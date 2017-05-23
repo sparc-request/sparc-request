@@ -25,7 +25,8 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
     render 'dashboard/protocols/summary',
       protocol: protocol,
       protocol_type: protocol.type,
-      permission_to_edit: true
+      permission_to_edit: true,
+      user: jug2
   end
 
   let_there_be_lane
@@ -111,8 +112,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
 
     context 'Study is not archived' do
       it 'should display the archive button' do
-        protocol = build(:unarchived_study_without_validations)
-        allow(jug2).to receive(:super_users) { [1] }
+        protocol = create(:unarchived_study_without_validations, primary_pi: jug2)
         render_summary_for protocol
         expect(response).to have_content('Archive Study')
       end
@@ -120,8 +120,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
 
     context 'Study is archived' do
       it 'should display the archive button' do
-        protocol = build(:archived_study_without_validations)
-        allow(jug2).to receive(:super_users) { [1] }
+        protocol = create(:archived_study_without_validations, primary_pi: jug2)
         render_summary_for protocol
         expect(response).to have_content('Unarchive Study')
       end
@@ -209,8 +208,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
 
     context 'Project is not archived' do
       it 'should display the archive button' do
-        protocol = build(:unarchived_project_without_validations)
-        allow(jug2).to receive(:super_users) { [1] }
+        protocol = create(:unarchived_project_without_validations, primary_pi: jug2)
         render_summary_for protocol
         expect(response).to have_content('Archive Project')
       end
@@ -218,8 +216,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
 
     context 'Project is archived' do
       it 'should display the archive button' do
-        protocol = build(:archived_project_without_validations)
-        allow(jug2).to receive(:super_users) { [1] }
+        protocol = create(:archived_project_without_validations, primary_pi: jug2)
         render_summary_for protocol
         expect(response).to have_content('Unarchive Project')
       end

@@ -223,7 +223,7 @@ class Protocol < ApplicationRecord
 
     ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_identity(identity_id))
     
-    if Identity.find(identity_id).is_super_user?
+    if SuperUser.where(identity_id: identity_id).any?
       empty_protocol_ids  = includes(:sub_service_requests).where(sub_service_requests: { id: nil }).ids
       protocol_ids        = ssrs.distinct.pluck(:protocol_id)
       all_protocol_ids    = (protocol_ids + empty_protocol_ids).uniq

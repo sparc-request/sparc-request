@@ -56,7 +56,6 @@ class Dashboard::MultipleLineItemsController < Dashboard::BaseController
 
         @new_line_items.each do |line_item|
           line_item.update_attribute(:sub_service_request_id, @sub_service_request.id)
-          @sub_service_request.update_cwf_data_for_new_line_item(line_item)
         end
 
         flash.now[:success] = t(:dashboard)[:multiple_line_items][:created]

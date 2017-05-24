@@ -72,14 +72,12 @@ class Surveyor::SurveysController < ApplicationController
   end
 
   def update_dependents_list
-    @survey = Survey.find(params[:survey_id])
-    selects = {}
+    @survey     = Survey.find(params[:survey_id])
+    @questions  = @survey.questions
 
-    @survey.questions.each do |question|
-      selects[question.id] = render_to_string(partial: 'surveyor/surveys/form/dependent_dropdown', locals: { survey: @survey, question: question })
+    respond_to do |format|
+      format.js
     end
-
-    render json: selects.to_json
   end
 
   private

@@ -203,27 +203,27 @@ class Protocol < ApplicationRecord
   scope :admin_filter, -> (params) {
     filter, id  = params.split(" ")
     if filter == 'for_admin'
-      for_admin(Identity.find(id))
+      for_admin(id)
     elsif filter == 'for_identity'
-      for_identity(Identity.find(id))
+      for_identity(id)
     end
   }
 
-  scope :for_identity, -> (identity) {
-    return nil if identity.nil?
+  scope :for_identity, -> (identity_id) {
+    return nil if identity_id == '0'
 
     joins(:project_roles).
-    where(project_roles: { identity: identity }).
+    where(project_roles: { identity_id: identity_id }).
     where.not(project_roles: { project_rights: 'none' })
   }
 
-  scope :for_admin, -> (identity) {
+  scope :for_admin, -> (identity_id) {
     # returns protocols with ssrs in orgs authorized for identity
-    return nil if identity.nil?
+    return nil if identity_id == '0'
 
-    ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_identity(identity.id))
+    ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_identity(identity_id))
     
-    if identity.is_super_user?
+    if Identity.find(identity_id).is_super_user?
       empty_protocol_ids  = includes(:sub_service_requests).where(sub_service_requests: { id: nil }).ids
       protocol_ids        = ssrs.distinct.pluck(:protocol_id)
       all_protocol_ids    = (protocol_ids + empty_protocol_ids).uniq

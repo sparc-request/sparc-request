@@ -46,7 +46,7 @@ class ServicePricingReport < ReportingModule
   end
 
   def records
-    records ||= self.table.joins(:pricing_maps).where(self.where(self.params)).uniq(self.uniq).group(self.group).order(self.order)
+    records ||= self.table.joins(:pricing_maps).where(self.where(self.params)).distinct(self.uniq).group(self.group).order(self.order)
   end
 
   def column_attrs

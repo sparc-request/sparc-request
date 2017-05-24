@@ -50,7 +50,7 @@ RSpec.describe Dashboard::ProtocolsController do
 
       it 'should assign @protocol_filters to the five most recent filters' do
         expect(ProtocolFilter).to have_received(:latest_for_user).
-          with(@logged_in_user.id, 5)
+          with(@logged_in_user.id, ProtocolFilter::MAX_FILTERS)
         expect(assigns(:protocol_filters)).to eq("users filters")
       end
 
@@ -94,7 +94,7 @@ RSpec.describe Dashboard::ProtocolsController do
 
       it 'should assign @protocol_filters to the five most recent filters' do
         expect(ProtocolFilter).to have_received(:latest_for_user).
-          with(@logged_in_user.id, 5)
+          with(@logged_in_user.id, ProtocolFilter::MAX_FILTERS)
         expect(assigns(:protocol_filters)).to eq("users filters")
       end
 

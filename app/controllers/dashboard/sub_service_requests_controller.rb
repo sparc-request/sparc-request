@@ -226,7 +226,7 @@ private
   end
 
   def authorize_protocol
-    unless @permission_to_view || Protocol.for_admin(@user).include?(@service_request.protocol)
+    unless @permission_to_view || Protocol.for_admin(@user.id).include?(@service_request.protocol)
       @sub_service_request  = nil
       @service_request      = nil
       @permission_to_edit   = nil

@@ -18,33 +18,43 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class AssociatedUserCreator
-  attr_reader :protocol_role
+require "rails_helper"
 
-  def initialize(params)
-    protocol = Protocol.find(params[:protocol_id])
-    @protocol_role = protocol.project_roles.build(params)
+RSpec.describe "User deletes a filter", js: :true do
 
-    if @protocol_role.unique_to_protocol? && @protocol_role.fully_valid?
-      @successful = true
-      if @protocol_role.role == 'primary-pi'
-        protocol.project_roles.primary_pis.each do |pr|
-          pr.update_attributes(project_rights: 'approve', role: 'general-access-user')
-        end
-      end
-      @protocol_role.save
-      
-      protocol.email_about_change_in_authorized_user(@protocol_role, "add")
+  let_there_be_lane
+  fake_login_for_each_test
 
-      if USE_EPIC && protocol.selected_for_epic && !QUEUE_EPIC
-        Notifier.notify_for_epic_user_approval(protocol).deliver
-      end
-    else
-      @successful = false
-    end
+  before :each do
+    @protocol1 = create(:study_without_validations, primary_pi: jug2, title: "title%", short_title: "Protocol1")
+    @protocol2 = create(:study_without_validations, primary_pi: jug2, title: "xTitle", short_title: "Protocol2")
+    @protocol3 = create(:study_without_validations, primary_pi: jug2, title: "a%a", short_title: "Protocol3")
+
+    service_request1 = create(:service_request_without_validations, protocol: @protocol1)
+    service_request2 = create(:service_request_without_validations, protocol: @protocol2)
+    service_request3 = create(:service_request_without_validations, protocol: @protocol3)
+
+    create(:protocol_filter, identity: jug2)
+
+    visit dashboard_protocols_path
+    wait_for_javascript_to_finish
+
+    expect(page).to have_selector(".protocols_index_row", count: 3)
   end
 
-  def successful?
-    @successful
+  it 'should delete the filter' do
+    find('.delete-filter').click
+    wait_for_javascript_to_finish
+
+    expect(page).to_not have_selector('.delete-filter')
+  end
+
+  context 'which is their last filter' do
+    it 'should delete the saved filters panel' do
+      find('.delete-filter').click
+      wait_for_javascript_to_finish
+
+      expect(page).to_not have_selector('#saved_searches .panel')
+    end
   end
 end

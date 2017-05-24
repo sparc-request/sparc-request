@@ -20,4 +20,16 @@
 
 class Tag < ApplicationRecord
   audited
+
+  def self.to_hash
+    tags = {}
+    where.not(name: 'epic').each do |tag|
+      tags[tag.name] = I18n.t(:tags)[tag.ymlized_name] ? I18n.t(:tags)[tag.ymlized_name] : tag.name.humanize
+    end
+    tags
+  end
+
+  def ymlized_name
+    self.name.gsub(" ","_").to_sym
+  end
 end

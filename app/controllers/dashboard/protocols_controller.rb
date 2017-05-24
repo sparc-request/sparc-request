@@ -55,8 +55,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     @protocols        = @filterrific.find.page(params[:page])
     @admin_protocols  = Protocol.for_admin(@user.id).pluck(:id)
-    @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)
-
+    @protocol_filters = ProtocolFilter.latest_for_user(@user.id, ProtocolFilter::MAX_FILTERS)
+    
     #toggles the display of the navigation bar, instead of breadcrumbs
     @show_navbar      = true
     @show_messages    = true
@@ -150,7 +150,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def update
     protocol_type = protocol_params[:type]
     @protocol = @protocol.becomes(protocol_type.constantize) unless protocol_type.nil?
-    if params[:updated_protocol_type] == 'true' && protocol_type == 'Study'
+    if params[:updated_protocol_type] == 'true' && protocol_type == 'Study' && @protocol.valid?
       @protocol.update_attribute(:type, protocol_type)
       @protocol.activate
       @protocol.reload

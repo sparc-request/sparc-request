@@ -21,6 +21,7 @@
 class Service < ApplicationRecord
 
   include RemotelyNotifiable
+  include ServiceUtility
 
   audited
   acts_as_taggable
@@ -122,7 +123,13 @@ class Service < ApplicationRecord
   # cents.
   def self.dollars_to_cents dollars
     dollars = dollars.gsub(',','')
-    (BigDecimal(dollars) * 100).to_i
+    #check if dollars arg will be a valid for BigDecimal conversion
+    if ServiceUtility.valid_float?(dollars)
+      #if not we convert dollars to an integer
+      (BigDecimal(dollars) * 100).to_i
+    else
+      (BigDecimal(dollars.to_i) * 100).to_i
+    end
   end
 
   # Given an integer number of cents, return a Float representing the

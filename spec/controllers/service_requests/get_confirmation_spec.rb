@@ -141,13 +141,11 @@ RSpec.describe ServiceRequestsController, type: :controller do
           stub_const("USE_EPIC", true)
           setup_valid_study_answers(protocol)
 
-          # previously_submitted_at is null so we get 2 emails
-          expect {
-            xhr :get, :confirmation, {
-              sub_service_request_id: ssr.id,
-              id: sr.id
-            }
-          }.to change(ActionMailer::Base.deliveries, :count).by(3)
+          # We have a user, and service_provider so we send 2 emails
+          xhr :get, :confirmation, {
+            sub_service_request_id: ssr.id,id: sr.id}
+
+          expect(Delayed::Backend::ActiveRecord::Job.count).to eq(2)
         end
       end
     end
@@ -227,18 +225,16 @@ RSpec.describe ServiceRequestsController, type: :controller do
           ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft', protocol_id: protocol.id)
           li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                      create(:service_provider, identity: logged_in_user, organization: org)
-
+          org.submission_emails.create(email: 'hedwig@owlpost.com')
           session[:identity_id]            = logged_in_user.id
           stub_const("USE_EPIC", true)
           setup_valid_study_answers(protocol)
 
-          # previously_submitted_at is null so we get 2 emails
-          expect {
-            xhr :get, :confirmation, {
-              sub_service_request_id: ssr.id,
-              id: sr.id
-            }
-          }.to change(ActionMailer::Base.deliveries, :count).by(3)
+          # We have an admin, user, and service_provider so we send 3 emails
+          xhr :get, :confirmation, {
+            sub_service_request_id: ssr.id,
+            id: sr.id }
+          expect(Delayed::Backend::ActiveRecord::Job.count).to eq(3)
         end
       end
     end

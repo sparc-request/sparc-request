@@ -18,22 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FactoryGirl.define do
-  factory :survey do
-    title               { Faker::Lorem.word }
-    access_code         { Faker::Lorem.word }
-    display_order       { 0 }
-    sequence(:version)  { |n| n }
-    active              { false }
+module ServiceUtility
 
-    trait :active do
-      active true
-    end
-
-    trait :without_validations do
-      to_create { |instance| instance.save(validate: false) }
-    end
-
-    factory :survey_without_validations, traits: [:without_validations]
+  def self.valid_float?(str)
+    !!Float(str) rescue false
   end
 end

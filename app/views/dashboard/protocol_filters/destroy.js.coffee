@@ -17,23 +17,11 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-FactoryGirl.define do
-  factory :survey do
-    title               { Faker::Lorem.word }
-    access_code         { Faker::Lorem.word }
-    display_order       { 0 }
-    sequence(:version)  { |n| n }
-    active              { false }
-
-    trait :active do
-      active true
-    end
-
-    trait :without_validations do
-      to_create { |instance| instance.save(validate: false) }
-    end
-
-    factory :survey_without_validations, traits: [:without_validations]
-  end
-end
+$("#modal_errors").html("<%= j render 'shared/modal_errors', errors: @errors %>")
+<% unless @errors %>
+$("#saved_searches").html("<%= j render 'dashboard/protocol_filters/saved_searches', current_user: @user, protocol_filters: @protocol_filters %>")
+$("#modal_place").modal('hide')
+<% if @protocol_filters.count == 0 %>
+$("#saved_searches").html("")
+<% end %>
+<% end %>

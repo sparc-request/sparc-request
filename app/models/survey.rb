@@ -21,6 +21,7 @@
 class Survey < ActiveRecord::Base
   has_many :responses, dependent: :destroy
   has_many :sections, dependent: :destroy
+  has_many :questions, through: :sections
   has_many :associated_surveys, as: :surveyable, dependent: :destroy
   
   has_many :questions, through: :sections

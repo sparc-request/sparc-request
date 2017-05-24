@@ -55,8 +55,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     @protocols        = @filterrific.find.page(params[:page])
     @admin_protocols  = Protocol.for_admin(@user.id).pluck(:id)
-    @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)
-
+    @protocol_filters = ProtocolFilter.latest_for_user(@user.id, ProtocolFilter::MAX_FILTERS)
+    
     #toggles the display of the navigation bar, instead of breadcrumbs
     @show_navbar      = true
     @show_messages    = true

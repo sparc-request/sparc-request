@@ -57,7 +57,8 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
 
     context 'ProtocolFilters present' do
       before(:each) do
-        assign(:protocol_filters, [double('protocol_filter',
+        assign(:protocol_filters, [double('protocol_filter', 
+          id: 1,
           search_name: 'My Awesome Filter',
           href: ''
         )])

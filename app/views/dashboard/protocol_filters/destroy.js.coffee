@@ -17,57 +17,11 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-class Dashboard::ProtocolFiltersController < Dashboard::BaseController
-  respond_to :html, :json
-
-  def new
-    @protocol_filter = @user.protocol_filters.new(new_params)
-  end
-
-  def create
-    if ProtocolFilter.create(create_params)
-      flash[:success] = 'Search Saved!'
-    else
-      flash[:alert] = 'Search Failed to Save.'
-    end
-
-    @protocol_filters = ProtocolFilter.latest_for_user(@user.id, ProtocolFilter::MAX_FILTERS)
-  end
-
-  def destroy
-    filter = ProtocolFilter.find(params[:id])
-    filter.destroy
-    @protocol_filters = ProtocolFilter.latest_for_user(@user.id, ProtocolFilter::MAX_FILTERS)
-    
-    flash[:danger] = 'Search Deleted!'
-    
-    respond_to do |format|
-      format.js
-    end
-  end
-
-  private
-
-  def create_params
-    params.require(:protocol_filter).permit(:identity_id,
-      :search_name,
-      :show_archived,
-      :admin_filter,
-      :search_query,
-      with_organization: [],
-      with_status: [],
-      with_owner: [])
-  end
-
-  def new_params
-    params.require(:filterrific).permit(:identity_id,
-      :search_name,
-      :show_archived,
-      :admin_filter,
-      search_query: [:search_drop, :search_text],
-      with_organization: [],
-      with_status: [],
-      with_owner: [])
-  end
-end
+$("#modal_errors").html("<%= j render 'shared/modal_errors', errors: @errors %>")
+<% unless @errors %>
+$("#saved_searches").html("<%= j render 'dashboard/protocol_filters/saved_searches', current_user: @user, protocol_filters: @protocol_filters %>")
+$("#modal_place").modal('hide')
+<% if @protocol_filters.count == 0 %>
+$("#saved_searches").html("")
+<% end %>
+<% end %>

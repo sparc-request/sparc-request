@@ -26,23 +26,23 @@
           %span{aria: {hidden:'true'}} &times;
           %span.sr-only &times;
         %h4.modal-title.text-center
-          Edit Visit
+          = t(:calendars)[:pppv][:header_fields][:edit_billing_modal]
       .modal-body
         = hidden_field_tag 'arm_id', params[:arm_id], class: 'v-arm-id'
         = hidden_field_tag 'sr_id', params[:service_request_id], class: 'v-sr-id'
         .form-group
-          = f.label :research_billing_qty, 'Research Billing Quantity', class: 'col-sm-8 control-label'
-          .col-sm-4
+          = f.label :research_billing_qty, t(:calendars)[:pppv][:editable_fields][:research], class: 'col-sm-5 control-label'
+          .col-sm-6
             = f.text_field :research_billing_qty, class: 'form-control'
         .form-group
-          = f.label :insurance_billing_qty, 'Insurance Billing Quantity', class: 'col-sm-8 control-label'
-          .col-sm-4
+          = f.label :insurance_billing_qty, t(:calendars)[:pppv][:editable_fields][:third_party], class: 'col-sm-5 control-label'
+          .col-sm-6
             = f.text_field :insurance_billing_qty, class: 'form-control'
         .form-group
-          = f.label :effort_billing_qty, 'Effort Billing Quantity', class: 'col-sm-8 control-label'
-          .col-sm-4
+          = f.label :effort_billing_qty, t(:calendars)[:pppv][:editable_fields][:percent], class: 'col-sm-5 control-label'
+          .col-sm-6
             = f.text_field :effort_billing_qty, class: 'form-control'
       .modal-footer
         %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
-          Close
-        = f.submit 'Save Changes', class: 'btn btn-primary'
+          = t(:actions)[:close]
+        = f.submit t(:actions)[:save], class: 'btn btn-primary'

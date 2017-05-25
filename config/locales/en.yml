@@ -197,6 +197,7 @@ en:
         research: "R"
         third_party: "T"
         percent: "%"
+        edit_billing_modal: "Edit Billing Quantities"
       editable_fields:
         window_before: "Edit Window Before Visit"
         day: "Edit Visit Day"
@@ -204,6 +205,9 @@ en:
         visit_name: "Edit Visit Name"
         your_cost: "Edit Your Cost"
         subject_count: "Edit Subject Count"
+        research: "Research Billing Quantity:"
+        third_party: "Insurance Billing Quantity:"
+        percent: "Effort Billing Quantity:"
       totals:
         maximum_direct: "Maximum Total Direct Costs Per Patient"
         maximum_per_patient: "Maximum Total Per Patient"

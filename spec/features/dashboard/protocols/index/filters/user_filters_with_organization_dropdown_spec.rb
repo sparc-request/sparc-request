@@ -20,46 +20,35 @@
 
 require "rails_helper"
 
-RSpec.describe Dashboard::EpicQueuesController do
-  describe "GET #index" do
-    describe "for overlord users" do
-      before(:each) do
-        stub_const("EPIC_QUEUE_ACCESS", ['jug2'])
-        
-        protocol = create(:protocol,
-                          :without_validations,
-                          last_epic_push_status: 'failed'
-                         )
-        @eq = create(:epic_queue, protocol: protocol)
-        log_in_dashboard_identity(obj: build(:identity, ldap_uid: 'jug2'))
-        get :index, format: :json
-      end
+RSpec.describe "User selects organizations and filters", js: :true do
 
-      it "should put all EpicQueues in @epic_queues" do
-        expect(assigns(:epic_queues)).to eq([@eq])
-      end
+	let_there_be_lane
+	fake_login_for_each_test
 
-      it { is_expected.to render_template "dashboard/epic_queues/index" }
-      it { is_expected.to respond_with 200 }
-    end
+	scenario "and sees protocols with statuses" do
+		institution   = create(:institution)
+		provider      = create(:provider, parent: institution)
+		program       = create(:program, parent: provider)
+		good_org      = create(:core, parent: program, name: "Corey's House")
+		good_protocol = create(:study_without_validations, primary_pi: jug2)
+		good_sr       = create(:service_request_without_validations, protocol: good_protocol)
+										create(:sub_service_request, service_request: good_sr, organization: good_org)
+		bad_org       = create(:core, parent: program, name: "Not Corey's House")
+		bad_protocol  = create(:study_without_validations, primary_pi: jug2)
+		bad_sr        = create(:service_request_without_validations, protocol: bad_protocol)
+										create(:sub_service_request, service_request: bad_sr, organization: bad_org)
 
-    describe "for creepy hacker doods" do
-      before(:each) do
-        protocol = create(:protocol,
-                          :without_validations,
-                          last_epic_push_status: 'failed'
-                         )
-        @eq = create(:epic_queue, protocol: protocol)
-        log_in_dashboard_identity(obj: build_stubbed(:identity))
-        get :index, format: :json
-      end
+		create(:service_provider, identity: jug2, organization: good_org)
 
-      it "should put all EpicQueues in @epic_queues" do
-        expect(assigns(:epic_queues)).to_not eq([@eq])
-      end
+		visit dashboard_protocols_path
+		wait_for_javascript_to_finish
 
-      it { is_expected.to_not render_template "dashboard/epic_queues/index" }
-      it { is_expected.to respond_with 200 }
-    end
-  end
+		bootstrap_multiselect("#filterrific_with_organization", [good_org.name])
+		find("#apply-filter-button").click
+		wait_for_javascript_to_finish
+
+		expect(page).to have_selector(".protocols_index_row", count: 1)
+		expect(page).to have_content(good_protocol.short_title)
+		expect(page).to_not have_content(bad_protocol.short_title)
+	end
 end

@@ -20,46 +20,31 @@
 
 require "rails_helper"
 
-RSpec.describe Dashboard::EpicQueuesController do
-  describe "GET #index" do
-    describe "for overlord users" do
-      before(:each) do
-        stub_const("EPIC_QUEUE_ACCESS", ['jug2'])
-        
-        protocol = create(:protocol,
-                          :without_validations,
-                          last_epic_push_status: 'failed'
-                         )
-        @eq = create(:epic_queue, protocol: protocol)
-        log_in_dashboard_identity(obj: build(:identity, ldap_uid: 'jug2'))
-        get :index, format: :json
-      end
+RSpec.describe "User selects statuses and filters", js: :true do
 
-      it "should put all EpicQueues in @epic_queues" do
-        expect(assigns(:epic_queues)).to eq([@eq])
-      end
+  let_there_be_lane
+  fake_login_for_each_test
 
-      it { is_expected.to render_template "dashboard/epic_queues/index" }
-      it { is_expected.to respond_with 200 }
-    end
+  scenario "and sees protocols with statuses" do
+    stub_const("AVAILABLE_STATUSES", { 'draft': 'Draft', 'submitted': 'Submitted' })
 
-    describe "for creepy hacker doods" do
-      before(:each) do
-        protocol = create(:protocol,
-                          :without_validations,
-                          last_epic_push_status: 'failed'
-                         )
-        @eq = create(:epic_queue, protocol: protocol)
-        log_in_dashboard_identity(obj: build_stubbed(:identity))
-        get :index, format: :json
-      end
+    organization        = create(:organization)
+    protocol_draft      = create(:study_without_validations, primary_pi: jug2)
+    sr_draft            = create(:service_request_without_validations, protocol: protocol_draft)
+                          create(:sub_service_request, status: 'draft', service_request: sr_draft, organization: organization)
+    protocol_submitted  = create(:study_without_validations, primary_pi: jug2)
+    sr_submitted        = create(:service_request_without_validations, protocol: protocol_submitted)
+                          create(:sub_service_request, status: 'submitted', service_request: sr_submitted, organization: organization)
 
-      it "should put all EpicQueues in @epic_queues" do
-        expect(assigns(:epic_queues)).to_not eq([@eq])
-      end
+    visit dashboard_protocols_path
+    wait_for_javascript_to_finish
 
-      it { is_expected.to_not render_template "dashboard/epic_queues/index" }
-      it { is_expected.to respond_with 200 }
-    end
+    bootstrap_multiselect("#filterrific_with_status", ["Draft"])
+    find("#apply-filter-button").click
+    wait_for_javascript_to_finish
+
+    expect(page).to have_selector(".protocols_index_row", count: 1)
+    expect(page).to have_content(protocol_draft.short_title)
+    expect(page).to_not have_content(protocol_submitted.short_title)
   end
 end

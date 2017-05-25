@@ -20,46 +20,34 @@
 
 require "rails_helper"
 
-RSpec.describe Dashboard::EpicQueuesController do
-  describe "GET #index" do
-    describe "for overlord users" do
-      before(:each) do
-        stub_const("EPIC_QUEUE_ACCESS", ['jug2'])
-        
-        protocol = create(:protocol,
-                          :without_validations,
-                          last_epic_push_status: 'failed'
-                         )
-        @eq = create(:epic_queue, protocol: protocol)
-        log_in_dashboard_identity(obj: build(:identity, ldap_uid: 'jug2'))
-        get :index, format: :json
-      end
+RSpec.describe "User filters using \"My Admin Protocols\"", js: :true do
 
-      it "should put all EpicQueues in @epic_queues" do
-        expect(assigns(:epic_queues)).to eq([@eq])
-      end
+  let_there_be_lane
+  fake_login_for_each_test
 
-      it { is_expected.to render_template "dashboard/epic_queues/index" }
-      it { is_expected.to respond_with 200 }
-    end
+  before :each do
+    organization    = create(:organization)
+    @protocol       = create(:study_without_validations, primary_pi: jug2)
+    @sr             = create(:service_request_without_validations, protocol: @protocol)
+                      create(:sub_service_request, service_request: @sr, organization: organization)
+    admin_org       = create(:organization)
+    @admin_protocol = create(:study_without_validations, primary_pi: jug2)
+    @admin_sr       = create(:service_request_without_validations, protocol: @admin_protocol)
+                      create(:sub_service_request, service_request: @admin_sr, organization: admin_org)
 
-    describe "for creepy hacker doods" do
-      before(:each) do
-        protocol = create(:protocol,
-                          :without_validations,
-                          last_epic_push_status: 'failed'
-                         )
-        @eq = create(:epic_queue, protocol: protocol)
-        log_in_dashboard_identity(obj: build_stubbed(:identity))
-        get :index, format: :json
-      end
+    create(:service_provider, identity: jug2, organization: admin_org)
 
-      it "should put all EpicQueues in @epic_queues" do
-        expect(assigns(:epic_queues)).to_not eq([@eq])
-      end
+    visit dashboard_protocols_path
+    wait_for_javascript_to_finish
 
-      it { is_expected.to_not render_template "dashboard/epic_queues/index" }
-      it { is_expected.to respond_with 200 }
-    end
+    find("#filterrific_admin_filter_for_admin_#{jug2.id}").click
+    find("#apply-filter-button").click
+    wait_for_javascript_to_finish
+  end
+
+  scenario "and sees their admin protocols" do
+    expect(page).to have_selector(".protocols_index_row", count: 1)
+    expect(page).to have_content(@admin_protocol.short_title)
+    expect(page).to_not have_content(@protocol.short_title)
   end
 end

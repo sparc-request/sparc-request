@@ -34,13 +34,13 @@
           = visit.effort_billing_qty
     - else
       .col-xs-4.text-center.no-padding
-        %a.edit-billing-qty{ href: 'javascript:void(0)', data: { id: visit.id, portal: @portal } }
+        %a.edit-billing-qty{ href: 'javascript:void(0)', data: { id: visit.id, arm_id: arm.id, service_request_id: service_request.id, portal: @portal } }
           = visit.research_billing_qty
       .col-xs-4.text-center.no-padding
-        %a.edit-billing-qty{ href: 'javascript:void(0)', data: { id: visit.id, portal: @portal } }
+        %a.edit-billing-qty{ href: 'javascript:void(0)', data: { id: visit.id, arm_id: arm.id, service_request_id: service_request.id, portal: @portal } }
           = visit.insurance_billing_qty
       .col-xs-4.text-center.no-padding
-        %a.edit-billing-qty{ href: 'javascript:void(0)', data: { id: visit.id, portal: @portal } }
+        %a.edit-billing-qty{ href: 'javascript:void(0)', data: { id: visit.id, arm_id: arm.id, service_request_id: service_request.id, portal: @portal } }
           = visit.effort_billing_qty
 - when 'calendar'
   .line-item-visit-pricing

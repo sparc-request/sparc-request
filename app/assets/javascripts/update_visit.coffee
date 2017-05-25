@@ -22,6 +22,17 @@ $ ->
   $(document).on 'click', '.edit-billing-qty', ->
     id = $(this).data('id')
     portal = $(this).data('portal')
+    srId = $(this).data('service-request-id')
+    armId = $(this).data('arm-id')
     $.ajax
       type: 'GET'
-      url: "/dashboard/visits/#{id}/edit?portal=#{portal}"
+      url: "/dashboard/visits/#{id}/edit?portal=#{portal}&&arm_id=#{armId}&&service_request_id=#{srId}"
+
+  $(document).on 'ajax:success', '.visit-form', ->
+    arm_id = $('.visit-form .v-arm-id').val()
+    sr_id = $('.visit-form .v-sr-id').val()
+    reload_calendar(arm_id, sr_id)
+    $('#modal_place').modal('hide')
+
+  $(document).on 'ajax:error', '.visit-form', (e, data, status, xhr) ->
+    $('.visit-form').renderFormErrors('visit', jQuery.parseJSON(data.responseText))

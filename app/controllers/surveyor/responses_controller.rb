@@ -54,7 +54,10 @@ class Surveyor::ResponsesController < ApplicationController
     @review   = params[:review] == 'true'
 
     if @response.save && @response.question_responses.none? { |qr| qr.errors.any? }
+      # Delete responses to questions that didn't show anyways to avoid confusion in the data
+      @response.question_responses.where(required: true, content: [nil, '']).destroy_all
       SurveyNotification.system_satisfaction_survey(@response) if @response.survey.access_code == 'system-satisfaction-survey'
+      
       flash[:success] = t(:surveyor)[:responses][:create]
     else
       @errors = true

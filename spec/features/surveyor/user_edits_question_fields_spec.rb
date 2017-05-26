@@ -28,7 +28,7 @@ RSpec.describe 'User edits question fields', js: true do
   before :each do
     @survey = create(:survey)
     @section = create(:section, survey: @survey)
-    @question = create(:question, section: @section)
+    @question = create(:question, question_type: 'dropdown', section: @section)
 
     stub_const("SITE_ADMINS", ['jug2'])
   end
@@ -88,21 +88,24 @@ RSpec.describe 'User edits question fields', js: true do
   end
 
   scenario 'and sees updated is_dependent' do
+    @option    = create(:option, question: @question, content: "What is the meaning of life?")
+    @question2 = create(:question, section: @section)
+
     visit surveyor_surveys_path
     wait_for_javascript_to_finish
 
     find('.edit-survey').click
     wait_for_javascript_to_finish
 
-    find('#question-is_dependent').click
+    all('#question-is_dependent')[1].click
     wait_for_javascript_to_finish
 
-    expect(@question.reload.is_dependent).to eq(true)
+    expect(@question2.reload.is_dependent).to eq(true)
   end
 
   scenario 'and sees updated depender_id' do
+    @option    = create(:option, question: @question, content: "What is the meaning of life?")
     @question2 = create(:question, section: @section)
-    @option    = create(:option, question: @question2, content: "What is the meaning of life?")
     
     visit surveyor_surveys_path
     wait_for_javascript_to_finish
@@ -110,13 +113,13 @@ RSpec.describe 'User edits question fields', js: true do
     find('.edit-survey').click
     wait_for_javascript_to_finish
 
-    first('#question-is_dependent').click
+    all('#question-is_dependent')[1].click
     wait_for_javascript_to_finish
 
     bootstrap_select '#question-depender_id', 'What is the meaning of life?'
     wait_for_javascript_to_finish
     
-    expect(@question.reload.depender_id).to eq(@option.id)
+    expect(@question2.reload.depender_id).to eq(@option.id)
   end
 
   context 'and adds a question' do

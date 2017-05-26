@@ -79,7 +79,7 @@ class QuestionResponse < ActiveRecord::Base
   private
 
   def check_content_requirements
-    if self.required? && self.content.blank? && self.depender.present? && depender_selected?
+    if self.required? && self.content.blank? && (self.depender.nil? || self.depender.present? && depender_selected?)
       errors.add(:content, :blank)
     end
   end

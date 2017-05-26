@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User sets each XEditable field', js: true do
+RSpec.describe 'User sets each Service Calendar field', js: true do
   let_there_be_lane
 
   fake_login_for_each_test
@@ -228,27 +228,27 @@ RSpec.describe 'User sets each XEditable field', js: true do
       end
 
       scenario 'r' do
-        find('.edit-research-billing-qty.editable').click
-        find('.editable-input input').set(5)
-        find('.editable-submit').click
+        find('a.edit-billing-qty', match: :first).click
+        fill_in 'visit_research_billing_qty', with: 5
+        click_button 'Save'
         wait_for_javascript_to_finish
 
         expect(@arm.visits.first.research_billing_qty).to eq(5)
       end
 
       scenario 't' do
-        find('.edit-insurance-billing-qty.editable').click
-        find('.editable-input input').set(5)
-        find('.editable-submit').click
+        find('a.edit-billing-qty', match: :first).click
+        fill_in 'visit_insurance_billing_qty', with: 5
+        click_button 'Save'
         wait_for_javascript_to_finish
 
         expect(@arm.visits.first.insurance_billing_qty).to eq(5)
       end
 
       scenario '%' do
-        find('.edit-effort-billing-qty.editable').click
-        find('.editable-input input').set(5)
-        find('.editable-submit').click
+        find('a.edit-billing-qty', match: :first).click
+        fill_in 'visit_effort_billing_qty', with: 5
+        click_button 'Save'
         wait_for_javascript_to_finish
 
         expect(@arm.visits.first.effort_billing_qty).to eq(5)
@@ -311,30 +311,30 @@ RSpec.describe 'User sets each XEditable field', js: true do
       end
 
       scenario 'r' do
-        find('.edit-research-billing-qty.editable').click
-        find('.editable-input input').set('a number')
-        find('.editable-submit').click
+        find('a.edit-billing-qty', match: :first).click
+        fill_in 'visit_research_billing_qty', with: 'string'
+        click_button 'Save'
+        wait_for_javascript_to_finish
 
-        expect(page).to have_selector('.editable-error-block', visible: true)
-        expect(page).to have_content('Research Billing Qty is not a number')
+        expect(page).to have_css('span.help-block', text: 'Is not a number')
       end
 
       scenario 't' do
-        find('.edit-insurance-billing-qty.editable').click
-        find('.editable-input input').set('not a number')
-        find('.editable-submit').click
+        find('a.edit-billing-qty', match: :first).click
+        fill_in 'visit_insurance_billing_qty', with: 'string'
+        click_button 'Save'
+        wait_for_javascript_to_finish
 
-        expect(page).to have_selector('.editable-error-block', visible: true)
-        expect(page).to have_content('Insurance Billing Qty is not a number')
+        expect(page).to have_css('span.help-block', text: 'Is not a number')
       end
 
       scenario '%' do
-        find('.edit-effort-billing-qty.editable').click
-        find('.editable-input input').set('imaginary number')
-        find('.editable-submit').click
+        find('a.edit-billing-qty', match: :first).click
+        fill_in 'visit_effort_billing_qty', with: 'string'
+        click_button 'Save'
+        wait_for_javascript_to_finish
 
-        expect(page).to have_selector('.editable-error-block', visible: true)
-        expect(page).to have_content('Effort Billing Qty is not a number')
+        expect(page).to have_css('span.help-block', text: 'Is not a number')
       end
 
       scenario 'unit type #' do

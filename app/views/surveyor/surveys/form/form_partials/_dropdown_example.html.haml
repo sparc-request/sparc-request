@@ -20,7 +20,7 @@
 %hr
 .col-sm-12
   - question.options.each do |option|
-    .form-group
+    .form-group.option{ data: {option_id: option.id } }
       .col-lg-11.no-padding
         = text_field_tag "option-content", option.content, class: 'form-control option-content', placeholder: t(:surveyor)[:surveys][:form][:content][:option][:content][:placeholder], maxlength: 255
       .col-lg-1.no-padding

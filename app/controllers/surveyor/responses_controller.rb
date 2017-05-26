@@ -60,6 +60,8 @@ class Surveyor::ResponsesController < ApplicationController
       
       flash[:success] = t(:surveyor)[:responses][:create]
     else
+      @response.destroy
+      
       @errors = true
     end
   end

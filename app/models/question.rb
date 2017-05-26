@@ -45,6 +45,10 @@ class Question < ActiveRecord::Base
     self.survey.questions.where("questions.id < ?", self.id)
   end
 
+  def is_dependent?
+    self.is_dependent && self.depender_id.present?
+  end
+  
   private
 
   def update_options_based_on_question_type

@@ -18,11 +18,15 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
--# Render disabled example content so the user can see what the question might look like
-.option{ class: "option-#{option.id}", data: { option_id: option.id } }
-  .form-group
-    .col-lg-11.no-padding
-      = text_field_tag "option-content", option.content, class: 'form-control option-content', placeholder: t(:surveyor)[:surveys][:form][:content][:option][:content][:placeholder], maxlength: 255
-    .col-lg-1.no-padding
-      = link_to surveyor_option_path(option), method: :delete, remote: true, class: 'btn btn-danger pull-right delete-option', title: t(:surveyor)[:surveys][:form][:content][:option][:delete], data: { toggle: 'tooltip', animation: 'false' } do
-        %span.glyphicon.glyphicon-trash
+%hr
+.col-sm-12
+  - question.options.each do |option|
+    .form-group
+      .col-lg-1.text-center
+        = radio_button_tag :response_example, '', false, class: 'radio-example form-control', disabled: true
+      .col-lg-10.no-padding
+        = text_field_tag "option-content", option.content, class: 'form-control option-content', placeholder: t(:surveyor)[:surveys][:form][:content][:option][:content][:placeholder], maxlength: 255
+      .col-lg-1.no-padding
+        = link_to surveyor_option_path(option), method: :delete, remote: true, class: 'btn btn-danger pull-right delete-option', title: t(:surveyor)[:surveys][:form][:content][:option][:delete], data: { toggle: 'tooltip', animation: 'false' } do
+          %span.glyphicon.glyphicon-trash
+  = render 'surveyor/surveys/form/form_partials/add_option_button', question: question

@@ -20,7 +20,7 @@
 %select.selectpicker.select-depender#question-depender_id{ selected: question.depender_id }
   %option{ value: "" }
     = t(:constants)[:prompts][:none]
-  - survey.questions.where.not(id: question.id).each do |question|
+  - question.previous_questions.each do |question|
     %optgroup{ label: question.content }
       - question.options.each do |option|
         %option{ value: option.id }

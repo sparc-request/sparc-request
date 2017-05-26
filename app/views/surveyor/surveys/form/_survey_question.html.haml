@@ -33,11 +33,11 @@
 
   .form-group
     = label_tag "question-required", t(:surveyor)[:surveys][:form][:content][:question][:required], class: 'col-sm-1 control-label no-padding-x text-left'
-    .col-sm-1.no-padding
-      = check_box_tag "question-required", question.required, question.required, class: 'form-control'
+    .col-sm-1
+      = check_box_tag "question-required", question.required, question.required
     = label_tag "question-is_dependent", t(:surveyor)[:surveys][:form][:content][:question][:dependent][:label], class: 'col-sm-2 control-label no-padding-x text-right'
-    .col-sm-1.no-padding
-      = check_box_tag "question-is_dependent", question.is_dependent, question.is_dependent, class: 'form-control is-dependent', disabled: question.previous_questions.empty?
+    .col-sm-1
+      = check_box_tag "question-is_dependent", question.is_dependent, question.is_dependent, class: 'is-dependent', disabled: question.previous_questions.empty?
     .dependent-dropdown-container{ class: question.is_dependent ? '' : 'hidden' }
       = label_tag "question-depender_id", t(:surveyor)[:surveys][:form][:content][:question][:dependent][:dropdown][:label], class: 'col-sm-2 control-label no-padding-x'
       .col-sm-4.no-padding

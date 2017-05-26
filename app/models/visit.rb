@@ -28,9 +28,9 @@ class Visit < ApplicationRecord
   belongs_to :visit_group
   belongs_to :line_items_visit
   
-  validates :research_billing_qty, numericality: { only_integer: true }
-  validates :insurance_billing_qty, numericality: { only_integer: true }
-  validates :effort_billing_qty, numericality: { only_integer: true }
+  validates :research_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :insurance_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :effort_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   # Find a Visit for the given "line items visit" and visit group.  This
   # creates the visit if it does not exist.

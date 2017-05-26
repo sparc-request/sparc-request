@@ -31,6 +31,7 @@ class QuestionResponse < ActiveRecord::Base
   validates_numericality_of :content, only_integer: true, if: Proc.new{ |qr| !qr.content.blank? && qr.question_id && qr.question.question_type == 'number' }
 
   after_save :check_content_requirements
+  
   def phone_number_format
     if content.match(/\d{10}/).nil?
       errors.add(:base, I18n.t(:errors)[:question_responses][:phone_invalid])

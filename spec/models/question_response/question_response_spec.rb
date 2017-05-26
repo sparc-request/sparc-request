@@ -122,4 +122,7 @@ RSpec.describe QuestionResponse, type: :model do
       expect(qr2).to be_valid
     end
   end
+
+  # Callbacks
+  it { is_expected.to callback(:check_content_requirements).after(:save) }
 end

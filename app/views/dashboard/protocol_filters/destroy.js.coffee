@@ -17,48 +17,11 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-class Subject < ApplicationRecord
-  audited
-
-  after_create { self.create_calendar }
-
-  def label
-    label = nil
-
-    if not external_subject_id.blank?
-      label = "Subject ID:#{external_subject_id}"
-    end
-
-    if not mrn.blank?
-      label = "Subject MRN:#{mrn}"
-    end
-
-    label
-  end
-
-  def has_appointments?
-    !self.calendar.appointments.empty?
-  end
-
-  ### audit reporting methods ###
-
-  def audit_field_replacements
-    {"external_subject_id" => "PARTICIPANT ID"}
-  end
-
-  def audit_excluded_fields
-    {'create' => ['arm_id']}
-  end
-
-  def audit_label audit
-    self.label || "Subject #{id}"
-  end
-
-  ### end audit reporting methods ###
-
-  def procedures
-    appointments = Appointment.where("calendar_id = ?", self.calendar.id).includes(:procedures)
-    procedures = appointments.collect{|x| x.procedures}.flatten
-  end
-end
+$("#modal_errors").html("<%= j render 'shared/modal_errors', errors: @errors %>")
+<% unless @errors %>
+$("#saved_searches").html("<%= j render 'dashboard/protocol_filters/saved_searches', current_user: @user, protocol_filters: @protocol_filters %>")
+$("#modal_place").modal('hide')
+<% if @protocol_filters.count == 0 %>
+$("#saved_searches").html("")
+<% end %>
+<% end %>

@@ -19,6 +19,10 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class SetProcedureCompletedToDefault < ActiveRecord::Migration
+
+  class Procedure < ActiveRecord::Base
+  end
+
   def up
     change_column :procedures, :completed, :boolean, :default => false
     Procedure.where(completed: nil).update_all({completed: false})

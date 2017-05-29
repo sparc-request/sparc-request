@@ -18,4 +18,26 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-require Rails.root.join('lib/dashboard/protocol_finder.rb')
+require "rails_helper"
+
+RSpec.describe "User checks the archived checkbox and filters", js: :true do
+
+  let_there_be_lane
+  fake_login_for_each_test
+
+  scenario "and sees archived protocols" do
+    protocol_archived = create(:study_without_validations, primary_pi: jug2, archived: true, short_title: 'ArchivedProtocol')
+    protocol_unarchived = create(:study_without_validations, primary_pi: jug2, archived: false, short_title: 'UnarchivedProtocol')
+
+    visit dashboard_protocols_path
+    wait_for_javascript_to_finish
+
+    find("#filterrific_show_archived").click
+    find("#apply-filter-button").click
+    wait_for_javascript_to_finish
+
+    expect(page).to have_selector(".protocols_index_row", count: 1)
+    expect(page).to have_content(protocol_archived.short_title)
+    expect(page).to_not have_content(protocol_unarchived.short_title)
+  end
+end

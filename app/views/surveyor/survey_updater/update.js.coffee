@@ -21,11 +21,11 @@
 <% @errors.zip(@errors.full_messages).each do |error, message| %>
 if !$("#<%=@klass%>-<%=error[0]%>").parents('.form-group').hasClass('has-error')
   $("#<%=@klass%>-<%=error[0]%>").parents('.form-group').addClass('has-error')
-  $("#<%=@klass%>-<%=error[0]%>").parents('.form-group').append("<span class='help-block'><%=message%></span>")
+  $("#<%=@klass%>-<%=error[0]%>").parents('.form-group').children('div:not(.control-label)').append("<span class='help-block'><%=message%></span>")
 <% end %>
 <% else %>
 $("#<%=@klass%>-<%=@field%>").parents('.form-group').removeClass('has-error')
-$("#<%=@klass%>-<%=@field%>").parents('.form-group').children('.help-block').remove()
+$("#<%=@klass%>-<%=@field%>").parents('.form-group').find('.help-block').remove()
 <% end %>
 
 <% if @klass == 'survey' %>

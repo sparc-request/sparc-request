@@ -46,11 +46,10 @@ $(document).ready ->
             reset_service_requests_handlers()
 
       $(document).on 'click', '.protocol-archive-button', ->
-        protocol_id = $(this).parents("tr").data('protocol-id')
+        protocol_id = $(this).data('protocol-id')
         $.ajax
           type: 'PATCH'
           url:  "/dashboard/protocols/#{protocol_id}/archive.js"
-          data: { protocol_id: protocol_id }
 
       $(document).on 'submit', '#filterrific-no-ajax-auto-submit', ->
         $('#filterrific_sorted_by').val("#{$('.protocol-sort').data('sort-name')} #{$('.protocol-sort').data('sort-order')}")

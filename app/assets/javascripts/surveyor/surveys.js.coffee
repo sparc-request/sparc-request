@@ -87,10 +87,6 @@ $(document).ready ->
     else
       $(container).addClass('hidden')
 
-  $(document).on 'click', '.add-option, .delete-option', ->
-    survey_id = $(this).parents('.survey').data('survey-id')
-    build_dependents_selectpicker(survey_id)
-
 send_update_request = (obj, val) ->
   field_data  = $(obj).attr('id').split('-')
   klass       = field_data[0]
@@ -105,16 +101,7 @@ send_update_request = (obj, val) ->
       "#{klass}":
         "#{attribute}": val
 
-build_dependents_selectpicker = (survey_id) ->
+(exports ? this).build_dependents_selectpicker = (survey_id) ->
   $.ajax
     type: 'get'
-    url: "/surveyor/surveys/#{survey_id}/update_dependents_list"
-    success: (data) ->
-      $.each data, (question_id, dropdown) ->
-
-        question = $(".question-#{question_id}")
-        select = $(question).find('select.select-depender')
-        $(select).html(dropdown)
-        $(select).selectpicker('refresh')
-
-      return false
+    url: "/surveyor/surveys/#{survey_id}/update_dependents_list.js"

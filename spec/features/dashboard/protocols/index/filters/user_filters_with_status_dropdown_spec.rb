@@ -18,33 +18,33 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class AssociatedUserCreator
-  attr_reader :protocol_role
+require "rails_helper"
 
-  def initialize(params)
-    protocol = Protocol.find(params[:protocol_id])
-    @protocol_role = protocol.project_roles.build(params)
+RSpec.describe "User selects statuses and filters", js: :true do
 
-    if @protocol_role.unique_to_protocol? && @protocol_role.fully_valid?
-      @successful = true
-      if @protocol_role.role == 'primary-pi'
-        protocol.project_roles.primary_pis.each do |pr|
-          pr.update_attributes(project_rights: 'request', role: 'general-access-user')
-        end
-      end
-      @protocol_role.save
-      
-      protocol.email_about_change_in_authorized_user(@protocol_role, "add")
+  let_there_be_lane
+  fake_login_for_each_test
 
-      if USE_EPIC && protocol.selected_for_epic && !QUEUE_EPIC
-        Notifier.notify_for_epic_user_approval(protocol).deliver
-      end
-    else
-      @successful = false
-    end
-  end
+  scenario "and sees protocols with statuses" do
+    stub_const("AVAILABLE_STATUSES", { 'draft': 'Draft', 'submitted': 'Submitted' })
 
-  def successful?
-    @successful
+    organization        = create(:organization)
+    protocol_draft      = create(:study_without_validations, primary_pi: jug2)
+    sr_draft            = create(:service_request_without_validations, protocol: protocol_draft)
+                          create(:sub_service_request, status: 'draft', service_request: sr_draft, organization: organization)
+    protocol_submitted  = create(:study_without_validations, primary_pi: jug2)
+    sr_submitted        = create(:service_request_without_validations, protocol: protocol_submitted)
+                          create(:sub_service_request, status: 'submitted', service_request: sr_submitted, organization: organization)
+
+    visit dashboard_protocols_path
+    wait_for_javascript_to_finish
+
+    bootstrap_multiselect("#filterrific_with_status", ["Draft"])
+    find("#apply-filter-button").click
+    wait_for_javascript_to_finish
+
+    expect(page).to have_selector(".protocols_index_row", count: 1)
+    expect(page).to have_content(protocol_draft.short_title)
+    expect(page).to_not have_content(protocol_submitted.short_title)
   end
 end

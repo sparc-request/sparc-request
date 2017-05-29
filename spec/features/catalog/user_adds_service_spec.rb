@@ -55,7 +55,7 @@ RSpec.describe 'User adds service to cart', js: true do
       find('.yes-button').click
       wait_for_javascript_to_finish
 
-      expect(page).to have_selector('.line-item div', text: @service.abbreviation)
+      expect(page).to have_selector('.line-item .service', text: @service.abbreviation)
     end
   end
 

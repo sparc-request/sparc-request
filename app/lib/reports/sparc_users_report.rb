@@ -18,10 +18,56 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class AddAppointmentCompletionsForPftCore < ActiveRecord::Migration
-  def change
-    Appointment.all.each do |app|
-      app.create_appointment_completions
+class SparcUsersReport < Report
+  def self.description
+  end
+
+  def default_output_file
+    return 'sparc_users_report.csv'
+  end
+
+  def assemble_users
+    associated = Identity.joins(:project_roles).distinct! {|e| e.id}
+    cms = Identity.joins(:catalog_managers).distinct! {|e| e.id}
+    sps = Identity.joins(:service_providers).distinct! {|e| e.id}
+    sus = Identity.joins(:super_users).distinct! {|e| e.id}
+
+    all_users = (associated + cms + sps + sus).flatten.uniq! {|e| e.id}
+
+    return all_users
+  end
+
+  def run
+    header = [
+      'Name',
+      'Email'
+    ]
+
+    # Axlsx::Package.new do |p|
+    #   p.workbook.add_worksheet(name: 'Report') do |sheet|
+    #     sheet.add_row(header)
+    #     self.assemble_users.each do |u|
+    #       row = [
+    #         u.full_name,
+    #         u.email
+    #       ]
+    #       # puts row
+    #       sheet.add_row(row)
+    #     end
+    #   end
+    #   puts p.serialize
+    #   p.serialize(@output_file)
+    # end
+    CSV.open(@output_file, 'wb') do |csv|
+      csv << header
+      self.assemble_users.each do |u|
+        row = [
+          u.full_name,
+          u.email
+        ]
+          # puts row
+        csv << row
+      end
     end
   end
 end

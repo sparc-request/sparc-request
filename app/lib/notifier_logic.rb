@@ -91,7 +91,7 @@ class NotifierLogic
         controller = set_instance_variables(@current_user, @service_request, service_list_false, service_list_true, line_items, protocol)
         xls = controller.render_to_string action: 'show', formats: [:xlsx]
         individual_ssr = @sub_service_request.present? ? true : false
-        Notifier.notify_admin(submission_email.email, xls, @current_user, sub_service_request, audit_report, ssr_destroyed, individual_ssr).deliver
+        Notifier.delay.notify_admin(submission_email.email, xls, @current_user, sub_service_request, audit_report, ssr_destroyed, individual_ssr)
       end
     end
   end
@@ -179,9 +179,9 @@ class NotifierLogic
       # Do not want to send authorized user request amendment emails when audit_report is not present
       
       if request_amendment && audit_report.present?
-        Notifier.notify_user(project_role, @service_request, @sub_service_request, xls, approval, @current_user, audit_report, individual_ssr).deliver_now
+        Notifier.delay.notify_user(project_role, @service_request, @sub_service_request, xls, approval, @current_user, audit_report, individual_ssr)
       elsif !request_amendment
-        Notifier.notify_user(project_role, @service_request, @sub_service_request, xls, approval, @current_user, audit_report, individual_ssr).deliver_now
+        Notifier.delay.notify_user(project_role, @service_request, @sub_service_request, xls, approval, @current_user, audit_report, individual_ssr)
       end
     end
   end
@@ -219,7 +219,7 @@ class NotifierLogic
     end
 
     individual_ssr = @sub_service_request.present? ? true : false
-    Notifier.notify_service_provider(service_provider, @service_request, attachments, @current_user, sub_service_request, audit_report, ssr_destroyed, request_amendment, individual_ssr).deliver_now
+    Notifier.delay.notify_service_provider(service_provider, @service_request, attachments, @current_user, sub_service_request, audit_report, ssr_destroyed, request_amendment, individual_ssr)
   end
 
   def filter_audit_trail(identity, ssr_ids_that_need_auditing)

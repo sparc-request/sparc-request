@@ -191,8 +191,6 @@ en:
         id: "ID"
         pis: "PI(s)"
         requests: Requests
-        archive: "Archive"
-        unarchive: "Unarchive"
 
       documents:
         header: "Documents"

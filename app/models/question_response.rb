@@ -22,7 +22,7 @@ class QuestionResponse < ActiveRecord::Base
   belongs_to :question
   belongs_to :response
 
-  validates :content, presence: true, if: :required?
+  delegate :depender, to: :question
 
   validate :phone_number_format, if: Proc.new{ |qr| !qr.content.blank? && qr.question_id && qr.question.question_type == 'phone' }
   validate :email_format, if: Proc.new{ |qr| !qr.content.blank? && qr.question_id && qr.question.question_type == 'email' }
@@ -30,6 +30,8 @@ class QuestionResponse < ActiveRecord::Base
   
   validates_numericality_of :content, only_integer: true, if: Proc.new{ |qr| !qr.content.blank? && qr.question_id && qr.question.question_type == 'number' }
 
+  after_save :check_content_requirements
+  
   def phone_number_format
     if content.match(/\d{10}/).nil?
       errors.add(:base, I18n.t(:errors)[:question_responses][:phone_invalid])
@@ -73,5 +75,17 @@ class QuestionResponse < ActiveRecord::Base
     else
       ""
     end
+  end
+
+  private
+
+  def check_content_requirements
+    if self.required? && self.content.blank? && (self.depender.nil? || self.depender.present? && depender_selected?)
+      errors.add(:content, :blank)
+    end
+  end
+
+  def depender_selected?
+    self.depender && self.response.question_responses.where(question_id: self.depender.question_id).first.content == self.depender.content
   end
 end

@@ -18,3 +18,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $('#modal_place').html("<%= j render 'surveyor/responses/new_form_modal', survey: @survey, response: @response, review: @review, sub_service_request: @sub_service_request %>")
 $('#modal_place').modal('show')
+$('.datetimepicker.date').datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
+$('.datetimepicker.time').datetimepicker(format: 'hh:mm A', allowInputToggle: true)
+$('.selectpicker').selectpicker()

@@ -206,5 +206,26 @@ RSpec.describe 'User edits question fields', js: true do
       expect(page).to_not have_selector('.question')
       expect(@section.questions.count).to eq(0)
     end
+
+    context 'with options that appear in a depdent selectpicker' do
+      scenario 'and sees updated dependent selectpickers' do
+        @option    = create(:option, question: @question)
+        @question2 = create(:question, section: @section, is_dependent: true)
+
+        visit surveyor_surveys_path
+        wait_for_javascript_to_finish
+
+        find('.edit-survey').click
+        wait_for_javascript_to_finish
+
+        first('.delete-question').click
+        wait_for_javascript_to_finish
+
+        find('.select-depender').click
+        wait_for_javascript_to_finish
+
+        expect(page).to_not have_selector('.select-depender .text', text: @option.content, visible: true)
+      end
+    end
   end
 end

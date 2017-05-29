@@ -38,7 +38,7 @@ class Question < ActiveRecord::Base
             inclusion: { in: [true, false] }
 
   accepts_nested_attributes_for :options, allow_destroy: true
-
+  
   after_update :update_options_based_on_question_type, if: :question_type_changed?
 
   def previous_questions

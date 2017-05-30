@@ -299,9 +299,13 @@ RSpec.describe "Admin User filters My Admin Protocols using Search functionality
 
   context "HR# search" do
     before :each do
-      @protocol1 = create(:study_without_validations, primary_pi: jug2, title: "title%", short_title: "Protocol1")
-      @protocol2 = create(:study_without_validations, primary_pi: jug2, title: "xTitle", short_title: "Protocol2")
-      @protocol3 = create(:study_without_validations, primary_pi: jug2, title: "a%a", short_title: "Protocol3")
+      hsi1       = create(:human_subjects_info, hr_number: 111111)
+      hsi2       = create(:human_subjects_info, hr_number: 222222)
+      hsi3       = create(:human_subjects_info, hr_number: 333333)
+
+      @protocol1 = create(:study_without_validations, primary_pi: jug2, title: "title%", short_title: "Protocol1", human_subjects_info: hsi1)
+      @protocol2 = create(:study_without_validations, primary_pi: jug2, title: "xTitle", short_title: "Protocol2", human_subjects_info: hsi2)
+      @protocol3 = create(:study_without_validations, primary_pi: jug2, title: "a%a", short_title: "Protocol3", human_subjects_info: hsi3)
 
       service_request1 = create(:service_request_without_validations, protocol: @protocol1)
       service_request2 = create(:service_request_without_validations, protocol: @protocol2)
@@ -405,9 +409,13 @@ RSpec.describe "Admin User filters My Admin Protocols using Search functionality
 
   context "All search" do
     before :each do
-      @protocol1 = create(:study_without_validations, id: 555555, primary_pi: jug2, title: "title%", short_title: "Protocol1")
-      @protocol2 = create(:study_without_validations, id: 666666, primary_pi: jug2, title: "xTitle", short_title: "Protocol2")
-      @protocol3 = create(:study_without_validations, id: 777777, primary_pi: other_user, title: @protocol1.id.to_s, short_title: "Protocol3", research_master_id: 1234)
+      hsi1       = create(:human_subjects_info, hr_number: 111111)
+      hsi2       = create(:human_subjects_info, hr_number: 222222)
+      hsi3       = create(:human_subjects_info, hr_number: 333333)
+
+      @protocol1 = create(:study_without_validations, id: 555555, primary_pi: jug2, title: "title%", short_title: "Protocol1", human_subjects_info: hsi1)
+      @protocol2 = create(:study_without_validations, id: 666666, primary_pi: jug2, title: "xTitle", short_title: "Protocol2", human_subjects_info: hsi2)
+      @protocol3 = create(:study_without_validations, id: 777777, primary_pi: other_user, title: @protocol1.id.to_s, short_title: "Protocol3", research_master_id: 1234, human_subjects_info: hsi3)
       @protocol4 = create(:project_without_validations, id: 888888, primary_pi: jug2, title: "101010101", short_title: "Protocol4")
       
       service_request1 = create(:service_request_without_validations, protocol: @protocol1)

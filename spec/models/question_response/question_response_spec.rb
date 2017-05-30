@@ -30,12 +30,6 @@ RSpec.describe QuestionResponse, type: :model do
   it { is_expected.to belong_to(:response) }
 
   # Validations
-  it 'should validate presence of content if required' do
-    qr = build(:question_response, required: true, content: nil)
-
-    expect(qr).to_not be_valid
-  end
-
   context 'question_type == phone' do
     it 'should return true if blank' do
       q   = create(:question, question_type: 'phone')
@@ -128,4 +122,7 @@ RSpec.describe QuestionResponse, type: :model do
       expect(qr2).to be_valid
     end
   end
+
+  # Callbacks
+  it { is_expected.to callback(:check_content_requirements).after(:save) }
 end

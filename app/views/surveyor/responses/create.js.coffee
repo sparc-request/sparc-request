@@ -30,6 +30,7 @@ $(".question-<%=qr.question_id%>").removeClass('has-error')
 $(".question-<%=qr.question_id%> .help-block").remove()
 <% end %>
 <% end %>
+<% @response.question_responses.destroy_all %>
 <% else %>
 <% if @review %>
 $('#modal_place').modal('hide')

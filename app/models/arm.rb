@@ -30,10 +30,9 @@ class Arm < ApplicationRecord
   has_many :visit_groups, -> { order("position") }, :dependent => :destroy
   has_many :visits, :through => :line_items_visits
 
-  after_create :create_calendar_objects
+  after_create :create_calendar_objects, if: Proc.new { |arm| arm.protocol.present? }
   after_update :update_visit_groups
   after_update :update_liv_subject_counts
-  before_destroy :destroy_livs, if: Proc.new { |arm| arm.protocol.arms.empty? }
 
   validates :name, presence: true
   validate :name_formatted_properly
@@ -200,10 +199,6 @@ class Arm < ApplicationRecord
     end
   end
   
-  def destroy_livs
-    self.protocol.service_requests.each{ |sr| sr.per_patient_per_visit_line_items.each(&:destroy) }
-  end
-
   def mass_create_visit_groups
     last_position = self.visit_groups.any? ? self.visit_groups.last.position : 0
     position      = last_position + 1

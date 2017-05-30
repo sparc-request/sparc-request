@@ -29,14 +29,14 @@ class LineItemsVisit < ApplicationRecord
   has_one :service_request, through: :line_item
   has_one :sub_service_request, through: :line_item
   has_one :service, through: :line_item
-  has_many :visits, -> { includes(:visit_group).order("visit_groups.position") }, :dependent => :destroy
+  has_many :visits, :dependent => :destroy
   has_many :notes, as: :notable, dependent: :destroy
 
   validate :subject_count_valid
   validate :pppv_line_item
   validates_numericality_of :subject_count
 
-  after_create :build_visits
+  after_create :build_visits, if: Proc.new { |liv| liv.arm.present? }
 
   # Destroy parent Arm if the last LineItemsVisit was destroyed
   after_destroy :release_parent

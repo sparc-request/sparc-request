@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 20112016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -36,7 +36,17 @@ FactoryGirl.define do
     end
 
     after(:create) do |arm, evaluator|
-      arm.default_visit_days
+      if arm.visit_count.present? && arm.visit_count > 0 && evaluator.line_item_count > 0
+        sr = evaluator.service_request || create(:service_request_without_validations)
+
+        arm.default_visit_days
+
+        evaluator.line_item_count.times do |n|
+          li = create(:line_item_with_service, service_request: sr)
+        end
+
+        arm.reload
+      end
     end
 
     factory :arm_without_validations, traits: [:without_validations]

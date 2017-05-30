@@ -25,14 +25,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
   describe 'GET /v1/line_items_visit/:id.json' do
 
     before :each do
-      org               = create(:organization)
-      service           = create(:service, organization: org)
-      protocol          = create(:protocol_without_validations)
-      service_request   = create(:service_request_without_validations, protocol: protocol)
-      ssr               = create(:sub_service_request_without_validations, service_request: service_request, organization: org)
-      line_item         = create(:line_item_without_validations, sub_service_request: ssr, service_request: service_request, service: service)
-      arm               = create(:arm_without_validations, protocol: protocol)
-      @line_items_visit = create(:line_items_visit_without_validations, arm: arm, line_item: line_item)
+      @line_items_visit = create(:line_items_visit_without_validations)
     end
 
     context 'response params' do

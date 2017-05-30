@@ -196,6 +196,7 @@ RSpec.describe 'ServiceRequest' do
     #USE_INDIRECT_COST = true  #For testing indirect cost
 
     before :each do
+      service_request.arms.each { |arm| arm.visits.update_all(quantity: 15, research_billing_qty: 5, insurance_billing_qty: 5, effort_billing_qty: 5) }
       @protocol = service_request.protocol
       @protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 200)
       @protocol.save validate: false

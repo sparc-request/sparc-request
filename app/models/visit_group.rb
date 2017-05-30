@@ -31,9 +31,9 @@ class VisitGroup < ApplicationRecord
 
   acts_as_list scope: :arm
 
-  after_create :build_visits
-  after_create :increment_visit_count, if: Proc.new { self.arm.visit_count < self.arm.visit_groups.count }
-  before_destroy :decrement_visit_count, if: Proc.new { self.arm.visit_count >= self.arm.visit_groups.count  }
+  after_create :build_visits, if: Proc.new { |vg| vg.arm.present? }
+  after_create :increment_visit_count, if: Proc.new { |vg| vg.arm.present? && vg.arm.visit_count < vg.arm.visit_groups.count }
+  before_destroy :decrement_visit_count, if: Proc.new { |vg| vg.arm.present? && vg.arm.visit_count >= vg.arm.visit_groups.count  }
 
   validates :name, presence: true
   validates :position, presence: true

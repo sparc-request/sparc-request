@@ -207,8 +207,8 @@ def build_arms
   let!(:protocol_for_service_request_id) {project.id rescue study.id}
   let!(:arm1)                { create(:arm, name: "Arm", protocol_id: protocol_for_service_request_id, visit_count: 10, subject_count: 2)}
   let!(:arm2)                { create(:arm, name: "Arm2", protocol_id: protocol_for_service_request_id, visit_count: 5, subject_count: 4)}
-  let!(:visit_group1)         { create(:visit_group, arm_id: arm1.id, position: 1, day: 1)}
-  let!(:visit_group2)         { create(:visit_group, arm_id: arm2.id, position: 1, day: 1)}
+  let!(:visit_group1)        { arm1.visit_groups.first }
+  let!(:visit_group2)        { arm2.visit_groups.first }
 end
 
 def build_project

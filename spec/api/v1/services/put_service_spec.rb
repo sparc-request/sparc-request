@@ -70,12 +70,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         context 'response params' do
 
           before :each do
-            org               = create(:organization)
-            service           = create(:service, organization: org)
-            protocol          = create(:protocol_without_validations)
-            service_request   = create(:service_request_without_validations, protocol: protocol)
-            ssr               = create(:sub_service_request_without_validations, service_request: service_request, organization: org)
-            line_item         = create(:line_item_without_validations, sub_service_request: ssr, service_request: service_request, service: service)
+            line_item = create(:line_item_without_validations)
 
             service_params = {
               service: {

@@ -219,6 +219,7 @@ class NotifierLogic
     end
 
     individual_ssr = @sub_service_request.present? ? true : false
+
     Notifier.delay.notify_service_provider(service_provider, @service_request, attachments, @current_user, sub_service_request, audit_report, ssr_destroyed, request_amendment, individual_ssr)
   end
 

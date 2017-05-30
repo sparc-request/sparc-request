@@ -23,36 +23,34 @@ require 'rails_helper'
 RSpec.describe Arm, type: :model do
   describe '#service_list' do
     before(:all) do
-      p     = create(:protocol_without_validations)
-      @sr   = create(:service_request_without_validations, protocol: p)
-      @arm  = create(:arm, protocol: p, service_request: @sr)
-
       # org1(not ssrs) <- org2(not ssrs)* <- s1(not otf)
+      # org2 <- s2(otf)
+      # org3(ssrs)* <- org4(ssrs) <- s3(not otf)
+      # org3(ssrs)* <- org5(not ssrs) <- s4(not otf)
+      # (*) These organizations should be the keys of @service_list
+      
       @org1 = create(:organization, process_ssrs: false, parent: nil)
       @org2 = create(:organization, process_ssrs: false, parent: @org1)
-      @s1   = create(:service, organization: @org2, one_time_fee: false)
-      @li1  = create(:line_item, service: @s1, service_request: @sr)
-      @liv1 = create(:line_items_visit, arm: @arm, line_item: @li1)
-
-      # org2 <- s2(otf)
-      @s2   = create(:service, organization: @org2, one_time_fee: true)
-      @li2  = create(:line_item, service: @s2, service_request: @sr)
-
-      # org3(ssrs)* <- org4(ssrs) <- s3(not otf)
       @org3 = create(:organization, process_ssrs: true, parent: nil)
       @org4 = create(:organization, process_ssrs: true, parent: @org3)
-      @s3   = create(:service, organization: @org3, one_time_fee: false)
-      @li3  = create(:line_item, service: @s3, service_request: @sr)
-      @liv3 = create(:line_items_visit, arm: @arm, line_item: @li3)
-
-      # org3(ssrs)* <- org5(not ssrs) <- s4(not otf)
       @org5 = create(:organization, process_ssrs: false, parent: @org3)
+
+      @s1   = create(:service, organization: @org2, one_time_fee: false)
+      @s2   = create(:service, organization: @org2, one_time_fee: true)
+      @s3   = create(:service, organization: @org3, one_time_fee: false)
       @s4   = create(:service, organization: @org5, one_time_fee: false)
+
+      p     = create(:protocol_without_validations)
+      @sr   = create(:service_request_without_validations, protocol: p)
+      
+      @li1  = create(:line_item, service: @s1, service_request: @sr)
+      @li2  = create(:line_item, service: @s2, service_request: @sr)
+      @li3  = create(:line_item, service: @s3, service_request: @sr)
       @li4  = create(:line_item, service: @s4, service_request: @sr)
-      @liv4 = create(:line_items_visit, arm: @arm, line_item: @li4)
+
+      @arm  = create(:arm, protocol: p, service_request: @sr)
 
       @service_list = @arm.reload.service_list
-      # (*) These organizations should be the keys of @service_list
     end
 
     context 'non-one time fee Service does not have a SSRS Organization as a parent' do

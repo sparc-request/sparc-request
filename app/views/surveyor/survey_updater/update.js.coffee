@@ -26,8 +26,13 @@ if !$("#<%=@klass%>-<%=error[0]%>").parents('.form-group').hasClass('has-error')
 <% else %>
 $("#<%=@klass%>-<%=@field%>").parents('.form-group').removeClass('has-error')
 $("#<%=@klass%>-<%=@field%>").parents('.form-group').find('.help-block').remove()
-<% end %>
 
 <% if @klass == 'survey' %>
 $('.survey-table').bootstrapTable('refresh')
+<% end %>
+
+<% if @klass == 'question' %>
+$(".question-options[data-question-id='<%=@object.id%>']").html('<%= j render "surveyor/surveys/form/form_partials/#{@object.question_type}_example", question: @object %>')
+$('.selectpicker').selectpicker()
+<% end %>
 <% end %>

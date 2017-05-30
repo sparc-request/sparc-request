@@ -21,6 +21,15 @@
 class Dashboard::VisitsController < Dashboard::BaseController
   respond_to :json, :js, :html
 
+  def edit
+    @visit = Visit.find(params[:id])
+    @portal = params[:portal]
+
+    respond_to do |format|
+      format.js
+    end
+  end
+
   # Used for x-editable update and validations
   def update
     @visit = Visit.find(params[:id])

@@ -313,7 +313,7 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :visits, only: [:update, :destroy]
+    resources :visits, only: [:edit, :update, :destroy]
 
     resources :visit_groups, only: [:new, :create, :update, :destroy] do
       collection do

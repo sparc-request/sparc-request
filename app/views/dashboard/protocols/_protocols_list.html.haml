@@ -32,6 +32,7 @@
       = page_entries_info protocols, {model: "Protocol"}
       = render_filterrific_spinner
     .pull-right
+      = link_to t(:dashboard)[:protocols][:table][:exporter], dashboard_protocols_path(:format => :csv, :filterrific => @filterrific.to_hash), class: 'btn btn-success'
       .btn-group#create-new-protocol-select
         %button.btn.btn-success.dropdown-toggle#create-new-study-button{ type: 'button', 'aria-expanded' => 'false', data: { toggle: 'dropdown' }}
           %span
@@ -62,8 +63,9 @@
           %span.glyphicon.glyphicon-triangle-bottom.desc
       %th.col-sm-2.text-center
         = t(:dashboard)[:protocols][:table][:requests]
-      %th.col-sm-2.text-center
-        = t(:dashboard)[:protocols][:table][:archive]
+        %span.protocol-sort{ name: 'requests', data: { sort_name: 'requests', sort_order: 'asc' } }
+          %span.glyphicon.glyphicon-triangle-top.asc
+          %span.glyphicon.glyphicon-triangle-bottom.desc
     - protocols.each do |protocol|
       %tr.protocols_index_row{ data: { protocol_id: protocol.id }}
         %td.id
@@ -75,7 +77,5 @@
           = pis_display protocol
         %td.requests.text-center
           = display_requests_button(protocol, admin_protocols, current_user)
-        %td.archive.text-center
-          = display_archive_button(protocol, admin_protocols, current_user)
   .pull-right
     = will_paginate protocols, renderer: BootstrapPagination::Rails

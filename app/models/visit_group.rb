@@ -28,12 +28,8 @@ class VisitGroup < ApplicationRecord
   belongs_to :arm
   has_many :visits, :dependent => :destroy
   has_many :line_items_visits, through: :visits
-  has_many :appointments
 
   acts_as_list scope: :arm
-
-  after_save :set_arm_edited_flag_on_subjects
-  before_destroy :remove_appointments
 
   validates :name, presence: true
   validates :position, presence: true
@@ -43,10 +39,6 @@ class VisitGroup < ApplicationRecord
   validates :day, presence: true, numericality: { only_integer: true }
 
   validate :day_must_be_in_order
-
-  def set_arm_edited_flag_on_subjects
-    self.arm.set_arm_edited_flag_on_subjects
-  end
 
   def <=> (other_vg)
     return unless other_vg.respond_to?(:day)
@@ -79,17 +71,6 @@ class VisitGroup < ApplicationRecord
   end
 
   private
-
-  def remove_appointments
-    appointments = self.appointments
-    appointments.each do |app|
-      if app.completed?
-        app.update_attributes(position: self.position, name: self.name, visit_group_id: nil)
-      else
-        app.destroy
-      end
-    end
-  end
 
   def day_must_be_in_order
     unless in_order?

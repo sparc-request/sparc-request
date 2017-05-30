@@ -26,3 +26,4 @@
       - @protocol_filters.each do |pf|
         %li
           = link_to pf.search_name, pf.href, class: "saved_search_link"
+          = link_to "", dashboard_protocol_filter_path(pf.id), class: "glyphicon glyphicon-remove pull-right delete-filter", method: :delete, remote: true

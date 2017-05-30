@@ -28,6 +28,7 @@ header_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color
 header_centered_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :center }
 sub_header_style = wb.styles.add_style sz: 12, b: true, bg_color: 'E8E8E8', alignment: { horizontal: :left }
 name_header_style = wb.styles.add_style sz: 12, b: true, bg_color: 'ADADAD', alignment: { horizontal: :left }
+visit_day_style = wb.styles.add_style sz: 12, b: true, bg_color: 'ADADAD', alignment: { horizontal: :center }
 
 wb.add_worksheet(name: "Review") do |sheet|
 
@@ -94,6 +95,7 @@ wb.add_worksheet(name: "Review") do |sheet|
 
   merge_services_row = []
   merge_service_rows = []
+  merge_arm_rows = []
   merge_sub_header_rows = []
 
   ##### beginning of arms
@@ -102,25 +104,33 @@ wb.add_worksheet(name: "Review") do |sheet|
       services_row = ["Selected Services", ""]
       services_row << "Current Cost" if @admin_offset
       services_row += ["Your Cost", "# of Subjects"]
+      arm_row = [arm.name, "", "", "", ""]
+
       num_visits = arm.visit_count
       arm.visit_groups.each do |vg|
         services_row << "#{vg.name}"
         services_row << ""
+        arm_row << "#{vg.day}"
+        arm_row << ""
       end
 
       (visit_count - num_visits).times do
         services_row << ""
         services_row << ""
+        arm_row << ""
+        arm_row << ""
       end
 
       services_row << "Total Per Patient"
       services_row << "Total Per Study"
+      arm_row << ""
+      arm_row << ""
 
       services_row = sheet.add_row services_row, :style => header_style
 
       services_sub_header_rows = []
       service_rows = []
-      services_sub_header_rows << sheet.add_row([arm.name], :style => name_header_style)
+      merge_arm_rows << sheet.add_row(arm_row, :style => name_header_style)
 
       r_t_row = ["", "", "", ""]
       r_t_row << "" if @admin_offset
@@ -241,47 +251,6 @@ wb.add_worksheet(name: "Review") do |sheet|
   line_items.each{|li| li.pricing_scheme = 'effective'} if @admin_offset
 
 
-  #Direct and Indirect Cost Subtotals
-  if USE_INDIRECT_COST
-    sheet.add_row
-
-    direct_cost_total_row = has_per_patient_per_visit_services ? ["", "", "", "", ""] : ["", "", "", ""]
-
-    if has_per_patient_per_visit_services
-      (visit_count*2 - 3).times do
-        direct_cost_total_row << ""
-      end
-    end
-
-    direct_cost_total_row << "" if @admin_offset
-
-    if has_per_patient_per_visit_services
-      direct_cost_total_row += ["Total Direct Cost", "", "", display_study_grand_total_direct_costs(@service_request.protocol, @service_request)]
-    else
-      direct_cost_total_row += ["Total Direct Cost", display_study_grand_total_direct_costs(@service_request.protocol, @service_request)]
-    end
-
-    direct_cost_total_row = sheet.add_row(direct_cost_total_row, :style => row_header_style)
-
-    indirect_cost_total_row = has_per_patient_per_visit_services ? ["", "", "", "", ""] : ["", "", "", ""]
-
-    if has_per_patient_per_visit_services
-      (visit_count*2 - 3).times do
-        indirect_cost_total_row << ""
-      end
-    end
-
-    indirect_cost_total_row << "" if @admin_offset
-
-    if has_per_patient_per_visit_services
-      indirect_cost_total_row += ["Total Indirect Cost", "", "", display_study_grand_total_indirect_costs(@service_request.protocol, @service_request)]
-    else
-      indirect_cost_total_row += ["Total Indirect Cost", display_study_grand_total_indirect_costs(@service_request.protocol, @service_request)]
-    end
-
-    indirect_cost_total_row = sheet.add_row(indirect_cost_total_row, :style => row_header_style)
-  end
-
   ##SSR Total
   if @sub_service_request
     ssr_total_row = ["", "", "", "", ""]
@@ -354,6 +323,16 @@ wb.add_worksheet(name: "Review") do |sheet|
     end
   end
 
+  merge_arm_rows.each do |arm_row|
+    sheet.merge_cells("A#{arm_row.index+1}:E#{arm_row.index+1}")
+    visit_count.times do |idx|
+      start_idx = 2 * idx + 4 + @admin_offset.to_i
+      end_idx = 2 * idx + 5 + @admin_offset.to_i
+      sheet.merge_cells("#{alpha_array[start_idx]}#{arm_row.index+1}:#{alpha_array[end_idx]}#{arm_row.index+1}")
+      sheet["#{alpha_array[start_idx]}#{arm_row.index+1}"].style = visit_day_style
+    end
+  end
+
   merge_sub_header_rows.each do |services_sub_header_rows|
     services_sub_header_rows.each do |sshr|
       sheet.merge_cells("A#{sshr.index+1}:#{end_column}#{sshr.index+1}") #selected services sub header row
@@ -370,8 +349,5 @@ wb.add_worksheet(name: "Review") do |sheet|
   from_left = 4
   begin_column = alpha_array[visit_count + from_left - 3]
   end_column = alpha_array[visit_count + from_left - 2]
-  sheet.merge_cells("#{begin_column}#{direct_cost_total_row.index+1}:#{end_column}#{direct_cost_total_row.index+1}") if has_per_patient_per_visit_services if USE_INDIRECT_COST
-  sheet.merge_cells("#{begin_column}#{indirect_cost_total_row.index+1}:#{end_column}#{indirect_cost_total_row.index+1}") if has_per_patient_per_visit_services if USE_INDIRECT_COST
   sheet.merge_cells("#{begin_column}#{grand_total_row.index+1}:#{end_column}#{grand_total_row.index+1}") if has_per_patient_per_visit_services
-
 end

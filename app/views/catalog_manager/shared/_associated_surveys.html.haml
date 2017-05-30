@@ -34,7 +34,7 @@
 
   %table
     %tr
-      %td= select_tag 'new_associated_survey', grouped_options_for_select(Survey.all.group_by(&:title).map{|k,v| [k,v.map{|p| ["Version #{p.version}", p.id]}]}, nil, { prompt: t(:cm_shared)[:labels][:select_survey] }) 
+      %td= select_tag 'new_associated_survey', grouped_options_for_select(Survey.active.group_by(&:title).map{|k,v| [k,v.map{|p| ["Version #{p.version}", p.id]}]}, nil, { prompt: t(:cm_shared)[:labels][:select_survey] }) 
       %td= button_tag t("cm_shared.labels.new_associated_survey"), :"data-surveyable_id" => entity.id, :"data-surveyable_type" => entity.class.to_s, :class => 'add_associated_survey'
   .survey_warning_message
     = t("cm_shared.labels.survey_warning")

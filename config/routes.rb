@@ -289,7 +289,7 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :protocol_filters, only: [:new, :create]
+    resources :protocol_filters, only: [:new, :create, :destroy]
 
     resources :service_requests, only: [:show]
 
@@ -328,12 +328,6 @@ SparcRails::Application.routes.draw do
     collection do
       get :setup
       post :generate
-    end
-
-    member do
-      get :research_project_summary
-      post :cwf_audit
-      get :cwf_subject
     end
   end
 

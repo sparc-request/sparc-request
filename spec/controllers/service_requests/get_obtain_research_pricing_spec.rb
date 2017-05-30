@@ -100,22 +100,22 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       context 'with an authorized_user' do
         it 'should notify everyone (authorized_user)' do
-          expect {
-            xhr :get, :obtain_research_pricing, {
-              id: @sr.id
-            }
-          }.to change(ActionMailer::Base.deliveries, :count).by(1)
+          xhr :get, :obtain_research_pricing, {
+            id: @sr.id
+          }
+
+          expect(Delayed::Backend::ActiveRecord::Job.count).to eq(1)
         end
       end
 
       context 'with an authorized_user, a service_provider' do
         it 'should notify everyone (authorized_user, service_provider)' do
           create(:service_provider, identity: logged_in_user, organization: @org)
-          expect {
-            xhr :get, :obtain_research_pricing, {
-              id: @sr.id
-            }
-          }.to change(ActionMailer::Base.deliveries, :count).by(2)
+          xhr :get, :obtain_research_pricing, {
+            id: @sr.id
+          }
+
+          expect(Delayed::Backend::ActiveRecord::Job.count).to eq(2)
         end
       end
 
@@ -123,11 +123,11 @@ RSpec.describe ServiceRequestsController, type: :controller do
         it 'should notify everyone (authorized_user, service_provider, and admin)' do
           create(:service_provider, identity: logged_in_user, organization: @org)
           @org.submission_emails.create(email: 'hedwig@owlpost.com')
-          expect {
-            xhr :get, :obtain_research_pricing, {
-              id: @sr.id
-            }
-          }.to change(ActionMailer::Base.deliveries, :count).by(3)
+          xhr :get, :obtain_research_pricing, {
+            id: @sr.id
+          }
+
+          expect(Delayed::Backend::ActiveRecord::Job.count).to eq(3)
         end
       end
     end
@@ -250,6 +250,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       context 'ssr status is set to "complete"' do
          before :each do
+          stub_const("FINISHED_STATUSES", ['complete'])
+          
           @org      = create(:organization)
           service  = create(:service, organization: @org, one_time_fee: true)
           protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
@@ -261,7 +263,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         end
 
         it 'should not update status to "get_a_cost_estimate"' do
-
           xhr :get, :obtain_research_pricing, {
             id: @sr.id
           }

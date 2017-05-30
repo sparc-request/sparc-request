@@ -25,7 +25,8 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
     render 'dashboard/protocols/summary',
       protocol: protocol,
       protocol_type: protocol.type,
-      permission_to_edit: true
+      permission_to_edit: true,
+      user: jug2
   end
 
   let_there_be_lane
@@ -108,6 +109,22 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
         expect(response).to have_content('College Department')
       end
     end
+
+    context 'Study is not archived' do
+      it 'should display the archive button' do
+        protocol = create(:unarchived_study_without_validations, primary_pi: jug2)
+        render_summary_for protocol
+        expect(response).to have_content('Archive Study')
+      end
+    end
+
+    context 'Study is archived' do
+      it 'should display the archive button' do
+        protocol = create(:archived_study_without_validations, primary_pi: jug2)
+        render_summary_for protocol
+        expect(response).to have_content('Unarchive Study')
+      end
+    end
   end
 
   context 'Protocol is a Project' do
@@ -186,6 +203,22 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
         expect(response).not_to have_content('Potential Funding Source')
         expect(response).to have_content('Funding Source')
         expect(response).to have_content('College Department')
+      end
+    end
+
+    context 'Project is not archived' do
+      it 'should display the archive button' do
+        protocol = create(:unarchived_project_without_validations, primary_pi: jug2)
+        render_summary_for protocol
+        expect(response).to have_content('Archive Project')
+      end
+    end
+
+    context 'Project is archived' do
+      it 'should display the archive button' do
+        protocol = create(:archived_project_without_validations, primary_pi: jug2)
+        render_summary_for protocol
+        expect(response).to have_content('Unarchive Project')
       end
     end
   end

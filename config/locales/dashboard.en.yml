@@ -182,6 +182,7 @@ en:
     ###############
     protocols:
       table:
+        exporter: "Exporter"
         header: "Protocols"
         new_protocol: "New Protocol"
         new_study: "New Study"
@@ -190,8 +191,6 @@ en:
         id: "ID"
         pis: "PI(s)"
         requests: Requests
-        archive: "Archive"
-        unarchive: "Unarchive"
 
       documents:
         header: "Documents"
@@ -328,7 +327,7 @@ en:
 
         study_schedule:
           header: "Study Schedule"
-          no_requests: "There are no per-patient/per-visit requests."
+          no_requests: "There are no clinical services requested."
 
         study_level_activities:
           header: "Study Level Activities"

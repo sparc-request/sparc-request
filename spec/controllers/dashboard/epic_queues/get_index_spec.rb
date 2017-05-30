@@ -24,6 +24,8 @@ RSpec.describe Dashboard::EpicQueuesController do
   describe "GET #index" do
     describe "for overlord users" do
       before(:each) do
+        stub_const("EPIC_QUEUE_ACCESS", ['jug2'])
+        
         protocol = create(:protocol,
                           :without_validations,
                           last_epic_push_status: 'failed'

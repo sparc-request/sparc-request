@@ -51,7 +51,7 @@ RSpec.describe UserMailer do
       end
 
       it "should display message conclusion" do
-        expect(@mail).to have_xpath("//p[normalize-space(text()) = 'Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have.']")
+        expect(@mail).to have_xpath("//p[normalize-space(text()) = '#{I18n.t('proper.right_navigation.faqs.answer_6', :contact_us_email => CONTACT_US_EMAIL['to'])}']")
       end
 
       it "should display acknowledgments" do
@@ -114,7 +114,7 @@ RSpec.describe UserMailer do
       end
 
       it "should display message conclusion" do
-        expect(@mail).to have_xpath("//p[normalize-space(text()) = 'Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have.']")
+        expect(@mail).to have_xpath("//p[normalize-space(text()) = '#{I18n.t('proper.right_navigation.faqs.answer_6', :contact_us_email => CONTACT_US_EMAIL['to'])}']")
       end
 
       it "should display acknowledgments" do

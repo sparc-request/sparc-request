@@ -28,7 +28,7 @@ module EmailHelpers
     expect(mail_response).to have_xpath("//p[normalize-space(text()) = 'Services have been added or deleted in SPARCRequest and is awaiting your review in']")
     expect(mail_response).to have_xpath "//p//a[@href='/dashboard/protocols/#{@service_request.protocol.id}'][text()= 'SPARCDashboard.']/@href"
     expect(mail_response).to have_xpath("//p[normalize-space(text()) = 'A list of requested services is attached.']")
-    expect(mail_response).to have_xpath("//p[normalize-space(text()) = 'Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have.']")
+    expect(mail_response).to have_xpath("//p[normalize-space(text()) = '#{I18n.t('proper.right_navigation.faqs.answer_6', :contact_us_email => CONTACT_US_EMAIL['to'])}']")
   end
 
   #### DELETE ALL SERVICES MESSAGE ####
@@ -38,7 +38,7 @@ module EmailHelpers
     # below to which you have been granted access.'
     expect(mail_response).to have_xpath("//p[normalize-space(text()) = 'All services have been deleted in SPARCRequest for the #{@service_request.protocol.type} below to which you have been granted access.']")
     expect(mail_response).not_to have_xpath("//p[normalize-space(text()) = 'A list of requested services is attached.']")
-    expect(mail_response).to have_xpath("//p[normalize-space(text()) = 'Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have.']")
+    expect(mail_response).to have_xpath("//p[normalize-space(text()) = '#{I18n.t('proper.right_navigation.faqs.answer_6', :contact_us_email => CONTACT_US_EMAIL['to'])}']")
   end
   #### SUBMITTED MESSAGE METHODS ####
   def submitted_service_provider_and_admin_message
@@ -92,7 +92,7 @@ module EmailHelpers
 
   def message_conclusion(mail_response)
     expect(mail_response).to have_xpath("//p[normalize-space(text()) = 'A list of requested services is attached.']")
-    expect(mail_response).to have_xpath("//p[normalize-space(text()) = 'Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have.']")
+    expect(mail_response).to have_xpath("//p[normalize-space(text()) = '#{I18n.t('proper.right_navigation.faqs.answer_6', :contact_us_email => CONTACT_US_EMAIL['to'])}']")
   end
 
   def does_have_acknowledgments

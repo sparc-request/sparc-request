@@ -17,64 +17,22 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+$ ->
 
-class VisitGroup < ApplicationRecord
-  self.per_page = Visit.per_page
+  $(document).on 'click', '.edit-billing-qty', ->
+    id = $(this).data('id')
+    portal = $(this).data('portal')
+    srId = $(this).data('service-request-id')
+    armId = $(this).data('arm-id')
+    $.ajax
+      type: 'GET'
+      url: "/dashboard/visits/#{id}/edit?portal=#{portal}&&arm_id=#{armId}&&service_request_id=#{srId}"
 
-  include RemotelyNotifiable
-  include Comparable
+  $(document).on 'ajax:success', '.visit-form', ->
+    arm_id = $('.visit-form .v-arm-id').val()
+    sr_id = $('.visit-form .v-sr-id').val()
+    reload_calendar(arm_id, sr_id)
+    $('#modal_place').modal('hide')
 
-  audited
-  belongs_to :arm
-  has_many :visits, :dependent => :destroy
-  has_many :line_items_visits, through: :visits
-
-  acts_as_list scope: :arm
-
-  validates :name, presence: true
-  validates :position, presence: true
-  validates :window_before,
-            :window_after,
-            presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-  validates :day, presence: true, numericality: { only_integer: true }
-
-  validate :day_must_be_in_order
-
-  def <=> (other_vg)
-    return unless other_vg.respond_to?(:day)
-    self.day <=> other_vg.day
-  end
-
-  def insertion_name
-    "Before #{name}" + (day.present? ? " (Day #{day})" : "")
-  end
-
-  ### audit reporting methods ###
-
-  def audit_label audit
-    "#{arm.name} #{name}"
-  end
-
-  def audit_field_value_mapping
-    {"arm_id" => "Arm.find(ORIGINAL_VALUE).name"}
-  end
-
-  ### end audit reporting methods ###
-
-  def any_visit_quantities_customized?(service_request)
-    visits.any? { |visit| ((visit.quantities_customized?) && (visit.line_items_visit.line_item.service_request_id == service_request.id)) }
-  end
-
-  # TODO: remove after day_must_be_in_order validation is fixed.
-  def in_order?
-    arm.visit_groups.where("position < ? AND day >= ? OR position > ? AND day <= ?", position, day, position, day).none?
-  end
-
-  private
-
-  def day_must_be_in_order
-    unless in_order?
-      errors.add(:day, 'must be in order')
-    end
-  end
-end
+  $(document).on 'ajax:error', '.visit-form', (e, data, status, xhr) ->
+    $('.visit-form').renderFormErrors('visit', jQuery.parseJSON(data.responseText))

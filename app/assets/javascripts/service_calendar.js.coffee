@@ -278,32 +278,6 @@ getSRId = ->
     success: () ->
       reload_calendar($(this).data('armId'))
 
-  $('.edit-research-billing-qty').editable
-    params: (params) ->
-      {
-        visit:
-          research_billing_qty: params.value
-        service_request_id: getSRId()
-      }
-    success: () ->
-      reload_calendar($(this).data('armId'))
-
-  $('.edit-insurance-billing-qty').editable
-    params: (params) ->
-      {
-        visit:
-          insurance_billing_qty: params.value
-        service_request_id: getSRId()
-      }
-
-  $('.edit-effort-billing-qty').editable
-    params: (params) ->
-      {
-        visit:
-          effort_billing_qty: params.value
-        service_request_id: getSRId()
-      }
-
   $('.edit-qty').editable
     params: (params) ->
       {

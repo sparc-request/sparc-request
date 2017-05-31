@@ -31,6 +31,77 @@ RSpec.describe 'Visit' do
   let!(:visit_group)       { create(:visit_group, arm_id: arm.id)}
   let!(:visit1)            { create(:visit, line_items_visit_id: line_items_visit1.id, visit_group_id: visit_group.id) }
 
+  describe 'valid visit' do
+    context 'research_billing_qty' do
+      it 'should be a number' do
+        visit = build(:visit, research_billing_qty: 'string')
+        visit.save
+
+        expect(visit.errors.messages[:research_billing_qty].blank?).to eq(false)
+      end
+
+      it 'should not allow negative numbers' do
+        visit = build(:visit, research_billing_qty: -1)
+        visit.save
+
+        expect(visit.errors.messages[:research_billing_qty].blank?).to eq(false)
+      end
+
+      it 'should not allow fractions' do
+        visit = build(:visit, research_billing_qty: 2.7)
+        visit.save
+
+        expect(visit.errors.messages[:research_billing_qty].blank?).to eq(false)
+      end
+    end
+
+    context 'insurance_billing_qty' do
+      it 'should be a number' do
+        visit = build(:visit, insurance_billing_qty: 'string')
+        visit.save
+
+        expect(visit.errors.messages[:insurance_billing_qty].blank?).to eq(false)
+      end
+
+      it 'should not allow negative numbers' do
+        visit = build(:visit, insurance_billing_qty: -1)
+        visit.save
+
+        expect(visit.errors.messages[:insurance_billing_qty].blank?).to eq(false)
+      end
+
+      it 'should not allow fractions' do
+        visit = build(:visit, insurance_billing_qty: 2.7)
+        visit.save
+
+        expect(visit.errors.messages[:insurance_billing_qty].blank?).to eq(false)
+      end
+    end
+
+    context 'effort_billing_qty' do
+      it 'should be a number' do
+        visit = build(:visit, effort_billing_qty: 'string')
+        visit.save
+
+        expect(visit.errors.messages[:effort_billing_qty].blank?).to eq(false)
+      end
+
+      it 'should not allow negative numbers' do
+        visit = build(:visit, effort_billing_qty: -1)
+        visit.save
+
+        expect(visit.errors.messages[:effort_billing_qty].blank?).to eq(false)
+      end
+
+      it 'should not allow fractions' do
+        visit = build(:visit, effort_billing_qty: 2.7)
+        visit.save
+
+        expect(visit.errors.messages[:effort_billing_qty].blank?).to eq(false)
+      end
+    end
+  end
+
   describe 'quantities customized' do
 
     it 'should return false if the quantities are untouched, or set to the default checked state' do

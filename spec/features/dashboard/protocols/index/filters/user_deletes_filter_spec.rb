@@ -20,46 +20,41 @@
 
 require "rails_helper"
 
-RSpec.describe Dashboard::EpicQueuesController do
-  describe "GET #index" do
-    describe "for overlord users" do
-      before(:each) do
-        stub_const("EPIC_QUEUE_ACCESS", ['jug2'])
-        
-        protocol = create(:protocol,
-                          :without_validations,
-                          last_epic_push_status: 'failed'
-                         )
-        @eq = create(:epic_queue, protocol: protocol)
-        log_in_dashboard_identity(obj: build(:identity, ldap_uid: 'jug2'))
-        get :index, format: :json
-      end
+RSpec.describe "User deletes a filter", js: :true do
 
-      it "should put all EpicQueues in @epic_queues" do
-        expect(assigns(:epic_queues)).to eq([@eq])
-      end
+  let_there_be_lane
+  fake_login_for_each_test
 
-      it { is_expected.to render_template "dashboard/epic_queues/index" }
-      it { is_expected.to respond_with 200 }
-    end
+  before :each do
+    @protocol1 = create(:study_without_validations, primary_pi: jug2, title: "title%", short_title: "Protocol1")
+    @protocol2 = create(:study_without_validations, primary_pi: jug2, title: "xTitle", short_title: "Protocol2")
+    @protocol3 = create(:study_without_validations, primary_pi: jug2, title: "a%a", short_title: "Protocol3")
 
-    describe "for creepy hacker doods" do
-      before(:each) do
-        protocol = create(:protocol,
-                          :without_validations,
-                          last_epic_push_status: 'failed'
-                         )
-        @eq = create(:epic_queue, protocol: protocol)
-        log_in_dashboard_identity(obj: build_stubbed(:identity))
-        get :index, format: :json
-      end
+    service_request1 = create(:service_request_without_validations, protocol: @protocol1)
+    service_request2 = create(:service_request_without_validations, protocol: @protocol2)
+    service_request3 = create(:service_request_without_validations, protocol: @protocol3)
 
-      it "should put all EpicQueues in @epic_queues" do
-        expect(assigns(:epic_queues)).to_not eq([@eq])
-      end
+    create(:protocol_filter, identity: jug2)
 
-      it { is_expected.to_not render_template "dashboard/epic_queues/index" }
-      it { is_expected.to respond_with 200 }
+    visit dashboard_protocols_path
+    wait_for_javascript_to_finish
+
+    expect(page).to have_selector(".protocols_index_row", count: 3)
+  end
+
+  it 'should delete the filter' do
+    find('.delete-filter').click
+    wait_for_javascript_to_finish
+
+    expect(page).to_not have_selector('.delete-filter')
+  end
+
+  context 'which is their last filter' do
+    it 'should delete the saved filters panel' do
+      find('.delete-filter').click
+      wait_for_javascript_to_finish
+
+      expect(page).to_not have_selector('#saved_searches .panel')
     end
   end
 end

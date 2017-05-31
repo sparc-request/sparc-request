@@ -29,6 +29,88 @@ RSpec.describe "VisitGroup" do
   let!(:visit1)      { create(:visit, visit_group_id: visit_group.id)}         
   let!(:visit2)      { create(:visit, visit_group_id: visit_group.id)}         
 
+  describe 'valid visit' do
+    context 'name' do
+      it 'should not be nil' do
+        visit_group = build(:visit_group, arm_id: arm1.id, name: nil)
+        visit_group.save
+
+        expect(visit_group.errors.messages[:name].blank?).to eq(false)
+      end
+    end
+
+    context 'position' do
+      it 'should not be nil' do
+        visit_group = build(:visit_group, arm_id: arm1.id, position: nil)
+        visit_group.save
+
+        expect(visit_group.errors.messages[:position].blank?).to eq(false)
+      end
+    end
+
+    context 'window_before' do
+      it 'should be a number' do
+        visit_group = build(:visit_group, arm_id: arm1.id, window_before: 'string')
+        visit_group.save
+
+        expect(visit_group.errors.messages[:window_before].blank?).to eq(false)
+      end
+
+      it 'should not allow negative numbers' do
+        visit_group = build(:visit_group, arm_id: arm1.id, window_before: -1)
+        visit_group.save
+
+        expect(visit_group.errors.messages[:window_before].blank?).to eq(false)
+      end
+
+      it 'should not allow fractions' do
+        visit_group = build(:visit_group, arm_id: arm1.id, window_before: 2.7)
+        visit_group.save
+
+        expect(visit_group.errors.messages[:window_before].blank?).to eq(false)
+      end
+    end
+
+    context 'window_after' do
+      it 'should be a number' do
+        visit_group = build(:visit_group, arm_id: arm1.id, window_after: 'string')
+        visit_group.save
+
+        expect(visit_group.errors.messages[:window_after].blank?).to eq(false)
+      end
+
+      it 'should not allow negative numbers' do
+        visit_group = build(:visit_group, arm_id: arm1.id, window_after: -1)
+        visit_group.save
+
+        expect(visit_group.errors.messages[:window_after].blank?).to eq(false)
+      end
+
+      it 'should not allow fractions' do
+        visit_group = build(:visit_group, arm_id: arm1.id, window_after: 2.7)
+        visit_group.save
+
+        expect(visit_group.errors.messages[:window_after].blank?).to eq(false)
+      end
+    end
+
+    context 'day' do
+      it 'should not be nil' do
+        visit_group = build(:visit_group, arm_id: arm1.id, day: nil)
+        visit_group.save
+
+        expect(visit_group.errors.messages[:day]).to be
+      end
+
+      it 'should not allow fractions' do
+        visit_group = build(:visit_group, arm_id: arm1.id, day: 2.7)
+        visit_group.save
+
+        expect(visit_group.errors.messages[:day]).to be
+      end
+    end
+  end
+
   describe 'any visit quantities customized' do
     let!(:protocol)          { create(:protocol_without_validations) }
     let!(:arm)               { create(:arm, protocol: protocol) }

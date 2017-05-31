@@ -44,8 +44,10 @@ module Dashboard
       org_options = []
       inactive = content_tag(:strong, I18n.t(:dashboard)[:protocol_filters][:inactive], class: 'text-danger filter-identifier')
       orgs.each do |org|
-        name = content_tag(:span, org.name)
-        name = name + inactive unless org.is_available
+        name = content_tag(
+                :span,
+                org.name + (org.is_available ? "" : inactive),
+                class: 'text')
         org_options << [name, org.id]
       end
       org_options

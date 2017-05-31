@@ -121,7 +121,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     click_add_service_for(otf_service_core_1)
     find("a", text: /Yes/).click
     wait_for_javascript_to_finish
-    
+
     within(".shopping-cart") do
       expect(page).to have_selector('.service', text: otf_service_core_1.abbreviation, visible: true)
     end

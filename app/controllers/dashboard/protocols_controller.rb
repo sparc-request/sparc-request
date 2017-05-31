@@ -28,8 +28,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   before_action :protocol_authorizer_edit,                        only: [:edit, :update, :update_protocol_type, :archive]
 
   def index
-    admin_orgs   = @user.authorized_admin_organizations
-    @admin       = !admin_orgs.empty?
+    admin_orgs = @user.authorized_admin_organizations
+    @admin     = admin_orgs.any?
 
     @default_filter_params = { show_archived: 0, sorted_by: 'id desc' }
 
@@ -211,7 +211,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   private
 
   def filterrific_params
-    temp = params.require(:filterrific).permit(:identity_id,
+    params.require(:filterrific).permit(:identity_id,
       :search_name,
       :show_archived,
       :admin_filter,
@@ -222,12 +222,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       with_organization: [],
       with_status: [],
       with_owner: [])
-
-    unless @admin
-      temp[:admin_filter] = "for_identity #{@user.id}"
-    end
-
-    temp
   end
 
   def protocol_params

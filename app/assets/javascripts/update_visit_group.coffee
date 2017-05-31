@@ -1,4 +1,4 @@
-reload_calendar = (arm_id, sr_id) ->
+(exports ? this).reload_calendar = (arm_id, sr_id) ->
   tab = $('li.custom-tab.active a').last().attr('id')
   tab = tab.substring(0, tab.indexOf("tab") - 1).replace("-", "_")
   data = $('#service-calendars').data()
@@ -9,7 +9,7 @@ reload_calendar = (arm_id, sr_id) ->
   data.protocol_id = data.protocolId
   $.get '/service_calendars/table.js', data
 
-$.fn.renderFormErrors = (modelName, errors) ->
+(exports ? this).$.fn.renderFormErrors = (modelName, errors) ->
   form = this
 
   this.clearFormErrors()

@@ -188,7 +188,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def add_service
-    existing_service_ids = @service_request.line_items.reject{ |line_item| line_item.status == 'complete' }.map(&:service_id)
+    existing_service_ids = @service_request.line_items.reject{ |line_item| FINISHED_STATUSES.include?(line_item.status) }.map(&:service_id)
 
     if existing_service_ids.include?( params[:service_id].to_i )
       @duplicate_service = true
@@ -408,7 +408,7 @@ class ServiceRequestsController < ApplicationController
 
         cal = cals.first
 
-        events = cal.events.sort { |x, y| y.dtstart <=> x.dtstart }
+        events = cal.try(:events).try(:sort) { |x, y| y.dtstart <=> x.dtstart } || []
 
         events.each do |event|
           next if Time.parse(event.dtstart.to_s) > startMax

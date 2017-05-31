@@ -17,24 +17,6 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-<% if @errors %>
-<% @response.question_responses.each do |qr| %>
-<% if qr.errors.any? %>
-if !$(".question-<%=qr.question_id%>").hasClass('has-error')
-  $(".question-<%=qr.question_id%>").addClass('has-error')
-  <% qr.errors.full_messages.each do |message| %>
-  $(".question-<%=qr.question_id%>").append("<span class='help-block'><%= message %></span>")
-  <% end %>
-<% else %>
-$(".question-<%=qr.question_id%>").removeClass('has-error')
-$(".question-<%=qr.question_id%> .help-block").remove()
-<% end %>
-<% end %>
-<% @response.question_responses.destroy_all %>
-<% else %>
-<% if @review %>
-$('#modal_place').modal('hide')
-<% else %>
-window.location = "/surveyor/responses/<%=@response.id%>/complete"
-<% end %>
-<% end %>
+
+$('#modal_place').html("<%= j render 'form', visit: @visit, portal: @portal %>")
+$('#modal_place').modal('show')

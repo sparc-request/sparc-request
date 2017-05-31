@@ -39,7 +39,7 @@ class VisitGroup < ApplicationRecord
   validates :position, presence: true
   validates :window_before,
             :window_after,
-            presence: true, numericality: { only_integer: true }
+            presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :day, presence: true, numericality: { only_integer: true }
 
   validate :day_must_be_in_order

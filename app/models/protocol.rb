@@ -105,10 +105,10 @@ class Protocol < ApplicationRecord
   def self.to_csv(protocols)
     CSV.generate do |csv|
       ##Insert headers
-      csv << ["Protocol ID", "Project/Study", "Short Title", "Primary Principal Investigator(s)", "Archived?"]
+      csv << ["Protocol ID", "Project/Study", "Short Title", "Primary Principal Investigator(s)"]
       ##Insert data for each protocol
       protocols.each do |p|
-        csv << [p.id, p.is_study? ? "Study" : "Project", p.short_title, p.principal_investigators.map(&:full_name).join(', '), p.archived ? "Yes" : "No"]
+        csv << [p.id, p.is_study? ? "Study" : "Project", p.short_title, p.principal_investigators.map(&:full_name).join(', ')]
       end
     end
   end
@@ -173,7 +173,7 @@ class Protocol < ApplicationRecord
       # and combine with the old scope's values
       unscoped  = self.unscoped.joins(:non_pi_authorized_users).joins(:identities).where(authorized_user_query)
       others    = self.current_scope
-      
+
       where(id: others & unscoped).distinct
     when "HR#"
       joins(:human_subjects_info).
@@ -222,7 +222,7 @@ class Protocol < ApplicationRecord
     return nil if identity_id == '0'
 
     ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_identity(identity_id))
-    
+
     if SuperUser.where(identity_id: identity_id).any?
       empty_protocol_ids  = includes(:sub_service_requests).where(sub_service_requests: { id: nil }).ids
       protocol_ids        = ssrs.distinct.pluck(:protocol_id)

@@ -28,6 +28,7 @@
         .col-sm-8
           = f.text_field :window_after, class: 'form-control'
     .modal-footer
-      %button{ class: 'btn btn-default', data: { dismiss: 'modal' } } Close
+      %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
+        Close
       = f.submit 'Save changes', class: 'btn btn-primary'
 

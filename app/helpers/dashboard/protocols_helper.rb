@@ -50,12 +50,12 @@ module Dashboard::ProtocolsHelper
     end
   end
 
-  def display_archive_button(protocol, current_user)
-    if current_user.can_edit_protocol?(protocol) || current_user.is_overlord?
+  def display_archive_button(protocol, permission_to_edit)
+    if permission_to_edit
       content_tag( :button, (protocol.archived ? t(:protocols)[:summary][:unarchive] : t(:protocols)[:summary][:archive])+" #{protocol.type.capitalize}", 
                     type: 'button', 
                     class: 'protocol-archive-button btn btn-warning btn-sm',
-                    data: { protocol_id: protocol.id, current_user: current_user.id }
+                    data: { protocol_id: protocol.id, permission_to_edit: permission_to_edit }
       )
     end
   end

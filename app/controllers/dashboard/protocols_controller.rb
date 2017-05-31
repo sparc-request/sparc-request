@@ -192,11 +192,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def archive
-    binding.pry
     @protocol.toggle!(:archived)
     @protocol_type = @protocol.type
-    @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
-    @current_user = Identity.find(params[:current_user])
+    @permission_to_edit = params[:permission_to_edit]
     respond_to do |format|
       format.js
     end

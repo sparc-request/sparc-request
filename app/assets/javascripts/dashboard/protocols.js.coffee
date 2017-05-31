@@ -47,9 +47,12 @@ $(document).ready ->
 
       $(document).on 'click', '.protocol-archive-button', ->
         protocol_id = $(this).data('protocol-id')
+        current_user_id = $(this).data('current-user')
+        console.log(current_user_id)
         $.ajax
           type: 'PATCH'
           url:  "/dashboard/protocols/#{protocol_id}/archive.js"
+          data: { current_user: current_user_id }
 
       $(document).on 'submit', '#filterrific-no-ajax-auto-submit', ->
         $('#filterrific_sorted_by').val("#{$('.protocol-sort').data('sort-name')} #{$('.protocol-sort').data('sort-order')}")

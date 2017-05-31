@@ -47,6 +47,8 @@ FactoryGirl.define do
 
         arm.reload
       end
+
+      arm.default_visit_days
     end
 
     factory :arm_without_validations, traits: [:without_validations]

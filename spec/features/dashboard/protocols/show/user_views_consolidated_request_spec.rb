@@ -37,7 +37,6 @@ RSpec.describe "User views Consolidated Request", js: true do
       click_button 'View Consolidated Request'
       first('.view-full-calendar-button').click
       wait_for_javascript_to_finish
-
       expect(page).to have_selector('.full-calendar-modal', visible: true)
     end
   end

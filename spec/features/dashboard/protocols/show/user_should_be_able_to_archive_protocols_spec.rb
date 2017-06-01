@@ -40,8 +40,7 @@ RSpec.describe 'User should be able to archive protocols', js: true do
   end
 
   before :each do
-    @page = Dashboard::Protocols::ShowPage.new
-    @page.load(id: project.id)
+    visit dashboard_protocol_path(project)
     wait_for_javascript_to_finish
   end
 

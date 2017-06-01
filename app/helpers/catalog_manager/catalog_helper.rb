@@ -34,10 +34,10 @@ module CatalogManager::CatalogHelper
 
   def accordion_link_text(org)
     if org.is_a?(Service)
-      css_class = org.is_available ? 'text-service' : 'unavailable-org'
+      css_class = org.is_available ? 'text-service' : 'text-service unavailable-org'
       content_tag(:span, org.name, class: css_class)
     else
-      css_class = org.is_available ? "text-#{org.type.downcase}" : 'unavailable-org'
+      css_class = org.is_available ? "text-#{org.type.downcase}" : "text-#{org.type.downcase} unavailable-org"
       content_tag(:span, org.name, class: css_class)
     end
   end

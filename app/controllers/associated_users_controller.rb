@@ -23,6 +23,7 @@ class AssociatedUsersController < ApplicationController
 
   before_action :initialize_service_request
   before_action :authorize_identity
+  skip_before_action :authorize_identity,     only: [:update]
   before_action :find_protocol_role,          only: [:edit, :destroy]
   before_action :find_protocol,               only: [:index, :new, :edit, :destroy]
 

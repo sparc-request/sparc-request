@@ -33,7 +33,7 @@
               = identity.display_name
             %a.btn.btn-xs.btn-danger.glyphicon.glyphicon-remove#new-associated-user-button{ href: "javascript:void(0);", data: { protocol_id: protocol.id, permission: 'true', toggle: "tooltip", animation: 'false', placement: 'right' }, title: "Remove" }
       %div#protocol_role_data{ data: { pr_id: identity.id, pr_name: identity.full_name, pi_id: current_pi.id, pi_name: current_pi.full_name }}
-      = form_for [:dashboard, project_role], url: project_role.new_record? ? dashboard_associated_users_path : dashboard_associated_user_path(project_role), remote: true, html: { class: "protocol_role_form" } do |form|
+      = form_for [:dashboard, project_role], url: project_role.new_record? ? associated_users_path : associated_user_path(project_role), remote: true, html: { class: "protocol_role_form" } do |form|
         = form.hidden_field :identity_id
         = form.hidden_field :protocol_id
         .row

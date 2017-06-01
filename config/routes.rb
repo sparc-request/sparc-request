@@ -269,7 +269,7 @@ SparcRails::Application.routes.draw do
       member do
         patch :update_protocol_type
         get :display_requests
-        put :archive
+        patch :archive
       end
     end
 

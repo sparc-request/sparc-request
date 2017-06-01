@@ -49,9 +49,8 @@ $(document).ready ->
         protocol_id = $(this).data('protocol-id')
         permission_to_edit = $(this).data('permission-to-edit')
         $.ajax
-          type: 'put'
+          type: 'PATCH'
           url:  "/dashboard/protocols/#{protocol_id}/archive.js"
-          data: { junk: "junk", permission_to_edit: permission_to_edit }
 
       $(document).on 'submit', '#filterrific-no-ajax-auto-submit', ->
         $('#filterrific_sorted_by').val("#{$('.protocol-sort').data('sort-name')} #{$('.protocol-sort').data('sort-order')}")

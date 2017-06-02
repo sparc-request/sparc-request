@@ -100,19 +100,17 @@ $(document).ready ->
       $(this).addClass('freeze')
 
   $(document).on 'change', '.visit-quantity', ->
-    checked = $(this).is(':checked')
-    obj     = $(this)
-
     $.ajax
       type: 'PUT'
       data:
-        checked:  checked
-        visit_id: $(this).data('visit-id')
-        portal: $(this).data('portal')
-        sub_service_request_id: $(this).data('ssrid')
-        service_request_id: getSRId()
-        sub_service_request_id: getSSRId()
-      url: $(this).attr('update')
+        visit:
+          quantity:               $(this).data('quantity')
+          research_billing_qty:   $(this).data('research-billing-qty')
+          insurance_billing_qty:  $(this).data('insurance-billing-qty')
+          effort_billing_qty:     $(this).data('effort-billing-qty')
+        admin:                    $(this).data('admin')
+        tab:                      $(this).data('tab')
+      url: "/visits/#{$(this).data('visit-id')}"
 
   $(document).on 'change', '#visit_group', ->
     $.ajax

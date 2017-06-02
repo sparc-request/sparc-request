@@ -60,17 +60,13 @@
       - totals_hash = liv.try(:per_subject_subtotals, visits)
       - visits.each_with_index do |v, index|
         %td.text-center.visit.visit-width{ class: "visit-#{index+1}", data: { cents: totals_hash["#{v.id}"] || 0.00 } }
-          = render 'service_calendars/master_calendar/pppv/line_item_visit_input', arm: arm, line_item: liv.line_item, visit: v, tab: tab, service_request: service_request, sub_service_request: sub_service_request, pages: pages, merged: merged, portal: portal, review: review, admin: admin, locked: locked
+          = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", arm: arm, visit: v, tab: tab, service_request: service_request, sub_service_request: sub_service_request, pages: pages, merged: merged, portal: portal, review: review, admin: admin, locked: locked
       - (5 - visits.size).times do
         %td.visit-width &nbsp;
 
       - unless portal
-        %td.text-center.pppv-per-patient-line-item-total.total-width
-          %strong
-            = display_visit_based_direct_cost(liv)
-        %td.text-center.pppv-per-study-line-item-total.total-width
-          %strong
-            = Dashboard::ServiceCalendars.display_visit_based_direct_cost_per_study(liv)
+        = render 'service_calendars/master_calendar/pppv/total_per_patient', liv: liv
+        = render 'service_calendars/master_calendar/pppv/total_per_study', liv: liv
 
 - unless portal
-  = render 'service_calendars/master_calendar/pppv/pppv_totals', service_request: service_request, arm: arm, tab: tab, line_items_visits: line_items_visits.flatten
+  = render 'service_calendars/master_calendar/pppv/totals/pppv_totals', service_request: service_request, arm: arm, tab: tab, line_items_visits: line_items_visits.flatten, page: page

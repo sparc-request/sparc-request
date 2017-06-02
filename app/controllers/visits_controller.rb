@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Dashboard::VisitsController < Dashboard::BaseController
+class VisitsController < ApplicationController
   respond_to :json, :js, :html
 
   def edit
@@ -32,16 +32,20 @@ class Dashboard::VisitsController < Dashboard::BaseController
 
   # Used for x-editable update and validations
   def update
-    @visit = Visit.find(params[:id])
-    admin = params[:service_request_id] ? false : true
+    @visit  = Visit.find(params[:id])
+    @liv    = @visit.line_items_visit
+    @admin  = params[:admin] == 'true'
+    @tab    = params[:tab]
+    @locked = !@visit.line_items_visit.sub_service_request.can_be_edited? && !@admin
 
     if @visit.update_attributes(visit_params)
-      unless params[:portal] == 'true'
-        @visit.line_items_visit.sub_service_request.set_to_draft(@admin)
-      end
-      render nothing: true
+      @visit.line_items_visit.sub_service_request.set_to_draft unless @admin
     else
-      render json: @visit.errors, status: :unprocessable_entity
+      @errors = @visit.errors
+    end
+
+    respond_to do |format|
+      format.js
     end
   end
 

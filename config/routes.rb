@@ -139,7 +139,8 @@ SparcRails::Application.routes.draw do
 
   resources :line_items, only: [:update]
   resources :visit_groups, only: [:edit, :update]
-
+  resources :visits, only: [:edit, :update, :destroy]
+  
   resources :documents, only: [:index, :new, :create, :edit, :update, :destroy]
 
   resources :notes, only: [:index, :new, :create]
@@ -312,8 +313,6 @@ SparcRails::Application.routes.draw do
         get :refresh_tab
       end
     end
-
-    resources :visits, only: [:edit, :update, :destroy]
 
     resources :visit_groups, only: [:new, :create, :update, :destroy] do
       collection do

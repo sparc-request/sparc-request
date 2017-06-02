@@ -324,10 +324,8 @@ class SubServiceRequest < ApplicationRecord
     end
   end
 
-  def set_to_draft(admin)
-    if !admin && status != 'draft'
-      self.update_attributes(status: 'draft')
-    end
+  def set_to_draft
+    self.update_attributes(status: 'draft') unless status == 'draft'
   end
 
   def switch_to_new_service_request

@@ -121,4 +121,20 @@ module AssociatedUsersHelper
       disabled: project_role.identity_id == current_user.id
     )
   end
+
+  def determine_entity(dashboard, project_role)
+    if dashboard
+      [:dashboard, project_role]
+    else
+      project_role
+    end
+  end
+
+  def determine_url(dashboard, project_role)
+    if dashboard
+      project_role.new_record? ? dashboard_associated_users_path : dashboard_associated_user_path(project_role)
+    else
+      project_role.new_record? ? associated_users_path : associated_user_path(project_role)
+    end
+  end
 end

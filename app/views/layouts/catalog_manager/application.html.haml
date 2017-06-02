@@ -38,7 +38,7 @@
   %body#body
     #container
       #header
-        = render 'layouts/header_logos', location: "proper"
+        = render 'layouts/header_logos', location: "catalog_manager"
         %input#current_user_id{type: 'hidden', value: @user.try(:id)}
       = render 'layouts/header', user: @user
       .flash

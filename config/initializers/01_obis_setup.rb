@@ -48,6 +48,7 @@ begin
   HEADER_LINK_1                             = application_config['header_link_1']
   HEADER_LINK_2_PROPER                      = application_config['header_link_2_proper']
   HEADER_LINK_2_DASHBOARD                   = application_config['header_link_2_dashboard']
+  HEADER_LINK_2_CATALOG                     = application_config['header_link_2_catalog']
   HEADER_LINK_3                             = application_config['header_link_3']
   USE_INDIRECT_COST                         = application_config['use_indirect_cost']
   USE_SHIBBOLETH                            = application_config['use_shiboleth']

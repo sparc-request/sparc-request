@@ -38,6 +38,7 @@ development:
   header_link_1: http://sctr.musc.edu
   header_link_2_proper: http://localhost:3000/
   header_link_2_dashboard: http://localhost:3000/dashboard
+  header_link_2_catalog: http://localhost:3000/catalog_manager
   header_link_3: http://www.musc.edu
   use_indirect_cost: false
   use_shiboleth: true

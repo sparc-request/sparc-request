@@ -173,7 +173,11 @@ class LineItem < ApplicationRecord
   # factor.
   def units_per_package
     unit_factor = self.service.displayed_pricing_map.unit_factor
-    units_per_package = unit_factor || 1
+    if unit_factor.nil? || unit_factor == 0
+      units_per_package = 1
+    else
+      units_per_package = unit_factor
+    end
 
     return units_per_package
   end

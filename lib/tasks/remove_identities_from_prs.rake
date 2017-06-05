@@ -12,7 +12,8 @@ namespace :data do
     puts "Found relevant OCR Identities,
     next we'll discover associated Project Roles"
 
-    ocr_prs = ProjectRole.where(identity_id: ocr_folks)
+    ocr_prs = ProjectRole.where(identity_id: ocr_folks).where.not(role: 'primary-pi')
+    binding.pry
 
     puts "Found Project Roles, removing..."
 

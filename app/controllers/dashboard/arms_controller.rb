@@ -31,19 +31,11 @@ class Dashboard::ArmsController < Dashboard::BaseController
   end
 
   def create
-    @protocol = Protocol.find(params[:arm][:protocol_id])
+    @protocol = Protocol.find(arm_params[:protocol_id])
     @service_request = ServiceRequest.find(params[:service_request_id])
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    name = params[:arm][:name]
-    visit_count = params[:arm][:visit_count].try(:to_i)
-    subject_count = params[:arm][:subject_count].try(:to_i)
-    protocol_id = params[:arm][:protocol_id].to_i
-
-    arm_builder = Dashboard::ArmBuilder.new(name: name,
-      visit_count: visit_count,
-      subject_count: subject_count,
-      protocol_id: protocol_id)
-    @selected_arm = arm_builder.arm
+    @selected_arm = Arm.create(arm_params)
+    @selected_arm.default_visit_days
 
     if @selected_arm.valid?
       flash[:success] = t(:arms)[:created]
@@ -72,13 +64,11 @@ class Dashboard::ArmsController < Dashboard::BaseController
   end
 
   def destroy
-    destroyer = Dashboard::ArmDestroyer.new(id: params[:id],
-      sub_service_request_id: params[:sub_service_request_id])
-    destroyer.destroy
+    @selected_arm = Arm.find(params[:id])
+    @selected_arm.destroy
 
-    @sub_service_request = destroyer.sub_service_request
-    @service_request = destroyer.service_request
-    @selected_arm = destroyer.selected_arm
+    @service_request = ServiceRequest.find(params[:service_request_id])
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
 
     flash[:alert] = t(:arms)[:destroyed]
   end
@@ -92,16 +82,8 @@ class Dashboard::ArmsController < Dashboard::BaseController
       :new_with_draft,
       :protocol_id,
       :minimum_visit_count,
-      :minimum_subject_count,
-      subjects_attributes: [:name,
-        :mrn,
-        :dob,
-        :gender,
-        :ethnicity,
-        :external_subject_id,
-        :status,
-        :arm_edited,
-        :_destroy])
+      :minimum_subject_count
+    )
   end
 
   def find_arm

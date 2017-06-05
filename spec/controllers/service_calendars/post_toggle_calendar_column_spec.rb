@@ -59,11 +59,8 @@ RSpec.describe ServiceCalendarsController do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
       ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
-      arm       = create(:arm, protocol: protocol)
       li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-      liv       = create(:line_items_visit, line_item: li, arm: arm)
-      vg        = create(:visit_group, arm: arm)
-      v         = create(:visit, line_items_visit: liv, visit_group: vg)
+      arm       = create(:arm, protocol: protocol)
 
       session[:identity_id] = logged_in_user.id
 
@@ -83,11 +80,8 @@ RSpec.describe ServiceCalendarsController do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
       ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
-      arm       = create(:arm, protocol: protocol)
       li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-      liv       = create(:line_items_visit, line_item: li, arm: arm)
-      vg        = create(:visit_group, arm: arm)
-      v         = create(:visit, line_items_visit: liv, visit_group: vg)
+      arm       = create(:arm, protocol: protocol)
 
       session[:identity_id] = logged_in_user.id
 
@@ -108,11 +102,9 @@ RSpec.describe ServiceCalendarsController do
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
         ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
-        arm       = create(:arm, protocol: protocol)
         li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-        liv       = create(:line_items_visit, line_item: li, arm: arm)
-        vg        = create(:visit_group, arm: arm)
-        v         = create(:visit, line_items_visit: liv, visit_group: vg, quantity: 0, research_billing_qty: 0, insurance_billing_qty: 1, effort_billing_qty: 1)
+        arm       = create(:arm, protocol: protocol)
+        v         = arm.visits.first
 
         session[:identity_id] = logged_in_user.id
 
@@ -137,11 +129,11 @@ RSpec.describe ServiceCalendarsController do
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
         ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
-        arm       = create(:arm, protocol: protocol)
         li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-        liv       = create(:line_items_visit, line_item: li, arm: arm)
-        vg        = create(:visit_group, arm: arm)
-        v         = create(:visit, line_items_visit: liv, visit_group: vg, quantity: 1, research_billing_qty: 1, insurance_billing_qty: 1, effort_billing_qty: 1)
+        arm       = create(:arm, protocol: protocol)
+        v         = arm.visits.first
+
+        v.update_attributes(quantity: 1, research_billing_qty: 1, insurance_billing_qty: 1, effort_billing_qty: 1)
 
         session[:identity_id] = logged_in_user.id
 
@@ -166,11 +158,8 @@ RSpec.describe ServiceCalendarsController do
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
         ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
-        arm       = create(:arm, protocol: protocol)
         li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-        liv       = create(:line_items_visit, line_item: li, arm: arm)
-        vg        = create(:visit_group, arm: arm)
-        v         = create(:visit, line_items_visit: liv, visit_group: vg, quantity: 1, research_billing_qty: 1, insurance_billing_qty: 1, effort_billing_qty: 1)
+        arm       = create(:arm, protocol: protocol)
 
         session[:identity_id] = logged_in_user.id
 
@@ -190,11 +179,8 @@ RSpec.describe ServiceCalendarsController do
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
         ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
-        arm       = create(:arm, protocol: protocol)
         li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-        liv       = create(:line_items_visit, line_item: li, arm: arm)
-        vg        = create(:visit_group, arm: arm)
-        v         = create(:visit, line_items_visit: liv, visit_group: vg, quantity: 1, research_billing_qty: 1, insurance_billing_qty: 1, effort_billing_qty: 1)
+        arm       = create(:arm, protocol: protocol)
 
         session[:identity_id] = logged_in_user.id
 
@@ -217,11 +203,8 @@ RSpec.describe ServiceCalendarsController do
           sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
           ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
           ssr2      = create(:sub_service_request_without_validations, organization: org2, service_request: sr, status: 'on_hold')
-          arm       = create(:arm, protocol: protocol)
           li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-          liv       = create(:line_items_visit, line_item: li, arm: arm)
-          vg        = create(:visit_group, arm: arm)
-          v         = create(:visit, line_items_visit: liv, visit_group: vg, quantity: 1, research_billing_qty: 1, insurance_billing_qty: 1, effort_billing_qty: 1)
+          arm       = create(:arm, protocol: protocol)
 
           session[:identity_id] = logged_in_user.id
 
@@ -245,11 +228,8 @@ RSpec.describe ServiceCalendarsController do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
       ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
-      arm       = create(:arm, protocol: protocol)
       li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-      liv       = create(:line_items_visit, line_item: li, arm: arm)
-      vg        = create(:visit_group, arm: arm)
-      v         = create(:visit, line_items_visit: liv, visit_group: vg)
+      arm       = create(:arm, protocol: protocol)
 
       session[:identity_id] = logged_in_user.id
 
@@ -269,11 +249,8 @@ RSpec.describe ServiceCalendarsController do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
       ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
-      arm       = create(:arm, protocol: protocol)
       li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-      liv       = create(:line_items_visit, line_item: li, arm: arm)
-      vg        = create(:visit_group, arm: arm)
-      v         = create(:visit, line_items_visit: liv, visit_group: vg)
+      arm       = create(:arm, protocol: protocol)
 
       session[:identity_id] = logged_in_user.id
 

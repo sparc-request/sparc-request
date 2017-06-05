@@ -50,7 +50,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, protocol_id: protocol.id)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:identity_id]        = logged_in_user.id
+      session[:identity_id] = logged_in_user.id
 
       xhr :get, :obtain_research_pricing, {
         id: sr.id
@@ -61,15 +61,14 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
     context 'a new service request' do
       before :each do
-        @org      = create(:organization)
+        @org     = create(:organization)
         service  = create(:service, organization: @org, one_time_fee: true)
         protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
-        @sr       = create(:service_request_without_validations, protocol: protocol, original_submitted_date: nil, status: 'draft')
-        @ssr      = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'draft', submitted_at: nil, protocol_id: protocol.id)
+        @sr      = create(:service_request_without_validations, protocol: protocol, original_submitted_date: nil, status: 'draft')
+        @ssr     = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'draft', submitted_at: nil, protocol_id: protocol.id)
         li       = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
 
-
-        session[:identity_id]            = logged_in_user.id
+        session[:identity_id] = logged_in_user.id
       end
 
       it 'should update SR status to "get_a_cost_estimate"' do
@@ -135,14 +134,14 @@ RSpec.describe ServiceRequestsController, type: :controller do
     context 'editing a service request that has been previously submitted' do
       context 'status is get_a_cost_estimate' do
         before :each do
-          @org      = create(:organization)
+          @org     = create(:organization)
           service  = create(:service, organization: @org, one_time_fee: true)
           protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
-          @sr       = create(:service_request_without_validations, protocol: protocol, original_submitted_date: Time.now.yesterday)
-          @ssr      = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'get_a_cost_estimate', submitted_at: Time.now.yesterday, protocol_id: protocol.id)
+          @sr      = create(:service_request_without_validations, protocol: protocol, original_submitted_date: Time.now.yesterday)
+          @ssr     = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'get_a_cost_estimate', submitted_at: Time.now.yesterday, protocol_id: protocol.id)
           li       = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
 
-          session[:identity_id]            = logged_in_user.id
+          session[:identity_id] = logged_in_user.id
         end
 
         it 'status should remain get_a_cost_estimate' do
@@ -194,14 +193,14 @@ RSpec.describe ServiceRequestsController, type: :controller do
     context 'editing a service request that has been previously submitted' do
       context 'ssr status is set to a locked status' do
         before :each do
-          @org      = create(:organization)
+          @org     = create(:organization)
           service  = create(:service, organization: @org, one_time_fee: true)
           protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
-          @sr       = create(:service_request_without_validations, protocol: protocol, original_submitted_date: Time.now.yesterday)
-          @ssr      = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'locked_status', submitted_at: Time.now.yesterday, protocol_id: protocol.id)
+          @sr      = create(:service_request_without_validations, protocol: protocol, original_submitted_date: Time.now.yesterday)
+          @ssr     = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'locked_status', submitted_at: Time.now.yesterday, protocol_id: protocol.id)
           li       = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
 
-          session[:identity_id]            = logged_in_user.id
+          session[:identity_id] = logged_in_user.id
           stub_const('EDITABLE_STATUSES', {@org.id => ["draft"]})
         end
 
@@ -255,11 +254,11 @@ RSpec.describe ServiceRequestsController, type: :controller do
           @org      = create(:organization)
           service  = create(:service, organization: @org, one_time_fee: true)
           protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
-          @sr       = create(:service_request_without_validations, protocol: protocol, original_submitted_date: Time.now.yesterday)
-          @ssr      = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'complete', submitted_at: Time.now.yesterday, protocol_id: protocol.id)
+          @sr      = create(:service_request_without_validations, protocol: protocol, original_submitted_date: Time.now.yesterday)
+          @ssr     = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'complete', submitted_at: Time.now.yesterday, protocol_id: protocol.id)
           li       = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
 
-          session[:identity_id]            = logged_in_user.id
+          session[:identity_id] = logged_in_user.id
         end
 
         it 'should not update status to "get_a_cost_estimate"' do
@@ -314,7 +313,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, protocol_id: protocol.id)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:identity_id]        = logged_in_user.id
+      session[:identity_id] = logged_in_user.id
 
       xhr :get, :obtain_research_pricing, {
         id: sr.id
@@ -331,7 +330,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, protocol_id: protocol.id)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:identity_id]        = logged_in_user.id
+      session[:identity_id] = logged_in_user.id
 
       xhr :get, :obtain_research_pricing, {
         id: sr.id

@@ -24,7 +24,7 @@ FactoryGirl.define do
   end
 
   sequence :day do |n|
-    n
+    n * VisitGroup.admin_day_multiplier
   end
 
   sequence :name do |n|

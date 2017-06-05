@@ -49,6 +49,7 @@ class LineItem < ApplicationRecord
   validate :quantity_must_be_smaller_than_max_and_greater_than_min, on: :update, if: Proc.new { |li| li.service.one_time_fee }
   validates :units_per_quantity, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, on: :update, if: Proc.new { |li| li.service.one_time_fee }
 
+  after_create :build_line_items_visits, if: Proc.new { |li| li.service.present? && !li.one_time_fee && li.service_request.present? && li.service_request.arms.any? }
 
   default_scope { order('line_items.id ASC') }
 
@@ -349,5 +350,13 @@ class LineItem < ApplicationRecord
 
   def has_incomplete_additional_details?
     service.questionnaires.active.present? && !submission.present?
+  end
+
+  private
+
+  def build_line_items_visits
+    self.service_request.arms.each do |arm|
+      arm.line_items_visits.create(line_item: self, subject_count: arm.subject_count)
+    end
   end
 end

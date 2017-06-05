@@ -41,11 +41,6 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
     li2       = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service2)
     
     arm       = create(:arm, protocol: protocol)
-    vg        = create(:visit_group, arm: arm)
-    liv       = create(:line_items_visit, line_item: li, arm: arm)
-    liv2      = create(:line_items_visit, line_item: li2, arm: arm)
-                create(:visit, visit_group: vg, line_items_visit: liv)
-                create(:visit, visit_group: vg, line_items_visit: liv2)
   end
 
   context 'for SSRs which aren\'t locked' do

@@ -29,7 +29,7 @@ RSpec.describe 'ServiceRequest' do
   describe "set visit page" do
     let!(:protocol)         { create(:protocol_without_validations) }
     let!(:service_request)  { create(:service_request_without_validations, protocol: protocol) }
-    let!(:arm)              { create(:arm, protocol: protocol, visit_count: 10)}
+    let!(:arm)              { create(:arm, protocol: protocol, visit_count: 10) }
 
     it "should return 1 if arm visit count <= 5" do
       arm.update_attributes(visit_count: 0)
@@ -125,10 +125,6 @@ RSpec.describe 'ServiceRequest' do
 
   context "methods" do
 
-    before :each do
-      add_visits
-    end
-
     describe "one time fee line items" do
       it "should return one time fee line items" do
         expect(service_request.one_time_fee_line_items[0].service.name).to eq("One Time Fee")
@@ -200,7 +196,7 @@ RSpec.describe 'ServiceRequest' do
     #USE_INDIRECT_COST = true  #For testing indirect cost
 
     before :each do
-      add_visits
+      service_request.arms.each { |arm| arm.visits.update_all(quantity: 15, research_billing_qty: 5, insurance_billing_qty: 5, effort_billing_qty: 5) }
       @protocol = service_request.protocol
       @protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 200)
       @protocol.save validate: false

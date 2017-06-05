@@ -217,12 +217,6 @@ class ServiceRequest < ApplicationRecord
       if line_item.service.one_time_fee
         # quantity is only set for one time fee
         line_item.update_attribute(:quantity, quantity)
-
-      else
-        # only per-patient per-visit have arms
-        self.arms.each do |arm|
-          arm.create_line_items_visit(line_item)
-        end
       end
 
       line_item.reload
@@ -456,31 +450,6 @@ class ServiceRequest < ApplicationRecord
     end
 
     self.protocol.update_attributes(next_ssr_id: next_ssr_id) if self.protocol
-  end
-
-  def add_or_update_arms
-    return unless self.has_per_patient_per_visit_services?
-
-    p = self.protocol
-    if p
-      if p.arms.empty?
-        arm = p.arms.create(
-          name: 'Screening Phase',
-          visit_count: 1,
-          new_with_draft: true)
-        self.per_patient_per_visit_line_items.each do |li|
-          arm.create_line_items_visit(li)
-        end
-      else
-        p.arms.each do |arm|
-          p.service_requests.each do |sr|
-            sr.per_patient_per_visit_line_items.each do |li|
-              arm.create_line_items_visit(li) if arm.line_items_visits.where(:line_item_id => li.id).empty?
-            end
-          end
-        end
-      end
-    end
   end
 
   def should_push_to_epic?

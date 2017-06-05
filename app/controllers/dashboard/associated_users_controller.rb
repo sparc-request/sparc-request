@@ -44,6 +44,8 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     respond_to do |format|
       format.js
     end
+
+    @dashboard = true
   end
 
   def new
@@ -58,8 +60,9 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
         # Adds error if user already associated with protocol
         @errors = @project_role.errors
       end
-
     end
+
+    @dashboard = true
 
     respond_to do |format|
       format.js

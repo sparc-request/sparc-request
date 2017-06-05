@@ -21,7 +21,7 @@
   .panel-heading
     %h4.panel-title
       .form-group.no-margin
-        = text_field_tag "survey-title", survey.title, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:content][:survey][:title][:placeholder]
+        = text_field_tag "survey-title", survey.title, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:content][:survey][:title][:placeholder], maxlength: 255
   .panel-body
     .form-group
       .col-lg-12.no-padding

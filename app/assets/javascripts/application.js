@@ -61,4 +61,5 @@
 //= require surveyor/surveys
 //= require sweetalert.min
 //= require update_visit_group
+//= require update_visit
 //= require feedback

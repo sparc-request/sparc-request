@@ -72,6 +72,33 @@ $(document).ready ->
         service_request_id: getSRId()
     return false
 
+  $(document).on 'click', '.freeze-header-button', ->
+
+    arm = $(this).data('arm-id')
+
+    if arm == 'otf-calendar'
+      arm_container = $(this).closest(".#{arm}")
+    else
+      arm_container = $(this).closest(".arm-calendar-container-#{arm}")
+
+    if $(this).hasClass('freeze')
+      arm_container.find('table').addClass('scrolling-table')
+      arm_container.find('thead').addClass('scrolling-thead')
+      arm_container.find('tbody').addClass('scrolling-div')
+      $(this).find('.freeze-header').hide()
+      $(this).find('.unfreeze-header').show()
+      $(this).removeClass('freeze')
+      $(this).addClass('unfreeze')
+    else
+      arm_container.find('table').removeClass('scrolling-table')
+      arm_container.find('table').addClass('non-scrolling-table')
+      arm_container.find('thead').removeClass('scrolling-thead')
+      arm_container.find('tbody').removeClass('scrolling-div')
+      $(this).find('.unfreeze-header').hide()
+      $(this).find('.freeze-header').show()
+      $(this).removeClass('unfreeze')
+      $(this).addClass('freeze')
+
   $(document).on 'change', '.visit-quantity', ->
     checked = $(this).is(':checked')
     obj     = $(this)
@@ -250,32 +277,6 @@ getSRId = ->
       }
     success: () ->
       reload_calendar($(this).data('armId'))
-
-  $('.edit-research-billing-qty').editable
-    params: (params) ->
-      {
-        visit:
-          research_billing_qty: params.value
-        service_request_id: getSRId()
-      }
-    success: () ->
-      reload_calendar($(this).data('armId'))
-
-  $('.edit-insurance-billing-qty').editable
-    params: (params) ->
-      {
-        visit:
-          insurance_billing_qty: params.value
-        service_request_id: getSRId()
-      }
-
-  $('.edit-effort-billing-qty').editable
-    params: (params) ->
-      {
-        visit:
-          effort_billing_qty: params.value
-        service_request_id: getSRId()
-      }
 
   $('.edit-qty').editable
     params: (params) ->

@@ -29,14 +29,14 @@ class LineItemsVisit < ApplicationRecord
   has_one :service_request, through: :line_item
   has_one :sub_service_request, through: :line_item
   has_one :service, through: :line_item
-  has_many :visits, -> { includes(:visit_group).order("visit_groups.position") }, :dependent => :destroy
+  has_many :visits, :dependent => :destroy
   has_many :notes, as: :notable, dependent: :destroy
 
   validate :subject_count_valid
   validate :pppv_line_item
   validates_numericality_of :subject_count
 
-  after_save :set_arm_edited_flag_on_subjects
+  after_create :build_visits, if: Proc.new { |liv| liv.arm.present? }
 
   # Destroy parent Arm if the last LineItemsVisit was destroyed
   after_destroy :release_parent
@@ -53,29 +53,11 @@ class LineItemsVisit < ApplicationRecord
     end
   end
 
-  def set_arm_edited_flag_on_subjects
-    self.arm.set_arm_edited_flag_on_subjects
-  end
-
   # Find a LineItemsVisit for the given arm and line item.  If it does
   # not exist, create it first, then return it.
   def self.for(arm, line_item)
     liv = LineItemsVisit.where(arm_id: arm.id, line_item_id: line_item.id).first_or_create(subject_count: arm.subject_count)
     return liv
-  end
-
-  def create_visits
-    ActiveRecord::Base.transaction do
-      self.arm.visit_groups.each do |vg|
-        self.add_visit(vg)
-      end
-    end
-  end
-
-  def update_visit_names line_items_visit
-    self.visits.count do |index|
-      self.visits[index].visit_group.name = line_items_visit.visits[index].visit_group.name
-    end
   end
 
   # Returns the cost per unit based on a quantity (usually just the quantity on the line_item)
@@ -188,29 +170,6 @@ class LineItemsVisit < ApplicationRecord
     end
   end
 
-  # Add a new visit.  Returns the new Visit upon success or false upon
-  # error.
-  def add_visit visit_group
-    self.visits.create(visit_group_id: visit_group.id)
-  end
-
-  def procedures
-    self.visits.map {|x| x.appointments.map {|y| y.procedures.select {|z| z.line_item_id == self.line_item_id}}}.flatten
-  end
-
-  def remove_procedures
-    self.procedures.each do |pro|
-      if pro.completed?
-        if pro.line_item.service.displayed_pricing_map.unit_factor > 1
-          pro.update_attributes(:unit_factor_cost => pro.cost * 100)
-        end
-        pro.update_attributes(service_id: self.line_item.service_id, line_item_id: nil, visit_id: nil)
-      else
-        pro.destroy
-      end
-    end
-  end
-
   ### audit reporting methods ###
 
   def audit_excluded_actions
@@ -224,6 +183,12 @@ class LineItemsVisit < ApplicationRecord
   end
 
   private
+
+  def build_visits
+    self.arm.visit_groups.each do |vg|
+      self.visits.create(visit_group: vg)
+    end
+  end
 
   def release_parent
     # Destroy parent Arm if the last LineItemsVisit was destroyed

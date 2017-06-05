@@ -17,6 +17,4 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-protocol_row = $("tr.protocols_index_row[data-protocol-id=#{<%= @protocol.id %>}]")
-protocol_row.hide()
+$('#summary-panel').replaceWith("<%= j render 'summary', protocol: @protocol, protocol_type: @protocol_type, permission_to_edit: @permission_to_edit %>")

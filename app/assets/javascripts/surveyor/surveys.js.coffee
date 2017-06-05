@@ -49,27 +49,7 @@ $(document).ready ->
       type: 'get'
       url: "/surveyor/surveys/#{survey_id}/preview.js"
 
-  ### Survey Form ###
-  options = {
-    text: 'text', email: 'text', zipcode: 'text', time: 'time', phone: 'text',
-    textarea: 'textarea', yes_no: 'yes_no', state: 'dropdown', country: 'dropdown',
-    date: 'date', number: 'number'
-  }
-
-  $(document).on 'change', '.select-question-type', ->
-    send_update_request($(this), $(this).val())
-
-    question_id = $(this).data('question-id')
-
-    if options[$(this).val()]
-      option_type = options[$(this).val()].replace('_', '-')
-      $(".question-options[data-question-id=#{question_id}]").addClass('hidden')
-      $(".question-options.#{option_type}-options[data-question-id=#{question_id}]").removeClass('hidden')
-    else
-      $(".question-options[data-question-id=#{question_id}]").addClass('hidden')
-      $(".question-options.customize-options[data-question-id=#{question_id}]").removeClass('hidden')
-
-  $(document).on 'change', '.select-depender', ->
+  $(document).on 'change', '.select-depender, .select-question-type', ->
     send_update_request($(this), $(this).val())
 
   $(document).on 'focusout', '#survey-modal input[type="text"], #survey-modal textarea', ->
@@ -87,10 +67,6 @@ $(document).ready ->
     else
       $(container).addClass('hidden')
 
-  $(document).on 'click', '.add-option, .delete-option', ->
-    survey_id = $(this).parents('.survey').data('survey-id')
-    build_dependents_selectpicker(survey_id)
-
 send_update_request = (obj, val) ->
   field_data  = $(obj).attr('id').split('-')
   klass       = field_data[0]
@@ -105,16 +81,7 @@ send_update_request = (obj, val) ->
       "#{klass}":
         "#{attribute}": val
 
-build_dependents_selectpicker = (survey_id) ->
+(exports ? this).build_dependents_selectpicker = (survey_id) ->
   $.ajax
     type: 'get'
-    url: "/surveyor/surveys/#{survey_id}/update_dependents_list"
-    success: (data) ->
-      $.each data, (question_id, dropdown) ->
-
-        question = $(".question-#{question_id}")
-        select = $(question).find('select.select-depender')
-        $(select).html(dropdown)
-        $(select).selectpicker('refresh')
-
-      return false
+    url: "/surveyor/surveys/#{survey_id}/update_dependents_list.js"

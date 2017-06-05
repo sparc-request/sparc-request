@@ -29,23 +29,23 @@ RSpec.describe '/service_calendar/master_calendar/otf/_otf_totals', type: :view 
     @service_request = create(:service_request_without_validations, protocol: @protocol)
   end
 
-  it 'should display total direct costs for one time fee services if USE_INDIRECT_COST is true' do
+  it 'should display total direct costs for Non-clinical services if USE_INDIRECT_COST is true' do
     stub_const("USE_INDIRECT_COST", true)
     render "/service_calendars/master_calendar/otf/otf_totals", service_request: @service_request
 
-    expect(response).to have_content('Total Direct Costs (One Time Fee Services) Per Study')
+    expect(response).to have_content('Total Direct Costs (Non-clinical Services) Per Study')
   end
 
-  it 'should not display total direct costs for one time fee services if USE_INDIRECT_COST is false' do
+  it 'should not display total direct costs for Non-clinical services if USE_INDIRECT_COST is false' do
     stub_const("USE_INDIRECT_COST", false)
     render "/service_calendars/master_calendar/otf/otf_totals", service_request: @service_request
 
-    expect(response).to_not have_content('Total Direct Costs (One Time Fee Services) Per Study')
+    expect(response).to_not have_content('Total Direct Costs (Non-clinical Services) Per Study')
   end
 
-  it 'should display total one time fees costs' do
+  it 'should display total Non-clinicals costs' do
     render "/service_calendars/master_calendar/otf/otf_totals", service_request: @service_request
 
-    expect(response).to have_content('Total Costs (One Time Fee Services) Per Study')
+    expect(response).to have_content('Total Costs (Non-clinical Services) Per Study')
   end
 end

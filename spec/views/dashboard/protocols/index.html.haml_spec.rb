@@ -25,7 +25,7 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
 
   before(:each) do
     assign(:user, jug2)
-    assign(:filterrific, double('filterrific',
+    assign(:filterrific, double('filterrific', :to_hash => {},
       select_options: {
         with_status: [],
         with_organization: [],
@@ -57,7 +57,8 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
 
     context 'ProtocolFilters present' do
       before(:each) do
-        assign(:protocol_filters, [double('protocol_filter',
+        assign(:protocol_filters, [double('protocol_filter', 
+          id: 1,
           search_name: 'My Awesome Filter',
           href: ''
         )])
@@ -145,73 +146,6 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
 
       it 'should display PIs' do
         expect(response).to have_selector('td', text: 'Santa Claws, Toof Fairy')
-      end
-    end
-
-    describe 'archive button' do
-      context 'unarchived Project on page' do
-        it "should display 'Archive Project'" do
-          assign(:protocols, [create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)].paginate(page: 1))
-
-          render template: 'dashboard/protocols/index.html.haml'
-          expect(response).to have_selector('button', text: 'Archive Project')
-        end
-      end
-
-      context 'unarchived Study on page' do
-        it "should display 'Archive Study'" do
-          assign(:protocols, [create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Study', archived: false)].paginate(page: 1))
-
-          render template: 'dashboard/protocols/index.html.haml'
-
-          expect(response).to have_selector('button', text: 'Archive Study')
-        end
-      end
-
-      context 'archived Project on page' do
-        it "should display 'Unarchive Project'" do
-          assign(:protocols, [create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: true)].paginate(page: 1))
-
-          render template: 'dashboard/protocols/index.html.haml'
-
-          expect(response).to have_selector('button', text: 'Unarchive Project')
-        end
-      end
-
-      context 'archived Study on page' do
-        it "should display 'Unarchive Study'" do
-          assign(:protocols, [create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Study', archived: true)].paginate(page: 1))
-
-          render template: 'dashboard/protocols/index.html.haml'
-
-          expect(response).to have_selector('button', text: 'Unarchive Study')
-        end
-      end
-    end
-
-    describe 'requests button' do
-      context 'Protocol has no ServiceRequests' do
-        it 'should not display button' do
-          protocol = build(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
-          allow(protocol).to receive(:service_requests).and_return []
-          assign(:protocols, [protocol].paginate(page: 1))
-
-          render
-
-          expect(response).not_to have_selector('button', text: 'Requests')
-        end
-      end
-
-      context 'Protocol has a SubServiceRequest' do
-        it 'should display button' do
-          protocol = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
-          allow(protocol).to receive(:sub_service_requests).and_return ["a SubServiceRequest"]
-          assign(:protocols, [protocol].paginate(page: 1))
-
-          render
-
-          expect(response).to have_selector('button', text: 'Requests')
-        end
       end
     end
   end

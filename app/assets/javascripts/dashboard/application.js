@@ -59,5 +59,7 @@
 //= require study_schedule_tabs
 //= require subsidy_form
 //= require dashboard/navbar
+//= require update_visit_group
+//= require update_visit
 
 window.Sparc = {};

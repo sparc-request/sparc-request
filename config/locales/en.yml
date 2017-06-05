@@ -177,7 +177,8 @@ en:
       billing: "Quantity/Billing Tab"
       pricing: "Consolidated Request Tab"
     pppv:
-      header: "Per Patient/Visit Services -- %{arm_name}"
+      clinical_services: "Clinical Services"
+      header: "Clinical Services</br>Arm: %{arm_name}"
       header_fields:
         notes: "Notes"
         service: "Service Name"
@@ -196,6 +197,7 @@ en:
         research: "R"
         third_party: "T"
         percent: "%"
+        edit_billing_modal: "Edit Billing Quantities"
       editable_fields:
         window_before: "Edit Window Before Visit"
         day: "Edit Visit Day"
@@ -203,15 +205,15 @@ en:
         visit_name: "Edit Visit Name"
         your_cost: "Edit Your Cost"
         subject_count: "Edit Subject Count"
-        research: "Edit Research Billing Qty"
-        third_party: "Edit Insurance Billing Qty"
-        percent: "Edit Effort Billing Qty"
+        research: "Research Billing Quantity:"
+        third_party: "Insurance Billing Quantity:"
+        percent: "Effort Billing Quantity:"
       totals:
         maximum_direct: "Maximum Total Direct Costs Per Patient"
         maximum_per_patient: "Maximum Total Per Patient"
-        total_costs: "Total Costs (Per Patient/Visit Services) Per Study -- %{arm_name}"
+        total_costs: "Total Costs (Clinical Services) Per Study -- %{arm_name}"
     otf:
-      header: "One Time Fee Services"
+      header: "Non-clinical Services"
       header_fields:
         service: "Service Name"
         status: "Status"
@@ -225,18 +227,20 @@ en:
         quantity: "Edit Qty"
         unit_quantity: "Edit Units per Qty"
       totals:
-        total_direct: "Total Direct Costs (One Time Fee Services) Per Study"
-        total_costs: "Total Costs (One Time Fee Services) Per Study"
+        total_direct: "Total Direct Costs (Non-clinical Services) Per Study"
+        total_costs: "Total Costs (Non-clinical Services) Per Study"
     merged_totals:
       header: "Study Cost Totals"
       grand_total: "Grand Total"
     tooltips:
-      total_per_study: 'Total proposed cost of one-time fees per study'
+      total_per_study: 'Total proposed cost of Non-clinical Services per study'
       move_visit_button: 'Ability to change visit position'
       pppv_total_costs: 'Total proposed cost of services per arm'
       line_item_notes: 'Line Item Notes'
       pppv_status: 'Used to track the progress of a service'
       quantity_type: 'Unit of measurement'
+      freeze_header: 'Freeze Header Row'
+      unfreeze_header: 'Unfreeze Header Row'
       subject_count: 'Number of participants'
       service_rate: 'Cost of service prior to any discounts'
       your_cost: 'Price after research discount (based on selected funding source)'
@@ -308,7 +312,7 @@ en:
       link_display: "Email: success@musc.edu"
       phone_href: "tel:843-792-8300"
       phone_display: "Call: 843-792-8300"
-  
+
   ###############
   # IE7 WARNING #
   ###############
@@ -350,6 +354,8 @@ en:
     updated: "%{protocol_type} Updated!"
     summary:
       header: "%{protocol_type} Summary"
+      archive: "Archive"
+      unarchive: "Unarchive"
       id: "%{protocol_type} ID:"
       title: "Title:"
       short_title: "Short Title:"
@@ -757,17 +763,17 @@ en:
       maximum_direct: "Maximum Total Direct Costs Per Patient"
       maximum_indirect: "Maximum Total Indirect Costs Per Patient"
       maximum_per: "Maximum Total Per Patient"
-      total_costs_arm: "Total Costs (Per Patient/Visit Services) All ARMs"
+      total_costs_arm: "Total Costs (Clinical Services) All ARMs"
       total_costs_other: "Total Costs (Other Services) Per Study"
-      total_costs: "Total Costs (Per Patient/Visit Services) Per Study"
-      total_direct_arm: "Total Direct Costs (Per Patient/Visit Services) All ARMs"
+      total_costs: "Total Costs (Clinical Services) Per Study"
+      total_direct_arm: "Total Direct Costs (Clinical Services) All ARMs"
       total_direct_other: "Total Direct Costs (Other Services) Per Study"
-      total_direct: "Total Direct Costs (Per Patient/Visit Services) Per Study"
-      total_indirect_arm: "Total Indirect Costs (Per Patient/Visit Services) All ARMs"
+      total_direct: "Total Direct Costs (Clinical Services) Per Study"
+      total_indirect_arm: "Total Indirect Costs (Clinical Services) All ARMs"
       total_indirect_other: "Total Indirect Costs (Other Services) Per Study"
-      total_indirect: "Total Indirect Costs (Per Patient/Visit Services) Per Study"
+      total_indirect: "Total Indirect Costs (Clinical Services) Per Study"
       totals_costs_other: "Total Costs (Other Services) Per Study"
-    per_patient: "Per Patient/Visit Services"
+    per_patient: "Clinical Services"
     tabs:
       billing: "Quantity/Billing Tab"
       pricing: "Consolidated Request Tab"
@@ -871,7 +877,7 @@ en:
     notes:
       header: "Notes"
       link:  "Add Note"
-    otf_button: "Add One-Time Fee Service"
+    otf_button: "Add Non-clinical Service"
     remove_service_button: "Remove Service"
     service_button: "Add Service"
     services:
@@ -882,9 +888,9 @@ en:
         cost: "Cost"
         date: "Fulfillment Dates"
         delete: "Delete"
-        header: "Non Per-Patient/Per-Visit"
+        header: "Non-clinical Service"
         in_process: "In Process"
-        no_requests: "There are no non per-patient/per-visit requests."
+        no_requests:  “There are no non-clinical services requested.”
         notes: "Notes"
         number: "#"
         otf_unit_type: "Unit Type"
@@ -901,8 +907,8 @@ en:
         arm: "Select Arm"
         delete_link: "Delete a Visit"
         delete: "Delete a Visit"
-        header: "Per-Patient/Per-Visit"
-        no_requests: "There are no per-patient/per-visit requests."
+        header: "Clinical Service"
+        no_requests: "There are no clinical services requested."
         remove_arm: "Remove an Arm"
     status_changes:
       date: "Date Changed"
@@ -1147,7 +1153,7 @@ en:
     message_error: "Message can't be blank"
   fulfillment_js:
     arm_delete_confirm: "Are you sure you want to remove the arm?"
-    arm_remove_alert: "You can't delete the last arm while Per-Patient/Per Visit services still exist."
+    arm_remove_alert: "You can't delete the last arm while Clinical Services still exist."
     arm_subject_data_alert: "This arm has subject data and can not be deleted."
     cwf_service_delete: "Are you sure you want to remove this service?"
     date_error: "Please enter a start date before the end date"

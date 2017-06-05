@@ -92,9 +92,12 @@ en:
               label: "Dependent:"
               dropdown:
                 label: "Display If:"
+            zipcode:
+              placeholder: 'XXXXX'
+            phone:
+              placeholder: 'XXXXXXXXXX'
           option:
             add: "Add Option"
             delete: "Delete Option"
             content:
               placeholder: "Option (Required)"
-

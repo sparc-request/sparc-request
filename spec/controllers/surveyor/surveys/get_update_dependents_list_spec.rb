@@ -22,12 +22,22 @@ require 'rails_helper'
 
 RSpec.describe Surveyor::SurveysController, type: :controller do
   stub_controller
+  
   let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity, ldap_uid: 'weh6@musc.edu') }
 
   before :each do
     stub_const('SITE_ADMINS', ['weh6@musc.edu'])
+    
     session[:identity_id] = logged_in_user.id
+
+    @survey = create(:survey_without_validations)
+    section = create(:section, survey: @survey)
+              create(:question, section: section)
+
+    xhr :get, :update_dependents_list, {
+      survey_id: @survey.id
+    }
   end
 
   describe '#update_dependents_list' do
@@ -40,36 +50,15 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
     end
 
     it 'should assign @survey to the survey' do
-      survey = create(:survey_without_validations)
-
-      xhr :get, :update_dependents_list, {
-        survey_id: survey.id
-      }
-
-      expect(assigns(:survey)).to eq(survey)
+      expect(assigns(:survey)).to eq(@survey)
     end
 
-    it 'should render json of dependent dropdowns' do
-      survey = create(:survey_without_validations)
-      section = create(:section_without_validations, survey: survey)
-      question = create(:question_without_validations, section: section)
-
-      xhr :get, :update_dependents_list, {
-        survey_id: survey.id
-      }
-
-      expect(response.content_type).to eq('application/json')
-      expect(JSON.parse(response.body)[question.id.to_s]).to be
+    it 'should assign @questions to the questions' do
+      expect(assigns(:questions)).to eq(@survey.questions)
     end
 
-    it 'should respond ok' do
-      survey = create(:survey_without_validations)
-      
-      xhr :get, :update_dependents_list, {
-        survey_id: survey.id
-      }
+    it { is_expected.to render_template(:update_dependents_list) }
 
-      expect(controller).to respond_with(:ok)
-    end
+    it { is_expected.to respond_with(:ok) }
   end
 end

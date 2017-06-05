@@ -21,6 +21,7 @@
 class Survey < ActiveRecord::Base
   has_many :responses, dependent: :destroy
   has_many :sections, dependent: :destroy
+  has_many :questions, through: :sections
   has_many :associated_surveys, as: :surveyable, dependent: :destroy
   
   has_many :questions, through: :sections
@@ -38,6 +39,10 @@ class Survey < ActiveRecord::Base
   validates_uniqueness_of :version, scope: :access_code
 
   accepts_nested_attributes_for :sections, allow_destroy: true
+
+  scope :active, -> {
+    where(active: true)
+  }
 
   def insertion_name
     "Before #{title} (Version #{version})"

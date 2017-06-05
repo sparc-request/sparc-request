@@ -28,7 +28,7 @@ RSpec.describe 'User edits question fields', js: true do
   before :each do
     @survey = create(:survey)
     @section = create(:section, survey: @survey)
-    @question = create(:question, section: @section)
+    @question = create(:question, question_type: 'dropdown', section: @section)
 
     stub_const("SITE_ADMINS", ['jug2'])
   end
@@ -87,36 +87,93 @@ RSpec.describe 'User edits question fields', js: true do
     expect(@question.reload.required).to eq(true)
   end
 
-  scenario 'and sees updated is_dependent' do
-    visit surveyor_surveys_path
-    wait_for_javascript_to_finish
+  context 'is_dependent' do
+    context 'for the first question' do
+      scenario 'and sees a disabled checkbox' do
+        visit surveyor_surveys_path
+        wait_for_javascript_to_finish
 
-    find('.edit-survey').click
-    wait_for_javascript_to_finish
+        find('.edit-survey').click
+        wait_for_javascript_to_finish
 
-    find('#question-is_dependent').click
-    wait_for_javascript_to_finish
+        expect(page).to have_selector('#question-is_dependent:disabled')
+        expect(page).to_not have_selector('#question-is_dependent:not(:disabled)')
+      end
+    end
+    
+    scenario 'and sees updated is_dependent' do
+      @option    = create(:option, question: @question, content: "What is the meaning of life?")
+      @question2 = create(:question, section: @section)
 
-    expect(@question.reload.is_dependent).to eq(true)
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+
+      find('.edit-survey').click
+      wait_for_javascript_to_finish
+
+      all('#question-is_dependent')[1].click
+      wait_for_javascript_to_finish
+
+      expect(@question2.reload.is_dependent).to eq(true)
+    end
   end
 
-  scenario 'and sees updated depender_id' do
-    @question2 = create(:question, section: @section)
-    @option    = create(:option, question: @question2, content: "What is the meaning of life?")
-    
-    visit surveyor_surveys_path
-    wait_for_javascript_to_finish
+  context 'depender id' do
+    scenario 'and sees previous questions\' options' do
+      @option    = create(:option, question: @question, content: "What is the meaning of life?")
+      @question2 = create(:question, section: @section)
 
-    find('.edit-survey').click
-    wait_for_javascript_to_finish
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
 
-    first('#question-is_dependent').click
-    wait_for_javascript_to_finish
+      find('.edit-survey').click
+      wait_for_javascript_to_finish
 
-    bootstrap_select '#question-depender_id', 'What is the meaning of life?'
-    wait_for_javascript_to_finish
-    
-    expect(@question.reload.depender_id).to eq(@option.id)
+      all('#question-is_dependent')[1].click
+      wait_for_javascript_to_finish
+
+      find("button[data-id='question-depender_id']").click
+
+      expect(page).to have_selector('.text', text: @option.content)
+    end
+
+    scenario 'and does not see subsequent questions\' options' do
+      @question2 = create(:question, question_type: 'dropdown', section: @section)
+      @question3 = create(:question, question_type: 'dropdown', section: @section)
+      @option    = create(:option, question: @question2, content: "What is the meaning of life?")
+
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+
+      find('.edit-survey').click
+      wait_for_javascript_to_finish
+
+      all('#question-is_dependent')[1].click
+      wait_for_javascript_to_finish
+
+      find("button[data-id='question-depender_id']").click
+
+      expect(page).to_not have_selector('.text', text: @option.content)
+    end
+
+    scenario 'and sees updated depender_id' do
+      @option    = create(:option, question: @question, content: "What is the meaning of life?")
+      @question2 = create(:question, section: @section)
+      
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+
+      find('.edit-survey').click
+      wait_for_javascript_to_finish
+
+      all('#question-is_dependent')[1].click
+      wait_for_javascript_to_finish
+
+      bootstrap_select '#question-depender_id', 'What is the meaning of life?'
+      wait_for_javascript_to_finish
+      
+      expect(@question2.reload.depender_id).to eq(@option.id)
+    end
   end
 
   context 'and adds a question' do
@@ -148,6 +205,27 @@ RSpec.describe 'User edits question fields', js: true do
 
       expect(page).to_not have_selector('.question')
       expect(@section.questions.count).to eq(0)
+    end
+
+    context 'with options that appear in a depdent selectpicker' do
+      scenario 'and sees updated dependent selectpickers' do
+        @option    = create(:option, question: @question)
+        @question2 = create(:question, section: @section, is_dependent: true)
+
+        visit surveyor_surveys_path
+        wait_for_javascript_to_finish
+
+        find('.edit-survey').click
+        wait_for_javascript_to_finish
+
+        first('.delete-question').click
+        wait_for_javascript_to_finish
+
+        find('.select-depender').click
+        wait_for_javascript_to_finish
+
+        expect(page).to_not have_selector('.select-depender .text', text: @option.content, visible: true)
+      end
     end
   end
 end

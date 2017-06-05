@@ -23,7 +23,7 @@
       = ssr_name_display(sub_service_request)
   - sub_service_request.line_items.each do |li|
     .col-sm-12.line-item
-      .col-sm-9.service
+      %span.col-sm-9.service
         = li.service.abbreviation
         %strong
           = li.service.cpt_code? ? " (#{li.service.cpt_code})" : ""

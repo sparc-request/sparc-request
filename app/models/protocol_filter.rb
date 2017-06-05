@@ -32,6 +32,8 @@ class ProtocolFilter < ApplicationRecord
     limit(limit)
   }
 
+  MAX_FILTERS = 15
+
   def href
     Rails.application.routes.url_helpers.
     dashboard_root_path(

@@ -25,26 +25,17 @@ class Visit < ApplicationRecord
 
   audited
 
-  has_many :procedures
-  has_many :appointments, :through => :procedures
   belongs_to :visit_group
   belongs_to :line_items_visit
   
-  validates :research_billing_qty, numericality: { only_integer: true }
-  validates :insurance_billing_qty, numericality: { only_integer: true }
-  validates :effort_billing_qty, numericality: { only_integer: true }
-
-
-  after_save :set_arm_edited_flag_on_subjects
+  validates :research_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :insurance_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :effort_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   # Find a Visit for the given "line items visit" and visit group.  This
   # creates the visit if it does not exist.
   def self.for(line_items_visit, visit_group)
     return Visit.find_or_create_by(line_items_visit_id: line_items_visit.id, visit_group_id: visit_group.id)
-  end
-
-  def set_arm_edited_flag_on_subjects
-    self.visit_group.arm.set_arm_edited_flag_on_subjects
   end
 
   def cost(per_unit_cost = self.line_items_visit.per_unit_cost(self.line_items_visit.quantity_total))

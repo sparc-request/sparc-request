@@ -237,8 +237,8 @@ RSpec.describe 'User takes a survey', js: true do
 
       expect(page).to have_content(@q_yes_no.content)
       expect(page).to have_selector('.option input[type="radio"]', count: 2)
-      expect(page).to have_selector('.option', text: 'Yes')
-      expect(page).to have_selector('.option', text: 'No')
+      expect(page).to have_content('Yes')
+      expect(page).to have_content('No')
     end
 
     scenario 'and sees correctly saved value' do

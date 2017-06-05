@@ -60,6 +60,7 @@ class Dashboard::BaseController < ActionController::Base
 
   def protocol_authorizer_edit
     @authorization  = ProtocolAuthorizer.new(@protocol, @user)
+
     unless @authorization.can_edit? || @admin
       @protocol = nil
       render partial: 'dashboard/shared/authorization_error',

@@ -39,9 +39,8 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
     @otf_li   = create(:line_item, service_request: sr, sub_service_request: ssr, service: otf, units_per_quantity: 1, quantity: 1)
 
     @arm      = create(:arm, protocol: protocol, subject_count: 10)
-    vg        = create(:visit_group, arm: @arm, day: 1)
-    @liv      = create(:line_items_visit, line_item: @pppv_li, arm: @arm, subject_count: 1)
-                create(:visit, visit_group: vg, line_items_visit: @liv)
+    @vg       = @arm.visit_groups.first
+    @liv      = @arm.line_items_visits.first
 
     stub_const('EDITABLE_STATUSES', { })
 
@@ -57,7 +56,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(@arm.visit_groups.first.window_before).to eq(5)
+        expect(@vg.reload.window_before).to eq(5)
       end
 
       scenario 'window after' do
@@ -66,7 +65,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(@arm.visit_groups.first.window_after).to eq(5)
+        expect(@vg.reload.window_after).to eq(5)
       end
 
       scenario 'day' do
@@ -75,7 +74,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(@arm.visit_groups.first.day).to eq(5)
+        expect(@vg.reload.day).to eq(5)
       end
 
       scenario 'visit name' do
@@ -84,7 +83,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(@arm.visit_groups.first.name).to eq('Visit Me')
+        expect(@vg.reload.name).to eq('Visit Me')
       end
 
       scenario 'subject count' do
@@ -188,7 +187,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(@arm.visit_groups.first.window_before).to eq(5)
+        expect(@vg.reload.window_before).to eq(5)
       end
 
       scenario 'window after' do
@@ -197,7 +196,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(@arm.visit_groups.first.window_after).to eq(5)
+        expect(@vg.reload.window_after).to eq(5)
       end
 
       scenario 'day' do
@@ -206,7 +205,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(@arm.visit_groups.first.day).to eq(5)
+        expect(@vg.reload.day).to eq(5)
       end
 
       scenario 'visit name' do
@@ -215,7 +214,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(@arm.visit_groups.first.name).to eq('Visit Me')
+        expect(@vg.reload.name).to eq('Visit Me')
       end
 
       scenario 'subject count' do

@@ -18,12 +18,12 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - question.options.each do |option|
-  .checkbox
+  .form-group.option{ data: { question_id: question.id, option_id: option.id } }
     - if ['new', 'preview'].include?(action_name)
-      = qr.label :content, class: "option", data: { question_id: question.id, option_id: option.id } do
+      .col-lg-1.text-center
         = qr.check_box :content, { multiple: true }, option.content, nil
-        = option.content
+      = option.content
     - else
-      %label.option
+      .col-lg-1.text-center
         = check_box_tag :content_checkbox, '', multiple_select_formatter(qr.content).include?(option.content), disabled: true, multiple: true
-        = option.content
+      = option.content

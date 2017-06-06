@@ -29,6 +29,14 @@ RSpec.describe NotifierLogic do
 
   let(:logged_in_user)          { Identity.first }
 
+  before :each do
+    Delayed::Worker.delay_jobs = false
+  end
+
+  after :each do
+    Delayed::Worker.delay_jobs = true
+  end
+  
   ### update_ssrs_and_send_emails ###
   context '#update_status_and_send_get_a_cost_estimate_email for an entire SR' do
     context 'create a new SR with all new services' do
@@ -57,7 +65,7 @@ RSpec.describe NotifierLogic do
       it 'should notify authorized users (initial submission email)' do
         allow(Notifier).to receive(:notify_user) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver_now)
+          expect(mailer).to receive(:deliver)
           mailer
         end
         project_role = @sr.protocol.project_roles.first
@@ -68,7 +76,7 @@ RSpec.describe NotifierLogic do
       it 'should notify service providers (initial submission email)' do
         allow(Notifier).to receive(:notify_service_provider) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver_now)
+          expect(mailer).to receive(:deliver)
           mailer
         end
 
@@ -135,7 +143,7 @@ RSpec.describe NotifierLogic do
       it 'NO EMAILS SENT' do
         allow(Notifier).to receive(:notify_user) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver_now)
+          expect(mailer).to receive(:deliver)
           mailer
         end
 
@@ -146,7 +154,7 @@ RSpec.describe NotifierLogic do
       it 'NO EMAILS SENT' do
         allow(Notifier).to receive(:notify_service_provider) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver_now)
+          expect(mailer).to receive(:deliver)
           mailer
         end
 
@@ -213,7 +221,7 @@ RSpec.describe NotifierLogic do
       it 'should notify authorized users (initial submission email)' do
         allow(Notifier).to receive(:notify_user) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver_now)
+          expect(mailer).to receive(:deliver)
           mailer
         end
         project_role = @sr.protocol.project_roles.first
@@ -224,7 +232,7 @@ RSpec.describe NotifierLogic do
       it 'should notify service providers (initial submission email)' do
         allow(Notifier).to receive(:notify_service_provider) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver_now)
+          expect(mailer).to receive(:deliver)
           mailer
         end
 
@@ -291,7 +299,7 @@ RSpec.describe NotifierLogic do
       it 'should notify authorized users (initial submission email)' do
         allow(Notifier).to receive(:notify_user) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver_now)
+          expect(mailer).to receive(:deliver)
           mailer
         end
         project_role = @sr.protocol.project_roles.first
@@ -302,7 +310,7 @@ RSpec.describe NotifierLogic do
       it 'should notify service providers (initial submission email)' do
         allow(Notifier).to receive(:notify_service_provider) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver_now)
+          expect(mailer).to receive(:deliver)
           mailer
         end
 

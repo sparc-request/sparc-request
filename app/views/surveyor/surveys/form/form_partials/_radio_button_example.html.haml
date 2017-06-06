@@ -23,7 +23,7 @@
   - question.options.each do |option|
     .form-group.option{ data: { option_id: option.id } }
       .col-lg-1.text-center
-        = radio_button_tag :response_example, '', false, class: 'radio-example form-control', disabled: true
+        = radio_button_tag :response_example, '', false, class: 'radio-example', disabled: true
       .col-lg-10.no-padding
         = text_field_tag "option-content", option.content, class: 'form-control option-content', placeholder: t(:surveyor)[:surveys][:form][:content][:option][:content][:placeholder], maxlength: 255
       .col-lg-1.no-padding

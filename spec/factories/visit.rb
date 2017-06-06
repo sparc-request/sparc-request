@@ -21,5 +21,9 @@
 FactoryGirl.define do
 
   factory :visit do
+    quantity              { 0 }
+    research_billing_qty  { 0 }
+    insurance_billing_qty { 0 }
+    effort_billing_qty    { 0 }
   end
 end

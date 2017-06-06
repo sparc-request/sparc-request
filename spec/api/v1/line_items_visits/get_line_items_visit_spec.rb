@@ -24,9 +24,8 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
   describe 'GET /v1/line_items_visit/:id.json' do
 
-    before do
-      @line_items_visit = build(:line_items_visit)
-      @line_items_visit.save validate: false
+    before :each do
+      @line_items_visit = create(:line_items_visit_without_validations)
     end
 
     context 'response params' do

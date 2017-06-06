@@ -266,7 +266,9 @@ getSRId = ->
           displayed_cost: params.value
         service_request_id: getSRId()
       }
-    success: ->
+    success: (data) ->
+      $('#sub_service_request_header').html(data['header'])
+      $('.selectpicker').selectpicker()
 
   $('.edit-subject-count').editable
     params: (params) ->

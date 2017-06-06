@@ -112,7 +112,8 @@ $(document).ready ->
     for k,v of answers
       array_values.push(v)
     nil_value = $.inArray('', array_values) > -1
-    if array_values[0] == 'true' || !nil_value
+    not_for_epic = $.inArray('false') < 2 && $('#selected_for_epic_button .btn input:radio:checked').val() == 'false'
+    if array_values[0] == 'true' || not_for_epic || !nil_value
       $.ajax
         type: 'POST'
         data: answers
@@ -127,7 +128,7 @@ $(document).ready ->
   #######################################################################################
 
   ### INITIAL PAGE LOAD EDIT STUDY IN SPARCRequest #######################
-  if $('#study_selected_for_epic_true_button').hasClass('active') || $('#study_selected_for_epic_false_button').hasClass('active')
+  if $('#study_selected_for_epic_true_button').hasClass('active')
     $('#study_type_answer_certificate_of_conf_answer').show_elt()
     $('#study_type_note').show()
 
@@ -168,11 +169,13 @@ $(document).ready ->
     # Publish Study in Epic - Radio
     switch $('#selected_for_epic_button .btn input:radio:checked').val()
       when 'true'
-        $(study_type_form).show()
-        $(certificate_of_confidence_dropdown).show_elt()
+        $('.question-label').addClass('required')
       when 'false'
-        $(study_type_form).show()
-        $(certificate_of_confidence_dropdown).show_elt().trigger 'change'
+        $('.question-label').removeClass('required')
+    $(study_type_form).hide()
+    $(certificate_of_confidence_dropdown).hide_elt().trigger 'change'
+    $(study_type_form).show()
+    $(certificate_of_confidence_dropdown).show_elt()
 
   $(document).on 'change', certificate_of_confidence_dropdown, (e) ->
     new_value = $(e.target).val()
@@ -203,7 +206,8 @@ $(document).ready ->
     else
       data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val() }
       determine_study_type(data)
-      $(epic_inbasket_dropdown).show_elt()
+      if $('#selected_for_epic_button .btn input:radio:checked').val() == 'true'
+        $(epic_inbasket_dropdown).show_elt()
     return
 
   $(document).on 'change', epic_inbasket_dropdown, (e) ->

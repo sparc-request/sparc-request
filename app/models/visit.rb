@@ -28,6 +28,8 @@ class Visit < ApplicationRecord
   belongs_to :visit_group
   belongs_to :line_items_visit
   
+  has_one :arm, through: :visit_group
+  
   validates :research_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :insurance_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :effort_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
@@ -39,7 +41,6 @@ class Visit < ApplicationRecord
   end
 
   def cost(per_unit_cost = self.line_items_visit.per_unit_cost(self.line_items_visit.quantity_total))
-
     li = self.line_items_visit.line_item
     if li.applicable_rate == "N/A"
       return "N/A"

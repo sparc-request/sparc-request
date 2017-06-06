@@ -36,6 +36,7 @@ class VisitsController < ApplicationController
     @liv    = @visit.line_items_visit
     @admin  = params[:admin] == 'true'
     @tab    = params[:tab]
+    @page   = params[:page]
     @locked = !@visit.line_items_visit.sub_service_request.can_be_edited? && !@admin
 
     if @visit.update_attributes(visit_params)

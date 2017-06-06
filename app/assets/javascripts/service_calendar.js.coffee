@@ -40,15 +40,15 @@ $(document).ready ->
         url: $(this).data('url')
 
   $(document).on 'click', '.service-calendar-row', ->
-    return false if $(this).attr("disabled")
-
-    if confirm(I18n['calendars']['confirm_row_select'])
+    return false if $(this).attr('disabled')
+    if confirm(I18n['calendars']['pppv']['editable_fields']['row_select']['confirm'])
       $.ajax
         type: 'post'
         url: $(this).data('url')
 
   $(document).on 'click', '.service-calendar-column', ->
-    if confirm(I18n['calendars']['confirm_column_select'])
+    return false if $(this).attr('disabled')
+    if confirm(I18n['calendars']['pppv']['editable_fields']['column_select']['confirm'])
       $.ajax
         type: 'post'
         url: $(this).data('url')
@@ -110,6 +110,7 @@ $(document).ready ->
           effort_billing_qty:     $(this).data('effort-billing-qty')
         admin:                    $(this).data('admin')
         tab:                      $(this).data('tab')
+        page:                     $(this).data('page')
       url: "/visits/#{$(this).data('visit-id')}"
 
   $(document).on 'change', '#visit_group', ->
@@ -161,35 +162,6 @@ $(document).ready ->
       url: '/notes'
       data: data
   # NOTES LISTENERS END
-
-
-(exports ? this).changing_tabs_calculating_rates = ->
-  arm_ids = []
-  $('.calendar-container').each (index, arm) ->
-    arm_ids.push( $(arm).data('arm-id') )
-
-  i = 0
-  while i < arm_ids.length
-    calculate_max_rates(arm_ids[i])
-    i++
-
-calculate_max_rates = (arm_id) ->
-  for num in [1..$(".arm-calendar-container-#{arm_id} .visit-group-box:visible").length]
-    column = '.visit-' + num
-    visits = $(".arm-calendar-container-#{arm_id}:visible #{column}.visit")
-
-    direct_total = 0
-    $(visits).each (index, visit) ->
-      direct_total += Math.floor($(visit).data('cents')) / 100.0
-
-    indirect_rate = parseFloat($("#indirect_rate").val()) / 100.0
-    max_total = direct_total * (1 + indirect_rate)
-
-    direct_total_display = '$' + (direct_total).toFixed(2)
-    max_total_display = '$' + (Math.floor(max_total * 100) / 100).toFixed(2)
-
-    $(".arm-calendar-container-#{arm_id}:visible #{column}.max-direct-per-patient strong").html(direct_total_display)
-    $(".arm-calendar-container-#{arm_id}:visible #{column}.max-total-per-patient strong").html(max_total_display)
 
 getSRId = ->
   $("input[name='service_request_id']").val()

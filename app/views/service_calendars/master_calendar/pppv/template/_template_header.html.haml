@@ -70,7 +70,7 @@
 
 %tr
   %th{ colspan: portal ? 10 : 11, class: portal ? "" : "checkbox-row-start-width" }
-  = render 'service_calendars/master_calendar/pppv/check_visit_columns', service_request: service_request, sub_service_request: sub_service_request, tab: tab, portal: portal, visit_groups: visit_groups, page: page
+  = render 'service_calendars/master_calendar/pppv/check_visit_columns', service_request: service_request, sub_service_request: sub_service_request, tab: tab, admin: admin, visit_groups: visit_groups, page: page
 
   -unless portal
     %th{ colspan: 2, class: "checkbox-row-end-width" }

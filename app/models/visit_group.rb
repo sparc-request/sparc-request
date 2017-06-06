@@ -70,6 +70,10 @@ class VisitGroup < ApplicationRecord
     arm.visit_groups.where("position < ? AND day >= ? OR position > ? AND day <= ?", position, day, position, day).none?
   end
 
+  def per_patient_subtotals
+    self.visits.sum{ |v| v.cost || 0.00 }
+  end
+    
   private
 
   def day_must_be_in_order

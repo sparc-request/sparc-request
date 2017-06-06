@@ -53,15 +53,14 @@
         - if locked
           = liv.subject_count
         - else
-          %a.edit-subject-count{ class: locked ? 'locked' : '', href: 'javascript:void(0)', data: { arm_id: arm.id, name: 'subject_count', title: t(:calendars)[:pppv][:editable_fields][:subject_count], value: liv.subject_count, url: dashboard_line_items_visit_path(liv, srid: service_request.id, portal: @portal) } }
+          %a.edit-subject-count{ class: locked ? 'locked' : '', href: 'javascript:void(0)', data: { arm_id: arm.id, name: 'subject_count', title: t(:calendars)[:pppv][:editable_fields][:subject_count], value: liv.subject_count, url: dashboard_line_items_visit_path(liv, srid: service_request.id, portal: portal) } }
       %td.text-center.xs-col-width
-        = Dashboard::ServiceCalendars.select_row(liv, sub_service_request, portal, locked)
-      - visits      = liv.visits.paginate(page: page.to_i, per_page: 5)
-      - totals_hash = liv.try(:per_subject_subtotals, visits)
+        = render 'service_calendars/master_calendar/pppv/template/select_row', liv: liv, service_request: service_request, sub_service_request: sub_service_request, admin: admin, locked: locked, page: page
+      - visits = liv.visits.paginate(page: page.to_i, per_page: Visit.per_page)
       - visits.each_with_index do |v, index|
-        %td.text-center.visit.visit-width{ class: "visit-#{index+1}", data: { cents: totals_hash["#{v.id}"] || 0.00 } }
-          = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", arm: arm, visit: v, tab: tab, service_request: service_request, sub_service_request: sub_service_request, pages: pages, merged: merged, portal: portal, review: review, admin: admin, locked: locked
-      - (5 - visits.size).times do
+        %td.text-center.visit.visit-width{ class: "visit-#{index+1}" }
+          = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", service_request: service_request, sub_service_request: sub_service_request, visit: v, tab: tab, page: page, admin: admin, locked: locked
+      - (Visit.per_page - visits.size).times do
         %td.visit-width &nbsp;
 
       - unless portal

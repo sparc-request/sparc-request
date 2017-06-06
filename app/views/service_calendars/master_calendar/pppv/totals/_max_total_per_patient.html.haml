@@ -17,6 +17,7 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- visit_groups = arm.visit_groups.paginate(page: page.to_i, per_page: VisitGroup.per_page).includes(visits: { line_items_visit: { line_item: [:admin_rates, :service, service_request: :protocol] } })
 
 %tr.maximum-total-per-patient{ class: "arm-#{arm.id} " }
   %td{ colspan: 11, class: tab == 'template' ? "maximum-total-per-patient-width-template" : "max-total-per-patient-width" }
@@ -25,6 +26,7 @@
   - visit_groups.each do |vg|
     %td.text-center.visit-width{ class: "max-total-per-patient visit-#{vg.id}" }
       %strong
+        = currency_converter(vg.per_patient_subtotals)
   - (VisitGroup.per_page - visit_groups.count).times do
     %td.visit-width
   %td.text-center.total-width

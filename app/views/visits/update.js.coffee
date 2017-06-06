@@ -17,6 +17,14 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$("#visit-<%=@visit.id%>").replaceWith('<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_visit_input", visit: @visit, admin: @admin, tab: @tab, locked: @locked %>')
+# Replace Visit
+$("#visit-<%=@visit.id%>").replaceWith('<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_visit_input", visit: @visit, admin: @admin, tab: @tab, page: @page, locked: @locked %>')
+
+# Replace Per Patient / Study Totals
 $("#visit-<%=@visit.id%>").parent().siblings('.pppv-per-patient-line-item-total').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_patient', liv: @liv %>")
 $("#visit-<%=@visit.id%>").parent().siblings('.pppv-per-study-line-item-total').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_study', liv: @liv %>")
+
+# Replace Totals
+$(".arm-<%=@visit.arm.id%>.maximum-total-direct-cost-per-patient").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/totals/max_total_direct_per_patient', arm: @visit.arm, line_items_visits: @visit.arm.line_items_visits, tab: @tab, page: @page %>")
+$(".arm-<%=@visit.arm.id%>.maximum-total-per-patient").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/totals/max_total_per_patient', arm: @visit.arm, line_items_visits: @visit.arm.line_items_visits, tab: @tab, page: @page %>")
+$(".arm-<%=@visit.arm.id%>.total-per-patient-per-visit-cost-per-study").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/totals/total_cost_per_study', arm: @visit.arm, line_items_visits: @visit.arm.line_items_visits, tab: @tab %>")

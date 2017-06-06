@@ -40,38 +40,6 @@ class ServiceCalendarsController < ApplicationController
   before_action :authorize_identity,              if: Proc.new { params[:portal] != 'true' }
   before_action :authorize_dashboard_access,      if: Proc.new { params[:portal] == 'true' }
 
-  def update
-    visit         = Visit.find(params[:visit_id])
-    @arm          = Arm.find(params[:arm_id])
-    @tab          = params[:tab]
-    @merged       = params[:merged] == 'true'
-    @portal       = params[:portal] == 'true'
-    @review       = params[:review] == 'true'
-    @admin        = params[:admin] == 'true'
-    @consolidated = false
-    @pages        = eval(params[:pages])
-    @sub_service_request = visit.line_items_visit.sub_service_request if @admin
-    @service_request = visit.line_items_visit.sub_service_request.service_request
-
-    visit.line_items_visit.sub_service_request.set_to_draft(@admin)
-
-    if params[:checked] == 'true'
-      unit_minimum = visit.line_items_visit.line_item.service.displayed_pricing_map.unit_minimum
-
-      visit.update_attributes(
-        quantity: unit_minimum,
-        research_billing_qty: unit_minimum
-      )
-    else
-      visit.update_attributes(
-        quantity: 0,
-        research_billing_qty: 0,
-        insurance_billing_qty: 0,
-        effort_billing_qty: 0
-      )
-    end
-  end
-
   def table
     @tab          = params[:tab]
     @review       = params[:review] == 'true'
@@ -85,7 +53,6 @@ class ServiceCalendarsController < ApplicationController
 
     @merged       = false
     @consolidated = false
-
     setup_calendar_pages
 
     respond_to do |format|
@@ -139,40 +106,46 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def toggle_calendar_row
-    @line_items_visit  = LineItemsVisit.find(params[:line_items_visit_id])
-    @service           = @line_items_visit.line_item.service if params[:check]
-    @portal            = params[:portal] == 'true'
+    @line_items_visit = LineItemsVisit.find(params[:line_items_visit_id])
+    @service          = @line_items_visit.line_item.service if params[:check]
+    @arm              = @line_items_visit.arm
+    @admin            = params[:admin] == 'true'
+    @tab              = 'template'
+    @page             = params[:page]
+    @locked           = !@line_items_visit.sub_service_request.can_be_edited? && !@admin
 
-    return unless @line_items_visit.sub_service_request.can_be_edited? || @portal
-
-    @line_items_visit.visits.each do |visit|
-      if params[:check]
-        visit.update_attributes(quantity: @service.displayed_pricing_map.unit_minimum, research_billing_qty: @service.displayed_pricing_map.unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0)
-      elsif params[:uncheck]
-        visit.update_attributes(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0)
-      end
+    if params[:check] && !@locked
+      @line_items_visit.visits.update_all(quantity: @service.displayed_pricing_map.unit_minimum, research_billing_qty: @service.displayed_pricing_map.unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0)
+    elsif params[:uncheck] && !@locked
+      @line_items_visit.visits.update_all(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0)
     end
 
     # Update the sub service request only if we are not in dashboard; admin's actions should not affect the status
-    unless @portal
-      sub_service_request = @line_items_visit.line_item.sub_service_request
-      sub_service_request.update_attribute(:status, "draft")
+    unless @admin || @locked
+      @line_items_visit.line_item.sub_service_request.update_attribute(:status, "draft")
       @service_request.update_attribute(:status, "draft")
     end
 
-    render partial: 'update_service_calendar'
+    respond_to do |format|
+      format.js
+    end
   end
 
   def toggle_calendar_column
-    column_id  = params[:column_id].to_i
-    @arm       = Arm.find(params[:arm_id])
-    @portal    = params[:portal] == 'true'
+    @column_id    = params[:column_id].to_i
+    @visit_group  = VisitGroup.find(params[:visit_group_id])
+    @admin        = params[:admin] == 'true'
 
+    @visit_group.visits.
+
+
+
+    
     @service_request.service_list(false).each do |_key, value|
       next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name] || @sub_service_request.can_be_edited?
 
       @arm.line_items_visits.each do |liv|
-        next if value[:line_items].exclude?(liv.line_item) || (!@portal && (!liv.line_item.sub_service_request.can_be_edited? || liv.line_item.sub_service_request.is_complete?))
+        next if value[:line_items].exclude?(liv.line_item) || (!@admin && (!liv.line_item.sub_service_request.can_be_edited? || liv.line_item.sub_service_request.is_complete?))
         visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
         if params[:check]
           visit.update_attributes quantity: liv.line_item.service.displayed_pricing_map.unit_minimum, research_billing_qty: liv.line_item.service.displayed_pricing_map.unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0
@@ -183,7 +156,7 @@ class ServiceCalendarsController < ApplicationController
     end
 
     # Update the sub service request only if we are not in dashboard; admin's actions should not affect the status
-    unless @portal
+    unless @admin
       @arm.line_items.map(&:sub_service_request).uniq.each do |ssr|
         next if (@sub_service_request && ssr != @sub_service_request)
         next unless ssr.can_be_edited?
@@ -191,8 +164,6 @@ class ServiceCalendarsController < ApplicationController
       end
       @service_request.update_attribute(:status, "draft")
     end
-
-    render partial: 'update_service_calendar'
   end
 
   private

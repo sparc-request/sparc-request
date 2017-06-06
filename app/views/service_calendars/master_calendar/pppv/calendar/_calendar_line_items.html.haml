@@ -45,12 +45,12 @@
         = display_unit_type(liv)
       %td.subject-count.text-center.xs-col-width
         = liv.subject_count
-      - visits      = liv.visits.paginate(page: page.to_i, per_page: 5)
+      - visits      = liv.visits.paginate(page: page.to_i, per_page: Visit.per_page)
       - totals_hash = liv.try(:per_subject_subtotals, visits)
       - visits.each_with_index do |v, index|
-        %td.text-center.visit.visit-width{ class: "visit-#{index+1}", data: { cents: totals_hash["#{v.id}"] || 0.00 } }
+        %td.text-center.visit.visit-width{ class: "visit-#{index+1}" }
           = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", arm: arm, line_item: liv.line_item, visit: v, tab: tab, portal: portal, service_request: service_request, totals_hash: totals_hash
-      - (5 - visits.size).times do
+      - (Visit.per_page - visits.size).times do
         %td.visit-width &nbsp;
       %td.text-center.pppv-per-patient-line-item-total.total-width
         %strong

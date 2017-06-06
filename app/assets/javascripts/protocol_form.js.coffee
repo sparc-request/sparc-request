@@ -127,7 +127,7 @@ $(document).ready ->
   #######################################################################################
 
   ### INITIAL PAGE LOAD EDIT STUDY IN SPARCRequest #######################
-  if $('#study_selected_for_epic_true_button').hasClass('active')
+  if $('#study_selected_for_epic_true_button').hasClass('active') || $('#study_selected_for_epic_false_button').hasClass('active')
     $('#study_type_answer_certificate_of_conf_answer').show_elt()
     $('#study_type_note').show()
 
@@ -171,8 +171,8 @@ $(document).ready ->
         $(study_type_form).show()
         $(certificate_of_confidence_dropdown).show_elt()
       when 'false'
-        $(study_type_form).hide()
-        $(certificate_of_confidence_dropdown).hide_elt().trigger 'change'
+        $(study_type_form).show()
+        $(certificate_of_confidence_dropdown).show_elt().trigger 'change'
 
   $(document).on 'change', certificate_of_confidence_dropdown, (e) ->
     new_value = $(e.target).val()

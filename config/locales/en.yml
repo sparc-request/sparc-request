@@ -161,7 +161,7 @@ en:
       email: "Email"
       phone: "Phone"
       rights: "Proxy Rights"
-      epic_emr_access: 'EPIC EMR Access'
+      epic_emr_access: 'EPIC EMR </br> Access'
     tooltips:
       epic_access: 'Granting Epic EMR access populates study personnel in Epic Research Record as long as they have an Epic login'
       rights: 'Defines access to protocol in SPARCDashboard'

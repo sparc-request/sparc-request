@@ -1,3 +1,4 @@
+@admin_offset = 1
 # Copyright © 2011 MUSC Foundation for Research Development
 # All rights reserved.
 
@@ -23,25 +24,32 @@ default = wb.styles.add_style alignment: { horizontal: :left }
 centered = wb.styles.add_style alignment: { horizontal: :center }
 bordered = wb.styles.add_style :border=> {:style => :thin, :color => "00000000"}
 centered_bordered = wb.styles.add_style :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
+rt_hdr_even_style = wb.styles.add_style bg_color: 'E8E8E8', :alignment => {:horizontal => :center}
+rt_hdr_odd_style = wb.styles.add_style :alignment => {:horizontal => :center}
+rt_even_style = wb.styles.add_style bg_color: 'E8E8E8', :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
+rt_odd_style = wb.styles.add_style :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
 row_header_style = wb.styles.add_style b: true
 header_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :left }
-header_centered_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :center }
+header_centered_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :center, wrap_text: true }
 sub_header_style = wb.styles.add_style sz: 12, b: true, bg_color: 'E8E8E8', alignment: { horizontal: :left }
 name_header_style = wb.styles.add_style sz: 12, b: true, bg_color: 'ADADAD', alignment: { horizontal: :left }
 visit_day_style = wb.styles.add_style sz: 12, b: true, bg_color: 'ADADAD', alignment: { horizontal: :center }
+
+start_qty_col = 0
+rt_col_width = 7.5
 
 wb.add_worksheet(name: "Review") do |sheet|
 
   sheet.add_row ["#{@protocol.class.to_s} Information"], :style => header_style
   sheet.add_row ["#{@protocol.class.to_s} ID", @protocol.id], :style => default
   sheet.add_row ['Short Title', @protocol.short_title], :style => default
-  sheet.add_row ["#{@protocol.class.to_s} Title", @protocol.short_title], :style => default
+  sheet.add_row ["#{@protocol.class.to_s} Title", @protocol.title], :style => default
   sheet.add_row ["Funding Source", @protocol.display_funding_source_value], :style => default
 
   sheet.add_row
 
   sheet.add_row ["Authorized Users"], :style => header_style
-  proxy_row = ["Name", "Role", "", "Proxy Rights"]
+  proxy_row = ["Name", "Role", "Proxy Rights"]
 
   has_per_patient_per_visit_services = !@service_list_false.empty?
 
@@ -53,42 +61,37 @@ wb.add_worksheet(name: "Review") do |sheet|
   end
 
   if has_per_patient_per_visit_services
-    (visit_count*2 + 2).times do
+    (visit_count*2 + 3 + @admin_offset.to_i).times do
       proxy_row << ""
     end
+  else
+    proxy_row += ["", ""]
   end
 
   sheet.add_row proxy_row, :style => sub_header_style
 
   @protocol.project_roles.each do |pr|
-    sheet.add_row [pr.identity.full_name, USER_ROLES.key(pr.role), "", PROXY_RIGHTS.key(pr.project_rights)], :style => default
+    sheet.add_row [pr.identity.full_name, USER_ROLES.key(pr.role), PROXY_RIGHTS.key(pr.project_rights)], :style => default
   end
 
   sheet.add_row
 
   sheet.add_row ["Document Uploads"], :style => header_style
 
-  doc_row = ["Name", "Type", "", "Institution/Provider/Program/Core"]
+  doc_row = ["Name", "Type", "Uploaded Date"]
   if has_per_patient_per_visit_services
-    (visit_count*2 + 2).times do
+    (visit_count*2 + 3 + @admin_offset.to_i).times do
       doc_row << ""
     end
+  else
+    doc_row += ["", "", ""]
   end
 
   sheet.add_row doc_row, :style => sub_header_style
 
   @service_request.protocol.documents.each do |doc|
     next unless @sub_service_request.nil? or doc.sub_service_requests.map{|ssr| ssr.id}.include?(@sub_service_request.id)
-    parents = []
-    doc.sub_service_requests.each do |ssr|
-      next unless @service_request.service_list.keys.include?(ssr.organization_id)
-      parents << @service_request.service_list[ssr.organization_id][:name]
-    end
-    sheet.add_row [doc.document_file_name, DOCUMENT_TYPES.key(doc.doc_type), "", parents.first], :style => default
-    parents.shift #remove first and iterate over remaining
-    parents.each do |p|
-      sheet.add_row ["", "", "", p], :style => default
-    end
+    sheet.add_row [doc.document_file_name, DOCUMENT_TYPES.key(doc.doc_type), doc.updated_at.strftime('%m/%d/%y')], :style => default
   end
 
   sheet.add_row
@@ -107,7 +110,10 @@ wb.add_worksheet(name: "Review") do |sheet|
       arm_row = [arm.name, "", "", "", ""]
 
       num_visits = arm.visit_count
+      visit_group_name_sizes = []
+
       arm.visit_groups.each do |vg|
+        visit_group_name_sizes << vg.name.size
         services_row << "#{vg.name}"
         services_row << ""
         arm_row << "#{vg.day}"
@@ -124,9 +130,17 @@ wb.add_worksheet(name: "Review") do |sheet|
       services_row << "Total Per Patient"
       services_row << "Total Per Study"
       arm_row << ""
-      arm_row << ""
 
-      services_row = sheet.add_row services_row, :style => header_style
+      dbl_rt_col_width = rt_col_width * 2
+      row_height_factor = (visit_group_name_sizes.max / dbl_rt_col_width).ceil
+
+      if row_height_factor == 1
+        services_row = sheet.add_row services_row, :style => header_style
+      elsif row_height_factor > 1 && row_height_factor < 4
+        services_row = sheet.add_row services_row, :style => header_style, :height => (row_height_factor * dbl_rt_col_width)
+      elsif row_height_factor >= 4
+        services_row = sheet.add_row services_row, :style => header_style, :height => (row_height_factor * dbl_rt_col_width * 1.4)
+      end
 
       services_sub_header_rows = []
       service_rows = []
@@ -140,7 +154,22 @@ wb.add_worksheet(name: "Review") do |sheet|
         r_t_row << "T"
       end
 
-      sheet.add_row(r_t_row, :style => centered)
+      even_set = true
+
+      styles_array = [centered, centered, centered]
+      styles_array << centered if @admin_offset
+      styles_array << centered
+
+      2.step(visit_count*2, 2) do
+        styles_array << (even_set ? rt_hdr_even_style : rt_hdr_odd_style)
+        styles_array << (even_set ? rt_hdr_even_style : rt_hdr_odd_style)
+        even_set = !even_set
+      end
+
+      styles_array << [centered, centered]
+      styles_array.flatten!
+
+      sheet.add_row(r_t_row, :style => styles_array)
 
       @service_list_false.each do |key, value|
         next if @sub_service_request.present? && @sub_service_request.organization.name != value[:process_ssr_organization_name]
@@ -148,6 +177,8 @@ wb.add_worksheet(name: "Review") do |sheet|
         services_sub_header_rows << sheet.add_row([value[:name]], :style => sub_header_style)
 
         arm.line_items_visits.each do |line_items_visit|
+
+          even_set = true
           line_item = line_items_visit.line_item
 
           next if value[:line_items].exclude?(line_item) || (@sub_service_request.present? && line_item.sub_service_request_id != @sub_service_request.id)
@@ -162,6 +193,8 @@ wb.add_worksheet(name: "Review") do |sheet|
           end
           service_row += [display_your_cost(line_item), line_items_visit.subject_count]
 
+          start_qty_col = service_row.size # grab the size so we know where the R/T columns start
+
           line_items_visit.visits.each_with_index do |v, index|
             service_row << (totals_hash["#{v.id}"] == 0 ? '' : v.research_billing_qty)
             service_row << (totals_hash["#{v.id}"] == 0 ? '' : v.insurance_billing_qty)
@@ -175,9 +208,13 @@ wb.add_worksheet(name: "Review") do |sheet|
           styles_array = [bordered, bordered, bordered]
           styles_array << bordered if @admin_offset
           styles_array << centered_bordered
-          (visit_count * 2).times do
-            styles_array << centered_bordered
+
+          2.step(visit_count*2, 2) do
+            styles_array << (even_set ? rt_even_style : rt_odd_style)
+            styles_array << (even_set ? rt_even_style : rt_odd_style)
+            even_set = !even_set
           end
+
           styles_array << [bordered, bordered]
           styles_array.flatten!
 
@@ -265,10 +302,10 @@ wb.add_worksheet(name: "Review") do |sheet|
   end
 
   ##Total
-  grand_total_row = ["", "", "", "", ""]
+  grand_total_row = @sub_service_request ? ["", "", "", "", ""] : ["", "", "", ""]
 
   if has_per_patient_per_visit_services
-    (visit_count*2).times do
+    (visit_count * 2 + @admin_offset.to_i).times do
       grand_total_row << ""
     end
   end
@@ -303,10 +340,8 @@ wb.add_worksheet(name: "Review") do |sheet|
   sheet["A5"].style = row_header_style
 
   sheet.merge_cells("A7:#{end_column}7") #authorized user header
-  sheet.merge_cells("B8:C8") #table sub header
   last_authorized_user_row_number = 0 #store it so we know where the document uploads start
   @protocol.project_roles.size.times do |n|
-    sheet.merge_cells("B#{8+n+1}:C#{8+n+1}")
     last_authorized_user_row_number = 8+n+1
   end
 
@@ -323,14 +358,14 @@ wb.add_worksheet(name: "Review") do |sheet|
     end
   end
 
+  # format the R/T columns to the same width
+  (visit_count * 2).times do |n|
+    sheet.column_info[start_qty_col].width = rt_col_width
+    start_qty_col += 1
+  end
+
   merge_arm_rows.each do |arm_row|
-    sheet.merge_cells("A#{arm_row.index+1}:E#{arm_row.index+1}")
-    visit_count.times do |idx|
-      start_idx = 2 * idx + 4 + @admin_offset.to_i
-      end_idx = 2 * idx + 5 + @admin_offset.to_i
-      sheet.merge_cells("#{alpha_array[start_idx]}#{arm_row.index+1}:#{alpha_array[end_idx]}#{arm_row.index+1}")
-      sheet["#{alpha_array[start_idx]}#{arm_row.index+1}"].style = visit_day_style
-    end
+    sheet.merge_cells("A#{arm_row.index+1}:#{end_column}#{arm_row.index+1}")
   end
 
   merge_sub_header_rows.each do |services_sub_header_rows|

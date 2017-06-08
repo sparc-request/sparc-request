@@ -2,4 +2,13 @@
   tbody, tr {
     word-break: break-word;
   }
+  th {
+    vertical-align: middle;
+  }
+  .edit-delete-col {
+    width: 7%;
+  }
+  .break-all {
+    word-break: break-all;
+  }
 }

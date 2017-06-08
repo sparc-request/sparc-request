@@ -108,6 +108,8 @@ $(document).ready ->
           research_billing_qty:   $(this).data('research-billing-qty')
           insurance_billing_qty:  $(this).data('insurance-billing-qty')
           effort_billing_qty:     $(this).data('effort-billing-qty')
+        service_request_id:       getSRId()
+        sub_service_request_id:   getSSRId()
         admin:                    $(this).data('admin')
         tab:                      $(this).data('tab')
         page:                     $(this).data('page')

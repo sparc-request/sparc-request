@@ -21,7 +21,7 @@
 $("#check-all-row-<%=@line_items_visit.id%>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_row', service_request: @service_request, sub_service_request: @sub_service_request, liv: @line_items_visit, page: @page, admin: @admin, locked: @locked %>")
 
 # Replace visits
-<% @line_items_visit.visits.paginate(page: @page.to_i, per_page: Visit.per_page).each do |visit| %>
+<% @visits.paginate(page: @page.to_i, per_page: Visit.per_page).each do |visit| %>
 $("#visit-<%=visit.id%>").replaceWith('<%= j render "service_calendars/master_calendar/pppv/template/template_visit_input", visit: visit, tab: @tab, page: @page, admin: @admin, locked: @locked %>')
 <% end %>
 
@@ -30,6 +30,6 @@ $("#check-all-row-<%=@line_items_visit.id%>").parent().siblings('.pppv-per-patie
 $("#check-all-row-<%=@line_items_visit.id%>").parent().siblings('.pppv-per-study-line-item-total').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_study', liv: @line_items_visit %>")
 
 # Replace Totals
-$(".arm-<%=@arm.id%>.maximum-total-direct-cost-per-patient").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/totals/max_total_direct_per_patient', arm: @arm, line_items_visits: @line_items_visit, tab: @tab, page: @page %>")
-$(".arm-<%=@arm.id%>.maximum-total-per-patient").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/totals/max_total_per_patient', arm: @arm, line_items_visits: @arm.line_items_visits, tab: @tab, page: @page %>")
-$(".arm-<%=@arm.id%>.total-per-patient-per-visit-cost-per-study").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/totals/total_cost_per_study', arm: @arm, line_items_visits: @arm.line_items_visits, tab: @tab %>")
+$(".arm-<%=@arm.id%>.maximum-total-direct-cost-per-patient").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/totals/max_total_direct_per_patient', arm: @arm, visit_groups: @visit_groups, line_items_visits: @line_items_visits, tab: @tab, page: @page %>")
+$(".arm-<%=@arm.id%>.maximum-total-per-patient").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/totals/max_total_per_patient', arm: @arm, visit_groups: @visit_groups, line_items_visits: @line_items_visits, tab: @tab, page: @page %>")
+$(".arm-<%=@arm.id%>.total-per-patient-per-visit-cost-per-study").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/totals/total_cost_per_study', arm: @arm, line_items_visits: @line_items_visits, tab: @tab %>")

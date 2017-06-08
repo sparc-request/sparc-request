@@ -106,18 +106,22 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def toggle_calendar_row
-    @line_items_visit = LineItemsVisit.find(params[:line_items_visit_id])
-    @service          = @line_items_visit.line_item.service if params[:check]
-    @arm              = @line_items_visit.arm
-    @admin            = params[:admin] == 'true'
-    @tab              = 'template'
-    @page             = params[:page]
-    @locked           = !@line_items_visit.sub_service_request.can_be_edited? && !@admin
+    @admin              = params[:admin] == 'true'
+    @tab                = 'template'
+    @page               = params[:page]
+    @line_items_visit   = LineItemsVisit.find(params[:line_items_visit_id])
+    @arm                = @line_items_visit.arm
+    @line_items_visits  = @arm.line_items_visits
+    @visit_groups       = @arm.visit_groups.paginate(page: @page.to_i, per_page: VisitGroup.per_page)
+    @visits             = @line_items_visit.visits
+    @locked             = !@admin && !@line_items_visit.sub_service_request.can_be_edited?
 
     if params[:check] && !@locked
-      @line_items_visit.visits.update_all(quantity: @service.displayed_pricing_map.unit_minimum, research_billing_qty: @service.displayed_pricing_map.unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0)
+      unit_minimum = @line_items_visit.line_item.service.displayed_pricing_map.unit_minimum
+
+      @visits.update_all(quantity: unit_minimum, research_billing_qty: unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0)
     elsif params[:uncheck] && !@locked
-      @line_items_visit.visits.update_all(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0)
+      @visits.update_all(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0)
     end
 
     # Update the sub service request only if we are not in dashboard; admin's actions should not affect the status
@@ -132,37 +136,41 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def toggle_calendar_column
-    @column_id    = params[:column_id].to_i
-    @visit_group  = VisitGroup.find(params[:visit_group_id])
-    @admin        = params[:admin] == 'true'
+    @admin              = params[:admin] == 'true'
+    @tab                = 'template'
+    @page               = params[:page]
+    @visit_group        = VisitGroup.find(params[:visit_group_id])
+    @arm                = @visit_group.arm
+    @line_items_visits  = @arm.line_items_visits
+    @visit_groups       = @arm.visit_groups.paginate(page: @page.to_i, per_page: VisitGroup.per_page)
 
-    @visit_group.visits.
-
-
-
-    
-    @service_request.service_list(false).each do |_key, value|
-      next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name] || @sub_service_request.can_be_edited?
-
-      @arm.line_items_visits.each do |liv|
-        next if value[:line_items].exclude?(liv.line_item) || (!@admin && (!liv.line_item.sub_service_request.can_be_edited? || liv.line_item.sub_service_request.is_complete?))
-        visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
-        if params[:check]
-          visit.update_attributes quantity: liv.line_item.service.displayed_pricing_map.unit_minimum, research_billing_qty: liv.line_item.service.displayed_pricing_map.unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0
-        elsif params[:uncheck]
-          visit.update_attributes quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0
-        end
+    editable_ssrs =
+      if @sub_service_request
+        SubServiceRequest.where(id: @sub_service_request)
+      else
+        SubServiceRequest.where(id: @arm.sub_service_requests.select{ |ssr| ssr.can_be_edited? })
       end
+
+    @visits = @visit_group.visits.joins(:sub_service_request).where(sub_service_requests: { id: editable_ssrs })
+
+    if params[:check]
+      @visits.each do |v|
+        unit_minimum = v.service.displayed_pricing_map.unit_minimum
+        
+        v.update_attributes(quantity: unit_minimum, research_billing_qty: unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0)
+      end
+    elsif params[:uncheck]
+      @visits.update_all(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0)
     end
 
     # Update the sub service request only if we are not in dashboard; admin's actions should not affect the status
     unless @admin
-      @arm.line_items.map(&:sub_service_request).uniq.each do |ssr|
-        next if (@sub_service_request && ssr != @sub_service_request)
-        next unless ssr.can_be_edited?
-        ssr.update_attribute(:status, "draft")
-      end
+      editable_ssrs.update_all(status: 'draft')
       @service_request.update_attribute(:status, "draft")
+    end
+
+    respond_to do |format|
+      format.js
     end
   end
 

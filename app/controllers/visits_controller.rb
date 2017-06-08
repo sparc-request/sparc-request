@@ -21,8 +21,11 @@
 class VisitsController < ApplicationController
   respond_to :json, :js, :html
 
+  before_action :initialize_service_request
+  before_action :authorize_identity
+
   def edit
-    @visit = Visit.find(params[:id])
+    @visit  = Visit.find(params[:id])
     @portal = params[:portal]
 
     respond_to do |format|
@@ -30,14 +33,17 @@ class VisitsController < ApplicationController
     end
   end
 
-  # Used for x-editable update and validations
   def update
-    @visit  = Visit.find(params[:id])
-    @liv    = @visit.line_items_visit
-    @admin  = params[:admin] == 'true'
-    @tab    = params[:tab]
-    @page   = params[:page]
-    @locked = !@visit.line_items_visit.sub_service_request.can_be_edited? && !@admin
+    @admin              = params[:admin] == 'true'
+    @tab                = params[:tab]
+    @page               = params[:page]
+    @visit              = Visit.find(params[:id])
+    @line_items_visit   = @visit.line_items_visit
+    @visit_group        = @visit.visit_group
+    @arm                = @visit.arm
+    @line_items_visits  = @arm.line_items_visits.eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups] ] ] ], service_request: :protocol ])
+    @visit_groups       = @arm.visit_groups.paginate(page: @page.to_i, per_page: VisitGroup.per_page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups] ] ] ], service_request: :protocol ] } })
+    @locked             = !@visit.line_items_visit.sub_service_request.can_be_edited? && !@admin
 
     if @visit.update_attributes(visit_params)
       @visit.line_items_visit.sub_service_request.set_to_draft unless @admin

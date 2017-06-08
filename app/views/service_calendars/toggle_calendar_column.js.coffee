@@ -18,18 +18,18 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # Replace checkbox
-$("#check-all-column-<%=@visit_group.id%>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_column', service_request: @service_request, sub_service_request: @sub_service_request, visit_group: @visit_group, page: @page, index: @index, admin: @admin %>")
+$("#check-all-column-<%=@visit_group.id%>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_column', service_request: @service_request, sub_service_request: @sub_service_request, visit_group: @visit_group, page: @page, admin: @admin %>")
 
+<% @visits.each do |visit| %>
 # Replace visits
-<% @visit_group.visits.each do |visit| %>
 $("#visit-<%=visit.id%>").replaceWith('<%= j render "service_calendars/master_calendar/pppv/template/template_visit_input", visit: visit, tab: @tab, page: @page, admin: @admin, locked: @locked %>')
-<% end %>
 
 # Replace Per Patient / Study Totals
-$("#check-all-row-<%=@line_items_visit.id%>").parent().siblings('.pppv-per-patient-line-item-total').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_patient', liv: @line_items_visit %>")
-$("#check-all-row-<%=@line_items_visit.id%>").parent().siblings('.pppv-per-study-line-item-total').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_study', liv: @line_items_visit %>")
+$("#visit-<%=visit.id%>").parent().siblings('.pppv-per-patient-line-item-total').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_patient', liv: visit.line_items_visit %>")
+$("#visit-<%=visit.id%>").parent().siblings('.pppv-per-study-line-item-total').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_study', liv: visit.line_items_visit %>")
+<% end %>
 
 # Replace Totals
-$(".arm-<%=@arm.id%>.maximum-total-direct-cost-per-patient").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/totals/max_total_direct_per_patient', arm: @arm, line_items_visits: @line_items_visit, tab: @tab, page: @page %>")
-$(".arm-<%=@arm.id%>.maximum-total-per-patient").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/totals/max_total_per_patient', arm: @arm, line_items_visits: @arm.line_items_visits, tab: @tab, page: @page %>")
-$(".arm-<%=@arm.id%>.total-per-patient-per-visit-cost-per-study").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/totals/total_cost_per_study', arm: @arm, line_items_visits: @arm.line_items_visits, tab: @tab %>")
+$(".arm-<%=@arm.id%>.maximum-total-direct-cost-per-patient").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/totals/max_total_direct_per_patient', arm: @arm, visit_groups: @visit_groups, line_items_visits: @line_items_visits, tab: @tab, page: @page %>")
+$(".arm-<%=@arm.id%>.maximum-total-per-patient").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/totals/max_total_per_patient', arm: @arm, visit_groups: @visit_groups, line_items_visits: @line_items_visits, tab: @tab, page: @page %>")
+$(".arm-<%=@arm.id%>.total-per-patient-per-visit-cost-per-study").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/totals/total_cost_per_study', arm: @arm, line_items_visits: @line_items_visits, tab: @tab %>")

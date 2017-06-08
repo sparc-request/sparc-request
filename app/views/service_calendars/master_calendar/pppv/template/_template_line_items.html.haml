@@ -59,7 +59,7 @@
       - visits = liv.visits.paginate(page: page.to_i, per_page: Visit.per_page)
       - visits.each_with_index do |v, index|
         %td.text-center.visit.visit-width{ class: "visit-#{index+1}" }
-          = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", service_request: service_request, sub_service_request: sub_service_request, visit: v, tab: tab, page: page, admin: admin, locked: locked
+          = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", service_request: service_request, sub_service_request: sub_service_request, visit: v, line_items_visit: liv, tab: tab, page: page, admin: admin, locked: locked
       - (Visit.per_page - visits.size).times do
         %td.visit-width &nbsp;
 

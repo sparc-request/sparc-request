@@ -27,6 +27,7 @@ class Arm < ApplicationRecord
 
   has_many :line_items_visits, :dependent => :destroy
   has_many :line_items, :through => :line_items_visits
+  has_many :sub_service_requests, through: :line_items
   has_many :visit_groups, -> { order("position") }, :dependent => :destroy
   has_many :visits, :through => :line_items_visits
 

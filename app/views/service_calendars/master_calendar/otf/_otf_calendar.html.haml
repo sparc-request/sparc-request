@@ -22,7 +22,7 @@
     .pull-left
       %h3.panel-title
         = t(:calendars)[:otf][:header]
-    - unless portal
+    - if !(portal || review)
       .pull-right
         = render 'service_calendars/master_calendar/otf/otf_freeze_header_button', service_request: service_request
     .clearfix

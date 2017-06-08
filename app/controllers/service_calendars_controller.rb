@@ -109,11 +109,11 @@ class ServiceCalendarsController < ApplicationController
     @admin              = params[:admin] == 'true'
     @tab                = 'template'
     @page               = params[:page]
-    @line_items_visit   = LineItemsVisit.find(params[:line_items_visit_id])
+    @line_items_visit   = LineItemsVisit.eager_load(sub_service_request: { organization: { parent: { parent: :parent } } }, line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]]]).find(params[:line_items_visit_id])
     @arm                = @line_items_visit.arm
-    @line_items_visits  = @arm.line_items_visits
-    @visit_groups       = @arm.visit_groups.paginate(page: @page.to_i, per_page: VisitGroup.per_page)
-    @visits             = @line_items_visit.visits
+    @line_items_visits  = @arm.line_items_visits.eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol])
+    @visit_groups       = @arm.visit_groups.paginate(page: @page.to_i, per_page: VisitGroup.per_page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol] } })
+    @visits             = @line_items_visit.visits.eager_load(service: :pricing_maps)
     @locked             = !@admin && !@line_items_visit.sub_service_request.can_be_edited?
 
     if params[:check] && !@locked
@@ -126,7 +126,7 @@ class ServiceCalendarsController < ApplicationController
 
     # Update the sub service request only if we are not in dashboard; admin's actions should not affect the status
     unless @admin || @locked
-      @line_items_visit.line_item.sub_service_request.update_attribute(:status, "draft")
+      @line_items_visit.sub_service_request.update_attribute(:status, "draft")
       @service_request.update_attribute(:status, "draft")
     end
 
@@ -141,17 +141,17 @@ class ServiceCalendarsController < ApplicationController
     @page               = params[:page]
     @visit_group        = VisitGroup.find(params[:visit_group_id])
     @arm                = @visit_group.arm
-    @line_items_visits  = @arm.line_items_visits
-    @visit_groups       = @arm.visit_groups.paginate(page: @page.to_i, per_page: VisitGroup.per_page)
+    @line_items_visits  = @arm.line_items_visits.eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol])
+    @visit_groups       = @arm.visit_groups.paginate(page: @page.to_i, per_page: VisitGroup.per_page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol] } })
 
     editable_ssrs =
       if @sub_service_request
         SubServiceRequest.where(id: @sub_service_request)
       else
-        SubServiceRequest.where(id: @arm.sub_service_requests.select{ |ssr| ssr.can_be_edited? })
+        SubServiceRequest.where(id: @arm.sub_service_requests.eager_load(organization: { parent: { parent: :parent } }).select{ |ssr| ssr.can_be_edited? })
       end
 
-    @visits = @visit_group.visits.joins(:sub_service_request).where(sub_service_requests: { id: editable_ssrs })
+    @visits = @visit_group.visits.joins(:sub_service_request).where(sub_service_requests: { id: editable_ssrs }).eager_load(service: :pricing_maps, line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol] })
 
     if params[:check]
       @visits.each do |v|
@@ -165,7 +165,7 @@ class ServiceCalendarsController < ApplicationController
 
     # Update the sub service request only if we are not in dashboard; admin's actions should not affect the status
     unless @admin
-      editable_ssrs.update_all(status: 'draft')
+      editable_ssrs.where.not(status: 'draft').update_all(status: 'draft')
       @service_request.update_attribute(:status, "draft")
     end
 

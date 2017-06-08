@@ -37,16 +37,16 @@ class VisitsController < ApplicationController
     @admin              = params[:admin] == 'true'
     @tab                = params[:tab]
     @page               = params[:page]
-    @visit              = Visit.find(params[:id])
-    @line_items_visit   = @visit.line_items_visit
-    @visit_group        = @visit.visit_group
+    @visit              = Visit.eager_load(sub_service_request: { organization: { parent: { parent: :parent } } }, service: :pricing_maps).find(params[:id])
     @arm                = @visit.arm
-    @line_items_visits  = @arm.line_items_visits.eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups] ] ] ], service_request: :protocol ])
-    @visit_groups       = @arm.visit_groups.paginate(page: @page.to_i, per_page: VisitGroup.per_page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups] ] ] ], service_request: :protocol ] } })
-    @locked             = !@visit.line_items_visit.sub_service_request.can_be_edited? && !@admin
+    @line_items_visits  = @arm.line_items_visits.eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol])
+    @line_items_visit   = @line_items_visits.find(@visit.line_items_visit_id)
+    @visit_groups       = @arm.visit_groups.paginate(page: @page.to_i, per_page: VisitGroup.per_page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol] } })
+    @visit_group        = @visit_groups.find(@visit.visit_group_id)
+    @locked             = !@visit.sub_service_request.can_be_edited? && !@admin
 
     if @visit.update_attributes(visit_params)
-      @visit.line_items_visit.sub_service_request.set_to_draft unless @admin
+      @visit.sub_service_request.set_to_draft unless @admin
     else
       @errors = @visit.errors
     end

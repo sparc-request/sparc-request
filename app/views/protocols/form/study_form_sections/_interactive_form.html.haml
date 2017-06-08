@@ -36,7 +36,7 @@
 .form-group.row.selected_for_epic_dependent{ display_if(protocol.selected_for_epic) }
   = form.label :study_type_questions,
     t(:protocols)[:studies][:information][:study_type_questions],
-    class: 'col-lg-2 control-label required',
+    class: "col-lg-2 control-label question-label #{protocol.selected_for_epic ? 'required' : ''}",
     data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
     title: t(:protocols)[:tooltips][:study_type_questions]
   .col-lg-10

@@ -26,7 +26,9 @@ class VisitsController < ApplicationController
 
   def edit
     @visit  = Visit.find(params[:id])
-    @portal = params[:portal]
+    @admin  = params[:admin]
+    @tab    = 'billing_strategy'
+    @page   = params[:page]
 
     respond_to do |format|
       format.js

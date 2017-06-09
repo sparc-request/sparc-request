@@ -17,7 +17,7 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
-.row
+.row{ class: "visit-#{visit.id}" }
   - if locked
     .col-xs-4.text-center.no-padding
       .research-billing-qty
@@ -30,11 +30,11 @@
         = visit.effort_billing_qty
   - else
     .col-xs-4.text-center.no-padding
-      %a.edit-billing-qty{ href: 'javascript:void(0)', data: { id: visit.id, arm_id: arm.id, service_request_id: service_request.id, portal: @portal } }
+      %a.edit-billing-qty{ href: 'javascript:void(0)', data: { visit_id: visit.id, page: page, admin: admin.to_s } }
         = visit.research_billing_qty
     .col-xs-4.text-center.no-padding
-      %a.edit-billing-qty{ href: 'javascript:void(0)', data: { id: visit.id, arm_id: arm.id, service_request_id: service_request.id, portal: @portal } }
+      %a.edit-billing-qty{ href: 'javascript:void(0)', data: { visit_id: visit.id, page: page, admin: admin.to_s } }
         = visit.insurance_billing_qty
     .col-xs-4.text-center.no-padding
-      %a.edit-billing-qty{ href: 'javascript:void(0)', data: { id: visit.id, arm_id: arm.id, service_request_id: service_request.id, portal: @portal } }
+      %a.edit-billing-qty{ href: 'javascript:void(0)', data: { visit_id: visit.id, page: page, admin: admin.to_s } }
         = visit.effort_billing_qty

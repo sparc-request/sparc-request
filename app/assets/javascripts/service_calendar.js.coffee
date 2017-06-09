@@ -115,6 +115,16 @@ $(document).ready ->
         page:                     $(this).data('page')
       url: "/visits/#{$(this).data('visit-id')}"
 
+  $(document).on 'click', '.edit-billing-qty', ->
+    $.ajax
+      type: 'GET'
+      data:
+        service_request_id:     getSRId()
+        sub_service_request_id: getSSRId()
+        admin:                  $(this).data('admin')
+        page:                   $(this).data('page')
+      url: "/visits/#{$(this).data('visit-id')}/edit"
+
   $(document).on 'change', '#visit_group', ->
     $.ajax
       type: 'GET'

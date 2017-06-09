@@ -33,16 +33,16 @@
               = t(:authorized_users)[:table_fields][:name]
             %th.col-sm-2{ data: { field: 'role', align: 'left', sortable: 'true' } }
               = t(:authorized_users)[:table_fields][:role]
-            %th.col-sm-2{ data: { field: 'email', align: 'left', sortable: 'false' } }
+            %th.col-sm-2.break-all{ data: { field: 'email', align: 'left', sortable: 'false' } }
               = t(:authorized_users)[:table_fields][:email]
-            %th.col-sm-1{ data: { field: 'phone', align: 'left', sortable: 'false' } }
+            %th.col-sm-2.break-all{ data: { field: 'phone', align: 'left', sortable: 'false' } }
               = t(:authorized_users)[:table_fields][:phone]
             %th.col-sm-2{ data: { field: 'proxy_rights', align: 'left', sortable: 'true' } }
               = t(:authorized_users)[:table_fields][:rights]
             - if protocol.selected_for_epic?
-              %th.col-sm-1{ data: { field: 'epic_emr_access', align: 'center', sortable: 'true' } }
-                = t(:authorized_users)[:table_fields][:epic_emr_access]
-            %th.col-sm-1{ data: { field: 'edit', align: 'center', sortable: 'false' } }
+              %th{ data: { field: 'epic_emr_access', align: 'center', sortable: 'true' } }
+                = raw(t(:authorized_users)[:table_fields][:epic_emr_access])
+            %th.edit-delete-col{ data: { field: 'edit', align: 'center', sortable: 'false' } }
               = t(:actions)[:edit]
-            %th.col-sm-1{ data: { field: 'delete', align: 'center', sortable: 'false' } }
+            %th.edit-delete-col{ data: { field: 'delete', align: 'center', sortable: 'false' } }
               = t(:actions)[:delete]

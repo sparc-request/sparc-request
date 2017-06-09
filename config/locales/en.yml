@@ -161,7 +161,7 @@ en:
       email: "Email"
       phone: "Phone"
       rights: "Proxy Rights"
-      epic_emr_access: 'EPIC EMR Access'
+      epic_emr_access: 'EPIC EMR </br> Access'
     tooltips:
       epic_access: 'Granting Epic EMR access populates study personnel in Epic Research Record as long as they have an Epic login'
       rights: 'Defines access to protocol in SPARCDashboard'
@@ -1185,8 +1185,8 @@ en:
         cost: "Your Cost"
         subjects: "# Subjects"
         total: "Service Total"
-        study_level_charges: "Study Level Charges"
-        study_schedule: "Study Schedule"
+        study_level_charges: "Non-clinical Services Charges"
+        study_schedule: "Clinical Services"
         subject_tracker: "Subject Tracker"
       totals:
         direct_cost: "Total Direct Cost"

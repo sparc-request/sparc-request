@@ -107,7 +107,7 @@ module AssociatedUsersHelper
         content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' })
       ),
       type: 'button', data: { project_role_id: project_role.id },
-      class: "btn btn-warning actions-button edit-associated-user-button"
+      class: "btn btn-sm btn-warning actions-button edit-associated-user-button"
     )
   end
 
@@ -117,7 +117,7 @@ module AssociatedUsersHelper
         content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
       ),
       type: 'button', data: { project_role_id: project_role.id, identity_role: project_role.role, identity_id: project_role.identity_id },
-      class: "btn btn-danger actions-button delete-associated-user-button",
+      class: "btn btn-sm btn-danger actions-button delete-associated-user-button",
       disabled: project_role.identity_id == current_user.id
     )
   end

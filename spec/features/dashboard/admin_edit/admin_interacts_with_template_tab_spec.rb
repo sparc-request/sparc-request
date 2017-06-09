@@ -112,7 +112,7 @@ RSpec.describe 'User interacts with Template tab', js: true do
       visit dashboard_sub_service_request_path(ssr)
       wait_for_javascript_to_finish
 
-      click_link 'Clnical Services'
+      click_link 'Clinical Services'
       click_link 'Template Tab'
       wait_for_javascript_to_finish
 

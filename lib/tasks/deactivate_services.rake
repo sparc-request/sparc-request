@@ -30,7 +30,7 @@ task deactivate_services: :environment do
         service = Service.find_by(eap_id: row["EAP ID"], cpt_code: row["CPT Code"], revenue_code: row["Revenue Code"])
 
         if service
-          service.assign_attributes({ is_available: false, audit_comment: 'by script' }, without_protection: true)
+          service.assign_attributes({ is_available: false, audit_comment: 'by script' })
           service.save
           puts "Deactivated #{service.name}"
         else

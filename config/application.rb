@@ -59,6 +59,7 @@ module SparcRails
     # and, you don't need to override all of the text, only the sets of texts you need customized
     config.i18n.load_path += Dir[Rails.root.join('config/locales/proper', '*.{rb,yml}').to_s]
     config.i18n.load_path += Dir[Rails.root.join('config/locales/dashboard', '*.{rb,yml}').to_s]
+    config.i18n.load_path += Dir[Rails.root.join('config/locales/catalog_manager', '*.{rb,yml}').to_s]
     config.i18n.load_path += Dir[Rails.root.join('config/locales/additional_details', '*.{rb,yml}').to_s]
     config.i18n.load_path += Dir[Rails.root.join('config/locales/surveyor', '*.{rb,yml}').to_s]
     config.i18n.fallbacks = [:en]

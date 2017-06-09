@@ -17,41 +17,23 @@
 /* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS*/
 /* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
 /* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
-@import colors
 
-.full
-  width: 100%
+// replaced require_tree .
+@import 'layout';
+@import 'catalog';
 
-.control-label
-  margin-bottom: 0
-  padding-top: 7px
-  text-align: right
-
-.body-container
-  margin-bottom: 20px
-
-@media( max-width: 768px )
-  .col-sm-3
-    width: 25%
-  .col-sm-6
-    width: 50%
-  .col-sm-9
-    width: 75%
-  .col-sm-12
-    width: 100%
-
-.pricing-message
-  color: red
-
-.locked
-  margin-left: 3px
-
-.no-padding
-  padding: 0 !important
-
-.no-padding-x
-  padding-left: 0 !important
-  padding-right: 0 !important
-
-.no-margin
-  margin: 0 !important
+// other files
+@import 'bootstrap-sprockets';
+@import 'bootstrap';
+@import 'bootstrap-select';
+@import 'bootstrap-table';
+@import 'bootstrap-table-custom';
+@import 'bootstrap-datetimepicker';
+@import 'editable/bootstrap-editable';
+@import '960';
+@import 'jquery.toastmessage';
+@import '../layout';
+@import '../proper/colors';
+@import 'twitter_typeahead';
+@import 'sweetalert';
+@import 'nprogress_config';

@@ -1,0 +1,96 @@
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+- show_available_only = [show_available_only, true]
+.panel-group#cm-accordion
+  .panel-heading.no-padding-y
+    .col-sm-1.no-padding-y
+      = link_to plus_glyphicon(), 'javascript:void(0)', data: { parent: '#cm-accordion' }
+    .col-sm-11.no-padding-y
+      = link_to create_new_text(:institution), 'javascript:void(0)', class: 'org-form-label panel-title'
+  - institutions.where(is_available: show_available_only).each do |institution|
+    .panel-heading.no-padding-y
+      .col-sm-1.no-padding-y
+        = link_to folder_glyphicon(), 'javascript:void(0)', data: { id: institution.id, toggle: 'collapse', target: ".institution-#{institution.id}", parent: '#cm-accordion' }
+      .col-sm-11.no-padding-y
+        = link_to accordion_link_text(institution), 'javascript:void(0)', class: 'org-form-label panel-title'
+    .panel-collapse.collapse{ class: "institution-#{institution.id}" }
+      .panel-body.no-padding-y
+        .panel-heading.no-padding-y
+          .col-sm-1.no-padding-y
+            = link_to plus_glyphicon(), 'javascript:void(0)', data: { parent: ".institution-#{institution.id}" }
+          .col-sm-11.no-padding-y
+            = link_to create_new_text(:provider), 'javascript:void(0)', class: 'org-form-label panel-title'
+        - institution.providers.where(is_available: show_available_only).order("`order`").each do |provider|
+          .panel-heading.no-padding-y
+            .col-sm-1.no-padding-y
+              = link_to folder_glyphicon(), 'javascript:void(0)', data: { id: provider.id, toggle: 'collapse', target: ".provider-#{provider.id}", parent: "#institution-#{institution.id}" }
+            .col-sm-11.no-padding-y
+              = link_to accordion_link_text(provider), 'javascript:void(0)', class: 'org-form-label panel-title'
+          .panel-collapse.collapse{ class: "provider-#{provider.id}" }
+            .panel-body.no-padding-y
+              .panel-heading.no-padding-y
+                .col-sm-1.no-padding-y
+                  = link_to plus_glyphicon(), 'javascript:void(0)', data: { parent: ".provider-#{provider.id}" }
+                .col-sm-11.no-padding-y
+                  = link_to create_new_text(:program), 'javascript:void(0)', class: 'org-form-label panel-title'
+              - provider.programs.where(is_available: show_available_only).order("`order`").each do |program|
+                .panel-heading.no-padding-y
+                  .col-sm-1.no-padding-y
+                    = link_to folder_glyphicon(), 'javascript:void(0)', data: { id: program.id, toggle: 'collapse', target: ".program-#{program.id}", parent: "provider-#{provider.id}" }
+                  .col-sm-11.no-padding-y
+                    = link_to accordion_link_text(program), 'javascript:void(0)', class: 'org-form-label panel-title'
+                .panel-collapse.collapse{ class: "program-#{program.id}" }
+                  .panel-body.no-padding-y
+                    .panel-heading.no-padding-y
+                      .col-sm-1.no-padding-y
+                        = link_to plus_glyphicon(), 'javascript:void(0)', data: { parent: ".program-#{program.id}" }
+                      .col-sm-11.no-padding-y
+                        = link_to create_new_text(:core), 'javascript:void(0)', class: 'org-form-label panel-title'
+                    .panel-heading.no-padding-y
+                      .col-sm-1.no-padding-y
+                        = link_to plus_glyphicon(), 'javascript:void(0)', data: { parent: ".program-#{program.id}" }
+                      .col-sm-11.no-padding-y
+                        = link_to create_new_text(:service), 'javascript:void(0)', class: 'org-form-label panel-title'
+                    - program.cores.where(is_available: show_available_only).order("`order`").each do |core|
+                      .panel-heading.no-padding-y
+                        .col-sm-1.no-padding-y
+                          = link_to folder_glyphicon(), 'javascript:void(0)', data: { id: core.id, toggle: 'collapse', target: ".core-#{core.id}", parent: "program-#{program.id}" }
+                        .col-sm-11.no-padding-y
+                          = link_to accordion_link_text(core), 'javascript:void(0)', class: 'org-form-label panel-title'
+                      .panel-collapse.collapse{ class: "core-#{core.id}" }
+                        .panel-body.no-padding-y
+                          .panel-heading.no-padding-y
+                            .col-sm-1.no-padding-y
+                              = link_to plus_glyphicon(), 'javascript:void(0)', data: { parent: ".core-#{core.id}" }
+                            .col-sm-11.no-padding-y
+                              = link_to create_new_text(:service), 'javascript:void(0)', class: 'org-form-label panel-title'
+                          - core.services.where(is_available: show_available_only).order("`order`, `name`").each do |service|
+                            .panel-heading.no-padding-y
+                              .col-sm-1.no-padding-y
+                                = link_to file_glyphicon(), 'javascript:void(0)', data: { id: service.id, parent: "core-#{core.id}" }
+                              .col-sm-11.no-padding-y
+                                = link_to accordion_link_text(service), 'javascript:void(0)', class: 'org-form-label panel-title'
+                    - program.services.where(is_available: show_available_only).order("`order`, `name`").each do |service|
+                      .panel-heading.no-padding-y
+                        .col-sm-1.no-padding-y
+                          = link_to file_glyphicon(), 'javascript:void(0)', data: { id: service.id, parent: "program-#{program.id}" }
+                        .col-sm-11.no-padding-y
+                          = link_to accordion_link_text(service), 'javascript:void(0)', class: 'org-form-label panel-title'

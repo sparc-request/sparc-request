@@ -36,7 +36,7 @@
             = t(:calendars)[:pppv][:header_fields][:third_party]
           .col-xs-4.billing-type.no-padding{ data: { toggle: 'tooltip', animation: 'false', title: t(:proper)[:service_calendar][:tooltips][:effort] } }
             = t(:calendars)[:pppv][:header_fields][:percent]
-    - (5 - visit_groups.count).times do
+    - (VisitGroup.per_page - visit_groups.size).times do
       %th.visit-width &nbsp;
 
     - unless portal

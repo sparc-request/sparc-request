@@ -393,13 +393,7 @@ class ServiceRequest < ApplicationRecord
   end
 
   def direct_cost_total line_items=self.line_items
-    otf = self.total_direct_costs_one_time(line_items)
-    puts "!"*50
-    puts "!"*50
-    puts "!"*50
-    pppv = self.total_direct_costs_per_patient(self.arms, line_items)
-
-    otf + pppv
+    self.total_direct_costs_one_time(line_items) + self.total_direct_costs_per_patient(self.arms, line_items)
   end
 
   def indirect_cost_total line_items=self.line_items

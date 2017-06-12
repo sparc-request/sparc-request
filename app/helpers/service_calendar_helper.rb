@@ -88,6 +88,10 @@ module ServiceCalendarHelper
     currency_converter(line_item.applicable_rate)
   end
 
+  def update_per_subject_subtotals line_items_visit
+    line_items_visit.per_subject_subtotals
+  end
+
   def display_org_name(org_name, ssr, locked)
     header  = content_tag(:span, org_name + (ssr.ssr_id ? " (#{ssr.ssr_id})" : ""))
     header += content_tag(:span, '', class: 'glyphicon glyphicon-lock locked') if locked

@@ -20,6 +20,11 @@
 # Replace checkbox
 $("#check-all-row-<%=@line_items_visit.id%>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_row', service_request: @service_request, sub_service_request: @sub_service_request, liv: @line_items_visit, page: @page, admin: @admin, locked: @locked %>")
 
+# Replace Column checkboxes
+<% @visit_groups.each do |vg| %>
+$("#check-all-column-<%=vg.id%>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_column', service_request: @service_request, sub_service_request: @sub_service_request, visit_group: vg, page: @page, admin: @admin %>")
+<% end %>
+
 # Replace visits
 <% @visits.paginate(page: @page.to_i, per_page: Visit.per_page).each do |visit| %>
 $(".visit-<%=visit.id%>").replaceWith('<%= j render "service_calendars/master_calendar/pppv/template/template_visit_input", visit: visit, tab: @tab, page: @page, admin: @admin, locked: @locked %>')

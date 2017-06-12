@@ -132,27 +132,5 @@ module Dashboard
 
       options_for_select(arr, cur_page)
     end
-
-    def self.select_column(visit_group, n, admin, service_request, sub_service_request)
-
-      arm_id        = visit_group.arm_id
-      # If we are in proper, we want to use service request, othewise in dashboard, we use SSR for admin study schedule
-      liv_query          = sub_service_request ? { sub_service_request_id: sub_service_request.id } : { service_request_id: service_request.id }
-      filtered_livs      = visit_group.line_items_visits.joins(:line_item).where(line_items: liv_query)
-      checked            = filtered_livs.all? { |l| l.visits[n.to_i].research_billing_qty >= 1 }
-      check_param        = checked ? 'uncheck' : 'check'
-      icon               = checked ? 'glyphicon-remove' : 'glyphicon-ok'
-      klass              = checked ? 'btn-danger' : 'btn-success'
-      tooltip_column     = checked ? 'Uncheck Column' : 'Check Column'
-      service_request_id = service_request ? service_request.id : sub_service_request.service_request.id
-      url                = "/service_calendars/toggle_calendar_column?#{check_param}=true&service_request_id=#{service_request_id}&column_id=#{n + 1}&arm_id=#{arm_id}&admin=#{admin.to_s}"
-      url                += "&sub_service_request_id=#{sub_service_request.id}" if sub_service_request
-
-      content_tag(:span, '',
-        role: 'button',
-        class: "btn btn-xs #{klass} service-calendar-column glyphicon #{icon}",
-        id: "check-all-column-#{n+1}",
-        data: { toggle: "tooltip", animation: 'false', title: tooltip_column, url: url })
-    end
   end
 end

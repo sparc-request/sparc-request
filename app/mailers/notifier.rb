@@ -34,7 +34,13 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :cc => cc, :from => @identity.email, :subject => subject)
   end
 
-  def notify_user(project_role, service_request, ssr, xls, approval, user_current, audit_report=nil, individual_ssr=false)
+  def notify_user(project_role, service_request, ssr, approval, user_current, audit_report=nil, individual_ssr=false)
+
+    service_list_false = service_request.service_list(false)
+    service_list_true = service_request.service_list(true)
+    controller = set_instance_variables(user_current, service_request, service_list_false, service_list_true, service_request.line_items, service_request.protocol)
+
+    xls = controller.render_to_string action: 'show', formats: [:xlsx]
 
     if audit_report.present?
       @status = 'request_amendment'
@@ -66,7 +72,13 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end
 
-  def notify_admin(submission_email_address, xls, user_current, ssr, audit_report=nil, ssr_destroyed=false, individual_ssr=false)
+  def notify_admin(submission_email_address, user_current, ssr, audit_report=nil, ssr_destroyed=false, individual_ssr=false)
+    service_request = ssr.service_request
+    service_list_false = service_request.service_list(false, nil, sub_service_request)
+    service_list_true = service_request.service_list(true, nil, sub_service_request)
+    controller = set_instance_variables(user_current, service_request, service_list_false, service_list_true, ssr.line_items, service_request.protocol)
+    xls = controller.render_to_string action: 'show', formats: [:xlsx]
+
     @ssr_deleted = false
     @notes = ssr.protocol.notes
 
@@ -103,7 +115,29 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end
 
-  def notify_service_provider(service_provider, service_request, attachments_to_add, user_current, ssr, audit_report=nil, ssr_destroyed=false, request_amendment=false, individual_ssr=false)
+  def notify_service_provider(service_provider, service_request, user_current, ssr, audit_report=nil, ssr_destroyed=false, request_amendment=false, individual_ssr=false)
+
+    attachments = {}
+    service_list_true = service_request.service_list(true, service_provider)
+    service_list_false = service_request.service_list(false, service_provider)
+
+    # Retrieves the valid line items for service provider to calculate total direct cost in the xls
+    line_items = []
+    service_request.sub_service_requests.each do |ssr|
+      if service_provider.identity.is_service_provider?(ssr)
+        line_items << ssr.line_items
+      end
+    end
+
+    controller = set_instance_variables(user_current, service_request, service_list_false, service_list_true, line_items.flatten, service_request.protocol)
+    xls = controller.render_to_string action: 'show', formats: [:xlsx]
+    attachments["service_request_#{sub_service_request.service_request.id}.xlsx"] = xls
+
+    if ssr.organization.tag_list.include? 'required forms'
+      request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf service_request
+      attachments["request_for_grant_billing_#{sub_service_request.service_request.id}.pdf"] = request_for_grant_billing_form
+    end
+
     @notes = service_request.protocol.notes
     
     if ssr_destroyed
@@ -132,7 +166,7 @@ class Notifier < ActionMailer::Base
     @ssrs_to_be_displayed = [ssr] if service_provider.identity.is_service_provider?(ssr)
 
     if !ssr_destroyed
-      attachments_to_add.each do |file_name, document|
+      attachments.each do |file_name, document|
         next if document.nil?
         attachments["#{file_name}"] = document
       end
@@ -246,5 +280,16 @@ class Notifier < ActionMailer::Base
     @sent = sent
     @failed = failed
     mail(:to => EPIC_QUEUE_REPORT_TO, :from => NO_REPLY_FROM, :subject => "Epic Queue Complete")
+  end
+
+  def set_instance_variables(current_user, service_request, service_list_false, service_list_true, line_items, protocol)
+    controller = ServiceRequestsController.new()
+    controller.instance_variable_set(:"@current_user", current_user)
+    controller.instance_variable_set(:"@service_request", service_request)
+    controller.instance_variable_set(:"@service_list_false", service_list_false)
+    controller.instance_variable_set(:"@service_list_true", service_list_true)
+    controller.instance_variable_set(:"@line_items", line_items)
+    controller.instance_variable_set(:"@protocol", protocol)
+    controller
   end
 end

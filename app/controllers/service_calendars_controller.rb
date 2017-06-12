@@ -41,6 +41,7 @@ class ServiceCalendarsController < ApplicationController
   before_action :authorize_dashboard_access,      if: Proc.new { params[:portal] == 'true' }
 
   def table
+    @scroll_true  = params[:scroll].present? && params[:scroll] == 'true'
     @tab          = params[:tab]
     @review       = params[:review] == 'true'
     @portal       = params[:portal] == 'true'

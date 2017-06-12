@@ -34,10 +34,13 @@ $(document).ready ->
       $('.billing-info ul').addClass('hidden')
 
   $(document).on 'click', '.page-change-arrow', ->
+    scroll = $(this).parents('.scrolling-thead').length > 0
     unless $(this).attr('disabled')
       $.ajax
         type: 'GET'
         url: $(this).data('url')
+        data:
+          scroll: scroll
 
   $(document).on 'click', '.service-calendar-row', ->
     return false if $(this).attr('disabled')
@@ -54,6 +57,7 @@ $(document).ready ->
         url: $(this).data('url')
 
   $(document).on 'change', '.visit-group-select .selectpicker', ->
+    scroll = $(this).parents('.scrolling-thead').length > 0
     page = $(this).find('option:selected').attr('page')
 
     $.ajax
@@ -61,6 +65,7 @@ $(document).ready ->
       url: $(this).data('url')
       data:
         page: page
+        scroll: scroll
 
   $(document).on 'click', '.move-visit-button', ->
     arm_id = $(this).data('arm-id')
@@ -179,11 +184,12 @@ getSRId = ->
   $("input[name='service_request_id']").val()
 
 (exports ? this).setup_xeditable_fields = () ->
-  reload_calendar = (arm_id) ->
+  reload_calendar = (arm_id, scroll) ->
     # E.g. "billing-strategy-tab" -> "billing_strategy"
     tab = $('li.custom-tab.active a').last().attr('id')
     tab = tab.substring(0, tab.indexOf("tab") - 1).replace("-", "_")
     data = $('#service-calendars').data()
+    data.scroll = scroll
     data.tab = tab
     data.arm_id = arm_id
     data.service_request_id = getSRId()
@@ -260,7 +266,8 @@ getSRId = ->
         service_request_id: getSRId()
       }
     success: () ->
-      reload_calendar($(this).data('armId'))
+      scroll = $(this).parents('.scrolling-div').length > 0
+      reload_calendar($(this).data('armId'), scroll)
 
   $('.edit-qty').editable
     params: (params) ->

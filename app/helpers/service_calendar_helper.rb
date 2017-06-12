@@ -66,7 +66,7 @@ module ServiceCalendarHelper
     line_item_count = @line_items.flatten.count
     
     ssr_count = @line_items.flatten.map(&:sub_service_request).uniq.count
-    (line_item_count + ssr_count) > 8
+    (line_item_count + ssr_count) > 10
   end
 
   def display_unit_type(liv)

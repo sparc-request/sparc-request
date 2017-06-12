@@ -1,7 +1,8 @@
-(exports ? this).reload_calendar = (arm_id, sr_id) ->
+(exports ? this).reload_calendar = (arm_id, sr_id, scroll) ->
   tab = $('li.custom-tab.active a').last().attr('id')
   tab = tab.substring(0, tab.indexOf("tab") - 1).replace("-", "_")
   data = $('#service-calendars').data()
+  data.scroll = scroll
   data.tab = tab
   data.arm_id = arm_id
   data.service_request_id = sr_id
@@ -31,9 +32,10 @@ $.fn.clearFormErrors = () ->
 $ ->
 
   $(document).on 'ajax:success', '.visit-group-form', ->
+    scroll = $(this).parents('footer').siblings('#container').find('.scrolling-div').length > 0
     arm_id = $('.visit-group-form .vg-arm-id').val()
     sr_id = $('.visit-group-form .vg-sr-id').val()
-    reload_calendar(arm_id, sr_id)
+    reload_calendar(arm_id, sr_id, scroll)
     $('#modal_place').modal('hide')
 
   $(document).on 'ajax:error', '.visit-group-form', (e, data, status, xhr) ->

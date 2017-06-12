@@ -344,22 +344,19 @@ class ServiceRequest < ApplicationRecord
 
   def total_direct_costs_per_patient arms=self.arms, line_items=nil
     total = 0.0
-    lids = line_items.map(&:id) unless line_items.nil?
     arms.each do |arm|
-      livs = line_items.nil? ? arm.line_items_visits : arm.line_items_visits.reject{|liv| !lids.include? liv.line_item_id}
-      total += arm.direct_costs_for_visit_based_service livs
+      livs = line_items.nil? ? arm.line_items_visits : arm.line_items_visits.where(line_item: line_items)
+      total += arm.direct_costs_for_visit_based_service(livs.eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol]))
     end
-
     total
   end
 
   def total_indirect_costs_per_patient arms=self.arms, line_items=nil
     total = 0.0
     if USE_INDIRECT_COST
-      lids = line_items.map(&:id) unless line_items.nil?
       arms.each do |arm|
-        livs = line_items.nil? ? arm.line_items_visits : arm.line_items_visits.reject{|liv| !lids.include? liv.line_item_id}
-        total += arm.indirect_costs_for_visit_based_service
+        livs = line_items.nil? ? arm.line_items_visits : arm.line_items_visits.where(line_item: line_items)
+        total += arm.indirect_costs_for_visit_based_service(livs.eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol]))
       end
     end
 
@@ -371,22 +368,23 @@ class ServiceRequest < ApplicationRecord
   end
 
   def total_direct_costs_one_time line_items=self.line_items
-    total = 0.0
-    line_items.select {|x| x.service.one_time_fee}.each do |li|
-      total += li.direct_costs_for_one_time_fee
-    end
-
-    total
+    line_items.joins(:service).
+      where(services: { one_time_fee: true }).
+      eager_load(
+        :admin_rates,
+        service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]],
+        service_request: :protocol).
+      sum(&:direct_costs_for_one_time_fee)
   end
 
   def total_indirect_costs_one_time line_items=self.line_items
     total = 0.0
     if USE_INDIRECT_COST
-      line_items.select {|x| x.service.one_time_fee}.each do |li|
-        total += li.indirect_costs_for_one_time_fee
-      end
+      total += line_items.joins(:service).
+        where(services: { one_time_fee: true }).
+        eager_load(:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol).
+        sum(&:indirect_costs_for_one_time_fee)
     end
-
     total
   end
 
@@ -395,7 +393,13 @@ class ServiceRequest < ApplicationRecord
   end
 
   def direct_cost_total line_items=self.line_items
-    self.total_direct_costs_one_time(line_items) + self.total_direct_costs_per_patient(self.arms, line_items)
+    otf = self.total_direct_costs_one_time(line_items)
+    puts "!"*50
+    puts "!"*50
+    puts "!"*50
+    pppv = self.total_direct_costs_per_patient(self.arms, line_items)
+
+    otf + pppv
   end
 
   def indirect_cost_total line_items=self.line_items

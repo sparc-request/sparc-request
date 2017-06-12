@@ -48,7 +48,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
     visit dashboard_sub_service_request_path(ssr)
     wait_for_javascript_to_finish
 
-    click_link 'Study Schedule'
+    click_link 'Clinical Services'
     
     wait_for_javascript_to_finish
   end

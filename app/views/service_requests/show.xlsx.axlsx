@@ -28,6 +28,7 @@ rt_hdr_odd_style = wb.styles.add_style :alignment => {:horizontal => :center}
 rt_even_style = wb.styles.add_style bg_color: 'E8E8E8', :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
 rt_odd_style = wb.styles.add_style :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
 row_header_style = wb.styles.add_style b: true
+wrapped_row_header_style = wb.styles.add_style b: true, alignment: { wrap_text: true }
 header_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :left }
 header_centered_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :center, wrap_text: true }
 sub_header_style = wb.styles.add_style sz: 12, b: true, bg_color: 'E8E8E8', alignment: { horizontal: :left }
@@ -64,7 +65,9 @@ wb.add_worksheet(name: "Review") do |sheet|
       proxy_row << ""
     end
   else
-    proxy_row += ["", ""]
+    (6 + @admin_offset.to_i).times do
+     proxy_row << ""
+    end
   end
 
   sheet.add_row proxy_row, :style => sub_header_style
@@ -83,7 +86,9 @@ wb.add_worksheet(name: "Review") do |sheet|
       doc_row << ""
     end
   else
-    doc_row += ["", "", ""]
+    (6 + @admin_offset.to_i).times do
+      doc_row << ""
+    end
   end
 
   sheet.add_row doc_row, :style => sub_header_style
@@ -312,6 +317,25 @@ wb.add_worksheet(name: "Review") do |sheet|
   grand_total_row += ["Total Cost", display_study_grand_total(@service_request.protocol, @service_request)]
   grand_total_row = sheet.add_row(grand_total_row, :style => row_header_style)
 
+  ## signatures and disclaimer
+
+  sheet.add_row
+
+  signatures_text  = "The Signatures of the Principal Investigator and Study Delegate (study coordinator, grants adminstrator, etc.) indicate that this Study Calendar "
+  signatures_text2 = "has been reviewed; the _____________________________________________________ billable services have been identified and the highlighted services "
+  signatures_text3 = "should be included in an order set for unlicensed staff to process standing orders for the abive identified study."
+
+  first_signature_row = sheet.add_row([signatures_text], :style => row_header_style)
+  sheet.add_row([signatures_text2], :style => row_header_style)
+  sheet.add_row([signatures_text3], :style => row_header_style)
+  sheet.add_row
+
+  sheet.add_row(["Principal Investigator Signature:                     ___________________________________________________      Date: ____________________"], :style => default)
+  sheet.add_row
+  sheet.add_row(["Study Delegate Signature:                              ___________________________________________________      Date: ____________________"], :style => default)
+  sheet.add_row
+  sheet.add_row(["___________________ Delegate Signature: ___________________________________________________      Date: ____________________"], :style => default)
+
   ###### style and merge cells ######
 
   end_column = "G"
@@ -384,4 +408,17 @@ wb.add_worksheet(name: "Review") do |sheet|
   begin_column = alpha_array[visit_count + from_left - 3]
   end_column = alpha_array[visit_count + from_left - 2]
   sheet.merge_cells("#{begin_column}#{grand_total_row.index+1}:#{end_column}#{grand_total_row.index+1}") if has_per_patient_per_visit_services
+
+
+  ### added for signature section, fix the width of A, and then merge cells
+  sheet.column_info[0].width = 100
+  sheet.merge_cells("A#{first_signature_row.index+1}:D#{first_signature_row.index+1}")
+  sheet.merge_cells("A#{first_signature_row.index+2}:D#{first_signature_row.index+2}")
+  sheet.merge_cells("A#{first_signature_row.index+3}:D#{first_signature_row.index+3}")
+  sheet.merge_cells("A#{first_signature_row.index+4}:D#{first_signature_row.index+4}")
+  sheet.merge_cells("A#{first_signature_row.index+5}:D#{first_signature_row.index+5}")
+  sheet.merge_cells("A#{first_signature_row.index+6}:D#{first_signature_row.index+6}")
+  sheet.merge_cells("A#{first_signature_row.index+7}:D#{first_signature_row.index+7}")
+  sheet.merge_cells("A#{first_signature_row.index+8}:D#{first_signature_row.index+8}")
+  sheet.merge_cells("A#{first_signature_row.index+9}:D#{first_signature_row.index+9}")
 end

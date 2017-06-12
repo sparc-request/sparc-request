@@ -22,7 +22,7 @@ $("#check-all-row-<%=@line_items_visit.id%>").replaceWith("<%= j render 'service
 
 # Replace visits
 <% @visits.paginate(page: @page.to_i, per_page: Visit.per_page).each do |visit| %>
-$("#visit-<%=visit.id%>").replaceWith('<%= j render "service_calendars/master_calendar/pppv/template/template_visit_input", visit: visit, tab: @tab, page: @page, admin: @admin, locked: @locked %>')
+$(".visit-<%=visit.id%>").replaceWith('<%= j render "service_calendars/master_calendar/pppv/template/template_visit_input", visit: visit, tab: @tab, page: @page, admin: @admin, locked: @locked %>')
 <% end %>
 
 # Replace Per Patient / Study Totals

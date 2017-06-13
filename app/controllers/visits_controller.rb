@@ -91,7 +91,6 @@ class VisitsController < ApplicationController
   end
 
   def authorize_admin
-    binding.pry
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @service_request     = @sub_service_request.service_request
 

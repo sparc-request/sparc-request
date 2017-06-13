@@ -36,9 +36,9 @@ class ServiceCalendarsController < ApplicationController
   respond_to :html, :js
   layout false
 
-  before_action :initialize_service_request,      if: Proc.new{ params[:portal] != 'true' }
-  before_action :authorize_identity,              if: Proc.new { params[:portal] != 'true' }
-  before_action :authorize_dashboard_access,      if: Proc.new { params[:portal] == 'true' }
+  before_action :initialize_service_request, if: Proc.new{ params[:portal] != 'true' || params[:admin] != 'true' }
+  before_action :authorize_identity,         if: Proc.new { params[:portal] != 'true' || params[:admin] != 'true' }
+  before_action :authorize_dashboard_access, if: Proc.new { params[:portal] == 'true' || params[:admin] == 'true' }
 
   def table
     @tab          = params[:tab]

@@ -29,12 +29,13 @@ $('#modal_place').modal('hide')
 <% end %>
 
 <% if @admin %>
+# Replace SSR Header
 $('#sub_service_request_header').html("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: SubServiceRequest.eager_load(line_items: [:admin_rates, line_items_visits: :arm, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol]).find(@sub_service_request.id) %>")
 $('.selectpicker').selectpicker()
 <% end %>
 
 # Replace Visit
-$(".visit-<%=@visit.id%>:visible").replaceWith('<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_visit_input", visit: @visit, line_items_visit: @line_items_visit, admin: @admin, tab: @tab, page: @page, locked: @locked %>')
+$(".visit-<%=@visit.id%>:visible").html('<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_visit_input", visit: @visit, line_items_visit: @line_items_visit, admin: @admin, tab: @tab, page: @page, locked: @locked %>')
 
 # Replace Per Patient / Study Totals
 $(".visit-<%=@visit.id%>:visible").parent().siblings('.pppv-per-patient-line-item-total').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_patient', liv: @line_items_visit %>")

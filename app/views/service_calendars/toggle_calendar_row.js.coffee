@@ -25,9 +25,15 @@ $("#check-all-row-<%=@line_items_visit.id%>").replaceWith("<%= j render 'service
 $("#check-all-column-<%=vg.id%>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_column', service_request: @service_request, sub_service_request: @sub_service_request, visit_group: vg, page: @page, admin: @admin %>")
 <% end %>
 
+<% if @admin %>
+# Replace SSR Header
+$('#sub_service_request_header').html("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: SubServiceRequest.eager_load(line_items: [:admin_rates, line_items_visits: :arm, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol]).find(@sub_service_request.id) %>")
+$('.selectpicker').selectpicker()
+<% end %>
+
 # Replace visits
 <% @visits.paginate(page: @page.to_i, per_page: Visit.per_page).each do |visit| %>
-$(".visit-<%=visit.id%>").replaceWith('<%= j render "service_calendars/master_calendar/pppv/template/template_visit_input", visit: visit, tab: @tab, page: @page, admin: @admin, locked: @locked %>')
+$(".visit-<%=visit.id%>:visible").html('<%= j render "service_calendars/master_calendar/pppv/template/template_visit_input", visit: visit, tab: @tab, page: @page, admin: @admin, locked: @locked %>')
 <% end %>
 
 # Replace Per Patient / Study Totals

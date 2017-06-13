@@ -36,9 +36,9 @@ class ServiceCalendarsController < ApplicationController
   respond_to :html, :js
   layout false
 
-  before_action :initialize_service_request, if: Proc.new{ params[:portal] != 'true' || params[:admin] != 'true' }
-  before_action :authorize_identity,         if: Proc.new { params[:portal] != 'true' || params[:admin] != 'true' }
-  before_action :authorize_dashboard_access, if: Proc.new { params[:portal] == 'true' || params[:admin] == 'true' }
+  before_action :initialize_service_request, unless: :in_dashboard?
+  before_action :authorize_identity,         unless: :in_dashboard?
+  before_action :authorize_dashboard_access, if: :in_dashboard?
 
   def table
     @tab          = params[:tab]
@@ -176,6 +176,10 @@ class ServiceCalendarsController < ApplicationController
 
   private
 
+  def in_dashboard?
+    (params[:portal] && params[:portal] == 'true') || (params[:admin] && params[:admin] == 'true')
+  end
+
   def authorize_dashboard_access
     if params[:sub_service_request_id]
       authorize_admin
@@ -188,13 +192,8 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def authorize_protocol
-    @protocol = if params[:protocol_id]
-                  Protocol.find(params[:protocol_id])
-                else
-                  Arm.find(params[:arm_id]).protocol
-                end
-
-    permission_to_view = current_user.can_view_protocol?(@protocol)
+    @protocol           = @service_request ? @service_request.protocol : Protocol.find(params[:protocol_id])
+    permission_to_view  = current_user.can_view_protocol?(@protocol)
 
     unless permission_to_view || Protocol.for_admin(current_user.id).include?(@protocol)
       @protocol = nil

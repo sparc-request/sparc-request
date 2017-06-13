@@ -65,6 +65,8 @@ RSpec.describe VisitsController do
           arm       = create(:arm_without_validations, protocol: protocol)
           visit     = arm.visits.first
 
+          session[:identity_id] = logged_in_user.id
+          
           xhr :put, :update, {
             id: visit.id,
             admin: 'false',
@@ -89,8 +91,11 @@ RSpec.describe VisitsController do
           arm       = create(:arm_without_validations, protocol: protocol)
           visit     = arm.visits.first
 
+          session[:identity_id] = logged_in_user.id
+
           xhr :put, :update, {
             id: visit.id,
+            sub_service_request_id: ssr.id,
             admin: 'true',
             page: '1',
             visit: {

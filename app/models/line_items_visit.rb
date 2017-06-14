@@ -29,7 +29,7 @@ class LineItemsVisit < ApplicationRecord
   has_one :service_request, through: :line_item
   has_one :sub_service_request, through: :line_item
   has_one :service, through: :line_item
-  has_many :visits, :dependent => :destroy
+  has_many :visits, -> { includes(:visit_group).order("visit_groups.position") }, :dependent => :destroy
   has_many :notes, as: :notable, dependent: :destroy
 
   validate :subject_count_valid

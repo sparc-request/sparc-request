@@ -68,13 +68,23 @@ $(document).ready ->
         scroll: scroll
 
   $(document).on 'click', '.move-visit-button', ->
-    arm_id = $(this).data('arm-id')
     $.ajax
       type: 'GET'
       url: '/service_calendars/show_move_visits'
       data:
-        arm_id: arm_id
-        service_request_id: getSRId()
+        arm_id:                 $(this).data('arm-id')
+        service_request_id:     getSRId()
+        sub_service_request_id: getSSRId()
+        tab:                    $(this).data('tab')
+        pages:                  $(this).data('pages')
+        page:                   $(this).data('page')
+        review:                 $(this).data('review')
+        portal:                 $(this).data('portal')
+        admin:                  $(this).data('admin')
+        visit_groups:           $(this).data('visit-groups')
+        merged:                 $(this).data('merged')
+        consolidated:           $(this).data('consolidated')
+        statuses_hidden:        $(this).data('statuses-hidden')
     return false
 
   $(document).on 'click', '.freeze-header-button', ->
@@ -131,13 +141,26 @@ $(document).ready ->
       url: "/visits/#{$(this).data('visit-id')}/edit"
 
   $(document).on 'change', '#visit_group', ->
+    arm_id = $('#arm_id').val()
+    move_visit_button = $(".arm-calendar-container-#{arm_id}").find('.move-visit-button')
     $.ajax
       type: 'GET'
       url: '/service_calendars/show_move_visits'
       data:
-        arm_id: $('#arm_id').val()
-        visit_group_id: $(this).val()
-        service_request_id: getSRId()
+        arm_id:                   arm_id
+        visit_group_id:           $(this).val()
+        service_request_id:       getSRId()
+        sub_service_request_id:   getSSRId()
+        tab:                      $(move_visit_button).data('tab')
+        pages:                    $(move_visit_button).data('pages')
+        page:                     $(move_visit_button).data('page')
+        review:                   $(move_visit_button).data('review')
+        portal:                   $(move_visit_button).data('portal')
+        admin:                    $(move_visit_button).data('admin')
+        visit_groups:             $(move_visit_button).data('visit-groups')
+        merged:                   $(move_visit_button).data('merged')
+        consolidated:             $(move_visit_button).data('consolidated')
+        statuses_hidden:          $(move_visit_button).data('statuses-hidden')
 
   # NOTES LISTENERS BEGIN
   $(document).on 'click', 'button.btn-link.notes',  ->

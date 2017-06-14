@@ -13,13 +13,19 @@ before_script:
   - mysql -e 'create database test_sparc_request;'
 script:
   - RAILS_ENV=test bundle exec rake db:migrate
+script:
   - bundle exec rspec spec/api
-  - bundle exec rspec spec/controllers
   - bundle exec rspec spec/extensions
-  - bundle exec rspec spec/features
+  - bundle exec rspec spec/mailers
   - bundle exec rspec spec/helpers
   - bundle exec rspec spec/jobs
+script:
   - bundle exec rspec spec/lib
-  - bundle exec rspec spec/mailers
+script:
   - bundle exec rspec spec/models
   - bundle exec rspec spec/views
+script:
+  - bundle exec rspec spec/controllers
+script:
+  - bundle exec rspec spec/features
+

@@ -2,6 +2,7 @@ class AdditionalDetails::SubmissionsController < ApplicationController
   before_action :authenticate_identity!
   layout 'additional_details'
   include AdditionalDetails::StatesHelper
+  protect_from_forgery except: [:show, :edit, :new]
 
   def index
     @service = Service.find(params[:service_id])

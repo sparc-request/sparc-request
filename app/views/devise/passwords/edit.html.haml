@@ -18,39 +18,21 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .devise-form
-  .col-sm-6.col-sm-offset-3.text-center
+  .col-md-6.col-md-offset-3.text-center
     %h1.page-header
-      = t(:identities)[:approved]
-    .form
-      .form-group.field
-        %label.col-sm-3.text-right
-          = t(:devise)[:registrations][:last_name]
-        .col-sm-9
-          = text_field_tag :last_name, @identity.last_name, class: 'form-control', disabled: true
-      .form-group.field
-        %label.col-sm-3.text-right
-          = t(:devise)[:registrations][:first_name]
-        .col-sm-9
-          = text_field_tag :first_name, @identity.first_name, class: 'form-control', disabled: true
-      .form-group.field
-        %label.col-sm-3.text-right
-          = t(:devise)[:registrations][:company]
-        .col-sm-9
-          = text_field_tag :company, @identity.company, class: 'form-control', disabled: true
-      .form-group.field
-        %label.col-sm-3.text-right
-          = t(:devise)[:registrations][:email]
-        .col-sm-9
-          = text_field_tag :email, @identity.email, class: 'form-control', disabled: true
-      .form-group.field
-        %label.col-sm-3.text-right
-          = t(:devise)[:registrations][:phone]
-        .col-sm-9
-          = text_field_tag :phone, @identity.phone, class: 'form-control', disabled: true
-      .form-group.field
-        %label.col-sm-3.text-right
-          = t(:devise)[:registrations][:reason]
-        .col-sm-9
-          = text_area_tag :reason, params[:reason], class: 'form-control', disabled: true
-    %hr
-      = link_to t(:proper)[:confirmation][:to_dashboard], DASHBOARD_LINK, class: 'btn btn-lg btn-success'
+      = t(:devise)[:passwords][:edit][:header]
+    #change-password-form
+      = form_for resource, as: resource_name, url: password_path(resource_name), method: :put do |f|
+        = f.hidden_field :reset_password_token, value: resource.reset_password_token
+        - if resource.errors.any?
+          = render 'shared/modal_errors', errors: resource.errors
+        .form-group.field
+          = f.label :password, t(:devise)[:passwords][:edit][:new_password]
+          = f.password_field :password, class: 'form-control'
+        .form-group.field
+          = f.label :password_confirmation, t(:devise)[:passwords][:edit][:confirm_password]
+          = f.password_field :password_confirmation, class: 'form-control'
+        .form-group
+          = f.submit t(:devise)[:passwords][:edit][:submit], class: 'btn btn-primary'
+      .links
+        = render 'devise/shared/links'

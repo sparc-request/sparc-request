@@ -82,6 +82,10 @@ en:
         content: "Question"
       question_response:
         content: "Question"
+      visit:
+        research_billing_qty: "Research Billing Quantity"
+        insurance_billing_qty: "Insurance Billing Quantity"
+        effort_billing_qty: "Effort Billing Quantity"
 
   ########
   # ARMS #

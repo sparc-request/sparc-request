@@ -20,13 +20,24 @@
 # Replace checkbox
 $("#check-all-column-<%=@visit_group.id%>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_column', service_request: @service_request, sub_service_request: @sub_service_request, visit_group: @visit_group, page: @page, admin: @admin %>")
 
+# Replace Row checkboxes
+<% @line_items_visits.each do |liv| %>
+$("#check-all-row-<%=liv.id%>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_row', service_request: @service_request, sub_service_request: @sub_service_request, liv: liv, page: @page, admin: @admin, locked: @locked %>")
+<% end %>
+
+<% if @admin %>
+# Replace SSR Header
+$('#sub_service_request_header').html("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: SubServiceRequest.eager_load(line_items: [:admin_rates, line_items_visits: :arm, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol]).find(@sub_service_request.id) %>")
+$('.selectpicker').selectpicker()
+<% end %>
+
 <% @visits.each do |visit| %>
 # Replace visits
-$(".visit-<%=visit.id%>").replaceWith('<%= j render "service_calendars/master_calendar/pppv/template/template_visit_input", visit: visit, tab: @tab, page: @page, admin: @admin, locked: @locked %>')
+$(".visit-<%=visit.id%>:visible").html('<%= j render "service_calendars/master_calendar/pppv/template/template_visit_input", visit: visit, tab: @tab, page: @page, admin: @admin, locked: @locked %>')
 
 # Replace Per Patient / Study Totals
-$(".visit-<%=visit.id%>").parent().siblings('.pppv-per-patient-line-item-total').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_patient', liv: visit.line_items_visit %>")
-$(".visit-<%=visit.id%>").parent().siblings('.pppv-per-study-line-item-total').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_study', liv: visit.line_items_visit %>")
+$(".visit-<%=visit.id%>:visible").parent().siblings('.pppv-per-patient-line-item-total').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_patient', liv: visit.line_items_visit %>")
+$(".visit-<%=visit.id%>:visible").parent().siblings('.pppv-per-study-line-item-total').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_study', liv: visit.line_items_visit %>")
 <% end %>
 
 # Replace Totals

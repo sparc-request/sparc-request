@@ -128,6 +128,12 @@ module ApplicationHelper
     end
   end
 
+  def display_service_name(service)
+    name = content_tag(:span, service.display_service_name)
+    name = name + content_tag(:span, '(Inactive)', class: 'inactive-text') unless service.is_available
+    name
+  end
+
   ##Sets css bootstrap classes for rails flash message types##
   def twitterized_type type
     case type.to_sym

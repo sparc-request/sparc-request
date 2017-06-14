@@ -42,30 +42,30 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
 
   describe '#destroy' do
     it 'should assign @service' do
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: @submission.id,
         service_id: @service.id
-      }
+      }, format: :js
 
       expect(assigns(:service)).to eq(@service)
     end
 
     it 'should assign @submission' do
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: @submission.id,
         service_id: @service.id
-      }
+      }, format: :js
 
       expect(assigns(:submission)).to eq(@submission)
     end
 
     context 'params[:protocol_id] present' do
       before :each do
-        xhr :delete, :destroy, {
+        delete :destroy, params: {
           id: @submission.id,
           service_id: @service.id,
           protocol_id: @protocol.id
-        }
+        }, format: :js
       end
 
       it 'should assign @protocol' do
@@ -83,11 +83,11 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
 
     context 'params[:line_item_id] present' do
       before :each do
-        xhr :delete, :destroy, {
+        delete :destroy, params: {
           id: @submission.id,
           service_id: @service.id,
           line_item_id: @li.id
-        }
+        }, format: :js
       end
 
       it 'should assign @line_item' do
@@ -100,28 +100,28 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
     end
 
     it 'should destroy submission' do
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: @submission.id,
         service_id: @service.id
-      }
+      }, format: :js
 
       expect(Submission.count).to eq(1)
     end
 
     it 'should render template' do
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: @submission.id,
         service_id: @service.id
-      }
+      }, format: :js
 
       expect(controller).to render_template(:destroy)
     end
 
     it 'should respond ok' do
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: @submission.id,
         service_id: @service.id
-      }
+      }, format: :js
 
       expect(controller).to respond_with(:ok)
     end

@@ -39,7 +39,7 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
 
   describe '#update' do
     it 'should assign @service' do
-      xhr :put, :update, {
+      put :update, params: {
         id: @submission.id,
         service_id: @service.id,
         submission: {
@@ -47,13 +47,13 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
           identity_id: logged_in_user.id,
           service_id: @service.id
         }
-      }
+      }, format: :js
 
       expect(assigns(:service)).to eq(@service)
     end
 
     it 'should assign @submission' do
-      xhr :put, :update, {
+      put :update, params: {
         id: @submission.id,
         service_id: @service.id,
         submission: {
@@ -61,14 +61,14 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
           identity_id: logged_in_user.id,
           service_id: @service.id
         }
-      }
+      }, format: :js
 
       expect(assigns(:submission)).to eq(@submission.reload)
     end
 
     context 'params[:sr_id] present' do
       it 'should assign @service_request' do
-        xhr :put, :update, {
+        put :update, params: {
           id: @submission.id,
           service_id: @service.id,
           sr_id: @sr.id,
@@ -77,7 +77,7 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
             identity_id: logged_in_user.id,
             service_id: @service.id
           }
-        }
+        }, format: :js
 
         expect(assigns(:service_request)).to eq(@sr)
       end
@@ -85,7 +85,7 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
 
     context 'params[:sr_id] not present' do
       it 'should not assign @service_request' do
-        xhr :put, :update, {
+        put :update, params: {
           id: @submission.id,
           service_id: @service.id,
           submission: {
@@ -93,14 +93,14 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
             identity_id: logged_in_user.id,
             service_id: @service.id
           }
-        }
+        }, format: :js
 
         expect(assigns(:service_request)).to_not be
       end
     end
 
     it 'should update submission' do
-      xhr :put, :update, {
+      put :update, params: {
         id: @submission.id,
         service_id: @service.id,
         submission: {
@@ -114,13 +114,13 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
             }
           }
         }
-      }
+      }, format: :js
 
       expect(@que_resp.reload.content).to eq('I do not like green eggs & ham.')
     end
 
     it 'should render template' do
-      xhr :put, :update, {
+      put :update, params: {
         id: @submission.id,
         service_id: @service.id,
         submission: {
@@ -128,20 +128,20 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
           identity_id: logged_in_user.id,
           service_id: @service.id
         }
-      }
+      }, format: :js
 
       expect(controller).to render_template(:update)
     end
 
     it 'should respond ok' do
-      xhr :put, :update, {
+      put :update, params: {
         id: @submission.id,
         service_id: @service.id,
         submission: {
           id: @submission.id,
           identity_id: logged_in_user.id,
           service_id: @service.id
-        }
+        }, format: :js
       }
 
       expect(controller).to respond_with(:ok)

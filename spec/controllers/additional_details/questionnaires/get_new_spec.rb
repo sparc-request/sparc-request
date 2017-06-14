@@ -28,9 +28,9 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
     before :each do
       @service = create(:service)
 
-      xhr :get, :new, {
+      get :new, params: {
         service_id: @service.id
-      }
+      }, format: :js
     end
 
     it 'should assign @service' do

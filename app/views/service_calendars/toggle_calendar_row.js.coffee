@@ -37,8 +37,8 @@ $(".visit-<%=visit.id%>:visible").html('<%= j render "service_calendars/master_c
 <% end %>
 
 # Replace Per Patient / Study Totals
-$("#check-all-row-<%=@line_items_visit.id%>").siblings('.pppv-per-patient-line-item-total').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_patient', liv: @line_items_visit %>")
-$("#check-all-row-<%=@line_items_visit.id%>").siblings('.pppv-per-study-line-item-total').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_study', liv: @line_items_visit %>")
+$("#check-all-row-<%=@line_items_visit.id%>").parent().siblings('.pppv-per-patient-line-item-total').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_patient', liv: @line_items_visit %>")
+$("#check-all-row-<%=@line_items_visit.id%>").parent().siblings('.pppv-per-study-line-item-total').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_study', liv: @line_items_visit %>")
 
 # Replace Totals
 $(".arm-<%=@arm.id%>.maximum-total-direct-cost-per-patient").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/totals/max_total_direct_per_patient', arm: @arm, visit_groups: @visit_groups, line_items_visits: @line_items_visits, tab: @tab, page: @page %>")

@@ -149,10 +149,9 @@ class Protocol < ApplicationRecord
     # Searches protocols based on 'Authorized User', 'HR#', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title', OR 'Search All'
     # Protects against SQL Injection with ActiveRecord::Base::sanitize
     # inserts ! so that we can escape special characters
-    escaped_search_term = search_attrs[:search_text].to_s.gsub(/[!%_]/) { |x| '!' + x }
-    like_search_term = sanitize_sql_like("%#{escaped_search_term}%")
-    test = ActiveRecord::Base.connection.quote("%#{escaped_search_term}%")
-    exact_search_term = search_attrs[:search_text]
+
+    like_search_term = ActiveRecord::Base.connection.quote("%#{escaped_search_term}%")
+    exact_search_term = ActiveRecord::Base.connection.quote(search_attrs[:search_text])
 
     ### SEARCH QUERIES ###
     authorized_user_query  = "CONCAT(identities.first_name, ' ', identities.last_name) LIKE #{like_search_term} escape '!'"

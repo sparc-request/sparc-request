@@ -14,13 +14,16 @@ before_script:
   - RAILS_ENV=test bundle exec rake db:migrate
 jobs:
   include:
-    - script: bundle exec rspec spec/api
-    - script: bundle exec rspec spec/extensions
-    - script: bundle exec rspec spec/jobs
-    - script: bundle exec rspec spec/helpers
-    - script: bundle exec rspec spec/mailers
-    - script: bundle exec rspec spec/controllers
-    - script: bundle exec rspec spec/features
-    - script: bundle exec rspec spec/lib
-    - script: bundle exec rspec spec/models
-    - script: bundle exec rspec spec/views
+    - script:
+      - bundle exec rspec spec/api
+      - bundle exec rspec spec/extensions
+      - bundle exec rspec spec/jobs
+      - bundle exec rspec spec/helpers
+      - bundle exec rspec spec/mailers
+    - script:
+      - bundle exec rspec spec/controllers
+      - bundle exec rspec spec/lib
+      - bundle exec rspec spec/models
+      - bundle exec rspec spec/views
+    - script:
+      - bundle exec rspec spec/features

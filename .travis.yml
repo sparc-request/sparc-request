@@ -20,10 +20,9 @@ jobs:
       - bundle exec rspec spec/jobs
       - bundle exec rspec spec/helpers
       - bundle exec rspec spec/mailers
-    - script:
-      - bundle exec rspec spec/controllers
       - bundle exec rspec spec/lib
       - bundle exec rspec spec/models
       - bundle exec rspec spec/views
     - script:
+      - bundle exec rspec spec/controllers
       - bundle exec rspec spec/features

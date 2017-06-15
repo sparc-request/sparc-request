@@ -36,7 +36,7 @@ class VisitGroupsController < ApplicationController
     @visit_group = VisitGroup.find(params[:id])
 
     if @visit_group.update_attributes(visit_group_params)
-      render nothing: true
+      head :ok
     else
       # If we update the visit group day, then @visit_group.day is already updated, therefore
       # any errors for day are not deleted.
@@ -54,7 +54,7 @@ class VisitGroupsController < ApplicationController
       else
         @visit_group.attributes = visit_group_params
         @visit_group.save(validate: false)
-        render nothing: true
+        head :ok
       end
     end
   end

@@ -40,11 +40,11 @@ RSpec.describe DocumentsController, type: :controller do
       doc_params  = { doc_type: 'Neurology',  }
 
 
-      xhr :post, :create, {
+      post :create, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id,
         document: doc_params
-      }
+      }, xhr: true
 
       expect(assigns(:protocol)).to eq(protocol)
     end
@@ -55,11 +55,11 @@ RSpec.describe DocumentsController, type: :controller do
       doc_params  = { doc_type: 'Neurology', document: Rack::Test::UploadedFile.new(File.join('doc', 'musc_installation_example.txt'),'txt/plain') }
 
 
-      xhr :post, :create, {
+      post :create, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id,
         document: doc_params
-      }
+      }, xhr: true
 
       expect(assigns(:document).class).to eq(Document)
       expect(assigns(:document).protocol).to eq(protocol)
@@ -73,11 +73,11 @@ RSpec.describe DocumentsController, type: :controller do
 
 
 
-        xhr :post, :create, {
-        service_request_id: sr.id,
+        post :create, params: {
+          service_request_id: sr.id,
           protocol_id: protocol.id,
           document: doc_params
-        }
+        }, xhr: true
 
         expect(Document.count).to eq(1)
       end
@@ -90,12 +90,12 @@ RSpec.describe DocumentsController, type: :controller do
         doc_params  = { doc_type: 'Neurology', document: Rack::Test::UploadedFile.new(File.join('doc', 'musc_installation_example.txt'),'text/plain') }
 
 
-        xhr :post, :create, {
-        service_request_id: sr.id,
+        post :create, params: {
+          service_request_id: sr.id,
           protocol_id: protocol.id,
           org_ids: [org.id],
           document: doc_params
-        }
+        }, xhr: true
 
         expect(assigns(:document).sub_service_requests.include?(ssr)).to eq(true)
       end
@@ -108,11 +108,11 @@ RSpec.describe DocumentsController, type: :controller do
         doc_params  = { doc_type: '' }
 
 
-        xhr :post, :create, {
-        service_request_id: sr.id,
+        post :create, params: {
+          service_request_id: sr.id,
           protocol_id: protocol.id,
           document: doc_params
-        }
+        }, xhr: true
 
         expect(Document.count).to eq(0)
       end
@@ -123,11 +123,11 @@ RSpec.describe DocumentsController, type: :controller do
         doc_params  = { doc_type: '' }
 
 
-        xhr :post, :create, {
-        service_request_id: sr.id,
+        post :create, params: {
+          service_request_id: sr.id,
           protocol_id: protocol.id,
           document: doc_params
-        }
+        }, xhr: true
 
         expect(assigns(:errors)).to be
       end
@@ -139,11 +139,11 @@ RSpec.describe DocumentsController, type: :controller do
       doc_params  = { doc_type: 'Neurology', document: Rack::Test::UploadedFile.new(File.join('doc', 'musc_installation_example.txt'),'txt/plain') }
 
 
-      xhr :post, :create, {
+      post :create, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id,
         document: doc_params
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:create)
     end
@@ -154,11 +154,11 @@ RSpec.describe DocumentsController, type: :controller do
       doc_params  = { doc_type: 'Neurology', document: Rack::Test::UploadedFile.new(File.join('doc', 'musc_installation_example.txt'),'txt/plain') }
 
 
-      xhr :post, :create, {
+      post :create, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id,
         document: doc_params
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

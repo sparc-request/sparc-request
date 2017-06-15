@@ -46,7 +46,7 @@ RSpec.describe Dashboard::MessagesController do
         and_return("new message")
 
       log_in_dashboard_identity(obj: @logged_in_user)
-      xhr :get, :new, @new_message_attrs
+      get :new, params: @new_message_attrs, xhr: true
     end
 
     it "should create a new Message from current user to user other than current user of Notification" do

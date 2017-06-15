@@ -32,7 +32,7 @@ class LineItemsController < ApplicationController
     if @line_item.update_attributes(line_item_params)
       @service_request.update_attributes(status: 'draft')
       @line_item.sub_service_request.update_attributes(status: 'draft')
-      render nothing: true
+      head :ok
     else
       render json: @line_item.errors, status: :unprocessable_entity
     end

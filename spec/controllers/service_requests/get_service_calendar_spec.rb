@@ -56,10 +56,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
       arm      = create(:arm, protocol: protocol)
       pages    = { arm.id.to_s => '3' }
 
-      xhr :get, :service_calendar, {
+      get :service_calendar, params: {
         id: sr.id,
         pages: pages
-      }
+      }, xhr: true
 
       expect(session[:service_calendar_pages]).to eq(ActionController::Parameters.new(pages))
     end
@@ -73,9 +73,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                  create(:arm, protocol: protocol)
 
-      xhr :get, :service_calendar, {
+      get :service_calendar, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:service_calendar)
     end
@@ -89,9 +89,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                  create(:arm, protocol: protocol)
 
-      xhr :get, :service_calendar, {
+      get :service_calendar, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

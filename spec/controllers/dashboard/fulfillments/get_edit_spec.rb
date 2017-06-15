@@ -28,7 +28,7 @@ RSpec.describe Dashboard::FulfillmentsController do
       end
 
       log_in_dashboard_identity(obj: build_stubbed(:identity))
-      xhr :get, :edit, id: @fulfillment.id
+      get :edit, params: { id: @fulfillment.id }, xhr: true
     end
 
     it "should assign @fulfillment from params[:id]" do

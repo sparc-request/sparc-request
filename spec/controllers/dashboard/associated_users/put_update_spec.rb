@@ -37,10 +37,17 @@ RSpec.describe Dashboard::AssociatedUsersController do
           build_stubbed(:project_role, protocol: @protocol)
         end
 
+<<<<<<< HEAD
         put :update, params: {
           id: project_role.id,
           protocol_id: @protocol.id
         }, xhr: true
+=======
+        put :update,  params: {
+          id: project_role.id,
+          protocol_id: @protocol.id
+          }, xhr: true
+>>>>>>> jtm finished some controller specs
       end
 
       it "should use ProtocolAuthorizer to authorize user" do
@@ -70,16 +77,20 @@ RSpec.describe Dashboard::AssociatedUsersController do
         allow(AssociatedUserUpdater).to receive(:new).
           and_return(project_role_updater)
 
+<<<<<<< HEAD
         put :update, params: {
           id: @project_role.id,
           protocol_id: @protocol.id,
           project_role: {identity_id: '1'}
         }, xhr: true
+=======
+        put :update, params: { id: @project_role.id, protocol_id: @protocol.id, project_role: {identity_id: '1'} }, xhr: true
+>>>>>>> jtm finished some controller specs
       end
 
       it 'should update @protocol_role using params[:project_role] using ProtocolUpdater' do
         expect(AssociatedUserUpdater).to have_received(:new).
-          with controller_params(id: @project_role.id.to_s, project_role: {identity_id: '1'})
+          with controller_params(id: @project_role.id.to_s, project_role: {identity_id: '1'}).to_unsafe_h
       end
 
       it 'should not set @errors' do
@@ -112,11 +123,15 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
         allow(AssociatedUserUpdater).to receive(:new).and_return(@project_role_updater)
 
+<<<<<<< HEAD
         put :update, params: {
           id: @project_role.id,
           protocol_id: @protocol.id,
           project_role: {identity_id: '1'}
         }, xhr: true
+=======
+        put :update, params: { id: @project_role.id, protocol_id: @protocol.id, project_role: {identity_id: '1'} }, xhr: true
+>>>>>>> jtm finished some controller specs
       end
 
       it 'should set @errors' do

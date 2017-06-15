@@ -4,7 +4,7 @@ RSpec.describe FeedbackController, type: :controller do
 
   describe '#GET new' do
     it 'should instantiate new Feedback object' do
-      xhr :get, :new
+      get :new, xhr: true
 
       expect(response).to be_success
     end

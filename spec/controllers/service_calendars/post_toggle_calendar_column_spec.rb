@@ -26,6 +26,59 @@ RSpec.describe ServiceCalendarsController do
   let!(:logged_in_user) { create(:identity) }
 
   describe '#toggle_calendar_column' do
+<<<<<<< HEAD
+=======
+    it 'should call before_filter #initialize_service_request' do
+      expect(before_filters.include?(:initialize_service_request)).to eq(true)
+    end
+
+    it 'should call before_filter #authorize_identity' do
+      expect(before_filters.include?(:authorize_identity)).to eq(true)
+    end
+
+    it 'should assign @arm' do
+      org       = create(:organization)
+      service   = create(:service, organization: org)
+      protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
+      ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
+      li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+      arm       = create(:arm, protocol: protocol)
+
+      session[:identity_id] = logged_in_user.id
+
+      post :toggle_calendar_column, params: {
+        service_request_id: sr.id,
+        arm_id: arm.id,
+        check: 'true',
+        portal: 'false'
+      }, xhr: true
+
+      expect(assigns(:arm)).to eq(arm)
+    end
+
+    it 'should assign @portal' do
+      org       = create(:organization)
+      service   = create(:service, organization: org)
+      protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
+      ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
+      li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+      arm       = create(:arm, protocol: protocol)
+
+      session[:identity_id] = logged_in_user.id
+
+      post :toggle_calendar_column, params: {
+        service_request_id: sr.id,
+        arm_id: arm.id,
+        check: 'true',
+        portal: 'false'
+      }, xhr: true
+
+      expect(assigns(:portal)).to eq(false)
+    end
+
+>>>>>>> jtm finished some controller specs
     context 'check' do
       it 'should update visits' do
         org       = create(:organization)
@@ -41,12 +94,21 @@ RSpec.describe ServiceCalendarsController do
 
         session[:identity_id] = logged_in_user.id
 
+<<<<<<< HEAD
         xhr :post, :toggle_calendar_column, {
           visit_group_id: arm.visit_groups.first.id,
           service_request_id: sr.id,
           page: '1',
           check: 'true',
         }
+=======
+        post :toggle_calendar_column, params: {
+          service_request_id: sr.id,
+          arm_id: arm.id,
+          check: 'true',
+          portal: 'false'
+        }, xhr: true
+>>>>>>> jtm finished some controller specs
 
         expect(v.reload.quantity).to eq(1)
         expect(v.reload.research_billing_qty).to eq(1)
@@ -70,12 +132,21 @@ RSpec.describe ServiceCalendarsController do
 
         session[:identity_id] = logged_in_user.id
 
+<<<<<<< HEAD
         xhr :post, :toggle_calendar_column, {
           visit_group_id: arm.visit_groups.first.id,
           service_request_id: sr.id,
           page: '1',
           uncheck: 'true',
         }
+=======
+        post :toggle_calendar_column, params: {
+          service_request_id: sr.id,
+          arm_id: arm.id,
+          uncheck: 'true',
+          portal: 'false'
+        }, xhr: true
+>>>>>>> jtm finished some controller specs
 
         expect(v.reload.quantity).to eq(0)
         expect(v.reload.research_billing_qty).to eq(0)
@@ -96,6 +167,7 @@ RSpec.describe ServiceCalendarsController do
 
         session[:identity_id] = logged_in_user.id
 
+<<<<<<< HEAD
         xhr :post, :toggle_calendar_column, {
           visit_group_id: arm.visit_groups.first.id,
           service_request_id: sr.id,
@@ -103,6 +175,14 @@ RSpec.describe ServiceCalendarsController do
           check: 'true',
           admin: 'false'
         }
+=======
+        post :toggle_calendar_column, params: {
+          service_request_id: sr.id,
+          arm_id: arm.id,
+          check: 'true',
+          portal: 'false'
+        }, xhr: true
+>>>>>>> jtm finished some controller specs
 
         expect(ssr.reload.status).to eq('draft')
       end
@@ -120,6 +200,7 @@ RSpec.describe ServiceCalendarsController do
 
         session[:identity_id] = logged_in_user.id
 
+<<<<<<< HEAD
         xhr :post, :toggle_calendar_column, {
           visit_group_id: arm.visit_groups.first.id,
           service_request_id: sr.id,
@@ -127,9 +208,67 @@ RSpec.describe ServiceCalendarsController do
           check: 'true',
           admin: 'true'
         }
+=======
+        post :toggle_calendar_column, params: {
+          service_request_id: sr.id,
+          arm_id: arm.id,
+          check: 'true',
+          portal: 'false'
+        }, xhr: true
+>>>>>>> jtm finished some controller specs
 
         expect(ssr.reload.status).to eq('on_hold')
       end
+<<<<<<< HEAD
+=======
+
+      context 'editing sub service request' do
+        it 'should not update other sub service requests statuses' do
+          org       = create(:organization)
+          org2      = create(:organization)
+          service   = create(:service, organization: org)
+          protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+          sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
+          ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
+          ssr2      = create(:sub_service_request_without_validations, organization: org2, service_request: sr, status: 'on_hold')
+          li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+          arm       = create(:arm, protocol: protocol)
+
+          session[:identity_id] = logged_in_user.id
+
+          post :toggle_calendar_column, params: {
+            service_request_id: sr.id,
+            arm_id: arm.id,
+            check: 'true',
+            portal: 'false'
+          }, xhr: true
+
+          expect(ssr.reload.status).to eq('draft')
+          expect(ssr2.reload.status).to eq('on_hold')
+        end
+      end
+    end
+
+    it 'should render template' do
+      org       = create(:organization)
+      service   = create(:service, organization: org)
+      protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
+      ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
+      li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+      arm       = create(:arm, protocol: protocol)
+
+      session[:identity_id] = logged_in_user.id
+
+      post :toggle_calendar_column, params: {
+        service_request_id: sr.id,
+        arm_id: arm.id,
+        check: 'true',
+        portal: 'false'
+      }, xhr: true
+
+      expect(controller).to render_template(partial: '_update_service_calendar')
+>>>>>>> jtm finished some controller specs
     end
 
     context 'editing sub service request' do
@@ -147,6 +286,7 @@ RSpec.describe ServiceCalendarsController do
 
         session[:identity_id] = logged_in_user.id
 
+<<<<<<< HEAD
         xhr :post, :toggle_calendar_column, {
           visit_group_id: arm.visit_groups.first.id,
           sub_service_request_id: ssr.id,
@@ -155,6 +295,14 @@ RSpec.describe ServiceCalendarsController do
           check: 'true',
           admin: 'false'
         }
+=======
+      post :toggle_calendar_column, params: {
+        service_request_id: sr.id,
+        arm_id: arm.id,
+        check: 'true',
+        portal: 'false'
+      }, xhr: true
+>>>>>>> jtm finished some controller specs
 
         expect(ssr.reload.status).to eq('draft')
         expect(ssr2.reload.status).to eq('on_hold')

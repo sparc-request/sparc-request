@@ -95,6 +95,7 @@ RSpec.describe ServiceCalendarsController do
         session[:identity_id] = logged_in_user.id
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         xhr :post, :toggle_calendar_column, {
           visit_group_id: arm.visit_groups.first.id,
           service_request_id: sr.id,
@@ -102,12 +103,17 @@ RSpec.describe ServiceCalendarsController do
           check: 'true',
         }
 =======
+=======
+>>>>>>> jtm finished some controller specs
         post :toggle_calendar_column, params: {
           service_request_id: sr.id,
           arm_id: arm.id,
           check: 'true',
           portal: 'false'
         }, xhr: true
+<<<<<<< HEAD
+>>>>>>> jtm finished some controller specs
+=======
 >>>>>>> jtm finished some controller specs
 
         expect(v.reload.quantity).to eq(1)
@@ -133,6 +139,7 @@ RSpec.describe ServiceCalendarsController do
         session[:identity_id] = logged_in_user.id
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         xhr :post, :toggle_calendar_column, {
           visit_group_id: arm.visit_groups.first.id,
           service_request_id: sr.id,
@@ -140,12 +147,17 @@ RSpec.describe ServiceCalendarsController do
           uncheck: 'true',
         }
 =======
+=======
+>>>>>>> jtm finished some controller specs
         post :toggle_calendar_column, params: {
           service_request_id: sr.id,
           arm_id: arm.id,
           uncheck: 'true',
           portal: 'false'
         }, xhr: true
+<<<<<<< HEAD
+>>>>>>> jtm finished some controller specs
+=======
 >>>>>>> jtm finished some controller specs
 
         expect(v.reload.quantity).to eq(0)
@@ -168,6 +180,7 @@ RSpec.describe ServiceCalendarsController do
         session[:identity_id] = logged_in_user.id
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         xhr :post, :toggle_calendar_column, {
           visit_group_id: arm.visit_groups.first.id,
           service_request_id: sr.id,
@@ -176,12 +189,17 @@ RSpec.describe ServiceCalendarsController do
           admin: 'false'
         }
 =======
+=======
+>>>>>>> jtm finished some controller specs
         post :toggle_calendar_column, params: {
           service_request_id: sr.id,
           arm_id: arm.id,
           check: 'true',
           portal: 'false'
         }, xhr: true
+<<<<<<< HEAD
+>>>>>>> jtm finished some controller specs
+=======
 >>>>>>> jtm finished some controller specs
 
         expect(ssr.reload.status).to eq('draft')
@@ -201,6 +219,7 @@ RSpec.describe ServiceCalendarsController do
         session[:identity_id] = logged_in_user.id
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         xhr :post, :toggle_calendar_column, {
           visit_group_id: arm.visit_groups.first.id,
           service_request_id: sr.id,
@@ -209,12 +228,17 @@ RSpec.describe ServiceCalendarsController do
           admin: 'true'
         }
 =======
+=======
+>>>>>>> jtm finished some controller specs
         post :toggle_calendar_column, params: {
           service_request_id: sr.id,
           arm_id: arm.id,
           check: 'true',
           portal: 'false'
         }, xhr: true
+<<<<<<< HEAD
+>>>>>>> jtm finished some controller specs
+=======
 >>>>>>> jtm finished some controller specs
 
         expect(ssr.reload.status).to eq('on_hold')
@@ -287,6 +311,7 @@ RSpec.describe ServiceCalendarsController do
         session[:identity_id] = logged_in_user.id
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         xhr :post, :toggle_calendar_column, {
           visit_group_id: arm.visit_groups.first.id,
           sub_service_request_id: ssr.id,
@@ -296,12 +321,17 @@ RSpec.describe ServiceCalendarsController do
           admin: 'false'
         }
 =======
+=======
+>>>>>>> jtm finished some controller specs
       post :toggle_calendar_column, params: {
         service_request_id: sr.id,
         arm_id: arm.id,
         check: 'true',
         portal: 'false'
       }, xhr: true
+<<<<<<< HEAD
+>>>>>>> jtm finished some controller specs
+=======
 >>>>>>> jtm finished some controller specs
 
         expect(ssr.reload.status).to eq('draft')

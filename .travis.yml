@@ -11,10 +11,9 @@ before_script:
   - cp config/epic.yml.example config/epic.yml
   - cp config/ldap.yml.example config/ldap.yml
   - mysql -e 'create database test_sparc_request;'
+  - RAILS_ENV=test bundle exec rake db:migrate
 jobs:
   include:
-    script:
-      - RAILS_ENV=test bundle exec rake db:migrate
     script:
       - bundle exec rspec spec/api
       - bundle exec rspec spec/extensions

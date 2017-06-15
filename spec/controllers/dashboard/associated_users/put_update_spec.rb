@@ -75,7 +75,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
       it 'should update @protocol_role using params[:project_role] using ProtocolUpdater' do
         expect(AssociatedUserUpdater).to have_received(:new).
-          with controller_params(id: @project_role.id.to_s, project_role: {identity_id: '1'}).to_unsafe_h
+          with controller_params(id: @project_role.id.to_s, project_role: {identity_id: '1'})
       end
 
       it 'should not set @errors' do

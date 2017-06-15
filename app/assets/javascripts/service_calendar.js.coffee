@@ -206,7 +206,7 @@ $(document).ready ->
 getSRId = ->
   $("input[name='service_request_id']").val()
 
-(exports ? this).setup_xeditable_fields = () ->
+(exports ? this).setup_xeditable_fields = (scroll) ->
   reload_calendar = (arm_id, scroll) ->
     # E.g. "billing-strategy-tab" -> "billing_strategy"
     tab = $('li.custom-tab.active a').last().attr('id')
@@ -300,7 +300,8 @@ getSRId = ->
         service_request_id: getSRId()
       }
     success: ->
-      $('#service-calendar .custom-tab.active a').click()
+      scroll = $(this).parents('.scrolling-div').length > 0
+      reload_calendar($(this).data('armId'), scroll)
 
   $('.edit-units-per-qty').editable
     params: (params) ->
@@ -310,4 +311,5 @@ getSRId = ->
         service_request_id: getSRId()
       }
     success: ->
-      $('#service-calendar .custom-tab.active a').click()
+      scroll = $(this).parents('.scrolling-div').length > 0
+      reload_calendar($(this).data('armId'), scroll)

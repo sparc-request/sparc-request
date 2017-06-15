@@ -51,7 +51,7 @@ class ServicePricingReport < ReportingModule
   end
 
   def records
-    records ||= self.table.joins(:pricing_maps).where(self.where(self.params)).group(self.group).order(self.order).distinct(self.uniq)
+    records ||= self.table.eager_load(:pricing_maps).where(self.where(self.params)).group(self.group).order(self.order).distinct(self.uniq)
   end
 
   def column_attrs
@@ -147,7 +147,7 @@ class ServicePricingReport < ReportingModule
       service_organization_ids = service_organization_ids & tagged_organization_ids
     end
 
-    return "services.organization_id IN (#{service_organization_ids.join(',')}) and pricing_maps.display_date >= #{args[:services_pricing_date]}"
+    return "pricing_maps.display_date >= #{args[:services_pricing_date] || Date.today.to_s}" + (service_organization_ids.any? ? "and services.organization_id IN (#{service_organization_ids.join(',')})" : "")
   end
 
   def uniq

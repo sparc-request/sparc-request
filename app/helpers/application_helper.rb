@@ -128,10 +128,8 @@ module ApplicationHelper
     end
   end
 
-  def display_service_name(service)
-    name = content_tag(:span, service.display_service_name)
-    name = name + content_tag(:span, '(Inactive)', class: 'inactive-text') unless service.is_available
-    name
+  def inactive_tag
+    content_tag(:span, t(:calendars)[:inactive], class: 'inactive-text')
   end
 
   ##Sets css bootstrap classes for rails flash message types##

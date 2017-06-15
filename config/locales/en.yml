@@ -176,6 +176,7 @@ en:
       template: "Template Tab"
       billing: "Quantity/Billing Tab"
       pricing: "Consolidated Request Tab"
+    inactive: "(Inactive)"
     pppv:
       clinical_services: "Clinical Services"
       header: "Clinical Services</br>Arm: %{arm_name}"

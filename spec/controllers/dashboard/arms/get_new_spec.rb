@@ -38,8 +38,10 @@ RSpec.describe Dashboard::ArmsController do
 
     before(:each) do
       log_in_dashboard_identity(obj: identity_stub)
-      xhr :get, :new, protocol_id: protocol_stub.id, service_request_id: sr_stub.id,
+      get :new, params: {
+        protocol_id: protocol_stub.id, service_request_id: sr_stub.id,
         sub_service_request_id: ssr_stub.id, schedule_tab: 'schedule_tab'
+      }, xhr: true
     end
 
     it 'should set @protocol from params[:protocol_id]' do

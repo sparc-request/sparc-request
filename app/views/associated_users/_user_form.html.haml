@@ -32,8 +32,8 @@
             %label
               = identity.display_name
             %a.btn.btn-xs.btn-danger.glyphicon.glyphicon-remove#new-associated-user-button{ href: "javascript:void(0);", data: { protocol_id: protocol.id, permission: 'true', toggle: "tooltip", animation: 'false', placement: 'right' }, title: "Remove" }
-      %div#protocol_role_data{ data: { pr_id: identity.id, pr_name: identity.full_name, pi_id: current_pi.id, pi_name: current_pi.full_name }}
-      = form_for determine_entity(dashboard, project_role), url: determine_url(dashboard, project_role), remote: true, html: { class: "protocol_role_form" } do |form| 
+      = render 'associated_users/form/primary_pi_warning', protocol: protocol, identity: identity
+      = form_for project_role, url: determine_url(dashboard, project_role), remote: true, html: { class: "protocol-role-form" } do |form| 
         - unless dashboard
           = hidden_field_tag :service_request_id, service_request.id
         = form.hidden_field :identity_id
@@ -41,13 +41,13 @@
         .row
           .col-lg-12
             = form.fields_for :identity do |identity_form|
-              = user_form_group(name: :era_commons_name, classes: %w(role_dependent commons_name hidden), form: identity_form) do
+              = user_form_group(name: :era_commons_name, classes: ['role_dependent commons_name', ['pi', 'primary-pi'].include?(form.object.role) ? '' : 'hidden'], form: identity_form) do
                 = identity_form.text_field :era_commons_name, class: 'form-control'
 
               = user_form_group(name: :credentials, form: identity_form) do
                 = identity_form.select :credentials, options_for_select(USER_CREDENTIALS, identity.credentials), { include_blank: t(:authorized_users)[:form_fields][:credentials_prompt] }, class: 'form-control selectpicker'
 
-              = user_form_group(name: :credentials_other, classes: %w(credentials_dependent other hidden), form: identity_form) do
+              = user_form_group(name: :credentials_other, classes: ['credentials_dependent other', identity_form.object.credentials == 'other' ? '' : 'hidden'], form: identity_form, title: t(:authorized_users)[:form_fields][:credentials_specify], required: true) do
                 = identity_form.text_field :credentials_other, class: 'form-control'
 
               = render("dashboard/associated_users/professional_organizations", professional_organization: identity.professional_organization)
@@ -55,18 +55,17 @@
               = user_form_group(name: :phone, form: identity_form) do
                 = identity_form.text_field :phone, class: 'form-control'
 
-              = user_form_group(name: :subspecialty, classes: %w(role_dependent subspecialty hidden), form: identity_form) do
+              = user_form_group(name: :subspecialty, classes: ['role_dependent subspecialty', ['pi', 'primary-pi'].include?(form.object.role) ? '' : 'hidden'], form: identity_form) do
                 = identity_form.select :subspecialty, options_for_select((SUBSPECIALTIES.sort), identity.subspecialty), { include_blank: t(:authorized_users)[:form_fields][:subspecialty_prompt] }, class: 'form-control selectpicker'
 
-            = user_form_group(name: :role, form: form) do
+            = user_form_group(name: :role, form: form, required: true) do
               = form.select :role, options_for_select(USER_ROLES, form.object.role), { include_blank: t(:authorized_users)[:form_fields][:role_prompt] }, class: 'form-control selectpicker'
 
-            = user_form_group(name: :role_specify, classes: %w(role_dependent other hidden), form: form) do
+            = user_form_group(name: :role_specify, classes: ['role_dependent other', form.object.role == 'other' ? '' : 'hidden'], form: form, required: true) do
               = form.text_field :role_other, class: 'form-control'
 
             - if USE_EPIC && protocol != nil && protocol.selected_for_epic
-              = user_form_group(name: :epic_access,
-                form: form,
+              = user_form_group(name: :epic_access, form: form, required: true,
                 data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
                 title: t(:authorized_users)[:tooltips][:epic_access]) do
                 = label_tag nil, nil, class: 'radio-inline' do
@@ -76,30 +75,11 @@
                   = form.radio_button :epic_access, true, class: 'epic_access'
                   Yes
 
-            - disable = (form.object.role == 'pi' || form.object.role == 'primary-pi')
-            = user_form_group(name: :rights,
-              form: form,
-              data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' },
-              title: t(:authorized_users)[:tooltips][:rights]) do
-              .radio
-                %label
-                  = form.radio_button :project_rights, "none", disabled: disable
-                  %span
-                    = t(:authorized_users)[:rights][:none]
-              .radio
-                %label
-                  = form.radio_button :project_rights, "view", disabled: disable
-                  %span
-                    = t(:authorized_users)[:rights][:view]
-              .radio
-                %label
-                  = form.radio_button :project_rights, "approve", disabled: disable
-                  %span
-                    = t(:authorized_users)[:rights][:approve]
+            = render 'associated_users/form/project_rights', form: form, dashboard: dashboard, admin: admin
 
     .modal-footer
       .center-block
-        %button.btn.btn-default#cancel_protocol_rights_button{ type: 'button' }
+        %button.btn.btn-default#protocol-role-close{ type: 'button' }
           = t(:actions)[:close]
-        %button.btn.btn-primary#save_protocol_rights_button
+        %button.btn.btn-primary#protocol-role-save
           = t(:actions)[:save]

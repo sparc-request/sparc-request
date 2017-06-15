@@ -37,7 +37,7 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
     get :edit, params: {
       id: @submission.id,
       service_id: @service.id
-    }, format: :js
+    }, xhr: true
   end
 
   describe '#edit' do

@@ -38,19 +38,18 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
 
   def edit
     @identity     = @protocol_role.identity
-    @current_pi   = @protocol.primary_principal_investigator
     @header_text  = t(:authorized_users)[:edit][:header]
+    @dashboard    = true
 
     respond_to do |format|
       format.js
     end
-
-    @dashboard = true
   end
 
   def new
-    @header_text = t(:authorized_users)[:add][:header]
-
+    @header_text  = t(:authorized_users)[:add][:header]
+    @dashboard    = true
+    
     if params[:identity_id] # if user selected
       @identity     = Identity.find(params[:identity_id])
       @project_role = @protocol.project_roles.new(identity_id: @identity.id)
@@ -61,8 +60,6 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
         @errors = @project_role.errors
       end
     end
-
-    @dashboard = true
 
     respond_to do |format|
       format.js

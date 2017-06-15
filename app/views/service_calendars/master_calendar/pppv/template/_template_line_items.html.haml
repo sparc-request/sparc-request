@@ -56,7 +56,7 @@
           %a.edit-subject-count{ class: locked ? 'locked' : '', href: 'javascript:void(0)', data: { arm_id: arm.id, name: 'subject_count', title: t(:calendars)[:pppv][:editable_fields][:subject_count], value: liv.subject_count, url: dashboard_line_items_visit_path(liv, srid: service_request.id, portal: portal) } }
       %td.text-center.xs-col-width
         = render 'service_calendars/master_calendar/pppv/template/select_row', liv: liv, service_request: service_request, sub_service_request: sub_service_request, admin: admin, locked: locked, page: page
-      - visits = liv.visits.paginate(page: page.to_i, per_page: Visit.per_page)
+      - visits = liv.ordered_visits.paginate(page: page.to_i, per_page: Visit.per_page)
       - visits.each_with_index do |v, index|
         %td.text-center.visit.visit-width{ class: "visit-#{v.id}" }
           = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", service_request: service_request, sub_service_request: sub_service_request, visit: v, tab: tab, page: page, admin: admin, locked: locked

@@ -36,8 +36,8 @@ $('.selectpicker').selectpicker()
 $(".visit-<%=visit.id%>:visible").html('<%= j render "service_calendars/master_calendar/pppv/template/template_visit_input", visit: visit, tab: @tab, page: @page, admin: @admin, locked: @locked %>')
 
 # Replace Per Patient / Study Totals
-$(".visit-<%=visit.id%>:visible").parent().siblings('.pppv-per-patient-line-item-total').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_patient', liv: visit.line_items_visit %>")
-$(".visit-<%=visit.id%>:visible").parent().siblings('.pppv-per-study-line-item-total').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_study', liv: visit.line_items_visit %>")
+$(".visit-<%=visit.id%>:visible").siblings('.pppv-per-patient-line-item-total').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_patient', liv: visit.line_items_visit %>")
+$(".visit-<%=visit.id%>:visible").siblings('.pppv-per-study-line-item-total').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_study', liv: visit.line_items_visit %>")
 <% end %>
 
 # Replace Totals

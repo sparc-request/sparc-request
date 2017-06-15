@@ -36,10 +36,11 @@ RSpec.describe Dashboard::AssociatedUsersController do
         project_role = findable_stub(ProjectRole) do
           build_stubbed(:project_role, protocol: @protocol)
         end
-        put :update, params: {
+
+        put :update,  params: {
           id: project_role.id,
           protocol_id: @protocol.id
-        }, xhr: true
+          }, xhr: true
       end
 
       it "should use ProtocolAuthorizer to authorize user" do
@@ -78,7 +79,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
       it 'should update @protocol_role using params[:project_role] using ProtocolUpdater' do
         expect(AssociatedUserUpdater).to have_received(:new).
-          with id: @project_role.id.to_s, project_role: controller_params( { identity_id: '1' } )
+          with controller_params(id: @project_role.id.to_s, project_role: {identity_id: '1'}).to_unsafe_h
       end
 
       it 'should not set @errors' do
@@ -111,11 +112,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
         allow(AssociatedUserUpdater).to receive(:new).and_return(@project_role_updater)
 
-        put :update, params: {
-          id: @project_role.id,
-          protocol_id: @protocol.id,
-          project_role: {identity_id: '1'}
-        }, xhr: true
+        put :update, params: { id: @project_role.id, protocol_id: @protocol.id, project_role: {identity_id: '1'} }, xhr: true
       end
 
       it 'should set @errors' do

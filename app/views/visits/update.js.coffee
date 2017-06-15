@@ -38,8 +38,8 @@ $('.selectpicker').selectpicker()
 $(".visit-<%=@visit.id%>:visible").html('<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_visit_input", visit: @visit, line_items_visit: @line_items_visit, admin: @admin, tab: @tab, page: @page, locked: @locked %>')
 
 # Replace Per Patient / Study Totals
-$(".visit-<%=@visit.id%>:visible").parent().siblings('.pppv-per-patient-line-item-total').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_patient', liv: @line_items_visit %>")
-$(".visit-<%=@visit.id%>:visible").parent().siblings('.pppv-per-study-line-item-total').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_study', liv: @line_items_visit %>")
+$(".visit-<%=@visit.id%>:visible").parent().find('.pppv-per-patient-line-item-total').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_patient', liv: @line_items_visit %>")
+$(".visit-<%=@visit.id%>:visible").parent().find('.pppv-per-study-line-item-total').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_study', liv: @line_items_visit %>")
 
 # Replace Totals
 $(".arm-<%=@arm.id%>.maximum-total-direct-cost-per-patient:visible").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/totals/max_total_direct_per_patient', arm: @arm, line_items_visits: @line_items_visits, visit_groups: @visit_groups, tab: @tab, page: @page %>")

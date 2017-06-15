@@ -42,36 +42,36 @@ RSpec.describe Dashboard::ProtocolsController do
       end
 
       it 'creates a new protocol record' do
-        expect{ xhr :post, 
-                    :create, 
-                    protocol: @protocol_attributes }.
+        expect{ post :create, params: {
+                    protocol: @protocol_attributes
+                    }, xhr: true }.
                     to change{ Protocol.count }.by( 1 )
       end
 
       it 'creates a new service request record' do
-        expect{ xhr :post, 
-                    :create, 
-                    protocol: @protocol_attributes }.
+        expect{ post :create, params: {
+                    protocol: @protocol_attributes
+                    }, xhr: true }.
                     to change{ ServiceRequest.count }.by( 1 )
       end
 
       it 'creates a new project role record' do
-        expect{ xhr :post, 
-                    :create, 
-                    protocol: @protocol_attributes }.
+        expect{ post :create, params: {
+                    protocol: @protocol_attributes
+                    }, xhr: true }.
                     to change{ ProjectRole.count }.by( 1 )
       end
 
       it 'creates an extra project role record if the current user is not assigned to the protocol' do
         @protocol_attributes[:project_roles_attributes]["0"][:identity_id] = build_stubbed(:identity).id
-        expect{ xhr :post, 
-                    :create, 
-                    protocol: @protocol_attributes }.
+        expect{ post :create, params: {
+                    protocol: @protocol_attributes
+                    }, xhr: true }.
                     to change{ ProjectRole.count }.by( 2 )
       end
 
       it 'receives the correct flash message' do
-        xhr :post, :create, protocol: @protocol_attributes
+        post :create, params: { protocol: @protocol_attributes }, xhr: true
         expect(flash[:success]).to eq(I18n.t('protocols.created', protocol_type: @protocol_attributes['type']))
       end
 
@@ -91,28 +91,28 @@ RSpec.describe Dashboard::ProtocolsController do
       end
 
       it 'gives the correct error message' do
-        xhr :post, :create, protocol: @protocol.attributes
+        post :create, params: { protocol: @protocol.attributes }, xhr: true
         expect(assigns(:errors)).to eq(assigns(:protocol).errors)
       end
 
       it 'does not create a new protocol record' do
-        expect{ xhr :post, 
-                    :create, 
-                    protocol: @protocol.attributes }.
+        expect{ post :create, params: {
+                    protocol: @protocol.attributes
+                    }, xhr: true }.
                     not_to change{ Protocol.count }
       end
 
       it 'does not create a new service request record' do
-        expect{ xhr :post, 
-                    :create, 
-                    protocol: @protocol.attributes }.
+        expect{ post :create, params: {
+                    protocol: @protocol.attributes
+                    }, xhr: true }.
                     not_to change{ ServiceRequest.count }
       end
 
       it 'does not create a new project role record' do
-        expect{ xhr :post, 
-                    :create, 
-                    protocol: @protocol.attributes }.
+        expect{ post :create, params: {
+                    protocol: @protocol.attributes
+                    }, xhr: true }.
                     not_to change{ ProjectRole.count }
       end
 

@@ -38,87 +38,87 @@ RSpec.describe Dashboard::VisitGroupsController do
       end
 
       it 'should assign @service_request' do
-        xhr :get, :new, {
+        get :new, params: {
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           protocol_id: @protocol.id,
           current_page: 'tree-fiddy',
           schedule_tab: 'tabloid'
-        }
+        }, xhr: true
 
         expect(assigns(:service_request)).to eq(@sr)
       end
 
       it 'should assign @sub_service_request' do
-        xhr :get, :new, {
+        get :new, params: {
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           protocol_id: @protocol.id,
           current_page: 'tree-fiddy',
           schedule_tab: 'tabloid'
-        }
+        }, xhr: true
 
         expect(assigns(:sub_service_request)).to eq(@ssr)
       end
 
       it 'should assign @protocol' do
-        xhr :get, :new, {
+        get :new, params: {
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           protocol_id: @protocol.id,
           current_page: 'tree-fiddy',
           schedule_tab: 'tabloid'
-        }
+        }, xhr: true
 
         expect(assigns(:protocol)).to eq(@protocol)
       end
 
       it 'should assign @current_page' do
-        xhr :get, :new, {
+        get :new, params: {
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           protocol_id: @protocol.id,
           current_page: 'tree-fiddy',
           schedule_tab: 'tabloid'
-        }
+        }, xhr: true
 
         expect(assigns(:current_page)).to eq('tree-fiddy')
       end
 
       it 'should assign @schedule_tab' do
-        xhr :get, :new, {
+        get :new, params: {
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           protocol_id: @protocol.id,
           current_page: 'tree-fiddy',
           schedule_tab: 'tabloid'
-        }
+        }, xhr: true
 
         expect(assigns(:schedule_tab)).to eq('tabloid')
       end
 
       it 'should assign @visit_group' do
-        xhr :get, :new, {
+        get :new, params: {
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           protocol_id: @protocol.id,
           current_page: 'tree-fiddy',
           schedule_tab: 'tabloid'
-        }
+        }, xhr: true
 
         expect(assigns(:visit_group)).to be_a_new(VisitGroup)
       end
 
       context 'params[:arm_id] is present' do
         it 'should assign @arm to the arm' do
-          xhr :get, :new, {
+          get :new, params: {
             service_request_id: @sr.id,
             sub_service_request_id: @ssr.id,
             protocol_id: @protocol.id,
             current_page: 'tree-fiddy',
             schedule_tab: 'tabloid',
             arm_id: @arm2.id
-          }
+          }, xhr: true
 
           expect(assigns(:arm)).to eq(@arm2)
         end
@@ -126,38 +126,38 @@ RSpec.describe Dashboard::VisitGroupsController do
 
       context 'params[:arm_id] is nil' do
         it 'should assign @arm to the first arm' do
-          xhr :get, :new, {
+          get :new, params: {
             service_request_id: @sr.id,
             sub_service_request_id: @ssr.id,
             protocol_id: @protocol.id,
             current_page: 'tree-fiddy',
             schedule_tab: 'tabloid'
-          }
+          }, xhr: true
 
           expect(assigns(:arm)).to eq(@arm1)
         end
       end
 
       it 'should render template' do
-        xhr :get, :new, {
+        get :new, params: {
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           protocol_id: @protocol.id,
           current_page: 'tree-fiddy',
           schedule_tab: 'tabloid'
-        }
+        }, xhr: true
 
         expect(controller).to render_template(:new)
       end
 
       it 'should respond ok' do
-        xhr :get, :new, {
+        get :new, params: {
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           protocol_id: @protocol.id,
           current_page: 'tree-fiddy',
           schedule_tab: 'tabloid'
-        }
+        }, xhr: true
 
         expect(controller).to respond_with(:ok)          
       end
@@ -173,13 +173,13 @@ RSpec.describe Dashboard::VisitGroupsController do
         @ssr      = create(:sub_service_request, service_request: @sr, organization: org)
         @arm      = create(:arm, protocol: @protocol)
         
-        xhr :get, :new, {
+        get :new, params: {
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           protocol_id: @protocol.id,
           current_page: 'tree-fiddy',
           schedule_tab: 'tabloid'
-        }
+        }, xhr: true
       end
 
       it 'should not assign variables' do

@@ -41,7 +41,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
         before :each do
           create(:super_user, identity: @logged_in_user, organization: @organization)
 
-          put :update, id: @sub_service_request.id, sub_service_request: { lab_approved: true }, format: :js
+          put :update, params: { id: @sub_service_request.id, sub_service_request: { lab_approved: true }, format: :js }
         end
 
         it { is_expected.to render_template "dashboard/sub_service_requests/update" }
@@ -50,7 +50,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
       context 'user is not authorized admin on SSR' do
         before :each do
-          get :show, id: @sub_service_request.id
+          get :show, params: { id: @sub_service_request.id }
         end
 
         it { is_expected.to render_template "service_requests/_authorization_error" }
@@ -62,7 +62,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
     context 'instance variables' do
       before :each do
         create(:super_user, identity: @logged_in_user, organization: @organization)
-        put :update, id: @sub_service_request.id, sub_service_request: { lab_approved: true }, format: :js
+        put :update, params: { id: @sub_service_request.id, sub_service_request: { lab_approved: true }, format: :js }
       end
 
       it 'should assign instance variables' do
@@ -90,7 +90,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
         @organization.associated_surveys.create survey_id: @survey.id
 
         expect_any_instance_of(SubServiceRequest).to receive(:distribute_surveys)
-        put :update, sub_service_request: {status: 'complete'}, id: @sub_service_request.id, format: :js
+        put :update, params: { sub_service_request: {status: 'complete'}, id: @sub_service_request.id, format: :js }
       end
     end
 
@@ -106,7 +106,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
           @organization.associated_surveys.create survey_id: @survey.id
 
           expect_any_instance_of(SubServiceRequest).to_not receive(:distribute_surveys)
-          put :update, sub_service_request: {status: 'not_complete'}, id: @sub_service_request.id, format: :js
+          put :update, params: { sub_service_request: {status: 'not complete'}, id: @sub_service_request.id, format: :js }
         end
       end
     end
@@ -117,7 +117,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
           create(:super_user, identity: @logged_in_user, organization: @organization)
 
           expect_any_instance_of(SubServiceRequest).to_not receive(:distribute_surveys)
-          put :update, sub_service_request: {status: 'not_complete'}, id: @sub_service_request.id, format: :js
+          put :update, params: { sub_service_request: {status: 'not complete'}, id: @sub_service_request.id, format: :js }
         end
       end
     end

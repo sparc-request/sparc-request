@@ -37,7 +37,7 @@ RSpec.describe Dashboard::SubsidiesController do
                                 service_request: @service_request,
                                 organization: @organization,
                                 status: 'draft')
-      xhr :get, :new, admin: 'true', sub_service_request_id: @ssr.id, format: :js
+      get :new, params: { admin: 'true', sub_service_request_id: @ssr.id, format: :js }, xhr: true
     end
 
     it { is_expected.to render_template "dashboard/subsidies/new" }

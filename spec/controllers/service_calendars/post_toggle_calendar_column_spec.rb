@@ -64,12 +64,12 @@ RSpec.describe ServiceCalendarsController do
 
       session[:identity_id] = logged_in_user.id
 
-      xhr :post, :toggle_calendar_column, {
+      post :toggle_calendar_column, params: {
         service_request_id: sr.id,
         arm_id: arm.id,
         check: 'true',
         portal: 'false'
-      }
+      }, xhr: true
 
       expect(assigns(:arm)).to eq(arm)
     end
@@ -85,12 +85,12 @@ RSpec.describe ServiceCalendarsController do
 
       session[:identity_id] = logged_in_user.id
 
-      xhr :post, :toggle_calendar_column, {
+      post :toggle_calendar_column, params: {
         service_request_id: sr.id,
         arm_id: arm.id,
         check: 'true',
         portal: 'false'
-      }
+      }, xhr: true
 
       expect(assigns(:portal)).to eq(false)
     end
@@ -108,12 +108,12 @@ RSpec.describe ServiceCalendarsController do
 
         session[:identity_id] = logged_in_user.id
 
-        xhr :post, :toggle_calendar_column, {
-        service_request_id: sr.id,
+        post :toggle_calendar_column, params: {
+          service_request_id: sr.id,
           arm_id: arm.id,
           check: 'true',
           portal: 'false'
-        }
+        }, xhr: true
 
         expect(v.reload.quantity).to eq(1)
         expect(v.reload.research_billing_qty).to eq(1)
@@ -137,12 +137,12 @@ RSpec.describe ServiceCalendarsController do
 
         session[:identity_id] = logged_in_user.id
 
-        xhr :post, :toggle_calendar_column, {
-        service_request_id: sr.id,
+        post :toggle_calendar_column, params: {
+          service_request_id: sr.id,
           arm_id: arm.id,
           uncheck: 'true',
           portal: 'false'
-        }
+        }, xhr: true
 
         expect(v.reload.quantity).to eq(0)
         expect(v.reload.research_billing_qty).to eq(0)
@@ -163,12 +163,12 @@ RSpec.describe ServiceCalendarsController do
 
         session[:identity_id] = logged_in_user.id
 
-        xhr :post, :toggle_calendar_column, {
-        service_request_id: sr.id,
+        post :toggle_calendar_column, params: {
+          service_request_id: sr.id,
           arm_id: arm.id,
           check: 'true',
           portal: 'false'
-        }
+        }, xhr: true
 
         expect(ssr.reload.status).to eq('draft')
       end
@@ -184,12 +184,12 @@ RSpec.describe ServiceCalendarsController do
 
         session[:identity_id] = logged_in_user.id
 
-        xhr :post, :toggle_calendar_column, {
-        service_request_id: sr.id,
+        post :toggle_calendar_column, params: {
+          service_request_id: sr.id,
           arm_id: arm.id,
           check: 'true',
           portal: 'false'
-        }
+        }, xhr: true
 
         expect(sr.reload.status).to eq('draft')
       end
@@ -208,13 +208,12 @@ RSpec.describe ServiceCalendarsController do
 
           session[:identity_id] = logged_in_user.id
 
-          xhr :post, :toggle_calendar_column, {
-            sub_service_request_id: ssr.id,
+          post :toggle_calendar_column, params: {
             service_request_id: sr.id,
             arm_id: arm.id,
             check: 'true',
             portal: 'false'
-          }
+          }, xhr: true
 
           expect(ssr.reload.status).to eq('draft')
           expect(ssr2.reload.status).to eq('on_hold')
@@ -233,12 +232,12 @@ RSpec.describe ServiceCalendarsController do
 
       session[:identity_id] = logged_in_user.id
 
-      xhr :post, :toggle_calendar_column, {
+      post :toggle_calendar_column, params: {
         service_request_id: sr.id,
         arm_id: arm.id,
         check: 'true',
         portal: 'false'
-      }
+      }, xhr: true
 
       expect(controller).to render_template(partial: '_update_service_calendar')
     end
@@ -254,12 +253,12 @@ RSpec.describe ServiceCalendarsController do
 
       session[:identity_id] = logged_in_user.id
 
-      xhr :post, :toggle_calendar_column, {
+      post :toggle_calendar_column, params: {
         service_request_id: sr.id,
         arm_id: arm.id,
         check: 'true',
         portal: 'false'
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

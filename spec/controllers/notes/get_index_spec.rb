@@ -31,10 +31,10 @@ RSpec.describe NotesController, type: :controller do
       note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
 
-      xhr :get, :index, {
+      get :index, params: {
         service_request_id: sr.id,
         note: note_params
-      }
+      }, xhr: true
 
       expect(assigns(:notable_id)).to eq(sr.id.to_s)
     end
@@ -45,10 +45,10 @@ RSpec.describe NotesController, type: :controller do
       note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
 
-      xhr :get, :index, {
+      get :index, params: {
         service_request_id: sr.id,
         note: note_params
-      }
+      }, xhr: true
 
       expect(assigns(:notable_type)).to eq('ServiceRequest')
     end
@@ -59,10 +59,10 @@ RSpec.describe NotesController, type: :controller do
       note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
 
-      xhr :get, :index, {
+      get :index, params: {
         service_request_id: sr.id,
         note: note_params
-      }
+      }, xhr: true
 
       expect(assigns(:notable)).to eq(sr)
     end
@@ -73,11 +73,11 @@ RSpec.describe NotesController, type: :controller do
       note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
 
-      xhr :get, :index, {
+      get :index, params: {
         service_request_id: sr.id,
         note: note_params,
         in_dashboard: 'true'
-      }
+      }, xhr: true
 
       expect(assigns(:in_dashboard)).to eq(true)
     end
@@ -90,11 +90,11 @@ RSpec.describe NotesController, type: :controller do
         note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
 
-        xhr :get, :index, {
+        get :index, params: {
         service_request_id: sr.id,
           note: note_params,
           format: :json
-        }
+        }, xhr: true
 
         expect(assigns(:notes)).to eq(sr.notes)
       end
@@ -105,11 +105,11 @@ RSpec.describe NotesController, type: :controller do
         note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
 
-        xhr :get, :index, {
+        get :index, params: {
         service_request_id: sr.id,
           note: note_params,
           format: :json
-        }
+        }, xhr: true
 
         expect(controller).to render_template(:index)
       end
@@ -121,10 +121,10 @@ RSpec.describe NotesController, type: :controller do
       note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
 
-      xhr :get, :index, {
+      get :index, params: {
         service_request_id: sr.id,
         note: note_params
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:index)
     end
@@ -135,10 +135,10 @@ RSpec.describe NotesController, type: :controller do
       note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
 
-      xhr :get, :index, {
+      get :index, params: {
         service_request_id: sr.id,
         note: note_params
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

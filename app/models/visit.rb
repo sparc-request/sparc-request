@@ -37,6 +37,8 @@ class Visit < ApplicationRecord
   validates :insurance_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :effort_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  scope :ordered, -> { joins(:visit_group).order('visit_groups.position') }
+
   # Find a Visit for the given "line items visit" and visit group.  This
   # creates the visit if it does not exist.
   def self.for(line_items_visit, visit_group)

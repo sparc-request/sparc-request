@@ -35,7 +35,7 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
 
     get :new, params: {
       service_id: @service.id
-    }, format: :js
+    }, xhr: true
   end
 
   describe '#new' do

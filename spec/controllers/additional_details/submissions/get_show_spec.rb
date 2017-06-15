@@ -39,7 +39,7 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
     get :show, params: {
       id: @submission.id,
       service_id: @service.id
-    }, format: :js
+    }, xhr: true
   end
 
   describe '#show' do

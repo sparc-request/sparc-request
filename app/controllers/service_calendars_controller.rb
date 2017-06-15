@@ -105,7 +105,6 @@ class ServiceCalendarsController < ApplicationController
     @merged                 = params[:merged]
     @statuses_hidden        = params[:statuses_hidden]
     @arm                    = Arm.find( params[:arm_id] )
-    @visit_groups           = params[:visit_groups]
     @visit_group            = params[:visit_group_id] ? @arm.visit_groups.find(params[:visit_group_id]) : @arm.visit_groups.first
 
     @pages = {}

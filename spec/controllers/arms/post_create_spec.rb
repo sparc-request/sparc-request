@@ -39,11 +39,11 @@ RSpec.describe ArmsController, type: :controller do
         sr          = create(:service_request_without_validations, protocol: protocol)
         arm_params  = { name: 'Armada', subject_count: 1, visit_count: 1 }
 
-        xhr :post, :create, {
+        post :create, params: {
           service_request_id: sr.id,
           protocol_id: protocol.id,
           arm: arm_params
-        }
+        }, xhr: true
 
         expect(Arm.count).to eq(1)
       end
@@ -55,11 +55,11 @@ RSpec.describe ArmsController, type: :controller do
         sr          = create(:service_request_without_validations, protocol: protocol)
         arm_params  = { name: '', subject_count: -1, visit_count: -1 }
 
-        xhr :post, :create, {
+        post :create, params: {
           service_request_id: sr.id,
           protocol_id: protocol.id,
           arm: arm_params
-        }
+        }, xhr: true
 
         expect(Arm.count).to eq(0)
       end
@@ -69,11 +69,11 @@ RSpec.describe ArmsController, type: :controller do
         sr          = create(:service_request_without_validations, protocol: protocol)
         arm_params  = { name: '', subject_count: -1, visit_count: -1 }
 
-        xhr :post, :create, {
+        post :create, params: {
           service_request_id: sr.id,
           protocol_id: protocol.id,
           arm: arm_params
-        }
+        }, xhr: true
 
         expect(assigns(:errors)).to be
       end
@@ -84,11 +84,11 @@ RSpec.describe ArmsController, type: :controller do
       sr          = create(:service_request_without_validations, protocol: protocol)
       arm_params  = { name: 'Armada', subject_count: 1, visit_count: 1 }
 
-      xhr :post, :create, {
+      post :create, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id,
         arm: arm_params
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:create)
     end
@@ -98,11 +98,11 @@ RSpec.describe ArmsController, type: :controller do
       sr          = create(:service_request_without_validations, protocol: protocol)
       arm_params  = { name: 'Armada', subject_count: 1, visit_count: 1 }
 
-      xhr :post, :create, {
+      post :create, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id,
         arm: arm_params
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

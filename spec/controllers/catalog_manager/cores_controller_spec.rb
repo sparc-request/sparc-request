@@ -34,7 +34,9 @@ RSpec.describe CatalogManager::CoresController do
   describe '#create' do
     before :each do
       @program = create(:program)
-      post :create, name: 'Some Core', program_id: @program.id, format: :js
+      post :create,
+        params: { name: 'Some Core', program_id: @program.id },
+        xhr: true
     end
 
     it 'should create a core' do
@@ -62,7 +64,7 @@ RSpec.describe CatalogManager::CoresController do
       @organization = create(:core)
       logged_in_user.catalog_manager_rights.create(organization_id: @organization.id)
 
-      xhr :get, :show, id: @organization.id
+      get :show, params: { id: @organization.id }, xhr: true
     end
 
     it 'should assign @path' do
@@ -101,12 +103,12 @@ RSpec.describe CatalogManager::CoresController do
                               tag_list: nil },
                   pricing_setups: {blank_pricing_setup: pricing_setup} }
 
-      xhr :put, :update, @params, format: :js
+      put :update, params: @params, xhr: true
     end
 
     it 'should assign @attributes' do
       @params[:core][:tag_list] = ''
-      expect(assigns(:attributes).symbolize_keys).to eq(@params[:core])
+      expect(assigns(:attributes).to_h.symbolize_keys).to eq(@params[:core])
     end
 
     it 'should assign @organization' do

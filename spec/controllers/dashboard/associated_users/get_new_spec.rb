@@ -40,7 +40,9 @@ RSpec.describe Dashboard::AssociatedUsersController do
         authorize(identity, protocol, can_edit: false)
         log_in_dashboard_identity(obj: identity)
 
-        xhr :get, :new, protocol_id: protocol.id, identity_id: identity.id, format: :js
+        get :new, params: {
+          protocol_id: protocol.id, identity_id: identity.id
+        }, xhr: true
       end
 
       it "should use ProtocolAuthorizer to authorize user" do
@@ -57,7 +59,9 @@ RSpec.describe Dashboard::AssociatedUsersController do
         authorize(identity, protocol, can_edit: true)
         log_in_dashboard_identity(obj: identity)
 
-        xhr :get, :new, protocol_id: protocol.id, format: :js
+        get :new, params: {
+          protocol_id: protocol.id
+        }, xhr: true
       end
 
       it 'should set @header_text to "Add Associated User"' do
@@ -83,7 +87,9 @@ RSpec.describe Dashboard::AssociatedUsersController do
         allow(@project_roles_association).to receive(:new).
           and_return(@new_project_role)
 
-        xhr :get, :new, protocol_id: protocol.id, identity_id: identity.id, format: :js
+        get :new, params: {
+          protocol_id: protocol.id, identity_id: identity.id
+        }, xhr: true
       end
 
       it "should build a ProjectRole for Protocol using params[:identity_id]" do
@@ -122,7 +128,9 @@ RSpec.describe Dashboard::AssociatedUsersController do
         allow(@project_roles_association).to receive(:new).
           and_return(@new_project_role)
 
-        xhr :get, :new, protocol_id: protocol.id, identity_id: identity.id, format: :js
+        get :new, params: {
+          protocol_id: protocol.id, identity_id: identity.id
+        }, xhr: true
       end
 
       it 'should set @errors' do

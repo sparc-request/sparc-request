@@ -52,7 +52,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
         authorize(identity, protocol, can_edit: false)
         log_in_dashboard_identity(obj: identity)
 
-        xhr :get, :edit, id: project_role.id, format: :js
+        get :edit, params: { id: project_role.id }, xhr: true
       end
 
       it "should use ProtocolAuthorizer to authorize user" do
@@ -69,7 +69,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
         authorize(identity, protocol, can_edit: true)
         log_in_dashboard_identity(obj: identity)
 
-        xhr :get, :edit, id: project_role.id, format: :js
+        get :edit, params: { id: project_role.id }, xhr: true
       end
 
       it 'should set @protocol_role from params[:id]' do

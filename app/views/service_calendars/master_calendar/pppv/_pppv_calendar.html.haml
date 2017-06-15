@@ -28,7 +28,7 @@
         = render 'service_calendars/master_calendar/pppv/pppv_freeze_header_button', tab: tab, portal: portal, arm: arm, service_request: service_request, sub_service_request: sub_service_request, merged: merged, statuses_hidden: statuses_hidden, scroll_true: @scroll_true
     - unless portal || review
       .pull-right
-        %button.btn.btn-warning.move-visit-button{ data: { pages: pages, page: page, review: review, portal: portal, visit_groups: visit_groups, admin: admin, tab: tab, arm_id: arm.id, merged: merged, consolidated: consolidated, statuses_hidden: statuses_hidden, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:calendars)[:tooltips][:move_visit_button]}
+        %button.btn.btn-warning.move-visit-button{ data: { pages: pages, page: page, review: review.to_s, portal: portal.to_s, visit_groups: visit_groups, admin: admin.to_s, tab: tab, arm_id: arm.id, merged: merged.to_s, consolidated: consolidated.to_s, statuses_hidden: statuses_hidden, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:calendars)[:tooltips][:move_visit_button]}
           = t(:proper)[:service_calendar][:move_visit][:header]
         .divider
     .clearfix

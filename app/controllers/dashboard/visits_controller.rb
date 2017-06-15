@@ -39,7 +39,7 @@ class Dashboard::VisitsController < Dashboard::BaseController
       unless params[:portal] == 'true'
         @visit.line_items_visit.sub_service_request.set_to_draft(@admin)
       end
-      render nothing: true
+      head :ok
     else
       render json: @visit.errors, status: :unprocessable_entity
     end

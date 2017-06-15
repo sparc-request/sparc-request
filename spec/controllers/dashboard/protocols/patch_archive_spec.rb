@@ -32,7 +32,7 @@ RSpec.describe Dashboard::ProtocolsController do
       allow(@protocol_stub).to receive(:valid?).and_return(true)
       allow(@protocol_stub).to receive(:toggle!)
 
-      xhr :patch, :archive, id: @protocol_stub.id
+      patch :archive, params: { id: @protocol_stub.id }, xhr: true
     end
 
     it 'should toggle archived field of Protocol' do

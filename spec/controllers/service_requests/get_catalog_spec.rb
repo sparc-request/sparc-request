@@ -49,9 +49,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
-        xhr :get, :catalog, {
+        get :catalog, params: {
           id: sr.id
-        }
+        }, xhr: true
 
         expect(assigns(:institutions).count).to eq(2)
         expect(assigns(:institutions)[0]).to eq(i1)
@@ -69,10 +69,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
         sr       = create(:service_request_without_validations, protocol: protocol)
         ssr      = create(:sub_service_request_without_validations, organization: prgrm, service_request: sr)
 
-        xhr :get, :catalog, {
+        get :catalog, params: {
           sub_service_request_id: ssr.id,
           id: sr.id
-        }
+        }, xhr: true
 
         expect(assigns(:institutions).count).to eq(1)
         expect(assigns(:institutions)[0]).to eq(i1)
@@ -86,9 +86,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
         stub_const('USE_GOOGLE_CALENDAR', true)
 
-        xhr :get, :catalog, {
+        get :catalog, params: {
           id: sr.id
-        }
+        }, xhr: true
 
         expect(assigns(:events)).to be
       end
@@ -101,9 +101,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
         stub_const('USE_NEWS_FEED', true)
 
-        xhr :get, :catalog, {
+        get :catalog, params: {
           id: sr.id
-        }
+        }, xhr: true
 
         expect(assigns(:news)).to be
       end
@@ -114,9 +114,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
 
-      xhr :get, :catalog, {
-        id: sr.id
-      }
+      get :catalog, params: {
+          id: sr.id
+        }, xhr: true
 
       expect(controller).to render_template(:catalog)
     end
@@ -126,9 +126,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
 
-      xhr :get, :catalog, {
-        id: sr.id
-      }
+      get :catalog, params: {
+          id: sr.id
+        }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

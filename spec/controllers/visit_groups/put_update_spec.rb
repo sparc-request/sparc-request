@@ -41,11 +41,11 @@ RSpec.describe VisitGroupsController, type: :controller do
       vg        = arm.visit_groups.first
       vg_params = { day: 5 }
 
-      xhr :put, :update, {
+      put :update, params: {
         id: vg.id,
         service_request_id: sr.id,
         visit_group: vg_params
-      }
+      }, xhr: true
 
       expect(assigns(:visit_group)).to eq(vg.reload)
     end
@@ -58,11 +58,11 @@ RSpec.describe VisitGroupsController, type: :controller do
         vg        = arm.visit_groups.first
         vg_params = { day: 5 }
 
-        xhr :put, :update, {
+        put :update, params: {
           id: vg.id,
           service_request_id: sr.id,
           visit_group: vg_params
-        }
+        }, xhr: true
 
         expect(vg.reload.day).to eq(5)
       end
@@ -74,11 +74,11 @@ RSpec.describe VisitGroupsController, type: :controller do
         vg        = arm.visit_groups.first
         vg_params = { day: 5 }
 
-        xhr :put, :update, {
+        put :update, params: {
           id: vg.id,
           service_request_id: sr.id,
           visit_group: vg_params
-        }
+        }, xhr: true
 
         expect(response.body).to be_blank
       end
@@ -90,11 +90,11 @@ RSpec.describe VisitGroupsController, type: :controller do
         vg        = arm.visit_groups.first
         vg_params = { day: 5 }
 
-        xhr :put, :update, {
+        put :update, params: {
           id: vg.id,
           service_request_id: sr.id,
           visit_group: vg_params
-        }
+        }, xhr: true
 
         expect(controller).to respond_with(:ok)
       end
@@ -112,11 +112,11 @@ RSpec.describe VisitGroupsController, type: :controller do
           vg.save(validate: false)
           vg_params = { window_before: 1 }
 
-          xhr :put, :update, {
+          put :update, params: {
             id: vg.id,
             service_request_id: sr.id,
             visit_group: vg_params
-          }
+          }, xhr: true
 
           expect(vg.reload.window_before).to eq(1)
         end
@@ -131,11 +131,11 @@ RSpec.describe VisitGroupsController, type: :controller do
           vg.save(validate: false)
           vg_params = { window_before: 1 }
 
-          xhr :put, :update, {
+          put :update, params: {
             id: vg.id,
             service_request_id: sr.id,
             visit_group: vg_params
-          }
+          }, xhr: true
 
           expect(response.body).to be_blank
         end
@@ -150,11 +150,11 @@ RSpec.describe VisitGroupsController, type: :controller do
           vg.save(validate: false)
           vg_params = { window_before: 1 }
 
-          xhr :put, :update, {
+          put :update, params: {
             id: vg.id,
             service_request_id: sr.id,
             visit_group: vg_params
-          }
+          }, xhr: true
 
           expect(controller).to respond_with(:ok)
         end
@@ -171,11 +171,11 @@ RSpec.describe VisitGroupsController, type: :controller do
           vg.save(validate: false)
           vg_params = { name: nil }
 
-          xhr :put, :update, {
+          put :update, params: {
             id: vg.id,
             service_request_id: sr.id,
             visit_group: vg_params
-          }
+          }, xhr: true
 
           expect(vg.reload.name).to eq('Visit 1')
         end
@@ -190,11 +190,11 @@ RSpec.describe VisitGroupsController, type: :controller do
           vg.save(validate: false)
           vg_params = { name: nil }
 
-          xhr :put, :update, {
+          put :update, params: {
             id: vg.id,
             service_request_id: sr.id,
             visit_group: vg_params
-          }
+          }, xhr: true
 
           expect(JSON.parse(response.body)).to be
         end
@@ -209,11 +209,11 @@ RSpec.describe VisitGroupsController, type: :controller do
           vg.save(validate: false)
           vg_params = { name: nil }
 
-          xhr :put, :update, {
+          put :update, params: {
             id: vg.id,
             service_request_id: sr.id,
             visit_group: vg_params
-          }
+          }, xhr: true
 
           expect(controller).to respond_with(:unprocessable_entity)
         end

@@ -39,7 +39,7 @@ RSpec.describe Dashboard::SubsidiesController do
                                  status: 'draft')
       @subsidy         = create(:subsidy_without_validations,
                                  sub_service_request: @ssr)
-      xhr :delete, :destroy, id: @subsidy.id, format: :js
+      delete :destroy, params: { id: @subsidy.id, format: :js }, xhr: true
     end
 
     it { is_expected.to render_template "dashboard/subsidies/destroy" }

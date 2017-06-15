@@ -41,19 +41,19 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
 
     it 'should assign @survey to a new survey' do
       expect{
-        xhr :post, :create
+        post :create, xhr: true
       }.to change{ Survey.count }.by(1)
       expect(assigns(:survey)).to be_a(Survey)
     end
 
     it 'should redirect to show' do
-      xhr :post, :create
+      post :create, xhr: true
 
       expect(controller).to redirect_to(surveyor_survey_path(assigns(:survey)))
     end
 
     it 'should respond ok' do      
-      xhr :post, :create
+      post :create, xhr: true
 
       expect(controller).to respond_with(302)
     end

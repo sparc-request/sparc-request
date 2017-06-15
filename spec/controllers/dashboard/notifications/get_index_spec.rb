@@ -31,7 +31,7 @@ RSpec.describe Dashboard::NotificationsController do
           and_return(["inbox notification1", "inbox notification1", "inbox notification2"])
 
         log_in_dashboard_identity(obj: @logged_in_user)
-        get :index, table: "inbox", sub_service_request_id: "SubServiceRequest id"
+        get :index, params: { table: "inbox", sub_service_request_id: "SubServiceRequest id" }
       end
 
       it "should asssign @table to params[:table]" do
@@ -55,7 +55,7 @@ RSpec.describe Dashboard::NotificationsController do
           and_return(["sent notification1", "sent notification1", "sent notification2"])
 
         log_in_dashboard_identity(obj: @logged_in_user)
-        get :index, table: "not-inbox", sub_service_request_id: "SubServiceRequest id"
+        get :index, params: { table: "not-inbox", sub_service_request_id: "SubServiceRequest id" }
       end
 
       it "should asssign @table to params[:table]" do

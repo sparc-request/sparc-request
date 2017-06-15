@@ -21,9 +21,11 @@ RSpec.describe LockedOrganizationsController, type: :controller do
              organization: organization
             )
 
-      xhr :get, :show, org_id: organization.id,
+      get :show, params: {
+        org_id: organization.id,
         protocol_id: protocol.id,
         service_request_id: sr.id
+        }, xhr: true
 
 
       expect(response).to be_success
@@ -45,9 +47,11 @@ RSpec.describe LockedOrganizationsController, type: :controller do
              organization: organization
             )
 
-      xhr :get, :show, org_id: organization.id,
+      get :show, params: {
+        org_id: organization.id,
         protocol_id: protocol.id,
         service_request_id: sr.id
+        }, xhr: true
 
 
       expect(assigns(:identity)).to eq identity
@@ -69,9 +73,11 @@ RSpec.describe LockedOrganizationsController, type: :controller do
              organization: organization
             )
 
-      xhr :get, :show, org_id: organization.id,
+      get :show, params: {
+        org_id: organization.id,
         protocol_id: protocol.id,
         service_request_id: sr.id
+        }, xhr: true
 
 
       expect(assigns(:organization)).to eq organization
@@ -93,9 +99,11 @@ RSpec.describe LockedOrganizationsController, type: :controller do
              organization: organization
             )
 
-      xhr :get, :show, org_id: organization.id,
+      get :show, params: {
+        org_id: organization.id,
         protocol_id: protocol.id,
         service_request_id: sr.id
+        }, xhr: true
 
 
       expect(assigns(:service_provider)).to eq sp
@@ -117,9 +125,11 @@ RSpec.describe LockedOrganizationsController, type: :controller do
              organization: organization
             )
 
-      xhr :get, :show, org_id: organization.id,
+      get :show, params: {
+        org_id: organization.id,
         protocol_id: protocol.id,
         service_request_id: sr.id
+        }, xhr: true
 
 
       expect(assigns(:protocol)).to eq protocol
@@ -141,9 +151,11 @@ RSpec.describe LockedOrganizationsController, type: :controller do
              organization: organization
             )
 
-      xhr :get, :show, org_id: organization.id,
+      get :show, params: {
+        org_id: organization.id,
         protocol_id: protocol.id,
         service_request_id: sr.id
+        }, xhr: true
 
 
       expect(assigns(:ssr)).to eq ssr

@@ -46,14 +46,14 @@ RSpec.describe Dashboard::VisitsController do
                              insurance_billing_qty: 0,
                              effort_billing_qty: 0)
 
-          xhr :put, :update, {
+          put :update, params: {
             id: @visit.id,
             portal: 'true',
             service_request_id: @sr,
             visit: {
               research_billing_qty: 1
             }
-          }
+          }, xhr: true
         end
 
         it 'should respond ok' do
@@ -98,14 +98,14 @@ RSpec.describe Dashboard::VisitsController do
                              insurance_billing_qty: 0,
                              effort_billing_qty: 0)
 
-          xhr :put, :update, {
+          put :update, params: {
             id: @visit.id,
             portal: 'false',
             service_request_id: @sr,
             visit: {
               research_billing_qty: 1
             }
-          }
+          }, xhr: true
         end
 
         it 'should respond ok' do
@@ -152,14 +152,14 @@ RSpec.describe Dashboard::VisitsController do
                              insurance_billing_qty: 0,
                              effort_billing_qty: 0)
 
-          xhr :put, :update, {
+          put :update, params: {
             id: @visit.id,
             portal: 'false',
             service_request_id: @sr,
             visit: {
               research_billing_qty: 1.5
             }
-          }
+          }, xhr: true
         end
 
         it 'should respond with unprocessable_entity' do

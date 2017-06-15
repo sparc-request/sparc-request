@@ -442,7 +442,6 @@ RSpec.describe EpicInterface do
           'env' => 'http://www.w3.org/2003/05/soap-envelope',
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
-
       expect(node).to include(expected.root)
     end
 

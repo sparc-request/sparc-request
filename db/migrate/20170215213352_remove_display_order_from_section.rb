@@ -1,4 +1,4 @@
-class RemoveDisplayOrderFromSection < ActiveRecord::Migration
+class RemoveDisplayOrderFromSection < ActiveRecord::Migration[5.1]
   def up
     remove_column :sections, :display_order
   end

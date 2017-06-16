@@ -18,13 +18,12 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class SplitVisitBilling < ActiveRecord::Migration[5.1]
-  def up
-    add_column :visits, :research_billing_qty, :integer
-    add_column :visits, :insurance_billing_qty, :integer
-    add_column :visits, :effort_billing_qty, :integer
-  end
-
-  def down
+task add_versions_to_migrations: :environment do
+  query = "< ActiveRecord::Migration"
+  update = "< ActiveRecord::Migration[5.1]"
+  Dir.glob(Rails.root + 'db/migrate/*') do |file|
+    code_file = File.read(file)
+    updated_file = code_file.gsub(/#{query}/, update)
+    File.open(file, 'w') { |file| file.write(updated_file) }
   end
 end

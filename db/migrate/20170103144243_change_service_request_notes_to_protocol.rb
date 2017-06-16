@@ -1,4 +1,4 @@
-class ChangeServiceRequestNotesToProtocol < ActiveRecord::Migration
+class ChangeServiceRequestNotesToProtocol < ActiveRecord::Migration[5.1]
   def change
     Note.includes(:notable).where(notable_type: 'ServiceRequest').each do |note|
       if note.notable

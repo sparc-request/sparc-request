@@ -19,8 +19,6 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 = javascript_include_tag 'service_calendar_logic'
 
-= hidden_field_tag :indirect_rate, @service_request.protocol.indirect_cost_rate || 0
-
 #service-calendars{ data: { review: @review.to_s, portal: @portal.to_s, admin: @admin.to_s, merged: @merged.to_s, consolidated: @consolidated.to_s, pages: @pages, protocol_id: @service_request.protocol_id, sub_service_request_id: @sub_service_request.try(:id) }}
   - if @sub_service_request ? @sub_service_request.has_per_patient_per_visit_services? : @service_request.has_per_patient_per_visit_services?
     - @service_request.arms.each do |arm|

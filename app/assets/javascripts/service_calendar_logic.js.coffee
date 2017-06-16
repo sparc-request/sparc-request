@@ -22,4 +22,3 @@ $(document).ready ->
   $('.selectpicker').selectpicker()
   $('[data-toggle="tooltip"]').tooltip()
   setup_xeditable_fields()
-  changing_tabs_calculating_rates()

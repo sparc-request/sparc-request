@@ -70,21 +70,16 @@
           = liv.subject_count
         - else
           %a.edit-subject-count{ href: 'javascript:void(0)', data: { arm_id: arm.id, name: 'subject_count', title: t(:calendars)[:pppv][:editable_fields][:subject_count], value: liv.subject_count, url: dashboard_line_items_visit_path(liv, srid: service_request.id, portal: @portal) } }
-      - visits      = liv.visits.paginate(page: page.to_i, per_page: 5)
-      - totals_hash = liv.try(:per_subject_subtotals, visits)
+      - visits = liv.ordered_visits.paginate(page: page.to_i, per_page: Visit.per_page)
       - visits.each_with_index do |v, index|
-        %td.text-center.visit.visit-width{ class: "visit-#{index+1}", data: { cents: totals_hash["#{v.id}"] || 0.00 } }
-          = render 'service_calendars/master_calendar/pppv/line_item_visit_input', arm: arm, line_item: liv.line_item, visit: v, tab: tab, portal: portal, service_request: service_request, locked: locked
-      - (5 - visits.size).times do
+        %td.text-center.visit.visit-width{ class: "visit-#{v.id}" }
+          = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", visit: v, page: page, admin: admin, locked: locked
+      - (Visit.per_page - visits.size).times do
         %td.visit-width &nbsp;
 
       - unless portal
-        %td.text-center.pppv-per-patient-line-item-total.total-width
-          %strong
-            = display_visit_based_direct_cost(liv)
-        %td.text-center.pppv-per-study-line-item-total.total-width
-          %strong
-            = Dashboard::ServiceCalendars.display_visit_based_direct_cost_per_study(liv)
+        = render 'service_calendars/master_calendar/pppv/total_per_patient', liv: liv
+        = render 'service_calendars/master_calendar/pppv/total_per_study', liv: liv
 
 - unless portal
-  = render 'service_calendars/master_calendar/pppv/pppv_totals', service_request: service_request, arm: arm, tab: tab, line_items_visits: line_items_visits.flatten
+  = render 'service_calendars/master_calendar/pppv/totals/pppv_totals', service_request: service_request, arm: arm, tab: tab, line_items_visits: line_items_visits.flatten, page: page

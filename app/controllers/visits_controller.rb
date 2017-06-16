@@ -18,30 +18,44 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Dashboard::VisitsController < Dashboard::BaseController
+class VisitsController < ApplicationController
   respond_to :json, :js, :html
 
+  before_action :initialize_service_request, if: Proc.new{ params[:admin] != 'true' }
+  before_action :authorize_identity,         if: Proc.new { params[:admin] != 'true' }
+  before_action :authorize_admin,            if: Proc.new { params[:admin] == 'true' }
+
   def edit
-    @visit = Visit.find(params[:id])
-    @portal = params[:portal]
+    @visit  = Visit.find(params[:id])
+    @admin  = params[:admin]
+    @tab    = 'billing_strategy'
+    @page   = params[:page]
 
     respond_to do |format|
       format.js
     end
   end
 
-  # Used for x-editable update and validations
   def update
-    @visit = Visit.find(params[:id])
-    admin = params[:service_request_id] ? false : true
+    @admin              = params[:admin] == 'true'
+    @tab                = params[:tab]
+    @page               = params[:page]
+    @visit              = Visit.eager_load(sub_service_request: { organization: { parent: { parent: :parent } } }, service: :pricing_maps).find(params[:id])
+    @arm                = @visit.arm
+    @line_items_visits  = @arm.line_items_visits.eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol])
+    @line_items_visit   = @line_items_visits.find(@visit.line_items_visit_id)
+    @visit_groups       = @arm.visit_groups.paginate(page: @page.to_i, per_page: VisitGroup.per_page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol] } })
+    @visit_group        = VisitGroup.find(@visit.visit_group_id)
+    @locked             = !@visit.sub_service_request.can_be_edited? && !@admin
 
     if @visit.update_attributes(visit_params)
-      unless params[:portal] == 'true'
-        @visit.line_items_visit.sub_service_request.set_to_draft(@admin)
-      end
-      render nothing: true
+      @visit.sub_service_request.set_to_draft unless @admin
     else
-      render json: @visit.errors, status: :unprocessable_entity
+      @errors = @visit.errors
+    end
+
+    respond_to do |format|
+      format.js
     end
   end
 
@@ -74,5 +88,16 @@ class Dashboard::VisitsController < Dashboard::BaseController
       :research_billing_qty,
       :insurance_billing_qty,
       :effort_billing_qty)
+  end
+
+  def authorize_admin
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    @service_request     = @sub_service_request.service_request
+
+    unless (current_user.authorized_admin_organizations & @sub_service_request.org_tree).any?
+      @sub_service_request = nil
+      @service_request = nil
+      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
+    end
   end
 end

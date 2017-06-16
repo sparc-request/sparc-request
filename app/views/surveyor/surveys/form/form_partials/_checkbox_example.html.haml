@@ -27,6 +27,5 @@
       .col-lg-10.no-padding
         = text_field_tag "option-content", option.content, class: 'form-control option-content', placeholder: t(:surveyor)[:surveys][:form][:content][:option][:content][:placeholder], maxlength: 255
       .col-lg-1.no-padding
-        = link_to surveyor_option_path(option), method: :delete, remote: true, class: 'btn btn-danger pull-right delete-option', title: t(:surveyor)[:surveys][:form][:content][:option][:delete], data: { toggle: 'tooltip', animation: 'false' } do
-          %span.glyphicon.glyphicon-trash
+        = render 'surveyor/surveys/form/form_partials/delete_option_button'
   = render 'surveyor/surveys/form/form_partials/add_option_button', question: question

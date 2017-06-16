@@ -84,14 +84,8 @@ class NotifierLogic
     sub_service_requests.each do |sub_service_request|
       audit_report = request_amendment ? sub_service_request.audit_line_items(@current_user) : nil
       sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-        service_list_false = sub_service_request.service_request.service_list(false, nil, sub_service_request)
-        service_list_true = sub_service_request.service_request.service_list(true, nil, sub_service_request)
-        line_items = sub_service_request.line_items
-        protocol = @service_request.protocol
-        controller = set_instance_variables(@current_user, @service_request, service_list_false, service_list_true, line_items, protocol)
-        xls = controller.render_to_string action: 'show', formats: [:xlsx]
         individual_ssr = @sub_service_request.present? ? true : false
-        Notifier.delay.notify_admin(submission_email.email, xls, @current_user, sub_service_request, audit_report, ssr_destroyed, individual_ssr)
+        Notifier.delay.notify_admin(submission_email.email, @current_user, sub_service_request, audit_report, ssr_destroyed, individual_ssr)
       end
     end
   end
@@ -158,15 +152,6 @@ class NotifierLogic
       audit_report = nil
     end
 
-    service_list_false = @service_request.service_list(false)
-    service_list_true = @service_request.service_list(true)
-    line_items = @service_request.line_items
-    protocol = @service_request.protocol
-
-    controller = set_instance_variables(@current_user, @service_request, service_list_false, service_list_true, line_items, protocol)
-
-    xls = controller.render_to_string action: 'show', formats: [:xlsx]
-
     if @service_request.protocol.project_roles.where(identity: @current_user).where.not(project_rights: "approve").any?
       approval = @service_request.approvals.create
     else
@@ -179,9 +164,9 @@ class NotifierLogic
       # Do not want to send authorized user request amendment emails when audit_report is not present
       
       if request_amendment && audit_report.present?
-        Notifier.delay.notify_user(project_role, @service_request, @sub_service_request, xls, approval, @current_user, audit_report, individual_ssr)
+        Notifier.delay.notify_user(project_role, @service_request, @sub_service_request, approval, @current_user, audit_report, individual_ssr)
       elsif !request_amendment
-        Notifier.delay.notify_user(project_role, @service_request, @sub_service_request, xls, approval, @current_user, audit_report, individual_ssr)
+        Notifier.delay.notify_user(project_role, @service_request, @sub_service_request, approval, @current_user, audit_report, individual_ssr)
       end
     end
   end
@@ -193,33 +178,8 @@ class NotifierLogic
   end
 
   def send_individual_service_provider_notification(sub_service_request, service_provider, audit_report=nil, ssr_destroyed=false, request_amendment=false)
-    attachments = {}
-    service_list_true = @service_request.service_list(true, service_provider)
-    service_list_false = @service_request.service_list(false, service_provider)
-
-    # Retrieves the valid line items for service provider to calculate total direct cost in the xls
-    line_items = []
-    @service_request.sub_service_requests.each do |ssr|
-      if service_provider.identity.is_service_provider?(ssr)
-        line_items << ssr.line_items
-      end
-    end
-
-    line_items = line_items.flatten
-    protocol = @service_request.protocol
-    controller = set_instance_variables(@current_user, @service_request, service_list_false, service_list_true, line_items, protocol)
-    xls = controller.render_to_string action: 'show', formats: [:xlsx]
-    attachments["service_request_#{sub_service_request.service_request.id}.xlsx"] = xls
-    #TODO this is not very multi-institutional
-    # generate the required forms pdf if it's required
-
-    if sub_service_request.organization.tag_list.include? 'required forms'
-      request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf service_request
-      attachments["request_for_grant_billing_#{sub_service_request.service_request.id}.pdf"] = request_for_grant_billing_form
-    end
-
     individual_ssr = @sub_service_request.present? ? true : false
-    Notifier.delay.notify_service_provider(service_provider, @service_request, attachments, @current_user, sub_service_request, audit_report, ssr_destroyed, request_amendment, individual_ssr)
+    Notifier.delay.notify_service_provider(service_provider, @service_request, @current_user, sub_service_request, audit_report, ssr_destroyed, request_amendment, individual_ssr)
   end
 
   def filter_audit_trail(identity, ssr_ids_that_need_auditing)
@@ -301,16 +261,5 @@ class NotifierLogic
       ssrs_with_draft_status = @service_request.sub_service_requests.select{ |ssr| (ssr.status == "draft") }
     end
     ssrs_with_draft_status
-  end
-
-  def set_instance_variables(current_user, service_request, service_list_false, service_list_true, line_items, protocol)
-    controller = ServiceRequestsController.new()
-    controller.instance_variable_set(:"@current_user", current_user)
-    controller.instance_variable_set(:"@service_request", service_request)
-    controller.instance_variable_set(:"@service_list_false", service_list_false)
-    controller.instance_variable_set(:"@service_list_true", service_list_true)
-    controller.instance_variable_set(:"@line_items", line_items)
-    controller.instance_variable_set(:"@protocol", protocol)
-    controller
   end
 end

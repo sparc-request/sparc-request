@@ -149,6 +149,7 @@ class Protocol < ApplicationRecord
     # Searches protocols based on 'Authorized User', 'HR#', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title', OR 'Search All'
     # Protects against SQL Injection with ActiveRecord::Base::sanitize
     # inserts ! so that we can escape special characters
+    escaped_search_term = search_attrs[:search_text].to_s.gsub(/[!%_]/) { |x| '!' + x }
 
     like_search_term = ActiveRecord::Base.connection.quote("%#{escaped_search_term}%")
     exact_search_term = ActiveRecord::Base.connection.quote(search_attrs[:search_text])
@@ -157,11 +158,12 @@ class Protocol < ApplicationRecord
     authorized_user_query  = "CONCAT(identities.first_name, ' ', identities.last_name) LIKE #{like_search_term} escape '!'"
     hr_query               = "human_subjects_info.hr_number LIKE #{like_search_term} escape '!'"
     pi_query               = "CONCAT(identities.first_name, ' ', identities.last_name) LIKE #{like_search_term} escape '!'"
-    protocol_id_query      = sanitize_sql_for_conditions("protocols.id = #{exact_search_term}")
+    protocol_id_query      = "protocols.id = #{exact_search_term}"
     pro_num_query          = "human_subjects_info.pro_number LIKE #{like_search_term} escape '!'"
-    rmid_query             = sanitize_sql_for_conditions("protocols.research_master_id = #{exact_search_term}")
+    rmid_query             = "protocols.research_master_id = #{exact_search_term}"
     title_query            = ["protocols.short_title LIKE #{like_search_term} escape '!'", "protocols.title LIKE #{like_search_term} escape '!'"]
     ### END SEARCH QUERIES ###
+
     hr_pro_ids = HumanSubjectsInfo.where([hr_query, pro_num_query].join(' OR ')).pluck(:protocol_id)
     hr_protocol_id_query = hr_pro_ids.empty? ? nil : "protocols.id in (#{hr_pro_ids.join(', ')})"
 

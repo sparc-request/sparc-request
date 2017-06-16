@@ -150,6 +150,8 @@ class Protocol < ApplicationRecord
     # Protects against SQL Injection with ActiveRecord::Base::sanitize
     # inserts ! so that we can escape special characters
 
+    escaped_search_term = search_attrs[:search_text].to_s.gsub(/[!%_]/) { |x| '!' + x }
+
     like_search_term = ActiveRecord::Base.connection.quote("%#{escaped_search_term}%")
     exact_search_term = ActiveRecord::Base.connection.quote(search_attrs[:search_text])
 
@@ -162,7 +164,6 @@ class Protocol < ApplicationRecord
     rmid_query             = sanitize_sql_for_conditions("protocols.research_master_id = #{exact_search_term}")
     title_query            = ["protocols.short_title LIKE #{like_search_term} escape '!'", "protocols.title LIKE #{like_search_term} escape '!'"]
     ### END SEARCH QUERIES ###
-    binding.pry
     hr_pro_ids = HumanSubjectsInfo.where([hr_query, pro_num_query].join(' OR ')).pluck(:protocol_id)
     hr_protocol_id_query = hr_pro_ids.empty? ? nil : "protocols.id in (#{hr_pro_ids.join(', ')})"
 

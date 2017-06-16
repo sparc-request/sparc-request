@@ -26,8 +26,7 @@ RSpec.describe ServiceCalendarsController do
   let!(:logged_in_user) { create(:identity) }
 
   describe '#toggle_calendar_column' do
-<<<<<<< HEAD
-=======
+
     it 'should call before_filter #initialize_service_request' do
       expect(before_filters.include?(:initialize_service_request)).to eq(true)
     end
@@ -78,7 +77,6 @@ RSpec.describe ServiceCalendarsController do
       expect(assigns(:portal)).to eq(false)
     end
 
->>>>>>> jtm finished some controller specs
     context 'check' do
       it 'should update visits' do
         org       = create(:organization)
@@ -94,27 +92,12 @@ RSpec.describe ServiceCalendarsController do
 
         session[:identity_id] = logged_in_user.id
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-        xhr :post, :toggle_calendar_column, {
-          visit_group_id: arm.visit_groups.first.id,
-          service_request_id: sr.id,
-          page: '1',
-          check: 'true',
-        }
-=======
-=======
->>>>>>> jtm finished some controller specs
         post :toggle_calendar_column, params: {
           service_request_id: sr.id,
           arm_id: arm.id,
           check: 'true',
           portal: 'false'
         }, xhr: true
-<<<<<<< HEAD
->>>>>>> jtm finished some controller specs
-=======
->>>>>>> jtm finished some controller specs
 
         expect(v.reload.quantity).to eq(1)
         expect(v.reload.research_billing_qty).to eq(1)
@@ -138,27 +121,12 @@ RSpec.describe ServiceCalendarsController do
 
         session[:identity_id] = logged_in_user.id
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-        xhr :post, :toggle_calendar_column, {
-          visit_group_id: arm.visit_groups.first.id,
-          service_request_id: sr.id,
-          page: '1',
-          uncheck: 'true',
-        }
-=======
-=======
->>>>>>> jtm finished some controller specs
         post :toggle_calendar_column, params: {
           service_request_id: sr.id,
           arm_id: arm.id,
           uncheck: 'true',
           portal: 'false'
         }, xhr: true
-<<<<<<< HEAD
->>>>>>> jtm finished some controller specs
-=======
->>>>>>> jtm finished some controller specs
 
         expect(v.reload.quantity).to eq(0)
         expect(v.reload.research_billing_qty).to eq(0)
@@ -179,28 +147,12 @@ RSpec.describe ServiceCalendarsController do
 
         session[:identity_id] = logged_in_user.id
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-        xhr :post, :toggle_calendar_column, {
-          visit_group_id: arm.visit_groups.first.id,
-          service_request_id: sr.id,
-          page: '1',
-          check: 'true',
-          admin: 'false'
-        }
-=======
-=======
->>>>>>> jtm finished some controller specs
         post :toggle_calendar_column, params: {
           service_request_id: sr.id,
           arm_id: arm.id,
           check: 'true',
           portal: 'false'
         }, xhr: true
-<<<<<<< HEAD
->>>>>>> jtm finished some controller specs
-=======
->>>>>>> jtm finished some controller specs
 
         expect(ssr.reload.status).to eq('draft')
       end
@@ -218,33 +170,15 @@ RSpec.describe ServiceCalendarsController do
 
         session[:identity_id] = logged_in_user.id
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-        xhr :post, :toggle_calendar_column, {
-          visit_group_id: arm.visit_groups.first.id,
-          service_request_id: sr.id,
-          page: '1',
-          check: 'true',
-          admin: 'true'
-        }
-=======
-=======
->>>>>>> jtm finished some controller specs
         post :toggle_calendar_column, params: {
           service_request_id: sr.id,
           arm_id: arm.id,
           check: 'true',
           portal: 'false'
         }, xhr: true
-<<<<<<< HEAD
->>>>>>> jtm finished some controller specs
-=======
->>>>>>> jtm finished some controller specs
 
         expect(ssr.reload.status).to eq('on_hold')
       end
-<<<<<<< HEAD
-=======
 
       context 'editing sub service request' do
         it 'should not update other sub service requests statuses' do
@@ -292,7 +226,6 @@ RSpec.describe ServiceCalendarsController do
       }, xhr: true
 
       expect(controller).to render_template(partial: '_update_service_calendar')
->>>>>>> jtm finished some controller specs
     end
 
     context 'editing sub service request' do
@@ -310,29 +243,12 @@ RSpec.describe ServiceCalendarsController do
 
         session[:identity_id] = logged_in_user.id
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-        xhr :post, :toggle_calendar_column, {
-          visit_group_id: arm.visit_groups.first.id,
-          sub_service_request_id: ssr.id,
+        post :toggle_calendar_column, params: {
           service_request_id: sr.id,
-          page: '1',
+          arm_id: arm.id,
           check: 'true',
-          admin: 'false'
-        }
-=======
-=======
->>>>>>> jtm finished some controller specs
-      post :toggle_calendar_column, params: {
-        service_request_id: sr.id,
-        arm_id: arm.id,
-        check: 'true',
-        portal: 'false'
-      }, xhr: true
-<<<<<<< HEAD
->>>>>>> jtm finished some controller specs
-=======
->>>>>>> jtm finished some controller specs
+          portal: 'false'
+        }, xhr: true
 
         expect(ssr.reload.status).to eq('draft')
         expect(ssr2.reload.status).to eq('on_hold')

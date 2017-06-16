@@ -30,6 +30,8 @@ class LineItemsVisit < ApplicationRecord
   has_one :sub_service_request, through: :line_item
   has_one :service, through: :line_item
   has_many :visits, :dependent => :destroy
+  has_many :ordered_visits, -> { ordered }, class_name: "Visit"
+  has_many :visit_groups, through: :visits
   has_many :notes, as: :notable, dependent: :destroy
 
   validate :subject_count_valid
@@ -77,15 +79,11 @@ class LineItemsVisit < ApplicationRecord
   end
 
   def units_per_package
-    unit_factor = self.line_item.service.displayed_pricing_map.unit_factor
-    units_per_package = unit_factor || 1
-    return units_per_package
+    self.line_item.service.displayed_pricing_map.unit_factor || 1
   end
 
   def quantity_total
-    # quantity_total = self.visits.map {|x| x.research_billing_qty}.inject(:+) * self.subject_count
-    quantity_total = self.visits.sum('research_billing_qty')
-    return quantity_total * (self.subject_count || 0)
+    quantity_total = self.visits.sum(:research_billing_qty) * (self.subject_count || 0)
   end
 
   # Returns a hash of subtotals for the visits in the line item.
@@ -116,11 +114,7 @@ class LineItemsVisit < ApplicationRecord
 
   # Determine the direct costs for a visit-based service for one subject
   def direct_costs_for_visit_based_service_single_subject
-    result = Visit.where("line_items_visit_id = ? AND research_billing_qty >= ?", self.id, 1).sum(:research_billing_qty)
-    research_billing_qty_total = result || 0
-    subject_total = research_billing_qty_total * per_unit_cost(quantity_total())
-
-    subject_total
+    (self.visits.where("research_billing_qty >= ?", 1).sum(:research_billing_qty) || 0) * per_unit_cost(quantity_total())
   end
 
   # Determine the direct costs for a visit-based service

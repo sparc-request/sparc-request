@@ -49,7 +49,6 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
     wait_for_javascript_to_finish
 
     click_link 'Clinical Services'
-    
     wait_for_javascript_to_finish
   end
 
@@ -211,6 +210,8 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
       context 'r' do
         before :each do
           find('a.edit-billing-qty', match: :first).click
+          wait_for_javascript_to_finish
+          
           fill_in 'visit_research_billing_qty', with: 5
           click_button 'Save'
           wait_for_javascript_to_finish
@@ -228,6 +229,8 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
       context 't' do
         before :each do
           find('a.edit-billing-qty', match: :first).click
+          wait_for_javascript_to_finish
+          
           fill_in 'visit_insurance_billing_qty', with: 5
           click_button 'Save'
           wait_for_javascript_to_finish
@@ -244,6 +247,8 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
       context '%' do
         before :each do
           find('a.edit-billing-qty', match: :first).click
+          wait_for_javascript_to_finish
+          
           fill_in 'visit_effort_billing_qty', with: 5
           click_button 'Save'
           wait_for_javascript_to_finish
@@ -280,13 +285,15 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
       context 'r' do
         before :each do
           find('a.edit-billing-qty', match: :first).click
+          wait_for_javascript_to_finish
+          
           fill_in 'visit_research_billing_qty', with: 'string'
           click_button 'Save'
           wait_for_javascript_to_finish
         end
 
         it 'should throw an error' do
-          expect(page).to have_css('span.help-block', text: 'Is not a number')
+          expect(page).to have_content("Research Billing Quantity is not a number")
         end
 
         it 'should not update header total cost' do
@@ -297,13 +304,15 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
       context 't' do
         before :each do
           find('a.edit-billing-qty', match: :first).click
+          wait_for_javascript_to_finish
+          
           fill_in 'visit_insurance_billing_qty', with: 'string'
           click_button 'Save'
           wait_for_javascript_to_finish
         end
 
         it 'should throw an error' do
-          expect(page).to have_css('span.help-block', text: 'Is not a number')
+          expect(page).to have_content("Insurance Billing Quantity is not a number")
         end
 
         it 'should not update header total cost' do
@@ -314,13 +323,15 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
       context '%' do
         before :each do
           find('a.edit-billing-qty', match: :first).click
+          wait_for_javascript_to_finish
+          
           fill_in 'visit_effort_billing_qty', with: 'string'
           click_button 'Save'
           wait_for_javascript_to_finish
         end
 
         it 'should throw an error' do
-          expect(page).to have_css('span.help-block', text: 'Is not a number')
+          expect(page).to have_content("Effort Billing Quantity is not a number")
         end
 
         it 'should not update header total cost' do

@@ -85,7 +85,6 @@ class AssociatedUsersController < ApplicationController
     protocol_role         = updater.protocol_role
     @return_to_dashboard  = protocol_role.identity_id == current_user.id && ['none', 'view'].include?(protocol_role.project_rights)
 
-    binding.pry
     if updater.successful?
       flash.now[:success] = t(:authorized_users)[:updated]
     else

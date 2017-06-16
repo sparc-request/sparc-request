@@ -44,7 +44,7 @@
         .col-sm-4
           = render 'surveyor/surveys/form/dependent_dropdown', survey: survey, question: question
     .col-sm-1.no-padding.pull-right
-      = link_to surveyor_question_path(question), method: :delete, remote: true, class: 'btn btn-danger pull-right delete-question', title: t(:surveyor)[:surveys][:form][:content][:question][:delete], data: { toggle: 'tooltip', animation: 'false' } do 
+      %button.btn.btn-sm.btn-danger.pull-right.delete-question{ title: t(:surveyor)[:surveys][:form][:content][:question][:delete], data: { toggle: 'tooltip', animation: 'false' } }
         %span.glyphicon.glyphicon-trash
 
   .question-options{ data: { question_id: question.id } }

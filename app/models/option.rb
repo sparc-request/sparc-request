@@ -23,8 +23,16 @@ class Option < ActiveRecord::Base
 
   delegate :survey, to: :question
 
-  has_many :dependents, class_name: 'Question', foreign_key: :depender_id, dependent: :destroy
+  has_many :dependents, class_name: 'Question', foreign_key: :depender_id
 
   validates :content,
             presence: true
+
+  before_destroy :update_dependents
+
+  private
+
+  def update_dependents
+    self.dependents.update_all(depender_id: nil)
+  end
 end

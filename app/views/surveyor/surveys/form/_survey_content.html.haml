@@ -32,4 +32,5 @@
         = render 'surveyor/surveys/form/survey_section', survey: survey, section: section
 
     .form-group
-      = link_to add_section_content, surveyor_sections_path(survey_id: survey.id), method: :post, remote: true, class: 'btn btn-sm btn-primary add-section'
+      %button.btn.btn-sm.btn-primary.add-section
+        = add_section_content

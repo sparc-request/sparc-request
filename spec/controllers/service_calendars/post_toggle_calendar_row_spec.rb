@@ -26,6 +26,7 @@ RSpec.describe ServiceCalendarsController do
   let!(:logged_in_user) { create(:identity) }
 
   describe '#toggle_calendar_row' do
+
     it 'should call before_filter #initialize_service_request' do
       expect(before_filters.include?(:initialize_service_request)).to eq(true)
     end
@@ -87,13 +88,14 @@ RSpec.describe ServiceCalendarsController do
         org       = create(:organization)
         service   = create(:service)
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
-        sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
-        ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
-        arm       = create(:arm, protocol: protocol)
+        sr        = create(:service_request_without_validations, protocol: protocol)
+        ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr)
         li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-        liv       = create(:line_items_visit, line_item: li, arm: arm)
-        vg        = create(:visit_group, arm: arm)
-        v         = create(:visit, line_items_visit: liv, visit_group: vg, quantity: 0, research_billing_qty: 0, insurance_billing_qty: 1, effort_billing_qty: 1)
+        arm       = create(:arm, protocol: protocol)
+        liv       = arm.line_items_visits.first
+        v         = arm.visits.first
+
+        v.update_attributes(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 1, effort_billing_qty: 1)
 
         session[:identity_id] = logged_in_user.id
 
@@ -129,6 +131,7 @@ RSpec.describe ServiceCalendarsController do
         post :toggle_calendar_row, params: {
         service_request_id: sr.id,
           line_items_visit_id: liv.id,
+          page: '1',
           uncheck: 'true',
           portal: 'false'
         }, xhr: true
@@ -140,8 +143,8 @@ RSpec.describe ServiceCalendarsController do
       end
     end
 
-    context 'not in dashboard' do
-      it 'should update sub service request status' do
+    context '@admin false' do
+      it 'should update sub service request to draft' do
         org       = create(:organization)
         service   = create(:service)
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
@@ -153,16 +156,21 @@ RSpec.describe ServiceCalendarsController do
         vg        = create(:visit_group, arm: arm)
         v         = create(:visit, line_items_visit: liv, visit_group: vg)
 
-        session[:identity_id]        = logged_in_user.id
+        session[:identity_id] = logged_in_user.id
 
         post :toggle_calendar_row, params: {
           service_request_id: sr.id,
           line_items_visit_id: liv.id,
+          page: '1',
           check: 'true',
           portal: 'false'
         }, xhr: true
+
         expect(ssr.reload.status).to eq('draft')
       end
+    end
+
+    context '@admin true' do
 
       it 'should create past status' do
         org       = create(:organization)
@@ -190,6 +198,7 @@ RSpec.describe ServiceCalendarsController do
       end
 
       it 'should update service request status' do
+
         org       = create(:organization)
         service   = create(:service)
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
@@ -201,16 +210,18 @@ RSpec.describe ServiceCalendarsController do
         vg        = create(:visit_group, arm: arm)
         v         = create(:visit, line_items_visit: liv, visit_group: vg)
 
-        session[:identity_id]        = logged_in_user.id
+        session[:identity_id] = logged_in_user.id
 
         post :toggle_calendar_row, params: {
           service_request_id: sr.id,
           line_items_visit_id: liv.id,
+          page: '1',
           check: 'true',
+          admin: 'true',
           portal: 'false'
         }, xhr: true
 
-        expect(sr.reload.status).to eq('draft')
+        expect(ssr.reload.status).to eq('on_hold')
       end
     end
 

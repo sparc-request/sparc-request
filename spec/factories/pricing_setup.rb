@@ -40,5 +40,11 @@ FactoryGirl.define do
     trait :charge_master do
       charge_master true
     end
+
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
+    end
+
+    factory :pricing_setup_without_validations, traits: [:without_validations]
   end
 end

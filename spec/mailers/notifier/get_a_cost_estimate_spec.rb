@@ -37,8 +37,7 @@ RSpec.describe Notifier do
         @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'get_a_cost_estimate')
         @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
         @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
-        @xls                  = Array.new
-        @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, @xls, identity, @sub_service_request)
+        @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, identity, @sub_service_request)
 
         @service_request.reload
       end
@@ -70,14 +69,13 @@ RSpec.describe Notifier do
         @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
         @submission_email     = create(:submission_email, email: 'success@musc.edu', organization: @organization)
         @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
-        @xls                  = Array.new
-        @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, @xls, identity, @sub_service_request)
+        @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, identity, @sub_service_request)
         
         @service_request.reload
       end
 
       it 'should show epic column' do
-        assert_email_user_information_when_selected_for_epic(@mail.body)
+        assert_email_user_information_when_selected_for_epic(@mail.body.parts.first.body)
       end
     end
 
@@ -90,14 +88,13 @@ RSpec.describe Notifier do
         @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
         @submission_email     = create(:submission_email, email: 'success@musc.edu', organization: @organization)
         @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
-        @xls                  = Array.new
-        @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, @xls, identity, @sub_service_request)
+        @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, identity, @sub_service_request)
         
         @service_request.reload
       end
 
       it 'should not show epic column' do
-        assert_email_user_information_when_not_selected_for_epic(@mail.body)
+        assert_email_user_information_when_not_selected_for_epic(@mail.body.parts.first.body)
       end
     end
   end
@@ -112,8 +109,7 @@ RSpec.describe Notifier do
         @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
         @approval             = create(:approval, service_request: @service_request)
         @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
-        @xls                  = ' '
-        @mail                 = Notifier.notify_user(@project_role, @service_request, nil, @xls, @approval, identity)
+        @mail                 = Notifier.notify_user(@project_role, @service_request, nil, @approval, identity)
         
         @service_request.reload
       end
@@ -141,8 +137,7 @@ RSpec.describe Notifier do
         @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
         @approval             = create(:approval, service_request: @service_request)
         @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
-        @xls                  = ' '
-        @mail                 = Notifier.notify_user(@project_role, @service_request, nil, @xls, @approval, identity)
+        @mail                 = Notifier.notify_user(@project_role, @service_request, nil, @approval, identity)
         
         @service_request.reload
       end
@@ -161,8 +156,7 @@ RSpec.describe Notifier do
         @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
         @approval             = create(:approval, service_request: @service_request)
         @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
-        @xls                  = ' '
-        @mail                 = Notifier.notify_user(@project_role, @service_request, nil, @xls, @approval, identity)
+        @mail                 = Notifier.notify_user(@project_role, @service_request, nil, @approval, identity)
         
         @service_request.reload
       end
@@ -183,8 +177,7 @@ RSpec.describe Notifier do
         @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
         @submission_email     = create(:submission_email, email: 'success@musc.edu', organization: @organization)
         @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
-        @xls                  = ' '
-        @mail                 = Notifier.notify_admin(@submission_email, @xls, identity, @sub_service_request)
+        @mail                 = Notifier.notify_admin(@submission_email, identity, @sub_service_request)
         
         @service_request.reload
       end
@@ -212,8 +205,7 @@ RSpec.describe Notifier do
         @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
         @submission_email     = create(:submission_email, email: 'success@musc.edu', organization: @organization)
         @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
-        @xls                  = ' '
-        @mail                 = Notifier.notify_admin(@submission_email, @xls, identity, @sub_service_request)
+        @mail                 = Notifier.notify_admin(@submission_email, identity, @sub_service_request)
         
         @service_request.reload
       end
@@ -232,8 +224,7 @@ RSpec.describe Notifier do
         @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
         @submission_email     = create(:submission_email, email: 'success@musc.edu', organization: @organization)
         @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
-        @xls                  = ' '
-        @mail                 = Notifier.notify_admin(@submission_email, @xls, identity, @sub_service_request)
+        @mail                 = Notifier.notify_admin(@submission_email, identity, @sub_service_request)
         
         @service_request.reload
       end

@@ -20,4 +20,3 @@
 if $(".question-<%=@question.id%>").is(':first-child')
   $(".question-<%=@question.id%>").next().find('#question-is_dependent').prop('disabled', 'disabled')
 $(".question-<%=@question.id%>").remove()
-build_dependents_selectpicker("<%=@question.survey.id%>")

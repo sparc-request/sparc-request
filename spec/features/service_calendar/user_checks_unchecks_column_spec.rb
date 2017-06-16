@@ -40,7 +40,7 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
     li        = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
     li2       = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service2)
     
-    arm       = create(:arm, protocol: protocol)
+    @arm      = create(:arm, protocol: protocol)
   end
 
   context 'for SSRs which aren\'t locked' do
@@ -51,6 +51,7 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
     context 'check:' do
       scenario 'and sees all visits checked' do
         visit service_calendar_service_request_path(@sr)
+        wait_for_javascript_to_finish
 
         find('.service-calendar-column').click
 
@@ -60,10 +61,11 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
 
     context 'uncheck:' do
       scenario 'and sees all visits unchecked' do
-        Visit.update_all(research_billing_qty: 1)
+        @arm.visits.update_all(research_billing_qty: 1)
         visit service_calendar_service_request_path(@sr)
 
         find('.service-calendar-column').click
+        wait_for_javascript_to_finish
 
         expect(page).to have_css('.visit-quantity[checked]', count: 0)
      end
@@ -78,8 +80,10 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
     context 'check:' do
       scenario 'and sees the not-locked visits checked and the locked visits not checked' do
         visit service_calendar_service_request_path(@sr)
+        wait_for_javascript_to_finish
 
         find('.service-calendar-column').click
+        wait_for_javascript_to_finish
 
         expect(page).to have_css('.visit-quantity[checked]', count: 1)
         expect(all('.visit-quantity').last).to_not be_checked
@@ -93,8 +97,10 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
 
       scenario 'and sees the not-locked visits unchecked and the locked visits checked' do
         visit service_calendar_service_request_path(@sr)
+        wait_for_javascript_to_finish
 
         find('.service-calendar-column').click
+        wait_for_javascript_to_finish
 
         expect(page).to have_css('.visit-quantity:checked', count: 1)
         expect(all('.visit-quantity').last).to be_checked

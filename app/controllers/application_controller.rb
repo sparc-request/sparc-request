@@ -216,7 +216,7 @@ class ApplicationController < ActionController::Base
       @service_request.sub_service_requests.each do |ssr|
         organization = ssr.organization
         if organization.has_editable_statuses?
-          self_or_parent_id = ssr.find_editable_id(organization.id)
+          self_or_parent_id = ssr.find_editable_id
           if !EDITABLE_STATUSES[self_or_parent_id].include?(ssr.status)
             @locked_org_ids << self_or_parent_id
             @locked_org_ids << organization.all_children(Organization.all).map(&:id)

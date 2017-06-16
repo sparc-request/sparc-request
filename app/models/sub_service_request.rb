@@ -296,7 +296,7 @@ class SubServiceRequest < ApplicationRecord
   #A request is locked if the organization it's in isn't editable
   def is_locked?
     if organization.has_editable_statuses?
-      return !EDITABLE_STATUSES[find_editable_id(self.organization.id)].include?(self.status)
+      return !EDITABLE_STATUSES[find_editable_id].include?(self.status)
     end
     false
   end
@@ -304,8 +304,7 @@ class SubServiceRequest < ApplicationRecord
   # Can't edit a request if it's placed in an uneditable status
   def can_be_edited?
     if organization.has_editable_statuses?
-      self_or_parent_id = find_editable_id(self.organization.id)
-      EDITABLE_STATUSES[self_or_parent_id].include?(self.status) && !is_complete?
+      EDITABLE_STATUSES[find_editable_id].include?(self.status) && !is_complete?
     else
       !is_complete?
     end
@@ -315,19 +314,15 @@ class SubServiceRequest < ApplicationRecord
     return FINISHED_STATUSES.include?(status)
   end
 
-  def find_editable_id(id)
-    parent_ids = Organization.find(id).parents.map(&:id)
+  def find_editable_id
+    parent_ids = self.organization.parents.map(&:id)
     EDITABLE_STATUSES.keys.each do |org_id|
-      if (org_id == id) || parent_ids.include?(org_id)
-        return org_id
-      end
+      return org_id if (org_id == self.organization_id) || parent_ids.include?(org_id)
     end
   end
 
-  def set_to_draft(admin)
-    if !admin && status != 'draft'
-      self.update_attributes(status: 'draft')
-    end
+  def set_to_draft
+    self.update_attributes(status: 'draft') unless status == 'draft'
   end
 
   def switch_to_new_service_request

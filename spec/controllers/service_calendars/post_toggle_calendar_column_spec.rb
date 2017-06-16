@@ -7,26 +7,7 @@
 
 # 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
 # disclaimer in the documentation and/or other materials provided with the distribution.
-
-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
-# derived from this software without specific prior written permission.
-
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-# Copyright © 2011 MUSC Foundation for Research Development
-# All rights reserved.
-
-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
-# disclaimer in the documentation and/or other materials provided with the distribution.
-
+  
 # 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
 # derived from this software without specific prior written permission.
 
@@ -45,6 +26,7 @@ RSpec.describe ServiceCalendarsController do
   let!(:logged_in_user) { create(:identity) }
 
   describe '#toggle_calendar_column' do
+
     it 'should call before_filter #initialize_service_request' do
       expect(before_filters.include?(:initialize_service_request)).to eq(true)
     end
@@ -106,6 +88,8 @@ RSpec.describe ServiceCalendarsController do
         arm       = create(:arm, protocol: protocol)
         v         = arm.visits.first
 
+        v.update_attributes(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 1, effort_billing_qty: 1)
+
         session[:identity_id] = logged_in_user.id
 
         post :toggle_calendar_column, params: {
@@ -151,12 +135,12 @@ RSpec.describe ServiceCalendarsController do
       end
     end
 
-    context 'not in dashboard' do
-      it 'should update sub service requests statuses' do
+    context '@admin false' do
+      it 'should update sub service requests to draft' do
         org       = create(:organization)
         service   = create(:service, organization: org)
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
-        sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
+        sr        = create(:service_request_without_validations, protocol: protocol)
         ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
         li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
         arm       = create(:arm, protocol: protocol)
@@ -172,12 +156,14 @@ RSpec.describe ServiceCalendarsController do
 
         expect(ssr.reload.status).to eq('draft')
       end
+    end
 
-      it 'should update service request status' do
+    context '@admin true' do
+      it 'should not update sub service requests to draft' do
         org       = create(:organization)
         service   = create(:service, organization: org)
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
-        sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
+        sr        = create(:service_request_without_validations, protocol: protocol)
         ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
         li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
         arm       = create(:arm, protocol: protocol)
@@ -191,7 +177,7 @@ RSpec.describe ServiceCalendarsController do
           portal: 'false'
         }, xhr: true
 
-        expect(sr.reload.status).to eq('draft')
+        expect(ssr.reload.status).to eq('on_hold')
       end
 
       context 'editing sub service request' do
@@ -242,25 +228,31 @@ RSpec.describe ServiceCalendarsController do
       expect(controller).to render_template(partial: '_update_service_calendar')
     end
 
-    it 'should respond ok' do
-      org       = create(:organization)
-      service   = create(:service, organization: org)
-      protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
-      sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
-      ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
-      li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-      arm       = create(:arm, protocol: protocol)
+    context 'editing sub service request' do
+      it 'should not update other sub service requests statuses' do
+        org       = create(:organization)
+        org2      = create(:organization)
+        service   = create(:service, organization: org)
+        protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+        sr        = create(:service_request_without_validations, protocol: protocol)
+        ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
+        ssr2      = create(:sub_service_request_without_validations, organization: org2, service_request: sr, status: 'on_hold')
+        li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+        li2       = create(:line_item, service_request: sr, sub_service_request: ssr2, service: service)
+        arm       = create(:arm, protocol: protocol)
 
-      session[:identity_id] = logged_in_user.id
+        session[:identity_id] = logged_in_user.id
 
-      post :toggle_calendar_column, params: {
-        service_request_id: sr.id,
-        arm_id: arm.id,
-        check: 'true',
-        portal: 'false'
-      }, xhr: true
+        post :toggle_calendar_column, params: {
+          service_request_id: sr.id,
+          arm_id: arm.id,
+          check: 'true',
+          portal: 'false'
+        }, xhr: true
 
-      expect(controller).to respond_with(:ok)
+        expect(ssr.reload.status).to eq('draft')
+        expect(ssr2.reload.status).to eq('on_hold')
+      end
     end
   end
 end

@@ -58,7 +58,9 @@ $(document).ready ->
 
   # Renders warning when changing Primary PI
   $(document).on 'click', '#protocol-role-save', ->
-    if $("select[name='project_role[role]']").val() == 'primary-pi' && !$('.protocol-role-form').hasClass('hidden')
+    identity_id = parseInt($('#project_role_identity_id').val())
+    pi_id       = $('#change-primary-pi-warning').data('pi-id')
+    if $("select[name='project_role[role]']").val() == 'primary-pi' && identity_id != pi_id && !$('.protocol-role-form').hasClass('hidden')
       $(".protocol-role-form").addClass('hidden')
       $('#change-primary-pi-warning').removeClass('hidden')
     else

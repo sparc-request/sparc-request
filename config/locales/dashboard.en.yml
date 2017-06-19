@@ -228,7 +228,7 @@ en:
     #  SERVICE REQUESTS  #
     ######################
     service_requests:
-      modify_request: "Modify Request"
+      modify_request: "Add / Modify Request"
       srid: "SRID"
       organization: "Organization"
       owner: "Owner"

@@ -60,8 +60,9 @@ class Protocol < ApplicationRecord
   belongs_to :study_type_question_group
 
   validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
-
   validates :research_master_id, presence: true, if: "RESEARCH_MASTER_ENABLED && has_human_subject_info?"
+
+  validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 1000 }, allow_blank: true
 
   attr_accessor :requester_id
   attr_accessor :validate_nct

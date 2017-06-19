@@ -41,6 +41,7 @@ class ServiceCalendarsController < ApplicationController
   before_action :authorize_dashboard_access, if: :in_dashboard?
 
   def table
+    @scroll_true  = params[:scroll].present? && params[:scroll] == 'true'
     @tab          = params[:tab]
     @review       = params[:review] == 'true'
     @portal       = params[:portal] == 'true'
@@ -94,15 +95,47 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def show_move_visits
-    @arm = Arm.find( params[:arm_id] )
-    @visit_group = params[:visit_group_id] ? @arm.visit_groups.find(params[:visit_group_id]) : @arm.visit_groups.first
+    @tab                    = params[:tab]
+    @sub_service_request    = params[:sub_service_request]
+    @page                   = params[:page]
+    @review                 = params[:review]
+    @portal                 = params[:portal]
+    @admin                  = params[:admin]
+    @consolidated           = params[:consolidated]
+    @merged                 = params[:merged]
+    @statuses_hidden        = params[:statuses_hidden]
+    @arm                    = Arm.find( params[:arm_id] )
+    @visit_group            = params[:visit_group_id] ? @arm.visit_groups.find(params[:visit_group_id]) : @arm.visit_groups.first
+
+    @pages = {}
+    @service_request.arms.each do |arm|
+      new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
+      @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
+    end
   end
 
   def move_visit_position
-    arm = Arm.find( params[:arm_id] )
-    vg  = arm.visit_groups.find( params[:visit_group].to_i )
+    @tab                    = params[:tab]
+    @sub_service_request    = params[:sub_service_request]
+    @page                   = params[:page]
+    @review                 = params[:review] == "true"
+    @portal                 = params[:portal] == "true"
+    @admin                  = params[:admin] == "true"
+    @consolidated           = params[:consolidated] == "true"
+    @merged                 = params[:merged] == "true"
+    @statuses_hidden        = params[:statuses_hidden]
+    @arm                    = Arm.find( params[:arm_id] )
+    @visit_groups           = @arm.visit_groups.paginate(page: @page.to_i, per_page: VisitGroup.per_page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol] } })
 
-    vg.insert_at( params[:position].to_i - 1 )
+    @visit_group        = VisitGroup.find(params[:visit_group].to_i)
+
+    @visit_group.insert_at( params[:position].to_i - 1 )
+
+    @pages = {}
+    @service_request.arms.each do |arm|
+      new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
+      @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
+    end
   end
 
   def toggle_calendar_row

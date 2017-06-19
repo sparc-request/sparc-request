@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .modal-dialog.modal-md
   .modal-content
-    = form_for arm, url: move_visit_position_service_calendars_path(arm_id: arm.id, service_request_id: service_request.id), remote: true, method: :post, html: { class: 'form-horizontal', role: 'form' } do |f|
+    = form_for arm, url: move_visit_position_service_calendars_path(arm_id: arm.id, service_request_id: service_request.id, sub_service_request: sub_service_request, tab: tab, pages: pages, page: page, review: review, portal: portal, visit_group: visit_group, admin: admin, merged: merged, consolidated: consolidated, statuses_hidden: statuses_hidden), remote: true, method: :post, html: { class: 'form-horizontal', role: 'form' } do |f|
       = hidden_field_tag :arm_id, arm.id
       .modal-header
         %button.close{type: 'button', data: {dismiss: 'modal'}}

@@ -17,10 +17,17 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+<% if @arm.nil? %>
+$(".otf-calendar").replaceWith("<%= escape_javascript(render('service_calendars/master_calendar/otf/otf_calendar', scroll_true: @scroll_true, tab: @tab, service_request: @service_request, sub_service_request: @sub_service_request, review: @review, portal: @portal, admin: @admin, merged: @merged, consolidated: @consolidated, statuses_hidden: %w(first_draft)))%>")
+<% else %>
 $(".arm-calendar-container-<%= @arm.id %>").replaceWith("<%= escape_javascript(render( '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @pages[@arm.id], pages: @pages, review: @review, portal: @portal, admin: @admin, merged: @merged, consolidated: @consolidated, statuses_hidden: %w(first_draft))) %>")
+
+<% end %>
 <% if @portal %>
 $("#sub_service_request_header").html("<%= escape_javascript(render( 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request )) %>")
 <% end %>
+
 $('.selectpicker').selectpicker()
-setup_xeditable_fields()
+setup_xeditable_fields(@scroll_true)
 changing_tabs_calculating_rates()

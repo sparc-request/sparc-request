@@ -1,8 +1,8 @@
 - if display_freeze_header_button_pppv(tab, portal, arm, service_request, sub_service_request, merged, statuses_hidden)
-  .btn.btn-xs.btn-primary.freeze-header-button.freeze{ data: { arm_id: arm.id } }
-    .freeze-header{ data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:calendars)[:tooltips][:freeze_header]}
+  .btn.btn-xs.btn-primary.freeze-header-button.freeze{ class: scroll_true ? "unfreeze" : "freeze", data: { arm_id: arm.id } }
+    .freeze-header{ style: scroll_true ? "display: none" : "", data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:calendars)[:tooltips][:freeze_header]}
       .top-arrow
         .glyphicon.glyphicon-th.top-icon
       .glyphicon.glyphicon-th.bottom-icon
-    .unfreeze-header{ style: "display: none", data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:calendars)[:tooltips][:unfreeze_header]}
+    .unfreeze-header{ style: scroll_true ? "" : "display: none", data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:calendars)[:tooltips][:unfreeze_header]}
       .glyphicon.glyphicon-th

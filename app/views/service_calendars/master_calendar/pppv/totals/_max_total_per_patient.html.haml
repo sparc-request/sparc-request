@@ -25,7 +25,7 @@
     %td.text-center.visit-width{ class: "max-total-per-patient visit-#{vg.id}" }
       %strong
         = currency_converter(vg.per_patient_subtotals)
-  - (VisitGroup.per_page - visit_groups.count).times do
+  - (VisitGroup.per_page - visit_groups.length).times do
     %td.visit-width
   %td.text-center.total-width
     %strong

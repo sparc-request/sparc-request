@@ -20,4 +20,3 @@
 $('#modal_place').html("<%= escape_javascript(render( 'service_calendars/view_full_calendar', tab: @tab, service_request: @service_request, sub_service_request: @sub_service_request, pages: @pages, review: @review, portal: @portal, admin: @admin, merged: @merged, consolidated: @consolidated, statuses_hidden: @statuses_hidden)) %>")
 $('#modal_place').modal('show')
 $('.selectpicker').selectpicker()
-changing_tabs_calculating_rates()

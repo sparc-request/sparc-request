@@ -32,7 +32,7 @@ class SubServiceRequest < ApplicationRecord
   belongs_to :owner, :class_name => 'Identity', :foreign_key => "owner_id"
   belongs_to :service_request
   belongs_to :organization
-  belongs_to :protocol
+  belongs_to :protocol, counter_cache: true
   has_many :past_statuses, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
   has_many :line_items_visits, through: :line_items
@@ -127,9 +127,6 @@ class SubServiceRequest < ApplicationRecord
       new_args.update(args)
       li = service_request.create_line_item(new_args)
 
-      # Update subject visit calendars if present
-      update_cwf_data_for_new_line_item(li)
-
       li
     end
 
@@ -138,30 +135,6 @@ class SubServiceRequest < ApplicationRecord
     else
       self.reload
       return false
-    end
-  end
-
-  def update_cwf_data_for_new_line_item(li)
-    if self.in_work_fulfillment
-      values = []
-      columns = [:line_item_id,:visit_id,:appointment_id]
-      self.service_request.arms.each do |arm|
-        visits = Visit.joins(:line_items_visit).where(visits: { visit_group_id: arm.visit_groups}, line_items_visits:{ line_item_id: li.id} )
-        visits.group_by{|v| v.visit_group_id}.each do |vg_id, group_visits|
-          Appointment.where(visit_group_id: vg_id).each do |appointment|
-            appointment_id = appointment.id
-            if appointment.organization_id == li.service.organization_id
-              group_visits.each do |visit|
-                values << [li.id,visit.id,appointment_id]
-              end
-            end
-          end
-        end
-      end
-      if !(values.empty?)
-        Procedure.import columns, values, {:validate => true}
-      end
-      self.reload
     end
   end
 
@@ -323,7 +296,7 @@ class SubServiceRequest < ApplicationRecord
   #A request is locked if the organization it's in isn't editable
   def is_locked?
     if organization.has_editable_statuses?
-      return !EDITABLE_STATUSES[find_editable_id(self.organization.id)].include?(self.status)
+      return !EDITABLE_STATUSES[find_editable_id].include?(self.status)
     end
     false
   end
@@ -331,8 +304,7 @@ class SubServiceRequest < ApplicationRecord
   # Can't edit a request if it's placed in an uneditable status
   def can_be_edited?
     if organization.has_editable_statuses?
-      self_or_parent_id = find_editable_id(self.organization.id)
-      EDITABLE_STATUSES[self_or_parent_id].include?(self.status) && !is_complete?
+      EDITABLE_STATUSES[find_editable_id].include?(self.status) && !is_complete?
     else
       !is_complete?
     end
@@ -342,19 +314,15 @@ class SubServiceRequest < ApplicationRecord
     return FINISHED_STATUSES.include?(status)
   end
 
-  def find_editable_id(id)
-    parent_ids = Organization.find(id).parents.map(&:id)
+  def find_editable_id
+    parent_ids = self.organization.parents.map(&:id)
     EDITABLE_STATUSES.keys.each do |org_id|
-      if (org_id == id) || parent_ids.include?(org_id)
-        return org_id
-      end
+      return org_id if (org_id == self.organization_id) || parent_ids.include?(org_id)
     end
   end
 
-  def set_to_draft(admin)
-    if !admin && status != 'draft'
-      self.update_attributes(status: 'draft')
-    end
+  def set_to_draft
+    self.update_attributes(status: 'draft') unless status == 'draft'
   end
 
   def switch_to_new_service_request

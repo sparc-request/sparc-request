@@ -37,5 +37,5 @@
           %th{ data: { field: 'proxy_rights', align: 'left', sortable: 'true' } }
             = t(:authorized_users)[:table_fields][:rights]
           - if protocol.selected_for_epic?
-            %th{ data: { field: 'epic_emr_access', align: 'left', sortable: 'true' } }
-              = t(:authorized_users)[:table_fields][:epic_emr_access]
+            %th{ data: { field: 'epic_emr_access', align: 'center', sortable: 'true' } }
+              = raw(t(:authorized_users)[:table_fields][:epic_emr_access])

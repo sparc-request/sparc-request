@@ -107,7 +107,7 @@ module AssociatedUsersHelper
         content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' })
       ),
       type: 'button', data: { project_role_id: project_role.id },
-      class: "btn btn-warning actions-button edit-associated-user-button"
+      class: "btn btn-sm btn-warning actions-button edit-associated-user-button"
     )
   end
 
@@ -117,8 +117,24 @@ module AssociatedUsersHelper
         content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
       ),
       type: 'button', data: { project_role_id: project_role.id, identity_role: project_role.role, identity_id: project_role.identity_id },
-      class: "btn btn-danger actions-button delete-associated-user-button",
+      class: "btn btn-sm btn-danger actions-button delete-associated-user-button",
       disabled: project_role.identity_id == current_user.id
     )
+  end
+
+  def determine_entity(dashboard, project_role)
+    if dashboard
+      [:dashboard, project_role]
+    else
+      project_role
+    end
+  end
+
+  def determine_url(dashboard, project_role)
+    if dashboard
+      project_role.new_record? ? dashboard_associated_users_path : dashboard_associated_user_path(project_role)
+    else
+      project_role.new_record? ? associated_users_path : associated_user_path(project_role)
+    end
   end
 end

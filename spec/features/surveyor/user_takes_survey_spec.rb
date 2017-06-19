@@ -229,18 +229,22 @@ RSpec.describe 'User takes a survey', js: true do
   context 'yes/no questions' do
     scenario 'and sees yes/no questions' do
       @q_yes_no = create(:question, section: @section, question_type: 'yes_no', content: 'Yes/No Question')
+                  create(:option, content: 'Yes', question: @q_yes_no)
+                  create(:option, content: 'No', question: @q_yes_no)
 
       visit new_surveyor_response_path(access_code: @survey.access_code, sub_service_request_id: @ssr.id)
       wait_for_javascript_to_finish
 
       expect(page).to have_content(@q_yes_no.content)
       expect(page).to have_selector('.option input[type="radio"]', count: 2)
-      expect(page).to have_selector('.option', text: 'Yes')
-      expect(page).to have_selector('.option', text: 'No')
+      expect(page).to have_content('Yes')
+      expect(page).to have_content('No')
     end
 
     scenario 'and sees correctly saved value' do
       @q_yes_no = create(:question, section: @section, question_type: 'yes_no', content: 'Yes/No Question')
+                  create(:option, content: 'Yes', question: @q_yes_no)
+                  create(:option, content: 'No', question: @q_yes_no)
 
       visit new_surveyor_response_path(access_code: @survey.access_code, sub_service_request_id: @ssr.id)
       wait_for_javascript_to_finish

@@ -32,7 +32,19 @@ class Dashboard::ProtocolFiltersController < Dashboard::BaseController
       flash[:alert] = 'Search Failed to Save.'
     end
 
-    @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)
+    @protocol_filters = ProtocolFilter.latest_for_user(@user.id, ProtocolFilter::MAX_FILTERS)
+  end
+
+  def destroy
+    filter = ProtocolFilter.find(params[:id])
+    filter.destroy
+    @protocol_filters = ProtocolFilter.latest_for_user(@user.id, ProtocolFilter::MAX_FILTERS)
+    
+    flash[:danger] = 'Search Deleted!'
+    
+    respond_to do |format|
+      format.js
+    end
   end
 
   private

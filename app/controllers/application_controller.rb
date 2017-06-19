@@ -182,7 +182,7 @@ class ApplicationController < ActionController::Base
 
     # we have a current user
     if current_user
-      if @sub_service_request.nil? and (@service_request.status == 'first_draft' || current_user.can_edit_service_request?(@service_request))
+      if @sub_service_request.nil? and (@service_request && (@service_request.status == 'first_draft' || current_user.can_edit_service_request?(@service_request)))
         return true
       elsif @sub_service_request and current_user.can_edit_sub_service_request?(@sub_service_request)
         return true
@@ -216,7 +216,7 @@ class ApplicationController < ActionController::Base
       @service_request.sub_service_requests.each do |ssr|
         organization = ssr.organization
         if organization.has_editable_statuses?
-          self_or_parent_id = ssr.find_editable_id(organization.id)
+          self_or_parent_id = ssr.find_editable_id
           if !EDITABLE_STATUSES[self_or_parent_id].include?(ssr.status)
             @locked_org_ids << self_or_parent_id
             @locked_org_ids << organization.all_children(Organization.all).map(&:id)

@@ -34,13 +34,11 @@ RSpec.describe Dashboard::VisitGroupsController do
         @sr       = create(:service_request_without_validations, protocol: @protocol)
         @ssr      = create(:sub_service_request, service_request: @sr, organization: org)
         @arm      = create(:arm, protocol: @protocol)
-      end
 
-      it 'should assign @service_request' do
-        xhr :post, :create, {
+        @valid_vg_params = {
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
-          visit_group: {
+          visit_group: { 
             arm_id: @arm.id,
             name: 'Visit Me',
             position: 1,
@@ -49,141 +47,74 @@ RSpec.describe Dashboard::VisitGroupsController do
             window_after: 0
           }
         }
+
+        @invalid_vg_params = {
+          service_request_id: @sr.id,
+          sub_service_request_id: @ssr.id,
+          visit_group: {
+            arm_id: @arm.id,
+            name: 'Visit Me',
+            position: 1,
+            day: 'asd',
+            window_before: 0,
+            window_after: 0
+          }
+        }
+      end
+
+      it 'should assign @service_request' do
+        xhr :post, :create, @valid_vg_params
 
         expect(assigns(:service_request)).to eq(@sr)
       end
 
       it 'should assign @sub_service_request' do
-        xhr :post, :create, {
-          service_request_id: @sr.id,
-          sub_service_request_id: @ssr.id,
-          visit_group: {
-            arm_id: @arm.id,
-            name: 'Visit Me',
-            position: 1,
-            day: 1,
-            window_before: 0,
-            window_after: 0
-          }
-        }
+        xhr :post, :create, @valid_vg_params
 
         expect(assigns(:sub_service_request)).to eq(@ssr)
       end
 
       it 'should assign @arm' do
-        xhr :post, :create, {
-          service_request_id: @sr.id,
-          sub_service_request_id: @ssr.id,
-          visit_group: {
-            arm_id: @arm.id,
-            name: 'Visit Me',
-            position: 1,
-            day: 1,
-            window_before: 0,
-            window_after: 0
-          }
-        }
-
+        xhr :post, :create, @valid_vg_params
         expect(assigns(:arm)).to eq(@arm)
       end
 
-      it 'should assign @visit_group' do
-        xhr :post, :create, {
-          service_request_id: @sr.id,
-          sub_service_request_id: @ssr.id,
-          visit_group: {
-            arm_id: @arm.id,
-            name: 'Visit Me',
-            position: 1,
-            day: 1,
-            window_before: 0,
-            window_after: 0
-          }
-        }
-
-        expect(assigns(:visit_group)).to be_a_new(VisitGroup)
-      end
-
       context 'visit group is valid' do
-        before :each do
-          xhr :post, :create, {
-            service_request_id: @sr.id,
-            sub_service_request_id: @ssr.id,
-            visit_group: {
-              arm_id: @arm.id,
-              name: 'Visit Me',
-              position: 1,
-              day: 1,
-              window_before: 0,
-              window_after: 0
-            }
-          }
-        end
-
         it 'should create visit group' do
-          expect(VisitGroup.count).to eq(1)
+          expect{
+            xhr :post, :create, @valid_vg_params
+          }.to change(VisitGroup, :count).by 1
         end
 
         it 'should not assign @errors' do
+          xhr :post, :create, @valid_vg_params
+
           expect(assigns(:errors)).to_not be
         end
       end
 
       context 'visit group is invalid' do
-        before :each do
-          xhr :post, :create, {
-            service_request_id: @sr.id,
-            sub_service_request_id: @ssr.id,
-            visit_group: {
-              arm_id: @arm.id,
-              name: 'Visit Me',
-              position: 1,
-              day: 'asd',
-              window_before: 0,
-              window_after: 0
-            }
-          }
-        end
-
         it 'should not create visit group' do
-          expect(VisitGroup.count).to eq(0)
+          expect{
+            xhr :post, :create, @invalid_vg_params
+          }.to_not change(VisitGroup, :count)
         end
 
         it 'should assign @errors' do
+          xhr :post, :create, @invalid_vg_params
+
           expect(assigns(:errors)).to be
         end
       end
 
       it 'should render template' do
-        xhr :post, :create, {
-          service_request_id: @sr.id,
-          sub_service_request_id: @ssr.id,
-          visit_group: {
-            arm_id: @arm.id,
-            name: 'Visit Me',
-            position: 1,
-            day: 1,
-            window_before: 0,
-            window_after: 0
-          }
-        }
+        xhr :post, :create, @valid_vg_params
 
         expect(controller).to render_template(:create)
       end
 
       it 'should respond ok' do
-        xhr :post, :create, {
-          service_request_id: @sr.id,
-          sub_service_request_id: @ssr.id,
-          visit_group: {
-            arm_id: @arm.id,
-            name: 'Visit Me',
-            position: 1,
-            day: 1,
-            window_before: 0,
-            window_after: 0
-          }
-        }
+        xhr :post, :create, @valid_vg_params
 
         expect(controller).to respond_with(:ok)          
       end

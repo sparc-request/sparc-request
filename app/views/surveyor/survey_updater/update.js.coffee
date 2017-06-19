@@ -21,13 +21,18 @@
 <% @errors.zip(@errors.full_messages).each do |error, message| %>
 if !$("#<%=@klass%>-<%=error[0]%>").parents('.form-group').hasClass('has-error')
   $("#<%=@klass%>-<%=error[0]%>").parents('.form-group').addClass('has-error')
-  $("#<%=@klass%>-<%=error[0]%>").parents('.form-group').append("<span class='help-block'><%=message%></span>")
+  $("#<%=@klass%>-<%=error[0]%>").parents('.form-group').children('div:not(.control-label)').append("<span class='help-block'><%=message%></span>")
 <% end %>
 <% else %>
 $("#<%=@klass%>-<%=@field%>").parents('.form-group').removeClass('has-error')
-$("#<%=@klass%>-<%=@field%>").parents('.form-group').children('.help-block').remove()
-<% end %>
+$("#<%=@klass%>-<%=@field%>").parents('.form-group').find('.help-block').remove()
 
 <% if @klass == 'survey' %>
 $('.survey-table').bootstrapTable('refresh')
+<% end %>
+
+<% if @klass == 'question' %>
+$(".question-options[data-question-id='<%=@object.id%>']").html('<%= j render "surveyor/surveys/form/form_partials/#{@object.question_type}_example", question: @object %>')
+$('.selectpicker').selectpicker()
+<% end %>
 <% end %>

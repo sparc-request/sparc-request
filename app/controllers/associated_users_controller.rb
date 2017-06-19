@@ -47,8 +47,9 @@ class AssociatedUsersController < ApplicationController
         # Adds error if user already associated with protocol
         @errors = @project_role.errors
       end
-
     end
+
+    @dashboard = false
 
     respond_to do |format|
       format.js
@@ -63,6 +64,8 @@ class AssociatedUsersController < ApplicationController
     respond_to do |format|
       format.js
     end
+
+    @dashboard = false
   end
 
   def create

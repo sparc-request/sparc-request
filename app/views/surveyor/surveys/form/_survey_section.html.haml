@@ -28,7 +28,7 @@
             .col-sm-11.no-padding
               = text_field_tag "section-title", section.title, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:content][:section][:title][:placeholder], maxlength: 255
             .col-sm-1.no-padding
-              = link_to surveyor_section_path(section), method: :delete, remote: true, class: 'btn btn-danger pull-right delete-section', title: t(:surveyor)[:surveys][:form][:content][:section][:delete], data: { toggle: 'tooltip', animation: 'false' } do
+              %button.btn.btn-sm.btn-danger.pull-right.delete-section{ title: t(:surveyor)[:surveys][:form][:content][:section][:delete], data: { toggle: 'tooltip', animation: 'false' } }
                 %span.glyphicon.glyphicon-trash
     .panel-body
       .form-group
@@ -40,4 +40,5 @@
           = render 'surveyor/surveys/form/survey_question', survey: survey, section: section, question: question
 
       .form-group
-        = link_to add_question_content, surveyor_questions_path(section_id: section.id), method: :post, remote: true, class: 'btn btn-sm btn-primary add-question'
+        %button.btn.btn-sm.btn-primary.add-question
+          = add_question_content

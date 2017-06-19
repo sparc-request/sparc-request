@@ -19,8 +19,13 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .panel.panel-primary.calendar-container.otf-calendar
   .panel-heading
-    %h3.panel-title
-      = t(:calendars)[:otf][:header]
+    .pull-left
+      %h3.panel-title
+        = t(:calendars)[:otf][:header]
+    - unless review
+      .pull-right
+        = render 'service_calendars/master_calendar/otf/otf_freeze_header_button', service_request: service_request
+    .clearfix
   %table.table.table-bordered
     %thead
       = render 'service_calendars/master_calendar/otf/otf_header', tab: tab,

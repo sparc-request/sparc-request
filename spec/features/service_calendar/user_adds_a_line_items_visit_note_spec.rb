@@ -41,17 +41,14 @@ RSpec.describe 'User adds a line items visit note', js: true do
     li2       = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service2)
     
     arm       = create(:arm, protocol: protocol)
-    vg        = create(:visit_group, arm: arm)
-    @liv       = create(:line_items_visit, line_item: li, arm: arm)
-    liv2      = create(:line_items_visit, line_item: li2, arm: arm)
-                create(:visit, visit_group: vg, line_items_visit: @liv)
-                create(:visit, visit_group: vg, line_items_visit: liv2)
+    @liv      = arm.line_items_visits.first
   end
 
   context 'before clicking the notes button' do
     scenario 'sees black note badge with note count 0' do
       visit service_calendar_service_request_path(@sr)
       wait_for_javascript_to_finish
+
       expect(page).not_to have_selector("#lineitemsvisit_#{@liv.id}_notes",class: 'blue-badge')
       expect(page).to have_selector("#lineitemsvisit_#{@liv.id}_notes", text: '0')
     end
@@ -60,7 +57,10 @@ RSpec.describe 'User adds a line items visit note', js: true do
   context 'clicks notes button' do
     before :each do
       visit service_calendar_service_request_path(@sr)
+      wait_for_javascript_to_finish
+
       find("#lineitemsvisit_#{@liv.id}_notes").click
+      wait_for_javascript_to_finish
     end
 
     scenario 'and sees notes modal' do
@@ -75,8 +75,13 @@ RSpec.describe 'User adds a line items visit note', js: true do
   context 'clicks add note button' do
     before :each do
       visit service_calendar_service_request_path(@sr)
+      wait_for_javascript_to_finish
+
       find("#lineitemsvisit_#{@liv.id}_notes").click
+      wait_for_javascript_to_finish
+
       click_button 'Add a Note'
+      wait_for_javascript_to_finish
     end
 
     scenario 'and sees new notes modal' do
@@ -91,8 +96,14 @@ RSpec.describe 'User adds a line items visit note', js: true do
   context 'enters a note and clicks add' do
     before :each do
       visit service_calendar_service_request_path(@sr)
+      wait_for_javascript_to_finish
+
       find("#lineitemsvisit_#{@liv.id}_notes").click
+      wait_for_javascript_to_finish
+
       click_button 'Add a Note'
+      wait_for_javascript_to_finish
+
       fill_in 'note_body', with: 'test'
       click_button 'Add'
       wait_for_javascript_to_finish
@@ -112,9 +123,12 @@ RSpec.describe 'User adds a line items visit note', js: true do
     before :each do
       visit service_calendar_service_request_path(@sr)
       wait_for_javascript_to_finish
+
       click_link 'Consolidated Request Tab'
       wait_for_javascript_to_finish
+
       find("#lineitemsvisit_#{@liv.id}_notes").click
+      wait_for_javascript_to_finish
     end
 
     scenario 'and sees notes modal' do
@@ -130,9 +144,12 @@ RSpec.describe 'User adds a line items visit note', js: true do
     before :each do
       visit service_calendar_service_request_path(@sr)
       wait_for_javascript_to_finish
+
       click_link 'Quantity/Billing Tab'
       wait_for_javascript_to_finish
+      
       find("#lineitemsvisit_#{@liv.id}_notes").click
+      wait_for_javascript_to_finish
     end
 
     scenario 'and sees notes modal' do

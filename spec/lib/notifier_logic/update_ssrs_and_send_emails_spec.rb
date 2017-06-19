@@ -29,6 +29,14 @@ RSpec.describe NotifierLogic do
 
   let(:logged_in_user)          { Identity.first }
 
+  before :each do
+    Delayed::Worker.delay_jobs = false
+  end
+
+  after :each do
+    Delayed::Worker.delay_jobs = true
+  end
+  
   ### update_ssrs_and_send_emails ###
   context '#update_ssrs_and_send_emails for an entire SR' do
     context 'create a new SR with all new services' do
@@ -57,23 +65,23 @@ RSpec.describe NotifierLogic do
       it 'should notify authorized users (initial submission email)' do
         allow(Notifier).to receive(:notify_user) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver_now)
+          expect(mailer).to receive(:deliver)
           mailer
         end
         project_role = @sr.protocol.project_roles.first
         NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails
-        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, nil, anything, false, logged_in_user, nil, false)
+        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, nil, false, logged_in_user, nil, false)
       end
 
       it 'should notify service providers (initial submission email)' do
         allow(Notifier).to receive(:notify_service_provider) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver_now)
+          expect(mailer).to receive(:deliver)
           mailer
         end
 
         NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails
-        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, anything, logged_in_user, @ssr2, nil, false, false, false)
+        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, logged_in_user, @ssr2, nil, false, false, false)
       end
 
       it 'should notify admin (initial submission email)' do
@@ -84,7 +92,7 @@ RSpec.describe NotifierLogic do
         end 
         
         NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails 
-        expect(Notifier).to have_received(:notify_admin).with(@admin_email, anything, logged_in_user, @ssr2, nil, false, false)
+        expect(Notifier).to have_received(:notify_admin).with(@admin_email, logged_in_user, @ssr2, nil, false, false)
       end
 
       it 'should send_user_notifications request_amendment=>false' do
@@ -147,14 +155,14 @@ RSpec.describe NotifierLogic do
       it 'should notify authorized users' do
         allow(Notifier).to receive(:notify_user) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver_now)
+          expect(mailer).to receive(:deliver)
           mailer
         end
 
         audit = { :line_items => @deleted_li }
         project_role = @sr.protocol.project_roles.first
         NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails
-        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, nil, anything, false, logged_in_user, audit, false)
+        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, nil, false, logged_in_user, audit, false)
       end
 
       it 'should NOT notify service providers' do
@@ -221,7 +229,7 @@ RSpec.describe NotifierLogic do
       it 'NO EMAILS' do
         allow(Notifier).to receive(:notify_user) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver_now)
+          expect(mailer).to receive(:deliver)
           mailer
         end
 
@@ -232,7 +240,7 @@ RSpec.describe NotifierLogic do
       it 'NO EMAILS' do
         allow(Notifier).to receive(:notify_service_provider) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver_now)
+          expect(mailer).to receive(:deliver)
           mailer
         end
 
@@ -303,24 +311,24 @@ RSpec.describe NotifierLogic do
       it 'should notify authorized users (request_amendment_email)' do
         allow(Notifier).to receive(:notify_user) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver_now)
+          expect(mailer).to receive(:deliver)
           mailer
         end
         audit = { :line_items => @added_li }
         project_role = @sr.protocol.project_roles.first
         NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails
-        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, nil, anything, false, logged_in_user, audit, false)
+        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, nil, false, logged_in_user, audit, false)
       end
 
       it 'should notify service providers (initial submission email)' do
         allow(Notifier).to receive(:notify_service_provider) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver_now)
+          expect(mailer).to receive(:deliver)
           mailer
         end
 
         NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails
-        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, anything, logged_in_user, @ssr2, nil, false, false, false)
+        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, logged_in_user, @ssr2, nil, false, false, false)
       end
 
       it 'should notify admin (initial submission email)' do
@@ -331,7 +339,7 @@ RSpec.describe NotifierLogic do
         end 
         
         NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails 
-        expect(Notifier).to have_received(:notify_admin).with(@admin_email, anything, logged_in_user, @ssr2, nil, false, false)
+        expect(Notifier).to have_received(:notify_admin).with(@admin_email, logged_in_user, @ssr2, nil, false, false)
       end
 
       it 'should send_user_notifications request_amendment=>true' do
@@ -388,24 +396,24 @@ RSpec.describe NotifierLogic do
       it 'should notify authorized users' do
         allow(Notifier).to receive(:notify_user) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver_now)
+          expect(mailer).to receive(:deliver)
           mailer
         end
         audit = { :line_items => @added_li }
         project_role = @sr.protocol.project_roles.first
         NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails
-        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, nil, anything, false, logged_in_user, audit, false)
+        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, nil, false, logged_in_user, audit, false)
       end
 
       it 'should notify service providers' do
         allow(Notifier).to receive(:notify_service_provider) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver_now)
+          expect(mailer).to receive(:deliver)
           mailer
         end
         audit = { :line_items => @added_li, :sub_service_request_id => @ssr2.id }
         NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails
-        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, anything, logged_in_user, @ssr2, audit, false, true, false)
+        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, logged_in_user, @ssr2, audit, false, true, false)
       end
 
       it 'should notify admin' do
@@ -416,7 +424,7 @@ RSpec.describe NotifierLogic do
         end
         audit = { :line_items => @added_li, :sub_service_request_id => @ssr2.id }
         NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails 
-        expect(Notifier).to have_received(:notify_admin).with(@admin_email, anything, logged_in_user, @ssr2, audit, false, false)
+        expect(Notifier).to have_received(:notify_admin).with(@admin_email, logged_in_user, @ssr2, audit, false, false)
       end
 
       it 'should send_user_notifications request_amendment=>true' do
@@ -477,26 +485,26 @@ RSpec.describe NotifierLogic do
       it 'should notify authorized users' do
         allow(Notifier).to receive(:notify_user) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver_now)
+          expect(mailer).to receive(:deliver)
           mailer
         end
         audit = { :line_items => @deleted_li }
         project_role = @sr.protocol.project_roles.first
         NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails
-        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, nil, anything, false, logged_in_user, audit, false)
+        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, nil, false, logged_in_user, audit, false)
       end
 
       it 'should notify service providers' do
         allow(Notifier).to receive(:notify_service_provider) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver_now)
+          expect(mailer).to receive(:deliver)
           mailer
         end
 
         audit = { :line_items => @deleted_li, :sub_service_request_id => @ssr2.id }
 
         NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails
-        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, anything, logged_in_user, @ssr2, audit, false, true, false)
+        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, logged_in_user, @ssr2, audit, false, true, false)
       end
 
       it 'should notify admin' do
@@ -508,7 +516,7 @@ RSpec.describe NotifierLogic do
         audit = { :line_items => @deleted_li, :sub_service_request_id => @ssr2.id }
 
         NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails 
-        expect(Notifier).to have_received(:notify_admin).with(@admin_email, anything, logged_in_user, @ssr2, audit, false, false)
+        expect(Notifier).to have_received(:notify_admin).with(@admin_email, logged_in_user, @ssr2, audit, false, false)
       end
 
       it 'should send_user_notifications request_amendment=>true' do
@@ -564,7 +572,7 @@ RSpec.describe NotifierLogic do
       it 'should notify authorized users' do
         allow(Notifier).to receive(:notify_user) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver_now)
+          expect(mailer).to receive(:deliver)
           mailer
         end
 
@@ -575,7 +583,7 @@ RSpec.describe NotifierLogic do
       it 'should notify service providers' do
         allow(Notifier).to receive(:notify_service_provider) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver_now)
+          expect(mailer).to receive(:deliver)
           mailer
         end
 

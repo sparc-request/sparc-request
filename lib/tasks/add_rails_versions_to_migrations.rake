@@ -20,8 +20,8 @@
 
 task add_versions_to_migrations: :environment do
   query = "< ActiveRecord::Migration"
-  update = "< ActiveRecord::Migration[5.1]"
-  grep_query = "< ActiveRecord::Migration\\[5.1\\]"
+  update = "< ActiveRecord::Migration[4.2]"
+  grep_query = "< ActiveRecord::Migration\\[4.2\\]"
   Dir.glob(Rails.root + 'db/migrate/*') do |file|
     code_file = File.read(file)
     updated_file = code_file.gsub(/#{query}/, update)

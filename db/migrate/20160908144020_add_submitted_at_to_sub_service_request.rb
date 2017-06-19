@@ -1,4 +1,4 @@
-class AddSubmittedAtToSubServiceRequest < ActiveRecord::Migration[5.1]
+class AddSubmittedAtToSubServiceRequest < ActiveRecord::Migration[4.2]
   def change
     add_column :sub_service_requests, :submitted_at, :timestamp
 

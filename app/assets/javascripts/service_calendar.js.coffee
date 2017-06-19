@@ -68,13 +68,6 @@ $(document).ready ->
         scroll: scroll
 
   $(document).on 'click', '.move-visit-button', ->
-    console.log("consolidated")
-    console.log($(this).data('consolidated'))
-    console.log("merged")
-    console.log($(this).data('merged'))
-    console.log("statuses-hidden")
-    console.log($(this).data('statuses-hidden'))
-
     $.ajax
       type: 'GET'
       url: '/service_calendars/show_move_visits'
@@ -149,8 +142,6 @@ $(document).ready ->
   $(document).on 'change', '#visit_group', ->
     arm_id = $('#arm_id').val()
     move_visit_button = $(".arm-calendar-container-#{arm_id}").find('.move-visit-button')
-    console.log('visig_group_id')
-    console.log($(this).val())
     $.ajax
       type: 'GET'
       url: '/service_calendars/show_move_visits'

@@ -27,6 +27,8 @@
         = li.service.abbreviation
         %strong
           = li.service.cpt_code? ? " (#{li.service.cpt_code})" : ""
+        - unless li.service.is_available
+          = inactive_tag
       .col-sm-3
         - if sub_service_request.can_be_edited? && allow_delete && li.optional?
           %button.btn.btn-xs.btn-danger.remove-service.pull-right{ type: 'button', data: { id: li.id, srid: service_request.id, ssrid: sub_service_request.id, editing_ssr: editing_ssr ? 1 : 0, request_submitted: service_request.submitted_at? ? 1 : 0, toggle: "tooltip", animation: 'false', placement: 'right'}, title: "Remove" }

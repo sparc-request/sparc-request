@@ -47,6 +47,7 @@ RSpec.describe ServiceCalendarsController do
         service_request_id: sr.id,
         arm_id: arm.id,
         visit_group: vg1.id,
+        page: 1,
         position: 3
       }, xhr: true
 
@@ -69,7 +70,8 @@ RSpec.describe ServiceCalendarsController do
         service_request_id: sr.id,
           arm_id: arm.id,
           visit_group: vg1.id,
-          position: 4
+          position: 4,
+          page: 1
         }, xhr: true
 
         expect(vg1.reload.position).to eq(3)
@@ -91,6 +93,7 @@ RSpec.describe ServiceCalendarsController do
         service_request_id: sr.id,
         arm_id: arm.id,
         visit_group: vg1.id,
+        page: 1,
         position: 3
       }, xhr: true
 
@@ -110,6 +113,7 @@ RSpec.describe ServiceCalendarsController do
         service_request_id: sr.id,
         arm_id: arm.id,
         visit_group: vg1.id,
+        page: 1,
         position: 3
       }, xhr: true
 

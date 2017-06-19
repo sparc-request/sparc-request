@@ -25,8 +25,8 @@
     - visit_groups.includes(visits: { line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol] } }).each do |vg|
       %td.text-center.visit-width{ class: "max-direct-per-patient visit-#{vg.id}" }
         %strong
-          = currency_converter(vg.per_patient_subtotals * (1 + arm.protocol.indirect_cost_rate))
-    - (VisitGroup.per_page - visit_groups.count).times do
+          = currency_converter(vg.per_patient_subtotals * (1 + (arm.protocol.indirect_cost_rate || 0)))
+    - (VisitGroup.per_page - visit_groups.length).times do
       %td.visit-width
     %td.text-center.total-width
       %strong

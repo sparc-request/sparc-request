@@ -23,6 +23,7 @@ class Dashboard::LineItemsVisitsController < Dashboard::BaseController
 
   # Used for x-editable update and validations
   def update
+    @scroll_true      = params[:scroll].present? && params[:scroll] == 'true'
     @line_items_visit = LineItemsVisit.find( params[:id] )
     @service_request  = ServiceRequest.find( params[:srid] )
 

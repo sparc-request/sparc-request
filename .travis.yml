@@ -12,6 +12,7 @@ before_script:
   - cp config/ldap.yml.example config/ldap.yml
   - mysql -e 'create database test_sparc_request;'
   - RAILS_ENV=test bundle exec rake db:migrate
+  - RAILS_ENV=test bundle exec rake assets:precompile
 jobs:
   include:
     - script:

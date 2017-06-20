@@ -129,7 +129,7 @@ send_update_request = (obj, val) ->
       "#{klass}":
         "#{attribute}": val
     success: ->
-      if ['question_type', 'content'].includes(attribute)
+      if $.inArray(attribute, ['question_type', 'content'])
         build_dependents_selectpicker($('.survey').data('survey-id'))
 
 build_dependents_selectpicker = (survey_id) ->

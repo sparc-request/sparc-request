@@ -54,7 +54,7 @@ module Dashboard::ProtocolsHelper
     if permission_to_edit
       content_tag( :button, (protocol.archived ? t(:protocols)[:summary][:unarchive] : t(:protocols)[:summary][:archive])+" #{protocol.type.capitalize}", 
                     type: 'button', 
-                    class: 'protocol-archive-button btn btn-warning btn-sm',
+                    class: 'protocol-archive-button btn btn-default btn-sm',
                     data: { protocol_id: protocol.id }
       )
     end

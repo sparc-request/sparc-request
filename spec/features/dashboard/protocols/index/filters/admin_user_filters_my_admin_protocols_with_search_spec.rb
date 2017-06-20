@@ -26,7 +26,7 @@ RSpec.describe "Admin User filters My Admin Protocols using Search functionality
   fake_login_for_each_test
 
   let!(:other_user)     { create(:identity, first_name: 'John', last_name: 'Doe') }
-  
+
   let!(:organization1)  { create(:organization) }
   let!(:organization2)  { create(:organization) }
   let!(:organization3)  { create(:organization) }
@@ -146,7 +146,7 @@ RSpec.describe "Admin User filters My Admin Protocols using Search functionality
       @protocol2 = create(:study_without_validations, primary_pi: jug2, title: "xTitle", short_title: "Protocol2")
       @protocol3 = create(:study_without_validations, primary_pi: jug2, title: "a%a", short_title: "Protocol3")
 
-      create(:project_role, protocol: @protocol3, identity: other_user, project_rights: 'view', role: 'consultant') 
+      create(:project_role, protocol: @protocol3, identity: other_user, project_rights: 'view', role: 'consultant')
 
       service_request1 = create(:service_request_without_validations, protocol: @protocol1)
       service_request2 = create(:service_request_without_validations, protocol: @protocol2)
@@ -167,7 +167,7 @@ RSpec.describe "Admin User filters My Admin Protocols using Search functionality
       fill_in 'filterrific_search_query_search_text', with: other_user.first_name.downcase
       find('#apply-filter-button').click
       wait_for_javascript_to_finish
-      
+
       expect(page).to have_selector(".protocols_index_row", count: 1)
       expect(page).to_not have_content(@protocol1.short_title)
       expect(page).to_not have_content(@protocol2.short_title)
@@ -417,7 +417,7 @@ RSpec.describe "Admin User filters My Admin Protocols using Search functionality
       @protocol2 = create(:study_without_validations, id: 666666, primary_pi: jug2, title: "xTitle", short_title: "Protocol2", human_subjects_info: hsi2)
       @protocol3 = create(:study_without_validations, id: 777777, primary_pi: other_user, title: @protocol1.id.to_s, short_title: "Protocol3", research_master_id: 1234, human_subjects_info: hsi3)
       @protocol4 = create(:project_without_validations, id: 888888, primary_pi: jug2, title: "101010101", short_title: "Protocol4")
-      
+
       service_request1 = create(:service_request_without_validations, protocol: @protocol1)
       service_request2 = create(:service_request_without_validations, protocol: @protocol2)
       service_request3 = create(:service_request_without_validations, protocol: @protocol3)
@@ -555,7 +555,7 @@ RSpec.describe "Admin User filters My Admin Protocols using Search functionality
         fill_in 'filterrific_search_query_search_text', with: other_user.first_name
         find('#apply-filter-button').click
         wait_for_javascript_to_finish
-        
+
         expect(page).to have_selector(".protocols_index_row", count: 1)
         expect(page).to_not have_content(@protocol1.short_title)
         expect(page).to_not have_content(@protocol2.short_title)
@@ -567,7 +567,7 @@ RSpec.describe "Admin User filters My Admin Protocols using Search functionality
         fill_in 'filterrific_search_query_search_text', with: 'Darth Vader'
         find('#apply-filter-button').click
         wait_for_javascript_to_finish
-        
+
         expect(page).to have_selector(".protocols_index_row", count: 0)
         expect(page).to_not have_content(@protocol1.short_title)
         expect(page).to_not have_content(@protocol2.short_title)
@@ -581,7 +581,7 @@ RSpec.describe "Admin User filters My Admin Protocols using Search functionality
         fill_in 'filterrific_search_query_search_text', with: @protocol3.research_master_id
         find('#apply-filter-button').click
         wait_for_javascript_to_finish
-        
+
         expect(page).to have_selector(".protocols_index_row", count: 1)
         expect(page).to_not have_content(@protocol1.short_title)
         expect(page).to_not have_content(@protocol2.short_title)
@@ -655,10 +655,10 @@ RSpec.describe "Admin User filters My Admin Protocols using Search functionality
     end
 
     it 'should return projects and not just studies' do
-      fill_in 'filterrific_search_query_search_text', with: '101'
+      fill_in 'filterrific_search_query_search_text', with: '101010101'
       find('#apply-filter-button').click
       wait_for_javascript_to_finish
-      
+
       expect(page).to have_selector(".protocols_index_row", count: 1)
       expect(page).to_not have_content(@protocol1.short_title)
       expect(page).to_not have_content(@protocol2.short_title)

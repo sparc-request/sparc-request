@@ -1,0 +1,123 @@
+ Copyright © 2011 MUSC Foundation for Research Development
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+ 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+ disclaimer in the documentation and/or other materials provided with the distribution.
+
+ 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+ derived from this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+ BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+ SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Steps to install SPARC on existing instance
+
+1. sudo su && useradd capistrano
+2. add capistrano to rvm group (/etc/group)
+3. su capistrano
+4. rvm install ruby-1.9.3-p286
+5. rvm use ruby-1.9.3-p286@sparc --create
+6. cd ~ && mkdir .ssh
+7. paste public keys into .ssh/authorized_keys
+8. chmod 700 .ssh
+9. chmod 600 .ssh/authorized_keys
+10. copy id_rsa from /home/capistrano/.ssh on obis-sparc-dev.mdc.musc.edu
+11. chmod 600 .ssh/id_rsa
+12. git clone git@github.com:HSSC/sparc-rails.git and make sure you can connect to git
+13. rm -rf sparc-rails to removed the cloned directory
+14. exit
+15. rvm use ruby-1.9.3-p286@sparc --create (you should be root user now)
+16. gem install passenger
+17. yum install httpd httpd-devel curl-devel
+18. exit to regular user and rvmsudo passenger-install-apache2-module
+19. copy the following into /etc/httpd/conf.d/passenger.conf
+
+   LoadModule passenger_module /usr/local/rvm/gems/ruby-1.9.3-p286@sparc/gems/passenger-3.0.19/ext/apache2/mod_passenger.so
+   PassengerRoot /usr/local/rvm/gems/ruby-1.9.3-p286@sparc/gems/passenger-3.0.19
+   PassengerRuby /usr/local/rvm/wrappers/ruby-1.9.3-p286@sparc/ruby
+
+20. mkdir rails && chown capistrano:capistrano rails
+21. vi /etc/httpd/conf.d/sparc.conf and paste the following
+
+NameVirtualHost *:80
+<VirtualHost *:80>
+    DocumentRoot /var/www/rails/sparc-rails/current/public
+
+    PassengerLogLevel 3
+    RackEnv staging
+
+    <Directory /var/www/rails/sparc-rails/current/public>
+      Allow from all
+      Options -MultiViews
+    </Directory>
+</VirtualHost>
+
+22. su capistrano && cd /var/www/rails
+23. FROM LOCAL: cap ENV deploy:setup
+24. back on server, cd sparc-rails/shared && mkdir config
+25. vi config/database.yml and add something like this
+
+redh
+
+26. vi config/application.yml and add something like this
+
+staging:
+  default_mail_to: 'glennj@musc.edu'
+  admin_mail_to: 'success@musc.edu'
+  dashboard_link: 'https://sparc-stg.mdc.musc.edu/dashboard/'
+
+27. vi config/setup_load_paths.rb and add something like this
+
+if ENV['MY_RUBY_HOME'] && ENV['MY_RUBY_HOME'].include?('rvm')
+  begin
+    gems_path = ENV['MY_RUBY_HOME'].split(/@/)[0].sub(/rubies/,'gems')
+    ENV['GEM_PATH'] = "#{gems_path}:#{gems_path}@sparc"
+    require 'rvm'
+    RVM.use_from_path! File.dirname(File.dirname(__FILE__))
+  rescue LoadError
+    raise "RVM gem is currently unavailable."
+  end
+end
+
+# If you're not using Bundler at all, remove lines bellow
+ENV['BUNDLE_GEMFILE'] = File.expand_path('../DeployGemfile', File.dirname(__FILE__))
+require 'bundler/setup'
+
+28. switch back to root user
+
+29. mysql create the database you specified in database.yml
+
+30. FROM LOCAL: cap ENV deploy:cold
+
+NOTE: had to yum install libxslt-devel
+
+31. /etc/init.d/httpd configtest - if this is good you can proceed
+
+32. /etc/init.d/httpd start
+
+33. FROM LOCAL: cap ENV deploy
+
+34. visit http://obis-sparc-rails-ENV.mdc.musc.edu and you should see the app
+
+35. load data/documents
+
+36.  ssh sctrwebstg12.mdc.musc.edu and edit the appropriate /etc/httpd/conf.d/sparc-stg.musc.edu.conf (this example is staging).  Others could be testing or training
+       ssh obisproxyprod0-v.musc.edu and edit vi /etc/httpd/conf.d/sparc.musc.edu.conf for production
+
+       Edits would be to change the secure location to /identities/auth/shibboleth/callback
+       May have to add the following
+
+       <Location /Shibboleth.sso>
+         PassengerEnabled off
+       </Location>
+
+       Change the proxy settings to port 80
+

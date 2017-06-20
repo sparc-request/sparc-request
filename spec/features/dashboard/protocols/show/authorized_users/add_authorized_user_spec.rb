@@ -298,7 +298,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
   end
 
   def then_i_should_see_the_warning_message
-    expect(page).to have_text("**WARNING**")
+    expect(page).to have_text("**Warning**")
   end
 
   def then_i_should_see_the_new_primary_pi

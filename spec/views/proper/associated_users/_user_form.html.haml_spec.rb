@@ -5,18 +5,20 @@ RSpec.describe '/associated_users/_user_form', type: :view do
   let_there_be_lane
 
   def render_user_form(epic = false)
-    protocol = build(:unarchived_study_without_validations, id: 1, primary_pi: jug2, selected_for_epic: epic)
+    protocol = create(:unarchived_study_without_validations, id: 1, primary_pi: jug2, selected_for_epic: epic)
     project_role = build(:project_role, id: 1, protocol_id: protocol.id, identity_id: jug2.id, role: 'consultant', epic_access: 0)
     service_request = build(:service_request_without_validations)
     dashboard = false
     stub_const("USE_EPIC", epic)
+    assign(:user, jug2)
     render "/associated_users/user_form", header_text: "Edit Authorized User",
                                                    identity: jug2,
                                                    protocol: protocol,
                                                    current_pi: jug2,
                                                    project_role: project_role,
                                                    dashboard: dashboard,
-                                                   service_request: service_request
+                                                   service_request: service_request,
+                                                   admin: false
   end
 
   context 'When the user views the associated users form' do

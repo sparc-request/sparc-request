@@ -450,7 +450,6 @@ class ServiceRequest < ApplicationRecord
     if protocol
       protocol.next_ssr_id = next_ssr_id
       protocol.save(validate: false)
-      puts protocol.errors.inspect
     end
   end
 

@@ -1,12 +1,10 @@
 desc 'correct_protocol_next_ssr_id'
 task correct_protocol_next_ssr_id: :environment do
 
-  protocols = Protocol.all
-
   CSV.open("tmp/corrected_ssr_ids.csv", "w+") do |csv|
     csv << ['Protocol ID', 'Protocol Next Ssr_id', 'Sub Service Request ID', "Protocol's Last SSRs Ssr_id"]
 
-    protocols.each do |protocol|
+    Protocol.find_each do |protocol|
       ssr = protocol.sub_service_requests.last
       if ssr && protocol.next_ssr_id
         if ("%04d" % (protocol.next_ssr_id)) == ssr.ssr_id

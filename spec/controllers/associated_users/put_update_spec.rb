@@ -112,6 +112,7 @@ RSpec.describe AssociatedUsersController, type: :controller do
       pr        = create(:project_role, identity: other_user, protocol: protocol, role: 'noob')
       pr_params = { role: 'not noob' }
 
+      session[:identity_id] = logged_in_user.id
 
       put :update, params: {
         service_request_id: sr.id,

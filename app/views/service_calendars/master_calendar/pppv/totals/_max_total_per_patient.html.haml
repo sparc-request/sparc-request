@@ -24,7 +24,10 @@
   - visit_groups.each do |vg|
     %td.text-center.visit-width{ class: "max-total-per-patient visit-#{vg.id}" }
       %strong
-        = currency_converter(vg.per_patient_subtotals)
+        - if USE_INDIRECT_COST
+          = currency_converter(vg.per_patient_subtotals * (1 + ((arm.protocol.indirect_cost_rate / 100) || 0)))
+        - else
+          = currency_converter(vg.per_patient_subtotals)
   - (VisitGroup.per_page - visit_groups.length).times do
     %td.visit-width
   %td.text-center.total-width

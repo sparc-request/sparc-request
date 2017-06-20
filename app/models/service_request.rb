@@ -447,7 +447,11 @@ class ServiceRequest < ApplicationRecord
       next_ssr_id += 1 unless self.protocol
     end
 
-    self.protocol.update_attributes(next_ssr_id: next_ssr_id) if self.protocol
+    if protocol
+      protocol.next_ssr_id = next_ssr_id
+      protocol.save(validate: false)
+      puts protocol.errors.inspect
+    end
   end
 
   def should_push_to_epic?

@@ -9,7 +9,7 @@ task ssr_id_report: :environment do
     protocols.each do |protocol|
       ssr = protocol.sub_service_requests.last
       if ssr && protocol.next_ssr_id
-        if ("%04d" % (protocol.next_ssr_id - 1)) != ssr.ssr_id
+        if ("%04d" % (protocol.next_ssr_id)) == ssr.ssr_id
           csv << [protocol.id, protocol.next_ssr_id, ssr.id, ssr.ssr_id]
         end
       end

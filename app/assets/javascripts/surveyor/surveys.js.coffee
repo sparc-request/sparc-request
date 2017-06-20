@@ -129,10 +129,10 @@ send_update_request = (obj, val) ->
       "#{klass}":
         "#{attribute}": val
     success: ->
-      if attribute == 'question_type'
+      if $.inArray(attribute, ['question_type', 'content'])
         build_dependents_selectpicker($('.survey').data('survey-id'))
 
-(exports ? this).build_dependents_selectpicker = (survey_id) ->
+build_dependents_selectpicker = (survey_id) ->
   $.ajax
     type: 'get'
     url: "/surveyor/surveys/#{survey_id}/update_dependents_list.js"

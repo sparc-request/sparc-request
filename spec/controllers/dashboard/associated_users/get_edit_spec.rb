@@ -84,10 +84,6 @@ RSpec.describe Dashboard::AssociatedUsersController do
         expect(assigns(:identity)).to eq(identity)
       end
 
-      it 'should set @current_pi to the Primary PI of @protocol' do
-        expect(assigns(:current_pi)).to eq(primary_pi)
-      end
-
       it 'should set @header_text to "Edit Authorized User"' do
         expect(assigns(:header_text)).to eq('Edit Authorized User')
       end

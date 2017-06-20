@@ -20,8 +20,8 @@
 $(document).ready ->
 
   #**************** Add Authorized User Form Begin ****************
-
-  window.update_disabled_hidden_form_items = () ->
+  # Role - Dropdown
+  $(document).on 'changed.bs.select', '#project_role_role', ->
     $('.role_dependent').addClass('hidden')
     switch $('#project_role_role').val()
       when 'other'
@@ -29,12 +29,10 @@ $(document).ready ->
       when 'business-grants-manager'
         $('#project_role_project_rights_none').attr('disabled', true)
         $('#project_role_project_rights_view').attr('disabled', true)
-        $('#project_role_project_rights_request').attr('disabled', true)
         $('#project_role_project_rights_approve').attr('checked', true)
       when 'pi', 'primary-pi'
         $('#project_role_project_rights_none').attr('disabled', true)
         $('#project_role_project_rights_view').attr('disabled', true)
-        $('#project_role_project_rights_request').attr('disabled', true)
         $('#project_role_project_rights_approve').attr('checked', true)
         $('.role_dependent.commons_name').removeClass('hidden')
         $('.role_dependent.subspecialty').removeClass('hidden')
@@ -51,44 +49,28 @@ $(document).ready ->
     else
       $('.credentials_dependent.other').addClass('hidden')
 
-  # Role - Dropdown
-  $(document).on 'changed.bs.select', '#project_role_role', ->
-    window.update_disabled_hidden_form_items()
+  # Show/Hide Warning when changing project rights that will redirect user to Dashboard
+  $(document).on 'change', 'input[name="project_role[project_rights]"]', ->
+    if ($(this).val() == 'view' && !$(this).data('dashboard')) || $(this).val() == 'none'
+      $('.project-rights-redirect-warning').removeClass('hidden')
+    else
+      $('.project-rights-redirect-warning').addClass('hidden')
 
   # Renders warning when changing Primary PI
-  $(document).on 'click', '#save_protocol_rights_button', ->
-    form = $("form.protocol_role_form")
-    primary_pi_id = $('#protocol_role_data').data("pi-id")
-    protocol_role_id = $('#protocol_role_data').data("pr-id")
-    if form.is(":hidden")
-      form.submit()
-    else if $("select[name='project_role[role]']").val() == 'primary-pi' and primary_pi_id != protocol_role_id
-      primary_pi_full_name = $('#protocol_role_data').data("pi-name")
-      pr_full_name = $('#protocol_role_data').data("pr-name")
-      protocol_id = $('#project_role_protocol_id').val()
-
-      warning = I18n["protocol_information"]["change_primary_pi"]["warning"]
-      message1 = I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_1"]+
-        "(<strong>#{pr_full_name}</strong>)"+
-        I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_2"]+
-        "(<strong>#{primary_pi_full_name}</strong>)"+
-        I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_3"]+
-        "(<strong>#{protocol_id}</strong>)."
-      message2 = I18n["protocol_information"]["change_primary_pi"]["warning_prompt_2"]
-
-      form.hide()
-      $('.modal-body').append("<h1 class='change_ppi_prompt text-center' style='color:red;'>#{warning}</h1><p class='change_ppi_prompt text-center' style='font-size:14px;'>#{message1}</p><p class='change_ppi_prompt text-center' style='font-size:14px;'>#{message2}</p>")
+  $(document).on 'click', '#protocol-role-save', ->
+    identity_id = parseInt($('#project_role_identity_id').val())
+    pi_id       = $('#change-primary-pi-warning').data('pi-id')
+    if $("select[name='project_role[role]']").val() == 'primary-pi' && identity_id != pi_id && !$('.protocol-role-form').hasClass('hidden')
+      $(".protocol-role-form").addClass('hidden')
+      $('#change-primary-pi-warning').removeClass('hidden')
     else
-      form.submit()
+      $(".protocol-role-form").submit()
 
-  $(document).on 'click', '#cancel_protocol_rights_button', (event) ->
-    $form = $("form.protocol_role_form")
-    if $form.is(':hidden')
-      # on a warning modal, show form again
-      $('.change_ppi_prompt').remove()
-      $form.show()
+  $(document).on 'click', '#protocol-role-close', ->
+    if $(".protocol-role-form").hasClass('hidden')
+      $('#change-primary-pi-warning').addClass('hidden')
+      $(".protocol-role-form").removeClass('hidden')
     else
-      # cancel
       $(this).closest('.modal').modal('hide')
 
   $(document).on 'changed.bs.select', '.professional-organization-form select', ->

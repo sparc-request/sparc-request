@@ -64,6 +64,6 @@
         = f.label :reason, t(:devise)[:registrations][:reason], class: 'col-sm-3'
         .col-sm-9
           = f.text_area :reason, class: 'form-control', rows: 5
-      .form-group.text-center
+      .form-group
         = f.submit t(:devise)[:registrations][:submit], class: 'btn btn-primary'
         = link_to t(:actions)[:cancel], new_identity_session_path, class: 'btn btn-primary'

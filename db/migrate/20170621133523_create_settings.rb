@@ -8,7 +8,9 @@ class CreateSettings < ActiveRecord::Migration[5.0]
       t.string :description
       t.integer :group
       t.string :version
-      t.timestamps null: false 
+      t.timestamps null: false
     end
   end
+
+  add_index :settings, :key, unique: true
 end

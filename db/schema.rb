@@ -481,7 +481,7 @@ ActiveRecord::Schema.define(version: 20170621150847) do
     t.string   "value"
     t.string   "concept_code"
     t.integer  "parent_id"
-    t.integer  "sortorder"
+    t.integer  "sort_order"
     t.string   "category"
     t.boolean  "default"
     t.boolean  "reserved"

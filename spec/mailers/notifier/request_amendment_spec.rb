@@ -37,18 +37,19 @@ RSpec.describe Notifier do
           before :each do
             @organization         = create(:organization)
             @service              = create(:service, organization: @organization, one_time_fee: true)
+            create(:pricing_setup_without_validations, organization_id: @organization.id)
             @service_provider     = create(:service_provider, identity: identity, organization: @organization)
-            @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
+            @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, funding_status: 'funded')
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
             @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
-            @xls                  = Array.new
+  
 
             @service_request.reload
             deleted_and_created_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = @sub_service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)
-            @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, @xls, identity, @sub_service_request, @report, false, true)
+            @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, identity, @sub_service_request, @report, false, true)
           end
 
           # Expected service provider message is defined under request_amendment_intro
@@ -58,8 +59,8 @@ RSpec.describe Notifier do
 
           it 'should render default tables' do
             assert_notification_email_tables_for_service_provider_request_amendment
-            assert_email_request_amendment_for_added(@mail.body)
-            assert_email_request_amendment_for_deleted(@mail.body)
+            assert_email_request_amendment_for_added(@mail.body.parts.first.body)
+            assert_email_request_amendment_for_deleted(@mail.body.parts.first.body)
           end
 
           it 'should not have a reminder note or submission reminder' do
@@ -72,22 +73,23 @@ RSpec.describe Notifier do
           before :each do
             @organization         = create(:organization)
             @service              = create(:service, organization: @organization, one_time_fee: true)
+            create(:pricing_setup_without_validations, organization_id: @organization.id)
             @service_provider     = create(:service_provider, identity: identity, organization: @organization)
-            @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6, selected_for_epic: true)
+            @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, selected_for_epic: true, funding_status: 'funded')
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
             @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
-            @xls                  = Array.new
+  
 
             @service_request.reload
             deleted_and_created_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = @sub_service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)
-            @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, @xls, identity, @sub_service_request, @report, false, true)
+            @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, identity, @sub_service_request, @report, false, true)
           end
 
           it 'should show epic column' do
-            assert_email_user_information_when_selected_for_epic(@mail.body)
+            assert_email_user_information_when_selected_for_epic(@mail.body.parts.first.body)
           end
         end
       end
@@ -99,18 +101,19 @@ RSpec.describe Notifier do
           before :each do
             @organization         = create(:organization)
             @service              = create(:service, organization: @organization, one_time_fee: true)
+            create(:pricing_setup_without_validations, organization_id: @organization.id)
             @service_provider     = create(:service_provider, identity: identity, organization: @organization)
-            @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
+            @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, funding_status: 'funded')
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
             @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
-            @xls                  = Array.new
+  
 
             @service_request.reload
             created_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = @sub_service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)
-            @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, @xls, identity, @sub_service_request, @report, false, true)
+            @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, identity, @sub_service_request, @report, false, true)
           end
 
           # Expected service provider message is defined under request_amendment_intro
@@ -120,7 +123,7 @@ RSpec.describe Notifier do
 
           it 'should render default tables' do
             assert_notification_email_tables_for_service_provider_request_amendment
-            assert_email_request_amendment_for_added(@mail.body)
+            assert_email_request_amendment_for_added(@mail.body.parts.first.body)
           end
 
           it 'should not have a reminder note or submission reminder' do
@@ -133,22 +136,23 @@ RSpec.describe Notifier do
           before :each do
             @organization         = create(:organization)
             @service              = create(:service, organization: @organization, one_time_fee: true)
+            create(:pricing_setup_without_validations, organization_id: @organization.id)
             @service_provider     = create(:service_provider, identity: identity, organization: @organization)
-            @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6, selected_for_epic: true)
+            @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, selected_for_epic: true, funding_status: 'funded')
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
             @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
-            @xls                  = Array.new
+  
 
             @service_request.reload
             created_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = @sub_service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)
-            @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, @xls, identity, @sub_service_request, @report, false, true)
+            @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, identity, @sub_service_request, @report, false, true)
           end
 
           it 'should show epic column' do
-            assert_email_user_information_when_selected_for_epic(@mail.body)
+            assert_email_user_information_when_selected_for_epic(@mail.body.parts.first.body)
           end
         end
       end
@@ -158,19 +162,20 @@ RSpec.describe Notifier do
           before :each do
             @organization         = create(:organization)
             @service              = create(:service, organization: @organization, one_time_fee: true)
-            @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
+            create(:pricing_setup_without_validations, organization_id: @organization.id)
+            @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, funding_status: 'funded')
             @project_role         = create(:project_role, identity: jug2, protocol: @protocol, project_rights: 'view')
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
             @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
             @approval             = create(:approval, service_request: @service_request)
-            @xls                  = Array.new
+  
 
             @service_request.reload
             created_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = setup_authorized_user_audit_report
-            @mail                 = Notifier.notify_user(@project_role, @service_request, nil, @xls, @approval, identity, @report)
+            @mail                 = Notifier.notify_user(@project_role, @service_request, nil, @approval, identity, @report)
           end
 
           # Expected service provider message is defined under request_amendment_intro
@@ -193,19 +198,20 @@ RSpec.describe Notifier do
           before :each do
             @organization         = create(:organization)
             @service              = create(:service, organization: @organization, one_time_fee: true)
-            @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6, selected_for_epic: true)
+            create(:pricing_setup_without_validations, organization_id: @organization.id)
+            @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, selected_for_epic: true, funding_status: 'funded')
             @project_role         = create(:project_role, identity: jug2, protocol: @protocol, project_rights: 'view')
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
             @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
             @approval             = create(:approval, service_request: @service_request)
-            @xls                  = Array.new
+  
 
             @service_request.reload
             created_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = setup_authorized_user_audit_report
-            @mail                 = Notifier.notify_user(@project_role, @service_request, nil, @xls, @approval, identity, @report)
+            @mail                 = Notifier.notify_user(@project_role, @service_request, nil, @approval, identity, @report)
           end
 
           it 'should show epic column' do
@@ -218,19 +224,19 @@ RSpec.describe Notifier do
         before :each do
           @organization         = create(:organization)
           @service              = create(:service, organization: @organization, one_time_fee: true)
+          create(:pricing_setup_without_validations, organization_id: @organization.id)
           @service_provider     = create(:service_provider, identity: identity, organization: @organization)
-          @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
+          @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, funding_status: 'funded')
           @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
           @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
           @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
           @submission_email     = create(:submission_email, email: 'success@musc.edu', organization: @organization)
-          @xls                  = ' '
 
           @service_request.reload
           created_line_item_audit_trail(@service_request, @service, identity)
 
           @report               = @sub_service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)
-          @mail                 = Notifier.notify_admin(@submission_email, @xls, identity, @sub_service_request, @report)
+          @mail                 = Notifier.notify_admin(@submission_email, identity, @sub_service_request, @report)
         end
 
         # Expected admin message is defined under get_a_cost_estimate_service_provider_admin_message
@@ -251,18 +257,19 @@ RSpec.describe Notifier do
           before do
             @organization         = create(:organization)
             @service              = create(:service, organization: @organization, one_time_fee: true)
+            create(:pricing_setup_without_validations, organization_id: @organization.id)
             @service_provider     = create(:service_provider, identity: identity, organization: @organization)
-            @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
+            @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, funding_status: 'funded')
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
             @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
-            @xls                  = Array.new
+  
 
             @service_request.reload
             deleted_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = @sub_service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)
-            @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, @xls, identity, @sub_service_request, @report, false, true)
+            @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, identity, @sub_service_request, @report, false, true)
           end
 
           # Expected service provider message is defined under request_amendment_intro
@@ -272,7 +279,7 @@ RSpec.describe Notifier do
 
           it 'should render default tables' do
             assert_notification_email_tables_for_service_provider_request_amendment
-            assert_email_request_amendment_for_deleted(@mail.body)
+            assert_email_request_amendment_for_deleted(@mail.body.parts.first.body)
           end
 
           it 'should not have a reminder note or submission reminder' do
@@ -285,22 +292,23 @@ RSpec.describe Notifier do
           before :each do
             @organization         = create(:organization)
             @service              = create(:service, organization: @organization, one_time_fee: true)
+            create(:pricing_setup_without_validations, organization_id: @organization.id)
             @service_provider     = create(:service_provider, identity: identity, organization: @organization)
-            @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6, selected_for_epic: true)
+            @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, selected_for_epic: true, funding_status: 'funded')
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
             @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
-            @xls                  = Array.new
+  
 
             @service_request.reload
             deleted_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = @sub_service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)
-            @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, @xls, identity, @sub_service_request, @report, false, true)
+            @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, identity, @sub_service_request, @report, false, true)
           end
 
           it 'should show epic column' do
-            assert_email_user_information_when_selected_for_epic(@mail.body)
+            assert_email_user_information_when_selected_for_epic(@mail.body.parts.first.body)
           end
         end
       end
@@ -310,19 +318,20 @@ RSpec.describe Notifier do
           before :each do
             @organization         = create(:organization)
             @service              = create(:service, organization: @organization, one_time_fee: true)
-            @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
+            create(:pricing_setup_without_validations, organization_id: @organization.id)
+            @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, funding_status: 'funded')
             @project_role         = create(:project_role, identity: jug2, protocol: @protocol, project_rights: 'view')
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
             @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
             @approval             = create(:approval, service_request: @service_request)
-            @xls                  = Array.new
+  
 
             @service_request.reload
             deleted_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = setup_authorized_user_audit_report
-            @mail                 = Notifier.notify_user(@project_role, @service_request, nil, @xls, @approval, identity, @report)
+            @mail                 = Notifier.notify_user(@project_role, @service_request, nil, @approval, identity, @report)
           end
 
           # Expected service provider message is defined under request_amendment_intro
@@ -345,19 +354,20 @@ RSpec.describe Notifier do
           before :each do
             @organization         = create(:organization)
             @service              = create(:service, organization: @organization, one_time_fee: true)
-            @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6, selected_for_epic: true)
+            create(:pricing_setup_without_validations, organization_id: @organization.id)
+            @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, selected_for_epic: true, funding_status: 'funded')
             @project_role         = create(:project_role, identity: jug2, protocol: @protocol, project_rights: 'view')
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
             @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
             @approval             = create(:approval, service_request: @service_request)
-            @xls                  = Array.new
+  
 
             @service_request.reload
             deleted_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = setup_authorized_user_audit_report
-            @mail                 = Notifier.notify_user(@project_role, @service_request, nil, @xls, @approval, identity, @report)
+            @mail                 = Notifier.notify_user(@project_role, @service_request, nil, @approval, identity, @report)
           end
 
           it 'should show epic column' do
@@ -370,19 +380,19 @@ RSpec.describe Notifier do
         before do
           @organization         = create(:organization)
           @service              = create(:service, organization: @organization, one_time_fee: true)
+          create(:pricing_setup_without_validations, organization_id: @organization.id)
           @service_provider     = create(:service_provider, identity: identity, organization: @organization)
-          @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
+          @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, funding_status: 'funded')
           @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
           @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
           @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
           @submission_email     = create(:submission_email, email: 'success@musc.edu', organization: @organization)
-          @xls                  = ' '
 
           @service_request.reload
           deleted_line_item_audit_trail(@service_request, @service, identity)
 
           @report               = @sub_service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)
-          @mail                 = Notifier.notify_admin(@submission_email, @xls, identity, @sub_service_request, @report)
+          @mail                 = Notifier.notify_admin(@submission_email, identity, @sub_service_request, @report)
         end
 
         # Expected admin message is defined under get_a_cost_estimate_service_provider_admin_message
@@ -404,19 +414,19 @@ RSpec.describe Notifier do
       before :each do
         @organization         = create(:organization)
         @service              = create(:service, organization: @organization, one_time_fee: true)
+        create(:pricing_setup_without_validations, organization_id: @organization.id)
         @service_provider     = create(:service_provider, identity: identity, organization: @organization)
-        @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
+        @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, funding_status: 'funded')
         @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
         @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
         @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
         @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
-        @xls                  = Array.new
 
         @service_request.reload
         deleted_and_created_line_item_audit_trail(@service_request, @service, identity)
 
         @report               = @sub_service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)
-        @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, @xls, identity, @sub_service_request, @report, false, true)
+        @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, identity, @sub_service_request, @report, false, true)
       end
 
       # Expected service provider message is defined under request_amendment_intro
@@ -426,8 +436,8 @@ RSpec.describe Notifier do
 
       it 'should render default tables' do
         assert_notification_email_tables_for_service_provider_request_amendment
-        assert_email_request_amendment_for_added(@mail.body)
-        assert_email_request_amendment_for_deleted(@mail.body)
+        assert_email_request_amendment_for_added(@mail.body.parts.first.body)
+        assert_email_request_amendment_for_deleted(@mail.body.parts.first.body)
       end
 
       it 'should have a notes reminder message but not a submission reminder' do

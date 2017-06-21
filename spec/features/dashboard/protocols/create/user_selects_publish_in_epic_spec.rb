@@ -44,6 +44,38 @@ RSpec.describe 'User creates study', js: true do
                   create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
   end
 
+  context 'selects "No" for "Publish Study in Epic" and selects answers that give study_type 18' do
+    scenario 'should show note for study_type 18' do
+      visit_create_study_form
+      wait_for_javascript_to_finish
+
+      find('#study_selected_for_epic_false_button').click
+      wait_for_javascript_to_finish
+
+      bootstrap_select '#study_type_answer_certificate_of_conf_answer', 'No'
+      bootstrap_select '#study_type_answer_higher_level_of_privacy_answer', 'No'
+      wait_for_javascript_to_finish
+
+      expect(page).to have_content('Full Functionality')
+    end
+  end
+
+  context 'selects "No" for "Publish Study in Epic" and selects answers that give study_type 19' do
+    scenario 'should show note for study_type 19' do
+      visit_create_study_form
+      wait_for_javascript_to_finish
+
+      find('#study_selected_for_epic_false_button').click
+      wait_for_javascript_to_finish
+
+      bootstrap_select '#study_type_answer_certificate_of_conf_answer', 'No'
+      bootstrap_select '#study_type_answer_higher_level_of_privacy_answer', 'Yes'
+      wait_for_javascript_to_finish
+
+      expect(page).to have_content('Break-The-Glass for research associated encounters')
+    end
+  end
+
   context 'selects "Publish Study in Epic" and selects answers that give study_type 1' do
     scenario 'should show note for study_type 1' do
       visit_create_study_form

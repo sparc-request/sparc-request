@@ -41,7 +41,7 @@
               = t(:authorized_users)[:table_fields][:rights]
             - if protocol.selected_for_epic?
               %th{ data: { field: 'epic_emr_access', align: 'center', sortable: 'true' } }
-                = t(:authorized_users)[:table_fields][:epic_emr_access]
+                = raw(t(:authorized_users)[:table_fields][:epic_emr_access])
             %th{ data: { field: 'edit', align: 'center', sortable: 'false' } }
               = t(:actions)[:edit]
             %th{ data: { field: 'delete', align: 'center', sortable: 'false' } }

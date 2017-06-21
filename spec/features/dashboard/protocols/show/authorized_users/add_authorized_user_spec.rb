@@ -298,7 +298,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
   end
 
   def then_i_should_see_the_warning_message
-    expect(page).to have_text("**WARNING**")
+    expect(page).to have_text("**Warning**")
   end
 
   def then_i_should_see_the_new_primary_pi
@@ -318,7 +318,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
   def then_i_should_see_the_old_primary_pi_has_request_rights
     wait_for_javascript_to_finish
-    expect(ProjectRole.find_by(identity_id: logged_in_user.id, protocol_id: protocol.id).project_rights).to eq('request')
+    expect(ProjectRole.find_by(identity_id: logged_in_user.id, protocol_id: protocol.id).project_rights).to eq('approve')
   end
 
   def then_i_should_see_an_error_of_type error_type

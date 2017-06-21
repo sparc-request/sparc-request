@@ -102,6 +102,17 @@ class Protocol < ApplicationRecord
   validate :unique_rm_id_to_protocol,
     if: -> record { RESEARCH_MASTER_ENABLED && !record.research_master_id.nil? }
 
+  def self.to_csv(protocols)
+    CSV.generate do |csv|
+      ##Insert headers
+      csv << ["Protocol ID", "Project/Study", "Short Title", "Primary Principal Investigator(s)"]
+      ##Insert data for each protocol
+      protocols.each do |p|
+        csv << [p.id, p.is_study? ? "Study" : "Project", p.short_title, p.principal_investigators.map(&:full_name).join(', ')]
+      end
+    end
+  end
+
   def existing_rm_id
     rm_ids = HTTParty.get(RESEARCH_MASTER_API + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{RMID_API_TOKEN}\""})
     ids = rm_ids.map{ |rm_id| rm_id['id'] }
@@ -120,12 +131,6 @@ class Protocol < ApplicationRecord
       end
     end
   end
-
-  scope :for_identity, -> (identity) {
-    joins(:project_roles).
-    where(project_roles: { identity_id: identity.id }).
-    where.not(project_roles: { project_rights: 'none' })
-  }
 
   filterrific(
     default_filter_params: { show_archived: 0 },
@@ -159,22 +164,25 @@ class Protocol < ApplicationRecord
     title_query            = ["protocols.short_title LIKE #{like_search_term} escape '!'", "protocols.title LIKE #{like_search_term} escape '!'"]
     ### END SEARCH QUERIES ###
 
-    hr_pro_ids = HumanSubjectsInfo.where([hr_query, pro_num_query].join(' OR ')).map(&:protocol_id)
+    hr_pro_ids = HumanSubjectsInfo.where([hr_query, pro_num_query].join(' OR ')).pluck(:protocol_id)
     hr_protocol_id_query = hr_pro_ids.empty? ? nil : "protocols.id in (#{hr_pro_ids.join(', ')})"
 
     case search_attrs[:search_drop]
-
     when "Authorized User"
-      joins(:non_pi_authorized_users).
-        joins(:identities).
-        where(authorized_user_query).distinct
+      # To prevent overlap between the for_identity or for_admin scope, run the query unscoped
+      # and combine with the old scope's values
+      unscoped  = self.unscoped.joins(:non_pi_authorized_users).joins(:identities).where(authorized_user_query)
+      others    = self.current_scope
+
+      where(id: others & unscoped).distinct
     when "HR#"
       joins(:human_subjects_info).
         where(hr_query).distinct
     when "PI"
-      joins(:principal_investigators).
-        where(pi_query).
-        distinct
+      unscoped  = self.unscoped.joins(:principal_investigators).where(pi_query)
+      others    = self.current_scope
+
+      where(id: others & unscoped).distinct
     when "Protocol ID"
       where(protocol_id_query).distinct
     when "PRO#"
@@ -197,32 +205,32 @@ class Protocol < ApplicationRecord
     if filter == 'for_admin'
       for_admin(id)
     elsif filter == 'for_identity'
-      for_identity_id(id)
-    elsif filter == 'empty_protocols'
-      empty_protocols(id)
+      for_identity(id)
     end
   }
 
+  scope :for_identity, -> (identity_id) {
+    return nil if identity_id == '0'
+
+    joins(:project_roles).
+    where(project_roles: { identity_id: identity_id }).
+    where.not(project_roles: { project_rights: 'none' })
+  }
+
   scope :for_admin, -> (identity_id) {
-    # returns protocols with ssrs in orgs authorized for identity_id
+    # returns protocols with ssrs in orgs authorized for identity
     return nil if identity_id == '0'
+
     ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_identity(identity_id))
-    joins(:sub_service_requests).merge(ssrs).distinct
-  }
 
-  scope :for_identity_id, -> (identity_id) {
-    # returns protocols user has a project role for
-    return nil if identity_id == '0'
-    joins(:project_roles).where(project_roles: { identity_id: identity_id }).where.not(project_roles: { project_rights: 'none' })
-  }
+    if SuperUser.where(identity_id: identity_id).any?
+      empty_protocol_ids  = includes(:sub_service_requests).where(sub_service_requests: { id: nil }).ids
+      protocol_ids        = ssrs.distinct.pluck(:protocol_id)
+      all_protocol_ids    = (protocol_ids + empty_protocol_ids).uniq
 
-  scope :empty_protocols, -> (identity_id) {
-    # returns protocols with no ssrs if you are a super user of any kind
-    return nil if identity_id == '0'
-    if Identity.find(identity_id).super_users.any?
-      includes(:sub_service_requests).where(sub_service_requests: {id: nil})
+      where(id: all_protocol_ids)
     else
-      return nil
+      joins(:sub_service_requests).merge(ssrs).distinct
     end
   }
 
@@ -265,6 +273,8 @@ class Protocol < ApplicationRecord
       order("TRIM(REPLACE(short_title, CHAR(9), ' ')) #{sort_order.upcase}")
     when 'pis'
       joins(primary_pi_role: :identity).order(".identities.first_name #{sort_order.upcase}")
+    when 'requests'
+      order("sub_service_requests_count #{sort_order.upcase}")
     end
   }
 
@@ -494,13 +504,15 @@ class Protocol < ApplicationRecord
   end
 
   def direct_cost_total(service_request)
-    service_requests.where('status != ? OR id = ?', 'first_draft', service_request.id).
+    service_requests.where(id: service_request.id).or(service_requests.where.not(status: 'draft')).
+      eager_load(:line_items).
       to_a.sum(&:direct_cost_total)
   end
 
   def indirect_cost_total(service_request)
     if USE_INDIRECT_COST
-      service_requests.where('(status != ? AND status != ?) OR id = ?', 'first_draft', 'draft', service_request.id).
+      service_requests.where(id: service_request.id).or(service_requests.where.not(status: ['first_draft', 'draft'])).
+        eager_load(:line_items).
         to_a.sum(&:indirect_cost_total)
     else
       0

@@ -22,9 +22,11 @@ FactoryGirl.define do
 
   factory :line_items_visit do
     subject_count 1
-  end
 
-  trait :without_validations do
-    to_create { |instance| instance.save(validate: false) }
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
+    end
+
+    factory :line_items_visit_without_validations, traits: [:without_validations]
   end
 end

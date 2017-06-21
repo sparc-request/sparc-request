@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 20112016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,9 +20,11 @@
 
 FactoryGirl.define do
   factory :arm do
-    sequence(:name) { |n| "Arm #{n}" }
-    subject_count   1
-    visit_count     1
+    sequence(:name)       { |n| "Arm #{n}" }
+    subject_count         { 1 }
+    visit_count           { 1 }
+    minimum_subject_count { 0 }
+    minimum_visit_count   { 0 }
 
     transient do
       line_item_count   0
@@ -37,22 +39,16 @@ FactoryGirl.define do
       if arm.visit_count.present? && arm.visit_count > 0 && evaluator.line_item_count > 0
         sr = evaluator.service_request || create(:service_request_without_validations)
 
-        vgs = []
-        arm.visit_count.times do |n|
-          vgs << arm.visit_groups.create(name: "Visit #{n}", position: n + 1, day: n,
-                        window_before: 0, window_after: 0)
-        end
+        arm.default_visit_days
 
         evaluator.line_item_count.times do |n|
           li = create(:line_item_with_service, service_request: sr)
-          liv = create(:line_items_visit, arm: arm, line_item: li, subject_count: arm.subject_count)
-          vgs.each do |vg|
-            create(:visit, line_items_visit: liv, visit_group: vg)
-          end
         end
 
         arm.reload
       end
+
+      arm.default_visit_days
     end
 
     factory :arm_without_validations, traits: [:without_validations]

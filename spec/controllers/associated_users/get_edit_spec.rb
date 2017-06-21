@@ -75,20 +75,6 @@ RSpec.describe AssociatedUsersController, type: :controller do
       expect(assigns(:identity)).to eq(logged_in_user)
     end
 
-    it 'should assign @current_pi' do
-      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-      sr       = create(:service_request_without_validations, protocol: protocol)
-      pr       = protocol.project_roles.first
-
-
-      xhr :get, :edit, {
-        service_request_id: sr.id,
-        id: pr.id
-      }
-
-      expect(assigns(:current_pi)).to eq(protocol.primary_principal_investigator)
-    end
-
     it 'should assign @header_text' do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)

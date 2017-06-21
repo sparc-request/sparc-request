@@ -26,8 +26,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
     before do
       5.times do
-        arm = build(:arm)
-        arm.save validate: false
+        create(:arm_without_validations)
       end
 
       @arm_ids = Arm.pluck(:id)

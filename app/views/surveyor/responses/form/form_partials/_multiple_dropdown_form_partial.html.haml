@@ -17,7 +17,8 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- if ['new', 'preview'].include?(action_name)
-  = qr.select :content, options_from_collection_for_select(question.options, 'content', 'content'), { include_blank: true }, { class: 'form-control selectpicker option', multiple: true }
-- else
-  = select_tag :content, options_from_collection_for_select(qr.question.options, 'content', 'content', multiple_select_formatter(qr.content)), include_blank: true, class: 'form-control selectpicker option', disabled: true, multiple: true
+.form-group
+  - if ['new', 'preview'].include?(action_name)
+    = qr.select :content, options_from_collection_for_select(question.options, 'content', 'content'), { include_blank: true }, { class: 'form-control selectpicker option', multiple: true }
+  - else
+    = select_tag :content, options_from_collection_for_select(qr.question.options, 'content', 'content', multiple_select_formatter(qr.content)), include_blank: true, class: 'form-control selectpicker option', disabled: true, multiple: true

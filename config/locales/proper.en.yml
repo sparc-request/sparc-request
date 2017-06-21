@@ -163,8 +163,8 @@ en:
       authorized_users_notice: "Authorized Users"
       documents_notice: "Documents"
       notes_notice: "Notes"
-      pppv_calendars_notice: "Per Patient/Visit Calendars"
-      otf_calendar_notice: "One Time Fees"
+      pppv_calendars_notice: "Clinical Services"
+      otf_calendar_notice: "Non-clinical Services"
       totals_notice: "Total Costs"
 
     ##############################

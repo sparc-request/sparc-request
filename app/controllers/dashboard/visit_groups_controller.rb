@@ -35,17 +35,13 @@ class Dashboard::VisitGroupsController < Dashboard::BaseController
   end
 
   def create
-    @arm          = Arm.find(create_params[:arm_id])
-    @visit_group  = VisitGroup.new(create_params)
+    @arm        = Arm.find(create_params[:arm_id])
+    visit_group = @arm.visit_groups.create(create_params)
 
-    if @visit_group.valid?
-      if @arm.add_visit(@visit_group.position, @visit_group.day, @visit_group.window_before, @visit_group.window_after, @visit_group.name, 'true')
-        flash[:success] = t(:dashboard)[:visit_groups][:created]
-      else
-        @errors = @arm.errors
-      end
+    if visit_group.valid?
+      flash[:success] = t(:dashboard)[:visit_groups][:created]
     else
-      @errors = @visit_group.errors
+      @errors = visit_group.errors
     end
   end
 
@@ -64,7 +60,7 @@ class Dashboard::VisitGroupsController < Dashboard::BaseController
 
   def update
     @arm = @visit_group.arm
-
+    
     if @visit_group.update_attributes(update_params)
       flash[:success] = t(:dashboard)[:visit_groups][:updated]
     else
@@ -75,8 +71,7 @@ class Dashboard::VisitGroupsController < Dashboard::BaseController
   def destroy
     @arm = @visit_group.arm
 
-    if @arm.remove_visit(@visit_group.position)
-      @arm.decrement!(:minimum_visit_count)
+    if @visit_group.destroy
       flash.now[:alert] = t(:dashboard)[:visit_groups][:destroyed]
     else
       @errors = @arm.errors

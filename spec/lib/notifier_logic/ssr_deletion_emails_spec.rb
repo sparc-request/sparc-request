@@ -29,6 +29,14 @@ RSpec.describe NotifierLogic do
 
   let(:logged_in_user)          { Identity.first }
 
+  before :each do
+    Delayed::Worker.delay_jobs = false
+  end
+
+  after :each do
+    Delayed::Worker.delay_jobs = true
+  end
+
   context '#ssr_deletion_emails(ssr, ssr_destroyed: true, request_amendment: false) for an entire SR' do
     context 'deleted an entire SSR' do
       before :each do
@@ -62,7 +70,7 @@ RSpec.describe NotifierLogic do
       it 'should not notify authorized users (deletion email)' do
         allow(Notifier).to receive(:notify_user) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver_now)
+          expect(mailer).to receive(:deliver)
           mailer
         end
 
@@ -73,12 +81,12 @@ RSpec.describe NotifierLogic do
       it 'should notify service providers (deletion email)' do
         allow(Notifier).to receive(:notify_service_provider) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver_now)
+          expect(mailer).to receive(:deliver)
           mailer
         end
 
         NotifierLogic.new(@sr, nil, logged_in_user).ssr_deletion_emails(@ssr, ssr_destroyed: true, request_amendment: false)
-        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, anything, logged_in_user, @ssr, nil, true, false, false)
+        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, logged_in_user, @ssr, nil, true, false, false)
       end
 
       it 'should notify admin (deletion email)' do
@@ -89,7 +97,7 @@ RSpec.describe NotifierLogic do
         end 
         
         NotifierLogic.new(@sr, nil, logged_in_user).ssr_deletion_emails(@ssr, ssr_destroyed: true, request_amendment: false) 
-        expect(Notifier).to have_received(:notify_admin).with(@admin_email, anything, logged_in_user, @ssr, nil, true, false)
+        expect(Notifier).to have_received(:notify_admin).with(@admin_email, logged_in_user, @ssr, nil, true, false)
       end
     end
   end

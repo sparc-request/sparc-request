@@ -25,7 +25,7 @@ task import_constants: :environment do
   Dir.glob(Rails.root + 'db/seeds/permissable_values/2.0.5/*') do |file|
     puts("Importing CSV file: #{file.split('/').last}")
     CSV.foreach(file, headers: true) do |row|
-      PermissibleValue.find_or_create_by(row.to_hash)
+      PermissibleValue.create(row.to_hash)
     end
   end
 end

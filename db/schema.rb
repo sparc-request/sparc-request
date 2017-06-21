@@ -489,7 +489,7 @@ ActiveRecord::Schema.define(version: 20170621150847) do
     t.datetime "updated_at",   null: false
   end
 
-  create_table "pricing_maps", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "pricing_maps", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer  "service_id"
     t.string   "unit_type"
     t.decimal  "unit_factor",                precision: 5,  scale: 2

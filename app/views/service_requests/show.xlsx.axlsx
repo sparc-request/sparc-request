@@ -97,7 +97,7 @@ wb.add_worksheet(name: "Review") do |sheet|
 
   @service_request.protocol.documents.each do |doc|
     next unless @sub_service_request.nil? or doc.sub_service_requests.map{|ssr| ssr.id}.include?(@sub_service_request.id)
-    sheet.add_row [doc.document_file_name, DOCUMENT_TYPES.key(doc.doc_type), "", "", doc.updated_at.strftime('%m/%d/%y')], :style => default
+    sheet.add_row [doc.document_file_name, PermissibleValue.where(category: 'document_type', key: doc.doc_type).first.value, "", "", doc.updated_at.strftime('%m/%d/%y')], :style => default
   end
 
   sheet.add_row

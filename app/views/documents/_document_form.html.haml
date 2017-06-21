@@ -35,7 +35,7 @@
             .form-group
               = form.label :doc_type, t(:documents)[:form_fields][:document_type], class: 'col-sm-4 control-label required'
               .col-sm-7
-                = form.select :doc_type, options_for_select(DOCUMENT_TYPES, document.doc_type), { prompt: t(:documents)[:select_type] }, class: 'form-control selectpicker'
+                = form.select :doc_type, options_for_select(PermissibleValue.where(category: 'document_type').map(&:value), document.doc_type), { prompt: t(:documents)[:select_type] }, class: 'form-control selectpicker'
             .form-group#doc-type-other-field{ display_if(document.doc_type == 'other') }
               = form.label :doc_type_other, t(:documents)[:form_fields][:specify_doc_type], class: 'col-sm-4 control-label required'
               .col-sm-7

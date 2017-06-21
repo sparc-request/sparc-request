@@ -18,13 +18,14 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+require 'csv'
 
 desc "Import constants from csv files and add them to the appropriate tables"
 task import_constants: :environment do
-  binding.pry
-  Dir.glob(Rails.root + 'db/seeds/permisssable_values/2.0.5') do |file|
-
+  Dir.glob(Rails.root + 'db/seeds/permissable_values/2.0.5/*') do |file|
+    puts("Importing CSV file: #{file.split('/').last}")
     CSV.foreach(file, headers: true) do |row|
+      PermissibleValue.find_or_create_by(row.to_hash)
     end
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170517143845) do
+ActiveRecord::Schema.define(version: 20170621150847) do
 
   create_table "admin_rates", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer  "line_item_id"
@@ -474,6 +474,19 @@ ActiveRecord::Schema.define(version: 20170517143845) do
     t.datetime "updated_at",                                                    null: false
     t.float    "percent_subsidy",        limit: 24
     t.index ["sub_service_request_id"], name: "index_payments_on_sub_service_request_id", using: :btree
+  end
+
+  create_table "permissible_values", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "key"
+    t.string   "value"
+    t.string   "concept_code"
+    t.integer  "parent_id"
+    t.integer  "sortorder"
+    t.string   "category"
+    t.boolean  "default"
+    t.boolean  "reserved"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   create_table "pricing_maps", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|

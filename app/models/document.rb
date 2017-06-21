@@ -31,7 +31,7 @@ class Document < ApplicationRecord
   validates :doc_type_other, presence: true, if: Proc.new { |doc| doc.doc_type == 'other' }
 
   def display_document_type
-    self.doc_type == "other" ? self.doc_type_other : PermissibleValues.where(category: 'document_type', key: self.doc_type).first.value
+    self.doc_type == "other" ? self.doc_type_other : PermissibleValue.where(category: 'document_type', key: self.doc_type).first.value
   end
 
   def all_organizations

@@ -50,19 +50,6 @@ RSpec.describe Dashboard::NotificationsController do
         expect(assigns(:sub_service_request)).to eq(@sub_service_request)
       end
 
-      it "should build a new Notification associated with SubServiceRequest" do
-        expect(assigns(:notification)).to eq(@new_notification)
-      end
-
-      it "should build a new Message to Identity from params[:identity_id]" do
-        expect(@new_notification.messages).to have_received(:new).
-          with(to: @recipient.id.to_s)
-      end
-
-      it "should assign new Message to @message" do
-        expect(assigns(:message)).to eq(@new_message)
-      end
-
       it { is_expected.to respond_with :ok }
       it { is_expected.to render_template "dashboard/notifications/new" }
     end
@@ -85,15 +72,6 @@ RSpec.describe Dashboard::NotificationsController do
 
       it "should build a new Notification" do
         expect(assigns(:notification)).to eq(@new_notification)
-      end
-
-      it "should build a new Message to Identity from params[:identity_id]" do
-        expect(@new_notification.messages).to have_received(:new).
-          with(to: @recipient.id.to_s)
-      end
-
-      it "should assign new Message to @message" do
-        expect(assigns(:message)).to eq(@new_message)
       end
 
       it { is_expected.to respond_with :ok }

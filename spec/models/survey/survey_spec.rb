@@ -44,8 +44,6 @@ RSpec.describe Survey, type: :model do
     new_survey = build(:survey, access_code: 'access-code', version: 0)
     
     expect(new_survey).to_not be_valid
-
-    puts new_survey.errors
   end
 
   # Other

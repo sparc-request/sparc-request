@@ -44,6 +44,31 @@ module ServiceCalendarHelper
     notable_type == "LineItemsVisit" || notable_type == "LineItem"
   end
 
+  def display_freeze_header_button_pppv(tab, portal, arm, service_request, sub_service_request, merged, statuses_hidden)
+    if portal && tab != "calendar"
+      add_scrollable_class = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, statuses_hidden: statuses_hidden).map{|x| x.last}.flatten.count > 9
+    else
+      line_item_visits = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, statuses_hidden: statuses_hidden).map{|x| x.last}.flatten
+      line_item_visit_count = line_item_visits.count
+      ssr_count = line_item_visits.map(&:sub_service_request).uniq.count
+      add_scrollable_class = portal ? (line_item_visit_count + ssr_count) > 10 : (line_item_visit_count + ssr_count) > 8
+    end
+    add_scrollable_class
+  end
+
+  def display_freeze_header_button_otf(service_request)
+    @line_items = []
+    service_request.service_list(true).each do |_, value|
+      value[:line_items].group_by(&:sub_service_request_id).each do |sub_service_request_id, line_items|
+        @line_items << line_items
+      end
+    end
+    line_item_count = @line_items.flatten.count
+    
+    ssr_count = @line_items.flatten.map(&:sub_service_request).uniq.count
+    (line_item_count + ssr_count) > 10
+  end
+
   def display_unit_type(liv)
     unit_type = liv.line_item.service.displayed_pricing_map.unit_type
     unit_type = unit_type.gsub("/", "/ ")

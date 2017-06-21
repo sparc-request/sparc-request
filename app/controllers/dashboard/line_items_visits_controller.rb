@@ -23,6 +23,7 @@ class Dashboard::LineItemsVisitsController < Dashboard::BaseController
 
   # Used for x-editable update and validations
   def update
+    @scroll_true      = params[:scroll].present? && params[:scroll] == 'true'
     @line_items_visit = LineItemsVisit.find( params[:id] )
     @service_request  = ServiceRequest.find( params[:srid] )
 
@@ -47,7 +48,6 @@ class Dashboard::LineItemsVisitsController < Dashboard::BaseController
     @line_items = @sub_service_request.line_items
 
     ActiveRecord::Base.transaction do
-      @line_items_visit.remove_procedures
       if @line_items_visit.destroy
         line_item.destroy unless line_item.line_items_visits.count > 0
         # Have to reload the service request to get the correct direct cost total for the subsidy

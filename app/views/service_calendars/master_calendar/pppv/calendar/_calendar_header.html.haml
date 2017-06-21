@@ -1,0 +1,45 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+%tr
+  %th.text-center{ class: portal ? "portal-consolidated-service-header" : "consolidated-service-header", colspan: 2, rowspan: 2 }
+    = t(:calendars)[:pppv][:header_fields][:service]
+  %th.text-center.notes-width{ rowspan: 2 }
+    = t(:calendars)[:pppv][:header_fields][:notes]
+  %th.text-center.status-width{ rowspan: 2 }
+    = t(:calendars)[:pppv][:header_fields][:status]
+  %th.text-center.unit-cost-width{ colspan: 2 }
+    = t(:calendars)[:pppv][:header_fields][:unit_cost]
+  %th.text-center.quantity-type-width{ rowspan: 2 }
+    = t(:calendars)[:pppv][:header_fields][:quantity_type]
+  %th.text-center.xs-col-width{ rowspan: 2 }
+    = t(:calendars)[:pppv][:header_fields][:subject_count]
+  %th.text-center.visit-group-select{ colspan: 5 }
+    = render 'service_calendars/master_calendar/pppv/visit_group_page_select', service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, page: page, pages: pages, review: review, portal: portal, admin: admin
+  %th.text-center.total-width{ rowspan: 2 }
+    = t(:calendars)[:pppv][:header_fields][:total_per_patient]
+  %th.text-center.total-width{ rowspan: 2 }
+    = t(:calendars)[:pppv][:header_fields][:total_per_study]
+
+%tr
+  %th.text-center.sm-col-width
+    = raw(t(:calendars)[:pppv][:header_fields][:service_rate])
+  %th.text-center.sm-col-width
+    = raw(t(:calendars)[:pppv][:header_fields][:your_cost])
+  = render 'service_calendars/master_calendar/pppv/visit_groups', service_request: service_request, arm: arm, tab: tab, visit_groups: visit_groups, portal: portal

@@ -25,12 +25,8 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
   describe 'GET /v1/visit/:id.json' do
 
     before do
-      Visit.skip_callback(:save, :after, :set_arm_edited_flag_on_subjects)
-
       @visit = build(:visit)
       @visit.save validate: false
-      
-      Visit.set_callback(:save, :after, :set_arm_edited_flag_on_subjects)
     end
 
     context 'response params' do

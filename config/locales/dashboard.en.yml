@@ -182,6 +182,7 @@ en:
     ###############
     protocols:
       table:
+        exporter: "Exporter"
         header: "Protocols"
         new_protocol: "New Protocol"
         new_study: "New Study"
@@ -190,8 +191,6 @@ en:
         id: "ID"
         pis: "PI(s)"
         requests: Requests
-        archive: "Archive"
-        unarchive: "Unarchive"
 
       documents:
         header: "Documents"
@@ -229,7 +228,7 @@ en:
     #  SERVICE REQUESTS  #
     ######################
     service_requests:
-      modify_request: "Modify Request"
+      modify_request: "Add / Modify Request"
       srid: "SRID"
       organization: "Organization"
       owner: "Owner"
@@ -251,14 +250,14 @@ en:
           program_core: "Program/Core"
 
     ############################
-    #  STUDY LEVEL ACTIVITIES  #
+    #  Non-clinical Services #
     ############################
     study_level_activities:
-      add: "Add Study Level Activity"
-      edit: "Edit Study Level Activity"
-      created: "Study Level Activity Created!"
-      updated: "Study Level Activity Updated!"
-      destroyed: "Study Level Activity Destroyed!"
+      add: "Add Non-clinical Services"
+      edit: "Edit Non-clinical Services"
+      created: "Non-clinical Services Created!"
+      updated: "Non-clinical Services Updated!"
+      destroyed: "Non-clinical Services Destroyed!"
       table:
         service: "Service"
         quantity_requested: "Qty Requested"
@@ -279,7 +278,7 @@ en:
         edit: " Edit Activity"
         delete: " Delete Activity"
       details:
-        header: "Study Level Activity Details"
+        header: "Non-clinical Services Details"
         charge_code: "Charge Code"
         unit_quantity: "Units / Quantity"
         unit_type: "Unit Type"
@@ -327,11 +326,11 @@ en:
             contacted_date: "Requester Contacted Date"
 
         study_schedule:
-          header: "Study Schedule"
-          no_requests: "There are no per-patient/per-visit requests."
+          header: "Clinical Services"
+          no_requests: "There are no clinical services requested."
 
         study_level_activities:
-          header: "Study Level Activities"
+          header: "Non-clinical Services"
 
         documents:
           header: "Documents"

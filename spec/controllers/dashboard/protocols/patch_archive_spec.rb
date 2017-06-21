@@ -23,10 +23,12 @@ require 'rails_helper'
 RSpec.describe Dashboard::ProtocolsController do
   describe 'PATCH #archive' do
     before(:each) do
-      log_in_dashboard_identity(obj: build_stubbed(:identity))
+      user = build_stubbed(:identity)
+      log_in_dashboard_identity(obj: user)
       @protocol_stub = findable_stub(Protocol) do
         build_stubbed(:protocol, type: "Study")
       end
+      authorize(user, @protocol_stub, can_edit: true)
       allow(@protocol_stub).to receive(:valid?).and_return(true)
       allow(@protocol_stub).to receive(:toggle!)
 

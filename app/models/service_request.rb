@@ -217,12 +217,6 @@ class ServiceRequest < ApplicationRecord
       if line_item.service.one_time_fee
         # quantity is only set for one time fee
         line_item.update_attribute(:quantity, quantity)
-
-      else
-        # only per-patient per-visit have arms
-        self.arms.each do |arm|
-          arm.create_line_items_visit(line_item)
-        end
       end
 
       line_item.reload
@@ -350,22 +344,19 @@ class ServiceRequest < ApplicationRecord
 
   def total_direct_costs_per_patient arms=self.arms, line_items=nil
     total = 0.0
-    lids = line_items.map(&:id) unless line_items.nil?
     arms.each do |arm|
-      livs = line_items.nil? ? arm.line_items_visits : arm.line_items_visits.reject{|liv| !lids.include? liv.line_item_id}
-      total += arm.direct_costs_for_visit_based_service livs
+      livs = line_items.nil? ? arm.line_items_visits : arm.line_items_visits.where(line_item: line_items)
+      total += arm.direct_costs_for_visit_based_service(livs.eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol]))
     end
-
     total
   end
 
   def total_indirect_costs_per_patient arms=self.arms, line_items=nil
     total = 0.0
     if USE_INDIRECT_COST
-      lids = line_items.map(&:id) unless line_items.nil?
       arms.each do |arm|
-        livs = line_items.nil? ? arm.line_items_visits : arm.line_items_visits.reject{|liv| !lids.include? liv.line_item_id}
-        total += arm.indirect_costs_for_visit_based_service
+        livs = line_items.nil? ? arm.line_items_visits : arm.line_items_visits.where(line_item: line_items)
+        total += arm.indirect_costs_for_visit_based_service(livs.eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol]))
       end
     end
 
@@ -377,22 +368,23 @@ class ServiceRequest < ApplicationRecord
   end
 
   def total_direct_costs_one_time line_items=self.line_items
-    total = 0.0
-    line_items.select {|x| x.service.one_time_fee}.each do |li|
-      total += li.direct_costs_for_one_time_fee
-    end
-
-    total
+    line_items.joins(:service).
+      where(services: { one_time_fee: true }).
+      eager_load(
+        :admin_rates,
+        service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]],
+        service_request: :protocol).
+      sum(&:direct_costs_for_one_time_fee)
   end
 
   def total_indirect_costs_one_time line_items=self.line_items
     total = 0.0
     if USE_INDIRECT_COST
-      line_items.select {|x| x.service.one_time_fee}.each do |li|
-        total += li.indirect_costs_for_one_time_fee
-      end
+      total += line_items.joins(:service).
+        where(services: { one_time_fee: true }).
+        eager_load(:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol).
+        sum(&:indirect_costs_for_one_time_fee)
     end
-
     total
   end
 
@@ -455,31 +447,9 @@ class ServiceRequest < ApplicationRecord
       next_ssr_id += 1 unless self.protocol
     end
 
-    self.protocol.update_attributes(next_ssr_id: next_ssr_id) if self.protocol
-  end
-
-  def add_or_update_arms
-    return unless self.has_per_patient_per_visit_services?
-
-    p = self.protocol
-    if p
-      if p.arms.empty?
-        arm = p.arms.create(
-          name: 'Screening Phase',
-          visit_count: 1,
-          new_with_draft: true)
-        self.per_patient_per_visit_line_items.each do |li|
-          arm.create_line_items_visit(li)
-        end
-      else
-        p.arms.each do |arm|
-          p.service_requests.each do |sr|
-            sr.per_patient_per_visit_line_items.each do |li|
-              arm.create_line_items_visit(li) if arm.line_items_visits.where(:line_item_id => li.id).empty?
-            end
-          end
-        end
-      end
+    if protocol
+      protocol.next_ssr_id = next_ssr_id
+      protocol.save(validate: false)
     end
   end
 

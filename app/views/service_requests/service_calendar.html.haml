@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 = javascript_include_tag 'service_calendar'
 
-= render '/service_requests/navigation/steps', service_request: @service_request, sub_service_request_id: @sub_service_request.try(:id), step: @step_text, step_number: @step_number, css_class: @css_class
+= render '/service_requests/navigation/steps', service_request: @service_request, sub_service_request: @sub_service_request, step: @step_text, step_number: @step_number, css_class: @css_class
 .col-sm-12.body-container
   = form_tag navigate_service_request_path(@service_request), id: 'service-request-form' do
     - if @sub_service_request

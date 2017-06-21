@@ -17,6 +17,12 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.question-options.dropdown-options{ class: display_question_example(question, 'dropdown'), data: { question_id: question.id } }
-  .form-group
-    = select_tag :response_example, [], class: 'form-control selectpicker', disabled: "disabled"
+%hr
+.col-sm-12
+  - question.options.each do |option|
+    .form-group.option{ data: {option_id: option.id } }
+      .col-lg-11.no-padding
+        = text_field_tag "option-content", option.content, class: 'form-control option-content', placeholder: t(:surveyor)[:surveys][:form][:content][:option][:content][:placeholder], maxlength: 255
+      .col-lg-1.no-padding
+        = render 'surveyor/surveys/form/form_partials/delete_option_button'
+  = render 'surveyor/surveys/form/form_partials/add_option_button', question: question

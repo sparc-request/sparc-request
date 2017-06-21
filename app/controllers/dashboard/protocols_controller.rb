@@ -23,13 +23,13 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   respond_to :html, :json, :xlsx
 
   before_action :find_protocol,                                   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
-  before_action :find_admin_for_protocol,                         only: [:show, :edit, :update, :update_protocol_type, :display_requests]
+  before_action :find_admin_for_protocol,                         only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
   before_action :protocol_authorizer_view,                        only: [:show, :view_full_calendar, :display_requests]
-  before_action :protocol_authorizer_edit,                        only: [:edit, :update, :update_protocol_type]
+  before_action :protocol_authorizer_edit,                        only: [:edit, :update, :update_protocol_type, :archive]
 
   def index
-    admin_orgs   = @user.authorized_admin_organizations
-    @admin       = !admin_orgs.empty?
+    admin_orgs = @user.authorized_admin_organizations
+    @admin     = admin_orgs.any?
 
     @default_filter_params = { show_archived: 0, sorted_by: 'id desc' }
 
@@ -55,8 +55,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     @protocols        = @filterrific.find.page(params[:page])
     @admin_protocols  = Protocol.for_admin(@user.id).pluck(:id)
-    @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)
-
+    @protocol_filters = ProtocolFilter.latest_for_user(@user.id, ProtocolFilter::MAX_FILTERS)
+    
     #toggles the display of the navigation bar, instead of breadcrumbs
     @show_navbar      = true
     @show_messages    = true
@@ -67,6 +67,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     respond_to do |format|
       format.html
       format.js
+      format.csv { send_data Protocol.to_csv(@filterrific.find), :filename => "dashboard_protocols.csv"}
     end
   end
 
@@ -148,8 +149,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def update
     protocol_type = protocol_params[:type]
+    @protocol.assign_attributes({ selected_for_epic: protocol_params[:selected_for_epic], study_type_question_group_id: StudyTypeQuestionGroup.active_id })
     @protocol = @protocol.becomes(protocol_type.constantize) unless protocol_type.nil?
-    if params[:updated_protocol_type] == 'true' && protocol_type == 'Study'
+    if params[:updated_protocol_type] == 'true' && protocol_type == 'Study' && @protocol.valid?
       @protocol.update_attribute(:type, protocol_type)
       @protocol.activate
       @protocol.reload
@@ -192,6 +194,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def archive
     @protocol.toggle!(:archived)
+    @protocol_type = @protocol.type
+    @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
     respond_to do |format|
       format.js
     end
@@ -208,7 +212,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   private
 
   def filterrific_params
-    temp = params.require(:filterrific).permit(:identity_id,
+    params.require(:filterrific).permit(:identity_id,
       :search_name,
       :show_archived,
       :admin_filter,
@@ -219,12 +223,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       with_organization: [],
       with_status: [],
       with_owner: [])
-
-    unless @admin
-      temp[:admin_filter] = "for_identity #{@user.id}"
-    end
-
-    temp
   end
 
   def protocol_params

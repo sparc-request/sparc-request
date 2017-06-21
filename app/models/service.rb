@@ -21,6 +21,7 @@
 class Service < ApplicationRecord
 
   include RemotelyNotifiable
+  include ServiceUtility
 
   audited
   acts_as_taggable
@@ -62,6 +63,10 @@ class Service < ApplicationRecord
     errors.add(:service, "must contain at least 1 pricing map.") if pricing_maps.length < 1
   end
   ###############################################
+
+  def humanized_status
+    self.is_available ? 'Available' : 'Unavailable'
+  end
 
   def process_ssrs_organization
     organization.process_ssrs_parent
@@ -118,7 +123,13 @@ class Service < ApplicationRecord
   # cents.
   def self.dollars_to_cents dollars
     dollars = dollars.gsub(',','')
-    (BigDecimal(dollars) * 100).to_i
+    #check if dollars arg will be a valid for BigDecimal conversion
+    if ServiceUtility.valid_float?(dollars)
+      #if not we convert dollars to an integer
+      (BigDecimal(dollars) * 100).to_i
+    else
+      (BigDecimal(dollars.to_i) * 100).to_i
+    end
   end
 
   # Given an integer number of cents, return a Float representing the
@@ -220,7 +231,7 @@ class Service < ApplicationRecord
   def effective_pricing_map_for_date(date=Date.today)
     raise ArgumentError, "Service has no pricing maps" if self.pricing_maps.empty?
 
-    current_maps = self.pricing_maps.where('effective_date <= ?', date.to_s(:db))
+    current_maps = self.pricing_maps.select{ |x| x.effective_date <= date.to_date }
     raise ArgumentError, "Service has no current pricing maps" if current_maps.empty?
 
     sorted_maps = current_maps.sort { |lhs, rhs| lhs.effective_date <=> rhs.effective_date }

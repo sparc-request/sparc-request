@@ -65,7 +65,7 @@ class Service < ApplicationRecord
   ###############################################
 
   def humanized_status
-    self.is_available ? 'Available' : 'Unavailable'
+    self.is_available ? I18n.t(:reporting)[:service_pricing][:available] : I18n.t(:reporting)[:service_pricing][:unavailable]
   end
 
   def process_ssrs_organization

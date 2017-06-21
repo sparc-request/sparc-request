@@ -146,8 +146,9 @@ class ServicePricingReport < ReportingModule
       tagged_organization_ids = service_organizations.joins(:tags).where(tags: { id: params[:tags] }).ids
       service_organization_ids = service_organization_ids & tagged_organization_ids
     end
-
-    return "pricing_maps.display_date >= #{args[:services_pricing_date] || Date.today.to_s}" + (service_organization_ids.any? ? "and services.organization_id IN (#{service_organization_ids.join(',')})" : "")
+    binding.primary
+    date = args[:services_pricing_date] ? Date.parse(args[:services_pricing_date]) : Date.today
+    return "pricing_maps.display_date >= \"#{date}\"" + (service_organization_ids.any? ? "and services.organization_id IN (#{service_organization_ids.join(',')})" : "")
   end
 
   def uniq

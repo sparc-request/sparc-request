@@ -242,10 +242,10 @@ class SubServiceRequest < ApplicationRecord
   ######################## FULFILLMENT RELATED METHODS ##########################
   ###############################################################################
   def ready_for_fulfillment?
-    # return true if work fulfillment has already been turned "on" or global variable FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is set to false or nil
-    # otherwise, return true only if FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is true and the parent organization has tag 'clinical work fulfillment'
-    if self.in_work_fulfillment || !FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER ||
-        (FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER && self.organization.tag_list.include?('clinical work fulfillment'))
+    # return true if work fulfillment has already been turned "on" or global variable fulfillment_contingent_on_catalog_manager is set to false or nil
+    # otherwise, return true only if fulfillment_contingent_on_catalog_manager is true and the parent organization has tag 'clinical work fulfillment'
+    if self.in_work_fulfillment || !Setting.find_by_key("fulfillment_contingent_on_catalog_manager").value ||
+        (Setting.find_by_key("fulfillment_contingent_on_catalog_manager").value && self.organization.tag_list.include?('clinical work fulfillment'))
       return true
     else
       return false
@@ -256,30 +256,30 @@ class SubServiceRequest < ApplicationRecord
   ## SSR STATUS METHODS ##
   ########################
 
-  # Returns the SSR id that need an initial submission email and updates 
+  # Returns the SSR id that need an initial submission email and updates
   # the SSR status to new status if appropriate
   def update_status_and_notify(new_status)
     to_notify = []
     if can_be_edited?
       available = AVAILABLE_STATUSES.keys
-      editable = EDITABLE_STATUSES[organization_id] || available
+      editable = Setting.find_by_key("editable_statuses").value[organization_id] || available
       changeable = available & editable
       if changeable.include?(new_status)
         #  See Pivotal Stories: #133049647 & #135639799
-        if (status != new_status) && ((new_status == 'submitted' && UPDATABLE_STATUSES.include?(status)) || new_status != 'submitted')
+        if (status != new_status) && ((new_status == 'submitted' && Setting.find_by_key("updatable_statuses").value.include?(status)) || new_status != 'submitted')
           ### For 'submitted' status ONLY:
           # Since adding/removing services changes a SSR status to 'draft', we have to look at the past status to see if we should notify users of a status change
-          # We do NOT notify if updating from an un-updatable status or we're updating to a status that we already were previously 
+          # We do NOT notify if updating from an un-updatable status or we're updating to a status that we already were previously
           if new_status == 'submitted'
             past_status = PastStatus.where(sub_service_request_id: id).last
             past_status = past_status.nil? ? nil : past_status.status
-            if status == 'draft' && ((UPDATABLE_STATUSES.include?(past_status) && past_status != new_status) || past_status == nil) # past_status == nil indicates a newly created SSR
+            if status == 'draft' && ((Setting.find_by_key("updatable_statuses").value.include?(past_status) && past_status != new_status) || past_status == nil) # past_status == nil indicates a newly created SSR
               to_notify << id
             elsif status != 'draft'
-              to_notify << id 
+              to_notify << id
             end
           else
-            to_notify << id 
+            to_notify << id
           end
 
           new_status == 'submitted' ? update_attributes(status: new_status, submitted_at: Time.now, nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false) : update_attribute(:status, new_status)
@@ -296,7 +296,7 @@ class SubServiceRequest < ApplicationRecord
   #A request is locked if the organization it's in isn't editable
   def is_locked?
     if organization.has_editable_statuses?
-      return !EDITABLE_STATUSES[find_editable_id].include?(self.status)
+      return !Setting.find_by_key("editable_statuses").value[find_editable_id].include?(self.status)
     end
     false
   end
@@ -304,19 +304,19 @@ class SubServiceRequest < ApplicationRecord
   # Can't edit a request if it's placed in an uneditable status
   def can_be_edited?
     if organization.has_editable_statuses?
-      EDITABLE_STATUSES[find_editable_id].include?(self.status) && !is_complete?
+      Setting.find_by_key("editable_statuses").value[find_editable_id].include?(self.status) && !is_complete?
     else
       !is_complete?
     end
   end
 
   def is_complete?
-    return FINISHED_STATUSES.include?(status)
+    return Setting.find_by_key("finished_statuses").value.include?(status)
   end
 
   def find_editable_id
     parent_ids = self.organization.parents.map(&:id)
-    EDITABLE_STATUSES.keys.each do |org_id|
+    Setting.find_by_key("editable_statuses").value.keys.each do |org_id|
       return org_id if (org_id == self.organization_id) || parent_ids.include?(org_id)
     end
   end
@@ -460,9 +460,9 @@ class SubServiceRequest < ApplicationRecord
     end_date = Time.now.utc
 
     deleted_line_item_audits = AuditRecovery.where("audited_changes LIKE '%sub_service_request_id: #{id}%' AND auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('destroy') AND created_at BETWEEN '#{start_date}' AND '#{end_date}'")
-                             
+
     added_line_item_audits = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{service_request.id}%' AND auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('create') AND created_at BETWEEN '#{start_date}' AND '#{end_date}'")
-    
+
     ### Takes all the added LIs and filters them down to the ones specific to this SSR ###
     added_li_ids = added_line_item_audits.present? ? added_line_item_audits.map(&:auditable_id) : []
     li_ids_added_to_this_ssr = line_items.present? ? line_items.map(&:id) : []

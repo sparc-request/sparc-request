@@ -24,7 +24,7 @@
         = t(:protocols)[:studies][:information][:header]
   %table.table
     %tbody
-      - if RESEARCH_MASTER_ENABLED
+      - if Setting.find_by_key("research_master_enabled").value
         %tr.row
           %td
             %label.col-lg-4
@@ -125,4 +125,4 @@
                   = render partial: 'protocols/view_details/epic_questions_answers', locals: { answer: answer }
                 - elsif !answer.study_type_question.study_type_question_group.active && !protocol.active? && answer.answer != nil
                   = render partial: 'protocols/view_details/epic_questions_answers', locals: { answer: answer }
-            = render partial: 'protocols/view_details/study_type_note', locals: { protocol: protocol }         
+            = render partial: 'protocols/view_details/study_type_note', locals: { protocol: protocol }

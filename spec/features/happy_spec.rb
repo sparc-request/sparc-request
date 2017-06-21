@@ -38,7 +38,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
   end
 
   it "is happy" do
-    stub_const("SYSTEM_SATISFACTION_SURVEY", true)
+    create(:setting, key: "system_satisfaction_survey", value: true)
 
     #######################################
     # Organization structure and Services #
@@ -89,11 +89,11 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     ##########
     click_link 'Login / Sign Up'
     wait_for_javascript_to_finish
-    
+
     expect(page).to have_selector("a", text: /Outside User Login/)
     find("a", text: /Outside User Login/).click
     wait_for_javascript_to_finish
-    
+
     fill_in "Login", with: "johnd"
     fill_in "Password", with: "p4ssword"
     click_button 'Login'
@@ -105,19 +105,19 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     # Add Core 1 Services #
     #######################
     expect(page).to have_selector("span", text: provider_non_split.name)
-    
+
     find("span", text: provider_non_split.name).click
     wait_for_javascript_to_finish
-    
+
     find("span", text: program_split.name).click
     wait_for_javascript_to_finish
-    
+
     find("span", text: core1.name).click
     wait_for_javascript_to_finish
-    
+
     expect(page).to have_selector('a.service', text: otf_service_core_1.name, visible: true)
     expect(page).to have_selector('a.service', text: pppv_service_core_1.name, visible: true)
-    
+
     click_add_service_for(otf_service_core_1)
     find("a", text: /Yes/).click
     wait_for_javascript_to_finish
@@ -125,9 +125,9 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     within(".shopping-cart") do
       expect(page).to have_selector('.service', text: otf_service_core_1.abbreviation, visible: true)
     end
-    
+
     click_add_service_for(pppv_service_core_1)
-    
+
     within(".shopping-cart") do
       expect(page).to have_selector('.service', text: pppv_service_core_1.abbreviation, visible: true)
     end
@@ -141,24 +141,24 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
 
     find("span", text: provider_split.name).click
     wait_for_javascript_to_finish
-    
+
     find("span", text: program_non_split.name).click
     wait_for_javascript_to_finish
-    
+
     find("span", text: core2.name).click
     wait_for_javascript_to_finish
-    
+
     expect(page).to have_selector('a.service', text: otf_service_core_2.name, visible: true)
     expect(page).to have_selector('a.service', text: pppv_service_core_2.name, visible: true)
-    
+
     click_add_service_for(otf_service_core_2)
-    
+
     within(".shopping-cart") do
       expect(page).to have_selector('.service', text: otf_service_core_2.abbreviation, visible: true)
     end
-    
+
     click_add_service_for(pppv_service_core_2)
-    
+
     within(".shopping-cart") do
       expect(page).to have_selector('.service', text: pppv_service_core_2.abbreviation, visible: true)
     end
@@ -175,22 +175,22 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
 
     click_link("New Project")
     wait_for_javascript_to_finish
-    
+
     fill_in("Short Title:", with: "My Protocol")
     fill_in("Project Title:", with: "My Protocol is Very Important - #12345")
-    
+
     click_button("Select a Funding Status")
     find("li", text: "Funded").click
     expect(page).to have_button("Select a Funding Source")
     click_button("Select a Funding Source")
     find("li", text: "Federal").click
-    
+
     fill_in "Primary PI:", with: "john"
 
     expect(page).to have_selector("div.tt-selectable", text: /johnd@musc.edu/)
     first("div.tt-selectable", text: /johnd@musc.edu/).click
     wait_for_javascript_to_finish
-    
+
     click_button 'Save'
     wait_for_javascript_to_finish
 
@@ -203,12 +203,12 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     # Step 2A #
     ###########
     expect(page).to have_selector('.step-header', text: 'STEP 2A')
-    
+
     find('#project_start_date').click
     within(".bootstrap-datetimepicker-widget") do
       first("td.day", text: "1").click
     end
-    
+
     find('#project_end_date').click
     within(".bootstrap-datetimepicker-widget") do
       first("td.day", text: "1").click
@@ -223,19 +223,19 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     # Step 2B #
     ###########
     expect(page).to have_selector('.step-header', text: 'STEP 2B')
-    
+
     find("a", text: "(?)").click
     wait_for_javascript_to_finish
-    
+
     fill_in 'visit_group_day', with: 1
-    
+
     click_button 'Save changes'
     wait_for_javascript_to_finish
 
     click_link 'Save and Continue'
     wait_for_javascript_to_finish
 
-    
+
 
     ##########
     # Step 3 #
@@ -245,7 +245,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     click_link 'Save and Continue'
     wait_for_javascript_to_finish
 
-    
+
 
     ##########
     # Step 4 #
@@ -271,7 +271,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
       wait_for_javascript_to_finish
     end
 
-    
+
 
     ##########
     # Step 5 #
@@ -281,7 +281,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     click_link 'Go to Dashboard'
     wait_for_javascript_to_finish
 
-    
+
 
     #############
     # Dashboard #

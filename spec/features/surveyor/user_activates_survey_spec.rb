@@ -26,7 +26,7 @@ RSpec.describe 'User activates a survey', js: true do
   fake_login_for_each_test
 
   before :each do
-    stub_const("SITE_ADMINS", ['jug2'])
+    create(:setting, key: "site_admins", value: ['jug2'])
 
     @survey = create(:survey)
 
@@ -34,7 +34,7 @@ RSpec.describe 'User activates a survey', js: true do
     wait_for_javascript_to_finish
 
     click_link 'Activate'
-    wait_for_javascript_to_finish 
+    wait_for_javascript_to_finish
   end
 
   scenario 'and sees the activated survey' do

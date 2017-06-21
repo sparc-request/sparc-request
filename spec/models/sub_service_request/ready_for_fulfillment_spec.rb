@@ -25,89 +25,86 @@ RSpec.describe 'SubServiceRequest' do
     @institution.type = "Institution"
     @institution.abbreviation = "TECHU"
     @institution.save(validate: false)
-    
+
     @provider = Provider.new
     @provider.type = "Provider"
     @provider.abbreviation = "ICTS"
     @provider.parent_id = @institution.id
     @provider.save(validate: false)
-    
+
     @program = Program.new
     @program.type = "Program"
     @program.name = "BMI"
     @program.parent_id = @provider.id
     @program.save(validate: false)
-    
+
     @core = Core.new
     @core.type = "Core"
     @core.name = "REDCap"
     @core.parent_id = @program.id
     @core.save(validate: false)
-    
+
     @sub_service_request = SubServiceRequest.new
     @sub_service_request.organization_id = @core.id
     @sub_service_request.save(validate: false)
   end
-  
-  it 'is ready for fulfillment if already in work fulfillment and FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is true' do
-    stub_const("FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER", true)
+
+  it 'is ready for fulfillment if already in work fulfillment and fulfillment_contingent_on_catalog_manager is true' do
+    create(:setting, key: "fulfillment_contingent_on_catalog_manager", value: true)
     @sub_service_request.in_work_fulfillment = true
     expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
   end
-  
-  it 'is ready for fulfillment if already in work fulfillment and FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is false' do
-    stub_const("FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER", false)
+
+  it 'is ready for fulfillment if already in work fulfillment and fulfillment_contingent_on_catalog_manager is false' do
+    create(:setting, key: "fulfillment_contingent_on_catalog_manager", value: false)
     @sub_service_request.in_work_fulfillment = true
     expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
   end
-  
-  it 'is ready for fulfillment if already in work fulfillment and FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is nil' do
-    stub_const("FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER", nil)
+
+  it 'is ready for fulfillment if already in work fulfillment and fulfillment_contingent_on_catalog_manager is not populated' do
     @sub_service_request.in_work_fulfillment = true
     expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
   end
- 
-  it 'is NOT ready for fulfillment if FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is true' do
-    stub_const("FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER", true)
+
+  it 'is NOT ready for fulfillment if fulfillment_contingent_on_catalog_manager is true' do
+    create(:setting, key: "fulfillment_contingent_on_catalog_manager", value: true)
     expect(@sub_service_request.ready_for_fulfillment?).to eq(false)
   end
-       
-  it 'is ready for fulfillment if FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is false' do
-    stub_const("FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER", false)
+
+  it 'is ready for fulfillment if fulfillment_contingent_on_catalog_manager is false' do
+    create(:setting, key: "fulfillment_contingent_on_catalog_manager", value: false)
     expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
   end
-  
-  it 'is ready for fulfillment if FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is nil' do
-    stub_const("FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER", nil)
+
+  it 'is ready for fulfillment if fulfillment_contingent_on_catalog_manager is not populated' do
     expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
   end
-  
-  it 'is ready for fulfillment if the service is directly under an organization with the tag "clinical work fulfillment" and FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is true' do
-    stub_const("FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER", true)
+
+  it 'is ready for fulfillment if the service is directly under an organization with the tag "clinical work fulfillment" and fulfillment_contingent_on_catalog_manager is true' do
+    create(:setting, key: "fulfillment_contingent_on_catalog_manager", value: true)
     @core.tag_list << "clinical work fulfillment"
     @core.save(validate: false)
     expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
   end
-  
-  it 'is ready for fulfillment if the service is directly under an organization with the tag "clinical work fulfillment" and FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is false' do
-    stub_const("FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER", false)
+
+  it 'is ready for fulfillment if the service is directly under an organization with the tag "clinical work fulfillment" and fulfillment_contingent_on_catalog_manager is false' do
+    create(:setting, key: "fulfillment_contingent_on_catalog_manager", value: false)
     @core.tag_list << "clinical work fulfillment"
     @core.save(validate: false)
     expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
   end
-  
-  it 'is ready for fulfillment if the service is directly under an organization with the tag "clinical work fulfillment" and FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is nil' do
-    stub_const("FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER", nil)
+
+  it 'is ready for fulfillment if the service is directly under an organization with the tag "clinical work fulfillment" and fulfillment_contingent_on_catalog_manager is not populated' do
     @core.tag_list << "clinical work fulfillment"
     @core.save(validate: false)
     expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
   end
-  
-  it 'is NOT ready for fulfillment if the service has a grandparent organization with the tag "clinical work fulfillment" and FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is true' do
-    stub_const("FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER", true)
+
+  it 'is NOT ready for fulfillment if the service has a grandparent organization with the tag "clinical work fulfillment" and fulfillment_contingent_on_catalog_manager is true' do
+    create(:setting, key: "fulfillment_contingent_on_catalog_manager", value: true)
     @program.tag_list << "clinical work fulfillment"
     @program.save(validate: false)
     expect(@sub_service_request.ready_for_fulfillment?).to eq(false)
   end
- 
+
 end

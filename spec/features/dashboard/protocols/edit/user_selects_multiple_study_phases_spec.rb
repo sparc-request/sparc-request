@@ -35,7 +35,7 @@ RSpec.describe 'User edits study', js: true do
     ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                   create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
     StudyTypeQuestionGroup.create(active: 1)
-    stub_const("RESEARCH_MASTER_ENABLED", false)
+    create(:setting, key: "research_master_enabled", value: true)
   end
 
   context 'selects multiple study phases' do
@@ -48,7 +48,7 @@ RSpec.describe 'User edits study', js: true do
       wait_for_javascript_to_finish
 
       find('[data-id="protocol_study_phase_ids"]').click
-      first('.dropdown-menu.open span.text', text: "IV").click   
+      first('.dropdown-menu.open span.text', text: "IV").click
     end
 
     it 'and sees updated study phases (IV)' do

@@ -33,7 +33,7 @@
     = render 'service_requests/review/calendars', service_request: @service_request, sub_service_request: @sub_service_request, pages: @pages, tab: @tab, arm: @arm, portal: @portal, admin: @admin, review: @review, merged: @merged, consolidated: @consolidated
 = render 'service_requests/navigation/footer', service_request: @service_request, sub_service_request_id: @sub_service_request.try(:id), css_class: @css_class, back: @back, forward: @forward
 
-- if SYSTEM_SATISFACTION_SURVEY
+- if Setting.find_by_key("system_satisfaction_survey").value
   = javascript_include_tag 'system_satisfaction'
   = hidden_field_tag :use_system_satisfaction, 'true'
   = render 'service_requests/modals/participate_in_survey_modal'

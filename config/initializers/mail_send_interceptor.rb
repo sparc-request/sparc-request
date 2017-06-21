@@ -4,7 +4,7 @@ class MailSendInterceptor
     def delivering_email(mail)
       cc_to = " AND CC TO #{mail.cc}" if mail.cc.present?
 
-      mail.subject = "[#{HOST} - EMAIL TO #{mail.to} #{cc_to}] #{mail.subject}"
+      mail.subject = "[#{Setting.find_by_key("host").value} - EMAIL TO #{mail.to} #{cc_to}] #{mail.subject}"
       mail.to = DEFAULT_MAIL_TO
       mail.cc = nil
     end

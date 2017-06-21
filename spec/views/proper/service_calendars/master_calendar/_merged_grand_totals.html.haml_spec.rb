@@ -46,15 +46,15 @@ RSpec.describe '/service_calendar/master_calendar/_merged_grand_totals', type: :
     expect(response).to have_content('Total Costs (Non-clinical Services) Per Study')
   end
 
-  it 'should display total direct cost if USE_INDIRECT_COST is true' do
-    stub_const("USE_INDIRECT_COST", true)
+  it 'should display total direct cost if Setting.find_by_key("use_indirect_cost").value is true' do
+    create(:setting, key: "use_indirect_cost", value: true)
     render "/service_calendars/master_calendar/merged_grand_totals", service_request: @service_request
 
     expect(response).to have_content('Total Direct Cost')
   end
 
-  it 'should not display total direct cost if USE_INDIRECT_COST is false' do
-    stub_const("USE_INDIRECT_COST", false)
+  it 'should not display total direct cost if Setting.find_by_key("use_indirect_cost").value is false' do
+    create(:setting, key: "use_indirect_cost", value: true)
     render "/service_calendars/master_calendar/merged_grand_totals", service_request: @service_request
 
     expect(response).to_not have_content('Total Direct Cost')

@@ -27,8 +27,8 @@ RSpec.describe 'User wants to add an authorized user', js: true do
   fake_login_for_each_test
 
   before :each do
-    stub_const('USE_LDAP', false)
-    
+    create(:setting, key: "use_ldap", value: false)
+
     institution = create(:institution, name: "Institution")
     provider    = create(:provider, name: "Provider", parent: institution)
     program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
@@ -68,7 +68,7 @@ RSpec.describe 'User wants to add an authorized user', js: true do
 
         suggestion.click
         wait_for_javascript_to_finish
-        
+
         bootstrap_select '#project_role_role', 'PD/PI'
 
         click_button 'Save'

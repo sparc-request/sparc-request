@@ -102,7 +102,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                    create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
-        stub_const("EDITABLE_STATUSES", { org.id => ['first_draft'] })
+        create(:setting, key: "editable_statuses", value: {org.id => ['first_draft']})
 
         xhr :post, :remove_service, {
           id: sr.id,

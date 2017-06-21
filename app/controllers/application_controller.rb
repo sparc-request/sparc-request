@@ -205,7 +205,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authorize_site_admin
-    unless SITE_ADMINS.include?(current_user.ldap_uid)
+    unless Setting.find_by_key("site_admins").value.include?(current_user.ldap_uid)
       authorization_error "You do not have access to this page.", ""
     end
   end
@@ -217,7 +217,7 @@ class ApplicationController < ActionController::Base
         organization = ssr.organization
         if organization.has_editable_statuses?
           self_or_parent_id = ssr.find_editable_id
-          if !EDITABLE_STATUSES[self_or_parent_id].include?(ssr.status)
+          if !Setting.find_by_key("editable_statuses").value[self_or_parent_id].include?(ssr.status)
             @locked_org_ids << self_or_parent_id
             @locked_org_ids << organization.all_children(Organization.all).map(&:id)
           end

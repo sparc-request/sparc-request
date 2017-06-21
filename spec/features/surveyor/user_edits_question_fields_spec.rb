@@ -30,7 +30,7 @@ RSpec.describe 'User edits question fields', js: true do
     @section = create(:section, survey: @survey)
     @question = create(:question, question_type: 'dropdown', section: @section)
 
-    stub_const("SITE_ADMINS", ['jug2'])
+    create(:setting, key: "site_admins", value: ['jug2'])
   end
 
   scenario 'and sees updated title' do
@@ -100,7 +100,7 @@ RSpec.describe 'User edits question fields', js: true do
         expect(page).to_not have_selector('#question-is_dependent:not(:disabled)')
       end
     end
-    
+
     scenario 'and sees updated is_dependent' do
       @option    = create(:option, question: @question, content: "What is the meaning of life?")
       @question2 = create(:question, section: @section)
@@ -159,7 +159,7 @@ RSpec.describe 'User edits question fields', js: true do
     scenario 'and sees updated depender_id' do
       @option    = create(:option, question: @question, content: "What is the meaning of life?")
       @question2 = create(:question, section: @section)
-      
+
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
@@ -171,7 +171,7 @@ RSpec.describe 'User edits question fields', js: true do
 
       bootstrap_select '#question-depender_id', 'What is the meaning of life?'
       wait_for_javascript_to_finish
-      
+
       expect(@question2.reload.depender_id).to eq(@option.id)
     end
   end

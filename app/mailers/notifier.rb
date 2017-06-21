@@ -25,8 +25,8 @@ class Notifier < ActionMailer::Base
   def new_identity_waiting_for_approval identity
     @identity = identity
 
-    email = ADMIN_MAIL_TO
-    cc = NEW_USER_CC
+    email = Setting.find_by_key("admin_mail_to").value
+    cc = Setting.find_by_key("new_user_cc").value
 
     ##REVIEW: This subject appears incorrect? Copy paste from previous method?
     subject = "New Question from #{t(:mailer)[:application_title]}"
@@ -46,7 +46,7 @@ class Notifier < ActionMailer::Base
 
     xls = controller.render_to_string action: 'show', formats: [:xlsx]
     ### END ATTACHMENTS ###
-    
+
     if audit_report.present?
       @status = 'request_amendment'
     elsif individual_ssr
@@ -63,7 +63,7 @@ class Notifier < ActionMailer::Base
 
     @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
 
-    @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
+    @portal_link = Setting.find_by_key("dashboard_link").value + "/protocols/#{@protocol.id}"
     @ssrs_to_be_displayed =  individual_ssr ? [ssr] : @service_request.sub_service_requests
 
     attachments["service_request_#{@protocol.id}.xlsx"] = xls
@@ -72,7 +72,7 @@ class Notifier < ActionMailer::Base
     email = @identity.email
     subject = "#{@protocol.id} - #{t(:mailer)[:application_title]} service request"
 
-    mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
+    mail(:to => email, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
   end
 
   def notify_admin(submission_email_address, user_current, ssr, audit_report=nil, ssr_destroyed=false, individual_ssr=false)
@@ -98,7 +98,7 @@ class Notifier < ActionMailer::Base
     @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
     @ssrs_to_be_displayed = [ssr]
 
-    @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
+    @portal_link = Setting.find_by_key("dashboard_link").value + "/protocols/#{@protocol.id}"
     @portal_text = "Administrators/Service Providers, Click Here"
 
     @audit_report = audit_report
@@ -110,7 +110,7 @@ class Notifier < ActionMailer::Base
     email =  submission_email_address
     subject = "#{@protocol.id} - #{t(:mailer)[:application_title]} service request"
 
-    mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
+    mail(:to => email, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
   end
 
   def notify_service_provider(service_provider, service_request, user_current, ssr, audit_report=nil, ssr_destroyed=false, request_amendment=false, individual_ssr=false)
@@ -119,7 +119,7 @@ class Notifier < ActionMailer::Base
     @notes = @protocol.notes
 
     @status = status(ssr_destroyed, request_amendment, individual_ssr, ssr, @service_request)
-    
+
     @role = 'none'
     @full_name = service_provider.identity.full_name
 
@@ -127,7 +127,7 @@ class Notifier < ActionMailer::Base
 
     @audit_report = audit_report
 
-    @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
+    @portal_link = Setting.find_by_key("dashboard_link").value + "/protocols/#{@protocol.id}"
     @portal_text = "Administrators/Service Providers, Click Here"
 
     ### ATTACHMENTS ###
@@ -171,14 +171,14 @@ class Notifier < ActionMailer::Base
     email = service_provider.identity.email
     subject = "#{@protocol.id} - #{t(:mailer)[:application_title]} service request"
 
-    mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
+    mail(:to => email, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
   end
 
   def account_status_change identity, approved
     @approved = approved
 
     ##REVIEW: Why do we care what the from is?
-    email_from = Rails.env == 'production' ? ADMIN_MAIL_TO : DEFAULT_MAIL_TO
+    email_from = Rails.env == 'production' ? Setting.find_by_key("admin_mail_to").value : DEFAULT_MAIL_TO
     email_to = identity.email
     subject = "#{t(:mailer)[:application_title]} account request - status change"
 
@@ -192,7 +192,7 @@ class Notifier < ActionMailer::Base
   def provide_feedback feedback
     @feedback = feedback
 
-    email_to = FEEDBACK_MAIL_TO
+    email_to = Setting.find_by_key("feedback_mail_to").value
     email_from = @feedback.email.blank? ? DEFAULT_MAIL_TO : @feedback.email
 
     mail(:to => email_to, :from => email_from, :subject => "Feedback")
@@ -208,7 +208,7 @@ class Notifier < ActionMailer::Base
     email_to = identity.email
     subject = "#{sub_service_request.protocol.id} - #{t(:mailer)[:application_title]} - service request deleted"
 
-    mail(:to => email_to, :from => NO_REPLY_FROM, :subject => subject)
+    mail(:to => email_to, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
   end
 
   def notify_for_epic_user_approval protocol
@@ -217,7 +217,7 @@ class Notifier < ActionMailer::Base
 
     subject = "#{@protocol.id} - Epic Rights Approval"
 
-    mail(:to => EPIC_RIGHTS_MAIL_TO, :from => NO_REPLY_FROM, :subject => subject)
+    mail(:to => Setting.find_by_key("epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
   end
 
   def notify_primary_pi_for_epic_user_final_review protocol
@@ -227,7 +227,7 @@ class Notifier < ActionMailer::Base
     email_to = @primary_pi.email
     subject = "#{@protocol.id} - Epic Rights User Approval"
 
-    mail(:to => email_to, :from => NO_REPLY_FROM, :subject => subject)
+    mail(:to => email_to, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
   end
 
   def notify_primary_pi_for_epic_user_removal protocol, project_role
@@ -237,7 +237,7 @@ class Notifier < ActionMailer::Base
 
     subject = "#{@protocol.id} - Epic User Removal"
 
-    mail(:to => EPIC_RIGHTS_MAIL_TO, :from => NO_REPLY_FROM, :subject => subject)
+    mail(:to => Setting.find_by_key("epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
   end
 
   def notify_for_epic_access_removal protocol, project_role
@@ -246,7 +246,7 @@ class Notifier < ActionMailer::Base
 
     subject = "#{@protocol.id} - Remove Epic Access"
 
-    mail(:to => EPIC_RIGHTS_MAIL_TO, :from => NO_REPLY_FROM, :subject => subject)
+    mail(:to => Setting.find_by_key("epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
   end
 
   def notify_for_epic_rights_changes protocol, project_role, previous_rights
@@ -257,24 +257,24 @@ class Notifier < ActionMailer::Base
 
     subject = "#{@protocol.id} - Update Epic Access"
 
-    mail(:to => EPIC_RIGHTS_MAIL_TO, :from => NO_REPLY_FROM, :subject => subject)
+    mail(:to => Setting.find_by_key("epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
   end
 
   def epic_queue_error protocol, error=nil
     @protocol = protocol
     @error = error
-    mail(:to => QUEUE_EPIC_LOAD_ERROR_TO, :from => NO_REPLY_FROM, :subject => "#{@protocol.id} - Error batch loading protocol to Epic")
+    mail(:to => Setting.find_by_key("queue_epic_load_error_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => "#{@protocol.id} - Error batch loading protocol to Epic")
   end
 
   def epic_queue_report
     attachments["epic_queue_report.csv"] = File.read(Rails.root.join("tmp", "epic_queue_report.csv"))
-    mail(:to => EPIC_QUEUE_REPORT_TO, :from => NO_REPLY_FROM, :subject => "Epic Queue Report")
+    mail(:to => Setting.find_by_key("epic_queue_report_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => "Epic Queue Report")
   end
 
   def epic_queue_complete sent, failed
     @sent = sent
     @failed = failed
-    mail(:to => EPIC_QUEUE_REPORT_TO, :from => NO_REPLY_FROM, :subject => "Epic Queue Complete")
+    mail(:to => Setting.find_by_key("epic_queue_report_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => "Epic Queue Complete")
   end
 
   def set_instance_variables(current_user, service_request, service_list_false, service_list_true, line_items, protocol)

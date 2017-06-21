@@ -78,7 +78,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
     #####SURVEYS#####
     context 'ssr status is complete' do
       it 'should distribute surveys' do
-        stub_const("FINISHED_STATUSES", ['complete'])
+        create(:setting, key: "finished_statuses", value: ['complete'])
 
         create(:super_user, identity: @logged_in_user, organization: @organization)
         @service         = create(:service_without_validations, organization_id:  @organization.id)

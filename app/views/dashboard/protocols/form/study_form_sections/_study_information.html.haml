@@ -25,10 +25,10 @@
     .sub_text
       = t(:protocols)[:studies][:information][:subtext]
   .panel-body.container-fluid
-    - if RESEARCH_MASTER_ENABLED
+    - if Setting.find_by_key("research_master_enabled").value
       .form-group.row
         = form.label :research_master_id, class: 'col-lg-2 control-label rm-id' do
-          = link_to t(:protocols)[:studies][:information][:research_master_id], RESEARCH_MASTER_LINK, target: '_blank'
+          = link_to t(:protocols)[:studies][:information][:research_master_id], Setting.find_by_key("research_master_link").value, target: '_blank'
         .col-lg-3
           = form.text_field :research_master_id, class: 'form-control research-master-field', readonly: action_name == "edit" && admin
         - if action_name == "edit" && admin
@@ -43,7 +43,7 @@
         title: t(:protocols)[:tooltips][:short_title]
       .col-lg-10
         = form.text_field :short_title,
-          class: [('form-control'), (RESEARCH_MASTER_ENABLED ? 'rm-id-dependent rm-locked-fields' : '')],
+          class: [('form-control'), (Setting.find_by_key("research_master_enabled").value ? 'rm-id-dependent rm-locked-fields' : '')],
           disabled: @protocol.research_master_id
 
     .form-group.row
@@ -54,7 +54,7 @@
         title: t(:protocols)[:tooltips][:title]
       .col-lg-10
         = form.text_field :title,
-          class: [('form-control'), (RESEARCH_MASTER_ENABLED ? 'rm-id-dependent rm-locked-fields' : '')],
+          class: [('form-control'), (Setting.find_by_key("research_master_enabled").value ? 'rm-id-dependent rm-locked-fields' : '')],
           disabled: @protocol.research_master_id
 
     .form-group.row#funding-status
@@ -144,7 +144,7 @@
     / Display epic questions as readonly for administrators who aren't an authorized user
     / with edit abilities
     - updated_protocol_type = action_name == 'update_protocol_type' ?  true : false
-    - if USE_EPIC
+    - if Setting.find_by_key("use_epic").value
       - if action_name == 'new' || updated_protocol_type
         = render partial: 'dashboard/protocols/form/study_form_sections/interactive_form', locals: { protocol: protocol, form: form, updated_protocol_type: updated_protocol_type }
       - else

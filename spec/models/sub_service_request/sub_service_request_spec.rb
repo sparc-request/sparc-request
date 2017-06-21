@@ -123,7 +123,7 @@ RSpec.describe 'SubServiceRequest' do
       context "indirect cost total" do
 
         it "should return the indirect cost for one time fees" do
-          if USE_INDIRECT_COST
+          if Setting.find_by_key("use_indirect_cost").value
             expect(sub_service_request.indirect_cost_total).to eq(1000)
           else
             expect(sub_service_request.indirect_cost_total).to eq(0.0)
@@ -131,7 +131,7 @@ RSpec.describe 'SubServiceRequest' do
         end
 
         it "should return the indirect cost for visit based services" do
-          if USE_INDIRECT_COST
+          if Setting.find_by_key("use_indirect_cost").value
             expect(sub_service_request.indirect_cost_total).to eq(1000)
           else
             expect(sub_service_request.indirect_cost_total).to eq(0.0)
@@ -142,7 +142,7 @@ RSpec.describe 'SubServiceRequest' do
       context "grand total" do
 
         it "should return the grand total cost of the sub service request" do
-          if USE_INDIRECT_COST
+          if Setting.find_by_key("use_indirect_cost").value
             expect(sub_service_request.grand_total).to eq(1500)
           else
             expect(sub_service_request.grand_total).to eq(5000.0)
@@ -213,7 +213,7 @@ RSpec.describe 'SubServiceRequest' do
       let!(:line_item2) { create(:line_item, sub_service_request_id: ssr2.id, service_request_id: service_request.id, service_id: service2.id) }
 
       before :each do
-        EDITABLE_STATUSES[sub_service_request.organization.id] = ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval']
+        create(:setting, key: "editable_statuses", value: { sub_service_request.organization.id => ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval'] })
       end
 
       context "can be edited" do

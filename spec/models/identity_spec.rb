@@ -106,7 +106,7 @@ RSpec.describe "Identity" do
     let!(:request)              {create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id, ssr_id: '0002')}
 
     before :each do
-      stub_const("FINISHED_STATUSES", ['complete'])
+      create(:setting, key: "finished_statuses", value: ['complete'])
     end
 
     describe "permission methods" do

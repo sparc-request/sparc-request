@@ -33,8 +33,8 @@ RSpec.describe Arm, type: :model do
       allow(arm).to receive(:line_items_visits).and_return livs
     end
 
-    context 'with USE_INDIRECT_COST' do
-      before(:each) { stub_const('USE_INDIRECT_COST', true) }
+    context 'with Setting.find_by_key("use_indirect_cost").value' do
+      before(:each) {create(:setting, key: "use_indirect_cost", value: true)}
 
       context 'with no argument' do
         it 'should return total cost' do
@@ -49,7 +49,7 @@ RSpec.describe Arm, type: :model do
       end
     end
 
-    context 'without USE_INDIRECT_COST' do
+    context 'without Setting.find_by_key("use_indirect_cost").value' do
       context 'with no argument' do
         it 'should return total cost' do
           expect(arm.total_costs_for_visit_based_service).to eq(3+4+5)

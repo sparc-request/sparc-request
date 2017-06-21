@@ -139,6 +139,6 @@ class Study < Protocol
   end
 
   def is_epic?
-    USE_EPIC
+    Setting.find_by_key("use_epic").value
   end
 end

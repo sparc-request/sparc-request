@@ -34,8 +34,8 @@ class ProtocolsController < ApplicationController
     @protocol.requester_id  = current_user.id
     @service_request        = ServiceRequest.find(params[:srid])
     @protocol.populate_for_edit
-    gon.rm_id_api_url = RESEARCH_MASTER_API
-    gon.rm_id_api_token = RMID_API_TOKEN
+    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
+    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
   end
 
   def create
@@ -59,9 +59,9 @@ class ProtocolsController < ApplicationController
 
       @protocol.update_attribute(:next_ssr_id, @service_request.sub_service_requests.count + 1)
 
-      if USE_EPIC && @protocol.selected_for_epic
+      if Setting.find_by_key("use_epic").value && @protocol.selected_for_epic
         @protocol.ensure_epic_user
-        Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
+        Notifier.notify_for_epic_user_approval(@protocol).deliver unless Setting.find_by_key("queue_epic").value
       end
 
       flash[:success] = I18n.t('protocols.created', protocol_type: @protocol.type)
@@ -78,8 +78,8 @@ class ProtocolsController < ApplicationController
     @protocol.populate_for_edit
     @protocol.valid?
     @errors = @protocol.errors
-    gon.rm_id_api_url = RESEARCH_MASTER_API
-    gon.rm_id_api_token = RMID_API_TOKEN
+    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
+    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
 
     respond_to do |format|
       format.html
@@ -266,7 +266,7 @@ class ProtocolsController < ApplicationController
   end
 
   def send_epic_notification_for_final_review(protocol)
-    Notifier.notify_primary_pi_for_epic_user_final_review(protocol).deliver unless QUEUE_EPIC
+    Notifier.notify_primary_pi_for_epic_user_final_review(protocol).deliver unless Setting.find_by_key("queue_epic").value
   end
 
   def push_protocol_to_epic protocol

@@ -1,13 +1,20 @@
 desc "Temporary task to populate the settings table"
 task :populate_settings_table => :environment do
 
-  file = open('tmp/defaults.json')
-  json = file.read
+  environment = Rails.env
+  hash = YAML.load_file('config/application.yml')
+  hash[environment].each do |key, value|
+    type = ""
+      if (value.class == TrueClass) || (value.class == FalseClass)
+        type = 'boolean'
+      elsif value.class == Array
+        type = 'array'
+      elsif value.class == Hash
+        type = 'hash'
+      else
+        type = 'string'
+      end
 
-  parsed = JSON.parse(json)
-  ActiveRecord::Base.transaction do
-    parsed.each do |key, value|
-      Setting.create(key: key['name'], value: key['value'], description: key['description'])
-    end
+    Setting.create(key: key, value: value, data_type: type)
   end
 end

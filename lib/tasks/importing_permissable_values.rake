@@ -18,8 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'csv'
-
 desc "Import permissible values from csv files and add them to the appropriate table"
 task import_permissible_values: :environment do
   Dir.glob(Rails.root + 'db/seeds/permissable_values/2.0.5/*') do |file|

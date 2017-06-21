@@ -1,4 +1,4 @@
-id,key,value,concept_code,parent_id,sortorder,category,default,reserved
+id,key,value,concept_code,parent_id,sort_order,category,default,reserved
 ,C06,C06 Research Facilities Construction Grant,,,1,federal_grant_code,,
 ,D43,D43 International Research Training Grants,,,2,federal_grant_code,,
 ,D71,D71 International Research Training Planning Grant,,,3,federal_grant_code,,

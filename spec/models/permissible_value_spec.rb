@@ -38,7 +38,7 @@ RSpec.describe PermissibleValue, type: :model do
       pv1 = create(:permissible_value, category: category)
       pv2 = create(:permissible_value, category: category)
             create(:permissible_value)
-      expect(PermissibleValue.get_value_list(category, key)).to eq([pv1.value, pv2.value])
+      expect(PermissibleValue.get_value_list(category)).to eq([pv1.value, pv2.value])
     end
   end
 end

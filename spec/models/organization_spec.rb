@@ -458,7 +458,6 @@ RSpec.describe 'organization' do
       it 'should return true if the current organization or its parent have editable statuses' do
         organization1 = Organization.create
         organization2 = Organization.create(parent_id: organization1.id)
-        EDITABLE_STATUSES[organization1.id] = ['draft']
         expect(organization2.has_editable_statuses?).to eq(true)
         expect(organization1.has_editable_statuses?).to eq(true)
       end
@@ -466,7 +465,7 @@ RSpec.describe 'organization' do
       it 'should return false otherwise' do
         organization1 = Organization.create
         organization2 = Organization.create
-        EDITABLE_STATUSES[organization1.id] = ['draft']
+        organization2.editable_statuses.destroy_all
         expect(organization2.has_editable_statuses?).to eq(false)
       end
     end

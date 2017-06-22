@@ -197,11 +197,11 @@ RSpec.describe ServiceRequestsController, type: :controller do
           service  = create(:service, organization: @org, one_time_fee: true)
           protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
           @sr      = create(:service_request_without_validations, protocol: protocol, original_submitted_date: Time.now.yesterday)
-          @ssr     = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'locked_status', submitted_at: Time.now.yesterday, protocol_id: protocol.id)
+          @ssr     = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'on_hold', submitted_at: Time.now.yesterday, protocol_id: protocol.id)
           li       = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
 
           session[:identity_id] = logged_in_user.id
-          stub_const('EDITABLE_STATUSES', {@org.id => ["draft"]})
+          @org.editable_statuses.where(status: 'on_hold').destroy_all
         end
 
         it 'should not update status to "get_a_cost_estimate"' do
@@ -210,7 +210,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
             id: @sr.id
           }
 
-          expect(@ssr.reload.status).to eq('locked_status')
+          expect(@ssr.reload.status).to eq('on_hold')
         end
 
         context 'with an authorized_user' do

@@ -71,7 +71,6 @@ begin
   CONSTANTS_YML_OVERRIDE                    = application_config['constants_yml_override'] || ''
   SYSTEM_SATISFACTION_SURVEY                = application_config['system_satisfaction_survey'] || false
   NO_REPLY_FROM                             = application_config['no_reply_from']
-  EDITABLE_STATUSES                         = application_config['editable_statuses'] || {}
   UPDATABLE_STATUSES                        = application_config['updatable_statuses'] || []
   FINISHED_STATUSES                         = application_config['finished_statuses'] || []
   REMOTE_SERVICE_NOTIFIER_PROTOCOL          = application_config['remote_service_notifier_protocol']

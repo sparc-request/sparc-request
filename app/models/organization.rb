@@ -90,7 +90,7 @@ class Organization < ApplicationRecord
     if self.process_ssrs
       return self
     else
-      return self.parents.select {|x| x.process_ssrs}.first
+      return self.parents.detect {|x| x.process_ssrs} || self
     end
   end
 
@@ -115,15 +115,8 @@ class Organization < ApplicationRecord
     end
   end
 
-  # If an organization or one of it's parents is defined as lockable in the application.yml, return true
-  def has_editable_statuses?
-    EDITABLE_STATUSES.keys.each do |org_id|
-      if parents(true).include?(org_id) || (org_id == id)
-        return true
-      end
-    end
-
-    false
+  def has_editable_status?(status)
+    self.editable_statuses.where(status: status).any?
   end
 
   # Returns the immediate children of this organization (shallow search)

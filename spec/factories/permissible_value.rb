@@ -25,7 +25,7 @@ FactoryGirl.define do
     category     { Faker::Lorem.word.humanize }
     concept_code nil
     parent_id    nil
-    sortorder    nil
+    sort_order    nil
     default      true
     reserved     false
   end

@@ -44,6 +44,7 @@ class Organization < ApplicationRecord
   has_many :sub_service_requests, :dependent => :destroy
   has_many :protocols, through: :sub_service_requests
   has_many :available_statuses, :dependent => :destroy
+  has_many :editable_statuses, :dependent => :destroy
   has_many :org_children, class_name: "Organization", foreign_key: :parent_id
   
   accepts_nested_attributes_for :subsidy_map

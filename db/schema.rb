@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170517143845) do
+ActiveRecord::Schema.define(version: 20170622132807) do
 
   create_table "admin_rates", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer  "line_item_id"
@@ -173,6 +173,14 @@ ActiveRecord::Schema.define(version: 20170517143845) do
   create_table "documents_sub_service_requests", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer "document_id"
     t.integer "sub_service_request_id"
+  end
+
+  create_table "editable_statuses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.integer  "organization_id"
+    t.string   "status",          null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.index ["organization_id"], name: "index_editable_statuses_on_organization_id", using: :btree
   end
 
   create_table "epic_queue_records", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
@@ -1016,6 +1024,7 @@ ActiveRecord::Schema.define(version: 20170517143845) do
     t.index ["visit_group_id"], name: "index_visits_on_visit_group_id", using: :btree
   end
 
+  add_foreign_key "editable_statuses", "organizations"
   add_foreign_key "item_options", "items"
   add_foreign_key "items", "questionnaires"
   add_foreign_key "options", "questions"

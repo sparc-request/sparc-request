@@ -17,20 +17,11 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-%tr.maximum-total-per-patient{ class: "arm-#{arm.id} " }
-  %td{ colspan: 11, class: tab == 'template' ? "maximum-total-per-patient-width-template" : "max-total-per-patient-width" }
-    %strong
-      = t(:calendars)[:pppv][:totals][:maximum_per_patient]
-  - visit_groups.each do |vg|
-    %td.text-center.visit-width{ class: "max-total-per-patient visit-#{vg.id}" }
-      %strong
-        - if USE_INDIRECT_COST
-          = currency_converter(vg.per_patient_subtotals * (1 + (arm.protocol.indirect_cost_rate.nil? ? 0 : (arm.protocol.indirect_cost_rate / 100))))
-        - else
-          = currency_converter(vg.per_patient_subtotals)
-  - (VisitGroup.per_page - visit_groups.length).times do
-    %td.visit-width
-  %td.text-center.total-width
-    %strong
-      = display_max_total_cost_per_patient(arm, line_items_visits)
-  %td.text-center.total-width
+.row.hidden#change-primary-pi-warning{ data: { pi_id: protocol.primary_principal_investigator.id } }
+  .col-lg-12
+    %h1.text-danger.text-center
+      = t(:authorized_users)[:change_primary_pi][:header]
+    %p.text-center
+      = raw(t('authorized_users.change_primary_pi.warning', new_pi_name: identity.full_name, old_pi_name: protocol.primary_principal_investigator.full_name, protocol_id: protocol.id))
+    %p.text-center
+      = t(:authorized_users)[:change_primary_pi][:prompt]

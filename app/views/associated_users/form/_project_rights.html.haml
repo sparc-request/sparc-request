@@ -17,20 +17,23 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-%tr.maximum-total-per-patient{ class: "arm-#{arm.id} " }
-  %td{ colspan: 11, class: tab == 'template' ? "maximum-total-per-patient-width-template" : "max-total-per-patient-width" }
-    %strong
-      = t(:calendars)[:pppv][:totals][:maximum_per_patient]
-  - visit_groups.each do |vg|
-    %td.text-center.visit-width{ class: "max-total-per-patient visit-#{vg.id}" }
-      %strong
-        - if USE_INDIRECT_COST
-          = currency_converter(vg.per_patient_subtotals * (1 + (arm.protocol.indirect_cost_rate.nil? ? 0 : (arm.protocol.indirect_cost_rate / 100))))
-        - else
-          = currency_converter(vg.per_patient_subtotals)
-  - (VisitGroup.per_page - visit_groups.length).times do
-    %td.visit-width
-  %td.text-center.total-width
-    %strong
-      = display_max_total_cost_per_patient(arm, line_items_visits)
-  %td.text-center.total-width
+- disable = ['pi', 'primary-pi', 'business-grants-manager'].include?(form.object.role)
+= user_form_group(name: :rights, form: form, required: true,
+  data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' },
+  title: t(:authorized_users)[:tooltips][:rights]) do
+  - PROXY_RIGHTS.each do |key, value|
+    .radio
+      %label
+        = form.radio_button :project_rights, value, disabled: ['pi', 'primary-pi', 'business-grants-manager'].include?(form.object.role) && value != 'approve', data: { dashboard: dashboard.to_s }
+      %span
+        = key
+- user = (@user.present? ? @user : current_user)
+- if action_name == 'edit' && user.id == form.object.identity_id
+  - if dashboard && !admin
+    .form-group.text-center.project-rights-redirect-warning.hidden
+      %span.text-danger
+        = t(:authorized_users)[:rights][:change_warning][:dashboard]
+  - elsif !dashboard && !user.is_overlord?
+    .form-group.text-center.project-rights-redirect-warning.hidden
+      %span.text-danger
+        = t(:authorized_users)[:rights][:change_warning][:proper]

@@ -1,4 +1,4 @@
-﻿id,key,value,concept_code,parent_id,sort_order,category,default,reserved
+id,key,value,concept_code,parent_id,sort_order,category,default,reserved
 ,cancer_center,Cancer Center,,,,affiliation_type,,
 ,lipidomics_cobre,Lipidomics COBRE,,,,affiliation_type,,
 ,oral_health_cobre,Center for Oral Health Research,,,,affiliation_type,,

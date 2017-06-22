@@ -18,43 +18,39 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Setting < ApplicationRecord
-  include DataTypeValidator
+FactoryGirl.define do
+  factory :setting do
+    sequence(:key) { |n| "setting-#{n}" }
+    data_type      { Faker::Lorum.word }
+    value          { nil }
+    friendly_name  { Faker::Lorum.word }
+    description    { Faker::Lorum.sentence }
+    group          { rand(0..10) }
+    version        { '1.0' }
 
-  audited
-
-  validates_uniqueness_of :key
-
-  validates :data_type, inclusion: { in: %w(boolean string json email url path) }, presence: true
-
-  validate :value_matches_type, if: Proc.new{ self.value.present? }
-
-  def value
-    case data_type
-    when 'boolean'
-      read_attribute(:value) == 'true'
-    when 'json'
-      JSON.parse(read_attribute(:value))
+    trait :boolean do
+      data_type { 'boolean' }
+      value     { rand(['true', 'false']) }
     end
-  end
 
-  private
+    trait :json do
+      data_type { 'json' }
+      value     { '{"key":"value"}' }
+    end
 
-  def value_matches_type
-    errors.add(:value, 'invalid type') unless
-      case data_type
-      when 'boolean'
-        is_boolean?(value)
-      when 'json'
-        is_json?(value)
-      when 'email'
-        is_email?(value)
-      when 'url'
-        is_url?(value)
-      when 'path'
-        is_path?(value)
-      else
-        false
-      end
+    trait :email do
+      data_type { 'email' }
+      value     { 'sparc@musc.edu' }
+    end
+
+    trait :url do
+      data_type { 'url' }
+      value     { 'https://sparc.musc.edu/dashboard/protocols/' }
+    end
+
+    trait :path do
+      data_type { 'path' }
+      value     { '/dashboard/protocols/?admin=false' }
+    end
   end
 end

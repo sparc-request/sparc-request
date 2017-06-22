@@ -17,44 +17,32 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+module DataTypeValidator
+  require 'json'
+  require 'uri'
 
-class Setting < ApplicationRecord
-  include DataTypeValidator
+  def is_boolean?(value)
+    %w(true false).include?(value)
+  end
 
-  audited
-
-  validates_uniqueness_of :key
-
-  validates :data_type, inclusion: { in: %w(boolean string json email url path) }, presence: true
-
-  validate :value_matches_type, if: Proc.new{ self.value.present? }
-
-  def value
-    case data_type
-    when 'boolean'
-      read_attribute(:value) == 'true'
-    when 'json'
-      JSON.parse(read_attribute(:value))
+  def is_json?(value)
+    begin
+      JSON.parse(value)
+      true
+    rescue
+      false
     end
   end
 
-  private
+  def is_email?(value)
+    value.match?(Devise::email_regexp)
+  end
 
-  def value_matches_type
-    errors.add(:value, 'invalid type') unless
-      case data_type
-      when 'boolean'
-        is_boolean?(value)
-      when 'json'
-        is_json?(value)
-      when 'email'
-        is_email?(value)
-      when 'url'
-        is_url?(value)
-      when 'path'
-        is_path?(value)
-      else
-        false
-      end
+  def is_url?(value)
+    value.match?(/^((ftp|http|https):\/\/)?[a-zA-Z0-9]+(.[a-zA-Z0-9])?(:[0-9]+)?/)
+  end
+
+  def is_path?(value)
+    value.match?(/^(\/\w+)+(\/)?(\?(\w+=[\w\d]+(&\w+=[\w\d]+)+)+)*$/)
   end
 end

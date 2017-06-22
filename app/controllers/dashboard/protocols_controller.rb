@@ -56,7 +56,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocols        = @filterrific.find.page(params[:page])
     @admin_protocols  = Protocol.for_admin(@user.id).pluck(:id)
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, ProtocolFilter::MAX_FILTERS)
-    
+
     #toggles the display of the navigation bar, instead of breadcrumbs
     @show_navbar      = true
     @show_messages    = true
@@ -95,8 +95,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol.requester_id  = current_user.id
     @protocol.populate_for_edit
     session[:protocol_type] = params[:protocol_type]
-    gon.rm_id_api_url = RESEARCH_MASTER_API
-    gon.rm_id_api_token = RMID_API_TOKEN
+    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
+    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
   end
 
   def create
@@ -115,9 +115,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
       @protocol.service_requests.new(status: 'draft').save(validate: false)
 
-      if USE_EPIC && @protocol.selected_for_epic
+      if Setting.find_by_key("use_epic").value && @protocol.selected_for_epic
         @protocol.ensure_epic_user
-        Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
+        Notifier.notify_for_epic_user_approval(@protocol).deliver unless Setting.find_by_key("queue_epic").value
       end
 
       flash[:success] = I18n.t('protocols.created', protocol_type: @protocol.type)
@@ -131,8 +131,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @permission_to_edit = @authorization.nil? ? false : @authorization.can_edit?
     @in_dashboard       = true
     @protocol.populate_for_edit
-    gon.rm_id_api_url = RESEARCH_MASTER_API
-    gon.rm_id_api_token = RMID_API_TOKEN
+    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
+    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
 
     session[:breadcrumbs].
       clear.

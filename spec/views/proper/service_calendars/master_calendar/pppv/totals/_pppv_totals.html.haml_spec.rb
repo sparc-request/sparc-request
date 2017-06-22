@@ -32,15 +32,15 @@ RSpec.describe '/service_calendar/master_calendar/pppv/totals/_pppv_totals', typ
     @liv             = []
   end
 
-  it 'should display maximum total direct cost per patient if USE_INDIRECT_COST is true' do
-    stub_const("USE_INDIRECT_COST", true)
+  it 'should display maximum total direct cost per patient if use_indirect_cost is true' do
+    create(:setting, key: "use_indirect_cost", value: true)
     render "/service_calendars/master_calendar/pppv/totals/pppv_totals", tab: 'calendar', arm: @arm, line_items_visits: @liv, page: '1'
 
     expect(response).to have_content('Maximum Total Direct Costs Per Patient')
   end
 
-  it 'should not display maximum total direct cost per patient if USE_INDIRECT_COST is false' do
-    stub_const("USE_INDIRECT_COST", false)
+  it 'should not display maximum total direct cost per patient if use_indirect_cost is false' do
+    create(:setting, key: "use_indirect_cost", value: false)
     render "/service_calendars/master_calendar/pppv/totals/pppv_totals", tab: 'calendar', arm: @arm, line_items_visits: @liv, page: '1'
 
     expect(response).to_not have_content('Maximum Total Direct Costs Per Patient')
@@ -54,7 +54,7 @@ RSpec.describe '/service_calendar/master_calendar/pppv/totals/_pppv_totals', typ
 
   it 'should not display total cost per arm' do
     render "/service_calendars/master_calendar/pppv/totals/pppv_totals", tab: 'calendar', arm: @arm, line_items_visits: @liv, page: '1'
-    
+
     expect(response).to have_content("Total Costs (Clinical Services) Per Study -- #{@arm.name}")
   end
 end

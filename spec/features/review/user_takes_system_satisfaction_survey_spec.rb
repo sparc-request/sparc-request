@@ -40,7 +40,7 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
 
   context 'but system is not using system satisfaction survey' do
     before :each do
-      stub_const("SYSTEM_SATISFACTION_SURVEY", false)
+      create(:setting, key: "system_satisfaction_survey", value: false)
 
       visit review_service_request_path(@sr)
       wait_for_javascript_to_finish
@@ -69,7 +69,7 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
     before :each do
       @survey = create(:survey, access_code: 'system-satisfaction-survey', title: 'System Satisfaction Survey', active: true)
 
-      stub_const("SYSTEM_SATISFACTION_SURVEY", true)
+      create(:setting, key: "system_satisfaction_survey", value: true)
 
       visit review_service_request_path(@sr)
       wait_for_javascript_to_finish

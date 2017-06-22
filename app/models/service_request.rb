@@ -109,7 +109,7 @@ class ServiceRequest < ApplicationRecord
       errors.add(:base, I18n.t('errors.visit_groups.days_out_of_order', arm_name: vg.arm.name))
     end
 
-    if USE_EPIC
+    if Setting.find_by_key("use_epic").value
       self.arms.each do |arm|
         days = arm.visit_groups.map(&:day)
 
@@ -353,7 +353,7 @@ class ServiceRequest < ApplicationRecord
 
   def total_indirect_costs_per_patient arms=self.arms, line_items=nil
     total = 0.0
-    if USE_INDIRECT_COST
+    if Setting.find_by_key("use_indirect_cost").value
       arms.each do |arm|
         livs = line_items.nil? ? arm.line_items_visits : arm.line_items_visits.where(line_item: line_items)
         total += arm.indirect_costs_for_visit_based_service(livs.eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol]))
@@ -379,7 +379,7 @@ class ServiceRequest < ApplicationRecord
 
   def total_indirect_costs_one_time line_items=self.line_items
     total = 0.0
-    if USE_INDIRECT_COST
+    if Setting.find_by_key("use_indirect_cost").value
       total += line_items.joins(:service).
         where(services: { one_time_fee: true }).
         eager_load(:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol).
@@ -472,8 +472,8 @@ class ServiceRequest < ApplicationRecord
     line_item_audits = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{self.id}%' AND
                                       auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('create', 'destroy') AND
                                       created_at BETWEEN '#{start_date}' AND '#{end_date}'")
-                                    
-    line_item_audits = line_item_audits.present? ? line_item_audits.group_by(&:auditable_id) : {}                         
+
+    line_item_audits = line_item_audits.present? ? line_item_audits.group_by(&:auditable_id) : {}
 
     {:line_items => line_item_audits}
   end

@@ -42,7 +42,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
     @vg       = @arm.visit_groups.first
     @liv      = @arm.line_items_visits.first
 
-    stub_const('EDITABLE_STATUSES', { })
+    create(:setting, key: "editable_statuses", value: {})
 
     visit service_calendar_service_request_path(sr)
     wait_for_javascript_to_finish

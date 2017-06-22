@@ -24,14 +24,14 @@ RSpec.describe Dashboard::EpicQueuesController do
   describe "GET #index" do
     describe "for overlord users" do
       before(:each) do
-        stub_const("EPIC_QUEUE_ACCESS", ['jug2'])
-        
+        create(:setting, key: "epic_queue_access", value: ['jug2'])
+
         protocol = create(:protocol,
                           :without_validations,
                           last_epic_push_status: 'failed'
                          )
         @eq = create(:epic_queue, protocol: protocol)
-        stub_const("EPIC_QUEUE_ACCESS", ['jug2'])
+        # create(:setting, key: "epic_queue_access", value: ['jug2']) ##Might be needed
         log_in_dashboard_identity(obj: build(:identity, ldap_uid: 'jug2'))
         get :index, format: :json
       end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170517143845) do
+ActiveRecord::Schema.define(version: 20170621133523) do
 
   create_table "admin_rates", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer  "line_item_id"
@@ -780,6 +780,19 @@ ActiveRecord::Schema.define(version: 20170517143845) do
     t.datetime "updated_at",               null: false
     t.index ["session_id"], name: "index_sessions_on_session_id", using: :btree
     t.index ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
+  end
+
+  create_table "settings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "key"
+    t.text     "value",         limit: 65535
+    t.string   "type"
+    t.string   "friendly_name"
+    t.string   "description"
+    t.integer  "group"
+    t.string   "version"
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.index ["key"], name: "index_settings_on_key", unique: true, using: :btree
   end
 
   create_table "study_phases", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|

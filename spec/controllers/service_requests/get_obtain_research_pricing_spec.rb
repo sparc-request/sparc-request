@@ -201,7 +201,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
           li       = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
 
           session[:identity_id] = logged_in_user.id
-          stub_const('EDITABLE_STATUSES', {@org.id => ["draft"]})
+          create(:setting, key: "editable_statuses", value: {@org.id => ['draft']})
         end
 
         it 'should not update status to "get_a_cost_estimate"' do
@@ -249,8 +249,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       context 'ssr status is set to "complete"' do
          before :each do
-          stub_const("FINISHED_STATUSES", ['complete'])
-          
+          create(:setting, key: "finished_statuses", value: ['complete'])
+
           @org      = create(:organization)
           service  = create(:service, organization: @org, one_time_fee: true)
           protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')

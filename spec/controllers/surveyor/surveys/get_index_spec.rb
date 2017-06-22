@@ -26,7 +26,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
   let!(:logged_in_user) { create(:identity, ldap_uid: 'weh6@musc.edu') }
 
   before :each do
-    stub_const('SITE_ADMINS', ['weh6@musc.edu'])
+    create(:setting, key: "site_admins", value: ['weh6@musc.edu'])
     session[:identity_id] = logged_in_user.id
   end
 
@@ -60,7 +60,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
     context 'format json' do
       it 'should assign @surveys to all surveys' do
         create(:survey_without_validations)
-        
+
         xhr :get, :index, {
           format: :json
         }

@@ -44,7 +44,7 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
   end
 
   before(:each) do
-    stub_const('USE_LDAP', false)
+    create(:setting, key: "use_ldap", value: false)
   end
 
   let!(:protocol) { create(:unarchived_project_without_validations, primary_pi: logged_in_user) }

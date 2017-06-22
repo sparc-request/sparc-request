@@ -133,7 +133,7 @@ RSpec.describe Dashboard::ProtocolsController do
         end
 
         it 'should allow blank Research Master ID with human subjects' do
-          stub_const("RESEARCH_MASTER_ENABLED", true)
+          create(:setting, key: "research_master_enabled", value: true)
           @protocol.research_master_id = 1
           @protocol.save(validate: false)
 
@@ -144,7 +144,7 @@ RSpec.describe Dashboard::ProtocolsController do
         end
 
         it 'should not save with blank RMID with other invalid params' do
-          stub_const("RESEARCH_MASTER_ENABLED", true)
+          create(:setting, key: "research_master_enabled", value: true)
           @protocol.research_master_id = 1
           @protocol.save(validate: false)
 
@@ -181,7 +181,7 @@ RSpec.describe Dashboard::ProtocolsController do
         end
 
         it 'should allow blank Research Master ID with human subjects' do
-          stub_const("RESEARCH_MASTER_ENABLED", true)
+          create(:setting, key: "research_master_enabled", value: true)
           @protocol.research_master_id = 1
           @protocol.save(validate: false)
 
@@ -192,7 +192,7 @@ RSpec.describe Dashboard::ProtocolsController do
         end
 
         it 'should not save with blank RMID with other invalid params' do
-          stub_const("RESEARCH_MASTER_ENABLED", true)
+          create(:setting, key: "research_master_enabled", value: true)
           @protocol.research_master_id = 1
           @protocol.save(validate: false)
 

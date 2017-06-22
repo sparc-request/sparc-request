@@ -156,12 +156,12 @@ class ServiceRequestsController < ApplicationController
 
     should_push_to_epic = @sub_service_request ? @sub_service_request.should_push_to_epic? : @service_request.should_push_to_epic?
 
-    if should_push_to_epic && USE_EPIC && @protocol.selected_for_epic
+    if should_push_to_epic && Setting.find_by_key("use_epic").value && @protocol.selected_for_epic
       # Send a notification to Lane et al to create users in Epic.  Once
       # that has been done, one of them will click a link which calls
       # approve_epic_rights.
       @protocol.ensure_epic_user
-      if QUEUE_EPIC
+      if Setting.find_by_key("queue_epic").value
         EpicQueue.create(protocol_id: @protocol.id, identity_id: current_user.id) unless EpicQueue.where(protocol_id: @protocol.id).size == 1
       else
         @protocol.awaiting_approval_for_epic_push
@@ -188,7 +188,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def add_service
-    existing_service_ids = @service_request.line_items.reject{ |line_item| FINISHED_STATUSES.include?(line_item.status) }.map(&:service_id)
+    existing_service_ids = @service_request.line_items.reject{ |line_item| Setting.find_by_key("finished_statuses").value.include?(line_item.status) }.map(&:service_id)
 
     if existing_service_ids.include?( params[:service_id].to_i )
       @duplicate_service = true
@@ -394,7 +394,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def setup_catalog_calendar
-    if USE_GOOGLE_CALENDAR
+    if Setting.find_by_key("use_google_calendar").value
       curTime = Time.now.utc
       startMin = curTime
       startMax  = (curTime + 1.month)
@@ -430,7 +430,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def setup_catalog_news_feed
-    if USE_NEWS_FEED
+    if Setting.find_by_key("use_news_feed").value
       page = Nokogiri::HTML(open("https://www.sparcrequestblog.com"))
       articles = page.css('article.post').take(3)
       @news = []
@@ -460,7 +460,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def send_epic_notification_for_user_approval(protocol)
-    Notifier.notify_for_epic_user_approval(protocol).deliver unless QUEUE_EPIC
+    Notifier.notify_for_epic_user_approval(protocol).deliver unless Setting.find_by_key("queue_epic").value
   end
 
   def authorize_protocol_edit_request

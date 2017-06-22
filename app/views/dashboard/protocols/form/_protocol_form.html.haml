@@ -40,5 +40,5 @@
       .col-lg-4
       .col-lg-4.text-center
         %input.btn.btn-lg.btn-success{ type: "submit", value: t(:actions)[:save] }
-        = link_to t(:actions)[:cancel], protocol.id.present? ? dashboard_protocol_path(protocol) : DASHBOARD_LINK, class: 'btn btn-lg btn-danger'
+        = link_to t(:actions)[:cancel], protocol.id.present? ? dashboard_protocol_path(protocol) : Setting.find_by_key("dashboard_link").value, class: 'btn btn-lg btn-danger'
       .col-lg-4

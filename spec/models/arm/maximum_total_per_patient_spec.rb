@@ -35,8 +35,8 @@ RSpec.describe Arm, type: :model do
       allow(arm).to receive(:protocol).and_return(protocol)
     end
 
-    context 'with USE_INDIRECT_COST' do
-      before(:each) { stub_const('USE_INDIRECT_COST', true) }
+    context 'with Setting.find_by_key("use_indirect_cost").value' do
+      before(:each) {create(:setting, key: "use_indirect_cost", value: true)}
 
       context 'with no argument' do
         it 'should return total cost' do
@@ -51,7 +51,7 @@ RSpec.describe Arm, type: :model do
       end
     end
 
-    context 'without USE_INDIRECT_COST' do
+    context 'without Setting.find_by_key("use_indirect_cost").value' do
       context 'with no argument' do
         it 'should return total cost' do
           expect(arm.maximum_total_per_patient).to eq(12.0)

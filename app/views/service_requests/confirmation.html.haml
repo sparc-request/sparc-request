@@ -29,9 +29,9 @@
         = t(:sr_confirmation)[:instructions]
     .form-group
       = render 'service_requests/confirmation/confirmation_details', service_request: @service_request
-    - if USE_EPIC && !QUEUE_EPIC
+    - if Setting.find_by_key("use_epic").value && !Setting.find_by_key("queue_epic").value
       .form-group
         = render 'protocols/push_to_epic', protocol: @protocol
     .form-group.text-center
       = link_to t(:proper)[:confirmation][:download_request], service_request_path(format: :xlsx), class: 'btn btn-lg btn-success'
-      = link_to t(:proper)[:confirmation][:to_dashboard], DASHBOARD_LINK, class: 'btn btn-lg btn-success'
+      = link_to t(:proper)[:confirmation][:to_dashboard], Setting.find_by_key("dashboard_link").value, class: 'btn btn-lg btn-success'

@@ -21,7 +21,7 @@
 require 'rails_helper'
 
 RSpec.describe SurveyNotification do
-  
+
   let(:identity)  { create(:identity, email: 'nobody@nowhere.com') }
   let(:org)       { create(:organization) }
   let(:ssr)       { create(:sub_service_request_without_validations, organization: org) }
@@ -43,7 +43,7 @@ RSpec.describe SurveyNotification do
 
     #ensure that the sender is correct
     it 'should render the sender email' do
-      expect(mail).to deliver_to(ADMIN_MAIL_TO)
+      expect(mail).to deliver_to(Setting.find_by_key("admin_mail_to").value)
     end
 
     #ensure that the e-mail contains a link to the survey

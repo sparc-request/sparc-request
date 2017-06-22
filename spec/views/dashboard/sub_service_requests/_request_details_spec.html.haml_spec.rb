@@ -33,9 +33,9 @@ RSpec.describe 'dashboard/sub_service_requests/_request_details', type: :view do
     end
   end
 
-  context "USE_EPIC truthy" do
+  context "use_epic truthy" do
     it "should display 'Send to Epic' button" do
-      stub_const("USE_EPIC", true)
+      create(:setting, key: "use_epic", value: true)
       protocol = stub_protocol
       service_request = stub_service_request(protocol: protocol)
       sub_service_request = stub_sub_service_request(service_request: service_request)
@@ -46,9 +46,9 @@ RSpec.describe 'dashboard/sub_service_requests/_request_details', type: :view do
     end
   end
 
-  context "USE_EPIC falsey" do
+  context "use_epic falsey" do
     it "should not display 'Send to Epic' button" do
-      stub_const("USE_EPIC", false)
+      create(:setting, key: "use_epic", value: false)
 
       protocol = stub_protocol
       service_request = stub_service_request(protocol: protocol)

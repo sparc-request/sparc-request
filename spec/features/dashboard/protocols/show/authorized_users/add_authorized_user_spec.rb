@@ -25,7 +25,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
   let!(:other_user) { create(:identity, last_name: "Doe", first_name: "Jane", ldap_uid: "janed", email: "janed@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
 
-  before(:each) { stub_const('USE_LDAP', false) }
+  before(:each) { create(:setting, key: "use_ldap", value: false)}
 
   context 'which is not assigned to themself' do
     let!(:protocol) { create(:unarchived_project_without_validations, primary_pi: logged_in_user) }

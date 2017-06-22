@@ -31,7 +31,7 @@ RSpec.describe 'User edits option fields', js: true do
     @question = create(:question, section: @section, question_type: 'dropdown')
     @option = create(:option, question: @question)
 
-    stub_const("SITE_ADMINS", ['jug2'])
+    create(:setting, key: "site_admins", value: ['jug2'])
   end
 
   scenario 'and sees updated content' do

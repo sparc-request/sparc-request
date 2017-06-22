@@ -50,9 +50,9 @@ RSpec.describe AssociatedUserCreator do
       expect(creator.protocol_role).to eq(ProjectRole.last)
     end
 
-    context "SEND_AUTHORIZED_USER_EMAILS: true && protocol has non-draft status" do
+    context "send_authorized_user_emails is true and protocol has non-draft status" do
       it "should send authorized user changed emails" do
-        stub_const("SEND_AUTHORIZED_USER_EMAILS", true)
+        create(:setting, key: "send_authorized_user_emails", value: true)
         allow(UserMailer).to receive(:authorized_user_changed).twice do
           mailer = double("mailer")
           expect(mailer).to receive(:deliver)
@@ -64,9 +64,9 @@ RSpec.describe AssociatedUserCreator do
       end
     end
 
-    context "SEND_AUTHORIZED_USER_EMAILS false" do
+    context "send_authorized_user_emails is false" do
       it "should not send authorized user changed emails" do
-        stub_const("SEND_AUTHORIZED_USER_EMAILS", false)
+        create(:setting, key: "send_authorized_user_emails", value: false)
         @ssr.update_attribute(:status, 'complete')
         allow(UserMailer).to receive(:authorized_user_changed)
         AssociatedUserCreator.new(@project_role_attrs)
@@ -75,11 +75,11 @@ RSpec.describe AssociatedUserCreator do
       end
     end
 
-    context "USE_EPIC == true && Protocol selected for epic && protocol.selected_for_epic: true && QUEUE_EPIC == false" do
+    context "use_epic is true and Protocol selected for epic is true and queue_epic is false" do
       it "should notify for epic user approval" do
         @protocol.update_attribute(:selected_for_epic, true)
-        stub_const("USE_EPIC", true)
-        stub_const("QUEUE_EPIC", false)
+        create(:setting, key: "use_epic", value: true)
+        create(:setting, key: "queue_epic", value: false)
         allow(Notifier).to receive(:notify_for_epic_user_approval) do
           mailer = double("mailer")
           expect(mailer).to receive(:deliver)
@@ -114,9 +114,9 @@ RSpec.describe AssociatedUserCreator do
       expect { AssociatedUserCreator.new(@project_role_attrs) }.not_to change { ProjectRole.count }
     end
 
-    context "SEND_AUTHORIZED_USER_EMAILS true" do
+    context "send_authorized_user_emails is true" do
       it "should not send authorized user changed emails" do
-        stub_const("SEND_AUTHORIZED_USER_EMAILS", true)
+        create(:setting, key: "send_authorized_user_emails", value: true)
         allow(UserMailer).to receive(:authorized_user_changed)
 
         AssociatedUserCreator.new(@project_role_attrs)
@@ -125,10 +125,10 @@ RSpec.describe AssociatedUserCreator do
       end
     end
 
-    context "USE_EPIC == true && Protocol selected for epic && QUEUE_EPIC == false" do
+    context "use_epic is true and Protocol selected for epic is true and queue_epic is false" do
       it "should not notify for epic user approval" do
-        stub_const("USE_EPIC", true)
-        stub_const("QUEUE_EPIC", false)
+        create(:setting, key: "use_epic", value: true)
+        create(:setting, key: "queue_epic", value: false)
         allow(Notifier).to receive(:notify_for_epic_user_approval)
 
         AssociatedUserCreator.new(@project_role_attrs)

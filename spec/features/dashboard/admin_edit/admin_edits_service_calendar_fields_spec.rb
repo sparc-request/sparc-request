@@ -43,7 +43,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
     @liv      = @arm.line_items_visits.first
     visit     = create(:visit, line_items_visit: @liv, visit_group: @vg, research_billing_qty: 1)
 
-    stub_const('EDITABLE_STATUSES', { })
+    create(:setting, key: "editable_statuses", value: {})
 
     visit dashboard_sub_service_request_path(ssr)
     wait_for_javascript_to_finish
@@ -211,7 +211,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         before :each do
           find('a.edit-billing-qty', match: :first).click
           wait_for_javascript_to_finish
-          
+
           fill_in 'visit_research_billing_qty', with: 5
           click_button 'Save'
           wait_for_javascript_to_finish
@@ -230,7 +230,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         before :each do
           find('a.edit-billing-qty', match: :first).click
           wait_for_javascript_to_finish
-          
+
           fill_in 'visit_insurance_billing_qty', with: 5
           click_button 'Save'
           wait_for_javascript_to_finish
@@ -248,7 +248,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         before :each do
           find('a.edit-billing-qty', match: :first).click
           wait_for_javascript_to_finish
-          
+
           fill_in 'visit_effort_billing_qty', with: 5
           click_button 'Save'
           wait_for_javascript_to_finish
@@ -286,7 +286,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         before :each do
           find('a.edit-billing-qty', match: :first).click
           wait_for_javascript_to_finish
-          
+
           fill_in 'visit_research_billing_qty', with: 'string'
           click_button 'Save'
           wait_for_javascript_to_finish
@@ -305,7 +305,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         before :each do
           find('a.edit-billing-qty', match: :first).click
           wait_for_javascript_to_finish
-          
+
           fill_in 'visit_insurance_billing_qty', with: 'string'
           click_button 'Save'
           wait_for_javascript_to_finish
@@ -324,7 +324,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         before :each do
           find('a.edit-billing-qty', match: :first).click
           wait_for_javascript_to_finish
-          
+
           fill_in 'visit_effort_billing_qty', with: 'string'
           click_button 'Save'
           wait_for_javascript_to_finish

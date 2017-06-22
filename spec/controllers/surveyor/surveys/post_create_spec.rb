@@ -26,7 +26,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
   let!(:logged_in_user) { create(:identity, ldap_uid: 'weh6@musc.edu') }
 
   before :each do
-    stub_const('SITE_ADMINS', ['weh6@musc.edu'])
+    create(:setting, key: "site_admins", value: ['weh6@musc.edu'])
     session[:identity_id] = logged_in_user.id
   end
 
@@ -52,7 +52,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
       expect(controller).to redirect_to(surveyor_survey_path(assigns(:survey)))
     end
 
-    it 'should respond ok' do      
+    it 'should respond ok' do
       xhr :post, :create
 
       expect(controller).to respond_with(302)

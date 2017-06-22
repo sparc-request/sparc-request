@@ -26,7 +26,7 @@ RSpec.describe 'User creates a survey', js: true do
   fake_login_for_each_test
 
   before :each do
-    stub_const("SITE_ADMINS", ['jug2'])
+    create(:setting, key: "site_admins", value: ['jug2'])
 
     visit surveyor_surveys_path
     wait_for_javascript_to_finish

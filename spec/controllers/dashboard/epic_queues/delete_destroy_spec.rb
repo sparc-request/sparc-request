@@ -23,8 +23,8 @@ require "rails_helper"
 RSpec.describe Dashboard::EpicQueuesController do
   describe "DELETE #destroy" do
     before(:each) do
-      stub_const("EPIC_QUEUE_ACCESS", ['jug2'])
-      
+      create(:setting, key: "epic_queue_access", value: ['jug2'])
+
       @epic_queue = build_stubbed(:epic_queue)
       allow(@epic_queue).to receive(:destroy)
       allow(EpicQueue).to receive(:find).
@@ -34,7 +34,7 @@ RSpec.describe Dashboard::EpicQueuesController do
 
     describe "for overlord users" do
       before(:each) do
-        stub_const("EPIC_QUEUE_ACCESS", ['jug2'])
+        create(:setting, key: "epic_queue_access", value: ['jug2'])
         log_in_dashboard_identity(obj: build(:identity, ldap_uid: 'jug2'))
         xhr :delete, :destroy, id: @epic_queue.id
       end
@@ -47,7 +47,7 @@ RSpec.describe Dashboard::EpicQueuesController do
       it { is_expected.to respond_with :ok }
     end
 
-    describe "for creepy hacker doods" do 
+    describe "for creepy hacker doods" do
       before(:each) do
         log_in_dashboard_identity(obj: build_stubbed(:identity))
         xhr :delete, :destroy, id: @epic_queue.id

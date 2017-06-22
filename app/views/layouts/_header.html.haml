@@ -21,7 +21,7 @@
   .container-fluid
     .navbar-header
       %ul.nav.navbar-nav
-        - NAVBAR_LINKS.each do |identifier, data|
+        - Setting.find_by_key("navbar_links").value.each do |identifier, data|
           = navbar_link(identifier, data, @highlighted_link)
     %p.navbar-text.navbar-right.welcome-nav
       - if current_user.present?

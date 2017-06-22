@@ -29,7 +29,7 @@ RSpec.describe 'User edits section fields', js: true do
     @survey = create(:survey)
     @section = create(:section, survey: @survey)
 
-    stub_const("SITE_ADMINS", ['jug2'])
+    create(:setting, key: "site_admins", value: ['jug2'])
   end
 
   scenario 'and sees updated title' do

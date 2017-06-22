@@ -9,7 +9,7 @@ RSpec.describe '/associated_users/_user_form', type: :view do
     project_role = build(:project_role, id: 1, protocol_id: protocol.id, identity_id: jug2.id, role: 'consultant', epic_access: 0)
     service_request = build(:service_request_without_validations)
     dashboard = false
-    stub_const("USE_EPIC", epic)
+    create(:setting, key: "use_epic", value: epic)
     render "/associated_users/user_form", header_text: "Edit Authorized User",
                                                    identity: jug2,
                                                    protocol: protocol,

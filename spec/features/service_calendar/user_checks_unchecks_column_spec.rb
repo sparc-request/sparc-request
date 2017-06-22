@@ -39,13 +39,13 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
     @ssr2     = create(:sub_service_request, service_request: @sr, organization: org2)
     li        = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
     li2       = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service2)
-    
+
     @arm      = create(:arm, protocol: protocol)
   end
 
   context 'for SSRs which aren\'t locked' do
     before :each do
-      stub_const('EDITABLE_STATUSES', { })
+      create(:setting, key: "editable_statuses", value: {})
     end
 
     context 'check:' do
@@ -74,7 +74,7 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
 
   context 'for locked SSRs' do
     before :each do
-      stub_const('EDITABLE_STATUSES', { @ssr2.organization.id => ['first_draft'] })
+      create(:setting, key: "editable_statuses", value: {@ssr2.organization.id => ['first_draft']})
     end
 
     context 'check:' do

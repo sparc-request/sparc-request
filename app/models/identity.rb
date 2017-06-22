@@ -110,7 +110,7 @@ class Identity < ApplicationRecord
 
   # Return the netid (ldap_uid without the @musc.edu)
   def netid
-    if USE_LDAP then
+    if Setting.find_by_key("use_ldap").value then
       return ldap_uid.sub(/@#{Directory::DOMAIN}/, '')
     else
       return ldap_uid
@@ -233,7 +233,7 @@ class Identity < ApplicationRecord
   def can_edit_protocol?(protocol)
     protocol.project_roles.where(identity_id: self.id, project_rights: ['approve', 'request']).any?
   end
-  
+
   # Determines whether this identity can edit a given organization's information in CatalogManager.
   # Returns true if this identity's catalog_manager_organizations includes the given organization.
   def can_edit_entity? organization, deep_search=false

@@ -45,7 +45,7 @@ class Organization < ApplicationRecord
   has_many :protocols, through: :sub_service_requests
   has_many :available_statuses, :dependent => :destroy
   has_many :org_children, class_name: "Organization", foreign_key: :parent_id
-  
+
   accepts_nested_attributes_for :subsidy_map
   accepts_nested_attributes_for :pricing_setups
   accepts_nested_attributes_for :submission_emails
@@ -114,7 +114,7 @@ class Organization < ApplicationRecord
 
   # If an organization or one of it's parents is defined as lockable in the application.yml, return true
   def has_editable_statuses?
-    EDITABLE_STATUSES.keys.each do |org_id|
+    Setting.find_by_key("editable_statuses").value.keys.each do |org_id|
       if parents(true).include?(org_id) || (org_id == id)
         return true
       end

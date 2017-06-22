@@ -20,7 +20,7 @@
 
 module ApiAuthenticationHelper
 
-  def http_login(username=REMOTE_SERVICE_NOTIFIER_USERNAME, password=REMOTE_SERVICE_NOTIFIER_PASSWORD)
+  def http_login username=Setting.find_by_key('remote_service_notifier_username').value, password=Setting.find_by_key('remote_service_notifier_password').value
     @env ||= {}
 
     @env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(username, password)

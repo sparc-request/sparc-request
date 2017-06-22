@@ -41,14 +41,14 @@ class RemoteServiceNotifierJob < Struct.new(:object_id, :object_class, :action)
 
   def url
     [
-      REMOTE_SERVICE_NOTIFIER_PROTOCOL,
+      Setting.find_by_key("remote_service_notifier_protocol").value,
       '://',
-      REMOTE_SERVICE_NOTIFIER_USERNAME,
+      Setting.find_by_key("remote_service_notifier_username").value,
       ':',
-      REMOTE_SERVICE_NOTIFIER_PASSWORD,
+      Setting.find_by_key("remote_service_notifier_password").value,
       '@',
-      REMOTE_SERVICE_NOTIFIER_HOST,
-      REMOTE_SERVICE_NOTIFIER_PATH
+      Setting.find_by_key("remote_service_notifier_host").value,
+      Setting.find_by_key("remote_service_notifier_path").value
     ].join
   end
 

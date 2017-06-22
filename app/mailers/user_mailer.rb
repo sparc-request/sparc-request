@@ -19,14 +19,14 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class UserMailer < ActionMailer::Base
-  default :from => NO_REPLY_FROM 
+  default :from => Setting.find_by_key("no_reply_from").value
 
   def authorized_user_changed(user, protocol, modified_role, action)
     @action = action
     @modified_role = modified_role
     @send_to = user
     @protocol = protocol
-    @protocol_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
+    @protocol_link = Setting.find_by_key("dashboard_link").value + "/protocols/#{@protocol.id}"
     send_message("#{@protocol.id} - #{t(:mailer)[:application_title]} Authorized Users")
   end
 

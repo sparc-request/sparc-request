@@ -28,7 +28,7 @@ RSpec.describe 'User edits survey fields', js: true do
   before :each do
     @survey = create(:survey)
 
-    stub_const("SITE_ADMINS", ['jug2'])
+    create(:setting, key: "site_admins", value: ['jug2'])
   end
 
   scenario 'and sees updated access code' do

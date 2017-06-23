@@ -45,8 +45,8 @@ RSpec.describe 'User begins Service Request', js: true do
 
     protocol = create(:protocol_without_validations, primary_pi: jug2)
     @sr      = create(:service_request_without_validations, status: "first_draft", protocol_id: protocol.id)
-    @ssr1    = create(:sub_service_request_without_validations, service_request: @sr, organization: program1, status: "first-draft", protocol_id: protocol.id)
-    ssr2     = create(:sub_service_request_without_validations, service_request: @sr, organization: program2, status: "first-draft", protocol_id: protocol.id)
+    @ssr1    = create(:sub_service_request_without_validations, service_request: @sr, organization: program1, status: "first_draft", protocol_id: protocol.id)
+    ssr2     = create(:sub_service_request_without_validations, service_request: @sr, organization: program2, status: "first_draft", protocol_id: protocol.id)
     create(:line_item, service_request: @sr, sub_service_request: @ssr1, service: service1)
     create(:line_item, service_request: @sr, sub_service_request: ssr2, service: service2)
   end

@@ -19,11 +19,13 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class EditableStatus < ApplicationRecord
+  TYPES = (AVAILABLE_STATUSES.keys << 'first_draft')
+
   audited
 
   belongs_to :organization
 
-  attr_accessor :new
+  validates :status, inclusion: { in: TYPES }, presence: true
 
-  validates :status, inclusion: { in: AVAILABLE_STATUSES.keys }, presence: true
+  attr_accessor :new
 end

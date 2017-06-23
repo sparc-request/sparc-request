@@ -46,9 +46,9 @@
             %br
             %legend= t(:organization_form)[:editable_statuses]
             %table
-              = f.fields_for :editable_statuses, @organization.editable_statuses.sort{|x, y| AVAILABLE_STATUSES[x.status] <=> AVAILABLE_STATUSES[y.status]} do |es|
+              = f.fields_for :editable_statuses, @organization.editable_statuses.sort{|x, y| EditableStatus::TYPES[x.status] <=> EditableStatus::TYPES[y.status]} do |es|
                 %tr
-                  %th= es.label :status, "#{AVAILABLE_STATUSES[es.object.status].gsub('CTRC', 'Nexus')}:"
+                  %th= es.label :status, "#{EditableStatus::TYPES[es.object.status].gsub('CTRC', 'Nexus')}:"
                   %td= es.check_box "_destroy", {:checked => !es.object.new_record?}, false, true
                   = es.hidden_field :status, :value => es.object.status
           %td
@@ -56,7 +56,7 @@
             %legend= t(:organization_form)[:selected_statuses]
             %table
               %tr
-                - @organization.editable_statuses.sort{|x, y| AVAILABLE_STATUSES[x.status] <=> AVAILABLE_STATUSES[y.status]}.each do |es|
+                - @organization.editable_statuses.sort{|x, y| EditableStatus::TYPES[x.status] <=> EditableStatus::TYPES[y.status]}.each do |es|
                   - unless es.id.nil?
                     %tr
-                      %th= AVAILABLE_STATUSES[es.status]
+                      %th= EditableStatus::TYPES[es.status]

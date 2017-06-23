@@ -1,0 +1,4 @@
+id,key,value,concept_code,parent_id,sort_order,category,default,reserved
+,clinical_trials,Clinical Trials,,,1,study_type,,
+,basic_science,Basic Science,,,2,study_type,,
+,translational_science,Translational Science,,,3,study_type,,

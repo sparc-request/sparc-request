@@ -1,4 +1,4 @@
-﻿id,key,value,concept_code,parent_id,sort_order,category,default,reserved
+id,key,value,concept_code,parent_id,sort_order,category,default,reserved
 ,ctrc_approved,Active,,,1,status,,
 ,administrative_review,Administrative Review,,,2,status,,
 ,approved,Approved,,,3,status,,

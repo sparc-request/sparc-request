@@ -1,4 +1,4 @@
-id,key,value,concept_code,parent_id,sortorder,type,default,reserved
+id,key,value,concept_code,parent_id,sort_order,category,default,reserved
 ,biosketch,Biosketch,,,1,document_type,,
 ,budget,Budget,,,2,document_type,,
 ,oral_health_cobre,Certificate of Confidentiality,,,3,document_type,,

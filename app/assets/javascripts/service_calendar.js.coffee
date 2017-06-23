@@ -21,6 +21,7 @@
 #= require navigation
 
 $(document).ready ->
+
   getSRId = ->
     $("input[name='service_request_id']").val()
 
@@ -32,6 +33,30 @@ $(document).ready ->
       $('.billing-info ul').removeClass('hidden')
     else
       $('.billing-info ul').addClass('hidden')
+
+    # Hold freeze header upon tab change
+    $(document).ajaxComplete (event, xhr, settings) ->
+      arm_ids_with_frozen_header = []
+      frozen_headers = $('.unfreeze')
+      frozen_headers.each (index, arm) ->
+        if $(arm).data('arm-id') != undefined
+          arm_ids_with_frozen_header.push( $(arm).data('arm-id') )
+
+      $(jQuery.unique(arm_ids_with_frozen_header)).each (index, arm) ->
+        if arm == 'otf-calendar'
+          arm_container = $(".#{arm}")
+        else
+          arm_container = $(".arm-calendar-container-#{arm}")
+
+        $(arm_container).each ->
+          $(this).find('table').addClass('scrolling-table')
+          $(this).find('thead').addClass('scrolling-thead')
+          $(this).find('tbody').addClass('scrolling-div')
+          $(this).find('.freeze-header-button').find('.freeze-header').hide()
+          $(this).find('.freeze-header-button').find('.unfreeze-header').show()
+          $(this).find('.freeze-header-button').removeClass('freeze')
+          $(this).find('.freeze-header-button').addClass('unfreeze')
+      
 
   $(document).on 'click', '.page-change-arrow', ->
     scroll = $(this).parents('.scrolling-thead').length > 0
@@ -91,27 +116,30 @@ $(document).ready ->
     arm = $(this).data('arm-id')
 
     if arm == 'otf-calendar'
-      arm_container = $(this).closest(".#{arm}")
+      arm_container = $(".#{arm}")
     else
-      arm_container = $(this).closest(".arm-calendar-container-#{arm}")
+      arm_container = $(".arm-calendar-container-#{arm}")
 
     if $(this).hasClass('freeze')
-      arm_container.find('table').addClass('scrolling-table')
-      arm_container.find('thead').addClass('scrolling-thead')
-      arm_container.find('tbody').addClass('scrolling-div')
-      $(this).find('.freeze-header').hide()
-      $(this).find('.unfreeze-header').show()
-      $(this).removeClass('freeze')
-      $(this).addClass('unfreeze')
+      $(arm_container).each ->
+        $(this).find('table').addClass('scrolling-table')
+        $(this).find('table').removeClass('non-scrolling-table')
+        $(this).find('thead').addClass('scrolling-thead')
+        $(this).find('tbody').addClass('scrolling-div')
+        $(this).find('.freeze-header-button').find('.freeze-header').hide()
+        $(this).find('.freeze-header-button').find('.unfreeze-header').show()
+        $(this).find('.freeze-header-button').removeClass('freeze')
+        $(this).find('.freeze-header-button').addClass('unfreeze')
     else
-      arm_container.find('table').removeClass('scrolling-table')
-      arm_container.find('table').addClass('non-scrolling-table')
-      arm_container.find('thead').removeClass('scrolling-thead')
-      arm_container.find('tbody').removeClass('scrolling-div')
-      $(this).find('.unfreeze-header').hide()
-      $(this).find('.freeze-header').show()
-      $(this).removeClass('unfreeze')
-      $(this).addClass('freeze')
+      $(arm_container).each ->
+        $(this).find('table').removeClass('scrolling-table')
+        $(this).find('table').addClass('non-scrolling-table')
+        $(this).find('thead').removeClass('scrolling-thead')
+        $(this).find('tbody').removeClass('scrolling-div')
+        $(this).find('.freeze-header-button').find('.unfreeze-header').hide()
+        $(this).find('.freeze-header-button').find('.freeze-header').show()
+        $(this).find('.freeze-header-button').removeClass('unfreeze')
+        $(this).find('.freeze-header-button').addClass('freeze')
 
   $(document).on 'change', '.visit-quantity', ->
     $.ajax

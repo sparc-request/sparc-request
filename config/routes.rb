@@ -49,7 +49,7 @@ SparcRails::Application.routes.draw do
   resources :feedback
 
   begin
-    use_shibboleth_only = Setting.find_by_key("use_shibboleth_only").value
+    use_shibboleth_only = Setting.find_by_key("use_shibboleth_only").try(:value)
   rescue ActiveRecord::StatementInvalid
     use_shibboleth_only = false
   end

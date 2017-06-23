@@ -24,8 +24,8 @@ class Directory
   # Only initialize LDAP if it is enabled
 
   begin
-    use_ldap = Setting.find_by_key("use_ldap").value
-    suppress_ldap_for_user_search = Setting.find_by_key("suppress_ldap_for_user_search").value
+    use_ldap = Setting.find_by_key("use_ldap").try(:value)
+    suppress_ldap_for_user_search = Setting.find_by_key("suppress_ldap_for_user_search").try(:value)
   rescue ActiveRecord::StatementInvalid
     use_ldap = true
     suppress_ldap_for_user_search = nil

@@ -8,15 +8,15 @@ task :populate_settings_table => :environment do
       type = ""
         if (value.class == TrueClass) || (value.class == FalseClass)
           type = 'boolean'
-        elsif value.class == Array
-          type = 'array'
-        elsif value.class == Hash
-          type = 'hash'
+        elsif (value.class == Array) || (value.class == Hash)
+          type = 'json'
         else
           type = 'string'
         end
 
-      Setting.create(key: key, value: value, data_type: type)
+      setting = Setting.new
+      setting.assign_attributes(key: key, value: value, data_type: type)
+      setting.save(validate: false)
     end
   end
 end

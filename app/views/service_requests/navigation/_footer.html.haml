@@ -26,7 +26,7 @@
     .col-sm-3.text-center
       = link_to t(:proper)[:navigation][:bottom][:get_cost_estimate],
         obtain_research_pricing_service_request_path(sub_service_request_id: sub_service_request_id),
-        class: 'btn btn-default get-a-cost-estimate', data: { disable_with: "Getting Cost..." }
+        class: 'btn btn-default get-a-cost-estimate', data: { disable_with: t(:proper)[:navigation][:bottom][:getting_cost] }
   - else
     .col-sm-6.text-center
       - if service_request.submitted_at.blank? && service_request.protocol.present?

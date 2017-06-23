@@ -39,4 +39,4 @@
       class: 'btn btn-default form-submit-button'
   - else
     .col-sm-3.text-right
-      = link_to action_name == 'review' ? t(:proper)[:navigation][:bottom][:submit] : t(:proper)[:navigation][:bottom][:save_and_continue], 'javascript:void(0)', class: 'btn btn-default form-submit-button', data: { disable_with: "#{action_name == 'review' ? 'Submitting...' : 'Saving...'}" }
+      = link_to action_name == 'review' ? t(:proper)[:navigation][:bottom][:submit] : t(:proper)[:navigation][:bottom][:save_and_continue], 'javascript:void(0)', class: 'btn btn-default form-submit-button', data: { disable_with: "#{action_name == 'review' ? t(:proper)[:navigation][:bottom][:submitting] : t(:proper)[:navigation][:bottom][:saving] }" }

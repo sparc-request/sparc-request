@@ -22,35 +22,6 @@
 
 $(document).ready ->
 
-  # Hold freeze header upon tab change
-  $(document).ajaxComplete ->
-    tab = $('li.custom-tab.active a').data('target')
-    console.log(tab)
-    console.log($("#{tab}"))
-    arm_ids_with_frozen_header = []
-    frozen_headers = $('.unfreeze')
-    frozen_headers.each (index, arm) ->
-      if $(arm).data('arm-id') != undefined
-        arm_ids_with_frozen_header.push( $(arm).data('arm-id') )
-    console.log(jQuery.unique(arm_ids_with_frozen_header))
-    $(jQuery.unique(arm_ids_with_frozen_header)).each (index, arm) ->
-      console.log("does not have class scrolling-div")
-      if arm == 'otf-calendar'
-        arm_container = $("#{tab}").find(".#{arm}")
-      else
-        arm_container = $("#{tab}").find(".arm-calendar-container-#{arm}")
-      console.log("arm container")
-      console.log(arm_container.length)
-      console.log($(arm_container).length)
-      $(arm_container).each ->
-        $(this).find('table').addClass('scrolling-table')
-        $(this).find('thead').addClass('scrolling-thead')
-        $(this).find('tbody').addClass('scrolling-div')
-        $(this).find('.freeze-header').hide()
-        $(this).find('.unfreeze-header').show()
-        $(this).removeClass('freeze')
-        $(this).addClass('unfreeze')
-
   getSRId = ->
     $("input[name='service_request_id']").val()
 
@@ -62,6 +33,32 @@ $(document).ready ->
       $('.billing-info ul').removeClass('hidden')
     else
       $('.billing-info ul').addClass('hidden')
+
+    # Hold freeze header upon tab change
+    $(document).ajaxComplete (event, xhr, settings) ->
+      tab = $('li.custom-tab.active a').data('target')
+
+      arm_ids_with_frozen_header = []
+      frozen_headers = $('.unfreeze')
+      frozen_headers.each (index, arm) ->
+        if $(arm).data('arm-id') != undefined
+          arm_ids_with_frozen_header.push( $(arm).data('arm-id') )
+
+      $(jQuery.unique(arm_ids_with_frozen_header)).each (index, arm) ->
+        if arm == 'otf-calendar'
+          arm_container = $("#{tab}").find(".#{arm}")
+        else
+          arm_container = $("#{tab}").find(".arm-calendar-container-#{arm}")
+
+        $(arm_container).each ->
+          $(this).find('table').addClass('scrolling-table')
+          $(this).find('thead').addClass('scrolling-thead')
+          $(this).find('tbody').addClass('scrolling-div')
+          $(this).find('.freeze-header-button').find('.freeze-header').hide()
+          $(this).find('.freeze-header-button').find('.unfreeze-header').show()
+          $(this).find('.freeze-header-button').removeClass('freeze')
+          $(this).find('.freeze-header-button').addClass('unfreeze')
+      
 
   $(document).on 'click', '.page-change-arrow', ->
     scroll = $(this).parents('.scrolling-thead').length > 0

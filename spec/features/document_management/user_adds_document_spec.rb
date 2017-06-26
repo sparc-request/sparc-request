@@ -35,6 +35,7 @@ RSpec.describe 'User adds a new document', js: true do
     ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                   create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
                   create(:arm, protocol: @protocol, visit_count: 1)
+                  create(:permissible_value, key: 'protocol', value: 'Protocol', category: 'document_type')
   end
 
   context 'and clicks \'Add a Document\'' do

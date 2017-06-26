@@ -76,7 +76,7 @@ def merge_service(old_service_id, new_service_id)
   dest_org_process_ssrs = new_service.organization.process_ssrs_parent
   puts "Merging Service #{old_service.id} into #{new_service.id} belonging to Org ##{dest_org_process_ssrs.id}"
 
-  [LineItem, Procedure, ServiceProvider].each do |model|
+  [LineItem, ServiceProvider].each do |model|
     model.where(service_id: old_service_id).each do |obj|
       obj.update!(service_id: new_service_id)
     end

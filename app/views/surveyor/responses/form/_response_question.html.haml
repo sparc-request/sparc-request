@@ -29,7 +29,7 @@
     .form-group
       %p.question-description
         = raw(question.description)
-  .form-group.question-options
+  .question-options
     = render "surveyor/responses/form/form_partials/#{question.question_type}_form_partial", question: question, qr: qr
   - if question.errors.any?
     .alert.alert-danger

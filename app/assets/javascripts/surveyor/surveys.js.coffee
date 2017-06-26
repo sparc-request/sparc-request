@@ -49,6 +49,54 @@ $(document).ready ->
       type: 'get'
       url: "/surveyor/surveys/#{survey_id}/preview.js"
 
+  $(document).on 'click', '.add-section', ->
+    $.ajax
+      type: 'post'
+      url: '/surveyor/sections'
+      data:
+        survey_id: $('.survey').data('survey-id')
+      success: ->
+        build_dependents_selectpicker($('.survey').data('survey-id'))
+
+  $(document).on 'click', '.delete-section', ->
+    $.ajax
+      type: 'delete'
+      url: "/surveyor/sections/#{$(this).parents('.section').data('section-id')}"
+      success: ->
+        build_dependents_selectpicker($('.survey').data('survey-id'))
+
+  $(document).on 'click', '.add-question', ->
+    $.ajax
+      type: 'post'
+      url: '/surveyor/questions'
+      data:
+        section_id: $(this).parents('.section').data('section-id')
+      success: ->
+        build_dependents_selectpicker($('.survey').data('survey-id'))
+
+  $(document).on 'click', '.delete-question', ->
+    $.ajax
+      type: 'delete'
+      url: "/surveyor/questions/#{$(this).parents('.question').data('question-id')}"
+      success: ->
+        build_dependents_selectpicker($('.survey').data('survey-id'))
+
+  $(document).on 'click', '.add-option', ->
+    $.ajax
+      type: 'post'
+      url: '/surveyor/options'
+      data:
+        question_id: $(this).parents('.question').data('question-id')
+      success: ->
+        build_dependents_selectpicker($('.survey').data('survey-id'))
+
+  $(document).on 'click', '.delete-option', ->
+    $.ajax
+      type: 'delete'
+      url: "/surveyor/options/#{$(this).parents('.option').data('option-id')}"
+      success: ->
+        build_dependents_selectpicker($('.survey').data('survey-id'))
+
   $(document).on 'change', '.select-depender, .select-question-type', ->
     send_update_request($(this), $(this).val())
 
@@ -80,8 +128,11 @@ send_update_request = (obj, val) ->
       klass: klass
       "#{klass}":
         "#{attribute}": val
+    success: ->
+      if $.inArray(attribute, ['question_type', 'content'])
+        build_dependents_selectpicker($('.survey').data('survey-id'))
 
-(exports ? this).build_dependents_selectpicker = (survey_id) ->
+build_dependents_selectpicker = (survey_id) ->
   $.ajax
     type: 'get'
     url: "/surveyor/surveys/#{survey_id}/update_dependents_list.js"

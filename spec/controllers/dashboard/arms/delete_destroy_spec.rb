@@ -25,45 +25,34 @@ RSpec.describe Dashboard::ArmsController do
     before(:each) do
       log_in_dashboard_identity(obj: build_stubbed(:identity))
 
-      @request_params = { id: "arm id", sub_service_request_id: "sub service request id" }
-      @destroyer = instance_double(Dashboard::ArmDestroyer,
-        service_request: "service request",
-        sub_service_request: "sub service request",
-        selected_arm: "selected arm")
-      allow(@destroyer).to receive(:destroy)
-      allow(Dashboard::ArmDestroyer).to receive(:new).
-        and_return(@destroyer)
+      @organization = create(:organization)
+      @protocol     = create(:study_without_validations)
+      @sr           = create(:service_request_without_validations, protocol: @protocol)
+      @ssr          = create(:sub_service_request_without_validations, service_request: @sr, organization: @organization)
+      @arm          = create(:arm, protocol: @protocol)
+
+      @request_params = { id: @arm.id, service_request_id: @sr.id, sub_service_request_id: @ssr.id }
 
       xhr :delete, :destroy, @request_params
     end
 
-    it "should use Dashboard::ArmDestroyer" do
-      expect(Dashboard::ArmDestroyer).to have_received(:new).
-        with(id: "arm id", sub_service_request_id: "sub service request id")
+    it "should destroy the arm" do
+      expect(Arm.count).to eq(0)
     end
 
-    it "should invoke #destroy on Dashboard::ArmDestroyer" do
-      expect(@destroyer).to have_received(:destroy)
+    it "should assign @service_request" do
+      expect(assigns(:service_request)).to eq(@sr)
     end
 
-    it "should assign @service_request from Dashboard::ArmDestroyer instance" do
-      expect(assigns(:service_request)).to eq("service request")
+    it "should assign @sub_service_request" do
+      expect(assigns(:sub_service_request)).to eq(@ssr)
     end
 
-    it "should assign @sub_service_request from Dashboard::ArmDestroyer instance" do
-      expect(assigns(:sub_service_request)).to eq("sub service request")
-    end
-
-    it "should assign @selected_arm from Dashboard::ArmDestroyer instance" do
-      expect(assigns(:selected_arm)).to eq("selected arm")
-    end
-
-    it "should set flash[:alert]" do
-      expect(flash[:alert]).not_to be_nil
+    it "should assign @selected_arm" do
+      expect(assigns(:selected_arm)).to eq(@arm)
     end
 
     it { is_expected.to render_template "dashboard/arms/destroy" }
-
     it { is_expected.to respond_with :ok }
   end
 end

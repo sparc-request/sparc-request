@@ -82,6 +82,10 @@ en:
         content: "Question"
       question_response:
         content: "Question"
+      visit:
+        research_billing_qty: "Research Billing Quantity"
+        insurance_billing_qty: "Insurance Billing Quantity"
+        effort_billing_qty: "Effort Billing Quantity"
 
   ########
   # ARMS #
@@ -141,27 +145,33 @@ en:
       era: "ERA Commons Name:"
       credentials: "Credentials:"
       credentials_prompt: "Select a Credential"
-      credentials_specify: "Please Specify:*"
+      credentials_specify: "Please Specify:"
       phone: "Phone:"
       subspecialty: "Subspecialty:"
       subspecialty_prompt: "Select a Subspecialty"
-      rights: "User Rights:*"
-      role: "Role:*"
+      role: "Role:"
       role_prompt: "Select a Role"
-      role_specify: "Please Specify:*"
-      epic_access: "Epic EMR Access?:*"
-      select_one: "Select one"
+      role_specify: "Please Specify:"
+      epic_access: "Epic EMR Access?:"
+      rights: "User Rights:"
     rights:
       none: Member Only
       view: "View Rights"
       approve: "Authorized/Change Study Charges"
+      change_warning:
+        dashboard: "Warning: Changing your User Rights to \'Member Only\' will redirect you to your Dashboard"
+        proper: "Warning: Changing your User Rights will redirect you to your Dashboard"
+    change_primary_pi:
+      header: "**Warning**"
+      warning: "Adding the new Primary PI (<strong>%{new_pi_name}</strong>) will change the current Primary PI (<strong>%{old_pi_name}</strong>) to a general access user on Protocol (<strong>%{protocol_id}</strong>)."
+      prompt: "Do you wish to proceed?"
     table_fields:
       name: "Full Name"
       role: "Role"
       email: "Email"
       phone: "Phone"
       rights: "Proxy Rights"
-      epic_emr_access: 'EPIC EMR Access'
+      epic_emr_access: 'EPIC EMR </br> Access'
     tooltips:
       epic_access: 'Granting Epic EMR access populates study personnel in Epic Research Record as long as they have an Epic login'
       rights: 'Defines access to protocol in SPARCDashboard'
@@ -176,6 +186,7 @@ en:
       template: "Template Tab"
       billing: "Quantity/Billing Tab"
       pricing: "Consolidated Request Tab"
+    inactive: "(Inactive)"
     pppv:
       clinical_services: "Clinical Services"
       header: "Clinical Services</br>Arm: %{arm_name}"
@@ -208,6 +219,15 @@ en:
         research: "Research Billing Quantity:"
         third_party: "Insurance Billing Quantity:"
         percent: "Effort Billing Quantity:"
+        row_select:
+          check: "Check Row"
+          uncheck: "Uncheck Row"
+          confirm: "This will reset custom values for this row, do you wish to continue?"
+        column_select:
+          check: "Check Column"
+          uncheck: "Uncheck Column"
+          confirm: "This will reset custom values for this column, do you wish to continue?"
+
       totals:
         maximum_direct: "Maximum Total Direct Costs Per Patient"
         maximum_per_patient: "Maximum Total Per Patient"
@@ -1183,8 +1203,8 @@ en:
         cost: "Your Cost"
         subjects: "# Subjects"
         total: "Service Total"
-        study_level_charges: "Study Level Charges"
-        study_schedule: "Study Schedule"
+        study_level_charges: "Non-clinical Services Charges"
+        study_schedule: "Clinical Services"
         subject_tracker: "Subject Tracker"
       totals:
         direct_cost: "Total Direct Cost"

@@ -1209,8 +1209,9 @@ RSpec.describe EpicInterface do
           :arm,
           name: 'Arm',
           protocol: study,
-          visit_count: 10,
           subject_count: 2)
+
+      arm1.visit_groups.first.update_attribute(:day, 1)
 
       epic_interface.send_billing_calendar(study)
 
@@ -1222,13 +1223,11 @@ RSpec.describe EpicInterface do
               <id root="1.2.3.4" extension="STUDY#{study.id}"/>
               <title>#{study.epic_title}</title>
               <text>#{study.brief_description}</text>
-
               <component4 typeCode="COMP">
                 <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
                   <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm1.id}" />
-                  <title>Arm</title>
+                  <title>#{arm1.name}</title>
                   <code code="CELL" codeSystem="n/a" />
-
                   <component1 typeCode="COMP">
                     <sequenceNumber value="1" />
                     <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
@@ -1236,16 +1235,37 @@ RSpec.describe EpicInterface do
                       <title>Cycle 1</title>
                       <code code="CYCLE" codeSystem="n/a" />
                       <effectiveTime>
-                        <low value="#{epic_interface.relative_date(0, study.start_date)}"/>
-                        <high value="#{epic_interface.relative_date(0, study.start_date)}"/>
+                        <low value="#{epic_interface.relative_date(arm1.visit_groups.first.day, study.start_date)}"/>
+                        <high value="#{epic_interface.relative_date(arm1.visit_groups.first.day, study.start_date)}"/>
                       </effectiveTime>
+                      <component1 typeCode="COMP">
+                        <sequenceNumber value="1"/>
+                        <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                          <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm1.id}.CYCLE1.DAY#{arm1.visit_groups.first.day}"/>
+                          <title>#{arm1.visit_groups.first.name}</title>
+                        </timePointEventDefinition>
+                      </component1>
                     </timePointEventDefinition>
                   </component1>
-
                 </timePointEventDefinition>
               </component4>
+              <component4 typeCode="COMP">
+                <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                  <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm1.id}.CYCLE1.DAY#{arm1.visit_groups.first.day}"/>
+                  <title>#{arm1.visit_groups.first.name}</title>
+                  <code code="VISIT" codeSystem="n/a"/>
+                  <component2 typeCode="COMP">
+                    <encounter classCode="ENC" moodCode="DEF">
+                      <effectiveTime>
+                        <low value="#{epic_interface.relative_date(arm1.visit_groups.first.day, study.start_date)}"/>
+                        <high value="#{epic_interface.relative_date(arm1.visit_groups.first.day, study.start_date)}"/>
+                      </effectiveTime>
+                      <activityTime value="#{epic_interface.relative_date(arm1.visit_groups.first.day, study.start_date)}"/>
+                    </encounter>
+                  </component2>
+               </timePointEventDefinition>
+             </component4>
             </plannedStudy>
-
           </protocolDef>
         </RetrieveProtocolDefResponse>
       END
@@ -1270,15 +1290,16 @@ RSpec.describe EpicInterface do
           :arm,
           name: 'Arm 1',
           protocol: study,
-          visit_count: 10,
           subject_count: 2)
 
       arm2 = create(
           :arm,
           name: 'Arm 2',
           protocol: study,
-          visit_count: 10,
           subject_count: 2)
+
+      arm1.visit_groups.first.update_attribute(:day, 1)
+      arm2.visit_groups.first.update_attribute(:day, 1)
 
       epic_interface.send_billing_calendar(study)
 
@@ -1290,13 +1311,11 @@ RSpec.describe EpicInterface do
               <id root="1.2.3.4" extension="STUDY#{study.id}"/>
               <title>#{study.epic_title}</title>
               <text>#{study.brief_description}</text>
-
-              <component4 typeCode="COMP" xmlns="urn:hl7-org:v3" >
+              <component4 typeCode="COMP">
                 <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
                   <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm1.id}" />
-                  <title>Arm 1</title>
+                  <title>#{arm1.name}</title>
                   <code code="CELL" codeSystem="n/a" />
-
                   <component1 typeCode="COMP">
                     <sequenceNumber value="1" />
                     <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
@@ -1304,21 +1323,25 @@ RSpec.describe EpicInterface do
                       <title>Cycle 1</title>
                       <code code="CYCLE" codeSystem="n/a" />
                       <effectiveTime>
-                        <low value="#{epic_interface.relative_date(0, study.start_date)}"/>
-                        <high value="#{epic_interface.relative_date(0, study.start_date)}"/>
+                        <low value="#{epic_interface.relative_date(arm1.visit_groups.first.day, study.start_date)}"/>
+                        <high value="#{epic_interface.relative_date(arm1.visit_groups.first.day, study.start_date)}"/>
                       </effectiveTime>
+                      <component1 typeCode="COMP">
+                        <sequenceNumber value="1"/>
+                        <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                          <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm1.id}.CYCLE1.DAY#{arm1.visit_groups.first.day}"/>
+                          <title>#{arm1.visit_groups.first.name}</title>
+                        </timePointEventDefinition>
+                      </component1>
                     </timePointEventDefinition>
                   </component1>
-
                 </timePointEventDefinition>
               </component4>
-
-              <component4 typeCode="COMP" xmlns="urn:hl7-org:v3" >
+              <component4 typeCode="COMP">
                 <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
                   <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm2.id}" />
-                  <title>Arm 2</title>
+                  <title>#{arm2.name}</title>
                   <code code="CELL" codeSystem="n/a" />
-
                   <component1 typeCode="COMP">
                     <sequenceNumber value="2" />
                     <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
@@ -1326,17 +1349,53 @@ RSpec.describe EpicInterface do
                       <title>Cycle 1</title>
                       <code code="CYCLE" codeSystem="n/a" />
                       <effectiveTime>
-                        <low value="#{epic_interface.relative_date(0, study.start_date)}"/>
-                        <high value="#{epic_interface.relative_date(0, study.start_date)}"/>
+                        <low value="#{epic_interface.relative_date(arm2.visit_groups.first.day, study.start_date)}"/>
+                        <high value="#{epic_interface.relative_date(arm2.visit_groups.first.day, study.start_date)}"/>
                       </effectiveTime>
+                      <component1 typeCode="COMP">
+                        <sequenceNumber value="1"/>
+                        <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                          <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm2.id}.CYCLE1.DAY#{arm2.visit_groups.first.day}"/>
+                          <title>#{arm2.visit_groups.first.name}</title>
+                        </timePointEventDefinition>
+                      </component1>
                     </timePointEventDefinition>
                   </component1>
-
                 </timePointEventDefinition>
               </component4>
-
+              <component4 typeCode="COMP">
+                <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                  <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm1.id}.CYCLE1.DAY#{arm1.visit_groups.first.day}"/>
+                  <title>#{arm1.visit_groups.first.name}</title>
+                  <code code="VISIT" codeSystem="n/a"/>
+                  <component2 typeCode="COMP">
+                    <encounter classCode="ENC" moodCode="DEF">
+                      <effectiveTime>
+                        <low value="#{epic_interface.relative_date(arm1.visit_groups.first.day, study.start_date)}"/>
+                        <high value="#{epic_interface.relative_date(arm1.visit_groups.first.day, study.start_date)}"/>
+                      </effectiveTime>
+                      <activityTime value="#{epic_interface.relative_date(arm1.visit_groups.first.day, study.start_date)}"/>
+                    </encounter>
+                  </component2>
+               </timePointEventDefinition>
+              </component4>
+              <component4 typeCode="COMP">
+                <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                  <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm2.id}.CYCLE1.DAY#{arm2.visit_groups.first.day}"/>
+                  <title>#{arm2.visit_groups.first.name}</title>
+                  <code code="VISIT" codeSystem="n/a"/>
+                  <component2 typeCode="COMP">
+                    <encounter classCode="ENC" moodCode="DEF">
+                      <effectiveTime>
+                        <low value="#{epic_interface.relative_date(arm2.visit_groups.first.day, study.start_date)}"/>
+                        <high value="#{epic_interface.relative_date(arm2.visit_groups.first.day, study.start_date)}"/>
+                      </effectiveTime>
+                      <activityTime value="#{epic_interface.relative_date(arm2.visit_groups.first.day, study.start_date)}"/>
+                    </encounter>
+                  </component2>
+                </timePointEventDefinition>
+              </component4>
             </plannedStudy>
-
           </protocolDef>
         </RetrieveProtocolDefResponse>
       END

@@ -24,9 +24,9 @@ module AssociatedUsersHelper
   #        Also used in form helpers.
   # classes - HTML classes to add to form-group.
   # label - Override localized label text.
-  def user_form_group(form: nil, name:, classes: [], label: nil, data: {}, title: nil)
+  def user_form_group(form: nil, name:, classes: [], label: nil, data: {}, title: nil, required: false)
     form_group_classes = %w(row form-group) + [classes]
-    label_class = 'col-lg-3 control-label'
+    label_class = 'col-lg-3 control-label' + (required ? 'required' : '')
     label_text = label || t(:authorized_users)[:form_fields][name.to_sym]
     label = if form
               form.label(name,
@@ -71,7 +71,7 @@ module AssociatedUsersHelper
   #   options.
   def professional_organization_dropdown(form: nil, choices_from:)
     select_class = 'form-control selectpicker'
-    prompt = t(:authorized_users)[:form_fields][:select_one]
+    prompt = t(:constants)[:prompts][:select_one]
     if choices_from.kind_of?(ProfessionalOrganization)
       options = options_from_collection_for_select(choices_from.self_and_siblings.order(:name), 'id', 'name', choices_from.id)
       select_id = "select-pro-org-#{choices_from.org_type}"
@@ -107,7 +107,7 @@ module AssociatedUsersHelper
         content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' })
       ),
       type: 'button', data: { project_role_id: project_role.id },
-      class: "btn btn-warning actions-button edit-associated-user-button"
+      class: "btn btn-sm btn-warning actions-button edit-associated-user-button"
     )
   end
 
@@ -117,8 +117,24 @@ module AssociatedUsersHelper
         content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
       ),
       type: 'button', data: { project_role_id: project_role.id, identity_role: project_role.role, identity_id: project_role.identity_id },
-      class: "btn btn-danger actions-button delete-associated-user-button",
+      class: "btn btn-sm btn-danger actions-button delete-associated-user-button",
       disabled: project_role.identity_id == current_user.id
     )
+  end
+
+  def determine_entity(dashboard, project_role)
+    if dashboard
+      [:dashboard, project_role]
+    else
+      project_role
+    end
+  end
+
+  def determine_url(dashboard, project_role)
+    if dashboard
+      project_role.new_record? ? dashboard_associated_users_path : dashboard_associated_user_path(project_role)
+    else
+      project_role.new_record? ? associated_users_path : associated_user_path(project_role)
+    end
   end
 end

@@ -33,49 +33,57 @@ RSpec.describe Dashboard::VisitGroupsController do
         @protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
         @sr       = create(:service_request_without_validations, protocol: @protocol)
         @ssr      = create(:sub_service_request, service_request: @sr, organization: org)
-        @arm      = create(:arm, protocol: @protocol)
-        @vg       = create(:visit_group, arm: @arm)
+        @arm      = create(:arm, protocol: @protocol, visit_count: 1)
+        @vg       = @arm.visit_groups.first
 
-        # We'll delete a visit from the arm, so we need a second visit
-        # to keep the arm valid.
-        create(:visit_group, arm: @arm)
-
-        xhr :delete, :destroy, {
-          id: @vg.id,
-          service_request_id: @sr.id,
-          sub_service_request_id: @ssr.id
-        }
+        @params = { id: @vg.id, service_request_id: @sr.id, sub_service_request_id: @ssr.id }
       end
 
       it 'should assign @visit_group' do
+        xhr :delete, :destroy, @params
+
         expect(assigns(:visit_group)).to eq(@vg)
       end
 
       it 'should assign @service_request' do
+        xhr :delete, :destroy, @params
+
         expect(assigns(:service_request)).to eq(@sr)
       end
 
       it 'should assign @sub_service_request' do
+        xhr :delete, :destroy, @params
+
         expect(assigns(:sub_service_request)).to eq(@ssr)
       end
 
       it 'should assign @arm' do
+        xhr :delete, :destroy, @params
+
         expect(assigns(:arm)).to eq(@arm)
       end
 
       it 'should destroy the visit group' do
-        expect(VisitGroup.count).to eq(1)
+        expect{
+          xhr :delete, :destroy, @params
+        }.to change(VisitGroup, :count).by -1
       end
 
       it 'should decrement the arm visit count' do
-        expect(@arm.reload.visit_count).to eq(1)
+        xhr :delete, :destroy, @params
+
+        expect(@arm.reload.visit_count).to eq(0)
       end
 
       it 'should render template' do
+        xhr :delete, :destroy, @params
+
         expect(controller).to render_template(:destroy)
       end
 
       it 'should respond ok' do
+        xhr :delete, :destroy, @params
+
         expect(controller).to respond_with(:ok)
       end
     end

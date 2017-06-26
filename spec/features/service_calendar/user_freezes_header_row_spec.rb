@@ -64,7 +64,7 @@ RSpec.describe 'User freezes header row', js: true do
       org       = create(:organization)
                   create(:pricing_setup, organization: org)
       services = []
-      8.times do
+      10.times do
         services << create(:service, organization: org, one_time_fee: true)
       end
 

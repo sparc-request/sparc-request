@@ -184,9 +184,8 @@ RSpec.describe "Line Item" do
     end
 
     describe "cost calculations" do
-
       before :each do
-        add_visits
+        service_request.arms.each { |arm| arm.visits.update_all(quantity: 15, research_billing_qty: 5, insurance_billing_qty: 5, effort_billing_qty: 5) }
       end
 
       context "direct costs for one time fee" do

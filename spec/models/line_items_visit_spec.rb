@@ -45,8 +45,9 @@ RSpec.describe LineItemsVisit do
 
     before :each do
       service_request.protocol.update_attributes(indirect_cost_rate: 200)
-      add_visits
       @line_items_visit = arm1.line_items_visits.first
+
+      service_request.arms.each { |arm| arm.visits.update_all(quantity: 15, research_billing_qty: 5, insurance_billing_qty: 5, effort_billing_qty: 5) }
     end
 
     context "business methods" do
@@ -187,15 +188,6 @@ RSpec.describe LineItemsVisit do
           it "should return the correct cost" do
             expect(@line_items_visit.indirect_costs_for_one_time_fee).to eq(500)
           end
-        end
-      end
-
-      describe "add visit" do
-
-        it "should add a visit" do
-          vg = arm1.visit_groups.create(position: arm1.visit_groups.count, day: arm1.visit_groups.count, name: "Visit Group")
-          @line_items_visit.add_visit(vg)
-          expect(@line_items_visit.visits.count).to eq(11)
         end
       end
 

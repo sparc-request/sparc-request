@@ -36,7 +36,8 @@ class AssociatedUsersController < ApplicationController
   end
 
   def new
-    @header_text = t(:authorized_users)[:add][:header]
+    @header_text  = t(:authorized_users)[:add][:header]
+    @dashboard    = false
 
     if params[:identity_id] # if user selected
       @identity     = Identity.find(params[:identity_id])
@@ -47,7 +48,6 @@ class AssociatedUsersController < ApplicationController
         # Adds error if user already associated with protocol
         @errors = @project_role.errors
       end
-
     end
 
     respond_to do |format|
@@ -57,8 +57,9 @@ class AssociatedUsersController < ApplicationController
 
   def edit
     @identity     = @protocol_role.identity
-    @current_pi   = @protocol.primary_principal_investigator
     @header_text  = t(:authorized_users)[:edit][:header]
+    @dashboard    = false
+    @admin        = false
 
     respond_to do |format|
       format.js
@@ -80,7 +81,9 @@ class AssociatedUsersController < ApplicationController
   end
 
   def update
-    updater = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params)
+    updater               = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params)
+    protocol_role         = updater.protocol_role
+    @return_to_dashboard  = protocol_role.identity_id == current_user.id && ['none', 'view'].include?(protocol_role.project_rights)
 
     if updater.successful?
       flash.now[:success] = t(:authorized_users)[:updated]

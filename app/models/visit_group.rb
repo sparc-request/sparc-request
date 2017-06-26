@@ -26,10 +26,15 @@ class VisitGroup < ApplicationRecord
 
   audited
   belongs_to :arm
+  
   has_many :visits, :dependent => :destroy
   has_many :line_items_visits, through: :visits
-
+  
   acts_as_list scope: :arm
+
+  after_create :build_visits, if: Proc.new { |vg| vg.arm.present? }
+  after_create :increment_visit_count, if: Proc.new { |vg| vg.arm.present? && vg.arm.visit_count < vg.arm.visit_groups.count }
+  before_destroy :decrement_visit_count, if: Proc.new { |vg| vg.arm.present? && vg.arm.visit_count >= vg.arm.visit_groups.count  }
 
   validates :name, presence: true
   validates :position, presence: true
@@ -40,9 +45,15 @@ class VisitGroup < ApplicationRecord
 
   validate :day_must_be_in_order
 
+  default_scope { order(:position) }
+
   def <=> (other_vg)
     return unless other_vg.respond_to?(:day)
     self.day <=> other_vg.day
+  end
+
+  def self.admin_day_multiplier
+    5
   end
 
   def insertion_name
@@ -70,7 +81,25 @@ class VisitGroup < ApplicationRecord
     arm.visit_groups.where("position < ? AND day >= ? OR position > ? AND day <= ?", position, day, position, day).none?
   end
 
+  def per_patient_subtotals
+    self.visits.sum{ |v| v.cost || 0.00 }
+  end
+    
   private
+
+  def build_visits
+    self.arm.line_items_visits.each do |liv|
+      self.visits.create(line_items_visit: liv)
+    end
+  end
+
+  def increment_visit_count
+    self.arm.increment!(:visit_count)
+  end
+
+  def decrement_visit_count
+    self.arm.decrement!(:visit_count)
+  end
 
   def day_must_be_in_order
     unless in_order?

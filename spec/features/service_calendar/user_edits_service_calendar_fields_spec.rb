@@ -39,9 +39,8 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
     @otf_li   = create(:line_item, service_request: sr, sub_service_request: ssr, service: otf, units_per_quantity: 1, quantity: 1)
 
     @arm      = create(:arm, protocol: protocol, subject_count: 10)
-    vg        = create(:visit_group, arm: @arm, day: 1)
-    @liv      = create(:line_items_visit, line_item: @pppv_li, arm: @arm, subject_count: 1)
-                create(:visit, visit_group: vg, line_items_visit: @liv)
+    @vg       = @arm.visit_groups.first
+    @liv      = @arm.line_items_visits.first
 
     stub_const('EDITABLE_STATUSES', { })
 
@@ -53,38 +52,46 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
     context 'to a valid value' do
       scenario 'window before' do
         find('a.edit-visit-group', match: :first).click
+        wait_for_javascript_to_finish
+
         fill_in 'visit_group_window_before', with: 5
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(@arm.visit_groups.first.window_before).to eq(5)
+        expect(@vg.reload.window_before).to eq(5)
       end
 
       scenario 'window after' do
         find('a.edit-visit-group', match: :first).click
+        wait_for_javascript_to_finish
+
         fill_in 'visit_group_window_after', with: 5
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(@arm.visit_groups.first.window_after).to eq(5)
+        expect(@vg.reload.window_after).to eq(5)
       end
 
       scenario 'day' do
         find('a.edit-visit-group', match: :first).click
+        wait_for_javascript_to_finish
+
         fill_in 'visit_group_day', with: 5
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(@arm.visit_groups.first.day).to eq(5)
+        expect(@vg.reload.day).to eq(5)
       end
 
       scenario 'visit name' do
         find('a.edit-visit-group', match: :first).click
+        wait_for_javascript_to_finish
+
         fill_in 'visit_group_name', with: 'Visit Me'
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(@arm.visit_groups.first.name).to eq('Visit Me')
+        expect(@vg.reload.name).to eq('Visit Me')
       end
 
       scenario 'subject count' do
@@ -118,6 +125,8 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
     context 'to an invalid value' do
       scenario 'window before' do
         find('a.edit-visit-group', match: :first).click
+        wait_for_javascript_to_finish
+
         fill_in 'visit_group_window_before', with: 'a lot'
         click_button 'Save changes'
         wait_for_javascript_to_finish
@@ -127,6 +136,8 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
 
       scenario 'window after' do
         find('a.edit-visit-group', match: :first).click
+        wait_for_javascript_to_finish
+
         fill_in 'visit_group_window_after', with: 'a lot'
         click_button 'Save changes'
         wait_for_javascript_to_finish
@@ -136,6 +147,8 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
 
       scenario 'day' do
         find('a.edit-visit-group', match: :first).click
+        wait_for_javascript_to_finish
+
         fill_in 'visit_group_day', with: 'someday'
         click_button 'Save changes'
         wait_for_javascript_to_finish
@@ -184,38 +197,46 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
     context 'to a valid value' do
       scenario 'window before' do
         find('a.edit-visit-group', match: :first).click
+        wait_for_javascript_to_finish
+
         fill_in 'visit_group_window_before', with: 5
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(@arm.visit_groups.first.window_before).to eq(5)
+        expect(@vg.reload.window_before).to eq(5)
       end
 
       scenario 'window after' do
         find('a.edit-visit-group', match: :first).click
+        wait_for_javascript_to_finish
+
         fill_in 'visit_group_window_after', with: 5
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(@arm.visit_groups.first.window_after).to eq(5)
+        expect(@vg.reload.window_after).to eq(5)
       end
 
       scenario 'day' do
         find('a.edit-visit-group', match: :first).click
+        wait_for_javascript_to_finish
+
         fill_in 'visit_group_day', with: 5
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(@arm.visit_groups.first.day).to eq(5)
+        expect(@vg.reload.day).to eq(5)
       end
 
       scenario 'visit name' do
         find('a.edit-visit-group', match: :first).click
+        wait_for_javascript_to_finish
+
         fill_in 'visit_group_name', with: 'Visit Me'
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(@arm.visit_groups.first.name).to eq('Visit Me')
+        expect(@vg.reload.name).to eq('Visit Me')
       end
 
       scenario 'subject count' do
@@ -229,6 +250,8 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
 
       scenario 'r' do
         find('a.edit-billing-qty', match: :first).click
+        wait_for_javascript_to_finish
+
         fill_in 'visit_research_billing_qty', with: 5
         click_button 'Save'
         wait_for_javascript_to_finish
@@ -238,6 +261,8 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
 
       scenario 't' do
         find('a.edit-billing-qty', match: :first).click
+        wait_for_javascript_to_finish
+
         fill_in 'visit_insurance_billing_qty', with: 5
         click_button 'Save'
         wait_for_javascript_to_finish
@@ -247,6 +272,8 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
 
       scenario '%' do
         find('a.edit-billing-qty', match: :first).click
+        wait_for_javascript_to_finish
+
         fill_in 'visit_effort_billing_qty', with: 5
         click_button 'Save'
         wait_for_javascript_to_finish
@@ -276,6 +303,8 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
     context 'to an invalid value' do
       scenario 'window before' do
         find('a.edit-visit-group', match: :first).click
+        wait_for_javascript_to_finish
+
         fill_in 'visit_group_window_before', with: 'a lot'
         click_button 'Save changes'
         wait_for_javascript_to_finish
@@ -285,6 +314,8 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
 
       scenario 'window after' do
         find('a.edit-visit-group', match: :first).click
+        wait_for_javascript_to_finish
+
         fill_in 'visit_group_window_after', with: 'a lot'
         click_button 'Save changes'
         wait_for_javascript_to_finish
@@ -294,6 +325,8 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
 
       scenario 'day' do
         find('a.edit-visit-group', match: :first).click
+        wait_for_javascript_to_finish
+
         fill_in 'visit_group_day', with: 'a lot'
         click_button 'Save changes'
         wait_for_javascript_to_finish
@@ -312,29 +345,35 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
 
       scenario 'r' do
         find('a.edit-billing-qty', match: :first).click
+        wait_for_javascript_to_finish
+
         fill_in 'visit_research_billing_qty', with: 'string'
         click_button 'Save'
         wait_for_javascript_to_finish
 
-        expect(page).to have_css('span.help-block', text: 'Is not a number')
+        expect(page).to have_content("Research Billing Quantity is not a number")
       end
 
       scenario 't' do
         find('a.edit-billing-qty', match: :first).click
+        wait_for_javascript_to_finish
+
         fill_in 'visit_insurance_billing_qty', with: 'string'
         click_button 'Save'
         wait_for_javascript_to_finish
 
-        expect(page).to have_css('span.help-block', text: 'Is not a number')
+        expect(page).to have_content("Insurance Billing Quantity is not a number")
       end
 
       scenario '%' do
         find('a.edit-billing-qty', match: :first).click
+        wait_for_javascript_to_finish
+
         fill_in 'visit_effort_billing_qty', with: 'string'
         click_button 'Save'
         wait_for_javascript_to_finish
 
-        expect(page).to have_css('span.help-block', text: 'Is not a number')
+        expect(page).to have_content("Effort Billing Quantity is not a number")
       end
 
       scenario 'unit type #' do

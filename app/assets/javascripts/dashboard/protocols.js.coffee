@@ -108,7 +108,7 @@ $(document).ready ->
           method: 'get'
           url: "/service_calendars/view_full_calendar.js"
           data:
-            portal: true
+            portal: 'true'
             protocol_id: protocol_id
             statuses_hidden: statuses_hidden
 

@@ -35,8 +35,8 @@ RSpec.describe Dashboard::VisitGroupsController do
         @ssr      = create(:sub_service_request, service_request: @sr, organization: org)
         @arm1     = create(:arm, protocol: @protocol)
         @arm2     = create(:arm, protocol: @protocol)
-        @vg1      = create(:visit_group, arm: @arm1)
-        @vg2      = create(:visit_group, arm: @arm2)
+        @vg1      = @arm1.visit_groups.first
+        @vg2      = @arm2.visit_groups.first
       end
 
       it 'should assign @service_request' do

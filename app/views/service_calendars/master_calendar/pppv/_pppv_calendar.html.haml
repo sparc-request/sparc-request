@@ -24,23 +24,23 @@
       %h3.panel-title
         = raw(I18n.t('calendars.pppv.header', arm_name: arm.name))
     .pull-right
-      = render 'service_calendars/master_calendar/pppv/pppv_freeze_header_button', tab: tab, portal: portal, arm: arm, service_request: service_request, sub_service_request: sub_service_request, merged: merged, statuses_hidden: statuses_hidden
+      - unless review
+        = render 'service_calendars/master_calendar/pppv/pppv_freeze_header_button', tab: tab, portal: portal, arm: arm, service_request: service_request, sub_service_request: sub_service_request, merged: merged, statuses_hidden: statuses_hidden, scroll_true: @scroll_true
     - unless portal || review
       .pull-right
-        %button.btn.btn-warning.move-visit-button{ data: { arm_id: arm.id, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:calendars)[:tooltips][:move_visit_button]}
+        %button.btn.btn-warning.move-visit-button{ data: { pages: pages, page: page, review: review.to_s, portal: portal.to_s, visit_groups: visit_groups, admin: admin.to_s, tab: tab, arm_id: arm.id, merged: merged.to_s, consolidated: consolidated.to_s, statuses_hidden: statuses_hidden, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:calendars)[:tooltips][:move_visit_button]}
           = t(:proper)[:service_calendar][:move_visit][:header]
         .divider
     .clearfix
   = hidden_field_tag :service_request_id, service_request.id
-  %table.table.table-bordered
-    %thead
-      = render "service_calendars/master_calendar/pppv/#{tab}_header",
+  %table.table.table-bordered{ class: @scroll_true ? "scrolling-table" : "non-scrolling-table" }
+    %thead.pppv-thead{ class: @scroll_true ? "scrolling-thead" : "" }
+      = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_header",
         service_request: service_request, sub_service_request: sub_service_request,
         arm: arm, tab: tab, pages: pages, page: page, review: review,
         portal: portal, visit_groups: visit_groups, admin: admin
-    %tbody
-      = render "service_calendars/master_calendar/pppv/#{tab}_line_items",
+    %tbody.pppv-tbody{ class: @scroll_true ? "scrolling-div" : "" }
+      = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_line_items",
         service_request: service_request, sub_service_request: sub_service_request,
         arm: arm, tab: tab, pages: pages, page: page, review: review, portal: portal,
-        admin: admin, merged: merged, consolidated: consolidated, visit_groups: visit_groups,
-        statuses_hidden: statuses_hidden
+        admin: admin, merged: merged, consolidated: consolidated, visit_groups: visit_groups, statuses_hidden: statuses_hidden

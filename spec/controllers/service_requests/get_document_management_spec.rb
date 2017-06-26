@@ -55,9 +55,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
       arm      = create(:arm, protocol: protocol)
-      liv      = create(:line_items_visit, arm: arm, line_item: li)
-      vg       = create(:visit_group, arm: arm, day: 1)
-                 create(:visit, visit_group: vg, line_items_visit: liv)
                  create(:subsidy, sub_service_request: ssr)
 
       xhr :get, :document_management, {
@@ -76,9 +73,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
       arm      = create(:arm, protocol: protocol)
-      liv      = create(:line_items_visit, arm: arm, line_item: li)
-      vg       = create(:visit_group, arm: arm, day: 1)
-                 create(:visit, visit_group: vg, line_items_visit: liv)
                  create(:subsidy, sub_service_request: ssr)
 
       xhr :get, :document_management, {
@@ -97,9 +91,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
       arm      = create(:arm, protocol: protocol)
-      liv      = create(:line_items_visit, arm: arm, line_item: li)
-      vg       = create(:visit_group, arm: arm, day: 1)
-                 create(:visit, visit_group: vg, line_items_visit: liv)
                  create(:subsidy, sub_service_request: ssr)
 
       xhr :get, :document_management, {
@@ -118,9 +109,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
       arm      = create(:arm, protocol: protocol)
-      liv      = create(:line_items_visit, arm: arm, line_item: li)
-      vg       = create(:visit_group, arm: arm, day: 1)
-                 create(:visit, visit_group: vg, line_items_visit: liv)
 
       xhr :get, :document_management, {
         id: sr.id

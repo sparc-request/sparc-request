@@ -1,14 +1,19 @@
 namespace :data do
   task clean_up_services: :environment do
+    include ActiveModel::AttributeAssignment
+
     service_1 = Service.find(494)
     service_1.destroy
 
     service_2 = Service.find(495)
     new_service_2 = Service.find(485)
 
+    merge_service(service_2.id, new_service_2.id)
+    Organization.find(60).destroy
+
     ssrs = []
 
-    service_2.sub_service_requests.each do |ssr|
+    new_service_2.sub_service_requests.each do |ssr|
       if ssr.line_items.empty?
         ssr.destroy
         next
@@ -50,7 +55,10 @@ namespace :data do
             # ! needed, since only it will return the _other_ attributes.
             copy_over_attributes = old_attributes.
               slice!(*%w(id ssr_id organization_id org_tree_display status))
-            dest_ssr.assign_attributes(copy_over_attributes, without_protection: true)
+            dest_ssr.assign_attributes(copy_over_attributes)
+            dest_ssr.assign_attributes(ssr_id: (sprintf '%04d', Protocol.find(dest_ssr.protocol_id).next_ssr_id))
+            protocol_to_update = Protocol.find(dest_ssr.protocol_id)
+            protocol_to_update.update_attribute(:next_ssr_id, protocol_to_update.next_ssr_id + 1)
             dest_ssr.save(validate: false)
             dest_ssr.update_org_tree
             ssr.service_request.ensure_ssr_ids
@@ -62,8 +70,6 @@ namespace :data do
       end # ssr.line_items.each
     end
 
-    merge_service(service_2.id, new_service_2.id)
-    Organization.find(60).destroy
   end
 
   def merge_service(old_service_id, new_service_id)

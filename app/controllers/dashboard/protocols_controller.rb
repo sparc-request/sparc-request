@@ -23,7 +23,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   respond_to :html, :json, :xlsx
 
   before_action :find_protocol,                                   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
-  before_action :find_admin_for_protocol,                         only: [:show, :edit, :update, :update_protocol_type, :display_requests]
+  before_action :find_admin_for_protocol,                         only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
   before_action :protocol_authorizer_view,                        only: [:show, :view_full_calendar, :display_requests]
   before_action :protocol_authorizer_edit,                        only: [:edit, :update, :update_protocol_type, :archive]
 
@@ -149,6 +149,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def update
     protocol_type = protocol_params[:type]
+    @protocol.assign_attributes({ selected_for_epic: protocol_params[:selected_for_epic], study_type_question_group_id: StudyTypeQuestionGroup.active_id })
     @protocol = @protocol.becomes(protocol_type.constantize) unless protocol_type.nil?
     if params[:updated_protocol_type] == 'true' && protocol_type == 'Study' && @protocol.valid?
       @protocol.update_attribute(:type, protocol_type)

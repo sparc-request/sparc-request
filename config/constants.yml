@@ -603,9 +603,7 @@ study_type_answers_version_3: { '1' : [true,    ~,    ~,    ~,    ~],
                                 '15': [false, false, true, false, false],
                                 '16': [false, false, true, true, false],
                                 '17': [false, false, true, false, true],
-                                '18': [false, false,   ~,    ~,   ~],
-                                '19': [false, true,    ~,    ~,   ~],
-                                '0': [false, false, true, true, true] }
+                                '0': [false, false, true, true, true ] }
 
 study_type_notes:             { '1' : 'De-identified Research Participant',
                                 '3' : 'Break-The-Glass for research associated encounters',
@@ -623,8 +621,6 @@ study_type_notes:             { '1' : 'De-identified Research Participant',
                                 '15': 'Full Epic Functionality:  notification, no pink header, no MyChart access.',
                                 '16': 'Full Epic Functionality:  notification, pink header, no MyChart access.',
                                 '17': 'Full Epic Functionality:  notification, no pink header, MyChart access.',
-                                '18': 'Full Functionality',
-                                '19': 'Break-The-Glass for research associated encounters',
                                 '0': 'Full Epic Functionality:  notification, pink header, MyChart access.' }
 
 study_type_questions: ["1a. Does your study require a higher level of privacy for the participants?",   
@@ -641,11 +637,13 @@ study_type_questions_version_2: ["1. Does your study have a Certificate of Confi
                                  "4. Do you wish to remove the 'Research: Active' indicator in the Patient Header for your study participants?*",
                                  "5. Do you need to restrict the sending of study related results, such as laboratory and radiology results, to a participants MyChart?*"]
 
-study_type_questions_version_3: ["1. Does your Informed Consent provide information to the participant specifically stating their study participation will be kept private from anyone outside the research team? (i.e. your study has a Certificate of Confidentiality or involves sensitive data collection which requires de-identification of the research participant.)",
-                               '2. Does your study require a higher level of privacy protection for the participants? (Your study needs "break the glass" functionality because it is collection sensitive data, such as HIV/sexually transmitted disease, sexual practice/attitudes, illegal substance, etc., which needs higher privacy protection, yet not complete de-identification of the study participant.)',
+study_type_questions_version_3: ["1. Does your Informed Consent provide information to the participant specifically stating their study participation will be kept private from anyone outside the research team? (i.e. your study has a Certificate of Confidentiality or involves sensitive data collection which requires de-identification of the research participant in Epic.)",
+                               '2. Does your study require a higher level of privacy protection for the participants? (Your study needs "break the glass" functionality in Epic because it is collection sensitive data, such as HIV/sexually transmitted disease, sexual practice/attitudes, illegal substance, etc., which needs higher privacy protection, yet not complete de-identification of the study participant.)',
                                "3. Is it appropriate for study team members to receive Epic InBasket notifications if research participants in this study are hospitalized or admitted to the Emergency Department?",
                                '4. Is it appropriate to display the pink "Research: Active" indicator in the Patient Header for all study participants?',
-                               "5. Is it appropriate for all study participants to receive associated test results, such as labs and/or imaging findings, via MyChart?"]
+                               "5. Is it appropriate for all study participants to receive associated test results, such as labs and/or imaging findings, via MyChart?",
+                               "1. Does your Informed Consent provide information to the participant specifically stating their study participation will be kept private from anyone outside the research team? (i.e. your study has a Certificate of Confidentiality or involves sensitive data collection which requires de-identification of the research participant.)",
+                               '2. Does your study require a higher level of privacy protection for the participants? (Your study needs "break the glass" functionality because it is collection sensitive data, such as HIV/sexually transmitted disease, sexual practice/attitudes, illegal substance, etc., which needs higher privacy protection, yet not complete de-identification of the study participant.)']
 
 subject_ethnicities: { 'Caucasian': 'caucasian',
                       'African American/Black': 'black',

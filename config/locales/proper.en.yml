@@ -238,6 +238,9 @@ en:
         get_cost_estimate: "Get a Cost Estimate"
         save_and_continue: "Save and Continue →"
         submit: "Submit Request →"
+        saving: "Saving..."
+        submitting: "Submitting..."
+        getting_cost: "Getting Cost..."
       save_as_draft:
         header: "Save as Draft"
         body: "This study will be saved as a draft and no notifications or emails will be sent to Service Providers. Do you wish to proceed?"

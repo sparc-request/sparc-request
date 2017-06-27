@@ -26,7 +26,7 @@
     .col-sm-3.text-center
       = link_to t(:proper)[:navigation][:bottom][:get_cost_estimate],
         obtain_research_pricing_service_request_path(sub_service_request_id: sub_service_request_id),
-        class: 'btn btn-default get-a-cost-estimate'
+        class: 'btn btn-default get-a-cost-estimate', data: { disable_with: t(:proper)[:navigation][:bottom][:getting_cost] }
   - else
     .col-sm-6.text-center
       - if service_request.submitted_at.blank? && service_request.protocol.present?
@@ -39,4 +39,4 @@
       class: 'btn btn-default form-submit-button'
   - else
     .col-sm-3.text-right
-      = link_to action_name == 'review' ? t(:proper)[:navigation][:bottom][:submit] : t(:proper)[:navigation][:bottom][:save_and_continue], 'javascript:void(0)', class: 'btn btn-default form-submit-button'
+      = link_to action_name == 'review' ? t(:proper)[:navigation][:bottom][:submit] : t(:proper)[:navigation][:bottom][:save_and_continue], 'javascript:void(0)', class: 'btn btn-default form-submit-button', data: { disable_with: "#{action_name == 'review' ? t(:proper)[:navigation][:bottom][:submitting] : t(:proper)[:navigation][:bottom][:saving] }" }

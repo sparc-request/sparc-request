@@ -31,6 +31,6 @@
           = t(:proper)[:navigation][:save_as_draft][:body]
       .modal-footer
         .center-block
-          = link_to t(:constants)[:yes_select], save_and_exit_service_request_path, class: 'btn btn-default yes-button'
+          = link_to t(:constants)[:yes_select], save_and_exit_service_request_path, class: 'btn btn-default yes-button', data: { t(:proper)[:navigation][:bottom][:saving] }
           %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
             = t(:constants)[:no_select]

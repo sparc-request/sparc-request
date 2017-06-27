@@ -300,7 +300,6 @@ class EpicInterface
   end
 
   def emit_study_type(xml, study)
-
     study_type = StudyTypeFinder.new(study).study_type
 
     if study_type

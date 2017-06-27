@@ -84,6 +84,8 @@ $(document).ready ->
   epic_inbasket_dropdown = '#study_type_answer_epic_inbasket_answer'
   research_active_dropdown = '#study_type_answer_research_active_answer'
   restrict_sending_dropdown = '#study_type_answer_restrict_sending_answer'
+  certificate_of_confidence_no_epic = '#study_type_answer_certificate_of_conf_no_epic_answer'
+  higher_level_of_privacy_no_epic = '#study_type_answer_higher_level_of_privacy_no_epic_answer'
 
   epic_box_alert_message = () ->
     options = {
@@ -129,8 +131,14 @@ $(document).ready ->
 
   ### INITIAL PAGE LOAD EDIT STUDY IN SPARCRequest #######################
   if $('#study_selected_for_epic_true_button').hasClass('active')
+    $(study_type_form).show()
+    $(certificate_of_confidence_dropdown).show_elt()
     $('#study_type_answer_certificate_of_conf_answer').show_elt()
     $('#study_type_note').show()
+
+  else if $('#study_selected_for_epic_false_button').hasClass('active') || $('input#epic_config').val() == 'false'
+    $(study_type_form).show()
+    $(certificate_of_confidence_no_epic).show_elt()
 
   ###FUNDING STATUS FIELDS DISPLAY###
   $(document).on 'change', '#protocol_funding_status', ->
@@ -159,10 +167,7 @@ $(document).ready ->
     $(this).siblings('.active').removeClass('active')
 
   ###END PUBLISH IN EPIC BUTTON STATES###
-
-  if $("input[name='protocol[selected_for_epic]',val='true']").prop('checked')
-    $(study_type_form).show()
-    $(certificate_of_confidence_dropdown).show_elt()
+    
 
   ###EPIC BUTTON FIELDS DISPLAY###
   $(document).on 'change', "input[name='protocol[selected_for_epic]']", ->
@@ -170,12 +175,15 @@ $(document).ready ->
     switch $('#selected_for_epic_button .btn input:radio:checked').val()
       when 'true'
         $('.question-label').addClass('required')
+        $(certificate_of_confidence_no_epic).hide_elt().trigger 'change'
+        $(certificate_of_confidence_dropdown).show_elt()
       when 'false'
         $('.question-label').removeClass('required')
+        $(certificate_of_confidence_dropdown).hide_elt().trigger 'change'
+        $(certificate_of_confidence_no_epic).show_elt()
     $(study_type_form).hide()
-    $(certificate_of_confidence_dropdown).hide_elt().trigger 'change'
     $(study_type_form).show()
-    $(certificate_of_confidence_dropdown).show_elt()
+    
 
   $(document).on 'change', certificate_of_confidence_dropdown, (e) ->
     new_value = $(e.target).val()
@@ -238,6 +246,14 @@ $(document).ready ->
       determine_study_type(data)
     else
       $('#study_type_note').hide()
+    return
+
+  $(document).on 'change', certificate_of_confidence_no_epic, (e) ->
+    new_value = $(e.target).val()
+    if new_value == 'false'
+      $(higher_level_of_privacy_no_epic).show_elt()
+    else
+      $(higher_level_of_privacy_no_epic).hide_elt()
     return
 
   ###END EPIC BUTTON FIELDS DISPLAY###

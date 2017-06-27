@@ -41,6 +41,9 @@ class Service < ApplicationRecord
   has_many :identities, :through => :service_providers
   has_many :questionnaires
   has_many :submissions
+  ## commented out to remove tags, but will likely be added in later ##
+  # has_many :taggings, through: :organization
+  # has_many :tags, through: :taggings
 
   # Services that this service depends on
   has_many :service_relations, :dependent => :destroy

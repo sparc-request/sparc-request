@@ -945,7 +945,6 @@ RSpec.describe EpicInterface do
           </studyCharacteristic>
         </subjectOf>
       END
-
       expected = Nokogiri::XML(xml)
 
       node = epic_received[0].xpath(
@@ -1011,7 +1010,7 @@ RSpec.describe EpicInterface do
       'env' => 'http://www.w3.org/2003/05/soap-envelope',
       'rpe' => 'urn:ihe:qrph:rpe:2009',
       'hl7' => 'urn:hl7-org:v3')
-
+      
       expect(node[0]).to be_equivalent_to(expected.root)
     end
 
@@ -1040,7 +1039,6 @@ RSpec.describe EpicInterface do
       'env' => 'http://www.w3.org/2003/05/soap-envelope',
       'rpe' => 'urn:ihe:qrph:rpe:2009',
       'hl7' => 'urn:hl7-org:v3')
-
       expect(node[0]).to be_equivalent_to(expected.root)
     end
 

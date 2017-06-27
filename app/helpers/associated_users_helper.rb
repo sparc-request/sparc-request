@@ -24,9 +24,9 @@ module AssociatedUsersHelper
   #        Also used in form helpers.
   # classes - HTML classes to add to form-group.
   # label - Override localized label text.
-  def user_form_group(form: nil, name:, classes: [], label: nil, data: {}, title: nil)
+  def user_form_group(form: nil, name:, classes: [], label: nil, data: {}, title: nil, required: false)
     form_group_classes = %w(row form-group) + [classes]
-    label_class = 'col-lg-3 control-label'
+    label_class = 'col-lg-3 control-label' + (required ? 'required' : '')
     label_text = label || t(:authorized_users)[:form_fields][name.to_sym]
     label = if form
               form.label(name,
@@ -71,7 +71,7 @@ module AssociatedUsersHelper
   #   options.
   def professional_organization_dropdown(form: nil, choices_from:)
     select_class = 'form-control selectpicker'
-    prompt = t(:authorized_users)[:form_fields][:select_one]
+    prompt = t(:constants)[:prompts][:select_one]
     if choices_from.kind_of?(ProfessionalOrganization)
       options = options_from_collection_for_select(choices_from.self_and_siblings.order(:name), 'id', 'name', choices_from.id)
       select_id = "select-pro-org-#{choices_from.org_type}"

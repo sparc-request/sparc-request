@@ -124,7 +124,6 @@ class ServicePricingReport < ReportingModule
 
   # Other tables to include
   def includes
-    return :pricing_maps
   end
 
   ## commented out to remove tags, but will likely be added in later ##

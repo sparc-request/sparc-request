@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,20 +17,23 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#save-as-draft-modal
-  .modal-dialog
-    .modal-content
-      .modal-header
-        %button.close{ type: 'button', data: { dismiss: 'modal' } }
-          %span{ aria: { hidden: 'true' } } &times;
-        %h4.text-center#modal-title
-          = t(:proper)[:navigation][:save_as_draft][:header]
-      .modal-body
-        #modal_errors
-        .form-group
-          = t(:proper)[:navigation][:save_as_draft][:body]
-      .modal-footer
-        .center-block
-          = link_to t(:constants)[:yes_select], save_and_exit_service_request_path, class: 'btn btn-default yes-button', data: { t(:proper)[:navigation][:bottom][:saving] }
-          %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
-            = t(:constants)[:no_select]
+- disable = ['pi', 'primary-pi', 'business-grants-manager'].include?(form.object.role)
+= user_form_group(name: :rights, form: form, required: true,
+  data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' },
+  title: t(:authorized_users)[:tooltips][:rights]) do
+  - PROXY_RIGHTS.each do |key, value|
+    .radio
+      %label
+        = form.radio_button :project_rights, value, disabled: ['pi', 'primary-pi', 'business-grants-manager'].include?(form.object.role) && value != 'approve', data: { dashboard: dashboard.to_s }
+      %span
+        = key
+- user = (@user.present? ? @user : current_user)
+- if action_name == 'edit' && user.id == form.object.identity_id
+  - if dashboard && !admin
+    .form-group.text-center.project-rights-redirect-warning.hidden
+      %span.text-danger
+        = t(:authorized_users)[:rights][:change_warning][:dashboard]
+  - elsif !dashboard && !user.is_overlord?
+    .form-group.text-center.project-rights-redirect-warning.hidden
+      %span.text-danger
+        = t(:authorized_users)[:rights][:change_warning][:proper]

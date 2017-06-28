@@ -930,7 +930,7 @@ RSpec.describe EpicInterface do
 
     it 'should return YES_COFC' do
 
-      answers = [true, nil, nil, nil, nil, nil]
+      answers = [true, nil, nil, nil, nil, nil, nil]
       update_answers(3, answers)
 
       epic_interface.send_study_creation(study)
@@ -952,8 +952,7 @@ RSpec.describe EpicInterface do
       'env' => 'http://www.w3.org/2003/05/soap-envelope',
       'rpe' => 'urn:ihe:qrph:rpe:2009',
       'hl7' => 'urn:hl7-org:v3')
-      binding.pry
-      expect(node[0]).to be_equivalent_to(expected.root)
+      expect(node[1]).to be_equivalent_to(expected.root)
 
     end
 

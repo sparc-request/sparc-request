@@ -21,7 +21,6 @@
 class StudyTypeFinder
 
 	def initialize(study, answers=nil)
-    binding.pry
 		@study = study
     @answers = answers
 		@study_type = nil
@@ -37,7 +36,6 @@ class StudyTypeFinder
   end
 
   def collect_answers(study)
-    binding.pry
     @study.display_answers.map(&:answer)
   end
 

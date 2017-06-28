@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .form-group.row
-  = form.label :selected_for_epic, t(:protocols)[:studies][:information][:push_to_epic], class: 'col-lg-2 control-label required'
+  = form.label :selected_for_epic, t(:protocols)[:studies][:information][:push_to_epic], class: "col-lg-2 control-label required"
   .col-lg-10
     %span.epic_selected.display_epic_answers
       = form.object.selected_for_epic ? t(:constants)[:yes_select] : t(:constants)[:no_select]
@@ -26,9 +26,8 @@
         = form.hidden_field :selected_for_epic, value: true
       - else
         = form.hidden_field :selected_for_epic, value: false
-.form-group.row.selected_for_epic_dependent#readonly{ display_if(protocol.selected_for_epic) }
-  = form.label :study_type_questions, t(:study_form)[:study_type_questions], class: 'col-lg-2 control-label'
+.form-group.row.selected_for_epic_dependent#readonly
+  = form.label :study_type_questions, t(:study_form)[:study_type_questions], class: "col-lg-2 control-label "
   .col-lg-10
-    - if protocol.selected_for_epic 
-      = form.fields_for :study_type_answers, protocol.display_answers do |answer|
-        = render partial: 'dashboard/protocols/form/study_form_sections/readonly_answer_field', locals: { answer: answer }
+    = form.fields_for :study_type_answers, protocol.display_answers do |answer|
+      = render partial: 'dashboard/protocols/form/study_form_sections/readonly_answer_field', locals: { answer: answer }

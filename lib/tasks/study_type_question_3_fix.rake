@@ -22,6 +22,8 @@ desc "change data in version 3 of epic questions"
 task :study_type_question_3_fix => :environment do
   
   STUDY_TYPE_QUESTIONS_VERSION_3.each_with_index do |stq, index|
-    StudyTypeQuestion.where(study_type_question_group_id: 3).where(order: index+1).update(question: stq)
+    StudyTypeQuestion.where(study_type_question_group_id: 3).find_or_create_by(question: stq)
   end
+  StudyTypeQuestion.where(question: STUDY_TYPE_QUESTIONS_VERSION_3[5]).update(order: 1, friendly_id: 'certificate_of_conf_no_epic')
+  StudyTypeQuestion.where(question: STUDY_TYPE_QUESTIONS_VERSION_3[6]).update(order: 2, friendly_id: 'higher_level_of_privacy_no_epic')
 end

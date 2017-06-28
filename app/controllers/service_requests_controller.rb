@@ -34,6 +34,7 @@ class ServiceRequestsController < ApplicationController
   def show
     @protocol = @service_request.protocol
     @admin_offset = params[:admin_offset]
+    @show_signature_section = params[:show_signature_section]
     @service_list_true = @service_request.service_list(true)
     @service_list_false = @service_request.service_list(false)
     @line_items = @service_request.line_items

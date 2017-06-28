@@ -77,7 +77,7 @@
             %label.col-lg-4
               = t(:protocols)[:studies][:information][:funding_source_federal][:code]
             .col-lg-8
-              = FEDERAL_GRANT_CODES.key(protocol.federal_grant_code_id)
+              = PermissibleValue.get_value('federal_grant_code', protocol.federal_grant_code_id)
         %tr.row
           %td
             %label.col-lg-4

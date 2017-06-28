@@ -44,68 +44,87 @@ RSpec.describe 'User creates study', js: true do
                   create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
   end
 
-  context 'selects "No" for "Publish Study in Epic" and selects answers that give study_type 18' do
-    scenario 'should show note for study_type 18' do
-      visit_create_study_form
-      wait_for_javascript_to_finish
+  context 'Using Epic' do
+    context 'selects "Publish Study in Epic" and selects answers that give study_type 1' do
+      scenario 'should show note for study_type 1' do
+        visit_create_study_form
+        wait_for_javascript_to_finish
 
-      find('#study_selected_for_epic_false_button').click
-      wait_for_javascript_to_finish
+        find('#study_selected_for_epic_true_button').click
+        wait_for_javascript_to_finish
 
-      bootstrap_select '#study_type_answer_certificate_of_conf_answer', 'No'
-      bootstrap_select '#study_type_answer_higher_level_of_privacy_answer', 'No'
-      wait_for_javascript_to_finish
+        bootstrap_select '#study_type_answer_certificate_of_conf_answer', 'Yes'
+        wait_for_javascript_to_finish
 
-      expect(page).to have_content('Full Functionality')
+        expect(page).to have_content('De-identified  Research  Participant')
+      end
+    end
+    context 'selects "Publish Study in Epic" and selects answers that give study_type 11' do
+      scenario 'should show note for study_type 1' do
+        visit_create_study_form
+        wait_for_javascript_to_finish
+
+        find('#study_selected_for_epic_true_button').click
+        wait_for_javascript_to_finish
+
+        bootstrap_select '#study_type_answer_certificate_of_conf_answer', 'No'
+        bootstrap_select '#study_type_answer_higher_level_of_privacy_answer', 'No'
+        bootstrap_select '#study_type_answer_epic_inbasket_answer', 'No'
+        bootstrap_select '#study_type_answer_research_active_answer', 'No'
+        bootstrap_select '#study_type_answer_restrict_sending_answer', 'No'
+        wait_for_javascript_to_finish
+
+        expect(page).to have_content('Full Epic  Functionality: no  notification, no  pink  header, no  MyChart access.')
+      end
+    end
+
+    context 'selects "No" to "Publish Study in Epic"' do
+      it 'should show questions without Epic language' do
+        visit_create_study_form
+        wait_for_javascript_to_finish
+
+        find('#study_selected_for_epic_false_button').click
+        wait_for_javascript_to_finish
+
+        expect(page).to have_content(STUDY_TYPE_QUESTIONS_VERSION_3[5])
+
+        bootstrap_select '#study_type_answer_certificate_of_conf_no_epic_answer', 'No'
+        wait_for_javascript_to_finish
+
+        expect(page).to have_content(STUDY_TYPE_QUESTIONS_VERSION_3[6])
+      end
     end
   end
 
-  context 'selects "No" for "Publish Study in Epic" and selects answers that give study_type 19' do
-    scenario 'should show note for study_type 19' do
+  context 'Not Using Epic' do
+
+    before :each do
+      stub_const("USE_EPIC", false)
       visit_create_study_form
       wait_for_javascript_to_finish
-
-      find('#study_selected_for_epic_false_button').click
-      wait_for_javascript_to_finish
-
-      bootstrap_select '#study_type_answer_certificate_of_conf_answer', 'No'
-      bootstrap_select '#study_type_answer_higher_level_of_privacy_answer', 'Yes'
-      wait_for_javascript_to_finish
-
-      expect(page).to have_content('Break-The-Glass for research associated encounters')
     end
-  end
 
-  context 'selects "Publish Study in Epic" and selects answers that give study_type 1' do
-    scenario 'should show note for study_type 1' do
-      visit_create_study_form
-      wait_for_javascript_to_finish
-
-      find('#study_selected_for_epic_true_button').click
-      wait_for_javascript_to_finish
-
-      bootstrap_select '#study_type_answer_certificate_of_conf_answer', 'Yes'
-      wait_for_javascript_to_finish
-
-      expect(page).to have_content('De-identified  Research  Participant')
+    it 'defaults to the "No" answer for the epic question' do
+      expect(page).not_to have_selector('#study_selected_for_epic_true_button')
+      expect(page).to have_content(STUDY_TYPE_QUESTIONS_VERSION_3[5])
     end
-  end
-  context 'selects "Publish Study in Epic" and selects answers that give study_type 11' do
-    scenario 'should show note for study_type 1' do
-      visit_create_study_form
-      wait_for_javascript_to_finish
 
-      find('#study_selected_for_epic_true_button').click
-      wait_for_javascript_to_finish
+    it 'shows the second question when "No" is selected for the first' do
+      bootstrap_select '#study_type_answer_certificate_of_conf_no_epic_answer', 'No'
+      expect(page).to have_content(STUDY_TYPE_QUESTIONS_VERSION_3[6])
+    end
 
-      bootstrap_select '#study_type_answer_certificate_of_conf_answer', 'No'
-      bootstrap_select '#study_type_answer_higher_level_of_privacy_answer', 'No'
-      bootstrap_select '#study_type_answer_epic_inbasket_answer', 'No'
-      bootstrap_select '#study_type_answer_research_active_answer', 'No'
-      bootstrap_select '#study_type_answer_restrict_sending_answer', 'No'
+    it 'does not show notes when the form is completed' do
+      bootstrap_select '#study_type_answer_certificate_of_conf_no_epic_answer', 'Yes'
       wait_for_javascript_to_finish
-
-      expect(page).to have_content('Full Epic  Functionality: no  notification, no  pink  header, no  MyChart access.')
+      expect(page).not_to have_selector('#study_type_note')
+      bootstrap_select '#study_type_answer_certificate_of_conf_no_epic_answer', 'No'
+      bootstrap_select '#study_type_answer_higher_level_of_privacy_no_epic_answer', 'Yes'
+      wait_for_javascript_to_finish
+      expect(page).not_to have_selector('#study_type_note')
+      bootstrap_select '#study_type_answer_higher_level_of_privacy_no_epic_answer', 'No'
+      wait_for_javascript_to_finish
+      expect(page).not_to have_selector('#study_type_note')
     end
   end
 end

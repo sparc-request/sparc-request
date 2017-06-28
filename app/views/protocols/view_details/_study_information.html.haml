@@ -111,18 +111,17 @@
             = protocol.selected_for_epic ? t(:constants)[:yes_select] : t(:constants)[:no_select]
 
       / Epic Questions
-      - if protocol.selected_for_epic
-        %tr.row
-          %td.row
-            %table.table.table-bordered
-              %thead.default-header
-                %th
-                  %h5.col-lg-12
-                    %strong
-                      = t(:protocols)[:studies][:information][:study_type_questions]
-              - protocol.display_answers.each do |answer|
-                - if answer.study_type_question.study_type_question_group.active && protocol.active? && answer.answer != nil
-                  = render partial: 'protocols/view_details/epic_questions_answers', locals: { answer: answer }
-                - elsif !answer.study_type_question.study_type_question_group.active && !protocol.active? && answer.answer != nil
-                  = render partial: 'protocols/view_details/epic_questions_answers', locals: { answer: answer }
-            = render partial: 'protocols/view_details/study_type_note', locals: { protocol: protocol }         
+      %tr.row
+        %td.row
+          %table.table.table-bordered
+            %thead.default-header
+              %th
+                %h5.col-lg-12
+                  %strong
+                    = t(:protocols)[:studies][:information][:study_type_questions]
+            - protocol.display_answers.each do |answer|
+              - if answer.study_type_question.study_type_question_group.active && protocol.active? && answer.answer != nil
+                = render partial: 'protocols/view_details/epic_questions_answers', locals: { answer: answer }
+              - elsif !answer.study_type_question.study_type_question_group.active && !protocol.active? && answer.answer != nil
+                = render partial: 'protocols/view_details/epic_questions_answers', locals: { answer: answer }
+          = render partial: 'protocols/view_details/study_type_note', locals: { protocol: protocol }         

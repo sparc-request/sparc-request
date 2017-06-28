@@ -60,6 +60,8 @@ en:
           attributes:
             content:
               blank: "Content can't be blank"
+      messages:
+        spoofed_media_type: "has formatting errors. Try re-saving file as a different format, and retrying."
     attributes:
       arm:
         name: "Arm Name"
@@ -987,7 +989,7 @@ en:
   study_form:
     affiliations: "Affiliations, Collaborations, and Memberships"
     approval_pending: "Application/Approval Pending:"
-    study_type_questions: "Study type questions *"
+    study_type_questions: "Study Type Questions"
     attributes: "Study Attributes"
     clear: "Clear"
     code_blank: "Select a Federal Grant Code"

@@ -51,7 +51,7 @@ class ServicePricingReport < ReportingModule
   end
 
   def records
-    records ||= self.table.eager_load(:pricing_maps).where(self.where(self.params)).group(self.group).order(self.order).distinct(self.uniq)
+    records ||= self.table.joins(self.joins(self.params)).where(self.where(self.params)).group(self.group).order(self.order).distinct(self.uniq)
   end
 
   def column_attrs
@@ -121,7 +121,12 @@ class ServicePricingReport < ReportingModule
 
   # Other tables to include
   def includes
-    return :pricing_maps
+  end
+
+  def joins args={}
+    rtn = [:pricing_maps]
+    rtn << :tags if args[:tags]
+    return rtn
   end
 
   # Conditions
@@ -142,12 +147,9 @@ class ServicePricingReport < ReportingModule
 
     service_organizations = Organization.where(id: service_organization_ids)
 
-    if args[:tags]
-      tagged_organization_ids = service_organizations.joins(:tags).where(tags: { id: params[:tags] }).ids
-      service_organization_ids = service_organization_ids & tagged_organization_ids
-    end
-
-    return "pricing_maps.display_date >= #{args[:services_pricing_date] || Date.today.to_s}" + (service_organization_ids.any? ? "and services.organization_id IN (#{service_organization_ids.join(',')})" : "")
+    date = args[:services_pricing_date] ? Date.parse(args[:services_pricing_date]) : Date.today
+    query = "pricing_maps.display_date >= \"#{date}\" and services.organization_id IN (#{service_organization_ids.join(',')})"
+    return query + (args[:tags] ? " and tags.name IN (\"#{args[:tags].join('\",\"')}\")" : "")
   end
 
   def uniq

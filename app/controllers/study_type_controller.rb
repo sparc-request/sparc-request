@@ -29,6 +29,6 @@ class StudyTypeController < ApplicationController
   def extract_answers
     extracted_params = params.extract!(:ans1, :ans2, :ans3, :ans4, :ans5)
     boolean_params = extracted_params.transform_values {|val| val.to_s.eql?('true') ? true : val.eql?('') ? nil : false}
-    @study_type_answers = boolean_params.values  
+    @study_type_answers = boolean_params.values
   end
 end

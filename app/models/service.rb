@@ -41,6 +41,8 @@ class Service < ApplicationRecord
   has_many :identities, :through => :service_providers
   has_many :questionnaires
   has_many :submissions
+  has_many :taggings, through: :organization
+  has_many :tags, through: :taggings
 
   # Services that this service depends on
   has_many :service_relations, :dependent => :destroy
@@ -65,7 +67,7 @@ class Service < ApplicationRecord
   ###############################################
 
   def humanized_status
-    self.is_available ? 'Available' : 'Unavailable'
+    self.is_available ? I18n.t(:reporting)[:service_pricing][:available] : I18n.t(:reporting)[:service_pricing][:unavailable]
   end
 
   def process_ssrs_organization

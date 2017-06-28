@@ -113,10 +113,9 @@ $(document).ready ->
     array_values = new Array()
     for k,v of answers
       array_values.push(v)
-    nil_value = $.inArray('', array_values) > -1
-    not_for_epic = $.inArray('false') < 2 && $('#selected_for_epic_button .btn input:radio:checked').val() == 'false'
-    console.log("hello")
-    if array_values[0] == 'true' || not_for_epic || !nil_value
+    nil_value = $.inArray('', array_values) < 5
+    if array_values[0] == 'true' || !nil_value
+      console.log("hello")
       $.ajax
         type: 'POST'
         data: answers

@@ -66,7 +66,7 @@ RSpec.describe 'User creates study', js: true do
 
         find('#study_selected_for_epic_true_button').click
         wait_for_javascript_to_finish
-
+        binding.pry
         bootstrap_select '#study_type_answer_certificate_of_conf_answer', 'No'
         bootstrap_select '#study_type_answer_higher_level_of_privacy_answer', 'No'
         bootstrap_select '#study_type_answer_epic_inbasket_answer', 'No'

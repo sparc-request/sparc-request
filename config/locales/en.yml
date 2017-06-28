@@ -61,7 +61,7 @@ en:
             content:
               blank: "Content can't be blank"
       messages:
-        spoofed_media_type: "has formatting errors. Try re-saving file as a different format, and retrying."
+        spoofed_media_type: "has format errors. Please re-save the file in a different format and try again."
     attributes:
       arm:
         name: "Arm Name"

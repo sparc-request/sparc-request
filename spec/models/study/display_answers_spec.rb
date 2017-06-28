@@ -20,78 +20,14 @@
 require 'rails_helper'
 
 RSpec.describe 'Protocol' do
-  let_there_be_lane
-  let_there_be_j
-  build_service_request_with_study()
-  build_study_type_question_groups()
-  build_study_type_questions()
-  build_study_type_answers()
 
-  describe 'should return a study_type for version_3' do
-
-    before :each do 
-      study.update_attribute(:selected_for_epic, true)
+  describe '#display_answers' do
+    before :each do
+      @study = create(:study_without_validations_with_questions, selected_for_epic: true)
     end
 
     it 'should return appropriate answers' do
-      STUDY_TYPE_ANSWERS_VERSION_3.each do |ans|
-        update_answers(3, ans.last)
-        expect(study.display_answers.map(&:answer)).to eq(ans.last)
-      end 
-    end
-  end
-
-  describe 'should return a study_type for version_2' do
-
-    before :each do 
-      study.update_attribute(:selected_for_epic, true)
-      study.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.where(version: 2).first.id)
-    end
-
-    it 'should return appropriate answers' do
-      STUDY_TYPE_ANSWERS_VERSION_2.each do |ans|
-        update_answers(2, ans.last)
-        expect(study.display_answers.map(&:answer)).to eq(ans.last)
-      end 
-    end
-  end
-
-  describe 'should return a study_type for version_1' do
-
-    before :each do 
-      study.update_attribute(:selected_for_epic, true)
-      study.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.where(version: 1).first.id)
-    end
-
-    it 'should return appropriate answers' do
-      STUDY_TYPE_ANSWERS.each do |ans|
-        update_answers(1, ans.last)
-        expect(study.display_answers.map(&:answer)).to eq(ans.last)
-      end 
-    end
-  end
-
-  def update_answers (version, answer_array)
-    if version == 3
-      answer1_version_3.update_attributes(answer: answer_array[0])
-      answer2_version_3.update_attributes(answer: answer_array[1])
-      answer3_version_3.update_attributes(answer: answer_array[2])
-      answer4_version_3.update_attributes(answer: answer_array[3])
-      answer5_version_3.update_attributes(answer: answer_array[4])
-    elsif version == 2
-      answer1_version_2.update_attributes(answer: answer_array[0])
-      answer2_version_2.update_attributes(answer: answer_array[1])
-      answer3_version_2.update_attributes(answer: answer_array[2])
-      answer4_version_2.update_attributes(answer: answer_array[3])
-      answer5_version_2.update_attributes(answer: answer_array[4])
-      answer6_version_2.update_attributes(answer: answer_array[5])
-    elsif version == 1
-      answer1_version_1.update_attributes(answer: answer_array[0])
-      answer2_version_1.update_attributes(answer: answer_array[1])
-      answer3_version_1.update_attributes(answer: answer_array[2])
-      answer4_version_1.update_attributes(answer: answer_array[3])
-      answer5_version_1.update_attributes(answer: answer_array[4])
-      answer6_version_1.update_attributes(answer: answer_array[5])
+      expect(@study.display_answers).to eq(@study.study_type_answers)
     end
   end
 end

@@ -542,7 +542,6 @@ potential_funding_sources: { 'College Department': 'college',
                              'Student Funded Research': 'unfunded' }
 
 proxy_rights: { 'Authorize/Change Study Charges': 'approve',
-                'Request/Approve Services': 'request',
                 'View Rights': 'view',
                 'Member Only': 'none' }
 
@@ -898,26 +897,6 @@ user_roles: { 'Primary PI': 'primary-pi',
               'Billing/Business Manager': 'business-grants-manager',
               'Research Nurse': 'research-nurse',
               'Other': 'other' }
-audit_actions: { 'create': 'Added',
-                 'destroy': 'Deleted'}
-additional_detail_question_types: {
-  'Text': 'text',
-  'Text Area': 'textarea',
-  'Radio Button': 'radio_button',
-  'Likert Scale': 'likert',
-  'Checkbox': 'checkbox',
-  'Yes/No': 'yes_no',
-  'Email': 'email',
-  'Date': 'date',
-  'Number': 'number',
-  'Zipcode': 'zipcode',
-  'State': 'state',
-  'Country': 'country',
-  'Time': 'time',
-  'Phone': 'phone',
-  'Dropdown': 'dropdown',
-  'Multiple Dropdown': 'multiple_dropdown'
-}
 browser_versions: {
   'Internet Explorer': '1',
   'Mozilla Firefox': '2',

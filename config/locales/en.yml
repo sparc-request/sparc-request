@@ -60,6 +60,8 @@ en:
           attributes:
             content:
               blank: "Content can't be blank"
+      messages:
+        spoofed_media_type: "has formatting errors. Try re-saving file as a different format, and retrying."
     attributes:
       arm:
         name: "Arm Name"
@@ -145,20 +147,26 @@ en:
       era: "ERA Commons Name:"
       credentials: "Credentials:"
       credentials_prompt: "Select a Credential"
-      credentials_specify: "Please Specify:*"
+      credentials_specify: "Please Specify:"
       phone: "Phone:"
       subspecialty: "Subspecialty:"
       subspecialty_prompt: "Select a Subspecialty"
-      rights: "User Rights:*"
-      role: "Role:*"
+      role: "Role:"
       role_prompt: "Select a Role"
-      role_specify: "Please Specify:*"
-      epic_access: "Epic EMR Access?:*"
-      select_one: "Select one"
+      role_specify: "Please Specify:"
+      epic_access: "Epic EMR Access?:"
+      rights: "User Rights:"
     rights:
       none: Member Only
       view: "View Rights"
       approve: "Authorized/Change Study Charges"
+      change_warning:
+        dashboard: "Warning: Changing your User Rights to \'Member Only\' will redirect you to your Dashboard"
+        proper: "Warning: Changing your User Rights will redirect you to your Dashboard"
+    change_primary_pi:
+      header: "**Warning**"
+      warning: "Adding the new Primary PI (<strong>%{new_pi_name}</strong>) will change the current Primary PI (<strong>%{old_pi_name}</strong>) to a general access user on Protocol (<strong>%{protocol_id}</strong>)."
+      prompt: "Do you wish to proceed?"
     table_fields:
       name: "Full Name"
       role: "Role"

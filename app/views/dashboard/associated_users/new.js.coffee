@@ -24,7 +24,7 @@ getSRId = () ->
 $("#modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
 $('#authorized_user_search').val('')
 <% elsif @identity.present? %># User selected, go to 'User Form'
-$("#modal_place").html("<%= escape_javascript(render( 'associated_users/user_form', protocol: @protocol, project_role: @project_role, identity: @identity, current_pi: @current_pi, header_text: @header_text, dashboard: @dashboard )) %>")
+$("#modal_place").html("<%= escape_javascript(render( 'associated_users/user_form', protocol: @protocol, project_role: @project_role, identity: @identity, current_pi: @current_pi, header_text: @header_text, dashboard: @dashboard, admin: @admin )) %>")
 <% else %># User not selected, go to 'Select User Form'
 $("#modal_place").html("<%= escape_javascript(render( 'associated_users/select_user_form', protocol: @protocol, header_text: @header_text )) %>")
 

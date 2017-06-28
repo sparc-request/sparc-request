@@ -20,20 +20,21 @@
 
 
 .form-group.row
-  = form.label :selected_for_epic,
-    t(:protocols)[:studies][:information][:push_to_epic],
-    class: 'col-lg-2 control-label required',
-    data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
-    title: t(:protocols)[:tooltips][:epic]
-  .col-lg-10
-    .btn-group#selected_for_epic_button{data: { toggle: "labels" } }
-      %label.radio-inline.btn.btn-default#study_selected_for_epic_true_button{ class: protocol.selected_for_epic? ? 'active' : ''}
-        = form.radio_button :selected_for_epic, 'true', id: "study_selected_for_epic_true", class: 'hidden'
-        = t(:constants)[:yes_select]
-      %label.radio-inline.btn.btn-default#study_selected_for_epic_false_button{ class: protocol.selected_for_epic == false ? 'active' : ''}
-        = form.radio_button :selected_for_epic, 'false', id: "study_selected_for_epic_false", class: 'hidden'
-        = t(:constants)[:no_select]
-.form-group.row.selected_for_epic_dependent{ display_if(protocol.selected_for_epic) }
+  - if USE_EPIC
+    = form.label :selected_for_epic,
+      t(:protocols)[:studies][:information][:push_to_epic],
+      class: 'col-lg-2 control-label required',
+      data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
+      title: t(:protocols)[:tooltips][:epic]
+    .col-lg-10
+      .btn-group#selected_for_epic_button{data: { toggle: "labels" } }
+        %label.radio-inline.btn.btn-default#study_selected_for_epic_true_button{ class: protocol.selected_for_epic? ? 'active' : ''}
+          = form.radio_button :selected_for_epic, 'true', id: "study_selected_for_epic_true", class: 'hidden'
+          = t(:constants)[:yes_select]
+        %label.radio-inline.btn.btn-default#study_selected_for_epic_false_button{ class: protocol.selected_for_epic || USE_EPIC ? '': 'active'}
+          = form.radio_button :selected_for_epic, 'false', id: "study_selected_for_epic_false", class: 'hidden'
+          = t(:constants)[:no_select]
+.form-group.row.selected_for_epic_dependent
   = form.label :study_type_questions,
     t(:protocols)[:studies][:information][:study_type_questions],
     class: "col-lg-2 control-label question-label #{protocol.selected_for_epic ? 'required' : ''}",

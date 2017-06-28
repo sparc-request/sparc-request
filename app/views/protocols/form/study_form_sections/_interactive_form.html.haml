@@ -34,7 +34,7 @@
         %label.radio-inline.btn.btn-default#study_selected_for_epic_false_button{ class: protocol.selected_for_epic || USE_EPIC ? '': 'active'}
           = form.radio_button :selected_for_epic, 'false', id: "study_selected_for_epic_false", class: 'hidden'
           = t(:constants)[:no_select]
-.form-group.row.selected_for_epic_dependent
+.form-group.row.selected_for_epic_dependent{ display_if(protocol.selected_for_epic) }
   = form.label :study_type_questions,
     t(:protocols)[:studies][:information][:study_type_questions],
     class: "col-lg-2 control-label question-label #{protocol.selected_for_epic ? 'required' : ''}",

@@ -98,7 +98,7 @@ class ServiceCalendarsController < ApplicationController
     @tab                  = params[:tab]
     @sub_service_request  = params[:sub_service_request]
     @page                 = params[:page]
-    @pages                = eval(params[:pages])
+    @pages                = eval(params[:pages]) rescue {}
     @review               = params[:review]
     @portal               = params[:portal]
     @admin                = params[:admin]
@@ -117,7 +117,7 @@ class ServiceCalendarsController < ApplicationController
     @tab                  = params[:tab]
     @sub_service_request  = params[:sub_service_request]
     @page                 = params[:page]
-    @pages                = eval(params[:pages])
+    @pages                = eval(params[:pages]) rescue {}
     @review               = params[:review] == "true"
     @portal               = params[:portal] == "true"
     @admin                = params[:admin] == "true"

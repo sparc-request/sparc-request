@@ -40,7 +40,7 @@ class VisitGroupsController < ApplicationController
     @admin        = params[:admin] == 'true'
     @merged       = params[:merged] == 'true'
     @consolidated = params[:consolidated] == 'true'
-    @pages        = eval(params[:pages])
+    @pages        = eval(params[:pages]) rescue {}
     @page         = params[:page].to_i
 
     unless @visit_group.update_attributes(visit_group_params)

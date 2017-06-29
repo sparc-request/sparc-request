@@ -42,6 +42,23 @@ $(document).ready ->
         data:
           scroll: scroll
 
+  $(document).on 'click', '.edit-visit-group', ->
+    $.ajax
+      type: 'GET'
+      url: "/visit_groups/#{$(this).data('id')}/edit.js"
+      data:
+        service_request_id:     getSRId()
+        sub_service_request_id: getSSRId()
+        tab:                    $(this).data('tab')
+        pages:                  $(this).data('pages')
+        page:                   $(this).data('page')
+        review:                 $(this).data('review')
+        portal:                 $(this).data('portal')
+        admin:                  $(this).data('admin')
+        merged:                 $(this).data('merged')
+        consolidated:           $(this).data('consolidated')
+        statuses_hidden:        $(this).data('statuses-hidden')
+
   $(document).on 'click', '.service-calendar-row', ->
     return false if $(this).attr('disabled')
     if confirm(I18n['calendars']['pppv']['editable_fields']['row_select']['confirm'])

@@ -113,9 +113,8 @@ $(document).ready ->
     array_values = new Array()
     for k,v of answers
       array_values.push(v)
-    nil_value = $.inArray('', array_values) > -1
-    not_for_epic = $.inArray('false') < 2 && $('#selected_for_epic_button .btn input:radio:checked').val() == 'false'
-    if array_values[0] == 'true' || not_for_epic || !nil_value
+    nil_value = $.inArray('', array_values) < 5
+    if array_values[0] == 'true' || !nil_value
       $.ajax
         type: 'POST'
         data: answers
@@ -195,7 +194,7 @@ $(document).ready ->
       $(epic_inbasket_dropdown).hide_elt()
       $(research_active_dropdown).hide_elt()
       $(restrict_sending_dropdown).hide_elt()
-      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val() }
+      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val(), ans6: "", ans7: ""  }
       determine_study_type(data)
     else
       $(higher_level_of_privacy_dropdown).hide_elt()
@@ -212,7 +211,7 @@ $(document).ready ->
       $(restrict_sending_dropdown).hide_elt()
       $('#study_type_note').hide()
     else
-      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val() }
+      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val(), ans6: "", ans7: ""  }
       determine_study_type(data)
       if $('#selected_for_epic_button .btn input:radio:checked').val() == 'true'
         $(epic_inbasket_dropdown).show_elt()
@@ -224,7 +223,7 @@ $(document).ready ->
       $(restrict_sending_dropdown).hide_elt()
       $('#study_type_note').hide()
     else
-      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val() }
+      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val(), ans6: "", ans7: ""  }
       determine_study_type(data)
       $(research_active_dropdown).show_elt()
     return
@@ -234,7 +233,7 @@ $(document).ready ->
       $(restrict_sending_dropdown).hide_elt()
       $('#study_type_note').hide()
     else
-      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val() }
+      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val(), ans6: "", ans7: ""   }
       determine_study_type(data)
       $(restrict_sending_dropdown).show_elt()
     return
@@ -242,7 +241,7 @@ $(document).ready ->
   $(document).on 'change', restrict_sending_dropdown, (e) ->
     new_value = $(e.target).val()
     if new_value != ''
-      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val() }
+      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val(), ans6: "", ans7: ""  }
       determine_study_type(data)
     else
       $('#study_type_note').hide()

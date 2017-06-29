@@ -115,7 +115,6 @@ $(document).ready ->
       array_values.push(v)
     nil_value = $.inArray('', array_values) < 5
     if array_values[0] == 'true' || !nil_value
-      console.log("hello")
       $.ajax
         type: 'POST'
         data: answers

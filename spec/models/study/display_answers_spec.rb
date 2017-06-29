@@ -36,7 +36,7 @@ RSpec.describe 'Protocol' do
     it 'should return appropriate answers' do
       STUDY_TYPE_ANSWERS_VERSION_3.each do |ans|
         update_answers(3, ans.last)
-        expect(study.display_answers.compact.map(&:answer)).to eq(ans.last)
+        expect(study.display_answers.map(&:answer)).to eq(ans.last)
       end 
     end
   end
@@ -78,6 +78,8 @@ RSpec.describe 'Protocol' do
       answer3_version_3.update_attributes(answer: answer_array[2])
       answer4_version_3.update_attributes(answer: answer_array[3])
       answer5_version_3.update_attributes(answer: answer_array[4])
+      answer6_version_3.update_attributes(answer: answer_array[5])
+      answer7_version_3.update_attributes(answer: answer_array[6])
     elsif version == 2
       answer1_version_2.update_attributes(answer: answer_array[0])
       answer2_version_2.update_attributes(answer: answer_array[1])

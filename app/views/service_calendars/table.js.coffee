@@ -30,4 +30,3 @@ $("#sub_service_request_header").html("<%= escape_javascript(render( 'dashboard/
 
 $('.selectpicker').selectpicker()
 setup_xeditable_fields(@scroll_true)
-changing_tabs_calculating_rates()

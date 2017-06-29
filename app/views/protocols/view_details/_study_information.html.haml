@@ -83,7 +83,7 @@
             %label.col-lg-4
               = t(:protocols)[:studies][:information][:funding_source_federal][:phs_sponsor]
             .col-lg-8
-              = FEDERAL_GRANT_PHS_SPONSORS.key(protocol.federal_phs_sponsor)
+              = PermissibleValue.get_value('federal_grant_phs_sponsor', protocol.federal_phs_sponsor)
         %tr.row
           %td
             %label.col-lg-4

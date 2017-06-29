@@ -110,7 +110,7 @@
       .form-group.row
         = form.label :federal_phs_sponsor, t(:protocols)[:studies][:information][:funding_source_federal][:phs_sponsor], class: 'col-lg-2 control-label'
         .col-lg-10
-          = form.select :federal_phs_sponsor, options_for_select(FEDERAL_GRANT_PHS_SPONSORS, protocol.federal_phs_sponsor), { include_blank: t(:protocols)[:prompts][:federal_sponsor] }, class: 'selectpicker'
+          = form.select :federal_phs_sponsor, options_for_select(PermissibleValue.get_value_list('federal_grant_phs_sponsor'), protocol.federal_phs_sponsor), { include_blank: t(:protocols)[:prompts][:federal_sponsor] }, class: 'selectpicker'
 
       .row
         %label.col-lg-2

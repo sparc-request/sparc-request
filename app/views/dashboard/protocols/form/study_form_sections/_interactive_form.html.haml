@@ -31,7 +31,7 @@
         %label.radio-inline.btn.btn-default#study_selected_for_epic_true_button{ class: protocol.selected_for_epic? ? 'active' : ''}
           = form.radio_button :selected_for_epic, 'true', id: "study_selected_for_epic_true", class: 'hidden'
           = t(:constants)[:yes_select]
-        %label.radio-inline.btn.btn-default#study_selected_for_epic_false_button{ class: protocol.selected_for_epic == false ? 'active' : ''}
+        %label.radio-inline.btn.btn-default#study_selected_for_epic_false_button{ class: !protocol.selected_for_epic || !USE_EPIC ? 'active': '' }
           = form.radio_button :selected_for_epic, 'false', id: "study_selected_for_epic_false", class: 'hidden'
           = t(:constants)[:no_select]
 .form-group.row.selected_for_epic_dependent{ display_if(protocol.selected_for_epic) }

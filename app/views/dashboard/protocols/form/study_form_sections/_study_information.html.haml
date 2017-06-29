@@ -124,7 +124,7 @@
       .form-group.row#federal-non-phs
         = form.label :federal_non_phs_sponsor, t(:protocols)[:studies][:information][:funding_source_federal][:non_phs_sponsor], class: 'col-lg-2 control-label'
         .col-lg-10
-          = form.select :federal_non_phs_sponsor, options_for_select(FEDERAL_GRANT_NON_PHS_SPONSORS, protocol.federal_non_phs_sponsor), { include_blank: t(:protocols)[:prompts][:federal_sponsor] }, class: 'selectpicker'
+          = form.select :federal_non_phs_sponsor, options_for_select(PermissibleValue.get_value_list('protocol.federal_non_phs_sponsor'), protocol.federal_non_phs_sponsor), { include_blank: t(:protocols)[:prompts][:federal_sponsor] }, class: 'selectpicker'
 
       .form-group.row
         = form.label :federal_grant_serial_number, t(:protocols)[:studies][:information][:funding_source_federal][:serial_number], class: 'col-lg-2 control-label'

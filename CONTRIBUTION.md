@@ -1,16 +1,12 @@
 ## Contributing to Sparc Request ##
 
-### Pull Request Guidelines ###
+Please follow the [Pull Request Guidelines](https://github.com/sparc-request/sparc-request/blob/master/PULL_REQUEST_GUIDELINES.md) when submitting and reviewing a pull request.  
 
-Before any third-party contribution can be consider ready for submission as a
-pull request, the contributor must:
+In addition to these guidelines, please remember before any third-party contribution can be considered ready for submission as a pull request, the contributor must:
 
 * Include unit tests that provide full code coverage for all new code within
 any pull request (please adhere to the specifications laid out in the
 [RSpec Style Guide](https://github.com/sparc-request/sparc-request/wiki/SPARC-Request-Spec-Guide) when writing unit tests)
-
-* Run the entire test suite and verify that all tests pass in order to avoid
-breaking any existing functionality
 
 * Adhere to the [Sparc Style Guide](https://github.com/HSSC/ruby-style-guide)
 
@@ -47,5 +43,3 @@ description with as much relevant information as possible, including but not lim
 * What the expected functionality is
 * Ensure that it works with our existing code base
 * A detailed explanation for any new gems introduced
-
-Make sure all pull-requests have a green test suite on Travis.

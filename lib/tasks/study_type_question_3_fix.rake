@@ -25,7 +25,7 @@ task :study_type_question_3_fix => :environment do
     question = StudyTypeQuestion.where(study_type_question_group_id: 3).find_or_create_by(question: stq)
 
     unless StudyTypeAnswer.where(study_type_question: question).any?
-      Protocol.all.each do |protocol|
+      Protocol.joins(:study_type_question_group).where(study_type_question_groups: { version: 3 }).all.each do |protocol|
         protocol.study_type_answers.create(study_type_question: question)
       end
     end

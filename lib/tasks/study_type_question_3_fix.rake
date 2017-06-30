@@ -31,6 +31,6 @@ task :study_type_question_3_fix => :environment do
     end
   end
   
-  StudyTypeQuestion.where(question: STUDY_TYPE_QUESTIONS_VERSION_3[5]).update(order: 1, friendly_id: 'certificate_of_conf_no_epic')
-  StudyTypeQuestion.where(question: STUDY_TYPE_QUESTIONS_VERSION_3[6]).update(order: 2, friendly_id: 'higher_level_of_privacy_no_epic')
+  StudyTypeQuestion.where(question: STUDY_TYPE_QUESTIONS_VERSION_3[5]).update(order: 6, friendly_id: 'certificate_of_conf_no_epic')
+  StudyTypeQuestion.where(question: STUDY_TYPE_QUESTIONS_VERSION_3[6]).update(order: 7, friendly_id: 'higher_level_of_privacy_no_epic')
 end

@@ -511,11 +511,6 @@ RSpec.describe EpicInterface do
 
         answers = [true, true, nil, nil, nil, nil]
         update_answers(1, answers)
-        question_id = [ stq_higher_level_of_privacy_version_1.id, stq_certificate_of_conf_version_1.id, stq_access_study_info_version_1.id, stq_epic_inbasket_version_1.id, stq_research_active_version_1.id, stq_restrict_sending_version_1.id]
-
-        answers.each_with_index do |ans, index|
-          StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: question_id[index], answer: ans)
-        end
 
         epic_interface.send_study_creation(study)
 
@@ -957,7 +952,6 @@ RSpec.describe EpicInterface do
     end
 
     it 'should return NO_COFC' do
-
       answers = [false, true, false, false, false, false]
       update_answers(2, answers)
 
@@ -982,7 +976,7 @@ RSpec.describe EpicInterface do
       'rpe' => 'urn:ihe:qrph:rpe:2009',
       'hl7' => 'urn:hl7-org:v3')
 
-      expect(node[0]).to be_equivalent_to(expected.root)
+      expect(node[1]).to be_equivalent_to(expected.root)
     end
 
     it 'return a study type of 1' do

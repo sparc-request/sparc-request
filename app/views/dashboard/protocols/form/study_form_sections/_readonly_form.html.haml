@@ -28,7 +28,8 @@
         - else
           = form.hidden_field :selected_for_epic, value: false
 .form-group.row.selected_for_epic_dependent#readonly
-  = form.label :study_type_questions, t(:protocols)[:studies][:information][:study_type_questions], class: "col-lg-2 control-label "
-  .col-lg-10
-    = form.fields_for :study_type_answers, protocol.display_answers do |answer|
-      = render partial: 'dashboard/protocols/form/study_form_sections/readonly_answer_field', locals: { answer: answer, protocol: protocol }
+  - if protocol.display_answers.any?{ |as| display_study_type_question?(protocol, as) }
+    = form.label :study_type_questions, t(:protocols)[:studies][:information][:study_type_questions], class: "col-lg-2 control-label #{USE_EPIC && protocol.selected_for_epic ? 'required' : ''}"
+    .col-lg-10
+      = form.fields_for :study_type_answers, protocol.display_answers do |answer|
+        = render partial: 'dashboard/protocols/form/study_form_sections/readonly_answer_field', locals: { answer: answer, protocol: protocol }

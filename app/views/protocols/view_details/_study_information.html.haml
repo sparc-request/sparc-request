@@ -126,5 +126,5 @@
                   = render partial: 'protocols/view_details/epic_questions_answers', locals: { answer: answer }
                 - elsif !answer.study_type_question.study_type_question_group.active && !protocol.active? && display_study_type_question?(protocol, answer)
                   = render partial: 'protocols/view_details/epic_questions_answers', locals: { answer: answer }
-            - if USE_EPIC
+            - if USE_EPIC && protocol.selected_for_epic
               = render partial: 'protocols/view_details/study_type_note', locals: { protocol: protocol }         

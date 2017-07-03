@@ -89,7 +89,7 @@
         title: t(:protocols)[:tooltips][:potential_funding_source]
       .col-lg-10
         = form.select :potential_funding_source,
-          options_for_select(POTENTIAL_FUNDING_SOURCES, protocol.potential_funding_source),
+          options_for_select(PermissibleValue.get_value_key_hash('potential_funding_source'), protocol.potential_funding_source),
           { include_blank: t(:protocols)[:prompts][:potential_source] },
           class: 'selectpicker'
 

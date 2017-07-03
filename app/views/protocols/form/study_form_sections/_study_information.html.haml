@@ -139,5 +139,5 @@
 
     = render partial: 'protocols/form/study_form_sections/interactive_form', locals: { protocol: protocol, form: form }
 
-    - if USE_EPIC && (protocol.selected_for_epic || action_name == 'new')
+    - if USE_EPIC
       = render partial: 'protocols/form/study_form_sections/study_type_note', locals: { protocol: protocol, form: form }

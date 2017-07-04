@@ -386,6 +386,9 @@ en:
       potential_source: "Potential Funding Source:"
       research_master_id: "Research Master ID:"
       na_research_master_id: 'Not Available'
+      rmid_validated: "Updated to corresponding Research Master ID %{title}"
+      rmid_short_title: "Short Title"
+      rmid_title: "Title"
     view_details:
       button: "View %{protocol_type} Details"
       header: "%{protocol_type} Details: #%{protocol_id}"

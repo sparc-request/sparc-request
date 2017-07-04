@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170517143845) do
+ActiveRecord::Schema.define(version: 20170704180659) do
 
   create_table "admin_rates", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer  "line_item_id"
@@ -591,6 +591,7 @@ ActiveRecord::Schema.define(version: 20170517143845) do
     t.integer  "study_type_question_group_id"
     t.integer  "research_master_id"
     t.integer  "sub_service_requests_count",                                                  default: 0
+    t.boolean  "rmid_validated",                                                              default: false
     t.index ["next_ssr_id"], name: "index_protocols_on_next_ssr_id", using: :btree
   end
 

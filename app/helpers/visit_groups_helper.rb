@@ -22,7 +22,7 @@ module VisitGroupsHelper
   def visit_position_options(arm, visit_group=nil)
     if visit_group
       options_from_collection_for_select(
-        arm.visit_groups.reject{ |vg| vg.id == visit_group.id },
+        arm.visit_groups.where.not(id: visit_group.id),
         'position',
         'insertion_name',
         visit_group.position

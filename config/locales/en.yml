@@ -896,7 +896,7 @@ en:
     otf_quantity_minimum: "Quantity Minimum"
     otf_unit_type: "Unit Type (weeks, days, samples, etc.)"
     other_rate: "Other Rate"
-    per_patient: "Per Patient"
+    per_patient: "Clinical Service"
     quantity_type: "Quantity Type (hours, each, slides, etc.)"
     rate_disclaimer: "*IF N/A, NO PRICING SET-UP IS DEFINED FOR THE CURRENT DATES"
     rates: "Rates"

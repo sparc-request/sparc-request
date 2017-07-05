@@ -47,5 +47,7 @@ RSpec.describe 'Protocol' do
     answer3_version_3.update_attributes(answer: answer_array[2])
     answer4_version_3.update_attributes(answer: answer_array[3])
     answer5_version_3.update_attributes(answer: answer_array[4])
+    answer6_version_3.update_attributes(answer: answer_array[5])
+    answer7_version_3.update_attributes(answer: answer_array[6])
   end
 end

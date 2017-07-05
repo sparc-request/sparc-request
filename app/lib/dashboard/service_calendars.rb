@@ -20,12 +20,12 @@
 
 require 'action_view'
 
-include ActionView::Helpers::FormOptionsHelper
-include ActionView::Helpers::FormTagHelper
-include ActionView::Helpers::NumberHelper
-
 module Dashboard
   module ServiceCalendars
+    extend ActionView::Helpers::FormOptionsHelper
+    extend ActionView::Helpers::FormTagHelper
+    extend ActionView::Helpers::NumberHelper
+
     def self.generate_visit_navigation(arm, service_request, pages, tab, portal=nil, ssr_id=nil)
       page = pages[arm.id].to_i == 0 ? 1 : pages[arm.id].to_i
 

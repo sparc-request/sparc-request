@@ -511,11 +511,6 @@ RSpec.describe EpicInterface do
 
         answers = [true, true, nil, nil, nil, nil]
         update_answers(1, answers)
-        question_id = [ stq_higher_level_of_privacy_version_1.id, stq_certificate_of_conf_version_1.id, stq_access_study_info_version_1.id, stq_epic_inbasket_version_1.id, stq_research_active_version_1.id, stq_restrict_sending_version_1.id]
-
-        answers.each_with_index do |ans, index|
-          StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: question_id[index], answer: ans)
-        end
 
         epic_interface.send_study_creation(study)
 
@@ -930,7 +925,7 @@ RSpec.describe EpicInterface do
 
     it 'should return YES_COFC' do
 
-      answers = [true, nil, nil, nil, nil, nil]
+      answers = [true, nil, nil, nil, nil, nil, nil]
       update_answers(3, answers)
 
       epic_interface.send_study_creation(study)
@@ -945,7 +940,6 @@ RSpec.describe EpicInterface do
           </studyCharacteristic>
         </subjectOf>
       END
-
       expected = Nokogiri::XML(xml)
 
       node = epic_received[0].xpath(
@@ -953,13 +947,11 @@ RSpec.describe EpicInterface do
       'env' => 'http://www.w3.org/2003/05/soap-envelope',
       'rpe' => 'urn:ihe:qrph:rpe:2009',
       'hl7' => 'urn:hl7-org:v3')
-
       expect(node[1]).to be_equivalent_to(expected.root)
 
     end
 
     it 'should return NO_COFC' do
-
       answers = [false, true, false, false, false, false]
       update_answers(2, answers)
 
@@ -988,7 +980,7 @@ RSpec.describe EpicInterface do
     end
 
     it 'return a study type of 1' do
-      answers = [true, nil, nil, nil, nil]
+      answers = [true, nil, nil, nil, nil, nil, nil]
       update_answers(3, answers)
 
       epic_interface.send_study_creation(study)
@@ -1011,13 +1003,13 @@ RSpec.describe EpicInterface do
       'env' => 'http://www.w3.org/2003/05/soap-envelope',
       'rpe' => 'urn:ihe:qrph:rpe:2009',
       'hl7' => 'urn:hl7-org:v3')
-
+      
       expect(node[0]).to be_equivalent_to(expected.root)
     end
 
     it 'return a study type of 3' do
 
-      answers = [false, true, false, false, false]
+      answers = [false, true, false, false, false, nil, nil]
       update_answers(3, answers)
 
       epic_interface.send_study_creation(study)
@@ -1040,7 +1032,6 @@ RSpec.describe EpicInterface do
       'env' => 'http://www.w3.org/2003/05/soap-envelope',
       'rpe' => 'urn:ihe:qrph:rpe:2009',
       'hl7' => 'urn:hl7-org:v3')
-
       expect(node[0]).to be_equivalent_to(expected.root)
     end
 
@@ -1512,6 +1503,8 @@ RSpec.describe EpicInterface do
       answer3_version_3.update_attributes(answer: answer_array[2])
       answer4_version_3.update_attributes(answer: answer_array[3])
       answer5_version_3.update_attributes(answer: answer_array[4])
+      answer6_version_3.update_attributes(answer: answer_array[5])
+      answer7_version_3.update_attributes(answer: answer_array[6])
     elsif version == 2
       answer1_version_2.update_attributes(answer: answer_array[0])
       answer2_version_2.update_attributes(answer: answer_array[1])

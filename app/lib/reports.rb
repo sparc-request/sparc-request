@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'reports/report'
+require 'reports/reporting'
 
 base = File.expand_path(File.dirname(__FILE__))
 
@@ -33,7 +33,7 @@ def run_report_command(args = ARGV)
   case cmd
   when 'list'
     puts "Available reports:"
-    reports = Report.all
+    reports = Reporting.all
     reports.sort_by! { |report| report.name }
     reports.each do |report|
       puts "  #{report.name.underscore} - #{report.description}"

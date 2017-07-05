@@ -21,7 +21,7 @@
 # Report for all services under the REDCap core
 # Monthly report
 
-class RedcapReport < Report
+class RedcapReport < Reporting
   def self.description
     "Provide a list of Services submitted within specified dates under the REDCap Core."
   end
@@ -105,7 +105,7 @@ class RedcapReport < Report
           end
         end
       end
-      p.serialize(@output_file)  
+      p.serialize(@output_file)
     end
   end
 end

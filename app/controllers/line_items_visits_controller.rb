@@ -29,24 +29,30 @@ class LineItemsVisitsController < ApplicationController
   def update
     page              = params[:page]
     tab               = params[:tab]
+    portal            = params[:portal] == 'true'
     line_items_visit  = LineItemsVisit.find(params[:id])
     arm               = line_items_visit.arm
     line_items_visits = arm.line_items_visits.eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol])
     visit_groups      = arm.visit_groups.paginate(page: page.to_i, per_page: VisitGroup.per_page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol] } })
 
     if line_items_visit.update_attributes(line_items_visit_params)
-      unless params[:portal] == 'true'
+      unless portal
         line_items_visit.sub_service_request.update_attribute(:status, 'draft')
         @service_request.update_attribute(:status, 'draft')
       end
-      render json: { 
-               total_per_patient: render_to_string(partial: 'service_calendars/master_calendar/pppv/total_per_patient', locals: { liv: line_items_visit }),
-               total_per_study: render_to_string(partial: 'service_calendars/master_calendar/pppv/total_per_study', locals: { liv: line_items_visit }),
-               max_total_direct: render_to_string(partial: 'service_calendars/master_calendar/pppv/totals/max_total_direct_per_patient', locals: { arm: arm, visit_groups: visit_groups, line_items_visits: line_items_visits, tab: tab, page: page }),
-               max_total_per_patient: render_to_string(partial: 'service_calendars/master_calendar/pppv/totals/max_total_per_patient', locals: { arm: arm, visit_groups: visit_groups, line_items_visits: line_items_visits, tab: tab, page: page }),
-               total_costs: render_to_string(partial: 'service_calendars/master_calendar/pppv/totals/total_cost_per_study', locals: { arm: arm, line_items_visits: line_items_visits, tab: tab }),
-               success: true
-             }
+
+      data = { 
+        total_per_patient: render_to_string(partial: 'service_calendars/master_calendar/pppv/total_per_patient', locals: { liv: line_items_visit }),
+        total_per_study: render_to_string(partial: 'service_calendars/master_calendar/pppv/total_per_study', locals: { liv: line_items_visit }),
+        max_total_direct: render_to_string(partial: 'service_calendars/master_calendar/pppv/totals/max_total_direct_per_patient', locals: { arm: arm, visit_groups: visit_groups, line_items_visits: line_items_visits, tab: tab, page: page }),
+        max_total_per_patient: render_to_string(partial: 'service_calendars/master_calendar/pppv/totals/max_total_per_patient', locals: { arm: arm, visit_groups: visit_groups, line_items_visits: line_items_visits, tab: tab, page: page }),
+        total_costs: render_to_string(partial: 'service_calendars/master_calendar/pppv/totals/total_cost_per_study', locals: { arm: arm, line_items_visits: line_items_visits, tab: tab }),
+        success: true
+      }
+      
+      data[:ssr_header] = render_to_string(partial: 'dashboard/sub_service_requests/header', locals: { sub_service_request: @sub_service_request }) if params[:portal]
+
+      render json: data
     else
       render json: line_items_visit.errors, status: :unprocessable_entity
     end

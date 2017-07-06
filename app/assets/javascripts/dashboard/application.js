@@ -54,6 +54,7 @@
 //= require_tree .
 
 //= require ../service_calendar
+//= require ../global
 //= require global
 //= require associated_users_form
 //= require study_schedule_tabs

@@ -21,12 +21,6 @@
 #= require navigation
 
 $(document).ready ->
-  getSRId = ->
-    $("input[name='service_request_id']").val()
-
-  getSSRId = ->
-    $("input[name='sub_service_request_id']").val()
-
   $(document).on 'click', '.custom-tab a', ->
     if $(this).is('#billing-strategy-tab')
       $('.billing-info ul').removeClass('hidden')
@@ -201,9 +195,6 @@ $(document).ready ->
       data: data
   # NOTES LISTENERS END
 
-getSRId = ->
-  $("input[name='service_request_id']").val()
-
 (exports ? this).setup_xeditable_fields = (scroll) ->
   reload_calendar = (arm_id, scroll) ->
     # E.g. "billing-strategy-tab" -> "billing_strategy"
@@ -251,6 +242,7 @@ getSRId = ->
         line_items_visit:
           subject_count: params.value
         service_request_id: getSRId()
+        sub_service_request_id: getSSRId()
       }
     success: (data) ->
       arm_id = $(this).data('arm-id')
@@ -263,6 +255,11 @@ getSRId = ->
       $(".arm-#{arm_id}.maximum-total-direct-cost-per-patient").replaceWith(data['max_total_direct'])
       $(".arm-#{arm_id}.maximum-total-per-patient").replaceWith(data['max_total_per_patient'])
       $(".arm-#{arm_id}.total-per-patient-per-visit-cost-per-study").replaceWith(data['total_costs'])
+
+      if data['ssr_header']
+        # Replace Admin Dashboard SSR header
+        $('#sub_service_request_header').html(data['ssr_header'])
+        $('.selectpicker').selectpicker()
 
   $('.edit-qty').editable
     params: (params) ->

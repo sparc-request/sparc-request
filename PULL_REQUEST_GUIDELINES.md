@@ -1,3 +1,18 @@
+[//]: # (Copyright © 2011-2016 MUSC Foundation for Research Development)
+[//]: # (All rights reserved.)
+
+[//]: # (Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:)
+
+[//]: # ( 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.)
+
+[//]: # ( 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following)
+[//]: # ( disclaimer in the documentation and/or other materials provided with the distribution.)
+
+[//]: # ( 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products)
+[//]: # " derived from this software without specific prior written permission."
+
+[//]: # "THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
+
 ## Everything Concerning Pull Requests ##
 
 ### When submitting a PR: ###
@@ -47,6 +62,18 @@
 After reviewing the PR on the “Files Changed” tab in github, in the upper right hand corner there is a “Review changes” button where you can either “Comment”, “Approve”,  or “Request Changes”.
 
 ### After submitting a PR: ###
-Make sure your PR passes on Travis.  Any Pull Requests that do not pass on Travis will not be pulled in.
+
+Make sure your PR:
+
+* Adheres to the above guidelines (title, labels, pivotal story id, etc)
+
+* Passes on Travis
+
+* Has been reviewed (Request Reviewers if need be)
+
+* Has no merge conflicts
+
 
 Shoutout to [Thoughtbot](https://github.com/thoughtbot/guides/tree/master/code-review) for their excellent code review doc.
+
+Last updated:  July 6, 2017

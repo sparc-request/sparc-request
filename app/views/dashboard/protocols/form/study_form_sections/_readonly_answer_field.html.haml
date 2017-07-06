@@ -22,3 +22,7 @@
     = answer.label :answer, answer.object.study_type_question.question, class: "long"
   .col-lg-4
     = answer.object.answer == true ? "Yes" : "No"
+    - if display_study_type_question?(protocol, answer.object)
+      = link_to 'Edit',
+        edit_dashboard_protocol_study_type_answers_path(protocol, edit_answers: true),
+        class: 'btn btn-warning edit-answers', remote: true

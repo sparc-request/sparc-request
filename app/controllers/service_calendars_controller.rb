@@ -252,7 +252,7 @@ class ServiceCalendarsController < ApplicationController
     session[:service_calendar_pages][arm_id]  = page if page && arm_id
 
     @service_request.arms.each do |arm|
-      new_page        = (session[:service_calendar_pages][arm.id].nil?) ? 1 : session[:service_calendar_pages][arm.id]
+      new_page        = (session[:service_calendar_pages].nil? || session[:service_calendar_pages][arm.id].nil?) ? 1 : session[:service_calendar_pages][arm.id]
       @pages[arm.id]  = @service_request.set_visit_page(new_page, arm)
     end
   end

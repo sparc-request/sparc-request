@@ -210,6 +210,43 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def in_dashboard?
+    (params[:portal] && params[:portal] == 'true') || (params[:admin] && params[:admin] == 'true')
+  end
+
+  def authorize_dashboard_access
+    if params[:sub_service_request_id]
+      authorize_admin
+    else
+      if params[:service_request_id]
+        @service_request = ServiceRequest.find(params[:service_request_id])
+      end
+      authorize_protocol
+    end
+  end
+
+  def authorize_protocol
+    @protocol           = @service_request ? @service_request.protocol : Protocol.find(params[:protocol_id])
+    permission_to_view  = current_user.can_view_protocol?(@protocol)
+
+    unless permission_to_view || Protocol.for_admin(current_user.id).include?(@protocol)
+      @protocol = nil
+
+      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
+    end
+  end
+
+  def authorize_admin
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    @service_request     = @sub_service_request.service_request
+
+    unless (current_user.authorized_admin_organizations & @sub_service_request.org_tree).any?
+      @sub_service_request = nil
+      @service_request = nil
+      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
+    end
+  end
+
   def find_locked_org_ids
     @locked_org_ids = []
     if @service_request.protocol.present?

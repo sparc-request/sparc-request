@@ -21,8 +21,7 @@
 class Study < Protocol
   validates :sponsor_name,                presence: true
   validates :selected_for_epic,           inclusion: [true, false], :if => [:is_epic?]
-  validate  :validate_study_type_answers, if: [:selected_for_epic?, "StudyTypeQuestionGroup.active.pluck(:id).first == study_type_question_group_id"]
-
+  validate  :validate_study_type_answers
 
   def classes
     return [ 'project' ] # for backward-compatibility
@@ -37,8 +36,7 @@ class Study < Protocol
   end
 
   def display_answers
-    answers = StudyTypeQuestion.joins(:study_type_question_group).where(study_type_question_groups: { version: version_type })
-    answers.map{ |ans| ans.study_type_answers.find_by_protocol_id(id) }
+    self.study_type_answers.joins(study_type_question: :study_type_question_group).where(study_type_question_groups: { version: version_type }).order('study_type_questions.order')
   end
 
   def populate_for_edit
@@ -108,33 +106,35 @@ class Study < Protocol
   FRIENDLY_IDS = ["certificate_of_conf", "higher_level_of_privacy", "epic_inbasket", "research_active", "restrict_sending"]
 
   def validate_study_type_answers
-    answers = {}
-    FRIENDLY_IDS.each do |fid|
-      q = StudyTypeQuestion.active.find_by_friendly_id(fid)
-      answers[fid] = study_type_answers.find{|x| x.study_type_question_id == q.id}
-    end
-
-    has_errors = false
-    begin
-      if answers["certificate_of_conf"].answer.nil?
-        has_errors = true
-      elsif answers["certificate_of_conf"].answer == false
-        if (answers["higher_level_of_privacy"].answer.nil?)
-          has_errors = true
-        elsif (answers["epic_inbasket"].answer.nil?)
-          has_errors = true
-        elsif (answers["research_active"].answer.nil?)
-          has_errors = true
-        elsif (answers["restrict_sending"].answer.nil?)
-          has_errors = true
-        end
+    if USE_EPIC && self.selected_for_epic && StudyTypeQuestionGroup.active.ids.first == self.study_type_question_group_id
+      answers = {}
+      FRIENDLY_IDS.each do |fid|
+        q = StudyTypeQuestion.active.find_by_friendly_id(fid)
+        answers[fid] = study_type_answers.find{|x| x.study_type_question_id == q.id}
       end
-    rescue => e
-      has_errors = true
-    end
 
-    if has_errors
-      errors.add(:study_type_answers, "must be selected")
+      has_errors = false
+      begin
+        if answers["certificate_of_conf"].answer.nil?
+          has_errors = true
+        elsif answers["certificate_of_conf"].answer == false
+          if (answers["higher_level_of_privacy"].answer.nil?)
+            has_errors = true
+          elsif (answers["epic_inbasket"].answer.nil?)
+            has_errors = true
+          elsif (answers["research_active"].answer.nil?)
+            has_errors = true
+          elsif (answers["restrict_sending"].answer.nil?)
+            has_errors = true
+          end
+        end
+      rescue => e
+        has_errors = true
+      end
+
+      if has_errors
+        errors.add(:study_type_answers, "must be selected")
+      end
     end
   end
 

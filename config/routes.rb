@@ -266,6 +266,7 @@ SparcRails::Application.routes.draw do
     resources :projects, controller: :protocols, except: [:destroy]
 
     resources :protocols, except: [:destroy] do
+      resource :study_type_answers, only: [:edit]
       member do
         patch :update_protocol_type
         get :display_requests

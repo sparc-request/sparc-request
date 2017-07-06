@@ -150,7 +150,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def update
     protocol_type = protocol_params[:type]
     @protocol = @protocol.becomes(protocol_type.constantize) unless protocol_type.nil?
-    if params[:updated_protocol_type] == 'true' && protocol_type == 'Study'
+    if (params[:updated_protocol_type] == 'true' && protocol_type == 'Study') || params[:can_edit] == 'true'
       @protocol.assign_attributes(study_type_question_group_id: StudyTypeQuestionGroup.active_id)
       @protocol.assign_attributes(selected_for_epic: protocol_params[:selected_for_epic]) if protocol_params[:selected_for_epic]
       if @protocol.valid?

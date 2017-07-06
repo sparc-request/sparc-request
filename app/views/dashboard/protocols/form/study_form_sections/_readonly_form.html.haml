@@ -27,6 +27,9 @@
           = form.hidden_field :selected_for_epic, value: true
         - else
           = form.hidden_field :selected_for_epic, value: false
+        = link_to 'Edit',
+          edit_dashboard_protocol_study_type_answers_path(protocol, edit_answers: true),
+          class: 'btn btn-warning edit-answers', remote: true
 .form-group.row.selected_for_epic_dependent#readonly
   - if protocol.display_answers.any?{ |as| display_study_type_question?(protocol, as) }
     = form.label :study_type_questions, t(:protocols)[:studies][:information][:study_type_questions], class: "col-lg-2 control-label #{USE_EPIC && protocol.selected_for_epic ? 'required' : ''}"

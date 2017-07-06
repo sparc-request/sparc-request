@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class UpdateObtainResearchPricingAvailableStatuses < ActiveRecord::Migration
+class UpdateObtainResearchPricingAvailableStatuses < ActiveRecord::Migration[4.2]
   def up
     AvailableStatus.where(:status => 'obtain_research_pricing').each do |as|
       as.update_attributes({:status => 'get_a_cost_estimate'})

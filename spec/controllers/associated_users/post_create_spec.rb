@@ -40,10 +40,10 @@ RSpec.describe AssociatedUsersController, type: :controller do
         sr        = create(:service_request_without_validations, protocol: protocol)
         pr_params = { protocol_id: protocol.id, identity_id: other_user.id, project_rights: 'member', role: 'consultant' }
 
-        xhr :post, :create, {
+        post :create, params: {
           project_role: pr_params,
           service_request_id: sr.id
-        }
+        }, xhr: true
 
         expect(ProjectRole.count).to eq(2)
       end
@@ -55,10 +55,10 @@ RSpec.describe AssociatedUsersController, type: :controller do
         sr        = create(:service_request_without_validations, protocol: protocol)
         pr_params = { protocol_id: protocol.id, identity_id: logged_in_user.id, project_rights: 'member', role: 'consultant' }
 
-        xhr :post, :create, {
+        post :create, params: {
           project_role: pr_params,
           service_request_id: sr.id
-        }
+        }, xhr: true
 
         expect(ProjectRole.count).to eq(1)
       end
@@ -68,10 +68,10 @@ RSpec.describe AssociatedUsersController, type: :controller do
         sr        = create(:service_request_without_validations, protocol: protocol)
         pr_params = { protocol_id: protocol.id, identity_id: logged_in_user.id, project_rights: 'member', role: 'consultant' }
 
-        xhr :post, :create, {
+        post :create, params: {
           project_role: pr_params,
           service_request_id: sr.id
-        }
+        }, xhr: true
 
         expect(assigns(:errors)).to be
       end
@@ -82,10 +82,10 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       pr_params = { protocol_id: protocol.id, identity_id: other_user.id, project_rights: 'member', role: 'consultant' }
 
-      xhr :post, :create, {
+      post :create, params: {
         project_role: pr_params,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:create)
     end
@@ -95,10 +95,10 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       pr_params = { protocol_id: protocol.id, identity_id: other_user.id, project_rights: 'member', role: 'consultant' }
 
-      xhr :post, :create, {
+      post :create, params: {
         project_role: pr_params,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class ChangeDisplayAndEffectiveDateToJustDate < ActiveRecord::Migration
+class ChangeDisplayAndEffectiveDateToJustDate < ActiveRecord::Migration[4.2]
   def up
     change_column :pricing_setups, :display_date, :date
     change_column :pricing_setups, :effective_date, :date

@@ -35,21 +35,21 @@ RSpec.describe Dashboard::ProtocolFiltersController do
       end
 
       it "creates a protocol filter record" do
-        expect{ xhr :post, :create, protocol_filter: @protocol_filter.attributes }.to change{ ProtocolFilter.count }.by(1)
+        expect{ post :create, params: { protocol_filter: @protocol_filter.attributes }, xhr: true }.to change{ ProtocolFilter.count }.by(1)
       end
 
       it "adds the filter to the user's protocol filter list" do
-        expect{ xhr :post, :create, protocol_filter: @protocol_filter.attributes }.to change{ @user.protocol_filters.count }.by(1)
+        expect{ post :create, params: { protocol_filter: @protocol_filter.attributes }, xhr: true }.to change{ @user.protocol_filters.count }.by(1)
       end
 
       it "saves the correct attributes for the protocol filter" do
-        xhr :post, :create, protocol_filter: @protocol_filter.attributes
+        post :create, params: { protocol_filter: @protocol_filter.attributes }, xhr: true
         expect( ProtocolFilter.last.attributes.except( 'id', 'created_at', 'updated_at' ) ).to eq(
           "identity_id" => @user.id, "search_name" => "", "show_archived" => nil, "search_query" => "", "with_organization" => [], "with_status" => [], "admin_filter" => "", "with_owner" => [])
       end
 
       it "flashes the correct message" do
-        xhr :post, :create, protocol_filter: @protocol_filter.attributes
+        post :create, params: { protocol_filter: @protocol_filter.attributes }, xhr: true
         expect( flash[:success] ).to eq( 'Search Saved!' )
       end
 

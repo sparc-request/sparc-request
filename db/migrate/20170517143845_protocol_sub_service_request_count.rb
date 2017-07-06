@@ -1,4 +1,4 @@
-class ProtocolSubServiceRequestCount < ActiveRecord::Migration[5.0]
+class ProtocolSubServiceRequestCount < ActiveRecord::Migration[4.2][5.0]
   def change
     add_column :protocols, :sub_service_requests_count, :integer, default: 0
 

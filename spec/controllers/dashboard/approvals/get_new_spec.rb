@@ -28,7 +28,7 @@ RSpec.describe Dashboard::ApprovalsController, type: :controller do
       end
 
       log_in_dashboard_identity(obj: build_stubbed(:identity))
-      xhr :get, :new, ssr_id: @ssr_stub.id
+      get :new, params: { ssr_id: @ssr_stub.id }, xhr: true
     end
 
     it 'should set @sub_service_request to the SubServiceRequest with id params[:ssr_id]' do

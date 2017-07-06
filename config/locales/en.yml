@@ -843,6 +843,7 @@ en:
     disabled_all_services: "Disable All Services"
     disabled_at: "Disabled at: %{disabled_parent}"
     eap_id: 'EAP ID'
+    editable_statuses: 'Editable Statuses'
     enable_all_services: "Enable All Services"
     epic_info: "Epic Interface"
     errors: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."

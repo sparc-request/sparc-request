@@ -186,7 +186,7 @@ RSpec.describe ServiceRequest, type: :model do
           service     = create(:service, organization: @org, one_time_fee: true)
           protocol    = create(:protocol_federally_funded, primary_pi: identity, type: 'Study')
           @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
-          @ssr_un_updatable_status   = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'un_updatable_status', submitted_at: nil, nursing_nutrition_approved: nil, lab_approved: nil, imaging_approved: nil, committee_approved: nil)
+          @ssr_un_updatable_status   = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'on_hold', submitted_at: nil, nursing_nutrition_approved: nil, lab_approved: nil, imaging_approved: nil, committee_approved: nil)
           @sr.reload
         end
 
@@ -218,7 +218,7 @@ RSpec.describe ServiceRequest, type: :model do
 
           it "should not update the status of the SSR to submitted" do
             @sr.update_status('submitted')
-            expect(@ssr_un_updatable_status.reload.status).to eq('un_updatable_status')
+            expect(@ssr_un_updatable_status.reload.status).to eq('on_hold')
           end
 
           it "should update the status of the SR to submitted" do

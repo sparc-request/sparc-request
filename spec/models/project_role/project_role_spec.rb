@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Project Role' do
+RSpec.describe ProjectRole, type: :model do
 
   let!(:user)         {create(:identity)}
   let!(:user2)         {create(:identity)}

@@ -38,7 +38,7 @@
         = link_to 'Cancel Edit',
           edit_dashboard_protocol_study_type_answers_path(protocol),
           class: 'btn btn-danger cancel-edit', remote: true
-.form-group.row.selected_for_epic_dependent{ display_if(protocol.selected_for_epic) }
+.form-group.row.selected_for_epic_dependent{ style: protocol.selected_for_epic || action_name == 'update_protocol_type' ? 'display:block;' : 'display:none;' }
   = hidden_field_tag :updated_protocol_type, updated_protocol_type
   = form.label :study_type_questions,
     t(:protocols)[:studies][:information][:study_type_questions],
@@ -58,9 +58,3 @@
               = link_to 'Cancel Edit',
                 edit_dashboard_protocol_study_type_answers_path(protocol),
                 class: 'btn btn-danger cancel-edit', remote: true
-.answer-questions{ display_if(!protocol.selected_for_epic) }
-  = form.label :study_type_questions, t(:protocols)[:studies][:information][:study_type_questions], class: "col-lg-2 control-label #{USE_EPIC && protocol.selected_for_epic ? 'required' : ''}"
-  .col-lg-10
-    .form-group.row
-      .col-lg-8
-        = label_tag 'answer', STUDY_TYPE_QUESTIONS_VERSION_3[5], class: 'long'

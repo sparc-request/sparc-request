@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= button_to t(:organization_form)[:cancel_button], catalog_manager_root_path, :confirm => "Are you sure?", :style => 'display:none;', :id => 'cancel_button'
+= button_to t(:organization_form)[:cancel_button], catalog_manager_root_path, method: :get, :confirm => "Are you sure?", :style => 'display:none;', :id => 'cancel_button'
 
 = form_for @service, :url => catalog_manager_services_path, :method => :post, :remote => true, :id => 'entity_form' do |f|
   .errorExplanation#errorExplanation{:style => 'display:none;'}

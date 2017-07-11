@@ -70,7 +70,7 @@ en:
       human_subjects_info:
         nct_number: "The NCT #"
       identity:
-        ldap_uid: "Username"
+        ldap_uid: "Login"
         first_name: "First Name"
         last_name: "Last Name"
         password_confirmation: "Password Confirmation"
@@ -334,6 +334,13 @@ en:
       link_display: "Email: success@musc.edu"
       phone_href: "tel:843-792-8300"
       phone_display: "Call: 843-792-8300"
+
+  ##############
+  # IDENTITIES #
+  ##############
+  identities:
+    approved: "Account Approved"
+    disapproved: "Account Disapproved"
 
   ###############
   # IE7 WARNING #

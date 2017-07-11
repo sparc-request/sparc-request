@@ -304,7 +304,7 @@ wb.add_worksheet(name: "Review") do |sheet|
 
   ##SSR Total
   if @sub_service_request
-    ssr_total_row = ["", "", "", ""]
+    ssr_total_row = ["", "", "", "", "", "", ""]
     if has_per_patient_per_visit_services
       (visit_count*2).times do
         ssr_total_row << ""
@@ -319,7 +319,7 @@ wb.add_worksheet(name: "Review") do |sheet|
   grand_total_row = @sub_service_request ? ["", "", "", "", "", "", ""] : ["", "", "", "", "", ""]
 
   if has_per_patient_per_visit_services
-    (visit_count * 2 + @admin_offset.to_i).times do
+    (visit_count * 2).times do
       grand_total_row << ""
     end
   elsif @admin_offset
@@ -336,7 +336,7 @@ wb.add_worksheet(name: "Review") do |sheet|
 
     signatures_text  = "The Signatures of the Principal Investigator and Study Delegate (study coordinator, grants adminstrator, etc.) indicate that this Study Calendar "
     signatures_text2 = "has been reviewed; the _____________________________________________________ billable services have been identified and the highlighted services "
-    signatures_text3 = "should be included in an order set for unlicensed staff to process standing orders for the abive identified study."
+    signatures_text3 = "should be included in an order set for unlicensed staff to process standing orders for the above identified study."
 
     first_signature_row = sheet.add_row([signatures_text], :style => row_header_style, :widths => [:ignore])
     sheet.add_row([signatures_text2], :style => row_header_style, :widths => [:ignore])

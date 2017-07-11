@@ -41,4 +41,4 @@
       - else
         %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
           = t(:actions)[:close]
-    %input.btn.btn-primary.notes.add{ type: 'submit', value: t(:actions)[:add], data: {notable_id: @notable_id, notable_type: @notable_type, in_dashboard: in_dashboard}}
+    %input.btn.btn-primary.notes.add{ type: 'submit', value: t(:actions)[:add], data: {notable_id: @notable_id, notable_type: @notable_type, in_dashboard: in_dashboard, disable_with: t(:actions)[:adding]}}

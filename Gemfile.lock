@@ -289,6 +289,7 @@ GEM
       coffee-rails (>= 3.2.1)
       jquery-rails
       rails (>= 3.2.0)
+    net-ldap (0.16.0)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (4.1.0)
@@ -299,7 +300,6 @@ GEM
       mini_portile2 (~> 2.2.0)
     nori (2.1.0)
     nprogress-rails (0.2.0.2)
-    obis-net-ldap (0.4.0)
     omniauth (1.6.1)
       hashie (>= 3.4.6, < 3.6.0)
       rack (>= 1.6.2, < 3)
@@ -581,11 +581,11 @@ DEPENDENCIES
   mysql2 (~> 0.3.18)
   nested_form
   nested_form_fields
+  net-ldap (~> 0.16.0)
   newrelic_rpm
   nokogiri
   nori
   nprogress-rails
-  obis-net-ldap
   omniauth
   omniauth-shibboleth
   paperclip (~> 4.3, >= 4.3.7)

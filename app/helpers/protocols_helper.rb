@@ -19,13 +19,20 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module ProtocolsHelper
-  def display_study_type_question?(protocol, study_type_answer)
-    to_display = 
-      if !USE_EPIC || protocol.selected_for_epic == false
+  def display_study_type_question?(protocol, study_type_answer, view_protocol=false)
+    if !USE_EPIC || protocol.selected_for_epic == false
+      if view_protocol
         ['certificate_of_conf_no_epic', 'higher_level_of_privacy_no_epic'].include?(study_type_answer.study_type_question.friendly_id) && study_type_answer.answer != nil
       else
-        !['certificate_of_conf_no_epic', 'higher_level_of_privacy_no_epic'].include?(study_type_answer.study_type_question.friendly_id) && study_type_answer.answer != nil
+        if study_type_answer.study_type_question.friendly_id == 'certificate_of_conf_no_epic'
+          true
+        else
+          ['higher_level_of_privacy_no_epic'].include?(study_type_answer.study_type_question.friendly_id) && study_type_answer.answer != nil
+        end
       end
+    else
+      !['certificate_of_conf_no_epic', 'higher_level_of_privacy_no_epic'].include?(study_type_answer.study_type_question.friendly_id) && study_type_answer.answer != nil
+    end
   end
 
   def display_rmid_validated_protocol(protocol, option)

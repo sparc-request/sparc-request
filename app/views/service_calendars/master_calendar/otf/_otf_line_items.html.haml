@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - service_request.service_list(true).each do |_, value| # get only one time fee services and group them
   - value[:line_items].group_by(&:sub_service_request_id).each do |sub_service_request_id, line_items|
-    - next unless sub_service_request.nil? || sub_service_request.id == sub_service_request_id
+    - next unless tab == 'calendar' || sub_service_request.nil? || sub_service_request.id == sub_service_request_id
     - ssr = sub_service_request || SubServiceRequest.find(sub_service_request_id)
     - next if statuses_hidden.include? ssr.status
     - locked = !ssr.can_be_edited? && !admin

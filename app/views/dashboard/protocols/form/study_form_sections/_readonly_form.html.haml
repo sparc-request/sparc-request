@@ -39,6 +39,10 @@
   - else
     = form.label :study_type_questions, t(:protocols)[:studies][:information][:study_type_questions], class: "col-lg-2 control-label #{USE_EPIC && protocol.selected_for_epic ? 'required' : ''}"
     .col-lg-10
-      = link_to 'Answer',
-        edit_dashboard_protocol_study_type_answers_path(protocol, edit_answers: true),
-        class: 'btn btn-warning edit-answers', remote: true
+      .form-group.row
+        .col-lg-8
+          = label_tag 'answer', STUDY_TYPE_QUESTIONS_VERSION_3[5], class: 'long'
+        .col-lg-4
+          = link_to 'Answer',
+            edit_dashboard_protocol_study_type_answers_path(protocol, edit_answers: true),
+            class: 'btn btn-warning edit-answers', remote: true

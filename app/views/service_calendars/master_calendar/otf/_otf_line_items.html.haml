@@ -63,9 +63,7 @@
           - else
             %a.edit-qty{ href: 'javascript:void(0)', data: { name: 'quantity', title: t(:calendars)[:otf][:editable_fields][:quantity], value: line_item.quantity, url: line_item_path(line_item, srid: service_request.id) } }
 
-        %td.total-per-study.text-center
-          %strong
-            = display_one_time_fee_direct_cost(line_item)
+        = render 'service_calendars/master_calendar/otf/total_per_study', line_item: line_item
 
 - unless review
-  = render 'service_calendars/master_calendar/otf/otf_totals', service_request: service_request
+  = render 'service_calendars/master_calendar/otf/totals/otf_totals', service_request: service_request

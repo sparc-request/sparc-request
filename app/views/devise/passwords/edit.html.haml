@@ -17,20 +17,22 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- url_data = { sub_service_request_id: sub_service_request.try(:id), service_request_id: service_request.try(:id), pages: pages.to_s, arm_id: arm.id, tab: tab, portal: portal.to_s, admin: admin.to_s, review: review.to_s, merged: merged.to_s, consolidated: consolidated.to_s, statuses_hidden: statuses_hidden, format: :js }
-
-- if consolidated
-  - path_method = method(:view_full_calendar_service_calendars_path)
-- elsif merged
-  - path_method = method(:merged_calendar_service_calendars_path)
-- else
-  - path_method = method(:table_service_calendars_path)
-
-.col-xs-2
-  .page-change-arrow.btn.btn-info.glyphicon.glyphicon-arrow-left{ title: t(:calendars)[:pppv][:header_fields][:page_select][:previous], type: 'button', disabled: page == 1 ? true : nil, role: 'button', aria: { label: t(:calendars)[:pppv][:header_fields][:page_select][:previous] }, data: { toggle: 'tooltip', animation: 'false', url: path_method.call(url_data.merge(page: page - 1)) } }
-
-.col-xs-8
-  = Dashboard::ServiceCalendars.build_visits_select(arm, page, path_method.call(url_data))
-
-.col-xs-2
-  .page-change-arrow.btn.btn-info.glyphicon.glyphicon-arrow-right{ title: t(:calendars)[:pppv][:header_fields][:page_select][:next], type: 'button', disabled: ((page + 1) * 5) - 4 > arm.visit_count ? true : nil, role: 'button', aria: { label: t(:calendars)[:pppv][:header_fields][:page_select][:previous] }, data: { toggle: 'tooltip', animation: 'false', url: path_method.call(url_data.merge(page: page + 1)) } }
+.devise-form
+  .col-md-6.col-md-offset-3.text-center
+    %h1.page-header
+      = t(:devise)[:passwords][:edit][:header]
+    #change-password-form
+      = form_for resource, as: resource_name, url: password_path(resource_name), method: :put do |f|
+        = f.hidden_field :reset_password_token, value: resource.reset_password_token
+        - if resource.errors.any?
+          = render 'shared/modal_errors', errors: resource.errors
+        .form-group.field
+          = f.label :password, t(:devise)[:passwords][:edit][:new_password]
+          = f.password_field :password, class: 'form-control'
+        .form-group.field
+          = f.label :password_confirmation, t(:devise)[:passwords][:edit][:confirm_password]
+          = f.password_field :password_confirmation, class: 'form-control'
+        .form-group
+          = f.submit t(:devise)[:passwords][:edit][:submit], class: 'btn btn-primary'
+      .links
+        = render 'devise/shared/links'

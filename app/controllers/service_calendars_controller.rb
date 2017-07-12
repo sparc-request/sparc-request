@@ -95,46 +95,42 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def show_move_visits
-    @tab                    = params[:tab]
-    @sub_service_request    = params[:sub_service_request]
-    @page                   = params[:page]
-    @review                 = params[:review]
-    @portal                 = params[:portal]
-    @admin                  = params[:admin]
-    @consolidated           = params[:consolidated]
-    @merged                 = params[:merged]
-    @statuses_hidden        = params[:statuses_hidden]
-    @arm                    = Arm.find( params[:arm_id] )
-    @visit_group            = params[:visit_group_id] ? @arm.visit_groups.find(params[:visit_group_id]) : @arm.visit_groups.first
+    @tab                  = params[:tab]
+    @sub_service_request  = params[:sub_service_request]
+    @page                 = params[:page]
+    @pages                = eval(params[:pages]) rescue {}
+    @review               = params[:review]
+    @portal               = params[:portal]
+    @admin                = params[:admin]
+    @consolidated         = params[:consolidated]
+    @merged               = params[:merged]
+    @statuses_hidden      = params[:statuses_hidden]
+    @arm                  = Arm.eager_load(:visit_groups).find( params[:arm_id] )
+    @visit_group          = params[:visit_group_id] ? @arm.visit_groups.find(params[:visit_group_id]) : @arm.visit_groups.first
 
-    @pages = {}
-    @service_request.arms.each do |arm|
-      new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-      @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
+    respond_to do |format|
+      format.js
     end
   end
 
   def move_visit_position
-    @tab                    = params[:tab]
-    @sub_service_request    = params[:sub_service_request]
-    @page                   = params[:page]
-    @review                 = params[:review] == "true"
-    @portal                 = params[:portal] == "true"
-    @admin                  = params[:admin] == "true"
-    @consolidated           = params[:consolidated] == "true"
-    @merged                 = params[:merged] == "true"
-    @statuses_hidden        = params[:statuses_hidden]
-    @arm                    = Arm.find( params[:arm_id] )
-    @visit_groups           = @arm.visit_groups.paginate(page: @page.to_i, per_page: VisitGroup.per_page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol] } })
-
-    @visit_group        = VisitGroup.find(params[:visit_group].to_i)
+    @tab                  = params[:tab]
+    @sub_service_request  = params[:sub_service_request]
+    @page                 = params[:page]
+    @pages                = eval(params[:pages]) rescue {}
+    @review               = params[:review] == "true"
+    @portal               = params[:portal] == "true"
+    @admin                = params[:admin] == "true"
+    @consolidated         = params[:consolidated] == "true"
+    @merged               = params[:merged] == "true"
+    @statuses_hidden      = params[:statuses_hidden]
+    @arm                  = Arm.find( params[:arm_id] )
+    @visit_group          = VisitGroup.find(params[:visit_group].to_i)
 
     @visit_group.insert_at( params[:position].to_i - 1 )
 
-    @pages = {}
-    @service_request.arms.each do |arm|
-      new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-      @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
+    respond_to do |format|
+      format.js
     end
   end
 
@@ -211,15 +207,15 @@ class ServiceCalendarsController < ApplicationController
 
   def setup_calendar_pages
     @pages  = {}
-    page    = params[:page] if params[:page]
-    arm_id  = params[:arm_id] if params[:arm_id]
+    page    = params[:page].to_i if params[:page]
+    arm_id  = params[:arm_id].to_i if params[:arm_id]
     @arm    = Arm.find(arm_id) if arm_id
 
-    session[:service_calendar_pages]          = params[:pages] if params[:pages]
+    session[:service_calendar_pages]          = eval(params[:pages]) if params[:pages]
     session[:service_calendar_pages][arm_id]  = page if page && arm_id
 
     @service_request.arms.each do |arm|
-      new_page        = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
+      new_page        = (session[:service_calendar_pages].nil? || session[:service_calendar_pages][arm.id].nil?) ? 1 : session[:service_calendar_pages][arm.id]
       @pages[arm.id]  = @service_request.set_visit_page(new_page, arm)
     end
   end

@@ -66,18 +66,13 @@ RSpec.describe VisitGroupsController, type: :controller do
 
         expect(vg.reload.day).to eq(5)
       end
-    end
 
-    context 'visit group invalid' do
-      it 'should not update visit group' do
+      it 'should render nothing' do
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol)
         arm       = create(:arm, protocol: protocol, name: "Armada")
         vg        = arm.visit_groups.first
-        
-        vg.day = nil
-        vg.save(validate: false)
-        vg_params = { name: nil }
+        vg_params = { day: 5 }
 
         put :update, params: {
           id: vg.id,
@@ -85,18 +80,15 @@ RSpec.describe VisitGroupsController, type: :controller do
           visit_group: vg_params
         }, xhr: true
 
-        expect(vg.reload.name).to eq('Visit 1')
+        expect(response.body).to be_blank
       end
 
-      it 'should assign @errors' do
+      it 'should respond ok' do
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol)
         arm       = create(:arm, protocol: protocol, name: "Armada")
         vg        = arm.visit_groups.first
-        
-        vg.day = nil
-        vg.save(validate: false)
-        vg_params = { name: nil }
+        vg_params = { day: 5 }
 
         put :update, params: {
           id: vg.id,
@@ -104,7 +96,7 @@ RSpec.describe VisitGroupsController, type: :controller do
           visit_group: vg_params
         }, xhr: true
 
-        expect(assigns(:errors)).to be
+        expect(controller).to respond_with(:ok)
       end
     end
 

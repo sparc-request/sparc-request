@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe CoverLetter do
+RSpec.describe CoverLetter, type: :model do
   it{ should belong_to :sub_service_request }
   it{ should validate_presence_of :content }
 end

@@ -23,7 +23,7 @@ require 'mysql2'
 require 'csv'
 require 'pp'
 
-class AprReport < Report
+class AprReport < Reporting
   def fix_old_codes
     # ActiveRecord::Base.establish_connection(
     #   :adapter => 'mysql2',

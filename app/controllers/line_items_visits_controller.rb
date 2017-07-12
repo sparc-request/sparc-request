@@ -50,7 +50,7 @@ class LineItemsVisitsController < ApplicationController
         success: true
       }
       
-      data[:ssr_header] = render_to_string(partial: 'dashboard/sub_service_requests/header', locals: { sub_service_request: @sub_service_request }) if params[:portal]
+      data[:ssr_header] = render_to_string(partial: 'dashboard/sub_service_requests/header', locals: { sub_service_request: @sub_service_request }) if portal
 
       render json: data
     else

@@ -17,14 +17,62 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
-
 require 'rails_helper'
 
-RSpec.describe Arm, type: :model do
-  it 'should strip name of leading, trailing, and excess whitespace in arm name' do
-    protocol = create(:protocol_without_validations)
-    arm = build(:arm, name: "     name      with    spaces  1 + 2     1+2      ")
+RSpec.describe 'RMID validated Protocols', js: true do
+  let!(:user) do
+    create(:identity,
+           last_name: "Doe",
+           first_name: "John",
+           ldap_uid: "johnd",
+           email: "johnd@musc.edu",
+           password: "p4ssword",
+           password_confirmation: "p4ssword",
+           approved: true
+          )
+  end
 
-    expect(arm.name).to eq("name with spaces 1 + 2 1+2")
+  fake_login_for_each_test('johnd')
+
+  let!(:study) do
+    create(:study_without_validations,
+            primary_pi: user,
+            rmid_validated: true
+          )
+  end
+
+  before :each do
+    visit dashboard_protocol_path(study)
+    wait_for_javascript_to_finish
+  end
+
+  describe 'main page' do
+    it 'shows visual cue that the Protocol has been refreshed with RMID data' do
+      expect(page).to have_css(
+        'h6.text-success',
+        text: 'Updated to corresponding Research Master ID Short Title'
+      )
+      expect(page).to have_css(
+        'h6.text-success',
+        text: 'Updated to corresponding Research Master ID Title'
+      )
+    end
+  end
+
+  describe 'view details' do
+    it 'shows that the Protocol has been refreshed with RMID data' do
+      click_button 'View Study Details'
+      within '.modal-content' do
+        expect(page).to have_css(
+          'h6.text-success',
+          text: 'Updated to corresponding Research Master ID Short Title'
+        )
+        expect(page).to have_css(
+          'h6.text-success',
+          text: 'Updated to corresponding Research Master ID Title'
+        )
+      end
+    end
   end
 end
+

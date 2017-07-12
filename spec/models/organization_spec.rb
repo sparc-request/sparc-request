@@ -21,7 +21,7 @@
 require 'date'
 require 'rails_helper'
 
-RSpec.describe 'organization' do
+RSpec.describe Organization, type: :model do
   let_there_be_lane
   let_there_be_j
   build_service_request_with_project

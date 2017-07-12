@@ -26,7 +26,6 @@ class VisitGroupsController < ApplicationController
 
   def edit
     @visit_group = VisitGroup.find(params[:id])
-
     respond_to do |format|
       format.js
     end
@@ -34,21 +33,29 @@ class VisitGroupsController < ApplicationController
 
   # Used for x-editable update and validations
   def update
-    @visit_group  = VisitGroup.find(params[:id])
-    @portal       = params[:portal] == 'true'
-    @review       = params[:review] == 'true'
-    @admin        = params[:admin] == 'true'
-    @merged       = params[:merged] == 'true'
-    @consolidated = params[:consolidated] == 'true'
-    @pages        = eval(params[:pages]) rescue {}
-    @page         = params[:page].to_i
+    @visit_group = VisitGroup.find(params[:id])
 
-    unless @visit_group.update_attributes(visit_group_params)
-      @errors = @visit_group.errors
-    end
+    if @visit_group.update_attributes(visit_group_params)
+      render nothing: true
+    else
+      # If we update the visit group day, then @visit_group.day is already updated, therefore
+      # any errors for day are not deleted.
+      # If we update a different attribute, then day will be nil and the errors for day
+      # will be deleted.
+      if @visit_group.day.nil?
+        @visit_group.errors.delete(:day)
+      end
 
-    respond_to do |format|
-      format.js
+      # If there are legitimate errors, render them
+      # Else, it means day validation caused the update_attributes to fail even though we didn't
+      # change it, so we ignore validation and update the attribute correctly.
+      if @visit_group.errors.any?
+        render json: @visit_group.errors, status: :unprocessable_entity
+      else
+        @visit_group.attributes = visit_group_params
+        @visit_group.save(validate: false)
+        render nothing: true
+      end
     end
   end
 

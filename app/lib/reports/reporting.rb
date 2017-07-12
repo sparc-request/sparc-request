@@ -23,7 +23,7 @@ require 'fileutils'
 
 # Base class for reports.  A report class must inherit from Report in
 # order to be run from the report runner.
-class Report
+class Reporting
   attr_reader :output_file
   attr_reader :output_dir
 

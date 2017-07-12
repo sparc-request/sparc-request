@@ -189,29 +189,15 @@ class ServiceRequestsController < ApplicationController
   end
 
   def add_service
-    existing_service_ids = @service_request.line_items.reject{ |line_item| FINISHED_STATUSES.include?(line_item.status) }.map(&:service_id)
-
-    if existing_service_ids.include?( params[:service_id].to_i )
+    add_service = AddService.new(@service_request,
+                                 params[:service_id].to_i,
+                                 current_user
+                                )
+    add_service.existing_service_ids
+    if add_service.existing_service_ids.include?( params[:service_id].to_i )
       @duplicate_service = true
     else
-      service        = Service.find( params[:service_id] )
-      new_line_items = @service_request.create_line_items_for_service( service: service, optional: true, existing_service_ids: existing_service_ids, recursive_call: false ) || []
-
-      # create sub_service_requests
-      @service_request.reload
-      @service_request.previous_submitted_at = @service_request.submitted_at
-      new_line_items.each do |li|
-        ssr = find_or_create_sub_service_request(li, @service_request)
-        li.update_attribute(:sub_service_request_id, ssr.id)
-        if @service_request.status == 'first_draft'
-          ssr.update_attribute(:status, 'first_draft')
-        elsif ssr.status.nil? || (ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr))
-          previous_status = ssr.status
-          ssr.update_attribute(:status, 'draft')
-        end
-      end
-
-      @service_request.ensure_ssr_ids
+      add_service.generate_new_service_request
       @line_items_count     = @sub_service_request ? @sub_service_request.line_items.count : @service_request.line_items.count
       @sub_service_requests = @service_request.cart_sub_service_requests
     end
@@ -481,20 +467,6 @@ class ServiceRequestsController < ApplicationController
         render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to edit this Request.' }
       end
     end
-  end
-
-  # Returns either an existing sub service request (if the line item's belongs to the sub service request)
-  def find_or_create_sub_service_request(line_item, service_request)
-    organization = line_item.service.process_ssrs_organization
-    service_request.sub_service_requests.each do |ssr|
-      if (ssr.organization == organization) && !ssr.is_complete?
-        return ssr
-      end
-    end
-    sub_service_request = service_request.sub_service_requests.create(organization_id: organization.id)
-    service_request.ensure_ssr_ids
-
-    sub_service_request
   end
 
   def set_highlighted_link

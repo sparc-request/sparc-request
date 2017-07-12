@@ -166,7 +166,10 @@ $(document).ready ->
     $(this).siblings('.active').removeClass('active')
 
   ###END PUBLISH IN EPIC BUTTON STATES###
-    
+
+  if $("input[name='protocol[selected_for_epic]'][val='true']").prop('checked')
+    $(study_type_form).show()
+    $(certificate_of_confidence_dropdown).show_elt()
 
   ###EPIC BUTTON FIELDS DISPLAY###
   $(document).on 'change', "input[name='protocol[selected_for_epic]']", ->

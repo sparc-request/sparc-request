@@ -129,7 +129,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(page).to have_css('span.help-block', text: 'Is not a number')
+        expect(page).to have_content('Window before is not a number')
       end
 
       scenario 'window after' do
@@ -140,7 +140,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(page).to have_css('span.help-block', text: 'Is not a number')
+        expect(page).to have_content('Window after is not a number')
       end
 
       scenario 'day' do
@@ -151,7 +151,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(page).to have_css('span.help-block', text: 'Is not a number')
+        expect(page).to have_content('Day is not a number')
       end
 
       scenario 'subject count' do
@@ -307,7 +307,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(page).to have_css('span.help-block', text: 'Is not a number')
+        expect(page).to have_content('Window before is not a number')
       end
 
       scenario 'window after' do
@@ -318,7 +318,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(page).to have_css('span.help-block', text: 'Is not a number')
+        expect(page).to have_content('Window after is not a number')
       end
 
       scenario 'day' do
@@ -329,7 +329,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(page).to have_css('span.help-block', text: 'Is not a number')
+        expect(page).to have_content('Day is not a number')
       end
 
       scenario 'subject count' do

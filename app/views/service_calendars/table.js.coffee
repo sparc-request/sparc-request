@@ -25,15 +25,7 @@ $(".arm-calendar-container-<%= @arm.id %>").replaceWith("<%= escape_javascript(r
 <% end %>
 
 <% if @portal %>
-# Admin Edit
-<% if @admin %>
 $("#sub_service_request_header").html("<%= escape_javascript(render( 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request )) %>")
-# View Consolidated Request -- All
-<% else %>
-<% @protocol.sub_service_requests.each do |ssr| %>
-$("#sub_service_request_header").html("<%= escape_javascript(render( 'dashboard/sub_service_requests/header', sub_service_request: ssr )) %>")
-<% end %>
-<% end %>
 <% end %>
 
 $('.selectpicker').selectpicker()

@@ -21,12 +21,13 @@
 module ProtocolsHelper
   def display_study_type_question?(protocol, study_type_answer, view_protocol=false)
     if !USE_EPIC || protocol.selected_for_epic == false
+      # If read-only (Dashboard--> 'Edit Study Information' or 'View Study Details') do not show the first CofC question if unanswered
       if view_protocol
         ['certificate_of_conf_no_epic', 'higher_level_of_privacy_no_epic'].include?(study_type_answer.study_type_question.friendly_id) && study_type_answer.answer != nil
-      else
+      else # Else we want to always display the first CofC question regardless of whether it's been answered or needs to be answered
         if study_type_answer.study_type_question.friendly_id == 'certificate_of_conf_no_epic'
           true
-        else
+        else # We want to see the second CofC question if it's been answered
           ['higher_level_of_privacy_no_epic'].include?(study_type_answer.study_type_question.friendly_id) && study_type_answer.answer != nil
         end
       end

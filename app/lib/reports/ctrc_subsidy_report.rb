@@ -24,7 +24,7 @@ def helper
   ActionController::Base.helpers
 end
 
-class CtrcSubsidyReport < Report
+class CtrcSubsidyReport < Reporting
   def self.currency_converter cents
     helper.number_to_currency(Service.cents_to_dollars(cents))
   end

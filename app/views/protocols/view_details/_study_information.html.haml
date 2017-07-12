@@ -103,15 +103,16 @@
             = t(:protocols)[:studies][:information][:sponsor]
           .col-lg-8
             = protocol.sponsor_name
-      %tr.row
-        %td
-          %label.col-lg-4
-            = t(:protocols)[:studies][:information][:push_to_epic]
-          .col-lg-8
-            = protocol.selected_for_epic ? t(:constants)[:yes_select] : t(:constants)[:no_select]
+      - if USE_EPIC
+        %tr.row
+          %td
+            %label.col-lg-4
+              = t(:protocols)[:studies][:information][:push_to_epic]
+            .col-lg-8
+              = protocol.selected_for_epic ? t(:constants)[:yes_select] : t(:constants)[:no_select]
 
-      / Epic Questions
-      - if protocol.selected_for_epic
+      - if protocol.display_answers.any?{ |as| display_study_type_question?(protocol, as) }
+        / Epic Questions
         %tr.row
           %td.row
             %table.table.table-bordered
@@ -121,8 +122,9 @@
                     %strong
                       = t(:protocols)[:studies][:information][:study_type_questions]
               - protocol.display_answers.each do |answer|
-                - if answer.study_type_question.study_type_question_group.active && protocol.active? && answer.answer != nil
+                - if answer.study_type_question.study_type_question_group.active && protocol.active? && display_study_type_question?(protocol, answer)
                   = render partial: 'protocols/view_details/epic_questions_answers', locals: { answer: answer }
-                - elsif !answer.study_type_question.study_type_question_group.active && !protocol.active? && answer.answer != nil
+                - elsif !answer.study_type_question.study_type_question_group.active && !protocol.active? && display_study_type_question?(protocol, answer)
                   = render partial: 'protocols/view_details/epic_questions_answers', locals: { answer: answer }
-            = render partial: 'protocols/view_details/study_type_note', locals: { protocol: protocol }         
+            - if USE_EPIC && protocol.selected_for_epic
+              = render partial: 'protocols/view_details/study_type_note', locals: { protocol: protocol }         

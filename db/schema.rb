@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170622132807) do
+ActiveRecord::Schema.define(version: 20170707153553) do
 
   create_table "admin_rates", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer  "line_item_id"
@@ -142,17 +142,17 @@ ActiveRecord::Schema.define(version: 20170622132807) do
   end
 
   create_table "delayed_jobs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
-    t.integer  "priority",                 default: 0, null: false
-    t.integer  "attempts",                 default: 0, null: false
-    t.text     "handler",    limit: 65535,             null: false
-    t.text     "last_error", limit: 65535
+    t.integer  "priority",                      default: 0, null: false
+    t.integer  "attempts",                      default: 0, null: false
+    t.text     "handler",    limit: 4294967295,             null: false
+    t.text     "last_error", limit: 4294967295
     t.datetime "run_at"
     t.datetime "locked_at"
     t.datetime "failed_at"
     t.string   "locked_by"
     t.string   "queue"
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
     t.index ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
   end
 

@@ -34,10 +34,11 @@ class ServicePricingReport < ReportingModule
       Provider        =>  { :field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program         =>  { :field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
       Core            =>  { :field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
-      "Tags"          =>  { :field_type => :check_box_tag, :for => 'tags',
-                            :multiple => Tag.to_hash,
-                            :selected => Tag.to_hash.values
-                          },
+      ## commented out to remove tags, but will likely be added in later ##
+      # "Tags"          =>  { :field_type => :check_box_tag, :for => 'tags',
+      #                       :multiple => Tag.to_hash,
+      #                       :selected => Tag.to_hash.values
+      #                     },
       "Rate Types"    =>  { :field_type => :check_box_tag, :for => "rate_types",
                             :multiple => {
                               "full_rate" => "Service Rate",
@@ -51,6 +52,8 @@ class ServicePricingReport < ReportingModule
   end
 
   def records
+    ## commented out to remove tags, but will likely be added in later ##
+    # records ||= self.table.joins(self.joins(self.params)).where(self.where(self.params)).group(self.group).order(self.order).distinct(self.uniq)
     records ||= self.table.eager_load(:pricing_maps).where(self.where(self.params)).group(self.group).order(self.order).distinct(self.uniq)
   end
 
@@ -121,8 +124,14 @@ class ServicePricingReport < ReportingModule
 
   # Other tables to include
   def includes
-    return :pricing_maps
   end
+
+  ## commented out to remove tags, but will likely be added in later ##
+  # def joins args={}
+  #   rtn = [:pricing_maps]
+  #   rtn << :tags if args[:tags]
+  #   return rtn
+  # end
 
   # Conditions
   def where args={}
@@ -142,12 +151,10 @@ class ServicePricingReport < ReportingModule
 
     service_organizations = Organization.where(id: service_organization_ids)
 
-    if args[:tags]
-      tagged_organization_ids = service_organizations.joins(:tags).where(tags: { id: params[:tags] }).ids
-      service_organization_ids = service_organization_ids & tagged_organization_ids
-    end
-
-    return "pricing_maps.display_date >= #{args[:services_pricing_date] || Date.today.to_s}" + (service_organization_ids.any? ? "and services.organization_id IN (#{service_organization_ids.join(',')})" : "")
+    date = args[:services_pricing_date] ? Date.parse(args[:services_pricing_date]) : Date.today
+    query = "`pricing_maps`.`display_date` <= '#{date}' and `services`.`organization_id` IN (#{service_organization_ids.join(',')})"
+    ## commented out to remove tags, but will likely be added in later ##
+    return query # + (args[:tags] ? " and tags.name IN (\"#{args[:tags].join('\",\"')}\")" : "")
   end
 
   def uniq

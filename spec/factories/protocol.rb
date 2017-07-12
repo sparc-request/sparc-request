@@ -21,7 +21,7 @@
 FactoryGirl.define do
   factory :protocol, aliases: [:project] do
     next_ssr_id                  { Random.rand(10000) }
-    short_title                  { Faker::Lorem.word }
+    short_title                  { Faker::Lorem.sentence(2) }
     title                        { Faker::Lorem.sentence(3) }
     sponsor_name                 { Faker::Lorem.sentence(3) }
     brief_description            { Faker::Lorem.paragraph(2) }

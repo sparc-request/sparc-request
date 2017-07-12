@@ -19,6 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Question < ActiveRecord::Base
+
   belongs_to :section
   belongs_to :depender, class_name: 'Option'
   
@@ -37,4 +38,25 @@ class Question < ActiveRecord::Base
             inclusion: { in: [true, false] }
 
   accepts_nested_attributes_for :options, allow_destroy: true
+  
+  after_update :update_options_based_on_question_type, if: :question_type_changed?
+
+  def previous_questions
+    self.survey.questions.where("questions.id < ?", self.id)
+  end
+
+  def is_dependent?
+    self.is_dependent && self.depender_id.present?
+  end
+  
+  private
+
+  def update_options_based_on_question_type
+    self.options.destroy_all
+
+    if self.question_type == 'yes_no'
+      self.options.create(content: 'Yes')
+      self.options.create(content: 'No')
+    end
+  end
 end

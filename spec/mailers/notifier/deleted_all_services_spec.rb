@@ -33,21 +33,37 @@ RSpec.describe Notifier do
       before :each do
         @institution          = create(:institution, name: 'Institution')
         @provider             = create(:provider, parent: @institution, name: 'Provider')
-        @organization         = create(:program, parent: @provider, name: 'Organize')
+        
+        pricing_setup = {id: '',
+                       display_date:   '2016-06-27',
+                       effective_date: '2016-06-28',
+                       federal:   '100',
+                       corporate: '100',
+                       other:     '100',
+                       member:    '100',
+                       college_rate_type:      'federal',
+                       federal_rate_type:      'federal',
+                       foundation_rate_type:   'federal',
+                       industry_rate_type:     'federal',
+                       investigator_rate_type: 'federal',
+                       internal_rate_type:     'federal',
+                       unfunded_rate_type:     'federal',
+                       newly_created: 'true'}
+        @organization         = create(:program_with_pricing_setup, parent: @provider, name: 'Organize')
+        create(:pricing_setup_without_validations, organization_id: @organization.id)
         @service              = create(:service, organization: @organization, one_time_fee: true)
         @service_provider     = create(:service_provider, identity: identity, organization: @organization)
-        @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
+        @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, funding_status: 'funded')
         @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
         @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
         @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
-        @xls                  = Array.new
 
         @service_request.reload
 
         deleted_and_created_line_item_audit_trail(@service_request, @service, identity)
 
         @report               = @sub_service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)
-        @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, @xls, identity, @sub_service_request, @report, true, false, false)
+        @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, identity, @sub_service_request, @report, true, false, false)
       end
 
       # Expected service provider message is defined under deleted_all_services_intro_for_service_providers
@@ -72,20 +88,20 @@ RSpec.describe Notifier do
     context 'when protocol has selected for epic' do
       before :each do
         @organization         = create(:organization)
+        create(:pricing_setup_without_validations, organization_id: @organization.id)
         @service              = create(:service, organization: @organization, one_time_fee: true)
         @service_provider     = create(:service_provider, identity: identity, organization: @organization)
-        @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6, selected_for_epic: true)
+        @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, selected_for_epic: true, funding_status: 'funded')
         @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
         @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
         @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
-        @xls                  = Array.new
 
         @service_request.reload
         
         deleted_and_created_line_item_audit_trail(@service_request, @service, identity)
 
         @report               = @sub_service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)
-        @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, @xls, identity, @sub_service_request, @report, true, false, false)
+        @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, identity, @sub_service_request, @report, true, false, false)
       end
 
       it 'should show epic column' do

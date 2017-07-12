@@ -66,7 +66,6 @@ module EmailHelpers
     # SPARCRequest and is awaiting your review in SPARCDashboard. Please ensure services chosen 
     # are appropriate and can be provided. Communicate any necessary changes to the study team 
     # and request they “Submit to Start Services” once ready to proceed."
-    
     expect(mail_response).to have_text('A request has been made for a budget review (Get Cost Estimate) in SPARCRequest and is awaiting your review in SPARCDashboard.  Please ensure services chosen are appropriate and can be provided. Communicate any necessary changes to the study team and request they “Submit to Start Services” once ready to proceed.')
     expect(mail_response).to have_xpath "//a[@href='/dashboard/protocols/#{@service_request.protocol.id}'][text()= 'SPARCDashboard']/@href"
 
@@ -147,10 +146,10 @@ module EmailHelpers
     # Should have 'Administrators/Service Providers, Click Here' link
     # Should have standard message conclusion
     # Should NOT show acknowledgments 
-    get_a_cost_estimate_service_provider_admin_message(@mail.body)
-    service_provider_and_admin_link(@mail.body)
-    message_conclusion(@mail.body)
-    does_not_have_acknowledgments(@mail.body)
+    get_a_cost_estimate_service_provider_admin_message(@mail.body.parts.first.body)
+    service_provider_and_admin_link(@mail.body.parts.first.body)
+    message_conclusion(@mail.body.parts.first.body)
+    does_not_have_acknowledgments(@mail.body.parts.first.body)
   end
 
   def get_a_cost_estimate_intro_for_general_users

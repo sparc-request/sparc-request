@@ -25,17 +25,19 @@ class Visit < ApplicationRecord
 
   audited
 
-  has_many :procedures
-  has_many :appointments, :through => :procedures
   belongs_to :visit_group
   belongs_to :line_items_visit
   
-  validates :research_billing_qty, numericality: { only_integer: true }
-  validates :insurance_billing_qty, numericality: { only_integer: true }
-  validates :effort_billing_qty, numericality: { only_integer: true }
+  has_one :arm, through: :visit_group
+  has_one :line_item, through: :line_items_visit
+  has_one :service, through: :line_item
+  has_one :sub_service_request, through: :line_item
+  
+  validates :research_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :insurance_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :effort_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
-
-  after_save :set_arm_edited_flag_on_subjects
+  scope :ordered, -> { joins(:visit_group).order('visit_groups.position') }
 
   # Find a Visit for the given "line items visit" and visit group.  This
   # creates the visit if it does not exist.
@@ -43,12 +45,7 @@ class Visit < ApplicationRecord
     return Visit.find_or_create_by(line_items_visit_id: line_items_visit.id, visit_group_id: visit_group.id)
   end
 
-  def set_arm_edited_flag_on_subjects
-    self.visit_group.arm.set_arm_edited_flag_on_subjects
-  end
-
   def cost(per_unit_cost = self.line_items_visit.per_unit_cost(self.line_items_visit.quantity_total))
-
     li = self.line_items_visit.line_item
     if li.applicable_rate == "N/A"
       return "N/A"

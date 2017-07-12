@@ -25,13 +25,13 @@ class Document < ApplicationRecord
   has_and_belongs_to_many :sub_service_requests
   belongs_to :protocol
   has_attached_file :document #, :preserve_files => true
-  validates_attachment :document, :content_type => {:content_type => %w(text/plain image/jpeg image/jpg image/png application/vnd.ms-excel text/csv application/pdf application/msword application/vnd.openxmlformats-officedocument.wordprocessingml.document application/vnd.openxmlformats-officedocument.spreadsheetml.sheet)}
+  do_not_validate_attachment_file_type :document
 
   validates :doc_type, :document, presence: true
   validates :doc_type_other, presence: true, if: Proc.new { |doc| doc.doc_type == 'other' }
 
   def display_document_type
-    self.doc_type == "other" ? self.doc_type_other.try(:humanize) : DOCUMENT_TYPES.key(self.doc_type)
+    self.doc_type == "other" ? self.doc_type_other : DOCUMENT_TYPES.key(self.doc_type)
   end
 
   def all_organizations

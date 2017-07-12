@@ -87,7 +87,7 @@ class Dashboard::LineItemsController < Dashboard::BaseController
       end
       format.json do
         if success
-          render json: { success: true }
+          render json: { success: true, header: render_to_string(partial: 'dashboard/sub_service_requests/header.html', locals: { sub_service_request: @sub_service_request} )  }
         else
           render json: @line_item.errors, status: :unprocessable_entity
         end
@@ -182,10 +182,9 @@ class Dashboard::LineItemsController < Dashboard::BaseController
   end
 
   def update_per_patient_line_item
-    #Create new line_item, and link up line_items_visit, modify CWF data, etc...
+    #Create new line_item, and link up line_items_visit, etc...
     @old_line_item = @line_item
     visit_ids = @line_items_visit.visits.pluck(:id)
-    @procedures = @old_line_item.procedures.where(visit_id: visit_ids)
 
     ActiveRecord::Base.transaction do
       if (@line_item = LineItem.create(service_request_id: @service_request.id, service_id: @service_id, sub_service_request_id: @sub_service_request.id))

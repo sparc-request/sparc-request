@@ -17,6 +17,7 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 .question{ class: "question-#{question.id}", data: { question_id: question.id } }
   %br
   %hr
@@ -32,35 +33,19 @@
 
   .form-group
     = label_tag "question-required", t(:surveyor)[:surveys][:form][:content][:question][:required], class: 'col-sm-1 control-label no-padding-x text-left'
-    .col-sm-1.no-padding
-      = check_box_tag "question-required", question.required, question.required, class: 'form-control'
+    .col-sm-1
+      = check_box_tag "question-required", question.required, question.required
     = label_tag "question-is_dependent", t(:surveyor)[:surveys][:form][:content][:question][:dependent][:label], class: 'col-sm-2 control-label no-padding-x text-right'
-    .col-sm-1.no-padding
-      = check_box_tag "question-is_dependent", question.is_dependent, question.is_dependent, class: 'form-control is-dependent'
+    .col-sm-1
+      = check_box_tag "question-is_dependent", question.is_dependent, question.is_dependent, class: 'is-dependent', disabled: question.previous_questions.empty?
     .dependent-dropdown-container{ class: question.is_dependent ? '' : 'hidden' }
       = label_tag "question-depender_id", t(:surveyor)[:surveys][:form][:content][:question][:dependent][:dropdown][:label], class: 'col-sm-2 control-label no-padding-x'
       .col-sm-4.no-padding
         .col-sm-4
           = render 'surveyor/surveys/form/dependent_dropdown', survey: survey, question: question
     .col-sm-1.no-padding.pull-right
-      = link_to surveyor_question_path(question), method: :delete, remote: true, class: 'btn btn-danger pull-right delete-question', title: t(:surveyor)[:surveys][:form][:content][:question][:delete], data: { toggle: 'tooltip', animation: 'false' } do 
+      %button.btn.btn-sm.btn-danger.pull-right.delete-question{ title: t(:surveyor)[:surveys][:form][:content][:question][:delete], data: { toggle: 'tooltip', animation: 'false' } }
         %span.glyphicon.glyphicon-trash
 
-  -# Render disabled example content so the user can see what the question might look like
-  = render 'surveyor/surveys/form/form_partials/text_example', question: question
-  = render 'surveyor/surveys/form/form_partials/textarea_example', question: question
-  = render 'surveyor/surveys/form/form_partials/yes_no_example', question: question
-  = render 'surveyor/surveys/form/form_partials/date_example', question: question
-  = render 'surveyor/surveys/form/form_partials/time_example', question: question
-  = render 'surveyor/surveys/form/form_partials/number_example', question: question
-  = render 'surveyor/surveys/form/form_partials/dropdown_example', question: question
-
-  .question-options.customize-options{ class: display_question_example(question, 'custom'), data: { question_id: question.id } }
-    %hr
-    .col-sm-12
-      %div{ class: "question-#{question.id}-options" }
-        - question.options.each do |option|
-          = render 'surveyor/surveys/form/survey_option', survey: survey, section: section, question: question, option: option
-
-      .form-group
-        = link_to t(:surveyor)[:surveys][:form][:content][:option][:add], surveyor_options_path(question_id: question.id), method: :post, remote: true, class: 'btn btn-sm btn-primary add-option'
+  .question-options{ data: { question_id: question.id } }
+    = render "surveyor/surveys/form/form_partials/#{question.question_type}_example", question: question

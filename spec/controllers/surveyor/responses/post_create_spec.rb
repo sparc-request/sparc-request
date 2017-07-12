@@ -108,7 +108,7 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
           }
         }
 
-        expect(assigns(:errors).count).to eq(1)
+        expect(assigns(:errors)).to eq(true)
       end
     end
 

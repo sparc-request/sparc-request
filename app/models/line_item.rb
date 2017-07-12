@@ -25,7 +25,7 @@ class LineItem < ApplicationRecord
   audited
 
   belongs_to :service_request
-  belongs_to :service, -> { includes(:pricing_maps, :organization) }, counter_cache: true
+  belongs_to :service, counter_cache: true
   belongs_to :sub_service_request
   has_many :fulfillments, dependent: :destroy
 
@@ -49,7 +49,7 @@ class LineItem < ApplicationRecord
   validate :quantity_must_be_smaller_than_max_and_greater_than_min, on: :update, if: Proc.new { |li| li.service.one_time_fee }
   validates :units_per_quantity, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, on: :update, if: Proc.new { |li| li.service.one_time_fee }
 
-  after_destroy :remove_procedures
+  after_create :build_line_items_visits, if: Proc.new { |li| li.service.present? && !li.one_time_fee && li.service_request.present? && li.service_request.arms.any? }
 
   default_scope { order('line_items.id ASC') }
 
@@ -97,50 +97,27 @@ class LineItem < ApplicationRecord
     end
   end
 
-  def applicable_rate(appointment_completed_date=nil)
+  def applicable_rate
     rate = nil
-    if appointment_completed_date
-      if has_admin_rates? appointment_completed_date
-        rate = admin_rate_for_date(appointment_completed_date)
-      else
-        pricing_map         = self.pricing_scheme == 'displayed' ? self.service.displayed_pricing_map(appointment_completed_date) : self.service.effective_pricing_map_for_date(appointment_completed_date)
-        pricing_setup       = self.pricing_scheme == 'displayed' ? self.service.organization.pricing_setup_for_date(appointment_completed_date) : self.service.organization.effective_pricing_setup_for_date(appointment_completed_date)
-        funding_source      = self.service_request.protocol.funding_source_based_on_status
-        selected_rate_type  = pricing_setup.rate_type(funding_source)
-        applied_percentage  = pricing_setup.applied_percentage(selected_rate_type)
 
-        rate = pricing_map.applicable_rate(selected_rate_type, applied_percentage)
-      end
+    if has_admin_rates?
+      rate = self.admin_rates.last.admin_cost
     else
-      if has_admin_rates?
-        rate = self.admin_rates.last.admin_cost
-      else
-        pricing_map         = self.pricing_scheme == 'displayed' ? self.service.displayed_pricing_map : self.service.current_effective_pricing_map
-        pricing_setup       = self.pricing_scheme == 'displayed' ? self.service.organization.current_pricing_setup : self.service.organization.effective_pricing_setup_for_date
-        funding_source      = self.service_request.protocol.funding_source_based_on_status
-        selected_rate_type  = pricing_setup.rate_type(funding_source)
-        applied_percentage  = pricing_setup.applied_percentage(selected_rate_type)
+      pricing_map         = self.pricing_scheme == 'displayed' ? self.service.displayed_pricing_map : self.service.current_effective_pricing_map
+      pricing_setup       = self.pricing_scheme == 'displayed' ? self.service.organization.current_pricing_setup : self.service.organization.effective_pricing_setup_for_date
+      funding_source      = self.service_request.protocol.funding_source_based_on_status
+      selected_rate_type  = pricing_setup.rate_type(funding_source)
+      applied_percentage  = pricing_setup.applied_percentage(selected_rate_type)
 
-        rate = pricing_map.applicable_rate(selected_rate_type, applied_percentage)
-      end
+      rate = pricing_map.applicable_rate(selected_rate_type, applied_percentage)
     end
 
     rate
   end
 
-  def has_admin_rates? appointment_completed_date=nil
+  def has_admin_rates?
     has_admin_rates = !self.admin_rates.empty? && !self.admin_rates.last.admin_cost.blank?
-    has_admin_rates = has_admin_rates && self.admin_rates.select{|ar| ar.created_at.to_date <= appointment_completed_date.to_date}.size > 0 if appointment_completed_date
     has_admin_rates
-  end
-
-  def admin_rate_for_date appointment_completed_date
-    sorted_rates = self.admin_rates.order(:id).reverse
-    sorted_rates.each do |rate|
-      if rate.created_at.to_date <= appointment_completed_date.to_date
-        return rate.admin_cost
-      end
-    end
   end
 
   def attached_to_submitted_request
@@ -149,7 +126,7 @@ class LineItem < ApplicationRecord
   end
 
   # Returns the cost per unit based on a quantity and the units per quantity if there is one
-  def per_unit_cost(quantity_total=self.quantity, appointment_completed_date=nil)
+  def per_unit_cost(quantity_total=self.quantity)
     units_per_quantity = self.units_per_quantity
     if quantity_total == 0 || quantity_total.nil?
       0
@@ -158,7 +135,7 @@ class LineItem < ApplicationRecord
       # Need to divide by the unit factor here. Defaulted to 1 if there isn't one
       packages_we_have_to_get = (total_quantity.to_f / self.units_per_package.to_f).ceil
       # The total cost is the number of packages times the rate
-      total_cost = packages_we_have_to_get.to_f * self.applicable_rate(appointment_completed_date).to_f
+      total_cost = packages_we_have_to_get.to_f * self.applicable_rate.to_f
       # And the cost per quantity is the total cost divided by the
       # quantity. The result here may not be a whole number if the
       # quantity is not a multiple of units per package.
@@ -231,36 +208,6 @@ class LineItem < ApplicationRecord
     # implement per_unit_cost to call that method.
     num = self.quantity || 0.0
     num * self.per_unit_cost
-  end
-
-  # This determines the complete cost for a line item with fulfillments
-  # taking into account the possibility for a unit factor greater than 1
-  # Only fulfillments within date range will be calculated
-  # direct_cost is then calculated by taking the sum of the products of
-  # the fractional (to the total) quantities of each fulfillment and the applicable
-  # rate at the date of the fulfillment's completion.
-  def direct_cost_for_one_time_fee_with_fulfillments start_date, end_date
-    total_quantity = 0.0
-    fulfillment_rates = []
-    if !self.fulfillments.empty?
-      self.fulfillments.each do |fulfillment|
-        if fulfillment.within_date_range?(start_date, end_date)
-          if fulfillment.unit_quantity?
-            total_quantity += fulfillment.quantity * fulfillment.unit_quantity
-            fulfillment_rates.push({quantity: fulfillment.quantity, rate: self.applicable_rate(fulfillment.date)})
-          else
-            total_quantity += fulfillment.quantity
-            fulfillment_rates.push({quantity: fulfillment.quantity, rate: self.applicable_rate(fulfillment.date)})
-          end
-        end
-      end
-    end
-    direct_cost = 0.0
-    fulfillment_rates.each do |fr|
-      direct_cost += ((total_quantity / units_per_package).ceil * ((fr[:quantity] / total_quantity) * fr[:rate]))
-    end
-
-    direct_cost
   end
 
   # Determine the indirect cost rate related to a particular line item
@@ -411,14 +358,9 @@ class LineItem < ApplicationRecord
 
   private
 
-  def remove_procedures
-    procedures = self.procedures
-    procedures.each do |pro|
-      if pro.completed?
-        pro.update_attributes(service_id: self.service_id, line_item_id: nil, visit_id: nil)
-      else
-        pro.destroy
-      end
+  def build_line_items_visits
+    self.service_request.arms.each do |arm|
+      arm.line_items_visits.create(line_item: self, subject_count: arm.subject_count)
     end
   end
 end

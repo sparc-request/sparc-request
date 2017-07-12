@@ -22,6 +22,9 @@
     display: inline-block
     width: 100%
   
+  input[type='checkbox'], input[type='radio']:not(.yes-no-radio)
+    margin-top: 11px
+
   .add-section span, .add-question span
     margin-right: 5px
 
@@ -37,3 +40,8 @@
   .preview-survey
     span
       margin-right: 5px
+
+.survey-form, #survey-response
+  input[type='checkbox'], input[type='radio']
+    transform: scale(1.75)
+

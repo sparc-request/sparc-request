@@ -24,17 +24,12 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
   describe 'GET /v1/line_items_visits.json' do
 
-    before do
-      LineItemsVisit.skip_callback(:save, :after, :set_arm_edited_flag_on_subjects)
-
+    before :each do
       5.times do
-        line_items_visit = build(:line_items_visit)
-        line_items_visit.save validate: false
+        create(:line_items_visit_without_validations)
       end
 
       @line_items_visits_ids = LineItemsVisit.pluck(:id)
-      
-      LineItemsVisit.set_callback(:save, :after, :set_arm_edited_flag_on_subjects)
     end
 
     context 'with ids' do

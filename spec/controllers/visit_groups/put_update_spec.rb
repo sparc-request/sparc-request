@@ -38,7 +38,7 @@ RSpec.describe VisitGroupsController, type: :controller do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr        = create(:service_request_without_validations, protocol: protocol)
       arm       = create(:arm, protocol: protocol, name: "Armada")
-      vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
+      vg        = arm.visit_groups.first
       vg_params = { day: 5 }
 
       xhr :put, :update, {
@@ -55,7 +55,7 @@ RSpec.describe VisitGroupsController, type: :controller do
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol)
         arm       = create(:arm, protocol: protocol, name: "Armada")
-        vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
+        vg        = arm.visit_groups.first
         vg_params = { day: 5 }
 
         xhr :put, :update, {
@@ -71,7 +71,7 @@ RSpec.describe VisitGroupsController, type: :controller do
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol)
         arm       = create(:arm, protocol: protocol, name: "Armada")
-        vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
+        vg        = arm.visit_groups.first
         vg_params = { day: 5 }
 
         xhr :put, :update, {
@@ -87,7 +87,7 @@ RSpec.describe VisitGroupsController, type: :controller do
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol)
         arm       = create(:arm, protocol: protocol, name: "Armada")
-        vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
+        vg        = arm.visit_groups.first
         vg_params = { day: 5 }
 
         xhr :put, :update, {
@@ -106,7 +106,7 @@ RSpec.describe VisitGroupsController, type: :controller do
           protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
           sr        = create(:service_request_without_validations, protocol: protocol)
           arm       = create(:arm, protocol: protocol, name: "Armada")
-          vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time", window_before: 2)
+          vg        = arm.visit_groups.first
           
           vg.day = nil
           vg.save(validate: false)
@@ -125,7 +125,7 @@ RSpec.describe VisitGroupsController, type: :controller do
           protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
           sr        = create(:service_request_without_validations, protocol: protocol)
           arm       = create(:arm, protocol: protocol, name: "Armada")
-          vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time", window_before: 2)
+          vg        = arm.visit_groups.first
           
           vg.day = nil
           vg.save(validate: false)
@@ -144,7 +144,7 @@ RSpec.describe VisitGroupsController, type: :controller do
           protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
           sr        = create(:service_request_without_validations, protocol: protocol)
           arm       = create(:arm, protocol: protocol, name: "Armada")
-          vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time", window_before: 2)
+          vg        = arm.visit_groups.first
           
           vg.day = nil
           vg.save(validate: false)
@@ -165,7 +165,7 @@ RSpec.describe VisitGroupsController, type: :controller do
           protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
           sr        = create(:service_request_without_validations, protocol: protocol)
           arm       = create(:arm, protocol: protocol, name: "Armada")
-          vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
+          vg        = arm.visit_groups.first
           
           vg.day = nil
           vg.save(validate: false)
@@ -177,14 +177,14 @@ RSpec.describe VisitGroupsController, type: :controller do
             visit_group: vg_params
           }
 
-          expect(vg.reload.name).to eq("Visit Me Baby One More Time")
+          expect(vg.reload.name).to eq('Visit 1')
         end
 
         it 'should render json errors' do
           protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
           sr        = create(:service_request_without_validations, protocol: protocol)
           arm       = create(:arm, protocol: protocol, name: "Armada")
-          vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
+          vg        = arm.visit_groups.first
           
           vg.day = nil
           vg.save(validate: false)
@@ -203,7 +203,7 @@ RSpec.describe VisitGroupsController, type: :controller do
           protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
           sr        = create(:service_request_without_validations, protocol: protocol)
           arm       = create(:arm, protocol: protocol, name: "Armada")
-          vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
+          vg        = arm.visit_groups.first
           
           vg.day = nil
           vg.save(validate: false)

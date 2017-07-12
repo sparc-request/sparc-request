@@ -128,6 +128,10 @@ module ApplicationHelper
     end
   end
 
+  def inactive_tag
+    content_tag(:span, t(:calendars)[:inactive], class: 'inactive-text')
+  end
+
   ##Sets css bootstrap classes for rails flash message types##
   def twitterized_type type
     case type.to_sym

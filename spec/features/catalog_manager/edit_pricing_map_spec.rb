@@ -124,27 +124,27 @@ RSpec.describe 'edit pricing map', js: true do
       it 'should display the one time fee error message if a field is blank', one_time_fee: true do
         find(".otf_quantity_type", visible: true).set("")
         wait_for_javascript_to_finish
-        expect(page).to have_content("If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.")
+        expect(page).to have_content("If the Pricing Map is a non-clinical service (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.")
       end
 
       it 'should hide the error message if that field is filled back in', one_time_fee: true do
         find('.otf_quantity_type', visible: true).set('')
         wait_for_javascript_to_finish
 
-        expect(page).to have_content('If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.')
+        expect(page).to have_content('If the Pricing Map is a non-clinical service (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.')
 
         find('.otf_quantity_type', visible: true).set('Each')
         page.execute_script("$('.otf_quantity_type:visible').change()") #Shouldn't need this. Argh.
         wait_for_javascript_to_finish
 
-        expect(page).not_to have_content('If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.')
+        expect(page).not_to have_content('If the Pricing Map is a non-clinical service (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.')
       end
 
-      it 'should hide the error message if the one time fee box is unchecked', one_time_fee: true do
+      it 'should hide the error message if the non-clinical service box is unchecked', one_time_fee: true do
         find('.otf_quantity_type', visible: true).set('')
         wait_for_javascript_to_finish
 
-        expect(page).to have_content("If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.")
+        expect(page).to have_content("If the Pricing Map is a non-clinical service (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.")
       end
     end
   end

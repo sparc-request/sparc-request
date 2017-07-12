@@ -26,31 +26,34 @@ class VisitGroup < ApplicationRecord
 
   audited
   belongs_to :arm
+  
   has_many :visits, :dependent => :destroy
   has_many :line_items_visits, through: :visits
-  has_many :appointments
-
+  
   acts_as_list scope: :arm
 
-  after_save :set_arm_edited_flag_on_subjects
-  before_destroy :remove_appointments
+  after_create :build_visits, if: Proc.new { |vg| vg.arm.present? }
+  after_create :increment_visit_count, if: Proc.new { |vg| vg.arm.present? && vg.arm.visit_count < vg.arm.visit_groups.count }
+  before_destroy :decrement_visit_count, if: Proc.new { |vg| vg.arm.present? && vg.arm.visit_count >= vg.arm.visit_groups.count  }
 
   validates :name, presence: true
   validates :position, presence: true
   validates :window_before,
             :window_after,
-            presence: true, numericality: { only_integer: true }
+            presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :day, presence: true, numericality: { only_integer: true }
 
   validate :day_must_be_in_order
 
-  def set_arm_edited_flag_on_subjects
-    self.arm.set_arm_edited_flag_on_subjects
-  end
+  default_scope { order(:position) }
 
   def <=> (other_vg)
     return unless other_vg.respond_to?(:day)
     self.day <=> other_vg.day
+  end
+
+  def self.admin_day_multiplier
+    5
   end
 
   def insertion_name
@@ -78,17 +81,24 @@ class VisitGroup < ApplicationRecord
     arm.visit_groups.where("position < ? AND day >= ? OR position > ? AND day <= ?", position, day, position, day).none?
   end
 
+  def per_patient_subtotals
+    self.visits.sum{ |v| v.cost || 0.00 }
+  end
+    
   private
 
-  def remove_appointments
-    appointments = self.appointments
-    appointments.each do |app|
-      if app.completed?
-        app.update_attributes(position: self.position, name: self.name, visit_group_id: nil)
-      else
-        app.destroy
-      end
+  def build_visits
+    self.arm.line_items_visits.each do |liv|
+      self.visits.create(line_items_visit: liv)
     end
+  end
+
+  def increment_visit_count
+    self.arm.increment!(:visit_count)
+  end
+
+  def decrement_visit_count
+    self.arm.decrement!(:visit_count)
   end
 
   def day_must_be_in_order

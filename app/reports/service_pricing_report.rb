@@ -29,24 +29,32 @@ class ServicePricingReport < ReportingModule
 
   def default_options
     {
-      "Pricing Date" => {:field_type => :date_field, :for => "services_pricing_date"},
-      Institution => {:field_type => :select_tag, :required => true, :has_dependencies => "true"},
-      Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
-      Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
-      Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
-      "Tags" => {:field_type => :text_field_tag},
-      "Rate Types" => {:field_type => :check_box_tag, :for => "rate_types",
-                      :multiple => {"full_rate" => "Service Rate",
-                                    "federal_rate" => "Federal Rate",
-                                    "corporate_rate" => "Corporate Rate",
-                                    "other_rate" => "Other Rate",
-                                    "member_rate" => "Member Rate"}
-                     }
+      "Pricing Date"  =>  { :field_type => :date_field, :for => "services_pricing_date"},
+      Institution     =>  { :field_type => :select_tag, :required => true, :has_dependencies => "true"},
+      Provider        =>  { :field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
+      Program         =>  { :field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
+      Core            =>  { :field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
+      ## commented out to remove tags, but will likely be added in later ##
+      # "Tags"          =>  { :field_type => :check_box_tag, :for => 'tags',
+      #                       :multiple => Tag.to_hash,
+      #                       :selected => Tag.to_hash.values
+      #                     },
+      "Rate Types"    =>  { :field_type => :check_box_tag, :for => "rate_types",
+                            :multiple => {
+                              "full_rate" => "Service Rate",
+                              "federal_rate" => "Federal Rate",
+                              "corporate_rate" => "Corporate Rate",
+                              "other_rate" => "Other Rate",
+                              "member_rate" => "Member Rate" },
+                            :selected => ['Service Rate', 'Federal Rate', 'Corporate Rate', 'Other Rate', 'Member Rate']
+                          }
     }
   end
 
   def records
-    records ||= self.table.joins(:pricing_maps).where(self.where(self.params)).uniq(self.uniq).group(self.group).order(self.order)
+    ## commented out to remove tags, but will likely be added in later ##
+    # records ||= self.table.joins(self.joins(self.params)).where(self.where(self.params)).group(self.group).order(self.order).distinct(self.uniq)
+    records ||= self.table.eager_load(:pricing_maps).where(self.where(self.params)).group(self.group).order(self.order).distinct(self.uniq)
   end
 
   def column_attrs
@@ -69,6 +77,8 @@ class ServicePricingReport < ReportingModule
     end
 
     attrs["Service"] = :name
+
+    attrs["Service Status"] = :humanized_status
 
     if params[:rate_types]
       if params[:rate_types].include?("full_rate")
@@ -114,18 +124,18 @@ class ServicePricingReport < ReportingModule
 
   # Other tables to include
   def includes
-    return :pricing_maps
   end
+
+  ## commented out to remove tags, but will likely be added in later ##
+  # def joins args={}
+  #   rtn = [:pricing_maps]
+  #   rtn << :tags if args[:tags]
+  #   return rtn
+  # end
 
   # Conditions
   def where args={}
     selected_organization_id = args[:core_id] || args[:program_id] || args[:provider_id] || args[:institution_id] # we want to go up the tree, service_organization_ids plural because we might have child organizations to include
-
-    if args[:tags]
-      tags = args[:tags].split(',')
-    else
-      tags = []
-    end
 
     # get child organization that have services to related to them
     service_organization_ids = [selected_organization_id]
@@ -137,15 +147,14 @@ class ServicePricingReport < ReportingModule
       service_organization_ids.uniq!
     end
 
-    service_organization_ids = Organization.all.map(&:id) if service_organization_ids.compact.empty? # use all if none are selected
+    service_organization_ids = Organization.ids if service_organization_ids.compact.empty? # use all if none are selected
 
-    service_organizations = Organization.find(service_organization_ids)
+    service_organizations = Organization.where(id: service_organization_ids)
 
-    unless tags.empty?
-      tagged_organization_ids = service_organizations.reject {|x| (x.tags.map(&:name) & tags).empty?}.map(&:id)
-      service_organization_ids = service_organization_ids.reject {|x| !tagged_organization_ids.include?(x)}
-    end
-    return "services.organization_id IN (#{service_organization_ids.join(',')}) and pricing_maps.display_date >= #{args[:services_pricing_date]}"
+    date = args[:services_pricing_date] ? Date.parse(args[:services_pricing_date]) : Date.today
+    query = "`pricing_maps`.`display_date` <= '#{date}' and `services`.`organization_id` IN (#{service_organization_ids.join(',')})"
+    ## commented out to remove tags, but will likely be added in later ##
+    return query # + (args[:tags] ? " and tags.name IN (\"#{args[:tags].join('\",\"')}\")" : "")
   end
 
   def uniq

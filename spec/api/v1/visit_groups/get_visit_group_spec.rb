@@ -23,13 +23,8 @@ require 'rails_helper'
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
   describe 'GET /v1/visit_group/:id.json' do
-    before(:each) { VisitGroup.skip_callback(:save, :after, :set_arm_edited_flag_on_subjects) }
-    after(:each) { VisitGroup.set_callback(:save, :after, :set_arm_edited_flag_on_subjects) }
-
-    before do
-      protocol = create(:protocol_without_validations)
-      arm      = create(:arm, protocol: protocol)
-      @visit_group = create(:visit_group, arm: arm)
+    before :each do
+      @visit_group = create(:visit_group_without_validations)
     end
 
     context 'response params' do

@@ -43,27 +43,25 @@
         %td.your-cost.text-center
           = "$#{number_with_precision(Service.cents_to_dollars(line_item.applicable_rate), precision: 2)}"
 
-        %td.unit-type-number.text-center{ colspan: 3 }
-          - if otf_unit_type == 'N/A'
-            .unit-type
-              = otf_unit_type
-          - else
-            .unit-type.col-sm-6
-              = otf_unit_type
-            .units-per-qty.col-sm-6
-              - if locked || tab == 'calendar'
-                = line_item.units_per_quantity
-              - else
-                %a.edit-units-per-qty{ href: 'javascript:void(0)', data: { name: 'units_per_quantity', title: t(:calendars)[:otf][:editable_fields][:unit_quantity], value: line_item.units_per_quantity, url: line_item_path(line_item, srid: service_request.id) } }
-
-        %td.qty-type-number.text-center{ colspan: 3 }
-          .qty-type.col-sm-6
-            = otf_qty_type
-          .qty.col-sm-6
+        - if otf_unit_type == 'N/A'
+          %td.unit-type-number.unit-type.text-center{ colspan: 2 }
+            = otf_unit_type
+        - else
+          %td.unit-type-number.unit-type.text-center
+            = otf_unit_type
+          %td.unit-type-number.units-per-qty.text-center
             - if locked || tab == 'calendar'
-              = line_item.quantity
+              = line_item.units_per_quantity
             - else
-              %a.edit-qty{ href: 'javascript:void(0)', data: { name: 'quantity', title: t(:calendars)[:otf][:editable_fields][:quantity], value: line_item.quantity, url: line_item_path(line_item, srid: service_request.id) } }
+              %a.edit-units-per-qty{ href: 'javascript:void(0)', data: { name: 'units_per_quantity', title: t(:calendars)[:otf][:editable_fields][:unit_quantity], value: line_item.units_per_quantity, url: line_item_path(line_item, srid: service_request.id) } }
+
+        %td.qty-type-number.qty-type.text-center
+          = otf_qty_type
+        %td.qty-type-number.qty.text-center
+          - if locked || tab == 'calendar'
+            = line_item.quantity
+          - else
+            %a.edit-qty{ href: 'javascript:void(0)', data: { name: 'quantity', title: t(:calendars)[:otf][:editable_fields][:quantity], value: line_item.quantity, url: line_item_path(line_item, srid: service_request.id) } }
 
         %td.total-per-study.text-center
           %strong

@@ -26,10 +26,9 @@
       %h4.modal-title.text-center
         = t(:surveyor)[:surveys][:form][:header]
     .modal-body
-      .survey-form.form
-        .survey{ class: "survey-#{survey.id}", data: { survey_id: survey.id } }
-          = render 'surveyor/surveys/form/survey_fields', survey: survey
-          = render 'surveyor/surveys/form/survey_content', survey: survey
+      .survey.survey-form.form{ data: { survey_id: survey.id } }
+        = render 'surveyor/surveys/form/survey_fields', survey: survey
+        = render 'surveyor/surveys/form/survey_content', survey: survey
     .modal-footer
       %button.btn.btn-primary{ data: { dismiss: 'modal' } }
         = "Done"

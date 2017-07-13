@@ -141,19 +141,19 @@ ActiveRecord::Schema.define(version: 20170707153553) do
     t.index ["sub_service_request_id"], name: "index_cover_letters_on_sub_service_request_id"
   end
 
-  create_table "delayed_jobs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
-    t.integer  "priority",                      default: 0, null: false
-    t.integer  "attempts",                      default: 0, null: false
-    t.text     "handler",    limit: 4294967295,             null: false
-    t.text     "last_error", limit: 4294967295
+  create_table "delayed_jobs", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
+    t.integer "priority", default: 0, null: false
+    t.integer "attempts", default: 0, null: false
+    t.text "handler", limit: 4294967295, null: false
+    t.text "last_error", limit: 4294967295
     t.datetime "run_at"
     t.datetime "locked_at"
     t.datetime "failed_at"
-    t.string   "locked_by"
-    t.string   "queue"
-    t.datetime "created_at",                                null: false
-    t.datetime "updated_at",                                null: false
-    t.index ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
+    t.string "locked_by"
+    t.string "queue"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
   create_table "documents", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -175,21 +175,21 @@ ActiveRecord::Schema.define(version: 20170707153553) do
     t.integer "sub_service_request_id"
   end
 
-  create_table "editable_statuses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.integer  "organization_id"
-    t.string   "status",          null: false
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
-    t.index ["organization_id"], name: "index_editable_statuses_on_organization_id", using: :btree
+  create_table "editable_statuses", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "organization_id"
+    t.string "status", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id"], name: "index_editable_statuses_on_organization_id"
   end
 
-  create_table "epic_queue_records", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
-    t.integer  "protocol_id"
-    t.string   "status"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-    t.string   "origin"
-    t.integer  "identity_id"
+  create_table "epic_queue_records", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
+    t.integer "protocol_id"
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "origin"
+    t.integer "identity_id"
   end
 
   create_table "epic_queues", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
@@ -594,13 +594,13 @@ ActiveRecord::Schema.define(version: 20170707153553) do
     t.string "billing_business_manager_static_email"
     t.datetime "recruitment_start_date"
     t.datetime "recruitment_end_date"
-    t.boolean  "selected_for_epic"
-    t.boolean  "archived",                                                                    default: false
-    t.integer  "study_type_question_group_id"
-    t.integer  "research_master_id"
-    t.integer  "sub_service_requests_count",                                                  default: 0
-    t.boolean  "rmid_validated",                                                              default: false
-    t.index ["next_ssr_id"], name: "index_protocols_on_next_ssr_id", using: :btree
+    t.boolean "selected_for_epic"
+    t.boolean "archived", default: false
+    t.integer "study_type_question_group_id"
+    t.integer "research_master_id"
+    t.integer "sub_service_requests_count", default: 0
+    t.boolean "rmid_validated", default: false
+    t.index ["next_ssr_id"], name: "index_protocols_on_next_ssr_id"
   end
 
   create_table "protocols_study_phases", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|

@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 require 'rails_helper'
 
-RSpec.describe 'Protocol' do
+RSpec.describe Protocol, type: :model do
   let!(:logged_in_user) { create(:identity) }
 
   before :each do

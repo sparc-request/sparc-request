@@ -20,11 +20,42 @@
 
 require 'rails_helper'
 
-RSpec.describe Arm, type: :model do
-  it 'should strip name of leading, trailing, and excess whitespace in arm name' do
-    protocol = create(:protocol_without_validations)
-    arm = build(:arm, name: "     name      with    spaces  1 + 2     1+2      ")
+RSpec.describe 'RMID validated Protocol', js: true do
+  let!(:user) do
+    create(:identity,
+           last_name: "Doe",
+           first_name: "John",
+           ldap_uid: "johnd",
+           email: "johnd@musc.edu",
+           password: "p4ssword",
+           password_confirmation: "p4ssword",
+           approved: true)
+  end
 
-    expect(arm.name).to eq("name with spaces 1 + 2 1+2")
+  fake_login_for_each_test("johnd")
+
+  def visit_protocols_index_page
+    page = Dashboard::Protocols::IndexPage.new
+    page.load
+    page
+  end
+
+  describe 'RMID validated Protocol' do
+    before(:each) do
+      create(:super_user, identity_id: user.id)
+    end
+
+    scenario 'User sees updated RMID validated Protocol' do
+      create(:study_without_validations,
+             primary_pi: user,
+             rmid_validated: true
+            )
+
+      page = visit_protocols_index_page
+
+      expect(page).to have_css('h6.text-success', text:
+                               'Updated to corresponding Research Master ID Short Title'
+                              )
+    end
   end
 end

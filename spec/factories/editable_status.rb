@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,42 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'date'
-require 'rails_helper'
+FactoryGirl.define do
 
-RSpec.describe Protocol, type: :model do
-  let_there_be_lane
-  let_there_be_j
-  build_service_request_with_study()
-  build_service_request_with_project()
-  build_study_type_question_groups()
-  build_study_type_questions()
-  build_study_type_answers()
-
-  describe ".notify_remote_around_update?", delay: true do
-
-    context ":short_title update present" do
-
-      it "should create a RemoteServiceNotifierJob" do
-        protocol = build(:protocol)
-
-        protocol.save validate: false
-        protocol.update_attribute :short_title, "New short title"
-
-        expect(Delayed::Job.where(queue: "remote_service_notifier").one?).to be
-      end
-    end
-
-    context ":short_title update not present" do
-
-      it "should not create a RemoteServiceNotifierJob" do
-        protocol = build(:protocol)
-
-        protocol.save validate: false
-        protocol.update_attribute :title, "New title"
-
-        expect(Delayed::Job.where(queue: "remote_service_notifier").one?).not_to be
-      end
-    end
+  factory :editable_status do
+    status { AVAILABLE_STATUSES.keys.sample || 'active' }
   end
 end

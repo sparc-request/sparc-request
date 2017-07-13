@@ -27,7 +27,8 @@
 // It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
 // the compiled file.
 //
-//= require jquery
+//= require jquery2
+//= require jquery-migrate
 //= require bootstrap-sprockets
 //= require bootstrap-select
 //= require bootstrap-table
@@ -60,5 +61,4 @@
 //= require surveyor/responses
 //= require surveyor/surveys
 //= require sweetalert.min
-//= require update_visit_group
 //= require feedback

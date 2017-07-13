@@ -102,7 +102,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                    create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
-        stub_const("EDITABLE_STATUSES", { org.id => ['first_draft'] })
+        org.editable_statuses.where(status: 'on_hold').destroy_all
 
         post :remove_service, params: {
           id: sr.id,

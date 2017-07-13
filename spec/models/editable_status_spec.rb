@@ -18,53 +18,14 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#= require navigation
-#= require cart
+require 'rails_helper'
 
-$(document).ready ->
-  $(document).on 'click', '#document-new', ->
-    data =
-      protocol_id: $(this).data('protocol-id')
-      service_request_id: getSRId()
-    $.ajax
-      type: 'GET'
-      url: '/documents/new'
-      data: data
-    return false
+RSpec.describe EditableStatus, type: :model do
+  it 'should have a valid factory' do
+    expect(build(:editable_status)).to be_valid
+  end
 
-  $(document).on 'click', '.document-edit', ->
-    row_index   = $(this).parents('tr').data('index')
-    document_id = $(this).parents('table#documents-table').bootstrapTable('getData')[row_index].id
-    $.ajax
-      type: 'GET'
-      url: "/documents/#{document_id}/edit"
-      data:
-        service_request_id: getSRId()
-
-  $(document).on 'click', '.document-delete', ->
-    row_index   = $(this).parents('tr').data('index')
-    document_id = $(this).parents('table#documents-table').bootstrapTable('getData')[row_index].id
-    if confirm I18n['documents']['delete_confirm']
-      $.ajax
-        type: 'DELETE'
-        url: "/documents/#{document_id}?service_request_id=#{getSRId()}"
-
-  $(document).on 'change', '#document_doc_type', ->
-    if $(this).val() == 'other'
-      $('#doc-type-other-field').show()
-    else
-      $('#doc-type-other-field').hide()
-
-  $(document).on 'click', '#note-new', ->
-    notable_type = $(this).data('notable-type')
-    notable_id = $(this).data('notable-id')
-    $.ajax
-      type: 'GET'
-      url: '/notes/new'
-      data:
-        note:
-          notable_type: notable_type
-          notable_id: notable_id
-        in_dashboard: false
-        service_request_id: getSRId()
-    return false
+  it { is_expected.to belong_to(:organization) }
+  it { is_expected.to validate_inclusion_of(:status).in_array(AVAILABLE_STATUSES.keys) }
+  it { is_expected.to validate_presence_of(:status) }
+end

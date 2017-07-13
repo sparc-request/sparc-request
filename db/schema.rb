@@ -175,13 +175,21 @@ ActiveRecord::Schema.define(version: 20170707153553) do
     t.integer "sub_service_request_id"
   end
 
-  create_table "epic_queue_records", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
-    t.integer "protocol_id"
-    t.string "status"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "origin"
-    t.integer "identity_id"
+  create_table "editable_statuses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.integer  "organization_id"
+    t.string   "status",          null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.index ["organization_id"], name: "index_editable_statuses_on_organization_id", using: :btree
+  end
+
+  create_table "epic_queue_records", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
+    t.integer  "protocol_id"
+    t.string   "status"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.string   "origin"
+    t.integer  "identity_id"
   end
 
   create_table "epic_queues", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
@@ -1017,6 +1025,7 @@ ActiveRecord::Schema.define(version: 20170707153553) do
     t.index ["visit_group_id"], name: "index_visits_on_visit_group_id"
   end
 
+  add_foreign_key "editable_statuses", "organizations"
   add_foreign_key "item_options", "items"
   add_foreign_key "items", "questionnaires"
   add_foreign_key "options", "questions"

@@ -22,9 +22,6 @@
 #= require cart
 
 $(document).ready ->
-  getSRId = ->
-    $("input[name='service_request_id']").val()
-
   $(document).on 'click', '#new-arm-button', ->
     $.ajax
       type: 'get'

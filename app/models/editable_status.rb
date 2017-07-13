@@ -18,53 +18,14 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#= require navigation
-#= require cart
+class EditableStatus < ApplicationRecord
+  TYPES = (AVAILABLE_STATUSES.keys << 'first_draft')
 
-$(document).ready ->
-  $(document).on 'click', '#document-new', ->
-    data =
-      protocol_id: $(this).data('protocol-id')
-      service_request_id: getSRId()
-    $.ajax
-      type: 'GET'
-      url: '/documents/new'
-      data: data
-    return false
+  audited
 
-  $(document).on 'click', '.document-edit', ->
-    row_index   = $(this).parents('tr').data('index')
-    document_id = $(this).parents('table#documents-table').bootstrapTable('getData')[row_index].id
-    $.ajax
-      type: 'GET'
-      url: "/documents/#{document_id}/edit"
-      data:
-        service_request_id: getSRId()
+  belongs_to :organization
 
-  $(document).on 'click', '.document-delete', ->
-    row_index   = $(this).parents('tr').data('index')
-    document_id = $(this).parents('table#documents-table').bootstrapTable('getData')[row_index].id
-    if confirm I18n['documents']['delete_confirm']
-      $.ajax
-        type: 'DELETE'
-        url: "/documents/#{document_id}?service_request_id=#{getSRId()}"
+  validates :status, inclusion: { in: TYPES }, presence: true
 
-  $(document).on 'change', '#document_doc_type', ->
-    if $(this).val() == 'other'
-      $('#doc-type-other-field').show()
-    else
-      $('#doc-type-other-field').hide()
-
-  $(document).on 'click', '#note-new', ->
-    notable_type = $(this).data('notable-type')
-    notable_id = $(this).data('notable-id')
-    $.ajax
-      type: 'GET'
-      url: '/notes/new'
-      data:
-        note:
-          notable_type: notable_type
-          notable_id: notable_id
-        in_dashboard: false
-        service_request_id: getSRId()
-    return false
+  attr_accessor :new
+end

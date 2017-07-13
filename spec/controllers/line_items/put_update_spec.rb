@@ -109,9 +109,11 @@ RSpec.describe LineItemsController, type: :controller do
           line_item: li_params
         }
 
-        expect(JSON.parse(response.body)['total_per_study']).to be
-        expect(JSON.parse(response.body)['max_total_direct']).to be
-        expect(JSON.parse(response.body)['total_costs']).to be
+        json = JSON.parse(response.body)
+
+        expect(json['total_per_study']).to be
+        expect(json['max_total_direct']).to be
+        expect(json['total_costs']).to be
       end
 
       it 'should respond ok' do
@@ -149,7 +151,7 @@ RSpec.describe LineItemsController, type: :controller do
           line_item: li_params
         }
 
-        expect(JSON.parse(response.body)).to be
+        expect(JSON.parse(response.body)['quantity']).to be
       end
 
       it 'should respond unprocessable_entity' do

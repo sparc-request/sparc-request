@@ -251,13 +251,9 @@ class ApplicationController < ActionController::Base
     @locked_org_ids = []
     if @service_request.protocol.present?
       @service_request.sub_service_requests.each do |ssr|
-        organization = ssr.organization
-        if organization.has_editable_statuses?
-          self_or_parent_id = ssr.find_editable_id
-          if !EDITABLE_STATUSES[self_or_parent_id].include?(ssr.status)
-            @locked_org_ids << self_or_parent_id
-            @locked_org_ids << organization.all_children(Organization.all).map(&:id)
-          end
+        if ssr.is_locked?
+          @locked_org_ids << ssr.organization_id
+          @locked_org_ids << ssr.organization.all_children(Organization.all).map(&:id)
         end
       end
 

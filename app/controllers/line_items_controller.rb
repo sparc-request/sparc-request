@@ -38,7 +38,7 @@ class LineItemsController < ApplicationController
         total_costs: render_to_string(partial: 'service_calendars/master_calendar/otf/totals/total_cost_per_study', locals: { service_request: @service_request })
       }
     else
-      render json: @line_item.errors, status: :unprocessable_entity
+      render json: line_item.errors, status: :unprocessable_entity
     end
   end
 

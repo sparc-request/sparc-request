@@ -52,12 +52,12 @@ RSpec.describe LineItemsVisitsController, type: :controller do
         liv         = arm.line_items_visits.first
         liv_params  = { subject_count: 3 }
 
-        xhr :put, :update, {
+        put :update, params: {
           id: liv.id,
           service_request_id: sr.id,
           page: '1',
           line_items_visit: liv_params
-        }
+        }, xhr: true
 
         expect(liv.reload.subject_count).to eq(3)
       end
@@ -72,13 +72,13 @@ RSpec.describe LineItemsVisitsController, type: :controller do
           liv         = arm.line_items_visits.first
           liv_params  = { subject_count: 3 }
 
-          xhr :put, :update, {
+          put :update, params: {
             id: liv.id,
             service_request_id: sr.id,
             page: '1',
             portal: 'true',
             line_items_visit: liv_params
-          }
+          }, xhr: true
 
           json = JSON.parse(response.body)
           
@@ -101,13 +101,13 @@ RSpec.describe LineItemsVisitsController, type: :controller do
           liv         = arm.line_items_visits.first
           liv_params  = { subject_count: 3 }
 
-          xhr :put, :update, {
+          put :update, params: {
             id: liv.id,
             service_request_id: sr.id,
             page: '1',
             portal: 'false',
             line_items_visit: liv_params
-          }
+          }, xhr: true
 
           json = JSON.parse(response.body)
           
@@ -131,12 +131,12 @@ RSpec.describe LineItemsVisitsController, type: :controller do
         liv         = arm.line_items_visits.first
         liv_params  = { subject_count: nil }
 
-        xhr :put, :update, {
+        put :update, params: {
           id: liv.id,
           service_request_id: sr.id,
           page: '1',
           line_items_visit: liv_params
-        }
+        }, xhr: true
 
         expect(JSON.parse(response.body)['subject_count']).to be
       end
@@ -150,12 +150,12 @@ RSpec.describe LineItemsVisitsController, type: :controller do
         liv         = arm.line_items_visits.first
         liv_params  = { subject_count: nil }
 
-        xhr :put, :update, {
+        put :update, params: {
           id: liv.id,
           service_request_id: sr.id,
           page: '1',
           line_items_visit: liv_params
-        }
+        }, xhr: true
 
         expect(controller).to respond_with(:unprocessable_entity)
       end

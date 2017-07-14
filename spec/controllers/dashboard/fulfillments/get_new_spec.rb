@@ -29,7 +29,7 @@ RSpec.describe Dashboard::FulfillmentsController do
 
       logged_in_user = build_stubbed(:identity)
       log_in_dashboard_identity(obj: logged_in_user)
-      xhr :get, :new, line_item_id: "line item id"
+      get :new, params: { line_item_id: "line item id" }, xhr: true
     end
 
     it "should assign to @fulfillment a new Fulfillment associated with LineItem from params[:line_item_id]" do

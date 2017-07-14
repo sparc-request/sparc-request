@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class SubServiceRequestInWorkFulfillmentDefaultToFalse < ActiveRecord::Migration
+class SubServiceRequestInWorkFulfillmentDefaultToFalse < ActiveRecord::Migration[4.2]
   def up
     change_column :sub_service_requests, :in_work_fulfillment, :boolean, default: false
 

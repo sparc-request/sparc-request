@@ -21,30 +21,30 @@ require 'rails_helper'
 
 RSpec.describe ContactFormsController, type: :controller do
   stub_controller
-  
+
   describe 'GET #create' do
     it 'should assign @contact_form' do
-      xhr :post, :create, {
+      post :create, params: {
         contact_form: {
           subject: 'candy land',
           email: 'not@fake.com',
           message: 'illuminati'
         }
-      }
+      }, xhr: true
 
       expect(assigns(:contact_form).class).to eq(ContactForm)
     end
 
     context 'contact form valid' do
       it 'should send email' do
-        expect { 
-          xhr :post, :create, {
+        expect {
+          post :create, params: {
             contact_form: {
               subject: 'candy land',
               email: 'not@fake.com',
               message: 'illuminati'
             }
-          }
+          }, xhr: true
         }.to change(ActionMailer::Base.deliveries, :count).by(1)
       end
     end
@@ -52,49 +52,49 @@ RSpec.describe ContactFormsController, type: :controller do
     context 'contact form invalid' do
       it 'should not send email' do
         expect {
-          xhr :post, :create, {
+          post :create, params: {
             contact_form: {
               subject: '',
               email: '',
               message: ''
             }
-          }
+          }, xhr: true
         }.to change(ActionMailer::Base.deliveries, :count).by(0)
       end
 
       it 'should assign @errors' do
-        xhr :post, :create, {
+        post :create, params: {
           contact_form: {
             subject: '',
             email: '',
             message: ''
           }
-        }
+        }, xhr: true
 
         expect(assigns(:errors)).to be
       end
     end
 
     it 'should render template' do
-      xhr :post, :create, {
+      post :create, params: {
         contact_form: {
           subject: 'candy land',
           email: 'not@fake.com',
           message: 'illuminati'
         }
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:create)
     end
 
     it 'returns http success' do
-      xhr :post, :create, {
+      post :create, params: {
         contact_form: {
           subject: 'candy land',
           email: 'not@fake.com',
           message: 'illuminati'
         }
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

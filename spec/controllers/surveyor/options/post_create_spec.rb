@@ -42,9 +42,9 @@ RSpec.describe Surveyor::OptionsController, type: :controller do
     it 'should assign @question to the question' do
       question = create(:question_without_validations)
 
-      xhr :post, :create, {
+      post :create, params: {
         question_id: question.id
-      }
+      }, xhr: true
 
       expect(assigns(:question)).to eq(question)
     end
@@ -53,9 +53,9 @@ RSpec.describe Surveyor::OptionsController, type: :controller do
       question = create(:question_without_validations)
 
       expect{
-        xhr :post, :create, {
+        post :create, params: {
           question_id: question.id
-        }
+        }, xhr: true
       }.to change{ Option.count }.by(1)
       expect(assigns(:option)).to be_an(Option)
     end
@@ -63,9 +63,9 @@ RSpec.describe Surveyor::OptionsController, type: :controller do
     it 'should render template' do
       question = create(:question_without_validations)
 
-      xhr :post, :create, {
+      post :create, params: {
         question_id: question.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:create)
     end
@@ -73,9 +73,9 @@ RSpec.describe Surveyor::OptionsController, type: :controller do
     it 'should respond ok' do
       question = create(:question_without_validations)
 
-      xhr :post, :create, {
+      post :create, params: {
         question_id: question.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

@@ -1,4 +1,4 @@
-class RemoveSsrIdFromLineItems < ActiveRecord::Migration
+class RemoveSsrIdFromLineItems < ActiveRecord::Migration[4.2]
   def up
     remove_column :line_items, :ssr_id
   end

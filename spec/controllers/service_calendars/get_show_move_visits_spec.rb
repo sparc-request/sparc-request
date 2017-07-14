@@ -39,10 +39,10 @@ RSpec.describe ServiceCalendarsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
       arm      = create(:arm, protocol: protocol, name: "Arm")
 
-      xhr :get, :show_move_visits, {
+      get :show_move_visits, params: {
         service_request_id: sr.id,
         arm_id: arm.id
-      }
+      }, xhr: true
 
       expect(assigns(:arm)).to eq(arm)
     end
@@ -52,10 +52,10 @@ RSpec.describe ServiceCalendarsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
       arm      = create(:arm, protocol: protocol, name: "Arm")
 
-      xhr :get, :show_move_visits, {
+      get :show_move_visits, params: {
         service_request_id: sr.id,
         arm_id: arm.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:show_move_visits)
     end
@@ -65,10 +65,10 @@ RSpec.describe ServiceCalendarsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
       arm      = create(:arm, protocol: protocol, name: "Arm")
 
-      xhr :get, :show_move_visits, {
+      get :show_move_visits, params: {
         service_request_id: sr.id,
         arm_id: arm.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

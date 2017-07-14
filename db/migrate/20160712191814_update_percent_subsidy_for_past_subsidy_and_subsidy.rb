@@ -21,7 +21,7 @@
 # Percent subsidy is held.
 # Calculating percent subsidy based on pi contribution for both
 # PastSubsidy and Subsidy tables
-class UpdatePercentSubsidyForPastSubsidyAndSubsidy < ActiveRecord::Migration
+class UpdatePercentSubsidyForPastSubsidyAndSubsidy < ActiveRecord::Migration[4.2]
   class Subsidy < ActiveRecord::Base
   end
 

@@ -32,7 +32,7 @@ RSpec.describe CatalogManager::InstitutionsController do
 
   describe '#create' do
     before :each do
-      post :create, name: 'Some Institution', format: :js
+      post :create, params: { name: 'Some Institution' }, xhr: true
     end
 
     it 'should create an institution' do
@@ -56,7 +56,7 @@ RSpec.describe CatalogManager::InstitutionsController do
       @organization = create(:institution)
       logged_in_user.catalog_manager_rights.create( organization_id: @organization.id )
 
-      xhr :get, :show, id: @organization.id
+      get :show, params: { id: @organization.id }, xhr: true
     end
 
     it 'should assign @path' do
@@ -94,11 +94,11 @@ RSpec.describe CatalogManager::InstitutionsController do
                   institution: { name: 'New Institution Name' },
                   pricing_setups: {blank_pricing_setup: pricing_setup} }
 
-      xhr :put, :update, @params, format: :js
+      put :update, params: @params, xhr: true
     end
 
     it 'should assign @attributes' do
-      expect(assigns(:attributes).symbolize_keys).to eq(@params[:institution])
+      expect(assigns(:attributes).to_h.symbolize_keys).to eq(@params[:institution])
     end
 
     it 'should assign @organization' do

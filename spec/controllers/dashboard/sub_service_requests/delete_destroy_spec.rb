@@ -38,7 +38,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
         before :each do
           create(:super_user, identity: @logged_in_user, organization: @organization)
 
-          delete :destroy, id: @sub_service_request.id, format: :js
+          delete :destroy, params: { id: @sub_service_request.id, format: :js }
         end
 
         it { is_expected.to render_template "dashboard/sub_service_requests/destroy" }
@@ -47,7 +47,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
       context 'user is not authorized admin on SSR' do
         before :each do
-          delete :destroy, id: @sub_service_request.id, format: :js
+          delete :destroy, params: { id: @sub_service_request.id, format: :js }
         end
 
         it { is_expected.to render_template "service_requests/_authorization_error" }
@@ -60,7 +60,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
       before :each do
         create(:super_user, identity: @logged_in_user, organization: @organization)
 
-        delete :destroy, id: @sub_service_request.id, format: :js
+        delete :destroy, params: { id: @sub_service_request.id, format: :js }
       end
 
       it 'should assign instance variables' do
@@ -81,16 +81,16 @@ RSpec.describe Dashboard::SubServiceRequestsController do
       end
 
       it 'should destroy toast messages for the SSR' do
-        expect{ delete :destroy, id: @sub_service_request.id, format: :js }.to change(ToastMessage, :count).by(-1)
+        expect{ delete :destroy, params: { id: @sub_service_request.id, format: :js } }.to change(ToastMessage, :count).by(-1)
       end
 
       it 'should render_template' do
-        delete(:destroy, id: @sub_service_request.id, format: :js)
+        delete :destroy, params: { id: @sub_service_request.id, format: :js }
         is_expected.to render_template "dashboard/sub_service_requests/destroy"
       end
 
       it 'should respond with ok' do
-        delete(:destroy, id: @sub_service_request.id, format: :js)
+        delete :destroy, params: { id: @sub_service_request.id, format: :js }
         is_expected.to respond_with :ok
       end
 
@@ -111,7 +111,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
         before :each do
           create(:super_user, identity: @logged_in_user, organization: @organization)
 
-          delete :destroy, id: @sub_service_request.id, format: :js
+          delete :destroy, params: { id: @sub_service_request.id, format: :js }
         end
 
         it 'should notify them' do
@@ -126,7 +126,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
         before :each do
           create(:service_provider, organization: @organization, identity: @logged_in_user, hold_emails: false)
 
-          delete :destroy, id: @sub_service_request.id, format: :js
+          delete :destroy, params: { id: @sub_service_request.id, format: :js }
         end
 
         it 'should notify them' do

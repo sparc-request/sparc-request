@@ -41,10 +41,10 @@ RSpec.describe VisitGroupsController, type: :controller do
       arm       = create(:arm, protocol: protocol, name: "Armada")
       vg        = arm.visit_groups.first
 
-      xhr :get, :edit, {
+      get :edit, params: {
         id: vg.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(response).to have_http_status(200)
     end

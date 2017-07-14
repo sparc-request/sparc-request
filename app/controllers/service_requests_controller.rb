@@ -296,7 +296,7 @@ class ServiceRequestsController < ApplicationController
     @details_params ||= begin
       required_keys = params[:study] ? :study : :project
       temp = params.require(required_keys).permit(:start_date, :end_date,
-        :recruitment_start_date, :recruitment_end_date)
+        :recruitment_start_date, :recruitment_end_date).to_h
 
       # Finally, transform date attributes.
       date_attrs = %w(start_date end_date recruitment_start_date recruitment_end_date)

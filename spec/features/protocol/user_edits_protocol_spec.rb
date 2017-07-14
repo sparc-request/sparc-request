@@ -33,7 +33,8 @@ RSpec.describe 'User edits protocol', js: true do
     @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
     ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                   create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-    
+                  create(:permissible_value, category: 'funding_source', key: 'federal', value: 'Federal')
+
     StudyTypeQuestionGroup.create(active: 1)
   end
 

@@ -21,4 +21,178 @@
 require 'rails_helper'
 
 RSpec.describe 'User views details after editing epic answers', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
+  build_study_type_question_groups
+  build_study_type_questions
+
+  context 'use epic = true' do
+    context 'Study, selected for epic: false, question group 3' do
+      scenario 'user views epic answers in view details' do
+        protocol = create(:protocol_without_validations,
+                          type: 'Study',
+                          primary_pi: jug2,
+                          funding_status: 'funded',
+                          funding_source: 'foundation',
+                          selected_for_epic: false,
+                          study_type_question_group_id: 3
+                        )
+        organization    = create(:organization)
+        create(:super_user, identity: jug2,
+              organization: organization)
+        answer_questions(protocol)
+
+        find('.view-protocol-details-button').click
+        wait_for_javascript_to_finish
+
+        expect(page).to have_css('h5.col-lg-12', text: 'Study Type Questions:')
+        expect(page).to have_css('div.col-lg-2', text: 'Yes')
+      end
+    end
+
+    context 'Study, selected for epic: true, question group 3' do
+      scenario 'user views epic answers in view details' do
+        protocol = create(:protocol_without_validations,
+                          type: 'Study',
+                          primary_pi: jug2,
+                          funding_status: 'funded',
+                          funding_source: 'foundation',
+                          selected_for_epic: true,
+                          study_type_question_group_id: 3
+                        )
+        organization    = create(:organization)
+        create(:super_user, identity: jug2,
+              organization: organization)
+        answer_questions(protocol)
+
+        find('.view-protocol-details-button').click
+        wait_for_javascript_to_finish
+
+        expect(page).to have_css('h5.col-lg-12', text: 'Study Type Questions:')
+        expect(page).to have_css('div.col-lg-2', text: 'Yes')
+      end
+    end
+
+    context 'Study, selected for epic: true, question group 2' do
+      scenario 'user views epic answers in view details' do
+        protocol = create(:protocol_without_validations,
+                          type: 'Study',
+                          primary_pi: jug2,
+                          funding_status: 'funded',
+                          funding_source: 'foundation',
+                          selected_for_epic: true,
+                          study_type_question_group_id: 2
+                        )
+        organization    = create(:organization)
+        create(:super_user, identity: jug2,
+              organization: organization)
+        answer_questions(protocol)
+
+        find('.view-protocol-details-button').click
+        wait_for_javascript_to_finish
+
+        expect(page).to have_css('h5.col-lg-12', text: 'Study Type Questions:')
+        expect(page).to have_css('div.col-lg-2', text: 'Yes')
+      end
+    end
+  end
+
+  context 'use epic = false' do
+    before :each do
+      stub_const('USE_EPIC', false)
+    end
+
+    context 'Study, selected for epic: false, question group 3' do
+      scenario 'user views epic answers in view details' do
+        protocol = create(:protocol_without_validations,
+                          type: 'Study',
+                          primary_pi: jug2,
+                          funding_status: 'funded',
+                          funding_source: 'foundation',
+                          selected_for_epic: false,
+                          study_type_question_group_id: 3
+                        )
+        organization    = create(:organization)
+        create(:super_user, identity: jug2,
+              organization: organization)
+        answer_questions(protocol, use_epic: false)
+
+        find('.view-protocol-details-button').click
+        wait_for_javascript_to_finish
+
+        expect(page).to have_css('h5.col-lg-12', text: 'Study Type Questions:')
+        expect(page).to have_css('div.col-lg-2', text: 'Yes')
+      end
+    end
+
+    context 'Study, selected for epic: true, question group 3' do
+      scenario 'user views epic answers in view details' do
+        protocol = create(:protocol_without_validations,
+                          type: 'Study',
+                          primary_pi: jug2,
+                          funding_status: 'funded',
+                          funding_source: 'foundation',
+                          selected_for_epic: true,
+                          study_type_question_group_id: 3
+                        )
+        organization    = create(:organization)
+        create(:super_user, identity: jug2,
+              organization: organization)
+        answer_questions(protocol, use_epic: false)
+
+        find('.view-protocol-details-button').click
+        wait_for_javascript_to_finish
+
+        expect(page).to have_css('h5.col-lg-12', text: 'Study Type Questions:')
+        expect(page).to have_css('div.col-lg-2', text: 'Yes')
+      end
+    end
+
+    context 'Study, selected for epic: true, question group 2' do
+      scenario 'user views epic answers in view details' do
+        protocol = create(:protocol_without_validations,
+                          type: 'Study',
+                          primary_pi: jug2,
+                          funding_status: 'funded',
+                          funding_source: 'foundation',
+                          selected_for_epic: true,
+                          study_type_question_group_id: 2
+                        )
+        organization    = create(:organization)
+        create(:super_user, identity: jug2,
+              organization: organization)
+        answer_questions(protocol, use_epic: false)
+
+        find('.view-protocol-details-button').click
+        wait_for_javascript_to_finish
+
+        expect(page).to have_css('h5.col-lg-12', text: 'Study Type Questions:')
+        expect(page).to have_css('div.col-lg-2', text: 'Yes')
+      end
+    end
+  end
+
+  private
+
+  def answer_questions(protocol, use_epic: true)
+    visit edit_dashboard_protocol_path(protocol)
+    wait_for_javascript_to_finish
+    find('.edit-answers', match: :first).click
+    wait_for_javascript_to_finish
+    if use_epic
+      find('#study_selected_for_epic_true_button').click
+    end
+    wait_for_javascript_to_finish
+    if use_epic
+      bootstrap_select '#study_type_answer_certificate_of_conf_answer', 'Yes'
+    else
+      bootstrap_select('#study_type_answer_certificate_of_conf_no_epic_answer',
+                       'Yes'
+                      )
+    end
+    wait_for_javascript_to_finish
+    click_button 'Save'
+    wait_for_javascript_to_finish
+  end
 end
+

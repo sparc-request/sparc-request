@@ -18,9 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$('.protocol-form').html("<%= j render 'dashboard/protocols/form/protocol_form', protocol: @protocol, protocol_type: @protocol.type, admin: true, permission_to_edit: true, edit_answers: @edit_answers %>")
+$('#protocol-form-display').replaceWith("<%= j render 'dashboard/protocols/form/protocol_form', protocol: @protocol, protocol_type: @protocol.type, admin: true, permission_to_edit: true, edit_answers: @edit_answers %>")
 $(".datetimepicker:not(.time)").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
 $('.datetimepicker.time').datetimepicker(format: 'hh:mm A', allowInputToggle: true)
 $(".selectpicker").selectpicker()
 $('[data-toggle="tooltip"]').tooltip()
-
+setup_epic_question_config()

@@ -22,7 +22,7 @@ class Dashboard::StudyTypeAnswersController < Dashboard::BaseController
 
   def edit
     @protocol = Protocol.find(params[:protocol_id])
-    @edit_answers = params[:edit_answers] ? true : false
+    @edit_answers = params[:edit_answers].present?
     @render_js = true
     @protocol.populate_for_edit
     respond_to do |format|

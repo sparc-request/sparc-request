@@ -42,12 +42,12 @@ RSpec.describe ServiceCalendarsController do
 
         session[:identity_id] = logged_in_user.id
 
-        xhr :post, :toggle_calendar_row, {
+        post :toggle_calendar_row, params: {
           line_items_visit_id: liv.id,
           service_request_id: sr.id,
           page: '1',
           check: 'true'
-        }
+        }, xhr: true
 
         expect(v.reload.quantity).to eq(1)
         expect(v.reload.research_billing_qty).to eq(1)
@@ -71,12 +71,12 @@ RSpec.describe ServiceCalendarsController do
 
         session[:identity_id] = logged_in_user.id
 
-        xhr :post, :toggle_calendar_row, {
+        post :toggle_calendar_row, params: {
           service_request_id: sr.id,
           line_items_visit_id: liv.id,
           page: '1',
           uncheck: 'true',
-        }
+        }, xhr: true
 
         expect(v.reload.quantity).to eq(0)
         expect(v.reload.research_billing_qty).to eq(0)
@@ -100,13 +100,13 @@ RSpec.describe ServiceCalendarsController do
 
         session[:identity_id] = logged_in_user.id
 
-        xhr :post, :toggle_calendar_row, {
+        post :toggle_calendar_row, params: {
           service_request_id: sr.id,
           line_items_visit_id: liv.id,
           page: '1',
           check: 'true',
           admin: 'false'
-        }
+        }, xhr: true
 
         expect(ssr.reload.status).to eq('draft')
       end
@@ -127,13 +127,13 @@ RSpec.describe ServiceCalendarsController do
 
         session[:identity_id] = logged_in_user.id
 
-        xhr :post, :toggle_calendar_row, {
+        post :toggle_calendar_row, params: {
           service_request_id: sr.id,
           line_items_visit_id: liv.id,
           page: '1',
           check: 'true',
           admin: 'true'
-        }
+        }, xhr: true
 
         expect(ssr.reload.status).to eq('on_hold')
       end

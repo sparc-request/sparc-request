@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class AddCoreApprovalsToSubServiceRequest < ActiveRecord::Migration
+class AddCoreApprovalsToSubServiceRequest < ActiveRecord::Migration[4.2]
   def change
     add_column :sub_service_requests, :nursing_nutrition_approved, :boolean, :default => false
     add_column :sub_service_requests, :lab_approved, :boolean, :default => false

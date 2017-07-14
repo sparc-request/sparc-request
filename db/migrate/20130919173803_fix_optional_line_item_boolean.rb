@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class FixOptionalLineItemBoolean < ActiveRecord::Migration
+class FixOptionalLineItemBoolean < ActiveRecord::Migration[4.2]
   def up
     line_items = LineItem.where(:optional => nil)
     line_items.each{|li| li.update_attribute(:optional, true)}

@@ -37,10 +37,10 @@ RSpec.describe ArmsController, type: :controller do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :new, {
+      get :new, params: {
         protocol_id: protocol.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:protocol)).to eq(protocol)
     end
@@ -49,10 +49,10 @@ RSpec.describe ArmsController, type: :controller do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :new, {
+      get :new, params: {
         protocol_id: protocol.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:arm).class).to eq(Arm)
       expect(assigns(:arm).protocol).to eq(protocol)
@@ -62,10 +62,10 @@ RSpec.describe ArmsController, type: :controller do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :new, {
+      get :new, params: {
         protocol_id: protocol.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:header_text)).to be
     end
@@ -74,10 +74,10 @@ RSpec.describe ArmsController, type: :controller do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :new, {
+      get :new, params: {
         protocol_id: protocol.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:path)).to eq(arms_path(assigns(:arm)))
     end
@@ -86,10 +86,10 @@ RSpec.describe ArmsController, type: :controller do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :new, {
+      get :new, params: {
         protocol_id: protocol.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:new)
     end
@@ -98,10 +98,10 @@ RSpec.describe ArmsController, type: :controller do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :new, {
+      get :new, params: {
         protocol_id: protocol.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

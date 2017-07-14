@@ -26,7 +26,7 @@ RSpec.describe ProtocolsController, type: :controller do
     it "returns http success" do
       protocol = create(:protocol_without_validations)
       allow(controller).to receive(:authorize_identity).and_return(true)
-      get :show, id: protocol.id, format: :js
+      get :show, params: { id: protocol.id, format: :js }
       expect(response).to have_http_status(:success)
     end
   end

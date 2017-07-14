@@ -40,10 +40,10 @@ RSpec.describe DocumentsController, type: :controller do
                   create(:document, protocol: protocol)
 
 
-      xhr :get, :index, {
+      get :index, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id
-      }
+      }, xhr: true
 
       expect(assigns(:protocol)).to eq(protocol)
     end
@@ -54,10 +54,10 @@ RSpec.describe DocumentsController, type: :controller do
                   create(:document, protocol: protocol)
 
 
-      xhr :get, :index, {
+      get :index, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id
-      }
+      }, xhr: true
 
       expect(assigns(:documents)).to eq(protocol.documents)
     end
@@ -68,10 +68,10 @@ RSpec.describe DocumentsController, type: :controller do
                   create(:document, protocol: protocol)
 
 
-      xhr :get, :index, {
+      get :index, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:index)
     end
@@ -82,10 +82,10 @@ RSpec.describe DocumentsController, type: :controller do
                   create(:document, protocol: protocol)
 
 
-      xhr :get, :index, {
+      get :index, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

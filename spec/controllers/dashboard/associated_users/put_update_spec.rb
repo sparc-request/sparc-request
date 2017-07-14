@@ -37,8 +37,10 @@ RSpec.describe Dashboard::AssociatedUsersController do
           build_stubbed(:project_role, protocol: @protocol)
         end
 
-        xhr :put, :update,  id: project_role.id,
-                            protocol_id: @protocol.id
+        put :update,  params: {
+          id: project_role.id,
+          protocol_id: @protocol.id
+          }, xhr: true
       end
 
       it "should use ProtocolAuthorizer to authorize user" do
@@ -68,12 +70,12 @@ RSpec.describe Dashboard::AssociatedUsersController do
         allow(AssociatedUserUpdater).to receive(:new).
           and_return(project_role_updater)
 
-        xhr :put, :update, id: @project_role.id, protocol_id: @protocol.id, project_role: {identity_id: '1'}
+        put :update, params: { id: @project_role.id, protocol_id: @protocol.id, project_role: {identity_id: '1'} }, xhr: true
       end
 
       it 'should update @protocol_role using params[:project_role] using ProtocolUpdater' do
         expect(AssociatedUserUpdater).to have_received(:new).
-          with controller_params(id: @project_role.id.to_s, project_role: {identity_id: '1'})
+          with id: @project_role.id.to_s, project_role: controller_params({identity_id: '1'})
       end
 
       it 'should not set @errors' do
@@ -106,7 +108,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
         allow(AssociatedUserUpdater).to receive(:new).and_return(@project_role_updater)
 
-        xhr :put, :update, id: @project_role.id, protocol_id: @protocol.id, project_role: {identity_id: '1'}
+        put :update, params: { id: @project_role.id, protocol_id: @protocol.id, project_role: {identity_id: '1'} }, xhr: true
       end
 
       it 'should set @errors' do

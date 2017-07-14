@@ -33,7 +33,7 @@ RSpec.describe Dashboard::FulfillmentsController do
 
         log_in_dashboard_identity(obj: build_stubbed(:identity))
 
-        xhr :post, :create, fulfillment: { quantity: 5 }
+        post :create, params: { fulfillment: { quantity: 5 } }, xhr: true
       end
 
       it "should create Fulfillment" do
@@ -61,7 +61,7 @@ RSpec.describe Dashboard::FulfillmentsController do
 
         log_in_dashboard_identity(obj: build_stubbed(:identity))
 
-        xhr :post, :create, fulfillment: { quantity: 5 }
+        post :create, params: { fulfillment: { quantity: 5 } }, xhr: true
       end
 
       it "should attempt to create Fulfillment" do

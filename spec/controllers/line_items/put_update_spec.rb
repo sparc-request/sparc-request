@@ -49,11 +49,11 @@ RSpec.describe LineItemsController, type: :controller do
         li        = create(:line_item_without_validations, sub_service_request: ssr, quantity: 1, service: service, service_request: sr)
         li_params = { quantity: 2 }
 
-        xhr :put, :update, {
+        put :update, params: {
           id: li.id,
           srid: sr.id,
           line_item: li_params
-        }
+        }, xhr: true
 
         expect(li.reload.quantity).to eq(2)
       end
@@ -67,11 +67,11 @@ RSpec.describe LineItemsController, type: :controller do
         li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
         li_params = { quantity: 2 }
 
-        xhr :put, :update, {
+        put :update, params: {
           id: li.id,
           srid: sr.id,
           line_item: li_params
-        }
+        }, xhr: true
 
         expect(sr.reload.status).to eq('draft')
       end
@@ -85,11 +85,11 @@ RSpec.describe LineItemsController, type: :controller do
         li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
         li_params = { quantity: 2 }
 
-        xhr :put, :update, {
+        put :update, params: {
           id: li.id,
           srid: sr.id,
           line_item: li_params
-        }
+        }, xhr: true
 
         expect(ssr.reload.status).to eq('draft')
       end
@@ -103,11 +103,11 @@ RSpec.describe LineItemsController, type: :controller do
         li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
         li_params = { quantity: 2 }
 
-        xhr :put, :update, {
+        put :update, params: {
           id: li.id,
           srid: sr.id,
           line_item: li_params
-        }
+        }, xhr: true
 
         json = JSON.parse(response.body)
 
@@ -125,11 +125,11 @@ RSpec.describe LineItemsController, type: :controller do
         li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
         li_params = { quantity: 2 }
 
-        xhr :put, :update, {
+        put :update, params: {
           id: li.id,
           srid: sr.id,
           line_item: li_params
-        }
+        }, xhr: true
 
         expect(controller).to respond_with(:ok)
       end
@@ -145,11 +145,11 @@ RSpec.describe LineItemsController, type: :controller do
         li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
         li_params = { quantity: nil }
 
-        xhr :put, :update, {
+        put :update, params: {
           id: li.id,
           srid: sr.id,
           line_item: li_params
-        }
+        }, xhr: true
 
         expect(JSON.parse(response.body)['quantity']).to be
       end
@@ -163,11 +163,11 @@ RSpec.describe LineItemsController, type: :controller do
         li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
         li_params = { quantity: nil }
 
-        xhr :put, :update, {
+        put :update, params: {
           id: li.id,
           srid: sr.id,
           line_item: li_params
-        }
+        }, xhr: true
 
         expect(controller).to respond_with(:unprocessable_entity)
       end

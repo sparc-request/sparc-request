@@ -38,9 +38,9 @@ RSpec.describe ServiceRequestsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :show, {
+      get :show, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:protocol)).to eq(protocol)
     end
@@ -49,10 +49,10 @@ RSpec.describe ServiceRequestsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :show, {
+      get :show, params: {
         id: sr.id,
         admin_offset: '10'
-      }
+      }, xhr: true
 
       expect(assigns(:admin_offset)).to eq('10')
     end
@@ -61,9 +61,9 @@ RSpec.describe ServiceRequestsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :show, {
+      get :show, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:show)
     end
@@ -72,9 +72,9 @@ RSpec.describe ServiceRequestsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :show, {
+      get :show, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

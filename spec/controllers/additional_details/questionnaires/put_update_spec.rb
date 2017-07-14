@@ -31,7 +31,7 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
     end
 
     it 'should assign @service' do
-      xhr :put, :update, {
+      put :update, params: {
         service_id: @service.id,
         id: @questionnaire.id,
         questionnaire: {
@@ -44,13 +44,13 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
             }
           }
         }
-      }
+      }, format: :js
 
       expect(assigns(:service)).to eq(@service)
     end
 
     it 'should assign @questionnaire' do
-      xhr :put, :update, {
+      put :update, params: {
         service_id: @service.id,
         id: @questionnaire.id,
         questionnaire: {
@@ -63,14 +63,14 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
             }
           }
         }
-      }
+      }, format: :js
 
       expect(assigns(:questionnaire)).to eq(@questionnaire)
     end
 
     context 'successful' do
       before :each do
-        xhr :put, :update, {
+        put :update, params: {
           service_id: @service.id,
           id: @questionnaire.id,
           questionnaire: {
@@ -83,7 +83,7 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
               }
             }
           }
-        }
+        }, format: :js
       end
 
       it 'should update the questionnaire' do
@@ -97,7 +97,7 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
 
     context 'unsuccessful' do
       before :each do
-        xhr :put, :update, {
+        put :update, params: {
           service_id: @service.id,
           id: @questionnaire.id,
           questionnaire: {
@@ -110,7 +110,7 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
               }
             }
           }
-        }
+        }, format: :js
       end
 
       it 'should not update the questionnaire' do

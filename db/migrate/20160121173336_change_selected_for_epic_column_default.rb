@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class ChangeSelectedForEpicColumnDefault < ActiveRecord::Migration
+class ChangeSelectedForEpicColumnDefault < ActiveRecord::Migration[4.2]
    def change
     change_column :protocols, :selected_for_epic, :boolean, :default => nil
     Rake::Task["add_new_study_type_questions"].invoke

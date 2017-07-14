@@ -27,7 +27,7 @@ RSpec.describe Dashboard::FulfillmentsController do
         @line_item = findable_stub(LineItem) { build_stubbed(:line_item) }
 
         log_in_dashboard_identity(obj: build_stubbed(:identity))
-        xhr :get, :index, line_item_id: @line_item.id
+        get :index, params: { line_item_id: @line_item.id }, xhr: true
       end
 
       it "should assign LineItem from params[:line_item_id] to @line_item" do
@@ -45,7 +45,7 @@ RSpec.describe Dashboard::FulfillmentsController do
         allow(@line_item).to receive(:fulfillments).and_return(@fulfillments)
 
         log_in_dashboard_identity(obj: build_stubbed(:identity))
-        get :index, line_item_id: @line_item.id, format: :json
+        get :index, params: { line_item_id: @line_item.id, format: :json }, xhr: true
       end
 
       it "should assign LineItem from params[:line_item_id] to @line_item" do

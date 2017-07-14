@@ -43,11 +43,11 @@ RSpec.describe AssociatedUsersController, type: :controller do
 
         session[:identity_id] = logged_in_user.id
 
-        xhr :put, :update, {
+        put :update, params: {
         service_request_id: sr.id,
           id: pr.id,
           project_role: pr_params
-        }
+        }, xhr: true
 
         expect(pr.reload.role).to eq('not noob')
       end
@@ -62,11 +62,11 @@ RSpec.describe AssociatedUsersController, type: :controller do
 
         session[:identity_id] = logged_in_user.id
 
-        xhr :put, :update, {
+        put :update, params: {
         service_request_id: sr.id,
           id: pr.id,
           project_role: pr_params
-        }
+        }, xhr: true
 
         expect(pr.reload.role).to eq('noob')
       end
@@ -79,11 +79,11 @@ RSpec.describe AssociatedUsersController, type: :controller do
 
         session[:identity_id] = logged_in_user.id
 
-        xhr :put, :update, {
+        put :update, params: {
         service_request_id: sr.id,
           id: pr.id,
           project_role: pr_params
-        }
+        }, xhr: true
 
         expect(assigns(:errors)).to be
       end
@@ -97,11 +97,11 @@ RSpec.describe AssociatedUsersController, type: :controller do
 
       session[:identity_id] = logged_in_user.id
 
-      xhr :put, :update, {
+      put :update, params: {
         service_request_id: sr.id,
         id: pr.id,
         project_role: pr_params
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:update)
     end
@@ -113,12 +113,12 @@ RSpec.describe AssociatedUsersController, type: :controller do
       pr_params = { role: 'not noob' }
 
       session[:identity_id] = logged_in_user.id
-      
-      xhr :put, :update, {
+
+      put :update, params: {
         service_request_id: sr.id,
         id: pr.id,
         project_role: pr_params
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

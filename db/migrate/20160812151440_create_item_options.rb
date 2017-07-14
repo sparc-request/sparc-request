@@ -1,4 +1,4 @@
-class CreateItemOptions < ActiveRecord::Migration
+class CreateItemOptions < ActiveRecord::Migration[4.2]
   def change
     create_table :item_options do |t|
       t.string :content

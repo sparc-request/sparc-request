@@ -29,9 +29,9 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
     @survey = create(:survey)
     @resp   = create(:response, survey: @survey)
 
-    xhr :get, :show, {
+    get :show, params: {
       id: @resp.id
-    }
+    }, xhr: true
   end
 
   describe '#show' do

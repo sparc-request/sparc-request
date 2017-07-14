@@ -35,12 +35,6 @@
   = hidden_field_tag :service_request_id, service_request.id
   %table.table.table-bordered{ class: @scroll_true ? "scrolling-table" : "non-scrolling-table" }
     %thead.pppv-thead{ class: @scroll_true ? "scrolling-thead" : "" }
-      = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_header",
-        service_request: service_request, sub_service_request: sub_service_request,
-        arm: arm, tab: tab, pages: pages, page: page, review: review,
-        portal: portal, visit_groups: visit_groups, admin: admin
+      = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_header", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, review: review, portal: portal, admin: admin, merged: merged, consolidated: consolidated, statuses_hidden: statuses_hidden, visit_groups: visit_groups
     %tbody.pppv-tbody{ class: @scroll_true ? "scrolling-div" : "" }
-      = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_line_items",
-        service_request: service_request, sub_service_request: sub_service_request,
-        arm: arm, tab: tab, pages: pages, page: page, review: review, portal: portal,
-        admin: admin, merged: merged, consolidated: consolidated, visit_groups: visit_groups, statuses_hidden: statuses_hidden
+      = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_line_items", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, review: review, portal: portal, admin: admin, merged: merged, consolidated: consolidated, visit_groups: visit_groups, statuses_hidden: statuses_hidden

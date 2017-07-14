@@ -86,12 +86,14 @@ module Dashboard
           where(services: { one_time_fee: false })
       else
         (sub_service_request || service_request).line_items_visits.
+          eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]], service_request: :protocol]).
+          eager_load(service: :pricing_maps, sub_service_request: :organization).
           joins(:sub_service_request).
           where.not(sub_service_requests: { status: statuses_hidden }).
           joins(line_item: :service).
           where(services: { one_time_fee: false }, arm_id: arm.id)
       end.group_by do |liv|
-        liv.sub_service_request.id
+        liv.sub_service_request
       end
     end
 

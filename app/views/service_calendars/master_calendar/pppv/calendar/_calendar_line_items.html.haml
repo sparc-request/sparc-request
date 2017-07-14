@@ -18,9 +18,8 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - line_items_visits = []
-- Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, statuses_hidden: statuses_hidden).each do |sub_service_request_id, livs|
+- Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, statuses_hidden: statuses_hidden).each do |ssr, livs|
   - line_items_visits << livs
-  - ssr    = SubServiceRequest.find(sub_service_request_id)
   - locked = !ssr.can_be_edited? && !admin
 
   -# SSR Header Row
@@ -49,7 +48,7 @@
         = liv.subject_count
       - visits      = liv.visits.paginate(page: page.to_i, per_page: Visit.per_page)
       - totals_hash = liv.try(:per_subject_subtotals, visits)
-      - visits.each_with_index do |v, index|
+      - visits.eager_load(service: :pricing_maps).each do |v|
         %td.text-center.visit.visit-width{ class: "visit-#{v.id}" }
           = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", visit: v, totals_hash: totals_hash
       - (Visit.per_page - visits.size).times do
@@ -62,4 +61,4 @@
           = Dashboard::ServiceCalendars.display_visit_based_direct_cost_per_study(liv)
 
 - unless review or portal
-  = render 'service_calendars/master_calendar/pppv/totals/pppv_totals', service_request: service_request, arm: arm, tab: tab, line_items_visits: line_items_visits.flatten, page: page
+  = render 'service_calendars/master_calendar/pppv/totals/pppv_totals', service_request: service_request, arm: arm, tab: tab, visit_groups: visit_groups, line_items_visits: line_items_visits.flatten, page: page

@@ -10,8 +10,13 @@ class PermissibleValue < ApplicationRecord
     PermissibleValue.where(category: category).pluck(:value)
   end
 
+  # Get a hash of PermissibleValue keys as they keys and values as values
+  def self.get_hash(category)
+    Hash[PermissibleValue.where(category: category).pluck(:key, :value)]
+  end
+
   # Get a hash of PermissibleValue values as the keys and keys as values
-  def self.get_value_key_hash(category)
+  def self.get_inverted_hash(category)
     Hash[PermissibleValue.where(category: category).pluck(:value, :key)]
   end
 end

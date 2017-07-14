@@ -22,7 +22,4 @@ $("#protocol-form-display").replaceWith("<%= escape_javascript(render( '/dashboa
 $("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
 $(".datetimepicker").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
 $(".selectpicker").selectpicker()
-
-if $("input[name='protocol[selected_for_epic]',val='true']").prop('checked')
-  $('.selected_for_epic_dependent').show()
-  $('#study_type_answer_certificate_of_conf_answer').show_elt()
+setup_epic_question_config()

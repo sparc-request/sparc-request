@@ -24,9 +24,9 @@
     %ul.excluded_funding_sources
       - entity.subsidy_map.excluded_funding_sources.each do |excluded_funding_source|
         %li
-          = FUNDING_SOURCES.reverse_hash_to_strings[excluded_funding_source.funding_source]
+          = PermissibleValue.get_value('funding_source', excluded_funding_source.funding_source)
           %span.ui-icon.ui-icon-close.remove_funding_source{:funding_source_id => excluded_funding_source.id}
-    = select_tag 'funding_source', options_for_select( FUNDING_SOURCES.each{ |a| [a[0], a[1]]}), :prompt => '--- Select ---', :class => 'new_excluded_funding_source', :style => 'width:325px;'
+    = select_tag 'funding_source', options_for_select(PermissibleValue.get_value_key_hash('funding_source')), :prompt => '--- Select ---', :class => 'new_excluded_funding_source', :style => 'width:325px;'
     %a.add_new_excluded_funding_source.btn{:org_id => entity.id, :org_type => entity.class}
       = t("cm_shared.labels.exclude_button")
     %br

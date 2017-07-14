@@ -40,9 +40,9 @@ module Dashboard::ProjectsHelper
 
   def display_funding_source(project)
     if project.funding_status == 'funded'
-      (FUNDING_SOURCES.invert)[project.funding_source]
+      PermissibleValue.get_value('funding_source', project.funding_source)
     elsif project.funding_status == 'pending_funding'
-      (POTENTIAL_FUNDING_SOURCES.invert)[project.potential_funding_source]
+      PermissibleValue.get_value('potential_funding_source', project.potential_funding_source)
     else
       ''
     end

@@ -379,15 +379,15 @@ class Protocol < ApplicationRecord
   def display_funding_source_value
     if funding_status == "funded"
       if funding_source == "internal"
-        "#{FUNDING_SOURCES.key funding_source}: #{funding_source_other}"
+        "#{PermissibleValue.get_value('funding_source', funding_source)}: #{funding_source_other}"
       else
-        "#{FUNDING_SOURCES.key funding_source}"
+        "#{PermissibleValue.get_value('funding_source', funding_source)}"
       end
     elsif funding_status == "pending_funding"
       if potential_funding_source == "internal"
-        "#{POTENTIAL_FUNDING_SOURCES.key potential_funding_source}: #{potential_funding_source_other}"
+        "#{PermissibleValue.get_value('potential_funding_source', potential_funding_source)}: #{potential_funding_source_other}"
       else
-        "#{POTENTIAL_FUNDING_SOURCES.key potential_funding_source}"
+        "#{PermissibleValue.get_value('potential_funding_source', potential_funding_source)}"
       end
     end
   end

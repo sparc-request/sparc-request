@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class ChangeVisitWindow < ActiveRecord::Migration
+class ChangeVisitWindow < ActiveRecord::Migration[4.2]
   def up
     add_column :visit_groups, :window_after, :integer, :default => 0
     rename_column :visit_groups, :window, :window_before

@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class FixConsultArrangedDateAndRequesterContactedDate < ActiveRecord::Migration
+class FixConsultArrangedDateAndRequesterContactedDate < ActiveRecord::Migration[4.2]
   def up
     service_requests = ServiceRequest.where("consult_arranged_date is not null or requester_contacted_date is not null")
 

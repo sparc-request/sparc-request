@@ -40,58 +40,58 @@ RSpec.describe Dashboard::VisitGroupsController do
       end
 
       it 'should assign @service_request' do
-        xhr :get, :navigate, {
+        get :navigate, params: {
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           protocol_id: @protocol.id,
           intended_action: 'new'
-        }
+        }, xhr: true
 
         expect(assigns(:service_request)).to eq(@sr)
       end
 
       it 'should assign @sub_service_request' do
-        xhr :get, :navigate, {
+        get :navigate, params: {
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           protocol_id: @protocol.id,
           intended_action: 'new'
-        }
+        }, xhr: true
 
         expect(assigns(:sub_service_request)).to eq(@ssr)
       end
 
       it 'should assign @protocol' do
-        xhr :get, :navigate, {
+        get :navigate, params: {
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           protocol_id: @protocol.id,
           intended_action: 'new'
-        }
+        }, xhr: true
 
         expect(assigns(:protocol)).to eq(@protocol)
       end
 
       it 'should assign @intended_action' do
-        xhr :get, :navigate, {
+        get :navigate, params: {
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           protocol_id: @protocol.id,
           intended_action: 'new'
-        }
+        }, xhr: true
 
         expect(assigns(:intended_action)).to eq('new')
       end
 
       context 'params[:visit_group_id] is present' do
         before :each do
-          xhr :get, :navigate, {
+          get :navigate, params: {
             service_request_id: @sr.id,
             sub_service_request_id: @ssr.id,
             protocol_id: @protocol.id,
             intended_action: 'new',
             visit_group_id: @vg1.id
-          }
+          }, xhr: true
         end
 
         it 'should assign @visit_group' do
@@ -106,13 +106,13 @@ RSpec.describe Dashboard::VisitGroupsController do
       context 'params[:visit_group_id] is nil' do
         context 'params[:arm_id] is present' do
           before :each do
-            xhr :get, :navigate, {
+            get :navigate, params: {
               service_request_id: @sr.id,
               sub_service_request_id: @ssr.id,
               protocol_id: @protocol.id,
               intended_action: 'new',
               arm_id: @arm2.id
-            }
+            }, xhr: true
           end
 
           it 'should assign @arm' do
@@ -126,12 +126,12 @@ RSpec.describe Dashboard::VisitGroupsController do
 
         context 'params[:arm_id] is nil' do
           before :each do
-            xhr :get, :navigate, {
+            get :navigate, params: {
               service_request_id: @sr.id,
               sub_service_request_id: @ssr.id,
               protocol_id: @protocol.id,
               intended_action: 'new'
-            }
+            }, xhr: true
           end
 
           it 'should assign @arm' do
@@ -145,23 +145,23 @@ RSpec.describe Dashboard::VisitGroupsController do
       end
 
       it 'should render template' do
-        xhr :get, :navigate, {
+        get :navigate, params: {
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           protocol_id: @protocol.id,
           intended_action: 'new'
-        }
+        }, xhr: true
 
         expect(controller).to render_template(:navigate)
       end
 
       it 'should respond ok' do
-        xhr :get, :navigate, {
+        get :navigate, params: {
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           protocol_id: @protocol.id,
           intended_action: 'new'
-        }
+        }, xhr: true
 
         expect(controller).to respond_with(:ok)          
       end
@@ -177,12 +177,12 @@ RSpec.describe Dashboard::VisitGroupsController do
         @ssr      = create(:sub_service_request, service_request: @sr, organization: org)
         @arm      = create(:arm, protocol: @protocol)
         
-        xhr :get, :navigate, {
+        get :navigate, params: {
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           protocol_id: @protocol.id,
           intended_action: 'new'
-        }
+        }, xhr: true
       end
 
       it 'should not assign variables' do

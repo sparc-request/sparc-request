@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class AddOtherFundingSourceFields < ActiveRecord::Migration
+class AddOtherFundingSourceFields < ActiveRecord::Migration[4.2]
   def up
     add_column :protocols, :potential_funding_source_other, :string
     add_column :protocols, :funding_source_other, :string

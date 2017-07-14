@@ -38,7 +38,7 @@ RSpec.describe Dashboard::VisitGroupsController do
       end
 
       it 'should assign @visit_group' do
-        xhr :put, :update, {
+        put :update, params: {
           id: @vg.id,
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
@@ -46,13 +46,13 @@ RSpec.describe Dashboard::VisitGroupsController do
             name: 'Visit Me',
             position: 2
           }
-        }
+        }, xhr: true
 
         expect(assigns(:visit_group)).to eq(@vg)
       end
 
       it 'should assign @service_request' do
-        xhr :put, :update, {
+        put :update, params: {
           id: @vg.id,
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
@@ -60,13 +60,13 @@ RSpec.describe Dashboard::VisitGroupsController do
             name: 'Visit Me',
             position: 2
           }
-        }
+        }, xhr: true
 
         expect(assigns(:service_request)).to eq(@sr)
       end
 
       it 'should assign @sub_service_request' do
-        xhr :put, :update, {
+        put :update, params: {
           id: @vg.id,
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
@@ -74,13 +74,13 @@ RSpec.describe Dashboard::VisitGroupsController do
             name: 'Visit Me',
             position: 2
           }
-        }
+        }, xhr: true
 
         expect(assigns(:sub_service_request)).to eq(@ssr)
       end
 
       it 'should assign @arm' do
-        xhr :put, :update, {
+        put :update, params: {
           id: @vg.id,
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
@@ -88,14 +88,14 @@ RSpec.describe Dashboard::VisitGroupsController do
             name: 'Visit Me',
             position: 2
           }
-        }
+        }, xhr: true
 
         expect(assigns(:arm)).to eq(@arm)
       end
 
       context 'visit group is valid' do
         before :each do
-          xhr :put, :update, {
+          put :update, params: {
             id: @vg.id,
             service_request_id: @sr.id,
             sub_service_request_id: @ssr.id,
@@ -103,7 +103,7 @@ RSpec.describe Dashboard::VisitGroupsController do
               name: 'Visit Me',
               position: 2
             }
-          }
+          }, xhr: true
         end
 
         it 'should update visit group' do
@@ -121,7 +121,7 @@ RSpec.describe Dashboard::VisitGroupsController do
 
       context 'visit group is invalid' do
         before :each do
-          xhr :put, :update, {
+          put :update, params: {
             id: @vg.id,
             service_request_id: @sr.id,
             sub_service_request_id: @ssr.id,
@@ -130,7 +130,7 @@ RSpec.describe Dashboard::VisitGroupsController do
               position: 2,
               day: 'asd'
             }
-          }
+          }, xhr: true
         end
 
         it 'should not update visit group' do
@@ -143,7 +143,7 @@ RSpec.describe Dashboard::VisitGroupsController do
       end
 
       it 'should render template' do
-        xhr :put, :update, {
+        put :update, params: {
             id: @vg.id,
             service_request_id: @sr.id,
             sub_service_request_id: @ssr.id,
@@ -151,13 +151,13 @@ RSpec.describe Dashboard::VisitGroupsController do
               name: 'Visit Me',
               position: 2
             }
-          }
+          }, xhr: true
 
         expect(controller).to render_template(:update)
       end
 
       it 'should respond ok' do
-        xhr :put, :update, {
+        put :update, params: {
             id: @vg.id,
             service_request_id: @sr.id,
             sub_service_request_id: @ssr.id,
@@ -165,7 +165,7 @@ RSpec.describe Dashboard::VisitGroupsController do
               name: 'Visit Me',
               position: 2
             }
-          }
+          }, xhr: true
 
         expect(controller).to respond_with(:ok)          
       end
@@ -182,7 +182,7 @@ RSpec.describe Dashboard::VisitGroupsController do
         @arm      = create(:arm, protocol: @protocol)
         @vg       = @arm.visit_groups.first
 
-        xhr :put, :update, {
+        put :update, params: {
           id: @vg.id,
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
@@ -190,7 +190,7 @@ RSpec.describe Dashboard::VisitGroupsController do
             name: 'Visit Me',
             position: 2
           }
-        }
+        }, xhr: true
       end
 
       it 'should not assign variables' do

@@ -388,24 +388,27 @@ class ServiceRequestsController < ApplicationController
 
       @events = []
       begin
-        #to parse file and get events
-        cal_file = File.open(Rails.root.join("tmp", "basic.ics"))
+        path = Rails.root.join("tmp", "basic.ics")
+        if path.exist?
+          #to parse file and get events
+          cal_file = File.open(path)
 
-        cals = Icalendar.parse(cal_file)
+          cals = Icalendar.parse(cal_file)
 
-        cal = cals.first
+          cal = cals.first
 
-        events = cal.try(:events).try(:sort) { |x, y| y.dtstart <=> x.dtstart } || []
+          events = cal.try(:events).try(:sort) { |x, y| y.dtstart <=> x.dtstart } || []
 
-        events.each do |event|
-          next if Time.parse(event.dtstart.to_s) > startMax
-          break if Time.parse(event.dtstart.to_s) < startMin
-          @events << create_calendar_event(event)
+          events.each do |event|
+            next if Time.parse(event.dtstart.to_s) > startMax
+            break if Time.parse(event.dtstart.to_s) < startMin
+            @events << create_calendar_event(event)
+          end
+
+          @events.reverse!
+
+          Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).update_all(status: ALERT_STATUSES['clear'])
         end
-
-        @events.reverse!
-
-        Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).update_all(status: ALERT_STATUSES['clear'])
       rescue Exception => e
         active_alert = Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).first_or_initialize
         if Rails.env == 'production' && active_alert.new_record?

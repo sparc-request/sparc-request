@@ -18,6 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - line_items_visits = []
+- totals = {}
 - Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, statuses_hidden: statuses_hidden).each do |ssr, livs|
   - line_items_visits << livs
   - locked = !ssr.can_be_edited? && !admin
@@ -35,7 +36,7 @@
         - unless liv.service.is_available
           = inactive_tag
       %td.notes.text-center.notes-width
-        = display_liv_notes(liv, @portal)
+        = display_liv_notes(liv, portal)
       %td.status.text-center.status-width
         = AVAILABLE_STATUSES[ssr.status]
       %td.service-rate.text-center.sm-col-width

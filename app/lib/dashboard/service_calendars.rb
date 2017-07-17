@@ -80,14 +80,15 @@ module Dashboard
     def self.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, opts = {})
       statuses_hidden = opts[:statuses_hidden] || %w(first_draft)
       if opts[:merged]
-        arm.line_items_visits.joins(line_item: :sub_service_request).
+        arm.line_items_visits.
+          joins(line_item: :sub_service_request).
           where.not(sub_service_requests: { status: statuses_hidden }).
           joins(line_item: :service).
           where(services: { one_time_fee: false })
       else
         (sub_service_request || service_request).line_items_visits.
           eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]], service_request: :protocol]).
-          eager_load(service: :pricing_maps, sub_service_request: :organization).
+          eager_load(:notes, service: :pricing_maps, sub_service_request: :organization).
           joins(:sub_service_request).
           where.not(sub_service_requests: { status: statuses_hidden }).
           joins(line_item: :service).

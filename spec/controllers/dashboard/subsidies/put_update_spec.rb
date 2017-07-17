@@ -42,7 +42,7 @@ RSpec.describe Dashboard::SubsidiesController do
         @pending_subsidy = create(:pending_subsidy,
                                   sub_service_request_id: @ssr.id,
                                   percent_subsidy: 0.1)
-        xhr :put, :update, admin: 'true', id: @pending_subsidy.id, pending_subsidy: { percent_subsidy: '15.0' }, format: :js
+        put :update, params: { admin: 'true', id: @pending_subsidy.id, pending_subsidy: { percent_subsidy: '15.0' }, format: :js }, xhr: true
       end
 
       it { is_expected.to render_template "dashboard/subsidies/update" }
@@ -91,7 +91,7 @@ RSpec.describe Dashboard::SubsidiesController do
           @pending_subsidy = create(:pending_subsidy,
                                     sub_service_request_id: @ssr.id,
                                     percent_subsidy: 0.1)
-          xhr :put, :update, admin: 'false', id: @pending_subsidy.id, pending_subsidy: { percent_subsidy: '11.0' }, format: :js
+          put :update, params: { admin: 'false', id: @pending_subsidy.id, pending_subsidy: { percent_subsidy: '11.0' }, format: :js }, xhr: true
         end
 
         it 'should respond found' do
@@ -141,7 +141,7 @@ RSpec.describe Dashboard::SubsidiesController do
           @pending_subsidy = create(:pending_subsidy,
                                     sub_service_request_id: @ssr.id,
                                     percent_subsidy: 0.1)
-          xhr :put, :update, admin: 'false', id: @pending_subsidy.id, pending_subsidy: { percent_subsidy: '15.0' }, format: :js
+          put :update, params: { admin: 'false', id: @pending_subsidy.id, pending_subsidy: { percent_subsidy: '15.0' }, format: :js }, xhr: true
         end
 
         it 'should respond ok' do

@@ -23,4 +23,8 @@ class ResearchTypesInfo < ApplicationRecord
   audited
 
   belongs_to :protocol
+
+  def has_children_types?
+    self.human_subjects || self.vertebrate_animals || self.investigational_products || self.ip_patents
+  end
 end

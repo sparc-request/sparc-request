@@ -21,7 +21,7 @@
 require 'rails_helper'
 
 RSpec.describe Admin::IdentitiesController do
-      
+
   describe 'user is not logged in and, thus, has no access to' do
     it 'index' do
       get(:index, {:format => :html})
@@ -29,26 +29,26 @@ RSpec.describe Admin::IdentitiesController do
     end
 
     it 'search' do
-      get(:search, {:term => "abcd", :format => :json})
+      get(:search, params: {:term => "abcd", :format => :json})
       expect(response.status).to eq(401)
     end
-    
+
     it 'create' do
       expect {
-        post(:create, {:format => :json,
+        post(:create, params: {:format => :json,
           :identity => {:first_name => "John", :last_name => "Smith", :email => "johnsmith@techu.edu", :ldap_uid => "jsmith@techu.edu"}
         })
         expect(response.status).to eq(401)
       }.to change(Identity, :count).by(0)
     end
-    
+
     it 'show' do 
-      get(:show, {:id => 1, :format => :json})
+      get(:show, params: {:id => 1, :format => :json})
       expect(response.status).to eq(401)
     end
-   
+
     it 'update' do
-      put(:update, {:id => 1, :format => :json})
+      put(:update, params: {:id => 1, :format => :json})
       expect(response.status).to eq(401)
     end
   end
@@ -77,7 +77,7 @@ RSpec.describe Admin::IdentitiesController do
        
         it 'search' do
           allow(Directory).to receive(:search_and_merge_ldap_and_database_results) { [] }
-          get(:search, {:term => "abcd", :format => :json})
+          get(:search, params: {:term => "abcd", :format => :json})
           expect(response.status).to eq(200)
           expect(response.body).to eq("[]")
         end
@@ -101,7 +101,7 @@ RSpec.describe Admin::IdentitiesController do
           allow(Directory).to receive(:search_database) { [ database_user ]}
           allow(Directory).to receive(:search_ldap) { [ ldap_user, ldap_user_two ] }
           
-          get(:search, {:term => "abcd", :format => :json})
+          get(:search, params: {:term => "abcd", :format => :json})
           expect(response.status).to eq(200)
 
           # record found in both the database and LDAP has an "id" value
@@ -114,7 +114,7 @@ RSpec.describe Admin::IdentitiesController do
         
         it 'create' do
           expect {
-            post(:create, {:format => :json,
+            post(:create, params: {:format => :json,
               :identity => {:first_name => "John", :last_name => "Smith", :email => "johnsmith@techu.edu", :ldap_uid => "jsmith@techu.edu"}
             })
             expect(response.status).to eq(200)
@@ -129,12 +129,12 @@ RSpec.describe Admin::IdentitiesController do
       
       describe 'should NOT have access to' do
         it 'show' do 
-          get(:show, {:id => @identity, :format => :json})
+          get(:show, params: {:id => @identity, :format => :json})
           expect(response.status).to eq(401)
         end
        
         it 'update' do
-          put(:update, {:id => 1, :format => :json})
+          put(:update, params: {:id => 1, :format => :json})
           expect(response.status).to eq(401)
         end
       end
@@ -156,13 +156,13 @@ RSpec.describe Admin::IdentitiesController do
        
         it 'search' do
           allow(Directory).to receive(:search_and_merge_ldap_and_database_results) { [] }
-          get(:search, {:term => "abcd", :format => :json})
+          get(:search, params: {:term => "abcd", :format => :json})
           expect(response.status).to eq(200)
         end
   
         it 'create' do
           expect {
-            post(:create, {:format => :json,
+            post(:create, params: {:format => :json,
               :identity => {:first_name => "John", :last_name => "Smith", :email => "johnsmith@techu.edu", :ldap_uid => "jsmith@techu.edu"}
             })
             expect(response.status).to eq(200)
@@ -177,12 +177,12 @@ RSpec.describe Admin::IdentitiesController do
       
       describe 'should NOT have access to' do
         it 'show' do 
-          get(:show, {:id => @identity, :format => :json})
+          get(:show, params: {:id => @identity, :format => :json})
           expect(response.status).to eq(401)
         end
        
         it 'update' do
-          put(:update, {:id => 1, :format => :json})
+          put(:update, params: {:id => 1, :format => :json})
           expect(response.status).to eq(401)
         end
       end
@@ -203,13 +203,13 @@ RSpec.describe Admin::IdentitiesController do
      
       it 'search' do
         allow(Directory).to receive(:search_and_merge_ldap_and_database_results) { [] }
-        get(:search, {:term => "abcd", :format => :json})
+        get(:search, params: {:term => "abcd", :format => :json})
         expect(response.status).to eq(200)
       end
       
       it 'create' do
         expect {
-          post(:create, {:format => :json,
+          post(:create, params: {:format => :json,
             :identity => {:first_name => "John", :last_name => "Smith", :email => "johnsmith@techu.edu", :ldap_uid => "jsmith@techu.edu"}
           })
           expect(response.status).to eq(200)
@@ -223,7 +223,7 @@ RSpec.describe Admin::IdentitiesController do
       
       it 'create and messages for failed validation' do
         expect {
-          post(:create, {:format => :json,
+          post(:create, params: {:format => :json,
             :identity => {:first_name => "John", :last_name => "", :email => "johnsmith@techu.edu", :ldap_uid => "jsmith@techu.edu"}
           })
           expect(response.status).to eq(422)
@@ -232,7 +232,7 @@ RSpec.describe Admin::IdentitiesController do
       end
       
       it 'show' do 
-        get(:show, {:id => @identity, :format => :json})
+        get(:show, params: {:id => @identity, :format => :json})
         expect(response.status).to eq(200)
         expect(JSON.parse(response.body)).to include("id" => @identity.id, "first_name" => "Jane", "last_name" => "Doe", 
                                                      "email" => "janedoe@techu.edu", "ldap_uid" => "jdoe@techu.edu") 
@@ -240,7 +240,7 @@ RSpec.describe Admin::IdentitiesController do
       
       it 'update (and LDAP_UID should not be allowed to change)' do
         expect {
-          put(:update, {:format => :json, :id => @identity,
+          put(:update, params: {:format => :json, :id => @identity,
             :identity => {:first_name => "John", :last_name => "Smith", :email => "johnsmith@techu.edu", :ldap_uid => "jsmith@techu.edu"}
           })
           expect(response.status).to eq(200)
@@ -253,7 +253,7 @@ RSpec.describe Admin::IdentitiesController do
       
       it 'update and messages for failed validation' do
         expect {
-          put(:update, {:format => :json, :id => @identity,
+          put(:update, params: {:format => :json, :id => @identity,
             :identity => {:first_name => "", :last_name => "Smith", :email => "johnsmith@techu.edu", :ldap_uid => "jsmith@techu.edu"}
           })
           expect(response.status).to eq(422)
@@ -264,11 +264,11 @@ RSpec.describe Admin::IdentitiesController do
       end
       
       it '404s for a bogus identity id' do
-        get(:show, {:id => 23234234, :format => :json})        
+        get(:show, params: {:id => 23234234, :format => :json})        
         expect(response.status).to eq(404)
         expect(response.body).to eq("")
         
-        put(:update, {:format => :json, :id => 23234234,
+        put(:update, params: {:format => :json, :id => 23234234,
           :identity => {:first_name => "John", :last_name => "Smith", :email => "johnsmith@techu.edu", :ldap_uid => "jsmith@techu.edu"}
         })
         expect(response.status).to eq(404)
@@ -292,13 +292,13 @@ RSpec.describe Admin::IdentitiesController do
        
         it 'search' do
           allow(Directory).to receive(:search_and_merge_ldap_and_database_results) { [] }
-          get(:search, {:term => "abcd", :format => :json})
+          get(:search, params: {:term => "abcd", :format => :json})
           expect(response.status).to eq(200)
         end
         
         it 'create' do
           expect {
-            post(:create, {:format => :json,
+            post(:create, params: {:format => :json,
               :identity => {:first_name => "John", :last_name => "Smith", :email => "johnsmith@techu.edu", :ldap_uid => "jsmith@techu.edu"}
             })
             expect(response.status).to eq(200)
@@ -313,12 +313,12 @@ RSpec.describe Admin::IdentitiesController do
       
       describe 'should NOT have access to' do
         it 'show' do 
-          get(:show, {:id => @identity, :format => :json})
+          get(:show, params: {:id => @identity, :format => :json})
           expect(response.status).to eq(401)
         end
        
         it 'update' do
-          put(:update, {:id => 1, :format => :json})
+          put(:update, params: {:id => 1, :format => :json})
           expect(response.status).to eq(401)
         end
       end

@@ -23,7 +23,7 @@ module CwfHelper
   def cwf_sends_api_put_request_for_resource(klass, object_id, params)
     http_login
 
-    put "/v1/#{klass}/#{object_id}.json", params, @env
+    put "/v1/#{klass}/#{object_id}.json", params: params, headers: @env
   end
 
   def cwf_sends_api_get_request_for_resource(klass, object_id, depth)
@@ -35,7 +35,7 @@ module CwfHelper
       params = {}
     end
 
-    get "/v1/#{klass}/#{object_id}.json", params, @env
+    get "/v1/#{klass}/#{object_id}.json", params: params, headers: @env
   end
 
   def cwf_sends_api_get_request_for_resources(klass, depth, ids=[])
@@ -51,13 +51,13 @@ module CwfHelper
       params.merge!({ depth: depth })
     end
 
-    get "/v1/#{klass}.json", params, @env
+    get "/v1/#{klass}.json", params: params, headers: @env
   end
 
   def cwf_sends_api_get_request_for_resources_by_params(klass, params)
     http_login
 
-    get "/v1/#{klass}.json", params, @env
+    get "/v1/#{klass}.json", params: params, headers: @env
   end
 end
 

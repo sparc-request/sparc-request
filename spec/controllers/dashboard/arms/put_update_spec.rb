@@ -41,8 +41,10 @@ RSpec.describe Dashboard::ArmsController do
         @arm_stub = findable_stub(Arm) { build_stubbed(:arm) }
         allow(@arm_stub).to receive(:update_attributes).and_return(true)
 
-        xhr :put, :update, id: @arm_stub.id, arm: { name: "some name" },
-          service_request_id: sr_stub.id, sub_service_request_id: ssr_stub.id
+        put :update,
+          params: { id: @arm_stub.id, arm: { name: "some name" },
+          service_request_id: sr_stub.id, sub_service_request_id: ssr_stub.id },
+          xhr: true
       end
 
       it { is_expected.to render_template "dashboard/arms/update" }
@@ -78,8 +80,9 @@ RSpec.describe Dashboard::ArmsController do
         end
         allow(@arm_stub).to receive(:update_attributes).and_return(false)
 
-        xhr :put, :update, id: @arm_stub.id, arm: { name: "a bad name" },
-          service_request_id: sr_stub.id, sub_service_request_id: ssr_stub.id
+        put :update, params: { id: @arm_stub.id, arm: { name: "a bad name" },
+          service_request_id: sr_stub.id, sub_service_request_id: ssr_stub.id },
+          xhr: true
       end
 
       it 'should assign @arm from params[:arm_id] and update it according to params[:arm]' do

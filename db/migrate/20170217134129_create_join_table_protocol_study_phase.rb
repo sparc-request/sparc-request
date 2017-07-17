@@ -1,4 +1,4 @@
-class CreateJoinTableProtocolStudyPhase < ActiveRecord::Migration
+class CreateJoinTableProtocolStudyPhase < ActiveRecord::Migration[4.2]
   def change
     create_join_table :protocols, :study_phases do |t|
       t.index [:protocol_id, :study_phase_id]

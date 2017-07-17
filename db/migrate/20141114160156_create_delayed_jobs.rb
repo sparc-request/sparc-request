@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class CreateDelayedJobs < ActiveRecord::Migration
+class CreateDelayedJobs < ActiveRecord::Migration[4.2]
   def self.up
     create_table :delayed_jobs, :force => true do |table|
       table.integer :priority, :default => 0, :null => false # Allows some jobs to jump to the front of the queue

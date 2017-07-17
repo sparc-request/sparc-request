@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 # This migration comes from acts_as_taggable_on_engine (originally 4)
-class AddMissingTaggableIndex < ActiveRecord::Migration
+class AddMissingTaggableIndex < ActiveRecord::Migration[4.2]
   def self.up
     add_index :taggings, [:taggable_id, :taggable_type, :context]
   end

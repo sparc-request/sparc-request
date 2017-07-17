@@ -44,7 +44,7 @@ RSpec.describe Dashboard::MessagesController do
         allow(Message).to receive(:create).and_return(@new_message)
 
         log_in_dashboard_identity(obj: build_stubbed(:identity))
-        xhr :post, :create, message: @new_message_attr
+        post :create, params: { message: @new_message_attr }, xhr: true
       end
 
       it "should create a Message" do
@@ -78,9 +78,9 @@ RSpec.describe Dashboard::MessagesController do
         allow(Message).to receive(:create)
 
         log_in_dashboard_identity(obj: build_stubbed(:identity))
-        xhr :post, :create, message: { notification_id: @notification.id,
+        post :create, params: { message: { notification_id: @notification.id,
           to: @to_identity.id.to_s, from: @from_identity.id.to_s, email: "jay@email.com",
-          body: "" }
+          body: "" } }, xhr: true
       end
 
       it "should not create a Message" do

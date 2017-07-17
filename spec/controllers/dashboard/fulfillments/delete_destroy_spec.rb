@@ -29,7 +29,7 @@ RSpec.describe Dashboard::FulfillmentsController do
       allow(@fulfillment).to receive(:delete)
 
       log_in_dashboard_identity(obj: build_stubbed(:identity))
-      xhr :delete, :destroy, id: @fulfillment.id
+      delete :destroy, params: { id: @fulfillment.id }, xhr: true
     end
 
     it "should destroy Fulfillment from params[:id]" do

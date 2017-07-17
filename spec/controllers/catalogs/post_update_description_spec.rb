@@ -42,10 +42,10 @@ RSpec.describe CatalogsController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       org       = create(:organization)
 
-      xhr :post, :update_description, {
+      post :update_description, params: {
         id: org.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:organization)).to eq(org)
     end
@@ -55,11 +55,11 @@ RSpec.describe CatalogsController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       org       = create(:organization)
 
-      xhr :post, :update_description, {
+      post :update_description, params: {
         id: org.id,
         process_ssr_found: 'true',
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:process_ssr_found)).to eq(true)
     end
@@ -71,12 +71,12 @@ RSpec.describe CatalogsController, type: :controller do
         org       = create(:organization)
         ssr       = create(:sub_service_request_without_validations, service_request: sr, organization: org)
 
-      xhr :post, :update_description, {
+      post :update_description, params: {
         id: org.id,
         process_ssr_found: 'true',
         service_request_id: sr.id,
         sub_service_request_id: ssr.id
-      }
+      }, xhr: true
 
       expect(assigns(:ssr_org)).to eq(org)
       end
@@ -87,10 +87,10 @@ RSpec.describe CatalogsController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       org       = create(:organization)
 
-      xhr :post, :update_description, {
+      post :update_description, params: {
         id: org.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:update_description)
     end
@@ -100,10 +100,10 @@ RSpec.describe CatalogsController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       org       = create(:organization)
 
-      xhr :post, :update_description, {
+      post :update_description, params: {
         id: org.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

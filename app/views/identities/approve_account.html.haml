@@ -17,5 +17,40 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-= t(:identity)[:approved]
+.devise-form
+  .col-sm-6.col-sm-offset-3.text-center
+    %h1.page-header
+      = t(:identities)[:approved]
+    .form
+      .form-group.field
+        %label.col-sm-3.text-right
+          = t(:devise)[:registrations][:last_name]
+        .col-sm-9
+          = text_field_tag :last_name, @identity.last_name, class: 'form-control', disabled: true
+      .form-group.field
+        %label.col-sm-3.text-right
+          = t(:devise)[:registrations][:first_name]
+        .col-sm-9
+          = text_field_tag :first_name, @identity.first_name, class: 'form-control', disabled: true
+      .form-group.field
+        %label.col-sm-3.text-right
+          = t(:devise)[:registrations][:company]
+        .col-sm-9
+          = text_field_tag :company, @identity.company, class: 'form-control', disabled: true
+      .form-group.field
+        %label.col-sm-3.text-right
+          = t(:devise)[:registrations][:email]
+        .col-sm-9
+          = text_field_tag :email, @identity.email, class: 'form-control', disabled: true
+      .form-group.field
+        %label.col-sm-3.text-right
+          = t(:devise)[:registrations][:phone]
+        .col-sm-9
+          = text_field_tag :phone, @identity.phone, class: 'form-control', disabled: true
+      .form-group.field
+        %label.col-sm-3.text-right
+          = t(:devise)[:registrations][:reason]
+        .col-sm-9
+          = text_area_tag :reason, params[:reason], class: 'form-control', disabled: true
+    %hr
+      = link_to t(:proper)[:confirmation][:to_dashboard], DASHBOARD_LINK, class: 'btn btn-lg btn-success'

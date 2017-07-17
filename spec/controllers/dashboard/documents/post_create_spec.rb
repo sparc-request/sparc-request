@@ -42,9 +42,9 @@ RSpec.describe Dashboard::DocumentsController do
           @ssr            = create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft', protocol_id: @protocol.id)
                             create(:super_user, identity: logged_in_user, organization: organization)
           document        = Rack::Test::UploadedFile.new(File.join('doc', 'musc_installation_example.txt'),'text/plain')
-          params          = { org_ids: [organization.id], protocol_id: @protocol.id, document: { protocol: @protocol, doc_type: 'Protocol', document: document } }
+          params          = { org_ids: [organization.id], protocol_id: @protocol.id, document: { protocol: @protocol, doc_type: 'Protocol', document: document }, format: :js }
 
-          xhr :post, :create, params, format: :js
+          post :create, params: params, xhr: true
         end
 
         it 'should assign @protocol from params[:protocol_id]' do
@@ -74,9 +74,9 @@ RSpec.describe Dashboard::DocumentsController do
           @ssr            = create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft', protocol_id: @protocol.id)
                             create(:super_user, identity: logged_in_user, organization: organization)
           @document       = Rack::Test::UploadedFile.new(File.join('doc', 'musc_installation_example.txt'),'text/plain')
-          params          = { org_ids: [organization.id], protocol_id: @protocol.id, document: { protocol: @protocol, doc_type: 'Protocol', document: @document } }
+          params          = { org_ids: [organization.id], protocol_id: @protocol.id, document: { protocol: @protocol, doc_type: 'Protocol', document: @document }, format: :js }
 
-          xhr :post, :create, params, format: :js
+          post :create, params: params, xhr: true
         end
 
         it 'should assign sub_service_requests to the document' do
@@ -94,9 +94,9 @@ RSpec.describe Dashboard::DocumentsController do
       context 'params[:document] describes an invalid Document' do
         before :each do
           document  = Rack::Test::UploadedFile.new(File.join('doc', 'musc_installation_example.txt'),'txt/plain')
-          params    = { protocol_id: @protocol.id, document: { protocol: @protocol, doc_type: nil, document: document } }
+          params    = { protocol_id: @protocol.id, document: { protocol: @protocol, doc_type: nil, document: document }, format: :js }
 
-          xhr :post, :create, params, format: :js
+          post :create, params: params, xhr: :ture
         end
 
         it 'should set @errors' do
@@ -111,9 +111,9 @@ RSpec.describe Dashboard::DocumentsController do
     context 'user is not authorized to edit protocol' do
       before :each do
         protocol  = create(:protocol_without_validations, primary_pi: create(:identity))
-        params    = { protocol_id: protocol.id, document: {} }
+        params    = { protocol_id: protocol.id, document: {}, format: :js }
 
-        xhr :post, :create, params, format: :js
+        post :create, params: params, xhr: :ture
       end
 
       it { is_expected.to render_template 'dashboard/shared/_authorization_error' }

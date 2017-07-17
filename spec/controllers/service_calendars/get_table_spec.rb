@@ -38,10 +38,10 @@ RSpec.describe ServiceCalendarsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :table, {
+      get :table, params: {
         service_request_id: sr.id,
         tab: 'template'
-      }
+      }, xhr: true
 
       expect(assigns(:tab)).to eq('template')
     end
@@ -50,10 +50,10 @@ RSpec.describe ServiceCalendarsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :table, {
+      get :table, params: {
         service_request_id: sr.id,
         review: 'true'
-      }
+      }, xhr: true
 
       expect(assigns(:review)).to eq(true)
     end
@@ -62,10 +62,10 @@ RSpec.describe ServiceCalendarsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :table, {
+      get :table, params: {
         service_request_id: sr.id,
         portal: 'false'
-      }
+      }, xhr: true
 
       expect(assigns(:portal)).to eq(false)
     end
@@ -74,7 +74,7 @@ RSpec.describe ServiceCalendarsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :table, service_request_id: sr.id
+      get :table, params: { service_request_id: sr.id }, xhr: true
 
       expect(assigns(:merged)).to eq(false)
     end
@@ -83,7 +83,7 @@ RSpec.describe ServiceCalendarsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :table, service_request_id: sr.id
+      get :table, params: { service_request_id: sr.id }, xhr: true
 
       expect(assigns(:consolidated)).to eq(false)
     end
@@ -94,7 +94,7 @@ RSpec.describe ServiceCalendarsController do
       arm1      = create(:arm, protocol: protocol, name: "Arm 1")
       arm2      = create(:arm, protocol: protocol, name: "Arm 2")
 
-      xhr :get, :table, service_request_id: sr.id
+      get :table, params: { service_request_id: sr.id }, xhr: true
 
       expect(assigns(:pages).count).to eq(2)
       expect(assigns(:pages)[arm1.id]).to be
@@ -106,10 +106,10 @@ RSpec.describe ServiceCalendarsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
       arm      = create(:arm, protocol: protocol, name: "Arm")
 
-      xhr :get, :table, {
+      get :table, params: {
         service_request_id: sr.id,
         arm_id: arm.id
-      }
+      }, xhr: true
 
       expect(assigns(:arm)).to eq(arm)
     end
@@ -119,10 +119,10 @@ RSpec.describe ServiceCalendarsController do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
-        xhr :get, :table, {
+        get :table, params: {
           service_request_id: sr.id,
           format: :js
-        }
+        }, xhr: true
 
         expect(controller).to render_template(:table)
       end
@@ -131,10 +131,10 @@ RSpec.describe ServiceCalendarsController do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
-        xhr :get, :table, {
+        get :table, params: {
           service_request_id: sr.id,
           format: :js
-        }
+        }, xhr: true
 
         expect(controller).to respond_with(:ok)
       end
@@ -145,10 +145,10 @@ RSpec.describe ServiceCalendarsController do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
-        xhr :get, :table, {
+        get :table, params: {
           service_request_id: sr.id,
           format: :html
-        }
+        }, xhr: true
 
         expect(controller).to render_template(:table)
       end
@@ -157,10 +157,10 @@ RSpec.describe ServiceCalendarsController do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
-        xhr :get, :table, {
+        get :table, params: {
           service_request_id: sr.id,
           format: :html
-        }
+        }, xhr: true
 
         expect(controller).to respond_with(:ok)
       end

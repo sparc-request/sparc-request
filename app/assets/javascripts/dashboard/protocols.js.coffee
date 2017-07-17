@@ -24,9 +24,6 @@
 $(document).ready ->
   Sparc.protocol =
     ready: ->
-      getSRId = () ->
-        $('input[name="service_request_id"]').val()
-
       #  Protocol Index Begin
       $(document).on 'click', '.protocols_index_row > .id, .protocols_index_row > .title, .protocols_index_row > .pis', ->
         #if you click on the row, it opens the protocol show

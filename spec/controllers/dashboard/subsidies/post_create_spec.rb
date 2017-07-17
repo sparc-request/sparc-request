@@ -39,7 +39,7 @@ RSpec.describe Dashboard::SubsidiesController do
                                   service_request: @service_request,
                                   organization: @organization,
                                   status: 'draft')
-        xhr :post, :create, admin: 'true', pending_subsidy: { sub_service_request_id: @ssr.id, percent_subsidy: "50.00", pi_contribution: "100.00" }, format: :js
+        post :create, params: { admin: 'true', pending_subsidy: { sub_service_request_id: @ssr.id, percent_subsidy: "50.00", pi_contribution: "100.00" }, format: :js }, xhr: true
       end
 
       it { is_expected.to render_template "dashboard/subsidies/create" }
@@ -81,7 +81,7 @@ RSpec.describe Dashboard::SubsidiesController do
                                     service_request: @service_request,
                                     organization: @organization,
                                     status: 'draft')
-          xhr :post, :create, admin: 'false', pending_subsidy: { sub_service_request_id: @ssr.id, percent_subsidy: "9.00", pi_contribution: "100.00" }, format: :js
+          post :create, params: { admin: 'false', pending_subsidy: { sub_service_request_id: @ssr.id, percent_subsidy: "9.00", pi_contribution: "100.00" }, format: :js }, xhr: true
         end
 
         it 'should respond found' do
@@ -125,7 +125,7 @@ RSpec.describe Dashboard::SubsidiesController do
                                     service_request: @service_request,
                                     organization: @organization,
                                     status: 'draft')
-          xhr :post, :create, admin: 'false', pending_subsidy: { sub_service_request_id: @ssr.id, percent_subsidy: "50.00", pi_contribution: "100.00" }, format: :js
+          post :create, params: { admin: 'false', pending_subsidy: { sub_service_request_id: @ssr.id, percent_subsidy: "50.00", pi_contribution: "100.00" }, format: :js }, xhr: true
         end
 
         it { is_expected.to render_template "dashboard/subsidies/create" }

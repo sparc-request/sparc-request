@@ -63,7 +63,7 @@ RSpec.describe 'User edits an existing document', js: true do
         click_button 'Upload'
         wait_for_javascript_to_finish
 
-        expect(@document.reload.doc_type).to eq('Consent')
+        expect(@document.reload.doc_type).to eq('consent')
       end
     end
   end

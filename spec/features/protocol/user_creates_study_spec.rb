@@ -23,6 +23,7 @@ require 'rails_helper'
 RSpec.describe 'User creates study', js: true do
   let_there_be_lane
   fake_login_for_each_test
+  build_impact_areas
 
   before :each do
     institution = create(:institution, name: "Institution")

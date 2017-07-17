@@ -34,7 +34,7 @@ RSpec.describe Dashboard::ProtocolsController do
 
           log_in_dashboard_identity(obj: @logged_in_user)
 
-          get :display_requests, id: @protocol.id, format: :js
+          get :display_requests, params: { id: @protocol.id, format: :js }
         end
 
         it "should use ProtocolAuthorizer to authorize user" do
@@ -61,7 +61,7 @@ RSpec.describe Dashboard::ProtocolsController do
             with(identity_id: @user.id).
             and_return(@project_role)
 
-          xhr :get, :display_requests, id: @protocol.id, format: :js
+          get :display_requests, params: { id: @protocol.id, format: :js }
         end
 
         it "should set @protocol to Protocol <- params[:id]" do
@@ -80,7 +80,7 @@ RSpec.describe Dashboard::ProtocolsController do
 
           log_in_dashboard_identity(obj: @logged_in_user)
 
-          get :display_requests, id: @protocol.id, format: :js
+          get :display_requests, params: { id: @protocol.id, format: :js }
         end
 
         it 'should set @admin to false' do
@@ -102,7 +102,7 @@ RSpec.describe Dashboard::ProtocolsController do
 
           log_in_dashboard_identity(obj: @logged_in_user)
 
-          get :display_requests, id: @protocol.id, format: :js
+          get :display_requests, params: { id: @protocol.id, format: :js }
         end
 
         it 'should set @admin to true' do
@@ -123,7 +123,7 @@ RSpec.describe Dashboard::ProtocolsController do
 
           log_in_dashboard_identity(obj: @logged_in_user)
 
-          get :display_requests, id: @protocol.id, format: :js
+          get :display_requests, params: { id: @protocol.id, format: :js }
         end
 
         it 'should set @admin to true' do

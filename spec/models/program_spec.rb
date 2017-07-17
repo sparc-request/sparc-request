@@ -21,7 +21,7 @@
 require 'date'
 require 'rails_helper'
 
-RSpec.describe Program do
+RSpec.describe Program, type: :model do
  describe "has_pricing_setup" do
     context 'neither program nor parent provider has a pricing setup' do
       it 'should return false' do

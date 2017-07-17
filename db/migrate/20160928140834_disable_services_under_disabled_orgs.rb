@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class DisableServicesUnderDisabledOrgs < ActiveRecord::Migration
+class DisableServicesUnderDisabledOrgs < ActiveRecord::Migration[4.2]
   def change
     Organization.where(is_available: false).each do |org|
       org.services.where(is_available: true).update_all(is_available: false)

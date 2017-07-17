@@ -4,19 +4,19 @@ RSpec.describe Dashboard::BaseController, type: :controller do
   controller do
     def show
       find_admin_for_protocol
-      render nothing: true
+      head :ok
     end
 
     def index
       find_admin_for_protocol
       protocol_authorizer_view
-      render nothing: true if @authorization.can_view? || @admin
+      head :ok if @authorization.can_view? || @admin
     end
 
     def new
       find_admin_for_protocol
       protocol_authorizer_edit
-      render nothing: true if @authorization.can_edit? || @admin
+      head :ok if @authorization.can_edit? || @admin
     end
   end
 
@@ -40,14 +40,14 @@ RSpec.describe Dashboard::BaseController, type: :controller do
         create(:super_user, identity: @user, organization: @organization)
         log_in_dashboard_identity({id: @user.id})
 
-        get :show, id: "id"
+        get :show, params: { id: "id" }
         expect(assigns(:admin)).to eq(true)
       end
       it 'should set @admin to true when the user is a Service Provider' do
         create(:service_provider, identity: @user, organization: @organization)
         log_in_dashboard_identity({id: @user.id})
 
-        get :show, id: "id"
+        get :show, params: { id: "id" }
         expect(assigns(:admin)).to eq(true)
       end
     end
@@ -56,7 +56,7 @@ RSpec.describe Dashboard::BaseController, type: :controller do
       it 'should set @admin to false if the user is not an admin of an organization' do
         log_in_dashboard_identity({id: @user.id})
 
-        get :show, id: "id"
+        get :show, params: { id: "id" }
         expect(assigns(:admin)).to eq(false)
       end
     end

@@ -41,12 +41,12 @@ RSpec.describe ServiceCalendarsController do
 
       session[:identity_id] = logged_in_user.id
 
-      xhr :get, :view_full_calendar, {
+      get :view_full_calendar, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id,
         arm_id: arm.id,
         portal: 'true'
-      }
+      }, xhr: true
 
       expect(assigns(:tab)).to eq('calendar')
     end
@@ -59,12 +59,12 @@ RSpec.describe ServiceCalendarsController do
 
       session[:identity_id] = logged_in_user.id
 
-      xhr :get, :view_full_calendar, {
+      get :view_full_calendar, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id,
         arm_id: arm.id,
         portal: 'true'
-      }
+      }, xhr: true
 
       expect(assigns(:review)).to eq(false)
     end
@@ -77,12 +77,12 @@ RSpec.describe ServiceCalendarsController do
 
       session[:identity_id] = logged_in_user.id
 
-      xhr :get, :view_full_calendar, {
+      get :view_full_calendar, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id,
         arm_id: arm.id,
         portal: 'true'
-      }
+      }, xhr: true
 
       expect(assigns(:portal)).to eq(true)
     end
@@ -94,12 +94,12 @@ RSpec.describe ServiceCalendarsController do
 
       session[:identity_id] = logged_in_user.id
 
-      xhr :get, :view_full_calendar, {
+      get :view_full_calendar, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id,
         arm_id: arm.id,
         portal: 'true'
-      }
+      }, xhr: true
 
       expect(assigns(:merged)).to eq(true)
     end
@@ -112,12 +112,12 @@ RSpec.describe ServiceCalendarsController do
 
       session[:identity_id] = logged_in_user.id
 
-      xhr :get, :view_full_calendar, {
+      get :view_full_calendar, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id,
         arm_id: arm.id,
         portal: 'true'
-      }
+      }, xhr: true
 
       expect(assigns(:consolidated)).to eq(true)
     end
@@ -130,12 +130,12 @@ RSpec.describe ServiceCalendarsController do
 
       session[:identity_id] = logged_in_user.id
 
-      xhr :get, :view_full_calendar, {
+      get :view_full_calendar, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id,
         arm_id: arm.id,
         portal: 'true'
-      }
+      }, xhr: true
 
       expect(assigns(:service_request)).to eq(sr)
     end
@@ -148,13 +148,13 @@ RSpec.describe ServiceCalendarsController do
 
       session[:identity_id] = logged_in_user.id
 
-      xhr :get, :view_full_calendar, {
+      get :view_full_calendar, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id,
         arm_id: arm.id,
         portal: 'true',
         statuses_hidden: ['None for me, thank you']
-      }
+      }, xhr: true
 
       expect(assigns(:statuses_hidden)).to eq(['None for me, thank you'])
     end
@@ -167,12 +167,12 @@ RSpec.describe ServiceCalendarsController do
 
       session[:identity_id] = logged_in_user.id
 
-      xhr :get, :view_full_calendar, {
+      get :view_full_calendar, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id,
         arm_id: arm1.id,
         portal: 'true'
-      }
+      }, xhr: true
 
       expect(assigns(:pages).count).to eq(2)
       expect(assigns(:pages)[arm1.id]).to be
@@ -186,12 +186,12 @@ RSpec.describe ServiceCalendarsController do
 
       session[:identity_id] = logged_in_user.id
 
-      xhr :get, :view_full_calendar, {
+      get :view_full_calendar, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id,
-        portal: 'true',
-        arm_id: arm.id
-      }
+        arm_id: arm.id,
+        portal: 'true'
+      }, xhr: true
 
       expect(assigns(:arm)).to eq(arm)
     end
@@ -203,12 +203,12 @@ RSpec.describe ServiceCalendarsController do
 
       session[:identity_id] = logged_in_user.id
 
-      xhr :get, :view_full_calendar, {
+      get :view_full_calendar, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id,
         arm_id: arm.id,
         portal: 'true'
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:view_full_calendar)
     end
@@ -221,12 +221,12 @@ RSpec.describe ServiceCalendarsController do
 
       session[:identity_id] = logged_in_user.id
 
-      xhr :get, :view_full_calendar, {
+      get :view_full_calendar, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id,
         arm_id: arm.id,
         portal: 'true'
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

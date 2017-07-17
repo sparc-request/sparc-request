@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Catalog' do
+RSpec.describe Catalog, type: :model do
   context "providers and programs with valid pricing setups" do
     let!(:institution)             { create(:institution) }
     let!(:provider1)               { create(:provider, parent_id: institution.id) }

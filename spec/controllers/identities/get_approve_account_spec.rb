@@ -27,9 +27,9 @@ RSpec.describe IdentitiesController do
     it 'should assign @identity' do
       identity = create(:identity)
 
-      xhr :get, :approve_account, {
+      get :approve_account, params: {
         id: identity.id
-      }
+      }, xhr: true
 
       expect(assigns(:identity)).to eq(identity)
     end
@@ -37,9 +37,9 @@ RSpec.describe IdentitiesController do
     it 'should update approved status' do
       identity = create(:identity)
 
-      xhr :get, :approve_account, {
+      get :approve_account, params: {
         id: identity.id
-      }
+      }, xhr: true
 
       expect(identity.reload.approved).to eq(true)      
     end
@@ -48,18 +48,18 @@ RSpec.describe IdentitiesController do
       identity = create(:identity)
 
       expect {
-        xhr :get, :approve_account, {
+        get :approve_account, params: {
           id: identity.id
-        }
+        }, xhr: true
       }.to change(ActionMailer::Base.deliveries, :count).by(1)
     end
 
     it 'should render template' do
       identity = create(:identity)
 
-      xhr :get, :approve_account, {
+      get :approve_account, params: {
         id: identity.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:approve_account)
     end
@@ -67,9 +67,9 @@ RSpec.describe IdentitiesController do
     it 'should respond ok' do
       identity = create(:identity)
 
-      xhr :get, :approve_account, {
+      get :approve_account, params: {
         id: identity.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

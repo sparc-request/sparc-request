@@ -6,7 +6,7 @@ RSpec.describe Dashboard::EpicQueueRecordsController, type: :controller do
     it 'should have a success status' do
       log_in_dashboard_identity(obj: build(:identity, ldap_uid: 'jug2'))
 
-      get :index, format: :json
+      get :index, params: { format: :json }
 
       expect(response).to be_success
     end
@@ -15,7 +15,7 @@ RSpec.describe Dashboard::EpicQueueRecordsController, type: :controller do
   describe "for creepy hacker doods" do
     before(:each) do
       log_in_dashboard_identity(obj: build_stubbed(:identity))
-      get :index, format: :json
+      get :index, params: { format: :json }
     end
 
     it { is_expected.to_not render_template "dashboard/epic_queues/index" }

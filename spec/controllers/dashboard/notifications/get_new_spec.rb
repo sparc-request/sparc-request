@@ -39,7 +39,7 @@ RSpec.describe Dashboard::NotificationsController do
 
         @logged_in_user = build_stubbed(:identity)
         log_in_dashboard_identity(obj: @logged_in_user)
-        xhr :get, :new, sub_service_request_id: @sub_service_request.id, identity_id: @recipient.id
+        get :new, params: { sub_service_request_id: @sub_service_request.id, identity_id: @recipient.id }, xhr: true
       end
 
       it "should set @sub_service_request_id to params[:sub_service_request_id]" do
@@ -67,7 +67,7 @@ RSpec.describe Dashboard::NotificationsController do
 
         @logged_in_user = build_stubbed(:identity)
         log_in_dashboard_identity(obj: @logged_in_user)
-        xhr :get, :new, identity_id: @recipient.id
+        get :new, params: { identity_id: @recipient.id }, xhr: true
       end
 
       it "should build a new Notification" do
@@ -93,7 +93,7 @@ RSpec.describe Dashboard::NotificationsController do
           and_return(@new_message)
 
         log_in_dashboard_identity(obj: @logged_in_user)
-        xhr :get, :new, identity_id: @logged_in_user.id
+        get :new, params: { identity_id: @logged_in_user.id }, xhr: true
       end
 
       it "should add an error to new Notification" do

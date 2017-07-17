@@ -33,7 +33,7 @@ RSpec.describe Dashboard::LineItemsController do
           and_return("candidate pppv services")
 
         log_in_dashboard_identity(obj: build_stubbed(:identity))
-        xhr :post, :create, line_item: { sub_service_request_id: @sub_service_request.id }
+        post :create, params: { line_item: { sub_service_request_id: @sub_service_request.id } }, xhr: true
       end
 
       it "should set @sub_service_request from params[:line_item][:sub_service_request_id]" do
@@ -65,8 +65,10 @@ RSpec.describe Dashboard::LineItemsController do
         allow(@sub_service_request).to receive(:create_line_item).and_return(false)
 
         log_in_dashboard_identity(obj: build_stubbed(:identity))
-        xhr :post, :create, line_item: { service_id: "not blank",
-            sub_service_request_id: @sub_service_request.id }
+        post :create, params: {
+            line_item: { service_id: "not blank",
+            sub_service_request_id: @sub_service_request.id 
+            } }, xhr: true
       end
 
       it "should set @errors" do
@@ -98,8 +100,10 @@ RSpec.describe Dashboard::LineItemsController do
 
         logged_in_user = build_stubbed(:identity)
         log_in_dashboard_identity(obj: logged_in_user)
-        xhr :post, :create, line_item: { service_id: "not blank",
-          sub_service_request_id: @sub_service_request.id }
+        post :create, params: {
+            line_item: { service_id: "not blank",
+            sub_service_request_id: @sub_service_request.id 
+            } }, xhr: true
       end
 
       it "should set @sub_service_request from params[:sub_service_request_id]" do

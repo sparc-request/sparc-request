@@ -37,7 +37,7 @@ RSpec.describe Dashboard::ProtocolsController do
           and_return("users filters")
 
         log_in_dashboard_identity(obj: @logged_in_user)
-        xhr :get, :index
+        get :index, xhr: true
       end
 
       it 'should use Filterrific to get protocols' do
@@ -81,7 +81,7 @@ RSpec.describe Dashboard::ProtocolsController do
           and_return("users filters")
 
         log_in_dashboard_identity(obj: @logged_in_user)
-        xhr :get, :index
+        get :index, xhr: true
       end
 
       it 'should use Filterrific to get protocols' do

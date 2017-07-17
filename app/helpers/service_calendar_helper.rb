@@ -178,7 +178,7 @@ module ServiceCalendarHelper
   # Grand Totals
   #############################################
   def display_ssr_grand_total sub_service_request
-    sum = sub_service_request.grand_total
+    sum = sub_service_request.direct_cost_total
     currency_converter sum
   end
 

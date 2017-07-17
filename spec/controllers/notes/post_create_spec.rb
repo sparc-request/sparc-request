@@ -32,10 +32,10 @@ RSpec.describe NotesController, type: :controller do
 
       session[:identity_id] = logged_in_user.id
 
-      xhr :post, :create, {
+      post :create, params: {
         service_request_id: sr.id,
         note: note_params
-      }
+      }, xhr: true
 
       expect(assigns(:notable_id)).to eq(sr.id.to_s)
     end
@@ -47,10 +47,10 @@ RSpec.describe NotesController, type: :controller do
 
       session[:identity_id] = logged_in_user.id
 
-      xhr :post, :create, {
+      post :create, params: {
         service_request_id: sr.id,
         note: note_params
-      }
+      }, xhr: true
 
       expect(assigns(:notable_type)).to eq('ServiceRequest')
     end
@@ -62,10 +62,10 @@ RSpec.describe NotesController, type: :controller do
 
       session[:identity_id] = logged_in_user.id
 
-      xhr :post, :create, {
+      post :create, params: {
         service_request_id: sr.id,
         note: note_params
-      }
+      }, xhr: true
 
       expect(assigns(:notable)).to eq(sr)
     end
@@ -77,11 +77,11 @@ RSpec.describe NotesController, type: :controller do
 
       session[:identity_id] = logged_in_user.id
 
-      xhr :post, :create, {
+      post :create, params: {
         service_request_id: sr.id,
         note: note_params,
         in_dashboard: 'true'
-      }
+      }, xhr: true
 
       expect(assigns(:in_dashboard)).to eq(true)
     end
@@ -94,10 +94,10 @@ RSpec.describe NotesController, type: :controller do
 
         session[:identity_id] = logged_in_user.id
 
-        xhr :post, :create, {
-        service_request_id: sr.id,
+        post :create, params: {
+          service_request_id: sr.id,
           note: note_params
-        }
+        }, xhr: true
 
         expect(Note.count).to eq(1)
       end
@@ -111,10 +111,10 @@ RSpec.describe NotesController, type: :controller do
 
         session[:identity_id] = logged_in_user.id
 
-        xhr :post, :create, {
-        service_request_id: sr.id,
+        post :create, params: {
+          service_request_id: sr.id,
           note: note_params
-        }
+        }, xhr: true
 
         expect(Note.count).to eq(0)
       end
@@ -126,10 +126,10 @@ RSpec.describe NotesController, type: :controller do
 
         session[:identity_id] = logged_in_user.id
 
-        xhr :post, :create, {
-        service_request_id: sr.id,
+        post :create, params: {
+          service_request_id: sr.id,
           note: note_params
-        }
+        }, xhr: true
 
         expect(assigns(:errors)).to be
       end
@@ -142,10 +142,10 @@ RSpec.describe NotesController, type: :controller do
 
       session[:identity_id] = logged_in_user.id
 
-      xhr :post, :create, {
+      post :create, params: {
         service_request_id: sr.id,
         note: note_params
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:create)
     end
@@ -157,10 +157,10 @@ RSpec.describe NotesController, type: :controller do
 
       session[:identity_id] = logged_in_user.id
 
-      xhr :post, :create, {
+      post :create, params: {
         service_request_id: sr.id,
         note: note_params
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

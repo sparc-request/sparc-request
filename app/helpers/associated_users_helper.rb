@@ -26,7 +26,7 @@ module AssociatedUsersHelper
   # label - Override localized label text.
   def user_form_group(form: nil, name:, classes: [], label: nil, data: {}, title: nil, required: false)
     form_group_classes = %w(row form-group) + [classes]
-    label_class = 'col-lg-3 control-label' + (required ? 'required' : '')
+    label_class = 'col-lg-3 control-label' + (required ? ' required' : '')
     label_text = label || t(:authorized_users)[:form_fields][name.to_sym]
     label = if form
               form.label(name,

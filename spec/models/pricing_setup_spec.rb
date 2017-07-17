@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'PricingSetup' do
+RSpec.describe PricingSetup, type: :model do
   describe 'rate_type' do
     [
       'college',

@@ -21,7 +21,7 @@
 require 'date'
 require 'rails_helper'
 
-RSpec.describe 'organization' do
+RSpec.describe Organization, type: :model do
   let_there_be_lane
   let_there_be_j
   build_service_request_with_project
@@ -453,21 +453,20 @@ RSpec.describe 'organization' do
       end
     end
 
-    describe 'has editable statuses?' do
+    describe 'has_editable_status?' do
 
       it 'should return true if the current organization or its parent have editable statuses' do
         organization1 = Organization.create
         organization2 = Organization.create(parent_id: organization1.id)
-        EDITABLE_STATUSES[organization1.id] = ['draft']
-        expect(organization2.has_editable_statuses?).to eq(true)
-        expect(organization1.has_editable_statuses?).to eq(true)
+        expect(organization2.has_editable_status?('draft')).to eq(true)
+        expect(organization1.has_editable_status?('draft')).to eq(true)
       end
 
       it 'should return false otherwise' do
         organization1 = Organization.create
         organization2 = Organization.create
-        EDITABLE_STATUSES[organization1.id] = ['draft']
-        expect(organization2.has_editable_statuses?).to eq(false)
+        organization2.editable_statuses.destroy_all
+        expect(organization2.has_editable_status?('draft')).to eq(false)
       end
     end
   end

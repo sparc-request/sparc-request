@@ -33,13 +33,13 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
     it 'should assign @review' do
       survey = create(:survey)
 
-      xhr :post, :create, {
+      post :create, params: {
         review: 'true',
         response: {
           identity_id: logged_in_user.id,
           survey_id: survey.id
         }
-      }
+      }, xhr: true
 
       expect(assigns(:review)).to eq(true)
     end
@@ -51,7 +51,7 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
         question = create(:question, section: section, required: true)
 
         expect{
-          xhr :post, :create, {
+          post :create, params: {
             response: {
               identity_id: logged_in_user.id,
               survey_id: survey.id,
@@ -63,7 +63,7 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
                 }
               }
             }
-          }
+          }, xhr: true
         }.to change{ Response.count }.by(1)
       end
     end
@@ -75,7 +75,7 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
         question = create(:question, section: section, required: true)
 
         expect{
-          xhr :post, :create, {
+          post :create, params: {
             response: {
               identity_id: logged_in_user.id,
               survey_id: survey.id,
@@ -86,7 +86,7 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
                 }
               }
             }
-          }
+          }, xhr: true
         }.to_not change{ Response.count }
       end
 
@@ -95,7 +95,7 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
         section = create(:section, survey: survey)
         question = create(:question, section: section, required: true)
         
-        xhr :post, :create, {
+        post :create, params: {
           response: {
             identity_id: logged_in_user.id,
             survey_id: survey.id,
@@ -106,7 +106,7 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
               }
             }
           }
-        }
+        }, xhr: true
 
         expect(assigns(:errors)).to eq(true)
       end
@@ -115,12 +115,12 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
     it 'should render template' do
       survey = create(:survey)
 
-      xhr :post, :create, {
+      post :create, params: {
         response: {
           identity_id: logged_in_user.id,
           survey_id: survey.id
         }
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:create)
     end
@@ -128,12 +128,12 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
     it 'should respond ok' do
       survey = create(:survey)
 
-      xhr :post, :create, {
+      post :create, params: {
         response: {
           identity_id: logged_in_user.id,
           survey_id: survey.id
         }
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

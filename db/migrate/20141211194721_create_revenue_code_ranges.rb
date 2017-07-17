@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class CreateRevenueCodeRanges < ActiveRecord::Migration
+class CreateRevenueCodeRanges < ActiveRecord::Migration[4.2]
   def change
     create_table :revenue_code_ranges do |t|
       t.integer :from

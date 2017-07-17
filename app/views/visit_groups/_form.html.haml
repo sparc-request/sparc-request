@@ -1,7 +1,5 @@
 .modal-dialog.modal-md
-  = form_for @visit_group, remote: true,
-    url: visit_group_path(@visit_group, service_request_id: params[:service_request_id]),
-    html: { method: 'put', class: 'modal-content form-horizontal visit-group-form', data: { type: 'json' } } do |f|
+  = form_for @visit_group, remote: true, url: visit_group_path(@visit_group, service_request_id: params[:service_request_id], sub_service_request_id: params[:sub_service_request_id], page: params[:page], pages: params[:pages], tab: params[:tab], portal: params[:portal], admin: params[:admin], review: params[:review], merged: params[:merged], consolidated: params[:consolidated], statuses_hidden: params[:statuses_hidden]), html: { method: 'put', class: 'modal-content form-horizontal visit-group-form' } do |f|
     .modal-header
       %button.close{type: 'button', data: {dismiss: 'modal'}}
         %span{aria: {hidden:'true'}} &times;
@@ -9,8 +7,7 @@
       %h4.modal-title.text-center
         Edit Visit
     .modal-body
-      = hidden_field_tag 'arm_id', params[:arm_id], class: 'vg-arm-id'
-      = hidden_field_tag 'sr_id', params[:service_request_id], class: 'vg-sr-id'
+      #modal_errors
       .form-group
         = f.label :name, 'Visit Name', class: 'col-sm-4 control-label'
         .col-sm-8

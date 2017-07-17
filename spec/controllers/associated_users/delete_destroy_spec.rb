@@ -39,10 +39,10 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       pr        = create(:project_role, identity: other_user, protocol: protocol)
 
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: pr.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:protocol_role)).to eq(pr)
     end
@@ -52,10 +52,10 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       pr        = create(:project_role, identity: other_user, protocol: protocol)
 
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: pr.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:protocol)).to eq(protocol)
     end
@@ -65,10 +65,10 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       pr        = create(:project_role, identity: other_user, protocol: protocol)
 
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: pr.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(ProjectRole.count).to eq(1)
     end
@@ -83,10 +83,10 @@ RSpec.describe AssociatedUsersController, type: :controller do
         stub_const("QUEUE_EPIC", false)
 
         expect {
-          xhr :delete, :destroy, {
+          delete :destroy, params: {
             service_request_id: sr.id,
             id: pr.id
-          }
+          }, xhr: true
         }.to change(ActionMailer::Base.deliveries, :count).by(1)
       end
     end
@@ -96,10 +96,10 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       pr        = create(:project_role, identity: other_user, protocol: protocol)
 
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: pr.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:destroy)
     end
@@ -109,10 +109,10 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       pr        = create(:project_role, identity: other_user, protocol: protocol)
 
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: pr.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

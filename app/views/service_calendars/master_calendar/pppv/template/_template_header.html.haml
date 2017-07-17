@@ -47,7 +47,7 @@
       = t(:calendars)[:pppv][:header_fields][:subject_count]
   %th.select-row-header.xs-col-width{ rowspan: 2 }
   %th.visit-group-select.text-center{ colspan: 5 }
-    = render 'service_calendars/master_calendar/pppv/visit_group_page_select', service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, page: page, pages: pages, review: review, portal: portal, admin: admin
+    = render 'service_calendars/master_calendar/pppv/visit_group_page_select', service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, page: page, pages: pages, review: review, portal: portal, admin: admin, merged: merged, consolidated: consolidated, statuses_hidden: statuses_hidden
 
   - unless portal
     %th.text-center.total-width{ rowspan: 2 }

@@ -35,12 +35,12 @@ RSpec.describe Dashboard::ArmsController do
       before(:each) do
         @arm_params = { protocol_id: @protocol.id, name: "MyArm", subject_count: -1, visit_count: "x" }
 
-        xhr :post, :create, {
+        post :create, params: {
           arm: @arm_params,
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           protocol_id: @protocol.id
-        }
+        }, xhr: true
       end
 
       it "should not create an arm" do
@@ -59,12 +59,12 @@ RSpec.describe Dashboard::ArmsController do
       before(:each) do
         @arm_params = { protocol_id: @protocol.id, name: "MyArm", subject_count: 1, visit_count: 1 }
 
-        xhr :post, :create, {
+        post :create, params: {
           arm: @arm_params,
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           protocol_id: @protocol.id
-        }
+        }, xhr: true
       end
 
       it "should create an arm" do

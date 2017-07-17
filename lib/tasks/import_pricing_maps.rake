@@ -67,7 +67,7 @@ namespace :data do
       puts "Starting import"
       input_file = Rails.root.join("db", "imports", file)
       CSV.foreach(input_file, :headers => true) do |row|
-        service = Service.find(row['service_id'].to_i)
+        service = Service.find(row['Service ID'].to_i)
 
         pricing_map = service.pricing_maps.build(
                                               :full_rate => Service.dollars_to_cents(row['full_rate'].to_s.strip.gsub("$", "").gsub(",", "")),

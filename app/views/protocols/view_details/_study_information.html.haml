@@ -114,7 +114,7 @@
               = protocol.selected_for_epic ? t(:constants)[:yes_select] : t(:constants)[:no_select]
       / If USE_EPIC is false and any of the CofC questions have been answered, display them OR
       / If USE_EPIC is true and any of the Epic questions have been answered, display them
-      - if (USE_EPIC && protocol.display_answers.map(&:answer).compact.present?) || (!USE_EPIC && protocol.active? && protocol.display_answers.last(2).map(&:answer).compact.present?)
+      - if display_readonly_study_type_questions?(protocol)
         - if protocol.display_answers{ |as| display_study_type_question?(protocol, as) }
           %tr.row
             %td.row

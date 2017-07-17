@@ -82,7 +82,7 @@ $(document).ready ->
       srid : srid
     if confirm(I18n['protocols']['change_type']['warning'])
       $.ajax
-        type: 'PATCH'
+        type: 'PUT'
         url: "#{in_dashboard}/protocols/#{protocol_id}/update_protocol_type"
         data: data
   # Protocol Edit End

@@ -39,10 +39,10 @@ RSpec.describe AssociatedUsersController, type: :controller do
       pr       = protocol.project_roles.first
 
 
-      xhr :get, :edit, {
+      get :edit, params: {
         service_request_id: sr.id,
         id: pr.id
-      }
+      }, xhr: true
 
       expect(assigns(:protocol_role)).to eq(pr)
     end
@@ -53,10 +53,10 @@ RSpec.describe AssociatedUsersController, type: :controller do
       pr       = protocol.project_roles.first
 
 
-      xhr :get, :edit, {
+      get :edit, params: {
         service_request_id: sr.id,
         id: pr.id
-      }
+      }, xhr: true
 
       expect(assigns(:protocol)).to eq(protocol)
     end
@@ -67,10 +67,10 @@ RSpec.describe AssociatedUsersController, type: :controller do
       pr       = protocol.project_roles.first
 
 
-      xhr :get, :edit, {
+      get :edit, params: {
         service_request_id: sr.id,
         id: pr.id
-      }
+      }, xhr: true
 
       expect(assigns(:identity)).to eq(logged_in_user)
     end
@@ -81,10 +81,10 @@ RSpec.describe AssociatedUsersController, type: :controller do
       pr       = protocol.project_roles.first
 
 
-      xhr :get, :edit, {
+      get :edit, params: {
         service_request_id: sr.id,
         id: pr.id
-      }
+      }, xhr: true
 
       expect(assigns(:header_text)).to be
     end
@@ -95,10 +95,10 @@ RSpec.describe AssociatedUsersController, type: :controller do
       pr       = protocol.project_roles.first
 
 
-      xhr :get, :edit, {
+      get :edit, params: {
         service_request_id: sr.id,
         id: pr.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:edit)
     end
@@ -109,10 +109,10 @@ RSpec.describe AssociatedUsersController, type: :controller do
       pr       = protocol.project_roles.first
 
 
-      xhr :get, :edit, {
+      get :edit, params: {
         service_request_id: sr.id,
         id: pr.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

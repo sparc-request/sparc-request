@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class CreateJoinTableDocumentsSubServiceRequests < ActiveRecord::Migration
+class CreateJoinTableDocumentsSubServiceRequests < ActiveRecord::Migration[4.2]
 
   class SubServiceRequest < ActiveRecord::Base
     has_and_belongs_to_many :documents

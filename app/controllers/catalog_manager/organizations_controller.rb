@@ -82,6 +82,10 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
         :status,
         :new,
         :position,
+        :_destroy],
+      editable_statuses_attributes: [:organization_id,
+        :status,
+        :new,
         :_destroy])
   end
 

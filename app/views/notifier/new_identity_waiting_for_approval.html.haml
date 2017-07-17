@@ -53,10 +53,10 @@
     %br
     %br
 
-    = link_to t(:notifier)[:notice][:approve], approve_account_identity_url(@identity)
+    = link_to t(:notifier)[:notice][:approve], approve_account_identity_url(@identity, reason: @identity.reason)
 
     %br
     \- OR - 
     %br
 
-    = link_to t(:notifier)[:notice][:disapprove], disapprove_account_identity_url(@identity)
+    = link_to t(:notifier)[:notice][:disapprove], disapprove_account_identity_url(@identity, reason: @identity.reason)

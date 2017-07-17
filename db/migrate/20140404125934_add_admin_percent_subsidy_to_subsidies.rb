@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class AddAdminPercentSubsidyToSubsidies < ActiveRecord::Migration
+class AddAdminPercentSubsidyToSubsidies < ActiveRecord::Migration[4.2]
   def change
     add_column :subsidies, :admin_percent_subsidy, :float, default: 0.0
   end

@@ -39,10 +39,10 @@ RSpec.describe DocumentsController, type: :controller do
       sr          = create(:service_request_without_validations, protocol: protocol)
       doc         = create(:document, protocol: protocol)
 
-      xhr :get, :edit, {
+      get :edit, params: {
         id: doc.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:document)).to eq(doc)
     end
@@ -52,10 +52,10 @@ RSpec.describe DocumentsController, type: :controller do
       sr          = create(:service_request_without_validations, protocol: protocol)
       doc         = create(:document, protocol: protocol)
 
-      xhr :get, :edit, {
+      get :edit, params: {
         id: doc.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:header_text)).to be
     end
@@ -65,10 +65,10 @@ RSpec.describe DocumentsController, type: :controller do
       sr          = create(:service_request_without_validations, protocol: protocol)
       doc         = create(:document, protocol: protocol)
 
-      xhr :get, :edit, {
+      get :edit, params: {
         id: doc.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:path)).to eq(document_path(assigns(:document)))
     end
@@ -78,10 +78,10 @@ RSpec.describe DocumentsController, type: :controller do
       sr          = create(:service_request_without_validations, protocol: protocol)
       doc         = create(:document, protocol: protocol)
 
-      xhr :get, :edit, {
+      get :edit, params: {
         id: doc.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:edit)
     end
@@ -91,10 +91,10 @@ RSpec.describe DocumentsController, type: :controller do
       sr          = create(:service_request_without_validations, protocol: protocol)
       doc         = create(:document, protocol: protocol)
 
-      xhr :get, :edit, {
+      get :edit, params: {
         id: doc.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

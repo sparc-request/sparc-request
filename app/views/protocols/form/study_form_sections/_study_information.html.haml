@@ -136,6 +136,8 @@
         title: t(:protocols)[:tooltips][:sponsor_name]
       .col-lg-10
         = form.text_field :sponsor_name, class: 'form-control'
+
+    = render partial: 'protocols/form/study_form_sections/interactive_form', locals: { protocol: protocol, form: form }
+
     - if USE_EPIC
-      = render partial: 'protocols/form/study_form_sections/interactive_form', locals: { protocol: protocol, form: form }
       = render partial: 'protocols/form/study_form_sections/study_type_note', locals: { protocol: protocol, form: form }

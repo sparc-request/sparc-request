@@ -57,9 +57,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       arm      = create(:arm, protocol: protocol)
                  create(:subsidy, sub_service_request: ssr)
 
-      xhr :get, :service_subsidy, {
+      get :service_subsidy, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:has_subsidy)).to eq(true)
     end
@@ -74,9 +74,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
       arm      = create(:arm, protocol: protocol)
 
-      xhr :get, :service_subsidy, {
+      get :service_subsidy, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:eligible_for_subsidy)).to eq(true)
     end
@@ -90,9 +90,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
         ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-        xhr :get, :service_subsidy, {
+        get :service_subsidy, params: {
           id: sr.id
-        }
+        }, xhr: true
       end
     end
 
@@ -105,9 +105,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
       arm      = create(:arm, protocol: protocol)
 
-      xhr :get, :service_subsidy, {
+      get :service_subsidy, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to redirect_to("/service_requests/#{sr.id}/document_management")
     end
@@ -122,9 +122,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
       arm      = create(:arm, protocol: protocol)
 
-      xhr :get, :service_subsidy, {
+      get :service_subsidy, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:service_subsidy)
     end
@@ -139,9 +139,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
       arm      = create(:arm, protocol: protocol)
 
-      xhr :get, :service_subsidy, {
+      get :service_subsidy, params: {
         id: sr.id
-      }
+      }, xhr: true
     end
   end
 end

@@ -40,11 +40,11 @@ RSpec.describe ArmsController, type: :controller do
       arm         = create(:arm_without_validations, protocol: protocol)
       arm_params  = { name: 'Armada', subject_count: 1, visit_count: 1 }
 
-      xhr :put, :update, {
+      put :update, params: {
         id: arm.id,
         arm: arm_params,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:arm)).to eq(arm)
     end
@@ -56,11 +56,11 @@ RSpec.describe ArmsController, type: :controller do
         arm         = create(:arm_without_validations, protocol: protocol)
         arm_params  = { name: 'Armada', subject_count: 1, visit_count: 1 }
 
-        xhr :put, :update, {
+        put :update, params: {
           id: arm.id,
           arm: arm_params,
           service_request_id: sr.id
-        }
+        }, xhr: true
 
         expect(arm.reload.name).to eq('Armada')
       end
@@ -73,11 +73,11 @@ RSpec.describe ArmsController, type: :controller do
         arm         = create(:arm_without_validations, protocol: protocol)
         arm_params  = { name: 'Mi Armigo', subject_count: -1, visit_count: -1 }
 
-        xhr :put, :update, {
+        put :update, params: {
           id: arm.id,
           arm: arm_params,
           service_request_id: sr.id
-        }
+        }, xhr: true
 
         expect(arm.reload.name).to_not eq('Mi Armigo')
       end
@@ -88,11 +88,11 @@ RSpec.describe ArmsController, type: :controller do
         arm         = create(:arm_without_validations, protocol: protocol)
         arm_params  = { name: '', subject_count: -1, visit_count: -1 }
 
-        xhr :put, :update, {
+        put :update, params: {
           id: arm.id,
           arm: arm_params,
           service_request_id: sr.id
-        }
+        }, xhr: true
 
         expect(assigns(:errors)).to be
       end
@@ -104,11 +104,11 @@ RSpec.describe ArmsController, type: :controller do
       arm         = create(:arm_without_validations, protocol: protocol)
       arm_params  = { name: 'Armada', subject_count: 1, visit_count: 1 }
 
-      xhr :put, :update, {
+      put :update, params: {
         id: arm.id,
         arm: arm_params,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:update)
     end
@@ -119,11 +119,11 @@ RSpec.describe ArmsController, type: :controller do
       arm         = create(:arm_without_validations, protocol: protocol)
       arm_params  = { name: 'Armada', subject_count: 1, visit_count: 1 }
 
-      xhr :put, :update, {
+      put :update, params: {
         id: arm.id,
         arm: arm_params,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

@@ -31,7 +31,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
         authorize(identity, protocol, can_edit: false)
         log_in_dashboard_identity(obj: identity)
 
-        xhr :post, :create, protocol_id: protocol.id, format: :js
+        post :create, params: { protocol_id: protocol.id }, xhr: true
       end
 
       it "should use ProtocolAuthorizer to authorize user" do
@@ -54,7 +54,10 @@ RSpec.describe Dashboard::AssociatedUsersController do
         allow(AssociatedUserCreator).to receive(:new).
           and_return(associated_user_creator)
 
-        xhr :post, :create, protocol_id: protocol.id, project_role: @new_project_roles_attrs, format: :js
+        post :create, params: {
+          protocol_id: protocol.id,
+          project_role: @new_project_roles_attrs 
+        }, xhr: true
       end
 
       it "should use AssociatedUserCreator to create ProjectRole" do
@@ -85,7 +88,10 @@ RSpec.describe Dashboard::AssociatedUsersController do
         allow(AssociatedUserCreator).to receive(:new).
           and_return(associated_user_creator)
 
-        xhr :post, :create, protocol_id: protocol.id, project_role: @new_project_roles_attrs, format: :js
+        post :create, params: {
+          protocol_id: protocol.id,
+          project_role: @new_project_roles_attrs
+        }, xhr: true
       end
 
       it "should use AssociatedUserCreator to (attempt) to create ProjectRole" do
@@ -116,7 +122,10 @@ RSpec.describe Dashboard::AssociatedUsersController do
         allow(AssociatedUserCreator).to receive(:new).
           and_return(associated_user_creator)
 
-        xhr :post, :create, protocol_id: protocol.id, project_role: @new_project_roles_attrs, format: :js
+        post :create, params: {
+          protocol_id: protocol.id,
+          project_role: @new_project_roles_attrs
+        }, xhr: true
       end
 
       it 'should set @permission_to_edit' do

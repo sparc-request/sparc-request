@@ -24,6 +24,7 @@ en:
   ###########
   actions:
     add: "Add"
+    adding: "Adding..."
     back: "Back"
     approve: "Approve"
     cancel: "Cancel"
@@ -60,6 +61,8 @@ en:
           attributes:
             content:
               blank: "Content can't be blank"
+      messages:
+        spoofed_media_type: "has format errors. Please re-save the file in a different format and try again."
     attributes:
       arm:
         name: "Arm Name"
@@ -68,7 +71,7 @@ en:
       human_subjects_info:
         nct_number: "The NCT #"
       identity:
-        ldap_uid: "Username"
+        ldap_uid: "Login"
         first_name: "First Name"
         last_name: "Last Name"
         password_confirmation: "Password Confirmation"
@@ -333,6 +336,13 @@ en:
       phone_href: "tel:843-792-8300"
       phone_display: "Call: 843-792-8300"
 
+  ##############
+  # IDENTITIES #
+  ##############
+  identities:
+    approved: "Account Approved"
+    disapproved: "Account Disapproved"
+
   ###############
   # IE7 WARNING #
   ###############
@@ -384,6 +394,9 @@ en:
       potential_source: "Potential Funding Source:"
       research_master_id: "Research Master ID:"
       na_research_master_id: 'Not Available'
+      rmid_validated: "Updated to corresponding Research Master ID %{title}"
+      rmid_short_title: "Short Title"
+      rmid_title: "Title"
     view_details:
       button: "View %{protocol_type} Details"
       header: "%{protocol_type} Details: #%{protocol_id}"
@@ -841,6 +854,7 @@ en:
     disabled_all_services: "Disable All Services"
     disabled_at: "Disabled at: %{disabled_parent}"
     eap_id: 'EAP ID'
+    editable_statuses: 'Editable Statuses'
     enable_all_services: "Enable All Services"
     epic_info: "Epic Interface"
     errors: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
@@ -850,7 +864,7 @@ en:
     name: "Name"
     new_cm: "New Catalog Manager"
     new_sp: "New Service Provider"
-    one_time_fee: "Non-clinical Service"
+    one_time_fee: "Non-clinical (Non-Per </br> Patient/Visit) Services"
     order: "Order"
     otf_field_errors: "If the Pricing Map is a non-clinical service (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required."
     per_patient_errors: "Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps."
@@ -894,7 +908,7 @@ en:
     otf_quantity_minimum: "Quantity Minimum"
     otf_unit_type: "Unit Type (weeks, days, samples, etc.)"
     other_rate: "Other Rate"
-    per_patient: "Per Patient"
+    per_patient: "Clinical Service"
     quantity_type: "Quantity Type (hours, each, slides, etc.)"
     rate_disclaimer: "*IF N/A, NO PRICING SET-UP IS DEFINED FOR THE CURRENT DATES"
     rates: "Rates"
@@ -987,7 +1001,7 @@ en:
   study_form:
     affiliations: "Affiliations, Collaborations, and Memberships"
     approval_pending: "Application/Approval Pending:"
-    study_type_questions: "Study type questions *"
+    study_type_questions: "Study Type Questions"
     attributes: "Study Attributes"
     clear: "Clear"
     code_blank: "Select a Federal Grant Code"

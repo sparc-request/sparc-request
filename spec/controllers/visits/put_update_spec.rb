@@ -66,15 +66,15 @@ RSpec.describe VisitsController do
           visit     = arm.visits.first
 
           session[:identity_id] = logged_in_user.id
-          
-          xhr :put, :update, {
+
+          put :update, params: {
             id: visit.id,
             admin: 'false',
             page: '1',
             visit: {
               quantity: 1
             }
-          }
+          }, xhr: true
 
           expect(ssr.reload.status).to eq('draft')
         end
@@ -93,7 +93,7 @@ RSpec.describe VisitsController do
 
           session[:identity_id] = logged_in_user.id
 
-          xhr :put, :update, {
+          put :update, params: {
             id: visit.id,
             sub_service_request_id: ssr.id,
             admin: 'true',
@@ -101,7 +101,7 @@ RSpec.describe VisitsController do
             visit: {
               quantity: 1
             }
-          }
+          }, xhr: true
 
           expect(ssr.reload.status).to eq('status')
         end

@@ -35,8 +35,11 @@ RSpec.describe Dashboard::LineItemsController do
         allow(LineItem).to receive(:new).and_return("my new LineItem")
 
         log_in_dashboard_identity(obj: build_stubbed(:identity))
-        xhr :get, :new, sub_service_request_id: @sub_service_request.id,
-          schedule_tab: "my schedule tab", one_time_fee: "yep"
+        get :new, params: {
+          sub_service_request_id: @sub_service_request.id,
+          schedule_tab: "my schedule tab", 
+          one_time_fee: "yep"
+          }, xhr: true
       end
 
       it "should set @sub_service_request from params[:sub_service_request_id]" do
@@ -73,8 +76,11 @@ RSpec.describe Dashboard::LineItemsController do
           and_return("candidate pppv services")
 
         log_in_dashboard_identity(obj: build_stubbed(:identity))
-        xhr :get, :new, sub_service_request_id: @sub_service_request.id,
-          schedule_tab: "my schedule tab", page_hash: "my page hash"
+        get :new, params: {
+          sub_service_request_id: @sub_service_request.id,
+          schedule_tab: "my schedule tab", 
+          page_hash: "my page hash"
+          }, xhr: true
       end
 
       it "should set @sub_service_request from params[:sub_service_request_id]" do

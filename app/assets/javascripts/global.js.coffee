@@ -26,6 +26,12 @@ $ ->
   $(document).ajaxComplete ->
     $('[data-toggle="tooltip"]').tooltip()
 
+(exports ? this).getSRId = ->
+  $("input[name='service_request_id']").val()
+
+(exports ? this).getSSRId = ->
+  $("input[name='sub_service_request_id']").val()
+
 (exports ? this).formatMoney = (n, t=',', d='.', c='$') ->
   s = if n < 0 then "-#{c}" else c
   i = Math.abs(n).toFixed(2)

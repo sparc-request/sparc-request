@@ -21,7 +21,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'PricingMap' do
+RSpec.describe PricingMap, type: :model do
 
   describe "validations" do
     let!(:core)          { create(:core) }

@@ -33,7 +33,7 @@ RSpec.describe Dashboard::EpicQueuesController do
         @eq = create(:epic_queue, protocol: protocol)
         # create(:setting, key: "epic_queue_access", value: ['jug2']) ##Might be needed
         log_in_dashboard_identity(obj: build(:identity, ldap_uid: 'jug2'))
-        get :index, format: :json
+        get :index, params: { format: :json }
       end
 
       it "should put all EpicQueues in @epic_queues" do
@@ -52,7 +52,7 @@ RSpec.describe Dashboard::EpicQueuesController do
                          )
         @eq = create(:epic_queue, protocol: protocol)
         log_in_dashboard_identity(obj: build_stubbed(:identity))
-        get :index, format: :json
+        get :index, params: { format: :json }
       end
 
       it "should put all EpicQueues in @epic_queues" do

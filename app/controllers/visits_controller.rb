@@ -21,9 +21,9 @@
 class VisitsController < ApplicationController
   respond_to :json, :js, :html
 
-  before_action :initialize_service_request, if: Proc.new{ params[:admin] != 'true' }
-  before_action :authorize_identity,         if: Proc.new { params[:admin] != 'true' }
-  before_action :authorize_admin,            if: Proc.new { params[:admin] == 'true' }
+  before_action :initialize_service_request, unless: :in_dashboard?
+  before_action :authorize_identity,         unless: :in_dashboard?
+  before_action :authorize_admin,            if: :in_dashboard?
 
   def edit
     @visit  = Visit.find(params[:id])
@@ -88,16 +88,5 @@ class VisitsController < ApplicationController
       :research_billing_qty,
       :insurance_billing_qty,
       :effort_billing_qty)
-  end
-
-  def authorize_admin
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @service_request     = @sub_service_request.service_request
-
-    unless (current_user.authorized_admin_organizations & @sub_service_request.org_tree).any?
-      @sub_service_request = nil
-      @service_request = nil
-      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
-    end
   end
 end

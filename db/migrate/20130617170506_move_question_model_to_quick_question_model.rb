@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class MoveQuestionModelToQuickQuestionModel < ActiveRecord::Migration
+class MoveQuestionModelToQuickQuestionModel < ActiveRecord::Migration[4.2]
   def up
     # populate quick_questions with questions
     ActiveRecord::Base.connection.execute("insert into quick_questions select * from questions")

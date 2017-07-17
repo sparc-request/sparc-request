@@ -42,9 +42,9 @@ RSpec.describe Surveyor::QuestionsController, type: :controller do
     it 'should assign @section to the section' do
       section = create(:section_without_validations)
 
-      xhr :post, :create, {
+      post :create, params: {
         section_id: section.id
-      }
+      }, xhr: true
 
       expect(assigns(:section)).to eq(section)
     end
@@ -53,9 +53,9 @@ RSpec.describe Surveyor::QuestionsController, type: :controller do
       survey = create(:survey_without_validations)
       section = create(:section_without_validations, survey: survey)
 
-      xhr :post, :create, {
+      post :create, params: {
         section_id: section.id
-      }
+      }, xhr: true
 
       expect(assigns(:survey)).to eq(survey)
     end
@@ -64,9 +64,9 @@ RSpec.describe Surveyor::QuestionsController, type: :controller do
       section = create(:section_without_validations)
 
       expect{
-        xhr :post, :create, {
+        post :create, params: {
           section_id: section.id
-        }
+        }, xhr: true
       }.to change{ Question.count }.by(1)
       expect(assigns(:question)).to be_a(Question)
     end
@@ -74,9 +74,9 @@ RSpec.describe Surveyor::QuestionsController, type: :controller do
     it 'should render template' do
       section = create(:section_without_validations)
 
-      xhr :post, :create, {
+      post :create, params: {
         section_id: section.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:create)
     end
@@ -84,9 +84,9 @@ RSpec.describe Surveyor::QuestionsController, type: :controller do
     it 'should respond ok' do
       section = create(:section_without_validations)
 
-      xhr :post, :create, {
+      post :create, params: {
         section_id: section.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class ConsolidateAdminProtocolFilters < ActiveRecord::Migration
+class ConsolidateAdminProtocolFilters < ActiveRecord::Migration[4.2]
   def change
     add_column :protocol_filters, :admin_filter, :string
     remove_column :protocol_filters, :for_identity_id

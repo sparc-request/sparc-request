@@ -42,9 +42,9 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
     it 'should assign @survey to the survey' do
       survey = create(:survey_without_validations)
 
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: survey.id
-      }
+      }, xhr: true
 
       expect(assigns(:survey)).to eq(survey)
     end
@@ -53,18 +53,18 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
       survey = create(:survey_without_validations)
 
       expect{
-        xhr :delete, :destroy, {
+        delete :destroy, params: {
           id: survey.id
-        }
+        }, xhr: true
       }.to change{ Survey.count }.by(-1)
     end
 
     it 'should render template' do
       survey = create(:survey_without_validations)
 
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: survey.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:destroy)
     end
@@ -72,9 +72,9 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
     it 'should respond ok' do
       survey = create(:survey_without_validations)
 
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: survey.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'SubServiceRequest' do
+RSpec.describe SubServiceRequest, type: :model do
 
   let_there_be_lane
   let_there_be_j

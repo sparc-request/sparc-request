@@ -37,7 +37,7 @@ RSpec.describe ArmsController, type: :controller do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       @sr       = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :index, service_request_id: @sr.id
+      get :index, params: { service_request_id: @sr.id }, xhr: true
 
       expect(assigns(:arms)).to eq(@sr.arms)
     end
@@ -46,7 +46,7 @@ RSpec.describe ArmsController, type: :controller do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       @sr       = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :index, service_request_id: @sr.id
+      get :index, params: { service_request_id: @sr.id }, xhr: true
 
       expect(assigns(:arms_editable)).to eq(@sr.arms_editable?)
     end
@@ -55,7 +55,7 @@ RSpec.describe ArmsController, type: :controller do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       @sr       = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :index, service_request_id: @sr.id
+      get :index, params: { service_request_id: @sr.id }, xhr: true
 
       expect(assigns(:arm_count)).to eq(@sr.arms.count)
     end
@@ -64,7 +64,7 @@ RSpec.describe ArmsController, type: :controller do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       @sr       = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :index, service_request_id: @sr.id
+      get :index, params: { service_request_id: @sr.id }, xhr: true
 
       expect(controller).to render_template(:index)
     end
@@ -73,7 +73,7 @@ RSpec.describe ArmsController, type: :controller do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       @sr       = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :index, service_request_id: @sr.id
+      get :index, params: { service_request_id: @sr.id }, xhr: true
 
       expect(controller).to respond_with :ok
     end

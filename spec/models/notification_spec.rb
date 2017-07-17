@@ -20,7 +20,7 @@
 
 require "rails_helper"
 
-RSpec.describe Notification do
+RSpec.describe Notification, type: :model do
   describe ".of_ssr" do
     context "with :sub_service_request_id" do
       it "should return all Notifications belonging to SubServiceRequest" do

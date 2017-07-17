@@ -42,9 +42,9 @@ RSpec.describe Surveyor::SectionsController, type: :controller do
     it 'should assign @section to the section' do
       section = create(:section_without_validations)
 
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: section.id
-      }
+      }, xhr: true
 
       expect(assigns(:section)).to eq(section)
     end
@@ -53,18 +53,18 @@ RSpec.describe Surveyor::SectionsController, type: :controller do
       section = create(:section_without_validations)
 
       expect{
-        xhr :delete, :destroy, {
+        delete :destroy, params: {
           id: section.id
-        }
+        }, xhr: true
       }.to change{ Section.count }.by(-1)
     end
 
     it 'should render template' do
       section = create(:section_without_validations)
 
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: section.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:destroy)
     end
@@ -72,9 +72,9 @@ RSpec.describe Surveyor::SectionsController, type: :controller do
     it 'should respond ok' do
       section = create(:section_without_validations)
 
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: section.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

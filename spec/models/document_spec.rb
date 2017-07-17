@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Document do
+RSpec.describe Document, type: :model do
   it { should belong_to(:protocol) }
   it { should have_and_belong_to_many(:sub_service_requests) }
 

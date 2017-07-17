@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class AddRequestUuidToAudits < ActiveRecord::Migration
+class AddRequestUuidToAudits < ActiveRecord::Migration[4.2]
   # switch to separate audit database to run migration
   if USE_SEPARATE_AUDIT_DATABASE
     ActiveRecord::Base.establish_connection("audit_#{Rails.env}")

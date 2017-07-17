@@ -1,0 +1,54 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- data = { id: visit_group.id, page: page, pages: pages.to_s, tab: tab, portal: portal.to_s, admin: admin.to_s, review: review.to_s, merged: merged.to_s, consolidated: consolidated.to_s, statuses_hidden: statuses_hidden, toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' }
+%th.visit-group-box{ class: "visit-group-#{visit_group.id} visit-width" }
+  .row.text-center
+    .col-xs-4.no-padding.text-center
+      = "-"
+    .col-xs-4.no-padding.text-center
+      = t(:calendars)[:pppv][:header_fields][:day]
+    .col-xs-4.no-padding.text-center
+      = "+"
+  .row.text-center
+    .col-xs-4.no-padding.text-center
+      - if portal || tab == 'calendar'
+        = visit_group.window_before
+      - else
+        = link_to visit_group.window_before, 'javascript:void(0)', data: data, class: 'edit-visit-group', title: t(:calendars)[:tooltips][:window_before]
+    .col-xs-4.no-padding.text-center
+      - if portal || tab == 'calendar'
+        = visit_group.day
+      - else
+        - if visit_group.day.blank?
+          - day = '(?)'
+        - else
+          - day = visit_group.day
+        = link_to day, 'javascript:void(0)', data: data, class: 'edit-visit-group', title: t(:calendars)[:tooltips][:visit_day]
+    .col-xs-4.no-padding.text-center
+      - if portal || tab == 'calendar'
+        = visit_group.window_after
+      - else
+        = link_to visit_group.window_after, 'javascript:void(0)', data: data, class: 'edit-visit-group', title: t(:calendars)[:tooltips][:window_after]
+  .row.visit-group-names.text-center
+    .col-sm-12.text-center{ data: { visit_group_id: visit_group.id } }
+      - if portal || tab == 'calendar'
+        = visit_group.name
+      - else
+        = link_to visit_group.name, 'javascript:void(0)', data: data, class: 'edit-visit-group', title: t(:calendars)[:tooltips][:visit_name]

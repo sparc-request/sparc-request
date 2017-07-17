@@ -43,13 +43,13 @@ RSpec.describe Surveyor::SurveyUpdaterController, type: :controller do
       survey = create(:survey)
       klass = 'survey'
 
-      xhr :put, :update, {
+      put :update, params: {
         id: survey.id,
         klass: klass,
         survey: {
           version: 1
         }
-      }
+      }, xhr: true
 
       expect(assigns(:klass)).to eq(klass)
     end
@@ -58,13 +58,13 @@ RSpec.describe Surveyor::SurveyUpdaterController, type: :controller do
       survey = create(:survey)
       klass = 'survey'
 
-      xhr :put, :update, {
+      put :update, params: {
         id: survey.id,
         klass: klass,
         survey: {
           version: 1
         }
-      }
+      }, xhr: true
 
       expect(assigns(:object)).to eq(survey)
     end
@@ -73,13 +73,13 @@ RSpec.describe Surveyor::SurveyUpdaterController, type: :controller do
       survey = create(:survey)
       klass = 'survey'
 
-      xhr :put, :update, {
+      put :update, params: {
         id: survey.id,
         klass: klass,
         survey: {
           version: 1
         }
-      }
+      }, xhr: true
 
       expect(assigns(:field)).to eq('version')
     end
@@ -89,13 +89,13 @@ RSpec.describe Surveyor::SurveyUpdaterController, type: :controller do
         survey = create(:survey, version: 0)
         klass = 'survey'
 
-        xhr :put, :update, {
+        put :update, params: {
           id: survey.id,
           klass: klass,
           survey: {
             version: 1
           }
-        }
+        }, xhr: true
 
         expect(survey.reload.version).to eq(1)
       end
@@ -106,13 +106,13 @@ RSpec.describe Surveyor::SurveyUpdaterController, type: :controller do
         survey = create(:survey, active: false)
         klass = 'survey'
 
-        xhr :put, :update, {
+        put :update, params: {
           id: survey.id,
           klass: klass,
           survey: {
             title: nil
           }
-        }
+        }, xhr: true
 
         expect(survey.reload.active).to eq(false)
       end
@@ -121,13 +121,13 @@ RSpec.describe Surveyor::SurveyUpdaterController, type: :controller do
         survey = create(:survey, active: false)
         klass = 'survey'
 
-        xhr :put, :update, {
+        put :update, params: {
           id: survey.id,
           klass: klass,
           survey: {
             title: nil
           }
-        }
+        }, xhr: true
 
         expect(assigns(:errors)).to be
       end
@@ -138,13 +138,13 @@ RSpec.describe Surveyor::SurveyUpdaterController, type: :controller do
       survey = create(:survey)
       klass = 'survey'
 
-      xhr :put, :update, {
+      put :update, params: {
         id: survey.id,
         klass: klass,
         survey: {
           version: 1
         }
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:update)
     end
@@ -153,13 +153,13 @@ RSpec.describe Surveyor::SurveyUpdaterController, type: :controller do
       survey = create(:survey)
       klass = 'survey'
 
-      xhr :put, :update, {
+      put :update, params: {
         id: survey.id,
         klass: klass,
         survey: {
           version: 1
         }
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

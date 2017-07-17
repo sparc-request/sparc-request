@@ -47,7 +47,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
           http_login(bad_username, Setting.find_by_key("remote_service_notifier_password").value)
 
-          get "/v1/protocols/#{@protocol.id}.json", @env
+          get "/v1/protocols/#{@protocol.id}.json", headers: @env
         end
 
         it 'should not allow the request' do
@@ -66,7 +66,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
           http_login(Setting.find_by_key("remote_service_notifier_username").value, bad_password)
 
-          get "/v1/protocols/#{@protocol.id}.json", @env
+          get "/v1/protocols/#{@protocol.id}.json", headers: @env
         end
 
         it 'should not allow the request' do

@@ -42,9 +42,9 @@ RSpec.describe Surveyor::OptionsController, type: :controller do
     it 'should assign @option to the option' do
       option = create(:option_without_validations)
 
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: option.id
-      }
+      }, xhr: true
 
       expect(assigns(:option)).to eq(option)
     end
@@ -53,18 +53,18 @@ RSpec.describe Surveyor::OptionsController, type: :controller do
       option = create(:option_without_validations)
 
       expect{
-        xhr :delete, :destroy, {
+        delete :destroy, params: {
           id: option.id
-        }
+        }, xhr: true
       }.to change{ Option.count }.by(-1)
     end
 
     it 'should render template' do
       option = create(:option_without_validations)
 
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: option.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:destroy)
     end
@@ -72,9 +72,9 @@ RSpec.describe Surveyor::OptionsController, type: :controller do
     it 'should respond ok' do
       option = create(:option_without_validations)
 
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: option.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

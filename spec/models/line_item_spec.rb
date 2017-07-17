@@ -21,7 +21,7 @@
 
 require 'rails_helper'
 
-RSpec.describe "Line Item" do
+RSpec.describe LineItem, type: :model do
 
   let_there_be_lane
   let_there_be_j

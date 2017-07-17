@@ -41,12 +41,12 @@ RSpec.describe ServiceCalendarsController do
 
         session[:identity_id] = logged_in_user.id
 
-        xhr :post, :toggle_calendar_column, {
+        post :toggle_calendar_column, params: {
           visit_group_id: arm.visit_groups.first.id,
           service_request_id: sr.id,
           page: '1',
           check: 'true',
-        }
+        }, xhr: true
 
         expect(v.reload.quantity).to eq(1)
         expect(v.reload.research_billing_qty).to eq(1)
@@ -70,12 +70,12 @@ RSpec.describe ServiceCalendarsController do
 
         session[:identity_id] = logged_in_user.id
 
-        xhr :post, :toggle_calendar_column, {
+        post :toggle_calendar_column, params: {
           visit_group_id: arm.visit_groups.first.id,
           service_request_id: sr.id,
           page: '1',
           uncheck: 'true',
-        }
+        }, xhr: true
 
         expect(v.reload.quantity).to eq(0)
         expect(v.reload.research_billing_qty).to eq(0)
@@ -96,13 +96,13 @@ RSpec.describe ServiceCalendarsController do
 
         session[:identity_id] = logged_in_user.id
 
-        xhr :post, :toggle_calendar_column, {
+        post :toggle_calendar_column, params: {
           visit_group_id: arm.visit_groups.first.id,
           service_request_id: sr.id,
           page: '1',
           check: 'true',
           admin: 'false'
-        }
+        }, xhr: true
 
         expect(ssr.reload.status).to eq('draft')
       end
@@ -120,13 +120,13 @@ RSpec.describe ServiceCalendarsController do
 
         session[:identity_id] = logged_in_user.id
 
-        xhr :post, :toggle_calendar_column, {
+        post :toggle_calendar_column, params: {
           visit_group_id: arm.visit_groups.first.id,
           service_request_id: sr.id,
           page: '1',
           check: 'true',
           admin: 'true'
-        }
+        }, xhr: true
 
         expect(ssr.reload.status).to eq('on_hold')
       end
@@ -147,14 +147,14 @@ RSpec.describe ServiceCalendarsController do
 
         session[:identity_id] = logged_in_user.id
 
-        xhr :post, :toggle_calendar_column, {
+        post :toggle_calendar_column, params: {
           visit_group_id: arm.visit_groups.first.id,
           sub_service_request_id: ssr.id,
           service_request_id: sr.id,
           page: '1',
           check: 'true',
           admin: 'false'
-        }
+        }, xhr: true
 
         expect(ssr.reload.status).to eq('draft')
         expect(ssr2.reload.status).to eq('on_hold')
@@ -162,3 +162,4 @@ RSpec.describe ServiceCalendarsController do
     end
   end
 end
+

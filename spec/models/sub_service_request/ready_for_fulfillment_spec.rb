@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 require 'spec_helper'
 
-RSpec.describe 'SubServiceRequest' do
+RSpec.describe SubServiceRequest, type: :model do
   before :each do
     @institution = Institution.new
     @institution.type = "Institution"

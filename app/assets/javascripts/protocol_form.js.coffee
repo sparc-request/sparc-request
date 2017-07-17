@@ -103,7 +103,7 @@ $(document).ready ->
   ### FORM FIELDS LOGIC ###
   #######################################################################################
   ### INITIAL PAGE LOAD EDIT STUDY IN SPARCRequest #######################
-  setup_initial_epic_config()
+  setup_epic_question_config()
 
   ###FUNDING STATUS FIELDS DISPLAY###
   $(document).on 'change', '#protocol_funding_status', ->

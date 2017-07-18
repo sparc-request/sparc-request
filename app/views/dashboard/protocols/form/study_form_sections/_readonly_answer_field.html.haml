@@ -23,6 +23,6 @@
   .col-lg-4
     = answer.object.answer == true ? "Yes" : "No"
     - if display_study_type_question?(protocol, answer.object)
-      = link_to 'Edit',
+      = link_to t(:dashboard)[:protocols][:form][:edit_answer],
         edit_dashboard_protocol_study_type_answers_path(protocol, edit_answers: true),
         class: 'btn btn-warning edit-answers', remote: true

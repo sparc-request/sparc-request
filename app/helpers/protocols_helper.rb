@@ -28,6 +28,7 @@ module ProtocolsHelper
         if study_type_answer.study_type_question.friendly_id == 'certificate_of_conf_no_epic'
           true
         else # We want to see the second CofC question if it's been answered
+          
           ['higher_level_of_privacy_no_epic'].include?(study_type_answer.study_type_question.friendly_id) && study_type_answer.answer != nil
         end
       end
@@ -49,6 +50,6 @@ module ProtocolsHelper
   # If USE_EPIC is false and any of the CofC questions have been answered, display them OR
   # If USE_EPIC is true and any of the Epic questions have been answered, display them
   def display_readonly_study_type_questions?(protocol)
-    (USE_EPIC && protocol.display_answers.where.not(answer: nil).any?) || (!USE_EPIC && protocol.active? && protocol.display_answers.last(2).where.not(answer: nil).any?)
+    (USE_EPIC && protocol.display_answers.where.not(answer: nil).any?) || (!USE_EPIC && protocol.active? && protocol.display_answers.reverse_order.limit(2).where.not(answer:nil).any?)
   end
 end

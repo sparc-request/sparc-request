@@ -23,9 +23,17 @@ require 'rails_helper'
 RSpec.describe 'User creates study', js: true do
   let_there_be_lane
   fake_login_for_each_test
-  build_impact_areas
 
   before :each do
+    create(:permissible_value, key: 'pediatrics', value: 'Pediatrics', category: 'impact_area')
+    create(:permissible_value, key: 'hiv_aids', value: 'HIV/AIDS', category: 'impact_area')
+    create(:permissible_value, key: 'hypertension', value: 'Hypertension', category: 'impact_area')
+    create(:permissible_value, key: 'stroke', value: 'Stroke', category: 'impact_area')
+    create(:permissible_value, key: 'diabetes', value: 'Diabetes', category: 'impact_area')
+    create(:permissible_value, key: 'cancer', value: 'Cancer', category: 'impact_area')
+    create(:permissible_value, key: 'community', value: 'Community Engagement', category: 'impact_area')
+    create(:permissible_value, key: 'other', value: 'Other', category: 'impact_area')
+
     institution = create(:institution, name: "Institution")
     provider    = create(:provider, name: "Provider", parent: institution)
     program     = create(:program, name: "Program", parent: provider, process_ssrs: true)

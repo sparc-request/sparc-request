@@ -25,6 +25,8 @@ RSpec.describe 'User creates study', js: true do
   fake_login_for_each_test
 
   before :each do
+    create(:permissible_value, key: 'pediatrics', value: 'Pediatrics', category: 'impact_area')
+
     institution = create(:institution, name: "Institution")
     provider    = create(:provider, name: "Provider", parent: institution)
     program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
@@ -96,7 +98,7 @@ RSpec.describe 'User creates study', js: true do
 
       fill_in 'protocol_project_roles_attributes_0_identity_id', with: 'Julia'
 
-      find('#protocol_impact_areas_attributes_7__destroy').click
+      find('#protocol_impact_areas_attributes_0__destroy').click
 
       expect(page).to have_css('.impact_area_dependent', visible: true)
     end

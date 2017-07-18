@@ -69,7 +69,7 @@ namespace :data do
       puts "#"*50
       puts "Starting import"
       input_file = Rails.root.join("db", "imports", file)
-      CSV.foreach(input_file, :headers => true) do |row|
+      CSV.foreach(input_file, :headers => true, skip_blanks: true, skip_lines: /^(?:,\s*)+$/) do |row|
 
         service = Service.find(row['Service ID'].to_i)
 

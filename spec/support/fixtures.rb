@@ -46,6 +46,16 @@ def let_there_be_j
     )}
 end
 
+def build_user_roles
+  let!(:primary_pi_role)    { create(:permissible_value, category: 'user_role', key: 'primary-pi', value: 'Primary PI') }
+  let!(:pi_role)            { create(:permissible_value, category: 'user_role', key: 'pi', value: 'PD/PI') }
+  let!(:manager_role)       { create(:permissible_value, category: 'user_role', key: 'business-grants-manager', value: 'Billing/Business Manager') }
+  let!(:consultant_role)    { create(:permissible_value, category: 'user_role', key: 'consultant', value: 'Consultant') }
+  let!(:investigator_role)  { create(:permissible_value, category: 'user_role', key: 'co-investigator', value: 'Co-Investigator') }
+  let!(:mentor_role)        { create(:permissible_value, category: 'user_role', key: 'mentor', value: 'Mentor') }
+  let!(:other_role)         { create(:permissible_value, category: 'user_role', key: 'other', value: 'Other') }
+end
+
 def build_study_phases
   let!(:study_phase_O)    { StudyPhase.create(order: 1, phase: 'O', version: 1) }
   let!(:study_phase_I)    { StudyPhase.create(order: 2, phase: 'I', version: 1) }

@@ -77,6 +77,10 @@ RSpec.feature 'User wants to add an authorized user', js: true do
             end
 
             context 'but sets role and credentials to other and fills out the extra fields' do
+              before :each do
+                create(:permissible_value, category: 'user_credential', key: 'other', value: 'Other')
+              end
+
               scenario 'and sees they can submit the form' do
                 given_i_have_clicked_the_add_authorized_user_button
                 when_i_select_a_user_from_the_search
@@ -139,6 +143,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
                 context 'with errors in the form' do
                   scenario 'and sees errors' do
+                    create(:permissible_value, category: 'user_credential', key: 'other', value: 'Other')
                     given_i_have_clicked_the_add_authorized_user_button
                     when_i_select_a_user_from_the_search
                     when_i_set_the_role_to 'Primary PI'

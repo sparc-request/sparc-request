@@ -21,8 +21,7 @@
   .col-lg-8
     = answer.label :answer, answer.object.study_type_question.question, class: "long"
   .col-lg-4
-    - saved_answer = answer.object.answer
-    = saved_answer == true ? "Yes" : saved_answer == false ? "No" : nil
+    = display_readonly_answer(answer.object.answer)
     - if display_study_type_question?(protocol, answer.object)
       = link_to t(:dashboard)[:protocols][:form][:edit_answer],
         edit_dashboard_protocol_study_type_answers_path(protocol, edit_answers: true),

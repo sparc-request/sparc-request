@@ -273,6 +273,39 @@ RSpec.describe 'User edits epic answers', js: true do
         and_sees_the_correct_answers_and_no_note(false)
       end
     end
+
+    context 'Study, selected for epic: false, question group 3' do
+      scenario 'Edit Study, answer "No" for first question and do not answer second question' do
+        @protocol.update_attribute(:selected_for_epic, false)
+        @protocol.update_attribute(:study_type_question_group_id, 3)
+        visit edit_dashboard_protocol_path(@protocol)
+        wait_for_javascript_to_finish
+        
+        find('.edit-answers', match: :first).click
+        wait_for_javascript_to_finish
+
+        expect(page).to_not have_css('#study_selected_for_epic_true_button') 
+        bootstrap_select '#study_type_answer_certificate_of_conf_no_epic_answer', 'No'
+        wait_for_javascript_to_finish
+        expect(page).not_to have_selector('#study_type_note')
+
+        click_button 'Save'
+        wait_for_javascript_to_finish
+        find('.edit-protocol-information-button').click
+        within '#study_type_answer_certificate_of_conf_no_epic' do
+          expect(page).to have_css('div.col-lg-4', text: 'No')
+          expect(page).to have_css('a.edit-answers')
+        end
+
+        within '#study_type_answer_higher_level_of_privacy_no_epic' do
+          expect(page).to have_css('div.col-lg-4', text: '')
+          expect(page).to have_css('a.edit-answers')
+        end
+
+        ### SEE APPROPRIATE STUDY TYPE NOTE ###
+        expect(page).not_to have_selector('#study_type_note')
+      end
+    end
   end
 
   def version_2_study_type_questions_and_answers_are_displayed

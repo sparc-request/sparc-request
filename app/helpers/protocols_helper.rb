@@ -27,9 +27,9 @@ module ProtocolsHelper
       else # Else we want to always display the first CofC question regardless of whether it's been answered or needs to be answered
         if study_type_answer.study_type_question.friendly_id == 'certificate_of_conf_no_epic'
           true
-        else # We want to see the second CofC question if it's been answered
-          
-          ['higher_level_of_privacy_no_epic'].include?(study_type_answer.study_type_question.friendly_id) && study_type_answer.answer != nil
+        else # We want to see the second CofC question if it's been answered or if the first COFC answer is "No"
+          cofc_no_epic = protocol.display_answers.select{ |sta| sta.study_type_question.friendly_id == 'certificate_of_conf_no_epic' }
+          study_type_answer.study_type_question.friendly_id == 'higher_level_of_privacy_no_epic' && cofc_no_epic.present? ? cofc_no_epic.first.answer == false : false
         end
       end
     else

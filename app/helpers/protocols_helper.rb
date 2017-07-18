@@ -63,6 +63,6 @@ module ProtocolsHelper
   # If USE_EPIC is false and any of the CofC questions have been answered, display them OR
   # If USE_EPIC is true and any of the Epic questions have been answered, display them
   def display_readonly_study_type_questions?(protocol)
-    (USE_EPIC && protocol.display_answers.where.not(answer: nil).any?) || (!USE_EPIC && protocol.active? && protocol.display_answers.reverse_order.limit(2).where.not(answer:nil).any?)
+    (USE_EPIC && protocol.display_answers.where.not(answer: nil).any?) || (!USE_EPIC && protocol.active? && protocol.display_answers.joins(:study_type_question).where(study_type_questions: { friendly_id: ['certificate_of_conf_no_epic', 'higher_level_of_privacy_no_epic'] }).where.not(answer: nil).any?)
   end
 end

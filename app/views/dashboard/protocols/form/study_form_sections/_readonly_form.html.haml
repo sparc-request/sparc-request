@@ -44,6 +44,6 @@
         .col-lg-8
           = label_tag 'answer', STUDY_TYPE_QUESTIONS_VERSION_3[5], class: 'long'
         .col-lg-4
-          = link_to t(:dashboard)[:protocols][:form][:edit_answer],
+          = link_to t(:dashboard)[:protocols][:form][:new_answer],
             edit_dashboard_protocol_study_type_answers_path(protocol, edit_answers: true),
             class: 'btn btn-warning edit-answers', remote: true

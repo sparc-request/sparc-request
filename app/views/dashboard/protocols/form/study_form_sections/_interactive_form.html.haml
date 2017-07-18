@@ -55,6 +55,6 @@
           .col-lg-4
             = answer_form.select :answer, options_for_select([['Yes', true], ['No', false]], answer_form.object.answer), { include_blank: 'Select One' }, { class: 'selectpicker', id: "study_type_answer_#{answer_form.object.study_type_question.friendly_id}_answer" }
             - if edit_answers && action_name == 'edit'
-              = link_to 'Cancel Edit',
+              = link_to t(:dashboard)[:protocols][:form][:cancel_edit_answer],
                 edit_dashboard_protocol_study_type_answers_path(protocol),
                 class: 'btn btn-danger cancel-edit', remote: true

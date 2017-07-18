@@ -36,7 +36,7 @@ class StudyTypeFinder
   end
 
   def collect_answers(study)
-    @study.display_answers.map(&:answer)
+    @study.display_answers.pluck(:answer)
   end
 
   def determine_study_type(version, answers)

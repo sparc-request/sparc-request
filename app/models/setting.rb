@@ -35,6 +35,8 @@ class Setting < ApplicationRecord
       read_attribute(:value) == 'true'
     when 'json'
       JSON.parse(read_attribute(:value))
+    else
+      read_attribute(:value)
     end
   end
 

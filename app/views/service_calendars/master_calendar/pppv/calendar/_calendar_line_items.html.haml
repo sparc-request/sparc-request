@@ -38,7 +38,7 @@
       %td.notes.text-center.notes-width
         = display_liv_notes(liv, @portal)
       %td.status.text-center.status-width
-        = AVAILABLE_STATUSES[ssr.status]
+        = PermissibleValue.get_value('status', ssr.status)
       %td.service-rate.text-center.sm-col-width
         = display_service_rate(liv.line_item)
       %td.your-cost.text-center.sm-col-width

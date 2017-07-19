@@ -53,7 +53,7 @@ class RedcapReport < Report
       'Service Provider'
     ]
 
-    statuses = AVAILABLE_STATUSES
+    statuses = PermissibleValue.get_hash('status')
 
     idx = 1
 

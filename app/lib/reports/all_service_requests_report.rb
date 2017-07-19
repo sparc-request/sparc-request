@@ -51,7 +51,7 @@ class AllServiceRequestsReport < Report
       'Primary Investigator Department'
     ]
 
-    statuses = AVAILABLE_STATUSES
+    statuses = PermissibleValue.get_hash('status')
 
     idx = 1
 

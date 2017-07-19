@@ -46,6 +46,25 @@ def let_there_be_j
     )}
 end
 
+def build_statuses
+  let!(:ctrc_approved) {create(:permissible_value, category: 'status', key: 'ctrc_approved', value: 'Active')}
+  let!(:administrative_review) {create(:permissible_value, category: 'status', key: 'administrative_review', value: 'Administrative Review')}
+  let!(:approved) {create(:permissible_value, category: 'status', key: 'approved', value: 'Approved')}
+  let!(:awaiting_pi_approval) {create(:permissible_value, category: 'status', key: 'awaiting_pi_approval', value: 'Awaiting Requester Response')}
+  let!(:complete) {create(:permissible_value, category: 'status', key: 'complete', value: 'Complete')}
+  let!(:declined) {create(:permissible_value, category: 'status', key: 'declined', value: 'Declined')}
+  let!(:draft) {create(:permissible_value, category: 'status', key: 'draft', value: 'Draft')}
+  let!(:get_a_cost_estimate) {create(:permissible_value, category: 'status', key: 'get_a_cost_estimate', value: 'Get a Cost Estimate')}
+  let!(:invoiced) {create(:permissible_value, category: 'status', key: 'invoiced', value: 'Invoiced')}
+  let!(:ctrc_review) {create(:permissible_value, category: 'status', key: 'ctrc_review', value: 'In Admin review')}
+  let!(:committee_review) {create(:permissible_value, category: 'status', key: 'committee_review', value: 'In Committee Review')}
+  let!(:fulfillment_queue) {create(:permissible_value, category: 'status', key: 'fulfillment_queue', value: 'In Fulfillment Queue')}
+  let!(:in_process) {create(:permissible_value, category: 'status', key: 'in_process', value: 'In Process')}
+  let!(:on_hold) {create(:permissible_value, category: 'status', key: 'on_hold', value: 'On Hold')}
+  let!(:submitted) {create(:permissible_value, category: 'status', key: 'submitted', value: 'Submitted')}
+  let!(:withdrawn) {create(:permissible_value, category: 'status', key: 'withdrawn', value: 'Withdrawn')}
+end
+
 def build_proxy_rights
   let!(:none_right)     { create(:permissible_value, category: 'proxy_right', key: 'none', value: 'Member Only') }
   let!(:view_right)     { create(:permissible_value, category: 'proxy_right', key: 'view', value: 'View Rights') }

@@ -118,8 +118,8 @@ $(document).ready ->
 send_update_request = (obj, val) ->
   field_data  = $(obj).attr('id').split('-')
   klass       = field_data[0]
-  attribute   = field_data[1]
-  id          = $(obj).parents(".#{klass}").data("#{klass}-id")
+  id          = field_data[1]
+  attribute   = field_data[2]
 
   $.ajax
     type: 'put'
@@ -129,10 +129,12 @@ send_update_request = (obj, val) ->
       "#{klass}":
         "#{attribute}": val
     success: ->
-      if $.inArray(attribute, ['question_type', 'content'])
+      console.log attribute
+      if attribute == 'question_type' || attribute == 'content'
         build_dependents_selectpicker($('.survey').data('survey-id'))
 
 build_dependents_selectpicker = (survey_id) ->
+  console.log 'bad'
   $.ajax
     type: 'get'
     url: "/surveyor/surveys/#{survey_id}/update_dependents_list.js"

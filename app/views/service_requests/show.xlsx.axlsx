@@ -75,7 +75,7 @@ wb.add_worksheet(name: "Review") do |sheet|
   sheet.add_row proxy_row, :style => sub_header_style
 
   @protocol.project_roles.each do |pr|
-    sheet.add_row [pr.identity.full_name, PermissibleValue.get_value('user_role', pr.role), "", "", PROXY_RIGHTS.key(pr.project_rights)], :style => default
+    sheet.add_row [pr.identity.full_name, PermissibleValue.get_value('user_role', pr.role), "", "", PermissibleValue.get_value('proxy_right', pr.project_rights)], :style => default
   end
 
   sheet.add_row

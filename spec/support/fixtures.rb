@@ -56,6 +56,12 @@ def build_user_roles
   let!(:other_role)         { create(:permissible_value, category: 'user_role', key: 'other', value: 'Other') }
 end
 
+def build_proxy_rights
+  let!(:none_right)     { create(:permissible_value, category: 'proxy_right', key: 'none', value: 'Member Only') }
+  let!(:view_right)     { create(:permissible_value, category: 'proxy_right', key: 'view', value: 'View Rights') }
+  let!(:approve_right)  { create(:permissible_value, category: 'proxy_right', key: 'approve', value: 'Authorize/Change Study Charges') }
+end
+
 def build_study_phases
   let!(:study_phase_O)    { StudyPhase.create(order: 1, phase: 'O', version: 1) }
   let!(:study_phase_I)    { StudyPhase.create(order: 2, phase: 'I', version: 1) }

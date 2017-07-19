@@ -69,7 +69,7 @@
                   %label.col-lg-4
                     = t(:protocols)[:studies][:research_involving][:humans][:submission_type]
                   .col-lg-8
-                    = SUBMISSION_TYPES[human_info.submission_type]
+                    = PermissibleValue.get_value('submission_type', human_info.submission_type)
               %tr
                 %td
                   %label.col-lg-4

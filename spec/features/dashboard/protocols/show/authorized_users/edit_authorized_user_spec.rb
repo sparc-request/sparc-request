@@ -29,6 +29,8 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
     @division = ProfessionalOrganization.create(parent_id: department.id, name: "A Division", org_type: "division")
   end
 
+  build_proxy_rights
+  
   let!(:logged_in_user) do
     create(:identity, last_name: "Doe", first_name: "John", ldap_uid: "johnd",
       email: "johnd@musc.edu", password: "p4ssword",

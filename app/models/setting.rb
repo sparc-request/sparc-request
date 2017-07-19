@@ -55,8 +55,8 @@ class Setting < ApplicationRecord
         is_url?(value)
       when 'path'
         is_path?(value)
-      else
-        false
+      else # Default type = string, no validation needed
+        true
       end
   end
 end

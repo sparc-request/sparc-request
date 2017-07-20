@@ -110,6 +110,9 @@ def build_study_type_questions
   let!(:stq_epic_inbasket_version_3)           { StudyTypeQuestion.create("order"=>3, "question"=>"3. Is it appropriate for study team members to receive Epic InBasket notifications if research participants in this study are hospitalized or admitted to the Emergency Department?", "friendly_id"=>"epic_inbasket", "study_type_question_group_id" => study_type_question_group_version_3.id) }
   let!(:stq_research_active_version_3)         { StudyTypeQuestion.create("order"=>4, "question"=>"4. Is it appropriate to display the pink 'Research:Active indicator in the Patient Header for all study participants?", "friendly_id"=>"research_active", "study_type_question_group_id" => study_type_question_group_version_3.id) }
   let!(:stq_restrict_sending_version_3)        { StudyTypeQuestion.create("order"=>5, "question"=>"Is it appropriate for all study participants to receive associated test results, such as labs and/or imaging findings, via MyChart?", "friendly_id"=>"restrict_sending", "study_type_question_group_id" => study_type_question_group_version_3.id) }
+  let!(:stq_certificate_of_conf_no_epic_version_3)     { StudyTypeQuestion.create("order"=>6, "question"=>"1. Does your Informed Consent provide information to the participant specifically stating their study participation will be kept private from anyone outside the research team? (i.e. your study has a Certificate of Confidentiality or involves sensitive data collection which requires de-identification of the research participant.)", "friendly_id"=>"certificate_of_conf_no_epic", "study_type_question_group_id" => study_type_question_group_version_3.id) }
+  let!(:stq_higher_level_of_privacy_no_epic_version_3) { StudyTypeQuestion.create("order"=>7, "question"=>'2. Does your study require a higher level of privacy protection for the participants? (Your study needs "break the glass" functionality because it is collection sensitive data, such as HIV/sexually transmitted disease, sexual practice/attitudes, illegal substance, etc., which needs higher privacy protection, yet not complete de-identification of the study participant.)', "friendly_id"=>"higher_level_of_privacy_no_epic", "study_type_question_group_id" => study_type_question_group_version_3.id) }
+  
 end
 
 
@@ -132,6 +135,8 @@ def build_study_type_answers
   let!(:answer3_version_3)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_epic_inbasket_version_3.id, answer: 0)}
   let!(:answer4_version_3)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_research_active_version_3.id, answer: 1)}
   let!(:answer5_version_3)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_restrict_sending_version_3.id, answer: 1)}
+  let!(:answer6_version_3)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_certificate_of_conf_no_epic_version_3.id, answer: 0)}
+  let!(:answer7_version_3)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_higher_level_of_privacy_no_epic_version_3.id, answer: 0)}
 end
 
 def build_project_type_answers

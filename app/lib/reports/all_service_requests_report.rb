@@ -20,7 +20,7 @@
 
 # Report that displays all service requests in the system with PIs and requesters
 
-class AllServiceRequestsReport < Report
+class AllServiceRequestsReport < Reporting
   def self.description
     "Provide a list of all service requests with their corresponding PIs and requesters."
   end
@@ -91,7 +91,7 @@ class AllServiceRequestsReport < Report
           idx += 1
         end
       end
-      p.serialize(@output_file)  
+      p.serialize(@output_file)
     end
   end
 end

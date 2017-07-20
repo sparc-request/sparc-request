@@ -144,9 +144,11 @@
     / Display epic questions as readonly for administrators who aren't an authorized user
     / with edit abilities
     - updated_protocol_type = action_name == 'update_protocol_type' ?  true : false
+    
+    - if action_name == 'new' || updated_protocol_type
+      = render partial: 'dashboard/protocols/form/study_form_sections/interactive_form', locals: { protocol: protocol, form: form, updated_protocol_type: updated_protocol_type }
+    - else
+      = render partial: 'dashboard/protocols/form/study_form_sections/readonly_form', locals: { protocol: protocol, form: form }
+
     - if USE_EPIC
-      - if action_name == 'new' || updated_protocol_type
-        = render partial: 'dashboard/protocols/form/study_form_sections/interactive_form', locals: { protocol: protocol, form: form, updated_protocol_type: updated_protocol_type }
-      - else
-        = render partial: 'dashboard/protocols/form/study_form_sections/readonly_form', locals: { protocol: protocol, form: form }
       = render partial: 'dashboard/protocols/form/study_form_sections/study_type_note', locals: { protocol: protocol, form: form }

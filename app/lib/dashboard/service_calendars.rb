@@ -71,8 +71,8 @@ module Dashboard
     # Given line_items_visit belonging to Organization A, which belongs to
     # Organization B, which belongs to Organization C, return "C > B > A".
     # This "hierarchy" stops at a process_ssrs Organization.
-    def self.display_organization_hierarchy(line_items_visit)
-      parent_organizations = line_items_visit.line_item.service.parents.reverse
+    def self.display_organization_hierarchy(line_item)
+      parent_organizations = line_item.service.parents.reverse
       root = parent_organizations.find_index { |org| org.process_ssrs? } || (parent_organizations.length - 1)
       parent_organizations[0..root].map(&:abbreviation).reverse.join(' > ')
     end
@@ -81,6 +81,8 @@ module Dashboard
       statuses_hidden = opts[:statuses_hidden] || %w(first_draft)
       if opts[:merged]
         arm.line_items_visits.
+          eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]], service_request: :protocol]).
+          eager_load(:notes, :visits, :sub_service_request).
           joins(line_item: :sub_service_request).
           where.not(sub_service_requests: { status: statuses_hidden }).
           joins(line_item: :service).
@@ -88,7 +90,7 @@ module Dashboard
       else
         (sub_service_request || service_request).line_items_visits.
           eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]], service_request: :protocol]).
-          eager_load(:notes, service: :pricing_maps, sub_service_request: :organization).
+          eager_load(:notes, :visits, sub_service_request: :organization).
           joins(:sub_service_request).
           where.not(sub_service_requests: { status: statuses_hidden }).
           joins(line_item: :service).
@@ -96,6 +98,19 @@ module Dashboard
       end.group_by do |liv|
         liv.sub_service_request
       end
+    end
+
+    def self.otf_line_items_to_display(service_request, sub_service_request, opts = {})
+      (opts[:merged] ? service_request : (sub_service_request || service_request)).line_items.
+        eager_load(:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]).
+        eager_load(:notes, sub_service_request: :organization).
+        joins(:sub_service_request).
+        where.not(sub_service_requests: { status: opts[:statuses_hidden] || %w(first_draft) }).
+        joins(:service).
+        where(services: { one_time_fee: true }).
+        group_by do |li|
+          li.sub_service_request
+        end
     end
 
     def self.glyph_class(obj)

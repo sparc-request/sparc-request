@@ -25,6 +25,8 @@ class Organization < ApplicationRecord
   audited
   acts_as_taggable
 
+  after_create :build_default_statuses
+
   belongs_to :parent, :class_name => 'Organization'
   has_many :submission_emails, :dependent => :destroy
   has_many :associated_surveys, as: :surveyable, dependent: :destroy
@@ -398,6 +400,12 @@ class Organization < ApplicationRecord
     else
       orgs = Organization.where(parent_id: org_ids)
       orgs | authorized_child_organizations(orgs.pluck(:id))
+    end
+  end
+
+  def build_default_statuses
+    DEFAULT_STATUSES.each do |status|
+      AvailableStatus.find_or_create_by(organization_id: self.id, status: status)
     end
   end
 end

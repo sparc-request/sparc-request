@@ -370,7 +370,7 @@ class Organization < ApplicationRecord
       statuses = PermissibleValue.get_hash('status').select{|k,v| tmp_available_statuses.map(&:status).include? k}
     end
     if statuses.empty?
-      statuses = PermissibleValue.get_hash('status').select{|k,v| DEFAULT_STATUSES.include? k}
+      statuses = PermissibleValue.get_hash('status').select{|k,v| PermissibleValue.get_key_list('status', true).include? k}
     end
     statuses
   end

@@ -39,7 +39,7 @@
     .col-sm-1
       = check_box_tag "question-#{question.id}-is_dependent", question.is_dependent, question.is_dependent, class: 'is-dependent', disabled: question.previous_questions.empty?
     .dependent-dropdown-container{ class: question.is_dependent ? '' : 'hidden' }
-      = label_tag "question-depender_id", t(:surveyor)[:surveys][:form][:content][:question][:dependent][:dropdown][:label], class: 'col-sm-2 control-label no-padding-x'
+      = label_tag "question-#{question.id}-depender_id", t(:surveyor)[:surveys][:form][:content][:question][:dependent][:dropdown][:label], class: 'col-sm-2 control-label no-padding-x'
       .col-sm-4.no-padding
         .col-sm-4
           = render 'surveyor/surveys/form/dependent_dropdown', survey: survey, question: question

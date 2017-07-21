@@ -40,7 +40,7 @@ RSpec.describe 'User edits question fields', js: true do
     find('.edit-survey').click
     wait_for_javascript_to_finish
 
-    fill_in('question-content', with: 'This is a Terrible Question')
+    fill_in("question-#{@question.id}-content", with: 'This is a Terrible Question')
     find('.modal-title').click
     wait_for_javascript_to_finish
 
@@ -54,7 +54,7 @@ RSpec.describe 'User edits question fields', js: true do
     find('.edit-survey').click
     wait_for_javascript_to_finish
 
-    fill_in('question-description', with: 'How can I describe such a terrible question?')
+    fill_in("question-#{@question.id}-description", with: 'How can I describe such a terrible question?')
     find('.modal-title').click
     wait_for_javascript_to_finish
 
@@ -68,7 +68,7 @@ RSpec.describe 'User edits question fields', js: true do
     find('.edit-survey').click
     wait_for_javascript_to_finish
 
-    bootstrap_select '#question-question_type', 'Text Area'
+    bootstrap_select "#question-#{@question.id}-question_type", 'Text Area'
     wait_for_javascript_to_finish
 
     expect(@question.reload.question_type).to eq('textarea')
@@ -81,7 +81,7 @@ RSpec.describe 'User edits question fields', js: true do
     find('.edit-survey').click
     wait_for_javascript_to_finish
 
-    find('#question-required').click
+    find("#question-#{@question.id}-required").click
     wait_for_javascript_to_finish
 
     expect(@question.reload.required).to eq(true)
@@ -96,8 +96,8 @@ RSpec.describe 'User edits question fields', js: true do
         find('.edit-survey').click
         wait_for_javascript_to_finish
 
-        expect(page).to have_selector('#question-is_dependent:disabled')
-        expect(page).to_not have_selector('#question-is_dependent:not(:disabled)')
+        expect(page).to have_selector("#question-#{@question.id}-is_dependent:disabled")
+        expect(page).to_not have_selector("#question-#{@question.id}-is_dependent:not(:disabled)")
       end
     end
     
@@ -111,7 +111,7 @@ RSpec.describe 'User edits question fields', js: true do
       find('.edit-survey').click
       wait_for_javascript_to_finish
 
-      all('#question-is_dependent')[1].click
+      find("#question-#{@question2.id}-is_dependent").click
       wait_for_javascript_to_finish
 
       expect(@question2.reload.is_dependent).to eq(true)
@@ -129,10 +129,10 @@ RSpec.describe 'User edits question fields', js: true do
       find('.edit-survey').click
       wait_for_javascript_to_finish
 
-      all('#question-is_dependent')[1].click
+      find("#question-#{@question2.id}-is_dependent").click
       wait_for_javascript_to_finish
 
-      find("button[data-id='question-depender_id']").click
+      find("button[data-id='question-#{@question2.id}-depender_id']").click
 
       expect(page).to have_selector('.text', text: @option.content)
     end
@@ -148,10 +148,10 @@ RSpec.describe 'User edits question fields', js: true do
       find('.edit-survey').click
       wait_for_javascript_to_finish
 
-      all('#question-is_dependent')[1].click
+      find("#question-#{@question2.id}-is_dependent").click
       wait_for_javascript_to_finish
 
-      find("button[data-id='question-depender_id']").click
+      find("button[data-id='question-#{@question2.id}-depender_id']").click
 
       expect(page).to_not have_selector('.text', text: @option.content)
     end
@@ -166,10 +166,10 @@ RSpec.describe 'User edits question fields', js: true do
       find('.edit-survey').click
       wait_for_javascript_to_finish
 
-      all('#question-is_dependent')[1].click
+      find("#question-#{@question2.id}-is_dependent").click
       wait_for_javascript_to_finish
 
-      bootstrap_select '#question-depender_id', 'What is the meaning of life?'
+      bootstrap_select "#question-#{@question2.id}-depender_id", 'What is the meaning of life?'
       wait_for_javascript_to_finish
       
       expect(@question2.reload.depender_id).to eq(@option.id)

@@ -81,19 +81,15 @@ module Dashboard
       statuses_hidden = opts[:statuses_hidden] || %w(first_draft)
       if opts[:merged]
         arm.line_items_visits.
-          eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]], service_request: :protocol]).
-          eager_load(:notes, :visits, :sub_service_request).
-          joins(line_item: :sub_service_request).
+          eager_load(:visits, :notes).
+          includes(sub_service_request: :organization, line_item: [:admin_rates, :service_request, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).
           where.not(sub_service_requests: { status: statuses_hidden }).
-          joins(line_item: :service).
           where(services: { one_time_fee: false })
       else
         (sub_service_request || service_request).line_items_visits.
-          eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]], service_request: :protocol]).
-          eager_load(:notes, :visits, sub_service_request: :organization).
-          joins(:sub_service_request).
+          eager_load(:visits, :notes).
+          includes(sub_service_request: :organization, line_item: [:admin_rates, :service_request, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).
           where.not(sub_service_requests: { status: statuses_hidden }).
-          joins(line_item: :service).
           where(services: { one_time_fee: false }, arm_id: arm.id)
       end.group_by do |liv|
         liv.sub_service_request
@@ -102,11 +98,9 @@ module Dashboard
 
     def self.otf_line_items_to_display(service_request, sub_service_request, opts = {})
       (opts[:merged] ? service_request : (sub_service_request || service_request)).line_items.
-        eager_load(:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]).
-        eager_load(:notes, sub_service_request: :organization).
-        joins(:sub_service_request).
+        eager_load(:admin_rates, :notes, :service_request).
+        includes(sub_service_request: :organization, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]).
         where.not(sub_service_requests: { status: opts[:statuses_hidden] || %w(first_draft) }).
-        joins(:service).
         where(services: { one_time_fee: true }).
         group_by do |li|
           li.sub_service_request

@@ -80,10 +80,6 @@ module ServiceCalendarHelper
     currency_converter(line_item.applicable_rate)
   end
 
-  def update_per_subject_subtotals line_items_visit
-    line_items_visit.per_subject_subtotals
-  end
-
   def display_org_name(org_name, ssr, locked)
     header  = content_tag(:span, org_name + (ssr.ssr_id ? " (#{ssr.ssr_id})" : ""))
     header += content_tag(:span, '', class: 'glyphicon glyphicon-lock locked') if locked
@@ -151,9 +147,8 @@ module ServiceCalendarHelper
   end
 
   # Display grand totals per study
-  def display_total_direct_cost_per_study_otfs service_request, line_items
-    sum = service_request.total_direct_costs_one_time line_items
-    currency_converter sum
+  def display_total_direct_cost_per_study_otfs(service_request)
+    currency_converter(service_request.total_direct_costs_one_time)
   end
 
   def display_total_indirect_cost_per_study_otfs service_request, line_items
@@ -161,9 +156,8 @@ module ServiceCalendarHelper
     currency_converter sum
   end
 
-  def display_total_cost_per_study_otfs service_request, line_items
-    sum = service_request.total_costs_one_time line_items
-    currency_converter sum
+  def display_total_cost_per_study_otfs(service_request)
+    currency_converter(service_request.total_costs_one_time)
   end
 
   #############################################
@@ -189,9 +183,8 @@ module ServiceCalendarHelper
     currency_converter sum
   end
 
-  def display_study_grand_total_direct_costs protocol, service_request
-    sum = protocol.direct_cost_total service_request
-    currency_converter sum
+  def display_study_grand_total_direct_costs(protocol, service_request)
+    currency_converter(protocol.direct_cost_total(service_request))
   end
 
   def display_study_grand_total_indirect_costs protocol, service_request
@@ -199,9 +192,8 @@ module ServiceCalendarHelper
     currency_converter sum
   end
 
-  def display_study_grand_total protocol, service_request
-    sum = protocol.grand_total service_request
-    currency_converter sum
+  def display_study_grand_total(protocol, service_request)
+    currency_converter(protocol.grand_total(service_request))
   end
 
   #############################################

@@ -46,11 +46,10 @@
         = display_unit_type(liv)
       %td.subject-count.text-center.xs-col-width
         = liv.subject_count
-      - visits      = liv.visits.paginate(page: page.to_i, per_page: Visit.per_page)
-      - totals_hash = liv.try(:per_subject_subtotals, visits)
-      - visits.eager_load(service: :pricing_maps).each do |v|
+      - visits      = liv.ordered_visits.page(page).eager_load(line_items_visit: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] })
+      - visits.each do |v|
         %td.text-center.visit.visit-width{ class: "visit-#{v.id}" }
-          = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", visit: v, totals_hash: totals_hash
+          = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", visit: v
       - (Visit.per_page - visits.size).times do
         %td.visit-width &nbsp;
       %td.text-center.pppv-per-patient-line-item-total.total-width

@@ -66,8 +66,8 @@
 
       = render 'service_calendars/master_calendar/pppv/subject_count', liv: liv, arm: arm, page: page, tab: tab, locked: locked, portal: portal
 
-      - visits = liv.ordered_visits.paginate(page: page.to_i, per_page: Visit.per_page)
-      - visits.eager_load(service: :pricing_maps).each do |v|
+      - visits = liv.ordered_visits.page(page).eager_load(line_items_visit: { line_item: { service: :pricing_maps } })
+      - visits.each do |v|
         %td.text-center.visit.visit-width{ class: "visit-#{v.id}" }
           = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", visit: v, page: page, admin: admin, locked: locked
       - (Visit.per_page - visits.size).times do

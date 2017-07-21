@@ -23,6 +23,7 @@ require 'rails_helper'
 RSpec.describe "User views Status History tab", js: true do
   let_there_be_lane
   fake_login_for_each_test
+  build_statuses
 
   scenario "and changes the status of the SSR to a new status" do
     organization    = create(:organization, process_ssrs: true)

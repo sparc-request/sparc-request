@@ -20,7 +20,7 @@
 
 require 'csv'
 
-class CtrcServicesReport < Report
+class CtrcServicesReport < Reporting
   def default_output_file
     return './ctrc_services_report.csv'
   end

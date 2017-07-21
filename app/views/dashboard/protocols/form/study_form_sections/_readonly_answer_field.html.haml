@@ -17,7 +17,7 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
-.form-group.row{id: "study_type_answer_#{answer.object.study_type_question.friendly_id}", style: (answer.object.answer != nil ? nil : "display:none;")}
+.form-group.row{id: "study_type_answer_#{answer.object.study_type_question.friendly_id}", style: display_study_type_question?(protocol, answer.object) ? 'display:block;' : 'display:none;'}
   .col-lg-8
     = answer.label :answer, answer.object.study_type_question.question, class: "long"
   .col-lg-4

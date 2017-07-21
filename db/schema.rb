@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170621150847) do
+ActiveRecord::Schema.define(version: 20170707153553) do
 
   create_table "admin_rates", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "line_item_id"
@@ -141,18 +141,31 @@ ActiveRecord::Schema.define(version: 20170621150847) do
     t.index ["sub_service_request_id"], name: "index_cover_letters_on_sub_service_request_id", using: :btree
   end
 
+<<<<<<< HEAD
   create_table "delayed_jobs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "priority",                 default: 0, null: false
     t.integer  "attempts",                 default: 0, null: false
     t.text     "handler",    limit: 65535,             null: false
     t.text     "last_error", limit: 65535
+=======
+  create_table "delayed_jobs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
+    t.integer  "priority",                      default: 0, null: false
+    t.integer  "attempts",                      default: 0, null: false
+    t.text     "handler",    limit: 4294967295,             null: false
+    t.text     "last_error", limit: 4294967295
+>>>>>>> master
     t.datetime "run_at"
     t.datetime "locked_at"
     t.datetime "failed_at"
     t.string   "locked_by"
     t.string   "queue"
+<<<<<<< HEAD
     t.datetime "created_at"
     t.datetime "updated_at"
+=======
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
+>>>>>>> master
     t.index ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
   end
 

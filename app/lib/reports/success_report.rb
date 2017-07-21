@@ -20,7 +20,7 @@
 
 # Report that displays all SUCCESS Center Service Requests By core
 
-class SuccessReport < Report
+class SuccessReport < Reporting
 
   def self.description
     "Provide a list of all service requests, by core, under the SUCCESS Center."

@@ -109,12 +109,12 @@
       .form-group.row
         = form.label :federal_grant_code_id, t(:protocols)[:studies][:information][:funding_source_federal][:code], class: 'col-lg-2 control-label'
         .col-lg-10
-          = form.select :federal_grant_code_id, options_for_select(PermissibleValue.get_value_list('federal_grant_code'), protocol.federal_grant_code_id), { include_blank: t(:study_form)[:code_blank] }, class: 'selectpicker'
+          = form.select :federal_grant_code_id, options_for_select(PermissibleValue.get_inverted_hash('federal_grant_code'), protocol.federal_grant_code_id), { include_blank: t(:study_form)[:code_blank] }, class: 'selectpicker'
 
       .form-group.row
         = form.label :federal_phs_sponsor, t(:protocols)[:studies][:information][:funding_source_federal][:phs_sponsor], class: 'col-lg-2 control-label'
         .col-lg-10
-          = form.select :federal_phs_sponsor, options_for_select(PermissibleValue.get_value_list('federal_grant_phs_sponsor'), protocol.federal_phs_sponsor), { include_blank: t(:protocols)[:prompts][:federal_sponsor] }, class: 'selectpicker'
+          = form.select :federal_phs_sponsor, options_for_select(PermissibleValue.get_inverted_hash('federal_grant_phs_sponsor'), protocol.federal_phs_sponsor), { include_blank: t(:protocols)[:prompts][:federal_sponsor] }, class: 'selectpicker'
 
       .row
         %label.col-lg-2
@@ -124,7 +124,7 @@
       .form-group.row#federal-non-phs
         = form.label :federal_non_phs_sponsor, t(:protocols)[:studies][:information][:funding_source_federal][:non_phs_sponsor], class: 'col-lg-2 control-label'
         .col-lg-10
-          = form.select :federal_non_phs_sponsor, options_for_select(PermissibleValue.get_value_list('protocol.federal_non_phs_sponsor'), protocol.federal_non_phs_sponsor), { include_blank: t(:protocols)[:prompts][:federal_sponsor] }, class: 'selectpicker'
+          = form.select :federal_non_phs_sponsor, options_for_select(PermissibleValue.get_inverted_hash('federal_grant_non_phs_sponsor'), protocol.federal_non_phs_sponsor), { include_blank: t(:protocols)[:prompts][:federal_sponsor] }, class: 'selectpicker'
 
       .form-group.row
         = form.label :federal_grant_serial_number, t(:protocols)[:studies][:information][:funding_source_federal][:serial_number], class: 'col-lg-2 control-label'
@@ -144,9 +144,11 @@
     / Display epic questions as readonly for administrators who aren't an authorized user
     / with edit abilities
     - updated_protocol_type = action_name == 'update_protocol_type' ?  true : false
+    
+    - if action_name == 'new' || updated_protocol_type
+      = render partial: 'dashboard/protocols/form/study_form_sections/interactive_form', locals: { protocol: protocol, form: form, updated_protocol_type: updated_protocol_type }
+    - else
+      = render partial: 'dashboard/protocols/form/study_form_sections/readonly_form', locals: { protocol: protocol, form: form }
+
     - if USE_EPIC
-      - if action_name == 'new' || updated_protocol_type
-        = render partial: 'dashboard/protocols/form/study_form_sections/interactive_form', locals: { protocol: protocol, form: form, updated_protocol_type: updated_protocol_type }
-      - else
-        = render partial: 'dashboard/protocols/form/study_form_sections/readonly_form', locals: { protocol: protocol, form: form }
       = render partial: 'dashboard/protocols/form/study_form_sections/study_type_note', locals: { protocol: protocol, form: form }

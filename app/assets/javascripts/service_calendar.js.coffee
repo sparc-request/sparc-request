@@ -306,10 +306,15 @@ $(document).ready ->
         line_item:
           quantity: params.value
         service_request_id: getSRId()
+        sub_service_request_id: getSSRId()
       }
-    success: ->
-      scroll = $(this).parents('.scrolling-div').length > 0
-      reload_calendar($(this).data('armId'), scroll)
+    success: (data) ->
+      # Replace Study Total
+      $(this).parent().siblings('.total-per-study').replaceWith(data['total_per_study'])
+
+      # Replace Totals
+      $('.total-direct-one-time-fee-cost-per-study').replaceWith(data['max_total_direct'])
+      $('.total-one-time-fee-cost-per-study').replaceWith(data['total_costs'])
 
   $('.edit-units-per-qty').editable
     params: (params) ->
@@ -317,7 +322,12 @@ $(document).ready ->
         line_item:
           units_per_quantity: params.value
         service_request_id: getSRId()
+        sub_service_request_id: getSSRId()
       }
-    success: ->
-      scroll = $(this).parents('.scrolling-div').length > 0
-      reload_calendar($(this).data('armId'), scroll)
+    success: (data) ->
+      # Replace Study Total
+      $(this).parent().siblings('.total-per-study').replaceWith(data['total_per_study'])
+
+      # Replace Totals
+      $('.total-direct-one-time-fee-cost-per-study').replaceWith(data['max_total_direct'])
+      $('.total-one-time-fee-cost-per-study').replaceWith(data['total_costs'])

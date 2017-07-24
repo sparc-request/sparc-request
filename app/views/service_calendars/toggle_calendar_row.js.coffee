@@ -27,12 +27,12 @@ $("#check-all-column-<%=vg.id%>").replaceWith("<%= j render 'service_calendars/m
 
 <% if @admin %>
 # Replace SSR Header
-$('#sub_service_request_header').html("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: SubServiceRequest.eager_load(line_items: [:admin_rates, line_items_visits: :arm, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol]).find(@sub_service_request.id) %>")
+$('#sub_service_request_header').html("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: SubServiceRequest.eager_load(line_items: [:admin_rates, service_request: :protocol, line_items_visits: :arm, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).find(@sub_service_request.id) %>")
 $('.selectpicker').selectpicker()
 <% end %>
 
 # Replace visits
-<% @visits.paginate(page: @page.to_i, per_page: Visit.per_page).ordered.each do |visit| %>
+<% @visits.ordered.page(@page).each do |visit| %>
 $(".visit-<%=visit.id%>:visible").html('<%= j render "service_calendars/master_calendar/pppv/template/template_visit_input", visit: visit, tab: @tab, page: @page, admin: @admin, locked: @locked %>')
 <% end %>
 

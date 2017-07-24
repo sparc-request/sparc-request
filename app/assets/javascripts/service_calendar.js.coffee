@@ -235,20 +235,6 @@ $(document).ready ->
   # NOTES LISTENERS END
 
 (exports ? this).setup_xeditable_fields = (scroll) ->
-  reload_calendar = (arm_id, scroll) ->
-    # E.g. "billing-strategy-tab" -> "billing_strategy"
-    tab = $('li.custom-tab.active a').last().attr('id')
-    tab = tab.substring(0, tab.indexOf("tab") - 1).replace("-", "_")
-    data = $('#service-calendars').data()
-    data.scroll = scroll
-    data.tab = tab
-    data.arm_id = arm_id
-    data.service_request_id = getSRId()
-    data.sub_service_request_id = data.subServiceRequestId
-    data.protocol_id = data.protocolId
-    # Reload calendar
-    $.get '/service_calendars/table.js', data
-
   # Override x-editable defaults
   $.fn.editable.defaults.send = 'always'
   $.fn.editable.defaults.ajaxOptions =

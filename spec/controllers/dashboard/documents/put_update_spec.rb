@@ -42,9 +42,9 @@ RSpec.describe Dashboard::DocumentsController do
           @ssr            = create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft', protocol_id: @protocol.id)
                             create(:super_user, identity: logged_in_user, organization: organization)
           @document       = create(:document, protocol: @protocol)
-          params          = { id: @document.id, document: { protocol: @protocol, doc_type: 'Protocol' } }
+          params          = { id: @document.id, document: { protocol: @protocol, doc_type: 'Protocol' }, format: :js }
 
-          xhr :put, :update, params, format: :js
+          put :update, params: params, xhr: true
         end
 
         it 'should assign @document' do
@@ -74,9 +74,9 @@ RSpec.describe Dashboard::DocumentsController do
           @ssr            = create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft', protocol_id: @protocol.id)
                             create(:super_user, identity: logged_in_user, organization: organization)
           @document       = create(:document, protocol: @protocol)
-          params          = { org_ids: [organization.id], id: @document.id, document: { protocol: @protocol, doc_type: 'Protocol' } }
+          params          = { org_ids: [organization.id], id: @document.id, document: { protocol: @protocol, doc_type: 'Protocol' }, format: :js }
 
-          xhr :put, :update, params, format: :js
+          put :update, params: params, xhr: true
         end
 
         it 'should update the document' do
@@ -98,9 +98,9 @@ RSpec.describe Dashboard::DocumentsController do
       context 'params[:document] describes an invalid Document' do
         before :each do
           document  = create(:document, protocol: @protocol)
-          params    = { id: document.id, document: { protocol: @protocol, doc_type: nil } }
+          params    = { id: document.id, document: { protocol: @protocol, doc_type: nil }, format: :js }
 
-          xhr :put, :update, params, format: :js
+          put :update, params: params, xhr: true
         end
 
         it 'should set @errors' do
@@ -117,7 +117,7 @@ RSpec.describe Dashboard::DocumentsController do
         protocol  = create(:protocol_without_validations, primary_pi: other_user)
         document  = create(:document, protocol: protocol)
 
-        xhr :put, :update, id: document.id, document: { doc_type: 'important' }, format: :js
+        put :update, params: { id: document.id, document: { doc_type: 'important' }, format: :js }
       end
 
       it { is_expected.to respond_with :ok }
@@ -135,7 +135,7 @@ RSpec.describe Dashboard::DocumentsController do
 
         document.sub_service_requests = [ssr]
 
-        xhr :put, :update, id: document.id, document: { doc_type: 'important' }, format: :js
+        put :update, params: { id: document.id, document: { doc_type: 'important' }, format: :js }, xhr: true
       end
 
       it { is_expected.to respond_with :ok }
@@ -147,7 +147,7 @@ RSpec.describe Dashboard::DocumentsController do
         protocol  = create(:protocol_without_validations, primary_pi: other_user)
         document  = create(:document, protocol: protocol)
 
-        xhr :put, :update, id: document.id, document: { doc_type: 'important' }, format: :js
+        put :update, params: { id: document.id, document: { doc_type: 'important' }, format: :js }, xhr: true
       end
 
       it { is_expected.to respond_with :ok }

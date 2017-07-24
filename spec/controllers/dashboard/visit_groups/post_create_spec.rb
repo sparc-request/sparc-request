@@ -63,31 +63,31 @@ RSpec.describe Dashboard::VisitGroupsController do
       end
 
       it 'should assign @service_request' do
-        xhr :post, :create, @valid_vg_params
+        post :create, params: @valid_vg_params, xhr: true
 
         expect(assigns(:service_request)).to eq(@sr)
       end
 
       it 'should assign @sub_service_request' do
-        xhr :post, :create, @valid_vg_params
+        post :create, params: @valid_vg_params, xhr: true
 
         expect(assigns(:sub_service_request)).to eq(@ssr)
       end
 
       it 'should assign @arm' do
-        xhr :post, :create, @valid_vg_params
+        post :create, params: @valid_vg_params, xhr: true
         expect(assigns(:arm)).to eq(@arm)
       end
 
       context 'visit group is valid' do
         it 'should create visit group' do
           expect{
-            xhr :post, :create, @valid_vg_params
+            post :create, params: @valid_vg_params, xhr: true
           }.to change(VisitGroup, :count).by 1
         end
 
         it 'should not assign @errors' do
-          xhr :post, :create, @valid_vg_params
+          post :create, params: @valid_vg_params, xhr: true
 
           expect(assigns(:errors)).to_not be
         end
@@ -96,25 +96,25 @@ RSpec.describe Dashboard::VisitGroupsController do
       context 'visit group is invalid' do
         it 'should not create visit group' do
           expect{
-            xhr :post, :create, @invalid_vg_params
+            post :create, params: @invalid_vg_params, xhr: true
           }.to_not change(VisitGroup, :count)
         end
 
         it 'should assign @errors' do
-          xhr :post, :create, @invalid_vg_params
+          post :create, params: @invalid_vg_params, xhr: true
 
           expect(assigns(:errors)).to be
         end
       end
 
       it 'should render template' do
-        xhr :post, :create, @valid_vg_params
+        post :create, params: @valid_vg_params, xhr: true
 
         expect(controller).to render_template(:create)
       end
 
       it 'should respond ok' do
-        xhr :post, :create, @valid_vg_params
+        post :create, params: @valid_vg_params, xhr: true
 
         expect(controller).to respond_with(:ok)          
       end
@@ -130,7 +130,7 @@ RSpec.describe Dashboard::VisitGroupsController do
         @ssr      = create(:sub_service_request, service_request: @sr, organization: org)
         @arm      = create(:arm, protocol: @protocol)
         
-        xhr :post, :create, {
+        post :create, params: {
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           visit_group: {
@@ -141,7 +141,7 @@ RSpec.describe Dashboard::VisitGroupsController do
             window_before: 0,
             window_after: 0
           }
-        }
+        }, xhr: true
       end
 
       it 'should not assign variables' do

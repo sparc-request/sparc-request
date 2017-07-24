@@ -1,4 +1,4 @@
-class AddVersionColToStudyTypeQuestionGroup < ActiveRecord::Migration
+class AddVersionColToStudyTypeQuestionGroup < ActiveRecord::Migration[4.2]
   def up
     add_column :study_type_question_groups, :version, :integer, after: :id
     StudyTypeQuestionGroup.reset_column_information

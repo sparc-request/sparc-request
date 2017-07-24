@@ -37,10 +37,10 @@ RSpec.describe AssociatedUsersController, type: :controller do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :index, {
+      get :index, params: {
         protocol_id: protocol.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:protocol)).to eq(protocol)
     end
@@ -50,10 +50,10 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
       session[:identity_id] = logged_in_user.id
-      xhr :get, :index, {
+      get :index, params: {
         protocol_id: protocol.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:current_user)).to eq(logged_in_user)
     end
@@ -62,10 +62,10 @@ RSpec.describe AssociatedUsersController, type: :controller do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :index, {
+      get :index, params: {
         protocol_id: protocol.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:protocol_roles)).to eq(protocol.project_roles)
     end
@@ -74,10 +74,10 @@ RSpec.describe AssociatedUsersController, type: :controller do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :index, {
+      get :index, params: {
         protocol_id: protocol.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:index)
     end
@@ -86,10 +86,10 @@ RSpec.describe AssociatedUsersController, type: :controller do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :index, {
+      get :index, params: {
         protocol_id: protocol.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

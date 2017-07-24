@@ -40,7 +40,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
         before :each do
           create(:super_user, identity: @logged_in_user, organization: @organization)
 
-          get :approval_history, id: @sub_service_request.id, format: :json
+          get :approval_history, params: { id: @sub_service_request.id, format: :json }
         end
 
         it { is_expected.to render_template "dashboard/sub_service_requests/approval_history" }
@@ -49,7 +49,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
       context 'user is not authorized admin on SSR' do
         before :each do
-          get :approval_history, id: @sub_service_request.id, format: :json
+          get :approval_history, params: { id: @sub_service_request.id, format: :json }
         end
 
         it { is_expected.to render_template "service_requests/_authorization_error" }
@@ -62,7 +62,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
       before :each do
         create(:super_user, identity: @logged_in_user, organization: @organization)
 
-        get :approval_history, id: @sub_service_request.id, format: :json
+        get :approval_history, params: { id: @sub_service_request.id, format: :json }
       end
 
       it 'should assign instance variables' do

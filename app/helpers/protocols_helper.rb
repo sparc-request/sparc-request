@@ -27,4 +27,14 @@ module ProtocolsHelper
         !['certificate_of_conf_no_epic', 'higher_level_of_privacy_no_epic'].include?(study_type_answer.study_type_question.friendly_id) && study_type_answer.answer != nil
       end
   end
+
+  def display_rmid_validated_protocol(protocol, option)
+    if protocol.rmid_validated?
+      content_tag(
+        :h6,
+        t("protocols.summary.rmid_validated", title: option),
+        class: "text-success"
+      )
+    end
+  end
 end

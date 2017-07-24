@@ -30,7 +30,7 @@ RSpec.describe Dashboard::LineItemsController do
         and_return("my otf line items")
 
       log_in_dashboard_identity(obj: build_stubbed(:identity))
-      get :index, sub_service_request_id: @sub_service_request.id, format: :json
+      get :index, params: { sub_service_request_id: @sub_service_request.id, format: :json }
     end
 
     it "should assign @sub_service_request from params[:sub_service_request_id]" do

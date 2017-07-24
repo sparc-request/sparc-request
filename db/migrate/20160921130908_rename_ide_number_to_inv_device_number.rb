@@ -1,4 +1,4 @@
-class RenameIdeNumberToInvDeviceNumber < ActiveRecord::Migration
+class RenameIdeNumberToInvDeviceNumber < ActiveRecord::Migration[4.2]
   def up
     rename_column :investigational_products_info, :ide_number, :inv_device_number
     add_column :investigational_products_info, :exemption_type, :string, default: ""

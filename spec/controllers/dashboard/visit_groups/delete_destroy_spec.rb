@@ -40,49 +40,49 @@ RSpec.describe Dashboard::VisitGroupsController do
       end
 
       it 'should assign @visit_group' do
-        xhr :delete, :destroy, @params
+        delete :destroy, params: @params, xhr: true
 
         expect(assigns(:visit_group)).to eq(@vg)
       end
 
       it 'should assign @service_request' do
-        xhr :delete, :destroy, @params
+        delete :destroy, params: @params, xhr: true
 
         expect(assigns(:service_request)).to eq(@sr)
       end
 
       it 'should assign @sub_service_request' do
-        xhr :delete, :destroy, @params
+        delete :destroy, params: @params, xhr: true
 
         expect(assigns(:sub_service_request)).to eq(@ssr)
       end
 
       it 'should assign @arm' do
-        xhr :delete, :destroy, @params
+        delete :destroy, params: @params, xhr: true
 
         expect(assigns(:arm)).to eq(@arm)
       end
 
       it 'should destroy the visit group' do
         expect{
-          xhr :delete, :destroy, @params
+          delete :destroy, params: @params, xhr: true
         }.to change(VisitGroup, :count).by -1
       end
 
       it 'should decrement the arm visit count' do
-        xhr :delete, :destroy, @params
+        delete :destroy, params: @params, xhr: true
 
         expect(@arm.reload.visit_count).to eq(0)
       end
 
       it 'should render template' do
-        xhr :delete, :destroy, @params
+        delete :destroy, params: @params, xhr: true
 
         expect(controller).to render_template(:destroy)
       end
 
       it 'should respond ok' do
-        xhr :delete, :destroy, @params
+        delete :destroy, params: @params, xhr: true
 
         expect(controller).to respond_with(:ok)
       end
@@ -99,11 +99,11 @@ RSpec.describe Dashboard::VisitGroupsController do
         @arm      = create(:arm, protocol: @protocol)
         @vg       = create(:visit_group, arm: @arm)
 
-        xhr :delete, :destroy, {
+        delete :destroy, params: {
           id: @vg.id,
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id
-        }
+        }, xhr: true
       end
 
       it 'should not assign variables' do

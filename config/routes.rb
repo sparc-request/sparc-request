@@ -138,6 +138,7 @@ SparcRails::Application.routes.draw do
   end
 
   resources :line_items, only: [:update]
+  resources :line_items_visits, only: [:update, :destroy]
   resources :visit_groups, only: [:edit, :update]
   resources :visits, only: [:edit, :update, :destroy]
   
@@ -240,8 +241,6 @@ SparcRails::Application.routes.draw do
         put :update_from_cwf
       end
     end
-
-    resources :line_items_visits, only: [:update, :destroy]
 
     resources :messages, only: [:index, :new, :create]
 

@@ -22,9 +22,6 @@
 #= require cart
 
 $(document).ready ->
-  getSRId = ->
-    $("input[name='service_request_id']").val()
-
   $(document).on 'click', '#document-new', ->
     data =
       protocol_id: $(this).data('protocol-id')

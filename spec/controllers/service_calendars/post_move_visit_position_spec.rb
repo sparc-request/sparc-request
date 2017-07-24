@@ -43,13 +43,13 @@ RSpec.describe ServiceCalendarsController do
       vg3      = create(:visit_group, arm: arm, position: 3)
 
 
-      xhr :post, :move_visit_position, {
+      post :move_visit_position, params: {
         service_request_id: sr.id,
         arm_id: arm.id,
         visit_group: vg1.id,
-        position: 3,
-        page: 1
-      }
+        page: 1,
+        position: 3
+      }, xhr: true
 
       expect(vg1.reload.position).to eq(2)
       expect(vg2.reload.position).to eq(1)
@@ -66,13 +66,13 @@ RSpec.describe ServiceCalendarsController do
         vg3      = create(:visit_group, arm: arm, position: 3)
 
 
-        xhr :post, :move_visit_position, {
+        post :move_visit_position, params: {
         service_request_id: sr.id,
           arm_id: arm.id,
           visit_group: vg1.id,
           position: 4,
           page: 1
-        }
+        }, xhr: true
 
         expect(vg1.reload.position).to eq(3)
         expect(vg2.reload.position).to eq(1)
@@ -89,13 +89,13 @@ RSpec.describe ServiceCalendarsController do
       vg3      = create(:visit_group, arm: arm, position: 3)
 
 
-      xhr :post, :move_visit_position, {
+      post :move_visit_position, params: {
         service_request_id: sr.id,
         arm_id: arm.id,
         visit_group: vg1.id,
-        position: 3,
-        page: 1
-      }
+        page: 1,
+        position: 3
+      }, xhr: true
 
       expect(controller).to render_template(:move_visit_position)
     end
@@ -109,13 +109,13 @@ RSpec.describe ServiceCalendarsController do
       vg3      = create(:visit_group, arm: arm, position: 3)
 
 
-      xhr :post, :move_visit_position, {
+      post :move_visit_position, params: {
         service_request_id: sr.id,
         arm_id: arm.id,
         visit_group: vg1.id,
-        position: 3,
-        page: 1
-      }
+        page: 1,
+        position: 3
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

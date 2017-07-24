@@ -34,16 +34,16 @@ RSpec.describe Dashboard::ProtocolFiltersController do
     end
 
     it "creates the appropriate project filter object" do
-      xhr :get, :new, filterrific: @filterrific
+      get :new, params: { filterrific: @filterrific }, xhr: true
       expect( assigns(:protocol_filter).attributes ).to eq( build(:protocol_filter, identity_id: @user.id, search_query: '{"search_drop"=>"", "search_text"=>""}').attributes )
     end
 
     it "adds the filter to the user's protocol filter list" do
-      expect{ xhr :get, :new, filterrific: @filterrific }.to change{ @user.protocol_filters.length }.by(1)
+      expect{ get :new, params: { filterrific: @filterrific }, xhr: true }.to change{ @user.protocol_filters.length }.by(1)
     end
 
     it "doesn't save the project filter object" do
-      expect{ xhr :get, :new, filterrific: @filterrific }.to_not change{ ProtocolFilter.count }
+      expect{ get :new, params: { filterrific: @filterrific }, xhr: true }.to_not change{ ProtocolFilter.count }
     end
 
   end

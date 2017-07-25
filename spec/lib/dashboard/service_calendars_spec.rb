@@ -28,11 +28,11 @@ RSpec.describe Dashboard::ServiceCalendars do
         org_B = create(:organization, process_ssrs: false, abbreviation: "B", parent: org_C)
         org_A = create(:organization, process_ssrs: false, abbreviation: "A", parent: org_B)
         service = create(:service, :without_validations, organization: org_A)
-        liv = instance_double(LineItemsVisit)
-        allow(liv).to receive_message_chain(:line_item, :service).
+        li = instance_double(LineItem)
+        allow(li).to receive(:service).
           and_return(service)
 
-        expect(Dashboard::ServiceCalendars.display_organization_hierarchy(liv)).
+        expect(Dashboard::ServiceCalendars.display_organization_hierarchy(li)).
           to eq("C > B > A")
       end
     end
@@ -43,11 +43,11 @@ RSpec.describe Dashboard::ServiceCalendars do
         org_B = create(:organization, process_ssrs: true, abbreviation: "B", parent: org_C)
         org_A = create(:organization, process_ssrs: false, abbreviation: "A", parent: org_B)
         service = create(:service, :without_validations, organization: org_A)
-        liv = instance_double(LineItemsVisit)
-        allow(liv).to receive_message_chain(:line_item, :service).
+        li = instance_double(LineItem)
+        allow(li).to receive(:service).
           and_return(service)
 
-        expect(Dashboard::ServiceCalendars.display_organization_hierarchy(liv)).
+        expect(Dashboard::ServiceCalendars.display_organization_hierarchy(li)).
           to eq("B > A")
       end
     end
@@ -92,9 +92,9 @@ RSpec.describe Dashboard::ServiceCalendars do
 
         arm.reload
         livs = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, nil, ssr, merged: true, consolidated: false)
-        expect(livs.keys).to contain_exactly(draft_ssr.id, ssr.id)
-        expect(livs[draft_ssr.id]).to eq([liv_draft])
-        expect(livs[ssr.id]).to contain_exactly(liv_pppv1, liv_pppv2)
+        expect(livs.keys).to contain_exactly(draft_ssr, ssr)
+        expect(livs[draft_ssr]).to eq([liv_draft])
+        expect(livs[ssr]).to contain_exactly(liv_pppv1, liv_pppv2)
       end
     end
 
@@ -131,8 +131,8 @@ RSpec.describe Dashboard::ServiceCalendars do
 
           arm.reload
           livs = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, nil, ssr)
-          expect(livs.keys).to eq([ssr.id])
-          expect(livs[ssr.id]).to contain_exactly(liv_pppv1, liv_pppv2)
+          expect(livs.keys).to eq([ssr])
+          expect(livs[ssr]).to contain_exactly(liv_pppv1, liv_pppv2)
         end
       end
 
@@ -171,8 +171,8 @@ RSpec.describe Dashboard::ServiceCalendars do
           arm.reload
           livs = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, sr, nil)
 
-          expect(livs.keys).to eq([ssr.id])
-          expect(livs[ssr.id]).to contain_exactly(liv_pppv1, liv_pppv2)
+          expect(livs.keys).to eq([ssr])
+          expect(livs[ssr]).to contain_exactly(liv_pppv1, liv_pppv2)
         end
       end
     end

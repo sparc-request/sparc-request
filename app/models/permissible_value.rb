@@ -10,6 +10,15 @@ class PermissibleValue < ApplicationRecord
     PermissibleValue.where(category: category).pluck(:value)
   end
 
+  # Get an array of PermissibleValue keys with the given category
+  def self.get_key_list(category, default=nil)
+    unless default.nil?
+      PermissibleValue.where(category: category, default: default).pluck(:key)
+    else
+      PermissibleValue.where(category: category).pluck(:key)
+    end
+  end
+
   # Get a hash of PermissibleValue keys as they keys and values as values
   def self.get_hash(category)
     Hash[PermissibleValue.where(category: category).pluck(:key, :value)]

@@ -74,7 +74,7 @@ namespace :data do
     def build_one_time_fee_report csv, ssr, provider, program, core
       if ssr.protocol
         service_request_id = full_ssr_id(ssr)
-        status = AVAILABLE_STATUSES[ssr.status]
+        status = PermissibleValue.get_value('status', ssr.status)
         protocol_id = ssr.protocol_id
         short_title = ssr.protocol.short_title
         pi = ssr.protocol.try(:primary_principal_investigator).try(:full_name)

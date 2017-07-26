@@ -18,55 +18,14 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'rails_helper'
+class Dashboard::StudyTypeAnswersController < Dashboard::BaseController
 
-RSpec.describe Surveyor::SurveysController, type: :controller do
-  stub_controller
-  let!(:before_filters) { find_before_filters }
-  let!(:logged_in_user) { create(:identity, ldap_uid: 'weh6@musc.edu') }
-
-  before :each do
-    stub_const('SITE_ADMINS', ['weh6@musc.edu'])
-    session[:identity_id] = logged_in_user.id
-  end
-
-  describe '#destroy' do
-    it 'should call before_filter #authenticate_identity!' do
-      expect(before_filters.include?(:authenticate_identity!)).to eq(true)
-    end
-
-    it 'should call before_filter #authorize_site_admin' do
-      expect(before_filters.include?(:authorize_site_admin)).to eq(true)
-    end
-
-    it 'should delete the survey' do
-      survey = create(:survey_without_validations)
-
-      expect{
-        delete :destroy, params: {
-          id: survey.id
-        }, xhr: true
-      }.to change{ Survey.count }.by(-1)
-    end
-
-    it 'should render template' do
-      survey = create(:survey_without_validations)
-
-      delete :destroy, params: {
-        id: survey.id
-      }, xhr: true
-
-      expect(controller).to render_template(:destroy)
-    end
-
-    it 'should respond ok' do
-      survey = create(:survey_without_validations)
-      
-      delete :destroy, params: {
-        id: survey.id
-      }, xhr: true
-
-      expect(controller).to respond_with(:ok)
+  def edit
+    @protocol = Protocol.find(params[:protocol_id])
+    @edit_answers = params[:edit_answers].present?
+    @protocol.populate_for_edit
+    respond_to do |format|
+      format.js
     end
   end
 end

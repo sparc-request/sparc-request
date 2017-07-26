@@ -18,55 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'rails_helper'
-
-RSpec.describe Surveyor::SurveysController, type: :controller do
-  stub_controller
-  let!(:before_filters) { find_before_filters }
-  let!(:logged_in_user) { create(:identity, ldap_uid: 'weh6@musc.edu') }
-
-  before :each do
-    stub_const('SITE_ADMINS', ['weh6@musc.edu'])
-    session[:identity_id] = logged_in_user.id
-  end
-
-  describe '#destroy' do
-    it 'should call before_filter #authenticate_identity!' do
-      expect(before_filters.include?(:authenticate_identity!)).to eq(true)
-    end
-
-    it 'should call before_filter #authorize_site_admin' do
-      expect(before_filters.include?(:authorize_site_admin)).to eq(true)
-    end
-
-    it 'should delete the survey' do
-      survey = create(:survey_without_validations)
-
-      expect{
-        delete :destroy, params: {
-          id: survey.id
-        }, xhr: true
-      }.to change{ Survey.count }.by(-1)
-    end
-
-    it 'should render template' do
-      survey = create(:survey_without_validations)
-
-      delete :destroy, params: {
-        id: survey.id
-      }, xhr: true
-
-      expect(controller).to render_template(:destroy)
-    end
-
-    it 'should respond ok' do
-      survey = create(:survey_without_validations)
-      
-      delete :destroy, params: {
-        id: survey.id
-      }, xhr: true
-
-      expect(controller).to respond_with(:ok)
-    end
-  end
-end
+$('#protocol-form-display').replaceWith("<%= j render 'dashboard/protocols/form/protocol_form', protocol: @protocol, protocol_type: @protocol.type, admin: true, permission_to_edit: true, edit_answers: @edit_answers %>")
+$(".datetimepicker:not(.time)").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
+$('.datetimepicker.time').datetimepicker(format: 'hh:mm A', allowInputToggle: true)
+$(".selectpicker").selectpicker()
+$('[data-toggle="tooltip"]').tooltip()
+setup_epic_question_config()

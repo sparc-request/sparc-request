@@ -121,7 +121,7 @@
               %thead.default-header
                 %th
                   %h5.col-lg-12
-                    %strong
+                    %strong{ data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' }, title: t(:protocols)[:tooltips][:study_type_questions] }
                       = t(:protocols)[:studies][:information][:study_type_questions]
               - protocol.display_answers.each do |answer|
                 - if answer.study_type_question.study_type_question_group.active && protocol.active? && display_study_type_question?(protocol, answer)

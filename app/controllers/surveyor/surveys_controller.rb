@@ -23,7 +23,6 @@ class Surveyor::SurveysController < ApplicationController
 
   before_action :authenticate_identity!
   before_action :authorize_site_admin
-  before_action :find_survey, only: [:show, :destroy]
 
   def index
     respond_to do |format|
@@ -35,6 +34,8 @@ class Surveyor::SurveysController < ApplicationController
   end
 
   def show
+    @survey = Survey.eager_load(sections: { questions: :options }).find(params[:id])
+
     respond_to do |format|
       format.js
     end
@@ -53,7 +54,7 @@ class Surveyor::SurveysController < ApplicationController
   end
 
   def destroy
-    @survey.destroy
+    Survey.find(params[:id]).destroy
 
     respond_to do |format|
       format.js
@@ -73,16 +74,10 @@ class Surveyor::SurveysController < ApplicationController
 
   def update_dependents_list
     @survey     = Survey.find(params[:survey_id])
-    @questions  = @survey.questions
+    @questions  = @survey.questions.eager_load(section: :survey)
 
     respond_to do |format|
       format.js
     end
-  end
-
-  private
-
-  def find_survey
-    @survey = Survey.find(params[:id])
   end
 end

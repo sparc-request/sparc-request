@@ -84,7 +84,7 @@ RSpec.describe NotifierLogic do
       it 'should notify admin (deletion email)' do
         allow(Notifier).to receive(:notify_admin) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver)
+          expect(mailer).to receive(:deliver_now)
           mailer
         end 
         

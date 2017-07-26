@@ -35,6 +35,8 @@ class Setting < ApplicationRecord
       read_attribute(:value) == 'true'
     when 'json'
       JSON.parse(read_attribute(:value))
+    else
+      read_attribute(:value)
     end
   end
 
@@ -53,8 +55,8 @@ class Setting < ApplicationRecord
         is_url?(value)
       when 'path'
         is_path?(value)
-      else
-        false
+      else # Default type = string, no validation needed
+        true
       end
   end
 end

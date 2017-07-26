@@ -29,7 +29,7 @@
           %tr.row
             %td
               .col-lg-12
-                = "- " + ImpactArea::TYPES[impact_area.name] + (impact_area.name == "other" ? ": " + impact_area.other_text : "")
+                = "- " + ImpactArea.types[impact_area.name] + (impact_area.name == "other" ? ": " + impact_area.other_text : "")
   - else
     .panel-body
       = render partial: 'shared/alert', locals: { message: t(:protocols)[:studies][:impact_areas][:none] }

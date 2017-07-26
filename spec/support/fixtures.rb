@@ -46,6 +46,17 @@ def let_there_be_j
     )}
 end
 
+def build_impact_areas
+  let!(:pediatrics)     { create(:permissible_value, key: 'pediatrics', value: 'Pediatrics', category: 'impact_area') }
+  let!(:hiv_aids)       { create(:permissible_value, key: 'hiv_aids', value: 'HIV/AIDS', category: 'impact_area') }
+  let!(:hypertension)   { create(:permissible_value, key: 'hypertension', value: 'Hypertension', category: 'impact_area') }
+  let!(:stroke)         { create(:permissible_value, key: 'stroke', value: 'Stroke', category: 'impact_area') }
+  let!(:diabetes)       { create(:permissible_value, key: 'diabetes', value: 'Diabetes', category: 'impact_area') }
+  let!(:cancer)         { create(:permissible_value, key: 'cancer', value: 'Cancer', category: 'impact_area') }
+  let!(:community)      { create(:permissible_value, key: 'community', value: 'Community Engagement', category: 'impact_area') }
+  let!(:other)          { create(:permissible_value, key: 'other', value: 'Other', category: 'impact_area') }
+end
+
 def build_proxy_rights
   let!(:none_right)     { create(:permissible_value, category: 'proxy_right', key: 'none', value: 'Member Only') }
   let!(:view_right)     { create(:permissible_value, category: 'proxy_right', key: 'view', value: 'View Rights') }

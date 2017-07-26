@@ -26,5 +26,7 @@ class ImpactArea < ApplicationRecord
   attr_accessor :new
   attr_accessor :position
 
-  TYPES = PermissibleValue.get_hash('impact_area')
+  def self.types
+    PermissibleValue.get_hash('impact_area')
+  end
 end

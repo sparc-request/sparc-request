@@ -75,7 +75,7 @@ class Study < Protocol
 
   def setup_impact_areas
     position = 1
-    obj_names = ImpactArea::TYPES.map{|k,v| k}
+    obj_names = ImpactArea.types.map{|k,v| k}
     obj_names.each do |obj_name|
       impact_area = impact_areas.detect{|obj| obj.name == obj_name}
       impact_area = impact_areas.build(:name => obj_name, :new => true) unless impact_area

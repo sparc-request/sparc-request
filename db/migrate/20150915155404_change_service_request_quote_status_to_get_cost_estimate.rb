@@ -19,11 +19,37 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class ChangeServiceRequestQuoteStatusToGetCostEstimate < ActiveRecord::Migration
+
+  class AvailableStatus < ApplicationRecord
+    audited
+
+    belongs_to :organization
+
+    attr_accessor :new
+    attr_accessor :position
+
+    TYPES = { 'ctrc_approved': 'Active',
+              'administrative_review': 'Administrative Review',
+              'approved': 'Approved',
+              'awaiting_pi_approval': 'Awaiting Requester Response',
+              'complete': 'Complete',
+              'declined': 'Declined',
+              'draft': 'Draft',
+              'get_a_cost_estimate': 'Get a Cost Estimate',
+              'invoiced': 'Invoiced',
+              'ctrc_review': 'In Admin Review',
+              'committee_review': 'In Committee Review',
+              'fulfillment_queue': 'In Fulfillment Queue',
+              'in_process': 'In Process',
+              'on_hold': 'On Hold',
+              'submitted': 'Submitted',
+              'withdrawn': 'Withdrawn' }
+  end
+
   def up
     [
       'ServiceRequest',
       'SubServiceRequest',
-      'AvailableStatus',
       'PastStatus'
     ].each do |model|
       model.
@@ -31,13 +57,13 @@ class ChangeServiceRequestQuoteStatusToGetCostEstimate < ActiveRecord::Migration
         where(status: 'get_a_quote').
         update_all status: 'get_a_cost_estimate'
     end
+    AvailableStatus.where(status: 'get_a_quote').update_all(status: 'get_a_cost_estimate')
   end
 
   def down
     [
       'ServiceRequest',
       'SubServiceRequest',
-      'AvailableStatus',
       'PastStatus'
     ].each do |model|
       model.
@@ -45,5 +71,6 @@ class ChangeServiceRequestQuoteStatusToGetCostEstimate < ActiveRecord::Migration
         where(status: 'get_a_cost_estimate').
         update_all status: 'get_a_quote'
     end
+    AvailableStatus.where(status: 'get_a_quote').update_all(status: 'get_a_cost_estimate')
   end
 end

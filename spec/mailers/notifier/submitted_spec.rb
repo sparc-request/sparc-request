@@ -25,6 +25,7 @@ RSpec.describe Notifier do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
+  build_statuses
 
   let(:identity) { jug2 }
 

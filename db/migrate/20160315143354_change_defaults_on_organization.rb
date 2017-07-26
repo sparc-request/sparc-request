@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class ChangeDefaultsOnOrganization < ActiveRecord::Migration
+class ChangeDefaultsOnOrganization < ActiveRecord::Migration[4.2]
   def change
     change_column :organizations, :process_ssrs, :boolean, :default => 0
 

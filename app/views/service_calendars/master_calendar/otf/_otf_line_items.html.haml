@@ -34,6 +34,8 @@
       %tr.otf-line-item-row{ class: locked ? 'bg-danger text-danger' : '' }
         %td.service-name{ colspan: 2 }
           = line_item.service.display_service_name
+          - unless line_item.service.is_available
+            = inactive_tag
         %td.notes.text-center
           = display_li_notes(line_item, @portal)
         %td.status.text-center

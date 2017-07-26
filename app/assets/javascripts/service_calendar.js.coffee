@@ -21,13 +21,6 @@
 #= require navigation
 
 $(document).ready ->
-
-  getSRId = ->
-    $("input[name='service_request_id']").val()
-
-  getSSRId = ->
-    $("input[name='sub_service_request_id']").val()
-
   freezeHeader = (arm_container) ->
     $(arm_container).each ->
       $(this).find('table').addClass('scrolling-table')
@@ -241,9 +234,6 @@ $(document).ready ->
       data: data
   # NOTES LISTENERS END
 
-getSRId = ->
-  $("input[name='service_request_id']").val()
-
 (exports ? this).setup_xeditable_fields = (scroll) ->
   reload_calendar = (arm_id, scroll) ->
     # E.g. "billing-strategy-tab" -> "billing_strategy"
@@ -271,40 +261,6 @@ getSRId = ->
         error_msgs.push(humanize_string(attr)+err)
     return error_msgs.join("\n")
 
-  $('.window-before').editable
-    params: (params) ->
-      {
-        visit_group:
-          window_before: params.value
-        service_request_id: getSRId()
-      }
-
-  $('.day').editable
-    params: (params) ->
-      {
-        visit_group:
-          day: params.value
-        service_request_id: getSRId()
-      }
-    emptytext: '(?)'
-
-  $('.window-after').editable
-    params: (params) ->
-      {
-        visit_group:
-          window_after: params.value
-        service_request_id: getSRId()
-      }
-
-  $('.visit-group-name').editable
-    params: (params) ->
-      {
-        visit_group:
-          name: params.value
-        service_request_id: getSRId()
-      }
-    emptytext: '(?)'
-
   $('.edit-your-cost').editable
     display: (value) ->
       # display field as currency, edit as quantity
@@ -325,10 +281,24 @@ getSRId = ->
         line_items_visit:
           subject_count: params.value
         service_request_id: getSRId()
+        sub_service_request_id: getSSRId()
       }
-    success: () ->
-      scroll = $(this).parents('.scrolling-div').length > 0
-      reload_calendar($(this).data('armId'), scroll)
+    success: (data) ->
+      arm_id = $(this).data('arm-id')
+      
+      # Replace Per Patient / Study Totals
+      $(this).parent().siblings('.pppv-per-patient-line-item-total').replaceWith(data['total_per_patient'])
+      $(this).parent().siblings('.pppv-per-study-line-item-total').replaceWith(data['total_per_study'])
+      
+      # Replace Totals
+      $(".arm-#{arm_id}.maximum-total-direct-cost-per-patient").replaceWith(data['max_total_direct'])
+      $(".arm-#{arm_id}.maximum-total-per-patient").replaceWith(data['max_total_per_patient'])
+      $(".arm-#{arm_id}.total-per-patient-per-visit-cost-per-study").replaceWith(data['total_costs'])
+
+      if data['ssr_header']
+        # Replace Admin Dashboard SSR header
+        $('#sub_service_request_header').html(data['ssr_header'])
+        $('.selectpicker').selectpicker()
 
   $('.edit-qty').editable
     params: (params) ->

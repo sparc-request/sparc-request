@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class UpdateOrgTreeForExistingSsr < ActiveRecord::Migration
+class UpdateOrgTreeForExistingSsr < ActiveRecord::Migration[4.2]
   def up
     SubServiceRequest.all.each do |ssr|
       puts "Updating org tree for #{ssr.id}"

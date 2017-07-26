@@ -39,10 +39,6 @@ RSpec.describe 'User checks and unchecks calendar rows', js: true do
   end
 
   context 'for SSRs which aren\'t locked' do
-    before :each do
-      stub_const('EDITABLE_STATUSES', { })
-    end
-
     context 'check:' do
       scenario 'and sees all visits checked' do
         visit service_calendar_service_request_path(@sr)
@@ -76,7 +72,7 @@ RSpec.describe 'User checks and unchecks calendar rows', js: true do
 
   context 'for locked SSRs' do
     before :each do
-      stub_const('EDITABLE_STATUSES', { @ssr.organization.id => ['first_draft'] })
+      @ssr.organization.editable_statuses.where(status: @ssr.status).destroy_all
     end
 
     context 'check:' do

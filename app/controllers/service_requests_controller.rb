@@ -296,7 +296,7 @@ class ServiceRequestsController < ApplicationController
     @details_params ||= begin
       required_keys = params[:study] ? :study : :project
       temp = params.require(required_keys).permit(:start_date, :end_date,
-        :recruitment_start_date, :recruitment_end_date)
+        :recruitment_start_date, :recruitment_end_date).to_h
 
       # Finally, transform date attributes.
       date_attrs = %w(start_date end_date recruitment_start_date recruitment_end_date)
@@ -388,25 +388,27 @@ class ServiceRequestsController < ApplicationController
 
       @events = []
       begin
-        #to parse file and get events
-        cal_file = File.open(Rails.root.join("tmp", "basic.ics"))
+        path = Rails.root.join("tmp", "basic.ics")
+        if path.exist?
+          #to parse file and get events
+          cal_file = File.open(path)
 
-        cals = Icalendar.parse(cal_file)
+          cals = Icalendar.parse(cal_file)
 
-        cal = cals.first
+          cal = cals.first
 
-        events = cal.try(:events).try(:sort) { |x, y| y.dtstart <=> x.dtstart } || []
+          events = cal.try(:events).try(:sort) { |x, y| y.dtstart <=> x.dtstart } || []
 
-        events.each do |event|
-          next if Time.parse(event.dtstart.to_s) > startMax
-          break if Time.parse(event.dtstart.to_s) < startMin
-          @events << create_calendar_event(event)
+          events.each do |event|
+            next if Time.parse(event.dtstart.to_s) > startMax
+            break if Time.parse(event.dtstart.to_s) < startMin
+            @events << create_calendar_event(event)
+          end
+
+          @events.reverse!
+          Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).update_all(status: ALERT_STATUSES['clear'])
         end
-
-        @events.reverse!
-
-        Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).update_all(status: ALERT_STATUSES['clear'])
-      rescue Exception => e
+      rescue Exception, ArgumentError => e
         active_alert = Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).first_or_initialize
         if Rails.env == 'production' && active_alert.new_record?
           active_alert.save
@@ -418,13 +420,16 @@ class ServiceRequestsController < ApplicationController
 
   def setup_catalog_news_feed
     if USE_NEWS_FEED
-      page = Nokogiri::HTML(open("https://www.sparcrequestblog.com"))
-      articles = page.css('article.post').take(3)
       @news = []
-      articles.each do |article|
-        @news << {title: (article.at_css('.entry-title') ? article.at_css('.entry-title').text : ""),
+      begin
+        page = Nokogiri::HTML(open("https://www.sparcrequestblog.com"))
+        articles = page.css('article.post').take(3)
+        articles.each do |article|
+          @news << {title: (article.at_css('.entry-title') ? article.at_css('.entry-title').text : ""),
                   link: (article.at_css('.entry-title a') ? article.at_css('.entry-title a')[:href] : ""),
                   date: (article.at_css('.date') ? article.at_css('.date').text : "") }
+        end
+      rescue Net::OpenTimeout
       end
     end
   end

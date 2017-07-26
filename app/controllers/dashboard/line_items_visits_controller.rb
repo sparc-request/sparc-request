@@ -32,7 +32,7 @@ class Dashboard::LineItemsVisitsController < Dashboard::BaseController
         @service_request.update_attributes(status: 'draft')
         @line_items_visit.sub_service_request.update_attributes(status: 'draft')
       end
-      render json: { success: true }
+      head :ok
     else
       render json: @line_items_visit.errors, status: :unprocessable_entity
     end

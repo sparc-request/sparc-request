@@ -53,7 +53,7 @@ RSpec.describe "User views SSR table", js: true do
         let!(:organization)         { create(:organization,type: 'Institution', name: 'Megacorp', admin: bob, service_provider: bob) }
 
         scenario 'and sees View but not Edit' do
-          stub_const("EDITABLE_STATUSES", { organization.id => ['draft'] })
+          organization.editable_statuses.where(status: 'on_hold').destroy_all
 
           sub_service_request.update_attribute(:status, 'on_hold')
 

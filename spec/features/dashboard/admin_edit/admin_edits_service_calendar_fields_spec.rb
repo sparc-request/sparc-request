@@ -43,8 +43,6 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
     @liv      = @arm.line_items_visits.first
     visit     = create(:visit, line_items_visit: @liv, visit_group: @vg, research_billing_qty: 1)
 
-    stub_const('EDITABLE_STATUSES', { })
-
     visit dashboard_sub_service_request_path(ssr)
     wait_for_javascript_to_finish
 

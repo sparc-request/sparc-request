@@ -39,11 +39,11 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
 
-      xhr :get, :new, {
+      get :new, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id,
         identity_id: other_user.id
-      }
+      }, xhr: true
 
       expect(assigns(:protocol)).to eq(protocol)
     end
@@ -53,11 +53,11 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
 
-      xhr :get, :new, {
+      get :new, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id,
         identity_id: other_user.id
-      }
+      }, xhr: true
 
       expect(assigns(:header_text)).to be
     end
@@ -67,11 +67,11 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
 
-      xhr :get, :new, {
+      get :new, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id,
         identity_id: other_user.id
-      }
+      }, xhr: true
 
       expect(assigns(:identity)).to eq(other_user)
     end
@@ -81,11 +81,11 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
 
-      xhr :get, :new, {
+      get :new, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id,
         identity_id: other_user.id
-      }
+      }, xhr: true
 
       expect(assigns(:project_role).class).to eq(ProjectRole)
       expect(assigns(:project_role).protocol).to eq(protocol)
@@ -97,11 +97,11 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
 
-      xhr :get, :new, {
+      get :new, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id,
         identity_id: other_user.id
-      }
+      }, xhr: true
 
       expect(assigns(:current_pi)).to eq(protocol.primary_principal_investigator)
     end
@@ -112,11 +112,11 @@ RSpec.describe AssociatedUsersController, type: :controller do
         sr       = create(:service_request_without_validations, protocol: protocol)
 
 
-        xhr :get, :new, {
+        get :new, params: {
         service_request_id: sr.id,
           protocol_id: protocol.id,
           identity_id: logged_in_user.id
-        }
+        }, xhr: true
 
         expect(assigns(:errors)).to be
       end
@@ -127,11 +127,11 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
 
-      xhr :get, :new, {
+      get :new, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id,
         identity_id: other_user.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:new)
     end
@@ -141,11 +141,11 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
 
-      xhr :get, :new, {
+      get :new, params: {
         service_request_id: sr.id,
         protocol_id: protocol.id,
         identity_id: other_user.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

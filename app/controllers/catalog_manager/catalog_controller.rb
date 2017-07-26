@@ -70,7 +70,7 @@ class CatalogManager::CatalogController < CatalogManager::AppController
 
   def verify_valid_pricing_setups
     ps_array = Catalog.invalid_pricing_setups_for(@user)
-    render :text => ps_array.empty? ? 'true' : ps_array.map(&:name).join(', ') + ' have invalid pricing setups'
+    render :plain => ps_array.empty? ? 'true' : ps_array.map(&:name).join(', ') + ' have invalid pricing setups'
   end
 
   def validate_pricing_map_dates
@@ -117,7 +117,7 @@ class CatalogManager::CatalogController < CatalogManager::AppController
       service.save!
     end
 
-    render :text => ""
+    render :plain => ""
   end
 
   def add_excluded_funding_source

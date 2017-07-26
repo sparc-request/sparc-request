@@ -29,12 +29,11 @@ RSpec.describe AdditionalDetails::PreviewsController do
       @service = create( :service )
       @questionnaire = build( :questionnaire, service: @service, active: false )
 
-      xhr :post, :create, {
+      post :create, params: {
         name: 'Some Program',
         service_id: @service,
-        questionnaire: @questionnaire.attributes,
-        format: :js
-      }
+        questionnaire: @questionnaire.attributes
+      }, format: :js
     end
 
     it 'should assign @questionnaire' do

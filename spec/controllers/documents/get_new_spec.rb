@@ -38,10 +38,10 @@ RSpec.describe DocumentsController, type: :controller do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr        = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :new, {
+      get :new, params: {
         protocol_id: protocol.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:protocol)).to eq(protocol)
     end
@@ -50,10 +50,10 @@ RSpec.describe DocumentsController, type: :controller do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr        = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :new, {
+      get :new, params: {
         protocol_id: protocol.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:document).class).to eq(Document)
       expect(assigns(:document).protocol).to eq(protocol)
@@ -63,10 +63,10 @@ RSpec.describe DocumentsController, type: :controller do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr        = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :new, {
+      get :new, params: {
         protocol_id: protocol.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:header_text)).to be
     end
@@ -75,10 +75,10 @@ RSpec.describe DocumentsController, type: :controller do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr        = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :new, {
+      get :new, params: {
         protocol_id: protocol.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:path)).to eq(documents_path(assigns(:document)))
     end
@@ -87,10 +87,10 @@ RSpec.describe DocumentsController, type: :controller do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr        = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :new, {
+      get :new, params: {
         protocol_id: protocol.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:new)
     end
@@ -99,10 +99,10 @@ RSpec.describe DocumentsController, type: :controller do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr        = create(:service_request_without_validations, protocol: protocol)
 
-      xhr :get, :new, {
+      get :new, params: {
         protocol_id: protocol.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

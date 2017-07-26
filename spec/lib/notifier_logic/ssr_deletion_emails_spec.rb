@@ -29,7 +29,6 @@ RSpec.describe NotifierLogic do
 
   let(:logged_in_user)          { Identity.first }
 
-
   context '#ssr_deletion_emails(ssr, ssr_destroyed: true, request_amendment: false) for an entire SR' do
     context 'deleted an entire SSR' do
       before :each do
@@ -63,7 +62,7 @@ RSpec.describe NotifierLogic do
       it 'should not notify authorized users (deletion email)' do
         allow(Notifier).to receive(:notify_user) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver)
+          expect(mailer).to receive(:deliver_now)
           mailer
         end
 
@@ -74,7 +73,7 @@ RSpec.describe NotifierLogic do
       it 'should notify service providers (deletion email)' do
         allow(Notifier).to receive(:notify_service_provider) do
           mailer = double('mail') 
-          expect(mailer).to receive(:deliver)
+          expect(mailer).to receive(:deliver_now)
           mailer
         end
 

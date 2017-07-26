@@ -29,13 +29,6 @@ RSpec.describe NotifierLogic do
 
   let(:logged_in_user)          { Identity.first }
 
-  before :each do
-    Delayed::Worker.delay_jobs = false
-  end
-
-  after :each do
-    Delayed::Worker.delay_jobs = true
-  end
 
   context '#ssr_deletion_emails(ssr, ssr_destroyed: true, request_amendment: false) for an entire SR' do
     context 'deleted an entire SSR' do

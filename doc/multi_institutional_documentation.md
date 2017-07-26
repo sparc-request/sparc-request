@@ -46,7 +46,7 @@ Several important settings can be found in config/application.yml.  There is an 
 - new_user_cc: Same as above except for users cc'd when a new user request is submitted.
 - system_satisfaction_survey_cc: Sames as above except for users cc'd when a system satisfaction survey is submitted 
 - root_url: This is the root url for the application 
-- dashboard_link: This setting will soon be deprecated.  Sets the location of the user portal.
+- dashboard_link: This is the url for the user dashboard
 - header_link_1: This is the url for the first image in the header 
 - header_link_2: This is the url for the second image in the header
 - header_link_3: This is the url for the third image in the header 

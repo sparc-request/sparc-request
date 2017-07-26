@@ -4,7 +4,7 @@ task :populate_settings_table => :environment do
   include DataTypeValidator
 
   environment = Rails.env
-  hash = YAML.load_file('config/application.yml')
+  hash = JSON.parse(File.read('config/defaults.json'))
   ActiveRecord::Base.transaction do
     hash[environment].each do |key, value|
       if [TrueClass, FalseClass].include?(value.class)

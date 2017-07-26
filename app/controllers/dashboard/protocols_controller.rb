@@ -96,7 +96,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol.populate_for_edit
     session[:protocol_type] = params[:protocol_type]
     gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
-    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
+    gon.rm_id_api_token = Setting.find_by_key("research_master_api_token").value
   end
 
   def create
@@ -132,7 +132,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @in_dashboard       = true
     @protocol.populate_for_edit
     gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
-    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
+    gon.rm_id_api_token = Setting.find_by_key("research_master_api_token").value
 
     session[:breadcrumbs].
       clear.

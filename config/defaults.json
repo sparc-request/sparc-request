@@ -1,58 +1,506 @@
- [ { "name" : "research_master_enabled", "value": "true"},
-  { "name" : "default_mail_to", "value": "catesa@musc.edu"},
-  { "name" : "admin_mail_to", "value": "catesa@musc.edu"},
-  { "name" : "feedback_mail_to", "value": "hutsonk@musc.edu"},
-  { "name" : "contact_us_mail_to", "value": "success@musc.edu"},
-  { "name" : "contact_us_cc", "value": "sparcrequest@gmail.com"},
-  { "name" : "listserv_mail_to", "value": "hewwe@musc.edu, hutsonk@musc.edu"},
-  { "name" : "new_user_cc", "value": "amcates@gmail.com, no-reply@musc.edu"},
-  { "name" : "system_satisfaction_survey_cc", "value": "amcates@gmail.com, catesa@musc.edu"},
-  { "name" : "root_url", "value": "https://andrews-mac-pro.thurmond-gazes.musc.edu"},
-  { "name" : "dashboard_link", "value": "http://musc-pro.homelinux.net:3001/dashboard"},
-  { "name" : "research_master_link", "value": "https://research-master-staging.musc.edu/"},
-  { "name" : "research_master_api", "value": "https://research-master-staging.musc.edu/api/"},
-  { "name" : "rmid_api_token", "value": "some token"},
-  { "name" : "create_an_account", "value": "false"},
-  { "name" : "header_link_1", "value": "http://sctr.musc.edu"},
-  { "name" : "header_link_2_proper", "value": "http://localhost:3000/"},
-  { "name" : "header_link_2_dashboard", "value": "http://localhost:3000/dashboard"},
-  { "name" : "header_link_3", "value": "http://www.musc.edu"},
-  { "name" : "use_indirect_cost", "value": "false"},
-  { "name" : "use_shiboleth", "value": "true"},
-  { "name" : "use_shibboleth_only", "value": "false" ,"description" : " set to true to turn off database authentication sign in options"},
-  { "name" : "use_ldap", "value": "true"},
-  { "name" : "suppress_ldap_for_user_search", "value": "true" , "description" : "allow the use of LDAP but suppress its use within the project/study User Search box"},
-  { "name" : "wkhtmltopdf_location", "value": "/usr/local/bin/wkhtmltopdf"},
-  { "name" : "approve_epic_rights_mail_to", "value": "forney@musc.edu, crossoml@musc.edu"},
-  { "name" : "use_epic", "value": "true"},
-  { "name" : "queue_epic", "value": "true"},
-  { "name" : "queue_epic_load_error_to", "value": "hutsonk@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu"},
-  { "name" : "queue_epic_edit_ldap_uids", "value": "jug2@musc.edu"},
-  { "name" : "use_google_calendar", "value": "true"},
-  { "name" : "use_news_feed", "value": "true"},
-  { "name" : "calendar_url", "value": "https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics"},
-  { "name" : "use_faq_link", "value": "false"},
-  { "name" : "faq_url", "value": "http://academicdepartments.musc.edu/sctr/sparc_request/faq.html"},
-  { "name" : "send_authorized_user_emails", "value": "true"},
-  { "name" : "no_reply_from", "value": "no-reply@musc.edu"},
-  { "name" : "use_separate_audit_database", "value": "false" , "description": " needs to be false at outset since new institutions may not use a separate audit database"},
-  { "name" : "system_satisfaction_survey", "value": "false"},
-  { "name" : "editable_statuses", "value": "{ '14': ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval', 'complete'], '48': ['draft', 'submitted', 'complete']}" },
-  {"name" : "updatable_statuses", "value": "[ 'first_draft', 'draft', 'get_a_cost_estimate', 'awaiting_pi_approval']"},
- {"name" : "navbar_links", "value": "{ sparc_request:              ['SPARCRequest', 'http://localhost:3000/'], sparc_dashboard:            ['SPARCDashboard', 'http://localhost:3000/dashboard'], sparc_fulfillment:          ['SPARCFulfillment', 'https://cwf-d.obis.musc.edu/identities/sign_in'], sparc_catalog:              ['SPARCCatalog', 'http://localhost:3000/catalog_manager'], sparc_report:               ['SPARCReport', 'http://localhost:3000/reports'] }"},
-  {"name" : "remote_service_notifier_protocol", "value": "http"},
-  {"name" : "remote_service_notifier_host", "value": "127.0.0.1:5001"},
-  {"name" : "remote_service_notifier_path", "value": "/v1/notifications.json"},
-  {"name" : "remote_service_notifier_username", "value": ""},
-  {"name" : "remote_service_notifier_password", "value": ""},
-  {"name" : "host", "value": "127.0.0.1:5000"},
-  {"name" : "current_api_version", "value": "v1"},
-  {"name" : "bug_enhancement_url", "value": "http://something.com"},
-  {"name" : "clinical_work_fulfillment_url", "value": "http://fulfillment-future-url.com"},
-  {"name" : "fulfillment_contingent_on_catalog_manager", "value": "true"},
-  {"name" : "about_sparc_url", "value": "http://academicdepartments.musc.edu/sctr/sparc_request"},
-  {"name" : "use_about_sparc_link", "value": "true"},
-  {"name" : "use_feedback_link", "value": "true"},
-  {"name" : "feedback_link", "value": "http://something.com"},
-  {"name" : "send_emails_to_real_users", "value": "false"}
+[
+  { 
+    "key":          "about_sparc_url",
+    "value":        "http://academicdepartments.musc.edu/sctr/sparc_request",
+    "friendly_id":  "\"About SPARCRequest\" URL",
+    "description":  "The URL for the \"About SPARCRequest\" button.",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  { 
+    "key":          "admin_mail_to", 
+    "value":        "catesa@musc.edu",
+    "friendly_id":  "Admin Mail-To",
+    "description":  "This field will overwrite the admin user mailers in the application to instead mail to this address. To be overwritten in development/testing/staging to prevent real emails being sent out to admin users.",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  { 
+    "key":          "approve_epic_rights_mail_to", 
+    "value":        "forney@musc.edu, crossoml@musc.edu",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "bug_enhancement_url",
+    "value":        "http://something.com",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "calendar_url",
+    "value":        "https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "clinical_work_fulfillment_url",
+    "value":        "http://fulfillment-future-url.com",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "contact_us_cc",
+    "value":        "sparcrequest@gmail.com",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "contact_us_mail_to",
+    "value":        "success@musc.edu",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "create_an_account",
+    "value":        "false",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "current_api_version",
+    "value":        "v1",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "dashboard_link",
+    "value":        "http://musc-pro.homelinux.net:3001/dashboard",
+    "friendly_id":  "Dashboard URL",
+    "description":  "This is the url for the user dashboard.",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "default_mail_to",
+    "value":        "catesa@musc.edu", "friendly_id": "Default Mail-To", "description": "The default address to send notifier emails to.",
+    "friendly_id":  "Default Mail-To",
+    "description":  "This field will overwrite the general user mailers in the application to instead mail to this address. To be overwritten in development/testing/staging to prevent real emails being sent out to general users.",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "faq_url",
+    "value":        "http://academicdepartments.musc.edu/sctr/sparc_request/faq.html",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "feedback_link",
+    "value":        "http://something.com",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "feedback_mail_to",
+    "value":        "hutsonk@musc.edu",
+    "friendly_id":  "Feedback Mail-To",
+    "description":  "This field will overwrite the feedback mailers in the application to instead mail to this address. To be overwritten in development/testing/staging to prevent real emails being sent out from users.",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "fulfillment_contingent_on_catalog_manager",
+    "value":        "true",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "header_link_1",
+    "value":        "http://sctr.musc.edu",
+    "friendly_id":  "Header Link 1",
+    "description":  "This is the URL for the first image in the header logos.",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "header_link_2_dashboard",
+    "value":        "http://localhost:3000/dashboard",
+    "friendly_id":  "Header Link 2 (SPARCDashboard)",
+    "description":  "This is the URL for the second image in the header logos in SPARCDashboard.",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "header_link_2_proper",
+    "value":        "http://localhost:3000/",
+    "friendly_id":  "Header Link 2 (SPARCRequest)",
+    "description":  "This is the URL for the second image in the header logos in SPARCRequest.",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "header_link_3",
+    "value":        "http://www.musc.edu",
+    "friendly_id":  "Header Link 3",
+    "description":  "This is the URL for the third image in the header logos.",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "host",
+    "value":        "127.0.0.1:5000",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "listserv_mail_to",
+    "value":        "hewwe@musc.edu, hutsonk@musc.edu",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "navbar_links",
+    "value":        "{ sparc_request: ['SPARCRequest', 'http://localhost:3000/'], sparc_dashboard: ['SPARCDashboard', 'http://localhost:3000/dashboard'], sparc_fulfillment: ['SPARCFulfillment', 'https://cwf-d.obis.musc.edu/identities/sign_in'], sparc_catalog: ['SPARCCatalog', 'http://localhost:3000/catalog_manager'], sparc_report: ['SPARCReport', 'http://localhost:3000/reports'] }",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "new_user_cc",
+    "value":        "amcates@gmail.com, no-reply@musc.edu",
+    "friendly_id":  "New User CC",
+    "description":  "This field will overwrite the new user mailers in the application to instead cc to this address. To be overwritten in development/testing/staging to prevent real emails being sent out to users.",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "no_reply_from",
+    "value":        "no-reply@musc.edu",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "queue_epic",
+    "value":        "true",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "queue_epic_edit_ldap_uids",
+    "value":        "jug2@musc.edu",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "queue_epic_load_error_to",
+    "value":        "hutsonk@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "remote_service_notifier_host",
+    "value":        "127.0.0.1:5001",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "remote_service_notifier_password",
+    "value":        "",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "remote_service_notifier_path",
+    "value":        "/v1/notifications.json",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "remote_service_notifier_protocol",
+    "value":        "http",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "remote_service_notifier_userkey",
+    "value":        "",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "research_master_api",
+    "value":        "https://research-master-staging.musc.edu/api/",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "research_master_api_token",
+    "value":        "some token",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "research_master_enabled",
+    "value":        "true", "friendly_id": "Rsearch Master Enabled", "description": "Specify whether the Research Master ID application should be used.",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "research_master_link",
+    "value":        "https://research-master-staging.musc.edu/",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "root_url",
+    "value":        "https://andrews-mac-pro.thurmond-gazes.musc.edu",
+    "friendly_id":  "Root URL",
+    "description":  "This is the root URL for the application.",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "send_authorized_user_emails",
+    "value":        "true",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "send_emails_to_real_users",
+    "value":        "false",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "suppress_ldap_for_user_search",
+    "value":        "true" , "description" : "allow the use of LDAP but suppress its use within the project/study User Search box",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "system_satisfaction_survey",
+    "value":        "false",
+    "friendly_id":  "Use System Satisfaction Survey",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "system_satisfaction_survey_cc",
+    "value":        "amcates@gmail.com, catesa@musc.edu",
+    "friendly_id":  "System Satisfaction Survey CC",
+    "description":  "This field will overwrite the system satisfaction survey mailers in the application to instead cc to this address. To be overwritten in development/testing/staging to prevent real emails being sent out to users.",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "updatable_statuses",
+    "value":        "[ 'first_draft', 'draft', 'get_a_cost_estimate', 'awaiting_pi_approval']",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "use_about_sparc_link",
+    "value":        "true",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "use_epic",
+    "value":        "true",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "use_faq_link",
+    "value":        "false",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "use_feedback_link",
+    "value":        "true",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "use_google_calendar",
+    "value":        "true",
+    "friendly_id":  "Use Google Calendar",
+    "description":  "This determines whether the application will display calendar events on the homepage.",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "use_indirect_cost",
+    "value":        "false",
+    "friendly_id":  "Use Indirect Cost",
+    "description":  "This determines whether the application will display direct costs to users. If true, then in addition to direct costs and direct cost subtotals, users will also see indirect costs and indirect cost subtotals, and indirect costs will also be included in the grand total. If false, then indirect costs will not be included in the totals.",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "use_ldap",
+    "value":        "true",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "use_news_feed",
+    "value":        "true",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "use_separate_audit_database",
+    "value":        "false" , "description": " needs to be false at outset since new institutions may not use a separate audit database",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "use_shibboleth",
+    "value":        "true",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "use_shibboleth_only",
+    "value":        "false" ,"description" : " set to true to turn off database authentication sign in options",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  },
+  {
+    "key":          "wkhtmltopdf_location",
+    "value":        "/usr/local/bin/wkhtmltopdf",
+    "friendly_id":  "",
+    "description":  "",
+    "group":        "",
+    "version":      "",
+    "parent_key":   ""
+  }
 ]

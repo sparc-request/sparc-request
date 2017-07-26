@@ -34,7 +34,7 @@ class Setting < ApplicationRecord
     when 'boolean'
       read_attribute(:value) == 'true'
     when 'json'
-      JSON.parse(read_attribute(:value))
+      JSON.parse(read_attribute(:value).gsub("=>", ": "))
     else
       read_attribute(:value)
     end

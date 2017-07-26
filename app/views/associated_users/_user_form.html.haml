@@ -59,7 +59,7 @@
                 = identity_form.select :subspecialty, options_for_select((SUBSPECIALTIES.sort), identity.subspecialty), { include_blank: t(:authorized_users)[:form_fields][:subspecialty_prompt] }, class: 'form-control selectpicker'
 
             = user_form_group(name: :role, form: form, required: true) do
-              = form.select :role, options_for_select(USER_ROLES, form.object.role), { include_blank: t(:authorized_users)[:form_fields][:role_prompt] }, class: 'form-control selectpicker'
+              = form.select :role, options_for_select(PermissibleValue.get_inverted_hash('user_role'), form.object.role), { include_blank: t(:authorized_users)[:form_fields][:role_prompt] }, class: 'form-control selectpicker'
 
             = user_form_group(name: :role_specify, classes: ['role_dependent other', form.object.role == 'other' ? '' : 'hidden'], form: form, required: true) do
               = form.text_field :role_other, class: 'form-control'

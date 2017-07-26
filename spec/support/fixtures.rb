@@ -46,6 +46,16 @@ def let_there_be_j
     )}
 end
 
+def build_user_roles
+  let!(:primary_pi_role)    { create(:permissible_value, category: 'user_role', key: 'primary-pi', value: 'Primary PI') }
+  let!(:pi_role)            { create(:permissible_value, category: 'user_role', key: 'pi', value: 'PD/PI') }
+  let!(:manager_role)       { create(:permissible_value, category: 'user_role', key: 'business-grants-manager', value: 'Billing/Business Manager') }
+  let!(:consultant_role)    { create(:permissible_value, category: 'user_role', key: 'consultant', value: 'Consultant') }
+  let!(:investigator_role)  { create(:permissible_value, category: 'user_role', key: 'co-investigator', value: 'Co-Investigator') }
+  let!(:mentor_role)        { create(:permissible_value, category: 'user_role', key: 'mentor', value: 'Mentor') }
+  let!(:other_role)         { create(:permissible_value, category: 'user_role', key: 'other', value: 'Other') }
+end
+
 def build_proxy_rights
   let!(:none_right)     { create(:permissible_value, category: 'proxy_right', key: 'none', value: 'Member Only') }
   let!(:view_right)     { create(:permissible_value, category: 'proxy_right', key: 'view', value: 'View Rights') }

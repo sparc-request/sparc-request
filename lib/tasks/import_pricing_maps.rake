@@ -75,10 +75,10 @@ namespace :data do
 
         pricing_map = service.pricing_maps.build(
                                               :full_rate => Service.dollars_to_cents(row['full_rate'].to_s.strip.gsub("$", "").gsub(",", "")),
-                                              :corporate_rate => row['corporate_rate'].blank? ? nil : Service.dollars_to_cents(row['corporate_rate'].to_s.strip.gsub("$", "").gsub(",", "")),
-                                              :federal_rate => row['federal_rate'].blank? ? nil : Service.dollars_to_cents(row['federal_rate'].to_s.strip.gsub("$", "").gsub(",", "")),
-                                              :member_rate => row['member_rate'].blank? ? nil : Service.dollars_to_cents(row['member_rate'].to_s.strip.gsub("$", "").gsub(",", "")),
-                                              :other_rate => row['other_rate'].blank? ? nil : Service.dollars_to_cents(row['other_rate'].to_s.strip.gsub("$", "").gsub(",", "")),
+                                              :corporate_rate => (row['corporate_rate'].blank? ? nil : Service.dollars_to_cents(row['corporate_rate'].to_s.strip.gsub("$", "").gsub(",", ""))),
+                                              :federal_rate => (row['federal_rate'].blank? ? nil : Service.dollars_to_cents(row['federal_rate'].to_s.strip.gsub("$", "").gsub(",", ""))),
+                                              :member_rate => (row['member_rate'].blank? ? nil : Service.dollars_to_cents(row['member_rate'].to_s.strip.gsub("$", "").gsub(",", ""))),
+                                              :other_rate => (row['other_rate'].blank? ? nil : Service.dollars_to_cents(row['other_rate'].to_s.strip.gsub("$", "").gsub(",", ""))),
                                               :unit_type => row['unit_type'],
                                               :quantity_type => row['quantity_type'],
                                               :unit_factor => row['unit_factor'],

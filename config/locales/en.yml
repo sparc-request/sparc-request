@@ -512,7 +512,7 @@ en:
       submission_type: "Select a Submission Type"
     tooltips:
       epic: 'Defines whether record will interface to Epic EMR upon submission'
-      study_type_questions: 'Information needed to determine confidentiality of patients/protocols in Epic'
+      study_type_questions: 'Information needed to determine confidentiality of patients/protocols'
       nct_number: 'Clinicaltrials.gov Registry Number'
       pro_number: 'Institutional Review Board (IRB) Unique Identifier'
       ind_number: 'Investigational New Drug (IND) Number'

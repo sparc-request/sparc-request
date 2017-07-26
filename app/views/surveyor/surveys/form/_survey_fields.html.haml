@@ -23,19 +23,19 @@
       = t(:surveyor)[:surveys][:form][:survey_information][:header]
   .panel-body
     .form-group
-      = label_tag "survey-access_code", t(:surveyor)[:surveys][:form][:survey_information][:access_code], class: 'col-lg-2 control-label required'
+      = label_tag "survey-#{survey.id}-access_code", t(:surveyor)[:surveys][:form][:survey_information][:access_code], class: 'col-lg-2 control-label required'
       .col-lg-10
-        = text_field_tag "survey-access_code", survey.access_code, class: 'form-control', maxlength: 255
+        = text_field_tag "survey-#{survey.id}-access_code", survey.access_code, class: 'form-control', maxlength: 255
     .form-group
-      = label_tag "survey-version", t(:surveyor)[:surveys][:form][:survey_information][:version], class: 'col-lg-2 control-label required'
+      = label_tag "survey-#{survey.id}-version", t(:surveyor)[:surveys][:form][:survey_information][:version], class: 'col-lg-2 control-label required'
       .col-lg-10
-        = text_field_tag "survey-version", survey.version, class: 'form-control', maxlength: 255
+        = text_field_tag "survey-#{survey.id}-version", survey.version, class: 'form-control', maxlength: 255
     .form-group
-      = label_tag "survey-display_order", t(:surveyor)[:surveys][:form][:survey_information][:display_order], class: 'col-lg-2 control-label required'
+      = label_tag "survey-#{survey.id}-display_order", t(:surveyor)[:surveys][:form][:survey_information][:display_order], class: 'col-lg-2 control-label required'
       .col-lg-10
-        = select_tag "survey-display_order", display_order_options, class: 'form-control selectpicker', include_blank: t(:constants)[:prompts][:none]
+        = select_tag "survey-#{survey.id}-display_order", display_order_options, class: 'form-control selectpicker', include_blank: t(:constants)[:prompts][:none]
     .form-group
-      = label_tag "survey-active", t(:surveyor)[:surveys][:form][:survey_information][:active], class: 'col-lg-2 control-label'
+      = label_tag "survey-#{survey.id}-active", t(:surveyor)[:surveys][:form][:survey_information][:active], class: 'col-lg-2 control-label'
       .col-lg-10
         .col-lg-1
-          = check_box_tag "survey-active", survey.active, survey.active
+          = check_box_tag "survey-#{survey.id}-active", survey.active, survey.active

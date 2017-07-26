@@ -74,7 +74,6 @@ def build_statuses
   let!(:on_hold) {create(:permissible_value, category: 'status', key: 'on_hold', value: 'On Hold')}
   let!(:submitted) {create(:permissible_value, category: 'status', key: 'submitted', value: 'Submitted')}
   let!(:withdrawn) {create(:permissible_value, category: 'status', key: 'withdrawn', value: 'Withdrawn')}
->>>>>>> os##3615063
 end
 
 def build_user_roles

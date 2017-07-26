@@ -181,6 +181,13 @@ en:
     #  PROTOCOLS  #
     ###############
     protocols:
+      form:
+        edit_selected_for_epic: 'Edit'
+        cancel_edit_selected_for_epic: 'Cancel Edit'
+        edit_answer: 'Edit'
+        new_answer: 'Answer'
+        cancel_edit_answer: 'Cancel Edit'
+
       table:
         exporter: "Exporter"
         header: "Protocols"

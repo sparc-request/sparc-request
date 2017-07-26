@@ -28,7 +28,7 @@
     %th Epic Responsibilities Removed
   %tr{:id => "project_role_#{@project_role.id}"}
     %td.name= @project_role.identity.full_name
-    %td.role= USER_ROLES.invert[@project_role.role]
+    %td.role= PermissibleValue.get_value('user_role', pr.role)
     %td.epic_rights_added
       %ul
         - @added_rights.each do |ar|

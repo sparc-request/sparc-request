@@ -24,6 +24,7 @@ RSpec.describe 'User wants to add an authorized user', js: true do
   let_there_be_lane
   let_there_be_j
   build_proxy_rights
+  build_user_roles
   
   fake_login_for_each_test
 

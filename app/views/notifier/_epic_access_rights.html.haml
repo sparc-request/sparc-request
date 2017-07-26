@@ -27,7 +27,7 @@
     - next unless pr.epic_access
     %tr{:id => "project_role_#{pr.id}"}
       %td.name= pr.identity.full_name
-      %td.role= USER_ROLES.invert[pr.role]
+      %td.role= PermissibleValue.get_value('user_role', pr.role)
       %td.epic_rights
         %ul
           - pr.epic_rights.each do |er|

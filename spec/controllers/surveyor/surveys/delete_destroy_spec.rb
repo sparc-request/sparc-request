@@ -39,16 +39,6 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
       expect(before_filters.include?(:authorize_site_admin)).to eq(true)
     end
 
-    it 'should assign @survey to the survey' do
-      survey = create(:survey_without_validations)
-
-      delete :destroy, params: {
-        id: survey.id
-      }, xhr: true
-
-      expect(assigns(:survey)).to eq(survey)
-    end
-
     it 'should delete the survey' do
       survey = create(:survey_without_validations)
 

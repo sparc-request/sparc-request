@@ -26,14 +26,14 @@
         .clearfix
           .form-group.no-margin
             .col-sm-11.no-padding
-              = text_field_tag "section-title", section.title, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:content][:section][:title][:placeholder], maxlength: 255
+              = text_field_tag "section-#{section.id}-title", section.title, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:content][:section][:title][:placeholder], maxlength: 255
             .col-sm-1.no-padding
               %button.btn.btn-sm.btn-danger.pull-right.delete-section{ title: t(:surveyor)[:surveys][:form][:content][:section][:delete], data: { toggle: 'tooltip', animation: 'false' } }
                 %span.glyphicon.glyphicon-trash
     .panel-body
       .form-group
         .col-lg-12.no-padding
-          = text_area_tag "section-description", section.description, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:content][:section][:description][:placeholder]
+          = text_area_tag "section-#{section.id}-description", section.description, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:content][:section][:description][:placeholder]
 
       .section-questions{ class: "section-#{section.id}-questions" }
         - section.questions.each do |question|

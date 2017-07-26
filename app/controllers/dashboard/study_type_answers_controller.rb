@@ -18,8 +18,14 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#protocol-form-display").replaceWith("<%= escape_javascript(render( '/dashboard/protocols/form/protocol_form', protocol: @protocol, protocol_type: @protocol_type, admin: @admin, permission_to_edit: @permission_to_edit )) %>")
-$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
-$(".datetimepicker").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
-$(".selectpicker").selectpicker()
-setup_epic_question_config()
+class Dashboard::StudyTypeAnswersController < Dashboard::BaseController
+
+  def edit
+    @protocol = Protocol.find(params[:protocol_id])
+    @edit_answers = params[:edit_answers].present?
+    @protocol.populate_for_edit
+    respond_to do |format|
+      format.js
+    end
+  end
+end

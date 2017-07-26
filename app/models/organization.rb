@@ -347,7 +347,7 @@ class Organization < ApplicationRecord
 
   def setup_available_statuses
     position = 1
-    obj_names = AvailableStatus::TYPES.map{ |k,v| k }
+    obj_names = PermissibleValue.get_hash('status').map{ |k,v| k }
     obj_names.each do |obj_name|
       available_status = available_statuses.detect { |obj| obj.status == obj_name }
       available_status ||= available_statuses.build(status: obj_name, new: true)

@@ -45,7 +45,7 @@
                 = identity_form.text_field :era_commons_name, class: 'form-control'
 
               = user_form_group(name: :credentials, form: identity_form) do
-                = identity_form.select :credentials, options_for_select(USER_CREDENTIALS, identity.credentials), { include_blank: t(:authorized_users)[:form_fields][:credentials_prompt] }, class: 'form-control selectpicker'
+                = identity_form.select :credentials, options_for_select(PermissibleValue.get_inverted_hash('user_credential'), identity.credentials), { include_blank: t(:authorized_users)[:form_fields][:credentials_prompt] }, class: 'form-control selectpicker'
 
               = user_form_group(name: :credentials_other, classes: ['credentials_dependent other', identity_form.object.credentials == 'other' ? '' : 'hidden'], form: identity_form, title: t(:authorized_users)[:form_fields][:credentials_specify], required: true) do
                 = identity_form.text_field :credentials_other, class: 'form-control'

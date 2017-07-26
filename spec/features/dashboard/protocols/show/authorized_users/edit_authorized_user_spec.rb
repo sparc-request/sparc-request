@@ -67,6 +67,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
 
       context 'and clicks the Edit Authorized User button' do
         scenario 'and sees the Edit Authorized User dialog and the users information' do
+          create(:permissible_value, category: 'user_credential', key: 'ba', value: 'BA')
           given_i_have_clicked_the_edit_authorized_user_button("John Doe")
           then_i_should_see_the_edit_authorized_user_dialog
           then_i_should_see_the_user_information
@@ -111,6 +112,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
 
               context 'with errors in the form' do
                 scenario 'and sees errors' do
+                  create(:permissible_value, category: 'user_credential', key: 'other', value: 'Other')
                   given_i_have_clicked_the_edit_authorized_user_button("Jane Doe")
                   when_i_set_the_role_to 'Primary PI'
                   when_i_have_an_error
@@ -125,6 +127,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
 
         context 'and sets the role and credentials to other, makes the extra fields empty, and submits the form' do
           scenario 'and sees some errors' do
+            create(:permissible_value, category: 'user_credential', key: 'other', value: 'Other')
             given_i_have_clicked_the_edit_authorized_user_button("John Doe")
             when_i_set_the_role_and_credentials_to_other
             when_i_submit_the_form

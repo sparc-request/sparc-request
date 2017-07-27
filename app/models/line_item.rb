@@ -161,21 +161,6 @@ class LineItem < ApplicationRecord
     return quantity_total * (line_items_visit.subject_count || 0)
   end
 
-  # Returns a hash of subtotals for the visits in the line item.
-  # Visit totals depend on the quantities in the other visits, so it would be clunky
-  # to compute one visit at a time
-  def per_subject_subtotals(visits=self.visits)
-    totals = { }
-    quantity_total = quantity_total()
-    per_unit_cost = per_unit_cost(quantity_total)
-
-    visits.each do |visit|
-      totals[visit.id.to_s] = visit.cost(per_unit_cost)
-    end
-
-    return totals
-  end
-
   # Determine the direct costs for a visit-based service for one subject
   def direct_costs_for_visit_based_service_single_subject(line_items_visit)
     # line items visit should also check that it's for the correct protocol

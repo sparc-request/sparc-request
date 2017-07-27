@@ -40,12 +40,12 @@ class VisitsController < ApplicationController
     @admin              = params[:admin] == 'true'
     @tab                = params[:tab]
     @page               = params[:page]
-    @visit              = Visit.eager_load(sub_service_request: { organization: { parent: { parent: :parent } } }, service: :pricing_maps).find(params[:id])
+    @visit              = Visit.find(params[:id])
     @arm                = @visit.arm
-    @line_items_visits  = @arm.line_items_visits.eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol])
-    @line_items_visit   = @line_items_visits.find(@visit.line_items_visit_id)
-    @visit_groups       = @arm.visit_groups.paginate(page: @page.to_i, per_page: VisitGroup.per_page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol] } })
-    @visit_group        = VisitGroup.find(@visit.visit_group_id)
+    @line_items_visits  = @arm.line_items_visits.eager_load(line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]])
+    @line_items_visit   = @line_items_visits.detect{ |liv| liv.id == @visit.line_items_visit_id }
+    @visit_groups       = @arm.visit_groups.page(@page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] }})
+    @visit_group        = @visit_groups.detect{ |vg| vg.id == @visit.visit_group_id }
     @locked             = !@visit.sub_service_request.can_be_edited? && !@admin
 
     if @visit.update_attributes(visit_params)

@@ -27,33 +27,32 @@ RSpec.describe '/service_calendar/master_calendar/pppv/totals/_pppv_totals', typ
   before(:each) do
     @protocol        = create(:unarchived_study_without_validations, id: 1, primary_pi: jug2)
     @service_request = create(:service_request_without_validations, protocol: @protocol)
-    @arm            = create(:arm, protocol: @protocol, name: 'Arm')
-    @visit_group1    = create(:visit_group, arm: @arm)
+    @arm             = create(:arm, protocol: @protocol, name: 'Arm')
     @liv             = []
   end
 
   it 'should display maximum total direct cost per patient if USE_INDIRECT_COST is true' do
     stub_const("USE_INDIRECT_COST", true)
-    render "/service_calendars/master_calendar/pppv/totals/pppv_totals", tab: 'calendar', arm: @arm, line_items_visits: @liv, page: '1'
+    render "/service_calendars/master_calendar/pppv/totals/pppv_totals", tab: 'calendar', arm: @arm, line_items_visits: @liv, page: '1', visit_groups: @arm.visit_groups
 
     expect(response).to have_content('Maximum Total Direct Costs Per Patient')
   end
 
   it 'should not display maximum total direct cost per patient if USE_INDIRECT_COST is false' do
     stub_const("USE_INDIRECT_COST", false)
-    render "/service_calendars/master_calendar/pppv/totals/pppv_totals", tab: 'calendar', arm: @arm, line_items_visits: @liv, page: '1'
+    render "/service_calendars/master_calendar/pppv/totals/pppv_totals", tab: 'calendar', arm: @arm, line_items_visits: @liv, page: '1', visit_groups: @arm.visit_groups
 
     expect(response).to_not have_content('Maximum Total Direct Costs Per Patient')
   end
 
   it 'should display maximum total cost per patient' do
-    render "/service_calendars/master_calendar/pppv/totals/pppv_totals", tab: 'calendar', arm: @arm, line_items_visits: @liv, page: '1'
+    render "/service_calendars/master_calendar/pppv/totals/pppv_totals", tab: 'calendar', arm: @arm, line_items_visits: @liv, page: '1', visit_groups: @arm.visit_groups
 
     expect(response).to have_content('Maximum Total Per Patient')
   end
 
   it 'should not display total cost per arm' do
-    render "/service_calendars/master_calendar/pppv/totals/pppv_totals", tab: 'calendar', arm: @arm, line_items_visits: @liv, page: '1'
+    render "/service_calendars/master_calendar/pppv/totals/pppv_totals", tab: 'calendar', arm: @arm, line_items_visits: @liv, page: '1', visit_groups: @arm.visit_groups
     
     expect(response).to have_content("Total Costs (Clinical Services) Per Study -- #{@arm.name}")
   end

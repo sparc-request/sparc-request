@@ -30,7 +30,6 @@ class Visit < ApplicationRecord
   
   has_one :arm, through: :visit_group
   has_one :line_item, through: :line_items_visit
-  has_one :service, through: :line_item
   has_one :sub_service_request, through: :line_item
   
   validates :research_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }

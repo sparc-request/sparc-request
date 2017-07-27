@@ -30,10 +30,10 @@ class LineItemsVisitsController < ApplicationController
     page              = params[:page]
     tab               = params[:tab]
     portal            = params[:portal] == 'true'
-    line_items_visit  = LineItemsVisit.find(params[:id])
+    line_items_visit  = LineItemsVisit.eager_load(:sub_service_request, line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).find(params[:id])
     arm               = line_items_visit.arm
-    line_items_visits = arm.line_items_visits.eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol])
-    visit_groups      = arm.visit_groups.paginate(page: page.to_i, per_page: VisitGroup.per_page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol] } })
+    line_items_visits = arm.line_items_visits.eager_load(line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]])
+    visit_groups      = arm.visit_groups.page(page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] }})
 
     if line_items_visit.update_attributes(line_items_visit_params)
       unless portal

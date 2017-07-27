@@ -42,9 +42,9 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
     it 'should assign @survey to the survey' do
       survey = create(:survey_without_validations)
 
-      xhr :get, :preview, {
+      get :preview, params: {
         survey_id: survey.id
-      }
+      }, xhr: true
 
       expect(assigns(:survey)).to eq(survey)
     end
@@ -52,9 +52,9 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
     it 'should assign @response to a new response of @survey' do
       survey = create(:survey_without_validations)
 
-      xhr :get, :preview, {
+      get :preview, params: {
         survey_id: survey.id
-      }
+      }, xhr: true
 
       expect(assigns(:response)).to be_a_new(Response)
       expect(assigns(:response).survey).to eq(survey)
@@ -63,9 +63,9 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
     it 'should build @response question_responses' do
       survey = create(:survey_without_validations)
 
-      xhr :get, :preview, {
+      get :preview, params: {
         survey_id: survey.id
-      }
+      }, xhr: true
 
       expect(assigns(:response).question_responses).to be
     end
@@ -73,9 +73,9 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
     it 'should render template' do
       survey = create(:survey_without_validations)
 
-      xhr :get, :preview, {
+      get :preview, params: {
         survey_id: survey.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:preview)
     end
@@ -83,9 +83,9 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
     it 'should respond ok' do
       survey = create(:survey_without_validations)
       
-      xhr :get, :preview, {
+      get :preview, params: {
         survey_id: survey.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

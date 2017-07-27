@@ -38,7 +38,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
           email: "user2@email.com")
         allow(Identity).to receive(:search).with("ABC").and_return([matching_record1, matching_record2])
 
-        get :search_identities, term: "\n ABC \n", format: :json
+        get :search_identities, params: { term: "\n ABC \n" }, format: :json
       end
 
       it "should render those results as json" do
@@ -55,7 +55,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
       before(:each) do
         allow(Identity).to receive(:search).with("ABC").and_return([])
 
-        get :search_identities, term: "\n ABC \n", format: :json
+        get :search_identities, params: { term: "\n ABC \n" }, format: :json
       end
 
       it "should render 'No Results' in json response" do

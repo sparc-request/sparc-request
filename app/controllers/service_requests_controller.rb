@@ -189,29 +189,15 @@ class ServiceRequestsController < ApplicationController
   end
 
   def add_service
-    existing_service_ids = @service_request.line_items.reject{ |line_item| FINISHED_STATUSES.include?(line_item.status) }.map(&:service_id)
-
-    if existing_service_ids.include?( params[:service_id].to_i )
+    add_service = AddService.new(@service_request,
+                                 params[:service_id].to_i,
+                                 current_user
+                                )
+    add_service.existing_service_ids
+    if add_service.existing_service_ids.include?( params[:service_id].to_i )
       @duplicate_service = true
     else
-      service        = Service.find( params[:service_id] )
-      new_line_items = @service_request.create_line_items_for_service( service: service, optional: true, existing_service_ids: existing_service_ids, recursive_call: false ) || []
-
-      # create sub_service_requests
-      @service_request.reload
-      @service_request.previous_submitted_at = @service_request.submitted_at
-      new_line_items.each do |li|
-        ssr = find_or_create_sub_service_request(li, @service_request)
-        li.update_attribute(:sub_service_request_id, ssr.id)
-        if @service_request.status == 'first_draft'
-          ssr.update_attribute(:status, 'first_draft')
-        elsif ssr.status.nil? || (ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr))
-          previous_status = ssr.status
-          ssr.update_attribute(:status, 'draft')
-        end
-      end
-
-      @service_request.ensure_ssr_ids
+      add_service.generate_new_service_request
       @line_items_count     = @sub_service_request ? @sub_service_request.line_items.count : @service_request.line_items.count
       @sub_service_requests = @service_request.cart_sub_service_requests
     end
@@ -310,7 +296,7 @@ class ServiceRequestsController < ApplicationController
     @details_params ||= begin
       required_keys = params[:study] ? :study : :project
       temp = params.require(required_keys).permit(:start_date, :end_date,
-        :recruitment_start_date, :recruitment_end_date)
+        :recruitment_start_date, :recruitment_end_date).to_h
 
       # Finally, transform date attributes.
       date_attrs = %w(start_date end_date recruitment_start_date recruitment_end_date)
@@ -402,24 +388,26 @@ class ServiceRequestsController < ApplicationController
 
       @events = []
       begin
-        #to parse file and get events
-        cal_file = File.open(Rails.root.join("tmp", "basic.ics"))
+        path = Rails.root.join("tmp", "basic.ics")
+        if path.exist?
+          #to parse file and get events
+          cal_file = File.open(path)
 
-        cals = Icalendar.parse(cal_file)
+          cals = Icalendar.parse(cal_file)
 
-        cal = cals.first
+          cal = cals.first
 
-        events = cal.try(:events).try(:sort) { |x, y| y.dtstart <=> x.dtstart } || []
+          events = cal.try(:events).try(:sort) { |x, y| y.dtstart <=> x.dtstart } || []
 
-        events.each do |event|
-          next if Time.parse(event.dtstart.to_s) > startMax
-          break if Time.parse(event.dtstart.to_s) < startMin
-          @events << create_calendar_event(event)
+          events.each do |event|
+            next if Time.parse(event.dtstart.to_s) > startMax
+            break if Time.parse(event.dtstart.to_s) < startMin
+            @events << create_calendar_event(event)
+          end
+
+          @events.reverse!
+          Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).update_all(status: ALERT_STATUSES['clear'])
         end
-
-        @events.reverse!
-
-        Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).update_all(status: ALERT_STATUSES['clear'])
       rescue Exception, ArgumentError => e
         active_alert = Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).first_or_initialize
         if Rails.env == 'production' && active_alert.new_record?
@@ -429,7 +417,7 @@ class ServiceRequestsController < ApplicationController
       end
     end
   end
-  
+
   def setup_catalog_news_feed
     if USE_NEWS_FEED
       @news = []
@@ -484,20 +472,6 @@ class ServiceRequestsController < ApplicationController
         render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to edit this Request.' }
       end
     end
-  end
-
-  # Returns either an existing sub service request (if the line item's belongs to the sub service request)
-  def find_or_create_sub_service_request(line_item, service_request)
-    organization = line_item.service.process_ssrs_organization
-    service_request.sub_service_requests.each do |ssr|
-      if (ssr.organization == organization) && !ssr.is_complete?
-        return ssr
-      end
-    end
-    sub_service_request = service_request.sub_service_requests.create(organization_id: organization.id)
-    service_request.ensure_ssr_ids
-
-    sub_service_request
   end
 
   def set_highlighted_link

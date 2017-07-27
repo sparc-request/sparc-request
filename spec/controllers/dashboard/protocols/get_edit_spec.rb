@@ -33,7 +33,7 @@ RSpec.describe Dashboard::ProtocolsController do
           authorize(@logged_in_user, @protocol, can_edit: false)
 
           log_in_dashboard_identity(obj: @logged_in_user)
-          get :edit, id: @protocol.id
+          get :edit, params: { id: @protocol.id }
         end
 
         it "should use ProtocolAuthorizer to authorize user" do
@@ -66,7 +66,7 @@ RSpec.describe Dashboard::ProtocolsController do
 
             log_in_dashboard_identity(obj: @logged_in_user)
 
-            get :edit, id: @protocol.id
+            get :edit, params: { id: @protocol.id }
           end
 
           it "should assign @protocol_type to type of Protocol" do
@@ -103,7 +103,7 @@ RSpec.describe Dashboard::ProtocolsController do
 
             log_in_dashboard_identity(obj: @logged_in_user)
 
-            get :edit, id: @protocol.id
+            get :edit, params: { id: @protocol.id }
           end
 
           it "should assign @protocol_type to type of Protocol" do
@@ -130,7 +130,7 @@ RSpec.describe Dashboard::ProtocolsController do
 
         log_in_dashboard_identity(obj: @logged_in_user)
 
-        get :edit, id: @protocol.id
+        get :edit, params: { id: @protocol.id }
       end
 
       it 'should set @admin to false' do
@@ -154,7 +154,7 @@ RSpec.describe Dashboard::ProtocolsController do
 
           log_in_dashboard_identity(obj: @logged_in_user)
 
-          get :edit, id: @protocol.id
+          get :edit, params: { id: @protocol.id }
         end
 
         it 'should set @admin to true' do
@@ -175,7 +175,7 @@ RSpec.describe Dashboard::ProtocolsController do
 
           log_in_dashboard_identity(obj: @logged_in_user)
 
-          get :edit, id: @protocol.id
+          get :edit, params: { id: @protocol.id }
         end
 
         it 'should set @admin to true' do

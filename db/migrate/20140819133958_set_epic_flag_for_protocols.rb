@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class SetEpicFlagForProtocols < ActiveRecord::Migration
+class SetEpicFlagForProtocols < ActiveRecord::Migration[4.2]
   def up
     protocols = Protocol.where("last_epic_push_time != ?", false)
     protocols.each do |protocol|

@@ -21,7 +21,7 @@
 require 'date'
 require 'rails_helper'
 
-RSpec.describe 'ProtocolAuthorizer', type: :model do
+RSpec.describe ProtocolAuthorizer, type: :model do
   # data that can be setup and references memoized
   # these can persist between tests
   def protocol

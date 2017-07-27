@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class ChangeRelationshipsOnSubsidies < ActiveRecord::Migration
+class ChangeRelationshipsOnSubsidies < ActiveRecord::Migration[4.2]
   def change
     remove_column :subsidies, :service_request_id
     remove_column :subsidies, :organization_id

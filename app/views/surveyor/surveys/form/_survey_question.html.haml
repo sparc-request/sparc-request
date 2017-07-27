@@ -23,23 +23,23 @@
   %hr
   .col-lg-8.no-padding
     .form-group
-      = text_field_tag "question-content", question.content, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:content][:question][:content][:placeholder], maxlength: 255
+      = text_field_tag "question-#{question.id}-content", question.content, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:content][:question][:content][:placeholder], maxlength: 255
   .col-lg-4.no-padding
     .form-group
-      = select_tag "question-question_type", options_for_select(ADDITIONAL_DETAIL_QUESTION_TYPES, question.question_type), class: 'selectpicker select-question-type pull-right', data: { question_id: question.id }
+      = select_tag "question-#{question.id}-question_type", options_for_select(ADDITIONAL_DETAIL_QUESTION_TYPES, question.question_type), class: 'selectpicker select-question-type pull-right', data: { question_id: question.id }
 
   .form-group
-    = text_area_tag "question-description", question.description, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:content][:question][:description][:placeholder]
+    = text_area_tag "question-#{question.id}-description", question.description, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:content][:question][:description][:placeholder]
 
   .form-group
-    = label_tag "question-required", t(:surveyor)[:surveys][:form][:content][:question][:required], class: 'col-sm-1 control-label no-padding-x text-left'
+    = label_tag "question-#{question.id}-required", t(:surveyor)[:surveys][:form][:content][:question][:required], class: 'col-sm-1 control-label no-padding-x text-left'
     .col-sm-1
-      = check_box_tag "question-required", question.required, question.required
-    = label_tag "question-is_dependent", t(:surveyor)[:surveys][:form][:content][:question][:dependent][:label], class: 'col-sm-2 control-label no-padding-x text-right'
+      = check_box_tag "question-#{question.id}-required", question.required, question.required
+    = label_tag "question-#{question.id}-is_dependent", t(:surveyor)[:surveys][:form][:content][:question][:dependent][:label], class: 'col-sm-2 control-label no-padding-x text-right'
     .col-sm-1
-      = check_box_tag "question-is_dependent", question.is_dependent, question.is_dependent, class: 'is-dependent', disabled: question.previous_questions.empty?
+      = check_box_tag "question-#{question.id}-is_dependent", question.is_dependent, question.is_dependent, class: 'is-dependent', disabled: question.previous_questions.empty?
     .dependent-dropdown-container{ class: question.is_dependent ? '' : 'hidden' }
-      = label_tag "question-depender_id", t(:surveyor)[:surveys][:form][:content][:question][:dependent][:dropdown][:label], class: 'col-sm-2 control-label no-padding-x'
+      = label_tag "question-#{question.id}-depender_id", t(:surveyor)[:surveys][:form][:content][:question][:dependent][:dropdown][:label], class: 'col-sm-2 control-label no-padding-x'
       .col-sm-4.no-padding
         .col-sm-4
           = render 'surveyor/surveys/form/dependent_dropdown', survey: survey, question: question

@@ -28,7 +28,7 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
 
     context "success" do
 
-      before { get :new, get_new_valid_params }
+      before { get :new, params: get_new_valid_params }
 
       it "should assign a new Service with default values" do
         expect(assigns(:service).name).to eq("New Service")
@@ -42,7 +42,7 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
 
     context "success" do
 
-      before(:each) { post :create, post_create_valid_params }
+      before(:each) { post :create, params: post_create_valid_params }
 
       it "should persist a Service" do
         expect(Service.count).to eq(1)
@@ -57,7 +57,7 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
       it "should update the Service" do
         service = create(:service)
 
-        put :update, id: service.id, service: { name: "New name" }
+        put :update, params: { id: service.id, service: { name: "New name" } }
 
         expect(service.reload.name).to eq("New name")
       end
@@ -67,7 +67,7 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
         it "should create ServiceLevelComponents" do
           service = create(:service)
 
-          put :update, id: service.id, service: { name: "New name" }.merge!(service_level_component_params)
+          put :update, params: { id: service.id, service: { name: "New name" }.merge!(service_level_component_params) }
 
           expect(service.reload.components.split(',').count).to eq(2)
         end
@@ -78,7 +78,7 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
         before { @service = FactoryGirl.create(:service_with_components) }
 
         it "should create new ServiceLevelComponents" do
-          put :update, id: @service.id, service: { name: "New name" }.merge!(service_level_component_params)
+          put :update, params: { id: @service.id, service: { name: "New name" }.merge!(service_level_component_params) }
 
           expect(@service.reload.components.split(',').count).to eq(2)
         end
@@ -86,7 +86,7 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
         it "should destroy ServiceLevelComponents marked for destroy" do
           service_level_component = @service.components.split(',').first
 
-          put :update, id: @service.id, service: service_level_component_destroy_params(@service, service_level_component)
+          put :update, params: { id: @service.id, service: service_level_component_destroy_params(@service, service_level_component) }
 
           expect(@service.reload.components.split(',').count).to eq(2)
         end
@@ -100,7 +100,7 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
         it "should build ServiceLevelComponents with the correct :position" do
           service = FactoryGirl.create(:service_with_components, organization: organization)
 
-          get :show, id: service.id
+          get :show, params: { id: service.id }
 
           expect(assigns(:service).components.split(',').count).to eq(3)
         end

@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,16 +17,22 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- if USE_INDIRECT_COST
-  %tr.total-direct-one-time-fee-cost-per-study
-    %th.total-direct-one-time-fee-width{ colspan: 10 }
-      = t(:calendars)[:otf][:totals][:total_direct]
-    %td.text-center
-      %strong
-        = display_total_direct_cost_per_study_otfs(service_request, service_request.line_items)
-%tr.total-one-time-fee-cost-per-study
-  %th.total-one-time-fee-width{ colspan: 10 }
-    = t(:calendars)[:otf][:totals][:total_costs]
-  %td.text-center
-    %strong
-      = display_total_cost_per_study_otfs(service_request, service_request.line_items)
+.devise-form
+  .col-md-6.col-md-offset-3.text-center
+    %h1.page-header
+      = t(:devise)[:passwords][:edit][:header]
+    #change-password-form
+      = form_for resource, as: resource_name, url: password_path(resource_name), method: :put do |f|
+        = f.hidden_field :reset_password_token, value: resource.reset_password_token
+        - if resource.errors.any?
+          = render 'shared/modal_errors', errors: resource.errors
+        .form-group.field
+          = f.label :password, t(:devise)[:passwords][:edit][:new_password]
+          = f.password_field :password, class: 'form-control'
+        .form-group.field
+          = f.label :password_confirmation, t(:devise)[:passwords][:edit][:confirm_password]
+          = f.password_field :password_confirmation, class: 'form-control'
+        .form-group
+          = f.submit t(:devise)[:passwords][:edit][:submit], class: 'btn btn-primary'
+      .links
+        = render 'devise/shared/links'

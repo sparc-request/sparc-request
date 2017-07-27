@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class IndexUsersOnFirstNameLastNameCombo < ActiveRecord::Migration
+class IndexUsersOnFirstNameLastNameCombo < ActiveRecord::Migration[4.2]
   def change
     #TODO current testing, staging, production mysql implementations don't support FULLTEXT on InnoDB,  may come back to this in the future, only used in app/models/protocol.rb search_query scope
     #add_index :identities, [:first_name, :last_name], name: 'full_name', type: :fulltext

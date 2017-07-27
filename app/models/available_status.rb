@@ -25,6 +25,4 @@ class AvailableStatus < ApplicationRecord
 
   attr_accessor :new
   attr_accessor :position
-
-  TYPES = PermissibleValue.get_hash('status')
 end

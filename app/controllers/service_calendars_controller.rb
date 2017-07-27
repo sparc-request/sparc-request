@@ -138,12 +138,12 @@ class ServiceCalendarsController < ApplicationController
     @admin              = params[:admin] == 'true'
     @tab                = 'template'
     @page               = params[:page]
-    @line_items_visit   = LineItemsVisit.eager_load(arm: :visits, line_item: [:admin_rates, sub_service_request: { organization: { parent: { parent: :parent } } }, service: :pricing_maps]).find(params[:line_items_visit_id])
+    @line_items_visit   = LineItemsVisit.eager_load(sub_service_request: { organization: { parent: { parent: :parent } } }, line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]]]).find(params[:line_items_visit_id])
     @arm                = @line_items_visit.arm
-    @line_items_visits  = @arm.line_items_visits.eager_load(line_item: [:admin_rates, service_request: :protocol])
-    @visit_groups       = @arm.visit_groups.page(@page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] } })
-    @visits             = @line_items_visit.visits
-    @locked             = !@admin && !@line_items_visit.line_item.sub_service_request.can_be_edited?
+    @line_items_visits  = @arm.line_items_visits.eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol])
+    @visit_groups       = @arm.visit_groups.paginate(page: @page.to_i, per_page: VisitGroup.per_page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol] } })
+    @visits             = @line_items_visit.visits.eager_load(service: :pricing_maps)
+    @locked             = !@admin && !@line_items_visit.sub_service_request.can_be_edited?
 
     if params[:check] && !@locked
       unit_minimum = @line_items_visit.line_item.service.displayed_pricing_map.unit_minimum
@@ -155,7 +155,7 @@ class ServiceCalendarsController < ApplicationController
 
     # Update the sub service request only if we are not in dashboard; admin's actions should not affect the status
     unless @admin || @locked
-      @line_items_visit.line_item.sub_service_request.update_attribute(:status, "draft")
+      @line_items_visit.sub_service_request.update_attribute(:status, "draft")
       @service_request.update_attribute(:status, "draft")
     end
 

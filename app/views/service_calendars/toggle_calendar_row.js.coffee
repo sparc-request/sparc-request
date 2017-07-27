@@ -32,7 +32,7 @@ $('.selectpicker').selectpicker()
 <% end %>
 
 # Replace visits
-<% @visits.ordered.page(@page).each do |visit| %>
+<% @visits.paginate(page: @page.to_i, per_page: Visit.per_page).ordered.each do |visit| %>
 $(".visit-<%=visit.id%>:visible").html('<%= j render "service_calendars/master_calendar/pppv/template/template_visit_input", visit: visit, tab: @tab, page: @page, admin: @admin, locked: @locked %>')
 <% end %>
 

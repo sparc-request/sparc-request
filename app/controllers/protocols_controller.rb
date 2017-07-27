@@ -216,8 +216,6 @@ class ProtocolsController < ApplicationController
         :potential_funding_source,
         :potential_funding_source_other,
         :potential_funding_start_date,
-        :recruitment_end_date,
-        :recruitment_start_date,
         :requester_id,
         :selected_for_epic,
         :short_title,

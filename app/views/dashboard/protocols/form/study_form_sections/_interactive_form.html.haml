@@ -18,7 +18,6 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 .form-group.row
   - if USE_EPIC
     = form.label :selected_for_epic,
@@ -34,11 +33,16 @@
         %label.radio-inline.btn.btn-default#study_selected_for_epic_false_button{ class: protocol.selected_for_epic == false || !USE_EPIC ? 'active': '' }
           = form.radio_button :selected_for_epic, 'false', id: "study_selected_for_epic_false", class: 'hidden'
           = t(:constants)[:no_select]
-.form-group.row.selected_for_epic_dependent{ display_if(protocol.selected_for_epic) }
+      - if edit_answers && action_name == 'edit'
+        = link_to t(:dashboard)[:protocols][:form][:cancel_edit_selected_for_epic],
+          edit_dashboard_protocol_study_type_answers_path(protocol),
+          class: 'btn btn-danger cancel-edit', remote: true
+
+.form-group.row.selected_for_epic_dependent{ style: protocol.selected_for_epic || (!USE_EPIC && action_name == 'update_protocol_type') ? 'display:block;' : 'display:none;' }
   = hidden_field_tag :updated_protocol_type, updated_protocol_type
   = form.label :study_type_questions,
     t(:protocols)[:studies][:information][:study_type_questions],
-    class: "col-lg-2 control-label question-label #{USE_EPIC && protocol.selected_for_epic ? 'required' : ''}",
+    class: "col-lg-2 control-label question-label #{ USE_EPIC && protocol.selected_for_epic ? 'required' : '' }",
     data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
     title: t(:protocols)[:tooltips][:study_type_questions]
   .col-lg-10
@@ -50,3 +54,7 @@
             = answer_form.label :answer, break_before_parenthetical(answer_form.object.study_type_question.question), class: "long"
           .col-lg-4
             = answer_form.select :answer, options_for_select([['Yes', true], ['No', false]], answer_form.object.answer), { include_blank: 'Select One' }, { class: 'selectpicker', id: "study_type_answer_#{answer_form.object.study_type_question.friendly_id}_answer" }
+            - if edit_answers && action_name == 'edit'
+              = link_to t(:dashboard)[:protocols][:form][:cancel_edit_answer],
+                edit_dashboard_protocol_study_type_answers_path(protocol),
+                class: 'btn btn-danger cancel-edit', remote: true

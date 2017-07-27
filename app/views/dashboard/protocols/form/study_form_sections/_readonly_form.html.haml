@@ -27,9 +27,24 @@
           = form.hidden_field :selected_for_epic, value: true
         - else
           = form.hidden_field :selected_for_epic, value: false
+        = link_to t(:dashboard)[:protocols][:form][:edit_selected_for_epic],
+          edit_dashboard_protocol_study_type_answers_path(protocol, edit_answers: true),
+          class: 'btn btn-warning edit-answers', remote: true
+          
 .form-group.row.selected_for_epic_dependent#readonly
-  - if protocol.display_answers.any?{ |as| display_study_type_question?(protocol, as) }
-    = form.label :study_type_questions, t(:protocols)[:studies][:information][:study_type_questions], class: "col-lg-2 control-label #{USE_EPIC && protocol.selected_for_epic ? 'required' : ''}"
+  - if display_readonly_study_type_questions?(protocol)
+    - if protocol.display_answers{ |as| display_study_type_question?(protocol, as, true) }
+      = form.label :study_type_questions, t(:protocols)[:studies][:information][:study_type_questions], class: "col-lg-2 control-label #{USE_EPIC && protocol.selected_for_epic ? 'required' : ''}", data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' }, title: t(:protocols)[:tooltips][:study_type_questions]
+      .col-lg-10
+        = form.fields_for :study_type_answers, protocol.display_answers do |answer|
+          = render partial: 'dashboard/protocols/form/study_form_sections/readonly_answer_field', locals: { answer: answer, protocol: protocol }
+  - else
+    = form.label :study_type_questions, t(:protocols)[:studies][:information][:study_type_questions], class: "col-lg-2 control-label #{USE_EPIC && protocol.selected_for_epic ? 'required' : ''}", data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' }, title: t(:protocols)[:tooltips][:study_type_questions]
     .col-lg-10
-      = form.fields_for :study_type_answers, protocol.display_answers do |answer|
-        = render partial: 'dashboard/protocols/form/study_form_sections/readonly_answer_field', locals: { answer: answer, protocol: protocol }
+      .form-group.row
+        .col-lg-8
+          = label_tag 'answer', STUDY_TYPE_QUESTIONS_VERSION_3[5], class: 'long'
+        .col-lg-4
+          = link_to t(:dashboard)[:protocols][:form][:new_answer],
+            edit_dashboard_protocol_study_type_answers_path(protocol, edit_answers: true),
+            class: 'btn btn-warning edit-answers', remote: true

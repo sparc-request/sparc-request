@@ -26,48 +26,17 @@ RSpec.describe LineItemsController, type: :controller do
   let!(:logged_in_user) { create(:identity) }
 
   describe '#update' do
+
+    before :each do
+      session[:identity_id] = logged_in_user.id
+    end
+
     it 'should call before_filter #initialize_service_request' do
       expect(before_filters.include?(:initialize_service_request)).to eq(true)
     end
 
     it 'should call before_filter #authorize_identity' do
       expect(before_filters.include?(:authorize_identity)).to eq(true)
-    end
-
-    it 'should assign @line_item' do
-      protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
-      sr        = create(:service_request_without_validations, protocol: protocol)
-      org       = create(:organization)
-      ssr       = create(:sub_service_request_without_validations, service_request: sr, organization: org)
-      service   = create(:service, one_time_fee: true)
-      li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
-      li_params = { quantity: 2 }
-
-      put :update, params: {
-        id: li.id,
-        srid: sr.id,
-        line_item: li_params
-      }, xhr: true
-
-      expect(assigns(:line_item)).to eq(li)
-    end
-
-    it 'should assign @service_request' do
-      protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
-      sr        = create(:service_request_without_validations, protocol: protocol)
-      org       = create(:organization)
-      ssr       = create(:sub_service_request_without_validations, service_request: sr, organization: org)
-      service   = create(:service, one_time_fee: true)
-      li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
-      li_params = { quantity: 2 }
-
-      put :update, params: {
-        id: li.id,
-        srid: sr.id,
-        line_item: li_params
-      }, xhr: true
-
-      expect(assigns(:service_request)).to eq(sr)
     end
 
     context 'line item valid' do
@@ -125,7 +94,7 @@ RSpec.describe LineItemsController, type: :controller do
         expect(ssr.reload.status).to eq('draft')
       end
 
-      it 'should render nothing' do
+      it 'should render totals JSON' do
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol)
         org       = create(:organization)
@@ -140,7 +109,11 @@ RSpec.describe LineItemsController, type: :controller do
           line_item: li_params
         }, xhr: true
 
-        expect(response.body).to be_blank
+        json = JSON.parse(response.body)
+
+        expect(json['total_per_study']).to be
+        expect(json['max_total_direct']).to be
+        expect(json['total_costs']).to be
       end
 
       it 'should respond ok' do
@@ -178,7 +151,7 @@ RSpec.describe LineItemsController, type: :controller do
           line_item: li_params
         }, xhr: true
 
-        expect(JSON.parse(response.body)).to be
+        expect(JSON.parse(response.body)['quantity']).to be
       end
 
       it 'should respond unprocessable_entity' do

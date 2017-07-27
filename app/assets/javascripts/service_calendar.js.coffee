@@ -235,20 +235,6 @@ $(document).ready ->
   # NOTES LISTENERS END
 
 (exports ? this).setup_xeditable_fields = (scroll) ->
-  reload_calendar = (arm_id, scroll) ->
-    # E.g. "billing-strategy-tab" -> "billing_strategy"
-    tab = $('li.custom-tab.active a').last().attr('id')
-    tab = tab.substring(0, tab.indexOf("tab") - 1).replace("-", "_")
-    data = $('#service-calendars').data()
-    data.scroll = scroll
-    data.tab = tab
-    data.arm_id = arm_id
-    data.service_request_id = getSRId()
-    data.sub_service_request_id = data.subServiceRequestId
-    data.protocol_id = data.protocolId
-    # Reload calendar
-    $.get '/service_calendars/table.js', data
-
   # Override x-editable defaults
   $.fn.editable.defaults.send = 'always'
   $.fn.editable.defaults.ajaxOptions =
@@ -306,10 +292,15 @@ $(document).ready ->
         line_item:
           quantity: params.value
         service_request_id: getSRId()
+        sub_service_request_id: getSSRId()
       }
-    success: ->
-      scroll = $(this).parents('.scrolling-div').length > 0
-      reload_calendar($(this).data('armId'), scroll)
+    success: (data) ->
+      # Replace Study Total
+      $(this).parent().siblings('.total-per-study').replaceWith(data['total_per_study'])
+
+      # Replace Totals
+      $('.total-direct-one-time-fee-cost-per-study').replaceWith(data['max_total_direct'])
+      $('.total-one-time-fee-cost-per-study').replaceWith(data['total_costs'])
 
   $('.edit-units-per-qty').editable
     params: (params) ->
@@ -317,7 +308,12 @@ $(document).ready ->
         line_item:
           units_per_quantity: params.value
         service_request_id: getSRId()
+        sub_service_request_id: getSSRId()
       }
-    success: ->
-      scroll = $(this).parents('.scrolling-div').length > 0
-      reload_calendar($(this).data('armId'), scroll)
+    success: (data) ->
+      # Replace Study Total
+      $(this).parent().siblings('.total-per-study').replaceWith(data['total_per_study'])
+
+      # Replace Totals
+      $('.total-direct-one-time-fee-cost-per-study').replaceWith(data['max_total_direct'])
+      $('.total-one-time-fee-cost-per-study').replaceWith(data['total_costs'])

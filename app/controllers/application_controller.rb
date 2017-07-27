@@ -237,7 +237,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authorize_admin
-    @sub_service_request = SubServiceRequest.eager_load(line_items: [:admin_rates, service_request: :protocol, line_items_visits: :arm, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).find(params[:sub_service_request_id])
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @service_request     = @sub_service_request.service_request
 
     unless (current_user.authorized_admin_organizations & @sub_service_request.org_tree).any?

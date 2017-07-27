@@ -25,10 +25,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
   let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
 
-  before(:each) do
-    allow_any_instance_of(ServiceRequestsController).to receive(:previous_page).and_return('http://example.com')
-  end
-
   describe '#remove_service' do
     it 'should call before_filter #initialize_service_request' do
       expect(before_filters.include?(:initialize_service_request)).to eq(true)
@@ -76,6 +72,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
     end
 
     it 'should not delete complete line item' do
+      stub_const('FINISHED_STATUSES', ['complete'])
       org      = create(:organization, process_ssrs: true)
       service  = create(:service, organization: org)
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)

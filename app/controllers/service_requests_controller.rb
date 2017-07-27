@@ -207,19 +207,21 @@ class ServiceRequestsController < ApplicationController
     line_item = @service_request.line_items.find(params[:line_item_id])
     ssr       = line_item.sub_service_request
 
-    ssr.line_items.where(service: line_item.service.related_services).update_all(optional: true)
+    if ssr.can_be_edited?
+      ssr.line_items.where(service: line_item.service.related_services).update_all(optional: true)
 
-    line_item.destroy
+      line_item.destroy
 
-    if ssr.line_items.any?
-      ssr.update_attribute(:status, 'draft') unless ssr.status == 'first_draft'
-    else
-      NotifierLogic.new(@service_request, nil, current_user).ssr_deletion_emails(ssr, ssr_destroyed: true, request_amendment: false)
-      ssr.destroy
+      if ssr.line_items.any?
+        ssr.update_attribute(:status, 'draft') unless ssr.status == 'first_draft'
+      else
+        NotifierLogic.new(@service_request, nil, current_user).ssr_deletion_emails(ssr, ssr_destroyed: true, request_amendment: false)
+        ssr.destroy
+      end
     end
 
     @service_request.reload
-    
+
     @line_items_count     = (@sub_service_request || @service_request).line_items.count
     @sub_service_requests = @service_request.cart_sub_service_requests
 

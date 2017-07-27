@@ -1,4 +1,4 @@
-class CreateStudyPhases < ActiveRecord::Migration
+class CreateStudyPhases < ActiveRecord::Migration[4.2]
   def change
     create_table :study_phases do |t|
       t.integer :order

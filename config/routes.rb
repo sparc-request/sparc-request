@@ -104,7 +104,7 @@ SparcRails::Application.routes.draw do
 
   resources :protocols, except: [:index, :destroy] do
     member do
-      patch :update_protocol_type
+      put :update_protocol_type
       get :approve_epic_rights
       get :push_to_epic
       get :push_to_epic_status
@@ -138,6 +138,7 @@ SparcRails::Application.routes.draw do
   end
 
   resources :line_items, only: [:update]
+  resources :line_items_visits, only: [:update, :destroy]
   resources :visit_groups, only: [:edit, :update]
   resources :visits, only: [:edit, :update, :destroy]
   
@@ -241,8 +242,6 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :line_items_visits, only: [:update, :destroy]
-
     resources :messages, only: [:index, :new, :create]
 
     resources :multiple_line_items, only: [] do
@@ -267,8 +266,9 @@ SparcRails::Application.routes.draw do
     resources :projects, controller: :protocols, except: [:destroy]
 
     resources :protocols, except: [:destroy] do
+      resource :study_type_answers, only: [:edit]
       member do
-        patch :update_protocol_type
+        put :update_protocol_type
         get :display_requests
         patch :archive
       end
@@ -282,7 +282,7 @@ SparcRails::Application.routes.draw do
       scope '/protocols', controller: :protocols, except: [:destroy] do
         resources :test, except: [:destroy] do
           member do
-            patch :update_protocol_type
+            put :update_protocol_type
             get :display_requests
             patch :archive
           end

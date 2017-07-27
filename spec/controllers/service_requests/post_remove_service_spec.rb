@@ -50,10 +50,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ServiceRelation.create(service_id: service.id, related_service_id: service2.id, optional: false)
 
 
-      xhr :post, :remove_service, {
+      post :remove_service, params: {
         id: sr.id,
         line_item_id: li.id
-      }
+      }, xhr: true
 
       expect(li2.reload.optional).to eq(true)
     end
@@ -67,10 +67,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
 
-      xhr :post, :remove_service, {
+      post :remove_service, params: {
         id: sr.id,
         line_item_id: li.id
-      }
+      }, xhr: true
 
       expect(sr.line_items.count).to eq(0)
     end
@@ -84,10 +84,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
 
-      xhr :post, :remove_service, {
+      post :remove_service, params: {
         id: sr.id,
         line_item_id: li.id
-      }
+      }, xhr: true
 
       expect(sr.line_items.count).to eq(1)
     end
@@ -102,12 +102,12 @@ RSpec.describe ServiceRequestsController, type: :controller do
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                    create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
-        stub_const("EDITABLE_STATUSES", { org.id => ['first_draft'] })
+        org.editable_statuses.where(status: 'on_hold').destroy_all
 
-        xhr :post, :remove_service, {
+        post :remove_service, params: {
           id: sr.id,
           line_item_id: li.id
-        }
+        }, xhr: true
 
         expect(ssr.reload.status).to eq('on_hold')
       end
@@ -125,10 +125,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
         session[:identity_id]        = logged_in_user.id
 
-        xhr :post, :remove_service, {
+        post :remove_service, params: {
           id: sr.id,
           line_item_id: li.id
-        }
+        }, xhr: true
 
         expect(ssr.reload.status).to eq('draft')
       end
@@ -144,10 +144,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
         session[:identity_id]        = logged_in_user.id
 
-        xhr :post, :remove_service, {
+        post :remove_service, params: {
           id: sr.id,
           line_item_id: li.id
-        }
+        }, xhr: true
 
         expect(PastStatus.count).to eq(1)
         expect(PastStatus.first.sub_service_request_id).to eq(ssr.id)
@@ -165,10 +165,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
                    create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
 
-        xhr :post, :remove_service, {
+        post :remove_service, params: {
           id: sr.id,
           line_item_id: li.id
-        }
+        }, xhr: true
 
         expect(ssr.reload.status).to eq('first_draft')
       end
@@ -185,10 +185,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
         session[:identity_id]        = logged_in_user.id
 
-        xhr :post, :remove_service, {
+        post :remove_service, params: {
           id: sr.id,
           line_item_id: li.id
-        }
+        }, xhr: true
 
         expect(sr.sub_service_requests.count).to eq(0)
       end
@@ -204,10 +204,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
 
-      xhr :post, :remove_service, {
+      post :remove_service, params: {
         id: sr.id,
         line_item_id: li.id
-      }
+      }, xhr: true
 
       expect(assigns(:line_items_count)).to eq(1)
     end
@@ -222,10 +222,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
 
-      xhr :post, :remove_service, {
+      post :remove_service, params: {
         id: sr.id,
         line_item_id: li.id
-      }
+      }, xhr: true
 
       expect(assigns(:sub_service_requests)[:active].count + assigns(:sub_service_requests)[:complete].count).to eq(1)
     end
@@ -239,10 +239,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
 
-      xhr :post, :remove_service, {
+      post :remove_service, params: {
         id: sr.id,
         line_item_id: li.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:remove_service)
     end
@@ -256,10 +256,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
 
-      xhr :post, :remove_service, {
+      post :remove_service, params: {
         id: sr.id,
         line_item_id: li.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

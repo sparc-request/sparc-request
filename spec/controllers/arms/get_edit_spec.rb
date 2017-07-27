@@ -38,10 +38,10 @@ RSpec.describe ArmsController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
       arm      = create(:arm_without_validations, protocol: protocol)
 
-      xhr :get, :edit, {
+      get :edit, params: {
         id: arm.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:arm)).to eq(arm)
     end
@@ -51,10 +51,10 @@ RSpec.describe ArmsController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
       arm      = create(:arm_without_validations, protocol: protocol)
 
-      xhr :get, :edit, {
+      get :edit, params: {
         id: arm.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:protocol)).to eq(protocol)
     end
@@ -64,10 +64,10 @@ RSpec.describe ArmsController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
       arm      = create(:arm_without_validations, protocol: protocol)
 
-      xhr :get, :edit, {
+      get :edit, params: {
         id: arm.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:header_text)).to be
     end
@@ -77,10 +77,10 @@ RSpec.describe ArmsController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
       arm      = create(:arm_without_validations, protocol: protocol)
 
-      xhr :get, :edit, {
+      get :edit, params: {
         id: arm.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:path)).to eq(arm_path(assigns(:arm)))
     end
@@ -90,10 +90,10 @@ RSpec.describe ArmsController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
       arm      = create(:arm_without_validations, protocol: protocol)
 
-      xhr :get, :edit, {
+      get :edit, params: {
         id: arm.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:edit)
     end
@@ -103,10 +103,10 @@ RSpec.describe ArmsController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
       arm      = create(:arm_without_validations, protocol: protocol)
 
-      xhr :get, :edit, {
+      get :edit, params: {
         id: arm.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

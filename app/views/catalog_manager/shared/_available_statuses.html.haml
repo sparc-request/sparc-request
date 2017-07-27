@@ -29,16 +29,34 @@
             = f.fields_for :available_statuses, @organization.available_statuses.sort{|x, y| AVAILABLE_STATUSES[x.status] <=> AVAILABLE_STATUSES[y.status]} do |as|
               %tr
                 %th= as.label :status, "#{AvailableStatus::TYPES[as.object.status].gsub('CTRC', 'Nexus')}:"
-                %td= as.check_box "_destroy", {:checked => !as.object.new_record? || DEFAULT_STATUSES.include?(as.object.status), :disabled => ["Draft", "Get a Cost Estimate", "Submitted"].include?(AVAILABLE_STATUSES[as.object.status])}, false, true
+                %td= as.check_box "_destroy", {class: 'available-status', :checked => !as.object.new_record? || DEFAULT_STATUSES.include?(as.object.status), :disabled => ["Draft", "Get a Cost Estimate", "Submitted"].include?(AVAILABLE_STATUSES[as.object.status]), data: { status: as.object.status }}, false, true
                 = as.hidden_field :status, :value => as.object.status
         %td
           %legend= t(:organization_form)[:selected_statuses]
           %table
-            %tr
-            %tr
             %tr
               - @organization.available_statuses.sort{|x, y| AVAILABLE_STATUSES[x.status] <=> AVAILABLE_STATUSES[y.status]}.each do |as|
                 -if !as.id.nil?
                   %tr
                     %th= AVAILABLE_STATUSES[as.status]
 
+      - if current_user.is_overlord?
+        %tr
+          %td
+            %br
+            %legend= t(:organization_form)[:editable_statuses]
+            %table
+              = f.fields_for :editable_statuses, @organization.editable_statuses.select{ |es| es.status != 'first_draft'}.sort{|x, y| AVAILABLE_STATUSES[x.status] <=> AVAILABLE_STATUSES[y.status]} do |es|
+                %tr{ class: "#{es.object.status}-dependent", style: @organization.available_statuses.select{ |as| !as.new_record? }.map(&:status).include?(es.object.status) ? "display:table-row;" : "display:none;" }
+                  %th= es.label :status, "#{AVAILABLE_STATUSES[es.object.status].gsub('CTRC', 'Nexus')}:"
+                  %td= es.check_box "_destroy", {:checked => !es.object.new_record?}, false, true
+                  = es.hidden_field :status, :value => es.object.status
+          %td
+            %br
+            %legend= t(:organization_form)[:selected_statuses]
+            %table
+              %tr
+                - @organization.editable_statuses.select{ |es| es.status != 'first_draft' }.sort{|x, y| AVAILABLE_STATUSES[x.status] <=> AVAILABLE_STATUSES[y.status]}.each do |es|
+                  - unless es.id.nil?
+                    %tr{ class: "#{es.status}-dependent", style: @organization.available_statuses.select{ |as| !as.new_record? }.map(&:status).include?(es.status) ? "display:table-row;" : "display:none;" }
+                      %th= AVAILABLE_STATUSES[es.status]

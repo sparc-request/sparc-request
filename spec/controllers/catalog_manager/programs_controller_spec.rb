@@ -34,7 +34,8 @@ RSpec.describe CatalogManager::ProgramsController do
   describe '#create' do
     before :each do
       @provider = create(:provider)
-      post :create, name: 'Some Program', provider_id: @provider.id, format: :js
+      post :create,
+        params: { name: 'Some Program', provider_id: @provider.id }, xhr: true
     end
 
     it 'should create a provider' do
@@ -62,7 +63,7 @@ RSpec.describe CatalogManager::ProgramsController do
       @organization = create(:program)
       logged_in_user.catalog_manager_rights.create(organization_id: @organization.id)
 
-      xhr :get, :show, id: @organization.id
+      get :show, params: { id: @organization.id }, xhr: true
     end
 
     it 'should assign @path' do
@@ -101,12 +102,12 @@ RSpec.describe CatalogManager::ProgramsController do
                               tag_list: nil },
                   pricing_setups: {blank_pricing_setup: pricing_setup} }
 
-      xhr :put, :update, @params, format: :js
+      put :update, params: @params, xhr: true
     end
 
     it 'should assign @attributes' do
       @params[:program][:tag_list] = ''
-      expect(assigns(:attributes).symbolize_keys).to eq(@params[:program])
+      expect(assigns(:attributes).to_h.symbolize_keys).to eq(@params[:program])
     end
 
     it 'should assign @organization' do

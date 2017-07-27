@@ -38,7 +38,7 @@ RSpec.describe 'User edits survey fields', js: true do
     find('.edit-survey').click
     wait_for_javascript_to_finish
 
-    fill_in 'survey-access_code', with: 'access-denied'
+    fill_in "survey-#{@survey.id}-access_code", with: 'access-denied'
     find('.modal-title').click
     wait_for_javascript_to_finish
 
@@ -52,7 +52,7 @@ RSpec.describe 'User edits survey fields', js: true do
     find('.edit-survey').click
     wait_for_javascript_to_finish
 
-    fill_in 'survey-version', with: '9000'
+    fill_in "survey-#{@survey.id}-version", with: '9000'
     find('.modal-title').click
     wait_for_javascript_to_finish
 
@@ -68,7 +68,7 @@ RSpec.describe 'User edits survey fields', js: true do
     first('.edit-survey').click
     wait_for_javascript_to_finish
 
-    bootstrap_select '#survey-display_order', 'Add as last'
+    bootstrap_select "#survey-#{@survey.id}-display_order", 'Add as last'
     wait_for_javascript_to_finish
 
     expect(@survey.reload.display_order).to eq(2)
@@ -81,7 +81,7 @@ RSpec.describe 'User edits survey fields', js: true do
     find('.edit-survey').click
     wait_for_javascript_to_finish
 
-    find('#survey-active').click
+    find("#survey-#{@survey.id}-active").click
     wait_for_javascript_to_finish
 
     expect(@survey.reload.active).to eq(true)
@@ -94,7 +94,7 @@ RSpec.describe 'User edits survey fields', js: true do
     find('.edit-survey').click
     wait_for_javascript_to_finish
 
-    fill_in('survey-title', with: 'This is a Terrible Survey')
+    fill_in("survey-#{@survey.id}-title", with: 'This is a Terrible Survey')
     find('.modal-title').click
     wait_for_javascript_to_finish
 
@@ -108,7 +108,7 @@ RSpec.describe 'User edits survey fields', js: true do
     find('.edit-survey').click
     wait_for_javascript_to_finish
 
-    fill_in('survey-description', with: 'How can I describe such a terrible survey?')
+    fill_in("survey-#{@survey.id}-description", with: 'How can I describe such a terrible survey?')
     find('.modal-title').click
     wait_for_javascript_to_finish
 

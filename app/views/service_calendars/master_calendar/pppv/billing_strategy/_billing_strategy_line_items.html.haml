@@ -65,11 +65,8 @@
         %td.unit-type.text-center.unit-type-width
           = display_unit_type(liv)
 
-      %td.subject-count.text-center.xs-col-width
-        - if locked
-          = liv.subject_count
-        - else
-          %a.edit-subject-count{ href: 'javascript:void(0)', data: { arm_id: arm.id, name: 'subject_count', title: t(:calendars)[:pppv][:editable_fields][:subject_count], value: liv.subject_count, url: dashboard_line_items_visit_path(liv, srid: service_request.id, portal: @portal) } }
+      = render 'service_calendars/master_calendar/pppv/subject_count', liv: liv, arm: arm, page: page, tab: tab, locked: locked, portal: portal
+
       - visits = liv.ordered_visits.paginate(page: page.to_i, per_page: Visit.per_page)
       - visits.each_with_index do |v, index|
         %td.text-center.visit.visit-width{ class: "visit-#{v.id}" }

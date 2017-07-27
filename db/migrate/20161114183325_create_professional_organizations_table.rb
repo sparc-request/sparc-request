@@ -1,4 +1,4 @@
-class CreateProfessionalOrganizationsTable < ActiveRecord::Migration
+class CreateProfessionalOrganizationsTable < ActiveRecord::Migration[4.2]
   def up
     create_table :professional_organizations do |t|
       t.text :name

@@ -21,13 +21,6 @@
 #= require navigation
 
 $(document).ready ->
-
-  getSRId = ->
-    $("input[name='service_request_id']").val()
-
-  getSSRId = ->
-    $("input[name='sub_service_request_id']").val()
-
   freezeHeader = (arm_container) ->
     $(arm_container).each ->
       $(this).find('table').addClass('scrolling-table')
@@ -241,24 +234,7 @@ $(document).ready ->
       data: data
   # NOTES LISTENERS END
 
-getSRId = ->
-  $("input[name='service_request_id']").val()
-
 (exports ? this).setup_xeditable_fields = (scroll) ->
-  reload_calendar = (arm_id, scroll) ->
-    # E.g. "billing-strategy-tab" -> "billing_strategy"
-    tab = $('li.custom-tab.active a').last().attr('id')
-    tab = tab.substring(0, tab.indexOf("tab") - 1).replace("-", "_")
-    data = $('#service-calendars').data()
-    data.scroll = scroll
-    data.tab = tab
-    data.arm_id = arm_id
-    data.service_request_id = getSRId()
-    data.sub_service_request_id = data.subServiceRequestId
-    data.protocol_id = data.protocolId
-    # Reload calendar
-    $.get '/service_calendars/table.js', data
-
   # Override x-editable defaults
   $.fn.editable.defaults.send = 'always'
   $.fn.editable.defaults.ajaxOptions =
@@ -270,40 +246,6 @@ getSRId = ->
       for err in errors
         error_msgs.push(humanize_string(attr)+err)
     return error_msgs.join("\n")
-
-  $('.window-before').editable
-    params: (params) ->
-      {
-        visit_group:
-          window_before: params.value
-        service_request_id: getSRId()
-      }
-
-  $('.day').editable
-    params: (params) ->
-      {
-        visit_group:
-          day: params.value
-        service_request_id: getSRId()
-      }
-    emptytext: '(?)'
-
-  $('.window-after').editable
-    params: (params) ->
-      {
-        visit_group:
-          window_after: params.value
-        service_request_id: getSRId()
-      }
-
-  $('.visit-group-name').editable
-    params: (params) ->
-      {
-        visit_group:
-          name: params.value
-        service_request_id: getSRId()
-      }
-    emptytext: '(?)'
 
   $('.edit-your-cost').editable
     display: (value) ->
@@ -325,10 +267,24 @@ getSRId = ->
         line_items_visit:
           subject_count: params.value
         service_request_id: getSRId()
+        sub_service_request_id: getSSRId()
       }
-    success: () ->
-      scroll = $(this).parents('.scrolling-div').length > 0
-      reload_calendar($(this).data('armId'), scroll)
+    success: (data) ->
+      arm_id = $(this).data('arm-id')
+      
+      # Replace Per Patient / Study Totals
+      $(this).parent().siblings('.pppv-per-patient-line-item-total').replaceWith(data['total_per_patient'])
+      $(this).parent().siblings('.pppv-per-study-line-item-total').replaceWith(data['total_per_study'])
+      
+      # Replace Totals
+      $(".arm-#{arm_id}.maximum-total-direct-cost-per-patient").replaceWith(data['max_total_direct'])
+      $(".arm-#{arm_id}.maximum-total-per-patient").replaceWith(data['max_total_per_patient'])
+      $(".arm-#{arm_id}.total-per-patient-per-visit-cost-per-study").replaceWith(data['total_costs'])
+
+      if data['ssr_header']
+        # Replace Admin Dashboard SSR header
+        $('#sub_service_request_header').html(data['ssr_header'])
+        $('.selectpicker').selectpicker()
 
   $('.edit-qty').editable
     params: (params) ->
@@ -336,10 +292,15 @@ getSRId = ->
         line_item:
           quantity: params.value
         service_request_id: getSRId()
+        sub_service_request_id: getSSRId()
       }
-    success: ->
-      scroll = $(this).parents('.scrolling-div').length > 0
-      reload_calendar($(this).data('armId'), scroll)
+    success: (data) ->
+      # Replace Study Total
+      $(this).parent().siblings('.total-per-study').replaceWith(data['total_per_study'])
+
+      # Replace Totals
+      $('.total-direct-one-time-fee-cost-per-study').replaceWith(data['max_total_direct'])
+      $('.total-one-time-fee-cost-per-study').replaceWith(data['total_costs'])
 
   $('.edit-units-per-qty').editable
     params: (params) ->
@@ -347,7 +308,12 @@ getSRId = ->
         line_item:
           units_per_quantity: params.value
         service_request_id: getSRId()
+        sub_service_request_id: getSSRId()
       }
-    success: ->
-      scroll = $(this).parents('.scrolling-div').length > 0
-      reload_calendar($(this).data('armId'), scroll)
+    success: (data) ->
+      # Replace Study Total
+      $(this).parent().siblings('.total-per-study').replaceWith(data['total_per_study'])
+
+      # Replace Totals
+      $('.total-direct-one-time-fee-cost-per-study').replaceWith(data['max_total_direct'])
+      $('.total-one-time-fee-cost-per-study').replaceWith(data['total_costs'])

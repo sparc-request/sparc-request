@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class FixOldSsrStatusValues < ActiveRecord::Migration
+class FixOldSsrStatusValues < ActiveRecord::Migration[4.2]
   def up
     old_statuses = ["in process", "ctrc review", "ctrc approved", "on hold", "awaiting pi approval"]
     ssrs = SubServiceRequest.all.select {|x| old_statuses.include?(x.status)}

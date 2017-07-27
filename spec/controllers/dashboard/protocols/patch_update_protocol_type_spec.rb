@@ -21,7 +21,7 @@
 require 'rails_helper'
 
 RSpec.describe Dashboard::ProtocolsController do
-  describe 'patch update_protocol_type' do
+  describe 'put update_protocol_type' do
     context 'user is an Authorized User' do
       context 'user not authorized to edit Protocol' do
         before(:each) do
@@ -33,7 +33,7 @@ RSpec.describe Dashboard::ProtocolsController do
           end
           authorize(@logged_in_user, @protocol, can_edit: false)
           log_in_dashboard_identity(obj: @logged_in_user)
-          xhr :patch, :update_protocol_type, id: @protocol.id
+          put :update_protocol_type, params: { id: @protocol.id }, xhr: true
         end
 
         it "should use ProtocolAuthorizer to authorize user" do
@@ -60,7 +60,7 @@ RSpec.describe Dashboard::ProtocolsController do
           allow(@protocol).to receive(:populate_for_edit)
           authorize(@logged_in_user, @protocol, can_edit: true)
 
-          xhr :patch, :update_protocol_type, id: @protocol.id, type: "Project"
+          put :update_protocol_type, params: { id: @protocol.id, type: "Project"}, xhr: true
         end
 
         it 'should set protocol_type' do
@@ -88,7 +88,7 @@ RSpec.describe Dashboard::ProtocolsController do
 
           log_in_dashboard_identity(obj: @logged_in_user)
 
-          xhr :patch, :update_protocol_type, id: @protocol.id
+          put :update_protocol_type, params: { id: @protocol.id }, xhr: true
         end
 
         it 'should set @admin to false' do
@@ -111,7 +111,7 @@ RSpec.describe Dashboard::ProtocolsController do
 
           log_in_dashboard_identity(obj: @logged_in_user)
 
-          xhr :patch, :update_protocol_type, id: @protocol.id
+          put :update_protocol_type, params: { id: @protocol.id }, xhr: true
         end
 
         it 'should set @admin to true' do
@@ -133,7 +133,7 @@ RSpec.describe Dashboard::ProtocolsController do
 
           log_in_dashboard_identity(obj: @logged_in_user)
 
-          xhr :patch, :update_protocol_type, id: @protocol.id
+          put :update_protocol_type, params: { id: @protocol.id }, xhr: true
         end
 
         it 'should set @admin to true' do

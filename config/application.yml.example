@@ -66,8 +66,6 @@ development:
   no_reply_from: "no-reply@musc.edu"
   use_separate_audit_database: false # needs to be false at outset since new institutions may not use a separate audit database
   system_satisfaction_survey: false
-  editable_statuses: { 14: ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval', 'complete'],
-                     48: ['draft', 'submitted', 'complete'] }
   updatable_statuses: [ 'first_draft', 'draft', 'get_a_cost_estimate', 'awaiting_pi_approval']
   finished_statuses: ['complete', 'withdrawn']
   navbar_links: { sparc_request:              ['SPARCRequest', 'http://localhost:3000/'],
@@ -114,8 +112,6 @@ test:
   header_link_2_proper: http://localhost:3000/
   header_link_2_dashboard: http://localhost:3000/dashboard
   header_link_3: http://www.musc.edu
-  editable_statuses: { 14: ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval'],
-                     48: ['draft', 'submitted'] }
   updatable_statuses: [ 'first_draft', 'draft', 'get_a_cost_estimate', 'awaiting_pi_approval']
   finished_statuses: ['complete', 'withdrawn']
   navbar_links: { sparc_request:              ['SPARCRequest', 'http://localhost:3000/'],

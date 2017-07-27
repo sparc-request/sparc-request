@@ -40,7 +40,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
         before :each do
           create(:super_user, identity: @logged_in_user, organization: @organization)
 
-          get :show, id: @sub_service_request.id
+          get :show, params: { id: @sub_service_request.id }
         end
 
         it { is_expected.to render_template "dashboard/sub_service_requests/show" }
@@ -49,7 +49,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
       context 'user is not authorized admin on SSR' do
         before :each do
-          get :show, id: @sub_service_request.id
+          get :show, params: { id: @sub_service_request.id }
         end
 
         it { is_expected.to render_template "service_requests/_authorization_error" }
@@ -62,7 +62,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
       before :each do
         create(:super_user, identity: @logged_in_user, organization: @organization)
 
-        get :show, id: @sub_service_request.id # Defaults to HTML
+        get :show, params: { id: @sub_service_request.id }
       end
 
       it 'should assign instance variables' do
@@ -85,7 +85,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
       context 'session[:service_calendar_pages]' do
         context 'params[:pages] is assigned' do
           before :each do
-            get :show, id: @sub_service_request.id, pages: 'pages'
+            get :show, params: { id: @sub_service_request.id, pages: 'pages' }
           end
 
           it 'should be assigned' do
@@ -98,7 +98,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
         context 'params[:pages] is not assigned' do
           before :each do
-            get :show, id: @sub_service_request.id
+            get :show, params: { id: @sub_service_request.id }
           end
 
           it 'should not be assigned' do
@@ -115,7 +115,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
           @breadcrumber = Dashboard::Breadcrumber.new
           @breadcrumber.add_crumbs(protocol_id: @protocol.id, sub_service_request_id: @sub_service_request.id)
 
-          get :show, id: @sub_service_request.id
+          get :show, params: { id: @sub_service_request.id }
         end
 
         it 'should add the protocol and sub service request' do

@@ -235,7 +235,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       alert_text << "Before creating services, please configure an active pricing setup for either the program '" << @program.name << "' or the provider '" << @program.provider.name << "'."
     end
 
-    render :text => alert_text
+    render :plain => alert_text
   end
 
   private

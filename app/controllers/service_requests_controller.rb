@@ -204,7 +204,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def remove_service
-    line_item = @service_request.line_items.find(line_item_id)
+    line_item = @service_request.line_items.find(params[:line_item_id])
     ssr       = line_item.sub_service_request
 
     ssr.line_items.where(service: line_item.service.related_services).update_all(optional: true)
@@ -218,6 +218,8 @@ class ServiceRequestsController < ApplicationController
       ssr.destroy
     end
 
+    @service_request.reload
+    
     @line_items_count     = (@sub_service_request || @service_request).line_items.count
     @sub_service_requests = @service_request.cart_sub_service_requests
 

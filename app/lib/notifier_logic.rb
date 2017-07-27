@@ -161,16 +161,16 @@ class NotifierLogic
     else
       approval = false
     end
-  
+    deleted_ssrs = @service_request.deleted_ssrs_since_previous_submission(true)
     # send e-mail to all folks with view and above
     @service_request.protocol.project_roles.each do |project_role|
       next if project_role.project_rights == 'none' || project_role.identity.email.blank?
       # Do not want to send authorized user request amendment emails when audit_report is not present
       
       if request_amendment && audit_report.present?
-        Notifier.delay.notify_user(project_role, @service_request, @sub_service_request, approval, @current_user, audit_report, individual_ssr)
+        Notifier.delay.notify_user(project_role, @service_request, @sub_service_request, approval, @current_user, audit_report, individual_ssr, deleted_ssrs)
       elsif !request_amendment
-        Notifier.delay.notify_user(project_role, @service_request, @sub_service_request, approval, @current_user, audit_report, individual_ssr)
+        Notifier.delay.notify_user(project_role, @service_request, @sub_service_request, approval, @current_user, audit_report, individual_ssr, nil)
       end
     end
   end

@@ -85,7 +85,11 @@ class NotifierLogic
       audit_report = request_amendment ? sub_service_request.audit_line_items(@current_user) : nil
       sub_service_request.organization.submission_emails_lookup.each do |submission_email|
         individual_ssr = @sub_service_request.present? ? true : false
-        Notifier.delay.notify_admin(submission_email.email, @current_user, sub_service_request, audit_report, ssr_destroyed, individual_ssr)
+        if ssr_destroyed
+          Notifier.notify_admin(submission_email.email, @current_user, sub_service_request, audit_report, ssr_destroyed, individual_ssr).deliver_now
+        else
+          Notifier.delay.notify_admin(submission_email.email, @current_user, sub_service_request, audit_report, ssr_destroyed, individual_ssr)
+        end
       end
     end
   end
@@ -179,7 +183,11 @@ class NotifierLogic
 
   def send_individual_service_provider_notification(sub_service_request, service_provider, audit_report=nil, ssr_destroyed=false, request_amendment=false)
     individual_ssr = @sub_service_request.present? ? true : false
-    Notifier.delay.notify_service_provider(service_provider, @service_request, @current_user, sub_service_request, audit_report, ssr_destroyed, request_amendment, individual_ssr)
+    if ssr_destroyed
+      Notifier.notify_service_provider(service_provider, @service_request, @current_user, sub_service_request, audit_report, ssr_destroyed, request_amendment, individual_ssr).deliver_now
+    else
+      Notifier.delay.notify_service_provider(service_provider, @service_request, @current_user, sub_service_request, audit_report, ssr_destroyed, request_amendment, individual_ssr)
+    end
   end
 
   def filter_audit_trail(identity, ssr_ids_that_need_auditing)

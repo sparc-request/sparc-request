@@ -525,23 +525,6 @@ class Protocol < ApplicationRecord
     direct_cost_total(service_request) + indirect_cost_total(service_request)
   end
 
-  def arm_cleanup
-    return unless self.arms.count > 0
-
-    remove_arms = true
-
-    self.service_requests.each do |sr|
-      if sr.has_per_patient_per_visit_services?
-        remove_arms = false
-        break
-      end
-    end
-
-    if remove_arms
-      self.arms.destroy_all
-    end
-  end
-
   def has_incomplete_additional_details?
     line_items.any?(&:has_incomplete_additional_details?)
   end

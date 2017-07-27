@@ -198,62 +198,31 @@ class ServiceRequestsController < ApplicationController
       @duplicate_service = true
     else
       add_service.generate_new_service_request
-      @line_items_count     = @sub_service_request ? @sub_service_request.line_items.count : @service_request.line_items.count
+      @line_items_count     = (@sub_service_request || @service_request).line_items.count
       @sub_service_requests = @service_request.cart_sub_service_requests
     end
   end
 
   def remove_service
-    line_item   = @service_request.line_items.find( params[:line_item_id] )
-    line_items  = @sub_service_request ? @sub_service_request.line_items : @service_request.line_items
-    service     = line_item.service
-    ssr         = line_item.sub_service_request
+    line_item = @service_request.line_items.find(line_item_id)
+    ssr       = line_item.sub_service_request
 
-    line_item_service_ids = @service_request.line_items.map(&:service_id)
+    ssr.line_items.where(service: line_item.service.related_services).update_all(optional: true)
 
-    # look at related services and set them to optional
-    # TODO POTENTIAL ISSUE: what if another service has the same related service
-    service.related_services.each do |rs|
-      if line_item_service_ids.include? rs.id
-        @service_request.line_items.find_by_service_id(rs.id).update_attribute(:optional, true)
-      end
-    end
+    line_item.destroy
 
-    line_items.where(service_id: service.id).each do |li|
-      if li.status != 'complete'
-        if ssr.can_be_edited? && ssr.status != 'first_draft'
-          ssr.update_attribute(:status, 'draft')
-        end
-        li.destroy
-      end
-    end
-
-    line_items.reload
-
-    @service_request.reload
-    @page = previous_page
-
-    # Have the protocol clean up the arms
-    @service_request.protocol.arm_cleanup if @service_request.protocol
-
-    # clean up sub_service_requests
-    @service_request.reload
-    @service_request.previous_submitted_at = @service_request.submitted_at
-    @protocol = @service_request.protocol
-
-    #notify service providers and admin of a destroyed ssr upon deletion of ssr
-    if ssr.line_items.empty?
-      notifier_logic = NotifierLogic.new(@service_request, nil, current_user)
-      notifier_logic.ssr_deletion_emails(ssr, ssr_destroyed: true, request_amendment: false)
+    if ssr.line_items.any?
+      ssr.update_attribute(:status, 'draft') unless ssr.status == 'first_draft'
+    else
+      NotifierLogic.new(@service_request, nil, current_user).ssr_deletion_emails(ssr, ssr_destroyed: true, request_amendment: false)
       ssr.destroy
     end
 
-    @service_request.reload
-    @line_items_count     = @sub_service_request ? @sub_service_request.line_items.count : @service_request.line_items.count
+    @line_items_count     = (@sub_service_request || @service_request).line_items.count
     @sub_service_requests = @service_request.cart_sub_service_requests
 
     respond_to do |format|
-      format.js {render layout: false}
+      format.js { render layout: false }
     end
   end
 
@@ -282,11 +251,6 @@ class ServiceRequestsController < ApplicationController
   end
 
   private
-
-  def previous_page
-    # we need for pages other than the catalog
-    request.referrer.split('/').last
-  end
 
   def feedback_params
     params.require(:feedback).permit(:email, :message)

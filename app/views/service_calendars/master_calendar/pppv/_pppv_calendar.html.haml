@@ -38,7 +38,7 @@
       = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_header",
         service_request: service_request, sub_service_request: sub_service_request,
         arm: arm, tab: tab, pages: pages, page: page, review: review,
-        portal: portal, visit_groups: visit_groups, admin: admin
+        portal: portal, admin: admin, merged: merged, consolidated: consolidated, statuses_hidden: statuses_hidden
     %tbody.pppv-tbody{ class: @scroll_true ? "scrolling-div" : "" }
       = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_line_items",
         service_request: service_request, sub_service_request: sub_service_request,

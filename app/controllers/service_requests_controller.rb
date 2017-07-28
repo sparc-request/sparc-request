@@ -132,8 +132,8 @@ class ServiceRequestsController < ApplicationController
     @review       = true
     @portal       = false
     @admin        = false
-    @merged       = false
-    @consolidated = true
+    @merged       = true
+    @consolidated = false
 
     # Reset all the page numbers to 1 at the start of the review request
     # step.

@@ -105,7 +105,7 @@ class ServiceCalendarsController < ApplicationController
     @consolidated         = params[:consolidated]
     @merged               = params[:merged]
     @statuses_hidden      = params[:statuses_hidden]
-    @arm                  = Arm.eager_load(:visit_groups).find( params[:arm_id] )
+    @arm                  = Arm.find( params[:arm_id] )
     @visit_group          = params[:visit_group_id] ? @arm.visit_groups.find(params[:visit_group_id]) : @arm.visit_groups.first
 
     respond_to do |format|
@@ -126,6 +126,7 @@ class ServiceCalendarsController < ApplicationController
     @statuses_hidden      = params[:statuses_hidden]
     @arm                  = Arm.find( params[:arm_id] )
     @visit_group          = VisitGroup.find(params[:visit_group].to_i)
+    @visit_groups         = @arm.visit_groups.page(@page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] } })
 
     @visit_group.insert_at( params[:position].to_i - 1 )
 

@@ -359,7 +359,7 @@ class LineItem < ApplicationRecord
   private
 
   def build_line_items_visits_if_pppv
-    if !self.try(:one_time_fee) && self.service_request.try(:arms).try(:any?)
+    if self.service && !self.one_time_fee && self.service_request.try(:arms).try(:any?)
       self.service_request.arms.each do |arm|
         arm.line_items_visits.create(line_item: self, subject_count: arm.subject_count)
       end

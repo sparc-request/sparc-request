@@ -75,7 +75,7 @@ wb.add_worksheet(name: "Review") do |sheet|
   sheet.add_row proxy_row, :style => sub_header_style
 
   @protocol.project_roles.each do |pr|
-    sheet.add_row [pr.identity.full_name, USER_ROLES.key(pr.role), "", "", PROXY_RIGHTS.key(pr.project_rights)], :style => default
+    sheet.add_row [pr.identity.full_name, PermissibleValue.get_value('user_role', pr.role), "", "", PermissibleValue.get_value('proxy_right', pr.project_rights)], :style => default
   end
 
   sheet.add_row
@@ -331,22 +331,24 @@ wb.add_worksheet(name: "Review") do |sheet|
 
   ## signatures and disclaimer
 
-  sheet.add_row
+  if @show_signature_section
+    sheet.add_row
 
-  signatures_text  = "The Signatures of the Principal Investigator and Study Delegate (study coordinator, grants adminstrator, etc.) indicate that this Study Calendar "
-  signatures_text2 = "has been reviewed; the _____________________________________________________ billable services have been identified and the highlighted services "
-  signatures_text3 = "should be included in an order set for unlicensed staff to process standing orders for the abive identified study."
+    signatures_text  = "The Signatures of the Principal Investigator and Study Delegate (study coordinator, grants adminstrator, etc.) indicate that this Study Calendar "
+    signatures_text2 = "has been reviewed; the _____________________________________________________ billable services have been identified and the highlighted services "
+    signatures_text3 = "should be included in an order set for unlicensed staff to process standing orders for the above identified study."
 
-  first_signature_row = sheet.add_row([signatures_text], :style => row_header_style, :widths => [:ignore])
-  sheet.add_row([signatures_text2], :style => row_header_style, :widths => [:ignore])
-  sheet.add_row([signatures_text3], :style => row_header_style, :widths => [:ignore])
-  sheet.add_row
+    first_signature_row = sheet.add_row([signatures_text], :style => row_header_style, :widths => [:ignore])
+    sheet.add_row([signatures_text2], :style => row_header_style, :widths => [:ignore])
+    sheet.add_row([signatures_text3], :style => row_header_style, :widths => [:ignore])
+    sheet.add_row
 
-  sheet.add_row(["Principal Investigator Signature:                     _________________________________________      Date: ____________________"], :style => default, :widths => [:ignore])
-  sheet.add_row
-  sheet.add_row(["Study Delegate Signature:                              _________________________________________      Date: ____________________"], :style => default, :widths => [:ignore])
-  sheet.add_row
-  sheet.add_row(["___________________ Delegate Signature: _________________________________________      Date: ____________________"], :style => default, :widths => [:ignore])
+    sheet.add_row(["Principal Investigator Signature:                     _________________________________________      Date: ____________________"], :style => default, :widths => [:ignore])
+    sheet.add_row
+    sheet.add_row(["Study Delegate Signature:                              _________________________________________      Date: ____________________"], :style => default, :widths => [:ignore])
+    sheet.add_row
+    sheet.add_row(["___________________ Delegate Signature: _________________________________________      Date: ____________________"], :style => default, :widths => [:ignore])
+  end
 
   ###### style and merge cells ######
 
@@ -437,15 +439,17 @@ wb.add_worksheet(name: "Review") do |sheet|
 
 
   ### added for signature section, fix the width of A, and then merge cells
-  sheet.merge_cells("A#{first_signature_row.index+1}:F#{first_signature_row.index+1}")
-  sheet.merge_cells("A#{first_signature_row.index+2}:F#{first_signature_row.index+2}")
-  sheet.merge_cells("A#{first_signature_row.index+3}:F#{first_signature_row.index+3}")
-  sheet.merge_cells("A#{first_signature_row.index+4}:F#{first_signature_row.index+4}")
-  sheet.merge_cells("A#{first_signature_row.index+5}:F#{first_signature_row.index+5}")
-  sheet.merge_cells("A#{first_signature_row.index+6}:F#{first_signature_row.index+6}")
-  sheet.merge_cells("A#{first_signature_row.index+7}:F#{first_signature_row.index+7}")
-  sheet.merge_cells("A#{first_signature_row.index+8}:F#{first_signature_row.index+8}")
-  sheet.merge_cells("A#{first_signature_row.index+9}:F#{first_signature_row.index+9}")
+  if @show_signature_section
+    sheet.merge_cells("A#{first_signature_row.index+1}:F#{first_signature_row.index+1}")
+    sheet.merge_cells("A#{first_signature_row.index+2}:F#{first_signature_row.index+2}")
+    sheet.merge_cells("A#{first_signature_row.index+3}:F#{first_signature_row.index+3}")
+    sheet.merge_cells("A#{first_signature_row.index+4}:F#{first_signature_row.index+4}")
+    sheet.merge_cells("A#{first_signature_row.index+5}:F#{first_signature_row.index+5}")
+    sheet.merge_cells("A#{first_signature_row.index+6}:F#{first_signature_row.index+6}")
+    sheet.merge_cells("A#{first_signature_row.index+7}:F#{first_signature_row.index+7}")
+    sheet.merge_cells("A#{first_signature_row.index+8}:F#{first_signature_row.index+8}")
+    sheet.merge_cells("A#{first_signature_row.index+9}:F#{first_signature_row.index+9}")
+  end
 
   ### setting some column widths
   if @admin_offset

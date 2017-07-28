@@ -26,10 +26,10 @@
         %td
           %legend= t(:organization_form)[:available_statuses]
           %table
-            = f.fields_for :available_statuses, @organization.available_statuses.sort{|x, y| AVAILABLE_STATUSES[x.status] <=> AVAILABLE_STATUSES[y.status]} do |as|
+            = f.fields_for :available_statuses, @organization.available_statuses.sort{|x, y| PermissibleValue.get_value('status', x.status) <=> PermissibleValue.get_value('status', y.status)} do |as|
               %tr
-                %th= as.label :status, "#{AvailableStatus::TYPES[as.object.status].gsub('CTRC', 'Nexus')}:"
-                %td= as.check_box "_destroy", {:checked => !as.object.new_record? || DEFAULT_STATUSES.include?(as.object.status), :disabled => ["Draft", "Get a Cost Estimate", "Submitted"].include?(AVAILABLE_STATUSES[as.object.status])}, false, true
+                %th= as.label :status, "#{PermissibleValue.get_value('status', as.object.status).gsub('CTRC', 'Nexus')}:"
+                %td= as.check_box "_destroy", {:checked => !as.object.new_record? || PermissibleValue.get_key_list('status', true).include?(as.object.status), :disabled => ["Draft", "Get a Cost Estimate", "Submitted"].include?(PermissibleValue.get_value('status', as.object.status))}, false, true
                 = as.hidden_field :status, :value => as.object.status
         %td
           %legend= t(:organization_form)[:selected_statuses]
@@ -37,8 +37,8 @@
             %tr
             %tr
             %tr
-              - @organization.available_statuses.sort{|x, y| AVAILABLE_STATUSES[x.status] <=> AVAILABLE_STATUSES[y.status]}.each do |as|
+              - @organization.available_statuses.sort{|x, y| PermissibleValue.get_value('status', x.status) <=> PermissibleValue.get_value('status', y.status)}.each do |as|
                 -if !as.id.nil?
                   %tr
-                    %th= AVAILABLE_STATUSES[as.status]
+                    %th= PermissibleValue.get_value('status', as.status)
 

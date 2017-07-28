@@ -20,7 +20,7 @@
 
 # Report that displays all SUCCESS Center Service Requests By core
 
-class SuccessReport < Report
+class SuccessReport < Reporting
 
   def self.description
     "Provide a list of all service requests, by core, under the SUCCESS Center."
@@ -50,7 +50,7 @@ class SuccessReport < Report
       'Status'
     ]
 
-    statuses = AVAILABLE_STATUSES
+    statuses = PermissibleValue.get_hash('status')
 
     orgs = Program.find(47).cores.map(&:id)
 

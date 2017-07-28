@@ -34,6 +34,7 @@ class ServiceRequestsController < ApplicationController
   def show
     @protocol = @service_request.protocol
     @admin_offset = params[:admin_offset]
+    @show_signature_section = params[:show_signature_section]
     @service_list_true = @service_request.service_list(true)
     @service_list_false = @service_request.service_list(false)
     @line_items = @service_request.line_items
@@ -419,7 +420,7 @@ class ServiceRequestsController < ApplicationController
         @events.reverse!
 
         Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).update_all(status: ALERT_STATUSES['clear'])
-      rescue Exception => e
+      rescue Exception, ArgumentError => e
         active_alert = Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).first_or_initialize
         if Rails.env == 'production' && active_alert.new_record?
           active_alert.save
@@ -428,16 +429,19 @@ class ServiceRequestsController < ApplicationController
       end
     end
   end
-
+  
   def setup_catalog_news_feed
     if USE_NEWS_FEED
-      page = Nokogiri::HTML(open("https://www.sparcrequestblog.com"))
-      articles = page.css('article.post').take(3)
       @news = []
-      articles.each do |article|
-        @news << {title: (article.at_css('.entry-title') ? article.at_css('.entry-title').text : ""),
+      begin
+        page = Nokogiri::HTML(open("https://www.sparcrequestblog.com"))
+        articles = page.css('article.post').take(3)
+        articles.each do |article|
+          @news << {title: (article.at_css('.entry-title') ? article.at_css('.entry-title').text : ""),
                   link: (article.at_css('.entry-title a') ? article.at_css('.entry-title a')[:href] : ""),
                   date: (article.at_css('.date') ? article.at_css('.date').text : "") }
+        end
+      rescue Net::OpenTimeout
       end
     end
   end

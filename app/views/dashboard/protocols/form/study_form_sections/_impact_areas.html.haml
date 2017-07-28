@@ -28,7 +28,7 @@
     = form.fields_for :impact_areas, protocol.impact_areas.sort_by(&:position) do |ia_form|
       - checked = !ia_form.object.new && !ia_form.object.marked_for_destruction?
       .form-group.row{ class: ia_form.object.name }
-        = ia_form.label :name, "#{ImpactArea::TYPES[ia_form.object.name]}:", class: 'col-lg-2 control-label'
+        = ia_form.label :name, "#{PermissibleValue.get_value('impact_area', ia_form.object.name)}:", class: 'col-lg-2 control-label'
         .col-lg-1
           = ia_form.check_box "_destroy", { checked: checked, class: 'form-control' }, false, true
           = ia_form.hidden_field :name, value: ia_form.object.name

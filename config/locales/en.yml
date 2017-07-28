@@ -60,6 +60,8 @@ en:
           attributes:
             content:
               blank: "Content can't be blank"
+      messages:
+        spoofed_media_type: "has format errors. Please re-save the file in a different format and try again."
     attributes:
       arm:
         name: "Arm Name"
@@ -850,7 +852,7 @@ en:
     name: "Name"
     new_cm: "New Catalog Manager"
     new_sp: "New Service Provider"
-    one_time_fee: "Non-clinical Service"
+    one_time_fee: "Non-clinical (Non-Per </br> Patient/Visit) Services"
     order: "Order"
     otf_field_errors: "If the Pricing Map is a non-clinical service (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required."
     per_patient_errors: "Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps."
@@ -987,7 +989,7 @@ en:
   study_form:
     affiliations: "Affiliations, Collaborations, and Memberships"
     approval_pending: "Application/Approval Pending:"
-    study_type_questions: "Study type questions *"
+    study_type_questions: "Study Type Questions"
     attributes: "Study Attributes"
     clear: "Clear"
     code_blank: "Select a Federal Grant Code"

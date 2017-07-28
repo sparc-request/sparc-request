@@ -46,7 +46,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       initialize_filterrific(Protocol, params[:filterrific] && filterrific_params,
         default_filter_params: @default_filter_params,
         select_options: {
-          with_status: AVAILABLE_STATUSES.invert,
+          with_status: PermissibleValue.get_inverted_hash('status'),
           with_organization: Dashboard::GroupedOrganizations.new(@organizations).collect_grouped_options,
           with_owner: build_with_owner_params
         },
@@ -149,12 +149,15 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def update
     protocol_type = protocol_params[:type]
-    @protocol.assign_attributes({ selected_for_epic: protocol_params[:selected_for_epic], study_type_question_group_id: StudyTypeQuestionGroup.active_id })
     @protocol = @protocol.becomes(protocol_type.constantize) unless protocol_type.nil?
-    if params[:updated_protocol_type] == 'true' && protocol_type == 'Study' && @protocol.valid?
-      @protocol.update_attribute(:type, protocol_type)
-      @protocol.activate
-      @protocol.reload
+    if params[:updated_protocol_type] == 'true' && protocol_type == 'Study'
+      @protocol.assign_attributes(study_type_question_group_id: StudyTypeQuestionGroup.active_id)
+      @protocol.assign_attributes(selected_for_epic: protocol_params[:selected_for_epic]) if protocol_params[:selected_for_epic]
+      if @protocol.valid?
+        @protocol.update_attribute(:type, protocol_type)
+        @protocol.activate
+        @protocol.reload
+      end
     end
 
     attrs               = fix_date_params

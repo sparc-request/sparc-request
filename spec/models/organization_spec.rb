@@ -25,6 +25,7 @@ RSpec.describe 'organization' do
   let_there_be_lane
   let_there_be_j
   build_service_request_with_project
+  build_statuses
 
   describe 'submission emails lookup' do
 

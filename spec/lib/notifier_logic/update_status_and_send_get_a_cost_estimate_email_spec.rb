@@ -26,6 +26,7 @@ RSpec.describe NotifierLogic do
   let_there_be_j
   fake_login_for_each_test
   build_service_request_with_study
+  build_statuses
 
   let(:logged_in_user)          { Identity.first }
 
@@ -70,7 +71,7 @@ RSpec.describe NotifierLogic do
         end
         project_role = @sr.protocol.project_roles.first
         NotifierLogic.new(@sr, nil, logged_in_user).update_status_and_send_get_a_cost_estimate_email
-        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, nil, false, logged_in_user, nil, false)
+        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, nil, false, logged_in_user, nil, false, anything)
       end
 
       it 'should notify service providers (initial submission email)' do
@@ -226,7 +227,7 @@ RSpec.describe NotifierLogic do
         end
         project_role = @sr.protocol.project_roles.first
         NotifierLogic.new(@sr, nil, logged_in_user).update_status_and_send_get_a_cost_estimate_email
-        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, nil, false, logged_in_user, nil, false)
+        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, nil, false, logged_in_user, nil, false, anything)
       end
 
       it 'should notify service providers (initial submission email)' do
@@ -304,7 +305,7 @@ RSpec.describe NotifierLogic do
         end
         project_role = @sr.protocol.project_roles.first
         NotifierLogic.new(@sr, nil, logged_in_user).update_status_and_send_get_a_cost_estimate_email
-        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, nil, false, logged_in_user, nil, false)
+        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, nil, false, logged_in_user, nil, false, anything)
       end
 
       it 'should notify service providers (initial submission email)' do

@@ -74,10 +74,11 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def formatted_status
-    if AVAILABLE_STATUSES.has_key? status
-      AVAILABLE_STATUSES[status]
-    else
+    formatted_status = PermissibleValue.get_value('status', self.status)
+    if formatted_status.nil?
       "STATUS MAPPING NOT PRESENT"
+    else
+      formatted_status
     end
   end
 
@@ -261,7 +262,7 @@ class SubServiceRequest < ApplicationRecord
   def update_status_and_notify(new_status)
     to_notify = []
     if can_be_edited?
-      available = AVAILABLE_STATUSES.keys
+      available = PermissibleValue.get_key_list('status')
       editable = EDITABLE_STATUSES[organization_id] || available
       changeable = available & editable
       if changeable.include?(new_status)

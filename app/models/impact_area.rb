@@ -25,6 +25,4 @@ class ImpactArea < ApplicationRecord
 
   attr_accessor :new
   attr_accessor :position
-
-  TYPES = IMPACT_AREAS
 end

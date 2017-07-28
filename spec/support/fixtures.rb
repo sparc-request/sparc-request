@@ -46,6 +46,52 @@ def let_there_be_j
     )}
 end
 
+def build_impact_areas
+  let!(:pediatrics)     { create(:permissible_value, key: 'pediatrics', value: 'Pediatrics', category: 'impact_area') }
+  let!(:hiv_aids)       { create(:permissible_value, key: 'hiv_aids', value: 'HIV/AIDS', category: 'impact_area') }
+  let!(:hypertension)   { create(:permissible_value, key: 'hypertension', value: 'Hypertension', category: 'impact_area') }
+  let!(:stroke)         { create(:permissible_value, key: 'stroke', value: 'Stroke', category: 'impact_area') }
+  let!(:diabetes)       { create(:permissible_value, key: 'diabetes', value: 'Diabetes', category: 'impact_area') }
+  let!(:cancer)         { create(:permissible_value, key: 'cancer', value: 'Cancer', category: 'impact_area') }
+  let!(:community)      { create(:permissible_value, key: 'community', value: 'Community Engagement', category: 'impact_area') }
+  let!(:other)          { create(:permissible_value, key: 'other', value: 'Other', category: 'impact_area') }
+end
+
+def build_statuses
+  let!(:ctrc_approved) {create(:permissible_value, category: 'status', key: 'ctrc_approved', value: 'Active')}
+  let!(:administrative_review) {create(:permissible_value, category: 'status', key: 'administrative_review', value: 'Administrative Review')}
+  let!(:approved) {create(:permissible_value, category: 'status', key: 'approved', value: 'Approved')}
+  let!(:awaiting_pi_approval) {create(:permissible_value, category: 'status', key: 'awaiting_pi_approval', value: 'Awaiting Requester Response')}
+  let!(:complete) {create(:permissible_value, category: 'status', key: 'complete', value: 'Complete')}
+  let!(:declined) {create(:permissible_value, category: 'status', key: 'declined', value: 'Declined')}
+  let!(:draft) {create(:permissible_value, category: 'status', key: 'draft', value: 'Draft')}
+  let!(:get_a_cost_estimate) {create(:permissible_value, category: 'status', key: 'get_a_cost_estimate', value: 'Get a Cost Estimate')}
+  let!(:invoiced) {create(:permissible_value, category: 'status', key: 'invoiced', value: 'Invoiced')}
+  let!(:ctrc_review) {create(:permissible_value, category: 'status', key: 'ctrc_review', value: 'In Admin review')}
+  let!(:committee_review) {create(:permissible_value, category: 'status', key: 'committee_review', value: 'In Committee Review')}
+  let!(:fulfillment_queue) {create(:permissible_value, category: 'status', key: 'fulfillment_queue', value: 'In Fulfillment Queue')}
+  let!(:in_process) {create(:permissible_value, category: 'status', key: 'in_process', value: 'In Process')}
+  let!(:on_hold) {create(:permissible_value, category: 'status', key: 'on_hold', value: 'On Hold')}
+  let!(:submitted) {create(:permissible_value, category: 'status', key: 'submitted', value: 'Submitted')}
+  let!(:withdrawn) {create(:permissible_value, category: 'status', key: 'withdrawn', value: 'Withdrawn')}
+end
+
+def build_user_roles
+  let!(:primary_pi_role)    { create(:permissible_value, category: 'user_role', key: 'primary-pi', value: 'Primary PI') }
+  let!(:pi_role)            { create(:permissible_value, category: 'user_role', key: 'pi', value: 'PD/PI') }
+  let!(:manager_role)       { create(:permissible_value, category: 'user_role', key: 'business-grants-manager', value: 'Billing/Business Manager') }
+  let!(:consultant_role)    { create(:permissible_value, category: 'user_role', key: 'consultant', value: 'Consultant') }
+  let!(:investigator_role)  { create(:permissible_value, category: 'user_role', key: 'co-investigator', value: 'Co-Investigator') }
+  let!(:mentor_role)        { create(:permissible_value, category: 'user_role', key: 'mentor', value: 'Mentor') }
+  let!(:other_role)         { create(:permissible_value, category: 'user_role', key: 'other', value: 'Other') }
+end
+
+def build_proxy_rights
+  let!(:none_right)     { create(:permissible_value, category: 'proxy_right', key: 'none', value: 'Member Only') }
+  let!(:view_right)     { create(:permissible_value, category: 'proxy_right', key: 'view', value: 'View Rights') }
+  let!(:approve_right)  { create(:permissible_value, category: 'proxy_right', key: 'approve', value: 'Authorize/Change Study Charges') }
+end
+
 def build_study_phases
   let!(:study_phase_O)    { StudyPhase.create(order: 1, phase: 'O', version: 1) }
   let!(:study_phase_I)    { StudyPhase.create(order: 2, phase: 'I', version: 1) }
@@ -85,6 +131,9 @@ def build_study_type_questions
   let!(:stq_epic_inbasket_version_3)           { StudyTypeQuestion.create("order"=>3, "question"=>"3. Is it appropriate for study team members to receive Epic InBasket notifications if research participants in this study are hospitalized or admitted to the Emergency Department?", "friendly_id"=>"epic_inbasket", "study_type_question_group_id" => study_type_question_group_version_3.id) }
   let!(:stq_research_active_version_3)         { StudyTypeQuestion.create("order"=>4, "question"=>"4. Is it appropriate to display the pink 'Research:Active indicator in the Patient Header for all study participants?", "friendly_id"=>"research_active", "study_type_question_group_id" => study_type_question_group_version_3.id) }
   let!(:stq_restrict_sending_version_3)        { StudyTypeQuestion.create("order"=>5, "question"=>"Is it appropriate for all study participants to receive associated test results, such as labs and/or imaging findings, via MyChart?", "friendly_id"=>"restrict_sending", "study_type_question_group_id" => study_type_question_group_version_3.id) }
+  let!(:stq_certificate_of_conf_no_epic_version_3)     { StudyTypeQuestion.create("order"=>6, "question"=>"1. Does your Informed Consent provide information to the participant specifically stating their study participation will be kept private from anyone outside the research team? (i.e. your study has a Certificate of Confidentiality or involves sensitive data collection which requires de-identification of the research participant.)", "friendly_id"=>"certificate_of_conf_no_epic", "study_type_question_group_id" => study_type_question_group_version_3.id) }
+  let!(:stq_higher_level_of_privacy_no_epic_version_3) { StudyTypeQuestion.create("order"=>7, "question"=>'2. Does your study require a higher level of privacy protection for the participants? (Your study needs "break the glass" functionality because it is collection sensitive data, such as HIV/sexually transmitted disease, sexual practice/attitudes, illegal substance, etc., which needs higher privacy protection, yet not complete de-identification of the study participant.)', "friendly_id"=>"higher_level_of_privacy_no_epic", "study_type_question_group_id" => study_type_question_group_version_3.id) }
+  
 end
 
 
@@ -107,6 +156,8 @@ def build_study_type_answers
   let!(:answer3_version_3)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_epic_inbasket_version_3.id, answer: 0)}
   let!(:answer4_version_3)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_research_active_version_3.id, answer: 1)}
   let!(:answer5_version_3)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_restrict_sending_version_3.id, answer: 1)}
+  let!(:answer6_version_3)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_certificate_of_conf_no_epic_version_3.id, answer: 0)}
+  let!(:answer7_version_3)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_higher_level_of_privacy_no_epic_version_3.id, answer: 0)}
 end
 
 def build_project_type_answers

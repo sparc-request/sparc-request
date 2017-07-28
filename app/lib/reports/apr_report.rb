@@ -153,7 +153,7 @@ class AprReport < Report
           row << (INSTITUTIONS.detect {|k,v| v == pi.institution}[0] rescue pi.institution)
           row << (COLLEGES.detect {|k,v| v == pi.college}[0] rescue pi.college)
           row << (DEPARTMENTS.detect {|k,v| v == pi.department}[0] rescue pi.department)
-          row << (SUBSPECIALTIES.detect {|k,v| v == pi.subspecialty}[0] rescue pi.subspecialty)
+          row << (PermissibleValue.get_inverted_hash('subspecialty').detect {|k,v| v == pi.subspecialty}[0] rescue pi.subspecialty)
         else
           7.times do
             row << ''

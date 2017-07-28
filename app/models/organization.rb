@@ -359,7 +359,7 @@ class Organization < ApplicationRecord
   def get_available_statuses
     tmp_available_statuses = self.available_statuses.reject{|status| status.new_record?}
     statuses = []
-    if tmp_available_statuses.empty?
+    if tmp_available_statuses.empty? || tmp_available_statuses.collect{|status| status.status} == DEFAULT_STATUSES.collect{|k, v| k}
       self.parents.each do |parent|
         if !parent.available_statuses.empty?
           statuses = AVAILABLE_STATUSES.select{|k,v| parent.available_statuses.map(&:status).include? k}

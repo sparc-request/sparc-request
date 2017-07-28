@@ -440,16 +440,16 @@ RSpec.describe Organization, type: :model do
 
     describe "get available statuses" do
 
-      it "should set the status to the parent's status if there is one" do
-        expect(core.get_available_statuses).to eq({"draft"=>"Draft", "submitted"=>"Submitted"})
+      it "should set inherit the parent's status if there is one" do
+        expect(core.get_available_statuses).to include({"administrative_review"=>"Administrative Review"})
       end
 
       it "should set the status to the default if there are no parent statuses" do
         expect(provider.get_available_statuses).to include("draft" => "Draft", "submitted" => "Submitted", "complete" => "Complete", "in_process" => "In Process", "awaiting_pi_approval" => "Awaiting Requester Response", "on_hold" => "On Hold")
       end
 
-      it "should not get the parent's status if it already has a status" do
-        expect(program.get_available_statuses).to eq({"draft"=>"Draft", "submitted"=>"Submitted"})
+      it "should not get the parent's status if it already has a non-default status" do
+        expect(program.get_available_statuses).to include({"administrative_review"=>"Administrative Review"})
       end
     end
 

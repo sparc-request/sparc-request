@@ -17,8 +17,14 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- path_method = method(:table_service_calendars_path)
-- url_data = { sub_service_request_id: sub_service_request.try(:id), service_request_id: service_request.try(:id), pages: pages, arm_id: arm.id, tab: tab, portal: portal, admin: admin, format: :js }
+- url_data = { sub_service_request_id: sub_service_request.try(:id), service_request_id: service_request.try(:id), pages: pages.to_s, arm_id: arm.id, tab: tab, portal: portal.to_s, admin: admin.to_s, review: review.to_s, merged: merged.to_s, consolidated: consolidated.to_s, statuses_hidden: statuses_hidden, format: :js }
+
+- if consolidated
+  - path_method = method(:view_full_calendar_service_calendars_path)
+- elsif merged
+  - path_method = method(:merged_calendar_service_calendars_path)
+- else
+  - path_method = method(:table_service_calendars_path)
 
 .col-xs-2
   .page-change-arrow.btn.btn-info.glyphicon.glyphicon-arrow-left{ title: t(:calendars)[:pppv][:header_fields][:page_select][:previous], type: 'button', disabled: page == 1 ? true : nil, role: 'button', aria: { label: t(:calendars)[:pppv][:header_fields][:page_select][:previous] }, data: { toggle: 'tooltip', animation: 'false', url: path_method.call(url_data.merge(page: page - 1)) } }

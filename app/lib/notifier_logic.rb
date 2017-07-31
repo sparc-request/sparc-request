@@ -85,7 +85,11 @@ class NotifierLogic
       audit_report = request_amendment ? sub_service_request.audit_line_items(@current_user) : nil
       sub_service_request.organization.submission_emails_lookup.each do |submission_email|
         individual_ssr = @sub_service_request.present? ? true : false
-        Notifier.delay.notify_admin(submission_email.email, @current_user, sub_service_request, audit_report, ssr_destroyed, individual_ssr)
+        if ssr_destroyed
+          Notifier.notify_admin(submission_email.email, @current_user, sub_service_request, audit_report, ssr_destroyed, individual_ssr).deliver_now
+        else
+          Notifier.delay.notify_admin(submission_email.email, @current_user, sub_service_request, audit_report, ssr_destroyed, individual_ssr)
+        end
       end
     end
   end
@@ -157,16 +161,16 @@ class NotifierLogic
     else
       approval = false
     end
-  
+    deleted_ssrs = @service_request.deleted_ssrs_since_previous_submission(true)
     # send e-mail to all folks with view and above
     @service_request.protocol.project_roles.each do |project_role|
       next if project_role.project_rights == 'none' || project_role.identity.email.blank?
       # Do not want to send authorized user request amendment emails when audit_report is not present
       
       if request_amendment && audit_report.present?
-        Notifier.delay.notify_user(project_role, @service_request, @sub_service_request, approval, @current_user, audit_report, individual_ssr)
+        Notifier.delay.notify_user(project_role, @service_request, @sub_service_request, approval, @current_user, audit_report, individual_ssr, deleted_ssrs)
       elsif !request_amendment
-        Notifier.delay.notify_user(project_role, @service_request, @sub_service_request, approval, @current_user, audit_report, individual_ssr)
+        Notifier.delay.notify_user(project_role, @service_request, @sub_service_request, approval, @current_user, audit_report, individual_ssr, nil)
       end
     end
   end
@@ -179,7 +183,11 @@ class NotifierLogic
 
   def send_individual_service_provider_notification(sub_service_request, service_provider, audit_report=nil, ssr_destroyed=false, request_amendment=false)
     individual_ssr = @sub_service_request.present? ? true : false
-    Notifier.delay.notify_service_provider(service_provider, @service_request, @current_user, sub_service_request, audit_report, ssr_destroyed, request_amendment, individual_ssr)
+    if ssr_destroyed
+      Notifier.notify_service_provider(service_provider, @service_request, @current_user, sub_service_request, audit_report, ssr_destroyed, request_amendment, individual_ssr).deliver_now
+    else
+      Notifier.delay.notify_service_provider(service_provider, @service_request, @current_user, sub_service_request, audit_report, ssr_destroyed, request_amendment, individual_ssr)
+    end
   end
 
   def filter_audit_trail(identity, ssr_ids_that_need_auditing)

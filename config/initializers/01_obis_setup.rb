@@ -18,18 +18,11 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-begin
-  application_config ||= YAML.load_file(Rails.root.join('config', 'application.yml'))[Rails.env]
-
-  if wkhtmltopdf_location = Setting.find_by_key('wkhtmltopdf_location').try(:value)
-    # Setup PDFKit
-    PDFKit.configure do |config|
-      config.wkhtmltopdf = wkhtmltopdf_location
-    end
+if wkhtmltopdf_location = Setting.find_by_key('wkhtmltopdf_location').try(:value)
+  # Setup PDFKit
+  PDFKit.configure do |config|
+    config.wkhtmltopdf = wkhtmltopdf_location
   end
-
-rescue
-  raise "application.yml not found, see config/application.yml.example"
 end
 
 # Loads in and sets all the constants from the constants.yml file

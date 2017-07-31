@@ -1,22 +1,37 @@
 class PopulateDefaultSettingsData < ActiveRecord::Migration[5.0]
   def change
-    file = open('config/defaults.json')
-    json = file.read
+    include DataTypeValidator
 
-    parsed = JSON.parse(json)
+    environment = Rails.env
+    array = JSON.parse(File.read('config/defaults.json'))
     ActiveRecord::Base.transaction do
-      parsed.each do |key, value|
-        type = ""
-        if (key['value'] == 'true') || (key['value'] == 'false')
+      array.each do |hash|
+        if is_boolean?(hash['value'])
           type = 'boolean'
-        elsif (key['value'][0] == '[') || (key['value'][0] == '{')
+        elsif is_json?(hash['value'])
           type = 'json'
+        elsif is_email?(hash['value'])
+          type = 'email'
+        elsif is_url?(hash['value'])
+          type = 'url'
+        elsif is_path?(hash['value'])
+          type = 'path'
         else
           type = 'string'
         end
 
-        setting = Setting.new
-        setting.assign_attributes(key: key['name'], value: key['value'], description: key['description'], data_type: type)
+        setting = Setting.create(
+          key:            hash['key'],
+          value:          hash['value'],
+          data_type:      type,
+          friendly_name:  hash['friendly_name'],
+          description:    hash['description'],
+          group:          hash['group'],
+          version:        hash['version'],
+        )
+
+        setting.parent_key    = hash['parent_key']
+        setting.parent_value  = hash['parent_value']
         setting.save(validate: false)
       end
     end

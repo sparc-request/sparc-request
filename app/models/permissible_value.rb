@@ -5,11 +5,6 @@ class PermissibleValue < ApplicationRecord
     PermissibleValue.where(category: category, key: key).first.try(:value)
   end
 
-  # Get an array of PermissibleValue values with the given category
-  def self.get_value_list(category)
-    PermissibleValue.where(category: category).pluck(:value)
-  end
-
   # Get an array of PermissibleValue keys with the given category
   def self.get_key_list(category, default=nil)
     unless default.nil?

@@ -4,26 +4,36 @@ task :populate_settings_table => :environment do
   include DataTypeValidator
 
   environment = Rails.env
-  hash = JSON.parse(File.read('config/defaults.json'))
+  array = JSON.parse(File.read('config/defaults.json'))
   ActiveRecord::Base.transaction do
-    hash[environment].each do |key, value|
-      if [TrueClass, FalseClass].include?(value.class)
+    array.each do |hash|
+      if [TrueClass, FalseClass].include?(hash['value'].class)
         type = 'boolean'
-        value = value.to_s
-      elsif [Array, Hash].include?(value.class)
+        hash['value'] = hash['value'].to_s
+      elsif [Array, Hash].include?(hash['value'].class)
         type = 'json'
-      elsif is_email?(value)
+      elsif is_email?(hash['value'])
         type = 'email'
-      elsif is_url?(value)
+      elsif is_url?(hash['value'])
         type = 'url'
-      elsif is_path?(value)
+      elsif is_path?(hash['value'])
         type = 'path'
       else
         type = 'string'
       end
+      
+      setting = Setting.create(
+        key:            hash['key'],
+        value:          hash['value'],
+        data_type:      type,
+        friendly_name:  hash['friendly_name'],
+        description:    hash['description'],
+        group:          hash['group'],
+        version:        hash['version'],
+      )
 
-      setting = Setting.new
-      setting.assign_attributes(key: key, value: value, data_type: type, friendly_name: key.titleize, description: key.humanize)
+      setting.parent_key    = hash['parent_key']
+      setting.parent_value  = hash['parent_value']
       setting.save(validate: false)
     end
   end

@@ -5,9 +5,11 @@ class CreateSettings < ActiveRecord::Migration[5.0]
       t.text :value
       t.string :data_type
       t.string :friendly_name
-      t.string :description
+      t.text :description
       t.integer :group
       t.string :version
+      t.string :parent_key
+      t.string :parent_value
       t.timestamps null: false
     end
 

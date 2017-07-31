@@ -23,11 +23,15 @@ class Setting < ApplicationRecord
 
   audited
 
+  belongs_to :parent, -> { find_by_key(self.parent_key) }, class_name: 'Setting'
+
   validates_uniqueness_of :key
 
   validates :data_type, inclusion: { in: %w(boolean string json email url path) }, presence: true
+  validates :parent_key, inclusion: { in: Setting.all.pluck(:key) }, allow_blank: true
 
   validate :value_matches_type, if: Proc.new{ self.value.present? }
+  validate :parent_value_matches_parent_type, if: Proc.new{ self.parent_key.present? }
 
   def value
     case data_type
@@ -43,7 +47,7 @@ class Setting < ApplicationRecord
   private
 
   def value_matches_type
-    errors.add(:value, 'invalid type') unless
+    errors.add(:value, 'does not match the provided data type') unless
       case data_type
       when 'boolean'
         is_boolean?(value)
@@ -55,6 +59,24 @@ class Setting < ApplicationRecord
         is_url?(value)
       when 'path'
         is_path?(value)
+      else # Default type = string, no validation needed
+        true
+      end
+  end
+
+  def parent_value_matches_parent_type
+    errors.add(:parent_value, 'does not match the parent\'s data type') unless
+      case data_type
+      when 'boolean'
+        is_boolean?(self.parent.value)
+      when 'json'
+        is_json?(self.parent.value)
+      when 'email'
+        is_email?(self.parent.value)
+      when 'url'
+        is_url?(self.parent.value)
+      when 'path'
+        is_path?(self.parent.value)
       else # Default type = string, no validation needed
         true
       end

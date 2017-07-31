@@ -175,7 +175,7 @@ ActiveRecord::Schema.define(version: 20170707153553) do
     t.integer "sub_service_request_id"
   end
 
-  create_table "editable_statuses", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "editable_statuses", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "organization_id"
     t.string "status", null: false
     t.datetime "created_at", null: false
@@ -791,14 +791,16 @@ ActiveRecord::Schema.define(version: 20170707153553) do
     t.index ["updated_at"], name: "index_sessions_on_updated_at"
   end
 
-  create_table "settings", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "settings", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "key"
     t.text "value"
     t.string "data_type"
     t.string "friendly_name"
-    t.string "description"
+    t.text "description"
     t.integer "group"
     t.string "version"
+    t.string "parent_key"
+    t.string "parent_value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["key"], name: "index_settings_on_key", unique: true

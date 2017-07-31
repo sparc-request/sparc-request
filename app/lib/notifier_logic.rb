@@ -28,10 +28,14 @@ class NotifierLogic
     @ssrs_updated_from_un_updatable_status = ssrs_that_have_been_updated_from_a_un_updatable_status
   end
 
-  def ssr_deletion_emails(ssr, ssr_destroyed: true, request_amendment: false)
+  def ssr_deletion_emails(deleted_ssr: nil, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
     if @ssrs_updated_from_un_updatable_status.present?
       send_ssr_service_provider_notifications(ssr, ssr_destroyed: true, request_amendment: false)
       send_admin_notifications([ssr], request_amendment: false, ssr_destroyed: true)
+    elsif admin_delete_ssr
+      send_user_notifications(request_amendment: false, admin_delete_ssr: true, deleted_ssr: deleted_ssr)
+      send_ssr_service_provider_notifications(deleted_ssr, ssr_destroyed: true, request_amendment: false)
+      send_admin_notifications([deleted_ssr], request_amendment: false, ssr_destroyed: true)
     end
   end
 
@@ -141,7 +145,7 @@ class NotifierLogic
     send_service_provider_notifications(sub_service_requests, request_amendment: false)
   end
 
-  def send_user_notifications(request_amendment: false)
+  def send_user_notifications(request_amendment: false, admin_delete_ssr: false, deleted_ssr: nil)
     # Does an approval need to be created?  Check that the user
     # submitting has approve rights.
     individual_ssr = @sub_service_request.present? ? true : false
@@ -161,15 +165,17 @@ class NotifierLogic
     else
       approval = false
     end
+    
     deleted_ssrs = @service_request.deleted_ssrs_since_previous_submission(true)
+
     # send e-mail to all folks with view and above
     @service_request.protocol.project_roles.each do |project_role|
       next if project_role.project_rights == 'none' || project_role.identity.email.blank?
-      # Do not want to send authorized user request amendment emails when audit_report is not present
-      
-      if request_amendment && audit_report.present?
+      if request_amendment && audit_report.present? # Request Amendment Email
         Notifier.delay.notify_user(project_role, @service_request, @sub_service_request, approval, @current_user, audit_report, individual_ssr, deleted_ssrs)
-      elsif !request_amendment
+      elsif admin_delete_ssr # Users get an Deletion Email upon SSR deletion from Dashboard --> Admin Edit, otherwise deleted SSR is included in the Request Amendment Email
+        Notifier.notify_user(project_role, @service_request, @sub_service_request, approval, @current_user, audit_report, individual_ssr, deleted_ssr, admin_delete_ssr).deliver
+      elsif !request_amendment # Initial Submission Email
         Notifier.delay.notify_user(project_role, @service_request, @sub_service_request, approval, @current_user, audit_report, individual_ssr, nil)
       end
     end
@@ -243,6 +249,7 @@ class NotifierLogic
   def destroyed_ssr_that_needs_a_request_amendment_email
     deleted_ssr_audits_that_need_request_amendment_email = []
     destroyed_ssr_audit = @service_request.deleted_ssrs_since_previous_submission
+
     destroyed_ssr_audit.each do |ssr_audit|
       un_updatable_statuses = SubServiceRequest.all.map(&:status).uniq - UPDATABLE_STATUSES
       latest_action_update_audit = AuditRecovery.where("auditable_id = #{ssr_audit.auditable_id} AND action = 'update'")

@@ -9,10 +9,9 @@ task :populate_settings_table => :environment do
   array = JSON.parse(File.read('config/defaults.json'))
   ActiveRecord::Base.transaction do
     array.each do |hash|
-      if [TrueClass, FalseClass].include?(hash['value'].class)
+      if is_boolean?(hash['value'])
         type = 'boolean'
-        hash['value'] = hash['value'].to_s
-      elsif [Array, Hash].include?(hash['value'].class)
+      elsif is_json?(hash['value'])
         type = 'json'
       elsif is_email?(hash['value'])
         type = 'email'

@@ -19,27 +19,6 @@
     "parent_key":     "",
     "parent_value":   ""
   },
-  { 
-    "key":            "approve_epic_rights_mail_to", 
-    "value":          "forney@musc.edu, crossoml@musc.edu",
-    "friendly_name":  "Approve EPIC Rights Mail-To",
-    "description":    "Email addresses of users who are e-mailed for EPIC rights approval",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "",
-    "parent_value":   ""
-  },
-  // Unused in Application - Is this needed?
-  // {
-  //   "key":            "bug_enhancement_url",
-  //   "value":          "http://something.com",
-  //   "friendly_name":  "Bug Enhancement URL",
-  //   "description":    "",
-  //   "group":          "",
-  //   "version":        "",
-  //   "parent_key":     "",
-  //   "parent_value":   ""
-  // },
   {
     "key":            "calendar_url",
     "value":          "https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics",
@@ -75,16 +54,6 @@
     "value":          "success@musc.edu",
     "friendly_name":  "Contact Us Mail-To",
     "description":    "",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "",
-    "parent_value":   ""
-  },
-  {
-    "key":            "create_an_account",
-    "value":          "false",
-    "friendly_name":  "Create an Account",
-    "description":    "Determines whether the application will allow new accounts to be created by outside users.",
     "group":          "",
     "version":        "",
     "parent_key":     "",
@@ -142,6 +111,16 @@
   //   "parent_value":   "true"
   // },
   {
+    "key":            "epic_rights_mail_to",
+    "value":          "forney@musc.edu, crossoml@musc.edu",
+    "friendly_name":  "EPIC Rights Mail-To",
+    "description":    "Email addresses of users who are e-mailed for EPIC rights approval",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
     "key":            "faq_url",
     "value":          "http://academicdepartments.musc.edu/sctr/sparc_request/faq.html",
     "friendly_name":  "FAQs URL",
@@ -170,6 +149,16 @@
     "version":        "",
     "parent_key":     "use_feedback_link",
     "parent_value":   "false"
+  },
+  {
+    "key":            "finished_statuses",
+    "value":          "['complete', 'withdrawn']",
+    "friendly_name":  "Finished Statuses",
+    "description":    "Defines the statuses that a SubServiceRequest is considered complete. In these statuses, SubServiceRequests can't be updated. New services from those organizations will be added to new SubServiceRequests.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
   },
   {
     "key":            "fulfillment_contingent_on_catalog_manager",
@@ -292,6 +281,26 @@
     "parent_value":   "true"
   },
   {
+    "key":            "redcap_api_token",
+    "value":          "",
+    "friendly_name":  "Redcap API Token",
+    "description":    "The token used to access the Redcap API.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_redcap_api",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "redcap_api_url",
+    "value":          "https://redcap.musc.edu/api/",
+    "friendly_name":  "Redcap API URL",
+    "description":    "",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_redcap_api",
+    "parent_value":   "true"
+  },
+  {
     "key":            "remote_service_notifier_host",
     "value":          "127.0.0.1:5001",
     "friendly_name":  "Remote Service Notifier",
@@ -332,9 +341,9 @@
     "parent_value":   ""
   },
   {
-    "key":            "remote_service_notifier_userkey",
+    "key":            "remote_service_notifier_username",
     "value":          "",
-    "friendly_name":  "Remote Service Notifier User Key",
+    "friendly_name":  "Remote Service Notifier Username",
     "description":    "",
     "group":          "",
     "version":        "",
@@ -342,7 +351,7 @@
     "parent_value":   ""
   },
   {
-    "key":            "research_master_api",
+    "key":            "research_master_api_url",
     "value":          "https://research-master-staging.musc.edu/api/",
     "friendly_name":  "Research Master API URL",
     "description":    "The URL of the Research Master ID API.",
@@ -353,7 +362,7 @@
   },
   {
     "key":            "research_master_api_token",
-    "value":          "some token",
+    "value":          "e754d4e002bd58b4b1a55a3f5808ec37",
     "friendly_name":  "Research Master API Token",
     "description":    "The token used to access the Research Master ID API.",
     "group":          "",
@@ -406,6 +415,16 @@
     "value":          "false",
     "friendly_name":  "Send Emails to Real Users",
     "description":    "",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "site_admins",
+    "value":          "['jug2@musc.edu']",
+    "friendly_name":  "Site Admins",
+    "description":    "Determines which users will have access to the SPARCSurvey module.",
     "group":          "",
     "version":        "",
     "parent_key":     "",
@@ -516,6 +535,16 @@
     "value":          "true",
     "friendly_name":  "Use News Feed",
     "description":    "Determines whether the application will display news on the homepage.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "use_redcap_api",
+    "value":          "false",
+    "friendly_name":  "Use Redcap API",
+    "description":    "Determines whether the application will use an external redcap feedback module.",
     "group":          "",
     "version":        "",
     "parent_key":     "",

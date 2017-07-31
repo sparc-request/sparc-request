@@ -56,7 +56,7 @@
                 = identity_form.text_field :phone, class: 'form-control'
 
               = user_form_group(name: :subspecialty, classes: ['role_dependent subspecialty', ['pi', 'primary-pi'].include?(form.object.role) ? '' : 'hidden'], form: identity_form) do
-                = identity_form.select :subspecialty, options_for_select((SUBSPECIALTIES.sort), identity.subspecialty), { include_blank: t(:authorized_users)[:form_fields][:subspecialty_prompt] }, class: 'form-control selectpicker'
+                = identity_form.select :subspecialty, options_for_select((PermissibleValue.get_inverted_hash('subspecialty').sort), identity.subspecialty), { include_blank: t(:authorized_users)[:form_fields][:subspecialty_prompt] }, class: 'form-control selectpicker'
 
             = user_form_group(name: :role, form: form, required: true) do
               = form.select :role, options_for_select(PermissibleValue.get_inverted_hash('user_role'), form.object.role), { include_blank: t(:authorized_users)[:form_fields][:role_prompt] }, class: 'form-control selectpicker'

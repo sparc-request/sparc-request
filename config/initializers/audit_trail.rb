@@ -31,7 +31,7 @@ module Audited
     module ActiveRecord
       class Audit < ::ActiveRecord::Base
         # database connection information in database.yml should be named audit_environment (eg. audit_development)
-        establish_connection("audit_#{Rails.env}") if Setting.find_by_key("use_separate_audit_database").value
+        establish_connection("audit_#{Rails.env}") if Setting.find_by_key("use_separate_audit_database").try(:value)
       end
     end
   end

@@ -20,7 +20,7 @@
 
 class AddRequestUuidToAudits < ActiveRecord::Migration[4.2]
   # switch to separate audit database to run migration
-  if USE_SEPARATE_AUDIT_DATABASE
+  if Setting.find_by_key("use_separate_audit_database").value
     ActiveRecord::Base.establish_connection("audit_#{Rails.env}")
   end
 
@@ -29,7 +29,7 @@ class AddRequestUuidToAudits < ActiveRecord::Migration[4.2]
     add_index_unless_exists :audits, :request_uuid
 
     # switch back so we can add the schema_migration version
-    if USE_SEPARATE_AUDIT_DATABASE
+    if Setting.find_by_key("use_separate_audit_database").value
       ActiveRecord::Base.establish_connection("#{Rails.env}")
     end
     
@@ -40,7 +40,7 @@ class AddRequestUuidToAudits < ActiveRecord::Migration[4.2]
     remove_column :audits, :request_uuid
 
     # switch back so we can add the schema_migration version
-    if USE_SEPARATE_AUDIT_DATABASE
+    if Setting.find_by_key("use_separate_audit_database").value
       ActiveRecord::Base.establish_connection("#{Rails.env}")
     end
   end

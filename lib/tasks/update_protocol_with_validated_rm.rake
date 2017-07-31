@@ -5,10 +5,10 @@ namespace :data do
   task update_protocol_with_validated_rm: :environment do
     print('Fetching from Research Master API...')
     validated_research_masters = HTTParty.get(
-      "#{RESEARCH_MASTER_API}validated_records.json",
+      "#{Setting.find_by_key('research_master_api_url')}validated_records.json",
       headers:{
         'Content-Type' => 'application/json',
-        'Authorization' => "Token token=\"#{RMID_API_TOKEN}\""
+        'Authorization' => "Token token=\"#{Setting.find_by_key('research_master_api_token').value}\""
       }
     )
     puts 'Done'

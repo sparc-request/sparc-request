@@ -34,7 +34,6 @@ RSpec.describe Dashboard::EpicQueuesController do
 
     describe "for overlord users" do
       before(:each) do
-        create(:setting, key: "epic_queue_access", value: ['jug2'])
         log_in_dashboard_identity(obj: build(:identity, ldap_uid: 'jug2'))
         delete :destroy, params: { id: @epic_queue.id }, xhr: true
       end

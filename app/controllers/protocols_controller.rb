@@ -34,7 +34,7 @@ class ProtocolsController < ApplicationController
     @protocol.requester_id  = current_user.id
     @service_request        = ServiceRequest.find(params[:srid])
     @protocol.populate_for_edit
-    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
+    gon.rm_id_api_url = Setting.find_by_key("research_master_api_url").value
     gon.rm_id_api_token = Setting.find_by_key("research_master_api_token").value
   end
 
@@ -78,7 +78,7 @@ class ProtocolsController < ApplicationController
     @protocol.populate_for_edit
     @protocol.valid?
     @errors = @protocol.errors
-    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
+    gon.rm_id_api_url = Setting.find_by_key("research_master_api_url").value
     gon.rm_id_api_token = Setting.find_by_key("research_master_api_token").value
 
     respond_to do |format|

@@ -23,7 +23,7 @@
   %head
     %title
       = t(:dashboard)[:header]
-    = stylesheet_link_tag "#{Setting.find_by_key("custom_asset_path").value}dashboard/application"
+    = stylesheet_link_tag "dashboard/application"
     = javascript_include_tag 'dashboard/application'
     /[if IE]
       = stylesheet_link_tag 'ie'

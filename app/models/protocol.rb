@@ -115,7 +115,7 @@ class Protocol < ApplicationRecord
   end
 
   def existing_rm_id
-    rm_ids = HTTParty.get(Setting.find_by_key("research_master_api").value + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{Setting.find_by_key("research_master_api_token").value}\""})
+    rm_ids = HTTParty.get(Setting.find_by_key("research_master_api_url").value + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{Setting.find_by_key("research_master_api_token").value}\""})
     ids = rm_ids.map{ |rm_id| rm_id['id'] }
 
     unless ids.include?(self.research_master_id)

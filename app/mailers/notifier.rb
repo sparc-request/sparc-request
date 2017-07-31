@@ -63,6 +63,7 @@ class Notifier < ActionMailer::Base
 
     @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
 
+    # 
     @portal_link = Setting.find_by_key("dashboard_link").value + "/protocols/#{@protocol.id}"
     @ssrs_to_be_displayed =  individual_ssr ? [ssr] : @service_request.sub_service_requests
 
@@ -178,7 +179,7 @@ class Notifier < ActionMailer::Base
     @approved = approved
 
     ##REVIEW: Why do we care what the from is?
-    email_from = Rails.env == 'production' ? Setting.find_by_key("admin_mail_to").value : DEFAULT_MAIL_TO
+    email_from = Rails.env == 'production' ? Setting.find_by_key("admin_mail_to").value : Setting.find_by_key("default_mail_to").value
     email_to = identity.email
     subject = "#{t(:mailer)[:application_title]} account request - status change"
 
@@ -193,7 +194,7 @@ class Notifier < ActionMailer::Base
     @feedback = feedback
 
     email_to = Setting.find_by_key("feedback_mail_to").value
-    email_from = @feedback.email.blank? ? DEFAULT_MAIL_TO : @feedback.email
+    email_from = @feedback.email.blank? ? Setting.find_by_key("default_mail_to") : @feedback.email
 
     mail(:to => email_to, :from => email_from, :subject => "Feedback")
   end

@@ -20,7 +20,7 @@
 
 
 .form-group.row
-  - if USE_EPIC
+  - if Setting.find_by_key("USE_EPIC").value
     = form.label :selected_for_epic,
       t(:protocols)[:studies][:information][:push_to_epic],
       class: 'col-lg-2 control-label required',
@@ -31,14 +31,14 @@
         %label.radio-inline.btn.btn-default#study_selected_for_epic_true_button{ class: protocol.selected_for_epic? ? 'active' : ''}
           = form.radio_button :selected_for_epic, 'true', id: "study_selected_for_epic_true", class: 'hidden'
           = t(:constants)[:yes_select]
-        %label.radio-inline.btn.btn-default#study_selected_for_epic_false_button{ class: protocol.selected_for_epic == false || !USE_EPIC ? 'active': '' }
+        %label.radio-inline.btn.btn-default#study_selected_for_epic_false_button{ class: protocol.selected_for_epic == false || !Setting.find_by_key("USE_EPIC").value ? 'active': '' }
           = form.radio_button :selected_for_epic, 'false', id: "study_selected_for_epic_false", class: 'hidden'
           = t(:constants)[:no_select]
 .form-group.row.selected_for_epic_dependent{ display_if(protocol.selected_for_epic) }
   = hidden_field_tag :updated_protocol_type, updated_protocol_type
   = form.label :study_type_questions,
     t(:protocols)[:studies][:information][:study_type_questions],
-    class: "col-lg-2 control-label question-label #{USE_EPIC && protocol.selected_for_epic ? 'required' : ''}",
+    class: "col-lg-2 control-label question-label #{Setting.find_by_key("USE_EPIC").value && protocol.selected_for_epic ? 'required' : ''}",
     data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
     title: t(:protocols)[:tooltips][:study_type_questions]
   .col-lg-10

@@ -1,6 +1,8 @@
 desc "Temporary task to populate the settings table"
 task :populate_settings_table => :environment do
 
+  # TODO: Move to migration
+
   include DataTypeValidator
 
   environment = Rails.env
@@ -21,7 +23,7 @@ task :populate_settings_table => :environment do
       else
         type = 'string'
       end
-      
+
       setting = Setting.create(
         key:            hash['key'],
         value:          hash['value'],

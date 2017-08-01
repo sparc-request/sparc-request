@@ -152,7 +152,7 @@
   },
   {
     "key":            "finished_statuses",
-    "value":          "['complete', 'withdrawn']",
+    "value":          "[\"complete\", \"withdrawn\"]",
     "friendly_name":  "Finished Statuses",
     "description":    "Defines the statuses that a SubServiceRequest is considered complete. In these statuses, SubServiceRequests can't be updated. New services from those organizations will be added to new SubServiceRequests.",
     "group":          "",
@@ -232,7 +232,7 @@
   },
   {
     "key":            "navbar_links",
-    "value":          "{ sparc_request: ['SPARCRequest', 'http://localhost:3000/'], sparc_dashboard: ['SPARCDashboard', 'http://localhost:3000/dashboard'], sparc_fulfillment: ['SPARCFulfillment', 'https://cwf-d.obis.musc.edu/identities/sign_in'], sparc_catalog: ['SPARCCatalog', 'http://localhost:3000/catalog_manager'], sparc_report: ['SPARCReport', 'http://localhost:3000/reports'] }",
+    "value":          "{ sparc_request: [\"SPARCRequest\", \"http://localhost:3000/\"], sparc_dashboard: [\"SPARCDashboard\", \"http://localhost:3000/dashboard\"], sparc_fulfillment: [\"SPARCFulfillment\", \"https://cwf-d.obis.musc.edu/identities/sign_in\"], sparc_catalog: [\"SPARCCatalog\", \"http://localhost:3000/catalog_manager\"], sparc_report: [\"SPARCReport\", \"http://localhost:3000/reports\"] }",
     "friendly_name":  "Navbar Links",
     "description":    "Links which appear in the header navbar.",
     "group":          "",
@@ -422,7 +422,7 @@
   },
   {
     "key":            "site_admins",
-    "value":          "['jug2@musc.edu']",
+    "value":          "[\"jug2@musc.edu\"]",
     "friendly_name":  "Site Admins",
     "description":    "Determines which users will have access to the SPARCSurvey module.",
     "group":          "",
@@ -462,7 +462,7 @@
   },
   {
     "key":            "updatable_statuses",
-    "value":          "['first_draft', 'draft', 'get_a_cost_estimate', 'awaiting_pi_approval']",
+    "value":          "[\"first_draft\", \"draft\", \"get_a_cost_estimate\", \"awaiting_pi_approval\"]",
     "friendly_name":  "Updatable Statuses",
     "description":    "Defines the statuses that a SubServiceRequest can be updated from. Any other statuses are considered \"un-updatable\".",
     "group":          "",

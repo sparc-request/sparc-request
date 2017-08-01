@@ -1,8 +1,7 @@
 class PopulateDefaultSettingsData < ActiveRecord::Migration[5.0]
-  def change
-    include DataTypeValidator
+  include DataTypeValidator
 
-    environment = Rails.env
+  def change
     array = JSON.parse(File.read('config/defaults.json'))
     ActiveRecord::Base.transaction do
       array.each do |hash|

@@ -20,12 +20,12 @@
 
 class AdditionalDetails::QuestionnairesController < ApplicationController
   before_action :authenticate_identity!
-  before_action :find_service
-  before_action :find_questionnaire, only: [:edit, :update, :destroy]
+  before_action :find_questionable
+  before_action :find_questionnaire, only: [:edit, :update, :destroy, :toggle_activation]
   layout 'additional_details'
 
   def index
-    @questionnaires = @service.questionnaires
+    @questionnaires = @questionable.questionnaires
   end
 
   def new
@@ -37,10 +37,9 @@ class AdditionalDetails::QuestionnairesController < ApplicationController
   end
 
   def create
-    @questionnaire = @service.questionnaires.new(questionnaire_params)
-
+    @questionnaire = @questionable.questionnaires.new(questionnaire_params)
     if @questionnaire.save
-      redirect_to service_additional_details_questionnaires_path(@service)
+      redirect_to additional_details_questionnaires_path(questionable_id: @questionable.id, questionable_type: @questionable.class.name)
     else
       render :new
     end
@@ -48,15 +47,33 @@ class AdditionalDetails::QuestionnairesController < ApplicationController
 
   def update
     if @questionnaire.update(questionnaire_params)
-      redirect_to service_additional_details_questionnaires_path(@service)
+      redirect_to additional_details_questionnaires_path(questionable_id: @questionable.id, questionable_type: @questionable.class.name)
     else
       render :edit
     end
   end
 
+  def toggle_activation
+    @questionnaires = @questionable.questionnaires
+    @questionnaire.update_attribute(:active, !@questionnaire.active)
+    respond_to do |format|
+      format.js
+    end
+  end
+
+  def preview
+    @questionnaire = Questionnaire.new(questionnaire_params)
+    @service = @questionable
+    @submission = Submission.new
+    @submission.questionnaire_responses.build
+    respond_to do |format|
+      format.js
+    end
+  end
+
   def destroy
     @questionnaire.destroy
-    redirect_to service_additional_details_questionnaires_path(@service)
+    redirect_to additional_details_questionnaires_path(questionable_id: @questionable.id, questionable_type: @questionable.class.name)
   end
 
   private
@@ -65,8 +82,12 @@ class AdditionalDetails::QuestionnairesController < ApplicationController
     @questionnaire = Questionnaire.find(params[:id])
   end
 
-  def find_service
-    @service = Service.find(params[:service_id])
+  def find_questionable
+    if params[:questionnaire]
+      @questionable = questionnaire_params[:questionable_type].classify.constantize.find(questionnaire_params[:questionable_id])
+    else
+      @questionable = params[:questionable_type].classify.constantize.find(params[:questionable_id])
+    end
   end
 
   def questionnaire_params

@@ -4,7 +4,7 @@
   .panel-body
     .row
       .col-sm-offset-10.col-sm-2
-        = link_to new_service_additional_details_questionnaire_path(@service), class: 'btn btn-success' do
+        = link_to new_additional_details_questionnaire_path(questionable_id: @questionable.id, questionable_type: @questionable.class.name), class: 'btn btn-success' do
           = t(:additional_details)[:create_new_questionnaire]
           %span.glyphicon.glyphicon-plus
     .row

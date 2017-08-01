@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170707153553) do
+ActiveRecord::Schema.define(version: 20170731165230) do
 
   create_table "admin_rates", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer "line_item_id"
@@ -634,11 +634,12 @@ ActiveRecord::Schema.define(version: 20170707153553) do
 
   create_table "questionnaires", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.string "name"
-    t.integer "service_id"
+    t.integer "questionable_id"
+    t.string "questionable_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "active", default: false
-    t.index ["service_id"], name: "index_questionnaires_on_service_id"
+    t.index ["questionable_id"], name: "index_questionnaires_on_questionable_id"
   end
 
   create_table "questions", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
@@ -1033,7 +1034,7 @@ ActiveRecord::Schema.define(version: 20170707153553) do
   add_foreign_key "question_responses", "responses"
   add_foreign_key "questionnaire_responses", "items"
   add_foreign_key "questionnaire_responses", "submissions"
-  add_foreign_key "questionnaires", "services"
+  add_foreign_key "questionnaires", "services", column: "questionable_id"
   add_foreign_key "questions", "options", column: "depender_id"
   add_foreign_key "questions", "sections"
   add_foreign_key "responses", "identities"

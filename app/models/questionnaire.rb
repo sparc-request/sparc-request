@@ -1,5 +1,5 @@
 class Questionnaire < ApplicationRecord
-  belongs_to :service
+  belongs_to :questionable, polymorphic: :true
   has_many :items, dependent: :destroy
   has_many :submissions, dependent: :destroy
   validates :name, presence: true

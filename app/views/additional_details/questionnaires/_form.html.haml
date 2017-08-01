@@ -2,8 +2,9 @@
   .panel-heading
     = t(:additional_details)[:form_builder_title]
   .panel-body
-    = hidden_field_tag 'service_id', service.id
-    = form_for [service, :additional_details, questionnaire], html: { class: 'form-horizontal questionnaire-form' } do |f|
+    = form_for [:additional_details, questionnaire], html: { class: 'form-horizontal questionnaire-form' } do |f|
+      = f.hidden_field :questionable_id, value: questionable.id
+      = f.hidden_field :questionable_type, value: questionable.class.name
       - if questionnaire.errors.any?
         .alert.alert-danger
           %ul.list-unstyled
@@ -67,5 +68,5 @@
             = t(:additional_details)[:view_preview]
             %span.glyphicon.glyphicon-search
           = link_to t(:additional_details)[:return_to_questionnaires],
-            service_additional_details_questionnaires_path(service), 
+            additional_details_questionnaires_path(questionable_id: questionable.id, questionable_type: questionable.class.name), 
             class: 'btn btn-warning'

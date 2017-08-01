@@ -23,12 +23,15 @@ SparcRails::Application.routes.draw do
 
   resources :services do
     namespace :additional_details do
-      resources :questionnaires
-      resource :questionnaire do
-        resource :preview, only: [:create]
-      end
       resources :submissions
-      resources :update_questionnaires, only: [:update]
+    end
+  end
+
+  namespace :additional_details do
+    resources :questionnaires
+    resource :questionnaire do
+      post 'preview'
+      patch 'toggle_activation'
     end
   end
 

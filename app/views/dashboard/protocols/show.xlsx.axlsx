@@ -105,7 +105,7 @@ arm_r_totals = {}
         total_research_amount_cell = total_research_amount_column + current_row.to_s
         number_of_subjects_cell = number_of_subjects_column + current_row.to_s
         line_item_row = [liv.line_item.service.name, liv.line_item.service.cpt_code, liv.line_item.sub_service_request.status.humanize.titleize, "0", cents_to_dollars(liv.line_item.service.current_effective_pricing_map.full_rate), cents_to_dollars(liv.line_item.applicable_rate)]
-        liv.visits.each_with_index do |visit, index|
+        liv.ordered_visits.each_with_index do |visit, index|
           n_cell = n_columns[index] + current_row.to_s
           line_item_row << [visit.research_billing_qty, "=#{nr_cell} * #{n_cell}", "=#{your_cost_cell} * #{n_cell}"]
           @line_item_style_array << [default, money, money]

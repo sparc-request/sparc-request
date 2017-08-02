@@ -156,24 +156,8 @@ class LineItem < ApplicationRecord
   end
 
   def quantity_total(line_items_visit)
-    # quantity_total = self.visits.map {|x| x.research_billing_qty}.inject(:+) * self.subject_count
     quantity_total = line_items_visit.visits.sum('research_billing_qty')
     return quantity_total * (line_items_visit.subject_count || 0)
-  end
-
-  # Returns a hash of subtotals for the visits in the line item.
-  # Visit totals depend on the quantities in the other visits, so it would be clunky
-  # to compute one visit at a time
-  def per_subject_subtotals(visits=self.visits)
-    totals = { }
-    quantity_total = quantity_total()
-    per_unit_cost = per_unit_cost(quantity_total)
-
-    visits.each do |visit|
-      totals[visit.id.to_s] = visit.cost(per_unit_cost)
-    end
-
-    return totals
   end
 
   # Determine the direct costs for a visit-based service for one subject
@@ -318,7 +302,7 @@ class LineItem < ApplicationRecord
       next unless line_item && line_item.arms.find(arm.id)
 
       line_item_visit = line_item.line_items_visits.find_by_arm_id arm.id
-      v = line_item_visit.visits[visit_position]
+      v = line_item_visit.ordered_visits[visit_position]
       total_quantity_between_visits = visit.quantity_total + v.quantity_total
       if not(total_quantity_between_visits == 0 or total_quantity_between_visits == sr.linked_quantity_total)
         first_service, second_service = [self.service.name, line_item.service.name].sort

@@ -114,9 +114,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      xhr :get, :review, {
+      get :review, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:consolidated)).to eq(false)
     end

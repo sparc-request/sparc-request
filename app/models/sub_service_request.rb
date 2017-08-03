@@ -139,14 +139,11 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def one_time_fee_line_items
-    line_items = LineItem.where(:sub_service_request_id => self.id).includes(:service)
-    line_items.select {|li| li.service.one_time_fee}
+    self.line_items.joins(:service).where(services: { one_time_fee: true })
   end
 
   def per_patient_per_visit_line_items
-    line_items = LineItem.where(:sub_service_request_id => self.id).includes(:service)
-
-    line_items.select {|li| !li.service.one_time_fee}
+    self.line_items.joins(:service).where(services: { one_time_fee: false })
   end
 
   def has_one_time_fee_services?

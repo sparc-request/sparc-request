@@ -22,6 +22,6 @@ $("#modal_place #modal_errors").html("<%= escape_javascript(render( 'shared/moda
 <% else %>
 $('.visit-group-<%=@visit_group.id%>:visible').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/visit_group', visit_group: @visit_group, tab: params[:tab], page: @page, pages: @pages, portal: @portal, review: @review, admin: @admin, merged: @merged, consolidated: @consolidated, statuses_hidden: params[:statuses_hidden] %>")
 $('.visit-group-select:visible').html("<%= j render 'service_calendars/master_calendar/pppv/visit_group_page_select', service_request: @service_request, sub_service_request: @sub_service_request, arm: @visit_group.arm, tab: params[:tab], page: @page, pages: @pages, portal: @portal, review: @review, admin: @admin, merged: @merged, consolidated: @consolidated, statuses_hidden: params[:statuses_hidden] %>")
-$('#visits-select-for-<%=@visit_group.arm_id%>').selectpicker()
+$('#visits-select-for-<%=@visit_group.arm_id%>.selectpicker').selectpicker()
 $('#modal_place').modal('hide')
 <% end %>

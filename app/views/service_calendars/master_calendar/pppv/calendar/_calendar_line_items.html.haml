@@ -47,7 +47,7 @@
         = display_unit_type(liv)
       %td.subject-count.text-center.xs-col-width
         = liv.subject_count
-      - visits      = liv.visits.paginate(page: page.to_i, per_page: Visit.per_page)
+      - visits      = liv.ordered_visits.paginate(page: page.to_i, per_page: Visit.per_page)
       - totals_hash = liv.try(:per_subject_subtotals, visits)
       - visits.each_with_index do |v, index|
         %td.text-center.visit.visit-width{ class: "visit-#{v.id}" }

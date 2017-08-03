@@ -30,8 +30,7 @@ SparcRails::Application.routes.draw do
   namespace :additional_details do
     resources :questionnaires
     resource :questionnaire do
-      post 'preview'
-      patch 'toggle_activation'
+      resource :preview, only: [:create]
     end
   end
 

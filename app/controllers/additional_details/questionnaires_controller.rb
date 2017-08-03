@@ -21,7 +21,7 @@
 class AdditionalDetails::QuestionnairesController < ApplicationController
   before_action :authenticate_identity!
   before_action :find_questionable
-  before_action :find_questionnaire, only: [:edit, :update, :destroy, :toggle_activation]
+  before_action :find_questionnaire, only: [:edit, :update, :destroy]
   layout 'additional_details'
 
   def index
@@ -46,28 +46,14 @@ class AdditionalDetails::QuestionnairesController < ApplicationController
   end
 
   def update
+    @questionnaires = @questionable.questionnaires
     if @questionnaire.update(questionnaire_params)
-      redirect_to additional_details_questionnaires_path(questionable_id: @questionable.id, questionable_type: @questionable.class.name)
+      respond_to do |format|
+        format.html{ redirect_to additional_details_questionnaires_path(questionable_id: @questionable.id, questionable_type: @questionable.class.name) }
+        format.js{ render :update }
+      end
     else
       render :edit
-    end
-  end
-
-  def toggle_activation
-    @questionnaires = @questionable.questionnaires
-    @questionnaire.update_attribute(:active, !@questionnaire.active)
-    respond_to do |format|
-      format.js
-    end
-  end
-
-  def preview
-    @questionnaire = Questionnaire.new(questionnaire_params)
-    @service = @questionable
-    @submission = Submission.new
-    @submission.questionnaire_responses.build
-    respond_to do |format|
-      format.js
     end
   end
 

@@ -18,9 +18,9 @@
     %td
       .text-center
         - if questionnaire.active?
-          = link_to t(:additional_details)[:disable_questionnaire], toggle_activation_additional_details_questionnaire_path(id: questionnaire, questionable_id: @questionable, questionable_type: @questionable.class.name), method: :patch, class: 'btn btn-danger active-questionnaire', remote: true
+          = link_to t(:additional_details)[:disable_questionnaire], additional_details_questionnaire_path( id: questionnaire, questionnaire: { questionable_id: @questionable, questionable_type: @questionable.class.name, active: 0 }), method: :patch, class: 'btn btn-danger active-questionnaire', remote: true
         - else
-          = link_to t(:additional_details)[:activate_questionnaire], toggle_activation_additional_details_questionnaire_path(id: questionnaire, questionable_id: @questionable, questionable_type: @questionable.class.name), method: :patch, class: 'btn btn-success inactive-questionnaire', remote: true
+          = link_to t(:additional_details)[:activate_questionnaire], additional_details_questionnaire_path( id: questionnaire, questionnaire: { questionable_id: @questionable, questionable_type: @questionable.class.name, active: 1 }), method: :patch, class: 'btn btn-success inactive-questionnaire', remote: true
     %td
       .text-center
         = link_to edit_additional_details_questionnaire_path(questionnaire, questionable_id: @questionable, questionable_type: @questionable.class.name), class: 'btn btn-info' do

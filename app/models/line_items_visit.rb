@@ -89,7 +89,7 @@ class LineItemsVisit < ApplicationRecord
   # Returns a hash of subtotals for the visits in the line item.
   # Visit totals depend on the quantities in the other visits, so it would be clunky
   # to compute one visit at a time
-  def per_subject_subtotals(visits=self.visits)
+  def per_subject_subtotals(visits=self.ordered_visits)
     totals = { }
     quantity_total = quantity_total()
     per_unit_cost = per_unit_cost(quantity_total)
@@ -103,7 +103,7 @@ class LineItemsVisit < ApplicationRecord
 
   # Return visits with R and T quantities
   # Used in service_request show.xlsx report
-  def per_subject_rt_indicated(visits=self.visits)
+  def per_subject_rt_indicated(visits=self.ordered_visits)
     indicated_visits = {}
     visits.each do |visit|
       indicated_visits[visit.id.to_s] = visit.research_billing_qty + visit.insurance_billing_qty

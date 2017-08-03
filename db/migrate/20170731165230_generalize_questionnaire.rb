@@ -1,7 +1,9 @@
 class GeneralizeQuestionnaire < ActiveRecord::Migration[5.1]
   def change
-    rename_column :questionnaires, :service_id, :questionable_id
-    add_column :questionnaires, :questionable_type, :string, after: :questionable_id
-    Questionnaire.find_each{ |q| q.update(questionable_type: 'Service')}
+    add_reference :questionnaires, :questionable, polymorphic: true
+    Questionnaire.find_each do |q|
+      q.update( questionable_id: q.service_id, questionable_type: 'Service')
+    end
+    remove_reference :questionnaires, :service, index: true, foreign_key: true
   end
 end

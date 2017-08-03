@@ -27,11 +27,12 @@ RSpec.describe AdditionalDetails::PreviewsController do
   describe '#create' do
     before :each do
       @service = create( :service )
-      @questionnaire = build( :questionnaire, service: @service, active: false )
+      @questionnaire = build( :questionnaire, questionable: @service, active: false )
 
       post :create, params: {
         name: 'Some Program',
-        service_id: @service,
+        questionable_id: @service,
+        questionable_type: 'Service',
         questionnaire: @questionnaire.attributes
       }, format: :js
     end

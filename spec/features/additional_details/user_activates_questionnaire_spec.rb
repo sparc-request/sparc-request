@@ -27,14 +27,14 @@ RSpec.describe 'User has multiple questionnaires that can be activated', js: tru
 
   before(:each) do
     @service = create(:service_with_ctrc_organization)
-    create(:questionnaire, active: 0, items: [ Item.new( content: 'This is a test question', item_type: 'text', item_options_attributes: { "0" => { content: "" } } , description: "", required: 1 ) ], service: @service)
-    create(:questionnaire, active: 0, items: [ Item.new( content: 'This is a test question', item_type: 'text', item_options_attributes: { "0" => { content: "" } } , description: "", required: 1 ) ], service: @service)
+    create(:questionnaire, active: 0, items: [ Item.new( content: 'This is a test question', item_type: 'text', item_options_attributes: { "0" => { content: "" } } , description: "", required: 1 ) ], questionable: @service)
+    create(:questionnaire, active: 0, items: [ Item.new( content: 'This is a test question', item_type: 'text', item_options_attributes: { "0" => { content: "" } } , description: "", required: 1 ) ], questionable: @service)
   end
 
   describe "Both are inactive" do
 
     before(:each) do
-      visit service_additional_details_questionnaires_path(@service)
+      visit additional_details_questionnaires_path(questionable_id: @service.id, questionable_type: 'Service')
       expect(page).to_not have_css '.disabled'
     end
 
@@ -58,7 +58,7 @@ RSpec.describe 'User has multiple questionnaires that can be activated', js: tru
 
     before(:each) do
       @service.questionnaires.first.update_attribute(:active, 1)
-      visit service_additional_details_questionnaires_path(@service)
+      visit additional_details_questionnaires_path(questionable_id: @service.id, questionable_type: 'Service')
       expect(page).to have_css '.disabled', count: @service.questionnaires.count - 1
     end
 

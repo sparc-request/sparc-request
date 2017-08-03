@@ -18,33 +18,22 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-require 'rails_helper'
+class AdditionalDetails::PreviewsController < ApplicationController
+  before_action :authenticate_identity!
 
-RSpec.describe AdditionalDetails::QuestionnairesController do
-  stub_controller
-  let!(:logged_in_user) { create(:identity) }
-
-  describe '#index' do
-    before :each do
-      @service = create(:service)
-      @questionnaire = create(:questionnaire, :without_validations, questionable: @service)
-
-      get :index, params: {
-        questionable_id: @service.id,
-        questionable_type: 'Service'
-      }, format: :js
+  def create
+    @service = Service.find(questionnaire_params[:questionable_id])
+    @questionnaire = Questionnaire.new(questionnaire_params)
+    @submission = Submission.new
+    @submission.questionnaire_responses.build
+    respond_to do |format|
+      format.js
     end
+  end
 
-    it 'should assign @service' do
-      expect(assigns(:questionable)).to eq(@service)
-    end
+  private
 
-    it 'should assign @questionnaires' do
-      expect(assigns(:questionnaires)).to eq([@questionnaire])
-    end
-
-    it { is_expected.to render_template(:index) }
-
-    it { is_expected.to respond_with(:ok) }
+  def questionnaire_params
+    params.require(:questionnaire).permit!
   end
 end

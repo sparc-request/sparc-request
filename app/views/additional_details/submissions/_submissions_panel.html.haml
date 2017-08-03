@@ -50,7 +50,7 @@
               %td
                 .text-center
                   = link_to_if current_identity.is_super_user? || current_identity.is_service_provider?(ssr), "#{service.name}",
-                    service_additional_details_questionnaires_path(service), target: '_blank'
+                    additional_details_questionnaires_path(questionable_id: service.id, questionable_type: 'Service'), target: '_blank'
               %td
                 .text-center
                   - if submission.created_at == submission.updated_at

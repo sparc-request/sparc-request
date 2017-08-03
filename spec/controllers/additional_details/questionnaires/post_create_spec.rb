@@ -31,9 +31,10 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
 
     it 'should assign @service' do
       post :create, params: {
-        service_id: @service.id,
         questionnaire: {
           name: 'string',
+          questionable_id: @service.id,
+          questionable_type: 'Service',
           items_attributes: {
             '0' => {
               content: 'test',
@@ -44,14 +45,15 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
         }
       }, format: :js
 
-      expect(assigns(:service)).to eq(@service)
+      expect(assigns(:questionable)).to eq(@service)
     end
 
     it 'should assign @questionnaire' do
       post :create, params: {
-        service_id: @service.id,
         questionnaire: {
           name: 'string',
+          questionable_id: @service.id,
+          questionable_type: 'Service',
           items_attributes: {
             '0' => {
               content: 'test',
@@ -68,9 +70,10 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
     context 'successful' do
       before :each do
         post :create, params: {
-          service_id: @service.id,
           questionnaire: {
             name: 'string',
+            questionable_id: @service.id,
+            questionable_type: 'Service',
             items_attributes: { 
               '0' => { 
                 content: 'test',
@@ -90,7 +93,7 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
         expect(Item.count).to eq(1)
       end
 
-      it { is_expected.to redirect_to(action: :index, service_id: @service.id) }
+      it { is_expected.to redirect_to(action: :index, questionable_id: @service.id, questionable_type: 'Service') }
 
       it { is_expected.to respond_with(302) }
     end
@@ -98,8 +101,9 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
     context 'unsuccessful' do
       before :each do
         post :create, params: {
-          service_id: @service.id,
           questionnaire: {
+            questionable_id: @service.id,
+            questionable_type: 'Service',
             items_attributes: { 
               '0' => { 
                 content: 'test'

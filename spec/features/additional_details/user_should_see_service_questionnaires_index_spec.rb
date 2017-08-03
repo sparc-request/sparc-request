@@ -29,10 +29,10 @@ RSpec.describe 'User should see service questionnaire index', js: true do
     questionnaire = create(:questionnaire,
                            :without_validations,
                            name: 'Awesome Questionnaire',
-                           service: service)
+                           questionable: service)
     create(:item, questionnaire: questionnaire)
 
-    visit service_additional_details_questionnaires_path(service)
+    visit additional_details_questionnaires_path(questionable_id: service.id, questionable_type: 'Service')
 
     expect(page).to have_css 'tr td', text: questionnaire.name
   end

@@ -70,6 +70,7 @@ class ServiceCalendarsController < ApplicationController
     @merged           = true
     @consolidated     = false
     @statuses_hidden  = []
+    @scroll_true        = params[:scroll].present? && params[:scroll] == 'true'
     setup_calendar_pages
 
     respond_to do |format|
@@ -79,14 +80,16 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def view_full_calendar
-    @tab                = 'calendar'
-    @review             = false
-    @portal             = true
-    @admin              = false
-    @merged             = true
-    @consolidated       = true
-    @service_request    = @protocol.any_service_requests_to_display?
-    @statuses_hidden    = params[:statuses_hidden]
+    @tab                   = 'calendar'
+    @review                = false
+    @portal                = true
+    @admin                 = false
+    @merged                = true
+    @consolidated          = true
+    @service_request       = @protocol.any_service_requests_to_display?
+    @statuses_hidden       = params[:statuses_hidden]
+    @scroll_true           = params[:scroll].present? && params[:scroll] == 'true'
+    @visit_dropdown_change = params[:pages].present?
     setup_calendar_pages
 
     respond_to do |format|

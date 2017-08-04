@@ -96,7 +96,11 @@ class Dashboard::VisitGroupsController < Dashboard::BaseController
       :day,
       :window_before,
       :window_after)
-    temp[:position] = temp[:position].to_i - 1
+    
+    if @visit_group.position < temp[:position].to_i
+      temp[:position] = temp[:position].to_i - 1
+    end
+    
     temp
   end
 

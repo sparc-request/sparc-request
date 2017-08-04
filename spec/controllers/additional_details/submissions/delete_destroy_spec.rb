@@ -34,26 +34,16 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
     ssr           = create(:sub_service_request, service_request: @sr, organization: org)
     @li           = create(:line_item, service_request: @sr, sub_service_request: ssr, service: @service)
     @li2          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: @service2)
-    @submission   = create(:submission, protocol: @protocol, identity: logged_in_user, service: @service, line_item: @li, questionnaire: @que)
-    @submission2  = create(:submission, protocol: @protocol, identity: logged_in_user, service: @service, line_item: @li2, questionnaire: @que)
+    @submission   = create(:submission, protocol: @protocol, identity: logged_in_user, line_item: @li, questionnaire: @que)
+    @submission2  = create(:submission, protocol: @protocol, identity: logged_in_user, line_item: @li2, questionnaire: @que)
 
     session[:identity_id] = logged_in_user.id
   end
 
   describe '#destroy' do
-    it 'should assign @service' do
-      delete :destroy, params: {
-        id: @submission.id,
-        service_id: @service.id
-      }, format: :js
-
-      expect(assigns(:service)).to eq(@service)
-    end
-
     it 'should assign @submission' do
       delete :destroy, params: {
-        id: @submission.id,
-        service_id: @service.id
+        id: @submission.id
       }, format: :js
 
       expect(assigns(:submission)).to eq(@submission)
@@ -63,7 +53,6 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
       before :each do
         delete :destroy, params: {
           id: @submission.id,
-          service_id: @service.id,
           protocol_id: @protocol.id
         }, format: :js
       end
@@ -85,7 +74,6 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
       before :each do
         delete :destroy, params: {
           id: @submission.id,
-          service_id: @service.id,
           line_item_id: @li.id
         }, format: :js
       end
@@ -101,8 +89,7 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
 
     it 'should destroy submission' do
       delete :destroy, params: {
-        id: @submission.id,
-        service_id: @service.id
+        id: @submission.id
       }, format: :js
 
       expect(Submission.count).to eq(1)
@@ -110,8 +97,7 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
 
     it 'should render template' do
       delete :destroy, params: {
-        id: @submission.id,
-        service_id: @service.id
+        id: @submission.id
       }, format: :js
 
       expect(controller).to render_template(:destroy)
@@ -119,8 +105,7 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
 
     it 'should respond ok' do
       delete :destroy, params: {
-        id: @submission.id,
-        service_id: @service.id
+        id: @submission.id
       }, format: :js
 
       expect(controller).to respond_with(:ok)

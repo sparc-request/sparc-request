@@ -24,10 +24,12 @@ class AdditionalDetails::PreviewsController < ApplicationController
   def create
     @service = Service.find(questionnaire_params[:questionable_id])
     @questionnaire = Questionnaire.new(questionnaire_params)
-    @submission = Submission.new
-    @submission.questionnaire_responses.build
-    respond_to do |format|
-      format.js
+    if @questionnaire.valid?
+      @submission = Submission.new
+      @submission.questionnaire_responses.build
+      respond_to do |format|
+        format.js
+      end
     end
   end
 

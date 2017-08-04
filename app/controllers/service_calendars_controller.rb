@@ -129,7 +129,13 @@ class ServiceCalendarsController < ApplicationController
 
     @visit_group        = VisitGroup.find(params[:visit_group].to_i)
 
-    @visit_group.insert_at( params[:position].to_i - 1 )
+    new_position = params[:position].to_i
+
+    if @visit_group.position < new_position
+      @visit_group.insert_at( new_position - 1 )
+    else
+      @visit_group.insert_at( new_position )
+    end
 
     @pages = {}
     @service_request.arms.each do |arm|

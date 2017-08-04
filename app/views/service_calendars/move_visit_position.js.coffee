@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $('#modal_place').modal('hide')
 
-$(".arm-calendar-container-<%= @arm.id %> .pppv-thead").html('<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_header", service_request: @service_request, sub_service_request: @sub_service_request, arm: @arm, tab: @tab, pages: @pages, page: @page.to_i, review: @review, portal: @portal, visit_groups: @visit_groups, admin: @admin %>')
+$(".arm-calendar-container-<%= @arm.id %> .pppv-thead").html('<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_header", service_request: @service_request, sub_service_request: @sub_service_request, arm: @arm, tab: @tab, pages: @pages, page: @page.to_i, review: @review, portal: @portal, visit_groups: @visit_groups, admin: @admin, merged: @merged, consolidated: @consolidated, statuses_hidden: @statuses_hidden %>')
 
 $(".arm-calendar-container-<%= @arm.id %> .pppv-tbody").html('<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_line_items", service_request: @service_request, sub_service_request: @sub_service_request, arm: @arm, tab: @tab, pages: @pages, page: @page.to_i, review: @review, portal: @portal, visit_groups: @visit_groups, admin: @admin, merged: @merged, consolidated: @consolidated, statuses_hidden: @statuses_hidden %>')
 

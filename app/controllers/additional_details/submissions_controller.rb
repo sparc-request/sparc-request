@@ -4,14 +4,14 @@ class AdditionalDetails::SubmissionsController < ApplicationController
   include AdditionalDetails::StatesHelper
 
   def index
-    @service = Service.find(params[:service_id])
-    @submissions = @service.submissions
+    @questionnaire = Questionnaire.find(params[:questionnaire_id])
+    @submissions = @questionnaire.submissions
   end
 
   def show
     @submission = Submission.find(params[:id])
     @questionnaire_responses = @submission.questionnaire_responses
-    @questionnaire = Questionnaire.find(@submission.questionnaire_id)
+    @questionnaire = @submission.questionnaire
     @items = @questionnaire.items
     respond_to do |format|
       format.js
@@ -19,8 +19,7 @@ class AdditionalDetails::SubmissionsController < ApplicationController
   end
 
   def new
-    @service = Service.find(params[:service_id])
-    @questionnaire = @service.questionnaires.active.first
+    @questionnaire = Questionnaire.find(params[:questionnaire_id])
     @submission = Submission.new
     @submission.questionnaire_responses.build
     respond_to do |format|
@@ -29,18 +28,16 @@ class AdditionalDetails::SubmissionsController < ApplicationController
   end
 
   def edit
-    @service = Service.find(params[:service_id])
     @submission = Submission.find(params[:id])
-    @questionnaire = @service.questionnaires.active.first
+    @questionnaire = @submission.questionnaire
     respond_to do |format|
       format.js
     end
   end
 
   def create
-    @service = Service.find(params[:service_id])
-    @questionnaire = @service.questionnaires.active.first
     @submission = Submission.new(submission_params)
+    @questionnaire = @submission.questionnaire
     @protocol = Protocol.find(submission_params[:protocol_id])
     @submissions = @protocol.submissions
     @line_item = LineItem.find(submission_params[:line_item_id])
@@ -58,7 +55,6 @@ class AdditionalDetails::SubmissionsController < ApplicationController
   end
 
   def update
-    @service = Service.find(params[:service_id])
     @submission = Submission.find(params[:id])
     @protocol = Protocol.find(@submission.protocol_id)
     @submissions = @protocol.submissions
@@ -77,13 +73,14 @@ class AdditionalDetails::SubmissionsController < ApplicationController
   end
 
   def destroy
-    @service = Service.find(params[:service_id])
     @submission = Submission.find(params[:id])
     @user = current_user
     if params[:protocol_id]
       @protocol = Protocol.find(params[:protocol_id])
       @submissions = @protocol.submissions
       @permission_to_edit = current_user.can_edit_protocol?(@protocol)
+    else
+      @submissions = @submission.protocol.submissions
     end
     if params[:line_item_id]
       @line_item = LineItem.find(params[:line_item_id])

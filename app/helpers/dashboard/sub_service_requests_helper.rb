@@ -219,7 +219,7 @@ module Dashboard::SubServiceRequestsHelper
                           :option,
                           "#{li.service.name}",
                           data: {
-                            service_id: li.service.id,
+                            questionnaire_id: li.service.questionnaires.active.first.id,
                             protocol_id: protocol.id,
                             line_item_id: li.id
                           }

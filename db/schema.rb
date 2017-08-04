@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170731165230) do
+ActiveRecord::Schema.define(version: 20170804122207) do
 
   create_table "admin_rates", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer "line_item_id"
@@ -874,7 +874,6 @@ ActiveRecord::Schema.define(version: 20170731165230) do
   end
 
   create_table "submissions", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
-    t.integer "service_id"
     t.integer "identity_id"
     t.integer "questionnaire_id"
     t.integer "protocol_id"
@@ -885,7 +884,6 @@ ActiveRecord::Schema.define(version: 20170731165230) do
     t.index ["line_item_id"], name: "index_submissions_on_line_item_id"
     t.index ["protocol_id"], name: "index_submissions_on_protocol_id"
     t.index ["questionnaire_id"], name: "index_submissions_on_questionnaire_id"
-    t.index ["service_id"], name: "index_submissions_on_service_id"
   end
 
   create_table "subsidies", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -1044,5 +1042,4 @@ ActiveRecord::Schema.define(version: 20170731165230) do
   add_foreign_key "submissions", "line_items"
   add_foreign_key "submissions", "protocols"
   add_foreign_key "submissions", "questionnaires"
-  add_foreign_key "submissions", "services"
 end

@@ -26,11 +26,13 @@
     = stylesheet_link_tag "additional_details/application"
     = javascript_include_tag 'additional_details/application'
     = csrf_meta_tags
+    :javascript
+      window.I18n = #{current_translations.to_json.html_safe};
 
   %body{ class: "#{controller_name} #{action_name}" }
     = render 'additional_details/shared/navbar'
     %ol.breadcrumb
-      = display_organization_tree(@questionable.organization)
+      /= display_organization_tree(@questionnaire.questionable.organization)
     .container
       .flash
         = render "shared/flash"

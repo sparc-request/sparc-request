@@ -198,7 +198,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def archive
     @protocol.toggle!(:archived)
     @protocol_type = @protocol.type
-    @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
+    @permission_to_edit = params[:permission_to_edit]
     respond_to do |format|
       format.js
     end

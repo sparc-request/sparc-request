@@ -548,5 +548,8 @@ $ ->
     window.location.assign("/catalog_manager?show_unavailable=#{show_unavailable}")
   )
 
-
-
+  $(document).on 'change', '.available-status', ->
+    if $(this).prop('checked')
+      $(".#{$(this).data('status')}-dependent").show()
+    else
+      $(".#{$(this).data('status')}-dependent").hide()

@@ -23,8 +23,7 @@
       = t(:calendars)[:merged_totals][:header]
   %table.table.table-bordered
     %tbody
-      - service_request.arms.each do |arm|
-        - next if arm.visit_groups.empty?
+      - service_request.arms.eager_load(line_items_visits: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] }).each do |arm|
         %tr.total-cost-per-arm
           %th{ colspan: 10 }
             = I18n.t('calendars.pppv.totals.total_costs', arm_name: arm.name)
@@ -34,7 +33,7 @@
         %th{ colspan: 10 }
           = t(:calendars)[:otf][:totals][:total_costs]
         %td.text-center{ colspan: 2 }
-          = display_total_cost_per_study_otfs(service_request, service_request.line_items)
+          = display_total_cost_per_study_otfs(service_request)
       %tr.bg-primary
         %td{ colspan: 13 }
       - if USE_INDIRECT_COST

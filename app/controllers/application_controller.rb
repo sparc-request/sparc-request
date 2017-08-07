@@ -188,7 +188,7 @@ class ApplicationController < ActionController::Base
         return true
       end
     # the service request is in first draft and has yet to be submitted (catalog page only)
-    elsif @service_request.status == 'first_draft'
+    elsif @service_request.status == 'first_draft' && controller_name != 'protocols' && action_name != 'protocol'
       return true
     elsif !@service_request.status.nil? # this is a previous service request so we should attempt to sign in
       authenticate_identity!

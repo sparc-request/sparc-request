@@ -41,7 +41,7 @@ RSpec.describe 'User edits option fields', js: true do
     find('.edit-survey').click
     wait_for_javascript_to_finish
 
-    fill_in('option-content', with: 'This is a Terrible Option')
+    fill_in("option-#{@option.id}-content", with: 'This is a Terrible Option')
     find('.modal-title').click
     wait_for_javascript_to_finish
 

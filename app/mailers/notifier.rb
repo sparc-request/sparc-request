@@ -34,10 +34,11 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :cc => cc, :from => @identity.email, :subject => subject)
   end
 
-  def notify_user(project_role, service_request, ssr, approval, user_current, audit_report=nil, individual_ssr=false)
+  def notify_user(project_role, service_request, ssr, approval, user_current, audit_report=nil, individual_ssr=false, deleted_ssrs=nil)
 
     @protocol = service_request.protocol
     @service_request = service_request
+    @deleted_ssrs = deleted_ssrs
 
     ### ATTACHMENTS ###
     service_list_false = @service_request.service_list(false)

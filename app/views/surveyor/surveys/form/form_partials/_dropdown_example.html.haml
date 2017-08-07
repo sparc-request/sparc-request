@@ -22,7 +22,7 @@
   - question.options.each do |option|
     .form-group.option{ data: {option_id: option.id } }
       .col-lg-11.no-padding
-        = text_field_tag "option-content", option.content, class: 'form-control option-content', placeholder: t(:surveyor)[:surveys][:form][:content][:option][:content][:placeholder], maxlength: 255
+        = text_field_tag "option-#{option.id}-content", option.content, class: 'form-control option-content', placeholder: t(:surveyor)[:surveys][:form][:content][:option][:content][:placeholder], maxlength: 255
       .col-lg-1.no-padding
         = render 'surveyor/surveys/form/form_partials/delete_option_button'
   = render 'surveyor/surveys/form/form_partials/add_option_button', question: question

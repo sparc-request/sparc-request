@@ -39,7 +39,7 @@ RSpec.describe 'User edits section fields', js: true do
     find('.edit-survey').click
     wait_for_javascript_to_finish
 
-    fill_in('section-title', with: 'This is a Terrible Section')
+    fill_in("section-#{@section.id}-title", with: 'This is a Terrible Section')
     find('.modal-title').click
     wait_for_javascript_to_finish
 
@@ -53,7 +53,7 @@ RSpec.describe 'User edits section fields', js: true do
     find('.edit-survey').click
     wait_for_javascript_to_finish
 
-    fill_in('section-description', with: 'How can I describe such a terrible section?')
+    fill_in("section-#{@section.id}-description", with: 'How can I describe such a terrible section?')
     find('.modal-title').click
     wait_for_javascript_to_finish
 

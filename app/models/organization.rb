@@ -381,7 +381,7 @@ class Organization < ApplicationRecord
 
   def setup_editable_statuses
     EditableStatus::TYPES.each do |status|
-      self.editable_statuses.build(status: status, new: true) unless self.editable_statuses.where(status: status).any?
+      self.editable_statuses.build(status: status, new: true) unless self.editable_statuses.detect{ |es| es.status == status }
     end
   end
 

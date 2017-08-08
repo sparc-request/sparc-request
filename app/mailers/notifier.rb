@@ -53,8 +53,7 @@ class Notifier < ActionMailer::Base
     @full_name = @identity.full_name
     @audit_report = audit_report
 
-    @service_requester_id = @service_request.sub_service_requests.first.nil? ? AuditRecovery.where(auditable_id: deleted_ssrs.id, auditable_type: 'SubServiceRequest', action: 'destroy').first.audited_changes['service_requester_id'] : @service_request.sub_service_requests.first.service_requester_id
-
+    @service_requester_id = service_requester_id(@service_request, deleted_ssrs.id)
     @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
 
     if admin_delete_ssr
@@ -92,7 +91,8 @@ class Notifier < ActionMailer::Base
     @role = 'none'
     @full_name = submission_email_address
 
-    @service_requester_id = @service_request.sub_service_requests.first.nil? ? AuditRecovery.where(auditable_id: ssr.id, auditable_type: 'SubServiceRequest', action: 'destroy').first.audited_changes['service_requester_id'] : @service_request.sub_service_requests.first.service_requester_id
+    @service_requester_id = service_requester_id(@service_request, ssr.id)
+    @ssrs_to_be_displayed = [ssr]
 
     @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
     @portal_text = "Administrators/Service Providers, Click Here"
@@ -119,7 +119,7 @@ class Notifier < ActionMailer::Base
     @role = 'none'
     @full_name = service_provider.identity.full_name
 
-    @service_requester_id = @service_request.sub_service_requests.first.nil? ? AuditRecovery.where(auditable_id: ssr.id, auditable_type: 'SubServiceRequest', action: 'destroy').first.audited_changes['service_requester_id'] : @service_request.sub_service_requests.first.service_requester_id
+    @service_requester_id = service_requester_id(@service_request, ssr.id)
     @audit_report = audit_report
 
     @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
@@ -294,5 +294,9 @@ class Notifier < ActionMailer::Base
       status = service_request.status
     end
     status
+  end
+
+  def service_requester_id(service_request, deleted_ssr_id)
+    service_request.sub_service_requests.first.present? ? service_request.sub_service_requests.first.service_requester_id : AuditRecovery.where(auditable_id: deleted_ssr_id, auditable_type: 'SubServiceRequest', action: 'destroy').first.audited_changes['service_requester_id']
   end
 end

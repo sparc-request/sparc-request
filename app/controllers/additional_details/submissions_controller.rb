@@ -38,7 +38,7 @@ class AdditionalDetails::SubmissionsController < ApplicationController
   def create
     @submission = Submission.new(submission_params)
     @questionnaire = @submission.questionnaire
-    @protocol = @submission.protocol
+    @protocol = Protocol.find(submission_params[:protocol_id])
     @submissions = @protocol.submissions
     @sub_service_request = @submission.sub_service_request
     @service_request = @sub_service_request.service_request
@@ -56,7 +56,7 @@ class AdditionalDetails::SubmissionsController < ApplicationController
 
   def update
     @submission = Submission.find(params[:id])
-    @protocol = Protocol.find(@submission.protocol_id)
+    @protocol = @submission.protocol
     @submissions = @protocol.submissions
     if params[:sr_id]
       @service_request = ServiceRequest.find(params[:sr_id])

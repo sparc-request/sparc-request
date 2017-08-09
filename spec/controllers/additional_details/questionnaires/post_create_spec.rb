@@ -31,10 +31,10 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
 
     it 'should assign @service' do
       post :create, params: {
+        questionable_id: @service.id,
+        questionable_type: 'Service',
         questionnaire: {
           name: 'string',
-          questionable_id: @service.id,
-          questionable_type: 'Service',
           items_attributes: {
             '0' => {
               content: 'test',
@@ -50,10 +50,10 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
 
     it 'should assign @questionnaire' do
       post :create, params: {
+        questionable_id: @service.id,
+        questionable_type: 'Service',
         questionnaire: {
           name: 'string',
-          questionable_id: @service.id,
-          questionable_type: 'Service',
           items_attributes: {
             '0' => {
               content: 'test',
@@ -70,10 +70,10 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
     context 'successful' do
       before :each do
         post :create, params: {
+          questionable_id: @service.id,
+          questionable_type: 'Service',
           questionnaire: {
             name: 'string',
-            questionable_id: @service.id,
-            questionable_type: 'Service',
             items_attributes: { 
               '0' => { 
                 content: 'test',
@@ -101,9 +101,9 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
     context 'unsuccessful' do
       before :each do
         post :create, params: {
+          questionable_id: @service.id,
+          questionable_type: 'Service',
           questionnaire: {
-            questionable_id: @service.id,
-            questionable_type: 'Service',
             items_attributes: { 
               '0' => { 
                 content: 'test'

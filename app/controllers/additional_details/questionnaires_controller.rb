@@ -38,6 +38,7 @@ class AdditionalDetails::QuestionnairesController < ApplicationController
 
   def create
     @questionnaire = @questionable.questionnaires.new(questionnaire_params)
+    
     if @questionnaire.save
       redirect_to additional_details_questionnaires_path(questionable_id: @questionable.id, questionable_type: @questionable.class.name)
     else

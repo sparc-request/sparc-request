@@ -33,10 +33,10 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
     it 'should assign @service' do
       put :update, params: {
         id: @questionnaire.id,
+        questionable_id: @service.id,
+        questionable_type: 'Service',
         questionnaire: {
           name: 'Not Funny',
-          questionable_id: @service.id,
-          questionable_type: 'Service',
           items_attributes: {
             '0' => {
               content: 'testy',
@@ -53,10 +53,10 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
     it 'should assign @questionnaire' do
       put :update, params: {
         id: @questionnaire.id,
+        questionable_id: @service.id,
+        questionable_type: 'Service',
         questionnaire: {
           name: 'Not Funny',
-          questionable_id: @service.id,
-          questionable_type: 'Service',
           items_attributes: {
             '0' => {
               content: 'testy',
@@ -74,10 +74,10 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
       before :each do
         put :update, params: {
           id: @questionnaire.id,
+          questionable_id: @service.id,
+          questionable_type: 'Service',
           questionnaire: {
             name: 'Not Funny',
-            questionable_id: @service.id,
-            questionable_type: 'Service',
             items_attributes: {
               '0' => {
                 content: 'testy',
@@ -102,9 +102,9 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
       before :each do
         put :update, params: {
           id: @questionnaire.id,
+          questionable_id: @service.id,
+          questionable_type: 'Service',
           questionnaire: {
-            questionable_id: @service.id,
-            questionable_type: 'Service',
             active: 1
           }
         }, format: :js
@@ -123,10 +123,10 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
       before :each do
         put :update, params: {
           id: @questionnaire.id,
+          questionable_id: @service.id,
+          questionable_type: 'Service',
           questionnaire: {
             name: 'Not Funny',
-            questionable_id: @service.id,
-            questionable_type: 'Service',
             active: 1,
             items_attributes: {
               '0' => {

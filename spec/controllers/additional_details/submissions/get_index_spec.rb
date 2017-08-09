@@ -31,8 +31,7 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
     protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user)
     sr          = create(:service_request_without_validations, protocol: protocol)
     ssr         = create(:sub_service_request, service_request: sr, organization: org)
-    li          = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-    @submission = create(:submission, protocol: protocol, identity: logged_in_user, line_item: li, questionnaire: @que)
+    @submission = create(:submission, protocol: protocol, identity: logged_in_user, sub_service_request: ssr, questionnaire: @que)
 
     get :index, params: {
       questionnaire_id: @que.id

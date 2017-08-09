@@ -28,7 +28,6 @@ RSpec.describe AdditionalDetails::PreviewsController do
     before :each do
       @service = create( :service )
       @questionnaire = build( :questionnaire, questionable: @service, active: false )
-
       post :create, params: {
         name: 'Some Program',
         questionable_id: @service,

@@ -25,16 +25,15 @@ RSpec.describe LineItem, type: :model do
   before :each do
     org = create(:organization)
     @service = create(:service, organization: org)
-    @que = create(:questionnaire, :without_validations, questionable: @service, active: true)
     @protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
     sr = create(:service_request_without_validations, protocol: @protocol)
-    ssr = create(:sub_service_request, service_request: sr, organization: org)
-    @li = create(:line_item, service_request: sr, sub_service_request: ssr, service: @service)
+    @ssr = create(:sub_service_request, service_request: sr, organization: org)
+    @que = create(:questionnaire, :without_validations, questionable: @service, active: true)
   end
 
   context 'protocol has incomplete additional details' do
     it 'should return true' do
-      expect(@li.has_incomplete_additional_details?).to eq(true)
+      expect(@ssr.has_incomplete_additional_details?).to eq(true)
     end
   end
 
@@ -42,7 +41,7 @@ RSpec.describe LineItem, type: :model do
     it 'should return false' do
       create(:submission, identity: logged_in_user, protocol: @protocol, line_item: @li, questionnaire: @que)
       
-      expect(@li.has_incomplete_additional_details?).to eq(false)
+      expect(@ssr.has_incomplete_additional_details?).to eq(false)
     end
   end
 end

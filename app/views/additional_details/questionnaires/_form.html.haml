@@ -3,8 +3,8 @@
     = t(:additional_details)[:form_builder_title]
   .panel-body
     = form_for [:additional_details, questionnaire], html: { class: 'form-horizontal questionnaire-form' } do |f|
-      = f.hidden_field :questionable_id, value: questionable.id
-      = f.hidden_field :questionable_type, value: questionable.class.name
+      = hidden_field_tag :questionable_id, questionable.id
+      = hidden_field_tag :questionable_type, questionable.class.name
       - if questionnaire.errors.any?
         .alert.alert-danger
           %ul.list-unstyled

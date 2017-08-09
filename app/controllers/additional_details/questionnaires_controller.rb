@@ -37,6 +37,7 @@ class AdditionalDetails::QuestionnairesController < ApplicationController
   end
 
   def create
+    binding.pry
     @questionnaire = @questionable.questionnaires.new(questionnaire_params)
     if @questionnaire.save
       redirect_to additional_details_questionnaires_path(questionable_id: @questionable.id, questionable_type: @questionable.class.name)
@@ -69,11 +70,7 @@ class AdditionalDetails::QuestionnairesController < ApplicationController
   end
 
   def find_questionable
-    if params[:questionnaire]
-      @questionable = questionnaire_params[:questionable_type].classify.constantize.find(questionnaire_params[:questionable_id])
-    else
-      @questionable = params[:questionable_type].classify.constantize.find(params[:questionable_id])
-    end
+    @questionable = params[:questionable_type].classify.constantize.find(params[:questionable_id])
   end
 
   def questionnaire_params

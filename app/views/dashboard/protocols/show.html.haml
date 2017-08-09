@@ -25,6 +25,8 @@
   = render 'dashboard/service_requests/service_requests', protocol: @protocol, super_user_orgs: @super_user_orgs, permission_to_edit: @permission_to_edit, user: @user, view_only: false, show_view_ssr_back: @show_view_ssr_back, statuses_hidden: %(first_draft)
   .additional-details-submissions-panel
     = render "additional_details/submissions/submissions_panel", protocol: @protocol, submissions: @submissions
+  .milestones-panel
+    = render "dashboard/protocols/milestone", protocol: @protocol
 
 = render 'additional_details/submissions/submission_modal'
 

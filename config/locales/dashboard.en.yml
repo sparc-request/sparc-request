@@ -210,6 +210,18 @@ en:
         coverage_report: 'Coverage Analysis Report'
         consolidated_all: "All"
         consolidated_exclude_drafts: "Exclude Drafts"
+      milestones:
+        title: 'Milestones (Timeline)'
+        start_date: "%{type} Start Date"
+        end_date: "%{type} End Date"
+        recruitment_start: "%{type} Estimated Recruitment Start Date"
+        recruitment_end: "%{type} Estimated Recruitment End Date"
+        update_button: 'Update Milestones'
+        tooltips:
+          start_date: "%{type} estimated start date (used by service providers to prioritize)"
+          end_date: "%{type} estimated end date (used by service providers to prioritize)"
+          recruitment_start_date: "When your %{type} is estimated to start recruiting participants"
+          recruitment_end_date: "When your %{type} is estimated to stop recruiting participants"
     #####################
     # SERVICE CALENDARS #
     #####################

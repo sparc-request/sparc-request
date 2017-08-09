@@ -131,7 +131,13 @@ class ServiceCalendarsController < ApplicationController
     @visit_group          = VisitGroup.find(params[:visit_group].to_i)
     @visit_groups         = @arm.visit_groups.page(@page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] } })
 
-    @visit_group.insert_at( params[:position].to_i - 1 )
+    new_position = params[:position].to_i
+
+    if @visit_group.position < new_position
+      @visit_group.insert_at( new_position - 1 )
+    else
+      @visit_group.insert_at( new_position )
+    end
 
     respond_to do |format|
       format.js

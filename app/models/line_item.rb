@@ -348,10 +348,6 @@ class LineItem < ApplicationRecord
     service_abbreviation
   end
 
-  def has_incomplete_additional_details?
-    service.questionnaires.active.present? && !submission.present?
-  end
-
   private
 
   def build_line_items_visits

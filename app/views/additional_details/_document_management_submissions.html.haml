@@ -38,30 +38,32 @@
     - if service_request.additional_detail_services.present?
       - service_request.line_items.each do |line_item|
         - service = Service.find(line_item.service_id)
+        - questionnaire = service.questionnaires.active.first
+        - ssr = line_item.sub_service_request
         - if service.questionnaires.active.present?
           %tr
             %td
               = service.name
             %td
               .text-center
-                - if line_item.submission.present?
-                  = link_to additional_details_submission_path(line_item.submission),
+                - if ssr.completed_questionnaire?(questionnaire)
+                  = link_to additional_details_submission_path(ssr.find_submission(questionnaire)),
                     remote: true, class: 'btn btn-primary' do
                     %span.glyphicon.glyphicon-search
                 - else
-                  = link_to new_additional_details_submission_path(questionnaire_id: service.questionnaires.active.first.id, protocol_id: @service_request.protocol_id, sr_id: @service_request.id, line_item_id: line_item.id), remote: true, class: 'btn btn-primary' do
+                  = link_to new_additional_details_submission_path(questionnaire_id: service.questionnaires.active.first.id, protocol_id: @service_request.protocol_id, sr_id: @service_request.id, ssr_id: ssr.id), remote: true, class: 'btn btn-primary' do
                     = t(:additional_details)[:document_complete_details]
                     %span.glyphicon.glyphicon-modal-window
             %td
               .text-center
-                = line_item.submission.present? ? "True" : "False"
+                = ssr.completed_questionnaire?(questionnaire) ? "True" : "False"
             %td
               .text-center
-                - if line_item.submission.present?
-                  = link_to edit_additional_details_submission_path(line_item.submission, sr_id: @service_request.id), remote: true, class: 'btn btn-warning' do
+                - if ssr.completed_questionnaire?(questionnaire)
+                  = link_to edit_additional_details_submission_path(ssr.find_submission(questionnaire).id, sr_id: @service_request.id), remote: true, class: 'btn btn-warning' do
                     %span.glyphicon.glyphicon-edit
             %td
               .text-center
-                - if line_item.submission.present?
-                  = link_to "javascript:void(0);", class: 'btn btn-danger delete-submission', data: { id: line_item.submission.id, service_id: service.id, sr_id: @service_request.id, protocol_id: @service_request.protocol_id, line_item_id: line_item.id } do
+                - if ssr.completed_questionnaire?(questionnaire)
+                  = link_to "javascript:void(0);", class: 'btn btn-danger delete-submission', data: { id: ssr.find_submission(questionnaire).id, service_id: service.id, sr_id: @service_request.id, protocol_id: @service_request.protocol_id, ssr_id: ssr.id } do
                     %span.glyphicon.glyphicon-remove

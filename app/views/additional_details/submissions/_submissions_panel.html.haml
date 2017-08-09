@@ -41,7 +41,7 @@
               = t(:additional_details)[:submissions][:table_fields][:delete]
         %tbody
           - submissions.each do |submission|
-            - ssr = SubServiceRequest.find(submission.line_item.sub_service_request_id)
+            - ssr = submission.sub_service_request
             %tr{ class: "submission", data: { id: "#{submission.id}" } }
               %td
                 .text-center
@@ -66,5 +66,5 @@
                   remote: true, class: 'btn btn-warning' do
                   %span.glyphicon.glyphicon-edit
               %td.text-center
-                = link_to "javascript:void(0);", class: 'btn btn-danger delete-submission', data: { id: "#{submission.id}", questionable_id: "#{submission.questionnaire.questionable.id}", protocol_id: "#{submission.protocol_id}", line_item_id: "#{submission.line_item_id}" } do
+                = link_to "javascript:void(0);", class: 'btn btn-danger delete-submission', data: { id: "#{submission.id}", questionable_id: "#{submission.questionnaire.questionable.id}", protocol_id: "#{submission.protocol_id}", ssr_id: "#{submission.sub_service_request_id}" } do
                   %span.glyphicon.glyphicon-remove

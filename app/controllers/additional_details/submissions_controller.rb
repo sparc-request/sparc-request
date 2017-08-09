@@ -38,10 +38,10 @@ class AdditionalDetails::SubmissionsController < ApplicationController
   def create
     @submission = Submission.new(submission_params)
     @questionnaire = @submission.questionnaire
-    @protocol = Protocol.find(submission_params[:protocol_id])
+    @protocol = @submission.protocol
     @submissions = @protocol.submissions
-    @line_item = LineItem.find(submission_params[:line_item_id])
-    @service_request = @line_item.service_request
+    @sub_service_request = @submission.sub_service_request
+    @service_request = @sub_service_request.service_request
     @permission_to_edit = current_user.can_edit_protocol?(@protocol)
     @user = current_user
     
@@ -82,9 +82,9 @@ class AdditionalDetails::SubmissionsController < ApplicationController
     else
       @submissions = @submission.protocol.submissions
     end
-    if params[:line_item_id]
-      @line_item = LineItem.find(params[:line_item_id])
-      @service_request = ServiceRequest.find(@line_item.service_request_id)
+    if params[:ssr_id]
+      @sub_service_request = SubServiceRequest.find(params[:ssr_id])
+      @service_request = ServiceRequest.find(@sub_service_request.service_request_id)
     end
     respond_to do |format|
       if @submission.destroy

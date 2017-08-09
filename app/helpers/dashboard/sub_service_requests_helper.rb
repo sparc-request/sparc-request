@@ -208,20 +208,19 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def display_ssr_submissions(ssr)
-    line_items = ssr.line_items.includes(service: :questionnaires).includes(:submission).to_a.select(&:has_incomplete_additional_details?)
-
-    if line_items.any?
+    if ssr.has_incomplete_additional_details?
       protocol    = ssr.protocol
       submissions = ""
 
-      line_items.each do |li|
+      ssr.organization.services.each do |service|
+        next unless service.questionnaires.active.present?
         submissions +=  content_tag(
                           :option,
-                          "#{li.service.name}",
+                          "#{service.name}",
                           data: {
-                            questionnaire_id: li.service.questionnaires.active.first.id,
+                            questionnaire_id: service.questionnaires.active.first.id,
                             protocol_id: protocol.id,
-                            line_item_id: li.id
+                            ssr_id: ssr.id
                           }
                         )
       end

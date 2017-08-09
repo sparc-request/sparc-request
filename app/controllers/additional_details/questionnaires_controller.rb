@@ -37,7 +37,6 @@ class AdditionalDetails::QuestionnairesController < ApplicationController
   end
 
   def create
-    binding.pry
     @questionnaire = @questionable.questionnaires.new(questionnaire_params)
     if @questionnaire.save
       redirect_to additional_details_questionnaires_path(questionable_id: @questionable.id, questionable_type: @questionable.class.name)

@@ -25,6 +25,8 @@ class Organization < ApplicationRecord
   audited
   acts_as_taggable
 
+  after_create :build_default_statuses
+
   belongs_to :parent, :class_name => 'Organization'
   has_many :submission_emails, :dependent => :destroy
   has_many :associated_surveys, as: :surveyable, dependent: :destroy
@@ -357,7 +359,7 @@ class Organization < ApplicationRecord
   def get_available_statuses
     tmp_available_statuses = self.available_statuses.reject{|status| status.new_record?}
     statuses = []
-    if tmp_available_statuses.empty?
+    if tmp_available_statuses.empty? || tmp_available_statuses.collect(&:status) == DEFAULT_STATUSES
       self.parents.each do |parent|
         if !parent.available_statuses.empty?
           statuses = AVAILABLE_STATUSES.select{|k,v| parent.available_statuses.map(&:status).include? k}
@@ -408,6 +410,12 @@ class Organization < ApplicationRecord
     else
       orgs = Organization.where(parent_id: org_ids)
       orgs | authorized_child_organizations(orgs.pluck(:id))
+    end
+  end
+
+  def build_default_statuses
+    DEFAULT_STATUSES.each do |status|
+      AvailableStatus.find_or_create_by(organization_id: self.id, status: status)
     end
   end
 end

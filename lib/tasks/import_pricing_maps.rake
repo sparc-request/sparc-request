@@ -55,6 +55,9 @@ namespace :data do
       file
     end
 
+    imported_maps = CSV.open("tmp/imported_maps.csv", "w")
+    imported_maps << ['Service ID', 'Map Created', 'Import Error']
+
     puts "Press CTRL-C to exit"
     puts ""
 
@@ -66,8 +69,9 @@ namespace :data do
       puts "#"*50
       puts "Starting import"
       input_file = Rails.root.join("db", "imports", file)
-      CSV.foreach(input_file, :headers => true) do |row|
-        service = Service.find(row['service_id'].to_i)
+      CSV.foreach(input_file, :headers => true, skip_blanks: true, skip_lines: /^(?:,\s*)+$/) do |row|
+
+        service = Service.find(row['Service ID'].to_i)
 
         pricing_map = service.pricing_maps.build(
                                               :full_rate => Service.dollars_to_cents(row['full_rate'].to_s.strip.gsub("$", "").gsub(",", "")),
@@ -88,17 +92,19 @@ namespace :data do
         if pricing_map.valid?
           puts "New pricing map created for #{service.name}"
           puts "  full_rate = $ #{pricing_map.full_rate / 100}"
-          puts "  corporate_rate = $ #{pricing_map.corporate_rate / 100}"
-          puts "  federal_rate = $ #{pricing_map.federal_rate / 100}"
-          puts "  member_rate = $ #{pricing_map.member_rate / 100}"
-          puts "  other_rate = $ #{pricing_map.other_rate / 100}"
+          puts "  corporate_rate = $ #{pricing_map.corporate_rate? ? (pricing_map.corporate_rate / 100) : 0}"
+          puts "  federal_rate = $ #{pricing_map.federal_rate? ? (pricing_map.federal_rate / 100) : 0}"
+          puts "  member_rate = $ #{pricing_map.member_rate? ? (pricing_map.member_rate / 100) : 0}"
+          puts "  other_rate = $ #{pricing_map.other_rate? ? (pricing_map.other_rate / 100) : 0}"
           puts ""
+          imported_maps << [service.id, "New pricing map created for #{service.name}", '']
           pricing_map.save
         else
           puts "#"*50
           puts "Error importing pricing map"
           puts service.inspect
           puts pricing_map.inspect
+          imported_maps << [service.id, '', pricing_map.errors]
           puts service.errors
           puts pricing_map.errors
         end

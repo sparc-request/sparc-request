@@ -20,4 +20,3 @@
 $(".arm-calendar-container-<%= @arm.id %>").html("<%= escape_javascript(render( '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @pages[@arm.id], pages: @pages, review: @review, portal: @portal, admin: @admin, merged: @merged, consolidated: @consolidated, statuses_hidden: @statuses_hidden )) %>")
 $('.selectpicker').selectpicker()
 setup_xeditable_fields()
-changing_tabs_calculating_rates()

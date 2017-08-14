@@ -34,10 +34,10 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
     li          = create(:line_item, service_request: sr, sub_service_request: ssr, service: @service)
     @submission = create(:submission, protocol: protocol, identity: logged_in_user, service: @service, line_item: li, questionnaire: @que)
 
-    xhr :get, :edit, {
+    get :edit, params: {
       id: @submission.id,
       service_id: @service.id
-    }
+    }, xhr: true
   end
 
   describe '#edit' do

@@ -26,7 +26,7 @@ class ServiceRequest < ApplicationRecord
 
   belongs_to :protocol
   has_many :sub_service_requests, :dependent => :destroy
-  has_many :line_items, -> { includes(:service) }, :dependent => :destroy
+  has_many :line_items, :dependent => :destroy
   has_many :services, through: :line_items
   has_many :line_items_visits, through: :line_items
   has_many :subsidies, through: :sub_service_requests
@@ -227,15 +227,11 @@ class ServiceRequest < ApplicationRecord
   end
 
   def one_time_fee_line_items
-    line_items.map do |line_item|
-      line_item.service.one_time_fee ? line_item : nil
-    end.compact
+    line_items.joins(:service).where(services: { one_time_fee: true })
   end
 
   def per_patient_per_visit_line_items
-    line_items.map do |line_item|
-      line_item.service.one_time_fee ? nil : line_item
-    end.compact
+    line_items.joins(:service).where(services: { one_time_fee: false })
   end
 
   def set_visit_page page_passed, arm
@@ -344,22 +340,19 @@ class ServiceRequest < ApplicationRecord
 
   def total_direct_costs_per_patient arms=self.arms, line_items=nil
     total = 0.0
-    lids = line_items.map(&:id) unless line_items.nil?
     arms.each do |arm|
-      livs = line_items.nil? ? arm.line_items_visits : arm.line_items_visits.reject{|liv| !lids.include? liv.line_item_id}
-      total += arm.direct_costs_for_visit_based_service livs
+      livs = (line_items.nil? ? arm.line_items_visits : arm.line_items_visits.where(line_item: line_items)).eager_load(line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]])
+      total += arm.direct_costs_for_visit_based_service(livs)
     end
-
     total
   end
 
   def total_indirect_costs_per_patient arms=self.arms, line_items=nil
     total = 0.0
     if USE_INDIRECT_COST
-      lids = line_items.map(&:id) unless line_items.nil?
       arms.each do |arm|
-        livs = line_items.nil? ? arm.line_items_visits : arm.line_items_visits.reject{|liv| !lids.include? liv.line_item_id}
-        total += arm.indirect_costs_for_visit_based_service
+        livs = (line_items.nil? ? arm.line_items_visits : arm.line_items_visits.where(line_item: line_items)).eager_load(line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]])
+        total += arm.indirect_costs_for_visit_based_service(livs)
       end
     end
 
@@ -370,27 +363,27 @@ class ServiceRequest < ApplicationRecord
     self.total_direct_costs_per_patient(arms) + self.total_indirect_costs_per_patient(arms)
   end
 
-  def total_direct_costs_one_time line_items=self.line_items
-    total = 0.0
-    line_items.select {|x| x.service.one_time_fee}.each do |li|
-      total += li.direct_costs_for_one_time_fee
-    end
-
-    total
+  def total_direct_costs_one_time(line_items=self.line_items)
+    line_items.
+      eager_load(:admin_rates, service_request: :protocol).
+      includes(service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]).
+      where(services: { one_time_fee: true }).
+      sum(&:direct_costs_for_one_time_fee)
   end
 
-  def total_indirect_costs_one_time line_items=self.line_items
+  def total_indirect_costs_one_time(line_items=self.line_items)
     total = 0.0
     if USE_INDIRECT_COST
-      line_items.select {|x| x.service.one_time_fee}.each do |li|
-        total += li.indirect_costs_for_one_time_fee
-      end
+      total += line_items.
+        eager_load(:admin_rates, service_request: :protocol).
+        includes(service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]).
+        where(services: { one_time_fee: true }).
+        sum(&:indirect_costs_for_one_time_fee)
     end
-
     total
   end
 
-  def total_costs_one_time line_items=self.line_items
+  def total_costs_one_time(line_items=self.line_items)
     self.total_direct_costs_one_time(line_items) + self.total_indirect_costs_one_time(line_items)
   end
 
@@ -449,7 +442,10 @@ class ServiceRequest < ApplicationRecord
       next_ssr_id += 1 unless self.protocol
     end
 
-    self.protocol.update_attributes(next_ssr_id: next_ssr_id) if self.protocol
+    if protocol
+      protocol.next_ssr_id = next_ssr_id
+      protocol.save(validate: false)
+    end
   end
 
   def should_push_to_epic?

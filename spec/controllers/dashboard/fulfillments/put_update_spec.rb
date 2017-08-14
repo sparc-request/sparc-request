@@ -32,7 +32,7 @@ RSpec.describe Dashboard::FulfillmentsController do
 
         log_in_dashboard_identity(obj: build_stubbed(:identity))
 
-        xhr :put, :update, id: @fulfillment.id, fulfillment: { quantity: 5 }
+        put :update, params: { id: @fulfillment.id, fulfillment: { quantity: 5 } }, xhr: true
       end
 
       it "should update Fulfillment" do
@@ -60,7 +60,7 @@ RSpec.describe Dashboard::FulfillmentsController do
         logged_in_user = build_stubbed(:identity)
         log_in_dashboard_identity(obj: logged_in_user)
 
-        xhr :put, :update, id: @fulfillment.id, fulfillment: { quantity: 5 }
+        put :update, params: { id: @fulfillment.id, fulfillment: { quantity: 5 } }, xhr: true
       end
 
       it "should attempt to update Fulfillment" do

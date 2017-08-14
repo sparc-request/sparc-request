@@ -20,12 +20,12 @@
 
 require 'action_view'
 
-include ActionView::Helpers::FormOptionsHelper
-include ActionView::Helpers::FormTagHelper
-include ActionView::Helpers::NumberHelper
-
 module Dashboard
   module ServiceCalendars
+    extend ActionView::Helpers::FormOptionsHelper
+    extend ActionView::Helpers::FormTagHelper
+    extend ActionView::Helpers::NumberHelper
+
     def self.generate_visit_navigation(arm, service_request, pages, tab, portal=nil, ssr_id=nil)
       page = pages[arm.id].to_i == 0 ? 1 : pages[arm.id].to_i
 
@@ -71,8 +71,8 @@ module Dashboard
     # Given line_items_visit belonging to Organization A, which belongs to
     # Organization B, which belongs to Organization C, return "C > B > A".
     # This "hierarchy" stops at a process_ssrs Organization.
-    def self.display_organization_hierarchy(line_items_visit)
-      parent_organizations = line_items_visit.line_item.service.parents.reverse
+    def self.display_organization_hierarchy(line_item)
+      parent_organizations = line_item.service.parents.reverse
       root = parent_organizations.find_index { |org| org.process_ssrs? } || (parent_organizations.length - 1)
       parent_organizations[0..root].map(&:abbreviation).reverse.join(' > ')
     end
@@ -80,19 +80,31 @@ module Dashboard
     def self.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, opts = {})
       statuses_hidden = opts[:statuses_hidden] || %w(first_draft)
       if opts[:merged]
-        arm.line_items_visits.joins(line_item: :sub_service_request).
+        arm.line_items_visits.
+          eager_load(:visits, :notes).
+          includes(sub_service_request: :organization, line_item: [:admin_rates, :service_request, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).
           where.not(sub_service_requests: { status: statuses_hidden }).
-          joins(line_item: :service).
           where(services: { one_time_fee: false })
       else
         (sub_service_request || service_request).line_items_visits.
-          joins(:sub_service_request).
+          eager_load(:visits, :notes).
+          includes(sub_service_request: :organization, line_item: [:admin_rates, :service_request, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).
           where.not(sub_service_requests: { status: statuses_hidden }).
-          joins(line_item: :service).
           where(services: { one_time_fee: false }, arm_id: arm.id)
       end.group_by do |liv|
-        liv.sub_service_request.id
+        liv.sub_service_request
       end
+    end
+
+    def self.otf_line_items_to_display(service_request, sub_service_request, opts = {})
+      (opts[:merged] ? service_request : (sub_service_request || service_request)).line_items.
+        eager_load(:admin_rates, :notes, :service_request).
+        includes(sub_service_request: :organization, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]).
+        where.not(sub_service_requests: { status: opts[:statuses_hidden] || %w(first_draft) }).
+        where(services: { one_time_fee: true }).
+        group_by do |li|
+          li.sub_service_request
+        end
     end
 
     def self.glyph_class(obj)
@@ -131,42 +143,6 @@ module Dashboard
       end
 
       options_for_select(arr, cur_page)
-    end
-
-    def self.select_row(line_items_visit, sub_service_request, portal, locked=false)
-      checked        = line_items_visit.visits.all? { |v| v.research_billing_qty >= 1  }
-      check_param    = checked ? 'uncheck' : 'check'
-      icon           = checked ? 'glyphicon-remove' : 'glyphicon-ok'
-      klass          = checked ? 'btn-danger' : 'btn-success'
-      tooltip_row    = checked ? 'Uncheck Row' : 'Check Row'
-
-      url         = "/service_calendars/toggle_calendar_row?#{check_param}=true&service_request_id=#{line_items_visit.line_item.service_request.id}&line_items_visit_id=#{line_items_visit.id}&portal=#{portal.to_s}"
-      url        += "&sub_service_request_id=#{sub_service_request.id}" if sub_service_request
-
-      content_tag(:span, '', class: "glyphicon #{icon} btn btn-xs #{klass} service-calendar-row",
-                  id: "check-all-row-#{line_items_visit.id}", data: { toggle: "tooltip", animation: 'false', title: tooltip_row, url: url }, disabled: locked)
-    end
-
-    def self.select_column(visit_group, n, portal, service_request, sub_service_request)
-
-      arm_id        = visit_group.arm_id
-      # If we are in proper, we want to use service request, othewise in dashboard, we use SSR for admin study schedule
-      liv_query          = sub_service_request ? { sub_service_request_id: sub_service_request.id } : { service_request_id: service_request.id }
-      filtered_livs      = visit_group.line_items_visits.joins(:line_item).where(line_items: liv_query)
-      checked            = filtered_livs.all? { |l| l.visits[n.to_i].research_billing_qty >= 1 }
-      check_param        = checked ? 'uncheck' : 'check'
-      icon               = checked ? 'glyphicon-remove' : 'glyphicon-ok'
-      klass              = checked ? 'btn-danger' : 'btn-success'
-      tooltip_column     = checked ? 'Uncheck Column' : 'Check Column'
-      service_request_id = service_request ? service_request.id : sub_service_request.service_request.id
-      url                = "/service_calendars/toggle_calendar_column?#{check_param}=true&service_request_id=#{service_request_id}&column_id=#{n + 1}&arm_id=#{arm_id}&portal=#{portal.to_s}"
-      url                += "&sub_service_request_id=#{sub_service_request.id}" if sub_service_request
-
-      content_tag(:span, '',
-        role: 'button',
-        class: "btn btn-xs #{klass} service-calendar-column glyphicon #{icon}",
-        id: "check-all-column-#{n+1}",
-        data: { toggle: "tooltip", animation: 'false', title: tooltip_column, url: url })
     end
   end
 end

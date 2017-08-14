@@ -19,12 +19,12 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .form-group
   - question.options.each do |option|
-    .col-lg-2.no-padding{ data: { question_id: question.id, option_id: option.id } }
+    .col-lg-2.no-padding
       - if ['new', 'preview'].include?(action_name)
-        .col-lg-6.no-padding.text-center.option
+        .col-lg-6.no-padding.text-center.option{ data: { question_id: question.id, option_id: option.id } }
           = qr.radio_button :content, option.content.downcase
         = option.content
       - else
-        .col-lg-6.no-padding.text-center.option
+        .col-lg-6.no-padding.text-center.option{ data: { question_id: question.id, option_id: option.id } }
           = radio_button_tag :content_yes_no, option.content.downcase, qr.content == option.content.downcase, disabled: true
         = option.content

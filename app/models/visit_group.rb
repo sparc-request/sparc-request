@@ -26,9 +26,10 @@ class VisitGroup < ApplicationRecord
 
   audited
   belongs_to :arm
+  
   has_many :visits, :dependent => :destroy
   has_many :line_items_visits, through: :visits
-
+  
   acts_as_list scope: :arm
 
   after_create :build_visits, if: Proc.new { |vg| vg.arm.present? }
@@ -80,6 +81,10 @@ class VisitGroup < ApplicationRecord
     arm.visit_groups.where("position < ? AND day >= ? OR position > ? AND day <= ?", position, day, position, day).none?
   end
 
+  def per_patient_subtotals
+    self.visits.sum{ |v| v.cost || 0.00 }
+  end
+    
   private
 
   def build_visits

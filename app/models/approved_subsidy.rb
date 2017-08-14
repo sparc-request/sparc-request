@@ -34,7 +34,12 @@ class ApprovedSubsidy < Subsidy
   def approved_cost
     # Calculates cost of subsidy (amount subsidized)
     # stored total - pi_contribution then convert from cents to dollars
-    ( total_at_approval - pi_contribution ) / 100.0
+    ( total_at_approval - approved_pi_contribution ) / 100.0
+  end
+
+  def approved_pi_contribution
+    # Calculates the pi contribution at the time of subsidy approval
+    total_at_approval.to_f - (total_at_approval.to_f * percent_subsidy) || total_at_approval.to_f
   end
 
   def log_approval_note

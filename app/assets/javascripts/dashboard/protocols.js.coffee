@@ -24,9 +24,6 @@
 $(document).ready ->
   Sparc.protocol =
     ready: ->
-      getSRId = () ->
-        $('input[name="service_request_id"]').val()
-
       #  Protocol Index Begin
       $(document).on 'click', '.protocols_index_row > .id, .protocols_index_row > .title, .protocols_index_row > .pis', ->
         #if you click on the row, it opens the protocol show
@@ -108,7 +105,7 @@ $(document).ready ->
           method: 'get'
           url: "/service_calendars/view_full_calendar.js"
           data:
-            portal: true
+            portal: 'true'
             protocol_id: protocol_id
             statuses_hidden: statuses_hidden
 

@@ -54,8 +54,11 @@ namespace :data do
             old_attributes = ssr.attributes
             # ! needed, since only it will return the _other_ attributes.
             copy_over_attributes = old_attributes.
-              slice!(*%w(id organization_id org_tree_display status))
+              slice!(*%w(id ssr_id organization_id org_tree_display status))
             dest_ssr.assign_attributes(copy_over_attributes)
+            dest_ssr.assign_attributes(ssr_id: (sprintf '%04d', Protocol.find(dest_ssr.protocol_id).next_ssr_id))
+            protocol_to_update = Protocol.find(dest_ssr.protocol_id)
+            protocol_to_update.update_attribute(:next_ssr_id, protocol_to_update.next_ssr_id + 1)
             dest_ssr.save(validate: false)
             dest_ssr.update_org_tree
             ssr.service_request.ensure_ssr_ids

@@ -28,9 +28,9 @@ audits.each do |audit|
   changes["id"] = audit.auditable_id
   obj = audit.auditable_type.constantize
 
-  rec = obj.new(changes, :without_protection => true) # we want to assign all attributes listed in the audit
+  rec = obj.new(changes) # we want to assign all attributes listed in the audit
 
   rec.without_auditing do # we don't want to audit the fact that we are restoring these records
-   rec.save
+   rec.save(validate: false)
   end
 end

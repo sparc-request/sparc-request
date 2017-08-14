@@ -46,6 +46,7 @@ class AdditionalDetails::SubmissionsController < ApplicationController
     @line_item = LineItem.find(submission_params[:line_item_id])
     @service_request = @line_item.service_request
     @permission_to_edit = current_user.can_edit_protocol?(@protocol)
+    @user = current_user
     
     respond_to do |format|
       if @submission.save
@@ -78,6 +79,7 @@ class AdditionalDetails::SubmissionsController < ApplicationController
   def destroy
     @service = Service.find(params[:service_id])
     @submission = Submission.find(params[:id])
+    @user = current_user
     if params[:protocol_id]
       @protocol = Protocol.find(params[:protocol_id])
       @submissions = @protocol.submissions

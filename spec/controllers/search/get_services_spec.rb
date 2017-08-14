@@ -43,10 +43,10 @@ RSpec.describe SearchController do
       s2    = create(:service, organization: org, name: 'Evres me Poorly')
 
 
-      xhr :get, :services, {
+      get :services, params: {
         service_request_id: sr.id,
         term: 'Serve'
-      }
+      }, xhr: true
 
       results = JSON.parse(response.body)
 
@@ -63,10 +63,10 @@ RSpec.describe SearchController do
       s1    = create(:service, organization: org, abbreviation: 'Serve me Well')
       s2    = create(:service, organization: org, abbreviation: 'Evres me Poorly')
 
-      xhr :get, :services, {
+      get :services, params: {
         service_request_id: sr.id,
         term: 'Serve'
-      }
+      }, xhr: true
 
       results = JSON.parse(response.body)
 
@@ -83,10 +83,10 @@ RSpec.describe SearchController do
       s2    = create(:service, organization: org, cpt_code: 4321)
 
 
-      xhr :get, :services, {
+     get :services, params: {
         service_request_id: sr.id,
         term: '1234'
-      }
+      }, xhr: true
 
       results = JSON.parse(response.body)
 
@@ -103,10 +103,10 @@ RSpec.describe SearchController do
       s2    = create(:service, organization: org, name: 'Service 321', is_available: 0)
 
 
-      xhr :get, :services, {
+      get :services, params: {
         service_request_id: sr.id,
         term: 'Service'
-      }
+      }, xhr: true
 
       results = JSON.parse(response.body)
 
@@ -128,12 +128,12 @@ RSpec.describe SearchController do
       s1    = create(:service, organization: org, name: 'Service 123')
       s2    = create(:service, organization: org2, name: 'Service 321')
 
-      stub_const("EDITABLE_STATUSES", { org.id => ['draft'] })
+      org.editable_statuses.where(status: 'on_hold').destroy_all
 
-      xhr :get, :services, {
+      get :services, params: {
         service_request_id: sr.id,
         term: 'Service'
-      }
+      }, xhr: true
 
       results = JSON.parse(response.body)
 
@@ -152,11 +152,11 @@ RSpec.describe SearchController do
         s1    = create(:service, organization: org, name: 'Service 123')
         s2    = create(:service, organization: org2, name: 'Service 321')
 
-        xhr :get, :services, {
+        get :services, params: {
           service_request_id: sr.id,
           sub_service_request_id: ssr.id,
           term: 'Service'
-        }
+        }, xhr: true
 
         results = JSON.parse(response.body)
 

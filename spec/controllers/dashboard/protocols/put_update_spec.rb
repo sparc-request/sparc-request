@@ -30,7 +30,7 @@ RSpec.describe Dashboard::ProtocolsController do
           @protocol = create(:protocol_federally_funded, primary_pi: @logged_in_user)
           authorize(@logged_in_user, @protocol, can_edit: false)
 
-          xhr :get, :update, id: @protocol.id
+          get :update, params: { id: @protocol.id }, xhr: true
         end
 
         it { is_expected.to respond_with :ok }
@@ -50,7 +50,7 @@ RSpec.describe Dashboard::ProtocolsController do
             allow(StudyTypeQuestionGroup).to receive(:active_id).
               and_return("active group id")
 
-            xhr :get, :update, id: @protocol.id, protocol: { title: "New Title" }
+            get :update, params: { id: @protocol.id, protocol: { title: "New Title" } }, xhr: true
           end
 
           it "should update Protocol <- params[:id] as specified in params[:protocol] and update its StudyTypeQuestionGroup to the active one" do
@@ -82,7 +82,7 @@ RSpec.describe Dashboard::ProtocolsController do
             allow(StudyTypeQuestionGroup).to receive(:active_id).
               and_return("active group id")
 
-            xhr :get, :update, id: @protocol.id, protocol: { some_attribute: "some value" }
+            get :update, params: { id: @protocol.id, protocol: { some_attribute: "some value" } }, xhr: true
           end
 
           it 'should set @errors to Protocol\'s errors attribute' do
@@ -99,7 +99,7 @@ RSpec.describe Dashboard::ProtocolsController do
 
         log_in_dashboard_identity(obj: @logged_in_user)
 
-        xhr :get, :update, id: @protocol.id
+        get :update, params: { id: @protocol.id }, xhr: true
       end
 
       it 'should set @admin to false' do
@@ -122,12 +122,13 @@ RSpec.describe Dashboard::ProtocolsController do
           service_request = create(:service_request_without_validations, protocol: @protocol)
                             create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft', protocol_id: @protocol.id)
                             create(:super_user, identity: @logged_in_user, organization: organization)
-
+          @study_type_question_group_version_3 = StudyTypeQuestionGroup.create(active: true, version: 3)
           log_in_dashboard_identity(obj: @logged_in_user)
         end
 
         it 'should set @admin to true' do
-          xhr :get, :update, id: @protocol.id, protocol: { title: "some value" }
+
+          get :update, params: { id: @protocol.id, protocol: { title: "some value", selected_for_epic: "true", study_type_question_group_id: @study_type_question_group_version_3.id } }, xhr: true
           expect(assigns(:admin)).to eq(true)
         end
 
@@ -136,7 +137,7 @@ RSpec.describe Dashboard::ProtocolsController do
           @protocol.research_master_id = 1
           @protocol.save(validate: false)
 
-          xhr :get, :update, id: @protocol.id, protocol: { research_master_id: nil }
+          get :update, params: { id: @protocol.id, protocol: { research_master_id: nil } }, xhr: true
           @protocol.reload
 
           expect(@protocol.research_master_id).to be_nil
@@ -147,14 +148,14 @@ RSpec.describe Dashboard::ProtocolsController do
           @protocol.research_master_id = 1
           @protocol.save(validate: false)
 
-          xhr :get, :update, id: @protocol.id, protocol: { title: "", research_master_id: nil }
+          get :update, params: { id: @protocol.id, protocol: { title: "", research_master_id: nil } }, xhr: true
           @protocol.reload
 
           expect(@protocol.research_master_id).to eq(1)
         end
 
         it 'should respond ok' do
-          xhr :get, :update, id: @protocol.id, protocol: { title: "some value" }
+          get :update, params: { id: @protocol.id, protocol: { title: "some value" } }, xhr: true
           expect(controller).to respond_with(:ok)
         end
       end
@@ -170,12 +171,12 @@ RSpec.describe Dashboard::ProtocolsController do
           service_request = create(:service_request_without_validations, protocol: @protocol)
                             create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft', protocol_id: @protocol.id)
                             create(:service_provider, identity: @logged_in_user, organization: organization)
-
+          @study_type_question_group_version_3 = StudyTypeQuestionGroup.create(active: true, version: 3)
           log_in_dashboard_identity(obj: @logged_in_user)
         end
 
         it 'should set @admin to true' do
-          xhr :get, :update, id: @protocol.id, protocol: { title: "some value" }
+          get :update, params: { id: @protocol.id, protocol: { title: "some value", selected_for_epic: "true", study_type_question_group_id: @study_type_question_group_version_3.id } }, xhr: true
           expect(assigns(:admin)).to eq(true)
         end
 
@@ -184,7 +185,7 @@ RSpec.describe Dashboard::ProtocolsController do
           @protocol.research_master_id = 1
           @protocol.save(validate: false)
 
-          xhr :get, :update, id: @protocol.id, protocol: { research_master_id: nil }
+          get :update, params: { id: @protocol.id, protocol: { research_master_id: nil } }, xhr: true
           @protocol.reload
 
           expect(@protocol.research_master_id).to be_nil
@@ -195,14 +196,14 @@ RSpec.describe Dashboard::ProtocolsController do
           @protocol.research_master_id = 1
           @protocol.save(validate: false)
 
-          xhr :get, :update, id: @protocol.id, protocol: { title: "", research_master_id: nil }
+          get :update, params: { id: @protocol.id, protocol: { title: "", research_master_id: nil } }, xhr: true
           @protocol.reload
 
           expect(@protocol.research_master_id).to eq(1)
         end
 
         it 'should respond ok' do
-          xhr :get, :update, id: @protocol.id, protocol: { title: "some value" }
+          get :update, params: { id: @protocol.id, protocol: { title: "some value" } }, xhr: true
           expect(controller).to respond_with(:ok)
         end
       end

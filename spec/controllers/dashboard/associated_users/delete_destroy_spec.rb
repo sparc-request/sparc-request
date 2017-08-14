@@ -35,7 +35,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
         log_in_dashboard_identity(obj: build_stubbed(:identity))
 
-        xhr :delete, :destroy, id: @protocol_role.id
+        delete :destroy, params: { id: @protocol_role.id }, xhr: true
       end
 
       it 'should not destroy @protocol_role' do
@@ -62,7 +62,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
           log_in_dashboard_identity(obj: @user)
 
-          xhr :delete, :destroy, id: @protocol_role.id
+          delete :destroy, params: { id: @protocol_role.id }, xhr: true
         end
 
         it 'should email authorized user' do
@@ -104,12 +104,12 @@ RSpec.describe Dashboard::AssociatedUsersController do
         end
 
         it 'should destroy @protocol_role' do
-          xhr :delete, :destroy, id: @protocol_role.id
+          delete :destroy, params: { id: @protocol_role.id }, xhr: true
           expect(ProjectRole.count).to eq(1)
         end
 
         it 'should not set associated fields' do
-          xhr :delete, :destroy, id: @protocol_role.id
+          delete :destroy, params: { id: @protocol_role.id }, xhr: true
           expect(assigns(:current_user_destroyed)).to eq(false)
           expect(assigns(:protocol_type)).to eq(nil)
           expect(assigns(:permission_to_edit)).to eq(nil)
@@ -118,12 +118,12 @@ RSpec.describe Dashboard::AssociatedUsersController do
         end
 
         it 'should email authorized user' do
-          xhr :delete, :destroy, id: @protocol_role.id
+          delete :destroy, params: { id: @protocol_role.id }, xhr: true
           expect(UserMailer).to have_received(:authorized_user_changed).twice
         end
 
         it 'should render appropriate template' do
-          xhr :delete, :destroy, id: @protocol_role.id
+          delete :destroy, params: { id: @protocol_role.id }, xhr: true
           expect(response).to render_template "dashboard/associated_users/destroy"
           expect(response.status).to eq(200)
         end
@@ -131,7 +131,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
         context "SSRs with status draft" do
           it 'should not email user' do
             @ssr.update_attribute(:status, 'draft')
-            xhr :delete, :destroy, id: @protocol_role.id
+            delete :destroy, params: { id: @protocol_role.id }, xhr: true
             expect(UserMailer).not_to have_received(:authorized_user_changed)
           end
         end
@@ -156,7 +156,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
           log_in_dashboard_identity(obj: @user)
 
-          xhr :delete, :destroy, id: @protocol_role.id
+          delete :destroy, params: { id: @protocol_role.id }, xhr: true
         end
 
         it "should notify Primary PI for epic user removal" do
@@ -177,7 +177,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
           log_in_dashboard_identity(obj: @user)
 
-          xhr :delete, :destroy, id: @protocol_role.id
+          delete :destroy, params: { id: @protocol_role.id }, xhr: true
         end
 
         it 'should not notify Primary PI for epic user removal' do

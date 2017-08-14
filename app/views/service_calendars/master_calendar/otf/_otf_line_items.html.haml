@@ -17,55 +17,55 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- service_request.service_list(true).each do |_, value| # get only one time fee services and group them
-  - value[:line_items].group_by(&:sub_service_request_id).each do |sub_service_request_id, line_items|
-    - next unless sub_service_request.nil? || sub_service_request.id == sub_service_request_id
-    - ssr = sub_service_request || SubServiceRequest.find(sub_service_request_id)
-    - next if statuses_hidden.include? ssr.status
-    - locked = !ssr.can_be_edited? && !admin
 
-    %tr.organization-header{ class: locked ? 'bg-danger text-danger' : '' }
-      %th{ colspan: 14 }
-        = display_org_name(value[:name], ssr, locked)
-    - line_items.each do |line_item|
-      - displayed_pricing_map = line_item.service.displayed_pricing_map
-      - otf_unit_type         = displayed_pricing_map.try(:otf_unit_type)
-      - otf_qty_type          = displayed_pricing_map.try(:quantity_type)
-      %tr.otf-line-item-row{ class: locked ? 'bg-danger text-danger' : '' }
-        %td.service-name{ colspan: 2 }
-          = line_item.service.display_service_name
-        %td.notes.text-center
-          = display_li_notes(line_item, @portal)
-        %td.status.text-center
-          = AVAILABLE_STATUSES[ssr.status]
-        %td.service-rate.text-center
-          = display_service_rate(line_item)
-        %td.your-cost.text-center
-          = "$#{number_with_precision(Service.cents_to_dollars(line_item.applicable_rate), precision: 2)}"
+- Dashboard::ServiceCalendars.otf_line_items_to_display(service_request, sub_service_request, merged: merged, statuses_hidden: statuses_hidden).each do |ssr, line_items|
+  - locked = !ssr.can_be_edited? && !admin
 
-        - if otf_unit_type == 'N/A'
-          %td.unit-type-number.unit-type.text-center{ colspan: 2 }
-            = otf_unit_type
-        - else
-          %td.unit-type-number.unit-type.text-center
-            = otf_unit_type
-          %td.unit-type-number.units-per-qty.text-center
-            - if locked || tab == 'calendar'
-              = line_item.units_per_quantity
-            - else
-              %a.edit-units-per-qty{ href: 'javascript:void(0)', data: { name: 'units_per_quantity', title: t(:calendars)[:otf][:editable_fields][:unit_quantity], value: line_item.units_per_quantity, url: line_item_path(line_item, srid: service_request.id) } }
+  -# SSR Header Row
+  %tr.organization-header{ class: locked ? 'bg-danger text-danger' : '' }
+    %th{ colspan: 14 }
+      = display_org_name(Dashboard::ServiceCalendars.display_organization_hierarchy(line_items[0]), ssr, locked)
 
-        %td.qty-type-number.qty-type.text-center
-          = otf_qty_type
-        %td.qty-type-number.qty.text-center
+  -# Line Items
+  - line_items.each do |line_item|
+    - displayed_pricing_map = line_item.service.displayed_pricing_map
+    - otf_unit_type         = displayed_pricing_map.try(:otf_unit_type)
+    - otf_qty_type          = displayed_pricing_map.try(:quantity_type)
+    %tr.otf-line-item-row{ class: locked ? 'bg-danger text-danger' : '' }
+      %td.service-name{ colspan: 2 }
+        = line_item.service.display_service_name
+        - unless line_item.service.is_available
+          = inactive_tag
+      %td.notes.text-center
+        = display_li_notes(line_item, portal)
+      %td.status.text-center
+        = AVAILABLE_STATUSES[ssr.status]
+      %td.service-rate.text-center
+        = display_service_rate(line_item)
+      %td.your-cost.text-center
+        = "$#{number_with_precision(Service.cents_to_dollars(line_item.applicable_rate), precision: 2)}"
+
+      - if otf_unit_type == 'N/A'
+        %td.unit-type-number.unit-type.text-center{ colspan: 2 }
+          = otf_unit_type
+      - else
+        %td.unit-type-number.unit-type.text-center
+          = otf_unit_type
+        %td.unit-type-number.units-per-qty.text-center
           - if locked || tab == 'calendar'
-            = line_item.quantity
+            = line_item.units_per_quantity
           - else
-            %a.edit-qty{ href: 'javascript:void(0)', data: { name: 'quantity', title: t(:calendars)[:otf][:editable_fields][:quantity], value: line_item.quantity, url: line_item_path(line_item, srid: service_request.id) } }
+            %a.edit-units-per-qty{ href: 'javascript:void(0)', data: { name: 'units_per_quantity', title: t(:calendars)[:otf][:editable_fields][:unit_quantity], value: line_item.units_per_quantity, url: line_item_path(line_item, srid: service_request.id) } }
 
-        %td.total-per-study.text-center
-          %strong
-            = display_one_time_fee_direct_cost(line_item)
+      %td.qty-type-number.qty-type.text-center
+        = otf_qty_type
+      %td.qty-type-number.qty.text-center
+        - if locked || tab == 'calendar'
+          = line_item.quantity
+        - else
+          %a.edit-qty{ href: 'javascript:void(0)', data: { name: 'quantity', title: t(:calendars)[:otf][:editable_fields][:quantity], value: line_item.quantity, url: line_item_path(line_item, srid: service_request.id) } }
+
+      = render 'service_calendars/master_calendar/otf/total_per_study', line_item: line_item
 
 - unless review
-  = render 'service_calendars/master_calendar/otf/otf_totals', service_request: service_request
+  = render 'service_calendars/master_calendar/otf/totals/otf_totals', service_request: service_request

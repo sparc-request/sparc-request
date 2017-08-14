@@ -489,6 +489,10 @@ class Protocol < ApplicationRecord
       any?(&:has_ctrc_clinical_services?)
   end
 
+  def has_clinical_services?
+    service_requests.any?(&:has_per_patient_per_visit_services?)
+  end
+
   def find_sub_service_request_with_ctrc(service_request)
     service_request.sub_service_requests.find(&:ctrc?).try(:ssr_id)
   end

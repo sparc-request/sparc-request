@@ -28,7 +28,7 @@
     = form.fields_for :affiliations, protocol.affiliations.sort_by(&:position) do |affiliations_form|
       - checked = !affiliations_form.object.new && !affiliations_form.object.marked_for_destruction?
       .form-group.row{ class: affiliations_form.object.name }
-        = affiliations_form.label :name, "#{Affiliation::TYPES[affiliations_form.object.name]}:", class: 'col-lg-2 control-label'
+        = affiliations_form.label :name, "#{PermissibleValue.get_value('affiliation_type', affiliations_form.object.name)}:", class: 'col-lg-2 control-label'
         .col-lg-1
           = affiliations_form.check_box "_destroy", { checked: checked, class: 'form-control' }, false, true
           = affiliations_form.hidden_field :name, value: affiliations_form.object.name

@@ -23,22 +23,26 @@ require 'rails_helper'
 RSpec.describe PermissibleValue, type: :model do
   context 'get_value' do
     it 'should return the first value with the given key and category' do
-      category = 'category'
-      key = 'key'
-      pv = create(:permissible_value, category: category, key: key)
-           create(:permissible_value)
-      expect(PermissibleValue.get_value(category, key)).to eq(pv.value)
+      pv = create(:permissible_value, category: 'category', key: 'key1')
+           create(:permissible_value, category: 'category', key: 'key2')
+      expect(PermissibleValue.get_value('category', 'key1')).to eq(pv.value)
     end
   end
 
-  context 'get_value_list' do
-    it 'should return an array of values with the given category' do
-      category = 'category'
-      key = 'key'
-      pv1 = create(:permissible_value, category: category)
-      pv2 = create(:permissible_value, category: category)
-            create(:permissible_value)
-      expect(PermissibleValue.get_value_list(category)).to eq([pv1.value, pv2.value])
+  context 'get_key_list' do
+    before :each do
+      @pv1 = create(:permissible_value, key: 'key1', category: 'first', default: true)
+      @pv2 = create(:permissible_value, key: 'key2', category: 'first', default: true)
+      @pv3 = create(:permissible_value, key: 'key3', category: 'first', default: false)
+             create(:permissible_value, key: 'key4', category: 'second', default: true)
+    end
+
+    it 'should return an array of keys if default is nil' do
+      expect(PermissibleValue.get_key_list('first')).to eq([@pv1.key, @pv2.key, @pv3.key])
+    end
+
+    it 'should return an array of keys where default is true' do
+      expect(PermissibleValue.get_key_list('first', true)).to eq([@pv1.key, @pv2.key])
     end
   end
 end

@@ -212,9 +212,10 @@ class ServiceRequestsController < ApplicationController
 
       line_item.destroy
 
-      if ssr.line_items.any?
-        ssr.update_attribute(:status, 'draft') unless ssr.status == 'first_draft'
-      else
+      ssr.update_attribute(:status, 'draft') unless ssr.status == 'first_draft'
+      @service_request.reload
+
+      if ssr.line_items.empty?
         NotifierLogic.new(@service_request, nil, current_user).ssr_deletion_emails(deleted_ssr: ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
         ssr.destroy
       end

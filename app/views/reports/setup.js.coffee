@@ -22,7 +22,7 @@ $('#report-container').show()
 $('#report-selection').hide()
 $('.selectpicker').selectpicker()
 first_dependency = "#" + $('.reporting-field.has-dependencies').attr('id')
-window.check_deps(first_dependency)
+window.disable_deps(first_dependency)
 
 <% @date_ranges.each do |dr| %>
 <% field,options = dr %>

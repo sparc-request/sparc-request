@@ -132,8 +132,8 @@ class ServiceRequestsController < ApplicationController
     @review       = true
     @portal       = false
     @admin        = false
-    @merged       = false
-    @consolidated = true
+    @merged       = true
+    @consolidated = false
 
     # Reset all the page numbers to 1 at the start of the review request
     # step.
@@ -215,7 +215,7 @@ class ServiceRequestsController < ApplicationController
       if ssr.line_items.any?
         ssr.update_attribute(:status, 'draft') unless ssr.status == 'first_draft'
       else
-        NotifierLogic.new(@service_request, nil, current_user).ssr_deletion_emails(ssr, ssr_destroyed: true, request_amendment: false)
+        NotifierLogic.new(@service_request, nil, current_user).ssr_deletion_emails(deleted_ssr: ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
         ssr.destroy
       end
     end

@@ -506,15 +506,19 @@ class Protocol < ApplicationRecord
   end
 
   def direct_cost_total(service_request)
-    service_requests.where(id: service_request.id).or(service_requests.where.not(status: 'draft')).
-      eager_load(:line_items).
-      to_a.sum(&:direct_cost_total)
+    self.service_requests.
+      where(id: service_request.id).
+      or(service_requests.where.not(status: 'draft')).
+      eager_load(:line_items, :arms).
+      sum(&:direct_cost_total)
   end
 
   def indirect_cost_total(service_request)
     if USE_INDIRECT_COST
-      service_requests.where(id: service_request.id).or(service_requests.where.not(status: ['first_draft', 'draft'])).
-        eager_load(:line_items).
+      self.service_requests.
+        where(id: service_request.id).
+        or(service_requests.where.not(status: ['first_draft', 'draft'])).
+        eager_load(:line_items, :arms).
         to_a.sum(&:indirect_cost_total)
     else
       0

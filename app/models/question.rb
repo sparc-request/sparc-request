@@ -42,7 +42,7 @@ class Question < ActiveRecord::Base
   after_update :update_options_based_on_question_type, if: :question_type_changed?
 
   def previous_questions
-    self.survey.questions.where("questions.id < ?", self.id)
+    self.survey.questions.eager_load(:options).where("questions.id < ?", self.id)
   end
 
   def is_dependent?

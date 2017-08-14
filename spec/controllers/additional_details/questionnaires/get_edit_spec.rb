@@ -29,10 +29,10 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
       @service = create(:service)
       @questionnaire = create(:questionnaire, :without_validations, service: @service)
 
-      xhr :get, :edit, {
+      get :edit, params: {
         service_id: @service.id,
         id: @questionnaire.id
-      }
+      }, format: :js
     end
 
     it 'should assign @service' do

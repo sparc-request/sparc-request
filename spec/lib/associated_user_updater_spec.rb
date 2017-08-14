@@ -47,8 +47,7 @@ RSpec.describe AssociatedUserUpdater do
         project_rights: "to-party")
 
       AssociatedUserUpdater.new(id: project_role.id, project_role: { role: "primary-pi" })
-
-      expect(primary_pi.project_roles(0).first.role).to eq("general-access-user")
+      expect(primary_pi.project_roles.first.role).to eq("general-access-user")
       expect(project_role.reload.role).to eq("primary-pi")
     end
   end

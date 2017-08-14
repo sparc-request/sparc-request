@@ -54,11 +54,11 @@
 //= require_tree .
 
 //= require ../service_calendar
+//= require ../global
 //= require global
 //= require associated_users_form
 //= require study_schedule_tabs
 //= require subsidy_form
 //= require dashboard/navbar
-//= require update_visit_group
 
 window.Sparc = {};

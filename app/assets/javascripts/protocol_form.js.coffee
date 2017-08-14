@@ -24,6 +24,16 @@ toggleFields = (fields, state) ->
 resetRmIdFields = (fields, value) ->
   $(fields).val(value)
 
+study_type_form = '.selected_for_epic_dependent'
+study_selected_for_epic_button = '#selected_for_epic_button'
+certificate_of_confidence_dropdown = '#study_type_answer_certificate_of_conf_answer'
+higher_level_of_privacy_dropdown = '#study_type_answer_higher_level_of_privacy_answer'
+epic_inbasket_dropdown = '#study_type_answer_epic_inbasket_answer'
+research_active_dropdown = '#study_type_answer_research_active_answer'
+restrict_sending_dropdown = '#study_type_answer_restrict_sending_answer'
+certificate_of_confidence_no_epic = '#study_type_answer_certificate_of_conf_no_epic_answer'
+higher_level_of_privacy_no_epic = '#study_type_answer_higher_level_of_privacy_no_epic_answer'
+
 $(document).ready ->
 
   if $('.human-subjects:checkbox:checked').length > 0
@@ -72,20 +82,10 @@ $(document).ready ->
       srid : srid
     if confirm(I18n['protocols']['change_type']['warning'])
       $.ajax
-        type: 'PATCH'
+        type: 'PUT'
         url: "#{in_dashboard}/protocols/#{protocol_id}/update_protocol_type"
         data: data
   # Protocol Edit End
-
-  study_type_form = '.selected_for_epic_dependent'
-  study_selected_for_epic_button = '#selected_for_epic_button'
-  certificate_of_confidence_dropdown = '#study_type_answer_certificate_of_conf_answer'
-  higher_level_of_privacy_dropdown = '#study_type_answer_higher_level_of_privacy_answer'
-  epic_inbasket_dropdown = '#study_type_answer_epic_inbasket_answer'
-  research_active_dropdown = '#study_type_answer_research_active_answer'
-  restrict_sending_dropdown = '#study_type_answer_restrict_sending_answer'
-  certificate_of_confidence_no_epic = '#study_type_answer_certificate_of_conf_no_epic_answer'
-  higher_level_of_privacy_no_epic = '#study_type_answer_higher_level_of_privacy_no_epic_answer'
 
   epic_box_alert_message = () ->
     options = {
@@ -99,45 +99,11 @@ $(document).ready ->
     }
     $('#epic_box_alert').dialog(options).dialog("open")
 
-  $.prototype.hide_elt = () ->
-    this[0].selectedIndex = 0
-    this.selectpicker('refresh')
-    this.closest('.row').hide()
-    return this
-
-  $.prototype.show_elt = () ->
-    this.closest('.row').show()
-    return this
-
-  determine_study_type = (answers) ->
-    array_values = new Array()
-    for k,v of answers
-      array_values.push(v)
-    nil_value = $.inArray('', array_values) < 5
-    if array_values[0] == 'true' || !nil_value
-      $.ajax
-        type: 'POST'
-        data: answers
-        url: "/study_type/determine_study_type_note"
-        success: ->
-          $('#study_type_note').show()
-        errors: ->
-          sweetAlert("Oops...", "Something went wrong!", "error")
-
   #########################
   ### FORM FIELDS LOGIC ###
   #######################################################################################
-
   ### INITIAL PAGE LOAD EDIT STUDY IN SPARCRequest #######################
-  if $('#study_selected_for_epic_true_button').hasClass('active')
-    $(study_type_form).show()
-    $(certificate_of_confidence_dropdown).show_elt()
-    $('#study_type_answer_certificate_of_conf_answer').show_elt()
-    $('#study_type_note').show()
-
-  else if $('#study_selected_for_epic_false_button').hasClass('active') || $('input#epic_config').val() == 'false'
-    $(study_type_form).show()
-    $(certificate_of_confidence_no_epic).show_elt()
+  setup_epic_question_config()
 
   ###FUNDING STATUS FIELDS DISPLAY###
   $(document).on 'change', '#protocol_funding_status', ->
@@ -158,104 +124,6 @@ $(document).ready ->
   ###END FUNDING SOURCE FIELDS DISPLAY###
 
 
-
-  ###PUBLISH IN EPIC BUTTON STATES###
-  $(document).on 'click', '#selected_for_epic_button label', ->
-    $(this).addClass('active')
-    $(this).children('input').prop('checked')
-    $(this).siblings('.active').removeClass('active')
-
-  ###END PUBLISH IN EPIC BUTTON STATES###
-    
-
-  ###EPIC BUTTON FIELDS DISPLAY###
-  $(document).on 'change', "input[name='protocol[selected_for_epic]']", ->
-    # Publish Study in Epic - Radio
-    switch $('#selected_for_epic_button .btn input:radio:checked').val()
-      when 'true'
-        $('.question-label').addClass('required')
-        $(certificate_of_confidence_no_epic).hide_elt().trigger 'change'
-        $(certificate_of_confidence_dropdown).show_elt()
-      when 'false'
-        $('.question-label').removeClass('required')
-        $(certificate_of_confidence_dropdown).hide_elt().trigger 'change'
-        $(certificate_of_confidence_no_epic).show_elt()
-    $(study_type_form).hide()
-    $(study_type_form).show()
-    
-
-  $(document).on 'change', certificate_of_confidence_dropdown, (e) ->
-    new_value = $(e.target).val()
-    if new_value == 'false'
-      $(higher_level_of_privacy_dropdown).show_elt()
-      $('#study_type_note').hide()
-    else if new_value == 'true'
-      $(higher_level_of_privacy_dropdown).hide_elt()
-      $(epic_inbasket_dropdown).hide_elt()
-      $(research_active_dropdown).hide_elt()
-      $(restrict_sending_dropdown).hide_elt()
-      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val(), ans6: "", ans7: ""  }
-      determine_study_type(data)
-    else
-      $(higher_level_of_privacy_dropdown).hide_elt()
-      $(epic_inbasket_dropdown).hide_elt()
-      $(research_active_dropdown).hide_elt()
-      $(restrict_sending_dropdown).hide_elt()
-      $('#study_type_note').hide()
-    return
-
-  $(document).on 'change', higher_level_of_privacy_dropdown, (e) ->
-    if $(e.target).val() == ''
-      $(epic_inbasket_dropdown).hide_elt()
-      $(research_active_dropdown).hide_elt()
-      $(restrict_sending_dropdown).hide_elt()
-      $('#study_type_note').hide()
-    else
-      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val(), ans6: "", ans7: ""  }
-      determine_study_type(data)
-      if $('#selected_for_epic_button .btn input:radio:checked').val() == 'true'
-        $(epic_inbasket_dropdown).show_elt()
-    return
-
-  $(document).on 'change', epic_inbasket_dropdown, (e) ->
-    if $(e.target).val() == ''
-      $(research_active_dropdown).hide_elt()
-      $(restrict_sending_dropdown).hide_elt()
-      $('#study_type_note').hide()
-    else
-      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val(), ans6: "", ans7: ""  }
-      determine_study_type(data)
-      $(research_active_dropdown).show_elt()
-    return
-
-  $(document).on 'change', research_active_dropdown, (e) ->
-    if $(e.target).val() == ''
-      $(restrict_sending_dropdown).hide_elt()
-      $('#study_type_note').hide()
-    else
-      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val(), ans6: "", ans7: ""   }
-      determine_study_type(data)
-      $(restrict_sending_dropdown).show_elt()
-    return
-
-  $(document).on 'change', restrict_sending_dropdown, (e) ->
-    new_value = $(e.target).val()
-    if new_value != ''
-      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val(), ans6: "", ans7: ""  }
-      determine_study_type(data)
-    else
-      $('#study_type_note').hide()
-    return
-
-  $(document).on 'change', certificate_of_confidence_no_epic, (e) ->
-    new_value = $(e.target).val()
-    if new_value == 'false'
-      $(higher_level_of_privacy_no_epic).show_elt()
-    else
-      $(higher_level_of_privacy_no_epic).hide_elt()
-    return
-
-  ###END EPIC BUTTON FIELDS DISPLAY###
 
   ###HUMAN SUBJECTS FIELDS DISPLAY###
   $(document).on 'change', '#protocol_research_types_info_attributes_human_subjects', ->
@@ -357,3 +225,141 @@ $(document).ready ->
       $('#user-select-clear-icon').hide()
       $("#protocol_project_roles_attributes_0_identity_id[type='hidden']").val('')
       $("#protocol_project_roles_attributes_0_identity_id[type='text']").val('').show()
+
+$.prototype.hide_elt = () ->
+    this[0].selectedIndex = 0
+    this.selectpicker('refresh')
+    this.closest('.row').hide()
+    return this
+
+$.prototype.show_elt = () ->
+  this.closest('.row').show()
+  return this
+
+determine_study_type = (answers) ->
+  array_values = new Array()
+  for k,v of answers
+    array_values.push(v)
+  nil_value = $.inArray('', array_values) < 5
+  if array_values[0] == 'true' || !nil_value
+    $.ajax
+      type: 'POST'
+      data: answers
+      url: "/study_type/determine_study_type_note"
+      success: ->
+        $('#study_type_note').show()
+      errors: ->
+        sweetAlert("Oops...", "Something went wrong!", "error")
+          
+(exports ? this).setup_epic_question_config = () ->
+  if $('#study_selected_for_epic_true_button').hasClass('active')
+    $(study_type_form).show()
+    $(certificate_of_confidence_dropdown).show_elt()
+    $('#study_type_answer_certificate_of_conf_answer').show_elt()
+    $('#study_type_note').show()
+
+  else if $('#study_selected_for_epic_false_button').hasClass('active') || $('input#epic_config').val() == 'false'
+    $(study_type_form).show()
+    $(certificate_of_confidence_no_epic).show_elt()
+
+  ###PUBLISH IN EPIC BUTTON STATES###
+  $(document).on 'click', '#selected_for_epic_button label', ->
+    $(this).addClass('active')
+    $(this).children('input').prop('checked')
+    $(this).siblings('.active').removeClass('active')
+
+  ###END PUBLISH IN EPIC BUTTON STATES###
+
+  if $("input[name='protocol[selected_for_epic]'][val='true']").prop('checked')
+    $(study_type_form).show()
+    $(certificate_of_confidence_dropdown).show_elt()
+
+  ###EPIC BUTTON FIELDS DISPLAY###
+  $(document).on 'change', "input[name='protocol[selected_for_epic]']", ->
+    # Publish Study in Epic - Radio
+    switch $('#selected_for_epic_button .btn input:radio:checked').val()
+      when 'true'
+        $('.question-label').addClass('required')
+        $(certificate_of_confidence_no_epic).hide_elt().trigger 'change'
+        $(certificate_of_confidence_dropdown).show_elt()
+      when 'false'
+        $('.question-label').removeClass('required')
+        $(certificate_of_confidence_dropdown).hide_elt().trigger 'change'
+        $(certificate_of_confidence_no_epic).show_elt()
+    $(study_type_form).hide()
+    $(study_type_form).show()
+    
+
+  $(document).on 'change', certificate_of_confidence_dropdown, (e) ->
+    new_value = $(e.target).val()
+    if new_value == 'false'
+      $(higher_level_of_privacy_dropdown).show_elt()
+      $('#study_type_note').hide()
+    else if new_value == 'true'
+      $(higher_level_of_privacy_dropdown).hide_elt()
+      $(epic_inbasket_dropdown).hide_elt()
+      $(research_active_dropdown).hide_elt()
+      $(restrict_sending_dropdown).hide_elt()
+      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val(), ans6: "", ans7: ""  }
+      determine_study_type(data)
+    else
+      $(higher_level_of_privacy_dropdown).hide_elt()
+      $(epic_inbasket_dropdown).hide_elt()
+      $(research_active_dropdown).hide_elt()
+      $(restrict_sending_dropdown).hide_elt()
+      $('#study_type_note').hide()
+    return
+
+  $(document).on 'change', higher_level_of_privacy_dropdown, (e) ->
+    if $(e.target).val() == ''
+      $(epic_inbasket_dropdown).hide_elt()
+      $(research_active_dropdown).hide_elt()
+      $(restrict_sending_dropdown).hide_elt()
+      $('#study_type_note').hide()
+    else
+      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val(), ans6: "", ans7: ""  }
+      determine_study_type(data)
+      if $('#selected_for_epic_button .btn input:radio:checked').val() == 'true'
+        $(epic_inbasket_dropdown).show_elt()
+    return
+
+  $(document).on 'change', epic_inbasket_dropdown, (e) ->
+    if $(e.target).val() == ''
+      $(research_active_dropdown).hide_elt()
+      $(restrict_sending_dropdown).hide_elt()
+      $('#study_type_note').hide()
+    else
+      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val(), ans6: "", ans7: ""  }
+      determine_study_type(data)
+      $(research_active_dropdown).show_elt()
+    return
+
+  $(document).on 'change', research_active_dropdown, (e) ->
+    if $(e.target).val() == ''
+      $(restrict_sending_dropdown).hide_elt()
+      $('#study_type_note').hide()
+    else
+      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val(), ans6: "", ans7: ""   }
+      determine_study_type(data)
+      $(restrict_sending_dropdown).show_elt()
+    return
+
+  $(document).on 'change', restrict_sending_dropdown, (e) ->
+    new_value = $(e.target).val()
+    if new_value != ''
+      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val(), ans6: "", ans7: ""  }
+      determine_study_type(data)
+    else
+      $('#study_type_note').hide()
+    return
+
+  $(document).on 'change', certificate_of_confidence_no_epic, (e) ->
+    new_value = $(e.target).val()
+    if new_value == 'false'
+      $(higher_level_of_privacy_no_epic).show_elt()
+    else
+      $(higher_level_of_privacy_no_epic).hide_elt()
+    return
+
+  ###END EPIC BUTTON FIELDS DISPLAY###
+  

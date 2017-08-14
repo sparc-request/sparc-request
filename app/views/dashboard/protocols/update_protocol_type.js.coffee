@@ -18,16 +18,8 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#protocol-form-display").html("<%= escape_javascript(render( '/dashboard/protocols/form/protocol_form', protocol: @protocol, protocol_type: @protocol_type, admin: @admin, permission_to_edit: @permission_to_edit )) %>")
+$("#protocol-form-display").replaceWith("<%= escape_javascript(render( '/dashboard/protocols/form/protocol_form', protocol: @protocol, protocol_type: @protocol_type, admin: @admin, permission_to_edit: @permission_to_edit )) %>")
 $("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
 $(".datetimepicker").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
 $(".selectpicker").selectpicker()
-
-if $("input[name='protocol[selected_for_epic]',val='true']").prop('checked')
-  $('.selected_for_epic_dependent').show()
-  $('#study_type_answer_certificate_of_conf_answer').show_elt()
-
-
-
-
-
+setup_epic_question_config()

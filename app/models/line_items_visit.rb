@@ -83,7 +83,7 @@ class LineItemsVisit < ApplicationRecord
   end
 
   def quantity_total
-    quantity_total = self.visits.sum(:research_billing_qty) * (self.subject_count || 0)
+    sum_visits_research_billing_qty * (self.subject_count || 0)
   end
 
   # Returns a hash of subtotals for the visits in the line item.
@@ -114,7 +114,7 @@ class LineItemsVisit < ApplicationRecord
 
   # Determine the direct costs for a visit-based service for one subject
   def direct_costs_for_visit_based_service_single_subject
-    (self.visits.where("research_billing_qty >= ?", 1).sum(:research_billing_qty) || 0) * per_unit_cost(quantity_total())
+    sum_visits_research_billing_qty_gte_1 * per_unit_cost(quantity_total())
   end
 
   # Determine the direct costs for a visit-based service
@@ -189,5 +189,18 @@ class LineItemsVisit < ApplicationRecord
     if LineItemsVisit.where(arm_id: arm_id).none?
       Arm.find(arm_id).destroy
     end
+  end
+
+  def sum_visits_research_billing_qty
+    @research_billing_total ||= 
+      if self.visits.loaded?
+        self.visits.sum(&:research_billing_qty) || 0
+      else
+        self.visits.sum(:research_billing_qty) || 0
+      end
+  end
+
+  def sum_visits_research_billing_qty_gte_1
+    @research_billing_gte1_total ||= self.visits.where("research_billing_qty >= ?", 1).sum(:research_billing_qty) || 0
   end
 end

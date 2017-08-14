@@ -17,8 +17,6 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-
 .form-group.row
   - if USE_EPIC
     = form.label :selected_for_epic,
@@ -34,7 +32,7 @@
         %label.radio-inline.btn.btn-default#study_selected_for_epic_false_button{ class: protocol.selected_for_epic == false || !USE_EPIC ? 'active': ''}
           = form.radio_button :selected_for_epic, 'false', id: "study_selected_for_epic_false", class: 'hidden'
           = t(:constants)[:no_select]
-.form-group.row.selected_for_epic_dependent{ display_if(protocol.selected_for_epic) }
+.form-group.row.selected_for_epic_dependent{ style: protocol.selected_for_epic || (!USE_EPIC && action_name == 'update_protocol_type') ? 'display:block;' : 'display:none;' }
   = form.label :study_type_questions, t(:protocols)[:studies][:information][:study_type_questions], class: "col-lg-2 control-label question-label #{USE_EPIC && protocol.selected_for_epic ? 'required' : ''}", data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' }, title: t(:protocols)[:tooltips][:study_type_questions]
   .col-lg-10
     - action_name == 'update_protocol_type' ? protocol.setup_study_type_answers : ''

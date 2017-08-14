@@ -162,32 +162,6 @@ module Dashboard::ServiceRequestsHelper
     end
   end
 
-
-  def display_visit_quantity(li)
-    visit_quantities = ""
-    service_id = li.service.id
-    visits_length = li.visits.length
-    remaining_visits = 5
-    if li.visits && visits_length > 0
-      li.ordered_visits.each_with_index do |visit, i|
-        package_cost = determine_package_cost(@project, li.service)
-        cost_arr = sub_totals(li, li.service, package_cost)
-        cost_in_dollars = if cost_arr[i] == 'N/A'
-                            "N/A"
-                          else
-                            "$#{two_decimal_places(cost_arr[i].floor * 0.01) rescue "N/A"}"
-                          end
-
-        @visits_array[i][:values] << { :service_id => service_id, :cost => cost_arr[i] }
-        visit_quantities += create_quantity_content_tag(cost_in_dollars, service_id, i + 1) if i < 5
-      end
-      remaining_visits -= visits_length
-    end
-    remaining_visits.times { |i| visit_quantities += create_quantity_content_tag('', service_id, visits_length < 5 ? i + visits_length +1 : i + 1) }
-
-    visit_quantities.html_safe
-  end
-
   def create_quantity_content_tag(display_text, service_id, num)
     content_tag(:td, display_text, :class => 'visit_quantity', :id => "quantity_#{service_id}_column_#{num}")
   end
@@ -211,11 +185,6 @@ module Dashboard::ServiceRequestsHelper
     package_cost == "N/A" ? package_cost : PriceGrabber::Business.per_unit_cost(li.service.pricing_map, package_cost, li.quantity)
   end
 
-  def sub_totals(li, service, package_cost)
-    ##li.instance_values is the "line_item" that the per_subject_subtotals requires
-    PriceGrabber::Business.per_subject_subtotals(li.instance_values, package_cost, service.pricing_map)
-  end
-
   def display_total(project, one_time_fees, per_patient_per_visit, type)
     total = "#{total_totals(project, one_time_fees, per_patient_per_visit)[type].to_s.to_f * 0.01}"
     "$#{two_decimal_places(total)}"
@@ -227,18 +196,6 @@ module Dashboard::ServiceRequestsHelper
       PriceGrabber::Business.total_totals(project.indirect_cost_rate, line_items_and_rate_maps)
     rescue
       "N/A"
-    end
-  end
-
-  def display_service_total(li)
-    amount = 0
-    package_cost = determine_package_cost(@project, li.service)
-    cost_arr = sub_totals(li, li.service, package_cost)
-    cost_arr.each { |value| amount += value if value != 'N/A'}
-    if [0, 0.00, 0.0].include?(amount)
-      "N/A"
-    else
-      "$#{two_decimal_places(amount.floor * 0.01)}"
     end
   end
 

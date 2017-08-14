@@ -70,6 +70,7 @@ class ServiceCalendarsController < ApplicationController
     @merged           = true
     @consolidated     = false
     @statuses_hidden  = []
+    @scroll_true        = params[:scroll].present? && params[:scroll] == 'true'
     setup_calendar_pages
 
     respond_to do |format|
@@ -79,14 +80,16 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def view_full_calendar
-    @tab                = 'calendar'
-    @review             = false
-    @portal             = true
-    @admin              = false
-    @merged             = true
-    @consolidated       = true
-    @service_request    = @protocol.any_service_requests_to_display?
-    @statuses_hidden    = params[:statuses_hidden]
+    @tab                   = 'calendar'
+    @review                = false
+    @portal                = true
+    @admin                 = false
+    @merged                = true
+    @consolidated          = true
+    @service_request       = @protocol.any_service_requests_to_display?
+    @statuses_hidden       = params[:statuses_hidden]
+    @scroll_true           = params[:scroll].present? && params[:scroll] == 'true'
+    @visit_dropdown_change = params[:pages].present?
     setup_calendar_pages
 
     respond_to do |format|
@@ -95,39 +98,38 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def show_move_visits
-    @tab                    = params[:tab]
-    @sub_service_request    = params[:sub_service_request]
-    @page                   = params[:page]
-    @review                 = params[:review]
-    @portal                 = params[:portal]
-    @admin                  = params[:admin]
-    @consolidated           = params[:consolidated]
-    @merged                 = params[:merged]
-    @statuses_hidden        = params[:statuses_hidden]
-    @arm                    = Arm.find( params[:arm_id] )
-    @visit_group            = params[:visit_group_id] ? @arm.visit_groups.find(params[:visit_group_id]) : @arm.visit_groups.first
+    @tab                  = params[:tab]
+    @sub_service_request  = params[:sub_service_request]
+    @page                 = params[:page]
+    @pages                = eval(params[:pages]) rescue {}
+    @review               = params[:review]
+    @portal               = params[:portal]
+    @admin                = params[:admin]
+    @consolidated         = params[:consolidated]
+    @merged               = params[:merged]
+    @statuses_hidden      = params[:statuses_hidden]
+    @arm                  = Arm.find( params[:arm_id] )
+    @visit_group          = params[:visit_group_id] ? @arm.visit_groups.find(params[:visit_group_id]) : @arm.visit_groups.first
 
-    @pages = {}
-    @service_request.arms.each do |arm|
-      new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-      @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
+    respond_to do |format|
+      format.js
     end
   end
 
   def move_visit_position
-    @tab                    = params[:tab]
-    @sub_service_request    = params[:sub_service_request]
-    @page                   = params[:page]
-    @review                 = params[:review] == "true"
-    @portal                 = params[:portal] == "true"
-    @admin                  = params[:admin] == "true"
-    @consolidated           = params[:consolidated] == "true"
-    @merged                 = params[:merged] == "true"
-    @statuses_hidden        = params[:statuses_hidden]
-    @arm                    = Arm.find( params[:arm_id] )
-    @visit_groups           = @arm.visit_groups.paginate(page: @page.to_i, per_page: VisitGroup.per_page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol] } })
-
-    @visit_group        = VisitGroup.find(params[:visit_group].to_i)
+    @tab                  = params[:tab]
+    @sub_service_request  = params[:sub_service_request]
+    @page                 = params[:page]
+    @pages                = eval(params[:pages]) rescue {}
+    @review               = params[:review] == "true"
+    @portal               = params[:portal] == "true"
+    @admin                = params[:admin] == "true"
+    @consolidated         = params[:consolidated] == "true"
+    @merged               = params[:merged] == "true"
+    @statuses_hidden      = params[:statuses_hidden]
+    @arm                  = Arm.find( params[:arm_id] )
+    @visit_group          = VisitGroup.find(params[:visit_group].to_i)
+    @visit_groups         = @arm.visit_groups.page(@page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] } })
 
     new_position = params[:position].to_i
 
@@ -137,10 +139,8 @@ class ServiceCalendarsController < ApplicationController
       @visit_group.insert_at( new_position )
     end
 
-    @pages = {}
-    @service_request.arms.each do |arm|
-      new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-      @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
+    respond_to do |format|
+      format.js
     end
   end
 
@@ -214,43 +214,6 @@ class ServiceCalendarsController < ApplicationController
   end
 
   private
-
-  def in_dashboard?
-    (params[:portal] && params[:portal] == 'true') || (params[:admin] && params[:admin] == 'true')
-  end
-
-  def authorize_dashboard_access
-    if params[:sub_service_request_id]
-      authorize_admin
-    else
-      if params[:service_request_id]
-        @service_request = ServiceRequest.find(params[:service_request_id])
-      end
-      authorize_protocol
-    end
-  end
-
-  def authorize_protocol
-    @protocol           = @service_request ? @service_request.protocol : Protocol.find(params[:protocol_id])
-    permission_to_view  = current_user.can_view_protocol?(@protocol)
-
-    unless permission_to_view || Protocol.for_admin(current_user.id).include?(@protocol)
-      @protocol = nil
-
-      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
-    end
-  end
-
-  def authorize_admin
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @service_request     = @sub_service_request.service_request
-
-    unless (current_user.authorized_admin_organizations & @sub_service_request.org_tree).any?
-      @sub_service_request = nil
-      @service_request = nil
-      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
-    end
-  end
 
   def setup_calendar_pages
     @pages  = {}

@@ -66,11 +66,11 @@
       data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
       title: t(:calendars)[:tooltips][:your_cost] do
       = raw(t(:calendars)[:pppv][:header_fields][:your_cost])
-  = render 'service_calendars/master_calendar/pppv/visit_groups', service_request: service_request, arm: arm, tab: tab, visit_groups: arm.visit_groups.page(page), portal: portal
+  = render 'service_calendars/master_calendar/pppv/visit_groups', visit_groups: visit_groups, page: page, pages: pages, tab: tab, portal: portal, admin: admin, review: review, merged: merged, consolidated: consolidated, statuses_hidden: statuses_hidden
 
 %tr
   %th{ colspan: portal ? 10 : 11, class: portal ? "" : "checkbox-row-start-width" }
-  = render 'service_calendars/master_calendar/pppv/check_visit_columns', service_request: service_request, sub_service_request: sub_service_request, tab: tab, admin: admin, visit_groups: arm.visit_groups.page(page), page: page
+  = render 'service_calendars/master_calendar/pppv/check_visit_columns', service_request: service_request, sub_service_request: sub_service_request, tab: tab, admin: admin, visit_groups: visit_groups, page: page
 
   -unless portal
     %th{ colspan: 2, class: "checkbox-row-end-width" }

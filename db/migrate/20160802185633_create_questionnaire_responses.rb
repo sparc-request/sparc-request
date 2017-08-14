@@ -1,4 +1,4 @@
-class CreateQuestionnaireResponses < ActiveRecord::Migration
+class CreateQuestionnaireResponses < ActiveRecord::Migration[4.2]
   def change
     create_table :questionnaire_responses do |t|
       t.references :submission, index: true, foreign_key: true

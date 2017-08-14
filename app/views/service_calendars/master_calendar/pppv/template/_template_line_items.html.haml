@@ -13,30 +13,29 @@
 
 -# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
 -# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
--# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLx`ARY, OR CONSEQUENTIAL
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - line_items_visits = []
-- Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, statuses_hidden: statuses_hidden).each do |sub_service_request_id, livs|
+- Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, statuses_hidden: statuses_hidden).each do |ssr, livs|
   - line_items_visits << livs
-  - ssr    = SubServiceRequest.find(sub_service_request_id)
   - locked = !ssr.can_be_edited? && !admin
 
   -# SSR Header Row
   %tr.organization-header{ class: locked ? 'text-danger' : '' }
     %th{ colspan: portal ? 13 : 19 }
-      = display_org_name(Dashboard::ServiceCalendars.display_organization_hierarchy(livs[0]), ssr, locked)
+      = display_org_name(Dashboard::ServiceCalendars.display_organization_hierarchy(livs[0].line_item), ssr, locked)
 
   -# Line Items Visits
   - livs.each do |liv|
     %tr.pppv-line-item-row{ class: locked ? 'bg-danger text-danger' : '' }
       %td.service-name.service-width{ colspan: 4 }
-        = liv.service.display_service_name
-        - unless liv.service.is_available
+        = liv.line_item.service.display_service_name
+        - unless liv.line_item.service.is_available
           = inactive_tag
       %td.notes.text-center.notes-width
-        = display_liv_notes(liv, @portal)
+        = display_liv_notes(liv, portal)
       %td.status.text-center.status-width
         = AVAILABLE_STATUSES[ssr.status]
       %td.service-rate.text-center.sm-col-width
@@ -51,15 +50,12 @@
         %td.unit-type.text-center.sm-col-width
           = display_unit_type(liv)
 
-      %td.subject-count.text-center.xs-col-width
-        - if locked
-          = liv.subject_count
-        - else
-          %a.edit-subject-count{ class: locked ? 'locked' : '', href: 'javascript:void(0)', data: { arm_id: arm.id, name: 'subject_count', title: t(:calendars)[:pppv][:editable_fields][:subject_count], value: liv.subject_count, url: dashboard_line_items_visit_path(liv, srid: service_request.id, portal: portal) } }
+      = render 'service_calendars/master_calendar/pppv/subject_count', liv: liv, arm: arm, page: page, tab: tab, locked: locked, portal: portal
+      
       %td.text-center.xs-col-width
         = render 'service_calendars/master_calendar/pppv/template/select_row', liv: liv, service_request: service_request, sub_service_request: sub_service_request, admin: admin, locked: locked, page: page
-      - visits = liv.ordered_visits.paginate(page: page.to_i, per_page: Visit.per_page)
-      - visits.each_with_index do |v, index|
+      - visits = liv.ordered_visits.page(page).eager_load(line_items_visit: { line_item: { service: :pricing_maps } })
+      - visits.each do |v|
         %td.text-center.visit.visit-width{ class: "visit-#{v.id}" }
           = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", service_request: service_request, sub_service_request: sub_service_request, visit: v, tab: tab, page: page, admin: admin, locked: locked
       - (Visit.per_page - visits.size).times do
@@ -70,4 +66,4 @@
         = render 'service_calendars/master_calendar/pppv/total_per_study', liv: liv
 
 - unless portal
-  = render 'service_calendars/master_calendar/pppv/totals/pppv_totals', service_request: service_request, arm: arm, tab: tab, line_items_visits: line_items_visits.flatten, page: page
+  = render 'service_calendars/master_calendar/pppv/totals/pppv_totals', service_request: service_request, arm: arm, visit_groups: visit_groups, tab: tab, line_items_visits: line_items_visits.flatten, page: page

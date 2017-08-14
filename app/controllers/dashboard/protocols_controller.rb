@@ -150,7 +150,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def update
     protocol_type = protocol_params[:type]
     @protocol = @protocol.becomes(protocol_type.constantize) unless protocol_type.nil?
-    if params[:updated_protocol_type] == 'true' && protocol_type == 'Study'
+    if (params[:updated_protocol_type] == 'true' && protocol_type == 'Study') || params[:can_edit] == 'true'
       @protocol.assign_attributes(study_type_question_group_id: StudyTypeQuestionGroup.active_id)
       @protocol.assign_attributes(selected_for_epic: protocol_params[:selected_for_epic]) if protocol_params[:selected_for_epic]
       if @protocol.valid?
@@ -234,6 +234,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         :arms_attributes,
         :billing_business_manager_static_email,
         :brief_description,
+        :end_date,
         :federal_grant_code_id,
         :federal_grant_serial_number,
         :federal_grant_title,
@@ -259,6 +260,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         :short_title,
         :sponsor_name,
         {:study_phase_ids => []},
+        :start_date,
         :study_type_question_group_id,
         :title,
         :type,

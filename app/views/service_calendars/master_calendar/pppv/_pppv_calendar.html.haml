@@ -17,7 +17,7 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- visit_groups = arm.visit_groups.page(page)
+- visit_groups = arm.visit_groups.page(page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] } })
 .panel.panel-primary.calendar-container.pppv-calendar{ class: "arm-calendar-container-#{arm.id}", data: { arm_id: arm.id } }
   .panel-heading
     .pull-left
@@ -28,19 +28,13 @@
         = render 'service_calendars/master_calendar/pppv/pppv_freeze_header_button', tab: tab, portal: portal, arm: arm, service_request: service_request, sub_service_request: sub_service_request, merged: merged, statuses_hidden: statuses_hidden, scroll_true: @scroll_true
     - unless portal || review
       .pull-right
-        %button.btn.btn-warning.move-visit-button{ data: { pages: pages, page: page, review: review.to_s, portal: portal.to_s, visit_groups: visit_groups, admin: admin.to_s, tab: tab, arm_id: arm.id, merged: merged.to_s, consolidated: consolidated.to_s, statuses_hidden: statuses_hidden, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:calendars)[:tooltips][:move_visit_button]}
+        %button.btn.btn-warning.move-visit-button{ data: { arm_id: arm.id, pages: pages.to_s, page: page, review: review.to_s, portal: portal.to_s, admin: admin.to_s, tab: tab, merged: merged.to_s, consolidated: consolidated.to_s, statuses_hidden: statuses_hidden, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:calendars)[:tooltips][:move_visit_button]}
           = t(:proper)[:service_calendar][:move_visit][:header]
         .divider
     .clearfix
   = hidden_field_tag :service_request_id, service_request.id
   %table.table.table-bordered{ class: @scroll_true ? "scrolling-table" : "non-scrolling-table" }
     %thead.pppv-thead{ class: @scroll_true ? "scrolling-thead" : "" }
-      = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_header",
-        service_request: service_request, sub_service_request: sub_service_request,
-        arm: arm, tab: tab, pages: pages, page: page, review: review,
-        portal: portal, admin: admin, merged: merged, consolidated: consolidated, statuses_hidden: statuses_hidden
+      = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_header", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, review: review, portal: portal, admin: admin, merged: merged, consolidated: consolidated, statuses_hidden: statuses_hidden, visit_groups: visit_groups
     %tbody.pppv-tbody{ class: @scroll_true ? "scrolling-div" : "" }
-      = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_line_items",
-        service_request: service_request, sub_service_request: sub_service_request,
-        arm: arm, tab: tab, pages: pages, page: page, review: review, portal: portal,
-        admin: admin, merged: merged, consolidated: consolidated, visit_groups: visit_groups, statuses_hidden: statuses_hidden
+      = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_line_items", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, review: review, portal: portal, admin: admin, merged: merged, consolidated: consolidated, visit_groups: visit_groups, statuses_hidden: statuses_hidden

@@ -21,17 +21,38 @@
 #= require navigation
 
 $(document).ready ->
-  getSRId = ->
-    $("input[name='service_request_id']").val()
-
-  getSSRId = ->
-    $("input[name='sub_service_request_id']").val()
+  freezeHeader = (arm_container) ->
+    $(arm_container).each ->
+      $(this).find('table').addClass('scrolling-table')
+      $(this).find('table').removeClass('non-scrolling-table')
+      $(this).find('thead').addClass('scrolling-thead')
+      $(this).find('tbody').addClass('scrolling-div')
+      $(this).find('.freeze-header-button').find('.freeze-header').hide()
+      $(this).find('.freeze-header-button').find('.unfreeze-header').show()
+      $(this).find('.freeze-header-button').removeClass('freeze')
+      $(this).find('.freeze-header-button').addClass('unfreeze')
 
   $(document).on 'click', '.custom-tab a', ->
     if $(this).is('#billing-strategy-tab')
       $('.billing-info ul').removeClass('hidden')
     else
       $('.billing-info ul').addClass('hidden')
+
+    # Hold freeze header upon tab change
+    $(document).ajaxComplete ->
+      arm_ids_with_frozen_header = []
+      frozen_headers = $('.unfreeze')
+      frozen_headers.each (index, arm) ->
+        if $(arm).data('arm-id') != undefined
+          arm_ids_with_frozen_header.push( $(arm).data('arm-id') )
+
+      $(jQuery.unique(arm_ids_with_frozen_header)).each (index, arm) ->
+        if arm == 'otf-calendar'
+          arm_container = $(".#{arm}")
+        else
+          arm_container = $(".arm-calendar-container-#{arm}")
+
+        freezeHeader(arm_container)  
 
   $(document).on 'click', '.page-change-arrow', ->
     scroll = $(this).parents('.scrolling-thead').length > 0
@@ -41,6 +62,23 @@ $(document).ready ->
         url: $(this).data('url')
         data:
           scroll: scroll
+
+  $(document).on 'click', '.edit-visit-group', ->
+    $.ajax
+      type: 'GET'
+      url: "/visit_groups/#{$(this).data('id')}/edit.js"
+      data:
+        service_request_id:     getSRId()
+        sub_service_request_id: getSSRId()
+        tab:                    $(this).data('tab')
+        pages:                  $(this).data('pages')
+        page:                   $(this).data('page')
+        review:                 $(this).data('review')
+        portal:                 $(this).data('portal')
+        admin:                  $(this).data('admin')
+        merged:                 $(this).data('merged')
+        consolidated:           $(this).data('consolidated')
+        statuses_hidden:        $(this).data('statuses-hidden')
 
   $(document).on 'click', '.service-calendar-row', ->
     return false if $(this).attr('disabled')
@@ -91,27 +129,22 @@ $(document).ready ->
     arm = $(this).data('arm-id')
 
     if arm == 'otf-calendar'
-      arm_container = $(this).closest(".#{arm}")
+      arm_container = $(".#{arm}")
     else
-      arm_container = $(this).closest(".arm-calendar-container-#{arm}")
+      arm_container = $(".arm-calendar-container-#{arm}")
 
     if $(this).hasClass('freeze')
-      arm_container.find('table').addClass('scrolling-table')
-      arm_container.find('thead').addClass('scrolling-thead')
-      arm_container.find('tbody').addClass('scrolling-div')
-      $(this).find('.freeze-header').hide()
-      $(this).find('.unfreeze-header').show()
-      $(this).removeClass('freeze')
-      $(this).addClass('unfreeze')
+      freezeHeader(arm_container)
     else
-      arm_container.find('table').removeClass('scrolling-table')
-      arm_container.find('table').addClass('non-scrolling-table')
-      arm_container.find('thead').removeClass('scrolling-thead')
-      arm_container.find('tbody').removeClass('scrolling-div')
-      $(this).find('.unfreeze-header').hide()
-      $(this).find('.freeze-header').show()
-      $(this).removeClass('unfreeze')
-      $(this).addClass('freeze')
+      $(arm_container).each ->
+        $(this).find('table').removeClass('scrolling-table')
+        $(this).find('table').addClass('non-scrolling-table')
+        $(this).find('thead').removeClass('scrolling-thead')
+        $(this).find('tbody').removeClass('scrolling-div')
+        $(this).find('.freeze-header-button').find('.unfreeze-header').hide()
+        $(this).find('.freeze-header-button').find('.freeze-header').show()
+        $(this).find('.freeze-header-button').removeClass('unfreeze')
+        $(this).find('.freeze-header-button').addClass('freeze')
 
   $(document).on 'change', '.visit-quantity', ->
     $.ajax
@@ -201,24 +234,7 @@ $(document).ready ->
       data: data
   # NOTES LISTENERS END
 
-getSRId = ->
-  $("input[name='service_request_id']").val()
-
 (exports ? this).setup_xeditable_fields = (scroll) ->
-  reload_calendar = (arm_id, scroll) ->
-    # E.g. "billing-strategy-tab" -> "billing_strategy"
-    tab = $('li.custom-tab.active a').last().attr('id')
-    tab = tab.substring(0, tab.indexOf("tab") - 1).replace("-", "_")
-    data = $('#service-calendars').data()
-    data.scroll = scroll
-    data.tab = tab
-    data.arm_id = arm_id
-    data.service_request_id = getSRId()
-    data.sub_service_request_id = data.subServiceRequestId
-    data.protocol_id = data.protocolId
-    # Reload calendar
-    $.get '/service_calendars/table.js', data
-
   # Override x-editable defaults
   $.fn.editable.defaults.send = 'always'
   $.fn.editable.defaults.ajaxOptions =
@@ -230,40 +246,6 @@ getSRId = ->
       for err in errors
         error_msgs.push(humanize_string(attr)+err)
     return error_msgs.join("\n")
-
-  $('.window-before').editable
-    params: (params) ->
-      {
-        visit_group:
-          window_before: params.value
-        service_request_id: getSRId()
-      }
-
-  $('.day').editable
-    params: (params) ->
-      {
-        visit_group:
-          day: params.value
-        service_request_id: getSRId()
-      }
-    emptytext: '(?)'
-
-  $('.window-after').editable
-    params: (params) ->
-      {
-        visit_group:
-          window_after: params.value
-        service_request_id: getSRId()
-      }
-
-  $('.visit-group-name').editable
-    params: (params) ->
-      {
-        visit_group:
-          name: params.value
-        service_request_id: getSRId()
-      }
-    emptytext: '(?)'
 
   $('.edit-your-cost').editable
     display: (value) ->
@@ -285,10 +267,24 @@ getSRId = ->
         line_items_visit:
           subject_count: params.value
         service_request_id: getSRId()
+        sub_service_request_id: getSSRId()
       }
-    success: () ->
-      scroll = $(this).parents('.scrolling-div').length > 0
-      reload_calendar($(this).data('armId'), scroll)
+    success: (data) ->
+      arm_id = $(this).data('arm-id')
+      
+      # Replace Per Patient / Study Totals
+      $(this).parent().siblings('.pppv-per-patient-line-item-total').replaceWith(data['total_per_patient'])
+      $(this).parent().siblings('.pppv-per-study-line-item-total').replaceWith(data['total_per_study'])
+      
+      # Replace Totals
+      $(".arm-#{arm_id}.maximum-total-direct-cost-per-patient").replaceWith(data['max_total_direct'])
+      $(".arm-#{arm_id}.maximum-total-per-patient").replaceWith(data['max_total_per_patient'])
+      $(".arm-#{arm_id}.total-per-patient-per-visit-cost-per-study").replaceWith(data['total_costs'])
+
+      if data['ssr_header']
+        # Replace Admin Dashboard SSR header
+        $('#sub_service_request_header').html(data['ssr_header'])
+        $('.selectpicker').selectpicker()
 
   $('.edit-qty').editable
     params: (params) ->
@@ -296,10 +292,15 @@ getSRId = ->
         line_item:
           quantity: params.value
         service_request_id: getSRId()
+        sub_service_request_id: getSSRId()
       }
-    success: ->
-      scroll = $(this).parents('.scrolling-div').length > 0
-      reload_calendar($(this).data('armId'), scroll)
+    success: (data) ->
+      # Replace Study Total
+      $(this).parent().siblings('.total-per-study').replaceWith(data['total_per_study'])
+
+      # Replace Totals
+      $('.total-direct-one-time-fee-cost-per-study').replaceWith(data['max_total_direct'])
+      $('.total-one-time-fee-cost-per-study').replaceWith(data['total_costs'])
 
   $('.edit-units-per-qty').editable
     params: (params) ->
@@ -307,7 +308,12 @@ getSRId = ->
         line_item:
           units_per_quantity: params.value
         service_request_id: getSRId()
+        sub_service_request_id: getSSRId()
       }
-    success: ->
-      scroll = $(this).parents('.scrolling-div').length > 0
-      reload_calendar($(this).data('armId'), scroll)
+    success: (data) ->
+      # Replace Study Total
+      $(this).parent().siblings('.total-per-study').replaceWith(data['total_per_study'])
+
+      # Replace Totals
+      $('.total-direct-one-time-fee-cost-per-study').replaceWith(data['max_total_direct'])
+      $('.total-one-time-fee-cost-per-study').replaceWith(data['total_costs'])

@@ -304,7 +304,7 @@ wb.add_worksheet(name: "Review") do |sheet|
 
   ##SSR Total
   if @sub_service_request
-    ssr_total_row = ["", "", "", ""]
+    ssr_total_row = ["", "", "", "", "", "", ""]
     if has_per_patient_per_visit_services
       (visit_count*2).times do
         ssr_total_row << ""
@@ -319,7 +319,7 @@ wb.add_worksheet(name: "Review") do |sheet|
   grand_total_row = @sub_service_request ? ["", "", "", "", "", "", ""] : ["", "", "", "", "", ""]
 
   if has_per_patient_per_visit_services
-    (visit_count * 2 + @admin_offset.to_i).times do
+    (visit_count * 2).times do
       grand_total_row << ""
     end
   elsif @admin_offset

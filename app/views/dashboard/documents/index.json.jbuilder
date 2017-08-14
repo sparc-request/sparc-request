@@ -1,5 +1,5 @@
 json.(@documents) do |doc|
-  has_access_to_doc = @permission_to_edit || (@admin_orgs & doc.all_organizations).any?
+  has_access_to_doc = @user.catalog_overlord || @permission_to_edit || (@admin_orgs & doc.all_organizations).any?
 
 	json.id doc.id
 	json.type doc.display_document_type

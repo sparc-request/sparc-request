@@ -33,9 +33,9 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
     it 'should assign @survey to the Survey' do
       survey = create(:survey, active: true)
 
-      xhr :get, :new, {
+      get :new, params: {
         access_code: survey.access_code
-      }
+      }, xhr: true
 
       expect(assigns(:survey)).to eq(survey)
     end
@@ -43,9 +43,9 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
     it 'should assign @response as a new Response of Survey' do
       survey = create(:survey, active: true)
 
-      xhr :get, :new, {
+      get :new, params: {
         access_code: survey.access_code
-      }
+      }, xhr: true
 
       expect(assigns(:response)).to be_a_new(Response)
       expect(assigns(:response).survey).to eq(survey)
@@ -54,9 +54,9 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
     it 'should build question responses' do
       survey = create(:survey, active: true)
 
-      xhr :get, :new, {
+      get :new, params: {
         access_code: survey.access_code
-      }
+      }, xhr: true
 
       expect(assigns(:response).question_responses).to be
     end
@@ -67,11 +67,11 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
         org = create(:organization)
         ssr = create(:sub_service_request_without_validations, organization: org)
 
-        xhr :get, :new, {
+        get :new, params: {
           access_code: survey.access_code,
           sub_service_request_id: ssr.id,
           format: :html
-        }
+        }, xhr: true
 
         expect(assigns(:review)).to eq("false")
       end
@@ -81,11 +81,11 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
         org = create(:organization)
         ssr = create(:sub_service_request_without_validations, organization: org)
 
-        xhr :get, :new, {
+        get :new, params: {
           access_code: survey.access_code,
           sub_service_request_id: ssr.id,
           format: :html
-        }
+        }, xhr: true
 
         expect(assigns(:sub_service_request)).to eq(ssr)
       end
@@ -95,11 +95,11 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
         org = create(:organization)
         ssr = create(:sub_service_request_without_validations, organization: org)
 
-        xhr :get, :new, {
+        get :new, params: {
           access_code: survey.access_code,
           sub_service_request_id: ssr.id,
           format: :html
-        }
+        }, xhr: true
 
         expect(controller).to render_template(:new)
       end
@@ -109,11 +109,11 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
         org = create(:organization)
         ssr = create(:sub_service_request_without_validations, organization: org)
 
-        xhr :get, :new, {
+        get :new, params: {
           access_code: survey.access_code,
           sub_service_request_id: ssr.id,
           format: :html
-        }
+        }, xhr: true
 
         expect(controller).to respond_with(:ok)
       end
@@ -123,10 +123,10 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
       it 'should assign @review to true' do
         survey = create(:survey, active: true)
 
-        xhr :get, :new, {
+        get :new, params: {
           access_code: survey.access_code,
           format: :js
-        }
+        }, xhr: true
 
         expect(assigns(:review)).to eq("true")
       end
@@ -134,10 +134,10 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
       it 'should render template' do
         survey = create(:survey, active: true)
 
-        xhr :get, :new, {
+        get :new, params: {
           access_code: survey.access_code,
           format: :js
-        }
+        }, xhr: true
 
         expect(controller).to render_template(:new)
       end
@@ -145,10 +145,10 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
       it 'should respond ok' do
         survey = create(:survey, active: true)
 
-        xhr :get, :new, {
+        get :new, params: {
           access_code: survey.access_code,
           format: :js
-        }
+        }, xhr: true
 
         expect(controller).to respond_with(:ok)
       end

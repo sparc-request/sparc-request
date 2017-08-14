@@ -19,8 +19,8 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 - if USE_SHIBBOLETH_ONLY
-  %h4= t(:devise)[:registrations][:not_allowed]
-
+  %h4
+    = t(:devise)[:registrations][:not_allowed]
 - else
   #sign-up-form
     = form_for resource, as: resource_name, url: registration_path(resource_name) do |f|
@@ -29,11 +29,11 @@
       - if resource.errors.any?
         = render 'shared/modal_errors', errors: resource.errors
       .form-group.field
-        = f.label :last_name, t(:devise)[:registrations][:last_name], class: 'col-sm-3'
+        = f.label :last_name, t(:devise)[:registrations][:last_name], class: 'col-sm-3 required'
         .col-sm-9
           = f.text_field :last_name, class: 'form-control'
       .form-group.field
-        = f.label :first_name, t(:devise)[:registrations][:first_name], class: 'col-sm-3'
+        = f.label :first_name, t(:devise)[:registrations][:first_name], class: 'col-sm-3 required'
         .col-sm-9
           = f.text_field :first_name, class: 'form-control'
       .form-group.field
@@ -41,7 +41,7 @@
         .col-sm-9
           = f.text_field :company, class: 'form-control'
       .form-group.field
-        = f.label :email, t(:devise)[:registrations][:email], class: 'col-sm-3'
+        = f.label :email, t(:devise)[:registrations][:email], class: 'col-sm-3 required'
         .col-sm-9
           = f.text_field :email, class: 'form-control'
       .form-group.field
@@ -49,21 +49,21 @@
         .col-sm-9
           = f.text_field :phone, class: 'form-control'
       .form-group.field
-        = f.label :ldap_uid, t(:devise)[:registrations][:username], class: 'col-sm-3'
+        = f.label :ldap_uid, t(:devise)[:registrations][:login], class: 'col-sm-3 required'
         .col-sm-9
           = f.text_field :ldap_uid, class: 'form-control'
       .form-group.field
-        = f.label :password, t(:devise)[:registrations][:password], class: 'col-sm-3'
+        = f.label :password, t(:devise)[:registrations][:password], class: 'col-sm-3 required'
         .col-sm-9
           = f.password_field :password, class: 'form-control'
       .form-group.field
-        = f.label :password_confirmation, t(:devise)[:registrations][:confirmation], class: 'col-sm-3'
+        = f.label :password_confirmation, t(:devise)[:registrations][:confirmation], class: 'col-sm-3 required'
         .col-sm-9
           = f.password_field :password_confirmation, class: 'form-control'
       .form-group.field.last
         = f.label :reason, t(:devise)[:registrations][:reason], class: 'col-sm-3'
         .col-sm-9
           = f.text_area :reason, class: 'form-control', rows: 5
-      .form-group.text-center
+      .form-group
         = f.submit t(:devise)[:registrations][:submit], class: 'btn btn-primary'
         = link_to t(:actions)[:cancel], new_identity_session_path, class: 'btn btn-primary'

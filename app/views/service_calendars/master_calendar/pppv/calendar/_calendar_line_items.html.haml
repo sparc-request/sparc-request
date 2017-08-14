@@ -18,25 +18,24 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - line_items_visits = []
-- Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, statuses_hidden: statuses_hidden).each do |sub_service_request_id, livs|
+- Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, statuses_hidden: statuses_hidden).each do |ssr, livs|
   - line_items_visits << livs
-  - ssr    = SubServiceRequest.find(sub_service_request_id)
   - locked = !ssr.can_be_edited? && !admin
 
   -# SSR Header Row
   %tr.organization-header{ class: locked ? 'text-danger' : '' }
     %th{ colspan: 15 }
-      = display_org_name(Dashboard::ServiceCalendars.display_organization_hierarchy(livs[0]), ssr, locked)
+      = display_org_name(Dashboard::ServiceCalendars.display_organization_hierarchy(livs[0].line_item), ssr, locked)
 
   -# Line Items Visits
   - livs.each do |liv|
     %tr.pppv-line-item-row{ class: locked ? 'bg-danger text-danger' : '' }
       %td.service-name{ colspan: 2 }
-        = liv.service.display_service_name
-        - unless liv.service.is_available
+        = liv.line_item.service.display_service_name
+        - unless liv.line_item.service.is_available
           = inactive_tag
       %td.notes.text-center.notes-width
-        = display_liv_notes(liv, @portal)
+        = display_liv_notes(liv, portal)
       %td.status.text-center.status-width
         = AVAILABLE_STATUSES[ssr.status]
       %td.service-rate.text-center.sm-col-width
@@ -47,11 +46,10 @@
         = display_unit_type(liv)
       %td.subject-count.text-center.xs-col-width
         = liv.subject_count
-      - visits      = liv.ordered_visits.paginate(page: page.to_i, per_page: Visit.per_page)
-      - totals_hash = liv.try(:per_subject_subtotals, visits)
-      - visits.each_with_index do |v, index|
+      - visits      = liv.ordered_visits.page(page).eager_load(line_items_visit: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] })
+      - visits.each do |v|
         %td.text-center.visit.visit-width{ class: "visit-#{v.id}" }
-          = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", visit: v, totals_hash: totals_hash
+          = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", visit: v
       - (Visit.per_page - visits.size).times do
         %td.visit-width &nbsp;
       %td.text-center.pppv-per-patient-line-item-total.total-width
@@ -62,4 +60,4 @@
           = Dashboard::ServiceCalendars.display_visit_based_direct_cost_per_study(liv)
 
 - unless review or portal
-  = render 'service_calendars/master_calendar/pppv/totals/pppv_totals', service_request: service_request, arm: arm, tab: tab, line_items_visits: line_items_visits.flatten, page: page
+  = render 'service_calendars/master_calendar/pppv/totals/pppv_totals', service_request: service_request, arm: arm, tab: tab, visit_groups: visit_groups, line_items_visits: line_items_visits.flatten, page: page

@@ -27,162 +27,162 @@
     %h5
       %strong
         = t(:protocols)[:studies][:research_involving][:header]
-        
-  - if research_types_info.present?
-    - if research_types_info.human_subjects || research_types_info.vertebrate_animals || research_types_info.investigational_products || research_types_info.ip_patents
-      / Human Subjects
-      - if research_types_info.human_subjects
-        .panel-body
-          %table.table.table-bordered
-            %thead.default-header
-              %th
-                %h5.col-lg-12
-                  %strong
-                    = t(:protocols)[:studies][:research_involving][:humans][:header]
-            %tbody
-              %tr
-                %td
-                  %label.col-lg-4
-                    = t(:protocols)[:studies][:research_involving][:humans][:nct_number]
-                  .col-lg-8
-                    = human_info.nct_number
-              %tr
-                %td
-                  %label.col-lg-4
-                    = t(:protocols)[:studies][:research_involving][:humans][:hr_number]
-                  .col-lg-8
-                    = human_info.hr_number
-              %tr
-                %td
-                  %label.col-lg-4
-                    = t(:protocols)[:studies][:research_involving][:humans][:pro_number]
-                  .col-lg-8
-                    = human_info.pro_number
-              %tr
-                %td
-                  %label.col-lg-4
-                    = t(:protocols)[:studies][:research_involving][:humans][:record_irb]
-                  .col-lg-8
-                    = human_info.irb_of_record
-              %tr
-                %td
-                  %label.col-lg-4
-                    = t(:protocols)[:studies][:research_involving][:humans][:submission_type]
-                  .col-lg-8
-                    = SUBMISSION_TYPES[human_info.submission_type]
-              %tr
-                %td
-                  %label.col-lg-4
-                    = t(:protocols)[:studies][:research_involving][:humans][:pending_approval]
-                  .col-lg-8
-                    = human_info.approval_pending ? t(:constants)[:yes_select] : t(:constants)[:no_select]
-              %tr
-                %td
-                  %label.col-lg-4
-                    = t(:protocols)[:studies][:research_involving][:humans][:irb_approval_date]
-                  .col-lg-8
-                    = format_date(human_info.irb_approval_date)
 
-              %tr
-                %td
-                  %label.col-lg-4
-                    = t(:protocols)[:studies][:research_involving][:humans][:irb_expiration_date]
-                  .col-lg-8
-                    = format_date(human_info.irb_expiration_date)
-              %tr
-                %td
-                  %label.col-lg-4
-                    = t(:protocols)[:studies][:information][:phase]
-                  .col-lg-8
-                    = Protocol.find(protocol.id).study_phases.map(&:phase).join(', ')
+  - if research_types_info.present? && research_types_info.has_children_types?
+    / Human Subjects
+    - if research_types_info.human_subjects
+      .panel-body
+        %table.table.table-bordered
+          %thead.default-header
+            %th
+              %h5.col-lg-12
+                %strong
+                  = t(:protocols)[:studies][:research_involving][:humans][:header]
+          %tbody
+            %tr
+              %td
+                %label.col-lg-4
+                  = t(:protocols)[:studies][:research_involving][:humans][:nct_number]
+                .col-lg-8
+                  = human_info.nct_number
+            %tr
+              %td
+                %label.col-lg-4
+                  = t(:protocols)[:studies][:research_involving][:humans][:hr_number]
+                .col-lg-8
+                  = human_info.hr_number
+            %tr
+              %td
+                %label.col-lg-4
+                  = t(:protocols)[:studies][:research_involving][:humans][:pro_number]
+                .col-lg-8
+                  = human_info.pro_number
+            %tr
+              %td
+                %label.col-lg-4
+                  = t(:protocols)[:studies][:research_involving][:humans][:record_irb]
+                .col-lg-8
+                  = human_info.irb_of_record
+            %tr
+              %td
+                %label.col-lg-4
+                  = t(:protocols)[:studies][:research_involving][:humans][:submission_type]
+                .col-lg-8
+                  = SUBMISSION_TYPES[human_info.submission_type]
+            %tr
+              %td
+                %label.col-lg-4
+                  = t(:protocols)[:studies][:research_involving][:humans][:pending_approval]
+                .col-lg-8
+                  = human_info.approval_pending ? t(:constants)[:yes_select] : t(:constants)[:no_select]
+            %tr
+              %td
+                %label.col-lg-4
+                  = t(:protocols)[:studies][:research_involving][:humans][:irb_approval_date]
+                .col-lg-8
+                  = format_date(human_info.irb_approval_date)
 
-      / Vertebrate Animals
-      - if research_types_info.vertebrate_animals
-        .panel-body
-          %table.table.table-bordered
-            %thead.default-header
-              %th
-                %h5.col-lg-12
-                  %strong
-                    = t(:protocols)[:studies][:research_involving][:vertebrates][:header]
-            %tbody
-              %tr
-                %td
-                  %label.col-lg-4
-                    = t(:protocols)[:studies][:research_involving][:vertebrates][:iacuc_number]
-                  .col-lg-8
-                    = vertebrate_info.iacuc_number
-              %tr
-                %td
-                  %label.col-lg-4
-                    = t(:protocols)[:studies][:research_involving][:vertebrates][:iacuc_name]
-                  .col-lg-8
-                    = vertebrate_info.name_of_iacuc
-              %tr
-                %td
-                  %label.col-lg-4
-                    = t(:protocols)[:studies][:research_involving][:vertebrates][:iacuc_approval_date]
-                  .col-lg-8
-                    = format_date(vertebrate_info.iacuc_approval_date)
-              %tr
-                %td
-                  %label.col-lg-4
-                    = t(:protocols)[:studies][:research_involving][:vertebrates][:iacuc_expiration_date]
-                  .col-lg-8
-                    = format_date(vertebrate_info.iacuc_expiration_date)
+            %tr
+              %td
+                %label.col-lg-4
+                  = t(:protocols)[:studies][:research_involving][:humans][:irb_expiration_date]
+                .col-lg-8
+                  = format_date(human_info.irb_expiration_date)
+            %tr
+              %td
+                %label.col-lg-4
+                  = t(:protocols)[:studies][:information][:phase]
+                .col-lg-8
+                  = Protocol.find(protocol.id).study_phases.map(&:phase).join(', ')
 
-      / Investigational Products
-      - if research_types_info.investigational_products
-        .panel-body
-          %table.table.table-bordered
-            %thead.default-header
-              %th
-                %h5.col-lg-12
-                  %strong
-                    = t(:protocols)[:studies][:research_involving][:products][:header]
-            %tbody
-              %tr
-                %td
-                  %label.col-lg-4
-                    = t(:protocols)[:studies][:research_involving][:products][:ind_number]
-                  .col-lg-8
-                    = products_info.ind_number
+    / Vertebrate Animals
+    - if research_types_info.vertebrate_animals
+      .panel-body
+        %table.table.table-bordered
+          %thead.default-header
+            %th
+              %h5.col-lg-12
+                %strong
+                  = t(:protocols)[:studies][:research_involving][:vertebrates][:header]
+          %tbody
+            %tr
+              %td
+                %label.col-lg-4
+                  = t(:protocols)[:studies][:research_involving][:vertebrates][:iacuc_number]
+                .col-lg-8
+                  = vertebrate_info.iacuc_number
+            %tr
+              %td
+                %label.col-lg-4
+                  = t(:protocols)[:studies][:research_involving][:vertebrates][:iacuc_name]
+                .col-lg-8
+                  = vertebrate_info.name_of_iacuc
+            %tr
+              %td
+                %label.col-lg-4
+                  = t(:protocols)[:studies][:research_involving][:vertebrates][:iacuc_approval_date]
+                .col-lg-8
+                  = format_date(vertebrate_info.iacuc_approval_date)
+            %tr
+              %td
+                %label.col-lg-4
+                  = t(:protocols)[:studies][:research_involving][:vertebrates][:iacuc_expiration_date]
+                .col-lg-8
+                  = format_date(vertebrate_info.iacuc_expiration_date)
+
+    / Investigational Products
+    - if research_types_info.investigational_products
+      .panel-body
+        %table.table.table-bordered
+          %thead.default-header
+            %th
+              %h5.col-lg-12
+                %strong
+                  = t(:protocols)[:studies][:research_involving][:products][:header]
+          %tbody
+            %tr
+              %td
+                %label.col-lg-4
+                  = t(:protocols)[:studies][:research_involving][:products][:ind_number]
+                .col-lg-8
+                  = products_info.ind_number
+            %tr
+              %td
+                %label.col-lg-3
+                  = t(:protocols)[:studies][:research_involving][:products][:ind_on_hold]
+                .col-lg-9
+                  = products_info.ind_on_hold ? t(:constants)[:yes_select] : t(:constants)[:no_select]
+            - if products_info.exemption_type.present?
               %tr
                 %td
                   %label.col-lg-3
-                    = t(:protocols)[:studies][:research_involving][:products][:ind_on_hold]
+                    = t(:protocols)[:studies][:research_involving][:products][:numbers][products_info.exemption_type.to_sym]
                   .col-lg-9
-                    = products_info.ind_on_hold ? t(:constants)[:yes_select] : t(:constants)[:no_select]
-              - if products_info.exemption_type.present?
-                %tr
-                  %td
-                    %label.col-lg-3
-                      = t(:protocols)[:studies][:research_involving][:products][:numbers][products_info.exemption_type.to_sym]
-                    .col-lg-9
-                      = products_info.inv_device_number
+                    = products_info.inv_device_number
 
-      / IP/Patents
-      - if research_types_info.ip_patents
-        .panel-body
-          %table.table.table-bordered
-            %thead.default-header
-              %th
-                %h5.col-lg-12
-                  %strong
-                    = t(:protocols)[:studies][:research_involving][:ip_patents][:header]
-            %tbody
-              %tr
-                %td
-                  %label.col-lg-4
-                    = t(:protocols)[:studies][:research_involving][:ip_patents][:number]
-                  .col-lg-8
-                    = ip_patent_info.patent_number
-              %tr
-                %td
-                  %label.col-lg-4
-                    = t(:protocols)[:studies][:research_involving][:ip_patents][:inventors]
-                  .col-lg-8
-                    = ip_patent_info.inventors
+    / IP/Patents
+    - if research_types_info.ip_patents
+      .panel-body
+        %table.table.table-bordered
+          %thead.default-header
+            %th
+              %h5.col-lg-12
+                %strong
+                  = t(:protocols)[:studies][:research_involving][:ip_patents][:header]
+          %tbody
+            %tr
+              %td
+                %label.col-lg-4
+                  = t(:protocols)[:studies][:research_involving][:ip_patents][:number]
+                .col-lg-8
+                  = ip_patent_info.patent_number
+            %tr
+              %td
+                %label.col-lg-4
+                  = t(:protocols)[:studies][:research_involving][:ip_patents][:inventors]
+                .col-lg-8
+                  = ip_patent_info.inventors
   - else
     .panel-body
-      = render partial: 'shared/alert', locals: { message: t(:protocols)[:studies][:research_involving][:none] }
+      = render partial: 'shared/alert',
+        locals: { message: t(:protocols)[:studies][:research_involving][:none] }

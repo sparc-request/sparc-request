@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class MovePositionFromVisitToVisitGroup < ActiveRecord::Migration
+class MovePositionFromVisitToVisitGroup < ActiveRecord::Migration[4.2]
   class Arm < ActiveRecord::Base
     has_many :line_items_visits, :dependent => :destroy
     has_many :visit_groups

@@ -87,7 +87,7 @@ class ReportingModule
 private
 
   def report_params
-    self.params.except("type").map{|k,v| [k.titleize, v]}
+    self.params.permit!.except("type").to_h.map{|k,v| [k.titleize, v]}
   end
 
   def create_report obj

@@ -1,4 +1,4 @@
-class AddProtocolIdToSubServiceRequests < ActiveRecord::Migration
+class AddProtocolIdToSubServiceRequests < ActiveRecord::Migration[4.2]
   def change
     add_column :sub_service_requests, :protocol_id, :integer
     add_index :sub_service_requests, :protocol_id

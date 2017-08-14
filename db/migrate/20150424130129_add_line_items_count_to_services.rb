@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class AddLineItemsCountToServices < ActiveRecord::Migration
+class AddLineItemsCountToServices < ActiveRecord::Migration[4.2]
   def change
     add_column :services, :line_items_count, :integer, default: 0
   end

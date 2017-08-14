@@ -27,4 +27,4 @@
       %li
         = link_to t(:proper)[:footer][:sctr], t(:proper)[:footer][:sctr_url], target: :blank
       %li
-        = link_to t(:proper)[:footer][:about], t(:proper)[:footer][:about_url], target: :blank
+        = link_to t(:proper)[:footer][:about], Setting.find_by_key("about_sparc_url"), target: :blank

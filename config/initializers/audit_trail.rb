@@ -18,15 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-# Check whether we want to use a separate database for the audit trail
-begin 
-  application_config ||= YAML.load_file(Rails.root.join('config', 'application.yml'))[Rails.env]
-  USE_SEPARATE_AUDIT_DATABASE = application_config['use_separate_audit_database'] rescue false
-rescue
-  raise "application.yml not found, see config/application.yml.example"
-end
-
 module Audited
   module Auditor
     module AuditedInstanceMethods
@@ -40,7 +31,7 @@ module Audited
     module ActiveRecord
       class Audit < ::ActiveRecord::Base
         # database connection information in database.yml should be named audit_environment (eg. audit_development)
-        establish_connection("audit_#{Rails.env}") if USE_SEPARATE_AUDIT_DATABASE
+        establish_connection("audit_#{Rails.env}") if Setting.find_by_key("use_separate_audit_database").try(:value)
       end
     end
   end

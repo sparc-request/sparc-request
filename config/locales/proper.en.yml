@@ -44,7 +44,7 @@ en:
       sctr: "SCTR"
       sctr_url: "http://sctr.musc.edu"
       about: "About"
-      about_url: "http://academicdepartments.musc.edu/sctr/sparc_request"
+      about_alt: "About SPARCRequest"
 
     ###########
     # CATALOG #

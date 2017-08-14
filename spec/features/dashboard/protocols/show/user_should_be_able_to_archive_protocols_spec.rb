@@ -52,6 +52,7 @@ RSpec.describe 'User should be able to archive protocols', js: true do
     expect(project.archived).to eq(false)
     click_button 'Archive Project'
     wait_for_javascript_to_finish
+
     expect(project.reload.archived).to eq(true)
     expect(page).to have_content 'Unarchive Project'
   end

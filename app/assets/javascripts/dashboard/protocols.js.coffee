@@ -44,9 +44,11 @@ $(document).ready ->
 
       $(document).on 'click', '.protocol-archive-button', ->
         protocol_id = $(this).data('protocol-id')
+        permission_to_edit = $(this).data('permission-to-edit')
         $.ajax
           type: 'PATCH'
-          url:  "/dashboard/protocols/#{protocol_id}/archive.js"
+          url:  "/dashboard/protocols/#{protocol_id}/archive?permission_to_edit=#{permission_to_edit}"
+
 
       $(document).on 'submit', '#filterrific-no-ajax-auto-submit', ->
         $('#filterrific_sorted_by').val("#{$('.protocol-sort').data('sort-name')} #{$('.protocol-sort').data('sort-order')}")
@@ -146,7 +148,7 @@ $(document).ready ->
           protocol_id         = $selected_option.data('protocol-id')
           line_item_id        = $selected_option.data('line-item-id')
           $this               = $(this)
-          
+
           $.ajax
             method: 'GET'
             url: "/services/#{service_id}/additional_details/submissions/new.js"
@@ -189,7 +191,7 @@ $(document).ready ->
           url: "/dashboard/protocols.js"
           data: data
 
-(exports ? this).reset_service_requests_handlers = -> 
+(exports ? this).reset_service_requests_handlers = ->
   $('.service-requests-table').on 'all.bs.table', ->
     #Enable selectpickers
     $(this).find('.selectpicker').selectpicker()

@@ -25,35 +25,36 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
   let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
 
-  describe '#new' do
+  describe '#edit' do
     before :each do
-      @survey = create(:survey, active: true)
+      @ssr      = create(:sub_service_request_without_validations, organization: create(:organization))
+      @survey   = create(:survey, active: true)
+      @resp     = create(:response, survey: @survey, sub_service_request: @ssr)
 
-      get :new, params: { access_code: @survey.access_code }, xhr: true
+      get :edit, params: { id: @resp.id }, xhr: true
     end
 
     it 'should call before_filter #authenticate_identity!' do
       expect(before_filters.include?(:authenticate_identity!)).to eq(true)
     end
 
-    it 'should assign @survey to the Survey' do
-      expect(assigns(:survey)).to eq(@survey)
-    end
-
-    it 'should assign @response as a new Response of Survey' do
-      expect(assigns(:response)).to be_a_new(Response)
-      expect(assigns(:response).survey).to eq(@survey)
+    it 'should assign @response to the response' do
+      expect(assigns(:response)).to eq(@resp)
     end
 
     it 'should build question responses' do
-      expect(assigns(:response).question_responses).to be
+      expect(@resp.question_responses).to be
     end
 
-    it 'should assign @review to true' do
-      expect(assigns(:review)).to eq("true")
+    it 'should assign @review to false' do
+      expect(assigns(:review)).to eq("false")
     end
 
-    it { is_expected.to render_template(:new) }
+    it 'should assign @sub_service_request' do
+      expect(assigns(:sub_service_request)).to eq(@ssr)
+    end
+
+    it { is_expected.to render_template(:edit) }
     it { is_expected.to respond_with(:ok) }
   end
 end

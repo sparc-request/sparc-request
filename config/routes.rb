@@ -184,12 +184,12 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :organizations, only: [:show, :update, :create]
-    resources :institutions, only: [:show, :update, :create]
-    resources :providers, only: [:show, :update, :create]
-    resources :programs, only: [:show, :update, :create]
-    resources :cores, only: [:show, :update, :create]
-    resources :services, except: [:index, :edit, :destroy] do
+    resources :organizations, only: [:edit, :update, :create]
+    resources :institutions, only: [:edit, :update, :create]
+    resources :providers, only: [:edit, :update, :create]
+    resources :programs, only: [:edit, :update, :create]
+    resources :cores, only: [:edit, :update, :create]
+    resources :services, except: [:index, :show, :destroy] do
       collection do
         get :verify_parent_service_provider
       end

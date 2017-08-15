@@ -20,12 +20,16 @@
 
 class CatalogManager::ServicesController < CatalogManager::AppController
   layout false
-  respond_to :js, :html, :json
 
-  def show
+  def edit
     @service  = Service.find params[:id]
     @programs = @service.provider.programs
     @cores    = @service.program.cores
+
+    #TODO: Validate user can edit service
+    respond_to do |format|
+      format.js
+    end
   end
 
   def update_cores

@@ -24,7 +24,7 @@ class CatalogManager::InstitutionsController < CatalogManager::OrganizationsCont
     @user.catalog_manager_rights.create( organization_id: @organization.id )
   end
 
-  def show
+  def edit
     @path = catalog_manager_institution_path
     super
   end

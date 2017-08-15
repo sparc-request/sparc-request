@@ -18,21 +18,4 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogManager::CoresController < CatalogManager::OrganizationsController
-  def create
-    @parent_org = Program.find(params[:program_id])
-    @organization = Core.new({name: params[:name], abbreviation: params[:name], parent_id: @parent_org.id})
-    super
-  end
-
-  def edit
-    @path = catalog_manager_core_path
-    super
-  end
-
-  def update
-    @attributes = organization_params(:core)
-    super
-  end
-
-end
+$("#org-form-container").html("<%= j render '/catalog_manager/services/form', service: @service %>")

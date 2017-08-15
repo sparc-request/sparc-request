@@ -25,7 +25,7 @@ class CatalogManager::ProvidersController < CatalogManager::OrganizationsControl
     super
   end
 
-  def show
+  def edit
     @path = catalog_manager_provider_path
     super
   end

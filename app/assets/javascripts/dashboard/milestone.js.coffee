@@ -11,3 +11,7 @@ $ ->
 
   $(document).on 'dp.change', '.recruitment-end-date-picker', (e) ->
     $('.recruitment-end-date-setter').val(e.date)
+
+  $(document).on 'dp.hide', '.start-date-picker, .end-date-picker, .recruitment-start-date-picker, .recruitment-end-date-picker', ->
+    $('.milestone-form').submit()
+

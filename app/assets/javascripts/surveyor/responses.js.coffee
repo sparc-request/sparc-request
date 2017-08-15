@@ -31,4 +31,3 @@ $(document).ready ->
     else
       $(".dependent-for-option-#{option_id}").addClass('hidden')
 
-

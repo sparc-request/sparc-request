@@ -26,4 +26,8 @@ class Response < ActiveRecord::Base
   has_many :question_responses, dependent: :destroy
   
   accepts_nested_attributes_for :question_responses
+
+  def completed?
+    self.question_responses.any?
+  end
 end

@@ -32,11 +32,11 @@ class SurveyNotification < ActionMailer::Base
   end
 
   def service_survey(surveys, identity, ssr)
-    @identity = identity
-    @surveys  = surveys
-    @ssr      = ssr
-    email     = @identity.email
-    subject   = t('surveyor.responses.emails.service_survey.subject', site_name: t(:proper)[:header])
+    @identity   = identity
+    @surveys    = surveys
+    @ssr        = ssr
+    email       = @identity.email
+    subject     = t('surveyor.responses.emails.service_survey.subject', site_name: t(:proper)[:header])
 
     mail(to: email, from: NO_REPLY_FROM, subject: subject)
   end

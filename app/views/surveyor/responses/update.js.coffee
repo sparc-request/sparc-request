@@ -1,3 +1,4 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -16,8 +17,20 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$('#modal_place').html("<%= j render 'surveyor/responses/form_modal', survey: @survey, response: @response, review: @review, sub_service_request: @sub_service_request %>")
-$('#modal_place').modal('show')
-$('.datetimepicker.date').datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
-$('.datetimepicker.time').datetimepicker(format: 'hh:mm A', allowInputToggle: true)
-$('.selectpicker').selectpicker()
+<% if @errors %>
+<% @response.question_responses.each do |qr| %>
+<% if qr.errors.any? %>
+if !$(".question-<%=qr.question_id%> .question-label").hasClass('has-error')
+  $(".question-<%=qr.question_id%> .question-label").addClass('has-error')
+  <% qr.errors.full_messages.each do |message| %>
+  $(".question-<%=qr.question_id%> .question-label").append("<span class='help-block'><%= message %></span>")
+  <% end %>
+<% else %>
+$(".question-<%=qr.question_id%>").removeClass('has-error')
+$(".question-<%=qr.question_id%> .help-block").remove()
+<% end %>
+<% end %>
+<% @response.question_responses.destroy_all %>
+<% else %>
+window.location = "/surveyor/responses/<%=@response.id%>/complete"
+<% end %>

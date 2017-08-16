@@ -39,6 +39,10 @@ RSpec.describe UserMailer do
         @protocol_role  = create(:project_role, protocol: @protocol, identity: modified_identity, project_rights: 'approve', role: 'consultant')
         @mail           = UserMailer.authorized_user_changed(identity, @protocol, @protocol_role, 'add')
       end
+
+      it 'should display correct subject' do
+        expect(@mail).to have_subject("SPARCRequest Authorized Users Update (Protocol #{@protocol.id})")
+      end
     
       it "should display the 'added' message" do
         # An Authorized User has been added in SparcDashboard ***(link to protocol)***

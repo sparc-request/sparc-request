@@ -105,7 +105,6 @@ task :protocol_merge => :environment do
       request.save(validate: false)
       request.sub_service_requests.each do |ssr|
         ssr.update_attributes(protocol_id: first_protocol.id)
-        ssr.update_attributes(ssr_id: "%04d" % first_protocol.next_ssr_id)
         first_protocol.update_attributes(next_ssr_id: first_protocol.next_ssr_id + 1)
         if ssr.in_work_fulfillment
           fulfillment_ssrs << ssr

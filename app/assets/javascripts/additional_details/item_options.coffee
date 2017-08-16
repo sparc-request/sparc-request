@@ -1,7 +1,7 @@
 #= require 'likert'
 
 $ ->
-  needOptions = ['radio_button', 'checkbox', 'dropdown', 'multiple_dropdown']
+  needOptions = ['radio_button', 'checkbox', 'dropdown', 'multiple_dropdown', 'likert']
 
   showOptions = (selection, array) ->
     $.inArray(selection, array) > -1

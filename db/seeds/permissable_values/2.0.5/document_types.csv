@@ -1,7 +1,7 @@
 id,key,value,concept_code,parent_id,sort_order,category,default,reserved
 ,biosketch,Biosketch,,,1,document_type,,
 ,budget,Budget,,,2,document_type,,
-,oral_health_cobre,Certificate of Confidentiality,,,3,document_type,,
+,cofc,Certificate of Confidentiality,,,3,document_type,,
 ,consent,Consent,,,4,document_type,,
 ,contract,Contract,,,5,document_type,,
 ,coverage_analysis,Coverage Analysis,,,6,document_type,,

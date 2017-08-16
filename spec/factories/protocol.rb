@@ -25,7 +25,7 @@ FactoryGirl.define do
     title                        { Faker::Lorem.sentence(3) }
     sponsor_name                 { Faker::Lorem.sentence(3) }
     brief_description            { Faker::Lorem.paragraph(2) }
-    indirect_cost_rate           { Random.rand(1000) }
+    indirect_cost_rate           { Random.rand(1..1000) }
     udak_project_number          { Random.rand(1000).to_s }
     funding_rfa                  { Faker::Lorem.word }
     potential_funding_start_date { Time.now + 1.year }

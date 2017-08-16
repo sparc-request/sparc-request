@@ -58,8 +58,8 @@ RSpec.describe SurveyNotification do
   end
 
   describe 'service system satisfaction survey' do
-    let(:survey)  { create(:survey, title: "System Satisfaction survey", access_code: "system-satisfaction-survey") }
-    let(:mail)    { SurveyNotification.service_survey([survey], identity, ssr) }
+    let(:survey)    { create(:survey, title: "System Satisfaction survey", access_code: "system-satisfaction-survey") }
+    let(:mail)      { SurveyNotification.service_survey([survey], identity, ssr) }
 
     #ensure that the subject is correct
     it 'should render the subject' do
@@ -78,8 +78,7 @@ RSpec.describe SurveyNotification do
 
     #ensure that the e-mail contains a link to the survey
     it 'should contain the survey link' do
-      survey_link_path = "surveyor/responses/new.html?access_code=#{survey.access_code}&amp;sub_service_request_id=#{ssr.id}&amp;survey_version=#{survey.version}"
-      expect(mail.body.include?(survey_link_path)).to eq(true)
+      expect(["/surveyor/responses/", "/edit.html"].all? { |s| mail.body.include?(s) }).to eq(true)
     end
 
     it 'should not contain the SCTR grant citation paragraph' do
@@ -88,8 +87,8 @@ RSpec.describe SurveyNotification do
   end
 
   describe 'SCTR Customer Satisfaction Survey' do
-    let(:survey)  { create(:survey, title: "SCTR Customer Satisfaction survey", access_code: "sctr-customer-satisfaction-survey") }
-    let(:mail)    { SurveyNotification.service_survey([survey], identity, ssr) }
+    let(:survey)    { create(:survey, title: "SCTR Customer Satisfaction survey", access_code: "sctr-customer-satisfaction-survey") }
+    let(:mail)      { SurveyNotification.service_survey([survey], identity, ssr) }
 
     #ensure that the subject is correct
     it 'should render the subject' do
@@ -108,8 +107,7 @@ RSpec.describe SurveyNotification do
 
     #ensure that the e-mail contains a link to the survey
     it 'should contain the survey link' do
-      survey_link_path = "surveyor/responses/new.html?access_code=#{survey.access_code}&amp;sub_service_request_id=#{ssr.id}&amp;survey_version=#{survey.version}"
-      expect(mail.body.include?(survey_link_path)).to eq(true)
+      expect(["/surveyor/responses/", "/edit.html"].all? { |s| mail.body.include?(s) }).to eq(true)
     end
 
     it 'should contain the SCTR grant citation paragraph' do

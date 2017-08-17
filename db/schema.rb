@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170707153553) do
+ActiveRecord::Schema.define(version: 20170817141100) do
 
   create_table "admin_rates", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer "line_item_id"
@@ -175,7 +175,7 @@ ActiveRecord::Schema.define(version: 20170707153553) do
     t.integer "sub_service_request_id"
   end
 
-  create_table "editable_statuses", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "editable_statuses", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "organization_id"
     t.string "status", null: false
     t.datetime "created_at", null: false
@@ -381,7 +381,9 @@ ActiveRecord::Schema.define(version: 20170707153553) do
     t.text "body"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["from"], name: "index_messages_on_from"
     t.index ["notification_id"], name: "index_messages_on_notification_id"
+    t.index ["to"], name: "index_messages_on_to"
   end
 
   create_table "notes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|

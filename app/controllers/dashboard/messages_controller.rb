@@ -39,7 +39,10 @@ class Dashboard::MessagesController < Dashboard::BaseController
     @notification = Notification.find(params[:message][:notification_id])
     if message_params[:body].present? # don't create empty messages
       @message = Message.create(message_params)
-      @notification.set_read_by(Identity.find(@message.to), false)
+      @recipient = @message.recipient
+      @notification.set_read_by(@recipient, false)
+
+      UserMailer.notification_received(@recipient, @notification.sub_service_request).deliver unless @recipient.email.blank?
     end
     @messages = @notification.messages
   end

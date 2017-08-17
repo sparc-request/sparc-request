@@ -24,21 +24,21 @@ RSpec.describe ApplicationController, type: :controller do
   controller do
     def index
       initialize_service_request
-      render nothing: true
+      render body: nil
     end
 
     def show
-      render nothing: true
+      render head :ok
     end
 
     def not_navigate
       initialize_service_request
-      render nothing: true
+      render head :ok
     end
 
     def navigate
       initialize_service_request
-      render nothing: true
+      render head :ok
     end
   end
 
@@ -158,14 +158,14 @@ RSpec.describe ApplicationController, type: :controller do
     context 'not hitting ServiceRequestsController' do
       context 'params[:service_request_id] present' do
         it 'should set @service_request' do
-          get :index, service_request_id: service_request.id
+          get :index, params: { service_request_id: service_request.id }
           expect(assigns(:service_request)).to eq service_request
         end
 
         context 'params[:sub_service_request_id] present' do
           before(:each) do
-            get :index, service_request_id: service_request.id,
-              sub_service_request_id: sub_service_request.id
+            get :index, params: { service_request_id: service_request.id,
+              sub_service_request_id: sub_service_request.id }
           end
 
           it 'should set @sub_service_request' do
@@ -174,7 +174,7 @@ RSpec.describe ApplicationController, type: :controller do
         end
 
         context 'session[:sub_service_request_id] absent' do
-          before(:each) { get :index, service_request_id: service_request.id }
+          before(:each) { get :index, params: { service_request_id: service_request.id } }
 
           it 'should not set @sub_service_request' do
             expect(assigns(:sub_service_request)).to_not be

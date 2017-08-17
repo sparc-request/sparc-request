@@ -56,9 +56,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       session[:identity_id]        = logged_in_user.id
 
-      xhr :get, :protocol, {
+      get :protocol, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(ssr.reload.service_requester).to eq(logged_in_user)
     end
@@ -73,9 +73,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       session[:identity_id]        = logged_in_user.id
 
-      xhr :get, :protocol, {
+      get :protocol, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:protocol)
     end
@@ -90,9 +90,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       session[:identity_id]        = logged_in_user.id
 
-      xhr :get, :protocol, {
+      get :protocol, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

@@ -21,7 +21,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'SubServiceRequest' do
+RSpec.describe SubServiceRequest, type: :model do
 
   let_there_be_lane
   let_there_be_j
@@ -213,7 +213,7 @@ RSpec.describe 'SubServiceRequest' do
       let!(:line_item2) { create(:line_item, sub_service_request_id: ssr2.id, service_request_id: service_request.id, service_id: service2.id) }
 
       before :each do
-        EDITABLE_STATUSES[sub_service_request.organization.id] = ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval']
+        sub_service_request.organization.editable_statuses.where(status: 'on_hold').destroy_all
       end
 
       context "can be edited" do
@@ -228,11 +228,6 @@ RSpec.describe 'SubServiceRequest' do
           expect(sub_service_request.can_be_edited?).to eq(true)
         end
 
-        it "should return true if the status is nil" do
-          sub_service_request.update_attributes(status: nil)
-          expect(sub_service_request.can_be_edited?).to eq(true)
-        end
-
         it "should return true if the status is get a cost estimate" do
           sub_service_request.update_attributes(status: 'get_a_cost_estimate')
           expect(sub_service_request.can_be_edited?).to eq(true)
@@ -244,6 +239,7 @@ RSpec.describe 'SubServiceRequest' do
         end
 
         it 'should should return false if the status is complete' do
+          stub_const("FINISHED_STATUSES", ['complete'])
           sub_service_request.update_attributes(status: 'complete')
           expect(sub_service_request.can_be_edited?).to eq(false)
         end

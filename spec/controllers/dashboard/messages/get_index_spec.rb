@@ -35,7 +35,7 @@ RSpec.describe Dashboard::MessagesController do
           and_return("MyMessages")
 
         log_in_dashboard_identity(obj: @logged_in_user)
-        xhr :get, :index, notification_id: @notification.id
+        get :index, params: { notification_id: @notification.id }, xhr: true
       end
 
       it "should mark Notification as read" do
@@ -73,7 +73,7 @@ RSpec.describe Dashboard::MessagesController do
           and_return("MyMessages")
 
         log_in_dashboard_identity(obj: @logged_in_user)
-        xhr :get, :index, notification_id: @notification.id
+        get :index, params: { notification_id: @notification.id }, xhr: true
       end
 
       it "should not re-mark Notification as read" do

@@ -17,29 +17,62 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
+require 'rails_helper'
 
-require "rails_helper"
+RSpec.describe 'RMID validated Protocols', js: true do
+  let!(:user) do
+    create(:identity,
+           last_name: "Doe",
+           first_name: "John",
+           ldap_uid: "johnd",
+           email: "johnd@musc.edu",
+           password: "p4ssword",
+           password_confirmation: "p4ssword",
+           approved: true
+          )
+  end
 
-RSpec.describe Dashboard::FulfillmentsController do
-  describe "GET #edit" do
-    before(:each) do
-      @fulfillment = findable_stub(Fulfillment) do
-        instance_double(Fulfillment, id: 1)
+  fake_login_for_each_test('johnd')
+
+  let!(:study) do
+    create(:study_without_validations,
+            primary_pi: user,
+            rmid_validated: true
+          )
+  end
+
+  before :each do
+    visit dashboard_protocol_path(study)
+    wait_for_javascript_to_finish
+  end
+
+  describe 'main page' do
+    it 'shows visual cue that the Protocol has been refreshed with RMID data' do
+      expect(page).to have_css(
+        'h6.text-success',
+        text: 'Updated to corresponding Research Master ID Short Title'
+      )
+      expect(page).to have_css(
+        'h6.text-success',
+        text: 'Updated to corresponding Research Master ID Title'
+      )
+    end
+  end
+
+  describe 'view details' do
+    it 'shows that the Protocol has been refreshed with RMID data' do
+      click_button 'View Study Details'
+      within '.modal-content' do
+        expect(page).to have_css(
+          'h6.text-success',
+          text: 'Updated to corresponding Research Master ID Short Title'
+        )
+        expect(page).to have_css(
+          'h6.text-success',
+          text: 'Updated to corresponding Research Master ID Title'
+        )
       end
-
-      log_in_dashboard_identity(obj: build_stubbed(:identity))
-      xhr :get, :edit, id: @fulfillment.id
     end
-
-    it "should assign @fulfillment from params[:id]" do
-      expect(assigns(:fulfillment)).to eq(@fulfillment)
-    end
-
-    it "should assign @header_text" do
-      expect(assigns(:header_text)).not_to be_nil
-    end
-
-    it { is_expected.to render_template "dashboard/fulfillments/edit" }
-    it { is_expected.to respond_with :ok }
   end
 end
+

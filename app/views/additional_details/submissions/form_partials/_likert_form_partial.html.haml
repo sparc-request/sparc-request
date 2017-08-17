@@ -1,6 +1,6 @@
 %br
-- item.item_options.each do |item_option|
-  .likert-group.no-padding{ class: "col-sm-#{(12 / item.item_options.count).ceil}"}
+- item.item_options.each_with_index do |item_option, index|
+  .likert-group.no-padding{ class: "col-sm-#{(12 / item.item_options.length).ceil}"}
     .col-sm-12.text-center.no-padding
       = index+1
     .col-sm-12.text-center.no-padding.likert

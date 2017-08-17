@@ -54,9 +54,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       session[:identity_id]        = logged_in_user.id
 
-      xhr :get, :confirmation, {
+      get :confirmation, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:service_request).previous_submitted_at).to eq(sr.submitted_at)
     end
@@ -73,10 +73,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
         session[:identity_id]            = logged_in_user.id
 
-        xhr :get, :confirmation, {
+        get :confirmation, params: {
           sub_service_request_id: ssr.id,
           id: sr.id
-        }
+        }, xhr: true
 
         expect(ssr.reload.status).to eq('submitted')
         expect(ssr.reload.nursing_nutrition_approved).to eq(false)
@@ -95,10 +95,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
         session[:identity_id]            = logged_in_user.id
 
-        xhr :get, :confirmation, {
+        get :confirmation, params: {
           sub_service_request_id: ssr.id,
           id: sr.id
-        }
+        }, xhr: true
 
         expect(PastStatus.count).to eq(1)
         expect(PastStatus.first.sub_service_request).to eq(ssr)
@@ -118,10 +118,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
           stub_const("QUEUE_EPIC", true)
           setup_valid_study_answers(protocol)
 
-          xhr :get, :confirmation, {
-          sub_service_request_id: ssr.id,
+          get :confirmation, params: {
+            sub_service_request_id: ssr.id,
             id: sr.id
-          }
+          }, xhr: true
 
           expect(EpicQueue.count).to eq(1)
           expect(EpicQueue.first.protocol_id).to eq(protocol.id)
@@ -143,8 +143,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
           setup_valid_study_answers(protocol)
 
           # We have a user, and service_provider so we send 2 emails
-          xhr :get, :confirmation, {
-            sub_service_request_id: ssr.id,id: sr.id}
+          get :confirmation, params: {
+            sub_service_request_id: ssr.id,
+            id: sr.id
+          }, xhr: true
 
           expect(Delayed::Backend::ActiveRecord::Job.count).to eq(2)
         end
@@ -165,9 +167,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
         time                         = Time.parse('2016-06-01 12:34:56')
 
         Timecop.freeze(time) do
-          xhr :get, :confirmation, {
+          get :confirmation, params: {
             id: sr.id
-          }
+          }, xhr: true
           expect(sr.reload.submitted_at).to eq(time)
         end
       end
@@ -183,9 +185,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
         session[:identity_id]        = logged_in_user.id
 
-        xhr :get, :confirmation, {
+        get :confirmation, params: {
           id: sr.id
-        }
+        }, xhr: true
 
         expect(sr.reload.status).to eq('submitted')
         expect(ssr.reload.nursing_nutrition_approved).to eq(false)
@@ -208,9 +210,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
           stub_const("QUEUE_EPIC", true)
           setup_valid_study_answers(protocol)
 
-          xhr :get, :confirmation, {
+          get :confirmation, params: {
             id: sr.id
-          }
+          }, xhr: true
 
           expect(EpicQueue.count).to eq(1)
           expect(EpicQueue.first.protocol_id).to eq(protocol.id)
@@ -232,9 +234,11 @@ RSpec.describe ServiceRequestsController, type: :controller do
           setup_valid_study_answers(protocol)
 
           # We have an admin, user, and service_provider so we send 3 emails
-          xhr :get, :confirmation, {
+          get :confirmation, params: {
             sub_service_request_id: ssr.id,
-            id: sr.id }
+            id: sr.id 
+            }, xhr: true
+            
           expect(Delayed::Backend::ActiveRecord::Job.count).to eq(3)
         end
       end
@@ -250,9 +254,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       session[:identity_id]        = logged_in_user.id
 
-      xhr :get, :confirmation, {
+      get :confirmation, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:confirmation)
     end
@@ -267,9 +271,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       session[:identity_id]        = logged_in_user.id
 
-      xhr :get, :confirmation, {
+      get :confirmation, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

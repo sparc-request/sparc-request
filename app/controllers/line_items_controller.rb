@@ -26,15 +26,19 @@ class LineItemsController < ApplicationController
 
   # Used for x-editable update and validations
   def update
-    @line_item        = LineItem.find( params[:id] )
-    @service_request  = ServiceRequest.find( params[:srid] )
+    line_item = LineItem.find(params[:id])
 
-    if @line_item.update_attributes(line_item_params)
-      @service_request.update_attributes(status: 'draft')
-      @line_item.sub_service_request.update_attributes(status: 'draft')
-      render nothing: true
+    if line_item.update_attributes(line_item_params)
+      @service_request.update_attribute(:status, 'draft')
+      line_item.sub_service_request.update_attribute(:status, 'draft')
+      
+      render json: {
+        total_per_study: render_to_string(partial: 'service_calendars/master_calendar/otf/total_per_study', locals: { line_item: line_item }),
+        max_total_direct: render_to_string(partial: 'service_calendars/master_calendar/otf/totals/max_total_direct_one_time_fee', locals: { service_request: @service_request }),
+        total_costs: render_to_string(partial: 'service_calendars/master_calendar/otf/totals/total_cost_per_study', locals: { service_request: @service_request })
+      }
     else
-      render json: @line_item.errors, status: :unprocessable_entity
+      render json: line_item.errors, status: :unprocessable_entity
     end
   end
 

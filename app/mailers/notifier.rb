@@ -34,8 +34,7 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :cc => cc, :from => @identity.email, :subject => subject)
   end
 
-  def notify_user(project_role, service_request, ssr, approval, user_current, audit_report=nil, individual_ssr=false, deleted_ssrs=nil)
-
+  def notify_user(project_role, service_request, ssr, approval, user_current, audit_report=nil, individual_ssr=false, deleted_ssrs=nil, admin_delete_ssr=false)
     @protocol = service_request.protocol
     @service_request = service_request
     @deleted_ssrs = deleted_ssrs
@@ -47,27 +46,25 @@ class Notifier < ActionMailer::Base
 
     xls = controller.render_to_string action: 'show', formats: [:xlsx]
     ### END ATTACHMENTS ###
-    
-    if audit_report.present?
-      @status = 'request_amendment'
-    elsif individual_ssr
-      @status = ssr.status
-    else
-      @status = @service_request.status
-    end
-
+    @status = status(admin_delete_ssr, audit_report.present?, individual_ssr, ssr, @service_request)
     @notes = []
     @identity = project_role.identity
     @role = project_role.role
     @full_name = @identity.full_name
     @audit_report = audit_report
 
-    @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
-
+    @service_requester_id = service_requester_id(@service_request, deleted_ssrs)
     @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
-    @ssrs_to_be_displayed =  individual_ssr ? [ssr] : @service_request.sub_service_requests
 
-    attachments["service_request_#{@protocol.id}.xlsx"] = xls
+    if admin_delete_ssr
+      @ssrs_to_be_displayed = [deleted_ssrs]
+    else
+      @ssrs_to_be_displayed = individual_ssr ? [ssr] : @service_request.sub_service_requests
+    end
+
+    if !admin_delete_ssr
+      attachments["service_request_#{@protocol.id}.xlsx"] = xls
+    end
 
     # only send these to the correct person in the production env
     email = @identity.email
@@ -96,7 +93,7 @@ class Notifier < ActionMailer::Base
     @role = 'none'
     @full_name = submission_email_address
 
-    @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
+    @service_requester_id = service_requester_id(@service_request, ssr)
     @ssrs_to_be_displayed = [ssr]
 
     @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
@@ -124,8 +121,7 @@ class Notifier < ActionMailer::Base
     @role = 'none'
     @full_name = service_provider.identity.full_name
 
-    @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
-
+    @service_requester_id = service_requester_id(@service_request, ssr)
     @audit_report = audit_report
 
     @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
@@ -300,5 +296,9 @@ class Notifier < ActionMailer::Base
       status = service_request.status
     end
     status
+  end
+
+  def service_requester_id(service_request, deleted_ssr)
+    service_request.sub_service_requests.first.present? ? service_request.sub_service_requests.first.service_requester_id : AuditRecovery.where(auditable_id: deleted_ssr.id, auditable_type: 'SubServiceRequest', action: 'destroy').first.audited_changes['service_requester_id']
   end
 end

@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe "VisitGroup" do
+RSpec.describe VisitGroup, type: :model do
 
   let_there_be_lane
   let_there_be_j

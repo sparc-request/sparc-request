@@ -24,7 +24,7 @@
         = t(:calendars)[:otf][:header]
     - unless review
       .pull-right
-        = render 'service_calendars/master_calendar/otf/otf_freeze_header_button', service_request: service_request, scroll_true: @scroll_true
+        = render 'service_calendars/master_calendar/otf/otf_freeze_header_button', service_request: service_request, sub_service_request: sub_service_request, merged: merged, statuses_hidden: statuses_hidden, scroll_true: @scroll_true
     .clearfix
   %table.table.table-bordered{ class: @scroll_true ? "scrolling-table" : "non-scrolling-table" }
     %thead{ class: @scroll_true ? "scrolling-thead" : "" }

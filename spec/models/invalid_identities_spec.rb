@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe InvalidIdentities do
+RSpec.describe InvalidIdentities, type: :model do
   describe '#remove_from_db' do
     it 'should delete identities if they meet requirements for deletion' do
       identity = create(

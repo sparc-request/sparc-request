@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class AddDefaultToVisitQuantity < ActiveRecord::Migration
+class AddDefaultToVisitQuantity < ActiveRecord::Migration[4.2]
   def change
     change_column :visits, :quantity, :integer, :default => 0
     change_column :visits, :research_billing_qty, :integer, :default => 0

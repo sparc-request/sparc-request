@@ -21,7 +21,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Payment do
+RSpec.describe Payment, type: :model do
   it{ should validate_presence_of :date_submitted }
   it{ should validate_numericality_of :amount_invoiced }
   it{ should validate_numericality_of :amount_received }

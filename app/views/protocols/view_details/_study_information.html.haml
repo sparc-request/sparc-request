@@ -40,12 +40,14 @@
             = t(:protocols)[:studies][:information][:short_title]
           .col-lg-8
             = protocol.short_title
+            = display_rmid_validated_protocol(protocol, t('protocols.summary.rmid_short_title'))
       %tr.row
         %td
           %label.col-lg-4
             = t(:protocols)[:studies][:information][:title]
           .col-lg-8
             = protocol.title
+            = display_rmid_validated_protocol(protocol, t('protocols.summary.rmid_title'))
       %tr.row
         %td
           %label.col-lg-4
@@ -111,20 +113,20 @@
             .col-lg-8
               = protocol.selected_for_epic ? t(:constants)[:yes_select] : t(:constants)[:no_select]
 
-      - if protocol.display_answers.any?{ |as| display_study_type_question?(protocol, as) }
-        / Epic Questions
-        %tr.row
-          %td.row
-            %table.table.table-bordered
-              %thead.default-header
-                %th
-                  %h5.col-lg-12
-                    %strong
+      - if display_readonly_study_type_questions?(protocol)
+        - if protocol.display_answers{ |as| display_study_type_question?(protocol, as) }
+          %tr.row
+            %td.row
+              %table.table.table-bordered
+                %thead.default-header
+                  %th
+                    %h5.col-lg-12
+                      %strong{ data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' }, title: t(:protocols)[:tooltips][:study_type_questions] }
                       = t(:protocols)[:studies][:information][:study_type_questions]
-              - protocol.display_answers.each do |answer|
-                - if answer.study_type_question.study_type_question_group.active && protocol.active? && display_study_type_question?(protocol, answer)
-                  = render partial: 'protocols/view_details/epic_questions_answers', locals: { answer: answer }
-                - elsif !answer.study_type_question.study_type_question_group.active && !protocol.active? && display_study_type_question?(protocol, answer)
-                  = render partial: 'protocols/view_details/epic_questions_answers', locals: { answer: answer }
-            - if USE_EPIC && protocol.selected_for_epic
-              = render partial: 'protocols/view_details/study_type_note', locals: { protocol: protocol }         
+                - protocol.display_answers.each do |answer|
+                  - if answer.study_type_question.study_type_question_group.active && protocol.active? && display_study_type_question?(protocol, answer, true)
+                    = render partial: 'protocols/view_details/epic_questions_answers', locals: { answer: answer }
+                  - elsif !answer.study_type_question.study_type_question_group.active && !protocol.active? && display_study_type_question?(protocol, answer, true)
+                    = render partial: 'protocols/view_details/epic_questions_answers', locals: { answer: answer }
+              - if USE_EPIC && protocol.selected_for_epic
+                = render partial: 'protocols/view_details/study_type_note', locals: { protocol: protocol }         

@@ -1,4 +1,4 @@
-class IncreaseSurveyDescriptionLengths < ActiveRecord::Migration[5.0]
+class IncreaseSurveyDescriptionLengths < ActiveRecord::Migration[4.2][5.0]
   def up
     change_column :surveys, :description, :text
     change_column :sections, :description, :text

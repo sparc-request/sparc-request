@@ -24,6 +24,7 @@ en:
   ###########
   actions:
     add: "Add"
+    adding: "Adding..."
     back: "Back"
     approve: "Approve"
     cancel: "Cancel"
@@ -70,7 +71,7 @@ en:
       human_subjects_info:
         nct_number: "The NCT #"
       identity:
-        ldap_uid: "Username"
+        ldap_uid: "Login"
         first_name: "First Name"
         last_name: "Last Name"
         password_confirmation: "Password Confirmation"
@@ -335,6 +336,13 @@ en:
       phone_href: "tel:843-792-8300"
       phone_display: "Call: 843-792-8300"
 
+  ##############
+  # IDENTITIES #
+  ##############
+  identities:
+    approved: "Account Approved"
+    disapproved: "Account Disapproved"
+
   ###############
   # IE7 WARNING #
   ###############
@@ -386,6 +394,9 @@ en:
       potential_source: "Potential Funding Source:"
       research_master_id: "Research Master ID:"
       na_research_master_id: 'Not Available'
+      rmid_validated: "Updated to corresponding Research Master ID %{title}"
+      rmid_short_title: "Short Title"
+      rmid_title: "Title"
     view_details:
       button: "View %{protocol_type} Details"
       header: "%{protocol_type} Details: #%{protocol_id}"
@@ -501,7 +512,7 @@ en:
       submission_type: "Select a Submission Type"
     tooltips:
       epic: 'Defines whether record will interface to Epic EMR upon submission'
-      study_type_questions: 'Information needed to determine confidentiality of patients/protocols in Epic'
+      study_type_questions: 'Information needed to determine confidentiality of patients/protocols'
       nct_number: 'Clinicaltrials.gov Registry Number'
       pro_number: 'Institutional Review Board (IRB) Unique Identifier'
       ind_number: 'Investigational New Drug (IND) Number'
@@ -843,6 +854,7 @@ en:
     disabled_all_services: "Disable All Services"
     disabled_at: "Disabled at: %{disabled_parent}"
     eap_id: 'EAP ID'
+    editable_statuses: 'Editable Statuses'
     enable_all_services: "Enable All Services"
     epic_info: "Epic Interface"
     errors: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
@@ -896,7 +908,7 @@ en:
     otf_quantity_minimum: "Quantity Minimum"
     otf_unit_type: "Unit Type (weeks, days, samples, etc.)"
     other_rate: "Other Rate"
-    per_patient: "Per Patient"
+    per_patient: "Clinical Service"
     quantity_type: "Quantity Type (hours, each, slides, etc.)"
     rate_disclaimer: "*IF N/A, NO PRICING SET-UP IS DEFINED FOR THE CURRENT DATES"
     rates: "Rates"

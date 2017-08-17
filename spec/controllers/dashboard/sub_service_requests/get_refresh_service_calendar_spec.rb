@@ -40,7 +40,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
         before :each do
           create(:super_user, identity: @logged_in_user, organization: @organization)
 
-          xhr :get, :refresh_service_calendar, id: @sub_service_request.id, format: :js
+          get :refresh_service_calendar, params: { id: @sub_service_request.id, format: :js }, xhr: true
         end
 
         it { is_expected.to render_template "dashboard/sub_service_requests/refresh_service_calendar" }
@@ -49,7 +49,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
       context 'user is not authorized admin on SSR' do
         before :each do
-          xhr :get, :refresh_service_calendar, id: @sub_service_request.id, format: :js
+          get :refresh_service_calendar, params: { id: @sub_service_request.id, format: :js }, xhr: true
         end
 
         it { is_expected.to render_template "service_requests/_authorization_error" }
@@ -62,7 +62,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
       before :each do
         create(:super_user, identity: @logged_in_user, organization: @organization)
 
-        xhr :get, :refresh_service_calendar, id: @sub_service_request.id, format: :js
+        get :refresh_service_calendar, params: { id: @sub_service_request.id, format: :js }, xhr: true
       end
 
       it 'should assign instance variables' do
@@ -82,7 +82,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
       context 'params[:arm_id] assigned' do
         before :each do
-          xhr :get, :refresh_service_calendar, id: @sub_service_request.id, arm_id: @arm.id, format: :js
+          get :refresh_service_calendar, params: { id: @sub_service_request.id, arm_id: @arm.id, format: :js }, xhr: true
         end
 
         it 'should be assigned' do
@@ -95,7 +95,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
       context 'params[:arm_id] not assigned' do
         before :each do
-          xhr :get, :refresh_service_calendar, id: @sub_service_request.id, format: :js
+          get :refresh_service_calendar, params: { id: @sub_service_request.id, format: :js }, xhr: true
         end
 
         it 'should not be assigned' do
@@ -114,7 +114,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
       context 'params[:portal] assigned' do
         before :each do
-          xhr :get, :refresh_service_calendar, id: @sub_service_request.id, portal: 'true', format: :js
+          get :refresh_service_calendar, params: { id: @sub_service_request.id, portal: 'true', format: :js }, xhr: true
         end
 
         it 'should be assigned' do
@@ -127,7 +127,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
       context 'params[:portal] not assigned' do
         before :each do
-          xhr :get, :refresh_service_calendar, id: @sub_service_request.id, format: :js
+          get :refresh_service_calendar, params: { id: @sub_service_request.id, format: :js }, xhr: true
         end
 
         it 'should not be assigned' do
@@ -146,7 +146,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
       context '@portal == \'true\'' do
         before :each do
-          xhr :get, :refresh_service_calendar, id: @sub_service_request.id, portal: 'true', format: :js
+          get :refresh_service_calendar, params: { id: @sub_service_request.id, portal: 'true', format: :js }, xhr: true
         end
 
         it 'should be \'default_calendar\'' do
@@ -159,7 +159,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
       context '@portal != \'true\'' do
         before :each do
-          xhr :get, :refresh_service_calendar, id: @sub_service_request.id, format: :js
+          get :refresh_service_calendar, params: { id: @sub_service_request.id, format: :js }, xhr: true
         end
 
         it 'should be \'red-provider\'' do
@@ -178,7 +178,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
       context 'session[:service_calendar_pages] not assigned' do
         before :each do
-          xhr :get, :refresh_service_calendar, id: @sub_service_request.id, format: :js
+          get :refresh_service_calendar, params: { id: @sub_service_request.id, format: :js }, xhr: true
         end
 
         it 'should set the page to 1 for all arms' do
@@ -192,7 +192,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
       context 'session[:service_calendar_pages] is assigned' do
         before :each do
           session[:service_calendar_pages] = {}
-          xhr :get, :refresh_service_calendar, id: @sub_service_request.id, arm_id: @arm.id, page: 1, pages: { @arm.id => 9 }, format: :js
+          get :refresh_service_calendar, params: { id: @sub_service_request.id, arm_id: @arm.id, page: 1, pages: { @arm.id => 9 }, format: :js }, xhr: true
         end
 
         it 'should set corresponding page for all arms' do
@@ -212,7 +212,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
       context 'params[:pages] assigned' do
         before :each do
-          xhr :get, :refresh_service_calendar, id: @sub_service_request.id, pages: { "1" => "2" }, format: :js
+          get :refresh_service_calendar, params: { id: @sub_service_request.id, pages: { "1" => "2" }, format: :js }, xhr: true
         end
 
         it 'should be assigned' do
@@ -225,7 +225,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
       context 'params[:pages] not assigned' do
         before :each do
-          xhr :get, :refresh_service_calendar, id: @sub_service_request.id, format: :js
+          get :refresh_service_calendar, params: { id: @sub_service_request.id, format: :js }, xhr: true
         end
 
         it 'should not be assigned' do
@@ -238,7 +238,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
       context 'params[:arm_id] and params[:page] assigned' do
         before :each do
-          xhr :get, :refresh_service_calendar, id: @sub_service_request.id, arm_id: @arm.id, page: 1, pages: { @arm.id => 9 }, format: :js
+          get :refresh_service_calendar, params: { id: @sub_service_request.id, arm_id: @arm.id, page: 1, pages: { @arm.id => 9 }, format: :js }, xhr: true
         end
 
         it 'should be assigned' do

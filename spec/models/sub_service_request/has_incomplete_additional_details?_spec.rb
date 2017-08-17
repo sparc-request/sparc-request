@@ -39,7 +39,7 @@ RSpec.describe LineItem, type: :model do
 
   context 'protocol does not have incomplete additional details' do
     it 'should return false' do
-      create(:submission, identity: logged_in_user, protocol: @protocol, line_item: @li, questionnaire: @que)
+      create(:submission, identity: logged_in_user, protocol: @protocol, sub_service_request: @ssr, questionnaire: @que)
       
       expect(@ssr.has_incomplete_additional_details?).to eq(false)
     end

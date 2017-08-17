@@ -63,6 +63,18 @@
               %th= t(:organization_form)[:split_notify] #not present in institutions
               %td= f.check_box :process_ssrs
 
+          - if @organization.process_ssrs?
+            %tr
+              %th
+                = t(:additional_details)[:label]
+              %td
+                - if @organization.questionnaires.active.present?
+                  = link_to "#{@organization.questionnaires.active.first.name}(active)", additional_details_questionnaires_path(questionable_id: @organization.id, questionable_type: 'Organization')
+                - elsif @organization.questionnaires.present?
+                  = link_to "#{@organization.questionnaires.first.name}(inactive)", additional_details_questionnaires_path(questionable_id: @organization.id, questionable_type: 'Organization')
+                - else
+                  = link_to t(:additional_details)[:add], additional_details_questionnaires_path(questionable_id: @organization.id, questionable_type: 'Organization')
+
           %tr
             %th= t(:organization_form)[:disabled]
             %td

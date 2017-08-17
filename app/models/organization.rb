@@ -31,6 +31,8 @@ class Organization < ApplicationRecord
   has_many :pricing_setups, :dependent => :destroy
   has_one :subsidy_map, :dependent => :destroy
 
+  has_many :questionnaires, as: :questionable, dependent: :destroy
+
   has_many :super_users, :dependent => :destroy
   has_many :identities, :through => :super_users
 

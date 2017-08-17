@@ -419,10 +419,19 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def has_incomplete_additional_details?
+    has_incomplete_additional_details_services? || has_incomplete_additional_details_organization?
+  end
+
+  def has_incomplete_additional_details_services?
     !organization.services.detect do |service|
       questionnaire = service.questionnaires.active.first
       completed_questionnaire?(questionnaire) if questionnaire
     end
+  end
+
+  def has_incomplete_additional_details_organization?
+    questionnaire = organization.questionnaires.active.first
+    !completed_questionnaire?(questionnaire) if questionnaire
   end
 
   ##########################

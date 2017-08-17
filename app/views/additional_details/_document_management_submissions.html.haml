@@ -21,49 +21,8 @@
   %h3
     %span{ title: t(:proper)[:document_management][:tooltips][:additional_details], data: { toggle: 'tooltip', delay: '{"show":"500"}' } }
       = t(:proper)[:document_management][:additional_details_notice]
-%table.table.table-striped.table-bordered.table-hover
-  %thead.primary-header.document-submissions-header
-    %tr
-      %th.text-center
-        = t(:additional_details)[:service_name]
-      %th.text-center
-        = t(:additional_details)[:complete_or_view]
-      %th.text-center
-        = t(:additional_details)[:completed]
-      %th.text-center
-        = t(:additional_details)[:edit_questionnaire]
-      %th.text-center
-        = t(:additional_details)[:delete_questionnaire]
-  %tbody
-    - if service_request.additional_detail_services.present?
-      - service_request.line_items.each do |line_item|
-        - service = Service.find(line_item.service_id)
-        - questionnaire = service.questionnaires.active.first
-        - ssr = line_item.sub_service_request
-        - if service.questionnaires.active.present?
-          %tr
-            %td
-              = service.name
-            %td
-              .text-center
-                - if ssr.completed_questionnaire?(questionnaire)
-                  = link_to additional_details_submission_path(ssr.find_submission(questionnaire)),
-                    remote: true, class: 'btn btn-primary' do
-                    %span.glyphicon.glyphicon-search
-                - else
-                  = link_to new_additional_details_submission_path(questionnaire_id: service.questionnaires.active.first.id, protocol_id: @service_request.protocol_id, sr_id: @service_request.id, ssr_id: ssr.id), remote: true, class: 'btn btn-primary' do
-                    = t(:additional_details)[:document_complete_details]
-                    %span.glyphicon.glyphicon-modal-window
-            %td
-              .text-center
-                = ssr.completed_questionnaire?(questionnaire) ? "True" : "False"
-            %td
-              .text-center
-                - if ssr.completed_questionnaire?(questionnaire)
-                  = link_to edit_additional_details_submission_path(ssr.find_submission(questionnaire).id, sr_id: @service_request.id), remote: true, class: 'btn btn-warning' do
-                    %span.glyphicon.glyphicon-edit
-            %td
-              .text-center
-                - if ssr.completed_questionnaire?(questionnaire)
-                  = link_to "javascript:void(0);", class: 'btn btn-danger delete-submission', data: { id: ssr.find_submission(questionnaire).id, service_id: service.id, sr_id: @service_request.id, protocol_id: @service_request.protocol_id, ssr_id: ssr.id } do
-                    %span.glyphicon.glyphicon-remove
+- if service_request.additional_detail_services.present?
+  = render "additional_details/document_management_submissions_table", service_request: service_request, containers: service_request.line_items, questionable_type: 'Service'
+
+- if service_request.additional_detail_organizations.present?
+  = render "additional_details/document_management_submissions_table", service_request: service_request, containers: service_request.sub_service_requests, questionable_type: 'Organization'

@@ -40,7 +40,7 @@ class AdditionalDetails::QuestionnairesController < ApplicationController
     @questionnaire = @questionable.questionnaires.new(questionnaire_params)
     
     if @questionnaire.save
-      redirect_to additional_details_questionnaires_path(questionable_id: @questionable.id, questionable_type: @questionable.class.name)
+      redirect_to additional_details_questionnaires_path(questionable_id: @questionable.id, questionable_type: @questionable.class.base_class.name)
     else
       render :new
     end
@@ -50,7 +50,7 @@ class AdditionalDetails::QuestionnairesController < ApplicationController
     @questionnaires = @questionable.questionnaires
     if @questionnaire.update(questionnaire_params)
       respond_to do |format|
-        format.html{ redirect_to additional_details_questionnaires_path(questionable_id: @questionable.id, questionable_type: @questionable.class.name) }
+        format.html{ redirect_to additional_details_questionnaires_path(questionable_id: @questionable.id, questionable_type: @questionable.class.base_class.name) }
         format.js{ render :update }
       end
     else
@@ -60,7 +60,7 @@ class AdditionalDetails::QuestionnairesController < ApplicationController
 
   def destroy
     @questionnaire.destroy
-    redirect_to additional_details_questionnaires_path(questionable_id: @questionable.id, questionable_type: @questionable.class.name)
+    redirect_to additional_details_questionnaires_path(questionable_id: @questionable.id, questionable_type: @questionable.class.base_class.name)
   end
 
   private

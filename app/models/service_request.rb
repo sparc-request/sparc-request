@@ -423,6 +423,10 @@ class ServiceRequest < ApplicationRecord
     services.joins(:questionnaires).where(questionnaires: { active: true })
   end
 
+  def additional_detail_organizations
+    sub_service_requests.joins(organization: [:questionnaires]).where(questionnaires: {active: true })
+  end
+
   # Returns the SSR ids that need an initial submission email, updates the SR status,
   # and updates the SSR status to new status if appropriate
   def update_status(new_status)

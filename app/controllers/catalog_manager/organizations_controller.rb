@@ -34,7 +34,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     end
 
     #TODO: Validate user can edit organization
-    render 'catalog_manager/organizations/show'
+    render 'catalog_manager/organizations/edit'
   end
 
   def update

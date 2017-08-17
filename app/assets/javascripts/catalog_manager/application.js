@@ -48,6 +48,7 @@
 //= require form_manager
 //= require form_fx_manager
 //= require twitter/typeahead.min
+//= require handlebars-v4.0.5
 //= require assert
 //= require ajax_handler
 //= require sweetalert.min

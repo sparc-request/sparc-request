@@ -359,7 +359,7 @@ class Organization < ApplicationRecord
   def get_available_statuses
     tmp_available_statuses = self.available_statuses.reject{|status| status.new_record?}
     statuses = []
-    if tmp_available_statuses.empty? || tmp_available_statuses.collect(&:status) == DEFAULT_STATUSES
+    if tmp_available_statuses.empty? || tmp_available_statuses.collect(&:status) == PermissibleValue.get_key_list('status', true)
       self.parents.each do |parent|
         if !parent.available_statuses.empty?
           statuses = PermissibleValue.get_hash('status').select{|k,v| parent.available_statuses.map(&:status).include? k}
@@ -414,7 +414,7 @@ class Organization < ApplicationRecord
   end
 
   def build_default_statuses
-    DEFAULT_STATUSES.each do |status|
+    PermissibleValue.get_key_list('status', true).each do |status|
       AvailableStatus.find_or_create_by(organization_id: self.id, status: status)
     end
   end

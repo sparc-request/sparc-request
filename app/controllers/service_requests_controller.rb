@@ -25,7 +25,7 @@ class ServiceRequestsController < ApplicationController
 
   before_action :initialize_service_request,      except: [:approve_changes, :get_help, :feedback]
   before_action :validate_step,                   only:   [:protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation, :save_and_exit]
-  before_action :setup_navigation,                only:   [:navigate, :protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
+  before_action :setup_navigation,                only:   [:navigate, :catalog, :protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
   before_action :authorize_identity,              except: [:approve_changes, :get_help, :feedback, :show]
   before_action :authenticate_identity!,          except: [:catalog, :add_service, :remove_service, :get_help, :feedback]
   before_action :authorize_protocol_edit_request, only:   [:catalog]
@@ -100,13 +100,8 @@ class ServiceRequestsController < ApplicationController
   end
 
   def service_subsidy
-    @has_subsidy          = @service_request.sub_service_requests.map(&:has_subsidy?).any?
-    @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
-
-    # this is only if the calendar totals page is not going to be used.
-    if @service_request.arms.blank?
-      @back = 'service_details'
-    end
+    @has_subsidy          = @sub_service_request ? @sub_service_request.has_subsidy? : @service_request.sub_service_requests.map(&:has_subsidy?).any?
+    @eligible_for_subsidy = @sub_service_request ? @sub_service_request.eligible_for_subsidy? : @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
 
     if !@has_subsidy && !@eligible_for_subsidy
       ssr_id_params = @sub_service_request ? "?sub_service_request_id=#{@sub_service_request.id}" : ""
@@ -372,10 +367,8 @@ class ServiceRequestsController < ApplicationController
     c = YAML.load_file(Rails.root.join('config', 'navigation.yml'))[@page]
     unless c.nil?
       @step_text   = c['step_text']
-      @step_number = c['step_number']
       @css_class   = c['css_class']
       @back        = c['back']
-      @catalog     = c['catalog']
       @forward     = c['forward']
     end
   end

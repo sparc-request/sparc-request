@@ -25,8 +25,8 @@
     = hidden_field_tag :location, ''
     = hidden_field_tag :validates, ''
     .form-group
-      %p.instructions
-        = t(:sr_confirmation)[:instructions]
+      %p.instructions.text-danger
+        = t(:proper)[:confirmation][:confirmation_warning]
     .form-group
       = render 'service_requests/confirmation/confirmation_details', service_request: @service_request
     - if USE_EPIC && !QUEUE_EPIC

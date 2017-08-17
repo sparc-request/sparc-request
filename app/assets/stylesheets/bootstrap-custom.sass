@@ -85,8 +85,24 @@
 
 
 
+// Text
+.text-danger
+  color: $sparc-red !important
+
+
+
 // Navs
 .nav-tabs
   .custom-tab.active
     [data-toggle='tab']
       background: $sparc-blue !important
+
+
+
+// Bootstrap Select
+.btn.dropdown-toggle:not(.btn-default):not(.btn-success):not(.btn-warning):not(.btn-danger):not(.btn-info)
+  background: $sparc-blue
+.btn.dropdown-toggle:not(.btn-default):not(.btn-success):not(.btn-warning):not(.btn-danger):not(.btn-info):hover
+  background: $sparc-blue-hover
+.btn.dropdown-toggle:not(.btn-default):not(.btn-success):not(.btn-warning):not(.btn-danger):not(.btn-info):focus
+  background: $sparc-blue-focus

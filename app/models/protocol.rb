@@ -33,7 +33,7 @@ class Protocol < ApplicationRecord
   has_many :project_roles,                dependent: :destroy
   has_one :primary_pi_role,               -> { where(role: 'primary-pi') }, class_name: "ProjectRole", dependent: :destroy
   has_many :identities,                   through: :project_roles
-  has_many :service_requests
+  has_many :service_requests,             dependent: :destroy
   has_many :services,                     through: :service_requests
   has_many :sub_service_requests
   has_many :line_items,                   through: :service_requests

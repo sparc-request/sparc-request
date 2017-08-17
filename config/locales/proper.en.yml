@@ -38,7 +38,7 @@ en:
     ##########
     footer:
       listserv: "Listserv"
-      listserv_subject: "SPARC Request Listserv"
+      listserv_subject: "SPARCRequest Listserv"
       sparc_blog: "Blog"
       sparc_blog_url: "https://sparcrequestblog.com/"
       sctr: "SCTR"

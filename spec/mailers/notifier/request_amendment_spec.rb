@@ -52,6 +52,10 @@ RSpec.describe Notifier do
             @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, identity, @sub_service_request, @report, false, true)
           end
 
+          it 'should display correct subject' do
+            expect(@mail).to have_subject("SPARCRequest Amendment Submitted (Protocol #{@protocol.id})")
+          end
+          
           # Expected service provider message is defined under request_amendment_intro
           it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
             request_amendment_intro(@mail)

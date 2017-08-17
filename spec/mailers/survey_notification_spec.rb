@@ -33,7 +33,7 @@ RSpec.describe SurveyNotification do
 
     #ensure that the subject is correct
     it 'should render the subject' do
-      expect(mail).to have_subject("System satisfaction survey completed in SPARCRequest")
+      expect(mail).to have_subject("System Satisfaction Survey Completed in SPARCRequest")
     end
 
     #ensure that the receiver is correct
@@ -63,7 +63,7 @@ RSpec.describe SurveyNotification do
 
     #ensure that the subject is correct
     it 'should render the subject' do
-      expect(mail).to have_subject("SPARCRequest Survey Notification")
+      expect(mail).to have_subject("SPARCRequest Survey Notification (Request #{ssr.display_id})")
     end
 
     #ensure that the receiver is correct
@@ -92,7 +92,7 @@ RSpec.describe SurveyNotification do
 
     #ensure that the subject is correct
     it 'should render the subject' do
-      expect(mail).to have_subject("SPARCRequest Survey Notification")
+      expect(mail).to have_subject("SPARCRequest Survey Notification (Request #{ssr.display_id})")
     end
 
     #ensure that the receiver is correct

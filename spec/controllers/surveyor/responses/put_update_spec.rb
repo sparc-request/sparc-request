@@ -25,35 +25,81 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
   let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
 
-  describe '#new' do
+  describe '#update' do
     before :each do
-      @survey = create(:survey, active: true)
-
-      get :new, params: { access_code: @survey.access_code }, xhr: true
+      @survey   = create(:survey)
+      @section  = create(:section, survey: @survey)
+      @question = create(:question, section: @section, required: true)
+      @resp = create(:response, survey: @survey)
     end
 
     it 'should call before_filter #authenticate_identity!' do
       expect(before_filters.include?(:authenticate_identity!)).to eq(true)
     end
 
-    it 'should assign @survey to the Survey' do
-      expect(assigns(:survey)).to eq(@survey)
+    context 'response is valid' do
+      it 'should update @response' do
+        expect {
+          put :update, params: {
+            id: @resp.id,
+            response: {
+              identity_id: logged_in_user.id,
+              survey_id: @survey.id,
+              question_responses_attributes: {
+                '0' => {
+                  required: 'true',
+                  question_id: @question.id,
+                  content: 'response'
+                }
+              }
+            }
+          }, xhr: true
+        }.to change{ QuestionResponse.count }.by(1)
+      end
     end
 
-    it 'should assign @response as a new Response of Survey' do
-      expect(assigns(:response)).to be_a_new(Response)
-      expect(assigns(:response).survey).to eq(@survey)
+    context 'response is invalid' do
+      it 'should assign @errors' do
+        put :update, params: {
+          id: @resp.id,
+          response: {
+            identity_id: logged_in_user.id,
+            survey_id: @survey.id,
+            question_responses_attributes: {
+              '0' => {
+                required: 'true',
+                question_id: @question.id
+              }
+            }
+          }
+        }, xhr: true
+
+        expect(assigns(:errors)).to eq(true)
+      end
     end
 
-    it 'should build question responses' do
-      expect(assigns(:response).question_responses).to be
+    it 'should render template' do
+      put :update, params: {
+        id: @resp.id,
+        response: {
+          identity_id: logged_in_user.id,
+          survey_id: @survey.id
+        }
+      }, xhr: true
+
+      expect(controller).to render_template(:update)
     end
 
-    it 'should assign @review to true' do
-      expect(assigns(:review)).to eq("true")
-    end
+    it 'should respond ok' do
+      put :update, params: {
+        id: @resp.id,
+        response: {
+          identity_id: logged_in_user.id,
+          survey_id: @survey.id
+        }
+      }, xhr: true
 
-    it { is_expected.to render_template(:new) }
-    it { is_expected.to respond_with(:ok) }
+      expect(controller).to respond_with(:ok)
+    end
   end
 end

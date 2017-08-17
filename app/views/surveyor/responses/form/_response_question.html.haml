@@ -23,8 +23,8 @@
     %hr
   = qr.hidden_field :required, value: question.required?
   = qr.hidden_field :question_id, value: question.id
-  .form-group
-    = qr.label :content, raw(question.content), class: question.required? ? "required" : ""
+  .form-group.question-label
+    = qr.label :content, raw(question.content), class: ['control-label text-left', question.required? ? "required" : ""]
   - unless question.description.blank?
     .form-group
       %p.question-description

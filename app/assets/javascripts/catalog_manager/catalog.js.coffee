@@ -44,13 +44,11 @@ $ ->
 ##############################################
 
 initialize_org_search = () ->
-  console.log($('#availability-button'))
-  console.log($('#availability-button').data('show-available-only'))
   services_bloodhound = new Bloodhound(
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     remote:
-      url: "/search/organizations?term=%QUERY&show_available_only=#{$('.availablility-button').data('show-available-only')}",
+      url: "/search/organizations?term=%QUERY&show_available_only=#{$('#availability-button').data('show-available-only')}",
       wildcard: '%QUERY'
   )
   services_bloodhound.initialize() # Initialize the Bloodhound suggestion engine

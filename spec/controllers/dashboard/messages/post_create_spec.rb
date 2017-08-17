@@ -30,8 +30,8 @@ RSpec.describe Dashboard::MessagesController do
         allow(@notification).to receive(:messages).and_return("MyMessages")
         allow(@notification).to receive(:set_read_by)
 
-        @to_identity = findable_stub(Identity) { build_stubbed(:identity) }
-        @from_identity = build_stubbed(:identity)
+        @to_identity = create(:identity)
+        @from_identity = create(:identity)
         @new_message_attr = {
           notification_id: @notification.id.to_s,
           to: @to_identity.id.to_s,

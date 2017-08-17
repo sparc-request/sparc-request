@@ -1,4 +1,4 @@
-$('.milestones-panel').html("<%= j render 'dashboard/protocols/milestone', protocol: @protocol %>")
+$('.milestones-panel').replaceWith("<%= j render 'dashboard/protocols/milestone', protocol: @protocol %>")
 $(".datetimepicker:not(.time)").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
 $('.datetimepicker.time').datetimepicker(format: 'hh:mm A', allowInputToggle: true)
 $(".selectpicker").selectpicker()

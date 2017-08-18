@@ -1,4 +1,4 @@
--# Copyright © 2011-2016 MUSC Foundation for Research Development
+-# Copyright © 2011-2017 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -23,12 +23,12 @@
       .col-sm-12.text-center.no-padding
         = index+1
       .col-sm-12.text-center.no-padding.likert
-        - if ['new', 'preview'].include?(action_name)
+        - if ['new', 'edit', 'preview'].include?(action_name)
           = qr.radio_button :content, option.content
         - else
-          = radio_button_tag :content_likert, '', qr.content == option.content, disabled: true
+          = radio_button_tag :content_likert, '', qr.object.content == option.content, disabled: true
       .col-sm-12.text-center.no-padding
-        - if ['new', 'preview'].include?(action_name)
+        - if ['new', 'edit', 'preview'].include?(action_name)
           = qr.label :content, option.content, class: "radio-inline option no-padding", data: { question_id: question.id, option_id: option.id }
         - else
           %label.radio-inline.option.no-padding

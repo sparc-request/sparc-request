@@ -56,7 +56,7 @@ gem 'pdfkit'
 gem 'prawn', '0.12.0'
 gem 'premailer-rails'
 gem 'rack-mini-profiler'
-gem 'rails', '~> 5.1', '>= 5.1.2'
+gem 'rails', '~> 5.1', '>= 5.1.3'
 gem 'rails-html-sanitizer'
 # Needed to used audited-activerecord w/ Rails 5
 gem "rails-observers", github: 'rails/rails-observers'

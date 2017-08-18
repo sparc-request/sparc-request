@@ -52,7 +52,7 @@ class ServiceRequestsController < ApplicationController
     when 'protocol'
       @service_request.group_valid?(:protocol)
     when 'service_details'
-      @service_request.protocol.update_attributes(details_params) if @service_request.protocol
+      @service_request.protocol.update_attributes(details_params) if @service_request.protocol && details_params
       @service_request.group_valid?(:service_details)
     when 'service_calendar'
       @service_request.group_valid?(:service_calendar)
@@ -263,17 +263,19 @@ class ServiceRequestsController < ApplicationController
 
   def details_params
     @details_params ||= begin
-      required_keys = params[:study] ? :study : :project
-      temp = params.require(required_keys).permit(:start_date, :end_date,
-        :recruitment_start_date, :recruitment_end_date).to_h
+      required_keys = params[:study] ? :study : params[:project] ? :project : nil
+      if required_keys.present?
+        temp = params.require(required_keys).permit(:start_date, :end_date,
+          :recruitment_start_date, :recruitment_end_date).to_h
 
-      # Finally, transform date attributes.
-      date_attrs = %w(start_date end_date recruitment_start_date recruitment_end_date)
-      temp.inject({}) do |h, (k, v)|
-        if date_attrs.include?(k) && v.present?
-          h.merge(k => Time.strptime(v, "%m/%d/%Y"))
-        else
-          h.merge(k => v)
+        # Finally, transform date attributes.
+        date_attrs = %w(start_date end_date recruitment_start_date recruitment_end_date)
+        temp.inject({}) do |h, (k, v)|
+          if date_attrs.include?(k) && v.present?
+            h.merge(k => Time.strptime(v, "%m/%d/%Y"))
+          else
+            h.merge(k => v)
+          end
         end
       end
     end

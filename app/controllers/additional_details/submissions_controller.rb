@@ -5,6 +5,7 @@ class AdditionalDetails::SubmissionsController < ApplicationController
 
   def index
     @questionnaire = Questionnaire.find(params[:questionnaire_id])
+    @questionable = @questionnaire.questionable
     @submissions = @questionnaire.submissions
   end
 

@@ -32,7 +32,7 @@
   %body{ class: "#{controller_name} #{action_name}" }
     = render 'additional_details/shared/navbar'
     %ol.breadcrumb
-      /= display_organization_tree(@questionnaire.questionable.organization)
+      = display_organization_tree(@questionable.class.base_class.name == 'Organization' ? @questionable : @questionable.organization)
     .container
       .flash
         = render "shared/flash"

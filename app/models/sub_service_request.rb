@@ -44,6 +44,7 @@ class SubServiceRequest < ApplicationRecord
   has_many :reports, :dependent => :destroy
   has_many :notifications, :dependent => :destroy
   has_many :subsidies
+  has_many :responses
   has_one :approved_subsidy, :dependent => :destroy
   has_one :pending_subsidy, :dependent => :destroy
 
@@ -418,6 +419,10 @@ class SubServiceRequest < ApplicationRecord
         SurveyNotification.service_survey(available_surveys, service_requester, self).deliver
       end
     end
+  end
+
+  def surveys_completed?
+    self.responses.all?(&:completed?)
   end
 
   ###############################

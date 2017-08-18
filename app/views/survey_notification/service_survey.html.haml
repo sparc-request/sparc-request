@@ -32,11 +32,11 @@
 %br
 
 %ul
-- @surveys.each do |survey|
+- @responses.each do |response|
   %li
-    = link_to survey.title, url_for(controller: '/surveyor/responses', action: :edit, only_path: false, id: Response.create(survey: survey, identity: @identity, sub_service_request: @ssr).id, format: :html), target: '_blank'
+    = link_to response.survey.title, url_for(controller: '/surveyor/responses', action: :edit, only_path: false, id: response.id, format: :html), target: '_blank'
 
-- if @surveys.map(&:access_code).include?("sctr-customer-satisfaction-survey")
+- if @surveys.pluck(:access_code).include?("sctr-customer-satisfaction-survey")
   #sctr-grant-citation
     %br
     = t(:surveyor)[:responses][:emails][:sctr_customer_satisfaction][:grant_reminder]

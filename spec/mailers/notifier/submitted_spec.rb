@@ -44,7 +44,7 @@ RSpec.describe Notifier do
         end
 
         it 'should display correct subject' do
-          expect(@mail).to have_subject("#{@protocol.id} - SPARCRequest service request")
+          expect(@mail).to have_subject("SPARCRequest Submission (Protocol #{@protocol.id})")
         end
         # Expected service provider message is defined under submitted_service_provider_and_admin_message
         it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do

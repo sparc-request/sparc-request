@@ -40,7 +40,7 @@ SparcRails::Application.routes.draw do
     resources :sections, only: [:create, :destroy]
     resources :questions, only: [:create, :destroy]
     resources :options, only: [:create, :destroy]
-    resources :responses, only: [:show, :new, :create] do
+    resources :responses, only: [:show, :new, :edit, :create, :update] do
       get :complete
     end
     resources :survey_updater, only: [:update]

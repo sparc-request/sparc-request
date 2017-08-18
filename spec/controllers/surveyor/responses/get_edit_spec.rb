@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,16 +18,43 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Response < ActiveRecord::Base
-  belongs_to :survey
-  belongs_to :identity
-  belongs_to :sub_service_request
-  
-  has_many :question_responses, dependent: :destroy
-  
-  accepts_nested_attributes_for :question_responses
+require 'rails_helper'
 
-  def completed?
-    self.question_responses.any?
+RSpec.describe Surveyor::ResponsesController, type: :controller do
+  stub_controller
+  let!(:before_filters) { find_before_filters }
+  let!(:logged_in_user) { create(:identity) }
+
+  describe '#edit' do
+    before :each do
+      @ssr      = create(:sub_service_request_without_validations, organization: create(:organization))
+      @survey   = create(:survey, active: true)
+      @resp     = create(:response, survey: @survey, sub_service_request: @ssr)
+
+      get :edit, params: { id: @resp.id }, xhr: true
+    end
+
+    it 'should call before_filter #authenticate_identity!' do
+      expect(before_filters.include?(:authenticate_identity!)).to eq(true)
+    end
+
+    it 'should assign @response to the response' do
+      expect(assigns(:response)).to eq(@resp)
+    end
+
+    it 'should build question responses' do
+      expect(@resp.question_responses).to be
+    end
+
+    it 'should assign @review to false' do
+      expect(assigns(:review)).to eq("false")
+    end
+
+    it 'should assign @sub_service_request' do
+      expect(assigns(:sub_service_request)).to eq(@ssr)
+    end
+
+    it { is_expected.to render_template(:edit) }
+    it { is_expected.to respond_with(:ok) }
   end
 end

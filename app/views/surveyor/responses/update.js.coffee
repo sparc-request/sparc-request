@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,17 +17,20 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-class Response < ActiveRecord::Base
-  belongs_to :survey
-  belongs_to :identity
-  belongs_to :sub_service_request
-  
-  has_many :question_responses, dependent: :destroy
-  
-  accepts_nested_attributes_for :question_responses
-
-  def completed?
-    self.question_responses.any?
-  end
-end
+<% if @errors %>
+<% @response.question_responses.each do |qr| %>
+<% if qr.errors.any? %>
+if !$(".question-<%=qr.question_id%> .question-label").hasClass('has-error')
+  $(".question-<%=qr.question_id%> .question-label").addClass('has-error')
+  <% qr.errors.full_messages.each do |message| %>
+  $(".question-<%=qr.question_id%> .question-label").append("<span class='help-block'><%= message %></span>")
+  <% end %>
+<% else %>
+$(".question-<%=qr.question_id%>").removeClass('has-error')
+$(".question-<%=qr.question_id%> .help-block").remove()
+<% end %>
+<% end %>
+<% @response.question_responses.destroy_all %>
+<% else %>
+window.location = "/surveyor/responses/<%=@response.id%>/complete"
+<% end %>

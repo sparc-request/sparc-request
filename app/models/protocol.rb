@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -33,7 +33,7 @@ class Protocol < ApplicationRecord
   has_many :project_roles,                dependent: :destroy
   has_one :primary_pi_role,               -> { where(role: 'primary-pi') }, class_name: "ProjectRole", dependent: :destroy
   has_many :identities,                   through: :project_roles
-  has_many :service_requests
+  has_many :service_requests,             dependent: :destroy
   has_many :services,                     through: :service_requests
   has_many :sub_service_requests
   has_many :line_items,                   through: :service_requests

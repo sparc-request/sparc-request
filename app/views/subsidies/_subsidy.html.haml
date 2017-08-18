@@ -20,7 +20,7 @@
 .panel.panel-primary
   .panel-heading
     %h3.panel-title
-      = sub_service_request.organization.name
+      = ssr_name_display(sub_service_request)
   .panel-body
     .approved-subsidy
       = render 'subsidies/approved_subsidy', subsidy: sub_service_request.approved_subsidy, admin: false

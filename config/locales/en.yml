@@ -607,7 +607,7 @@ en:
       email_invalid: "Email is invalid"
       zipcode_invalid: "Zipcode is invalid"
     service_requests:
-      line_items_missing: "No Services have been detected in your Cart. Please return to the Catalog and add Services before continuing"
+      line_items_missing: "You must add Services to your cart before continuing"
       protocol_missing: "You must create a Protocol before continuing"
       protocol_errors: "The selected Protocol has errors which must be fixed. Please edit the Protocol before continuing"
       arms_missing: "You must create Arms before proceeding to the Service Calendar"

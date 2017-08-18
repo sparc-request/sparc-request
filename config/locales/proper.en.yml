@@ -82,8 +82,8 @@ en:
     # PROTOCOL #
     ############
     protocol:
-      review_services_notice: "Review Services"
-      review_services_instructions: "Please review the SPARC Request Services you have selected"
+      review_services_notice: "Services"
+      review_services_instructions: "Please review the SPARCRequest Services you have selected"
       create_protocol_notice: "Create Protocol"
       create_protocol_instructions: "Create a Protocol and add all relevant information"
       review_protocol_notice: "Protocol Information"
@@ -98,10 +98,10 @@ en:
     # SERVICE DETAILS #
     ###################
     service_details:
-      enter_dates_notice: "Timeline"
-      enter_dates_instructions: "Used to generate applicable service fees"
+      enter_dates_notice: "Milestones"
+      enter_dates_instructions: "Used for Study/Project metric tracking"
       arm_information_notice: "Arm Information"
-      arm_information_instructions: "Used to build your Service Calendar"
+      arm_information_instructions: "Used to build your Calendar Structure"
       start_date: "Start Date"
       end_date: "End Date"
       recruitment_start: "Estimated Recruitment Start Date"
@@ -143,7 +143,7 @@ en:
     # DOCUMENT MANAGEMENT #
     #######################
     document_management:
-      documents_notice: "Shared Documents"
+      documents_notice: "Documents"
       notes_notice: "Notes"
       additional_details_notice: 'Forms'
       tooltips:
@@ -178,6 +178,7 @@ en:
     # CONFIRMATION #
     ################
     confirmation:
+      confirmation_warning: "Thank you for submitting your service request(s) through SPARCRequest. An email has been sent to each of your service providers and they should be contacting you soon. If you have any questions or concerns, please don't hesitate to contact the SUCCESS Center at 792-8300 or success@musc.edu."
       cost_estimate_warning: "You have successfully submitted a request to get a cost estimate. Emails have been submitted on your behalf and we will respond to your request shortly. Should you have any questions regarding your request, please contact the Service Providers listed below."
       service_requests_notice: "My Service Requests"
       download_request: "Download Service Request"
@@ -227,11 +228,13 @@ en:
     ##############
     navigation:
       steps:
-        step1: "STEP 1:<br />Review Services &<br />Assign Protocol"
-        step2: "STEP 2:<br />Enter Service<br />Details"
-        step3: "STEP 3:<br />Notes &<br />Documents"
-        step4: "STEP 4:<br />Review Your<br />Request"
-        step5: "STEP 5:<br />Submission<br />Confirmation"
+        step1: "STEP 1:<br/>Add/Update<br/>Services"
+        step2: "STEP 2:<br/>Services &<br/>Protocol Information"
+        step3: "STEP 3:<br/>Milestones &<br/>Calendar Structure"
+        step4: "STEP 4:<br/>Service<br/>Calendar"
+        step4a: "STEP 4a:<br/>Subsidy<br/>Information"
+        step5: "STEP 5:<br/>Documents,<br/>Notes & Forms"
+        step6: "STEP 6:<br/>Review Your<br/>Request"
       bottom:
         back: "← Go Back"
         save_as_draft: "Save as Draft"

@@ -85,21 +85,13 @@ module ServiceRequestsHelper
       remote: true, class: 'btn btn-default'
   end
 
-  def step_nav_button(text, color, link, url)
-    if link
-      link_to(
-        (content_tag(:div, raw(text), class: "btn step-text step-btn-#{color}")+
-        content_tag(:div, '', class: "right-arrow right-arrow-#{color}")),
-        url,
-        class: 'step-btn'
-      )
-    else
-      content_tag(:div,
-        (content_tag(:div, raw(text), class: "btn step-text step-btn-#{color}")+
-        content_tag(:div, '', class: "right-arrow right-arrow-#{color}")),
-        class: 'step-btn'
-      )
-    end
+  def step_nav_button(text, color, url)
+    link_to(
+      content_tag(:div, raw(text), class: "btn step-text")+
+      content_tag(:div, '', class: "right-arrow"),
+      url,
+      class: "step-btn step-btn-#{color}"
+    )
   end
 
   def display_ssr_id(sub_service_request)

@@ -19,12 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  $(document).on('mouseenter focus', 'a.step-btn', ->
-    $(this).children().addClass('hover')
-  ).on('mouseleave focusout', '.step-btn', ->
-    $(this).children().removeClass('hover')
-  )
-
   $(document).on 'click', '.step-btn', (event) -> 
     if $(this).data('clicked')
       event.preventDefault()

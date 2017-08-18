@@ -32,7 +32,6 @@ RSpec.describe 'User has questionnaires to complete', js: true do
     it 'should see the questionnaires' do
       within '.document-management-submissions' do
         expect(page).to have_content('Brain Removal')
-        save_and_open_screenshot
         expect(page).to have_content('Foot Stuff')
       end
     end

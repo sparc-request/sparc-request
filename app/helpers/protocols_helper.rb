@@ -51,12 +51,14 @@ module ProtocolsHelper
   end
 
   def display_rmid_validated_protocol(protocol, option)
-    if protocol.rmid_validated?
-      content_tag(
-        :h6,
-        t("protocols.summary.rmid_validated", title: option),
-        class: "text-success"
-      )
+    if RESEARCH_MASTER_ENABLED
+      if protocol.rmid_validated?
+        content_tag(
+          :h6,
+          t("protocols.summary.rmid_validated", title: option),
+          class: "text-success"
+        )
+      end
     end
   end
 

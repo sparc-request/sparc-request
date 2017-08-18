@@ -81,7 +81,7 @@ class AdditionalDetails::SubmissionsController < ApplicationController
       @submissions = @protocol.submissions
       @permission_to_edit = current_user.can_edit_protocol?(@protocol)
     else
-      @submissions = @submission.protocol.submissions
+      @submissions = @submission.questionnaire.submissions
     end
     if params[:ssr_id]
       @sub_service_request = SubServiceRequest.find(params[:ssr_id])

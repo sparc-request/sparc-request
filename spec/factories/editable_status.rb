@@ -21,6 +21,6 @@
 FactoryGirl.define do
 
   factory :editable_status do
-    status { AVAILABLE_STATUSES.keys.sample || 'active' }
+    status { [“ctrc_approved”, “administrative_review”, “approved”, “awaiting_pi_approval”, “complete”, “declined”, “draft”, “get_a_cost_estimate”, “invoiced”, “ctrc_review”, “committee_review”, “fulfillment_queue”, “in_process”, “on_hold”, “submitted”, “withdrawn”].sample }
   end
 end

@@ -24,8 +24,13 @@ RSpec.describe Dashboard::MessagesController do
   describe "POST #create" do
     context "params[:message][:body] not empty" do
       before(:each) do
+        ssr = build_stubbed(
+          :sub_service_request,
+          protocol: build_stubbed(:protocol),
+          organization: build_stubbed(:organization)
+        )
         @notification = findable_stub(Notification) do
-          build_stubbed(:notification)
+          build_stubbed(:notification, sub_service_request: ssr)
         end
         allow(@notification).to receive(:messages).and_return("MyMessages")
         allow(@notification).to receive(:set_read_by)
@@ -67,8 +72,13 @@ RSpec.describe Dashboard::MessagesController do
 
     context "params[:message][:body] empty" do
       before(:each) do
+        ssr = build_stubbed(
+          :sub_service_request,
+          protocol: build_stubbed(:protocol),
+          organization: build_stubbed(:organization)
+        )
         @notification = findable_stub(Notification) do
-          build_stubbed(:notification)
+          build_stubbed(:notification, sub_service_request: ssr)
         end
         allow(@notification).to receive(:messages).and_return("MyMessages")
 

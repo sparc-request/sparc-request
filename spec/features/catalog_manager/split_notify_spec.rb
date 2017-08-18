@@ -28,28 +28,31 @@ RSpec.describe 'as a user on catalog page', js: true do
   end
 
   context "Provider" do
-    scenario 'Status Options tab appears' do
+    scenario 'Status Options tab appears and questionnaire link is present' do
       when_user_checks_the_split_notify_checkbox_for_org('South Carolina Clinical and Translational Institute (SCTR)', '#provider_process_ssrs')
       then_the_user_should_see_the_status_options_tab
+      then_the_user_should_see_the_questionnaire_link
     end
 
-    scenario 'Status Options tab disappears' do
+    scenario 'Status Options tab and questionnaire link disappears' do
       when_user_checks_the_split_notify_checkbox_for_org('South Carolina Clinical and Translational Institute (SCTR)', '#provider_process_ssrs')
       when_user_unchecks_the_split_notify_checkbox_for_org('#provider_process_ssrs')
       then_the_user_should_not_see_the_status_options_tab
+      then_the_user_should_not_see_the_questionnaire_link
     end
   end
 
   context "Program" do
-    scenario 'Status Options tab appears' do
+    scenario 'Status Options tab appears and questionnaire link is present' do
       when_user_checks_the_split_notify_checkbox_for_org('Office of Biomedical Informatics', '#program_process_ssrs')
-      then_the_user_should_see_the_status_options_tab
+      then_the_user_should_see_the_questionnaire_link
     end
 
-    scenario 'Status Options tab disappears' do
+    scenario 'Status Options tab and questionnaire link disappears' do
       when_user_checks_the_split_notify_checkbox_for_org('Office of Biomedical Informatics', '#program_process_ssrs')
       when_user_unchecks_the_split_notify_checkbox_for_org('#program_process_ssrs')
       then_the_user_should_not_see_the_status_options_tab
+      then_the_user_should_not_see_the_questionnaire_link
     end
   end
 
@@ -74,5 +77,13 @@ RSpec.describe 'as a user on catalog page', js: true do
 
   def then_the_user_should_see_the_status_options_tab
     expect(page).to have_content "Status Options (Use default statuses below or click to create custom service request statuses)"
+  end
+
+  def then_the_user_should_see_the_questionnaire_link
+    expect(page).to have_selector "tr#questionnaires"
+  end
+
+  def then_the_user_should_not_see_the_questionnaire_link
+    expect(page).not_to have_selector "tr#questionnaires"
   end
 end

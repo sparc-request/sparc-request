@@ -20,11 +20,11 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User should see service questionnaire index', js: true do
+RSpec.describe 'User should see questionnaire index', js: true do
   let_there_be_lane
   fake_login_for_each_test
 
-  scenario 'successfully' do
+  scenario 'service' do
     service = create(:service, :with_ctrc_organization)
     questionnaire = create(:questionnaire,
                            :without_validations,
@@ -33,6 +33,19 @@ RSpec.describe 'User should see service questionnaire index', js: true do
     create(:item, questionnaire: questionnaire)
 
     visit additional_details_questionnaires_path(questionable_id: service.id, questionable_type: 'Service')
+
+    expect(page).to have_css 'tr td', text: questionnaire.name
+  end
+
+  scenario 'organization' do
+    org = create(:organization_without_validations)
+    questionnaire = create(:questionnaire,
+                           :without_validations,
+                           name: 'Awesome Questionnaire',
+                           questionable: org)
+    create(:item, questionnaire: questionnaire)
+
+    visit additional_details_questionnaires_path(questionable_id: org.id, questionable_type: 'Organization')
 
     expect(page).to have_css 'tr td', text: questionnaire.name
   end

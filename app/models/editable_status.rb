@@ -23,11 +23,11 @@ class EditableStatus < ApplicationRecord
 
   belongs_to :organization
 
-  validates :status, inclusion: { in: TYPES }, presence: true
+  validates :status, inclusion: { in: self.statuses }, presence: true
 
   attr_accessor :new
 
-  def self.types
+  def self.statuses
     PermissibleValue.get_key_list('status') << 'first_draft'
   end
 end

@@ -380,7 +380,7 @@ class Organization < ApplicationRecord
   end
 
   def setup_editable_statuses
-    EditableStatus.types.each do |status|
+    EditableStatus.statuses.each do |status|
       self.editable_statuses.build(status: status, new: true) unless self.editable_statuses.detect{ |es| es.status == status }
     end
   end
@@ -398,7 +398,7 @@ class Organization < ApplicationRecord
   private
 
   def create_past_statuses
-    EditableStatus.types.each do |status|
+    EditableStatus.statuses.each do |status|
       self.editable_statuses.create(status: status)
     end
   end

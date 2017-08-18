@@ -18,7 +18,7 @@ task status_recovery: :environment do
 
   approval_audits = AuditRecovery.where(auditable_type: 'Approval')
   approval_audits.each do |k, v|
-    if k['audited_changes']['sub_service_request_id'].to_i == recovered_ssr_id
+    if (k['audited_changes']['sub_service_request_id'].to_i == recovered_ssr_id) && (k['action'] == 'create')
       Approval.create(sub_service_request_id: destination_ssr_id, approval_date: k['audited_changes']['approval_date'],
                       approval_type: k['audited_changes']['approval_type'], identity_id: k['audited_changes']['identity_id'].to_i)
     end

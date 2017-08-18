@@ -37,7 +37,7 @@ class ReportingModule
 
   def records
     records ||= self.table.includes(self.includes)
-                    .joins(self.joins)
+                    .joins(self.joins(self.params))
                     .where(self.where(self.params))
                     .distinct(self.uniq)
                     .group(self.group)
@@ -48,10 +48,10 @@ class ReportingModule
   def includes
   end
 
-  def joins
+  def joins(args={})
   end
 
-  def where
+  def where(args={})
   end
 
   def uniq

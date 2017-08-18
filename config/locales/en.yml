@@ -61,6 +61,10 @@ en:
           attributes:
             content:
               blank: "Content can't be blank"
+        question_response:
+          attributes:
+            content:
+              blank: "has to be answered"
       messages:
         spoofed_media_type: "has format errors. Please re-save the file in a different format and try again."
     attributes:
@@ -84,7 +88,7 @@ en:
       question:
         content: "Question"
       question_response:
-        content: "Question"
+        content: "Required Question"
       visit:
         research_billing_qty: "Research Billing Quantity"
         insurance_billing_qty: "Insurance Billing Quantity"

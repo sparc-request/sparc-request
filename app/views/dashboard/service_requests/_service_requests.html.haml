@@ -17,6 +17,7 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 .panel.panel-default#service-requests-panel
   .panel-heading
     %h4.panel-title.pull-left
@@ -24,7 +25,7 @@
     .pull-right
       .export-consolidated-request
         .dropdown
-          %button.btn.btn-primary.btn-sm.dropdown-toggle{ type: 'button', data: { toggle: 'dropdown' } }
+          %button.btn.btn-primary.btn-sm.dropdown-toggle.view-consolidated{ data: { placement: 'top', delay: '{"show":"500"}', toggle: 'dropdown' }, title: t(:dashboard)[:protocols][:service_requests][:tooltips][:consolidated_request] }
             = t(:dashboard)[:protocols][:service_requests][:view_consolidated]
           %ul.dropdown-menu
             %li
@@ -32,7 +33,7 @@
             %li
               %a.view-full-calendar-button{ data: { protocol_id: protocol.id, statuses_hidden: %w(draft first_draft) } }= t(:dashboard)[:protocols][:service_requests][:consolidated_exclude_drafts]
         .dropdown
-          %button.btn.btn-primary.btn-sm.dropdown-toggle{ type: 'button', data: { protocol_id: protocol.id, toggle: 'dropdown' } }
+          %button.btn.btn-primary.btn-sm.dropdown-toggle.export-consolidated{ data: { protocol_id: protocol.id, toggle: 'dropdown', placement: 'top', delay: '{"show":"500"}' }, title: t(:dashboard)[:protocols][:service_requests][:tooltips][:export_consolidated_request] }
             = t(:dashboard)[:protocols][:service_requests][:export_consolidated]
           %ul.dropdown-menu
             %li
@@ -43,3 +44,7 @@
   .panel-body
     - protocol.service_requests.each do |sr|
       = render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, protocol: protocol, user: user, permission_to_edit: permission_to_edit, view_only: view_only, show_view_ssr_back: show_view_ssr_back
+
+:javascript
+  $('.view-consolidated').tooltip();
+  $('.export-consolidated').tooltip();

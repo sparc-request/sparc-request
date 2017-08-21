@@ -120,8 +120,12 @@ en:
     navbar:
       logged_in_as: "Logged in as "
       surveys: "Surveys"
-      epic_queue: "View Epic Queue"
+      epic_queue: "Epic Queue"
       messages: "All Notifications"
+      tooltips:
+        surveys: "Survey builder"
+        epic_queue: "View or edit protocols for Epic interface"
+        messages: "Access to correspondence"
 
     ###########
     #  NOTES  #
@@ -153,6 +157,10 @@ en:
         select: "Select User:"
         subject: "Subject"
         message: "Please enter message text here..."
+      tooltips:
+        table_button: "Ability to send correspondence to Service Providers or Authorized Users"
+        main_button: "Send SPARC system notification to an Authorized User or Service Provider"
+
 
 
     ######################
@@ -176,6 +184,9 @@ en:
         modal:
           header: "Choose a name for your search."
           name: "Name"
+      tooltips:
+        save: "Save current search"
+        reset: "Clear current search"
 
     ###############
     #  PROTOCOLS  #
@@ -189,15 +200,21 @@ en:
         cancel_edit_answer: 'Cancel Edit'
 
       table:
-        exporter: "Exporter"
+        export: "Export"
         header: "Protocols"
         new_protocol: "New Protocol"
         new_study: "New Study"
         new_project: "New Project"
         short_title: "Short Title"
-        id: "ID"
+        id: "Protocol ID"
         pis: "PI(s)"
         requests: Requests
+        tooltips:
+          protocol_id: "System generated from SPARCRequest"
+          short_title: "An abbreviated form of the title used to identify your study/project"
+          pi: "Principal Investigator(s)"
+          export: "Export displayed protocols to Excel"
+          requests: "Quick access to requests"
 
       documents:
         header: "Documents"
@@ -210,6 +227,9 @@ en:
         coverage_report: 'Coverage Analysis Report'
         consolidated_all: "All"
         consolidated_exclude_drafts: "Exclude Drafts"
+        tooltips:
+          consolidated_request: "Quick access to view all service requests"
+          export_consolidated_request: "Quick access to export all service requests to Excel"
       milestones:
         title: 'Milestones (Timeline)'
         start_date: "Start Date"
@@ -258,9 +278,16 @@ en:
         view: "View"
         edit: "Edit"
         admin_edit: "Admin Edit"
+        tooltips:
+          view: "Quick access to view services for selected provider"
+          edit: "Ability to change services for a selected provider (routes to SPARCRequest)"
+          admin: "Service Provider administrative access to track and manage services"
       additional_details:
         header: "Form Functionality"
         selectpicker: "Complete Form"
+      tooltips:
+        modify_request: "Allows Authorized User to add or edit services (routes to SPARCRequest)"
+        coverage_report: "Ability to export research and third-party payer information to Excel"
       view_ssr:
         documents:
           header: "Documents"
@@ -310,6 +337,8 @@ en:
       admin_rate:
         header: "Add Admin Rate"
         cost: "Cost:"
+      tooltips:
+        add_non_clinical_services: "Add Non-clinical services related to selected organization"
 
     ##########################
     #  SUB SERVICE REQUESTS  #
@@ -344,6 +373,10 @@ en:
             end_date: "Proposed End Date"
             arranged_date: "Consult Arranged Date"
             contacted_date: "Requester Contacted Date"
+          tooltips:
+            send_to_epic: "Push entire protocol to Epic Research EMR"
+            export_to_excel: "Generates spreadsheet with request information"
+            delete_request: "Deletes requested services and all associated information"
 
         study_schedule:
           header: "Clinical Services"
@@ -376,6 +409,10 @@ en:
             subsidy_cost: "Subsidy Cost"
             approved_by: "Approved By"
             date: "Date Approved"
+          tooltips:
+            status_history: "Status log of request"
+            approval_history: "Time stamp log of approvals"
+            subsidy_history: "Time stamp of approved subsidies"
 
         notifications:
           header: "Notifications"

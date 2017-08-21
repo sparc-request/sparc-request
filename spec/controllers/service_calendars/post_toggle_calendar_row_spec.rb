@@ -24,6 +24,7 @@ RSpec.describe ServiceCalendarsController do
   stub_controller
   let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
+  build_statuses
 
   describe '#toggle_calendar_row' do
     context 'check' do

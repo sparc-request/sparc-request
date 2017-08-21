@@ -24,6 +24,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
   stub_controller
   let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
+  build_statuses
 
   before(:each) do
     allow_any_instance_of(ServiceRequestsController).to receive(:previous_page).and_return('http://example.com')

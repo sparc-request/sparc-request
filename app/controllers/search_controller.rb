@@ -59,7 +59,9 @@ class SearchController < ApplicationController
 
   def organizations
     term = params[:term].strip
-    query_available = params[:show_available_only] == "false" ? " AND is_available = 1" : "" #the param name is the opposite of what is currently displayed
+    if params[:show_available_only] == 'false' #the param name is the opposite of what is currently displayed
+      query_available = " AND is_available = 1"
+    end
 
     results = Organization.where("(name LIKE ? OR abbreviation LIKE ?)#{query_available}", "%#{term}%", "%#{term}%") +
               Service.where("(name LIKE ? OR abbreviation LIKE ? OR cpt_code LIKE ?)#{query_available}", "%#{term}%", "%#{term}%", "%#{term}%")
@@ -70,7 +72,8 @@ class SearchController < ApplicationController
         abbreviation: org.abbreviation,
         type: org.class.to_s,
         text_color: "text-#{org.class.to_s.downcase}",
-        cpt_code: cpt_code_text(org)
+        cpt_code: cpt_code_text(org),
+        inactive_tag: inactive_text(org)
       }
     }
 
@@ -80,10 +83,10 @@ class SearchController < ApplicationController
   private
 
   def cpt_code_text(org)
-    if org.class == Service
-      "CPT code: #{org.cpt_code}"
-    else
-      ""
-    end
+    text = org.class == Service ? "CPT code: #{org.cpt_code}" : ""
+  end
+
+  def inactive_text(org)
+    text = org.is_available ? "" : "(Inactive)"
   end
 end

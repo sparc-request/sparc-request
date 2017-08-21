@@ -13,10 +13,10 @@
       %th.text-center
         = t(:additional_details)[:delete_questionnaire]
   %tbody
-    - containers.each do |container|
-      - questionable = questionable_type.constantize.find(container.read_attribute("#{questionable_type.downcase}_id"))
+    - objects_with_questionnaires.each do |obj|
+      - questionable = questionable_type.constantize.find(obj.read_attribute("#{questionable_type.downcase}_id"))
       - questionnaire = questionable.questionnaires.active.first
-      - ssr = (questionable_type == 'Service' ? container.sub_service_request : container)
+      - ssr = (questionable_type == 'Service' ? obj.sub_service_request : obj)
       - if questionable.questionnaires.active.present?
         %tr
           %td

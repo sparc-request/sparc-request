@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -39,7 +39,7 @@ SparcRails::Application.routes.draw do
     resources :sections, only: [:create, :destroy]
     resources :questions, only: [:create, :destroy]
     resources :options, only: [:create, :destroy]
-    resources :responses, only: [:show, :new, :create] do
+    resources :responses, only: [:show, :new, :edit, :create, :update] do
       get :complete
     end
     resources :survey_updater, only: [:update]
@@ -265,6 +265,7 @@ SparcRails::Application.routes.draw do
     resources :projects, controller: :protocols, except: [:destroy]
 
     resources :protocols, except: [:destroy] do
+      resource :milestones, only: [:update]
       resource :study_type_answers, only: [:edit]
       member do
         put :update_protocol_type

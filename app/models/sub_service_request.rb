@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -140,14 +140,11 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def one_time_fee_line_items
-    line_items = LineItem.where(:sub_service_request_id => self.id).includes(:service)
-    line_items.select {|li| li.service.one_time_fee}
+    self.line_items.joins(:service).where(services: { one_time_fee: true })
   end
 
   def per_patient_per_visit_line_items
-    line_items = LineItem.where(:sub_service_request_id => self.id).includes(:service)
-
-    line_items.select {|li| !li.service.one_time_fee}
+    self.line_items.joins(:service).where(services: { one_time_fee: false })
   end
 
   def has_one_time_fee_services?

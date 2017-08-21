@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -25,7 +25,7 @@ class ServiceRequestsController < ApplicationController
 
   before_action :initialize_service_request,      except: [:approve_changes, :get_help, :feedback]
   before_action :validate_step,                   only:   [:protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation, :save_and_exit]
-  before_action :setup_navigation,                only:   [:navigate, :protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
+  before_action :setup_navigation,                only:   [:navigate, :catalog, :protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
   before_action :authorize_identity,              except: [:approve_changes, :get_help, :feedback, :show]
   before_action :authenticate_identity!,          except: [:catalog, :add_service, :remove_service, :get_help, :feedback]
   before_action :authorize_protocol_edit_request, only:   [:catalog]
@@ -52,7 +52,7 @@ class ServiceRequestsController < ApplicationController
     when 'protocol'
       @service_request.group_valid?(:protocol)
     when 'service_details'
-      @service_request.protocol.update_attributes(details_params) if @service_request.protocol
+      @service_request.protocol.update_attributes(details_params) if @service_request.protocol && details_params
       @service_request.group_valid?(:service_details)
     when 'service_calendar'
       @service_request.group_valid?(:service_calendar)
@@ -100,13 +100,8 @@ class ServiceRequestsController < ApplicationController
   end
 
   def service_subsidy
-    @has_subsidy          = @service_request.sub_service_requests.map(&:has_subsidy?).any?
-    @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
-
-    # this is only if the calendar totals page is not going to be used.
-    if @service_request.arms.blank?
-      @back = 'service_details'
-    end
+    @has_subsidy          = @sub_service_request ? @sub_service_request.has_subsidy? : @service_request.sub_service_requests.map(&:has_subsidy?).any?
+    @eligible_for_subsidy = @sub_service_request ? @sub_service_request.eligible_for_subsidy? : @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
 
     if !@has_subsidy && !@eligible_for_subsidy
       ssr_id_params = @sub_service_request ? "?sub_service_request_id=#{@sub_service_request.id}" : ""
@@ -132,8 +127,8 @@ class ServiceRequestsController < ApplicationController
     @review       = true
     @portal       = false
     @admin        = false
-    @merged       = false
-    @consolidated = true
+    @merged       = true
+    @consolidated = false
 
     # Reset all the page numbers to 1 at the start of the review request
     # step.
@@ -198,62 +193,36 @@ class ServiceRequestsController < ApplicationController
       @duplicate_service = true
     else
       add_service.generate_new_service_request
-      @line_items_count     = @sub_service_request ? @sub_service_request.line_items.count : @service_request.line_items.count
+      @line_items_count     = (@sub_service_request || @service_request).line_items.count
       @sub_service_requests = @service_request.cart_sub_service_requests
     end
   end
 
   def remove_service
-    line_item   = @service_request.line_items.find( params[:line_item_id] )
-    line_items  = @sub_service_request ? @sub_service_request.line_items : @service_request.line_items
-    service     = line_item.service
-    ssr         = line_item.sub_service_request
+    line_item = @service_request.line_items.find(params[:line_item_id])
+    ssr       = line_item.sub_service_request
 
-    line_item_service_ids = @service_request.line_items.map(&:service_id)
+    if ssr.can_be_edited?
+      ssr.line_items.where(service: line_item.service.related_services).update_all(optional: true)
 
-    # look at related services and set them to optional
-    # TODO POTENTIAL ISSUE: what if another service has the same related service
-    service.related_services.each do |rs|
-      if line_item_service_ids.include? rs.id
-        @service_request.line_items.find_by_service_id(rs.id).update_attribute(:optional, true)
+      line_item.destroy
+
+      ssr.update_attribute(:status, 'draft') unless ssr.status == 'first_draft'
+      @service_request.reload
+
+      if ssr.line_items.empty?
+        NotifierLogic.new(@service_request, nil, current_user).ssr_deletion_emails(deleted_ssr: ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
+        ssr.destroy
       end
     end
 
-    line_items.where(service_id: service.id).each do |li|
-      if li.status != 'complete'
-        if ssr.can_be_edited? && ssr.status != 'first_draft'
-          ssr.update_attribute(:status, 'draft')
-        end
-        li.destroy
-      end
-    end
-
-    line_items.reload
-
     @service_request.reload
-    @page = previous_page
 
-    # Have the protocol clean up the arms
-    @service_request.protocol.arm_cleanup if @service_request.protocol
-
-    # clean up sub_service_requests
-    @service_request.reload
-    @service_request.previous_submitted_at = @service_request.submitted_at
-    @protocol = @service_request.protocol
-
-    #notify service providers and admin of a destroyed ssr upon deletion of ssr
-    if ssr.line_items.empty?
-      notifier_logic = NotifierLogic.new(@service_request, nil, current_user)
-      notifier_logic.ssr_deletion_emails(ssr, ssr_destroyed: true, request_amendment: false)
-      ssr.destroy
-    end
-
-    @service_request.reload
-    @line_items_count     = @sub_service_request ? @sub_service_request.line_items.count : @service_request.line_items.count
+    @line_items_count     = (@sub_service_request || @service_request).line_items.count
     @sub_service_requests = @service_request.cart_sub_service_requests
 
     respond_to do |format|
-      format.js {render layout: false}
+      format.js { render layout: false }
     end
   end
 
@@ -283,28 +252,25 @@ class ServiceRequestsController < ApplicationController
 
   private
 
-  def previous_page
-    # we need for pages other than the catalog
-    request.referrer.split('/').last
-  end
-
   def feedback_params
     params.require(:feedback).permit(:email, :message)
   end
 
   def details_params
     @details_params ||= begin
-      required_keys = params[:study] ? :study : :project
-      temp = params.require(required_keys).permit(:start_date, :end_date,
-        :recruitment_start_date, :recruitment_end_date).to_h
+      required_keys = params[:study] ? :study : params[:project] ? :project : nil
+      if required_keys.present?
+        temp = params.require(required_keys).permit(:start_date, :end_date,
+          :recruitment_start_date, :recruitment_end_date).to_h
 
-      # Finally, transform date attributes.
-      date_attrs = %w(start_date end_date recruitment_start_date recruitment_end_date)
-      temp.inject({}) do |h, (k, v)|
-        if date_attrs.include?(k) && v.present?
-          h.merge(k => Time.strptime(v, "%m/%d/%Y"))
-        else
-          h.merge(k => v)
+        # Finally, transform date attributes.
+        date_attrs = %w(start_date end_date recruitment_start_date recruitment_end_date)
+        temp.inject({}) do |h, (k, v)|
+          if date_attrs.include?(k) && v.present?
+            h.merge(k => Time.strptime(v, "%m/%d/%Y"))
+          else
+            h.merge(k => v)
+          end
         end
       end
     end
@@ -372,10 +338,8 @@ class ServiceRequestsController < ApplicationController
     c = YAML.load_file(Rails.root.join('config', 'navigation.yml'))[@page]
     unless c.nil?
       @step_text   = c['step_text']
-      @step_number = c['step_number']
       @css_class   = c['css_class']
       @back        = c['back']
-      @catalog     = c['catalog']
       @forward     = c['forward']
     end
   end

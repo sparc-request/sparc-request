@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -234,6 +234,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         :arms_attributes,
         :billing_business_manager_static_email,
         :brief_description,
+        :end_date,
         :federal_grant_code_id,
         :federal_grant_serial_number,
         :federal_grant_title,
@@ -259,6 +260,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         :short_title,
         :sponsor_name,
         {:study_phase_ids => []},
+        :start_date,
         :study_type_question_group_id,
         :title,
         :type,

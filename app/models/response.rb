@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -26,4 +26,8 @@ class Response < ActiveRecord::Base
   has_many :question_responses, dependent: :destroy
   
   accepts_nested_attributes_for :question_responses
+
+  def completed?
+    self.question_responses.any?
+  end
 end

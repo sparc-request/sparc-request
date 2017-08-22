@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -41,6 +41,9 @@ class Service < ApplicationRecord
   has_many :identities, :through => :service_providers
   has_many :questionnaires
   has_many :submissions
+  ## commented out to remove tags, but will likely be added in later ##
+  # has_many :taggings, through: :organization
+  # has_many :tags, through: :taggings
 
   # Services that this service depends on
   has_many :service_relations, :dependent => :destroy
@@ -65,7 +68,7 @@ class Service < ApplicationRecord
   ###############################################
 
   def humanized_status
-    self.is_available ? 'Available' : 'Unavailable'
+    self.is_available ? I18n.t(:reporting)[:service_pricing][:available] : I18n.t(:reporting)[:service_pricing][:unavailable]
   end
 
   def process_ssrs_organization

@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,9 +27,9 @@
 #   studies with either of the four services, Unassisted microCT usage,
 #   microCT scanning/analysis, Digital imaging and analysis, and
 #   Unassisted microscope imaging. They are located under the
-#   Mineralized Tissue Facility core. 
+#   Mineralized Tissue Facility core.
 #
-class CohrReport < Report
+class CohrReport < Reporting
   def self.description
     "uses PI, srid, services, price per hour, and total cost to calculate the number of hours"
   end
@@ -103,9 +103,9 @@ class CohrReport < Report
 
             if ssr
               # if li.sub_service_request.past_statuses.where(:status => 'complete').count > 0
-                
 
-              
+
+
               next if not ssr.is_complete? || ssr.past_statuses.where(:status => 'complete').count > 0
               complete_date = li.sub_service_request.past_statuses.try(:last).try(:date)
               next if not complete_date

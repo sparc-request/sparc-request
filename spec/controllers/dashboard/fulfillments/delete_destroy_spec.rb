@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -29,7 +29,7 @@ RSpec.describe Dashboard::FulfillmentsController do
       allow(@fulfillment).to receive(:delete)
 
       log_in_dashboard_identity(obj: build_stubbed(:identity))
-      xhr :delete, :destroy, id: @fulfillment.id
+      delete :destroy, params: { id: @fulfillment.id }, xhr: true
     end
 
     it "should destroy Fulfillment from params[:id]" do

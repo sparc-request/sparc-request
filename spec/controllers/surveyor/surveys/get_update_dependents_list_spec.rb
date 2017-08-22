@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -35,9 +35,9 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
     section = create(:section, survey: @survey)
               create(:question, section: section)
 
-    xhr :get, :update_dependents_list, {
+    get :update_dependents_list, params: {
       survey_id: @survey.id
-    }
+    }, xhr: true
   end
 
   describe '#update_dependents_list' do

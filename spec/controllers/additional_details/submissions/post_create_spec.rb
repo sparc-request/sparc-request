@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -34,14 +34,14 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
     @li         = create(:line_item, service_request: @sr, sub_service_request: ssr, service: @service)
 
     session[:identity_id] = logged_in_user.id
-    
-    xhr :get, :create, {
+
+    post :create, params: {
       service_id: @service.id,
       submission: {
         protocol_id: @protocol.id,
         line_item_id: @li.id
       }
-    }
+    }, format: :js
   end
 
   describe '#create' do

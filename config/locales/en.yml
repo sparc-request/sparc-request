@@ -24,6 +24,7 @@ en:
   ###########
   actions:
     add: "Add"
+    adding: "Adding..."
     back: "Back"
     approve: "Approve"
     cancel: "Cancel"
@@ -60,6 +61,12 @@ en:
           attributes:
             content:
               blank: "Content can't be blank"
+        question_response:
+          attributes:
+            content:
+              blank: "has to be answered"
+      messages:
+        spoofed_media_type: "has format errors. Please re-save the file in a different format and try again."
     attributes:
       arm:
         name: "Arm Name"
@@ -68,7 +75,7 @@ en:
       human_subjects_info:
         nct_number: "The NCT #"
       identity:
-        ldap_uid: "Username"
+        ldap_uid: "Login"
         first_name: "First Name"
         last_name: "Last Name"
         password_confirmation: "Password Confirmation"
@@ -81,7 +88,7 @@ en:
       question:
         content: "Question"
       question_response:
-        content: "Question"
+        content: "Required Question"
       visit:
         research_billing_qty: "Research Billing Quantity"
         insurance_billing_qty: "Insurance Billing Quantity"
@@ -333,6 +340,13 @@ en:
       phone_href: "tel:843-792-8300"
       phone_display: "Call: 843-792-8300"
 
+  ##############
+  # IDENTITIES #
+  ##############
+  identities:
+    approved: "Account Approved"
+    disapproved: "Account Disapproved"
+
   ###############
   # IE7 WARNING #
   ###############
@@ -384,6 +398,9 @@ en:
       potential_source: "Potential Funding Source:"
       research_master_id: "Research Master ID:"
       na_research_master_id: 'Not Available'
+      rmid_validated: "Updated to corresponding Research Master ID %{title}"
+      rmid_short_title: "Short Title"
+      rmid_title: "Title"
     view_details:
       button: "View %{protocol_type} Details"
       header: "%{protocol_type} Details: #%{protocol_id}"
@@ -499,7 +516,7 @@ en:
       submission_type: "Select a Submission Type"
     tooltips:
       epic: 'Defines whether record will interface to Epic EMR upon submission'
-      study_type_questions: 'Information needed to determine confidentiality of patients/protocols in Epic'
+      study_type_questions: 'Information needed to determine confidentiality of patients/protocols'
       nct_number: 'Clinicaltrials.gov Registry Number'
       pro_number: 'Institutional Review Board (IRB) Unique Identifier'
       ind_number: 'Investigational New Drug (IND) Number'
@@ -590,7 +607,7 @@ en:
       email_invalid: "Email is invalid"
       zipcode_invalid: "Zipcode is invalid"
     service_requests:
-      line_items_missing: "No Services have been detected in your Cart. Please return to the Catalog and add Services before continuing"
+      line_items_missing: "You must add Services to your cart before continuing"
       protocol_missing: "You must create a Protocol before continuing"
       protocol_errors: "The selected Protocol has errors which must be fixed. Please edit the Protocol before continuing"
       arms_missing: "You must create Arms before proceeding to the Service Calendar"
@@ -841,6 +858,7 @@ en:
     disabled_all_services: "Disable All Services"
     disabled_at: "Disabled at: %{disabled_parent}"
     eap_id: 'EAP ID'
+    editable_statuses: 'Editable Statuses'
     enable_all_services: "Enable All Services"
     epic_info: "Epic Interface"
     errors: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
@@ -850,7 +868,7 @@ en:
     name: "Name"
     new_cm: "New Catalog Manager"
     new_sp: "New Service Provider"
-    one_time_fee: "Non-clinical Service"
+    one_time_fee: "Non-clinical (Non-Per </br> Patient/Visit) Services"
     order: "Order"
     otf_field_errors: "If the Pricing Map is a non-clinical service (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required."
     per_patient_errors: "Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps."
@@ -894,7 +912,7 @@ en:
     otf_quantity_minimum: "Quantity Minimum"
     otf_unit_type: "Unit Type (weeks, days, samples, etc.)"
     other_rate: "Other Rate"
-    per_patient: "Per Patient"
+    per_patient: "Clinical Service"
     quantity_type: "Quantity Type (hours, each, slides, etc.)"
     rate_disclaimer: "*IF N/A, NO PRICING SET-UP IS DEFINED FOR THE CURRENT DATES"
     rates: "Rates"
@@ -987,7 +1005,7 @@ en:
   study_form:
     affiliations: "Affiliations, Collaborations, and Memberships"
     approval_pending: "Application/Approval Pending:"
-    study_type_questions: "Study type questions *"
+    study_type_questions: "Study Type Questions"
     attributes: "Study Attributes"
     clear: "Clear"
     code_blank: "Select a Federal Grant Code"
@@ -1381,8 +1399,15 @@ en:
 
   # Mailer
   mailer:
-    add_intro: "An Authorized User has been added in"
+    email_title:
+      epic_queue_error:  "Epic Interface Error "
+      epic_queue_summary: "Epic Queue Summary"
+      epic_queue_report: "Epic Queue Report"
+      new: "New"
+      new_account_registration: "New SPARCRequest Account Registration"
+      general: "SPARCRequest %{email_status} (%{type} %{id})"
     application_title: "SPARCRequest"
+    add_intro: "An Authorized User has been added in"
     contact_information: "Contact Information"
     delete_intro: "An Authorized User has been deleted in"
     epic_access: "Epic Access"
@@ -1473,8 +1498,8 @@ en:
     notes_present:  "*Note(s) are included with this submission."
     notice:
       approve: "Approve Account"
-      body1: "Request for new SPARC Request account submitted and awaiting approval"
-      body2: "A new SPARC Request account is waiting for approval."
+      body1: "Request for new SPARCRequest account submitted and awaiting approval"
+      body2: "A new SPARCRequest account is waiting for approval."
       company: "Company"
       disapprove: "Disapprove Account"
       email: "Email"

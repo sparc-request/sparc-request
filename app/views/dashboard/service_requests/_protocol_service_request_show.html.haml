@@ -1,4 +1,4 @@
--# Copyright © 2011-2016 MUSC Foundation for Research Development
+-# Copyright © 2011-2017 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -26,7 +26,7 @@
       - if permission_to_edit
         %button.btn.btn-warning.btn-sm.edit-service-request{ class: permission_to_edit ? '' : 'disabled', type: 'button', data: { permission: permission_to_edit.to_s, url: modify_request_button_url(service_request) } }
           = t(:dashboard)[:service_requests][:modify_request]
-      = link_to t(:dashboard)[:protocols][:service_requests][:coverage_report], service_request_path(service_request, format: :xlsx), class: 'btn btn-sm btn-success'
+      = link_to t(:dashboard)[:protocols][:service_requests][:coverage_report], service_request_path(service_request, format: :xlsx, show_signature_section: 1), class: 'btn btn-sm btn-success'
     .clearfix
   .panel-body
     .bootstrap-table-dropdown-overflow

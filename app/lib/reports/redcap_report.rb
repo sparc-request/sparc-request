@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,7 +21,7 @@
 # Report for all services under the REDCap core
 # Monthly report
 
-class RedcapReport < Report
+class RedcapReport < Reporting
   def self.description
     "Provide a list of Services submitted within specified dates under the REDCap Core."
   end
@@ -105,7 +105,7 @@ class RedcapReport < Report
           end
         end
       end
-      p.serialize(@output_file)  
+      p.serialize(@output_file)
     end
   end
 end

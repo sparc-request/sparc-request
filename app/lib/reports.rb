@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'reports/report'
+require 'reports/reporting'
 
 base = File.expand_path(File.dirname(__FILE__))
 
@@ -33,7 +33,7 @@ def run_report_command(args = ARGV)
   case cmd
   when 'list'
     puts "Available reports:"
-    reports = Report.all
+    reports = Reporting.all
     reports.sort_by! { |report| report.name }
     reports.each do |report|
       puts "  #{report.name.underscore} - #{report.description}"

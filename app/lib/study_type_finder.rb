@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -36,13 +36,17 @@ class StudyTypeFinder
   end
 
   def collect_answers(study)
-    @study.display_answers.map(&:answer)
+    @study.display_answers.pluck(:answer)
   end
 
   def determine_study_type(version, answers)
     case version
     when 3
       study_type_ans_constant = STUDY_TYPE_ANSWERS_VERSION_3
+      # Because we can't use a don't-care to check the value of the 2 non-epic questions,
+      # we have to replace their values with nil. They do not impact the study type.
+      answers[StudyTypeQuestion.joins(:study_type_question_group).where(study_type_question_groups: { version: 3 }).count - 1] = nil
+      answers[StudyTypeQuestion.joins(:study_type_question_group).where(study_type_question_groups: { version: 3 }).count - 2] = nil
     when 2
       study_type_ans_constant = STUDY_TYPE_ANSWERS_VERSION_2
     when 1

@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -30,44 +30,44 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
     end
 
     it 'should assign @service' do
-      xhr :post, :create, {
+      post :create, params: {
         service_id: @service.id,
         questionnaire: {
           name: 'string',
-          items_attributes: { 
-            '0' => { 
+          items_attributes: {
+            '0' => {
               content: 'test',
               item_type:'text',
               required: '1'
             }
           }
         }
-      }
+      }, format: :js
 
       expect(assigns(:service)).to eq(@service)
     end
 
     it 'should assign @questionnaire' do
-      xhr :post, :create, {
+      post :create, params: {
         service_id: @service.id,
         questionnaire: {
           name: 'string',
-          items_attributes: { 
-            '0' => { 
+          items_attributes: {
+            '0' => {
               content: 'test',
               item_type:'text',
               required: '1'
             }
           }
         }
-      }
+      }, format: :js
 
       expect(assigns(:questionnaire)).to be_a(Questionnaire)
     end
 
     context 'successful' do
       before :each do
-        xhr :post, :create, {
+        post :create, params: {
           service_id: @service.id,
           questionnaire: {
             name: 'string',
@@ -79,7 +79,7 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
               }
             }
           }
-        }
+        }, format: :js
       end
 
       it 'should create a questionnaire' do
@@ -97,7 +97,7 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
 
     context 'unsuccessful' do
       before :each do
-        xhr :post, :create, {
+        post :create, params: {
           service_id: @service.id,
           questionnaire: {
             items_attributes: { 
@@ -106,7 +106,7 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
               }
             }
           }
-        }
+        }, format: :js
       end
 
       it 'should not create a questionnaire' do

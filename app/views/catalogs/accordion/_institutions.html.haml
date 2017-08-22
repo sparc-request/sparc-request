@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2017 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
     - next if ssr_org && !((institution_is_process_ssr = ssr_org == i) || ssr_org.parents.include?(i))
     - locked = locked_ids.include?(i.id)
 
-    .panel.panel-primary
+    .panel.panel-default
       .panel-heading.institution-header.clicked{ class: [i.css_class, locked ? 'bg-danger text-danger' : ''], data: { id: i.id, process_ssr_found: institution_is_process_ssr.to_s, toggle: 'collapse', target: ".institution-#{i.id}", parent: '#institution-accordion' } }
         %h4.panel-title.text-center
           = organization_name_display(i, locked)

@@ -22,6 +22,6 @@
     - if ['new', 'edit', 'preview'].include?(action_name)
       = qr.text_field :content, class: 'form-control', maxlength: 255
     - else
-      = text_field_tag :content, qr.object.content, class: 'form-control', disabled: true
+      = text_field_tag :content, qr.content, class: 'form-control', disabled: true
     %span.input-group-addon
       %span.glyphicon.glyphicon-calendar

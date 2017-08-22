@@ -21,4 +21,4 @@
   - if ['new', 'edit', 'preview'].include?(action_name)
     = qr.text_area :content, class: 'form-control option', maxlength: 255
   - else
-    = text_area_tag :content, qr.object.content, class: 'form-control option', disabled: true
+    = text_area_tag :content, qr.content, class: 'form-control option', disabled: true

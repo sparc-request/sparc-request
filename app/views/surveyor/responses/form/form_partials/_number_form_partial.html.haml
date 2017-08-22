@@ -21,4 +21,4 @@
   - if ['new', 'edit', 'preview'].include?(action_name)
     = qr.number_field :content, class: 'form-control option'
   - else
-    = number_field_tag :content, qr.object.content, class: 'form-control option', disabled: true
+    = number_field_tag :content, qr.content, class: 'form-control option', disabled: true

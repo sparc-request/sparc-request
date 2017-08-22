@@ -26,7 +26,7 @@
         - if ['new', 'edit', 'preview'].include?(action_name)
           = qr.radio_button :content, option.content
         - else
-          = radio_button_tag :content_likert, '', qr.object.content == option.content, disabled: true
+          = radio_button_tag :content_likert, '', qr.content == option.content, disabled: true
       .col-sm-12.text-center.no-padding
         - if ['new', 'edit', 'preview'].include?(action_name)
           = qr.label :content, option.content, class: "radio-inline option no-padding", data: { question_id: question.id, option_id: option.id }

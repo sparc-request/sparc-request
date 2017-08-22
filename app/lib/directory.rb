@@ -105,6 +105,7 @@ class Directory
     query_select     = "select distinct identities.* from identities"
 
     where_term = lambda do |search_term|
+      search_term.gsub!("'", %q(\\\'))
       return  "(identities.ldap_uid like '%#{search_term}%' or "\
               "identities.email like '%#{search_term}%' or "\
               "identities.first_name like '%#{search_term}%' or "\

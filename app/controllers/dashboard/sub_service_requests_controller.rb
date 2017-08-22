@@ -134,6 +134,16 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     end
   end
 
+  def resend_surveys
+    if @sub_service_request.surveys_completed?
+      @refresh = true # Refresh the details options
+      flash[:alert] = 'All surveys have already been completed.'
+    else
+      @sub_service_request.distribute_surveys
+      flash[:success] = 'Surveys re-sent!'
+    end
+  end
+
   #History Table Methods Begin
   def change_history_tab
     #Replaces currently displayed ssr history bootstrap table

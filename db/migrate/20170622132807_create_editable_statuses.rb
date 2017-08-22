@@ -30,20 +30,20 @@ class CreateEditableStatuses < ActiveRecord::Migration[5.0]
     if defined?(EDITABLE_STATUSES)
       EDITABLE_STATUSES.each do |org_id, statuses|
         if organization = Organization.find_by_id(org_id)
-          (statuses << 'first_draft').each do |status|
+          statuses.each do |status|
             organization.editable_statuses.create(status: status)
           end
         end
       end
 
       Organization.where.not(id: EDITABLE_STATUSES.keys).each do |org|
-        (AVAILABLE_STATUSES.keys << 'first_draft').each do |status|
+        AVAILABLE_STATUSES.keys.each do |status|
           org.editable_statuses.create(status: status)
         end
       end
     else
       Organization.all.each do |org|
-        (AVAILABLE_STATUSES.keys << 'first_draft').each do |status|
+        AVAILABLE_STATUSES.keys.each do |status|
           org.editable_statuses.create(status: status)
         end
       end

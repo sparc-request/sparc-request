@@ -61,6 +61,13 @@ $(document).ready ->
       type: 'PUT'
       url: "/dashboard/sub_service_requests/#{sub_service_request_id}/push_to_epic"
 
+  $(document).on 'click', '#resend-surveys-button', ->
+    $(this).prop('disabled', true)
+    ssr_id = $(this).data('sub-service-request-id')
+    $.ajax
+      type: 'PUT'
+      url: "/dashboard/sub_service_requests/#{ssr_id}/resend_surveys"
+      success: ->
 
   # SERVICE REQUEST INFO LISTENERS END
   # ADMIN TAB LISTENER BEGIN

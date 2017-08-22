@@ -305,6 +305,7 @@ SparcRails::Application.routes.draw do
     resources :sub_service_requests, except: [:new, :create, :edit]do
       member do
         put :push_to_epic
+        put :resend_surveys
         get :change_history_tab
         get :status_history
         get :approval_history

@@ -21,6 +21,7 @@
 <% unless @errors %>
 $("#sub_service_request_header").html("<%= escape_javascript(render(partial: 'dashboard/sub_service_requests/header', locals: { sub_service_request: @sub_service_request })) %>");
 $("#subsidy_information").html("<%= escape_javascript(render(partial: 'dashboard/subsidies/subsidy', locals: { sub_service_request: @sub_service_request, admin: true })) %>");
+$("#details").html("<%= j render 'dashboard/sub_service_requests/request_details', protocol: @sub_service_request.protocol, service_request: @sub_service_request.service_request, sub_service_request: @sub_service_request %>")
 
 $("#status-history-table").bootstrapTable 'refresh'
 

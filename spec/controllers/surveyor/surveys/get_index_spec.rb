@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -41,17 +41,17 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
 
     context 'format html' do
       it 'should render template' do
-        xhr :get, :index, {
+        get :index, params: {
           format: :html
-        }
+        }, xhr: true
 
         expect(controller).to render_template(:index)
       end
 
       it 'should respond ok' do
-        xhr :get, :index, {
+        get :index, params: {
           format: :html
-        }
+        }, xhr: true
 
         expect(controller).to respond_with(:ok)
       end
@@ -61,25 +61,25 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
       it 'should assign @surveys to all surveys' do
         create(:survey_without_validations)
         
-        xhr :get, :index, {
+        get :index, params: {
           format: :json
-        }
+        }, xhr: true
 
         expect(assigns(:surveys)).to eq(Survey.all)
       end
 
       it 'should render template' do
-        xhr :get, :index, {
+        get :index, params: {
           format: :json
-        }
+        }, xhr: true
 
         expect(controller).to render_template(:index)
       end
 
       it 'should respond ok' do
-        xhr :get, :index, {
+        get :index, params: {
           format: :json
-        }
+        }, xhr: true
 
         expect(controller).to respond_with(:ok)
       end

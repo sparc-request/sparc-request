@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -41,11 +41,11 @@ RSpec.describe DocumentsController, type: :controller do
       doc_params  = { doc_type: 'Neurology' }
 
 
-      xhr :put, :update, {
+      put :update, params: {
         service_request_id: sr.id,
         id: doc.id,
         document: doc_params
-      }
+      }, xhr: true
 
       expect(assigns(:document)).to eq(doc)
     end
@@ -57,11 +57,11 @@ RSpec.describe DocumentsController, type: :controller do
       doc_params  = { doc_type: 'Neurology' }
 
 
-      xhr :put, :update, {
+      put :update, params: {
         service_request_id: sr.id,
         id: doc.id,
         document: doc_params
-      }
+      }, xhr: true
 
       expect(assigns(:protocol)).to eq(protocol)
     end
@@ -74,11 +74,11 @@ RSpec.describe DocumentsController, type: :controller do
         doc_params  = { doc_type: 'Neurology' }
 
 
-        xhr :put, :update, {
-        service_request_id: sr.id,
+        put :update, params: {
+          service_request_id: sr.id,
           id: doc.id,
           document: doc_params
-        }
+        }, xhr: true
 
         expect(doc.reload.doc_type).to eq('Neurology')
       end
@@ -92,11 +92,11 @@ RSpec.describe DocumentsController, type: :controller do
         doc_params  = { doc_type: '' }
 
 
-        xhr :put, :update, {
-        service_request_id: sr.id,
+        put :update, params: {
+          service_request_id: sr.id,
           id: doc.id,
           document: doc_params
-        }
+        }, xhr: true
 
         expect(doc.reload.doc_type).to eq('Blah')
       end
@@ -108,11 +108,11 @@ RSpec.describe DocumentsController, type: :controller do
         doc_params  = { doc_type: '' }
 
 
-        xhr :put, :update, {
-        service_request_id: sr.id,
+        put :update, params: {
+          service_request_id: sr.id,
           id: doc.id,
           document: doc_params
-        }
+        }, xhr: true
 
         expect(assigns(:errors)).to be
       end
@@ -125,11 +125,11 @@ RSpec.describe DocumentsController, type: :controller do
       doc_params  = { doc_type: 'Neurology' }
 
 
-      xhr :put, :update, {
+      put :update, params: {
         service_request_id: sr.id,
         id: doc.id,
         document: doc_params
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:update)
     end
@@ -141,11 +141,11 @@ RSpec.describe DocumentsController, type: :controller do
       doc_params  = { doc_type: 'Neurology' }
 
 
-      xhr :put, :update, {
+      put :update, params: {
         service_request_id: sr.id,
         id: doc.id,
         document: doc_params
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

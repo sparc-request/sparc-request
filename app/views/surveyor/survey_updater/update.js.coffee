@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,13 +19,13 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <% if @errors %>
 <% @errors.zip(@errors.full_messages).each do |error, message| %>
-if !$("#<%=@klass%>-<%=error[0]%>").parents('.form-group').hasClass('has-error')
-  $("#<%=@klass%>-<%=error[0]%>").parents('.form-group').addClass('has-error')
-  $("#<%=@klass%>-<%=error[0]%>").parents('.form-group').children('div:not(.control-label)').append("<span class='help-block'><%=message%></span>")
+if !$("#<%=@klass%>-<%=@object.id%>-<%=error[0]%>").parents('.form-group').hasClass('has-error')
+  $("#<%=@klass%>-<%=@object.id%>-<%=error[0]%>").parents('.form-group').addClass('has-error')
+  $("#<%=@klass%>-<%=@object.id%>-<%=error[0]%>").after("<span class='help-block'><%=message%></span>")
 <% end %>
 <% else %>
-$("#<%=@klass%>-<%=@field%>").parents('.form-group').removeClass('has-error')
-$("#<%=@klass%>-<%=@field%>").parents('.form-group').find('.help-block').remove()
+$("#<%=@klass%>-<%=@object.id%>-<%=@field%>").parents('.form-group').removeClass('has-error')
+$("#<%=@klass%>-<%=@object.id%>-<%=@field%>").siblings('.help-block').remove()
 
 <% if @klass == 'survey' %>
 $('.survey-table').bootstrapTable('refresh')

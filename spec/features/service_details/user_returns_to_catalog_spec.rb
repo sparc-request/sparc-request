@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -46,7 +46,6 @@ RSpec.describe 'User returns to catalog', js: true do
     protocol = create(:protocol_without_validations, primary_pi: jug2)
     @sr      = create(:service_request_without_validations, status: "first_draft", protocol_id: protocol.id)
     @ssr1    = create(:sub_service_request_without_validations, service_request: @sr, organization: program1, status: "draft", protocol: protocol)
-    stub_const("EDITABLE_STATUSES", { @ssr1.organization_id => [@ssr1.status] })
     ssr2     = create(:sub_service_request_without_validations, service_request: @sr, organization: program2, status: "draft", protocol: protocol)
     create(:line_item, service_request: @sr, sub_service_request: @ssr1, service: service1)
     create(:line_item, service_request: @sr, sub_service_request: ssr2, service: service2)

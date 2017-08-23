@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe "Line items counter cache" do
+RSpec.describe LineItem, type: :model do
 
   let!(:new_service) { create(:service, name: "New Service") }
   let!(:service_request) { FactoryGirl.create(:service_request_without_validations) }

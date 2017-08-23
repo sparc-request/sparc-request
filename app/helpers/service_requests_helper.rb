@@ -90,7 +90,7 @@ module ServiceRequestsHelper
       content_tag(:div,
         content_tag(:div, raw(text), class: "btn step-text")+
         content_tag(:div, '', class: "right-arrow"),
-        class: "step-btn step-btn-#{color}"
+        class: "step-btn step-btn-#{color} disabled_steps"
       )
     else
       link_to(

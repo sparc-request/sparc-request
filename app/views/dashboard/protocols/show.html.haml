@@ -1,4 +1,4 @@
--# Copyright © 2011-2016 MUSC Foundation for Research Development
+-# Copyright © 2011-2017 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -25,6 +25,8 @@
   = render 'dashboard/service_requests/service_requests', protocol: @protocol, super_user_orgs: @super_user_orgs, permission_to_edit: @permission_to_edit, user: @user, view_only: false, show_view_ssr_back: @show_view_ssr_back, statuses_hidden: %(first_draft)
   .additional-details-submissions-panel
     = render "additional_details/submissions/submissions_panel", protocol: @protocol, submissions: @submissions
+  .milestones-panel.spacing-above
+    = render "dashboard/protocols/milestone", protocol: @protocol
 
 = render 'additional_details/submissions/submission_modal'
 

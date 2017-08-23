@@ -1,4 +1,4 @@
-# Copyright © 2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -76,11 +76,13 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
 
 
 
-    ######################
-    # Visit catalog page #
-    ######################
+    ##########
+    # Step 1 #
+    ##########
     visit "/"
     wait_for_javascript_to_finish
+
+    expect(page).to have_selector('.step-header', text: 'STEP 1')
 
 
 
@@ -169,9 +171,9 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
 
 
     ##########
-    # Step 1 #
+    # Step 2 #
     ##########
-    expect(page).to have_selector('.step-header', text: 'STEP 1')
+    expect(page).to have_selector('.step-header', text: 'STEP 2')
 
     click_link("New Project")
     wait_for_javascript_to_finish
@@ -199,10 +201,10 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
 
 
 
-    ###########
-    # Step 2A #
-    ###########
-    expect(page).to have_selector('.step-header', text: 'STEP 2A')
+    ##########
+    # Step 3 #
+    ##########
+    expect(page).to have_selector('.step-header', text: 'STEP 3')
     
     find('#project_start_date').click
     within(".bootstrap-datetimepicker-widget") do
@@ -219,10 +221,10 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
 
 
 
-    ###########
-    # Step 2B #
-    ###########
-    expect(page).to have_selector('.step-header', text: 'STEP 2B')
+    ##########
+    # Step 4 #
+    ##########
+    expect(page).to have_selector('.step-header', text: 'STEP 4')
     
     find("a", text: "(?)").click
     wait_for_javascript_to_finish
@@ -238,9 +240,9 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     
 
     ##########
-    # Step 3 #
+    # Step 5 #
     ##########
-    expect(page).to have_selector('.step-header', text: 'STEP 3')
+    expect(page).to have_selector('.step-header', text: 'STEP 5')
 
     click_link 'Save and Continue'
     wait_for_javascript_to_finish
@@ -248,9 +250,9 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     
 
     ##########
-    # Step 4 #
+    # Step 6 #
     ##########
-    expect(page).to have_selector('.step-header', text: 'STEP 4')
+    expect(page).to have_selector('.step-header', text: 'STEP 6')
 
     click_link 'Submit Request'
     wait_for_javascript_to_finish
@@ -276,7 +278,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     ##########
     # Step 5 #
     ##########
-    expect(page).to have_selector('.step-header', text: 'STEP 5')
+    expect(page).to have_selector('.step-header', text: 'Confirmation')
 
     click_link 'Go to Dashboard'
     wait_for_javascript_to_finish

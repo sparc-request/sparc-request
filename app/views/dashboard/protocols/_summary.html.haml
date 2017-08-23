@@ -1,4 +1,4 @@
--# Copyright © 2011-2016 MUSC Foundation for Research Development~
+-# Copyright © 2011-2017 MUSC Foundation for Research Development~
 -# All rights reserved.~
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -54,12 +54,14 @@
           = t(:protocols)[:summary][:title]
       .col-sm-10
         = protocol.try(:title)
+        = display_rmid_validated_protocol(protocol, t('protocols.summary.rmid_title'))
     .row
       .col-sm-2
         %label
           = t(:protocols)[:summary][:short_title]
       .col-sm-10
         = protocol.try(:short_title)
+        = display_rmid_validated_protocol(protocol, t('protocols.summary.rmid_short_title'))
     - if protocol_type == 'Study'
       .row
         .col-sm-2

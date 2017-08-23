@@ -1,4 +1,4 @@
--# Copyright © 2011-2016 MUSC Foundation for Research Development
+-# Copyright © 2011-2017 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,9 +21,9 @@
   %h3
     = t(:proper)[:confirmation][:service_requests_notice]
 .panel.panel-default
-  %table.table.table-condensed#request-ssrs-table
-    %thead
-      %tr
+  %table.table.table-striped.table-bordered#request-ssrs-table
+    %thead.table-active
+      %tr.table-active
         %th
           = t(:proper)[:confirmation][:table_fields][:request_id]
         %th

@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -44,7 +44,7 @@ RSpec.describe 'User views a locked SSR', js: true do
     vg        = create(:visit_group, arm: arm)
                 create(:visit, visit_group: vg, line_items_visit: liv, research_billing_qty: 5, insurance_billing_qty: 5, effort_billing_qty: 5)
 
-    stub_const('EDITABLE_STATUSES', { org.id => ['first_draft'] })
+    org.editable_statuses.where(status: [ssr1.status, ssr2.status]).destroy_all
 
     visit service_calendar_service_request_path(@sr)
     wait_for_javascript_to_finish

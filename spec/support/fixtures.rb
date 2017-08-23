@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -178,6 +178,7 @@ def build_per_patient_per_visit_services
   let!(:clinical_provider)   { create(:clinical_provider, organization_id: program.id, identity_id: jug2.id) }
   let!(:available_status)    { create(:available_status, organization_id: program.id, status: 'submitted')}
   let!(:available_status2)   { create(:available_status, organization_id: program.id, status: 'draft')}
+  let!(:available_status3)   { create(:available_status, organization_id: program.id, status: 'administrative_review')}
   let!(:subsidy)             { Subsidy.auditing_enabled = false; create(:subsidy_without_validations, percent_subsidy: 0.45, sub_service_request_id: sub_service_request.id)}
   let!(:subsidy_map)         { create(:subsidy_map, organization_id: program.id) }
 end

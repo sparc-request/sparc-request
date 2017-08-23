@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -24,14 +24,19 @@ RSpec.describe Dashboard::MessagesController do
   describe "POST #create" do
     context "params[:message][:body] not empty" do
       before(:each) do
+        ssr = build_stubbed(
+          :sub_service_request,
+          protocol: build_stubbed(:protocol),
+          organization: build_stubbed(:organization)
+        )
         @notification = findable_stub(Notification) do
-          build_stubbed(:notification)
+          build_stubbed(:notification, sub_service_request: ssr)
         end
         allow(@notification).to receive(:messages).and_return("MyMessages")
         allow(@notification).to receive(:set_read_by)
 
-        @to_identity = findable_stub(Identity) { build_stubbed(:identity) }
-        @from_identity = build_stubbed(:identity)
+        @to_identity = create(:identity)
+        @from_identity = create(:identity)
         @new_message_attr = {
           notification_id: @notification.id.to_s,
           to: @to_identity.id.to_s,
@@ -44,7 +49,7 @@ RSpec.describe Dashboard::MessagesController do
         allow(Message).to receive(:create).and_return(@new_message)
 
         log_in_dashboard_identity(obj: build_stubbed(:identity))
-        xhr :post, :create, message: @new_message_attr
+        post :create, params: { message: @new_message_attr }, xhr: true
       end
 
       it "should create a Message" do
@@ -67,8 +72,13 @@ RSpec.describe Dashboard::MessagesController do
 
     context "params[:message][:body] empty" do
       before(:each) do
+        ssr = build_stubbed(
+          :sub_service_request,
+          protocol: build_stubbed(:protocol),
+          organization: build_stubbed(:organization)
+        )
         @notification = findable_stub(Notification) do
-          build_stubbed(:notification)
+          build_stubbed(:notification, sub_service_request: ssr)
         end
         allow(@notification).to receive(:messages).and_return("MyMessages")
 
@@ -78,9 +88,9 @@ RSpec.describe Dashboard::MessagesController do
         allow(Message).to receive(:create)
 
         log_in_dashboard_identity(obj: build_stubbed(:identity))
-        xhr :post, :create, message: { notification_id: @notification.id,
+        post :create, params: { message: { notification_id: @notification.id,
           to: @to_identity.id.to_s, from: @from_identity.id.to_s, email: "jay@email.com",
-          body: "" }
+          body: "" } }, xhr: true
       end
 
       it "should not create a Message" do

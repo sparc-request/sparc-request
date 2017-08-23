@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -21,7 +21,7 @@
 # This migration comes from acts_as_taggable_on_engine (originally 5)
 # This migration is added to circumvent issue #623 and have special characters
 # work properly
-class ChangeCollationForTagNames < ActiveRecord::Migration
+class ChangeCollationForTagNames < ActiveRecord::Migration[4.2]
   def up
     if ActsAsTaggableOn::Utils.using_mysql?
       execute("ALTER TABLE tags MODIFY name varchar(255) CHARACTER SET utf8 COLLATE utf8_bin;")

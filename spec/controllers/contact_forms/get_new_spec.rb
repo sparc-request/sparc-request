@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,22 +21,22 @@ require 'rails_helper'
 
 RSpec.describe ContactFormsController, type: :controller do
   stub_controller
-  
+
   describe '#new' do
     it 'should assign @contact_form' do
-      xhr :get, :new
+      get :new, xhr: true
 
       expect(assigns(:contact_form).class).to eq(ContactForm)
     end
 
     it 'should render template' do
-      xhr :get, :new
+      get :new, xhr: true
 
       expect(controller).to render_template(:new)
     end
 
     it 'should respond ok' do
-      xhr :get, :new
+      get :new, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

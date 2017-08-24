@@ -37,7 +37,7 @@ RSpec.describe 'layouts/dashboard/_dashboard_header.html.haml', view: true do
   it 'should display view epic queue button' do
     render 'layouts/dashboard/dashboard_header', user: @user
 
-    expect(response).to have_selector('button#epic-queue-btn', text: 'View Epic Queue')
+    expect(response).to have_selector('button#epic-queue-btn', text: 'Epic Queue')
   end
 
   it 'should display number of unread notifications (for user)' do

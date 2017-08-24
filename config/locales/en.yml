@@ -182,6 +182,7 @@ en:
     tooltips:
       epic_access: 'Granting Epic EMR access populates study personnel in Epic Research Record as long as they have an Epic login'
       rights: 'Defines access to protocol in SPARCDashboard'
+      add_user: "Ability to add an Authorized User to a protocol"
 
   #############
   # CALENDARS #
@@ -316,6 +317,7 @@ en:
       access: "Allow Access:"
     tooltips:
       access: "Uploaded documents are made viewable to all service providers unless checkmark is removed"
+      add_document: "Upload document(s) in repository"
     select_type: "Please Select Type"
     delete_confirm: "Are you sure you want to delete the selected Document from this protocol?"
 
@@ -401,6 +403,12 @@ en:
       rmid_validated: "Updated to corresponding Research Master ID %{title}"
       rmid_short_title: "Short Title"
       rmid_title: "Title"
+      tooltips:
+        notes: "Protocol notes viewable to Administrators and Authorized Users"
+        details: "Quick access to protocol information"
+        edit: "Quick access to edit protocol information"
+        archive_study: "Ability to hide study from all Authorized User dashboards"
+        unarchive_study: "Click to reveal on all associated Authorized User dashboards"
     view_details:
       button: "View %{protocol_type} Details"
       header: "%{protocol_type} Details: #%{protocol_id}"

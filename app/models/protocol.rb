@@ -534,7 +534,7 @@ class Protocol < ApplicationRecord
   end
 
   def has_incomplete_additional_details?
-    line_items.any?(&:has_incomplete_additional_details?)
+    sub_service_requests.any?(&:has_incomplete_additional_details?)
   end
 
   private

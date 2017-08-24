@@ -26,8 +26,8 @@ RSpec.describe 'additional_details/questionnaires/_form', type: :view do
 
     before(:each) do
       service = create(:service)
-    	questionnaire = create(:questionnaire, :without_validations, service: service)
-      render "/additional_details/questionnaires/form", service: service, questionnaire: questionnaire
+    	questionnaire = create(:questionnaire, :without_validations, questionable: service)
+      render "/additional_details/questionnaires/form", questionable: service, questionnaire: questionnaire
     end
 
     it 'should have the correct title' do
@@ -56,8 +56,8 @@ RSpec.describe 'additional_details/questionnaires/_form', type: :view do
 
     before(:each) do
       service = create(:service)
-      questionnaire = create(:questionnaire, items: [ Item.new( content: 'This is a test question', item_type: 'text', item_options_attributes: { "0" => { content: "" } } , description: "", required: 1 ) ], service: service)
-      render "/additional_details/questionnaires/form", service: service, questionnaire: questionnaire
+      questionnaire = create(:questionnaire, items: [ Item.new( content: 'This is a test question', item_type: 'text', item_options_attributes: { "0" => { content: "" } } , description: "", required: 1 ) ], questionable: service)
+      render "/additional_details/questionnaires/form", questionable: service, questionnaire: questionnaire
     end
 
     it 'should have the additional remove question button' do

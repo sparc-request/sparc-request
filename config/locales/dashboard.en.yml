@@ -221,7 +221,7 @@ en:
         add_document: "Add Document"
 
       service_requests:
-        header: "Service Requests"
+        header: "Requests"
         view_consolidated: "View Consolidated Request"
         export_consolidated: "Export Consolidated Request"
         coverage_report: 'Coverage Analysis Report'

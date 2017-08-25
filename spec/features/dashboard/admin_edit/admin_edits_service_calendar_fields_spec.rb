@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -42,8 +42,6 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
     @vg       = @arm.visit_groups.first
     @liv      = @arm.line_items_visits.first
     visit     = create(:visit, line_items_visit: @liv, visit_group: @vg, research_billing_qty: 1)
-
-    stub_const('EDITABLE_STATUSES', { })
 
     visit dashboard_sub_service_request_path(ssr)
     wait_for_javascript_to_finish

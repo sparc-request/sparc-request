@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,9 +22,6 @@
 #= require cart
 
 $(document).ready ->
-  getSRId = ->
-    $("input[name='service_request_id']").val()
-
   $(document).on 'click', '#new-arm-button', ->
     $.ajax
       type: 'get'

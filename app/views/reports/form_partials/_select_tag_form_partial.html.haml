@@ -1,4 +1,4 @@
--# Copyright © 2011-2016 MUSC Foundation for Research Development
+-# Copyright © 2011-2017 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,16 +21,16 @@
 - if field.is_a?(Class) && field.respond_to?(:where)
   - records         = field.where(options[:filters])
   - dependency      = options[:dependency]
+  - has_deps_class  = options[:has_dependencies] ? 'has-dependencies' : ''
   - required_class  = options[:required] ? 'required' : ''
   - default_classes = ['form-control reporting-field selectpicker', required_class]
-  - check_dep_class = dependency ? 'check-dep' : ''
   - id              = options[:for] || "#{field.name.underscore}_id"
   - name            = options[:for] ? "report[#{options[:for]}]" : "report[#{field.name.underscore}_id]"
   - name_method     = options[:custom_name_method] || :name
 
   = label_tag id, field_label, class: ['col-sm-3 control-label', required_class]
   .col-sm-9
-    %select{ id: id, class: [default_classes, required_class, check_dep_class], name: name, data: { dependency: dependency } }
+    %select{ id: id, class: [default_classes, required_class, has_deps_class], name: name, data: { dependency: dependency } }
       %option{ value: '' }
         = t(:constants)[:prompts][:select_one]
       

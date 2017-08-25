@@ -1,4 +1,4 @@
-/* Copyright © 2011-2016 MUSC Foundation for Research Development*/
+/* Copyright © 2011-2017 MUSC Foundation for Research Development*/
 /* All rights reserved.*/
 
 /* Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:*/
@@ -23,12 +23,25 @@
   margin-bottom: 20px
   
 /* RELATED TO THE INSTITUTION ACCORDION */
-.institution-header, .provider-header, .core-header
-  background: $sparc-light-blue
+.institution-header,
+.provider-header,
+.core-header
+  background: $sparc-blue !important
   color: white !important
   cursor: pointer
   h4
     font-size: 14px
+
+.institution-header:hover,
+.provider-header:hover,
+.core-header:hover
+  background: $sparc-blue-hover !important
+
+.institution-header.clicked:hover,
+.provider-header.clicked:hover,
+.core-header.clicked:hover
+  background: $sparc-blue-focus !important
+
 
 .service-catalog
   .panel-group
@@ -65,17 +78,23 @@
 
 /* HANDLING INSTITUTION COLORING */
 .blue-provider,
+.blue-green-provider,
 .green-provider,
 .light-blue-provider,
-.red-provider,
-.orange-provider
-  h1
+.pink-provider,
+.orange-provider,
+.red-provider
+  h1, h2, h3, h4, h5, h6
     color: white
 
 .blue-provider
   background: $sparc-blue !important
 .blue-provider-text
   color: $sparc-blue
+.blue-green-provider
+  background: $sparc-blue-green !important
+.blue-green-provider-text
+  color: $sparc-blue-green
 .green-provider
   background: $sparc-green !important
 .green-provider-text
@@ -84,19 +103,27 @@
   background: $sparc-light-blue !important
 .light-blue-provider-text
   color: $sparc-light-blue
-.red-provider
-  background: $sparc-red !important
-.red-provider-text
-  color: $sparc-red
+.pink-provider
+  background: $sparc-pink !important
+.pink-provider-text
+  color: $sparc-pink
 .orange-provider
   background: $sparc-orange !important
 .orange-provider-text
   color: $sparc-orange
+.red-provider
+  background: $sparc-red !important
+.red-provider-text
+  color: $sparc-red
 
 .institution-header.blue-provider:not(.clicked):hover,
 .provider-header.blue-provider:not(.clicked):hover,
 .core-header.blue-provider:not(.clicked):hover,
   background: $sparc-blue-hover !important
+.institution-header.blue-green-provider:not(.clicked):hover,
+.provider-header.blue-green-provider:not(.clicked):hover,
+.core-header.blue-green-provider:not(.clicked):hover,
+  background: $sparc-blue-green-hover !important
 .institution-header.green-provider:not(.clicked):hover,
 .provider-header.green-provider:not(.clicked):hover,
 .core-header.green-provider:not(.clicked):hover,
@@ -105,17 +132,25 @@
 .provider-header.light-blue-provider:not(.clicked):hover,
 .core-header.light-blue-provider:not(.clicked):hover,
   background: $sparc-light-blue-hover !important
-.institution-header.red-provider:not(.clicked):hover,
-.provider-header.red-provider:not(.clicked):hover,
-.core-header.red-provider:not(.clicked):hover,
-  background: $sparc-red-hover !important
+.institution-header.pink-provider:not(.clicked):hover,
+.provider-header.pink-provider:not(.clicked):hover,
+.core-header.pink-provider:not(.clicked):hover,
+  background : $sparc-pink-hover !important
 .institution-header.orange-provider:not(.clicked):hover,
 .provider-header.orange-provider:not(.clicked):hover,
 .core-header.orange-provider:not(.clicked):hover,
   background: $sparc-orange-hover !important
+.institution-header.red-provider:not(.clicked):hover,
+.provider-header.red-provider:not(.clicked):hover,
+.core-header.red-provider:not(.clicked):hover,
+  background : $sparc-red-hover !important
 
 .blue-provider.clicked
   background: $sparc-blue-hover !important
+  border: 1px solid #5D5D5D !important
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset
+.blue-green-provider.clicked
+  background: $sparc-blue-green-hover !important
   border: 1px solid #5D5D5D !important
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset
 .green-provider.clicked
@@ -126,29 +161,39 @@
   background: $sparc-light-blue-hover !important
   border: 1px solid #5D5D5D !important
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset
-.red-provider.clicked
-  background: $sparc-red-hover !important
+.pink-provider.clicked
+  background: $sparc-pink-hover !important
   border: 1px solid #5D5D5D !important
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset
 .orange-provider.clicked
   background: $sparc-orange-hover !important
   border: 1px solid #5D5D5D !important
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset
+.red-provider.clicked
+  background: $sparc-red-hover !important
+  border: 1px solid #5D5D5D !important
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset
 
 .blue-provider.clicked:hover
-  background: $sparc-blue-clicked-hover !important
+  background: $sparc-blue-focus !important
+  border-color: #4C4C4C !important
+.blue-green-provider.clicked:hover
+  background: $sparc-blue-green-focus !important
   border-color: #4C4C4C !important
 .green-provider.clicked:hover
-  background: $sparc-green-clicked-hover !important
+  background: $sparc-green-focus !important
   border-color: #4C4C4C !important
 .light-blue-provider.clicked:hover
-  background: $sparc-light-blue-clicked-hover !important
+  background: $sparc-light-blue-focus !important
   border-color: #4C4C4C !important
-.red-provider.clicked:hover
-  background: $sparc-red-clicked-hover !important
+.pink-provider.clicked:hover
+  background: $sparc-pink-focus !important
   border-color: #4C4C4C !important
 .orange-provider.clicked:hover
-  background: $sparc-orange-clicked-hover !important
+  background: $sparc-orange-focus !important
+  border-color: #4C4C4C !important
+.red-provider.clicked:hover
+  background: $sparc-red-focus !important
   border-color: #4C4C4C !important
 
 /* HANDLING CORE AND SERVICE LIST STYLING */
@@ -197,7 +242,7 @@
     margin-bottom: 10px
     .page-header
       margin-top: 0
-      color: $sparc-light-blue
+      color: $sparc-blue
     h3
       margin-top: 0
 
@@ -214,7 +259,7 @@
         .calendar-event
           display: inline-block
           .date
-            background: $sparc-light-blue
+            background: $sparc-blue-green
             border-radius: 3px
             .day
               font-size: 20px
@@ -227,7 +272,7 @@
       padding-left: 0
       padding-right: 0
 
-    .panel
+    .panel-info
       .blog-link:not(:last-child),
       .calendar-event:not(:last-child)
         padding-bottom: 5px

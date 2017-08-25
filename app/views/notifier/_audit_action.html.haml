@@ -1,4 +1,4 @@
--# Copyright © 2011-2016 MUSC Foundation for Research Development~
+-# Copyright © 2011-2017 MUSC Foundation for Research Development~
 -# All rights reserved.~
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -31,7 +31,7 @@
   %tbody
     - @audit_report[:line_items].each do |last_change|
       - service_info = Service.find(last_change.audited_changes["service_id"])
-      - ssr = determine_ssr(last_change, action_name)
+      - ssr = determine_ssr(last_change, action_name, @deleted_ssrs)
       - if ssr.present?
         - if SubServiceRequest.where(id: last_change.audited_changes['sub_service_request_id']).empty?
           = render "audit_new_or_destroyed_ssr", last_change: last_change, service_info: service_info, ssr: ssr

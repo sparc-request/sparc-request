@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -71,7 +71,7 @@ module Dashboard::ServiceRequestsHelper
   def max_visit_count sub_service_request
     line_items_visits = sub_service_request.line_items.map { |li| li.line_items_visits }
     line_items_visits.flatten!
-    visit_counts = line_items_visits.map { |vg| vg.visits.count }
+    visit_counts = line_items_visits.map { |liv| liv.visits.count }
 
     return visit_counts.max
   end
@@ -102,21 +102,21 @@ module Dashboard::ServiceRequestsHelper
   # This method is ugly
   def visits_for_select arm
     unless arm.line_items_visits.empty?
-      vg = arm.line_items_visits.first
-      unless vg.visits.empty?
+      liv = arm.line_items_visits.first
+      unless liv.visits.empty?
         # If there are position attributes set, use positon
-        if vg.visits.last.position
-          unless vg.visits.last.position.blank?
-            last_position = vg.visits.last.position
+        if liv.ordered_visits.last.position
+          unless liv.ordered_visits.last.position.blank?
+            last_position = liv.ordered_visits.last.position
           else
-            last_position = vg.visits.count
+            last_position = liv.visits.count
           end
         # If position is for some reason nil (IT SHOULD NOT BE) use count
         else
-          last_position = vg.visits.count
+          last_position = liv.visits.count
         end
         arr = [["Add Visit #{last_position + 1}", nil]]
-        visits = Visit.where(:line_items_visit_id => vg.id).includes(:visit_group)
+        visits = Visit.where(:line_items_visit_id => liv.id).includes(:visit_group)
         visits = visits.sort_by{|index| index.try(:position)}
         last_position.times do |visit|
           visit_name = visits[visit].try(:visit_group).try(:name) || "Visit #{visit}"
@@ -134,11 +134,11 @@ module Dashboard::ServiceRequestsHelper
 
   def visits_for_delete arm
     unless arm.line_items_visits.empty?
-      vg = arm.line_items_visits.first
-        if vg.visits.size > 1
-          visit_count = vg.visits.last.position
+      liv = arm.line_items_visits.first
+        if liv.visits.size > 1
+          visit_count = liv.ordered_visits.last.position
           arr = []
-          visits = Visit.where(:line_items_visit_id => vg.id).includes(:visit_group)
+          visits = Visit.where(:line_items_visit_id => liv.id).includes(:visit_group)
           visits = visits.sort_by{|index| index.try(:position)}
           visit_count.times do |visit|
             visit_name = visits[visit].try(:visit_group).try(:name) || "Visit #{visit}"
@@ -156,36 +156,10 @@ module Dashboard::ServiceRequestsHelper
   end
 
   def visit_size_for_arm arm
-    vg = arm.line_items_visits.first
-    if vg
-      return vg.visits.size
+    liv = arm.line_items_visits.first
+    if liv
+      return liv.visits.size
     end
-  end
-
-
-  def display_visit_quantity(li)
-    visit_quantities = ""
-    service_id = li.service.id
-    visits_length = li.visits.length
-    remaining_visits = 5
-    if li.visits && visits_length > 0
-      li.visits.each_with_index do |visit, i|
-        package_cost = determine_package_cost(@project, li.service)
-        cost_arr = sub_totals(li, li.service, package_cost)
-        cost_in_dollars = if cost_arr[i] == 'N/A'
-                            "N/A"
-                          else
-                            "$#{two_decimal_places(cost_arr[i].floor * 0.01) rescue "N/A"}"
-                          end
-
-        @visits_array[i][:values] << { :service_id => service_id, :cost => cost_arr[i] }
-        visit_quantities += create_quantity_content_tag(cost_in_dollars, service_id, i + 1) if i < 5
-      end
-      remaining_visits -= visits_length
-    end
-    remaining_visits.times { |i| visit_quantities += create_quantity_content_tag('', service_id, visits_length < 5 ? i + visits_length +1 : i + 1) }
-
-    visit_quantities.html_safe
   end
 
   def create_quantity_content_tag(display_text, service_id, num)
@@ -211,11 +185,6 @@ module Dashboard::ServiceRequestsHelper
     package_cost == "N/A" ? package_cost : PriceGrabber::Business.per_unit_cost(li.service.pricing_map, package_cost, li.quantity)
   end
 
-  def sub_totals(li, service, package_cost)
-    ##li.instance_values is the "line_item" that the per_subject_subtotals requires
-    PriceGrabber::Business.per_subject_subtotals(li.instance_values, package_cost, service.pricing_map)
-  end
-
   def display_total(project, one_time_fees, per_patient_per_visit, type)
     total = "#{total_totals(project, one_time_fees, per_patient_per_visit)[type].to_s.to_f * 0.01}"
     "$#{two_decimal_places(total)}"
@@ -227,18 +196,6 @@ module Dashboard::ServiceRequestsHelper
       PriceGrabber::Business.total_totals(project.indirect_cost_rate, line_items_and_rate_maps)
     rescue
       "N/A"
-    end
-  end
-
-  def display_service_total(li)
-    amount = 0
-    package_cost = determine_package_cost(@project, li.service)
-    cost_arr = sub_totals(li, li.service, package_cost)
-    cost_arr.each { |value| amount += value if value != 'N/A'}
-    if [0, 0.00, 0.0].include?(amount)
-      "N/A"
-    else
-      "$#{two_decimal_places(amount.floor * 0.01)}"
     end
   end
 

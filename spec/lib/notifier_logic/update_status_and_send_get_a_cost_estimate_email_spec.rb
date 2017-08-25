@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -70,7 +70,7 @@ RSpec.describe NotifierLogic do
         end
         project_role = @sr.protocol.project_roles.first
         NotifierLogic.new(@sr, nil, logged_in_user).update_status_and_send_get_a_cost_estimate_email
-        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, nil, false, logged_in_user, nil, false)
+        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, nil, false, logged_in_user, nil, false, anything, false)
       end
 
       it 'should notify service providers (initial submission email)' do
@@ -99,7 +99,7 @@ RSpec.describe NotifierLogic do
         @notifier_logic =  NotifierLogic.new(@sr, nil, logged_in_user)
         allow(@notifier_logic).to receive(:send_user_notifications)
         @notifier_logic.update_status_and_send_get_a_cost_estimate_email
-        expect(@notifier_logic).to have_received(:send_user_notifications).with({:request_amendment=>false})
+        expect(@notifier_logic).to have_received(:send_user_notifications).with({:request_amendment=>false, :admin_delete_ssr=>false, :deleted_ssr=>nil})
       end
 
       it 'should send_service_provider_notifications request_amendment=>false' do
@@ -226,7 +226,7 @@ RSpec.describe NotifierLogic do
         end
         project_role = @sr.protocol.project_roles.first
         NotifierLogic.new(@sr, nil, logged_in_user).update_status_and_send_get_a_cost_estimate_email
-        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, nil, false, logged_in_user, nil, false)
+        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, nil, false, logged_in_user, nil, false, anything, false)
       end
 
       it 'should notify service providers (initial submission email)' do
@@ -255,7 +255,7 @@ RSpec.describe NotifierLogic do
         @notifier_logic =  NotifierLogic.new(@sr, nil, logged_in_user)
         allow(@notifier_logic).to receive(:send_user_notifications)
         @notifier_logic.update_status_and_send_get_a_cost_estimate_email
-        expect(@notifier_logic).to have_received(:send_user_notifications).with({:request_amendment=>false})
+        expect(@notifier_logic).to have_received(:send_user_notifications).with({:request_amendment=>false, :admin_delete_ssr=>false, :deleted_ssr=>nil})
       end
 
       it 'should send_service_provider_notifications request_amendment=>false' do
@@ -304,7 +304,7 @@ RSpec.describe NotifierLogic do
         end
         project_role = @sr.protocol.project_roles.first
         NotifierLogic.new(@sr, nil, logged_in_user).update_status_and_send_get_a_cost_estimate_email
-        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, nil, false, logged_in_user, nil, false)
+        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, nil, false, logged_in_user, nil, false, anything, false)
       end
 
       it 'should notify service providers (initial submission email)' do
@@ -333,7 +333,7 @@ RSpec.describe NotifierLogic do
         @notifier_logic =  NotifierLogic.new(@sr, nil, logged_in_user)
         allow(@notifier_logic).to receive(:send_user_notifications)
         @notifier_logic.update_status_and_send_get_a_cost_estimate_email
-        expect(@notifier_logic).to have_received(:send_user_notifications).with({:request_amendment=>false})
+        expect(@notifier_logic).to have_received(:send_user_notifications).with({:request_amendment=>false, :admin_delete_ssr=>false, :deleted_ssr=>nil})
       end
 
       it 'should send_service_provider_notifications with the updatable SSRs equest_amendment=>false' do

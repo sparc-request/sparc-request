@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -42,7 +42,7 @@ class Question < ActiveRecord::Base
   after_update :update_options_based_on_question_type, if: :question_type_changed?
 
   def previous_questions
-    self.survey.questions.where("questions.id < ?", self.id)
+    self.survey.questions.eager_load(:options).where("questions.id < ?", self.id)
   end
 
   def is_dependent?

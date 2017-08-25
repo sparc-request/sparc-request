@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -33,7 +33,7 @@ class Protocol < ApplicationRecord
   has_many :project_roles,                dependent: :destroy
   has_one :primary_pi_role,               -> { where(role: 'primary-pi') }, class_name: "ProjectRole", dependent: :destroy
   has_many :identities,                   through: :project_roles
-  has_many :service_requests
+  has_many :service_requests,             dependent: :destroy
   has_many :services,                     through: :service_requests
   has_many :sub_service_requests
   has_many :line_items,                   through: :service_requests
@@ -62,7 +62,7 @@ class Protocol < ApplicationRecord
   validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
   validates :research_master_id, presence: true, if: "RESEARCH_MASTER_ENABLED && has_human_subject_info?"
 
-  validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 1000 }, allow_blank: true
+  validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 1000 }, allow_blank: true
 
   attr_accessor :requester_id
   attr_accessor :validate_nct
@@ -531,23 +531,6 @@ class Protocol < ApplicationRecord
 
   def grand_total(service_request)
     direct_cost_total(service_request) + indirect_cost_total(service_request)
-  end
-
-  def arm_cleanup
-    return unless self.arms.count > 0
-
-    remove_arms = true
-
-    self.service_requests.each do |sr|
-      if sr.has_per_patient_per_visit_services?
-        remove_arms = false
-        break
-      end
-    end
-
-    if remove_arms
-      self.arms.destroy_all
-    end
   end
 
   def has_incomplete_additional_details?

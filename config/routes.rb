@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -40,7 +40,7 @@ SparcRails::Application.routes.draw do
     resources :sections, only: [:create, :destroy]
     resources :questions, only: [:create, :destroy]
     resources :options, only: [:create, :destroy]
-    resources :responses, only: [:show, :new, :create] do
+    resources :responses, only: [:show, :new, :edit, :create, :update] do
       get :complete
     end
     resources :survey_updater, only: [:update]
@@ -306,6 +306,7 @@ SparcRails::Application.routes.draw do
     resources :sub_service_requests, except: [:new, :create, :edit]do
       member do
         put :push_to_epic
+        put :resend_surveys
         get :change_history_tab
         get :status_history
         get :approval_history

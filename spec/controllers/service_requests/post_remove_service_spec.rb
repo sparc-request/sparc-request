@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -24,10 +24,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
   stub_controller
   let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
-
-  before(:each) do
-    allow_any_instance_of(ServiceRequestsController).to receive(:previous_page).and_return('http://example.com')
-  end
 
   describe '#remove_service' do
     it 'should call before_filter #initialize_service_request' do
@@ -76,6 +72,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
     end
 
     it 'should not delete complete line item' do
+      stub_const('FINISHED_STATUSES', ['complete'])
       org      = create(:organization, process_ssrs: true)
       service  = create(:service, organization: org)
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)

@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -32,7 +32,7 @@ class Dashboard::LineItemsVisitsController < Dashboard::BaseController
         @service_request.update_attributes(status: 'draft')
         @line_items_visit.sub_service_request.update_attributes(status: 'draft')
       end
-      render json: { success: true }
+      head :ok
     else
       render json: @line_items_visit.errors, status: :unprocessable_entity
     end

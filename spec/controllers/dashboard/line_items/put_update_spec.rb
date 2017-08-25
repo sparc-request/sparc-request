@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -30,7 +30,7 @@ RSpec.describe Dashboard::LineItemsController do
         allow(@line_item).to receive(:update_attributes).and_return(true)
 
         log_in_dashboard_identity(obj: build_stubbed(:identity))
-        xhr :put, :update, id: @line_item.id, line_item: { quantity: 5 }
+        put :update, params: { id: @line_item.id, line_item: { quantity: 5 } }, xhr: true
       end
 
       it "should assign @otf to whether or not LineItem's Service is a one time fee" do
@@ -65,7 +65,7 @@ RSpec.describe Dashboard::LineItemsController do
         allow(@line_item).to receive(:update_attributes).and_return(false)
 
         log_in_dashboard_identity(obj: build_stubbed(:identity))
-        xhr :put, :update, id: @line_item.id, line_item: { quantity: 5 }
+        put :update, params: { id: @line_item.id, line_item: { quantity: 5 } }, xhr: true
       end
 
       it "should assign @otf to whether or not LineItem's Service is a one time fee" do

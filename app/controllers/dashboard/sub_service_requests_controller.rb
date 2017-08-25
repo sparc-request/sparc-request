@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -95,16 +95,9 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     if @sub_service_request.destroy
       # Delete all related toast messages
       ToastMessage.where(sending_class_id: params[:id], sending_class: 'SubServiceRequest').each(&:destroy)
-
-      # notify users with view rights or above of deletion
-      @protocol.project_roles.where.not(project_rights: "none").each do |project_role|
-        Notifier.sub_service_request_deleted(project_role.identity, @sub_service_request, current_user).deliver unless project_role.identity.email.blank?
-      end
-
-      # notify service providers
-      @sub_service_request.organization.service_providers.where.not(hold_emails: true).each do |service_provider|
-        Notifier.sub_service_request_deleted(service_provider.identity, @sub_service_request, current_user).deliver
-      end
+      notifier_logic = NotifierLogic.new(@sub_service_request.service_request, nil, current_user)
+      notifier_logic.ssr_deletion_emails(deleted_ssr: @sub_service_request, ssr_destroyed: false, request_amendment: false, admin_delete_ssr: true)
+    
       flash[:alert] = 'Request Destroyed!'
       session[:breadcrumbs].clear(:sub_service_request_id)
     end
@@ -138,6 +131,16 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       flash[:success] = 'Request Pushed to Epic!'
     rescue
       flash[:alert] = $!.message
+    end
+  end
+
+  def resend_surveys
+    if @sub_service_request.surveys_completed?
+      @refresh = true # Refresh the details options
+      flash[:alert] = 'All surveys have already been completed.'
+    else
+      @sub_service_request.distribute_surveys
+      flash[:success] = 'Surveys re-sent!'
     end
   end
 

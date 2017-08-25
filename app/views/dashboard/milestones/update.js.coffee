@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -18,28 +18,8 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-require "rails_helper"
-
-RSpec.describe Dashboard::FulfillmentsController do
-  describe "GET #edit" do
-    before(:each) do
-      @fulfillment = findable_stub(Fulfillment) do
-        instance_double(Fulfillment, id: 1)
-      end
-
-      log_in_dashboard_identity(obj: build_stubbed(:identity))
-      xhr :get, :edit, id: @fulfillment.id
-    end
-
-    it "should assign @fulfillment from params[:id]" do
-      expect(assigns(:fulfillment)).to eq(@fulfillment)
-    end
-
-    it "should assign @header_text" do
-      expect(assigns(:header_text)).not_to be_nil
-    end
-
-    it { is_expected.to render_template "dashboard/fulfillments/edit" }
-    it { is_expected.to respond_with :ok }
-  end
-end
+$('.milestones-panel').html("<%= j render 'dashboard/protocols/milestone', protocol: @protocol %>")
+$(".datetimepicker:not(.time)").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
+$('.datetimepicker.time').datetimepicker(format: 'hh:mm A', allowInputToggle: true)
+$(".selectpicker").selectpicker()
+$('[data-toggle="tooltip"]').tooltip()

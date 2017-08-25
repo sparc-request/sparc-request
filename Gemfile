@@ -48,7 +48,7 @@ gem 'newrelic_rpm'
 gem 'nokogiri'
 gem 'nori'
 gem 'nprogress-rails'
-gem 'obis-net-ldap'
+gem 'net-ldap', '~> 0.16.0'
 gem 'omniauth'
 gem 'omniauth-shibboleth'
 gem 'paperclip', '~> 4.3', '>= 4.3.7'
@@ -56,7 +56,7 @@ gem 'pdfkit'
 gem 'prawn', '0.12.0'
 gem 'premailer-rails'
 gem 'rack-mini-profiler'
-gem 'rails', '~> 5.0', '>= 5.0.3'
+gem 'rails', '~> 5.1', '>= 5.1.3'
 gem 'rails-html-sanitizer'
 # Needed to used audited-activerecord w/ Rails 5
 gem "rails-observers", github: 'rails/rails-observers'
@@ -67,13 +67,14 @@ gem 'sass'
 gem 'sass-rails'
 gem 'savon', '~> 2.2.0'
 gem 'simplecov', require: false, group: :test
-gem 'therubyracer', '0.10.2', :platforms => :ruby, group: :production
+gem 'therubyracer', '0.12.3', :platforms => :ruby, group: :production
 gem 'twitter-typeahead-rails'
 gem 'uglifier', '>= 1.0.3'
 gem 'whenever', require: false
 gem 'will_paginate'
 gem 'will_paginate-bootstrap'
 gem 'x-editable-rails'
+gem 'dotenv-rails'
 
 group :development, :test, :profile do
   gem 'addressable', '~> 2.3.6'

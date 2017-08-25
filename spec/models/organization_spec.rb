@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,7 +21,7 @@
 require 'date'
 require 'rails_helper'
 
-RSpec.describe 'organization' do
+RSpec.describe Organization, type: :model do
   let_there_be_lane
   let_there_be_j
   build_service_request_with_project
@@ -440,34 +440,33 @@ RSpec.describe 'organization' do
 
     describe "get available statuses" do
 
-      it "should set the status to the parent's status if there is one" do
-        expect(core.get_available_statuses).to eq({"draft"=>"Draft", "submitted"=>"Submitted"})
+      it "should set inherit the parent's status if there is one" do
+        expect(core.get_available_statuses).to include({"administrative_review"=>"Administrative Review"})
       end
 
       it "should set the status to the default if there are no parent statuses" do
         expect(provider.get_available_statuses).to include("draft" => "Draft", "submitted" => "Submitted", "complete" => "Complete", "in_process" => "In Process", "awaiting_pi_approval" => "Awaiting Requester Response", "on_hold" => "On Hold")
       end
 
-      it "should not get the parent's status if it already has a status" do
-        expect(program.get_available_statuses).to eq({"draft"=>"Draft", "submitted"=>"Submitted"})
+      it "should not get the parent's status if it already has a non-default status" do
+        expect(program.get_available_statuses).to include({"administrative_review"=>"Administrative Review"})
       end
     end
 
-    describe 'has editable statuses?' do
+    describe 'has_editable_status?' do
 
       it 'should return true if the current organization or its parent have editable statuses' do
         organization1 = Organization.create
         organization2 = Organization.create(parent_id: organization1.id)
-        EDITABLE_STATUSES[organization1.id] = ['draft']
-        expect(organization2.has_editable_statuses?).to eq(true)
-        expect(organization1.has_editable_statuses?).to eq(true)
+        expect(organization2.has_editable_status?('draft')).to eq(true)
+        expect(organization1.has_editable_status?('draft')).to eq(true)
       end
 
       it 'should return false otherwise' do
         organization1 = Organization.create
         organization2 = Organization.create
-        EDITABLE_STATUSES[organization1.id] = ['draft']
-        expect(organization2.has_editable_statuses?).to eq(false)
+        organization2.editable_statuses.destroy_all
+        expect(organization2.has_editable_status?('draft')).to eq(false)
       end
     end
   end

@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,7 +21,7 @@
 require 'date'
 require 'rails_helper'
 
-RSpec.describe 'Protocol' do
+RSpec.describe Protocol, type: :model do
   let_there_be_lane
   let_there_be_j
   build_service_request_with_study()
@@ -37,4 +37,7 @@ RSpec.describe 'Protocol' do
       expect(project.valid?).to eq false
     end
   end
+
+  it { is_expected.to validate_numericality_of(:indirect_cost_rate).is_greater_than_or_equal_to(1) }
+  it { is_expected.to validate_numericality_of(:indirect_cost_rate).is_less_than_or_equal_to(1000) }
 end

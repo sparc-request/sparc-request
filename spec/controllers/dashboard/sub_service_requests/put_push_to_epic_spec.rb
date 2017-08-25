@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -38,7 +38,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
         before :each do
           create(:super_user, identity: @logged_in_user, organization: @organization)
 
-          put :push_to_epic, id: @sub_service_request.id, format: :js
+          put :push_to_epic, params: { id: @sub_service_request.id, format: :js }
         end
 
         it { is_expected.to render_template "dashboard/sub_service_requests/push_to_epic" }
@@ -47,7 +47,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
       context 'user is not authorized admin on SSR' do
         before :each do
-          put :push_to_epic, id: @sub_service_request.id, format: :js
+          put :push_to_epic, params: { id: @sub_service_request.id, format: :js }
         end
 
         it { is_expected.to render_template "service_requests/_authorization_error" }
@@ -60,7 +60,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
       before :each do
         create(:super_user, identity: @logged_in_user, organization: @organization)
 
-        put :push_to_epic, id: @sub_service_request.id, format: :js
+        put :push_to_epic, params: { id: @sub_service_request.id, format: :js }
       end
 
       it 'should assign instance variables' do
@@ -79,16 +79,16 @@ RSpec.describe Dashboard::SubServiceRequestsController do
       end
 
       it 'should push the protocol' do
-        expect{ put :push_to_epic, id: @sub_service_request.id, format: :js }.to change(EpicQueueRecord, :count).by(1)
+        expect{ put :push_to_epic, params: { id: @sub_service_request.id, format: :js } }.to change(EpicQueueRecord, :count).by(1)
       end
 
       it 'render template' do
-        put :push_to_epic, id: @sub_service_request.id, format: :js
+        put :push_to_epic, params: { id: @sub_service_request.id, format: :js }
         is_expected.to render_template "dashboard/sub_service_requests/push_to_epic"
       end
 
       it 'respond ok' do
-        put :push_to_epic, id: @sub_service_request.id, format: :js
+        put :push_to_epic, params: { id: @sub_service_request.id, format: :js }
         is_expected.to respond_with :ok
       end
     end

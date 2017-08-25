@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -26,7 +26,7 @@ RSpec.describe ProtocolsController, type: :controller do
     it "returns http success" do
       protocol = create(:protocol_without_validations)
       allow(controller).to receive(:authorize_identity).and_return(true)
-      get :show, id: protocol.id, format: :js
+      get :show, params: { id: protocol.id, format: :js }
       expect(response).to have_http_status(:success)
     end
   end

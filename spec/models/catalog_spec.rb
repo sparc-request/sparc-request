@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Catalog' do
+RSpec.describe Catalog, type: :model do
   context "providers and programs with valid pricing setups" do
     let!(:institution)             { create(:institution) }
     let!(:provider1)               { create(:provider, parent_id: institution.id) }

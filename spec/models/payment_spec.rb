@@ -1,5 +1,5 @@
 # coding: utf-8
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,7 +21,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Payment do
+RSpec.describe Payment, type: :model do
   it{ should validate_presence_of :date_submitted }
   it{ should validate_numericality_of :amount_invoiced }
   it{ should validate_numericality_of :amount_received }

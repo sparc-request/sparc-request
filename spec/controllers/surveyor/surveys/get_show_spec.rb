@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -42,9 +42,9 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
     it 'should assign @survey to the survey' do
       survey = create(:survey_without_validations)
 
-      xhr :get, :show, {
+      get :show, params: {
         id: survey.id
-      }
+      }, xhr: true
 
       expect(assigns(:survey)).to eq(survey)
     end
@@ -52,9 +52,9 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
     it 'should render template' do
       survey = create(:survey_without_validations)
 
-      xhr :get, :show, {
+      get :show, params: {
         id: survey.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:show)
     end
@@ -62,9 +62,9 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
     it 'should respond ok' do
       survey = create(:survey_without_validations)
       
-      xhr :get, :show, {
+      get :show, params: {
         id: survey.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

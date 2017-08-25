@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -26,132 +26,34 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
   let!(:logged_in_user) { create(:identity) }
 
   describe '#new' do
+    before :each do
+      @survey = create(:survey, active: true)
+
+      get :new, params: { access_code: @survey.access_code }, xhr: true
+    end
+
     it 'should call before_filter #authenticate_identity!' do
       expect(before_filters.include?(:authenticate_identity!)).to eq(true)
     end
 
     it 'should assign @survey to the Survey' do
-      survey = create(:survey, active: true)
-
-      xhr :get, :new, {
-        access_code: survey.access_code
-      }
-
-      expect(assigns(:survey)).to eq(survey)
+      expect(assigns(:survey)).to eq(@survey)
     end
 
     it 'should assign @response as a new Response of Survey' do
-      survey = create(:survey, active: true)
-
-      xhr :get, :new, {
-        access_code: survey.access_code
-      }
-
       expect(assigns(:response)).to be_a_new(Response)
-      expect(assigns(:response).survey).to eq(survey)
+      expect(assigns(:response).survey).to eq(@survey)
     end
 
     it 'should build question responses' do
-      survey = create(:survey, active: true)
-
-      xhr :get, :new, {
-        access_code: survey.access_code
-      }
-
       expect(assigns(:response).question_responses).to be
     end
 
-    context 'format.html (Taking Survey From Email Link)' do
-      it 'should assign @review to false' do
-        survey = create(:survey, active: true)
-        org = create(:organization)
-        ssr = create(:sub_service_request_without_validations, organization: org)
-
-        xhr :get, :new, {
-          access_code: survey.access_code,
-          sub_service_request_id: ssr.id,
-          format: :html
-        }
-
-        expect(assigns(:review)).to eq("false")
-      end
-
-      it 'should assign @sub_service_request' do
-        survey = create(:survey, active: true)
-        org = create(:organization)
-        ssr = create(:sub_service_request_without_validations, organization: org)
-
-        xhr :get, :new, {
-          access_code: survey.access_code,
-          sub_service_request_id: ssr.id,
-          format: :html
-        }
-
-        expect(assigns(:sub_service_request)).to eq(ssr)
-      end
-
-      it 'should render template' do
-        survey = create(:survey, active: true)
-        org = create(:organization)
-        ssr = create(:sub_service_request_without_validations, organization: org)
-
-        xhr :get, :new, {
-          access_code: survey.access_code,
-          sub_service_request_id: ssr.id,
-          format: :html
-        }
-
-        expect(controller).to render_template(:new)
-      end
-
-      it 'should respond ok' do
-        survey = create(:survey, active: true)
-        org = create(:organization)
-        ssr = create(:sub_service_request_without_validations, organization: org)
-
-        xhr :get, :new, {
-          access_code: survey.access_code,
-          sub_service_request_id: ssr.id,
-          format: :html
-        }
-
-        expect(controller).to respond_with(:ok)
-      end
+    it 'should assign @review to true' do
+      expect(assigns(:review)).to eq("true")
     end
 
-    context 'format.js (Taking Survey From Step 4' do
-      it 'should assign @review to true' do
-        survey = create(:survey, active: true)
-
-        xhr :get, :new, {
-          access_code: survey.access_code,
-          format: :js
-        }
-
-        expect(assigns(:review)).to eq("true")
-      end
-
-      it 'should render template' do
-        survey = create(:survey, active: true)
-
-        xhr :get, :new, {
-          access_code: survey.access_code,
-          format: :js
-        }
-
-        expect(controller).to render_template(:new)
-      end
-
-      it 'should respond ok' do
-        survey = create(:survey, active: true)
-
-        xhr :get, :new, {
-          access_code: survey.access_code,
-          format: :js
-        }
-
-        expect(controller).to respond_with(:ok)
-      end
-    end
+    it { is_expected.to render_template(:new) }
+    it { is_expected.to respond_with(:ok) }
   end
 end

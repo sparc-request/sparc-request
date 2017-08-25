@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -548,5 +548,8 @@ $ ->
     window.location.assign("/catalog_manager?show_unavailable=#{show_unavailable}")
   )
 
-
-
+  $(document).on 'change', '.available-status', ->
+    if $(this).prop('checked')
+      $(".#{$(this).data('status')}-dependent").show()
+    else
+      $(".#{$(this).data('status')}-dependent").hide()

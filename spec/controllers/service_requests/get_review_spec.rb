@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -54,9 +54,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      xhr :get, :review, {
+      get :review, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:tab)).to eq('calendar')
     end
@@ -69,9 +69,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      xhr :get, :review, {
+      get :review, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:review)).to eq(true)
     end
@@ -84,14 +84,14 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      xhr :get, :review, {
+      get :review, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:portal)).to eq(false)
     end
 
-    it 'should assign @merged to false' do
+    it 'should assign @merged to true' do
       org      = create(:organization)
       service  = create(:service, organization: org, one_time_fee: true)
       protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
@@ -99,11 +99,26 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      xhr :get, :review, {
+      get :review, params: {
         id: sr.id
-      }
+      }, xhr: true
 
-      expect(assigns(:merged)).to eq(false)
+      expect(assigns(:merged)).to eq(true)
+    end
+
+    it 'should assign @consolidated to false' do
+      org      = create(:organization)
+      service  = create(:service, organization: org, one_time_fee: true)
+      protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+
+      get :review, params: {
+        id: sr.id
+      }, xhr: true
+
+      expect(assigns(:consolidated)).to eq(false)
     end
 
     it 'should assign @pages' do
@@ -117,9 +132,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       arm2     = create(:arm, protocol: protocol)
       pages    = { arm1.id => 1, arm2.id => 1 }
 
-      xhr :get, :review, {
+      get :review, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:pages)).to eq(pages)
     end
@@ -132,9 +147,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      xhr :get, :review, {
+      get :review, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:review)
     end
@@ -147,9 +162,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      xhr :get, :review, {
+      get :review, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

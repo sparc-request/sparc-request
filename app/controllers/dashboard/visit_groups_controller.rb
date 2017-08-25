@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -96,7 +96,11 @@ class Dashboard::VisitGroupsController < Dashboard::BaseController
       :day,
       :window_before,
       :window_after)
-    temp[:position] = temp[:position].to_i - 1
+    
+    if @visit_group.position < temp[:position].to_i
+      temp[:position] = temp[:position].to_i - 1
+    end
+    
     temp
   end
 

@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,12 +22,11 @@
 $(".otf-calendar").replaceWith("<%= escape_javascript(render('service_calendars/master_calendar/otf/otf_calendar', scroll_true: @scroll_true, tab: @tab, service_request: @service_request, sub_service_request: @sub_service_request, review: @review, portal: @portal, admin: @admin, merged: @merged, consolidated: @consolidated, statuses_hidden: %w(first_draft)))%>")
 <% else %>
 $(".arm-calendar-container-<%= @arm.id %>").replaceWith("<%= escape_javascript(render( '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @pages[@arm.id], pages: @pages, review: @review, portal: @portal, admin: @admin, merged: @merged, consolidated: @consolidated, statuses_hidden: %w(first_draft))) %>")
-
 <% end %>
+
 <% if @portal %>
 $("#sub_service_request_header").html("<%= escape_javascript(render( 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request )) %>")
 <% end %>
 
 $('.selectpicker').selectpicker()
 setup_xeditable_fields(@scroll_true)
-changing_tabs_calculating_rates()

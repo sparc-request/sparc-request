@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -82,6 +82,10 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
         :status,
         :new,
         :position,
+        :_destroy],
+      editable_statuses_attributes: [:organization_id,
+        :status,
+        :new,
         :_destroy])
   end
 

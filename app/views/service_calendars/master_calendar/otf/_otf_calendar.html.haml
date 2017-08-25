@@ -1,4 +1,4 @@
--# Copyright © 2011-2016 MUSC Foundation for Research Development
+-# Copyright © 2011-2017 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -24,7 +24,7 @@
         = t(:calendars)[:otf][:header]
     - unless review
       .pull-right
-        = render 'service_calendars/master_calendar/otf/otf_freeze_header_button', service_request: service_request, scroll_true: @scroll_true
+        = render 'service_calendars/master_calendar/otf/otf_freeze_header_button', service_request: service_request, sub_service_request: sub_service_request, merged: merged, statuses_hidden: statuses_hidden, scroll_true: @scroll_true
     .clearfix
   %table.table.table-bordered{ class: @scroll_true ? "scrolling-table" : "non-scrolling-table" }
     %thead{ class: @scroll_true ? "scrolling-thead" : "" }

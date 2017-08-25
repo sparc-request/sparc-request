@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -34,7 +34,10 @@ class LineItem < ApplicationRecord
   has_many :procedures
   has_many :admin_rates, dependent: :destroy
   has_many :notes, as: :notable, dependent: :destroy
+  
   has_one :submission, dependent: :destroy
+  has_one :protocol, through: :service_request
+  
   attr_accessor :pricing_scheme
 
   accepts_nested_attributes_for :fulfillments, allow_destroy: true
@@ -49,8 +52,9 @@ class LineItem < ApplicationRecord
   validate :quantity_must_be_smaller_than_max_and_greater_than_min, on: :update, if: Proc.new { |li| li.service.one_time_fee }
   validates :units_per_quantity, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, on: :update, if: Proc.new { |li| li.service.one_time_fee }
 
-  after_create :build_line_items_visits, if: Proc.new { |li| li.service.present? && !li.one_time_fee && li.service_request.present? && li.service_request.arms.any? }
-
+  after_create :build_line_items_visits_if_pppv
+  before_destroy :destroy_arms_if_last_pppv_line_item
+  
   default_scope { order('line_items.id ASC') }
 
   def displayed_cost_valid?(displayed_cost)
@@ -160,24 +164,8 @@ class LineItem < ApplicationRecord
   end
 
   def quantity_total(line_items_visit)
-    # quantity_total = self.visits.map {|x| x.research_billing_qty}.inject(:+) * self.subject_count
     quantity_total = line_items_visit.visits.sum('research_billing_qty')
     return quantity_total * (line_items_visit.subject_count || 0)
-  end
-
-  # Returns a hash of subtotals for the visits in the line item.
-  # Visit totals depend on the quantities in the other visits, so it would be clunky
-  # to compute one visit at a time
-  def per_subject_subtotals(visits=self.visits)
-    totals = { }
-    quantity_total = quantity_total()
-    per_unit_cost = per_unit_cost(quantity_total)
-
-    visits.each do |visit|
-      totals[visit.id.to_s] = visit.cost(per_unit_cost)
-    end
-
-    return totals
   end
 
   # Determine the direct costs for a visit-based service for one subject
@@ -322,7 +310,7 @@ class LineItem < ApplicationRecord
       next unless line_item && line_item.arms.find(arm.id)
 
       line_item_visit = line_item.line_items_visits.find_by_arm_id arm.id
-      v = line_item_visit.visits[visit_position]
+      v = line_item_visit.ordered_visits[visit_position]
       total_quantity_between_visits = visit.quantity_total + v.quantity_total
       if not(total_quantity_between_visits == 0 or total_quantity_between_visits == sr.linked_quantity_total)
         first_service, second_service = [self.service.name, line_item.service.name].sort
@@ -358,9 +346,17 @@ class LineItem < ApplicationRecord
 
   private
 
-  def build_line_items_visits
-    self.service_request.arms.each do |arm|
-      arm.line_items_visits.create(line_item: self, subject_count: arm.subject_count)
+  def build_line_items_visits_if_pppv
+    if self.service && !self.one_time_fee && self.service_request.try(:arms).try(:any?)
+      self.service_request.arms.each do |arm|
+        arm.line_items_visits.create(line_item: self, subject_count: arm.subject_count)
+      end
+    end
+  end
+
+  def destroy_arms_if_last_pppv_line_item
+    if self.try(:protocol).try(:service_requests).try(:none?) { |sr| sr.has_per_patient_per_visit_services? }
+      self.service_request.try(:arms).try(:destroy_all)
     end
   end
 end

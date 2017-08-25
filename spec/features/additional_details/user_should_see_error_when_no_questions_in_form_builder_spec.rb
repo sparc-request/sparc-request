@@ -26,7 +26,7 @@ RSpec.describe 'User should see error - no questions created', js: true do
 
   scenario 'successfully' do
     service = create(:service, :with_ctrc_organization)
-    visit new_service_additional_details_questionnaire_path(service)
+    visit new_additional_details_questionnaire_path(questionable_id: service.id, questionable_type: 'Service')
 
     click_button 'Create Questionnaire'
 
@@ -37,7 +37,7 @@ RSpec.describe 'User should see error - no questions created', js: true do
 
   scenario 'successfully - fills out name' do
     service = create(:service, :with_ctrc_organization)
-    visit new_service_additional_details_questionnaire_path(service)
+    visit new_additional_details_questionnaire_path(questionable_id: service.id, questionable_type: 'Service')
 
     fill_in 'questionnaire_name', with: 'New Questionnaire'
     click_button 'Create Questionnaire'
@@ -48,7 +48,7 @@ RSpec.describe 'User should see error - no questions created', js: true do
 
   scenario 'successfully' do
     service = create(:service, :with_ctrc_organization)
-    visit new_service_additional_details_questionnaire_path(service)
+    visit new_additional_details_questionnaire_path(questionable_id: service.id, questionable_type: 'Service')
     fill_in 'questionnaire_name', with: 'New Questionnaire'
     fill_in 'questionnaire_items_attributes_0_content', with: 'What is your favorite color?'
     select 'Radio Button', from: 'questionnaire_items_attributes_0_item_type'
@@ -60,7 +60,7 @@ RSpec.describe 'User should see error - no questions created', js: true do
 
     click_button 'Create Questionnaire'
 
-    expect(current_path).to eq service_additional_details_questionnaires_path(service)
+    expect(current_path).to eq additional_details_questionnaires_path()
     expect(Questionnaire.count).to eq 1
     expect(page).not_to have_content(
       'At least one question must exist in order to create a form.'

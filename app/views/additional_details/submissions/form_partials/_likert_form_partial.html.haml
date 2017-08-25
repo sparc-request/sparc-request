@@ -19,10 +19,10 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 %br
-- item.item_options.each_with_index do |item_option, index|
-  .likert-group.no-padding{ class: "col-sm-#{(12 / item.item_options.length).ceil}"}
+- item.item_options.each do |item_option|
+  .likert-group.no-padding{ class: "col-sm-#{(12 / item.item_options.size).ceil}"}
     .col-sm-12.text-center.no-padding
-      = index+1
+      = item.item_options.index(item_option)+1
     .col-sm-12.text-center.no-padding.likert
       = qr.radio_button :content, item_option.content
     .col-sm-12.text-center.no-padding

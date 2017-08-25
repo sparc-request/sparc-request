@@ -25,7 +25,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do |example|
-    DatabaseCleaner[:active_record, connection: :test].strategy = example.metadata[:js] ? :truncation : :transaction
+    DatabaseCleaner[:active_record, connection: :test].strategy = :truncation
     DatabaseCleaner.start
   end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170707153553) do
+ActiveRecord::Schema.define(version: 20170817141100) do
 
   create_table "admin_rates", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer "line_item_id"
@@ -170,12 +170,12 @@ ActiveRecord::Schema.define(version: 20170707153553) do
     t.index ["protocol_id"], name: "index_documents_on_protocol_id"
   end
 
-  create_table "documents_sub_service_requests", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "documents_sub_service_requests", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer "document_id"
     t.integer "sub_service_request_id"
   end
 
-  create_table "editable_statuses", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "editable_statuses", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "organization_id"
     t.string "status", null: false
     t.datetime "created_at", null: false
@@ -381,7 +381,9 @@ ActiveRecord::Schema.define(version: 20170707153553) do
     t.text "body"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["from"], name: "index_messages_on_from"
     t.index ["notification_id"], name: "index_messages_on_notification_id"
+    t.index ["to"], name: "index_messages_on_to"
   end
 
   create_table "notes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -482,6 +484,19 @@ ActiveRecord::Schema.define(version: 20170707153553) do
     t.datetime "updated_at", null: false
     t.float "percent_subsidy", limit: 24
     t.index ["sub_service_request_id"], name: "index_payments_on_sub_service_request_id"
+  end
+
+  create_table "permissible_values", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string "key"
+    t.string "value"
+    t.string "concept_code"
+    t.integer "parent_id"
+    t.integer "sort_order"
+    t.string "category"
+    t.boolean "default"
+    t.boolean "reserved"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "pricing_maps", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -789,6 +804,21 @@ ActiveRecord::Schema.define(version: 20170707153553) do
     t.datetime "updated_at", null: false
     t.index ["session_id"], name: "index_sessions_on_session_id"
     t.index ["updated_at"], name: "index_sessions_on_updated_at"
+  end
+
+  create_table "settings", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string "key"
+    t.text "value"
+    t.string "data_type"
+    t.string "friendly_name"
+    t.text "description"
+    t.integer "group"
+    t.string "version"
+    t.string "parent_key"
+    t.string "parent_value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_settings_on_key", unique: true
   end
 
   create_table "study_phases", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|

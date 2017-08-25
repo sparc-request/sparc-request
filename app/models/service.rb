@@ -75,11 +75,9 @@ class Service < ApplicationRecord
     organization.process_ssrs_parent
   end
 
-  # Return the parent organizations of the service.  Note that this
-  # returns the organizations in the reverse order of
-  # Organization#parents.
+  # Return the parent organizations of the service.
   def parents
-    return organization.parents.reverse + [ organization ]
+    return organization.parents + [ organization ]
   end
 
   def core

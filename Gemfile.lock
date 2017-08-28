@@ -266,7 +266,7 @@ GEM
       addressable (~> 2.3)
     letter_opener (1.4.1)
       launchy (~> 2.2)
-    libv8 (3.16.14.19)
+    libv8 (3.16.14.19-x86_64-darwin-16)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
     mail (2.6.6)
@@ -486,8 +486,8 @@ GEM
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
     temple (0.8.0)
-    therubyracer (0.12.2)
-      libv8 (~> 3.16.14.0)
+    therubyracer (0.12.3)
+      libv8 (~> 3.16.14.15)
       ref
     thor (0.20.0)
     thread_safe (0.3.6)
@@ -634,7 +634,7 @@ DEPENDENCIES
   spring
   spring-commands-rspec
   sqlite3
-  therubyracer (= 0.12.2)
+  therubyracer (= 0.12.3)
   timecop
   traceroute
   twitter-typeahead-rails

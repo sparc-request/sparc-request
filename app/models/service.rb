@@ -76,8 +76,9 @@ class Service < ApplicationRecord
   end
 
   # Return the parent organizations of the service.
-  def parents
-    return organization.parents + [ organization ]
+  def parents id_only=false
+    parent_org = id_only ? organization.id : organization
+    return [ parent_org ] + organization.parents(id_only)
   end
 
   def core

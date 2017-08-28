@@ -73,7 +73,9 @@ initialize_org_search = () ->
   ).on('typeahead:render', (event, a, b, c) ->
     $('[data-toggle="tooltip"]').tooltip({ 'delay' : { show: 1000, hide: 500 } })
   ).on('typeahead:select', (event, suggestion) ->
-    window.cart.selectService(suggestion.value, $(this).data('srid'), $(this).data('ssrid'))
+    for parent in suggestion['parents']
+      target = $(parent).data('target')
+      $(target).collapse('show')
   )
 
 

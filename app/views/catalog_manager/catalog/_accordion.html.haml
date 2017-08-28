@@ -28,7 +28,7 @@
   - institutions.where(is_available: show_available_only).each do |institution|
     .panel-heading.no-padding-y
       .col-sm-1.no-padding-y
-        = link_to folder_glyphicon(), 'javascript:void(0)', data: { id: institution.id, toggle: 'collapse', target: ".institution-#{institution.id}", parent: '#cm-accordion' }
+        = link_to folder_glyphicon(), 'javascript:void(0)', id: "institution-#{institution.id}", data: { toggle: 'collapse', target: ".institution-#{institution.id}", parent: '#cm-accordion' }
       .col-sm-11.no-padding-y
         = link_to accordion_link_text(institution), edit_catalog_manager_institution_path(institution), class: 'org-form-label panel-title', remote: true
     .panel-collapse.collapse{ class: "institution-#{institution.id}" }
@@ -41,7 +41,7 @@
         - institution.providers.where(is_available: show_available_only).order("`order`").each do |provider|
           .panel-heading.no-padding-y
             .col-sm-1.no-padding-y
-              = link_to folder_glyphicon(), 'javascript:void(0)', data: { id: provider.id, toggle: 'collapse', target: ".provider-#{provider.id}", parent: "#institution-#{institution.id}" }
+              = link_to folder_glyphicon(), 'javascript:void(0)', id: "provider-#{provider.id}", data: { toggle: 'collapse', target: ".provider-#{provider.id}", parent: "#institution-#{institution.id}" }
             .col-sm-11.no-padding-y
               = link_to accordion_link_text(provider), edit_catalog_manager_provider_path(provider), class: 'org-form-label panel-title', remote: true
           .panel-collapse.collapse{ class: "provider-#{provider.id}" }
@@ -54,7 +54,7 @@
               - provider.programs.where(is_available: show_available_only).order("`order`").each do |program|
                 .panel-heading.no-padding-y
                   .col-sm-1.no-padding-y
-                    = link_to folder_glyphicon(), 'javascript:void(0)', data: { id: program.id, toggle: 'collapse', target: ".program-#{program.id}", parent: "provider-#{provider.id}" }
+                    = link_to folder_glyphicon(), 'javascript:void(0)', id: "program-#{program.id}", data: { toggle: 'collapse', target: ".program-#{program.id}", parent: "provider-#{provider.id}" }
                   .col-sm-11.no-padding-y
                     = link_to accordion_link_text(program), edit_catalog_manager_program_path(program), class: 'org-form-label panel-title', remote: true
                 .panel-collapse.collapse{ class: "program-#{program.id}" }
@@ -72,7 +72,7 @@
                     - program.cores.where(is_available: show_available_only).order("`order`").each do |core|
                       .panel-heading.no-padding-y
                         .col-sm-1.no-padding-y
-                          = link_to folder_glyphicon(), 'javascript:void(0)', data: { id: core.id, toggle: 'collapse', target: ".core-#{core.id}", parent: "program-#{program.id}" }
+                          = link_to folder_glyphicon(), 'javascript:void(0)', id: "core-#{core.id}", data: { toggle: 'collapse', target: ".core-#{core.id}", parent: "program-#{program.id}" }
                         .col-sm-11.no-padding-y
                           = link_to accordion_link_text(core), edit_catalog_manager_core_path(core), class: 'org-form-label panel-title', remote: true
                       .panel-collapse.collapse{ class: "core-#{core.id}" }
@@ -85,12 +85,12 @@
                           - core.services.where(is_available: show_available_only).order("`order`, `name`").each do |service|
                             .panel-heading.no-padding-y
                               .col-sm-1.no-padding-y
-                                = link_to file_glyphicon(), 'javascript:void(0)', data: { id: service.id, parent: "core-#{core.id}" }
+                                = link_to file_glyphicon(), 'javascript:void(0)', id: "service-#{service.id}", data: { parent: "core-#{core.id}" }
                               .col-sm-11.no-padding-y
                                 = link_to accordion_link_text(service), edit_catalog_manager_service_path(service), class: 'org-form-label panel-title', remote: true
                     - program.services.where(is_available: show_available_only).order("`order`, `name`").each do |service|
                       .panel-heading.no-padding-y
                         .col-sm-1.no-padding-y
-                          = link_to file_glyphicon(), 'javascript:void(0)', data: { id: service.id, parent: "program-#{program.id}" }
+                          = link_to file_glyphicon(), 'javascript:void(0)', id: "service-#{service.id}", data: { parent: "program-#{program.id}" }
                         .col-sm-11.no-padding-y
                           = link_to accordion_link_text(service), edit_catalog_manager_service_path(service), class: 'org-form-label panel-title', remote: true

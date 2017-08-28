@@ -73,7 +73,9 @@ class SearchController < ApplicationController
         type: org.class.to_s,
         text_color: "text-#{org.class.to_s.downcase}",
         cpt_code: cpt_code_text(org),
-        inactive_tag: inactive_text(org)
+        inactive_tag: inactive_text(org),
+        parents: org.parents.reverse.map{ |p| "##{p.class.to_s.downcase}-#{p.id}" },
+        value_selector: "##{org.class.to_s.downcase}-#{org.id}"
       }
     }
 

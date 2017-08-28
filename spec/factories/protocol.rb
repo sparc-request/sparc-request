@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,12 +21,11 @@
 FactoryGirl.define do
   factory :protocol, aliases: [:project] do
     next_ssr_id                  { Random.rand(10000) }
-    short_title                  { Faker::Lorem.word }
+    short_title                  { Faker::Lorem.sentence(2) }
     title                        { Faker::Lorem.sentence(3) }
     sponsor_name                 { Faker::Lorem.sentence(3) }
     brief_description            { Faker::Lorem.paragraph(2) }
-    indirect_cost_rate           { Random.rand(1000) }
-    study_phase                  { Faker::Lorem.word }
+    indirect_cost_rate           { Random.rand(1..1000) }
     udak_project_number          { Random.rand(1000).to_s }
     funding_rfa                  { Faker::Lorem.word }
     potential_funding_start_date { Time.now + 1.year }
@@ -45,6 +44,10 @@ FactoryGirl.define do
       to_create { |instance| instance.save(validate: false) }
     end
 
+    trait :project do
+      type "Project"
+    end
+
     trait :funded do
       funding_status "funded"
       funding_source "skrill"
@@ -57,14 +60,6 @@ FactoryGirl.define do
     trait :federal do
       funding_source           "federal"
       potential_funding_source "federal"
-    end
-
-    trait :project do
-      type "Project"
-    end
-
-    trait :study do
-      type "Study"
     end
 
     trait :archived do
@@ -106,14 +101,6 @@ FactoryGirl.define do
       project_role nil
     end
 
-    after(:build) do |protocol, evaluator|
-      protocol.build_ip_patents_info(attributes_for(:ip_patents_info)) unless protocol.ip_patents_info
-      protocol.build_human_subjects_info(attributes_for(:human_subjects_info)) unless protocol.human_subjects_info
-      protocol.build_investigational_products_info(attributes_for(:investigational_products_info)) unless protocol.investigational_products_info
-      protocol.build_research_types_info(attributes_for(:research_types_info)) unless protocol.research_types_info
-      protocol.build_vertebrate_animals_info(attributes_for(:vertebrate_animals_info)) unless protocol.vertebrate_animals_info
-    end
-
     before(:create) do |protocol, evaluator|
       if evaluator.primary_pi
         protocol.project_roles << create(:project_role, protocol_id: protocol.id, identity_id: evaluator.primary_pi.id, project_rights: 'approve', role: 'primary-pi')
@@ -124,19 +111,11 @@ FactoryGirl.define do
       end
     end
 
-    factory :protocol_without_validations, traits: [:without_validations]
-    factory :study_without_validations, traits: [:without_validations, :study]
-    factory :project_without_validations, traits: [:without_validations, :project]
-    factory :unarchived_project_without_validations, traits: [:without_validations, :project, :unarchived]
-    factory :archived_project_without_validations, traits: [:without_validations, :project, :archived]
-    factory :unarchived_study_without_validations, traits: [:without_validations, :study, :unarchived]
-    factory :archived_study_without_validations, traits: [:without_validations, :study, :archived]
-    factory :protocol_federally_funded, traits: [:funded, :federal]
-    factory :protocol_with_sub_service_request_in_cwf, traits: [:with_sub_service_request_in_cwf, :funded, :federal]
-    factory :study_with_blank_dates, traits: [:study, :pending, :blank_funding_start_dates, :blank_start_and_end_dates]
-  end
-
-  factory :study, parent: :protocol, class: 'Study' do
-    type "Study"
+    factory :protocol_without_validations,              traits: [:without_validations]
+    factory :project_without_validations,               traits: [:without_validations, :project]
+    factory :unarchived_project_without_validations,    traits: [:without_validations, :project, :unarchived]
+    factory :archived_project_without_validations,      traits: [:without_validations, :project, :archived]
+    factory :protocol_federally_funded,                 traits: [:funded, :federal]
+    factory :protocol_with_sub_service_request_in_cwf,  traits: [:with_sub_service_request_in_cwf, :funded, :federal]
   end
 end

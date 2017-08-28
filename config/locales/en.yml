@@ -24,6 +24,7 @@ en:
   ###########
   actions:
     add: "Add"
+    adding: "Adding..."
     back: "Back"
     approve: "Approve"
     cancel: "Cancel"
@@ -46,6 +47,26 @@ en:
   # ACTIVERECORD #
   ################
   activerecord:
+    errors:
+      models:
+        item:
+          attributes:
+            content:
+              blank: "Content can't be blank"
+        questionnaire:
+          attributes:
+            name:
+              blank: "Name can't be blank"
+        item_option:
+          attributes:
+            content:
+              blank: "Content can't be blank"
+        question_response:
+          attributes:
+            content:
+              blank: "has to be answered"
+      messages:
+        spoofed_media_type: "has format errors. Please re-save the file in a different format and try again."
     attributes:
       arm:
         name: "Arm Name"
@@ -54,14 +75,24 @@ en:
       human_subjects_info:
         nct_number: "The NCT #"
       identity:
-        ldap_uid: "Username"
+        ldap_uid: "Login"
         first_name: "First Name"
         last_name: "Last Name"
         password_confirmation: "Password Confirmation"
       note:
         body: "Note"
+      option:
+        content: "Option"
       protocol:
         human_subjects_info: "The NCT #"
+      question:
+        content: "Question"
+      question_response:
+        content: "Required Question"
+      visit:
+        research_billing_qty: "Research Billing Quantity"
+        insurance_billing_qty: "Insurance Billing Quantity"
+        effort_billing_qty: "Effort Billing Quantity"
 
   ########
   # ARMS #
@@ -85,6 +116,10 @@ en:
     delete_warning: "Are you sure you want to delete this arm?"
     screening_tooltip: "Enter the number of subjects you expect to screen as well as how many screening visits are required. If no screening phase is required, you can change the name of the Arm to meet your needs."
     name_tooltip: "Arm Name must be unique within a protocol, and the following special characters are not allowed: [ ] * / \\ ? : )."
+    tooltips:
+      add_arm: 'A group, or subgroup, of participants in a clinical trial that receives specific intervention, or no intervention, according to the study protocol'
+      subject_count: 'Total number of estimated participants per arm'
+      visit_count: 'Total number of visits per arm'
 
   #######################
   # AUTHORIZATION ERROR #
@@ -92,6 +127,8 @@ en:
   authorization_error:
     header: "Authorization Error"
     link: "Return to your Dashboard"
+    dashboard:
+      visit_groups: 'You are not allowed to access that Visit Group.'
 
   ####################
   # AUTHORIZED USERS #
@@ -115,28 +152,36 @@ en:
       era: "ERA Commons Name:"
       credentials: "Credentials:"
       credentials_prompt: "Select a Credential"
-      credentials_specify: "Please Specify:*"
+      credentials_specify: "Please Specify:"
       phone: "Phone:"
       subspecialty: "Subspecialty:"
       subspecialty_prompt: "Select a Subspecialty"
-      rights: "User Rights:*"
-      role: "Role:*"
+      role: "Role:"
       role_prompt: "Select a Role"
-      role_specify: "Please Specify:*"
-      epic_access: "Epic EMR Access?:*"
-      select_one: "Select one"
+      role_specify: "Please Specify:"
+      epic_access: "Epic EMR Access?:"
+      rights: "User Rights:"
     rights:
       none: Member Only
       view: "View Rights"
-      request: "Request/Approve Services"
       approve: "Authorized/Change Study Charges"
+      change_warning:
+        dashboard: "Warning: Changing your User Rights to \'Member Only\' will redirect you to your Dashboard"
+        proper: "Warning: Changing your User Rights will redirect you to your Dashboard"
+    change_primary_pi:
+      header: "**Warning**"
+      warning: "Adding the new Primary PI (<strong>%{new_pi_name}</strong>) will change the current Primary PI (<strong>%{old_pi_name}</strong>) to a general access user on Protocol (<strong>%{protocol_id}</strong>)."
+      prompt: "Do you wish to proceed?"
     table_fields:
       name: "Full Name"
       role: "Role"
       email: "Email"
       phone: "Phone"
       rights: "Proxy Rights"
-      epic_emr_access: 'EPIC EMR Access'
+      epic_emr_access: 'EPIC EMR </br> Access'
+    tooltips:
+      epic_access: 'Granting Epic EMR access populates study personnel in Epic Research Record as long as they have an Epic login'
+      rights: 'Defines access to protocol in SPARCDashboard'
 
   #############
   # CALENDARS #
@@ -148,9 +193,12 @@ en:
       template: "Template Tab"
       billing: "Quantity/Billing Tab"
       pricing: "Consolidated Request Tab"
+    inactive: "(Inactive)"
     pppv:
-      header: "Per Patient/Visit Services -- %{arm_name}"
+      clinical_services: "Clinical Services"
+      header: "Clinical Services</br>Arm: %{arm_name}"
       header_fields:
+        notes: "Notes"
         service: "Service Name"
         status: "Status"
         unit_cost: "Unit Costs"
@@ -158,6 +206,7 @@ en:
         your_cost: "Your<br>Cost"
         quantity_type: "Clinical Qty Type"
         subject_count: "N"
+        day: "Day"
         page_select:
           previous: "View Previous"
           next: "View Next"
@@ -166,6 +215,7 @@ en:
         research: "R"
         third_party: "T"
         percent: "%"
+        edit_billing_modal: "Edit Billing Quantities"
       editable_fields:
         window_before: "Edit Window Before Visit"
         day: "Edit Visit Day"
@@ -173,15 +223,24 @@ en:
         visit_name: "Edit Visit Name"
         your_cost: "Edit Your Cost"
         subject_count: "Edit Subject Count"
-        research: "Edit Research Billing Qty"
-        third_party: "Edit Insurance Billing Qty"
-        percent: "Edit Effort Billing Qty"
+        research: "Research Billing Quantity:"
+        third_party: "Insurance Billing Quantity:"
+        percent: "Effort Billing Quantity:"
+        row_select:
+          check: "Check Row"
+          uncheck: "Uncheck Row"
+          confirm: "This will reset custom values for this row, do you wish to continue?"
+        column_select:
+          check: "Check Column"
+          uncheck: "Uncheck Column"
+          confirm: "This will reset custom values for this column, do you wish to continue?"
+
       totals:
         maximum_direct: "Maximum Total Direct Costs Per Patient"
         maximum_per_patient: "Maximum Total Per Patient"
-        total_costs: "Total Costs (Per Patient/Visit Services) Per Study -- %{arm_name}"
+        total_costs: "Total Costs (Clinical Services) Per Study -- %{arm_name}"
     otf:
-      header: "One Time Fee Services"
+      header: "Non-clinical Services"
       header_fields:
         service: "Service Name"
         status: "Status"
@@ -195,11 +254,27 @@ en:
         quantity: "Edit Qty"
         unit_quantity: "Edit Units per Qty"
       totals:
-        total_direct: "Total Direct Costs (One Time Fee Services) Per Study"
-        total_costs: "Total Costs (One Time Fee Services) Per Study"
+        total_direct: "Total Direct Costs (Non-clinical Services) Per Study"
+        total_costs: "Total Costs (Non-clinical Services) Per Study"
     merged_totals:
       header: "Study Cost Totals"
       grand_total: "Grand Total"
+    tooltips:
+      total_per_study: 'Total proposed cost of Non-clinical Services per study'
+      move_visit_button: 'Ability to change visit position'
+      pppv_total_costs: 'Total proposed cost of services per arm'
+      line_item_notes: 'Line Item Notes'
+      pppv_status: 'Used to track the progress of a service'
+      quantity_type: 'Unit of measurement'
+      freeze_header: 'Freeze Header Row'
+      unfreeze_header: 'Unfreeze Header Row'
+      subject_count: 'Number of participants'
+      service_rate: 'Cost of service prior to any discounts'
+      your_cost: 'Price after research discount (based on selected funding source)'
+      window_before: 'Visit window days before visit'
+      window_after: 'Visit window days after visit'
+      visit_day: 'Day the anticipated visit occurs (incremental)'
+      visit_name: 'Name of the visit'
 
   #############
   # CONSTANTS #
@@ -214,6 +289,7 @@ en:
       select: "---Please Select---"
       search_for_user: "Search for a User"
       select_one: "Select One"
+    add_as_last: "Add as last"
 
   #############
   # DOCUMENTS #
@@ -238,8 +314,38 @@ en:
       specify_doc_type: "Please Specify:"
       document: "Document:"
       access: "Allow Access:"
+    tooltips:
+      access: "Uploaded documents are made viewable to all service providers unless checkmark is removed"
     select_type: "Please Select Type"
     delete_confirm: "Are you sure you want to delete the selected Document from this protocol?"
+
+  ###############
+  # ERROR PAGES #
+  ###############
+  error_pages:
+    not_found:
+      heading: "Uh, oh.  You've hit a"
+      error: "Page Not Found (404)"
+      help_text: "For help, contact us:"
+      link_href: "mailto:success@musc.edu"
+      link_display: "Email: success@musc.edu"
+      phone_href: "tel:843-792-8300"
+      phone_display: "Call: 843-792-8300"
+    server_error:
+      heading: "Uh, oh.  You've hit an"
+      error: "Internal Server Error (500)"
+      help_text: "For help, contact us:"
+      link_href: "mailto:success@musc.edu"
+      link_display: "Email: success@musc.edu"
+      phone_href: "tel:843-792-8300"
+      phone_display: "Call: 843-792-8300"
+
+  ##############
+  # IDENTITIES #
+  ##############
+  identities:
+    approved: "Account Approved"
+    disapproved: "Account Disapproved"
 
   ###############
   # IE7 WARNING #
@@ -282,12 +388,19 @@ en:
     updated: "%{protocol_type} Updated!"
     summary:
       header: "%{protocol_type} Summary"
+      archive: "Archive"
+      unarchive: "Unarchive"
       id: "%{protocol_type} ID:"
       title: "Title:"
       short_title: "Short Title:"
       sponsor: "Sponsor Name:"
       funding_source: "Funding Source:"
       potential_source: "Potential Funding Source:"
+      research_master_id: "Research Master ID:"
+      na_research_master_id: 'Not Available'
+      rmid_validated: "Updated to corresponding Research Master ID %{title}"
+      rmid_short_title: "Short Title"
+      rmid_title: "Title"
     view_details:
       button: "View %{protocol_type} Details"
       header: "%{protocol_type} Details: #%{protocol_id}"
@@ -319,7 +432,7 @@ en:
           separator: "-OR-"
           non_phs_sponsor: "Federal Non-PHS Sponsor:"
           serial_number: "Federal Grant Serial Number:"
-        phase: "Study Phase:"
+        phase: "Study Phase(s):"
         sponsor: "Sponsor Name:"
         push_to_epic: "Publish Study in Epic:"
         study_type_questions: "Study Type Questions:"
@@ -346,6 +459,10 @@ en:
           pending_approval: "Application/Approval Pending?:"
           irb_approval_date: "IRB Approval Date:"
           irb_expiration_date: "IRB Expiration Date:"
+        tooltips:
+          ide: 'Investigation Device Exemption (IDE) Number'
+          hde: 'Humanitarian Device Exemption (HDE) Number'
+          hud: 'Humanitarian Use Device (HUD) Number'
         vertebrates:
           header: "Vertebrate Animals"
           iacuc_number: "IACUC #:"
@@ -395,11 +512,23 @@ en:
       source: "Select a Funding Source"
       potential_source: "Select a Potential Funding Source"
       federal_sponsor: "Select if Applicable"
-      phase: "Select a Study Phase"
+      phase: "Select Study Phase(s)"
       submission_type: "Select a Submission Type"
+    tooltips:
+      epic: 'Defines whether record will interface to Epic EMR upon submission'
+      study_type_questions: 'Information needed to determine confidentiality of patients/protocols'
+      nct_number: 'Clinicaltrials.gov Registry Number'
+      pro_number: 'Institutional Review Board (IRB) Unique Identifier'
+      ind_number: 'Investigational New Drug (IND) Number'
+      short_title: 'An abbreviated form of the title used to identify your study/project'
+      title: 'Full title of your study/project'
+      funding_status: 'Indicates whether or not funding has been applied for or obtained'
+      potential_funding_source: 'Funding source that has been applied for but not yet obtained. Pricing is logically driven off this field'
+      funding_source: 'Funding source which drives research pricing for your study/project'
+      sponsor_name: 'Specify name of the entity funding the project/study'
     authorized_users:
       header: "Add Primary PI"
-      primary_pi: "Primary PI: *"
+      primary_pi: "Primary PI:"
 
   ########################
   # NOT APPROVED WARNING #
@@ -440,11 +569,25 @@ en:
       percent: "Percent Subsidy:"
       pi: "PI Contribution:"
       cost: "Subsidy Cost:"
+    tooltips:
+      request_cost: "Total cost of services eligible for a subsidy"
+      percent: "Percent of Current Request Cost to be covered by Service Provider"
+      pi: "Amount PI is responsible to provide to Service Provider"
+      cost: "Amount of Current Request Cost to be covered by Service Provider"
+
+  #######################
+  # SWEET ALERT CONTENT #
+  #######################
+  swal:
+    swal_confirm:
+      title: "Are you sure?"
+      text: "You cannot undo this action"
 
   #############################
   # VALIDATION ERROR MESSAGES #
   #############################
   errors:
+    user_note: "Fields with an Asterisk ( * ) are required"
     arms:
       name_unique: "has to be unique within a study/project"
       bad_characters: "can not contain any of the following characters: [ ] * / \\ ? :"
@@ -455,17 +598,21 @@ en:
       displayed_cost_gte_zero: 'must be greater than or equal to 0'
     line_items_visits:
       subject_count_invalid: "Subject Count cannot exceed the Arm Subject Count (%{arm_subject_count})"
-    visit_groups:
-      days_out_of_order: "Please make sure visit days are in sequential order (%{arm_name})."
     protocols:
       start_date_missing: "Start Date can\'t be blank"
       end_date_missing: "End Date can\'t be blank"
       date_range_invalid: "Start Date must come before End Date"
+    question_responses:
+      phone_invalid: "Phone is invalid"
+      email_invalid: "Email is invalid"
+      zipcode_invalid: "Zipcode is invalid"
     service_requests:
-      line_items_missing: "No Services have been detected in your Cart. Please return to the Catalog and add Services before continuing"
+      line_items_missing: "You must add Services to your cart before continuing"
       protocol_missing: "You must create a Protocol before continuing"
       protocol_errors: "The selected Protocol has errors which must be fixed. Please edit the Protocol before continuing"
       arms_missing: "You must create Arms before proceeding to the Service Calendar"
+    visit_groups:
+      days_out_of_order: "Please make sure visit days are in sequential order (%{arm_name})."
 
   ################
   # VISIT GROUPS #
@@ -479,8 +626,6 @@ en:
       position: "Insert into Position:"
       window_before: "Window Before:"
       window_after: "Window After:"
-    prompts:
-      add_as_last: "Add as last"
 
 
 
@@ -655,17 +800,17 @@ en:
       maximum_direct: "Maximum Total Direct Costs Per Patient"
       maximum_indirect: "Maximum Total Indirect Costs Per Patient"
       maximum_per: "Maximum Total Per Patient"
-      total_costs_arm: "Total Costs (Per Patient/Visit Services) All ARMs"
+      total_costs_arm: "Total Costs (Clinical Services) All ARMs"
       total_costs_other: "Total Costs (Other Services) Per Study"
-      total_costs: "Total Costs (Per Patient/Visit Services) Per Study"
-      total_direct_arm: "Total Direct Costs (Per Patient/Visit Services) All ARMs"
+      total_costs: "Total Costs (Clinical Services) Per Study"
+      total_direct_arm: "Total Direct Costs (Clinical Services) All ARMs"
       total_direct_other: "Total Direct Costs (Other Services) Per Study"
-      total_direct: "Total Direct Costs (Per Patient/Visit Services) Per Study"
-      total_indirect_arm: "Total Indirect Costs (Per Patient/Visit Services) All ARMs"
+      total_direct: "Total Direct Costs (Clinical Services) Per Study"
+      total_indirect_arm: "Total Indirect Costs (Clinical Services) All ARMs"
       total_indirect_other: "Total Indirect Costs (Other Services) Per Study"
-      total_indirect: "Total Indirect Costs (Per Patient/Visit Services) Per Study"
+      total_indirect: "Total Indirect Costs (Clinical Services) Per Study"
       totals_costs_other: "Total Costs (Other Services) Per Study"
-    per_patient: "Per Patient/Visit Services"
+    per_patient: "Clinical Services"
     tabs:
       billing: "Quantity/Billing Tab"
       pricing: "Consolidated Request Tab"
@@ -693,6 +838,7 @@ en:
     add_map: "Add Pricing Map"
     associated_surveys: "Surveys"
     auto_price_adj: "Automatic Pricing Adjustment"
+    available_statuses: "Available Statuses"
     blank_field_errors: "Name and Order are required on the Service.  Effective Date, Display Date, and Service Rate are required on all Pricing Maps."
     cancel_button: "Cancel"
     change_rates: "Increase or Decrease Rates"
@@ -709,8 +855,11 @@ en:
     default_statuses: "Default Statuses:"
     description: "Description"
     disabled: "Display in SPARC"
+    disabled_all_services: "Disable All Services"
     disabled_at: "Disabled at: %{disabled_parent}"
     eap_id: 'EAP ID'
+    editable_statuses: 'Editable Statuses'
+    enable_all_services: "Enable All Services"
     epic_info: "Epic Interface"
     errors: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
     gen_info: "General Information"
@@ -719,9 +868,9 @@ en:
     name: "Name"
     new_cm: "New Catalog Manager"
     new_sp: "New Service Provider"
-    one_time_fee: "One Time Fee"
+    one_time_fee: "Non-clinical (Non-Per </br> Patient/Visit) Services"
     order: "Order"
-    otf_field_errors: "If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required."
+    otf_field_errors: "If the Pricing Map is a non-clinical service (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required."
     per_patient_errors: "Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps."
     pricing_maps: "Pricing Maps"
     pricing_setup: "Pricing Setup"
@@ -729,6 +878,7 @@ en:
     program: "Program"
     related_services: "Related Services"
     revenue_code: "Revenue Code"
+    selected_statuses: "Selected Statuses"
     send_to_epic: "Send To Epic"
     service_center_cost: "Service Center Cost"
     service_error: "There are no service providers anywhere on this tree."
@@ -756,13 +906,13 @@ en:
     effective_date: "Effective Date"
     exclude_from_indirect_cost: "Exclude from Indirect Cost"
     federal_rate: "Federal Rate"
-    is_one_time_fee: "Is One Time Fee"
+    is_one_time_fee: "Is Non-clinical Service"
     member_rate: "Member Rate"
-    one_time_fee: "One Time Fee"
+    one_time_fee: "Non-clinical Service"
     otf_quantity_minimum: "Quantity Minimum"
     otf_unit_type: "Unit Type (weeks, days, samples, etc.)"
     other_rate: "Other Rate"
-    per_patient: "Per Patient"
+    per_patient: "Clinical Service"
     quantity_type: "Quantity Type (hours, each, slides, etc.)"
     rate_disclaimer: "*IF N/A, NO PRICING SET-UP IS DEFINED FOR THE CURRENT DATES"
     rates: "Rates"
@@ -855,7 +1005,7 @@ en:
   study_form:
     affiliations: "Affiliations, Collaborations, and Memberships"
     approval_pending: "Application/Approval Pending:"
-    study_type_questions: "Study type questions *"
+    study_type_questions: "Study Type Questions"
     attributes: "Study Attributes"
     clear: "Clear"
     code_blank: "Select a Federal Grant Code"
@@ -936,7 +1086,7 @@ en:
     notes:
       header: "Notes"
       link:  "Add Note"
-    otf_button: "Add One-Time Fee Service"
+    otf_button: "Add Non-clinical Service"
     remove_service_button: "Remove Service"
     service_button: "Add Service"
     services:
@@ -947,9 +1097,9 @@ en:
         cost: "Cost"
         date: "Fulfillment Dates"
         delete: "Delete"
-        header: "Non Per-Patient/Per-Visit"
+        header: "Non-clinical Service"
         in_process: "In Process"
-        no_requests: "There are no non per-patient/per-visit requests."
+        no_requests:  “There are no non-clinical services requested.”
         notes: "Notes"
         number: "#"
         otf_unit_type: "Unit Type"
@@ -966,8 +1116,8 @@ en:
         arm: "Select Arm"
         delete_link: "Delete a Visit"
         delete: "Delete a Visit"
-        header: "Per-Patient/Per-Visit"
-        no_requests: "There are no per-patient/per-visit requests."
+        header: "Clinical Service"
+        no_requests: "There are no clinical services requested."
         remove_arm: "Remove an Arm"
     status_changes:
       date: "Date Changed"
@@ -1010,6 +1160,10 @@ en:
     PIs: "PI(s)"
     protocol: "Queued Protocol"
     status: "Last Queue Status"
+    created_at: 'Current Queue Date'
+    send: 'Send'
+    by: 'By'
+    sent_protocols: 'Sent Protocols'
   footer:
     mail_to: "hundc@musc.edu"
     mail_link: "Sign Up For the SPARC Request Listserv"
@@ -1060,8 +1214,8 @@ en:
         cost: "Your Cost"
         subjects: "# Subjects"
         total: "Service Total"
-        study_level_charges: "Study Level Charges"
-        study_schedule: "Study Schedule"
+        study_level_charges: "Non-clinical Services Charges"
+        study_schedule: "Clinical Services"
         subject_tracker: "Subject Tracker"
       totals:
         direct_cost: "Total Direct Cost"
@@ -1208,7 +1362,7 @@ en:
     message_error: "Message can't be blank"
   fulfillment_js:
     arm_delete_confirm: "Are you sure you want to remove the arm?"
-    arm_remove_alert: "You can't delete the last arm while Per-Patient/Per Visit services still exist."
+    arm_remove_alert: "You can't delete the last arm while Clinical Services still exist."
     arm_subject_data_alert: "This arm has subject data and can not be deleted."
     cwf_service_delete: "Are you sure you want to remove this service?"
     date_error: "Please enter a start date before the end date"
@@ -1219,7 +1373,6 @@ en:
     remove_service: "Are you sure that you want to remove this service from all subjects' visit calendars in this arm?"
     service_delete_confirm: "Are you sure that you want to remove this service from all subjects' visit calendars?"
     subsidy: "Value is over maximum subsidy percentage."
-  has_fulfillments: "This line item has one or more fulfillments associated with it and can not be deleted."
   in_fulfillment: "This line item is associated with a request that is in Fulfillment and cannot be deleted."
   js_confirm: "Are you sure?"
   notifications_js:
@@ -1246,8 +1399,15 @@ en:
 
   # Mailer
   mailer:
-    add_intro: "An Authorized User has been added in"
+    email_title:
+      epic_queue_error:  "Epic Interface Error "
+      epic_queue_summary: "Epic Queue Summary"
+      epic_queue_report: "Epic Queue Report"
+      new: "New"
+      new_account_registration: "New SPARCRequest Account Registration"
+      general: "SPARCRequest %{email_status} (%{type} %{id})"
     application_title: "SPARCRequest"
+    add_intro: "An Authorized User has been added in"
     contact_information: "Contact Information"
     delete_intro: "An Authorized User has been deleted in"
     epic_access: "Epic Access"
@@ -1330,19 +1490,16 @@ en:
     epic_access: "Epic Access"
     link: "HERE"
     name: "User Name"
-    # Language for 'Get a Cost Estimate'
-    non_service_provider_intro_1: "%{welcome} in SPARCRequest. You can review or edit this request in "
-    non_service_provider_intro_2: ". An email has been sent to the service provider(s) to review and ensure the services are appropriate."
-    non_service_provider_intro_3: "Please note the services will not start until this request is submitted through SPARCDashboard."
-    # Language for 'Submitted'
-    non_service_provider_intro_submitted_1: "%{welcome} in SPARCRequest.  Visit "
-    non_service_provider_intro_submitted_2: " to view the status or make any updates to your request."
+    non_service_provider_message: "%{welcome} in SPARCRequest. You can review or edit this request in %{href}. An email has been sent to the service provider(s) to review and ensure the services are appropriate. <b>Please note the services will not start until this request is submitted through SPARCDashboard.</b>"
+    service_provider_message: "%{welcome} in SPARCRequest and is awaiting your review in %{href}.  Please ensure services chosen are appropriate and can be provided. Communicate any necessary changes to the study team and request they “Submit to Start Services” once ready to proceed."
+    non_service_provider_submitted_message:  "%{welcome} in SPARCRequest.  Visit %{href} to view the status or make any updates to your request."
+    service_provider_submitted_message:  "%{welcome} in SPARCRequest and is awaiting your review in %{href}."
     note: "*Note: upon submission, services selected to go to Epic will be sent daily at 4:30pm."
     notes_present:  "*Note(s) are included with this submission."
     notice:
       approve: "Approve Account"
-      body1: "Request for new SPARC Request account submitted and awaiting approval"
-      body2: "A new SPARC Request account is waiting for approval."
+      body1: "Request for new SPARCRequest account submitted and awaiting approval"
+      body2: "A new SPARCRequest account is waiting for approval."
       company: "Company"
       disapprove: "Disapprove Account"
       email: "Email"
@@ -1362,13 +1519,8 @@ en:
     s_name: "Sponsor Name"
     service: "Service"
     service_request: "Service Request"
-    # Language for 'Submitted'
-    service_provider_intro_submitted_1: "%{welcome} in SPARCRequest and is awaiting your review in "
-    # Language for 'Get a Cost Estimate'
-    service_provider_intro_1: "%{welcome} in SPARCRequest and is awaiting your review in "
     sparc_dashboard: "SPARCDashboard"
     sparc_dashboard_period: "SPARCDashboard."
-    service_provider_intro_2: ".  Please ensure services chosen are appropriate and can be provided. Communicate any necessary changes to the study team and request they “Submit to Start Services” once ready to proceed."
     source: "Funding Source"
     srid_info: "Service Request Information"
     sr_id: "Service Request ID:"
@@ -1553,6 +1705,20 @@ en:
     dashboard: "Dashboard"
     faq: "Help/FAQs"
     feedback: "Feedback"
+    feedback:
+      name: 'Name'
+      email: 'Email'
+      date: 'Date'
+      bug: 'Bug'
+      enhancement_feature_request: 'Enhancement/Feature Request'
+      training: 'Training'
+      other: 'Other'
+      immediate_work_stoppage: 'Immediate Work Stoppage'
+      high: 'High'
+      normal: 'Normal'
+      low: 'Low'
+      browser_version: 'Browser Version'
+      prompt: 'Please Choose a Browser'
     redcap_survey: 'https://redcap.musc.edu/surveys/?s=A37TNJWJPL'
 
   # Service Request approve epic rights

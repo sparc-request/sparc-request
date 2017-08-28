@@ -1,4 +1,4 @@
--# Copyright © 2011-2016 MUSC Foundation for Research Development
+-# Copyright © 2011-2017 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,7 +21,10 @@
 #search_box
   %span.search= t(:cm_index)[:search]
   = text_field_tag 'search'
-  = submit_tag t(:cm_index)[:submit], :class => 'custom_button', :id => 'search_button'
+  = submit_tag t(:cm_index)[:submit],
+    :class => 'custom_button',
+    :id => 'search_button',
+    data: { disable_with: false }
   %button#clear_search.custom_button Clear Search
   %span.ui-corner-all.pricing_setup_error
     %p 

@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -34,8 +34,13 @@ FactoryGirl.define do
     end
 
     trait :without_callback_notify_remote_service_after_create do
-      before(:create) { |service| service.class.skip_callback(:create, :after, :notify_remote_service_after_create) }
-      #  after(:create) { Service.set_callback(:create, :after, :notify_remote_service_after_create) }
+      before(:create) do |service|
+        begin
+          service.class.skip_callback(:create, :after, :notify_remote_service_after_create)
+        rescue ArgumentError
+          # Do nothing. Callback has already been skipped.
+        end
+      end
     end
 
     trait :with_ctrc_organization do
@@ -66,6 +71,12 @@ FactoryGirl.define do
 
     trait :per_patient_per_visit do
       one_time_fee false
+    end
+
+    trait :with_questionnaires do
+      after(:create) do |service|
+        service.questionnaires = create_list(:questionnaire, 2, service: service, active: 0)
+      end
     end
 
     transient do

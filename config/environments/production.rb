@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -29,13 +29,14 @@ SparcRails::Application.configure do
   # and those relying on copy on write to perform better.
   # Rake tasks automatically ignore this option for performance.
   config.eager_load = true
+  config.enable_dependency_loading = false
 
   # Full error reports are disabled and caching is turned on
   config.consider_all_requests_local       = false
   config.action_controller.perform_caching = true
 
   # Disable Rails's static asset server (Apache or nginx will already do this)
-  config.serve_static_files = false
+  config.public_file_server.enabled = false
 
   # Compress JavaScripts and CSS
   config.assets.js_compressor = :uglifier
@@ -100,7 +101,7 @@ SparcRails::Application.configure do
       exception_recipients: ['catesa@musc.edu', 'johstu@musc.edu',
                              'leonarjp@musc.edu', 'wiel@musc.edu',
                              'lohrp@musc.edu', 'holtw@musc.edu',
-                             'hardeeje@musc.edu']
+                             'hardeeje@musc.edu', 'sparcrequest@musc.edu']
     }
 
 end

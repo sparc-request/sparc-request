@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -28,8 +28,7 @@ $("#service-requests-panel").html("<%= escape_javascript(render('dashboard/servi
 $("#documents-table").bootstrapTable()
 $(".service-requests-table").bootstrapTable()
 
-$('.service-requests-table').on 'all.bs.table', ->
-  $(this).find('.selectpicker').selectpicker() #Find descendant selectpickers
+reset_service_requests_handlers()
 <% end %>
 $("#modal_place").modal 'hide'
 $("#associated-users-table").bootstrapTable 'refresh', {silent: true}

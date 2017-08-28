@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,4 +21,3 @@
 $("#modal_place").html("<%= escape_javascript(render( 'dashboard/arms/add_arm_form', protocol: @protocol, arm: @arm, current_page: @current_page, services: @services, schedule_tab: @schedule_tab, sub_service_request: @sub_service_request, service_request: @service_request )) %>");
 $("#modal_place").modal 'show'
 $("[data-toggle='tooltip']").tooltip()
-set_required_fields()

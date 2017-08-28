@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Protocol < ActiveRecord::Base
+class Protocol < ApplicationRecord
 
   include RemotelyNotifiable
 
@@ -33,9 +33,10 @@ class Protocol < ActiveRecord::Base
   has_many :project_roles,                dependent: :destroy
   has_one :primary_pi_role,               -> { where(role: 'primary-pi') }, class_name: "ProjectRole", dependent: :destroy
   has_many :identities,                   through: :project_roles
-  has_many :service_requests
+  has_many :service_requests,             dependent: :destroy
   has_many :services,                     through: :service_requests
-  has_many :sub_service_requests,         through: :service_requests
+  has_many :sub_service_requests
+  has_many :line_items,                   through: :service_requests
   has_many :organizations,                through: :sub_service_requests
   has_many :affiliations,                 dependent: :destroy
   has_many :impact_areas,                 dependent: :destroy
@@ -48,64 +49,20 @@ class Protocol < ActiveRecord::Base
 
   has_many :principal_investigators, -> { where(project_roles: { role: %w(pi primary-pi) }) },
     source: :identity, through: :project_roles
+  has_many :non_pi_authorized_users, -> { where.not(project_roles: { role: %w(pi primary-pi) }) },
+    source: :identity, through: :project_roles
   has_many :billing_managers, -> { where(project_roles: { role: 'business-grants-manager' }) },
     source: :identity, through: :project_roles
   has_many :coordinators, -> { where(project_roles: { role: 'research-assistant-coordinator' }) },
     source: :identity, through: :project_roles
 
+  has_and_belongs_to_many :study_phases
   belongs_to :study_type_question_group
 
-  attr_accessible :affiliations_attributes
-  attr_accessible :archived
-  attr_accessible :arms_attributes
-  attr_accessible :billing_business_manager_static_email
-  attr_accessible :brief_description
-  attr_accessible :end_date
-  attr_accessible :federal_grant_code_id
-  attr_accessible :federal_grant_serial_number
-  attr_accessible :federal_grant_title
-  attr_accessible :federal_non_phs_sponsor
-  attr_accessible :federal_phs_sponsor
-  attr_accessible :funding_rfa
-  attr_accessible :funding_source
-  attr_accessible :funding_source_other
-  attr_accessible :funding_start_date
-  attr_accessible :funding_status
-  attr_accessible :human_subjects_info_attributes
-  attr_accessible :identity_id
-  attr_accessible :impact_areas_attributes
-  attr_accessible :indirect_cost_rate
-  attr_accessible :investigational_products_info_attributes
-  attr_accessible :ip_patents_info_attributes
-  attr_accessible :last_epic_push_status
-  attr_accessible :last_epic_push_time
-  attr_accessible :next_ssr_id
-  attr_accessible :potential_funding_source
-  attr_accessible :potential_funding_source_other
-  attr_accessible :potential_funding_start_date
-  attr_accessible :project_roles_attributes
-  attr_accessible :recruitment_end_date
-  attr_accessible :recruitment_start_date
-  attr_accessible :requester_id
-  attr_accessible :research_types_info_attributes
-  attr_accessible :selected_for_epic
-  attr_accessible :short_title
-  attr_accessible :sponsor_name
-  attr_accessible :start_date
-  attr_accessible :study_phase
-  attr_accessible :study_type_answers_attributes
-  attr_accessible :study_type_question_group_id
-  attr_accessible :study_types_attributes
-  attr_accessible :title
-  attr_accessible :type
-  attr_accessible :udak_project_number
-  attr_accessible :vertebrate_animals_info_attributes
-  attr_accessible :research_master_id
-  attr_accessible :has_human_subject_info
-
   validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
+  validates :research_master_id, presence: true, if: "RESEARCH_MASTER_ENABLED && has_human_subject_info?"
 
-  validates :research_master_id, presence: true, if: :has_human_subject_info?
+  validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 1000 }, allow_blank: true
 
   attr_accessor :requester_id
   attr_accessor :validate_nct
@@ -137,14 +94,44 @@ class Protocol < ActiveRecord::Base
   end
 
   def has_human_subject_info?
-    self.has_human_subject_info == true
+    self.research_types_info.try(:human_subjects) || false
   end
 
-  scope :for_identity, -> (identity) {
-    joins(:project_roles).
-    where(project_roles: { identity_id: identity.id }).
-    where.not(project_roles: { project_rights: 'none' })
-  }
+  validate :existing_rm_id,
+    if: -> record { RESEARCH_MASTER_ENABLED && !record.research_master_id.nil? }
+
+  validate :unique_rm_id_to_protocol,
+    if: -> record { RESEARCH_MASTER_ENABLED && !record.research_master_id.nil? }
+
+  def self.to_csv(protocols)
+    CSV.generate do |csv|
+      ##Insert headers
+      csv << ["Protocol ID", "Project/Study", "Short Title", "Primary Principal Investigator(s)"]
+      ##Insert data for each protocol
+      protocols.each do |p|
+        csv << [p.id, p.is_study? ? "Study" : "Project", p.short_title, p.principal_investigators.map(&:full_name).join(', ')]
+      end
+    end
+  end
+
+  def existing_rm_id
+    rm_ids = HTTParty.get(RESEARCH_MASTER_API + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{RMID_API_TOKEN}\""})
+    ids = rm_ids.map{ |rm_id| rm_id['id'] }
+
+    unless ids.include?(self.research_master_id)
+      errors.add(:_, 'The entered Research Master ID does not exist. Please go to the Research Master website to create a new record.')
+    end
+  end
+
+  def unique_rm_id_to_protocol
+    Protocol.all.each do |protocol|
+      if self.id != protocol.id
+        if self.research_master_id == protocol.research_master_id
+          errors.add(:_, "The Research Master ID is already taken by Protocol #{protocol.id}. Please enter another RMID.")
+        end
+      end
+    end
+  end
 
   filterrific(
     default_filter_params: { show_archived: 0 },
@@ -159,33 +146,60 @@ class Protocol < ActiveRecord::Base
     ]
   )
 
-  scope :search_query, -> (search_term) {
-    # Searches protocols based on short_title, title, id, and associated_users
+  scope :search_query, lambda { |search_attrs|
+    # Searches protocols based on 'Authorized User', 'HR#', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title', OR 'Search All'
     # Protects against SQL Injection with ActiveRecord::Base::sanitize
-
     # inserts ! so that we can escape special characters
-    escaped_search_term = search_term.to_s.gsub(/[!%_]/) { |x| '!' + x }
+    escaped_search_term = search_attrs[:search_text].to_s.gsub(/[!%_]/) { |x| '!' + x }
 
-    like_search_term = ActiveRecord::Base::sanitize("%#{escaped_search_term}%")
-    exact_search_term = ActiveRecord::Base::sanitize(search_term)
+    escaped_search_term = search_attrs[:search_text].to_s.gsub(/[!%_]/) { |x| '!' + x }
 
-    #TODO temporary replacement for "MATCH(identities.first_name, identities.last_name) AGAINST (#{exact_search_term})"
-    where_clause = ["CONCAT(identities.first_name, ' ', identities.last_name) LIKE #{like_search_term} escape '!'"]
+    like_search_term = ActiveRecord::Base.connection.quote("%#{escaped_search_term}%")
+    exact_search_term = ActiveRecord::Base.connection.quote(search_attrs[:search_text])
 
-    where_clause += ["protocols.short_title like #{like_search_term} escape '!'",
-      "protocols.title like #{like_search_term} escape '!'",
-      "protocols.id = #{exact_search_term}"]
+    ### SEARCH QUERIES ###
+    authorized_user_query  = "CONCAT(identities.first_name, ' ', identities.last_name) LIKE #{like_search_term} escape '!'"
+    hr_query               = "human_subjects_info.hr_number LIKE #{like_search_term} escape '!'"
+    pi_query               = "CONCAT(identities.first_name, ' ', identities.last_name) LIKE #{like_search_term} escape '!'"
+    protocol_id_query      = "protocols.id = #{exact_search_term}"
+    pro_num_query          = "human_subjects_info.pro_number LIKE #{like_search_term} escape '!'"
+    rmid_query             = "protocols.research_master_id = #{exact_search_term}"
+    title_query            = ["protocols.short_title LIKE #{like_search_term} escape '!'", "protocols.title LIKE #{like_search_term} escape '!'"]
+    ### END SEARCH QUERIES ###
+    hr_pro_ids = HumanSubjectsInfo.where([hr_query, pro_num_query].join(' OR ')).pluck(:protocol_id)
+    hr_protocol_id_query = hr_pro_ids.empty? ? nil : "protocols.id in (#{hr_pro_ids.join(', ')})"
 
-    joins(:identities).
-      where(where_clause.compact.join(' OR ')).
-      distinct
-  }
+    case search_attrs[:search_drop]
+    when "Authorized User"
+      # To prevent overlap between the for_identity or for_admin scope, run the query unscoped
+      # and combine with the old scope's values
+      unscoped  = self.unscoped.joins(:non_pi_authorized_users).joins(:identities).where(authorized_user_query)
+      others    = self.current_scope
 
-  scope :for_identity_id, -> (identity_id) {
-    return nil if identity_id == '0'
-    joins(:project_roles).
-      where(project_roles: { identity_id: identity_id }).
-      where.not(project_roles: { project_rights: 'none' })
+      where(id: others & unscoped).distinct
+    when "HR#"
+      joins(:human_subjects_info).
+        where(hr_query).distinct
+    when "PI"
+      unscoped  = self.unscoped.joins(:principal_investigators).where(pi_query)
+      others    = self.current_scope
+
+      where(id: others & unscoped).distinct
+    when "Protocol ID"
+      where(protocol_id_query).distinct
+    when "PRO#"
+      joins(:human_subjects_info).
+        where(pro_num_query).distinct
+    when "RMID"
+      where(rmid_query).distinct
+    when "Short/Long Title"
+      where(title_query.join(' OR ')).distinct
+    when ""
+      all_query = [authorized_user_query, pi_query, protocol_id_query, title_query, hr_protocol_id_query, rmid_query]
+      joins(:identities).
+        where(all_query.compact.join(' OR ')).
+        distinct
+    end
   }
 
   scope :admin_filter, -> (params) {
@@ -193,18 +207,33 @@ class Protocol < ActiveRecord::Base
     if filter == 'for_admin'
       for_admin(id)
     elsif filter == 'for_identity'
-      for_identity_id(id)
+      for_identity(id)
     end
   }
 
+  scope :for_identity, -> (identity_id) {
+    return nil if identity_id == '0'
+
+    joins(:project_roles).
+    where(project_roles: { identity_id: identity_id }).
+    where.not(project_roles: { project_rights: 'none' })
+  }
+
   scope :for_admin, -> (identity_id) {
-    # returns protocols with ssrs in orgs authorized for identity_id
+    # returns protocols with ssrs in orgs authorized for identity
     return nil if identity_id == '0'
 
     ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_identity(identity_id))
 
-    joins(:sub_service_requests).
-      merge(ssrs).distinct
+    if SuperUser.where(identity_id: identity_id).any?
+      empty_protocol_ids  = includes(:sub_service_requests).where(sub_service_requests: { id: nil }).ids
+      protocol_ids        = ssrs.distinct.pluck(:protocol_id)
+      all_protocol_ids    = (protocol_ids + empty_protocol_ids).uniq
+
+      where(id: all_protocol_ids)
+    else
+      joins(:sub_service_requests).merge(ssrs).distinct
+    end
   }
 
   scope :show_archived, -> (boolean) {
@@ -241,11 +270,13 @@ class Protocol < ActiveRecord::Base
     sort_order  = arr[1]
     case sort_name
     when 'id'
-      order("id #{sort_order.upcase}")
+      order("protocols.id #{sort_order.upcase}")
     when 'short_title'
       order("TRIM(REPLACE(short_title, CHAR(9), ' ')) #{sort_order.upcase}")
     when 'pis'
       joins(primary_pi_role: :identity).order(".identities.first_name #{sort_order.upcase}")
+    when 'requests'
+      order("sub_service_requests_count #{sort_order.upcase}")
     end
   }
 
@@ -259,11 +290,6 @@ class Protocol < ActiveRecord::Base
 
   def is_project?
     self.type == 'Project'
-  end
-
-  # Determines whether a protocol contains a service_request with only a "first draft" status
-  def has_first_draft_service_request?
-    service_requests.any? && service_requests.map(&:status).all? { |status| status == 'first_draft'}
   end
 
   def active?
@@ -463,6 +489,10 @@ class Protocol < ActiveRecord::Base
       any?(&:has_ctrc_clinical_services?)
   end
 
+  def has_clinical_services?
+    service_requests.any?(&:has_per_patient_per_visit_services?)
+  end
+
   def find_sub_service_request_with_ctrc(service_request)
     service_request.sub_service_requests.find(&:ctrc?).try(:ssr_id)
   end
@@ -480,13 +510,19 @@ class Protocol < ActiveRecord::Base
   end
 
   def direct_cost_total(service_request)
-    service_requests.where('status != ? OR id = ?', 'first_draft', service_request.id).
-      to_a.sum(&:direct_cost_total)
+    self.service_requests.
+      where(id: service_request.id).
+      or(service_requests.where.not(status: 'draft')).
+      eager_load(:line_items, :arms).
+      sum(&:direct_cost_total)
   end
 
   def indirect_cost_total(service_request)
     if USE_INDIRECT_COST
-      service_requests.where('(status != ? AND status != ?) OR id = ?', 'first_draft', 'draft', service_request.id).
+      self.service_requests.
+        where(id: service_request.id).
+        or(service_requests.where.not(status: ['first_draft', 'draft'])).
+        eager_load(:line_items, :arms).
         to_a.sum(&:indirect_cost_total)
     else
       0
@@ -497,25 +533,8 @@ class Protocol < ActiveRecord::Base
     direct_cost_total(service_request) + indirect_cost_total(service_request)
   end
 
-  def arm_cleanup
-    return unless self.arms.count > 0
-
-    remove_arms = true
-
-    self.service_requests.each do |sr|
-      if sr.has_per_patient_per_visit_services?
-        remove_arms = false
-        break
-      end
-    end
-
-    if remove_arms
-      self.arms.destroy_all
-    end
-  end
-
-  def has_non_first_draft_ssrs?
-    sub_service_requests.where.not(status: 'first_draft').any?
+  def has_incomplete_additional_details?
+    line_items.any?(&:has_incomplete_additional_details?)
   end
 
   private

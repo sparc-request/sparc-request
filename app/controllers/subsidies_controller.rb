@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -31,8 +31,7 @@ class SubsidiesController < ApplicationController
   end
 
   def create
-    format_percent_subsidy_param
-    @subsidy = PendingSubsidy.new(params[:pending_subsidy].except(:pi_contribution))
+    @subsidy = PendingSubsidy.new(subsidy_params)
     if @subsidy.valid?
       @subsidy.save
       @sub_service_request = @subsidy.sub_service_request
@@ -54,8 +53,7 @@ class SubsidiesController < ApplicationController
   def update
     @subsidy = PendingSubsidy.find(params[:id])
     @sub_service_request = @subsidy.sub_service_request
-    format_percent_subsidy_param
-    if @subsidy.update_attributes(params[:pending_subsidy].except(:pi_contribution))
+    if @subsidy.update_attributes(subsidy_params)
       @admin = false
       flash[:success] = t(:subsidies)[:updated]
     else
@@ -75,14 +73,21 @@ class SubsidiesController < ApplicationController
 
   private
 
+  def subsidy_params
+    @subsidy_params ||= begin
+      temp = params.require(:pending_subsidy).permit(:sub_service_request_id,
+        :overridden,
+        :status,
+        :percent_subsidy)
+      if temp[:percent_subsidy].present?
+        temp[:percent_subsidy] = temp[:percent_subsidy].gsub(/[^\d^\.]/, '').to_f / 100
+      end
+      temp
+    end
+  end
+
   def find_subsidy
     @subsidy = PendingSubsidy.find(params[:id])
     @sub_service_request = @subsidy.sub_service_request
-  end
-
-  def format_percent_subsidy_param
-    if !params[:pending_subsidy].nil? && params[:pending_subsidy][:percent_subsidy].present?
-      params[:pending_subsidy][:percent_subsidy] = ((params[:pending_subsidy][:percent_subsidy].gsub(/[^\d^\.]/, '').to_f) / 100)
-    end
   end
 end

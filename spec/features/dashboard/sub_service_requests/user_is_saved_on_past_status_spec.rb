@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -34,7 +34,8 @@ RSpec.describe "User views Status History tab", js: true do
     ssr             = create(:sub_service_request_without_validations,
                               organization: organization,
                               service_request: service_request,
-                              status: 'draft')
+                              status: 'draft',
+                              protocol: protocol)
     survey          = create(:survey,
                               access_code: 'sctr-customer-satisfaction-survey')
 

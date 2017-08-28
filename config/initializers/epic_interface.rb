@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -44,7 +44,7 @@ def start_fake_epic_server(epic_received, epic_results)
   server = FakeEpicServer.new(FakeEpicServlet: { received: epic_received,
                                                  results: epic_results})
   thread = Thread.new { server.start }
-  timeout(10) { while server.status != :Running; end }
+  Timeout.timeout(10) { while server.status != :Running; end }
   at_exit { server.shutdown; thread.join }
 
   return server

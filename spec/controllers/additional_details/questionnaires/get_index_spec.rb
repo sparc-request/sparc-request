@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -21,14 +21,17 @@
 require 'rails_helper'
 
 RSpec.describe AdditionalDetails::QuestionnairesController do
+  stub_controller
+  let!(:logged_in_user) { create(:identity) }
+
   describe '#index' do
     before :each do
       @service = create(:service)
-      @questionnaire = create(:questionnaire, service: @service)
+      @questionnaire = create(:questionnaire, :without_validations, service: @service)
 
-      xhr :get, :index, {
+      get :index, params: {
         service_id: @service.id
-      }
+      }, format: :js
     end
 
     it 'should assign @service' do

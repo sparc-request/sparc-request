@@ -1,4 +1,4 @@
-// Copyright © 2011-2016 MUSC Foundation for Research Development
+// Copyright © 2011-2017 MUSC Foundation for Research Development
 // All rights reserved.
 
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,8 @@
 // It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
 // the compiled file.
 //
-//= require jquery
+//= require jquery2
+//= require jquery-migrate
 //= require bootstrap-sprockets
 //= require bootstrap-select
 //= require bootstrap-table
@@ -57,4 +58,7 @@
 //= require associated_users_form
 //= require study_schedule_tabs
 //= require subsidy_form
+//= require surveyor/responses
+//= require surveyor/surveys
 //= require sweetalert.min
+//= require feedback

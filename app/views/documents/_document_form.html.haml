@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2017 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -47,9 +47,9 @@
                   = document.document_file_name
                 = form.file_field :document
             .form-group
-              = form.label :org_ids, t(:documents)[:form_fields][:access], class: 'col-sm-4 control-label'
+              = form.label :org_ids, t(:documents)[:form_fields][:access], class: 'col-sm-4 control-label', title: t(:documents)[:tooltips][:access], data: { toggle: 'tooltip', delay: '{"show":"500"}' }
               .col-sm-7
-                = select_tag :org_ids, options_from_collection_for_select(document.protocol.organizations.distinct.sort_by(&:name), :id, :name, document.sub_service_requests.map(&:organization_id)), class: 'form-control selectpicker', multiple: true
+                = select_tag :org_ids, document_org_access_collection(document, action_name), class: 'form-control selectpicker', multiple: true
       .modal-footer
         .center-block
           %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }

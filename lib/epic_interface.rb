@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -178,6 +178,7 @@ class EpicInterface
         emit_category_grouper(xml, study)
         emit_study_type(xml, study)
         emit_ide_number(xml, study)
+        emit_rmid(xml, study)
         emit_cofc(xml, study)
         emit_visits(xml, study)
         emit_procedures_and_encounters(xml, study)
@@ -207,6 +208,7 @@ class EpicInterface
         emit_study_type(xml, study)
         emit_ide_number(xml, study)
         emit_cofc(xml, study)
+        emit_rmid(xml, study)
 
       }
     }
@@ -298,7 +300,6 @@ class EpicInterface
   end
 
   def emit_study_type(xml, study)
-
     study_type = StudyTypeFinder.new(study).study_type
 
     if study_type
@@ -306,6 +307,19 @@ class EpicInterface
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'STUDYTYPE')
           xml.value(value: study_type)
+        }
+      }
+    end
+  end
+
+  def emit_rmid(xml, study)
+    rmid = study.research_master_id
+
+    if rmid
+      xml.subjectOf(typeCode: 'SUBJ') {
+        xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
+          xml.code(code: 'RGFT3')
+          xml.value(value: rmid)
         }
       }
     end
@@ -435,13 +449,13 @@ class EpicInterface
       if not service.cpt_code.blank? then
         service_code = service.cpt_code
         service_code_system = "SPARCCPT"
-      elsif not service.charge_code.blank? then
-        service_code = service.charge_code
+      elsif not service.eap_id.blank? then
+        service_code = service.eap_id
         service_code_system = "SPARCCPT"
       else
         # Skip this service, since it has neither a CPT code nor a Charge
         # code and add to an error list to warn the user
-        error_string = "#{service.name} does not have a CPT or a Charge code."
+        error_string = "#{service.name} does not have a CPT code or an EAP Id."
         @errors[:no_code] = [] unless @errors[:no_code]
         @errors[:no_code] << error_string unless @errors[:no_code].include?(error_string)
         next

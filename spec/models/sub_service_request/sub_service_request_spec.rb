@@ -1,5 +1,5 @@
 # coding: utf-8
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,7 +21,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'SubServiceRequest' do
+RSpec.describe SubServiceRequest, type: :model do
 
   let_there_be_lane
   let_there_be_j
@@ -103,30 +103,6 @@ RSpec.describe 'SubServiceRequest' do
           expect(li.service_id).to eq(@fulfillment_service.id)
           expect(li).not_to be_new_record
         end
-
-        context 'subject calendars exist' do
-
-          before :each do
-            add_visits
-            service_request.arms.each(&:populate_subjects)
-            sub_service_request.update_attribute(:in_work_fulfillment, true)
-          end
-
-          it 'should create procedures for the line item' do
-            count = Procedure.count
-            li = sub_service_request.create_line_item(service_id: @fulfillment_service.id, sub_service_request_id: sub_service_request.id)
-            expect(Procedure.count).to eq(count * 2)
-          end
-
-          it 'should roll back if it fails' do
-            expect {
-              allow(sub_service_request).to receive(:in_work_fulfillment).and_raise('error')
-              sub_service_request.create_line_item(service_id: @fulfillment_service.id, sub_service_request_id: sub_service_request.id) rescue nil
-            }.not_to change(LineItem, :count)
-          end
-
-        end
-
       end
     end
 
@@ -237,7 +213,7 @@ RSpec.describe 'SubServiceRequest' do
       let!(:line_item2) { create(:line_item, sub_service_request_id: ssr2.id, service_request_id: service_request.id, service_id: service2.id) }
 
       before :each do
-        EDITABLE_STATUSES[sub_service_request.organization.id] = ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval']
+        sub_service_request.organization.editable_statuses.where(status: 'on_hold').destroy_all
       end
 
       context "can be edited" do
@@ -252,11 +228,6 @@ RSpec.describe 'SubServiceRequest' do
           expect(sub_service_request.can_be_edited?).to eq(true)
         end
 
-        it "should return true if the status is nil" do
-          sub_service_request.update_attributes(status: nil)
-          expect(sub_service_request.can_be_edited?).to eq(true)
-        end
-
         it "should return true if the status is get a cost estimate" do
           sub_service_request.update_attributes(status: 'get_a_cost_estimate')
           expect(sub_service_request.can_be_edited?).to eq(true)
@@ -268,6 +239,7 @@ RSpec.describe 'SubServiceRequest' do
         end
 
         it 'should should return false if the status is complete' do
+          stub_const("FINISHED_STATUSES", ['complete'])
           sub_service_request.update_attributes(status: 'complete')
           expect(sub_service_request.can_be_edited?).to eq(false)
         end

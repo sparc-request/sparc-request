@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -21,10 +21,10 @@
 module ServiceRequestsHelper
 
   def protocol_id_display(sub_service_request, service_request)
-    if sub_service_request && sub_service_request.service_request.protocol.present?
-      " SRID: #{sub_service_request.service_request.protocol.id}"
+    if sub_service_request && sub_service_request.protocol.present?
+      " (SRID: #{sub_service_request.protocol.id})"
     elsif service_request && service_request.protocol.present?
-      " SRID: #{service_request.protocol.id}"
+      " (SRID: #{service_request.protocol.id})"
     else
       ""
     end
@@ -79,16 +79,32 @@ module ServiceRequestsHelper
     end
   end
 
-  def save_as_draft_button
-    link_to t(:proper)[:navigation][:bottom][:save_as_draft], save_and_exit_service_request_path, remote: true, class: 'btn btn-default'
+  def save_as_draft_button(sub_service_request_id=nil)
+    link_to t(:proper)[:navigation][:bottom][:save_as_draft],
+      save_and_exit_service_request_path(sub_service_request_id: sub_service_request_id),
+      remote: true, class: 'btn btn-default'
   end
 
-  def step_nav_button(text, color, url)
-    link_to(
-      (content_tag(:div, raw(text), class: "btn step-text step-btn-#{color}")+
-      content_tag(:div, '', class: "right-arrow right-arrow-#{color}")),
-      url,
-      class: 'step-btn'
-    )
+  def step_nav_button(text, color, url, inactive_link)
+    if inactive_link
+      content_tag(:div,
+        content_tag(:div, raw(text), class: "btn step-text")+
+        content_tag(:div, '', class: "right-arrow"),
+        class: "step-btn step-btn-#{color} disabled_steps"
+      )
+    else
+      link_to(
+        content_tag(:div, raw(text), class: "btn step-text")+
+        content_tag(:div, '', class: "right-arrow"),
+        url,
+        class: "step-btn step-btn-#{color}"
+      )
+    end
+  end
+
+  def display_ssr_id(sub_service_request)
+    if sub_service_request
+      sub_service_request.protocol_id.to_s + '-' + sub_service_request.ssr_id
+    end
   end
 end

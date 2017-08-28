@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -27,7 +27,7 @@ RSpec.describe 'dashboard/notifications/_notifications', type: :view do
       protocol             = build_stubbed(:protocol)
       service_request      = build_stubbed(:service_request, protocol: protocol)
       organization         = build_stubbed(:organization)
-      @sub_service_request = build_stubbed(:sub_service_request, service_request: service_request, organization: organization)
+      @sub_service_request = build_stubbed(:sub_service_request, service_request: service_request, organization: organization, protocol: protocol)
       @logged_in_user      = build_stubbed(:identity)
     end
 

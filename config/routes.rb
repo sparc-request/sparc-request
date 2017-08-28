@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,10 +21,6 @@
 SparcRails::Application.routes.draw do
   post 'study_type/determine_study_type_note'
 
-  match '/direct_link_to/:survey_code', :to => 'surveyor#create', :as => 'direct_link_survey', :via => :get
-  match '/surveys/:survey_code/:response_set_code', :to => 'surveyor#destroy', :via => :delete
-  mount Surveyor::Engine => "/surveys", :as => "surveyor"
-
   resources :services do
     namespace :additional_details do
       resources :questionnaires
@@ -35,6 +31,22 @@ SparcRails::Application.routes.draw do
       resources :update_questionnaires, only: [:update]
     end
   end
+
+  namespace :surveyor do
+    resources :surveys, only: [:index, :show, :create, :destroy] do
+      get :preview
+      get :update_dependents_list
+    end
+    resources :sections, only: [:create, :destroy]
+    resources :questions, only: [:create, :destroy]
+    resources :options, only: [:create, :destroy]
+    resources :responses, only: [:show, :new, :edit, :create, :update] do
+      get :complete
+    end
+    resources :survey_updater, only: [:update]
+  end
+
+  resources :feedback
 
   if USE_SHIBBOLETH_ONLY
     devise_for :identities,
@@ -99,13 +111,12 @@ SparcRails::Application.routes.draw do
     end
   end
 
-  resources :protocols, except: [:index, :show, :destroy] do
+  resources :protocols, except: [:index, :destroy] do
     member do
-      patch :update_protocol_type
+      put :update_protocol_type
       get :approve_epic_rights
       get :push_to_epic
       get :push_to_epic_status
-      get :view_details
     end
   end
 
@@ -121,7 +132,7 @@ SparcRails::Application.routes.draw do
 
   resources :arms, only: [:index, :new, :create, :edit, :update, :destroy]
 
-  resource :service_calendars, only: [:update] do
+  resource :service_calendars, only: [] do
     member do
       get 'table'
       get 'merged_calendar'
@@ -136,8 +147,10 @@ SparcRails::Application.routes.draw do
   end
 
   resources :line_items, only: [:update]
-  resources :visit_groups, only: [:update]
-
+  resources :line_items_visits, only: [:update, :destroy]
+  resources :visit_groups, only: [:edit, :update]
+  resources :visits, only: [:edit, :update, :destroy]
+  
   resources :documents, only: [:index, :new, :create, :edit, :update, :destroy]
 
   resources :notes, only: [:index, :new, :create]
@@ -227,6 +240,7 @@ SparcRails::Application.routes.draw do
     resources :documents, except: [:show]
 
     resources :epic_queues, only: [:index, :destroy]
+    resources :epic_queue_records, only: [:index]
 
     resources :fulfillments
 
@@ -236,8 +250,6 @@ SparcRails::Application.routes.draw do
         put :update_from_cwf
       end
     end
-
-    resources :line_items_visits, only: [:update, :destroy]
 
     resources :messages, only: [:index, :new, :create]
 
@@ -263,11 +275,12 @@ SparcRails::Application.routes.draw do
     resources :projects, controller: :protocols, except: [:destroy]
 
     resources :protocols, except: [:destroy] do
+      resource :milestones, only: [:update]
+      resource :study_type_answers, only: [:edit]
       member do
-        patch :update_protocol_type
+        put :update_protocol_type
         get :display_requests
         patch :archive
-        get :view_details
       end
     end
 
@@ -279,7 +292,7 @@ SparcRails::Application.routes.draw do
       scope '/protocols', controller: :protocols, except: [:destroy] do
         resources :test, except: [:destroy] do
           member do
-            patch :update_protocol_type
+            put :update_protocol_type
             get :display_requests
             patch :archive
           end
@@ -287,7 +300,7 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :protocol_filters, only: [:new, :create]
+    resources :protocol_filters, only: [:new, :create, :destroy]
 
     resources :service_requests, only: [:show]
 
@@ -302,6 +315,7 @@ SparcRails::Application.routes.draw do
     resources :sub_service_requests, except: [:new, :create, :edit]do
       member do
         put :push_to_epic
+        put :resend_surveys
         get :change_history_tab
         get :status_history
         get :approval_history
@@ -310,8 +324,6 @@ SparcRails::Application.routes.draw do
         get :refresh_tab
       end
     end
-
-    resources :visits, only: [:update, :destroy]
 
     resources :visit_groups, only: [:new, :create, :update, :destroy] do
       collection do
@@ -327,12 +339,6 @@ SparcRails::Application.routes.draw do
       get :setup
       post :generate
     end
-
-    member do
-      get :research_project_summary
-      post :cwf_audit
-      get :cwf_subject
-    end
   end
 
   ##### Admin Identities #####
@@ -345,4 +351,8 @@ SparcRails::Application.routes.draw do
   mount API::Base => '/'
 
   root to: 'service_requests#catalog'
+  
+  ## error page routes ##
+  match "/404", :to => "error_pages#not_found", :via => :all
+  match "/500", :to => "error_pages#internal_server_error", :via => :all  
 end

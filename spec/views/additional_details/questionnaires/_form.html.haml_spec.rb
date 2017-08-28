@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -25,13 +25,13 @@ RSpec.describe 'additional_details/questionnaires/_form', type: :view do
   describe 'empty questionnaire' do
 
     before(:each) do
-    	questionnaire = build(:questionnaire)
-      service = create(:service, questionnaires: [questionnaire])
+      service = create(:service)
+    	questionnaire = create(:questionnaire, :without_validations, service: service)
       render "/additional_details/questionnaires/form", service: service, questionnaire: questionnaire
     end
 
     it 'should have the correct title' do
-    	expect(response).to have_content('Additional Details Form Builder')
+    	expect(response).to have_content('Form Functionality Form Builder')
     end
 
     it 'should have the correct buttons' do
@@ -55,8 +55,8 @@ RSpec.describe 'additional_details/questionnaires/_form', type: :view do
   describe 'filled questionnaire' do
 
     before(:each) do
-      questionnaire = build(:questionnaire, items: [ Item.new( content: 'This is a test question', item_type: 'text', item_options_attributes: { "0" => { content: "" } } , description: "", required: 1 ) ] )
-      service = create(:service, questionnaires: [questionnaire])
+      service = create(:service)
+      questionnaire = create(:questionnaire, items: [ Item.new( content: 'This is a test question', item_type: 'text', item_options_attributes: { "0" => { content: "" } } , description: "", required: 1 ) ], service: service)
       render "/additional_details/questionnaires/form", service: service, questionnaire: questionnaire
     end
 

@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,9 +18,10 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Service < ActiveRecord::Base
+class Service < ApplicationRecord
 
   include RemotelyNotifiable
+  include ServiceUtility
 
   audited
   acts_as_taggable
@@ -40,6 +41,9 @@ class Service < ActiveRecord::Base
   has_many :identities, :through => :service_providers
   has_many :questionnaires
   has_many :submissions
+  ## commented out to remove tags, but will likely be added in later ##
+  # has_many :taggings, through: :organization
+  # has_many :tags, through: :taggings
 
   # Services that this service depends on
   has_many :service_relations, :dependent => :destroy
@@ -52,25 +56,7 @@ class Service < ActiveRecord::Base
   has_many :depending_services, :through => :depending_service_relations, :source => :service
 
   # Surveys associated with this service
-  has_many :associated_surveys, :as => :surveyable
-
-  attr_accessible :name
-  attr_accessible :abbreviation
-  attr_accessible :order
-  attr_accessible :description
-  attr_accessible :is_available
-  attr_accessible :service_center_cost
-  attr_accessible :cpt_code
-  attr_accessible :eap_id
-  attr_accessible :charge_code
-  attr_accessible :revenue_code
-  attr_accessible :organization_id
-  attr_accessible :send_to_epic
-  attr_accessible :tag_list
-  attr_accessible :revenue_code_range_id
-  attr_accessible :line_items_count
-  attr_accessible :one_time_fee
-  attr_accessible :components
+  has_many :associated_surveys, as: :surveyable, dependent: :destroy
 
   validate :validate_pricing_maps_present
 
@@ -80,6 +66,10 @@ class Service < ActiveRecord::Base
     errors.add(:service, "must contain at least 1 pricing map.") if pricing_maps.length < 1
   end
   ###############################################
+
+  def humanized_status
+    self.is_available ? I18n.t(:reporting)[:service_pricing][:available] : I18n.t(:reporting)[:service_pricing][:unavailable]
+  end
 
   def process_ssrs_organization
     organization.process_ssrs_parent
@@ -136,7 +126,13 @@ class Service < ActiveRecord::Base
   # cents.
   def self.dollars_to_cents dollars
     dollars = dollars.gsub(',','')
-    (BigDecimal(dollars) * 100).to_i
+    #check if dollars arg will be a valid for BigDecimal conversion
+    if ServiceUtility.valid_float?(dollars)
+      #if not we convert dollars to an integer
+      (BigDecimal(dollars) * 100).to_i
+    else
+      (BigDecimal(dollars.to_i) * 100).to_i
+    end
   end
 
   # Given an integer number of cents, return a Float representing the
@@ -164,7 +160,9 @@ class Service < ActiveRecord::Base
       end
     end
 
-    return service_name
+    service_name = service_name.gsub("/", "/ ")
+
+    service_name
   end
 
   # Will check for nil display dates on the service's pricing maps
@@ -192,7 +190,9 @@ class Service < ActiveRecord::Base
       if current_maps.empty?
         raise ArgumentError, "Service has no current pricing maps!"
       else
-        pricing_map = current_maps.sort {|a,b| b.display_date <=> a.display_date}.first
+        # If two pricing maps have the same display_date, prefer the most
+        # recently created pricing_map.
+        pricing_map = current_maps.sort {|a,b| [b.display_date, b.id] <=> [a.display_date, a.id]}.first
       end
 
       return pricing_map
@@ -234,7 +234,7 @@ class Service < ActiveRecord::Base
   def effective_pricing_map_for_date(date=Date.today)
     raise ArgumentError, "Service has no pricing maps" if self.pricing_maps.empty?
 
-    current_maps = self.pricing_maps.where('effective_date <= ?', date.to_s(:db))
+    current_maps = self.pricing_maps.select{ |x| x.effective_date <= date.to_date }
     raise ArgumentError, "Service has no current pricing maps" if current_maps.empty?
 
     sorted_maps = current_maps.sort { |lhs, rhs| lhs.effective_date <=> rhs.effective_date }
@@ -323,4 +323,3 @@ class Service < ActiveRecord::Base
     ["components"]
   end
 end
-

@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -46,6 +46,20 @@ def let_there_be_j
     )}
 end
 
+def build_study_phases
+  let!(:study_phase_O)    { StudyPhase.create(order: 1, phase: 'O', version: 1) }
+  let!(:study_phase_I)    { StudyPhase.create(order: 2, phase: 'I', version: 1) }
+  let!(:study_phase_Ia)    { StudyPhase.create(order: 3, phase: 'Ia', version: 1) }
+  let!(:study_phase_Ib)    { StudyPhase.create(order: 4, phase: 'Ib', version: 1) }
+  let!(:study_phase_II)    { StudyPhase.create(order: 5, phase: 'II', version: 1) }
+  let!(:study_phase_IIa)    { StudyPhase.create(order: 6, phase: 'IIa', version: 1) }
+  let!(:study_phase_IIb)    { StudyPhase.create(order: 7, phase: 'IIb', version: 1) }
+  let!(:study_phase_III)    { StudyPhase.create(order: 8, phase: 'III', version: 1) }
+  let!(:study_phase_IIIa)    { StudyPhase.create(order: 9, phase: 'IIIa', version: 1) }
+  let!(:study_phase_IIIb)   { StudyPhase.create(order: 10, phase: 'IIIb', version: 1) }
+  let!(:study_phase_IV)   { StudyPhase.create(order: 11, phase: 'IV', version: 1) }
+end
+
 def build_study_type_question_groups
   let!(:study_type_question_group_version_1)  { StudyTypeQuestionGroup.create(active: false, version: 1) }
   let!(:study_type_question_group_version_2)    { StudyTypeQuestionGroup.create(active: false, version: 2) }
@@ -71,6 +85,9 @@ def build_study_type_questions
   let!(:stq_epic_inbasket_version_3)           { StudyTypeQuestion.create("order"=>3, "question"=>"3. Is it appropriate for study team members to receive Epic InBasket notifications if research participants in this study are hospitalized or admitted to the Emergency Department?", "friendly_id"=>"epic_inbasket", "study_type_question_group_id" => study_type_question_group_version_3.id) }
   let!(:stq_research_active_version_3)         { StudyTypeQuestion.create("order"=>4, "question"=>"4. Is it appropriate to display the pink 'Research:Active indicator in the Patient Header for all study participants?", "friendly_id"=>"research_active", "study_type_question_group_id" => study_type_question_group_version_3.id) }
   let!(:stq_restrict_sending_version_3)        { StudyTypeQuestion.create("order"=>5, "question"=>"Is it appropriate for all study participants to receive associated test results, such as labs and/or imaging findings, via MyChart?", "friendly_id"=>"restrict_sending", "study_type_question_group_id" => study_type_question_group_version_3.id) }
+  let!(:stq_certificate_of_conf_no_epic_version_3)     { StudyTypeQuestion.create("order"=>6, "question"=>"1. Does your Informed Consent provide information to the participant specifically stating their study participation will be kept private from anyone outside the research team? (i.e. your study has a Certificate of Confidentiality or involves sensitive data collection which requires de-identification of the research participant.)", "friendly_id"=>"certificate_of_conf_no_epic", "study_type_question_group_id" => study_type_question_group_version_3.id) }
+  let!(:stq_higher_level_of_privacy_no_epic_version_3) { StudyTypeQuestion.create("order"=>7, "question"=>'2. Does your study require a higher level of privacy protection for the participants? (Your study needs "break the glass" functionality because it is collection sensitive data, such as HIV/sexually transmitted disease, sexual practice/attitudes, illegal substance, etc., which needs higher privacy protection, yet not complete de-identification of the study participant.)', "friendly_id"=>"higher_level_of_privacy_no_epic", "study_type_question_group_id" => study_type_question_group_version_3.id) }
+  
 end
 
 
@@ -93,6 +110,8 @@ def build_study_type_answers
   let!(:answer3_version_3)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_epic_inbasket_version_3.id, answer: 0)}
   let!(:answer4_version_3)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_research_active_version_3.id, answer: 1)}
   let!(:answer5_version_3)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_restrict_sending_version_3.id, answer: 1)}
+  let!(:answer6_version_3)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_certificate_of_conf_no_epic_version_3.id, answer: 0)}
+  let!(:answer7_version_3)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_higher_level_of_privacy_no_epic_version_3.id, answer: 0)}
 end
 
 def build_project_type_answers
@@ -159,6 +178,7 @@ def build_per_patient_per_visit_services
   let!(:clinical_provider)   { create(:clinical_provider, organization_id: program.id, identity_id: jug2.id) }
   let!(:available_status)    { create(:available_status, organization_id: program.id, status: 'submitted')}
   let!(:available_status2)   { create(:available_status, organization_id: program.id, status: 'draft')}
+  let!(:available_status3)   { create(:available_status, organization_id: program.id, status: 'administrative_review')}
   let!(:subsidy)             { Subsidy.auditing_enabled = false; create(:subsidy_without_validations, percent_subsidy: 0.45, sub_service_request_id: sub_service_request.id)}
   let!(:subsidy_map)         { create(:subsidy_map, organization_id: program.id) }
 end
@@ -189,44 +209,12 @@ def build_service_request
   end
 end
 
-def add_visits
-  create_visits
-  update_visits
-  update_visit_groups
-end
-
-def create_visits
-  service_request.reload
-  service_request.arms.each do |arm|
-    service_request.per_patient_per_visit_line_items.each do |line_item|
-      arm.create_line_items_visit(line_item)
-    end
-  end
-  arm1.reload
-  arm2.reload
-end
-
-def update_visits
-  service_request.arms.each do |arm|
-    arm.visits.each do |visit|
-      visit.update_attributes(quantity: 15, research_billing_qty: 5, insurance_billing_qty: 5, effort_billing_qty: 5, billing: Faker::Lorem.word)
-    end
-  end
-end
-
-def update_visit_groups
-  vgs = VisitGroup.all
-  vgs.each do |vg|
-    vg.update_attributes(day: vg.position)
-  end
-end
-
 def build_arms
   let!(:protocol_for_service_request_id) {project.id rescue study.id}
   let!(:arm1)                { create(:arm, name: "Arm", protocol_id: protocol_for_service_request_id, visit_count: 10, subject_count: 2)}
   let!(:arm2)                { create(:arm, name: "Arm2", protocol_id: protocol_for_service_request_id, visit_count: 5, subject_count: 4)}
-  let!(:visit_group1)         { create(:visit_group, arm_id: arm1.id, position: 1, day: 1)}
-  let!(:visit_group2)         { create(:visit_group, arm_id: arm2.id, position: 1, day: 1)}
+  let!(:visit_group1)        { arm1.visit_groups.first }
+  let!(:visit_group2)        { arm2.visit_groups.first }
 end
 
 def build_project
@@ -251,6 +239,7 @@ def build_project
         project_rights:  "approve",
         role:            "business-grants-manager")
     service_request.update_attribute(:protocol_id, protocol.id)
+    sub_service_request.update_attribute(:protocol_id, protocol.id)
     protocol.reload
     service_request.reload
     protocol
@@ -269,6 +258,7 @@ def build_study
     protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month, selected_for_epic: false, study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first, project_roles_attributes: [{identity_id:     identity.id, project_rights:  "approve", role: "primary-pi"}, {identity_id: identity2.id, project_rights:  "approve", role: "business-grants-manager"}])
     protocol.save validate: false
     service_request.update_attribute(:protocol_id, protocol.id)
+    sub_service_request.update_attribute(:protocol_id, protocol.id)
     protocol.reload
     protocol
   }

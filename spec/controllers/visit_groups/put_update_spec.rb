@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -38,14 +38,14 @@ RSpec.describe VisitGroupsController, type: :controller do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr        = create(:service_request_without_validations, protocol: protocol)
       arm       = create(:arm, protocol: protocol, name: "Armada")
-      vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
+      vg        = arm.visit_groups.first
       vg_params = { day: 5 }
 
-      xhr :put, :update, {
+      put :update, params: {
         id: vg.id,
         service_request_id: sr.id,
         visit_group: vg_params
-      }
+      }, xhr: true
 
       expect(assigns(:visit_group)).to eq(vg.reload)
     end
@@ -55,48 +55,16 @@ RSpec.describe VisitGroupsController, type: :controller do
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol)
         arm       = create(:arm, protocol: protocol, name: "Armada")
-        vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
+        vg        = arm.visit_groups.first
         vg_params = { day: 5 }
 
-        xhr :put, :update, {
+        put :update, params: {
           id: vg.id,
           service_request_id: sr.id,
           visit_group: vg_params
-        }
+        }, xhr: true
 
         expect(vg.reload.day).to eq(5)
-      end
-
-      it 'should render nothing' do
-        protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
-        sr        = create(:service_request_without_validations, protocol: protocol)
-        arm       = create(:arm, protocol: protocol, name: "Armada")
-        vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
-        vg_params = { day: 5 }
-
-        xhr :put, :update, {
-          id: vg.id,
-          service_request_id: sr.id,
-          visit_group: vg_params
-        }
-
-        expect(response.body).to be_blank
-      end
-
-      it 'should respond ok' do
-        protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
-        sr        = create(:service_request_without_validations, protocol: protocol)
-        arm       = create(:arm, protocol: protocol, name: "Armada")
-        vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
-        vg_params = { day: 5 }
-
-        xhr :put, :update, {
-          id: vg.id,
-          service_request_id: sr.id,
-          visit_group: vg_params
-        }
-
-        expect(controller).to respond_with(:ok)
       end
     end
 
@@ -105,49 +73,71 @@ RSpec.describe VisitGroupsController, type: :controller do
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol)
         arm       = create(:arm, protocol: protocol, name: "Armada")
-        vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
+        vg        = arm.visit_groups.first
+        
+        vg.day = nil
+        vg.save(validate: false)
         vg_params = { name: nil }
 
-        xhr :put, :update, {
+        put :update, params: {
           id: vg.id,
           service_request_id: sr.id,
           visit_group: vg_params
-        }
+        }, xhr: true
 
-        expect(vg.reload.name).to eq("Visit Me Baby One More Time")
+        expect(vg.reload.name).to eq('Visit 1')
       end
 
-      it 'should render json errors' do
+      it 'should assign @errors' do
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol)
         arm       = create(:arm, protocol: protocol, name: "Armada")
-        vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
+        vg        = arm.visit_groups.first
+        
+        vg.day = nil
+        vg.save(validate: false)
         vg_params = { name: nil }
 
-        xhr :put, :update, {
+        put :update, params: {
           id: vg.id,
           service_request_id: sr.id,
           visit_group: vg_params
-        }
+        }, xhr: true
 
-        expect(JSON.parse(response.body)).to be
+        expect(assigns(:errors)).to be
       end
+    end
 
-      it 'should respond unprocessable entity' do
-        protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
-        sr        = create(:service_request_without_validations, protocol: protocol)
-        arm       = create(:arm, protocol: protocol, name: "Armada")
-        vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
-        vg_params = { name: nil }
+    it 'should render template' do
+      protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr        = create(:service_request_without_validations, protocol: protocol)
+      arm       = create(:arm, protocol: protocol, name: "Armada")
+      vg        = arm.visit_groups.first
+      vg_params = { day: 5 }
 
-        xhr :put, :update, {
-          id: vg.id,
-          service_request_id: sr.id,
-          visit_group: vg_params
-        }
+      put :update, params: {
+        id: vg.id,
+        service_request_id: sr.id,
+        visit_group: vg_params
+      }, xhr: true
 
-        expect(controller).to respond_with(:unprocessable_entity)
-      end
+      expect(response.body).to render_template(:update)
+    end
+
+    it 'should respond ok' do
+      protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr        = create(:service_request_without_validations, protocol: protocol)
+      arm       = create(:arm, protocol: protocol, name: "Armada")
+      vg        = arm.visit_groups.first
+      vg_params = { day: 5 }
+
+      put :update, params: {
+        id: vg.id,
+        service_request_id: sr.id,
+        visit_group: vg_params
+      }, xhr: true
+
+      expect(controller).to respond_with(:ok)
     end
   end
 end

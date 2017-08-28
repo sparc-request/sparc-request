@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -31,7 +31,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
         authorize(identity, protocol, can_edit: false)
         log_in_dashboard_identity(obj: identity)
 
-        xhr :post, :create, protocol_id: protocol.id, format: :js
+        post :create, params: { protocol_id: protocol.id }, xhr: true
       end
 
       it "should use ProtocolAuthorizer to authorize user" do
@@ -48,18 +48,21 @@ RSpec.describe Dashboard::AssociatedUsersController do
         authorize(identity, protocol, can_edit: true)
         log_in_dashboard_identity(obj: identity)
 
-        @new_project_roles_attrs = {identity_id: other_user.id}
+        @new_project_roles_attrs = { identity_id: other_user.id.to_s }
         associated_user_creator = instance_double(AssociatedUserCreator,
           successful?: true)
         allow(AssociatedUserCreator).to receive(:new).
           and_return(associated_user_creator)
 
-        xhr :post, :create, protocol_id: protocol.id, project_role: @new_project_roles_attrs, format: :js
+        post :create, params: {
+          protocol_id: protocol.id,
+          project_role: @new_project_roles_attrs 
+        }, xhr: true
       end
 
       it "should use AssociatedUserCreator to create ProjectRole" do
         expect(AssociatedUserCreator).to have_received(:new).
-          with(@new_project_roles_attrs)
+          with controller_params(@new_project_roles_attrs)
       end
 
       it "should not set @errors" do
@@ -75,7 +78,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
         authorize(identity, protocol, can_edit: true)
         log_in_dashboard_identity(obj: identity)
 
-        @new_project_roles_attrs = {identity_id: other_user.id}
+        @new_project_roles_attrs = { identity_id: other_user.id.to_s }
         new_project_role = build_stubbed(:project_role)
         allow(new_project_role).to receive(:errors).and_return("my errors")
         associated_user_creator = instance_double(AssociatedUserCreator,
@@ -85,12 +88,15 @@ RSpec.describe Dashboard::AssociatedUsersController do
         allow(AssociatedUserCreator).to receive(:new).
           and_return(associated_user_creator)
 
-        xhr :post, :create, protocol_id: protocol.id, project_role: @new_project_roles_attrs, format: :js
+        post :create, params: {
+          protocol_id: protocol.id,
+          project_role: @new_project_roles_attrs
+        }, xhr: true
       end
 
       it "should use AssociatedUserCreator to (attempt) to create ProjectRole" do
         expect(AssociatedUserCreator).to have_received(:new).
-          with(@new_project_roles_attrs)
+          with controller_params(@new_project_roles_attrs)
       end
 
       it "should set @errors from built ProjectRole's errors" do
@@ -115,8 +121,11 @@ RSpec.describe Dashboard::AssociatedUsersController do
           and_return(project_role)
         allow(AssociatedUserCreator).to receive(:new).
           and_return(associated_user_creator)
-        
-        xhr :post, :create, protocol_id: protocol.id, project_role: @new_project_roles_attrs, format: :js
+
+        post :create, params: {
+          protocol_id: protocol.id,
+          project_role: @new_project_roles_attrs
+        }, xhr: true
       end
 
       it 'should set @permission_to_edit' do

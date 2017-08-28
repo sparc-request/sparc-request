@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,10 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-
-  $(document).on 'click', '#messages-btn', ->
-    window.location = '/dashboard/notifications'
-
   $(document).on('click', '.notifications_row > td.user,td.subject,td.time', ->
     #if you click on the row, it opens the notification show
     row_index   = $(this).parents('tr').data('index')

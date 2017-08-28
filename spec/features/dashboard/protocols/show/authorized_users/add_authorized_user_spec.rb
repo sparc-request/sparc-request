@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -197,8 +197,8 @@ RSpec.feature 'User wants to add an authorized user', js: true do
         organization    = create(:organization)
         organization2   = create(:organization)
         service_request = create(:service_request_without_validations, protocol: protocol)
-                          create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft')
-                          create(:sub_service_request_without_validations, service_request: service_request, organization: organization2, status: 'draft')
+                          create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft', protocol: protocol)
+                          create(:sub_service_request_without_validations, service_request: service_request, organization: organization2, status: 'draft', protocol: protocol)
                           create(:super_user, organization: organization, identity: logged_in_user)
         # navigate to page
         @page = Dashboard::Protocols::ShowPage.new
@@ -257,7 +257,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
   def when_i_fill_out_the_required_fields
     when_i_set_the_role_to('Co-Investigator')
-    @page.authorized_user_modal.request_rights.click
+    @page.authorized_user_modal.approve_rights.click
   end
 
   def when_i_set_the_role_and_credentials_to_other
@@ -293,12 +293,12 @@ RSpec.feature 'User wants to add an authorized user', js: true do
   end
 
   def then_i_should_see_the_user_has_been_added
-    @page.wait_for_authorized_users(text: /Jane Doe.*Co-Investigator.*Request\/Approve Services/)
-    expect(@page).to have_authorized_users(text: /Jane Doe.*Co-Investigator.*Request\/Approve Services/)
+    @page.wait_for_authorized_users(text: /Jane Doe.*Co-Investigator.*Authorize/)
+    expect(@page).to have_authorized_users(text: /Jane Doe.*Co-Investigator.*Authorize/)
   end
 
   def then_i_should_see_the_warning_message
-    expect(page).to have_text("**WARNING**")
+    expect(page).to have_text("**Warning**")
   end
 
   def then_i_should_see_the_new_primary_pi
@@ -318,7 +318,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
   def then_i_should_see_the_old_primary_pi_has_request_rights
     wait_for_javascript_to_finish
-    expect(ProjectRole.find_by(identity_id: logged_in_user.id, protocol_id: protocol.id).project_rights).to eq('request')
+    expect(ProjectRole.find_by(identity_id: logged_in_user.id, protocol_id: protocol.id).project_rights).to eq('approve')
   end
 
   def then_i_should_see_an_error_of_type error_type

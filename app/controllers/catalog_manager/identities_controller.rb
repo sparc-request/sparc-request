@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -86,7 +86,7 @@ class CatalogManager::IdentitiesController < CatalogManager::AppController
     if rel_type == 'service_provider_organizational_unit'
       service_provider = ServiceProvider.find params["relationship"]
       @service_provider_error_message = nil
-      
+
       # we need to have more than just this one service provider in the tree in order to delete
       # if we have services we only need to verify that a service provider exists above us
       # otherwise we look in the entire tree for at least one service provider
@@ -94,9 +94,9 @@ class CatalogManager::IdentitiesController < CatalogManager::AppController
         service_provider.destroy
         oe.reload
       else
-        @service_provider_error_message = I18n.t("organization_form.service_provider_required_message") 
+        @service_provider_error_message = I18n.t("organization_form.service_provider_required_message")
       end
-      
+
       render :partial => 'catalog_manager/shared/service_providers', :locals => {:entity => oe}
 
     elsif rel_type == 'super_user_organizational_unit'
@@ -182,16 +182,16 @@ class CatalogManager::IdentitiesController < CatalogManager::AppController
     end
 
     manager.save
-    
+
     render :partial => 'catalog_manager/shared/catalog_managers', :locals => {:entity => oe}
   end
 
   def search
     term = params[:term].strip
-    results = Identity.search(term).map do |i| 
+    results = Identity.search(term).map do |i|
       {
-       :label => i.display_name, :value => i.id, :email => i.email, :institution => i.institution, :phone => i.phone, :era_commons_name => i.era_commons_name,
-       :college => i.college, :department => i.department, :credentials => i.credentials, :credentials_other => i.credentials_other
+       :label => i.display_name, :value => i.id, :email => i.email, :institution => i.professional_org_lookup("institution"), :phone => i.phone, :era_commons_name => i.era_commons_name,
+       :college => i.professional_org_lookup("college"), :department => i.professional_org_lookup("department"), :credentials => i.credentials, :credentials_other => i.credentials_other
       }
     end
     results = [{:label => 'No Results'}] if results.empty?

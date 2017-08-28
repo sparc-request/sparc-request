@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -34,7 +34,10 @@ RSpec.describe CatalogManager::ProvidersController do
   describe '#create' do
     before :each do
       @institution = create(:institution)
-      post :create, name: 'Some Provider', institution_id: @institution.id, format: :js
+      post :create,
+        params: { name: 'Some Provider',
+                  institution_id: @institution.id
+      }, xhr: true
     end
 
     it 'should create a provider' do
@@ -62,7 +65,7 @@ RSpec.describe CatalogManager::ProvidersController do
       @organization = create(:provider)
       logged_in_user.catalog_manager_rights.create(organization_id: @organization.id)
 
-      xhr :get, :show, id: @organization.id
+      get :show, params: { id: @organization.id }, xhr: true
     end
 
     it 'should assign @path' do
@@ -96,18 +99,17 @@ RSpec.describe CatalogManager::ProvidersController do
                        internal_rate_type:     'federal',
                        unfunded_rate_type:     'federal',
                        newly_created: 'true'}
-      @params = ActionController::Parameters.new(
-                { id: @organization.id,
+      @params = { id: @organization.id,
                   provider: { name: 'New Provider Name',
                               tag_list: nil },
-                  pricing_setups: {blank_pricing_setup: pricing_setup} })
+                  pricing_setups: {blank_pricing_setup: pricing_setup} }
 
-      xhr :put, :update, @params, format: :js
+      put :update, params: @params, xhr: true
     end
 
     it 'should assign @attributes' do
       @params[:provider][:tag_list] = ''
-      expect(assigns(:attributes)).to eq(@params[:provider])
+      expect(assigns(:attributes).to_h.symbolize_keys).to eq(@params[:provider])
     end
 
     it 'should assign @organization' do

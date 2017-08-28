@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,12 +18,13 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class SubServiceRequest < ActiveRecord::Base
+class SubServiceRequest < ApplicationRecord
 
   include RemotelyNotifiable
 
   audited
 
+  before_create :set_protocol_id
   after_save :update_org_tree
   after_save :update_past_status
 
@@ -31,6 +32,7 @@ class SubServiceRequest < ActiveRecord::Base
   belongs_to :owner, :class_name => 'Identity', :foreign_key => "owner_id"
   belongs_to :service_request
   belongs_to :organization
+  belongs_to :protocol, counter_cache: true
   has_many :past_statuses, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
   has_many :line_items_visits, through: :line_items
@@ -42,34 +44,11 @@ class SubServiceRequest < ActiveRecord::Base
   has_many :reports, :dependent => :destroy
   has_many :notifications, :dependent => :destroy
   has_many :subsidies
+  has_many :responses
   has_one :approved_subsidy, :dependent => :destroy
   has_one :pending_subsidy, :dependent => :destroy
-  has_one :protocol, through: :service_request
 
   delegate :percent_subsidy, to: :approved_subsidy, allow_nil: true
-
-  # service_request_id & ssr_id together form a unique id for the sub service request
-  attr_accessible :service_request_id
-  attr_accessible :ssr_id
-  attr_accessible :organization_id
-  attr_accessible :owner_id
-  attr_accessible :status_date
-  attr_accessible :status
-  attr_accessible :consult_arranged_date
-  attr_accessible :nursing_nutrition_approved
-  attr_accessible :lab_approved
-  attr_accessible :imaging_approved
-  attr_accessible :committee_approved
-  attr_accessible :requester_contacted_date
-  attr_accessible :line_items_attributes
-  attr_accessible :subsidy_attributes
-  attr_accessible :payments_attributes
-  attr_accessible :in_work_fulfillment
-  attr_accessible :routing
-  attr_accessible :documents
-  attr_accessible :service_requester_id
-  attr_accessible :requester_contacted_date
-  attr_accessible :submitted_at
 
   accepts_nested_attributes_for :line_items, allow_destroy: true
   accepts_nested_attributes_for :payments, allow_destroy: true
@@ -134,7 +113,7 @@ class SubServiceRequest < ActiveRecord::Base
   end
 
   def display_id
-    return "#{service_request.try(:protocol).try(:id)}-#{ssr_id || 'DRAFT'}"
+    return "#{protocol.try(:id)}-#{ssr_id || 'DRAFT'}"
   end
 
   def has_subsidy?
@@ -149,9 +128,6 @@ class SubServiceRequest < ActiveRecord::Base
       new_args.update(args)
       li = service_request.create_line_item(new_args)
 
-      # Update subject visit calendars if present
-      update_cwf_data_for_new_line_item(li)
-
       li
     end
 
@@ -163,39 +139,12 @@ class SubServiceRequest < ActiveRecord::Base
     end
   end
 
-  def update_cwf_data_for_new_line_item(li)
-    if self.in_work_fulfillment
-      values = []
-      columns = [:line_item_id,:visit_id,:appointment_id]
-      self.service_request.arms.each do |arm|
-        visits = Visit.joins(:line_items_visit).where(visits: { visit_group_id: arm.visit_groups}, line_items_visits:{ line_item_id: li.id} )
-        visits.group_by{|v| v.visit_group_id}.each do |vg_id, group_visits|
-          Appointment.where(visit_group_id: vg_id).each do |appointment|
-            appointment_id = appointment.id
-            if appointment.organization_id == li.service.organization_id
-              group_visits.each do |visit|
-                values << [li.id,visit.id,appointment_id]
-              end
-            end
-          end
-        end
-      end
-      if !(values.empty?)
-        Procedure.import columns, values, {:validate => true}
-      end
-      self.reload
-    end
-  end
-
   def one_time_fee_line_items
-    line_items = LineItem.where(:sub_service_request_id => self.id).includes(:service)
-    line_items.select {|li| li.service.one_time_fee}
+    self.line_items.joins(:service).where(services: { one_time_fee: true })
   end
 
   def per_patient_per_visit_line_items
-    line_items = LineItem.where(:sub_service_request_id => self.id).includes(:service)
-
-    line_items.select {|li| !li.service.one_time_fee}
+    self.line_items.joins(:service).where(services: { one_time_fee: false })
   end
 
   def has_one_time_fee_services?
@@ -280,7 +229,7 @@ class SubServiceRequest < ActiveRecord::Base
 
   def eligible_for_subsidy?
     # This defines when subsidies show up for SubServiceRequests across the app.
-    if organization.eligible_for_subsidy? and not organization.funding_source_excluded_from_subsidy?(self.service_request.protocol.try(:funding_source_based_on_status))
+    if organization.eligible_for_subsidy? and not organization.funding_source_excluded_from_subsidy?(self.protocol.try(:funding_source_based_on_status))
       true
     else
       false
@@ -304,45 +253,60 @@ class SubServiceRequest < ActiveRecord::Base
   ########################
   ## SSR STATUS METHODS ##
   ########################
+
+  # Returns the SSR id that need an initial submission email and updates 
+  # the SSR status to new status if appropriate
+  def update_status_and_notify(new_status)
+    to_notify = []
+    if can_be_edited?
+      available = AVAILABLE_STATUSES.keys
+      editable = self.is_locked? || available
+      changeable = available & editable
+      if changeable.include?(new_status)
+        #  See Pivotal Stories: #133049647 & #135639799
+        if (status != new_status) && ((new_status == 'submitted' && UPDATABLE_STATUSES.include?(status)) || new_status != 'submitted')
+          ### For 'submitted' status ONLY:
+          # Since adding/removing services changes a SSR status to 'draft', we have to look at the past status to see if we should notify users of a status change
+          # We do NOT notify if updating from an un-updatable status or we're updating to a status that we already were previously 
+          if new_status == 'submitted'
+            past_status = PastStatus.where(sub_service_request_id: id).last
+            past_status = past_status.nil? ? nil : past_status.status
+            if status == 'draft' && ((UPDATABLE_STATUSES.include?(past_status) && past_status != new_status) || past_status == nil) # past_status == nil indicates a newly created SSR
+              to_notify << id
+            elsif status != 'draft'
+              to_notify << id 
+            end
+          else
+            to_notify << id 
+          end
+
+          new_status == 'submitted' ? update_attributes(status: new_status, submitted_at: Time.now, nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false) : update_attribute(:status, new_status)
+        end
+      end
+    end
+    to_notify
+  end
+
   def ctrc?
     self.organization.tag_list.include? "ctrc"
   end
 
   #A request is locked if the organization it's in isn't editable
   def is_locked?
-    if organization.has_editable_statuses?
-      return !EDITABLE_STATUSES[find_editable_id(self.organization.id)].include?(self.status)
-    end
-    false
+    self.status != 'first_draft' && !self.organization.process_ssrs_parent.has_editable_status?(status)
   end
 
   # Can't edit a request if it's placed in an uneditable status
   def can_be_edited?
-    if organization.has_editable_statuses?
-      self_or_parent_id = find_editable_id(self.organization.id)
-      EDITABLE_STATUSES[self_or_parent_id].include?(self.status) && !is_complete?
-    else
-      !is_complete?
-    end
+     self.status == 'first_draft' || (self.organization.process_ssrs_parent.has_editable_status?(self.status) && !self.is_complete?)
   end
 
   def is_complete?
-    return status == 'complete'
+    FINISHED_STATUSES.include?(self.status)
   end
 
-  def find_editable_id(id)
-    parent_ids = Organization.find(id).parents.map(&:id)
-    EDITABLE_STATUSES.keys.each do |org_id|
-      if (org_id == id) || parent_ids.include?(org_id)
-        return org_id
-      end
-    end
-  end
-
-  def set_to_draft(admin)
-    if !admin && status != 'draft'
-      self.update_attributes(status: 'draft')
-    end
+  def set_to_draft
+    self.update_attributes(status: 'draft') unless status == 'draft'
   end
 
   def switch_to_new_service_request
@@ -378,7 +342,7 @@ class SubServiceRequest < ActiveRecord::Base
   end
 
   def update_past_status
-    if !@prev_status.blank? && @prev_status != self.status
+    if self.status_changed? && !@prev_status.blank?
       past_status = self.past_statuses.create(status: @prev_status, date: Time.now)
       user_id = AuditRecovery.where(auditable_id: past_status.id, auditable_type: 'PastStatus').first.user_id
       past_status.update_attribute(:changed_by_id, user_id)
@@ -444,7 +408,7 @@ class SubServiceRequest < ActiveRecord::Base
   ##########################
   # Distributes all available surveys to primary pi and ssr requester
   def distribute_surveys
-    primary_pi = service_request.protocol.primary_principal_investigator
+    primary_pi = protocol.primary_principal_investigator
     # send all available surveys at once
     available_surveys = line_items.map{|li| li.service.available_surveys}.flatten.compact.uniq
     # do nothing if we don't have any available surveys
@@ -457,7 +421,57 @@ class SubServiceRequest < ActiveRecord::Base
     end
   end
 
-  ### audit reporting methods ###
+  def surveys_completed?
+    self.responses.all?(&:completed?)
+  end
+
+  ###############################
+  ### AUDIT REPORTING METHODS ###
+  ###############################
+
+  # Collects all the added/deleted line_items that need to be displayed in the audit report for emails
+  def audit_line_items(identity)
+    filtered_audit_trail = {:line_items => []}
+    ssr_submitted_at_audit = AuditRecovery.where("audited_changes LIKE '%submitted_at%' AND auditable_id = #{id} AND auditable_type = 'SubServiceRequest' AND action IN ('update') AND user_id = #{identity.id}")
+    ssr_submitted_at_audit = ssr_submitted_at_audit.present? ? ssr_submitted_at_audit.order(created_at: :desc).first : nil
+
+    ### start_date = last time SSR was submitted
+    ### if SSR has never been submitted, start_date == nil
+    if !ssr_submitted_at_audit.nil? && (ssr_submitted_at_audit.audited_changes['submitted_at'].include?(nil) || ssr_submitted_at_audit.audited_changes['submitted_at'].nil?)
+      start_date = nil
+    else
+      if !ssr_submitted_at_audit.nil?
+        start_date = ssr_submitted_at_audit.audited_changes['submitted_at']
+        start_date = start_date.present? ? start_date.first.utc : Time.now.utc
+      end
+    end
+    end_date = Time.now.utc
+
+    deleted_line_item_audits = AuditRecovery.where("audited_changes LIKE '%sub_service_request_id: #{id}%' AND auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('destroy') AND created_at BETWEEN '#{start_date}' AND '#{end_date}'")
+                             
+    added_line_item_audits = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{service_request.id}%' AND auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('create') AND created_at BETWEEN '#{start_date}' AND '#{end_date}'")
+    
+    ### Takes all the added LIs and filters them down to the ones specific to this SSR ###
+    added_li_ids = added_line_item_audits.present? ? added_line_item_audits.map(&:auditable_id) : []
+    li_ids_added_to_this_ssr = line_items.present? ? line_items.map(&:id) : []
+    added_lis = added_li_ids & li_ids_added_to_this_ssr
+
+    if !added_lis.empty?
+      added_lis.each do |li_id|
+        filtered_audit_trail[:line_items] << added_line_item_audits.where(auditable_id: li_id).first
+      end
+    end
+
+    if deleted_line_item_audits.present?
+      deleted_line_item_audits.each do |deleted_li|
+        filtered_audit_trail[:line_items] << deleted_li
+      end
+    end
+
+    filtered_audit_trail[:sub_service_request_id] = self.id
+    filtered_audit_trail
+  end
+
 
   def audit_label audit
     "Service Request #{display_id}"
@@ -493,6 +507,10 @@ class SubServiceRequest < ActiveRecord::Base
   ### end audit reporting methods ###
 
   private
+
+  def set_protocol_id
+    self.protocol_id = service_request.try(:protocol_id)
+  end
 
   def notify_remote_around_update?
     true

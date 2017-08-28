@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -41,12 +41,13 @@ RSpec.describe AssociatedUsersController, type: :controller do
         pr        = create(:project_role, identity: other_user, protocol: protocol, role: 'noob')
         pr_params = { role: 'not noob' }
 
+        session[:identity_id] = logged_in_user.id
 
-        xhr :put, :update, {
+        put :update, params: {
         service_request_id: sr.id,
           id: pr.id,
           project_role: pr_params
-        }
+        }, xhr: true
 
         expect(pr.reload.role).to eq('not noob')
       end
@@ -59,12 +60,13 @@ RSpec.describe AssociatedUsersController, type: :controller do
         pr        = create(:project_role, identity: other_user, protocol: protocol, role: 'noob')
         pr_params = { role: nil }
 
+        session[:identity_id] = logged_in_user.id
 
-        xhr :put, :update, {
+        put :update, params: {
         service_request_id: sr.id,
           id: pr.id,
           project_role: pr_params
-        }
+        }, xhr: true
 
         expect(pr.reload.role).to eq('noob')
       end
@@ -75,12 +77,13 @@ RSpec.describe AssociatedUsersController, type: :controller do
         pr        = create(:project_role, identity: other_user, protocol: protocol, role: 'noob')
         pr_params = { role: nil }
 
+        session[:identity_id] = logged_in_user.id
 
-        xhr :put, :update, {
+        put :update, params: {
         service_request_id: sr.id,
           id: pr.id,
           project_role: pr_params
-        }
+        }, xhr: true
 
         expect(assigns(:errors)).to be
       end
@@ -92,12 +95,13 @@ RSpec.describe AssociatedUsersController, type: :controller do
       pr        = create(:project_role, identity: other_user, protocol: protocol, role: 'noob')
       pr_params = { role: 'not noob' }
 
+      session[:identity_id] = logged_in_user.id
 
-      xhr :put, :update, {
+      put :update, params: {
         service_request_id: sr.id,
         id: pr.id,
         project_role: pr_params
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:update)
     end
@@ -108,12 +112,13 @@ RSpec.describe AssociatedUsersController, type: :controller do
       pr        = create(:project_role, identity: other_user, protocol: protocol, role: 'noob')
       pr_params = { role: 'not noob' }
 
+      session[:identity_id] = logged_in_user.id
 
-      xhr :put, :update, {
+      put :update, params: {
         service_request_id: sr.id,
         id: pr.id,
         project_role: pr_params
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

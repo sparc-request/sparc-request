@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -31,7 +31,7 @@ RSpec.describe 'dashboard/sub_service_requests/_per_patient_per_visit', type: :v
 
       render "dashboard/sub_service_requests/per_patient_per_visit", sub_service_request: sub_service_request, service_request: service_request
 
-      expect(response).to have_content("There are no per-patient/per-visit requests.")
+      expect(response).to have_content("There are no clinical services requested.")
     end
   end
 
@@ -44,7 +44,7 @@ RSpec.describe 'dashboard/sub_service_requests/_per_patient_per_visit', type: :v
 
       render "dashboard/sub_service_requests/per_patient_per_visit", sub_service_request: sub_service_request, service_request: service_request
 
-      expect(response).to have_content("There are no per-patient/per-visit requests.")
+      expect(response).to have_content("There are no clinical services requested.")
     end
   end
 

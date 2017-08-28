@@ -1,4 +1,4 @@
--# Copyright © 2011-2016 MUSC Foundation for Research Development
+-# Copyright © 2011-2017 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -33,10 +33,14 @@
     = form.hidden_field :sorted_by
     .panel-body
       #protocol_filter_form_display
-        .form-group.row
-          = form.label :search_query, t(:actions)[:search], class: 'col-lg-3 control-label'
-          .col-lg-9
-            = form.text_field :search_query, class: 'form-control'
+        .form-group.row.search_padding
+          .col-lg-12
+            .input-group
+              = form.fields_for :search_query do |search|
+                .input-group-btn
+                  .dd_select
+                    = search.select :search_drop, options_for_select(t(:dashboard)[:protocol_filters][:search_by_options], filterrific.search_query.try(:search_drop)), { prompt:  t(:dashboard)[:protocol_filters][:search_by] }, class: "form-control selectpicker ", data: { style: 'dropdown_filter' }
+                = search.text_field :search_text, value: filterrific.search_query.try(:search_text), class: 'form-control'
 
         .form-group.row
           = form.label :show_archived, t(:dashboard)[:protocol_filters][:archived], class: 'col-lg-10 control-label'
@@ -71,6 +75,8 @@
             = form.label :admin_filter, t(:dashboard)[:protocol_filters][:my_admin_protocols], class: 'col-lg-10 control-label'
             .col-lg-2
               = form.radio_button :admin_filter, "for_admin #{current_user.id}"
+        - else
+          = form.hidden_field :admin_filter, value: "for_identity #{current_user.id}"
 
     .panel-footer
       .pull-right

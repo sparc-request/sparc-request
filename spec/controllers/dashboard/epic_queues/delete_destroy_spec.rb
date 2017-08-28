@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -23,6 +23,8 @@ require "rails_helper"
 RSpec.describe Dashboard::EpicQueuesController do
   describe "DELETE #destroy" do
     before(:each) do
+      stub_const("EPIC_QUEUE_ACCESS", ['jug2'])
+      
       @epic_queue = build_stubbed(:epic_queue)
       allow(@epic_queue).to receive(:destroy)
       allow(EpicQueue).to receive(:find).
@@ -32,8 +34,9 @@ RSpec.describe Dashboard::EpicQueuesController do
 
     describe "for overlord users" do
       before(:each) do
+        stub_const("EPIC_QUEUE_ACCESS", ['jug2'])
         log_in_dashboard_identity(obj: build(:identity, ldap_uid: 'jug2'))
-        xhr :delete, :destroy, id: @epic_queue.id
+        delete :destroy, params: { id: @epic_queue.id }, xhr: true
       end
 
       it "should delete EpicQueue from params[:id]" do
@@ -47,7 +50,7 @@ RSpec.describe Dashboard::EpicQueuesController do
     describe "for creepy hacker doods" do 
       before(:each) do
         log_in_dashboard_identity(obj: build_stubbed(:identity))
-        xhr :delete, :destroy, id: @epic_queue.id
+        delete :destroy, params: { id: @epic_queue.id }, xhr: true
       end
 
       it "should not delete the EpicQueue from params[:id]" do

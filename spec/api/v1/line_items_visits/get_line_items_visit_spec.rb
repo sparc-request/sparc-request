@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -24,13 +24,8 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
   describe 'GET /v1/line_items_visit/:id.json' do
 
-    before do
-      LineItemsVisit.skip_callback(:save, :after, :set_arm_edited_flag_on_subjects)
-
-      @line_items_visit = build(:line_items_visit)
-      @line_items_visit.save validate: false
-      
-      LineItemsVisit.set_callback(:save, :after, :set_arm_edited_flag_on_subjects)
+    before :each do
+      @line_items_visit = create(:line_items_visit_without_validations)
     end
 
     context 'response params' do

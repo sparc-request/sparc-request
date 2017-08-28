@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 require 'rails_helper'
 
-RSpec.describe 'Protocol' do
+RSpec.describe Protocol, type: :model do
   let_there_be_lane
   let_there_be_j
   build_service_request_with_study()
@@ -78,6 +78,8 @@ RSpec.describe 'Protocol' do
       answer3_version_3.update_attributes(answer: answer_array[2])
       answer4_version_3.update_attributes(answer: answer_array[3])
       answer5_version_3.update_attributes(answer: answer_array[4])
+      answer6_version_3.update_attributes(answer: answer_array[5])
+      answer7_version_3.update_attributes(answer: answer_array[6])
     elsif version == 2
       answer1_version_2.update_attributes(answer: answer_array[0])
       answer2_version_2.update_attributes(answer: answer_array[1])

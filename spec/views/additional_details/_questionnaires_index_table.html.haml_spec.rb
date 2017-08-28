@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -25,9 +25,9 @@ RSpec.describe 'additional_details/_questionnaires_index_table', type: :view do
   before(:each) do
 
     @service = create(:service)
-    @questionnaires = create_list(:questionnaire_with_responses, 2, service_id: @service.id)
+    @questionnaires = create_list(:questionnaire_with_responses, 2, :without_validations, service_id: @service.id)
     @questionnaires.first.active = 0
-    
+
     render "/additional_details/questionnaires_index_table"
 
   end

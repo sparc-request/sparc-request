@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -29,6 +29,7 @@ RSpec.describe 'User views a SSR', js: true do
     institution = create(:institution, name: "Institution")
     provider    = create(:provider, name: "Provider", parent: institution)
     program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
+                  create(:pricing_setup, organization: program)
     service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
     @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2)
     @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)

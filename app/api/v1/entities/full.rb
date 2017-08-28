@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -17,9 +17,6 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
-
-#Copyright © 2011-2016 MUSC Foundation for Research Development.
-#All rights reserved.
 
 module V1
 
@@ -120,7 +117,6 @@ module V1
             :sponsor_name,
             :brief_description,
             :indirect_cost_rate,
-            :study_phase,
             :udak_project_number,
             :funding_rfa,
             :funding_status,
@@ -186,13 +182,9 @@ module V1
 
     expose  :protocol_id,
             :status,
-            :approved,
-            :subject_count
+            :approved
 
     with_options(format_with: :iso_timestamp) do
-      expose :consult_arranged_date
-      expose :pppv_complete_date
-      expose :pppv_in_process_date
       expose :submitted_at
     end
   end

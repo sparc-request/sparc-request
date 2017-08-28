@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -27,12 +27,10 @@ RSpec.describe Dashboard::ProtocolsController do
         before(:each) do
           @logged_in_user = build_stubbed(:identity)
           log_in_dashboard_identity(obj: @logged_in_user)
-          @protocol = findable_stub(Protocol) do
-            build_stubbed(:protocol, type: "Project")
-          end
+          @protocol = create(:protocol_federally_funded, primary_pi: @logged_in_user)
           authorize(@logged_in_user, @protocol, can_edit: false)
 
-          xhr :get, :update, id: @protocol.id
+          get :update, params: { id: @protocol.id }, xhr: true
         end
 
         it { is_expected.to respond_with :ok }
@@ -45,24 +43,19 @@ RSpec.describe Dashboard::ProtocolsController do
             @logged_in_user = build_stubbed(:identity)
             log_in_dashboard_identity(obj: @logged_in_user)
 
-            @protocol = findable_stub(Protocol) do
-              build_stubbed(:protocol, type: "Project")
-            end
+            @protocol = create(:protocol_federally_funded, primary_pi: @logged_in_user)
             authorize(@logged_in_user, @protocol, can_edit: true)
 
             # let us have an active StudyTypeQuestionGroup
             allow(StudyTypeQuestionGroup).to receive(:active_id).
               and_return("active group id")
 
-            allow(@protocol).to receive(:update_attributes).
-              and_return(true)
-
-            xhr :get, :update, id: @protocol.id, protocol: { some_attribute: "some value" }
+            get :update, params: { id: @protocol.id, protocol: { title: "New Title" } }, xhr: true
           end
 
           it "should update Protocol <- params[:id] as specified in params[:protocol] and update its StudyTypeQuestionGroup to the active one" do
-            expect(@protocol).to have_received(:update_attributes).
-              with(some_attribute: "some value")
+            @protocol.reload
+            expect(@protocol.title).to eq("New Title")
           end
 
           it "should not set @errors" do
@@ -78,24 +71,22 @@ RSpec.describe Dashboard::ProtocolsController do
             @logged_in_user = build_stubbed(:identity)
             log_in_dashboard_identity(obj: @logged_in_user)
 
-            @protocol = findable_stub(Protocol) do
-              build_stubbed(:protocol, type: "Project")
-            end
-            allow(@protocol).to receive(:errors).and_return("oh god")
+            @protocol = create(:protocol_without_validations,
+                primary_pi: @logged_in_user,
+                funding_status: "funded",
+                funding_source: "skrill",
+                title: "")
             authorize(@logged_in_user, @protocol, can_edit: true)
 
             # let us have an active StudyTypeQuestionGroup
             allow(StudyTypeQuestionGroup).to receive(:active_id).
               and_return("active group id")
 
-            allow(@protocol).to receive(:update_attributes).
-              and_return(false)
-
-            xhr :get, :update, id: @protocol.id, protocol: { some_attribute: "some value" }
+            get :update, params: { id: @protocol.id, protocol: { some_attribute: "some value" } }, xhr: true
           end
 
           it 'should set @errors to Protocol\'s errors attribute' do
-            expect(assigns(:errors)).to eq('oh god')
+            expect(assigns(:errors).full_messages).to eq(["Title can't be blank"])
           end
         end
       end
@@ -104,11 +95,11 @@ RSpec.describe Dashboard::ProtocolsController do
     context 'user does not have Admin access nor a valid project role' do
       before :each do
         @logged_in_user = create(:identity)
-        @protocol       = create(:protocol_without_validations, type: 'Project')
+        @protocol       = create(:protocol_without_validations)
 
         log_in_dashboard_identity(obj: @logged_in_user)
 
-        xhr :get, :update, id: @protocol.id
+        get :update, params: { id: @protocol.id }, xhr: true
       end
 
       it 'should set @admin to false' do
@@ -123,43 +114,98 @@ RSpec.describe Dashboard::ProtocolsController do
       context 'user authorized to edit Protocol as Super User' do
         before :each do
           @logged_in_user = create(:identity)
-          @protocol       = create(:protocol_without_validations, type: 'Project')
+          @protocol       = create(:protocol_without_validations,
+                                    primary_pi: @logged_in_user,
+                                    funding_status: "funded",
+                                    funding_source: "foundation")
           organization    = create(:organization)
           service_request = create(:service_request_without_validations, protocol: @protocol)
-                            create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft')
+                            create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft', protocol_id: @protocol.id)
                             create(:super_user, identity: @logged_in_user, organization: organization)
-
+          @study_type_question_group_version_3 = StudyTypeQuestionGroup.create(active: true, version: 3)
           log_in_dashboard_identity(obj: @logged_in_user)
-
-          xhr :get, :update, id: @protocol.id, protocol: { title: "some value" }
         end
 
         it 'should set @admin to true' do
+
+          get :update, params: { id: @protocol.id, protocol: { title: "some value", selected_for_epic: "true", study_type_question_group_id: @study_type_question_group_version_3.id } }, xhr: true
           expect(assigns(:admin)).to eq(true)
         end
 
-        it { is_expected.to respond_with :ok }
+        it 'should allow blank Research Master ID with human subjects' do
+          stub_const("RESEARCH_MASTER_ENABLED", true)
+          @protocol.research_master_id = 1
+          @protocol.save(validate: false)
+
+          get :update, params: { id: @protocol.id, protocol: { research_master_id: nil } }, xhr: true
+          @protocol.reload
+
+          expect(@protocol.research_master_id).to be_nil
+        end
+
+        it 'should not save with blank RMID with other invalid params' do
+          stub_const("RESEARCH_MASTER_ENABLED", true)
+          @protocol.research_master_id = 1
+          @protocol.save(validate: false)
+
+          get :update, params: { id: @protocol.id, protocol: { title: "", research_master_id: nil } }, xhr: true
+          @protocol.reload
+
+          expect(@protocol.research_master_id).to eq(1)
+        end
+
+        it 'should respond ok' do
+          get :update, params: { id: @protocol.id, protocol: { title: "some value" } }, xhr: true
+          expect(controller).to respond_with(:ok)
+        end
       end
 
       context 'user authorized to edit Protocol as Service Provider' do
         before :each do
           @logged_in_user = create(:identity)
-          @protocol       = create(:protocol_without_validations, type: 'Project')
+          @protocol       = create(:protocol_without_validations,
+                                    primary_pi: @logged_in_user,
+                                    funding_status: "funded",
+                                    funding_source: "foundation")
           organization    = create(:organization)
           service_request = create(:service_request_without_validations, protocol: @protocol)
-                            create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft')
+                            create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft', protocol_id: @protocol.id)
                             create(:service_provider, identity: @logged_in_user, organization: organization)
-
+          @study_type_question_group_version_3 = StudyTypeQuestionGroup.create(active: true, version: 3)
           log_in_dashboard_identity(obj: @logged_in_user)
-
-          xhr :get, :update, id: @protocol.id, protocol: { title: "some value" }
         end
 
         it 'should set @admin to true' do
+          get :update, params: { id: @protocol.id, protocol: { title: "some value", selected_for_epic: "true", study_type_question_group_id: @study_type_question_group_version_3.id } }, xhr: true
           expect(assigns(:admin)).to eq(true)
         end
 
-        it { is_expected.to respond_with :ok }
+        it 'should allow blank Research Master ID with human subjects' do
+          stub_const("RESEARCH_MASTER_ENABLED", true)
+          @protocol.research_master_id = 1
+          @protocol.save(validate: false)
+
+          get :update, params: { id: @protocol.id, protocol: { research_master_id: nil } }, xhr: true
+          @protocol.reload
+
+          expect(@protocol.research_master_id).to be_nil
+        end
+
+        it 'should not save with blank RMID with other invalid params' do
+          stub_const("RESEARCH_MASTER_ENABLED", true)
+          @protocol.research_master_id = 1
+          @protocol.save(validate: false)
+
+          get :update, params: { id: @protocol.id, protocol: { title: "", research_master_id: nil } }, xhr: true
+          @protocol.reload
+
+          expect(@protocol.research_master_id).to eq(1)
+        end
+
+        it 'should respond ok' do
+          get :update, params: { id: @protocol.id, protocol: { title: "some value" } }, xhr: true
+          expect(controller).to respond_with(:ok)
+        end
       end
     end
   end

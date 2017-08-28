@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -30,8 +30,9 @@ class SurveyResponseReport < ReportingModule
   # see app/reports/test_report.rb for all options
   def default_options
     {
-      "Date Range" => {:field_type => :date_range, :for => "completed_at", :from => "2012-03-01".to_date, :to => Date.today},
-      Survey => {:field_type => :select_tag, :custom_name_method => :title, :required => true}
+      "Date Range" => {:field_type => :date_range, :for => "created_at", :from => "2012-03-01".to_date, :to => Date.today},
+      Survey => {:field_type => :select_tag, :custom_name_method => :title, :required => true},
+      "Include Pending Responses" => { field_type: :check_box_tag, for: "show_pending" }
     }
   end
 
@@ -40,20 +41,16 @@ class SurveyResponseReport < ReportingModule
     attrs = {}
 
     attrs["SSR ID"] = "sub_service_request.try(:display_id)"
-    attrs["User ID"] = :user_id
+    attrs["User ID"] = :identity_id
     attrs["User Name"] = "identity.try(:full_name)"
-    attrs["Submitted Date"] = "completed_at.try(:strftime, \"%D\")"
+    attrs["Submitted Date"] = "created_at.try(:strftime, \"%D\")"
 
     if params[:survey_id]
       survey = Survey.find(params[:survey_id])
       survey.sections.each do |section|
         section.questions.each do |question|
-          question.answers.each do |answer|
-            if answer.response_class == "text"
-              attrs[ActionView::Base.full_sanitizer.sanitize(question.text)] = "responses.select{|response| response.question_id == #{question.id}}.first.try(:text_value)"
-            else
-              attrs[ActionView::Base.full_sanitizer.sanitize(question.text)] = "responses.select{|response| response.question_id == #{question.id}}.first.try(:answer).try(:text)"
-            end
+          question.question_responses.each do |qr|
+            attrs[ActionView::Base.full_sanitizer.sanitize(question.content)] = "question_responses.any? ? question_responses.where(question_id: #{question.id}).first.try(:report_content) : 'No Response'"
           end
         end
       end
@@ -74,7 +71,7 @@ class SurveyResponseReport < ReportingModule
   # def order => order by these attributes (include table name is always a safe bet, ex. identities.id DESC, protocols.title ASC)
   # Primary table to query
   def table
-    ResponseSet
+    Response
   end
 
   # Other tables to include
@@ -82,28 +79,29 @@ class SurveyResponseReport < ReportingModule
     return :survey
   end
 
-  # Other tables to join
-  def joins
-    return :responses
+  # Other tables to include
+  def joins(args={})
+    # If showing pending, do not joins question responses
+    return args[:show_pending] ? nil : :question_responses
   end
 
   # Conditions
   def where args={}
-    completed_at = (args[:completed_at_from] ? args[:completed_at_from] : self.default_options["Date Range"][:from]).to_time.strftime("%Y-%m-%d 00:00:00")..(args[:completed_at_to] ? args[:completed_at_to] : self.default_options["Date Range"][:to]).to_time.strftime("%Y-%m-%d 23:59:59")
+    created_at = (args[:created_at_from] ? args[:created_at_from] : self.default_options["Date Range"][:from]).to_time.strftime("%Y-%m-%d 00:00:00")..(args[:created_at_to] ? args[:created_at_to] : self.default_options["Date Range"][:to]).to_time.strftime("%Y-%m-%d 23:59:59")
 
-    return :response_sets => {:completed_at => completed_at, :survey_id => args[:survey_id]}
+    return :responses => {:created_at => created_at, :survey_id => args[:survey_id]}
   end
 
   # Return only uniq records for
   def uniq
-    return :response_sets
+    return :responses
   end
 
   def group
   end
 
   def order
-    "response_sets.completed_at ASC"
+    "responses.created_at ASC"
   end
 
   ##################  END QUERY SETUP   #####################
@@ -113,14 +111,36 @@ class SurveyResponseReport < ReportingModule
   def create_report(worksheet)
     super
 
-    # only add satisfaction rate to the bottom of reports for the system satisfaction survey
-    if params["survey_id"] == Survey.find_by(access_code: "system-satisfaction-survey").id.to_s
-      record_answers = records.map { |record| record.responses.where(question_id: 1).first.try(:answer).try(:text) }.compact
-      yes_answers = record_answers.select { |answer| answer == "Yes" }
-      percent_satisifed = yes_answers.length.to_f / record_answers.length * 100
+    start_date = (params[:created_at_from] ? params[:created_at_from] : "2012-03-01".to_date).to_time.strftime("%Y-%m-%d 00:00:00")
+    end_date = (params[:created_at_to] ? params[:created_at_to] : Date.today).to_time.strftime("%Y-%m-%d 23:59:59")
+    # assumes the first question where only one option can be picked is the satisfaction question
+    survey                    = Survey.find(params[:survey_id])
+    questions                 = Question.where(question_type: ['yes_no', 'likert', 'radio_button'], section: Section.where(survey: survey))
+    responses                 = QuestionResponse.where(question: questions, created_at: start_date..end_date).where.not(content: [nil, ""])
+    total_percent_satisfied   = responses.map{ |qr| percent_satisfied(qr.content.downcase) }.sum
+    average_percent_satisifed = responses.count == 0 ? 0 : (total_percent_satisfied.to_f / responses.count.to_f).round(2)
 
-      worksheet.add_row([])
-      worksheet.add_row(["Overall Satisfaction Rate", "", sprintf("%.2f%%", percent_satisifed)])
+    worksheet.add_row([])
+    worksheet.add_row(["Overall Satisfaction Rate", "", "#{average_percent_satisifed}%"])
+  end
+
+  # assumes all satisfaction question is answered with a likert scale from version 1 of System Satisfaction or SCTR Customer Satisfaction Survey,
+  # or Yes or No answer from version 0 of those surveys.
+  def percent_satisfied(content)
+    if ['yes', 'extremely likely', 'very satisfied'].include?(content)
+      100
+    elsif ['somewhat likely', 'satisfied'].include?(content)
+      80
+    elsif ['neutral'].include?(content)
+      60
+    elsif ['not very likely', 'dissatisfied'].include?(content)
+      40
+    elsif ['not at all likely', 'very dissatisfied'].include?(content)
+      20
+    elsif ['no'].include?(content)
+      0
+    else
+      0
     end
   end
 end

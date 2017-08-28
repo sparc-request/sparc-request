@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe "Identity" do
+RSpec.describe Identity, type: :model do
   let_there_be_lane
   let_there_be_j
   build_service_request_with_project
@@ -103,7 +103,11 @@ RSpec.describe "Identity" do
     let!(:clinical_provider)    {create(:clinical_provider, identity_id: user2.id, organization_id: core.id)}
     let!(:ctrc_provider)        {create(:clinical_provider, identity_id: user2.id, organization_id: program.id)}
     let!(:project_role)         {create(:project_role, identity_id: user.id, protocol_id: project.id, project_rights: 'approve')}
-    let!(:request)              {create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id)}
+    let!(:request)              {create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id, ssr_id: '0002')}
+
+    before :each do
+      stub_const("FINISHED_STATUSES", ['complete'])
+    end
 
     describe "permission methods" do
 
@@ -113,7 +117,6 @@ RSpec.describe "Identity" do
 
         it "should return false if the users rights are not 'approve' or request" do
           project_role.update_attributes(project_rights: 'none')
-          service_request.update_attributes(service_requester_id: user2.id)
           expect(user.can_edit_service_request?(service_request)).to eq(false)
         end
 
@@ -138,7 +141,6 @@ RSpec.describe "Identity" do
 
         it "should return false if the user does not have correct rights" do
           project_role.update_attributes(project_rights: 'none')
-          service_request.update_attributes(service_requester_id: user2.id)
           expect(user.can_edit_sub_service_request?(sub_service_request)).to eq(false)
         end
       end

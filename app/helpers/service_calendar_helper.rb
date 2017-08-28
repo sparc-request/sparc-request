@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,15 +27,57 @@ module ServiceCalendarHelper
   def display_service_rate line_item
     full_rate = line_item.service.displayed_pricing_map.full_rate
 
-    full_rate < line_item.applicable_rate ? "N/A" : currency_converter(full_rate)
+    currency_converter(full_rate)
+  end
+
+  def display_liv_notes(liv, portal)
+  has_notes = liv.notes.length > 0
+  raw(content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-list-alt note-icon #{has_notes ? "blue-note" : "black-note"}", aria: {hidden: "true"}))+raw(content_tag(:span, liv.notes.length, class: "#{has_notes ? "badge blue-badge" : "badge"}", id: "lineitemsvisit_#{liv.id}_notes")), type: 'button', class: 'btn btn-link form-control actions-button notes', data: {notable_id: liv.id, notable_type: "LineItemsVisit", in_dashboard: portal}))
+  end
+
+  def display_li_notes(li, portal)
+    has_notes = li.notes.length > 0
+    raw(content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-list-alt note-icon #{has_notes ? "blue-note" : "black-note"}", aria: {hidden: "true"}))+raw(content_tag(:span, li.notes.length, class: "#{has_notes ? "badge blue-badge" : "badge"}", id: "lineitem_#{li.id}_notes")), type: 'button', class: 'btn btn-link form-control actions-button notes', data: {notable_id: li.id, notable_type: "LineItem", in_dashboard: portal}))
+  end
+
+  def notable_type_is_related_to_li_or_liv(notable_type)
+    notable_type == "LineItemsVisit" || notable_type == "LineItem"
+  end
+
+  def display_freeze_header_button_pppv?(arm, service_request, sub_service_request, portal, merged, statuses_hidden)
+    livs_and_ssrs = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, statuses_hidden: statuses_hidden)
+    
+    if portal && !merged
+      livs_and_ssrs.values.flatten.count > 9
+    else
+      liv_count = livs_and_ssrs.values.flatten.count
+      ssr_count = livs_and_ssrs.keys.count
+      
+      portal ? (liv_count + ssr_count) > 10 : (liv_count + ssr_count) > 8
+    end
+  end
+
+  def display_freeze_header_button_otf?(service_request, sub_service_request, merged, statuses_hidden)
+    lis_and_ssrs = Dashboard::ServiceCalendars.otf_line_items_to_display(service_request, sub_service_request, merged: merged, statuses_hidden: statuses_hidden)
+    
+    (lis_and_ssrs.values.flatten.count + lis_and_ssrs.keys.count) > 10
+  end
+
+  def display_unit_type(liv)
+    liv.line_item.service.displayed_pricing_map.unit_type.gsub("/", "/ ")
+  end
+
+  def display_service_name_and_code(notable_type, notable_id)
+    case notable_type
+    when "LineItem"
+      LineItem.find(notable_id.to_i).service.name + (LineItem.find(notable_id.to_i).service.cpt_code.present? ? " (" + LineItem.find(notable_id.to_i).service.cpt_code + ")" : "")
+    when "LineItemsVisit"
+      LineItemsVisit.find(notable_id.to_i).line_item.service.name + (LineItemsVisit.find(notable_id.to_i).line_item.service.cpt_code.present? ? " (" + LineItemsVisit.find(notable_id.to_i).line_item.service.cpt_code + ")" : "")
+    end
   end
 
   def display_your_cost line_item
     currency_converter(line_item.applicable_rate)
-  end
-
-  def update_per_subject_subtotals line_items_visit
-    line_items_visit.per_subject_subtotals
   end
 
   def display_org_name(org_name, ssr, locked)
@@ -105,9 +147,8 @@ module ServiceCalendarHelper
   end
 
   # Display grand totals per study
-  def display_total_direct_cost_per_study_otfs service_request, line_items
-    sum = service_request.total_direct_costs_one_time line_items
-    currency_converter sum
+  def display_total_direct_cost_per_study_otfs(service_request)
+    currency_converter(service_request.total_direct_costs_one_time)
   end
 
   def display_total_indirect_cost_per_study_otfs service_request, line_items
@@ -115,16 +156,15 @@ module ServiceCalendarHelper
     currency_converter sum
   end
 
-  def display_total_cost_per_study_otfs service_request, line_items
-    sum = service_request.total_costs_one_time line_items
-    currency_converter sum
+  def display_total_cost_per_study_otfs(service_request)
+    currency_converter(service_request.total_costs_one_time)
   end
 
   #############################################
   # Grand Totals
   #############################################
   def display_ssr_grand_total sub_service_request
-    sum = sub_service_request.grand_total
+    sum = sub_service_request.direct_cost_total
     currency_converter sum
   end
 
@@ -143,9 +183,8 @@ module ServiceCalendarHelper
     currency_converter sum
   end
 
-  def display_study_grand_total_direct_costs protocol, service_request
-    sum = protocol.direct_cost_total service_request
-    currency_converter sum
+  def display_study_grand_total_direct_costs(protocol, service_request)
+    currency_converter(protocol.direct_cost_total(service_request))
   end
 
   def display_study_grand_total_indirect_costs protocol, service_request
@@ -153,9 +192,8 @@ module ServiceCalendarHelper
     currency_converter sum
   end
 
-  def display_study_grand_total protocol, service_request
-    sum = protocol.grand_total service_request
-    currency_converter sum
+  def display_study_grand_total(protocol, service_request)
+    currency_converter(protocol.grand_total(service_request))
   end
 
   #############################################

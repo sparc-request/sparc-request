@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -29,7 +29,7 @@ RSpec.describe Dashboard::FulfillmentsController do
 
       logged_in_user = build_stubbed(:identity)
       log_in_dashboard_identity(obj: logged_in_user)
-      xhr :get, :new, line_item_id: "line item id"
+      get :new, params: { line_item_id: "line item id" }, xhr: true
     end
 
     it "should assign to @fulfillment a new Fulfillment associated with LineItem from params[:line_item_id]" do

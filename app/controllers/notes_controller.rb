@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -40,7 +40,6 @@ class NotesController < ApplicationController
   def create
     @note  = Note.create(note_params.merge(identity_id: current_user.id))
     @notes = @notable.notes
-
     if @note.valid?
       @selector = "#{@note.unique_selector}_notes"
       flash[:success] = t(:notes)[:created]
@@ -62,6 +61,6 @@ class NotesController < ApplicationController
   end
 
   def set_in_dashboard
-    @in_dashboard = params[:in_dashboard] == 'true'
+    @in_dashboard = (params[:in_dashboard] || params[:note][:in_dashboard]) == 'true'
   end
 end

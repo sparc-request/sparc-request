@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,6 +21,7 @@
 $(document).ready ->
 
   $('.epic-queue-table').bootstrapTable()
+  $('.epic-queue-records-table').bootstrapTable()
 
   $(document).on 'click', '.delete-epic-queue-button', ->
     if confirm(I18n['epic_queues']['confirm'])
@@ -28,3 +29,23 @@ $(document).ready ->
       $.ajax
         type: 'DELETE'
         url: "/dashboard/epic_queues/#{eq_id}.js"
+
+  $('.epic-queue-table').on 'click-cell.bs.table', (field, value, row, $element) ->
+    if value == 'protocol'
+      protocolId = $element.protocol_id
+      window.open("/dashboard/protocols/#{protocolId}")
+
+  $('.epic-queue-records-table').on 'click-cell.bs.table', (field, value, row, $element) ->
+    if value == 'protocol'
+      protocolId = $element.protocol_id
+      window.open("/dashboard/protocols/#{protocolId}")
+
+  $(document).on 'click', '.push-to-epic', (e) ->
+    e.preventDefault()
+    protocol_id = $(this).data('protocol-id')
+    eq_id = $(this).data('eq-id')
+    $.ajax
+      type: 'GET'
+      url: "/protocols/#{protocol_id}/push_to_epic.js?from_portal=true&&eq_id=#{eq_id}"
+
+

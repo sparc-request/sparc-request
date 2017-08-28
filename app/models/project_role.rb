@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class ProjectRole < ActiveRecord::Base
+class ProjectRole < ApplicationRecord
 
   include RemotelyNotifiable
 
@@ -28,15 +28,6 @@ class ProjectRole < ActiveRecord::Base
   belongs_to :identity
 
   has_many :epic_rights, :dependent => :destroy
-
-  attr_accessible :protocol_id
-  attr_accessible :identity_id
-  attr_accessible :project_rights
-  attr_accessible :role
-  attr_accessible :role_other
-  attr_accessible :epic_access
-  attr_accessible :epic_rights_attributes
-  attr_accessible :identity_attributes
 
   accepts_nested_attributes_for :epic_rights, :allow_destroy => true
   accepts_nested_attributes_for :identity
@@ -134,10 +125,6 @@ class ProjectRole < ActiveRecord::Base
     if role == 'business-grants-manager' and right == 'approve'
       return true
     end
-
-    if current_user == identity and role != 'pi' and role != 'primary-pi' and right == 'request'
-      return true
-    end
     return false
   end
 
@@ -151,7 +138,6 @@ class ProjectRole < ActiveRecord::Base
     case project_rights
     when "none"    then "Member Only"
     when "view"    then "View Rights"
-    when "request" then "Request/Approve Services"
     when "approve" then "Authorize/Change Study Charges"
     end
   end

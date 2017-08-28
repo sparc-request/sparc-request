@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -251,13 +251,13 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
         expect(page).to have_selector('button', visible: true, text: 'Save')
         expect(page).to have_selector('button', visible: true, text: 'Close')
       when 'edit form'
-        expect(page).to have_selector('form.protocol_role_form', visible: true)
+        expect(page).to have_selector('form.protocol-role-form', visible: true)
       when 'edit text'
         expect(page).to have_selector('h4', visible: true, text: 'Edit Authorized User')
         expect(page).to have_selector('button', visible: true, text: 'Save')
         expect(page).to have_selector('button', visible: true, text: 'Close')
       when 'warning'
-        expect(page).to have_text("**WARNING**")
+        expect(page).to have_text("**Warning**")
         expect(page).to have_text("Adding the new Primary PI")
         expect(page).to have_text("Do you wish to proceed?")
       when 'warning text add'
@@ -281,7 +281,7 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
       when 'edit form'
         expect(page).to_not have_selector("form.associated_users_form", visible: true)
       when 'warning'
-        expect(page).to_not have_text("**WARNING**")
+        expect(page).to_not have_text("**Warning**")
         expect(page).to_not have_text("Adding the new Primary PI")
         expect(page).to_not have_text("Do you wish to proceed?")
       else

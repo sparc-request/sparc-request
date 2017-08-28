@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -35,14 +35,14 @@ task :remove_historical_first_draft => :environment do
     SubServiceRequest.where("status = ? and updated_at < ?", 'first_draft', end_date).find_each do |ssr|
       service_request = ssr.service_request
       puts "Removing SubServiceRequest ##{ssr.id}"
-      csv << [ssr.service_request.protocol_id, ssr.id, ssr.updated_at]
+      csv << [ssr.protocol_id, ssr.id, ssr.updated_at]
       ssr.destroy!
 
       service_request.reload
 
       if service_request.sub_service_requests.empty?
         puts "Removing ServiceRequest ##{service_request.id}"
-        csv << [ssr.service_request.protocol_id, ssr.id, ssr.updated_at, service_request.id]
+        csv << [ssr.protocol_id, ssr.id, ssr.updated_at, service_request.id]
         service_request.destroy!
       end
     end

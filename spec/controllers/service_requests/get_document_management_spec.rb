@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -55,14 +55,11 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
       arm      = create(:arm, protocol: protocol)
-      liv      = create(:line_items_visit, arm: arm, line_item: li)
-      vg       = create(:visit_group, arm: arm, day: 1)
-                 create(:visit, visit_group: vg, line_items_visit: liv)
                  create(:subsidy, sub_service_request: ssr)
 
-      xhr :get, :document_management, {
+      get :document_management, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:notable_type)).to eq('Protocol')
     end
@@ -76,14 +73,11 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
       arm      = create(:arm, protocol: protocol)
-      liv      = create(:line_items_visit, arm: arm, line_item: li)
-      vg       = create(:visit_group, arm: arm, day: 1)
-                 create(:visit, visit_group: vg, line_items_visit: liv)
                  create(:subsidy, sub_service_request: ssr)
 
-      xhr :get, :document_management, {
+      get :document_management, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:notable_id)).to eq(protocol.id)
     end
@@ -97,14 +91,11 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
       arm      = create(:arm, protocol: protocol)
-      liv      = create(:line_items_visit, arm: arm, line_item: li)
-      vg       = create(:visit_group, arm: arm, day: 1)
-                 create(:visit, visit_group: vg, line_items_visit: liv)
                  create(:subsidy, sub_service_request: ssr)
 
-      xhr :get, :document_management, {
+      get :document_management, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:has_subsidy)).to eq(true)
     end
@@ -118,14 +109,11 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
       arm      = create(:arm, protocol: protocol)
-      liv      = create(:line_items_visit, arm: arm, line_item: li)
-      vg       = create(:visit_group, arm: arm, day: 1)
-                 create(:visit, visit_group: vg, line_items_visit: liv)
 
-      xhr :get, :document_management, {
+      get :document_management, params: {
         id: sr.id
-      }
-
+      }, xhr: true
+      
       expect(assigns(:eligible_for_subsidy)).to eq(true)
     end
 
@@ -138,9 +126,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
         ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-        xhr :get, :document_management, {
+        get :document_management, params: {
           id: sr.id
-        }
+        }, xhr: true
 
         expect(assigns(:back)).to eq('service_calendar')
       end
@@ -154,9 +142,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      xhr :get, :document_management, {
+      get :document_management, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:document_management)
     end
@@ -169,9 +157,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      xhr :get, :document_management, {
+      get :document_management, params: {
         id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

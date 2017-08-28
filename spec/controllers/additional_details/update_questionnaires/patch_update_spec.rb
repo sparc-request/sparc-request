@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -21,69 +21,72 @@
 require 'rails_helper'
 
 RSpec.describe AdditionalDetails::UpdateQuestionnairesController do
+  stub_controller
+  let!(:logged_in_user) { create(:identity) }
+
   describe '#update' do
     before :each do
       @service        = create(:service)
-      @questionnaire  = create(:questionnaire, service: @service, active: true)
+      @questionnaire  = create(:questionnaire, :without_validations, service: @service, active: true)
     end
 
     it 'should assign @service' do
-      xhr :patch, :update, {
+      patch :update, params: {
         service_id: @service.id,
         id: @questionnaire.id
-      }
+      }, format: :js
 
       expect(assigns(:service)).to eq(@service)
     end
 
     it 'should assign @questionnaires' do
-      xhr :patch, :update, {
+      patch :update, params: {
         service_id: @service.id,
         id: @questionnaire.id
-      }
+      }, format: :js
 
       expect(assigns(:questionnaires)).to eq([@questionnaire])
     end
 
     it 'should assign @questionnaire' do
-      xhr :patch, :update, {
+      patch :update, params: {
         service_id: @service.id,
         id: @questionnaire.id
-      }
+      }, format: :js
 
       expect(assigns(:questionnaire)).to eq(@questionnaire)
     end
 
     it 'should update status' do
-      xhr :patch, :update, {
+      patch :update, params: {
         service_id: @service.id,
         id: @questionnaire.id
-      }
+      }, format: :js
 
       expect(@questionnaire.reload.active).to eq(false)
 
-      xhr :patch, :update, {
+      patch :update, params: {
         service_id: @service.id,
         id: @questionnaire.id
-      }
+      }, format: :js
 
       expect(@questionnaire.reload.active).to eq(true)
     end
 
     it 'should render template' do
-      xhr :patch, :update, {
+      patch :update, params: {
         service_id: @service.id,
         id: @questionnaire.id
-      }
+      }, format: :js
 
       expect(controller).to render_template(:update)
     end
 
     it 'should respond ok' do
-      xhr :patch, :update, {
+      patch :update, params: {
         service_id: @service.id,
         id: @questionnaire.id
-      }
+      }, format: :js
 
       expect(controller).to respond_with(:ok)
     end

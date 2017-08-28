@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,17 +18,11 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class ToastMessage < ActiveRecord::Base
+class ToastMessage < ApplicationRecord
   audited
 
   belongs_to :sender, :class_name => 'Identity', :foreign_key => 'from'
   belongs_to :recipient, :class_name => 'Identity', :foreign_key => 'to'
-
-  attr_accessible :from
-  attr_accessible :to
-  attr_accessible :sending_class
-  attr_accessible :sending_class_id
-  attr_accessible :message
 
   def sending_object
     self.sending_class.constantize.send(:find, self.sending_class_id)

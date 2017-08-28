@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class ServiceRequest < ActiveRecord::Base
+class ServiceRequest < ApplicationRecord
 
   include RemotelyNotifiable
 
@@ -26,7 +26,7 @@ class ServiceRequest < ActiveRecord::Base
 
   belongs_to :protocol
   has_many :sub_service_requests, :dependent => :destroy
-  has_many :line_items, -> { includes(:service) }, :dependent => :destroy
+  has_many :line_items, :dependent => :destroy
   has_many :services, through: :line_items
   has_many :line_items_visits, through: :line_items
   has_many :subsidies, through: :sub_service_requests
@@ -38,6 +38,7 @@ class ServiceRequest < ActiveRecord::Base
   has_many :notes, as: :notable, dependent: :destroy
 
   after_save :set_original_submitted_date
+  after_save :set_ssr_protocol_id
 
   validation_group :catalog do
     validate :validate_line_items
@@ -57,16 +58,6 @@ class ServiceRequest < ActiveRecord::Base
     validate :validate_service_calendar
   end
 
-  attr_accessible :protocol_id
-  attr_accessible :status
-  attr_accessible :notes
-  attr_accessible :approved
-  attr_accessible :consult_arranged_date
-  attr_accessible :pppv_complete_date
-  attr_accessible :pppv_in_process_date
-  attr_accessible :submitted_at
-  attr_accessible :line_items_attributes
-  attr_accessible :sub_service_requests_attributes
   attr_accessor   :previous_submitted_at
 
   accepts_nested_attributes_for :line_items
@@ -226,12 +217,6 @@ class ServiceRequest < ActiveRecord::Base
       if line_item.service.one_time_fee
         # quantity is only set for one time fee
         line_item.update_attribute(:quantity, quantity)
-
-      else
-        # only per-patient per-visit have arms
-        self.arms.each do |arm|
-          arm.create_line_items_visit(line_item)
-        end
       end
 
       line_item.reload
@@ -242,15 +227,11 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def one_time_fee_line_items
-    line_items.map do |line_item|
-      line_item.service.one_time_fee ? line_item : nil
-    end.compact
+    line_items.joins(:service).where(services: { one_time_fee: true })
   end
 
   def per_patient_per_visit_line_items
-    line_items.map do |line_item|
-      line_item.service.one_time_fee ? nil : line_item
-    end.compact
+    line_items.joins(:service).where(services: { one_time_fee: false })
   end
 
   def set_visit_page page_passed, arm
@@ -319,12 +300,19 @@ class ServiceRequest < ActiveRecord::Base
     groupings
   end
 
-  def deleted_ssrs_since_previous_submission
-    AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%' AND auditable_type = 'SubServiceRequest' AND action = 'destroy' AND created_at BETWEEN '#{previous_submitted_at.utc}' AND '#{Time.now.utc}'")
+  def deleted_ssrs_since_previous_submission(start_time_at_previous_sub_time=false)
+    ### start_time varies depending on if the submitted_at has been updated or not
+    if start_time_at_previous_sub_time
+      start_time = previous_submitted_at.nil? ? Time.now.utc : previous_submitted_at.utc
+    else
+      start_time = submitted_at.nil? ? Time.now.utc : submitted_at.utc
+    end
+    AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%' AND auditable_type = 'SubServiceRequest' AND action = 'destroy' AND created_at BETWEEN '#{start_time}' AND '#{Time.now.utc}'")
   end
 
   def created_ssrs_since_previous_submission
-    AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%' AND auditable_type = 'SubServiceRequest' AND action = 'create' AND created_at BETWEEN '#{previous_submitted_at.utc}' AND '#{Time.now.utc}'")
+    start_time = submitted_at.nil? ? Time.now.utc : submitted_at.utc
+    AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%' AND auditable_type = 'SubServiceRequest' AND action = 'create' AND created_at BETWEEN '#{start_time}' AND '#{Time.now.utc}'")
   end
 
   def previously_submitted_ssrs
@@ -352,22 +340,19 @@ class ServiceRequest < ActiveRecord::Base
 
   def total_direct_costs_per_patient arms=self.arms, line_items=nil
     total = 0.0
-    lids = line_items.map(&:id) unless line_items.nil?
     arms.each do |arm|
-      livs = line_items.nil? ? arm.line_items_visits : arm.line_items_visits.reject{|liv| !lids.include? liv.line_item_id}
-      total += arm.direct_costs_for_visit_based_service livs
+      livs = (line_items.nil? ? arm.line_items_visits : arm.line_items_visits.where(line_item: line_items)).eager_load(line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]])
+      total += arm.direct_costs_for_visit_based_service(livs)
     end
-
     total
   end
 
   def total_indirect_costs_per_patient arms=self.arms, line_items=nil
     total = 0.0
     if USE_INDIRECT_COST
-      lids = line_items.map(&:id) unless line_items.nil?
       arms.each do |arm|
-        livs = line_items.nil? ? arm.line_items_visits : arm.line_items_visits.reject{|liv| !lids.include? liv.line_item_id}
-        total += arm.indirect_costs_for_visit_based_service
+        livs = (line_items.nil? ? arm.line_items_visits : arm.line_items_visits.where(line_item: line_items)).eager_load(line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]])
+        total += arm.indirect_costs_for_visit_based_service(livs)
       end
     end
 
@@ -378,27 +363,27 @@ class ServiceRequest < ActiveRecord::Base
     self.total_direct_costs_per_patient(arms) + self.total_indirect_costs_per_patient(arms)
   end
 
-  def total_direct_costs_one_time line_items=self.line_items
-    total = 0.0
-    line_items.select {|x| x.service.one_time_fee}.each do |li|
-      total += li.direct_costs_for_one_time_fee
-    end
-
-    total
+  def total_direct_costs_one_time(line_items=self.line_items)
+    line_items.
+      eager_load(:admin_rates, service_request: :protocol).
+      includes(service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]).
+      where(services: { one_time_fee: true }).
+      sum(&:direct_costs_for_one_time_fee)
   end
 
-  def total_indirect_costs_one_time line_items=self.line_items
+  def total_indirect_costs_one_time(line_items=self.line_items)
     total = 0.0
     if USE_INDIRECT_COST
-      line_items.select {|x| x.service.one_time_fee}.each do |li|
-        total += li.indirect_costs_for_one_time_fee
-      end
+      total += line_items.
+        eager_load(:admin_rates, service_request: :protocol).
+        includes(service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]).
+        where(services: { one_time_fee: true }).
+        sum(&:indirect_costs_for_one_time_fee)
     end
-
     total
   end
 
-  def total_costs_one_time line_items=self.line_items
+  def total_costs_one_time(line_items=self.line_items)
     self.total_direct_costs_one_time(line_items) + self.total_indirect_costs_one_time(line_items)
   end
 
@@ -433,34 +418,15 @@ class ServiceRequest < ActiveRecord::Base
     services.joins(:questionnaires).where(questionnaires: { active: true })
   end
 
-  # Change the status of the service request and all the sub service
-  # requests to the given status.
-  def update_status(new_status, use_validation=true, submit=false)
+  # Returns the SSR ids that need an initial submission email, updates the SR status,
+  # and updates the SSR status to new status if appropriate
+  def update_status(new_status)
     to_notify = []
-    self.assign_attributes(status: new_status)
-
+    update_attribute(:status, new_status)
     sub_service_requests.each do |ssr|
-      next unless ssr.can_be_edited?
-      available = AVAILABLE_STATUSES.keys
-      editable = EDITABLE_STATUSES[ssr.organization_id] || available
-      changeable = available & editable
-
-      if changeable.include?(new_status)
-        if (ssr.status != new_status) && (UPDATABLE_STATUSES.include?(ssr.status) || !submit)
-          ssr.update_attribute(:status, new_status)
-          # Do not notify (initial submit email) if ssr has been previously submitted
-          if new_status == 'submitted'
-            to_notify << ssr.id unless ssr.previously_submitted?
-          else
-            to_notify << ssr.id
-          end
-        end
-      end
+      to_notify << ssr.update_status_and_notify(new_status)
     end
-
-    self.save(validate: use_validation)
-
-    to_notify
+    to_notify.flatten
   end
 
   # Make sure that all the sub service requests have an ssr id
@@ -476,32 +442,9 @@ class ServiceRequest < ActiveRecord::Base
       next_ssr_id += 1 unless self.protocol
     end
 
-    self.protocol.update_attributes(next_ssr_id: next_ssr_id) if self.protocol
-  end
-
-  def add_or_update_arms
-    return unless self.has_per_patient_per_visit_services?
-
-    p = self.protocol
-    if p
-      if p.arms.empty?
-        arm = p.arms.create(
-          name: 'Screening Phase',
-          visit_count: 1,
-          subject_count: 1,
-          new_with_draft: true)
-        self.per_patient_per_visit_line_items.each do |li|
-          arm.create_line_items_visit(li)
-        end
-      else
-        p.arms.each do |arm|
-          p.service_requests.each do |sr|
-            sr.per_patient_per_visit_line_items.each do |li|
-              arm.create_line_items_visit(li) if arm.line_items_visits.where(:line_item_id => li.id).empty?
-            end
-          end
-        end
-      end
+    if protocol
+      protocol.next_ssr_id = next_ssr_id
+      protocol.save(validate: false)
     end
   end
 
@@ -527,40 +470,17 @@ class ServiceRequest < ActiveRecord::Base
     line_item_audits = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{self.id}%' AND
                                       auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('create', 'destroy') AND
                                       created_at BETWEEN '#{start_date}' AND '#{end_date}'")
-                                    .group_by(&:auditable_id)
+                                    
+    line_item_audits = line_item_audits.present? ? line_item_audits.group_by(&:auditable_id) : {}                         
 
     {:line_items => line_item_audits}
   end
 
-  def has_non_first_draft_ssrs?
-    sub_service_requests.where.not(status: 'first_draft').any?
-  end
-
   def cart_sub_service_requests
-    active    = self.sub_service_requests.where.not(status: 'complete')
-    complete  = self.sub_service_requests.where(status: 'complete')
+    active    = self.sub_service_requests.select{ |ssr| !ssr.is_complete? }
+    complete  = self.sub_service_requests.select{ |ssr| ssr.is_complete? }
 
     { active: active, complete: complete }
-  end
-
-  def ssrs_associated_with_service_provider(service_provider)
-    ssrs_to_be_displayed = []
-    self.sub_service_requests.each do |ssr|
-      if service_provider.identity.is_service_provider?(ssr)
-        ssrs_to_be_displayed << ssr
-      end
-    end
-    ssrs_to_be_displayed
-  end
-
-  def ssrs_to_be_displayed_in_email(service_provider, audit_report, ssr_destroyed, ssr_id)
-    if ssr_destroyed
-      ssr = SubServiceRequest.find(ssr_id)
-      ssrs_to_be_displayed = [ssr] if service_provider.identity.is_service_provider?(ssr)
-    else
-      ssrs_to_be_displayed = self.ssrs_associated_with_service_provider(service_provider)
-    end
-    ssrs_to_be_displayed
   end
 
   private
@@ -569,6 +489,14 @@ class ServiceRequest < ActiveRecord::Base
     if self.submitted_at && !self.original_submitted_date
       self.original_submitted_date = self.submitted_at
       self.save(validate: false)
+    end
+  end
+
+  def set_ssr_protocol_id
+    if protocol_id_changed?
+      sub_service_requests.each do |ssr|
+        ssr.update_attributes(protocol_id: protocol_id)
+      end
     end
   end
 end

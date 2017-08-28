@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,10 +21,10 @@
 class AssociatedUsersController < ApplicationController
   respond_to :html, :json, :js
 
-  before_filter :initialize_service_request
-  before_filter :authorize_identity
-  before_filter :find_protocol_role,          only: [:edit, :destroy]
-  before_filter :find_protocol,               only: [:index, :new, :edit, :destroy]
+  before_action :initialize_service_request
+  before_action :authorize_identity
+  before_action :find_protocol_role,          only: [:edit, :destroy]
+  before_action :find_protocol,               only: [:index, :new, :edit, :destroy]
 
   def index
     @current_user   = current_user
@@ -36,7 +36,8 @@ class AssociatedUsersController < ApplicationController
   end
 
   def new
-    @header_text = t(:authorized_users)[:add][:header]
+    @header_text  = t(:authorized_users)[:add][:header]
+    @dashboard    = false
 
     if params[:identity_id] # if user selected
       @identity     = Identity.find(params[:identity_id])
@@ -47,9 +48,8 @@ class AssociatedUsersController < ApplicationController
         # Adds error if user already associated with protocol
         @errors = @project_role.errors
       end
-
     end
-    
+
     respond_to do |format|
       format.js
     end
@@ -57,8 +57,9 @@ class AssociatedUsersController < ApplicationController
 
   def edit
     @identity     = @protocol_role.identity
-    @current_pi   = @protocol.primary_principal_investigator
     @header_text  = t(:authorized_users)[:edit][:header]
+    @dashboard    = false
+    @admin        = false
 
     respond_to do |format|
       format.js
@@ -66,7 +67,7 @@ class AssociatedUsersController < ApplicationController
   end
 
   def create
-    creator = AssociatedUserCreator.new(params[:project_role])
+    creator = AssociatedUserCreator.new(project_role_params)
 
     if creator.successful?
       flash.now[:success] = t(:authorized_users)[:created]
@@ -80,8 +81,10 @@ class AssociatedUsersController < ApplicationController
   end
 
   def update
-    updater = AssociatedUserUpdater.new(id: params[:id], project_role: params[:project_role])
-    
+    updater               = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params)
+    protocol_role         = updater.protocol_role
+    @return_to_dashboard  = protocol_role.identity_id == current_user.id && ['none', 'view'].include?(protocol_role.project_rights)
+
     if updater.successful?
       flash.now[:success] = t(:authorized_users)[:updated]
     else
@@ -116,11 +119,33 @@ class AssociatedUsersController < ApplicationController
     term    = params[:term].strip
     results = Identity.search(term).map { |i| { label: i.display_name, value: i.id, email: i.email } }
     results = [{ label: 'No Results' }] if results.empty?
-    
+
     render json: results.to_json
   end
 
 private
+  def project_role_params
+    params.require(:project_role).permit(:protocol_id,
+      :identity_id,
+      :project_rights,
+      :role,
+      :role_other,
+      :epic_access,
+      identity_attributes: [
+        :credentials,
+        :credentials_other,
+        :email,
+        :era_commons_name,
+        :professional_organization_id,
+        :phone,
+        :subspecialty,
+        :id
+      ],
+      epic_rights_attributes: [:right,
+        :new,
+        :position,
+        :_destroy])
+  end
 
   def find_protocol_role
     @protocol_role = ProjectRole.find(params[:id])
@@ -130,7 +155,7 @@ private
     if @protocol_role.present?
       @protocol   = @protocol_role.protocol
     else
-      protocol_id = params[:protocol_id] || params[:project_role][:protocol_id]
+      protocol_id = params[:protocol_id] || project_role_params[:protocol_id]
       @protocol   = Protocol.find(protocol_id)
     end
   end

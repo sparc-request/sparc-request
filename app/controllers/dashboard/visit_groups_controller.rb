@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,58 +20,48 @@
 
 class Dashboard::VisitGroupsController < Dashboard::BaseController
   respond_to :json, :html
-  before_action :find_visit_group, only: [:update, :destroy]
+
+  before_action :find_visit_group,          only: [:update, :destroy]
+  before_action :find_service_request
+  before_action :find_sub_service_request
+  before_action :find_protocol,             only: [:new, :navigate]
+  before_action :authorize_admin_visit_group
 
   def new
-    @service_request = ServiceRequest.find(params[:service_request_id])
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @current_page = params[:current_page] # the current page of the study schedule
-    @protocol = Protocol.find(params[:protocol_id])
-    @visit_group = VisitGroup.new
     @schedule_tab = params[:schedule_tab]
-    @arm = params[:arm_id].present? ? Arm.find(params[:arm_id]) : @protocol.arms.first
+    @visit_group  = VisitGroup.new
+    @arm          = params[:arm_id].present? ? Arm.find(params[:arm_id]) : @protocol.arms.first
   end
 
   def create
-    @service_request = ServiceRequest.find(params[:service_request_id])
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @arm =  Arm.find(params[:visit_group][:arm_id])
-    @visit_group = VisitGroup.new(params[:visit_group])
-    if @visit_group.valid?
-      if @arm.add_visit(@visit_group.position, @visit_group.day, @visit_group.window_before, @visit_group.window_after, @visit_group.name, 'true')
-        @service_request.relevant_service_providers_and_super_users.each do |identity|
-          create_visit_change_toast(identity, @sub_service_request) unless identity == @user
-        end
-        flash[:success] = t(:dashboard)[:visit_groups][:created]
-      else
-        @errors = @arm.errors
-      end
+    @arm        = Arm.find(create_params[:arm_id])
+    visit_group = @arm.visit_groups.create(create_params)
+
+    if visit_group.valid?
+      flash[:success] = t(:dashboard)[:visit_groups][:created]
     else
-      @errors = @visit_group.errors
+      @errors = visit_group.errors
     end
   end
 
   def navigate
     # Used in study schedule management for navigating to a visit group, given an index of them by arm.
-    @protocol = Protocol.find(params[:protocol_id])
-    @service_request = ServiceRequest.find(params[:service_request_id])
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @intended_action = params[:intended_action]
+
     if params[:visit_group_id]
-      @visit_group = VisitGroup.find(params[:visit_group_id])
-      @arm = @visit_group.arm
+      @visit_group  = VisitGroup.find(params[:visit_group_id])
+      @arm          = @visit_group.arm
     else
-      @arm = params[:arm_id].present? ? Arm.find(params[:arm_id]) : @protocol.arms.first
-      @visit_group = @arm.visit_groups.first
+      @arm          = params[:arm_id].present? ? Arm.find(params[:arm_id]) : @protocol.arms.first
+      @visit_group  = @arm.visit_groups.first
     end
   end
 
   def update
-    @service_request = ServiceRequest.find(params[:service_request_id])
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @arm = @visit_group.arm
-    params[:visit_group][:position] = params[:visit_group][:position].to_i - 1
-    if @visit_group.update_attributes(params[:visit_group])
+    
+    if @visit_group.update_attributes(update_params)
       flash[:success] = t(:dashboard)[:visit_groups][:updated]
     else
       @errors = @visit_group.errors
@@ -79,14 +69,9 @@ class Dashboard::VisitGroupsController < Dashboard::BaseController
   end
 
   def destroy
-    @service_request = ServiceRequest.find(params[:service_request_id])
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @arm = @visit_group.arm
-    if @arm.remove_visit(@visit_group.position)
-      @arm.decrement!(:minimum_visit_count)
-      @service_request.relevant_service_providers_and_super_users.each do |identity|
-        create_visit_change_toast(identity, @sub_service_request) unless identity == @user
-      end
+
+    if @visit_group.destroy
       flash.now[:alert] = t(:dashboard)[:visit_groups][:destroyed]
     else
       @errors = @arm.errors
@@ -95,17 +80,56 @@ class Dashboard::VisitGroupsController < Dashboard::BaseController
 
   private
 
+  def create_params
+    params.require(:visit_group).permit(:name,
+      :position,
+      :arm_id,
+      :day,
+      :window_before,
+      :window_after)
+  end
+
+  def update_params
+    temp = params.require(:visit_group).permit(:name,
+      :position,
+      :arm_id,
+      :day,
+      :window_before,
+      :window_after)
+    
+    if @visit_group.position < temp[:position].to_i
+      temp[:position] = temp[:position].to_i - 1
+    end
+    
+    temp
+  end
+
   def find_visit_group
     @visit_group = VisitGroup.find(params[:id])
   end
 
-  def create_visit_change_toast identity, sub_service_request
-    ToastMessage.create(
-      to: identity.id,
-      from: current_identity.id,
-      sending_class: 'SubServiceRequest',
-      sending_class_id: sub_service_request.id,
-      message: 'The visit count on this service request has been changed'
-    )
+  def find_service_request
+    @service_request = ServiceRequest.find(params[:service_request_id])
+  end
+
+  def find_sub_service_request
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+  end
+
+  def find_protocol
+    @protocol = Protocol.find(params[:protocol_id])
+  end
+
+  def authorize_admin_visit_group
+    unless (@user.authorized_admin_organizations & @sub_service_request.org_tree).any?
+      @protocol            = nil
+      @service_request     = nil
+      @sub_service_request = nil
+      @visit_group         = nil
+
+      # This is an intruder
+      flash[:alert] = t(:authorization_error)[:dashboard][:visit_groups]
+      redirect_to dashboard_root_path
+    end
   end
 end

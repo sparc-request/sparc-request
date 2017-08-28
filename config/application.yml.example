@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -30,6 +30,10 @@ development:
   root_url: "https://andrews-mac-pro.thurmond-gazes.musc.edu"
   dashboard_link: 'http://musc-pro.homelinux.net:3001/dashboard'
   research_master_link: 'https://research-master-staging.musc.edu/'
+  research_master_api: 'https://research-master-staging.musc.edu/api/'
+  research_master_enabled: true
+  rmid_api_token: 'some token'
+  redcap_api: 'https://redcap.musc.edu/api/'
   create_an_account: false
   header_link_1: http://sctr.musc.edu
   header_link_2_proper: http://localhost:3000/
@@ -45,7 +49,8 @@ development:
   use_epic: true
   queue_epic: true
   queue_epic_load_error_to: 'hutsonk@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu'
-  queue_epic_edit_ldap_uids: ['jug2@musc.edu']
+  site_admins: ['jug2@musc.edu']
+  epic_queue_access: ['jug2@musc.edu']
   use_google_calendar: true
   # insert sub-directory path to override the three header images + account sign-in image and override application.css
 #  custom_asset_path: image_override/
@@ -61,9 +66,8 @@ development:
   no_reply_from: "no-reply@musc.edu"
   use_separate_audit_database: false # needs to be false at outset since new institutions may not use a separate audit database
   system_satisfaction_survey: false
-  editable_statuses: { 14: ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval', 'complete'],
-                     48: ['draft', 'submitted', 'complete'] }
   updatable_statuses: [ 'first_draft', 'draft', 'get_a_cost_estimate', 'awaiting_pi_approval']
+  finished_statuses: ['complete', 'withdrawn']
   navbar_links: { sparc_request:              ['SPARCRequest', 'http://localhost:3000/'],
                   sparc_dashboard:            ['SPARCDashboard', 'http://localhost:3000/dashboard'],
                   sparc_fulfillment:          ['SPARCFulfillment', 'https://cwf-d.obis.musc.edu/identities/sign_in'],
@@ -85,8 +89,9 @@ development:
   about_sparc_url: http://academicdepartments.musc.edu/sctr/sparc_request
   use_about_sparc_link: true
   use_feedback_link: true
-  feedback_link: "http://something.com"
+  feedback_link: "https://redcap.musc.edu/surveys/?s=A37TNJWJPL"
   send_emails_to_real_users: false
+  use_redcap_api: true
 
 test:
   default_mail_to: nobody@nowhere.com
@@ -100,13 +105,15 @@ test:
   root_url: /
   dashboard_link: /dashboard
   research_master_link: 'https://research-master-staging.musc.edu/'
+  research_master_api: 'https://research-master-staging.musc.edu/api/'
+  rmid_api_token: 'some token'
+  research_master_enabled: true
   header_link_1: http://sctr.musc.edu
   header_link_2_proper: http://localhost:3000/
   header_link_2_dashboard: http://localhost:3000/dashboard
   header_link_3: http://www.musc.edu
-  editable_statuses: { 14: ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval'],
-                     48: ['draft', 'submitted'] }
   updatable_statuses: [ 'first_draft', 'draft', 'get_a_cost_estimate', 'awaiting_pi_approval']
+  finished_statuses: ['complete', 'withdrawn']
   navbar_links: { sparc_request:              ['SPARCRequest', 'http://localhost:3000/'],
                   sparc_dashboard:            ['SPARCDashboard', 'http://localhost:3000/dashboard'],
                   sparc_fulfillment:          ['SPARCFulfillment', 'https://cwf-d.obis.musc.edu/identities/sign_in'],
@@ -121,7 +128,8 @@ test:
   use_epic: true
   queue_epic: false
   queue_epic_load_error_to: 'hutsonk@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu'
-  queue_epic_edit_ldap_uids: ['jug2']
+  site_admins: ['jug2']
+  epic_queue_access: ['jug2']
   use_google_calendar: true
   # insert sub-directory path to override the three header images + account sign-in image and override application.css
 #  custom_asset_path: image_override/
@@ -154,3 +162,5 @@ test:
   use_about_sparc_link: false
   use_feedback_link: true
   send_emails_to_real_users: false
+  redcap_api: 'https://redcap.musc.edu/api/'
+  use_redcap_api: true

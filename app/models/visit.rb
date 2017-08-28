@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,32 +18,26 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Visit < ActiveRecord::Base
+class Visit < ApplicationRecord
   self.per_page = 5
 
   include RemotelyNotifiable
 
   audited
 
-  has_many :procedures
-  has_many :appointments, :through => :procedures
   belongs_to :visit_group
   belongs_to :line_items_visit
+  
+  has_one :arm, through: :visit_group
+  has_one :line_item, through: :line_items_visit
+  has_one :service, through: :line_item
+  has_one :sub_service_request, through: :line_item
+  
+  validates :research_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :insurance_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :effort_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
-  attr_accessible :line_items_visit_id
-  attr_accessible :visit_group_id
-  attr_accessible :quantity
-  attr_accessible :billing
-  attr_accessible :research_billing_qty  # (R) qty billed to the study/project
-  attr_accessible :insurance_billing_qty # (T) qty billed to the patients insurance or third party
-  attr_accessible :effort_billing_qty    # (%) qty billing to % effort
-
-  validates :research_billing_qty, numericality: { only_integer: true }
-  validates :insurance_billing_qty, numericality: { only_integer: true }
-  validates :effort_billing_qty, numericality: { only_integer: true }
-            
-
-  after_save :set_arm_edited_flag_on_subjects
+  scope :ordered, -> { joins(:visit_group).order('visit_groups.position') }
 
   # Find a Visit for the given "line items visit" and visit group.  This
   # creates the visit if it does not exist.
@@ -51,12 +45,7 @@ class Visit < ActiveRecord::Base
     return Visit.find_or_create_by(line_items_visit_id: line_items_visit.id, visit_group_id: visit_group.id)
   end
 
-  def set_arm_edited_flag_on_subjects
-    self.visit_group.arm.set_arm_edited_flag_on_subjects
-  end
-
   def cost(per_unit_cost = self.line_items_visit.per_unit_cost(self.line_items_visit.quantity_total))
-    
     li = self.line_items_visit.line_item
     if li.applicable_rate == "N/A"
       return "N/A"

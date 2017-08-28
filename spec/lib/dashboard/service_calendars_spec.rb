@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -28,11 +28,11 @@ RSpec.describe Dashboard::ServiceCalendars do
         org_B = create(:organization, process_ssrs: false, abbreviation: "B", parent: org_C)
         org_A = create(:organization, process_ssrs: false, abbreviation: "A", parent: org_B)
         service = create(:service, :without_validations, organization: org_A)
-        liv = instance_double(LineItemsVisit)
-        allow(liv).to receive_message_chain(:line_item, :service).
+        li = instance_double(LineItem)
+        allow(li).to receive(:service).
           and_return(service)
 
-        expect(Dashboard::ServiceCalendars.display_organization_hierarchy(liv)).
+        expect(Dashboard::ServiceCalendars.display_organization_hierarchy(li)).
           to eq("C > B > A")
       end
     end
@@ -43,11 +43,11 @@ RSpec.describe Dashboard::ServiceCalendars do
         org_B = create(:organization, process_ssrs: true, abbreviation: "B", parent: org_C)
         org_A = create(:organization, process_ssrs: false, abbreviation: "A", parent: org_B)
         service = create(:service, :without_validations, organization: org_A)
-        liv = instance_double(LineItemsVisit)
-        allow(liv).to receive_message_chain(:line_item, :service).
+        li = instance_double(LineItem)
+        allow(li).to receive(:service).
           and_return(service)
 
-        expect(Dashboard::ServiceCalendars.display_organization_hierarchy(liv)).
+        expect(Dashboard::ServiceCalendars.display_organization_hierarchy(li)).
           to eq("B > A")
       end
     end
@@ -71,7 +71,6 @@ RSpec.describe Dashboard::ServiceCalendars do
         # this LIV should not appear (it is not PPPV)
         service_otf = create(:service, :without_validations, organization: org_A, one_time_fee: true)
         li_otf = create(:line_item, :without_validations, service: service_otf, sub_service_request: ssr)
-        create(:line_items_visit, arm: arm, line_item: li_otf, sub_service_request: ssr)
 
         # this LIV should not appear (not associated with arm)
         wrong_arm = create(:arm, :without_validations)
@@ -93,9 +92,9 @@ RSpec.describe Dashboard::ServiceCalendars do
 
         arm.reload
         livs = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, nil, ssr, merged: true, consolidated: false)
-        expect(livs.keys).to contain_exactly(draft_ssr.id, ssr.id)
-        expect(livs[draft_ssr.id]).to eq([liv_draft])
-        expect(livs[ssr.id]).to contain_exactly(liv_pppv1, liv_pppv2)
+        expect(livs.keys).to contain_exactly(draft_ssr, ssr)
+        expect(livs[draft_ssr]).to eq([liv_draft])
+        expect(livs[ssr]).to contain_exactly(liv_pppv1, liv_pppv2)
       end
     end
 
@@ -117,7 +116,6 @@ RSpec.describe Dashboard::ServiceCalendars do
           # this LIV should not appear (it is not PPPV)
           service_otf = create(:service, :without_validations, organization: org_A, one_time_fee: true)
           li_otf = create(:line_item, :without_validations, service: service_otf, sub_service_request: ssr)
-          create(:line_items_visit, arm: arm, line_item: li_otf, sub_service_request: ssr)
 
           # this LIV should not appear (associated with another SSR)
           another_ssr = create(:sub_service_request, :without_validations, organization: org_A)
@@ -133,8 +131,8 @@ RSpec.describe Dashboard::ServiceCalendars do
 
           arm.reload
           livs = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, nil, ssr)
-          expect(livs.keys).to eq([ssr.id])
-          expect(livs[ssr.id]).to contain_exactly(liv_pppv1, liv_pppv2)
+          expect(livs.keys).to eq([ssr])
+          expect(livs[ssr]).to contain_exactly(liv_pppv1, liv_pppv2)
         end
       end
 
@@ -156,7 +154,6 @@ RSpec.describe Dashboard::ServiceCalendars do
           # this LIV should not appear (it is not PPPV)
           service_otf = create(:service, :without_validations, organization: org_A, one_time_fee: true)
           li_otf = create(:line_item, :without_validations, service: service_otf, service_request: sr, sub_service_request: ssr)
-          create(:line_items_visit, arm: arm, line_item: li_otf)
 
           # this LIV should not appear (associated with another SR)
           another_sr = create(:service_request_without_validations)
@@ -174,8 +171,8 @@ RSpec.describe Dashboard::ServiceCalendars do
           arm.reload
           livs = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, sr, nil)
 
-          expect(livs.keys).to eq([ssr.id])
-          expect(livs[ssr.id]).to contain_exactly(liv_pppv1, liv_pppv2)
+          expect(livs.keys).to eq([ssr])
+          expect(livs[ssr]).to contain_exactly(liv_pppv1, liv_pppv2)
         end
       end
     end

@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -29,7 +29,7 @@ module VisitGroupsHelper
       ) +
       content_tag(
         :option,
-        t(:visit_groups)[:prompts][:add_as_last],
+        t(:constants)[:add_as_last],
         value: "#{arm.visit_groups.count+1}"
       )
     else
@@ -40,7 +40,7 @@ module VisitGroupsHelper
       ) +
       content_tag(
         :option,
-        t(:visit_groups)[:prompts][:add_as_last],
+        t(:constants)[:add_as_last],
         value: "#{arm.visit_groups.count+1}"
       )
     end

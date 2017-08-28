@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,7 +20,7 @@
 
 require 'directory'
 
-class Identity < ActiveRecord::Base
+class Identity < ApplicationRecord
 
   include RemotelyNotifiable
 
@@ -41,13 +41,6 @@ class Identity < ActiveRecord::Base
   email_regexp = /\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/
   password_length = 6..128
 
-  attr_accessible :approved
-  attr_accessible :company
-  attr_accessible :email
-  attr_accessible :password
-  attr_accessible :password_confirmation
-  attr_accessible :reason
-  attr_accessible :remember_me
   #### END DEVISE SETUP ####
 
   belongs_to :professional_organization
@@ -72,18 +65,6 @@ class Identity < ActiveRecord::Base
   has_many :studies, -> { where("protocols.type = 'Study'")}, through: :project_roles, source: :protocol
   has_many :submissions
   has_many :super_users, dependent: :destroy
-
-  attr_accessible :catalog_overlord
-  attr_accessible :credentials
-  attr_accessible :credentials_other
-  attr_accessible :email
-  attr_accessible :era_commons_name
-  attr_accessible :first_name
-  attr_accessible :last_name
-  attr_accessible :ldap_uid
-  attr_accessible :phone
-  attr_accessible :professional_organization_id
-  attr_accessible :subspecialty
 
   cattr_accessor :current_user
 
@@ -134,6 +115,11 @@ class Identity < ActiveRecord::Base
     else
       return ldap_uid
     end
+  end
+
+  #replace old organization methods with new professional organization lookups
+  def professional_org_lookup(org_type)
+    professional_organization ? professional_organization.parents_and_self.select{|org| org.org_type == org_type}.first.try(:name) : ""
   end
 
   ###############################################################################
@@ -227,8 +213,8 @@ class Identity < ActiveRecord::Base
   end
 
   # Only users with request or approve rights can edit.
-  def can_edit_service_request? sr
-    has_correct_project_role?(sr)
+  def can_edit_service_request?(sr)
+    has_correct_project_role?(sr) || self.is_overlord?
   end
 
   # If a user has request or approve rights AND the request is editable, then the user can edit.
@@ -236,12 +222,18 @@ class Identity < ActiveRecord::Base
     ssr.can_be_edited? && has_correct_project_role?(ssr)
   end
 
-  def has_correct_project_role? request
-    protocol = request.class == ServiceRequest ? request.protocol : request.service_request.protocol
-
-    protocol.project_roles.where(identity_id: self.id, project_rights: ['approve', 'request']).any?
+  def has_correct_project_role?(request)
+    can_edit_protocol?(request.protocol)
   end
 
+  def can_view_protocol?(protocol)
+    protocol.project_roles.where(identity_id: self.id, project_rights: ['view', 'approve', 'request']).any?
+  end
+
+  def can_edit_protocol?(protocol)
+    protocol.project_roles.where(identity_id: self.id, project_rights: ['approve', 'request']).any?
+  end
+  
   # Determines whether this identity can edit a given organization's information in CatalogManager.
   # Returns true if this identity's catalog_manager_organizations includes the given organization.
   def can_edit_entity? organization, deep_search=false

@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -39,7 +39,10 @@ class Dashboard::MessagesController < Dashboard::BaseController
     @notification = Notification.find(params[:message][:notification_id])
     if message_params[:body].present? # don't create empty messages
       @message = Message.create(message_params)
-      @notification.set_read_by(Identity.find(@message.to), false)
+      @recipient = @message.recipient
+      @notification.set_read_by(@recipient, false)
+
+      UserMailer.notification_received(@recipient, @notification.sub_service_request).deliver unless @recipient.email.blank?
     end
     @messages = @notification.messages
   end

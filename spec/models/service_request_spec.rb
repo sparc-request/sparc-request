@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'ServiceRequest' do
+RSpec.describe ServiceRequest, type: :model do
 
   let_there_be_lane
   let_there_be_j
@@ -29,7 +29,7 @@ RSpec.describe 'ServiceRequest' do
   describe "set visit page" do
     let!(:protocol)         { create(:protocol_without_validations) }
     let!(:service_request)  { create(:service_request_without_validations, protocol: protocol) }
-    let!(:arm)              { create(:arm, protocol: protocol, visit_count: 10)}
+    let!(:arm)              { create(:arm, protocol: protocol, visit_count: 10) }
 
     it "should return 1 if arm visit count <= 5" do
       arm.update_attributes(visit_count: 0)
@@ -125,10 +125,6 @@ RSpec.describe 'ServiceRequest' do
 
   context "methods" do
 
-    before :each do
-      add_visits
-    end
-
     describe "one time fee line items" do
       it "should return one time fee line items" do
         expect(service_request.one_time_fee_line_items[0].service.name).to eq("One Time Fee")
@@ -200,7 +196,7 @@ RSpec.describe 'ServiceRequest' do
     #USE_INDIRECT_COST = true  #For testing indirect cost
 
     before :each do
-      add_visits
+      service_request.arms.each { |arm| arm.visits.update_all(quantity: 15, research_billing_qty: 5, insurance_billing_qty: 5, effort_billing_qty: 5) }
       @protocol = service_request.protocol
       @protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 200)
       @protocol.save validate: false
@@ -289,32 +285,11 @@ RSpec.describe 'ServiceRequest' do
     end
   end
 
-  describe 'ssrs_associated_with_service_provider' do
-    context 'service_provider is associated with sub_service_requests' do
-
-      it 'should return all ssrs associated with the service_provider' do
-        expect(service_request.ssrs_associated_with_service_provider(service_provider)).to eq(service_request.sub_service_requests)
-      end
-    end
-
-    context 'service_provider is not associated with sub_service_requests' do
-      
-      before :each do
-        identity = create(:identity)
-        @service_provider2 = create(:service_provider, identity_id: identity.id)
-      end
-
-      it 'should return empty array' do
-        expect(service_request.ssrs_associated_with_service_provider(@service_provider2)).to eq([])
-      end
-    end
-  end
-
   describe '#additional_detail_services' do
     it 'should select the services that have additional details' do
       service_request = create(:service_request_without_validations)
       create(:service)
-      create(:questionnaire, active: true, service: Service.first)
+      create(:questionnaire, :without_validations, active: true, service: Service.first)
       LineItem.first.update_attribute(:service_request_id, service_request.id)
       LineItem.first.update_attribute(:service_id, Service.first.id)
 
@@ -325,7 +300,7 @@ RSpec.describe 'ServiceRequest' do
     it 'should select the services that have additional details' do
       service_request = create(:service_request_without_validations)
       service = create(:service)
-      create(:questionnaire, active: true, service: Service.first)
+      create(:questionnaire, :without_validations, active: true, service: Service.first)
       LineItem.first.update_attribute(:service_request_id, service_request.id)
       LineItem.first.update_attribute(:service_id, Service.first.id)
 

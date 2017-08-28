@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -46,11 +46,10 @@ module Dashboard::DocumentsHelper
 
   def document_org_access_collection(document, action)
     default_select  = if action == 'new'
-                        current_user.authorized_admin_organizations.ids
+                        document.protocol.organizations.ids
                       else
                         document.sub_service_requests.map(&:organization_id)
                       end
-
     options_from_collection_for_select(document.protocol.organizations.distinct.sort_by(&:name), :id, :name, default_select)
   end
 end

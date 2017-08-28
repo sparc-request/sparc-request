@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -37,7 +37,7 @@ RSpec.describe Dashboard::ProtocolsController do
           and_return("users filters")
 
         log_in_dashboard_identity(obj: @logged_in_user)
-        xhr :get, :index
+        get :index, xhr: true
       end
 
       it 'should use Filterrific to get protocols' do
@@ -50,7 +50,7 @@ RSpec.describe Dashboard::ProtocolsController do
 
       it 'should assign @protocol_filters to the five most recent filters' do
         expect(ProtocolFilter).to have_received(:latest_for_user).
-          with(@logged_in_user.id, 5)
+          with(@logged_in_user.id, ProtocolFilter::MAX_FILTERS)
         expect(assigns(:protocol_filters)).to eq("users filters")
       end
 
@@ -81,7 +81,7 @@ RSpec.describe Dashboard::ProtocolsController do
           and_return("users filters")
 
         log_in_dashboard_identity(obj: @logged_in_user)
-        xhr :get, :index
+        get :index, xhr: true
       end
 
       it 'should use Filterrific to get protocols' do
@@ -94,7 +94,7 @@ RSpec.describe Dashboard::ProtocolsController do
 
       it 'should assign @protocol_filters to the five most recent filters' do
         expect(ProtocolFilter).to have_received(:latest_for_user).
-          with(@logged_in_user.id, 5)
+          with(@logged_in_user.id, ProtocolFilter::MAX_FILTERS)
         expect(assigns(:protocol_filters)).to eq("users filters")
       end
 

@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -24,30 +24,6 @@
 $(document).ready ->
   Sparc.protocol =
     ready: ->
-      getSRId = () ->
-        $('input[name="service_request_id"]').val()
-
-      $('.service-requests-table').on 'all.bs.table', ->
-        $(this).find('.selectpicker').selectpicker() #Find descendant selectpickers
-
-      $(document).on 'click', '.service-request-button', ->
-        if $(this).data('permission')
-          window.location = $(this).data('url')
-
-      disableButton: (containing_text, change_to) ->
-        button = $(".ui-dialog .ui-button:contains(#{containing_text})")
-        button.html("<span class='ui-button-text'>#{change_to}</span>")
-          .attr('disabled', true)
-          .addClass('button-disabled')
-
-      enableButton: (containing_text, change_to) ->
-        button = $(".ui-dialog .ui-button:contains(#{containing_text})")
-        button.html("<span class='ui-button-text'>#{change_to}</span>").attr('disabled', false).removeClass('button-disabled')
-
-      # Delete cookies from previously visited SSR
-      $.cookie('admin-tab', null, {path: '/'})
-      $.cookie('admin-ss-tab', null, {path: '/'})
-
       #  Protocol Index Begin
       $(document).on 'click', '.protocols_index_row > .id, .protocols_index_row > .title, .protocols_index_row > .pis', ->
         #if you click on the row, it opens the protocol show
@@ -64,16 +40,13 @@ $(document).ready ->
             $('#modal_place').html(data.modal)
             $('#modal_place').modal 'show'
             $('.service-requests-table').bootstrapTable()
-            $('.service-requests-table').on 'all.bs.table', ->
-              $(this).find('.selectpicker').selectpicker()
-
+            reset_service_requests_handlers()
 
       $(document).on 'click', '.protocol-archive-button', ->
-        protocol_id = $(this).parents("tr").data('protocol-id')
+        protocol_id = $(this).data('protocol-id')
         $.ajax
           type: 'PATCH'
           url:  "/dashboard/protocols/#{protocol_id}/archive.js"
-          data: { protocol_id: protocol_id }
 
       $(document).on 'submit', '#filterrific-no-ajax-auto-submit', ->
         $('#filterrific_sorted_by').val("#{$('.protocol-sort').data('sort-name')} #{$('.protocol-sort').data('sort-order')}")
@@ -118,9 +91,7 @@ $(document).ready ->
         protocol_id = $(this).data('protocol-id')
         $.ajax
           method: 'get'
-          url: "/dashboard/protocols/#{protocol_id}/view_details"
-          data:
-            service_request_id: $("input[name='service_request_id']").val()
+          url: "/protocols/#{protocol_id}.js?portal=true"
 
       $(document).on 'click', '.edit-protocol-information-button', ->
         if $(this).data('permission')
@@ -134,7 +105,7 @@ $(document).ready ->
           method: 'get'
           url: "/service_calendars/view_full_calendar.js"
           data:
-            portal: true
+            portal: 'true'
             protocol_id: protocol_id
             statuses_hidden: statuses_hidden
 
@@ -164,8 +135,29 @@ $(document).ready ->
             $('#modal_place').html(data.modal)
             $('#modal_place').modal 'show'
             $('.service-requests-table').bootstrapTable()
-            $('.service-requests-table').on 'all.bs.table', ->
-              $(this).find('.selectpicker').selectpicker()
+            reset_service_requests_handlers()
+
+      $(document).on 'change', '.complete-details', ->
+        $selected_options = $('option:selected', this)
+
+        if $selected_options.length > 0
+          $selected_option    = $selected_options.first()
+          service_id          = $selected_option.data('service-id')
+          protocol_id         = $selected_option.data('protocol-id')
+          line_item_id        = $selected_option.data('line-item-id')
+          $this               = $(this)
+          
+          $.ajax
+            method: 'GET'
+            url: "/services/#{service_id}/additional_details/submissions/new.js"
+            data:
+              protocol_id: protocol_id
+              line_item_id: line_item_id
+            success: ->
+              $this.selectpicker('deselectAll')
+              $this.selectpicker('render')
+
+      reset_service_requests_handlers()
       # Protocol Show End
 
       # Protocol Table Sorting
@@ -196,3 +188,8 @@ $(document).ready ->
           type: 'get'
           url: "/dashboard/protocols.js"
           data: data
+
+(exports ? this).reset_service_requests_handlers = -> 
+  $('.service-requests-table').on 'all.bs.table', ->
+    #Enable selectpickers
+    $(this).find('.selectpicker').selectpicker()

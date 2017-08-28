@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -26,6 +26,12 @@ RSpec.describe Arm, type: :model do
     let!(:arm)      { create(:arm, protocol: protocol, visit_count: 2, line_item_count: 1) }
 
     it 'should set the day for each VisitGroup to its position * 5' do
+      protocol = create(:protocol_without_validations)
+      arm      = create(:arm, protocol: protocol, visit_count: 2, line_item_count: 1)
+
+      arm.visit_groups.first.update_attribute(:day, 1)
+      arm.visit_groups.second.update_attribute(:day, 2)
+
       expect { arm.default_visit_days }.to change { arm.visit_groups.pluck :day }.to([5, 10])
     end
   end

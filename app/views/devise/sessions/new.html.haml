@@ -1,4 +1,4 @@
--# Copyright © 2011-2016 MUSC Foundation for Research Development
+-# Copyright © 2011-2017 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,8 +20,7 @@
 
 = javascript_include_tag 'login'
 .devise-form
-  .col-md-3
-  .col-md-6.text-center
+  .col-md-6.col-md-offset-3.text-center
     %h1.page-header
       = t(:devise)[:sessions][:header]
     .form-group.login-buttons
@@ -37,4 +36,3 @@
       %a.btn.btn-primary{ href: root_path }
         = t(:devise)[:sessions][:return]
     = render 'login_form', service_request: @service_request
-  .col-md-3

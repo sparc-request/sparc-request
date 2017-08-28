@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -78,7 +78,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         parsed_body         = JSON.parse(response.body)
         expected_attributes = build(:service_request).attributes.
                                 keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'original_submitted_date'].include?(key) }.
+                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'original_submitted_date', "consult_arranged_date", "pppv_complete_date", "pppv_in_process_date", "subject_count"].include?(key) }.
                                 push('callback_url', 'sparc_id').
                                 sort
 
@@ -94,7 +94,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         parsed_body         = JSON.parse(response.body)
         expected_attributes = build(:service_request).attributes.
                                 keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'original_submitted_date'].include?(key) }.
+                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'original_submitted_date', "consult_arranged_date", "pppv_complete_date", "pppv_in_process_date", "subject_count"].include?(key) }.
                                 push('callback_url', 'sparc_id', 'sub_service_requests', 'line_items', 'protocol').
                                 sort
 

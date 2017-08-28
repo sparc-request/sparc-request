@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -24,9 +24,9 @@ class CatalogManager::AppController < ActionController::Base
   protect_from_forgery
   helper_method :current_user
 
-  before_filter :authenticate_identity!
-  before_filter :set_user
-  before_filter :set_highlighted_link
+  before_action :authenticate_identity!
+  before_action :set_user
+  before_action :set_highlighted_link
 
   def set_highlighted_link
     @highlighted_link ||= 'sparc_catalog'

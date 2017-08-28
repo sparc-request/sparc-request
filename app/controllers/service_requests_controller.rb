@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -23,17 +23,18 @@ require 'generate_request_grant_billing_pdf'
 class ServiceRequestsController < ApplicationController
   respond_to :js, :json, :html
 
-  before_filter :initialize_service_request,      except: [:approve_changes, :get_help, :feedback]
-  before_filter :validate_step,                   only:   [:protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation, :save_and_exit]
-  before_filter :setup_navigation,                only:   [:navigate, :protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
-  before_filter :authorize_identity,              except: [:approve_changes, :get_help, :feedback, :show]
-  before_filter :authenticate_identity!,          except: [:catalog, :add_service, :remove_service, :get_help, :feedback]
-  before_filter :authorize_protocol_edit_request, only:   [:catalog]
-  before_filter :find_locked_org_ids,             only:   [:catalog]
+  before_action :initialize_service_request,      except: [:approve_changes, :get_help, :feedback]
+  before_action :validate_step,                   only:   [:protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation, :save_and_exit]
+  before_action :setup_navigation,                only:   [:navigate, :catalog, :protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
+  before_action :authorize_identity,              except: [:approve_changes, :get_help, :feedback, :show]
+  before_action :authenticate_identity!,          except: [:catalog, :add_service, :remove_service, :get_help, :feedback]
+  before_action :authorize_protocol_edit_request, only:   [:catalog]
+  before_action :find_locked_org_ids,             only:   [:catalog]
 
   def show
     @protocol = @service_request.protocol
     @admin_offset = params[:admin_offset]
+    @show_signature_section = params[:show_signature_section]
     @service_list_true = @service_request.service_list(true)
     @service_list_false = @service_request.service_list(false)
     @line_items = @service_request.line_items
@@ -51,13 +52,7 @@ class ServiceRequestsController < ApplicationController
     when 'protocol'
       @service_request.group_valid?(:protocol)
     when 'service_details'
-      details_params = params[:study] ? params[:study] : params[:project]
-      details_params = convert_date_for_save(details_params, :start_date)
-      details_params = convert_date_for_save(details_params, :end_date)
-      details_params = convert_date_for_save(details_params, :recruitment_start_date)
-      details_params = convert_date_for_save(details_params, :recruitment_end_date)
-
-      @service_request.protocol.update_attributes( details_params ) if @service_request.protocol
+      @service_request.protocol.update_attributes(details_params) if @service_request.protocol && details_params
       @service_request.group_valid?(:service_details)
     when 'service_calendar'
       @service_request.group_valid?(:service_calendar)
@@ -91,58 +86,22 @@ class ServiceRequestsController < ApplicationController
   end
 
   def service_details
-    @service_request.add_or_update_arms
+    if @service_request.has_per_patient_per_visit_services? && @service_request.arms.empty?
+        @service_request.protocol.arms.create(
+          name: 'Screening Phase',
+          visit_count: 1,
+          new_with_draft: true
+        )
+    end
   end
 
   def service_calendar
     session[:service_calendar_pages] = params[:pages] if params[:pages]
-
-    @service_request.arms.each do |arm|
-      #check each ARM for line_items_visits (in other words, it's a new arm)
-      if arm.line_items_visits.empty?
-        #Create missing line_items_visits
-        @service_request.per_patient_per_visit_line_items.each do |line_item|
-          arm.create_line_items_visit(line_item)
-        end
-      else
-        #Check to see if ARM has been modified...
-        arm.line_items_visits.each do |liv|
-          #Update subject counts under certain conditions
-          if @service_request.status == 'first_draft' or liv.subject_count.nil? or liv.subject_count > arm.subject_count
-            liv.update_attribute(:subject_count, arm.subject_count)
-          end
-        end
-        #Arm.visit_count has benn increased, so create new visit group, and populate the visits
-        if arm.visit_count > arm.visit_groups.count
-          ActiveRecord::Base.transaction do
-            arm.mass_create_visit_group
-          end
-        end
-        #Arm.visit_count has been decreased, destroy visit group (and visits)
-        if arm.visit_count < arm.visit_groups.count
-          ActiveRecord::Base.transaction do
-            arm.mass_destroy_visit_group
-          end
-        end
-      end
-    end
   end
 
-  # do not delete. Method will be needed if calendar totals page is used
-  # def calendar_totals
-  #   if @service_request.arms.blank?
-  #     @back = 'service_details'
-  #   end
-  # end
-
   def service_subsidy
-    @has_subsidy          = @service_request.sub_service_requests.map(&:has_subsidy?).any?
-    @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
-
-    # this is only if the calendar totals page is not going to be used.
-    if @service_request.arms.blank?
-      @back = 'service_details'
-    end
+    @has_subsidy          = @sub_service_request ? @sub_service_request.has_subsidy? : @service_request.sub_service_requests.map(&:has_subsidy?).any?
+    @eligible_for_subsidy = @sub_service_request ? @sub_service_request.eligible_for_subsidy? : @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
 
     if !@has_subsidy && !@eligible_for_subsidy
       ssr_id_params = @sub_service_request ? "?sub_service_request_id=#{@sub_service_request.id}" : ""
@@ -162,12 +121,14 @@ class ServiceRequestsController < ApplicationController
   end
 
   def review
+    @notable_type = 'Protocol'
+    @notable_id = @service_request.protocol_id
     @tab          = 'calendar'
     @review       = true
     @portal       = false
     @admin        = false
-    @merged       = false
-    @consolidated = true
+    @merged       = true
+    @consolidated = false
 
     # Reset all the page numbers to 1 at the start of the review request
     # step.
@@ -181,7 +142,7 @@ class ServiceRequestsController < ApplicationController
     @protocol = @service_request.protocol
     @service_request.previous_submitted_at = @service_request.submitted_at
 
-    NotifierLogic.new(@service_request, @sub_service_request, current_user).send_confirmation_notifications_get_a_cost_estimate
+    NotifierLogic.new(@service_request, @sub_service_request, current_user).update_status_and_send_get_a_cost_estimate_email
     render formats: [:html]
   end
 
@@ -203,9 +164,7 @@ class ServiceRequestsController < ApplicationController
         send_epic_notification_for_user_approval(@protocol)
       end
     end
-    notifier_logic = NotifierLogic.new(@service_request, @sub_service_request, current_user)
-    notifier_logic.send_request_amendment_email_evaluation
-    notifier_logic.send_confirmation_notifications_submitted
+    NotifierLogic.new(@service_request, @sub_service_request, current_user).update_ssrs_and_send_emails
     render formats: [:html]
   end
 
@@ -215,7 +174,7 @@ class ServiceRequestsController < ApplicationController
         if @sub_service_request #if editing a sub service request, update status
           @sub_service_request.update_attribute(:status, 'draft')
         else
-          update_service_request_status(@service_request, 'draft', false)
+          @service_request.update_status('draft')
           @service_request.ensure_ssr_ids
         end
         redirect_to dashboard_root_path, sub_service_request_id: @sub_service_request.try(:id)
@@ -225,86 +184,45 @@ class ServiceRequestsController < ApplicationController
   end
 
   def add_service
-    existing_service_ids = @service_request.line_items.reject{ |line_item| line_item.status == 'complete' }.map(&:service_id)
-
-    if existing_service_ids.include?( params[:service_id].to_i )
+    add_service = AddService.new(@service_request,
+                                 params[:service_id].to_i,
+                                 current_user
+                                )
+    add_service.existing_service_ids
+    if add_service.existing_service_ids.include?( params[:service_id].to_i )
       @duplicate_service = true
     else
-      service        = Service.find( params[:service_id] )
-      new_line_items = @service_request.create_line_items_for_service( service: service, optional: true, existing_service_ids: existing_service_ids, recursive_call: false ) || []
-
-      # create sub_service_requests
-      @service_request.reload
-      @service_request.previous_submitted_at = @service_request.submitted_at
-      new_line_items.each do |li|
-        ssr = find_or_create_sub_service_request(li, @service_request)
-        li.update_attribute(:sub_service_request_id, ssr.id)
-        if @service_request.status == 'first_draft'
-          ssr.update_attribute(:status, 'first_draft')
-        elsif ssr.status.nil? || (ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr) && (ssr.status != 'complete'))
-          previous_status = ssr.status
-          ssr.update_attribute(:status, 'draft')
-        end
-      end
-
-      @service_request.ensure_ssr_ids
-      @line_items_count     = @sub_service_request ? @sub_service_request.line_items.count : @service_request.line_items.count
+      add_service.generate_new_service_request
+      @line_items_count     = (@sub_service_request || @service_request).line_items.count
       @sub_service_requests = @service_request.cart_sub_service_requests
     end
   end
 
   def remove_service
-    line_item   = @service_request.line_items.find( params[:line_item_id] )
-    line_items  = @sub_service_request ? @sub_service_request.line_items : @service_request.line_items
-    service     = line_item.service
-    ssr         = line_item.sub_service_request
+    line_item = @service_request.line_items.find(params[:line_item_id])
+    ssr       = line_item.sub_service_request
 
-    line_item_service_ids = @service_request.line_items.map(&:service_id)
+    if ssr.can_be_edited?
+      ssr.line_items.where(service: line_item.service.related_services).update_all(optional: true)
 
-    # look at related services and set them to optional
-    # TODO POTENTIAL ISSUE: what if another service has the same related service
-    service.related_services.each do |rs|
-      if line_item_service_ids.include? rs.id
-        @service_request.line_items.find_by_service_id(rs.id).update_attribute(:optional, true)
+      line_item.destroy
+
+      ssr.update_attribute(:status, 'draft') unless ssr.status == 'first_draft'
+      @service_request.reload
+
+      if ssr.line_items.empty?
+        NotifierLogic.new(@service_request, nil, current_user).ssr_deletion_emails(deleted_ssr: ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
+        ssr.destroy
       end
     end
 
-    line_items.where(service_id: service.id).each do |li|
-      if li.status != 'complete'
-        if ssr.can_be_edited? && ssr.status != 'first_draft'
-          ssr.update_attribute(:status, 'draft')
-        end
-        li.destroy
-      end
-    end
-
-    line_items.reload
-
     @service_request.reload
-    @page = request.referrer.split('/').last # we need for pages other than the catalog
 
-    # Have the protocol clean up the arms
-    @service_request.protocol.arm_cleanup if @service_request.protocol
-
-    # clean up sub_service_requests
-    @service_request.reload
-    @service_request.previous_submitted_at = @service_request.submitted_at
-    @protocol = @service_request.protocol
-
-    if ssr.line_items.empty?
-      if !ssr.submitted_at.nil?
-        # only notify service providers of destroyed ssr
-        NotifierLogic.new(@service_request, nil, current_user).send_ssr_service_provider_notifications(ssr, ssr_destroyed: true, request_amendment: false)
-      end
-      ssr.destroy
-    end
-
-    @service_request.reload
-    @line_items_count     = @sub_service_request ? @sub_service_request.line_items.count : @service_request.line_items.count
+    @line_items_count     = (@sub_service_request || @service_request).line_items.count
     @sub_service_requests = @service_request.cart_sub_service_requests
 
     respond_to do |format|
-      format.js {render layout: false}
+      format.js { render layout: false }
     end
   end
 
@@ -312,7 +230,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def feedback
-    feedback = Feedback.new(params[:feedback])
+    feedback = Feedback.new(feedback_params)
     if feedback.save
       Notifier.provide_feedback(feedback).deliver_now
       flash.now[:success] = t(:proper)[:right_navigation][:feedback][:submitted]
@@ -333,6 +251,30 @@ class ServiceRequestsController < ApplicationController
   end
 
   private
+
+  def feedback_params
+    params.require(:feedback).permit(:email, :message)
+  end
+
+  def details_params
+    @details_params ||= begin
+      required_keys = params[:study] ? :study : params[:project] ? :project : nil
+      if required_keys.present?
+        temp = params.require(required_keys).permit(:start_date, :end_date,
+          :recruitment_start_date, :recruitment_end_date).to_h
+
+        # Finally, transform date attributes.
+        date_attrs = %w(start_date end_date recruitment_start_date recruitment_end_date)
+        temp.inject({}) do |h, (k, v)|
+          if date_attrs.include?(k) && v.present?
+            h.merge(k => Time.strptime(v, "%m/%d/%Y"))
+          else
+            h.merge(k => v)
+          end
+        end
+      end
+    end
+  end
 
   # Each of these helper methods assigns session[:errors] to persist the errors through the
   # redirect_to so that the user has an explanation
@@ -395,11 +337,10 @@ class ServiceRequestsController < ApplicationController
 
     c = YAML.load_file(Rails.root.join('config', 'navigation.yml'))[@page]
     unless c.nil?
-      @step_text = c['step_text']
-      @css_class = c['css_class']
-      @back = c['back']
-      @catalog = c['catalog']
-      @forward = c['forward']
+      @step_text   = c['step_text']
+      @css_class   = c['css_class']
+      @back        = c['back']
+      @forward     = c['forward']
     end
   end
 
@@ -411,25 +352,27 @@ class ServiceRequestsController < ApplicationController
 
       @events = []
       begin
-        #to parse file and get events
-        cal_file = File.open(Rails.root.join("tmp", "basic.ics"))
+        path = Rails.root.join("tmp", "basic.ics")
+        if path.exist?
+          #to parse file and get events
+          cal_file = File.open(path)
 
-        cals = Icalendar.parse(cal_file)
+          cals = Icalendar.parse(cal_file)
 
-        cal = cals.first
+          cal = cals.first
 
-        events = cal.events.sort { |x, y| y.dtstart <=> x.dtstart }
+          events = cal.try(:events).try(:sort) { |x, y| y.dtstart <=> x.dtstart } || []
 
-        events.each do |event|
-          next if Time.parse(event.dtstart.to_s) > startMax
-          break if Time.parse(event.dtstart.to_s) < startMin
-          @events << create_calendar_event(event)
+          events.each do |event|
+            next if Time.parse(event.dtstart.to_s) > startMax
+            break if Time.parse(event.dtstart.to_s) < startMin
+            @events << create_calendar_event(event)
+          end
+
+          @events.reverse!
+          Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).update_all(status: ALERT_STATUSES['clear'])
         end
-
-        @events.reverse!
-
-        Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).update_all(status: ALERT_STATUSES['clear'])
-      rescue Exception => e
+      rescue Exception, ArgumentError => e
         active_alert = Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).first_or_initialize
         if Rails.env == 'production' && active_alert.new_record?
           active_alert.save
@@ -441,13 +384,16 @@ class ServiceRequestsController < ApplicationController
 
   def setup_catalog_news_feed
     if USE_NEWS_FEED
-      page = Nokogiri::HTML(open("https://www.sparcrequestblog.com"))
-      articles = page.css('article.post').take(3)
       @news = []
-      articles.each do |article|
-        @news << {title: (article.at_css('.entry-title') ? article.at_css('.entry-title').text : ""),
+      begin
+        page = Nokogiri::HTML(open("https://www.sparcrequestblog.com"))
+        articles = page.css('article.post').take(3)
+        articles.each do |article|
+          @news << {title: (article.at_css('.entry-title') ? article.at_css('.entry-title').text : ""),
                   link: (article.at_css('.entry-title a') ? article.at_css('.entry-title a')[:href] : ""),
                   date: (article.at_css('.date') ? article.at_css('.date').text : "") }
+        end
+      rescue Net::OpenTimeout
       end
     end
   end
@@ -473,26 +419,6 @@ class ServiceRequestsController < ApplicationController
     Notifier.notify_for_epic_user_approval(protocol).deliver unless QUEUE_EPIC
   end
 
-  def update_service_request_status(service_request, status, validate=true, submit=false)
-    requests = []
-
-    service_request.sub_service_requests.each do |ssr|
-      if UPDATABLE_STATUSES.include?(ssr.status) || !submit
-        requests << ssr
-      end
-    end
-
-    to_notify = service_request.update_status(status, validate, submit)
-
-    if (status == 'submitted')
-      service_request.previous_submitted_at = service_request.submitted_at
-      service_request.update_attribute(:submitted_at, Time.now)
-      requests.each { |ssr| ssr.update_attributes(submitted_at: Time.now) }
-    end
-
-    to_notify
-  end
-
   def authorize_protocol_edit_request
     if current_user
       authorized  = if @sub_service_request
@@ -501,7 +427,7 @@ class ServiceRequestsController < ApplicationController
                       @service_request.status == 'first_draft' || current_user.can_edit_service_request?(@service_request)
                     end
 
-      protocol = @sub_service_request ? @sub_service_request.service_request.protocol : @service_request.protocol
+      protocol = @sub_service_request ? @sub_service_request.protocol : @service_request.protocol
 
       unless authorized || protocol.project_roles.find_by(identity: current_user).present?
         @service_request     = nil
@@ -512,29 +438,7 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  # Returns either an existing sub service request (if the line item's belongs to the sub service request)
-  def find_or_create_sub_service_request(line_item, service_request)
-    organization = line_item.service.process_ssrs_organization
-    service_request.sub_service_requests.each do |ssr|
-      if (ssr.organization == organization) && (ssr.status != 'complete')
-        return ssr
-      end
-    end
-    sub_service_request = service_request.sub_service_requests.create(organization_id: organization.id)
-    service_request.ensure_ssr_ids
-
-    sub_service_request
-  end
-
   def set_highlighted_link
     @highlighted_link ||= 'sparc_request'
-  end
-
-  def convert_date_for_save(attrs, date_field)
-    if attrs[date_field] && attrs[date_field].present?
-      attrs[date_field] = Time.strptime(attrs[date_field], "%m/%d/%Y")
-    end
-
-    attrs
   end
 end

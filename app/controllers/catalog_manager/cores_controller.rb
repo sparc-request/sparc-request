@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -24,15 +24,15 @@ class CatalogManager::CoresController < CatalogManager::OrganizationsController
     @organization = Core.new({name: params[:name], abbreviation: params[:name], parent_id: @parent_org.id})
     super
   end
-  
+
   def show
     @path = catalog_manager_core_path
     super
   end
-  
+
   def update
-    @attributes = params[:core]
+    @attributes = organization_params(:core)
     super
   end
-  
+
 end

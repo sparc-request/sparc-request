@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -23,13 +23,8 @@ require 'rails_helper'
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
   describe 'GET /v1/visit_group/:id.json' do
-
-    before do
-      VisitGroup.skip_callback(:save, :after, :set_arm_edited_flag_on_subjects)
-
-      protocol = create(:protocol_without_validations)
-      arm      = create(:arm, protocol: protocol)
-      @visit_group = create(:visit_group, arm: arm)
+    before :each do
+      @visit_group = create(:visit_group_without_validations)
     end
 
     context 'response params' do

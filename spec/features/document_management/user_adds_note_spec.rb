@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -44,8 +44,8 @@ RSpec.describe 'User adds a new note', js: true do
 
       click_button 'Add a Note'
       wait_for_javascript_to_finish
-
       expect(page).to have_selector('.modal-dialog', text: 'New Protocol Note', visible: true)
+      
     end
 
     context 'and fills out the form and submits' do

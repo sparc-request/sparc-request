@@ -1,0 +1,103 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+en:
+  surveyor:
+    responses:
+      update: "Thank you for participating in this survey!"
+      complete:
+        header: "Survey Completed"
+        thanks: "Thank you for completing the survey!"
+        to_dashboard: "Return to Dashboard"
+      emails:
+        system_satisfaction:
+          subject: "System Satisfaction Survey Completed in %{site_name}"
+          text1: "has completed a system satisfaction survey."
+          text2: "Results can be found "
+        service_survey:
+          subject: "%{site_name} Survey Notification (Request %{ssr_id})"
+          greeting: "Dear %{name},"
+          text1: "Thank you for requesting services from"
+          text2: "The service(s) you requested have now been completed."
+          text3: "Please click on the link(s) below to complete the following survey(s) regarding the service(s) you received. Your feedback is important and appreciated!"
+        sctr_customer_satisfaction:
+          grant_reminder: "Please remember to cite the CTSA grant in any related publications:"
+          grant_info: "&quot;This publication [or project] was supported by the South Carolina Clinical & Translation Research (SCTR) Institute, with an academic home at the Medical University of South Carolina <strong class='din-gray-text'>NIH - NCATS Grant Number UL1 TR001450.</strong>&quot;"
+
+
+    surveys:
+      header: "Surveys"
+      new: "New Survey"
+      table:
+        headers:
+          title: "Title"
+          access_code: "Access Code"
+          version: "Version"
+          display_order: "Display Order"
+          active: "Active"
+          options: "Options"
+        fields:
+          edit: "Edit Survey"
+          delete: "Delete Survey"
+          activate: "Activate"
+          disable: "Disable"
+          preview: "Preview"
+      form:
+        header: "Live Editing Survey"
+        survey_information:
+          header: "Survey Information"
+          access_code: "Access Code:"
+          version: "Version:"
+          display_order: "Display Order:"
+          active: "Active:"
+        content:
+          survey:
+            title:
+              placeholder: "Survey Title (Required)"
+            description:
+              placeholder: "Survey Description (Recommended)"
+          section:
+            add: "Add Section"
+            delete: "Delete Section"
+            title:
+              placeholder: "Section Title (Recommended)"
+            description:
+              placeholder: "Section Description (Optional)"
+          question:
+            add: "Add Question"
+            delete: "Delete Question"
+            content:
+              placeholder: "Question (Required)"
+            description:
+              placeholder: "Question Description (Optional)"
+            required: "Required:"
+            dependent:
+              label: "Dependent:"
+              dropdown:
+                label: "Display If:"
+            zipcode:
+              placeholder: 'XXXXX'
+            phone:
+              placeholder: 'XXXXXXXXXX'
+          option:
+            add: "Add Option"
+            delete: "Delete Option"
+            content:
+              placeholder: "Option (Required)"

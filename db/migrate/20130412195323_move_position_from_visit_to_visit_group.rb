@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,22 +18,17 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class MovePositionFromVisitToVisitGroup < ActiveRecord::Migration
+class MovePositionFromVisitToVisitGroup < ActiveRecord::Migration[4.2]
   class Arm < ActiveRecord::Base
     has_many :line_items_visits, :dependent => :destroy
     has_many :visit_groups
     has_many :visits, :through => :line_items_visits
-    attr_accessible :visit_count
   end
   class Visit < ActiveRecord::Base
-    attr_accessible :position
-    attr_accessible :visit_group_id
     belongs_to :visit_group
     belongs_to :line_items_visit
   end
   class VisitGroup < ActiveRecord::Base
-    attr_accessible :arm_id
-    attr_accessible :name
     acts_as_list :scope => :arm
   end
   class LineItemsVisit < ActiveRecord::Base

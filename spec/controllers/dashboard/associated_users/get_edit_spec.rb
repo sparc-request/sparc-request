@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -52,7 +52,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
         authorize(identity, protocol, can_edit: false)
         log_in_dashboard_identity(obj: identity)
 
-        xhr :get, :edit, id: project_role.id, format: :js
+        get :edit, params: { id: project_role.id }, xhr: true
       end
 
       it "should use ProtocolAuthorizer to authorize user" do
@@ -69,7 +69,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
         authorize(identity, protocol, can_edit: true)
         log_in_dashboard_identity(obj: identity)
 
-        xhr :get, :edit, id: project_role.id, format: :js
+        get :edit, params: { id: project_role.id }, xhr: true
       end
 
       it 'should set @protocol_role from params[:id]' do
@@ -82,10 +82,6 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
       it 'should set @identity to the Identity associated with @project_role' do
         expect(assigns(:identity)).to eq(identity)
-      end
-
-      it 'should set @current_pi to the Primary PI of @protocol' do
-        expect(assigns(:current_pi)).to eq(primary_pi)
       end
 
       it 'should set @header_text to "Edit Authorized User"' do

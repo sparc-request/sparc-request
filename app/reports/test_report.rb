@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -46,6 +46,7 @@ class TestReport < ReportingModule
   # :selected => array of pre-selected checkboxes ['submitted', 'in_process']
   # :custom_name_method => method (default is :name)
   # :has_dependencies => this is used to signal the first dependencies to set up on page load. For example, institution when filter organizations.
+  # :selectpicker => this adds the class of 'selectpicker' onto the item, for usage by the selectpicker dropdown js.
   def default_options
     {
       "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => "2012-03-01".to_date, :to => Date.today, :required => true},
@@ -83,8 +84,10 @@ class TestReport < ReportingModule
 
     attrs["Unique PI Last Name"] = :last_name
     attrs["Unique PI First Name"] = :first_name
-    attrs["College"] = [:college, COLLEGES.invert] # we invert since our hash is setup {"Bio Medical" => "bio_med"} for some crazy reason
-    attrs["Department"] = [:department, DEPARTMENTS.invert]
+    attrs["Institution"] = "try(:professional_org_lookup, 'institution')"
+    attrs["College"]     = "try(:professional_org_lookup, 'college')"
+    attrs["Department"]  = "try(:professional_org_lookup, 'department')"
+    attrs["Division"]    = "try(:professional_org_lookup, 'division')"
 
     attrs
   end

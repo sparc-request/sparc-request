@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Project Role' do
+RSpec.describe ProjectRole, type: :model do
 
   let!(:user)         {create(:identity)}
   let!(:user2)         {create(:identity)}
@@ -93,11 +93,6 @@ RSpec.describe 'Project Role' do
       expect(@project_role.should_select?('approve', user)).to eq(true)
     end
 
-    it "should return true if current user is on project role, role != 'pi', and right == 'request'" do
-      @project_role.update_attributes(role: 'mentor')
-      expect(@project_role.should_select?('request', user)).to eq(true)
-    end
-
     it "should return false if previous conditions are not met" do
       expect(@project_role.should_select?('request', user)).to eq(false)
       @project_role.update_attributes(role: 'mentor')
@@ -115,11 +110,6 @@ RSpec.describe 'Project Role' do
     it "should display 'View Rights' when project right is 'view'" do
       @project_role.update_attributes(project_rights: 'view')
       expect(@project_role.display_rights).to eq("View Rights")
-    end
-
-    it "should display 'Request/Approve Services' when project right is 'request'" do
-      @project_role.update_attributes(project_rights: 'request')
-      expect(@project_role.display_rights).to eq("Request/Approve Services")
     end
 
     it "should display 'Authorize/Change Study Charges' when project right is 'approve'" do

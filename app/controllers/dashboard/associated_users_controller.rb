@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,11 +21,11 @@
 class Dashboard::AssociatedUsersController < Dashboard::BaseController
   respond_to :html, :json, :js
 
-  before_filter :find_protocol_role,                              only: [:edit, :destroy]
-  before_filter :find_protocol,                                   only: [:index, :new, :create, :edit, :update, :destroy]
-  before_filter :find_admin_for_protocol,                         only: [:index, :new, :create, :edit, :update, :destroy]
-  before_filter :protocol_authorizer_view,                        only: [:index]
-  before_filter :protocol_authorizer_edit,                        only: [:new, :create, :edit, :update, :destroy]
+  before_action :find_protocol_role,                              only: [:edit, :destroy]
+  before_action :find_protocol,                                   only: [:index, :new, :create, :edit, :update, :destroy]
+  before_action :find_admin_for_protocol,                         only: [:index, :new, :create, :edit, :update, :destroy]
+  before_action :protocol_authorizer_view,                        only: [:index]
+  before_action :protocol_authorizer_edit,                        only: [:new, :create, :edit, :update, :destroy]
 
   def index
     @protocol_roles     = @protocol.project_roles
@@ -38,8 +38,8 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
 
   def edit
     @identity     = @protocol_role.identity
-    @current_pi   = @protocol.primary_principal_investigator
     @header_text  = t(:authorized_users)[:edit][:header]
+    @dashboard    = true
 
     respond_to do |format|
       format.js
@@ -47,8 +47,9 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
   def new
-    @header_text = t(:authorized_users)[:add][:header]
-
+    @header_text  = t(:authorized_users)[:add][:header]
+    @dashboard    = true
+    
     if params[:identity_id] # if user selected
       @identity     = Identity.find(params[:identity_id])
       @project_role = @protocol.project_roles.new(identity_id: @identity.id)
@@ -58,7 +59,6 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
         # Adds error if user already associated with protocol
         @errors = @project_role.errors
       end
-
     end
 
     respond_to do |format|
@@ -67,7 +67,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
   def create
-    creator = AssociatedUserCreator.new(params[:project_role])
+    creator = AssociatedUserCreator.new(project_role_params)
 
     if creator.successful?
       if @current_user_created = params[:project_role][:identity_id].to_i == @user.id
@@ -85,7 +85,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
   def update
-    updater = AssociatedUserUpdater.new(id: params[:id], project_role: params[:project_role])
+    updater = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params)
 
     if updater.successful?
       # We care about this because the new rights will determine what is rendered
@@ -156,6 +156,28 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
 private
+def project_role_params
+  params.require(:project_role).permit(:protocol_id,
+    :identity_id,
+    :project_rights,
+    :role,
+    :role_other,
+    :epic_access,
+    identity_attributes: [
+      :credentials,
+      :credentials_other,
+      :email,
+      :era_commons_name,
+      :professional_organization_id,
+      :phone,
+      :subspecialty,
+      :id
+    ],
+    epic_rights_attributes: [:right,
+      :new,
+      :position,
+      :_destroy])
+end
 
   def find_protocol_role
     @protocol_role = ProjectRole.find(params[:id])

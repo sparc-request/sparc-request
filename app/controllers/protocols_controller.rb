@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,11 +21,12 @@
 class ProtocolsController < ApplicationController
 
   respond_to :html, :js, :json
+  protect_from_forgery except: :show
 
-  before_filter :initialize_service_request,  unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
-  before_filter :authorize_identity,          unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
-  before_filter :set_portal
-  before_filter :find_protocol,               only: [:edit, :update, :view_details]
+  before_action :initialize_service_request,  unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
+  before_action :authorize_identity,          unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
+  before_action :set_portal
+  before_action :find_protocol,               only: [:edit, :update, :show]
 
   def new
     @protocol_type          = params[:protocol_type]
@@ -33,10 +34,12 @@ class ProtocolsController < ApplicationController
     @protocol.requester_id  = current_user.id
     @service_request        = ServiceRequest.find(params[:srid])
     @protocol.populate_for_edit
+    gon.rm_id_api_url = RESEARCH_MASTER_API
+    gon.rm_id_api_token = RMID_API_TOKEN
   end
 
   def create
-    protocol_class                          = params[:protocol][:type].capitalize.constantize
+    protocol_class                          = protocol_params[:type].capitalize.constantize
     attrs                                   = fix_date_params
     @protocol                               = protocol_class.new(attrs)
     @service_request                        = ServiceRequest.find(params[:srid])
@@ -70,10 +73,13 @@ class ProtocolsController < ApplicationController
   def edit
     @protocol_type                          = @protocol.type
     @service_request                        = ServiceRequest.find(params[:srid])
+    @sub_service_request                    = SubServiceRequest.find(params[:sub_service_request_id]) if params[:sub_service_request_id]
     @in_dashboard                           = false
     @protocol.populate_for_edit
     @protocol.valid?
     @errors = @protocol.errors
+    gon.rm_id_api_url = RESEARCH_MASTER_API
+    gon.rm_id_api_token = RMID_API_TOKEN
 
     respond_to do |format|
       format.html
@@ -81,9 +87,9 @@ class ProtocolsController < ApplicationController
   end
 
   def update
-    protocol_type = params[:protocol][:type]
+    protocol_type = protocol_params[:type]
     @protocol = @protocol.becomes(protocol_type.constantize) unless protocol_type.nil?
-    if params[:updated_protocol_type] == 'true' && protocol_type == 'Study'
+    if protocol_type == 'Study' && @protocol.valid?
       @protocol.update_attribute(:type, protocol_type)
       @protocol.activate
       @protocol.reload
@@ -91,6 +97,7 @@ class ProtocolsController < ApplicationController
 
     attrs            = fix_date_params
     @service_request = ServiceRequest.find(params[:srid])
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id]) if params[:sub_service_request_id]
 
     if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
 
@@ -115,14 +122,14 @@ class ProtocolsController < ApplicationController
     @protocol_type = params[:type]
     @protocol = @protocol.becomes(@protocol_type.constantize) unless @protocol_type.nil?
     @protocol.populate_for_edit
-    
+
     flash[:success] = t(:protocols)[:change_type][:updated]
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
       flash[:alert] = t(:protocols)[:change_type][:new_study_warning]
-    end  
+    end
   end
 
-  def view_details
+  def show
     respond_to do |format|
       format.js
     end
@@ -158,7 +165,8 @@ class ProtocolsController < ApplicationController
 
   def push_to_epic
     @protocol = Protocol.find params[:id]
-
+    epic_queue = EpicQueue.find params[:eq_id]
+    epic_queue.update_attribute(:attempted_push, true)
     # removed 12/23/13 per request by Lane
     #if current_user != @protocol.primary_principal_investigator then
     #  raise ArgumentError, "User is not primary PI"
@@ -168,7 +176,10 @@ class ProtocolsController < ApplicationController
     # rendered will
     push_protocol_to_epic(@protocol)
 
-    render :formats => [:html]
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   def from_portal?
@@ -179,6 +190,60 @@ class ProtocolsController < ApplicationController
 
   def find_protocol
     @protocol = Protocol.find(params[:id])
+  end
+
+  def protocol_params
+    @protocol_params ||= begin
+        params.require(:protocol).permit(:archived,
+        :arms_attributes,
+        :billing_business_manager_static_email,
+        :brief_description,
+        :federal_grant_code_id,
+        :federal_grant_serial_number,
+        :federal_grant_title,
+        :federal_non_phs_sponsor,
+        :federal_phs_sponsor,
+        :funding_rfa,
+        :funding_source,
+        :funding_source_other,
+        :funding_start_date,
+        :funding_status,
+        :identity_id,
+        :indirect_cost_rate,
+        :last_epic_push_status,
+        :last_epic_push_time,
+        :next_ssr_id,
+        :potential_funding_source,
+        :potential_funding_source_other,
+        :potential_funding_start_date,
+        :requester_id,
+        :selected_for_epic,
+        :short_title,
+        :sponsor_name,
+        :study_type_question_group_id,
+        :title,
+        :type,
+        :udak_project_number,
+        :research_master_id,
+        {:study_phase_ids => []},
+        research_types_info_attributes: [:id, :human_subjects, :vertebrate_animals, :investigational_products, :ip_patents],
+        study_types_attributes: [:id, :name, :new, :position, :_destroy],
+        vertebrate_animals_info_attributes: [:id, :iacuc_number,
+          :name_of_iacuc,
+          :iacuc_approval_date,
+          :iacuc_expiration_date],
+        investigational_products_info_attributes: [:id, :protocol_id,
+          :ind_number,
+          :inv_device_number,
+          :exemption_type,
+          :ind_on_hold],
+        ip_patents_info_attributes: [:id, :patent_number, :inventors],
+        impact_areas_attributes: [:id, :name, :other_text, :new, :_destroy],
+        human_subjects_info_attributes: [:id, :nct_number, :hr_number, :pro_number, :irb_of_record, :submission_type, :irb_approval_date, :irb_expiration_date, :approval_pending],
+        affiliations_attributes: [:id, :name, :new, :position, :_destroy],
+        project_roles_attributes: [:id, :identity_id, :role, :project_rights, :_destroy],
+        study_type_answers_attributes: [:id, :answer, :study_type_question_id, :_destroy])
+    end
   end
 
   def resolve_layout
@@ -246,7 +311,7 @@ class ProtocolsController < ApplicationController
   end
 
   def fix_date_params
-    attrs               = params[:protocol]
+    attrs               = protocol_params
 
     #### fix dates so they are saved correctly ####
     attrs                                        = convert_date_for_save attrs, :start_date

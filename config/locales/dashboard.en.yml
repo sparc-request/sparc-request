@@ -23,7 +23,7 @@ en:
     ###########
     # HEADER #
     ##########
-    header: "SPARC Request Dashboard"
+    header: "SPARCRequest Dashboard"
 
     ###########
     #  ADMIN  #
@@ -56,7 +56,9 @@ en:
     #  EPIC QUEUES  #
     #################
     epic_queues:
-      header: "Epic Queues"
+      headers:
+        current: "Current"
+        past: "Past"
 
     ##################
     #  FULFILLMENTS  #
@@ -117,6 +119,7 @@ en:
     ##########
     navbar:
       logged_in_as: "Logged in as "
+      surveys: "Surveys"
       epic_queue: "View Epic Queue"
       messages: "All Notifications"
 
@@ -157,6 +160,8 @@ en:
     ######################
     protocol_filters:
       header: "Filter Protocols"
+      search_by: "Search All"
+      search_by_options: ['Authorized User', 'HR#', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title']
       archived: "Archived"
       inactive: "(inactive)"
       status: "Status"
@@ -164,6 +169,7 @@ en:
       owner: "Owner"
       my_protocols: "My Protocols"
       my_admin_protocols: "My Admin Protocols"
+      empty_protocols: "Empty Protocols (No Services)"
       filter: "Filter"
       saved_filters:
         header: "Recently Saved Filters"
@@ -175,7 +181,15 @@ en:
     #  PROTOCOLS  #
     ###############
     protocols:
+      form:
+        edit_selected_for_epic: 'Edit'
+        cancel_edit_selected_for_epic: 'Cancel Edit'
+        edit_answer: 'Edit'
+        new_answer: 'Answer'
+        cancel_edit_answer: 'Cancel Edit'
+
       table:
+        exporter: "Exporter"
         header: "Protocols"
         new_protocol: "New Protocol"
         new_study: "New Study"
@@ -184,8 +198,6 @@ en:
         id: "ID"
         pis: "PI(s)"
         requests: Requests
-        archive: "Archive"
-        unarchive: "Unarchive"
 
       documents:
         header: "Documents"
@@ -195,9 +207,21 @@ en:
         header: "Service Requests"
         view_consolidated: "View Consolidated Request"
         export_consolidated: "Export Consolidated Request"
-        add_services: "Add Services"
+        coverage_report: 'Coverage Analysis Report'
         consolidated_all: "All"
         consolidated_exclude_drafts: "Exclude Drafts"
+      milestones:
+        title: 'Milestones (Timeline)'
+        start_date: "Start Date"
+        end_date: "End Date"
+        recruitment_start: "Estimated Recruitment Start Date"
+        recruitment_end: "Estimated Recruitment End Date"
+        update_button: 'Update Milestones'
+        tooltips:
+          start_date: "Project/Study estimated start date (used by service providers to prioritize)"
+          end_date: "Project/Study estimated end date (used by service providers to prioritize)"
+          recruitment_start_date: "When your Project/Study is estimated to start recruiting participants"
+          recruitment_end_date: "When your Project/Study is estimated to stop recruiting participants"
     #####################
     # SERVICE CALENDARS #
     #####################
@@ -223,7 +247,7 @@ en:
     #  SERVICE REQUESTS  #
     ######################
     service_requests:
-      modify_request: "Modify Request"
+      modify_request: "Add / Modify Request"
       srid: "SRID"
       organization: "Organization"
       owner: "Owner"
@@ -234,6 +258,9 @@ en:
         view: "View"
         edit: "Edit"
         admin_edit: "Admin Edit"
+      additional_details:
+        header: "Form Functionality"
+        selectpicker: "Complete Form"
       view_ssr:
         documents:
           header: "Documents"
@@ -242,14 +269,14 @@ en:
           program_core: "Program/Core"
 
     ############################
-    #  STUDY LEVEL ACTIVITIES  #
+    #  Non-clinical Services #
     ############################
     study_level_activities:
-      add: "Add Study Level Activity"
-      edit: "Edit Study Level Activity"
-      created: "Study Level Activity Created!"
-      updated: "Study Level Activity Updated!"
-      destroyed: "Study Level Activity Destroyed!"
+      add: "Add Non-clinical Services"
+      edit: "Edit Non-clinical Services"
+      created: "Non-clinical Services Created!"
+      updated: "Non-clinical Services Updated!"
+      destroyed: "Non-clinical Services Destroyed!"
       table:
         service: "Service"
         quantity_requested: "Qty Requested"
@@ -270,7 +297,7 @@ en:
         edit: " Edit Activity"
         delete: " Delete Activity"
       details:
-        header: "Study Level Activity Details"
+        header: "Non-clinical Services Details"
         charge_code: "Charge Code"
         unit_quantity: "Units / Quantity"
         unit_type: "Unit Type"
@@ -309,6 +336,7 @@ en:
             send_to_epic: "Send to Epic"
             core_approvals: "Administrative Approvals"
             export_to_excel: "Export to Excel"
+            resend_surveys: "Resend Surveys"
             delete_request: "Delete Request"
           timeline:
             header: "Timeline"
@@ -318,11 +346,11 @@ en:
             contacted_date: "Requester Contacted Date"
 
         study_schedule:
-          header: "Study Schedule"
-          no_requests: "There are no per-patient/per-visit requests."
+          header: "Clinical Services"
+          no_requests: "There are no clinical services requested."
 
         study_level_activities:
-          header: "Study Level Activities"
+          header: "Non-clinical Services"
 
         documents:
           header: "Documents"

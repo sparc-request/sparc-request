@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -40,7 +40,7 @@ task :match_identity_with_professional_organization => :environment do
   # Task: to match Identity to Professional Organization.
   # There was not a concrete map on how to do this.
   # Match was based on partial word equality.
-  # First matched the departments (the lowest level), 
+  # First matched the departments (the lowest level),
   # then matched at the college level,
   # finally matched at the institution level
   @departments_that_need_review = []
@@ -58,7 +58,7 @@ task :match_identity_with_professional_organization => :environment do
   end
 
   # @departments_that_need_review are departments with no partial word matches.
-  # These were reviewed with Wenjun and she supplied the match for 
+  # These were reviewed with Wenjun and she supplied the match for
   # "pharmaceutical_and_biomedical_sciences", "orthopaedic_surgery", "pharmacy_and_clinical_sciences", "cell_biology_and_anatomy", "craniofacial_biology"
 
   @departments_that_need_review.delete("pharmaceutical_and_biomedical_sciences") ## Addressed, further down
@@ -69,7 +69,7 @@ task :match_identity_with_professional_organization => :environment do
 
   # These are the remaining departments that do not have matches.
   # Wenjun decided that in these cases, we match the college, and if the
-  # college doesn't match either, we match to the institution 
+  # college doesn't match either, we match to the institution
   puts "DEPARTMENTS THAT NEED REVIEW: "
   puts @departments_that_need_review.inspect
 
@@ -84,7 +84,7 @@ task :match_identity_with_professional_organization => :environment do
   one_department_match["urology"] = 62
 
   # the departments with more than one department match were sorted through
-  # and hard coded for appropriate match ("medicine", "radiology", "surgery", "urology") 
+  # and hard coded for appropriate match ("medicine", "radiology", "surgery", "urology")
   # the other departments with more than one match truly had two matches
   #("biochemistry_and_molecular_biology", "cell_and_molecular_pharmacology",
   # "pathology_and_laboratory_medicine", "microbiology_and_immunology", and "pharmaceutical_and_biomedical_sciences").  The departments with two matches are addressed
@@ -101,11 +101,12 @@ task :match_identity_with_professional_organization => :environment do
     unassigned_identities = Identity.all.where(professional_organization_id: nil)
     identities_with_key = unassigned_identities.where(department: key)
     identities_with_key.each do |identity_with_key|
-      identity_with_key.update_attribute(:professional_organization_id, value)
+      identity_with_key.assign_attributes({ professional_organization_id: value, audit_comment: "BY SCRIPT" }, without_protection: true)
+      identity_with_key.save
     end
   end
 
-  # There are departments with the same name, but under different colleges.  In this case, 
+  # There are departments with the same name, but under different colleges.  In this case,
   # the Identity is matched based on the college, but retains the department ID
   matching_department_and_college = { "biochemistry_and_molecular_biology" => ['graduate' => 16, 'medicine' => 40], "cell_and_molecular_pharmacology" => ['graduate' => 18, 'medicine' => 41],  "pathology_and_laboratory_medicine" => ['graduate' => 26, 'medicine' => 54], "microbiology_and_immunology" => ['graduate' => 23, 'medicine' => 46], "pharmaceutical_and_biomedical_sciences" => ['graduate' => 22, 'pharmacy' => 123]}
 
@@ -117,11 +118,14 @@ task :match_identity_with_professional_organization => :environment do
 
     identities_with_key.each do |identity_with_key|
       if identity_with_key.college == 'college_of_graduate_studies'
-        identity_with_key.update_attribute(:professional_organization_id, value.first['graduate'])
+        identity_with_key.assign_attributes({ professional_organization_id: value.first['graduate'], audit_comment: "BY SCRIPT" }, without_protection: true)
+        identity_with_key.save
       elsif identity_with_key.college == 'college_of_medicine'
-        identity_with_key.update_attribute(:professional_organization_id, value.first['medicine'])
+        identity_with_key.assign_attributes({ professional_organization_id: value.first['medicine'], audit_comment: "BY SCRIPT" }, without_protection: true)
+        identity_with_key.save
       elsif identity_with_key.college == 'college_of_pharmacy'
-        identity_with_key.update_attribute(:professional_organization_id, value.first['pharmacy'])
+        identity_with_key.assign_attributes({ professional_organization_id: value.first['pharmacy'], audit_comment: "BY SCRIPT" }, without_protection: true)
+        identity_with_key.save
       else
         # These identities need to be added to the unmatched report
         @identities_that_need_discussion << identity_with_key
@@ -155,7 +159,8 @@ task :match_identity_with_professional_organization => :environment do
     unassigned_identities = Identity.all.where(professional_organization_id: nil)
     identities_with_key = unassigned_identities.where(college: key) - @identities_that_need_discussion
     identities_with_key.each do |identity_with_key|
-      identity_with_key.update_attribute(:professional_organization_id, value)
+      identity_with_key.assign_attributes({ professional_organization_id: value, audit_comment: "BY SCRIPT" }, without_protection: true)
+      identity_with_key.save
     end
   end
   puts "END OF COLLEGE"
@@ -171,7 +176,8 @@ task :match_identity_with_professional_organization => :environment do
   # The only institution that matched with Professional Organization Institutions was 'medical_university_of_south_carolina'
   # Update Identities and their professional_organization_ids according to 'medical_university_of_south_carolina'
   identities_with_key.each do |identity_with_key|
-    identity_with_key.update_attribute(:professional_organization_id, 3)
+    identity_with_key.assign_attributes({ professional_organization_id: 3, audit_comment: "BY SCRIPT" }, without_protection: true)
+    identity_with_key.save
   end
   puts "END OF INSTITUTION"
   puts "Number of Unmatched Identities:"
@@ -180,16 +186,40 @@ task :match_identity_with_professional_organization => :environment do
   ### END INSTITUTION ###
 
   #### WENJUN MANUAL MATCHING ###
-  Identity.find(8045).update_attribute(:professional_organization_id, 4)
-  Identity.find(44254).update_attribute(:professional_organization_id, 4)
+  if identity_8045 = Identity.find_by(id: 8045)
+    identity_8045.assign_attributes({ professional_organization_id: 4, audit_comment: "BY SCRIPT" }, without_protection: true)
+    identity_8045.save
+  end
 
-  Identity.find(46501).update_attribute(:professional_organization_id, 16)
-  Identity.find(21330).update_attribute(:professional_organization_id, 18)
+  if identity_44254 = Identity.find_by(id: 44254)
+    identity_44254.assign_attributes({ professional_organization_id: 4, audit_comment: "BY SCRIPT" }, without_protection: true)
+    identity_44254.save
+  end
 
-  Identity.find(4958).update_attribute(:professional_organization_id, 23)
-  Identity.find(23505).update_attribute(:professional_organization_id, 23)
+  if identity_46501 = Identity.find_by(id: 46501)
+  identity_46501.assign_attributes({ professional_organization_id: 16, audit_comment: "BY SCRIPT" }, without_protection: true)
+  identity_46501.save
+  end
 
-  Identity.find(7787).update_attribute(:professional_organization_id, 26)
+  if identity_21330 = Identity.find_by(id: 21330)
+    identity_21330.assign_attributes({ professional_organization_id: 18, audit_comment: "BY SCRIPT" }, without_protection: true)
+    identity_21330.save
+  end
+
+  if identity_4958 = Identity.find_by(id: 4958)
+    identity_4958.assign_attributes({ professional_organization_id: 23, audit_comment: "BY SCRIPT" }, without_protection: true)
+    identity_4958.save
+  end
+
+  if identity_23505 = Identity.find_by(id: 23505)
+    identity_23505.assign_attributes({ professional_organization_id: 23, audit_comment: "BY SCRIPT" }, without_protection: true)
+    identity_23505.save
+  end
+
+  if identity_7787 = Identity.find_by(id: 7787)
+    identity_7787.assign_attributes({ professional_organization_id: 26, audit_comment: "BY SCRIPT" }, without_protection: true)
+    identity_7787.save
+  end
   ### END WENJUN MANUAL MATCHING ###
 
   ### CLEARING UNMATCHED IDENTITIES PER WENJUN ###
@@ -199,9 +229,9 @@ task :match_identity_with_professional_organization => :environment do
   unmatched_identities = ((identitites_with_no_professional_organization_id - identities_with_all_nil_values) - identities_with_all_empty_values)
 
   unmatched_identities.each do |unmatched_identity|
-    Identity.find(unmatched_identity.id).update_attribute(:institution, nil)
-    Identity.find(unmatched_identity.id).update_attribute(:college, nil)
-    Identity.find(unmatched_identity.id).update_attribute(:department, nil)
+    identity = Identity.find(unmatched_identity.id)
+    identity.assign_attributes({ institution: nil, college: nil, department: nil, audit_comment: "BY SCRIPT" }, without_protection: true)
+    identity.save
   end
 
   ### END CLEARING UNMATCHED IDENTITIES PER WENJUN ###

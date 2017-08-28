@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,8 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class SearchController < ApplicationController
-  before_filter :initialize_service_request
-  before_filter :authorize_identity
+  before_action :initialize_service_request
+  before_action :authorize_identity
 
   def services
     term              = params[:term].strip
@@ -41,7 +41,9 @@ class SearchController < ApplicationController
 
     results.map! { |s|
       {
-        parents:        s.parents.map(&:abbreviation).join(' | '),
+        institution:    s.institution.name,
+        inst_css_class: s.institution.css_class + '-text', 
+        parents:        ' | ' + s.parents.reject{ |p| p.type == 'Institution' }.map(&:abbreviation).join(' | '),
         label:          s.name,
         value:          s.id,
         description:    (s.description.nil? || s.description.blank?) ? t(:proper)[:catalog][:no_description] : s.description,

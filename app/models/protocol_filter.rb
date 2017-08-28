@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class ProtocolFilter < ActiveRecord::Base
+class ProtocolFilter < ApplicationRecord
 
   belongs_to :identity
 
@@ -26,21 +26,13 @@ class ProtocolFilter < ActiveRecord::Base
   serialize :with_status, Array
   serialize :with_owner, Array
 
-  attr_accessible :identity_id
-
-  attr_accessible :search_name
-  attr_accessible :show_archived
-  attr_accessible :admin_filter
-  attr_accessible :search_query
-  attr_accessible :with_organization
-  attr_accessible :with_status
-  attr_accessible :with_owner
-
   scope :latest_for_user, -> (identity_id, limit) {
     where(identity_id: identity_id).
     order(created_at: :desc).
     limit(limit)
   }
+
+  MAX_FILTERS = 15
 
   def href
     Rails.application.routes.url_helpers.
@@ -48,7 +40,7 @@ class ProtocolFilter < ActiveRecord::Base
       filterrific: {
         show_archived: (self.show_archived ? 1 : 0),
         admin_filter: self.admin_filter,
-        search_query: self.search_query,
+        search_query: eval(self.search_query),
         with_organization: self.with_organization,
         with_status: self.with_status,
         with_owner: self.with_owner,

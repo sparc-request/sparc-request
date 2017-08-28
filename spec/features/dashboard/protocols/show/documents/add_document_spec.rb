@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -87,7 +87,7 @@ RSpec.feature 'User wants to add a document', js: true do
   def give_user_admin_access_to_protocol
     @organization   = create(:organization)
     service_request = create(:service_request_without_validations, protocol: @protocol)
-                      create(:sub_service_request_without_validations, organization: @organization, service_request: service_request)
+                      create(:sub_service_request_without_validations, organization: @organization, service_request: service_request, protocol: @protocol)
                       create(:super_user, identity: logged_in_user, organization: @organization)
   end
 

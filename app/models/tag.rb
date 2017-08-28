@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,9 +18,18 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Tag < ActiveRecord::Base
+class Tag < ApplicationRecord
   audited
 
-  attr_accessible :name
-end
+  def self.to_hash
+    tags = {}
+    where.not(name: 'epic').each do |tag|
+      tags[tag.name] = I18n.t(:tags)[tag.ymlized_name] ? I18n.t(:tags)[tag.ymlized_name] : tag.name.humanize
+    end
+    tags
+  end
 
+  def ymlized_name
+    self.name.gsub(" ","_").to_sym
+  end
+end

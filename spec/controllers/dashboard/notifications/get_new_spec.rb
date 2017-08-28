@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -39,7 +39,7 @@ RSpec.describe Dashboard::NotificationsController do
 
         @logged_in_user = build_stubbed(:identity)
         log_in_dashboard_identity(obj: @logged_in_user)
-        xhr :get, :new, sub_service_request_id: @sub_service_request.id, identity_id: @recipient.id
+        get :new, params: { sub_service_request_id: @sub_service_request.id, identity_id: @recipient.id }, xhr: true
       end
 
       it "should set @sub_service_request_id to params[:sub_service_request_id]" do
@@ -48,19 +48,6 @@ RSpec.describe Dashboard::NotificationsController do
 
       it "should set @sub_service_request from params[:sub_service_request_id]" do
         expect(assigns(:sub_service_request)).to eq(@sub_service_request)
-      end
-
-      it "should build a new Notification associated with SubServiceRequest" do
-        expect(assigns(:notification)).to eq(@new_notification)
-      end
-
-      it "should build a new Message to Identity from params[:identity_id]" do
-        expect(@new_notification.messages).to have_received(:new).
-          with(to: @recipient.id.to_s)
-      end
-
-      it "should assign new Message to @message" do
-        expect(assigns(:message)).to eq(@new_message)
       end
 
       it { is_expected.to respond_with :ok }
@@ -80,20 +67,11 @@ RSpec.describe Dashboard::NotificationsController do
 
         @logged_in_user = build_stubbed(:identity)
         log_in_dashboard_identity(obj: @logged_in_user)
-        xhr :get, :new, identity_id: @recipient.id
+        get :new, params: { identity_id: @recipient.id }, xhr: true
       end
 
       it "should build a new Notification" do
         expect(assigns(:notification)).to eq(@new_notification)
-      end
-
-      it "should build a new Message to Identity from params[:identity_id]" do
-        expect(@new_notification.messages).to have_received(:new).
-          with(to: @recipient.id.to_s)
-      end
-
-      it "should assign new Message to @message" do
-        expect(assigns(:message)).to eq(@new_message)
       end
 
       it { is_expected.to respond_with :ok }
@@ -115,7 +93,7 @@ RSpec.describe Dashboard::NotificationsController do
           and_return(@new_message)
 
         log_in_dashboard_identity(obj: @logged_in_user)
-        xhr :get, :new, identity_id: @logged_in_user.id
+        get :new, params: { identity_id: @logged_in_user.id }, xhr: true
       end
 
       it "should add an error to new Notification" do

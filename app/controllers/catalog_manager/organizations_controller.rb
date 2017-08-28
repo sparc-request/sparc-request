@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -34,49 +34,66 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
   def update
     @organization = Organization.find(params[:id])
-    set_org_tags
-    update_organization
-    save_pricing_setups
+    updater = OrganizationUpdater.new(@attributes, @organization, params)
+    @attributes = updater.set_org_tags
+    show_success = updater.update_organization
+    updater.save_pricing_setups
     @organization.setup_available_statuses
     @entity = @organization
+    flash_update(show_success)
     render 'catalog_manager/organizations/update'
   end
 
   private
 
-  def update_organization
-    @attributes.delete(:id)
-    name_change = @attributes[:name] != @organization.name || @attributes[:abbreviation] != @organization.abbreviation
-    if @organization.update_attributes(@attributes)
-      @organization.update_ssr_org_name if name_change
-      @organization.update_descendants_availability(@attributes[:is_available])
+  def organization_params(type)
+    params.require(type).permit(:name,
+      :order,
+      :css_class,
+      :description,
+      :parent_id,
+      :abbreviation,
+      :ack_language,
+      :process_ssrs,
+      :is_available,
+      { tag_list:  [] },
+      subsidy_map_attributes: [:organization_id,
+        :max_dollar_cap,
+        :max_percentage,
+        :default_percentage,
+        :instructions],
+      pricing_setups_attributes: [:organization_id,
+        :display_date,
+        :effective_date,
+        :charge_master,
+        :federal,
+        :corporate,
+        :other,
+        :member,
+        :college_rate_type,
+        :federal_rate_type,
+        :foundation_rate_type,
+        :industry_rate_type,
+        :investigator_rate_type,
+        :internal_rate_type,
+        :unfunded_rate_type],
+      submission_emails_attributes: [:organization_id, :email],
+      available_statuses_attributes: [:organization_id,
+        :status,
+        :new,
+        :position,
+        :_destroy],
+      editable_statuses_attributes: [:organization_id,
+        :status,
+        :new,
+        :_destroy])
+  end
+
+  def flash_update(show_success)
+    if show_success
       flash[:notice] = "#{@organization.name} saved correctly."
     else
       flash[:alert] = "Failed to update #{@organization.name}."
-    end
-  end
-
-  def save_pricing_setups
-    if params[:pricing_setups] && ['Program', 'Provider'].include?(@organization.type)
-      params[:pricing_setups].each do |ps|
-        if ps[1]['id'].blank?
-          ps[1].delete(:id)
-          ps[1].delete(:newly_created)
-          @organization.pricing_setups.build(ps[1])
-        else
-          # @organization.pricing_setups.find(ps[1]['id']).update_attributes(ps[1])
-          ps_id = ps[1]['id']
-          ps[1].delete(:id)
-          @organization.pricing_setups.find(ps_id).update_attributes(ps[1])
-        end
-        @organization.save
-      end
-    end
-  end
-
-  def set_org_tags
-    unless @attributes[:tag_list] || @organization.type == 'Institution'
-      @attributes[:tag_list] = ""
     end
   end
 end

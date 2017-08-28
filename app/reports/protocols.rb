@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -43,38 +43,15 @@ class ProtocolsReport < ReportingModule
     attrs = {}
 
     attrs["Protocol ID"] = "service_request.try(:protocol).try(:id)"
+    attrs["Research Master ID"] = "service_request.try(:protocol).try(:research_master_id)"
     attrs["Protocol Short Title"] = "service_request.try(:protocol).try(:short_title)"
     attrs["Protocol Title"] = "service_request.try(:protocol).try(:title)"
-
-    if params[:institution_id]
-      attrs[Institution] = [params[:institution_id], :abbreviation]
-    else
-      attrs["Institution"] = "org_tree.select{|org| org.type == 'Institution'}.first.try(:abbreviation)"
-    end
-
-    if params[:provider_id]
-      attrs[Provider] = [params[:provider_id], :abbreviation]
-    else
-      attrs["Provider"] = "org_tree.select{|org| org.type == 'Provider'}.first.try(:abbreviation)"
-    end
-
-    if params[:program_id]
-      attrs[Program] = [params[:program_id], :abbreviation]
-    else
-      attrs["Program"] = "org_tree.select{|org| org.type == 'Program'}.first.try(:abbreviation)"
-    end
-
-    if params[:core_id]
-      attrs[Core] = [params[:core_id], :abbreviation]
-    else
-      attrs["Core"] = "org_tree.select{|org| org.type == 'Core'}.first.try(:abbreviation)"
-    end
-
+    attrs["Number of Requests"] = "service_request.try(:protocol).try(:sub_service_requests).try(:count)"
     attrs["Funding Source"] = "service_request.try(:protocol).try(:funding_source)"
     attrs["Potential Funding Source"] = "service_request.try(:protocol).try(:potential_funding_source)"
     attrs["Sponsor Name"] = "service_request.try(:protocol).try(:sponsor_name)"
     attrs["Financial Account"] = "service_request.try(:protocol).try(:udak_project_number).try{prepend(' ')}"
-    attrs["Study Phase"] = "service_request.try(:protocol).try(:study_phase)"
+    attrs["Study Phase"] = "service_request.try(:protocol).try{study_phases.map(&:phase).join(', ')}"
 
     attrs["NCT #"] = "service_request.try(:protocol).try(:human_subjects_info).try(:nct_number).try{prepend(' ')}"
     attrs["HR #"] = "service_request.try(:protocol).try(:human_subjects_info).try(:hr_number).try{prepend(' ')}"
@@ -82,11 +59,13 @@ class ProtocolsReport < ReportingModule
     attrs["IRB of Record"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_of_record)"
     attrs["IRB Expiration Date"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_expiration_date)"
 
-    attrs["Primary PI Last Name"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:last_name)"
-    attrs["Primary PI First Name"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:first_name)"
-    attrs["Primary PI Email"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:email)"
-    attrs["Primary PI College"] = ["service_request.try(:protocol).try(:primary_principal_investigator).try(:college)", COLLEGES.invert] # we invert since our hash is setup {"Bio Medical" => "bio_med"} for some crazy reason
-    attrs["Primary PI Department"] = ["service_request.try(:protocol).try(:primary_principal_investigator).try(:department)", DEPARTMENTS.invert]
+    attrs["Primary PI Last Name"]   = "service_request.try(:protocol).try(:primary_principal_investigator).try(:last_name)"
+    attrs["Primary PI First Name"]  = "service_request.try(:protocol).try(:primary_principal_investigator).try(:first_name)"
+    attrs["Primary PI Email"]       = "service_request.try(:protocol).try(:primary_principal_investigator).try(:email)"
+    attrs["Primary PI Institution"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:professional_org_lookup, 'institution')"
+    attrs["Primary PI College"]     = "service_request.try(:protocol).try(:primary_principal_investigator).try(:professional_org_lookup, 'college')"
+    attrs["Primary PI Department"]  = "service_request.try(:protocol).try(:primary_principal_investigator).try(:professional_org_lookup, 'department')"
+    attrs["Primary PI Division"]    = "service_request.try(:protocol).try(:primary_principal_investigator).try(:professional_org_lookup, 'division')"
 
     attrs["Primary Coordinator(s)"] = "service_request.try(:protocol).try(:coordinators).try(:map){|x| x.full_name}.try(:join, ', ')"
     attrs["Primary Coordinator Email(s)"] = "service_request.try(:protocol).try(:coordinator_emails)"
@@ -159,6 +138,7 @@ class ProtocolsReport < ReportingModule
   end
 
   def group
+    "protocol_id"
   end
 
   def order

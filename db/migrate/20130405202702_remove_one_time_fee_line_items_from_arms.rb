@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class RemoveOneTimeFeeLineItemsFromArms < ActiveRecord::Migration
+class RemoveOneTimeFeeLineItemsFromArms < ActiveRecord::Migration[4.2]
   class ServiceRequest < ActiveRecord::Base
     has_many :arms
     has_many :line_items
@@ -27,12 +27,8 @@ class RemoveOneTimeFeeLineItemsFromArms < ActiveRecord::Migration
     belongs_to :line_item
     belongs_to :arm
     has_many :visits
-    attr_accessible :arm_id, :subject_count
   end
   class Arm < ActiveRecord::Base
-    attr_accessible :name
-    attr_accessible :visit_count
-    attr_accessible :subject_count
     has_many :visit_groupings
   end
 

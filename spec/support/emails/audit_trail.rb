@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -53,4 +53,22 @@ end
 def deleted_and_created_line_item_audit_trail(service_request, service3, identity)
   deleted_line_item_audit_trail(service_request, service3, identity)
   created_line_item_audit_trail(service_request, service3, identity)
+end
+
+def setup_authorized_user_audit_report
+  audit_report = @service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now.utc)
+  audit_report = audit_report[:line_items].values.flatten
+  filtered_audit_report = { :line_items => [] }
+  audit_report.group_by{ |audit| audit[:audited_changes]['service_id'] }.each do |service_id, audits|
+    service_actions_since_previous_submission = audits.sort_by(&:created_at).map(&:action)
+    if service_actions_since_previous_submission.size >= 2 && service_actions_since_previous_submission.first == 'create' && service_actions_since_previous_submission.last == 'create'
+      filtered_audit_report[:line_items] << audits.last
+    elsif service_actions_since_previous_submission.size >= 2 && service_actions_since_previous_submission.first == 'create' && service_actions_since_previous_submission.last == 'destroy'
+    else
+      audits.each do |audit|
+        filtered_audit_report[:line_items] << audit
+      end
+    end
+  end
+  filtered_audit_report[:line_items].present? ? filtered_audit_report : nil
 end

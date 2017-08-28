@@ -1,4 +1,4 @@
-# Copyright © 2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,7 +21,11 @@
 require 'rails_helper'
 
 RSpec.describe "User submitting a ServiceRequest", js: true do
-  # TODO excerise login process instead of using fake_login_for_each_test
+  def click_add_service_for(service)
+    page.find("button[data-id='#{service.id}']").click
+    wait_for_javascript_to_finish
+  end
+
   let!(:user) do
     create(:identity,
            last_name: "Doe",
@@ -34,126 +38,256 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
   end
 
   it "is happy" do
-    # Organization structure and Services:
-    institution = create(:organization, type: "Institution")
+    stub_const("SYSTEM_SATISFACTION_SURVEY", true)
 
-    provider_non_split = create(:organization, :with_pricing_setup, type: "Provider", parent_id: institution.id)
-    provider_split = create(:organization, :with_pricing_setup, type: "Provider", process_ssrs: true, parent_id: institution.id)
+    #######################################
+    # Organization structure and Services #
+    #######################################
+    institution         = create(:organization, type: 'Institution', name: 'Institution', abbreviation: 'Instant')
 
-    program_split = create(:organization, type: "Program", process_ssrs: true, parent_id: provider_non_split.id)
-    program_non_split = create(:organization, type: "Program", parent_id: provider_split.id)
+    provider_non_split  = create(:organization, :with_pricing_setup, type: 'Provider', name: 'Provider Non Split', abbreviation: 'Prov No Splt', parent: institution)
+    provider_split      = create(:organization, :with_pricing_setup, type: 'Provider', name: 'Provider Split', abbreviation: 'Prov Splt', process_ssrs: true, parent: institution)
 
-    core1 = create(:organization, type: "Core", parent_id: program_split.id)
-    core2 = create(:organization, type: "Core", parent_id: program_non_split.id)
+    program_non_split   = create(:organization, type: 'Program', name: 'Program Non Split', abbreviation: 'Prog No Splt', parent: provider_split)
+    program_split       = create(:organization, type: 'Program', name: 'Program Split', abbreviation: 'Prog Splt', process_ssrs: true, parent: provider_non_split)
 
-    otf_service_core_1 = create(:one_time_fee_service, :with_pricing_map, organization_id: core1.id)
-    pppv_service_core_1 = create(:per_patient_per_visit_service, :with_pricing_map, organization_id: core1.id)
-    otf_service_core_2 = create(:one_time_fee_service, :with_pricing_map, organization_id: core2.id)
-    pppv_service_core_2 = create(:per_patient_per_visit_service, :with_pricing_map, organization_id: core2.id)
+    core1               = create(:organization, type: 'Core', name: 'Core 1', abbreviation: 'Core1', parent: program_split)
+    core2               = create(:organization, type: 'Core', name: 'Core 2', abbreviation: 'Core2', parent: program_non_split)
 
-    # Visit catalog page
+    otf_service_core_1  = create(:one_time_fee_service, :with_pricing_map, name: 'Otf Service Core 1', abbreviation: 'Otf Serv Core1', organization: core1)
+    pppv_service_core_1 = create(:per_patient_per_visit_service, :with_pricing_map, name: 'PPPV Service Core 1', abbreviation: 'PPPV Serv Core1', organization: core1)
+    otf_service_core_2  = create(:one_time_fee_service, :with_pricing_map, name: 'Otf Service Core 2', abbreviation: 'Otf Serv Core2', organization: core2)
+    pppv_service_core_2 = create(:per_patient_per_visit_service, :with_pricing_map, name: 'PPPV Service Core 1', abbreviation: 'PPPV Serv Core1', organization: core2)
+
+
+
+    ####################
+    # Survey structure #
+    ####################
+    survey      = create(:survey, :active, title: 'System Satisfaction Survey', access_code: 'system-satisfaction-survey')
+    section     = create(:section, survey: survey)
+    question_1  = create(:question, question_type: 'likert', content: '1) How satisfied are you with using SPARCRequest today?', section: section)
+    option_1    = create(:option, content: 'Very Dissatisfied', question: question_1)
+    option_2    = create(:option, content: 'Dissatisfied', question: question_1)
+    option_3    = create(:option, content: 'Neutral', question: question_1)
+    option_4    = create(:option, content: 'Satisfied', question: question_1)
+    option_5    = create(:option, content: 'Very Satisfied', question: question_1)
+    question_2  = create(:question, question_type: 'textarea', content: '2) Please leave your feedback and/or suggestions for future improvement.', section: section)
+
+
+
+    ##########
+    # Step 1 #
+    ##########
     visit "/"
+    wait_for_javascript_to_finish
 
-    # Log in:
-    click_link("Login / Sign Up")
-    expect(page).to have_css("a", text: /Outside User Login/)
+    expect(page).to have_selector('.step-header', text: 'STEP 1')
+
+
+
+    ##########
+    # Log in #
+    ##########
+    click_link 'Login / Sign Up'
+    wait_for_javascript_to_finish
+    
+    expect(page).to have_selector("a", text: /Outside User Login/)
     find("a", text: /Outside User Login/).click
+    wait_for_javascript_to_finish
+    
     fill_in "Login", with: "johnd"
     fill_in "Password", with: "p4ssword"
-    find("input[value='Login']").click
-
-    # Add Core 1 Services
-    expect(page).to have_css("span", text: provider_non_split.name)
-    find("span", text: provider_non_split.name).click
-    find("span", text: program_split.name).click
-    find("span", text: core1.name).click
-    expect(page).to have_content(otf_service_core_1.name)
-    expect(page).to have_content(pppv_service_core_1.name)
-    add_service_buttons = find_all("button", text: /Add/)
-    add_service_buttons[0].click
-    expect(page).to have_css("a", text: /Yes/)
-    find("a", text: /Yes/).click
-    add_service_buttons[1].click
-    expect(page).to have_css("a", text: /Yes/)
-    find("a", text: /Yes/).click
-
-    # Add Core 2 Services
-    find("span", text: provider_split.name).click
-    find("span", text: program_non_split.name).click
-    find("span", text: core2.name).click
-    expect(page).to have_content(otf_service_core_2.name)
-    expect(page).to have_content(pppv_service_core_2.name)
-    add_service_buttons = find_all("button", text: /Add/)
-    add_service_buttons.each(&:click)
-
-    # Should have all four Services in the cart.
-    within(".shopping-cart") do
-      expect(page).to have_content(otf_service_core_1.abbreviation)
-      expect(page).to have_content(pppv_service_core_1.abbreviation)
-      expect(page).to have_content(otf_service_core_2.abbreviation)
-      expect(page).to have_content(pppv_service_core_2.abbreviation)
-    end
+    click_button 'Login'
     wait_for_javascript_to_finish
-    find("a", text: /Continue/).click
 
-    # Step 1
-    expect(page).to have_link("New Project")
+
+
+    #######################
+    # Add Core 1 Services #
+    #######################
+    expect(page).to have_selector("span", text: provider_non_split.name)
+    
+    find("span", text: provider_non_split.name).click
+    wait_for_javascript_to_finish
+    
+    find("span", text: program_split.name).click
+    wait_for_javascript_to_finish
+    
+    find("span", text: core1.name).click
+    wait_for_javascript_to_finish
+    
+    expect(page).to have_selector('a.service', text: otf_service_core_1.name, visible: true)
+    expect(page).to have_selector('a.service', text: pppv_service_core_1.name, visible: true)
+    
+    click_add_service_for(otf_service_core_1)
+    find("a", text: /Yes/).click
+    wait_for_javascript_to_finish
+
+    within(".shopping-cart") do
+      expect(page).to have_selector('.service', text: otf_service_core_1.abbreviation, visible: true)
+    end
+    
+    click_add_service_for(pppv_service_core_1)
+    
+    within(".shopping-cart") do
+      expect(page).to have_selector('.service', text: pppv_service_core_1.abbreviation, visible: true)
+    end
+
+
+
+    #######################
+    # Add Core 2 Services #
+    #######################
+    expect(page).to have_selector("span", text: provider_split.name)
+
+    find("span", text: provider_split.name).click
+    wait_for_javascript_to_finish
+    
+    find("span", text: program_non_split.name).click
+    wait_for_javascript_to_finish
+    
+    find("span", text: core2.name).click
+    wait_for_javascript_to_finish
+    
+    expect(page).to have_selector('a.service', text: otf_service_core_2.name, visible: true)
+    expect(page).to have_selector('a.service', text: pppv_service_core_2.name, visible: true)
+    
+    click_add_service_for(otf_service_core_2)
+    
+    within(".shopping-cart") do
+      expect(page).to have_selector('.service', text: otf_service_core_2.abbreviation, visible: true)
+    end
+    
+    click_add_service_for(pppv_service_core_2)
+    
+    within(".shopping-cart") do
+      expect(page).to have_selector('.service', text: pppv_service_core_2.abbreviation, visible: true)
+    end
+
+    click_link 'Continue'
+    wait_for_javascript_to_finish
+
+
+
+    ##########
+    # Step 2 #
+    ##########
+    expect(page).to have_selector('.step-header', text: 'STEP 2')
+
     click_link("New Project")
-    fill_in("Short Title:*", with: "My Protocol")
-    fill_in("Project Title:*", with: "My Protocol is Very Important - #12345")
+    wait_for_javascript_to_finish
+    
+    fill_in("Short Title:", with: "My Protocol")
+    fill_in("Project Title:", with: "My Protocol is Very Important - #12345")
+    
     click_button("Select a Funding Status")
     find("li", text: "Funded").click
     expect(page).to have_button("Select a Funding Source")
     click_button("Select a Funding Source")
     find("li", text: "Federal").click
-    fill_in "Primary PI: *", with: "john"
+    
+    fill_in "Primary PI:", with: "john"
 
-    expect(page).to have_css("div.tt-selectable", text: /johnd@musc.edu/)
+    expect(page).to have_selector("div.tt-selectable", text: /johnd@musc.edu/)
     first("div.tt-selectable", text: /johnd@musc.edu/).click
-    find("input[value='Save']").click
+    wait_for_javascript_to_finish
+    
+    click_button 'Save'
+    wait_for_javascript_to_finish
 
-    expect(page).to have_css("a", text: /Save and Continue/)
-    find("a", text: /Save and Continue/).click
+    click_link 'Save and Continue'
+    wait_for_javascript_to_finish
 
-    # Step 2A
-    expect(page).to have_css('#project_start_date')
+
+
+    ##########
+    # Step 3 #
+    ##########
+    expect(page).to have_selector('.step-header', text: 'STEP 3')
+    
     find('#project_start_date').click
     within(".bootstrap-datetimepicker-widget") do
       first("td.day", text: "1").click
     end
+    
     find('#project_end_date').click
     within(".bootstrap-datetimepicker-widget") do
       first("td.day", text: "1").click
     end
-    find("a", text: /Save and Continue/).click
 
-    # Step 2B
-    # Set visit day
-    expect(page).to have_css("a", text: "(?)")
+    click_link 'Save and Continue'
+    wait_for_javascript_to_finish
+
+
+
+    ##########
+    # Step 4 #
+    ##########
+    expect(page).to have_selector('.step-header', text: 'STEP 4')
+    
     find("a", text: "(?)").click
-    expect(page).to have_css('.editable-input input')
-    find('.editable-input input').set('1')
-    find('.editable-buttons .glyphicon-ok').click
-    find("a", text: /Save and Continue/).click
+    wait_for_javascript_to_finish
+    
+    fill_in 'visit_group_day', with: 1
+    
+    click_button 'Save changes'
+    wait_for_javascript_to_finish
 
-    # Step 3
-    expect(page).to have_css("a", text: /Save and Continue/)
-    find("a", text: /Save and Continue/).click
+    click_link 'Save and Continue'
+    wait_for_javascript_to_finish
 
-    # Step 4
-    expect(page).to have_css("a", text: /Submit Request/)
-    find("a", text: /Submit Request/).click
+    
 
-    # Don't take survey
-    # TODO excerise taking survey and submitting it.
-    expect(page).to have_css(".modal-dialog a", text: /No/)
-    find(".modal-dialog a", text: /No/).click
+    ##########
+    # Step 5 #
+    ##########
+    expect(page).to have_selector('.step-header', text: 'STEP 5')
 
-    # Step 5
-    expect(page).to have_css("a", text: /Go to Dashboard/)
-    find("a", text: /Go to Dashboard/).click
+    click_link 'Save and Continue'
+    wait_for_javascript_to_finish
 
-    # Dashboard
+    
+
+    ##########
+    # Step 6 #
+    ##########
+    expect(page).to have_selector('.step-header', text: 'STEP 6')
+
+    click_link 'Submit Request'
+    wait_for_javascript_to_finish
+
+
+
+    ##########
+    # Survey #
+    ##########
+    within '.modal-dialog' do
+      find('.yes-button').click
+      wait_for_javascript_to_finish
+
+      find('#response_question_responses_attributes_0_content_very_satisfied').click
+      fill_in 'response_question_responses_attributes_1_content', with: 'I\'m so happy!'
+
+      click_button 'Submit'
+      wait_for_javascript_to_finish
+    end
+
+    
+
+    ##########
+    # Step 5 #
+    ##########
+    expect(page).to have_selector('.step-header', text: 'Confirmation')
+
+    click_link 'Go to Dashboard'
+    wait_for_javascript_to_finish
+
+    
+
+    #############
+    # Dashboard #
+    #############
     expect(page).to have_content("My Protocol")
   end
 end

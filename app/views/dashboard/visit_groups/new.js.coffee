@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,4 +21,3 @@
 $("#modal_place").html("<%= escape_javascript(render( 'dashboard/visit_groups/add_visit_form', protocol: @protocol, visit_group: @visit_group, arm: @arm, schedule_tab: @schedule_tab, current_page: @current_page, service_request: @service_request, sub_service_request: @sub_service_request )) %>");
 $("#modal_place").modal 'show'
 $(".selectpicker").selectpicker()
-set_required_fields()

@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -36,50 +36,24 @@ class ServiceCalendarsController < ApplicationController
   respond_to :html, :js
   layout false
 
-  before_filter :initialize_service_request,      if: Proc.new{ params[:portal] != 'true' }
-  before_filter :authorize_identity,              if: Proc.new { params[:portal] != 'true' }
-  before_filter :authorize_dashboard_access,      if: Proc.new { params[:portal] == 'true' }
-
-  def update
-    visit         = Visit.find(params[:visit_id])
-    @arm          = Arm.find(params[:arm_id])
-    @tab          = params[:tab]
-    @merged       = params[:merged] == 'true'
-    @portal       = params[:portal] == 'true'
-    @review       = params[:review] == 'true'
-    @admin        = params[:admin] == 'true'
-    @consolidated = false
-    @pages        = eval(params[:pages])
-    @sub_service_request = visit.line_items_visit.sub_service_request if @admin
-    @service_request = visit.line_items_visit.sub_service_request.service_request
-
-    visit.line_items_visit.sub_service_request.set_to_draft(@admin)
-
-    if params[:checked] == 'true'
-      unit_minimum = visit.line_items_visit.line_item.service.displayed_pricing_map.unit_minimum
-
-      visit.update_attributes(
-        quantity: unit_minimum,
-        research_billing_qty: unit_minimum
-      )
-    else
-      visit.update_attributes(
-        quantity: 0,
-        research_billing_qty: 0,
-        insurance_billing_qty: 0,
-        effort_billing_qty: 0
-      )
-    end
-  end
+  before_action :initialize_service_request, unless: :in_dashboard?
+  before_action :authorize_identity,         unless: :in_dashboard?
+  before_action :authorize_dashboard_access, if: :in_dashboard?
 
   def table
+    @scroll_true  = params[:scroll].present? && params[:scroll] == 'true'
     @tab          = params[:tab]
     @review       = params[:review] == 'true'
     @portal       = params[:portal] == 'true'
-    @admin        = @portal && @sub_service_request.present?
+
+    if params[:admin]
+      @admin = params[:admin] == 'true'
+    else
+      @admin = @portal && @sub_service_request.present?
+    end
+
     @merged       = false
     @consolidated = false
-
     setup_calendar_pages
 
     respond_to do |format|
@@ -89,13 +63,14 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def merged_calendar
-    @tab          = params[:tab]
-    @review       = params[:review] == 'true'
-    @portal       = params[:portal] == 'true'
-    @admin        = @portal && @sub_service_request.present?
-    @merged       = true
-    @consolidated = false
-
+    @tab              = params[:tab]
+    @review           = params[:review] == 'true'
+    @portal           = params[:portal] == 'true'
+    @admin            = @portal && @sub_service_request.present?
+    @merged           = true
+    @consolidated     = false
+    @statuses_hidden  = []
+    @scroll_true        = params[:scroll].present? && params[:scroll] == 'true'
     setup_calendar_pages
 
     respond_to do |format|
@@ -105,14 +80,16 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def view_full_calendar
-    @tab                = 'calendar'
-    @review             = false
-    @portal             = true
-    @admin              = false
-    @merged             = true
-    @consolidated       = true
-    @service_request    = @protocol.any_service_requests_to_display?
-    @statuses_hidden = params[:statuses_hidden]
+    @tab                   = 'calendar'
+    @review                = false
+    @portal                = true
+    @admin                 = false
+    @merged                = true
+    @consolidated          = true
+    @service_request       = @protocol.any_service_requests_to_display?
+    @statuses_hidden       = params[:statuses_hidden]
+    @scroll_true           = params[:scroll].present? && params[:scroll] == 'true'
+    @visit_dropdown_change = params[:pages].present?
     setup_calendar_pages
 
     respond_to do |format|
@@ -121,124 +98,134 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def show_move_visits
-    @arm = Arm.find( params[:arm_id] )
-    @visit_group = params[:visit_group_id] ? @arm.visit_groups.find(params[:visit_group_id]) : @arm.visit_groups.first
+    @tab                  = params[:tab]
+    @sub_service_request  = params[:sub_service_request]
+    @page                 = params[:page]
+    @pages                = eval(params[:pages]) rescue {}
+    @review               = params[:review]
+    @portal               = params[:portal]
+    @admin                = params[:admin]
+    @consolidated         = params[:consolidated]
+    @merged               = params[:merged]
+    @statuses_hidden      = params[:statuses_hidden]
+    @arm                  = Arm.find( params[:arm_id] )
+    @visit_group          = params[:visit_group_id] ? @arm.visit_groups.find(params[:visit_group_id]) : @arm.visit_groups.first
+
+    respond_to do |format|
+      format.js
+    end
   end
 
   def move_visit_position
-    arm = Arm.find( params[:arm_id] )
-    vg  = arm.visit_groups.find( params[:visit_group].to_i )
+    @tab                  = params[:tab]
+    @sub_service_request  = params[:sub_service_request]
+    @page                 = params[:page]
+    @pages                = eval(params[:pages]) rescue {}
+    @review               = params[:review] == "true"
+    @portal               = params[:portal] == "true"
+    @admin                = params[:admin] == "true"
+    @consolidated         = params[:consolidated] == "true"
+    @merged               = params[:merged] == "true"
+    @statuses_hidden      = params[:statuses_hidden]
+    @arm                  = Arm.find( params[:arm_id] )
+    @visit_group          = VisitGroup.find(params[:visit_group].to_i)
+    @visit_groups         = @arm.visit_groups.page(@page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] } })
 
-    vg.insert_at( params[:position].to_i - 1 )
+    new_position = params[:position].to_i
+
+    if @visit_group.position < new_position
+      @visit_group.insert_at( new_position - 1 )
+    else
+      @visit_group.insert_at( new_position )
+    end
+
+    respond_to do |format|
+      format.js
+    end
   end
 
   def toggle_calendar_row
-    @line_items_visit  = LineItemsVisit.find(params[:line_items_visit_id])
-    @service           = @line_items_visit.line_item.service if params[:check]
-    @portal            = params[:portal] == 'true'
+    @admin              = params[:admin] == 'true'
+    @tab                = 'template'
+    @page               = params[:page]
+    @line_items_visit   = LineItemsVisit.eager_load(sub_service_request: { organization: { parent: { parent: :parent } } }, line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]]]).find(params[:line_items_visit_id])
+    @arm                = @line_items_visit.arm
+    @line_items_visits  = @arm.line_items_visits.eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol])
+    @visit_groups       = @arm.visit_groups.paginate(page: @page.to_i, per_page: VisitGroup.per_page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol] } })
+    @visits             = @line_items_visit.ordered_visits.eager_load(service: :pricing_maps)
+    @locked             = !@admin && !@line_items_visit.sub_service_request.can_be_edited?
 
-    return unless @line_items_visit.sub_service_request.can_be_edited? || @portal
+    if params[:check] && !@locked
+      unit_minimum = @line_items_visit.line_item.service.displayed_pricing_map.unit_minimum
 
-    @line_items_visit.visits.each do |visit|
-      if params[:check]
-        visit.update_attributes(quantity: @service.displayed_pricing_map.unit_minimum, research_billing_qty: @service.displayed_pricing_map.unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0)
-      elsif params[:uncheck]
-        visit.update_attributes(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0)
-      end
+      @visits.update_all(quantity: unit_minimum, research_billing_qty: unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0)
+    elsif params[:uncheck] && !@locked
+      @visits.update_all(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0)
     end
 
     # Update the sub service request only if we are not in dashboard; admin's actions should not affect the status
-    unless @portal
-      sub_service_request = @line_items_visit.line_item.sub_service_request
-      sub_service_request.update_attribute(:status, "draft")
+    unless @admin || @locked
+      @line_items_visit.sub_service_request.update_attribute(:status, "draft")
       @service_request.update_attribute(:status, "draft")
     end
 
-    render partial: 'update_service_calendar'
+    respond_to do |format|
+      format.js
+    end
   end
 
   def toggle_calendar_column
-    column_id  = params[:column_id].to_i
-    @arm       = Arm.find(params[:arm_id])
-    @portal    = params[:portal] == 'true'
+    @admin              = params[:admin] == 'true'
+    @tab                = 'template'
+    @page               = params[:page]
+    @visit_group        = VisitGroup.find(params[:visit_group_id])
+    @arm                = @visit_group.arm
+    @line_items_visits  = @arm.line_items_visits.eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol])
+    @visit_groups       = @arm.visit_groups.paginate(page: @page.to_i, per_page: VisitGroup.per_page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol] } })
 
-    @service_request.service_list(false).each do |_key, value|
-      next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name] || @sub_service_request.can_be_edited?
-
-      @arm.line_items_visits.each do |liv|
-        next if value[:line_items].exclude?(liv.line_item) || (!@portal && (!liv.line_item.sub_service_request.can_be_edited? || liv.line_item.sub_service_request.is_complete?))
-        visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
-        if params[:check]
-          visit.update_attributes quantity: liv.line_item.service.displayed_pricing_map.unit_minimum, research_billing_qty: liv.line_item.service.displayed_pricing_map.unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0
-        elsif params[:uncheck]
-          visit.update_attributes quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0
-        end
+    editable_ssrs =
+      if @sub_service_request
+        SubServiceRequest.where(id: @sub_service_request)
+      else
+        SubServiceRequest.where(id: @arm.sub_service_requests.eager_load(organization: { parent: { parent: :parent } }).select{ |ssr| ssr.can_be_edited? })
       end
+
+    @visits = @visit_group.visits.joins(:sub_service_request).where(sub_service_requests: { id: editable_ssrs }).eager_load(service: :pricing_maps, line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol] })
+
+    if params[:check]
+      @visits.each do |v|
+        unit_minimum = v.service.displayed_pricing_map.unit_minimum
+        
+        v.update_attributes(quantity: unit_minimum, research_billing_qty: unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0)
+      end
+    elsif params[:uncheck]
+      @visits.update_all(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0)
     end
 
     # Update the sub service request only if we are not in dashboard; admin's actions should not affect the status
-    unless @portal
-      @arm.line_items.map(&:sub_service_request).uniq.each do |ssr|
-        next if (@sub_service_request && ssr != @sub_service_request)
-        next unless ssr.can_be_edited?
-        ssr.update_attribute(:status, "draft")
-      end
+    unless @admin
+      editable_ssrs.where.not(status: 'draft').update_all(status: 'draft')
       @service_request.update_attribute(:status, "draft")
     end
 
-    render partial: 'update_service_calendar'
+    respond_to do |format|
+      format.js
+    end
   end
 
   private
 
-  def authorize_dashboard_access
-    if params[:sub_service_request_id]
-      authorize_admin
-    else
-      if params[:service_request_id]
-        @service_request = ServiceRequest.find(params[:service_request_id])
-      end
-      authorize_protocol
-    end
-  end
-
-  def authorize_protocol
-    @protocol = if params[:protocol_id]
-                  Protocol.find(params[:protocol_id])
-                else
-                  Arm.find(params[:arm_id]).protocol
-                end
-    permission_to_view  = @protocol.project_roles.where(identity_id: current_user.id, project_rights: %w(approve request)).any?
-
-    unless permission_to_view || Protocol.for_admin(current_user.id).include?(@protocol)
-      @protocol = nil
-
-      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
-    end
-  end
-
-  def authorize_admin
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @service_request     = @sub_service_request.service_request
-
-    unless (current_user.authorized_admin_organizations & @sub_service_request.org_tree).any?
-      @sub_service_request = nil
-      @service_request = nil
-      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
-    end
-  end
-
   def setup_calendar_pages
     @pages  = {}
-    page    = params[:page] if params[:page]
-    arm_id  = params[:arm_id] if params[:arm_id]
+    page    = params[:page].to_i if params[:page]
+    arm_id  = params[:arm_id].to_i if params[:arm_id]
     @arm    = Arm.find(arm_id) if arm_id
 
-    session[:service_calendar_pages]          = params[:pages] if params[:pages]
+    session[:service_calendar_pages]          = eval(params[:pages]) if params[:pages]
     session[:service_calendar_pages][arm_id]  = page if page && arm_id
 
     @service_request.arms.each do |arm|
-      new_page        = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
+      new_page        = (session[:service_calendar_pages].nil? || session[:service_calendar_pages][arm.id].nil?) ? 1 : session[:service_calendar_pages][arm.id]
       @pages[arm.id]  = @service_request.set_visit_page(new_page, arm)
     end
   end

@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,17 +21,34 @@
 class VisitGroupsController < ApplicationController
   respond_to :json
 
-  before_filter :initialize_service_request
-  before_filter :authorize_identity
+  before_action :initialize_service_request
+  before_action :authorize_identity
+
+  def edit
+    @visit_group = VisitGroup.find(params[:id])
+
+    respond_to do |format|
+      format.js
+    end
+  end
 
   # Used for x-editable update and validations
   def update
-    @visit_group = VisitGroup.find(params[:id])
+    @visit_group  = VisitGroup.find(params[:id])
+    @portal       = params[:portal] == 'true'
+    @review       = params[:review] == 'true'
+    @admin        = params[:admin] == 'true'
+    @merged       = params[:merged] == 'true'
+    @consolidated = params[:consolidated] == 'true'
+    @pages        = eval(params[:pages]) rescue {}
+    @page         = params[:page].to_i
 
-    if @visit_group.update_attributes(visit_group_params)
-      render nothing: true
-    else
-      render json: @visit_group.errors, status: :unprocessable_entity
+    unless @visit_group.update_attributes(visit_group_params)
+      @errors = @visit_group.errors
+    end
+
+    respond_to do |format|
+      format.js
     end
   end
 

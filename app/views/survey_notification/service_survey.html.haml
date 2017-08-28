@@ -1,4 +1,4 @@
--# Copyright © 2011-2016 MUSC Foundation for Research Development
+-# Copyright © 2011-2017 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,20 +17,29 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+= stylesheet_link_tag "system_satisfaction"
 
-= "Dear #{@identity.full_name},"
+= t('surveyor.responses.emails.service_survey.greeting', name: @identity.full_name)
 %br
 %br
 
-Thank you for requesting services from
+= t(:surveyor)[:responses][:emails][:service_survey][:text1]
 = "#{ssr_institution(@ssr.organization)} - #{ssr_provider(@ssr.organization)} - #{ssr_program_core(@ssr.organization)}."
-The service(s) you requested have now been completed.
+= t(:surveyor)[:responses][:emails][:service_survey][:text2]
 %br
-Please click on the link(s) below to complete the following survey(s) regarding the service(s) you received. Your feedback is important and appreciated!
+= t(:surveyor)[:responses][:emails][:service_survey][:text3]
 
-%br
 %br
 
 %ul
-- @surveys.each do |survey|
-  %li= link_to survey.title, direct_link_survey_url(survey.access_code, :survey_version => survey.survey_version, :ssr_id => @ssr.id)
+- @responses.each do |response|
+  %li
+    = link_to response.survey.title, url_for(controller: '/surveyor/responses', action: :edit, only_path: false, id: response.id, format: :html), target: '_blank'
+
+- if @surveys.pluck(:access_code).include?("sctr-customer-satisfaction-survey")
+  #sctr-grant-citation
+    %br
+    = t(:surveyor)[:responses][:emails][:sctr_customer_satisfaction][:grant_reminder]
+    %br
+    %em.gray-text
+      = raw(t(:surveyor)[:responses][:emails][:sctr_customer_satisfaction][:grant_info])

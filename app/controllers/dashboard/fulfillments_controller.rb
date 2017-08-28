@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -40,7 +40,7 @@ class Dashboard::FulfillmentsController < Dashboard::BaseController
   end
 
   def create
-    @fulfillment = Fulfillment.new(params[:fulfillment])
+    @fulfillment = Fulfillment.new(fulfillment_params)
     if @fulfillment.valid?
       @fulfillment.save
       @line_item = @fulfillment.line_item
@@ -55,7 +55,7 @@ class Dashboard::FulfillmentsController < Dashboard::BaseController
   end
 
   def update
-    if @fulfillment.update_attributes(params[:fulfillment])
+    if @fulfillment.update_attributes(fulfillment_params)
       @line_item = @fulfillment.line_item
       flash[:success] = t(:dashboard)[:fulfillments][:updated]
     else
@@ -71,6 +71,18 @@ class Dashboard::FulfillmentsController < Dashboard::BaseController
   end
 
   private
+
+  def fulfillment_params
+    params.require(:fulfillment).permit(:line_item_id,
+      :timeframe,
+      :notes,
+      :time,
+      :date,
+      :quantity,
+      :unit_quantity,
+      :quantity_type,
+      :unit_type)
+  end
 
   def find_fulfillment
     @fulfillment = Fulfillment.find(params[:id])

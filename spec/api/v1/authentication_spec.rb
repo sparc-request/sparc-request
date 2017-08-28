@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -47,7 +47,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
           http_login(bad_username, REMOTE_SERVICE_NOTIFIER_PASSWORD)
 
-          get "/v1/protocols/#{@protocol.id}.json", @env
+          get "/v1/protocols/#{@protocol.id}.json", headers: @env
         end
 
         it 'should not allow the request' do
@@ -66,7 +66,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
           http_login(REMOTE_SERVICE_NOTIFIER_USERNAME, bad_password)
 
-          get "/v1/protocols/#{@protocol.id}.json", @env
+          get "/v1/protocols/#{@protocol.id}.json", headers: @env
         end
 
         it 'should not allow the request' do

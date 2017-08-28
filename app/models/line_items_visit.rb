@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class LineItemsVisit < ActiveRecord::Base
+class LineItemsVisit < ApplicationRecord
 
   include RemotelyNotifiable
 
@@ -29,17 +29,16 @@ class LineItemsVisit < ActiveRecord::Base
   has_one :service_request, through: :line_item
   has_one :sub_service_request, through: :line_item
   has_one :service, through: :line_item
-  has_many :visits, -> { includes(:visit_group).order("visit_groups.position") }, :dependent => :destroy
+  has_many :visits, :dependent => :destroy
+  has_many :ordered_visits, -> { ordered }, class_name: "Visit"
+  has_many :visit_groups, through: :visits
+  has_many :notes, as: :notable, dependent: :destroy
 
-  attr_accessible :arm_id
-  attr_accessible :line_item_id
-  attr_accessible :subject_count  # number of subjects for this visit grouping
-  attr_accessible :hidden
-
-  validates_numericality_of :subject_count
   validate :subject_count_valid
+  validate :pppv_line_item
+  validates_numericality_of :subject_count
 
-  after_save :set_arm_edited_flag_on_subjects
+  after_create :build_visits, if: Proc.new { |liv| liv.arm.present? }
 
   # Destroy parent Arm if the last LineItemsVisit was destroyed
   after_destroy :release_parent
@@ -50,8 +49,10 @@ class LineItemsVisit < ActiveRecord::Base
     end
   end
 
-  def set_arm_edited_flag_on_subjects
-    self.arm.set_arm_edited_flag_on_subjects
+  def pppv_line_item
+    if self.line_item.one_time_fee
+      errors.add(:_, 'Line Items Visits should only belong to a PPPV LineItem')
+    end
   end
 
   # Find a LineItemsVisit for the given arm and line item.  If it does
@@ -59,20 +60,6 @@ class LineItemsVisit < ActiveRecord::Base
   def self.for(arm, line_item)
     liv = LineItemsVisit.where(arm_id: arm.id, line_item_id: line_item.id).first_or_create(subject_count: arm.subject_count)
     return liv
-  end
-
-  def create_visits
-    ActiveRecord::Base.transaction do
-      self.arm.visit_groups.each do |vg|
-        self.add_visit(vg)
-      end
-    end
-  end
-
-  def update_visit_names line_items_visit
-    self.visits.count do |index|
-      self.visits[index].visit_group.name = line_items_visit.visits[index].visit_group.name
-    end
   end
 
   # Returns the cost per unit based on a quantity (usually just the quantity on the line_item)
@@ -92,21 +79,17 @@ class LineItemsVisit < ActiveRecord::Base
   end
 
   def units_per_package
-    unit_factor = self.line_item.service.displayed_pricing_map.unit_factor
-    units_per_package = unit_factor || 1
-    return units_per_package
+    self.line_item.service.displayed_pricing_map.unit_factor || 1
   end
 
   def quantity_total
-    # quantity_total = self.visits.map {|x| x.research_billing_qty}.inject(:+) * self.subject_count
-    quantity_total = self.visits.sum('research_billing_qty')
-    return quantity_total * (self.subject_count || 0)
+    sum_visits_research_billing_qty * (self.subject_count || 0)
   end
 
   # Returns a hash of subtotals for the visits in the line item.
   # Visit totals depend on the quantities in the other visits, so it would be clunky
   # to compute one visit at a time
-  def per_subject_subtotals(visits=self.visits)
+  def per_subject_subtotals(visits=self.ordered_visits)
     totals = { }
     quantity_total = quantity_total()
     per_unit_cost = per_unit_cost(quantity_total)
@@ -120,7 +103,7 @@ class LineItemsVisit < ActiveRecord::Base
 
   # Return visits with R and T quantities
   # Used in service_request show.xlsx report
-  def per_subject_rt_indicated(visits=self.visits)
+  def per_subject_rt_indicated(visits=self.ordered_visits)
     indicated_visits = {}
     visits.each do |visit|
       indicated_visits[visit.id.to_s] = visit.research_billing_qty + visit.insurance_billing_qty
@@ -131,11 +114,7 @@ class LineItemsVisit < ActiveRecord::Base
 
   # Determine the direct costs for a visit-based service for one subject
   def direct_costs_for_visit_based_service_single_subject
-    result = Visit.where("line_items_visit_id = ? AND research_billing_qty >= ?", self.id, 1).sum(:research_billing_qty)
-    research_billing_qty_total = result || 0
-    subject_total = research_billing_qty_total * per_unit_cost(quantity_total())
-
-    subject_total
+    sum_visits_research_billing_qty_gte_1 * per_unit_cost(quantity_total())
   end
 
   # Determine the direct costs for a visit-based service
@@ -185,29 +164,6 @@ class LineItemsVisit < ActiveRecord::Base
     end
   end
 
-  # Add a new visit.  Returns the new Visit upon success or false upon
-  # error.
-  def add_visit visit_group
-    self.visits.create(visit_group_id: visit_group.id)
-  end
-
-  def procedures
-    self.visits.map {|x| x.appointments.map {|y| y.procedures.select {|z| z.line_item_id == self.line_item_id}}}.flatten
-  end
-
-  def remove_procedures
-    self.procedures.each do |pro|
-      if pro.completed?
-        if pro.line_item.service.displayed_pricing_map.unit_factor > 1
-          pro.update_attributes(:unit_factor_cost => pro.cost * 100)
-        end
-        pro.update_attributes(service_id: self.line_item.service_id, line_item_id: nil, visit_id: nil)
-      else
-        pro.destroy
-      end
-    end
-  end
-
   ### audit reporting methods ###
 
   def audit_excluded_actions
@@ -222,10 +178,29 @@ class LineItemsVisit < ActiveRecord::Base
 
   private
 
+  def build_visits
+    self.arm.visit_groups.each do |vg|
+      self.visits.create(visit_group: vg)
+    end
+  end
+
   def release_parent
     # Destroy parent Arm if the last LineItemsVisit was destroyed
     if LineItemsVisit.where(arm_id: arm_id).none?
       Arm.find(arm_id).destroy
     end
+  end
+
+  def sum_visits_research_billing_qty
+    @research_billing_total ||= 
+      if self.visits.loaded?
+        self.visits.sum(&:research_billing_qty) || 0
+      else
+        self.visits.sum(:research_billing_qty) || 0
+      end
+  end
+
+  def sum_visits_research_billing_qty_gte_1
+    @research_billing_gte1_total ||= self.visits.where("research_billing_qty >= ?", 1).sum(:research_billing_qty) || 0
   end
 end

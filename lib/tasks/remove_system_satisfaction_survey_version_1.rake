@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -34,9 +34,9 @@ namespace :data do
     @sys_sat_survey_v1_id = nil
 
     Survey.where(title: "System Satisfaction survey").each do |survey|
-      if survey.survey_version == 0
+      if survey.version == 0
         @sys_sat_survey_v0_id = survey.id
-      elsif survey.survey_version == 1
+      elsif survey.version == 1
         @sys_sat_survey_v1_id = survey.id
       end
     end

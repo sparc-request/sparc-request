@@ -1,5 +1,5 @@
 # coding: utf-8
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -59,4 +59,12 @@ alias :stub_catalog_manager_controller :stub_portal_controller
 
 def find_before_filters
   controller._process_action_callbacks.select{ |f| f.kind == :before }.map(&:filter)
+end
+
+# With strong_params, the params variable - and subhashes of params - in controllers
+# aren't really hashes. This method makes it easy to do things like
+# `expect(something).to have_received(:update).with(controller_params(name: "new name"))`
+# when we're dealing with stubbed objects in a test.
+def controller_params(hash)
+  ActionController::Parameters.new(hash).permit!
 end

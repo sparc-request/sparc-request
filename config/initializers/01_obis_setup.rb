@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -38,7 +38,13 @@ begin
   SYSTEM_SATISFACTION_SURVEY_CC             = application_config['system_satisfaction_survey_cc']
   ROOT_URL                                  = application_config['root_url']
   DASHBOARD_LINK                            = application_config['dashboard_link']
+  RESEARCH_MASTER_ENABLED                   = application_config['research_master_enabled'] || false
   RESEARCH_MASTER_LINK                      = application_config['research_master_link']
+  RESEARCH_MASTER_API                       = application_config['research_master_api']
+  RMID_API_TOKEN                            = application_config['rmid_api_token']
+  REDCAP_TOKEN                              = application_config['redcap_token']
+  USE_REDCAP_API                            = application_config['use_redcap_api']
+  REDCAP_API                                = application_config['redcap_api']
   HEADER_LINK_1                             = application_config['header_link_1']
   HEADER_LINK_2_PROPER                      = application_config['header_link_2_proper']
   HEADER_LINK_2_DASHBOARD                   = application_config['header_link_2_dashboard']
@@ -51,7 +57,8 @@ begin
   USE_EPIC                                  = application_config['use_epic']
   QUEUE_EPIC                                = application_config['queue_epic']
   QUEUE_EPIC_LOAD_ERROR_TO                  = application_config['queue_epic_load_error_to']
-  QUEUE_EPIC_EDIT_LDAP_UIDS                 = application_config['queue_epic_edit_ldap_uids'] || []
+  EPIC_QUEUE_ACCESS                         = application_config['epic_queue_access'] || []
+  SITE_ADMINS                               = application_config['site_admins'] || []
   EPIC_QUEUE_REPORT_TO                      = application_config['epic_queue_report_to']
   USE_GOOGLE_CALENDAR                       = application_config['use_google_calendar']
   USE_NEWS_FEED                             = application_config['use_news_feed']
@@ -66,6 +73,7 @@ begin
   NO_REPLY_FROM                             = application_config['no_reply_from']
   EDITABLE_STATUSES                         = application_config['editable_statuses'] || {}
   UPDATABLE_STATUSES                        = application_config['updatable_statuses'] || []
+  FINISHED_STATUSES                         = application_config['finished_statuses'] || []
   REMOTE_SERVICE_NOTIFIER_PROTOCOL          = application_config['remote_service_notifier_protocol']
   REMOTE_SERVICE_NOTIFIER_HOST              = application_config['remote_service_notifier_host']
   REMOTE_SERVICE_NOTIFIER_PATH              = application_config['remote_service_notifier_path']
@@ -82,8 +90,6 @@ begin
   USE_FEEDBACK_LINK                         = application_config['use_feedback_link'] || false
   FEEDBACK_LINK                             = application_config['feedback_link'] || "#"
   NAVBAR_LINKS                              = application_config['navbar_links'] || {}
-  USER_PORTAL_LINK                          = application_config['user_portal_link']
-  CONTACT_US_EMAIL                          = application_config['contact_us_email']
   USE_CAS                                   = application_config['use_cas'] || false
   USE_CAS_ONLY                              = application_config['use_cas_only'] || false
   USE_SHIBOLETH                             = application_config['use_shiboleth'] || false
@@ -113,6 +119,7 @@ begin
   config                         = YAML::load_file(constant_file)
   ADDITIONAL_DETAIL_QUESTION_TYPES = config['additional_detail_question_types']
   AFFILIATION_TYPES              = config['affiliations']
+  BROWSER_VERSIONS               = config['browser_versions']
   IMPACT_AREAS                   = config['impact_areas']
   EPIC_RIGHTS                    = config['epic_rights']
   EPIC_RIGHTS_INFO               = config['epic_rights_info']

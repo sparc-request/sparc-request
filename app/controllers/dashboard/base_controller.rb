@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -23,10 +23,10 @@ class Dashboard::BaseController < ActionController::Base
   protect_from_forgery
   helper_method :current_user
 
-  before_filter :authenticate_identity!
-  before_filter :set_user
-  before_filter :establish_breadcrumber
-  before_filter :set_highlighted_link
+  before_action :authenticate_identity!
+  before_action :set_user
+  before_action :establish_breadcrumber
+  before_action :set_highlighted_link
 
   def set_highlighted_link
     @highlighted_link ||= 'sparc_dashboard'
@@ -75,6 +75,10 @@ class Dashboard::BaseController < ActionController::Base
   end
 
   def find_admin_for_protocol
-    @admin = Protocol.for_admin(@user).include?(@protocol)
+    if @user.super_users.any? && @protocol.sub_service_requests.empty?
+      @admin = true
+    else
+      @admin = Protocol.for_admin(@user.id).include?(@protocol)
+    end
   end
 end

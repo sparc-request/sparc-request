@@ -1,4 +1,4 @@
-// Copyright © 2011-2016 MUSC Foundation for Research Development
+// Copyright © 2011-2017 MUSC Foundation for Research Development
 // All rights reserved.
 
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,24 +18,18 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #header
-  height: 102px
-  width: 100%
-  display: table
-  margin-bottom: 10px
-
-  div
-    text-align: center
+  margin: 10px 0
 
   .org-logo
-    margin-left: 50px
-    margin-top: 15px
+    display: block
 
   .sparc-request-header
-    margin-top: 15px
+    display: block
+    padding: 15px 0
 
   .institution-logo
-    margin-top: 15px
-    margin-left: 25px
+    display: block
+
 
 .footer
   margin-left: auto
@@ -56,7 +50,7 @@
 
     li + li
       margin-left: 10px
-        
+
 .panel-heading
   h3
     white-space: nowrap
@@ -86,16 +80,29 @@
 .dropdown_badge span.badge
   margin-left: 5px
 
+.dropdown_filter
+  background-color: #337ab7
+  color: white
+
+.input-group-btn .dd_select .btn-group .btn
+  border-top-left-radius: 4px
+  border-top-right-radius: 0px
+  border-bottom-left-radius: 4px
+  border-bottom-right-radius: 0px
+
+.search_padding
+  padding-bottom: 15px
+
 // Custom Reporting Styling
-h2.report_title
+h2.report-title
   padding: 10px
   margin-bottom: 50px
 
-#reporting_form #report_fields .checkbox-inline
+#reporting-form #report-fields .checkbox-inline
   margin: 0px 30px 0 0
   cursor: auto
 
-#reporting_form .report_actions
+#reporting-form .report-actions
   margin-top: 40px
 
 //Custom Navbar Styling
@@ -123,6 +130,12 @@ h2.report_title
     li:not(:last-child) button
       margin-right: 10px
 
+.inactive-text
+  margin-left: 5px
+  color: red
+  font-weight: bold
+  font-style: italic
+
 .highlighted
   background: #E7E7E7
 
@@ -135,6 +148,7 @@ h2.report_title
 #container > #inner-content
   // these are cwf specs
   width: 1300px !important
+  min-height: 625px
   margin-left: auto
   margin-right: auto
   padding-left: 15px
@@ -287,7 +301,6 @@ div.new_message_dialog.ui-dialog
       background: url(/assets/dashboard/redbutton.png) no-repeat !important
       span.ui-button-text
         line-height: 18px
-div.rsr_dialog.ui-dialog
 div.report_date_range.ui-dialog
   div.ui-dialog-titlebar
     font-size: 1.1em
@@ -440,12 +453,6 @@ div.permissions_dialog
         width: 125px
       li.new_notification.roles, li.new_notification.requester
         width: 325px
-.service-request-button
-  color: $white
-  text-align: center
-  padding: 3px 0 3px 5px
-  background: #00B741 !important
-  border: 2px outset #80CCFF
 
 .right-dashboard
   float: left
@@ -1200,7 +1207,7 @@ div.permissions_dialog
   width: 200px
   z-index: 5
 
-#protocol
+#protocol, #add-authorized-user-form
   .control-label
     margin-bottom: 0
     padding-top: 7px
@@ -1208,3 +1215,16 @@ div.permissions_dialog
 
 .locked
   margin-left: 3px
+
+.no-padding
+  padding: 0 !important
+
+.no-padding-x
+  padding-left: 0 !important
+  padding-right: 0 !important
+
+.no-margin
+  margin: 0 !important
+
+label.required:after
+  content: "*"

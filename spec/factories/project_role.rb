@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -26,6 +26,10 @@ FactoryGirl.define do
     identity nil
     project_rights { Faker::Lorem.sentence(2) }
     role 'primary-pi'
+
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
+    end
 
     trait :approve do
       project_rights 'approve'

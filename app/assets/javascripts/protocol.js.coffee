@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -37,7 +37,7 @@ $(document).ready ->
     protocol_id = $(this).data('protocol-id')
     $.ajax
       type: 'get'
-      url: "/protocols/#{protocol_id}/view_details"
+      url: "/protocols/#{protocol_id}.js"
       data:
         service_request_id: $("input[name='service_request_id']").val()
     return false

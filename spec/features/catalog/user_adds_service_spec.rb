@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -40,7 +40,7 @@ RSpec.describe 'User adds service to cart', js: true do
       find('.program-link').click
       click_button 'Add'
 
-      expect(page).to have_selector('#modal-title', text: 'New Request?', visible: true)
+      expect(page).to have_selector('#modal-title', text: 'New or Existing', visible: true)
     end
   end
 
@@ -55,7 +55,7 @@ RSpec.describe 'User adds service to cart', js: true do
       find('.yes-button').click
       wait_for_javascript_to_finish
 
-      expect(page).to have_selector('.line-item div', text: @service.abbreviation)
+      expect(page).to have_selector('.line-item .service', text: @service.abbreviation)
     end
   end
 

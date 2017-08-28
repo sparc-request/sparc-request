@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -113,8 +113,7 @@ module CapybaraSupport
       otf_unit_type:                'Week',
       full_rate:                    4500.0000,
       exclude_from_indirect_cost:   0,
-      unit_minimum:                 1,
-      unit_type:                    'self')
+      unit_minimum:                 1)
     program_service_pricing_map.save!
 
     program_service = create(:service,
@@ -138,8 +137,7 @@ module CapybaraSupport
       otf_unit_type:                'Week',
       full_rate:                    4500.0000,
       exclude_from_indirect_cost:   0,
-      unit_minimum:                 1,
-      unit_type:                    'self')
+      unit_minimum:                 1)
     service_pricing_map.save!
 
     service = create(:service,
@@ -168,19 +166,20 @@ module CapybaraSupport
 
     project = FactoryGirl.create(:protocol_without_validations)
 
-    service_request = FactoryGirl.create(:service_request_without_validations, protocol_id: project.id, status: "draft", subject_count: 2)
+    service_request = FactoryGirl.create(:service_request_without_validations, protocol_id: project.id, status: "draft")
 
     sub_service_request = create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id,status: "draft", service_requester_id: Identity.find_by_ldap_uid("jug2@musc.edu").id)
 
     arm = create(:arm, protocol_id: project.id, subject_count: 2, visit_count: 10)
 
-    line_items_visit = create(:line_items_visit, arm_id: arm.id, subject_count: arm.subject_count)
 
-    survey = create(:survey, title: "System Satisfaction survey", description: nil, access_code: "system-satisfaction-survey", reference_identifier: nil,
-                                         data_export_identifier: nil, common_namespace: nil, common_identifier: nil, active_at: nil, inactive_at: nil, css_url: nil,
-                                         custom_class: nil, created_at: "2013-07-02 14:40:23", updated_at: "2013-07-02 14:40:23", display_order: 0, api_id: "4137bedf-40db-43e9-a411-932a5f6d77b7",
-                                         survey_version: 0)
-
+    survey = create(:survey, 
+      title: "System Satisfaction survey",
+      description: nil,
+      access_code: "system-satisfaction-survey",
+      display_order: 1,
+      version: 0,
+      active: true)
   end
 
   def create_ctrc_data
@@ -219,8 +218,7 @@ module CapybaraSupport
       unit_factor:                  1,
       full_rate:                    4500.0000,
       exclude_from_indirect_cost:   0,
-      unit_minimum:                 1,
-      unit_type:                    'Each')
+      unit_minimum:                 1)
     core_service_pricing_map.save!
 
     core_service = create(:service,

@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -33,7 +33,7 @@ RSpec.describe Dashboard::ProtocolsController do
           end
           authorize(@logged_in_user, @protocol, can_view: false)
 
-          get :show, id: @protocol.id
+          get :show, params: { id: @protocol.id }
         end
 
         it "should use ProtocolAuthorizer to authorize user" do
@@ -64,7 +64,7 @@ RSpec.describe Dashboard::ProtocolsController do
             with(identity_id: @logged_in_user.id).
             and_return(@project_role)
 
-          get :show, id: @protocol.id
+          get :show, params: { id: @protocol.id }
         end
 
         it 'should set @protocol' do
@@ -92,7 +92,7 @@ RSpec.describe Dashboard::ProtocolsController do
 
           log_in_dashboard_identity(obj: @logged_in_user)
 
-          get :show, id: @protocol.id
+          get :show, params: { id: @protocol.id }
         end
 
         it 'should set @admin to false' do
@@ -109,12 +109,12 @@ RSpec.describe Dashboard::ProtocolsController do
           @protocol       = create(:protocol_without_validations, type: 'Project')
           organization    = create(:organization)
           service_request = create(:service_request_without_validations, protocol: @protocol)
-                            create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft')
+                            create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft', protocol_id: @protocol.id)
                             create(:super_user, identity: @logged_in_user, organization: organization)
 
           log_in_dashboard_identity(obj: @logged_in_user)
 
-          get :show, id: @protocol.id
+          get :show, params: { id: @protocol.id }
         end
 
         it 'should set @admin to true' do
@@ -130,12 +130,12 @@ RSpec.describe Dashboard::ProtocolsController do
           @protocol       = create(:protocol_without_validations, type: 'Project')
           organization    = create(:organization)
           service_request = create(:service_request_without_validations, protocol: @protocol)
-                            create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft')
+                            create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft', protocol_id: @protocol.id)
                             create(:service_provider, identity: @logged_in_user, organization: organization)
 
           log_in_dashboard_identity(obj: @logged_in_user)
 
-          get :show, id: @protocol.id
+          get :show, params: { id: @protocol.id }
         end
 
         it 'should set @admin to true' do

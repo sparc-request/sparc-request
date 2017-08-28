@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -35,16 +35,18 @@ RSpec.describe SearchController do
     end
 
     it 'should return services with similar name' do
-      sr  = create(:service_request_without_validations)
-      org = create(:organization)
-      s1  = create(:service, organization: org, name: 'Serve me Well')
-      s2  = create(:service, organization: org, name: 'Evres me Poorly')
+      sr    = create(:service_request_without_validations)
+      inst  = create(:institution)
+      prvdr = create(:provider, parent: inst)
+      org   = create(:program, parent: prvdr)
+      s1    = create(:service, organization: org, name: 'Serve me Well')
+      s2    = create(:service, organization: org, name: 'Evres me Poorly')
 
 
-      xhr :get, :services, {
+      get :services, params: {
         service_request_id: sr.id,
         term: 'Serve'
-      }
+      }, xhr: true
 
       results = JSON.parse(response.body)
 
@@ -54,16 +56,17 @@ RSpec.describe SearchController do
     end
 
     it 'should return services with similar abbreviation' do
-      sr  = create(:service_request_without_validations)
-      org = create(:organization)
-      s1  = create(:service, organization: org, abbreviation: 'Serve me Well')
-      s2  = create(:service, organization: org, abbreviation: 'Evres me Poorly')
+      sr    = create(:service_request_without_validations)
+      inst  = create(:institution)
+      prvdr = create(:provider, parent: inst)
+      org   = create(:program, parent: prvdr)
+      s1    = create(:service, organization: org, abbreviation: 'Serve me Well')
+      s2    = create(:service, organization: org, abbreviation: 'Evres me Poorly')
 
-
-      xhr :get, :services, {
+      get :services, params: {
         service_request_id: sr.id,
         term: 'Serve'
-      }
+      }, xhr: true
 
       results = JSON.parse(response.body)
 
@@ -72,16 +75,18 @@ RSpec.describe SearchController do
     end
 
     it 'should return services with cpt code' do
-      sr  = create(:service_request_without_validations)
-      org = create(:organization)
-      s1  = create(:service, organization: org, cpt_code: 1234)
-      s2  = create(:service, organization: org, cpt_code: 4321)
+      sr    = create(:service_request_without_validations)
+      inst  = create(:institution)
+      prvdr = create(:provider, parent: inst)
+      org   = create(:program, parent: prvdr)
+      s1    = create(:service, organization: org, cpt_code: 1234)
+      s2    = create(:service, organization: org, cpt_code: 4321)
 
 
-      xhr :get, :services, {
+     get :services, params: {
         service_request_id: sr.id,
         term: '1234'
-      }
+      }, xhr: true
 
       results = JSON.parse(response.body)
 
@@ -90,16 +95,18 @@ RSpec.describe SearchController do
     end
 
     it 'should not return unavailable services' do
-      sr  = create(:service_request_without_validations)
-      org = create(:organization)
-      s1  = create(:service, organization: org, name: 'Service 123', is_available: 1)
-      s2  = create(:service, organization: org, name: 'Service 321', is_available: 0)
+      sr    = create(:service_request_without_validations)
+      inst  = create(:institution)
+      prvdr = create(:provider, parent: inst)
+      org   = create(:program, parent: prvdr)
+      s1    = create(:service, organization: org, name: 'Service 123', is_available: 1)
+      s2    = create(:service, organization: org, name: 'Service 321', is_available: 0)
 
 
-      xhr :get, :services, {
+      get :services, params: {
         service_request_id: sr.id,
         term: 'Service'
-      }
+      }, xhr: true
 
       results = JSON.parse(response.body)
 
@@ -114,17 +121,19 @@ RSpec.describe SearchController do
     it 'should not return services from a locked organization' do
       sr    = create(:service_request_without_validations)
       org   = create(:organization)
-      org2  = create(:organization)
+      inst  = create(:institution)
+      prvdr = create(:provider, parent: inst)
+      org2  = create(:program, parent: prvdr)
       ssr   = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'on_hold')
       s1    = create(:service, organization: org, name: 'Service 123')
       s2    = create(:service, organization: org2, name: 'Service 321')
 
-      stub_const("EDITABLE_STATUSES", { org.id => ['draft'] })
+      org.editable_statuses.where(status: 'on_hold').destroy_all
 
-      xhr :get, :services, {
+      get :services, params: {
         service_request_id: sr.id,
         term: 'Service'
-      }
+      }, xhr: true
 
       results = JSON.parse(response.body)
 
@@ -135,17 +144,19 @@ RSpec.describe SearchController do
     context 'editing sub service request' do
       it 'should not return services which are not in the ssr\'s org tree' do
         sr    = create(:service_request_without_validations)
-        org   = create(:organization)
+        inst  = create(:institution)
+        prvdr = create(:provider, parent: inst)
+        org   = create(:program, parent: prvdr)
         org2  = create(:organization)
         ssr   = create(:sub_service_request_without_validations, service_request: sr, organization: org)
         s1    = create(:service, organization: org, name: 'Service 123')
         s2    = create(:service, organization: org2, name: 'Service 321')
 
-        xhr :get, :services, {
+        get :services, params: {
           service_request_id: sr.id,
           sub_service_request_id: ssr.id,
           term: 'Service'
-        }
+        }, xhr: true
 
         results = JSON.parse(response.body)
 

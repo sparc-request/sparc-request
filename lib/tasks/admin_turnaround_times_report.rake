@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -45,9 +45,7 @@ namespace :data do
     end
 
     def full_ssr_id(ssr)
-    protocol = ssr.service_request.protocol
-
-    "#{protocol.id}-#{ssr.ssr_id}"
+      ssr.display_id
     end
 
     def extract_status_dates ssr

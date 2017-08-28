@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -21,17 +21,19 @@
 require 'rails_helper'
 
 RSpec.describe Dashboard::ProtocolsController do
-  describe 'patch update_protocol_type' do
+  describe 'put update_protocol_type' do
     context 'user is an Authorized User' do
       context 'user not authorized to edit Protocol' do
         before(:each) do
           @logged_in_user = build_stubbed(:identity)
           @protocol = findable_stub(Protocol) do
-            build_stubbed(:protocol)
+            stub = build_stubbed(:protocol)
+            allow(stub).to receive(:becomes).and_return(stub)
+            stub
           end
           authorize(@logged_in_user, @protocol, can_edit: false)
           log_in_dashboard_identity(obj: @logged_in_user)
-          xhr :patch, :update_protocol_type, id: @protocol.id
+          put :update_protocol_type, params: { id: @protocol.id }, xhr: true
         end
 
         it "should use ProtocolAuthorizer to authorize user" do
@@ -50,13 +52,15 @@ RSpec.describe Dashboard::ProtocolsController do
           @study_type_question_group_version_3 = StudyTypeQuestionGroup.create(active: true, version: 3)
           study_type_question_group_version_2 = StudyTypeQuestionGroup.create(active: false, version: 2)
           @protocol = findable_stub(Protocol) do
-            build_stubbed(:protocol, type: "Study", study_type_question_group_id: study_type_question_group_version_2.id)
+            stub = build_stubbed(:protocol, type: "Study", study_type_question_group_id: study_type_question_group_version_2.id)
+            allow(stub).to receive(:becomes).and_return(stub)
+            stub
           end
           allow(@protocol).to receive(:update_attribute)
           allow(@protocol).to receive(:populate_for_edit)
           authorize(@logged_in_user, @protocol, can_edit: true)
 
-          xhr :patch, :update_protocol_type, id: @protocol.id, type: "Project"
+          put :update_protocol_type, params: { id: @protocol.id, type: "Project"}, xhr: true
         end
 
         it 'should set protocol_type' do
@@ -84,7 +88,7 @@ RSpec.describe Dashboard::ProtocolsController do
 
           log_in_dashboard_identity(obj: @logged_in_user)
 
-          xhr :patch, :update_protocol_type, id: @protocol.id
+          put :update_protocol_type, params: { id: @protocol.id }, xhr: true
         end
 
         it 'should set @admin to false' do
@@ -102,12 +106,12 @@ RSpec.describe Dashboard::ProtocolsController do
           @protocol       = create(:protocol_without_validations, type: 'Project', study_type_question_group_id: study_type_question_group_version_3.id)
           organization    = create(:organization)
           service_request = create(:service_request_without_validations, protocol: @protocol)
-                            create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft')
+                            create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft', protocol_id: @protocol.id)
                             create(:super_user, identity: @logged_in_user, organization: organization)
 
           log_in_dashboard_identity(obj: @logged_in_user)
 
-          xhr :patch, :update_protocol_type, id: @protocol.id
+          put :update_protocol_type, params: { id: @protocol.id }, xhr: true
         end
 
         it 'should set @admin to true' do
@@ -124,12 +128,12 @@ RSpec.describe Dashboard::ProtocolsController do
           @protocol       = create(:protocol_without_validations, type: 'Project', study_type_question_group_id: study_type_question_group_version_3.id)
           organization    = create(:organization)
           service_request = create(:service_request_without_validations, protocol: @protocol)
-                            create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft')
+                            create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft', protocol_id: @protocol.id)
                             create(:service_provider, identity: @logged_in_user, organization: organization)
 
           log_in_dashboard_identity(obj: @logged_in_user)
 
-          xhr :patch, :update_protocol_type, id: @protocol.id
+          put :update_protocol_type, params: { id: @protocol.id }, xhr: true
         end
 
         it 'should set @admin to true' do

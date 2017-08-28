@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -60,8 +60,10 @@ class UniquePiReport < ReportingModule
 
     attrs["Unique PI Last Name"] = :last_name
     attrs["Unique PI First Name"] = :first_name
-    attrs["College"] = [:college, COLLEGES.invert] # we invert since our hash is setup {"Bio Medical" => "bio_med"} for some crazy reason
-    attrs["Department"] = [:department, DEPARTMENTS.invert]
+    attrs["Institution"] = "try(:professional_org_lookup, 'institution')"
+    attrs["College"]     = "try(:professional_org_lookup, 'college')"
+    attrs["Department"]  = "try(:professional_org_lookup, 'department')"
+    attrs["Division"]    = "try(:professional_org_lookup, 'division')"
 
     attrs
   end

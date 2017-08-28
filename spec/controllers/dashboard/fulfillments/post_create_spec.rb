@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -33,11 +33,11 @@ RSpec.describe Dashboard::FulfillmentsController do
 
         log_in_dashboard_identity(obj: build_stubbed(:identity))
 
-        xhr :post, :create, fulfillment: "fulfillment attributes"
+        post :create, params: { fulfillment: { quantity: 5 } }, xhr: true
       end
 
       it "should create Fulfillment" do
-        expect(Fulfillment).to have_received(:new).with("fulfillment attributes")
+        expect(Fulfillment).to have_received(:new).with controller_params(quantity: "5")
         expect(@fulfillment).to have_received(:save)
       end
 
@@ -61,11 +61,11 @@ RSpec.describe Dashboard::FulfillmentsController do
 
         log_in_dashboard_identity(obj: build_stubbed(:identity))
 
-        xhr :post, :create, fulfillment: "fulfillment attributes"
+        post :create, params: { fulfillment: { quantity: 5 } }, xhr: true
       end
 
       it "should attempt to create Fulfillment" do
-        expect(Fulfillment).to have_received(:new).with("fulfillment attributes")
+        expect(Fulfillment).to have_received(:new).with controller_params(quantity: "5")
       end
 
       it "should set @errors" do

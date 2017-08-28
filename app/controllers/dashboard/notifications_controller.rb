@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -57,10 +57,9 @@ class Dashboard::NotificationsController < Dashboard::BaseController
   end
 
   def create
-    message_params = params[:notification].delete(:message)
     if message_params[:to].present?
       @recipient = Identity.find(message_params[:to])
-      @notification = Notification.new(params[:notification].merge(originator_id: @user.id, read_by_originator: true, other_user_id: @recipient.id, read_by_other_user: false))
+      @notification = Notification.new(notification_params.merge(originator_id: @user.id, read_by_originator: true, other_user_id: @recipient.id, read_by_other_user: false))
       @message = @notification.messages.new(message_params.merge(from: @user.id, email: @recipient.email))
       if @message.valid?
         @notification.save
@@ -87,5 +86,20 @@ class Dashboard::NotificationsController < Dashboard::BaseController
     end
 
     @unread_notification_count = @user.unread_notification_count
+  end
+
+  private
+
+  def notification_params
+    params.require(:notification).permit(:sub_service_request_id,
+      :subject,
+      :originator_id,
+      :other_user_id,
+      :read_by_originator,
+      :read_by_other_user)
+  end
+
+  def message_params
+    params.require(:notification).permit(message: [:to, :from, :body])[:message]
   end
 end

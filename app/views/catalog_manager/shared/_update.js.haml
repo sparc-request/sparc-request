@@ -1,4 +1,4 @@
--# Copyright © 2011-2016 MUSC Foundation for Research Development
+-# Copyright © 2011-2017 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -23,7 +23,7 @@
   :plain
     $('#flash').hide();
     $('#flash').html("There were errors saving #{escape_javascript(@entity.name)}.");
-    Sparc.catalog.handle_ajax_errors("#{escape_javascript(@entity_errors)}", "#{@entity.type}")
+    Sparc.catalog.handle_ajax_errors("#{escape_javascript(@entity_errors)}", "#{@entity.class.name == 'Service' ? 'Service' : @entity.type}")
 
 - else
   :plain

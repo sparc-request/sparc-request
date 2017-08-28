@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,14 +18,14 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class LineItem < ActiveRecord::Base
+class LineItem < ApplicationRecord
 
   include RemotelyNotifiable
 
   audited
 
   belongs_to :service_request
-  belongs_to :service, -> { includes(:pricing_maps, :organization) }, counter_cache: true
+  belongs_to :service, counter_cache: true
   belongs_to :sub_service_request
   has_many :fulfillments, dependent: :destroy
 
@@ -34,19 +34,10 @@ class LineItem < ActiveRecord::Base
   has_many :procedures
   has_many :admin_rates, dependent: :destroy
   has_many :notes, as: :notable, dependent: :destroy
+  
   has_one :submission, dependent: :destroy
-
-  attr_accessible :service_request_id
-  attr_accessible :sub_service_request_id
-  attr_accessible :service_id
-  attr_accessible :optional
-  attr_accessible :complete_date
-  attr_accessible :in_process_date
-  attr_accessible :units_per_quantity
-  attr_accessible :quantity
-  attr_accessible :fulfillments_attributes
-  attr_accessible :displayed_cost
-
+  has_one :protocol, through: :service_request
+  
   attr_accessor :pricing_scheme
 
   accepts_nested_attributes_for :fulfillments, allow_destroy: true
@@ -61,8 +52,9 @@ class LineItem < ActiveRecord::Base
   validate :quantity_must_be_smaller_than_max_and_greater_than_min, on: :update, if: Proc.new { |li| li.service.one_time_fee }
   validates :units_per_quantity, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, on: :update, if: Proc.new { |li| li.service.one_time_fee }
 
-  after_destroy :remove_procedures
-
+  after_create :build_line_items_visits_if_pppv
+  before_destroy :destroy_arms_if_last_pppv_line_item
+  
   default_scope { order('line_items.id ASC') }
 
   def displayed_cost_valid?(displayed_cost)
@@ -109,50 +101,27 @@ class LineItem < ActiveRecord::Base
     end
   end
 
-  def applicable_rate(appointment_completed_date=nil)
+  def applicable_rate
     rate = nil
-    if appointment_completed_date
-      if has_admin_rates? appointment_completed_date
-        rate = admin_rate_for_date(appointment_completed_date)
-      else
-        pricing_map         = self.pricing_scheme == 'displayed' ? self.service.displayed_pricing_map(appointment_completed_date) : self.service.effective_pricing_map_for_date(appointment_completed_date)
-        pricing_setup       = self.pricing_scheme == 'displayed' ? self.service.organization.pricing_setup_for_date(appointment_completed_date) : self.service.organization.effective_pricing_setup_for_date(appointment_completed_date)
-        funding_source      = self.service_request.protocol.funding_source_based_on_status
-        selected_rate_type  = pricing_setup.rate_type(funding_source)
-        applied_percentage  = pricing_setup.applied_percentage(selected_rate_type)
 
-        rate = pricing_map.applicable_rate(selected_rate_type, applied_percentage)
-      end
+    if has_admin_rates?
+      rate = self.admin_rates.last.admin_cost
     else
-      if has_admin_rates?
-        rate = self.admin_rates.last.admin_cost
-      else
-        pricing_map         = self.pricing_scheme == 'displayed' ? self.service.displayed_pricing_map : self.service.current_effective_pricing_map
-        pricing_setup       = self.pricing_scheme == 'displayed' ? self.service.organization.current_pricing_setup : self.service.organization.effective_pricing_setup_for_date
-        funding_source      = self.service_request.protocol.funding_source_based_on_status
-        selected_rate_type  = pricing_setup.rate_type(funding_source)
-        applied_percentage  = pricing_setup.applied_percentage(selected_rate_type)
+      pricing_map         = self.pricing_scheme == 'displayed' ? self.service.displayed_pricing_map : self.service.current_effective_pricing_map
+      pricing_setup       = self.pricing_scheme == 'displayed' ? self.service.organization.current_pricing_setup : self.service.organization.effective_pricing_setup_for_date
+      funding_source      = self.service_request.protocol.funding_source_based_on_status
+      selected_rate_type  = pricing_setup.rate_type(funding_source)
+      applied_percentage  = pricing_setup.applied_percentage(selected_rate_type)
 
-        rate = pricing_map.applicable_rate(selected_rate_type, applied_percentage)
-      end
+      rate = pricing_map.applicable_rate(selected_rate_type, applied_percentage)
     end
 
     rate
   end
 
-  def has_admin_rates? appointment_completed_date=nil
+  def has_admin_rates?
     has_admin_rates = !self.admin_rates.empty? && !self.admin_rates.last.admin_cost.blank?
-    has_admin_rates = has_admin_rates && self.admin_rates.select{|ar| ar.created_at.to_date <= appointment_completed_date.to_date}.size > 0 if appointment_completed_date
     has_admin_rates
-  end
-
-  def admin_rate_for_date appointment_completed_date
-    sorted_rates = self.admin_rates.order(:id).reverse
-    sorted_rates.each do |rate|
-      if rate.created_at.to_date <= appointment_completed_date.to_date
-        return rate.admin_cost
-      end
-    end
   end
 
   def attached_to_submitted_request
@@ -161,7 +130,7 @@ class LineItem < ActiveRecord::Base
   end
 
   # Returns the cost per unit based on a quantity and the units per quantity if there is one
-  def per_unit_cost(quantity_total=self.quantity, appointment_completed_date=nil)
+  def per_unit_cost(quantity_total=self.quantity)
     units_per_quantity = self.units_per_quantity
     if quantity_total == 0 || quantity_total.nil?
       0
@@ -170,7 +139,7 @@ class LineItem < ActiveRecord::Base
       # Need to divide by the unit factor here. Defaulted to 1 if there isn't one
       packages_we_have_to_get = (total_quantity.to_f / self.units_per_package.to_f).ceil
       # The total cost is the number of packages times the rate
-      total_cost = packages_we_have_to_get.to_f * self.applicable_rate(appointment_completed_date).to_f
+      total_cost = packages_we_have_to_get.to_f * self.applicable_rate.to_f
       # And the cost per quantity is the total cost divided by the
       # quantity. The result here may not be a whole number if the
       # quantity is not a multiple of units per package.
@@ -191,24 +160,8 @@ class LineItem < ActiveRecord::Base
   end
 
   def quantity_total(line_items_visit)
-    # quantity_total = self.visits.map {|x| x.research_billing_qty}.inject(:+) * self.subject_count
     quantity_total = line_items_visit.visits.sum('research_billing_qty')
     return quantity_total * (line_items_visit.subject_count || 0)
-  end
-
-  # Returns a hash of subtotals for the visits in the line item.
-  # Visit totals depend on the quantities in the other visits, so it would be clunky
-  # to compute one visit at a time
-  def per_subject_subtotals(visits=self.visits)
-    totals = { }
-    quantity_total = quantity_total()
-    per_unit_cost = per_unit_cost(quantity_total)
-
-    visits.each do |visit|
-      totals[visit.id.to_s] = visit.cost(per_unit_cost)
-    end
-
-    return totals
   end
 
   # Determine the direct costs for a visit-based service for one subject
@@ -239,36 +192,6 @@ class LineItem < ActiveRecord::Base
     # implement per_unit_cost to call that method.
     num = self.quantity || 0.0
     num * self.per_unit_cost
-  end
-
-  # This determines the complete cost for a line item with fulfillments
-  # taking into account the possibility for a unit factor greater than 1
-  # Only fulfillments within date range will be calculated
-  # direct_cost is then calculated by taking the sum of the products of
-  # the fractional (to the total) quantities of each fulfillment and the applicable
-  # rate at the date of the fulfillment's completion.
-  def direct_cost_for_one_time_fee_with_fulfillments start_date, end_date
-    total_quantity = 0.0
-    fulfillment_rates = []
-    if !self.fulfillments.empty?
-      self.fulfillments.each do |fulfillment|
-        if fulfillment.within_date_range?(start_date, end_date)
-          if fulfillment.unit_quantity?
-            total_quantity += fulfillment.quantity * fulfillment.unit_quantity
-            fulfillment_rates.push({quantity: fulfillment.quantity, rate: self.applicable_rate(fulfillment.date)})
-          else
-            total_quantity += fulfillment.quantity
-            fulfillment_rates.push({quantity: fulfillment.quantity, rate: self.applicable_rate(fulfillment.date)})
-          end
-        end
-      end
-    end
-    direct_cost = 0.0
-    fulfillment_rates.each do |fr|
-      direct_cost += ((total_quantity / units_per_package).ceil * ((fr[:quantity] / total_quantity) * fr[:rate]))
-    end
-
-    direct_cost
   end
 
   # Determine the indirect cost rate related to a particular line item
@@ -383,7 +306,7 @@ class LineItem < ActiveRecord::Base
       next unless line_item && line_item.arms.find(arm.id)
 
       line_item_visit = line_item.line_items_visits.find_by_arm_id arm.id
-      v = line_item_visit.visits[visit_position]
+      v = line_item_visit.ordered_visits[visit_position]
       total_quantity_between_visits = visit.quantity_total + v.quantity_total
       if not(total_quantity_between_visits == 0 or total_quantity_between_visits == sr.linked_quantity_total)
         first_service, second_service = [self.service.name, line_item.service.name].sort
@@ -413,16 +336,23 @@ class LineItem < ActiveRecord::Base
     service_abbreviation
   end
 
+  def has_incomplete_additional_details?
+    service.questionnaires.active.present? && !submission.present?
+  end
+
   private
 
-  def remove_procedures
-    procedures = self.procedures
-    procedures.each do |pro|
-      if pro.completed?
-        pro.update_attributes(service_id: self.service_id, line_item_id: nil, visit_id: nil)
-      else
-        pro.destroy
+  def build_line_items_visits_if_pppv
+    if self.service && !self.one_time_fee && self.service_request.try(:arms).try(:any?)
+      self.service_request.arms.each do |arm|
+        arm.line_items_visits.create(line_item: self, subject_count: arm.subject_count)
       end
+    end
+  end
+
+  def destroy_arms_if_last_pppv_line_item
+    if self.try(:protocol).try(:service_requests).try(:none?) { |sr| sr.has_per_patient_per_visit_services? }
+      self.service_request.try(:arms).try(:destroy_all)
     end
   end
 end

@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -26,13 +26,21 @@ $(document).ready ->
 
   $(document).on "change", ".reporting-field", ->
     parent_id = "#" + $(this).attr('id')
-    window.check_deps(parent_id)
-    if $(this).val() != ""
-      $(".check-dep.needs-update").each ->
-        $(this).removeClass('needs-update')
+    if $(this).val() == "" && parent_id != '#core_id'
+      disable_deps(parent_id)
+    else
+      parent_val = $(this).val()
+      $("[data-dependency*=\"#{parent_id}\"]").each ->
+        new_parent_id = "#" + $(this).attr('id')
+        $(this).selectpicker("val", "")
         $(this).siblings('.bootstrap-select').children('button').prop('disabled', false)
-        cattype = $(parent_id).val()
-        optionswitch(cattype, "#" + $(this).attr('id'))
+        disable_deps(new_parent_id)
+        if parent_val == "" && parent_id == '#core_id'
+          cattype = $('#program_id').val()
+          optionswitch(cattype, "#" + $(this).attr('id'))
+        else
+          cattype = $(parent_id).val()
+          optionswitch(cattype, "#" + $(this).attr('id'))
 
   $(document).on "submit", "#reporting-form", (event) ->
     empty = $('.required').filter ->
@@ -90,14 +98,9 @@ window.create_date_pickers = (from, to) ->
 window.create_single_date_pickers = ->
   $(".datetimepicker").datetimepicker(format: 'YYYY-MM-DD', allowInputToggle: true)
 
-window.check_deps = (parent_id) ->
-  $("select.check-dep").each ->
-    dep = $(this).data("dependency")
-
-    if dep.match(parent_id)
-      $(this).addClass("needs-update")
-      $(this).val("")
-
-    if $(dep).val() == ""
-      $(this).siblings('.bootstrap-select').children('button').prop('disabled', true)
-
+window.disable_deps = (parent_id) ->
+  $("[data-dependency*=\"#{parent_id}\"]").each ->
+    $(this).selectpicker("val", "")
+    $(this).siblings('.bootstrap-select').children('button').prop('disabled', true)
+    new_parent_id = "#" + $(this).attr('id')
+    disable_deps(new_parent_id)

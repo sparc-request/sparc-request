@@ -1,4 +1,4 @@
-// Copyright © 2011-2016 MUSC Foundation for Research Development
+// Copyright © 2011-2017 MUSC Foundation for Research Development
 // All rights reserved.
 
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,26 +18,18 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #header
-  height: 102px
-  width: 100%
-  display: table
-  margin-bottom: 10px
-
-  div
-    text-align: center
+  margin: 10px 0
 
   .org-logo
-    margin-top: 15px
-    margin-right: 50px
-    float: right
+    display: block
 
   .sparc-request-header
-    margin-top: 35px
+    display: block
+    padding: 15px 0
 
   .institution-logo
-    margin-top: 15px
-    margin-left: 50px
-    float: left
+    display: block
+
 
 .footer
   margin-left: auto
@@ -58,7 +50,7 @@
 
     li + li
       margin-left: 10px
-        
+
 .panel-heading
   h3
     white-space: nowrap
@@ -100,7 +92,7 @@
 
 .search_padding
   padding-bottom: 15px
-  
+
 // Custom Reporting Styling
 h2.report-title
   padding: 10px
@@ -309,7 +301,6 @@ div.new_message_dialog.ui-dialog
       background: url(/assets/dashboard/redbutton.png) no-repeat !important
       span.ui-button-text
         line-height: 18px
-div.rsr_dialog.ui-dialog
 div.report_date_range.ui-dialog
   div.ui-dialog-titlebar
     font-size: 1.1em
@@ -1216,7 +1207,7 @@ div.permissions_dialog
   width: 200px
   z-index: 5
 
-#protocol
+#protocol, #add-authorized-user-form
   .control-label
     margin-bottom: 0
     padding-top: 7px

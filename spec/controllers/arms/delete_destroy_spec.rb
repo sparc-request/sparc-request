@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -38,10 +38,10 @@ RSpec.describe ArmsController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       arm       = create(:arm_without_validations, protocol: protocol)
 
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: arm.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(assigns(:arm)).to eq(arm)
     end
@@ -51,10 +51,10 @@ RSpec.describe ArmsController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       arm       = create(:arm_without_validations, protocol: protocol)
 
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: arm.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(Arm.where(id: arm.id).empty?).to eq(true)
     end
@@ -64,10 +64,10 @@ RSpec.describe ArmsController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       arm       = create(:arm_without_validations, protocol: protocol)
 
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: arm.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:destroy)
     end
@@ -77,10 +77,10 @@ RSpec.describe ArmsController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       arm       = create(:arm_without_validations, protocol: protocol)
 
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: arm.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

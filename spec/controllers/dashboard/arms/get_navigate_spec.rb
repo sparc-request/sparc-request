@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -48,9 +48,9 @@ RSpec.describe Dashboard::ArmsController do
 
     context 'params[:arm_id] present' do
       before(:each) do
-        xhr :get, :navigate, protocol_id: protocol_stub.id, arm_id: arm_stub.id,
+        get :navigate, params: { protocol_id: protocol_stub.id, arm_id: arm_stub.id,
           service_request_id: sr_stub.id, sub_service_request_id: ssr_stub.id,
-          intended_action: 'chillax'
+          intended_action: 'chillax' }, xhr: true
       end
 
       it 'should set @protocol from params[:protocol_id]' do
@@ -79,7 +79,12 @@ RSpec.describe Dashboard::ArmsController do
 
     context 'params[:arm_id] absent' do
       before(:each) do
-        xhr :get, :navigate, protocol_id: protocol_stub.id, service_request_id: sr_stub.id, sub_service_request_id: ssr_stub.id, intended_action: 'chillax'
+        get :navigate, params: {
+          protocol_id: protocol_stub.id,
+          service_request_id: sr_stub.id,
+          sub_service_request_id: ssr_stub.id,
+          intended_action: 'chillax'
+        }, xhr: true
       end
 
       it 'should set @arm to the Protocol\'s first Arm' do

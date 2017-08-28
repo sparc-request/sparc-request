@@ -15,7 +15,7 @@
 
 ## Contributing to SPARCRequest
 
-Please follow the [Pull Request Guidelines](https://github.com/sparc-request/sparc-request/blob/master/PULL_REQUEST_GUIDELINES.md) when submitting and reviewing a pull request.  
+Please follow the [Pull Request Guidelines](https://github.com/sparc-request/sparc-request/blob/master/PULL_REQUEST_GUIDELINES.md) when submitting and reviewing a pull request.
 
 In addition to these guidelines, please remember before any third-party contribution can be considered ready for submission as a pull request, the contributor must:
 
@@ -32,6 +32,7 @@ any pull request (please adhere to the specifications laid out in the
 * _**NOT**_ change any existing file structures within the application
 
 ## Reporting Bugs/ Requesting Features
+
 If you believe you have found a bug in the SPARCRequest codebase or would like to request a new feature, your course of action will differ depending on the level of involvement.
 
 ### Pivotal Tracker (for Members of SPARC OS Governance Committees)
@@ -51,7 +52,7 @@ If you have access to the project “SPARC – OS Development” on Pivotal Trac
 6. Description:  should go into as much relevant information as possible.  See “Bug Description” and “Feature Description” below.
 
 ### Github Issue/ Google Group (for Others)
-**Reporting Bugs:**  
+**Reporting Bugs:**
 
 If you do not have access to the aforementioned project, visit our [Github Issues](https://github.com/sparc-request/sparc-request/issues) or [Google Group](https://groups.google.com/forum/?hl=en#!forum/sparcrequest) and submit the bug with the following format:  Title, Type, Description. *Note that any bug submitted in the Google Group will be converted into a Github Issue.
 
@@ -94,7 +95,7 @@ Submit a pull request! Please make sure you are following the [Pull Request Guid
 
 Remember to check that your Pull Request has:
 
-* Been reviewed by at least 2 developers from the OS Governance Committee 
+* Been reviewed by at least 2 developers from the OS Governance Committee
 
 * The Pivotal Tracker story ID (and Git Issue #, if exists)
 

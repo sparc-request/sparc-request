@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -29,12 +29,11 @@ RSpec.describe AdditionalDetails::PreviewsController do
       @service = create( :service )
       @questionnaire = build( :questionnaire, service: @service, active: false )
 
-      xhr :post, :create, {
+      post :create, params: {
         name: 'Some Program',
         service_id: @service,
-        questionnaire: @questionnaire.attributes,
-        format: :js
-      }
+        questionnaire: @questionnaire.attributes
+      }, format: :js
     end
 
     it 'should assign @questionnaire' do

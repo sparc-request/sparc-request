@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -42,9 +42,9 @@ RSpec.describe Surveyor::QuestionsController, type: :controller do
     it 'should assign @question to the question' do
       question = create(:question_without_validations)
 
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: question.id
-      }
+      }, xhr: true
 
       expect(assigns(:question)).to eq(question)
     end
@@ -53,18 +53,18 @@ RSpec.describe Surveyor::QuestionsController, type: :controller do
       question = create(:question_without_validations)
 
       expect{
-        xhr :delete, :destroy, {
+        delete :destroy, params: {
           id: question.id
-        }
+        }, xhr: true
       }.to change{ Question.count }.by(-1)
     end
 
     it 'should render template' do
       question = create(:question_without_validations)
 
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: question.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:destroy)
     end
@@ -72,9 +72,9 @@ RSpec.describe Surveyor::QuestionsController, type: :controller do
     it 'should respond ok' do
       question = create(:question_without_validations)
 
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         id: question.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

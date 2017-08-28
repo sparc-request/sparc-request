@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -443,7 +443,7 @@ RSpec.describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      expect(node).to include(expected.root)
+      expect(node[1]).to be_equivalent_to(expected.root)
     end
 
     it 'should emit a subjectOf for a pro number if the study has both a pro number and an hr number' do

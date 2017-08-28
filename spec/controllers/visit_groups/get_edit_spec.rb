@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -41,10 +41,10 @@ RSpec.describe VisitGroupsController, type: :controller do
       arm       = create(:arm, protocol: protocol, name: "Armada")
       vg        = arm.visit_groups.first
 
-      xhr :get, :edit, {
+      get :edit, params: {
         id: vg.id,
         service_request_id: sr.id
-      }
+      }, xhr: true
 
       expect(response).to have_http_status(200)
     end

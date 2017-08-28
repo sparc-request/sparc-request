@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -31,7 +31,8 @@ class SurveyResponseReport < ReportingModule
   def default_options
     {
       "Date Range" => {:field_type => :date_range, :for => "created_at", :from => "2012-03-01".to_date, :to => Date.today},
-      Survey => {:field_type => :select_tag, :custom_name_method => :title, :required => true}
+      Survey => {:field_type => :select_tag, :custom_name_method => :title, :required => true},
+      "Include Pending Responses" => { field_type: :check_box_tag, for: "show_pending" }
     }
   end
 
@@ -49,7 +50,7 @@ class SurveyResponseReport < ReportingModule
       survey.sections.each do |section|
         section.questions.each do |question|
           question.question_responses.each do |qr|
-            attrs[ActionView::Base.full_sanitizer.sanitize(question.content)] = "question_responses.where(question_id: #{question.id}).first.try(:report_content)"
+            attrs[ActionView::Base.full_sanitizer.sanitize(question.content)] = "question_responses.any? ? question_responses.where(question_id: #{question.id}).first.try(:report_content) : 'No Response'"
           end
         end
       end
@@ -78,9 +79,10 @@ class SurveyResponseReport < ReportingModule
     return :survey
   end
 
-  # Other tables to join
-  def joins
-    return :question_responses
+  # Other tables to include
+  def joins(args={})
+    # If showing pending, do not joins question responses
+    return args[:show_pending] ? nil : :question_responses
   end
 
   # Conditions

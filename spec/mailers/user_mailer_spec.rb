@@ -43,7 +43,7 @@ RSpec.describe UserMailer do
       it 'should display correct subject' do
         expect(@mail).to have_subject("SPARCRequest Authorized Users Update (Protocol #{@protocol.id})")
       end
-    
+
       it "should display the 'added' message" do
         # An Authorized User has been added in SparcDashboard ***(link to protocol)***
         expect(@mail).to have_xpath("//p[normalize-space(text()) = 'An Authorized User has been added in']")
@@ -55,7 +55,7 @@ RSpec.describe UserMailer do
       end
 
       it "should display message conclusion" do
-        expect(@mail).to have_xpath("//p[normalize-space(text()) = '#{I18n.t('proper.right_navigation.faqs.answer_6', :contact_us_email => CONTACT_US_EMAIL['to'])}']")
+        expect(@mail).to have_xpath("//p[normalize-space(text()) = '#{I18n.t('proper.right_navigation.faqs.answer_6', :contact_us_email => CONTACT_US_MAIL_TO['to'])}']")
       end
 
       it "should display acknowledgments" do
@@ -118,7 +118,7 @@ RSpec.describe UserMailer do
       end
 
       it "should display message conclusion" do
-        expect(@mail).to have_xpath("//p[normalize-space(text()) = '#{I18n.t('proper.right_navigation.faqs.answer_6', :contact_us_email => CONTACT_US_EMAIL['to'])}']")
+        expect(@mail).to have_xpath("//p[normalize-space(text()) = '#{I18n.t('proper.right_navigation.faqs.answer_6', :contact_us_email => CONTACT_US_MAIL_TO['to'])}']")
       end
 
       it "should display acknowledgments" do

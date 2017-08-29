@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -33,9 +33,9 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
     ssr         = create(:sub_service_request, service_request: sr, organization: org)
     li          = create(:line_item, service_request: sr, sub_service_request: ssr, service: @service)
 
-    xhr :get, :new, {
+    get :new, params: {
       service_id: @service.id
-    }
+    }, xhr: true
   end
 
   describe '#new' do

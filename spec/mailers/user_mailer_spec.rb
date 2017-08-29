@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -39,7 +39,11 @@ RSpec.describe UserMailer do
         @protocol_role  = create(:project_role, protocol: @protocol, identity: modified_identity, project_rights: 'approve', role: 'consultant')
         @mail           = UserMailer.authorized_user_changed(identity, @protocol, @protocol_role, 'add')
       end
-    
+
+      it 'should display correct subject' do
+        expect(@mail).to have_subject("SPARCRequest Authorized Users Update (Protocol #{@protocol.id})")
+      end
+
       it "should display the 'added' message" do
         # An Authorized User has been added in SparcDashboard ***(link to protocol)***
         expect(@mail).to have_xpath("//p[normalize-space(text()) = 'An Authorized User has been added in']")
@@ -51,7 +55,7 @@ RSpec.describe UserMailer do
       end
 
       it "should display message conclusion" do
-        expect(@mail).to have_xpath("//p[normalize-space(text()) = 'Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have.']")
+        expect(@mail).to have_xpath("//p[normalize-space(text()) = '#{I18n.t('proper.right_navigation.faqs.answer_6', :contact_us_email => CONTACT_US_MAIL_TO['to'])}']")
       end
 
       it "should display acknowledgments" do
@@ -114,7 +118,7 @@ RSpec.describe UserMailer do
       end
 
       it "should display message conclusion" do
-        expect(@mail).to have_xpath("//p[normalize-space(text()) = 'Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have.']")
+        expect(@mail).to have_xpath("//p[normalize-space(text()) = '#{I18n.t('proper.right_navigation.faqs.answer_6', :contact_us_email => CONTACT_US_MAIL_TO['to'])}']")
       end
 
       it "should display acknowledgments" do

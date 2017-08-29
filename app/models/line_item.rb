@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -34,7 +34,10 @@ class LineItem < ApplicationRecord
   has_many :procedures
   has_many :admin_rates, dependent: :destroy
   has_many :notes, as: :notable, dependent: :destroy
+  
   has_one :submission, dependent: :destroy
+  has_one :protocol, through: :service_request
+  
   attr_accessor :pricing_scheme
 
   accepts_nested_attributes_for :fulfillments, allow_destroy: true
@@ -49,8 +52,9 @@ class LineItem < ApplicationRecord
   validate :quantity_must_be_smaller_than_max_and_greater_than_min, on: :update, if: Proc.new { |li| li.service.one_time_fee }
   validates :units_per_quantity, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, on: :update, if: Proc.new { |li| li.service.one_time_fee }
 
-  after_create :build_line_items_visits, if: Proc.new { |li| li.service.present? && !li.one_time_fee && li.service_request.present? && li.service_request.arms.any? }
-
+  after_create :build_line_items_visits_if_pppv
+  before_destroy :destroy_arms_if_last_pppv_line_item
+  
   default_scope { order('line_items.id ASC') }
 
   def displayed_cost_valid?(displayed_cost)
@@ -150,7 +154,11 @@ class LineItem < ApplicationRecord
   # factor.
   def units_per_package
     unit_factor = self.service.displayed_pricing_map.unit_factor
-    units_per_package = unit_factor || 1
+    if unit_factor.nil? || unit_factor == 0
+      units_per_package = 1
+    else
+      units_per_package = unit_factor
+    end
 
     return units_per_package
   end
@@ -338,9 +346,17 @@ class LineItem < ApplicationRecord
 
   private
 
-  def build_line_items_visits
-    self.service_request.arms.each do |arm|
-      arm.line_items_visits.create(line_item: self, subject_count: arm.subject_count)
+  def build_line_items_visits_if_pppv
+    if self.service && !self.one_time_fee && self.service_request.try(:arms).try(:any?)
+      self.service_request.arms.each do |arm|
+        arm.line_items_visits.create(line_item: self, subject_count: arm.subject_count)
+      end
+    end
+  end
+
+  def destroy_arms_if_last_pppv_line_item
+    if self.try(:protocol).try(:service_requests).try(:none?) { |sr| sr.has_per_patient_per_visit_services? }
+      self.service_request.try(:arms).try(:destroy_all)
     end
   end
 end

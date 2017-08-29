@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -235,7 +235,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       alert_text << "Before creating services, please configure an active pricing setup for either the program '" << @program.name << "' or the provider '" << @program.provider.name << "'."
     end
 
-    render :text => alert_text
+    render :plain => alert_text
   end
 
   private

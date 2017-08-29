@@ -21,18 +21,18 @@
 en:
   surveyor:
     responses:
-      create: "Thank you for participating in this survey!"
+      update: "Thank you for participating in this survey!"
       complete:
         header: "Survey Completed"
         thanks: "Thank you for completing the survey!"
         to_dashboard: "Return to Dashboard"
       emails:
         system_satisfaction:
-          subject: "System satisfaction survey completed in %{site_name}"
+          subject: "System Satisfaction Survey Completed in %{site_name}"
           text1: "has completed a system satisfaction survey."
           text2: "Results can be found "
         service_survey:
-          subject: "%{site_name} Survey Notification"
+          subject: "%{site_name} Survey Notification (Request %{ssr_id})"
           greeting: "Dear %{name},"
           text1: "Thank you for requesting services from"
           text2: "The service(s) you requested have now been completed."

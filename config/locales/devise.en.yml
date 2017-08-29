@@ -32,7 +32,20 @@ en:
         other: "%{count} errors prohibited this %{resource} from being saved:"
 
   devise:
-    cancel: "Cancel"
+    #########
+    # LINKS #
+    #########
+    links:
+      sign_in: "Sign in"
+      sign_up: "Sign up"
+      forgot_password: "Forgot your password?"
+      confirmation_instructions: "Didn't receive confirmation instructions?"
+      unlock_instructions: "Didn't receive unlock instructions?"
+      provider_sign_in: "Sign in with %{provider_name}"
+
+    ###########
+    # FAILURE #
+    ###########
     failure:
       already_authenticated: 'You are already signed in.'
       unauthenticated: 'You need to sign in or sign up before continuing.'
@@ -43,8 +56,12 @@ en:
       timeout: 'Your session expired, please sign in again to continue.'
       inactive: 'Your account was not activated yet.'
       not_approved: 'Your account has not been approved by your administrator yet.'
+    
+    ############
+    # SESSIONS #
+    ############
     sessions:
-      header: "Log in"
+      header: "Login"
       institution_users: "MUSC User Login"
       other_users: "Outside User Login"
       sign_up: "Don't have an account? Sign up"
@@ -58,10 +75,16 @@ en:
         header: "Login Required"
         warning: "You must log in before starting a new Service Request."
     passwords:
-      header: "Forgot Your Password?"
-      username: "Username:"
-      send_reset: "Send Password Reset"
-      send_instructions: 'You will receive an email with instructions about how to reset your password in a few minutes.'
+      new:
+        header: "Forgot Your Password?"
+        login: "Login"
+        send_reset: "Send Password Reset"
+        send_instructions: 'You will receive an email with instructions about how to reset your password in a few minutes.'
+      edit:
+        header: "Change Your Password"
+        new_password: "New Password"
+        confirm_password: "Confirm New Password"
+        submit: "Change My Password"
       updated: 'Your password was changed successfully. You are now signed in.'
       updated_not_active: 'Your password was changed successfully.'
       send_paranoid_instructions: "If your email address exists in our database, you will receive a password recovery link at your email address in a few minutes."
@@ -73,14 +96,14 @@ en:
     registrations:
       not_allowed: "NetID and password are required for signing in. Please contact your sponsor at your home institution to register."
       header: "Create Account"
-      last_name: "Last Name:*"
-      first_name: "First Name:*"
+      last_name: "Last Name:"
+      first_name: "First Name:"
       company: "Company:"
-      email: "Email:*"
+      email: "Email:"
       phone: "Phone:"
-      username: "Username:*"
-      password: "Password:*"
-      confirmation: "Password Confirmation:*"
+      login: "Login:"
+      password: "Password:"
+      confirmation: "Password Confirmation:"
       reason: "Reason for Account Request:"
       submit: "Create Account"
       signed_up: 'Welcome! You have signed up successfully.'

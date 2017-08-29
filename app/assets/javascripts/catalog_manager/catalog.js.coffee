@@ -76,6 +76,7 @@ initialize_org_search = () ->
     for parent in suggestion['parents']
       target = $(parent).data('target')
       $(target).collapse('show')
+      $(suggestion['value_selector']).parent().siblings().find(".org-form-label").click()
   )
 
 

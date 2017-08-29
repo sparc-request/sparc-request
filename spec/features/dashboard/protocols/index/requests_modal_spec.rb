@@ -30,6 +30,10 @@ RSpec.describe 'requests modal', js: true do
     page
   end
 
+  before :each do
+    create(:permissible_value, key: 'draft', value: 'Draft', category: 'status')
+  end
+
   let!(:protocol) do
     create(:unarchived_study_without_validations,
       id: 9999,
@@ -92,7 +96,7 @@ RSpec.describe 'requests modal', js: true do
       wait_for_javascript_to_finish
 
       expect(page).to have_requests_modal
-
+      
       page.requests_modal.service_requests.first.sub_service_requests.first.edit_button.click
       wait_for_javascript_to_finish
 

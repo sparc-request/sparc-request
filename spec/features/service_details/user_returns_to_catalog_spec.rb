@@ -25,6 +25,8 @@ RSpec.describe 'User returns to catalog', js: true do
   fake_login_for_each_test
 
   before :each do
+    create(:permissible_value, key: 'draft', value: 'Draft', category: 'status')
+    
     # Data setup:
     #
     # institution1        institution2

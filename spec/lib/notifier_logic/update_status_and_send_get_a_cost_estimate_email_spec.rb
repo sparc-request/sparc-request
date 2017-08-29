@@ -25,8 +25,8 @@ RSpec.describe NotifierLogic do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
-  build_service_request_with_study
   build_statuses
+  build_service_request_with_study
 
   let(:logged_in_user)          { Identity.first }
 

@@ -55,7 +55,8 @@ class Organization < ApplicationRecord
   accepts_nested_attributes_for :available_statuses, :allow_destroy => true
   accepts_nested_attributes_for :editable_statuses, :allow_destroy => true
 
-  after_create :create_past_statuses
+  after_create :create_editable_statuses
+
   # TODO: In rails 5, the .or operator will be added for ActiveRecord queries. We should try to
   #       condense this to a single query at that point
   scope :authorized_for_identity, -> (identity_id) {
@@ -397,7 +398,7 @@ class Organization < ApplicationRecord
 
   private
 
-  def create_past_statuses
+  def create_editable_statuses
     EditableStatus.statuses.each do |status|
       self.editable_statuses.create(status: status)
     end

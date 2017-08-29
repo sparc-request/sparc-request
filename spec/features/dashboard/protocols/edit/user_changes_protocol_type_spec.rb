@@ -28,6 +28,8 @@ RSpec.describe 'User changes protocol type', js: true do
 
   context 'User is an admin' do
     before :each do
+      create(:permissible_value, key: 'foundation', value: 'Foundation', category: 'funding_source')
+
       @protocol       = create(:protocol_without_validations,
                                 type: "Project",
                                 primary_pi: jug2,
@@ -92,7 +94,6 @@ RSpec.describe 'User changes protocol type', js: true do
 
               click_button 'Save'
               wait_for_javascript_to_finish
-
               expect(page).to have_content("Study Updated!")
             end
           end

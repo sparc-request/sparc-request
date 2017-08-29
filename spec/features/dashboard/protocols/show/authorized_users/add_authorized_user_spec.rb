@@ -201,6 +201,8 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
     context 'and sets the rights to approve or request' do
       before :each do
+        create(:permissible_value, key: 'draft', value: 'Draft', category: 'status')
+        
         protocol        = create(:unarchived_project_without_validations, primary_pi: other_user)
         organization    = create(:organization)
         organization2   = create(:organization)

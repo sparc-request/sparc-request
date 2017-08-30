@@ -31,6 +31,10 @@ $ ->
     $(e.target).prev('.panel-heading').find('.glyphicon-folder-open').removeClass('glyphicon-folder-open').addClass('glyphicon-folder-close')
   )
 
+  $(document).on 'click','#clear-search-button', ->
+    $('.search-result').removeClass('search-result')
+    $('.panel-collapse.in').collapse('hide');
+
   $(document).on 'click','#availability-button', ->
     show_available_only = $(this).data('show-available-only')
     $.ajax
@@ -70,13 +74,13 @@ initialize_org_search = () ->
         notFound: '<div class="tt-suggestion">No Results</div>'
       }
     }
-  ).on('typeahead:render', (event, a, b, c) ->
-    $('[data-toggle="tooltip"]').tooltip({ 'delay' : { show: 1000, hide: 500 } })
   ).on('typeahead:select', (event, suggestion) ->
     for parent in suggestion['parents']
       target = $(parent).data('target')
       $(target).collapse('show')
-      $(suggestion['value_selector']).parent().siblings().find(".org-form-label").click()
+      form_link = $(suggestion['value_selector']).parent()
+      form_link.parent().addClass("search-result")
+      form_link.siblings().find(".org-form-label").click()
   )
 
 

@@ -24,6 +24,7 @@ $institution-service-blue: #0078AE
 $provider-green: #339933
 $program-orange: #ff9933
 $core-blue: #003366
+$result-highlight: #ffff99
 
 
 /* Styling */
@@ -57,6 +58,13 @@ $core-blue: #003366
 
 .text-core
   color: $core-blue !important
+
+.search-result
+  background: $result-highlight
+  background: -webkit-linear-gradient(left, $result-highlight, white)
+  background: -o-linear-gradient(right, $result-highlight, white)
+  background: -moz-linear-gradient(right, $result-highlight, white)
+  background: linear-gradient(to right, $result-highlight , white)
 
 #catalog, #org-form-container
   margin-top: 25px

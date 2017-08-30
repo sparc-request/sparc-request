@@ -88,7 +88,11 @@ task :protocol_merge => :environment do
   first_protocol = get_protocol(false, 'first')
   second_protocol = get_protocol(false, 'second')
 
-  continue = prompt('Preparing to merge these two protocols. Are you sure you want to continue? (y/n): ')
+  if second_protocol.last_epic_push_time && (second_protocol.last_epic_push_status == 'complete')
+    continue = prompt('The second protocol has been pushed to epic. Are you sure that you want to continue? (y/n): ')
+  else
+    continue = prompt('Preparing to merge these two protocols. Are you sure you want to continue? (y/n): ')
+  end
 
   if (continue == 'y') || (continue == 'Y')
 

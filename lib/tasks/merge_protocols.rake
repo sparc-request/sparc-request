@@ -85,6 +85,10 @@ task :protocol_merge => :environment do
     end
   end
 
+  def has_research?(protocol, research_type)
+    protocol.research_types_info.try(research_type) || false
+  end
+
   first_protocol = get_protocol(false, 'first')
   second_protocol = get_protocol(false, 'second')
 
@@ -121,7 +125,19 @@ task :protocol_merge => :environment do
       end
     end
 
-    puts "Project roles have been transferred. Assigning service requests..."
+    puts "Project roles have been assigned, checking for and assigning research types, impact areas, and affiliations..."
+
+    if has_research?(second_protocol, 'human_subjects') && !has_research?(first_protocol, 'human_subjects')
+      second_protocol.human_subjects_info.update_attributes(protocol_id: first_protocol.id)
+    elsif has_research?(second_protocol, 'vertebrate_animals') && !has_research?(first_protocol, 'vertebrate_animals')
+      second_protocol.vertebrate_animals_info.update_attributes(protocol_id: first_protocol.id)
+    elsif has_research?(second_protocol, 'investigational_products') && !has_research?(first_protocol, 'investigational_products')
+      second_protocol.investigational_products_info.update_attributes(protocol_id: first_protocol.id)
+    elsif has_research?(second_protocol, 'ip_patents') && !has_research?(first_protocol, 'ip_patents')
+      second_protocol.ip_patents_info.update_attributes(protocol_id: first_protocol.id)
+    end
+
+    puts "Research types, impact areas, and affiliations have been transferred. Assigning service requests..."
 
     fulfillment_ssrs = []
     second_protocol.service_requests.each do |request|

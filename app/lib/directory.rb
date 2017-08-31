@@ -63,14 +63,14 @@ class Directory
     end
   end
 
-  def search_and_merge_and_update_ldap_and_database_results(term)
-    ldap_results = search_ldap(term)
-    db_results = search_database(term)
-    create_or_update_database_from_ldap(ldap_results, db_results)
+  def self.search_and_merge_and_update_ldap_and_database_results(term)
+    ldap_results = self.search_ldap(term)
+    db_results = self.search_database(term)
+    self.create_or_update_database_from_ldap(ldap_results, db_results)
     # Finally, search the database a second time and return the results.
     # If there were no new identities created, then this should return
     # the same as the original call to search_database().
-    return search_database(term)
+    return self.search_database(term)
   end
 
   # Searches the database only for a given search string.  Returns an

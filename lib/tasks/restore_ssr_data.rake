@@ -8,8 +8,9 @@ task restore_ssr_data: :environment do
   
   ssr1_line_item = LineItem.create(service_request_id: service_request.id, sub_service_request_id: ssr1.id, service_id: 8286, optional: true, quantity: 1, complete_date: nil, in_process_date: nil, created_at: "2016-05-31 14:43:10", updated_at: "2017-08-02 18:55:28", deleted_at: nil, units_per_quantity: 1)
 
-  past_status1 = PastStatus.create(sub_service_request_id: ssr1.id, status: "draft", date: "2016-05-31 14:44:56", created_at: "2016-05-31 14:44:56", updated_at: "2016-08-30 15:43:41", deleted_at: nil, changed_by_id: 9394)
-  past_status2 = PastStatus.create(sub_service_request_id: ssr1.id, status: "submitted", date: "2016-06-13 16:56:02", created_at: "2016-06-13 16:56:02", updated_at: "2016-08-30 15:43:48", deleted_at: nil, changed_by_id: 22112)
+  past_status1 = PastStatus.create(sub_service_request_id: ssr1.id, status: "draft", date: "2017-08-02 18:59:36", created_at: "2017-08-02 18:59:36", updated_at: "2017-08-02 18:59:36", deleted_at: nil, changed_by_id: 54148)
+  past_status2 = PastStatus.create(sub_service_request_id: ssr1.id, status: "submitted", date: "2017-08-02 19:31:46", created_at: "2017-08-02 19:31:46", updated_at: "2017-08-02 19:31:46", deleted_at: nil, changed_by_id: 22112)
+  past_status2 = PastStatus.create(sub_service_request_id: ssr1.id, status: "ctrc_review", date: "2017-08-02 19:31:49", created_at: "2017-08-02 19:31:49", updated_at: "2017-08-02 19:31:49", deleted_at: nil, changed_by_id: 22112)
   # arm = Arm.create(name: "ARM 1", visit_count: 3, created_at: "2014-08-05 14:21:19", updated_at: "2016-11-04 20:34:39",
   #                       subject_count: 20, protocol_id: protocol.id, new_with_draft: true, minimum_visit_count: 3, minimum_subject_count: 20)
 

@@ -86,7 +86,7 @@ class Directory
     return identity if identity
     # search the ldap using unid, create the record in database, and then return it
     m = /(.*)@#{DOMAIN}/.match(ldap_uid)
-    ldap_results = search_ldap(m[1])
+    ldap_results = self.search_ldap(m[1])
     self.create_or_update_database_from_ldap(ldap_results, [])
     Identity.find_by_ldap_uid(ldap_uid)
   end

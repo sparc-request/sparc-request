@@ -55,7 +55,7 @@ class Directory
       if LAZY_LOAD
         return self.search_and_merge_ldap_and_database_results(term)
       else
-        return self.search_and_merge__and_update_ldap_and_database_results(term)
+        return self.search_and_merge_and_update_ldap_and_database_results(term)
       end
 
     else # only search database once

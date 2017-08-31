@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -26,7 +26,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
       @logged_in_user = create(:identity)
       log_in_dashboard_identity(obj: @logged_in_user)
 
-      @protocol             = create(:protocol_federally_funded, primary_pi: @logged_in_user)
+      @protocol             = create(:protocol_federally_funded, type: 'Study', primary_pi: @logged_in_user)
       @service_request      = create(:service_request_without_validations, protocol: @protocol)
       @organization         = create(:organization)
       @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization, protocol_id: @protocol.id)
@@ -38,7 +38,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
         before :each do
           create(:super_user, identity: @logged_in_user, organization: @organization)
 
-          delete :destroy, id: @sub_service_request.id, format: :js
+          delete :destroy, params: { id: @sub_service_request.id, format: :js }
         end
 
         it { is_expected.to render_template "dashboard/sub_service_requests/destroy" }
@@ -47,7 +47,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
       context 'user is not authorized admin on SSR' do
         before :each do
-          delete :destroy, id: @sub_service_request.id, format: :js
+          delete :destroy, params: { id: @sub_service_request.id, format: :js }
         end
 
         it { is_expected.to render_template "service_requests/_authorization_error" }
@@ -60,13 +60,13 @@ RSpec.describe Dashboard::SubServiceRequestsController do
       before :each do
         create(:super_user, identity: @logged_in_user, organization: @organization)
 
-        delete :destroy, id: @sub_service_request.id, format: :js
+        delete :destroy, params: { id: @sub_service_request.id, format: :js }
       end
 
       it 'should assign instance variables' do
         expect(assigns(:sub_service_request)).to eq(@sub_service_request)
         expect(assigns(:admin_orgs)).to eq([@organization])
-        expect(assigns(:protocol)).to eq(@protocol)
+        expect(assigns(:protocol)).to eq(Protocol.find(@protocol.id))
       end
 
       it { is_expected.to render_template "dashboard/sub_service_requests/destroy" }
@@ -81,16 +81,16 @@ RSpec.describe Dashboard::SubServiceRequestsController do
       end
 
       it 'should destroy toast messages for the SSR' do
-        expect{ delete :destroy, id: @sub_service_request.id, format: :js }.to change(ToastMessage, :count).by(-1)
+        expect{ delete :destroy, params: { id: @sub_service_request.id, format: :js } }.to change(ToastMessage, :count).by(-1)
       end
 
       it 'should render_template' do
-        delete(:destroy, id: @sub_service_request.id, format: :js)
+        delete :destroy, params: { id: @sub_service_request.id, format: :js }
         is_expected.to render_template "dashboard/sub_service_requests/destroy"
       end
 
       it 'should respond with ok' do
-        delete(:destroy, id: @sub_service_request.id, format: :js)
+        delete :destroy, params: { id: @sub_service_request.id, format: :js }
         is_expected.to respond_with :ok
       end
 
@@ -98,43 +98,80 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
     #####NOTIFIER#####
     context 'notifier' do
-      before :each do
-        allow(Notifier).to receive(:sub_service_request_deleted).
-          with(@logged_in_user, @sub_service_request, @logged_in_user) do
-            mailer = double('mail')
+      context 'notify user' do
+        before :each do
+          allow(Notifier).to receive(:notify_user) do
+            mailer = double('mail') 
             expect(mailer).to receive(:deliver)
             mailer
           end
+        end
+
+        context 'deleted SSR is associated with a user' do
+          before :each do
+            create(:super_user, identity: @logged_in_user, organization: @organization)
+
+            delete :destroy, params: { id: @sub_service_request.id, format: :js }
+          end
+
+          it 'should notify them' do
+            project_role = @protocol.project_roles.first
+            expect(Notifier).to have_received(:notify_user).with(project_role, @service_request, nil, anything, @logged_in_user, nil, false, @sub_service_request, true)
+          end
+
+          it { is_expected.to render_template "dashboard/sub_service_requests/destroy" }
+          it { is_expected.to respond_with :ok }
+        end
       end
 
-      context 'user is authorized user' do
+      context 'notify service_provider' do
         before :each do
-          create(:super_user, identity: @logged_in_user, organization: @organization)
-
-          delete :destroy, id: @sub_service_request.id, format: :js
+          allow(Notifier).to receive(:notify_service_provider) do
+            mailer = double('mail') 
+            expect(mailer).to receive(:deliver_now)
+            mailer
+          end
         end
+        context 'deleted SSR is associated with a service_provider' do
+          before :each do
+            @service_provider = create(:service_provider, organization: @organization, identity: @logged_in_user, hold_emails: false)
 
-        it 'should notify them' do
-          expect(Notifier).to have_received(:sub_service_request_deleted)
+            delete :destroy, params: { id: @sub_service_request.id, format: :js }
+          end
+
+          it 'should notify them' do
+            expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @service_request, @logged_in_user, @sub_service_request, anything, true, false, false)
+          end
+
+          it { is_expected.to render_template "dashboard/sub_service_requests/destroy" }
+          it { is_expected.to respond_with :ok }
         end
-
-        it { is_expected.to render_template "dashboard/sub_service_requests/destroy" }
-        it { is_expected.to respond_with :ok }
       end
 
-      context 'user is service provider' do
+      context 'notify admin' do
         before :each do
-          create(:service_provider, organization: @organization, identity: @logged_in_user, hold_emails: false)
-
-          delete :destroy, id: @sub_service_request.id, format: :js
+          allow(Notifier).to receive(:notify_admin) do
+            mailer = double('mail') 
+            expect(mailer).to receive(:deliver_now)
+            mailer
+          end
         end
+        context 'deleted SSR is associated with an admin' do
+          before :each do
+            create(:super_user, identity: @logged_in_user, organization: @organization)
+            @organization.submission_emails.create(email: 'hedwig@owlpost.com')
+            @admin_email = 'hedwig@owlpost.com'
 
-        it 'should notify them' do
-          expect(Notifier).to have_received(:sub_service_request_deleted).twice
+            delete :destroy, params: { id: @sub_service_request.id, format: :js }
+          end
+
+          it 'should notify them' do
+            expect(Notifier).to have_received(:notify_admin).with(@admin_email, @logged_in_user, @sub_service_request, anything, true, false)
+          end
+
+          it { is_expected.to render_template "dashboard/sub_service_requests/destroy" }
+          it { is_expected.to respond_with :ok }
         end
-
-        it { is_expected.to render_template "dashboard/sub_service_requests/destroy" }
-        it { is_expected.to respond_with :ok }
       end
     end
   end

@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -41,8 +41,6 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
     @arm      = create(:arm, protocol: protocol, subject_count: 10)
     @vg       = @arm.visit_groups.first
     @liv      = @arm.line_items_visits.first
-
-    stub_const('EDITABLE_STATUSES', { })
 
     visit service_calendar_service_request_path(sr)
     wait_for_javascript_to_finish
@@ -131,7 +129,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(page).to have_css('span.help-block', text: 'Is not a number')
+        expect(page).to have_content('Window before is not a number')
       end
 
       scenario 'window after' do
@@ -142,7 +140,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(page).to have_css('span.help-block', text: 'Is not a number')
+        expect(page).to have_content('Window after is not a number')
       end
 
       scenario 'day' do
@@ -153,7 +151,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(page).to have_css('span.help-block', text: 'Is not a number')
+        expect(page).to have_content('Day is not a number')
       end
 
       scenario 'subject count' do
@@ -309,7 +307,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(page).to have_css('span.help-block', text: 'Is not a number')
+        expect(page).to have_content('Window before is not a number')
       end
 
       scenario 'window after' do
@@ -320,7 +318,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(page).to have_css('span.help-block', text: 'Is not a number')
+        expect(page).to have_content('Window after is not a number')
       end
 
       scenario 'day' do
@@ -331,7 +329,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(page).to have_css('span.help-block', text: 'Is not a number')
+        expect(page).to have_content('Day is not a number')
       end
 
       scenario 'subject count' do

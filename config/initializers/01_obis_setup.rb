@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -28,6 +28,7 @@ begin
   # Otherwise all emails will be routed to DEFAULT_MAIL_TO
   SEND_EMAILS_TO_REAL_USERS                 = application_config['send_emails_to_real_users'] || false
 
+  LAZY_LOAD                                 = application_config['lazy_load']
   ADMIN_MAIL_TO                             = application_config['admin_mail_to']
   EPIC_RIGHTS_MAIL_TO                       = application_config['approve_epic_rights_mail_to']
   FEEDBACK_MAIL_TO                          = application_config['feedback_mail_to']

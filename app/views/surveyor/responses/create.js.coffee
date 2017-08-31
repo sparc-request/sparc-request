@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,21 +20,17 @@
 <% if @errors %>
 <% @response.question_responses.each do |qr| %>
 <% if qr.errors.any? %>
-if !$(".question-<%=qr.question_id%>").hasClass('has-error')
-  $(".question-<%=qr.question_id%>").addClass('has-error')
+if !$(".question-<%=qr.question_id%> .question-label").hasClass('has-error')
+  $(".question-<%=qr.question_id%> .question-label").addClass('has-error')
   <% qr.errors.full_messages.each do |message| %>
-  $(".question-<%=qr.question_id%>").append("<span class='help-block'><%= message %></span>")
+  $(".question-<%=qr.question_id%> .question-label").append("<span class='help-block'><%= message %></span>")
   <% end %>
 <% else %>
-$(".question-<%=qr.question_id%>").removeClass('has-error')
-$(".question-<%=qr.question_id%> .help-block").remove()
+$(".question-<%=qr.question_id%> .question-label").removeClass('has-error')
+$(".question-<%=qr.question_id%> .question-label .help-block").remove()
 <% end %>
 <% end %>
-<% @response.question_responses.destroy_all %>
+<% @response.destroy %>
 <% else %>
-<% if @review %>
 $('#modal_place').modal('hide')
-<% else %>
-window.location = "/surveyor/responses/<%=@response.id%>/complete"
-<% end %>
 <% end %>

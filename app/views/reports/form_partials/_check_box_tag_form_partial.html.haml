@@ -1,4 +1,4 @@
--# Copyright © 2011-2016 MUSC Foundation for Research Development
+-# Copyright © 2011-2017 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -47,6 +47,6 @@
 
 - else # for individual checkboxes that have true/false
   .col-sm-9
-    = check_box_tag name, true, '', class: default_classes, type: "checkbox"
+    = check_box_tag name, true, selected.any?, class: default_classes, type: "checkbox"
 
 -# TODO define behavior if multiple is a method or string representation of method chain

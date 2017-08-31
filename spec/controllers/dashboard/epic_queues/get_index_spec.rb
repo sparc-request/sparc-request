@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -33,7 +33,7 @@ RSpec.describe Dashboard::EpicQueuesController do
         @eq = create(:epic_queue, protocol: protocol)
         stub_const("EPIC_QUEUE_ACCESS", ['jug2'])
         log_in_dashboard_identity(obj: build(:identity, ldap_uid: 'jug2'))
-        get :index, format: :json
+        get :index, params: { format: :json }
       end
 
       it "should put all EpicQueues in @epic_queues" do
@@ -52,7 +52,7 @@ RSpec.describe Dashboard::EpicQueuesController do
                          )
         @eq = create(:epic_queue, protocol: protocol)
         log_in_dashboard_identity(obj: build_stubbed(:identity))
-        get :index, format: :json
+        get :index, params: { format: :json }
       end
 
       it "should put all EpicQueues in @epic_queues" do

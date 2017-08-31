@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -21,7 +21,7 @@
 require 'date'
 require 'rails_helper'
 
-RSpec.describe Program do
+RSpec.describe Program, type: :model do
  describe "has_pricing_setup" do
     context 'neither program nor parent provider has a pricing setup' do
       it 'should return false' do

@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -44,6 +44,7 @@ class SubServiceRequest < ApplicationRecord
   has_many :reports, :dependent => :destroy
   has_many :notifications, :dependent => :destroy
   has_many :subsidies
+  has_many :responses
   has_one :approved_subsidy, :dependent => :destroy
   has_one :pending_subsidy, :dependent => :destroy
 
@@ -139,14 +140,11 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def one_time_fee_line_items
-    line_items = LineItem.where(:sub_service_request_id => self.id).includes(:service)
-    line_items.select {|li| li.service.one_time_fee}
+    self.line_items.joins(:service).where(services: { one_time_fee: true })
   end
 
   def per_patient_per_visit_line_items
-    line_items = LineItem.where(:sub_service_request_id => self.id).includes(:service)
-
-    line_items.select {|li| !li.service.one_time_fee}
+    self.line_items.joins(:service).where(services: { one_time_fee: false })
   end
 
   def has_one_time_fee_services?
@@ -262,7 +260,7 @@ class SubServiceRequest < ApplicationRecord
     to_notify = []
     if can_be_edited?
       available = AVAILABLE_STATUSES.keys
-      editable = EDITABLE_STATUSES[organization_id] || available
+      editable = self.is_locked? || available
       changeable = available & editable
       if changeable.include?(new_status)
         #  See Pivotal Stories: #133049647 & #135639799
@@ -295,30 +293,16 @@ class SubServiceRequest < ApplicationRecord
 
   #A request is locked if the organization it's in isn't editable
   def is_locked?
-    if organization.has_editable_statuses?
-      return !EDITABLE_STATUSES[find_editable_id].include?(self.status)
-    end
-    false
+    self.status != 'first_draft' && !self.organization.process_ssrs_parent.has_editable_status?(status)
   end
 
   # Can't edit a request if it's placed in an uneditable status
   def can_be_edited?
-    if organization.has_editable_statuses?
-      EDITABLE_STATUSES[find_editable_id].include?(self.status) && !is_complete?
-    else
-      !is_complete?
-    end
+     self.status == 'first_draft' || (self.organization.process_ssrs_parent.has_editable_status?(self.status) && !self.is_complete?)
   end
 
   def is_complete?
-    return FINISHED_STATUSES.include?(status)
-  end
-
-  def find_editable_id
-    parent_ids = self.organization.parents.map(&:id)
-    EDITABLE_STATUSES.keys.each do |org_id|
-      return org_id if (org_id == self.organization_id) || parent_ids.include?(org_id)
-    end
+    FINISHED_STATUSES.include?(self.status)
   end
 
   def set_to_draft
@@ -435,6 +419,10 @@ class SubServiceRequest < ApplicationRecord
         SurveyNotification.service_survey(available_surveys, service_requester, self).deliver
       end
     end
+  end
+
+  def surveys_completed?
+    self.responses.all?(&:completed?)
   end
 
   ###############################

@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -38,7 +38,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
     #####INSTANCE VARIABLES#####
     context 'instance variables' do
       before :each do
-        xhr :get, :show, id: @sub_service_request.id, format: :js
+        get :show, params: { id: @sub_service_request.id, format: :js }, xhr: true
       end
 
       it 'should assign instance variables' do
@@ -58,7 +58,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
     context '@pages' do
       context 'session[:service_calendar_pages] not assigned' do
         before :each do
-          xhr :get, :show, id: @sub_service_request.id, format: :js
+          get :show, params: { id: @sub_service_request.id, format: :js }, xhr: true
         end
 
         it 'should set the page to 1 for all arms' do
@@ -71,7 +71,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
       context 'session[:service_calendar_pages] is assigned' do
         before :each do
-          xhr :get, :show, id: @sub_service_request.id, arm_id: @arm.id, page: 1, format: :js
+          get :show, params: { id: @sub_service_request.id, arm_id: @arm.id, page: 1, format: :js }, xhr: true
         end
 
         it 'should set corresponding page for all arms' do
@@ -87,7 +87,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
     context 'session[:service_calendar_pages]' do
       context 'params[:pages] assigned' do
         before :each do
-          xhr :get, :show, id: @sub_service_request.id, pages: 'pages', format: :js
+          get :show, params: { id: @sub_service_request.id, pages: 'pages', format: :js }, xhr: true
         end
 
         it 'should be assigned' do
@@ -100,7 +100,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
       context 'params[:pages] not assigned' do
         before :each do
-          xhr :get, :show, id: @sub_service_request.id, format: :js
+          get :show, params: { id: @sub_service_request.id, format: :js }, xhr: true
         end
 
         it 'should not be assigned' do
@@ -113,7 +113,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
       context 'params[:arm_id] and params[:page] assigned' do
         before :each do
-          xhr :get, :show, id: @sub_service_request.id, arm_id: @arm.id, page: 1, format: :js
+          get :show, params: { id: @sub_service_request.id, arm_id: @arm.id, page: 1, format: :js }, xhr: true
         end
 
         it 'should be assigned' do

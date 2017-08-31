@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -39,7 +39,7 @@ RSpec.describe Dashboard::DocumentsController do
                           create(:super_user, identity: logged_in_user, organization: organization)
         @document       = create(:document, protocol: @protocol)
         
-        xhr :delete, :destroy, id: @document.id, format: :js
+        delete :destroy, params: { id: @document.id, format: :js }, xhr: true
       end
 
       it 'should assign @document' do
@@ -71,7 +71,7 @@ RSpec.describe Dashboard::DocumentsController do
         protocol  = create(:protocol_without_validations, primary_pi: other_user)
         document  = create(:document, protocol: protocol)
         
-        xhr :delete, :destroy, id: document.id, format: :js
+        delete :destroy, params: { id: document.id }, xhr: true
       end
 
       it 'should not destroy the document' do
@@ -93,7 +93,7 @@ RSpec.describe Dashboard::DocumentsController do
 
         document.sub_service_requests = [ssr]
 
-        xhr :delete, :destroy, id: document.id, format: :js
+        delete :destroy, params: { id: document.id, format: :js }, xhr: true
       end
 
       it 'should destroy the document' do
@@ -109,7 +109,7 @@ RSpec.describe Dashboard::DocumentsController do
         protocol  = create(:protocol_without_validations, primary_pi: other_user)
         document  = create(:document, protocol: protocol)
 
-        xhr :delete, :destroy, id: document.id, format: :js
+        delete :destroy, params: { id: document.id, format: :js }, xhr: true
       end
 
       it 'should not destroy the document' do

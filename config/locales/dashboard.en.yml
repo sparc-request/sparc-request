@@ -181,6 +181,13 @@ en:
     #  PROTOCOLS  #
     ###############
     protocols:
+      form:
+        edit_selected_for_epic: 'Edit'
+        cancel_edit_selected_for_epic: 'Cancel Edit'
+        edit_answer: 'Edit'
+        new_answer: 'Answer'
+        cancel_edit_answer: 'Cancel Edit'
+
       table:
         exporter: "Exporter"
         header: "Protocols"
@@ -203,6 +210,18 @@ en:
         coverage_report: 'Coverage Analysis Report'
         consolidated_all: "All"
         consolidated_exclude_drafts: "Exclude Drafts"
+      milestones:
+        title: 'Milestones (Timeline)'
+        start_date: "Start Date"
+        end_date: "End Date"
+        recruitment_start: "Estimated Recruitment Start Date"
+        recruitment_end: "Estimated Recruitment End Date"
+        update_button: 'Update Milestones'
+        tooltips:
+          start_date: "Project/Study estimated start date (used by service providers to prioritize)"
+          end_date: "Project/Study estimated end date (used by service providers to prioritize)"
+          recruitment_start_date: "When your Project/Study is estimated to start recruiting participants"
+          recruitment_end_date: "When your Project/Study is estimated to stop recruiting participants"
     #####################
     # SERVICE CALENDARS #
     #####################
@@ -317,6 +336,7 @@ en:
             send_to_epic: "Send to Epic"
             core_approvals: "Administrative Approvals"
             export_to_excel: "Export to Excel"
+            resend_surveys: "Resend Surveys"
             delete_request: "Delete Request"
           timeline:
             header: "Timeline"

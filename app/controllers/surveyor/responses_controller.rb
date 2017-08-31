@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -23,10 +23,10 @@ class Surveyor::ResponsesController < ApplicationController
 
   before_action :authenticate_identity!
   before_action :find_survey, only: [:new]
+  before_action :find_response, only: [:show, :edit, :update]
 
   def show
-    @response = Response.find(params[:id])
-    @survey   = @response.survey
+    @survey = @response.survey
 
     respond_to do |format|
       format.html
@@ -34,36 +34,61 @@ class Surveyor::ResponsesController < ApplicationController
   end
 
   def new
-    @response = @survey.responses.new
+    @review               = 'true'
+    @sub_service_request  = nil
+    @response             = @survey.responses.new
     @response.question_responses.build
 
     respond_to do |format|
-      format.html {
-        @review = 'false'
-        @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-      }
-      format.js {
-        @review = 'true'
-        @sub_service_request = nil
-      }
+      format.js
     end
   end
 
   def create
     @response = Response.new(response_params)
-    @review   = params[:review] == 'true'
 
     if @response.save && @response.question_responses.none? { |qr| qr.errors.any? }
       # Delete responses to questions that didn't show anyways to avoid confusion in the data
       @response.question_responses.where(required: true, content: [nil, '']).destroy_all
-      SurveyNotification.system_satisfaction_survey(@response) if @response.survey.access_code == 'system-satisfaction-survey'
-      
-      flash[:success] = t(:surveyor)[:responses][:create]
+      SurveyNotification.system_satisfaction_survey(@response).deliver_now if @response.survey.access_code == 'system-satisfaction-survey'
     else
-      @response.destroy
-      
       @errors = true
     end
+
+    respond_to do |format|
+      format.js
+    end
+  end
+
+  def edit
+    redirect_to surveyor_response_complete_path(@response) if @response.completed?
+
+    @response.question_responses.build
+
+    @review               = 'false'
+    @sub_service_request  = @response.sub_service_request
+    
+    respond_to do |format|
+      format.html
+    end
+  end
+
+  def update
+    if @response.update_attributes(response_params) && @response.question_responses.none? { |qr| qr.errors.any? }
+      # Delete responses to questions that didn't show anyways to avoid confusion in the data
+      @response.question_responses.where(required: true, content: [nil, '']).destroy_all
+      
+      flash[:success] = t(:surveyor)[:responses][:update]
+    else
+      @errors = true
+    end
+
+    respond_to do |format|
+      format.js
+    end
+  end
+
+  def complete
   end
 
   private
@@ -76,6 +101,10 @@ class Surveyor::ResponsesController < ApplicationController
     else
       @survey = surveys.first
     end
+  end
+
+  def find_response
+    @response = Response.find(params[:id])
   end
 
   def response_params

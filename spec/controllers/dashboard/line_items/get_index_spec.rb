@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -30,7 +30,7 @@ RSpec.describe Dashboard::LineItemsController do
         and_return("my otf line items")
 
       log_in_dashboard_identity(obj: build_stubbed(:identity))
-      get :index, sub_service_request_id: @sub_service_request.id, format: :json
+      get :index, params: { sub_service_request_id: @sub_service_request.id, format: :json }
     end
 
     it "should assign @sub_service_request from params[:sub_service_request_id]" do

@@ -72,6 +72,16 @@ class Directory
     return identities
   end
 
+  def self.find_or_create(ldap_uid)
+    identity = Identity.find_by_ldap_uid(ldap_uid)
+    return identity if identity
+    # search the ldap using unid, create the record in database, and then return it
+    m = /(.*)@#{DOMAIN}/.match(ldap_uid)
+    ldap_results = search_ldap(m[1])
+    self.create_or_update_database_from_ldap(ldap_results, [])
+    Identity.find_by_ldap_uid(ldap_uid)
+  end
+
   # Searches LDAP only for the given search string.  Returns an array of
   # Net::LDAP::Entry.
   def self.search_ldap(term)
@@ -186,7 +196,7 @@ class Directory
       end
     end
   end
-  
+
   # search and merge results but don't change the database
   # this assumes USE_LDAP = true, otherwise you wouldn't use this function
   def self.search_and_merge_ldap_and_database_results(term)
@@ -202,11 +212,11 @@ class Directory
       uid = "#{ldap_result[LDAP_UID].try(:first).try(:downcase)}@#{DOMAIN}"
       if identities[uid]
         results << identities[uid]
-      else 
+      else
         email = ldap_result[LDAP_EMAIL].try(:first)
         if email && email.strip.length > 0 # all SPARC users must have an email, this filters out some of the inactive LDAP users.
           results << Identity.new(ldap_uid: uid, first_name: ldap_result[LDAP_FIRST_NAME].try(:first), last_name: ldap_result[LDAP_LAST_NAME].try(:first), email: email)
-        end  
+        end
       end
     end
     results

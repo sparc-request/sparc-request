@@ -90,6 +90,14 @@ class Identity < ApplicationRecord
     false
   end
 
+  def suggestion_value
+    if LAZY_LOAD && USE_LDAP
+      ldap_uid
+    else
+      id
+    end
+  end
+
   ###############################################################################
   ############################## HELPER METHODS #################################
   ###############################################################################
@@ -159,6 +167,14 @@ class Identity < ApplicationRecord
 
   def self.search(term)
     return Directory.search(term)
+  end
+
+  def self.find_or_create(id)
+    if LAZY_LOAD && USE_LDAP
+      return Directory.find_or_create(id)
+    else
+      return self.find(id)
+    end
   end
 
   ###############################################################################
@@ -233,7 +249,7 @@ class Identity < ApplicationRecord
   def can_edit_protocol?(protocol)
     protocol.project_roles.where(identity_id: self.id, project_rights: ['approve', 'request']).any?
   end
-  
+
   # Determines whether this identity can edit a given organization's information in CatalogManager.
   # Returns true if this identity's catalog_manager_organizations includes the given organization.
   def can_edit_entity? organization, deep_search=false

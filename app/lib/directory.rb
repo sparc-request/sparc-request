@@ -50,18 +50,27 @@ class Directory
   def self.search(term)
     # Search ldap (if enabled) and the database
     if USE_LDAP && !SUPPRESS_LDAP_FOR_USER_SEARCH
-      ldap_results = search_ldap(term)
-      db_results = search_database(term)
       # If there are any entries returned from ldap that were not in the
       # database, then create them
-      create_or_update_database_from_ldap(ldap_results, db_results)
-      # Finally, search the database a second time and return the results.
-      # If there were no new identities created, then this should return
-      # the same as the original call to search_database().
-      return search_database(term)
+      if LAZY_LOAD
+        return self.search_and_merge_ldap_and_database_results(term)
+      else
+        return self.search_and_merge__and_update_ldap_and_database_results(term)
+      end
+
     else # only search database once
       return search_database(term)
     end
+  end
+
+  def search_and_merge__and_update_ldap_and_database_results(term)
+    ldap_results = search_ldap(term)
+    db_results = search_database(term)
+    create_or_update_database_from_ldap(ldap_results, db_results)
+    # Finally, search the database a second time and return the results.
+    # If there were no new identities created, then this should return
+    # the same as the original call to search_database().
+    return search_database(term)
   end
 
   # Searches the database only for a given search string.  Returns an

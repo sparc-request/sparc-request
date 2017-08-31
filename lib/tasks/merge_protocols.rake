@@ -137,6 +137,16 @@ task :protocol_merge => :environment do
       second_protocol.ip_patents_info.update_attributes(protocol_id: first_protocol.id)
     end
 
+    second_protocol.impact_areas.each do |area|
+      area.protocol_id = first_protocol.id
+      area.save(validate: false)
+    end
+
+    second_protocol.affiliations.each do |affiliation|
+      affiliation.protocol_id = first_protocol.id
+      affiliation.save(validate: false)
+    end
+
     puts "Research types, impact areas, and affiliations have been transferred. Assigning service requests..."
 
     fulfillment_ssrs = []

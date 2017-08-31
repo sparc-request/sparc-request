@@ -4,7 +4,7 @@ task restore_ssr_data: :environment do
   protocol = Protocol.find(11177)
   service_request = ServiceRequest.find(1528211)
 
-  ssr1 = SubServiceRequest.create(service_request_id: service_request.id, organization_id: 11, owner_id: 22112, ssr_id: "0001", status_date: nil, status: "ctrc_approved", created_at: "2017-08-02 18:55:28", updated_at: "2017-08-02 19:57:48", deleted_at: nil, consult_arranged_date: "2017-08-09 04:00:00", requester_contacted_date: "2017-08-02 04:00:00", nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false, in_work_fulfillment: true, routing: nil, org_tree_display: "SCTR/SUCCESS Center/Regulatory Services", service_requester_id: 54148, submitted_at: "2017-08-02 18:59:36", protocol_id: protocol.id)
+  ssr1 = SubServiceRequest.create(service_request_id: service_request.id, organization_id: 11, owner_id: 22112, ssr_id: "0001", status: "ctrc_approved", created_at: "2017-08-02 18:55:28", updated_at: "2017-08-02 19:57:48", deleted_at: nil, nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false, in_work_fulfillment: true, routing: nil, org_tree_display: "SCTR/SUCCESS Center/Regulatory Services", service_requester_id: 54148, submitted_at: "2017-08-02 18:59:36", protocol_id: protocol.id)
   
   ssr1_line_item = LineItem.create(service_request_id: service_request.id, sub_service_request_id: ssr1.id, service_id: 8286, optional: true, quantity: 1, complete_date: nil, in_process_date: nil, created_at: "2016-05-31 14:43:10", updated_at: "2017-08-02 18:55:28", deleted_at: nil, units_per_quantity: 1)
 

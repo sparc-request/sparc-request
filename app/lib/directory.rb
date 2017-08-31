@@ -63,7 +63,7 @@ class Directory
     end
   end
 
-  def search_and_merge__and_update_ldap_and_database_results(term)
+  def search_and_merge_and_update_ldap_and_database_results(term)
     ldap_results = search_ldap(term)
     db_results = search_database(term)
     create_or_update_database_from_ldap(ldap_results, db_results)

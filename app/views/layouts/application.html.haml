@@ -37,7 +37,7 @@
     = Gon::Base.render_data
 
   %body#body
-    - if ENV['site_name'] != 'production'
+    - if ENV.key?("site_name")
       .alert.alert-danger
         %p.text-center{:style => "letter-spacing: 8px"}
           = ENV['site_name']

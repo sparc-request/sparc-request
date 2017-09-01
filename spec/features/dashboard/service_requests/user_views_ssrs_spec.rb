@@ -34,10 +34,6 @@ RSpec.describe "User views SSR table", js: true do
 
   context 'for an editable SSR' do
     context 'As an Authorized User with Edit Privileges' do
-      before :each do
-        create(:permissible_value, key: 'draft', value: 'Draft', category: 'status')
-      end
-
       let!(:protocol)             { create(:unarchived_study_without_validations, primary_pi: jug2) }
       let!(:service_request)      { create(:service_request_without_validations, protocol: protocol, status: 'draft') }
       let!(:organization)         { create(:organization,type: 'Institution', name: 'Megacorp', admin: bob, service_provider: bob) }

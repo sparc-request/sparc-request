@@ -53,8 +53,6 @@ RSpec.describe 'service request list', js: true do
     end
 
     before(:each) do
-      create(:permissible_value, key: 'draft', value: 'Draft', category: 'status')
-      
       first_draft_ssr = create(:sub_service_request,
         service_request: service_request,
         organization: create(:organization),

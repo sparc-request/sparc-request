@@ -43,8 +43,6 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
            approved: true)
   end
 
-  build_user_roles
-  
   before(:each) do
     stub_const('USE_LDAP', false)
   end

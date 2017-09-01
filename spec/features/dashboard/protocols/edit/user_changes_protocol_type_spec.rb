@@ -28,8 +28,6 @@ RSpec.describe 'User changes protocol type', js: true do
 
   context 'User is an admin' do
     before :each do
-      create(:permissible_value, key: 'foundation', value: 'Foundation', category: 'funding_source')
-
       @protocol       = create(:protocol_without_validations,
                                 type: "Project",
                                 primary_pi: jug2,

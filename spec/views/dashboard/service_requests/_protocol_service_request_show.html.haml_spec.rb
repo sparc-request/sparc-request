@@ -24,7 +24,6 @@ require 'rails_helper'
 RSpec.describe 'dashboard/service_requests/protocol_service_request_show', type: :view do
   # TODO replace Lane with Identity stub
   let_there_be_lane
-  build_statuses
 
   let!(:protocol) do
     create(:protocol_federally_funded,

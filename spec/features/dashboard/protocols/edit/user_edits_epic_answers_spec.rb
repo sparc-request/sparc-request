@@ -27,8 +27,6 @@ RSpec.describe 'User edits epic answers', js: true do
   build_study_type_questions
 
   before :each do
-    create(:permissible_value, key: 'foundation', value: 'Foundation', category: 'funding_source')
-    
     @protocol       = create(:protocol_without_validations,
                               type: "Study",
                               primary_pi: jug2,

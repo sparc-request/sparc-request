@@ -25,8 +25,6 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
 
   let!(:other_user) { create(:identity, last_name: "Doe", first_name: "Jane", ldap_uid: "janed", email: "janed@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
 
-  build_user_roles
-  
   before(:each) { stub_const('USE_LDAP', false) }
 
   context 'which is not assigned to themself' do

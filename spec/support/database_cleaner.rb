@@ -19,13 +19,12 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 RSpec.configure do |config|
-
   config.before(:suite) do
     DatabaseCleaner[:active_record, connection: :test].clean_with :truncation
   end
 
   config.before(:each) do |example|
-    DatabaseCleaner[:active_record, connection: :test].strategy = :truncation
+    DatabaseCleaner[:active_record, connection: :test].strategy = :truncation, { except: %w[permissible_values] }
     DatabaseCleaner.start
   end
 

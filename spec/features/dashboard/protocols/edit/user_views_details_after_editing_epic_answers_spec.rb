@@ -26,10 +26,6 @@ RSpec.describe 'User views details after editing epic answers', js: true do
   build_study_type_question_groups
   build_study_type_questions
 
-  before :each do
-    create(:permissible_value, key: 'foundation', value: 'Foundation', category: 'funding_source')
-  end
-
   context 'use epic = true' do
     context 'Study, selected for epic: true, question group 3' do
       context 'user views epic answers in view details' do

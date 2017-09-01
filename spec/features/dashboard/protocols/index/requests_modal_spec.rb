@@ -30,10 +30,6 @@ RSpec.describe 'requests modal', js: true do
     page
   end
 
-  before :each do
-    create(:permissible_value, key: 'draft', value: 'Draft', category: 'status')
-  end
-
   let!(:protocol) do
     create(:unarchived_study_without_validations,
       id: 9999,

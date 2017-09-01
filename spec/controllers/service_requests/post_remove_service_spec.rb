@@ -24,7 +24,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
   stub_controller
   let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
-  build_statuses
 
   describe '#remove_service' do
     it 'should call before_filter #initialize_service_request' do

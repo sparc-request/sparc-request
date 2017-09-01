@@ -206,6 +206,10 @@ class Directory
     end
   end
 
+  def self.get_cn_from_dn(dn)
+    dn.split(',')[0].split('=')[1]
+  end
+
   # search and merge results but don't change the database
   # this assumes USE_LDAP = true, otherwise you wouldn't use this function
   def self.search_and_merge_ldap_and_database_results(term)
@@ -218,7 +222,7 @@ class Directory
     end
     ldap_results = Directory.search_ldap(term)
     ldap_results.each do |ldap_result|
-      uid = "#{ldap_result[LDAP_UID].try(:first).try(:downcase)}@#{DOMAIN}"
+      uid = self.get_cn_from_dn("#{ldap_result[LDAP_UID].try(:first).try(:downcase)}@#{DOMAIN}")
       if identities[uid]
         results << identities[uid]
       else

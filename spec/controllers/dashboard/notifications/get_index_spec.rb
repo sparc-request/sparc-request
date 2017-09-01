@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -31,7 +31,7 @@ RSpec.describe Dashboard::NotificationsController do
           and_return(["inbox notification1", "inbox notification1", "inbox notification2"])
 
         log_in_dashboard_identity(obj: @logged_in_user)
-        get :index, table: "inbox", sub_service_request_id: "SubServiceRequest id"
+        get :index, params: { table: "inbox", sub_service_request_id: "SubServiceRequest id" }
       end
 
       it "should asssign @table to params[:table]" do
@@ -55,7 +55,7 @@ RSpec.describe Dashboard::NotificationsController do
           and_return(["sent notification1", "sent notification1", "sent notification2"])
 
         log_in_dashboard_identity(obj: @logged_in_user)
-        get :index, table: "not-inbox", sub_service_request_id: "SubServiceRequest id"
+        get :index, params: { table: "not-inbox", sub_service_request_id: "SubServiceRequest id" }
       end
 
       it "should asssign @table to params[:table]" do

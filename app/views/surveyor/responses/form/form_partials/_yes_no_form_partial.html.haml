@@ -1,4 +1,4 @@
--# Copyright © 2011-2016 MUSC Foundation for Research Development
+-# Copyright © 2011-2017 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,7 +20,7 @@
 .form-group
   - question.options.each do |option|
     .col-lg-2.no-padding
-      - if ['new', 'preview'].include?(action_name)
+      - if ['new', 'edit', 'preview'].include?(action_name)
         .col-lg-6.no-padding.text-center.option{ data: { question_id: question.id, option_id: option.id } }
           = qr.radio_button :content, option.content.downcase
         = option.content

@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -26,7 +26,7 @@ RSpec.describe Dashboard::ProtocolsController do
       before(:each) do
         @current_user = build_stubbed(:identity)
         log_in_dashboard_identity(obj: @current_user)
-        get :new, protocol_type: 'project'
+        get :new, params: { protocol_type: 'project' }
       end
 
       it 'should set @protocol_type to "project"' do
@@ -51,7 +51,7 @@ RSpec.describe Dashboard::ProtocolsController do
       before(:each) do
         @current_user = build_stubbed(:identity)
         log_in_dashboard_identity(obj: @current_user)
-        get :new, protocol_type: 'study'
+        get :new, params: { protocol_type: 'study' }
       end
 
       it 'should set @protocol_type to "study"' do

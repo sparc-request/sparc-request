@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -21,7 +21,7 @@
 # Percent subsidy is held.
 # Calculating percent subsidy based on pi contribution for both
 # PastSubsidy and Subsidy tables
-class UpdatePercentSubsidyForPastSubsidyAndSubsidy < ActiveRecord::Migration
+class UpdatePercentSubsidyForPastSubsidyAndSubsidy < ActiveRecord::Migration[4.2]
   class Subsidy < ActiveRecord::Base
   end
 

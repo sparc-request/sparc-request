@@ -1,4 +1,4 @@
--# Copyright © 2011-2016 MUSC Foundation for Research Development
+-# Copyright © 2011-2017 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -35,6 +35,10 @@
               = t(:dashboard)[:sub_service_requests][:tabs][:request_details][:options][:core_approvals]
         %td.text-center
           = link_to t(:dashboard)[:sub_service_requests][:tabs][:request_details][:options][:export_to_excel], service_request_path(service_request, format: :xlsx, admin_offset: 1, sub_service_request_id: sub_service_request.id), :class => "export_to_excel_button btn btn-sm btn-primary"
+        - if sub_service_request.is_complete? && !sub_service_request.surveys_completed?
+          %td.text-center
+            %button.btn.btn-sm.btn-primary#resend-surveys-button{ data: { sub_service_request_id: sub_service_request.id } }
+              = t(:dashboard)[:sub_service_requests][:tabs][:request_details][:options][:resend_surveys]
         %td.text-center
           %button.btn.btn-sm.btn-danger#delete_ssr_button{ data: { sub_service_request_id: sub_service_request.id }}
             %span
@@ -48,27 +52,17 @@
   .panel-body#timeline_table
     .row
       .col-xs-12
-        .col-xs-3
-          %label
-            = t(:dashboard)[:sub_service_requests][:tabs][:request_details][:timeline][:start_date]
-        .col-xs-3
-          %label
-            = t(:dashboard)[:sub_service_requests][:tabs][:request_details][:timeline][:end_date]
-        .col-xs-3
+        .col-xs-6
           %label
             = t(:dashboard)[:sub_service_requests][:tabs][:request_details][:timeline][:arranged_date]
-        .col-xs-3
+        .col-xs-6
           %label
             = t(:dashboard)[:sub_service_requests][:tabs][:request_details][:timeline][:contacted_date]
     .row
       .col-xs-12
-        .col-xs-3
-          = text_field_tag "protocol_start_date_picker", protocol.try(:start_date).try(:strftime, '%D'), class: 'date datetimepicker form-control', :'data-protocol_id' => sub_service_request.try(:protocol).try(:id), :'data-sub_service_request_id' => sub_service_request.try(:id)
-        .col-xs-3
-          = text_field_tag "protocol_end_date_picker", protocol.try(:end_date).try(:strftime, '%D'), class: 'date datetimepicker form-control', :'data-protocol_id' => sub_service_request.try(:protocol).try(:id), :'data-sub_service_request_id' => sub_service_request.try(:id)
-        .col-xs-3
+        .col-xs-6
           = text_field_tag "sub_service_request_consult_arranged_date_picker", sub_service_request.try(:consult_arranged_date).try(:strftime, '%D'), class: 'date datetimepicker form-control', :'data-sub_service_request_id' => sub_service_request.try(:id)
-        .col-xs-3
+        .col-xs-6
           = text_field_tag "sub_service_request_requester_contacted_date_picker", sub_service_request.try(:requester_contacted_date).try(:strftime, '%D'), class: 'date datetimepicker form-control', :'data-sub_service_request_id' => sub_service_request.try(:id)
 
 - if sub_service_request.eligible_for_subsidy?

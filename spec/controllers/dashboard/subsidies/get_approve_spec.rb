@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -40,7 +40,7 @@ RSpec.describe Dashboard::SubsidiesController do
       @pending_subsidy = create(:pending_subsidy,
                                 sub_service_request_id: @ssr.id,
                                 percent_subsidy: 0.1)
-      xhr :get, :approve, id: @pending_subsidy.id, format: :js
+      get :approve, params: { id: @pending_subsidy.id, format: :js }, xhr: true
     end
 
     it { is_expected.to render_template "dashboard/subsidies/approve" }

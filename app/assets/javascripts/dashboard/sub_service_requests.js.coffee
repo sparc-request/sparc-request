@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -61,6 +61,13 @@ $(document).ready ->
       type: 'PUT'
       url: "/dashboard/sub_service_requests/#{sub_service_request_id}/push_to_epic"
 
+  $(document).on 'click', '#resend-surveys-button', ->
+    $(this).prop('disabled', true)
+    ssr_id = $(this).data('sub-service-request-id')
+    $.ajax
+      type: 'PUT'
+      url: "/dashboard/sub_service_requests/#{ssr_id}/resend_surveys"
+      success: ->
 
   # SERVICE REQUEST INFO LISTENERS END
   # ADMIN TAB LISTENER BEGIN
@@ -97,26 +104,6 @@ $(document).ready ->
 
   # STUDY SCHEDULE TAB END
   # TIMELINE LISTENERS BEGIN
-
-  $(document).on 'dp.hide', '#protocol_start_date_picker', ->
-    protocol_id = $(this).data('protocol_id')
-    ssr_id = $(this).data('sub_service_request_id')
-    start_date = $(this).val()
-    data = 'protocol' : {'start_date' : start_date}, 'sub_service_request' : {'id' : ssr_id}
-    $.ajax
-      type: 'PATCH'
-      url: "/dashboard/protocols/#{protocol_id}"
-      data: data
-
-  $(document).on 'dp.hide', '#protocol_end_date_picker', ->
-    protocol_id = $(this).data('protocol_id')
-    ssr_id = $(this).data('sub_service_request_id')
-    end_date = $(this).val()
-    data = 'protocol' : {'end_date' : end_date}, 'sub_service_request' : {'id' : ssr_id}
-    $.ajax
-      type: 'PATCH'
-      url: "/dashboard/protocols/#{protocol_id}"
-      data: data
 
   $(document).on 'dp.hide', '#sub_service_request_consult_arranged_date_picker', ->
     ssr_id = $(this).data('sub_service_request_id')

@@ -1,4 +1,4 @@
-/* Copyright © 2011 MUSC Foundation for Research Development*/
+/* Copyright © 2011-2017 MUSC Foundation for Research Development*/
 /* All rights reserved.*/
 
 /* Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:*/
@@ -20,112 +20,189 @@
 @import 'proper/colors'
 
 .steps
-  padding: 0 !important
-  div
-    padding: 0
-
-  .steps-banner-container
+  .container-fluid
     display: flex
 
-    #steps-banner
-      list-style-type: none
-      padding: 0
-      margin: 0
-      width: 100%
-      @media (min-width: 768px)
-        li
-          float: left
-          position: relative
-          width: 20%
-        li:first-child
-          z-index: 5
-          left: 68px
-        li:nth-child(2)
-          z-index: 4
-          left: 34px
-        li:nth-child(3)
-          z-index: 3
-        li:nth-child(4)
-          z-index: 2
-          right: 34px
-        li:nth-child(5)
-          z-index: 1
-          right: 68px
-      @media (max-width: 768px)
-        li
-          width: 100%
-      li
-        .step-btn:focus
-          outline: 0
-        .step-btn:hover
-          text-decoration: none
-        .step-btn
-          display: flex
-          width: 100%
-          .step-text
-            padding: 8px 0
-            width: 80%
-            margin-top: auto
-            margin-bottom: auto
-            color: white
-            border-radius: 0
-            outline: none
-            box-shadow: 0 0 0
-            font-size: 13px
-            cursor: default
-          .right-arrow
-            width: 0
-            height: 0
-            border-top: 50px solid transparent
-            border-bottom: 50px solid transparent
-            border-left: 45px solid
-        a.step-btn
-          .step-text,.right-arrow:hover
-            cursor: pointer
+#steps-banner
+  list-style-type: none
+  display: inline-flex
+  width: 100%
 
-      .step-btn-blue
-        background: $sparc-blue
-      .step-btn-blue.hover
-        background: $sparc-blue-hover
-      .step-btn-light-blue
-        background: $sparc-light-blue
-      .step-btn-light-blue.hover
-        background: $sparc-light-blue-hover
-      .step-btn-orange
-        background: $sparc-orange
-      .step-btn-orange.hover
-        background: $sparc-orange-hover
-      .step-btn-red
-        background: $sparc-red
-      .step-btn-red.hover
-        background: $sparc-red-hover
-      .step-btn-green
-        background: $sparc-green
-      .step-btn-green.hover
-        background: $sparc-green-hover
+  li
+    position: relative
+  li:not(:last-child)
+    float: left
+  li:last-child
+    float: right
 
-      .right-arrow-blue
-        border-left-color: $sparc-blue !important
-      .right-arrow-blue.hover
-        border-left-color: $sparc-blue-hover !important
-      .right-arrow-light-blue
-        border-left-color: $sparc-light-blue !important
-      .right-arrow-light-blue.hover
-        border-left-color: $sparc-light-blue-hover !important
-      .right-arrow-orange
-        border-left-color: $sparc-orange !important
-      .right-arrow-orange.hover
-        border-left-color: $sparc-orange-hover !important
-      .right-arrow-red
-        border-left-color: $sparc-red !important
-      .right-arrow-red.hover
-        border-left-color: $sparc-red-hover !important
-      .right-arrow-green
-        border-left-color: $sparc-green !important
-      .right-arrow-green.hover
-        border-left-color: $sparc-green-hover !important
+  li:first-child
+    z-index: 7
+  li:nth-child(2)
+    z-index: 6
+  li:nth-child(3)
+    z-index: 5
+  li:nth-child(4)
+    z-index: 4
+  li:nth-child(5)
+    z-index: 3
+  li:nth-child(6)
+    z-index: 2
+  li:nth-child(7)
+    z-index: 1
+
+  li.step-no-subsidy
+    width: 241.66667px
+  li.step-with-subsidy
+    width: 209.71429px
+
+  li.step-no-subsidy:nth-child(2)
+    right: 36px
+  li.step-no-subsidy:nth-child(3)
+    right: 72px
+  li.step-no-subsidy:nth-child(4)
+    right: 108px
+  li.step-no-subsidy:nth-child(5)
+    right: 144px
+  li.step-no-subsidy:nth-child(6)
+    right: 180px
+
+  li.step-with-subsidy:nth-child(2)
+    right: 33px
+  li.step-with-subsidy:nth-child(3)
+    right: 66px
+  li.step-with-subsidy:nth-child(4)
+    right: 99px
+  li.step-with-subsidy:nth-child(5)
+    right: 132px
+  li.step-with-subsidy:nth-child(6)
+    right: 165px
+  li.step-with-subsidy:nth-child(7)
+    right: 198px
+
+
+
+/* Step Button Styles */
+.step-btn
+  display: flex
+  width: 100%
+  .step-text
+    padding: 8px 0
+    width: 80%
+    margin-top: auto
+    margin-bottom: auto
+    color: white !important
+    border-radius: 0
+    outline: none
+    box-shadow: 0 0 0 !important
+    font-size: 13px
+    cursor: default
+  .right-arrow
+    width: 0
+    height: 0
+    border-top: 50px solid transparent
+    border-bottom: 50px solid transparent
+    border-left: 45px solid
+
+  .step-text:hover, .right-arrow:hover
+    cursor: pointer
+
+.disabled_steps
+  pointer-events: none
+
+.step-btn:focus
+  outline: 0
+
+.step-btn:hover
+  text-decoration: none
 
 .step-header
   color: white
   h3
     margin-top: 10px
+
+
+
+/* Step Button Colors */
+.step-btn-blue
+  .step-text
+    background: $sparc-blue
+  .right-arrow
+    border-left-color: $sparc-blue !important
+
+.step-btn-blue:hover
+  .step-text
+    background: $sparc-blue-hover
+  .right-arrow
+    border-left-color: $sparc-blue-hover !important
+
+.step-btn-light-blue
+  .step-text
+    background: $sparc-light-blue
+  .right-arrow
+    border-left-color: $sparc-light-blue !important
+
+.step-btn-light-blue:hover
+  .step-text
+    background: $sparc-light-blue-hover
+  .right-arrow
+    border-left-color: $sparc-light-blue-hover !important
+
+.step-btn-green
+  .step-text
+    background: $sparc-green
+  .right-arrow
+    border-left-color: $sparc-green !important
+
+.step-btn-green:hover
+  .step-text
+    background: $sparc-green-hover
+  .right-arrow
+    border-left-color: $sparc-green-hover !important
+
+.step-btn-orange
+  .step-text
+    background: $sparc-orange
+  .right-arrow
+    border-left-color: $sparc-orange !important
+
+.step-btn-orange:hover
+  .step-text
+    background: $sparc-orange-hover
+  .right-arrow
+    border-left-color: $sparc-orange-hover !important
+
+.step-btn-pink
+  .step-text
+    background: $sparc-pink
+  .right-arrow
+    border-left-color: $sparc-pink !important
+
+.step-btn-pink:hover
+  .step-text
+    background: $sparc-pink-hover
+  .right-arrow
+    border-left-color: $sparc-pink-hover !important
+
+.step-btn-blue-green
+  .step-text
+    background: $sparc-blue-green
+  .right-arrow
+    border-left-color: $sparc-blue-green !important
+
+.step-btn-blue-green:hover
+  .step-text
+    background: $sparc-blue-green-hover
+  .right-arrow
+    border-left-color: $sparc-blue-green-hover !important
+
+.step-btn-red
+  .step-text
+    background: $sparc-red
+  .right-arrow
+    border-left-color: $sparc-red !important
+
+.step-btn-red:hover
+  .step-text
+    background: $sparc-red-hover
+  .right-arrow
+    border-left-color: $sparc-red-hover !important

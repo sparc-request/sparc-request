@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -43,7 +43,7 @@ RSpec.describe Notifier do
       end
 
       it 'should display correct subject' do
-        expect(@mail).to have_subject("#{@protocol.id} - SPARCRequest service request")
+        expect(@mail).to have_subject("SPARCRequest Get Cost Estimate (Protocol #{@protocol.id})")
       end
 
       # Expected service provider message is defined under get_a_cost_estimate_service_provider_admin_message

@@ -79,7 +79,7 @@ class Directory
     "(& (sn=#{sn}*) (givenName=#{givenName}*))"
   end
 
-  def self.get_ldap_filter(term)
+  def self.get_ldap_filter(term, fields)
     search_terms = term.strip.split
     if search_terms.length == 2
       filter = self.get_ldap_filter_for_full_name(term)
@@ -103,7 +103,7 @@ class Directory
          base: LDAP_BASE,
          encryption: LDAP_ENCRYPTION)
       ldap.auth LDAP_AUTH_USERNAME, LDAP_AUTH_PASSWORD unless !LDAP_AUTH_USERNAME || !LDAP_AUTH_PASSWORD
-      res = ldap.search(:attributes => fields, :filter => self.get_ldap_filter(term))
+      res = ldap.search(:attributes => fields, :filter => self.get_ldap_filter(term, fields))
       Rails.logger.info ldap.get_operation_result unless res
     rescue => e
       Rails.logger.info '#'*100

@@ -72,6 +72,23 @@ class Directory
     return identities
   end
 
+  def self.get_ldap_filter_for_full_name(term)
+    search_terms = term.strip.split
+    givenName = search_terms[0]
+    sn = search_terms[1]
+    "(& (sn=#{sn}*) (givenName=#{givenName}*))"
+  end
+
+  def self.get_ldap_filter(term)
+    search_terms = term.strip.split
+    if search_terms.length == 2
+      filter = self.get_ldap_filter_for_full_name(term)
+    else
+      filter = (LDAP_FILTER && LDAP_FILTER.gsub('#{term}', term)) || fields.map { |f| Net::LDAP::Filter.contains(f, term) }.inject(:|)
+    end
+    filter
+  end
+
   # Searches LDAP only for the given search string.  Returns an array of
   # Net::LDAP::Entry.
   def self.search_ldap(term)
@@ -86,9 +103,7 @@ class Directory
          base: LDAP_BASE,
          encryption: LDAP_ENCRYPTION)
       ldap.auth LDAP_AUTH_USERNAME, LDAP_AUTH_PASSWORD unless !LDAP_AUTH_USERNAME || !LDAP_AUTH_PASSWORD
-      # use LDAP_FILTER to override default filter with custom string
-      filter = (LDAP_FILTER && LDAP_FILTER.gsub('#{term}', term)) || fields.map { |f| Net::LDAP::Filter.contains(f, term) }.inject(:|)
-      res = ldap.search(:attributes => fields, :filter => filter)
+      res = ldap.search(:attributes => fields, :filter => self.get_ldap_filter(term))
       Rails.logger.info ldap.get_operation_result unless res
     rescue => e
       Rails.logger.info '#'*100
@@ -186,7 +201,7 @@ class Directory
       end
     end
   end
-  
+
   # search and merge results but don't change the database
   # this assumes USE_LDAP = true, otherwise you wouldn't use this function
   def self.search_and_merge_ldap_and_database_results(term)
@@ -202,11 +217,11 @@ class Directory
       uid = "#{ldap_result[LDAP_UID].try(:first).try(:downcase)}@#{DOMAIN}"
       if identities[uid]
         results << identities[uid]
-      else 
+      else
         email = ldap_result[LDAP_EMAIL].try(:first)
         if email && email.strip.length > 0 # all SPARC users must have an email, this filters out some of the inactive LDAP users.
           results << Identity.new(ldap_uid: uid, first_name: ldap_result[LDAP_FIRST_NAME].try(:first), last_name: ldap_result[LDAP_LAST_NAME].try(:first), email: email)
-        end  
+        end
       end
     end
     results

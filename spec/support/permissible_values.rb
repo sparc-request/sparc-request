@@ -47,18 +47,18 @@ def build_statuses
   PermissibleValue.create(category: 'status', key: 'ctrc_approved', value: 'Active')
   PermissibleValue.create(category: 'status', key: 'administrative_review', value: 'Administrative Review')
   PermissibleValue.create(category: 'status', key: 'approved', value: 'Approved')
-  PermissibleValue.create(category: 'status', key: 'awaiting_pi_approval', value: 'Awaiting Requester Response')
-  PermissibleValue.create(category: 'status', key: 'complete', value: 'Complete')
+  PermissibleValue.create(category: 'status', key: 'awaiting_pi_approval', value: 'Awaiting Requester Response', default: true)
+  PermissibleValue.create(category: 'status', key: 'complete', value: 'Complete', default: true)
   PermissibleValue.create(category: 'status', key: 'declined', value: 'Declined')
-  PermissibleValue.create(category: 'status', key: 'draft', value: 'Draft')
+  PermissibleValue.create(category: 'status', key: 'draft', value: 'Draft', default: true)
   PermissibleValue.create(category: 'status', key: 'get_a_cost_estimate', value: 'Get a Cost Estimate')
   PermissibleValue.create(category: 'status', key: 'invoiced', value: 'Invoiced')
   PermissibleValue.create(category: 'status', key: 'ctrc_review', value: 'In Admin review')
   PermissibleValue.create(category: 'status', key: 'committee_review', value: 'In Committee Review')
   PermissibleValue.create(category: 'status', key: 'fulfillment_queue', value: 'In Fulfillment Queue')
-  PermissibleValue.create(category: 'status', key: 'in_process', value: 'In Process')
-  PermissibleValue.create(category: 'status', key: 'on_hold', value: 'On Hold')
-  PermissibleValue.create(category: 'status', key: 'submitted', value: 'Submitted')
+  PermissibleValue.create(category: 'status', key: 'in_process', value: 'In Process', default: true)
+  PermissibleValue.create(category: 'status', key: 'on_hold', value: 'On Hold', default: true)
+  PermissibleValue.create(category: 'status', key: 'submitted', value: 'Submitted', default: true)
   PermissibleValue.create(category: 'status', key: 'withdrawn', value: 'Withdrawn')
 end
 
@@ -79,7 +79,7 @@ def build_proxy_rights
 end
 
 def build_funding_sources
-  PermissibleValue.create(category: 'funding_source', key: 'college', value: 'College')
+  PermissibleValue.create(category: 'funding_source', key: 'college', value: 'College Department')
   PermissibleValue.create(category: 'funding_source', key: 'federal', value: 'Federal')
   PermissibleValue.create(category: 'funding_source', key: 'foundation', value: 'Foundation/Organization')
   PermissibleValue.create(category: 'funding_source', key: 'industry', value: 'Industry-Initiated/Industry-Sponsored')
@@ -89,7 +89,7 @@ def build_funding_sources
 end
 
 def build_potential_funding_sources
-  PermissibleValue.create(category: 'potential_funding_source', key: 'college', value: 'College')
+  PermissibleValue.create(category: 'potential_funding_source', key: 'college', value: 'College Department')
   PermissibleValue.create(category: 'potential_funding_source', key: 'federal', value: 'Federal')
   PermissibleValue.create(category: 'potential_funding_source', key: 'foundation', value: 'Foundation/Organization')
   PermissibleValue.create(category: 'potential_funding_source', key: 'industry', value: 'Industry-Initiated/Industry-Sponsored')

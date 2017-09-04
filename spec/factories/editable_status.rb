@@ -19,8 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 FactoryGirl.define do
-
   factory :editable_status do
-    status { [“ctrc_approved”, “administrative_review”, “approved”, “awaiting_pi_approval”, “complete”, “declined”, “draft”, “get_a_cost_estimate”, “invoiced”, “ctrc_review”, “committee_review”, “fulfillment_queue”, “in_process”, “on_hold”, “submitted”, “withdrawn”].sample }
+    status { PermissibleValue.get_key_list('status').sample }
   end
 end

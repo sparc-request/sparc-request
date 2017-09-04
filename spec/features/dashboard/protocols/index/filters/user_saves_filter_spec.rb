@@ -24,7 +24,6 @@ RSpec.describe "User saves a filter", js: :true do
 
   let_there_be_lane
   fake_login_for_each_test
-  build_statuses
 
   before :each do
     @institution  = create(:institution)

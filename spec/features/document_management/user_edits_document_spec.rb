@@ -36,7 +36,6 @@ RSpec.describe 'User edits an existing document', js: true do
                   create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
                   create(:arm, protocol: @protocol, visit_count: 1)
     @document   = create(:document, doc_type: 'Protocol', protocol: @protocol)
-                  create(:permissible_value, key: 'consent', value: 'Consent', category: 'document_type')
   end
 
   context 'and clicks the edit button' do

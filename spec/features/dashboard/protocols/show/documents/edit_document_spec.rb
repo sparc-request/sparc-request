@@ -29,7 +29,6 @@ RSpec.feature 'User wants to edit a document', js: true do
     @protocol = create(:unarchived_study_without_validations, primary_pi: logged_in_user)
                 create(:document, protocol: @protocol, doc_type: 'Protocol')
 
-    create(:permissible_value, key: 'consent', value: 'Consent', category: 'document_type')
     @page = Dashboard::Protocols::ShowPage.new
     @page.load(id: @protocol.id)
     wait_for_javascript_to_finish

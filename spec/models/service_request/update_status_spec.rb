@@ -22,7 +22,6 @@ require 'rails_helper'
 RSpec.describe ServiceRequest, type: :model do
   let_there_be_lane
   let_there_be_j
-  build_statuses
 
   describe "#update_status" do
     context "new_status.to eq('submitted')" do

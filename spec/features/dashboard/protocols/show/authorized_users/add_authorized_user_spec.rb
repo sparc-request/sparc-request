@@ -25,9 +25,6 @@ RSpec.feature 'User wants to add an authorized user', js: true do
   let!(:logged_in_user) { create(:identity, last_name: "Doe", first_name: "John", ldap_uid: "johnd", email: "johnd@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
   let!(:other_user) { create(:identity, last_name: "Doe", first_name: "Jane", ldap_uid: "janed", email: "janed@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
 
-  build_proxy_rights
-  build_user_roles
-  
   before(:each) { stub_const('USE_LDAP', false) }
 
   context 'which is not assigned to themself' do
@@ -80,10 +77,6 @@ RSpec.feature 'User wants to add an authorized user', js: true do
             end
 
             context 'but sets role and credentials to other and fills out the extra fields' do
-              before :each do
-                create(:permissible_value, category: 'user_credential', key: 'other', value: 'Other')
-              end
-
               scenario 'and sees they can submit the form' do
                 given_i_have_clicked_the_add_authorized_user_button
                 when_i_select_a_user_from_the_search
@@ -146,7 +139,6 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
                 context 'with errors in the form' do
                   scenario 'and sees errors' do
-                    create(:permissible_value, category: 'user_credential', key: 'other', value: 'Other')
                     given_i_have_clicked_the_add_authorized_user_button
                     when_i_select_a_user_from_the_search
                     when_i_set_the_role_to 'Primary PI'

@@ -37,13 +37,13 @@ class CreateEditableStatuses < ActiveRecord::Migration[5.0]
       end
 
       Organization.where.not(id: EDITABLE_STATUSES.keys).each do |org|
-        AVAILABLE_STATUSES.keys.each do |status|
+        PermissibleValue.get_key_list('status').each do |status|
           org.editable_statuses.create(status: status)
         end
       end
     else
       Organization.all.each do |org|
-        AVAILABLE_STATUSES.keys.each do |status|
+        PermissibleValue.get_key_list('status').each do |status|
           org.editable_statuses.create(status: status)
         end
       end

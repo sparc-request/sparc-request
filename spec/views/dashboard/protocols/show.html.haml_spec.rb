@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -30,13 +30,14 @@ RSpec.describe 'dashboard/protocols/show', type: :view do
     sr        = create(:service_request_without_validations, protocol: @protocol)
     ssr       = create(:sub_service_request, organization: org, service_request: sr)
     li        = create(:line_item, sub_service_request: ssr, service_request: sr, service: service)
+    que       = create( :questionnaire, :without_validations, :with_all_question_types, questionable: service)
 
     assign(:user, jug2)
     assign(:protocol, @protocol)
     assign(:protocol_type, @protocol.type)
     assign(:permission_to_edit, false)
     assign(:sub_service_request, ssr)
-    assign(:submissions, [create(:submission, protocol: @protocol, service: service, line_item: li)])
+    assign(:submissions, [create(:submission, protocol: @protocol, questionnaire: que, sub_service_request: ssr)])
     allow(view).to receive(:current_identity).and_return(jug2)
     render
   end

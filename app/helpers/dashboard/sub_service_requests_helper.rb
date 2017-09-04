@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -191,8 +191,8 @@ module Dashboard::SubServiceRequestsHelper
     total
   end
 
-  def ssr_notifications_display(ssr, user)
-    render 'dashboard/notifications/dropdown.html', sub_service_request: ssr, user: user
+  def ssr_notifications_display(ssr, user, sr_table)
+    render 'dashboard/notifications/dropdown.html', sub_service_request: ssr, user: user, sr_table: sr_table
   end
 
   def ssr_actions_display(ssr, user, permission_to_edit, admin_orgs, show_view_ssr_back)
@@ -208,27 +208,33 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def display_ssr_submissions(ssr)
-    line_items = ssr.line_items.includes(service: :questionnaires).includes(:submission).to_a.select(&:has_incomplete_additional_details?)
-
-    if line_items.any?
+    if ssr.has_incomplete_additional_details?
       protocol    = ssr.protocol
-      submissions = ""
-
-      line_items.each do |li|
-        submissions +=  content_tag(
-                          :option,
-                          "#{li.service.name}",
-                          data: {
-                            service_id: li.service.id,
-                            protocol_id: protocol.id,
-                            line_item_id: li.id
-                          }
-                        )
+      submissions = {}
+      if ssr.has_incomplete_additional_details_services?
+        submissions[:Services] = []
+        ssr.organization.services.each do |service|
+          next unless service.questionnaires.active.present?
+          submissions[:Services] << [service.name, service.name, data: {
+                                                                  questionnaire_id: service.questionnaires.active.first.id,
+                                                                  protocol_id: protocol.id,
+                                                                  ssr_id: ssr.id
+                                                                }]
+        end 
       end
+      if ssr.has_incomplete_additional_details_organization?
+        submissions[:Organization] = []
+        submissions[:Organization] << [ssr.organization.name, ssr.organization.name, data: {
+                                                                                      questionnaire_id: ssr.organization.questionnaires.active.first.id,
+                                                                                      protocol_id: protocol.id,
+                                                                                      ssr_id: ssr.id
+                                                                                    }]
+      end
+      submission_list = grouped_options_for_select(submissions)
 
       content_tag(
         :select,
-        submissions.html_safe,
+        submission_list.html_safe,
         title: t(:dashboard)[:service_requests][:additional_details][:selectpicker],
         class: 'selectpicker complete-details',
         data: {
@@ -244,13 +250,13 @@ module Dashboard::SubServiceRequestsHelper
   private
 
   def ssr_view_button(ssr, show_view_ssr_back)
-    content_tag(:button, t(:dashboard)[:service_requests][:actions][:view], class: 'view-service-request btn btn-primary btn-sm', type: 'button', data: { sub_service_request_id: ssr.id, show_view_ssr_back: show_view_ssr_back.to_s })
+    content_tag(:button, t(:dashboard)[:service_requests][:actions][:view], class: 'view-service-request btn btn-primary btn-sm', type: 'button', data: { sub_service_request_id: ssr.id, show_view_ssr_back: show_view_ssr_back.to_s, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:dashboard)[:service_requests][:actions][:tooltips][:view])
   end
 
   def ssr_edit_button(ssr, user, permission_to_edit)
     # The SSR must not be locked, and the user must either be an authorized user or an authorized admin
     if ssr.can_be_edited? && permission_to_edit
-      content_tag(:button, t(:dashboard)[:service_requests][:actions][:edit], class: 'edit-service-request btn btn-warning btn-sm', type: 'button', data: { permission: permission_to_edit.to_s, url: "/service_requests/#{ssr.service_request.id}/catalog?sub_service_request_id=#{ssr.id}"})
+      content_tag(:button, t(:dashboard)[:service_requests][:actions][:edit], class: 'edit-service-request btn btn-warning btn-sm', type: 'button', data: { permission: permission_to_edit.to_s, url: "/service_requests/#{ssr.service_request.id}/catalog?sub_service_request_id=#{ssr.id}", toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}', title: t(:dashboard)[:service_requests][:actions][:tooltips][:edit]})
     else
       ''
     end
@@ -258,7 +264,7 @@ module Dashboard::SubServiceRequestsHelper
 
   def ssr_admin_button(ssr, user, permission_to_edit, admin_access)
     if admin_access
-      content_tag(:button, t(:dashboard)[:service_requests][:actions][:admin_edit], class: "edit-service-request btn btn-warning btn-sm", type: 'button', data: { permission: admin_access.to_s, url: "/dashboard/sub_service_requests/#{ssr.id}" })
+      content_tag(:button, t(:dashboard)[:service_requests][:actions][:admin_edit], class: "edit-service-request btn btn-warning btn-sm", type: 'button', data: { permission: admin_access.to_s, url: "/dashboard/sub_service_requests/#{ssr.id}", toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:dashboard)[:service_requests][:actions][:tooltips][:admin])
     else
       ''
     end

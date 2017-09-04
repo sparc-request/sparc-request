@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -32,11 +32,18 @@ class SurveyNotification < ActionMailer::Base
   end
 
   def service_survey(surveys, identity, ssr)
-    @identity = identity
-    @surveys  = surveys
-    @ssr      = ssr
-    email     = @identity.email
-    subject   = t('surveyor.responses.emails.service_survey.subject', site_name: t(:proper)[:header])
+    @identity   = identity
+    @ssr        = ssr
+    @surveys    = surveys
+    @responses  = []
+    email       = @identity.email
+    subject     = t('surveyor.responses.emails.service_survey.subject', site_name: t(:proper)[:header], ssr_id: @ssr.display_id)
+
+    surveys.each do |survey|
+      response = survey.responses.where(identity: identity, sub_service_request: ssr).first || survey.responses.create(identity: identity, sub_service_request: ssr)
+
+      @responses << response unless response.completed?
+    end
 
     mail(to: email, from: NO_REPLY_FROM, subject: subject)
   end

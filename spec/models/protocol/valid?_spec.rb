@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -38,6 +38,6 @@ RSpec.describe Protocol, type: :model do
     end
   end
 
-  it { is_expected.to validate_numericality_of(:indirect_cost_rate).is_greater_than_or_equal_to(0) }
+  it { is_expected.to validate_numericality_of(:indirect_cost_rate).is_greater_than_or_equal_to(1) }
   it { is_expected.to validate_numericality_of(:indirect_cost_rate).is_less_than_or_equal_to(1000) }
 end

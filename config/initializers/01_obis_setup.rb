@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -71,7 +71,6 @@ begin
   CONSTANTS_YML_OVERRIDE                    = application_config['constants_yml_override'] || ''
   SYSTEM_SATISFACTION_SURVEY                = application_config['system_satisfaction_survey'] || false
   NO_REPLY_FROM                             = application_config['no_reply_from']
-  EDITABLE_STATUSES                         = application_config['editable_statuses'] || {}
   UPDATABLE_STATUSES                        = application_config['updatable_statuses'] || []
   FINISHED_STATUSES                         = application_config['finished_statuses'] || []
   REMOTE_SERVICE_NOTIFIER_PROTOCOL          = application_config['remote_service_notifier_protocol']

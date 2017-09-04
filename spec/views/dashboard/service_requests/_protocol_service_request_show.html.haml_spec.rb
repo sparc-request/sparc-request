@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -52,43 +52,6 @@ RSpec.describe 'dashboard/service_requests/protocol_service_request_show', type:
       admin: false,
       permission_to_edit: permission_to_edit,
       show_view_ssr_back: false)
-  end
-
-  describe 'header' do
-    context 'submitted ServiceRequest' do
-      it 'should display id, status, and submitted date' do
-        service_request = create(:service_request_without_validations,
-          id: 9999,
-          protocol: protocol,
-          status: 'submitted',
-          submitted_at: DateTime.now)
-        create(:sub_service_request,
-          ssr_id: '0001',
-          service_request: service_request,
-          organization: organization)
-
-        render_protocol_service_request_show service_request
-
-        expect(response).to have_content "Service Request: 9999 - Submitted - #{service_request.submitted_at.strftime('%D')}"
-      end
-    end
-
-    context 'unsubmitted ServiceRequest' do
-      it 'should display id, status, and last modified date' do
-        service_request = create(:service_request_without_validations,
-          id: 9999,
-          protocol: protocol,
-          status: 'draft')
-        create(:sub_service_request,
-          ssr_id: '0001',
-          service_request: service_request,
-          organization: organization)
-
-        render_protocol_service_request_show service_request
-
-        expect(response).to have_content "Service Request: 9999 - Draft - #{service_request.updated_at.strftime('%D')}"
-      end
-    end
   end
 
   describe '"Modify Request" button' do

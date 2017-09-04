@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@ RSpec.feature 'User wants to submit a questionnaire form', js: true do
   before :each do
     org       = create(:organization)
     @service  = create(:service, organization: org)
-    que       = create(:questionnaire, :without_validations, service: @service, active: true)
+    que       = create(:questionnaire, :without_validations, questionable: @service, active: true)
                 create(:item, questionnaire: que)
     @protocol = create(:protocol_federally_funded, primary_pi: jug2, type: 'Study')
     sr        = create(:service_request_without_validations, protocol: @protocol)

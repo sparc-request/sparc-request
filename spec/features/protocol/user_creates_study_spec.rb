@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -36,6 +36,7 @@ RSpec.describe 'User creates study', js: true do
                   create(:permissible_value, category: 'funding_source', key: 'federal', value: 'Federal')
 
     StudyTypeQuestionGroup.create(active: true)
+    stub_const("RESEARCH_MASTER_ENABLED", false)
   end
 
   context 'and clicks \'New Research Study\'' do

@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -26,11 +26,11 @@ RSpec.describe 'additional_details/questionnaires/index', type: :view do
 
     before(:each) do
       @service = create(:service, name: 'Test Service')
-      @questionnaire = create(:questionnaire, :without_validations, name: 'Test Questionnaire', active: 1, service: @service)
+      @questionnaire = create(:questionnaire, :without_validations, name: 'Test Questionnaire', active: 1, questionable: @service)
 
-      assign(:service, @service)
+      assign(:questionable, @service)
       assign(:questionnaires, [@questionnaire])
-      assign(:service_id, @service.id)
+      assign(:questionable_id, @service.id)
 
       render
     end
@@ -58,10 +58,10 @@ RSpec.describe 'additional_details/questionnaires/index', type: :view do
     before(:each) do
       submission = create(:submission)
       @service = create(:service, name: 'Test Service')
-      @questionnaire = create(:questionnaire, :without_validations, name: 'Test Questionnaire', active: 0, submissions: [submission], service: @service)
-      assign(:service, @service)
+      @questionnaire = create(:questionnaire, :without_validations, name: 'Test Questionnaire', active: 0, submissions: [submission], questionable: @service)
+      assign(:questionable, @service)
       assign(:questionnaires, [@questionnaire])
-      assign(:service_id, @service.id)
+      assign(:questionable_id, @service.id)
 
       render
     end

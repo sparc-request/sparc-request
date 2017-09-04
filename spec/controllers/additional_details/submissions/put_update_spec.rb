@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -26,40 +26,24 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
 
   before :each do
     org         = create(:organization)
-    @service    = create(:service, organization: org)
-    @que        = create(:questionnaire, :without_validations, service: @service, active: true)
+    service    = create(:service, organization: org)
+    @que        = create(:questionnaire, :without_validations, questionable: service, active: true)
     @item       = create(:item, questionnaire: @que)
     protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user)
     @sr         = create(:service_request_without_validations, protocol: protocol)
     ssr         = create(:sub_service_request, service_request: @sr, organization: org)
-    li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: @service)
-    @submission = create(:submission, protocol: protocol, identity: logged_in_user, service: @service, line_item: li, questionnaire: @que)
+    @submission = create(:submission, protocol: protocol, identity: logged_in_user, sub_service_request: ssr, questionnaire: @que)
     @que_resp   = create(:questionnaire_response, submission: @submission, item: @item, content: 'I like green eggs & ham.')
   end
 
   describe '#update' do
-    it 'should assign @service' do
-      put :update, params: {
-        id: @submission.id,
-        service_id: @service.id,
-        submission: {
-          id: @submission.id,
-          identity_id: logged_in_user.id,
-          service_id: @service.id
-        }
-      }, format: :js
-
-      expect(assigns(:service)).to eq(@service)
-    end
-
     it 'should assign @submission' do
       put :update, params: {
         id: @submission.id,
-        service_id: @service.id,
         submission: {
           id: @submission.id,
           identity_id: logged_in_user.id,
-          service_id: @service.id
+          questionnaire_id: @que.id
         }
       }, format: :js
 
@@ -70,12 +54,11 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
       it 'should assign @service_request' do
         put :update, params: {
           id: @submission.id,
-          service_id: @service.id,
           sr_id: @sr.id,
           submission: {
             id: @submission.id,
             identity_id: logged_in_user.id,
-            service_id: @service.id
+            questionnaire_id: @que.id
           }
         }, format: :js
 
@@ -87,11 +70,10 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
       it 'should not assign @service_request' do
         put :update, params: {
           id: @submission.id,
-          service_id: @service.id,
           submission: {
             id: @submission.id,
             identity_id: logged_in_user.id,
-            service_id: @service.id
+            questionnaire_id: @que.id
           }
         }, format: :js
 
@@ -102,10 +84,9 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
     it 'should update submission' do
       put :update, params: {
         id: @submission.id,
-        service_id: @service.id,
         submission: {
           identity_id: logged_in_user.id,
-          service_id: @service.id,
+          questionnaire_id: @que.id,
           questionnaire_responses_attributes: {
             "#{@que_resp.id}" => {
               id: @que_resp.id,
@@ -122,11 +103,10 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
     it 'should render template' do
       put :update, params: {
         id: @submission.id,
-        service_id: @service.id,
         submission: {
           id: @submission.id,
           identity_id: logged_in_user.id,
-          service_id: @service.id
+          questionnaire_id: @que.id
         }
       }, format: :js
 
@@ -136,11 +116,10 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
     it 'should respond ok' do
       put :update, params: {
         id: @submission.id,
-        service_id: @service.id,
         submission: {
           id: @submission.id,
           identity_id: logged_in_user.id,
-          service_id: @service.id
+          questionnaire_id: @que.id
         }, format: :js
       }
 

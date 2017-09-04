@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -26,28 +26,24 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
 
   before :each do
     org         = create(:organization)
-    @service    = create(:service, organization: org)
-    @que        = create(:questionnaire, :without_validations, service: @service, active: true)
+    service     = create(:service, organization: org)
+    @que        = create(:questionnaire, :without_validations, questionable: service, active: true)
     @protocol   = create(:protocol_federally_funded, primary_pi: logged_in_user)
     @sr         = create(:service_request_without_validations, protocol: @protocol)
-    ssr         = create(:sub_service_request, service_request: @sr, organization: org)
-    @li         = create(:line_item, service_request: @sr, sub_service_request: ssr, service: @service)
+    @ssr        = create(:sub_service_request, service_request: @sr, organization: org)
 
     session[:identity_id] = logged_in_user.id
 
     post :create, params: {
-      service_id: @service.id,
       submission: {
         protocol_id: @protocol.id,
-        line_item_id: @li.id
+        sub_service_request_id: @ssr.id,
+        questionnaire_id: @que.id
       }
     }, format: :js
   end
 
   describe '#create' do
-    it 'should assign @service' do
-      expect(assigns(:service)).to eq(@service)
-    end
 
     it 'should assign @questionnaire' do
       expect(assigns(:questionnaire)).to eq(@que)
@@ -67,7 +63,7 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
     end
 
     it 'should assign @line_item' do
-      expect(assigns(:line_item)).to eq(@li)
+      expect(assigns(:sub_service_request)).to eq(@ssr)
     end
 
     it 'should assign @service_request' do

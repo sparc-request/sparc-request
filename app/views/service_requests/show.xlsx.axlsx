@@ -209,7 +209,7 @@ wb.add_worksheet(name: "Review") do |sheet|
 
           start_qty_col = service_row.size # grab the size so we know where the R/T columns start
 
-          line_items_visit.visits.each_with_index do |v, index|
+          line_items_visit.ordered_visits.each_with_index do |v, index|
             service_row << (totals_hash["#{v.id}"] == 0 ? '' : v.research_billing_qty)
             service_row << (totals_hash["#{v.id}"] == 0 ? '' : v.insurance_billing_qty)
           end

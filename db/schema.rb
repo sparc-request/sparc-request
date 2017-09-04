@@ -1,3 +1,23 @@
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# All rights reserved.~
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following~
+# disclaimer in the documentation and/or other materials provided with the distribution.~
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products~
+# derived from this software without specific prior written permission.~
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,~
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT~
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL~
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
+
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,7 +30,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170707153553) do
+ActiveRecord::Schema.define(version: 20170818175101) do
 
   create_table "admin_rates", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer "line_item_id"
@@ -381,7 +401,9 @@ ActiveRecord::Schema.define(version: 20170707153553) do
     t.text "body"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["from"], name: "index_messages_on_from"
     t.index ["notification_id"], name: "index_messages_on_notification_id"
+    t.index ["to"], name: "index_messages_on_to"
   end
 
   create_table "notes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -484,6 +506,19 @@ ActiveRecord::Schema.define(version: 20170707153553) do
     t.index ["sub_service_request_id"], name: "index_payments_on_sub_service_request_id"
   end
 
+  create_table "permissible_values", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string "key"
+    t.string "value"
+    t.string "concept_code"
+    t.integer "parent_id"
+    t.integer "sort_order"
+    t.string "category"
+    t.boolean "default"
+    t.boolean "reserved"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "pricing_maps", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "service_id"
     t.string "unit_type"
@@ -568,7 +603,7 @@ ActiveRecord::Schema.define(version: 20170707153553) do
     t.text "title"
     t.string "sponsor_name"
     t.text "brief_description"
-    t.decimal "indirect_cost_rate", precision: 5, scale: 2
+    t.decimal "indirect_cost_rate", precision: 6, scale: 2
     t.string "study_phase"
     t.string "udak_project_number"
     t.string "funding_rfa"
@@ -634,11 +669,12 @@ ActiveRecord::Schema.define(version: 20170707153553) do
 
   create_table "questionnaires", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.string "name"
-    t.integer "service_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "active", default: false
-    t.index ["service_id"], name: "index_questionnaires_on_service_id"
+    t.string "questionable_type"
+    t.bigint "questionable_id"
+    t.index ["questionable_type", "questionable_id"], name: "index_questionnaires_on_questionable_type_and_questionable_id"
   end
 
   create_table "questions", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
@@ -888,18 +924,16 @@ ActiveRecord::Schema.define(version: 20170707153553) do
   end
 
   create_table "submissions", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
-    t.integer "service_id"
     t.integer "identity_id"
     t.integer "questionnaire_id"
     t.integer "protocol_id"
-    t.integer "line_item_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "sub_service_request_id"
     t.index ["identity_id"], name: "index_submissions_on_identity_id"
-    t.index ["line_item_id"], name: "index_submissions_on_line_item_id"
     t.index ["protocol_id"], name: "index_submissions_on_protocol_id"
     t.index ["questionnaire_id"], name: "index_submissions_on_questionnaire_id"
-    t.index ["service_id"], name: "index_submissions_on_service_id"
+    t.index ["sub_service_request_id"], name: "index_submissions_on_sub_service_request_id"
   end
 
   create_table "subsidies", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -1048,7 +1082,6 @@ ActiveRecord::Schema.define(version: 20170707153553) do
   add_foreign_key "question_responses", "responses"
   add_foreign_key "questionnaire_responses", "items"
   add_foreign_key "questionnaire_responses", "submissions"
-  add_foreign_key "questionnaires", "services"
   add_foreign_key "questions", "options", column: "depender_id"
   add_foreign_key "questions", "sections"
   add_foreign_key "responses", "identities"
@@ -1056,8 +1089,7 @@ ActiveRecord::Schema.define(version: 20170707153553) do
   add_foreign_key "responses", "surveys"
   add_foreign_key "sections", "surveys"
   add_foreign_key "submissions", "identities"
-  add_foreign_key "submissions", "line_items"
   add_foreign_key "submissions", "protocols"
   add_foreign_key "submissions", "questionnaires"
-  add_foreign_key "submissions", "services"
+  add_foreign_key "submissions", "sub_service_requests"
 end

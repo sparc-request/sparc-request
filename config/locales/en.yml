@@ -61,6 +61,10 @@ en:
           attributes:
             content:
               blank: "Content can't be blank"
+        question_response:
+          attributes:
+            content:
+              blank: "has to be answered"
       messages:
         spoofed_media_type: "has format errors. Please re-save the file in a different format and try again."
     attributes:
@@ -84,7 +88,7 @@ en:
       question:
         content: "Question"
       question_response:
-        content: "Question"
+        content: "Required Question"
       visit:
         research_billing_qty: "Research Billing Quantity"
         insurance_billing_qty: "Insurance Billing Quantity"
@@ -178,6 +182,7 @@ en:
     tooltips:
       epic_access: 'Granting Epic EMR access populates study personnel in Epic Research Record as long as they have an Epic login'
       rights: 'Defines access to protocol in SPARCDashboard'
+      add_user: "Ability to add an Authorized User to a protocol"
 
   #############
   # CALENDARS #
@@ -312,6 +317,7 @@ en:
       access: "Allow Access:"
     tooltips:
       access: "Uploaded documents are made viewable to all service providers unless checkmark is removed"
+      add_document: "Upload document(s) in repository"
     select_type: "Please Select Type"
     delete_confirm: "Are you sure you want to delete the selected Document from this protocol?"
 
@@ -397,6 +403,12 @@ en:
       rmid_validated: "Updated to corresponding Research Master ID %{title}"
       rmid_short_title: "Short Title"
       rmid_title: "Title"
+      tooltips:
+        notes: "Protocol notes viewable to Administrators and Authorized Users"
+        details: "Quick access to protocol information"
+        edit: "Quick access to edit protocol information"
+        archive_study: "Ability to hide study from all Authorized User dashboards"
+        unarchive_study: "Click to reveal on all associated Authorized User dashboards"
     view_details:
       button: "View %{protocol_type} Details"
       header: "%{protocol_type} Details: #%{protocol_id}"
@@ -512,7 +524,7 @@ en:
       submission_type: "Select a Submission Type"
     tooltips:
       epic: 'Defines whether record will interface to Epic EMR upon submission'
-      study_type_questions: 'Information needed to determine confidentiality of patients/protocols in Epic'
+      study_type_questions: 'Information needed to determine confidentiality of patients/protocols'
       nct_number: 'Clinicaltrials.gov Registry Number'
       pro_number: 'Institutional Review Board (IRB) Unique Identifier'
       ind_number: 'Investigational New Drug (IND) Number'
@@ -603,7 +615,7 @@ en:
       email_invalid: "Email is invalid"
       zipcode_invalid: "Zipcode is invalid"
     service_requests:
-      line_items_missing: "No Services have been detected in your Cart. Please return to the Catalog and add Services before continuing"
+      line_items_missing: "You must add Services to your cart before continuing"
       protocol_missing: "You must create a Protocol before continuing"
       protocol_errors: "The selected Protocol has errors which must be fixed. Please edit the Protocol before continuing"
       arms_missing: "You must create Arms before proceeding to the Service Calendar"
@@ -1395,8 +1407,15 @@ en:
 
   # Mailer
   mailer:
-    add_intro: "An Authorized User has been added in"
+    email_title:
+      epic_queue_error:  "Epic Interface Error "
+      epic_queue_summary: "Epic Queue Summary"
+      epic_queue_report: "Epic Queue Report"
+      new: "New"
+      new_account_registration: "New SPARCRequest Account Registration"
+      general: "SPARCRequest %{email_status} (%{type} %{id})"
     application_title: "SPARCRequest"
+    add_intro: "An Authorized User has been added in"
     contact_information: "Contact Information"
     delete_intro: "An Authorized User has been deleted in"
     epic_access: "Epic Access"
@@ -1487,8 +1506,8 @@ en:
     notes_present:  "*Note(s) are included with this submission."
     notice:
       approve: "Approve Account"
-      body1: "Request for new SPARC Request account submitted and awaiting approval"
-      body2: "A new SPARC Request account is waiting for approval."
+      body1: "Request for new SPARCRequest account submitted and awaiting approval"
+      body2: "A new SPARCRequest account is waiting for approval."
       company: "Company"
       disapprove: "Disapprove Account"
       email: "Email"

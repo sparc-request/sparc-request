@@ -1,0 +1,45 @@
+- if submissions.any?
+  %table.table.table-striped.table-bordered.table-hover
+    %thead
+      %tr
+        %th.text-center
+          = t(:additional_details)[:submissions][:table_fields][:sr_id]
+        %th.text-center
+          = t(:additional_details)[:submissions][:table_fields][questionable_type.downcase.to_sym]
+        %th.text-center
+          = t(:additional_details)[:submissions][:table_fields][:completion_time]
+        %th.text-center
+          = t(:additional_details)[:submissions][:table_fields][:view]
+        %th.text-center
+          = t(:additional_details)[:submissions][:table_fields][:edit]
+        %th.text-center
+          = t(:additional_details)[:submissions][:table_fields][:delete]
+    %tbody
+      - submissions.each do |submission|
+        - ssr = submission.sub_service_request
+        %tr{ class: "submission", data: { id: "#{submission.id}" } }
+          %td
+            .text-center
+              = "#{ssr.display_id}"
+          %td
+            .text-center
+              = link_to_if current_identity.is_super_user? || current_identity.is_service_provider?(ssr), "#{submission.questionnaire.questionable.name}",
+                additional_details_questionnaires_path(questionable_id: submission.questionnaire.questionable.id, questionable_type: questionable_type), target: '_blank'
+          %td
+            .text-center
+              - if submission.created_at == submission.updated_at
+                = submission.created_at.strftime("%m/%d/%Y")
+              - else
+                = submission.updated_at.strftime("%m/%d/%Y")
+          %td.text-center
+            = link_to additional_details_submission_path(submission),
+              remote: true, class: 'btn btn-primary' do
+              %span.glyphicon.glyphicon-search
+
+          %td.text-center
+            = link_to edit_additional_details_submission_path(submission),
+              remote: true, class: 'btn btn-warning' do
+              %span.glyphicon.glyphicon-edit
+          %td.text-center
+            = link_to "javascript:void(0);", class: 'btn btn-danger delete-submission', data: { id: "#{submission.id}", questionable_id: "#{submission.questionnaire.questionable.id}", protocol_id: "#{submission.protocol_id}", ssr_id: "#{submission.sub_service_request_id}" } do
+              %span.glyphicon.glyphicon-remove

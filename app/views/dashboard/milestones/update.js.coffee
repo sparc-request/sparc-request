@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -18,26 +18,8 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class AdditionalDetails::UpdateQuestionnairesController < ApplicationController
-  before_action :authenticate_identity!
-
-  def update
-    @service = Service.find(params[:service_id])
-    @questionnaires = @service.questionnaires
-    @questionnaire = Questionnaire.find(params[:id])
-    update_questionnaire(@questionnaire)
-    respond_to do |format|
-      format.js
-    end
-  end
-
-  private
-
-  def update_questionnaire(questionnaire)
-    if questionnaire.active?
-      questionnaire.update_attribute(:active, false)
-    else
-      questionnaire.update_attribute(:active, true)
-    end
-  end
-end
+$('.milestones-panel').html("<%= j render 'dashboard/protocols/milestone', protocol: @protocol %>")
+$(".datetimepicker:not(.time)").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
+$('.datetimepicker.time').datetimepicker(format: 'hh:mm A', allowInputToggle: true)
+$(".selectpicker").selectpicker()
+$('[data-toggle="tooltip"]').tooltip()

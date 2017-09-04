@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -289,7 +289,7 @@ RSpec.describe ServiceRequest, type: :model do
     it 'should select the services that have additional details' do
       service_request = create(:service_request_without_validations)
       create(:service)
-      create(:questionnaire, :without_validations, active: true, service: Service.first)
+      create(:questionnaire, :without_validations, active: true, questionable: Service.first)
       LineItem.first.update_attribute(:service_request_id, service_request.id)
       LineItem.first.update_attribute(:service_id, Service.first.id)
 
@@ -300,7 +300,7 @@ RSpec.describe ServiceRequest, type: :model do
     it 'should select the services that have additional details' do
       service_request = create(:service_request_without_validations)
       service = create(:service)
-      create(:questionnaire, :without_validations, active: true, service: Service.first)
+      create(:questionnaire, :without_validations, active: true, questionable: Service.first)
       LineItem.first.update_attribute(:service_request_id, service_request.id)
       LineItem.first.update_attribute(:service_id, Service.first.id)
 

@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -29,12 +29,13 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
       @service = create(:service)
 
       get :new, params: {
-        service_id: @service.id
+        questionable_id: @service.id,
+        questionable_type: 'Service'
       }, format: :js
     end
 
     it 'should assign @service' do
-      expect(assigns(:service)).to eq(@service)
+      expect(assigns(:questionable)).to eq(@service)
     end
 
     it 'should assign @questionnaire' do

@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -83,13 +83,13 @@ class LineItemsVisit < ApplicationRecord
   end
 
   def quantity_total
-    quantity_total = self.visits.sum(:research_billing_qty) * (self.subject_count || 0)
+    sum_visits_research_billing_qty * (self.subject_count || 0)
   end
 
   # Returns a hash of subtotals for the visits in the line item.
   # Visit totals depend on the quantities in the other visits, so it would be clunky
   # to compute one visit at a time
-  def per_subject_subtotals(visits=self.visits)
+  def per_subject_subtotals(visits=self.ordered_visits)
     totals = { }
     quantity_total = quantity_total()
     per_unit_cost = per_unit_cost(quantity_total)
@@ -103,7 +103,7 @@ class LineItemsVisit < ApplicationRecord
 
   # Return visits with R and T quantities
   # Used in service_request show.xlsx report
-  def per_subject_rt_indicated(visits=self.visits)
+  def per_subject_rt_indicated(visits=self.ordered_visits)
     indicated_visits = {}
     visits.each do |visit|
       indicated_visits[visit.id.to_s] = visit.research_billing_qty + visit.insurance_billing_qty
@@ -114,7 +114,7 @@ class LineItemsVisit < ApplicationRecord
 
   # Determine the direct costs for a visit-based service for one subject
   def direct_costs_for_visit_based_service_single_subject
-    (self.visits.where("research_billing_qty >= ?", 1).sum(:research_billing_qty) || 0) * per_unit_cost(quantity_total())
+    sum_visits_research_billing_qty_gte_1 * per_unit_cost(quantity_total())
   end
 
   # Determine the direct costs for a visit-based service
@@ -189,5 +189,18 @@ class LineItemsVisit < ApplicationRecord
     if LineItemsVisit.where(arm_id: arm_id).none?
       Arm.find(arm_id).destroy
     end
+  end
+
+  def sum_visits_research_billing_qty
+    @research_billing_total ||= 
+      if self.visits.loaded?
+        self.visits.sum(&:research_billing_qty) || 0
+      else
+        self.visits.sum(:research_billing_qty) || 0
+      end
+  end
+
+  def sum_visits_research_billing_qty_gte_1
+    @research_billing_gte1_total ||= self.visits.where("research_billing_qty >= ?", 1).sum(:research_billing_qty) || 0
   end
 end

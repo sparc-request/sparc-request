@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -216,8 +216,6 @@ class ProtocolsController < ApplicationController
         :potential_funding_source,
         :potential_funding_source_other,
         :potential_funding_start_date,
-        :recruitment_end_date,
-        :recruitment_start_date,
         :requester_id,
         :selected_for_epic,
         :short_title,

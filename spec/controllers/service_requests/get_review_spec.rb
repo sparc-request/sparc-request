@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -91,7 +91,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       expect(assigns(:portal)).to eq(false)
     end
 
-    it 'should assign @merged to false' do
+    it 'should assign @merged to true' do
       org      = create(:organization)
       service  = create(:service, organization: org, one_time_fee: true)
       protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
@@ -103,7 +103,22 @@ RSpec.describe ServiceRequestsController, type: :controller do
         id: sr.id
       }, xhr: true
 
-      expect(assigns(:merged)).to eq(false)
+      expect(assigns(:merged)).to eq(true)
+    end
+
+    it 'should assign @consolidated to false' do
+      org      = create(:organization)
+      service  = create(:service, organization: org, one_time_fee: true)
+      protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+
+      get :review, params: {
+        id: sr.id
+      }, xhr: true
+
+      expect(assigns(:consolidated)).to eq(false)
     end
 
     it 'should assign @pages' do

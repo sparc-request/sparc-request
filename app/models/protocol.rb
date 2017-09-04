@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -33,7 +33,7 @@ class Protocol < ApplicationRecord
   has_many :project_roles,                dependent: :destroy
   has_one :primary_pi_role,               -> { where(role: 'primary-pi') }, class_name: "ProjectRole", dependent: :destroy
   has_many :identities,                   through: :project_roles
-  has_many :service_requests
+  has_many :service_requests,             dependent: :destroy
   has_many :services,                     through: :service_requests
   has_many :sub_service_requests
   has_many :line_items,                   through: :service_requests
@@ -62,7 +62,7 @@ class Protocol < ApplicationRecord
   validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
   validates :research_master_id, presence: true, if: "Setting.find_by_key('research_master_enabled').value && has_human_subject_info?"
 
-  validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 1000 }, allow_blank: true
+  validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 1000 }, allow_blank: true
 
   attr_accessor :requester_id
   attr_accessor :validate_nct
@@ -489,6 +489,10 @@ class Protocol < ApplicationRecord
       any?(&:has_ctrc_clinical_services?)
   end
 
+  def has_clinical_services?
+    service_requests.any?(&:has_per_patient_per_visit_services?)
+  end
+
   def find_sub_service_request_with_ctrc(service_request)
     service_request.sub_service_requests.find(&:ctrc?).try(:ssr_id)
   end
@@ -506,15 +510,19 @@ class Protocol < ApplicationRecord
   end
 
   def direct_cost_total(service_request)
-    service_requests.where(id: service_request.id).or(service_requests.where.not(status: 'draft')).
-      eager_load(:line_items).
-      to_a.sum(&:direct_cost_total)
+    self.service_requests.
+      where(id: service_request.id).
+      or(service_requests.where.not(status: 'draft')).
+      eager_load(:line_items, :arms).
+      sum(&:direct_cost_total)
   end
 
   def indirect_cost_total(service_request)
     if Setting.find_by_key("use_indirect_cost").value
-      service_requests.where(id: service_request.id).or(service_requests.where.not(status: ['first_draft', 'draft'])).
-        eager_load(:line_items).
+      self.service_requests.
+        where(id: service_request.id).
+        or(service_requests.where.not(status: ['first_draft', 'draft'])).
+        eager_load(:line_items, :arms).
         to_a.sum(&:indirect_cost_total)
     else
       0
@@ -525,25 +533,8 @@ class Protocol < ApplicationRecord
     direct_cost_total(service_request) + indirect_cost_total(service_request)
   end
 
-  def arm_cleanup
-    return unless self.arms.count > 0
-
-    remove_arms = true
-
-    self.service_requests.each do |sr|
-      if sr.has_per_patient_per_visit_services?
-        remove_arms = false
-        break
-      end
-    end
-
-    if remove_arms
-      self.arms.destroy_all
-    end
-  end
-
   def has_incomplete_additional_details?
-    line_items.any?(&:has_incomplete_additional_details?)
+    sub_service_requests.any?(&:has_incomplete_additional_details?)
   end
 
   private

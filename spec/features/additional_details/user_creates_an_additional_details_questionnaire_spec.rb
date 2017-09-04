@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -24,9 +24,9 @@ RSpec.describe 'User creates an additional details questionnaire', js: true do
   let_there_be_lane
   fake_login_for_each_test
 
-  scenario 'successfully' do
+  scenario 'successfully with service' do
     service = create(:service, :with_ctrc_organization)
-    visit new_service_additional_details_questionnaire_path(service)
+    visit new_additional_details_questionnaire_path(questionable_id: service.id, questionable_type: 'Service')
     fill_in 'questionnaire_name', with: 'New Questionnaire'
     fill_in 'questionnaire_items_attributes_0_content', with: 'What is your favorite color?'
     select 'Radio Button', from: 'questionnaire_items_attributes_0_item_type'
@@ -38,7 +38,27 @@ RSpec.describe 'User creates an additional details questionnaire', js: true do
 
     click_button 'Create Questionnaire'
 
-    expect(current_path).to eq service_additional_details_questionnaires_path(service)
+    expect(current_path).to eq additional_details_questionnaires_path()
+    expect(Questionnaire.count).to eq 1
+    expect(Item.count).to eq 1
+    expect(ItemOption.count).to eq 2
+  end
+
+  scenario 'successfully with organization' do
+    org = create(:organization_without_validations)
+    visit new_additional_details_questionnaire_path(questionable_id: org.id, questionable_type: 'Organization')
+    fill_in 'questionnaire_name', with: 'New Questionnaire'
+    fill_in 'questionnaire_items_attributes_0_content', with: 'What is your favorite color?'
+    select 'Radio Button', from: 'questionnaire_items_attributes_0_item_type'
+    fill_in 'questionnaire_items_attributes_0_item_options_attributes_0_content', with: 'Green'
+    click_link 'Add another Option'
+    fill_in 'questionnaire_items_attributes_0_item_options_attributes_1_content', with: 'Red'
+
+    check 'questionnaire_items_attributes_0_required'
+
+    click_button 'Create Questionnaire'
+
+    expect(current_path).to eq additional_details_questionnaires_path()
     expect(Questionnaire.count).to eq 1
     expect(Item.count).to eq 1
     expect(ItemOption.count).to eq 2

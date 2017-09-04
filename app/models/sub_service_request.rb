@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -44,6 +44,8 @@ class SubServiceRequest < ApplicationRecord
   has_many :reports, :dependent => :destroy
   has_many :notifications, :dependent => :destroy
   has_many :subsidies
+  has_many :submissions, dependent: :destroy
+  has_many :responses
   has_one :approved_subsidy, :dependent => :destroy
   has_one :pending_subsidy, :dependent => :destroy
 
@@ -139,14 +141,11 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def one_time_fee_line_items
-    line_items = LineItem.where(:sub_service_request_id => self.id).includes(:service)
-    line_items.select {|li| li.service.one_time_fee}
+    self.line_items.joins(:service).where(services: { one_time_fee: true })
   end
 
   def per_patient_per_visit_line_items
-    line_items = LineItem.where(:sub_service_request_id => self.id).includes(:service)
-
-    line_items.select {|li| !li.service.one_time_fee}
+    self.line_items.joins(:service).where(services: { one_time_fee: false })
   end
 
   def has_one_time_fee_services?
@@ -295,12 +294,12 @@ class SubServiceRequest < ApplicationRecord
 
   #A request is locked if the organization it's in isn't editable
   def is_locked?
-    !self.organization.process_ssrs_parent.has_editable_status?(status)
+    self.status != 'first_draft' && !self.organization.process_ssrs_parent.has_editable_status?(status)
   end
 
   # Can't edit a request if it's placed in an uneditable status
   def can_be_edited?
-    self.organization.process_ssrs_parent.has_editable_status?(status) && !is_complete?
+     self.status == 'first_draft' || (self.organization.process_ssrs_parent.has_editable_status?(self.status) && !self.is_complete?)
   end
 
   def is_complete?
@@ -406,6 +405,34 @@ class SubServiceRequest < ApplicationRecord
   end
 
   ##########################
+  ### ADDITIONAL DETAILS ###
+  ##########################
+
+  def completed_questionnaire?(questionnaire)
+    submissions.where(questionnaire_id: questionnaire.id).present?
+  end
+
+  def find_submission(questionnaire)
+    submissions.where(questionnaire_id: questionnaire.id).first
+  end
+
+  def has_incomplete_additional_details?
+    has_incomplete_additional_details_services? || has_incomplete_additional_details_organization?
+  end
+
+  def has_incomplete_additional_details_services?
+    organization.services.detect{ |service|
+      questionnaire = service.questionnaires.active.first
+      !completed_questionnaire?(questionnaire) if questionnaire
+    }.present?
+  end
+
+  def has_incomplete_additional_details_organization?
+    questionnaire = organization.questionnaires.active.first
+    questionnaire.present? && !completed_questionnaire?(questionnaire)
+  end
+
+  ##########################
   ## SURVEY DISTRIBUTTION ##
   ##########################
   # Distributes all available surveys to primary pi and ssr requester
@@ -421,6 +448,10 @@ class SubServiceRequest < ApplicationRecord
         SurveyNotification.service_survey(available_surveys, service_requester, self).deliver
       end
     end
+  end
+
+  def surveys_completed?
+    self.responses.all?(&:completed?)
   end
 
   ###############################

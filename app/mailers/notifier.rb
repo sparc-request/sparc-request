@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -28,16 +28,14 @@ class Notifier < ActionMailer::Base
     email = Setting.find_by_key("admin_mail_to").value
     cc = Setting.find_by_key("new_user_cc").value
 
-    ##REVIEW: This subject appears incorrect? Copy paste from previous method?
-    subject = "New Question from #{t(:mailer)[:application_title]}"
-
+    subject = t(:mailer)[:email_title][:new_account_registration]
     mail(:to => email, :cc => cc, :from => @identity.email, :subject => subject)
   end
 
-  def notify_user(project_role, service_request, ssr, approval, user_current, audit_report=nil, individual_ssr=false)
-
+  def notify_user(project_role, service_request, ssr, approval, user_current, audit_report=nil, individual_ssr=false, deleted_ssrs=nil, admin_delete_ssr=false)
     @protocol = service_request.protocol
     @service_request = service_request
+    @deleted_ssrs = deleted_ssrs
 
     ### ATTACHMENTS ###
     service_list_false = @service_request.service_list(false)
@@ -47,31 +45,29 @@ class Notifier < ActionMailer::Base
     xls = controller.render_to_string action: 'show', formats: [:xlsx]
     ### END ATTACHMENTS ###
 
-    if audit_report.present?
-      @status = 'request_amendment'
-    elsif individual_ssr
-      @status = ssr.status
-    else
-      @status = @service_request.status
-    end
-
+    @status = status(admin_delete_ssr, audit_report.present?, individual_ssr, ssr, @service_request)
     @notes = []
     @identity = project_role.identity
     @role = project_role.role
     @full_name = @identity.full_name
     @audit_report = audit_report
 
-    @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
-
-    # 
+    @service_requester_id = service_requester_id(@service_request, deleted_ssrs)
     @portal_link = Setting.find_by_key("dashboard_link").value + "/protocols/#{@protocol.id}"
-    @ssrs_to_be_displayed =  individual_ssr ? [ssr] : @service_request.sub_service_requests
 
-    attachments["service_request_#{@protocol.id}.xlsx"] = xls
+    if admin_delete_ssr
+      @ssrs_to_be_displayed = [deleted_ssrs]
+    else
+      @ssrs_to_be_displayed = individual_ssr ? [ssr] : @service_request.sub_service_requests
+    end
+
+    if !admin_delete_ssr
+      attachments["service_request_#{@protocol.id}.xlsx"] = xls
+    end
 
     # only send these to the correct person in the production env
     email = @identity.email
-    subject = "#{@protocol.id} - #{t(:mailer)[:application_title]} service request"
+    subject = email_title(@status, @protocol, @deleted_ssrs)
 
     mail(:to => email, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
   end
@@ -96,7 +92,7 @@ class Notifier < ActionMailer::Base
     @role = 'none'
     @full_name = submission_email_address
 
-    @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
+    @service_requester_id = service_requester_id(@service_request, ssr)
     @ssrs_to_be_displayed = [ssr]
 
     @portal_link = Setting.find_by_key("dashboard_link").value + "/protocols/#{@protocol.id}"
@@ -109,7 +105,7 @@ class Notifier < ActionMailer::Base
     end
 
     email =  submission_email_address
-    subject = "#{@protocol.id} - #{t(:mailer)[:application_title]} service request"
+    subject = email_title(@status, @protocol, ssr)
 
     mail(:to => email, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
   end
@@ -124,8 +120,7 @@ class Notifier < ActionMailer::Base
     @role = 'none'
     @full_name = service_provider.identity.full_name
 
-    @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
-
+    @service_requester_id = service_requester_id(@service_request, ssr)
     @audit_report = audit_report
 
     @portal_link = Setting.find_by_key("dashboard_link").value + "/protocols/#{@protocol.id}"
@@ -170,7 +165,7 @@ class Notifier < ActionMailer::Base
 
     # only send these to the correct person in the production env
     email = service_provider.identity.email
-    subject = "#{@protocol.id} - #{t(:mailer)[:application_title]} service request"
+    subject = email_title(@status, @protocol, ssr)
 
     mail(:to => email, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
   end
@@ -264,18 +259,21 @@ class Notifier < ActionMailer::Base
   def epic_queue_error protocol, error=nil
     @protocol = protocol
     @error = error
-    mail(:to => Setting.find_by_key("queue_epic_load_error_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => "#{@protocol.id} - Error batch loading protocol to Epic")
+    subject =  "#{t(:mailer)[:epic_queue_error]} #{@protocol.id}"
+    mail(to: Setting.find_by_key("queue_epic_load_error_to").value, from: Setting.find_by_key("no_reply_from").value, subject: subject)
   end
 
   def epic_queue_report
     attachments["epic_queue_report.csv"] = File.read(Rails.root.join("tmp", "epic_queue_report.csv"))
-    mail(:to => Setting.find_by_key("epic_queue_report_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => "Epic Queue Report")
+    subject = "#{t(:mailer)[:email_title][:epic_queue_report]}"
+    mail(to: Setting.find_by_key("epic_queue_report_to").value, from: Setting.find_by_key("no_reply_from").value, subject: subject)
   end
 
   def epic_queue_complete sent, failed
     @sent = sent
     @failed = failed
-    mail(:to => Setting.find_by_key("epic_queue_report_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => "Epic Queue Complete")
+    subject = "#{t(:mailer)[:application_title]} #{t(:mailer)[:email_title][:epic_queue_summary]}"
+    mail(to: Setting.find_by_key("epic_queue_report_to").value, from: Setting.find_by_key("no_reply_from").value, subject: subject)
   end
 
   def set_instance_variables(current_user, service_request, service_list_false, service_list_true, line_items, protocol)
@@ -300,5 +298,28 @@ class Notifier < ActionMailer::Base
       status = service_request.status
     end
     status
+  end
+
+  def email_title(status, protocol, ssr)
+    email_status = case status
+    when 'get_a_cost_estimate'
+      "Get Cost Estimate"
+    when 'request_amendment'
+      "Amendment Submitted "
+    when 'ssr_destroyed'
+      "Request Deletion"
+    when 'submitted'
+      "Submission"
+    end
+
+    if status == 'ssr_destroyed'
+      t('mailer.email_title.general', email_status: email_status, type: "Request", id: ssr.display_id)
+    else
+      t('mailer.email_title.general', email_status: email_status, type: "Protocol", id: protocol.id)
+    end
+  end
+
+  def service_requester_id(service_request, deleted_ssr)
+    service_request.sub_service_requests.first.present? ? service_request.sub_service_requests.first.service_requester_id : AuditRecovery.where(auditable_id: deleted_ssr.id, auditable_type: 'SubServiceRequest', action: 'destroy').first.audited_changes['service_requester_id']
   end
 end

@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -27,16 +27,17 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
   describe '#destroy' do
     before :each do
       @service = create(:service)
-      @questionnaire = create(:questionnaire, :without_validations, service: @service)
+      @questionnaire = create(:questionnaire, :without_validations, questionable: @service)
 
       delete :destroy, params: {
-        service_id: @service.id,
+        questionable_id: @service.id,
+        questionable_type: 'Service',
         id: @questionnaire.id
       }, format: :js
     end
 
     it 'should assign @service' do
-      expect(assigns(:service)).to eq(@service)
+      expect(assigns(:questionable)).to eq(@service)
     end
 
     it 'should assign @questionnaire' do
@@ -47,7 +48,7 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
       expect(Questionnaire.count).to eq(0)
     end
 
-    it { is_expected.to redirect_to(action: :index, service_id: @service.id) }
+    it { is_expected.to redirect_to(action: :index, questionable_id: @service.id, questionable_type: 'Service') }
 
     it { is_expected.to respond_with(302) }
   end

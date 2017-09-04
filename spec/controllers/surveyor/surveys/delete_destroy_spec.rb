@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -37,16 +37,6 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
 
     it 'should call before_filter #authorize_site_admin' do
       expect(before_filters.include?(:authorize_site_admin)).to eq(true)
-    end
-
-    it 'should assign @survey to the survey' do
-      survey = create(:survey_without_validations)
-
-      delete :destroy, params: {
-        id: survey.id
-      }, xhr: true
-
-      expect(assigns(:survey)).to eq(survey)
     end
 
     it 'should delete the survey' do

@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -25,7 +25,8 @@ RSpec.describe 'additional_details/submissions/index', type: :view do
   before(:each) do
     @service = create(:service)
     @user = create(:identity)
-    @submissions = create_list(:submission, 5, service_id: @service.id, identity_id: @user.id)
+    @questionnaire  = create(:questionnaire, :without_validations, name: 'Test Questionnaire', active: 1, questionable: @service)
+    @submissions = create_list(:submission, 5, questionnaire_id: @questionnaire.id, identity_id: @user.id)
 
     render
   end

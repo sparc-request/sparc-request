@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe '/service_calendar/master_calendar/otf/_otf_totals', type: :view do
+RSpec.describe '/service_calendar/master_calendar/otf/totals/_otf_totals', type: :view do
 
   let_there_be_lane
 
@@ -29,22 +29,22 @@ RSpec.describe '/service_calendar/master_calendar/otf/_otf_totals', type: :view 
     @service_request = create(:service_request_without_validations, protocol: @protocol)
   end
 
-  it 'should display total direct costs for Non-clinical services if use_indirect_cost is true' do
+  it 'should display total direct costs for Non-clinical services if USE_INDIRECT_COST is true' do
     create(:setting, key: "use_indirect_cost", value: true)
-    render "/service_calendars/master_calendar/otf/otf_totals", service_request: @service_request
+    render "/service_calendars/master_calendar/otf/totals/otf_totals", service_request: @service_request
 
     expect(response).to have_content('Total Direct Costs (Non-clinical Services) Per Study')
   end
 
-  it 'should not display total direct costs for Non-clinical services if use_indirect_cost is false' do
+  it 'should not display total direct costs for Non-clinical services if USE_INDIRECT_COST is false' do
     create(:setting, key: "use_indirect_cost", value: true)
-    render "/service_calendars/master_calendar/otf/otf_totals", service_request: @service_request
+    render "/service_calendars/master_calendar/otf/totals/otf_totals", service_request: @service_request
 
     expect(response).to_not have_content('Total Direct Costs (Non-clinical Services) Per Study')
   end
 
   it 'should display total Non-clinicals costs' do
-    render "/service_calendars/master_calendar/otf/otf_totals", service_request: @service_request
+    render "/service_calendars/master_calendar/otf/totals/otf_totals", service_request: @service_request
 
     expect(response).to have_content('Total Costs (Non-clinical Services) Per Study')
   end

@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -142,17 +142,18 @@ $(document).ready ->
 
         if $selected_options.length > 0
           $selected_option    = $selected_options.first()
-          service_id          = $selected_option.data('service-id')
+          questionnaire_id    = $selected_option.data('questionnaire-id')
           protocol_id         = $selected_option.data('protocol-id')
-          line_item_id        = $selected_option.data('line-item-id')
+          ssr_id              = $selected_option.data('ssr-id')
           $this               = $(this)
           
           $.ajax
             method: 'GET'
-            url: "/services/#{service_id}/additional_details/submissions/new.js"
+            url: "/additional_details/submissions/new.js"
             data:
               protocol_id: protocol_id
-              line_item_id: line_item_id
+              ssr_id: ssr_id
+              questionnaire_id: questionnaire_id
             success: ->
               $this.selectpicker('deselectAll')
               $this.selectpicker('render')

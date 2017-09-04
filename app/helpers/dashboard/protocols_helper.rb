@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -32,7 +32,7 @@ module Dashboard::ProtocolsHelper
 
   def edit_protocol_button_display(protocol, permission_to_edit)
     if permission_to_edit
-      content_tag( :button, I18n.t('protocols.edit', protocol_type: protocol.type), type: 'button', class: 'edit-protocol-information-button btn btn-warning btn-sm', data: { permission: permission_to_edit.to_s, protocol_id: protocol.id })
+      content_tag( :button, I18n.t('protocols.edit', protocol_type: protocol.type), type: 'button', class: 'edit-protocol-information-button btn btn-warning btn-sm', data: { permission: permission_to_edit.to_s, protocol_id: protocol.id, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:protocols)[:summary][:tooltips][:edit])
     end
   end
 
@@ -55,7 +55,8 @@ module Dashboard::ProtocolsHelper
       content_tag( :button, (protocol.archived ? t(:protocols)[:summary][:unarchive] : t(:protocols)[:summary][:archive])+" #{protocol.type.capitalize}", 
                     type: 'button', 
                     class: 'protocol-archive-button btn btn-default btn-sm',
-                    data: { protocol_id: protocol.id }
+                    data: { protocol_id: protocol.id, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' },
+                    title: t("protocols.summary.tooltips.#{protocol.archived ? "unarchive_study" : "archive_study"}")
       )
     end
   end

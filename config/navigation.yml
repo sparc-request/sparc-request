@@ -18,102 +18,50 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+catalog:
+  step_text: "STEP 1: Add/Update Services"
+  css_class: "blue-provider"
+
 protocol:
-  step_text: 'STEP 1: Review Services and Assign Protocol'
-  step_number: '1'
-  css_class: blue-provider
+  step_text: 'STEP 2: Services and Protocol Information'
+  css_class: blue-green-provider
   back: catalog
-  catalog: catalog
   forward: service_details
-  validation_groups:
-    catalog:
-    save_and_exit:
-      - protocol
-    service_details:
-      - protocol
 
 service_details:
-  step_text: 'STEP 2A: Enter Dates and Arm Information'
-  step_number: '2A'
-  css_class: light-blue-provider
+  step_text: 'STEP 3: Milestones and Calendar Structure'
+  css_class: green-provider
   back: protocol
-  catalog: catalog
   forward: service_calendar
-  validation_groups:
-    catalog:
-      - service_details_back
-    protocol:
-      - service_details_back
-    save_and_exit:
-      - service_details_back
-    service_calendar:
-      - service_details
 
 service_calendar:
-  step_text: 'STEP 2B: Visit Calendar'
-  step_number: '2B'
+  step_text: 'STEP 4: Service Calendar'
   css_class: light-blue-provider
   back: service_details
-  catalog: catalog
   forward: service_subsidy
-  validation_groups:
-    protocol:
-      - service_calendar_back
-    service_details:
-      - service_calendar_back
-    save_and_exit:
-      - service_calendar_back
-    service_subsidy:
-      - service_calendar
 
 service_subsidy:
-  step_text: 'STEP 2C: Enter Requested Subsidy Information'
-  step_number: '2C'
-  css_class: light-blue-provider
+  step_text: 'STEP 4a: Subsidy Information'
+  css_class: pink-provider
   back: service_calendar
-  catalog: catalog
   forward: document_management
-  validation_groups:
-    document_management:
-      - service_subsidy
 
 document_management:
-  step_text: 'STEP 3: Shared Documents & Notes'
-  step_number: '3'
+  step_text: 'STEP 5: Document, Notes, and Forms'
   css_class: orange-provider
   back: service_subsidy
-  catalog: catalog
   forward: review
-  validation_groups:
-    review_view:
-      - document_management
 
 review:
-  step_text: 'STEP 4: Review Your Request'
-  step_number: '4'
+  step_text: 'STEP 6: Review Your Request'
   css_class: red-provider
   back: document_management
-  catalog: catalog
-  obtain_research_pricing: obtain_research_pricing
   forward: confirmation
-  validation_groups:
-    document_management:
 
 obtain_research_pricing:
-  step_text: 'STEP 5a: Get a Cost Estimate'
-  step_number: '5'
+  step_text: 'Get a Cost Estimate'
   css_class: green-provider
-  back: review
-  catalog: catalog
-  validation_groups:
-    document_management:
 
 confirmation:
-  step_text: 'STEP 5: Submission Confirmation'
-  step_number: '5'
+  step_text: 'Submission Confirmation'
   css_class: green-provider
-  back: review
-  catalog: catalog
-  forward: confirmation
-  validation_groups:
-    document_management:

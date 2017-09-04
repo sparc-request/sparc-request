@@ -26,9 +26,9 @@ module Dashboard::ServiceRequestsHelper
 
   def protocol_panel_header_line service_request
     if service_request.status == "submitted"
-      "Service Request: #{service_request.id} - Submitted - #{format_date(service_request.submitted_at)}"
+      "Submitted - #{format_date(service_request.submitted_at)}"
     else
-      "Service Request: #{service_request.id} - #{PermissibleValue.get_value('status', service_request.status)} - #{format_date(service_request.updated_at)}"
+      "#{PermissibleValue.get_value('status', service_request.status)} - #{format_date(service_request.updated_at)}"
     end
   end
 

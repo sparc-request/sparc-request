@@ -37,6 +37,7 @@ en:
     create_new_questionnaire: 'Create new'
     form_name: 'Form Name'
     service_name: 'Service Name'
+    organization_name: 'Organization Name'
     active: 'Active'
     activate: 'Activate'
     edit_questionnaire: 'Edit'
@@ -59,6 +60,7 @@ en:
         id: "ID"
         sr_id: 'SRID'
         service: "Service Name"
+        organization: 'Organization Name'
         completion_time: 'Completion Time'
         view: 'View'
         edit: 'Edit'

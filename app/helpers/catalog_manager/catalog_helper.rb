@@ -82,20 +82,20 @@ end
 #     service.pricing_maps.map{|x| x.id}
 #   end
 
-#   def display_organization_tree(organization)
-#     tree = []
+  def display_organization_tree(organization)
+    tree = []
 
-#     if organization.parents.empty?
-#       tree << organization.name
-#     else
-#       organization.parents.reverse_each do |parent|
-#         tree << parent.name
-#       end
-#       tree << organization.name
-#     end
+    if organization.parents.empty?
+      tree << organization.name
+    else
+      organization.parents.reverse_each do |parent|
+        tree << parent.name
+      end
+      tree << organization.name
+    end
 
-#     tree.join(' / ')
-#   end
+    tree.join(' / ')
+  end
 
 #   def disabled_parent organization
 #     if (orgs = organization.parents.insert(0, organization).select{|org| !org.is_available}).any?

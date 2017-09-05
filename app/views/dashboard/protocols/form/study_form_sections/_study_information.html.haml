@@ -44,7 +44,7 @@
       .col-lg-10
         = form.text_field :short_title,
           class: [('form-control'), (RESEARCH_MASTER_ENABLED ? 'rm-id-dependent rm-locked-fields' : '')],
-          disabled: RESEARCH_MASTER_ENABLED
+          disabled: RESEARCH_MASTER_ENABLED && protocol.research_master_id.present?
 
     .form-group.row
       = form.label :title,
@@ -55,7 +55,7 @@
       .col-lg-10
         = form.text_field :title,
           class: [('form-control'), (RESEARCH_MASTER_ENABLED ? 'rm-id-dependent rm-locked-fields' : '')],
-          disabled: RESEARCH_MASTER_ENABLED
+          disabled: RESEARCH_MASTER_ENABLED && protocol.research_master_id.present?
 
     .form-group.row#funding-status
       = form.label :funding_status,

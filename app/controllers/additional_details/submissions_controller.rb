@@ -24,15 +24,14 @@ class AdditionalDetails::SubmissionsController < ApplicationController
   include AdditionalDetails::StatesHelper
 
   def index
-    @questionnaire = Questionnaire.find(params[:questionnaire_id])
-    @questionable = @questionnaire.questionable
-    @submissions = @questionnaire.submissions
+    @service = Service.find(params[:service_id])
+    @submissions = @service.submissions
   end
 
   def show
     @submission = Submission.find(params[:id])
     @questionnaire_responses = @submission.questionnaire_responses
-    @questionnaire = @submission.questionnaire
+    @questionnaire = Questionnaire.find(@submission.questionnaire_id)
     @items = @questionnaire.items
     respond_to do |format|
       format.js
@@ -40,7 +39,8 @@ class AdditionalDetails::SubmissionsController < ApplicationController
   end
 
   def new
-    @questionnaire = Questionnaire.find(params[:questionnaire_id])
+    @service = Service.find(params[:service_id])
+    @questionnaire = @service.questionnaires.active.first
     @submission = Submission.new
     @submission.questionnaire_responses.build
     respond_to do |format|
@@ -49,20 +49,22 @@ class AdditionalDetails::SubmissionsController < ApplicationController
   end
 
   def edit
+    @service = Service.find(params[:service_id])
     @submission = Submission.find(params[:id])
-    @questionnaire = @submission.questionnaire
+    @questionnaire = @service.questionnaires.active.first
     respond_to do |format|
       format.js
     end
   end
 
   def create
+    @service = Service.find(params[:service_id])
+    @questionnaire = @service.questionnaires.active.first
     @submission = Submission.new(submission_params)
-    @questionnaire = @submission.questionnaire
     @protocol = Protocol.find(submission_params[:protocol_id])
     @submissions = @protocol.submissions
-    @sub_service_request = @submission.sub_service_request
-    @service_request = @sub_service_request.service_request
+    @line_item = LineItem.find(submission_params[:line_item_id])
+    @service_request = @line_item.service_request
     @permission_to_edit = current_user.can_edit_protocol?(@protocol)
     @user = current_user
     
@@ -76,8 +78,9 @@ class AdditionalDetails::SubmissionsController < ApplicationController
   end
 
   def update
+    @service = Service.find(params[:service_id])
     @submission = Submission.find(params[:id])
-    @protocol = @submission.protocol
+    @protocol = Protocol.find(@submission.protocol_id)
     @submissions = @protocol.submissions
     if params[:sr_id]
       @service_request = ServiceRequest.find(params[:sr_id])
@@ -94,18 +97,17 @@ class AdditionalDetails::SubmissionsController < ApplicationController
   end
 
   def destroy
+    @service = Service.find(params[:service_id])
     @submission = Submission.find(params[:id])
     @user = current_user
     if params[:protocol_id]
       @protocol = Protocol.find(params[:protocol_id])
       @submissions = @protocol.submissions
       @permission_to_edit = current_user.can_edit_protocol?(@protocol)
-    else
-      @submissions = @submission.questionnaire.submissions
     end
-    if params[:ssr_id]
-      @sub_service_request = SubServiceRequest.find(params[:ssr_id])
-      @service_request = ServiceRequest.find(@sub_service_request.service_request_id)
+    if params[:line_item_id]
+      @line_item = LineItem.find(params[:line_item_id])
+      @service_request = ServiceRequest.find(@line_item.service_request_id)
     end
     respond_to do |format|
       if @submission.destroy

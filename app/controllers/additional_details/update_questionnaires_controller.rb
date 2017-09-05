@@ -18,20 +18,26 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-require 'rails_helper'
+class AdditionalDetails::UpdateQuestionnairesController < ApplicationController
+  before_action :authenticate_identity!
 
-RSpec.describe Submission, type: :model do
-  it { is_expected.to belong_to(:service) }
+  def update
+    @service = Service.find(params[:service_id])
+    @questionnaires = @service.questionnaires
+    @questionnaire = Questionnaire.find(params[:id])
+    update_questionnaire(@questionnaire)
+    respond_to do |format|
+      format.js
+    end
+  end
 
-  it { is_expected.to belong_to(:identity) }
+  private
 
-  it { is_expected.to belong_to(:questionnaire) }
-
-  it { is_expected.to belong_to(:protocol) }
-
-  it { is_expected.to belong_to(:line_item) }
-
-  it { is_expected.to have_many(:questionnaire_responses) }
-
-  it { is_expected.to accept_nested_attributes_for(:questionnaire_responses) }
+  def update_questionnaire(questionnaire)
+    if questionnaire.active?
+      questionnaire.update_attribute(:active, false)
+    else
+      questionnaire.update_attribute(:active, true)
+    end
+  end
 end

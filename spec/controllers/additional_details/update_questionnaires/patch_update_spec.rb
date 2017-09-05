@@ -20,35 +20,75 @@
 
 require 'rails_helper'
 
-RSpec.describe AdditionalDetails::QuestionnairesController do
+RSpec.describe AdditionalDetails::UpdateQuestionnairesController do
   stub_controller
   let!(:logged_in_user) { create(:identity) }
 
-  describe '#destroy' do
+  describe '#update' do
     before :each do
-      @service = create(:service)
-      @questionnaire = create(:questionnaire, :without_validations, service: @service)
-
-      delete :destroy, params: {
-        service_id: @service.id,
-        id: @questionnaire.id
-      }, format: :js
+      @service        = create(:service)
+      @questionnaire  = create(:questionnaire, :without_validations, service: @service, active: true)
     end
 
     it 'should assign @service' do
+      patch :update, params: {
+        service_id: @service.id,
+        id: @questionnaire.id
+      }, format: :js
+
       expect(assigns(:service)).to eq(@service)
     end
 
+    it 'should assign @questionnaires' do
+      patch :update, params: {
+        service_id: @service.id,
+        id: @questionnaire.id
+      }, format: :js
+
+      expect(assigns(:questionnaires)).to eq([@questionnaire])
+    end
+
     it 'should assign @questionnaire' do
+      patch :update, params: {
+        service_id: @service.id,
+        id: @questionnaire.id
+      }, format: :js
+
       expect(assigns(:questionnaire)).to eq(@questionnaire)
     end
 
-    it 'should destroy the questionnaire' do
-      expect(Questionnaire.count).to eq(0)
+    it 'should update status' do
+      patch :update, params: {
+        service_id: @service.id,
+        id: @questionnaire.id
+      }, format: :js
+
+      expect(@questionnaire.reload.active).to eq(false)
+
+      patch :update, params: {
+        service_id: @service.id,
+        id: @questionnaire.id
+      }, format: :js
+
+      expect(@questionnaire.reload.active).to eq(true)
     end
 
-    it { is_expected.to redirect_to(action: :index, service_id: @service.id) }
+    it 'should render template' do
+      patch :update, params: {
+        service_id: @service.id,
+        id: @questionnaire.id
+      }, format: :js
 
-    it { is_expected.to respond_with(302) }
+      expect(controller).to render_template(:update)
+    end
+
+    it 'should respond ok' do
+      patch :update, params: {
+        service_id: @service.id,
+        id: @questionnaire.id
+      }, format: :js
+
+      expect(controller).to respond_with(:ok)
+    end
   end
 end

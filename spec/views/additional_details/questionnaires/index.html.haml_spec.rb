@@ -26,11 +26,11 @@ RSpec.describe 'additional_details/questionnaires/index', type: :view do
 
     before(:each) do
       @service = create(:service, name: 'Test Service')
-      @questionnaire = create(:questionnaire, :without_validations, name: 'Test Questionnaire', active: 1, questionable: @service)
+      @questionnaire = create(:questionnaire, :without_validations, name: 'Test Questionnaire', active: 1, service: @service)
 
-      assign(:questionable, @service)
+      assign(:service, @service)
       assign(:questionnaires, [@questionnaire])
-      assign(:questionable_id, @service.id)
+      assign(:service_id, @service.id)
 
       render
     end
@@ -58,10 +58,10 @@ RSpec.describe 'additional_details/questionnaires/index', type: :view do
     before(:each) do
       submission = create(:submission)
       @service = create(:service, name: 'Test Service')
-      @questionnaire = create(:questionnaire, :without_validations, name: 'Test Questionnaire', active: 0, submissions: [submission], questionable: @service)
-      assign(:questionable, @service)
+      @questionnaire = create(:questionnaire, :without_validations, name: 'Test Questionnaire', active: 0, submissions: [submission], service: @service)
+      assign(:service, @service)
       assign(:questionnaires, [@questionnaire])
-      assign(:questionable_id, @service.id)
+      assign(:service_id, @service.id)
 
       render
     end

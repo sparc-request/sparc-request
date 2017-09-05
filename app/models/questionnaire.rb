@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class Questionnaire < ApplicationRecord
-  belongs_to :questionable, polymorphic: :true
+  belongs_to :service
   has_many :items, dependent: :destroy
   has_many :submissions, dependent: :destroy
   validates :name, presence: true

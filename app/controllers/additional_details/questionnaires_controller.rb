@@ -20,12 +20,12 @@
 
 class AdditionalDetails::QuestionnairesController < ApplicationController
   before_action :authenticate_identity!
-  before_action :find_questionable
+  before_action :find_service
   before_action :find_questionnaire, only: [:edit, :update, :destroy]
   layout 'additional_details'
 
   def index
-    @questionnaires = @questionable.questionnaires
+    @questionnaires = @service.questionnaires
   end
 
   def new
@@ -37,22 +37,18 @@ class AdditionalDetails::QuestionnairesController < ApplicationController
   end
 
   def create
-    @questionnaire = @questionable.questionnaires.new(questionnaire_params)
-    
+    @questionnaire = @service.questionnaires.new(questionnaire_params)
+
     if @questionnaire.save
-      redirect_to additional_details_questionnaires_path(questionable_id: @questionable.id, questionable_type: @questionable.class.base_class.name)
+      redirect_to service_additional_details_questionnaires_path(@service)
     else
       render :new
     end
   end
 
   def update
-    @questionnaires = @questionable.questionnaires
     if @questionnaire.update(questionnaire_params)
-      respond_to do |format|
-        format.html{ redirect_to additional_details_questionnaires_path(questionable_id: @questionable.id, questionable_type: @questionable.class.base_class.name) }
-        format.js{ render :update }
-      end
+      redirect_to service_additional_details_questionnaires_path(@service)
     else
       render :edit
     end
@@ -60,7 +56,7 @@ class AdditionalDetails::QuestionnairesController < ApplicationController
 
   def destroy
     @questionnaire.destroy
-    redirect_to additional_details_questionnaires_path(questionable_id: @questionable.id, questionable_type: @questionable.class.base_class.name)
+    redirect_to service_additional_details_questionnaires_path(@service)
   end
 
   private
@@ -69,8 +65,8 @@ class AdditionalDetails::QuestionnairesController < ApplicationController
     @questionnaire = Questionnaire.find(params[:id])
   end
 
-  def find_questionable
-    @questionable = params[:questionable_type].classify.constantize.find(params[:questionable_id])
+  def find_service
+    @service = Service.find(params[:service_id])
   end
 
   def questionnaire_params

@@ -24,8 +24,8 @@ RSpec.describe 'additional_details/_questionnaires_index_table', type: :view do
 
   before(:each) do
 
-    @questionable = create(:service)
-    @questionnaires = create_list(:questionnaire_with_responses, 2, :without_validations, questionable: @questionable)
+    @service = create(:service)
+    @questionnaires = create_list(:questionnaire_with_responses, 2, :without_validations, service_id: @service.id)
     @questionnaires.first.active = 0
 
     render "/additional_details/questionnaires_index_table"
@@ -37,7 +37,7 @@ RSpec.describe 'additional_details/_questionnaires_index_table', type: :view do
     @questionnaires.each do |questionnaire|
       expect(response).to have_css('tr', text: questionnaire.name)
       expect(response).to have_css('span.badge', text: questionnaire.submissions.count)
-      expect(response).to have_css('tr', text: questionnaire.questionable.name)
+      expect(response).to have_css('tr', text: questionnaire.service.name)
       expect(response).to have_css('tr', text: questionnaire.active ? 'true' : 'false')
       expect(response).to have_css('a', text: "#{ questionnaire.active ? 'Disable' : 'Activate' } Questionnaire")
     end

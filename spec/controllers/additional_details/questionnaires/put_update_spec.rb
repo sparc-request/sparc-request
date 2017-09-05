@@ -27,14 +27,13 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
   describe '#update' do
     before :each do
       @service = create(:service)
-      @questionnaire = create(:questionnaire, :without_validations, :with_all_question_types, questionable: @service, name: 'Funny', active: 0)
+      @questionnaire = create(:questionnaire, :without_validations, service: @service, name: 'Funny')
     end
 
     it 'should assign @service' do
       put :update, params: {
+        service_id: @service.id,
         id: @questionnaire.id,
-        questionable_id: @service.id,
-        questionable_type: 'Service',
         questionnaire: {
           name: 'Not Funny',
           items_attributes: {
@@ -45,16 +44,15 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
             }
           }
         }
-      }, format: :html
+      }, format: :js
 
-      expect(assigns(:questionable)).to eq(@service)
+      expect(assigns(:service)).to eq(@service)
     end
 
     it 'should assign @questionnaire' do
       put :update, params: {
+        service_id: @service.id,
         id: @questionnaire.id,
-        questionable_id: @service.id,
-        questionable_type: 'Service',
         questionnaire: {
           name: 'Not Funny',
           items_attributes: {
@@ -65,17 +63,16 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
             }
           }
         }
-      }, format: :html
+      }, format: :js
 
       expect(assigns(:questionnaire)).to eq(@questionnaire)
     end
 
-    context 'successful - html' do
+    context 'successful' do
       before :each do
         put :update, params: {
+          service_id: @service.id,
           id: @questionnaire.id,
-          questionable_id: @service.id,
-          questionable_type: 'Service',
           questionnaire: {
             name: 'Not Funny',
             items_attributes: {
@@ -86,48 +83,25 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
               }
             }
           }
-        }, format: :html
+        }, format: :js
       end
 
       it 'should update the questionnaire' do
         expect(@questionnaire.reload.name).to eq('Not Funny')
       end
 
-      it { is_expected.to redirect_to(action: :index, questionable_id: @service.id, questionable_type: 'Service') }
+      it { is_expected.to redirect_to(action: :index, service_id: @service.id) }
 
       it { is_expected.to respond_with(302) }
-    end
-
-    context 'successful - js' do
-      before :each do
-        put :update, params: {
-          id: @questionnaire.id,
-          questionable_id: @service.id,
-          questionable_type: 'Service',
-          questionnaire: {
-            active: 1
-          }
-        }, format: :js
-      end
-
-      it 'should update the questionnaire' do
-        expect(@questionnaire.reload.active).to eq(true)
-      end
-
-      it { is_expected.to render_template(:update) }
-
-      it { is_expected.to respond_with(200) }
     end
 
     context 'unsuccessful' do
       before :each do
         put :update, params: {
+          service_id: @service.id,
           id: @questionnaire.id,
-          questionable_id: @service.id,
-          questionable_type: 'Service',
           questionnaire: {
             name: 'Not Funny',
-            active: 1,
             items_attributes: {
               '0' => {
                 content: '',
@@ -136,12 +110,11 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
               }
             }
           }
-        }, format: :html
+        }, format: :js
       end
 
       it 'should not update the questionnaire' do
         expect(@questionnaire.reload.name).to eq('Funny')
-        expect(@questionnaire.reload.active).to eq(false)
       end
 
       it { is_expected.to render_template(:edit) }

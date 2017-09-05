@@ -534,7 +534,6 @@ $ ->
 
   $(document).on('change', 'input[id*="_process_ssrs"]', ->
     $('#available_statuses_wrapper').toggle()
-    $('#questionnaires').toggle()
   )
 
   $(document).on('change', 'input[id*="_tag_list_clinical_work_fulfillment"]', ->

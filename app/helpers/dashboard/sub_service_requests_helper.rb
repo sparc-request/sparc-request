@@ -208,33 +208,27 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def display_ssr_submissions(ssr)
-    if ssr.has_incomplete_additional_details?
+    line_items = ssr.line_items.includes(service: :questionnaires).includes(:submission).to_a.select(&:has_incomplete_additional_details?)
+
+    if line_items.any?
       protocol    = ssr.protocol
-      submissions = {}
-      if ssr.has_incomplete_additional_details_services?
-        submissions[:Services] = []
-        ssr.organization.services.each do |service|
-          next unless service.questionnaires.active.present?
-          submissions[:Services] << [service.name, service.name, data: {
-                                                                  questionnaire_id: service.questionnaires.active.first.id,
-                                                                  protocol_id: protocol.id,
-                                                                  ssr_id: ssr.id
-                                                                }]
-        end 
+      submissions = ""
+
+      line_items.each do |li|
+        submissions +=  content_tag(
+                          :option,
+                          "#{li.service.name}",
+                          data: {
+                            service_id: li.service.id,
+                            protocol_id: protocol.id,
+                            line_item_id: li.id
+                          }
+                        )
       end
-      if ssr.has_incomplete_additional_details_organization?
-        submissions[:Organization] = []
-        submissions[:Organization] << [ssr.organization.name, ssr.organization.name, data: {
-                                                                                      questionnaire_id: ssr.organization.questionnaires.active.first.id,
-                                                                                      protocol_id: protocol.id,
-                                                                                      ssr_id: ssr.id
-                                                                                    }]
-      end
-      submission_list = grouped_options_for_select(submissions)
 
       content_tag(
         :select,
-        submission_list.html_safe,
+        submissions.html_safe,
         title: t(:dashboard)[:service_requests][:additional_details][:selectpicker],
         class: 'selectpicker complete-details',
         data: {

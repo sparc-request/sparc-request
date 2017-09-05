@@ -44,7 +44,6 @@ class SubServiceRequest < ApplicationRecord
   has_many :reports, :dependent => :destroy
   has_many :notifications, :dependent => :destroy
   has_many :subsidies
-  has_many :submissions, dependent: :destroy
   has_many :responses
   has_one :approved_subsidy, :dependent => :destroy
   has_one :pending_subsidy, :dependent => :destroy
@@ -402,34 +401,6 @@ class SubServiceRequest < ApplicationRecord
     if params[:committee_approved]
       self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Date.today, :approval_type => "Committee Approved"})
     end
-  end
-
-  ##########################
-  ### ADDITIONAL DETAILS ###
-  ##########################
-
-  def completed_questionnaire?(questionnaire)
-    submissions.where(questionnaire_id: questionnaire.id).present?
-  end
-
-  def find_submission(questionnaire)
-    submissions.where(questionnaire_id: questionnaire.id).first
-  end
-
-  def has_incomplete_additional_details?
-    has_incomplete_additional_details_services? || has_incomplete_additional_details_organization?
-  end
-
-  def has_incomplete_additional_details_services?
-    organization.services.detect{ |service|
-      questionnaire = service.questionnaires.active.first
-      !completed_questionnaire?(questionnaire) if questionnaire
-    }.present?
-  end
-
-  def has_incomplete_additional_details_organization?
-    questionnaire = organization.questionnaires.active.first
-    questionnaire.present? && !completed_questionnaire?(questionnaire)
   end
 
   ##########################

@@ -31,8 +31,7 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
 
     it 'should assign @service' do
       post :create, params: {
-        questionable_id: @service.id,
-        questionable_type: 'Service',
+        service_id: @service.id,
         questionnaire: {
           name: 'string',
           items_attributes: {
@@ -45,13 +44,12 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
         }
       }, format: :js
 
-      expect(assigns(:questionable)).to eq(@service)
+      expect(assigns(:service)).to eq(@service)
     end
 
     it 'should assign @questionnaire' do
       post :create, params: {
-        questionable_id: @service.id,
-        questionable_type: 'Service',
+        service_id: @service.id,
         questionnaire: {
           name: 'string',
           items_attributes: {
@@ -70,8 +68,7 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
     context 'successful' do
       before :each do
         post :create, params: {
-          questionable_id: @service.id,
-          questionable_type: 'Service',
+          service_id: @service.id,
           questionnaire: {
             name: 'string',
             items_attributes: { 
@@ -93,7 +90,7 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
         expect(Item.count).to eq(1)
       end
 
-      it { is_expected.to redirect_to(action: :index, questionable_id: @service.id, questionable_type: 'Service') }
+      it { is_expected.to redirect_to(action: :index, service_id: @service.id) }
 
       it { is_expected.to respond_with(302) }
     end
@@ -101,8 +98,7 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
     context 'unsuccessful' do
       before :each do
         post :create, params: {
-          questionable_id: @service.id,
-          questionable_type: 'Service',
+          service_id: @service.id,
           questionnaire: {
             items_attributes: { 
               '0' => { 

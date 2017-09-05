@@ -20,7 +20,7 @@
 
 = f.hidden_field :protocol_id, value: params[:protocol_id]
 = f.hidden_field :questionnaire_id, value: @questionnaire.id
-= f.hidden_field :sub_service_request_id, value: params[:ssr_id]
+= f.hidden_field :line_item_id, value: params[:line_item_id]
 - @questionnaire.items.each do |item|
   = f.fields_for :questionnaire_responses do |qr|
     - if item.required?

@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2017 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -105,7 +105,7 @@ module Dashboard
       element :consolidated_request_exclude_draft, "a", text: /Exclude Draft/
 
       # actual service request panels
-      sections :service_requests, '.panel-primary', text: /Service Request: \d+/ do
+      sections :service_requests, '#service-requests-panel' do
         element :modify_request_button, :button, text: "Modify Request"
 
         sections :ssrs, 'tbody tr' do

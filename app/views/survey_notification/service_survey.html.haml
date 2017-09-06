@@ -1,4 +1,4 @@
--# Copyright © 2011-2016 MUSC Foundation for Research Development
+-# Copyright © 2011-2017 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -32,11 +32,11 @@
 %br
 
 %ul
-- @surveys.each do |survey|
+- @responses.each do |response|
   %li
-    = link_to survey.title, url_for(controller: '/surveyor/responses', action: :new, only_path: false, access_code: survey.access_code, survey_version: survey.version, sub_service_request_id: @ssr.id, format: :html), target: '_blank'
+    = link_to response.survey.title, url_for(controller: '/surveyor/responses', action: :edit, only_path: false, id: response.id, format: :html), target: '_blank'
 
-- if @surveys.map(&:access_code).include?("sctr-customer-satisfaction-survey")
+- if @surveys.pluck(:access_code).include?("sctr-customer-satisfaction-survey")
   #sctr-grant-citation
     %br
     = t(:surveyor)[:responses][:emails][:sctr_customer_satisfaction][:grant_reminder]

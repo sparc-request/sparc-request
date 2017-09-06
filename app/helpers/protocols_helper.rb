@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -51,12 +51,14 @@ module ProtocolsHelper
   end
 
   def display_rmid_validated_protocol(protocol, option)
-    if protocol.rmid_validated?
-      content_tag(
-        :h6,
-        t("protocols.summary.rmid_validated", title: option),
-        class: "text-success"
-      )
+    if RESEARCH_MASTER_ENABLED
+      if protocol.rmid_validated?
+        content_tag(
+          :h6,
+          t("protocols.summary.rmid_validated", title: option),
+          class: "text-success"
+        )
+      end
     end
   end
 

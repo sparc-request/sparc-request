@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,7 +22,7 @@ $('#report-container').show()
 $('#report-selection').hide()
 $('.selectpicker').selectpicker()
 first_dependency = "#" + $('.reporting-field.has-dependencies').attr('id')
-window.check_deps(first_dependency)
+window.disable_deps(first_dependency)
 
 <% @date_ranges.each do |dr| %>
 <% field,options = dr %>

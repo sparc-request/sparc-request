@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -30,20 +30,6 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
       expect(before_filters.include?(:authenticate_identity!)).to eq(true)
     end
 
-    it 'should assign @review' do
-      survey = create(:survey)
-
-      post :create, params: {
-        review: 'true',
-        response: {
-          identity_id: logged_in_user.id,
-          survey_id: survey.id
-        }
-      }, xhr: true
-
-      expect(assigns(:review)).to eq(true)
-    end
-
     context 'response is valid' do
       it 'should save @response' do
         survey = create(:survey)
@@ -69,27 +55,6 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
     end
 
     context 'response is invalid' do
-      it 'should not save @response' do
-        survey = create(:survey)
-        section = create(:section, survey: survey)
-        question = create(:question, section: section, required: true)
-
-        expect{
-          post :create, params: {
-            response: {
-              identity_id: logged_in_user.id,
-              survey_id: survey.id,
-              question_responses_attributes: {
-                '0' => {
-                  required: 'true',
-                  question_id: question.id
-                }
-              }
-            }
-          }, xhr: true
-        }.to_not change{ Response.count }
-      end
-
       it 'should assign @errors' do
         survey = create(:survey)
         section = create(:section, survey: survey)

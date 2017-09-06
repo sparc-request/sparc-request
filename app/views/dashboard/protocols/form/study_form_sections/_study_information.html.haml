@@ -1,4 +1,4 @@
--# Copyright © 2011-2016 MUSC Foundation for Research Development
+-# Copyright © 2011-2017 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -44,7 +44,7 @@
       .col-lg-10
         = form.text_field :short_title,
           class: [('form-control'), (RESEARCH_MASTER_ENABLED ? 'rm-id-dependent rm-locked-fields' : '')],
-          disabled: @protocol.research_master_id
+          disabled: RESEARCH_MASTER_ENABLED
 
     .form-group.row
       = form.label :title,
@@ -55,7 +55,7 @@
       .col-lg-10
         = form.text_field :title,
           class: [('form-control'), (RESEARCH_MASTER_ENABLED ? 'rm-id-dependent rm-locked-fields' : '')],
-          disabled: @protocol.research_master_id
+          disabled: RESEARCH_MASTER_ENABLED
 
     .form-group.row#funding-status
       = form.label :funding_status,

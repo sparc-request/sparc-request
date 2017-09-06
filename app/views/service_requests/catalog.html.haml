@@ -1,4 +1,4 @@
--# Copyright © 2011-2016 MUSC Foundation for Research Development
+-# Copyright © 2011-2017 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -25,6 +25,7 @@
 - if !@service_request.protocol.nil?
   = hidden_field_tag :protocol_id, @service_request.protocol.id, class: 'protocol-id'
 
+= render '/service_requests/navigation/steps', service_request: @service_request, sub_service_request: @sub_service_request, step_text: @step_text, css_class: @css_class
 = render 'catalogs/about_section'
 = render 'catalogs/service_accordion', institutions: @institutions, ssr_org: @sub_service_request.try(:organization), locked_org_ids: @locked_org_ids
 = render 'catalogs/catalog_center', service_request: @service_request, sub_service_request: @sub_service_request, from_portal: @from_portal, organization: nil

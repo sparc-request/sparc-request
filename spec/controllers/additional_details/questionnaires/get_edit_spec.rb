@@ -27,17 +27,16 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
   describe '#edit' do
     before :each do
       @service = create(:service)
-      @questionnaire = create(:questionnaire, :without_validations, questionable: @service)
+      @questionnaire = create(:questionnaire, :without_validations, service: @service)
 
       get :edit, params: {
-        questionable_id: @service.id,
-        questionable_type: 'Service',
+        service_id: @service.id,
         id: @questionnaire.id
       }, format: :js
     end
 
     it 'should assign @service' do
-      expect(assigns(:questionable)).to eq(@service)
+      expect(assigns(:service)).to eq(@service)
     end
 
     it 'should assign @questionnaire' do

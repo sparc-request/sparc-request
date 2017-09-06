@@ -21,7 +21,7 @@
 require 'rails_helper'
 
 RSpec.describe Questionnaire, type: :model do
-  it { is_expected.to belong_to(:questionable) }
+  it { is_expected.to belong_to(:service) }
 
   it { is_expected.to have_many(:items) }
 

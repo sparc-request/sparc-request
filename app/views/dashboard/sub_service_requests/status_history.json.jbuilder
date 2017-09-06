@@ -1,6 +1,6 @@
 json.(@past_statuses) do |status|
   json.created_at format_datetime(status.date)
-  json.changed_from AVAILABLE_STATUSES[status.status]
-  json.changed_to AVAILABLE_STATUSES[status.changed_to]
+  json.changed_from PermissibleValue.get_value('status', status.status)
+  json.changed_to PermissibleValue.get_value('status', status.changed_to)
   json.changed_by status.changer.try(:full_name)
 end

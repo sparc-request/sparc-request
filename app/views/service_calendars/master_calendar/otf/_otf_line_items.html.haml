@@ -39,7 +39,7 @@
       %td.notes.text-center
         = display_li_notes(line_item, portal)
       %td.status.text-center
-        = AVAILABLE_STATUSES[ssr.status]
+        = PermissibleValue.get_value('status', ssr.status)
       %td.service-rate.text-center
         = display_service_rate(line_item)
       %td.your-cost.text-center

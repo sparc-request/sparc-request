@@ -208,21 +208,24 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def display_ssr_submissions(ssr)
-    if ssr.has_incomplete_additional_details?
+    has_incomplete_service = ssr.has_incomplete_additional_details_services?
+    has_incomplete_organization = ssr.has_incomplete_additional_details_organization?
+
+    if has_incomplete_service or has_incomplete_organization
       protocol    = ssr.protocol
       submissions = {}
-      if ssr.has_incomplete_additional_details_services?
+      if has_incomplete_service
         submissions[:Services] = []
-        ssr.organization.services.each do |service|
+        ssr.line_items.includes(:service).map(&:service).each do |service|
           next unless service.questionnaires.active.present?
           submissions[:Services] << [service.name, service.name, data: {
                                                                   questionnaire_id: service.questionnaires.active.first.id,
                                                                   protocol_id: protocol.id,
                                                                   ssr_id: ssr.id
                                                                 }]
-        end 
+        end
       end
-      if ssr.has_incomplete_additional_details_organization?
+      if has_incomplete_organization
         submissions[:Organization] = []
         submissions[:Organization] << [ssr.organization.name, ssr.organization.name, data: {
                                                                                       questionnaire_id: ssr.organization.questionnaires.active.first.id,

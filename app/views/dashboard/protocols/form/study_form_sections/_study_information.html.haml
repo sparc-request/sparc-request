@@ -31,9 +31,11 @@
           = link_to t(:protocols)[:studies][:information][:research_master_id], RESEARCH_MASTER_LINK, target: '_blank'
         .col-lg-3
           = form.text_field :research_master_id, class: 'form-control research-master-field', readonly: action_name == "edit" && admin
-        - if action_name == "edit" && admin
+        - if action_name == "edit" && admin && !@errors[:*].present?
           .btn.btn-warning.edit-rmid
             = t(:actions)[:edit]
+        - else
+          .glyphicon.glyphicon-exclamation-sign.red_exclamation{ title: t(:protocols)[:summary][:tooltips][:rmid_server_down], data: { toggle: 'tooltip', delay: '{"show":"500"}' } }
 
     .form-group.row
       = form.label :short_title,

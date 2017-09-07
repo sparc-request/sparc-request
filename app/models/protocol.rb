@@ -115,10 +115,16 @@ class Protocol < ApplicationRecord
   end
 
   def existing_rm_id
-    rm_ids = HTTParty.get(RESEARCH_MASTER_API + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{RMID_API_TOKEN}\""})
-    ids = rm_ids.map{ |rm_id| rm_id['id'] }
+    begin
+      rm_ids = HTTParty.get(RESEARCH_MASTER_API + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{RMID_API_TOKEN}\""})
+      ids = rm_ids.map{ |rm_id| rm_id['id'] }
+    rescue
+      
+      ids = []
+      errors.add(:*, 'Research Master ID Server is down.  You cannot edit the Research Master ID field at this time.')
+    end
 
-    unless ids.include?(self.research_master_id)
+    if !ids.include?(self.research_master_id) && !errors.present?
       errors.add(:_, 'The entered Research Master ID does not exist. Please go to the Research Master website to create a new record.')
     end
   end

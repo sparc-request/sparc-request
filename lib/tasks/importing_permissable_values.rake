@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,8 +18,15 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FactoryGirl.define do
-  factory :editable_status do
-    status { PermissibleValue.get_key_list('status').sample }
+desc "Import permissible values from csv files and add them to the appropriate table"
+task import_permissible_values: :environment do
+  Dir.glob(Rails.root + 'db/seeds/permissible_values/2.0.5/*.csv') do |file|
+    puts("Importing CSV file: #{file.split('/').last}")
+    CSV.foreach(file, headers: true) do |row|
+      if row['category'] == 'status'
+        binding.pry
+      end
+      PermissibleValue.create(row.to_hash)
+    end
   end
 end

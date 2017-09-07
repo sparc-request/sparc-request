@@ -21,7 +21,7 @@
 = user_form_group(name: :rights, form: form, required: true,
   data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' },
   title: t(:authorized_users)[:tooltips][:rights]) do
-  - PROXY_RIGHTS.each do |key, value|
+  - PermissibleValue.get_inverted_hash('proxy_right').each do |key, value|
     .radio
       %label
         = form.radio_button :project_rights, value, disabled: ['pi', 'primary-pi', 'business-grants-manager'].include?(form.object.role) && value != 'approve', data: { dashboard: dashboard.to_s }

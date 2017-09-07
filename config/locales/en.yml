@@ -409,6 +409,7 @@ en:
         edit: "Quick access to edit protocol information"
         archive_study: "Ability to hide study from all Authorized User dashboards"
         unarchive_study: "Click to reveal on all associated Authorized User dashboards"
+        rmid_server_down: "Research Master ID Server is down.  You cannot edit the Research Master ID field at this time."
     view_details:
       button: "View %{protocol_type} Details"
       header: "%{protocol_type} Details: #%{protocol_id}"

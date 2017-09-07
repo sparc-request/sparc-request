@@ -39,7 +39,7 @@ class Service < ApplicationRecord
   has_many :service_requests, through: :sub_service_requests
   has_many :line_items, :dependent => :destroy
   has_many :identities, :through => :service_providers
-  has_many :questionnaires, as: :questionable
+  has_many :questionnaires
   has_many :submissions
   ## commented out to remove tags, but will likely be added in later ##
   # has_many :taggings, through: :organization

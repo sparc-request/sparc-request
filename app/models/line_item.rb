@@ -34,6 +34,8 @@ class LineItem < ApplicationRecord
   has_many :procedures
   has_many :admin_rates, dependent: :destroy
   has_many :notes, as: :notable, dependent: :destroy
+  
+  has_one :submission, dependent: :destroy
   has_one :protocol, through: :service_request
   
   attr_accessor :pricing_scheme
@@ -332,6 +334,10 @@ class LineItem < ApplicationRecord
     end
 
     service_abbreviation
+  end
+
+  def has_incomplete_additional_details?
+    service.questionnaires.active.present? && !submission.present?
   end
 
   private

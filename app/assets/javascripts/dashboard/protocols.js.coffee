@@ -142,18 +142,17 @@ $(document).ready ->
 
         if $selected_options.length > 0
           $selected_option    = $selected_options.first()
-          questionnaire_id    = $selected_option.data('questionnaire-id')
+          service_id          = $selected_option.data('service-id')
           protocol_id         = $selected_option.data('protocol-id')
-          ssr_id              = $selected_option.data('ssr-id')
+          line_item_id        = $selected_option.data('line-item-id')
           $this               = $(this)
           
           $.ajax
             method: 'GET'
-            url: "/additional_details/submissions/new.js"
+            url: "/services/#{service_id}/additional_details/submissions/new.js"
             data:
               protocol_id: protocol_id
-              ssr_id: ssr_id
-              questionnaire_id: questionnaire_id
+              line_item_id: line_item_id
             success: ->
               $this.selectpicker('deselectAll')
               $this.selectpicker('render')

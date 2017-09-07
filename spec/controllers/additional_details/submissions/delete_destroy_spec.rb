@@ -26,24 +26,34 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
 
   before :each do
     org           = create(:organization)
-    org2           = create(:organization)
     @service      = create(:service, organization: org)
     @service2     = create(:service, organization: org)
-    @que          = create(:questionnaire, :without_validations, questionable: @service, active: true)
+    @que          = create(:questionnaire, :without_validations, service: @service, active: true)
     @protocol     = create(:protocol_federally_funded, primary_pi: logged_in_user)
     @sr           = create(:service_request_without_validations, protocol: @protocol)
-    @ssr          = create(:sub_service_request, service_request: @sr, organization: org)
-    @ssr2         = create(:sub_service_request, service_request: @sr, organization: org2)
-    @submission   = create(:submission, protocol: @protocol, identity: logged_in_user, sub_service_request: @ssr, questionnaire: @que)
-    @submission2  = create(:submission, protocol: @protocol, identity: logged_in_user, sub_service_request: @ssr2, questionnaire: @que)
+    ssr           = create(:sub_service_request, service_request: @sr, organization: org)
+    @li           = create(:line_item, service_request: @sr, sub_service_request: ssr, service: @service)
+    @li2          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: @service2)
+    @submission   = create(:submission, protocol: @protocol, identity: logged_in_user, service: @service, line_item: @li, questionnaire: @que)
+    @submission2  = create(:submission, protocol: @protocol, identity: logged_in_user, service: @service, line_item: @li2, questionnaire: @que)
 
     session[:identity_id] = logged_in_user.id
   end
 
   describe '#destroy' do
+    it 'should assign @service' do
+      delete :destroy, params: {
+        id: @submission.id,
+        service_id: @service.id
+      }, format: :js
+
+      expect(assigns(:service)).to eq(@service)
+    end
+
     it 'should assign @submission' do
       delete :destroy, params: {
-        id: @submission.id
+        id: @submission.id,
+        service_id: @service.id
       }, format: :js
 
       expect(assigns(:submission)).to eq(@submission)
@@ -53,6 +63,7 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
       before :each do
         delete :destroy, params: {
           id: @submission.id,
+          service_id: @service.id,
           protocol_id: @protocol.id
         }, format: :js
       end
@@ -70,16 +81,17 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
       end
     end
 
-    context 'params[:ssr_id] present' do
+    context 'params[:line_item_id] present' do
       before :each do
         delete :destroy, params: {
           id: @submission.id,
-          ssr_id: @ssr.id
+          service_id: @service.id,
+          line_item_id: @li.id
         }, format: :js
       end
 
       it 'should assign @line_item' do
-        expect(assigns(:sub_service_request)).to eq(@ssr)
+        expect(assigns(:line_item)).to eq(@li)
       end
 
       it 'should assign @service_request' do
@@ -89,7 +101,8 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
 
     it 'should destroy submission' do
       delete :destroy, params: {
-        id: @submission.id
+        id: @submission.id,
+        service_id: @service.id
       }, format: :js
 
       expect(Submission.count).to eq(1)
@@ -97,7 +110,8 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
 
     it 'should render template' do
       delete :destroy, params: {
-        id: @submission.id
+        id: @submission.id,
+        service_id: @service.id
       }, format: :js
 
       expect(controller).to render_template(:destroy)
@@ -105,7 +119,8 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
 
     it 'should respond ok' do
       delete :destroy, params: {
-        id: @submission.id
+        id: @submission.id,
+        service_id: @service.id
       }, format: :js
 
       expect(controller).to respond_with(:ok)

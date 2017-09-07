@@ -27,15 +27,16 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
   describe '#index' do
     before :each do
       @service = create(:service)
-      @questionnaire = create(:questionnaire, :without_validations, service: @service)
+      @questionnaire = create(:questionnaire, :without_validations, questionable: @service)
 
       get :index, params: {
-        service_id: @service.id
+        questionable_id: @service.id,
+        questionable_type: 'Service'
       }, format: :js
     end
 
     it 'should assign @service' do
-      expect(assigns(:service)).to eq(@service)
+      expect(assigns(:questionable)).to eq(@service)
     end
 
     it 'should assign @questionnaires' do

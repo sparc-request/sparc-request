@@ -28,6 +28,7 @@ RSpec.describe LineItem, type: :model do
     @protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
     sr = create(:service_request_without_validations, protocol: @protocol)
     @ssr = create(:sub_service_request, service_request: sr, organization: @org)
+    line_item = create(:line_item_without_validations, sub_service_request: @ssr, service: @service)
   end
 
   describe 'protocol with service questionnaire' do
@@ -45,7 +46,7 @@ RSpec.describe LineItem, type: :model do
     context 'protocol service does not have incomplete additional details' do
       it 'should return nil' do
         create(:submission, identity: logged_in_user, protocol: @protocol, sub_service_request: @ssr, questionnaire: @que)
-        
+
         expect(@ssr.has_incomplete_additional_details?).to eq(false)
       end
     end
@@ -65,7 +66,7 @@ RSpec.describe LineItem, type: :model do
     context 'protocol service does not have incomplete additional details' do
       it 'should return nil' do
         create(:submission, identity: logged_in_user, protocol: @protocol, sub_service_request: @ssr, questionnaire: @que)
-        
+
         expect(@ssr.has_incomplete_additional_details?).to eq(false)
       end
     end

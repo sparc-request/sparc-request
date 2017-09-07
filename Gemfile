@@ -5,7 +5,9 @@ gem 'activerecord-session_store'
 gem 'acts_as_list', github: 'swanandp/acts_as_list'
 gem 'acts-as-taggable-on'
 gem 'audited', '~> 4.3'
-gem 'axlsx'
+gem 'axlsx',
+  git: 'https://github.com/randym/axlsx.git',
+  ref: '7cf747675097be13df633f1b2a5c45391df52b33'
 gem 'axlsx_rails'
 gem 'bluecloth'
 gem 'bootstrap-sass'

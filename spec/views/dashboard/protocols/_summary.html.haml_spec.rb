@@ -31,13 +31,6 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
 
   let_there_be_lane
 
-  before :each do
-    create(:permissible_value, category: 'funding_source', key: 'college', value: 'College Department')
-    create(:permissible_value, category: 'funding_source', key: 'federal', value: 'Federal')
-    create(:permissible_value, category: 'potential_funding_source', key: 'college', value: 'College Department')
-    create(:permissible_value, category: 'potential_funding_source', key: 'federal', value: 'Federal')
-  end
-
   context 'Protocol is a Study' do
     it 'should be titled "Study Summary"' do
       protocol = build(:protocol_federally_funded,

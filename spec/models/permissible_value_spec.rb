@@ -30,7 +30,7 @@ RSpec.describe PermissibleValue, type: :model do
   end
 
   context 'get_key_list' do
-    before :each do
+    before :all do
       @pv1 = create(:permissible_value, key: 'key1', category: 'first', default: true)
       @pv2 = create(:permissible_value, key: 'key2', category: 'first', default: true)
       @pv3 = create(:permissible_value, key: 'key3', category: 'first', default: false)

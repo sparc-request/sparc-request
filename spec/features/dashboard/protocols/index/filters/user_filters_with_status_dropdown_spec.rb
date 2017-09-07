@@ -24,7 +24,6 @@ RSpec.describe "User selects statuses and filters", js: :true do
 
   let_there_be_lane
   fake_login_for_each_test
-  build_statuses
 
   scenario "and sees protocols with statuses" do
     organization        = create(:organization)

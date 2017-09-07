@@ -21,8 +21,6 @@
 require 'rails_helper'
 
 RSpec.describe SubServiceRequest, type: :model do
-  build_statuses
-
   describe ".formatted_status" do
 
     before { SubServiceRequest.skip_callback(:save, :after, :update_org_tree) }

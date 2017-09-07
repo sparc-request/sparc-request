@@ -33,7 +33,6 @@ RSpec.describe Document, type: :model do
     before :each do
       @document1 = create(:document, doc_type: 'other', doc_type_other: 'support')
       @document2 = create(:document, doc_type: 'hipaa')
-                   create(:permissible_value, key: 'hipaa', value: 'HIPAA', category: 'document_type')
     end
 
     it 'should display correctly for doc type other' do

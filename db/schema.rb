@@ -190,7 +190,7 @@ ActiveRecord::Schema.define(version: 20170818175101) do
     t.index ["protocol_id"], name: "index_documents_on_protocol_id"
   end
 
-  create_table "documents_sub_service_requests", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "documents_sub_service_requests", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer "document_id"
     t.integer "sub_service_request_id"
   end

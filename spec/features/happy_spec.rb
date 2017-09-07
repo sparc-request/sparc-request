@@ -75,11 +75,6 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     question_2  = create(:question, question_type: 'textarea', content: '2) Please leave your feedback and/or suggestions for future improvement.', section: section)
 
 
-    ###############
-    # "Constants" #
-    ###############
-    create(:permissible_value, category: 'funding_source', key: 'federal', value: 'Federal')
-
 
     ##########
     # Step 1 #

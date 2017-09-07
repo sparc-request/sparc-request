@@ -23,7 +23,6 @@ require 'rails_helper'
 RSpec.describe '/associated_users/_user_form', type: :view do
 
   let_there_be_lane
-  build_proxy_rights
 
   def render_user_form(epic = false)
     protocol = create(:unarchived_study_without_validations, id: 1, primary_pi: jug2, selected_for_epic: epic)

@@ -19,8 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 FactoryGirl.define do
-
   factory :editable_status do
-    status { AVAILABLE_STATUSES.keys.sample || 'active' }
+    status { PermissibleValue.get_key_list('status').sample }
   end
 end

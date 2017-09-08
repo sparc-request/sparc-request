@@ -221,7 +221,7 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
   sheet.add_row ["IDS Annual Review", "", "0", "0", "1", "=C#{pi_start_up_row+3}*E#{pi_start_up_row+3}", "=D#{pi_start_up_row+3}*E#{pi_start_up_row+3}"], :style => [default, default, money, money, default, money, money]
 
   @protocol.service_requests.each do |sr|
-    sr.line_items.where(services: {one_time_fee: true}).each do |li|
+    sr.line_items.includes(:service).where(services: {one_time_fee: true}).each do |li|
       next if @statuses_hidden.include?(li.sub_service_request.status)
       li_row = sheet.rows.length + 1
       sheet.add_row ["#{li.service.name} (#{li.sub_service_request.ssr_id})", "#{li.sub_service_request.status.humanize.titleize}", "0", cents_to_dollars(li.applicable_rate), li.quantity, "=C#{li_row}*E#{li_row}", "=D#{li_row}*E#{li_row}"], :style => [default, default, money, money, default, money, money]

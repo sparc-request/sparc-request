@@ -67,7 +67,7 @@ initialize_org_search = () ->
       limit: 100,
       templates: {
         suggestion: Handlebars.compile('<button class="text-left">
-                                          <strong><span class="{{text_color}}">{{type}}</span><span>: {{name}}</span></strong><span class="text-danger">{{inactive_tag}}</span><br>
+                                          <strong><span class="{{text_color}}">{{type}}</span><span>: {{name}}</span></strong><span class="text-danger"> {{inactive_tag}}</span><br>
                                           <span>Abbreviation: {{abbreviation}}</span><br>
                                           <span>{{cpt_code}}</span>
                                         </button>')

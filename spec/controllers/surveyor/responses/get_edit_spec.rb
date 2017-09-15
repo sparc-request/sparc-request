@@ -20,23 +20,41 @@
 
 require 'rails_helper'
 
-RSpec.feature 'create new institution', js: true do
-  before :each do
-    default_catalog_manager_setup
-  end
+RSpec.describe Surveyor::ResponsesController, type: :controller do
+  stub_controller
+  let!(:before_filters) { find_before_filters }
+  let!(:logged_in_user) { create(:identity) }
 
-  scenario 'user creates a new institution' do
-    accept_prompt(with: "Greatest Institution") do
-      click_link('Create New Institution')
+  describe '#edit' do
+    before :each do
+      @ssr      = create(:sub_service_request_without_validations, organization: create(:organization))
+      @survey   = create(:survey, active: true)
+      @resp     = create(:response, survey: @survey, sub_service_request: @ssr)
+
+      get :edit, params: { id: @resp.id }, xhr: true
     end
 
-    click_link( 'Greatest Institution' )
+    it 'should call before_filter #authenticate_identity!' do
+      expect(before_filters.include?(:authenticate_identity!)).to eq(true)
+    end
 
-    fill_in 'institution_abbreviation', with: 'GreatestInstitution'
-    fill_in 'institution_order', with: '1'
-    fill_in 'institution_description', with: ''
+    it 'should assign @response to the response' do
+      expect(assigns(:response)).to eq(@resp)
+    end
 
-    first("#save_button").click
-    expect(page).to have_content( 'Greatest Institution saved successfully' )
+    it 'should build question responses' do
+      expect(@resp.question_responses).to be
+    end
+
+    it 'should assign @review to false' do
+      expect(assigns(:review)).to eq("false")
+    end
+
+    it 'should assign @sub_service_request' do
+      expect(assigns(:sub_service_request)).to eq(@ssr)
+    end
+
+    it { is_expected.to render_template(:edit) }
+    it { is_expected.to respond_with(:ok) }
   end
 end

@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -26,9 +26,9 @@ module Dashboard::ServiceRequestsHelper
 
   def protocol_panel_header_line service_request
     if service_request.status == "submitted"
-      "Service Request: #{service_request.id} - Submitted - #{format_date(service_request.submitted_at)}"
+      "Submitted - #{format_date(service_request.submitted_at)}"
     else
-      "Service Request: #{service_request.id} - #{AVAILABLE_STATUSES[service_request.status]} - #{format_date(service_request.updated_at)}"
+      "#{AVAILABLE_STATUSES[service_request.status]} - #{format_date(service_request.updated_at)}"
     end
   end
 

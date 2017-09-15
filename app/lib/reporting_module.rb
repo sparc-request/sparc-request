@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -37,7 +37,7 @@ class ReportingModule
 
   def records
     records ||= self.table.includes(self.includes)
-                    .joins(self.joins)
+                    .joins(self.joins(self.params))
                     .where(self.where(self.params))
                     .distinct(self.uniq)
                     .group(self.group)
@@ -48,10 +48,10 @@ class ReportingModule
   def includes
   end
 
-  def joins
+  def joins(args={})
   end
 
-  def where
+  def where(args={})
   end
 
   def uniq

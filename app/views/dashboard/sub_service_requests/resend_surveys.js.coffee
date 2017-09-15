@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,31 +17,9 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+$('#resend-surveys-button').prop('disabled', false)
 
-require 'rails_helper'
-
-RSpec.describe 'edit an institution', js: true do
-
-
-  before :each do
-    default_catalog_manager_setup
-    Tag.create(name: "ctrc")
-    click_link('Medical University of South Carolina')
-  end
-
-
-  context 'successfully update an existing institution' do
-    it "should successfully edit and save the institution" do
-      # General Information fields
-      fill_in 'institution_abbreviation', with: 'GreatestInstitution'
-      fill_in 'institution_description', with: 'Description'
-      fill_in 'institution_ack_language', with: 'Language'
-      fill_in 'institution_order', with: '1'
-      select('blue', from: 'institution_css_class')
-      uncheck('institution_is_available')
-
-      first("#save_button").click
-      expect(page).to have_content( 'Medical University of South Carolina saved successfully' )
-    end
-  end
-end
+<% if @refresh %>
+$("#details").html("<%= j render 'dashboard/sub_service_requests/request_details', protocol: @sub_service_request.protocol, service_request: @sub_service_request.service_request, sub_service_request: @sub_service_request %>")
+<% end %>

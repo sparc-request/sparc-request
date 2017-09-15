@@ -45,42 +45,42 @@ module CatalogManager::CatalogHelper
   def create_new_text(org_key)
     content_tag(:span, t(:catalog_manager)[:catalog][:new][org_key], class: "text-#{org_key}")
   end
+end
 
 
 
 
 
 
+# Kept these for reference, remove later
 
+#   def node object, can_access=true, id=nil
+#     link_to display_name(object), '#', :id => id, :cid => object.id, :object_type => object.class.to_s.downcase, :class => can_access ? "#{object.class.to_s.downcase}" : "#{object.class.to_s.downcase} disabled_node"
+#   end
 
+#   def disable_pricing_setup(pricing_setup, can_edit_historical_data)
+#     begin
+#       if can_edit_historical_data == false
+#         (pricing_setup.effective_date <= Date.today) || (pricing_setup.display_date <= Date.today) ? true : false
+#       else
+#         false
+#       end
+#     rescue
+#       false
+#     end
+#   end
 
-  def node object, can_access=true, id=nil
-    link_to display_name(object), '#', :id => id, :cid => object.id, :object_type => object.class.to_s.downcase, :class => can_access ? "#{object.class.to_s.downcase}" : "#{object.class.to_s.downcase} disabled_node"
-  end
+#   def disable_pricing_map(pricing_map, can_edit_historical_data)
+#     if can_edit_historical_data == false
+#       (pricing_map.effective_date <= Date.today) || (pricing_map.display_date <= Date.today) ? true : false
+#     else
+#       false
+#     end
+#   end
 
-  def disable_pricing_setup(pricing_setup, can_edit_historical_data)
-    begin
-      if can_edit_historical_data == false
-        (pricing_setup.effective_date <= Date.today) || (pricing_setup.display_date <= Date.today) ? true : false
-      else
-        false
-      end
-    rescue
-      false
-    end
-  end
-
-  def disable_pricing_map(pricing_map, can_edit_historical_data)
-    if can_edit_historical_data == false
-      (pricing_map.effective_date <= Date.today) || (pricing_map.display_date <= Date.today) ? true : false
-    else
-      false
-    end
-  end
-
-  def pricing_map_ids service
-    service.pricing_maps.map{|x| x.id}
-  end
+#   def pricing_map_ids service
+#     service.pricing_maps.map{|x| x.id}
+#   end
 
   def display_organization_tree(organization)
     tree = []
@@ -97,13 +97,13 @@ module CatalogManager::CatalogHelper
     tree.join(' / ')
   end
 
-  def disabled_parent organization
-    if (orgs = organization.parents.insert(0, organization).select{|org| !org.is_available}).any?
-      I18n.t('organization_form.disabled_at', disabled_parent: orgs.last.name)
-    end
-  end
-end
+#   def disabled_parent organization
+#     if (orgs = organization.parents.insert(0, organization).select{|org| !org.is_available}).any?
+#       I18n.t('organization_form.disabled_at', disabled_parent: orgs.last.name)
+#     end
+#   end
+# end
 
-def display_name object
-  (object.respond_to?(:cpt_code) or object.respond_to?(:charge_code)) ? object.display_service_name(charge_code = true) : object.name
-end
+# def display_name object
+#   (object.respond_to?(:cpt_code) or object.respond_to?(:charge_code)) ? object.display_service_name(charge_code = true) : object.name
+# end

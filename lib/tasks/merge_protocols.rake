@@ -193,9 +193,6 @@ task :protocol_merge => :environment do
     puts "Merging service requests"
     Rake::Task["merge_srs"].invoke
 
-    puts "Fixing ssr ids"
-    Rake::Task["fix_ssr_ids"].invoke
-
     if fulfillment_ssrs.any?
       puts "#" * 50
       puts "#" * 50

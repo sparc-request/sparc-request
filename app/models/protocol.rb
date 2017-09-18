@@ -60,13 +60,14 @@ class Protocol < ApplicationRecord
   belongs_to :study_type_question_group
 
   validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
-  validates :research_master_id, presence: true, if: "RESEARCH_MASTER_ENABLED && has_human_subject_info?"
+  validates :research_master_id, presence: true, if: :rmid_requires_validation?
 
   validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 1000 }, allow_blank: true
 
   attr_accessor :requester_id
   attr_accessor :validate_nct
   attr_accessor :study_type_questions
+  attr_accessor :admin
 
   accepts_nested_attributes_for :research_types_info
   accepts_nested_attributes_for :human_subjects_info
@@ -91,6 +92,11 @@ class Protocol < ApplicationRecord
   validation_group :user_details do
     validate :validate_proxy_rights
     validate :primary_pi_exists
+  end
+
+  def rmid_requires_validation?
+    # bypassing validations for admin users only when in Dashboard [#139885925]
+    admin ? false : RESEARCH_MASTER_ENABLED && has_human_subject_info?
   end
 
   def has_human_subject_info?

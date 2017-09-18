@@ -67,7 +67,7 @@ class Protocol < ApplicationRecord
   attr_accessor :requester_id
   attr_accessor :validate_nct
   attr_accessor :study_type_questions
-  attr_accessor :admin
+  attr_accessor :bypass_rmid_validation
 
   accepts_nested_attributes_for :research_types_info
   accepts_nested_attributes_for :human_subjects_info
@@ -95,8 +95,8 @@ class Protocol < ApplicationRecord
   end
 
   def rmid_requires_validation?
-    # bypassing validations for admin users only when in Dashboard [#139885925]
-    admin ? false : RESEARCH_MASTER_ENABLED && has_human_subject_info?
+    # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]
+    self.bypass_rmid_validation ? false : RESEARCH_MASTER_ENABLED && has_human_subject_info?
   end
 
   def has_human_subject_info?

@@ -59,12 +59,12 @@ RSpec.describe CatalogManager::CoresController do
     it { is_expected.to respond_with :ok }
   end
 
-  describe '#show' do
+  describe '#edit' do
     before :each do
       @organization = create(:core)
       logged_in_user.catalog_manager_rights.create(organization_id: @organization.id)
 
-      get :show, params: { id: @organization.id }, xhr: true
+      get :edit, params: { id: @organization.id }, xhr: true
     end
 
     it 'should assign @path' do
@@ -75,7 +75,7 @@ RSpec.describe CatalogManager::CoresController do
       expect(assigns(:organization)).to eq(@organization)
     end
 
-    it { is_expected.to render_template "organizations/show" }
+    it { is_expected.to render_template "organizations/edit" }
     it { is_expected.to respond_with :ok }
   end
 

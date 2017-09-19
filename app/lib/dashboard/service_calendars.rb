@@ -72,7 +72,7 @@ module Dashboard
     # Organization B, which belongs to Organization C, return "C > B > A".
     # This "hierarchy" stops at a process_ssrs Organization.
     def self.display_organization_hierarchy(line_item)
-      parent_organizations = line_item.service.parents.reverse
+      parent_organizations = line_item.service.parents
       root = parent_organizations.find_index { |org| org.process_ssrs? } || (parent_organizations.length - 1)
       parent_organizations[0..root].map(&:abbreviation).reverse.join(' > ')
     end

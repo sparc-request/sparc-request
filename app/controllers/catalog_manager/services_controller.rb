@@ -20,6 +20,7 @@
 
 class CatalogManager::ServicesController < CatalogManager::AppController
   layout false
+  respond_to :html, :json, except: :edit
 
   def edit
     @service  = Service.find params[:id]

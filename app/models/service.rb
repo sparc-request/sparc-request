@@ -111,7 +111,8 @@ class Service < ApplicationRecord
   def available_surveys
     available = nil
 
-    parents.each do |parent|
+    #TODO: Should we get all parent surveys instead of the closest parent's surveys?
+    parents.reverse.each do |parent|
       next if parent.type == 'Institution' # Institutions can't define associated surveys
       available = parent.associated_surveys.map(&:survey) unless parent.associated_surveys.empty?
     end

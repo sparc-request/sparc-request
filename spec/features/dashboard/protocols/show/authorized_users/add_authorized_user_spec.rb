@@ -21,8 +21,8 @@
 require 'rails_helper'
 
 RSpec.feature 'User wants to add an authorized user', js: true do
+  
   let!(:logged_in_user) { create(:identity, last_name: "Doe", first_name: "John", ldap_uid: "johnd", email: "johnd@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
-
   let!(:other_user) { create(:identity, last_name: "Doe", first_name: "Jane", ldap_uid: "janed", email: "janed@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
 
   before(:each) { create(:setting, key: "use_ldap", value: false)}

@@ -33,8 +33,6 @@ class Organization < ApplicationRecord
   has_many :pricing_setups, :dependent => :destroy
   has_one :subsidy_map, :dependent => :destroy
 
-  has_many :questionnaires, as: :questionable, dependent: :destroy
-
   has_many :super_users, :dependent => :destroy
   has_many :identities, :through => :super_users
 
@@ -57,7 +55,8 @@ class Organization < ApplicationRecord
   accepts_nested_attributes_for :available_statuses, :allow_destroy => true
   accepts_nested_attributes_for :editable_statuses, :allow_destroy => true
 
-  after_create :create_past_statuses
+  after_create :create_editable_statuses
+
   # TODO: In rails 5, the .or operator will be added for ActiveRecord queries. We should try to
   #       condense this to a single query at that point
   scope :authorized_for_identity, -> (identity_id) {
@@ -347,7 +346,7 @@ class Organization < ApplicationRecord
 
   def setup_available_statuses
     position = 1
-    obj_names = AvailableStatus::TYPES.map{ |k,v| k }
+    obj_names = PermissibleValue.get_hash('status').map{ |k,v| k }
     obj_names.each do |obj_name|
       available_status = available_statuses.detect { |obj| obj.status == obj_name }
       available_status ||= available_statuses.build(status: obj_name, new: true)
@@ -361,18 +360,18 @@ class Organization < ApplicationRecord
   def get_available_statuses
     tmp_available_statuses = self.available_statuses.reject{|status| status.new_record?}
     statuses = []
-    if tmp_available_statuses.empty? || tmp_available_statuses.collect(&:status) == DEFAULT_STATUSES
+    if tmp_available_statuses.empty? || tmp_available_statuses.collect(&:status) == PermissibleValue.get_key_list('status', true)
       self.parents.each do |parent|
         if !parent.available_statuses.empty?
-          statuses = AVAILABLE_STATUSES.select{|k,v| parent.available_statuses.map(&:status).include? k}
+          statuses = PermissibleValue.get_hash('status').select{|k,v| parent.available_statuses.map(&:status).include? k}
           return statuses
         end
       end
     else
-      statuses = AVAILABLE_STATUSES.select{|k,v| tmp_available_statuses.map(&:status).include? k}
+      statuses = PermissibleValue.get_hash('status').select{|k,v| tmp_available_statuses.map(&:status).include? k}
     end
     if statuses.empty?
-      statuses = AVAILABLE_STATUSES.select{|k,v| DEFAULT_STATUSES.include? k}
+      statuses = PermissibleValue.get_hash('status').select{|k,v| PermissibleValue.get_key_list('status', true).include? k}
     end
     statuses
   end
@@ -382,7 +381,7 @@ class Organization < ApplicationRecord
   end
 
   def setup_editable_statuses
-    EditableStatus::TYPES.each do |status|
+    EditableStatus.statuses.each do |status|
       self.editable_statuses.build(status: status, new: true) unless self.editable_statuses.detect{ |es| es.status == status }
     end
   end
@@ -399,8 +398,8 @@ class Organization < ApplicationRecord
 
   private
 
-  def create_past_statuses
-    EditableStatus::TYPES.each do |status|
+  def create_editable_statuses
+    EditableStatus.statuses.each do |status|
       self.editable_statuses.create(status: status)
     end
   end
@@ -416,7 +415,7 @@ class Organization < ApplicationRecord
   end
 
   def build_default_statuses
-    DEFAULT_STATUSES.each do |status|
+    PermissibleValue.get_key_list('status', true).each do |status|
       AvailableStatus.find_or_create_by(organization_id: self.id, status: status)
     end
   end

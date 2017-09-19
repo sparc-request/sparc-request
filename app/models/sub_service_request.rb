@@ -44,7 +44,6 @@ class SubServiceRequest < ApplicationRecord
   has_many :reports, :dependent => :destroy
   has_many :notifications, :dependent => :destroy
   has_many :subsidies
-  has_many :submissions, dependent: :destroy
   has_many :responses
   has_one :approved_subsidy, :dependent => :destroy
   has_one :pending_subsidy, :dependent => :destroy
@@ -76,10 +75,11 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def formatted_status
-    if AVAILABLE_STATUSES.has_key? status
-      AVAILABLE_STATUSES[status]
-    else
+    formatted_status = PermissibleValue.get_value('status', self.status)
+    if formatted_status.nil?
       "STATUS MAPPING NOT PRESENT"
+    else
+      formatted_status
     end
   end
 
@@ -260,7 +260,7 @@ class SubServiceRequest < ApplicationRecord
   def update_status_and_notify(new_status)
     to_notify = []
     if can_be_edited?
-      available = AVAILABLE_STATUSES.keys
+      available = PermissibleValue.get_key_list('status')
       editable = self.is_locked? || available
       changeable = available & editable
       if changeable.include?(new_status)
@@ -402,34 +402,6 @@ class SubServiceRequest < ApplicationRecord
     if params[:committee_approved]
       self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Date.today, :approval_type => "Committee Approved"})
     end
-  end
-
-  ##########################
-  ### ADDITIONAL DETAILS ###
-  ##########################
-
-  def completed_questionnaire?(questionnaire)
-    submissions.where(questionnaire_id: questionnaire.id).present?
-  end
-
-  def find_submission(questionnaire)
-    submissions.where(questionnaire_id: questionnaire.id).first
-  end
-
-  def has_incomplete_additional_details?
-    has_incomplete_additional_details_services? || has_incomplete_additional_details_organization?
-  end
-
-  def has_incomplete_additional_details_services?
-    organization.services.detect{ |service|
-      questionnaire = service.questionnaires.active.first
-      !completed_questionnaire?(questionnaire) if questionnaire
-    }.present?
-  end
-
-  def has_incomplete_additional_details_organization?
-    questionnaire = organization.questionnaires.active.first
-    questionnaire.present? && !completed_questionnaire?(questionnaire)
   end
 
   ##########################

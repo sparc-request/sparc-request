@@ -45,7 +45,7 @@
                 = identity_form.text_field :era_commons_name, class: 'form-control'
 
               = user_form_group(name: :credentials, form: identity_form) do
-                = identity_form.select :credentials, options_for_select(USER_CREDENTIALS, identity.credentials), { include_blank: t(:authorized_users)[:form_fields][:credentials_prompt] }, class: 'form-control selectpicker'
+                = identity_form.select :credentials, options_for_select(PermissibleValue.get_inverted_hash('user_credential'), identity.credentials), { include_blank: t(:authorized_users)[:form_fields][:credentials_prompt] }, class: 'form-control selectpicker'
 
               = user_form_group(name: :credentials_other, classes: ['credentials_dependent other', identity_form.object.credentials == 'other' ? '' : 'hidden'], form: identity_form, title: t(:authorized_users)[:form_fields][:credentials_specify], required: true) do
                 = identity_form.text_field :credentials_other, class: 'form-control'
@@ -56,10 +56,10 @@
                 = identity_form.text_field :phone, class: 'form-control'
 
               = user_form_group(name: :subspecialty, classes: ['role_dependent subspecialty', ['pi', 'primary-pi'].include?(form.object.role) ? '' : 'hidden'], form: identity_form) do
-                = identity_form.select :subspecialty, options_for_select((SUBSPECIALTIES.sort), identity.subspecialty), { include_blank: t(:authorized_users)[:form_fields][:subspecialty_prompt] }, class: 'form-control selectpicker'
+                = identity_form.select :subspecialty, options_for_select((PermissibleValue.get_inverted_hash('subspecialty').sort), identity.subspecialty), { include_blank: t(:authorized_users)[:form_fields][:subspecialty_prompt] }, class: 'form-control selectpicker'
 
             = user_form_group(name: :role, form: form, required: true) do
-              = form.select :role, options_for_select(USER_ROLES, form.object.role), { include_blank: t(:authorized_users)[:form_fields][:role_prompt] }, class: 'form-control selectpicker'
+              = form.select :role, options_for_select(PermissibleValue.get_inverted_hash('user_role'), form.object.role), { include_blank: t(:authorized_users)[:form_fields][:role_prompt] }, class: 'form-control selectpicker'
 
             = user_form_group(name: :role_specify, classes: ['role_dependent other', form.object.role == 'other' ? '' : 'hidden'], form: form, required: true) do
               = form.text_field :role_other, class: 'form-control'

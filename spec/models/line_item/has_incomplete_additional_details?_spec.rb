@@ -23,51 +23,26 @@ RSpec.describe LineItem, type: :model do
   let!(:logged_in_user) { create(:identity) }
 
   before :each do
-    @org = create(:organization)
-    @service = create(:service, organization: @org)
+    org = create(:organization)
+    @service = create(:service, organization: org)
+    @que = create(:questionnaire, :without_validations, service: @service, active: true)
     @protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
     sr = create(:service_request_without_validations, protocol: @protocol)
-    @ssr = create(:sub_service_request, service_request: sr, organization: @org)
+    ssr = create(:sub_service_request, service_request: sr, organization: org)
+    @li = create(:line_item, service_request: sr, sub_service_request: ssr, service: @service)
   end
 
-  describe 'protocol with service questionnaire' do
-
-    before :each do
-      @que = create(:questionnaire, :without_validations, questionable: @service, active: true)
-    end
-
-    context 'protocol service has incomplete additional details' do
-      it 'should return true' do
-        expect(@ssr.has_incomplete_additional_details?).to eq(true)
-      end
-    end
-
-    context 'protocol service does not have incomplete additional details' do
-      it 'should return nil' do
-        create(:submission, identity: logged_in_user, protocol: @protocol, sub_service_request: @ssr, questionnaire: @que)
-        
-        expect(@ssr.has_incomplete_additional_details?).to eq(false)
-      end
+  context 'protocol has incomplete additional details' do
+    it 'should return true' do
+      expect(@li.has_incomplete_additional_details?).to eq(true)
     end
   end
 
-  describe 'protocol with organization questionnaire' do
-    before :each do
-      @que = create(:questionnaire, :without_validations, questionable: @org, active: true)
-    end
-
-    context 'protocol service has incomplete additional details' do
-      it 'should return true' do
-        expect(@ssr.has_incomplete_additional_details?).to eq(true)
-      end
-    end
-
-    context 'protocol service does not have incomplete additional details' do
-      it 'should return nil' do
-        create(:submission, identity: logged_in_user, protocol: @protocol, sub_service_request: @ssr, questionnaire: @que)
-        
-        expect(@ssr.has_incomplete_additional_details?).to eq(false)
-      end
+  context 'protocol does not have incomplete additional details' do
+    it 'should return false' do
+      create(:submission, identity: logged_in_user, protocol: @protocol, service: @service, line_item: @li, questionnaire: @que)
+      
+      expect(@li.has_incomplete_additional_details?).to eq(false)
     end
   end
 end

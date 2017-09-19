@@ -66,7 +66,7 @@ RSpec.describe '/associated_users/_user_form', type: :view do
 
     it 'should show the correct form fields when not using epic and protocol is not selected for epic' do
       render_user_form
-      expect(response).to have_selector('.radio', 4)
+      expect(response).to have_selector('.radio', 3)
       expect(response).to have_selector('.radio-inline', count: 0)
       expect(response).not_to have_selector('label', text: 'No')
       expect(response).not_to have_selector('label', text: 'Yes')

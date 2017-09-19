@@ -22,14 +22,12 @@ class AdditionalDetails::PreviewsController < ApplicationController
   before_action :authenticate_identity!
 
   def create
-    @service = params[:questionable_type].classify.constantize.find(params[:questionable_id])
+    @service = Service.find(params[:service_id])
     @questionnaire = Questionnaire.new(questionnaire_params)
     @submission = Submission.new
     @submission.questionnaire_responses.build
-    if @questionnaire.valid?
-      respond_to do |format|
-        format.js
-      end
+    respond_to do |format|
+      format.js
     end
   end
 

@@ -26,6 +26,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   before_action :find_admin_for_protocol,                         only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
   before_action :protocol_authorizer_view,                        only: [:show, :view_full_calendar, :display_requests]
   before_action :protocol_authorizer_edit,                        only: [:edit, :update, :update_protocol_type, :archive]
+  before_action :bypass_rmid_validations?,                        only: [:update, :edit]
 
   def index
     admin_orgs = @user.authorized_admin_organizations
@@ -140,7 +141,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     @protocol.valid?
     @errors = @protocol.errors
-    @errors.delete(:research_master_id) if @admin
+    @errors.delete(:research_master_id) if @bypass_rmid_validation
 
     respond_to do |format|
       format.html
@@ -164,7 +165,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
     # admin is not able to activate study_type_question_group
 
-    if save_protocol_with_blank_rmid_if_admin(attrs)
+    @protocol.bypass_rmid_validation = @bypass_rmid_validation
+
+    if @protocol.update_attributes(attrs)
       flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
     else
       @errors = @protocol.errors
@@ -336,15 +339,5 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     end
 
     attrs
-  end
-
-  def save_protocol_with_blank_rmid_if_admin(attrs)
-    @protocol.assign_attributes(attrs)
-    if @admin && !@protocol.valid? && @protocol.errors.full_messages == ["Research master can't be blank"]
-      @protocol.save(validate: false)
-    else
-      @protocol.errors.delete(:research_master_id) if @admin
-      @protocol.save
-    end
   end
 end

@@ -19,16 +19,21 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 RSpec.configure do |config|
-  config.before(:suite) do
-    DatabaseCleaner[:active_record, connection: :test].clean_with :truncation
+  
+  config.before :suite do
+    DefaultSettingsPopulator.new().populate
+  end
+end
+
+def set_config(key, value)
+  setting = Setting.find_by_key(key)
+  default_value = setting.value
+
+  before :each do
+    setting.update_attribute(value: value)
   end
 
-  config.before(:each) do |example|
-    DatabaseCleaner[:active_record, connection: :test].strategy = :truncation, { except: %w[permissible_values settings] }
-    DatabaseCleaner.start
-  end
-
-  config.append_after(:each) do
-    DatabaseCleaner.clean
+  after :each do
+    setting.update_attribute(value: default_value)
   end
 end

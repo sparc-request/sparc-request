@@ -2,9 +2,9 @@
   %table.table.table-striped.table-bordered.table-hover
     %thead
       %tr
-        %th.text-center
+        %th.text-center{width: 190}
           = t(:additional_details)[:submissions][:table_fields][:sr_id]
-        %th.text-center
+        %th.text-center{width: 410}
           = t(:additional_details)[:submissions][:table_fields][questionable_type.downcase.to_sym]
         %th.text-center
           = t(:additional_details)[:submissions][:table_fields][:completion_time]

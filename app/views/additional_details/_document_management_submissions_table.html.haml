@@ -2,13 +2,13 @@
 %table.table.table-striped.table-bordered.table-hover
   %thead.primary-header.document-submissions-header
     %tr
-      %th.text-center
+      %th.text-center{width: 350}
         = t(:additional_details)["#{questionable_type.downcase}_name".to_sym]
-      %th.text-center
+      %th.text-center{width: 250}
         = t(:additional_details)[:complete_or_view]
-      %th.text-center
+      %th.text-center{width: 140}
         = t(:additional_details)[:completed]
-      %th.text-center
+      %th.text-center{width: 80}
         = t(:additional_details)[:edit_questionnaire]
       %th.text-center
         = t(:additional_details)[:delete_questionnaire]

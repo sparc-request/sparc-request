@@ -28,6 +28,15 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def not_signed_in?
+    !current_user.present?
+  end
+
+  def redirect_to_login
+    redirect_to identity_session_path(service_request_id: nil)
+    flash[:alert] = t(:devise)[:failure][:unauthenticated]
+  end
+
   def after_sign_in_path_for(resource)
     stored_location_for(resource) || root_path
   end
@@ -179,7 +188,6 @@ class ApplicationController < ActionController::Base
   def authorize_identity
     # can the user edit the service request
     # can the user edit the sub service request
-
     # we have a current user
     if current_user
       if @sub_service_request.nil? and (@service_request && (@service_request.status == 'first_draft' || current_user.can_edit_service_request?(@service_request)))
@@ -187,6 +195,9 @@ class ApplicationController < ActionController::Base
       elsif @sub_service_request and current_user.can_edit_sub_service_request?(@sub_service_request)
         return true
       end
+    elsif !@service_request.present? && not_signed_in?
+      redirect_to_login
+      return true
     # the service request is in first draft and has yet to be submitted (catalog page only)
     elsif @service_request.status == 'first_draft' && controller_name != 'protocols' && action_name != 'protocol'
       return true
@@ -237,16 +248,16 @@ class ApplicationController < ActionController::Base
   end
 
   def authorize_admin
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @service_request     = @sub_service_request.service_request
-
-    if !current_user.present?
-      redirect_to identity_session_path(service_request_id: nil)
-      flash[:alert] = t(:devise)[:failure][:unauthenticated]
-    elsif !(current_user.authorized_admin_organizations & @sub_service_request.org_tree).any?
-      @sub_service_request = nil
-      @service_request = nil
-      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
+    if not_signed_in?
+      redirect_to_login
+    else
+      @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+      @service_request     = @sub_service_request.service_request
+      unless (current_user.authorized_admin_organizations & @sub_service_request.org_tree).any?
+        @sub_service_request = nil
+        @service_request = nil
+        render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
+      end
     end
   end
 

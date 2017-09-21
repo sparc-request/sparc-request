@@ -32,6 +32,12 @@ class MailSendInterceptor
 end
 
 # This initializer depends on obis_setup having been run first in order to read in application config values
-if Setting.find_by_key("send_emails_to_real_users") != true
+begin
+  send_emails_to_real_users = Setting.find_by_key("send_emails_to_real_users").try(:value)
+rescue
+  send_emails_to_real_users = nil
+end
+
+if send_emails_to_real_users != true
   ActionMailer::Base.register_interceptor(MailSendInterceptor)
 end

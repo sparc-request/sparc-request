@@ -48,7 +48,13 @@ SparcRails::Application.routes.draw do
 
   resources :feedback
 
-  if Setting.find_by_key("use_shibboleth_only").try(:value)
+  begin
+    use_shibboleth_only = Setting.find_by_key("use_shibboleth_only").try(:value)
+  rescue
+    use_shibboleth_only = nil
+  end
+
+  if use_shibboleth_only
     devise_for :identities,
                controllers: {
                  omniauth_callbacks: 'identities/omniauth_callbacks',

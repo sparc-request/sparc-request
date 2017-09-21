@@ -22,8 +22,13 @@ require 'net/ldap'
 
 class Directory
   
-  @@use_ldap = Setting.find_by_key("use_ldap").try(:value) || true
-  @@suppress_ldap_for_user_search = Setting.find_by_key("suppress_ldap_for_user_search").try(:value) || true
+  begin
+    @@use_ldap = Setting.find_by_key("use_ldap").value
+    @@suppress_ldap_for_user_search = Setting.find_by_key("suppress_ldap_for_user_search").value
+  rescue
+    @@use_ldap = true
+    @@suppress_ldap_for_user_search = true
+  end
 
   # Only initialize LDAP if it is enabled
   if @@use_ldap

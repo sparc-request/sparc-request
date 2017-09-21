@@ -18,7 +18,13 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-if wkhtmltopdf_location = Setting.find_by_key('wkhtmltopdf_location').try(:value)
+begin
+  wkhtmltopdf_location = Setting.find_by_key('wkhtmltopdf_location').try(:value)
+rescue
+  wkhtmltopdf_location = nil
+end
+
+if wkhtmltopdf_location
   # Setup PDFKit
   PDFKit.configure do |config|
     config.wkhtmltopdf = wkhtmltopdf_location

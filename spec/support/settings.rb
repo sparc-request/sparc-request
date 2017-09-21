@@ -25,15 +25,15 @@ RSpec.configure do |config|
   end
 end
 
-def set_config(key, value)
+def stub_config(key, value)
   setting = Setting.find_by_key(key)
   default_value = setting.value
 
   before :each do
-    setting.update_attribute(value: value)
+    setting.update_attribute(:value, value)
   end
 
   after :each do
-    setting.update_attribute(value: default_value)
+    setting.update_attribute(:value, default_value)
   end
 end

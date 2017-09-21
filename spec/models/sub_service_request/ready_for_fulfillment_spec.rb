@@ -17,7 +17,7 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe SubServiceRequest, type: :model do
   before :each do
@@ -49,62 +49,47 @@ RSpec.describe SubServiceRequest, type: :model do
     @sub_service_request.save(validate: false)
   end
 
-  it 'is ready for fulfillment if already in work fulfillment and fulfillment_contingent_on_catalog_manager is true' do
-    create(:setting, key: "fulfillment_contingent_on_catalog_manager", value: true)
-    @sub_service_request.in_work_fulfillment = true
-    expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
+  context 'fulfillment_contingent_on_catalog_manager is true' do
+    stub_config("fulfillment_contingent_on_catalog_manager", true)
+
+    it 'is NOT ready for fulfillment' do
+      expect(@sub_service_request.ready_for_fulfillment?).to eq(false)
+    end
+
+    it 'is ready for fulfillment if already in work fulfillment' do
+      @sub_service_request.in_work_fulfillment = true
+      expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
+    end
+
+    it 'is ready for fulfillment if the service is directly under an organization with the tag "clinical work fulfillment"' do
+      @core.tag_list << "clinical work fulfillment"
+      @core.save(validate: false)
+      expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
+    end
+
+    it 'is NOT ready for fulfillment if the service has a grandparent organization with the tag "clinical work fulfillment"' do
+      @program.tag_list << "clinical work fulfillment"
+      @program.save(validate: false)
+      expect(@sub_service_request.ready_for_fulfillment?).to eq(false)
+    end
   end
 
-  it 'is ready for fulfillment if already in work fulfillment and fulfillment_contingent_on_catalog_manager is false' do
-    create(:setting, key: "fulfillment_contingent_on_catalog_manager", value: false)
-    @sub_service_request.in_work_fulfillment = true
-    expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
-  end
+  context 'fulfillment_contingent_on_catalog_manager is false' do
+    stub_config("fulfillment_contingent_on_catalog_manager", false)
 
-  it 'is ready for fulfillment if already in work fulfillment and fulfillment_contingent_on_catalog_manager is not populated' do
-    @sub_service_request.in_work_fulfillment = true
-    expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
-  end
+    it 'is ready for fulfillment' do
+      expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
+    end
 
-  it 'is NOT ready for fulfillment if fulfillment_contingent_on_catalog_manager is true' do
-    create(:setting, key: "fulfillment_contingent_on_catalog_manager", value: true)
-    expect(@sub_service_request.ready_for_fulfillment?).to eq(false)
-  end
+    it 'is ready for fulfillment if already in work fulfillment' do
+      @sub_service_request.in_work_fulfillment = true
+      expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
+    end
 
-  it 'is ready for fulfillment if fulfillment_contingent_on_catalog_manager is false' do
-    create(:setting, key: "fulfillment_contingent_on_catalog_manager", value: false)
-    expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
+    it 'is ready for fulfillment if the service is directly under an organization with the tag "clinical work fulfillment"' do
+      @core.tag_list << "clinical work fulfillment"
+      @core.save(validate: false)
+      expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
+    end
   end
-
-  it 'is ready for fulfillment if fulfillment_contingent_on_catalog_manager is not populated' do
-    expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
-  end
-
-  it 'is ready for fulfillment if the service is directly under an organization with the tag "clinical work fulfillment" and fulfillment_contingent_on_catalog_manager is true' do
-    create(:setting, key: "fulfillment_contingent_on_catalog_manager", value: true)
-    @core.tag_list << "clinical work fulfillment"
-    @core.save(validate: false)
-    expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
-  end
-
-  it 'is ready for fulfillment if the service is directly under an organization with the tag "clinical work fulfillment" and fulfillment_contingent_on_catalog_manager is false' do
-    create(:setting, key: "fulfillment_contingent_on_catalog_manager", value: false)
-    @core.tag_list << "clinical work fulfillment"
-    @core.save(validate: false)
-    expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
-  end
-
-  it 'is ready for fulfillment if the service is directly under an organization with the tag "clinical work fulfillment" and fulfillment_contingent_on_catalog_manager is not populated' do
-    @core.tag_list << "clinical work fulfillment"
-    @core.save(validate: false)
-    expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
-  end
-
-  it 'is NOT ready for fulfillment if the service has a grandparent organization with the tag "clinical work fulfillment" and fulfillment_contingent_on_catalog_manager is true' do
-    create(:setting, key: "fulfillment_contingent_on_catalog_manager", value: true)
-    @program.tag_list << "clinical work fulfillment"
-    @program.save(validate: false)
-    expect(@sub_service_request.ready_for_fulfillment?).to eq(false)
-  end
-
 end

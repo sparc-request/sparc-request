@@ -25,10 +25,9 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
 
   let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity, ldap_uid: 'weh6@musc.edu') }
-
+  stub_config("site_admins", ["weh6@musc.edu"])
+  
   before :each do
-    create(:setting, key: "site_admins", value: ['weh6@musc.edu'])
-
     session[:identity_id] = logged_in_user.id
 
     @survey = create(:survey_without_validations)

@@ -22,12 +22,11 @@ require 'rails_helper'
 
 RSpec.describe 'User previews a survey', js: true do
   let_there_be_lane
-
   fake_login_for_each_test
 
-  before :each do
-    create(:setting, key: "site_admins", value: ['jug2'])
+  stub_config("site_admins", ["jug2"])
 
+  before :each do
     @survey = create(:survey)
     s1      = create(:section, survey: @survey)
     s2      = create(:section, survey: @survey)

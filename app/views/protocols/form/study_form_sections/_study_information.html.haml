@@ -25,7 +25,7 @@
     .sub_text
       = t(:protocols)[:studies][:information][:subtext]
   .panel-body.container-fluid
-    - if Setting.find_by_key("research_master_enabled").value
+    - if Setting.find_by_key("use_research_master").value
       .form-group.row
         = form.label :research_master_id, class: 'col-lg-2 control-label rm-id' do
           = link_to t(:protocols)[:studies][:information][:research_master_id], Setting.find_by_key("research_master_link").value, target: '_blank'
@@ -39,8 +39,8 @@
         title: t(:protocols)[:tooltips][:short_title]
       .col-lg-10
         = form.text_field :short_title,
-          class: [('form-control'), (Setting.find_by_key("research_master_enabled").value ? 'rm-id-dependent rm-locked-fields' : '')],
-          disabled: Setting.find_by_key("research_master_enabled").value
+          class: [('form-control'), (Setting.find_by_key("use_research_master").value ? 'rm-id-dependent rm-locked-fields' : '')],
+          disabled: Setting.find_by_key("use_research_master").value
 
     .form-group.row
       = form.label :title,
@@ -50,8 +50,8 @@
         title: t(:protocols)[:tooltips][:title]
       .col-lg-10
         = form.text_field :title,
-          class: [('form-control'), (Setting.find_by_key("research_master_enabled").value ? 'rm-id-dependent rm-locked-fields' : '')],
-          disabled: Setting.find_by_key("research_master_enabled").value
+          class: [('form-control'), (Setting.find_by_key("use_research_master").value ? 'rm-id-dependent rm-locked-fields' : '')],
+          disabled: Setting.find_by_key("use_research_master").value
 
     .form-group.row#funding-status
       = form.label :funding_status,

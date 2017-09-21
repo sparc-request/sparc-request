@@ -22,13 +22,12 @@ require 'rails_helper'
 
 RSpec.describe 'User edits survey fields', js: true do
   let_there_be_lane
-
   fake_login_for_each_test
+
+  stub_config("site_admins", ["jug2"])
 
   before :each do
     @survey = create(:survey)
-
-    create(:setting, key: "site_admins", value: ['jug2'])
   end
 
   scenario 'and sees updated access code' do

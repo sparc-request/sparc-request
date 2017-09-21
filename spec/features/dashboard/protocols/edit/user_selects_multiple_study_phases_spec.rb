@@ -24,6 +24,7 @@ RSpec.describe 'User edits study', js: true do
   let_there_be_lane
   fake_login_for_each_test
   build_study_phases
+  stub_config("use_research_master", true)
 
   before :each do
     institution = create(:institution, name: "Institution")
@@ -35,7 +36,6 @@ RSpec.describe 'User edits study', js: true do
     ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                   create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
     StudyTypeQuestionGroup.create(active: 1)
-    create(:setting, key: "research_master_enabled", value: true)
   end
 
   context 'selects multiple study phases' do

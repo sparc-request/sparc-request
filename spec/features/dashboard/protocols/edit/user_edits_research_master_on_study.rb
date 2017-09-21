@@ -25,6 +25,8 @@ RSpec.describe 'User edits research master id on study', js: true do
   fake_login_for_each_test
   build_study_phases
 
+  stub_config("use_research_master", true)
+  
   context 'User is an admin' do
     before :each do
       @protocol       = create(:protocol_without_validations,
@@ -36,7 +38,6 @@ RSpec.describe 'User edits research master id on study', js: true do
       service_request = create(:service_request_without_validations, protocol: @protocol)
                         create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft')
                         create(:super_user, identity: jug2, organization: organization)
-      create(:setting, key: "research_master_enabled", value: true)
 
       visit edit_dashboard_protocol_path(@protocol)
       wait_for_javascript_to_finish
@@ -59,7 +60,6 @@ RSpec.describe 'User edits research master id on study', js: true do
                                 primary_pi: jug2,
                                 funding_status: "funded",
                                 funding_source: "foundation")
-      create(:setting, key: "research_master_enabled", value: true)
 
       visit edit_dashboard_protocol_path(@protocol)
       wait_for_javascript_to_finish

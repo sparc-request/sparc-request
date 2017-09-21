@@ -84,8 +84,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
-        create(:setting, key: "use_google_calendar", value: true)
-
         get :catalog, params: {
           id: sr.id
         }, xhr: true
@@ -98,8 +96,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       it 'should assign @news' do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
-
-        create(:setting, key: "use_news_feed", value: true)
 
         get :catalog, params: {
           id: sr.id

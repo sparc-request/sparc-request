@@ -32,7 +32,6 @@ RSpec.describe Protocol, type: :model do
   describe "#email_about_change_in_authorized_user" do
     context "send_authorized_user_emails is true and ssr.status is 'not_draft'" do
       it "should send authorized user email" do
-        create(:setting, key: "send_authorized_user_emails", value: true)
         organization = create(:organization)
         @protocol1 = create(:study_without_validations)
         @sr1 = create(:service_request_without_validations, protocol_id: @protocol1.id)
@@ -53,7 +52,6 @@ RSpec.describe Protocol, type: :model do
 
     context "send_authorized_user_emails is true and ssr.status is 'draft'" do
       it "should send authorized user email" do
-        create(:setting, key: "send_authorized_user_emails", value: true)
         organization = create(:organization)
         @protocol1 = create(:study_without_validations)
         @sr1 = create(:service_request_without_validations, protocol_id: @protocol1.id)
@@ -73,8 +71,9 @@ RSpec.describe Protocol, type: :model do
     end
 
     context "send_authorized_user_emails is false and ssr.status is 'draft'" do
+      stub_config("send_authorized_user_emails", false)
+
       it "should send authorized user email" do
-        create(:setting, key: "send_authorized_user_emails", value: false)
         organization = create(:organization)
         @protocol1 = create(:study_without_validations)
         @sr1 = create(:service_request_without_validations, protocol_id: @protocol1.id)
@@ -94,8 +93,9 @@ RSpec.describe Protocol, type: :model do
     end
 
     context "send_authorized_user_emails is false and ssr.status is 'not_draft'" do
+      stub_config("send_authorized_user_emails", false)
+      
       it "should send authorized user email" do
-        create(:setting, key: "send_authorized_user_emails", value: false)
         organization = create(:organization)
         @protocol1 = create(:study_without_validations)
         @sr1 = create(:service_request_without_validations, protocol_id: @protocol1.id)

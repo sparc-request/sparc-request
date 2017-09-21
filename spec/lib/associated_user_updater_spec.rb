@@ -59,10 +59,7 @@ RSpec.describe AssociatedUserUpdater do
         selected_for_epic: true)
     end
 
-    before(:each) do
-      create(:setting, key: "use_epic", value: true)
-      create(:setting, key: "queue_epic", value: false)
-    end
+    stub_config("use_epic", true)
 
     context "epic access removed from ProjectRole" do
       it "should deliver a notification regarding epic access removal with updated ProjectRole" do

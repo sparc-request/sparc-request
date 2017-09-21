@@ -60,7 +60,7 @@ class Protocol < ApplicationRecord
   belongs_to :study_type_question_group
 
   validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
-  validates :research_master_id, presence: true, if: "Setting.find_by_key('research_master_enabled').value && has_human_subject_info?"
+  validates :research_master_id, presence: true, if: "Setting.find_by_key('use_research_master').value && has_human_subject_info?"
 
   validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 1000 }, allow_blank: true
 
@@ -98,10 +98,10 @@ class Protocol < ApplicationRecord
   end
 
   validate :existing_rm_id,
-    if: -> record { Setting.find_by_key("research_master_enabled").value && !record.research_master_id.nil? }
+    if: -> record { Setting.find_by_key("use_research_master").value && !record.research_master_id.nil? }
 
   validate :unique_rm_id_to_protocol,
-    if: -> record { Setting.find_by_key("research_master_enabled").value && !record.research_master_id.nil? }
+    if: -> record { Setting.find_by_key("use_research_master").value && !record.research_master_id.nil? }
 
   def self.to_csv(protocols)
     CSV.generate do |csv|

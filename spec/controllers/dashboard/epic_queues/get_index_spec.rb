@@ -22,9 +22,7 @@ require "rails_helper"
 
 RSpec.describe Dashboard::EpicQueuesController do
   describe "GET #index" do
-    before :each do
-      create(:setting, key: "epic_queue_access", value: ['jug2'])
-    end
+    stub_config("epic_queue_access", ['jug2'])
 
     describe "for overlord users" do
       before(:each) do

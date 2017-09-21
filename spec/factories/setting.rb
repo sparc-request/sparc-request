@@ -21,10 +21,10 @@
 FactoryGirl.define do
   factory :setting do
     sequence(:key) { |n| "setting-#{n}" }
-    data_type      { Faker::Lorum.word }
+    data_type      { Faker::Lorem.word }
     value          { nil }
-    friendly_name  { Faker::Lorum.word }
-    description    { Faker::Lorum.sentence }
+    friendly_name  { Faker::Lorem.word }
+    description    { Faker::Lorem.sentence }
     group          { rand(0..10) }
     version        { '1.0' }
 

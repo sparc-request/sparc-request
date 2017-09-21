@@ -21,17 +21,12 @@
 require 'net/ldap'
 
 class Directory
+  
+  @@use_ldap = Setting.find_by_key("use_ldap").try(:value) || true
+  @@suppress_ldap_for_user_search = Setting.find_by_key("suppress_ldap_for_user_search").try(:value) || true
+
   # Only initialize LDAP if it is enabled
-
-  begin
-    use_ldap = Setting.find_by_key("use_ldap").try(:value)
-    suppress_ldap_for_user_search = Setting.find_by_key("suppress_ldap_for_user_search").try(:value)
-  rescue ActiveRecord::StatementInvalid
-    use_ldap = true
-    suppress_ldap_for_user_search = nil
-  end
-
-  if use_ldap
+  if @@use_ldap
     # Load the YAML file for ldap configuration and set constants
     begin
       ldap_config   ||= YAML.load_file(Rails.root.join('config', 'ldap.yml'))[Rails.env]
@@ -58,7 +53,7 @@ class Directory
   # Returns an array of Identities that match the query.
   def self.search(term)
     # Search ldap (if enabled) and the database
-    if use_ldap && !suppress_ldap_for_user_search
+    if @@use_ldap && !@@suppress_ldap_for_user_search
       ldap_results = search_ldap(term)
       db_results = search_database(term)
       # If there are any entries returned from ldap that were not in the

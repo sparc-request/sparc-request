@@ -104,6 +104,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       end
 
       context 'using EPIC and queue_epic' do
+        stub_config("use_epic", true)
+        stub_config("queue_epic", true)
+
         it 'should create an item in the queue' do
           org      = create(:organization)
           service  = create(:service, organization: org, one_time_fee: true, send_to_epic: true)
@@ -113,8 +116,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
           li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
           session[:identity_id]            = logged_in_user.id
-          create(:setting, key: "use_epic", value: true)
-          create(:setting, key: "queue_epic", value: true)
+          
           setup_valid_study_answers(protocol)
 
           get :confirmation, params: {
@@ -128,6 +130,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
       end
 
       context 'using EPIC but not queue_epic' do
+        stub_config("use_epic", true)
+        
         it 'should notify' do
           org      = create(:organization)
           service  = create(:service, organization: org, one_time_fee: true, send_to_epic: true)
@@ -138,7 +142,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
                      create(:service_provider, identity: logged_in_user, organization: org)
 
           session[:identity_id]            = logged_in_user.id
-          create(:setting, key: "use_epic", value: true)
+
           setup_valid_study_answers(protocol)
 
           # We have a user, and service_provider so we send 2 emails
@@ -205,8 +209,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
           li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
           session[:identity_id]            = logged_in_user.id
-          create(:setting, key: "use_epic", value: true)
-          create(:setting, key: "queue_epic", value: true)
+
           setup_valid_study_answers(protocol)
 
           get :confirmation, params: {
@@ -228,8 +231,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
           li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                      create(:service_provider, identity: logged_in_user, organization: org)
           org.submission_emails.create(email: 'hedwig@owlpost.com')
+
           session[:identity_id]            = logged_in_user.id
-          create(:setting, key: "use_epic", value: true)
+
           setup_valid_study_answers(protocol)
 
           # We have an admin, user, and service_provider so we send 3 emails

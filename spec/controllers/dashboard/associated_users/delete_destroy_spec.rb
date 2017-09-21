@@ -138,14 +138,13 @@ RSpec.describe Dashboard::AssociatedUsersController do
       end
 
       context 'use_epic is true, queue_epic is false, Protocol associated with @protocol_role is selected for epic, and @protocol_role had epic access' do
+        stub_config("use_epic", true)
+        
         before :each do
           @user           = create(:identity)
           @protocol       = create(:protocol_without_validations, selected_for_epic: true, funding_status: 'funded', funding_source: 'federal')
                             create(:project_role, protocol: @protocol, identity: @user, project_rights: 'approve', role: 'primary-pi')
           @protocol_role  = create(:project_role, protocol: @protocol, identity: create(:identity), project_rights: 'approve', role: 'consultant', epic_access: true)
-
-          create(:setting, key: "use_epic", value: true)
-          create(:setting, key: "queue_epic", value: false)
 
           allow(Notifier).to receive(:notify_primary_pi_for_epic_user_removal).
             with(@protocol, @protocol_role) do
@@ -169,8 +168,6 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
       context "use_epic is false, queue_epic is false, Protocol associated with ProjectRole is not selected for epic, and @protocol_role did not have epic access" do
         before :each do
-          create(:setting, key: "use_epic", value: false)
-          create(:setting, key: "queue_epic", value: false)
           @user           = create(:identity)
           @protocol       = create(:protocol_without_validations, selected_for_epic: false, funding_status: 'funded', funding_source: 'federal')
           @protocol_role  = create(:project_role, protocol: @protocol, identity: @user, project_rights: 'approve', role: 'primary-pi')

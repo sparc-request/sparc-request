@@ -249,8 +249,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       context 'ssr status is set to "complete"' do
          before :each do
-          create(:setting, key: "finished_statuses", value: ['complete'])
-
           @org      = create(:organization)
           service  = create(:service, organization: @org, one_time_fee: true)
           protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')

@@ -239,7 +239,6 @@ RSpec.describe SubServiceRequest, type: :model do
         end
 
         it 'should should return false if the status is complete' do
-          create(:setting, key: 'finished_statuses', value: ['complete'])
           sub_service_request.update_attributes(status: 'complete')
           expect(sub_service_request.can_be_edited?).to eq(false)
         end

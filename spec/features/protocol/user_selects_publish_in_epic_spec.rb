@@ -98,7 +98,6 @@ RSpec.describe 'User creates study', js: true do
   context 'Not Using Epic' do
 
     before :each do
-      create(:setting, key: 'use_epic', value: false)
       visit_create_study_form
       wait_for_javascript_to_finish
     end

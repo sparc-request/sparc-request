@@ -26,8 +26,6 @@ RSpec.describe 'User views a completed SSR', js: true do
   fake_login_for_each_test
 
   before :each do
-    create(:setting, key: "finished_statuses", value: ['complete'])
-
     org       = create(:organization)
                 create(:pricing_setup, organization: org)
     pppv      = create(:service, organization: org, one_time_fee: false)

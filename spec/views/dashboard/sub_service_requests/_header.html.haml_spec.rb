@@ -24,7 +24,6 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
   include RSpecHtmlMatchers
 
   before(:each) do
-    create(:setting, key: "clinical_work_fulfillment_url", value: "www.future-url.org")
     allow(view).to receive(:user_display_protocol_total).and_return(100)
   end
 

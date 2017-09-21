@@ -193,7 +193,7 @@ RSpec.describe ServiceRequest, type: :model do
   end
 
   describe "cost calculations" do
-    #create(:setting, key: "use_indirect_cost", value: true)  #For testing indirect cost
+    #stub_config("use_indirect_cost", true)  #For testing indirect cost
 
     before :each do
       service_request.arms.each { |arm| arm.visits.update_all(quantity: 15, research_billing_qty: 5, insurance_billing_qty: 5, effort_billing_qty: 5) }

@@ -22,12 +22,11 @@ require 'rails_helper'
 
 RSpec.describe 'User deletes a survey', js: true do
   let_there_be_lane
-
   fake_login_for_each_test
 
+  stub_config("site_admins", ["jug2"])
+  
   before :each do
-    create(:setting, key: "site_admins", value: ['jug2'])
-
     create(:survey)
 
     visit surveyor_surveys_path

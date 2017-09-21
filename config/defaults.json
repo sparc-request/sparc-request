@@ -71,7 +71,7 @@
   },
   {
     "key":            "dashboard_link",
-    "value":          "http://musc-pro.homelinux.net:3001/dashboard",
+    "value":          "/dashboard/",
     "friendly_name":  "Dashboard URL",
     "description":    "The url for the user dashboard.",
     "group":          "",
@@ -91,7 +91,7 @@
   },
   {
     "key":            "epic_queue_access",
-    "value":          "[\"jug2@musc.edu\"]",
+    "value":          "[]",
     "friendly_name":  "Epic Queue Access",
     "description":    "Determines which users will have access to the EPIC Queue.",
     "group":          "",
@@ -262,7 +262,7 @@
   },
   {
     "key":            "queue_epic",
-    "value":          "true",
+    "value":          "false",
     "friendly_name":  "Queue EPIC",
     "description":    "Determines whether EPIC pushes will be queued or not. Emptying the queue is done via rake epic:batch_load. This can setup as a cronjob to run at a certain interval.",
     "group":          "",
@@ -357,7 +357,7 @@
     "description":    "The URL of the Research Master ID API.",
     "group":          "",
     "version":        "",
-    "parent_key":     "research_master_enabled",
+    "parent_key":     "use_research_master",
     "parent_value":   "true"
   },
   {
@@ -367,12 +367,12 @@
     "description":    "The token used to access the Research Master ID API.",
     "group":          "",
     "version":        "",
-    "parent_key":     "research_master_enabled",
+    "parent_key":     "use_research_master",
     "parent_value":   "true"
   },
   {
-    "key":            "research_master_enabled",
-    "value":          "true",
+    "key":            "use_research_master",
+    "value":          "false",
     "friendly_name":  "Use Research Master ID",
     "description":    "Determines whether the Research Master ID application should be used.",
     "group":          "",
@@ -387,7 +387,7 @@
     "description":    "The URL of the Research Master ID application.",
     "group":          "",
     "version":        "",
-    "parent_key":     "research_master_enabled",
+    "parent_key":     "use_research_master",
     "parent_value":   "true"
   },
   {
@@ -422,7 +422,7 @@
   },
   {
     "key":            "site_admins",
-    "value":          "[\"jug2@musc.edu\"]",
+    "value":          "[]",
     "friendly_name":  "Site Admins",
     "description":    "Determines which users will have access to the SPARCSurvey module.",
     "group":          "",
@@ -441,7 +441,7 @@
     "parent_value":   "true"
   },
   {
-    "key":            "system_satisfaction_survey",
+    "key":            "use_system_satisfaction_survey",
     "value":          "false",
     "friendly_name":  "Use System Satisfaction Survey",
     "description":    "Determines whether or not to display a System Satisfaction Survey prior to submitting a Service Request.",
@@ -457,7 +457,7 @@
     "description":    "This field will overwrite the system satisfaction survey mailers in the application to instead cc to this address. To be overwritten in development/testing/staging to prevent real emails being sent out to users.",
     "group":          "",
     "version":        "",
-    "parent_key":     "system_satisfaction_survey",
+    "parent_key":     "use_system_satisfaction_survey",
     "parent_value":   "true"
   },
   {
@@ -472,7 +472,7 @@
   },
   {
     "key":            "use_epic",
-    "value":          "true",
+    "value":          "false",
     "friendly_name":  "Use EPIC",
     "description":    "Determines whether or not EPIC integration will be used.",
     "group":          "",

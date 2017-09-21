@@ -34,9 +34,9 @@ RSpec.describe Arm, type: :model do
       allow(arm).to receive_message_chain(:protocol, :indirect_cost_rate).and_return 50
     end
 
+    stub_config("use_indirect_cost", true)
+    
     context 'with Setting.find_by_key("use_indirect_cost").value' do
-      before(:each) {create(:setting, key: "use_indirect_cost", value: true)}
-
       context 'with no argument' do
         it 'should return total indirect cost all LineItems' do
           expect(arm.maximum_indirect_costs_per_patient).to eq(arm.maximum_direct_costs_per_patient / 2.0)

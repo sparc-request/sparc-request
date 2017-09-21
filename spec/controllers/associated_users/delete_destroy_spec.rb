@@ -74,14 +74,13 @@ RSpec.describe AssociatedUsersController, type: :controller do
     end
 
     context 'use_epic is true and protocol.selected_for_epic is true and epic_access is true and queue_epic is false' do
+      stub_config("use_epic", true)
+      
       it 'should notify primary pi' do
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user, selected_for_epic: true)
         sr        = create(:service_request_without_validations, protocol: protocol)
         pr        = create(:project_role, identity: other_user, protocol: protocol, epic_access: true)
-
-        create(:setting, key: "use_epic", value: true)
-        create(:setting, key: "queue_epic", value: false)
-
+        
         expect {
           delete :destroy, params: {
             service_request_id: sr.id,

@@ -105,10 +105,6 @@ RSpec.describe Identity, type: :model do
     let!(:project_role)         {create(:project_role, identity_id: user.id, protocol_id: project.id, project_rights: 'approve')}
     let!(:request)              {create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id, ssr_id: '0002')}
 
-    before :each do
-      create(:setting, key: "finished_statuses", value: ['complete'])
-    end
-
     describe "permission methods" do
 
 

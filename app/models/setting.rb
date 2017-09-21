@@ -32,6 +32,16 @@ class Setting < ApplicationRecord
 
   validate :value_matches_type, if: Proc.new{ self.value.present? }
   validate :parent_value_matches_parent_type, if: Proc.new{ self.parent_key.present? }
+  
+  # Needed to correctly write boolean true and false as value in specs  
+  def value=(value)
+    if [TrueClass, FalseClass].include?(value.class)
+      value_will_change!
+      write_attribute(:value, value ? "true" : "false")
+    else
+      write_attribute(:value, value)
+    end
+  end
 
   def value
     case data_type

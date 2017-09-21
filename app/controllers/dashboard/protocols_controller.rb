@@ -98,6 +98,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     session[:protocol_type] = params[:protocol_type]
     gon.rm_id_api_url = RESEARCH_MASTER_API
     gon.rm_id_api_token = RMID_API_TOKEN
+    rmid_server_status(@protocol)
   end
 
   def create
@@ -125,6 +126,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     else
       @errors = @protocol.errors
     end
+    rmid_server_status(@protocol)
   end
 
   def edit
@@ -142,6 +144,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol.valid?
     @errors = @protocol.errors
     @errors.delete(:research_master_id) if @bypass_rmid_validation
+
+    rmid_server_status(@protocol)
 
     respond_to do |format|
       format.html
@@ -196,6 +200,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
       flash[:alert] = t(:protocols)[:change_type][:new_study_warning]
     end
+    
+    rmid_server_status(@protocol)
   end
 
   def archive

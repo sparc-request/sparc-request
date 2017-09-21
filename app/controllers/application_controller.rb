@@ -58,6 +58,10 @@ class ApplicationController < ActionController::Base
     }
   end
 
+  def rmid_server_status(protocol)
+    @rmid_server_down = protocol.rmid_server_status
+    @rmid_server_down ? flash[:alert] = t(:protocols)[:summary][:tooltips][:rmid_server_down] : nil
+  end
 
   def authorization_error msg, ref
     error = msg

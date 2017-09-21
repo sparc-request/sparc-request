@@ -124,9 +124,12 @@ class Protocol < ApplicationRecord
     rm_ids = HTTParty.get(RESEARCH_MASTER_API + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{RMID_API_TOKEN}\""})
     ids = rm_ids.map{ |rm_id| rm_id['id'] }
 
-    unless ids.include?(self.research_master_id)
+    if research_master_id.present? && !ids.include?(research_master_id)
       errors.add(:_, 'The entered Research Master ID does not exist. Please go to the Research Master website to create a new record.')
     end
+    
+    rescue
+      return "server_down"
   end
 
   def unique_rm_id_to_protocol
@@ -484,6 +487,10 @@ class Protocol < ApplicationRecord
 
     # Lets return this in case we need it for something else
     arm
+  end
+
+  def rmid_server_status
+    existing_rm_id == "server_down" && type == "Study"
   end
 
   def should_push_to_epic?

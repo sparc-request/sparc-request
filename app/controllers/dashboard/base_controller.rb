@@ -81,4 +81,8 @@ class Dashboard::BaseController < ActionController::Base
       @admin = Protocol.for_admin(@user.id).include?(@protocol)
     end
   end
+
+  def bypass_rmid_validations? # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]
+    @bypass_rmid_validation = @user.is_overlord? || @admin
+  end
 end

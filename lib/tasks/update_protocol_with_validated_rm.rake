@@ -49,6 +49,11 @@ namespace :data do
           title: vrm['long_title'],
           rmid_validated: true
         )
+        if protocol_to_update.has_human_subject_info?
+          protocol_to_update
+            .human_subjects_info
+            .update_attribute(:pro_number, vrm['pro_number'])
+        end
       end
       progress_bar.increment!
     end

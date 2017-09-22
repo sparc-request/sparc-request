@@ -879,6 +879,7 @@ en:
     new_sp: "New Service Provider"
     one_time_fee: "Non-clinical (Non-Per </br> Patient/Visit) Services"
     order: "Order"
+    order_code: "Order Code"
     otf_field_errors: "If the Pricing Map is a non-clinical service (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required."
     per_patient_errors: "Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps."
     pricing_maps: "Pricing Maps"

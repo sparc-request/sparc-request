@@ -905,6 +905,7 @@ en:
     super_users: "Super Users"
     tag_list: "Tags"
     user_rights: "User Rights"
+    use_default_statuses: "Use Default Statuses"
 
   pricing_map_form:
     clinical_quantity_type: "Clinical Quantity Type (hours, each, slides, etc.)"

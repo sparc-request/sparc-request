@@ -536,6 +536,11 @@ $ ->
     $('#available_statuses_wrapper').toggle()
   )
 
+  $(document).on('change', 'input[id*="_use_default_statuses"]', ->
+    $('#all_statuses').toggle()
+    $('#default_statuses').toggle()
+  )
+
   $(document).on('change', 'input[id*="_tag_list_clinical_work_fulfillment"]', ->
     $('#cwf_wrapper').toggle()
     $('#cwf_wrapper input.cwf_clear').val('')

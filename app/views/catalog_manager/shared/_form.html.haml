@@ -18,4 +18,46 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= "Placeholder for id: #{@organization.id} #{@organization.name}"
+-# General Information Panel
+.panel-group#cm-form-accordion
+  .panel.panel-default
+    .panel-heading
+      %h4.panel-title
+        = link_to 'General Info (not ymlized)', '#general-info-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
+    .panel-collapse.collapse.in#general-info-collapse
+      .panel-body
+        Not Yet Implemented
+
+  - if @organization.process_ssrs?
+    .panel.panel-default
+      .panel-heading
+        %h4.panel-title
+          = link_to 'Status Options (not ymlized)', '#status-options-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
+      .panel-collapse.collapse#status-options-collapse
+        .panel-body
+          Not Yet Implemented
+
+  .panel.panel-default
+    .panel-heading
+      %h4.panel-title
+        = link_to 'User Rights (not ymlized)', '#user-rights-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
+    .panel-collapse.collapse#user-rights-collapse
+      .panel-body
+        Not Yet Implemented
+
+  - unless @organization.type == 'Institution'
+    .panel.panel-default
+      .panel-heading
+        %h4.panel-title
+          = link_to 'Pricing (not ymlized)', '#pricing-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
+      .panel-collapse.collapse#pricing-collapse
+        .panel-body
+          Not Yet Implemented
+
+    .panel.panel-default
+      .panel-heading
+        %h4.panel-title
+          = link_to 'Associated Surveys (not ymlized)', '#associated-surveys-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
+      .panel-collapse.collapse#associated-surveys-collapse
+        .panel-body
+          Not Yet Implemented

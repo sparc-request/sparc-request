@@ -93,14 +93,14 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
       end
     end
 
-    describe "#show" do
+    describe "#edit" do
 
       context "Service with pre-existing ServiceLevelComponents" do
 
         it "should build ServiceLevelComponents with the correct :position" do
           service = FactoryGirl.create(:service_with_components, organization: organization)
 
-          get :show, params: { id: service.id }
+          get :edit, params: { id: service.id }, xhr: true
 
           expect(assigns(:service).components.split(',').count).to eq(3)
         end

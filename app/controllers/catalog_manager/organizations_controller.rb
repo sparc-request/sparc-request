@@ -19,17 +19,22 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class CatalogManager::OrganizationsController < CatalogManager::AppController
   layout false
-  respond_to :js, :html, :json
 
   def create
     @organization.build_subsidy_map() unless @organization.type == 'Institution'
     @organization.save
   end
 
-  def show
+  def edit
     @organization = Organization.find(params[:id])
     @organization.setup_available_statuses
-    render 'catalog_manager/organizations/show'
+
+    respond_to do |format|
+      format.js
+    end
+
+    #TODO: Validate user can edit organization
+    render 'catalog_manager/organizations/edit'
   end
 
   def update

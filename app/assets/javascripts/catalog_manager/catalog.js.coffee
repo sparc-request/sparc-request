@@ -23,6 +23,7 @@
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
 $ ->
+  initialize_org_search()
 
   $('.collapse').on('show.bs.collapse', (e) ->
     $(e.target).prev('.panel-heading').find('.glyphicon-folder-close').removeClass('glyphicon-folder-close').addClass('glyphicon-folder-open')
@@ -30,12 +31,58 @@ $ ->
     $(e.target).prev('.panel-heading').find('.glyphicon-folder-open').removeClass('glyphicon-folder-open').addClass('glyphicon-folder-close')
   )
 
-  $(document).on 'click','.availability-button', ->
+  $(document).on 'click','#clear-search-button', ->
+    $('.search-result').removeClass('search-result')
+    $('.panel-collapse.in').collapse('hide');
+
+  $(document).on 'click','#availability-button', ->
     show_available_only = $(this).data('show-available-only')
     $.ajax
       method: "GET"
       url: "/catalog_manager.js?show_available_only=#{show_available_only}"
-  
+      success: ->
+        initialize_org_search()
+
+##############################################
+### ORGANIZATION/SERVICE SEARCH BLOODHOUND ###
+##############################################
+
+initialize_org_search = () ->
+  services_bloodhound = new Bloodhound(
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    remote:
+      url: "/search/organizations?term=%QUERY&show_available_only=#{$('#availability-button').data('show-available-only')}",
+      wildcard: '%QUERY'
+  )
+  services_bloodhound.initialize() # Initialize the Bloodhound suggestion engine
+  $('#organization-query').typeahead(
+    {
+      minLength: 3,
+      hint: false,
+    },
+    {
+      displayKey: 'term',
+      source: services_bloodhound,
+      limit: 100,
+      templates: {
+        suggestion: Handlebars.compile('<button class="text-left">
+                                          <strong><span class="{{text_color}}">{{type}}</span><span>: {{name}}</span></strong><span class="text-danger"> {{inactive_tag}}</span><br>
+                                          <span>Abbreviation: {{abbreviation}}</span><br>
+                                          <span>{{cpt_code}}</span>
+                                        </button>')
+        notFound: '<div class="tt-suggestion">No Results</div>'
+      }
+    }
+  ).on('typeahead:select', (event, suggestion) ->
+    for parent in suggestion['parents']
+      target = $(parent).data('target')
+      $(target).collapse('show')
+      form_link = $(suggestion['value_selector']).parent()
+      form_link.parent().addClass("search-result")
+      form_link.siblings().find(".org-form-label").click()
+  )
+
 
 
 

@@ -25,7 +25,7 @@ class CatalogManager::CoresController < CatalogManager::OrganizationsController
     super
   end
 
-  def show
+  def edit
     @path = catalog_manager_core_path
     super
   end

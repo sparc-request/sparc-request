@@ -19,8 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class SearchController < ApplicationController
-  before_action :initialize_service_request
-  before_action :authorize_identity
+  before_action :initialize_service_request, only: [:services]
+  before_action :authorize_identity, only: [:services]
 
   def services
     term              = params[:term].strip
@@ -55,5 +55,40 @@ class SearchController < ApplicationController
     }
 
     render json: results.to_json
+  end
+
+  def organizations
+    term = params[:term].strip
+    if params[:show_available_only] == 'false' #the param name is the opposite of what is currently displayed
+      query_available = " AND is_available = 1"
+    end
+
+    results = Organization.where("(name LIKE ? OR abbreviation LIKE ?)#{query_available}", "%#{term}%", "%#{term}%") +
+              Service.where("(name LIKE ? OR abbreviation LIKE ? OR cpt_code LIKE ?)#{query_available}", "%#{term}%", "%#{term}%", "%#{term}%")
+
+    results.map! { |org|
+      {
+        name: org.name,
+        abbreviation: org.abbreviation,
+        type: org.class.to_s,
+        text_color: "text-#{org.class.to_s.downcase}",
+        cpt_code: cpt_code_text(org),
+        inactive_tag: inactive_text(org),
+        parents: org.parents.reverse.map{ |p| "##{p.class.to_s.downcase}-#{p.id}" },
+        value_selector: "##{org.class.to_s.downcase}-#{org.id}"
+      }
+    }
+
+    render json: results.to_json
+  end
+
+  private
+
+  def cpt_code_text(org)
+    text = org.class == Service ? "CPT code: #{org.cpt_code}" : ""
+  end
+
+  def inactive_text(org)
+    text = org.is_available ? "" : "(Inactive)"
   end
 end

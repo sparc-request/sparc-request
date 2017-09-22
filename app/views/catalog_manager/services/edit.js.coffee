@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,19 +18,4 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogManager::InstitutionsController < CatalogManager::OrganizationsController
-  def create
-    @organization = Institution.create({name: params[:name], abbreviation: params[:name], is_available: false})
-    @user.catalog_manager_rights.create( organization_id: @organization.id )
-  end
-
-  def edit
-    @path = catalog_manager_institution_path
-    super
-  end
-
-  def update
-    @attributes = organization_params(:institution)
-    super
-  end
-end
+$("#org-form-container").html("<%= j render '/catalog_manager/services/form', service: @service %>")

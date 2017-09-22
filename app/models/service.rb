@@ -75,11 +75,10 @@ class Service < ApplicationRecord
     organization.process_ssrs_parent
   end
 
-  # Return the parent organizations of the service.  Note that this
-  # returns the organizations in the reverse order of
-  # Organization#parents.
-  def parents
-    return organization.parents.reverse + [ organization ]
+  # Return the parent organizations of the service.
+  def parents id_only=false
+    parent_org = id_only ? organization.id : organization
+    return [ parent_org ] + organization.parents(id_only)
   end
 
   def core
@@ -112,7 +111,8 @@ class Service < ApplicationRecord
   def available_surveys
     available = nil
 
-    parents.each do |parent|
+    #TODO: Should we get all parent surveys instead of the closest parent's surveys?
+    parents.reverse.each do |parent|
       next if parent.type == 'Institution' # Institutions can't define associated surveys
       available = parent.associated_surveys.map(&:survey) unless parent.associated_surveys.empty?
     end

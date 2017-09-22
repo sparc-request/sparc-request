@@ -125,7 +125,7 @@ class Arm < ApplicationRecord
       last_parent = nil
       last_parent_name = nil
       found_parent = false
-      service.parents.reverse.each do |parent|
+      service.parents.each do |parent|
         next if !parent.process_ssrs? && !found_parent
         found_parent = true
         last_parent = last_parent || parent.id
@@ -134,7 +134,7 @@ class Arm < ApplicationRecord
         acks << parent.ack_language unless parent.ack_language.blank?
       end
       if found_parent == false
-        service.parents.reverse.each do |parent|
+        service.parents.each do |parent|
           name << parent.abbreviation
           acks << parent.ack_language unless parent.ack_language.blank?
         end

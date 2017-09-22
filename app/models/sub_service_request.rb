@@ -58,11 +58,11 @@ class SubServiceRequest < ApplicationRecord
   scope :in_work_fulfillment, -> { where(in_work_fulfillment: true) }
 
   def consult_arranged_date=(date)
-    write_attribute(:consult_arranged_date, Time.strptime(date, "%m/%d/%Y")) if date.present?
+    write_attribute(:consult_arranged_date, date.present? ? Time.strptime(date, "%m/%d/%Y") : nil)
   end
 
   def requester_contacted_date=(date)
-    write_attribute(:requester_contacted_date, Time.strptime(date, "%m/%d/%Y")) if date.present?
+    write_attribute(:requester_contacted_date, date.present? ? Time.strptime(date, "%m/%d/%Y") : nil)
   end
 
   def status= status

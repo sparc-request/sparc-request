@@ -60,18 +60,19 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
           session[:service_calendar_pages][arm_id]  = page
         end
 
-        @service_request    = @sub_service_request.service_request
-        @service_list       = @service_request.service_list
-        @line_items         = @sub_service_request.line_items
-        @protocol           = @service_request.protocol
-        @tab                = 'calendar'
-        @portal             = true
-        @admin              = false
-        @review             = true
-        @merged             = false
-        @consolidated       = false
-        @show_view_ssr_back = params[:show_view_ssr_back] == "true"
-        @pages              = {}
+        @service_request        = @sub_service_request.service_request
+        @service_list           = @service_request.service_list
+        @line_items             = @sub_service_request.line_items
+        @protocol               = @service_request.protocol
+        @tab                    = 'calendar'
+        @portal                 = true
+        @admin                  = false
+        @review                 = true
+        @merged                 = false
+        @consolidated           = false
+        @show_view_ssr_back     = params[:show_view_ssr_back] == "true"
+        @display_all_services   = true
+        @pages                  = {}
         @service_request.arms.each do |arm|
           new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
           @pages[arm.id] = @service_request.set_visit_page(new_page, arm)

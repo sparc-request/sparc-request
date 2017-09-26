@@ -38,7 +38,7 @@ class ServiceRequestsController < ApplicationController
     @service_list_true = @service_request.service_list(true)
     @service_list_false = @service_request.service_list(false)
     @line_items = @service_request.line_items
-
+    @display_all_services = params[:display_all_services] == 'true' ? true : false
 
     respond_to do |format|
       format.xlsx do
@@ -129,6 +129,7 @@ class ServiceRequestsController < ApplicationController
     @admin        = false
     @merged       = true
     @consolidated = false
+    @display_all_services = true
 
     # Reset all the page numbers to 1 at the start of the review request
     # step.
@@ -149,6 +150,7 @@ class ServiceRequestsController < ApplicationController
   def confirmation
     @protocol = @service_request.protocol
     @service_request.previous_submitted_at = @service_request.submitted_at
+    @display_all_services = true
 
     should_push_to_epic = @sub_service_request ? @sub_service_request.should_push_to_epic? : @service_request.should_push_to_epic?
 

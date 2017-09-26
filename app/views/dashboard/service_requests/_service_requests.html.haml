@@ -20,7 +20,7 @@
 - protocol.service_requests.each do |sr|
   .panel.panel-default#service-requests-panel
     .panel-heading
-      %h4.panel-title.pull-left
+      %h4.panel-title.pull-left.center-title
         = "#{t(:dashboard)[:protocols][:service_requests][:header]} - #{protocol_panel_header_line(sr)}"
       .pull-right
         .export-consolidated-request

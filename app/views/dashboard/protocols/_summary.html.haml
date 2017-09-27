@@ -1,4 +1,4 @@
--# Copyright © 2011-2016 MUSC Foundation for Research Development~
+-# Copyright © 2011-2017 MUSC Foundation for Research Development~
 -# All rights reserved.~
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -22,11 +22,11 @@
     %h4.panel-title.pull-left
       = I18n.t('protocols.summary.header', protocol_type: protocol_type)
     .pull-right
-      %button.btn.btn-sm.btn-default.notes.list{ data: { notable_type: "Protocol", notable_id: protocol.id } }
+      %button.btn.btn-sm.btn-default.notes.list{ data: { notable_type: "Protocol", notable_id: protocol.id, toggle: 'tooltip', placement: 'left', delay: '{"show":"500"}' }, title: t(:protocols)[:summary][:tooltips][:notes] }
         = "#{protocol_type} #{t(:models)[:note][:plural]}"
         %span.badge{id: "protocol_#{protocol.id}_notes"}
           = protocol.notes.count
-      %button.btn.btn-sm.btn-info.view-protocol-details-button{ data: { protocol_id: protocol.id } }
+      %button.btn.btn-sm.btn-info.view-protocol-details-button{ data: { protocol_id: protocol.id, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:protocols)[:summary][:tooltips][:details] }
         = I18n.t('protocols.view_details.button', protocol_type: protocol_type)
       = edit_protocol_button_display(protocol, permission_to_edit)
       = display_archive_button(protocol, permission_to_edit)
@@ -54,12 +54,14 @@
           = t(:protocols)[:summary][:title]
       .col-sm-10
         = protocol.try(:title)
+        = display_rmid_validated_protocol(protocol, t('protocols.summary.rmid_title'))
     .row
       .col-sm-2
         %label
           = t(:protocols)[:summary][:short_title]
       .col-sm-10
         = protocol.try(:short_title)
+        = display_rmid_validated_protocol(protocol, t('protocols.summary.rmid_short_title'))
     - if protocol_type == 'Study'
       .row
         .col-sm-2

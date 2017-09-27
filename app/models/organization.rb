@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -44,13 +44,16 @@ class Organization < ApplicationRecord
   has_many :sub_service_requests, :dependent => :destroy
   has_many :protocols, through: :sub_service_requests
   has_many :available_statuses, :dependent => :destroy
+  has_many :editable_statuses, :dependent => :destroy
   has_many :org_children, class_name: "Organization", foreign_key: :parent_id
   
   accepts_nested_attributes_for :subsidy_map
   accepts_nested_attributes_for :pricing_setups
   accepts_nested_attributes_for :submission_emails
   accepts_nested_attributes_for :available_statuses, :allow_destroy => true
+  accepts_nested_attributes_for :editable_statuses, :allow_destroy => true
 
+  after_create :create_past_statuses
   # TODO: In rails 5, the .or operator will be added for ActiveRecord queries. We should try to
   #       condense this to a single query at that point
   scope :authorized_for_identity, -> (identity_id) {
@@ -87,7 +90,7 @@ class Organization < ApplicationRecord
     if self.process_ssrs
       return self
     else
-      return self.parents.select {|x| x.process_ssrs}.first
+      return self.parents.detect {|x| x.process_ssrs} || self
     end
   end
 
@@ -112,15 +115,8 @@ class Organization < ApplicationRecord
     end
   end
 
-  # If an organization or one of it's parents is defined as lockable in the application.yml, return true
-  def has_editable_statuses?
-    EDITABLE_STATUSES.keys.each do |org_id|
-      if parents(true).include?(org_id) || (org_id == id)
-        return true
-      end
-    end
-
-    false
+  def has_editable_status?(status)
+    self.editable_statuses.where(status: status).any?
   end
 
   # Returns the immediate children of this organization (shallow search)
@@ -354,12 +350,17 @@ class Organization < ApplicationRecord
       available_status.position = position
       position += 1
     end
+
+    setup_editable_statuses
   end
 
   def get_available_statuses
     tmp_available_statuses = self.available_statuses.reject{|status| status.new_record?}
     statuses = []
-    if tmp_available_statuses.empty?
+
+    if self.use_default_statuses
+      statuses = AVAILABLE_STATUSES.select{|k,v| DEFAULT_STATUSES.include? k}
+    elsif tmp_available_statuses.empty?
       self.parents.each do |parent|
         if !parent.available_statuses.empty?
           statuses = AVAILABLE_STATUSES.select{|k,v| parent.available_statuses.map(&:status).include? k}
@@ -369,14 +370,17 @@ class Organization < ApplicationRecord
     else
       statuses = AVAILABLE_STATUSES.select{|k,v| tmp_available_statuses.map(&:status).include? k}
     end
-    if statuses.empty?
-      statuses = AVAILABLE_STATUSES.select{|k,v| DEFAULT_STATUSES.include? k}
-    end
     statuses
   end
 
   def self.find_all_by_available_status status
     Organization.all.select{|x| x.get_available_statuses.keys.include? status}
+  end
+
+  def setup_editable_statuses
+    EditableStatus::TYPES.each do |status|
+      self.editable_statuses.build(status: status, new: true) unless self.editable_statuses.detect{ |es| es.status == status }
+    end
   end
 
   def has_tag? tag
@@ -390,6 +394,12 @@ class Organization < ApplicationRecord
   end
 
   private
+
+  def create_past_statuses
+    EditableStatus::TYPES.each do |status|
+      self.editable_statuses.create(status: status)
+    end
+  end
 
   def self.authorized_child_organizations(org_ids)
     org_ids = org_ids.flatten.compact

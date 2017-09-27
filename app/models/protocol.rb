@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -33,7 +33,7 @@ class Protocol < ApplicationRecord
   has_many :project_roles,                dependent: :destroy
   has_one :primary_pi_role,               -> { where(role: 'primary-pi') }, class_name: "ProjectRole", dependent: :destroy
   has_many :identities,                   through: :project_roles
-  has_many :service_requests
+  has_many :service_requests,             dependent: :destroy
   has_many :services,                     through: :service_requests
   has_many :sub_service_requests
   has_many :line_items,                   through: :service_requests
@@ -60,8 +60,9 @@ class Protocol < ApplicationRecord
   belongs_to :study_type_question_group
 
   validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
-
   validates :research_master_id, presence: true, if: "RESEARCH_MASTER_ENABLED && has_human_subject_info?"
+
+  validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 1000 }, allow_blank: true
 
   attr_accessor :requester_id
   attr_accessor :validate_nct
@@ -151,8 +152,10 @@ class Protocol < ApplicationRecord
     # inserts ! so that we can escape special characters
     escaped_search_term = search_attrs[:search_text].to_s.gsub(/[!%_]/) { |x| '!' + x }
 
-    like_search_term = ActiveRecord::Base::sanitize("%#{escaped_search_term}%")
-    exact_search_term = ActiveRecord::Base::sanitize(search_attrs[:search_text])
+    escaped_search_term = search_attrs[:search_text].to_s.gsub(/[!%_]/) { |x| '!' + x }
+
+    like_search_term = ActiveRecord::Base.connection.quote("%#{escaped_search_term}%")
+    exact_search_term = ActiveRecord::Base.connection.quote(search_attrs[:search_text])
 
     ### SEARCH QUERIES ###
     authorized_user_query  = "CONCAT(identities.first_name, ' ', identities.last_name) LIKE #{like_search_term} escape '!'"
@@ -163,7 +166,6 @@ class Protocol < ApplicationRecord
     rmid_query             = "protocols.research_master_id = #{exact_search_term}"
     title_query            = ["protocols.short_title LIKE #{like_search_term} escape '!'", "protocols.title LIKE #{like_search_term} escape '!'"]
     ### END SEARCH QUERIES ###
-
     hr_pro_ids = HumanSubjectsInfo.where([hr_query, pro_num_query].join(' OR ')).pluck(:protocol_id)
     hr_protocol_id_query = hr_pro_ids.empty? ? nil : "protocols.id in (#{hr_pro_ids.join(', ')})"
 
@@ -487,6 +489,10 @@ class Protocol < ApplicationRecord
       any?(&:has_ctrc_clinical_services?)
   end
 
+  def has_clinical_services?
+    service_requests.any?(&:has_per_patient_per_visit_services?)
+  end
+
   def find_sub_service_request_with_ctrc(service_request)
     service_request.sub_service_requests.find(&:ctrc?).try(:ssr_id)
   end
@@ -504,15 +510,19 @@ class Protocol < ApplicationRecord
   end
 
   def direct_cost_total(service_request)
-    service_requests.where(id: service_request.id).or(service_requests.where.not(status: 'draft')).
-      eager_load(:line_items).
-      to_a.sum(&:direct_cost_total)
+    self.service_requests.
+      where(id: service_request.id).
+      or(service_requests.where.not(status: 'draft')).
+      eager_load(:line_items, :arms).
+      sum(&:direct_cost_total)
   end
 
   def indirect_cost_total(service_request)
     if USE_INDIRECT_COST
-      service_requests.where(id: service_request.id).or(service_requests.where.not(status: ['first_draft', 'draft'])).
-        eager_load(:line_items).
+      self.service_requests.
+        where(id: service_request.id).
+        or(service_requests.where.not(status: ['first_draft', 'draft'])).
+        eager_load(:line_items, :arms).
         to_a.sum(&:indirect_cost_total)
     else
       0
@@ -521,23 +531,6 @@ class Protocol < ApplicationRecord
 
   def grand_total(service_request)
     direct_cost_total(service_request) + indirect_cost_total(service_request)
-  end
-
-  def arm_cleanup
-    return unless self.arms.count > 0
-
-    remove_arms = true
-
-    self.service_requests.each do |sr|
-      if sr.has_per_patient_per_visit_services?
-        remove_arms = false
-        break
-      end
-    end
-
-    if remove_arms
-      self.arms.destroy_all
-    end
   end
 
   def has_incomplete_additional_details?

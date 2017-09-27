@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -56,6 +56,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
       :ack_language,
       :process_ssrs,
       :is_available,
+      :use_default_statuses,
       { tag_list:  [] },
       subsidy_map_attributes: [:organization_id,
         :max_dollar_cap,
@@ -79,9 +80,15 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
         :unfunded_rate_type],
       submission_emails_attributes: [:organization_id, :email],
       available_statuses_attributes: [:organization_id,
+        :id,
         :status,
         :new,
         :position,
+        :_destroy],
+      editable_statuses_attributes: [:organization_id,
+        :id,
+        :status,
+        :new,
         :_destroy])
   end
 

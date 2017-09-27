@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -40,10 +40,10 @@ RSpec.describe DocumentsController, type: :controller do
       doc         = create(:document, protocol: protocol)
 
 
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         service_request_id: sr.id,
         id: doc.id
-      }
+      }, xhr: true
 
       expect(assigns(:document)).to be
     end
@@ -54,10 +54,10 @@ RSpec.describe DocumentsController, type: :controller do
       doc         = create(:document, protocol: protocol)
 
 
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         service_request_id: sr.id,
         id: doc.id
-      }
+      }, xhr: true
 
       expect(Document.count).to eq(0)
     end
@@ -68,10 +68,10 @@ RSpec.describe DocumentsController, type: :controller do
       doc         = create(:document, protocol: protocol)
 
 
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         service_request_id: sr.id,
         id: doc.id
-      }
+      }, xhr: true
 
       expect(controller).to render_template(:destroy)
     end
@@ -82,10 +82,10 @@ RSpec.describe DocumentsController, type: :controller do
       doc         = create(:document, protocol: protocol)
 
 
-      xhr :delete, :destroy, {
+      delete :destroy, params: {
         service_request_id: sr.id,
         id: doc.id
-      }
+      }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

@@ -24,8 +24,9 @@
   .panel-body
     .bootstrap-table-dropdown-overflow
       #documents-custom-toolbar
-        %button.btn.btn-success#document-new{ class: permission_to_edit ? '' : 'disabled', data: { protocol_id: protocol.id, permission: permission_to_edit.to_s } }
-          = t(:documents)[:add_document]
+        %div.tooltip-wrapper{ data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' }, title: t(:documents)[:tooltips][:add_document] }
+          %button.btn.btn-success#document-new{ class: permission_to_edit ? '' : 'disabled', data: { protocol_id: protocol.id, permission: permission_to_edit.to_s } }
+            = t(:documents)[:add_document]
       %table#documents-table{ data: { toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: dashboard_documents_path(format: :json, protocol_id: protocol.id), striped: "true", toolbar: "#documents-custom-toolbar", "show-export" => "false", "export-types" => ['excel'] } }
         %thead.primary-header
           %tr

@@ -191,7 +191,7 @@ wb.add_worksheet(name: "Review") do |sheet|
           next if value[:line_items].exclude?(line_item) || (@sub_service_request.present? && line_item.sub_service_request_id != @sub_service_request.id)
 
           totals_hash = line_items_visit.try(:per_subject_rt_indicated)
-          service_row = [line_item.service.name, line_item.service.cpt_code, ""]
+          service_row = [line_item.service.name, line_item.service.cpt_code, line_item.service.order_code]
 
           if line_items_visit.notes.empty?
             service_row += [""]

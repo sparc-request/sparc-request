@@ -34,6 +34,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     @admin_orgs           = @user.authorized_admin_organizations
     @sub_service_requests = service_request.sub_service_requests.where.not(status: 'first_draft') # TODO: Remove Historical first_draft SSRs and remove this
     @show_view_ssr_back   = params[:show_view_ssr_back]
+    @sr_table             = params[:sr_table] || false
   end
 
   def show
@@ -97,7 +98,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       ToastMessage.where(sending_class_id: params[:id], sending_class: 'SubServiceRequest').each(&:destroy)
       notifier_logic = NotifierLogic.new(@sub_service_request.service_request, nil, current_user)
       notifier_logic.ssr_deletion_emails(deleted_ssr: @sub_service_request, ssr_destroyed: false, request_amendment: false, admin_delete_ssr: true)
-    
+
       flash[:alert] = 'Request Destroyed!'
       session[:breadcrumbs].clear(:sub_service_request_id)
     end
@@ -184,7 +185,6 @@ private
         :ssr_id,
         :organization_id,
         :owner_id,
-        :status_date,
         :status,
         :consult_arranged_date,
         :nursing_nutrition_approved,

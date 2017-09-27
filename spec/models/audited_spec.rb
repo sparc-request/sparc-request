@@ -97,7 +97,6 @@ RSpec.describe 'Audit trail' do
     OpenStruct.new(class_name: 'ServiceRelation',             key: 'related_service_id', value: 424242),
     OpenStruct.new(class_name: 'ServiceRequest',              key: 'start_date',         value: Date.parse('1914-08-01')),
     OpenStruct.new(class_name: 'StudyType',                   key: 'name',               value: 'imaginary_science'),
-    OpenStruct.new(class_name: 'SubServiceRequest',           key: 'status_date',        value: Date.parse('1914-08-01')),
     OpenStruct.new(class_name: 'SubmissionEmail',             key: 'email',              value: 'billg@microsoft.com'),
     OpenStruct.new(class_name: 'Subsidy',                     key: 'pi_contribution',    value: 424242),
     OpenStruct.new(class_name: 'SubsidyMap',                  key: 'max_percentage',     value: 0.42),

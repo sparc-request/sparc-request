@@ -25,6 +25,7 @@ RSpec.describe Dashboard::ProtocolsController do
     context 'params[:protocol_type] == "project"' do
       before(:each) do
         @current_user = build_stubbed(:identity)
+        allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
         log_in_dashboard_identity(obj: @current_user)
         get :new, params: { protocol_type: 'project' }
       end
@@ -50,6 +51,7 @@ RSpec.describe Dashboard::ProtocolsController do
     context 'params[:protocol_type] == "study"' do
       before(:each) do
         @current_user = build_stubbed(:identity)
+        allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
         log_in_dashboard_identity(obj: @current_user)
         get :new, params: { protocol_type: 'study' }
       end

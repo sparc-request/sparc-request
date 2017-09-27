@@ -65,6 +65,8 @@ $(document).ready ->
     if $(this).val() == ''
       resetRmIdFields('.rm-id-dependent', '')
       toggleFields('.rm-locked-fields', false)
+    else
+      toggleFields('.rm-locked-fields', true)
 
   $(document).on 'click', '.edit-rmid', ->
     $('#protocol_research_master_id').prop('readonly', false)

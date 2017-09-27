@@ -39,7 +39,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
 
   it "is happy" do
     stub_const("SYSTEM_SATISFACTION_SURVEY", true)
-
+    allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
     #######################################
     # Organization structure and Services #
     #######################################

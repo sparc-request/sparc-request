@@ -20,57 +20,92 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User edits protocol', js: true do
+RSpec.describe 'User creates study', js: true do
   let_there_be_lane
   fake_login_for_each_test
+  build_study_type_question_groups
+  build_study_type_questions
 
-  def edit_protocol_information(sr, study_type)
-    visit protocol_service_request_path(sr)
-    wait_for_javascript_to_finish
-
-    click_link "Edit #{study_type} Information"
-    wait_for_javascript_to_finish
+  def visit_create_study_form
+    page = Dashboard::Protocols::IndexPage.new
+    page.load
+    page.search_results.new_protocol_button.click
+    page.search_results.new_study_option.click
+    page
   end
 
   context "RMID server is up and running" do
+
     before :each do
       institution = create(:institution, name: "Institution")
       provider    = create(:provider, name: "Provider", parent: institution)
       program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
       service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
-      @protocol   = create(:protocol_federally_funded, type: 'Project', primary_pi: jug2)
-      @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
+      @sr         = create(:service_request_without_validations, status: 'first_draft')
       ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                     create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
 
       allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
-      StudyTypeQuestionGroup.create(active: 1)
+      stub_const("RESEARCH_MASTER_ENABLED", true)
     end
 
-    context 'and clicks Edit Information' do
-      scenario 'and sees the edit page' do
-        edit_protocol_information(@sr, "Project")
+    scenario 'and sees the study form' do
+      visit_create_study_form
+      wait_for_javascript_to_finish
 
-        expect(page).to have_content('Change Protocol Type')
-      end
+      expect(page).to have_content('Study Information')
+    end
 
-      scenario 'and does not see server down message' do
-        edit_protocol_information(@sr, "Project")
+    scenario 'and does not see a server down flash message' do
+      visit_create_study_form
+      wait_for_javascript_to_finish
 
-        expect(page).not_to have_content( I18n.t(:protocols)[:summary][:tooltips][:rmid_server_down] )
-      end
+      expect(page).not_to have_content( I18n.t(:protocols)[:summary][:tooltips][:rmid_server_down] )
+    end
 
-      context 'and edits information and submits' do
-        scenario 'and sees updated protocol' do
-          edit_protocol_information(@sr, "Project")
+    context 'and fills out and submits the form' do
+      scenario 'and sees the newly created protocol' do
+        visit_create_study_form
+        wait_for_javascript_to_finish
 
-          fill_in 'protocol_short_title', with: 'Now this is a short title all about how my life got flipped-turned upside down'
+        fill_in 'protocol_short_title', with: 'asd'
+        fill_in 'protocol_title', with: 'asd'
+        bootstrap_select '#protocol_funding_status', 'Funded'
+        bootstrap_select '#protocol_funding_source', 'Federal'
+        fill_in 'protocol_sponsor_name', with: 'asd'
+        find('#study_selected_for_epic_false_button').click
 
-          click_button 'Save'
-          wait_for_javascript_to_finish
+        fill_in 'protocol_project_roles_attributes_0_identity_id', with: 'Julia'
+        page.execute_script("$('#protocol_project_roles_attributes_0_identity_id').trigger('focus');")
+        wait_for_javascript_to_finish
 
-          expect(@protocol.reload.short_title).to eq('Now this is a short title all about how my life got flipped-turned upside down')
+        while (suggestion = first('.tt-suggestion')).nil?
         end
+
+        suggestion.click
+
+        click_button 'Save'
+        wait_for_javascript_to_finish
+        expect(page).to have_current_path(dashboard_protocol_path(Study.first))
+        expect(Study.count).to eq(1)
+      end
+
+      scenario 'clicks other checkbox and sees text field' do
+        visit_create_study_form
+        wait_for_javascript_to_finish
+
+        fill_in 'protocol_short_title', with: 'asd'
+        fill_in 'protocol_title', with: 'asd'
+        bootstrap_select '#protocol_funding_status', 'Funded'
+        bootstrap_select '#protocol_funding_source', 'Federal'
+        fill_in 'protocol_sponsor_name', with: 'asd'
+        find('#study_selected_for_epic_false_button').click
+
+        fill_in 'protocol_project_roles_attributes_0_identity_id', with: 'Julia'
+
+        find('#protocol_impact_areas_attributes_7__destroy').click
+
+        expect(page).to have_css('.impact_area_dependent', visible: true)
       end
     end
   end
@@ -81,30 +116,32 @@ RSpec.describe 'User edits protocol', js: true do
       provider    = create(:provider, name: "Provider", parent: institution)
       program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
       service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
-      @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2)
-      @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
+      @sr         = create(:service_request_without_validations, status: 'first_draft')
       ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                     create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-
       allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(true)
       StudyTypeQuestionGroup.create(active: true)
+      stub_const("RESEARCH_MASTER_ENABLED", true)
     end
 
-    context 'and clicks Edit Information' do
-      scenario 'and sees that the rmid server is down through flash message' do
-        edit_protocol_information(@sr, "Study")
+    context 'and clicks \'New Research Study\'' do
 
+      scenario 'and sees that the rmid server is down through flash message' do
+        visit_create_study_form
+        wait_for_javascript_to_finish
         expect(page).to have_content( I18n.t(:protocols)[:summary][:tooltips][:rmid_server_down] )
       end
 
       scenario 'and sees that the rmid server is down through disabled rmid field' do
-        edit_protocol_information(@sr, "Study")
+        visit_create_study_form
+        wait_for_javascript_to_finish
 
         expect(page).to have_css '.research-master-field:disabled'
       end
 
       scenario 'and sees that the rmid server is down through red exclamation' do
-        edit_protocol_information(@sr, "Study")
+        visit_create_study_form
+        wait_for_javascript_to_finish
 
         expect(page).to have_css '.glyphicon.glyphicon-exclamation-sign.text-danger'
       end

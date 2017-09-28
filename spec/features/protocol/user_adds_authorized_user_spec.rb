@@ -35,6 +35,7 @@ RSpec.describe 'User wants to add an authorized user', js: true do
     @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
     ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                   create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
+    allow(@protocol).to receive(:rmid_server_status).and_return(false)
   end
 
   context 'and clicks \'Add an Authorized User\'' do

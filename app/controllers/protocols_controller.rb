@@ -36,6 +36,7 @@ class ProtocolsController < ApplicationController
     @protocol.populate_for_edit
     gon.rm_id_api_url = Setting.find_by_key("research_master_api_url").value
     gon.rm_id_api_token = Setting.find_by_key("research_master_api_token").value
+    rmid_server_status(@protocol)
   end
 
   def create
@@ -68,6 +69,7 @@ class ProtocolsController < ApplicationController
     else
       @errors = @protocol.errors
     end
+    rmid_server_status(@protocol)
   end
 
   def edit
@@ -78,8 +80,14 @@ class ProtocolsController < ApplicationController
     @protocol.populate_for_edit
     @protocol.valid?
     @errors = @protocol.errors
+<<<<<<< HEAD
     gon.rm_id_api_url = Setting.find_by_key("research_master_api_url").value
     gon.rm_id_api_token = Setting.find_by_key("research_master_api_token").value
+=======
+    gon.rm_id_api_url = RESEARCH_MASTER_API
+    gon.rm_id_api_token = RMID_API_TOKEN
+    rmid_server_status(@protocol)
+>>>>>>> os#3615063
 
     respond_to do |format|
       format.html
@@ -127,6 +135,7 @@ class ProtocolsController < ApplicationController
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
       flash[:alert] = t(:protocols)[:change_type][:new_study_warning]
     end
+    rmid_server_status(@protocol)
   end
 
   def show

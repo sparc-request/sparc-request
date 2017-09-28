@@ -409,6 +409,7 @@ en:
         edit: "Quick access to edit protocol information"
         archive_study: "Ability to hide study from all Authorized User dashboards"
         unarchive_study: "Click to reveal on all associated Authorized User dashboards"
+        rmid_server_down: "Research Master ID Server is down.  You cannot edit the Research Master ID field at this time."
     view_details:
       button: "View %{protocol_type} Details"
       header: "%{protocol_type} Details: #%{protocol_id}"
@@ -878,6 +879,7 @@ en:
     new_sp: "New Service Provider"
     one_time_fee: "Non-clinical (Non-Per </br> Patient/Visit) Services"
     order: "Order"
+    order_code: "Order Code"
     otf_field_errors: "If the Pricing Map is a non-clinical service (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required."
     per_patient_errors: "Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps."
     pricing_maps: "Pricing Maps"

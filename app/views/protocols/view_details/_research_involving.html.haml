@@ -57,6 +57,8 @@
                   = t(:protocols)[:studies][:research_involving][:humans][:pro_number]
                 .col-lg-8
                   = human_info.pro_number
+                  = display_rmid_validated_protocol(human_info.protocol, 'Pro Number')
+
             %tr
               %td
                 %label.col-lg-4

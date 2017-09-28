@@ -20,7 +20,7 @@
 
 -# General Information Panel
 .panel-group#cm-form-accordion
-  .panel.panel-default
+  .panel.panel-default#general-info
     .panel-heading
       %h4.panel-title
         = link_to 'General Info (not ymlized)', '#general-info-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
@@ -28,8 +28,8 @@
       .panel-body
         Not Yet Implemented
 
-  - if @organization.process_ssrs?
-    .panel.panel-default
+  - if organization.process_ssrs?
+    .panel.panel-default#status-options
       .panel-heading
         %h4.panel-title
           = link_to 'Status Options (not ymlized)', '#status-options-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
@@ -37,7 +37,7 @@
         .panel-body
           Not Yet Implemented
 
-  .panel.panel-default
+  .panel.panel-default#user-rights
     .panel-heading
       %h4.panel-title
         = link_to 'User Rights (not ymlized)', '#user-rights-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
@@ -45,8 +45,8 @@
       .panel-body
         Not Yet Implemented
 
-  - unless @organization.type == 'Institution'
-    .panel.panel-default
+  - unless organization.type == 'Institution'
+    .panel.panel-default#pricing
       .panel-heading
         %h4.panel-title
           = link_to 'Pricing (not ymlized)', '#pricing-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
@@ -54,7 +54,7 @@
         .panel-body
           Not Yet Implemented
 
-    .panel.panel-default
+    .panel.panel-default#associated-surveys
       .panel-heading
         %h4.panel-title
           = link_to 'Associated Surveys (not ymlized)', '#associated-surveys-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }

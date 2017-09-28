@@ -58,6 +58,7 @@ RSpec.describe Dashboard::ProtocolsController do
           end
           allow(@protocol).to receive(:update_attribute)
           allow(@protocol).to receive(:populate_for_edit)
+          allow(@protocol).to receive(:rmid_server_status).and_return(false)
           authorize(@logged_in_user, @protocol, can_edit: true)
 
           put :update_protocol_type, params: { id: @protocol.id, type: "Project"}, xhr: true
@@ -85,7 +86,7 @@ RSpec.describe Dashboard::ProtocolsController do
         before :each do
           @logged_in_user = create(:identity)
           @protocol       = create(:protocol_without_validations, type: 'Project')
-
+          allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
           log_in_dashboard_identity(obj: @logged_in_user)
 
           put :update_protocol_type, params: { id: @protocol.id }, xhr: true
@@ -109,6 +110,8 @@ RSpec.describe Dashboard::ProtocolsController do
                             create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft', protocol_id: @protocol.id)
                             create(:super_user, identity: @logged_in_user, organization: organization)
 
+          allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
+
           log_in_dashboard_identity(obj: @logged_in_user)
 
           put :update_protocol_type, params: { id: @protocol.id }, xhr: true
@@ -130,6 +133,8 @@ RSpec.describe Dashboard::ProtocolsController do
           service_request = create(:service_request_without_validations, protocol: @protocol)
                             create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft', protocol_id: @protocol.id)
                             create(:service_provider, identity: @logged_in_user, organization: organization)
+                            
+          allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
 
           log_in_dashboard_identity(obj: @logged_in_user)
 

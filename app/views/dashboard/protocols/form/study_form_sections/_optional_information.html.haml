@@ -30,10 +30,11 @@
       .col-lg-10
         = form.text_field :udak_project_number, class: 'form-control'
 
-    .form-group.row
-      = form.label :indirect_cost_rate, t(:protocols)[:studies][:optional_information][:rate], class: 'col-lg-2 control-label'
-      .col-lg-10
-        = form.text_field :indirect_cost_rate, class: 'form-control'
+    - if USE_INDIRECT_COST
+      .form-group.row
+        = form.label :indirect_cost_rate, t(:protocols)[:studies][:optional_information][:rate], class: 'col-lg-2 control-label'
+        .col-lg-10
+          = form.text_field :indirect_cost_rate, class: 'form-control'
 
     .form-group.row.funding_status_dependent.pending_funding{ display_if(protocol.funding_status, "pending_funding") }
       = form.label :funding_rfa, t(:protocols)[:studies][:optional_information][:rfa], class: 'col-lg-2 control-label'

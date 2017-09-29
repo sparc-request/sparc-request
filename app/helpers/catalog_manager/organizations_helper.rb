@@ -19,4 +19,19 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 module CatalogManager::OrganizationsHelper
+  def org_tree_header organization
+    parents = organization.parents.map(&:name).reverse
+    header = content_tag :span do
+      parents.each do |p|
+        concat(content_tag(:span, p))
+        concat(content_tag(:span, '', class: 'inline-glyphicon glyphicon glyphicon-triangle-right'))
+      end
+    concat(content_tag(:span, organization.name)) unless organization.type == 'Institution'
+    end
+    header
+  end
+
+  def organization_type_header organization
+    content_tag(:span, organization.type, class: "text-#{organization.type.downcase}")
+  end
 end

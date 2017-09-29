@@ -37,6 +37,7 @@ RSpec.describe 'User edits research master id on study', js: true do
                         create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft')
                         create(:super_user, identity: jug2, organization: organization)
       stub_const("RESEARCH_MASTER_ENABLED", true)
+      allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
 
       visit edit_dashboard_protocol_path(@protocol)
       wait_for_javascript_to_finish
@@ -60,6 +61,7 @@ RSpec.describe 'User edits research master id on study', js: true do
                                 funding_status: "funded",
                                 funding_source: "foundation")
       stub_const("RESEARCH_MASTER_ENABLED", true)
+      allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
 
       visit edit_dashboard_protocol_path(@protocol)
       wait_for_javascript_to_finish

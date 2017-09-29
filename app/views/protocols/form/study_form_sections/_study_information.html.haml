@@ -29,8 +29,10 @@
       .form-group.row
         = form.label :research_master_id, class: 'col-lg-2 control-label rm-id' do
           = link_to t(:protocols)[:studies][:information][:research_master_id], RESEARCH_MASTER_LINK, target: '_blank'
-        .col-lg-10
-          = form.text_field :research_master_id, class: 'form-control research-master-field'
+        .col-lg-3
+          = form.text_field :research_master_id, class: 'form-control research-master-field', disabled: rmid_server_down
+        - if rmid_server_down
+          .glyphicon.glyphicon-exclamation-sign.text-danger{ title: t(:protocols)[:summary][:tooltips][:rmid_server_down], data: { toggle: 'tooltip', delay: '{"show":"500"}' } }
 
     .form-group.row
       = form.label :short_title, t(:protocols)[:studies][:information][:short_title],
@@ -40,7 +42,7 @@
       .col-lg-10
         = form.text_field :short_title,
           class: [('form-control'), (RESEARCH_MASTER_ENABLED ? 'rm-id-dependent rm-locked-fields' : '')],
-          disabled: RESEARCH_MASTER_ENABLED
+          disabled: RESEARCH_MASTER_ENABLED && protocol.research_master_id.present?
 
     .form-group.row
       = form.label :title,
@@ -51,7 +53,7 @@
       .col-lg-10
         = form.text_field :title,
           class: [('form-control'), (RESEARCH_MASTER_ENABLED ? 'rm-id-dependent rm-locked-fields' : '')],
-          disabled: RESEARCH_MASTER_ENABLED
+          disabled: RESEARCH_MASTER_ENABLED && protocol.research_master_id.present?
 
     .form-group.row#funding-status
       = form.label :funding_status,

@@ -23,13 +23,15 @@ require 'rails_helper'
 RSpec.describe 'User creates study', js: true do
   let_there_be_lane
   fake_login_for_each_test
+  build_study_type_question_groups
+  build_study_type_questions
 
-  def click_new_research_study(sr)
-    visit protocol_service_request_path(sr)
-    wait_for_javascript_to_finish
-
-    click_link 'New Research Study'
-    wait_for_javascript_to_finish
+  def visit_create_study_form
+    page = Dashboard::Protocols::IndexPage.new
+    page.load
+    page.search_results.new_protocol_button.click
+    page.search_results.new_study_option.click
+    page
   end
 
   context "RMID server is up and running" do
@@ -42,28 +44,29 @@ RSpec.describe 'User creates study', js: true do
       @sr         = create(:service_request_without_validations, status: 'first_draft')
       ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                     create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
+
       allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
-      StudyTypeQuestionGroup.create(active: true)
       stub_const("RESEARCH_MASTER_ENABLED", true)
     end
 
-    context 'and clicks \'New Research Study\'' do
-      scenario 'and sees the study form' do
-        click_new_research_study(@sr)
+    scenario 'and sees the study form' do
+      visit_create_study_form
+      wait_for_javascript_to_finish
 
-        expect(page).to have_content('Study Information')
-      end
+      expect(page).to have_content('Study Information')
+    end
 
-      scenario 'and does not see a server down flash message' do
-        click_new_research_study(@sr)
+    scenario 'and does not see a server down flash message' do
+      visit_create_study_form
+      wait_for_javascript_to_finish
 
-        expect(page).not_to have_content( I18n.t(:protocols)[:summary][:tooltips][:rmid_server_down] )
-      end
+      expect(page).not_to have_content( I18n.t(:protocols)[:summary][:tooltips][:rmid_server_down] )
     end
 
     context 'and fills out and submits the form' do
       scenario 'and sees the newly created protocol' do
-        click_new_research_study(@sr)
+        visit_create_study_form
+        wait_for_javascript_to_finish
 
         fill_in 'protocol_short_title', with: 'asd'
         fill_in 'protocol_title', with: 'asd'
@@ -83,13 +86,13 @@ RSpec.describe 'User creates study', js: true do
 
         click_button 'Save'
         wait_for_javascript_to_finish
-
-        expect(page).to have_current_path(protocol_service_request_path(@sr))
+        expect(page).to have_current_path(dashboard_protocol_path(Study.first))
         expect(Study.count).to eq(1)
       end
 
       scenario 'clicks other checkbox and sees text field' do
-        click_new_research_study(@sr)
+        visit_create_study_form
+        wait_for_javascript_to_finish
 
         fill_in 'protocol_short_title', with: 'asd'
         fill_in 'protocol_title', with: 'asd'
@@ -124,18 +127,21 @@ RSpec.describe 'User creates study', js: true do
     context 'and clicks \'New Research Study\'' do
 
       scenario 'and sees that the rmid server is down through flash message' do
-        click_new_research_study(@sr)
+        visit_create_study_form
+        wait_for_javascript_to_finish
         expect(page).to have_content( I18n.t(:protocols)[:summary][:tooltips][:rmid_server_down] )
       end
 
       scenario 'and sees that the rmid server is down through disabled rmid field' do
-        click_new_research_study(@sr)
+        visit_create_study_form
+        wait_for_javascript_to_finish
 
         expect(page).to have_css '.research-master-field:disabled'
       end
 
       scenario 'and sees that the rmid server is down through red exclamation' do
-        click_new_research_study(@sr)
+        visit_create_study_form
+        wait_for_javascript_to_finish
 
         expect(page).to have_css '.glyphicon.glyphicon-exclamation-sign.text-danger'
       end

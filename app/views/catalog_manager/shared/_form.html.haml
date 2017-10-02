@@ -31,7 +31,7 @@
   .panel.panel-default#general-info
     .panel-heading
       %h4.panel-title
-        = link_to 'General Info (not ymlized)', '#general-info-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
+        = link_to t(:catalog_manager)[:organization_form][:headers][:general_info], '#general-info-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
     .panel-collapse.collapse.in#general-info-collapse
       .panel-body
         Not Yet Implemented
@@ -40,7 +40,7 @@
     .panel.panel-default#status-options
       .panel-heading
         %h4.panel-title
-          = link_to 'Status Options (not ymlized)', '#status-options-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
+          = link_to t(:catalog_manager)[:organization_form][:headers][:status_options], '#status-options-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
       .panel-collapse.collapse#status-options-collapse
         .panel-body
           Not Yet Implemented
@@ -48,7 +48,7 @@
   .panel.panel-default#user-rights
     .panel-heading
       %h4.panel-title
-        = link_to 'User Rights (not ymlized)', '#user-rights-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
+        = link_to t(:catalog_manager)[:organization_form][:headers][:user_rights], '#user-rights-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
     .panel-collapse.collapse#user-rights-collapse
       .panel-body
         Not Yet Implemented
@@ -57,7 +57,7 @@
     .panel.panel-default#pricing
       .panel-heading
         %h4.panel-title
-          = link_to 'Pricing (not ymlized)', '#pricing-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
+          = link_to t(:catalog_manager)[:organization_form][:headers][:pricing], '#pricing-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
       .panel-collapse.collapse#pricing-collapse
         .panel-body
           Not Yet Implemented
@@ -65,7 +65,7 @@
     .panel.panel-default#associated-surveys
       .panel-heading
         %h4.panel-title
-          = link_to 'Associated Surveys (not ymlized)', '#associated-surveys-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
+          = link_to t(:catalog_manager)[:organization_form][:headers][:associated_surveys], '#associated-surveys-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
       .panel-collapse.collapse#associated-surveys-collapse
         .panel-body
           Not Yet Implemented

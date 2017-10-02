@@ -25,10 +25,10 @@ en:
       actions: "Actions"
       automatic: "Automatic Pricing Adjustment"
       catalog_rights: "Catalog Manager Rights"
-      general: "General Information"
       pricing: "Pricing Setup"
       save: "Save"
       service: "Service Providers"
+
       submission: "Submission E-mails"
       subsidy: "Subsidy Information"
       super: "Super Users"
@@ -103,6 +103,12 @@ en:
       pricing_map2: "Save and Apply to Pricing Maps"
 
     organization_form:
+      headers:
+        associated_surveys: "Associated Surveys"
+        general_info: "General Information"
+        pricing: "Pricing"
+        status_options: "Status Options"
+        user_rights: "User Rights"
       abbreviation: "Abbreviation"
       ack_language: "Acknowledgment Language"
       actions: "Actions:"
@@ -144,7 +150,6 @@ en:
       per_patient_errors: "Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps."
       pricing_maps: "Pricing Maps"
       pricing_setup: "Pricing Setup"
-      pricing: "Pricing"
       program: "Program"
       related_services: "Related Services"
       revenue_code: "Revenue Code"
@@ -166,7 +171,6 @@ en:
       subsidy_instructions: "Instructions"
       super_users: "Super Users"
       tag_list: "Tags"
-      user_rights: "User Rights"
 
     pricing_map_form:
       clinical_quantity_type: "Clinical Quantity Type (hours, each, slides, etc.)"

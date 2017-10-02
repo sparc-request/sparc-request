@@ -21,7 +21,7 @@
 %fieldset#available_statuses_fieldset.parent
   .legend= t(:organization_form)[:status_legend]
   %fieldset.single_fieldset
-    %label 
+    %label
       = t(:organization_form)[:use_default_statuses]
     = f.check_box :use_default_statuses
     #default_statuses{style: @organization.use_default_statuses? ? "display: block;" : "display: none;"}
@@ -33,6 +33,9 @@
               - DEFAULT_STATUSES.sort.each do |status|
                 %tr
                   %th= f.label :status, "#{AvailableStatus::TYPES[status].titleize}"
+        - if current_user.is_overlord?
+          %tr
+            %td= t(:organization_form)[:default_statuses_overlord]
     = render partial: 'catalog_manager/shared/available_statuses', locals: {f: f}
 
-    
+

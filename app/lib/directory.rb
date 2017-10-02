@@ -186,7 +186,18 @@ class Directory
       end
     end
   end
-  
+
+  def self.find_for_cas_oauth(cas_uid)
+    # first check if the identity already exists, ldap_uid is cas_uid@utah.edu
+    ldap_uid = "#{cas_uid}@#{DOMAIN}"
+    db_result = Identity.find_by_ldap_uid(ldap_uid)
+    return db_result unless db_result.nil?
+    # if this is the first time, the user tries to login via cas, create an identity for it
+    ldap_results = Directory.search_ldap(cas_uid)
+    Directory.create_or_update_database_from_ldap(ldap_results, [])
+    Identity.find_by_ldap_uid(ldap_uid)
+  end
+
   # search and merge results but don't change the database
   # this assumes USE_LDAP = true, otherwise you wouldn't use this function
   def self.search_and_merge_ldap_and_database_results(term)
@@ -202,11 +213,11 @@ class Directory
       uid = "#{ldap_result[LDAP_UID].try(:first).try(:downcase)}@#{DOMAIN}"
       if identities[uid]
         results << identities[uid]
-      else 
+      else
         email = ldap_result[LDAP_EMAIL].try(:first)
         if email && email.strip.length > 0 # all SPARC users must have an email, this filters out some of the inactive LDAP users.
           results << Identity.new(ldap_uid: uid, first_name: ldap_result[LDAP_FIRST_NAME].try(:first), last_name: ldap_result[LDAP_LAST_NAME].try(:first), email: email)
-        end  
+        end
       end
     end
     results

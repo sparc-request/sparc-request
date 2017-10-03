@@ -19,7 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class Submission < ApplicationRecord
-  belongs_to :sub_service_request
+  belongs_to :service
+  belongs_to :line_item
   belongs_to :protocol
   belongs_to :identity
   belongs_to :questionnaire

@@ -175,6 +175,11 @@ class Identity < ApplicationRecord
     identity
   end
 
+  # search the database for the identity with the given ldap_uid, if not found, create a new one
+  def self.find_for_cas_oauth(auth, _signed_in_resource = nil)
+    Directory.find_for_cas_oauth(auth.uid)
+  end
+
   def active_for_authentication?
     super && approved?
   end
@@ -233,7 +238,7 @@ class Identity < ApplicationRecord
   def can_edit_protocol?(protocol)
     protocol.project_roles.where(identity_id: self.id, project_rights: ['approve', 'request']).any?
   end
-  
+
   # Determines whether this identity can edit a given organization's information in CatalogManager.
   # Returns true if this identity's catalog_manager_organizations includes the given organization.
   def can_edit_entity? organization, deep_search=false

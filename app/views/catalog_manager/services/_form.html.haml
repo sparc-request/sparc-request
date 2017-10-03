@@ -77,11 +77,11 @@
                 = t(:additional_details)[:label]
               %td
                 - if @service.questionnaires.active.present?
-                  = link_to "#{@service.questionnaires.active.first.name}(active)", additional_details_questionnaires_path(questionable_id: @service.id, questionable_type: 'Service')
+                  = link_to "#{@service.questionnaires.active.first.name}(active)", service_additional_details_questionnaires_path(@service)
                 - elsif @service.questionnaires.present?
-                  = link_to "#{@service.questionnaires.first.name}(inactive)", additional_details_questionnaires_path(questionable_id: @service.id, questionable_type: 'Service')
+                  = link_to "#{@service.questionnaires.first.name}(inactive)", service_additional_details_questionnaires_path(@service)
                 - else
-                  = link_to t(:additional_details)[:add], additional_details_questionnaires_path(questionable_id: @service.id, questionable_type: 'Service')
+                  = link_to t(:additional_details)[:add], service_additional_details_questionnaires_path(@service)
             %tr
               %th= t(:organization_form)[:tag_list]
               %td
@@ -134,6 +134,9 @@
             %tr
               %th= f.label :revenue_code, t(:organization_form)[:revenue_code]
               %td= f.text_field :revenue_code
+            %tr
+              %th= f.label :order_code, t(:organization_form)[:order_code]
+              %td= f.text_field :order_code
             %tr
               %th= f.label :send_to_epic, t(:organization_form)[:send_to_epic]
               %td= f.check_box :send_to_epic

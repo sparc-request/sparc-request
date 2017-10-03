@@ -21,14 +21,15 @@
 SparcRails::Application.routes.draw do
   post 'study_type/determine_study_type_note'
 
-  resources :services
-
-  namespace :additional_details do
-    resources :questionnaires
-    resource :questionnaire do
-      resource :preview, only: [:create]
+  resources :services do
+    namespace :additional_details do
+      resources :questionnaires
+      resource :questionnaire do
+        resource :preview, only: [:create]
+      end
+      resources :submissions
+      resources :update_questionnaires, only: [:update]
     end
-    resources :submissions
   end
 
   namespace :surveyor do
@@ -54,16 +55,25 @@ SparcRails::Application.routes.draw do
                  sessions: 'identities/sessions',
                  registrations: 'identities/registrations'
                }, path_names: { sign_in: 'auth/shibboleth' }
-  else
+
+  elsif USE_CAS_ONLY
     devise_for :identities,
                controllers: {
                  omniauth_callbacks: 'identities/omniauth_callbacks',
                  sessions: 'identities/sessions',
                  registrations: 'identities/registrations'
+               }, path_names: { sign_in: 'auth/cas' }
+  else
+    devise_for :identities,
+               controllers: {
+                 omniauth_callbacks: 'identities/omniauth_callbacks',
+                 sessions: 'identities/sessions',
+                 registrations:      'identities/registrations'
                }
   end
 
   resources :identities, only: [] do
+
     member do
       get 'approve_account'
       get 'disapprove_account'

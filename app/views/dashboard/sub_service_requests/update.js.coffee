@@ -26,6 +26,7 @@ $("#details").html("<%= j render 'dashboard/sub_service_requests/request_details
 $("#status-history-table").bootstrapTable 'refresh'
 
 $(".selectpicker").selectpicker()
+$(".datetimepicker").datetimepicker(format: 'MM/DD/YYYY')
 $("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
 
 <% else %>

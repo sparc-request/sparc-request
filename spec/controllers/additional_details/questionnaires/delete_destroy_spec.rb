@@ -27,17 +27,16 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
   describe '#destroy' do
     before :each do
       @service = create(:service)
-      @questionnaire = create(:questionnaire, :without_validations, questionable: @service)
+      @questionnaire = create(:questionnaire, :without_validations, service: @service)
 
       delete :destroy, params: {
-        questionable_id: @service.id,
-        questionable_type: 'Service',
+        service_id: @service.id,
         id: @questionnaire.id
       }, format: :js
     end
 
     it 'should assign @service' do
-      expect(assigns(:questionable)).to eq(@service)
+      expect(assigns(:service)).to eq(@service)
     end
 
     it 'should assign @questionnaire' do
@@ -48,7 +47,7 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
       expect(Questionnaire.count).to eq(0)
     end
 
-    it { is_expected.to redirect_to(action: :index, questionable_id: @service.id, questionable_type: 'Service') }
+    it { is_expected.to redirect_to(action: :index, service_id: @service.id) }
 
     it { is_expected.to respond_with(302) }
   end

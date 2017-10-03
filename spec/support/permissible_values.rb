@@ -18,9 +18,8 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-RSpec.configure do |config|
-  
-  config.before :suite do
+def populate_permissible_values_before_suite
+  ActiveRecord::Base.transaction do
     build_impact_areas
     build_statuses
     build_user_roles

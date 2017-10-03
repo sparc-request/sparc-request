@@ -27,7 +27,7 @@ RSpec.describe Setting, data_type: :model do
 
   it { is_expected.to validate_uniqueness_of(:key) }
   it { is_expected.to validate_presence_of(:data_type) }
-  it { is_expected.to validate_inclusion_of(:data_type).in(%w(boolean string json email url path)) }
+  it { is_expected.to validate_inclusion_of(:data_type).in_array(%w(boolean string json email url path)) }
 
   describe '#value_matches_type' do
     context '#data_type == boolean' do
@@ -76,7 +76,7 @@ RSpec.describe Setting, data_type: :model do
       end
 
       it 'should return false if invalid' do
-        expect(build(:setting, data_type: 'url', value: 'https://sparc.musc.edu/dashboard/protocols/')).to_not be_valid
+        expect(build(:setting, data_type: 'path', value: 'https://sparc.musc.edu/dashboard/protocols/')).to_not be_valid
       end
     end
   end

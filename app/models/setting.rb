@@ -30,7 +30,7 @@ class Setting < ApplicationRecord
   validates :data_type, inclusion: { in: %w(boolean string json email url path) }, presence: true
   validates :parent_key, inclusion: { in: Setting.all.pluck(:key) }, allow_blank: true
 
-  validate :value_matches_type, if: Proc.new{ self.value.present? }
+  validate :value_matches_type, if: Proc.new{ !self.read_attribute(:value).nil? }
   validate :parent_value_matches_parent_type, if: Proc.new{ self.parent_key.present? }
   
   # Needed to correctly write boolean true and false as value in specs  
@@ -45,10 +45,14 @@ class Setting < ApplicationRecord
 
   def value
     case data_type
-    when 'boolean'
+    when 'boolean'  
       read_attribute(:value) == 'true'
     when 'json'
-      JSON.parse(read_attribute(:value).gsub("=>", ": "))
+      begin
+        JSON.parse(read_attribute(:value).gsub("=>", ": "))
+      rescue
+        nil
+      end
     else
       read_attribute(:value)
     end
@@ -60,17 +64,17 @@ class Setting < ApplicationRecord
     errors.add(:value, 'does not match the provided data type') unless
       case data_type
       when 'boolean'
-        is_boolean?(value)
+        is_boolean?(read_attribute(:value))
       when 'json'
-        is_json?(value)
+        is_json?(read_attribute(:value))
       when 'email'
-        is_email?(value)
+        is_email?(read_attribute(:value))
       when 'url'
-        is_url?(value)
+        is_url?(read_attribute(:value))
       when 'path'
-        is_path?(value)
+        is_path?(read_attribute(:value))
       else # Default type = string, no validation needed
-        true
+        !read_attribute(:value).nil?
       end
   end
 
@@ -78,17 +82,17 @@ class Setting < ApplicationRecord
     errors.add(:parent_value, 'does not match the parent\'s data type') unless
       case data_type
       when 'boolean'
-        is_boolean?(self.parent.value)
+        is_boolean?(self.parent.read_attribute(:value))
       when 'json'
-        is_json?(self.parent.value)
+        is_json?(self.parent.read_attribute(:value))
       when 'email'
-        is_email?(self.parent.value)
+        is_email?(self.parent.read_attribute(:value))
       when 'url'
-        is_url?(self.parent.value)
+        is_url?(self.parent.read_attribute(:value))
       when 'path'
-        is_path?(self.parent.value)
+        is_path?(self.parent.read_attribute(:value))
       else # Default type = string, no validation needed
-        true
+        !self.parent.read_attribute(:value).nil?
       end
   end
 end

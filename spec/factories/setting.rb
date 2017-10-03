@@ -21,7 +21,7 @@
 FactoryGirl.define do
   factory :setting do
     sequence(:key) { |n| "setting-#{n}" }
-    data_type      { Faker::Lorem.word }
+    data_type      { ['boolean', 'string', 'json', 'email', 'url', 'path',].sample }
     value          { nil }
     friendly_name  { Faker::Lorem.word }
     description    { Faker::Lorem.sentence }
@@ -30,7 +30,7 @@ FactoryGirl.define do
 
     trait :boolean do
       data_type { 'boolean' }
-      value     { rand(['true', 'false']) }
+      value     { [true, false].sample }
     end
 
     trait :json do

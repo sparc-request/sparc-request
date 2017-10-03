@@ -62,13 +62,11 @@ RSpec.describe 'User creates project', js: true do
       bootstrap_select '#protocol_funding_source', 'Federal'
 
       fill_in 'protocol_project_roles_attributes_0_identity_id', with: 'Julia'
-      page.execute_script("$('#protocol_project_roles_attributes_0_identity_id').trigger('focus');")
+      page.execute_script %Q{ $('#protocol_project_roles_attributes_0_identity_id').trigger("keydown") }
+      expect(page).to have_selector('.tt-suggestion')
+      
+      first('.tt-suggestion').click
       wait_for_javascript_to_finish
-
-      while (suggestion = first('.tt-suggestion')).nil?
-      end
-
-      suggestion.click
 
       click_button 'Save'
       wait_for_javascript_to_finish

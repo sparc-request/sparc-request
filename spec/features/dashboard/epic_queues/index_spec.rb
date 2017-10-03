@@ -50,6 +50,8 @@ RSpec.describe 'Notifications index', js: true do
     page
   end
 
+  stub_config("epic_queue_access", ['jug2'])
+  
   describe "Epic Queue Table" do
     context 'panel title' do
       it 'should display a title of current and past' do

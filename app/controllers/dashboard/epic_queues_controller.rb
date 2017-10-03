@@ -50,7 +50,7 @@ class Dashboard::EpicQueuesController < Dashboard::BaseController
 
   # Check to see if user has rights to view epic queues
   def authorize_overlord
-    unless Setting.find_by_key("epic_queue_access").value.include?(@user.ldap_uid)
+    unless Setting.find_by_key("use_epic").value && Setting.find_by_key("epic_queue_access").value.include?(@user.ldap_uid)
       @epic_queues = nil
       @epic_queue = nil
       render partial: 'service_requests/authorization_error', locals: { error: 'You do not have access to view the Epic Queues', in_dashboard: false }

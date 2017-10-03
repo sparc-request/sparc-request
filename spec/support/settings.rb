@@ -18,11 +18,11 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-RSpec.configure do |config|
-  
-  config.before :suite do
-    DefaultSettingsPopulator.new().populate
-  end
+def populate_settings_before_suite
+  DefaultSettingsPopulator.new().populate
+
+  Setting.find_by_key("use_ldap").update_attribute(:value, true)
+  Setting.find_by_key("suppress_ldap_for_user_search").update_attribute(:value, true)
 end
 
 def stub_config(key, value)

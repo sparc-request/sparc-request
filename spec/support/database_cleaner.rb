@@ -21,6 +21,10 @@
 RSpec.configure do |config|
   config.before(:suite) do
     DatabaseCleaner[:active_record, connection: :test].clean_with :truncation
+
+    # Ensure that this data is created after databasecleaner finishes
+    populate_settings_before_suite
+    populate_permissible_values_before_suite
   end
 
   config.before(:each) do |example|

@@ -332,7 +332,7 @@
   },
   {
     "key":            "remote_service_notifier_protocol",
-    "value":          "http",
+    "value":          "https",
     "friendly_name":  "Remote Service Notifier Protocol",
     "description":    "",
     "group":          "",
@@ -432,7 +432,7 @@
   },
   {
     "key":            "suppress_ldap_for_user_search",
-    "value":          "true",
+    "value":          "false",
     "friendly_name":  "Suppress LDAP for User Search",
     "description":    "Allow the use of LDAP but suppress its use within the Project/Study user search.",
     "group":          "",
@@ -522,7 +522,7 @@
   },
   {
     "key":            "use_ldap",
-    "value":          "true",
+    "value":          "false",
     "friendly_name":  "Use LDAP",
     "description":    "Determines whether the authorized user search will attempt to connect to an LDAP server. If false, it will simply search the database. NOTE: Even if this is set to false at least a blank \"ldap.yml\" is required.",
     "group":          "",

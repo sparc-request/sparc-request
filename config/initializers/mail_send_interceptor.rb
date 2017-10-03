@@ -31,7 +31,6 @@ class MailSendInterceptor
   end
 end
 
-# This initializer depends on obis_setup having been run first in order to read in application config values
 begin
   send_emails_to_real_users = Setting.find_by_key("send_emails_to_real_users").try(:value)
 rescue

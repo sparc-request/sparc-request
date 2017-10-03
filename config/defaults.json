@@ -71,7 +71,7 @@
   },
   {
     "key":            "dashboard_link",
-    "value":          "/dashboard/",
+    "value":          "/dashboard",
     "friendly_name":  "Dashboard URL",
     "description":    "The url for the user dashboard.",
     "group":          "",

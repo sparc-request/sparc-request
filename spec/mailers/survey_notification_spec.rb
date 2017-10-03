@@ -27,7 +27,6 @@ RSpec.describe SurveyNotification do
   let(:ssr)       { create(:sub_service_request_without_validations, organization: org) }
 
   describe 'system satisfaction survey' do
-    let(:mail_to)   { create(:setting, key: 'default_mail_to', value: identity.email) }
     let(:survey)    { create(:survey, title: "System Satisfaction survey", access_code: "system-satisfaction-survey") }
     let(:response)  { create(:response, identity: identity, survey: survey, sub_service_request: ssr) }
     let(:mail)      { SurveyNotification.system_satisfaction_survey(response) }
@@ -39,7 +38,7 @@ RSpec.describe SurveyNotification do
 
     #ensure that the receiver is correct
     it 'should render the receiver email' do
-      expect(mail).to deliver_from(mail_to) # set in application.yml as the default_mail_to
+      expect(mail).to deliver_from(identity.email)
     end
 
     #ensure that the sender is correct

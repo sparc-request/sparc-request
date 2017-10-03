@@ -89,6 +89,15 @@ task :protocol_merge => :environment do
     protocol.research_types_info.try(research_type) || false
   end
 
+  def role_should_be_assigned?(role_to_be_assigned, protocol)
+    protocol.project_roles.each do |role|
+      if (role.role == role_to_be_assigned.role) && (role.identity_id == role_to_be_assigned.identity_id)
+        return false
+      end
+    end
+    return true
+  end
+
   first_protocol = get_protocol(false, 'first')
   second_protocol = get_protocol(false, 'second')
 
@@ -112,17 +121,10 @@ task :protocol_merge => :environment do
 
     first_protocol.save(validate: false)
 
-    # if first_protocol.valid?
-    # first_protocol.save
-    # else
-    #   puts "#" *20
-    #   raise first_protocol.errors.inspect
-    # end
-
     puts "The protocol attributes have been succesfully merged. Assigning project roles to master protocol..."
 
     second_protocol.project_roles.each do |role|
-      if role.role != 'primary-pi'
+      if role.role != 'primary-pi' && role_should_be_assigned?(role, first_protocol)
         role.update_attributes(protocol_id: first_protocol.id)
       end
     end

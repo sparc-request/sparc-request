@@ -23,7 +23,7 @@ require 'net/ldap'
 class Directory
 
   begin
-    use_ldap = Setting.find_by_key("use_ldap").value
+    use_ldap = Setting.find_by_key("use_ldap").value || Rails.env == 'test'
   rescue
     use_ldap = true
   end

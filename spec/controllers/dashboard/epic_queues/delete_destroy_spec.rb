@@ -22,6 +22,7 @@ require "rails_helper"
 
 RSpec.describe Dashboard::EpicQueuesController do
   describe "DELETE #destroy" do
+    stub_config("use_epic", true)
     stub_config("epic_queue_access", ['jug2'])
     
     before(:each) do

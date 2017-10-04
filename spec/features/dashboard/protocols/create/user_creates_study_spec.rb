@@ -34,8 +34,10 @@ RSpec.describe 'User creates study', js: true do
     page
   end
 
+  stub_config("use_epic", true)
+  stub_config("use_research_master", true)
+  
   context "RMID server is up and running" do
-
     before :each do
       institution = create(:institution, name: "Institution")
       provider    = create(:provider, name: "Provider", parent: institution)
@@ -46,7 +48,6 @@ RSpec.describe 'User creates study', js: true do
                     create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
 
       allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
-      stub_const("RESEARCH_MASTER_ENABLED", true)
     end
 
     scenario 'and sees the study form' do
@@ -119,13 +120,12 @@ RSpec.describe 'User creates study', js: true do
       @sr         = create(:service_request_without_validations, status: 'first_draft')
       ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                     create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
+      
       allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(true)
       StudyTypeQuestionGroup.create(active: true)
-      stub_const("RESEARCH_MASTER_ENABLED", true)
     end
 
     context 'and clicks \'New Research Study\'' do
-
       scenario 'and sees that the rmid server is down through flash message' do
         visit_create_study_form
         wait_for_javascript_to_finish

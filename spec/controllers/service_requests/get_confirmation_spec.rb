@@ -200,6 +200,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       end
 
       context 'using EPIC and queue_epic' do
+        stub_config("use_epic", true)
+        stub_config("queue_epic", true)
+
         it 'should create an item in the queue' do
           org      = create(:organization)
           service  = create(:service, organization: org, one_time_fee: true, send_to_epic: true)
@@ -222,6 +225,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
       end
 
       context 'using EPIC but not queue_epic' do
+        stub_config("use_epic", true)
+
         it 'should notify' do
           org      = create(:organization)
           service  = create(:service, organization: org, one_time_fee: true, send_to_epic: true)

@@ -24,5 +24,48 @@
       %h4.panel-title
         = t(:additional_details)[:submissions][:completed_forms]
     .panel-body
-      = render "additional_details/submissions/submissions_table", questionable_type: 'Service', submissions: submissions.select{|sub| sub.questionnaire.questionable_type == 'Service'}
-      = render "additional_details/submissions/submissions_table", questionable_type: 'Organization', submissions: submissions.select{|sub| sub.questionnaire.questionable_type == 'Organization'}
+      %table.table.table-striped.table-bordered.table-hover
+        %thead
+          %tr
+            %th.text-center
+              = t(:additional_details)[:submissions][:table_fields][:sr_id]
+            %th.text-center
+              = t(:additional_details)[:submissions][:table_fields][:service]
+            %th.text-center
+              = t(:additional_details)[:submissions][:table_fields][:completion_time]
+            %th.text-center
+              = t(:additional_details)[:submissions][:table_fields][:view]
+            %th.text-center
+              = t(:additional_details)[:submissions][:table_fields][:edit]
+            %th.text-center
+              = t(:additional_details)[:submissions][:table_fields][:delete]
+        %tbody
+          - submissions.each do |submission|
+            - service = Service.find(submission.service_id)
+            - ssr = SubServiceRequest.find(submission.line_item.sub_service_request_id)
+            %tr{ class: "submission", data: { id: "#{submission.id}", service_id: "#{service.id}" } }
+              %td
+                .text-center
+                  = "#{ssr.display_id}"
+              %td
+                .text-center
+                  = link_to_if current_identity.is_super_user? || current_identity.is_service_provider?(ssr), "#{service.name}",
+                    service_additional_details_questionnaires_path(service), target: '_blank'
+              %td
+                .text-center
+                  - if submission.created_at == submission.updated_at
+                    = submission.created_at.strftime("%m/%d/%Y")
+                  - else
+                    = submission.updated_at.strftime("%m/%d/%Y")
+              %td.text-center
+                = link_to service_additional_details_submission_path(service, submission),
+                  remote: true, class: 'btn btn-primary' do
+                  %span.glyphicon.glyphicon-search
+
+              %td.text-center
+                = link_to edit_service_additional_details_submission_path(service, submission),
+                  remote: true, class: 'btn btn-warning' do
+                  %span.glyphicon.glyphicon-edit
+              %td.text-center
+                = link_to "javascript:void(0);", class: 'btn btn-danger delete-submission', data: { id: "#{submission.id}", service_id: "#{service.id}", protocol_id: "#{submission.protocol_id}", line_item_id: "#{submission.line_item_id}" } do
+                  %span.glyphicon.glyphicon-remove

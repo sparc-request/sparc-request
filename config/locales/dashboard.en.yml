@@ -306,6 +306,8 @@ en:
       destroyed: "Non-clinical Services Destroyed!"
       table:
         service: "Service"
+        unit_requested: "Unit Requested"
+        unit_type: "Unit Type"
         quantity_requested: "Qty Requested"
         quantity_type: "Qty Type"
         cost: "Cost"

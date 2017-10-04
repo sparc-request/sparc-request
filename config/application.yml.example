@@ -42,6 +42,8 @@ development:
   use_indirect_cost: false
   use_shiboleth: true
   use_shibboleth_only: false # set to true to turn off database authentication sign in options
+  use_cas: false # set true to use cas as authentication sign in option
+  use_cas_only: false # set to true to turn off database authentication sign in option
   use_ldap: true
   suppress_ldap_for_user_search: true # allow the use of LDAP but suppress its use within the project/study "User Search" box
   wkhtmltopdf_location: '/usr/local/bin/wkhtmltopdf'

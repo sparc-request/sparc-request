@@ -21,8 +21,7 @@
 FactoryGirl.define do
   factory :questionnaire do
     name {Faker::Lorem.word.humanize}
-    questionable_id nil
-    questionable_type nil
+    service_id nil
     active 1
 
     trait :without_validations do

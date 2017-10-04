@@ -17,12 +17,15 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 = javascript_include_tag 'login'
 .devise-form
   .col-md-6.col-md-offset-3.text-center
     %h1.page-header
       = t(:devise)[:sessions][:header]
     .form-group.login-buttons
+      - if USE_CAS
+        = link_to t(:devise)[:sessions][:institution_users], identity_cas_omniauth_authorize_path(service_request_id: @service_request.try(:id)), class: 'btn btn-primary omniauth-login-button'
       - if USE_SHIBBOLETH
         = link_to t(:devise)[:sessions][:institution_users], identity_shibboleth_omniauth_authorize_path(service_request_id: @service_request.try(:id)), class: 'btn btn-primary omniauth-login-button'
       %a.btn.btn-primary.standard-login-button

@@ -251,6 +251,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
         :cpt_code,
         :eap_id,
         :charge_code,
+        :order_code,
         :revenue_code,
         :organization_id,
         :send_to_epic,

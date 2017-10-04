@@ -27,7 +27,7 @@ $ ->
         values[field.name] = field.value
     serviceId = $('#service_id').val()
     $.ajax
-      url: "/services/#{serviceId}/additional_details/questionnaire/preview"
+      url: "/additional_details/questionnaire/preview"
       type: 'POST'
       data: values
       success: ->

@@ -44,6 +44,7 @@ class SubServiceRequest < ApplicationRecord
   has_many :reports, :dependent => :destroy
   has_many :notifications, :dependent => :destroy
   has_many :subsidies
+  has_many :submissions, dependent: :destroy
   has_many :responses
   has_one :approved_subsidy, :dependent => :destroy
   has_one :pending_subsidy, :dependent => :destroy
@@ -254,7 +255,7 @@ class SubServiceRequest < ApplicationRecord
   ## SSR STATUS METHODS ##
   ########################
 
-  # Returns the SSR id that need an initial submission email and updates 
+  # Returns the SSR id that need an initial submission email and updates
   # the SSR status to new status if appropriate
   def update_status_and_notify(new_status)
     to_notify = []
@@ -267,17 +268,17 @@ class SubServiceRequest < ApplicationRecord
         if (status != new_status) && ((new_status == 'submitted' && UPDATABLE_STATUSES.include?(status)) || new_status != 'submitted')
           ### For 'submitted' status ONLY:
           # Since adding/removing services changes a SSR status to 'draft', we have to look at the past status to see if we should notify users of a status change
-          # We do NOT notify if updating from an un-updatable status or we're updating to a status that we already were previously 
+          # We do NOT notify if updating from an un-updatable status or we're updating to a status that we already were previously
           if new_status == 'submitted'
             past_status = PastStatus.where(sub_service_request_id: id).last
             past_status = past_status.nil? ? nil : past_status.status
             if status == 'draft' && ((UPDATABLE_STATUSES.include?(past_status) && past_status != new_status) || past_status == nil) # past_status == nil indicates a newly created SSR
               to_notify << id
             elsif status != 'draft'
-              to_notify << id 
+              to_notify << id
             end
           else
-            to_notify << id 
+            to_notify << id
           end
 
           new_status == 'submitted' ? update_attributes(status: new_status, submitted_at: Time.now, nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false) : update_attribute(:status, new_status)
@@ -404,6 +405,34 @@ class SubServiceRequest < ApplicationRecord
   end
 
   ##########################
+  ### ADDITIONAL DETAILS ###
+  ##########################
+
+  def completed_questionnaire?(questionnaire)
+    submissions.where(questionnaire_id: questionnaire.id).present?
+  end
+
+  def find_submission(questionnaire)
+    submissions.where(questionnaire_id: questionnaire.id).first
+  end
+
+  def has_incomplete_additional_details?
+    has_incomplete_additional_details_services? || has_incomplete_additional_details_organization?
+  end
+
+  def has_incomplete_additional_details_services?
+    line_items.includes(:service).map(&:service).detect{|service|
+      questionnaire = service.questionnaires.active.first
+      !completed_questionnaire?(questionnaire) if questionnaire
+    }.present?
+  end
+
+  def has_incomplete_additional_details_organization?
+    questionnaire = organization.questionnaires.active.first
+    questionnaire.present? && !completed_questionnaire?(questionnaire)
+  end
+
+  ##########################
   ## SURVEY DISTRIBUTTION ##
   ##########################
   # Distributes all available surveys to primary pi and ssr requester
@@ -448,9 +477,9 @@ class SubServiceRequest < ApplicationRecord
     end_date = Time.now.utc
 
     deleted_line_item_audits = AuditRecovery.where("audited_changes LIKE '%sub_service_request_id: #{id}%' AND auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('destroy') AND created_at BETWEEN '#{start_date}' AND '#{end_date}'")
-                             
+
     added_line_item_audits = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{service_request.id}%' AND auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('create') AND created_at BETWEEN '#{start_date}' AND '#{end_date}'")
-    
+
     ### Takes all the added LIs and filters them down to the ones specific to this SSR ###
     added_li_ids = added_line_item_audits.present? ? added_line_item_audits.map(&:auditable_id) : []
     li_ids_added_to_this_ssr = line_items.present? ? line_items.map(&:id) : []

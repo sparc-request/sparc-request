@@ -228,8 +228,6 @@ class Directory
     end
   end
 
-<<<<<<< HEAD
-=======
   def self.find_for_cas_oauth(cas_uid)
     # first check if the identity already exists, ldap_uid is cas_uid@utah.edu
     ldap_uid = "#{cas_uid}@#{DOMAIN}"
@@ -241,7 +239,6 @@ class Directory
     Identity.find_by_ldap_uid(ldap_uid)
   end
   
->>>>>>> v3.0.0b
   # search and merge results but don't change the database
   # this assumes Setting.find_by_key("use_ldap").value = true, otherwise you wouldn't use this function
   def self.search_and_merge_ldap_and_database_results(term)

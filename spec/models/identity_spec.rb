@@ -59,6 +59,8 @@ RSpec.describe Identity, type: :model do
   end
 
   describe "searching identities" do
+    stub_config("use_ldap", true)
+    stub_config("suppress_ldap_for_user_search", false)
 
     # Several of these tests will put a bunch of stuff into the logs,
     # So while the tests are passing you will see a bunch of text in the spec logs.

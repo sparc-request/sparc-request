@@ -44,6 +44,7 @@ class SubServiceRequest < ApplicationRecord
   has_many :reports, :dependent => :destroy
   has_many :notifications, :dependent => :destroy
   has_many :subsidies
+  has_many :submissions, dependent: :destroy
   has_many :responses
   has_one :approved_subsidy, :dependent => :destroy
   has_one :pending_subsidy, :dependent => :destroy
@@ -58,11 +59,11 @@ class SubServiceRequest < ApplicationRecord
   scope :in_work_fulfillment, -> { where(in_work_fulfillment: true) }
 
   def consult_arranged_date=(date)
-    write_attribute(:consult_arranged_date, Time.strptime(date, "%m/%d/%Y")) if date.present?
+    write_attribute(:consult_arranged_date, date.present? ? Time.strptime(date, "%m/%d/%Y") : nil)
   end
 
   def requester_contacted_date=(date)
-    write_attribute(:requester_contacted_date, Time.strptime(date, "%m/%d/%Y")) if date.present?
+    write_attribute(:requester_contacted_date, date.present? ? Time.strptime(date, "%m/%d/%Y") : nil)
   end
 
   def status= status
@@ -402,6 +403,34 @@ class SubServiceRequest < ApplicationRecord
     if params[:committee_approved]
       self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Date.today, :approval_type => "Committee Approved"})
     end
+  end
+
+  ##########################
+  ### ADDITIONAL DETAILS ###
+  ##########################
+
+  def completed_questionnaire?(questionnaire)
+    submissions.where(questionnaire_id: questionnaire.id).present?
+  end
+
+  def find_submission(questionnaire)
+    submissions.where(questionnaire_id: questionnaire.id).first
+  end
+
+  def has_incomplete_additional_details?
+    has_incomplete_additional_details_services? || has_incomplete_additional_details_organization?
+  end
+
+  def has_incomplete_additional_details_services?
+    line_items.includes(:service).map(&:service).detect{|service|
+      questionnaire = service.questionnaires.active.first
+      !completed_questionnaire?(questionnaire) if questionnaire
+    }.present?
+  end
+
+  def has_incomplete_additional_details_organization?
+    questionnaire = organization.questionnaires.active.first
+    questionnaire.present? && !completed_questionnaire?(questionnaire)
   end
 
   ##########################

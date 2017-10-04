@@ -669,11 +669,12 @@ ActiveRecord::Schema.define(version: 20170818175101) do
 
   create_table "questionnaires", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.string "name"
-    t.integer "service_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "active", default: false
-    t.index ["service_id"], name: "index_questionnaires_on_service_id"
+    t.string "questionable_type"
+    t.bigint "questionable_id"
+    t.index ["questionable_type", "questionable_id"], name: "index_questionnaires_on_questionable_type_and_questionable_id"
   end
 
   create_table "questions", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
@@ -923,18 +924,16 @@ ActiveRecord::Schema.define(version: 20170818175101) do
   end
 
   create_table "submissions", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
-    t.integer "service_id"
     t.integer "identity_id"
     t.integer "questionnaire_id"
     t.integer "protocol_id"
-    t.integer "line_item_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "sub_service_request_id"
     t.index ["identity_id"], name: "index_submissions_on_identity_id"
-    t.index ["line_item_id"], name: "index_submissions_on_line_item_id"
     t.index ["protocol_id"], name: "index_submissions_on_protocol_id"
     t.index ["questionnaire_id"], name: "index_submissions_on_questionnaire_id"
-    t.index ["service_id"], name: "index_submissions_on_service_id"
+    t.index ["sub_service_request_id"], name: "index_submissions_on_sub_service_request_id"
   end
 
   create_table "subsidies", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -1083,7 +1082,6 @@ ActiveRecord::Schema.define(version: 20170818175101) do
   add_foreign_key "question_responses", "responses"
   add_foreign_key "questionnaire_responses", "items"
   add_foreign_key "questionnaire_responses", "submissions"
-  add_foreign_key "questionnaires", "services"
   add_foreign_key "questions", "options", column: "depender_id"
   add_foreign_key "questions", "sections"
   add_foreign_key "responses", "identities"
@@ -1091,8 +1089,7 @@ ActiveRecord::Schema.define(version: 20170818175101) do
   add_foreign_key "responses", "surveys"
   add_foreign_key "sections", "surveys"
   add_foreign_key "submissions", "identities"
-  add_foreign_key "submissions", "line_items"
   add_foreign_key "submissions", "protocols"
   add_foreign_key "submissions", "questionnaires"
-  add_foreign_key "submissions", "services"
+  add_foreign_key "submissions", "sub_service_requests"
 end

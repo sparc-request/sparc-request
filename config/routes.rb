@@ -21,15 +21,14 @@
 SparcRails::Application.routes.draw do
   post 'study_type/determine_study_type_note'
 
-  resources :services do
-    namespace :additional_details do
-      resources :questionnaires
-      resource :questionnaire do
-        resource :preview, only: [:create]
-      end
-      resources :submissions
-      resources :update_questionnaires, only: [:update]
+  resources :services
+
+  namespace :additional_details do
+    resources :questionnaires
+    resource :questionnaire do
+      resource :preview, only: [:create]
     end
+    resources :submissions
   end
 
   namespace :surveyor do
@@ -50,8 +49,10 @@ SparcRails::Application.routes.draw do
 
   begin
     use_shibboleth_only = Setting.find_by_key("use_shibboleth_only").try(:value)
+    use_cas_only        = Setting.find_by_key("use_cas_only").try(:value)
   rescue
     use_shibboleth_only = nil
+    use_cas_only        = nil
   end
 
   if use_shibboleth_only
@@ -61,16 +62,25 @@ SparcRails::Application.routes.draw do
                  sessions: 'identities/sessions',
                  registrations: 'identities/registrations'
                }, path_names: { sign_in: 'auth/shibboleth' }
-  else
+
+  elsif use_cas_only
     devise_for :identities,
                controllers: {
                  omniauth_callbacks: 'identities/omniauth_callbacks',
                  sessions: 'identities/sessions',
                  registrations: 'identities/registrations'
+               }, path_names: { sign_in: 'auth/cas' }
+  else
+    devise_for :identities,
+               controllers: {
+                 omniauth_callbacks: 'identities/omniauth_callbacks',
+                 sessions: 'identities/sessions',
+                 registrations:      'identities/registrations'
                }
   end
 
   resources :identities, only: [] do
+
     member do
       get 'approve_account'
       get 'disapprove_account'

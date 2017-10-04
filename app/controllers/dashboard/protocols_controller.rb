@@ -103,7 +103,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def create
     protocol_class                          = protocol_params[:type].capitalize.constantize
-    attrs                                   = fix_date_params
+    ### if lazy load enabled, we need create the identiy if necessary here
+    attrs                                   = Setting.find_by_key("use_ldap").value && Setting.find_by_key("lazy_load_ldap").value ? fix_identity : fix_date_params
     @protocol                               = protocol_class.new(attrs)
     @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id
 
@@ -322,6 +323,17 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       attrs[date_field] = Time.strptime(attrs[date_field].strip, "%m/%d/%Y")
     end
 
+    attrs
+  end
+
+  ### fix identity id nil problem when lazy loading is enabled
+  ### when lazy loadin is enabled, identity_id is merely ldap_uid, the identity may not exist in database yet, so we create it if necessary here
+  def fix_identity
+    attrs               = protocol_params
+    attrs[:project_roles_attributes].each do |index, project_role|
+      identity = Identity.find_or_create project_role[:identity_id]
+      project_role[:identity_id] = identity.id
+    end unless attrs[:project_roles_attributes].nil?
     attrs
   end
 

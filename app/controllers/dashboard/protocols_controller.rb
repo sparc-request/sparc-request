@@ -26,6 +26,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   before_action :find_admin_for_protocol,                         only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
   before_action :protocol_authorizer_view,                        only: [:show, :view_full_calendar, :display_requests]
   before_action :protocol_authorizer_edit,                        only: [:edit, :update, :update_protocol_type, :archive]
+  before_action :bypass_rmid_validations?,                        only: [:update, :edit]
 
   def index
     admin_orgs = @user.authorized_admin_organizations
@@ -56,7 +57,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocols        = @filterrific.find.page(params[:page])
     @admin_protocols  = Protocol.for_admin(@user.id).pluck(:id)
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, ProtocolFilter::MAX_FILTERS)
-    
+
     #toggles the display of the navigation bar, instead of breadcrumbs
     @show_navbar      = true
     @show_messages    = true
@@ -97,11 +98,16 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     session[:protocol_type] = params[:protocol_type]
     gon.rm_id_api_url = RESEARCH_MASTER_API
     gon.rm_id_api_token = RMID_API_TOKEN
+    rmid_server_status(@protocol)
   end
 
   def create
     protocol_class                          = protocol_params[:type].capitalize.constantize
     attrs                                   = fix_date_params
+    ### if lazy load enabled, we need create the identiy if necessary here
+    if LAZY_LOAD && USE_LDAP
+      attrs = fix_identity
+    end
     @protocol                               = protocol_class.new(attrs)
     @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id
 
@@ -124,6 +130,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     else
       @errors = @protocol.errors
     end
+    rmid_server_status(@protocol)
   end
 
   def edit
@@ -140,7 +147,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     @protocol.valid?
     @errors = @protocol.errors
-    @errors.delete(:research_master_id) if @admin
+    @errors.delete(:research_master_id) if @bypass_rmid_validation
+
+    rmid_server_status(@protocol)
 
     respond_to do |format|
       format.html
@@ -164,7 +173,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
     # admin is not able to activate study_type_question_group
 
-    if save_protocol_with_blank_rmid_if_admin(attrs)
+    @protocol.bypass_rmid_validation = @bypass_rmid_validation
+
+    if @protocol.update_attributes(attrs)
       flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
     else
       @errors = @protocol.errors
@@ -193,6 +204,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
       flash[:alert] = t(:protocols)[:change_type][:new_study_warning]
     end
+    
+    rmid_server_status(@protocol)
   end
 
   def archive
@@ -316,6 +329,17 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     attrs
   end
 
+  ### fix identity id nil problem when lazy loading is enabled
+  ### when lazy loadin is enabled, identity_id is merely ldap_uid, the identity may not exist in database yet, so we create it if necessary here
+  def fix_identity
+    attrs               = protocol_params
+    attrs[:project_roles_attributes].each do |index, project_role|
+      identity = Identity.find_or_create project_role[:identity_id]
+      project_role[:identity_id] = identity.id
+    end unless attrs[:project_roles_attributes].nil?
+    attrs
+  end
+
   def fix_date_params
     attrs               = protocol_params
 
@@ -336,15 +360,5 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     end
 
     attrs
-  end
-
-  def save_protocol_with_blank_rmid_if_admin(attrs)
-    @protocol.assign_attributes(attrs)
-    if @admin && !@protocol.valid? && @protocol.errors.full_messages == ["Research master can't be blank"]
-      @protocol.save(validate: false)
-    else
-      @protocol.errors.delete(:research_master_id) if @admin
-      @protocol.save
-    end
   end
 end

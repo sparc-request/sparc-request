@@ -21,17 +21,17 @@
 $("#modal_place #modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
 <% elsif @in_dashboard %>
 <% if notable_type_is_related_to_li_or_liv(@notable_type) %>
-$("#modal_place").html("<%= escape_javascript(render( 'index', notable_id: @notable_id, notable_type: @notable_type, in_dashboard: @in_dashboard )) %>")
+$("#modal_place").html("<%= escape_javascript(render( 'index', notable_id: @notable_id, notable_type: @notable_type, in_dashboard: @in_dashboard, notable: @notable )) %>")
 $("span#<%= @selector %>").html("<%= escape_javascript(@notes.count.to_s) %>").addClass('blue-badge').siblings().removeClass("black-note").addClass("blue-note")
 $('#notes-table').bootstrapTable()
 <% else %>
-$("#modal_place").html("<%= escape_javascript(render( 'index', notable_id: @notable_id, notable_type: @notable_type, in_dashboard: @in_dashboard )) %>")
+$("#modal_place").html("<%= escape_javascript(render( 'index', notable_id: @notable_id, notable_type: @notable_type, in_dashboard: @in_dashboard, notable: @notable )) %>")
 $("span#<%= @selector %>").html("<%= escape_javascript(@notes.count.to_s) %>")
 $('#notes-table').bootstrapTable()
 <% end %>
 <% else %>
 <% if notable_type_is_related_to_li_or_liv(@notable_type) %>
-$("#modal_place").html("<%= escape_javascript(render( 'index', notable_id: @notable_id, notable_type: @notable_type, in_dashboard: @in_dashboard )) %>")
+$("#modal_place").html("<%= escape_javascript(render( 'index', notable_id: @notable_id, notable_type: @notable_type, in_dashboard: @in_dashboard, notable: @notable )) %>")
 $("span#<%= @selector %>").html("<%= escape_javascript(@notes.count.to_s) %>").addClass('blue-badge').siblings().removeClass("black-note").addClass("blue-note")
 $('#notes-table').bootstrapTable()
 <% else %>

@@ -21,7 +21,7 @@
 .row.no-margin.text-center
   .col-md-3
     %a{ href: HEADER_LINK_1, class: 'org-logo' }
-      = image_tag 'sctr_header_sized.jpg', alt: 'org_logo', height: 140
+      = image_tag ENV['org_logo'] || 'sctr_header_sized.jpg', alt: 'org_logo', height: 140
   .col-md-6
     - if location == "proper"
       %a{ href: HEADER_LINK_2_PROPER, class: 'sparc-request-header' }
@@ -31,4 +31,4 @@
         = image_tag 'dashboard/logos/dashboard_logo.jpg', alt: 'dashboard_logo', height: 110
   .col-md-3
     %a{ href: HEADER_LINK_3, target: '_blank', class: 'institution-logo' }
-      = image_tag 'musc_header.jpg', alt: 'institution_logo', height: 140
+      = image_tag ENV['institution_logo'] || 'musc_header.jpg', alt: 'institution_logo', height: 140

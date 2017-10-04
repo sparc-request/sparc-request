@@ -116,7 +116,7 @@ class Organization < ApplicationRecord
   end
 
   def has_editable_status?(status)
-    self.get_editable_statuses.where(status: status).any?
+    self.get_editable_statuses[status].nil?
   end
 
   # Returns the immediate children of this organization (shallow search)
@@ -384,7 +384,7 @@ class Organization < ApplicationRecord
   end
 
   def get_editable_statuses
-    self.use_default_statuses ? statuses = AVAILABLE_STATUSES.select{|k,v| DEFAULT_STATUSES.include? k} : self.editable_statuses
+    self.use_default_statuses ? AVAILABLE_STATUSES.select{|k,v| DEFAULT_STATUSES.include? k} : AVAILABLE_STATUSES.select{|k,v| self.editable_statuses.pluck(:status).include? k}
   end
 
   def has_tag? tag

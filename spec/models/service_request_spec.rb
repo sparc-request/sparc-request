@@ -289,7 +289,7 @@ RSpec.describe ServiceRequest, type: :model do
     it 'should select the services that have additional details' do
       service_request = create(:service_request_without_validations)
       create(:service)
-      create(:questionnaire, :without_validations, active: true, service: Service.first)
+      create(:questionnaire, :without_validations, active: true, questionable: Service.first)
       LineItem.first.update_attribute(:service_request_id, service_request.id)
       LineItem.first.update_attribute(:service_id, Service.first.id)
 
@@ -300,7 +300,7 @@ RSpec.describe ServiceRequest, type: :model do
     it 'should select the services that have additional details' do
       service_request = create(:service_request_without_validations)
       service = create(:service)
-      create(:questionnaire, :without_validations, active: true, service: Service.first)
+      create(:questionnaire, :without_validations, active: true, questionable: Service.first)
       LineItem.first.update_attribute(:service_request_id, service_request.id)
       LineItem.first.update_attribute(:service_id, Service.first.id)
 

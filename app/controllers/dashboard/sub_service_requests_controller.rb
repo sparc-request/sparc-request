@@ -84,7 +84,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
 
   def update
     if @sub_service_request.update_attributes(sub_service_request_params)
-      @sub_service_request.distribute_surveys if @sub_service_request.is_complete?
+      @sub_service_request.distribute_surveys if (@sub_service_request.status == 'complete' && sub_service_request_params[:status].present?)
       flash[:success] = 'Request Updated!'
     else
       @errors = @sub_service_request.errors

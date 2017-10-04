@@ -31,7 +31,7 @@ class Dashboard::EpicQueuesController < Dashboard::BaseController
             user_change: true
           )
         else
-          @epic_queues = EpicQueue.where(attempted_push: false)
+          @epic_queues = EpicQueue.where(attempted_push: false, user_change: false)
         end
 
         render

@@ -59,6 +59,7 @@ en:
       headers:
         current: "Current"
         past: "Past"
+        authorized_user_update: "Authorized User Update"
 
     ##################
     #  FULFILLMENTS  #

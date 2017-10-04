@@ -26,7 +26,13 @@ class Dashboard::EpicQueuesController < Dashboard::BaseController
   def index
     respond_to do |format|
       format.json do
-        @epic_queues = EpicQueue.where(attempted_push: false)
+        if params[:user_change]
+          @epic_queues = EpicQueue.where(
+            user_change: true
+          )
+        else
+          @epic_queues = EpicQueue.where(attempted_push: false)
+        end
 
         render
       end

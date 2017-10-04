@@ -32,7 +32,7 @@ RSpec.describe 'User creates project', js: true do
     @sr         = create(:service_request_without_validations, status: 'first_draft')
     ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                   create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-                  
+    allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
   end
 
   context 'and clicks \'New Project\'' do

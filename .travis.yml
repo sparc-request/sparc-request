@@ -3,6 +3,12 @@ language: ruby
 cache: bundler
 dist: precise
 
+addons:
+  apt:
+    packages:
+      - libqtwebkit-dev
+      - libqtwebkit4
+
 before_install:
   - export TZ=America/New_York
 before_script:

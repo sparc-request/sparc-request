@@ -41,6 +41,7 @@ RSpec.describe 'User edits epic answers', js: true do
                               status: 'draft')
                       create(:super_user, identity: jug2,
                               organization: organization)
+    allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
   end
 
   context 'use epic = true' do

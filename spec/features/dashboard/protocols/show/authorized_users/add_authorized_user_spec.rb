@@ -218,7 +218,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
       end
 
       scenario 'and sees the Modify Request button for all SRs' do
-        expect(@page).to have_selector('.panel-heading .edit-service-request')
+        expect(@page).to have_selector('.panel-body .edit-service-request')
       end
     end
   end

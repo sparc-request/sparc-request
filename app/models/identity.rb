@@ -191,6 +191,11 @@ class Identity < ApplicationRecord
     identity
   end
 
+  # search the database for the identity with the given ldap_uid, if not found, create a new one
+  def self.find_for_cas_oauth(auth, _signed_in_resource = nil)
+    Directory.find_for_cas_oauth(auth.uid)
+  end
+
   def active_for_authentication?
     super && approved?
   end

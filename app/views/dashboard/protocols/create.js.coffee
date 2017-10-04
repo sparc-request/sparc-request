@@ -23,4 +23,5 @@ window.location = "<%= dashboard_protocol_path(@protocol) %>"
 <% else %>
 $("#flashes_container").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
 $('#body').scrollTop(0)
+$('#protocol_research_master_id').prop('disabled', <%=@rmid_server_down%>)
 <% end %>

@@ -90,6 +90,14 @@ class Identity < ApplicationRecord
     false
   end
 
+  def suggestion_value
+    if LAZY_LOAD && USE_LDAP
+      ldap_uid
+    else
+      id
+    end
+  end
+
   ###############################################################################
   ############################## HELPER METHODS #################################
   ###############################################################################
@@ -159,6 +167,14 @@ class Identity < ApplicationRecord
 
   def self.search(term)
     return Directory.search(term)
+  end
+
+  def self.find_or_create(id)
+    if LAZY_LOAD && USE_LDAP
+      return Directory.find_or_create(id)
+    else
+      return self.find(id)
+    end
   end
 
   ###############################################################################

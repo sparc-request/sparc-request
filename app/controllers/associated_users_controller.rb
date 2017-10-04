@@ -40,7 +40,7 @@ class AssociatedUsersController < ApplicationController
     @dashboard    = false
 
     if params[:identity_id] # if user selected
-      @identity     = Identity.find(params[:identity_id])
+      @identity     = Identity.find_or_create(params[:identity_id])
       @project_role = @protocol.project_roles.new(identity_id: @identity.id)
       @current_pi   = @protocol.primary_principal_investigator
 
@@ -117,7 +117,7 @@ class AssociatedUsersController < ApplicationController
   def search_identities
     # Like SearchController#identities, but without ssr/sr authorization
     term    = params[:term].strip
-    results = Identity.search(term).map { |i| { label: i.display_name, value: i.id, email: i.email } }
+    results = Identity.search(term).map { |i| { label: i.display_name, value: i.suggestion_value, email: i.email } }
     results = [{ label: 'No Results' }] if results.empty?
 
     render json: results.to_json

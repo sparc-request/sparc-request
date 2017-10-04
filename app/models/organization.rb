@@ -116,7 +116,7 @@ class Organization < ApplicationRecord
   end
 
   def has_editable_status?(status)
-    self.get_editable_statuses[status].nil?
+    self.get_editable_statuses[status].present?
   end
 
   # Returns the immediate children of this organization (shallow search)

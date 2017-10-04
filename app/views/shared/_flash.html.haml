@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 #flashes_container
-  - if !content_for?(:error_messages)
+  - if @rmid_server_down
     - flash.each do |type, message|
       .alert.alert-dismissable{ class: twitterized_type(type) }
         %button.close{:'data-dismiss' => "alert", type: "button"}
@@ -28,8 +28,20 @@
         %p
           = message
     - flash.clear
-  - else
     = content_for(:error_messages)
+  - else
+    - if !content_for?(:error_messages)
+      - flash.each do |type, message|
+        .alert.alert-dismissable{ class: twitterized_type(type) }
+          %button.close{:'data-dismiss' => "alert", type: "button"}
+            %span{:'aria-hidden' => "true"} &times;
+            %span.sr-only
+              = t(:actions)[:close]
+          %p
+            = message
+      - flash.clear
+    - else
+      = content_for(:error_messages)
 
 :coffeescript
   window.setTimeout (->

@@ -50,18 +50,27 @@ class Directory
   def self.search(term)
     # Search ldap (if enabled) and the database
     if USE_LDAP && !SUPPRESS_LDAP_FOR_USER_SEARCH
-      ldap_results = search_ldap(term)
-      db_results = search_database(term)
       # If there are any entries returned from ldap that were not in the
       # database, then create them
-      create_or_update_database_from_ldap(ldap_results, db_results)
-      # Finally, search the database a second time and return the results.
-      # If there were no new identities created, then this should return
-      # the same as the original call to search_database().
-      return search_database(term)
+      if LAZY_LOAD
+        return self.search_and_merge_ldap_and_database_results(term)
+      else
+        return self.search_and_merge_and_update_ldap_and_database_results(term)
+      end
+
     else # only search database once
       return search_database(term)
     end
+  end
+
+  def self.search_and_merge_and_update_ldap_and_database_results(term)
+    ldap_results = self.search_ldap(term)
+    db_results = self.search_database(term)
+    self.create_or_update_database_from_ldap(ldap_results, db_results)
+    # Finally, search the database a second time and return the results.
+    # If there were no new identities created, then this should return
+    # the same as the original call to search_database().
+    return self.search_database(term)
   end
 
   # Searches the database only for a given search string.  Returns an
@@ -87,6 +96,16 @@ class Directory
       filter = (LDAP_FILTER && LDAP_FILTER.gsub('#{term}', term)) || fields.map { |f| Net::LDAP::Filter.contains(f, term) }.inject(:|)
     end
     filter
+  end
+ 
+  def self.find_or_create(ldap_uid)
+    identity = Identity.find_by_ldap_uid(ldap_uid)
+    return identity if identity
+    # search the ldap using unid, create the record in database, and then return it
+    m = /(.*)@#{DOMAIN}/.match(ldap_uid)
+    ldap_results = self.search_ldap(m[1])
+    self.create_or_update_database_from_ldap(ldap_results, [])
+    Identity.find_by_ldap_uid(ldap_uid)
   end
 
   # Searches LDAP only for the given search string.  Returns an array of
@@ -202,6 +221,17 @@ class Directory
     end
   end
 
+  def self.find_for_cas_oauth(cas_uid)
+    # first check if the identity already exists, ldap_uid is cas_uid@utah.edu
+    ldap_uid = "#{cas_uid}@#{DOMAIN}"
+    db_result = Identity.find_by_ldap_uid(ldap_uid)
+    return db_result unless db_result.nil?
+    # if this is the first time, the user tries to login via cas, create an identity for it
+    ldap_results = Directory.search_ldap(cas_uid)
+    Directory.create_or_update_database_from_ldap(ldap_results, [])
+    Identity.find_by_ldap_uid(ldap_uid)
+  end
+  
   # search and merge results but don't change the database
   # this assumes USE_LDAP = true, otherwise you wouldn't use this function
   def self.search_and_merge_ldap_and_database_results(term)

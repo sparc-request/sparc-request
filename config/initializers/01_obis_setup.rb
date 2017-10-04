@@ -28,6 +28,7 @@ begin
   # Otherwise all emails will be routed to DEFAULT_MAIL_TO
   SEND_EMAILS_TO_REAL_USERS                 = application_config['send_emails_to_real_users'] || false
 
+  LAZY_LOAD                                 = application_config['lazy_load']
   ADMIN_MAIL_TO                             = application_config['admin_mail_to']
   EPIC_RIGHTS_MAIL_TO                       = application_config['approve_epic_rights_mail_to']
   FEEDBACK_MAIL_TO                          = application_config['feedback_mail_to']
@@ -71,7 +72,6 @@ begin
   CONSTANTS_YML_OVERRIDE                    = application_config['constants_yml_override'] || ''
   SYSTEM_SATISFACTION_SURVEY                = application_config['system_satisfaction_survey'] || false
   NO_REPLY_FROM                             = application_config['no_reply_from']
-  EDITABLE_STATUSES                         = application_config['editable_statuses'] || {}
   UPDATABLE_STATUSES                        = application_config['updatable_statuses'] || []
   FINISHED_STATUSES                         = application_config['finished_statuses'] || []
   REMOTE_SERVICE_NOTIFIER_PROTOCOL          = application_config['remote_service_notifier_protocol']
@@ -90,6 +90,11 @@ begin
   USE_FEEDBACK_LINK                         = application_config['use_feedback_link'] || false
   FEEDBACK_LINK                             = application_config['feedback_link'] || "#"
   NAVBAR_LINKS                              = application_config['navbar_links'] || {}
+  USE_CAS                                   = application_config['use_cas'] || false
+  USE_CAS_ONLY                              = application_config['use_cas_only'] || false
+  USE_SHIBOLETH                             = application_config['use_shiboleth'] || false
+  USE_SHIBOLETH_ONLY                        = application_config['use_shibboleth_only'] || false
+
 
   if LOCALE_OVERRIDE
     I18n.available_locales = [:en, LOCALE_OVERRIDE]

@@ -210,7 +210,6 @@ module V1
     expose  :formatted_status, as: :status
 
     with_options(format_with: :iso_timestamp) do
-      expose :status_date
       expose :consult_arranged_date
       expose :requester_contacted_date
     end

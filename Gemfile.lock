@@ -555,7 +555,7 @@ DEPENDENCIES
   bootstrap-select-rails
   bootstrap3-datetimepicker-rails
   bullet
-  capistrano (~> 3.8)
+  capistrano (~> 3.9)
   capistrano-bundler
   capistrano-passenger
   capistrano-rails
@@ -648,4 +648,4 @@ DEPENDENCIES
   x-editable-rails
 
 BUNDLED WITH
-   1.15.0
+   1.15.4

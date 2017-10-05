@@ -6,7 +6,7 @@ class EpicQueueManager
   end
 
   def create_epic_queue
-    if USE_EPIC && withheld_from_epic?(@protocol) && @protocol_role.epic_access
+    if Setting.find_by_key("use_epic").value && withheld_from_epic?(@protocol) && @protocol_role.epic_access
       unless withheld_epic_queue?(@protocol)
         EpicQueue.create(
           protocol_id: @protocol.id,

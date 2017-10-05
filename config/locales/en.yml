@@ -190,6 +190,8 @@ en:
   calendars:
     confirm_row_select: "This will reset custom values for this row, do you wish to continue?"
     confirm_column_select: "This will reset custom values for this column, do you wish to continue?"
+    show_all_services: 'Show All Services'
+    show_chosen_services: 'Show Chosen Services'
     tabs:
       template: "Template Tab"
       billing: "Quantity/Billing Tab"
@@ -861,7 +863,8 @@ en:
     cpt_code: "CPT Code"
     css_class: "Color"
     ctrc_label: "Administrative Approvals"
-    default_statuses: "Default Statuses:"
+    default_available_statuses: "Default Statuses:"
+    default_editable_statuses: "Default Editable Statuses:"
     description: "Description"
     disabled: "Display in SPARC"
     disabled_all_services: "Disable All Services"
@@ -907,6 +910,7 @@ en:
     super_users: "Super Users"
     tag_list: "Tags"
     user_rights: "User Rights"
+    use_default_statuses: "Use Default Statuses"
 
   pricing_map_form:
     clinical_quantity_type: "Clinical Quantity Type (hours, each, slides, etc.)"

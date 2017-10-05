@@ -25,8 +25,6 @@ class Organization < ApplicationRecord
   audited
   acts_as_taggable
 
-  after_create :build_default_statuses
-
   belongs_to :parent, :class_name => 'Organization'
   has_many :submission_emails, :dependent => :destroy
   has_many :associated_surveys, as: :surveyable, dependent: :destroy
@@ -121,7 +119,7 @@ class Organization < ApplicationRecord
   end
 
   def has_editable_status?(status)
-    self.editable_statuses.where(status: status).any?
+    self.get_editable_statuses[status].present?
   end
 
   # Returns the immediate children of this organization (shallow search)
@@ -361,19 +359,19 @@ class Organization < ApplicationRecord
 
   def get_available_statuses
     tmp_available_statuses = self.available_statuses.reject{|status| status.new_record?}
-    statuses = []
-    if tmp_available_statuses.empty? || tmp_available_statuses.collect(&:status) == PermissibleValue.get_key_list('status', true)
+    statuses = {}
+
+    if self.use_default_statuses
+      statuses = PermissibleValue.get_hash('status', true)
+    elsif tmp_available_statuses.empty?
       self.parents.each do |parent|
         if !parent.available_statuses.empty?
-          statuses = PermissibleValue.get_hash('status').select{|k,v| parent.available_statuses.map(&:status).include? k}
+          statuses = PermissibleValue.get_hash('status').select{|k,_| parent.available_statuses.pluck(:status).include?(k)}
           return statuses
         end
       end
     else
-      statuses = PermissibleValue.get_hash('status').select{|k,v| tmp_available_statuses.map(&:status).include? k}
-    end
-    if statuses.empty?
-      statuses = PermissibleValue.get_hash('status').select{|k,v| PermissibleValue.get_key_list('status', true).include? k}
+      statuses = PermissibleValue.get_hash('status').select{|k,_| tmp_available_statuses.map(&:status).include?(k)}
     end
     statuses
   end
@@ -386,6 +384,10 @@ class Organization < ApplicationRecord
     EditableStatus.statuses.each do |status|
       self.editable_statuses.build(status: status, new: true) unless self.editable_statuses.detect{ |es| es.status == status }
     end
+  end
+
+  def get_editable_statuses
+    self.use_default_statuses ? AVAILABLE_STATUSES.select{|k,v| DEFAULT_STATUSES.include? k} : AVAILABLE_STATUSES.select{|k,v| self.editable_statuses.pluck(:status).include? k}
   end
 
   def has_tag? tag
@@ -413,12 +415,6 @@ class Organization < ApplicationRecord
     else
       orgs = Organization.where(parent_id: org_ids)
       orgs | authorized_child_organizations(orgs.pluck(:id))
-    end
-  end
-
-  def build_default_statuses
-    PermissibleValue.get_key_list('status', true).each do |status|
-      AvailableStatus.find_or_create_by(organization_id: self.id, status: status)
     end
   end
 end

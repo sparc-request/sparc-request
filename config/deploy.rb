@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 # config valid only for current version of Capistrano
-lock "3.8.1"
+lock "3.9.0"
 
 set :application, "sparc_rails"
 set :repo_url, "git@github.com:bmic-development/sparc-request.git"

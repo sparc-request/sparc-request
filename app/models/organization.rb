@@ -387,7 +387,7 @@ class Organization < ApplicationRecord
   end
 
   def get_editable_statuses
-    self.use_default_statuses ? AVAILABLE_STATUSES.select{|k,v| DEFAULT_STATUSES.include? k} : AVAILABLE_STATUSES.select{|k,v| self.editable_statuses.pluck(:status).include? k}
+    self.use_default_statuses ? PermissibleValue.get_hash('status', true) : PermissibleValue.get_hash('status').select{|k,_| self.editable_statuses.pluck(:status).include?(k)}
   end
 
   def has_tag? tag

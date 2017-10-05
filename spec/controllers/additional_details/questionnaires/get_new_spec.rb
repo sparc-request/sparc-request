@@ -29,12 +29,13 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
       @service = create(:service)
 
       get :new, params: {
-        service_id: @service.id
+        questionable_id: @service.id,
+        questionable_type: 'Service'
       }, format: :js
     end
 
     it 'should assign @service' do
-      expect(assigns(:service)).to eq(@service)
+      expect(assigns(:questionable)).to eq(@service)
     end
 
     it 'should assign @questionnaire' do

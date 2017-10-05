@@ -416,14 +416,14 @@ class Protocol < ApplicationRecord
   # Note: this method is called inside a child thread by the service
   # requests controller.  Be careful adding code here that might not be
   # thread-safe.
-  def push_to_epic(epic_interface, origin, identity_id=nil)
+  def push_to_epic(epic_interface, origin, identity_id=nil, withhold_calendar=false)
     begin
       self.last_epic_push_time = Time.now
       self.last_epic_push_status = 'started'
       save(validate: false)
 
       Rails.logger.info("Sending study message to Epic")
-      epic_interface.send_study(self)
+      withhold_calendar ? epic_interface.send_study_creation(self) : epic_interface.send_study(self)
 
       self.last_epic_push_status = 'complete'
       save(validate: false)
@@ -547,7 +547,7 @@ class Protocol < ApplicationRecord
   end
 
   def has_incomplete_additional_details?
-    line_items.any?(&:has_incomplete_additional_details?)
+    sub_service_requests.any?(&:has_incomplete_additional_details?)
   end
 
   private

@@ -190,6 +190,8 @@ en:
   calendars:
     confirm_row_select: "This will reset custom values for this row, do you wish to continue?"
     confirm_column_select: "This will reset custom values for this column, do you wish to continue?"
+    show_all_services: 'Show All Services'
+    show_chosen_services: 'Show Chosen Services'
     tabs:
       template: "Template Tab"
       billing: "Quantity/Billing Tab"

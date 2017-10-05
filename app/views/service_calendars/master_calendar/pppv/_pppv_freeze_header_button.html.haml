@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- if display_freeze_header_button_pppv?(arm, service_request, sub_service_request, portal, merged, statuses_hidden)
+- if display_freeze_header_button_pppv?(arm, service_request, sub_service_request, portal, merged, statuses_hidden, display_all_services)
   .btn.btn-xs.btn-primary.freeze-header-button{ class: scroll_true ? "unfreeze" : "freeze", data: { arm_id: arm.id } }
     .freeze-header{ style: scroll_true ? "display: none" : "", data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:calendars)[:tooltips][:freeze_header]}
       .top-arrow

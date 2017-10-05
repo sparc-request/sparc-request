@@ -24,6 +24,7 @@ class AssociatedUserCreator
   def initialize(params)
     protocol = Protocol.find(params[:protocol_id])
     @protocol_role = protocol.project_roles.build(params)
+    eqm = EpicQueueManager.new(protocol, @protocol_role)
 
     if @protocol_role.unique_to_protocol? && @protocol_role.fully_valid?
       @successful = true
@@ -39,6 +40,9 @@ class AssociatedUserCreator
       if Setting.find_by_key("use_epic").value && protocol.selected_for_epic && !Setting.find_by_key("queue_epic").value
         Notifier.notify_for_epic_user_approval(protocol).deliver
       end
+
+      eqm.create_epic_queue
+
     else
       @successful = false
     end
@@ -48,3 +52,4 @@ class AssociatedUserCreator
     @successful
   end
 end
+

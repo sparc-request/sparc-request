@@ -32,7 +32,7 @@ class CatalogManager::IdentitiesController < CatalogManager::AppController
     identity = Identity.find identity_id
 
     if rel_type == 'service_provider_organizational_unit'
-      if not oe.service_providers or (oe.service_providers and not oe.service_providers.map(&:id).include? identity_id)
+      if not oe.service_providers or (oe.service_providers and not oe.service_providers.pluck(:identity_id).include? identity_id)
         # we have a new relationship to create
         #identity.create_relationship_to oe.id, 'service_provider_organizational_unit', {"view_draft_status" => false, "is_primary_contact" => false, "hold_emails" => false}
         service_provider = oe.service_providers.new
@@ -43,7 +43,7 @@ class CatalogManager::IdentitiesController < CatalogManager::AppController
       render :partial => 'catalog_manager/shared/service_providers', :locals => {:entity => oe}
 
     elsif rel_type == 'super_user_organizational_unit'
-      if not oe.super_users or (oe.super_users and not oe.super_users.map(&:id).include? identity_id)
+      if not oe.super_users or (oe.super_users and not oe.super_users.pluck(:identity_id).include? identity_id)
         # we have a new relationship to create
         #identity.create_relationship_to oe.id, 'super_user_organizational_unit'
         super_user = oe.super_users.new
@@ -54,7 +54,7 @@ class CatalogManager::IdentitiesController < CatalogManager::AppController
       render :partial => 'catalog_manager/shared/super_users', :locals => {:entity => oe}
 
     elsif rel_type == 'clinical_provider_organizational_unit'
-      if not oe.clinical_providers or (oe.clinical_providers and not oe.clinical_providers.map(&:id).include? identity_id)
+      if not oe.clinical_providers or (oe.clinical_providers and not oe.clinical_providers.pluck(:identity_id).include? identity_id)
         # we have a new relationship to create
         #identity.create_relationship_to oe.id, 'super_user_organizational_unit'
         clinical_provider = oe.clinical_providers.new
@@ -65,7 +65,7 @@ class CatalogManager::IdentitiesController < CatalogManager::AppController
       render :partial => 'catalog_manager/shared/clinical_providers', :locals => {:entity => oe}
 
     elsif rel_type == 'catalog_manager_organizational_unit'
-      if not oe.catalog_managers or (oe.catalog_managers and not oe.catalog_managers.map(&:id).include? identity_id)
+      if not oe.catalog_managers or (oe.catalog_managers and not oe.catalog_managers.pluck(:identity_id).include? identity_id)
         # we have a new relationship to create
         #identity.create_relationship_to oe.id, 'catalog_manager_organizational_unit'
         catalog_manager = oe.catalog_managers.new

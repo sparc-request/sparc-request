@@ -27,6 +27,7 @@ FactoryGirl.define do
     ack_language  { Faker::Lorem.paragraph(4) }
     process_ssrs  { false }
     is_available  { true }
+    use_default_statuses { true }
 
     trait :ctrc do
       after(:create) do |organization, evaluator|
@@ -110,6 +111,7 @@ FactoryGirl.define do
     ack_language  { Faker::Lorem.paragraph(4) }
     process_ssrs  { false }
     is_available  { true }
+    use_default_statuses { true }
 
     trait :disabled do
       is_available false
@@ -142,6 +144,7 @@ FactoryGirl.define do
     ack_language  { Faker::Lorem.paragraph(4) }
     process_ssrs  { false }
     is_available  { true }
+    use_default_statuses { true }
 
     trait :process_ssrs do
       process_ssrs true
@@ -193,6 +196,7 @@ FactoryGirl.define do
     ack_language  { Faker::Lorem.paragraph(4) }
     process_ssrs  { false }
     is_available  { true }
+    use_default_statuses { true }
 
     trait :process_ssrs do
       process_ssrs true
@@ -261,6 +265,7 @@ FactoryGirl.define do
     ack_language  { Faker::Lorem.paragraph(4) }
     process_ssrs  { false }
     is_available  { true }
+    use_default_statuses { true }
 
     trait :process_ssrs do
       process_ssrs true

@@ -17,16 +17,31 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.container.footer-container
-  .footer.text-center
-    %ul.footer-links
-      %li
-        = mail_to Setting.find_by_key("listserv_mail_to").value, t(:proper)[:footer][:listserv], subject: t(:proper)[:footer][:listserv_subject]
-      %li
-        = link_to t(:proper)[:footer][:sparc_blog], t(:proper)[:footer][:sparc_blog_url], target: :blank
-      %li
-        = link_to t(:proper)[:footer][:sctr], t(:proper)[:footer][:sctr_url], target: :blank
-      %li
-        = link_to t(:proper)[:footer][:about], Setting.find_by_key("about_sparc_url").value, target: :blank
-      %li
-        = ENV['SPARC_VERSION']
+
+%fieldset#available_statuses_fieldset.parent
+  .legend= t(:organization_form)[:status_legend]
+  %fieldset.single_fieldset
+    %label
+      = t(:organization_form)[:use_default_statuses]
+    = f.check_box :use_default_statuses
+    #default_statuses{style: @organization.use_default_statuses? ? "display: block;" : "display: none;"}
+      %table
+        %tr
+          %td
+            %legend= t(:organization_form)[:default_available_statuses]
+            %table
+              - DEFAULT_STATUSES.sort.each do |status|
+                %tr
+                  %th= f.label :status, "#{AvailableStatus::TYPES[status].titleize}"
+        - if current_user.is_overlord?
+          %tr
+            %td
+              %br
+              %legend= t(:organization_form)[:default_editable_statuses]
+              %table
+                - DEFAULT_STATUSES.sort.each do |status|
+                  %tr
+                    %th= f.label :status, "#{AvailableStatus::TYPES[status].titleize}"
+    = render partial: 'catalog_manager/shared/available_statuses', locals: {f: f}
+
+

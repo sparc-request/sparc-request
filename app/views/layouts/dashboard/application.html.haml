@@ -37,6 +37,11 @@
     = Gon::Base.render_data
 
   %body#body
+    - if ENV.key?("site_name")
+      .alert.alert-danger
+        %p.text-center{:style => "letter-spacing: 8px"}
+          = ENV['site_name']
+
     #container
       #header
         = render 'layouts/header_logos', location: "dashboard"

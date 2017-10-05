@@ -42,6 +42,8 @@ RSpec.describe 'User adds a line items visit note', js: true do
     
     arm       = create(:arm, protocol: protocol)
     @liv      = arm.line_items_visits.first
+
+    create(:visit, line_items_visit_id: @liv.id, research_billing_qty: 1, insurance_billing_qty: 0, effort_billing_qty: 0)
   end
 
   context 'before clicking the notes button' do

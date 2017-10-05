@@ -181,9 +181,14 @@ wb.add_worksheet(name: "Review") do |sheet|
       @service_list_false.each do |key, value|
         next if @sub_service_request.present? && @sub_service_request.organization.name != value[:process_ssr_organization_name]
 
-        services_sub_header_rows << sheet.add_row([value[:name]], :style => sub_header_style)
+        line_items_visits = @display_all_services ? arm.line_items_visits : arm.line_items_visits.joins(:visits).where.not( "research_billing_qty = 0 and insurance_billing_qty = 0 and effort_billing_qty = 0" ).uniq
 
-        arm.line_items_visits.each do |line_items_visit|
+        #Only show value[:name] when it hasn't been filtered out by the above line
+        if (value[:line_items].map(&:id) & line_items_visits.map(&:line_item_id) ).present?
+          services_sub_header_rows << sheet.add_row([value[:name]], :style => sub_header_style)
+        end
+
+        line_items_visits.each do |line_items_visit|
 
           even_set = true
           line_item = line_items_visit.line_item

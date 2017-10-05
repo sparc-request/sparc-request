@@ -26,7 +26,7 @@ RSpec.describe 'User checks and unchecks calendar rows', js: true do
   fake_login_for_each_test
 
   before :each do
-    org       = create(:organization)
+    org       = create(:organization, use_default_statuses: false)
                 create(:pricing_setup, organization: org)
     service   = create(:service, organization: org, one_time_fee: false)
 

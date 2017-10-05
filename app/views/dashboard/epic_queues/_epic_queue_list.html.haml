@@ -25,9 +25,15 @@
           data: { toggle: 'tab' }
       %li
         = link_to t(:dashboard)[:epic_queues][:headers][:past], '#past', data: { toggle: 'tab' }
+      %li
+        = link_to t(:dashboard)[:epic_queues][:headers][:authorized_user_update],
+          '#authorized-user-update',
+          data: { toggle: 'tab' }
   .panel-body
     .tab-content
       .tab-pane.fade.in.active#current
         = render "epic_queues_table"
       .tab-pane.fade#past
         = render "epic_queue_records_table"
+      .tab-pane.fade#authorized-user-update
+        = render "auth_user_change_list"

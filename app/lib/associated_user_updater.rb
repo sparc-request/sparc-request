@@ -24,6 +24,7 @@ class AssociatedUserUpdater
   def initialize(params)
     @protocol_role = ProjectRole.find(params[:id])
     protocol = @protocol_role.protocol
+    eqm = EpicQueueManager.new(protocol, @protocol_role)
 
     epic_rights = @protocol_role.epic_rights.to_a # use to_a to eval ActiveRecord::Relation
     @protocol_role.assign_attributes(params[:project_role])
@@ -53,9 +54,12 @@ class AssociatedUserUpdater
           Notifier.notify_for_epic_rights_changes(protocol, @protocol_role, epic_rights).deliver
         end
       end
+
+      eqm.create_epic_queue
     else
       @success = false
     end
+
   end
 
   def successful?
@@ -66,3 +70,4 @@ class AssociatedUserUpdater
     @protocol_role
   end
 end
+

@@ -91,7 +91,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
     context 'ssr is locked' do
       it 'should not update status' do
-        org      = create(:organization, process_ssrs: true)
+        org      = create(:organization, process_ssrs: true, use_default_statuses: false)
         service  = create(:service, organization: org)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)

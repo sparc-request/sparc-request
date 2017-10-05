@@ -59,7 +59,9 @@ class ProtocolsController < ApplicationController
       @service_request.update_attribute(:status, 'draft')
       @service_request.sub_service_requests.update_all(status: 'draft')
 
-      @protocol.update_attribute(:next_ssr_id, @service_request.sub_service_requests.count + 1)
+      last_ssr_id = @service_request.sub_service_requests.sort_by(&:ssr_id).last.ssr_id.to_i
+
+      @protocol.update_attribute(:next_ssr_id, last_ssr_id + 1)
 
       if Setting.find_by_key("use_epic").value && @protocol.selected_for_epic
         @protocol.ensure_epic_user

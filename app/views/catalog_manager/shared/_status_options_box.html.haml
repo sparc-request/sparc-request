@@ -30,9 +30,9 @@
           %td
             %legend= t(:organization_form)[:default_available_statuses]
             %table
-              - DEFAULT_STATUSES.sort.each do |status|
+              - PermissibleValue.get_key_list('status', true).sort.each do |status|
                 %tr
-                  %th= f.label :status, "#{AvailableStatus::TYPES[status].titleize}"
+                  %th= f.label :status, "#{PermissibleValue.get_value('status', status).titleize}"
         - if current_user.is_overlord?
           %tr
             %td
@@ -41,7 +41,7 @@
               %table
                 - DEFAULT_STATUSES.sort.each do |status|
                   %tr
-                    %th= f.label :status, "#{AvailableStatus::TYPES[status].titleize}"
+                    %th= f.label :status, "#{PermissibleValue.get_value('status', status).titleize}"
     = render partial: 'catalog_manager/shared/available_statuses', locals: {f: f}
 
 

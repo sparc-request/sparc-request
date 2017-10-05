@@ -186,9 +186,9 @@ end
 def build_service_request
   let!(:service_request)     { create(:service_request_without_validations, status: "draft") }
   let!(:institution)         { create(:institution,name: 'Medical University of South Carolina', order: 1, abbreviation: 'MUSC', is_available: 1)}
-  let!(:provider)            { create(:provider,parent_id:institution.id,name: 'South Carolina Clinical and Translational Institute (SCTR)',order: 1,css_class: 'blue-provider', abbreviation: 'SCTR1',process_ssrs: 0,is_available: 1)}
-  let!(:program)             { create(:program,type:'Program',parent_id:provider.id,name:'Office of Biomedical Informatics',order:1, abbreviation:'Informatics', process_ssrs:  0, is_available: 1)}
-  let!(:core)                { create(:core, parent_id: program.id)}
+  let!(:provider)            { create(:provider,parent_id:institution.id,name: 'South Carolina Clinical and Translational Institute (SCTR)',order: 1,css_class: 'blue-provider', abbreviation: 'SCTR1',process_ssrs: 0, is_available: 1)}
+  let!(:program)             { create(:program,type:'Program',parent_id:provider.id,name:'Office of Biomedical Informatics',order:1, abbreviation:'Informatics', process_ssrs:  0, is_available: 1, use_default_statuses: false)}
+  let!(:core)                { create(:core, parent_id: program.id, use_default_statuses: false)}
   let!(:core_17)             { create(:core, parent_id: program.id, abbreviation: "Nutrition") }
   let!(:core_13)             { create(:core, parent_id: program.id, abbreviation: "Nursing") }
   let!(:core_16)             { create(:core, parent_id: program.id, abbreviation: "Lab and Biorepository") }

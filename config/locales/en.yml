@@ -861,7 +861,8 @@ en:
     cpt_code: "CPT Code"
     css_class: "Color"
     ctrc_label: "Administrative Approvals"
-    default_statuses: "Default Statuses:"
+    default_available_statuses: "Default Statuses:"
+    default_editable_statuses: "Default Editable Statuses:"
     description: "Description"
     disabled: "Display in SPARC"
     disabled_all_services: "Disable All Services"
@@ -907,6 +908,7 @@ en:
     super_users: "Super Users"
     tag_list: "Tags"
     user_rights: "User Rights"
+    use_default_statuses: "Use Default Statuses"
 
   pricing_map_form:
     clinical_quantity_type: "Clinical Quantity Type (hours, each, slides, etc.)"

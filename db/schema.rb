@@ -488,6 +488,19 @@ ActiveRecord::Schema.define(version: 20171003152920) do
     t.index ["sub_service_request_id"], name: "index_payments_on_sub_service_request_id"
   end
 
+  create_table "permissible_values", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string "key"
+    t.string "value"
+    t.string "concept_code"
+    t.integer "parent_id"
+    t.integer "sort_order"
+    t.string "category"
+    t.boolean "default"
+    t.boolean "reserved"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "pricing_maps", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "service_id"
     t.string "unit_type"

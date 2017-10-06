@@ -39,7 +39,7 @@
               %br
               %legend= t(:organization_form)[:default_editable_statuses]
               %table
-                - DEFAULT_STATUSES.sort.each do |status|
+                - PermissibleValue.get_key_list('status', true).sort.each do |status|
                   %tr
                     %th= f.label :status, "#{PermissibleValue.get_value('status', status).titleize}"
     = render partial: 'catalog_manager/shared/available_statuses', locals: {f: f}

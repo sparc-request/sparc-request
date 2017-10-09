@@ -22,6 +22,7 @@ class Dashboard::EpicQueueRecordsController < Dashboard::BaseController
 
   def index
     @epic_queue_records = EpicQueueRecord.with_valid_protocols
+      .order(created_at: :desc)
     respond_to do |format|
       format.json
     end

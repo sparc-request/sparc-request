@@ -134,7 +134,10 @@ module Dashboard
       element :view_ssr_modal, ".user-view-ssr-modal"
 
       # Modal displaying consolidated request
-      element :consolidated_request_modal, ".modal-dialog", text: /Consolidated Request Summary/
+      section :consolidated_request_modal, ".modal-dialog", text: /Consolidated Request Summary/ do
+        element :show_all_services_button, "label#all-services.btn"
+        element :show_chosen_services_button, "label#chosen-services.btn"
+      end
     end
   end
 end

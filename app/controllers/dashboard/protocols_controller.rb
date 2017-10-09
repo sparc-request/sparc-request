@@ -57,7 +57,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocols        = @filterrific.find.page(params[:page])
     @admin_protocols  = Protocol.for_admin(@user.id).pluck(:id)
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, ProtocolFilter::MAX_FILTERS)
-    
+
     #toggles the display of the navigation bar, instead of breadcrumbs
     @show_navbar      = true
     @show_messages    = true
@@ -98,11 +98,16 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     session[:protocol_type] = params[:protocol_type]
     gon.rm_id_api_url = RESEARCH_MASTER_API
     gon.rm_id_api_token = RMID_API_TOKEN
+    rmid_server_status(@protocol)
   end
 
   def create
     protocol_class                          = protocol_params[:type].capitalize.constantize
     attrs                                   = fix_date_params
+    ### if lazy load enabled, we need create the identiy if necessary here
+    if LAZY_LOAD && USE_LDAP
+      attrs = fix_identity
+    end
     @protocol                               = protocol_class.new(attrs)
     @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id
 
@@ -125,6 +130,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     else
       @errors = @protocol.errors
     end
+    rmid_server_status(@protocol)
   end
 
   def edit
@@ -142,6 +148,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol.valid?
     @errors = @protocol.errors
     @errors.delete(:research_master_id) if @bypass_rmid_validation
+
+    rmid_server_status(@protocol)
 
     respond_to do |format|
       format.html
@@ -196,6 +204,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
       flash[:alert] = t(:protocols)[:change_type][:new_study_warning]
     end
+    
+    rmid_server_status(@protocol)
   end
 
   def archive
@@ -316,6 +326,17 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       attrs[date_field] = Time.strptime(attrs[date_field].strip, "%m/%d/%Y")
     end
 
+    attrs
+  end
+
+  ### fix identity id nil problem when lazy loading is enabled
+  ### when lazy loadin is enabled, identity_id is merely ldap_uid, the identity may not exist in database yet, so we create it if necessary here
+  def fix_identity
+    attrs               = protocol_params
+    attrs[:project_roles_attributes].each do |index, project_role|
+      identity = Identity.find_or_create project_role[:identity_id]
+      project_role[:identity_id] = identity.id
+    end unless attrs[:project_roles_attributes].nil?
     attrs
   end
 

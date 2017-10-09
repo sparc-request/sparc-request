@@ -63,6 +63,18 @@
               %th= t(:organization_form)[:split_notify] #not present in institutions
               %td= f.check_box :process_ssrs
 
+          
+          %tr#questionnaires{style: @organization.process_ssrs? ? "" : "display: none;"}
+            %th
+              = t(:additional_details)[:label]
+            %td
+              - if @organization.questionnaires.active.present?
+                = link_to "#{@organization.questionnaires.active.first.name}(active)", additional_details_questionnaires_path(questionable_id: @organization.id, questionable_type: 'Organization')
+              - elsif @organization.questionnaires.present?
+                = link_to "#{@organization.questionnaires.first.name}(inactive)", additional_details_questionnaires_path(questionable_id: @organization.id, questionable_type: 'Organization')
+              - else
+                = link_to t(:additional_details)[:add], additional_details_questionnaires_path(questionable_id: @organization.id, questionable_type: 'Organization')
+
           %tr
             %th= t(:organization_form)[:disabled]
             %td
@@ -92,7 +104,7 @@
                     %span= f.check_box :tag_list, { multiple: true }, tag.name, nil
 
     #available_statuses_wrapper{style: @organization.process_ssrs? ? "display: block;" : "display: none;"}
-      = render partial: 'catalog_manager/shared/available_statuses', locals: {f: f}
+      = render partial: 'catalog_manager/shared/status_options_box', locals: {f: f}
 
     %fieldset#user_rights.parent
       .legend= t(:organization_form)[:user_rights]

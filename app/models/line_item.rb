@@ -34,8 +34,6 @@ class LineItem < ApplicationRecord
   has_many :procedures
   has_many :admin_rates, dependent: :destroy
   has_many :notes, as: :notable, dependent: :destroy
-  
-  has_one :submission, dependent: :destroy
   has_one :protocol, through: :service_request
   
   attr_accessor :pricing_scheme
@@ -154,7 +152,11 @@ class LineItem < ApplicationRecord
   # factor.
   def units_per_package
     unit_factor = self.service.displayed_pricing_map.unit_factor
-    units_per_package = unit_factor || 1
+    if unit_factor.nil? || unit_factor == 0
+      units_per_package = 1
+    else
+      units_per_package = unit_factor
+    end
 
     return units_per_package
   end
@@ -334,10 +336,6 @@ class LineItem < ApplicationRecord
     end
 
     service_abbreviation
-  end
-
-  def has_incomplete_additional_details?
-    service.questionnaires.active.present? && !submission.present?
   end
 
   private

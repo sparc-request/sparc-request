@@ -26,7 +26,7 @@ class CreateEditableStatuses < ActiveRecord::Migration[5.0]
 
       t.timestamps                  null: false
     end
-
+    
     if defined?(EDITABLE_STATUSES)
       EDITABLE_STATUSES.each do |org_id, statuses|
         if organization = Organization.find_by_id(org_id)

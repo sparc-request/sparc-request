@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 <% if @submission.save %>
-$('.additional-details-submissions-panel').html("<%= j render 'submissions_panel', protocol: @protocol, submissions: @submissions %>")
+$('.additional-details-submissions-panel').replaceWith("<%= j render 'submissions_panel', protocol: @protocol, submissions: @submissions %>")
 swal("Success!", "Submission saved", "success")
 $('#submissionModal').modal('hide')
 <% else %>

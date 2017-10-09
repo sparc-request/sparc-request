@@ -43,6 +43,7 @@ RSpec.describe 'User changes protocol type', js: true do
                                status: 'draft')
                         create(:super_user, identity: jug2,
                                organization: organization)
+      allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
       visit edit_dashboard_protocol_path(@protocol)
       wait_for_javascript_to_finish
     end

@@ -41,6 +41,7 @@ RSpec.describe 'User views details after editing epic answers', js: true do
           organization    = create(:organization)
           create(:super_user, identity: jug2,
                 organization: organization)
+          allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
         end
 
         ### PUBLISH STUDY IN EPIC IS TRUE ###
@@ -126,6 +127,7 @@ RSpec.describe 'User views details after editing epic answers', js: true do
           organization    = create(:organization)
           create(:super_user, identity: jug2,
                 organization: organization)
+          allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
         end
 
         ### PUBLISH STUDY IN EPIC IS FALSE ###
@@ -212,6 +214,7 @@ RSpec.describe 'User views details after editing epic answers', js: true do
           create(:super_user, identity: jug2,
                 organization: organization)
           setup_data_for_version_2_study(@protocol)
+          allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
         end
 
         ### STUDY TYPE QUESTION GROUP 2 ###
@@ -337,6 +340,7 @@ RSpec.describe 'User views details after editing epic answers', js: true do
           organization    = create(:organization)
           create(:super_user, identity: jug2,
                 organization: organization)
+          allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
         end
 
         context 'only answers the first question' do
@@ -417,6 +421,7 @@ RSpec.describe 'User views details after editing epic answers', js: true do
           organization    = create(:organization)
           create(:super_user, identity: jug2,
                 organization: organization)
+          allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
         end
 
         context 'only answers the first question' do
@@ -498,6 +503,7 @@ RSpec.describe 'User views details after editing epic answers', js: true do
             organization    = create(:organization)
             create(:super_user, identity: jug2,
                   organization: organization)
+            allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
             setup_data_for_version_2_study(@protocol)
             visit dashboard_protocol_path(@protocol)
             wait_for_javascript_to_finish

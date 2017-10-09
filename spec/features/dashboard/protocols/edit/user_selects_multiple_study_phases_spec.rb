@@ -36,6 +36,7 @@ RSpec.describe 'User edits study', js: true do
                   create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
     StudyTypeQuestionGroup.create(active: 1)
     stub_const("RESEARCH_MASTER_ENABLED", false)
+    allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
   end
 
   context 'selects multiple study phases' do

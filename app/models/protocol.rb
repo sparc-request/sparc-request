@@ -60,13 +60,14 @@ class Protocol < ApplicationRecord
   belongs_to :study_type_question_group
 
   validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
-  validates :research_master_id, presence: true, if: "RESEARCH_MASTER_ENABLED && has_human_subject_info?"
+  validates :research_master_id, presence: true, if: :rmid_requires_validation?
 
   validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 1000 }, allow_blank: true
 
   attr_accessor :requester_id
   attr_accessor :validate_nct
   attr_accessor :study_type_questions
+  attr_accessor :bypass_rmid_validation
 
   accepts_nested_attributes_for :research_types_info
   accepts_nested_attributes_for :human_subjects_info
@@ -91,6 +92,11 @@ class Protocol < ApplicationRecord
   validation_group :user_details do
     validate :validate_proxy_rights
     validate :primary_pi_exists
+  end
+
+  def rmid_requires_validation?
+    # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]
+    self.bypass_rmid_validation ? false : RESEARCH_MASTER_ENABLED && has_human_subject_info?
   end
 
   def has_human_subject_info?
@@ -118,9 +124,12 @@ class Protocol < ApplicationRecord
     rm_ids = HTTParty.get(RESEARCH_MASTER_API + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{RMID_API_TOKEN}\""})
     ids = rm_ids.map{ |rm_id| rm_id['id'] }
 
-    unless ids.include?(self.research_master_id)
+    if research_master_id.present? && !ids.include?(research_master_id)
       errors.add(:_, 'The entered Research Master ID does not exist. Please go to the Research Master website to create a new record.')
     end
+    
+    rescue
+      return "server_down"
   end
 
   def unique_rm_id_to_protocol
@@ -407,14 +416,14 @@ class Protocol < ApplicationRecord
   # Note: this method is called inside a child thread by the service
   # requests controller.  Be careful adding code here that might not be
   # thread-safe.
-  def push_to_epic(epic_interface, origin, identity_id=nil)
+  def push_to_epic(epic_interface, origin, identity_id=nil, withhold_calendar=false)
     begin
       self.last_epic_push_time = Time.now
       self.last_epic_push_status = 'started'
       save(validate: false)
 
       Rails.logger.info("Sending study message to Epic")
-      epic_interface.send_study(self)
+      withhold_calendar ? epic_interface.send_study_creation(self) : epic_interface.send_study(self)
 
       self.last_epic_push_status = 'complete'
       save(validate: false)
@@ -480,6 +489,10 @@ class Protocol < ApplicationRecord
     arm
   end
 
+  def rmid_server_status
+    existing_rm_id == "server_down" && type == "Study"
+  end
+
   def should_push_to_epic?
     service_requests.any?(&:should_push_to_epic?)
   end
@@ -534,7 +547,7 @@ class Protocol < ApplicationRecord
   end
 
   def has_incomplete_additional_details?
-    line_items.any?(&:has_incomplete_additional_details?)
+    sub_service_requests.any?(&:has_incomplete_additional_details?)
   end
 
   private

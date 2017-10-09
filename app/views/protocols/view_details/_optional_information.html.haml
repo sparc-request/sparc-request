@@ -30,12 +30,13 @@
             = t(:protocols)[:studies][:optional_information][:udak_project_number]
           .col-lg-8
             = protocol.udak_project_number
-      %tr.row
-        %td
-          %label.col-lg-4
-            = t(:protocols)[:studies][:optional_information][:rate]
-          .col-lg-8
-            = protocol.indirect_cost_rate
+      - if USE_INDIRECT_COST
+        %tr.row
+          %td
+            %label.col-lg-4
+              = t(:protocols)[:studies][:optional_information][:rate]
+            .col-lg-8
+              = protocol.indirect_cost_rate
       %tr.row
         %td
           %label.col-lg-4

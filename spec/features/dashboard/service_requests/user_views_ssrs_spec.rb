@@ -50,7 +50,7 @@ RSpec.describe "User views SSR table", js: true do
       context 'for a locked SSR' do
         let!(:protocol)             { create(:unarchived_study_without_validations, primary_pi: jug2) }
         let!(:service_request)      { create(:service_request_without_validations, protocol: protocol, status: 'draft') }
-        let!(:organization)         { create(:organization,type: 'Institution', name: 'Megacorp', admin: bob, service_provider: bob) }
+        let!(:organization)         { create(:organization,type: 'Institution', name: 'Megacorp', admin: bob, service_provider: bob, use_default_statuses: false) }
 
         scenario 'and sees View but not Edit' do
           organization.editable_statuses.where(status: 'on_hold').destroy_all
@@ -102,7 +102,7 @@ RSpec.describe "User views SSR table", js: true do
   context 'for an SSR with forms to complete' do
     let!(:organization)         { create(:organization) }
     let!(:service)              { create(:service, organization: organization) }
-    let!(:questionnaire)        { create(:questionnaire, :without_validations, service: service, active: true) }
+    let!(:questionnaire)        { create(:questionnaire, :without_validations, questionable: service, active: true) }
     let!(:protocol)             { create(:protocol_federally_funded, primary_pi: jug2, type: 'Study') }
     let!(:service_request)      { create(:service_request_without_validations, protocol: protocol) }
     let!(:sub_service_request)  { create(:sub_service_request, service_request: service_request, organization: organization, status: 'draft', protocol: protocol) }

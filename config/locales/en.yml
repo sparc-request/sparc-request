@@ -327,7 +327,7 @@ en:
       heading: "Uh, oh.  You've hit a"
       error: "Page Not Found (404)"
       help_text: "For help, contact us:"
-      link_href: "mailto:success@musc.edu"
+      link_href: "mailto:sparcrequest@cnmc.org"
       link_display: "Email: success@musc.edu"
       phone_href: "tel:843-792-8300"
       phone_display: "Call: 843-792-8300"

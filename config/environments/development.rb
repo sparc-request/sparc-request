@@ -42,8 +42,16 @@ SparcRails::Application.configure do
   # Expands the lines which load the assets
   config.assets.debug = true
 
-  config.action_mailer.default_url_options = { :host => 'localhost:3000' }
-  config.action_mailer.delivery_method = :letter_opener
+  config.action_mailer.default_url_options = { :host => 'sparc.ctsicn.org' }
+  config.action_mailer.delivery_method = :sendmail
+  config.action_mailer.perform_deliveries = true
+
+  config.middleware.use ExceptionNotification::Rack,
+                        email: {
+                            ignore_if: ->(env, exception) { ['10.54.13.48'].include?(env['REMOTE_ADDR']) },
+                            sender_address: 'sparcrequest@childrensnational.org',
+                            exception_recipients: ['mskhan2@cnmc.org','hmorizono@cnmc.org','dkkim@cnmc.org','ccolvin@cnmc.org','hiroki@cnmcresearch.org']
+                        }
 
   config.log_level = :debug
 

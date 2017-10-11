@@ -234,7 +234,7 @@ RSpec.describe Notifier do
           @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
           @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
           @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
-          @submission_email     = create(:submission_email, email: 'success@musc.edu', organization: @organization)
+          @submission_email     = create(:submission_email, email: 'sparcrequest@childrensnational.org', organization: @organization)
 
           @service_request.reload
           created_line_item_audit_trail(@service_request, @service, identity)
@@ -390,7 +390,7 @@ RSpec.describe Notifier do
           @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
           @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
           @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
-          @submission_email     = create(:submission_email, email: 'success@musc.edu', organization: @organization)
+          @submission_email     = create(:submission_email, email: 'sparcrequest@childrensnational.org', organization: @organization)
 
           @service_request.reload
           deleted_line_item_audit_trail(@service_request, @service, identity)

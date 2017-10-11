@@ -18,12 +18,12 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Report that displays all SUCCESS Center Service Requests By core
+# Report that displays all CTSI Center Service Requests By core
 
 class SuccessReport < Reporting
 
   def self.description
-    "Provide a list of all service requests, by core, under the SUCCESS Center."
+    "Provide a list of all service requests, by core, under the CTSI Center."
   end
 
   def default_output_file
@@ -45,7 +45,7 @@ class SuccessReport < Reporting
   def run
     header = [
       'SRID #',
-      'SUCCESS Center Core',
+      'CTSI Center Core',
       'Date Submitted',
       'Status'
     ]

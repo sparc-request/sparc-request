@@ -21,7 +21,7 @@
 # OK - here's what I need - the number of service requests SUMITTED between 1/1/15 and 2/28/15 for all of SCTR.
 # This means either at the program or at the core level. So if the program doesn't have any cores, you'd run the
 # report at the program level (like Biostatistics). If the program has cores, you'd run at the core level
-# (like the SUCCESS Center). I only need those requests that were submitted...so it doesn't matter if they are now
+# (like the CTSI Center). I only need those requests that were submitted...so it doesn't matter if they are now
 # in a different status (ex: In Process, Complete, etc.) Is that hard? Doable? I need the SRID, the SCTR Program,
 # the Core (if applicable), the Primary PI, The PI College, the PI Department, and the submitted date.
 # Protocol Title and date the SSR was completed (if applicable)

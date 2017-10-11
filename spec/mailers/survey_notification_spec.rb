@@ -73,7 +73,7 @@ RSpec.describe SurveyNotification do
 
     #ensure that the sender is correct
     it 'should render the sender email' do
-      expect(mail).to deliver_from('no-reply@musc.edu')
+      expect(mail).to deliver_from('sparcrequest@childrensnational.org')
     end
 
     #ensure that the e-mail contains a link to the survey
@@ -102,7 +102,7 @@ RSpec.describe SurveyNotification do
 
     #ensure that the sender is correct
     it 'should render the sender email' do
-      expect(mail).to deliver_from('no-reply@musc.edu')
+      expect(mail).to deliver_from('sparcrequest@childrensnational.org')
     end
 
     #ensure that the e-mail contains a link to the survey

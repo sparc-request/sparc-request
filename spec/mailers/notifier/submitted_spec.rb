@@ -139,7 +139,7 @@ RSpec.describe Notifier do
           @protocol             = create(:study_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
           @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'submitted')
           @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
-          @submission_email     = create(:submission_email, email: 'success@musc.edu', organization: @organization)
+          @submission_email     = create(:submission_email, email: 'sparcrequest@childrensnational.org', organization: @organization)
           @mail                 = Notifier.notify_admin(@submission_email, identity, @sub_service_request)
           
           @service_request.reload
@@ -167,7 +167,7 @@ RSpec.describe Notifier do
           @protocol             = create(:study_without_validations, funding_source: 'cash flow', primary_pi: jpl6, selected_for_epic: true)
           @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'submitted')
           @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
-          @submission_email     = create(:submission_email, email: 'success@musc.edu', organization: @organization)
+          @submission_email     = create(:submission_email, email: 'sparcrequest@childrensnational.org', organization: @organization)
           @mail                 = Notifier.notify_admin(@submission_email, identity, @sub_service_request)
           
           @service_request.reload
@@ -250,7 +250,7 @@ RSpec.describe Notifier do
         @protocol             = create(:study_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
         @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'submitted')
         @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
-        @submission_email     = create(:submission_email, email: 'success@musc.edu', organization: @organization)
+        @submission_email     = create(:submission_email, email: 'sparcrequest@childrensnational.org', organization: @organization)
         @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
         @mail                 = Notifier.notify_admin(@submission_email, identity, @sub_service_request)
         

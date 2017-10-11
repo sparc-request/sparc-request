@@ -178,7 +178,7 @@ en:
     # CONFIRMATION #
     ################
     confirmation:
-      confirmation_warning: "Thank you for submitting your service request(s) through SPARCRequest. An email has been sent to each of your service providers and they should be contacting you soon. If you have any questions or concerns, please don't hesitate to contact the SUCCESS Center at 792-8300 or success@musc.edu."
+      confirmation_warning: "Thank you for submitting your service request(s) through SPARCRequest. An email has been sent to each of your service providers and they should be contacting you soon. If you have any questions or concerns, please don't hesitate to contact the CTSI Center at sparcrequest@childrensnational.org."
       cost_estimate_warning: "You have successfully submitted a request to get a cost estimate. Emails have been submitted on your behalf and we will respond to your request shortly. Should you have any questions regarding your request, please contact the Service Providers listed below."
       service_requests_notice: "My Service Requests"
       download_request: "Download Service Request"
@@ -265,7 +265,7 @@ en:
         question_5: "How is SPARC Request calculating my indirect costs?"
         answer_5: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARC Request uses this data to calculate your total overall indirect costs."
         question_6: "I\'m stuck! Who can I contact for assistance with SPARC Request?"
-        answer_6: "The SUCCESS Center is happy to assist you! Please contact us at success@musc.edu or (843) 792-3357."
+        answer_6: "The CTSI Center is happy to assist you! Please contact us at sparcrequest@childrensnational.org."
       feedback:
         header: "Feedback"
         email: "Email:"

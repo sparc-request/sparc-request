@@ -311,7 +311,7 @@ module CapybaraSupport
 
     when 'admin'
       xls = " "
-      sub_email = 'success@musc.edu'
+      sub_email = 'sparcrequest@childrensnational.org'
       return Notifier.notify_admin(sr,sub_email,xls,user)
     end
     return nil

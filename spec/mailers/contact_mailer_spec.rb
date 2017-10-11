@@ -23,7 +23,7 @@ require "rails_helper"
 RSpec.describe ContactMailer, type: :mailer do
   let!(:contact_form) do
     ContactForm.new(
-      subject: 'subject', email: 'example@example.com', message: 'message'
+      subject: 'subject', email: 'sparcrequest@childrensnational.org ', message: 'message'
     )
   end
 
@@ -36,14 +36,14 @@ RSpec.describe ContactMailer, type: :mailer do
   end
 
   it 'renders the receiver email' do
-    expect(mail.to).to eq(['success@musc.edu'])
+    expect(mail.to).to eq(['sparcrequest@childrensnational.org '])
   end
 
   it 'renders the receiver cc email' do
-    expect(mail.cc).to eq(['sparcrequest@gmail.com'])
+    expect(mail.cc).to eq(['sparcrequest@childrensnational.org '])
   end
 
   it 'renders the sender email' do
-    expect(mail.from).to eq(['example@example.com'])
+    expect(mail.from).to eq(['sparcrequest@childrensnational.org '])
   end
 end

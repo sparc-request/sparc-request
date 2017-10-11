@@ -74,6 +74,9 @@ gem 'whenever', require: false
 gem 'will_paginate'
 gem 'will_paginate-bootstrap'
 gem 'x-editable-rails'
+gem 'capistrano-rbenv', '~> 2.0'
+gem 'rails_admin', github: 'sferik/rails_admin'
+
 
 group :development, :test, :profile do
   gem 'addressable', '~> 2.3.6'

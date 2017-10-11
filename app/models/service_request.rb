@@ -116,10 +116,10 @@ class ServiceRequest < ApplicationRecord
         visit_group_errors = false
         invalid_day_errors = false
 
-        unless days.all?{|x| !x.blank?}
-          errors.add(:base, I18n.t('errors.arms.visit_day_missing', arm_name: arm.name))
-          visit_group_errors = true
-        end
+        #unless days.all?{|x| !x.blank?}
+        #  errors.add(:base, I18n.t('errors.arms.visit_day_missing', arm_name: arm.name))
+        #  visit_group_errors = true
+        #end
       end
     end
 

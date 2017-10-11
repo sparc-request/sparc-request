@@ -1684,7 +1684,7 @@ en:
     message8: "). This feature allows you to follow our latest news and is a great way to ask questions of and leave feedback for the SPARC Request Team as well as communicate with both us and other SPARC Request Users."
     # message7: "Due to user feedback regarding the inclusion of Indirect Costs in the Grand Total of Study Costs, Indirect Costs (as a line item) have currently been removed from SPARC Request and will be reintroduced in the budget template tools in the Study Tracker Release. Please contact the CTSI Center at 792-8300 with any questions."
     message9: "Website/Training: "
-    message9link: 'http://academicdepartments.musc.edu/sctr/sparc_request'
+    message9link: 'http://ctsicn.org/node/159'
     message10: "Blog: "
     message10link: 'http://www.sparcrequestblog.com'
     message11: "Pricing is consistent across locations unless otherwise stated."

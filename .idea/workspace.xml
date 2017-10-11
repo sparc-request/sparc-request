@@ -2,21 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="10bcd9ce-019d-4e15-a70a-62b763b8c492" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/lib/reports/success_report.rb" afterPath="$PROJECT_DIR$/app/lib/reports/success_report.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/notifier/notify_for_epic_user_approval.html.haml" afterPath="$PROJECT_DIR$/app/views/notifier/notify_for_epic_user_approval.html.haml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/notifier/notify_primary_pi_for_epic_user_final_review.html.haml" afterPath="$PROJECT_DIR$/app/views/notifier/notify_primary_pi_for_epic_user_final_review.html.haml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/notifier/notify_primary_pi_for_epic_user_removal.html.haml" afterPath="$PROJECT_DIR$/app/views/notifier/notify_primary_pi_for_epic_user_removal.html.haml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config/locales/en.yml" afterPath="$PROJECT_DIR$/config/locales/en.yml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config/locales/proper.en.yml" afterPath="$PROJECT_DIR$/config/locales/proper.en.yml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/tasks/submitted_ssrs.rake" afterPath="$PROJECT_DIR$/lib/tasks/submitted_ssrs.rake" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spec/mailers/contact_mailer_spec.rb" afterPath="$PROJECT_DIR$/spec/mailers/contact_mailer_spec.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spec/mailers/notifier/get_a_cost_estimate_spec.rb" afterPath="$PROJECT_DIR$/spec/mailers/notifier/get_a_cost_estimate_spec.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spec/mailers/notifier/request_amendment_spec.rb" afterPath="$PROJECT_DIR$/spec/mailers/notifier/request_amendment_spec.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spec/mailers/notifier/submitted_spec.rb" afterPath="$PROJECT_DIR$/spec/mailers/notifier/submitted_spec.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spec/mailers/survey_notification_spec.rb" afterPath="$PROJECT_DIR$/spec/mailers/survey_notification_spec.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spec/mailers/user_mailer_spec.rb" afterPath="$PROJECT_DIR$/spec/mailers/user_mailer_spec.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spec/support/capybara_support.rb" afterPath="$PROJECT_DIR$/spec/support/capybara_support.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spec/support/emails/messages.rb" afterPath="$PROJECT_DIR$/spec/support/emails/messages.rb" />
     </list>
     <ignored path="sparc-request-cnmc.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -91,21 +78,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="survey_notification_spec.rb" pinned="false" current-in-tab="true">
+      <file leaf-file-name="survey_notification_spec.rb" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/spec/mailers/survey_notification_spec.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="208">
-              <caret line="95" column="7" selection-start-line="95" selection-start-column="7" selection-end-line="95" selection-end-column="7" />
+            <state relative-caret-position="193">
+              <caret line="94" column="25" selection-start-line="94" selection-start-column="25" selection-end-line="94" selection-end-column="25" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="en.yml" pinned="false" current-in-tab="false">
+      <file leaf-file-name="en.yml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/config/locales/en.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="206">
-              <caret line="1684" column="308" selection-start-line="1684" selection-start-column="308" selection-end-line="1684" selection-end-column="308" />
+            <state relative-caret-position="286">
+              <caret line="1686" column="46" selection-start-line="1686" selection-start-column="4" selection-end-line="1686" selection-end-column="46" />
               <folding />
             </state>
           </provider>
@@ -166,13 +153,13 @@
         <option value="$PROJECT_DIR$/app/views/notifier/notify_for_epic_user_approval.html.haml" />
         <option value="$PROJECT_DIR$/app/views/notifier/notify_primary_pi_for_epic_user_final_review.html.haml" />
         <option value="$PROJECT_DIR$/app/views/notifier/notify_primary_pi_for_epic_user_removal.html.haml" />
-        <option value="$PROJECT_DIR$/config/locales/en.yml" />
         <option value="$PROJECT_DIR$/config/locales/proper.en.yml" />
         <option value="$PROJECT_DIR$/app/lib/reports/success_report.rb" />
         <option value="$PROJECT_DIR$/lib/tasks/submitted_ssrs.rake" />
         <option value="$PROJECT_DIR$/spec/mailers/user_mailer_spec.rb" />
         <option value="$PROJECT_DIR$/spec/support/emails/messages.rb" />
         <option value="$PROJECT_DIR$/spec/mailers/survey_notification_spec.rb" />
+        <option value="$PROJECT_DIR$/config/locales/en.yml" />
       </list>
     </option>
   </component>
@@ -438,12 +425,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1507749484251</updated>
-      <workItem from="1507749485902" duration="1415000" />
+      <workItem from="1507749485902" duration="1997000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1415000" />
+    <option name="totallyTimeSpent" value="1997000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="24" width="1301" height="744" extended-state="6" />
@@ -557,14 +544,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config/locales/en.yml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="206">
-          <caret line="1684" column="308" selection-start-line="1684" selection-start-column="308" selection-end-line="1684" selection-end-column="308" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/config/locales/proper.en.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="304">
@@ -607,8 +586,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/spec/mailers/survey_notification_spec.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="208">
-          <caret line="95" column="7" selection-start-line="95" selection-start-column="7" selection-end-line="95" selection-end-column="7" />
+        <state relative-caret-position="193">
+          <caret line="94" column="25" selection-start-line="94" selection-start-column="25" selection-end-line="94" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/locales/en.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="286">
+          <caret line="1686" column="46" selection-start-line="1686" selection-start-column="4" selection-end-line="1686" selection-end-column="46" />
           <folding />
         </state>
       </provider>

@@ -35,7 +35,7 @@ module DataTypeValidator
   end
 
   def is_email?(value)
-    value.match?(Devise::email_regexp)
+    value.match?(/^([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+(,\s([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+)*$/)
   end
 
   def is_url?(value)

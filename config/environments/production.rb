@@ -98,7 +98,7 @@ SparcRails::Application.configure do
 
   config.middleware.use ExceptionNotification::Rack,
                         email: {
-                            ignore_if: ->(env, exception) { ['xx.xx.xx.xx'].include?(env['REMOTE_ADDR']) },
+                            ignore_if: ->(env, exception) { ['x.x.x.x'].include?(env['REMOTE_ADDR']) },
                             sender_address: 'sparcrequest@childrensnational.org',
                             exception_recipients: ['mskhan2@cnmc.org','hmorizono@cnmc.org','dkkim@cnmc.org','ccolvin@cnmc.org','hiroki@cnmcresearch.org']
                         }

@@ -41,10 +41,15 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     @organization = Organization.find(params[:id])
     updater = OrganizationUpdater.new(@attributes, @organization, params)
     @attributes = updater.set_org_tags
-    show_success = updater.update_organization
+    show_success = updater.update_organization # this needs to be refactored
     updater.save_pricing_setups
     @organization.setup_available_statuses
     @entity = @organization
+
+    respond_to do |format|
+      format.js
+    end
+
     flash_update(show_success)
     render 'catalog_manager/organizations/update'
   end

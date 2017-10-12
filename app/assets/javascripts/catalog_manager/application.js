@@ -33,9 +33,11 @@
 //= require bootstrap-table
 //= require bootstrap-table-export
 //= require bootstrap-table-custom
+//= require bootstrap-toggle
 //= require moment
 //= require bootstrap-datetimepicker
 //= require catalog_manager/catalog
+//= require catalog_manager/form
 //= require jquery_ujs
 //= require jquery.remotipart
 //= require jquery_nested_form

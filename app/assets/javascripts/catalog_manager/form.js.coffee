@@ -18,22 +18,14 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogManager::ProvidersController < CatalogManager::OrganizationsController
-  def create
-    @parent_org = Institution.find(params[:institution_id])
-    @organization = Provider.new({name: params[:name], abbreviation: params[:name], parent_id: @parent_org.id})
-    super
-  end
+$ ->
+  $(document).on 'click', '#enable-all-services label', ->
+    $(this).addClass('active')
+    $(this).children('input').prop('checked')
+    $(this).siblings('.active').removeClass('active')
 
-  def edit
-    @path = catalog_manager_provider_path
-    super
-  end
-
-  def update
-    @attributes = organization_params(:provider)
-    @path = catalog_manager_provider_path
-    super
-  end
-
-end
+  $(document).on 'click', '#display-in-sparc .toggle', ->
+    if $(this).find("[id*='_is_available']").prop('checked')
+      $('#enable-all-services').show()
+    else
+      $('#enable-all-services').hide()

@@ -32,6 +32,7 @@ class CatalogManager::CoresController < CatalogManager::OrganizationsController
 
   def update
     @attributes = organization_params(:core)
+    @path = catalog_manager_core_path
     super
   end
 

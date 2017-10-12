@@ -29,6 +29,10 @@ class Tag < ApplicationRecord
     tags
   end
 
+  def humanized_name
+    I18n.t(:tags)[self.ymlized_name]
+  end
+
   def ymlized_name
     self.name.gsub(" ","_").to_sym
   end

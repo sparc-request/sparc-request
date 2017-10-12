@@ -32,6 +32,7 @@ class CatalogManager::ProgramsController < CatalogManager::OrganizationsControll
 
   def update
     @attributes = organization_params(:program)
+    @path = catalog_manager_program_path
     super
   end
 

@@ -31,6 +31,7 @@ class CatalogManager::InstitutionsController < CatalogManager::OrganizationsCont
 
   def update
     @attributes = organization_params(:institution)
+    @path = catalog_manager_institution_path
     super
   end
 end

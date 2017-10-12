@@ -11,6 +11,7 @@ gem 'bluecloth'
 gem 'bootstrap-sass'
 gem 'bootstrap-select-rails'
 gem 'bootstrap3-datetimepicker-rails'
+gem 'bootstrap-toggle-rails'
 gem 'capistrano', '~> 3.8'
 gem 'capistrano-bundler', require: false
 gem 'capistrano-rvm', require: false

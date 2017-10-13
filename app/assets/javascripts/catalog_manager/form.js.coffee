@@ -29,3 +29,6 @@ $ ->
       $('#enable-all-services').show()
     else
       $('#enable-all-services').hide()
+
+  $(document).on 'click', '#close-general-info', ->
+    $('#general-info-collapse').collapse('hide')

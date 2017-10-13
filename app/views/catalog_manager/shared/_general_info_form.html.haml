@@ -47,13 +47,13 @@
         = f.select :css_class, ACCORDION_COLOR_OPTIONS, { include_blank: t(:catalog_manager)[:organization_form][:color_blank] }, { class: 'selectpicker' }
 
   - unless organization.type == 'Institution'
-    #display-in-sparc.form-group.row
+    .form-group.row#display-in-sparc
       = f.label :is_available, t(:catalog_manager)[:organization_form][:disabled], class: 'col-sm-3 control-label'
       .col-sm-9
         = f.check_box :is_available, { checked: organization.is_available, disabled: organization.parent ? !organization.parent.is_available : false, data: { toggle: 'toggle' } }
 
   - if organization.services.any?
-    #enable-all-services.form-group.row{ class: organization.is_available? ? '' : 'hidden' }
+    .form-group.row#enable-all-services{ class: organization.is_available? ? '' : 'hidden' }
       = label_tag 'enable_all_services', t(:catalog_manager)[:organization_form][:enable_all_services], class: 'col-sm-3 control-label'
       .col-sm-9
         .btn-group{ role: 'group', data: { toggle: 'labels' } }
@@ -68,9 +68,11 @@
             = 'Enable All'
   - unless organization.type == 'Institution'
     .form-group.row
-      = f.label :tag_list, "TAGS", class: 'col-sm-3 control-label'
+      = f.label :tag_list, t(:catalog_manager)[:organization_form][:tag_list], class: 'col-sm-3 control-label'
       .col-sm-9
         = f.select :tag_list, options_from_collection_for_select(Tag.where.not(name: 'epic'), :name, :humanized_name, organization.tags.pluck(:name)), {}, class: 'form-control selectpicker', multiple: true, data: { none_selected_text: t(:constants)[:prompts][:none] }
 
-
-  %input.btn.btn-primary{ type: 'submit', value: t(:actions)[:save] }
+  %hr
+  .pull-right
+    %input.btn.btn-default#close-general-info{ type: 'button', value: t(:actions)[:close] }
+    %input.btn.btn-primary{ type: 'submit', value: t(:actions)[:save] }

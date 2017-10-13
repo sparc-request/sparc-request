@@ -33,7 +33,7 @@ $ ->
 
   $(document).on 'click','#clear-search-button', ->
     $('.search-result').removeClass('search-result')
-    $('.panel-collapse.in').collapse('hide');
+    $('#cm-accordion .panel-collapse.in').collapse('hide')
 
   $(document).on 'click','#availability-button', ->
     show_available_only = $(this).data('show-available-only')
@@ -78,9 +78,9 @@ initialize_org_search = () ->
     for parent in suggestion['parents']
       target = $(parent).data('target')
       $(target).collapse('show')
-      form_link = $(suggestion['value_selector']).parent()
-      form_link.parent().addClass("search-result")
-      form_link.siblings().find(".org-form-label").click()
+    form_link = $(suggestion['value_selector']).parent()
+    form_link.parent().addClass("search-result")
+    form_link.siblings().find(".org-form-label").click()
   )
 
 

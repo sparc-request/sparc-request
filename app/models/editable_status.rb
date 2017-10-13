@@ -27,5 +27,5 @@ class EditableStatus < ApplicationRecord
 
   validates :status, inclusion: { in: TYPES }, presence: true
 
-  attr_accessor :new
+  scope :selected, -> { where(selected: true) }
 end

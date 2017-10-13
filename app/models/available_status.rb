@@ -22,9 +22,9 @@ class AvailableStatus < ApplicationRecord
   audited
 
   belongs_to :organization
-
-  attr_accessor :new
   attr_accessor :position
+
+  scope :selected, -> { where(selected: true) }
 
   TYPES = AVAILABLE_STATUSES
 end

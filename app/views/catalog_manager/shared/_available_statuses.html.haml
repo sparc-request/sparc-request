@@ -17,7 +17,6 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 #all_statuses{style: @organization.use_default_statuses ? "display: none;" : "display: block;"}
   %table
     %tr
@@ -27,7 +26,7 @@
           = f.fields_for :available_statuses, @organization.available_statuses.sort{|x, y| AVAILABLE_STATUSES[x.status] <=> AVAILABLE_STATUSES[y.status]} do |as|
             %tr
               %th= as.label :status, "#{AvailableStatus::TYPES[as.object.status].gsub('CTRC', 'Nexus')}:"
-              %td= as.check_box "_destroy", {class: 'available-status', checked: (as.object.new_record? ? @organization.use_default_statuses && DEFAULT_STATUSES.include?(as.object.status) : true), disabled: ["Draft", "Get a Cost Estimate", "Submitted"].include?(AVAILABLE_STATUSES[as.object.status]), data: { status: as.object.status }}, false, true
+              %td= as.check_box :selected, {class: 'available-status', checked: as.object.selected ? true : (@organization.use_default_statuses && DEFAULT_STATUSES.include?(as.object.status)), disabled: ["Draft", "Get a Cost Estimate", "Submitted"].include?(AVAILABLE_STATUSES[as.object.status]), data: { status: as.object.status }}, 'true', 'false'
               = as.hidden_field :status, :value => as.object.status
 
     - if current_user.is_overlord?
@@ -37,7 +36,7 @@
           %legend= t(:organization_form)[:editable_statuses]
           %table
             = f.fields_for :editable_statuses, @organization.editable_statuses.sort{|x, y| AVAILABLE_STATUSES[x.status] <=> AVAILABLE_STATUSES[y.status]} do |es|
-              %tr{ class: "#{es.object.status}-dependent", style: @organization.available_statuses.select{|as| as.new_record? ? @organization.use_default_statuses && DEFAULT_STATUSES.include?(as.status) : true}.map(&:status).include?(es.object.status) ? "display:table-row;" : "display:none;" }
+              %tr{ class: "#{es.object.status}-dependent", style: (@organization.use_default_statuses ? DEFAULT_STATUSES : @organization.available_statuses.selected.pluck(:status)).include?(es.object.status) ? "display:table-row;" : "display:none;" }
                 %th= es.label :status, "#{AVAILABLE_STATUSES[es.object.status].gsub('CTRC', 'Nexus')}:"
-                %td= es.check_box "_destroy", {:checked => !es.object.new_record?}, false, true
+                %td= es.check_box :selected, {:checked => es.object.selected}, 'true', 'false'
                 = es.hidden_field :status, :value => es.object.status

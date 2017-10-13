@@ -55,7 +55,8 @@ class Organization < ApplicationRecord
   accepts_nested_attributes_for :available_statuses, :allow_destroy => true
   accepts_nested_attributes_for :editable_statuses, :allow_destroy => true
 
-  after_create :create_past_statuses
+
+  after_create :create_statuses
   # TODO: In rails 5, the .or operator will be added for ActiveRecord queries. We should try to
   #       condense this to a single query at that point
   scope :authorized_for_identity, -> (identity_id) {
@@ -118,7 +119,7 @@ class Organization < ApplicationRecord
   end
 
   def has_editable_status?(status)
-    self.get_editable_statuses[status].present?
+    (self.use_default_status ? DEFAULT_STATUSES : self.editable_statuses.selected.pluck(:status)).include?(status)
   end
 
   # Returns the immediate children of this organization (shallow search)
@@ -343,50 +344,27 @@ class Organization < ApplicationRecord
     return all_super_users.flatten.uniq {|x| x.identity_id}
   end
 
-  def setup_available_statuses
-    position = 1
-    obj_names = AvailableStatus::TYPES.map{ |k,v| k }
-    obj_names.each do |obj_name|
-      available_status = available_statuses.detect { |obj| obj.status == obj_name }
-      available_status ||= available_statuses.build(status: obj_name, new: true)
-      available_status.position = position
-      position += 1
-    end
-
-    setup_editable_statuses
-  end
-
   def get_available_statuses
-    tmp_available_statuses = self.available_statuses.reject{|status| status.new_record?}
     statuses = []
 
     if self.use_default_statuses
-      statuses = AVAILABLE_STATUSES.select{|k,v| DEFAULT_STATUSES.include? k}
-    elsif tmp_available_statuses.empty?
+      statuses = DEFAULT_STATUSES
+    elsif self.available_statuses.selected.present?
+      statuses = self.available_statuses.selected.pluck(:status)
+    else
       self.parents.each do |parent|
-        if !parent.available_statuses.empty?
-          statuses = AVAILABLE_STATUSES.select{|k,v| parent.available_statuses.map(&:status).include? k}
-          return statuses
+        if parent.available_statuses.selected.present?
+          statuses = parent.available_statuses.selected.pluck(:status)
+          break
         end
       end
-    else
-      statuses = AVAILABLE_STATUSES.select{|k,v| tmp_available_statuses.map(&:status).include? k}
     end
-    statuses
+
+    AVAILABLE_STATUSES.slice(*statuses)
   end
 
   def self.find_all_by_available_status status
     Organization.all.select{|x| x.get_available_statuses.keys.include? status}
-  end
-
-  def setup_editable_statuses
-    EditableStatus::TYPES.each do |status|
-      self.editable_statuses.build(status: status, new: true) unless self.editable_statuses.detect{ |es| es.status == status }
-    end
-  end
-
-  def get_editable_statuses
-    self.use_default_statuses ? AVAILABLE_STATUSES.select{|k,v| DEFAULT_STATUSES.include? k} : AVAILABLE_STATUSES.select{|k,v| self.editable_statuses.pluck(:status).include? k}
   end
 
   def has_tag? tag
@@ -401,10 +379,9 @@ class Organization < ApplicationRecord
 
   private
 
-  def create_past_statuses
-    EditableStatus::TYPES.each do |status|
-      self.editable_statuses.create(status: status)
-    end
+  def create_statuses
+    EditableStatus.import EditableStatus::TYPES.map{|status| EditableStatus.new(organization: self, status: status)}
+    AvailableStatus.import AvailableStatus::TYPES.keys.map{|status| AvailableStatus.new(organization: self, status: status)}
   end
 
   def self.authorized_child_organizations(org_ids)

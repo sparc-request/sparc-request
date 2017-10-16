@@ -511,6 +511,7 @@ funding_sources: { 'College Department': 'college',
                    'Student Funded Research': 'unfunded' }
 
 funding_statuses: { 'Pending Funding': 'pending_funding',
+                    'Undetermined': 'undetermined',
                     'Funded': 'funded' }
 
 impact_areas: { 'pediatrics': 'Pediatrics',

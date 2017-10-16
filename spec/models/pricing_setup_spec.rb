@@ -36,6 +36,13 @@ RSpec.describe 'PricingSetup' do
         expect(pricing_setup.rate_type(funding_source)).to eq 'foobarbaz'
       end
     end
+
+    it 'should return unfunded_rate_type when funding source is undetermined' do
+      funding_source = 'undetermined'
+      pricing_setup = build(:pricing_setup)
+      eval("pricing_setup.unfunded_rate_type = 'undetermined'")
+      expect(pricing_setup.rate_type(funding_source)).to eq 'undetermined'
+    end
   end
 
   describe 'applied_percentage' do

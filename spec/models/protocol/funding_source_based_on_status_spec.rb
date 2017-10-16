@@ -47,12 +47,18 @@ RSpec.describe 'Protocol' do
       expect(study.funding_source_based_on_status).to eq 'college'
     end
   end
-  
+
   describe 'should validate funding status and source for studies' do
     it 'should raise an exception if funding status is nil' do
       study = Study.create(attributes_for(:protocol))
       study.funding_status = nil
       expect(lambda { study.funding_source_based_on_status }).to raise_exception ArgumentError
+    end
+
+    it 'should not raise an exception if funding status is undetermined' do
+      study = Study.create(attributes_for(:protocol))
+      study.funding_status = 'undetermined'
+      expect(study.funding_source_based_on_status).to eq 'undetermined'
     end
 
     it 'should raise an exception if funding status is neither funded nor pending_funding' do

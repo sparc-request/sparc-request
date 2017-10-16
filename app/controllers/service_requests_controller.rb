@@ -205,7 +205,7 @@ class ServiceRequestsController < ApplicationController
     ssr       = line_item.sub_service_request
 
     if ssr.can_be_edited?
-      ssr.line_items.where(service: line_item.service.related_services).update_all(optional: true)
+      @service_request.line_items.where(service: line_item.service.related_services).update_all(optional: true)
 
       line_item.destroy
 

@@ -47,4 +47,8 @@ class Survey < ActiveRecord::Base
   def insertion_name
     "Before #{title} (Version #{version})"
   end
+
+  def report_title
+    "#{self.title} - Version #{self.version.to_s} #{self.active ? '(Active)' : '(Inactive)'}"
+  end
 end

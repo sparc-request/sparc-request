@@ -65,7 +65,7 @@ class AddService
       end
     end
     sub_service_request = service_request.sub_service_requests.create(
-      organization_id: organization.id
+      organization: organization, service_requester: @current_user
     )
     service_request.ensure_ssr_ids
 

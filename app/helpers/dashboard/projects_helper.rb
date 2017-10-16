@@ -72,6 +72,7 @@ module Dashboard::ProjectsHelper
     case status
     when 'pending_funding' then 'Pending Funding'
     when 'funded'          then 'Funded'
+    when 'undetermined'    then 'Undetermined'
     end
   end
 

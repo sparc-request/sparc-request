@@ -28,6 +28,7 @@ class Dashboard::EpicQueuesController < Dashboard::BaseController
       format.json do
         if params[:user_change]
           @epic_queues = EpicQueue.where(
+            attempted_push: false,
             user_change: true
           )
         else

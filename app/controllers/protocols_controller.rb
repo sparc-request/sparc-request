@@ -294,7 +294,7 @@ class ProtocolsController < ApplicationController
     # Thread.new do
     begin
       # Do the actual push.  This might take a while...
-      protocol.push_to_epic(EPIC_INTERFACE, "pi_email_approval", current_user.id)
+      protocol.push_to_epic(EPIC_INTERFACE, "submission_push", current_user.id)
       errors = EPIC_INTERFACE.errors
       session[:errors] = errors unless errors.empty?
       @epic_errors = true unless errors.empty?

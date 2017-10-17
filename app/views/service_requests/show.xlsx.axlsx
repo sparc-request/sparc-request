@@ -109,7 +109,10 @@ wb.add_worksheet(name: "Review") do |sheet|
 
   ##### beginning of arms
   if has_per_patient_per_visit_services
-    @service_request.arms.each do |arm|
+
+    arms_to_be_displayed = @display_all_services ? @service_request.arms : Arm.where(protocol: @service_request.protocol).joins(:line_items_visits).joins(:visits).where.not( "research_billing_qty = 0 and insurance_billing_qty = 0 and effort_billing_qty = 0" ).uniq
+
+    arms_to_be_displayed.each do |arm|
       services_row = ["Selected Services", "CPT Code", "Order Code", "Notes"]
       services_row << "Current Cost" if @admin_offset
       services_row += ["Your Cost", "# of Subjects"]
@@ -118,7 +121,6 @@ wb.add_worksheet(name: "Review") do |sheet|
 
       num_visits = arm.visit_count
       visit_group_name_sizes = []
-
       arm.visit_groups.each do |vg|
         visit_group_name_sizes << vg.name.size
         services_row << "#{vg.name}"

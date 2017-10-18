@@ -91,11 +91,7 @@ class Identity < ApplicationRecord
   end
 
   def suggestion_value
-    if LAZY_LOAD && USE_LDAP
-      ldap_uid
-    else
-      id
-    end
+    Setting.find_by_key("use_ldap").value && Setting.find_by_key("lazy_load_ldap").value ? ldap_uid : id
   end
 
   ###############################################################################
@@ -118,7 +114,7 @@ class Identity < ApplicationRecord
 
   # Return the netid (ldap_uid without the @musc.edu)
   def netid
-    if USE_LDAP then
+    if Setting.find_by_key("use_ldap").value then
       return ldap_uid.sub(/@#{Directory::DOMAIN}/, '')
     else
       return ldap_uid
@@ -170,7 +166,7 @@ class Identity < ApplicationRecord
   end
 
   def self.find_or_create(id)
-    if LAZY_LOAD && USE_LDAP
+    if Setting.find_by_key("use_ldap").value && Setting.find_by_key("lazy_load_ldap").value
       return Directory.find_or_create(id)
     else
       return self.find(id)

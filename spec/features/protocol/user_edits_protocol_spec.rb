@@ -44,7 +44,6 @@ RSpec.describe 'User edits protocol', js: true do
                     create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
 
       allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
-      stub_const("RESEARCH_MASTER_ENABLED", true)
       StudyTypeQuestionGroup.create(active: 1)
     end
 
@@ -77,6 +76,8 @@ RSpec.describe 'User edits protocol', js: true do
   end
 
   context "RMID server is down" do
+    stub_config("use_research_master", true)
+    
     before :each do
       institution = create(:institution, name: "Institution")
       provider    = create(:provider, name: "Provider", parent: institution)
@@ -89,7 +90,6 @@ RSpec.describe 'User edits protocol', js: true do
 
       allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(true)
       StudyTypeQuestionGroup.create(active: true)
-      stub_const("RESEARCH_MASTER_ENABLED", true)
     end
 
     context 'and clicks Edit Information' do

@@ -198,7 +198,7 @@ class LineItem < ApplicationRecord
 
   # Determine the indirect cost rate related to a particular line item
   def indirect_cost_rate
-    if USE_INDIRECT_COST
+    if Setting.find_by_key("use_indirect_cost").value
       self.service_request.protocol.indirect_cost_rate.to_f / 100
     else
       return 0
@@ -207,7 +207,7 @@ class LineItem < ApplicationRecord
 
   # Determine the indirect cost rate for a visit-based service for one subject
   def indirect_costs_for_visit_based_service_single_subject
-    if USE_INDIRECT_COST
+    if Setting.find_by_key("use_indirect_cost").value
       total = 0
       self.line_items_visits.each do |line_items_visit|
         total += self.direct_costs_for_visit_based_service_single_subject(line_items_visit) * self.indirect_cost_rate
@@ -220,7 +220,7 @@ class LineItem < ApplicationRecord
 
   # Determine the indirect costs for a visit-based service
   def indirect_costs_for_visit_based_service
-    if USE_INDIRECT_COST
+    if Setting.find_by_key("use_indirect_cost").value
       self.direct_costs_for_visit_based_service * self.indirect_cost_rate
     else
       return 0
@@ -229,7 +229,7 @@ class LineItem < ApplicationRecord
 
   # Determine the indirect costs for a one-time-fee service
   def indirect_costs_for_one_time_fee
-    if self.service.displayed_pricing_map.exclude_from_indirect_cost || !USE_INDIRECT_COST
+    if self.service.displayed_pricing_map.exclude_from_indirect_cost || !Setting.find_by_key("use_indirect_cost").value
       return 0
     else
       self.direct_costs_for_one_time_fee * self.indirect_cost_rate

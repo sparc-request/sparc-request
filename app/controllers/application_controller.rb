@@ -220,7 +220,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authorize_site_admin
-    unless SITE_ADMINS.include?(current_user.ldap_uid)
+    unless Setting.find_by_key("site_admins").value.include?(current_user.ldap_uid)
       authorization_error "You do not have access to this page.", ""
     end
   end

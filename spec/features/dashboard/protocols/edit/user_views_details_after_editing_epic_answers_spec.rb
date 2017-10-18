@@ -27,6 +27,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
   build_study_type_questions
 
   context 'use epic = true' do
+    stub_config("use_epic", true)
+    
     context 'Study, selected for epic: true, question group 3' do
       context 'user views epic answers in view details' do
         before :each do
@@ -322,9 +324,6 @@ RSpec.describe 'User views details after editing epic answers', js: true do
   end
 
   context 'use epic = false' do
-    before :each do
-      stub_const('USE_EPIC', false)
-    end
     ### SELECTED FOR EPIC IS FALSE IS IRRELEVANT BECAUSE USE_EPIC = FALSE ###
     context 'Study, selected for epic: false, question group 3' do
       context 'user views epic answers in view details' do

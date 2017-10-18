@@ -34,9 +34,9 @@ RSpec.describe Arm, type: :model do
       protocol = Protocol.new(indirect_cost_rate: 50)
       allow(arm).to receive(:protocol).and_return(protocol)
     end
-
-    context 'with USE_INDIRECT_COST' do
-      before(:each) { stub_const('USE_INDIRECT_COST', true) }
+    
+    context 'using indirect cost' do
+      stub_config("use_indirect_cost", true)
 
       context 'with no argument' do
         it 'should return total cost' do
@@ -51,7 +51,7 @@ RSpec.describe Arm, type: :model do
       end
     end
 
-    context 'without USE_INDIRECT_COST' do
+    context 'not using indirect cost' do
       context 'with no argument' do
         it 'should return total cost' do
           expect(arm.maximum_total_per_patient).to eq(12.0)

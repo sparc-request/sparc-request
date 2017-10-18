@@ -130,7 +130,7 @@ RSpec.describe ServiceRequest, type: :model do
 
       context "past status is updatable ('get_a_cost_estimate')" do
         before :each do
-          @org         = create(:organization_with_process_ssrs)
+          @org         = create(:organization_with_process_ssrs, use_default_statuses: false)
           identity     = create(:identity)
           service     = create(:service, organization: @org, one_time_fee: true)
           protocol    = create(:protocol_federally_funded, primary_pi: identity, type: 'Study')

@@ -34,10 +34,15 @@ RSpec.describe 'layouts/dashboard/_dashboard_header.html.haml', view: true do
     expect(session[:breadcrumbs]).to receive(:breadcrumbs).and_return('All those other pages.')
   end
 
-  it 'should display view epic queue button' do
-    render 'layouts/dashboard/dashboard_header', user: @user
+  context 'epic configuration turned on' do
+    stub_config("use_epic", true)
+    stub_config("epic_queue_access", ['jug2'])
+    
+    it 'should display view epic queue button' do
+      render 'layouts/dashboard/dashboard_header', user: @user
 
-    expect(response).to have_selector('button#epic-queue-btn', text: 'Epic Queue')
+      expect(response).to have_selector('button#epic-queue-btn', text: 'Epic Queue')
+    end
   end
 
   it 'should display number of unread notifications (for user)' do

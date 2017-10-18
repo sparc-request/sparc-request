@@ -25,10 +25,10 @@
     .sub_text
       = t(:protocols)[:studies][:information][:subtext]
   .panel-body.container-fluid
-    - if RESEARCH_MASTER_ENABLED
+    - if Setting.find_by_key("use_research_master").value
       .form-group.row
         = form.label :research_master_id, class: 'col-lg-2 control-label rm-id' do
-          = link_to t(:protocols)[:studies][:information][:research_master_id], RESEARCH_MASTER_LINK, target: '_blank'
+          = link_to t(:protocols)[:studies][:information][:research_master_id], Setting.find_by_key("research_master_link").value, target: '_blank'
         .col-lg-3
           = form.text_field :research_master_id, class: 'form-control research-master-field', disabled: rmid_server_down
         - if rmid_server_down
@@ -41,8 +41,8 @@
         title: t(:protocols)[:tooltips][:short_title]
       .col-lg-10
         = form.text_field :short_title,
-          class: [('form-control'), (RESEARCH_MASTER_ENABLED ? 'rm-id-dependent rm-locked-fields' : '')],
-          disabled: RESEARCH_MASTER_ENABLED && protocol.research_master_id.present?
+          class: [('form-control'), (Setting.find_by_key("use_research_master").value ? 'rm-id-dependent rm-locked-fields' : '')],
+          disabled: Setting.find_by_key("use_research_master").value && protocol.research_master_id.present?
 
     .form-group.row
       = form.label :title,
@@ -52,8 +52,8 @@
         title: t(:protocols)[:tooltips][:title]
       .col-lg-10
         = form.text_field :title,
-          class: [('form-control'), (RESEARCH_MASTER_ENABLED ? 'rm-id-dependent rm-locked-fields' : '')],
-          disabled: RESEARCH_MASTER_ENABLED && protocol.research_master_id.present?
+          class: [('form-control'), (Setting.find_by_key("use_research_master").value ? 'rm-id-dependent rm-locked-fields' : '')],
+          disabled: Setting.find_by_key("use_research_master").value && protocol.research_master_id.present?
 
     .form-group.row#funding-status
       = form.label :funding_status,
@@ -75,7 +75,7 @@
         title: t(:protocols)[:tooltips][:funding_source]
       .col-lg-10
         = form.select :funding_source,
-          options_for_select(FUNDING_SOURCES, protocol.funding_source),
+          options_for_select(PermissibleValue.get_inverted_hash('funding_source'), protocol.funding_source),
           { include_blank: t(:protocols)[:prompts][:source] },
           class: 'selectpicker'
 
@@ -87,7 +87,7 @@
         title: t(:protocols)[:tooltips][:potential_funding_source]
       .col-lg-10
         = form.select :potential_funding_source,
-          options_for_select(POTENTIAL_FUNDING_SOURCES, protocol.potential_funding_source),
+          options_for_select(PermissibleValue.get_inverted_hash('potential_funding_source'), protocol.potential_funding_source),
           { include_blank: t(:protocols)[:prompts][:potential_source] },
           class: 'selectpicker'
 
@@ -107,12 +107,12 @@
       .form-group.row
         = form.label :federal_grant_code_id, t(:protocols)[:studies][:information][:funding_source_federal][:code], class: 'col-lg-2 control-label'
         .col-lg-10
-          = form.select :federal_grant_code_id, options_for_select(FEDERAL_GRANT_CODES, protocol.federal_grant_code_id), { include_blank: t(:study_form)[:code_blank] }, class: 'selectpicker'
+          = form.select :federal_grant_code_id, options_for_select(PermissibleValue.get_inverted_hash('federal_grant_code'), protocol.federal_grant_code_id), { include_blank: t(:study_form)[:code_blank] }, class: 'selectpicker'
 
       .form-group.row
         = form.label :federal_phs_sponsor, t(:protocols)[:studies][:information][:funding_source_federal][:phs_sponsor], class: 'col-lg-2 control-label'
         .col-lg-10
-          = form.select :federal_phs_sponsor, options_for_select(FEDERAL_GRANT_PHS_SPONSORS, protocol.federal_phs_sponsor), { include_blank: t(:protocols)[:prompts][:federal_sponsor] }, class: 'selectpicker'
+          = form.select :federal_phs_sponsor, options_for_select(PermissibleValue.get_inverted_hash('federal_grant_phs_sponsor'), protocol.federal_phs_sponsor), { include_blank: t(:protocols)[:prompts][:federal_sponsor] }, class: 'selectpicker'
 
       .row
         %label.col-lg-2
@@ -122,7 +122,7 @@
       .form-group.row#federal-non-phs
         = form.label :federal_non_phs_sponsor, t(:protocols)[:studies][:information][:funding_source_federal][:non_phs_sponsor], class: 'col-lg-2 control-label'
         .col-lg-10
-          = form.select :federal_non_phs_sponsor, options_for_select(FEDERAL_GRANT_NON_PHS_SPONSORS, protocol.federal_non_phs_sponsor), { include_blank: t(:protocols)[:prompts][:federal_sponsor] }, class: 'selectpicker'
+          = form.select :federal_non_phs_sponsor, options_for_select(PermissibleValue.get_inverted_hash('federal_grant_non_phs_sponsor'), protocol.federal_non_phs_sponsor), { include_blank: t(:protocols)[:prompts][:federal_sponsor] }, class: 'selectpicker'
 
       .form-group.row
         = form.label :federal_grant_serial_number, t(:protocols)[:studies][:information][:funding_source_federal][:serial_number], class: 'col-lg-2 control-label'
@@ -141,5 +141,5 @@
 
     = render partial: 'protocols/form/study_form_sections/interactive_form', locals: { protocol: protocol, form: form }
 
-    - if USE_EPIC
+    - if Setting.find_by_key("use_epic").value
       = render partial: 'protocols/form/study_form_sections/study_type_note', locals: { protocol: protocol, form: form }

@@ -122,9 +122,9 @@ RSpec.describe 'User creates study', js: true do
     end
 
     context 'and clicks \'New Research Study\'' do
-
       scenario 'and sees that the rmid server is down through flash message' do
         click_new_research_study(@sr)
+        
         expect(page).to have_content( I18n.t(:protocols)[:summary][:tooltips][:rmid_server_down] )
       end
 

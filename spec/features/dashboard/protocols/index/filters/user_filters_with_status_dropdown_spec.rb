@@ -26,8 +26,6 @@ RSpec.describe "User selects statuses and filters", js: :true do
   fake_login_for_each_test
 
   scenario "and sees protocols with statuses" do
-    stub_const("AVAILABLE_STATUSES", { 'draft': 'Draft', 'submitted': 'Submitted' })
-
     organization        = create(:organization)
     protocol_draft      = create(:study_without_validations, primary_pi: jug2)
     sr_draft            = create(:service_request_without_validations, protocol: protocol_draft)

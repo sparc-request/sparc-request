@@ -24,10 +24,10 @@
       %td
         %legend= t(:organization_form)[:available_statuses]
         %table
-          = f.fields_for :available_statuses, @organization.available_statuses.sort{|x, y| AVAILABLE_STATUSES[x.status] <=> AVAILABLE_STATUSES[y.status]} do |as|
+          = f.fields_for :available_statuses, @organization.available_statuses.sort{|x, y| PermissibleValue.get_value('status', x.status) <=> PermissibleValue.get_value('status', y.status)} do |as|
             %tr
-              %th= as.label :status, "#{AvailableStatus::TYPES[as.object.status].gsub('CTRC', 'Nexus')}:"
-              %td= as.check_box "_destroy", {class: 'available-status', checked: (as.object.new_record? ? @organization.use_default_statuses && DEFAULT_STATUSES.include?(as.object.status) : true), disabled: ["Draft", "Get a Cost Estimate", "Submitted"].include?(AVAILABLE_STATUSES[as.object.status]), data: { status: as.object.status }}, false, true
+              %th= as.label :status, "#{PermissibleValue.get_value('status', as.object.status).gsub('CTRC', 'Nexus')}:"
+              %td= as.check_box "_destroy", {class: 'available-status', checked: (as.object.new_record? ? @organization.use_default_statuses && PermissibleValue.get_key_list('status', true).include?(as.object.status) : true), disabled: ["Draft", "Get a Cost Estimate", "Submitted"].include?(PermissibleValue.get_value('status', as.object.status)), data: { status: as.object.status }}, false, true
               = as.hidden_field :status, :value => as.object.status
 
     - if current_user.is_overlord?
@@ -36,8 +36,8 @@
           %br
           %legend= t(:organization_form)[:editable_statuses]
           %table
-            = f.fields_for :editable_statuses, @organization.editable_statuses.sort{|x, y| AVAILABLE_STATUSES[x.status] <=> AVAILABLE_STATUSES[y.status]} do |es|
-              %tr{ class: "#{es.object.status}-dependent", style: @organization.available_statuses.select{|as| as.new_record? ? @organization.use_default_statuses && DEFAULT_STATUSES.include?(as.status) : true}.map(&:status).include?(es.object.status) ? "display:table-row;" : "display:none;" }
-                %th= es.label :status, "#{AVAILABLE_STATUSES[es.object.status].gsub('CTRC', 'Nexus')}:"
+            = f.fields_for :editable_statuses, @organization.editable_statuses.sort{|x, y| PermissibleValue.get_value('status', x.status) <=> PermissibleValue.get_value('status', y.status)} do |es|
+              %tr{ class: "#{es.object.status}-dependent", style: @organization.available_statuses.select{|as| as.new_record? ? @organization.use_default_statuses && PermissibleValue.get_key_list('status', true).include?(as.status) : true}.map(&:status).include?(es.object.status) ? "display:table-row;" : "display:none;" }
+                %th= es.label :status, "#{PermissibleValue.get_value('status', es.object.status).gsub('CTRC', 'Nexus')}:"
                 %td= es.check_box "_destroy", {:checked => !es.object.new_record?}, false, true
                 = es.hidden_field :status, :value => es.object.status

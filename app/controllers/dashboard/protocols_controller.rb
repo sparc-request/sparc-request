@@ -47,7 +47,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       initialize_filterrific(Protocol, params[:filterrific] && filterrific_params,
         default_filter_params: @default_filter_params,
         select_options: {
-          with_status: AVAILABLE_STATUSES.invert,
+          with_status: PermissibleValue.get_inverted_hash('status'),
           with_organization: Dashboard::GroupedOrganizations.new(@organizations).collect_grouped_options,
           with_owner: build_with_owner_params
         },

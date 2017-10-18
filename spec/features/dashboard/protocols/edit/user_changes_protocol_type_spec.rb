@@ -93,7 +93,6 @@ RSpec.describe 'User changes protocol type', js: true do
 
               click_button 'Save'
               wait_for_javascript_to_finish
-
               expect(page).to have_content("Study Updated!")
             end
           end

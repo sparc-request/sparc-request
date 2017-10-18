@@ -94,7 +94,7 @@ RSpec.describe 'requests modal', js: true do
       expect(page).to have_requests_modal
 
       page.requests_modal.sub_service_requests.first.edit_button.click
-      wait_for_javascript_to_finish
+        wait_for_javascript_to_finish
 
       expect(URI.parse(current_url).path).to eq "/service_requests/#{service_request.id}/catalog"
     end

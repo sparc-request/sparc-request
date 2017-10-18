@@ -30,8 +30,7 @@
     %th.skinny-black-border= t(:notifier)[:requester]
   %tbody
     - @ssrs_to_be_displayed.each do |ssr|
-      - link = DASHBOARD_LINK + '/sub_service_requests/' + ssr.id.to_s
-      - requester = ssr.service_requester_id.present? ? Identity.find(ssr.service_requester_id).first_name + ' ' + Identity.find(ssr.service_requester_id).last_name : 'N/A'
+      - link = Setting.find_by_key("dashboard_link").value + '/sub_service_requests/' + ssr.id.to_s
       %tr.skinny-black-border
         - if @role == 'none'
           %td.center
@@ -39,7 +38,7 @@
         - else
           %td.skinny-black-border.center= ssr.display_id
         %td.skinny-black-border.center= ssr.org_tree_display
-        %td.skinny-black-border.center= AVAILABLE_STATUSES[ssr.reload.status]
-        %td.skinny-black-border.center= requester
+        %td.skinny-black-border.center= = PermissibleValue.get_value('status', ssr.reload.status)
+        %td.skinny-black-border.center= ssr.display_service_requester_name
 %br
 %br

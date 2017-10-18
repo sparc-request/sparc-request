@@ -28,7 +28,7 @@ module Dashboard::ServiceRequestsHelper
     if service_request.status == "submitted"
       "Submitted - #{format_date(service_request.submitted_at)}"
     else
-      "#{AVAILABLE_STATUSES[service_request.status]} - #{format_date(service_request.updated_at)}"
+      "#{PermissibleValue.get_value('status', service_request.status)} - #{format_date(service_request.updated_at)}"
     end
   end
 

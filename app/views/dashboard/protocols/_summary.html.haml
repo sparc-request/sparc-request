@@ -32,7 +32,7 @@
       = display_archive_button(protocol, permission_to_edit)
     .clearfix
   .panel-body#protocol-summary.text-left
-    - if RESEARCH_MASTER_ENABLED && protocol.is_study?
+    - if Setting.find_by_key("use_research_master").value && protocol.is_study?
       .row
         .col-sm-2
           %label

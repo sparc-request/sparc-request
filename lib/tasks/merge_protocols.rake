@@ -85,10 +85,27 @@ task :protocol_merge => :environment do
     end
   end
 
+  def has_research?(protocol, research_type)
+    protocol.research_types_info.try(research_type) || false
+  end
+
+  def role_should_be_assigned?(role_to_be_assigned, protocol)
+    protocol.project_roles.each do |role|
+      if (role.role == role_to_be_assigned.role) && (role.identity_id == role_to_be_assigned.identity_id)
+        return false
+      end
+    end
+    return true
+  end
+
   first_protocol = get_protocol(false, 'first')
   second_protocol = get_protocol(false, 'second')
 
-  continue = prompt('Preparing to merge these two protocols. Are you sure you want to continue? (y/n): ')
+  if second_protocol.last_epic_push_time && (second_protocol.last_epic_push_status == 'complete')
+    continue = prompt('The second protocol has been pushed to epic. Are you sure that you want to continue? (y/n): ')
+  else
+    continue = prompt('Preparing to merge these two protocols. Are you sure you want to continue? (y/n): ')
+  end
 
   if (continue == 'y') || (continue == 'Y')
 
@@ -102,22 +119,39 @@ task :protocol_merge => :environment do
       end
     end
 
-    if first_protocol.valid?
-    first_protocol.save
-    else
-      puts "#" *20
-      raise first_protocol.errors.inspect
-    end
+    first_protocol.save(validate: false)
 
     puts "The protocol attributes have been succesfully merged. Assigning project roles to master protocol..."
 
     second_protocol.project_roles.each do |role|
-      if role.role != 'primary-pi'
+      if role.role != 'primary-pi' && role_should_be_assigned?(role, first_protocol)
         role.update_attributes(protocol_id: first_protocol.id)
       end
     end
 
-    puts "Project roles have been transferred. Assigning service requests..."
+    puts "Project roles have been assigned, checking for and assigning research types, impact areas, and affiliations..."
+
+    if has_research?(second_protocol, 'human_subjects') && !has_research?(first_protocol, 'human_subjects')
+      second_protocol.human_subjects_info.update_attributes(protocol_id: first_protocol.id)
+    elsif has_research?(second_protocol, 'vertebrate_animals') && !has_research?(first_protocol, 'vertebrate_animals')
+      second_protocol.vertebrate_animals_info.update_attributes(protocol_id: first_protocol.id)
+    elsif has_research?(second_protocol, 'investigational_products') && !has_research?(first_protocol, 'investigational_products')
+      second_protocol.investigational_products_info.update_attributes(protocol_id: first_protocol.id)
+    elsif has_research?(second_protocol, 'ip_patents') && !has_research?(first_protocol, 'ip_patents')
+      second_protocol.ip_patents_info.update_attributes(protocol_id: first_protocol.id)
+    end
+
+    second_protocol.impact_areas.each do |area|
+      area.protocol_id = first_protocol.id
+      area.save(validate: false)
+    end
+
+    second_protocol.affiliations.each do |affiliation|
+      affiliation.protocol_id = first_protocol.id
+      affiliation.save(validate: false)
+    end
+
+    puts "Research types, impact areas, and affiliations have been transferred. Assigning service requests..."
 
     fulfillment_ssrs = []
     second_protocol.service_requests.each do |request|
@@ -125,7 +159,8 @@ task :protocol_merge => :environment do
       request.save(validate: false)
       request.sub_service_requests.each do |ssr|
         ssr.update_attributes(protocol_id: first_protocol.id)
-        first_protocol.update_attributes(next_ssr_id: first_protocol.next_ssr_id + 1)
+        first_protocol.next_ssr_id = (first_protocol.next_ssr_id + 1)
+        first_protocol.save(validate: false)
         if ssr.in_work_fulfillment
           fulfillment_ssrs << ssr
         end
@@ -156,6 +191,9 @@ task :protocol_merge => :environment do
 
     puts "Updating of child objects complete"
     second_protocol.delete
+
+    puts "Merging service requests"
+    Rake::Task["merge_srs"].invoke
 
     if fulfillment_ssrs.any?
       puts "#" * 50

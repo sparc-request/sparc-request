@@ -22,19 +22,18 @@ require 'rails_helper'
 
 RSpec.describe 'User activates a survey', js: true do
   let_there_be_lane
-
   fake_login_for_each_test
 
+  stub_config("site_admins", ["jug2"])
+  
   before :each do
-    stub_const("SITE_ADMINS", ['jug2'])
-
     @survey = create(:survey)
 
     visit surveyor_surveys_path
     wait_for_javascript_to_finish
 
     click_link 'Activate'
-    wait_for_javascript_to_finish 
+    wait_for_javascript_to_finish
   end
 
   scenario 'and sees the activated survey' do

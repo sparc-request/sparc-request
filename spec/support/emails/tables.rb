@@ -82,7 +82,7 @@ module EmailHelpers
     expect(@mail.body.parts.first.body).to have_xpath "//table//strong[text()='Service Request Information']"
     expect(@mail.body.parts.first.body).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Organization']/following-sibling::th[text()='Status']/following-sibling::th[text()='Requester']"
     ssrs_to_be_displayed.each do |ssr_to_be_displayed|
-      status = AVAILABLE_STATUSES[ssr_to_be_displayed.status]
+      status = PermissibleValue.get_value('status', ssr_to_be_displayed.status)
       expect(@mail.body.parts.first.body).to have_xpath "//td//a[@href='/dashboard/sub_service_requests/#{ssr_to_be_displayed.id}']['#{ssr_to_be_displayed.display_id}']/@href"
       expect(@mail.body.parts.first.body).to have_xpath "//td[text()='#{ssr_to_be_displayed.org_tree_display}']/following-sibling::td[text()='#{status}']"
       expect(@mail.body.parts.first.body).to have_xpath "//td[text()='#{ssr_to_be_displayed.service_requester_id.present? ? Identity.find(ssr_to_be_displayed.service_requester_id).first_name + ' ' + Identity.find(ssr_to_be_displayed.service_requester_id).last_name : 'N/A'}']"
@@ -106,7 +106,7 @@ module EmailHelpers
     expect(@mail.body.parts.first.body).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Organization']/following-sibling::th[text()='Status']/following-sibling::th[text()='Requester']"
     # Only display SSRs that are associated with that submission email
     displayed_sub_service_request = @service_request.protocol.sub_service_requests.first
-    status = AVAILABLE_STATUSES[displayed_sub_service_request.status]
+    status = PermissibleValue.get_value('status', displayed_service_request.status)
     expect(@mail.body.parts.first.body).to have_xpath "//td//a[@href='/dashboard/sub_service_requests/#{displayed_sub_service_request.id}']['#{displayed_sub_service_request.display_id}']/@href"
     expect(@mail.body.parts.first.body).to have_xpath "//td[text()='#{displayed_sub_service_request.org_tree_display}']/following-sibling::td[text()='#{status}']"    
     expect(@mail.body.parts.first.body).to have_xpath "//td[text()='#{displayed_sub_service_request.service_requester_id.present? ? Identity.find(displayed_sub_service_request.service_requester_id).first_name + ' ' + Identity.find(displayed_sub_service_request.service_requester_id).last_name : 'N/A'}']"   
@@ -118,7 +118,7 @@ module EmailHelpers
     expect(@mail).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Organization']/following-sibling::th[text()='Status']/following-sibling::th[text()='Requester']"
 
     @service_request.protocol.sub_service_requests.each do |ssr|
-      status = AVAILABLE_STATUSES[ssr.status]
+      status = PermissibleValue.get_value('status', ssr.status)
       expect(@mail.body.parts.first.body).to have_xpath "//td[text()='#{ssr.display_id}']/following-sibling::td[text()='#{ssr.org_tree_display}']/following-sibling::td[text()='#{status}']/following-sibling::td[text()= '#{ssr.service_requester_id.present? ? Identity.find(ssr.service_requester_id).first_name + ' ' + Identity.find(ssr.service_requester_id).last_name : 'N/A'}']"
     end
   end

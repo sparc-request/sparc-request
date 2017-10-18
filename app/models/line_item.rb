@@ -34,8 +34,6 @@ class LineItem < ApplicationRecord
   has_many :procedures
   has_many :admin_rates, dependent: :destroy
   has_many :notes, as: :notable, dependent: :destroy
-  
-  has_one :submission, dependent: :destroy
   has_one :protocol, through: :service_request
   
   attr_accessor :pricing_scheme
@@ -154,7 +152,11 @@ class LineItem < ApplicationRecord
   # factor.
   def units_per_package
     unit_factor = self.service.displayed_pricing_map.unit_factor
-    units_per_package = unit_factor || 1
+    if unit_factor.nil? || unit_factor == 0
+      units_per_package = 1
+    else
+      units_per_package = unit_factor
+    end
 
     return units_per_package
   end
@@ -196,7 +198,7 @@ class LineItem < ApplicationRecord
 
   # Determine the indirect cost rate related to a particular line item
   def indirect_cost_rate
-    if USE_INDIRECT_COST
+    if Setting.find_by_key("use_indirect_cost").value
       self.service_request.protocol.indirect_cost_rate.to_f / 100
     else
       return 0
@@ -205,7 +207,7 @@ class LineItem < ApplicationRecord
 
   # Determine the indirect cost rate for a visit-based service for one subject
   def indirect_costs_for_visit_based_service_single_subject
-    if USE_INDIRECT_COST
+    if Setting.find_by_key("use_indirect_cost").value
       total = 0
       self.line_items_visits.each do |line_items_visit|
         total += self.direct_costs_for_visit_based_service_single_subject(line_items_visit) * self.indirect_cost_rate
@@ -218,7 +220,7 @@ class LineItem < ApplicationRecord
 
   # Determine the indirect costs for a visit-based service
   def indirect_costs_for_visit_based_service
-    if USE_INDIRECT_COST
+    if Setting.find_by_key("use_indirect_cost").value
       self.direct_costs_for_visit_based_service * self.indirect_cost_rate
     else
       return 0
@@ -227,7 +229,7 @@ class LineItem < ApplicationRecord
 
   # Determine the indirect costs for a one-time-fee service
   def indirect_costs_for_one_time_fee
-    if self.service.displayed_pricing_map.exclude_from_indirect_cost || !USE_INDIRECT_COST
+    if self.service.displayed_pricing_map.exclude_from_indirect_cost || !Setting.find_by_key("use_indirect_cost").value
       return 0
     else
       self.direct_costs_for_one_time_fee * self.indirect_cost_rate
@@ -334,10 +336,6 @@ class LineItem < ApplicationRecord
     end
 
     service_abbreviation
-  end
-
-  def has_incomplete_additional_details?
-    service.questionnaires.active.present? && !submission.present?
   end
 
   private

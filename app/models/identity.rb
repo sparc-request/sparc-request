@@ -90,6 +90,10 @@ class Identity < ApplicationRecord
     false
   end
 
+  def suggestion_value
+    Setting.find_by_key("use_ldap").value && Setting.find_by_key("lazy_load_ldap").value ? ldap_uid : id
+  end
+
   ###############################################################################
   ############################## HELPER METHODS #################################
   ###############################################################################
@@ -110,7 +114,7 @@ class Identity < ApplicationRecord
 
   # Return the netid (ldap_uid without the @musc.edu)
   def netid
-    if USE_LDAP then
+    if Setting.find_by_key("use_ldap").value then
       return ldap_uid.sub(/@#{Directory::DOMAIN}/, '')
     else
       return ldap_uid
@@ -161,6 +165,14 @@ class Identity < ApplicationRecord
     return Directory.search(term)
   end
 
+  def self.find_or_create(id)
+    if Setting.find_by_key("use_ldap").value && Setting.find_by_key("lazy_load_ldap").value
+      return Directory.find_or_create(id)
+    else
+      return self.find(id)
+    end
+  end
+
   ###############################################################################
   ########################### PERMISSION METHODS ################################
   ###############################################################################
@@ -173,6 +185,11 @@ class Identity < ApplicationRecord
       identity = Identity.create ldap_uid: auth.uid, first_name: auth.info.first_name, last_name: auth.info.last_name, email: auth.info.email, password: Devise.friendly_token[0,20], approved: true
     end
     identity
+  end
+
+  # search the database for the identity with the given ldap_uid, if not found, create a new one
+  def self.find_for_cas_oauth(auth, _signed_in_resource = nil)
+    Directory.find_for_cas_oauth(auth.uid)
   end
 
   def active_for_authentication?
@@ -233,7 +250,7 @@ class Identity < ApplicationRecord
   def can_edit_protocol?(protocol)
     protocol.project_roles.where(identity_id: self.id, project_rights: ['approve', 'request']).any?
   end
-  
+
   # Determines whether this identity can edit a given organization's information in CatalogManager.
   # Returns true if this identity's catalog_manager_organizations includes the given organization.
   def can_edit_entity? organization, deep_search=false

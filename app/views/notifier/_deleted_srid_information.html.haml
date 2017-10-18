@@ -28,13 +28,12 @@
     %th.skinny-black-border= t(:notifier)[:requester]
   %tbody
     - @ssrs_to_be_displayed.each do |ssr|
-      - requester = ssr.service_requester_id.present? ? Identity.find(ssr.service_requester_id).first_name + ' ' + Identity.find(ssr.service_requester_id).last_name : 'N/A'
       %tr.skinny-black-border
         %td.skinny-black-border.center
           %strike= ssr.display_id
         %td.skinny-black-border.center
           %strike= ssr.org_tree_display
         %td.skinny-black-border.center
-          %strike= requester
+          %strike= ssr.display_service_requester_name
 %br
 %br

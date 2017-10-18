@@ -11,7 +11,7 @@ gem 'bluecloth'
 gem 'bootstrap-sass'
 gem 'bootstrap-select-rails'
 gem 'bootstrap3-datetimepicker-rails'
-gem 'capistrano', '~> 3.8'
+gem 'capistrano', '~> 3.9'
 gem 'capistrano-bundler', require: false
 gem 'capistrano-rvm', require: false
 gem 'capistrano-rails', require: false
@@ -67,13 +67,15 @@ gem 'sass'
 gem 'sass-rails'
 gem 'savon', '~> 2.2.0'
 gem 'simplecov', require: false, group: :test
-gem 'therubyracer', '0.10.2', :platforms => :ruby, group: :production
+gem 'therubyracer', '0.12.3', :platforms => :ruby, group: :production
 gem 'twitter-typeahead-rails'
 gem 'uglifier', '>= 1.0.3'
 gem 'whenever', require: false
 gem 'will_paginate'
 gem 'will_paginate-bootstrap'
 gem 'x-editable-rails'
+gem 'omniauth-cas'
+gem 'dotenv-rails'
 
 group :development, :test, :profile do
   gem 'addressable', '~> 2.3.6'

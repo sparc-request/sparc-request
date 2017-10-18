@@ -32,11 +32,24 @@ $(document).ready ->
       $(this).find('.freeze-header-button').removeClass('freeze')
       $(this).find('.freeze-header-button').addClass('unfreeze')
 
+  toggleServiceButtons = (clicked_button) ->
+    $(clicked_button).addClass('active btn-success').removeClass('btn-custom-green')
+    $(clicked_button).siblings().first().removeClass('active btn-success').addClass('btn-custom-green')
+
   $(document).on 'click', '.custom-tab a', ->
     if $(this).is('#billing-strategy-tab')
       $('.billing-info ul').removeClass('hidden')
     else
       $('.billing-info ul').addClass('hidden')
+
+    # hide and show service toggle buttons based on current tab
+    if $(this).is('#calendar_tab') || $(this).is('#calendar-tab')
+      $('.toggle-services-btn-group').css('display', 'inline-block')
+    else
+      $('.toggle-services-btn-group').css('display', 'none')
+
+    # reset toggle buttons
+    toggleServiceButtons($('.toggle-services-btn-group').find('#chosen-services'))
 
     # Hold freeze header upon tab change
     $(document).ajaxComplete ->
@@ -53,6 +66,42 @@ $(document).ready ->
           arm_container = $(".arm-calendar-container-#{arm}")
 
         freezeHeader(arm_container)  
+
+  $(document).on 'click', '.services-toggle', (e) ->
+    if !($(this).hasClass('active'))
+      toggleServiceButtons($(this))
+      href = this.hash
+      pane = $(this)
+
+      # helps keep track of which toggle button is active when changing visit dropdown
+      if $(this).hasClass('all-services')
+        $('.visit-group-select').addClass('display_all_services')
+      else
+        $('.visit-group-select').removeClass('display_all_services')
+
+      $.ajax
+        type: 'GET'
+        url: $(this).attr("data-url")
+        dataType: 'html'
+        data:
+          display_all_services: $(this).is('#all-services')
+        success: (data) ->
+          $(href).html data
+          pane.tab('show')
+
+  $(document).on 'click', '.full-calendar-services-toggle', ->
+    if !($(this).hasClass('active'))
+      toggleServiceButtons($(this))
+      protocol_id = $(this).data('protocolId')
+      statuses_hidden = $(this).data('statusesHidden')
+      $.ajax
+        method: 'get'
+        url: "/service_calendars/view_full_calendar.js"
+        data:
+          portal: 'true'
+          protocol_id: protocol_id
+          statuses_hidden: statuses_hidden
+          display_all_services: $(this).is('#all-services')
 
   $(document).on 'click', '.page-change-arrow', ->
     scroll = $(this).parents('.scrolling-thead').length > 0
@@ -97,6 +146,7 @@ $(document).ready ->
   $(document).on 'change', '.visit-group-select .selectpicker', ->
     scroll = $(this).parents('.scrolling-thead').length > 0
     page = $(this).find('option:selected').attr('page')
+    display_all_services = $('.visit-group-select').hasClass('display_all_services')
 
     $.ajax
       type: 'GET'
@@ -104,6 +154,7 @@ $(document).ready ->
       data:
         page: page
         scroll: scroll
+        display_all_services: display_all_services
 
   $(document).on 'click', '.move-visit-button', ->
     $.ajax

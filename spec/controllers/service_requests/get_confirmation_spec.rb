@@ -103,7 +103,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
         expect(PastStatus.first.sub_service_request).to eq(ssr)
       end
 
-      context 'using EPIC and QUEUE_EPIC' do
+      context 'using EPIC and queue_epic' do
+        stub_config("use_epic", true)
+        stub_config("queue_epic", true)
+
         it 'should create an item in the queue' do
           org      = create(:organization)
           service  = create(:service, organization: org, one_time_fee: true, send_to_epic: true)
@@ -113,8 +116,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
           li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
           session[:identity_id]            = logged_in_user.id
-          stub_const("USE_EPIC", true)
-          stub_const("QUEUE_EPIC", true)
+          
           setup_valid_study_answers(protocol)
 
           get :confirmation, params: {
@@ -127,7 +129,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
         end
       end
 
-      context 'using EPIC but not QUEUE_EPIC' do
+      context 'using EPIC but not queue_epic' do
+        stub_config("use_epic", true)
+        
         it 'should notify' do
           org      = create(:organization)
           service  = create(:service, organization: org, one_time_fee: true, send_to_epic: true)
@@ -138,7 +142,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
                      create(:service_provider, identity: logged_in_user, organization: org)
 
           session[:identity_id]            = logged_in_user.id
-          stub_const("USE_EPIC", true)
+
           setup_valid_study_answers(protocol)
 
           # We have a user, and service_provider so we send 2 emails
@@ -195,7 +199,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
         expect(ssr.reload.committee_approved).to eq(false)
       end
 
-      context 'using EPIC and QUEUE_EPIC' do
+      context 'using EPIC and queue_epic' do
+        stub_config("use_epic", true)
+        stub_config("queue_epic", true)
+
         it 'should create an item in the queue' do
           org      = create(:organization)
           service  = create(:service, organization: org, one_time_fee: true, send_to_epic: true)
@@ -205,8 +212,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
           li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
           session[:identity_id]            = logged_in_user.id
-          stub_const("USE_EPIC", true)
-          stub_const("QUEUE_EPIC", true)
+
           setup_valid_study_answers(protocol)
 
           get :confirmation, params: {
@@ -218,7 +224,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
         end
       end
 
-      context 'using EPIC but not QUEUE_EPIC' do
+      context 'using EPIC but not queue_epic' do
+        stub_config("use_epic", true)
+
         it 'should notify' do
           org      = create(:organization)
           service  = create(:service, organization: org, one_time_fee: true, send_to_epic: true)
@@ -228,8 +236,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
           li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                      create(:service_provider, identity: logged_in_user, organization: org)
           org.submission_emails.create(email: 'hedwig@owlpost.com')
+
           session[:identity_id]            = logged_in_user.id
-          stub_const("USE_EPIC", true)
+
           setup_valid_study_answers(protocol)
 
           # We have an admin, user, and service_provider so we send 3 emails
@@ -289,7 +298,7 @@ def add_li_creating_a_new_ssr_then_delete_li_destroying_ssr(sr, ssr, ssr2)
   added_li = AuditRecovery.where("audited_changes LIKE '%sub_service_request_id: #{ssr2.id}%' AND auditable_type = 'LineItem' AND action IN ('create')")
   added_li.first.update_attribute(:created_at, Time.now.utc)
   added_li.first.update_attribute(:user_id, logged_in_user.id)
-  
+
   ssr2.line_items.first.destroy!
   sr.sub_service_requests.last.destroy!
   sr.reload

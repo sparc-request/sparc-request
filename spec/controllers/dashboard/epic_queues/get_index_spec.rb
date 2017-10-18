@@ -22,16 +22,16 @@ require "rails_helper"
 
 RSpec.describe Dashboard::EpicQueuesController do
   describe "GET #index" do
+    stub_config("use_epic", true)
+    stub_config("epic_queue_access", ['jug2'])
+
     describe "for overlord users" do
       before(:each) do
-        stub_const("EPIC_QUEUE_ACCESS", ['jug2'])
-        
         protocol = create(:protocol,
                           :without_validations,
                           last_epic_push_status: 'failed'
                          )
         @eq = create(:epic_queue, protocol: protocol)
-        stub_const("EPIC_QUEUE_ACCESS", ['jug2'])
         log_in_dashboard_identity(obj: build(:identity, ldap_uid: 'jug2'))
         get :index, params: { format: :json }
       end

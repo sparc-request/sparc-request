@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2016 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -18,26 +18,31 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class AdditionalDetails::UpdateQuestionnairesController < ApplicationController
-  before_action :authenticate_identity!
+require 'rails_helper'
 
-  def update
-    @service = Service.find(params[:service_id])
-    @questionnaires = @service.questionnaires
-    @questionnaire = Questionnaire.find(params[:id])
-    update_questionnaire(@questionnaire)
-    respond_to do |format|
-      format.js
+RSpec.describe PermissibleValue, type: :model do
+  context 'get_value' do
+    it 'should return the first value with the given key and category' do
+      pv = create(:permissible_value, category: 'category', key: 'key1')
+           create(:permissible_value, category: 'category', key: 'key2')
+      expect(PermissibleValue.get_value('category', 'key1')).to eq(pv.value)
     end
   end
 
-  private
+  context 'get_key_list' do
+    before :all do
+      @pv1 = create(:permissible_value, key: 'key1', category: 'first', default: true)
+      @pv2 = create(:permissible_value, key: 'key2', category: 'first', default: true)
+      @pv3 = create(:permissible_value, key: 'key3', category: 'first', default: false)
+             create(:permissible_value, key: 'key4', category: 'second', default: true)
+    end
 
-  def update_questionnaire(questionnaire)
-    if questionnaire.active?
-      questionnaire.update_attribute(:active, false)
-    else
-      questionnaire.update_attribute(:active, true)
+    it 'should return an array of keys if default is nil' do
+      expect(PermissibleValue.get_key_list('first')).to eq([@pv1.key, @pv2.key, @pv3.key])
+    end
+
+    it 'should return an array of keys where default is true' do
+      expect(PermissibleValue.get_key_list('first', true)).to eq([@pv1.key, @pv2.key])
     end
   end
 end

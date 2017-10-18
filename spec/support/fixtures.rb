@@ -176,9 +176,9 @@ def build_per_patient_per_visit_services
   let!(:super_user)          { create(:super_user, organization_id: program.id, identity_id: jpl6.id)}
   let!(:catalog_manager)     { create(:catalog_manager, organization_id: program.id, identity_id: jpl6.id) }
   let!(:clinical_provider)   { create(:clinical_provider, organization_id: program.id, identity_id: jug2.id) }
-  let!(:available_status)    { create(:available_status, organization_id: program.id, status: 'submitted')}
-  let!(:available_status2)   { create(:available_status, organization_id: program.id, status: 'draft')}
-  let!(:available_status3)   { create(:available_status, organization_id: program.id, status: 'administrative_review')}
+  let!(:available_status)    { create(:available_status, organization_id: program.id, status: 'submitted', selected: true)}
+  let!(:available_status2)   { create(:available_status, organization_id: program.id, status: 'draft', selected: true)}
+  let!(:available_status3)   { create(:available_status, organization_id: program.id, status: 'administrative_review', selected: true)}
   let!(:subsidy)             { Subsidy.auditing_enabled = false; create(:subsidy_without_validations, percent_subsidy: 0.45, sub_service_request_id: sub_service_request.id)}
   let!(:subsidy_map)         { create(:subsidy_map, organization_id: program.id) }
 end

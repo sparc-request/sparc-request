@@ -48,9 +48,8 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
       scenario 'and sees all visits checked' do
         visit service_calendar_service_request_path(@sr)
         wait_for_javascript_to_finish
-
+        binding.pry
         find('.service-calendar-column').click
-
         expect(page).to have_css('.visit-quantity[checked]', count: 2)
      end
     end
@@ -80,7 +79,6 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
 
         find('.service-calendar-column').click
         wait_for_javascript_to_finish
-
         expect(page).to have_css('.visit-quantity[checked]', count: 1)
         expect(all('.visit-quantity').last).to_not be_checked
       end

@@ -30,7 +30,7 @@
       .col-lg-10
         = form.text_field :udak_project_number, class: 'form-control'
 
-    - if USE_INDIRECT_COST
+    - if Setting.find_by_key("use_indirect_cost").value
       .form-group.row
         = form.label :indirect_cost_rate, t(:protocols)[:studies][:optional_information][:rate], class: 'col-lg-2 control-label'
         .col-lg-10

@@ -30,9 +30,8 @@ RSpec.describe Protocol, type: :model do
   build_study_type_answers()
 
   describe "#email_about_change_in_authorized_user" do
-    context "SEND_AUTHORIZED_USER_EMAILS == true && ssr.status == 'not_draft'" do
+    context "send_authorized_user_emails is true and ssr.status is 'not_draft'" do
       it "should send authorized user email" do
-        stub_const('SEND_AUTHORIZED_USER_EMAILS', true)
         organization = create(:organization)
         @protocol1 = create(:study_without_validations)
         @sr1 = create(:service_request_without_validations, protocol_id: @protocol1.id)
@@ -51,9 +50,8 @@ RSpec.describe Protocol, type: :model do
       end
     end
 
-    context "SEND_AUTHORIZED_USER_EMAILS == true && ssr.status == 'draft'" do
+    context "send_authorized_user_emails is true and ssr.status is 'draft'" do
       it "should send authorized user email" do
-        stub_const('SEND_AUTHORIZED_USER_EMAILS', true)
         organization = create(:organization)
         @protocol1 = create(:study_without_validations)
         @sr1 = create(:service_request_without_validations, protocol_id: @protocol1.id)
@@ -72,9 +70,10 @@ RSpec.describe Protocol, type: :model do
       end
     end
 
-    context "SEND_AUTHORIZED_USER_EMAILS == false && ssr.status == 'draft'" do
+    context "send_authorized_user_emails is false and ssr.status is 'draft'" do
+      stub_config("send_authorized_user_emails", false)
+
       it "should send authorized user email" do
-        stub_const('SEND_AUTHORIZED_USER_EMAILS', false)
         organization = create(:organization)
         @protocol1 = create(:study_without_validations)
         @sr1 = create(:service_request_without_validations, protocol_id: @protocol1.id)
@@ -93,9 +92,10 @@ RSpec.describe Protocol, type: :model do
       end
     end
 
-    context "SEND_AUTHORIZED_USER_EMAILS == false && ssr.status == 'not_draft'" do
+    context "send_authorized_user_emails is false and ssr.status is 'not_draft'" do
+      stub_config("send_authorized_user_emails", false)
+      
       it "should send authorized user email" do
-        stub_const('SEND_AUTHORIZED_USER_EMAILS', false)
         organization = create(:organization)
         @protocol1 = create(:study_without_validations)
         @sr1 = create(:service_request_without_validations, protocol_id: @protocol1.id)

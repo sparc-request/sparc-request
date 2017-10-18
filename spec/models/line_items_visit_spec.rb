@@ -156,9 +156,9 @@ RSpec.describe LineItemsVisit, type: :model do
       end
 
       describe "indirect cost" do
-
+        stub_config("use_indirect_cost", true)
+        
         before :each do
-          stub_const("USE_INDIRECT_COST", true)
           study.update_attribute(:indirect_cost_rate, 200)
         end
 

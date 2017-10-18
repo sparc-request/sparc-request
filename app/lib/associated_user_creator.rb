@@ -37,7 +37,7 @@ class AssociatedUserCreator
 
       protocol.email_about_change_in_authorized_user(@protocol_role, "add")
 
-      if USE_EPIC && protocol.selected_for_epic && !QUEUE_EPIC
+      if Setting.find_by_key("use_epic").value && protocol.selected_for_epic && !Setting.find_by_key("queue_epic").value
         Notifier.notify_for_epic_user_approval(protocol).deliver
       end
 

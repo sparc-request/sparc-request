@@ -33,9 +33,9 @@ RSpec.describe Arm, type: :model do
       allow(arm).to receive(:line_items_visits).and_return livs
       allow(arm).to receive_message_chain(:protocol, :indirect_cost_rate).and_return 50
     end
-
-    context 'with USE_INDIRECT_COST' do
-      before(:each) { stub_const('USE_INDIRECT_COST', true) }
+    
+    context 'using indirect cost' do
+      stub_config("use_indirect_cost", true)
 
       context 'with no argument' do
         it 'should return total indirect cost all LineItems' do
@@ -50,7 +50,7 @@ RSpec.describe Arm, type: :model do
       end
     end
 
-    context 'without USE_INDIRECT_COST' do
+    context 'not using indirect cost' do
       context 'with no argument' do
         it 'should return total indirect cost all LineItems' do
           expect(arm.maximum_indirect_costs_per_patient).to eq 0.0

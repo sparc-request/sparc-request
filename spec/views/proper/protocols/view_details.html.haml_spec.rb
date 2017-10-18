@@ -51,6 +51,8 @@ RSpec.describe "protocols/view_details.html.haml", type: :view do
   end
 
   describe "view details of a study" do
+    stub_config("use_epic", true)
+    
     before(:each) do
       protocol = create(
         :study_without_validations_with_questions,

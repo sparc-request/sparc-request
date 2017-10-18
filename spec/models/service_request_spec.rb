@@ -58,12 +58,12 @@ RSpec.describe ServiceRequest, type: :model do
         service = create(:service,
                         organization_id: organization.id,
                         name: 'ABCD',
-                        one_time_fee: true) 
+                        one_time_fee: true)
         @identity = create(:identity)
         create(:service_provider,
                 identity: @identity,
                 organization: organization,
-                service: service) 
+                service: service)
         service_request.update_attribute(:submitted_at, Time.now.yesterday)
         ssr = service_request.sub_service_requests.first
         ssr.update_attribute(:submitted_at, Time.now.yesterday)
@@ -98,7 +98,7 @@ RSpec.describe ServiceRequest, type: :model do
       before :each do
         @identity = create(:identity)
       end
-      
+
       it "should NOT return a audit report" do
         expect(service_request.audit_report(@identity, Time.now.yesterday.utc, Time.now.utc)).to eq({:line_items=>{}})
       end
@@ -193,7 +193,7 @@ RSpec.describe ServiceRequest, type: :model do
   end
 
   describe "cost calculations" do
-    #USE_INDIRECT_COST = true  #For testing indirect cost
+    #stub_config("use_indirect_cost", true)  #For testing indirect cost
 
     before :each do
       service_request.arms.each { |arm| arm.visits.update_all(quantity: 15, research_billing_qty: 5, insurance_billing_qty: 5, effort_billing_qty: 5) }
@@ -211,7 +211,7 @@ RSpec.describe ServiceRequest, type: :model do
 
     context "total indirect cost one time" do
       it "should return the sum of all line items one time fee indirect cost" do
-        if USE_INDIRECT_COST
+        if Setting.find_by_key("use_indirect_cost").value
           expect(service_request.total_indirect_costs_one_time).to eq(10000)
         else
           expect(service_request.total_indirect_costs_one_time).to eq(0.0)
@@ -221,7 +221,7 @@ RSpec.describe ServiceRequest, type: :model do
 
     context "total cost one time" do
       it "should return the sum of all line items one time fee direct and indirect costs" do
-        if USE_INDIRECT_COST
+        if Setting.find_by_key("use_indirect_cost").value
           expect(service_request.total_costs_one_time).to eq(15000)
         else
           expect(service_request.total_costs_one_time).to eq(5000)
@@ -237,7 +237,7 @@ RSpec.describe ServiceRequest, type: :model do
 
     context "total indirect cost" do
       it "should return the sum of all line items indirect cost" do
-        if USE_INDIRECT_COST
+        if Setting.find_by_key("use_indirect_cost").value
           expect(service_request.indirect_cost_total).to eq(1210000)
         else
           expect(service_request.indirect_cost_total).to eq(0.0)
@@ -247,7 +247,7 @@ RSpec.describe ServiceRequest, type: :model do
 
     context "grand total" do
       it "should return the grand total of all costs" do
-        if USE_INDIRECT_COST
+        if Setting.find_by_key("use_indirect_cost").value
           expect(service_request.grand_total).to eq(1815000)
         else
           expect(service_request.grand_total).to eq(605000)
@@ -265,7 +265,7 @@ RSpec.describe ServiceRequest, type: :model do
     context "total indirect cost per patient" do
 
       it "should return the sum of all line items visit-based indirect cost" do
-        if USE_INDIRECT_COST
+        if Setting.find_by_key("use_indirect_cost").value
           expect(service_request.total_indirect_costs_per_patient).to eq(1200000)
         else
           expect(service_request.total_indirect_costs_per_patient).to eq(0.0)
@@ -276,7 +276,7 @@ RSpec.describe ServiceRequest, type: :model do
     context "total costs per patient" do
 
       it "should return the total of the direct and indirect costs" do
-        if USE_INDIRECT_COST
+        if Setting.find_by_key("use_indirect_cost").value
           expect(service_request.total_costs_per_patient).to eq(1800000)
         else
           expect(service_request.total_costs_per_patient).to eq(600000.0)

@@ -46,18 +46,22 @@ RSpec.describe '/service_calendar/master_calendar/_merged_grand_totals', type: :
     expect(response).to have_content('Total Costs (Non-clinical Services) Per Study')
   end
 
-  it 'should display total direct cost if USE_INDIRECT_COST is true' do
-    stub_const("USE_INDIRECT_COST", true)
-    render "/service_calendars/master_calendar/merged_grand_totals", service_request: @service_request
+  context 'indirect cost turned on' do
+    stub_config("use_indirect_cost", true)
 
-    expect(response).to have_content('Total Direct Cost')
+    it 'should display total direct cost' do
+      render "/service_calendars/master_calendar/merged_grand_totals", service_request: @service_request
+
+      expect(response).to have_content('Total Direct Cost')
+    end
   end
 
-  it 'should not display total direct cost if USE_INDIRECT_COST is false' do
-    stub_const("USE_INDIRECT_COST", false)
-    render "/service_calendars/master_calendar/merged_grand_totals", service_request: @service_request
+  context 'indirect cost turned off' do
+    it 'should not display total direct cost' do
+      render "/service_calendars/master_calendar/merged_grand_totals", service_request: @service_request
 
-    expect(response).to_not have_content('Total Direct Cost')
+      expect(response).to_not have_content('Total Direct Cost')
+    end
   end
 
   it 'should display the grand total' do

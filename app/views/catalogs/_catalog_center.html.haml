@@ -26,7 +26,7 @@
     - else
       = render 'catalogs/welcome'
   #calendar-blog.full
-    - if USE_NEWS_FEED
+    - if Setting.find_by_key("use_news_feed").value
       = render 'catalogs/news'
-    - if USE_GOOGLE_CALENDAR
+    - if Setting.find_by_key("use_google_calendar").value
       = render 'catalogs/calendar'

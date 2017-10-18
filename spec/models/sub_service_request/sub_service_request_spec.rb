@@ -245,7 +245,7 @@ RSpec.describe SubServiceRequest, type: :model do
         it 'should should return false if the status is complete' do
           stub_const("FINISHED_STATUSES", ['complete'])
           sub_service_request.update_attributes(status: 'complete')
-          
+          program.editable_statuses.where(status: sub_service_request.status).update(selected: true)
           expect(sub_service_request.can_be_edited?).to eq(false)
         end
       end

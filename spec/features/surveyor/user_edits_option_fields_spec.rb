@@ -22,16 +22,15 @@ require 'rails_helper'
 
 RSpec.describe 'User edits option fields', js: true do
   let_there_be_lane
-
   fake_login_for_each_test
+
+  stub_config("site_admins", ["jug2"])
 
   before :each do
     @survey = create(:survey)
     @section = create(:section, survey: @survey)
     @question = create(:question, section: @section, question_type: 'dropdown')
     @option = create(:option, question: @question)
-
-    stub_const("SITE_ADMINS", ['jug2'])
   end
 
   scenario 'and sees updated content' do

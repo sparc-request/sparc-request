@@ -1,0 +1,623 @@
+[
+  { 
+    "key":            "about_sparc_url",
+    "value":          "http://academicdepartments.musc.edu/sctr/sparc_request",
+    "friendly_name":  "\"About SPARCRequest\" URL",
+    "description":    "The URL for the \"About SPARCRequest\" button.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  { 
+    "key":            "admin_mail_to", 
+    "value":          "catesa@musc.edu",
+    "friendly_name":  "Admin Mail-To",
+    "description":    "This field will overwrite the admin user mailers in the application to instead mail to this address. To be overwritten in development/testing/staging to prevent real emails being sent out to admin users.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "calendar_url",
+    "value":          "https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics",
+    "friendly_name":  "Calendar URL",
+    "description":    "The web address used by the application to pull Google Calendar data to populate calendar events on the homepage.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_google_calendar",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "clinical_work_fulfillment_url",
+    "value":          "http://fulfillment-future-url.com",
+    "friendly_name":  "Clinical Work Fulfillment URL",
+    "description":    "",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "contact_us_cc",
+    "value":          "sparcrequest@gmail.com",
+    "friendly_name":  "Contact Us CC",
+    "description":    "",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "contact_us_mail_to",
+    "value":          "success@musc.edu",
+    "friendly_name":  "Contact Us Mail-To",
+    "description":    "",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "current_api_version",
+    "value":          "v1",
+    "friendly_name":  "Current API Version",
+    "description":    "The current version of the SPARCRequest API.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "dashboard_link",
+    "value":          "/dashboard",
+    "friendly_name":  "Dashboard URL",
+    "description":    "The url for the user dashboard.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "default_mail_to",
+    "value":          "catesa@musc.edu",
+    "friendly_name":  "Default Mail-To",
+    "description":    "This field will overwrite the general user mailers in the application to instead mail to this address. To be overwritten in development/testing/staging to prevent real emails being sent out to general users.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "epic_queue_access",
+    "value":          "[]",
+    "friendly_name":  "Epic Queue Access",
+    "description":    "Determines which users will have access to the EPIC Queue.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "queue_epic",
+    "parent_value":   "true"
+  },
+  // This is not defined in application.yml.example. Is this still used?
+  // {
+  //   "key":            "epic_queue_report_to",
+  //   "value":          "jug2@musc.edu",
+  //   "friendly_name":  "Epic Queue Report To",
+  //   "description":    "Email addresses of users who are e-mailed the EPIC queue report.",
+  //   "group":          "",
+  //   "version":        "",
+  //   "parent_key":     "queue_epic",
+  //   "parent_value":   "true"
+  // },
+  {
+    "key":            "epic_rights_mail_to",
+    "value":          "forney@musc.edu, crossoml@musc.edu",
+    "friendly_name":  "EPIC Rights Mail-To",
+    "description":    "Email addresses of users who are e-mailed for EPIC rights approval",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "faq_url",
+    "value":          "http://academicdepartments.musc.edu/sctr/sparc_request/faq.html",
+    "friendly_name":  "FAQs URL",
+    "description":    "The URL of the SPARCRequest frequently asked questions page.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_faq_link",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "feedback_link",
+    "value":          "http://something.com",
+    "friendly_name":  "Feedback URL",
+    "description":    "The URL of an external feedback system.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_feedback_link",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "feedback_mail_to",
+    "value":          "hutsonk@musc.edu",
+    "friendly_name":  "Feedback Mail-To",
+    "description":    "This field will overwrite the feedback mailers in the application to instead mail to this address. To be overwritten in development/testing/staging to prevent real emails being sent out from users.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_feedback_link",
+    "parent_value":   "false"
+  },
+  {
+    "key":            "finished_statuses",
+    "value":          "[\"complete\", \"withdrawn\"]",
+    "friendly_name":  "Finished Statuses",
+    "description":    "Defines the statuses that a SubServiceRequest is considered complete. In these statuses, SubServiceRequests can't be updated. New services from those organizations will be added to new SubServiceRequests.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "fulfillment_contingent_on_catalog_manager",
+    "value":          "true",
+    "friendly_name":  "Fulfillment Contingent on Catalog Manager",
+    "description":    "",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "header_link_1",
+    "value":          "http://sctr.musc.edu",
+    "friendly_name":  "Header Logo 1 URL",
+    "description":    "The URL for the first image in the header logos.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "header_link_2_dashboard",
+    "value":          "http://localhost:3000/dashboard",
+    "friendly_name":  "Header Logo 2 URL (SPARCDashboard)",
+    "description":    "The URL for the second image in the header logos in SPARCDashboard.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "header_link_2_proper",
+    "value":          "http://localhost:3000/",
+    "friendly_name":  "Header Logo 2 URL (SPARCRequest)",
+    "description":    "The URL for the second image in the header logos in SPARCRequest.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "header_link_3",
+    "value":          "http://www.musc.edu",
+    "friendly_name":  "Header Logo 3 URL",
+    "description":    "The URL for the third image in the header logos.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "host",
+    "value":          "127.0.0.1:5000",
+    "friendly_name":  "Host",
+    "description":    "",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "lazy_load_ldap",
+    "value":          "false",
+    "friendly_name":  "Lazy Load LDAP Results",
+    "description":    "When enabled, the database will return only LDAP Identities found in the database and will not create new entries. When disabled, if an LDAP Identity is not found in the database, a record will be created for that user and returned.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_ldap",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "listserv_mail_to",
+    "value":          "hewwe@musc.edu, hutsonk@musc.edu",
+    "friendly_name":  "Listserv Mail-To",
+    "description":    "Email addresses of users who are e-mailed by the Listserv link.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "navbar_links",
+    "value":          "{ \"sparc_request\": [\"SPARCRequest\", \"http://localhost:3000/\"], \"sparc_dashboard\": [\"SPARCDashboard\", \"http://localhost:3000/dashboard\"], \"sparc_fulfillment\": [\"SPARCFulfillment\", \"https://cwf-d.obis.musc.edu/identities/sign_in\"], \"sparc_catalog\": [\"SPARCCatalog\", \"http://localhost:3000/catalog_manager\"], \"sparc_report\": [\"SPARCReport\", \"http://localhost:3000/reports\"] }",
+    "friendly_name":  "Navbar Links",
+    "description":    "Links which appear in the header navbar.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "new_user_cc",
+    "value":          "amcates@gmail.com, no-reply@musc.edu",
+    "friendly_name":  "New User CC",
+    "description":    "This field will overwrite the new user mailers in the application to instead cc to this address. To be overwritten in development/testing/staging to prevent real emails being sent out to users.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "no_reply_from",
+    "value":          "no-reply@musc.edu",
+    "friendly_name":  "No Reply From",
+    "description":    "",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "queue_epic",
+    "value":          "false",
+    "friendly_name":  "Queue EPIC",
+    "description":    "Determines whether EPIC pushes will be queued or not. Emptying the queue is done via rake epic:batch_load. This can setup as a cronjob to run at a certain interval.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_epic",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "queue_epic_load_error_to",
+    "value":          "hutsonk@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu",
+    "friendly_name":  "Epic Queue Errors To",
+    "description":    "Email addresses of users who are e-mailed when there is an EPIC error.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "queue_epic",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "redcap_api_token",
+    "value":          "",
+    "friendly_name":  "Redcap API Token",
+    "description":    "The token used to access the Redcap API.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_redcap_api",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "redcap_api_url",
+    "value":          "https://redcap.musc.edu/api/",
+    "friendly_name":  "Redcap API URL",
+    "description":    "",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_redcap_api",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "remote_service_notifier_host",
+    "value":          "127.0.0.1:5001",
+    "friendly_name":  "Remote Service Notifier",
+    "description":    "",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "remote_service_notifier_password",
+    "value":          "",
+    "friendly_name":  "Remote Service Notifier Password",
+    "description":    "",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "remote_service_notifier_path",
+    "value":          "/v1/notifications.json",
+    "friendly_name":  "Remote Service Notifier Path",
+    "description":    "",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "remote_service_notifier_protocol",
+    "value":          "https",
+    "friendly_name":  "Remote Service Notifier Protocol",
+    "description":    "",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "remote_service_notifier_username",
+    "value":          "",
+    "friendly_name":  "Remote Service Notifier Username",
+    "description":    "",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "research_master_api_url",
+    "value":          "https://research-master-staging.musc.edu/api/",
+    "friendly_name":  "Research Master API URL",
+    "description":    "The URL of the Research Master ID API.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_research_master",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "research_master_api_token",
+    "value":          "e754d4e002bd58b4b1a55a3f5808ec37",
+    "friendly_name":  "Research Master API Token",
+    "description":    "The token used to access the Research Master ID API.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_research_master",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "use_research_master",
+    "value":          "false",
+    "friendly_name":  "Use Research Master ID",
+    "description":    "Determines whether the Research Master ID application should be used.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "research_master_link",
+    "value":          "https://research-master-staging.musc.edu/",
+    "friendly_name":  "Research Master ID URL",
+    "description":    "The URL of the Research Master ID application.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_research_master",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "root_url",
+    "value":          "https://andrews-mac-pro.thurmond-gazes.musc.edu",
+    "friendly_name":  "Root URL",
+    "description":    "The root URL for the application.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "send_authorized_user_emails",
+    "value":          "true",
+    "friendly_name":  "Send Authorized User Emails",
+    "description":    "Determines whether the application will send emails to all authorized users with \"View\" or greater rights/",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "send_emails_to_real_users",
+    "value":          "false",
+    "friendly_name":  "Send Emails to Real Users",
+    "description":    "",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "site_admins",
+    "value":          "[]",
+    "friendly_name":  "Site Admins",
+    "description":    "Determines which users will have access to the SPARCSurvey module.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "suppress_ldap_for_user_search",
+    "value":          "false",
+    "friendly_name":  "Suppress LDAP for User Search",
+    "description":    "Allow the use of LDAP but suppress its use within the Project/Study user search.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_ldap",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "use_system_satisfaction_survey",
+    "value":          "false",
+    "friendly_name":  "Use System Satisfaction Survey",
+    "description":    "Determines whether or not to display a System Satisfaction Survey prior to submitting a Service Request.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "system_satisfaction_survey_cc",
+    "value":          "amcates@gmail.com, catesa@musc.edu",
+    "friendly_name":  "System Satisfaction Survey CC",
+    "description":    "This field will overwrite the system satisfaction survey mailers in the application to instead cc to this address. To be overwritten in development/testing/staging to prevent real emails being sent out to users.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_system_satisfaction_survey",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "updatable_statuses",
+    "value":          "[\"first_draft\", \"draft\", \"get_a_cost_estimate\", \"awaiting_pi_approval\"]",
+    "friendly_name":  "Updatable Statuses",
+    "description":    "Defines the statuses that a SubServiceRequest can be updated from. Any other statuses are considered \"un-updatable\".",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "use_cas",
+    "value":          "false",
+    "friendly_name":  "Use CAS",
+    "description":    "Determines whether or not Omniauth will use CAS.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "use_cas_only",
+    "value":          "false",
+    "friendly_name":  "Use CAS Only",
+    "description":    "Determines whether the application will only use CAS authentication for user login. Set to true to turn off database authentication login options.<br>Note: This has a lower precedence than \"Use Shibboleth Only\" when both are enabled.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_cas",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "use_epic",
+    "value":          "false",
+    "friendly_name":  "Use EPIC",
+    "description":    "Determines whether or not EPIC integration will be used.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "use_faq_link",
+    "value":          "false",
+    "friendly_name":  "Use FAQ Link",
+    "description":    "Determines whether the application will use an internal list of frequently asked questions or link to an external resource.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "use_feedback_link",
+    "value":          "true",
+    "friendly_name":  "Use Feedback Link",
+    "description":    "Determines whether the application will use an internal or external feedback system.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "use_google_calendar",
+    "value":          "true",
+    "friendly_name":  "Use Google Calendar",
+    "description":    "Determines whether the application will display calendar events on the homepage.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "use_indirect_cost",
+    "value":          "false",
+    "friendly_name":  "Use Indirect Cost",
+    "description":    "Determines whether the application will display direct costs to users. If true, then in addition to direct costs and direct cost subtotals, users will also see indirect costs and indirect cost subtotals, and indirect costs will also be included in the grand total. If false, then indirect costs will not be included in the totals.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "use_ldap",
+    "value":          "false",
+    "friendly_name":  "Use LDAP",
+    "description":    "Determines whether the authorized user search will attempt to connect to an LDAP server. If false, it will simply search the database. NOTE: Even if this is set to false at least a blank \"ldap.yml\" is required.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "use_news_feed",
+    "value":          "true",
+    "friendly_name":  "Use News Feed",
+    "description":    "Determines whether the application will display news on the homepage.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "use_redcap_api",
+    "value":          "false",
+    "friendly_name":  "Use Redcap API",
+    "description":    "Determines whether the application will use an external redcap feedback module.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "use_separate_audit_database",
+    "value":          "false" , "description": " needs to be false at outset since new institutions may not use a separate audit database",
+    "friendly_name":  "Use Separate Audit Database",
+    "description":    "Determines whether the application will use a separate database to track audits.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "use_shibboleth",
+    "value":          "true",
+    "friendly_name":  "Use Shibboleth",
+    "description":    "Determines whether the single user login option will be displayed in the application. Currently this is only shibboleth. If you would like to use another OmniAuth module, this will need to be set to true.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "use_shibboleth_only",
+    "value":          "false",
+    "friendly_name":  "Use Shibboleth Only",
+    "description":    "Determines whether the application will only use Shibboleth authentication for user login. Set to true to turn off database authentication login options.<br>Note: This has a higher precedence than \"Use CAS Only\" when both are enabled.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_shibboleth",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "wkhtmltopdf_location",
+    "value":          "/usr/local/bin/wkhtmltopdf",
+    "friendly_name":  "WKHTMLTOPDF Location",
+    "description":    "Optional location for wkhtmltopdf if not using one supplied by a gem. eg. \"/usr/local/bin/wkhtmltopdf\"",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  }
+]

@@ -48,7 +48,7 @@ class Organization < ApplicationRecord
   has_many :available_statuses, :dependent => :destroy
   has_many :editable_statuses, :dependent => :destroy
   has_many :org_children, class_name: "Organization", foreign_key: :parent_id
-  
+
   accepts_nested_attributes_for :subsidy_map
   accepts_nested_attributes_for :pricing_setups
   accepts_nested_attributes_for :submission_emails

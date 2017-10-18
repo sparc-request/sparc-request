@@ -47,7 +47,15 @@ SparcRails::Application.routes.draw do
 
   resources :feedback
 
-  if USE_SHIBBOLETH_ONLY
+  begin
+    use_shibboleth_only = Setting.find_by_key("use_shibboleth_only").try(:value)
+    use_cas_only        = Setting.find_by_key("use_cas_only").try(:value)
+  rescue
+    use_shibboleth_only = nil
+    use_cas_only        = nil
+  end
+
+  if use_shibboleth_only
     devise_for :identities,
                controllers: {
                  omniauth_callbacks: 'identities/omniauth_callbacks',
@@ -55,7 +63,7 @@ SparcRails::Application.routes.draw do
                  registrations: 'identities/registrations'
                }, path_names: { sign_in: 'auth/shibboleth' }
 
-  elsif USE_CAS_ONLY
+  elsif use_cas_only
     devise_for :identities,
                controllers: {
                  omniauth_callbacks: 'identities/omniauth_callbacks',
@@ -149,7 +157,7 @@ SparcRails::Application.routes.draw do
   resources :line_items_visits, only: [:update, :destroy]
   resources :visit_groups, only: [:edit, :update]
   resources :visits, only: [:edit, :update, :destroy]
-  
+
   resources :documents, only: [:index, :new, :create, :edit, :update, :destroy]
 
   resources :notes, only: [:index, :new, :create]
@@ -350,8 +358,8 @@ SparcRails::Application.routes.draw do
   mount API::Base => '/'
 
   root to: 'service_requests#catalog'
-  
+
   ## error page routes ##
   match "/404", :to => "error_pages#not_found", :via => :all
-  match "/500", :to => "error_pages#internal_server_error", :via => :all  
+  match "/500", :to => "error_pages#internal_server_error", :via => :all
 end

@@ -22,9 +22,9 @@ require 'open-uri'
 
 desc "Download the iCal version of the google calendar"
 task :fetch_google_calendar => :environment do
-  if USE_GOOGLE_CALENDAR
+  if Setting.find_by_key("use_google_calendar").value
     open(Rails.root.join("tmp", "basic.ics"), "wb") do |file|
-      file << open(CALENDAR_URL).read
+      file << open(Setting.find_by_key("calendar_url").value).read
     end
   end
 end

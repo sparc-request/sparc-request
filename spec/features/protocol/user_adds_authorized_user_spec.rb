@@ -27,8 +27,6 @@ RSpec.describe 'User wants to add an authorized user', js: true do
   fake_login_for_each_test
 
   before :each do
-    stub_const('USE_LDAP', false)
-    
     institution = create(:institution, name: "Institution")
     provider    = create(:provider, name: "Provider", parent: institution)
     program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
@@ -60,16 +58,13 @@ RSpec.describe 'User wants to add an authorized user', js: true do
         wait_for_javascript_to_finish
 
         # Select the user
-        fill_in 'authorized_user_search', with: jpl6.full_name
-        page.execute_script("$('#authorized_user_search').trigger('focus');")
-        wait_for_javascript_to_finish
-
-        while (suggestion = first('.tt-suggestion')).nil?
-        end
-
-        suggestion.click
-        wait_for_javascript_to_finish
+        fill_in 'authorized_user_search', with: jpl6.first_name
+        page.execute_script %Q{ $('#authorized_user_search').trigger("keydown") }
+        expect(page).to have_selector('.tt-suggestion')
         
+        first('.tt-suggestion').click
+        wait_for_javascript_to_finish
+
         bootstrap_select '#project_role_role', 'PD/PI'
 
         click_button 'Save'

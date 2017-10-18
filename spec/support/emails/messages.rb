@@ -68,7 +68,6 @@ module EmailHelpers
     # and request they “Submit to Start Services” once ready to proceed."
     expect(mail_response).to have_text('A request has been made for a budget review (Get Cost Estimate) in SPARCRequest and is awaiting your review in SPARCDashboard.  Please ensure services chosen are appropriate and can be provided. Communicate any necessary changes to the study team and request they “Submit to Start Services” once ready to proceed.')
     expect(mail_response).to have_xpath "//a[@href='/dashboard/protocols/#{@service_request.protocol.id}'][text()= 'SPARCDashboard']/@href"
-
   end
 
   def get_a_cost_estimate_general_users

@@ -28,5 +28,5 @@
         .alert.alert-info.text-center
           = t(:surveyor)[:responses][:complete][:thanks]
       .text-center
-        = link_to t(:surveyor)[:responses][:complete][:to_dashboard], DASHBOARD_LINK, class: 'btn btn-lg btn-success'
+        = link_to t(:surveyor)[:responses][:complete][:to_dashboard], Setting.find_by_key("dashboard_link").value, class: 'btn btn-lg btn-success'
 .col-sm-3

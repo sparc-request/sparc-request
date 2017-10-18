@@ -33,7 +33,7 @@
               = identity.display_name
             %a.btn.btn-xs.btn-danger.glyphicon.glyphicon-remove#new-associated-user-button{ href: "javascript:void(0);", data: { protocol_id: protocol.id, permission: 'true', toggle: "tooltip", animation: 'false', placement: 'right' }, title: "Remove" }
       = render 'associated_users/form/primary_pi_warning', protocol: protocol, identity: identity
-      = form_for project_role, url: determine_url(dashboard, project_role), remote: true, html: { class: "protocol-role-form" } do |form| 
+      = form_for project_role, url: determine_url(dashboard, project_role), remote: true, html: { class: "protocol-role-form" } do |form|
         - unless dashboard
           = hidden_field_tag :service_request_id, service_request.id
         = form.hidden_field :identity_id
@@ -64,7 +64,7 @@
             = user_form_group(name: :role_specify, classes: ['role_dependent other', form.object.role == 'other' ? '' : 'hidden'], form: form, required: true) do
               = form.text_field :role_other, class: 'form-control'
 
-            - if USE_EPIC && protocol != nil && protocol.selected_for_epic
+            - if Setting.find_by_key("use_epic").value && protocol != nil && protocol.selected_for_epic
               = user_form_group(name: :epic_access, form: form, required: true,
                 data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
                 title: t(:authorized_users)[:tooltips][:epic_access]) do

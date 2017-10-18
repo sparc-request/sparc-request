@@ -48,11 +48,9 @@ RSpec.describe 'User changes protocol type', js: true do
       wait_for_javascript_to_finish
     end
 
-    context 'use epic = false' do
-      before :each do
-        stub_const('USE_EPIC', true)
-      end
-
+    context 'use epic = true' do
+      stub_config("use_epic", true)
+      
       context "changes the protocol type" do
         before :each do
           bootstrap_select '#protocol_type', 'Study'
@@ -114,10 +112,6 @@ RSpec.describe 'User changes protocol type', js: true do
     end
 
     context 'use epic = false' do
-      before :each do
-        stub_const('USE_EPIC', false)
-      end
-
       context "changes the protocol type" do
         before :each do
           bootstrap_select '#protocol_type', 'Study'

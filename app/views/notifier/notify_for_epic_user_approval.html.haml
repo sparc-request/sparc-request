@@ -28,8 +28,8 @@
 
 %br
 
-Thank you! Please contact the SUCCESS Center at 792-8300 or 
-= link_to CONTACT_US_MAIL_TO, "mailto:#{CONTACT_US_MAIL_TO}"
+Thank you! Please contact the SUCCESS Center at 792-8300 or
+= link_to Setting.find_by_key("contact_us_mail_to").value, "mailto:#{Setting.find_by_key("contact_us_mail_to").value}"
 with any questions.
 
 :scss

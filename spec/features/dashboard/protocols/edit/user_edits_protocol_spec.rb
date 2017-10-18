@@ -26,6 +26,8 @@ RSpec.describe 'User edits epic answers', js: true do
   build_study_type_question_groups
   build_study_type_questions
 
+  stub_config("use_research_master", true)
+  
   context "RMID server is up and running" do
     before :each do
       @protocol       = create(:protocol_without_validations,
@@ -44,7 +46,6 @@ RSpec.describe 'User edits epic answers', js: true do
                                 organization: organization)
 
       allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
-      stub_const("RESEARCH_MASTER_ENABLED", true)
     end
 
     context 'and clicks Edit Information' do
@@ -94,7 +95,6 @@ RSpec.describe 'User edits epic answers', js: true do
                                 organization: organization)
 
       allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(true)
-      stub_const("RESEARCH_MASTER_ENABLED", true)
     end
 
     context 'and clicks Edit Information' do

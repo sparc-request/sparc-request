@@ -22,12 +22,11 @@ require 'rails_helper'
 
 RSpec.describe 'User deletes a survey', js: true do
   let_there_be_lane
-
   fake_login_for_each_test
 
+  stub_config("site_admins", ["jug2"])
+  
   before :each do
-    stub_const("SITE_ADMINS", ['jug2'])
-
     create(:survey)
 
     visit surveyor_surveys_path
@@ -43,7 +42,7 @@ RSpec.describe 'User deletes a survey', js: true do
 
     visit surveyor_surveys_path
     wait_for_javascript_to_finish
-    
+
     expect(page).to have_content('No matching records found')
     expect(Survey.count).to eq(0)
   end

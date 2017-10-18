@@ -36,8 +36,8 @@ module SPARCCWF
       http_basic do |username, password|
 
         begin
-          username == REMOTE_SERVICE_NOTIFIER_USERNAME &&
-            password == REMOTE_SERVICE_NOTIFIER_PASSWORD
+          username == Setting.find_by_key("remote_service_notifier_username").value &&
+            password == Setting.find_by_key("remote_service_notifier_password").value
         rescue
           false
         end
@@ -83,7 +83,7 @@ module SPARCCWF
             find_objects(published_resource_to_s, params)
             if @objects
               present @objects, with: presenter(published_resource_to_s, params[:depth])
-            # for queries with where and a limit of 1  
+            # for queries with where and a limit of 1
             elsif @object
               present @object, with: presenter(published_resource_to_s, params[:depth])
             end

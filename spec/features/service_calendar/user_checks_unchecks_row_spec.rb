@@ -36,6 +36,8 @@ RSpec.describe 'User checks and unchecks calendar rows', js: true do
     li        = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
     
     arm       = create(:arm, protocol: protocol, visit_count: 3)
+
+    org.editable_statuses.where(status: @ssr.status).update(selected: true)
   end
 
   context 'for SSRs which aren\'t locked' do
@@ -46,7 +48,6 @@ RSpec.describe 'User checks and unchecks calendar rows', js: true do
         
         first('.service-calendar-row').click
         wait_for_javascript_to_finish
-        binding.pry
         all('.visit-quantity').each do |checkbox|
           expect(checkbox).to be_checked
         end

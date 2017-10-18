@@ -220,27 +220,32 @@ RSpec.describe SubServiceRequest, type: :model do
 
         it "should return true if the status is draft" do
           sub_service_request.update_attributes(status: "draft")
+          program.editable_statuses.where(status: sub_service_request.status).update(selected: true)
           expect(sub_service_request.can_be_edited?).to eq(true)
         end
 
         it "should return true if the status is submitted" do
           sub_service_request.update_attributes(status: "submitted")
+          program.editable_statuses.where(status: sub_service_request.status).update(selected: true)
           expect(sub_service_request.can_be_edited?).to eq(true)
         end
 
         it "should return true if the status is get a cost estimate" do
           sub_service_request.update_attributes(status: 'get_a_cost_estimate')
+          program.editable_statuses.where(status: sub_service_request.status).update(selected: true)
           expect(sub_service_request.can_be_edited?).to eq(true)
         end
 
         it "should return false if status is anything other than above states" do
           sub_service_request.update_attributes(status: "on_hold")
+          program.editable_statuses.where(status: sub_service_request.status).update(selected: true)
           expect(sub_service_request.can_be_edited?).to eq(false)
         end
 
         it 'should should return false if the status is complete' do
           stub_const("FINISHED_STATUSES", ['complete'])
           sub_service_request.update_attributes(status: 'complete')
+          
           expect(sub_service_request.can_be_edited?).to eq(false)
         end
       end

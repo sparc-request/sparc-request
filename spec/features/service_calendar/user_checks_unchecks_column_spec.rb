@@ -41,6 +41,9 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
     li2       = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service2)
     
     @arm      = create(:arm, protocol: protocol)
+
+    org.editable_statuses.where(status: @ssr.status).update(selected: true)
+    org2.editable_statuses.where(status: @ssr2.status).update(selected: true)
   end
 
   context 'for SSRs which aren\'t locked' do
@@ -48,7 +51,6 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
       scenario 'and sees all visits checked' do
         visit service_calendar_service_request_path(@sr)
         wait_for_javascript_to_finish
-        binding.pry
         find('.service-calendar-column').click
         expect(page).to have_css('.visit-quantity[checked]', count: 2)
      end

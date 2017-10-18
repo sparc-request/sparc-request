@@ -107,6 +107,7 @@ RSpec.describe Identity, type: :model do
 
     before :each do
       stub_const("FINISHED_STATUSES", ['complete'])
+      program.editable_statuses.where(status: sub_service_request.status).update(selected: true)
     end
 
     describe "permission methods" do

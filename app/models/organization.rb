@@ -346,7 +346,6 @@ class Organization < ApplicationRecord
 
   def get_available_statuses
     statuses = []
-    binding.pry
     if self.use_default_statuses
       statuses = DEFAULT_STATUSES
     elsif self.available_statuses.selected.present?

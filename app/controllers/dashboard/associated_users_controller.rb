@@ -67,7 +67,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
   def create
-    creator = AssociatedUserCreator.new(project_role_params)
+    creator = AssociatedUserCreator.new(project_role_params, @user)
 
     if creator.successful?
       if @current_user_created = params[:project_role][:identity_id].to_i == @user.id
@@ -85,7 +85,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
   def update
-    updater = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params)
+    updater = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params, current_identity: @user)
 
     if updater.successful?
       # We care about this because the new rights will determine what is rendered

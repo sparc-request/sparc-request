@@ -41,6 +41,7 @@ RSpec.describe NotifierLogic do
   context '#update_ssrs_and_send_emails for an entire SR' do
     context 'create a new SR with all new services' do
       before :each do
+        service_requester     = create(:identity)
         ### SR SETUP ###
         ### PREVIOUSLY SUBMITTED SSR ###
         @org         = create(:organization_with_process_ssrs)
@@ -52,8 +53,8 @@ RSpec.describe NotifierLogic do
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: nil)
         ### SSR SETUP ###
-        @ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, submitted_at: nil)
-        @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, submitted_at: nil)
+        @ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, submitted_at: nil, service_requester: service_requester)
+        @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, submitted_at: nil, service_requester: service_requester)
         ### LINE ITEM SETUP ###
         li          = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
         li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service)
@@ -119,6 +120,7 @@ RSpec.describe NotifierLogic do
 
     context 'deleted an entire SSR and resubmit SR' do
       before :each do
+        service_requester     = create(:identity)
         ### SR SETUP ###
         ### PREVIOUSLY SUBMITTED SSR ###
         @org         = create(:organization_with_process_ssrs)
@@ -130,8 +132,8 @@ RSpec.describe NotifierLogic do
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
-        ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc)
-        ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc)
+        ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
+        ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
         ### LINE ITEM SETUP ###
         li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
         li_1        = create(:line_item, service_request: @sr, sub_service_request: ssr2, service: service)
@@ -206,6 +208,7 @@ RSpec.describe NotifierLogic do
 
     context 'added a service to a new SSR, then delete that same service which destroys that SSR and resubmit SR' do
       before :each do
+        service_requester     = create(:identity)
         ### SR SETUP ###
         ### PREVIOUSLY SUBMITTED SSR ###
         @org         = create(:organization_with_process_ssrs)
@@ -216,8 +219,8 @@ RSpec.describe NotifierLogic do
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
-        ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc)
-        @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: nil, submitted_at: nil)
+        ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
+        @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: nil, submitted_at: nil, service_requester: service_requester)
         @ssr2.update_attribute(:status, 'draft')
         ### LINE ITEM SETUP ###
         li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
@@ -284,6 +287,7 @@ RSpec.describe NotifierLogic do
 
     context 'added a service to a new SSR and resubmit SR' do
       before :each do
+        service_requester     = create(:identity)
         ### SR SETUP ###
         ### PREVIOUSLY SUBMITTED SSR ###
         @org         = create(:organization_with_process_ssrs)
@@ -295,8 +299,8 @@ RSpec.describe NotifierLogic do
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
-        ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc)
-        @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'draft', submitted_at: nil)
+        ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
+        @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'draft', submitted_at: nil, service_requester: service_requester)
         ### LINE ITEM SETUP ###
         li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
         li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service)
@@ -367,6 +371,7 @@ RSpec.describe NotifierLogic do
 
     context 'previously submitted ssr that has added services' do
       before :each do
+        service_requester     = create(:identity)
          ### SR SETUP ###
         ### PREVIOUSLY SUBMITTED SSR ###
         @org         = create(:organization_with_process_ssrs)
@@ -378,8 +383,8 @@ RSpec.describe NotifierLogic do
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
-        ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc)
-        @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc)
+        ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
+        @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
         ### LINE ITEM SETUP ###
         li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
         li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service)
@@ -452,6 +457,7 @@ RSpec.describe NotifierLogic do
 
     context 'previously submitted ssr that has deleted services' do
       before :each do
+        service_requester     = create(:identity)
         ### SR SETUP ###
         ### PREVIOUSLY SUBMITTED SSR ###
         @org         = create(:organization_with_process_ssrs)
@@ -464,8 +470,8 @@ RSpec.describe NotifierLogic do
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
-        ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc)
-        @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc)
+        ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
+        @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
         ### LINE ITEM SETUP ###
         li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
         li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service)
@@ -544,6 +550,7 @@ RSpec.describe NotifierLogic do
 
     context 'previously submitted SSR (existing SSR) that has added and deleted services' do
       before :each do
+        service_requester     = create(:identity)
         ### SR SETUP ###
         ### PREVIOUSLY SUBMITTED SSR ###
         @org         = create(:organization_with_process_ssrs)
@@ -554,8 +561,8 @@ RSpec.describe NotifierLogic do
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
-        ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc)
-        @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc)
+        ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
+        @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
         ### LINE ITEM SETUP ###
         li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
         li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service)

@@ -1528,7 +1528,7 @@ en:
     proxy: "Proxy Rights:"
     request_amendment: "Request Amendment"
     request_amendment_intro:  "Services have been added or deleted in SPARCRequest and is awaiting your review in"
-    requester:  "(Requester)"
+    requester:  "Requester"
     role: "Role"
     s_name: "Sponsor Name"
     service: "Service"

@@ -30,10 +30,12 @@ namespace :data do
     CSV.open("tmp/ssrs_whose_service_requester_id_has_been_restored.csv", "wb") do |csv|
       csv << ["SSR ID"]
       SubServiceRequest.where(service_requester_id: nil).where.not(protocol_id: nil).each do |ssr|
-        puts ssr.id
-        csv << [ssr.id]
-        user_id = AuditRecovery.where(auditable_id: ssr.id, auditable_type: 'SubServiceRequest', action:  'create').first.user_id
-        ssr.update_attribute(:service_requester_id, user_id)
+        user_id = AuditRecovery.where(auditable_id: ssr.id, auditable_type: 'SubServiceRequest', action:  'create')
+        if user_id.present?
+          puts ssr.id
+          csv << [ssr.id]
+          ssr.update_attribute(:service_requester_id, user_id.first.user_id)
+        end
       end
       puts "The Service Requester ID has been restored for the above ssrs."
     end

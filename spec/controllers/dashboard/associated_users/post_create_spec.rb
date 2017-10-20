@@ -56,13 +56,13 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
         post :create, params: {
           protocol_id: protocol.id,
-          project_role: @new_project_roles_attrs 
+          project_role: @new_project_roles_attrs
         }, xhr: true
       end
 
       it "should use AssociatedUserCreator to create ProjectRole" do
         expect(AssociatedUserCreator).to have_received(:new).
-          with controller_params(@new_project_roles_attrs)
+          with controller_params(@new_project_roles_attrs), identity
       end
 
       it "should not set @errors" do
@@ -96,7 +96,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
       it "should use AssociatedUserCreator to (attempt) to create ProjectRole" do
         expect(AssociatedUserCreator).to have_received(:new).
-          with controller_params(@new_project_roles_attrs)
+          with controller_params(@new_project_roles_attrs), identity
       end
 
       it "should set @errors from built ProjectRole's errors" do

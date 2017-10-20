@@ -67,7 +67,7 @@ class AssociatedUsersController < ApplicationController
   end
 
   def create
-    creator = AssociatedUserCreator.new(project_role_params)
+    creator = AssociatedUserCreator.new(project_role_params, current_user)
 
     if creator.successful?
       flash.now[:success] = t(:authorized_users)[:created]
@@ -81,7 +81,7 @@ class AssociatedUsersController < ApplicationController
   end
 
   def update
-    updater               = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params)
+    updater               = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params, current_identity: current_user)
     protocol_role         = updater.protocol_role
     @return_to_dashboard  = protocol_role.identity_id == current_user.id && ['none', 'view'].include?(protocol_role.project_rights)
 

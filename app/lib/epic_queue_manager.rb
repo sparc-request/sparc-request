@@ -1,8 +1,9 @@
 class EpicQueueManager
 
-  def initialize(protocol, protocol_role)
+  def initialize(protocol, identity, protocol_role)
     @protocol = protocol
     @protocol_role = protocol_role
+    @identity = identity
   end
 
   def create_epic_queue
@@ -10,7 +11,7 @@ class EpicQueueManager
       unless withheld_epic_queue?(@protocol)
         EpicQueue.create(
           protocol_id: @protocol.id,
-          identity_id: @protocol_role.identity_id,
+          identity_id: @identity.id,
           user_change: true
         )
       end

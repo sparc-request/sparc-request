@@ -21,10 +21,10 @@
 class AssociatedUserCreator
   attr_reader :protocol_role
 
-  def initialize(params)
+  def initialize(params, current_identity)
     protocol = Protocol.find(params[:protocol_id])
     @protocol_role = protocol.project_roles.build(params)
-    eqm = EpicQueueManager.new(protocol, @protocol_role)
+    eqm = EpicQueueManager.new(protocol, current_identity, @protocol_role)
 
     if @protocol_role.unique_to_protocol? && @protocol_role.fully_valid?
       @successful = true

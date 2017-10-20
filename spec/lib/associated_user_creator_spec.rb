@@ -37,16 +37,16 @@ RSpec.describe AssociatedUserCreator do
     end
 
     it "#successful? should return true" do
-      creator = AssociatedUserCreator.new(@project_role_attrs)
+      creator = AssociatedUserCreator.new(@project_role_attrs, @identity)
       expect(creator.successful?).to eq(true)
     end
 
     it "should create a new ProjectRole for Protocol from params[:project_role][:protocol_id]" do
-      expect { AssociatedUserCreator.new(@project_role_attrs) }.to change { ProjectRole.count }.by(1)
+      expect { AssociatedUserCreator.new(@project_role_attrs, @identity) }.to change { ProjectRole.count }.by(1)
     end
 
     it "should return new ProjectRole with #protocol_role" do
-      creator = AssociatedUserCreator.new(@project_role_attrs)
+      creator = AssociatedUserCreator.new(@project_role_attrs, @identity)
       expect(creator.protocol_role).to eq(ProjectRole.last)
     end
 
@@ -58,7 +58,7 @@ RSpec.describe AssociatedUserCreator do
           mailer
         end
 
-        AssociatedUserCreator.new(@project_role_attrs)
+        AssociatedUserCreator.new(@project_role_attrs, @identity)
         expect(UserMailer).to have_received(:authorized_user_changed).twice
       end
     end
@@ -69,7 +69,7 @@ RSpec.describe AssociatedUserCreator do
       it "should not send authorized user changed emails" do
         @ssr.update_attribute(:status, 'complete')
         allow(UserMailer).to receive(:authorized_user_changed)
-        AssociatedUserCreator.new(@project_role_attrs)
+        AssociatedUserCreator.new(@project_role_attrs, @identity)
 
         expect(UserMailer).not_to have_received(:authorized_user_changed)
       end
@@ -86,7 +86,7 @@ RSpec.describe AssociatedUserCreator do
           mailer
         end
 
-        AssociatedUserCreator.new(@project_role_attrs)
+        AssociatedUserCreator.new(@project_role_attrs, @identity)
 
         expect(Notifier).to have_received(:notify_for_epic_user_approval)
       end
@@ -106,19 +106,19 @@ RSpec.describe AssociatedUserCreator do
     end
 
     it "#successful? should return false" do
-      creator = AssociatedUserCreator.new(@project_role_attrs)
+      creator = AssociatedUserCreator.new(@project_role_attrs, @identity)
       expect(creator.successful?).to eq(false)
     end
 
     it "should not create a new ProjectRole" do
-      expect { AssociatedUserCreator.new(@project_role_attrs) }.not_to change { ProjectRole.count }
+      expect { AssociatedUserCreator.new(@project_role_attrs, @identity) }.not_to change { ProjectRole.count }
     end
 
     context "send_authorized_user_emails is true" do
       it "should not send authorized user changed emails" do
         allow(UserMailer).to receive(:authorized_user_changed)
 
-        AssociatedUserCreator.new(@project_role_attrs)
+        AssociatedUserCreator.new(@project_role_attrs, @identity)
 
         expect(UserMailer).not_to have_received(:authorized_user_changed)
       end
@@ -130,7 +130,7 @@ RSpec.describe AssociatedUserCreator do
       it "should not notify for epic user approval" do
         allow(Notifier).to receive(:notify_for_epic_user_approval)
 
-        AssociatedUserCreator.new(@project_role_attrs)
+        AssociatedUserCreator.new(@project_role_attrs, @identity)
 
         expect(Notifier).not_to have_received(:notify_for_epic_user_approval)
       end

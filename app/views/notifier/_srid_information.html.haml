@@ -39,6 +39,6 @@
           %td.skinny-black-border.center= ssr.display_id
         %td.skinny-black-border.center= ssr.org_tree_display
         %td.skinny-black-border.center= PermissibleValue.get_value('status', ssr.reload.status)
-        %td.skinny-black-border.center= ssr.display_service_requester_name
+        %td.skinny-black-border.center= ssr.service_requester.try(&:full_name) || 'N/A'
 %br
 %br

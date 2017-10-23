@@ -34,6 +34,6 @@
         %td.skinny-black-border.center
           %strike= ssr.org_tree_display
         %td.skinny-black-border.center
-          %strike= ssr.display_service_requester_name
+          %strike= ssr.service_requester.try(&:full_name) || 'N/A'
 %br
 %br

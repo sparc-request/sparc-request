@@ -62,10 +62,6 @@ class SubServiceRequest < ApplicationRecord
     write_attribute(:consult_arranged_date, date.present? ? Time.strptime(date, "%m/%d/%Y") : nil)
   end
 
-  def display_service_requester_name
-    self.service_requester.present? ? Identity.find(self.service_requester_id).first_name + ' ' + Identity.find(self.service_requester_id).last_name : 'N/A'
-  end
-
   def requester_contacted_date=(date)
     write_attribute(:requester_contacted_date, date.present? ? Time.strptime(date, "%m/%d/%Y") : nil)
   end

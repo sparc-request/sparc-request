@@ -55,7 +55,7 @@ class Study < Protocol
 
   def setup_study_types
     position = 1
-    obj_names = StudyType::TYPES.map{|k,v| k}
+    obj_names = PermissibleValue.get_key_list('study_type')
     obj_names.each do |obj_name|
       study_type = study_types.detect{|obj| obj.name == obj_name}
       study_type = study_types.build(:name => obj_name, :new => true) unless study_type
@@ -75,7 +75,7 @@ class Study < Protocol
 
   def setup_impact_areas
     position = 1
-    obj_names = ImpactArea::TYPES.map{|k,v| k}
+    obj_names = PermissibleValue.get_hash('impact_area').map{|k,v| k}
     obj_names.each do |obj_name|
       impact_area = impact_areas.detect{|obj| obj.name == obj_name}
       impact_area = impact_areas.build(:name => obj_name, :new => true) unless impact_area
@@ -88,7 +88,7 @@ class Study < Protocol
 
   def setup_affiliations
     position = 1
-    obj_names = Affiliation::TYPES.map{|k,v| k}
+    obj_names = PermissibleValue.get_key_list('affiliation_type')
     obj_names.each do |obj_name|
       affiliation = affiliations.detect{|obj| obj.name == obj_name}
       affiliation = affiliations.build(:name => obj_name, :new => true) unless affiliation
@@ -106,7 +106,7 @@ class Study < Protocol
   FRIENDLY_IDS = ["certificate_of_conf", "higher_level_of_privacy", "epic_inbasket", "research_active", "restrict_sending"]
 
   def validate_study_type_answers
-    if USE_EPIC && self.selected_for_epic && StudyTypeQuestionGroup.active.ids.first == self.study_type_question_group_id
+    if Setting.find_by_key("use_epic").value && self.selected_for_epic && StudyTypeQuestionGroup.active.ids.first == self.study_type_question_group_id
       answers = {}
       FRIENDLY_IDS.each do |fid|
         q = StudyTypeQuestion.active.find_by_friendly_id(fid)
@@ -139,6 +139,6 @@ class Study < Protocol
   end
 
   def is_epic?
-    USE_EPIC
+    Setting.find_by_key("use_epic").value
   end
 end

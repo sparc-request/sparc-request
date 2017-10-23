@@ -96,7 +96,7 @@ class Protocol < ApplicationRecord
 
   def rmid_requires_validation?
     # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]
-    self.bypass_rmid_validation ? false : RESEARCH_MASTER_ENABLED && has_human_subject_info?
+    self.bypass_rmid_validation ? false : Setting.find_by_key('use_research_master').value && has_human_subject_info?
   end
 
   def has_human_subject_info?
@@ -104,10 +104,10 @@ class Protocol < ApplicationRecord
   end
 
   validate :existing_rm_id,
-    if: -> record { RESEARCH_MASTER_ENABLED && !record.research_master_id.nil? }
+    if: -> record { Setting.find_by_key("use_research_master").value && !record.research_master_id.nil? }
 
   validate :unique_rm_id_to_protocol,
-    if: -> record { RESEARCH_MASTER_ENABLED && !record.research_master_id.nil? }
+    if: -> record { Setting.find_by_key("use_research_master").value && !record.research_master_id.nil? }
 
   def self.to_csv(protocols)
     CSV.generate do |csv|
@@ -121,12 +121,15 @@ class Protocol < ApplicationRecord
   end
 
   def existing_rm_id
-    rm_ids = HTTParty.get(RESEARCH_MASTER_API + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{RMID_API_TOKEN}\""})
+    rm_ids = HTTParty.get(Setting.find_by_key("research_master_api_url").value + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{Setting.find_by_key("research_master_api_token").value}\""})
     ids = rm_ids.map{ |rm_id| rm_id['id'] }
 
-    unless ids.include?(self.research_master_id)
+    if research_master_id.present? && !ids.include?(research_master_id)
       errors.add(:_, 'The entered Research Master ID does not exist. Please go to the Research Master website to create a new record.')
     end
+    
+    rescue
+      return "server_down"
   end
 
   def unique_rm_id_to_protocol
@@ -291,7 +294,7 @@ class Protocol < ApplicationRecord
   end
 
   def is_epic?
-    USE_EPIC
+    Setting.find_by_key("use_epic").value
   end
 
   def is_project?
@@ -312,9 +315,9 @@ class Protocol < ApplicationRecord
 
   def email_about_change_in_authorized_user(modified_role, action)
     # Alert authorized users of deleted authorized user
-    # Send emails if SEND_AUTHORIZED_USER_EMAILS is set to true and if there are any non-draft SSRs
+    # Send emails if send_authorized_user_emails is set to true and if there are any non-draft SSRs
     # For example:  if a SR has SSRs all with a status of 'draft', don't send emails
-    if SEND_AUTHORIZED_USER_EMAILS && sub_service_requests.where.not(status: 'draft').any?
+    if Setting.find_by_key("send_authorized_user_emails").value && sub_service_requests.where.not(status: 'draft').any?
       alert_users = emailed_associated_users << modified_role
       alert_users.flatten.uniq.each do |project_role|
         UserMailer.authorized_user_changed(project_role.identity, self, modified_role, action).deliver unless project_role.identity.email.blank?
@@ -387,15 +390,15 @@ class Protocol < ApplicationRecord
   def display_funding_source_value
     if funding_status == "funded"
       if funding_source == "internal"
-        "#{FUNDING_SOURCES.key funding_source}: #{funding_source_other}"
+        "#{PermissibleValue.get_value('funding_source', funding_source)}: #{funding_source_other}"
       else
-        "#{FUNDING_SOURCES.key funding_source}"
+        "#{PermissibleValue.get_value('funding_source', funding_source)}"
       end
     elsif funding_status == "pending_funding"
       if potential_funding_source == "internal"
-        "#{POTENTIAL_FUNDING_SOURCES.key potential_funding_source}: #{potential_funding_source_other}"
+        "#{PermissibleValue.get_value('potential_funding_source', potential_funding_source)}: #{potential_funding_source_other}"
       else
-        "#{POTENTIAL_FUNDING_SOURCES.key potential_funding_source}"
+        "#{PermissibleValue.get_value('potential_funding_source', potential_funding_source)}"
       end
     end
   end
@@ -413,14 +416,14 @@ class Protocol < ApplicationRecord
   # Note: this method is called inside a child thread by the service
   # requests controller.  Be careful adding code here that might not be
   # thread-safe.
-  def push_to_epic(epic_interface, origin, identity_id=nil)
+  def push_to_epic(epic_interface, origin, identity_id=nil, withhold_calendar=false)
     begin
       self.last_epic_push_time = Time.now
       self.last_epic_push_status = 'started'
       save(validate: false)
 
       Rails.logger.info("Sending study message to Epic")
-      epic_interface.send_study(self)
+      withhold_calendar ? epic_interface.send_study_creation(self) : epic_interface.send_study(self)
 
       self.last_epic_push_status = 'complete'
       save(validate: false)
@@ -486,6 +489,10 @@ class Protocol < ApplicationRecord
     arm
   end
 
+  def rmid_server_status
+    existing_rm_id == "server_down" && type == "Study"
+  end
+
   def should_push_to_epic?
     service_requests.any?(&:should_push_to_epic?)
   end
@@ -524,7 +531,7 @@ class Protocol < ApplicationRecord
   end
 
   def indirect_cost_total(service_request)
-    if USE_INDIRECT_COST
+    if Setting.find_by_key("use_indirect_cost").value
       self.service_requests.
         where(id: service_request.id).
         or(service_requests.where.not(status: ['first_draft', 'draft'])).
@@ -540,7 +547,7 @@ class Protocol < ApplicationRecord
   end
 
   def has_incomplete_additional_details?
-    line_items.any?(&:has_incomplete_additional_details?)
+    sub_service_requests.any?(&:has_incomplete_additional_details?)
   end
 
   private

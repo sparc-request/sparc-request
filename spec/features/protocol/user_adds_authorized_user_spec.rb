@@ -23,12 +23,10 @@ require 'rails_helper'
 RSpec.describe 'User wants to add an authorized user', js: true do
   let_there_be_lane
   let_there_be_j
-
+  
   fake_login_for_each_test
 
   before :each do
-    stub_const('USE_LDAP', false)
-    
     institution = create(:institution, name: "Institution")
     provider    = create(:provider, name: "Provider", parent: institution)
     program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
@@ -37,6 +35,7 @@ RSpec.describe 'User wants to add an authorized user', js: true do
     @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
     ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                   create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
+    allow(@protocol).to receive(:rmid_server_status).and_return(false)
   end
 
   context 'and clicks \'Add an Authorized User\'' do
@@ -59,16 +58,13 @@ RSpec.describe 'User wants to add an authorized user', js: true do
         wait_for_javascript_to_finish
 
         # Select the user
-        fill_in 'authorized_user_search', with: jpl6.full_name
-        page.execute_script("$('#authorized_user_search').trigger('focus');")
-        wait_for_javascript_to_finish
-
-        while (suggestion = first('.tt-suggestion')).nil?
-        end
-
-        suggestion.click
-        wait_for_javascript_to_finish
+        fill_in 'authorized_user_search', with: jpl6.first_name
+        page.execute_script %Q{ $('#authorized_user_search').trigger("keydown") }
+        expect(page).to have_selector('.tt-suggestion')
         
+        first('.tt-suggestion').click
+        wait_for_javascript_to_finish
+
         bootstrap_select '#project_role_role', 'PD/PI'
 
         click_button 'Save'

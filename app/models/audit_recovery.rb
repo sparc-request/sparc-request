@@ -20,6 +20,13 @@
 
 class AuditRecovery < ApplicationRecord
   self.table_name = 'audits'
-  establish_connection("audit_#{Rails.env}") if USE_SEPARATE_AUDIT_DATABASE
+
+  begin
+    use_separate_audit_database = Setting.find_by_key("use_separate_audit_database").value
+  rescue
+    use_separate_audit_database = nil
+  end
+
+  establish_connection("audit_#{Rails.env}") if use_separate_audit_database
   serialize :audited_changes
 end

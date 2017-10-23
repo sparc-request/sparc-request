@@ -39,7 +39,7 @@ FactoryGirl.define do
     start_date                   { '2015-10-15' }
     end_date                     { '2015-10-15' }
     selected_for_epic            false
-
+    
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }
     end

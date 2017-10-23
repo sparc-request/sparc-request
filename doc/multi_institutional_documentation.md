@@ -46,12 +46,12 @@ Several important settings can be found in config/application.yml.  There is an 
 - new_user_cc: Same as above except for users cc'd when a new user request is submitted.
 - system_satisfaction_survey_cc: Sames as above except for users cc'd when a system satisfaction survey is submitted 
 - root_url: This is the root url for the application 
-- dashboard_link: This setting will soon be deprecated.  Sets the location of the user portal.
+- dashboard_link: This is the url for the user dashboard
 - header_link_1: This is the url for the first image in the header 
 - header_link_2: This is the url for the second image in the header
 - header_link_3: This is the url for the third image in the header 
 - use_indirect_cost: This is a true/false setting which determines whether the application will display indirect costs to the users.  If true, than in addition to direct costs and direct cost subtotals, users will also see indirect costs and indirect cost subtotals, and indirect costs will also be included in the grand total.  If set to false, indirect costs will not be displayed, and they will not be included in the totals.
-- use_shiboleth: This option controls whether the single user sign on option will be displayed in the application.  Currently this is only shibboleth, if you would like to use another oAuth module, this will need to be set to true.
+- use_shibboleth: This option controls whether the single user sign on option will be displayed in the application.  Currently this is only shibboleth, if you would like to use another oAuth module, this will need to be set to true.
 - use_ldap: This option controls whether the associated user search will attempt to connect to an LDAP server.  If false, it will simply search the database. NOTE: Even if this is set to false at least a blank ldap.yml is required.
 - wkhtmltopdf_location: Optional location for wkhtmltopdf if not using one supplied by gem eg. '/usr/local/bin/wkhtmltopdf'
 - approve_epic_rights_mail_to: Email addresses of users who are e-mailed for EPIC rights approval

@@ -31,7 +31,7 @@ class SurveyResponseReport < ReportingModule
   def default_options
     {
       "Date Range" => {:field_type => :date_range, :for => "created_at", :from => "2012-03-01".to_date, :to => Date.today},
-      Survey => {:field_type => :select_tag, :custom_name_method => :title, :required => true},
+      Survey => {:field_type => :select_tag, :custom_name_method => :report_title, :required => true},
       "Include Pending Responses" => { field_type: :check_box_tag, for: "show_pending" }
     }
   end

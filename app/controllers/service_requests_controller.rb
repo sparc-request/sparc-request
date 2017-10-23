@@ -38,7 +38,7 @@ class ServiceRequestsController < ApplicationController
     @service_list_true = @service_request.service_list(true)
     @service_list_false = @service_request.service_list(false)
     @line_items = @service_request.line_items
-
+    @display_all_services = params[:display_all_services] == 'true' ? true : false
 
     respond_to do |format|
       format.xlsx do
@@ -129,6 +129,7 @@ class ServiceRequestsController < ApplicationController
     @admin        = false
     @merged       = true
     @consolidated = false
+    @display_all_services = true
 
     # Reset all the page numbers to 1 at the start of the review request
     # step.
@@ -149,15 +150,16 @@ class ServiceRequestsController < ApplicationController
   def confirmation
     @protocol = @service_request.protocol
     @service_request.previous_submitted_at = @service_request.submitted_at
+    @display_all_services = true
 
     should_push_to_epic = @sub_service_request ? @sub_service_request.should_push_to_epic? : @service_request.should_push_to_epic?
 
-    if should_push_to_epic && USE_EPIC && @protocol.selected_for_epic
+    if should_push_to_epic && Setting.find_by_key("use_epic").value && @protocol.selected_for_epic
       # Send a notification to Lane et al to create users in Epic.  Once
       # that has been done, one of them will click a link which calls
       # approve_epic_rights.
       @protocol.ensure_epic_user
-      if QUEUE_EPIC
+      if Setting.find_by_key("queue_epic").value
         EpicQueue.create(protocol_id: @protocol.id, identity_id: current_user.id) unless EpicQueue.where(protocol_id: @protocol.id).size == 1
       else
         @protocol.awaiting_approval_for_epic_push
@@ -203,7 +205,7 @@ class ServiceRequestsController < ApplicationController
     ssr       = line_item.sub_service_request
 
     if ssr.can_be_edited?
-      ssr.line_items.where(service: line_item.service.related_services).update_all(optional: true)
+      @service_request.line_items.where(service: line_item.service.related_services).update_all(optional: true)
 
       line_item.destroy
 
@@ -345,7 +347,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def setup_catalog_calendar
-    if USE_GOOGLE_CALENDAR
+    if Setting.find_by_key("use_google_calendar").value
       curTime = Time.now.utc
       startMin = curTime
       startMax  = (curTime + 1.month)
@@ -383,7 +385,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def setup_catalog_news_feed
-    if USE_NEWS_FEED
+    if Setting.find_by_key("use_news_feed").value
       @news = []
       begin
         page = Nokogiri::HTML(open("https://www.sparcrequestblog.com"))
@@ -416,7 +418,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def send_epic_notification_for_user_approval(protocol)
-    Notifier.notify_for_epic_user_approval(protocol).deliver unless QUEUE_EPIC
+    Notifier.notify_for_epic_user_approval(protocol).deliver unless Setting.find_by_key("queue_epic").value
   end
 
   def authorize_protocol_edit_request

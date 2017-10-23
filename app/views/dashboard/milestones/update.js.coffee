@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-$('.milestones-panel').html("<%= j render 'dashboard/protocols/milestone', protocol: @protocol %>")
+$('.milestones-panel').replaceWith("<%= j render 'dashboard/protocols/milestone', protocol: @protocol %>")
 $(".datetimepicker:not(.time)").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
 $('.datetimepicker.time').datetimepicker(format: 'hh:mm A', allowInputToggle: true)
 $(".selectpicker").selectpicker()

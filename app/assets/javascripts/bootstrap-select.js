@@ -675,7 +675,7 @@
       this.$button.children('.filter-option').html(title);
 
       if (this.options.counter) {
-        var badge = "<span class='badge bootstrap-select-badge'>"+this.$lis.length+"</span>"
+        var badge = "<span class='badge bootstrap-select-badge'>"+this.$lis.filter("[data-original-index]").length+"</span>"
         this.$button.children('.filter-option').append(badge)
       }
 

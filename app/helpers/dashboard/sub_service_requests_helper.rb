@@ -56,10 +56,10 @@ module Dashboard::SubServiceRequestsHelper
       if sub_service_request.in_work_fulfillment?
         if user.clinical_provider_rights?
           # In fulfillment and user has rights
-          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:go_to_fulfillment], CLINICAL_WORK_FULFILLMENT_URL, target: "_blank", class: "btn btn-primary btn-md"
+          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:go_to_fulfillment], Setting.find_by_key("clinical_work_fulfillment_url").value, target: "_blank", class: "btn btn-primary btn-md"
         else
           # In fulfillment, user does not have rights, disable button
-          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:in_fulfillment], CLINICAL_WORK_FULFILLMENT_URL, target: "_blank", class: "btn btn-primary btn-md", disabled: true
+          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:in_fulfillment], Setting.find_by_key("clinical_work_fulfillment_url").value, target: "_blank", class: "btn btn-primary btn-md", disabled: true
         end
       else
         # Not in Fulfillment
@@ -191,8 +191,8 @@ module Dashboard::SubServiceRequestsHelper
     total
   end
 
-  def ssr_notifications_display(ssr, user)
-    render 'dashboard/notifications/dropdown.html', sub_service_request: ssr, user: user
+  def ssr_notifications_display(ssr, user, sr_table)
+    render 'dashboard/notifications/dropdown.html', sub_service_request: ssr, user: user, sr_table: sr_table
   end
 
   def ssr_actions_display(ssr, user, permission_to_edit, admin_orgs, show_view_ssr_back)
@@ -208,27 +208,36 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def display_ssr_submissions(ssr)
-    line_items = ssr.line_items.includes(service: :questionnaires).includes(:submission).to_a.select(&:has_incomplete_additional_details?)
+    has_incomplete_service = ssr.has_incomplete_additional_details_services?
+    has_incomplete_organization = ssr.has_incomplete_additional_details_organization?
 
-    if line_items.any?
+    if has_incomplete_service or has_incomplete_organization
       protocol    = ssr.protocol
-      submissions = ""
-
-      line_items.each do |li|
-        submissions +=  content_tag(
-                          :option,
-                          "#{li.service.name}",
-                          data: {
-                            service_id: li.service.id,
-                            protocol_id: protocol.id,
-                            line_item_id: li.id
-                          }
-                        )
+      submissions = {}
+      if has_incomplete_service
+        submissions[:Services] = []
+        ssr.line_items.includes(:service).map(&:service).each do |service|
+          next unless service.questionnaires.active.present?
+          submissions[:Services] << [service.name, service.name, data: {
+                                                                  questionnaire_id: service.questionnaires.active.first.id,
+                                                                  protocol_id: protocol.id,
+                                                                  ssr_id: ssr.id
+                                                                }]
+        end
       end
+      if has_incomplete_organization
+        submissions[:Organization] = []
+        submissions[:Organization] << [ssr.organization.name, ssr.organization.name, data: {
+                                                                                      questionnaire_id: ssr.organization.questionnaires.active.first.id,
+                                                                                      protocol_id: protocol.id,
+                                                                                      ssr_id: ssr.id
+                                                                                    }]
+      end
+      submission_list = grouped_options_for_select(submissions)
 
       content_tag(
         :select,
-        submissions.html_safe,
+        submission_list.html_safe,
         title: t(:dashboard)[:service_requests][:additional_details][:selectpicker],
         class: 'selectpicker complete-details',
         data: {
@@ -244,13 +253,13 @@ module Dashboard::SubServiceRequestsHelper
   private
 
   def ssr_view_button(ssr, show_view_ssr_back)
-    content_tag(:button, t(:dashboard)[:service_requests][:actions][:view], class: 'view-service-request btn btn-primary btn-sm', type: 'button', data: { sub_service_request_id: ssr.id, show_view_ssr_back: show_view_ssr_back.to_s })
+    content_tag(:button, t(:dashboard)[:service_requests][:actions][:view], class: 'view-service-request btn btn-primary btn-sm', type: 'button', data: { sub_service_request_id: ssr.id, show_view_ssr_back: show_view_ssr_back.to_s, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:dashboard)[:service_requests][:actions][:tooltips][:view])
   end
 
   def ssr_edit_button(ssr, user, permission_to_edit)
     # The SSR must not be locked, and the user must either be an authorized user or an authorized admin
     if ssr.can_be_edited? && permission_to_edit
-      content_tag(:button, t(:dashboard)[:service_requests][:actions][:edit], class: 'edit-service-request btn btn-warning btn-sm', type: 'button', data: { permission: permission_to_edit.to_s, url: "/service_requests/#{ssr.service_request.id}/catalog?sub_service_request_id=#{ssr.id}"})
+      content_tag(:button, t(:dashboard)[:service_requests][:actions][:edit], class: 'edit-service-request btn btn-warning btn-sm', type: 'button', data: { permission: permission_to_edit.to_s, url: "/service_requests/#{ssr.service_request.id}/catalog?sub_service_request_id=#{ssr.id}", toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}', title: t(:dashboard)[:service_requests][:actions][:tooltips][:edit]})
     else
       ''
     end
@@ -258,7 +267,7 @@ module Dashboard::SubServiceRequestsHelper
 
   def ssr_admin_button(ssr, user, permission_to_edit, admin_access)
     if admin_access
-      content_tag(:button, t(:dashboard)[:service_requests][:actions][:admin_edit], class: "edit-service-request btn btn-warning btn-sm", type: 'button', data: { permission: admin_access.to_s, url: "/dashboard/sub_service_requests/#{ssr.id}" })
+      content_tag(:button, t(:dashboard)[:service_requests][:actions][:admin_edit], class: "edit-service-request btn btn-warning btn-sm", type: 'button', data: { permission: admin_access.to_s, url: "/dashboard/sub_service_requests/#{ssr.id}", toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:dashboard)[:service_requests][:actions][:tooltips][:admin])
     else
       ''
     end

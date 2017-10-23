@@ -63,7 +63,7 @@ RSpec.describe 'requests modal', js: true do
       page = visit_protocols_index_page
       page.search_results.protocols.first.requests_button.click
       expect(page).to have_requests_modal
-      page.requests_modal.service_requests.first.modify_request_button.click
+      page.requests_modal.modify_request_button.click
       wait_for_javascript_to_finish
 
       expect(URI.parse(current_url).path).to eq "/service_requests/#{service_request.id}/catalog"
@@ -78,7 +78,7 @@ RSpec.describe 'requests modal', js: true do
 
       expect(page).to have_requests_modal
 
-      page.requests_modal.service_requests.first.sub_service_requests.first.view_button.click
+      page.requests_modal.sub_service_requests.first.view_button.click
       wait_for_javascript_to_finish
 
       expect(page).to have_selector ".modal-dialog.user-view-ssr-modal"
@@ -93,8 +93,8 @@ RSpec.describe 'requests modal', js: true do
 
       expect(page).to have_requests_modal
 
-      page.requests_modal.service_requests.first.sub_service_requests.first.edit_button.click
-      wait_for_javascript_to_finish
+      page.requests_modal.sub_service_requests.first.edit_button.click
+        wait_for_javascript_to_finish
 
       expect(URI.parse(current_url).path).to eq "/service_requests/#{service_request.id}/catalog"
     end
@@ -107,7 +107,7 @@ RSpec.describe 'requests modal', js: true do
       wait_for_javascript_to_finish
       expect(page).to have_requests_modal
 
-      page.requests_modal.service_requests.first.sub_service_requests.first.admin_edit_button.click
+      page.requests_modal.sub_service_requests.first.admin_edit_button.click
       wait_for_javascript_to_finish
 
       expect(URI.parse(current_url).path).to eq '/dashboard/sub_service_requests/9999'

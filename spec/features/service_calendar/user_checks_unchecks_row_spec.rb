@@ -26,7 +26,7 @@ RSpec.describe 'User checks and unchecks calendar rows', js: true do
   fake_login_for_each_test
 
   before :each do
-    org       = create(:organization)
+    org       = create(:organization, use_default_statuses: false)
                 create(:pricing_setup, organization: org)
     service   = create(:service, organization: org, one_time_fee: false)
 
@@ -34,7 +34,7 @@ RSpec.describe 'User checks and unchecks calendar rows', js: true do
     @sr       = create(:service_request_without_validations, protocol: protocol)
     @ssr      = create(:sub_service_request, service_request: @sr, organization: org)
     li        = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
-    
+
     arm       = create(:arm, protocol: protocol, visit_count: 3)
   end
 
@@ -43,7 +43,7 @@ RSpec.describe 'User checks and unchecks calendar rows', js: true do
       scenario 'and sees all visits checked' do
         visit service_calendar_service_request_path(@sr)
         wait_for_javascript_to_finish
-        
+
         first('.service-calendar-row').click
         wait_for_javascript_to_finish
 
@@ -79,7 +79,7 @@ RSpec.describe 'User checks and unchecks calendar rows', js: true do
       scenario 'and sees the button is disabled' do
         visit service_calendar_service_request_path(@sr)
         wait_for_javascript_to_finish
-        
+
         #Capybara::Node::Element would not return disabled for some reason, but running this script would
         expect(page.evaluate_script("$('.service-calendar-row').attr('disabled');")).to eq('disabled')
       end

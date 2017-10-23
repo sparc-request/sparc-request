@@ -27,5 +27,6 @@ class Dashboard::StudyTypeAnswersController < Dashboard::BaseController
     respond_to do |format|
       format.js
     end
+    rmid_server_status(@protocol)
   end
 end

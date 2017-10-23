@@ -43,15 +43,14 @@ RSpec.describe 'User changes protocol type', js: true do
                                status: 'draft')
                         create(:super_user, identity: jug2,
                                organization: organization)
+      allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
       visit edit_dashboard_protocol_path(@protocol)
       wait_for_javascript_to_finish
     end
 
-    context 'use epic = false' do
-      before :each do
-        stub_const('USE_EPIC', true)
-      end
-
+    context 'use epic = true' do
+      stub_config("use_epic", true)
+      
       context "changes the protocol type" do
         before :each do
           bootstrap_select '#protocol_type', 'Study'
@@ -92,7 +91,6 @@ RSpec.describe 'User changes protocol type', js: true do
 
               click_button 'Save'
               wait_for_javascript_to_finish
-
               expect(page).to have_content("Study Updated!")
             end
           end
@@ -114,10 +112,6 @@ RSpec.describe 'User changes protocol type', js: true do
     end
 
     context 'use epic = false' do
-      before :each do
-        stub_const('USE_EPIC', false)
-      end
-
       context "changes the protocol type" do
         before :each do
           bootstrap_select '#protocol_type', 'Study'

@@ -24,8 +24,8 @@ class SurveyNotification < ActionMailer::Base
   def system_satisfaction_survey(response)
     @response = response
     @identity = Identity.find(response.identity_id)
-    email     = ADMIN_MAIL_TO
-    cc        = SYSTEM_SATISFACTION_SURVEY_CC
+    email     = Setting.find_by_key("admin_mail_to").value
+    cc        = Setting.find_by_key("system_satisfaction_survey_cc").value
     subject   = t('surveyor.responses.emails.system_satisfaction.subject', site_name: t(:proper)[:header])
 
     mail(to: email, cc: cc, from: @identity.email, subject: subject)
@@ -45,7 +45,7 @@ class SurveyNotification < ActionMailer::Base
       @responses << response unless response.completed?
     end
 
-    mail(to: email, from: NO_REPLY_FROM, subject: subject)
+    mail(to: email, from: Setting.find_by_key("no_reply_from").value, subject: subject)
   end
 
 end

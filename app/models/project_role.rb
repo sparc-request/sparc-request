@@ -154,13 +154,13 @@ class ProjectRole < ApplicationRecord
   end
 
   def populate_for_edit
-    if USE_EPIC
+    if Setting.find_by_key("use_epic").value
       setup_epic_rights
     end
   end
 
   def set_epic_rights
-    if USE_EPIC
+    if Setting.find_by_key("use_epic").value
       if self.role == 'primary-pi'
         rights = setup_epic_rights(false)
         self.epic_access = true

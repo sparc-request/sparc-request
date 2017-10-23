@@ -18,10 +18,26 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-<% if @questionnaire.save %>
-swal("Success", "Questionnaire status updated", "success")
-$('.questionnaires-index-table').html("<%= j render 'additional_details/questionnaires_index_table', questionnaires: @questionnaires %>")
-set_disabled()
-<% else %>
-swal("Error", "Questionnaire status not updated", "error")
-<% end %>
+namespace :data do 
+  desc "Restore service_requester_id"
+  task :restore_service_requester_id => :environment do
+    # Finding all SSRs without a service_requester_id that are linked to an actual protocol
+    puts "Finding all SSRs that need their service_requester_id restored:"
+    puts "Total SSRs needing service_requester_id updated:"
+    puts SubServiceRequest.where(service_requester_id: nil).where.not(protocol_id: nil).count
+    puts "SSR IDs:"
+    # Finding all SSRs without a service_requester_id that are linked to an actual protocol
+    CSV.open("tmp/ssrs_whose_service_requester_id_has_been_restored.csv", "wb") do |csv|
+      csv << ["SSR ID"]
+      SubServiceRequest.where(service_requester_id: nil).where.not(protocol_id: nil).each do |ssr|
+        user_id = AuditRecovery.where(auditable_id: ssr.id, auditable_type: 'SubServiceRequest', action:  'create')
+        if user_id.present?
+          puts ssr.id
+          csv << [ssr.id]
+          ssr.update_attribute(:service_requester_id, user_id.first.user_id)
+        end
+      end
+      puts "The Service Requester ID has been restored for the above ssrs."
+    end
+  end
+end

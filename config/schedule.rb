@@ -26,3 +26,7 @@ end
 every 1.day, :at => '4:30 am' do
   rake "update_protocol_with_validated_rm"
 end
+
+every 1.day, :at => '5:00 pm' do
+  rake 'send_to_epic'
+end

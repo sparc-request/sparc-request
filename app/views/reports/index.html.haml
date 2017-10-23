@@ -20,6 +20,7 @@
 = javascript_include_tag 'reporting'
 
 #reporting-container.col-lg-10.col-lg-offset-1
+  - @counter = 0
   #report-selection.text-center
     .page-header
       %h1
@@ -27,6 +28,10 @@
         %br
         %small
           = t(:reporting)[:index][:subtext]
-    - $canned_reports.each do |report|
+    - $canned_reports.sort.each do |report|
       = link_to report.constantize.title, setup_reports_path(report: report), method: :get, remote: true, class: "btn btn-primary btn-lg"
+      - @counter += 1
+      - if @counter.modulo(4) == 0
+        %br
+        %br
   #report-container

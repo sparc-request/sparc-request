@@ -26,23 +26,18 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
 
   before :each do
     org         = create(:organization)
-    @service    = create(:service, organization: org)
-    @que        = create(:questionnaire, :without_validations, service: @service, active: true)
+    service    = create(:service, organization: org)
+    @que        = create(:questionnaire, :without_validations, questionable: service, active: true)
     protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user)
     sr          = create(:service_request_without_validations, protocol: protocol)
     ssr         = create(:sub_service_request, service_request: sr, organization: org)
-    li          = create(:line_item, service_request: sr, sub_service_request: ssr, service: @service)
 
     get :new, params: {
-      service_id: @service.id
+      questionnaire_id: @que.id
     }, xhr: true
   end
 
   describe '#new' do
-    it 'should assign @service' do
-      expect(assigns(:service)).to eq(@service)
-    end
-
     it 'should assign @questionnaire' do
       expect(assigns(:questionnaire)).to eq(@que)
     end

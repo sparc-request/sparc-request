@@ -23,7 +23,7 @@
       %button.close{ type: 'button', data: { dismiss: 'modal' } }
         %span{ aria: { hidden:'true' } } &times;
       %h4.modal-title.text-center
-        = I18n.t('dashboard.notes.header', notable_type: notable_type.underscore.humanize.titleize)
+        = I18n.t('dashboard.notes.header', notable_type: notable_type == 'Protocol' ? notable.type : notable_type)
     .modal-body
       #modal_errors
       .form-content

@@ -54,17 +54,17 @@
 
   - if organization.services.any?
     .form-group.row#enable-all-services{ class: organization.is_available? ? '' : 'hidden' }
-      = label_tag 'enable_all_services', t(:catalog_manager)[:organization_form][:enable_all_services], class: 'col-sm-3 control-label'
+      = label_tag 'all_services_availability', t(:catalog_manager)[:organization_form][:all_services_availability], class: 'col-sm-3 control-label'
       .col-sm-9
         .btn-group{ role: 'group', data: { toggle: 'labels' } }
           %label.radio-inline.btn.btn-default
-            = radio_button_tag 'enable_all_services', 'disable', false, class: 'hidden'
+            = radio_button_tag 'all_services_availability', 'false', false, class: 'hidden'
             = 'Disable All'
           %label.radio-inline.btn.btn-default.active
-            = radio_button_tag 'enable_all_services', 'keep', true, class: 'hidden'
+            = radio_button_tag 'all_services_availability', 'keep', true, class: 'hidden'
             = 'Keep Availability'
           %label.radio-inline.btn.btn-default
-            = radio_button_tag 'enable_all_services', 'enable', false, class: 'hidden'
+            = radio_button_tag 'all_services_availability', 'true', false, class: 'hidden'
             = 'Enable All'
   - unless organization.type == 'Institution'
     .form-group.row

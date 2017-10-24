@@ -36,20 +36,21 @@ class OrganizationUpdater
 
   def update_organization
     @attributes.delete(:id)
+    #detects if incoming name/abbreviation is different from the old name/abbreviation
     name_change = @attributes[:name] != @organization.name || @attributes[:abbreviation] != @organization.abbreviation
 
     # Update its Services
-    services_updated = if @params[:switch_all_services]
-                         service_availability = (@params[:switch_all_services] == "on")
-                         @organization.services.all? { |service| service.update(is_available: service_availability) }
-                       else
-                         true
-                       end
+    # services_updated = if @params[:switch_all_services] #if you selected a service availability option (old radio buttons)
+    #                      service_availability = (@params[:switch_all_services] == "on") #true if enable all, false otherwise
+    #                      @organization.services.all? { |service| service.update(is_available: service_availability) } #update all services to selection?
+    #                    else
+    #                      true
+    #                    end
     @organization.available_statuses.destroy_all
     @organization.editable_statuses.destroy_all
-    if services_updated && @organization.update_attributes(@attributes)
+    if @organization.update_attributes(@attributes)
       @organization.update_ssr_org_name if name_change
-      @organization.update_descendants_availability(@attributes[:is_available])
+      update_services
       true
     else
       false
@@ -75,6 +76,16 @@ class OrganizationUpdater
   end
 
   private
+
+  def update_services
+    if @attributes[:is_available] == '0'
+      # disable ALL children
+      @organization.update_descendants_availability(false)
+    elsif @params[:all_services_availability] != 'keep'
+      # enable immediate child services
+      @organization.services.update_all(is_available: @params[:all_services_availability] == 'true')
+    end
+  end
 
   def pricing_setups_params(ps)
     ps.permit(:organization_id,

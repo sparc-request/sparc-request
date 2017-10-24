@@ -26,9 +26,9 @@ $ ->
 
   $(document).on 'click', '#display-in-sparc .toggle', ->
     if $(this).find("[id*='_is_available']").prop('checked')
-      $('#enable-all-services').show()
+      $('#enable-all-services').removeClass('hidden')
     else
-      $('#enable-all-services').hide()
+      $('#enable-all-services').addClass('hidden')
 
   $(document).on 'click', '#close-general-info', ->
     $('#general-info-collapse').collapse('hide')

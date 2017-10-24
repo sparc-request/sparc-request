@@ -18,4 +18,10 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
 $("#org-form-container").html("<%= j render '/catalog_manager/shared/form', organization: @organization, path: @path %>")
+$('.selectpicker').selectpicker();
+$("[data-toggle='toggle']").bootstrapToggle(
+    on: 'Yes',
+    off: 'No'
+  );

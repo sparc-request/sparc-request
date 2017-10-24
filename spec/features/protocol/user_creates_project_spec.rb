@@ -32,7 +32,8 @@ RSpec.describe 'User creates project', js: true do
     @sr         = create(:service_request_without_validations, status: 'first_draft')
     ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                   create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-                  
+
+    allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
   end
 
   context 'and clicks \'New Project\'' do
@@ -61,13 +62,11 @@ RSpec.describe 'User creates project', js: true do
       bootstrap_select '#protocol_funding_source', 'Federal'
 
       fill_in 'protocol_project_roles_attributes_0_identity_id', with: 'Julia'
-      page.execute_script("$('#protocol_project_roles_attributes_0_identity_id').trigger('focus');")
+      page.execute_script %Q{ $('#protocol_project_roles_attributes_0_identity_id').trigger("keydown") }
+      expect(page).to have_selector('.tt-suggestion')
+      
+      first('.tt-suggestion').click
       wait_for_javascript_to_finish
-
-      while (suggestion = first('.tt-suggestion')).nil?
-      end
-
-      suggestion.click
 
       click_button 'Save'
       wait_for_javascript_to_finish

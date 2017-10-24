@@ -18,26 +18,10 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class AdditionalDetails::UpdateQuestionnairesController < ApplicationController
-  before_action :authenticate_identity!
-
-  def update
-    @service = Service.find(params[:service_id])
-    @questionnaires = @service.questionnaires
-    @questionnaire = Questionnaire.find(params[:id])
-    update_questionnaire(@questionnaire)
-    respond_to do |format|
-      format.js
-    end
-  end
-
-  private
-
-  def update_questionnaire(questionnaire)
-    if questionnaire.active?
-      questionnaire.update_attribute(:active, false)
-    else
-      questionnaire.update_attribute(:active, true)
-    end
-  end
-end
+<% if @questionnaire.save %>
+swal("Success", "Questionnaire status updated", "success")
+$('.questionnaires-index-table').html("<%= j render 'additional_details/questionnaires_index_table', questionnaires: @questionnaires %>")
+set_disabled()
+<% else %>
+swal("Error", "Questionnaire status not updated", "error")
+<% end %>

@@ -93,8 +93,6 @@ initialize_org_search = () ->
 
 
 
-
-
   # Sparc.catalog = {
 
   #   clear_error_fields: ->

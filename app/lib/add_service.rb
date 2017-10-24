@@ -27,7 +27,7 @@ class AddService
   end
 
   def existing_service_ids
-    @service_request.line_items.reject{ |line_item| FINISHED_STATUSES.include?(line_item.status) }.map(&:service_id)
+    @service_request.line_items.reject{ |line_item| Setting.find_by_key("finished_statuses").value.include?(line_item.status) }.map(&:service_id)
   end
 
   def generate_new_service_request
@@ -65,7 +65,7 @@ class AddService
       end
     end
     sub_service_request = service_request.sub_service_requests.create(
-      organization_id: organization.id
+      organization: organization, service_requester: @current_user
     )
     service_request.ensure_ssr_ids
 

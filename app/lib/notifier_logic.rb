@@ -106,7 +106,7 @@ class NotifierLogic
     ssrs_that_have_been_updated_from_a_un_updatable_status = []
     draft_ssrs.each do |ssr|
       past_status = PastStatus.where(sub_service_request_id: ssr.id).last
-      un_updatable_statuses = SubServiceRequest.all.map(&:status).uniq - UPDATABLE_STATUSES
+      un_updatable_statuses = SubServiceRequest.all.map(&:status).uniq - Setting.find_by_key("updatable_statuses").value
       if past_status.present?
         if un_updatable_statuses.include?(past_status.status)
           ssrs_that_have_been_updated_from_a_un_updatable_status << ssr
@@ -130,7 +130,7 @@ class NotifierLogic
     if @ssrs_updated_from_un_updatable_status.present? || @destroyed_ssrs_needing_notification.present? || @created_ssrs_needing_notification.present?
       send_user_notifications(request_amendment: true, admin_delete_ssr: false, deleted_ssr: nil)
     end
-    
+
     if @ssrs_updated_from_un_updatable_status.present?
       send_service_provider_notifications(@ssrs_updated_from_un_updatable_status, request_amendment: true)
       send_admin_notifications(@ssrs_updated_from_un_updatable_status, request_amendment: true)
@@ -218,7 +218,7 @@ class NotifierLogic
     destroyed_ssrs_ids = destroyed_ssrs_ids - created_and_destroyed_ssrs
     ssr_ids_that_need_auditing = [@ssrs_updated_from_un_updatable_status.map(&:id), added_ssrs_ids].flatten
     ssr_ids_that_need_auditing = ssr_ids_that_need_auditing - created_and_destroyed_ssrs
- 
+
     destroyed_lis = []
     destroyed_ssrs_ids.each do |id|
       destroyed_lis << AuditRecovery.where("audited_changes LIKE '%sub_service_request_id: #{id}%' AND auditable_type = 'LineItem' AND user_id = #{@current_user.id} AND action IN ('destroy') AND created_at BETWEEN '#{@service_request.previous_submitted_at.utc}' AND '#{Time.now.utc}'")
@@ -227,7 +227,7 @@ class NotifierLogic
     audit_report = filter_audit_trail(@current_user, ssr_ids_that_need_auditing)
     audit_report = [audit_report, destroyed_lis].flatten
     filtered_audit_report = { :line_items => [] }
-    
+
     audit_report.group_by{ |audit| audit[:audited_changes]['service_id'] }.each do |service_id, audits|
       service_actions_since_previous_submission = audits.sort_by(&:created_at).map(&:action)
       if service_actions_since_previous_submission.size >= 2 && service_actions_since_previous_submission.first == 'create' && service_actions_since_previous_submission.last == 'create'
@@ -251,7 +251,7 @@ class NotifierLogic
     destroyed_ssr_audit = @service_request.deleted_ssrs_since_previous_submission
 
     destroyed_ssr_audit.each do |ssr_audit|
-      un_updatable_statuses = SubServiceRequest.all.map(&:status).uniq - UPDATABLE_STATUSES
+      un_updatable_statuses = SubServiceRequest.all.map(&:status).uniq - Setting.find_by_key("updatable_statuses").value
       latest_action_update_audit = AuditRecovery.where("auditable_id = #{ssr_audit.auditable_id} AND action = 'update'")
       latest_action_update_audit = latest_action_update_audit.present? ? latest_action_update_audit.order(created_at: :desc).first : nil
       if latest_action_update_audit.nil? || latest_action_update_audit.audited_changes['status'].nil?
@@ -268,7 +268,7 @@ class NotifierLogic
     end
     deleted_ssr_audits_that_need_request_amendment_email
   end
-  
+
   def find_draft_ssrs
     if @sub_service_request
       ssrs_with_draft_status = @sub_service_request.status == 'draft' ? [@sub_service_request] : []

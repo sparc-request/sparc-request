@@ -64,16 +64,16 @@ module ServiceRequestsHelper
 
   # RIGHT NAVIGATION BUTTONS
   def faq_helper
-    if USE_FAQ_LINK
-      link_to t(:proper)[:right_navigation][:faqs][:header], FAQ_URL, target: :blank, class: 'btn btn-primary btn-lg btn-block help-faq-button'
+    if Setting.find_by_key("use_faq_link").value
+      link_to t(:proper)[:right_navigation][:faqs][:header], Setting.find_by_key("faq_url").value, target: :blank, class: 'btn btn-primary btn-lg btn-block help-faq-button'
     else
       link_to t(:proper)[:right_navigation][:faqs][:header], get_help_service_request_path, remote: true, class: 'btn btn-primary btn-lg btn-block help-faq-button'
     end
   end
 
   def feedback_helper
-    if USE_FEEDBACK_LINK
-      link_to t(:proper)[:right_navigation][:feedback][:header], FEEDBACK_LINK, target: :blank, class: 'feedback-button btn btn-primary btn-lg btn-block'
+    if Setting.find_by_key("use_feedback_link").value
+      link_to t(:proper)[:right_navigation][:feedback][:header], Setting.find_by_key("feedback_link").value, target: :blank, class: 'feedback-button btn btn-primary btn-lg btn-block'
     else
       content_tag(:button, t(:proper)[:right_navigation][:feedback][:header], class: 'feedback-button btn btn-primary btn-lg btn-block')
     end

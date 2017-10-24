@@ -42,7 +42,4 @@
           - if record.respond_to?(dependency_id.to_s)
             - option_class = "sub-#{record.send(dependency_id)}"
         %option{ value: record.id, class: option_class }
-          - if record.is_a?(Survey)
-            = record.title + " - Version " + record.version.to_s
-          - else
-            = record.send(name_method)
+          = record.send(name_method)

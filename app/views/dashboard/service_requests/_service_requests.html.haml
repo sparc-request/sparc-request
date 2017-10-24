@@ -20,7 +20,7 @@
 - protocol.service_requests.each do |sr|
   .panel.panel-default#service-requests-panel
     .panel-heading
-      %h4.panel-title.pull-left
+      %h4.panel-title.pull-left.center-title
         = "#{t(:dashboard)[:protocols][:service_requests][:header]} - #{protocol_panel_header_line(sr)}"
       .pull-right
         .export-consolidated-request
@@ -44,11 +44,16 @@
               %li
                 = link_to t(:dashboard)[:protocols][:service_requests][:consolidated_exclude_drafts],
                   dashboard_protocol_path(protocol, statuses_hidden: %w(draft first_draft), format: :xlsx)
-
-          = link_to t(:dashboard)[:protocols][:service_requests][:coverage_report],
-            service_request_path(sr, format: :xlsx, show_signature_section: 1),
-            class: 'btn btn-sm btn-success', data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
-            title: t(:dashboard)[:service_requests][:tooltips][:coverage_report]
+          .dropdown
+            %button.btn.btn-success.btn-sm.dropdown-toggle.coverage-analysis-report{ data: { protocol_id: protocol.id, toggle: 'dropdown', placement: 'top', delay: '{"show":"500"}' }, title: t(:dashboard)[:service_requests][:tooltips][:coverage_report] }
+              = t(:dashboard)[:protocols][:service_requests][:coverage_report]
+            %ul.dropdown-menu
+              %li
+                = link_to t(:calendars)[:show_chosen_services],
+                  service_request_path(sr, display_all_services: false, format: :xlsx, show_signature_section: 1)
+              %li
+                = link_to t(:calendars)[:show_all_services],
+                  service_request_path(sr, display_all_services: true, format: :xlsx, show_signature_section: 1)
       .clearfix
     .panel-body
       = render 'dashboard/service_requests/protocol_service_request_show',

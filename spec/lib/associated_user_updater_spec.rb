@@ -52,17 +52,14 @@ RSpec.describe AssociatedUserUpdater do
     end
   end
 
-  context "USE_EPIC == true && Protocol selected for epic && QUEUE_EPIC == false" do
+  context "use_epic is true and Protocol selected for epic and queue_epic is false" do
     let(:protocol) do
       create(:protocol_without_validations,
         primary_pi: primary_pi,
         selected_for_epic: true)
     end
 
-    before(:each) do
-      stub_const("USE_EPIC", true)
-      stub_const("QUEUE_EPIC", false)
-    end
+    stub_config("use_epic", true)
 
     context "epic access removed from ProjectRole" do
       it "should deliver a notification regarding epic access removal with updated ProjectRole" do

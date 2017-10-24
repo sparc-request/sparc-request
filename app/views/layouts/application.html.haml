@@ -37,6 +37,11 @@
     = Gon::Base.render_data
 
   %body#body
+    - if ENV.key?("site_name")
+      .alert.alert-danger
+        %p.text-center{:style => "letter-spacing: 8px"}
+          = ENV['site_name']
+
     - if @service_request
       = hidden_field_tag :service_request_id, @service_request.id, disabled: true
     - if @sub_service_request

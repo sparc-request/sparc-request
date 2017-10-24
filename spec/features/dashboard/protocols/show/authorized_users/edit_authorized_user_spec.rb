@@ -43,7 +43,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
       professional_organization_id: @division.id)
   end
 
-  before(:each) { stub_const('USE_LDAP', false) }
+  stub_config("use_ldap", false)
 
   context 'which is not assigned to themselves' do
     let!(:protocol) do

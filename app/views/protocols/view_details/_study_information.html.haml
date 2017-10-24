@@ -24,7 +24,7 @@
         = t(:protocols)[:studies][:information][:header]
   %table.table
     %tbody
-      - if RESEARCH_MASTER_ENABLED
+      - if Setting.find_by_key("use_research_master").value
         %tr.row
           %td
             %label.col-lg-4
@@ -79,19 +79,19 @@
             %label.col-lg-4
               = t(:protocols)[:studies][:information][:funding_source_federal][:code]
             .col-lg-8
-              = FEDERAL_GRANT_CODES.key(protocol.federal_grant_code_id)
+              = PermissibleValue.get_value('federal_grant_code', protocol.federal_grant_code_id)
         %tr.row
           %td
             %label.col-lg-4
               = t(:protocols)[:studies][:information][:funding_source_federal][:phs_sponsor]
             .col-lg-8
-              = FEDERAL_GRANT_PHS_SPONSORS.key(protocol.federal_phs_sponsor)
+              = PermissibleValue.get_value('federal_grant_phs_sponsor', protocol.federal_phs_sponsor)
         %tr.row
           %td
             %label.col-lg-4
               = t(:protocols)[:studies][:information][:funding_source_federal][:non_phs_sponsor]
             .col-lg-8
-              = FEDERAL_GRANT_NON_PHS_SPONSORS.key(protocol.federal_non_phs_sponsor)
+              = PermissibleValue.get_value('federal_grant_non_phs_sponsor', protocol.federal_non_phs_sponsor)
         %tr.row
           %td
             %label.col-lg-4
@@ -105,7 +105,7 @@
             = t(:protocols)[:studies][:information][:sponsor]
           .col-lg-8
             = protocol.sponsor_name
-      - if USE_EPIC
+      - if Setting.find_by_key("use_epic").value
         %tr.row
           %td
             %label.col-lg-4
@@ -128,5 +128,5 @@
                     = render partial: 'protocols/view_details/epic_questions_answers', locals: { answer: answer }
                   - elsif !answer.study_type_question.study_type_question_group.active && !protocol.active? && display_study_type_question?(protocol, answer, true)
                     = render partial: 'protocols/view_details/epic_questions_answers', locals: { answer: answer }
-              - if USE_EPIC && protocol.selected_for_epic
+              - if Setting.find_by_key("use_epic").value && protocol.selected_for_epic
                 = render partial: 'protocols/view_details/study_type_note', locals: { protocol: protocol }         

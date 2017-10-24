@@ -37,7 +37,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
            approved: true)
   end
 
-  stub_config("use_system_satisfaction_survey", true)
+  stub_config("system_satisfaction_survey", true)
   
   it "is happy" do
     allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)

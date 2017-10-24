@@ -22,7 +22,7 @@ require 'rails_helper'
 
 RSpec.describe Dashboard::ProtocolsController do
   describe 'PUT #update' do
-    stub_config("use_research_master", true)
+    stub_config("research_master_enabled", true)
     
     context 'user is an Authorized User' do
       context "user is not authorized to edit Protocol" do

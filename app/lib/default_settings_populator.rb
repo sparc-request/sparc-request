@@ -36,7 +36,7 @@ class DefaultSettingsPopulator
       @records.each do |hash|
         setting = Setting.create(
           key:            hash['key'],
-          value:          @application_config[hash['key']] || hash['value'],
+          value:          @application_config[hash['key']].to_s || hash['value'],
           data_type:      get_type(hash['value']),
           friendly_name:  hash['friendly_name'],
           description:    hash['description'],

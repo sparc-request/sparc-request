@@ -99,19 +99,18 @@
     "parent_key":     "queue_epic",
     "parent_value":   "true"
   },
-  // This is not defined in application.yml.example. Is this still used?
-  // {
-  //   "key":            "epic_queue_report_to",
-  //   "value":          "jug2@musc.edu",
-  //   "friendly_name":  "Epic Queue Report To",
-  //   "description":    "Email addresses of users who are e-mailed the EPIC queue report.",
-  //   "group":          "",
-  //   "version":        "",
-  //   "parent_key":     "queue_epic",
-  //   "parent_value":   "true"
-  // },
   {
-    "key":            "epic_rights_mail_to",
+    "key":            "epic_queue_report_to",
+    "value":          "catesa@musc.edu, forney@musc.edu, crossoml@musc.edu, moreira@musc.edu, powersp@musc.edu, rogersbr@musc.edu",
+    "friendly_name":  "Epic Queue Report To",
+    "description":    "Email addresses of users who are e-mailed the EPIC queue report.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "queue_epic",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "approve_epic_rights_mail_to",
     "value":          "forney@musc.edu, crossoml@musc.edu",
     "friendly_name":  "EPIC Rights Mail-To",
     "description":    "Email addresses of users who are e-mailed for EPIC rights approval",
@@ -291,7 +290,7 @@
     "parent_value":   "true"
   },
   {
-    "key":            "redcap_api_token",
+    "key":            "redcap_token",
     "value":          "",
     "friendly_name":  "Redcap API Token",
     "description":    "The token used to access the Redcap API.",
@@ -361,27 +360,27 @@
     "parent_value":   ""
   },
   {
-    "key":            "research_master_api_url",
+    "key":            "research_master_api",
     "value":          "https://research-master-staging.musc.edu/api/",
     "friendly_name":  "Research Master API URL",
     "description":    "The URL of the Research Master ID API.",
     "group":          "",
     "version":        "",
-    "parent_key":     "use_research_master",
+    "parent_key":     "research_master_enabled",
     "parent_value":   "true"
   },
   {
-    "key":            "research_master_api_token",
+    "key":            "rmid_api_token",
     "value":          "e754d4e002bd58b4b1a55a3f5808ec37",
     "friendly_name":  "Research Master API Token",
     "description":    "The token used to access the Research Master ID API.",
     "group":          "",
     "version":        "",
-    "parent_key":     "use_research_master",
+    "parent_key":     "research_master_enabled",
     "parent_value":   "true"
   },
   {
-    "key":            "use_research_master",
+    "key":            "research_master_enabled",
     "value":          "false",
     "friendly_name":  "Use Research Master ID",
     "description":    "Determines whether the Research Master ID application should be used.",
@@ -397,7 +396,7 @@
     "description":    "The URL of the Research Master ID application.",
     "group":          "",
     "version":        "",
-    "parent_key":     "use_research_master",
+    "parent_key":     "research_master_enabled",
     "parent_value":   "true"
   },
   {
@@ -451,7 +450,7 @@
     "parent_value":   "true"
   },
   {
-    "key":            "use_system_satisfaction_survey",
+    "key":            "system_satisfaction_survey",
     "value":          "false",
     "friendly_name":  "Use System Satisfaction Survey",
     "description":    "Determines whether or not to display a System Satisfaction Survey prior to submitting a Service Request.",
@@ -467,7 +466,7 @@
     "description":    "This field will overwrite the system satisfaction survey mailers in the application to instead cc to this address. To be overwritten in development/testing/staging to prevent real emails being sent out to users.",
     "group":          "",
     "version":        "",
-    "parent_key":     "use_system_satisfaction_survey",
+    "parent_key":     "system_satisfaction_survey",
     "parent_value":   "true"
   },
   {

@@ -34,7 +34,7 @@ RSpec.describe 'User should see RM ID displayed', js: true do
 
   fake_login_for_each_test("johnd")
 
-  stub_config("use_research_master", true)
+  stub_config("research_master_enabled", true)
   
   scenario 'successfully' do
     protocol = create(

@@ -37,7 +37,7 @@
   - my_class = @entity.class.to_s.downcase
   - url = eval("catalog_manager_#{my_class}_path")
   - @f = nil; form_for(@entity, :url => url) {|f| @f = f}
-  $('#available_statuses_fieldset').replaceWith("#{escape_javascript(render :partial => 'catalog_manager/shared/available_statuses', :locals => {:f => @f})}")
+  $('#available_statuses_wrapper').html("#{escape_javascript(render :partial => 'catalog_manager/shared/status_options_box', :locals => {:f => @f})}")
 
 -# re-render pricing_setups if the entity is a Provider or Program
 - if @entity.instance_of? Provider or @entity.instance_of? Program

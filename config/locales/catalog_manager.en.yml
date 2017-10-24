@@ -129,6 +129,8 @@ en:
       cpt_code: "CPT Code"
       css_class: "Color"
       ctrc_label: "Administrative Approvals"
+      default_available_statuses: "Default Statuses:"
+      default_editable_statuses: "Default Editable Statuses:"
       default_statuses: "Default Statuses:"
       description: "Description"
       disabled: "Display in SPARC"

@@ -1,0 +1,4 @@
+id,key,value,concept_code,parent_id,sort_order,category,default,reserved
+,approve,Authorize/Change Study Charges,,,1,proxy_right,,
+,view,View Rights,,,2,proxy_right,,
+,none,Member Only,,,3,proxy_right,,

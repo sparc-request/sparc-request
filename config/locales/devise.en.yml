@@ -56,13 +56,13 @@ en:
       timeout: 'Your session expired, please sign in again to continue.'
       inactive: 'Your account was not activated yet.'
       not_approved: 'Your account has not been approved by your administrator yet.'
-    
+
     ############
     # SESSIONS #
     ############
     sessions:
       header: "Login"
-      institution_users: "MUSC User Login"
+      institution_users: "%{institution} User Login"
       other_users: "Outside User Login"
       sign_up: "Don't have an account? Sign up"
       login: "Login"

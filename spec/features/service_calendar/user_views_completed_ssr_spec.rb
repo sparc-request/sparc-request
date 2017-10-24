@@ -26,8 +26,6 @@ RSpec.describe 'User views a completed SSR', js: true do
   fake_login_for_each_test
 
   before :each do
-    stub_const("FINISHED_STATUSES", ['complete'])
-
     org       = create(:organization)
                 create(:pricing_setup, organization: org)
     pppv      = create(:service, organization: org, one_time_fee: false)
@@ -42,7 +40,7 @@ RSpec.describe 'User views a completed SSR', js: true do
     li2       = create(:line_item, service_request: @sr, sub_service_request: ssr2, service: otf, units_per_quantity: 5, quantity: 5)
 
     arm       = create(:arm, protocol: protocol, visit_count: 3, subject_count: 5)
-    
+
     arm.visits.first.update_attributes(research_billing_qty: 5, insurance_billing_qty: 5, effort_billing_qty: 5)
 
     visit service_calendar_service_request_path(@sr)

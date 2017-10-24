@@ -18,5 +18,10 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
+<% if @questionnaire.valid? %>
+
 $('#modal_place').html("<%= j render 'modal_partial' %>")
 $('#modal_place').modal('show')
+<% else %>
+sweetAlert("Error", "Nothing to Preview", "error")
+<% end %>

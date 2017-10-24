@@ -47,6 +47,11 @@ class Dashboard::BaseController < ActionController::Base
 
   private
 
+  def rmid_server_status(protocol)
+    @rmid_server_down = protocol.rmid_server_status
+    @rmid_server_down ? flash[:alert] = t(:protocols)[:summary][:tooltips][:rmid_server_down] : nil
+  end
+
   def protocol_authorizer_view
     @authorization  = ProtocolAuthorizer.new(@protocol, @user)
 
@@ -80,5 +85,9 @@ class Dashboard::BaseController < ActionController::Base
     else
       @admin = Protocol.for_admin(@user.id).include?(@protocol)
     end
+  end
+
+  def bypass_rmid_validations? # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]
+    @bypass_rmid_validation = @user.is_overlord? || @admin
   end
 end

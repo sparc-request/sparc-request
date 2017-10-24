@@ -29,18 +29,22 @@ RSpec.describe '/service_calendar/master_calendar/otf/totals/_otf_totals', type:
     @service_request = create(:service_request_without_validations, protocol: @protocol)
   end
 
-  it 'should display total direct costs for Non-clinical services if USE_INDIRECT_COST is true' do
-    stub_const("USE_INDIRECT_COST", true)
-    render "/service_calendars/master_calendar/otf/totals/otf_totals", service_request: @service_request
+  context 'indirect cost turned on' do
+    stub_config("use_indirect_cost", true)
 
-    expect(response).to have_content('Total Direct Costs (Non-clinical Services) Per Study')
+    it 'should display total direct costs for Non-clinical services' do
+      render "/service_calendars/master_calendar/otf/totals/otf_totals", service_request: @service_request
+
+      expect(response).to have_content('Total Direct Costs (Non-clinical Services) Per Study')
+    end
   end
 
-  it 'should not display total direct costs for Non-clinical services if USE_INDIRECT_COST is false' do
-    stub_const("USE_INDIRECT_COST", false)
-    render "/service_calendars/master_calendar/otf/totals/otf_totals", service_request: @service_request
+  context 'indirect cost turned off' do
+    it 'should not display total direct costs for Non-clinical services' do
+      render "/service_calendars/master_calendar/otf/totals/otf_totals", service_request: @service_request
 
-    expect(response).to_not have_content('Total Direct Costs (Non-clinical Services) Per Study')
+      expect(response).to_not have_content('Total Direct Costs (Non-clinical Services) Per Study')
+    end
   end
 
   it 'should display total Non-clinicals costs' do

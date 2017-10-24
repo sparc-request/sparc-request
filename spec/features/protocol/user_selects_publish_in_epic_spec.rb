@@ -41,9 +41,12 @@ RSpec.describe 'User creates study', js: true do
     @sr         = create(:service_request_without_validations, status: 'first_draft')
     ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                   create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
+    allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
   end
 
   context 'Using Epic' do
+    stub_config("use_epic", true)
+    
     context 'selects "Publish Study in Epic" and selects answers that give study_type 1' do
       scenario 'should show note for study_type 1' do
         visit_create_study_form
@@ -98,7 +101,6 @@ RSpec.describe 'User creates study', js: true do
   context 'Not Using Epic' do
 
     before :each do
-      stub_const("USE_EPIC", false)
       visit_create_study_form
       wait_for_javascript_to_finish
     end

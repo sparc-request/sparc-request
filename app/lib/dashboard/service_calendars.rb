@@ -80,11 +80,20 @@ module Dashboard
     def self.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, opts = {})
       statuses_hidden = opts[:statuses_hidden] || %w(first_draft)
       if opts[:merged]
-        arm.line_items_visits.
-          eager_load(:visits, :notes).
-          includes(sub_service_request: :organization, line_item: [:admin_rates, :service_request, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).
-          where.not(sub_service_requests: { status: statuses_hidden }).
-          where(services: { one_time_fee: false })
+        if opts[:display_all_services]
+          arm.line_items_visits.
+            eager_load(:visits, :notes).
+            includes(sub_service_request: :organization, line_item: [:admin_rates, :service_request, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).
+            where.not(sub_service_requests: { status: statuses_hidden }).
+            where(services: { one_time_fee: false })
+        else
+          arm.line_items_visits.
+            eager_load(:visits, :notes).
+            includes(sub_service_request: :organization, line_item: [:admin_rates, :service_request, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).
+            where.not(sub_service_requests: { status: statuses_hidden }).
+            where(services: { one_time_fee: false }).
+            where.not( "research_billing_qty = 0 and insurance_billing_qty = 0 and effort_billing_qty = 0" )
+        end
       else
         (sub_service_request || service_request).line_items_visits.
           eager_load(:visits, :notes).

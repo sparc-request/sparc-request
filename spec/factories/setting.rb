@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,32 +17,40 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-require 'rails_helper'
 
-RSpec.describe LineItem, type: :model do
-  let!(:logged_in_user) { create(:identity) }
+FactoryGirl.define do
+  factory :setting do
+    sequence(:key) { |n| "setting-#{n}" }
+    data_type      { ['boolean', 'string', 'json', 'email', 'url', 'path',].sample }
+    value          { nil }
+    friendly_name  { Faker::Lorem.word }
+    description    { Faker::Lorem.sentence }
+    group          { rand(0..10) }
+    version        { '1.0' }
 
-  before :each do
-    org = create(:organization)
-    @service = create(:service, organization: org)
-    @que = create(:questionnaire, :without_validations, service: @service, active: true)
-    @protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
-    sr = create(:service_request_without_validations, protocol: @protocol)
-    ssr = create(:sub_service_request, service_request: sr, organization: org)
-    @li = create(:line_item, service_request: sr, sub_service_request: ssr, service: @service)
-  end
-
-  context 'protocol has incomplete additional details' do
-    it 'should return true' do
-      expect(@li.has_incomplete_additional_details?).to eq(true)
+    trait :boolean do
+      data_type { 'boolean' }
+      value     { [true, false].sample }
     end
-  end
 
-  context 'protocol does not have incomplete additional details' do
-    it 'should return false' do
-      create(:submission, identity: logged_in_user, protocol: @protocol, service: @service, line_item: @li, questionnaire: @que)
-      
-      expect(@li.has_incomplete_additional_details?).to eq(false)
+    trait :json do
+      data_type { 'json' }
+      value     { '{"key":"value"}' }
+    end
+
+    trait :email do
+      data_type { 'email' }
+      value     { 'sparc@musc.edu' }
+    end
+
+    trait :url do
+      data_type { 'url' }
+      value     { 'https://sparc.musc.edu/dashboard/protocols/' }
+    end
+
+    trait :path do
+      data_type { 'path' }
+      value     { '/dashboard/protocols/?admin=false' }
     end
   end
 end

@@ -34,8 +34,8 @@ RSpec.describe 'User edits protocol', js: true do
     @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
     ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                   create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-    
     StudyTypeQuestionGroup.create(active: 1)
+    allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
   end
 
   context 'and clicks Edit Information' do
@@ -43,13 +43,10 @@ RSpec.describe 'User edits protocol', js: true do
       before :each do
         visit protocol_service_request_path(@sr)
         wait_for_javascript_to_finish
-
         click_link 'Edit Study Information'
         wait_for_javascript_to_finish
-
         find('.human-subjects').click
         wait_for_javascript_to_finish
-
         find('[data-id="protocol_study_phase_ids"]').click
         first('.dropdown-menu.open span.text', text: "IV").click   
       end

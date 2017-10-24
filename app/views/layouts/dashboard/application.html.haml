@@ -23,7 +23,7 @@
   %head
     %title
       = t(:dashboard)[:header]
-    = stylesheet_link_tag "#{CUSTOM_ASSET_PATH}dashboard/application"
+    = stylesheet_link_tag "dashboard/application"
     = javascript_include_tag 'dashboard/application'
     /[if IE]
       = stylesheet_link_tag 'ie'
@@ -37,6 +37,11 @@
     = Gon::Base.render_data
 
   %body#body
+    - if ENV.key?("site_name")
+      .alert.alert-danger
+        %p.text-center{:style => "letter-spacing: 8px"}
+          = ENV['site_name']
+
     #container
       #header
         = render 'layouts/header_logos', location: "dashboard"

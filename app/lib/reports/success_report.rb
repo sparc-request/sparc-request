@@ -50,7 +50,7 @@ class SuccessReport < Reporting
       'Status'
     ]
 
-    statuses = AVAILABLE_STATUSES
+    statuses = PermissibleValue.get_hash('status')
 
     orgs = Program.find(47).cores.map(&:id)
 

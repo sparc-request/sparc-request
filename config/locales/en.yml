@@ -190,6 +190,8 @@ en:
   calendars:
     confirm_row_select: "This will reset custom values for this row, do you wish to continue?"
     confirm_column_select: "This will reset custom values for this column, do you wish to continue?"
+    show_all_services: 'Show All Services'
+    show_chosen_services: 'Show Chosen Services'
     tabs:
       template: "Template Tab"
       billing: "Quantity/Billing Tab"
@@ -409,6 +411,7 @@ en:
         edit: "Quick access to edit protocol information"
         archive_study: "Ability to hide study from all Authorized User dashboards"
         unarchive_study: "Click to reveal on all associated Authorized User dashboards"
+        rmid_server_down: "Research Master ID Server is down.  You cannot edit the Research Master ID field at this time."
     view_details:
       button: "View %{protocol_type} Details"
       header: "%{protocol_type} Details: #%{protocol_id}"

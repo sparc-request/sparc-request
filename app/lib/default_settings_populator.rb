@@ -23,7 +23,7 @@ class DefaultSettingsPopulator
 
   def initialize()
     @records = JSON.parse(File.read('config/defaults.json'))
-    @application_config = 
+    @application_config =
       if File.exists? Rails.root.join('config', 'application.yml')
         YAML.load_file(Rails.root.join('config', 'application.yml'))[Rails.env]
       else
@@ -36,7 +36,7 @@ class DefaultSettingsPopulator
       @records.each do |hash|
         setting = Setting.create(
           key:            hash['key'],
-          value:          @application_config[hash['key']].to_s || hash['value'],
+          value:          @application_config[hash['key']] || hash['value'],
           data_type:      get_type(hash['value']),
           friendly_name:  hash['friendly_name'],
           description:    hash['description'],

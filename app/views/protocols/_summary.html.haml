@@ -28,7 +28,7 @@
         = link_to I18n.t('protocols.edit', protocol_type: protocol_type), edit_protocol_path(protocol, srid: service_request.id, sub_service_request_id: sub_service_request_id), class: 'btn btn-warning edit-protocol-information-button'
     .clearfix
   .panel-body#protocol-summary.text-left
-    - if Setting.find_by_key("use_research_master").value && protocol.is_study?
+    - if Setting.find_by_key("research_master_enabled").value && protocol.is_study?
       .row
         .col-sm-3
           %label

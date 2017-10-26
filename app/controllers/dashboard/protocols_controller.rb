@@ -96,8 +96,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol.requester_id  = current_user.id
     @protocol.populate_for_edit
     session[:protocol_type] = params[:protocol_type]
-    gon.rm_id_api_url = Setting.find_by_key("research_master_api_url").value
-    gon.rm_id_api_token = Setting.find_by_key("research_master_api_token").value
+    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
+    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
     rmid_server_status(@protocol)
   end
 
@@ -135,8 +135,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @permission_to_edit = @authorization.nil? ? false : @authorization.can_edit?
     @in_dashboard       = true
     @protocol.populate_for_edit
-    gon.rm_id_api_url = Setting.find_by_key("research_master_api_url").value
-    gon.rm_id_api_token = Setting.find_by_key("research_master_api_token").value
+    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
+    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
 
     session[:breadcrumbs].
       clear.

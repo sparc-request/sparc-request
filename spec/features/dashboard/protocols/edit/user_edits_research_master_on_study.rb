@@ -25,7 +25,7 @@ RSpec.describe 'User edits research master id on study', js: true do
   fake_login_for_each_test
   build_study_phases
 
-  stub_config("use_research_master", true)
+  stub_config("research_master_enabled", true)
   
   context 'User is an admin' do
     before :each do

@@ -322,8 +322,10 @@ class ProtocolsController < ApplicationController
   def fix_identity
     attrs               = protocol_params
     attrs[:project_roles_attributes].each do |index, project_role|
-      identity = Identity.find_or_create project_role[:identity_id]
-      project_role[:identity_id] = identity.id
+      if project_role[:identity_id].present?
+        identity = Identity.find_or_create project_role[:identity_id]
+        project_role[:identity_id] = identity.id
+      end
     end unless attrs[:project_roles_attributes].nil?
     attrs
   end

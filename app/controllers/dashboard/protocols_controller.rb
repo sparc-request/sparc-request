@@ -47,7 +47,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       initialize_filterrific(Protocol, params[:filterrific] && filterrific_params,
         default_filter_params: @default_filter_params,
         select_options: {
-          with_status: AVAILABLE_STATUSES.invert,
+          with_status: PermissibleValue.get_inverted_hash('status'),
           with_organization: Dashboard::GroupedOrganizations.new(@organizations).collect_grouped_options,
           with_owner: build_with_owner_params
         },
@@ -96,18 +96,15 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol.requester_id  = current_user.id
     @protocol.populate_for_edit
     session[:protocol_type] = params[:protocol_type]
-    gon.rm_id_api_url = RESEARCH_MASTER_API
-    gon.rm_id_api_token = RMID_API_TOKEN
+    gon.rm_id_api_url = Setting.find_by_key("research_master_api_url").value
+    gon.rm_id_api_token = Setting.find_by_key("research_master_api_token").value
     rmid_server_status(@protocol)
   end
 
   def create
     protocol_class                          = protocol_params[:type].capitalize.constantize
-    attrs                                   = fix_date_params
     ### if lazy load enabled, we need create the identiy if necessary here
-    if LAZY_LOAD && USE_LDAP
-      attrs = fix_identity
-    end
+    attrs                                   = Setting.find_by_key("use_ldap").value && Setting.find_by_key("lazy_load_ldap").value ? fix_identity : fix_date_params
     @protocol                               = protocol_class.new(attrs)
     @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id
 
@@ -121,9 +118,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
       @protocol.service_requests.new(status: 'draft').save(validate: false)
 
-      if USE_EPIC && @protocol.selected_for_epic
+      if Setting.find_by_key("use_epic").value && @protocol.selected_for_epic
         @protocol.ensure_epic_user
-        Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
+        Notifier.notify_for_epic_user_approval(@protocol).deliver unless Setting.find_by_key("queue_epic").value
       end
 
       flash[:success] = I18n.t('protocols.created', protocol_type: @protocol.type)
@@ -138,8 +135,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @permission_to_edit = @authorization.nil? ? false : @authorization.can_edit?
     @in_dashboard       = true
     @protocol.populate_for_edit
-    gon.rm_id_api_url = RESEARCH_MASTER_API
-    gon.rm_id_api_token = RMID_API_TOKEN
+    gon.rm_id_api_url = Setting.find_by_key("research_master_api_url").value
+    gon.rm_id_api_token = Setting.find_by_key("research_master_api_token").value
 
     session[:breadcrumbs].
       clear.

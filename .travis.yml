@@ -15,7 +15,6 @@ before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - cp config/database.yml.example config/database.yml
-  - cp config/application.yml.example config/application.yml
   - cp config/epic.yml.example config/epic.yml
   - cp config/ldap.yml.example config/ldap.yml
   - mysql -e 'create database test_sparc_request;'

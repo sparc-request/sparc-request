@@ -67,7 +67,7 @@ class AssociatedUsersController < ApplicationController
   end
 
   def create
-    creator = AssociatedUserCreator.new(project_role_params)
+    creator = AssociatedUserCreator.new(project_role_params, current_user)
 
     if creator.successful?
       flash.now[:success] = t(:authorized_users)[:created]
@@ -81,7 +81,7 @@ class AssociatedUsersController < ApplicationController
   end
 
   def update
-    updater               = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params)
+    updater               = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params, current_identity: current_user)
     protocol_role         = updater.protocol_role
     @return_to_dashboard  = protocol_role.identity_id == current_user.id && ['none', 'view'].include?(protocol_role.project_rights)
 
@@ -104,7 +104,7 @@ class AssociatedUsersController < ApplicationController
 
     flash.now[:alert] = t(:authorized_users)[:destroyed]
 
-    if USE_EPIC && @protocol.selected_for_epic && epic_access && !QUEUE_EPIC
+    if Setting.find_by_key("use_epic").value && @protocol.selected_for_epic && epic_access && !Setting.find_by_key("queue_epic").value
       Notifier.notify_primary_pi_for_epic_user_removal(@protocol, protocol_role_clone).deliver
     end
 

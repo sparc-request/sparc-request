@@ -123,7 +123,7 @@ RSpec.describe SubServiceRequest, type: :model do
       context "indirect cost total" do
 
         it "should return the indirect cost for one time fees" do
-          if USE_INDIRECT_COST
+          if Setting.find_by_key("use_indirect_cost").value
             expect(sub_service_request.indirect_cost_total).to eq(1000)
           else
             expect(sub_service_request.indirect_cost_total).to eq(0.0)
@@ -131,7 +131,7 @@ RSpec.describe SubServiceRequest, type: :model do
         end
 
         it "should return the indirect cost for visit based services" do
-          if USE_INDIRECT_COST
+          if Setting.find_by_key("use_indirect_cost").value
             expect(sub_service_request.indirect_cost_total).to eq(1000)
           else
             expect(sub_service_request.indirect_cost_total).to eq(0.0)
@@ -142,7 +142,7 @@ RSpec.describe SubServiceRequest, type: :model do
       context "grand total" do
 
         it "should return the grand total cost of the sub service request" do
-          if USE_INDIRECT_COST
+          if Setting.find_by_key("use_indirect_cost").value
             expect(sub_service_request.grand_total).to eq(1500)
           else
             expect(sub_service_request.grand_total).to eq(5000.0)
@@ -243,7 +243,6 @@ RSpec.describe SubServiceRequest, type: :model do
         end
 
         it 'should should return false if the status is complete' do
-          stub_const("FINISHED_STATUSES", ['complete'])
           sub_service_request.update_attributes(status: 'complete')
           program.editable_statuses.where(status: sub_service_request.status).update(selected: true)
           expect(sub_service_request.can_be_edited?).to eq(false)

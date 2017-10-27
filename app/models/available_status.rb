@@ -22,9 +22,17 @@ class AvailableStatus < ApplicationRecord
   audited
 
   belongs_to :organization
+
   attr_accessor :position
 
   scope :selected, -> { where(selected: true) }
 
-  TYPES = AVAILABLE_STATUSES
+  STATUSES = PermissibleValue.get_hash("status").sort_by{|status, humanized| humanized}.to_h
+
+  TYPES = STATUSES.keys
+
+  def disabled_status?
+    ["Draft", "Get A Cost Estimate", "Submitted"].include?(self.status)
+  end
+
 end

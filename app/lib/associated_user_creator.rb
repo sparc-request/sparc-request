@@ -21,10 +21,10 @@
 class AssociatedUserCreator
   attr_reader :protocol_role
 
-  def initialize(params)
+  def initialize(params, current_identity)
     protocol = Protocol.find(params[:protocol_id])
     @protocol_role = protocol.project_roles.build(params)
-    eqm = EpicQueueManager.new(protocol, @protocol_role)
+    eqm = EpicQueueManager.new(protocol, current_identity, @protocol_role)
 
     if @protocol_role.unique_to_protocol? && @protocol_role.fully_valid?
       @successful = true
@@ -37,7 +37,7 @@ class AssociatedUserCreator
 
       protocol.email_about_change_in_authorized_user(@protocol_role, "add")
 
-      if USE_EPIC && protocol.selected_for_epic && !QUEUE_EPIC
+      if Setting.find_by_key("use_epic").value && protocol.selected_for_epic && !Setting.find_by_key("queue_epic").value
         Notifier.notify_for_epic_user_approval(protocol).deliver
       end
 

@@ -24,7 +24,7 @@ class AssociatedUserUpdater
   def initialize(params)
     @protocol_role = ProjectRole.find(params[:id])
     protocol = @protocol_role.protocol
-    eqm = EpicQueueManager.new(protocol, @protocol_role)
+    eqm = EpicQueueManager.new(protocol, params[:current_identity], @protocol_role)
 
     epic_rights = @protocol_role.epic_rights.to_a # use to_a to eval ActiveRecord::Relation
     @protocol_role.assign_attributes(params[:project_role])
@@ -45,7 +45,7 @@ class AssociatedUserUpdater
       # must come after the use of ActiveModel::Dirty methods above
       @protocol_role.save
 
-      if USE_EPIC && protocol.selected_for_epic && !QUEUE_EPIC
+      if Setting.find_by_key("use_epic").value && protocol.selected_for_epic && !Setting.find_by_key("queue_epic").value
         if access_removed
           Notifier.notify_for_epic_access_removal(protocol, @protocol_role).deliver
         elsif access_granted

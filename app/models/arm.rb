@@ -80,7 +80,7 @@ class Arm < ApplicationRecord
   end
 
   def maximum_indirect_costs_per_patient line_items_visits=self.line_items_visits
-    if USE_INDIRECT_COST
+    if Setting.find_by_key("use_indirect_cost").value
       self.maximum_direct_costs_per_patient(line_items_visits) * (self.protocol.indirect_cost_rate.to_f / 100)
     else
       return 0
@@ -101,7 +101,7 @@ class Arm < ApplicationRecord
 
   def indirect_costs_for_visit_based_service line_items_visits=self.line_items_visits
     total = 0.0
-    if USE_INDIRECT_COST
+    if Setting.find_by_key("use_indirect_cost").value
       line_items_visits.each do |vg|
         total += vg.indirect_costs_for_visit_based_service
       end
@@ -199,12 +199,12 @@ class Arm < ApplicationRecord
       end
     end
   end
-  
+
   def mass_create_visit_groups
     last_position = self.visit_groups.any? ? self.visit_groups.last.position : 0
     position      = last_position + 1
     count         = self.visit_count - last_position
-    
+
     count.times do |index|
       self.visit_groups.new(name: "Visit #{position}", position: position).save(validate: false)
       position += 1

@@ -27,6 +27,8 @@ RSpec.describe Protocol, type: :model do
   build_study_type_questions()
   build_study_type_answers()
 
+  stub_config("use_epic", true)
+  
   before :each do 
     study.update_attribute(:selected_for_epic, true)
   end

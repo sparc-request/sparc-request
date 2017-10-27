@@ -76,10 +76,11 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def formatted_status
-    if AVAILABLE_STATUSES.has_key? status
-      AVAILABLE_STATUSES[status]
-    else
+    formatted_status = PermissibleValue.get_value('status', self.status)
+    if formatted_status.nil?
       "STATUS MAPPING NOT PRESENT"
+    else
+      formatted_status
     end
   end
 
@@ -241,10 +242,10 @@ class SubServiceRequest < ApplicationRecord
   ######################## FULFILLMENT RELATED METHODS ##########################
   ###############################################################################
   def ready_for_fulfillment?
-    # return true if work fulfillment has already been turned "on" or global variable FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is set to false or nil
-    # otherwise, return true only if FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is true and the parent organization has tag 'clinical work fulfillment'
-    if self.in_work_fulfillment || !FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER ||
-        (FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER && self.organization.tag_list.include?('clinical work fulfillment'))
+    # return true if work fulfillment has already been turned "on" or global variable fulfillment_contingent_on_catalog_manager is set to false or nil
+    # otherwise, return true only if fulfillment_contingent_on_catalog_manager is true and the parent organization has tag 'clinical work fulfillment'
+    if self.in_work_fulfillment || !Setting.find_by_key("fulfillment_contingent_on_catalog_manager").value ||
+        (Setting.find_by_key("fulfillment_contingent_on_catalog_manager").value && self.organization.tag_list.include?('clinical work fulfillment'))
       return true
     else
       return false
@@ -260,19 +261,19 @@ class SubServiceRequest < ApplicationRecord
   def update_status_and_notify(new_status)
     to_notify = []
     if can_be_edited?
-      available = AVAILABLE_STATUSES.keys
+      available = PermissibleValue.get_key_list('status')
       editable = self.is_locked? || available
       changeable = available & editable
       if changeable.include?(new_status)
         #  See Pivotal Stories: #133049647 & #135639799
-        if (status != new_status) && ((new_status == 'submitted' && UPDATABLE_STATUSES.include?(status)) || new_status != 'submitted')
+        if (status != new_status) && ((new_status == 'submitted' && Setting.find_by_key("updatable_statuses").value.include?(status)) || new_status != 'submitted')
           ### For 'submitted' status ONLY:
           # Since adding/removing services changes a SSR status to 'draft', we have to look at the past status to see if we should notify users of a status change
           # We do NOT notify if updating from an un-updatable status or we're updating to a status that we already were previously
           if new_status == 'submitted'
             past_status = PastStatus.where(sub_service_request_id: id).last
             past_status = past_status.nil? ? nil : past_status.status
-            if status == 'draft' && ((UPDATABLE_STATUSES.include?(past_status) && past_status != new_status) || past_status == nil) # past_status == nil indicates a newly created SSR
+            if status == 'draft' && ((Setting.find_by_key("updatable_statuses").value.include?(past_status) && past_status != new_status) || past_status == nil) # past_status == nil indicates a newly created SSR
               to_notify << id
             elsif status != 'draft'
               to_notify << id
@@ -303,7 +304,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def is_complete?
-    FINISHED_STATUSES.include?(self.status)
+    return Setting.find_by_key("finished_statuses").value.include?(status)
   end
 
   def set_to_draft

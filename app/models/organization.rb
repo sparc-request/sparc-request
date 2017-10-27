@@ -48,15 +48,15 @@ class Organization < ApplicationRecord
   has_many :available_statuses, :dependent => :destroy
   has_many :editable_statuses, :dependent => :destroy
   has_many :org_children, class_name: "Organization", foreign_key: :parent_id
-  
+
   accepts_nested_attributes_for :subsidy_map
   accepts_nested_attributes_for :pricing_setups
   accepts_nested_attributes_for :submission_emails
   accepts_nested_attributes_for :available_statuses, :allow_destroy => true
   accepts_nested_attributes_for :editable_statuses, :allow_destroy => true
 
-
   after_create :create_statuses
+  
   # TODO: In rails 5, the .or operator will be added for ActiveRecord queries. We should try to
   #       condense this to a single query at that point
   scope :authorized_for_identity, -> (identity_id) {
@@ -359,7 +359,7 @@ class Organization < ApplicationRecord
       end
     end
 
-    AVAILABLE_STATUSES.slice(*statuses)
+    AvailableStatus::STATUSES.slice(*statuses)
   end
 
   def self.find_all_by_available_status status
@@ -379,8 +379,8 @@ class Organization < ApplicationRecord
   private
 
   def create_statuses
-    EditableStatus.import EditableStatus::TYPES.map{|status| EditableStatus.new(organization: self, status: status)}
-    AvailableStatus.import AvailableStatus::TYPES.keys.map{|status| AvailableStatus.new(organization: self, status: status)}
+    EditableStatus.import AvailableStatus::TYPES.map{|status| EditableStatus.new(organization: self, status: status)}
+    AvailableStatus.import AvailableStatus::TYPES.map{|status| AvailableStatus.new(organization: self, status: status)}
   end
 
   def self.authorized_child_organizations(org_ids)

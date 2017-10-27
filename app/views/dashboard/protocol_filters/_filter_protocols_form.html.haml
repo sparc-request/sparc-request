@@ -44,7 +44,7 @@
               = form.fields_for :search_query do |search|
                 .input-group-btn
                   .dd_select
-                    = search.select :search_drop, options_for_select(t(:dashboard)[:protocol_filters][:search_by_options], filterrific.search_query.try(:search_drop)), { prompt:  t(:dashboard)[:protocol_filters][:search_by] }, class: "form-control selectpicker ", data: { style: 'dropdown_filter' }
+                    = search.select :search_drop, options_for_select(ProtocolFilter.search_filters, filterrific.search_query.try(:search_drop)), { prompt:  t(:dashboard)[:protocol_filters][:search_by] }, class: "form-control selectpicker ", data: { style: 'dropdown_filter' }
                 = search.text_field :search_text, value: filterrific.search_query.try(:search_text), class: 'form-control'
 
         .form-group.row

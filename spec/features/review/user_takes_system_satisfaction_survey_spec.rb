@@ -64,7 +64,7 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
   end
 
   context 'and system is using system satisfaction survey' do
-    stub_config("use_system_satisfaction_survey", true)
+    stub_config("system_satisfaction_survey", true)
     
     before :each do
       @survey = create(:survey, access_code: 'system-satisfaction-survey', title: 'System Satisfaction Survey', active: true)

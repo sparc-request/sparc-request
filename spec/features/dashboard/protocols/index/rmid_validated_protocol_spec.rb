@@ -40,7 +40,7 @@ RSpec.describe 'RMID validated Protocol', js: true do
     page
   end
 
-  stub_config("use_research_master", true)
+  stub_config("research_master_enabled", true)
   
   describe 'RMID validated Protocol' do
     before(:each) do

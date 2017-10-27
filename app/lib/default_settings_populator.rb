@@ -23,7 +23,7 @@ class DefaultSettingsPopulator
 
   def initialize()
     @records = JSON.parse(File.read('config/defaults.json'))
-    @application_config = 
+    @application_config =
       if File.exists? Rails.root.join('config', 'application.yml')
         YAML.load_file(Rails.root.join('config', 'application.yml'))[Rails.env]
       else

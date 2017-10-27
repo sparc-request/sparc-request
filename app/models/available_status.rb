@@ -23,9 +23,8 @@ class AvailableStatus < ApplicationRecord
 
   belongs_to :organization
 
-  attr_accessor :position
-
   scope :selected, -> { where(selected: true) }
+  scope :alphabetized, -> { all.sort{ |x, y| STATUSES[x.status] <=> STATUSES[y.status] } }
 
   STATUSES = PermissibleValue.get_hash("status").sort_by{|status, humanized| humanized}.to_h
 

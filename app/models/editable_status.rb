@@ -30,4 +30,6 @@ class EditableStatus < ApplicationRecord
   validates :status, inclusion: { in: EditableStatus.statuses }, presence: true
 
   scope :selected, -> { where(selected: true) }
+
+  scope :alphabetized, -> { all.sort{ |x, y| AvailableStatus::STATUSES[x.status] <=> AvailableStatus::STATUSES[y.status] } }
 end

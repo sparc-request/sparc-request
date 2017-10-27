@@ -36,6 +36,15 @@ higher_level_of_privacy_no_epic = '#study_type_answer_higher_level_of_privacy_no
 
 $(document).ready ->
 
+  $(document).on 'blur', '#protocol_short_title, #protocol_title', ->
+    regex = /^[a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]+$/
+    unless regex.test($(this).val())
+      $(this).parent('div').find('span').removeClass('hide')
+      $(this).parents('div.form-group').addClass('has-error')
+    else
+      $(this).parent('div').find('span').addClass('hide')
+      $(this).parents('div.form-group').removeClass('has-error')
+
   if $('.human-subjects:checkbox:checked').length > 0
     $('.rm-id').addClass('required')
 

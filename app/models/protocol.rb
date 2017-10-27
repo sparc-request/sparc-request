@@ -64,6 +64,14 @@ class Protocol < ApplicationRecord
 
   validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 1000 }, allow_blank: true
 
+  validates :short_title,
+    format: { with: /^[a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]+$/,
+              message: '- No special characters allowed', multiline: true }
+
+  validates :title,
+    format: { with: /^[a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]+$/,
+              message: '- No special characters allowed', multiline: true }
+
   attr_accessor :requester_id
   attr_accessor :validate_nct
   attr_accessor :study_type_questions

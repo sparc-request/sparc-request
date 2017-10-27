@@ -47,6 +47,8 @@
         = form.text_field :short_title,
           class: [('form-control'), (Setting.find_by_key("research_master_enabled").value ? 'rm-id-dependent rm-locked-fields' : '')],
           disabled: Setting.find_by_key("research_master_enabled").value && protocol.research_master_id.present?
+        %span.help-block.hide
+          = t('protocols.help_text', title: "Short Title")
 
     .form-group.row
       = form.label :title,
@@ -58,6 +60,8 @@
         = form.text_field :title,
           class: [('form-control'), (Setting.find_by_key("research_master_enabled").value ? 'rm-id-dependent rm-locked-fields' : '')],
           disabled: Setting.find_by_key("research_master_enabled").value && protocol.research_master_id.present?
+        %span.help-block.hide
+          = t('protocols.help_text', title: "Study Title")
 
     .form-group.row#funding-status
       = form.label :funding_status,

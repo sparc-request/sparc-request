@@ -26,7 +26,7 @@ class Program < Organization
   has_many :services, :dependent => :destroy, :foreign_key => "organization_id"
 
   # Surveys associated with this service
-  has_many :associated_surveys, as: :surveyable, dependent: :destroy
+  has_many :associated_surveys, as: :associable, dependent: :destroy
 
   def populate_for_edit
     self.setup_available_statuses

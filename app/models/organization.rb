@@ -27,12 +27,10 @@ class Organization < ApplicationRecord
 
   belongs_to :parent, :class_name => 'Organization'
   has_many :submission_emails, :dependent => :destroy
-  has_many :associated_surveys, as: :surveyable, dependent: :destroy
+  has_many :associated_surveys, as: :associable, dependent: :destroy
   has_many :pricing_setups, :dependent => :destroy
   has_one :subsidy_map, :dependent => :destroy
-
-  has_many :questionnaires, as: :questionable, dependent: :destroy
-
+  has_many :surveys, as: :surveyable, dependent: :destroy
   has_many :super_users, :dependent => :destroy
   has_many :identities, :through => :super_users
 

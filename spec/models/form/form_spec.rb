@@ -20,16 +20,14 @@
 
 require 'rails_helper'
 
-RSpec.describe AssociatedSurvey, type: :model do
+RSpec.describe Form, type: :model do
   it 'should have a valid factory' do
-    expect(build(:associated_survey)).to be_valid
+    expect(build(:form)).to be_valid
   end
   
-  it { is_expected.to belong_to(:survey) }
-  it { is_expected.to belong_to(:associable) }
+  it { expect(Form.ancestors.include?(Survey)).to eq(true) }
 
-  it { is_expected.to validate_presence_of(:associable_id) }
-  it { is_expected.to validate_presence_of(:associable_type) }
-
-  it { is_expected.to validate_uniqueness_of(:survey_id).scoped_to(:associable_id, :associable_type) }
+  # Validations
+  it { is_expected.to validate_presence_of(:surveyable_id) }
+  it { is_expected.to validate_presence_of(:surveyable_type) }
 end

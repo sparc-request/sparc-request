@@ -18,18 +18,23 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'rails_helper'
+FactoryGirl.define do
+  factory :system_survey do
+    title               { Faker::Lorem.word }
+    access_code         { Faker::Lorem.word }
+    display_order       { 0 }
+    sequence(:version)  { |n| n }
+    active              { false }
+    type                { 'SystemSurvey' }
 
-RSpec.describe AssociatedSurvey, type: :model do
-  it 'should have a valid factory' do
-    expect(build(:associated_survey)).to be_valid
+    trait :active do
+      active true
+    end
+
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
+    end
+
+    factory :system_survey_without_validations, traits: [:without_validations]
   end
-  
-  it { is_expected.to belong_to(:survey) }
-  it { is_expected.to belong_to(:associable) }
-
-  it { is_expected.to validate_presence_of(:associable_id) }
-  it { is_expected.to validate_presence_of(:associable_type) }
-
-  it { is_expected.to validate_uniqueness_of(:survey_id).scoped_to(:associable_id, :associable_type) }
 end

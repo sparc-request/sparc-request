@@ -58,12 +58,12 @@ class Identity < ApplicationRecord
   has_many :received_messages, class_name: 'Message', foreign_key: 'to'
   has_many :received_notifications, class_name: "Notification", foreign_key: 'other_user_id'
   has_many :received_toast_messages, class_name: 'ToastMessage', foreign_key: 'to', dependent: :destroy
+  has_many :responses, dependent: :destroy
   has_many :sent_messages, class_name: 'Message', foreign_key: 'from'
   has_many :sent_notifications, class_name: "Notification", foreign_key: 'originator_id'
   has_many :sent_toast_messages, class_name: 'ToastMessage', foreign_key: 'from', dependent: :destroy
   has_many :service_providers, dependent: :destroy
   has_many :studies, -> { where("protocols.type = 'Study'")}, through: :project_roles, source: :protocol
-  has_many :submissions
   has_many :super_users, dependent: :destroy
 
   cattr_accessor :current_user

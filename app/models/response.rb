@@ -21,7 +21,7 @@
 class Response < ActiveRecord::Base
   belongs_to :survey
   belongs_to :identity
-  belongs_to :sub_service_request
+  belongs_to :respondable, polymorphic: true
   
   has_many :question_responses, dependent: :destroy
   

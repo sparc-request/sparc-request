@@ -45,7 +45,7 @@ class Protocol < ApplicationRecord
   has_many :notes, as: :notable,          dependent: :destroy
   has_many :study_type_questions,         through: :study_type_question_group
   has_many :documents,                    dependent: :destroy
-  has_many :submissions,                  dependent: :destroy
+  has_many :responses,                    through: :sub_service_requests
 
   has_many :principal_investigators, -> { where(project_roles: { role: %w(pi primary-pi) }) },
     source: :identity, through: :project_roles

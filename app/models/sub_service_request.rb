@@ -44,8 +44,7 @@ class SubServiceRequest < ApplicationRecord
   has_many :reports, :dependent => :destroy
   has_many :notifications, :dependent => :destroy
   has_many :subsidies
-  has_many :submissions, dependent: :destroy
-  has_many :responses
+  has_many :responses, as: :respondable, dependent: :destroy
   has_one :approved_subsidy, :dependent => :destroy
   has_one :pending_subsidy, :dependent => :destroy
 

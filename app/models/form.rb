@@ -18,18 +18,8 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'rails_helper'
-
-RSpec.describe AssociatedSurvey, type: :model do
-  it 'should have a valid factory' do
-    expect(build(:associated_survey)).to be_valid
-  end
-  
-  it { is_expected.to belong_to(:survey) }
-  it { is_expected.to belong_to(:associable) }
-
-  it { is_expected.to validate_presence_of(:associable_id) }
-  it { is_expected.to validate_presence_of(:associable_type) }
-
-  it { is_expected.to validate_uniqueness_of(:survey_id).scoped_to(:associable_id, :associable_type) }
+class Form < Survey
+  validates :surveyable_id,
+            :surveyable_type,
+            presence: true
 end

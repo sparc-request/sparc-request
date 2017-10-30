@@ -88,13 +88,12 @@ initialize_org_search = () ->
 
 
 
-
-
 # Conflict from merging v.3.1.0, might be important, saved with rest of comments for now
   # $(document).on('change', 'input[id*="_process_ssrs"]', ->
   #   $('#available_statuses_wrapper').toggle()
   #   $('#questionnaires').toggle()
   # )
+
 
   # $(document).on('change', 'input[id*="_use_default_statuses"]', ->
   #   $('#all_statuses').toggle()

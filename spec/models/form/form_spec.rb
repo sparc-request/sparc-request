@@ -26,8 +26,4 @@ RSpec.describe Form, type: :model do
   end
   
   it { expect(Form.ancestors.include?(Survey)).to eq(true) }
-
-  # Validations
-  it { is_expected.to validate_presence_of(:surveyable_id) }
-  it { is_expected.to validate_presence_of(:surveyable_type) }
 end

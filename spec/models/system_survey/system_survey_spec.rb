@@ -26,8 +26,4 @@ RSpec.describe SystemSurvey, type: :model do
   end
   
   it { expect(SystemSurvey.ancestors.include?(Survey)).to eq(true) }
-
-  # Validations
-  it { is_expected.to validate_absence_of(:surveyable_id) }
-  it { is_expected.to validate_absence_of(:surveyable_type) }
 end

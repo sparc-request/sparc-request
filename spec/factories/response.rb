@@ -20,10 +20,9 @@
 
 FactoryGirl.define do
   factory :response do
-    survey                    { nil }
-    identity                  { nil }
-    sequence(:respondable_id) { |n| n }
-    respondable_type          { Faker::Lorem.word }
+    survey           { nil }
+    identity         { nil }
+    respondable      { nil }
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }

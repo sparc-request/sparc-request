@@ -25,11 +25,10 @@ RSpec.describe AssociatedSurvey, type: :model do
     expect(build(:associated_survey)).to be_valid
   end
   
+  # Associations  
   it { is_expected.to belong_to(:survey) }
   it { is_expected.to belong_to(:associable) }
 
-  it { is_expected.to validate_presence_of(:associable_id) }
-  it { is_expected.to validate_presence_of(:associable_type) }
-
+  # Validations
   it { is_expected.to validate_uniqueness_of(:survey_id).scoped_to(:associable_id, :associable_type) }
 end

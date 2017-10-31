@@ -24,8 +24,5 @@ class AssociatedSurvey < ApplicationRecord
   belongs_to :survey, -> { where(type: 'SystemSurvey') }
   belongs_to :associable, polymorphic: true
   
-  validates :associable_type,
-            presence: true
-
   validates_uniqueness_of :survey_id, scope: [:associable_id, :associable_type]
 end

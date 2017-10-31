@@ -19,6 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Survey < ApplicationRecord
+  audited
+  
   has_many :responses, dependent: :destroy
   has_many :sections, dependent: :destroy
   has_many :questions, through: :sections
@@ -34,14 +36,27 @@ class Survey < ApplicationRecord
             :version,
             presence: true
 
-  validates_uniqueness_of :version, scope: :access_code
-  validates_inclusion_of :active, in: [true, false]
+  validates_uniqueness_of :version, scope: [:access_code, :type]
+
+  validates_uniqueness_of :access_code, scope: [:type], conditions: -> { where(active: true) }
 
   accepts_nested_attributes_for :sections, allow_destroy: true
 
   scope :active, -> {
     where(active: true)
   }
+
+  # 10/31/17 - Kyle Glick
+  # Added because version could not be written as an attribute by FactoryGirl. Possible keyword issue?
+  def version=(v)
+    write_attribute(:version, v)
+  end
+
+  # 10/31/17 - Kyle Glick
+  # Added because version could not be read as an attribute by FactoryGirl. Possible keyword issue?
+  def version
+    read_attribute(:version)
+  end
 
   def insertion_name
     "Before #{title} (Version #{version})"

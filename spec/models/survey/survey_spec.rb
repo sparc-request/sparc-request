@@ -37,7 +37,14 @@ RSpec.describe Survey, type: :model do
   it { is_expected.to validate_presence_of(:access_code) }
   it { is_expected.to validate_presence_of(:display_order) }
   it { is_expected.to validate_presence_of(:version) }
-  it { expect(build(:survey)).to validate_uniqueness_of(:version).scoped_to(:access_code) }
+
+  it { expect(build(:survey)).to validate_uniqueness_of(:version).scoped_to([:access_code, :type]) }
+  
+  it 'should only allow 1 active survey to each access code' do
+    survey1 = create(:survey, access_code: 'some-survey', active: true)
+
+    expect(build(:survey, access_code: 'some-survey', active: true)).to_not be_valid
+  end
 
   # Other
   it { is_expected.to accept_nested_attributes_for(:sections) }

@@ -20,11 +20,11 @@
 
 FactoryGirl.define do
   factory :survey do
-    title               { Faker::Lorem.word }
-    access_code         { Faker::Lorem.word }
-    display_order       { 0 }
-    sequence(:version)  { |n| n }
-    active              { false }
+    title                     { Faker::Lorem.word }
+    access_code               { Faker::Lorem.word }
+    sequence(:display_order)  { |n| n }
+    sequence(:version)        { |n| n }
+    active                    { false }
 
     trait :active do
       active true

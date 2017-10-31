@@ -22,12 +22,11 @@ FactoryGirl.define do
   factory :form do
     title                     { Faker::Lorem.word }
     access_code               { Faker::Lorem.word }
-    display_order             { 0 }
+    sequence(:display_order)  { |n| n }
     sequence(:version)        { |n| n }
     active                    { false }
     type                      { 'Form' }
-    sequence(:surveyable_id)  { |n| n }
-    surveyable_type           { Faker::Lorem.word }
+    surveyable                { nil }
 
     trait :active do
       active true

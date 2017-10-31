@@ -43,6 +43,8 @@ SparcRails::Application.routes.draw do
       get :complete
     end
     resources :survey_updater, only: [:update]
+
+    root to: 'surveys#index'
   end
 
   resources :feedback

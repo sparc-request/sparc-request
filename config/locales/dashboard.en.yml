@@ -120,11 +120,9 @@ en:
     ##########
     navbar:
       logged_in_as: "Logged in as "
-      surveys: "Surveys"
       epic_queue: "Epic Queue"
       messages: "All Notifications"
       tooltips:
-        surveys: "Survey builder"
         epic_queue: "View or edit protocols for Epic interface"
         messages: "Access to correspondence"
 

@@ -20,6 +20,10 @@
 
 en:
   surveyor:
+    forms:
+      header: "Forms"
+      tooltip: "Forms to collect additional information related to requesting a service"
+
     responses:
       update: "Thank you for participating in this survey!"
       complete:
@@ -43,7 +47,6 @@ en:
 
 
     surveys:
-      header: "Surveys"
       new: "New Survey"
       table:
         headers:
@@ -101,3 +104,7 @@ en:
             delete: "Delete Option"
             content:
               placeholder: "Option (Required)"
+
+    system_surveys:
+      header: "System Surveys"
+      tooltip: "Surveys to collect feedback from users"

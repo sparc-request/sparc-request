@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .page-header
   %h3
-    %span{ title: t(:proper)[:document_management][:tooltips][:additional_details], data: { toggle: 'tooltip', delay: '{"show":"500"}' } }
+    %span{ title: t(:surveyor)[:forms][:tooltip], data: { toggle: 'tooltip', delay: '{"show":"500"}' } }
       = t(:proper)[:document_management][:additional_details_notice]
 - if service_request.additional_detail_services.present?
   = render "additional_details/document_management_submissions_table", service_request: service_request, objects_with_questionnaires: service_request.line_items, questionable_type: 'Service'

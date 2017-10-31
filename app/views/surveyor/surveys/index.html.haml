@@ -19,13 +19,37 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .panel.panel-default
   .panel-heading
-    %h4.panel-title
-      = t(:surveyor)[:surveys][:header]
+    %h4.panel-title{ title: t(:surveyor)[:system_surveys][:tooltip], data: { toggle: 'tooltip', delay: '{"show":"500"}' } }
+      = t(:surveyor)[:system_surveys][:header]
   .panel-body
     .bootstrap-table-dropdown-overflow
       #surveys-custom-toolbar
-        = link_to t(:surveyor)[:surveys][:new], surveyor_surveys_path, method: :post, remote: true, class: "btn btn-success", id: "#new-survey-button"
+        = link_to t(:surveyor)[:surveys][:new], surveyor_surveys_path(type: 'SystemSurvey'), method: :post, remote: true, class: "btn btn-success", id: "#new-survey-button"
       %table.survey-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: surveyor_surveys_path, striped: 'true', toolbar: '#surveys-custom-toolbar', pagination: 'true', page_size: '20' } }
+        %thead.primary-header
+          %tr
+            %th.col-sm-3{ data: { field: "title", align: "left", sortable: 'true' } }
+              = t(:surveyor)[:surveys][:table][:headers][:title]
+            %th.col-sm-2{ data: { field: "access_code", align: "left", sortable: 'true' } }
+              = t(:surveyor)[:surveys][:table][:headers][:access_code]
+            %th.col-sm-1{ data: { field: "version", align: "left", sortable: 'true' } }
+              = t(:surveyor)[:surveys][:table][:headers][:version]
+            %th.col-sm-2{ data: { field: "display_order", align: "left", sortable: 'true' } }
+              = t(:surveyor)[:surveys][:table][:headers][:display_order]
+            %th.col-sm-1{ data: { field: "active", align: "center" } }
+              = t(:surveyor)[:surveys][:table][:headers][:active]
+            %th.col-sm-3{ data: { field: "options", align: "center" } }
+              = t(:surveyor)[:surveys][:table][:headers][:options]
+
+.panel.panel-default
+  .panel-heading
+    %h4.panel-title{ title: t(:surveyor)[:forms][:tooltip], data: { toggle: 'tooltip', delay: '{"show":"500"}' } }
+      = t(:surveyor)[:forms][:header]
+  .panel-body
+    .bootstrap-table-dropdown-overflow
+      #forms-custom-toolbar
+        = link_to t(:surveyor)[:surveys][:new], surveyor_surveys_path(type: 'Form'), method: :post, remote: true, class: "btn btn-success", id: "#new-survey-button"
+      %table.survey-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: surveyor_surveys_path, striped: 'true', toolbar: '#forms-custom-toolbar', pagination: 'true', page_size: '20' } }
         %thead.primary-header
           %tr
             %th.col-sm-3{ data: { field: "title", align: "left", sortable: 'true' } }

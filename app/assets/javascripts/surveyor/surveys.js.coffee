@@ -18,6 +18,8 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 $(document).ready ->
+  $("[data-toggle='tooltip']").tooltip()
+
   ### Survey Table ###
   $(document).on 'click', '.edit-survey', ->
     survey_id = $(this).data('survey-id')

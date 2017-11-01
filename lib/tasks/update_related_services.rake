@@ -41,7 +41,7 @@ task :update_related_services => :environment do
   puts "Reading in file..."
   input_file = Rails.root.join("db", "imports", get_file)
   continue = prompt('Preparing to update related services. Are you sure you want to continue? (y/n): ')
-
+  updated_service_relations_count = 0
   if (continue == 'y') || (continue == 'Y')
     ActiveRecord::Base.transaction do
       CSV.foreach(input_file, headers: true) do |row|
@@ -54,8 +54,12 @@ task :update_related_services => :environment do
           puts "created service relation: service_id: #{service.id}, related_service_id: #{related_service_id}, linked_quantity: #{linked_quantity}, linked_quantity_total: null"
           service.service_relations.create(related_service_id: related_service_id, optional: optional, linked_quantity: linked_quantity, linked_quantity_total: nil)
           service.save
+          updated_service_relations_count += 1
+        else
+          puts "Service with ID #{row['Service ID'].to_i} was not updated with a new service relation"
         end
       end
     end
+    puts "#{updated_service_relations_count} service relations have been updated"
   end
 end

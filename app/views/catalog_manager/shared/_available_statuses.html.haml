@@ -26,7 +26,7 @@
           = f.fields_for :available_statuses, @organization.available_statuses.alphabetized do |as|
             %tr
               %th= as.label :status, "#{PermissibleValue.get_value('status', as.object.status).gsub('CTRC', 'Nexus')}:"
-              %td= as.check_box :selected, {class: 'available-status', id: "#{as.object.status}", checked: @organization.get_available_statuses.include?(as.object.status), disabled: as.object.disabled_status?, data: { status: as.object.status }}, 'true', 'false'
+              %td= as.check_box :selected, {class: 'available-status', checked: @organization.get_available_statuses.include?(as.object.status), disabled: as.object.disabled_status?, data: { status: as.object.status }}, 'true', 'false'
 
     - if current_user.is_overlord?
       %tr

@@ -556,6 +556,6 @@ $ ->
 
   $(document).on 'change', '.available-status', ->
     if $(this).prop('checked')
-      $(".#{$(this).attr('id')}-dependent").show()
+      $(".#{$(this).data('status')}-dependent").show()
     else
-      $(".#{$(this).attr('id')}-dependent").hide()
+      $(".#{$(this).data('status')}-dependent").hide()

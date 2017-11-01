@@ -19,6 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class AvailableStatus < ApplicationRecord
+  
   audited
 
   belongs_to :organization
@@ -26,7 +27,9 @@ class AvailableStatus < ApplicationRecord
   scope :selected, -> { where(selected: true) }
   scope :alphabetized, -> { all.sort{ |x, y| STATUSES[x.status] <=> STATUSES[y.status] } }
 
-  STATUSES = PermissibleValue.get_hash("status").sort_by{|status, humanized| humanized}.to_h
+  STATUSES = PermissibleValue.get_hash('status')
+
+  DEFAULTS = PermissibleValue.get_key_list('status', true)
 
   TYPES = STATUSES.keys
 

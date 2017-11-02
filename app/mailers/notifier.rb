@@ -51,12 +51,10 @@ class Notifier < ActionMailer::Base
     @role = project_role.role
     @full_name = @identity.full_name
     @audit_report = audit_report
-
-    @service_requester_id = service_requester_id(@service_request, deleted_ssrs)
     @portal_link = Setting.find_by_key("dashboard_link").value + "/protocols/#{@protocol.id}"
 
     if admin_delete_ssr
-      @ssrs_to_be_displayed = [deleted_ssrs]
+      @ssrs_to_be_displayed = [@deleted_ssrs]
     else
       @ssrs_to_be_displayed = individual_ssr ? [ssr] : @service_request.sub_service_requests
     end
@@ -91,8 +89,6 @@ class Notifier < ActionMailer::Base
 
     @role = 'none'
     @full_name = submission_email_address
-
-    @service_requester_id = service_requester_id(@service_request, ssr)
     @ssrs_to_be_displayed = [ssr]
 
     @portal_link = Setting.find_by_key("dashboard_link").value + "/protocols/#{@protocol.id}"
@@ -119,8 +115,6 @@ class Notifier < ActionMailer::Base
 
     @role = 'none'
     @full_name = service_provider.identity.full_name
-
-    @service_requester_id = service_requester_id(@service_request, ssr)
     @audit_report = audit_report
 
     @portal_link = Setting.find_by_key("dashboard_link").value + "/protocols/#{@protocol.id}"
@@ -317,9 +311,5 @@ class Notifier < ActionMailer::Base
     else
       t('mailer.email_title.general', email_status: email_status, type: "Protocol", id: protocol.id)
     end
-  end
-
-  def service_requester_id(service_request, deleted_ssr)
-    service_request.sub_service_requests.first.present? ? service_request.sub_service_requests.first.service_requester_id : AuditRecovery.where(auditable_id: deleted_ssr.id, auditable_type: 'SubServiceRequest', action: 'destroy').first.audited_changes['service_requester_id']
   end
 end

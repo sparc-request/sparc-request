@@ -80,43 +80,46 @@ module EmailHelpers
     ssrs_to_be_displayed = [@service_request.protocol.sub_service_requests.first]
     # Expect table to show only SSR's (hyper-link) that are associated with service provider 
     expect(@mail.body.parts.first.body).to have_xpath "//table//strong[text()='Service Request Information']"
-    expect(@mail.body.parts.first.body).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Organization']/following-sibling::th[text()='Status']"
+    expect(@mail.body.parts.first.body).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Organization']/following-sibling::th[text()='Status']/following-sibling::th[text()='Requester']"
     ssrs_to_be_displayed.each do |ssr_to_be_displayed|
       status = PermissibleValue.get_value('status', ssr_to_be_displayed.status)
       expect(@mail.body.parts.first.body).to have_xpath "//td//a[@href='/dashboard/sub_service_requests/#{ssr_to_be_displayed.id}']['#{ssr_to_be_displayed.display_id}']/@href"
       expect(@mail.body.parts.first.body).to have_xpath "//td[text()='#{ssr_to_be_displayed.org_tree_display}']/following-sibling::td[text()='#{status}']"
+      expect(@mail.body.parts.first.body).to have_xpath "//td[text()='#{ssr_to_be_displayed.service_requester.try(&:full_name) || 'N/A'}']"
     end
   end
 
   def assert_email_deleted_srid_information_for_service_provider
     ssrs_to_be_displayed = [@service_request.protocol.sub_service_requests.first]
     expect(@mail.body).to have_xpath "//table//strong[text()='Service Request Information']"
-    expect(@mail.body).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Organization']"
+    expect(@mail.body).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Organization']/following-sibling::th[text()='Requester']"
     ssrs_to_be_displayed.each do |ssr_to_be_displayed|
       expect(@mail.body).to have_xpath "//td//strike['#{ssr_to_be_displayed.display_id}']"
       expect(@mail.body).to have_xpath "//td//strike[text()='#{ssr_to_be_displayed.org_tree_display}']"
+      expect(@mail.body).to have_xpath "//td//strike[text()='#{ssr_to_be_displayed.service_requester.try(&:full_name) || 'N/A'}']"
     end
   end
 
   def assert_email_srid_information_for_admin
     # Expect table to show all SSR's with hyper-link
     expect(@mail.body.parts.first.body).to have_xpath "//table//strong[text()='Service Request Information']"
-    expect(@mail.body.parts.first.body).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Organization']/following-sibling::th[text()='Status']"
+    expect(@mail.body.parts.first.body).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Organization']/following-sibling::th[text()='Status']/following-sibling::th[text()='Requester']"
     # Only display SSRs that are associated with that submission email
-    displayed_service_request = @service_request.protocol.sub_service_requests.first
-    status = PermissibleValue.get_value('status', displayed_service_request.status)
-    expect(@mail.body.parts.first.body).to have_xpath "//td//a[@href='/dashboard/sub_service_requests/#{displayed_service_request.id}']['#{displayed_service_request.display_id}']/@href"
-    expect(@mail.body.parts.first.body).to have_xpath "//td[text()='#{displayed_service_request.org_tree_display}']/following-sibling::td[text()='#{status}']"       
+    displayed_sub_service_request = @service_request.protocol.sub_service_requests.first
+    status = PermissibleValue.get_value('status', displayed_sub_service_request.status)
+    expect(@mail.body.parts.first.body).to have_xpath "//td//a[@href='/dashboard/sub_service_requests/#{displayed_sub_service_request.id}']['#{displayed_sub_service_request.display_id}']/@href"
+    expect(@mail.body.parts.first.body).to have_xpath "//td[text()='#{displayed_sub_service_request.org_tree_display}']/following-sibling::td[text()='#{status}']"    
+    expect(@mail.body.parts.first.body).to have_xpath "//td[text()='#{displayed_sub_service_request.service_requester.try(&:full_name) || 'N/A'}']"   
   end
 
   def assert_email_srid_information_for_user
     # Expect table to show all SSR's without hyper-link
     expect(@mail).to have_xpath "//table//strong[text()='Service Request Information']"
-    expect(@mail).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Organization']/following-sibling::th[text()='Status']"
+    expect(@mail).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Organization']/following-sibling::th[text()='Status']/following-sibling::th[text()='Requester']"
 
     @service_request.protocol.sub_service_requests.each do |ssr|
       status = PermissibleValue.get_value('status', ssr.status)
-      expect(@mail.body.parts.first.body).to have_xpath "//td[text()='#{ssr.display_id}']/following-sibling::td[text()='#{ssr.org_tree_display}']/following-sibling::td[text()='#{status}']"
+      expect(@mail.body.parts.first.body).to have_xpath "//td[text()='#{ssr.display_id}']/following-sibling::td[text()='#{ssr.org_tree_display}']/following-sibling::td[text()='#{status}']/following-sibling::td[text()= '#{ssr.service_requester.try(&:full_name) || 'N/A'}']"
     end
   end
 

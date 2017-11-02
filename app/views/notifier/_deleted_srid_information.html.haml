@@ -20,11 +20,12 @@
 %table.table{cellpadding: 3}
   %thead
     %tr.skinny-black-border
-      %td{:colspan => 2}
+      %td{:colspan => 3}
         %strong= t(:notifier)[:srid_info]
   %tr
     %th.skinny-black-border= t(:notifier)[:sr_id_acronym]
     %th.skinny-black-border= t(:notifier)[:organization]
+    %th.skinny-black-border= t(:notifier)[:requester]
   %tbody
     - @ssrs_to_be_displayed.each do |ssr|
       %tr.skinny-black-border
@@ -32,5 +33,7 @@
           %strike= ssr.display_id
         %td.skinny-black-border.center
           %strike= ssr.org_tree_display
+        %td.skinny-black-border.center
+          %strike= ssr.service_requester.try(&:full_name) || 'N/A'
 %br
 %br

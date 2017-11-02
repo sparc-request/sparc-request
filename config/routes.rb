@@ -119,6 +119,7 @@ SparcRails::Application.routes.draw do
   end
 
   resources :protocols, except: [:index, :destroy] do
+    resource :research_master, only: [:update]
     member do
       put :update_protocol_type
       get :approve_epic_rights

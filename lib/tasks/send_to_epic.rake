@@ -7,6 +7,7 @@ task send_to_epic: :environment do
     p.push_to_epic(EPIC_INTERFACE, 'admin_push', eq.identity_id, true)
     if p.last_epic_push_status == 'complete'
       eq.update_attribute(:attempted_push, true)
+      eq.destroy
     end
   end
 end

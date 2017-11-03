@@ -136,6 +136,7 @@ RSpec.describe ServiceRequest, type: :model do
           protocol    = create(:protocol_federally_funded, primary_pi: identity, type: 'Study')
           @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
           @ssr_updatable_status   = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'get_a_cost_estimate', submitted_at: nil)
+          @org.editable_statuses.where(status: @ssr_updatable_status.status).update(selected: true)
           @sr.reload
         end
 
@@ -293,10 +294,12 @@ RSpec.describe ServiceRequest, type: :model do
           protocol    = create(:protocol_federally_funded, primary_pi: identity, type: 'Study')
           @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
           @ssr_with_submitted_status   = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc)
+          @org.editable_statuses.where(status: @ssr_with_submitted_status.status).update(selected: true)
           @sr.reload
         end
 
         context "updating status to 'get_a_cost_estimate'" do
+
           it "should return an array with ssr id" do
             expect(@sr.update_status('get_a_cost_estimate')).to eq([@ssr_with_submitted_status.id])
           end

@@ -37,4 +37,4 @@
             = f.fields_for :editable_statuses, @organization.editable_statuses.alphabetized do |es|
               %tr{ class: "#{es.object.status}-dependent", style: @organization.get_available_statuses.include?(es.object.status) ? "display:table-row;" : "display:none;" }
                 %th= es.label :status, "#{es.object.humanize.gsub('CTRC', 'Nexus')}:"
-                %td= es.check_box :selected, {checked: es.object.selected}, 'true', 'false'
+                %td= es.check_box :selected, {checked: @organization.has_editable_status?(es.object.status)}, 'true', 'false'

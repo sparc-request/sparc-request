@@ -18,41 +18,13 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class ProtocolFilter < ApplicationRecord
+namespace :data do
+  desc "Regenerate settings table from local application.yml"
+  task regenerate_settings: :environment do
+    #Truncate settings table
+    ActiveRecord::Base.connection.execute("TRUNCATE settings")
 
-  belongs_to :identity
-
-  serialize :with_organization, Array
-  serialize :with_status, Array
-  serialize :with_owner, Array
-
-  scope :latest_for_user, -> (identity_id, limit) {
-    where(identity_id: identity_id).
-    order(created_at: :desc).
-    limit(limit)
-  }
-
-  MAX_FILTERS = 15
-
-  def href
-    Rails.application.routes.url_helpers.
-    dashboard_root_path(
-      filterrific: {
-        show_archived: (self.show_archived ? 1 : 0),
-        admin_filter: self.admin_filter,
-        search_query: eval(self.search_query),
-        with_organization: self.with_organization,
-        with_status: self.with_status,
-        with_owner: self.with_owner,
-      }
-    )
-  end
-
-  def self.search_filters
-    if Setting.find_by_key("research_master_enabled").value
-        ['Authorized User', 'HR#', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title']
-    else
-        ['Authorized User', 'HR#', 'PI', 'Protocol ID', 'PRO#', 'Short/Long Title']
-    end
+    #Rerun populator
+    DefaultSettingsPopulator.new().populate
   end
 end

@@ -263,39 +263,68 @@ RSpec.describe "Admin User filters My Protocols using Search functionality", js:
 
 
   context "RMID search" do
-    before :each do
-      @protocol1 = create(:study_without_validations, primary_pi: jug2, title: "title%", short_title: "Protocol1")
-      @protocol2 = create(:study_without_validations, primary_pi: jug2, title: "xTitle", short_title: "Protocol2")
-      @protocol3 = create(:study_without_validations, primary_pi: jug2, title: "a%a", short_title: "Protocol3", research_master_id: 1234)
+    context 'Setting.find_by_key("research_master_enabled").update_attribute(:value, true)' do
+      before :each do
+        Setting.find_by_key("research_master_enabled").update_attribute(:value, true)
+        @protocol1 = create(:study_without_validations, primary_pi: jug2, title: "title%", short_title: "Protocol1")
+        @protocol2 = create(:study_without_validations, primary_pi: jug2, title: "xTitle", short_title: "Protocol2")
+        @protocol3 = create(:study_without_validations, primary_pi: jug2, title: "a%a", short_title: "Protocol3", research_master_id: 1234)
 
-      service_request1 = create(:service_request_without_validations, protocol: @protocol1)
-      service_request2 = create(:service_request_without_validations, protocol: @protocol2)
-      service_request3 = create(:service_request_without_validations, protocol: @protocol3)
+        service_request1 = create(:service_request_without_validations, protocol: @protocol1)
+        service_request2 = create(:service_request_without_validations, protocol: @protocol2)
+        service_request3 = create(:service_request_without_validations, protocol: @protocol3)
 
-      visit dashboard_protocols_path
-      wait_for_javascript_to_finish
+        visit dashboard_protocols_path
+        wait_for_javascript_to_finish
 
-      find("#filterrific_admin_filter_for_identity_#{jug2.id}").click
-      find('#apply-filter-button').click
-      wait_for_javascript_to_finish
+        find("#filterrific_admin_filter_for_identity_#{jug2.id}").click
+        find('#apply-filter-button').click
+        wait_for_javascript_to_finish
 
-      expect(page).to have_selector(".protocols_index_row", count: 3)
+        expect(page).to have_selector(".protocols_index_row", count: 3)
+      end
+
+      it "should match against RMID" do
+        bootstrap_select '#filterrific_search_query_search_drop', 'RMID'
+        fill_in 'filterrific_search_query_search_text', with: @protocol3.research_master_id
+        find('#apply-filter-button').click
+        wait_for_javascript_to_finish
+
+        expect(page).to have_selector(".protocols_index_row", count: 1)
+        expect(page).to_not have_content(@protocol1.short_title)
+        expect(page).to_not have_content(@protocol2.short_title)
+        expect(page).to have_content(@protocol3.short_title)
+      end
     end
 
-    it "should match against RMID" do
-      bootstrap_select '#filterrific_search_query_search_drop', 'RMID'
-      fill_in 'filterrific_search_query_search_text', with: @protocol3.research_master_id
-      find('#apply-filter-button').click
-      wait_for_javascript_to_finish
+    context 'Setting.find_by_key("research_master_enabled").update_attribute(:value, false)' do
+      before :each do
+        Setting.find_by_key("research_master_enabled").update_attribute(:value, false)
+        @protocol1 = create(:study_without_validations, primary_pi: jug2, title: "title%", short_title: "Protocol1")
+        @protocol2 = create(:study_without_validations, primary_pi: jug2, title: "xTitle", short_title: "Protocol2")
+        @protocol3 = create(:study_without_validations, primary_pi: jug2, title: "a%a", short_title: "Protocol3", research_master_id: 1234)
 
-      expect(page).to have_selector(".protocols_index_row", count: 1)
-      expect(page).to_not have_content(@protocol1.short_title)
-      expect(page).to_not have_content(@protocol2.short_title)
-      expect(page).to have_content(@protocol3.short_title)
+        service_request1 = create(:service_request_without_validations, protocol: @protocol1)
+        service_request2 = create(:service_request_without_validations, protocol: @protocol2)
+        service_request3 = create(:service_request_without_validations, protocol: @protocol3)
+
+        visit dashboard_protocols_path
+        wait_for_javascript_to_finish
+
+        find("#filterrific_admin_filter_for_identity_#{jug2.id}").click
+        find('#apply-filter-button').click
+        wait_for_javascript_to_finish
+
+        expect(page).to have_selector(".protocols_index_row", count: 3)
+      end
+
+      it "should not display RMID as a filter option" do
+        bootstrap_select = page.find("select#filterrific_search_query_search_drop + .bootstrap-select")
+        bootstrap_select.click
+        expect(page).to_not have_content('RMID')
+      end
     end
   end
-
-
 
   context "HR# search" do
     before :each do

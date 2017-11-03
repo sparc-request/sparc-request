@@ -51,12 +51,10 @@ class Notifier < ActionMailer::Base
     @role = project_role.role
     @full_name = @identity.full_name
     @audit_report = audit_report
-
-    @service_requester_id = service_requester_id(@service_request, deleted_ssrs)
     @portal_link = Setting.find_by_key("dashboard_link").value + "/protocols/#{@protocol.id}"
 
     if admin_delete_ssr
-      @ssrs_to_be_displayed = [deleted_ssrs]
+      @ssrs_to_be_displayed = [@deleted_ssrs]
     else
       @ssrs_to_be_displayed = individual_ssr ? [ssr] : @service_request.sub_service_requests
     end
@@ -91,8 +89,6 @@ class Notifier < ActionMailer::Base
 
     @role = 'none'
     @full_name = submission_email_address
-
-    @service_requester_id = service_requester_id(@service_request, ssr)
     @ssrs_to_be_displayed = [ssr]
 
     @portal_link = Setting.find_by_key("dashboard_link").value + "/protocols/#{@protocol.id}"
@@ -119,8 +115,6 @@ class Notifier < ActionMailer::Base
 
     @role = 'none'
     @full_name = service_provider.identity.full_name
-
-    @service_requester_id = service_requester_id(@service_request, ssr)
     @audit_report = audit_report
 
     @portal_link = Setting.find_by_key("dashboard_link").value + "/protocols/#{@protocol.id}"
@@ -213,7 +207,7 @@ class Notifier < ActionMailer::Base
 
     subject = "#{@protocol.id} - Epic Rights Approval"
 
-    mail(:to => Setting.find_by_key("epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
+    mail(:to => Setting.find_by_key("approve_epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
   end
 
   def notify_primary_pi_for_epic_user_final_review protocol
@@ -233,7 +227,7 @@ class Notifier < ActionMailer::Base
 
     subject = "#{@protocol.id} - Epic User Removal"
 
-    mail(:to => Setting.find_by_key("epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
+    mail(:to => Setting.find_by_key("approve_epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
   end
 
   def notify_for_epic_access_removal protocol, project_role
@@ -242,7 +236,7 @@ class Notifier < ActionMailer::Base
 
     subject = "#{@protocol.id} - Remove Epic Access"
 
-    mail(:to => Setting.find_by_key("epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
+    mail(:to => Setting.find_by_key("approve_epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
   end
 
   def notify_for_epic_rights_changes protocol, project_role, previous_rights
@@ -253,7 +247,7 @@ class Notifier < ActionMailer::Base
 
     subject = "#{@protocol.id} - Update Epic Access"
 
-    mail(:to => Setting.find_by_key("epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
+    mail(:to => Setting.find_by_key("approve_epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
   end
 
   def epic_queue_error protocol, error=nil
@@ -317,9 +311,5 @@ class Notifier < ActionMailer::Base
     else
       t('mailer.email_title.general', email_status: email_status, type: "Protocol", id: protocol.id)
     end
-  end
-
-  def service_requester_id(service_request, deleted_ssr)
-    service_request.sub_service_requests.first.present? ? service_request.sub_service_requests.first.service_requester_id : AuditRecovery.where(auditable_id: deleted_ssr.id, auditable_type: 'SubServiceRequest', action: 'destroy').first.audited_changes['service_requester_id']
   end
 end

@@ -32,7 +32,7 @@ RSpec.describe 'User creates study', js: true do
     wait_for_javascript_to_finish
   end
 
-  stub_config("use_research_master", true)
+  stub_config("research_master_enabled", true)
   stub_config("use_epic", true)
   
   context "RMID server is up and running" do

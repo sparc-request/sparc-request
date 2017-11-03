@@ -41,7 +41,7 @@ RSpec.describe 'RMID validated Protocols', js: true do
           )
   end
 
-  stub_config("use_research_master", true)
+  stub_config("research_master_enabled", true)
   
   before :each do
     visit dashboard_protocol_path(study)

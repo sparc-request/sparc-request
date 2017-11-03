@@ -76,7 +76,7 @@ RSpec.describe 'User edits protocol', js: true do
   end
 
   context "RMID server is down" do
-    stub_config("use_research_master", true)
+    stub_config("research_master_enabled", true)
     
     before :each do
       institution = create(:institution, name: "Institution")

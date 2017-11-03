@@ -32,22 +32,23 @@ RSpec.describe NotifierLogic do
   context '#ssr_deletion_emails(ssr, ssr_destroyed: true, request_amendment: false) for an entire SR' do
     context 'deleted an entire SSR' do
       before :each do
+        service_requester     = create(:identity)
         ### SR SETUP ###
         ### PREVIOUSLY SUBMITTED SSR ###
         @org         = create(:organization_with_process_ssrs)
-        @org2         = create(:organization_with_process_ssrs)
+        @org2        = create(:organization_with_process_ssrs)
         ### ADMIN EMAIL ###
         @org2.submission_emails.create(email: 'hedwig@owlpost.com')
         @admin_email = 'hedwig@owlpost.com'
-        service     = create(:service, organization: @org, one_time_fee: true)
-        protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
+        service      = create(:service, organization: @org, one_time_fee: true)
+        protocol     = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
-        @ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc)
-        ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc)
+        @ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
+        ssr2         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc)
         ### LINE ITEM SETUP ###
-        li          = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
-        li_1        = create(:line_item, service_request: @sr, sub_service_request: ssr2, service: service)
+        li           = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
+        li_1         = create(:line_item, service_request: @sr, sub_service_request: ssr2, service: service)
         @service_provider = create(:service_provider, identity: logged_in_user, organization: @org2)
         ### DELETE LINE ITEM WHICH IN TURNS DELETES SSR ###
         # mimics the service_requests_controller remove_service method

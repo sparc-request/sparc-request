@@ -39,11 +39,12 @@
           %td.text-center
             %button.btn.btn-sm.btn-primary#resend-surveys-button{ data: { sub_service_request_id: sub_service_request.id } }
               = t(:dashboard)[:sub_service_requests][:tabs][:request_details][:options][:resend_surveys]
-        %td.text-center
-          %button.btn.btn-sm.btn-danger#delete_ssr_button{ data: { sub_service_request_id: sub_service_request.id, toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' }, title: t(:dashboard)[:sub_service_requests][:tabs][:request_details][:tooltips][:delete_request] }
-            %span
-              .glyphicon.glyphicon-remove
-              = t(:dashboard)[:sub_service_requests][:tabs][:request_details][:options][:delete_request]
+        - if !sub_service_request.in_work_fulfillment
+          %td.text-center
+            %button.btn.btn-sm.btn-danger#delete_ssr_button{ data: { sub_service_request_id: sub_service_request.id, toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' }, title: t(:dashboard)[:sub_service_requests][:tabs][:request_details][:tooltips][:delete_request] }
+              %span
+                .glyphicon.glyphicon-remove
+                = t(:dashboard)[:sub_service_requests][:tabs][:request_details][:options][:delete_request]
 
 .panel.panel-default
   .panel-heading

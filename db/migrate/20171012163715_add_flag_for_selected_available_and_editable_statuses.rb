@@ -11,8 +11,8 @@ class AddFlagForSelectedAvailableAndEditableStatuses < ActiveRecord::Migration[5
       selected_eds = []
       Organization.includes(:available_statuses, :editable_statuses).each do |org|
         selected_eds += org.editable_statuses.where(status: org.available_statuses.selected.pluck(:status))
-        avs += (AvailableStatus::TYPES -  org.available_statuses.pluck(:status)).map{|status| AvailableStatus.new( organization: org, status: status )}
-        eds += (AvailableStatus::TYPES - org.editable_statuses.pluck(:status)).map{|status| EditableStatus.new( organization: org, status: status )}
+        avs += (AvailableStatus.types-  org.available_statuses.pluck(:status)).map{|status| AvailableStatus.new( organization: org, status: status )}
+        eds += (EditableStatus.types - org.editable_statuses.pluck(:status)).map{|status| EditableStatus.new( organization: org, status: status )}
       end
       EditableStatus.where(id: selected_eds).update_all(selected: true)
       AvailableStatus.import avs

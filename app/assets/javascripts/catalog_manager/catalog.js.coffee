@@ -555,7 +555,5 @@ $ ->
   )
 
   $(document).on 'change', '.available-status', ->
-    if $(this).prop('checked')
-      $(".#{$(this).data('status')}-dependent").show()
-    else
-      $(".#{$(this).data('status')}-dependent").hide()
+    $(".#{$(this).data('status')}-dependent").toggle().find("td > input").prop("checked", $(this).prop("checked"));
+

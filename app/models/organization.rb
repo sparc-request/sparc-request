@@ -119,7 +119,7 @@ class Organization < ApplicationRecord
   end
 
   def has_editable_status?(status)
-    (self.use_default_statuses ? AvailableStatus::DEFAULTS : self.editable_statuses.selected.pluck(:status)).include?(status)
+    (self.use_default_statuses ? AvailableStatus.defaults : self.editable_statuses.selected.pluck(:status)).include?(status)
   end
 
   # Returns the immediate children of this organization (shallow search)
@@ -345,21 +345,21 @@ class Organization < ApplicationRecord
   end
 
   def get_available_statuses
-    statuses = []
+    selected_statuses = []
     if self.use_default_statuses
-      statuses = AvailableStatus::DEFAULTS
+      selected_statuses = AvailableStatus.defaults
     elsif self.available_statuses.selected.present?
-      statuses = self.available_statuses.selected.pluck(:status)
+      selected_statuses = self.available_statuses.selected.pluck(:status)
     else
       self.parents.each do |parent|
         if parent.available_statuses.selected.present?
-          statuses = parent.available_statuses.selected.pluck(:status)
+          selected_statuses = parent.available_statuses.selected.pluck(:status)
           break
         end
       end
     end
 
-    AvailableStatus::STATUSES.slice(*statuses)
+    AvailableStatus.statuses.slice(*selected_statuses)
   end
 
   def self.find_all_by_available_status status
@@ -379,8 +379,8 @@ class Organization < ApplicationRecord
   private
 
   def create_statuses
-    EditableStatus.import AvailableStatus::TYPES.map{|status| EditableStatus.new(organization: self, status: status)}
-    AvailableStatus.import AvailableStatus::TYPES.map{|status| AvailableStatus.new(organization: self, status: status)}
+    EditableStatus.import EditableStatus.types.map{|status| EditableStatus.new(organization: self, status: status)}
+    AvailableStatus.import AvailableStatus.types.map{|status| AvailableStatus.new(organization: self, status: status)}
   end
 
   def self.authorized_child_organizations(org_ids)

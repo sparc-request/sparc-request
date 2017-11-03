@@ -25,16 +25,26 @@ class AvailableStatus < ApplicationRecord
   belongs_to :organization
 
   scope :selected, -> { where(selected: true) }
-  scope :alphabetized, -> { all.sort{ |x, y| STATUSES[x.status] <=> STATUSES[y.status] } }
-
-  STATUSES = PermissibleValue.get_hash('status')
-
-  DEFAULTS = PermissibleValue.get_key_list('status', true)
-
-  TYPES = STATUSES.keys
+  scope :alphabetized, -> { all.sort{ |x, y| x.humanize <=> y.humanize } }
 
   def disabled_status?
     ["Draft", "Get A Cost Estimate", "Submitted"].include?(self.status)
+  end
+
+  def self.statuses
+    PermissibleValue.get_hash('status')
+  end
+
+  def self.defaults
+    PermissibleValue.get_key_list('status', true)
+  end
+
+  def humanize
+    AvailableStatus.statuses[self.status]
+  end
+
+  def self.types
+    self.statuses.keys
   end
 
 end

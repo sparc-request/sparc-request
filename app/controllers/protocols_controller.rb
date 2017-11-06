@@ -34,8 +34,8 @@ class ProtocolsController < ApplicationController
     @protocol.requester_id  = current_user.id
     @service_request        = ServiceRequest.find(params[:srid])
     @protocol.populate_for_edit
-    gon.rm_id_api_url = Setting.find_by_key("research_master_api_url").value
-    gon.rm_id_api_token = Setting.find_by_key("research_master_api_token").value
+    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
+    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
     rmid_server_status(@protocol)
   end
 
@@ -83,8 +83,8 @@ class ProtocolsController < ApplicationController
     @protocol.populate_for_edit
     @protocol.valid?
     @errors = @protocol.errors
-    gon.rm_id_api_url = Setting.find_by_key("research_master_api_url").value
-    gon.rm_id_api_token = Setting.find_by_key("research_master_api_token").value
+    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
+    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
     rmid_server_status(@protocol)
 
     respond_to do |format|
@@ -322,8 +322,10 @@ class ProtocolsController < ApplicationController
   def fix_identity
     attrs               = protocol_params
     attrs[:project_roles_attributes].each do |index, project_role|
-      identity = Identity.find_or_create project_role[:identity_id]
-      project_role[:identity_id] = identity.id
+      if project_role[:identity_id].present?
+        identity = Identity.find_or_create project_role[:identity_id]
+        project_role[:identity_id] = identity.id
+      end
     end unless attrs[:project_roles_attributes].nil?
     attrs
   end

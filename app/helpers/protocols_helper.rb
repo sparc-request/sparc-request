@@ -52,7 +52,7 @@ module ProtocolsHelper
   end
 
   def display_rmid_validated_protocol(protocol, option)
-    if Setting.find_by_key("use_research_master").value
+    if Setting.find_by_key("research_master_enabled").value
       if protocol.rmid_validated?
         content_tag(
           :h6,

@@ -59,7 +59,7 @@ class RedcapSurveyEmitter
     data = [record].to_json
 
     fields = {
-      :token => Setting.find_by_key("redcap_api_token").value,
+      :token => Setting.find_by_key("redcap_token").value,
       :content => 'record',
       :format => 'json',
       :type => 'flat',
@@ -78,7 +78,7 @@ class RedcapSurveyEmitter
 
   def latest_letter_id
     fields = {
-      :token => Setting.find_by_key("redcap_api_token").value,
+      :token => Setting.find_by_key("redcap_token").value,
       :content => 'record',
       :format => 'json',
       :type => 'flat'

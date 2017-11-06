@@ -24,7 +24,7 @@
         = t(:protocols)[:studies][:information][:header]
   %table.table
     %tbody
-      - if Setting.find_by_key("use_research_master").value
+      - if Setting.find_by_key("research_master_enabled").value
         %tr.row
           %td
             %label.col-lg-4

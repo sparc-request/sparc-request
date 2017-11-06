@@ -41,9 +41,6 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
     li2       = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service2)
 
     @arm      = create(:arm, protocol: protocol)
-
-    org.editable_statuses.where(status: @ssr.status).update(selected: true)
-    org2.editable_statuses.where(status: @ssr2.status).update(selected: true)
   end
 
   context 'for SSRs which aren\'t locked' do

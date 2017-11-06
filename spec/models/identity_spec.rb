@@ -106,7 +106,7 @@ RSpec.describe Identity, type: :model do
     let!(:ctrc_provider)        {create(:clinical_provider, identity_id: user2.id, organization_id: program.id)}
     let!(:project_role)         {create(:project_role, identity_id: user.id, protocol_id: project.id, project_rights: 'approve')}
     let!(:request)              {create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id, ssr_id: '0002')}
-    
+
     describe "permission methods" do
 
       describe "can edit service request " do

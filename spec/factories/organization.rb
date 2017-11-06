@@ -65,6 +65,7 @@ FactoryGirl.define do
       submission_email_count 0
       admin nil
       service_provider nil
+      selected_statuses false
     end
 
     after(:build) do |organization, evaluator|
@@ -97,6 +98,11 @@ FactoryGirl.define do
       if evaluator.service_provider
         create(:service_provider, organization: organization, identity: evaluator.service_provider)
       end
+    end
+
+    after(:create) do |organization, evaluator|
+      organization.available_statuses.update_all(selected: true)
+      organization.editable_statuses.update_all(selected: true)
     end
 
     factory :organization_with_process_ssrs, traits: [:process_ssrs, :with_pricing_setup]

@@ -179,6 +179,9 @@ def build_per_patient_per_visit_services
   let!(:available_status)    { create(:available_status, organization_id: program.id, status: 'submitted', selected: true)}
   let!(:available_status2)   { create(:available_status, organization_id: program.id, status: 'draft', selected: true)}
   let!(:available_status3)   { create(:available_status, organization_id: program.id, status: 'administrative_review', selected: true)}
+  let!(:editable_status)    { create(:editable_status, organization_id: program.id, status: 'submitted', selected: true)}
+  let!(:editable_status2)   { create(:editable_status, organization_id: program.id, status: 'draft', selected: true)}
+  let!(:editable_status3)   { create(:editable_status, organization_id: program.id, status: 'administrative_review', selected: true)}
   let!(:subsidy)             { Subsidy.auditing_enabled = false; create(:subsidy_without_validations, percent_subsidy: 0.45, sub_service_request_id: sub_service_request.id)}
   let!(:subsidy_map)         { create(:subsidy_map, organization_id: program.id) }
 end

@@ -212,39 +212,30 @@ RSpec.describe SubServiceRequest, type: :model do
       let!(:line_item1) { create(:line_item, sub_service_request_id: ssr1.id, service_request_id: service_request.id, service_id: service.id) }
       let!(:line_item2) { create(:line_item, sub_service_request_id: ssr2.id, service_request_id: service_request.id, service_id: service2.id) }
 
-      before :each do
-        sub_service_request.organization.editable_statuses.where(status: 'on_hold').destroy_all
-      end
-
       context "can be edited" do
 
         it "should return true if the status is draft" do
           sub_service_request.update_attributes(status: "draft")
-          program.editable_statuses.where(status: sub_service_request.status).update(selected: true)
           expect(sub_service_request.can_be_edited?).to eq(true)
         end
 
         it "should return true if the status is submitted" do
           sub_service_request.update_attributes(status: "submitted")
-          program.editable_statuses.where(status: sub_service_request.status).update(selected: true)
           expect(sub_service_request.can_be_edited?).to eq(true)
         end
 
         it "should return true if the status is get a cost estimate" do
           sub_service_request.update_attributes(status: 'get_a_cost_estimate')
-          program.editable_statuses.where(status: sub_service_request.status).update(selected: true)
           expect(sub_service_request.can_be_edited?).to eq(true)
         end
 
         it "should return false if status is anything other than above states" do
           sub_service_request.update_attributes(status: "on_hold")
-          program.editable_statuses.where(status: sub_service_request.status).update(selected: true)
           expect(sub_service_request.can_be_edited?).to eq(false)
         end
 
         it 'should should return false if the status is complete' do
           sub_service_request.update_attributes(status: 'complete')
-          program.editable_statuses.where(status: sub_service_request.status).update(selected: true)
           expect(sub_service_request.can_be_edited?).to eq(false)
         end
       end

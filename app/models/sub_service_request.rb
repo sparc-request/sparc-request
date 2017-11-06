@@ -261,7 +261,7 @@ class SubServiceRequest < ApplicationRecord
   def update_status_and_notify(new_status)
     to_notify = []
     if can_be_edited?
-      available = AvailableStatus.types
+      available = PermissibleValue.get_key_list('status')
       editable = self.is_locked? || available
       changeable = available & editable
       if changeable.include?(new_status)
@@ -300,7 +300,7 @@ class SubServiceRequest < ApplicationRecord
 
   # Can't edit a request if it's placed in an uneditable status
   def can_be_edited?
-    self.status == 'first_draft' || (self.organization.process_ssrs_parent.has_editable_status?(self.status) && !self.is_complete?)
+     self.status == 'first_draft' || (self.organization.process_ssrs_parent.has_editable_status?(self.status) && !self.is_complete?)
   end
 
   def is_complete?

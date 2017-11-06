@@ -106,17 +106,10 @@ RSpec.describe Identity, type: :model do
     let!(:ctrc_provider)        {create(:clinical_provider, identity_id: user2.id, organization_id: program.id)}
     let!(:project_role)         {create(:project_role, identity_id: user.id, protocol_id: project.id, project_rights: 'approve')}
     let!(:request)              {create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id, ssr_id: '0002')}
-
-    before :each do
-      stub_const("FINISHED_STATUSES", ['complete'])
-      program.editable_statuses.where(status: sub_service_request.status).update(selected: true)
-    end
     
     describe "permission methods" do
 
-
       describe "can edit service request " do
-
 
         it "should return false if the users rights are not 'approve' or request" do
           project_role.update_attributes(project_rights: 'none')

@@ -65,7 +65,6 @@ FactoryGirl.define do
       submission_email_count 0
       admin nil
       service_provider nil
-      selected_statuses false
     end
 
     after(:build) do |organization, evaluator|

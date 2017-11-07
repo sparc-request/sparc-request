@@ -38,6 +38,8 @@ RSpec.describe Protocol, type: :model do
     end
   end
 
-  it { is_expected.to validate_numericality_of(:indirect_cost_rate).is_greater_than_or_equal_to(1) }
-  it { is_expected.to validate_numericality_of(:indirect_cost_rate).is_less_than_or_equal_to(1000) }
+  if Setting.find_by_key('use_indirect_cost').value
+    it { is_expected.to validate_numericality_of(:indirect_cost_rate).is_greater_than_or_equal_to(1) }
+    it { is_expected.to validate_numericality_of(:indirect_cost_rate).is_less_than_or_equal_to(1000) }
+  end
 end

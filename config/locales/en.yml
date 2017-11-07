@@ -65,6 +65,10 @@ en:
           attributes:
             content:
               blank: "has to be answered"
+        project_role:
+          attributes:
+            identity_id:
+              blank: "^Primary PI can't be blank"
       messages:
         spoofed_media_type: "has format errors. Please re-save the file in a different format and try again."
     attributes:

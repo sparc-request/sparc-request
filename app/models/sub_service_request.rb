@@ -408,12 +408,12 @@ class SubServiceRequest < ApplicationRecord
   ### ADDITIONAL DETAILS ###
   ##########################
 
-  def completed_questionnaire?(questionnaire)
-    submissions.where(questionnaire_id: questionnaire.id).present?
+  def completed_survey?(survey)
+    responces.where(respondable_id: survey.id).present?
   end
 
-  def find_submission(questionnaire)
-    submissions.where(questionnaire_id: questionnaire.id).first
+  def find_responce(survey)
+    responces.where(respondable_id: survey.id).first
   end
 
   def has_incomplete_additional_details?
@@ -422,14 +422,15 @@ class SubServiceRequest < ApplicationRecord
 
   def has_incomplete_additional_details_services?
     line_items.includes(:service).map(&:service).detect{|service|
-      questionnaire = service.questionnaires.active.first
-      !completed_questionnaire?(questionnaire) if questionnaire
+      survey = service.surveys.active.first
+      !completed_survey?(survey) if survey
     }.present?
   end
 
   def has_incomplete_additional_details_organization?
-    questionnaire = organization.questionnaires.active.first
-    questionnaire.present? && !completed_questionnaire?(questionnaire)
+    survey = organization.surveys.active.first
+
+    survey.present? && !completed_survey?(survey)
   end
 
   ##########################

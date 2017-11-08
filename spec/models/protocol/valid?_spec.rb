@@ -30,6 +30,10 @@ RSpec.describe Protocol, type: :model do
   build_study_type_questions()
   build_study_type_answers()
 
+  before :each do
+    Setting.find_by_key("use_indirect_cost").update_attribute(:value, true)
+  end
+
   describe 'should validate funding source for projects' do
     it 'should raise an exception if funding source is nil' do
       project = Project.create(attributes_for(:protocol))
@@ -38,8 +42,6 @@ RSpec.describe Protocol, type: :model do
     end
   end
 
-  if Setting.find_by_key('use_indirect_cost').value
-    it { is_expected.to validate_numericality_of(:indirect_cost_rate).is_greater_than_or_equal_to(1) }
-    it { is_expected.to validate_numericality_of(:indirect_cost_rate).is_less_than_or_equal_to(1000) }
-  end
+  it { is_expected.to validate_numericality_of(:indirect_cost_rate).is_greater_than_or_equal_to(1) }
+  it { is_expected.to validate_numericality_of(:indirect_cost_rate).is_less_than_or_equal_to(1000) }
 end

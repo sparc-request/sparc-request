@@ -352,7 +352,7 @@ class Organization < ApplicationRecord
     elsif self.available_statuses.selected.present?
       selected_statuses = self.available_statuses.selected.pluck(:status)
     else
-      status_parent = self.parents.detect(self){ |parent| parent.available_statuses.selected.present? }
+      status_parent = self.parents.detect{ |parent| parent.available_statuses.selected.present? } || self
       selected_statuses = status_parent.available_statuses.selected.pluck(:status)
     end
 

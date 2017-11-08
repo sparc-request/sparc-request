@@ -27,12 +27,8 @@ class AvailableStatus < ApplicationRecord
   scope :selected, -> { where(selected: true) }
   scope :alphabetized, -> { all.sort{ |x, y| x.humanize <=> y.humanize } }
 
-  def disabled_statuses
-    ['draft', 'submitted', 'get_a_cost_estimate']
-  end
-
   def disabled_status?
-    disabled_statuses.include?(self.status)
+    ["Draft", "Get a Cost Estimate", "Submitted"].include?(self.humanize)
   end
 
   def self.statuses

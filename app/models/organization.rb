@@ -346,17 +346,14 @@ class Organization < ApplicationRecord
 
   def get_available_statuses
     selected_statuses = []
+
     if self.use_default_statuses
       selected_statuses = AvailableStatus.defaults
     elsif self.available_statuses.selected.present?
       selected_statuses = self.available_statuses.selected.pluck(:status)
     else
-      self.parents.each do |parent|
-        if parent.available_statuses.selected.present?
-          selected_statuses = parent.available_statuses.selected.pluck(:status)
-          break
-        end
-      end
+      status_parent = self.parents.detect(self){ |parent| parent.available_statuses.selected.present? }
+      selected_statuses = status_parent.available_statuses.selected.pluck(:status)
     end
 
     AvailableStatus.statuses.slice(*selected_statuses)

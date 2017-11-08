@@ -101,7 +101,7 @@ FactoryGirl.define do
 
     after(:create) do |organization, evaluator|
       organization.available_statuses.where(status: AvailableStatus.defaults).update_all(selected: true)
-      organization.editable_statuses.where(status: EditableStatus.defaults).update_all(selected: true)
+      organization.editable_statuses.where(status: AvailableStatus.defaults).update_all(selected: true)
     end
 
     factory :organization_with_process_ssrs, traits: [:process_ssrs, :with_pricing_setup]

@@ -53,7 +53,7 @@ class MigrateQuestionnaireDataToSurveys < ActiveRecord::Migration[5.1]
         description: nil,
         access_code: questionnaire.name.downcase.gsub(" ", "-"),
         display_order: Survey.maximum(:display_order) + 1,
-        version: Survey.where(access_code: questionnaire.name.downcase.gsub(" ", "-")).any? ? Survey.where(access_code: questionnaire.name.downcase.gsub(" ", "-")).maximum(:version) + 1 : 0,
+        version: Survey.where(access_code: questionnaire.name.downcase.gsub(" ", "-")).any? ? Survey.where(access_code: questionnaire.name.downcase.gsub(" ", "-")).maximum(:version) + 1 : 1,
         active: questionnaire.active,
         created_at: questionnaire.created_at,
         updated_at: questionnaire.updated_at,

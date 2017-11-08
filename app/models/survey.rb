@@ -32,15 +32,19 @@ class Survey < ApplicationRecord
 
   validates :title,
             :access_code,
-            :display_order,
-            :version,
             presence: true
 
   validates_uniqueness_of :version, scope: [:access_code, :type]
-
   validates_uniqueness_of :access_code, scope: [:type], conditions: -> { where(active: true) }
 
+  validates :version, numericality: { only_integer: true, greater_than_or_equal_to: 1 }, allow_blank: false
+  validates :display_order, numericality: { only_integer: true }, allow_blank: false
+
   accepts_nested_attributes_for :sections, allow_destroy: true
+
+  default_scope -> {
+    order(:access_code, :version)
+  }
 
   scope :active, -> {
     where(active: true)

@@ -32,8 +32,14 @@ class Setting < ApplicationRecord
 
   validate :value_matches_type, if: Proc.new{ !self.read_attribute(:value).nil? }
   validate :parent_value_matches_parent_type, if: Proc.new{ self.parent_key.present? }
-  
-  # Needed to correctly write boolean true and false as value in specs  
+
+  def self.safe_value(key)
+    s = Setting.find_by_key(key)
+    return nil if s.nil?
+    s.value
+  end
+
+  # Needed to correctly write boolean true and false as value in specs
   def value=(value)
     if [TrueClass, FalseClass].include?(value.class)
       value_will_change!
@@ -45,7 +51,7 @@ class Setting < ApplicationRecord
 
   def value
     case data_type
-    when 'boolean'  
+    when 'boolean'
       read_attribute(:value) == 'true'
     when 'json'
       begin

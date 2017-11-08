@@ -34,9 +34,11 @@ class ProtocolsController < ApplicationController
     @protocol.requester_id  = current_user.id
     @service_request        = ServiceRequest.find(params[:srid])
     @protocol.populate_for_edit
-    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
-    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
-    rmid_server_status(@protocol)
+    if Setting.safe_value('research_master_enabled')
+      gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
+      gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
+      rmid_server_status(@protocol)
+    end
   end
 
   def create

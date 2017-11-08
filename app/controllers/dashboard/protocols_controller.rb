@@ -96,9 +96,11 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol.requester_id  = current_user.id
     @protocol.populate_for_edit
     session[:protocol_type] = params[:protocol_type]
-    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
-    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
-    rmid_server_status(@protocol)
+    if Setting.safe_value('research_master_enabled')
+      gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
+      gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
+      rmid_server_status(@protocol)
+    end
   end
 
   def create
@@ -201,7 +203,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
       flash[:alert] = t(:protocols)[:change_type][:new_study_warning]
     end
-    
+
     rmid_server_status(@protocol)
   end
 

@@ -15,7 +15,7 @@
   %tbody
     - objects_with_questionnaires.each do |obj|
       - questionable = questionable_type.constantize.find(obj.read_attribute("#{questionable_type.downcase}_id"))
-      - questionnaire = questionable.questionnaires.active.first
+      - survey = questionable.questionnaires.active.first
       - ssr = (questionable_type == 'Service' ? obj.sub_service_request : obj)
       - if questionable.questionnaires.active.present?
         %tr
@@ -23,8 +23,8 @@
             = questionable.name
           %td
             .text-center
-              - if ssr.completed_questionnaire?(questionnaire)
-                = link_to additional_details_submission_path(ssr.find_submission(questionnaire)),
+              - if ssr.completed_survey?(survey)
+                = link_to additional_details_submission_path(ssr.find_responce(survey)),
                   remote: true, class: 'btn btn-primary' do
                   %span.glyphicon.glyphicon-search
               - else
@@ -33,14 +33,14 @@
                   %span.glyphicon.glyphicon-modal-window
           %td
             .text-center
-              = ssr.completed_questionnaire?(questionnaire) ? "True" : "False"
+              = ssr.completed_survey?(survey) ? "True" : "False"
           %td
             .text-center
-              - if ssr.completed_questionnaire?(questionnaire)
-                = link_to edit_additional_details_submission_path(ssr.find_submission(questionnaire).id, sr_id: @service_request.id), remote: true, class: 'btn btn-warning' do
+              - if ssr.completed_survey?(survey)
+                = link_to edit_additional_details_submission_path(ssr.find_responce(survey).id, sr_id: @service_request.id), remote: true, class: 'btn btn-warning' do
                   %span.glyphicon.glyphicon-edit
           %td
             .text-center
-              - if ssr.completed_questionnaire?(questionnaire)
-                = link_to "javascript:void(0);", class: 'btn btn-danger delete-submission', data: { id: ssr.find_submission(questionnaire).id, sr_id: @service_request.id, protocol_id: @service_request.protocol_id, ssr_id: ssr.id } do
+              - if ssr.completed_survey?(survey)
+                = link_to "javascript:void(0);", class: 'btn btn-danger delete-submission', data: { id: ssr.find_responce(survey).id, sr_id: @service_request.id, protocol_id: @service_request.protocol_id, ssr_id: ssr.id } do
                   %span.glyphicon.glyphicon-remove

@@ -48,6 +48,7 @@ class Dashboard::BaseController < ActionController::Base
   private
 
   def rmid_server_status(protocol)
+    return unless Setting.safe_value('research_master_enabled')
     @rmid_server_down = protocol.rmid_server_status
     @rmid_server_down ? flash[:alert] = t(:protocols)[:summary][:tooltips][:rmid_server_down] : nil
   end

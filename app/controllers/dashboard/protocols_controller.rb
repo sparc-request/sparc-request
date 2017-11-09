@@ -96,11 +96,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol.requester_id  = current_user.id
     @protocol.populate_for_edit
     session[:protocol_type] = params[:protocol_type]
-    if Setting.safe_value('research_master_enabled')
-      gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
-      gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
-      rmid_server_status(@protocol)
-    end
+    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
+    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
+    rmid_server_status(@protocol)
   end
 
   def create

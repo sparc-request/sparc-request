@@ -62,7 +62,7 @@ class Protocol < ApplicationRecord
   validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
   validates :research_master_id, presence: true, if: :rmid_requires_validation?
 
-  validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 1000 }, allow_blank: true
+  validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 1000 }, allow_blank: true, if: :indirect_cost_enabled
 
   attr_accessor :requester_id
   attr_accessor :validate_nct
@@ -551,6 +551,10 @@ class Protocol < ApplicationRecord
   end
 
   private
+
+  def indirect_cost_enabled
+    Setting.find_by_key('use_indirect_cost').value
+  end
 
   def notify_remote_around_update?
     true

@@ -56,14 +56,13 @@ class MigrateQuestionnaireDataToSurveys < ActiveRecord::Migration[5.1]
         version: Survey.where(access_code: questionnaire.name.downcase.gsub(" ", "-")).any? ? Survey.where(access_code: questionnaire.name.downcase.gsub(" ", "-")).maximum(:version) + 1 : 1,
         active: questionnaire.active,
         created_at: questionnaire.created_at,
-        updated_at: questionnaire.updated_at,
+        updated_at: questionnaire.updated_at, 
         surveyable_type: questionnaire.questionable_type,
         surveyable_id: questionnaire.questionable_id
       })
       
       new_survey = Form.create(survey_params.permit!)
-      
-      new_section = Section.create(survey: new_survey)
+      new_section = Section.create(survey: new_survey, title: "Section #{index+1}")
 
       items.select{ |i| i.questionnaire_id == questionnaire.id }.each do |item|
         question_params = ActionController::Parameters.new({
@@ -79,13 +78,27 @@ class MigrateQuestionnaireDataToSurveys < ActiveRecord::Migration[5.1]
         })
         new_question = Question.create(question_params.permit!)
 
-        item_options.select{ |io| io.item_id = item.id }.each do |item_option|
-          option_params = ActionController::Parameters.new({
+        # For Yes/No Questions, there are extra options left over that we don't want
+        if item.item_type == 'yes_no'
+          Option.create(
             question: new_question,
-            content: item_option.content,
-            created_at: item_option.created_at,
-            updated_at: item_option.updated_at
-          })
+            content: 'Yes'
+          )
+          Option.create(
+            question: new_question,
+            content: 'No'
+          )
+        else
+          item_options.select{ |io| io.item_id = item.id }.each do |item_option|
+            option_params = ActionController::Parameters.new({
+              question: new_question,
+              content: item_option.content,
+              created_at: item_option.created_at,
+              updated_at: item_option.updated_at
+            })
+
+             Option.create(option_params.permit!)
+          end
         end
       end
 

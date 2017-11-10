@@ -28,7 +28,13 @@ class Surveyor::SurveysController < Surveyor::BaseController
     respond_to do |format|
       format.html
       format.json {
-        @surveys = Survey.all
+        if params[:type] == "SystemSurvey"
+          @surveys = SystemSurvey.all
+        elsif params[:type] == "Form"
+          @surveys = Form.for(current_user)
+        else
+          Survey.none
+        end
       }
     end
   end
@@ -43,6 +49,7 @@ class Surveyor::SurveysController < Surveyor::BaseController
 
   def create
     @survey = Survey.create(
+                type: params[:type],
                 title: "Untitled Survey",
                 access_code: "untitled-survey",
                 version: (Survey.where(access_code: "untitled-survey").order(:version).last.try(:version) || 0) + 1,
@@ -74,10 +81,12 @@ class Surveyor::SurveysController < Surveyor::BaseController
 
   def update_dependents_list
     @survey     = Survey.find(params[:survey_id])
-    @questions  = @survey.questions.eager_load(section: :survey)
+    @questions  = @survey.questions.eager_load(section: { survey: { questions: :options } })
 
     respond_to do |format|
       format.js
     end
   end
+
+
 end

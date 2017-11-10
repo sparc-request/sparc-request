@@ -39,7 +39,7 @@ module Surveyor::SurveysHelper
       raw(
         content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' })
       ),
-      title: t(:surveyor)[:surveys][:table][:fields][:edit],
+      title: t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:edit],
       data: { survey_id: survey.id, toggle: 'tooltip', animation: 'false' },
       class: 'btn btn-warning edit-survey'
     )
@@ -50,14 +50,14 @@ module Surveyor::SurveysHelper
       raw(
         content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
       ),
-      title: t(:surveyor)[:surveys][:table][:fields][:delete],
+      title: t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:delete],
       data: { survey_id: survey.id, toggle: 'tooltip', animation: 'false' },
       class: 'btn btn-danger delete-survey'
     )
   end
 
   def activate_survey_button(survey)
-    text = survey.active? ? t(:surveyor)[:surveys][:table][:fields][:disable] : t(:surveyor)[:surveys][:table][:fields][:activate]
+    text = survey.active? ? t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:disable] : t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:activate]
     klass = survey.active? ? 'btn-danger activate-survey' : 'btn-success disable-survey'
     
     link_to text, surveyor_survey_updater_path(survey, klass: 'survey', survey: { active: !survey.active }), method: :patch, remote: true, class: ['btn', klass]
@@ -67,7 +67,7 @@ module Surveyor::SurveysHelper
     content_tag(:button,
       raw(
         content_tag(:span, '', class: 'glyphicon glyphicon-search', aria: { hidden: 'true' })+
-        t(:surveyor)[:surveys][:table][:fields][:preview]
+        t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:preview]
       ),
       data: { survey_id: survey.id },
       class: 'btn btn-info preview-survey'

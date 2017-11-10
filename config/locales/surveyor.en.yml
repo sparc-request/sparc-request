@@ -21,8 +21,23 @@
 en:
   surveyor:
     forms:
-      header: "Forms"
+      header: "My Forms"
       tooltip: "Forms to collect additional information related to requesting a service"
+      new: "New Form"
+      table:
+        headers:
+          surveyable: "Organization/Service"
+          title: "Title"
+          access_code: "Access Code"
+          version: "Version"
+          active: "Active"
+          options: "Options"
+        fields:
+          edit: "Edit Form"
+          delete: "Delete Form"
+          activate: "Activate"
+          disable: "Disable"
+          preview: "Preview"
 
     responses:
       update: "Thank you for participating in this survey!"
@@ -47,21 +62,6 @@ en:
 
 
     surveys:
-      new: "New Survey"
-      table:
-        headers:
-          title: "Title"
-          access_code: "Access Code"
-          version: "Version"
-          display_order: "Display Order"
-          active: "Active"
-          options: "Options"
-        fields:
-          edit: "Edit Survey"
-          delete: "Delete Survey"
-          activate: "Activate"
-          disable: "Disable"
-          preview: "Preview"
       form:
         header: "Live Editing Survey"
         survey_information:
@@ -105,6 +105,21 @@ en:
             content:
               placeholder: "Option (Required)"
 
-    system_surveys:
+    systemsurveys:
       header: "System Surveys"
       tooltip: "Surveys to collect feedback from users"
+      new: "New Survey"
+      table:
+        headers:
+          title: "Title"
+          access_code: "Access Code"
+          version: "Version"
+          display_order: "Display Order"
+          active: "Active"
+          options: "Options"
+        fields:
+          edit: "Edit Survey"
+          delete: "Delete Survey"
+          activate: "Activate"
+          disable: "Disable"
+          preview: "Preview"

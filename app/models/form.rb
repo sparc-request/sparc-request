@@ -19,4 +19,11 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Form < Survey
+  def self.for(identity)
+    org_ids     = identity.authorized_admin_organizations.ids
+    service_ids = Service.where(organization_id: org_ids).ids
+    
+    Form.where(surveyable_id: org_ids, surveyable_type: "Organization").
+      or(where(surveyable_id: service_ids, surveyable_type: "Service"))
+  end
 end

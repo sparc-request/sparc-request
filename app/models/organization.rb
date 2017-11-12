@@ -119,7 +119,7 @@ class Organization < ApplicationRecord
   end
 
   def has_editable_status?(status)
-    (self.use_default_statuses ? AvailableStatus.defaults : self.editable_statuses.selected.pluck(:status)).include?(status)
+    get_editable_statuses.include?(status)
   end
 
   # Returns the immediate children of this organization (shallow search)
@@ -346,7 +346,6 @@ class Organization < ApplicationRecord
 
   def get_available_statuses
     selected_statuses = []
-
     if self.use_default_statuses
       selected_statuses = AvailableStatus.defaults
     elsif self.available_statuses.selected.present?
@@ -357,6 +356,10 @@ class Organization < ApplicationRecord
     end
 
     AvailableStatus.statuses.slice(*selected_statuses)
+  end
+
+  def get_editable_statuses
+    self.use_default_statuses ? AvailableStatus.defaults : self.editable_statuses.selected.pluck(:status)
   end
 
   def self.find_all_by_available_status status

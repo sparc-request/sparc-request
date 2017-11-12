@@ -32,11 +32,11 @@ class AvailableStatus < ApplicationRecord
   end
 
   def self.statuses
-    PermissibleValue.get_hash('status')
+    @statuses ||= PermissibleValue.get_hash('status')
   end
 
   def self.defaults
-    PermissibleValue.get_key_list('status', true)
+    @defaults ||= PermissibleValue.get_key_list('status', true)
   end
 
   def humanize

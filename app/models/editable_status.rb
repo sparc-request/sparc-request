@@ -24,7 +24,7 @@ class EditableStatus < ApplicationRecord
   belongs_to :organization
 
   def self.statuses
-    PermissibleValue.get_hash('status')
+    @statuses ||= PermissibleValue.get_hash('status')
   end
 
   validates :status, inclusion: { in: EditableStatus.statuses.keys }, presence: true
@@ -35,6 +35,10 @@ class EditableStatus < ApplicationRecord
 
   def self.types
     self.statuses.keys
+  end
+
+  def self.defaults
+    @defaults ||= PermissibleValue.get_key_list('status', true)
   end
 
   def humanize

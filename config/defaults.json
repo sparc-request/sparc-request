@@ -618,5 +618,25 @@
     "version":        "",
     "parent_key":     "",
     "parent_value":   ""
+  },
+  {
+    "key": "success_center_phone",
+    "value": "(843) 792-8300",
+    "friendly_name": "Success center phone number",
+    "description": "phone number to call when serice request is made successfully",
+    "group": "",
+    "version": "",
+    "parent_key": "",
+    "parent_value": ""
+  }, 
+  {
+    "key": "success_email_to",
+    "value": "success@musc.edu",
+    "friendly_name": "Success email-to",
+    "description": "email to send to when service request is made successfully",
+    "group": "",
+    "version": "",
+    "parent_key": "",
+    "parent_value": ""
   }
 ]

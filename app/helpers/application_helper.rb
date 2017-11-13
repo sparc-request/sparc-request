@@ -20,6 +20,15 @@
 
 module ApplicationHelper
 
+  def get_setting_by_key(key)
+    setting = Setting.find_by_key(key)
+    if !setting.nil?
+      setting.value
+    else
+      ''
+    end
+  end
+
   def show_welcome_message(current_user, bootstrap = false)
     returning_html = ""
     if current_user

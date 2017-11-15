@@ -452,7 +452,7 @@
   {
     "key": "success_center_email_to",
     "value": "success@musc.edu",
-    "friendly_name": "Success email-to",
+    "friendly_name": "Success center email",
     "description": "email to send to when service request is made successfully",
     "group": "",
     "version": "",

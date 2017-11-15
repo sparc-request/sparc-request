@@ -23,7 +23,7 @@
 
   %head
     %meta{ :"http-equiv" => "content-type", :content => "text/html;charset=UTF-8" }
-    %title= t(:notifier)[:status_change][:body1] 
+    %title= t(:notifier)[:status_change][:body1]
 
   %body
     - if @approved
@@ -31,7 +31,7 @@
       = t(:notifier)[:status_change][:body3]
       = t(:notifier)[:status_change][:body4]
     - else
-      = t(:notifier)[:status_change][:body5]  
+      = t(:notifier)[:status_change][:body5]
     %br
     %br
-    = t(:mailer)[:issue_contact]
+    = t('mailer.issue_contact', success_center_phone: Setting.get_setting_by_key('success_center_phone'), success_email_to: Setting.get_setting_by_key('success_email_to'))

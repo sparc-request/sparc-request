@@ -43,7 +43,7 @@ RSpec.describe UserMailer do
       it 'should display correct subject' do
         expect(@mail).to have_subject("SPARCRequest Authorized Users Update (Protocol #{@protocol.id})")
       end
-    
+
       it "should display the 'added' message" do
         # An Authorized User has been added in SparcDashboard ***(link to protocol)***
         expect(@mail).to have_xpath("//p[normalize-space(text()) = 'An Authorized User has been added in']")
@@ -55,7 +55,7 @@ RSpec.describe UserMailer do
       end
 
       it "should display message conclusion" do
-        expect(@mail).to have_xpath("//p[normalize-space(text()) = 'Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have.']")
+        expect(@mail).to have_xpath("//p[text() = 'Please contact the SUCCESS Center at #{Setting.get_setting_by_key('success_center_phone')} or #{Setting.get_setting_by_key('success_email_to')} for assistance with this process or with any questions you may have.']")
       end
 
       it "should display acknowledgments" do
@@ -118,7 +118,7 @@ RSpec.describe UserMailer do
       end
 
       it "should display message conclusion" do
-        expect(@mail).to have_xpath("//p[normalize-space(text()) = 'Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have.']")
+        expect(@mail).to have_xpath("//p[text() = 'Please contact the SUCCESS Center at #{Setting.get_setting_by_key('success_center_phone')} or #{Setting.get_setting_by_key('success_email_to')} for assistance with this process or with any questions you may have.']")
       end
 
       it "should display acknowledgments" do

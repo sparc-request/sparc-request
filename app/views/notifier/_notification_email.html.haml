@@ -47,12 +47,12 @@
     /***** OTHER EMAIL TIDBITS *****
     - if display_notes?(@status, @role, @notes)
       %p= t(:notifier)[:notes_present]
-    
+
     - if @status != 'ssr_destroyed'
       %p= t(:notifier)[:body6]
-    
-    %p= t(:mailer)[:issue_contact]
-    
+
+    %p= t('mailer.issue_contact', success_center_phone: Setting.get_setting_by_key('success_center_phone'), success_email_to: Setting.get_setting_by_key('success_email_to'))
+
     - if @role != 'none'
       = render "acknowledgments"
     /***** END OTHER EMAIL TIDBITS *****

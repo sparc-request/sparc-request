@@ -27,6 +27,6 @@
   = render "user_info_table"
   %br
   %br
-  %p= t(:mailer)[:issue_contact]
+  %p= t('mailer.issue_contact', success_center_phone: Setting.get_setting_by_key('success_center_phone'), success_email_to: Setting.get_setting_by_key('success_email_to'))
   %br
   = render "acknowledgments"

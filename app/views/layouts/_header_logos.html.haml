@@ -30,7 +30,7 @@
       %a{ href: Setting.find_by_key("header_link_2_dashboard").value, class: 'sparc-request-header' }
         = image_tag 'dashboard/logos/dashboard_logo.jpg', alt: 'dashboard_logo', height: 110
     - elsif location == "catalog_manager"
-      %a{ href: Setting.find_by_key("header_link_2_dashboard").value }
+      %a{ href: Setting.find_by_key("header_link_2_catalog").value }
         = image_tag 'catalog_manager/logos/catalog_manager_logo.jpg', alt: 'catalog_manager_logo', class: 'sparc-request-header', height: 110
   .col-md-3
     %a{ href: Setting.find_by_key("header_link_3").value, target: '_blank', class: 'institution-logo' }

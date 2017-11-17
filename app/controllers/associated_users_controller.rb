@@ -99,6 +99,10 @@ class AssociatedUsersController < ApplicationController
   def destroy
     epic_access         = @protocol_role.epic_access
     protocol_role_clone = @protocol_role.clone
+    epic_queue_manager = EpicQueueManager.new(
+      @protocol_role.protocol, current_user, @protocol_role
+    )
+    epic_queue_manager.create_epic_queue
 
     @protocol_role.destroy
 

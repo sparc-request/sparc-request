@@ -13,6 +13,13 @@ GIT
       activerecord (>= 3.0)
 
 GIT
+  remote: git@github.com:HSSC/sanitized_data.git
+  revision: 2fde04e1cb3bf61ff6109bb712984bf2fce4bd23
+  specs:
+    sanitized_data (0.0.3)
+      iconv
+
+GIT
   remote: https://github.com/ayaman/filterrific.git
   revision: 292ecd953df4ec70f2f9a879105ef5aba5b77e95
   specs:
@@ -258,6 +265,7 @@ GEM
     i18n_data (0.8.0)
     icalendar (2.4.1)
     ice_nine (0.11.2)
+    iconv (1.0.4)
     jbuilder (2.7.0)
       activesupport (>= 4.2.0)
       multi_json (>= 1.2)
@@ -631,6 +639,7 @@ DEPENDENCIES
   rspec-html-matchers
   rspec-rails (~> 3.4)
   ruby-prof
+  sanitized_data!
   sass
   sass-rails
   savon (~> 2.2.0)
@@ -653,4 +662,4 @@ DEPENDENCIES
   x-editable-rails
 
 BUNDLED WITH
-   1.15.4
+   1.16.0

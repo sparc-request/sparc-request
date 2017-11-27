@@ -131,9 +131,6 @@ epic_rights: { 'view_rights': 'View Research Studies',
 
 epic_rights_info: 'Once the study is "completed" in Epic, it cannot be moved back to "Active or Inactive" Completing the study will inhibit new participants to be enrolled and associated with the study. Please select only one member of your study team that will be authorized to change a study status to Active/Complete.'
 
-funding_statuses: { 'Pending Funding': 'pending_funding',
-                    'Funded': 'funded' }
-
 institutions: { "University of South Carolina": "university_of_south_carolina",
                 "Health Sciences South Carolina": "health_sciences_south_carolina",
                 "Clemson University": "clemson_university",

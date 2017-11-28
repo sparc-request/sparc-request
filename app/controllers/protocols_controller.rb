@@ -182,6 +182,7 @@ class ProtocolsController < ApplicationController
     # Do the final push to epic in a separate thread.  The page which is
     # rendered will
     push_protocol_to_epic(@protocol)
+    epic_queue.destroy
 
     respond_to do |format|
       format.html
@@ -291,7 +292,7 @@ class ProtocolsController < ApplicationController
     # Thread.new do
     begin
       # Do the actual push.  This might take a while...
-      protocol.push_to_epic(EPIC_INTERFACE, "submission_push", current_user.id)
+      protocol.push_to_epic(EPIC_INTERFACE, "overlord_push", current_user.id)
       errors = EPIC_INTERFACE.errors
       session[:errors] = errors unless errors.empty?
       @epic_errors = true unless errors.empty?

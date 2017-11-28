@@ -283,6 +283,14 @@ en:
       visit_day: 'Day the anticipated visit occurs (incremental)'
       visit_name: 'Name of the visit'
 
+  calendar_structure:
+    header: "Calendar Structure"
+    lock_calendar: "Lock Calendar"
+    table_fields:
+      arm_name: "Arm Name"
+      subject_count: "Subject Count"
+      visit_count: "Visit Count"
+
   #############
   # CONSTANTS #
   #############

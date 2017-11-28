@@ -17,19 +17,22 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-= stylesheet_link_tag 'associated_users_table'
-.panel-group#protocol_show_information_panel
-  = render 'dashboard/protocols/summary', protocol: @protocol, protocol_type: @protocol_type, permission_to_edit: @permission_to_edit || @admin
-  = render 'dashboard/associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin
-  = render 'dashboard/calendar_structure/table', protocol: @protocol
-  = render 'dashboard/service_requests/service_requests', protocol: @protocol, super_user_orgs: @super_user_orgs, permission_to_edit: @permission_to_edit, user: @user, view_only: false, show_view_ssr_back: @show_view_ssr_back, statuses_hidden: %(first_draft)
-  = render 'dashboard/documents/documents_table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin
-  = render "additional_details/submissions/submissions_panel", protocol: @protocol, submissions: @submissions
-  = render "dashboard/protocols/milestone", protocol: @protocol
-
-= render 'additional_details/submissions/submission_modal'
-
-:javascript
-  $(document).ready( function() {
-    Sparc.protocol.ready();
-  })
+.panel.panel-default#calendar-structure-panel
+  .panel-heading
+    %h4.panel-title
+      = t(:calendar_structure)[:header]
+  .panel-body
+    .bootstrap-table-dropdown-overflow
+      #calendar-structure-custom-toolbar
+        %div.tooltip-wrapper{ data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' }, title: t(:authorized_users)[:tooltips][:add_user] }
+          %button.btn.btn-success#calendar-lock-button{ class: "calendar-lock", data: { protocol_id: protocol.id } }
+            = t(:calendar_structure)[:lock_calendar]
+      %table#associated-users-table{ data: { toggle: 'table', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: dashboard_arms_path(format: :json, protocol_id: protocol.id), striped: 'true', toolbar: '#calendar-structure-custom-toolbar' } }
+        %thead.primary-header
+          %tr
+            %th{ data: { field: 'name', align: 'left'} }
+              = t(:calendar_structure)[:table_fields][:arm_name]
+            %th{ data: { field: 'subject_count', align: 'left'} }
+              = t(:calendar_structure)[:table_fields][:subject_count]
+            %th{ data: { field: 'visit_count', align: 'left'} }
+              = t(:calendar_structure)[:table_fields][:visit_count]

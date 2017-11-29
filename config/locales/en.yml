@@ -291,6 +291,8 @@ en:
       arm_name: "Arm Name"
       subject_count: "Subject Count"
       visit_count: "Visit Count"
+    tooltips:
+      lock_calendar: 'Locking the calendar will prevent users from making changes to arm, subject, and visit information.'
 
   #############
   # CONSTANTS #

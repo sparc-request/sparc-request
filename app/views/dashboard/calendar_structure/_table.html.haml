@@ -24,13 +24,13 @@
   .panel-body
     .bootstrap-table-dropdown-overflow
       #calendar-structure-custom-toolbar
-        %div.tooltip-wrapper{ data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' }, title: t(:authorized_users)[:tooltips][:add_user] }
+        %div.tooltip-wrapper{ data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' }, title: t(:calendar_structure)[:tooltips][:lock_calendar] }
           %button.btn.btn-success#calendar-lock-button{ class: "calendar-lock", data: { protocol_id: protocol.id, locked: protocol.locked.to_s } }
             -if protocol.locked == false
               = t(:calendar_structure)[:lock_calendar]
             -else
               = t(:calendar_structure)[:unlock_calendar]
-      %table#associated-users-table{ data: { toggle: 'table', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: dashboard_arms_path(format: :json, protocol_id: protocol.id), striped: 'true', toolbar: '#calendar-structure-custom-toolbar' } }
+      %table#associated-users-table{ data: { toggle: 'table', 'show-columns' => 'true', 'show-toggle' => 'true', url: dashboard_arms_path(format: :json, protocol_id: protocol.id), striped: 'true', toolbar: '#calendar-structure-custom-toolbar' } }
         %thead.primary-header
           %tr
             %th{ data: { field: 'name', align: 'left'} }

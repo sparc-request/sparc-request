@@ -39,7 +39,7 @@ module EmailHelpers
       else
         requester_flag = ""
       end
-      expect(mail_response).to have_xpath "//td[text()='#{role.identity.full_name}']/following-sibling::td[text()='#{role.identity.email}']/following-sibling::td[text()='#{role.role.titleize}#{requester_flag}']"
+      expect(mail_response).to have_xpath "//td[text()=\"#{role.identity.full_name}\"]/following-sibling::td[text()='#{role.identity.email}']/following-sibling::td[text()='#{role.role.titleize}#{requester_flag}']"
     end
   end
 
@@ -55,7 +55,7 @@ module EmailHelpers
       end
 
       user_epic_access = role.epic_access == false ? "No" : "Yes"
-      expect(mail_response).to have_xpath "//td[text()='#{role.identity.full_name}']/following-sibling::td[text()='#{role.identity.email}']/following-sibling::td[text()='#{role.role.titleize}#{requester_flag}']/following-sibling::td[text()='#{user_epic_access}']"
+      expect(mail_response).to have_xpath "//td[text()=\"#{role.identity.full_name}\"]/following-sibling::td[text()='#{role.identity.email}']/following-sibling::td[text()='#{role.role.titleize}#{requester_flag}']/following-sibling::td[text()='#{user_epic_access}']"
     end
   end
 
@@ -71,7 +71,7 @@ module EmailHelpers
         requester_flag = ""
       end
       user_epic_access = role.epic_access == false ? "No" : "Yes"
-      expect(mail_response).to have_xpath "//td[text()='#{role.identity.full_name}']/following-sibling::td[text()='#{role.identity.email}']/following-sibling::td[text()='#{role.role.titleize}#{requester_flag}']"
+      expect(mail_response).to have_xpath "//td[text()=\"#{role.identity.full_name}\"]/following-sibling::td[text()='#{role.identity.email}']/following-sibling::td[text()='#{role.role.titleize}#{requester_flag}']"
       expect(mail_response).not_to have_xpath "//following-sibling::td[text()='#{user_epic_access}']"
     end
   end
@@ -85,7 +85,7 @@ module EmailHelpers
       status = PermissibleValue.get_value('status', ssr_to_be_displayed.status)
       expect(@mail.body.parts.first.body).to have_xpath "//td//a[@href='/dashboard/sub_service_requests/#{ssr_to_be_displayed.id}']['#{ssr_to_be_displayed.display_id}']/@href"
       expect(@mail.body.parts.first.body).to have_xpath "//td[text()='#{ssr_to_be_displayed.org_tree_display}']/following-sibling::td[text()='#{status}']"
-      expect(@mail.body.parts.first.body).to have_xpath "//td[text()='#{ssr_to_be_displayed.service_requester.try(&:full_name) || 'N/A'}']"
+      expect(@mail.body.parts.first.body).to have_xpath "//td[text()=\"#{ssr_to_be_displayed.service_requester.try(&:full_name) || 'N/A'}\"]"
     end
   end
 
@@ -96,7 +96,7 @@ module EmailHelpers
     ssrs_to_be_displayed.each do |ssr_to_be_displayed|
       expect(@mail.body).to have_xpath "//td//strike['#{ssr_to_be_displayed.display_id}']"
       expect(@mail.body).to have_xpath "//td//strike[text()='#{ssr_to_be_displayed.org_tree_display}']"
-      expect(@mail.body).to have_xpath "//td//strike[text()='#{ssr_to_be_displayed.service_requester.try(&:full_name) || 'N/A'}']"
+      expect(@mail.body).to have_xpath "//td//strike[text()=\"#{ssr_to_be_displayed.service_requester.try(&:full_name) || 'N/A'}\"]"
     end
   end
 
@@ -109,7 +109,7 @@ module EmailHelpers
     status = PermissibleValue.get_value('status', displayed_sub_service_request.status)
     expect(@mail.body.parts.first.body).to have_xpath "//td//a[@href='/dashboard/sub_service_requests/#{displayed_sub_service_request.id}']['#{displayed_sub_service_request.display_id}']/@href"
     expect(@mail.body.parts.first.body).to have_xpath "//td[text()='#{displayed_sub_service_request.org_tree_display}']/following-sibling::td[text()='#{status}']"    
-    expect(@mail.body.parts.first.body).to have_xpath "//td[text()='#{displayed_sub_service_request.service_requester.try(&:full_name) || 'N/A'}']"   
+    expect(@mail.body.parts.first.body).to have_xpath "//td[text()=\"#{displayed_sub_service_request.service_requester.try(&:full_name) || 'N/A'}\"]"
   end
 
   def assert_email_srid_information_for_user
@@ -119,7 +119,7 @@ module EmailHelpers
 
     @service_request.protocol.sub_service_requests.each do |ssr|
       status = PermissibleValue.get_value('status', ssr.status)
-      expect(@mail.body.parts.first.body).to have_xpath "//td[text()='#{ssr.display_id}']/following-sibling::td[text()='#{ssr.org_tree_display}']/following-sibling::td[text()='#{status}']/following-sibling::td[text()= '#{ssr.service_requester.try(&:full_name) || 'N/A'}']"
+      expect(@mail.body.parts.first.body).to have_xpath "//td[text()='#{ssr.display_id}']/following-sibling::td[text()='#{ssr.org_tree_display}']/following-sibling::td[text()='#{status}']/following-sibling::td[text()= \"#{ssr.service_requester.try(&:full_name) || 'N/A'}\"]"
     end
   end
 

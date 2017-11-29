@@ -286,6 +286,7 @@ en:
   calendar_structure:
     header: "Calendar Structure"
     lock_calendar: "Lock Calendar"
+    unlock_calendar: "Unlock Calendar"
     table_fields:
       arm_name: "Arm Name"
       subject_count: "Subject Count"

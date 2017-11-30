@@ -15,3 +15,6 @@ id,key,value,concept_code,parent_id,sort_order,category,default,reserved
 ,on_hold,On Hold,,,14,status,1,
 ,submitted,Submitted,,,15,status,1,
 ,withdrawn,Withdrawn,,,16,status,0,
+,paid,Paid,,,17,status,0,
+,ctsi_cn_review,Review,,,18,status,0,
+,ctsi_cn_approved,Approved,,,19,status,0,

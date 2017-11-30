@@ -70,7 +70,8 @@
           .form-group.row.approval_pending
             = hs_form.label :approval_pending, t(:protocols)[:studies][:research_involving][:humans][:pending_approval], class: 'col-lg-2 control-label'
             .col-lg-1
-              = hs_form.check_box :approval_pending, class: 'form-control'
+              -#= hs_form.check_box :approval_pending, class: 'form-control'
+              = hs_form.select :approval_pending, options_for_select(IRB_APPROVAL_STATUS, protocol.human_subjects_info.approval_pending), { include_blank: t(:protocols)[:prompts][:approval_pending] }, class: 'selectpicker'
 
           .form-group.row.irb_approval_date
             = hs_form.label :irb_approval_date, t(:protocols)[:studies][:research_involving][:humans][:irb_approval_date], class: 'col-lg-2 control-label'

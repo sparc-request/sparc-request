@@ -76,7 +76,8 @@
                 %label.col-lg-4
                   = t(:protocols)[:studies][:research_involving][:humans][:pending_approval]
                 .col-lg-8
-                  = human_info.approval_pending ? t(:constants)[:yes_select] : t(:constants)[:no_select]
+                  -#= human_info.approval_pending ? t(:constants)[:yes_select] : t(:constants)[:no_select]
+                  = IRB_APPROVAL_STATUS[human_info.approval_pending]
             %tr
               %td
                 %label.col-lg-4

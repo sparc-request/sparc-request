@@ -34,4 +34,4 @@
           = t(:proper)[:protocol][:create_protocol_instructions]
     .col-sm-12.protocol-container.text-center
       = link_to t(:protocols)[:studies][:new], new_protocol_path(srid: service_request.id, protocol_type: 'Study', service_request_id: service_request.id), class: 'btn btn-lg btn-success new-study', title: t(:proper)[:protocol][:study_tooltip], data: { toggle: 'tooltip' }
-      = link_to t(:protocols)[:projects][:new], new_protocol_path(srid: service_request.id, protocol_type: 'Project', service_request_id: service_request.id), class: 'btn btn-lg btn-primary new-project', title: t(:proper)[:protocol][:project_tooltip], data: { toggle: 'tooltip' }
+      -#= link_to t(:protocols)[:projects][:new], new_protocol_path(srid: service_request.id, protocol_type: 'Project', service_request_id: service_request.id), class: 'btn btn-lg btn-primary new-project', title: t(:proper)[:protocol][:project_tooltip], data: { toggle: 'tooltip' }

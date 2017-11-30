@@ -41,8 +41,8 @@ en:
       listserv_subject: "SPARCRequest Listserv"
       sparc_blog: "Blog"
       sparc_blog_url: "https://sparcrequestblog.com/"
-      sctr: "SCTR"
-      sctr_url: "http://sctr.musc.edu"
+      sctr: "CTSI"
+      sctr_url: "http://www.ctsicn.org"
       about: "About"
       about_alt: "About SPARCRequest"
 
@@ -136,8 +136,8 @@ en:
       eligible_notice: "The services selected below may be eligible for a <b><i>funding award</i></b> or subsidy to cover some or all of the costs of the services."
       not_eligible_notice: "None of the services you have selected are eligible for a subsidy."
       request_funding_notice: "To request additional research funding go to "
-      request_funding_link: "sctr.musc.edu"
-      request_funding_url: "https://sctr.musc.edu/"
+      request_funding_link: "www.ctsicn.org"
+      request_funding_url: "https://www.ctsicn.org/"
 
     #######################
     # DOCUMENT MANAGEMENT #
@@ -278,4 +278,4 @@ en:
         email: "Email:"
         message: "Message:"
         submitted: "Message sent successfully!"
-      ctrc_lock: "SCTR Research Nexus services are already present on this request (%{protocol_id}-%{ssr_id}) pertaining to this %{protocol_type}, '%{short_title}'. Please call (843) 792-8688 to edit the existing request."
+      ctrc_lock: "CTSI Research Nexus services are already present on this request (%{protocol_id}-%{ssr_id}) pertaining to this %{protocol_type}, '%{short_title}'. Please call (843) 792-8688 to edit the existing request."

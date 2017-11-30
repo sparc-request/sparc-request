@@ -331,16 +331,16 @@ en:
       heading: "Uh, oh.  You've hit a"
       error: "Page Not Found (404)"
       help_text: "For help, contact us:"
-      link_href: "mailto:success@musc.edu"
-      link_display: "Email: success@musc.edu"
+      link_href: "mailto:sparcrequest@childrensnational.org"
+      link_display: "Email: sparcrequest@childrensnational.org"
       phone_href: "tel:843-792-8300"
       phone_display: "Call: 843-792-8300"
     server_error:
       heading: "Uh, oh.  You've hit an"
       error: "Internal Server Error (500)"
       help_text: "For help, contact us:"
-      link_href: "mailto:success@musc.edu"
-      link_display: "Email: success@musc.edu"
+      link_href: "mailto:sparcrequest@childrensnational.org"
+      link_display: "Email: sparcrequest@childrensnational.org"
       phone_href: "tel:843-792-8300"
       phone_display: "Call: 843-792-8300"
 
@@ -425,7 +425,7 @@ en:
       updated: "Protocol Type Updated!"
       new_study_warning: "Please complete Sponsor Name and Publish Study in Epic"
     studies:
-      new: "New Research Study"
+      new: "New Research Study or Project"
       information:
         header: "Study Information"
         subtext: "Necessary to obtain correct pricing"
@@ -525,6 +525,7 @@ en:
       federal_sponsor: "Select if Applicable"
       phase: "Select Study Phase(s)"
       submission_type: "Select a Submission Type"
+      approval_pending: "Select IRB Application/Approval Status"
     tooltips:
       epic: 'Defines whether record will interface to Epic EMR upon submission'
       study_type_questions: 'Information needed to determine confidentiality of patients/protocols'
@@ -547,7 +548,7 @@ en:
   not_approved_warning:
     header: "Account not Approved"
     text1: "Your account has not yet been approved for use in SPARCRequest."
-    text2: "If you believe this is incorrect, please contact the SUCCESS center at (843) 792-8300 or success@musc.edu."
+    text2: "If you believe this is incorrect, please contact the CTSI Center at  sparcrequest@childrensnational.org."
 
   #############
   # SUBSIDIES #
@@ -1179,13 +1180,13 @@ en:
     by: 'By'
     sent_protocols: 'Sent Protocols'
   footer:
-    mail_to: "hundc@musc.edu"
+    mail_to: "mskhan2@cnmc.org"
     mail_link: "Sign Up For the SPARC Request Listserv"
     mail_subject: "SPARC Request Listserv"
     link_one_text: "SPARC Request Blog"
     link_one_url: "https://sparcrequestblog.com/"
-    link_two_text: "SCTR"
-    link_two_url: "http://sctr.musc.edu"
+    link_two_text: "CTSI"
+    link_two_url: "http://www.ctsicn.org"
     link_three_text: "SPARC Request Home"
     link_three_url: "http://academicdepartments.musc.edu/sctr/sparc_request"
   identity:
@@ -1425,7 +1426,7 @@ en:
     contact_information: "Contact Information"
     delete_intro: "An Authorized User has been deleted in"
     epic_access: "Epic Access"
-    issue_contact: "Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have."
+    issue_contact: "Please contact the CTSI Center at  sparcrequest@childrensnational.org for assistance with this process or with any questions you may have."
     name: "Name:"
     p_id: "Protocol ID:"
     p_info: "Protocol Information"
@@ -1673,7 +1674,7 @@ en:
     previously_submitted_study: "The request that you are editing has been previously submitted and can not be moved to another study."
     previously_submitted_project: "The request that you are editing has been previously submitted and can not be moved to another project."
     research_project: "New Project"
-    research_study: "New Research Study"
+    research_study: "New Research Study or Project"
     select_project: "Select Project"
     select_protocol: "Select a Research Study/Project"
     select_study: "Select Study"
@@ -1693,12 +1694,12 @@ en:
     message4: "** Please Note: You may only select services applicable to ONE research study/project at a time.**"
     message5: "Welcome to SPARC Request Version 4.0. We're happy to announce that Step 2 now includes the concept of clinical trial arms. You'll find other numerous enhancements and upgrades in Version 4.0. For more information and training documents, please visit our new website at"
     # <a>http://academicdepartments.musc.edu/sparc_request/</a>.
-    message6: "Please contact the SUCCESS Center at 792-8300 with any questions or to set up a demonstration!"
+    message6: "Please contact the CTSI Center at 792-8300 with any questions or to set up a demonstration!"
     message7: "Check out our SPARC Request Blog ("
     message8: "). This feature allows you to follow our latest news and is a great way to ask questions of and leave feedback for the SPARC Request Team as well as communicate with both us and other SPARC Request Users."
-    # message7: "Due to user feedback regarding the inclusion of Indirect Costs in the Grand Total of Study Costs, Indirect Costs (as a line item) have currently been removed from SPARC Request and will be reintroduced in the budget template tools in the Study Tracker Release. Please contact the SUCCESS Center at 792-8300 with any questions."
+    # message7: "Due to user feedback regarding the inclusion of Indirect Costs in the Grand Total of Study Costs, Indirect Costs (as a line item) have currently been removed from SPARC Request and will be reintroduced in the budget template tools in the Study Tracker Release. Please contact the CTSI Center at 792-8300 with any questions."
     message9: "Website/Training: "
-    message9link: 'http://academicdepartments.musc.edu/sctr/sparc_request'
+    message9link: 'http://ctsicn.org/node/159'
     message10: "Blog: "
     message10link: 'http://www.sparcrequestblog.com'
     message11: "Pricing is consistent across locations unless otherwise stated."
@@ -1750,7 +1751,7 @@ en:
       provider: "Provider:"
       short_title: "Short Title: "
     download_button: "Download my Service Request"
-    instructions: "Thank you for submitting your service request(s) through SPARC Request. An email has been sent to each of your service providers and they should be contacting you soon. If you have any questions or concerns, please don't hesitate to contact the SUCCESS Center at 792-8300 or success@musc.edu."
+    instructions: "Thank you for submitting your service request(s) through SPARC Request. An email has been sent to each of your service providers and they should be contacting you soon. If you have any questions or concerns, please don't hesitate to contact the CTSI Center at  sparcrequest@childrensnational.org."
     portal_button: "Go to Dashboard"
     research_pricing_instructions : "You have successfully submitted a request to get a cost estimate. An email(s) has been submitted on your behalf, and we will respond to your request for a cost estimate shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
 
@@ -1889,7 +1890,7 @@ en:
   # Subsidy Page
   subsidy_page:
     additional_confirm: "Are you sure you want to leave? Any unsaved changes to this service request will be lost."
-    eligible_html: "The services selected below may be eligible for a <b><i>funding award</i></b> or subsidy to cover some or all of the costs of the services. For example, SCTR (CTSA) provides funding awards for the Research Nexus."
+    eligible_html: "The services selected below may be eligible for a <b><i>funding award</i></b> or subsidy to cover some or all of the costs of the services. For example, CTSI (CTSA) provides funding awards for the Research Nexus."
     not_eligible: "None of the services you have selected are eligible for a subsidy."
     overridden: "This request has been previously submitted and the subsidy can now only be edited by an Admin."
     request_additional: "To request additional research funding go to"
@@ -1922,7 +1923,7 @@ en:
       question_text5: "How is SPARC Request calculating my indirect costs?"
       answer_text5: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARC Request uses this data to calculate your total overall indirect costs."
       question_text6: "I\'m stuck! Who can I contact for assistance with SPARC Request?"
-      answer_text6: "The SUCCESS Center is happy to assist you! Please contact us at success@musc.edu or (843) 792-3357."
+      answer_text6: "The CTSI Center is happy to assist you! Please contact us at sparcrequest@childrensnational.org ."
 
   # User details partial
   user_details:

@@ -293,6 +293,7 @@ en:
       visit_count: "Visit Count"
     tooltips:
       lock_calendar: 'Locking the calendar will prevent users from making changes to arm, subject, and visit information.'
+      arm_info: 'The calendar has been locked by an administrator. No changes to the stucture may be made at this time.'
 
   #############
   # CONSTANTS #

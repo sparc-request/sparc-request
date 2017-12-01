@@ -34,14 +34,10 @@ class Organization < ApplicationRecord
   has_many :questionnaires, as: :questionable, dependent: :destroy
 
   has_many :super_users, :dependent => :destroy
-  has_many :identities, :through => :super_users
-
   has_many :service_providers, :dependent => :destroy
-  has_many :identities, :through => :service_providers
-
   has_many :catalog_managers, :dependent => :destroy
   has_many :clinical_providers, :dependent => :destroy
-  has_many :identities, :through => :catalog_managers
+
   has_many :services, :dependent => :destroy
   has_many :sub_service_requests, :dependent => :destroy
   has_many :protocols, through: :sub_service_requests
@@ -340,6 +336,15 @@ class Organization < ApplicationRecord
     end
 
     return all_super_users.flatten.uniq {|x| x.identity_id}
+  end
+
+  # Returns all user rights on the organization, optionally including Service Providers
+  # and Clinical Providers
+  def all_user_rights(include_service_provicers=false, include_clinical_providers=false)
+    identity_ids = self.super_users.pluck(:identity_id) + self.catalog_managers.pluck(:identity_id)
+    identity_ids += self.service_providers.pluck(:identity_id) if include_service_provicers
+    identity_ids += self.clinical_providers.pluck(:identity_id) if include_clinical_providers
+    Identity.where(id: identity_ids)
   end
 
   def setup_available_statuses

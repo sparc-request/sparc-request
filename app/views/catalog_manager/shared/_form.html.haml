@@ -49,7 +49,7 @@
         = link_to t(:catalog_manager)[:organization_form][:headers][:user_rights], '#user-rights-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
     .panel-collapse.collapse#user-rights-collapse
       .panel-body
-        Not Yet Implemented
+        = render "catalog_manager/shared/user_rights_form", organization: organization, user: @user, path: path
 
   - unless organization.type == 'Institution'
     .panel.panel-default#pricing

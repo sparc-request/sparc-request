@@ -34,4 +34,22 @@ module CatalogManager::OrganizationsHelper
   def organization_type_header organization
     content_tag(:span, organization.type, class: "text-#{organization.type.downcase}")
   end
+
+  def user_rights organization
+    include_service_providers = organization.type != 'Institution'
+    inclued_clinical_rpoviders = include_service_providers && organization.tag_list.include?("clinical work fulfillment")
+    organization.all_user_rights(include_service_providers, inclued_clinical_rpoviders)
+  end
+
+  def can_edit_historic_data?(organization, identity)
+    identity.is_catalog_manager_for?(organization) && CatalogManager.find_by(identity_id: identity.id, organization_id: organization.id).edit_historic_data
+  end
+
+  def is_primary_contact?(organization, identity)
+    identity.is_service_provider_for?(organization) && ServiceProvider.find_by(identity_id: identity.id, organization_id: organization.id).is_primary_contact
+  end
+
+  def hold_emails?(organization, identity)
+    identity.is_service_provider_for?(organization) && ServiceProvider.find_by(identity_id: identity.id, organization_id: organization.id).hold_emails
+  end
 end

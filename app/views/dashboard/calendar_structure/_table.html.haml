@@ -31,7 +31,7 @@
                 = t(:calendar_structure)[:lock_calendar]
               -else
                 = t(:calendar_structure)[:unlock_calendar]
-      %table#associated-users-table{ data: { toggle: 'table', 'show-columns' => 'true', 'show-toggle' => 'true', url: dashboard_arms_path(format: :json, protocol_id: protocol.id), striped: 'true', toolbar: '#calendar-structure-custom-toolbar' } }
+      %table#calendar-structure-table{ data: { toggle: 'table', 'show-columns' => 'true', 'show-toggle' => 'true', url: dashboard_arms_path(format: :json, protocol_id: protocol.id), striped: 'true', toolbar: '#calendar-structure-custom-toolbar' } }
         %thead.primary-header
           %tr
             %th{ data: { field: 'name', align: 'left'} }

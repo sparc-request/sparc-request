@@ -69,8 +69,6 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
                                 reject { |key| ['study_phase', 'id', 'created_at', 'updated_at', 'deleted_at', 'research_master_id', 'sub_service_requests_count', 'rmid_validated', 'locked'].include?(key) }.
                                 push('callback_url', 'sparc_id').
                                 sort
-        puts parsed_body['protocol']
-        puts expected_attributes
         expect(parsed_body['protocol'].keys.sort).to eq(expected_attributes)
       end
     end

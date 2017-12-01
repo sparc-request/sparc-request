@@ -59,6 +59,7 @@ gem 'premailer-rails'
 gem 'rack-mini-profiler'
 gem 'rails', '~> 5.1', '>= 5.1.4'
 gem 'rails-html-sanitizer'
+gem 'rails_admin', github: 'sferik/rails_admin'
 # Needed to used audited-activerecord w/ Rails 5
 gem "rails-observers", github: 'rails/rails-observers'
 gem 'redcarpet'

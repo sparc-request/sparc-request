@@ -20,7 +20,7 @@
 
 SparcRails::Application.routes.draw do
   post 'study_type/determine_study_type_note'
-  #mount RailsAdmin::Engine => '/admin', :as => 'rails_admin'
+  mount RailsAdmin::Engine => '/admin', :as => 'rails_admin'
 
   resources :services
 

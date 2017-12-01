@@ -20,7 +20,7 @@
 
 # config valid only for current version of Capistrano
 #new line
-lock "3.9.0"
+lock "3.10.0"
 
 set :application, "sparc_rails"
 set :repo_url, "git@github.com:BI-CTSICN/sparc-request.git"

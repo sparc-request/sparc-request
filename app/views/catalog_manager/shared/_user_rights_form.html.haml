@@ -1,0 +1,67 @@
+-# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+= form_for organization, url: path, id: 'organization-user-rights-form', remote: true do |f|
+  %table.table.table-condensed.table-bordered
+    %thead
+      %tr
+        %th.col-sm-3 Name, Email
+        %th.col-sm-1 Supser User
+        %th.col-sm-3 Catalog Manager
+        - unless organization.type == "Institution"
+          %th.col-sm-3 Service Provider
+          - if organization.tag_list.include?("clinical work fulfillment")
+            %th.col-sm-1 Clinical Provider
+        %th.col-sm-1.text-center Remove
+    %tbody
+      - user_rights(organization).each_with_index do |ur, index|
+        %tr
+          %td
+            = ur.full_name
+            = ur.email
+          %td
+            = f.check_box "", { class: "super-user-checkbox", checked: ur.is_super_user_for?(organization) }
+            = f.hidden_field :identity_id, value: ur.id, id: "super-user-#{ur.id}"
+          %td
+            .form-check
+              = f.check_box "", { class: "catalog-manager-checkbox", checked: ur.is_catalog_manager_for?(organization) }
+              = f.hidden_field :identity_id, value: ur.id
+            .form-check
+              = f.check_box "", { class: "cm-edit-historic-data", checked: can_edit_historic_data?(organization, ur) }
+              Can Edit Historical Data
+          - unless organization.type == "Institution"
+            %td
+              .form-check
+                = f.check_box "", { class: "service-provider-checkbox", checked: ur.is_service_provider_for?(organization) }
+                = f.hidden_field :identity_id, value: ur.id
+              .form-check  
+                = f.check_box "", { class: "service-provider-checkbox", checked: is_primary_contact?(organization, ur) }
+                Primary Contact
+              .form-check
+                = f.check_box "", { class: "service-provider-checkbox", checked: hold_emails?(organization, ur) }
+                Hold Emails
+            - if organization.tag_list.include?("clinical work fulfillment")
+              %td
+                = f.check_box "", { class: "clinical-provider-checkbox", checked: ur.is_clinical_provider_for?(organization) }
+                = f.hidden_field :identity_id, value: ur.id
+          %td.text-center
+            %button.btn.btn-xs.btn-danger
+              %span.glyphicon.glyphicon-remove
+  %input.btn.btn-primary{ type: 'submit'}

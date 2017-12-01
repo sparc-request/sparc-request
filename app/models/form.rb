@@ -24,6 +24,11 @@ class Form < Survey
     service_ids = Service.where(organization_id: org_ids).ids
     
     Form.where(surveyable_id: org_ids, surveyable_type: "Organization").
-      or(where(surveyable_id: service_ids, surveyable_type: "Service"))
+      or(where(surveyable_id: service_ids, surveyable_type: "Service")).
+      or(where(surveyable_id: identity.id, surveyable_type: "Identity"))
+  end
+
+  def self.yaml_klass
+    Form.name
   end
 end

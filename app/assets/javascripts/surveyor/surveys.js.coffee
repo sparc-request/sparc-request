@@ -26,7 +26,7 @@ $(document).ready ->
 
     $.ajax
       type: 'get'
-      url: "/surveyor/surveys/#{survey_id}"
+      url: "/surveyor/surveys/#{survey_id}/edit"
 
   $(document).on 'click', '.delete-survey', ->
     survey_id = $(this).data('survey-id')
@@ -102,10 +102,10 @@ $(document).ready ->
   $(document).on 'change', '.select-depender, .select-question-type', ->
     send_update_request($(this), $(this).val())
 
-  $(document).on 'focusout', '#survey-modal input[type="text"], #survey-modal textarea', ->
+  $(document).on 'focusout', '#survey-modal input[type="text"], #form-modal input[type="text"]:not([id$="-surveyable"]), #survey-modal textarea, #form-modal textarea', ->
     send_update_request($(this), $(this).val())
 
-  $(document).on 'change', '#survey-modal input[type="checkbox"]', ->
+  $(document).on 'change', '#survey-modal input[type="checkbox"], #form-modal input[type="checkbox"]', ->
     send_update_request($(this), $(this).prop('checked'))
 
   $(document).on 'change', '.is-dependent', ->
@@ -116,6 +116,12 @@ $(document).ready ->
       $(container).removeClass('hidden')
     else
       $(container).addClass('hidden')
+
+  ### Form-Specific Logic ###
+  $(document).on 'hide.bs.modal', '#modal_place:has(#form-modal)', (e) ->
+    if !$("#modal_place [id$='-surveyable']").data('surveyable')
+      e.preventDefault()
+      alert "Please select an association for this Form before leaving."
 
 send_update_request = (obj, val) ->
   field_data  = $(obj).attr('id').split('-')

@@ -20,8 +20,16 @@
 .panel.panel-default
   .panel-heading
     %h4.panel-title
-      = t(:surveyor)[:surveys][:form][:survey_information][:header]
+      = I18n.t("surveyor.surveys.form.survey_information.header", klass: survey.class.yaml_klass)
   .panel-body
+    .form-group
+      = label_tag "survey-#{survey.id}-title", t(:surveyor)[:surveys][:form][:survey_information][:title], class: 'col-lg-2 control-label required'
+      .col-lg-10
+        = text_field_tag "survey-#{survey.id}-title", survey.title, class: 'form-control', maxlength: 255
+    .form-group
+      = label_tag "survey-#{survey.id}-description", t(:surveyor)[:surveys][:form][:survey_information][:description], class: 'col-lg-2 control-label'
+      .col-lg-10
+        = text_area_tag "survey-#{survey.id}-description", survey.description, class: 'form-control', maxlength: 255, placeholder: I18n.t("surveyor.surveys.form.placeholders.survey.description", klass: survey.class.yaml_klass.downcase)
     .form-group
       = label_tag "survey-#{survey.id}-access_code", t(:surveyor)[:surveys][:form][:survey_information][:access_code], class: 'col-lg-2 control-label required'
       .col-lg-10
@@ -31,9 +39,14 @@
       .col-lg-10
         = text_field_tag "survey-#{survey.id}-version", survey.version, class: 'form-control', maxlength: 255
     .form-group
-      = label_tag "survey-#{survey.id}-display_order", t(:surveyor)[:surveys][:form][:survey_information][:display_order], class: 'col-lg-2 control-label required'
-      .col-lg-10
-        = select_tag "survey-#{survey.id}-display_order", display_order_options, class: 'form-control selectpicker', include_blank: t(:constants)[:prompts][:none]
+      - if survey.is_a?(Form)
+        = label_tag "survey-#{survey.id}-surveyable", t(:surveyor)[:surveys][:form][:survey_information][:surveyable], class: 'col-lg-2 control-label required'
+        .col-lg-10
+          = text_field_tag "survey-#{survey.id}-surveyable", survey.surveyable.name, class: 'form-control', data: { surveyable: "#{survey.surveyable.class}-#{survey.surveyable.id}"}, placeholder: survey.surveyable.name
+      - else
+        = label_tag "survey-#{survey.id}-display_order", t(:surveyor)[:surveys][:form][:survey_information][:display_order], class: 'col-lg-2 control-label required'
+        .col-lg-10
+          = select_tag "survey-#{survey.id}-display_order", display_order_options, class: 'form-control selectpicker', include_blank: t(:constants)[:prompts][:none]
     .form-group
       = label_tag "survey-#{survey.id}-active", t(:surveyor)[:surveys][:form][:survey_information][:active], class: 'col-lg-2 control-label'
       .col-lg-10

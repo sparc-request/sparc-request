@@ -26,7 +26,7 @@ en:
       new: "New Form"
       table:
         headers:
-          surveyable: "Organization/Service"
+          surveyable: "Association"
           title: "Title"
           access_code: "Access Code"
           version: "Version"
@@ -63,47 +63,44 @@ en:
 
     surveys:
       form:
-        header: "Live Editing Survey"
+        header: "Live Editing %{klass}"
         survey_information:
-          header: "Survey Information"
+          header: "%{klass} Information"
+          title: "Title:"
+          description: "Description:"
           access_code: "Access Code:"
           version: "Version:"
           display_order: "Display Order:"
+          surveyable: "Association:"
           active: "Active:"
         content:
-          survey:
-            title:
-              placeholder: "Survey Title (Required)"
-            description:
-              placeholder: "Survey Description (Recommended)"
           section:
             add: "Add Section"
             delete: "Delete Section"
-            title:
-              placeholder: "Section Title (Recommended)"
-            description:
-              placeholder: "Section Description (Optional)"
           question:
             add: "Add Question"
             delete: "Delete Question"
-            content:
-              placeholder: "Question (Required)"
-            description:
-              placeholder: "Question Description (Optional)"
             required: "Required:"
             dependent:
               label: "Dependent:"
               dropdown:
                 label: "Display If:"
-            zipcode:
-              placeholder: 'XXXXX'
-            phone:
-              placeholder: 'XXXXXXXXXX'
           option:
             add: "Add Option"
             delete: "Delete Option"
-            content:
-              placeholder: "Option (Required)"
+        placeholders:
+          survey:
+            description: "Describe this %{klass} (Recommended)"
+          section:
+            title: "Section Title (Required)"
+            description: "Describe this section (Optional)"
+          question:
+            content: "Question (Required)"
+            description: "Describe this question (Optional)"
+            zipcode: "XXXXX or XXXXX-XXXX"
+            phone: "XXXXXXXXXX"
+          option:
+            content: "Option (Required)"
 
     systemsurveys:
       header: "System Surveys"

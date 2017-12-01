@@ -23,13 +23,13 @@
   %hr
   .col-lg-8.no-padding
     .form-group
-      = text_field_tag "question-#{question.id}-content", question.content, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:content][:question][:content][:placeholder], maxlength: 255
+      = text_field_tag "question-#{question.id}-content", question.content, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:placeholders][:question][:content], maxlength: 255
   .col-lg-4.no-padding
     .form-group
       = select_tag "question-#{question.id}-question_type", options_for_select(ADDITIONAL_DETAIL_QUESTION_TYPES, question.question_type), class: 'selectpicker select-question-type pull-right', data: { question_id: question.id }
 
   .form-group
-    = text_area_tag "question-#{question.id}-description", question.description, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:content][:question][:description][:placeholder]
+    = text_area_tag "question-#{question.id}-description", question.description, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:placeholders][:question][:description]
 
   .form-group
     = label_tag "question-#{question.id}-required", t(:surveyor)[:surveys][:form][:content][:question][:required], class: 'col-sm-1 control-label no-padding-x text-left'

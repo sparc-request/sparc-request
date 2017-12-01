@@ -19,4 +19,12 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class SystemSurvey < Survey
+
+  acts_as_list column: :display_order, scope: [:type]
+
+  validates :display_order, numericality: { only_integer: true }, allow_blank: false
+
+  def self.yaml_klass
+    "Survey"
+  end
 end

@@ -32,9 +32,10 @@ SparcRails::Application.routes.draw do
   end
 
   namespace :surveyor do
-    resources :surveys, only: [:index, :show, :create, :destroy] do
+    resources :surveys, only: [:index, :edit, :create, :destroy] do
       get :preview
       get :update_dependents_list
+      get :search_surveyables
     end
     resources :sections, only: [:create, :destroy]
     resources :questions, only: [:create, :destroy]

@@ -291,7 +291,8 @@ class Identity < ApplicationRecord
   ###############################################################################
 
   def authorized_admin_organizations
-    # returns organizations for which user is service provider or super user
+    # Returns the organizations for which the user has Super User or Service Provider
+    # privileges, plus all of their child organizations
     Organization.authorized_for_identity(self.id)
   end
 

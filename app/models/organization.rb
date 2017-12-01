@@ -55,11 +55,16 @@ class Organization < ApplicationRecord
 
   after_create :create_editable_statuses
 
-  # TODO: In rails 5, the .or operator will be added for ActiveRecord queries. We should try to
-  #       condense this to a single query at that point
   scope :authorized_for_identity, -> (identity_id) {
-    orgs = includes(:super_users, :service_providers).where("super_users.identity_id = ? or service_providers.identity_id = ?", identity_id, identity_id).references(:super_users, :service_providers).distinct(:organizations)
-    where(id: orgs + Organization.authorized_child_organizations(orgs.map(&:id))).distinct
+    where(
+      id: Organization.authorized_child_organization_ids(
+        includes(:super_users, :service_providers).
+        where("super_users.identity_id = ? or service_providers.identity_id = ?", identity_id, identity_id).
+        references(:super_users, :service_providers).
+        distinct(:organizations).ids
+      ),
+      is_available: true
+    )
   }
 
   scope :in_cwf, -> { joins(:tags).where(tags: { name: 'clinical work fulfillment' }) }
@@ -406,13 +411,12 @@ class Organization < ApplicationRecord
     end
   end
 
-  def self.authorized_child_organizations(org_ids)
-    org_ids = org_ids.flatten.compact
-    if org_ids.empty?
+  def self.authorized_child_organization_ids(org_ids)
+    child_ids = Organization.where(parent_id: org_ids).ids
+    if child_ids.empty?
       []
     else
-      orgs = Organization.where(parent_id: org_ids)
-      orgs | authorized_child_organizations(orgs.pluck(:id))
+      org_ids + self.authorized_child_organization_ids(child_ids)
     end
   end
 end

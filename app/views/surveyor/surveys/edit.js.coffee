@@ -20,4 +20,50 @@
 $('#modal_place').html("<%= j render 'surveyor/surveys/form/survey_form', survey: @survey, modal_title: @modal_title %>")
 $('#modal_place').modal('show')
 $('.selectpicker').selectpicker()
+
+<% if @survey.type == "Form" %>
+$('.form-table').bootstrapTable('refresh')
+<% else %>
 $('.survey-table').bootstrapTable('refresh')
+<% end %>
+
+surveyable_bloodhound = new Bloodhound(
+  datumTokenizer: (datum) ->
+    Bloodhound.tokenizers.whitespace datum.value
+  queryTokenizer: Bloodhound.tokenizers.whitespace
+  remote:
+    url: "/surveyor/surveys/<%= @survey.id %>/search_surveyables?term=%QUERY",
+    wildcard: '%QUERY'
+)
+surveyable_bloodhound.initialize() # Initialize the Bloodhound suggestion engine
+$("#modal_place [id$='-surveyable']").typeahead(
+  {
+    minLength: 3
+    hint: false
+    highlight: true
+  }
+  {
+    displayKey: 'label'
+    source: surveyable_bloodhound,
+    limit: 100,
+    templates: {
+      suggestion: Handlebars.compile('<button class="text-left"
+                                        <span><strong>{{parents}}</strong></span><br>
+                                        <span><strong>{{klass}}: {{label}}</strong></span><br>
+                                        <span><strong>Abbreviation: {{abbreviation}}</strong></span>
+                                      </button>')
+      notFound: '<div class="tt-suggestion">No Results</div>'
+    }
+  }
+).on('typeahead:select', (event, suggestion) ->
+  $(this).data('surveyable', "#{suggestion.klass}-#{suggestion.value}")
+  
+  $.ajax
+    type: 'put'
+    url: "/surveyor/survey_updater/#{$(this).attr('id').split('-')[1]}.js"
+    data:
+      klass: "survey"
+      survey:
+        surveyable_id: suggestion.value
+        surveyable_type: suggestion.klass
+)

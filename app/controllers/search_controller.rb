@@ -28,7 +28,7 @@ class SearchController < ApplicationController
                           sub_service_requests.
                           reject{ |ssr| !ssr.is_locked? }.
                           map(&:organization_id)
-    locked_child_ids  = Organization.authorized_child_organizations(locked_org_ids).map(&:id)
+    locked_child_ids  = Organization.authorized_child_organization_ids(locked_org_ids)
 
     results = Service.
                 where("(name LIKE ? OR abbreviation LIKE ? OR cpt_code LIKE ?) AND is_available = 1", "%#{term}%", "%#{term}%", "%#{term}%").

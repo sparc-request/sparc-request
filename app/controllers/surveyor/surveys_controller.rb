@@ -39,7 +39,7 @@ class Surveyor::SurveysController < Surveyor::BaseController
     end
   end
 
-  def show
+  def edit
     @survey = Survey.eager_load(sections: { questions: :options }).find(params[:id])
 
     respond_to do |format|
@@ -48,16 +48,17 @@ class Surveyor::SurveysController < Surveyor::BaseController
   end
 
   def create
+    klass = params[:type].constantize.yaml_klass
     @survey = Survey.create(
                 type: params[:type],
-                title: "Untitled Survey",
-                access_code: "untitled-survey",
-                version: (Survey.where(access_code: "untitled-survey").order(:version).last.try(:version) || 0) + 1,
-                active: true,
+                title: "Untitled #{klass}",
+                access_code: "untitled-#{klass.downcase}",
+                version: (Survey.where(access_code: "untitled-#{klass.downcase}").order(:version).last.try(:version) || 0) + 1,
+                active: false,
                 display_order: (Survey.all.order(:display_order).last.try(:display_order) || 0) + 1
               )
 
-    redirect_to surveyor_survey_path(@survey), format: :js
+    redirect_to edit_surveyor_survey_path(@survey), format: :js
   end
 
   def destroy
@@ -88,5 +89,24 @@ class Surveyor::SurveysController < Surveyor::BaseController
     end
   end
 
+  def search_surveyables
+    term = params[:term].strip
+    orgs = current_user.authorized_admin_organizations
+    services = Service.where(organization: orgs)
 
+    org_results = Organization.where("(name LIKE ? OR abbreviation LIKE ?) AND is_available = 1", "%#{term}%", "%#{term}%")
+    service_results = Service.where("(name LIKE ? OR abbreviation LIKE ? OR cpt_code LIKE ?) AND is_available = 1", "%#{term}%", "%#{term}%", "%#{term}%").reject{ |s| (s.current_pricing_map rescue false) == false}
+    results = org_results + service_results
+    results.map!{ |r|
+      {
+        parents:        r.parents.map(&:abbreviation).join(' | '),
+        klass:          r.class.name,
+        label:          r.name,
+        value:          r.id,
+        abbreviation:   r.abbreviation
+      }
+    }
+
+    render json: results.to_json
+  end
 end

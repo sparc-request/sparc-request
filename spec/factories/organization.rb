@@ -99,6 +99,11 @@ FactoryGirl.define do
       end
     end
 
+    after(:create) do |organization, evaluator|
+      organization.available_statuses.where(status: ['draft', 'submitted', 'get_a_cost_estimate']).update_all(selected: true)
+      organization.editable_statuses.where(status: ['draft', 'submitted', 'get_a_cost_estimate']).update_all(selected: true)
+    end
+
     factory :organization_with_process_ssrs, traits: [:process_ssrs, :with_pricing_setup]
     factory :organization_ctrc, traits: [:ctrc]
     factory :organization_without_validations, traits: [:without_validations]

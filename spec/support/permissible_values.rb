@@ -28,6 +28,7 @@ def populate_permissible_values_before_suite
     build_potential_funding_sources
     build_user_credentials
     build_document_types
+    build_funding_statuses
   end
 end
 
@@ -135,4 +136,10 @@ def build_document_types
   PermissibleValue.create(category: 'document_type', key: 'ocr_approval', value: 'OCR Approval')
   PermissibleValue.create(category: 'document_type', key: 'protocol', value: 'Protocol')
   PermissibleValue.create(category: 'document_type', key: 'other', value: 'Other')
+end
+
+
+def build_funding_statuses
+  PermissibleValue.create(category: 'funding_status', key: 'pending_funding', value: 'Pending Funding')
+  PermissibleValue.create(category: 'funding_status', key: 'funded', value: 'Funded')
 end

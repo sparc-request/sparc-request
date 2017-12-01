@@ -19,4 +19,17 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 # Allow pagination of arrays.
-require 'will_paginate/array'
+#require 'will_paginate/array'
+if defined?(WillPaginate)
+  module WillPaginate
+    module ActiveRecord
+      module RelationMethods
+        def per(value = nil) per_page(value) end
+        def total_count() count end
+      end
+    end
+    module CollectionMethods
+      alias_method :num_pages, :total_pages
+    end
+  end
+end

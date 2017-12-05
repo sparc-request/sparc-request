@@ -60,6 +60,8 @@ $(document).ready ->
     $.ajax
       type: 'PUT'
       url: "/dashboard/sub_service_requests/#{sub_service_request_id}/push_to_epic"
+      error: (xhr, ajaxOptions, thrownError) ->
+        swal('Error', 'This protocol has failed to be sent to Epic because of failed validation. Please make sure the service calendar is intact before trying again.', 'error')
 
   $(document).on 'click', '#resend-surveys-button', ->
     $(this).prop('disabled', true)

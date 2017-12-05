@@ -394,6 +394,7 @@ en:
     edit: "Edit %{protocol_type} Information"
     created: "%{protocol_type} Created!"
     updated: "%{protocol_type} Updated!"
+    help_text: "Please remove the special character in the %{title} field and try again"
     summary:
       header: "%{protocol_type} Summary"
       archive: "Archive"

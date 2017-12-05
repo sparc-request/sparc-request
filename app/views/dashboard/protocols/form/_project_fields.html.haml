@@ -30,6 +30,8 @@
         title: t(:protocols)[:tooltips][:short_title]
       .col-lg-10
         = form.text_field :short_title, class: 'form-control'
+        %span.help-block.hide
+          = t('protocols.help_text', title: "Short Title")
 
     .form-group.row
       = form.label :title,
@@ -39,6 +41,8 @@
         title: t(:protocols)[:tooltips][:title]
       .col-lg-10
         = form.text_field :title, class: 'form-control'
+        %span.help-block.hide
+          = t('protocols.help_text', title: "Project Title")
 
     .form-group.row#funding-status
       = form.label :funding_status,

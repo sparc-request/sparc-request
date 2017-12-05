@@ -84,6 +84,13 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   end
 
   def update
+    if params[:check_sr_calendar] == 'true'
+      sr = @sub_service_request.service_request
+      sr.validate_service_calendar
+      if sr.errors[:base].length > 0
+        raise 'error'
+      end
+    end
     if @sub_service_request.update_attributes(sub_service_request_params)
       @sub_service_request.distribute_surveys if (@sub_service_request.status == 'complete' && sub_service_request_params[:status].present?)
       flash[:success] = 'Request Updated!'

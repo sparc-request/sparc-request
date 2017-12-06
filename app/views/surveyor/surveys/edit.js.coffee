@@ -43,14 +43,20 @@ $("#modal_place [id$='-surveyable']").typeahead(
     highlight: true
   }
   {
-    displayKey: 'label'
+    displayKey: 'term'
     source: surveyable_bloodhound,
     limit: 100,
     templates: {
-      suggestion: Handlebars.compile('<button class="text-left"
-                                        <span><strong>{{parents}}</strong></span><br>
+      suggestion: Handlebars.compile('<button class="text-left">
+                                        {{#if parents}}
+                                          <strong>{{{parents}}}</strong><br>
+                                        {{/if}}
                                         <span><strong>{{klass}}: {{label}}</strong></span><br>
                                         <span><strong>Abbreviation: {{abbreviation}}</strong></span>
+                                        {{#if cpt_code}}
+                                          <br>
+                                          <span><strong>CPT Code: {{cpt_code}}</strong></span>
+                                        {{/if}}
                                       </button>')
       notFound: '<div class="tt-suggestion">No Results</div>'
     }

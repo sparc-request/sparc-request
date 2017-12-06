@@ -99,11 +99,13 @@ class Surveyor::SurveysController < Surveyor::BaseController
     results = org_results + service_results
     results.map!{ |r|
       {
-        parents:        r.parents.map(&:abbreviation).join(' | '),
+        parents:        r.organization_hierarchy(false, false, true),
         klass:          r.class.name,
         label:          r.name,
         value:          r.id,
-        abbreviation:   r.abbreviation
+        abbreviation:   r.abbreviation,
+        cpt_code:       r.try(:cpt_code),
+        term:           term
       }
     }
 

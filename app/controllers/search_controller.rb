@@ -41,16 +41,13 @@ class SearchController < ApplicationController
 
     results.map! { |s|
       {
-        institution:    s.institution.name,
-        inst_css_class: s.institution.css_class + '-text', 
-        parents:        ' | ' + s.parents.reject{ |p| p.type == 'Institution' }.map(&:abbreviation).join(' | '),
+        parents:        s.organization_hierarchy(false, false, true),
         label:          s.name,
         value:          s.id,
         description:    (s.description.nil? || s.description.blank?) ? t(:proper)[:catalog][:no_description] : s.description,
-        sr_id:          @service_request.id,
         abbreviation:   s.abbreviation,
         cpt_code:       s.cpt_code,
-        term:           params[:term]
+        term:           term
       }
     }
 

@@ -100,6 +100,25 @@ class Organization < ApplicationRecord
     end
   end
 
+  # Organization A, which belongs to
+  # Organization B, which belongs to Organization C, return "C > B > A".
+  # This "hierarchy" stops at a process_ssrs Organization.
+  def organization_hierarchy(include_self=false, process_ssrs=true, use_css=false)
+    parent_orgs = self.parents
+
+    if process_ssrs
+      root = parent_orgs.find_index { |org| org.process_ssrs? } || (parent_orgs.length - 1)
+    else
+      root = parent_orgs.length - 1
+    end
+
+    if use_css
+      parent_orgs[0..root].map{ |o| "<span class='#{o.css_class}-text'>#{o.abbreviation}</span>"}.reverse.join('<span> > </span>') + (include_self ? '<span> > </span>' + "<span class='#{self.css_class}-text'>#{self.abbreviation}</span>" : '')
+    else
+      parent_orgs[0..root].map(&:abbreviation).reverse.join(' > ') + (include_self ? ' > ' + self.abbreviation : '')
+    end
+  end
+
   #TODO SubServiceRequest.where(organization: self.all_child_organizations).each(:&update_org_tree)
   def update_ssr_org_name
     SubServiceRequest.where( organization: self.all_child_organizations<<self ).each(&:update_org_tree)
@@ -414,7 +433,7 @@ class Organization < ApplicationRecord
   def self.authorized_child_organization_ids(org_ids)
     child_ids = Organization.where(parent_id: org_ids).ids
     if child_ids.empty?
-      []
+      org_ids
     else
       org_ids + self.authorized_child_organization_ids(child_ids)
     end

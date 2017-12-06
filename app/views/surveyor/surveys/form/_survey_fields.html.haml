@@ -42,7 +42,7 @@
       - if survey.is_a?(Form)
         = label_tag "survey-#{survey.id}-surveyable", t(:surveyor)[:surveys][:form][:survey_information][:surveyable], class: 'col-lg-2 control-label required'
         .col-lg-10
-          = text_field_tag "survey-#{survey.id}-surveyable", survey.surveyable.name, class: 'form-control', data: { surveyable: "#{survey.surveyable.class}-#{survey.surveyable.id}"}, placeholder: survey.surveyable.name
+          = text_field_tag "survey-#{survey.id}-surveyable", survey.surveyable.try(:name), class: 'form-control', data: { surveyable: survey.surveyable ? "#{survey.surveyable.class}-#{survey.surveyable.id}" : "" }, placeholder: survey.surveyable.try(:name)
       - else
         = label_tag "survey-#{survey.id}-display_order", t(:surveyor)[:surveys][:form][:survey_information][:display_order], class: 'col-lg-2 control-label required'
         .col-lg-10

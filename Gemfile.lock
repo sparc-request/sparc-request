@@ -25,6 +25,17 @@ GIT
   specs:
     grouped_validations (0.3.3)
 
+GIT
+  remote: https://github.com/randym/axlsx
+  revision: c8ac844572b25fda358cc01d2104720c4c42f450
+  branch: master
+  specs:
+    axlsx (2.1.0.pre)
+      htmlentities (~> 4.3.4)
+      mimemagic (~> 0.3)
+      nokogiri (>= 1.6.6)
+      rubyzip (>= 1.2.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -92,10 +103,6 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
-    axlsx (2.0.1)
-      htmlentities (~> 4.3.1)
-      nokogiri (>= 1.4.1)
-      rubyzip (~> 1.0.0)
     axlsx_rails (0.5.1)
       actionpack (>= 3.1)
       axlsx (>= 2.0.1)
@@ -439,7 +446,7 @@ GEM
     ruby-graphviz (1.2.3)
     ruby-prof (0.16.2)
     ruby-rc4 (0.1.5)
-    rubyzip (1.0.0)
+    rubyzip (1.2.1)
     safe_yaml (1.0.4)
     sass (3.5.1)
       sass-listen (~> 4.0.0)
@@ -552,7 +559,7 @@ DEPENDENCIES
   acts_as_list!
   addressable (~> 2.3.6)
   audited (~> 4.3)
-  axlsx
+  axlsx!
   axlsx_rails
   bluecloth
   bootstrap-sass
@@ -631,6 +638,7 @@ DEPENDENCIES
   rspec-html-matchers
   rspec-rails (~> 3.4)
   ruby-prof
+  rubyzip (>= 1.2.1)
   sass
   sass-rails
   savon (~> 2.2.0)

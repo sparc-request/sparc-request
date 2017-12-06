@@ -94,7 +94,7 @@ class Surveyor::SurveysController < Surveyor::BaseController
     orgs = current_user.authorized_admin_organizations
     services = Service.where(organization: orgs)
 
-    org_results = Organization.where("(name LIKE ? OR abbreviation LIKE ?) AND is_available = 1", "%#{term}%", "%#{term}%")
+    org_results = Organization.where("(name LIKE ? OR abbreviation LIKE ?) AND is_available = 1 AND process_ssrs = 1", "%#{term}%", "%#{term}%")
     service_results = Service.where("(name LIKE ? OR abbreviation LIKE ? OR cpt_code LIKE ?) AND is_available = 1", "%#{term}%", "%#{term}%", "%#{term}%").reject{ |s| (s.current_pricing_map rescue false) == false}
     results = org_results + service_results
     results.map!{ |r|

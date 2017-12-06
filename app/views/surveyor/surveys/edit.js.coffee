@@ -51,7 +51,9 @@ $("#modal_place [id$='-surveyable']").typeahead(
                                         {{#if parents}}
                                           <strong>{{{parents}}}</strong><br>
                                         {{/if}}
-                                        <span><strong>{{klass}}: {{label}}</strong></span><br>
+                                        {{#if is_service}}
+                                          <span><strong>{{klass}}: {{label}}</strong></span><br>
+                                        {{/if}}
                                         <span><strong>Abbreviation: {{abbreviation}}</strong></span>
                                         {{#if cpt_code}}
                                           <br>

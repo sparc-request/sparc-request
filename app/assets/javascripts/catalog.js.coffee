@@ -85,7 +85,9 @@ $(document).ready ->
                                           <strong>{{{parents}}}</strong><br>
                                           <span><strong>Service: {{label}}</strong></span><br>
                                           <span><strong>Abbreviation: {{abbreviation}}</strong></span><br>
-                                          <span><strong>CPT Code: {{cpt_code}}</strong></span>
+                                          {{#if cpt_code}}
+                                            <span><strong>CPT Code: {{cpt_code}}</strong></span>
+                                          {{/if}}
                                         </button>')
         notFound: '<div class="tt-suggestion">No Results</div>'
       }

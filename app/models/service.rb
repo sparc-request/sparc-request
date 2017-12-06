@@ -94,7 +94,7 @@ class Service < ApplicationRecord
     end
 
     if use_css
-      parent_orgs[0..root].map{ |o| "<span class='#{o.css_class}-text'>#{o.abbreviation}</span>"}.reverse.join('<span> > </span>') + (include_self ? '<span> > </span>' + "<span>#{self.abbreviation}</span>" : '')
+      parent_orgs[0..root].map{ |o| "<span class='#{o.css_class}-text'>#{o.abbreviation}</span>"}.reverse.join('<span> / </span>') + (include_self ? '<span> / </span>' + "<span>#{self.abbreviation}</span>" : '')
     else
       parent_orgs[0..root].map(&:abbreviation).reverse.join(' > ') + (include_self ? ' > ' + self.abbreviation : '')
     end

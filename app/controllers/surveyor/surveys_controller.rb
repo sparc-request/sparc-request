@@ -91,16 +91,17 @@ class Surveyor::SurveysController < Surveyor::BaseController
 
   def search_surveyables
     term = params[:term].strip
-    orgs = current_user.authorized_admin_organizations
-    services = Service.where(organization: orgs)
+    org_ids = current_user.authorized_admin_organizations.ids
+    service_ids = Service.where(organization_id: org_ids).ids
 
-    org_results = Organization.where("(name LIKE ? OR abbreviation LIKE ?) AND is_available = 1 AND process_ssrs = 1", "%#{term}%", "%#{term}%")
-    service_results = Service.where("(name LIKE ? OR abbreviation LIKE ? OR cpt_code LIKE ?) AND is_available = 1", "%#{term}%", "%#{term}%", "%#{term}%").reject{ |s| (s.current_pricing_map rescue false) == false}
+    org_results = Organization.where("(name LIKE ? OR abbreviation LIKE ?) AND is_available = 1 AND process_ssrs = 1 AND id IN (?)", "%#{term}%", "%#{term}%", org_ids)
+    service_results = Service.where("(name LIKE ? OR abbreviation LIKE ? OR cpt_code LIKE ?) AND is_available = 1 AND id IN (?)", "%#{term}%", "%#{term}%", "%#{term}%", service_ids).reject{ |s| (s.current_pricing_map rescue false) == false}
     results = org_results + service_results
     results.map!{ |r|
       {
-        parents:        r.organization_hierarchy(false, false, true),
+        parents:        r.is_a?(Service) ? r.organization_hierarchy(false, false, true) : r.organization_hierarchy(true, false, true),
         klass:          r.class.name,
+        is_service:     r.is_a?(Service),
         label:          r.name,
         value:          r.id,
         abbreviation:   r.abbreviation,

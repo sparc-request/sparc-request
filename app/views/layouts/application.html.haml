@@ -58,6 +58,6 @@
         = yield
   %footer
     = render 'layouts/footer'
-    = render 'shared/piwik_tracking' if Rails.env == 'production'
+    = render 'shared/analytics' if Rails.env == 'production'
     = render 'shared/ie7_modal'
     = render 'shared/modal'

@@ -31,7 +31,7 @@ FactoryGirl.define do
 
     trait :ctrc do
       after(:create) do |organization, evaluator|
-        organization.tag_list = "ctrc_clinical_services"
+        organization.tag_list = "ctrc"
 
         organization.save
       end

@@ -427,8 +427,8 @@ wb.add_worksheet(name: "Review") do |sheet|
 #  end
 
   merge_sub_header_rows.each do |services_sub_header_rows|
-    services_sub_header_rows.each do |sshr|
-      sheet.merge_cells("A#{sshr.index+1}:#{end_column}#{sshr.index+1}") #selected services sub header row
+    services_sub_header_rows.each_with_index do |sshr, index|
+      sheet.merge_cells("A#{index+1}:#{end_column}#{index+1}") #selected services sub header row
     end
   end
 

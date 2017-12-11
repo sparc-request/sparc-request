@@ -283,6 +283,18 @@ en:
       visit_day: 'Day the anticipated visit occurs (incremental)'
       visit_name: 'Name of the visit'
 
+  calendar_structure:
+    header: "Calendar Structure"
+    lock_calendar: "Lock Calendar"
+    unlock_calendar: "Unlock Calendar"
+    table_fields:
+      arm_name: "Arm Name"
+      subject_count: "Subject Count"
+      visit_count: "Visit Count"
+    tooltips:
+      lock_calendar: 'Locking the calendar will prevent users from making changes to arm, subject, and visit information.'
+      arm_info: 'The calendar has been locked by an administrator. No changes to the stucture may be made at this time.'
+
   #############
   # CONSTANTS #
   #############

@@ -31,7 +31,7 @@
       .panel-heading.institution-header.clicked{ class: [i.css_class, locked ? 'bg-danger text-danger' : ''], data: { id: i.id, process_ssr_found: institution_is_process_ssr.to_s, toggle: 'collapse', target: ".institution-#{i.id}", parent: '#institution-accordion' } }
         .row
           .col-lg-10
-            %h4.panel-title.text-center
+            %h4.panel-title.text-left
               = organization_name_display(i, locked)
           .col-lg-2
             - if i.all_child_organizations.any?

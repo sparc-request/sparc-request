@@ -48,7 +48,7 @@
         title: t(:protocols)[:tooltips][:funding_status]
       .col-lg-10
         = form.select :funding_status,
-          options_for_select(FUNDING_STATUSES, protocol.funding_status),
+          options_for_select(PermissibleValue.get_inverted_hash('funding_status'), protocol.funding_status),
           { include_blank: t(:protocols)[:prompts][:status] },
           class: 'selectpicker project'
 

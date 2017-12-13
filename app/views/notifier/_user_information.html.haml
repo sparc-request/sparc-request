@@ -33,7 +33,7 @@
     - @protocol.project_roles.each do |pr|
       %tr.skinny-black-border
         %td.skinny-black-border.center= pr.identity.full_name
-        %td.skinny-black-border.center= pr.identity.email 
+        %td.skinny-black-border.center= pr.identity.email
         %td.skinny-black-border.center= pr.role.titleize
         - if @protocol.selected_for_epic
           %td.skinny-black-border.center= pr.epic_access == true ? "Yes" : "No"

@@ -22,6 +22,7 @@ class Subsidy < ApplicationRecord
   audited
 
   belongs_to :sub_service_request
+  belongs_to :identity, foreign_key: 'approved_by'
   has_many :notes, as: :notable
 
   delegate :organization, :direct_cost_total, to: :sub_service_request, allow_nil: true

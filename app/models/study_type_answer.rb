@@ -20,4 +20,5 @@
 
 class StudyTypeAnswer < ApplicationRecord
   belongs_to :study_type_question
+  belongs_to :protocol
 end

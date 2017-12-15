@@ -153,14 +153,13 @@ class ServiceRequestsController < ApplicationController
     @display_all_services = true
 
     should_push_to_epic = @sub_service_request ? @sub_service_request.should_push_to_epic? : @service_request.should_push_to_epic?
-
     if should_push_to_epic && Setting.find_by_key("use_epic").value && @protocol.selected_for_epic
       # Send a notification to Lane et al to create users in Epic.  Once
       # that has been done, one of them will click a link which calls
       # approve_epic_rights.
       @protocol.ensure_epic_user
       if Setting.find_by_key("queue_epic").value
-        EpicQueue.create(protocol_id: @protocol.id, identity_id: current_user.id) unless EpicQueue.where(protocol_id: @protocol.id).size == 1
+        EpicQueue.create(protocol_id: @protocol.id, identity_id: current_user.id) if should_queue_epic?(@protocol)
       else
         @protocol.awaiting_approval_for_epic_push
         send_epic_notification_for_user_approval(@protocol)
@@ -442,5 +441,15 @@ class ServiceRequestsController < ApplicationController
 
   def set_highlighted_link
     @highlighted_link ||= 'sparc_request'
+  end
+
+  def should_queue_epic?(protocol)
+    queues = EpicQueue.where(protocol_id: protocol.id)
+    if (queues.size == 1)
+      queues.first.update_attributes(user_change: false)
+      return false
+    else
+      return true
+    end
   end
 end

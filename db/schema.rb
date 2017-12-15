@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171128135720) do
+ActiveRecord::Schema.define(version: 20171206151250) do
 
   create_table "admin_rates", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer "line_item_id"
@@ -99,6 +99,7 @@ ActiveRecord::Schema.define(version: 20171128135720) do
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "selected", default: false
     t.index ["organization_id"], name: "index_available_statuses_on_organization_id"
   end
 
@@ -180,6 +181,7 @@ ActiveRecord::Schema.define(version: 20171128135720) do
     t.string "status", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "selected", default: false
     t.index ["organization_id"], name: "index_editable_statuses_on_organization_id"
   end
 
@@ -739,7 +741,6 @@ ActiveRecord::Schema.define(version: 20171128135720) do
   create_table "service_providers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "identity_id"
     t.integer "organization_id"
-    t.integer "service_id"
     t.boolean "is_primary_contact"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -747,7 +748,6 @@ ActiveRecord::Schema.define(version: 20171128135720) do
     t.datetime "deleted_at"
     t.index ["identity_id"], name: "index_service_providers_on_identity_id"
     t.index ["organization_id"], name: "index_service_providers_on_organization_id"
-    t.index ["service_id"], name: "index_service_providers_on_service_id"
   end
 
   create_table "service_relations", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|

@@ -60,9 +60,9 @@ class ChangeIdsFromIntToBigint < ActiveRecord::Migration[5.1]
     tables = ActiveRecord::Base.connection.tables
     models = ActiveRecord::Base.descendants
     db_habtms = models.map{ |model| model.reflect_on_all_associations(:has_and_belongs_to_many) }.compact.flatten.map{ |reflection| reflection.join_table }.uniq
-    db_models = (models - [Document]).group_by(&:table_name).slice(*tables).except(*db_habtms)
+    db_models = models.group_by(&:table_name).slice(*tables).except(*db_habtms)
     db_models.each{ |table_name, models| db_models[table_name] = models.first }
-    return db_models.except, db_habtms
+    return db_models.except("documents"), db_habtms
   end
 
   def get_references model

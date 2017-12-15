@@ -2,7 +2,7 @@ class ChangeIdsFromIntToBigint < ActiveRecord::Migration[5.1]
   def change
 
     db_models, db_habtms = map_models_to_tablenames
-    non_ar_tables = (ActiveRecord::Base.connection.tables - db_models.keys - db_habtms)
+    non_ar_tables = (ActiveRecord::Base.connection.tables - db_models.keys - db_habtms - "documents")
     references = Hash.new{ |h, k| h[k] = [] }
     foreign_keys = Hash.new{ |h, k| h[k] = [] }
     ActiveRecord::Base.transaction do
@@ -12,10 +12,6 @@ class ChangeIdsFromIntToBigint < ActiveRecord::Migration[5.1]
         foreign_keys[table_name] = fks if fks.present?
         references[table_name] = get_references(model) unless get_references(model).empty?
       end
-
-      puts "*" * 100
-      puts references["documents"]
-      puts "*" * 100
 
       foreign_keys.each do |table_name, fks|
         fks.each do |foreign_key|

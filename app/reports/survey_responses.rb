@@ -40,7 +40,7 @@ class SurveyResponseReport < ReportingModule
   def column_attrs
     attrs = {}
 
-    attrs["SSR ID"] = "sub_service_request.try(:display_id)"
+    attrs["SRID"] = "sub_service_request.try(:display_id)"
     attrs["User ID"] = :identity_id
     attrs["User Name"] = "identity.try(:full_name)"
     attrs["Submitted Date"] = "created_at.try(:strftime, \"%D\")"

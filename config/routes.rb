@@ -232,7 +232,7 @@ SparcRails::Application.routes.draw do
 
     resources :approvals, only: [:new, :create]
 
-    resources :arms, only: [:new, :create, :update, :destroy] do
+    resources :arms, only: [:new, :create, :update, :destroy, :index] do
       collection do
         get :navigate
       end

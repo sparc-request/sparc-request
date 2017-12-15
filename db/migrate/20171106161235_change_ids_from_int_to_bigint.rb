@@ -7,7 +7,7 @@ class ChangeIdsFromIntToBigint < ActiveRecord::Migration[5.1]
     foreign_keys = Hash.new{ |h, k| h[k] = [] }
     ActiveRecord::Base.transaction do
 
-      db_models.each do |table_name, model|
+      db_models.except("documents").each do |table_name, model|
         fks = foreign_keys(table_name)
         foreign_keys[table_name] = fks if fks.present?
         references[table_name] = get_references(model) unless get_references(model).empty?
@@ -63,7 +63,7 @@ class ChangeIdsFromIntToBigint < ActiveRecord::Migration[5.1]
     db_habtms = models.map{ |model| model.reflect_on_all_associations(:has_and_belongs_to_many) }.compact.flatten.map{ |reflection| reflection.join_table }.uniq
     db_models = models.group_by(&:table_name).slice(*tables).except(*db_habtms)
     db_models.each{ |table_name, models| db_models[table_name] = models.first }
-    return db_models.except("documents"), db_habtms
+    return db_models, db_habtms
   end
 
   def get_references model

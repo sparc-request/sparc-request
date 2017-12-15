@@ -20,11 +20,12 @@ class ChangeIdsFromIntToBigint < ActiveRecord::Migration[5.1]
       end
 
       db_models.each do |table_name, model|
-        change_table(table_name) do |t|
-          t.change model.primary_key, :bigint if column_is_integer? model, model.primary_key
-          references[table_name].each do |column_name|
-            t.change column_name, :bigint if column_is_integer? model, column_name
-          end
+        change_column table_name, model.primary_key, :bigint, auto_increment: true if column_is_integer? model, model.primary_key
+      end
+
+      references.each do |table_name, references|
+        references.each do |column_name|
+          change_column table_name, column_name, :bigint
         end
       end
 
@@ -67,7 +68,7 @@ class ChangeIdsFromIntToBigint < ActiveRecord::Migration[5.1]
 
   def get_references model
     bt_associations = model.reflect_on_all_associations.select do |association| 
-      association.foreign_key.present? && model.columns_hash[association.foreign_key.to_s].present?
+      association.foreign_key.present? && model.columns_hash[association.foreign_key.to_s].present? && column_is_integer?(model, association.foreign_key.to_s)
     end
     bt_associations.map{ |association| association.foreign_key.to_s }
   end

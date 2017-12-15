@@ -13,6 +13,10 @@ class ChangeIdsFromIntToBigint < ActiveRecord::Migration[5.1]
         references[table_name] = get_references(model) unless get_references(model).empty?
       end
 
+      puts "*" * 100
+      puts references["documents"]
+      puts "*" * 100
+
       foreign_keys.each do |table_name, fks|
         fks.each do |foreign_key|
           remove_foreign_key table_name, name: foreign_key.name

@@ -27,7 +27,7 @@ RSpec.describe 'User activates a survey', js: true do
   stub_config("site_admins", ["jug2"])
   
   before :each do
-    @survey = create(:survey)
+    @survey = create(:system_survey)
 
     visit surveyor_surveys_path
     wait_for_javascript_to_finish

@@ -57,10 +57,13 @@ module Surveyor::SurveysHelper
   end
 
   def activate_survey_button(survey)
-    text = survey.active? ? t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:disable] : t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:activate]
-    klass = survey.active? ? 'btn-danger activate-survey' : 'btn-success disable-survey'
-    
-    link_to text, surveyor_survey_updater_path(survey, klass: 'survey', survey: { active: !survey.active }), method: :patch, remote: true, class: ['btn', klass]
+    link_to(
+      survey.active? ? t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:disable] : t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:activate],
+      surveyor_survey_updater_path(survey, klass: 'survey', survey: { active: !survey.active }),
+      method: :patch,
+      remote: true,
+      class: survey.active? ? 'btn btn-danger activate-survey' : 'btn btn-success disable-survey'
+    )
   end
 
   def preview_survey_button(survey)

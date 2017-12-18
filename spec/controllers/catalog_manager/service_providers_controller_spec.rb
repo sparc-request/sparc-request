@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe CatalogManager::SuperUsersController, type: :controller do
+RSpec.describe CatalogManager::ServiceProvidersController, type: :controller do
 
   before :each do
     @identity_id = create(:identity).id
@@ -28,23 +28,23 @@ RSpec.describe CatalogManager::SuperUsersController, type: :controller do
   end
 
   describe '#create' do
-    it 'should create a Super User' do
+    it 'should create a Service Provider' do
       post :create,
-        params: { super_user: { identity_id: @identity_id, organization_id: @organization_id } },
+        params: { service_provider: { identity_id: @identity_id, organization_id: @organization_id } },
         xhr: true
 
-      expect(SuperUser.count).to eq(1)
+      expect(ServiceProvider.count).to eq(1)
     end
   end
 
   describe '#destroy' do
-    it 'should delete an existing Super User' do
-      cm = create(:super_user, identity_id: @identity_id, organization_id: @organization_id)
+    it 'should delete an existing Service Provider' do
+      cm = create(:service_provider, identity_id: @identity_id, organization_id: @organization_id)
       delete :destroy,
-        params: { super_user: { identity_id: @identity_id, organization_id: @organization_id } },
+        params: { service_provider: { identity_id: @identity_id, organization_id: @organization_id } },
         xhr: true
 
-      expect(SuperUser.count).to eq(0)
+      expect(ServiceProvider.count).to eq(0)
     end
   end
 

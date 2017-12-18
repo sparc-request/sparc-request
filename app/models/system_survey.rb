@@ -28,6 +28,6 @@ class SystemSurvey < Survey
   validates_uniqueness_of :active, scope: [:type, :access_code], if: -> { self.active }
 
   def self.yaml_klass
-    "Survey"
+    Survey.name
   end
 end

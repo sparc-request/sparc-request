@@ -24,6 +24,7 @@ en:
       header: "My Forms"
       tooltip: "Forms to collect additional information related to requesting a service"
       new: "New Form"
+      missing_association: "Please select an association for this Form before leaving."
       table:
         headers:
           surveyable: "Association"

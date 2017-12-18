@@ -51,6 +51,13 @@ $(document).ready ->
       type: 'get'
       url: "/surveyor/surveys/#{survey_id}/preview.js"
 
+  ### Survey Modal ###
+  $(document).on 'hide.bs.modal', '#modal_place', ->
+    if $(this).children("#survey-modal").length > 0
+      $('.survey-table').bootstrapTable('refresh')
+    else
+      $('.form-table').bootstrapTable('refresh')
+
   $(document).on 'click', '.add-section', ->
     $.ajax
       type: 'post'
@@ -121,7 +128,7 @@ $(document).ready ->
   $(document).on 'hide.bs.modal', '#modal_place:has(#form-modal)', (e) ->
     if !$("#modal_place [id$='-surveyable']").data('surveyable')
       e.preventDefault()
-      alert "Please select an association for this Form before leaving."
+      alert I18n["surveyor"]["forms"]["missing_association"]
 
 send_update_request = (obj, val) ->
   field_data  = $(obj).attr('id').split('-')

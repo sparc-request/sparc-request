@@ -37,30 +37,26 @@
             = ur.full_name
             = ur.email
           %td
-            = f.check_box "", { class: "super-user-checkbox", checked: ur.is_super_user_for?(organization) }
-            = f.hidden_field :identity_id, value: ur.id, id: "super-user-#{ur.id}"
+            = f.check_box "", { class: "super-user-checkbox", checked: ur.is_super_user_for?(organization), data: { identity_id: ur.id, organization_id: organization.id } }
           %td
             .form-check
-              = f.check_box "", { class: "catalog-manager-checkbox", checked: ur.is_catalog_manager_for?(organization) }
-              = f.hidden_field :identity_id, value: ur.id
+              = f.check_box "", { class: "catalog-manager-checkbox", checked: ur.is_catalog_manager_for?(organization), data: { identity_id: ur.id, organization_id: organization.id } }
             .form-check
               = f.check_box "", { class: "cm-edit-historic-data", checked: can_edit_historic_data?(organization, ur) }
               Can Edit Historical Data
           - unless organization.type == "Institution"
             %td
               .form-check
-                = f.check_box "", { class: "service-provider-checkbox", checked: ur.is_service_provider_for?(organization) }
-                = f.hidden_field :identity_id, value: ur.id
+                = f.check_box "", { class: "service-provider-checkbox", checked: ur.is_service_provider_for?(organization), data: { identity_id: ur.id, organization_id: organization.id } }
               .form-check  
-                = f.check_box "", { class: "service-provider-checkbox", checked: is_primary_contact?(organization, ur) }
+                = f.check_box "", { class: "sp-is-primary-contact", checked: is_primary_contact?(organization, ur) }
                 Primary Contact
               .form-check
-                = f.check_box "", { class: "service-provider-checkbox", checked: hold_emails?(organization, ur) }
+                = f.check_box "", { class: "sp-hold-emails", checked: hold_emails?(organization, ur) }
                 Hold Emails
             - if organization.tag_list.include?("clinical work fulfillment")
               %td
-                = f.check_box "", { class: "clinical-provider-checkbox", checked: ur.is_clinical_provider_for?(organization) }
-                = f.hidden_field :identity_id, value: ur.id
+                = f.check_box "", { class: "clinical-provider-checkbox", checked: ur.is_clinical_provider_for?(organization), data: { identity_id: ur.id, organization_id: organization.id } }
           %td.text-center
             %button.btn.btn-xs.btn-danger
               %span.glyphicon.glyphicon-remove

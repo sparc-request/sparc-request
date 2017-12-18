@@ -18,6 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+##############################################
+###          Org General Info              ###
+##############################################
 $ ->
   $(document).on 'click', '#enable-all-services label', ->
     $(this).addClass('active')
@@ -32,3 +35,88 @@ $ ->
 
   $(document).on 'click', '#close-general-info', ->
     $('#general-info-collapse').collapse('hide')
+
+  ##############################################
+  ###          Org User Rights               ###
+  ##############################################
+
+  $(document).on 'change', '.super-user-checkbox', ->
+    if $(this).prop('checked')
+      $.ajax
+        type: 'POST'
+        url: '/catalog_manager/super_user'
+        data:
+          super_user:
+            identity_id: $(this).data('identity-id')
+            organization_id: $(this).data('organization-id')
+    else
+      $.ajax
+        type: 'DELETE'
+        url: "/catalog_manager/super_user/"
+        data:
+          super_user:
+            identity_id: $(this).data('identity-id')
+            organization_id: $(this).data('organization-id')
+
+  $(document).on 'change', '.catalog-manager-checkbox', ->
+    if $(this).prop('checked')
+      $.ajax
+        type: 'POST'
+        url: '/catalog_manager/catalog_manager'
+        data:
+          catalog_manager:
+            identity_id: $(this).data('identity-id')
+            organization_id: $(this).data('organization-id')
+    else
+      $.ajax
+        type: 'DELETE'
+        url: "/catalog_manager/catalog_manager/"
+        data:
+          catalog_manager:
+            identity_id: $(this).data('identity-id')
+            organization_id: $(this).data('organization-id')
+
+  $(document).on 'change', '.service-provider-checkbox', ->
+    if $(this).prop('checked')
+      $.ajax
+        type: 'POST'
+        url: '/catalog_manager/service_provider'
+        data:
+          service_provider:
+            identity_id: $(this).data('identity-id')
+            organization_id: $(this).data('organization-id')
+    else
+      $.ajax
+        type: 'DELETE'
+        url: "/catalog_manager/service_provider/"
+        data:
+          service_provider:
+            identity_id: $(this).data('identity-id')
+            organization_id: $(this).data('organization-id')
+
+  $(document).on 'change', '.clinical-provider-checkbox', ->
+    if $(this).prop('checked')
+      $.ajax
+        type: 'POST'
+        url: '/catalog_manager/clinical_provider'
+        data:
+          clinical_provider:
+            identity_id: $(this).data('identity-id')
+            organization_id: $(this).data('organization-id')
+    else
+      $.ajax
+        type: 'DELETE'
+        url: "/catalog_manager/clinical_provider/"
+        data:
+          clinical_provider:
+            identity_id: $(this).data('identity-id')
+            organization_id: $(this).data('organization-id')
+
+  $(document).on 'change', '.cm-edit-historic-data', ->
+    console.log("edit historic data checkbox not implemented")
+
+  $(document).on 'change', '.sp-is-primary-contact', ->
+    console.log("is primary contact checkbox not implemented")
+
+  $(document).on 'change', '.sp-hold-emails', ->
+    console.log("hold emails checkbox not implemented")

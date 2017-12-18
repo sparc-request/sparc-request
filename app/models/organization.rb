@@ -48,8 +48,8 @@ class Organization < ApplicationRecord
   accepts_nested_attributes_for :subsidy_map
   accepts_nested_attributes_for :pricing_setups
   accepts_nested_attributes_for :submission_emails
-  accepts_nested_attributes_for :available_statuses, :allow_destroy => true
-  accepts_nested_attributes_for :editable_statuses, :allow_destroy => true
+  accepts_nested_attributes_for :available_statuses, allow_destroy: true
+  accepts_nested_attributes_for :editable_statuses, allow_destroy: true
 
   after_create :create_editable_statuses
 

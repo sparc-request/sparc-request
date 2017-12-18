@@ -25,5 +25,34 @@ RSpec.describe Form, type: :model do
     expect(build(:form)).to be_valid
   end
   
+  # Inheritance
   it { expect(Form.ancestors.include?(Survey)).to eq(true) }
+
+  # Validations
+  context 'active scoping to access_code' do
+    it 'should only allow 1 active form to each access code associated to a surveyable entity' do
+      org = create(:organization)
+
+      survey1 = create(:form, surveyable: org, access_code: 'some-form', active: true)
+
+      expect(build(:form, surveyable: org, access_code: 'some-form', active: true)).to_not be_valid
+    end
+
+    it 'should allow multiple inactive forms with the same access code on the same surveyable entity' do
+      org = create(:organization)
+
+      survey1 = create(:form, surveyable: org, access_code: 'some-form', active: true)
+
+      expect(build(:form, surveyable: org, access_code: 'some-form', active: false)).to be_valid
+    end
+
+    it 'should allow multiple active forms with the same active code for different organizations' do
+      org1 = create(:organization)
+      org2 = create(:organization)
+
+      survey1 = create(:form, surveyable: org1, access_code: 'some-form', active: true)
+
+      expect(build(:form, surveyable: org2, access_code: 'some-form', active: true)).to be_valid
+    end
+  end
 end

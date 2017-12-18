@@ -25,5 +25,23 @@ RSpec.describe SystemSurvey, type: :model do
     expect(build(:survey)).to be_valid
   end
   
+  # Inheritance
   it { expect(SystemSurvey.ancestors.include?(Survey)).to eq(true) }
+
+  # Validations
+  it { is_expected.to validate_presence_of(:display_order) }
+
+  context 'active scoping to access_code' do
+    it 'should only allow 1 active survey to each access code' do
+      survey1 = create(:system_survey, access_code: 'some-survey', active: true)
+
+      expect(build(:system_survey, access_code: 'some-survey', active: true)).to_not be_valid
+    end
+
+    it 'should allow multiple inactive surveys with the same access code' do
+      survey1 = create(:system_survey, access_code: 'some-survey', active: true)
+
+      expect(build(:system_survey, access_code: 'some-survey', active: false)).to be_valid
+    end
+  end
 end

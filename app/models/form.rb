@@ -19,6 +19,10 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Form < Survey
+
+  # 2 Forms can't have the same access_code, surveyable_id, and surveyable_type and both be active
+  validates_uniqueness_of :active, scope: [:type, :surveyable_id, :surveyable_type, :access_code], if: -> { self.active }
+
   def self.for(identity)
     org_ids     = identity.authorized_admin_organizations.ids
     service_ids = Service.where(organization_id: org_ids).ids

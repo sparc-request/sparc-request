@@ -32,13 +32,9 @@ class Survey < ApplicationRecord
             :access_code,
             presence: true
 
-  # There can only be one active survey with the same type and access_code at a time
-  # I.e. You can't have 2 Forms with the same access code that are both active
-  #      But you CAN have a SystemSurvey and a Form with the same access code that are both active
-  validates_uniqueness_of :access_code, scope: [:type], conditions: -> { where(active: true) }
   validates_uniqueness_of :version, scope: [:access_code, :type]
 
-  validates :version, numericality: { only_integer: true, greater_than_or_equal_to: 1 }, allow_blank: false
+  validates :version, numericality: { only_integer: true, greater_than: 0 }, presence: true
 
   accepts_nested_attributes_for :sections, allow_destroy: true
 

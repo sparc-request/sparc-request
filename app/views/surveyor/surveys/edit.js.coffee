@@ -21,7 +21,7 @@ $('#modal_place').html("<%= j render 'surveyor/surveys/form/survey_form', survey
 $('#modal_place').modal('show')
 $('.selectpicker').selectpicker()
 
-<% if @survey.type == "Form" %>
+<% if @survey.is_a?(Form) %>
 $('.form-table').bootstrapTable('refresh')
 <% else %>
 $('.survey-table').bootstrapTable('refresh')
@@ -32,7 +32,7 @@ surveyable_bloodhound = new Bloodhound(
     Bloodhound.tokenizers.whitespace datum.value
   queryTokenizer: Bloodhound.tokenizers.whitespace
   remote:
-    url: "/surveyor/surveys/<%= @survey.id %>/search_surveyables?term=%QUERY",
+    url: "/surveyor/surveys/search_surveyables?term=%QUERY",
     wildcard: '%QUERY'
 )
 surveyable_bloodhound.initialize() # Initialize the Bloodhound suggestion engine

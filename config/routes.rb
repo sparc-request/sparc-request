@@ -35,8 +35,11 @@ SparcRails::Application.routes.draw do
     resources :surveys, only: [:index, :edit, :create, :destroy] do
       get :preview
       get :update_dependents_list
+    end
+    resource :survey do
       get :search_surveyables
     end
+    
     resources :sections, only: [:create, :destroy]
     resources :questions, only: [:create, :destroy]
     resources :options, only: [:create, :destroy]

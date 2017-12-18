@@ -21,9 +21,7 @@ $('#modal_place').html("<%= j render 'surveyor/surveys/form/survey_form', survey
 $('#modal_place').modal('show')
 $('.selectpicker').selectpicker()
 
-<% if @survey.is_a?(Form) %>
-$('.form-table').bootstrapTable('refresh')
-<% else %>
+<% if @survey.is_a?(SystemSurvey) %>
 $('.survey-table').bootstrapTable('refresh')
 <% end %>
 
@@ -32,7 +30,7 @@ surveyable_bloodhound = new Bloodhound(
     Bloodhound.tokenizers.whitespace datum.value
   queryTokenizer: Bloodhound.tokenizers.whitespace
   remote:
-    url: "/surveyor/surveys/search_surveyables?term=%QUERY",
+    url: "/surveyor/survey/search_surveyables?term=%QUERY",
     wildcard: '%QUERY'
 )
 surveyable_bloodhound.initialize() # Initialize the Bloodhound suggestion engine
@@ -43,7 +41,7 @@ $("#modal_place [id$='-surveyable']").typeahead(
     highlight: true
   }
   {
-    displayKey: 'term'
+    displayKey: 'label'
     source: surveyable_bloodhound,
     limit: 100,
     templates: {
@@ -51,13 +49,10 @@ $("#modal_place [id$='-surveyable']").typeahead(
                                         {{#if parents}}
                                           <strong>{{{parents}}}</strong><br>
                                         {{/if}}
-                                        {{#if is_service}}
-                                          <span><strong>{{klass}}: {{label}}</strong></span><br>
+                                          <span><strong>{{label}}</strong></span>
                                         {{/if}}
-                                        <span><strong>Abbreviation: {{abbreviation}}</strong></span>
                                         {{#if cpt_code}}
-                                          <br>
-                                          <span><strong>CPT Code: {{cpt_code}}</strong></span>
+                                          <br><span><strong>CPT Code: {{cpt_code}}</strong></span>
                                         {{/if}}
                                       </button>')
       notFound: '<div class="tt-suggestion">No Results</div>'
@@ -65,7 +60,7 @@ $("#modal_place [id$='-surveyable']").typeahead(
   }
 ).on('typeahead:select', (event, suggestion) ->
   $(this).data('surveyable', "#{suggestion.klass}-#{suggestion.value}")
-  
+
   $.ajax
     type: 'put'
     url: "/surveyor/survey_updater/#{$(this).attr('id').split('-')[1]}.js"

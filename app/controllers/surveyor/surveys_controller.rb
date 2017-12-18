@@ -53,7 +53,7 @@ class Surveyor::SurveysController < Surveyor::BaseController
                 type: params[:type],
                 title: "Untitled #{klass}",
                 access_code: "untitled-#{klass.downcase}",
-                version: (Survey.where(access_code: "untitled-#{klass.downcase}").order(:version).last.try(:version) || 0) + 1,
+                version: (Survey.where(access_code: "untitled-#{klass.downcase}", type: klass).order(:version).last.try(:version) || 0) + 1,
                 active: false,
                 display_order: (Survey.all.order(:display_order).last.try(:display_order) || 0) + 1
               )
@@ -101,10 +101,8 @@ class Surveyor::SurveysController < Surveyor::BaseController
       {
         parents:        r.is_a?(Service) ? r.organization_hierarchy(false, false, true) : r.organization_hierarchy(true, false, true),
         klass:          r.class.name,
-        is_service:     r.is_a?(Service),
         label:          r.name,
         value:          r.id,
-        abbreviation:   r.abbreviation,
         cpt_code:       r.try(:cpt_code),
         term:           term
       }

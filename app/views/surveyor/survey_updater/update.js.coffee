@@ -22,16 +22,19 @@
 if !$("#<%=@klass%>-<%=@object.id%>-<%=error[0]%>").parents('.form-group').hasClass('has-error')
   $("#<%=@klass%>-<%=@object.id%>-<%=error[0]%>").parents('.form-group').addClass('has-error')
   $("#<%=@klass%>-<%=@object.id%>-<%=error[0]%>").after("<span class='help-block'><%=message%></span>")
+  <% if @field == 'active' %>
+    $("#<%=@klass%>-<%=@object.id%>-<%=@field%>").attr("checked", false)
+  <% end %>
 <% end %>
 <% else %>
 $("#<%=@klass%>-<%=@object.id%>-<%=@field%>").parents('.form-group').removeClass('has-error')
 $("#<%=@klass%>-<%=@object.id%>-<%=@field%>").siblings('.help-block').remove()
 
-<% if @klass == 'survey' %>
+<% if @object.is_a?(SystemSurvey) %>
 $('.survey-table').bootstrapTable('refresh')
-<% end %>
-
-<% if @klass == 'question' %>
+<% elsif @object.is_a?(Form) %>
+$('.form-table').bootstrapTable('refresh')
+<% elsif @object.is_a?(Question) %>
 $(".question-options[data-question-id='<%=@object.id%>']").html('<%= j render "surveyor/surveys/form/form_partials/#{@object.question_type}_example", question: @object %>')
 $('.selectpicker').selectpicker()
 <% end %>

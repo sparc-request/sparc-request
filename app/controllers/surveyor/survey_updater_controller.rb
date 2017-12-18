@@ -42,6 +42,34 @@ class Surveyor::SurveyUpdaterController < Surveyor::BaseController
   private
 
   def survey_updater_params
-    params.require(@klass.to_sym).permit!
+    case @klass
+    when 'survey'
+      params.require(:survey).permit(
+        :title,
+        :description,
+        :access_code,
+        :version,
+        :surveyable,
+        :active
+      )
+    when 'section'
+      params.require(:section).permit(
+        :title,
+        :description
+      )
+    when 'question'
+      params.require(:question).permit(
+        :content,
+        :description,
+        :question_type,
+        :required,
+        :is_dependent,
+        :depender_id
+      )
+    when 'option'
+      params.require(:option).permit(
+        :content
+      )
+    end
   end
 end

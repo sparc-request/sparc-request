@@ -49,22 +49,18 @@ en:
   activerecord:
     errors:
       models:
-        item:
+        form:
           attributes:
-            content:
-              blank: "Content can't be blank"
-        questionnaire:
-          attributes:
-            name:
-              blank: "Name can't be blank"
-        item_option:
-          attributes:
-            content:
-              blank: "Content can't be blank"
+            active:
+              taken: "A different version of this Form is already active"
         question_response:
           attributes:
             content:
               blank: "has to be answered"
+        system_survey:
+          attributes:
+            active:
+              taken: "A different version of this Survey is already active"
       messages:
         spoofed_media_type: "has format errors. Please re-save the file in a different format and try again."
     attributes:
@@ -89,6 +85,8 @@ en:
         content: "Question"
       question_response:
         content: "Required Question"
+      survey:
+        active: ""
       visit:
         research_billing_qty: "Research Billing Quantity"
         insurance_billing_qty: "Insurance Billing Quantity"

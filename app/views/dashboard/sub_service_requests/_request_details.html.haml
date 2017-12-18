@@ -26,7 +26,7 @@
     %tbody
       %tr
         - if Setting.find_by_key("use_epic").value
-          - if sub_service_request.protocol.selected_for_epic? && sub_service_request.organization.services(&:send_to_epic).any?
+          - if sub_service_request.protocol.selected_for_epic? && sub_service_request.organization.services.where(send_to_epic: true).exists?
             %td.text-center
               %button.btn.btn-sm.btn-primary#send_to_epic_button{ data: { sub_service_request_id: sub_service_request.id, toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}'}, title: t(:dashboard)[:sub_service_requests][:tabs][:request_details][:tooltips][:send_to_epic] }
                 = t(:dashboard)[:sub_service_requests][:tabs][:request_details][:options][:send_to_epic]

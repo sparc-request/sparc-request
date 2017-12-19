@@ -22,15 +22,13 @@ $(document).ready ->
 
   ### Survey Table ###
   $(document).on 'click', '.edit-survey', ->
-    survey_id = $(this).data('survey-id')
-
     $.ajax
       type: 'get'
-      url: "/surveyor/surveys/#{survey_id}/edit"
+      url: "/surveyor/surveys/#{$(this).data('survey-id')}/edit.js"
+      data:
+        type: $(this).data('type')
 
   $(document).on 'click', '.delete-survey', ->
-    survey_id = $(this).data('survey-id')
-
     swal {
       title: I18n['swal']['swal_confirm']['title']
       text: I18n['swal']['swal_confirm']['text']
@@ -42,7 +40,7 @@ $(document).ready ->
     }, ->
       $.ajax
         type: 'delete'
-        url: "/surveyor/surveys/#{survey_id}.js"
+        url: "/surveyor/surveys/#{$(this).data('survey-id')}.js"
 
   $(document).on 'click', '.preview-survey', ->
     survey_id = $(this).data('survey-id')

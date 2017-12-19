@@ -40,7 +40,7 @@ module Surveyor::SurveysHelper
         content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' })
       ),
       title: t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:edit],
-      data: { survey_id: survey.id, toggle: 'tooltip', animation: 'false' },
+      data: { survey_id: survey.id, type: survey.type, toggle: 'tooltip', animation: 'false' },
       class: 'btn btn-warning edit-survey'
     )
   end
@@ -78,16 +78,18 @@ module Surveyor::SurveysHelper
   end
 
   ### Surveys Form ###
-  def display_order_options
+  def display_order_options(survey)
     options_from_collection_for_select(
-      Survey.all,
+      SystemSurvey.unscoped.where.not(id: survey.id).order(:display_order),
       'display_order',
-      'insertion_name'
+      'insertion_name',
+      survey.display_order + 1
     )+
     content_tag(
       :option,
       t(:constants)[:add_as_last],
-      value: Survey.order('display_order DESC').first.display_order+1
+      value: (SystemSurvey.maximum(:display_order) || 0)+1,
+      selected: survey.display_order == SystemSurvey.maximum(:display_order)
     )
   end
 

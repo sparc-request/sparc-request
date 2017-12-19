@@ -26,30 +26,63 @@ RSpec.describe 'User activates a survey', js: true do
 
   stub_config("site_admins", ["jug2"])
   
-  before :each do
-    @survey = create(:system_survey)
-
-    visit surveyor_surveys_path
-    wait_for_javascript_to_finish
-
-    click_link 'Activate'
-    wait_for_javascript_to_finish
-  end
-
-  scenario 'and sees the activated survey' do
-    expect(@survey.reload.active).to eq(true)
-    expect(page).to have_content('Disable')
-  end
-
-  context 'and changes their mind and clicks disable' do
+  context 'surveys' do
     before :each do
-      click_link 'Disable'
+      @survey = create(:system_survey)
+
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+
+      click_link 'Activate'
       wait_for_javascript_to_finish
     end
 
-    scenario 'and sees the disabled survey' do
-      expect(@survey.reload.active).to eq(false)
-      expect(page).to have_content('Activate')
+    scenario 'and sees the activated survey' do
+      expect(@survey.reload.active).to eq(true)
+      expect(page).to have_content('Disable')
+    end
+
+    context 'and changes their mind and clicks disable' do
+      before :each do
+        click_link 'Disable'
+        wait_for_javascript_to_finish
+      end
+
+      scenario 'and sees the disabled survey' do
+        expect(@survey.reload.active).to eq(false)
+        expect(page).to have_content('Activate')
+      end
+    end
+  end
+
+  context 'forms' do
+    before :each do
+      org = create(:institution)
+      create(:super_user, organization: org, identity: jug2)
+      @form = create(:form, surveyable_id: org.id, surveyable_type: org.class.name)
+
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+
+      click_link 'Activate'
+      wait_for_javascript_to_finish
+    end
+
+    scenario 'and sees the activated form' do
+      expect(@form.reload.active).to eq(true)
+      expect(page).to have_content('Disable')
+    end
+
+    context 'and changes their mind and clicks disable' do
+      before :each do
+        click_link 'Disable'
+        wait_for_javascript_to_finish
+      end
+
+      scenario 'and sees the disabled form' do
+        expect(@form.reload.active).to eq(false)
+        expect(page).to have_content('Activate')
+      end
     end
   end
 end

@@ -28,19 +28,20 @@ class Surveyor::SurveysController < Surveyor::BaseController
     respond_to do |format|
       format.html
       format.json {
-        if params[:type] == "SystemSurvey"
-          @surveys = SystemSurvey.all
-        elsif params[:type] == "Form"
-          @surveys = Form.for(current_user)
-        else
-          Survey.none
-        end
+        @surveys = 
+          if params[:type] == "SystemSurvey"
+            SystemSurvey.all
+          elsif params[:type] == "Form"
+            Form.for(current_user)
+          else
+            Survey.none
+          end
       }
     end
   end
 
   def edit
-    @survey = Survey.eager_load(sections: { questions: :options }).find(params[:id])
+    @survey = params[:type].constantize.eager_load(sections: { questions: :options }).find(params[:id])
 
     respond_to do |format|
       format.js
@@ -53,9 +54,9 @@ class Surveyor::SurveysController < Surveyor::BaseController
                 type: params[:type],
                 title: "Untitled #{klass}",
                 access_code: "untitled-#{klass.downcase}",
-                version: (Survey.where(access_code: "untitled-#{klass.downcase}", type: klass).order(:version).last.try(:version) || 0) + 1,
+                version: (Survey.where(access_code: "untitled-#{klass.downcase}", type: klass).maximum(:version) || 0) + 1,
                 active: false,
-                display_order: (Survey.all.order(:display_order).last.try(:display_order) || 0) + 1
+                display_order: klass == 'Form' ? nil : (SystemSurvey.maximum(:display_order) || 0) + 1
               )
 
     redirect_to edit_surveyor_survey_path(@survey), format: :js

@@ -28,7 +28,7 @@ class Surveyor::SurveyUpdaterController < Surveyor::BaseController
     @klass  = params[:klass]
     @object = @klass.capitalize.constantize.find(params[:id])
     @field  = survey_updater_params.keys[0]
-
+    
     @object.assign_attributes(survey_updater_params)
     @object.valid?
 
@@ -49,8 +49,9 @@ class Surveyor::SurveyUpdaterController < Surveyor::BaseController
         :description,
         :access_code,
         :version,
-        :surveyable,
-        :active
+        :active,
+        :surveyable_id,
+        :surveyable_type
       )
     when 'section'
       params.require(:section).permit(

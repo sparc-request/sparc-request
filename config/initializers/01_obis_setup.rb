@@ -47,7 +47,6 @@ begin
   STUDY_TYPE_ANSWERS_VERSION_2   = config['study_type_answers_version_2']
   STUDY_TYPE_ANSWERS_VERSION_3   = config['study_type_answers_version_3']
   STUDY_TYPE_NOTES               = config['study_type_notes']
-  FUNDING_STATUSES               = config['funding_statuses']
   ACCORDION_COLOR_OPTIONS        = config['accordion_color_options']
   STUDY_PHASES                   = config['study_phases']
   INSTITUTIONS                   = config['institutions']

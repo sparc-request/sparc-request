@@ -21,5 +21,6 @@
 FactoryGirl.define do
 
   factory :available_status do
+    selected true
   end
 end

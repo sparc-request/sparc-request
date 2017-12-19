@@ -95,8 +95,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol.requester_id  = current_user.id
     @protocol.populate_for_edit
     session[:protocol_type] = params[:protocol_type]
-    gon.rm_id_api_url = Setting.find_by_key("research_master_api_url").value
-    gon.rm_id_api_token = Setting.find_by_key("research_master_api_token").value
+    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
+    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
     rmid_server_status(@protocol)
   end
 
@@ -134,8 +134,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @permission_to_edit = @authorization.nil? ? false : @authorization.can_edit?
     @in_dashboard       = true
     @protocol.populate_for_edit
-    gon.rm_id_api_url = Setting.find_by_key("research_master_api_url").value
-    gon.rm_id_api_token = Setting.find_by_key("research_master_api_token").value
+    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
+    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
 
     session[:breadcrumbs].
       clear.
@@ -153,33 +153,37 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def update
-    protocol_type = protocol_params[:type]
-    @protocol = @protocol.becomes(protocol_type.constantize) unless protocol_type.nil?
-    if (params[:updated_protocol_type] == 'true' && protocol_type == 'Study') || params[:can_edit] == 'true'
-      @protocol.assign_attributes(study_type_question_group_id: StudyTypeQuestionGroup.active_id)
-      @protocol.assign_attributes(selected_for_epic: protocol_params[:selected_for_epic]) if protocol_params[:selected_for_epic]
-      if @protocol.valid?
-        @protocol.update_attribute(:type, protocol_type)
-        @protocol.activate
-        @protocol.reload
+    unless params[:locked]
+      protocol_type = protocol_params[:type]
+      @protocol = @protocol.becomes(protocol_type.constantize) unless protocol_type.nil?
+      if (params[:updated_protocol_type] == 'true' && protocol_type == 'Study') || params[:can_edit] == 'true'
+        @protocol.assign_attributes(study_type_question_group_id: StudyTypeQuestionGroup.active_id)
+        @protocol.assign_attributes(selected_for_epic: protocol_params[:selected_for_epic]) if protocol_params[:selected_for_epic]
+        if @protocol.valid?
+          @protocol.update_attribute(:type, protocol_type)
+          @protocol.activate
+          @protocol.reload
+        end
       end
-    end
 
-    attrs               = fix_date_params
-    permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
-    # admin is not able to activate study_type_question_group
+      attrs               = fix_date_params
+      permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
+      # admin is not able to activate study_type_question_group
 
-    @protocol.bypass_rmid_validation = @bypass_rmid_validation
+      @protocol.bypass_rmid_validation = @bypass_rmid_validation
 
-    if @protocol.update_attributes(attrs)
-      flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
+      if @protocol.update_attributes(attrs)
+        flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
+      else
+        @errors = @protocol.errors
+      end
+
+      if params[:sub_service_request]
+        @sub_service_request = SubServiceRequest.find params[:sub_service_request][:id]
+        render "/dashboard/sub_service_requests/update"
+      end
     else
-      @errors = @protocol.errors
-    end
-
-    if params[:sub_service_request]
-      @sub_service_request = SubServiceRequest.find params[:sub_service_request][:id]
-      render "/dashboard/sub_service_requests/update"
+      perform_protocol_lock(@protocol, params[:locked])
     end
   end
 
@@ -268,6 +272,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         :selected_for_epic,
         :short_title,
         :sponsor_name,
+        :locked,
         {:study_phase_ids => []},
         :start_date,
         :study_type_question_group_id,
@@ -330,8 +335,10 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def fix_identity
     attrs               = protocol_params
     attrs[:project_roles_attributes].each do |index, project_role|
-      identity = Identity.find_or_create project_role[:identity_id]
-      project_role[:identity_id] = identity.id
+      if project_role[:identity_id].present?
+        identity = Identity.find_or_create project_role[:identity_id]
+        project_role[:identity_id] = identity.id
+      end
     end unless attrs[:project_roles_attributes].nil?
     attrs
   end
@@ -356,5 +363,13 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     end
 
     attrs
+  end
+
+  def perform_protocol_lock(protocol, lock_status)
+    if lock_status == 'true'
+      protocol.update_attributes(locked: false)
+    else
+      protocol.update_attributes(locked: true)
+    end
   end
 end

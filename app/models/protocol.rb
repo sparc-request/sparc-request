@@ -62,7 +62,7 @@ class Protocol < ApplicationRecord
   validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
   validates :research_master_id, presence: true, if: :rmid_requires_validation?
 
-  validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 1000 }, allow_blank: true
+  validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 1000 }, allow_blank: true, if: :indirect_cost_enabled
 
   attr_accessor :requester_id
   attr_accessor :validate_nct
@@ -96,7 +96,7 @@ class Protocol < ApplicationRecord
 
   def rmid_requires_validation?
     # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]
-    self.bypass_rmid_validation ? false : Setting.find_by_key('use_research_master').value && has_human_subject_info?
+    self.bypass_rmid_validation ? false : Setting.find_by_key('research_master_enabled').value && has_human_subject_info?
   end
 
   def has_human_subject_info?
@@ -104,10 +104,10 @@ class Protocol < ApplicationRecord
   end
 
   validate :existing_rm_id,
-    if: -> record { Setting.find_by_key("use_research_master").value && !record.research_master_id.nil? }
+    if: -> record { Setting.find_by_key("research_master_enabled").value && !record.research_master_id.nil? }
 
   validate :unique_rm_id_to_protocol,
-    if: -> record { Setting.find_by_key("use_research_master").value && !record.research_master_id.nil? }
+    if: -> record { Setting.find_by_key("research_master_enabled").value && !record.research_master_id.nil? }
 
   def self.to_csv(protocols)
     CSV.generate do |csv|
@@ -121,7 +121,7 @@ class Protocol < ApplicationRecord
   end
 
   def existing_rm_id
-    rm_ids = HTTParty.get(Setting.find_by_key("research_master_api_url").value + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{Setting.find_by_key("research_master_api_token").value}\""})
+    rm_ids = HTTParty.get(Setting.find_by_key("research_master_api").value + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{Setting.find_by_key("rmid_api_token").value}\""})
     ids = rm_ids.map{ |rm_id| rm_id['id'] }
 
     if research_master_id.present? && !ids.include?(research_master_id)
@@ -551,6 +551,10 @@ class Protocol < ApplicationRecord
   end
 
   private
+
+  def indirect_cost_enabled
+    Setting.find_by_key('use_indirect_cost').value
+  end
 
   def notify_remote_around_update?
     true

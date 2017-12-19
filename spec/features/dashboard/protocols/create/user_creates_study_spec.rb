@@ -35,7 +35,7 @@ RSpec.describe 'User creates study', js: true do
   end
 
   stub_config("use_epic", true)
-  stub_config("use_research_master", true)
+  stub_config("research_master_enabled", true)
   
   context "RMID server is up and running" do
     before :each do

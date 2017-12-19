@@ -447,15 +447,15 @@ wb.add_worksheet(name: "Review") do |sheet|
 
   ### added for signature section, fix the width of A, and then merge cells
   if @show_signature_section
-    sheet.merge_cells("A#{first_signature_row.index+1}:F#{first_signature_row.index+1}")
-    sheet.merge_cells("A#{first_signature_row.index+2}:F#{first_signature_row.index+2}")
-    sheet.merge_cells("A#{first_signature_row.index+3}:F#{first_signature_row.index+3}")
-    sheet.merge_cells("A#{first_signature_row.index+4}:F#{first_signature_row.index+4}")
-    sheet.merge_cells("A#{first_signature_row.index+5}:F#{first_signature_row.index+5}")
-    sheet.merge_cells("A#{first_signature_row.index+6}:F#{first_signature_row.index+6}")
-    sheet.merge_cells("A#{first_signature_row.index+7}:F#{first_signature_row.index+7}")
-    sheet.merge_cells("A#{first_signature_row.index+8}:F#{first_signature_row.index+8}")
-    sheet.merge_cells("A#{first_signature_row.index+9}:F#{first_signature_row.index+9}")
+    sheet.merge_cells("A#{sheet.rows.index(first_signature_row)+1}:F#{sheet.rows.index(first_signature_row)+1}")
+    sheet.merge_cells("A#{sheet.rows.index(first_signature_row)+2}:F#{sheet.rows.index(first_signature_row)+2}")
+    sheet.merge_cells("A#{sheet.rows.index(first_signature_row)+3}:F#{sheet.rows.index(first_signature_row)+3}")
+    sheet.merge_cells("A#{sheet.rows.index(first_signature_row)+4}:F#{sheet.rows.index(first_signature_row)+4}")
+    sheet.merge_cells("A#{sheet.rows.index(first_signature_row)+5}:F#{sheet.rows.index(first_signature_row)+5}")
+    sheet.merge_cells("A#{sheet.rows.index(first_signature_row)+6}:F#{sheet.rows.index(first_signature_row)+6}")
+    sheet.merge_cells("A#{sheet.rows.index(first_signature_row)+7}:F#{sheet.rows.index(first_signature_row)+7}")
+    sheet.merge_cells("A#{sheet.rows.index(first_signature_row)+8}:F#{sheet.rows.index(first_signature_row)+8}")
+    sheet.merge_cells("A#{sheet.rows.index(first_signature_row)+9}:F#{sheet.rows.index(first_signature_row)+9}")
   end
 
   ### setting some column widths

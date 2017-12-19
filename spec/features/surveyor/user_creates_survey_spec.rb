@@ -36,7 +36,7 @@ RSpec.describe 'User creates a survey', js: true do
       click_link 'New Survey'
       wait_for_javascript_to_finish
 
-      expect(page).to have_selector('#survey-modal')
+      expect(page).to have_selector('#survey-modal', visible: true)
       expect(SystemSurvey.count).to eq(1)
     end
   end
@@ -51,7 +51,7 @@ RSpec.describe 'User creates a survey', js: true do
       click_link 'New Form'
       wait_for_javascript_to_finish
 
-      expect(page).to have_selector('#form-modal')
+      expect(page).to have_selector('#form-modal', visible: true)
       expect(Form.count).to eq(1)
     end
   end

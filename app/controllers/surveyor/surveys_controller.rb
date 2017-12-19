@@ -59,7 +59,7 @@ class Surveyor::SurveysController < Surveyor::BaseController
                 display_order: klass == 'Form' ? nil : (SystemSurvey.maximum(:display_order) || 0) + 1
               )
 
-    redirect_to edit_surveyor_survey_path(@survey), format: :js
+    redirect_to edit_surveyor_survey_path(@survey, type: params[:type]), format: :js
   end
 
   def destroy

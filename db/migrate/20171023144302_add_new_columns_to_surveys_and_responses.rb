@@ -12,6 +12,9 @@ class AddNewColumnsToSurveysAndResponses < ActiveRecord::Migration[5.1]
 
     add_index :surveys, [:surveyable_id, :surveyable_type], name: :index_surveys_on_surveyable_id_and_surveyable_type, using: :btree
 
+    # Allow display_order to be null
+    change_column :surveys, :display_order, :integer, null: true
+
     # Add respondable_id and respondable_type to Responses
     add_column :responses, :respondable_id, :integer
     add_column :responses, :respondable_type, :string
@@ -45,6 +48,9 @@ class AddNewColumnsToSurveysAndResponses < ActiveRecord::Migration[5.1]
     remove_index :surveys, :index_surveys_on_surveyable_id_and_surveyable_type
     remove_column :surveys, :surveyable_id
     remove_column :surveys, :surveyable_type
+
+    # Don't allow display_order to be null
+    change_column :surveys, :display_order, :integer, null: false
 
     responses = Response.where(respondable_type: 'SubServiceRequest').to_a
 

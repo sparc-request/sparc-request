@@ -28,11 +28,17 @@ class CatalogManager::CatalogManagersController < ApplicationController
     CatalogManager.find_by(catalog_manager_params).destroy
   end
 
+  def update
+    cm = CatalogManager.find_by(identity_id: catalog_manager_params[:identity_id], organization_id: catalog_manager_params[:organization_id])
+    cm.update_attribute(:edit_historic_data, catalog_manager_params[:edit_historic_data] == 'true')
+  end
+
   private
 
   def catalog_manager_params
     params.require(:catalog_manager).permit(
       :identity_id,
-      :organization_id)
+      :organization_id,
+      :edit_historic_data)
   end
 end

@@ -28,11 +28,20 @@ class CatalogManager::ServiceProvidersController < ApplicationController
     ServiceProvider.find_by(service_provider_params).destroy
   end
 
+  def update
+    cm = ServiceProvider.find_by(identity_id: service_provider_params[:identity_id], organization_id: service_provider_params[:organization_id])
+    primary_contact = service_provider_params[:is_primary_contact].nil? ? cm.is_primary_contact : service_provider_params[:is_primary_contact] == 'true'
+    hold_emails = service_provider_params[:hold_emails].nil? ? cm.hold_emails : service_provider_params[:hold_emails] == 'true'
+    cm.update_attributes(is_primary_contact: primary_contact, hold_emails: hold_emails)
+  end
+
   private
 
   def service_provider_params
     params.require(:service_provider).permit(
       :identity_id,
-      :organization_id)
+      :organization_id,
+      :is_primary_contact,
+      :hold_emails)
   end
 end

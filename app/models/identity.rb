@@ -156,22 +156,6 @@ class Identity < ApplicationRecord
     is_provider
   end
 
-  def is_super_user_for?(organization)
-    !SuperUser.find_by(identity_id: self.id, organization_id: organization.id).nil?
-  end
-
-  def is_catalog_manager_for?(organization)
-    !CatalogManager.find_by(identity_id: self.id, organization_id: organization.id).nil?
-  end
-
-  def is_service_provider_for?(organization)
-    !ServiceProvider.find_by(identity_id: self.id, organization_id: organization.id).nil?
-  end
-
-  def is_clinical_provider_for?(organization)
-    !ClinicalProvider.find_by(identity_id: self.id, organization_id: organization.id).nil?
-  end
-
   ###############################################################################
   ############################# SEARCH METHODS ##################################
   ###############################################################################

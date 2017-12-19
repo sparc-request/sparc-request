@@ -31,33 +31,33 @@
             %th.col-sm-1 Clinical Provider
         %th.col-sm-1.text-center Remove
     %tbody
-      - user_rights(organization).each_with_index do |ur, index|
+      - user_rights = all_user_rights(organization)
+      - user_rights_identities(organization).each do |ur|
         %tr
           %td
             = ur.full_name
             = ur.email
           %td
-            = f.check_box "", { class: "super-user-checkbox", checked: ur.is_super_user_for?(organization), data: { identity_id: ur.id, organization_id: organization.id } }
+            = f.check_box "", { class: "super-user-checkbox", checked: !get_user_rights(user_rights[:super_users], ur.id).nil?, data: { identity_id: ur.id, organization_id: organization.id } }
           %td
             .form-check
-              = f.check_box "", { class: "catalog-manager-checkbox", checked: ur.is_catalog_manager_for?(organization), data: { identity_id: ur.id, organization_id: organization.id } }
+              = f.check_box "", { class: "catalog-manager-checkbox", checked: !get_user_rights(user_rights[:catalog_managers], ur.id).nil?, data: { identity_id: ur.id, organization_id: organization.id } }
             .form-check
-              = f.check_box "", { class: "cm-edit-historic-data", checked: can_edit_historic_data?(organization, ur) }
+              = f.check_box "", { id: "cm-edit-historic-data-#{ur.id}", class: "cm-edit-historic-data", checked: get_user_rights(user_rights[:catalog_managers], ur.id).try(:edit_historic_data), disabled: get_user_rights(user_rights[:catalog_managers], ur.id).nil?, data: { identity_id: ur.id, organization_id: organization.id } }
               Can Edit Historical Data
           - unless organization.type == "Institution"
             %td
               .form-check
-                = f.check_box "", { class: "service-provider-checkbox", checked: ur.is_service_provider_for?(organization), data: { identity_id: ur.id, organization_id: organization.id } }
+                = f.check_box "", { class: "service-provider-checkbox", checked: !get_user_rights(user_rights[:service_providers], ur.id).nil?, data: { identity_id: ur.id, organization_id: organization.id } }
               .form-check  
-                = f.check_box "", { class: "sp-is-primary-contact", checked: is_primary_contact?(organization, ur) }
+                = f.check_box "", { id: "sp-is-primary-contact-#{ur.id}", class: "sp-is-primary-contact", checked: get_user_rights(user_rights[:service_providers], ur.id).try(:is_primary_contact), disabled: get_user_rights(user_rights[:service_providers], ur.id).nil?, data: { identity_id: ur.id, organization_id: organization.id } }
                 Primary Contact
               .form-check
-                = f.check_box "", { class: "sp-hold-emails", checked: hold_emails?(organization, ur) }
+                = f.check_box "", { id: "sp-hold-emails-#{ur.id}", class: "sp-hold-emails", checked: get_user_rights(user_rights[:service_providers], ur.id).try(:hold_emails), disabled: get_user_rights(user_rights[:service_providers], ur.id).nil?, data: { identity_id: ur.id, organization_id: organization.id } }
                 Hold Emails
             - if organization.tag_list.include?("clinical work fulfillment")
               %td
-                = f.check_box "", { class: "clinical-provider-checkbox", checked: ur.is_clinical_provider_for?(organization), data: { identity_id: ur.id, organization_id: organization.id } }
+                = f.check_box "", { class: "clinical-provider-checkbox", checked: !get_user_rights(user_rights[:clinical_providers], ur.id).nil?, data: { identity_id: ur.id, organization_id: organization.id } }
           %td.text-center
             %button.btn.btn-xs.btn-danger
               %span.glyphicon.glyphicon-remove
-  %input.btn.btn-primary{ type: 'submit'}

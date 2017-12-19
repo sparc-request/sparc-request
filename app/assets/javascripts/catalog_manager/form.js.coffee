@@ -41,82 +41,81 @@ $ ->
   ##############################################
 
   $(document).on 'change', '.super-user-checkbox', ->
-    if $(this).prop('checked')
-      $.ajax
-        type: 'POST'
-        url: '/catalog_manager/super_user'
-        data:
-          super_user:
-            identity_id: $(this).data('identity-id')
-            organization_id: $(this).data('organization-id')
-    else
-      $.ajax
-        type: 'DELETE'
-        url: "/catalog_manager/super_user/"
-        data:
-          super_user:
-            identity_id: $(this).data('identity-id')
-            organization_id: $(this).data('organization-id')
+    $.ajax
+      type: if $(this).prop('checked') then 'POST' else 'DELETE'
+      url: '/catalog_manager/super_user'
+      data:
+        catalog_manager:
+          identity_id: $(this).data('identity-id')
+          organization_id: $(this).data('organization-id')
 
   $(document).on 'change', '.catalog-manager-checkbox', ->
-    if $(this).prop('checked')
-      $.ajax
-        type: 'POST'
-        url: '/catalog_manager/catalog_manager'
-        data:
-          catalog_manager:
-            identity_id: $(this).data('identity-id')
-            organization_id: $(this).data('organization-id')
-    else
-      $.ajax
-        type: 'DELETE'
-        url: "/catalog_manager/catalog_manager/"
-        data:
-          catalog_manager:
-            identity_id: $(this).data('identity-id')
-            organization_id: $(this).data('organization-id')
+    identity_id = $(this).data('identity-id')
+    checked = $(this).prop('checked')
+    $.ajax
+      type: if checked then 'POST' else 'DELETE'
+      url: '/catalog_manager/catalog_manager'
+      data:
+        catalog_manager:
+          identity_id: identity_id
+          organization_id: $(this).data('organization-id')
+      success: ->
+        $("#cm-edit-historic-data-#{identity_id}").prop('disabled', !checked)
+        if !checked
+          $("#cm-edit-historic-data-#{identity_id}").prop('checked', false)
 
   $(document).on 'change', '.service-provider-checkbox', ->
-    if $(this).prop('checked')
-      $.ajax
-        type: 'POST'
-        url: '/catalog_manager/service_provider'
-        data:
-          service_provider:
-            identity_id: $(this).data('identity-id')
-            organization_id: $(this).data('organization-id')
-    else
-      $.ajax
-        type: 'DELETE'
-        url: "/catalog_manager/service_provider/"
-        data:
-          service_provider:
-            identity_id: $(this).data('identity-id')
-            organization_id: $(this).data('organization-id')
+    identity_id = $(this).data('identity-id')
+    checked = $(this).prop('checked')
+    $.ajax
+      type: if checked then 'POST' else 'DELETE'
+      url: '/catalog_manager/service_provider'
+      data:
+        service_provider:
+          identity_id: identity_id
+          organization_id: $(this).data('organization-id')
+      success: ->
+        $("#sp-is-primary-contact-#{identity_id}").prop('disabled', !checked)
+        $("#sp-hold-emails-#{identity_id}").prop('disabled', !checked)
+        if !checked
+          $("#sp-is-primary-contact-#{identity_id}").prop('checked', false)
+          $("#sp-hold-emails-#{identity_id}").prop('checked', false)
 
   $(document).on 'change', '.clinical-provider-checkbox', ->
-    if $(this).prop('checked')
-      $.ajax
-        type: 'POST'
-        url: '/catalog_manager/clinical_provider'
-        data:
-          clinical_provider:
-            identity_id: $(this).data('identity-id')
-            organization_id: $(this).data('organization-id')
-    else
-      $.ajax
-        type: 'DELETE'
-        url: "/catalog_manager/clinical_provider/"
-        data:
-          clinical_provider:
-            identity_id: $(this).data('identity-id')
-            organization_id: $(this).data('organization-id')
+    $.ajax
+      type: if $(this).prop('checked') then 'POST' else 'DELETE'
+      url: '/catalog_manager/clinical_provider'
+      data:
+        catalog_manager:
+          identity_id: $(this).data('identity-id')
+          organization_id: $(this).data('organization-id')
 
   $(document).on 'change', '.cm-edit-historic-data', ->
-    console.log("edit historic data checkbox not implemented")
+    $.ajax
+      type: 'PUT'
+      url: 'catalog_manager/catalog_manager/'
+      data:
+        catalog_manager:
+          identity_id: $(this).data('identity-id')
+          organization_id: $(this).data('organization-id')
+          edit_historic_data: $(this).prop('checked')
 
   $(document).on 'change', '.sp-is-primary-contact', ->
-    console.log("is primary contact checkbox not implemented")
+    $.ajax
+      type: 'PUT'
+      url: 'catalog_manager/service_provider/'
+      data:
+        service_provider:
+          identity_id: $(this).data('identity-id')
+          organization_id: $(this).data('organization-id')
+          is_primary_contact: $(this).prop('checked')
 
   $(document).on 'change', '.sp-hold-emails', ->
-    console.log("hold emails checkbox not implemented")
+    $.ajax
+      type: 'PUT'
+      url: 'catalog_manager/service_provider/'
+      data:
+        service_provider:
+          identity_id: $(this).data('identity-id')
+          organization_id: $(this).data('organization-id')
+          hold_emails: $(this).prop('checked')

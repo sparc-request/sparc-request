@@ -27,7 +27,7 @@
         %h4.modal-title.text-center
           = survey.title
       .modal-body
-        = render 'surveyor/responses/form/response_content', f: f, survey: survey, sub_service_request: nil
+        = render 'surveyor/responses/form/response_content', f: f, survey: survey, respondable: nil
       .modal-footer
         %button.btn.btn-default{ data: { dismiss: 'modal' } }
           = t(:actions)[:close]

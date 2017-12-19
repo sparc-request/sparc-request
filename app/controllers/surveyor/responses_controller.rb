@@ -34,9 +34,9 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   end
 
   def new
-    @review               = 'true'
-    @sub_service_request  = nil
-    @response             = @survey.responses.new
+    @review       = 'true'
+    @respondable  = nil
+    @response     = @survey.responses.new
     @response.question_responses.build
 
     respond_to do |format|
@@ -65,8 +65,8 @@ class Surveyor::ResponsesController < Surveyor::BaseController
 
     @response.question_responses.build
 
-    @review               = 'false'
-    @sub_service_request  = @response.sub_service_request
+    @review       = 'false'
+    @respondable  = @response.respondable
     
     respond_to do |format|
       format.html

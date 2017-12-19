@@ -24,7 +24,7 @@
         = @response.survey.title
     = form_for @response, url: surveyor_response_path(@response, review: @review), remote: true do |f|
       .panel-body
-        = render 'surveyor/responses/form/response_content', f: f, survey: @response.survey, sub_service_request: @sub_service_request
+        = render 'surveyor/responses/form/response_content', f: f, survey: @response.survey, respondable: @respondable
       .panel-footer
         .clearfix
           = f.submit t(:actions)[:submit], class: 'btn btn-primary pull-right'

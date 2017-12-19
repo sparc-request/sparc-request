@@ -21,8 +21,9 @@
 #survey-response
   = f.hidden_field :identity_id, value: current_user.id
   = f.hidden_field :survey_id, value: survey.id
-  - if sub_service_request
-    = f.hidden_field :sub_service_request_id, value: sub_service_request.id
+  - if respondable
+    = f.hidden_field :respondable_id, value: respondable.id
+    = f.hidden_field :respondable_type, value: respondable.class.name
 
   - unless survey.description.blank?
     .form-group

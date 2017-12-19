@@ -27,10 +27,10 @@ RSpec.describe 'User takes a survey', js: true do
   fake_login_for_each_test
 
   before :each do
-    @survey   = create(:survey, title: "My Survey", active: true)
+    @survey   = create(:system_survey, title: "My Survey", active: true)
     @section  = create(:section, survey: @survey)
     @ssr      = create(:sub_service_request_without_validations, organization: create(:organization))
-    @resp     = create(:response, survey: @survey, identity: jug2, sub_service_request: @ssr)
+    @resp     = create(:response, survey: @survey, identity: jug2, respondable: @ssr)
   end
 
   scenario 'and sees all sections' do
@@ -164,11 +164,11 @@ RSpec.describe 'User takes a survey', js: true do
       wait_for_javascript_to_finish
 
       expect(page).to have_content(@q_likert.content)
-      expect(page).to have_selector('.option.likert-group div:first-child', text: '1')
-      expect(page).to have_selector('.option.likert-group div:first-child', text: '2')
-      expect(page).to have_selector('.option.likert-group .likert input[type="radio"]', count: 2)
-      expect(page).to have_selector('.option.likert-group div', text: @opt1.content)
-      expect(page).to have_selector('.option.likert-group div', text: @opt2.content)
+      expect(page).to have_selector('.option.likert-option div:first-child', text: '1')
+      expect(page).to have_selector('.option.likert-option div:first-child', text: '2')
+      expect(page).to have_selector('.option.likert-option .likert input[type="radio"]', count: 2)
+      expect(page).to have_selector('.option.likert-option div', text: @opt1.content)
+      expect(page).to have_selector('.option.likert-option div', text: @opt2.content)
     end
 
     scenario 'and sees correctly saved value' do

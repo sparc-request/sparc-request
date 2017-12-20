@@ -101,7 +101,7 @@ class Surveyor::SurveysController < Surveyor::BaseController
     results.map!{ |r|
       {
         parents:        r.is_a?(Service) ? r.organization_hierarchy(false, false, true) : r.organization_hierarchy(true, false, true),
-        klass:          r.class.name,
+        klass:          r.is_a?(Service) ? 'Service' : 'Organization',
         label:          r.name,
         value:          r.id,
         cpt_code:       r.try(:cpt_code),

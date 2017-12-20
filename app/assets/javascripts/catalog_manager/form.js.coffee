@@ -45,7 +45,7 @@ $ ->
       type: if $(this).prop('checked') then 'POST' else 'DELETE'
       url: '/catalog_manager/super_user'
       data:
-        catalog_manager:
+        super_user:
           identity_id: $(this).data('identity-id')
           organization_id: $(this).data('organization-id')
 
@@ -86,7 +86,7 @@ $ ->
       type: if $(this).prop('checked') then 'POST' else 'DELETE'
       url: '/catalog_manager/clinical_provider'
       data:
-        catalog_manager:
+        clinical_provider:
           identity_id: $(this).data('identity-id')
           organization_id: $(this).data('organization-id')
 
@@ -119,3 +119,15 @@ $ ->
           identity_id: $(this).data('identity-id')
           organization_id: $(this).data('organization-id')
           hold_emails: $(this).prop('checked')
+
+  $(document).on 'click', '.remove-user-rights', ->
+    identity_id = $(this).data('identity-id')
+    $.ajax
+      type: 'DELETE'
+      url: 'catalog_manager/user_right'
+      data:
+        user_rights:
+          identity_id: identity_id
+          organization_id: $(this).data('organization-id')
+      success: ->
+        $("#user-rights-row-#{identity_id}").fadeOut(1000)

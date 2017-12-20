@@ -209,6 +209,7 @@ SparcRails::Application.routes.draw do
     resource :catalog_manager, only: [:create, :destroy, :update]
     resource :service_provider, only: [:create, :destroy, :update]
     resource :clinical_provider, only: [:create, :destroy]
+    resource :user_right, only: [:destroy]
     resources :services, except: [:index, :show, :destroy] do
       collection do
         get :verify_parent_service_provider

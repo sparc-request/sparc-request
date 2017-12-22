@@ -447,15 +447,16 @@ wb.add_worksheet(name: "Review") do |sheet|
 
   ### added for signature section, fix the width of A, and then merge cells
   if @show_signature_section
-    sheet.merge_cells("A#{first_signature_row.index+1}:F#{first_signature_row.index+1}")
-    sheet.merge_cells("A#{first_signature_row.index+2}:F#{first_signature_row.index+2}")
-    sheet.merge_cells("A#{first_signature_row.index+3}:F#{first_signature_row.index+3}")
-    sheet.merge_cells("A#{first_signature_row.index+4}:F#{first_signature_row.index+4}")
-    sheet.merge_cells("A#{first_signature_row.index+5}:F#{first_signature_row.index+5}")
-    sheet.merge_cells("A#{first_signature_row.index+6}:F#{first_signature_row.index+6}")
-    sheet.merge_cells("A#{first_signature_row.index+7}:F#{first_signature_row.index+7}")
-    sheet.merge_cells("A#{first_signature_row.index+8}:F#{first_signature_row.index+8}")
-    sheet.merge_cells("A#{first_signature_row.index+9}:F#{first_signature_row.index+9}")
+    index = sheet.rows.index(first_signature_row)
+    sheet.merge_cells("A#{index+1}:F#{index+1}")
+    sheet.merge_cells("A#{index+2}:F#{index+2}")
+    sheet.merge_cells("A#{index+3}:F#{index+3}")
+    sheet.merge_cells("A#{index+4}:F#{index+4}")
+    sheet.merge_cells("A#{index+5}:F#{index+5}")
+    sheet.merge_cells("A#{index+6}:F#{index+6}")
+    sheet.merge_cells("A#{index+7}:F#{index+7}")
+    sheet.merge_cells("A#{index+8}:F#{index+8}")
+    sheet.merge_cells("A#{index+9}:F#{index+9}")
   end
 
   ### setting some column widths

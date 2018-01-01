@@ -49,4 +49,4 @@ namespace :survey do
   end
 end
 
-after "deploy:restart", "delayed_job:restart"
+after "deploy:restart", invoke!("delayed_job:restart")

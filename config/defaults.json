@@ -11,7 +11,7 @@
   },
   { 
     "key":            "admin_mail_to", 
-    "value":          "catesa@musc.edu",
+    "value":          "mskhan2@childrensnational.org",
     "friendly_name":  "Admin Mail-To",
     "description":    "This field will overwrite the admin user mailers in the application to instead mail to this address. To be overwritten in development/testing/staging to prevent real emails being sent out to admin users.",
     "group":          "",
@@ -27,11 +27,11 @@
     "group":          "",
     "version":        "",
     "parent_key":     "use_google_calendar",
-    "parent_value":   "true"
+    "parent_value":   "false"
   },
   {
     "key":            "clinical_work_fulfillment_url",
-    "value":          "http://fulfillment-future-url.com",
+    "value":          "http://10.54.13.48:5000",
     "friendly_name":  "Clinical Work Fulfillment URL",
     "description":    "",
     "group":          "",
@@ -41,7 +41,7 @@
   },
   {
     "key":            "contact_us_cc",
-    "value":          "sparcrequest@gmail.com",
+    "value":          "sparcrequest@childrensnational.org",
     "friendly_name":  "Contact Us CC",
     "description":    "",
     "group":          "",
@@ -51,7 +51,7 @@
   },
   {
     "key":            "contact_us_mail_to",
-    "value":          "success@musc.edu",
+    "value":          "sparcrequest@childrensnational.org",
     "friendly_name":  "Contact Us Mail-To",
     "description":    "",
     "group":          "",
@@ -71,7 +71,7 @@
   },
   {
     "key":            "dashboard_link",
-    "value":          "/dashboard",
+    "value":          "http://sparctest.ctsicn.org/dashboard",
     "friendly_name":  "Dashboard URL",
     "description":    "The url for the user dashboard.",
     "group":          "",
@@ -81,7 +81,7 @@
   },
   {
     "key":            "default_mail_to",
-    "value":          "catesa@musc.edu",
+    "value":          "sparcrequest@childrensnational.org",
     "friendly_name":  "Default Mail-To",
     "description":    "This field will overwrite the general user mailers in the application to instead mail to this address. To be overwritten in development/testing/staging to prevent real emails being sent out to general users.",
     "group":          "",
@@ -101,7 +101,7 @@
   },
   {
     "key":            "epic_queue_report_to",
-    "value":          "catesa@musc.edu, forney@musc.edu, crossoml@musc.edu, moreira@musc.edu, powersp@musc.edu, rogersbr@musc.edu",
+    "value":          "sparcrequest@childrensnational.org",
     "friendly_name":  "Epic Queue Report To",
     "description":    "Email addresses of users who are e-mailed the EPIC queue report.",
     "group":          "",
@@ -111,7 +111,7 @@
   },
   {
     "key":            "approve_epic_rights_mail_to",
-    "value":          "forney@musc.edu, crossoml@musc.edu",
+    "value":          "sparcrequest@childrensnational.org",
     "friendly_name":  "EPIC Rights Mail-To",
     "description":    "Email addresses of users who are e-mailed for EPIC rights approval",
     "group":          "",
@@ -131,7 +131,7 @@
   },
   {
     "key":            "feedback_link",
-    "value":          "http://something.com",
+    "value":          "https://cri-datacap.org/surveys/?s=YN3FMJ3P7F",
     "friendly_name":  "Feedback URL",
     "description":    "The URL of an external feedback system.",
     "group":          "",
@@ -141,7 +141,7 @@
   },
   {
     "key":            "feedback_mail_to",
-    "value":          "hutsonk@musc.edu",
+    "value":          "sparcrequest@childrensnational.org",
     "friendly_name":  "Feedback Mail-To",
     "description":    "This field will overwrite the feedback mailers in the application to instead mail to this address. To be overwritten in development/testing/staging to prevent real emails being sent out from users.",
     "group":          "",
@@ -171,7 +171,7 @@
   },
   {
     "key":            "header_link_1",
-    "value":          "http://sctr.musc.edu",
+    "value":          "http://www.ctsicn.org",
     "friendly_name":  "Header Logo 1 URL",
     "description":    "The URL for the first image in the header logos.",
     "group":          "",
@@ -181,7 +181,7 @@
   },
   {
     "key":            "header_link_2_dashboard",
-    "value":          "http://localhost:3000/dashboard",
+    "value":          "http://www.ctsicn.org",
     "friendly_name":  "Header Logo 2 URL (SPARCDashboard)",
     "description":    "The URL for the second image in the header logos in SPARCDashboard.",
     "group":          "",
@@ -191,7 +191,7 @@
   },
   {
     "key":            "header_link_2_proper",
-    "value":          "http://localhost:3000/",
+    "value":          "http://www.ctsicn.org",
     "friendly_name":  "Header Logo 2 URL (SPARCRequest)",
     "description":    "The URL for the second image in the header logos in SPARCRequest.",
     "group":          "",
@@ -201,7 +201,7 @@
   },
   {
     "key":            "header_link_3",
-    "value":          "http://www.musc.edu",
+    "value":          "http://www.ctsicn.org",
     "friendly_name":  "Header Logo 3 URL",
     "description":    "The URL for the third image in the header logos.",
     "group":          "",
@@ -211,7 +211,7 @@
   },
   {
     "key":            "host",
-    "value":          "127.0.0.1:5000",
+    "value":          "http://sparctest.ctsicn.org",
     "friendly_name":  "Host",
     "description":    "",
     "group":          "",
@@ -231,7 +231,7 @@
   },
   {
     "key":            "listserv_mail_to",
-    "value":          "hewwe@musc.edu, hutsonk@musc.edu",
+    "value":          "sparctest@childrensnational.org",
     "friendly_name":  "Listserv Mail-To",
     "description":    "Email addresses of users who are e-mailed by the Listserv link.",
     "group":          "",
@@ -241,7 +241,7 @@
   },
   {
     "key":            "navbar_links",
-    "value":          "{ \"sparc_request\": [\"SPARCRequest\", \"http://localhost:3000/\"], \"sparc_dashboard\": [\"SPARCDashboard\", \"http://localhost:3000/dashboard\"], \"sparc_fulfillment\": [\"SPARCFulfillment\", \"https://cwf-d.obis.musc.edu/identities/sign_in\"], \"sparc_catalog\": [\"SPARCCatalog\", \"http://localhost:3000/catalog_manager\"], \"sparc_report\": [\"SPARCReport\", \"http://localhost:3000/reports\"] }",
+    "value":          "{ \"sparc_request\": [\"SPARCRequest\", \"http://sparctest.ctsicn.org/\"], \"sparc_dashboard\": [\"SPARCDashboard\", \"http://sparctest.ctsicn.org/dashboard\"], \"sparc_fulfillment\": [\"SPARCFulfillment\", \"http://10.54.13.48:5000/identities/sign_in\"], \"sparc_catalog\": [\"SPARCCatalog\", \"http://sparctest.ctsicn.org/catalog_manager\"], \"sparc_report\": [\"SPARCReport\", \"http://sparctest.ctsicn.org/reports\"] }",
     "friendly_name":  "Navbar Links",
     "description":    "Links which appear in the header navbar.",
     "group":          "",
@@ -251,7 +251,7 @@
   },
   {
     "key":            "new_user_cc",
-    "value":          "amcates@gmail.com, no-reply@musc.edu",
+    "value":          "sparcrequest@childrensnational.org",
     "friendly_name":  "New User CC",
     "description":    "This field will overwrite the new user mailers in the application to instead cc to this address. To be overwritten in development/testing/staging to prevent real emails being sent out to users.",
     "group":          "",
@@ -261,7 +261,7 @@
   },
   {
     "key":            "no_reply_from",
-    "value":          "no-reply@musc.edu",
+    "value":          "no-reply@childrensnational.org",
     "friendly_name":  "No Reply From",
     "description":    "",
     "group":          "",
@@ -281,7 +281,7 @@
   },
   {
     "key":            "queue_epic_load_error_to",
-    "value":          "hutsonk@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu",
+    "value":          "sparctest@childrensnational.org",
     "friendly_name":  "Epic Queue Errors To",
     "description":    "Email addresses of users who are e-mailed when there is an EPIC error.",
     "group":          "",
@@ -311,7 +311,7 @@
   },
   {
     "key":            "remote_service_notifier_host",
-    "value":          "127.0.0.1:5001",
+    "value":          "10.54.13.48:5000",
     "friendly_name":  "Remote Service Notifier",
     "description":    "",
     "group":          "",
@@ -321,7 +321,7 @@
   },
   {
     "key":            "remote_service_notifier_password",
-    "value":          "",
+    "value":          "qL1oZmdMi7OU7G1f0q6aCTVR6HrmoNmpZVNc8DfHqek",
     "friendly_name":  "Remote Service Notifier Password",
     "description":    "",
     "group":          "",
@@ -341,7 +341,7 @@
   },
   {
     "key":            "remote_service_notifier_protocol",
-    "value":          "https",
+    "value":          "http",
     "friendly_name":  "Remote Service Notifier Protocol",
     "description":    "",
     "group":          "",
@@ -351,7 +351,7 @@
   },
   {
     "key":            "remote_service_notifier_username",
-    "value":          "",
+    "value":          "iyqu2bm3T4rDWWpnwYfEl2i6o2Sphpuq_TKvFnIOTA0",
     "friendly_name":  "Remote Service Notifier Username",
     "description":    "",
     "group":          "",
@@ -367,7 +367,7 @@
     "group":          "",
     "version":        "",
     "parent_key":     "research_master_enabled",
-    "parent_value":   "true"
+    "parent_value":   "false"
   },
   {
     "key":            "rmid_api_token",
@@ -377,7 +377,7 @@
     "group":          "",
     "version":        "",
     "parent_key":     "research_master_enabled",
-    "parent_value":   "true"
+    "parent_value":   "false"
   },
   {
     "key":            "research_master_enabled",
@@ -401,7 +401,7 @@
   },
   {
     "key":            "root_url",
-    "value":          "https://andrews-mac-pro.thurmond-gazes.musc.edu",
+    "value":          "http://sparctest.ctsicn.org",
     "friendly_name":  "Root URL",
     "description":    "The root URL for the application.",
     "group":          "",
@@ -421,7 +421,7 @@
   },
   {
     "key":            "send_emails_to_real_users",
-    "value":          "false",
+    "value":          "true",
     "friendly_name":  "Send Emails to Real Users",
     "description":    "",
     "group":          "",
@@ -431,7 +431,7 @@
   },
   {
     "key":            "site_admins",
-    "value":          "[]",
+    "value":          "['mskhan2@childrensnational.org']",
     "friendly_name":  "Site Admins",
     "description":    "Determines which users will have access to the SPARCSurvey module.",
     "group":          "",
@@ -461,7 +461,7 @@
   },
   {
     "key":            "system_satisfaction_survey_cc",
-    "value":          "amcates@gmail.com, catesa@musc.edu",
+    "value":          "sparctest@childrensnational.org",
     "friendly_name":  "System Satisfaction Survey CC",
     "description":    "This field will overwrite the system satisfaction survey mailers in the application to instead cc to this address. To be overwritten in development/testing/staging to prevent real emails being sent out to users.",
     "group":          "",
@@ -531,7 +531,7 @@
   },
   {
     "key":            "use_google_calendar",
-    "value":          "true",
+    "value":          "false",
     "friendly_name":  "Use Google Calendar",
     "description":    "Determines whether the application will display calendar events on the homepage.",
     "group":          "",
@@ -561,7 +561,7 @@
   },
   {
     "key":            "use_news_feed",
-    "value":          "true",
+    "value":          "false",
     "friendly_name":  "Use News Feed",
     "description":    "Determines whether the application will display news on the homepage.",
     "group":          "",
@@ -591,7 +591,7 @@
   },
   {
     "key":            "use_shibboleth",
-    "value":          "true",
+    "value":          "false",
     "friendly_name":  "Use Shibboleth",
     "description":    "Determines whether the single user login option will be displayed in the application. Currently this is only shibboleth. If you would like to use another OmniAuth module, this will need to be set to true.",
     "group":          "",

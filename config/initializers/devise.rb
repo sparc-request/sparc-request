@@ -28,7 +28,7 @@ Devise.setup do |config|
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class with default "from" parameter.
-  config.mailer_sender = "please-change-me-at-config-initializers-devise@example.com"
+  config.mailer_sender = "testsparcrequest@childrensnational.org"
 
   # Configure the class responsible to send e-mails.
   # config.mailer = "Devise::Mailer"
@@ -235,10 +235,10 @@ Devise.setup do |config|
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', :scope => 'user,public_repo'
 
-  config.omniauth :shibboleth, {:uid_field => 'eppn',
-                  :info_fields => {:email => 'mail', :name => 'cn', :last_name => 'sn', :first_name => 'givenName'},
-                  :extra_fields => [:schacHomeOrganization]
-  }
+  #config.omniauth :shibboleth, {:uid_field => 'eppn',
+  #                :info_fields => {:email => 'mail', :name => 'cn', :last_name => 'sn', :first_name => 'givenName'},
+  #                :extra_fields => [:schacHomeOrganization]
+  #}
 
   cas_config_file_path = Rails.root.join('config', 'cas.yml')
   if File.exist?(cas_config_file_path)

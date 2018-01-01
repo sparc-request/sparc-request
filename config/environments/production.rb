@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -29,7 +29,7 @@ SparcRails::Application.configure do
   # and those relying on copy on write to perform better.
   # Rake tasks automatically ignore this option for performance.
   config.eager_load = true
-  config.enable_dependency_loading = false
+  config.enable_dependency_loading = true
 
   # Full error reports are disabled and caching is turned on
   config.consider_all_requests_local       = false
@@ -92,16 +92,18 @@ SparcRails::Application.configure do
   # Log the query plan for queries taking more than this (works
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
-  config.action_mailer.default_url_options = { host: 'sparc.musc.edu' }
+  config.action_mailer.default_url_options = { :host => 'sparc.ctsicn.org' }
+  config.action_mailer.delivery_method = :sendmail
+  config.action_mailer.perform_deliveries = true
 
   config.middleware.use ExceptionNotification::Rack,
     email: {
-      ignore_if: ->(env, exception) { ['128.23.150.107'].include?(env['REMOTE_ADDR']) },
-      sender_address: 'donotreply@musc.edu',
-      exception_recipients: ['catesa@musc.edu', 'johstu@musc.edu',
-                             'leonarjp@musc.edu', 'wiel@musc.edu',
-                             'lohrp@musc.edu', 'holtw@musc.edu',
-                             'hardeeje@musc.edu', 'sparcrequest@musc.edu']
+      ignore_if: ->(env, exception) { ['xx.xx.xx.xx'].include?(env['REMOTE_ADDR']) },
+      sender_address: 'sparcrequest@childrensnational.org',
+      exception_recipients: ['mskhan2@cnmc.org', 'hmorizono@cnmc.org',
+                             'dkkim@cnmc.org', 'ccolvin@cnmc.org',
+                             'hiroki@cnmcresearch.org']
     }
 
 end
+

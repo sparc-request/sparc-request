@@ -6,5 +6,5 @@ id,key,value,concept_code,parent_id,sort_order,category,default,reserved
 ,cchp,CCHP,,,,affiliation_type,,
 ,inbre,INBRE,,,,affiliation_type,,
 ,reach,REACH,,,,affiliation_type,,
-,DC-CFAR,DC-CFAR,,,,affiliation_type,,
-,GWU Cancer center,GWU cancer center,,,,affiliation_type,,
+,dc_cfar,DC-CFAR,,,,affiliation_type,,
+,gwu_cancer_center,GWU cancer center,,,,affiliation_type,,

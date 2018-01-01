@@ -111,8 +111,9 @@ $(document).ready ->
   $(document).on 'change', '#protocol_funding_status', ->
     $('.funding_status_dependent').hide()
     switch $(this).val()
-      when 'funded' then $('.funded').show()
-      when 'pending_funding' then $('.pending_funding').show()
+      when 'funded' then $('.funded').show() $('.funding_sponsor_dependent').show()
+      when 'pending_funding' then $('.pending_funding').show() $('.funding_sponsor_dependent').show()
+      when 'no_funding' then $('.funding_sponsor_dependent').hide()
   ###END FUNDING STATUS FIELDS DISPLAY###
 
 

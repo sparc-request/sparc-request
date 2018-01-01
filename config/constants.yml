@@ -135,9 +135,9 @@ funding_statuses: { 'Pending Funding': 'pending_funding',
                     'Funded': 'funded' }
 
 
-irb_approval_status: { 'Approval request Not Submitted': 'Approval request Not Submitted',
-                       'Approval Pending': 'Approval Pending',
-                       'Approval Received': 'Approval Received' }
+irb_approval_status: { 'Approval request Not Submitted': 'not_submitted',
+                      'Approval Pending': 'pending',
+                      'Approval Received': 'received' }
 
 
 institutions: { "University of South Carolina": "university_of_south_carolina",

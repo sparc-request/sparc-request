@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Study < Protocol
-  validates :validate_sponsor_source
+  validate  :validate_sponsor_source
   validates :selected_for_epic,           inclusion: [true, false], :if => [:is_epic?]
   validate  :validate_study_type_answers
   

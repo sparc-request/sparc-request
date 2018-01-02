@@ -71,7 +71,7 @@
   },
   {
     "key":            "dashboard_link",
-    "value":          "http://sparctest.ctsicn.org/dashboard",
+    "value":          "https://sparc.ctsicn.org/dashboard",
     "friendly_name":  "Dashboard URL",
     "description":    "The url for the user dashboard.",
     "group":          "",
@@ -211,7 +211,7 @@
   },
   {
     "key":            "host",
-    "value":          "http://sparctest.ctsicn.org",
+    "value":          "https://sparc.ctsicn.org",
     "friendly_name":  "Host",
     "description":    "",
     "group":          "",
@@ -241,7 +241,7 @@
   },
   {
     "key":            "navbar_links",
-    "value":          "{ \"sparc_request\": [\"SPARCRequest\", \"http://sparctest.ctsicn.org/\"], \"sparc_dashboard\": [\"SPARCDashboarddd\", \"http://sparctest.ctsicn.org/dashboard\"], \"sparc_fulfillment\": [\"SPARCFulfillment\", \"http://10.54.13.48:5000/identities/sign_in\"], \"sparc_catalog\": [\"SPARCCatalog\", \"http://sparctest.ctsicn.org/catalog_manager\"], \"sparc_report\": [\"SPARCReport\", \"http://sparctest.ctsicn.org/reports\"] }",
+    "value":          "{ \"sparc_request\": [\"SPARCRequest\", \"https://sparc.ctsicn.org/\"], \"sparc_dashboard\": [\"SPARCDashboard\", \"https://sparc.ctsicn.org/dashboard\"], \"sparc_fulfillment\": [\"SPARCFulfillment\", \"http://10.54.13.48:5000/identities/sign_in\"], \"sparc_catalog\": [\"SPARCCatalog\", \"https://sparc.ctsicn.org/catalog_manager\"], \"sparc_report\": [\"SPARCReport\", \"https://sparc.ctsicn.org/reports\"] }",
     "friendly_name":  "Navbar Links",
     "description":    "Links which appear in the header navbar.",
     "group":          "",
@@ -401,7 +401,7 @@
   },
   {
     "key":            "root_url",
-    "value":          "http://sparctest.ctsicn.org",
+    "value":          "https://sparc.ctsicn.org",
     "friendly_name":  "Root URL",
     "description":    "The root URL for the application.",
     "group":          "",

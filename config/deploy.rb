@@ -28,7 +28,7 @@ set :user, 'capistrano'
 set :use_sudo, false
 
 set :stages, %w(testing demo demo2 staging production)
-set :default_stage, 'testing'
+set :default_stage, 'production'
 
 set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
 

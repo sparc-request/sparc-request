@@ -29,6 +29,7 @@ $(document).ready ->
         type: $(this).data('type')
 
   $(document).on 'click', '.delete-survey', ->
+    survey_id = $(this).data('survey-id')
     swal {
       title: I18n['swal']['swal_confirm']['title']
       text: I18n['swal']['swal_confirm']['text']
@@ -40,7 +41,7 @@ $(document).ready ->
     }, ->
       $.ajax
         type: 'delete'
-        url: "/surveyor/surveys/#{$(this).data('survey-id')}.js"
+        url: "/surveyor/surveys/#{survey_id}.js"
 
   $(document).on 'click', '.preview-survey', ->
     survey_id = $(this).data('survey-id')

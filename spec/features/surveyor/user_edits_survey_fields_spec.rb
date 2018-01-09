@@ -88,7 +88,7 @@ RSpec.describe 'User edits survey fields', js: true do
     end
 
     scenario 'and sees updated display order' do
-      create(:system_survey, access_code: @survey.access_code, version: @survey.version+1)
+      create(:system_survey, access_code: @survey.access_code, version: @survey.version+1, display_order: 0)
 
       visit surveyor_surveys_path
       wait_for_javascript_to_finish

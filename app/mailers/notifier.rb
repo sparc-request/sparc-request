@@ -299,7 +299,7 @@ class Notifier < ActionMailer::Base
     when 'get_a_cost_estimate'
       "Get Cost Estimate"
     when 'request_amendment'
-      "Amendment Submitted "
+      "Amendment Submitted"
     when 'ssr_destroyed'
       "Request Deletion"
     when 'submitted'

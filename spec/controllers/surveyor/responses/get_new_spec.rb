@@ -26,34 +26,156 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
   let!(:logged_in_user) { create(:identity) }
 
   describe '#new' do
-    before :each do
-      @survey = create(:survey, active: true)
-
-      get :new, params: { access_code: @survey.access_code }, xhr: true
-    end
-
     it 'should call before_filter #authenticate_identity!' do
       expect(before_filters.include?(:authenticate_identity!)).to eq(true)
     end
 
     it 'should assign @survey to the Survey' do
-      expect(assigns(:survey)).to eq(@survey)
+      survey = create(:survey, active: true)
+
+      get :new, params: {
+        access_code: survey.access_code
+      }, xhr: true
+
+      expect(assigns(:survey)).to eq(survey)
     end
 
     it 'should assign @response as a new Response of Survey' do
+      survey = create(:survey, active: true)
+
+      get :new, params: {
+        access_code: survey.access_code
+      }, xhr: true
+
       expect(assigns(:response)).to be_a_new(Response)
-      expect(assigns(:response).survey).to eq(@survey)
+      expect(assigns(:response).survey).to eq(survey)
     end
 
     it 'should build question responses' do
+      survey = create(:survey, active: true)
+
+      get :new, params: {
+        access_code: survey.access_code
+      }, xhr: true
+
       expect(assigns(:response).question_responses).to be
     end
 
-    it 'should assign @review to true' do
-      expect(assigns(:review)).to eq("true")
+    context 'format.html (Taking Survey From Email Link)' do
+      context 'survey has not been responded to yet' do
+        it 'should assign @review to false' do
+          survey = create(:survey, active: true)
+          org = create(:organization)
+          ssr = create(:sub_service_request_without_validations, organization: org)
+
+          get :new, params: {
+            access_code: survey.access_code,
+            respondable_id: ssr.id,
+            respondable_type: ssr.class.name,
+            format: :html
+          }, xhr: true
+
+          expect(assigns(:review)).to eq("false")
+        end
+
+        it 'should assign @respondable' do
+          survey = create(:survey, active: true)
+          org = create(:organization)
+          ssr = create(:sub_service_request_without_validations, organization: org)
+
+          get :new, params: {
+            access_code: survey.access_code,
+            respondable_id: ssr.id,
+            respondable_type: ssr.class.name,
+            format: :html
+          }, xhr: true
+
+          expect(assigns(:respondable)).to eq(ssr)
+        end
+
+        it 'should render template' do
+          survey = create(:survey, active: true)
+          org = create(:organization)
+          ssr = create(:sub_service_request_without_validations, organization: org)
+
+          get :new, params: {
+            access_code: survey.access_code,
+            respondable_id: ssr.id,
+            respondable_type: ssr.class.name,
+            format: :html
+          }, xhr: true
+
+          expect(controller).to render_template(:new)
+        end
+
+        it 'should respond ok' do
+          survey = create(:survey, active: true)
+          org = create(:organization)
+          ssr = create(:sub_service_request_without_validations, organization: org)
+
+          get :new, params: {
+            access_code: survey.access_code,
+            respondable_id: ssr.id,
+            respondable_type: ssr.class.name,
+            format: :html
+          }, xhr: true
+
+          expect(controller).to respond_with(:ok)
+        end
+      end
+
+      context 'survey has already been responded to' do
+        it 'should redirect to the completed page' do
+          survey = create(:survey, active: true)
+          org = create(:organization)
+          ssr = create(:sub_service_request_without_validations, organization: org)
+          response = create(:response, survey: survey, respondable: ssr)
+
+          get :new, params: {
+            access_code: survey.access_code,
+            respondable_id: ssr.id,
+            respondable_type: ssr.class.name,
+            format: :html
+          }, xhr: true
+
+          expect(controller).to redirect_to(surveyor_response_complete_path(response))
+        end
+      end
     end
 
-    it { is_expected.to render_template(:new) }
-    it { is_expected.to respond_with(:ok) }
+    context 'format.js (Taking Survey From Step 4' do
+      it 'should assign @review to true' do
+        survey = create(:survey, active: true)
+
+        get :new, params: {
+          access_code: survey.access_code,
+          format: :js
+        }, xhr: true
+
+        expect(assigns(:review)).to eq("true")
+      end
+
+      it 'should render template' do
+        survey = create(:survey, active: true)
+
+        get :new, params: {
+          access_code: survey.access_code,
+          format: :js
+        }, xhr: true
+
+        expect(controller).to render_template(:new)
+      end
+
+      it 'should respond ok' do
+        survey = create(:survey, active: true)
+
+        get :new, params: {
+          access_code: survey.access_code,
+          format: :js
+        }, xhr: true
+
+        expect(controller).to respond_with(:ok)
+      end
+    end
   end
 end

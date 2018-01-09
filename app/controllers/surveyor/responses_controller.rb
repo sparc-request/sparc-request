@@ -34,52 +34,34 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   end
 
   def new
-    @review       = 'true'
-    @respondable  = nil
-    @response     = @survey.responses.new
+    @response = @survey.responses.new
     @response.question_responses.build
 
     respond_to do |format|
-      format.js
+      format.html {
+        existing_response = Response.where(survey: @survey, respondable_id: params[:respondable_id], respondable_type: params[:respondable_type]).first
+        redirect_to surveyor_response_complete_path(existing_response) if existing_response
+        @review = 'false'
+        @respondable = params[:respondable_type].constantize.find(params[:respondable_id])
+      }
+      format.js {
+        @review = 'true'
+        @sub_service_request = nil
+      }
     end
   end
 
   def create
     @response = Response.new(response_params)
+    @review   = params[:review] == 'true'
 
     if @response.save && @response.question_responses.none? { |qr| qr.errors.any? }
       # Delete responses to questions that didn't show anyways to avoid confusion in the data
       @response.question_responses.where(required: true, content: [nil, '']).destroy_all
-      SurveyNotification.system_satisfaction_survey(@response).deliver_now if @response.survey.access_code == 'system-satisfaction-survey'
+      SurveyNotification.system_satisfaction_survey(@response).deliver_now if @response.survey.access_code == 'system-satisfaction-survey' && @review
+      flash[:success] = t(:surveyor)[:responses][:create]
     else
-      @errors = true
-    end
-
-    respond_to do |format|
-      format.js
-    end
-  end
-
-  def edit
-    redirect_to surveyor_response_complete_path(@response) if @response.completed?
-
-    @response.question_responses.build
-
-    @review       = 'false'
-    @respondable  = @response.respondable
-    
-    respond_to do |format|
-      format.html
-    end
-  end
-
-  def update
-    if @response.update_attributes(response_params) && @response.question_responses.none? { |qr| qr.errors.any? }
-      # Delete responses to questions that didn't show anyways to avoid confusion in the data
-      @response.question_responses.where(required: true, content: [nil, '']).destroy_all
-      
-      flash[:success] = t(:surveyor)[:responses][:update]
-    else
+      @response.destroy
       @errors = true
     end
 

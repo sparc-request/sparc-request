@@ -41,7 +41,7 @@ en:
           preview: "Preview"
 
     responses:
-      update: "Thank you for participating in this survey!"
+      create: "Thank you for participating in this survey!"
       complete:
         header: "Survey Completed"
         thanks: "Thank you for completing the survey!"

@@ -30,7 +30,11 @@ $(".question-<%=qr.question_id%> .question-label").removeClass('has-error')
 $(".question-<%=qr.question_id%> .question-label .help-block").remove()
 <% end %>
 <% end %>
-<% @response.destroy %>
+<% @response.question_responses.destroy_all %>
 <% else %>
+<% if @review %>
 $('#modal_place').modal('hide')
+<% else %>
+window.location = "/surveyor/responses/<%=@response.id%>/complete"
+<% end %>
 <% end %>

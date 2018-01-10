@@ -35,12 +35,12 @@ module Surveyor::SurveysHelper
   end
 
   def edit_survey_button(survey)
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' })
-      ),
+    link_to(
+      content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' }),
+      edit_surveyor_survey_path(survey),
+      remote: true,
       title: t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:edit],
-      data: { survey_id: survey.id, type: survey.type, toggle: 'tooltip', animation: 'false' },
+      data: { toggle: 'tooltip', animation: 'false' },
       class: 'btn btn-warning edit-survey'
     )
   end
@@ -67,12 +67,10 @@ module Surveyor::SurveysHelper
   end
 
   def preview_survey_button(survey)
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: 'glyphicon glyphicon-search', aria: { hidden: 'true' })+
-        t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:preview]
-      ),
-      data: { survey_id: survey.id },
+    link_to(
+      content_tag(:span, '', class: 'glyphicon glyphicon-search', aria: { hidden: 'true' }) + t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:preview],
+      surveyor_survey_preview_path(survey),
+      remote: true,
       class: 'btn btn-info preview-survey'
     )
   end

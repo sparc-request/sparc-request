@@ -21,13 +21,6 @@ $(document).ready ->
   $("[data-toggle='tooltip']").tooltip()
 
   ### Survey Table ###
-  $(document).on 'click', '.edit-survey', ->
-    $.ajax
-      type: 'get'
-      url: "/surveyor/surveys/#{$(this).data('survey-id')}/edit.js"
-      data:
-        type: $(this).data('type')
-
   $(document).on 'click', '.delete-survey', ->
     survey_id = $(this).data('survey-id')
     swal {
@@ -42,13 +35,6 @@ $(document).ready ->
       $.ajax
         type: 'delete'
         url: "/surveyor/surveys/#{survey_id}.js"
-
-  $(document).on 'click', '.preview-survey', ->
-    survey_id = $(this).data('survey-id')
-
-    $.ajax
-      type: 'get'
-      url: "/surveyor/surveys/#{survey_id}/preview.js"
 
   ### Survey Modal ###
   $(document).on 'hide.bs.modal', '#modal_place', ->

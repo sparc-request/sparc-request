@@ -41,7 +41,7 @@ class Surveyor::SurveysController < Surveyor::BaseController
   end
 
   def edit
-    @survey = params[:type].constantize.eager_load(sections: { questions: :options }).find(params[:id])
+    @survey = Survey.eager_load(sections: { questions: :options }).find(params[:id])
 
     respond_to do |format|
       format.js

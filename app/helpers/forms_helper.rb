@@ -27,9 +27,9 @@ module FormsHelper
 
   def form_options(form, completed)
     if completed
-      [ view_form_response_button(form)
+      [ view_form_response_button(form),
         edit_form_response_button(form),
-        delete_form_response_button(form),
+        delete_form_response_button(form)
       ].join('')
     else
       complete_form_response_button(form)

@@ -23,20 +23,12 @@ SparcRails::Application.routes.draw do
 
   resources :services
 
-  namespace :additional_details do
-    resources :questionnaires
-    resource :questionnaire do
-      resource :preview, only: [:create]
-    end
-    resources :submissions
-  end
-
   namespace :surveyor do
     resources :surveys, only: [:index, :edit, :create, :destroy] do
       get :preview
       get :update_dependents_list
     end
-    resource :survey do
+    resource :survey, only: [] do
       get :search_surveyables
     end
     resources :sections, only: [:create, :destroy]
@@ -46,9 +38,10 @@ SparcRails::Application.routes.draw do
       get :complete
     end
     resources :survey_updater, only: [:update]
-
     root to: 'surveys#index'
   end
+
+  resources :forms, only: [:index]
 
   resources :feedback
 

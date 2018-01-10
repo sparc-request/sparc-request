@@ -358,6 +358,16 @@ en:
       phone_href: "tel:843-792-8300"
       phone_display: "Call: 843-792-8300"
 
+  #########
+  # FORMS #
+  #########
+  forms:
+    table_fields:
+      association: "Association"
+      title: "Form Title"
+      completed: "Completed"
+      options: "Options"
+
   ##############
   # IDENTITIES #
   ##############

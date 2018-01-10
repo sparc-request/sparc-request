@@ -399,6 +399,23 @@ class ServiceRequest < ApplicationRecord
     self.direct_cost_total(line_items) + self.indirect_cost_total(line_items)
   end
 
+  #############
+  ### Forms ###
+  #############
+
+  def associated_forms
+    Form.where(surveyable_id: self.services.ids, surveyable_type: 'Service', active: true) +
+      Form.where(surveyable_id: Organization.where(id: self.sub_service_requests.pluck(:organization_id)), surveyable_type: ['Institution', 'Provider', 'Program', 'Core'], active: true)
+  end
+
+  def has_associated_forms?
+    self.services.joins(:forms).where(surveys: { active: true }).any? || self.sub_service_requests.joins(organization: :forms).where(surveys: { active: true })
+  end
+
+  def form_completed?(form)
+    Response.where(survey: form, respondable: self.sub_service_requests).any?
+  end
+
   def relevant_service_providers_and_super_users
     identities = []
 
@@ -412,14 +429,6 @@ class ServiceRequest < ApplicationRecord
     end
 
     identities.flatten.uniq
-  end
-
-  def additional_detail_services
-    services.joins(:surveys).where(surveys: { active: true })
-  end
-
-  def additional_detail_organizations
-    sub_service_requests.joins(organization: [:surveys]).where(surveys: {active: true })
   end
 
   # Returns the SSR ids that need an initial submission email, updates the SR status,

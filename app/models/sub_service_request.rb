@@ -405,35 +405,6 @@ class SubServiceRequest < ApplicationRecord
   end
 
   ##########################
-  ### ADDITIONAL DETAILS ###
-  ##########################
-
-  def completed_survey?(survey)
-    responces.where(respondable_id: survey.id).present?
-  end
-
-  def find_responce(survey)
-    responces.where(respondable_id: survey.id).first
-  end
-
-  def has_incomplete_additional_details?
-    has_incomplete_additional_details_services? || has_incomplete_additional_details_organization?
-  end
-
-  def has_incomplete_additional_details_services?
-    line_items.includes(:service).map(&:service).detect{|service|
-      survey = service.surveys.active.first
-      !completed_survey?(survey) if survey
-    }.present?
-  end
-
-  def has_incomplete_additional_details_organization?
-    survey = organization.surveys.active.first
-
-    survey.present? && !completed_survey?(survey)
-  end
-
-  ##########################
   ## SURVEY DISTRIBUTTION ##
   ##########################
   # Distributes all available surveys to primary pi and ssr requester

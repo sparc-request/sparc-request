@@ -30,7 +30,7 @@ class Organization < ApplicationRecord
   has_many :associated_surveys, as: :associable, dependent: :destroy
   has_many :pricing_setups, :dependent => :destroy
   has_one :subsidy_map, :dependent => :destroy
-  has_many :surveys, as: :surveyable, dependent: :destroy
+  has_many :forms, -> { active }, as: :surveyable, dependent: :destroy
   has_many :super_users, :dependent => :destroy
   has_many :identities, :through => :super_users
 

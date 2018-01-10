@@ -28,12 +28,12 @@
       = "+"
   .row.text-center
     .col-xs-4.no-padding.text-center
-      - if portal || tab == 'calendar'
-        = visit_group.window_before
+      - if portal || tab == 'calendar' || visit_group.arm.protocol.locked
+        = visit_group.window_before 
       - else
         = link_to visit_group.window_before, 'javascript:void(0)', data: data, class: 'edit-visit-group', title: t(:calendars)[:tooltips][:window_before]
     .col-xs-4.no-padding.text-center
-      - if portal || tab == 'calendar'
+      - if portal || tab == 'calendar' || visit_group.arm.protocol.locked
         = visit_group.day
       - else
         - if visit_group.day.blank?
@@ -42,13 +42,13 @@
           - day = visit_group.day
         = link_to day, 'javascript:void(0)', data: data, class: 'edit-visit-group', title: t(:calendars)[:tooltips][:visit_day]
     .col-xs-4.no-padding.text-center
-      - if portal || tab == 'calendar'
-        = visit_group.window_after
+      - if portal || tab == 'calendar' || visit_group.arm.protocol.locked
+        = visit_group.window_after 
       - else
         = link_to visit_group.window_after, 'javascript:void(0)', data: data, class: 'edit-visit-group', title: t(:calendars)[:tooltips][:window_after]
   .row.visit-group-names.text-center
     .col-sm-12.text-center{ data: { visit_group_id: visit_group.id } }
-      - if portal || tab == 'calendar'
+      - if portal || tab == 'calendar' || visit_group.arm.protocol.locked
         = visit_group.name
       - else
         = link_to visit_group.name, 'javascript:void(0)', data: data, class: 'edit-visit-group', title: t(:calendars)[:tooltips][:visit_name]

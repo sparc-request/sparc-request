@@ -22,6 +22,15 @@ class Dashboard::ArmsController < Dashboard::BaseController
   respond_to :json, :html
   before_action :find_arm, only: [:update]
 
+  def index
+    protocol = Protocol.find(params[:protocol_id])
+    @arms = protocol.arms
+
+    respond_to do |format|
+      format.json
+    end
+  end
+
   def new
     @protocol = Protocol.find(params[:protocol_id])
     @service_request = ServiceRequest.find(params[:service_request_id])

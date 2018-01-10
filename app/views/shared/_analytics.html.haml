@@ -17,9 +17,3 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.col-md-9.document-management-left
-  = render 'service_requests/document_management/documents', service_request: service_request
-  = render 'service_requests/document_management/notes', service_request: service_request, notable_type: notable_type, notable_id: notable_id
-  - if service_request.additional_detail_services.present? || service_request.additional_detail_organizations.present?
-    .document-management-submissions
-      = render "additional_details/document_management_submissions", service_request: service_request

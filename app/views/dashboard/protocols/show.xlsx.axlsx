@@ -28,8 +28,8 @@ default = wb.styles.add_style alignment: { horizontal: :left }
 # centered = wb.styles.add_style alignment: { horizontal: :center }
 # bordered = wb.styles.add_style :border=> {:style => :thin, :color => "00000000"}
 # centered_bordered = wb.styles.add_style :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
-money = wb.styles.add_style :format_code => '$#,##0.00_;[Red]-$#,##0.00'
-bold_money = wb.styles.add_style :format_code => '$#,##0.00_;[Red]-$#,##0.00', b: true
+money = wb.styles.add_style :format_code => '$#,##0.00_);[Red]-$#,###.00'
+bold_money = wb.styles.add_style :format_code => '$#,##0.00_);[Red]-$#,###.00', b: true
 percent = wb.styles.add_style :format_code => '0.00\%', b: true
 row_header_style = wb.styles.add_style b: true
 header_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :left }

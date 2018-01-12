@@ -21,6 +21,7 @@
   .panel-heading.text-center
     %h4.panel-title
       = t(:proper)[:cart][:header]
+      %span.glyphicon.glyphicon-shopping-cart
   = hidden_field_tag :line_item_count, line_items_count
   - if sub_service_request # If we are editing a single SSR, we don't want to display the tabs
     .list-group

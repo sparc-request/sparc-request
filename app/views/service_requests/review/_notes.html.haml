@@ -23,7 +23,7 @@
       = t(:proper)[:review][:notes_notice]
   .bootstrap-table-dropdown-overflow
     #notes-custom-toolbar
-    %table.table-striped#notes-table{ data: { toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: notes_path(format: :json, note: { notable_id: notable_id, notable_type: notable_type }), striped: "true", toolbar: "#notes-custom-toolbar", "show-export" => "false", "export-types" => ['excel'] } }
+    %table.table-striped#protocol-notes-table{ data: { toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: notes_path(format: :json, note: { notable_id: notable_id, notable_type: 'Protocol' }), striped: "true", toolbar: "#notes-custom-toolbar", "show-export" => "false", "export-types" => ['excel'] } }
       %thead.primary-header
         %tr
           %th{ data: { class: 'user', align: "left", sortable: "true", field: "user" } }

@@ -65,6 +65,10 @@ en:
           attributes:
             content:
               blank: "has to be answered"
+        project_role:
+          attributes:
+            identity_id:
+              blank: "^Primary PI can't be blank"
       messages:
         spoofed_media_type: "has format errors. Please re-save the file in a different format and try again."
     attributes:
@@ -278,6 +282,18 @@ en:
       window_after: 'Visit window days after visit'
       visit_day: 'Day the anticipated visit occurs (incremental)'
       visit_name: 'Name of the visit'
+
+  calendar_structure:
+    header: "Calendar Structure"
+    lock_calendar: "Lock Calendar"
+    unlock_calendar: "Unlock Calendar"
+    table_fields:
+      arm_name: "Arm Name"
+      subject_count: "Subject Count"
+      visit_count: "Visit Count"
+    tooltips:
+      lock_calendar: 'Locking the calendar will prevent users from making changes to arm, subject, and visit information.'
+      arm_info: 'The calendar has been locked by an administrator. No changes to the stucture may be made at this time.'
 
   #############
   # CONSTANTS #
@@ -531,8 +547,8 @@ en:
       nct_number: 'Clinicaltrials.gov Registry Number'
       pro_number: 'Institutional Review Board (IRB) Unique Identifier'
       ind_number: 'Investigational New Drug (IND) Number'
-      short_title: 'An abbreviated form of the title used to identify your study/project'
-      title: 'Full title of your study/project'
+      short_title: 'An abbreviated form of the title used to identify your study/project. Special characters outside the allowed range will be removed automatically.'
+      title: 'Full title of your study/project. Special characters outside the allowed range will be removed automatically.'
       funding_status: 'Indicates whether or not funding has been applied for or obtained'
       potential_funding_source: 'Funding source that has been applied for but not yet obtained. Pricing is logically driven off this field'
       funding_source: 'Funding source which drives research pricing for your study/project'
@@ -1528,7 +1544,7 @@ en:
     proxy: "Proxy Rights:"
     request_amendment: "Request Amendment"
     request_amendment_intro:  "Services have been added or deleted in SPARCRequest and is awaiting your review in"
-    requester:  "(Requester)"
+    requester:  "Requester"
     role: "Role"
     s_name: "Sponsor Name"
     service: "Service"

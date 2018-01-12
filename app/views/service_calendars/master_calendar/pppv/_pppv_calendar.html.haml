@@ -27,9 +27,13 @@
       - unless review
         = render 'service_calendars/master_calendar/pppv/pppv_freeze_header_button', tab: tab, portal: portal, arm: arm, service_request: service_request, sub_service_request: sub_service_request, merged: merged, statuses_hidden: statuses_hidden, scroll_true: @scroll_true, display_all_services: display_all_services
     - unless portal || review
+      - if arm.protocol.locked
+        .text-center
+          %span{class: 'glyphicon glyphicon-lock locked', style: 'font-size:50px;color:black;', data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' }, title: t(:calendar_structure)[:tooltips][:arm_info] }
       .pull-right
-        %button.btn.btn-warning.move-visit-button{ data: { arm_id: arm.id, pages: pages.to_s, page: page, review: review.to_s, portal: portal.to_s, admin: admin.to_s, tab: tab, merged: merged.to_s, consolidated: consolidated.to_s, statuses_hidden: statuses_hidden, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:calendars)[:tooltips][:move_visit_button]}
-          = t(:proper)[:service_calendar][:move_visit][:header]
+        - unless arm.protocol.locked
+          %button.btn.btn-warning.move-visit-button{ data: { arm_id: arm.id, pages: pages.to_s, page: page, review: review.to_s, portal: portal.to_s, admin: admin.to_s, tab: tab, merged: merged.to_s, consolidated: consolidated.to_s, statuses_hidden: statuses_hidden, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:calendars)[:tooltips][:move_visit_button]}
+            = t(:proper)[:service_calendar][:move_visit][:header]
         .divider
     .clearfix
   = hidden_field_tag :service_request_id, service_request.id

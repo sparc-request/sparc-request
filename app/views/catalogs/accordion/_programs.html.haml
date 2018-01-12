@@ -29,5 +29,5 @@
 
       %tr
         %td
-          %div.program-link.text-center{ class: locked ? 'bg-danger text-danger locked-program' : '', data: { id: p.id, process_ssr_found: program_is_process_ssr.to_s } }
+          %div.program-link.text-left{ class: locked ? 'bg-danger text-danger locked-program' : '', data: { id: p.id, process_ssr_found: program_is_process_ssr.to_s } }
             = organization_name_display(p, locked)

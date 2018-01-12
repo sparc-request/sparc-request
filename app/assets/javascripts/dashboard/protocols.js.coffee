@@ -24,6 +24,17 @@
 $(document).ready ->
   Sparc.protocol =
     ready: ->
+      $(document).on 'click', '.calendar-lock', ->
+        protocol_id = $(this).data('protocol-id')
+        locked = $(this).data('locked')
+        data =
+        'protocol_id'       : protocol_id,
+        'locked'            : locked
+        $.ajax
+          type: 'PUT'
+          url: "/dashboard/protocols/#{protocol_id}"
+          data: data
+
       #  Protocol Index Begin
       $(document).on 'click', '.protocols_index_row > .id, .protocols_index_row > .title, .protocols_index_row > .pis', ->
         #if you click on the row, it opens the protocol show

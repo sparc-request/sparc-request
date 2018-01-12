@@ -44,11 +44,11 @@ Once the Installation is complete you will need to create your initial instituti
 - Once in the console enter: require ‘./lib/initial_cm_creation’,  then enter: ‘run_initial_setup’ and follow the instructions.
 - NOTE: This tool should only be used to set up your initial institution and user, as it creates users with admin privileges.
 
-Once you have created an initial institution and set yourself as a catalog manager, you will be able to access the catalog manager part of the application and begin inputing your organizational structure and service offerings.  This tool can be found at <root_url>/catalog_manager. In order to access the other administration tool, the admin portal (found at <root_url>/portal/admin) you will need to either be a service provider or a super user for the organizational level you need admin control over in order to gain access to the portal.  These rights can be granted in the catalog manager under the ‘Service Providers’ and ‘Super Users’ sections for each organizational entity.
+Once you have created an initial institution and set yourself as a catalog manager, you will be able to access the catalog manager part of the application and begin inputing your organizational structure and service offerings. This tool can be found at <root_url>/catalog_manager. In order to access administrative options for a particular request within the dashboard, you will need to either be a service provider or a super user for the organizational level of the services in that request. These rights can be granted in the catalog manager under the ‘Service Providers’ and ‘Super Users’ sections for each organizational entity.
 
 Some basic important URLs for the application are as follows:
 <root_url> - The main SPARC Request shopping screen
-<root_url/portal> - The SPARC Request Dashboard.
-<root_url/portal/admin> - The SPARC Request Admin Portal (rights are require to gain access)
-<root_url/catalog_manager> - The Catalog Manager application for managing organizational structure and service offerings.
+<root_url/dashboard> - The SPARC Request Dashboard
+<root_url/catalog_manager> - The Catalog Manager application for managing organizational structure and service offerings
+<root_url/reports> - The SPARC Request reporting module
 

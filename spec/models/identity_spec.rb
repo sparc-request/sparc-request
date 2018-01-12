@@ -109,9 +109,7 @@ RSpec.describe Identity, type: :model do
 
     describe "permission methods" do
 
-
       describe "can edit service request " do
-
 
         it "should return false if the users rights are not 'approve' or request" do
           project_role.update_attributes(project_rights: 'none')

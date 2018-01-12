@@ -128,6 +128,13 @@ en:
         epic_queue: "View or edit protocols for Epic interface"
         messages: "Access to correspondence"
 
+    ##############
+    # NAVIGATION #
+    ##############
+    navigation:
+      bottom:
+        saving: "Saving..."
+
     ###########
     #  NOTES  #
     ###########
@@ -170,7 +177,6 @@ en:
     protocol_filters:
       header: "Filter Protocols"
       search_by: "Search All"
-      search_by_options: ['Authorized User', 'HR#', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title']
       archived: "Archived"
       inactive: "(inactive)"
       status: "Status"
@@ -212,7 +218,7 @@ en:
         requests: Requests
         tooltips:
           protocol_id: "System generated from SPARCRequest"
-          short_title: "An abbreviated form of the title used to identify your study/project"
+          short_title: "An abbreviated form of the title used to identify your study/project. Special characters outside the allowed range will be removed automatically."
           pi: "Principal Investigator(s)"
           export: "Export displayed protocols to Excel"
           requests: "Quick access to requests"

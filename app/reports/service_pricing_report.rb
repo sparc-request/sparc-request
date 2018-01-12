@@ -47,7 +47,14 @@ class ServicePricingReport < ReportingModule
                               "other_rate" => "Other Rate",
                               "member_rate" => "Member Rate" },
                             :selected => ['Service Rate', 'Federal Rate', 'Corporate Rate', 'Other Rate', 'Member Rate']
-                          }
+                          },
+      "Additional Codes" => { :field_type => :check_box_tag, :for => "additional_codes",
+                              :multiple => {
+                                "cpt_code" => "CPT Code",
+                                "revenue_code" => "Revenue Code",
+                                "order_code" => "Order Code",
+                                "eap_id" => "EAP ID"}
+                            }
     }
   end
 
@@ -62,23 +69,49 @@ class ServicePricingReport < ReportingModule
 
     if params[:institution_id]
       attrs[Institution] = [params[:institution_id], :abbreviation]
+    else
+      attrs["Institution"] = "parents.select{|org| org.type == 'Institution'}.first.try(:abbreviation)"
     end
 
     if params[:provider_id]
       attrs[Provider] = [params[:provider_id], :abbreviation]
+    else
+      attrs["Provider"] = "parents.select{|org| org.type == 'Provider'}.first.try(:abbreviation)"
     end
 
     if params[:program_id]
       attrs[Program] = [params[:program_id], :abbreviation]
+    else
+      attrs["Program"] = "parents.select{|org| org.type == 'Program'}.first.try(:abbreviation)"
     end
 
     if params[:core_id]
       attrs[Core] = [params[:core_id], :abbreviation]
+    else
+      attrs["Core"] = "parents.select{|org| org.type == 'Core'}.first.try(:abbreviation)"
     end
 
     attrs["Service"] = :name
 
     attrs["Service Status"] = :humanized_status
+
+    if params[:additional_codes]
+      if params[:additional_codes].include?("cpt_code")
+        attrs["CPT Code"] = "cpt_code"
+      end
+
+      if params[:additional_codes].include?("revenue_code")
+        attrs["Revenue Code"] = "revenue_code"
+      end
+
+      if params[:additional_codes].include?("order_code")
+        attrs["Order Code"] = "order_code"
+      end
+
+      if params[:additional_codes].include?("eap_id")
+        attrs["EAP ID"] = "eap_id"
+      end
+    end
 
     if params[:rate_types]
       if params[:rate_types].include?("full_rate")

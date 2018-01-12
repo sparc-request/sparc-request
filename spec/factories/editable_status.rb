@@ -20,6 +20,7 @@
 
 FactoryGirl.define do
   factory :editable_status do
+    selected true
     status { PermissibleValue.get_key_list('status').sample }
   end
 end

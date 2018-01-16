@@ -27,11 +27,10 @@
 
   - unless survey.description.blank?
     .form-group
-      .col-lg-12.no-padding
-        %p.survey-description
-          = raw(survey.description)
+      %p.survey-description.no-margin
+        = raw(survey.description)
 
-  .alert.alert-warning.col-sm-12.no-margin
+  .form-group.alert.alert-warning
     = t(:errors)[:user_note]
 
   .survey-sections

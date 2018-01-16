@@ -30,6 +30,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
 
     respond_to do |format|
       format.html
+      format.js
     end
   end
 
@@ -45,6 +46,9 @@ class Surveyor::ResponsesController < Surveyor::BaseController
       }
       format.js
     end
+  end
+
+  def edit
   end
 
   def create
@@ -63,6 +67,13 @@ class Surveyor::ResponsesController < Surveyor::BaseController
     respond_to do |format|
       format.js
     end
+  end
+
+  def update
+  end
+
+  def destroy
+    Response.find(params[:id]).destroy
   end
 
   def complete

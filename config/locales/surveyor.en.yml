@@ -34,8 +34,6 @@ en:
           active: "Active"
           options: "Options"
         fields:
-          edit: "Edit Form"
-          delete: "Delete Form"
           activate: "Activate"
           disable: "Disable"
           preview: "Preview"
@@ -116,8 +114,6 @@ en:
           active: "Active"
           options: "Options"
         fields:
-          edit: "Edit Survey"
-          delete: "Delete Survey"
           activate: "Activate"
           disable: "Disable"
           preview: "Preview"

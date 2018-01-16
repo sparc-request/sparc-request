@@ -34,7 +34,7 @@
 %ul
 - @surveys.each do |survey|
   %li
-    = link_to survey.title, url_for(controller: '/surveyor/responses', action: :new, only_path: false, access_code: survey.access_code, survey_version: survey.version, respondable_id: @ssr.id, respondable_type: @ssr.class.name, format: :html), target: '_blank'
+    = link_to survey.title, url_for(controller: '/surveyor/responses', action: :new, only_path: false, type: survey.class.name, access_code: survey.access_code, respondable_id: @ssr.id, respondable_type: @ssr.class.name, format: :html), target: '_blank'
 
 - if @surveys.pluck(:access_code).include?("sctr-customer-satisfaction-survey")
   #sctr-grant-citation

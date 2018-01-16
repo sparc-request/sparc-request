@@ -36,24 +36,19 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   def new
     @response = @survey.responses.new
     @response.question_responses.build
+    @respondable = params[:respondable_type].constantize.find(params[:respondable_id])
 
     respond_to do |format|
       format.html {
         existing_response = Response.where(survey: @survey, respondable_id: params[:respondable_id], respondable_type: params[:respondable_type]).first
         redirect_to surveyor_response_complete_path(existing_response) if existing_response
-        @review = 'false'
-        @respondable = params[:respondable_type].constantize.find(params[:respondable_id])
       }
-      format.js {
-        @review = 'true'
-        @sub_service_request = nil
-      }
+      format.js
     end
   end
 
   def create
     @response = Response.new(response_params)
-    @review   = params[:review] == 'true'
 
     if @response.save && @response.question_responses.none? { |qr| qr.errors.any? }
       # Delete responses to questions that didn't show anyways to avoid confusion in the data
@@ -76,13 +71,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   private
 
   def find_survey
-    surveys = Survey.where(access_code: params[:access_code], active: true).order('version DESC')
-
-    if params[:version]
-      @survey = surveys.where(version: params[:version]).first
-    else
-      @survey = surveys.first
-    end
+    @survey = params[:type].constantize.where(access_code: params[:access_code], active: true).first
   end
 
   def find_response

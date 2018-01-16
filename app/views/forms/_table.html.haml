@@ -21,11 +21,11 @@
   %table#forms-table{ data: { toggle: 'table', url: forms_path(format: :json,service_request_id: service_request.id), striped: "true" } }
     %thead.primary-header
       %tr
-        %th{ data: { field: "association", align: "left", sortable: "true" } }
+        %th.col-sm-5{ data: { field: "association", align: "left", sortable: "true" } }
           = t(:forms)[:table_fields][:association]
-        %th{ data: { field: "title", align: "left", sortable: "true" } }
+        %th.col-sm-3{ data: { field: "title", align: "left", sortable: "true" } }
           = t(:forms)[:table_fields][:title]
-        %th{ data: { field: "completed", align: "center", sortable: "false" } }
+        %th.col-sm-1{ data: { field: "completed", align: "center", sortable: "false" } }
           = t(:forms)[:table_fields][:completed]
-        %th{ data: { field: "options", align: "center", sortable: "false" } }
+        %th.col-sm-3{ data: { field: "options", align: "center", sortable: "false" } }
           = t(:forms)[:table_fields][:options]

@@ -32,9 +32,9 @@ $(".question-<%=qr.question_id%> .question-label .help-block").remove()
 <% end %>
 <% @response.question_responses.destroy_all %>
 <% else %>
-<% if @review %>
-$('#modal_place').modal('hide')
-<% else %>
-window.location = "/surveyor/responses/<%=@response.id%>/complete"
-<% end %>
+if $('#modal_place:visible').length > 0
+  $('#modal_place').modal('hide')
+  $('#forms-table').bootstrapTable('refresh')
+else
+  window.location = "/surveyor/responses/<%=@response.id%>/complete"
 <% end %>

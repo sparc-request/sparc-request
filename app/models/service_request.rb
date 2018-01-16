@@ -403,13 +403,20 @@ class ServiceRequest < ApplicationRecord
   ### Forms ###
   #############
 
+  def has_associated_forms?
+    self.services.joins(:forms).where(surveys: { active: true }).any? || self.sub_service_requests.joins(organization: :forms).where(surveys: { active: true })
+  end
+  
   def associated_forms
     Form.where(surveyable_id: self.services.ids, surveyable_type: 'Service', active: true) +
       Form.where(surveyable_id: Organization.where(id: self.sub_service_requests.pluck(:organization_id)), surveyable_type: ['Institution', 'Provider', 'Program', 'Core'], active: true)
   end
 
-  def has_associated_forms?
-    self.services.joins(:forms).where(surveys: { active: true }).any? || self.sub_service_requests.joins(organization: :forms).where(surveys: { active: true })
+  def ssr_with_form(form)
+    self.sub_service_requests.detect do |ssr|
+      Form.where(surveyable_id: ssr.services.ids, surveyable_type: 'Service', active: true).include?(form) ||
+        Form.where(surveyable_id: ssr.organization_id, surveyable_type: ['Institution', 'Provider', 'Program', 'Core']).include?(form)
+    end
   end
 
   def form_completed?(form)

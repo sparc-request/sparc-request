@@ -39,8 +39,6 @@ module Surveyor::SurveysHelper
       content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' }),
       edit_surveyor_survey_path(survey),
       remote: true,
-      title: t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:edit],
-      data: { toggle: 'tooltip', animation: 'false' },
       class: 'btn btn-warning edit-survey'
     )
   end
@@ -50,8 +48,7 @@ module Surveyor::SurveysHelper
       raw(
         content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
       ),
-      title: t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:delete],
-      data: { survey_id: survey.id, toggle: 'tooltip', animation: 'false' },
+      data: { survey_id: survey.id },
       class: 'btn btn-danger delete-survey'
     )
   end

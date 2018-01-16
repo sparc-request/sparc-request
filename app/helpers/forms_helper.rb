@@ -25,26 +25,50 @@ module FormsHelper
     content_tag(:h4, content_tag(:span, '', class: klass))
   end
 
-  def form_options(form, completed)
+  def form_options(form, completed, respondable)
     if completed
       [ view_form_response_button(form),
         edit_form_response_button(form),
         delete_form_response_button(form)
       ].join('')
     else
-      complete_form_response_button(form)
+      complete_form_response_button(form, respondable)
     end
   end
 
   def view_form_response_button(form)
+    link_to(
+      'View',
+      '',
+      remote: true,
+      class: 'btn btn-info view-form'
+    )
   end
 
   def edit_form_response_button(form)
+    link_to(
+      content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' }),
+      '',
+      remote: true,
+      class: 'btn btn-warning edit-form'
+    )
   end
 
   def delete_form_response_button(form)
+    link_to(
+      content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' }),
+      '',
+      remote: true,
+      class: 'btn btn-danger edit-form'
+    )
   end
 
-  def complete_form_response_button(form)
+  def complete_form_response_button(form, respondable)
+    link_to(
+      'Complete',
+      new_surveyor_response_path(type: form.class.name, access_code: form.access_code, respondable_id: respondable.id, respondable_type: respondable.class.name),
+      remote: true,
+      class: 'btn btn-success view-form'
+    )
   end
 end

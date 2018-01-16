@@ -40,7 +40,7 @@ $(document).ready ->
   $(document).on 'hide.bs.modal', '#modal_place', ->
     if $(this).children("#survey-modal").length > 0
       $('.survey-table').bootstrapTable('refresh')
-    else
+    else if $(this).children("#form-modal").length > 0
       $('.form-table').bootstrapTable('refresh')
 
   $(document).on 'click', '.add-section', ->

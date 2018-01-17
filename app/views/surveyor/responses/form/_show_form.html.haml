@@ -42,7 +42,7 @@
                 %br
                 %hr
               .form-group
-                %label{ class: qr.required? ? "required" : "" }
+                %label{ class: qr.required? ? "required" : "" }<
                   = raw(qr.question.content)
               - unless qr.question.description.blank?
                 .form-group

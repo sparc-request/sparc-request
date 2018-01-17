@@ -17,18 +17,16 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.modal-dialog
+.modal-dialog.modal-lg
   .modal-content
-    = form_for response, url: surveyor_responses_path(response), remote: true do |f|
-      .modal-header
-        %button.close{ type: 'button', data: { dismiss: 'modal' } }
-          %span{ aria: { hidden: 'true' } } &times;
-        %h4.text-center.modal-title
-          = survey.title
-      .modal-body
-        = render 'surveyor/responses/form/response_content', f: f, survey: survey, respondable: respondable
-      .modal-footer
-        .center-block
-          %button.btn.btn-default.no-button{ type: 'button', data: { dismiss: 'modal' } }
-            = t(:actions)[:close]
-          = f.submit t(:actions)[:submit], class: 'btn btn-primary'
+    .modal-header
+      %button.close{ type: 'button', data: { dismiss: 'modal' } }
+        %span{ aria: { hidden: 'true' } } &times;
+      %h4.text-center.modal-title
+        = @survey.title
+    .modal-body
+      = render 'surveyor/responses/form/show_form', survey: @survey, response: @response
+    .modal-footer
+      .center-block
+        %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
+          = t(:actions)[:close]

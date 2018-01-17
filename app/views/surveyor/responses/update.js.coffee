@@ -20,9 +20,6 @@
 <% if @response.valid? %>
 if $('#modal_place:visible').length > 0
   $('#modal_place').modal('hide')
-  $('#forms-table').bootstrapTable('refresh')
-else
-  window.location = "/surveyor/responses/<%=@response.id%>/complete"
 <% else %>
 <% @response.question_responses.each do |qr| %>
 <% if qr.valid? %>

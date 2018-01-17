@@ -49,19 +49,19 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   end
 
   def edit
+    @survey = @response.survey
+
+    respond_to do |format|
+      format.js
+    end
   end
 
   def create
     @response = Response.new(response_params)
 
-    if @response.save && @response.question_responses.none? { |qr| qr.errors.any? }
-      # Delete responses to questions that didn't show anyways to avoid confusion in the data
-      @response.question_responses.where(required: true, content: [nil, '']).destroy_all
-      SurveyNotification.system_satisfaction_survey(@response).deliver_now if @response.survey.access_code == 'system-satisfaction-survey' && @review
+    if @response.save
+      SurveyNotification.system_satisfaction_survey(@response).deliver_now if @response.survey.access_code == 'system-satisfaction-survey' && Rails.application.routes.recognize_path(request.referrer)[:action] == 'review'
       flash[:success] = t(:surveyor)[:responses][:create]
-    else
-      @response.destroy
-      @errors = true
     end
 
     respond_to do |format|
@@ -70,6 +70,9 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   end
 
   def update
+    if @response.update_attributes(response_params)
+      flash[:success] = t(:surveyor)[:responses][:update]
+    end
   end
 
   def destroy

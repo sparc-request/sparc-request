@@ -63,11 +63,11 @@ wb.add_worksheet(name: "Review") do |sheet|
   end
 
   if has_per_patient_per_visit_services
-    (visit_count*2 + 3 + @admin_offset.to_i).times do
+    (visit_count*2 + @admin_offset.to_i).times do
       proxy_row << ""
     end
   else
-    (3 + @admin_offset.to_i).times do
+    (@admin_offset.to_i).times do
      proxy_row << ""
     end
   end
@@ -84,13 +84,11 @@ wb.add_worksheet(name: "Review") do |sheet|
 
   doc_row = ["Name", "Type", "", "", "Uploaded Date"]
   if has_per_patient_per_visit_services
-    (visit_count*2 + 3 + @admin_offset.to_i).times do
+    (visit_count*2 + @admin_offset.to_i).times do
       doc_row << ""
     end
-  else
-    (3 + @admin_offset.to_i).times do
-      doc_row << ""
-    end
+  elsif @admin_offset
+    doc_row << ""
   end
 
   sheet.add_row doc_row, :style => sub_header_style
@@ -116,7 +114,7 @@ wb.add_worksheet(name: "Review") do |sheet|
       services_row = ["Selected Services", "CPT Code", "Order Code", "Notes"]
       services_row << "Current Cost" if @admin_offset
       services_row << "# of Subjects"
-      arm_row = [arm.name, "", "", "", "", ""]
+      arm_row = [arm.name, "", "", "", ""]
       arm_row += [""] if @admin_offset
 
       num_visits = arm.visit_count
@@ -125,10 +123,8 @@ wb.add_worksheet(name: "Review") do |sheet|
         visit_group_name_sizes << vg.name.size
         services_row << "#{vg.name}"
         services_row << ""
-        arm_row += ["#{vg.day}", "", "", ""]
+        arm_row += ["", "#{vg.day}"]
       end
-
-      services_row << ""
 
       (visit_count - num_visits).times do
         services_row << ""
@@ -136,8 +132,6 @@ wb.add_worksheet(name: "Review") do |sheet|
         arm_row << ""
         arm_row << ""
       end
-
-      services_row += ["", ""]
 
       dbl_rt_col_width = rt_col_width * 2
       row_height_factor = (visit_group_name_sizes.max / dbl_rt_col_width).ceil
@@ -218,8 +212,9 @@ wb.add_worksheet(name: "Review") do |sheet|
           line_items_visit.ordered_visits.each_with_index do |v, index|
             service_row << (totals_hash["#{v.id}"] == 0 ? '' : v.research_billing_qty)
             service_row << (totals_hash["#{v.id}"] == 0 ? '' : v.insurance_billing_qty)
-            service_row << ""
           end
+
+          service_row << ""
 
           (visit_count - num_visits).times do
             service_row << ""
@@ -251,7 +246,7 @@ wb.add_worksheet(name: "Review") do |sheet|
   end
   ############ end of arms.each
 
-  services_row = ["Selected Services", "", "", ""]
+  services_row = ["Selected Services"]
   services_row << "Current Cost" if @admin_offset
   services_row += [""] * (visit_count * 2 + 4)
 
@@ -359,7 +354,7 @@ wb.add_worksheet(name: "Review") do |sheet|
 
   alpha_array = alpha_array + additional_alpha_arrays.flatten
 
-  end_column = alpha_array[visit_count*2 + 7 + @admin_offset.to_i]
+  end_column = alpha_array[visit_count*2 + 4 + @admin_offset.to_i]
 
   sheet.merge_cells("A1:#{end_column}1") #info header
   sheet.merge_cells("B2:D2") #id

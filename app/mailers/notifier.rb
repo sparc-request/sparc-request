@@ -42,7 +42,7 @@ class Notifier < ActionMailer::Base
     service_list_true = @service_request.service_list(true)
     controller = set_instance_variables(user_current, @service_request, service_list_false, service_list_true, @service_request.line_items, @protocol)
 
-    xls = controller.render_to_string action: 'show', formats: [:xlsx]
+    xls = controller.render_to_string action: 'request_report', formats: [:xlsx]
     ### END ATTACHMENTS ###
 
     @status = status(admin_delete_ssr, audit_report.present?, individual_ssr, ssr, @service_request)
@@ -79,7 +79,7 @@ class Notifier < ActionMailer::Base
     service_list_false = @service_request.service_list(false, nil, ssr)
     service_list_true = @service_request.service_list(true, nil, ssr)
     controller = set_instance_variables(user_current, @service_request, service_list_false, service_list_true, ssr.line_items, @protocol)
-    xls = controller.render_to_string action: 'show', formats: [:xlsx]
+    xls = controller.render_to_string action: 'request_report', formats: [:xlsx]
     ### END ATTACHMENTS ###
 
     @ssr_deleted = false
@@ -136,7 +136,7 @@ class Notifier < ActionMailer::Base
     line_items = line_items.flatten
     controller = set_instance_variables(user_current, @service_request, service_list_false, service_list_true, line_items, @protocol)
 
-    xls = controller.render_to_string action: 'show', formats: [:xlsx]
+    xls = controller.render_to_string action: 'request_report', formats: [:xlsx]
     attachments_to_add["service_request_#{@service_request.id}.xlsx"] = xls
     #TODO this is not very multi-institutional
     # generate the required forms pdf if it's required

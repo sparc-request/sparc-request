@@ -39,10 +39,10 @@ class ServiceRequestsController < ApplicationController
     @service_list_false = @service_request.service_list(false)
     @line_items = @service_request.line_items
     @display_all_services = params[:display_all_services] == 'true' ? true : false
-
+    @report_type = params[:report_type]
     respond_to do |format|
       format.xlsx do
-        render xlsx: "show", filename: "service_request_#{@protocol.id}", disposition: "inline"
+        render xlsx: "#{@report_type}", filename: "service_request_#{@protocol.id}", disposition: "inline"
       end
     end
   end

@@ -55,22 +55,9 @@ wb.add_worksheet(name: "Review") do |sheet|
 
   has_per_patient_per_visit_services = !@service_list_false.empty?
 
-  visit_count = 0
-  if has_per_patient_per_visit_services
-    @service_request.arms.each do |arm|
-      visit_count = arm.visit_count unless visit_count > arm.visit_count
-    end
-  end
+  visit_count = (has_per_patient_per_visit_services ? @service_request.arms.map(&:visit_count).max : 0)
 
-  if has_per_patient_per_visit_services
-    (visit_count*2 + @admin_offset.to_i).times do
-      proxy_row << ""
-    end
-  else
-    (@admin_offset.to_i).times do
-     proxy_row << ""
-    end
-  end
+  proxy_row += [""] * (visit_count*2)
 
   sheet.add_row proxy_row, :style => sub_header_style
 
@@ -82,14 +69,7 @@ wb.add_worksheet(name: "Review") do |sheet|
 
   sheet.add_row ["Document Uploads"], :style => header_style
 
-  doc_row = ["Name", "Type", "", "", "Uploaded Date"]
-  if has_per_patient_per_visit_services
-    (visit_count*2 + @admin_offset.to_i).times do
-      doc_row << ""
-    end
-  elsif @admin_offset
-    doc_row << ""
-  end
+  doc_row = ["Name", "Type", "", "", "Uploaded Date"] + ( [""] * (visit_count*2) )
 
   sheet.add_row doc_row, :style => sub_header_style
 
@@ -112,10 +92,8 @@ wb.add_worksheet(name: "Review") do |sheet|
 
     arms_to_be_displayed.each do |arm|
       services_row = ["Selected Services", "CPT Code", "Order Code", "Notes"]
-      services_row << "Current Cost" if @admin_offset
       services_row << "# of Subjects"
       arm_row = [arm.name, "", "", "", ""]
-      arm_row += [""] if @admin_offset
 
       num_visits = arm.visit_count
       visit_group_name_sizes = []
@@ -135,6 +113,7 @@ wb.add_worksheet(name: "Review") do |sheet|
 
       dbl_rt_col_width = rt_col_width * 2
       row_height_factor = (visit_group_name_sizes.max / dbl_rt_col_width).ceil
+      binding.pry
 
       if row_height_factor == 1
         services_row = sheet.add_row services_row, :style => header_style
@@ -149,7 +128,6 @@ wb.add_worksheet(name: "Review") do |sheet|
       merge_arm_rows << sheet.add_row(arm_row, :style => name_header_style)
 
       r_t_row = ["", "", "", "", ""]
-      r_t_row << "" if @admin_offset
 
       num_visits.times do
         r_t_row << "R"
@@ -159,7 +137,6 @@ wb.add_worksheet(name: "Review") do |sheet|
       even_set = true
 
       styles_array = [centered, centered, centered, centered]
-      styles_array << centered if @admin_offset
       styles_array << centered
 
       2.step(visit_count*2, 2) do
@@ -200,11 +177,6 @@ wb.add_worksheet(name: "Review") do |sheet|
             service_row += [notes]
           end
 
-          if @admin_offset
-            line_item.pricing_scheme = 'effective'
-            service_row << display_your_cost(line_item)
-            line_item.pricing_scheme = 'displayed'
-          end
           service_row += [line_items_visit.subject_count]
 
           start_qty_col = service_row.size # grab the size so we know where the R/T columns start
@@ -216,14 +188,9 @@ wb.add_worksheet(name: "Review") do |sheet|
 
           service_row << ""
 
-          (visit_count - num_visits).times do
-            service_row << ""
-            service_row << ""
-          end
+          service_row += ["", ""] * (visit_count - num_visits)
 
-          styles_array = [bordered, centered_bordered, bordered, wrap_bordered]
-          styles_array << bordered if @admin_offset
-          styles_array << centered_bordered
+          styles_array = [bordered, centered_bordered, bordered, wrap_bordered, centered_bordered]
 
           2.step(visit_count*2, 2) do
             styles_array << (even_set ? rt_even_style : rt_odd_style)
@@ -232,8 +199,6 @@ wb.add_worksheet(name: "Review") do |sheet|
           end
 
           styles_array.flatten!
-
-          line_items_visit.line_item.pricing_scheme = 'effective' if @admin_offset
 
           service_rows << sheet.add_row(service_row, :style => styles_array)
         end
@@ -247,7 +212,6 @@ wb.add_worksheet(name: "Review") do |sheet|
   ############ end of arms.each
 
   services_row = ["Selected Services"]
-  services_row << "Current Cost" if @admin_offset
   services_row += [""] * (visit_count * 2 + 4)
 
   services_row = sheet.add_row services_row, :style => header_style
@@ -264,11 +228,6 @@ wb.add_worksheet(name: "Review") do |sheet|
     line_items.each do |line_item|
       service_row = [line_item.service.name, "", "", ""]
       line_item_total = display_one_time_fee_direct_cost(line_item)
-      if @admin_offset
-        line_item.pricing_scheme = 'effective'
-        line_item_total = display_one_time_fee_direct_cost(line_item)
-        line_item.pricing_scheme = 'displayed'
-      end
 
       if !@service_list_true.empty? && !@service_list_false.empty?
         service_row += ["", ""]
@@ -290,32 +249,16 @@ wb.add_worksheet(name: "Review") do |sheet|
   merge_sub_header_rows << services_sub_header_rows
 
   line_items = @sub_service_request ? @sub_service_request.line_items : @service_request.line_items
-  line_items.each{|li| li.pricing_scheme = 'effective'} if @admin_offset
-
 
   ##SSR Total
   if @sub_service_request
-    ssr_total_row = ["", "", "", "", "", "", ""]
-    if has_per_patient_per_visit_services
-      (visit_count*2).times do
-        ssr_total_row << ""
-      end
-    end
-
+    ssr_total_row = ["", "", "", "", "", "", ""] + ( [""] * (visit_count*2) )
     ssr_total_row += ["#{@sub_service_request.organization.abbreviation} Total", display_ssr_grand_total(@sub_service_request)]
     ssr_total_row = sheet.add_row(ssr_total_row, :style => row_header_style)
   end
 
   ##Total
-  grand_total_row = @sub_service_request ? ["", "", "", "", "", "", ""] : ["", "", "", "", "", ""]
-
-  if has_per_patient_per_visit_services
-    (visit_count * 2).times do
-      grand_total_row << ""
-    end
-  elsif @admin_offset
-    grand_total_row << ""
-  end
+  grand_total_row = ( @sub_service_request ? ["", "", "", "", "", "", ""] : ["", "", "", "", "", ""] ) + ( [""] * (visit_count*2) )
 
   grand_total_row = sheet.add_row(grand_total_row, :style => row_header_style)
 
@@ -345,7 +288,7 @@ wb.add_worksheet(name: "Review") do |sheet|
   end_column = "F"
 
   alpha_array = ("A".."Z").to_a
-  additional_alpha_arrays_needed = ((visit_count*2 + 5 + @admin_offset.to_i)/26.0).ceil + 1 #add one since some columns get pushed over, safety.  doesn't matter if we have extra here
+  additional_alpha_arrays_needed = ((visit_count*2 + 5)/26.0).ceil + 1 #add one since some columns get pushed over, safety.  doesn't matter if we have extra here
 
   additional_alpha_arrays = []
   additional_alpha_arrays_needed.times do |n|
@@ -354,7 +297,7 @@ wb.add_worksheet(name: "Review") do |sheet|
 
   alpha_array = alpha_array + additional_alpha_arrays.flatten
 
-  end_column = alpha_array[visit_count*2 + 4 + @admin_offset.to_i]
+  end_column = alpha_array[visit_count*2 + 4]
 
   sheet.merge_cells("A1:#{end_column}1") #info header
   sheet.merge_cells("B2:D2") #id
@@ -393,8 +336,8 @@ wb.add_worksheet(name: "Review") do |sheet|
     index = sheet.rows.index(services_row)
     #sheet.merge_cells("A#{index+1}:B#{index+1}")
     visit_count.times do |idx|
-      start_idx = 2 * idx + 5 + @admin_offset.to_i
-      end_idx = 2 * idx + 6 + @admin_offset.to_i
+      start_idx = 2 * idx + 5
+      end_idx = 2 * idx + 6
       sheet.merge_cells("#{alpha_array[start_idx]}#{index+1}:#{alpha_array[end_idx]}#{index+1}")
       sheet["#{alpha_array[start_idx]}#{index+1}"].style = header_centered_style
     end
@@ -448,9 +391,5 @@ wb.add_worksheet(name: "Review") do |sheet|
   end
 
   ### setting some column widths
-  if @admin_offset
-    sheet.column_widths nil, 12, 12, 50, 15, 15
-  else
-    sheet.column_widths nil, 12, 12, 50, 15
-  end
+  sheet.column_widths nil, 12, 12, 50, 15
 end

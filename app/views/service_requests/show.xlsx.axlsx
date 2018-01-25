@@ -113,7 +113,6 @@ wb.add_worksheet(name: "Review") do |sheet|
 
       dbl_rt_col_width = rt_col_width * 2
       row_height_factor = (visit_group_name_sizes.max / dbl_rt_col_width).ceil
-      binding.pry
 
       if row_height_factor == 1
         services_row = sheet.add_row services_row, :style => header_style
@@ -285,7 +284,7 @@ wb.add_worksheet(name: "Review") do |sheet|
 
   ###### style and merge cells ######
 
-  end_column = "F"
+  end_column = "G"
 
   alpha_array = ("A".."Z").to_a
   additional_alpha_arrays_needed = ((visit_count*2 + 5)/26.0).ceil + 1 #add one since some columns get pushed over, safety.  doesn't matter if we have extra here
@@ -317,7 +316,7 @@ wb.add_worksheet(name: "Review") do |sheet|
   last_authorized_user_row_number = 0 #store it so we know where the document uploads start
   @protocol.project_roles.size.times do |n|
     sheet.merge_cells("B#{first_authorized_user_row_number}:D#{first_authorized_user_row_number}")
-    sheet.merge_cells("E#{first_authorized_user_row_number}:F#{first_authorized_user_row_number}")
+    sheet.merge_cells("E#{first_authorized_user_row_number}:G#{first_authorized_user_row_number}")
 
     last_authorized_user_row_number = 8+n+1
     first_authorized_user_row_number += 1
@@ -372,9 +371,6 @@ wb.add_worksheet(name: "Review") do |sheet|
   from_left = 6
   begin_column = alpha_array[visit_count + from_left - 3]
   end_column = alpha_array[visit_count + from_left - 2]
-  grand_total_row_index = sheet.rows.index(grand_total_row)
-  sheet.merge_cells("#{begin_column}#{grand_total_row_index+1}:#{end_column}#{grand_total_row_index+1}") if has_per_patient_per_visit_services
-
 
   ### added for signature section, fix the width of A, and then merge cells
   if @show_signature_section

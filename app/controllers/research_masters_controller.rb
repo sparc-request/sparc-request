@@ -15,7 +15,7 @@ class ResearchMastersController < ApplicationController
   private
 
   def restrict_access
-    api_key = Setting.find_by(key: 'research_master_api_token').value == params[:access_token]
+    api_key = Setting.find_by(key: 'rmid_api_token').value == params[:access_token]
     head :unauthorized unless api_key
   end
 end

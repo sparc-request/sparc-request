@@ -50,10 +50,10 @@
             %ul.dropdown-menu
               %li
                 = link_to t(:calendars)[:show_chosen_services],
-                  service_request_path(sr, display_all_services: false, format: :xlsx, show_signature_section: 1)
+                  service_request_path(sr, display_all_services: false, format: :xlsx, report_type: 'coverage_analysis', show_signature_section: 1)
               %li
                 = link_to t(:calendars)[:show_all_services],
-                  service_request_path(sr, display_all_services: true, format: :xlsx, show_signature_section: 1)
+                  service_request_path(sr, display_all_services: true, format: :xlsx, report_type: 'coverage_analysis', show_signature_section: 1)
       .clearfix
     .panel-body
       = render 'dashboard/service_requests/protocol_service_request_show',

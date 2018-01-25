@@ -405,6 +405,28 @@ class SubServiceRequest < ApplicationRecord
     end
   end
 
+  #############
+  ### FORMS ###
+  #############
+  def forms_to_complete
+    Form.where(surveyable: self.services).where.not(id: self.responses.pluck(:survey_id)).active +
+      Form.where(surveyable: self.organization).where.not(id: self.responses.pluck(:survey_id)).active
+  end
+
+  def form_completed?(form)
+    self.responses.where(survey: form).any?
+  end
+
+  def has_completed_forms?
+    Response.where(respondable: self, survey: Form.where(surveyable: self.services).active.ids + Form.where(surveyable: self.organization).active.ids).any?
+  end
+
+  def all_forms_completed?
+    form_ids = Form.where(surveyable: self.services).active.ids + 
+                Form.where(surveyable: self.organization).active.ids
+    Response.where(respondable: self, survey_id: form_ids).count == form_ids.count
+  end
+
   ##########################
   ## SURVEY DISTRIBUTTION ##
   ##########################

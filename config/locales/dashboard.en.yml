@@ -61,6 +61,12 @@ en:
         past: "Past"
         authorized_user_update: "Authorized User Update"
 
+    #########
+    # FORMS #
+    #########
+    forms:
+      header: "Form Submissions"
+
     ##################
     #  FULFILLMENTS  #
     ##################
@@ -287,8 +293,8 @@ en:
           view: "Quick access to view services for selected provider"
           edit: "Ability to change services for a selected provider (routes to SPARCRequest)"
           admin: "Service Provider administrative access to track and manage services"
-      additional_details:
-        header: "Form Functionality"
+      forms:
+        header: "Forms"
         selectpicker: "Complete Form"
       tooltips:
         modify_request: "Allows Authorized User to add or edit services (routes to SPARCRequest)"

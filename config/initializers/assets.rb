@@ -36,6 +36,7 @@ Rails.application.config.assets.precompile += %w( dashboard/delete_submission.js
 Rails.application.config.assets.precompile += %w( dashboard/update_submission.js )
 Rails.application.config.assets.precompile += %w( document_management.js )
 Rails.application.config.assets.precompile += %w( filterrific/filterrific-spinner.gif )
+Rails.application.config.assets.precompile += %w( forms.js )
 Rails.application.config.assets.precompile += %w( ie.css )
 Rails.application.config.assets.precompile += %w( ie7_warning.js )
 Rails.application.config.assets.precompile += %w( ie8_plus.css )

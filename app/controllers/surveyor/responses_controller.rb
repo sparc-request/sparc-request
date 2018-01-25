@@ -76,7 +76,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   end
 
   def destroy
-    Response.find(params[:id]).destroy
+    (@response = Response.find(params[:id])).destroy
   end
 
   def complete

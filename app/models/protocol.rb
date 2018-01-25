@@ -550,8 +550,15 @@ class Protocol < ApplicationRecord
     direct_cost_total(service_request) + indirect_cost_total(service_request)
   end
 
-  def has_incomplete_additional_details?
-    sub_service_requests.any?(&:has_incomplete_additional_details?)
+  #############
+  ### FORMS ###
+  #############
+  def has_completed_forms?
+    self.sub_service_requests.any?(&:has_completed_forms?)
+  end
+
+  def all_forms_completed?
+    self.sub_service_requests.all?(&:all_forms_completed?)
   end
 
   private

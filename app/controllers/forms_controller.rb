@@ -25,6 +25,6 @@ class FormsController < ApplicationController
   before_action :authorize_identity
 
   def index
-    @forms = @service_request.associated_forms
+    @forms = params[:complete] == 'true' ? @service_request.completed_forms : @service_request.associated_forms
   end
 end

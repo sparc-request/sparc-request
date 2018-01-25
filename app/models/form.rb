@@ -27,7 +27,7 @@ class Form < Survey
     org_ids     = identity.authorized_admin_organizations.ids
     service_ids = Service.where(organization_id: org_ids).ids
     
-    Form.where(surveyable_id: org_ids, surveyable_type: ["Institution", "Provider", "Program", "Core"]).
+    Form.where(surveyable_id: org_ids, surveyable_type: 'Organization').
       or(where(surveyable_id: service_ids, surveyable_type: "Service"))
   end
 

@@ -402,25 +402,28 @@ class ServiceRequest < ApplicationRecord
   #############
   ### Forms ###
   #############
-
   def has_associated_forms?
-    self.services.joins(:forms).where(surveys: { active: true }).any? || self.sub_service_requests.joins(organization: :forms).where(surveys: { active: true })
+    self.services.joins(:forms).where(surveys: { active: true }).any? || self.sub_service_requests.joins(organization: :forms).where(surveys: { active: true }).any?
   end
   
   def associated_forms
-    Form.where(surveyable_id: self.services.ids, surveyable_type: 'Service', active: true) +
-      Form.where(surveyable_id: Organization.where(id: self.sub_service_requests.pluck(:organization_id)), surveyable_type: ['Institution', 'Provider', 'Program', 'Core'], active: true)
-  end
-
-  def ssr_with_form(form)
-    self.sub_service_requests.detect do |ssr|
-      Form.where(surveyable_id: ssr.services.ids, surveyable_type: 'Service', active: true).include?(form) ||
-        Form.where(surveyable_id: ssr.organization_id, surveyable_type: ['Institution', 'Provider', 'Program', 'Core']).include?(form)
+    forms = []
+    # Because there can be multiple SSRs with the same services/organizations we need to loop over each one
+    self.sub_service_requests.each do |ssr|
+      Form.where(surveyable: ssr.organization).active.each{ |f| forms << [f, ssr] }
+      Form.where(surveyable: ssr.services).active.each{ |f| forms << [f, ssr] }
     end
+    forms
   end
 
-  def form_completed?(form)
-    Response.where(survey: form, respondable: self.sub_service_requests).any?
+  def completed_forms
+    forms = []
+    # Because there can be multiple SSRs with the same services/organizations we need to loop over each one
+    self.sub_service_requests.each do |ssr|
+      Form.where(surveyable: ssr.organization).active.joins(:responses).where(responses: { respondable: ssr }).each{ |f| forms << [f, ssr] }
+      Form.where(surveyable: ssr.services).active.joins(:responses).where(responses: { respondable: ssr }).each{ |f| forms << [f, ssr] }
+    end
+    forms
   end
 
   def relevant_service_providers_and_super_users

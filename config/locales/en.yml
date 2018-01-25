@@ -363,6 +363,7 @@ en:
   #########
   forms:
     table_fields:
+      srid: "SRID"
       association: "Association"
       title: "Form Title"
       completed: "Completed"

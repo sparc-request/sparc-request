@@ -262,10 +262,10 @@ class ServiceRequestsController < ApplicationController
       required_keys = params[:study] ? :study : params[:project] ? :project : nil
       if required_keys.present?
         temp = params.require(required_keys).permit(:start_date, :end_date,
-          :recruitment_start_date, :recruitment_end_date).to_h
+          :recruitment_start_date, :recruitment_end_date, :initial_budget_sponsor_received_date, :budget_agreed_upon_date, :initial_amount, :negotiated_amount).to_h
 
         # Finally, transform date attributes.
-        date_attrs = %w(start_date end_date recruitment_start_date recruitment_end_date)
+        date_attrs = %w(start_date end_date recruitment_start_date recruitment_end_date initial_budget_sponsor_received_date budget_agreed_upon_date)
         temp.inject({}) do |h, (k, v)|
           if date_attrs.include?(k) && v.present?
             h.merge(k => Time.strptime(v, "%m/%d/%Y"))

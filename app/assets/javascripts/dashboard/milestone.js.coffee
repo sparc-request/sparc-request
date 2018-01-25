@@ -20,6 +20,12 @@
 
 $ ->
 
+  if $('.initial-budget-sponsor-received-date-picker').val() != ''
+    $('.initial-amount').removeClass('hide')
+
+  if $('.budget-agreed-upon-date-picker').val() != ''
+    $('.negotiated-amount').removeClass('hide')
+
   $(document).on 'dp.change', '.start-date-picker', (e) ->
     $('.start-date-setter').val(e.date)
 
@@ -32,6 +38,15 @@ $ ->
   $(document).on 'dp.change', '.recruitment-end-date-picker', (e) ->
     $('.recruitment-end-date-setter').val(e.date)
 
-  $(document).on 'dp.hide', '.start-date-picker, .end-date-picker, .recruitment-start-date-picker, .recruitment-end-date-picker', ->
+  $(document).on 'dp.change', '.initial-budget-sponsor-received-date-picker', (e) ->
+    $('.initial-budget-sponsor-received-date-setter').val(e.date)
+
+  $(document).on 'dp.change', '.budget-agreed-upon-date-picker', (e) ->
+    $('.budget-agreed-upon-setter').val(e.date)
+
+  $(document).on 'dp.hide', '.start-date-picker, .end-date-picker, .recruitment-start-date-picker, .recruitment-end-date-picker, .initial-budget-sponsor-received-date-picker, .budget-agreed-upon-date-picker', ->
+    $('.milestone-form').submit()
+
+  $(document).on 'blur', '.initial-amount, .negotiated-amount', ->
     $('.milestone-form').submit()
 

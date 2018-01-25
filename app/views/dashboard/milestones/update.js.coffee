@@ -23,3 +23,9 @@ $(".datetimepicker:not(.time)").datetimepicker(format: 'MM/DD/YYYY', allowInputT
 $('.datetimepicker.time').datetimepicker(format: 'hh:mm A', allowInputToggle: true)
 $(".selectpicker").selectpicker()
 $('[data-toggle="tooltip"]').tooltip()
+if $('.initial-budget-sponsor-received-date-picker').val() != ''
+  $('.initial-amount').removeClass('hide')
+
+if $('.budget-agreed-upon-date-picker').val() != ''
+  $('.negotiated-amount').removeClass('hide')
+

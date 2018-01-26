@@ -334,12 +334,12 @@ GEM
       omniauth (>= 1.0.0)
     options (2.3.2)
     orm_adapter (0.5.0)
-    paperclip (4.3.7)
-      activemodel (>= 3.2.0)
-      activesupport (>= 3.2.0)
+    paperclip (5.2.1)
+      activemodel (>= 4.2.0)
+      activesupport (>= 4.2.0)
       cocaine (~> 0.5.5)
       mime-types
-      mimemagic (= 0.3.0)
+      mimemagic (~> 0.3.0)
     parallel (1.12.0)
     parallel_tests (2.19.0)
       parallel
@@ -624,7 +624,7 @@ DEPENDENCIES
   omniauth
   omniauth-cas
   omniauth-shibboleth
-  paperclip (~> 4.3, >= 4.3.7)
+  paperclip (~> 5.2, >= 5.2.1)
   parallel_tests
   pdfkit
   prawn (= 0.12.0)
@@ -669,4 +669,4 @@ DEPENDENCIES
   x-editable-rails
 
 BUNDLED WITH
-   1.16.0
+   1.16.1

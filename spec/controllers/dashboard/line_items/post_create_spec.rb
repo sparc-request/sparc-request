@@ -52,7 +52,37 @@ RSpec.describe Dashboard::LineItemsController do
       it { is_expected.to respond_with :ok }
     end
 
-    context "params[:line_item][:service_id] present but params[:line_item] still describes an invalid LineItem" do
+    context "params[:line_item][:quantity] blank" do
+      before(:each) do
+        @service_request = build_stubbed(:service_request)
+
+        @sub_service_request = findable_stub(SubServiceRequest) do
+          build_stubbed(:sub_service_request, service_request: @service_request)
+        end
+        allow(@sub_service_request).to receive(:candidate_pppv_services).
+          and_return("candidate pppv services")
+
+        log_in_dashboard_identity(obj: build_stubbed(:identity))
+        post :create, params: { line_item: { service_id: 'not blank', sub_service_request_id: @sub_service_request.id } }, xhr: true
+      end
+
+      it "should set @sub_service_request from params[:line_item][:sub_service_request_id]" do
+        expect(assigns(:sub_service_request)).to eq(@sub_service_request)
+      end
+
+      it "should set @service_request to ServiceRequest of @sub_service_request" do
+        expect(assigns(:service_request)).to eq(@service_request)
+      end
+
+      it "should add an error message to SubServiceRequest for Service" do
+        expect(assigns(:errors).full_messages).to eq(["Must input a quantity"])
+      end
+
+      it { is_expected.to render_template "dashboard/line_items/create" }
+      it { is_expected.to respond_with :ok }
+    end
+
+    context "params[:line_item][:service_id] and params[:line_item][:quantity] present but params[:line_item] still describes an invalid LineItem" do
       before(:each) do
         @service_request = build_stubbed(:service_request)
 
@@ -67,6 +97,7 @@ RSpec.describe Dashboard::LineItemsController do
         log_in_dashboard_identity(obj: build_stubbed(:identity))
         post :create, params: {
             line_item: { service_id: "not blank",
+            quantity: 1,
             sub_service_request_id: @sub_service_request.id 
             } }, xhr: true
       end
@@ -102,7 +133,8 @@ RSpec.describe Dashboard::LineItemsController do
         log_in_dashboard_identity(obj: logged_in_user)
         post :create, params: {
             line_item: { service_id: "not blank",
-            sub_service_request_id: @sub_service_request.id 
+            sub_service_request_id: @sub_service_request.id,
+            quantity: 1
             } }, xhr: true
       end
 

@@ -64,7 +64,7 @@ class Organization < ApplicationRecord
         distinct(:organizations).ids
       ),
       is_available: true
-    )
+    ).distinct
   }
 
   scope :in_cwf, -> { joins(:tags).where(tags: { name: 'clinical work fulfillment' }) }

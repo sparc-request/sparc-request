@@ -25,7 +25,26 @@ class Document < ApplicationRecord
   has_and_belongs_to_many :sub_service_requests
   belongs_to :protocol
   has_attached_file :document #, :preserve_files => true
-  do_not_validate_attachment_file_type :document
+  validates_attachment :document, content_type: { content_type: [
+    "application/pdf",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "application/vnd.ms-office",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    "application/vnd.ms-powerpoint",
+    "application/octet-stream",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/msword",
+    "application/vnd.ms-excel",
+    "image/jpeg",
+    "text/csv",
+    "text/rtf",
+    "text/plain",
+    "text/msg",
+    "message/rfc822",
+    "image/gif",
+    "image/png",
+    "image/tiff"
+  ] }
 
   validates :doc_type, :document, presence: true
   validates :doc_type_other, presence: true, if: Proc.new { |doc| doc.doc_type == 'other' }

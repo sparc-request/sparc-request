@@ -25,7 +25,6 @@ RSpec.describe Dashboard::LineItemsController do
     context "params[:line_item][:service_id] blank" do
       before(:each) do
         @service_request = build_stubbed(:service_request)
-
         @sub_service_request = findable_stub(SubServiceRequest) do
           build_stubbed(:sub_service_request, service_request: @service_request)
         end
@@ -56,6 +55,12 @@ RSpec.describe Dashboard::LineItemsController do
       before(:each) do
         @service_request = build_stubbed(:service_request)
 
+        @service = findable_stub(Service) do
+          build_stubbed(:service)
+        end
+        allow(@service).to receive(:one_time_fee).
+          and_return(true)
+
         @sub_service_request = findable_stub(SubServiceRequest) do
           build_stubbed(:sub_service_request, service_request: @service_request)
         end
@@ -63,7 +68,7 @@ RSpec.describe Dashboard::LineItemsController do
           and_return("candidate pppv services")
 
         log_in_dashboard_identity(obj: build_stubbed(:identity))
-        post :create, params: { line_item: { service_id: 'not blank', sub_service_request_id: @sub_service_request.id } }, xhr: true
+        post :create, params: { line_item: { service_id: @service.id, sub_service_request_id: @sub_service_request.id } }, xhr: true
       end
 
       it "should set @sub_service_request from params[:line_item][:sub_service_request_id]" do
@@ -86,6 +91,10 @@ RSpec.describe Dashboard::LineItemsController do
       before(:each) do
         @service_request = build_stubbed(:service_request)
 
+        @service = findable_stub(Service) do
+          build_stubbed(:service)
+        end
+
         @sub_service_request = findable_stub(SubServiceRequest) do
           build_stubbed(:sub_service_request, service_request: @service_request)
         end
@@ -96,7 +105,7 @@ RSpec.describe Dashboard::LineItemsController do
 
         log_in_dashboard_identity(obj: build_stubbed(:identity))
         post :create, params: {
-            line_item: { service_id: "not blank",
+            line_item: { service_id: @service.id,
             quantity: 1,
             sub_service_request_id: @sub_service_request.id 
             } }, xhr: true
@@ -122,6 +131,10 @@ RSpec.describe Dashboard::LineItemsController do
       before(:each) do
         @service_request = build_stubbed(:service_request)
 
+        @service = findable_stub(Service) do
+          build_stubbed(:service)
+        end
+
         @sub_service_request = findable_stub(SubServiceRequest) do
           build_stubbed(:sub_service_request, service_request: @service_request)
         end
@@ -132,7 +145,7 @@ RSpec.describe Dashboard::LineItemsController do
         logged_in_user = build_stubbed(:identity)
         log_in_dashboard_identity(obj: logged_in_user)
         post :create, params: {
-            line_item: { service_id: "not blank",
+            line_item: { service_id: @service.id,
             sub_service_request_id: @sub_service_request.id,
             quantity: 1
             } }, xhr: true

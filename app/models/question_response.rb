@@ -86,7 +86,7 @@ class QuestionResponse < ActiveRecord::Base
   end
 
   def depender_selected?
-    self.depender && self.response.question_responses.where(question_id: self.depender.question_id).first.content == self.depender.content
+    self.depender && self.response.question_responses.detect{ |qr| qr.question_id == self.depender.question_id}.try(:content) == self.depender.content
   end
 
   private

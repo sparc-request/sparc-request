@@ -92,7 +92,8 @@ namespace :data do
                                   abbreviation: row['Procedure Name'],
                                   order: 1,
                                   one_time_fee: (row['Is One Time Fee?'] == 'Y' ? true : false),
-                                  is_available: true)
+                                  is_available: true,
+                                  audit_comment: 'imported by script')
 
               service.tag_list = "epic" if row['Send to Epic'] == 'Y'
 
@@ -118,7 +119,8 @@ namespace :data do
                                                     unit_minimum: (row['Is One Time Fee?'] == 'Y' ? nil : row['Qty Min']),
                                                     quantity_minimum: (row['Is One Time Fee?'] != 'Y' ? nil : row['Qty Min']),
                                                     display_date: display_date,
-                                                    effective_date: effective_date
+                                                    effective_date: effective_date,
+                                                    audit_comment: 'imported by script'
                                                     )
 
               if service.valid? and pricing_map.valid?

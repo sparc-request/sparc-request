@@ -64,7 +64,10 @@ class Surveyor::SurveysController < Surveyor::BaseController
   end
 
   def destroy
-    Survey.find(params[:id]).destroy
+    @survey = Survey.find(params[:id])
+    @type   = @survey.class.yaml_klass.downcase
+    
+    @survey.destroy
 
     respond_to do |format|
       format.js

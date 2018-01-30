@@ -28,7 +28,7 @@ class Surveyor::QuestionsController < Surveyor::BaseController
     @section  = Section.find(params[:section_id])
     @survey   = @section.survey
     @question = @section.questions.create(
-                  content: "Untitled Question",
+                  content: "New Question",
                   question_type: ADDITIONAL_DETAIL_QUESTION_TYPES.first[1],
                   required: false,
                   is_dependent: false

@@ -27,7 +27,7 @@ class Surveyor::SectionsController < Surveyor::BaseController
   def create
     @survey   = Survey.find(params[:survey_id])
     @section  = @survey.sections.create(
-                  title: "Untitled Section"
+                  title: "New Section"
                 )
 
     respond_to do |format|

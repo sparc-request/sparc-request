@@ -26,6 +26,6 @@
       .form-group
         %p.section-description.no-margin
           = raw(section.description)
-    - section.questions.each_with_index do |question, j|
-      = f.fields_for :question_responses do |qr|
-        = render 'surveyor/responses/form/response_question', f: f, qr: qr, survey: survey, section: section, question: question, index: j
+    - index = 0
+    = f.fields_for :question_responses do |qr|
+      = render 'surveyor/responses/form/response_question', f: f, qr: qr, survey: survey, section: section, question: qr.object.question, index: index

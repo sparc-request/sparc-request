@@ -42,7 +42,7 @@
       - if survey.is_a?(Form)
         = label_tag "survey-#{survey.id}-surveyable", t(:surveyor)[:surveys][:form][:survey_information][:surveyable], class: 'col-lg-2 control-label required'
         .col-lg-10
-          = text_field_tag "survey-#{survey.id}-surveyable", survey.surveyable.try(:name), class: 'form-control', data: { surveyable: survey.surveyable ? "#{survey.surveyable.class}-#{survey.surveyable.id}" : "" }, placeholder: survey.surveyable.try(:name)
+          = text_field_tag "survey-#{survey.id}-surveyable", survey.surveyable.try(:name), class: 'form-control', data: { surveyable: survey.surveyable ? "#{survey.surveyable.class}-#{survey.surveyable.id}" : "" }, placeholder: survey.surveyable.try(:name) || t(:surveyor)[:surveys][:form][:placeholders][:survey][:surveyable]
       - else
         = label_tag "survey-#{survey.id}-display_order", t(:surveyor)[:surveys][:form][:survey_information][:display_order], class: 'col-lg-2 control-label required'
         .col-lg-10
@@ -50,4 +50,4 @@
     .form-group
       = label_tag "survey-#{survey.id}-active", t(:surveyor)[:surveys][:form][:survey_information][:active], class: 'col-lg-2 control-label'
       .col-lg-10
-        = check_box_tag "survey-#{survey.id}-active", survey.active, survey.active
+        = check_box_tag "survey-#{survey.id}-active", survey.active, survey.active, survey.surveyable_type == 'Identity' ? { title: t(:surveyor)[:forms][:table][:tooltips][:activate], data: { toggle: 'tooltip' }, disabled: 'disabled' } : {}

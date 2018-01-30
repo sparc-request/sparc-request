@@ -24,11 +24,10 @@ class Form < Survey
   validates_uniqueness_of :active, scope: [:type, :surveyable_id, :surveyable_type, :access_code], if: -> { self.active }
 
   def self.for(identity)
-    org_ids     = identity.authorized_admin_organizations.ids
-    service_ids = Service.where(organization_id: org_ids).ids
+    orgs     = identity.authorized_admin_organizations
+    services = Service.where(organization: orgs)
     
-    Form.where(surveyable_id: org_ids, surveyable_type: 'Organization').
-      or(where(surveyable_id: service_ids, surveyable_type: "Service"))
+    Form.where(surveyable: orgs).or(where(surveyable: services)).or(where(surveyable: identity))
   end
 
   def self.yaml_klass

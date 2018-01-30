@@ -50,15 +50,16 @@ class Surveyor::SurveysController < Surveyor::BaseController
 
   def create
     klass = params[:type].constantize.yaml_klass
-    @survey = Survey.create(
+    @survey = Survey.new(
                 type: params[:type],
-                title: "Untitled #{klass}",
-                access_code: "untitled-#{klass.downcase}",
-                version: (Survey.where(access_code: "untitled-#{klass.downcase}", type: klass).maximum(:version) || 0) + 1,
+                title: "New #{klass}",
+                access_code: "new-#{klass.downcase}",
+                version: 1,
                 active: false,
-                display_order: klass == 'Form' ? nil : (SystemSurvey.maximum(:display_order) || 0) + 1
+                display_order: klass == 'Form' ? nil : (SystemSurvey.maximum(:display_order) || 0) + 1,
+                surveyable: klass == 'Form' ? current_user : nil
               )
-
+    @survey.save(validate: false)
     redirect_to edit_surveyor_survey_path(@survey, type: params[:type]), format: :js
   end
 

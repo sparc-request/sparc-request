@@ -68,4 +68,8 @@ $("#modal_place [id$='-surveyable']").typeahead(
       survey:
         surveyable_id: suggestion.value
         surveyable_type: suggestion.klass
+    success: ->
+      $("#survey-<%= @survey.id %>-surveyable").prop('placeholder', suggestion.label)
+      $("#survey-<%= @survey.id %>-active").prop('disabled', false)
+      $("#survey-<%= @survey.id %>-active").tooltip('disable')
 )

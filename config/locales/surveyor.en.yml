@@ -37,6 +37,8 @@ en:
           activate: "Activate"
           disable: "Disable"
           preview: "Preview"
+        tooltips:
+          activate: "Select an association to activate this survey"
 
     responses:
       create: "Thank you for participating in this survey!"
@@ -90,6 +92,7 @@ en:
         placeholders:
           survey:
             description: "Describe this %{klass} (Recommended)"
+            surveyable: "Select an Organization or Service for this form"
           section:
             title: "Section Title (Required)"
             description: "Describe this section (Optional)"

@@ -109,12 +109,6 @@ $(document).ready ->
     else
       $(container).addClass('hidden')
 
-  ### Form-Specific Logic ###
-  $(document).on 'hide.bs.modal', '#modal_place:has(#form-modal)', (e) ->
-    if !$("#modal_place [id$='-surveyable']").data('surveyable')
-      e.preventDefault()
-      alert I18n["surveyor"]["forms"]["missing_association"]
-
 send_update_request = (obj, val) ->
   field_data  = $(obj).attr('id').split('-')
   klass       = field_data[0]

@@ -214,7 +214,7 @@ module Dashboard::SubServiceRequestsHelper
     form_list[:Service]       = [] if forms.detect{ |f| f.surveyable_type == 'Service' }
 
     forms.each do |f|
-      form_list[f.surveyable_type.to_sym] << [f.surveyable.name, f.surveyable.name, data: { type: 'Form', access_code: f.access_code, respondable_id: ssr.id, respondable_type: 'SubServiceRequest' }]
+      form_list[f.surveyable_type.to_sym] << [f.surveyable.name, f.surveyable.name, data: { type: 'Form', survey_id: f.id, respondable_id: ssr.id, respondable_type: 'SubServiceRequest' }]
     end
 
     if form_list.empty?

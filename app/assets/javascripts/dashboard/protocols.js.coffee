@@ -160,7 +160,7 @@ $(document).ready ->
           url: "/surveyor/responses/new.js"
           data:
             type:             $option.data('type')
-            access_code:      $option.data('access-code')
+            survey_id:        $option.data('survey-id')
             respondable_id:   $option.data('respondable-id')
             respondable_type: $option.data('respondable-type')
           success: ->

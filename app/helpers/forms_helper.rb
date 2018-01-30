@@ -68,7 +68,7 @@ module FormsHelper
   def complete_form_response_button(form, respondable)
     link_to(
       'Complete',
-      new_surveyor_response_path(type: form.class.name, access_code: form.access_code, respondable_id: respondable.id, respondable_type: respondable.class.name),
+      new_surveyor_response_path(type: form.class.name, survey_id: form.id, respondable_id: respondable.id, respondable_type: respondable.class.name),
       remote: true,
       class: 'btn btn-success view-form-response'
     )

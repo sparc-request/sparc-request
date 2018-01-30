@@ -85,7 +85,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   private
 
   def find_survey
-    @survey = params[:type].constantize.where(access_code: params[:access_code], active: true).first
+    @survey = params[:type].constantize.find(params[:survey_id])
   end
 
   def find_response

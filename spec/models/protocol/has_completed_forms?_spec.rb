@@ -20,29 +20,29 @@
 require 'rails_helper'
 
 RSpec.describe Protocol, type: :model do
-  let!(:logged_in_user) { create(:identity) }
 
-  before :each do
-    org = create(:organization)
-    @service = create(:service, organization: org)
-    @que = create(:questionnaire, :without_validations, questionable: @service, active: true)
-    @protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
-    sr = create(:service_request_without_validations, protocol: @protocol)
-    @ssr = create(:sub_service_request, service_request: sr, organization: org)
-    line_item = create(:line_item_without_validations, sub_service_request: @ssr, service: @service)
-  end
+  let!(:organization) { create(:organization) }
+  let!(:service)      { create(:service, organization: organization) }
+  let!(:org_form)     { create(:form, surveyable: organization, active: true) }
+  let!(:service_form) { create(:form, surveyable: service, active: true) }
+  let!(:protocol)     { create(:study_without_validations) }
+  let!(:request)      { create(:service_request_without_validations, protocol: protocol) }
+  let!(:ssr)          { create(:sub_service_request, service_request: request, organization: organization) }
+  let!(:line_item)    { create(:line_item_without_validations, service_request: request, sub_service_request: ssr, service: service) }
 
-  context 'protocol has incomplete additional details' do
-    it 'should return true' do
-      expect(@protocol.has_incomplete_additional_details?).to eq(true)
+  describe '#has_completed_forms?' do
+    it 'should return false if no forms are complete' do
+      expect(protocol.has_completed_forms?).to eq(false)
     end
-  end
 
-  context 'protocol does not have incomplete additional details' do
-    it 'should return false' do
-      create(:submission, identity: logged_in_user, protocol: @protocol, sub_service_request: @ssr, questionnaire: @que)
+    it 'should return true if any Organization forms are complete' do
+      create(:response, survey: org_form, respondable: ssr)
+      expect(protocol.has_completed_forms?).to eq(true)
+    end
 
-      expect(@protocol.has_incomplete_additional_details?).to eq(false)
+    it 'should return true if any Service forms are complete' do
+      create(:response, survey: service_form, respondable: ssr)
+      expect(protocol.has_completed_forms?).to eq(true)
     end
   end
 end

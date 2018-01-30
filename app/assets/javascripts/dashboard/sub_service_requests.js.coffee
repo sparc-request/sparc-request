@@ -54,7 +54,7 @@ $(document).ready ->
       url: "/dashboard/sub_service_requests/#{sub_service_request_id}?check_sr_calendar=true"
       data: data
       error: (xhr, ajaxOptions, thrownError) ->
-        swal('Error', 'This protocol has failed to be sent to Epic because of failed validation. Please make sure the service calendar is intact before trying again.', 'error')
+        swal('Error', 'This protocol has failed to be sent to SPARCFulfillment because of failed validation. Please make sure the service calendar is intact before trying again.', 'error')
 
   $(document).on 'click', '#send_to_epic_button', ->
     $(this).prop( "disabled", true )

@@ -236,17 +236,23 @@ class Protocol < ApplicationRecord
     # returns protocols with ssrs in orgs authorized for identity
     return nil if identity_id == '0'
 
-    ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_identity(identity_id))
-
     if SuperUser.where(identity_id: identity_id).any?
-      empty_protocol_ids  = includes(:sub_service_requests).where(sub_service_requests: { id: nil }).ids
-      protocol_ids        = ssrs.distinct.pluck(:protocol_id)
-      all_protocol_ids    = (protocol_ids + empty_protocol_ids).uniq
-
-      where(id: all_protocol_ids)
+      self.for_super_user(identity_id)
     else
+      ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_service_provider(identity_id))
       joins(:sub_service_requests).merge(ssrs).distinct
     end
+  }
+
+  scope :for_super_user, -> (identity_id) {
+    # returns protocols with ssrs in orgs authorized for identity
+    ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_super_user(identity_id))
+
+    empty_protocol_ids  = includes(:sub_service_requests).where(sub_service_requests: { id: nil }).ids
+    protocol_ids        = ssrs.distinct.pluck(:protocol_id)
+    all_protocol_ids    = (protocol_ids + empty_protocol_ids).uniq
+
+    where(id: all_protocol_ids)
   }
 
   scope :show_archived, -> (boolean) {

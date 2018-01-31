@@ -464,8 +464,8 @@ en:
         push_to_epic: "Publish Study in Epic:"
         study_type_questions: "Study Type Questions:"
         note: "Note: "
-      optional_information:
-        header: "Optional Information"
+      financial_information:
+        header: "Financial Information"
         subtext: "Used for reporting purposes and saved for your future use"
         udak_project_number: "Financial Account (UDAK #):"
         rate: "Indirect Cost Rate:"

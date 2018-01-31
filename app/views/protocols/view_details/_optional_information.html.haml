@@ -21,26 +21,26 @@
   .panel-heading
     %h5
       %strong
-        = t(:protocols)[:studies][:optional_information][:header]
+        = t(:protocols)[:studies][:financial_information][:header]
   %table.table
     %tbody
       %tr.row
         %td
           %label.col-lg-4
-            = t(:protocols)[:studies][:optional_information][:udak_project_number]
+            = t(:protocols)[:studies][:financial_information][:udak_project_number]
           .col-lg-8
             = protocol.udak_project_number
       - if Setting.find_by_key("use_indirect_cost").value
         %tr.row
           %td
             %label.col-lg-4
-              = t(:protocols)[:studies][:optional_information][:rate]
+              = t(:protocols)[:studies][:financial_information][:rate]
             .col-lg-8
               = protocol.indirect_cost_rate
       %tr.row
         %td
           %label.col-lg-4
-            = t(:protocols)[:studies][:optional_information][:rfa]
+            = t(:protocols)[:studies][:financial_information][:rfa]
           .col-lg-8
             = protocol.funding_rfa
 
@@ -49,11 +49,11 @@
         %td
           - if protocol.funding_status == "funded" 
             %label.col-lg-4
-              = t(:protocols)[:studies][:optional_information][:start_date]
+              = t(:protocols)[:studies][:financial_information][:start_date]
             .col-lg-8
               = format_date(protocol.funding_start_date)
           - else
             %label.col-lg-4
-              = t(:protocols)[:studies][:optional_information][:potential_start_date]
+              = t(:protocols)[:studies][:financial_information][:potential_start_date]
             .col-lg-8
               = format_date(protocol.potential_funding_start_date)

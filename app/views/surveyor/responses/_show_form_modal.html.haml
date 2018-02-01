@@ -19,16 +19,34 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .modal-dialog.modal-lg
   .modal-content
-    = form_for response, url: action_name == 'new' ? surveyor_responses_path(response) : surveyor_response_path(response), method: (action_name == 'new' ? "post" : "put"), remote: true do |f|
-      .modal-header
-        %button.close{ type: 'button', data: { dismiss: 'modal' } }
-          %span{ aria: { hidden: 'true' } } &times;
-        %h4.text-center.modal-title
-          = survey.title
-      .modal-body
-        = render 'surveyor/responses/form/response_content', f: f, survey: survey, respondable: respondable
-      .modal-footer
-        .center-block
-          %button.btn.btn-default.no-button{ type: 'button', data: { dismiss: 'modal' } }
-            = t(:actions)[:close]
-          = f.submit t(:actions)[:submit], class: 'btn btn-primary'
+    .modal-header
+      %button.close{ type: 'button', data: { dismiss: 'modal' } }
+        %span{ aria: { hidden: 'true' } } &times;
+      %h4.text-center.modal-title
+        = @survey.title
+    .modal-body
+      .form#survey-response
+        - unless survey.description.blank?
+          .form-group
+            %p.survey-description.no-margin
+              = raw(survey.description)
+        .form-group.alert.alert-warning
+          = t(:errors)[:user_note]
+        .survey-sections
+          - survey.sections.each do |section|
+            .panel.panel-default.section
+              .panel-heading
+                %h4.panel-title
+                  = section.title
+              .panel-body
+                - unless section.description.blank?
+                  .form-group
+                    .col-lg-12.no-padding
+                      %p.section-description
+                        = raw(section.description)
+                - response.question_responses.eager_load(question: :options).where(questions: { section: section }).each_with_index do |question_response, index|
+                  = render 'surveyor/responses/form/response_question', section: section, question: question_response.question, question_response: question_response, index: index
+    .modal-footer
+      .center-block
+        %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
+          = t(:actions)[:close]

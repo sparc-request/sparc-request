@@ -21,4 +21,4 @@
   - if ['new', 'edit', 'preview'].include?(action_name)
     = qr.telephone_field :content, class: 'form-control option', placeholder: t(:surveyor)[:surveys][:form][:placeholders][:question][:phone]
   - else
-    = telephone_field_tag :content, qr.content, class: 'form-control option', disabled: true
+    = telephone_field_tag :content, question_response.content, class: 'form-control option', disabled: true

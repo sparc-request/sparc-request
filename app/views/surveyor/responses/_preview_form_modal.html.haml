@@ -17,15 +17,37 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.panel.panel-default.section
-  .panel-heading
-    %h4.panel-title
-      = section.title
-  .panel-body
-    - unless section.description.blank?
-      .form-group
-        %p.section-description.no-margin
-          = raw(section.description)
-    - index = 0
-    = f.fields_for :question_responses do |qr|
-      = render 'surveyor/responses/form/response_question', f: f, qr: qr, survey: survey, section: section, question: qr.object.question, index: index
+.modal-dialog.modal-lg#preview-modal
+  .modal-content
+    = form_for response, url: surveyor_responses_path(response), method: 'post', remote: true do |f|
+      .modal-header
+        %button.close{type: 'button', data: {dismiss: 'modal'}}
+          %span{aria: {hidden:'true'}} &times;
+          %span.sr-only &times;
+        %h4.modal-title.text-center
+          = survey.title
+      .modal-body
+        #survey-response
+          - unless survey.description.blank?
+            .form-group
+              %p.survey-description.no-margin
+                = raw(survey.description)
+          .form-group.alert.alert-warning
+            = t(:errors)[:user_note]
+          .survey-sections
+            - survey.sections.eager_load(questions: :options).each do |section|
+              .panel.panel-default.section
+                .panel-heading
+                  %h4.panel-title
+                    = section.title
+                .panel-body
+                  - unless section.description.blank?
+                    .form-group
+                      %p.section-description.no-margin
+                        = raw(section.description)
+                  - section.questions.each_with_index do |question, index|
+                    = f.fields_for :question_responses do |qr|
+                      = render 'surveyor/responses/form/response_question', qr: qr, section: section, question: question, index: index
+      .modal-footer
+        %button.btn.btn-default{ data: { dismiss: 'modal' } }
+          = t(:actions)[:close]

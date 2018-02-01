@@ -21,4 +21,4 @@
   - if ['new', 'edit', 'preview'].include?(action_name)
     = qr.text_field :content, class: 'form-control option', maxlength: 255, placeholder: t(:surveyor)[:surveys][:form][:placeholders][:question][:zipcode]
   - else
-    = text_field_tag :content, qr.content, class: 'form-control option', disabled: true
+    = text_field_tag :content, question_response.content, class: 'form-control option', disabled: true

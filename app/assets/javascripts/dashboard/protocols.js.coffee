@@ -24,9 +24,6 @@
 $(document).ready ->
   Sparc.protocol =
     ready: ->
-      $('.view-consolidated').tooltip()
-      $('.export-consolidated').tooltip()
-      
       $(document).on 'click', '.calendar-lock', ->
         protocol_id = $(this).data('protocol-id')
         locked = $(this).data('locked')
@@ -199,7 +196,11 @@ $(document).ready ->
           url: "/dashboard/protocols.js"
           data: data
 
-(exports ? this).reset_service_requests_handlers = -> 
+(exports ? this).reset_service_requests_handlers = ->
+  $('.view-consolidated').tooltip()
+  $('.export-consolidated').tooltip()
+  $('.coverage-analysis-report').tooltip()
+  
   $('.service-requests-table').on 'all.bs.table', ->
     #Enable selectpickers
     $(this).find('.selectpicker').selectpicker()

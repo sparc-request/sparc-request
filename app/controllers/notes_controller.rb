@@ -23,6 +23,7 @@ class NotesController < ApplicationController
 
   before_action :find_notable
   before_action :set_in_dashboard
+  before_action :set_review
 
   def index
     respond_to do |format|
@@ -62,5 +63,9 @@ class NotesController < ApplicationController
 
   def set_in_dashboard
     @in_dashboard = (params[:in_dashboard] || params[:note][:in_dashboard]) == 'true'
+  end
+
+  def set_review
+    @review = params[:review] == 'true'
   end
 end

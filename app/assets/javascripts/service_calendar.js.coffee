@@ -249,11 +249,13 @@ $(document).ready ->
     id = $(this).data('notable-id')
     type = $(this).data('notable-type')
     in_dashboard = $(this).data('in-dashboard')
+    review = $(this).data('review')
     data = 
       note:
         notable_id: id
         notable_type: type
       in_dashboard: in_dashboard
+      review: review
     $.ajax
       type: 'GET'
       url: '/notes.js'

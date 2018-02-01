@@ -407,12 +407,13 @@ wb.add_worksheet(name: "Review") do |sheet|
   end
 
   merge_services_row.each do |services_row|
-    #sheet.merge_cells("A#{services_row.index+1}:B#{services_row.index+1}")
+    index = sheet.rows.index(services_row)
+    #sheet.merge_cells("A#{index+1}:B#{index+1}")
     visit_count.times do |idx|
       start_idx = 2 * idx + 6 + @admin_offset.to_i
       end_idx = 2 * idx + 7 + @admin_offset.to_i
-      sheet.merge_cells("#{alpha_array[start_idx]}#{services_row.index+1}:#{alpha_array[end_idx]}#{services_row.index+1}")
-      sheet["#{alpha_array[start_idx]}#{services_row.index+1}"].style = header_centered_style
+      sheet.merge_cells("#{alpha_array[start_idx]}#{index+1}:#{alpha_array[end_idx]}#{index+1}")
+      sheet["#{alpha_array[start_idx]}#{index+1}"].style = header_centered_style
     end
   end
 
@@ -423,18 +424,21 @@ wb.add_worksheet(name: "Review") do |sheet|
   end
 
 #  merge_arm_rows.each do |arm_row|
-#    sheet.merge_cells("A#{arm_row.index+1}:#{end_column}#{arm_row.index+1}")
+#    index = sheet.rows.index(arm_row)
+#    sheet.merge_cells("A#{index+1}:#{end_column}#{index+1}")
 #  end
 
   merge_sub_header_rows.each do |services_sub_header_rows|
-    services_sub_header_rows.each_with_index do |sshr, index|
+    services_sub_header_rows.each do |sshr|
+      index = sheet.rows.index(sshr)
       sheet.merge_cells("A#{index+1}:#{end_column}#{index+1}") #selected services sub header row
     end
   end
 
 #  merge_service_rows.each do |service_rows|
 #    service_rows.each do |sr|
-#      sheet.merge_cells("A#{sr.index+1}:B#{sr.index+1}")
+#      index = sheet.rows.index(sr)
+#      sheet.merge_cells("A#{index+1}:B#{index+1}")
 #    end
 #  end
 
@@ -442,7 +446,8 @@ wb.add_worksheet(name: "Review") do |sheet|
   from_left = 6
   begin_column = alpha_array[visit_count + from_left - 3]
   end_column = alpha_array[visit_count + from_left - 2]
-  sheet.merge_cells("#{begin_column}#{grand_total_row.index+1}:#{end_column}#{grand_total_row.index+1}") if has_per_patient_per_visit_services
+  grand_total_row_index = sheet.rows.index(grand_total_row)
+  sheet.merge_cells("#{begin_column}#{grand_total_row_index+1}:#{end_column}#{grand_total_row_index+1}") if has_per_patient_per_visit_services
 
 
   ### added for signature section, fix the width of A, and then merge cells

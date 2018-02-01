@@ -1203,6 +1203,7 @@ en:
     send: 'Send'
     by: 'By'
     sent_protocols: 'Sent Protocols'
+    type: 'Type'
   footer:
     mail_to: "hundc@musc.edu"
     mail_link: "Sign Up For the SPARC Request Listserv"

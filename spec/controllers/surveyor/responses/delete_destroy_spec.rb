@@ -24,80 +24,45 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
   stub_controller
   let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
+  
+  let!(:resp) { create(:response) }
 
-  describe '#create' do
+  describe '#destroy' do
     it 'should call before_filter #authenticate_identity!' do
       expect(before_filters.include?(:authenticate_identity!)).to eq(true)
     end
 
-    context 'response is valid' do
-      it 'should save @response' do
-        survey = create(:survey)
-        section = create(:section, survey: survey)
-        question = create(:question, section: section, required: true)
+    it 'should assign @response' do
+      delete :destroy, params: {
+        id: resp.id
+      }, xhr: true
 
-        expect{
-          post :create, params: {
-            response: {
-              identity_id: logged_in_user.id,
-              survey_id: survey.id,
-              question_responses_attributes: {
-                '0' => {
-                  required: 'true',
-                  question_id: question.id,
-                  content: 'response'
-                }
-              }
-            }
-          }, xhr: true
-        }.to change{ Response.count }.by(1)
-      end
+      expect(assigns(:response)).to eq(resp)
     end
 
-    context 'response is invalid' do
-      it 'should not save @response' do
-        survey = create(:survey)
-        section = create(:section, survey: survey)
-        question = create(:question, section: section, required: true)
-
-        expect{
-          post :create, params: {
-            response: {
-              identity_id: logged_in_user.id,
-              survey_id: survey.id,
-              question_responses_attributes: {
-                '0' => {
-                  required: 'true',
-                  question_id: question.id
-                }
-              }
-            }
-          }, xhr: true
-        }.to_not change{ Response.count }
-      end
+    it 'should delete the response' do
+      expect{
+        delete :destroy, params: {
+          id: resp.id
+        }, xhr: true
+      }.to change{Response.count}.by(-1)
     end
 
     it 'should render template' do
-      survey = create(:survey)
+      survey = create(:form_without_validations)
 
-      post :create, params: {
-        response: {
-          identity_id: logged_in_user.id,
-          survey_id: survey.id
-        }
+      delete :destroy, params: {
+        id: survey.id
       }, xhr: true
 
-      expect(controller).to render_template(:create)
+      expect(controller).to render_template(:destroy)
     end
 
     it 'should respond ok' do
-      survey = create(:survey)
+      survey = create(:form_without_validations)
 
-      post :create, params: {
-        response: {
-          identity_id: logged_in_user.id,
-          survey_id: survey.id
-        }
+      delete :destroy, params: {
+        id: survey.id
       }, xhr: true
 
       expect(controller).to respond_with(:ok)

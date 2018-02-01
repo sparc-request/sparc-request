@@ -30,7 +30,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
     session[:identity_id] = logged_in_user.id
   end
 
-  describe '#show' do
+  describe '#edit' do
     it 'should call before_filter #authenticate_identity!' do
       expect(before_filters.include?(:authenticate_identity!)).to eq(true)
     end
@@ -42,7 +42,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
     it 'should assign @survey to the survey' do
       survey = create(:survey_without_validations)
 
-      get :show, params: {
+      get :edit, params: {
         id: survey.id
       }, xhr: true
 
@@ -52,17 +52,17 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
     it 'should render template' do
       survey = create(:survey_without_validations)
 
-      get :show, params: {
+      get :edit, params: {
         id: survey.id
       }, xhr: true
 
-      expect(controller).to render_template(:show)
+      expect(controller).to render_template(:edit)
     end
 
     it 'should respond ok' do
       survey = create(:survey_without_validations)
 
-      get :show, params: {
+      get :edit, params: {
         id: survey.id
       }, xhr: true
 

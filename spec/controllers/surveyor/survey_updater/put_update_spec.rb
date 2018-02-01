@@ -86,7 +86,7 @@ RSpec.describe Surveyor::SurveyUpdaterController, type: :controller do
 
     context 'object valid' do
       it 'should update object' do
-        survey = create(:survey, version: 0)
+        survey = create(:survey, version: 2)
         klass = 'survey'
 
         put :update, params: {

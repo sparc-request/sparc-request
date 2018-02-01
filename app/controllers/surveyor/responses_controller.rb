@@ -22,7 +22,6 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   respond_to :html, :js, :json
 
   before_action :authenticate_identity!
-  before_action :find_survey, only: [:new]
   before_action :find_response, only: [:show, :edit, :update]
 
   def show
@@ -35,13 +34,14 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   end
 
   def new
+    @survey = params[:type].constantize.find(params[:survey_id])
     @response = @survey.responses.new
     @response.question_responses.build
     @respondable = params[:respondable_type].constantize.find(params[:respondable_id])
 
     respond_to do |format|
       format.html {
-        existing_response = Response.where(survey: @survey, respondable_id: params[:respondable_id], respondable_type: params[:respondable_type]).first
+        existing_response = Response.where(survey: @survey, identity: current_user, respondable: @respondable).first
         redirect_to surveyor_response_complete_path(existing_response) if existing_response
       }
       format.js
@@ -73,20 +73,24 @@ class Surveyor::ResponsesController < Surveyor::BaseController
     if @response.update_attributes(response_params)
       flash[:success] = t(:surveyor)[:responses][:update]
     end
+
+    respond_to do |format|
+      format.js
+    end
   end
 
   def destroy
     (@response = Response.find(params[:id])).destroy
+
+    respond_to do |format|
+      format.js
+    end
   end
 
   def complete
   end
 
   private
-
-  def find_survey
-    @survey = params[:type].constantize.find(params[:survey_id])
-  end
 
   def find_response
     @response = Response.find(params[:id])

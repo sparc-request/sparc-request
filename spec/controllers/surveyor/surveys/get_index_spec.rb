@@ -58,14 +58,32 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
     end
 
     context 'format json' do
-      it 'should assign @surveys to all surveys' do
-        create(:survey_without_validations)
+      context "params[:type] == 'SystemSurvey'" do
+        it 'should assign @surveys to all SystemSurveys' do
+          create(:system_survey_without_validations)
 
-        get :index, params: {
-          format: :json
-        }, xhr: true
+          get :index, params: {
+            format: :json,
+            type: 'SystemSurvey'
+          }, xhr: true
 
-        expect(assigns(:surveys)).to eq(Survey.all)
+          expect(assigns(:surveys)).to eq(SystemSurvey.all)
+        end
+      end
+
+      context "params[:type] == 'Form'" do
+        it 'should assign @surveys to all Forms for the user' do
+          org = create(:organization)
+                create(:super_user, identity: logged_in_user, organization: org)
+                create(:form, surveyable: org)
+
+          get :index, params: {
+            format: :json,
+            type: 'Form'
+          }, xhr: true
+
+          expect(assigns(:surveys)).to eq(Form.for(logged_in_user))
+        end
       end
 
       it 'should render template' do

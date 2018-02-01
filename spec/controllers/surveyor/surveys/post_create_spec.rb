@@ -39,23 +39,51 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
       expect(before_filters.include?(:authorize_site_admin)).to eq(true)
     end
 
-    it 'should assign @survey to a new survey' do
-      expect{
-        post :create, xhr: true
-      }.to change{ Survey.count }.by(1)
-      expect(assigns(:survey)).to be_a(Survey)
+    context "params[:type] == 'SystemSurvey'" do
+      it 'should assign @survey to a new SystemSurvey' do
+        expect{
+          post :create, xhr: true, params: { type: 'SystemSurvey' }
+        }.to change{ SystemSurvey.count }.by(1)
+        expect(assigns(:survey)).to be_a(SystemSurvey)
+      end
+
+      it 'should redirect to edit' do
+        post :create, xhr: true, params: { type: 'SystemSurvey' }
+
+        expect(controller).to redirect_to(edit_surveyor_survey_path(assigns(:survey), type: 'SystemSurvey'))
+      end
+
+      it 'should respond ok' do
+        post :create, xhr: true, params: { type: 'SystemSurvey' }
+
+        expect(controller).to respond_with(302)
+      end
     end
 
-    it 'should redirect to show' do
-      post :create, xhr: true
+    context "params[:type] == 'Form'" do
+      it 'should assign @survey to a new SystemSurvey' do
+        expect{
+          post :create, xhr: true, params: { type: 'Form' }
+        }.to change{ Form.count }.by(1)
+        expect(assigns(:survey)).to be_a(Form)
+      end
 
-      expect(controller).to redirect_to(surveyor_survey_path(assigns(:survey)))
-    end
+      it 'should associate the new Form to the current user' do
+        post :create, xhr: true, params: { type: 'Form' }
+        expect(assigns(:survey).surveyable).to eq(logged_in_user)
+      end
 
-    it 'should respond ok' do
-      post :create, xhr: true
+      it 'should redirect to edit' do
+        post :create, xhr: true, params: { type: 'Form' }
 
-      expect(controller).to respond_with(302)
+        expect(controller).to redirect_to(edit_surveyor_survey_path(assigns(:survey), type: 'Form'))
+      end
+
+      it 'should respond ok' do
+        post :create, xhr: true, params: { type: 'Form' }
+
+        expect(controller).to respond_with(302)
+      end
     end
   end
 end

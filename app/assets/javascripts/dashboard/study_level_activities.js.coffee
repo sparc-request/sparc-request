@@ -47,13 +47,13 @@ $ ->
       url: "/dashboard/line_items/#{line_item_id}/edit"
       data: data
 
-  $(document).on 'click', '.otf_admin_rate', ->
+  $(document).on 'change', '.your-cost-edit', ->
     row_index   = $(this).parents('tr').data('index')
     line_item_id = $(this).parents('table.study_level_activities').bootstrapTable('getData')[row_index].id
-    data = 'modal' : 'sla_admin_rate_form'
+    data = 'line_item': 'displayed_cost' : $(this).val().replace('$', '')
     $.ajax
-      type: 'GET'
-      url: "/dashboard/line_items/#{line_item_id}/edit"
+      type: 'PATCH'
+      url: "/dashboard/line_items/#{line_item_id}"
       data: data
 
   $(document).on 'click', '.otf_delete', ->

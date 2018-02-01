@@ -82,6 +82,18 @@ class SearchController < ApplicationController
     render json: results.to_json
   end
 
+  def identities
+    term = params[:term].strip
+    results = Identity.search(term).map { |i|
+      {
+        identity_id: i.id,
+        name: i.full_name,
+        email: i.email
+      }
+    }
+    render json: results.to_json
+  end
+
   private
 
   def cpt_code_text(org)

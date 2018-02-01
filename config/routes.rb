@@ -174,6 +174,7 @@ SparcRails::Application.routes.draw do
     collection do
       get :services
       get :organizations
+      get :identities
     end
   end
 

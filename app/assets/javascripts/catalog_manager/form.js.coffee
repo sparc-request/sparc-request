@@ -120,7 +120,8 @@ $ ->
           organization_id: $(this).data('organization-id')
           hold_emails: $(this).prop('checked')
 
-  $(document).on 'click', '.remove-user-rights', ->
+  $(document).on 'click', '.remove-user-rights', (event) ->
+    event.preventDefault()
     identity_id = $(this).data('identity-id')
     $.ajax
       type: 'DELETE'
@@ -130,4 +131,4 @@ $ ->
           identity_id: identity_id
           organization_id: $(this).data('organization-id')
       success: ->
-        $("#user-rights-row-#{identity_id}").fadeOut(1000)
+        $("#user-rights-row-#{identity_id}").fadeOut(1000, () -> $(this).remove())

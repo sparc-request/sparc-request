@@ -83,6 +83,7 @@ class Dashboard::LineItemsController < Dashboard::BaseController
           end
         elsif @otf
           @errors = @line_item.errors
+          flash[:alert] = t(:dashboard)[:study_level_activities][:failed_update]
         end
       end
       format.json do

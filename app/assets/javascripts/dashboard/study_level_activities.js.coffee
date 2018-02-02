@@ -55,6 +55,7 @@ $ ->
       type: 'PATCH'
       url: "/dashboard/line_items/#{line_item_id}"
       data: data
+      error: $("#study-level-activities-table").bootstrapTable 'refresh', {silent: true}
 
   $(document).on 'click', '.otf_delete', ->
     row_index   = $(this).parents('tr').data('index')

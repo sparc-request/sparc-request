@@ -50,8 +50,8 @@ module Dashboard::ProtocolsHelper
     end
   end
 
-  def display_archive_button(protocol, permission_to_edit)
-    if permission_to_edit
+  def display_archive_button(protocol, permission_to_edit, current_user)
+    if permission_to_edit || Protocol.for_super_user(current_user.id).include?(protocol)
       content_tag( :button, (protocol.archived ? t(:protocols)[:summary][:unarchive] : t(:protocols)[:summary][:archive])+" #{protocol.type.capitalize}", 
                     type: 'button', 
                     class: 'protocol-archive-button btn btn-default btn-sm',

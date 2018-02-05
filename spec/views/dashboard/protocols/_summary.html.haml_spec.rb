@@ -26,6 +26,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
       protocol: protocol,
       protocol_type: protocol.type,
       permission_to_edit: true,
+      admin: true,
       user: jug2
   end
 

@@ -311,7 +311,6 @@ en:
       created: "Non-clinical Services Created!"
       updated: "Non-clinical Services Updated!"
       destroyed: "Non-clinical Services Destroyed!"
-      failed_update: "Failed to update Non-clinical Service"
       table:
         service: "Service"
         unit_requested: "Unit Requested"

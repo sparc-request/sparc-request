@@ -35,7 +35,7 @@
             %button.btn.btn-sm.btn-warning#admin_approvals_button{ data: { sub_service_request_id: sub_service_request.id }}
               = t(:dashboard)[:sub_service_requests][:tabs][:request_details][:options][:core_approvals]
         %td.text-center
-          = link_to t(:dashboard)[:sub_service_requests][:tabs][:request_details][:options][:export_to_excel], service_request_path(service_request, format: :xlsx, admin_offset: 1, sub_service_request_id: sub_service_request.id), :class => "export_to_excel_button btn btn-sm btn-primary", data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' }, title: t(:dashboard)[:sub_service_requests][:tabs][:request_details][:tooltips][:export_to_excel]
+          = link_to t(:dashboard)[:sub_service_requests][:tabs][:request_details][:options][:export_to_excel], service_request_path(service_request, format: :xlsx, report_type: 'request_report', admin_offset: 1, sub_service_request_id: sub_service_request.id), :class => "export_to_excel_button btn btn-sm btn-primary", data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' }, title: t(:dashboard)[:sub_service_requests][:tabs][:request_details][:tooltips][:export_to_excel]
         - if sub_service_request.is_complete? && !sub_service_request.surveys_completed?
           %td.text-center
             %button.btn.btn-sm.btn-primary#resend-surveys-button{ data: { sub_service_request_id: sub_service_request.id } }

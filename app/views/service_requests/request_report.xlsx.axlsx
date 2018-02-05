@@ -336,27 +336,6 @@ wb.add_worksheet(name: "Review") do |sheet|
   grand_total_row += ["Total Cost", display_study_grand_total(@service_request.protocol, @service_request)]
   grand_total_row = sheet.add_row(grand_total_row, :style => row_header_style)
 
-  ## signatures and disclaimer
-
-  if @show_signature_section
-    sheet.add_row
-
-    signatures_text  = "The Signatures of the Principal Investigator and Study Delegate (study coordinator, grants adminstrator, etc.) indicate that this Study Calendar "
-    signatures_text2 = "has been reviewed; the _____________________________________________________ billable services have been identified and the highlighted services "
-    signatures_text3 = "should be included in an order set for unlicensed staff to process standing orders for the above identified study."
-
-    first_signature_row = sheet.add_row([signatures_text], :style => row_header_style, :widths => [:ignore])
-    sheet.add_row([signatures_text2], :style => row_header_style, :widths => [:ignore])
-    sheet.add_row([signatures_text3], :style => row_header_style, :widths => [:ignore])
-    sheet.add_row
-
-    sheet.add_row(["Principal Investigator Signature:                     _________________________________________      Date: ____________________"], :style => default, :widths => [:ignore])
-    sheet.add_row
-    sheet.add_row(["Study Delegate Signature:                              _________________________________________      Date: ____________________"], :style => default, :widths => [:ignore])
-    sheet.add_row
-    sheet.add_row(["___________________ Delegate Signature: _________________________________________      Date: ____________________"], :style => default, :widths => [:ignore])
-  end
-
   ###### style and merge cells ######
 
   end_column = "G"
@@ -449,20 +428,6 @@ wb.add_worksheet(name: "Review") do |sheet|
   grand_total_row_index = sheet.rows.index(grand_total_row)
   sheet.merge_cells("#{begin_column}#{grand_total_row_index+1}:#{end_column}#{grand_total_row_index+1}") if has_per_patient_per_visit_services
 
-
-  ### added for signature section, fix the width of A, and then merge cells
-  if @show_signature_section
-    index = sheet.rows.index(first_signature_row)
-    sheet.merge_cells("A#{index+1}:F#{index+1}")
-    sheet.merge_cells("A#{index+2}:F#{index+2}")
-    sheet.merge_cells("A#{index+3}:F#{index+3}")
-    sheet.merge_cells("A#{index+4}:F#{index+4}")
-    sheet.merge_cells("A#{index+5}:F#{index+5}")
-    sheet.merge_cells("A#{index+6}:F#{index+6}")
-    sheet.merge_cells("A#{index+7}:F#{index+7}")
-    sheet.merge_cells("A#{index+8}:F#{index+8}")
-    sheet.merge_cells("A#{index+9}:F#{index+9}")
-  end
 
   ### setting some column widths
   if @admin_offset

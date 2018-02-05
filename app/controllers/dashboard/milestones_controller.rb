@@ -35,7 +35,11 @@ class Dashboard::MilestonesController < Dashboard::BaseController
       :start_date,
       :end_date,
       :recruitment_start_date,
-      :recruitment_end_date
+      :recruitment_end_date,
+      :initial_budget_sponsor_received_date,
+      :budget_agreed_upon_date,
+      :initial_amount,
+      :negotiated_amount
     )
   end
 end

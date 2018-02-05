@@ -17,7 +17,7 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.col-md-9.service-details-left  
+.col-md-9.service-details-left
   = render 'service_requests/service_details/details_dates', service_request: service_request, protocol: protocol
   - if (sub_service_request.nil? ? service_request.has_per_patient_per_visit_services? : sub_service_request.has_per_patient_per_visit_services?)
     = render 'service_requests/service_details/details_arms', service_request: service_request

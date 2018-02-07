@@ -274,7 +274,11 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def ssr_select_options(ssr)
-    ssr.nil? ? [] : statuses_with_classes(ssr)
+    if ssr.is_complete?
+      completed_statuses(ssr)
+    else
+      ssr.nil? ? [] : statuses_with_classes(ssr)
+    end
   end
 
   private
@@ -286,6 +290,19 @@ module Dashboard::SubServiceRequestsHelper
       else
         status
       end
+    end
+  end
+
+  def completed_statuses(ssr)
+    new_statuses = []
+    ssr.organization.get_available_statuses.invert.map do |status|
+      if status.include?('Complete') || status.include?('Withdrawn')
+        new_statuses << status
+      end
+    end
+
+    new_statuses.each do |status|
+      status
     end
   end
 end

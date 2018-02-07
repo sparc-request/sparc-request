@@ -275,7 +275,7 @@ module Dashboard::SubServiceRequestsHelper
 
   def ssr_select_options(ssr)
     if ssr.is_complete?
-      completed_statuses(ssr)
+      finished_statuses(ssr)
     else
       ssr.nil? ? [] : statuses_with_classes(ssr)
     end
@@ -285,7 +285,7 @@ module Dashboard::SubServiceRequestsHelper
 
   def statuses_with_classes(ssr)
     ssr.organization.get_available_statuses.invert.map do |status|
-      if status.include?('Complete') || status.include?('Withdrawn')
+      if in_finished_status?(status)
         status.push(:class=> 'finished-status')
       else
         status
@@ -293,10 +293,10 @@ module Dashboard::SubServiceRequestsHelper
     end
   end
 
-  def completed_statuses(ssr)
+  def finished_statuses(ssr)
     new_statuses = []
     ssr.organization.get_available_statuses.invert.map do |status|
-      if status.include?('Complete') || status.include?('Withdrawn')
+      if in_finished_status?(status)
         new_statuses << status
       end
     end
@@ -304,6 +304,10 @@ module Dashboard::SubServiceRequestsHelper
     new_statuses.each do |status|
       status
     end
+  end
+
+  def in_finished_status?(status)
+    status.include?('Complete') || status.include?('Withdrawn')
   end
 end
 

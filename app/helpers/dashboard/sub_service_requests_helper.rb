@@ -307,10 +307,7 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def in_finished_status?(status)
-    finished_statuses = Setting.find_by_key("finished_statuses")
-    puts "<>"*1000
-    puts finished_statuses.inspect
-    status.include?('Complete') || status.include?('Withdrawn')
+    Setting.find_by_key("finished_statuses").value.include?(status.last)
   end
 end
 

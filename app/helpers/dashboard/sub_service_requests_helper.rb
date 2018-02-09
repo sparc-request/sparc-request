@@ -302,12 +302,12 @@ module Dashboard::SubServiceRequestsHelper
     end
 
     new_statuses.each do |status|
-      status
+      status.push(:class=> 'finished-status')
     end
   end
 
   def in_finished_status?(status)
-    status.include?('Complete') || status.include?('Withdrawn')
+    Setting.find_by_key("finished_statuses").value.include?(status.last)
   end
 end
 

@@ -120,7 +120,7 @@ RSpec.describe 'User edits survey fields', js: true do
     before :each do
       @org = create(:institution)
       create(:super_user, organization: @org, identity: jug2)
-      @form = create(:form, surveyable_id: @org.id, surveyable_type: @org.class.name)
+      @form = create(:form, surveyable: @org)
     end
 
     scenario 'and sees updated title' do

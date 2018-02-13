@@ -46,7 +46,7 @@ RSpec.describe 'User edits a survey', js: true do
     before :each do
       org = create(:institution)
       create(:super_user, organization: org, identity: jug2)
-      create(:form, surveyable_id: org.id, surveyable_type: org.class.name)
+      create(:form, surveyable: org)
 
       visit surveyor_surveys_path
       wait_for_javascript_to_finish

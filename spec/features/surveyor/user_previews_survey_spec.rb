@@ -41,7 +41,7 @@ RSpec.describe 'User previews a survey', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      click_button 'Preview'
+      click_link 'Preview'
       wait_for_javascript_to_finish
     end
 
@@ -60,7 +60,7 @@ RSpec.describe 'User previews a survey', js: true do
     before :each do
       org = create(:institution)
       create(:super_user, organization: org, identity: jug2)
-      @form = create(:form, surveyable_id: org.id, surveyable_type: org.class.name)
+      @form = create(:form, surveyable: org)
       s1      = create(:section, survey: @form)
       s2      = create(:section, survey: @form)
       s3      = create(:section, survey: @form)
@@ -73,7 +73,7 @@ RSpec.describe 'User previews a survey', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      click_button 'Preview'
+      click_link 'Preview'
       wait_for_javascript_to_finish
     end
 

@@ -36,7 +36,7 @@ $(document).ready ->
           url: '/surveyor/responses/new.js'
           data:
             type: 'SystemSurvey'
-            access_code: 'system-satisfaction-survey'
+            survey_id: $(this).data('id')
             respondable_id: getSRId()
             respondable_type: 'ServiceRequest'
 

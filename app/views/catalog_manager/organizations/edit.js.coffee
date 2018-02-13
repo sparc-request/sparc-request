@@ -63,12 +63,12 @@ $('#user-rights-query').typeahead(
     # if institution, add only SU and CM
     $("#user-rights-table").append("
       <tr id='user-rights-row-#{suggestion['identity_id']}' data-identity-id='#{suggestion['identity_id']}'>
-        <td>#{suggestion['name']}</td>
-        <td>
+        <td>#{suggestion['name']}, #{suggestion['email']}</td>
+        <td class='text-center'>
           <input type='checkbox' class='super-user-checkbox' data-organization-id='<%= @organization.id %>' data-identity-id='#{suggestion['identity_id']}'>
         </td>
-        <td>
-          <div class='form-check'>
+        <td class='cm-cell'>
+          <div class='form-check text-center'>
             <input type='checkbox' class='catalog-manager-checkbox' data-organization-id='<%= @organization.id %>' data-identity-id='#{suggestion['identity_id']}'>
           </div>
           <div class='form-check'>
@@ -86,12 +86,12 @@ $('#user-rights-query').typeahead(
     # else add SU, CM, SP, CP
     $("#user-rights-table").append("
       <tr id='user-rights-row-#{suggestion['identity_id']}' data-identity-id='#{suggestion['identity_id']}'>
-        <td>#{suggestion['name']} #{suggestion['email']}</td>
-        <td>
+        <td>#{suggestion['name']}, #{suggestion['email']}</td>
+        <td class='text-center'>
           <input type='checkbox' class='super-user-checkbox' data-organization-id='<%= @organization.id %>' data-identity-id='#{suggestion['identity_id']}'>
         </td>
-        <td>
-          <div class='form-check'>
+        <td class='cm-cell'>
+          <div class='form-check text-center'>
             <input type='checkbox' class='catalog-manager-checkbox' data-organization-id='<%= @organization.id %>' data-identity-id='#{suggestion['identity_id']}'>
           </div>
           <div class='form-check'>
@@ -100,7 +100,7 @@ $('#user-rights-query').typeahead(
           </div>
         </td>
         <td>
-          <div class='form-check'>
+          <div class='form-check text-center'>
             <input type='checkbox' class='service-provider-checkbox' data-organization-id='<%= @organization.id %>' data-identity-id='#{suggestion['identity_id']}'>
           </div>
           <div class='form-check'>
@@ -112,7 +112,7 @@ $('#user-rights-query').typeahead(
             #{I18n['catalog_manager']['organization_form']['user_rights']['hold_emails']}
           </div>
         </td>
-        <td>
+        <td class='text-center'>
           <input type='checkbox' class='clinical-provider-checkbox' data-organization-id='<%= @organization.id %>' data-identity-id='#{suggestion['identity_id']}'>
         </td>
         <td class='text-center'>

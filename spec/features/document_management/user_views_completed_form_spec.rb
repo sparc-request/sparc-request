@@ -18,31 +18,35 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FactoryGirl.define do
-  factory :form do
-    title                     { Faker::Lorem.word }
-    access_code               { Faker::Lorem.word }
-    sequence(:display_order)  { |n| n }
-    sequence(:version)        { |n| n }
-    active                    { false }
-    type                      { 'Form' }
-    surveyable                { nil }
+require 'rails_helper'
 
-    trait :active do
-      active true
-    end
+RSpec.describe 'User views a completed form', js: true do
+  let_there_be_lane
 
-    trait :without_validations do
-      to_create { |instance| instance.save(validate: false) }
-    end
+  fake_login_for_each_test
 
-    trait :with_question do
-      after(:create) do |form, evaluator|
-        section = create(:section, survey: form)
-                  create(:question, section: section)
-      end
-    end
+  before :each do
+    institution = create(:institution, name: "Institution")
+    provider    = create(:provider, name: "Provider", parent: institution)
+    program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
+    service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
+    @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2)
+    @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
+    ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
+                  create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
+                  create(:arm, protocol: @protocol, visit_count: 1)
+    form        = create(:form, :with_question, surveyable: service, active: true)
+    response    = create(:response, survey: form, respondable: ssr)
+                  create(:question_response, response: response, question: form.questions.first, content: 'Respondability')
+  end
 
-    factory :form_without_validations, traits: [:without_validations]
+  scenario 'and sees the responses' do
+    visit document_management_service_request_path(@sr)
+    wait_for_javascript_to_finish
+
+    first('.view-form-response').click
+    wait_for_javascript_to_finish
+
+    expect(page).to have_selector('.modal input[value="Respondability"]', visible: true)
   end
 end

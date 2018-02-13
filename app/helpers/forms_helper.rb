@@ -73,7 +73,7 @@ module FormsHelper
       'Complete',
       new_surveyor_response_path(type: form.class.name, survey_id: form.id, respondable_id: respondable.id, respondable_type: respondable.class.name),
       remote: true,
-      class: 'btn btn-success view-form-response'
+      class: 'btn btn-success new-form-response'
     )
   end
 end

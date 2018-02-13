@@ -39,7 +39,9 @@ class Dashboard::MilestonesController < Dashboard::BaseController
       :initial_budget_sponsor_received_date,
       :budget_agreed_upon_date,
       :initial_amount,
-      :negotiated_amount
+      :negotiated_amount,
+      :initial_amount_clinical_services,
+      :negotiated_amount_clinical_services
     )
   end
 end

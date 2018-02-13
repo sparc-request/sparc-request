@@ -20,51 +20,25 @@
 
 require 'rails_helper'
 
-RSpec.describe CatalogManager::CatalogManagersController, type: :controller do
-
-  before :each do
-    @identity_id = create(:identity).id
-    @organization_id = create(:provider).id
-  end
-
-  describe '#create' do
-    it 'should create a Catalog Manager' do
-      post :create,
-        params: { catalog_manager: { identity_id: @identity_id, organization_id: @organization_id } },
-        xhr: true
-
-      expect(CatalogManager.count).to eq(1)
-    end
-  end
-
-  describe '#update' do
-    it 'should update edit_historic_data to true' do
-      cm = create(:catalog_manager, identity_id: @identity_id, organization_id: @organization_id, edit_historic_data: false)
-      put :update,
-        params: { catalog_manager: { identity_id: @identity_id, organization_id: @organization_id, edit_historic_data: 'true' } },
-        xhr: true
-
-      expect(cm.reload.edit_historic_data).to eq(true)
-    end
-
-    it 'should update edit_historic_data to false' do
-      cm = create(:catalog_manager, identity_id: @identity_id, organization_id: @organization_id, edit_historic_data: true)
-      put :update,
-        params: { catalog_manager: { identity_id: @identity_id, organization_id: @organization_id, edit_historic_data: 'false' } },
-        xhr: true
-
-      expect(cm.reload.edit_historic_data).to eq(false)
-    end
-  end
+RSpec.describe CatalogManager::UserRightsController, type: :controller do
 
   describe '#destroy' do
-    it 'should delete an existing Catalog Manager' do
-      cm = create(:catalog_manager, identity_id: @identity_id, organization_id: @organization_id)
+    it 'should remove rights for the given identity on an organization' do
+      org = create(:provider)
+      identity = create(:identity)
+      su = create(:super_user, identity_id: identity.id, organization_id: org.id)
+      cm = create(:catalog_manager, identity_id: identity.id, organization_id: org.id)
+      sp = create(:service_provider, identity_id: identity.id, organization_id: org.id)
+      cp = create(:clinical_provider, identity_id: identity.id, organization_id: org.id)
+
       delete :destroy,
-        params: { catalog_manager: { identity_id: @identity_id, organization_id: @organization_id } },
+        params: { user_rights: { identity_id: identity.id, organization_id: org.id } },
         xhr: true
 
-      expect(CatalogManager.count).to eq(0)
+      expect([SuperUser.count,
+              CatalogManager.count,
+              ServiceProvider.count,
+              ClinicalProvider.count]).to eq([0, 0, 0, 0])
     end
   end
 

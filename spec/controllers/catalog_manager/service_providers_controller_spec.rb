@@ -37,9 +37,47 @@ RSpec.describe CatalogManager::ServiceProvidersController, type: :controller do
     end
   end
 
+  describe '#update' do
+    it 'should update is_primary_contact to true' do
+      sp = create(:service_provider, identity_id: @identity_id, organization_id: @organization_id, is_primary_contact: false)
+      put :update,
+        params: { service_provider: { identity_id: @identity_id, organization_id: @organization_id, is_primary_contact: 'true' } },
+        xhr: true
+
+      expect(sp.reload.is_primary_contact).to eq(true)
+    end
+
+    it 'should update is_primary_contact to false' do
+      sp = create(:service_provider, identity_id: @identity_id, organization_id: @organization_id, is_primary_contact: true)
+      put :update,
+        params: { service_provider: { identity_id: @identity_id, organization_id: @organization_id, is_primary_contact: 'false' } },
+        xhr: true
+
+      expect(sp.reload.is_primary_contact).to eq(false)
+    end
+
+    it 'should update hold_emails to true' do
+      sp = create(:service_provider, identity_id: @identity_id, organization_id: @organization_id, hold_emails: false)
+      put :update,
+        params: { service_provider: { identity_id: @identity_id, organization_id: @organization_id, hold_emails: 'true' } },
+        xhr: true
+
+      expect(sp.reload.hold_emails).to eq(true)
+    end
+
+    it 'should update hold_emails to false' do
+      sp = create(:service_provider, identity_id: @identity_id, organization_id: @organization_id, hold_emails: true)
+      put :update,
+        params: { service_provider: { identity_id: @identity_id, organization_id: @organization_id, hold_emails: 'false' } },
+        xhr: true
+
+      expect(sp.reload.hold_emails).to eq(false)
+    end
+  end
+
   describe '#destroy' do
     it 'should delete an existing Service Provider' do
-      cm = create(:service_provider, identity_id: @identity_id, organization_id: @organization_id)
+      sp = create(:service_provider, identity_id: @identity_id, organization_id: @organization_id)
       delete :destroy,
         params: { service_provider: { identity_id: @identity_id, organization_id: @organization_id } },
         xhr: true

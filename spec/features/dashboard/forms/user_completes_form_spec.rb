@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User views a completed form', js: true do
+RSpec.describe 'User completes a form', js: true do
   let_there_be_lane
 
   fake_login_for_each_test
@@ -29,24 +29,44 @@ RSpec.describe 'User views a completed form', js: true do
     institution = create(:institution, name: "Institution")
     provider    = create(:provider, name: "Provider", parent: institution)
     program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
-    service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
+    @service    = create(:service, name: "My Service", abbreviation: "My Service", organization: program)
     @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2)
-    @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
-    ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
-                  create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
+    @sr         = create(:service_request_without_validations, protocol: @protocol)
+    ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program)
+                  create(:line_item, service_request: @sr, sub_service_request: ssr, service: @service)
                   create(:arm, protocol: @protocol, visit_count: 1)
-    form        = create(:form, :with_question, surveyable: service, active: true)
-    response    = create(:response, survey: form, respondable: ssr)
-                  create(:question_response, response: response, question: form.questions.first, content: 'Respondability')
+    @form       = create(:form, :with_question, surveyable: @service, active: true)
   end
 
-  scenario 'and sees the responses' do
-    visit document_management_service_request_path(@sr)
+  context 'with no other completed forms' do
+    scenario 'and sees the forms panel appear' do
+      visit dashboard_protocol_path(@protocol)
+      wait_for_javascript_to_finish
+
+      expect(page).to have_selector('#forms-panel', visible: false)
+
+      bootstrap_select '.complete-forms', @service.name
+      wait_for_javascript_to_finish
+
+      click_button 'Submit'
+      wait_for_javascript_to_finish
+
+      expect(page).to have_selector('#forms-panel', visible: true)
+    end
+  end
+
+  scenario 'and sees the response in the forms panel' do
+    visit dashboard_protocol_path(@protocol)
     wait_for_javascript_to_finish
 
-    first('.view-form-response').click
+    bootstrap_select '.complete-forms', @service.name
     wait_for_javascript_to_finish
 
-    expect(page).to have_selector('.modal input[value="Respondability"]', visible: true)
+    fill_in "response_question_responses_attributes_0_content", with: 'response to a question'
+    click_button 'Submit'
+    wait_for_javascript_to_finish
+
+    expect(@form.responses.count).to eq(1)
+    expect(@form.responses.first.question_responses.first.content).to eq('response to a question')
   end
 end

@@ -25,8 +25,11 @@ module FormsHelper
     content_tag(:h4, content_tag(:span, '', class: klass))
   end
 
-  def form_options(form, completed, respondable)
-    if completed
+  def form_options(form, completed, respondable, review)
+    if review
+      response = Response.where(survey: form, respondable: respondable).first
+      response ? view_form_response_button(form, response) : link_to(t(:actions)[:view], 'javascript:void(0)', class: 'btn btn-info disabled')
+    elsif completed
       response = Response.where(survey: form, respondable: respondable).first
       [ view_form_response_button(form, response),
         edit_form_response_button(form, response),
@@ -39,7 +42,7 @@ module FormsHelper
 
   def view_form_response_button(form, response)
     link_to(
-      'View',
+      t(:actions)[:view],
       surveyor_response_path(response),
       remote: true,
       class: 'btn btn-info view-form-response'

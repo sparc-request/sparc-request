@@ -21,4 +21,4 @@
   .page-header
     %h3{ title: t(:proper)[:document_management][:tooltips][:forms], data: { toggle: 'tooltip', delay: '{"show":"500"}' } }
       = t(:proper)[:document_management][:forms_notice]
-  = render "forms/table", service_request: service_request
+  = render "forms/table", service_request: service_request, review: review

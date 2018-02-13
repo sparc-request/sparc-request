@@ -26,31 +26,7 @@
         %h4.text-center.modal-title
           = survey.title
       .modal-body
-        #survey-response
-          = f.hidden_field :identity_id, value: current_user.id
-          = f.hidden_field :survey_id, value: survey.id
-          = f.hidden_field :respondable_id, value: respondable.id
-          = f.hidden_field :respondable_type, value: respondable.class.name
-          - unless survey.description.blank?
-            .form-group
-              %p.survey-description.no-margin
-                = raw(survey.description)
-          .form-group.alert.alert-warning
-            = t(:errors)[:user_note]
-          .survey-sections
-            - survey.sections.eager_load(questions: :options).each do |section|
-              .panel.panel-default.section
-                .panel-heading
-                  %h4.panel-title
-                    = section.title
-                .panel-body
-                  - unless section.description.blank?
-                    .form-group
-                      %p.section-description.no-margin
-                        = raw(section.description)
-                  - section.questions.each_with_index do |question, index|
-                    = f.fields_for :question_responses do |qr|
-                      = render 'surveyor/responses/form/response_question', qr: qr, section: section, question: question, index: index
+        = render 'surveyor/responses/form/new_form', f: f, survey: survey, respondable: respondable
       .modal-footer
         .center-block
           %button.btn.btn-default.no-button{ type: 'button', data: { dismiss: 'modal' } }

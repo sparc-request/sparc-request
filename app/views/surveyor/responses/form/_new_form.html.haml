@@ -17,14 +17,28 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.col-sm-8.col-sm-offset-2
-  .panel.panel-default#survey-panel
-    .panel-heading.text-center
-      %h4.panel-title
-        = @survey.title
-    = form_for @response, url: surveyor_responses_path(@response), remote: true do |f|
-      .panel-body
-        = render 'surveyor/responses/form/new_form', f: f, survey: @survey, respondable: @respondable
-      .panel-footer
-        .clearfix
-          = f.submit t(:actions)[:submit], class: 'btn btn-primary pull-right'
+#survey-response
+  = f.hidden_field :identity_id, value: current_user.id
+  = f.hidden_field :survey_id, value: survey.id
+  = f.hidden_field :respondable_id, value: respondable.id
+  = f.hidden_field :respondable_type, value: respondable.class.name
+  - unless survey.description.blank?
+    .form-group
+      %p.survey-description.no-margin
+        = raw(survey.description)
+  .form-group.alert.alert-warning
+    = t(:errors)[:user_note]
+  .survey-sections
+    - survey.sections.eager_load(questions: :options).each do |section|
+      .panel.panel-default.section
+        .panel-heading
+          %h4.panel-title
+            = section.title
+        .panel-body
+          - unless section.description.blank?
+            .form-group
+              %p.section-description.no-margin
+                = raw(section.description)
+          - section.questions.each_with_index do |question, index|
+            = f.fields_for :question_responses do |qr|
+              = render 'surveyor/responses/form/response_question', qr: qr, section: section, question: question, index: index

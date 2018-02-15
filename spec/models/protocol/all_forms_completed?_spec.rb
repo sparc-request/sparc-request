@@ -23,10 +23,10 @@ RSpec.describe Protocol, type: :model do
 
   let!(:organization)   { create(:organization) }
   let!(:service)        { create(:service, organization: organization) }
-  let!(:org_form1)      { create(:form, surveyable: organization, active: true) }
-  let!(:org_form2)      { create(:form, surveyable: organization, active: true) }
-  let!(:service_form1)  { create(:form, surveyable: service, active: true) }
-  let!(:service_form2)  { create(:form, surveyable: service, active: true) }
+  let!(:org_form1)      { create(:form, surveyable: organization, access_code: 'org-form-1', active: true) }
+  let!(:org_form2)      { create(:form, surveyable: organization, access_code: 'org-form-2', active: true) }
+  let!(:service_form1)  { create(:form, surveyable: service, access_code: 'serv-form-1', active: true) }
+  let!(:service_form2)  { create(:form, surveyable: service, access_code: 'serv-form-2', active: true) }
   let!(:protocol)       { create(:study_without_validations) }
   let!(:request)        { create(:service_request_without_validations, protocol: protocol) }
   let!(:ssr)            { create(:sub_service_request, service_request: request, organization: organization) }

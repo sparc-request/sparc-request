@@ -22,7 +22,7 @@ class Surveyor::SurveysController < Surveyor::BaseController
   respond_to :html, :js, :json
 
   before_action :authenticate_identity!
-  before_action :authorize_site_admin
+  before_action :authorize_survey_builder_access
 
   def index
     respond_to do |format|
@@ -95,13 +95,14 @@ class Surveyor::SurveysController < Surveyor::BaseController
   end
 
   def search_surveyables
-    term = params[:term].strip
-    org_ids = current_user.authorized_admin_organizations.ids
-    service_ids = Service.where(organization_id: org_ids).ids
-
-    org_results = Organization.where("(name LIKE ? OR abbreviation LIKE ?) AND is_available = 1 AND process_ssrs = 1 AND id IN (?)", "%#{term}%", "%#{term}%", org_ids)
+    term            = params[:term].strip
+    org_ids         = current_user.is_overlord? ? Organization.all.ids : current_user.authorized_admin_organizations.ids
+    service_ids     = Service.where(organization_id: org_ids).ids
+    
+    org_results     = Organization.where("(name LIKE ? OR abbreviation LIKE ?) AND is_available = 1 AND process_ssrs = 1 AND id IN (?)", "%#{term}%", "%#{term}%", org_ids)
     service_results = Service.where("(name LIKE ? OR abbreviation LIKE ? OR cpt_code LIKE ?) AND is_available = 1 AND id IN (?)", "%#{term}%", "%#{term}%", "%#{term}%", service_ids).reject{ |s| (s.current_pricing_map rescue false) == false}
-    results = org_results + service_results
+    results         = org_results + service_results
+    
     results.map!{ |r|
       {
         parents:        r.is_a?(Service) ? r.organization_hierarchy(false, false, true) : r.organization_hierarchy(true, false, true),

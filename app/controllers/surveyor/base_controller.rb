@@ -33,9 +33,22 @@ class Surveyor::BaseController < ApplicationController
     current_identity
   end
 
-  def authorize_site_admin
-    unless Setting.find_by_key("site_admins").value.include?(current_user.ldap_uid)
-      render partial: 'dashboard/shared/authorization_error', locals: { error: 'You are not allowed to access this protocol.' }
+  def authorize_survey_builder_access
+    # If SystemSurvey-specific actions, verify the user is a Site Admin
+    if params[:type] && params[:type] == 'SystemSurvey'
+      unless Setting.find_by_key("site_admins").value.include?(current_user.ldap_uid)
+        raise ActionController::RoutingError.new('Not Found')
+      end
+    # If Form-specific actions, verify the user is a Super User, Service Provider, or Overlord
+    elsif params[:type] && params[:type] == 'Form'
+      unless current_user.is_super_user? || current_user.is_service_provider? || current_user.is_overlord?
+        raise ActionController::RoutingError.new('Not Found')
+      end
+    # If non-specific actions, verify the user is a Site Admin, Super User, Service Provider, or Overlord
+    else
+      unless Setting.find_by_key("site_admins").value.include?(current_user.ldap_uid) || current_user.is_super_user? || current_user.is_service_provider? || current_user.is_overlord?
+        raise ActionController::RoutingError.new('Not Found')
+      end
     end
   end
 end

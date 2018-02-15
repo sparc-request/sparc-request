@@ -24,7 +24,7 @@ class Form < Survey
   validates_uniqueness_of :active, scope: [:type, :surveyable_id, :surveyable_type, :access_code], if: -> { self.active }
 
   def self.for(identity)
-    orgs     = identity.authorized_admin_organizations
+    orgs     = identity.is_overlord? ? Organization.all : identity.authorized_admin_organizations
     services = Service.where(organization: orgs)
     
     Form.where(surveyable: orgs).or(where(surveyable: services)).or(where(surveyable: identity))

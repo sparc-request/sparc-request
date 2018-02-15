@@ -22,7 +22,7 @@ class Surveyor::QuestionsController < Surveyor::BaseController
   respond_to :html, :js, :json
 
   before_action :authenticate_identity!
-  before_action :authorize_site_admin
+  before_action :authorize_survey_builder_access
   
   def create
     @section  = Section.find(params[:section_id])

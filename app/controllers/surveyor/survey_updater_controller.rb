@@ -22,7 +22,7 @@ class Surveyor::SurveyUpdaterController < Surveyor::BaseController
   respond_to :js
 
   before_action :authenticate_identity!
-  before_action :authorize_site_admin
+  before_action :authorize_survey_builder_access
   
   def update
     @klass  = params[:klass]

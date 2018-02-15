@@ -42,26 +42,27 @@
               %th.col-sm-3{ data: { field: "options", align: "center" } }
                 = t(:surveyor)[:systemsurveys][:table][:headers][:options]
 
-.panel.panel-default
-  .panel-heading
-    %h4.panel-title{ title: t(:surveyor)[:forms][:tooltip], data: { toggle: 'tooltip', delay: '{"show":"500"}', placement: 'left' } }
-      = t(:surveyor)[:forms][:header]
-  .panel-body
-    .bootstrap-table-dropdown-overflow
-      #forms-custom-toolbar
-        = link_to t(:surveyor)[:forms][:new], surveyor_surveys_path(type: 'Form'), method: :post, remote: true, class: "btn btn-success", id: "new-form-button"
-      %table.form-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: surveyor_surveys_path(type: 'Form'), striped: 'true', toolbar: '#forms-custom-toolbar', pagination: 'true', page_size: '20' } }
-        %thead.primary-header
-          %tr
-            %th.col-sm-3{ data: { field: "surveyable", align: "left", sortable: 'true' } }
-              = t(:surveyor)[:forms][:table][:headers][:surveyable]
-            %th.col-sm-2{ data: { field: "title", align: "left", sortable: 'true' } }
-              = t(:surveyor)[:forms][:table][:headers][:title]
-            %th.col-sm-2{ data: { field: "access_code", align: "left", sortable: 'true' } }
-              = t(:surveyor)[:forms][:table][:headers][:access_code]
-            %th.col-sm-1{ data: { field: "version", align: "left", sortable: 'true' } }
-              = t(:surveyor)[:forms][:table][:headers][:version]
-            %th.col-sm-1{ data: { field: "active", align: "center" } }
-              = t(:surveyor)[:forms][:table][:headers][:active]
-            %th.col-sm-3{ data: { field: "options", align: "center" } }
-              = t(:surveyor)[:forms][:table][:headers][:options]
+- if current_user.is_super_user? || current_user.is_service_provider? || current_user.is_overlord?
+  .panel.panel-default
+    .panel-heading
+      %h4.panel-title{ title: t(:surveyor)[:forms][:tooltip], data: { toggle: 'tooltip', delay: '{"show":"500"}', placement: 'left' } }
+        = t(:surveyor)[:forms][:header]
+    .panel-body
+      .bootstrap-table-dropdown-overflow
+        #forms-custom-toolbar
+          = link_to t(:surveyor)[:forms][:new], surveyor_surveys_path(type: 'Form'), method: :post, remote: true, class: "btn btn-success", id: "new-form-button"
+        %table.form-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: surveyor_surveys_path(type: 'Form'), striped: 'true', toolbar: '#forms-custom-toolbar', pagination: 'true', page_size: '20' } }
+          %thead.primary-header
+            %tr
+              %th.col-sm-3{ data: { field: "surveyable", align: "left", sortable: 'true' } }
+                = t(:surveyor)[:forms][:table][:headers][:surveyable]
+              %th.col-sm-2{ data: { field: "title", align: "left", sortable: 'true' } }
+                = t(:surveyor)[:forms][:table][:headers][:title]
+              %th.col-sm-2{ data: { field: "access_code", align: "left", sortable: 'true' } }
+                = t(:surveyor)[:forms][:table][:headers][:access_code]
+              %th.col-sm-1{ data: { field: "version", align: "left", sortable: 'true' } }
+                = t(:surveyor)[:forms][:table][:headers][:version]
+              %th.col-sm-1{ data: { field: "active", align: "center" } }
+                = t(:surveyor)[:forms][:table][:headers][:active]
+              %th.col-sm-3{ data: { field: "options", align: "center" } }
+                = t(:surveyor)[:forms][:table][:headers][:options]

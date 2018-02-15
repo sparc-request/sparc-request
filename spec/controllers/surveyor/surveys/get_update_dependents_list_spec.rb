@@ -44,8 +44,8 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
       expect(before_filters.include?(:authenticate_identity!)).to eq(true)
     end
 
-    it 'should call before_filter #authorize_site_admin' do
-      expect(before_filters.include?(:authorize_site_admin)).to eq(true)
+    it 'should call before_filter #authorize_survey_builder_access' do
+      expect(before_filters.include?(:authorize_survey_builder_access)).to eq(true)
     end
 
     it 'should assign @survey to the survey' do

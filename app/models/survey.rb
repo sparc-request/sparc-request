@@ -46,6 +46,25 @@ class Survey < ApplicationRecord
     where(active: true)
   }
 
+  QUESTION_TYPES = {
+    'Text': 'text',
+    'Text Area': 'textarea',
+    'Radio Button': 'radio_button',
+    'Likert Scale': 'likert',
+    'Checkbox': 'checkbox',
+    'Yes/No': 'yes_no',
+    'Email': 'email',
+    'Date': 'date',
+    'Number': 'number',
+    'Zipcode': 'zipcode',
+    'State': 'state',
+    'Country': 'country',
+    'Time': 'time',
+    'Phone': 'phone',
+    'Dropdown': 'dropdown',
+    'Multiple Dropdown': 'multiple_dropdown'
+  }
+  
   # Added because version could not be written as an attribute by FactoryGirl. Possible keyword issue?
   def version=(v)
     write_attribute(:version, v)

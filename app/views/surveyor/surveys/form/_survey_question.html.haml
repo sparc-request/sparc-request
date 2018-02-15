@@ -26,7 +26,7 @@
       = text_field_tag "question-#{question.id}-content", question.content, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:placeholders][:question][:content], maxlength: 255
   .col-lg-4.no-padding
     .form-group
-      = select_tag "question-#{question.id}-question_type", options_for_select(ADDITIONAL_DETAIL_QUESTION_TYPES, question.question_type), class: 'selectpicker select-question-type pull-right', data: { question_id: question.id }
+      = select_tag "question-#{question.id}-question_type", options_for_select(Survey::QUESTION_TYPES, question.question_type), class: 'selectpicker select-question-type pull-right', data: { question_id: question.id }
 
   .form-group
     = text_area_tag "question-#{question.id}-description", question.description, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:placeholders][:question][:description]

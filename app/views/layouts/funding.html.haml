@@ -1,0 +1,34 @@
+
+!!!
+%html
+  %head
+    %title
+      = t(:funding)[:header]
+    = stylesheet_link_tag "application"
+    = javascript_include_tag 'application'
+    /[if IE]
+      = stylesheet_link_tag 'ie'
+    /[if gt IE 7]
+      = stylesheet_link_tag 'ie8_plus'
+    /[if lt IE 8]
+      = javascript_include_tag "ie7_warning"
+    = csrf_meta_tags
+    :javascript
+      window.I18n = #{current_translations.to_json.html_safe};
+
+  %body#body
+    #container
+      #header
+        = render 'layouts/header_logos', location: "proper"
+        %input#current_user_id{ type: 'hidden', value: @user.try(:id) }
+      = render 'layouts/header', user: @user
+      .flash
+        = render 'shared/flash'
+      #inner-content.row
+        = yield
+
+  %footer
+    = render 'layouts/footer'
+    = render 'shared/analytics' if Rails.env == 'production'
+    = render 'shared/ie7_modal'
+    = render 'shared/modal'

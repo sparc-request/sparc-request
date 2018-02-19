@@ -286,4 +286,12 @@ class ApplicationController < ActionController::Base
   def xeditable? object=nil
     true
   end
+
+  def authorize_funding_admin
+    if not_signed_in?
+      redirect_to_login
+    else
+      redirect_to root_path unless current_user.is_funding_admin?
+    end
+  end
 end

@@ -1,0 +1,17 @@
+.panel.panel-default
+  .panel-heading
+    %h4.panel-title
+      = t(:funding)[:index][:header]
+  .panel-body
+    .bootstrap-table-dropdown-overflow
+      %table.funding-table{ data: { toggle: 'table', search: 'true', user: @user, url: funding_services_path(format: :json), striped: 'true', toolbar: '#fundings-custom-toolbar', pagination: 'true', page_size: '20' , sort_name: 'created', sort_order: 'desc' } }
+        %thead.primary-header
+          %tr
+            %th.col-md-8{ data: { field: "title", align: "left", sortable: 'true' } }
+              = t(:funding)[:index][:table][:headers][:title]
+            %th.col-md-2{ data: { field: "program", align: "left", sortable: 'true' } }
+              = t(:funding)[:index][:table][:headers][:program]
+            %th.col-md-2{ data: { field: "created", align: "left", sortable: 'true' } }
+              = t(:funding)[:index][:table][:headers][:created]
+            %th.col-md-2{ data: { field: "action", align: "center" } }
+              = t(:funding)[:index][:table][:headers][:action]

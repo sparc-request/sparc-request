@@ -72,7 +72,8 @@ task :update_hb_services => :environment do
                                               otf_unit_type: service.current_effective_pricing_map.otf_unit_type,
                                               quantity_minimum: service.current_effective_pricing_map.quantity_minimum,
                                               display_date: Date.strptime(row['Display Date'], "%m/%d/%y"),
-                                              effective_date: Date.strptime(row['Effective Date'], "%m/%d/%y")
+                                              effective_date: Date.strptime(row['Effective Date'], "%m/%d/%y"),
+                                              audit_comment: 'created by script'
                                               )
     if pricing_map.valid?
       pricing_map.save
@@ -101,30 +102,39 @@ task :update_hb_services => :environment do
         service = Service.where(id: row['Service ID'].to_i).first
         puts ""
         puts ""
+        updated = false
         
         if service
           unless service.revenue_code == row['Revenue Code'].rjust(4, '0')
             revenue_codes << [service.id, service.revenue_code]
             puts "Altering the revenue code of service with an id of #{service.id} from #{service.revenue_code} to #{row['Revenue Code']}"
-            service.revenue_code = row['Revenue Code'].rjust(4, '0')  
+            service.revenue_code = row['Revenue Code'].rjust(4, '0') 
+            updated = true 
           end
 
           unless service.cpt_code == row['CPT Code']
             cpt_codes << [service.id, service.cpt_code]
             puts "Altering the CPT code of service with an id of #{service.id} from #{service.cpt_code} to #{row['CPT Code']}"
-            service.cpt_code = row['CPT Code'] == 'NULL' ? nil : row['CPT Code']     
+            service.cpt_code = row['CPT Code'] == 'NULL' ? nil : row['CPT Code'] 
+            updated = true    
           end
 
           unless service.name == row['Procedure Name']
             service_names << [service.id, service.name]
             puts "Altering the name of service with an id of #{service.id} from #{service.name} to #{row['Procedure Name']}"
             service.name = row['Procedure Name'] 
+            updated = true
           end
 
           unless service.current_effective_pricing_map.full_rate == (row['Service Rate'].to_i * 100)
             pricing_maps << [service.id, service.current_effective_pricing_map.full_rate]
             puts "Altering service #{service.id} cost from a rate of #{service.current_effective_pricing_map.full_rate} to #{row['Service Rate'].to_i * 100}"
             update_service_pricing(service, row)
+            updated = true
+          end
+
+          if updated
+            service.audit_comment = 'updated by script'
           end
 
           service.save

@@ -13,7 +13,7 @@ module Funding::DocumentsHelper
   end
 
   def display_document_title(document)
-    link_to document.document_file_name.humanize, document.document.url
+    link_to document.document_file_name.humanize, document.document.url, download: document.document_file_name.humanize
   end
 
 end

@@ -25,14 +25,15 @@ end
 
 wb = xlsx_package.workbook
 default = wb.styles.add_style alignment: { horizontal: :left }
+bold_default = wb.styles.add_style alignment: {horizontal: :left}, b: true
 # centered = wb.styles.add_style alignment: { horizontal: :center }
 # bordered = wb.styles.add_style :border=> {:style => :thin, :color => "00000000"}
 # centered_bordered = wb.styles.add_style :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
-money = wb.styles.add_style :format_code => '$#,##0.00_);[Red]-$#,###.00'
-bold_money = wb.styles.add_style :format_code => '$#,##0.00_);[Red]-$#,###.00', b: true
-percent = wb.styles.add_style :format_code => '0.00\%', b: true
+money = wb.styles.add_style :format_code => '$* #,##0.00_);[Red]-$*#,###.00;$* -??_;'
+bold_money = wb.styles.add_style :format_code => '$#,##0.00_);[Red]-$#,###.00;$* -??_;', b: true
+percent = wb.styles.add_style :format_code => '0.00\%', b: true, alignment: { horizontal: :left }
 row_header_style = wb.styles.add_style b: true
-header_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :left }
+header_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :left, wrap_text: true}
 sub_header_style = wb.styles.add_style sz: 12, b: true, bg_color: 'ADADAD', alignment: { horizontal: :left }
 org_header_style = wb.styles.add_style sz: 12, b: true, bg_color: 'CCCCCC', alignment: { horizontal: :left }
 
@@ -44,29 +45,36 @@ arm_r_totals = {}
   wb.add_worksheet(name: "#{arm.sanitized_name}") do |sheet|
 
     #Repeating protocol information on the top of each page
-    protocol_header_row = ["#{@protocol.class.to_s} Information", "", "", "", "", ""]
-    ((arm.visit_groups.count * 3) + 5).times {protocol_header_row << ""}
+    protocol_header_row = ["#{@protocol.class.to_s} Information"] + [""] * (5 + (arm.visit_groups.count * 2) + 2)
     sheet.add_row protocol_header_row, :style => header_style
     sheet.add_row ["SPARC #{@protocol.class.to_s} ID:",@protocol.id], :style => default
+    sheet.add_row ["RMID:", @protocol.research_master_id]
     sheet.add_row ["Short Title:",@protocol.short_title], :style => default
-    sheet.add_row ["Protocol Title:", @protocol.title], :style => default
-    sheet.add_row ["Sponsor:", @protocol.sponsor_name], :style => default
     sheet.add_row ["Primary PI Name:", @protocol.primary_principal_investigator.full_name], :style => default
+    sheet.add_row ["Indirect Cost Rate:", @protocol.indirect_cost_rate]
+    sheet.add_row []
+    sheet.add_row ["#{arm.name}: Subject Count", arm.subject_count]
 
     #Header Section
-    arm_header_row = ["Selected Services", "CPT Code", "Status", "Negotiated Reimbursement (NR)", "Hospital Cost (Service Rate)", "Research Cost (Your Cost)"]
+    arm_header_row = ["Selected Services", "CPT Code", "Status", "Sponsor Unit Cost (Service Rate or Negotiated Reimbursement)", "Research Cost (Your Cost)", "# of Subjects"]
     arm_label_row = [arm.sanitized_name, "", "", "", "", ""]
     label_row = ["", "", "", "", "", ""]
+    cells_to_merge = []
+    arm_start = sheet.rows.length
     #Column headers and labels for each visit_group, meaning each visit / appointment
-    arm.visit_groups.each do |vg|
-      arm_header_row << ["", vg.name, ""]
-      label_row << ["N", "NR", "R Cost"]
-      arm_label_row << ["", "", ""]
+    arm.visit_groups.each_with_index do |vg, index|
+      arm_header_row += [vg.name, ""]
+      arm_label_row += [vg.day, ""]
+      label_row += ["R", "T"]
+      last_group = arm_header_row.length - 2
+      cells_to_merge << {from: Axlsx::cell_r(last_group, arm_start), to: Axlsx::cell_r(last_group + 1, arm_start)}
+      cells_to_merge << {from: Axlsx::cell_r(last_group, arm_start+1), to: Axlsx::cell_r(last_group + 1, arm_start+1)}
     end
 
-    arm_header_row << ["Total NR Per Patient", "Total Research Cost Per Patient", "# of Subjects", "Total NR Per Study", "Total Research Cost Per Study"]
-    label_row << ["NR", "R Cost", "", "NR", "R Cost"]
-    sheet.add_row arm_header_row.flatten, :style => header_style
+    arm_header_row += ["Total Sponsor Unit Cost Per Patient", "Total Research Cost Per Patient"]
+    arm_label_row += ["", ""]
+
+    sheet.add_row arm_header_row, :style => header_style
 
     # Fetch a bunch of columns
     total_nr_per_patient_column = sheet.rows.last.cells[-5].r[/([A-Z]+)/]
@@ -75,10 +83,14 @@ arm_r_totals = {}
     total_nr_per_study_column = sheet.rows.last.cells[-2].r[/([A-Z]+)/]
     total_r_cost_per_study_column = sheet.rows.last.cells[-1].r[/([A-Z]+)/]
 
-    sheet.add_row arm_label_row.flatten, :style => sub_header_style
+    sheet.add_row arm_label_row, :style => sub_header_style
+
+    cells_to_merge.each do |cells|
+      sheet.merge_cells "#{cells[:from]}:#{cells[:to]}"
+    end
+
     n_columns = sheet.rows.last.cells.drop(6).each_slice(3).map { |cs| cs[0].r[/([A-Z]+)/] }
-    r_columns = sheet.rows.last.cells.drop(6).each_slice(3).map { |cs| cs[2].r[/([A-Z]+)/] }
-    nr_columns = sheet.rows.last.cells.drop(6).each_slice(3).map { |cs| cs[1].r[/([A-Z]+)/] }
+    binding.pry
 
     # When moving/adding columns, make sure these match up
     # column F "Research Cost (Your Cost)"
@@ -91,9 +103,7 @@ arm_r_totals = {}
     #Displays line_items_visits, grouped by organization from the sub service request
     arm.line_items_visits.includes(:line_item).group_by{|liv| liv.line_item.sub_service_request}.each do |sub_service_request, line_items_visits|
       next if @statuses_hidden.include?(sub_service_request.status)
-      ssr_row = ["#{sub_service_request.organization.name}(#{sub_service_request.ssr_id})", "", "", "", "", ""]
-      ((arm.visit_groups.count * 3) + 5).times {ssr_row << ""}
-      sheet.add_row ssr_row, :style => org_header_style
+      sheet.add_row ["#{sub_service_request.organization.name}(#{sub_service_request.ssr_id})"] + [""] * (5 + (arm.visit_groups.count * 2) + 2), style: org_header_style
 
       current_row = sheet.rows.length + 1
       line_items_visits.each do |liv|
@@ -107,7 +117,7 @@ arm_r_totals = {}
         line_item_row = [liv.line_item.service.name, liv.line_item.service.cpt_code, liv.line_item.sub_service_request.status.humanize.titleize, "0", cents_to_dollars(liv.line_item.service.current_effective_pricing_map.full_rate), cents_to_dollars(liv.line_item.applicable_rate)]
         liv.ordered_visits.each_with_index do |visit, index|
           n_cell = n_columns[index] + current_row.to_s
-          line_item_row << [visit.research_billing_qty, "=#{nr_cell} * #{n_cell}", "=#{your_cost_cell} * #{n_cell}"]
+          line_item_row << [visit.research_billing_qty, "=#{nr_cell} * #{n_cell}", "=#{your_cost_cell} * 1"]
           @line_item_style_array << [default, money, money]
         end
         line_item_row << ["=#{nr_cell} * #{n_columns_sum}",
@@ -140,8 +150,8 @@ arm_r_totals = {}
       regulatory_row << ["0", "=#{negotiated_reimbursement_column}#{principle_row_no + 2} * #{n_columns[idx]}#{principle_row_no + 2}", "=#{research_cost_column}#{principle_row_no + 2} * #{n_columns[idx]}#{principle_row_no + 2}"]
       financial_row << ["0", "=#{negotiated_reimbursement_column}#{principle_row_no + 3} * #{n_columns[idx]}#{principle_row_no + 3}", "=#{research_cost_column}#{principle_row_no + 3} * #{n_columns[idx]}#{principle_row_no + 3}"]
       bottom_totals << ["",
-        "=SUM(#{nr_columns[idx]}1:#{nr_columns[idx]}#{principle_row_no+3})",
-        "=SUM(#{r_columns[idx]}1:#{r_columns[idx]}#{principle_row_no+3})"]
+        "",
+        ""]
     end
 
     principle_row << ["=#{negotiated_reimbursement_column}#{principle_row_no} * #{sum(n_columns, principle_row_no)}",
@@ -189,36 +199,64 @@ arm_r_totals = {}
     grand_totals_row = sheet.rows.length
     arm_nr_totals[arm.sanitized_name] = "#{negotiated_reimbursement_column}#{grand_totals_row}"
     arm_r_totals[arm.sanitized_name] = "#{research_cost_column}#{grand_totals_row}"
+    sheet.column_widths *( [40, 20, 10, 18, 18, 18] + ( [12] * arm.visit_groups.count * 2 ) + [18, 18] )
   end
 end
 
 
 wb.insert_worksheet(0, name: "Summary") do |sheet|
-  sheet.add_row ["#{@protocol.class.to_s} Information", "", "", "", "", "", ""], :style => header_style
+  sheet.add_row ["#{@protocol.class.to_s} Information", "", "", "", "", "", "", ""], :style => header_style
 
-  sheet.add_row ["SPARC #{@protocol.class.to_s} ID:", "", @protocol.id], :style => default
-  sheet.add_row ["Short Title:", "", @protocol.short_title], :style => default
-  sheet.add_row ["Protocol Title:", "", @protocol.title], :style => default
-  sheet.add_row ["Sponsor:", "", @protocol.sponsor_name], :style => default
-  sheet.add_row ["Primary PI Name:", "", @protocol.primary_principal_investigator.full_name], :style => default
-  sheet.add_row ["Business Manager:", "", @protocol.billing_managers.map(&:full_name).try(:join, ', ')], :style => default
-  sheet.add_row ["Funding Source:", "", @protocol.display_funding_source_value], :style => default
+  sheet.add_row ["SPARC #{@protocol.class.to_s} ID:", @protocol.id], :style => [bold_default, default]
+  sheet.add_row ["RMID:", @protocol.research_master_id], style: [bold_default, default]
+  sheet.add_row ["Short Title:", @protocol.short_title], :style => [bold_default, default]
+  sheet.add_row ["Protocol Title:", @protocol.title], :style => [bold_default, default]
+  sheet.add_row ["Sponsor:", @protocol.sponsor_name], :style => [bold_default, default]
+  sheet.add_row ["Primary PI Name:", @protocol.primary_principal_investigator.full_name], :style => [bold_default, default]
+  sheet.add_row ["Business Manager:", @protocol.billing_managers.map(&:full_name).try(:join, ', ')], :style => [bold_default, default]
+  sheet.add_row ["Funding Source:", @protocol.display_funding_source_value], :style => [bold_default, default]
+  sheet.add_row ["Indirect Cost Rate:", @protocol.indirect_cost_rate], style: [bold_default, percent]
 
-  sheet.add_row ["Protocol Arms", "", "", "", "", "", ""], :style => header_style
-  sheet.add_row ["Arm", "", "# of Subjects", "# of Visits", "", "", ""], :style => sub_header_style
+  indirect_cost_rate_row = sheet.rows.length
+
+  sheet.add_row []
+
+  sheet.add_row ["Authorized Users", "", "", "", "", "", "", ""], style: header_style
+  sheet.add_row ["Name", "Role", "Institutional Base Salary", "% Effort", "Project Period (in months)", "Salary Requested", "Fringe", "Total"]
+
+  current_row = sheet.rows.length
+  authorized_users_start_row = current_row
+
+  @protocol.project_roles.each do |pr|
+    current_row += 1
+    sheet.add_row [pr.identity.full_name, PermissibleValue.get_value('user_role', pr.role), "0", "", "", "0", "0", "=SUM(F#{current_row}:G#{current_row})"], style: [default, default, money, percent, default, money, money, money]
+  end
+
+  authorized_users_end_row = current_row
+
+  sheet.add_row []
+  sheet.add_row ["Total" , "", "", "", "", "=SUM(F#{authorized_users_start_row}:F#{authorized_users_end_row})", "=SUM(G#{authorized_users_start_row}:G#{authorized_users_end_row})", "=SUM(H#{authorized_users_start_row}:H#{authorized_users_end_row})"], style: money
+  total_users_cost_cell = "H#{sheet.rows.length}"
+  sheet.add_row []
+
+  sheet.add_row ["Protocol Arms", "", "", "", "", "", "", ""], :style => header_style
+  sheet.add_row ["Arm", "", "# of Subjects", "# of Visits", "", "", "", ""], :style => sub_header_style
 
   @protocol.arms.each do |arm|
     sheet.add_row [arm.sanitized_name, "", arm.subject_count, arm.visit_count, "", "", ""], :style => default
   end
+  sheet.add_row []
 
-  sheet.add_row ["Other Services", "", "Negotiated Reimbursement (NR)", "Research Cost (Your Cost)", "Procedure Occurrence (N)", "NR", "R Cost"], :style => header_style
-  sheet.add_row ["Study Level Services (Pass Through)", "Status", "", "", "", "", ""], :style => sub_header_style
+  sheet.add_row ["Other Services", "", "Sponsor Unit Cost (Service Rate or Negotiated Reimbursement)", "Research Cost (Your Cost)", "Procedure Occurence (N)", "F&A Applies?", "Total Cost to Sponsor (+OH)", "Margin to Cover Personnel Effort", ""], :style => header_style
+  sheet.add_row ["Study Level Services (Pass Through)", "Status", "", "", "", "", "", ""], :style => sub_header_style
 
-  pi_start_up_row = sheet.rows.length + 1
-  sheet.add_row ["PI Start Up", "", "0", "0", "1", "=C#{pi_start_up_row}*E#{pi_start_up_row}", "=D#{pi_start_up_row}*E#{pi_start_up_row}"], :style => [default, default, money, money, default, money, money]
-  sheet.add_row ["Administrative Start Up", "", "0", "0","1", "=C#{pi_start_up_row+1}*E#{pi_start_up_row+1}", "=D#{pi_start_up_row+1}*E#{pi_start_up_row+1}"], :style => [default, default, money, money, default, money, money]
-  sheet.add_row ["IRB Fee", "", "0", "0", "1", "=C#{pi_start_up_row+2}*E#{pi_start_up_row+2}", "=D#{pi_start_up_row+2}*E#{pi_start_up_row+2}"], :style => [default, default, money, money, default, money, money]
-  sheet.add_row ["IDS Annual Review", "", "0", "0", "1", "=C#{pi_start_up_row+3}*E#{pi_start_up_row+3}", "=D#{pi_start_up_row+3}*E#{pi_start_up_row+3}"], :style => [default, default, money, money, default, money, money]
+  current_row = sheet.rows.length
+  other_services_start_row = current_row
+
+  ["PI Start Up", "Administrative Start Up", "IDS Annual Review"].each do |service|
+    current_row += 1
+    sheet.add_row [service, "", "0", "0", "1", "Y", "=IF(F#{current_row}=\"Y\",(C#{current_row}*E#{current_row})*(1+($B$#{indirect_cost_rate_row}/100)),C#{current_row}*E#{current_row})", "=(C#{current_row}-D#{current_row})*E#{current_row}"], style: [default, default, money, money, default, money, money, money]
+  end
 
   @protocol.service_requests.each do |sr|
     sr.line_items.includes(:service).where(services: {one_time_fee: true}).each do |li|
@@ -227,26 +265,29 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
       sheet.add_row ["#{li.service.name} (#{li.sub_service_request.ssr_id})", "#{li.sub_service_request.status.humanize.titleize}", "0", cents_to_dollars(li.applicable_rate), li.quantity, "=C#{li_row}*E#{li_row}", "=D#{li_row}*E#{li_row}"], :style => [default, default, money, money, default, money, money]
     end
   end
-
+  sheet.add_row []
   previous_row = sheet.rows.length
-  sheet.add_row ["Study Level Services (Total)", "", "=Sum(C#{pi_start_up_row}:C#{previous_row})", "=Sum(D#{pi_start_up_row}:D#{previous_row})", "", "=Sum(F#{pi_start_up_row}:F#{previous_row})", "=Sum(G#{pi_start_up_row}:G#{previous_row})"], :style => [row_header_style, row_header_style, bold_money, bold_money, row_header_style, bold_money, bold_money]
+  sheet.add_row ["Study Level Services: Total Cost", "", "", "", "", "", "=Sum(G#{other_services_start_row}:G#{previous_row})", "=SUM(H#{other_services_start_row}:H#{previous_row})"], :style => [row_header_style, row_header_style, bold_money, bold_money, row_header_style, bold_money, bold_money, bold_money]
   study_level_n_total_cell = "F#{previous_row+1}"
   study_level_r_total_cell = "G#{previous_row+1}"
 
-  sheet.add_row ["Study Budget", "", "", "", "", "Total Negotiated Cost", "Total Research Cost"], :style => header_style
-  sheet.add_row ["Total Study Level", "", "", "", "", "=#{study_level_n_total_cell}", "=#{study_level_r_total_cell}"], :style => [default, default, default, default, default, money, money]
-  study_budget_start_row = sheet.rows.length
-  @protocol.arms.each do |arm|
-    sheet.add_row [arm.sanitized_name, "", "", "", "", "='#{arm.sanitized_name}'!#{arm_nr_totals[arm.sanitized_name]}", "='#{arm.sanitized_name}'!#{arm_r_totals[arm.sanitized_name]}"], :style => [default, default, default, default, default, money, money]
-  end
-  study_budget_end_row = sheet.rows.length
-  sheet.add_row ["Total Direct Cost", "", "", "", "", "=SUM(F#{study_budget_start_row}:F#{study_budget_end_row})", "=SUM(G#{study_budget_start_row}:G#{study_budget_end_row})"], :style => [row_header_style, row_header_style, row_header_style, row_header_style, row_header_style, bold_money, bold_money]
+  sheet.add_row []
 
+  sheet.add_row ["Study Budget", "Notes", "", "", "", "", "", ""], :style => header_style
+  sheet.add_row ["Total Study Cost (Sponsor Cost)", "", "=#{study_level_n_total_cell}"], :style => [default, default, money, money]
+  study_budget_start_row = sheet.rows.length
+  study_budget_end_row = sheet.rows.length
+  sheet.add_row ["Total Margin", "", "=SUM(G#{study_budget_start_row}:G#{study_budget_end_row})"], :style => [default, default, money]
+  margin_cell = "C#{sheet.rows.length}"
   indirect_cost_percentage_row = sheet.rows.length + 1
-  sheet.add_row ["Indirect Cost Percentage", "30"], :style => [row_header_style, percent]
+  sheet.add_row ["Study Contingency", "", "=#{margin_cell}-#{total_users_cost_cell}"], :style => [default, default, money]
+
+  sheet.add_row ["Breakeven Analysis", "", "", "", "", "", "" ]
 
   total_nr_budget = "F#{study_budget_end_row+1}+((B#{indirect_cost_percentage_row}/100.0)*F#{study_budget_end_row+1})"
   total_r_budget  = "G#{study_budget_end_row+1}+((B#{indirect_cost_percentage_row}/100.0)*G#{study_budget_end_row+1})"
 
-  sheet.add_row ["Total Budget", "", "", "", "", "=#{total_nr_budget}", "=#{total_r_budget}"], :style => [row_header_style, row_header_style, row_header_style, row_header_style, row_header_style, bold_money, bold_money]
+  sheet.add_row ["Total Budget", "", "=#{total_r_budget}"], :style => [row_header_style, row_header_style, row_header_style, row_header_style, row_header_style, bold_money, bold_money]
+
+  sheet.column_widths 40, 40, 15, 18, 25, 25, 25, 25
 end

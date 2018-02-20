@@ -25,7 +25,9 @@ $(".selectpicker").selectpicker()
 $('[data-toggle="tooltip"]').tooltip()
 if $('.initial-budget-sponsor-received-date-picker').val() != ''
   $('.initial-amount').removeClass('hide')
+  $('.initial-amount-cs').removeClass('hide')
 
 if $('.budget-agreed-upon-date-picker').val() != ''
   $('.negotiated-amount').removeClass('hide')
+  $('.negotiated-amount-cs').removeClass('hide')
 

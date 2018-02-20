@@ -77,59 +77,57 @@
             = f.label :initial_budget_sponsor_received_date,
               t(:proper)[:service_details][:initial_budget_sponsor_received_date],
               class: 'col-lg-2 control-label'
-            .col-lg-4
+            .col-lg-2
               = text_field_tag 'initial_budget_sponsor_received_date', nil,
                 class: 'datetimepicker form-control initial-budget-sponsor-received-date-picker',
                 value: (protocol.initial_budget_sponsor_received_date.strftime('%_m/%d/%Y') rescue nil)
               = f.hidden_field :initial_budget_sponsor_received_date, value: nil,
                 class: 'initial-budget-sponsor-received-date-setter'
             - if protocol.has_clinical_services?
-              .initial-amount.hide
-                = f.label :initial_amount,
+              .initial-amount-cs.hide
+                = f.label :initial_amount_clinical_services,
                   t(:proper)[:service_details][:initial_amount_clinical_services],
                   class: 'col-lg-2 control-label'
-                .col-lg-4
+                .col-lg-2
                   .input-group
                     .input-group-addon $
-                    = f.number_field :initial_amount,
+                    = f.number_field :initial_amount_clinical_services,
                       class: 'form-control'
-            - else
-              .initial-amount.hide
-                = f.label :initial_amount,
-                  t(:proper)[:service_details][:initial_amount_non_clinical_services],
-                  class: 'col-lg-2 control-label'
-                .col-lg-4
-                  .input-group
-                    .input-group-addon $
-                    = f.number_field :initial_amount,
-                      class: 'form-control'
+            .initial-amount.hide
+              = f.label :initial_amount,
+                t(:proper)[:service_details][:initial_amount_non_clinical_services],
+                class: 'col-lg-2 control-label'
+              .col-lg-2
+                .input-group
+                  .input-group-addon $
+                  = f.number_field :initial_amount,
+                    class: 'form-control'
           .form-group.col-lg-12#budget-agreed-upon-date
             = f.label :budget_agreed_upon_date,
               t(:proper)[:service_details][:budget_agreed_upon_date],
               class: 'col-lg-2 control-label'
-            .col-lg-4
+            .col-lg-2
               = text_field_tag 'budget_agreed_upon_date', nil,
                 class: 'datetimepicker form-control budget-agreed-upon-date-picker',
                 value: (protocol.budget_agreed_upon_date.strftime('%_m/%d/%Y') rescue nil)
               = f.hidden_field :budget_agreed_upon_date, value: nil,
                 class: 'budget-agreed-upon-setter'
             - if protocol.has_clinical_services?
-              .negotiated-amount.hide
-                = f.label :negotiated_amount,
+              .negotiated-amount-cs.hide
+                = f.label :negotiated_amount_clinical_services,
                   t(:proper)[:service_details][:negotiated_amount_clinical_services],
                   class: 'col-lg-2 control-label'
-                .col-lg-4
+                .col-lg-2
                   .input-group
                     .input-group-addon $
-                    = f.number_field :negotiated_amount,
+                    = f.number_field :negotiated_amount_clinical_services,
                       class: 'form-control'
-            - else
-              .negotiated-amount.hide
-                = f.label :negotiated_amount,
-                  t(:proper)[:service_details][:negotiated_amount_non_clinical_services],
-                  class: 'col-lg-2 control-label'
-                .col-lg-4
-                  .input-group
-                    .input-group-addon $
-                    = f.number_field :negotiated_amount,
-                      class: 'form-control'
+            .negotiated-amount.hide
+              = f.label :negotiated_amount,
+                t(:proper)[:service_details][:negotiated_amount_non_clinical_services],
+                class: 'col-lg-2 control-label'
+              .col-lg-2
+                .input-group
+                  .input-group-addon $
+                  = f.number_field :negotiated_amount,
+                    class: 'form-control'

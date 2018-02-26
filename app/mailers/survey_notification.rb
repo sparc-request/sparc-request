@@ -35,8 +35,15 @@ class SurveyNotification < ActionMailer::Base
     @identity   = identity
     @ssr        = ssr
     @surveys    = surveys
+    @responses  = []
     email       = @identity.email
     subject     = t('surveyor.responses.emails.service_survey.subject', site_name: t(:proper)[:header], ssr_id: @ssr.display_id)
+
+    surveys.each do |survey|
+      response = survey.responses.where(identity: identity, sub_service_request: ssr).first || survey.responses.create(identity: identity, sub_service_request: ssr)
+
+      @responses << response unless response.completed?
+    end
 
     mail(to: email, from: Setting.find_by_key("no_reply_from").value, subject: subject)
   end

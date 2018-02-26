@@ -21,4 +21,4 @@
   - if ['new', 'edit', 'preview'].include?(action_name)
     = qr.select :content, options_from_collection_for_select(question.options, 'content', 'content'), { include_blank: true }, { class: 'form-control selectpicker option' }
   - else
-    = select_tag :content, options_from_collection_for_select(question.options, 'content', 'content', question_response.content), include_blank: true, class: 'form-control selectpicker option', disabled: true
+    = select_tag :content, options_from_collection_for_select(qr.question.options, 'content', 'content', qr.content), include_blank: true, class: 'form-control selectpicker option', disabled: true

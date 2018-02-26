@@ -18,29 +18,22 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Surveyor::SurveysController < Surveyor::BaseController
+class Surveyor::SurveysController < ApplicationController
   respond_to :html, :js, :json
 
   before_action :authenticate_identity!
-  before_action :authorize_survey_builder_access
+  before_action :authorize_site_admin
 
   def index
     respond_to do |format|
       format.html
       format.json {
-        @surveys = 
-          if params[:type] == "SystemSurvey"
-            SystemSurvey.all
-          elsif params[:type] == "Form"
-            Form.for(current_user)
-          else
-            Survey.none
-          end
+        @surveys = Survey.all
       }
     end
   end
 
-  def edit
+  def show
     @survey = Survey.eager_load(sections: { questions: :options }).find(params[:id])
 
     respond_to do |format|
@@ -49,25 +42,19 @@ class Surveyor::SurveysController < Surveyor::BaseController
   end
 
   def create
-    klass = params[:type].constantize.yaml_klass
-    @survey = Survey.new(
-                type: params[:type],
-                title: "New #{klass}",
-                access_code: "new-#{klass.downcase}",
-                version: 1,
-                active: false,
-                display_order: klass == 'Form' ? nil : (SystemSurvey.maximum(:display_order) || 0) + 1,
-                surveyable: klass == 'Form' ? current_user : nil
+    @survey = Survey.create(
+                title: "Untitled Survey",
+                access_code: "untitled-survey",
+                version: (Survey.where(access_code: "untitled-survey").order(:version).last.try(:version) || 0) + 1,
+                active: true,
+                display_order: (Survey.all.order(:display_order).last.try(:display_order) || 0) + 1
               )
-    @survey.save(validate: false)
-    redirect_to edit_surveyor_survey_path(@survey, type: params[:type]), format: :js
+
+    redirect_to surveyor_survey_path(@survey), format: :js
   end
 
   def destroy
-    @survey = Survey.find(params[:id])
-    @type   = @survey.class.yaml_klass.downcase
-    
-    @survey.destroy
+    Survey.find(params[:id]).destroy
 
     respond_to do |format|
       format.js
@@ -87,33 +74,10 @@ class Surveyor::SurveysController < Surveyor::BaseController
 
   def update_dependents_list
     @survey     = Survey.find(params[:survey_id])
-    @questions  = @survey.questions.eager_load(section: { survey: { questions: :options } })
+    @questions  = @survey.questions.eager_load(section: :survey)
 
     respond_to do |format|
       format.js
     end
-  end
-
-  def search_surveyables
-    term            = params[:term].strip
-    org_ids         = current_user.is_overlord? ? Organization.all.ids : current_user.authorized_admin_organizations.ids
-    service_ids     = Service.where(organization_id: org_ids).ids
-    
-    org_results     = Organization.where("(name LIKE ? OR abbreviation LIKE ?) AND is_available = 1 AND process_ssrs = 1 AND id IN (?)", "%#{term}%", "%#{term}%", org_ids)
-    service_results = Service.where("(name LIKE ? OR abbreviation LIKE ? OR cpt_code LIKE ?) AND is_available = 1 AND id IN (?)", "%#{term}%", "%#{term}%", "%#{term}%", service_ids).reject{ |s| (s.current_pricing_map rescue false) == false}
-    results         = org_results + service_results
-    
-    results.map!{ |r|
-      {
-        parents:        r.is_a?(Service) ? r.organization_hierarchy(false, false, true) : r.organization_hierarchy(true, false, true),
-        klass:          r.is_a?(Service) ? 'Service' : 'Organization',
-        label:          r.name,
-        value:          r.id,
-        cpt_code:       r.try(:cpt_code),
-        term:           term
-      }
-    }
-
-    render json: results.to_json
   end
 end

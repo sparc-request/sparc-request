@@ -73,6 +73,16 @@
                     = disabled_parent(@service.organization)
 
             %tr
+              %th
+                = t(:additional_details)[:label]
+              %td
+                - if @service.questionnaires.active.present?
+                  = link_to "#{@service.questionnaires.active.first.name}(active)", additional_details_questionnaires_path(questionable_id: @service.id, questionable_type: 'Service')
+                - elsif @service.questionnaires.present?
+                  = link_to "#{@service.questionnaires.first.name}(inactive)", additional_details_questionnaires_path(questionable_id: @service.id, questionable_type: 'Service')
+                - else
+                  = link_to t(:additional_details)[:add], additional_details_questionnaires_path(questionable_id: @service.id, questionable_type: 'Service')
+            %tr
               %th= t(:organization_form)[:tag_list]
               %td
                 - Tag.all.each do |tag|

@@ -29,13 +29,9 @@ class QuestionResponse < ActiveRecord::Base
   validate :zipcode_format, if: Proc.new{ |qr| !qr.content.blank? && qr.question_id && qr.question.question_type == 'zipcode' }
   
   validates_numericality_of :content, only_integer: true, if: Proc.new{ |qr| !qr.content.blank? && qr.question_id && qr.question.question_type == 'number' }
-  validates_presence_of :content, if: Proc.new{ |qr| qr.must_be_answered? }
-  
-  # Callbacks occur after validation. Any blank responses at this point must
-  # have a depender that was not selected, therefore we don't want to save
-  # a response for the particular question. Replaces old controller logic.
-  before_save :remove_unanswered
 
+  after_save :check_content_requirements
+  
   def phone_number_format
     if content.match(/\d{10}/).nil?
       errors.add(:base, I18n.t(:errors)[:question_responses][:phone_invalid])
@@ -81,17 +77,15 @@ class QuestionResponse < ActiveRecord::Base
     end
   end
 
-  def must_be_answered?
-    self.required? && (self.depender.nil? || depender_selected?)
+  private
+
+  def check_content_requirements
+    if self.required? && self.content.blank? && (self.depender.nil? || self.depender.present? && depender_selected?)
+      errors.add(:content, :blank)
+    end
   end
 
   def depender_selected?
-    self.depender && self.response.question_responses.detect{ |qr| qr.question_id == self.depender.question_id}.try(:content) == self.depender.content
-  end
-
-  private
-
-  def remove_unanswered
-    return false if self.required? && self.content.blank?
+    self.depender && self.response.question_responses.where(question_id: self.depender.question_id).first.content == self.depender.content
   end
 end

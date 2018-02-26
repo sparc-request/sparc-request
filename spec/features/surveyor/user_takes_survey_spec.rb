@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,16 +27,16 @@ RSpec.describe 'User takes a survey', js: true do
   fake_login_for_each_test
 
   before :each do
-    @survey   = create(:system_survey, title: "My Survey", active: true)
+    @survey   = create(:survey, title: "My Survey", active: true)
     @section  = create(:section, survey: @survey)
-    org       = create(:organization)
-    @ssr      = create(:sub_service_request_without_validations, organization: org)
+    @ssr      = create(:sub_service_request_without_validations, organization: create(:organization))
+    @resp     = create(:response, survey: @survey, identity: jug2, sub_service_request: @ssr)
   end
 
   scenario 'and sees all sections' do
     @section2 = create(:section, survey: @survey)
 
-    visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+    visit edit_surveyor_response_path(@resp)
     wait_for_javascript_to_finish
 
     expect(all('.section').count).to eq(2)
@@ -51,7 +51,7 @@ RSpec.describe 'User takes a survey', js: true do
       @opt2           = create(:option, question: @q_radio_button, content: "Option 2")
       @q_dependent    = create(:question, section: @section, content: 'Dependent Question', depender: @opt1)
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       first('input').click
@@ -67,7 +67,7 @@ RSpec.describe 'User takes a survey', js: true do
     scenario 'and sees text questions' do
       @q_text = create(:question, section: @section, question_type: 'text', content: 'Text Question')
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       expect(page).to have_content(@q_text.content)
@@ -77,7 +77,7 @@ RSpec.describe 'User takes a survey', js: true do
     scenario 'and sees correctly saved value' do
       @q_text = create(:question, section: @section, question_type: 'text', content: 'Text Question')
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       fill_in('response_question_responses_attributes_0_content', with: 'text value')
@@ -95,7 +95,7 @@ RSpec.describe 'User takes a survey', js: true do
     scenario 'and sees textarea questions' do
       @q_textarea = create(:question, section: @section, question_type: 'textarea', content: 'Textarea Question')
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       expect(page).to have_content(@q_textarea.content)
@@ -105,7 +105,7 @@ RSpec.describe 'User takes a survey', js: true do
     scenario 'and sees correctly saved value' do
       @q_textarea = create(:question, section: @section, question_type: 'textarea', content: 'Textarea Question')
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       fill_in('response_question_responses_attributes_0_content', with: 'textarea value')
@@ -126,7 +126,7 @@ RSpec.describe 'User takes a survey', js: true do
       @opt1           = create(:option, question: @q_radio_button, content: "Option 1")
       @opt2           = create(:option, question: @q_radio_button, content: "Option 2")
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       expect(page).to have_content(@q_radio_button.content)
@@ -140,7 +140,7 @@ RSpec.describe 'User takes a survey', js: true do
       @opt1           = create(:option, question: @q_radio_button, content: "Option 1")
       @opt2           = create(:option, question: @q_radio_button, content: "Option 2")
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       first('input').click
@@ -160,15 +160,15 @@ RSpec.describe 'User takes a survey', js: true do
       @opt1     = create(:option, question: @q_likert, content: "Option 1")
       @opt2     = create(:option, question: @q_likert, content: "Option 2")
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       expect(page).to have_content(@q_likert.content)
-      expect(page).to have_selector('.option.likert-option div:first-child', text: '1')
-      expect(page).to have_selector('.option.likert-option div:first-child', text: '2')
-      expect(page).to have_selector('.option.likert-option .likert input[type="radio"]', count: 2)
-      expect(page).to have_selector('.option.likert-option div', text: @opt1.content)
-      expect(page).to have_selector('.option.likert-option div', text: @opt2.content)
+      expect(page).to have_selector('.option.likert-group div:first-child', text: '1')
+      expect(page).to have_selector('.option.likert-group div:first-child', text: '2')
+      expect(page).to have_selector('.option.likert-group .likert input[type="radio"]', count: 2)
+      expect(page).to have_selector('.option.likert-group div', text: @opt1.content)
+      expect(page).to have_selector('.option.likert-group div', text: @opt2.content)
     end
 
     scenario 'and sees correctly saved value' do
@@ -176,7 +176,7 @@ RSpec.describe 'User takes a survey', js: true do
       @opt1     = create(:option, question: @q_likert, content: "Option 1")
       @opt2     = create(:option, question: @q_likert, content: "Option 2")
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       first('input').click
@@ -196,7 +196,7 @@ RSpec.describe 'User takes a survey', js: true do
       @opt1       = create(:option, question: @q_checkbox, content: "Option 1")
       @opt2       = create(:option, question: @q_checkbox, content: "Option 2")
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       expect(page).to have_content(@q_checkbox.content)
@@ -210,7 +210,7 @@ RSpec.describe 'User takes a survey', js: true do
       @opt1       = create(:option, question: @q_checkbox, content: "Option 1")
       @opt2       = create(:option, question: @q_checkbox, content: "Option 2")
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       all('input[type="checkbox"]').each do |input|
@@ -229,8 +229,10 @@ RSpec.describe 'User takes a survey', js: true do
   context 'yes/no questions' do
     scenario 'and sees yes/no questions' do
       @q_yes_no = create(:question, section: @section, question_type: 'yes_no', content: 'Yes/No Question')
+                  create(:option, content: 'Yes', question: @q_yes_no)
+                  create(:option, content: 'No', question: @q_yes_no)
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       expect(page).to have_content(@q_yes_no.content)
@@ -241,8 +243,10 @@ RSpec.describe 'User takes a survey', js: true do
 
     scenario 'and sees correctly saved value' do
       @q_yes_no = create(:question, section: @section, question_type: 'yes_no', content: 'Yes/No Question')
-      
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+                  create(:option, content: 'Yes', question: @q_yes_no)
+                  create(:option, content: 'No', question: @q_yes_no)
+
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       first('input').click
@@ -260,7 +264,7 @@ RSpec.describe 'User takes a survey', js: true do
     scenario 'and sees email questions' do
       @q_email = create(:question, section: @section, question_type: 'email', content: 'Email Question')
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       expect(page).to have_content(@q_email.content)
@@ -270,7 +274,7 @@ RSpec.describe 'User takes a survey', js: true do
     scenario 'and sees correctly saved value' do
       @q_email = create(:question, section: @section, question_type: 'email', content: 'Email Question')
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       fill_in('response_question_responses_attributes_0_content', with: 'email@email.email')
@@ -288,7 +292,7 @@ RSpec.describe 'User takes a survey', js: true do
     scenario 'and sees date questions' do
       @q_date = create(:question, section: @section, question_type: 'date', content: 'Date Question')
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       expect(page).to have_content(@q_date.content)
@@ -298,7 +302,7 @@ RSpec.describe 'User takes a survey', js: true do
     scenario 'and sees correctly saved value' do
       @q_date = create(:question, section: @section, question_type: 'date', content: 'Date Question')
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       first('input').click
@@ -316,7 +320,7 @@ RSpec.describe 'User takes a survey', js: true do
     scenario 'and sees number questions' do
       @q_number = create(:question, section: @section, question_type: 'number', content: 'Number Question')
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       expect(page).to have_content(@q_number.content)
@@ -326,7 +330,7 @@ RSpec.describe 'User takes a survey', js: true do
     scenario 'and sees correctly saved value' do
       @q_number = create(:question, section: @section, question_type: 'number', content: 'Number Question')
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       fill_in('response_question_responses_attributes_0_content', with: '9000')
@@ -344,7 +348,7 @@ RSpec.describe 'User takes a survey', js: true do
     scenario' and sees zipcode questions' do
       @q_zipcode = create(:question, section: @section, question_type: 'zipcode', content: 'Zipcode Question')
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       expect(page).to have_content(@q_zipcode.content)
@@ -354,7 +358,7 @@ RSpec.describe 'User takes a survey', js: true do
     scenario 'and sees correctly saved value' do
       @q_zipcode = create(:question, section: @section, question_type: 'zipcode', content: 'Zipcode Question')
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       fill_in('response_question_responses_attributes_0_content', with: '12345')
@@ -372,7 +376,7 @@ RSpec.describe 'User takes a survey', js: true do
     scenario 'and sees state questions' do
       @q_state = create(:question, section: @section, question_type: 'state', content: 'State Question')
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       find('.dropdown-toggle').click
@@ -384,7 +388,7 @@ RSpec.describe 'User takes a survey', js: true do
     scenario 'and sees correctly saved value' do
       @q_state = create(:question, section: @section, question_type: 'state', content: 'State Question')
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       bootstrap_select('#response_question_responses_attributes_0_content', 'South Carolina')
@@ -402,7 +406,7 @@ RSpec.describe 'User takes a survey', js: true do
     scenario 'and sees country questions' do
       @q_country = create(:question, section: @section, question_type: 'country', content: 'Country Question')
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       find('.dropdown-toggle').click
@@ -414,7 +418,7 @@ RSpec.describe 'User takes a survey', js: true do
     scenario 'and sees correctly saved value' do
       @q_country = create(:question, section: @section, question_type: 'country', content: 'Country Question')
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       bootstrap_select('#response_question_responses_attributes_0_content', 'United States')
@@ -432,7 +436,7 @@ RSpec.describe 'User takes a survey', js: true do
     scenario 'and sees time questions' do
       @q_time = create(:question, section: @section, question_type: 'time', content: 'Time Question')
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       expect(page).to have_content(@q_time.content)
@@ -444,7 +448,7 @@ RSpec.describe 'User takes a survey', js: true do
       time = Time.now
       
       Timecop.freeze(time) do
-        visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+        visit edit_surveyor_response_path(@resp)
         wait_for_javascript_to_finish
 
         first('input').click
@@ -463,7 +467,7 @@ RSpec.describe 'User takes a survey', js: true do
     scenario 'and sees phone questions' do
       @q_phone = create(:question, section: @section, question_type: 'phone', content: 'Phone Question')
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       expect(page).to have_content(@q_phone.content)
@@ -473,7 +477,7 @@ RSpec.describe 'User takes a survey', js: true do
     scenario 'and sees correctly saved value' do
       @q_phone = create(:question, section: @section, question_type: 'phone', content: 'Phone Question')
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       fill_in('response_question_responses_attributes_0_content', with: '1234567890')
@@ -493,7 +497,7 @@ RSpec.describe 'User takes a survey', js: true do
       @opt1       = create(:option, question: @q_dropdown, content: "Option 1")
       @opt2       = create(:option, question: @q_dropdown, content: "Option 2")
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       expect(page).to have_content(@q_dropdown.content)
@@ -505,7 +509,7 @@ RSpec.describe 'User takes a survey', js: true do
       @opt1       = create(:option, question: @q_dropdown, content: "Option 1")
       @opt2       = create(:option, question: @q_dropdown, content: "Option 2")
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       bootstrap_select('#response_question_responses_attributes_0_content', 'Option 1')
@@ -525,7 +529,7 @@ RSpec.describe 'User takes a survey', js: true do
       @opt1                = create(:option, question: @q_multiple_dropdown, content: "Option 1")
       @opt2                = create(:option, question: @q_multiple_dropdown, content: "Option 2")
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       expect(page).to have_content(@q_multiple_dropdown.content)
@@ -538,15 +542,10 @@ RSpec.describe 'User takes a survey', js: true do
       @opt1                = create(:option, question: @q_multiple_dropdown, content: "Option 1")
       @opt2                = create(:option, question: @q_multiple_dropdown, content: "Option 2")
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
-      
-      find('.bootstrap-select').click
-      find('span.text', text: 'Option 1').click
-      find('span.text', text: 'Option 2').click
-      # For some reason bootstrap_multiselect was causing 'Option 1' to be checked but then unchecked when it also clicks 'Option 2'
-      #bootstrap_multiselect('#response_question_responses_attributes_0_content', [/Option 1/, /Option 2/])
-      first('.panel').click
+
+      bootstrap_multiselect('#response_question_responses_attributes_0_content', ['Option 1', 'Option 2'])
 
       click_button 'Submit'
       wait_for_javascript_to_finish
@@ -559,7 +558,7 @@ RSpec.describe 'User takes a survey', js: true do
 
   context 'and fills out the survey and submits' do
     scenario 'and is redirected to the completed screen' do
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+      visit edit_surveyor_response_path(@resp)
       wait_for_javascript_to_finish
 
       click_button 'Submit'

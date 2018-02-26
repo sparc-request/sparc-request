@@ -18,17 +18,17 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Surveyor::SurveyUpdaterController < Surveyor::BaseController
+class Surveyor::SurveyUpdaterController < ApplicationController
   respond_to :js
 
   before_action :authenticate_identity!
-  before_action :authorize_survey_builder_access
+  before_action :authorize_site_admin
   
   def update
     @klass  = params[:klass]
     @object = @klass.capitalize.constantize.find(params[:id])
     @field  = survey_updater_params.keys[0]
-    
+
     @object.assign_attributes(survey_updater_params)
     @object.valid?
 
@@ -42,35 +42,6 @@ class Surveyor::SurveyUpdaterController < Surveyor::BaseController
   private
 
   def survey_updater_params
-    case @klass
-    when 'survey'
-      params.require(:survey).permit(
-        :title,
-        :description,
-        :access_code,
-        :version,
-        :active,
-        :surveyable_id,
-        :surveyable_type
-      )
-    when 'section'
-      params.require(:section).permit(
-        :title,
-        :description
-      )
-    when 'question'
-      params.require(:question).permit(
-        :content,
-        :description,
-        :question_type,
-        :required,
-        :is_dependent,
-        :depender_id
-      )
-    when 'option'
-      params.require(:option).permit(
-        :content
-      )
-    end
+    params.require(@klass.to_sym).permit!
   end
 end

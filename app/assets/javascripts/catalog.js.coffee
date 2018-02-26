@@ -82,12 +82,10 @@ $(document).ready ->
       limit: 100,
       templates: {
         suggestion: Handlebars.compile('<button class="text-left" data-container="body" data-placement="right" data-toggle="tooltip" data-animation="false" title="{{description}}">
-                                          <strong>{{{parents}}}</strong><br>
+                                          <span><strong class="{{inst_css_class}}">{{institution}}</strong>{{parents}}</span><br>
                                           <span><strong>Service: {{label}}</strong></span><br>
                                           <span><strong>Abbreviation: {{abbreviation}}</strong></span><br>
-                                          {{#if cpt_code}}
-                                            <span><strong>CPT Code: {{cpt_code}}</strong></span>
-                                          {{/if}}
+                                          <span><strong>CPT Code: {{cpt_code}}</strong></span>
                                         </button>')
         notFound: '<div class="tt-suggestion">No Results</div>'
       }

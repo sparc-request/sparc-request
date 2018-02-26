@@ -58,12 +58,12 @@ class Identity < ApplicationRecord
   has_many :received_messages, class_name: 'Message', foreign_key: 'to'
   has_many :received_notifications, class_name: "Notification", foreign_key: 'other_user_id'
   has_many :received_toast_messages, class_name: 'ToastMessage', foreign_key: 'to', dependent: :destroy
-  has_many :responses, dependent: :destroy
   has_many :sent_messages, class_name: 'Message', foreign_key: 'from'
   has_many :sent_notifications, class_name: "Notification", foreign_key: 'originator_id'
   has_many :sent_toast_messages, class_name: 'ToastMessage', foreign_key: 'from', dependent: :destroy
   has_many :service_providers, dependent: :destroy
   has_many :studies, -> { where("protocols.type = 'Study'")}, through: :project_roles, source: :protocol
+  has_many :submissions
   has_many :super_users, dependent: :destroy
 
   cattr_accessor :current_user
@@ -140,24 +140,21 @@ class Identity < ApplicationRecord
     @is_super_user ||= self.super_users.count > 0
   end
 
-  def is_service_provider?(ssr=nil)
-    if ssr
-      is_provider = false
-      orgs =[]
-      orgs << ssr.organization << ssr.organization.parents
-      orgs.flatten!
+  def is_service_provider?(ssr)
+    is_provider = false
+    orgs =[]
+    orgs << ssr.organization << ssr.organization.parents
+    orgs.flatten!
 
-      orgs.each do |org|
-        provider_ids = org.service_providers_lookup.map{|x| x.identity_id}
-        if provider_ids.include?(self.id)
-          is_provider = true
-        end
+    orgs.each do |org|
+      provider_ids = org.service_providers_lookup.map{|x| x.identity_id}
+      if provider_ids.include?(self.id)
+        is_provider = true
       end
-
-      is_provider
-    else
-      @is_service_provider ||= self.service_providers.count > 0
     end
+
+    is_provider
+
   end
 
   ###############################################################################
@@ -294,8 +291,7 @@ class Identity < ApplicationRecord
   ###############################################################################
 
   def authorized_admin_organizations
-    # Returns the organizations for which the user has Super User or Service Provider
-    # privileges, plus all of their child organizations
+    # returns organizations for which user is service provider or super user
     Organization.authorized_for_identity(self.id)
   end
 

@@ -145,11 +145,11 @@ en:
     document_management:
       documents_notice: "Documents"
       notes_notice: "Notes"
-      forms_notice: 'Forms'
+      additional_details_notice: 'Forms'
       tooltips:
         documents: "Visible to Authorized Users and selected Service Providers"
         notes: "Important notes for your Study/Project"
-        forms: "Forms to collect additional information related to requesting a service"
+        additional_details: "Forms to collect additional information related to requesting a service"
 
     ##########
     # REVIEW #

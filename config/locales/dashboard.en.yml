@@ -61,12 +61,6 @@ en:
         past: "Past"
         authorized_user_update: "Authorized User Update"
 
-    #########
-    # FORMS #
-    #########
-    forms:
-      header: "Form Submissions"
-
     ##################
     #  FULFILLMENTS  #
     ##################
@@ -126,9 +120,11 @@ en:
     ##########
     navbar:
       logged_in_as: "Logged in as "
+      surveys: "Surveys"
       epic_queue: "Epic Queue"
       messages: "All Notifications"
       tooltips:
+        surveys: "Survey builder"
         epic_queue: "View or edit protocols for Epic interface"
         messages: "Access to correspondence"
 
@@ -293,8 +289,8 @@ en:
           view: "Quick access to view services for selected provider"
           edit: "Ability to change services for a selected provider (routes to SPARCRequest)"
           admin: "Service Provider administrative access to track and manage services"
-      forms:
-        header: "Forms"
+      additional_details:
+        header: "Form Functionality"
         selectpicker: "Complete Form"
       tooltips:
         modify_request: "Allows Authorized User to add or edit services (routes to SPARCRequest)"

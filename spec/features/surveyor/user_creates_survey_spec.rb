@@ -26,33 +26,15 @@ RSpec.describe 'User creates a survey', js: true do
 
   stub_config("site_admins", ["jug2"])
 
-  context 'surveys' do
-    before :each do
-      visit surveyor_surveys_path
-      wait_for_javascript_to_finish
-    end
-
-    scenario 'and sees the newly created survey' do
-      click_link 'New Survey'
-      wait_for_javascript_to_finish
-
-      expect(page).to have_selector('#survey-modal', visible: true)
-      expect(SystemSurvey.count).to eq(1)
-    end
+  before :each do
+    visit surveyor_surveys_path
+    wait_for_javascript_to_finish
   end
 
-  context 'forms' do
-    before :each do
-      visit surveyor_surveys_path
-      wait_for_javascript_to_finish
-    end
+  scenario 'and sees the newly created survey' do
+    click_link 'New Survey'
+    wait_for_javascript_to_finish
 
-    scenario 'and sees the newly created form' do
-      click_link 'New Form'
-      wait_for_javascript_to_finish
-
-      expect(page).to have_selector('#form-modal', visible: true)
-      expect(Form.count).to eq(1)
-    end
+    expect(page).to have_selector('#survey-modal')
   end
 end

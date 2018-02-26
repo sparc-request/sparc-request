@@ -23,6 +23,25 @@ accordion_color_options: { "blue": 'blue-provider',
                            "red": 'red-provider',
                            "green": 'green-provider' }
 
+additional_detail_question_types: {
+  'Text': 'text',
+  'Text Area': 'textarea',
+  'Radio Button': 'radio_button',
+  'Likert Scale': 'likert',
+  'Checkbox': 'checkbox',
+  'Yes/No': 'yes_no',
+  'Email': 'email',
+  'Date': 'date',
+  'Number': 'number',
+  'Zipcode': 'zipcode',
+  'State': 'state',
+  'Country': 'country',
+  'Time': 'time',
+  'Phone': 'phone',
+  'Dropdown': 'dropdown',
+  'Multiple Dropdown': 'multiple_dropdown'
+}
+
 alert_statuses: { 'active': 'active',
                   'clear': 'clear' }
 

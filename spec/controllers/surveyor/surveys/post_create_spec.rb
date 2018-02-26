@@ -23,74 +23,39 @@ require 'rails_helper'
 RSpec.describe Surveyor::SurveysController, type: :controller do
   stub_controller
   let!(:before_filters) { find_before_filters }
+  let!(:logged_in_user) { create(:identity, ldap_uid: 'weh6@musc.edu') }
+  stub_config("site_admins", ["weh6@musc.edu"])
+  
+  before :each do
+    session[:identity_id] = logged_in_user.id
+  end
 
   describe '#create' do
     it 'should call before_filter #authenticate_identity!' do
       expect(before_filters.include?(:authenticate_identity!)).to eq(true)
     end
 
-    it 'should call before_filter #authorize_survey_builder_access' do
-      expect(before_filters.include?(:authorize_survey_builder_access)).to eq(true)
+    it 'should call before_filter #authorize_site_admin' do
+      expect(before_filters.include?(:authorize_site_admin)).to eq(true)
     end
 
-    context "params[:type] == 'SystemSurvey'" do
-      let!(:logged_in_user) { create(:identity, ldap_uid: 'weh6@musc.edu') }
-      stub_config("site_admins", ["weh6@musc.edu"])
-
-      before :each do
-        session[:identity_id] = logged_in_user.id
-      end
-
-      it 'should assign @survey to a new SystemSurvey' do
-        expect{
-          post :create, xhr: true, params: { type: 'SystemSurvey' }
-        }.to change{ SystemSurvey.count }.by(1)
-        expect(assigns(:survey)).to be_a(SystemSurvey)
-      end
-
-      it 'should redirect to edit' do
-        post :create, xhr: true, params: { type: 'SystemSurvey' }
-
-        expect(controller).to redirect_to(edit_surveyor_survey_path(assigns(:survey), type: 'SystemSurvey'))
-      end
-
-      it 'should respond ok' do
-        post :create, xhr: true, params: { type: 'SystemSurvey' }
-
-        expect(controller).to respond_with(302)
-      end
+    it 'should assign @survey to a new survey' do
+      expect{
+        post :create, xhr: true
+      }.to change{ Survey.count }.by(1)
+      expect(assigns(:survey)).to be_a(Survey)
     end
 
-    context "params[:type] == 'Form'" do
-      let!(:logged_in_user) { create(:identity, ldap_uid: 'weh6@musc.edu', catalog_overlord: true) }
-      
-      before :each do
-        session[:identity_id] = logged_in_user.id
-      end
+    it 'should redirect to show' do
+      post :create, xhr: true
 
-      it 'should assign @survey to a new SystemSurvey' do
-        expect{
-          post :create, xhr: true, params: { type: 'Form' }
-        }.to change{ Form.count }.by(1)
-        expect(assigns(:survey)).to be_a(Form)
-      end
+      expect(controller).to redirect_to(surveyor_survey_path(assigns(:survey)))
+    end
 
-      it 'should associate the new Form to the current user' do
-        post :create, xhr: true, params: { type: 'Form' }
-        expect(assigns(:survey).surveyable).to eq(logged_in_user)
-      end
+    it 'should respond ok' do
+      post :create, xhr: true
 
-      it 'should redirect to edit' do
-        post :create, xhr: true, params: { type: 'Form' }
-
-        expect(controller).to redirect_to(edit_surveyor_survey_path(assigns(:survey), type: 'Form'))
-      end
-
-      it 'should respond ok' do
-        post :create, xhr: true, params: { type: 'Form' }
-
-        expect(controller).to respond_with(302)
-      end
+      expect(controller).to respond_with(302)
     end
   end
 end

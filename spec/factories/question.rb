@@ -26,13 +26,6 @@ FactoryGirl.define do
     question_type { 'text' }
     required      { false }
 
-    after(:create) do |question|
-      if question.question_type == 'yes_no'
-        create(:option, question: question, content: 'Yes')
-        create(:option, question: question, content: 'No')
-      end
-    end
-
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }
     end

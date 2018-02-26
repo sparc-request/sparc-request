@@ -26,63 +26,30 @@ RSpec.describe 'User activates a survey', js: true do
 
   stub_config("site_admins", ["jug2"])
   
-  context 'surveys' do
-    before :each do
-      @survey = create(:system_survey)
+  before :each do
+    @survey = create(:survey)
 
-      visit surveyor_surveys_path
-      wait_for_javascript_to_finish
+    visit surveyor_surveys_path
+    wait_for_javascript_to_finish
 
-      click_link 'Activate'
-      wait_for_javascript_to_finish
-    end
-
-    scenario 'and sees the activated survey' do
-      expect(@survey.reload.active).to eq(true)
-      expect(page).to have_content('Disable')
-    end
-
-    context 'and changes their mind and clicks disable' do
-      before :each do
-        click_link 'Disable'
-        wait_for_javascript_to_finish
-      end
-
-      scenario 'and sees the disabled survey' do
-        expect(@survey.reload.active).to eq(false)
-        expect(page).to have_content('Activate')
-      end
-    end
+    click_link 'Activate'
+    wait_for_javascript_to_finish
   end
 
-  context 'forms' do
+  scenario 'and sees the activated survey' do
+    expect(@survey.reload.active).to eq(true)
+    expect(page).to have_content('Disable')
+  end
+
+  context 'and changes their mind and clicks disable' do
     before :each do
-      org = create(:institution)
-      create(:super_user, organization: org, identity: jug2)
-      @form = create(:form, surveyable: org)
-
-      visit surveyor_surveys_path
-      wait_for_javascript_to_finish
-
-      click_link 'Activate'
+      click_link 'Disable'
       wait_for_javascript_to_finish
     end
 
-    scenario 'and sees the activated form' do
-      expect(@form.reload.active).to eq(true)
-      expect(page).to have_content('Disable')
-    end
-
-    context 'and changes their mind and clicks disable' do
-      before :each do
-        click_link 'Disable'
-        wait_for_javascript_to_finish
-      end
-
-      scenario 'and sees the disabled form' do
-        expect(@form.reload.active).to eq(false)
-        expect(page).to have_content('Activate')
-      end
+    scenario 'and sees the disabled survey' do
+      expect(@survey.reload.active).to eq(false)
+      expect(page).to have_content('Activate')
     end
   end
 end

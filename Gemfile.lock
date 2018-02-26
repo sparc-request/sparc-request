@@ -307,6 +307,11 @@ GEM
     multi_json (1.12.2)
     multi_xml (0.6.0)
     mysql2 (0.3.21)
+    nested_form (0.3.2)
+    nested_form_fields (0.8.2)
+      coffee-rails (>= 3.2.1)
+      jquery-rails
+      rails (>= 3.2.0)
     net-ldap (0.16.1)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
@@ -609,6 +614,8 @@ DEPENDENCIES
   letter_opener
   momentjs-rails (>= 2.8.1)
   mysql2 (~> 0.3.18)
+  nested_form
+  nested_form_fields
   net-ldap (~> 0.16.0)
   newrelic_rpm
   nokogiri

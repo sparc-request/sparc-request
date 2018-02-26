@@ -173,12 +173,12 @@ module CapybaraSupport
     arm = create(:arm, protocol_id: project.id, subject_count: 2, visit_count: 10)
 
 
-    survey = create(:system_survey, 
+    survey = create(:survey, 
       title: "System Satisfaction survey",
       description: nil,
       access_code: "system-satisfaction-survey",
       display_order: 1,
-      version: 1,
+      version: 0,
       active: true)
   end
 

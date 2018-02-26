@@ -27,10 +27,12 @@ class Organization < ApplicationRecord
 
   belongs_to :parent, :class_name => 'Organization'
   has_many :submission_emails, :dependent => :destroy
-  has_many :associated_surveys, as: :associable, dependent: :destroy
+  has_many :associated_surveys, as: :surveyable, dependent: :destroy
   has_many :pricing_setups, :dependent => :destroy
   has_one :subsidy_map, :dependent => :destroy
-  has_many :forms, -> { active }, as: :surveyable, dependent: :destroy
+
+  has_many :questionnaires, as: :questionable, dependent: :destroy
+
   has_many :super_users, :dependent => :destroy
   has_many :identities, :through => :super_users
 
@@ -55,16 +57,11 @@ class Organization < ApplicationRecord
 
   after_create :create_statuses
   
+  # TODO: In rails 5, the .or operator will be added for ActiveRecord queries. We should try to
+  #       condense this to a single query at that point
   scope :authorized_for_identity, -> (identity_id) {
-    where(
-      id: Organization.authorized_child_organization_ids(
-        includes(:super_users, :service_providers).
-        where("super_users.identity_id = ? or service_providers.identity_id = ?", identity_id, identity_id).
-        references(:super_users, :service_providers).
-        distinct(:organizations).ids
-      ),
-      is_available: true
-    ).distinct
+    orgs = includes(:super_users, :service_providers).where("super_users.identity_id = ? or service_providers.identity_id = ?", identity_id, identity_id).references(:super_users, :service_providers).distinct(:organizations)
+    where(id: orgs + Organization.authorized_child_organizations(orgs.map(&:id))).distinct
   }
 
   scope :in_cwf, -> { joins(:tags).where(tags: { name: 'clinical work fulfillment' }) }
@@ -97,25 +94,6 @@ class Organization < ApplicationRecord
       return self
     else
       return self.parents.detect {|x| x.process_ssrs} || self
-    end
-  end
-
-  # Organization A, which belongs to
-  # Organization B, which belongs to Organization C, return "C > B > A".
-  # This "hierarchy" stops at a process_ssrs Organization.
-  def organization_hierarchy(include_self=false, process_ssrs=true, use_css=false)
-    parent_orgs = self.parents
-
-    if process_ssrs
-      root = parent_orgs.find_index { |org| org.process_ssrs? } || (parent_orgs.length - 1)
-    else
-      root = parent_orgs.length - 1
-    end
-
-    if use_css
-      parent_orgs[0..root].map{ |o| "<span class='#{o.css_class}-text'>#{o.abbreviation}</span>"}.reverse.join('<span> / </span>') + (include_self ? '<span> / </span>' + "<span class='#{self.css_class}-text'>#{self.abbreviation}</span>" : '')
-    else
-      parent_orgs[0..root].map(&:abbreviation).reverse.join(' > ') + (include_self ? ' > ' + self.abbreviation : '')
     end
   end
 
@@ -405,12 +383,13 @@ class Organization < ApplicationRecord
     AvailableStatus.import AvailableStatus.types.map{|status| AvailableStatus.new(organization: self, status: status)}
   end
 
-  def self.authorized_child_organization_ids(org_ids)
-    child_ids = Organization.where(parent_id: org_ids).ids
-    if child_ids.empty?
-      org_ids
+  def self.authorized_child_organizations(org_ids)
+    org_ids = org_ids.flatten.compact
+    if org_ids.empty?
+      []
     else
-      org_ids + self.authorized_child_organization_ids(child_ids)
+      orgs = Organization.where(parent_id: org_ids)
+      orgs | authorized_child_organizations(orgs.pluck(:id))
     end
   end
 end

@@ -30,14 +30,14 @@ module ServiceCalendarHelper
     currency_converter(full_rate)
   end
 
-  def display_liv_notes(liv, portal, review)
+  def display_liv_notes(liv, portal)
   has_notes = liv.notes.length > 0
-  raw(content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-list-alt note-icon #{has_notes ? "blue-note" : "black-note"}", aria: {hidden: "true"}))+raw(content_tag(:span, liv.notes.length, class: "#{has_notes ? "badge blue-badge" : "badge"}", id: "lineitemsvisit_#{liv.id}_notes")), type: 'button', class: 'btn btn-link form-control actions-button notes', data: {notable_id: liv.id, notable_type: "LineItemsVisit", in_dashboard: portal, review: review}))
+  raw(content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-list-alt note-icon #{has_notes ? "blue-note" : "black-note"}", aria: {hidden: "true"}))+raw(content_tag(:span, liv.notes.length, class: "#{has_notes ? "badge blue-badge" : "badge"}", id: "lineitemsvisit_#{liv.id}_notes")), type: 'button', class: 'btn btn-link form-control actions-button notes', data: {notable_id: liv.id, notable_type: "LineItemsVisit", in_dashboard: portal}))
   end
 
-  def display_li_notes(li, portal, review)
+  def display_li_notes(li, portal)
     has_notes = li.notes.length > 0
-    raw(content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-list-alt note-icon #{has_notes ? "blue-note" : "black-note"}", aria: {hidden: "true"}))+raw(content_tag(:span, li.notes.length, class: "#{has_notes ? "badge blue-badge" : "badge"}", id: "lineitem_#{li.id}_notes")), type: 'button', class: 'btn btn-link form-control actions-button notes', data: {notable_id: li.id, notable_type: "LineItem", in_dashboard: portal, review: review}))
+    raw(content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-list-alt note-icon #{has_notes ? "blue-note" : "black-note"}", aria: {hidden: "true"}))+raw(content_tag(:span, li.notes.length, class: "#{has_notes ? "badge blue-badge" : "badge"}", id: "lineitem_#{li.id}_notes")), type: 'button', class: 'btn btn-link form-control actions-button notes', data: {notable_id: li.id, notable_type: "LineItem", in_dashboard: portal}))
   end
 
   def notable_type_is_related_to_li_or_liv(notable_type)

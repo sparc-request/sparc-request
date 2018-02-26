@@ -66,7 +66,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     ####################
     # Survey structure #
     ####################
-    survey      = create(:system_survey, :active, title: 'System Satisfaction Survey', access_code: 'system-satisfaction-survey', active: true)
+    survey      = create(:survey, :active, title: 'System Satisfaction Survey', access_code: 'system-satisfaction-survey')
     section     = create(:section, survey: survey)
     question_1  = create(:question, question_type: 'likert', content: '1) How satisfied are you with using SPARCRequest today?', section: section)
     option_1    = create(:option, content: 'Very Dissatisfied', question: question_1)

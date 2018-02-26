@@ -18,31 +18,62 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Survey < ActiveRecord::Base
+class Survey < ApplicationRecord
+  audited
+  
   has_many :responses, dependent: :destroy
   has_many :sections, dependent: :destroy
   has_many :questions, through: :sections
-  has_many :associated_surveys, as: :surveyable, dependent: :destroy
-  
-  has_many :questions, through: :sections
+  has_many :associated_surveys, dependent: :destroy
 
-  acts_as_list column: :display_order
-  
+  belongs_to :surveyable, polymorphic: true
+
   validates :title,
             :access_code,
-            :display_order,
-            :version,
             presence: true
 
-  validates_inclusion_of :active, in: [true, false]
+  validates_uniqueness_of :version, scope: [:access_code, :type]
 
-  validates_uniqueness_of :version, scope: :access_code
+  validates :version, numericality: { only_integer: true, greater_than: 0 }, presence: true
 
   accepts_nested_attributes_for :sections, allow_destroy: true
+
+  default_scope -> {
+    order(:access_code, :version)
+  }
 
   scope :active, -> {
     where(active: true)
   }
+
+  QUESTION_TYPES = {
+    'Text': 'text',
+    'Text Area': 'textarea',
+    'Radio Button': 'radio_button',
+    'Likert Scale': 'likert',
+    'Checkbox': 'checkbox',
+    'Yes/No': 'yes_no',
+    'Email': 'email',
+    'Date': 'date',
+    'Number': 'number',
+    'Zipcode': 'zipcode',
+    'State': 'state',
+    'Country': 'country',
+    'Time': 'time',
+    'Phone': 'phone',
+    'Dropdown': 'dropdown',
+    'Multiple Dropdown': 'multiple_dropdown'
+  }
+  
+  # Added because version could not be written as an attribute by FactoryGirl. Possible keyword issue?
+  def version=(v)
+    write_attribute(:version, v)
+  end
+
+  # Added because version could not be read as an attribute by FactoryGirl. Possible keyword issue?
+  def version
+    read_attribute(:version)
+  end
 
   def insertion_name
     "Before #{title} (Version #{version})"

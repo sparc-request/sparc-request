@@ -35,12 +35,32 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
       expect(before_filters.include?(:authenticate_identity!)).to eq(true)
     end
 
-    it 'should call before_filter #authorize_site_admin' do
-      expect(before_filters.include?(:authorize_site_admin)).to eq(true)
+    it 'should call before_filter #authorize_survey_builder_access' do
+      expect(before_filters.include?(:authorize_survey_builder_access)).to eq(true)
+    end
+
+    it 'should assign @survey to the deleted survey' do
+      survey = create(:form_without_validations)
+
+      delete :destroy, params: {
+        id: survey.id
+      }, xhr: true
+
+      expect(assigns(:survey)).to eq(survey)
+    end
+
+    it 'should assign @type to the survey\'s type' do
+      survey = create(:form_without_validations)
+
+      delete :destroy, params: {
+        id: survey.id
+      }, xhr: true
+
+      expect(assigns(:type)).to eq('form')
     end
 
     it 'should delete the survey' do
-      survey = create(:survey_without_validations)
+      survey = create(:form_without_validations)
 
       expect{
         delete :destroy, params: {
@@ -50,7 +70,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
     end
 
     it 'should render template' do
-      survey = create(:survey_without_validations)
+      survey = create(:form_without_validations)
 
       delete :destroy, params: {
         id: survey.id
@@ -60,7 +80,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
     end
 
     it 'should respond ok' do
-      survey = create(:survey_without_validations)
+      survey = create(:form_without_validations)
 
       delete :destroy, params: {
         id: survey.id

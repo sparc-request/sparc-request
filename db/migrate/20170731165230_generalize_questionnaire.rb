@@ -1,4 +1,7 @@
 class GeneralizeQuestionnaire < ActiveRecord::Migration[5.1]
+  class Questionnaire < ApplicationRecord
+  end
+  
   def change
     add_reference :questionnaires, :questionable, polymorphic: true
     Questionnaire.find_each do |q|

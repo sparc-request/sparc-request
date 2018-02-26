@@ -18,11 +18,10 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Surveyor::ResponsesController < ApplicationController
+class Surveyor::ResponsesController < Surveyor::BaseController
   respond_to :html, :js, :json
 
   before_action :authenticate_identity!
-  before_action :find_survey, only: [:new]
   before_action :find_response, only: [:show, :edit, :update]
 
   def show
@@ -30,14 +29,27 @@ class Surveyor::ResponsesController < ApplicationController
 
     respond_to do |format|
       format.html
+      format.js
     end
   end
 
   def new
-    @review               = 'true'
-    @sub_service_request  = nil
-    @response             = @survey.responses.new
+    @survey = params[:type].constantize.find(params[:survey_id])
+    @response = @survey.responses.new
     @response.question_responses.build
+    @respondable = params[:respondable_type].constantize.find(params[:respondable_id])
+
+    respond_to do |format|
+      format.html {
+        existing_response = Response.where(survey: @survey, identity: current_user, respondable: @respondable).first
+        redirect_to surveyor_response_complete_path(existing_response) if existing_response
+      }
+      format.js
+    end
+  end
+
+  def edit
+    @survey = @response.survey
 
     respond_to do |format|
       format.js
@@ -47,12 +59,9 @@ class Surveyor::ResponsesController < ApplicationController
   def create
     @response = Response.new(response_params)
 
-    if @response.save && @response.question_responses.none? { |qr| qr.errors.any? }
-      # Delete responses to questions that didn't show anyways to avoid confusion in the data
-      @response.question_responses.where(required: true, content: [nil, '']).destroy_all
-      SurveyNotification.system_satisfaction_survey(@response).deliver_now if @response.survey.access_code == 'system-satisfaction-survey'
-    else
-      @errors = true
+    if @response.save
+      SurveyNotification.system_satisfaction_survey(@response).deliver_now if @response.survey.access_code == 'system-satisfaction-survey' && Rails.application.routes.recognize_path(request.referrer)[:action] == 'review'
+      flash[:success] = t(:surveyor)[:responses][:create]
     end
 
     respond_to do |format|
@@ -60,28 +69,18 @@ class Surveyor::ResponsesController < ApplicationController
     end
   end
 
-  def edit
-    redirect_to surveyor_response_complete_path(@response) if @response.completed?
+  def update
+    if @response.update_attributes(response_params)
+      flash[:success] = t(:surveyor)[:responses][:update]
+    end
 
-    @response.question_responses.build
-
-    @review               = 'false'
-    @sub_service_request  = @response.sub_service_request
-    
     respond_to do |format|
-      format.html
+      format.js
     end
   end
 
-  def update
-    if @response.update_attributes(response_params) && @response.question_responses.none? { |qr| qr.errors.any? }
-      # Delete responses to questions that didn't show anyways to avoid confusion in the data
-      @response.question_responses.where(required: true, content: [nil, '']).destroy_all
-      
-      flash[:success] = t(:surveyor)[:responses][:update]
-    else
-      @errors = true
-    end
+  def destroy
+    (@response = Response.find(params[:id])).destroy
 
     respond_to do |format|
       format.js
@@ -92,16 +91,6 @@ class Surveyor::ResponsesController < ApplicationController
   end
 
   private
-
-  def find_survey
-    surveys = Survey.where(access_code: params[:access_code], active: true).order('version DESC')
-
-    if params[:version]
-      @survey = surveys.where(version: params[:version]).first
-    else
-      @survey = surveys.first
-    end
-  end
 
   def find_response
     @response = Response.find(params[:id])

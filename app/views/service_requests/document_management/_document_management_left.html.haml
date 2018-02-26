@@ -20,6 +20,5 @@
 .col-md-9.document-management-left
   = render 'service_requests/document_management/documents', service_request: service_request
   = render 'service_requests/document_management/notes', service_request: service_request, notable_type: notable_type, notable_id: notable_id
-  - if service_request.additional_detail_services.present? || service_request.additional_detail_organizations.present?
-    .document-management-submissions
-      = render "additional_details/document_management_submissions", service_request: service_request
+  - if service_request.has_associated_forms?
+    = render "service_requests/document_management/forms", service_request: service_request

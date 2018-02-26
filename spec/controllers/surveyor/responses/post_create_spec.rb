@@ -55,25 +55,25 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
     end
 
     context 'response is invalid' do
-      it 'should assign @errors' do
+      it 'should not save @response' do
         survey = create(:survey)
         section = create(:section, survey: survey)
         question = create(:question, section: section, required: true)
-        
-        post :create, params: {
-          response: {
-            identity_id: logged_in_user.id,
-            survey_id: survey.id,
-            question_responses_attributes: {
-              '0' => {
-                required: 'true',
-                question_id: question.id
+
+        expect{
+          post :create, params: {
+            response: {
+              identity_id: logged_in_user.id,
+              survey_id: survey.id,
+              question_responses_attributes: {
+                '0' => {
+                  required: 'true',
+                  question_id: question.id
+                }
               }
             }
-          }
-        }, xhr: true
-
-        expect(assigns(:errors)).to eq(true)
+          }, xhr: true
+        }.to_not change{ Response.count }
       end
     end
 

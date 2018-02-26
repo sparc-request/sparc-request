@@ -35,12 +35,10 @@ module Surveyor::SurveysHelper
   end
 
   def edit_survey_button(survey)
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' })
-      ),
-      title: t(:surveyor)[:surveys][:table][:fields][:edit],
-      data: { survey_id: survey.id, toggle: 'tooltip', animation: 'false' },
+    link_to(
+      content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' }),
+      edit_surveyor_survey_path(survey),
+      remote: true,
       class: 'btn btn-warning edit-survey'
     )
   end
@@ -50,41 +48,53 @@ module Surveyor::SurveysHelper
       raw(
         content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
       ),
-      title: t(:surveyor)[:surveys][:table][:fields][:delete],
-      data: { survey_id: survey.id, toggle: 'tooltip', animation: 'false' },
+      data: { survey_id: survey.id },
       class: 'btn btn-danger delete-survey'
     )
   end
 
   def activate_survey_button(survey)
-    text = survey.active? ? t(:surveyor)[:surveys][:table][:fields][:disable] : t(:surveyor)[:surveys][:table][:fields][:activate]
-    klass = survey.active? ? 'btn-danger activate-survey' : 'btn-success disable-survey'
-    
-    link_to text, surveyor_survey_updater_path(survey, klass: 'survey', survey: { active: !survey.active }), method: :patch, remote: true, class: ['btn', klass]
+    if survey.surveyable_type == 'Identity'
+      content_tag(:button,
+        survey.active? ? t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:disable] : t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:activate],
+        class: survey.active? ? 'btn btn-danger activate-survey' : 'btn btn-success disable-survey',
+        title: t(:surveyor)[:forms][:table][:tooltips][:activate],
+        data: { toggle: 'tooltip', container: 'body' },
+        disabled: 'disabled'
+      )
+    else
+      link_to(
+        survey.active? ? t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:disable] : t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:activate],
+        surveyor_survey_updater_path(survey, klass: 'survey', survey: { active: !survey.active }),
+        method: :patch,
+        remote: true,
+        class: survey.active? ? 'btn btn-danger activate-survey' : 'btn btn-success disable-survey',
+      )
+    end
   end
 
   def preview_survey_button(survey)
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: 'glyphicon glyphicon-search', aria: { hidden: 'true' })+
-        t(:surveyor)[:surveys][:table][:fields][:preview]
-      ),
-      data: { survey_id: survey.id },
+    link_to(
+      content_tag(:span, '', class: 'glyphicon glyphicon-search', aria: { hidden: 'true' }) + t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:preview],
+      surveyor_survey_preview_path(survey),
+      remote: true,
       class: 'btn btn-info preview-survey'
     )
   end
 
   ### Surveys Form ###
-  def display_order_options
+  def display_order_options(survey)
     options_from_collection_for_select(
-      Survey.all,
+      SystemSurvey.unscoped.where.not(id: survey.id).order(:display_order),
       'display_order',
-      'insertion_name'
+      'insertion_name',
+      survey.display_order + 1
     )+
     content_tag(
       :option,
       t(:constants)[:add_as_last],
-      value: Survey.order('display_order DESC').first.display_order+1
+      value: (SystemSurvey.maximum(:display_order) || 0)+1,
+      selected: survey.display_order == SystemSurvey.maximum(:display_order)
     )
   end
 
@@ -102,5 +112,62 @@ module Surveyor::SurveysHelper
         t(:surveyor)[:surveys][:form][:content][:question][:add]
       ].join("")
     )
+  end
+
+  def us_states
+    [
+      ['Alabama', 'AL'],
+      ['Alaska', 'AK'],
+      ['Arizona', 'AZ'],
+      ['Arkansas', 'AR'],
+      ['California', 'CA'],
+      ['Colorado', 'CO'],
+      ['Connecticut', 'CT'],
+      ['Delaware', 'DE'],
+      ['District of Columbia', 'DC'],
+      ['Florida', 'FL'],
+      ['Georgia', 'GA'],
+      ['Hawaii', 'HI'],
+      ['Idaho', 'ID'],
+      ['Illinois', 'IL'],
+      ['Indiana', 'IN'],
+      ['Iowa', 'IA'],
+      ['Kansas', 'KS'],
+      ['Kentucky', 'KY'],
+      ['Louisiana', 'LA'],
+      ['Maine', 'ME'],
+      ['Maryland', 'MD'],
+      ['Massachusetts', 'MA'],
+      ['Michigan', 'MI'],
+      ['Minnesota', 'MN'],
+      ['Mississippi', 'MS'],
+      ['Missouri', 'MO'],
+      ['Montana', 'MT'],
+      ['Nebraska', 'NE'],
+      ['Nevada', 'NV'],
+      ['New Hampshire', 'NH'],
+      ['New Jersey', 'NJ'],
+      ['New Mexico', 'NM'],
+      ['New York', 'NY'],
+      ['North Carolina', 'NC'],
+      ['North Dakota', 'ND'],
+      ['Ohio', 'OH'],
+      ['Oklahoma', 'OK'],
+      ['Oregon', 'OR'],
+      ['Pennsylvania', 'PA'],
+      ['Puerto Rico', 'PR'],
+      ['Rhode Island', 'RI'],
+      ['South Carolina', 'SC'],
+      ['South Dakota', 'SD'],
+      ['Tennessee', 'TN'],
+      ['Texas', 'TX'],
+      ['Utah', 'UT'],
+      ['Vermont', 'VT'],
+      ['Virginia', 'VA'],
+      ['Washington', 'WA'],
+      ['West Virginia', 'WV'],
+      ['Wisconsin', 'WI'],
+      ['Wyoming', 'WY']
+    ]
   end
 end

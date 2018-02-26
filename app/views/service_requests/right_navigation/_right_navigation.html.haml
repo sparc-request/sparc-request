@@ -21,9 +21,9 @@
 
 = faq_helper
 - if Setting.find_by_key("use_redcap_api").value
-  = link_to 'Feedback', new_feedback_path, remote: true, class: 'btn btn-primary btn-lg btn-block feedback-button'
+  = link_to 'Feedback', new_feedback_path, remote: true, class: 'btn btn-primary btn-lg btn-block feedback-button no-margin-x'
 - else
   = feedback_helper
   = render 'service_requests/right_navigation/feedback_modal'
-= link_to t(:proper)[:right_navigation][:contact][:header], new_contact_form_path, remote: true, class: 'btn btn-primary btn-lg btn-block contact-us-button'
+= link_to t(:proper)[:right_navigation][:contact][:header], new_contact_form_path, remote: true, class: 'btn btn-primary btn-lg btn-block contact-us-button no-margin-x'
 

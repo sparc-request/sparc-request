@@ -20,7 +20,7 @@
 
 FactoryGirl.define do
   factory :associated_survey do
-    survey          nil
-    surveyable_type { Faker::Lorem.word() }
+    survey      { nil }
+    associable  { nil }
   end
 end

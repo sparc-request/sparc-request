@@ -34,29 +34,32 @@
     width: 100%
 
     .likert-group
-      display: inline-block
+      display: flex
 
-      .likert:before
-        content: ''
-        position: relative
-        top: 11px
-        display: block
-        background-color: #efefef
-        height: 4px
+      .likert-option
+        display: inline-block
 
-      .likert
-        input
+        .likert:before
+          content: ''
           position: relative
+          top: 11px
+          display: block
+          background-color: #efefef
+          height: 4px
 
-    .likert-group:not(:first-child), .likert-group:not(:last-child)
-      .likert:before
-        width: 100%
+        .likert
+          input
+            position: relative
 
-    .likert-group:first-child
-      .likert:before
-        width: 50%
-        left: 50%
+      .likert-option:not(:first-child), .likert-option:not(:last-child)
+        .likert:before
+          width: 100%
 
-    .likert-group:last-child
-      .likert:before
-        width: 50%
+      .likert-option:first-child
+        .likert:before
+          width: 50%
+          left: 50%
+
+      .likert-option:last-child
+        .likert:before
+          width: 50%

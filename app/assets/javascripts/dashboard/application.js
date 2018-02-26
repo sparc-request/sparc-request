@@ -34,7 +34,6 @@
 //= require bootstrap-datetimepicker
 //= require jquery_ujs
 //= require jquery.remotipart
-//= require jquery_nested_form
 //= require jquery.cookie
 //= require jquery.form
 //= require jquery.toastmessage
@@ -59,6 +58,8 @@
 //= require associated_users_form
 //= require study_schedule_tabs
 //= require subsidy_form
+//= require surveyor/responses
+//= require surveyor/surveys
 //= require dashboard/navbar
 
 window.Sparc = {};

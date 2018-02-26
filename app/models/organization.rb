@@ -68,13 +68,24 @@ class Organization < ApplicationRecord
   }
 
   scope :authorized_for_super_user, -> (identity_id) {
-    orgs = joins(:super_users).where(super_users: { identity_id: identity_id } ).references(:super_users).distinct(:organizations)
-    where(id: orgs + Organization.authorized_child_organizations(orgs.map(&:id))).distinct
+    orgs = 
+    where(
+      id: Organization.authorized_child_organization_ids(
+        joins(:super_users).
+        where(super_users: { identity_id: identity_id } ).
+        references(:super_users).
+        distinct(:organizations).ids)
+    ).distinct
   }
 
   scope :authorized_for_service_provider, -> (identity_id) {
-    orgs = joins(:service_providers).where(service_providers: { identity_id: identity_id } ).references(:service_providers).distinct(:organizations)
-    where(id: orgs + Organization.authorized_child_organizations(orgs.map(&:id))).distinct
+    where(
+      id: Organization.authorized_child_organization_ids(
+        joins(:service_providers).
+        where(service_providers: { identity_id: identity_id } ).
+        references(:service_providers).
+        distinct(:organizations).ids)
+    ).distinct
   }
 
   scope :in_cwf, -> { joins(:tags).where(tags: { name: 'clinical work fulfillment' }) }

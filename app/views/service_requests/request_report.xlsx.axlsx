@@ -114,7 +114,7 @@ wb.add_worksheet(name: "Review") do |sheet|
 
     arms_to_be_displayed.each do |arm|
       services_row = ["Selected Services", "CPT Code", "Order Code", "Notes"]
-      services_row << "Current Cost" if @admin_offset
+      services_row << "Service Cost" if @admin_offset
       services_row += ["Your Cost", "# of Subjects"]
       arm_row = [arm.name, "", "", "", "", "", ""]
       arm_row += [""] if @admin_offset
@@ -209,7 +209,7 @@ wb.add_worksheet(name: "Review") do |sheet|
 
           if @admin_offset
             line_item.pricing_scheme = 'effective'
-            service_row << display_your_cost(line_item)
+            service_row << display_service_rate(line_item)
             line_item.pricing_scheme = 'displayed'
           end
           service_row += [display_your_cost(line_item), line_items_visit.subject_count]
@@ -255,7 +255,7 @@ wb.add_worksheet(name: "Review") do |sheet|
   ############ end of arms.each
 
   services_row = ["Selected Services", "", "", ""]
-  services_row << "Current Cost" if @admin_offset
+  services_row << "Service Rate" if @admin_offset
   services_row += ["Your Cost", ""]
 
   (visit_count*2 + 1).times do
@@ -281,7 +281,7 @@ wb.add_worksheet(name: "Review") do |sheet|
       if @admin_offset
         line_item.pricing_scheme = 'effective'
         line_item_total = display_one_time_fee_direct_cost(line_item)
-        service_row << display_your_cost(line_item)
+        service_row << display_service_rate(line_item)
         line_item.pricing_scheme = 'displayed'
       end
 
@@ -323,13 +323,15 @@ wb.add_worksheet(name: "Review") do |sheet|
   end
 
   ##Total
-  grand_total_row = @sub_service_request ? ["", "", "", "", "", "", ""] : ["", "", "", "", "", ""]
+  grand_total_row = @sub_service_request ? ["", "", "", "", "", ""] : ["", "", "", "", ""]
 
   if has_per_patient_per_visit_services
     (visit_count * 2).times do
       grand_total_row << ""
     end
-  elsif @admin_offset
+  end
+
+  if @admin_offset
     grand_total_row << ""
   end
 

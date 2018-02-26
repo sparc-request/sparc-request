@@ -96,17 +96,12 @@ a.add_new_excluded_funding_source {
   }
 }
 
-#show_all_services a.btn.unavailable_button,
-#show_all_services a.btn.survey-link, {
+#show_all_services a.btn.unavailable_button {
   margin-left: 45px;
   text-decoration: none;
   border-width: 1px !important;
   border-style: solid !important;
   margin-bottom: 10px;
-}
-
-a.btn.survey-link {
-  margin-left: 200px !important;
 }
 
 #catalog {

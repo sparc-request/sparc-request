@@ -26,5 +26,5 @@
         = option.content
       - else
         .col-lg-6.no-padding.text-center.option{ data: { question_id: question.id, option_id: option.id } }
-          = radio_button_tag :content_yes_no, option.content.downcase, question_response.content == option.content.downcase, disabled: true
+          = radio_button_tag :content_yes_no, option.content.downcase, qr.content == option.content.downcase, disabled: true
         = option.content

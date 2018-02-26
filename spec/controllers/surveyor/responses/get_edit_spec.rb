@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -25,40 +25,36 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
   let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
 
-  let!(:survey)   { create(:survey) }
-  let!(:resp)     { create(:response, survey: survey) }
-
   describe '#edit' do
+    before :each do
+      @ssr      = create(:sub_service_request_without_validations, organization: create(:organization))
+      @survey   = create(:survey, active: true)
+      @resp     = create(:response, survey: @survey, sub_service_request: @ssr)
+
+      get :edit, params: { id: @resp.id }, xhr: true
+    end
+
     it 'should call before_filter #authenticate_identity!' do
       expect(before_filters.include?(:authenticate_identity!)).to eq(true)
     end
 
-    it 'should assign @response' do
-      get :edit, params: {
-        id: resp.id
-      }, xhr: true
-      expect(assigns(:response)).to eq(resp)
+    it 'should assign @response to the response' do
+      expect(assigns(:response)).to eq(@resp)
     end
 
-    it 'should assign @survey to the Response\'s survey' do
-      get :edit, params: {
-        id: resp.id
-      }, xhr: true
-      expect(assigns(:survey)).to eq(survey)
+    it 'should build question responses' do
+      expect(@resp.question_responses).to be
     end
 
-    it 'should respond :ok' do
-      get :edit, params: {
-        id: resp.id
-      }, xhr: true
-      expect(controller).to respond_with(:ok)
+    it 'should assign @review to false' do
+      expect(assigns(:review)).to eq("false")
     end
 
-    it 'should render template' do
-      get :edit, params: {
-        id: resp.id
-      }, xhr: true
-      expect(controller).to render_template(:edit)
+    it 'should assign @sub_service_request' do
+      expect(assigns(:sub_service_request)).to eq(@ssr)
     end
+
+    it { is_expected.to render_template(:edit) }
+    it { is_expected.to respond_with(:ok) }
   end
 end

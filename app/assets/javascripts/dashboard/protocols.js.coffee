@@ -148,21 +148,26 @@ $(document).ready ->
             $('.service-requests-table').bootstrapTable()
             reset_service_requests_handlers()
 
-      $(document).on 'change', '.complete-forms', ->
-        $option = $('option:selected', this)
-        $this   = $(this)
+      $(document).on 'change', '.complete-details', ->
+        $selected_options = $('option:selected', this)
 
-        $.ajax
-          method: 'GET'
-          url: "/surveyor/responses/new.js"
-          data:
-            type:             $option.data('type')
-            survey_id:        $option.data('survey-id')
-            respondable_id:   $option.data('respondable-id')
-            respondable_type: $option.data('respondable-type')
-          success: ->
-            $this.selectpicker('deselectAll')
-            $this.selectpicker('render')
+        if $selected_options.length > 0
+          $selected_option    = $selected_options.first()
+          questionnaire_id    = $selected_option.data('questionnaire-id')
+          protocol_id         = $selected_option.data('protocol-id')
+          ssr_id              = $selected_option.data('ssr-id')
+          $this               = $(this)
+          
+          $.ajax
+            method: 'GET'
+            url: "/additional_details/submissions/new.js"
+            data:
+              protocol_id: protocol_id
+              ssr_id: ssr_id
+              questionnaire_id: questionnaire_id
+            success: ->
+              $this.selectpicker('deselectAll')
+              $this.selectpicker('render')
 
       reset_service_requests_handlers()
       # Protocol Show End
@@ -196,11 +201,7 @@ $(document).ready ->
           url: "/dashboard/protocols.js"
           data: data
 
-(exports ? this).reset_service_requests_handlers = ->
-  $('.view-consolidated').tooltip()
-  $('.export-consolidated').tooltip()
-  $('.coverage-analysis-report').tooltip()
-  
+(exports ? this).reset_service_requests_handlers = -> 
   $('.service-requests-table').on 'all.bs.table', ->
     #Enable selectpickers
     $(this).find('.selectpicker').selectpicker()

@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -25,104 +25,81 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
   let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
 
-  let!(:survey)   { create(:survey) }
-  let!(:resp)     { create(:response, survey: survey ) }
-  let!(:section)  { create(:section, survey: survey) }
-  let!(:question) { create(:question, section: section) }
-  let!(:qr)       { create(:question_response, question: question, response: resp, content: 'not responding') }
-
   describe '#update' do
+    before :each do
+      @survey   = create(:survey)
+      @section  = create(:section, survey: @survey)
+      @question = create(:question, section: @section, required: true)
+      @resp = create(:response, survey: @survey)
+    end
+
     it 'should call before_filter #authenticate_identity!' do
       expect(before_filters.include?(:authenticate_identity!)).to eq(true)
     end
 
-    it 'should assign @response' do
-      put :update, params: {
-        id: resp.id,
-        response: {
-          question_responses_attributes: {
-            '0' => {
-              id: qr.id,
-              question_id: question.id,
-              required: 'true',
-              content: 'responsibility'
-            }
-          }
-        }
-      }, xhr: true
-      expect(assigns(:response)).to eq(resp)
-    end
-
-    context '@response is valid' do
+    context 'response is valid' do
       it 'should update @response' do
+        expect {
+          put :update, params: {
+            id: @resp.id,
+            response: {
+              identity_id: logged_in_user.id,
+              survey_id: @survey.id,
+              question_responses_attributes: {
+                '0' => {
+                  required: 'true',
+                  question_id: @question.id,
+                  content: 'response'
+                }
+              }
+            }
+          }, xhr: true
+        }.to change{ QuestionResponse.count }.by(1)
+      end
+    end
+
+    context 'response is invalid' do
+      it 'should assign @errors' do
         put :update, params: {
-          id: resp.id,
+          id: @resp.id,
           response: {
+            identity_id: logged_in_user.id,
+            survey_id: @survey.id,
             question_responses_attributes: {
               '0' => {
-                id: qr.id,
-                question_id: question.id,
                 required: 'true',
-                content: 'responsibility'
+                question_id: @question.id
               }
             }
           }
         }, xhr: true
-        expect(qr.reload.content).to eq('responsibility')
-      end
-    end
 
-    context '@response is not valid' do
-      it 'should not update @response' do
-        put :update, params: {
-        id: resp.id,
-          response: {
-            question_responses_attributes: {
-              '0' => {
-                id: qr.id,
-                question_id: question.id,
-                required: 'true',
-                content: ''
-              }
-            }
-          }
-        }, xhr: true
-        expect(qr.reload.content).to eq('not responding')
+        expect(assigns(:errors)).to eq(true)
       end
-    end
-
-    it 'should respond :ok' do
-      put :update, params: {
-        id: resp.id,
-        response: {
-          question_responses_attributes: {
-            '0' => {
-              id: qr.id,
-              question_id: question.id,
-              required: 'true',
-              content: 'responsibility'
-            }
-          }
-        }
-      }, xhr: true
-      expect(controller).to respond_with(:ok)
     end
 
     it 'should render template' do
       put :update, params: {
-        id: resp.id,
+        id: @resp.id,
         response: {
-          question_responses_attributes: {
-            '0' => {
-              id: qr.id,
-              question_id: question.id,
-              required: 'true',
-              content: 'responsibility'
-            }
-          }
+          identity_id: logged_in_user.id,
+          survey_id: @survey.id
         }
       }, xhr: true
+
       expect(controller).to render_template(:update)
+    end
+
+    it 'should respond ok' do
+      put :update, params: {
+        id: @resp.id,
+        response: {
+          identity_id: logged_in_user.id,
+          survey_id: @survey.id
+        }
+      }, xhr: true
+
+      expect(controller).to respond_with(:ok)
     end
   end
 end

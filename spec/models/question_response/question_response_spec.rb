@@ -124,5 +124,5 @@ RSpec.describe QuestionResponse, type: :model do
   end
 
   # Callbacks
-  it { is_expected.to callback(:remove_unanswered).before(:save) }
+  it { is_expected.to callback(:check_content_requirements).after(:save) }
 end

@@ -19,11 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Response < ActiveRecord::Base
-  audited
-  
   belongs_to :survey
   belongs_to :identity
-  belongs_to :respondable, polymorphic: true
+  belongs_to :sub_service_request
   
   has_many :question_responses, dependent: :destroy
   

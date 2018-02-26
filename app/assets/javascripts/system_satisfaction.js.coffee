@@ -33,12 +33,7 @@ $(document).ready ->
         survey_offered = true
         $.ajax
           type: 'get'
-          url: '/surveyor/responses/new.js'
-          data:
-            type: 'SystemSurvey'
-            survey_id: $(this).data('id')
-            respondable_id: getSRId()
-            respondable_type: 'ServiceRequest'
+          url: '/surveyor/responses/new.js?access_code=system-satisfaction-survey'
 
       $(document).on 'hidden.bs.modal', "#modal_place", ->
         window.location = button.attr('href')

@@ -33,6 +33,7 @@
 //= require jquery.toastmessage
 //= require catalog_manager/jquery.jstree
 //= require jquery-ui
+//= require jquery_nested_form
 //= require catalog_manager/jquery.formatCurrency-1.4.0.min
 //= require catalog_manager/catalog
 //= require catalog_manager/services

@@ -32,8 +32,7 @@
       .center-block
         %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
           = t(:actions)[:close]
-        - if !@review
-          %button.btn.btn-primary.note.new{ type: "button", aria: { label: t(:notes)[:add] }, data: { notable_id: notable_id, notable_type: notable_type, in_dashboard: @in_dashboard.to_s } }
-            %span.glyphicon.glyphicon-plus{ aria: { hidden: "true" } }
-            %span
-              = t(:notes)[:add]
+        %button.btn.btn-primary.note.new{ type: "button", aria: { label: t(:notes)[:add] }, data: { notable_id: notable_id, notable_type: notable_type, in_dashboard: @in_dashboard.to_s } }
+          %span.glyphicon.glyphicon-plus{ aria: { hidden: "true" } }
+          %span
+            = t(:notes)[:add]

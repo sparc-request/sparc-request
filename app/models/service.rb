@@ -39,7 +39,8 @@ class Service < ApplicationRecord
   has_many :service_requests, through: :sub_service_requests
   has_many :line_items, :dependent => :destroy
   has_many :identities, :through => :service_providers
-  has_many :forms, -> { active }, as: :surveyable, dependent: :destroy
+  has_many :questionnaires, as: :questionable
+  has_many :submissions
   ## commented out to remove tags, but will likely be added in later ##
   # has_many :taggings, through: :organization
   # has_many :tags, through: :taggings
@@ -55,7 +56,7 @@ class Service < ApplicationRecord
   has_many :depending_services, :through => :depending_service_relations, :source => :service
 
   # Surveys associated with this service
-  has_many :associated_surveys, as: :associable, dependent: :destroy
+  has_many :associated_surveys, as: :surveyable, dependent: :destroy
 
   validate :validate_pricing_maps_present
 
@@ -79,25 +80,6 @@ class Service < ApplicationRecord
   # Organization#parents.
   def parents
     return organization.parents.reverse + [ organization ]
-  end
-
-  # Service belongs to Organization A, which belongs to
-  # Organization B, which belongs to Organization C, return "C > B > A".
-  # This "hierarchy" stops at a process_ssrs Organization.
-  def organization_hierarchy(include_self=false, process_ssrs=true, use_css=false)
-    parent_orgs = self.parents.reverse
-    
-    if process_ssrs
-      root = parent_orgs.find_index { |org| org.process_ssrs? } || (parent_orgs.length - 1)
-    else
-      root = parent_orgs.length - 1
-    end
-
-    if use_css
-      parent_orgs[0..root].map{ |o| "<span class='#{o.css_class}-text'>#{o.abbreviation}</span>"}.reverse.join('<span> / </span>') + (include_self ? '<span> / </span>' + "<span>#{self.abbreviation}</span>" : '')
-    else
-      parent_orgs[0..root].map(&:abbreviation).reverse.join(' > ') + (include_self ? ' > ' + self.abbreviation : '')
-    end
   end
 
   def core

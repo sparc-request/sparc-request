@@ -31,6 +31,10 @@
 
     .navbar-right
       %ul.nav.navbar-nav.pull-right
+        - if Setting.find_by_key("site_admins").value.include?(user.ldap_uid)
+          %li
+            %button.btn.btn-info.navbar-btn#survey-btn{ type: 'button', title: t(:dashboard)[:navbar][:tooltips][:surveys], data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' } }
+              = t(:dashboard)[:navbar][:surveys]
         - if Setting.find_by_key("use_epic").value && Setting.find_by_key("epic_queue_access").value.include?(user.ldap_uid)
           %li
             %button.btn.btn-info.navbar-btn#epic-queue-btn{ type: 'button', title: t(:dashboard)[:navbar][:tooltips][:epic_queue], data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}'} }

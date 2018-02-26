@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -58,6 +58,9 @@ class Service < ApplicationRecord
   has_many :associated_surveys, as: :associable, dependent: :destroy
 
   validate :validate_pricing_maps_present
+
+  # Services listed under the funding organizations
+  scope :funding_opportunities, -> { where(organization_id: Setting.find_by_key("funding_org_ids").value) }
 
   ###############################################
   # Validations

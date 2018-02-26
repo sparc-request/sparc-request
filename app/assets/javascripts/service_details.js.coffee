@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -57,3 +57,16 @@ $(document).ready ->
     $('.name-validation').tooltip()
     $('.subject-count').tooltip()
     $('.visit-count').tooltip()
+
+
+  $(document).on 'dp.change', '.initial-budget-sponsor-received-date-picker', ->
+    $('.initial-amount').removeClass('hide')
+
+  $(document).on 'dp.change', '.budget-agreed-upon-date-picker', ->
+    $('.negotiated-amount').removeClass('hide')
+
+  if $('.initial-budget-sponsor-received-date-picker').val() != ''
+    $('.initial-amount').removeClass('hide')
+
+  if $('.budget-agreed-upon-date-picker').val() != ''
+    $('.negotiated-amount').removeClass('hide')

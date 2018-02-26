@@ -354,6 +354,16 @@ SparcRails::Application.routes.draw do
     resources :identities, only: [:index, :show, :create, :update]
   end
 
+  ##### Funding Download #####
+  namespace :funding do
+    root :to => 'services#index'
+    resources :services do
+      member do
+        get :documents
+      end
+    end
+  end
+
   mount API::Base => '/'
 
   root to: 'service_requests#catalog'

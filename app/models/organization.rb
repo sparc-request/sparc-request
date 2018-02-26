@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -65,6 +65,16 @@ class Organization < ApplicationRecord
       ),
       is_available: true
     ).distinct
+  }
+
+  scope :authorized_for_super_user, -> (identity_id) {
+    orgs = joins(:super_users).where(super_users: { identity_id: identity_id } ).references(:super_users).distinct(:organizations)
+    where(id: orgs + Organization.authorized_child_organizations(orgs.map(&:id))).distinct
+  }
+
+  scope :authorized_for_service_provider, -> (identity_id) {
+    orgs = joins(:service_providers).where(service_providers: { identity_id: identity_id } ).references(:service_providers).distinct(:organizations)
+    where(id: orgs + Organization.authorized_child_organizations(orgs.map(&:id))).distinct
   }
 
   scope :in_cwf, -> { joins(:tags).where(tags: { name: 'clinical work fulfillment' }) }

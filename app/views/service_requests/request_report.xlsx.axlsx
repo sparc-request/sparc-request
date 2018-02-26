@@ -114,7 +114,7 @@ wb.add_worksheet(name: "Review") do |sheet|
 
     arms_to_be_displayed.each do |arm|
       services_row = ["Selected Services", "CPT Code", "Order Code", "Notes"]
-      services_row << "Current Cost" if @admin_offset
+      services_row << "Service Cost" if @admin_offset
       services_row += ["Your Cost", "# of Subjects"]
       arm_row = [arm.name, "", "", "", "", "", ""]
       arm_row += [""] if @admin_offset
@@ -209,7 +209,7 @@ wb.add_worksheet(name: "Review") do |sheet|
 
           if @admin_offset
             line_item.pricing_scheme = 'effective'
-            service_row << display_your_cost(line_item)
+            service_row << display_service_rate(line_item)
             line_item.pricing_scheme = 'displayed'
           end
           service_row += [display_your_cost(line_item), line_items_visit.subject_count]
@@ -255,7 +255,7 @@ wb.add_worksheet(name: "Review") do |sheet|
   ############ end of arms.each
 
   services_row = ["Selected Services", "", "", ""]
-  services_row << "Current Cost" if @admin_offset
+  services_row << "Service Rate" if @admin_offset
   services_row += ["Your Cost", ""]
 
   (visit_count*2 + 1).times do
@@ -281,7 +281,7 @@ wb.add_worksheet(name: "Review") do |sheet|
       if @admin_offset
         line_item.pricing_scheme = 'effective'
         line_item_total = display_one_time_fee_direct_cost(line_item)
-        service_row << display_your_cost(line_item)
+        service_row << display_service_rate(line_item)
         line_item.pricing_scheme = 'displayed'
       end
 
@@ -323,39 +323,20 @@ wb.add_worksheet(name: "Review") do |sheet|
   end
 
   ##Total
-  grand_total_row = @sub_service_request ? ["", "", "", "", "", "", ""] : ["", "", "", "", "", ""]
+  grand_total_row = @sub_service_request ? ["", "", "", "", "", ""] : ["", "", "", "", ""]
 
   if has_per_patient_per_visit_services
     (visit_count * 2).times do
       grand_total_row << ""
     end
-  elsif @admin_offset
+  end
+
+  if @admin_offset
     grand_total_row << ""
   end
 
   grand_total_row += ["Total Cost", display_study_grand_total(@service_request.protocol, @service_request)]
   grand_total_row = sheet.add_row(grand_total_row, :style => row_header_style)
-
-  ## signatures and disclaimer
-
-  if @show_signature_section
-    sheet.add_row
-
-    signatures_text  = "The Signatures of the Principal Investigator and Study Delegate (study coordinator, grants adminstrator, etc.) indicate that this Study Calendar "
-    signatures_text2 = "has been reviewed; the _____________________________________________________ billable services have been identified and the highlighted services "
-    signatures_text3 = "should be included in an order set for unlicensed staff to process standing orders for the above identified study."
-
-    first_signature_row = sheet.add_row([signatures_text], :style => row_header_style, :widths => [:ignore])
-    sheet.add_row([signatures_text2], :style => row_header_style, :widths => [:ignore])
-    sheet.add_row([signatures_text3], :style => row_header_style, :widths => [:ignore])
-    sheet.add_row
-
-    sheet.add_row(["Principal Investigator Signature:                     _________________________________________      Date: ____________________"], :style => default, :widths => [:ignore])
-    sheet.add_row
-    sheet.add_row(["Study Delegate Signature:                              _________________________________________      Date: ____________________"], :style => default, :widths => [:ignore])
-    sheet.add_row
-    sheet.add_row(["___________________ Delegate Signature: _________________________________________      Date: ____________________"], :style => default, :widths => [:ignore])
-  end
 
   ###### style and merge cells ######
 
@@ -449,20 +430,6 @@ wb.add_worksheet(name: "Review") do |sheet|
   grand_total_row_index = sheet.rows.index(grand_total_row)
   sheet.merge_cells("#{begin_column}#{grand_total_row_index+1}:#{end_column}#{grand_total_row_index+1}") if has_per_patient_per_visit_services
 
-
-  ### added for signature section, fix the width of A, and then merge cells
-  if @show_signature_section
-    index = sheet.rows.index(first_signature_row)
-    sheet.merge_cells("A#{index+1}:F#{index+1}")
-    sheet.merge_cells("A#{index+2}:F#{index+2}")
-    sheet.merge_cells("A#{index+3}:F#{index+3}")
-    sheet.merge_cells("A#{index+4}:F#{index+4}")
-    sheet.merge_cells("A#{index+5}:F#{index+5}")
-    sheet.merge_cells("A#{index+6}:F#{index+6}")
-    sheet.merge_cells("A#{index+7}:F#{index+7}")
-    sheet.merge_cells("A#{index+8}:F#{index+8}")
-    sheet.merge_cells("A#{index+9}:F#{index+9}")
-  end
 
   ### setting some column widths
   if @admin_offset

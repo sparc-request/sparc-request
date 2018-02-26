@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -354,6 +354,16 @@ SparcRails::Application.routes.draw do
     root :to => 'identities#index'
     match 'identities/search' => 'identities#search', :via => :get
     resources :identities, only: [:index, :show, :create, :update]
+  end
+
+  ##### Funding Download #####
+  namespace :funding do
+    root :to => 'services#index'
+    resources :services do
+      member do
+        get :documents
+      end
+    end
   end
 
   mount API::Base => '/'

@@ -157,6 +157,10 @@ class Identity < ApplicationRecord
 
   end
 
+  def is_funding_admin?
+    Setting.find_by_key("funding_admins").value.include?(ldap_uid)
+  end
+
   ###############################################################################
   ############################# SEARCH METHODS ##################################
   ###############################################################################

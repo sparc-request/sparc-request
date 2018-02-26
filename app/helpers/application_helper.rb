@@ -162,6 +162,8 @@ module ApplicationHelper
         current_user.catalog_managers.empty?
       when 'sparc_report'
         !current_user.is_super_user?
+      when 'sparc_funding'
+        !current_user.is_funding_admin?
       else
         false
       end

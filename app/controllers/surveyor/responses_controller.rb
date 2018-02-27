@@ -53,6 +53,10 @@ class Surveyor::ResponsesController < Surveyor::BaseController
 
     respond_to do |format|
       format.js
+      format.html { # Only used to take System Surveys via Service Survey emails
+        redirect_to surveyor_response_complete_path(@response) if @response.completed?
+        @response.question_responses.build
+      }
     end
   end
 

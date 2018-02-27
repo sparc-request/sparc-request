@@ -78,7 +78,7 @@ RSpec.describe SurveyNotification do
 
     #ensure that the e-mail contains a link to the survey
     it 'should contain the survey link' do
-      expect(["/surveyor/responses/", "/new.html"].all? { |s| mail.body.include?(s) }).to eq(true)
+      expect(["/surveyor/responses/", "/edit.html"].all? { |s| mail.body.include?(s) }).to eq(true)
     end
 
     it 'should not contain the SCTR grant citation paragraph' do
@@ -107,7 +107,7 @@ RSpec.describe SurveyNotification do
 
     #ensure that the e-mail contains a link to the survey
     it 'should contain the survey link' do
-      expect(["/surveyor/responses/", "/new.html"].all? { |s| mail.body.include?(s) }).to eq(true)
+      expect(["/surveyor/responses/", "/edit.html"].all? { |s| mail.body.include?(s) }).to eq(true)
     end
 
     it 'should contain the SCTR grant citation paragraph' do

@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -52,6 +52,9 @@ class Dashboard::LineItemsController < Dashboard::BaseController
     @service_request = @sub_service_request.service_request
     if line_item_params[:service_id].blank?
       @sub_service_request.errors.add(:service, 'must be selected')
+      @errors = @sub_service_request.errors
+    elsif line_item_params[:quantity].blank? && Service.find(line_item_params[:service_id]).one_time_fee
+      @sub_service_request.errors.add(:base, 'Must input a quantity')
       @errors = @sub_service_request.errors
     elsif !@sub_service_request.create_line_item(line_item_params)
       @errors = @sub_service_request.errors

@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -274,19 +274,40 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def ssr_select_options(ssr)
-    ssr.nil? ? [] : statuses_with_classes(ssr)
+    if ssr.is_complete?
+      finished_statuses(ssr)
+    else
+      ssr.nil? ? [] : statuses_with_classes(ssr)
+    end
   end
 
   private
 
   def statuses_with_classes(ssr)
     ssr.organization.get_available_statuses.invert.map do |status|
-      if status.include?('Complete') || status.include?('Withdrawn')
+      if in_finished_status?(status)
         status.push(:class=> 'finished-status')
       else
         status
       end
     end
+  end
+
+  def finished_statuses(ssr)
+    new_statuses = []
+    ssr.organization.get_available_statuses.invert.map do |status|
+      if in_finished_status?(status)
+        new_statuses << status
+      end
+    end
+
+    new_statuses.each do |status|
+      status.push(:class=> 'finished-status')
+    end
+  end
+
+  def in_finished_status?(status)
+    Setting.find_by_key("finished_statuses").value.include?(status.last)
   end
 end
 

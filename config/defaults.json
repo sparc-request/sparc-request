@@ -618,5 +618,25 @@
     "version":        "",
     "parent_key":     "",
     "parent_value":   ""
+  },
+  {
+    "key":            "funding_admins",
+    "value":          "[]",
+    "friendly_name":  "Funding Admins",
+    "description":    "Determines which users will have access to the Funding module.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "funding_org_ids",
+    "value":          "[]",
+    "friendly_name":  "Funding Opportunities Organizations",
+    "description":    "Organization ID of the organizations under the Funding Opportunities.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
   }
 ]

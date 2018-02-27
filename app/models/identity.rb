@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -155,6 +155,10 @@ class Identity < ApplicationRecord
 
     is_provider
 
+  end
+
+  def is_funding_admin?
+    Setting.find_by_key("funding_admins").value.include?(ldap_uid)
   end
 
   ###############################################################################

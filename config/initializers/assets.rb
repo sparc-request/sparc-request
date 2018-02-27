@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -21,6 +21,7 @@
 SparcRails::Application.config.assets.paths.unshift "#{Rails.root}/themes/assets/stylesheets"
 SparcRails::Application.config.assets.paths.unshift "#{Rails.root}/themes/assets/images"
 SparcRails::Application.config.assets.paths.unshift "#{Rails.root}/themes/assets/javascripts"
+Rails.application.config.assets.paths << Rails.root.join('node_modules')
 Rails.application.config.assets.precompile += %w( additional_details/application.css )
 Rails.application.config.assets.precompile += %w( additional_details/application.js )
 Rails.application.config.assets.precompile += %w( admin/application.css )
@@ -62,3 +63,4 @@ Rails.application.config.assets.precompile += %w( system_satisfaction.css )
 Rails.application.config.assets.precompile += %w( system_satisfaction.js )
 Rails.application.config.assets.precompile += %w( view_details.css )
 Rails.application.config.assets.precompile += %w( additional_details/styles/document_table.css )
+Rails.application.config.assets.precompile += %w( funding/documents.js )

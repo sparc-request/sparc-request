@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -60,7 +60,16 @@ class Organization < ApplicationRecord
   # TODO: In rails 5, the .or operator will be added for ActiveRecord queries. We should try to
   #       condense this to a single query at that point
   scope :authorized_for_identity, -> (identity_id) {
-    orgs = includes(:super_users, :service_providers).where("super_users.identity_id = ? or service_providers.identity_id = ?", identity_id, identity_id).references(:super_users, :service_providers).distinct(:organizations)
+    authorized_for_super_user(identity_id).or( authorized_for_service_provider(identity_id) )
+  }
+
+  scope :authorized_for_super_user, -> (identity_id) {
+    orgs = joins(:super_users).where(super_users: { identity_id: identity_id } ).references(:super_users).distinct(:organizations)
+    where(id: orgs + Organization.authorized_child_organizations(orgs.map(&:id))).distinct
+  }
+
+  scope :authorized_for_service_provider, -> (identity_id) {
+    orgs = joins(:service_providers).where(service_providers: { identity_id: identity_id } ).references(:service_providers).distinct(:organizations)
     where(id: orgs + Organization.authorized_child_organizations(orgs.map(&:id))).distinct
   }
 

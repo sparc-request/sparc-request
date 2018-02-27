@@ -46,6 +46,18 @@ en:
         header: "Survey Completed"
         thanks: "Thank you for completing the survey!"
         to_dashboard: "Return to Dashboard"
+      table:
+        header: "%{type} Responses"
+        headers:
+          ssrid: "SSRID"
+          short_title: "Short Title"
+          primary_pi: "Primary PI"
+          title: "%{type} Title"
+          complete: "Complete"
+          date: "Date"
+          actions: "Actions"
+      filter:
+        type: "Type"
       emails:
         system_satisfaction:
           subject: "System Satisfaction Survey Completed in %{site_name}"

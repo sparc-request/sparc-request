@@ -24,12 +24,31 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   before_action :authenticate_identity!
   before_action :find_response, only: [:show, :edit, :update]
 
+  def index
+    @filterrific  = 
+      initialize_filterrific(Response, params[:filterrific],
+        select_options: {
+          with_type: [['Form', 'Form'], ['Survey', 'SystemSurvey']]
+        }
+      )
+    @type       = @filterrific.with_type.constantize.yaml_klass
+    @responses  = @filterrific.find.eager_load(:survey, :question_responses)
+
+    respond_to do |format|
+      format.html
+      format.js
+      format.json
+      format.xlsx
+    end
+  end
+
   def show
     @survey = @response.survey
 
     respond_to do |format|
       format.html
       format.js
+      format.xlsx
     end
   end
 
@@ -94,6 +113,12 @@ class Surveyor::ResponsesController < Surveyor::BaseController
 
   def find_response
     @response = Response.find(params[:id])
+  end
+
+  def filterrific_params
+    params.require(:filterrific).permit(
+      :with_type
+    )
   end
 
   def response_params

@@ -130,6 +130,10 @@ class Identity < ApplicationRecord
   ############################ ATTRIBUTE METHODS ################################
   ###############################################################################
 
+  def is_site_admin?
+    Setting.find_by_key("site_admins").value.include?(self.ldap_uid)
+  end
+
   # Returns true if the user is a catalog overlord.  Should only be true for three uids:
   # lmf5, anc63, mas244
   def is_overlord?

@@ -22,12 +22,15 @@ getOrder = ->
   if $table.bootstrapTable('getOptions').sortOrder == 'asc' then -1 else 1
 
 (exports ? this).dateSorter = (a, b) ->
-  return -1 * getOrder() if !a
-  return 1 * getOrder() if !b
-
-  sort_a = new Date(a)
-  sort_b = new Date(b)
-
-  return 1 if sort_a > sort_b
-  return -1 if sort_a < sort_b
-  return 0
+  if !a && !b
+    return 0
+  else if a && !b
+    return 1
+  else if !a && b
+    return -1
+  else
+    sort_a = new Date(a)
+    sort_b = new Date(b)
+    return 1 if sort_a > sort_b
+    return -1 if sort_a < sort_b
+    return 0

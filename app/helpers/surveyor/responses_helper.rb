@@ -19,6 +19,55 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Surveyor::ResponsesHelper
+
+  def complete_display(response)
+    klass = response.completed? ? 'glyphicon glyphicon-ok text-success' : 'glyphicon glyphicon-remove text-danger'
+
+    content_tag(:h4, content_tag(:span, '', class: klass))
+  end
+
+  def response_options(response)
+    [ view_response_button(response),
+      edit_response_button(response),
+      download_response_button(response)
+    ].join('')
+  end
+
+  def view_response_button(response)
+    link_to(
+      t(:actions)[:view],
+      surveyor_response_path(response),
+      remote: true,
+      class: 'btn btn-info view-Ffresponse'
+    )
+  end
+
+  def edit_response_button(response)
+    link_to(
+      content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' }),
+      edit_surveyor_response_path(response),
+      remote: true,
+      class: 'btn btn-warning edit-response'
+    )
+  end
+
+  def delete_response_button(response)
+    content_tag(:button,
+      content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' }),
+      data: { response_id: response.id },
+      class: 'btn btn-danger delete-response'
+    )
+  end
+
+  def download_response_button(response)
+    link_to(
+      content_tag(:span, '', class: 'glyphicon glyphicon-download-alt', aria: { hidden: 'true' }),
+      'javascript:void(0)',
+      remote: true,
+      class: 'btn btn-success download-response'
+    )
+  end
+
   def dependency_classes(question)
     if question.is_dependent?
       ["dependent-for-option-#{question.depender_id}",

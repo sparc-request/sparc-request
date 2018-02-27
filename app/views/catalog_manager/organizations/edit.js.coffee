@@ -72,7 +72,7 @@ $('#user-rights-query').typeahead(
             <input type='checkbox' class='catalog-manager-checkbox' data-organization-id='<%= @organization.id %>' data-identity-id='#{suggestion['identity_id']}'>
           </div>
           <div class='form-check'>
-            <input type='checkbox' class='cm-edit-historic-data' id='cm-edit-historic-data-#{suggestion['identity_id']}' data-organization-id='<%= @organization.id %>' data-identity-id='#{suggestion['identity_id']}'>
+            <input type='checkbox' class='cm-edit-historic-data' id='cm-edit-historic-data-#{suggestion['identity_id']}' data-organization-id='<%= @organization.id %>' data-identity-id='#{suggestion['identity_id']}' disabled>
             #{I18n['catalog_manager']['organization_form']['user_rights']['edit_historic_data']}
           </div>
         </td>
@@ -95,7 +95,7 @@ $('#user-rights-query').typeahead(
             <input type='checkbox' class='catalog-manager-checkbox' data-organization-id='<%= @organization.id %>' data-identity-id='#{suggestion['identity_id']}'>
           </div>
           <div class='form-check'>
-            <input type='checkbox' class='cm-edit-historic-data' id='cm-edit-historic-data-#{suggestion['identity_id']}' data-organization-id='<%= @organization.id %>' data-identity-id='#{suggestion['identity_id']}'>
+            <input type='checkbox' class='cm-edit-historic-data' id='cm-edit-historic-data-#{suggestion['identity_id']}' data-organization-id='<%= @organization.id %>' data-identity-id='#{suggestion['identity_id']}' disabled>
             #{I18n['catalog_manager']['organization_form']['user_rights']['edit_historic_data']}
           </div>
         </td>
@@ -104,11 +104,11 @@ $('#user-rights-query').typeahead(
             <input type='checkbox' class='service-provider-checkbox' data-organization-id='<%= @organization.id %>' data-identity-id='#{suggestion['identity_id']}'>
           </div>
           <div class='form-check'>
-            <input type='checkbox' class='sp-is-primary-contact' id='sp-is-primary-contact-#{suggestion['identity_id']}' data-organization-id='<%= @organization.id %>' data-identity-id='#{suggestion['identity_id']}'>
+            <input type='checkbox' class='sp-is-primary-contact' id='sp-is-primary-contact-#{suggestion['identity_id']}' data-organization-id='<%= @organization.id %>' data-identity-id='#{suggestion['identity_id']}' disabled>
             #{I18n['catalog_manager']['organization_form']['user_rights']['primary_contact']}
           </div>
           <div class='form-check'>
-            <input type='checkbox' class='sp-hold-emails' id='sp-hold-emails-#{suggestion['identity_id']}' data-organization-id='<%= @organization.id %>' data-identity-id='#{suggestion['identity_id']}'>
+            <input type='checkbox' class='sp-hold-emails' id='sp-hold-emails-#{suggestion['identity_id']}' data-organization-id='<%= @organization.id %>' data-identity-id='#{suggestion['identity_id']}' disabled>
             #{I18n['catalog_manager']['organization_form']['user_rights']['hold_emails']}
           </div>
         </td>

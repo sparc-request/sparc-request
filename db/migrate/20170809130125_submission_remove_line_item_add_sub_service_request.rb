@@ -19,6 +19,10 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class SubmissionRemoveLineItemAddSubServiceRequest < ActiveRecord::Migration[5.1]
+  class Submission < ApplicationRecord
+    belongs_to :sub_service_request
+  end
+
   def change
     add_reference :submissions, :sub_service_request, index: true, foreign_key: true, type: :integer
     Submission.find_each do |sub|

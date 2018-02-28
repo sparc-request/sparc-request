@@ -21,38 +21,6 @@
 require 'rails_helper'
 
 RSpec.describe Dashboard::ServiceCalendars do
-  describe '.display_organization_hierarchy(line_items_visit)' do
-    context "LIV belongs to A which belongs to B which belongs to C, where A, B, and C are not process-ssrs Organizations" do
-      it "should return: C > B > A" do
-        org_C = create(:organization, process_ssrs: false, abbreviation: "C")
-        org_B = create(:organization, process_ssrs: false, abbreviation: "B", parent: org_C)
-        org_A = create(:organization, process_ssrs: false, abbreviation: "A", parent: org_B)
-        service = create(:service, :without_validations, organization: org_A)
-        li = instance_double(LineItem)
-        allow(li).to receive(:service).
-          and_return(service)
-
-        expect(Dashboard::ServiceCalendars.display_organization_hierarchy(li)).
-          to eq("C > B > A")
-      end
-    end
-
-    context "LIV belongs to A which belongs to B which belongs to C, where A and C are not  process-ssrs Organizations but B is" do
-      it "should return: B > A" do
-        org_C = create(:organization, process_ssrs: false, abbreviation: "C")
-        org_B = create(:organization, process_ssrs: true, abbreviation: "B", parent: org_C)
-        org_A = create(:organization, process_ssrs: false, abbreviation: "A", parent: org_B)
-        service = create(:service, :without_validations, organization: org_A)
-        li = instance_double(LineItem)
-        allow(li).to receive(:service).
-          and_return(service)
-
-        expect(Dashboard::ServiceCalendars.display_organization_hierarchy(li)).
-          to eq("B > A")
-      end
-    end
-  end
-
   describe '.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, opts = {})' do
     context 'opts[:merged] == true' do
       it "should return PPPV LIV's of arm not associated with a first-draft SSR" do

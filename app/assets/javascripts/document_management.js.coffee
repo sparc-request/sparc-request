@@ -20,6 +20,7 @@
 
 #= require navigation
 #= require cart
+#= require forms
 
 $(document).ready ->
   $(document).on 'click', '#document-new', ->

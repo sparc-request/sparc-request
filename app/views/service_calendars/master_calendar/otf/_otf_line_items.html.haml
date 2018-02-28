@@ -24,7 +24,7 @@
   -# SSR Header Row
   %tr.organization-header{ class: locked ? 'bg-danger text-danger' : '' }
     %th{ colspan: 14 }
-      = display_org_name(Dashboard::ServiceCalendars.display_organization_hierarchy(line_items[0]), ssr, locked)
+      = display_org_name(line_items[0].service.organization_hierarchy, ssr, locked)
 
   -# Line Items
   - line_items.each do |line_item|

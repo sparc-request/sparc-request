@@ -19,6 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class GeneralizeQuestionnaire < ActiveRecord::Migration[5.1]
+  class Questionnaire < ApplicationRecord
+  end
+  
   def change
     add_reference :questionnaires, :questionable, polymorphic: true
     Questionnaire.find_each do |q|

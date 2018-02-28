@@ -26,24 +26,51 @@ RSpec.describe 'User deletes a survey', js: true do
 
   stub_config("site_admins", ["jug2"])
   
-  before :each do
-    create(:survey)
+  context 'surveys' do
+    before :each do
+      create(:system_survey)
 
-    visit surveyor_surveys_path
-    wait_for_javascript_to_finish
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+    end
+
+    scenario 'and sees the survey is deleted' do
+      find('.delete-survey').click
+      wait_for_javascript_to_finish
+
+      find('.sweet-alert.visible button.confirm').trigger('click')
+      wait_for_javascript_to_finish
+
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+
+      expect(page).to have_selector('.survey-table td', text: 'No matching records found')
+      expect(SystemSurvey.count).to eq(0)
+    end
   end
 
-  scenario 'and sees the survey is deleted' do
-    find('.delete-survey').click
-    wait_for_javascript_to_finish
+  context 'forms' do
+    before :each do
+      org = create(:institution)
+      create(:super_user, organization: org, identity: jug2)
+      create(:form, surveyable: org)
 
-    find('.sweet-alert.visible button.confirm').trigger('click')
-    wait_for_javascript_to_finish
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+    end
 
-    visit surveyor_surveys_path
-    wait_for_javascript_to_finish
+    scenario 'and sees the form is deleted' do
+      find('.delete-survey').click
+      wait_for_javascript_to_finish
 
-    expect(page).to have_content('No matching records found')
-    expect(Survey.count).to eq(0)
+      find('.sweet-alert.visible button.confirm').trigger('click')
+      wait_for_javascript_to_finish
+
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+
+      expect(page).to have_selector('.form-table td', text: 'No matching records found')
+      expect(Form.count).to eq(0)
+    end
   end
 end

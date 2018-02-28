@@ -104,7 +104,7 @@ class ModifySurveyColumns < ActiveRecord::Migration[4.2]
     ####################################################################################
     puts "  Storing survey data..."
     # Remake Surveys
-    surveys = Survey.all.to_a
+    surveys = Survey.unscoped.all.to_a
     # Remake SurveySections as Sections
     sections = SurveySection.all.to_a
     # Remake Questions

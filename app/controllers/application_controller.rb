@@ -221,12 +221,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def authorize_site_admin
-    unless Setting.find_by_key("site_admins").value.include?(current_user.ldap_uid)
-      authorization_error "You do not have access to this page.", ""
-    end
-  end
-
   def in_dashboard?
     (params[:portal] && params[:portal] == 'true') || (params[:admin] && params[:admin] == 'true')
   end

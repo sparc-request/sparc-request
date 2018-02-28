@@ -28,7 +28,7 @@ class SearchController < ApplicationController
                           sub_service_requests.
                           reject{ |ssr| !ssr.is_locked? }.
                           map(&:organization_id)
-    locked_child_ids  = Organization.authorized_child_organizations(locked_org_ids).map(&:id)
+    locked_child_ids  = Organization.authorized_child_organization_ids(locked_org_ids)
 
     results = Service.
                 where("(name LIKE ? OR abbreviation LIKE ? OR cpt_code LIKE ?) AND is_available = 1", "%#{term}%", "%#{term}%", "%#{term}%").
@@ -41,16 +41,13 @@ class SearchController < ApplicationController
 
     results.map! { |s|
       {
-        institution:    s.institution.name,
-        inst_css_class: s.institution.css_class + '-text', 
-        parents:        ' | ' + s.parents.reject{ |p| p.type == 'Institution' }.map(&:abbreviation).join(' | '),
+        parents:        s.organization_hierarchy(false, false, true),
         label:          s.name,
         value:          s.id,
         description:    (s.description.nil? || s.description.blank?) ? t(:proper)[:catalog][:no_description] : s.description,
-        sr_id:          @service_request.id,
         abbreviation:   s.abbreviation,
         cpt_code:       s.cpt_code,
-        term:           params[:term]
+        term:           term
       }
     }
 

@@ -35,7 +35,6 @@ end
 begin
   constant_file                  = File.join(Rails.root, 'config', 'constants.yml')
   config                         = YAML::load_file(constant_file)
-  ADDITIONAL_DETAIL_QUESTION_TYPES = config['additional_detail_question_types']
   BROWSER_VERSIONS               = config['browser_versions']
   EPIC_RIGHTS                    = config['epic_rights']
   EPIC_RIGHTS_INFO               = config['epic_rights_info']

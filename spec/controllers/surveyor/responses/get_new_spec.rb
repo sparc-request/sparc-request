@@ -25,35 +25,111 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
   let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
 
+  before :each do
+    @respondable = create(:sub_service_request_without_validations, organization: create(:organization))
+  end
+
   describe '#new' do
-    before :each do
-      @survey = create(:survey, active: true)
-
-      get :new, params: { access_code: @survey.access_code }, xhr: true
-    end
-
     it 'should call before_filter #authenticate_identity!' do
       expect(before_filters.include?(:authenticate_identity!)).to eq(true)
     end
 
     it 'should assign @survey to the Survey' do
-      expect(assigns(:survey)).to eq(@survey)
+      survey = create(:form, active: true)
+
+      get :new, params: {
+        survey_id: survey.id,
+        respondable_id: @respondable.id,
+        respondable_type: 'SubServiceRequest',
+        type: 'Survey'
+      }, xhr: true
+
+      expect(assigns(:survey)).to eq(survey)
     end
 
     it 'should assign @response as a new Response of Survey' do
+      survey = create(:form, active: true)
+
+      get :new, params: {
+        survey_id: survey.id,
+        respondable_id: @respondable.id,
+        respondable_type: 'SubServiceRequest',
+        type: 'Survey'
+      }, xhr: true
+
       expect(assigns(:response)).to be_a_new(Response)
-      expect(assigns(:response).survey).to eq(@survey)
+      expect(assigns(:response).survey).to eq(survey)
     end
 
     it 'should build question responses' do
+      survey = create(:form, active: true)
+
+      get :new, params: {
+        survey_id: survey.id,
+        respondable_id: @respondable.id,
+        respondable_type: 'SubServiceRequest',
+        type: 'Survey'
+      }, xhr: true
+
       expect(assigns(:response).question_responses).to be
     end
 
-    it 'should assign @review to true' do
-      expect(assigns(:review)).to eq("true")
+    it 'should assign @respondable' do
+      survey = create(:form, active: true)
+
+      get :new, params: {
+        survey_id: survey.id,
+        respondable_id: @respondable.id,
+        respondable_type: 'SubServiceRequest',
+        type: 'Survey'
+      }, xhr: true
+
+      expect(assigns(:respondable)).to eq(@respondable)
     end
 
-    it { is_expected.to render_template(:new) }
-    it { is_expected.to respond_with(:ok) }
+    context 'format.html (Taking Survey From Email Link)' do
+      it 'should redirect if survey has already been taken by the user for the respondable' do
+        survey = create(:form, active: true)
+        existing_response = create(:response, survey: survey, identity: logged_in_user, respondable: @respondable)
+
+        session[:identity_id] = logged_in_user
+        
+        get :new, params: {
+          survey_id: survey.id,
+          respondable_id: @respondable.id,
+          respondable_type: 'SubServiceRequest',
+          type: 'Survey',
+          format: :html
+        }, xhr: true
+
+        expect(controller).to redirect_to(surveyor_response_complete_path(existing_response))
+      end
+    end
+
+    it 'should respond :ok' do
+      survey = create(:form, active: true)
+
+      get :new, params: {
+        survey_id: survey.id,
+        respondable_id: @respondable.id,
+        respondable_type: 'SubServiceRequest',
+        type: 'Survey'
+      }, xhr: true
+
+      expect(controller).to respond_with(:ok)
+    end
+
+    it 'should render template' do
+      survey = create(:form, active: true)
+
+      get :new, params: {
+        survey_id: survey.id,
+        respondable_id: @respondable.id,
+        respondable_type: 'SubServiceRequest',
+        type: 'Survey'
+      }, xhr: true
+
+      expect(controller).to render_template(:new)
+    end
   end
 end

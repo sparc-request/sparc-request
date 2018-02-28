@@ -17,16 +17,16 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.form-group<
+.form-group.likert-group<
   - question.options.each_with_index do |option, index|
-    .option.likert-group.no-padding{ style: "width: #{100.0 / question.options.count}%", data: { question_id: question.id, option_id: option.id } }>
+    .option.likert-option.no-padding{ style: "width: #{100.0 / question.options.count}%", data: { question_id: question.id, option_id: option.id } }>
       .col-sm-12.text-center.no-padding
         = index+1
       .col-sm-12.text-center.no-padding.likert
         - if ['new', 'edit', 'preview'].include?(action_name)
           = qr.radio_button :content, option.content
         - else
-          = radio_button_tag :content_likert, '', qr.content == option.content, disabled: true
+          = radio_button_tag :content_likert, '', question_response.content == option.content, disabled: true
       .col-sm-12.text-center.no-padding
         - if ['new', 'edit', 'preview'].include?(action_name)
           = qr.label :content, option.content, class: "radio-inline option no-padding", data: { question_id: question.id, option_id: option.id }

@@ -28,7 +28,7 @@ RSpec.describe Response, type: :model do
   # Associations
   it { is_expected.to belong_to(:survey) }
   it { is_expected.to belong_to(:identity) }
-  it { is_expected.to belong_to(:sub_service_request) }
+  it { is_expected.to belong_to(:respondable) }
 
   it { is_expected.to have_many(:question_responses).dependent(:destroy) }
 

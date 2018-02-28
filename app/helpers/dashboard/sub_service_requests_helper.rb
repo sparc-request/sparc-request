@@ -208,45 +208,20 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def display_ssr_submissions(ssr)
-    has_incomplete_service = ssr.has_incomplete_additional_details_services?
-    has_incomplete_organization = ssr.has_incomplete_additional_details_organization?
+    forms                     = ssr.forms_to_complete
+    form_list                 = {}
+    form_list[:Organization]  = [] if forms.detect{ |f| f.surveyable_type == 'Organization' }
+    form_list[:Service]       = [] if forms.detect{ |f| f.surveyable_type == 'Service' }
 
-    if has_incomplete_service or has_incomplete_organization
-      protocol    = ssr.protocol
-      submissions = {}
-      if has_incomplete_service
-        submissions[:Services] = []
-        ssr.line_items.includes(:service).map(&:service).each do |service|
-          next unless service.questionnaires.active.present?
-          submissions[:Services] << [service.name, service.name, data: {
-                                                                  questionnaire_id: service.questionnaires.active.first.id,
-                                                                  protocol_id: protocol.id,
-                                                                  ssr_id: ssr.id
-                                                                }]
-        end
-      end
-      if has_incomplete_organization
-        submissions[:Organization] = []
-        submissions[:Organization] << [ssr.organization.name, ssr.organization.name, data: {
-                                                                                      questionnaire_id: ssr.organization.questionnaires.active.first.id,
-                                                                                      protocol_id: protocol.id,
-                                                                                      ssr_id: ssr.id
-                                                                                    }]
-      end
-      submission_list = grouped_options_for_select(submissions)
+    forms.each do |f|
+      form_list[f.surveyable_type.to_sym] << [f.surveyable.name, f.surveyable.name, data: { type: 'Form', survey_id: f.id, respondable_id: ssr.id, respondable_type: 'SubServiceRequest' }]
+    end
 
-      content_tag(
-        :select,
-        submission_list.html_safe,
-        title: t(:dashboard)[:service_requests][:additional_details][:selectpicker],
-        class: 'selectpicker complete-details',
-        data: {
-          style: 'btn-danger',
-          counter: 'true'
-        }
-      )
-    else
+    if form_list.empty?
       ''
+    else
+      content_tag(:select, grouped_options_for_select(form_list).html_safe, title: t(:dashboard)[:service_requests][:forms][:selectpicker],
+        class: 'selectpicker complete-forms', data: { style: 'btn-danger', counter: 'true' })
     end
   end
 

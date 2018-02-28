@@ -30,21 +30,17 @@ RSpec.describe Survey, type: :model do
   it { is_expected.to have_many(:sections).dependent(:destroy) }
   it { is_expected.to have_many(:associated_surveys).dependent(:destroy) }
   it { is_expected.to have_many(:questions).through(:sections) }
+  it { is_expected.to belong_to(:surveyable) }
 
   # Validations
   it { is_expected.to validate_presence_of(:title) }
   it { is_expected.to validate_presence_of(:access_code) }
-  it { is_expected.to validate_presence_of(:display_order) }
   it { is_expected.to validate_presence_of(:version) }
 
-  it { is_expected.to validate_inclusion_of(:active).in_array([true,false]) }
+  it { is_expected.to validate_numericality_of(:version).only_integer }
+  it { is_expected.to validate_numericality_of(:version).is_greater_than(0) }
 
-  it 'should validate version scoped to access_code' do
-    survey = create(:survey, access_code: 'access-code', version: 0)
-    new_survey = build(:survey, access_code: 'access-code', version: 0)
-    
-    expect(new_survey).to_not be_valid
-  end
+  it { expect(build(:survey)).to validate_uniqueness_of(:version).scoped_to([:access_code, :type]) }
 
   # Other
   it { is_expected.to accept_nested_attributes_for(:sections) }

@@ -18,18 +18,18 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Surveyor::QuestionsController < ApplicationController
+class Surveyor::QuestionsController < Surveyor::BaseController
   respond_to :html, :js, :json
 
   before_action :authenticate_identity!
-  before_action :authorize_site_admin
+  before_action :authorize_survey_builder_access
   
   def create
     @section  = Section.find(params[:section_id])
     @survey   = @section.survey
     @question = @section.questions.create(
-                  content: "Untitled Question",
-                  question_type: ADDITIONAL_DETAIL_QUESTION_TYPES.first[1],
+                  content: "New Question",
+                  question_type: Survey::QUESTION_TYPES.first[1],
                   required: false,
                   is_dependent: false
                 )

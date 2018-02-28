@@ -85,7 +85,7 @@ RSpec.describe 'dashboard/sub_service_requests/_request_details', type: :view do
     it "should render subsidies" do
       protocol = stub_protocol
       service_request = stub_service_request(protocol: protocol)
-      sub_service_request = stub_sub_service_request(service_request: service_request, eligible_for_subsidy?: true)
+      sub_service_request = stub_sub_service_request(service_request: service_request, protocol: protocol, eligible_for_subsidy?: true)
 
       allow(sub_service_request).to receive_messages(approved_subsidy: nil, pending_subsidy: nil)
       render_request_details(protocol: protocol, service_request: service_request, sub_service_request: sub_service_request)
@@ -120,7 +120,7 @@ RSpec.describe 'dashboard/sub_service_requests/_request_details', type: :view do
   # specify protocol and organization
   def stub_sub_service_request(opts = {})
     obj = build_stubbed(:sub_service_request,
-      service_request: opts[:service_request])
+      service_request: opts[:service_request], protocol: opts[:protocol])
     allow(obj).to receive(:ctrc?).
       and_return(!!opts[:ctrc?])
     allow(obj).to receive(:eligible_for_subsidy?).

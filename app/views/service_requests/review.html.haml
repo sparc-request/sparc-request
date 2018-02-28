@@ -19,7 +19,6 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 = javascript_include_tag 'review'
 = stylesheet_link_tag 'associated_users_table'
-= stylesheet_link_tag 'additional_details/styles/document_table'
 
 = render '/service_requests/navigation/steps', service_request: @service_request, sub_service_request: @sub_service_request, step_text: @step_text, css_class: @css_class
 .col-sm-12.body-container#review-page
@@ -32,19 +31,11 @@
     = render 'service_requests/review/calendars', service_request: @service_request, sub_service_request: @sub_service_request, pages: @pages, tab: @tab, arm: @arm, portal: @portal, admin: @admin, review: @review, merged: @merged, consolidated: @consolidated, display_all_services: @display_all_services
     = render 'service_requests/review/documents', service_request: @service_request, protocol: @service_request.protocol
     = render 'service_requests/review/notes', service_request: @service_request, notable_id: @notable_id, notable_type: @notable_type
-    - if @service_request.additional_detail_organizations.present? || @service_request.additional_detail_services.present?
-      .page-header
-        %h3
-          %span{ title: t(:proper)[:document_management][:tooltips][:additional_details], data: { toggle: 'tooltip', delay: '{"show":"500"}' } }
-            = t(:proper)[:document_management][:additional_details_notice]
-    - if @service_request.additional_detail_services.present?
-      = render "additional_details/document_management_submissions_table", service_request: @service_request, objects_with_questionnaires: @service_request.line_items, questionable_type: 'Service'
-
-    - if @service_request.additional_detail_organizations.present?
-      = render "additional_details/document_management_submissions_table", service_request: @service_request, objects_with_questionnaires: @service_request.sub_service_requests, questionable_type: 'Organization'
+    - if @service_request.has_associated_forms?
+      = render "service_requests/document_management/forms", service_request: @service_request, review: @review
 = render 'service_requests/navigation/footer', service_request: @service_request, sub_service_request_id: @sub_service_request.try(:id), css_class: @css_class, back: @back, forward: @forward
 
-- if Setting.find_by_key("system_satisfaction_survey").value
+- if Setting.find_by_key("system_satisfaction_survey").value && survey = SystemSurvey.where(access_code: 'system-satisfaction-survey', active: true).first
   = javascript_include_tag 'system_satisfaction'
   = hidden_field_tag :use_system_satisfaction, 'true'
-  = render 'service_requests/modals/participate_in_survey_modal'
+  = render 'service_requests/modals/participate_in_survey_modal', survey: survey

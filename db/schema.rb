@@ -63,13 +63,13 @@ ActiveRecord::Schema.define(version: 20180126140905) do
   end
 
   create_table "associated_surveys", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.integer "surveyable_id"
-    t.string "surveyable_type"
+    t.integer "associable_id"
+    t.string "associable_type"
     t.integer "survey_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["associable_id"], name: "index_associated_surveys_on_associable_id"
     t.index ["survey_id"], name: "index_associated_surveys_on_survey_id"
-    t.index ["surveyable_id"], name: "index_associated_surveys_on_surveyable_id"
   end
 
   create_table "audits", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
@@ -176,7 +176,7 @@ ActiveRecord::Schema.define(version: 20180126140905) do
     t.integer "sub_service_request_id"
   end
 
-  create_table "editable_statuses", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
+  create_table "editable_statuses", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "organization_id"
     t.string "status", null: false
     t.datetime "created_at", null: false
@@ -322,26 +322,6 @@ ActiveRecord::Schema.define(version: 20180126140905) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.index ["protocol_id"], name: "index_ip_patents_info_on_protocol_id"
-  end
-
-  create_table "item_options", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
-    t.string "content"
-    t.boolean "validate_content"
-    t.integer "item_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["item_id"], name: "index_item_options_on_item_id"
-  end
-
-  create_table "items", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
-    t.text "content"
-    t.string "item_type"
-    t.text "description"
-    t.boolean "required"
-    t.integer "questionnaire_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["questionnaire_id"], name: "index_items_on_questionnaire_id"
   end
 
   create_table "line_items", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -490,7 +470,7 @@ ActiveRecord::Schema.define(version: 20180126140905) do
     t.index ["sub_service_request_id"], name: "index_payments_on_sub_service_request_id"
   end
 
-  create_table "permissible_values", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
+  create_table "permissible_values", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "key"
     t.string "value"
     t.string "concept_code"
@@ -649,27 +629,6 @@ ActiveRecord::Schema.define(version: 20180126140905) do
     t.index ["response_id"], name: "index_question_responses_on_response_id"
   end
 
-  create_table "questionnaire_responses", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
-    t.integer "submission_id"
-    t.integer "item_id"
-    t.text "content"
-    t.boolean "required", default: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["item_id"], name: "index_questionnaire_responses_on_item_id"
-    t.index ["submission_id"], name: "index_questionnaire_responses_on_submission_id"
-  end
-
-  create_table "questionnaires", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.boolean "active", default: false
-    t.string "questionable_type"
-    t.bigint "questionable_id"
-    t.index ["questionable_type", "questionable_id"], name: "index_questionnaires_on_questionable_type_and_questionable_id"
-  end
-
   create_table "questions", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer "section_id"
     t.boolean "is_dependent", null: false
@@ -718,11 +677,12 @@ ActiveRecord::Schema.define(version: 20180126140905) do
   create_table "responses", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer "survey_id"
     t.integer "identity_id"
-    t.integer "sub_service_request_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "respondable_id"
+    t.string "respondable_type"
     t.index ["identity_id"], name: "index_responses_on_identity_id"
-    t.index ["sub_service_request_id"], name: "index_responses_on_sub_service_request_id"
+    t.index ["respondable_id", "respondable_type"], name: "index_responses_on_respondable_id_and_respondable_type"
     t.index ["survey_id"], name: "index_responses_on_survey_id"
   end
 
@@ -819,7 +779,7 @@ ActiveRecord::Schema.define(version: 20180126140905) do
     t.index ["updated_at"], name: "index_sessions_on_updated_at"
   end
 
-  create_table "settings", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
+  create_table "settings", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "key"
     t.text "value"
     t.string "data_type"
@@ -914,19 +874,6 @@ ActiveRecord::Schema.define(version: 20180126140905) do
     t.index ["organization_id"], name: "index_submission_emails_on_organization_id"
   end
 
-  create_table "submissions", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
-    t.integer "identity_id"
-    t.integer "questionnaire_id"
-    t.integer "protocol_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "sub_service_request_id"
-    t.index ["identity_id"], name: "index_submissions_on_identity_id"
-    t.index ["protocol_id"], name: "index_submissions_on_protocol_id"
-    t.index ["questionnaire_id"], name: "index_submissions_on_questionnaire_id"
-    t.index ["sub_service_request_id"], name: "index_submissions_on_sub_service_request_id"
-  end
-
   create_table "subsidies", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -967,11 +914,15 @@ ActiveRecord::Schema.define(version: 20180126140905) do
     t.string "title", null: false
     t.text "description"
     t.string "access_code", null: false
-    t.integer "display_order", null: false
+    t.integer "display_order"
     t.integer "version", null: false
     t.boolean "active", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "type"
+    t.integer "surveyable_id"
+    t.string "surveyable_type"
+    t.index ["surveyable_id", "surveyable_type"], name: "index_surveys_on_surveyable_id_and_surveyable_type"
   end
 
   create_table "taggings", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
@@ -1066,21 +1017,12 @@ ActiveRecord::Schema.define(version: 20180126140905) do
   end
 
   add_foreign_key "editable_statuses", "organizations"
-  add_foreign_key "item_options", "items"
-  add_foreign_key "items", "questionnaires"
   add_foreign_key "options", "questions"
   add_foreign_key "question_responses", "questions"
   add_foreign_key "question_responses", "responses"
-  add_foreign_key "questionnaire_responses", "items"
-  add_foreign_key "questionnaire_responses", "submissions"
   add_foreign_key "questions", "options", column: "depender_id"
   add_foreign_key "questions", "sections"
   add_foreign_key "responses", "identities"
-  add_foreign_key "responses", "sub_service_requests"
   add_foreign_key "responses", "surveys"
   add_foreign_key "sections", "surveys"
-  add_foreign_key "submissions", "identities"
-  add_foreign_key "submissions", "protocols"
-  add_foreign_key "submissions", "questionnaires"
-  add_foreign_key "submissions", "sub_service_requests"
 end

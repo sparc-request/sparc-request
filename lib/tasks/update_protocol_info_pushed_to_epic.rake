@@ -20,9 +20,23 @@
 
 namespace :data do 
   task :update_protocol_info_pushed_to_epic => :environment do
-    epic_interface = EPIC_INTERFACE
-    Protocol.where(last_epic_push_status: 'complete').each do |protocol|
-      epic_interface.study_creation_message(protocol)
+    CSV.open("tmp/protocols_emit_cofc_skipped.csv", "wb") do |csv|
+      csv << ["Protocol ID", "Last Epic Push Time", "Last Epic Push Status", "Updated_at", "Created_at", "Selected For Epic", "Study Type Question Group ID"]
+
+      epic_interface = EPIC_INTERFACE
+
+      Protocol.where(last_epic_push_status: 'complete').each do |protocol|
+        if protocol.study_type_answers.empty?
+          csv << [protocol.id, protocol.last_epic_push_time, protocol.last_epic_push_status, protocol.updated_at, protocol.created_at, protocol.selected_for_epic, protocol.study_type_question_group_id]
+          # Per Wenjun:  skip only the emit_cofc method call, run everything else in the study_creation_message method for protocols that do not have any study_type_answers
+          epic_interface.study_creation_message(protocol, false)
+          puts "Skipped emit_cofc for #{protocol.id}"
+        else
+          epic_interface.study_creation_message(protocol)
+          puts "Updated protocol #{protocol.id}"
+        end
+      end
     end
+    puts "This script created temp/protocols_emit_cofc_skipped.csv"
   end
 end

@@ -1,0 +1,57 @@
+#!/usr/bin/env ruby
+
+require File.expand_path('../../config/environment',  __FILE__)
+
+require 'active_record'
+require 'json'
+require 'uri'
+
+include DataTypeValidator
+
+def is_boolean(some_var)
+  (some_var.is_a?(TrueClass) || some_var.is_a?(FalseClass))
+end
+
+def is_json(value)
+  value.is_a?(Array) || value.is_a?(Hash)
+end
+
+def get_type(value)
+  return 'json' if is_json(value)
+  return 'boolean' if is_boolean(value)
+  if is_boolean?(value)
+    'boolean'
+  elsif is_json?(value)
+    'json'
+  elsif is_email?(value)
+    'email'
+  elsif is_url?(value)
+    'url'
+  elsif is_path?(value)
+    'path'
+  else
+    'string'
+  end
+end
+
+def populate(records)
+  ActiveRecord::Base.transaction do
+    records.each do |hash|
+      Setting.where(key: hash['key']).first_or_initialize.tap do |setting|
+        setting.value = hash['value']
+        setting.parent_key    = hash['parent_key']
+        setting.parent_value  = hash['parent_value']
+        setting.data_type = get_type(hash['value'])
+        setting.friendly_name = hash['friendly_name']
+        setting.description = hash['description']
+        setting.group = hash['group']
+        setting.version = hash['version']
+        setting.save(validate: false)
+      end
+    end
+  end
+end
+
+records = JSON.parse(File.read(ARGV[0]))
+
+populate(records)

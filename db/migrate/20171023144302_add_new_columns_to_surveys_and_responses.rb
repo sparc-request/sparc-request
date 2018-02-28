@@ -29,15 +29,15 @@ class AddNewColumnsToSurveysAndResponses < ActiveRecord::Migration[5.1]
     rename_column :associated_surveys, :surveyable_id, :associable_id
     rename_column :associated_surveys, :surveyable_type, :associable_type
 
-    # Replace sub_service_request_id with respondable_id and respondable_type='SubServiceRequest'
-    responses.each do |r|
-      reloaded_response = Response.find(r.id)
-      reloaded_response.update_attributes(respondable_id: r.sub_service_request_id, respondable_type: 'SubServiceRequest')
-    end
-
     Survey.reset_column_information
     Response.reset_column_information
     AssociatedSurvey.reset_column_information
+
+    # Replace sub_service_request_id with respondable_id and respondable_type='SubServiceRequest'
+    responses.select{ |r| r.sub_service_request_id != nil }.each do |r|
+      reloaded_response = Response.find(r.id)
+      reloaded_response.update_attributes(respondable_id: r.sub_service_request_id, respondable_type: 'SubServiceRequest')
+    end
   end
 
   def down
@@ -68,14 +68,14 @@ class AddNewColumnsToSurveysAndResponses < ActiveRecord::Migration[5.1]
     rename_column :associated_surveys, :associable_id, :surveyable_id
     rename_column :associated_surveys, :associable_type, :surveyable_type
 
+    Survey.reset_column_information
+    Response.reset_column_information
+    AssociatedSurvey.reset_column_information
+    
     # Replace respondable_id with sub_service_request_id
     responses.each do |r|
       reloaded_response = Response.find(r.id)
       reloaded_response.update_attributes(sub_service_request_id: r.respondable_id)
     end
-
-    Survey.reset_column_information
-    Response.reset_column_information
-    AssociatedSurvey.reset_column_information
   end
 end

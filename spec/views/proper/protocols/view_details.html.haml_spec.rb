@@ -67,7 +67,7 @@ RSpec.describe "protocols/view_details.html.haml", type: :view do
       expect(response).to render_template("protocols/_view_details.html.haml")
       expect(response).to render_template(partial: "protocols/view_details/_study_fields")
       expect(response).to render_template(partial: "protocols/view_details/_study_information")
-      expect(response).to render_template(partial: "protocols/view_details/_optional_information")
+      expect(response).to render_template(partial: "protocols/view_details/_financial_information")
       expect(response).to render_template(partial: "protocols/view_details/_research_involving")
       expect(response).to render_template(partial: "protocols/view_details/_study_type")
       expect(response).to render_template(partial: "protocols/view_details/_impact_areas")

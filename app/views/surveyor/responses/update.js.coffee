@@ -20,6 +20,8 @@
 <% if @response.valid? %>
 if $('#modal_place:visible').length > 0
   $('#modal_place').modal('hide')
+else
+  window.location = "<%= surveyor_response_complete_path(@response) %>"
 <% else %>
 <% @response.question_responses.each do |qr| %>
 <% if qr.valid? %>

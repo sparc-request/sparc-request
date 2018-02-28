@@ -17,31 +17,14 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-= stylesheet_link_tag "system_satisfaction"
-
-= t('surveyor.responses.emails.service_survey.greeting', name: @identity.full_name)
-%br
-%br
-
-= t(:surveyor)[:responses][:emails][:service_survey][:text1]
-= "#{ssr_institution(@ssr.organization)} - #{ssr_provider(@ssr.organization)} - #{ssr_program_core(@ssr.organization)}."
-= t(:surveyor)[:responses][:emails][:service_survey][:text2]
-%br
-= t(:surveyor)[:responses][:emails][:service_survey][:text3]
-
-%br
-
-%ul
-- @surveys.each do |survey|
-  - unless response = survey.responses.where(identity: @identity, respondable: @ssr).first
-    - response = survey.responses.create(identity: @identity, respondable: @ssr)
-  %li
-    = link_to survey.title, url_for(controller: '/surveyor/responses', action: :edit, only_path: false, id: response.id, format: :html), target: '_blank'
-
-- if @surveys.pluck(:access_code).include?("sctr-customer-satisfaction-survey")
-  #sctr-grant-citation
-    %br
-    = t(:surveyor)[:responses][:emails][:sctr_customer_satisfaction][:grant_reminder]
-    %br
-    %em.gray-text
-      = raw(t(:surveyor)[:responses][:emails][:sctr_customer_satisfaction][:grant_info])
+.col-sm-8.col-sm-offset-2
+  .panel.panel-default#survey-panel
+    .panel-heading.text-center
+      %h4.panel-title
+        = @survey.title
+    = form_for @response, url: surveyor_response_path(@response), method: :put, remote: true do |f|
+      .panel-body
+        = render 'surveyor/responses/form/edit_form', f: f, survey: @survey, response: @response
+      .panel-footer
+        .clearfix
+          = f.submit t(:actions)[:submit], class: 'btn btn-primary pull-right'

@@ -198,8 +198,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
 
   def search
     term = params[:term].strip
-    services = Service.where("name LIKE '%#{term}%' OR abbreviation LIKE '%#{term}%' OR cpt_code LIKE '%#{term}%'")
-
+    services = Service.where("is_available=1 AND (name LIKE '%#{term}%' OR abbreviation LIKE '%#{term}%' OR cpt_code LIKE '%#{term}%')")
     reformatted_services = []
     services.each do |service|
       reformatted_services << {"label" => service.display_service_name, "value" => service.name, "id" => service.id}

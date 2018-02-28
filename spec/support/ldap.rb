@@ -19,11 +19,12 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 def create_ldap_filter(term)
+  directory = Directory.new
   fields = [
-    Directory::LDAP_UID,
-    Directory::LDAP_LAST_NAME,
-    Directory::LDAP_FIRST_NAME,
-    Directory::LDAP_EMAIL
+    directory.ldap_uid,
+    directory.ldap_last_name,
+    directory.ldap_first_name,
+    directory.ldap_email
   ]
 
   return fields.map {|f| Net::LDAP::Filter.contains(f, term)}.inject(:|)

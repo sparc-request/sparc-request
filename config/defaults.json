@@ -1,5 +1,5 @@
 [
-  { 
+  {
     "key":            "about_sparc_url",
     "value":          "http://academicdepartments.musc.edu/sctr/sparc_request",
     "friendly_name":  "\"About SPARCRequest\" URL",
@@ -9,8 +9,8 @@
     "parent_key":     "",
     "parent_value":   ""
   },
-  { 
-    "key":            "admin_mail_to", 
+  {
+    "key":            "admin_mail_to",
     "value":          "catesa@musc.edu",
     "friendly_name":  "Admin Mail-To",
     "description":    "This field will overwrite the admin user mailers in the application to instead mail to this address. To be overwritten in development/testing/staging to prevent real emails being sent out to admin users.",
@@ -634,6 +634,126 @@
     "value":          "[]",
     "friendly_name":  "Funding Opportunities Organizations",
     "description":    "Organization ID of the organizations under the Funding Opportunities.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "ldap_host",
+    "value":          "",
+    "friendly_name":  "LDAP host name (eg. ldap.myhost.com)",
+    "description":    "Fully qualified hostname of the LDAP server",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "ldap_port",
+    "value":          "",
+    "friendly_name":  "LDAP port (eg. 636)",
+    "description":    "LDAP server port",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "ldap_base",
+    "value":          "",
+    "friendly_name":  "LDAP base DN",
+    "description":    "Base DN to use when searching LDAP",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "ldap_encryption",
+    "value":          "",
+    "friendly_name":  "LDAP encryption",
+    "description":    "Encryption type to use, simple_tls or start_tls",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "ldap_domain",
+    "value":          "",
+    "friendly_name":  "Domain appended to LDAP results (eg. myhost.com)",
+    "description":    "Domain appended to LDAP results to created institutional ldap_uids in the identities table (change my_uid to my_uid@myhost.com)",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "ldap_uid",
+    "value":          "",
+    "friendly_name":  "LDAP uid attribute (eg: cn)",
+    "description":    "LDAP uid attribute",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "ldap_last_name",
+    "value":          "",
+    "friendly_name":  "LDAP last name attribute (eg: sn)",
+    "description":    "LDAP last name attribute",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "ldap_first_name",
+    "value":          "",
+    "friendly_name":  "LDAP first name attribute (eg: givenname)",
+    "description":    "LDAP first name attribute",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "ldap_email",
+    "value":          "",
+    "friendly_name":  "LDAP email attribute (eg: mail)",
+    "description":    "LDAP email attribute",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "ldap_auth_username",
+    "value":          "",
+    "friendly_name":  "Username used to authenticate to LDAP with",
+    "description":    "Username used to authenticate to LDAP with",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "ldap_auth_password",
+    "value":          "",
+    "friendly_name":  "Password used to authenticate to LDAP with",
+    "description":    "Password used to authenticate to LDAP with",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "ldap_filter",
+    "value":          "",
+    "friendly_name":  "Custom LDAP filter used in searching",
+    "description":    "Custom LDAP filter used in searching (eg. (&(|(|(|(cn=#{term}*)(sn=#{term}*))(givenName=#{term}*))(mail=#{term}*))(msRTCSIP-UserEnabled=TRUE)))",
     "group":          "",
     "version":        "",
     "parent_key":     "",

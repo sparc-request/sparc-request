@@ -17,11 +17,14 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-= stylesheet_link_tag 'view_details'
-
-= render 'protocols/view_details/study_information', protocol: protocol
-= render 'protocols/view_details/financial_information', protocol: protocol
-= render 'protocols/view_details/research_involving', protocol: protocol
-= render 'protocols/view_details/study_type', protocol: protocol
-= render 'protocols/view_details/impact_areas', protocol: protocol
-= render 'protocols/view_details/affiliations', protocol: protocol
+.col-sm-8.col-sm-offset-2
+  .panel.panel-default#survey-panel
+    .panel-heading.text-center
+      %h4.panel-title
+        = @survey.title
+    = form_for @response, url: surveyor_response_path(@response), method: :put, remote: true do |f|
+      .panel-body
+        = render 'surveyor/responses/form/edit_form', f: f, survey: @survey, response: @response
+      .panel-footer
+        .clearfix
+          = f.submit t(:actions)[:submit], class: 'btn btn-primary pull-right'

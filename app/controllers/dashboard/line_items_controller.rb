@@ -86,6 +86,7 @@ class Dashboard::LineItemsController < Dashboard::BaseController
           end
         elsif @otf
           @errors = @line_item.errors
+          flash[:alert] = @errors.full_messages.join("\n")
         end
       end
       format.json do

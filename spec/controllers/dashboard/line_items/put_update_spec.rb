@@ -59,7 +59,7 @@ RSpec.describe Dashboard::LineItemsController do
         @line_item = findable_stub(LineItem) do
           build_stubbed(:line_item)
         end
-        allow(@line_item).to receive(:errors).and_return("my errors")
+        allow(@line_item).to receive_message_chain(:errors, :full_messages).and_return(["my errors"])
         allow(@line_item).to receive_message_chain(:service, :one_time_fee).
           and_return("am i a one time fee?")
         allow(@line_item).to receive(:update_attributes).and_return(false)
@@ -82,7 +82,7 @@ RSpec.describe Dashboard::LineItemsController do
       end
 
       it "should set @errors" do
-        expect(assigns(:errors)).to eq("my errors")
+        expect(assigns(:errors).full_messages).to eq(["my errors"])
       end
 
       it { is_expected.to render_template "dashboard/line_items/update" }

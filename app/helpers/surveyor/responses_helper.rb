@@ -28,17 +28,17 @@ module Surveyor::ResponsesHelper
 
   def response_options(response)
     [ view_response_button(response),
-      edit_response_button(response),
-      download_response_button(response)
+      edit_response_button(response)#,
+      # download_response_button(response)
     ].join('')
   end
 
   def view_response_button(response)
     link_to(
-      t(:actions)[:view],
+      content_tag(:span, '', class: 'glyphicon glyphicon-search', aria: { hidden: 'true' }),
       surveyor_response_path(response),
       remote: true,
-      class: 'btn btn-info view-Ffresponse'
+      class: ['btn btn-info view-response', response.completed? ? '' : 'disabled']
     )
   end
 
@@ -47,7 +47,7 @@ module Surveyor::ResponsesHelper
       content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' }),
       edit_surveyor_response_path(response),
       remote: true,
-      class: 'btn btn-warning edit-response'
+      class: ['btn btn-warning edit-response', response.completed? ? '' : 'disabled']
     )
   end
 
@@ -63,7 +63,6 @@ module Surveyor::ResponsesHelper
     link_to(
       content_tag(:span, '', class: 'glyphicon glyphicon-download-alt', aria: { hidden: 'true' }),
       'javascript:void(0)',
-      remote: true,
       class: 'btn btn-success download-response'
     )
   end

@@ -37,7 +37,9 @@ class Surveyor::ResponsesController < Surveyor::BaseController
     respond_to do |format|
       format.html
       format.js
-      format.json
+      format.json {
+        preload_responses
+      }
       format.xlsx
     end
   end
@@ -127,5 +129,10 @@ class Surveyor::ResponsesController < Surveyor::BaseController
 
   def response_params
     params.require(:response).permit!
+  end
+
+  def preload_responses
+    preloader = ActiveRecord::Associations::Preloader.new
+    preloader.preload(@responses.select { |r| r.respondable_type == SubServiceRequest.name }, { respondable: { protocol: { primary_pi_role: :identity } } })
   end
 end

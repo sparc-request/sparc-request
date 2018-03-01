@@ -48,8 +48,9 @@ en:
         to_dashboard: "Return to Dashboard"
       table:
         header: "%{type} Responses"
+        export: "Export Responses"
         headers:
-          ssrid: "SSRID"
+          srid: "SRID"
           short_title: "Short Title"
           primary_pi: "Primary PI"
           title: "%{type} Title"

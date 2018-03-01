@@ -348,11 +348,7 @@ class Protocol < ApplicationRecord
   end
 
   def primary_principal_investigator
-    primary_pi_project_role.try(:identity)
-  end
-
-  def primary_pi_project_role
-    project_roles.find_by(role: 'primary-pi')
+    primary_pi_role.try(:identity)
   end
 
   def billing_business_manager_email
@@ -462,7 +458,7 @@ class Protocol < ApplicationRecord
   end
 
   def ensure_epic_user
-    primary_pi_project_role.set_epic_rights.save
+    primary_pi_role.set_epic_rights.save
     project_roles.reload
   end
 

@@ -44,7 +44,7 @@ RSpec.describe 'User edits a form response', js: true do
     visit dashboard_protocol_path(@protocol)
     wait_for_javascript_to_finish
 
-    first('.edit-form-response').click
+    first('.edit-response').click
     wait_for_javascript_to_finish
 
     fill_in 'response_question_responses_attributes_0_content', with: 'Not respondable at all'

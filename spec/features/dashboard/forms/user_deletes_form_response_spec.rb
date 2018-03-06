@@ -47,7 +47,7 @@ RSpec.describe 'User deletes a form response', js: true do
 
       expect(page).to have_selector('#forms-panel', visible: true)
 
-      first('.delete-form-response').click
+      first('.delete-response').click
       wait_for_javascript_to_finish
 
       find('.sweet-alert.visible button.confirm').trigger('click')
@@ -57,11 +57,26 @@ RSpec.describe 'User deletes a form response', js: true do
     end
   end
 
+  context 'with no other forms to complete' do
+    scenario 'and sees the forms column on the service requests table appear' do
+      visit dashboard_protocol_path(@protocol)
+      wait_for_javascript_to_finish
+
+      first('.delete-response').click
+      wait_for_javascript_to_finish
+
+      find('.sweet-alert.visible button.confirm').trigger('click')
+      wait_for_javascript_to_finish
+
+      expect(page).to have_content('Complete Form')
+    end
+  end
+
   scenario 'and sees the response was deleted' do
     visit dashboard_protocol_path(@protocol)
     wait_for_javascript_to_finish
 
-    first('.delete-form-response').click
+    first('.delete-response').click
     wait_for_javascript_to_finish
 
     find('.sweet-alert.visible button.confirm').trigger('click')

@@ -20,9 +20,10 @@
 <% if @response.valid? %>
 if $('#modal_place:visible').length > 0
   $('#modal_place').modal('hide')
+  $("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, user: current_user, view_only: false, show_view_ssr_back: false)) %>")
   $('.service-requests-table').bootstrapTable('refresh')
   $('#forms-panel').show()
-  $('#forms-table').bootstrapTable('refresh')
+  $('#forms-table').bootstrapTable()
 else
   window.location = "/surveyor/responses/<%=@response.id%>/complete"
 <% else %>

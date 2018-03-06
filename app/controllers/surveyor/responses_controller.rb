@@ -87,7 +87,10 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   end
 
   def create
-    @response = Response.new(response_params)
+    @response           = Response.new(response_params)
+    @protocol           = @response.respondable.try(:protocol)
+    @protocol_role      = @protocol.project_roles.find_by(identity_id: current_user.id) if @protocol
+    @permission_to_edit = @protocol_role.nil? ? false : @protocol_role.can_edit? if @protocol
 
     if @response.save
       SurveyNotification.system_satisfaction_survey(@response).deliver_now if @response.survey.access_code == 'system-satisfaction-survey' && Rails.application.routes.recognize_path(request.referrer)[:action] == 'review'
@@ -110,8 +113,13 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   end
 
   def destroy
-    (@response = Response.find(params[:id])).destroy
+    @response           = Response.find(params[:id])
+    @protocol           = @response.respondable.try(:protocol)
+    @protocol_role      = @protocol.project_roles.find_by(identity_id: current_user.id) if @protocol
+    @permission_to_edit = @protocol_role.nil? ? false : @protocol_role.can_edit? if @protocol
 
+    @response.destroy
+    
     respond_to do |format|
       format.js
     end

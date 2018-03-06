@@ -28,7 +28,7 @@ module FormsHelper
   def form_options(form, completed, respondable, review)
     if review
       response = Response.where(survey: form, respondable: respondable).first
-      response ? view_form_response_button(response) : link_to(t(:actions)[:view], 'javascript:void(0)', class: 'btn btn-info disabled')
+      response ? view_response_button(response) : link_to(t(:actions)[:view], 'javascript:void(0)', class: 'btn btn-info disabled')
     elsif completed
       response = Response.where(survey: form, respondable: respondable).first
       [ view_response_button(response),

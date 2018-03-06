@@ -17,11 +17,22 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.col-sm-8.col-sm-offset-2
-  .panel.panel-default#survey-panel
-    .panel-heading.text-center
-      %h4.panel-title
-        = @survey.title
-    .form
-      .panel-body
-        = render 'surveyor/responses/form/show_form', survey: @survey, response: @response
+#survey-response
+  - unless survey.description.blank?
+    .form-group
+      %p.survey-description.no-margin
+        = raw(survey.description)
+  .survey-sections
+    - survey.sections.each do |section|
+      .panel.panel-default.section
+        .panel-heading
+          %h4.panel-title
+            = section.title
+        .panel-body
+          - unless section.description.blank?
+            .form-group
+              .col-lg-12.no-padding
+                %p.section-description
+                  = raw(section.description)
+          - response.question_responses.eager_load(question: :options).where(questions: { section: section }).each_with_index do |question_response, index|
+            = render 'surveyor/responses/form/response_question', section: section, question: question_response.question, question_response: question_response, index: index

@@ -31,6 +31,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
           with_type: [['Form', 'Form'], ['Survey', 'SystemSurvey']]
         }
       )
+
     @type       = @filterrific.with_type.constantize.yaml_klass
     @responses  = @filterrific.find.eager_load(:survey, :question_responses)
 
@@ -40,7 +41,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
       format.json {
         preload_responses
       }
-      format.xlsx
+      # format.xlsx
     end
   end
 

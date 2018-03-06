@@ -18,53 +18,25 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= form_for organization, url: path, id: 'organization-user-rights-form', remote: true do |f|
-  %table.table.table-condensed.table-bordered{ class: organization.type == "Institution" ? 'ur-table-institution' : 'ur-table' }
-    %thead
-      %tr
-        %th.name-col
-          = t(:catalog_manager)[:organization_form][:user_rights][:name_email]
-        %th.su-col
-          = t(:catalog_manager)[:organization_form][:user_rights][:super_user]
-        %th.cm-col
-          = t(:catalog_manager)[:organization_form][:user_rights][:catalog_manager]
-        - unless organization.type == "Institution"
-          %th.sp-col
-            = t(:catalog_manager)[:organization_form][:user_rights][:service_provider]
-          - if organization.tag_list.include?("clinical work fulfillment")
-            %th.cp-col
-              = t(:catalog_manager)[:organization_form][:user_rights][:clinical_provider]
-        %th.text-center.remove-col
-          = t(:catalog_manager)[:organization_form][:remove]
-    %tbody#user-rights-table
-      - user_rights = all_user_rights(organization)
-      - user_rights_identities(organization).each do |ur|
-        %tr{ id: "user-rights-row-#{ur.id}", data: { identity_id: ur.id } }
-          %td
-            = "#{ur.full_name}, #{ur.email}"
-          %td.text-center
-            = f.check_box "", { class: "super-user-checkbox", checked: !get_user_rights(user_rights[:super_users], ur.id).nil?, data: { identity_id: ur.id, organization_id: organization.id } }
-          %td.cm-cell
-            .form-check.text-center
-              = f.check_box "", { class: "catalog-manager-checkbox", checked: !get_user_rights(user_rights[:catalog_managers], ur.id).nil?, data: { identity_id: ur.id, organization_id: organization.id } }
-            .form-check
-              = f.check_box "", { id: "cm-edit-historic-data-#{ur.id}", class: "cm-edit-historic-data", checked: get_user_rights(user_rights[:catalog_managers], ur.id).try(:edit_historic_data), disabled: get_user_rights(user_rights[:catalog_managers], ur.id).nil?, data: { identity_id: ur.id, organization_id: organization.id } }
-              = t(:catalog_manager)[:organization_form][:user_rights][:edit_historic_data]
-          - unless organization.type == "Institution"
-            %td
-              .form-check.text-center
-                = f.check_box "", { class: "service-provider-checkbox", checked: !get_user_rights(user_rights[:service_providers], ur.id).nil?, data: { identity_id: ur.id, organization_id: organization.id } }
-              .form-check  
-                = f.check_box "", { id: "sp-is-primary-contact-#{ur.id}", class: "sp-is-primary-contact", checked: get_user_rights(user_rights[:service_providers], ur.id).try(:is_primary_contact), disabled: get_user_rights(user_rights[:service_providers], ur.id).nil?, data: { identity_id: ur.id, organization_id: organization.id } }
-                = t(:catalog_manager)[:organization_form][:user_rights][:primary_contact]
-              .form-check
-                = f.check_box "", { id: "sp-hold-emails-#{ur.id}", class: "sp-hold-emails", checked: get_user_rights(user_rights[:service_providers], ur.id).try(:hold_emails), disabled: get_user_rights(user_rights[:service_providers], ur.id).nil?, data: { identity_id: ur.id, organization_id: organization.id } }
-                = t(:catalog_manager)[:organization_form][:user_rights][:hold_emails]
-            - if organization.tag_list.include?("clinical work fulfillment")
-              %td.text-center
-                = f.check_box "", { class: "clinical-provider-checkbox", checked: !get_user_rights(user_rights[:clinical_providers], ur.id).nil?, data: { identity_id: ur.id, organization_id: organization.id } }
-          %td.text-center
-            %button.btn.btn-xs.btn-danger.remove-user-rights{ data: { identity_id: ur.id, organization_id: organization.id } }
-              %span.glyphicon.glyphicon-remove
+%table.table.table-condensed.table-bordered{ class: user_rights_table_class(organization) }
+  %thead
+    %tr
+      %th.name-col
+        = t(:catalog_manager)[:organization_form][:user_rights][:name_email]
+      %th.su-col
+        = t(:catalog_manager)[:organization_form][:user_rights][:super_user]
+      %th.cm-col
+        = t(:catalog_manager)[:organization_form][:user_rights][:catalog_manager]
+      - unless organization.type == "Institution"
+        %th.sp-col
+          = t(:catalog_manager)[:organization_form][:user_rights][:service_provider]
+        - if organization.tag_list.include?("clinical work fulfillment")
+          %th.cp-col
+            = t(:catalog_manager)[:organization_form][:user_rights][:clinical_provider]
+      %th.text-center.remove-col
+        = t(:catalog_manager)[:organization_form][:remove]
+  %tbody#user-rights-table
+    - user_rights_identities(organization).each do |ur|
+      = render "catalog_manager/shared/user_rights_table_rows", organization: organization, user_rights: user_rights, ur: ur
 .col-sm-12.no-padding
   = text_field_tag 'user-rights-query', nil, placeholder: t(:catalog_manager)[:organization_form][:user_rights][:add_user], class: "form-control"

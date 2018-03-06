@@ -201,7 +201,9 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :organizations, only: [:edit, :update, :create]
+    resources :organizations, only: [:edit, :update, :create] do
+      get :refresh_user_rights
+    end
     resources :institutions, only: [:edit, :update, :create]
     resources :providers, only: [:edit, :update, :create]
     resources :programs, only: [:edit, :update, :create]

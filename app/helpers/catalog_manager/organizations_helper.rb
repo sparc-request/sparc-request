@@ -35,6 +35,16 @@ module CatalogManager::OrganizationsHelper
     content_tag(:span, organization.type, class: "text-#{organization.type.downcase}")
   end
 
+  def user_rights_table_class organization
+    if organization.type == 'Institution'
+      'ur-table-institution'
+    elsif organization.tag_list.include?('clinical work fulfillment')
+      'ur-table'
+    else
+      'ur-table-no-cwf'
+    end
+  end
+
   # Returns all Identities that have at least one user rights role
   def user_rights_identities organization
     include_service_providers = organization.type != 'Institution'
@@ -42,17 +52,13 @@ module CatalogManager::OrganizationsHelper
     organization.all_user_rights(include_service_providers, inclued_clinical_rpoviders)
   end
 
-  # Returns a hash of all user rights grouped by type of user right
-  def all_user_rights organization
-    { super_users: SuperUser.where(organization_id: organization.id),
-      catalog_managers: CatalogManager.where(organization_id: organization.id),
-      service_providers: ServiceProvider.where(organization_id: organization.id),
-      clinical_providers: ClinicalProvider.where(organization_id: organization.id) }
-  end
-
   # Returns the first instance an identity's user rights from the given hash of all user rights,
   # nil if the identity has no user rights in the hash
   def get_user_rights all_user_rights, identity_id
-    all_user_rights.detect{ |ur| ur.identity_id == identity_id }
+    if all_user_rights.nil?
+      nil
+    else
+      all_user_rights.detect{ |ur| ur.identity_id == identity_id }
+    end
   end
 end

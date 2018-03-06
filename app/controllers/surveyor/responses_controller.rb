@@ -24,6 +24,10 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   before_action :authenticate_identity!
   before_action :find_response, only: [:show, :edit, :update]
 
+  def set_highlighted_link
+    @highlighted_link ||= 'sparc_forms'
+  end
+
   def index
     @filterrific  = 
       initialize_filterrific(Response, params[:filterrific],

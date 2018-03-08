@@ -44,7 +44,7 @@ RSpec.describe 'User views form response', js: true do
     visit review_service_request_path(@sr)
     wait_for_javascript_to_finish
 
-    first('.view-form-response').click
+    first('.view-response').trigger('click')
     wait_for_javascript_to_finish
 
     expect(page).to have_selector('.modal-title', text: @form.title)

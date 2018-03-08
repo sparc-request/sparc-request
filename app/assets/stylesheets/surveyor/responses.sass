@@ -17,6 +17,8 @@
 // DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+@import 'proper/colors'
+
 #survey-response
   .modal-title,
   .panel-title,
@@ -63,3 +65,28 @@
       .likert-option:last-child
         .likert:before
           width: 50%
+
+#responses-panel
+  .fixed-table-toolbar
+    display: inline-table
+    width: 100%
+    padding: 10px 15px
+    background: $sparc-blue
+    
+    .bars.pull-left
+      width: 73%
+
+      #responses-custom-toolbar
+        width: 100%
+        
+        .panel-title
+          color: white
+
+  .fixed-table-container
+    border-radius: 0
+
+  .fixed-table-pagination
+    padding: 0 20px  
+
+  td.short-title, td.primary-pi, td.title
+    word-break: break-all

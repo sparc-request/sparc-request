@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module FormsHelper
-  def form_completed_display(form, completed)
+  def form_completed_display(completed)
     klass = completed ? 'glyphicon glyphicon-ok text-success' : 'glyphicon glyphicon-remove text-danger'
 
     content_tag(:h4, content_tag(:span, '', class: klass))
@@ -28,47 +28,19 @@ module FormsHelper
   def form_options(form, completed, respondable, review)
     if review
       response = Response.where(survey: form, respondable: respondable).first
-      response ? view_form_response_button(form, response) : link_to(t(:actions)[:view], 'javascript:void(0)', class: 'btn btn-info disabled')
+      response ? view_response_button(response) : link_to(t(:actions)[:view], 'javascript:void(0)', class: 'btn btn-info disabled')
     elsif completed
       response = Response.where(survey: form, respondable: respondable).first
-      [ view_form_response_button(form, response),
-        edit_form_response_button(form, response),
-        delete_form_response_button(form, response)
+      [ view_response_button(response),
+        edit_response_button(response),
+        delete_response_button(response)
       ].join('')
     else
-      complete_form_response_button(form, respondable)
+      complete_form_button(form, respondable)
     end
   end
 
-  def view_form_response_button(form, response)
-    link_to(
-      t(:actions)[:view],
-      surveyor_response_path(response),
-      remote: true,
-      class: 'btn btn-info view-form-response'
-    )
-  end
-
-  def edit_form_response_button(form, response)
-    link_to(
-      content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' }),
-      edit_surveyor_response_path(response),
-      remote: true,
-      class: 'btn btn-warning edit-form-response'
-    )
-  end
-
-  def delete_form_response_button(form, response)
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
-      ),
-      data: { response_id: response.id },
-      class: 'btn btn-danger delete-form-response'
-    )
-  end
-
-  def complete_form_response_button(form, respondable)
+  def complete_form_button(form, respondable)
     link_to(
       'Complete',
       new_surveyor_response_path(type: form.class.name, survey_id: form.id, respondable_id: respondable.id, respondable_type: respondable.class.name),

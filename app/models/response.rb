@@ -29,6 +29,17 @@ class Response < ActiveRecord::Base
   
   accepts_nested_attributes_for :question_responses
 
+  filterrific(
+    default_filter_params: { with_type: 'Form' },
+    available_filters: [
+      :with_type
+    ]
+  )
+
+  scope :with_type, -> (params) {
+    joins(:survey).where(surveys: { type: params })
+  }
+
   def completed?
     self.question_responses.any?
   end

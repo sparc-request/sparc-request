@@ -44,7 +44,7 @@ RSpec.describe 'User edits a form response', js: true do
     visit document_management_service_request_path(@sr)
     wait_for_javascript_to_finish
 
-    first('.edit-form-response').click
+    first('.edit-response').click
     wait_for_javascript_to_finish
 
     fill_in 'response_question_responses_attributes_0_content', with: 'Not respondable at all'

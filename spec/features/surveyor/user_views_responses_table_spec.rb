@@ -18,19 +18,56 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-getOrder = ->
-  if $table.bootstrapTable('getOptions').sortOrder == 'asc' then -1 else 1
+require 'rails_helper'
 
-(exports ? this).dateSorter = (a, b) ->
-  if !a && !b
-    return 0
-  else if a && !b
-    return 1
-  else if !a && b
-    return -1
-  else
-    sort_a = new Date(a)
-    sort_b = new Date(b)
-    return 1 if sort_a > sort_b
-    return -1 if sort_a < sort_b
-    return 0
+RSpec.describe 'User views the responses table', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
+  
+  context 'completed responses' do
+    before :each do
+      @form = create(:form)
+      @s1   = create(:section, survey: @form)
+      @q1   = create(:question, section: @s1)
+      @resp = create(:response, survey: @form)
+      @qr1  = create(:question_response, response: @resp, question: @q1)
+    end
+
+    scenario 'user should see an active "View" button' do
+      visit surveyor_responses_path
+      wait_for_javascript_to_finish
+
+      expect(page).to have_selector('.view-response:not(.disabled)')
+    end
+
+    scenario 'user should see an active "Edit" button' do
+      visit surveyor_responses_path
+      wait_for_javascript_to_finish
+
+      expect(page).to have_selector('.edit-response:not(.disabled)')
+    end
+  end
+
+  context 'incomplete responses' do
+    before :each do
+      @form = create(:form)
+      @s1   = create(:section, survey: @form)
+      @q1   = create(:question, section: @s1)
+      @resp = create(:response, survey: @form)
+    end
+
+    scenario 'user should see a disabled "View" button' do
+      visit surveyor_responses_path
+      wait_for_javascript_to_finish
+
+      expect(page).to have_selector('.view-response.disabled')
+    end
+
+    scenario 'user should see a disabled "Edit" button' do
+      visit surveyor_responses_path
+      wait_for_javascript_to_finish
+
+      expect(page).to have_selector('.edit-response.disabled')
+    end
+  end
+end

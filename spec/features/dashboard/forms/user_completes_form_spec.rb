@@ -55,6 +55,21 @@ RSpec.describe 'User completes a form', js: true do
     end
   end
 
+  context 'with no other forms to complete' do
+    scenario 'and sees the forms column on the service requests table disappear' do
+      visit dashboard_protocol_path(@protocol)
+      wait_for_javascript_to_finish
+
+      bootstrap_select '.complete-forms', @service.name
+      wait_for_javascript_to_finish
+
+      click_button 'Submit'
+      wait_for_javascript_to_finish
+
+      expect(page).to_not have_content('Complete Form')
+    end
+  end
+
   scenario 'and sees the response in the forms panel' do
     visit dashboard_protocol_path(@protocol)
     wait_for_javascript_to_finish

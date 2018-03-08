@@ -24,12 +24,38 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   before_action :authenticate_identity!
   before_action :find_response, only: [:show, :edit, :update]
 
+  def set_highlighted_link
+    @highlighted_link ||= 'sparc_forms'
+  end
+
+  def index
+    @filterrific  = 
+      initialize_filterrific(Response, params[:filterrific],
+        select_options: {
+          with_type: [['Form', 'Form'], ['Survey', 'SystemSurvey']]
+        }
+      )
+
+    @type       = @filterrific.with_type.constantize.yaml_klass
+    @responses  = @filterrific.find.eager_load(:survey, :question_responses)
+
+    respond_to do |format|
+      format.html
+      format.js
+      format.json {
+        preload_responses
+      }
+      # format.xlsx
+    end
+  end
+
   def show
     @survey = @response.survey
 
     respond_to do |format|
       format.html
       format.js
+      format.xlsx
     end
   end
 
@@ -61,7 +87,10 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   end
 
   def create
-    @response = Response.new(response_params)
+    @response           = Response.new(response_params)
+    @protocol           = @response.respondable.try(:protocol)
+    @protocol_role      = @protocol.project_roles.find_by(identity_id: current_user.id) if @protocol
+    @permission_to_edit = @protocol_role.nil? ? false : @protocol_role.can_edit? if @protocol
 
     if @response.save
       SurveyNotification.system_satisfaction_survey(@response).deliver_now if @response.survey.access_code == 'system-satisfaction-survey' && Rails.application.routes.recognize_path(request.referrer)[:action] == 'review'
@@ -84,8 +113,13 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   end
 
   def destroy
-    (@response = Response.find(params[:id])).destroy
+    @response           = Response.find(params[:id])
+    @protocol           = @response.respondable.try(:protocol)
+    @protocol_role      = @protocol.project_roles.find_by(identity_id: current_user.id) if @protocol
+    @permission_to_edit = @protocol_role.nil? ? false : @protocol_role.can_edit? if @protocol
 
+    @response.destroy
+    
     respond_to do |format|
       format.js
     end
@@ -100,7 +134,18 @@ class Surveyor::ResponsesController < Surveyor::BaseController
     @response = Response.find(params[:id])
   end
 
+  def filterrific_params
+    params.require(:filterrific).permit(
+      :with_type
+    )
+  end
+
   def response_params
     params.require(:response).permit!
+  end
+
+  def preload_responses
+    preloader = ActiveRecord::Associations::Preloader.new
+    preloader.preload(@responses.select { |r| r.respondable_type == SubServiceRequest.name }, { respondable: { protocol: { primary_pi_role: :identity } } })
   end
 end

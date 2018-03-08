@@ -20,7 +20,11 @@
 <% if @response.valid? %>
 if $('#modal_place:visible').length > 0
   $('#modal_place').modal('hide')
-  $('.service-requests-table').bootstrapTable('refresh')
+  <% if @protocol %>
+  $("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, user: current_user, view_only: false, show_view_ssr_back: false)) %>")
+  $('.service-requests-table').bootstrapTable()
+  reset_service_requests_handlers()
+  <% end %>
   $('#forms-panel').show()
   $('#forms-table').bootstrapTable('refresh')
 else

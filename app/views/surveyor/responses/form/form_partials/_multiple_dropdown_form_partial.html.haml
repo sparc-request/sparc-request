@@ -19,6 +19,6 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .form-group
   - if ['new', 'edit', 'preview'].include?(action_name)
-    = qr.select :content, options_from_collection_for_select(question.options, 'content', 'content'), {}, { class: 'form-control selectpicker option', multiple: true }
+    = qr.select :content, options_for_select(question.options.map{ |o| [o.content, o.content, { class: 'option', data: { option_id: o.id } }] }), {}, { class: 'form-control selectpicker', multiple: true, data: { question_id: question.id } }
   - else
-    = select_tag :content, options_from_collection_for_select(question.options, 'content', 'content', multiple_select_formatter(question_response.content)), class: 'form-control selectpicker option', disabled: true, multiple: true
+    = select_tag :content, options_for_select(question.options.map{ |o| [o.content, o.content, { class: 'option', data: { option_id: o.id } }] }, multiple_select_formatter(question_response.content)), class: 'form-control selectpicker', disabled: true, multiple: true, data: { question_id: question.id }

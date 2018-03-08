@@ -43,7 +43,6 @@ $(document).ready ->
     option_ids = $(this).find('.option:checked').map( -> 
       $(this).data('option-id')).get()
 
-    console.log question_id
     $(".dependent-for-question-#{question_id}").addClass('hidden')
 
     for option_id in option_ids

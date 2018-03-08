@@ -25,5 +25,6 @@ if $("#protocol_show_information_panel").length > 0
   <% end %>
   $("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, user: current_user, view_only: false, show_view_ssr_back: false)) %>")
   $('.service-requests-table').bootstrapTable()
+  reset_service_requests_handlers()
 else
   $('#forms-table').bootstrapTable('refresh')

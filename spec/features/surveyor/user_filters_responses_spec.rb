@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,36 +20,43 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User deletes a form response', js: true do
+RSpec.describe 'User filters responses', js: true do
   let_there_be_lane
-
   fake_login_for_each_test
 
+  stub_config('site_admins', ['jug2'])
+
+  let!(:form)             { create(:form, title: 'Formal Form') }
+  let!(:survey)           { create(:system_survey, title: 'Serviceable Survey') }
+  let!(:form_response)    { create(:response, survey: form) }
+  let!(:survey_response)  { create(:response, survey: survey) }
+
   before :each do
-    institution = create(:institution, name: "Institution")
-    provider    = create(:provider, name: "Provider", parent: institution)
-    program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
-    service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
-    @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2)
-    @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
-    ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
-                  create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-                  create(:arm, protocol: @protocol, visit_count: 1)
-    form        = create(:form, :with_question, surveyable: service, active: true)
-    @response   = create(:response, survey: form, respondable: ssr)
-                  create(:question_response, response: @response, question: form.questions.first, content: 'Respondability')
+    visit surveyor_responses_path
+    wait_for_javascript_to_finish
   end
 
-  scenario 'and sees the response was deleted' do
-    visit document_management_service_request_path(@sr)
-    wait_for_javascript_to_finish
+  describe 'type filter' do
+    context 'User filters Forms' do
+      scenario 'and sees only Forms' do
+        bootstrap_select '#filterrific_with_type', 'Form'
+        click_button 'Filter'
+        wait_for_javascript_to_finish
 
-    first('.delete-response').click
-    wait_for_javascript_to_finish
+        expect(page).to have_content(form.title)
+        expect(page).to_not have_content(survey.title)
+      end
+    end
 
-    find('.sweet-alert.visible button.confirm').trigger('click')
-    wait_for_javascript_to_finish
+    context 'User filters Surveys' do
+      scenario 'and sees only Surveys' do
+        bootstrap_select '#filterrific_with_type', 'Survey'
+        click_button 'Filter'
+        wait_for_javascript_to_finish
 
-    expect(Response.count).to eq(0)
+        expect(page).to have_content(survey.title)
+        expect(page).to_not have_content(form.title)
+      end
+    end
   end
 end

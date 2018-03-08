@@ -17,7 +17,7 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- if Setting.find_by_key("site_admins").value.include?(current_user.ldap_uid)
+- if current_user.is_site_admin?
   .panel.panel-default
     .panel-heading
       %h4.panel-title{ title: t(:surveyor)[:systemsurveys][:tooltip], data: { toggle: 'tooltip', delay: '{"show":"500"}', placement: 'left' } }

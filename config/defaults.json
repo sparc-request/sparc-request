@@ -241,7 +241,7 @@
   },
   {
     "key":            "navbar_links",
-    "value":          "{ \"sparc_request\": [\"SPARCRequest\", \"http://localhost:3000/\"], \"sparc_dashboard\": [\"SPARCDashboard\", \"http://localhost:3000/dashboard\"], \"sparc_fulfillment\": [\"SPARCFulfillment\", \"https://cwf-d.obis.musc.edu/identities/sign_in\"], \"sparc_catalog\": [\"SPARCCatalog\", \"http://localhost:3000/catalog_manager\"], \"sparc_report\": [\"SPARCReport\", \"http://localhost:3000/reports\"] }",
+    "value":          "{ \"sparc_request\": [\"SPARCRequest\", \"http://localhost:3000/\"], \"sparc_dashboard\": [\"SPARCDashboard\", \"http://localhost:3000/dashboard\"], \"sparc_fulfillment\": [\"SPARCFulfillment\", \"https://cwf-d.obis.musc.edu/identities/sign_in\"], \"sparc_catalog\": [\"SPARCCatalog\", \"http://localhost:3000/catalog_manager\"], \"sparc_report\": [\"SPARCReport\", \"http://localhost:3000/reports\"], \"sparc_forms\": [\"SPARCForms\", \"http://localhost:3000/surveyor/responses\"] }",
     "friendly_name":  "Navbar Links",
     "description":    "Links which appear in the header navbar.",
     "group":          "",

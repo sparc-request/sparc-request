@@ -32,12 +32,42 @@ class Response < ActiveRecord::Base
   filterrific(
     default_filter_params: { with_type: 'Form' },
     available_filters: [
-      :with_type
+      :with_type,
+      :to_survey,
+      :from_date,
+      :to_date,
+      :include_incomplete
     ]
   )
 
-  scope :with_type, -> (params) {
-    joins(:survey).where(surveys: { type: params })
+  scope :with_type, -> (type) {
+    joins(:survey).where(surveys: { type: type })
+  }
+
+  scope :to_survey, -> (survey_ids) {
+    survey_ids.reject!(&:blank?)
+    
+    return nil if survey_ids.empty?
+
+    joins(:survey).where(surveys: { id: survey_ids })
+  }
+
+  scope :from_date, -> (date) {
+    return nil if date.blank?
+
+    where("responses.created_at >= ?", date)
+  }
+
+  scope :to_date, -> (date) {
+    return nil if date.blank?
+
+    where("responses.created_at <= ?", date)
+  }
+
+  scope :include_incomplete, -> (boolean) {
+    return nil if boolean == 'true'
+
+    joins(:question_responses)
   }
 
   def completed?

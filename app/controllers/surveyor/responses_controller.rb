@@ -36,8 +36,8 @@ class Surveyor::ResponsesController < Surveyor::BaseController
         }
       )
 
-    @type       = @filterrific.with_type.constantize.yaml_klass
-    @responses  = @filterrific.find.eager_load(:survey, :question_responses)
+    @type       = @filterrific.try(:with_type).try(:constantize).try(:yaml_klass)
+    @responses  = @filterrific.try(:find).try(:eager_load, [:survey, :question_responses])
 
     respond_to do |format|
       format.html

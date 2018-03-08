@@ -48,3 +48,15 @@ $(document).ready ->
 
     for option_id in option_ids
       $(".dependent-for-option-#{option_id}").removeClass('hidden')
+
+  $(document).on 'change', '#filterrific_with_type', ->
+    selected_value = $(this).find('option:selected').val()
+
+    if selected_value == 'Form'
+      $("#for-SystemSurvey").addClass('hidden')
+      $("#for-SystemSurvey .selectpicker").selectpicker('deselectAll')
+      $("#for-Form").removeClass('hidden')
+    else
+      $("#for-Form").addClass('hidden')
+      $("#for-Form .selectpicker").selectpicker('deselectAll')
+      $("#for-SystemSurvey").removeClass('hidden')

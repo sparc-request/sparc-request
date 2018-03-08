@@ -58,7 +58,12 @@ en:
           date: "Date"
           actions: "Actions"
       filter:
+        header: "Filter Responses"
         type: "Type"
+        completion_date: "Completion Date"
+        from: "From"
+        to: "To"
+        include_incomplete: "Include Incomplete"
       emails:
         system_satisfaction:
           subject: "System Satisfaction Survey Completed in %{site_name}"

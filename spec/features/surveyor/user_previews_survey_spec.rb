@@ -52,7 +52,7 @@ RSpec.describe 'User previews a survey', js: true do
     scenario 'and sees all proper content' do
       expect(all('.section').count).to eq(@survey.sections.count)
       expect(all('.question').count).to eq(@survey.questions.count)
-      expect(all('.option').count).to eq(@survey.questions.map(&:options).count)
+      expect(all('.option').count).to eq(@survey.questions.map(&:options).flatten.count)
     end
   end
 
@@ -84,7 +84,7 @@ RSpec.describe 'User previews a survey', js: true do
     scenario 'and sees all proper content' do
       expect(all('.section').count).to eq(@form.sections.count)
       expect(all('.question').count).to eq(@form.questions.count)
-      expect(all('.option').count).to eq(@form.questions.map(&:options).count)
+      expect(all('.option').count).to eq(@form.questions.map(&:options).flatten.count)
     end
   end
 end

@@ -48,7 +48,7 @@ arm_totals_ref = {}
     sheet.add_row ["RMID:", @protocol.research_master_id]
     sheet.add_row ["Short Title:",@protocol.short_title], :style => default
     sheet.add_row ["Primary PI Name:", @protocol.primary_principal_investigator.full_name], :style => default
-    sheet.add_row ["Indirect Cost Rate:", @protocol.indirect_cost_rate || 0], style: percent
+    sheet.add_row ["Indirect Cost Rate:", "=Summary!B10"], style: percent
 
     indirect_cost_ref = sheet.rows.last.cells.last.r
 

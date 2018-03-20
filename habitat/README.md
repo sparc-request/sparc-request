@@ -31,12 +31,12 @@ Delayed Job output is logged to `/hab/svc/sparc-request/var/log/dj-N.log`
 
 ### OPS
 
-- Install SPARC: `hab pkg install chrisortman/sparc-request`
-- Start SPARC: `hab start chrisortman/sparc-request`
+- Install SPARC: `hab pkg install sparc-request/sparc-request`
+- Start SPARC: `hab start sparc-request/sparc-request`
 - Cause migrations & database tasks to run the next time the package is started: `mkdir -p /hab/svc/sparc-request/data/migrate && touch /hab/svc/sparc-request/data/migrate`
 - Follow the web process log: `less -R +F /hab/svc/sparc-request/var/log/puma.log`
 - Follow the delayed_job log: `less -R +F /hab/svc/sparc-request/var/log/dj-1.log`
-- To customize configuration `mkdir -p /hab/user/sparc-request/config && cp $(hab pkg path chrisortman/sparc-request)/default.toml /hab/user/sparc-request/config/user.toml` . Now you make your changes in `user.toml` and they override `default.toml` **requires habitat version > 0.52** 
+- To customize configuration `mkdir -p /hab/user/sparc-request/config && cp $(hab pkg path sparc-request/sparc-request)/default.toml /hab/user/sparc-request/config/user.toml` . Now you make your changes in `user.toml` and they override `default.toml` **requires habitat version > 0.52** 
 
 In order to run `eye` or `rails` commands you need to source the environment.
 

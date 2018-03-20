@@ -21,9 +21,9 @@ echo "**************************************"
 echo "You are all set."
 echo "I've created a sparc_user.toml file incase you need to customize some of the runtime parameters"
 echo "To run SPARC do:"
-echo 'sudo env "PATH=$PATH" hab start chrisortman/sparc-request'
+echo 'sudo env "PATH=$PATH" hab start sparc-request/sparc-request'
 echo ""
 echo "By default we try to connect to "
 echo "MYSQL on 33.33.33.1 as root/root"
 echo "But you can change it in sparc_user.toml and do this:"
-echo 'sudo env HAB_SPARC_REQUEST="$(cat sparc_user.toml)" "PATH=\$PATH" hab start chrisortman/sparc-request'
+echo 'sudo env HAB_SPARC_REQUEST="$(cat sparc_user.toml)" "PATH=\$PATH" hab start sparc-request/sparc-request'

@@ -1,0 +1,116 @@
+# Use this file to templatize your application's native configuration files.
+# See the docs at https//www.habitat.sh/docs/create-packages-configure/.
+# You can safely delete this file if you don't need it.
+time_zone = "Eastern Time (US & Canada)"
+rails_binding_ip = "0.0.0.0"
+rails_port = 3000
+
+database_name = "sparc_rails"
+database_username = "root"
+
+# It's up to the end user to set a password for their database, we
+# don't want to assume a default that can lead to insecure database
+# servers running in the wild.
+database_password = "root"
+
+# Normally you should use named service binding to bind the "database"
+# name to the database service group, and this app will connect to the
+# leader of that service group. If you do not use binding, this app
+# will fall back to using the database host specified here (localhost).
+# We recommend that this only be used for testing purposes.
+database_host = "33.33.33.1"
+
+# It's highly unlikely anyone would want to change this from the
+# default, right? but it's configurable. Just in case.
+database_port = 3306
+
+ssl_cert_file = ""
+
+## SPARC specific settings
+#
+[sparc.production]
+
+default_mail_to = "sparcrequest@gmail.com"
+admin_mail_to = "sparcrequest@gmail.com"
+contact_us_mail_to = "sparcrequest@gmail.com"
+feedback_mail_to = "sparcrequest@gmail.com"
+use_feedback_link = true
+new_user_cc = ""
+system_satisfaction_survey_cc =  ""
+#root_url = "https//i-cart.icts.uiowa.edu"
+#user_portal_link = "https//i-cart.icts.uiowa.edu/portal/"
+# dashboard_link = "https//i-cart.icts.uiowa.edu/dashboard"
+header_link_1 = "http//www.icts.uiowa.edu"
+header_link_2 = "/"
+header_link_3 = "http//www.uiowa.edu"
+use_indirect_cost = false
+use_shiboleth = true
+use_shibboleth_only = true
+use_ldap = true
+suppress_ldap_for_user_search = true # allow the use of LDAP but suppress its use within the project/study "User Search" box
+wkhtmltopdf_location = "/usr/local/bin/wkhtmltopdf"
+approve_epic_rights_mail_to = "sparcrequest@gmail.com"
+use_epic = false
+queue_epic = false
+queue_epic_load_error_to = "sparcrequest@gmail.com"
+use_google_calendar = false
+use_news_feed = false
+google_username = "sparcrequest@gmail.com"
+google_password = "MUSCsparcrequest"
+send_authorized_user_emails = true
+system_satisfaction_survey = false
+no_reply_from = "no-reply@icts.uiowa.edu"
+
+# new for v1.4.0 ...
+editable_statuses = { 14= ["first_draft", "draft", "submitted", "nil", "get_a_quote", "awaiting_pi_approval"],  48= ["draft", "submitted"] }
+updatable_statuses = [ "first_draft", "draft", "get_a_cost_estimate", "awaiting_pi_approval"]
+finished_statuses = ["complete", "withdrawn"]
+
+remote_service_notifier_path = "/v1/notifications.json"
+remote_service_notifier_username = "sparc_api"
+remote_service_notifier_password = ""
+current_api_version = "v1"
+host = "localhost:3000"
+# end API
+
+# allow catalog_manager to turn on fulfillment one organization at a time
+fulfillment_contingent_on_catalog_manager = true
+send_emails_to_real_users = false
+listserv_mail_to = "hewwe@musc.edu, hutsonk@musc.edu"
+# #######
+# Added 2.0.5
+#
+site_admins = ["sparcrequest@gmail.com"]
+epic_queue_access = [""]
+redcap_token = ""
+use_redcap_api = false
+redcap_api = ""
+
+use_cas = false
+use_cas_only = false
+lazy_load_ldap = true
+
+[ldap]
+
+host = ""
+port = 3269
+base= ""
+encryption= "simple_tls"
+domain= ""
+uid= "cn"
+last_name= "sn"
+first_name= "givenName"
+email= ""
+auth_username= ""
+auth_password= ""
+filter= ""
+
+[epic]
+
+study_root = "1.2.3.4"
+endpoint = "http://TODO"
+namespace = ""
+
+[shibboleth]
+
+request_type = "header"

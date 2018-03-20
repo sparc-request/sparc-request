@@ -1,0 +1,33 @@
+# coffee-rails in particular cares about this
+export HOME={{pkg.svc_var_path}}/home
+
+# This is where the package files are installed to
+export RAILS_ROOT="{{pkg.path}}/static/release"
+
+export TZ="{{cfg.time_zone}}"
+export GEM_HOME="$RAILS_ROOT/vendor/bundle/ruby/2.4.0"
+export GEM_PATH="$GEM_HOME:{{pkgPathFor "core/ruby"}}/lib/ruby/gems/2.4.0:{{pkgPathFor "core/bundler"}}"
+export LD_LIBRARY_PATH="{{pkgPathFor "core/gcc-libs"}}/lib"
+export PATH="$RAILS_ROOT/bin:{{pkgPathFor "core/node"}}/bin:{{pkgPathFor "chrisortman/eye"}}/bin:$PATH"
+
+export RAILS_ENV="production"
+export RACK_ENV=$RAILS_ENV
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+export RAILS_PORT='{{cfg.rails_port}}'
+export EYE_HOME="{{pkg.svc_var_path}}/eye"
+export EYE_FILE="{{pkg.svc_config_path}}/sparc.eye"
+
+export SHIBBOLETH_REQUEST_TYPE="{{cfg.shibboleth.request_type}}"
+
+if [ -n "{{cfg.ssl_cert_file}}" ]
+then
+  export SSL_CERT_FILE="{{cfg.ssl_cert_file}}"
+fi
+
+
+## SPARC VALUES
+export org_logo=org_logo2017.png
+export institution_logo=institution_logo2017.png
+export institution=University
+export SPARC_VERSION=v{{pkg.version}}

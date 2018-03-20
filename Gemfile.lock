@@ -6,13 +6,6 @@ GIT
       activemodel (>= 4.2)
 
 GIT
-  remote: git://github.com/swanandp/acts_as_list.git
-  revision: 587175de816d6aedb101ef42fd8d4a6dbecb8c94
-  specs:
-    acts_as_list (0.9.10)
-      activerecord (>= 3.0)
-
-GIT
   remote: https://github.com/HSSC/sanitized_data.git
   revision: 2fde04e1cb3bf61ff6109bb712984bf2fce4bd23
   specs:
@@ -42,6 +35,13 @@ GIT
       mimemagic (~> 0.3)
       nokogiri (>= 1.6.6)
       rubyzip (>= 1.2.1)
+
+GIT
+  remote: https://github.com/swanandp/acts_as_list.git
+  revision: c98bdc41fe63e5585c107426c7f69ef0bc95d7bc
+  specs:
+    acts_as_list (0.9.11)
+      activerecord (>= 3.0)
 
 GEM
   remote: https://rubygems.org/
@@ -81,6 +81,8 @@ GEM
       arel (~> 8.0)
     activerecord-import (0.21.0)
       activerecord (>= 3.2)
+    activerecord-nulldb-adapter (0.3.8)
+      activerecord (>= 2.0.0)
     activerecord-session_store (1.1.0)
       actionpack (>= 4.0, < 5.2)
       activerecord (>= 4.0, < 5.2)
@@ -125,6 +127,7 @@ GEM
     bullet (5.7.0)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.10.0)
+    byebug (10.0.0)
     capistrano (3.10.1)
       airbrussh (>= 1.0.0)
       i18n
@@ -306,7 +309,7 @@ GEM
       i18n (>= 0.6.4, < 1.0)
     multi_json (1.12.2)
     multi_xml (0.6.0)
-    mysql2 (0.3.21)
+    mysql2 (0.4.10)
     nested_form (0.3.2)
     nested_form_fields (0.8.2)
       coffee-rails (>= 3.2.1)
@@ -561,6 +564,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord-import
+  activerecord-nulldb-adapter
   activerecord-session_store
   acts-as-taggable-on
   acts_as_list!
@@ -573,6 +577,7 @@ DEPENDENCIES
   bootstrap-select-rails
   bootstrap3-datetimepicker-rails
   bullet
+  byebug
   capistrano (~> 3.9)
   capistrano-bundler
   capistrano-passenger
@@ -585,6 +590,7 @@ DEPENDENCIES
   country_select
   curb (~> 0.9.3)
   database_cleaner
+  delayed_job
   delayed_job_active_record
   devise (~> 4.2)
   dotenv-rails
@@ -613,7 +619,7 @@ DEPENDENCIES
   launchy
   letter_opener
   momentjs-rails (>= 2.8.1)
-  mysql2 (~> 0.3.18)
+  mysql2 (~> 0.4)
   nested_form
   nested_form_fields
   net-ldap (~> 0.16.0)
@@ -669,4 +675,4 @@ DEPENDENCIES
   x-editable-rails
 
 BUNDLED WITH
-   1.16.0
+   1.16.1

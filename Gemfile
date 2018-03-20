@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'activerecord-import'
 gem 'activerecord-session_store'
-gem 'acts_as_list', github: 'swanandp/acts_as_list'
+gem 'acts_as_list', :git => 'https://github.com/swanandp/acts_as_list.git'
 gem 'acts-as-taggable-on'
 gem 'audited', '~> 4.3'
 gem 'axlsx', git: 'https://github.com/randym/axlsx', branch: 'master'
@@ -21,6 +21,7 @@ gem 'coffee-rails'
 gem 'country_select'
 gem 'curb', '~> 0.9.3'
 gem 'delayed_job_active_record'
+gem 'delayed_job'
 gem 'devise', '~> 4.2'
 gem 'dynamic_form'
 gem 'execjs'
@@ -41,7 +42,7 @@ gem 'jbuilder', '~> 2.0'
 gem 'json', '>= 1.8'
 gem 'letter_opener'
 gem 'momentjs-rails', '>= 2.8.1'
-gem 'mysql2', '~> 0.3.18'
+gem 'mysql2', '~> 0.4'
 gem 'nested_form'
 gem 'nested_form_fields'
 gem 'newrelic_rpm'
@@ -86,10 +87,10 @@ group :development, :test, :profile do
   gem 'equivalent-xml'
   gem 'faker'
   gem 'launchy'
-  gem 'puma', '~> 3.0'
   gem 'timecop'
   gem 'progress_bar'
 end
+gem 'puma', '~> 3.0'
 
 group :development, :test do
   gem 'pry'
@@ -100,6 +101,7 @@ end
 group :development do
   gem 'highline'
   gem 'spring-commands-rspec'
+  gem 'byebug'
   gem 'spring'
   gem 'sqlite3'
   gem 'traceroute'
@@ -118,6 +120,18 @@ group :test do
   gem 'shoulda-callback-matchers'
   gem 'site_prism'
   gem 'webmock'
+end
+
+group :assets do
+  # We don't require this because we only have it so
+  # that we can run asset precompile during build without
+  # connecting to a database
+  # If we allow it to be required though it will screw up
+  # schema load / migrations because monkey patching.
+  # So what we do is not require it and then generate the
+  # require statement in the database.yml that we generate
+  # in the hab package build
+  gem "activerecord-nulldb-adapter", require: false
 end
 
 group :profile do

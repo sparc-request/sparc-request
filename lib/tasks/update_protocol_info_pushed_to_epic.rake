@@ -40,6 +40,6 @@ namespace :data do
         end
       end
     end
-    puts "This script created temp/bad_data_protocols.csv"
+    puts "This script created tmp/bad_data_protocols.csv"
   end
 end

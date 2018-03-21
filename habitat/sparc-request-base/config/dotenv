@@ -25,6 +25,9 @@ then
   export SSL_CERT_FILE="{{cfg.ssl_cert_file}}"
 fi
 
+## Exception Notifier
+export EXCEPTION_SENDER_ADDRESS="SPARC Notifier <no-reply@{{cfg.sparc.production.host}}"
+export EXCEPTION_RECIPIENTS="{{cfg.sparc.production.admin_mail_to}}"
 
 ## SPARC VALUES
 export org_logo=org_logo2017.png

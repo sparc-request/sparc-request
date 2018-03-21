@@ -30,7 +30,7 @@ export EXCEPTION_SENDER_ADDRESS="SPARC Notifier <no-reply@{{cfg.sparc.production
 export EXCEPTION_RECIPIENTS="{{cfg.sparc.production.admin_mail_to}}"
 
 ## SPARC VALUES
-export org_logo=org_logo2017.png
-export institution_logo=institution_logo2017.png
-export institution=University
+export org_logo="{{cfg.customization.org_logo}}"
+export institution_logo="{{cfg.customization.institution_logo}}"
+export institution="{{cfg.customization.institution}}"
 export SPARC_VERSION=v{{pkg.version}}

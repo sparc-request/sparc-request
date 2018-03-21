@@ -114,3 +114,9 @@ namespace = ""
 [shibboleth]
 
 request_type = "header"
+
+[customization]
+
+org_logo = "sctr_header_sized.jpg"
+institution_logo = "musc_header.jpg"
+institution = "University"

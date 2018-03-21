@@ -161,7 +161,7 @@ arm_totals_ref = {}
     total_sponsor_cost_ppv = ["Total per Patient per Visit (+OH)"] + [""] * 5
 
     (r_columns + [ totals_column ]).each do |col|
-      total_sponsor_cost_ppv += ["=#{col + total_research_row.to_s}*(1+#{indirect_cost_ref})", ""]
+      total_sponsor_cost_ppv += ["=#{col + total_research_row.to_s}*(#{indirect_cost_ref}/100)", ""]
     end
 
     sheet.add_row total_sponsor_cost_ppv, style: total_research_cost_style

@@ -115,7 +115,7 @@ class Identity < ApplicationRecord
   # Return the netid (ldap_uid without the @musc.edu)
   def netid
     if Setting.find_by_key("use_ldap").value then
-      return ldap_uid.sub(/@#{Directory::DOMAIN}/, '')
+      return ldap_uid.sub(/@#{Directory.new.domain}/, '')
     else
       return ldap_uid
     end
@@ -173,12 +173,12 @@ class Identity < ApplicationRecord
   ###############################################################################
 
   def self.search(term)
-    return Directory.search(term)
+    return Directory.new.search(term)
   end
 
   def self.find_or_create(id)
     if Setting.find_by_key("use_ldap").value && Setting.find_by_key("lazy_load_ldap").value
-      return Directory.find_or_create(id)
+      return Directory.new.find_or_create(id)
     else
       return self.find(id)
     end
@@ -200,7 +200,7 @@ class Identity < ApplicationRecord
 
   # search the database for the identity with the given ldap_uid, if not found, create a new one
   def self.find_for_cas_oauth(auth, _signed_in_resource = nil)
-    Directory.find_for_cas_oauth(auth.uid)
+    Directory.new.find_for_cas_oauth(auth.uid)
   end
 
   def active_for_authentication?

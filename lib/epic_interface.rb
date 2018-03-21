@@ -190,7 +190,7 @@ class EpicInterface
 
   # Build a study creation message to send to epic and return it as a
   # string.
-  def study_creation_message(study, include_cofc=true)
+  def study_creation_message(study)
     xml = Builder::XmlMarkup.new(indent: 2)
 
     xml.query(root: @study_root, extension: "STUDY#{study.id}")
@@ -207,9 +207,7 @@ class EpicInterface
         emit_category_grouper(xml, study)
         emit_study_type(xml, study)
         emit_ide_number(xml, study)
-        if include_cofc
-          emit_cofc(xml, study)
-        end
+        emit_cofc(xml, study)
         emit_rmid(xml, study)
 
       }

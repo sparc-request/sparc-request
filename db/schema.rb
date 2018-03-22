@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180126140905) do
+ActiveRecord::Schema.define(version: 20180322185010) do
 
   create_table "admin_rates", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer "line_item_id"
@@ -176,7 +176,7 @@ ActiveRecord::Schema.define(version: 20180126140905) do
     t.integer "sub_service_request_id"
   end
 
-  create_table "editable_statuses", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "editable_statuses", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer "organization_id"
     t.string "status", null: false
     t.datetime "created_at", null: false
@@ -470,7 +470,7 @@ ActiveRecord::Schema.define(version: 20180126140905) do
     t.index ["sub_service_request_id"], name: "index_payments_on_sub_service_request_id"
   end
 
-  create_table "permissible_values", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "permissible_values", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.string "key"
     t.string "value"
     t.string "concept_code"
@@ -596,8 +596,6 @@ ActiveRecord::Schema.define(version: 20180126140905) do
     t.decimal "initial_amount_clinical_services", precision: 8, scale: 2
     t.decimal "negotiated_amount", precision: 8, scale: 2
     t.decimal "negotiated_amount_clinical_services", precision: 8, scale: 2
-    t.decimal "initial_amount_ctrc", precision: 8, scale: 2
-    t.decimal "negotiated_amount_ctrc", precision: 8, scale: 2
     t.string "billing_business_manager_static_email"
     t.datetime "recruitment_start_date"
     t.datetime "recruitment_end_date"
@@ -779,13 +777,13 @@ ActiveRecord::Schema.define(version: 20180126140905) do
     t.index ["updated_at"], name: "index_sessions_on_updated_at"
   end
 
-  create_table "settings", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "settings", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.string "key"
     t.text "value"
     t.string "data_type"
     t.string "friendly_name"
     t.text "description"
-    t.integer "group"
+    t.string "group"
     t.string "version"
     t.string "parent_key"
     t.string "parent_value"

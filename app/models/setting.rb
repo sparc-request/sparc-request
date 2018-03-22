@@ -23,17 +23,15 @@ class Setting < ApplicationRecord
 
   audited
 
-  belongs_to :parent, -> { find_by_key(self.parent_key) }, class_name: 'Setting'
-
   validates_uniqueness_of :key
 
   validates :data_type, inclusion: { in: %w(boolean string json email url path) }, presence: true
   validates :parent_key, inclusion: { in: Setting.all.pluck(:key) }, allow_blank: true
 
   validate :value_matches_type, if: Proc.new{ !self.read_attribute(:value).nil? }
-  validate :parent_value_matches_parent_type, if: Proc.new{ self.parent_key.present? }
-  
-  # Needed to correctly write boolean true and false as value in specs  
+  validate :parent_value_matches_parent_data_type, if: Proc.new{ self.parent_key.present? }
+
+  # Needed to correctly write boolean true and false as value in specs
   def value=(value)
     if [TrueClass, FalseClass].include?(value.class)
       value_will_change!
@@ -45,7 +43,7 @@ class Setting < ApplicationRecord
 
   def value
     case data_type
-    when 'boolean'  
+    when 'boolean'
       read_attribute(:value) == 'true'
     when 'json'
       begin
@@ -58,41 +56,23 @@ class Setting < ApplicationRecord
     end
   end
 
+  def parent
+    parent_key.blank? ? nil : Setting.find_by_key(parent_key)
+  end
+
+  def children
+    Setting.where(parent_key: key)
+  end
+
   private
 
   def value_matches_type
     errors.add(:value, 'does not match the provided data type') unless
-      case data_type
-      when 'boolean'
-        is_boolean?(read_attribute(:value))
-      when 'json'
-        is_json?(read_attribute(:value))
-      when 'email'
-        is_email?(read_attribute(:value))
-      when 'url'
-        is_url?(read_attribute(:value))
-      when 'path'
-        is_path?(read_attribute(:value))
-      else # Default type = string, no validation needed
-        !read_attribute(:value).nil?
-      end
+      data_type == get_type(read_attribute(:value))
   end
 
-  def parent_value_matches_parent_type
+  def parent_value_matches_parent_data_type
     errors.add(:parent_value, 'does not match the parent\'s data type') unless
-      case data_type
-      when 'boolean'
-        is_boolean?(self.parent.read_attribute(:value))
-      when 'json'
-        is_json?(self.parent.read_attribute(:value))
-      when 'email'
-        is_email?(self.parent.read_attribute(:value))
-      when 'url'
-        is_url?(self.parent.read_attribute(:value))
-      when 'path'
-        is_path?(self.parent.read_attribute(:value))
-      else # Default type = string, no validation needed
-        !self.parent.read_attribute(:value).nil?
-      end
+      parent.data_type == get_type(read_attribute(:parent_value))
   end
 end

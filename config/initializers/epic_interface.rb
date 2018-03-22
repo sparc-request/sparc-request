@@ -18,7 +18,13 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-if Setting.find_by_key("use_epic").value
+begin
+  use_epic = Setting.find_by_key("use_epic").try(:value)
+rescue
+  use_epic = false
+end
+
+if use_epic
   if (epic_settings = Setting.where(group: "epic_settings")).any?
 
     require 'epic_interface'

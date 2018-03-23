@@ -32,11 +32,11 @@ class Surveyor::ResponsesController < Surveyor::BaseController
     @filterrific  = 
       initialize_filterrific(Response, params[:filterrific],
         select_options: {
-          with_type: [['Form', 'Form'], ['Survey', 'SystemSurvey']]
+          of_type: [['Form', 'Form'], ['Survey', 'SystemSurvey']]
         }
       )
 
-    @type       = @filterrific.try(:with_type).try(:constantize).try(:yaml_klass)
+    @type       = @filterrific.try(:of_type).try(:constantize).try(:yaml_klass)
     @responses  = @filterrific.try(:find).try(:eager_load, [:survey, :question_responses])
 
     respond_to do |format|

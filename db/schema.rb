@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180126140905) do
+ActiveRecord::Schema.define(version: 20180323160526) do
 
   create_table "admin_rates", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer "line_item_id"
@@ -596,8 +596,6 @@ ActiveRecord::Schema.define(version: 20180126140905) do
     t.decimal "initial_amount_clinical_services", precision: 8, scale: 2
     t.decimal "negotiated_amount", precision: 8, scale: 2
     t.decimal "negotiated_amount_clinical_services", precision: 8, scale: 2
-    t.decimal "initial_amount_ctrc", precision: 8, scale: 2
-    t.decimal "negotiated_amount_ctrc", precision: 8, scale: 2
     t.string "billing_business_manager_static_email"
     t.datetime "recruitment_start_date"
     t.datetime "recruitment_end_date"
@@ -672,6 +670,17 @@ ActiveRecord::Schema.define(version: 20180126140905) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.index ["protocol_id"], name: "index_research_types_info_on_protocol_id"
+  end
+
+  create_table "response_filters", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.integer "identity_id"
+    t.string "of_type"
+    t.string "with_survey"
+    t.datetime "from_date"
+    t.datetime "to_date"
+    t.boolean "include_incomplete"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "responses", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|

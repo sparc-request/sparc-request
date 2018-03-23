@@ -1,0 +1,2 @@
+module Surveyor::ResponseFiltersHelper
+end

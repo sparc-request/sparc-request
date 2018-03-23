@@ -18,59 +18,17 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Response < ActiveRecord::Base
-  audited
-  
-  belongs_to :survey
+class ResponseFilter < ApplicationRecord
+
   belongs_to :identity
-  belongs_to :respondable, polymorphic: true
-  
-  has_many :question_responses, dependent: :destroy
-  
-  accepts_nested_attributes_for :question_responses
 
-  filterrific(
-    default_filter_params: { of_type: 'Form' },
-    available_filters: [
-      :of_type,
-      :with_survey,
-      :from_date,
-      :to_date,
-      :include_incomplete
-    ]
-  )
+  serialize :with_survey, Array
 
-  scope :of_type, -> (type) {
-    joins(:survey).where(surveys: { type: type })
+  MAX_FILTERS = 15
+
+  scope :latest_for_user, -> (identity_id) {
+    where(identity_id: identity_id).
+    order(created_at: :desc).
+    limit(ResponseFilter::MAX_FILTERS)
   }
-
-  scope :with_survey, -> (survey_ids) {
-    survey_ids.reject!(&:blank?)
-    
-    return nil if survey_ids.empty?
-
-    joins(:survey).where(surveys: { id: survey_ids })
-  }
-
-  scope :from_date, -> (date) {
-    return nil if date.blank?
-
-    where("responses.created_at >= ?", date)
-  }
-
-  scope :to_date, -> (date) {
-    return nil if date.blank?
-
-    where("responses.created_at <= ?", date)
-  }
-
-  scope :include_incomplete, -> (boolean) {
-    return nil if boolean == 'true'
-
-    joins(:question_responses)
-  }
-
-  def completed?
-    self.question_responses.any?
-  end
 end

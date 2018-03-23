@@ -23,24 +23,24 @@
     .pull-left
       = t(:surveyor)[:responses][:filter][:header]
     .pull-right
-      = link_to t(:actions)[:save], 'javascript:void(0)', id: '#save-filters'
+      = link_to t(:actions)[:save], 'javascript:void(0)', id: 'save-filters'
       = " | "
-      = link_to t(:actions)[:reset], reset_filterrific_url, id: '#reset-filters'
+      = link_to t(:actions)[:reset], reset_filterrific_url, id: 'reset-filters'
     .clearfix
   = form_for_filterrific filterrific, remote: true do |form|
     .panel-body
       .form-group.row
-        = form.label :with_type, t(:surveyor)[:responses][:filter][:type], class: 'col-lg-3 control-label text-left'
+        = form.label :of_type, t(:surveyor)[:responses][:filter][:type], class: 'col-lg-3 control-label text-left'
         .col-lg-9
-          = form.select :with_type, filterrific.select_options[:with_type], {}, class: 'form-control selectpicker'
-      .form-group.row{ id: "for-#{Form.name}", class: filterrific.with_type == Form.name ? "" : "hidden" }
-        = form.label :to_survey, Form.name, class: 'col-lg-3 control-label text-left'
+          = form.select :of_type, filterrific.select_options[:of_type], {}, class: 'form-control selectpicker'
+      .form-group.row{ id: "for-#{Form.name}", class: filterrific.of_type == Form.name ? "" : "hidden" }
+        = form.label :with_survey, Form.name, class: 'col-lg-3 control-label text-left'
         .col-lg-9
-          = form.select :to_survey, options_from_collection_for_select(Form.all, :id, :title, filterrific.to_survey), {}, class: 'form-control selectpicker', multiple: true
-      .form-group.row{ id: "for-#{SystemSurvey.name}", class: filterrific.with_type == SystemSurvey.name ? "" : "hidden" }
-        = form.label :to_survey, Survey.name, class: 'col-lg-3 control-label text-left'
+          = form.select :with_survey, options_from_collection_for_select(Form.all, :id, :title, filterrific.with_survey), {}, class: 'form-control selectpicker', multiple: true
+      .form-group.row{ id: "for-#{SystemSurvey.name}", class: filterrific.of_type == SystemSurvey.name ? "" : "hidden" }
+        = form.label :with_survey, Survey.name, class: 'col-lg-3 control-label text-left'
         .col-lg-9
-          = form.select :to_survey, options_from_collection_for_select(SystemSurvey.all, :id, :title, filterrific.to_survey), {}, class: 'form-control selectpicker', multiple: true
+          = form.select :with_survey, options_from_collection_for_select(SystemSurvey.all, :id, :title, filterrific.with_survey), {}, class: 'form-control selectpicker', multiple: true
       .form-group.row
         .col-sm-12
           %label

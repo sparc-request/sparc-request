@@ -48,7 +48,18 @@ $(document).ready ->
     for option_id in option_ids
       $(".dependent-for-option-#{option_id}").removeClass('hidden')
 
-  $(document).on 'change', '#filterrific_with_type', ->
+  $(document).on 'click', '#save-filters', ->
+    data = {} # Grab form values
+
+    $.each $('form#filterrific_filter').serializeArray(), (i, field) ->
+      data[field.name] = field.value
+
+    if $(".form-group:visible #filterrific_with_survey").val()
+      data["filterrific[with_survey][]"] = $(".form-group:visible #filterrific_with_survey").val()
+    else
+      data["filterrific[with_survey][]"] = ""
+
+  $(document).on 'change', '#filterrific_of_type', ->
     selected_value = $(this).find('option:selected').val()
 
     if selected_value == 'Form'

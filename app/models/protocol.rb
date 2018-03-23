@@ -552,6 +552,10 @@ class Protocol < ApplicationRecord
     direct_cost_total(service_request) + indirect_cost_total(service_request)
   end
 
+  def industry_funded?
+    potential_funding_source == "industry" or funding_source == "industry"
+  end
+
   #############
   ### FORMS ###
   #############

@@ -149,7 +149,7 @@ class CatalogManager::CatalogController < CatalogManager::AppController
 
   def remove_associated_survey
     associated_survey = AssociatedSurvey.find(params[:associated_survey_id])
-    entity = associated_survey.surveyable
+    entity = associated_survey.associable
     associated_survey.delete
 
     render :partial => 'catalog_manager/shared/associated_surveys', :locals => {:entity => entity}

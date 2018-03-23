@@ -26,7 +26,7 @@
       .bootstrap-table-dropdown-overflow
         #surveys-custom-toolbar
           = link_to t(:surveyor)[:systemsurveys][:new], surveyor_surveys_path(type: 'SystemSurvey'), method: :post, remote: true, class: "btn btn-success", id: "new-survey-button"
-        %table.survey-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: surveyor_surveys_path(type: 'SystemSurvey'), striped: 'true', toolbar: '#surveys-custom-toolbar', pagination: 'true', page_size: '20' } }
+        %table.survey-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: surveyor_surveys_path(type: 'SystemSurvey'), striped: 'true', toolbar: '#surveys-custom-toolbar', pagination: 'true', page_size: '20', sort_name: 'display_order' } }
           %thead.primary-header
             %tr
               %th.col-sm-3{ data: { field: "title", align: "left", sortable: 'true' } }

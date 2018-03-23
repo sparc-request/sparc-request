@@ -27,9 +27,8 @@ namespace :data do
       epic_yml = YAML.load_file(Rails.root.join('config', 'epic.yml'))[Rails.env]
 
       epic_yml.each do |key, value|
-        setting = Setting.new(key: key, value: value, friendly_name: key.humanize.titleize, parent_key: "use_epic", group: "epic_settings")
+        setting = Setting.new(key: key, value: value, friendly_name: key.humanize.titleize, parent_key: "use_epic", group: "epic_settings", parent_value: "true")
         setting.data_type = get_type(setting.read_attribute(:value))
-        setting.parent_value = setting.parent.read_attribute(:value)
         setting.save
       end
     rescue

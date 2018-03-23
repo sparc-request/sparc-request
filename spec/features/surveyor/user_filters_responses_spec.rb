@@ -26,7 +26,9 @@ RSpec.describe 'User filters responses', js: true do
 
   stub_config('site_admins', ['jug2'])
 
-  let!(:form)             { create(:form, title: 'Formal Form') }
+  let!(:organization)     { create(:organization) }
+  let!(:super_user)       { create(:super_user, identity: jug2, organization: organization) }
+  let!(:form)             { create(:form, title: 'Formal Form', surveyable: organization) }
   let!(:survey)           { create(:system_survey, title: 'Serviceable Survey') }
   let!(:form_response)    { create(:response, survey: form) }
   let!(:survey_response)  { create(:response, survey: survey) }

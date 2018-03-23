@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MdUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -30,7 +30,7 @@ class Response < ActiveRecord::Base
   accepts_nested_attributes_for :question_responses
 
   filterrific(
-    default_filter_params: { with_type: 'Form' },
+    default_filter_params: {},
     available_filters: [
       :with_type
     ]

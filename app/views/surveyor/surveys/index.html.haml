@@ -42,7 +42,7 @@
               %th.col-sm-3{ data: { field: "options", align: "center" } }
                 = t(:surveyor)[:systemsurveys][:table][:headers][:options]
 
-- if current_user.is_super_user? || current_user.is_service_provider? || current_user.is_overlord?
+- if current_user.is_site_admin? || current_user.is_super_user? || current_user.is_service_provider? || current_user.is_catalog_manager?
   .panel.panel-default
     .panel-heading
       %h4.panel-title{ title: t(:surveyor)[:forms][:tooltip], data: { toggle: 'tooltip', delay: '{"show":"500"}', placement: 'left' } }

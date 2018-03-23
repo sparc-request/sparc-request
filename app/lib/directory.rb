@@ -25,28 +25,33 @@ class Directory
   begin
     use_ldap = Setting.find_by_key("use_ldap").value || Rails.env == 'test'
   rescue
-    use_ldap = true
+    use_ldap = false
   end
 
   # Only initialize LDAP if it is enabled
   if use_ldap
-    # Load the YAML file for ldap configuration and set constants
-    begin
-      ldap_config   ||= YAML.load_file(Rails.root.join('config', 'ldap.yml'))[Rails.env]
-      LDAP_HOST       = ldap_config['ldap_host']
-      LDAP_PORT       = ldap_config['ldap_port']
-      LDAP_BASE       = ldap_config['ldap_base']
-      LDAP_ENCRYPTION = ldap_config['ldap_encryption'].to_sym
-      DOMAIN          = ldap_config['ldap_domain']
-      LDAP_UID        = ldap_config['ldap_uid']
-      LDAP_LAST_NAME  = ldap_config['ldap_last_name']
-      LDAP_FIRST_NAME = ldap_config['ldap_first_name']
-      LDAP_EMAIL      = ldap_config['ldap_email']
-      LDAP_AUTH_USERNAME      = ldap_config['ldap_auth_username']
-      LDAP_AUTH_PASSWORD      = ldap_config['ldap_auth_password']
-      LDAP_FILTER      = ldap_config['ldap_filter']
-    rescue
-      raise "ldap.yml not found, see config/ldap.yml.example"
+    # Load the ldap settings and create a hash
+    if (ldap_settings = Setting.where(group: "ldap_settings")).any?
+      ldap_config = Hash.new
+      ldap_settings.each{|setting| ldap_config[setting.key] = setting.value}
+      begin
+        LDAP_HOST       = ldap_config['ldap_host']
+        LDAP_PORT       = ldap_config['ldap_port']
+        LDAP_BASE       = ldap_config['ldap_base']
+        LDAP_ENCRYPTION = ldap_config['ldap_encryption'].to_sym
+        DOMAIN          = ldap_config['ldap_domain']
+        LDAP_UID        = ldap_config['ldap_uid']
+        LDAP_LAST_NAME  = ldap_config['ldap_last_name']
+        LDAP_FIRST_NAME = ldap_config['ldap_first_name']
+        LDAP_EMAIL      = ldap_config['ldap_email']
+        LDAP_AUTH_USERNAME      = ldap_config['ldap_auth_username']
+        LDAP_AUTH_PASSWORD      = ldap_config['ldap_auth_password']
+        LDAP_FILTER      = ldap_config['ldap_filter']
+      rescue
+        raise "ldap settings incorrect, unable to load ldap configuration"
+      end
+    else
+      puts "WARNING: You have ldap turned on, but no settings populated for ldap. You must configure your ldap settings to have ldap turned on (Disregard if currently importing ldap.yml)"
     end
   end
 

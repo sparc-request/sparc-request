@@ -18,28 +18,21 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-def populate_settings_before_suite
-  require 'rake'
+namespace :data do
+  desc "Import epic.yml settings into Settings db table"
+  task :import_epic_yml => :environment do
+    include DataTypeValidator
 
-  load File.expand_path("../../../lib/tasks/import_epic_yml.rake", __FILE__)
-  Rake::Task.define_task(:environment)
+    begin
+      epic_yml = YAML.load_file(Rails.root.join('config', 'epic.yml'))[Rails.env]
 
-  DefaultSettingsPopulator.new().populate
-
-  Setting.find_by_key("use_epic").update_attribute(:value, true)
-  Setting.find_by_key("use_ldap").update_attribute(:value, true)
-  Setting.find_by_key("suppress_ldap_for_user_search").update_attribute(:value, true)
-end
-
-def stub_config(key, value)
-  setting = Setting.find_by_key(key)
-  default_value = setting.value
-
-  before :each do
-    setting.update_attribute(:value, value)
-  end
-
-  after :each do
-    setting.update_attribute(:value, default_value)
+      epic_yml.each do |key, value|
+        setting = Setting.new(key: key, value: value, friendly_name: key.humanize.titleize, parent_key: "use_epic", group: "epic_settings", parent_value: "true")
+        setting.data_type = get_type(setting.read_attribute(:value))
+        setting.save
+      end
+    rescue
+      puts "WARNING: You have no epic.yml, so there is nothing to import"
+    end
   end
 end

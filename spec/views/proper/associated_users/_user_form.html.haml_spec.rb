@@ -42,6 +42,8 @@ RSpec.describe '/associated_users/_user_form', type: :view do
 
   context 'When the user views the associated users form' do
     context 'epic configuration turned off' do
+      stub_config("use_epic", false)
+
       it 'should show the correct header and labels' do
         render_user_form
         expect(response).to have_selector('h4', text: "Edit Authorized User")
@@ -74,7 +76,7 @@ RSpec.describe '/associated_users/_user_form', type: :view do
 
     context 'epic configuration turned on' do
       stub_config("use_epic", true)
-      
+
       it 'should show the correct form fields when using epic and protocol is selected for epic' do
         render_user_form
         expect(response).to have_selector('label', text: 'No')

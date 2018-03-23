@@ -48,24 +48,7 @@ class DefaultSettingsPopulator
         setting.parent_value  = hash['parent_value']
         setting.save(validate: false)
       end
-    end
-  end
-
-  private
-
-  def get_type(value)
-    if is_boolean?(value)
-      'boolean'
-    elsif is_json?(value)
-      'json'
-    elsif is_email?(value)
-      'email'
-    elsif is_url?(value)
-      'url'
-    elsif is_path?(value)
-      'path'
-    else
-      'string'
+      Rake::Task["data:import_epic_yml"].invoke
     end
   end
 end

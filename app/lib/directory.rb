@@ -32,8 +32,6 @@ class Directory
   if use_ldap
     # Load the ldap settings and create a hash
     if ActiveRecord::Base.connection.table_exists?('settings') && (ldap_settings = Setting.where(group: "ldap_settings")).any?
-      puts '#' * 50
-      puts "test"
       ldap_config = Hash.new
       ldap_settings.each{|setting| ldap_config[setting.key] = setting.value}
       begin

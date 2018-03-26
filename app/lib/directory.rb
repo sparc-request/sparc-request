@@ -31,7 +31,7 @@ class Directory
   # Only initialize LDAP if it is enabled
   if use_ldap
     # Load the ldap settings and create a hash
-    if defined?(Setting) && (ldap_settings = Setting.where(group: "ldap_settings")).any?
+    if ActiveRecord::Base.connection.table_exists?('settings') && (ldap_settings = Setting.where(group: "ldap_settings")).any?
       puts '#' * 50
       puts "test"
       ldap_config = Hash.new

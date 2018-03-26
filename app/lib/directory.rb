@@ -31,7 +31,9 @@ class Directory
   # Only initialize LDAP if it is enabled
   if use_ldap
     # Load the ldap settings and create a hash
-    if Setting.defined? && (ldap_settings = Setting.where(group: "ldap_settings")).any?
+    if defined?(Setting) && (ldap_settings = Setting.where(group: "ldap_settings")).any?
+      puts '#' * 50
+      puts "test"
       ldap_config = Hash.new
       ldap_settings.each{|setting| ldap_config[setting.key] = setting.value}
       begin

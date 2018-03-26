@@ -22,6 +22,7 @@ def populate_settings_before_suite
   require 'rake'
 
   load File.expand_path("../../../lib/tasks/import_epic_yml.rake", __FILE__)
+  load File.expand_path("../../../lib/tasks/import_ldap_yml.rake", __FILE__)
 
   Rake::Task.define_task(:environment)
 

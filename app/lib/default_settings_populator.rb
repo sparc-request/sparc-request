@@ -48,8 +48,8 @@ class DefaultSettingsPopulator
         setting.parent_value  = hash['parent_value']
         setting.save(validate: false)
       end
-      Rake::Task["data:import_epic_yml"].invoke
-      Rake::Task["data:import_ldap_yml"].invoke
     end
+    Rake::Task["data:import_epic_yml"].invoke
+    Rake::Task["data:import_ldap_yml"].invoke
   end
 end

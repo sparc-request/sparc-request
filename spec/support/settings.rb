@@ -31,6 +31,8 @@ def populate_settings_before_suite
   Setting.find_by_key("use_epic").update_attribute(:value, true)
   Setting.find_by_key("use_ldap").update_attribute(:value, true)
   Setting.find_by_key("suppress_ldap_for_user_search").update_attribute(:value, true)
+
+  load File.expand_path("../../../app/lib/directory.rb", __FILE__)
 end
 
 def stub_config(key, value)

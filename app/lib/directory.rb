@@ -31,17 +31,7 @@ class Directory
   # Only initialize LDAP if it is enabled
   if use_ldap
     # Load the ldap settings and create a hash
-    if Rails.env == 'test'
-      LDAP_HOST       = 'authldap.musc.edu'
-      LDAP_PORT       = '636'
-      LDAP_BASE       = 'ou=people,dc=musc,dc=edu'
-      LDAP_ENCRYPTION = 'simple_tls'
-      DOMAIN          = 'musc.edu'
-      LDAP_UID        = 'uid'
-      LDAP_LAST_NAME  = 'sn'
-      LDAP_FIRST_NAME = 'givenname'
-      LDAP_EMAIL      = 'mail'
-    elsif (ldap_settings = Setting.where(group: "ldap_settings")).any?
+    if Setting.defined? && (ldap_settings = Setting.where(group: "ldap_settings")).any?
       ldap_config = Hash.new
       ldap_settings.each{|setting| ldap_config[setting.key] = setting.value}
       begin

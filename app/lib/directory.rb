@@ -50,6 +50,16 @@ class Directory
       rescue
         raise "ldap settings incorrect, unable to load ldap configuration"
       end
+    elsif Rails.env == 'test'
+      LDAP_HOST       = 'authldap.musc.edu'
+      LDAP_PORT       = '636'
+      LDAP_BASE       = 'ou=people,dc=musc,dc=edu'
+      LDAP_ENCRYPTION = 'simple_tls'
+      DOMAIN          = 'musc.edu'
+      LDAP_UID        = 'uid'
+      LDAP_LAST_NAME  = 'sn'
+      LDAP_FIRST_NAME = 'givenname'
+      LDAP_EMAIL      = 'mail'
     else
       puts "WARNING: You have ldap turned on, but no settings populated for ldap. You must configure your ldap settings to have ldap turned on (Disregard if currently importing ldap.yml)"
     end

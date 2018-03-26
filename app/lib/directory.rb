@@ -25,7 +25,7 @@ class Directory
   begin
     use_ldap = Setting.find_by_key("use_ldap").value || Rails.env == 'test'
   rescue
-    use_ldap = false
+    use_ldap = true
   end
 
   # Only initialize LDAP if it is enabled

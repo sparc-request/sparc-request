@@ -3,7 +3,7 @@ class AddSparcformsLinkToSettings < ActiveRecord::Migration[5.1]
     if setting = Setting.find_by_key('navbar_links')
       navbar_links = setting.value
       unless navbar_links['sparc_forms']
-        navbar_links['sparc_forms'] = ["SPARCForms", "http://localhost:3000/surveyor/responses"]
+        navbar_links['sparc_forms'] = ["SPARCForms", "../surveyor/responses"]
         setting.update_attribute(:value, navbar_links)
       end
     end

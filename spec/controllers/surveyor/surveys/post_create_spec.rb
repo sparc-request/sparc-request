@@ -23,7 +23,13 @@ require 'rails_helper'
 RSpec.describe Surveyor::SurveysController, type: :controller do
   stub_controller
   let!(:before_filters) { find_before_filters }
+  let!(:logged_in_user) { create(:identity, ldap_uid: 'jug2') }
+  stub_config("site_admins", ["jug2"])
 
+  before :each do
+    session[:identity_id] = logged_in_user.id
+  end
+      
   describe '#create' do
     it 'should call before_filter #authenticate_identity!' do
       expect(before_filters.include?(:authenticate_identity!)).to eq(true)
@@ -34,13 +40,6 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
     end
 
     context "params[:type] == 'SystemSurvey'" do
-      let!(:logged_in_user) { create(:identity, ldap_uid: 'weh6@musc.edu') }
-      stub_config("site_admins", ["weh6@musc.edu"])
-
-      before :each do
-        session[:identity_id] = logged_in_user.id
-      end
-
       it 'should assign @survey to a new SystemSurvey' do
         expect{
           post :create, xhr: true, params: { type: 'SystemSurvey' }
@@ -62,12 +61,6 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
     end
 
     context "params[:type] == 'Form'" do
-      let!(:logged_in_user) { create(:identity, ldap_uid: 'weh6@musc.edu', catalog_overlord: true) }
-      
-      before :each do
-        session[:identity_id] = logged_in_user.id
-      end
-
       it 'should assign @survey to a new SystemSurvey' do
         expect{
           post :create, xhr: true, params: { type: 'Form' }

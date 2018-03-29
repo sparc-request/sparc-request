@@ -68,7 +68,6 @@ class Organization < ApplicationRecord
   }
 
   scope :authorized_for_super_user, -> (identity_id) {
-    orgs = 
     where(
       id: Organization.authorized_child_organization_ids(
         joins(:super_users).
@@ -84,6 +83,16 @@ class Organization < ApplicationRecord
         joins(:service_providers).
         where(service_providers: { identity_id: identity_id } ).
         references(:service_providers).
+        distinct(:organizations).ids)
+    ).distinct
+  }
+
+  scope :authorized_for_catalog_manager, -> (identity_id) {
+    where(
+      id: Organization.authorized_child_organization_ids(
+        joins(:catalog_managers).
+        where(catalog_managers: { identity_id: identity_id } ).
+        references(:catalog_managers).
         distinct(:organizations).ids)
     ).distinct
   }

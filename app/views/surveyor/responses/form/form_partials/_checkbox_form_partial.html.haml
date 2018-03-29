@@ -25,5 +25,5 @@
       = option.content
     - else
       .col-lg-1.text-center
-        = check_box_tag :content_checkbox, '', multiple_select_formatter(question_response.content).include?(option.content), disabled: true, multiple: true
+        = check_box_tag :content_checkbox, '', multiple_select_formatter(question_response.content.downcase).include?(option.content.downcase), disabled: true, multiple: true
       = option.content

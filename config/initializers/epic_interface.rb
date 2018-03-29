@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 begin
-  use_epic = Setting.find_by_key("use_epic").try(:value)
+  use_epic = Setting.find_by_key("use_epic").value
 rescue
   use_epic = false
 end
@@ -81,6 +81,6 @@ if use_epic
     Rails.logger.info("Creating epic interface")
     EPIC_INTERFACE = EpicInterface.new(epic_config)
   else
-    puts "WARNING: You have Epic turned on, but no settings populated for epic. You must configure your epic settings to have epic turned on"
+    puts "WARNING: You have Epic turned on, but no settings populated for epic. You must configure your epic settings to have epic turned on (Disregard if currently importing epic.yml)"
   end
 end

@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -68,6 +68,11 @@ RSpec.describe Dashboard::ProtocolsController do
           expect(@protocol.type).to eq("Project")
         end
 
+        it 'should set reset research_master_id and rmid_validated' do
+          expect(@protocol.research_master_id).to eq(nil)
+          expect(@protocol.rmid_validated).to eq(false)
+        end
+
         it 'should set study_type_question_group to active' do
           expect(@protocol.study_type_question_group_id).to eq(@study_type_question_group_version_3.id)
         end
@@ -133,7 +138,7 @@ RSpec.describe Dashboard::ProtocolsController do
           service_request = create(:service_request_without_validations, protocol: @protocol)
                             create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft', protocol_id: @protocol.id)
                             create(:service_provider, identity: @logged_in_user, organization: organization)
-                            
+
           allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
 
           log_in_dashboard_identity(obj: @logged_in_user)

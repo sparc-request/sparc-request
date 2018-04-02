@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -32,7 +32,7 @@ RSpec.describe 'dashboard/sub_service_requests/_request_details', type: :view do
       sub_service_request = create(:sub_service_request, protocol: protocol, service_request: service_request, organization: org)
 
       render_request_details(protocol: protocol, service_request: service_request, sub_service_request: sub_service_request)
-      expect(response).to have_tag('a', with: { href: "/service_requests/#{service_request.id}.xlsx?admin_offset=1&sub_service_request_id=#{sub_service_request.id}" }, text: "Export to Excel")
+      expect(response).to have_tag('a', with: { href: "/service_requests/#{service_request.id}.xlsx?admin_offset=1&report_type=request_report&sub_service_request_id=#{sub_service_request.id}" }, text: "Export to Excel")
     end
   end
 
@@ -85,7 +85,7 @@ RSpec.describe 'dashboard/sub_service_requests/_request_details', type: :view do
     it "should render subsidies" do
       protocol = stub_protocol
       service_request = stub_service_request(protocol: protocol)
-      sub_service_request = stub_sub_service_request(service_request: service_request, eligible_for_subsidy?: true)
+      sub_service_request = stub_sub_service_request(service_request: service_request, protocol: protocol, eligible_for_subsidy?: true)
 
       allow(sub_service_request).to receive_messages(approved_subsidy: nil, pending_subsidy: nil)
       render_request_details(protocol: protocol, service_request: service_request, sub_service_request: sub_service_request)
@@ -120,7 +120,7 @@ RSpec.describe 'dashboard/sub_service_requests/_request_details', type: :view do
   # specify protocol and organization
   def stub_sub_service_request(opts = {})
     obj = build_stubbed(:sub_service_request,
-      service_request: opts[:service_request])
+      service_request: opts[:service_request], protocol: opts[:protocol])
     allow(obj).to receive(:ctrc?).
       and_return(!!opts[:ctrc?])
     allow(obj).to receive(:eligible_for_subsidy?).

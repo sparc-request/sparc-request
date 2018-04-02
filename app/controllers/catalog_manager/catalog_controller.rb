@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -149,7 +149,7 @@ class CatalogManager::CatalogController < CatalogManager::AppController
 
   def remove_associated_survey
     associated_survey = AssociatedSurvey.find(params[:associated_survey_id])
-    entity = associated_survey.surveyable
+    entity = associated_survey.associable
     associated_survey.delete
 
     render :partial => 'catalog_manager/shared/associated_surveys', :locals => {:entity => entity}

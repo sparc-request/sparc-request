@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,12 +22,15 @@ getOrder = ->
   if $table.bootstrapTable('getOptions').sortOrder == 'asc' then -1 else 1
 
 (exports ? this).dateSorter = (a, b) ->
-  return -1 * getOrder() if !a
-  return 1 * getOrder() if !b
-
-  sort_a = new Date(a)
-  sort_b = new Date(b)
-
-  return 1 if sort_a > sort_b
-  return -1 if sort_a < sort_b
-  return 0
+  if !a && !b
+    return 0
+  else if a && !b
+    return 1
+  else if !a && b
+    return -1
+  else
+    sort_a = new Date(a)
+    sort_b = new Date(b)
+    return 1 if sort_a > sort_b
+    return -1 if sort_a < sort_b
+    return 0

@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -34,11 +34,11 @@
             = form.hidden_field :sub_service_request_id
             = form.hidden_field :service_request_id
             .form-group
-              = form.label "service", t(:dashboard)[:study_level_activities][:form][:service], class: "col-sm-4 control-label"
+              = form.label "service", t(:dashboard)[:study_level_activities][:form][:service], class: "col-sm-4 control-label required"
               .col-sm-7
                 = sla_form_services_select(form, line_item)
             .form-group
-              = form.label "quantity", t(:dashboard)[:study_level_activities][:form][:quantity_requested], class: "col-sm-4 control-label"
+              = form.label "quantity", t(:dashboard)[:study_level_activities][:form][:quantity_requested], class: "col-sm-4 control-label required"
               .col-sm-7
                 = form.text_field "quantity", {class: 'form-control'}
             .form-group

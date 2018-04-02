@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -26,17 +26,37 @@ RSpec.describe 'User edits a survey', js: true do
 
   stub_config("site_admins", ["jug2"])
 
-  before :each do
-    create(:survey)
+  context 'surveys' do
+    before :each do
+      create(:system_survey)
 
-    visit surveyor_surveys_path
-    wait_for_javascript_to_finish
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+    end
+
+    scenario 'and sees the edit modal' do
+      find('.edit-survey').click
+      wait_for_javascript_to_finish
+
+      expect(page).to have_selector('#survey-modal')
+    end
   end
 
-  scenario 'and sees the edit modal' do
-    find('.edit-survey').click
-    wait_for_javascript_to_finish
+  context 'forms' do
+    before :each do
+      org = create(:institution)
+      create(:super_user, organization: org, identity: jug2)
+      create(:form, surveyable: org)
 
-    expect(page).to have_selector('#survey-modal')
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+    end
+
+    scenario 'and sees the edit modal' do
+      find('.edit-survey').click
+      wait_for_javascript_to_finish
+
+      expect(page).to have_selector('#form-modal')
+    end
   end
 end

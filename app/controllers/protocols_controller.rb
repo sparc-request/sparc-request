@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -127,6 +127,14 @@ class ProtocolsController < ApplicationController
 
     @protocol_type = params[:type]
     @protocol = @protocol.becomes(@protocol_type.constantize) unless @protocol_type.nil?
+
+    #### switching to a Project should clear out RMID and RMID validated flag ####
+    if @protocol_type && @protocol_type == 'Project'
+      @protocol.update_attribute :research_master_id, nil
+      @protocol.update_attribute :rmid_validated, false
+    end
+    #### end clearing RMID and RMID validated flag ####
+
     @protocol.populate_for_edit
 
     flash[:success] = t(:protocols)[:change_type][:updated]

@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -39,10 +39,10 @@ class ServiceRequestsController < ApplicationController
     @service_list_false = @service_request.service_list(false)
     @line_items = @service_request.line_items
     @display_all_services = params[:display_all_services] == 'true' ? true : false
-
+    @report_type = params[:report_type]
     respond_to do |format|
       format.xlsx do
-        render xlsx: "show", filename: "service_request_#{@protocol.id}", disposition: "inline"
+        render xlsx: "#{@report_type}", filename: "service_request_#{@protocol.id}", disposition: "inline"
       end
     end
   end
@@ -262,10 +262,10 @@ class ServiceRequestsController < ApplicationController
       required_keys = params[:study] ? :study : params[:project] ? :project : nil
       if required_keys.present?
         temp = params.require(required_keys).permit(:start_date, :end_date,
-          :recruitment_start_date, :recruitment_end_date).to_h
+          :recruitment_start_date, :recruitment_end_date, :initial_budget_sponsor_received_date, :budget_agreed_upon_date, :initial_amount, :negotiated_amount, :initial_amount_clinical_services, :negotiated_amount_clinical_services).to_h
 
         # Finally, transform date attributes.
-        date_attrs = %w(start_date end_date recruitment_start_date recruitment_end_date)
+        date_attrs = %w(start_date end_date recruitment_start_date recruitment_end_date initial_budget_sponsor_received_date budget_agreed_upon_date)
         temp.inject({}) do |h, (k, v)|
           if date_attrs.include?(k) && v.present?
             h.merge(k => Time.strptime(v, "%m/%d/%Y"))

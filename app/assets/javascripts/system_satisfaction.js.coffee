@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -33,7 +33,12 @@ $(document).ready ->
         survey_offered = true
         $.ajax
           type: 'get'
-          url: '/surveyor/responses/new.js?access_code=system-satisfaction-survey'
+          url: '/surveyor/responses/new.js'
+          data:
+            type: 'SystemSurvey'
+            survey_id: $(this).data('id')
+            respondable_id: getSRId()
+            respondable_type: 'ServiceRequest'
 
       $(document).on 'hidden.bs.modal', "#modal_place", ->
         window.location = button.attr('href')

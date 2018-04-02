@@ -21,4 +21,4 @@
   - if ['new', 'edit', 'preview'].include?(action_name)
     = qr.select :content, options_for_select(question.options.map{ |o| [o.content, o.content, { class: 'option', data: { option_id: o.id } }] }), {}, { class: 'form-control selectpicker', multiple: true, data: { question_id: question.id } }
   - else
-    = select_tag :content, options_for_select(question.options.map{ |o| [o.content, o.content, { class: 'option', data: { option_id: o.id } }] }, multiple_select_formatter(question_response.content)), class: 'form-control selectpicker', disabled: true, multiple: true, data: { question_id: question.id }
+    = select_tag :content, options_for_select(question.options.map{ |o| [o.content, o.content.downcase, { class: 'option', data: { option_id: o.id } }] }, multiple_select_formatter(question_response.content.downcase)), class: 'form-control selectpicker', disabled: true, multiple: true, data: { question_id: question.id }

@@ -24,13 +24,16 @@ RSpec.describe 'User views the responses table', js: true do
   let_there_be_lane
   fake_login_for_each_test
   
+  let!(:organization) { create(:organization) }
+  let!(:super_user)   { create(:super_user, identity: jug2, organization: organization) }
+  let!(:form)         { create(:form, surveyable: organization) }
+  let!(:section)      { create(:section, survey: form) }
+  let!(:question)     { create(:question, section: section) }
+  let!(:resp)         { create(:response, survey: form) }
+
   context 'completed responses' do
     before :each do
-      @form = create(:form)
-      @s1   = create(:section, survey: @form)
-      @q1   = create(:question, section: @s1)
-      @resp = create(:response, survey: @form)
-      @qr1  = create(:question_response, response: @resp, question: @q1)
+      create(:question_response, response: resp, question: question)
     end
 
     scenario 'user should see an active "View" button' do
@@ -49,13 +52,6 @@ RSpec.describe 'User views the responses table', js: true do
   end
 
   context 'incomplete responses' do
-    before :each do
-      @form = create(:form)
-      @s1   = create(:section, survey: @form)
-      @q1   = create(:question, section: @s1)
-      @resp = create(:response, survey: @form)
-    end
-
     scenario 'user should see a disabled "View" button' do
       visit surveyor_responses_path
       wait_for_javascript_to_finish

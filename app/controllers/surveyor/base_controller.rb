@@ -35,20 +35,25 @@ class Surveyor::BaseController < ApplicationController
 
   def authorize_survey_builder_access
     # If SystemSurvey-specific actions, verify the user is a Site Admin
-    if params[:type] && params[:type] == 'SystemSurvey'
-      unless current_user.is_site_admin?
-        raise ActionController::RoutingError.new('Not Found')
-      end
-    # If Form-specific actions, verify the user is a Super User, Service Provider, or Overlord
-    elsif params[:type] && params[:type] == 'Form'
-      unless current_user.is_super_user? || current_user.is_service_provider? || current_user.is_overlord?
-        raise ActionController::RoutingError.new('Not Found')
-      end
-    # If non-specific actions, verify the user is a Site Admin, Super User, Service Provider, or Overlord
+    if params[:type] && params[:type] == 'SystemSurvey' && !user_has_survey_access?
+      raise ActionController::RoutingError.new('Not Found')
+    # If any other actions, verify the user is a Site Admin, Super User, Service Provider, or Catalog Manager
+    elsif !user_has_survey_access? && !user_has_form_access?
+      raise ActionController::RoutingError.new('Not Found')
+    end
+  end
+
+  private
+
+  def user_has_survey_access?
+    current_user.is_site_admin?
+  end
+
+  def user_has_form_access?
+    if params[:type] == 'Form' && params[:id]
+      Form.for(current_user).ids.include?(params[:id])
     else
-      unless current_user.is_site_admin? || current_user.is_super_user? || current_user.is_service_provider? || current_user.is_overlord?
-        raise ActionController::RoutingError.new('Not Found')
-      end
+      current_user.is_super_user? || current_user.is_service_provider? || current_user.is_catalog_manager?
     end
   end
 end

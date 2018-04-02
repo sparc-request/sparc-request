@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MdUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,29 +18,37 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Response < ActiveRecord::Base
-  audited
-  
-  belongs_to :survey
-  belongs_to :identity
-  belongs_to :respondable, polymorphic: true
-  
-  has_many :question_responses, dependent: :destroy
-  
-  accepts_nested_attributes_for :question_responses
+require 'rails_helper'
 
-  filterrific(
-    default_filter_params: {},
-    available_filters: [
-      :with_type
-    ]
-  )
+RSpec.describe 'User previews an associated survey', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
 
-  scope :with_type, -> (params) {
-    joins(:survey).where(surveys: { type: params })
-  }
+  let!(:institution)  { create(:institution) }
+  let!(:provider)     { create(:provider, parent: institution) }
+  let!(:cm)           { create(:catalog_manager, identity: jug2, organization: provider) }
+  
+  let!(:survey)       { create(:system_survey, active: true) }
+  let!(:section)      { create(:section, survey: survey) }
+  let!(:question)     { create(:question, section: section) }
 
-  def completed?
-    self.question_responses.any?
+  before :each do
+    visit catalog_manager_root_path
+    wait_for_javascript_to_finish
+  end
+
+  scenario 'and asses the survey preview' do
+    click_link institution.name
+    click_link provider.name
+    find('.legend', text: 'Surveys').click
+    select "Version #{survey.version}", from: 'new_associated_survey'
+    find('.add_associated_survey').click
+    wait_for_javascript_to_finish
+    
+    new_window = window_opened_by { first('.associated_survey_link').click }
+    
+    within_window new_window do
+      expect(page).to have_selector('#survey-panel')
+    end
   end
 end

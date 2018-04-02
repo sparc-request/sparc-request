@@ -18,28 +18,21 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-namespace :data do 
-  task :update_protocol_info_pushed_to_epic => :environment do
-    CSV.open("tmp/bad_data_protocols.csv", "wb") do |csv|
-      csv << ["Protocol ID", "Last Epic Push Time", "Last Epic Push Status", "Updated_at", "Created_at", "Selected For Epic", "Study Type Question Group ID"]
+namespace :data do
+  desc "Import ldap.yml settings into Settings db table"
+  task :import_ldap_yml => :environment do
+    include DataTypeValidator
 
-      epic_interface = EPIC_INTERFACE
+    begin
+      ldap_yml = YAML.load_file(Rails.root.join('config', 'ldap.yml'))[Rails.env]
 
-      Protocol.where(last_epic_push_status: 'complete').each do |protocol|
-        # Check added per Wenjun 3/21/18
-        if protocol.selected_for_epic
-          if protocol.study_type_answers.empty?
-            csv << [protocol.id, protocol.last_epic_push_time, protocol.last_epic_push_status, protocol.updated_at, protocol.created_at, protocol.selected_for_epic, protocol.study_type_question_group_id]
-            puts "Bad data protocol #{protocol.id}"
-          else
-            epic_interface.send_study_creation(protocol)
-            puts "Updated protocol #{protocol.id}"
-          end
-        else
-          puts "Protocol is not selected for epic #{protocol.id}"
-        end
+      ldap_yml.each do |key, value|
+        setting = Setting.new(key: key, value: value, friendly_name: key.humanize.titleize, parent_key: "use_ldap", group: "ldap_settings", parent_value: "true")
+        setting.data_type = get_type(setting.read_attribute(:value))
+        setting.save
       end
+    rescue
+      puts "WARNING: You have no ldap.yml, so there is nothing to import"
     end
-    puts "This script created tmp/bad_data_protocols.csv"
   end
 end

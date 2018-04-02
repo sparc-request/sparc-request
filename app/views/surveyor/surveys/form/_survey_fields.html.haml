@@ -46,7 +46,7 @@
       - else
         = label_tag "survey-#{survey.id}-display_order", t(:surveyor)[:surveys][:form][:survey_information][:display_order], class: 'col-lg-2 control-label required'
         .col-lg-10
-          = select_tag "survey-#{survey.id}-display_order", display_order_options(survey), class: 'form-control selectpicker', include_blank: t(:constants)[:prompts][:none]
+          = select_tag "survey-#{survey.id}-display_order", display_order_options(survey), class: 'form-control selectpicker select-display-order', include_blank: t(:constants)[:prompts][:none]
     .form-group
       = label_tag "survey-#{survey.id}-active", t(:surveyor)[:surveys][:form][:survey_information][:active], class: 'col-lg-2 control-label'
       .col-lg-10

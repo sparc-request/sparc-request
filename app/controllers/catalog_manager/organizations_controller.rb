@@ -28,6 +28,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
   def show
     @organization = Organization.find(params[:id])
+    @organization.setup_available_statuses
     render 'catalog_manager/organizations/show'
   end
 
@@ -37,6 +38,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     @attributes = updater.set_org_tags
     show_success = updater.update_organization
     updater.save_pricing_setups
+    @organization.setup_available_statuses
     @entity = @organization
     flash_update(show_success)
     render 'catalog_manager/organizations/update'
@@ -80,11 +82,14 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
       available_statuses_attributes: [:organization_id,
         :id,
         :status,
-        :selected],
+        :new,
+        :position,
+        :_destroy],
       editable_statuses_attributes: [:organization_id,
         :id,
         :status,
-        :selected])
+        :new,
+        :_destroy])
   end
 
   def flash_update(show_success)

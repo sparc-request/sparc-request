@@ -297,7 +297,6 @@ RSpec.describe ServiceRequest, type: :model do
         end
 
         context "updating status to 'get_a_cost_estimate'" do
-
           it "should return an array with ssr id" do
             expect(@sr.update_status('get_a_cost_estimate')).to eq([@ssr_with_submitted_status.id])
           end

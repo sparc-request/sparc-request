@@ -212,6 +212,10 @@ RSpec.describe SubServiceRequest, type: :model do
       let!(:line_item1) { create(:line_item, sub_service_request_id: ssr1.id, service_request_id: service_request.id, service_id: service.id) }
       let!(:line_item2) { create(:line_item, sub_service_request_id: ssr2.id, service_request_id: service_request.id, service_id: service2.id) }
 
+      before :each do
+        sub_service_request.organization.editable_statuses.where(status: 'on_hold').destroy_all
+      end
+
       context "can be edited" do
 
         it "should return true if the status is draft" do

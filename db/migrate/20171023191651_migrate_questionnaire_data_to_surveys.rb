@@ -122,6 +122,7 @@ class MigrateQuestionnaireDataToSurveys < ActiveRecord::Migration[5.1]
             created_at: questionnaire_response.created_at,
             updated_at: questionnaire_response.updated_at
           })
+          QuestionResponse.create(question_response_params)
         end
       end
     end

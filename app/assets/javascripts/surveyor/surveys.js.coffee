@@ -91,7 +91,7 @@ $(document).ready ->
       success: ->
         build_dependents_selectpicker($('.survey').data('survey-id'))
 
-  $(document).on 'change', '.select-depender, .select-question-type', ->
+  $(document).on 'change', '.select-display-order, .select-depender, .select-question-type', ->
     send_update_request($(this), $(this).val())
 
   $(document).on 'focusout', '#survey-modal input[type="text"], #form-modal input[type="text"]:not([id$="-surveyable"]), #survey-modal textarea, #form-modal textarea', ->

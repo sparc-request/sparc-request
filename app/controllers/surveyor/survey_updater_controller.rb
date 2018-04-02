@@ -49,6 +49,7 @@ class Surveyor::SurveyUpdaterController < Surveyor::BaseController
         :description,
         :access_code,
         :version,
+        :display_order,
         :active,
         :surveyable_id,
         :surveyable_type

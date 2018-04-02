@@ -22,7 +22,7 @@ require 'rails_helper'
 
 RSpec.describe Form, type: :model do
 
-  # let!(:current_user) { create(:identity) }
+  let!(:current_user)   { create(:identity, ldap_uid: 'jug2') }
   let!(:organization1)  { create(:organization) }
   let!(:organization2)  { create(:organization) }
   let!(:service1)       { create(:service, organization: organization1) }
@@ -31,34 +31,36 @@ RSpec.describe Form, type: :model do
   let!(:org_form2)      { create(:form, surveyable: organization2) }
   let!(:service_form1)  { create(:form, surveyable: service1) }
   let!(:service_form2)  { create(:form, surveyable: service2) }
-  # let!(:user_form)    { create(:form, surveyable: current_user) }
-  # let!(:super_user)   { create(:super_user, identity: current_user, organization: organization) }
+  let!(:user_form)      { create(:form, surveyable: current_user) }
 
   describe 'Form#for' do
-    context 'User is a catalog overlord' do
-      it 'should return forms associated to the user and all orgs + services' do
-        current_user = create(:identity, catalog_overlord: true)
-        user_form    = create(:form, surveyable: current_user)
+    context 'User is a site_admin' do
+      stub_config('site_admins', ['jug2'])
 
+      it 'should return forms associated to the user and all orgs + services' do
         expect(Form.for(current_user).to_a.sort{ |l, r| l.id <=> r.id }).to eq([org_form1, org_form2, service_form1, service_form2, user_form])
       end
     end
 
-    context 'User is not a catalog overlord but is a super user' do
+    context 'User is a super user' do
       it 'should return forms associated to the user and admin orgs + services' do
-        current_user = create(:identity)
-        super_user   = create(:super_user, organization: organization1, identity: current_user)
-        user_form    = create(:form, surveyable: current_user)
+        create(:super_user, organization: organization1, identity: current_user)
 
         expect(Form.for(current_user).to_a.sort{ |l, r| l.id <=> r.id }).to eq([org_form1, service_form1, user_form])
       end
     end
 
-    context 'User is not a catalog overlord but is a service provider' do
+    context 'User is service provider' do
       it 'should return forms associated to the user and admin orgs + services' do
-        current_user      = create(:identity)
-        service_provider  = create(:service_provider, organization: organization1, identity: current_user)
-        user_form         = create(:form, surveyable: current_user)
+        create(:service_provider, organization: organization1, identity: current_user)
+
+        expect(Form.for(current_user).to_a.sort{ |l, r| l.id <=> r.id }).to eq([org_form1, service_form1, user_form])
+      end
+    end
+
+    context 'User is catalog manager' do
+      it 'should return forms associated to the user and admin orgs + services' do
+        create(:catalog_manager, organization: organization1, identity: current_user)
 
         expect(Form.for(current_user).to_a.sort{ |l, r| l.id <=> r.id }).to eq([org_form1, service_form1, user_form])
       end

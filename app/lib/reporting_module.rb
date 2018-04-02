@@ -123,7 +123,7 @@ private
     k,v = rp
 
     value = v
-    klass = k.safe_constantize
+    klass = k.delete(' ').safe_constantize
 
     if self.attrs.keys.include? klass # we've matched a class in our attrs hash
       obj = klass.find(v)

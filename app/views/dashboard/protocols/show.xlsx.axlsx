@@ -48,7 +48,7 @@ arm_totals_ref = {}
     sheet.add_row ["RMID:", @protocol.research_master_id]
     sheet.add_row ["Short Title:",@protocol.short_title], :style => default
     sheet.add_row ["Primary PI Name:", @protocol.primary_principal_investigator.full_name], :style => default
-    sheet.add_row ["Indirect Cost Rate:", @protocol.indirect_cost_rate || 0], style: percent
+    sheet.add_row ["Indirect Cost Rate:", "=Summary!B10"], style: percent
 
     indirect_cost_ref = sheet.rows.last.cells.last.r
 
@@ -161,7 +161,7 @@ arm_totals_ref = {}
     total_sponsor_cost_ppv = ["Total per Patient per Visit (+OH)"] + [""] * 5
 
     (r_columns + [ totals_column ]).each do |col|
-      total_sponsor_cost_ppv += ["=#{col + total_research_row.to_s}*(1+#{indirect_cost_ref})", ""]
+      total_sponsor_cost_ppv += ["=#{col + total_research_row.to_s}*(#{indirect_cost_ref}/100)", ""]
     end
 
     sheet.add_row total_sponsor_cost_ppv, style: total_research_cost_style

@@ -39,7 +39,7 @@ class Survey < ApplicationRecord
   accepts_nested_attributes_for :sections, allow_destroy: true
 
   default_scope -> {
-    order(:access_code, :version)
+    order(:display_order)
   }
 
   scope :active, -> {

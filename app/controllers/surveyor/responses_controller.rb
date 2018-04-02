@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,71 +18,108 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Surveyor::ResponsesController < ApplicationController
+class Surveyor::ResponsesController < Surveyor::BaseController
   respond_to :html, :js, :json
 
   before_action :authenticate_identity!
-  before_action :find_survey, only: [:new]
   before_action :find_response, only: [:show, :edit, :update]
+
+  def set_highlighted_link
+    @highlighted_link ||= 'sparc_forms'
+  end
+
+  def index
+    @filterrific  = 
+      initialize_filterrific(Response, params[:filterrific],
+        select_options: {
+          with_type: [['Form', 'Form'], ['Survey', 'SystemSurvey']]
+        }
+      )
+
+    @type       = @filterrific.with_type.constantize.yaml_klass
+    @responses  = @filterrific.find.eager_load(:survey, :question_responses)
+
+    respond_to do |format|
+      format.html
+      format.js
+      format.json {
+        preload_responses
+      }
+      # format.xlsx
+    end
+  end
 
   def show
     @survey = @response.survey
 
     respond_to do |format|
       format.html
+      format.js
+      format.xlsx
     end
   end
 
   def new
-    @review               = 'true'
-    @sub_service_request  = nil
-    @response             = @survey.responses.new
+    @survey = params[:type].constantize.find(params[:survey_id])
+    @response = @survey.responses.new
     @response.question_responses.build
+    @respondable = params[:respondable_type].constantize.find(params[:respondable_id])
 
     respond_to do |format|
-      format.js
-    end
-  end
-
-  def create
-    @response = Response.new(response_params)
-
-    if @response.save && @response.question_responses.none? { |qr| qr.errors.any? }
-      # Delete responses to questions that didn't show anyways to avoid confusion in the data
-      @response.question_responses.where(required: true, content: [nil, '']).destroy_all
-      SurveyNotification.system_satisfaction_survey(@response).deliver_now if @response.survey.access_code == 'system-satisfaction-survey'
-    else
-      @errors = true
-    end
-
-    respond_to do |format|
+      format.html {
+        existing_response = Response.where(survey: @survey, identity: current_user, respondable: @respondable).first
+        redirect_to surveyor_response_complete_path(existing_response) if existing_response
+      }
       format.js
     end
   end
 
   def edit
-    redirect_to surveyor_response_complete_path(@response) if @response.completed?
+    @survey = @response.survey
 
-    @response.question_responses.build
-
-    @review               = 'false'
-    @sub_service_request  = @response.sub_service_request
-    
     respond_to do |format|
-      format.html
+      format.js
+      format.html { # Only used to take System Surveys via Service Survey emails
+        redirect_to surveyor_response_complete_path(@response) if @response.completed?
+        @response.question_responses.build
+      }
+    end
+  end
+
+  def create
+    @response           = Response.new(response_params)
+    @protocol           = @response.respondable.try(:protocol)
+    @protocol_role      = @protocol.project_roles.find_by(identity_id: current_user.id) if @protocol
+    @permission_to_edit = @protocol_role.nil? ? false : @protocol_role.can_edit? if @protocol
+
+    if @response.save
+      SurveyNotification.system_satisfaction_survey(@response).deliver_now if @response.survey.access_code == 'system-satisfaction-survey' && Rails.application.routes.recognize_path(request.referrer)[:action] == 'review'
+      flash[:success] = t(:surveyor)[:responses][:create]
+    end
+
+    respond_to do |format|
+      format.js
     end
   end
 
   def update
-    if @response.update_attributes(response_params) && @response.question_responses.none? { |qr| qr.errors.any? }
-      # Delete responses to questions that didn't show anyways to avoid confusion in the data
-      @response.question_responses.where(required: true, content: [nil, '']).destroy_all
-      
+    if @response.update_attributes(response_params)
       flash[:success] = t(:surveyor)[:responses][:update]
-    else
-      @errors = true
     end
 
+    respond_to do |format|
+      format.js
+    end
+  end
+
+  def destroy
+    @response           = Response.find(params[:id])
+    @protocol           = @response.respondable.try(:protocol)
+    @protocol_role      = @protocol.project_roles.find_by(identity_id: current_user.id) if @protocol
+    @permission_to_edit = @protocol_role.nil? ? false : @protocol_role.can_edit? if @protocol
+
+    @response.destroy
+    
     respond_to do |format|
       format.js
     end
@@ -93,21 +130,22 @@ class Surveyor::ResponsesController < ApplicationController
 
   private
 
-  def find_survey
-    surveys = Survey.where(access_code: params[:access_code], active: true).order('version DESC')
-
-    if params[:version]
-      @survey = surveys.where(version: params[:version]).first
-    else
-      @survey = surveys.first
-    end
-  end
-
   def find_response
     @response = Response.find(params[:id])
   end
 
+  def filterrific_params
+    params.require(:filterrific).permit(
+      :with_type
+    )
+  end
+
   def response_params
     params.require(:response).permit!
+  end
+
+  def preload_responses
+    preloader = ActiveRecord::Associations::Preloader.new
+    preloader.preload(@responses.select { |r| r.respondable_type == SubServiceRequest.name }, { respondable: { protocol: { primary_pi_role: :identity } } })
   end
 end

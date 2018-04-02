@@ -4,5 +4,6 @@ json.(@epic_queue_records) do |eqr|
   json.pis format_pis(eqr.protocol)
   json.date format_epic_queue_created_at(eqr)
   json.status eqr.status.capitalize
+  json.type eqr.origin.try(:titleize)
   json.by eqr.try(:identity).try(:full_name)
 end

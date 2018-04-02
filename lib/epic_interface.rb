@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -190,7 +190,7 @@ class EpicInterface
 
   # Build a study creation message to send to epic and return it as a
   # string.
-  def study_creation_message(study)
+  def study_creation_message(study, include_cofc=true)
     xml = Builder::XmlMarkup.new(indent: 2)
 
     xml.query(root: @study_root, extension: "STUDY#{study.id}")
@@ -207,7 +207,9 @@ class EpicInterface
         emit_category_grouper(xml, study)
         emit_study_type(xml, study)
         emit_ide_number(xml, study)
-        emit_cofc(xml, study)
+        if include_cofc
+          emit_cofc(xml, study)
+        end
         emit_rmid(xml, study)
 
       }

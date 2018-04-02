@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -25,5 +25,5 @@
       = option.content
     - else
       .col-lg-1.text-center
-        = check_box_tag :content_checkbox, '', multiple_select_formatter(qr.content).include?(option.content), disabled: true, multiple: true
+        = check_box_tag :content_checkbox, '', multiple_select_formatter(question_response.content).include?(option.content), disabled: true, multiple: true
       = option.content

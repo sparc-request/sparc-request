@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -66,15 +66,6 @@ module Dashboard
       end
 
       raw(returning_html)
-    end
-
-    # Given line_items_visit belonging to Organization A, which belongs to
-    # Organization B, which belongs to Organization C, return "C > B > A".
-    # This "hierarchy" stops at a process_ssrs Organization.
-    def self.display_organization_hierarchy(line_item)
-      parent_organizations = line_item.service.parents.reverse
-      root = parent_organizations.find_index { |org| org.process_ssrs? } || (parent_organizations.length - 1)
-      parent_organizations[0..root].map(&:abbreviation).reverse.join(' > ')
     end
 
     def self.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, opts = {})

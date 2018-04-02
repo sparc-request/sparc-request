@@ -22,6 +22,10 @@ class Protocol < ApplicationRecord
 
   include RemotelyNotifiable
 
+  include SanitizedData
+  sanitize_setter :short_title, :special_characters, :squish
+  sanitize_setter :title, :special_characters, :squish
+
   audited
 
   has_many :study_types,                  dependent: :destroy
@@ -127,7 +131,7 @@ class Protocol < ApplicationRecord
     if research_master_id.present? && !ids.include?(research_master_id)
       errors.add(:_, 'The entered Research Master ID does not exist. Please go to the Research Master website to create a new record.')
     end
-    
+
     rescue
       return "server_down"
   end

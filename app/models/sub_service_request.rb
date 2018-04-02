@@ -525,7 +525,8 @@ class SubServiceRequest < ApplicationRecord
       audit = audits.sort_by(&:created_at).last
       # create action
       if audit.audited_changes["sub_service_request_id"].nil?
-        filtered_audit_trail[:line_items] << audit if LineItem.find(audit.auditable_id).sub_service_request_id == self.id
+        line_item = LineItem.where(id: audit.auditable_id).first
+        filtered_audit_trail[:line_items] << audit if (line_item && (line_item.sub_service_request_id == self.id))
       # destroy action
       else
         filtered_audit_trail[:line_items] << audit if audit.audited_changes["sub_service_request_id"] == self.id

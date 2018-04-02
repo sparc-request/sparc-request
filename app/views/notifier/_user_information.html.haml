@@ -34,10 +34,7 @@
       %tr.skinny-black-border
         %td.skinny-black-border.center= pr.identity.full_name
         %td.skinny-black-border.center= pr.identity.email
-        - if pr.identity.id == @service_requester_id
-          %td.skinny-black-border.center= pr.role.titleize + " " + t(:notifier)[:requester]
-        - else
-          %td.skinny-black-border.center= pr.role.titleize
+        %td.skinny-black-border.center= pr.role.titleize
         - if @protocol.selected_for_epic
           %td.skinny-black-border.center= pr.epic_access == true ? "Yes" : "No"
 %br

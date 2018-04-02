@@ -62,8 +62,8 @@ RSpec.describe ServiceRequest, type: :model do
         @identity = create(:identity)
         create(:service_provider,
                 identity: @identity,
-                organization: organization,
-                service: service)
+                organization: organization
+              )
         service_request.update_attribute(:submitted_at, Time.now.yesterday)
         ssr = service_request.sub_service_requests.first
         ssr.update_attribute(:submitted_at, Time.now.yesterday)

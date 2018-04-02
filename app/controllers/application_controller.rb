@@ -68,8 +68,10 @@ class ApplicationController < ActionController::Base
   end
 
   def rmid_server_status(protocol)
-    @rmid_server_down = protocol.rmid_server_status
-    @rmid_server_down ? flash[:alert] = t(:protocols)[:summary][:tooltips][:rmid_server_down] : nil
+    if Setting.find_by_key("research_master_enabled").value
+      @rmid_server_down = protocol.rmid_server_status
+      @rmid_server_down ? flash[:alert] = t(:protocols)[:summary][:tooltips][:rmid_server_down] : nil
+    end
   end
 
   def authorization_error msg, ref

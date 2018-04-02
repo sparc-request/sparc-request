@@ -24,24 +24,10 @@ class EditableStatus < ApplicationRecord
   belongs_to :organization
 
   def self.statuses
-    @statuses ||= PermissibleValue.get_hash('status')
+    PermissibleValue.get_key_list('status')
   end
 
-  validates :status, inclusion: { in: EditableStatus.statuses.keys }, presence: true
+  validates :status, inclusion: { in: EditableStatus.statuses }, presence: true
 
-  scope :selected, -> { where(selected: true) }
-
-  scope :alphabetized, -> { all.sort{ |x, y| x.humanize <=> y.humanize } }
-
-  def self.types
-    self.statuses.keys
-  end
-
-  def self.defaults
-    @defaults ||= PermissibleValue.get_key_list('status', true)
-  end
-
-  def humanize
-    EditableStatus.statuses[self.status]
-  end
+  attr_accessor :new
 end

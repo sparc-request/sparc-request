@@ -19,32 +19,10 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class AvailableStatus < ApplicationRecord
-  
   audited
 
   belongs_to :organization
 
-  scope :selected, -> { where(selected: true) }
-  scope :alphabetized, -> { all.sort{ |x, y| x.humanize <=> y.humanize } }
-
-  def disabled_status?
-    ["Draft", "Get a Cost Estimate", "Submitted"].include?(self.humanize)
-  end
-
-  def self.statuses
-    @statuses ||= PermissibleValue.get_hash('status')
-  end
-
-  def self.defaults
-    @defaults ||= PermissibleValue.get_key_list('status', true)
-  end
-
-  def humanize
-    AvailableStatus.statuses[self.status]
-  end
-
-  def self.types
-    self.statuses.keys
-  end
-
+  attr_accessor :new
+  attr_accessor :position
 end

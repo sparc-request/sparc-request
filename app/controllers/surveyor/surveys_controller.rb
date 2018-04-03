@@ -96,7 +96,14 @@ class Surveyor::SurveysController < Surveyor::BaseController
 
   def search_surveyables
     term            = params[:term].strip
-    org_ids         = current_user.is_overlord? ? Organization.all.ids : current_user.authorized_admin_organizations.ids
+    org_ids         =
+      if current_user.is_site_admin?
+        Organization.all.ids
+      else
+        Organization.authorized_for_super_user(current_user.id).or(
+          Organization.authorized_for_service_provider(current_user.id)).or(
+          Organization.authorized_for_catalog_manager(current_user.id)).ids
+      end
     service_ids     = Service.where(organization_id: org_ids).ids
     
     org_results     = Organization.where("(name LIKE ? OR abbreviation LIKE ?) AND is_available = 1 AND process_ssrs = 1 AND id IN (?)", "%#{term}%", "%#{term}%", org_ids)

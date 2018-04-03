@@ -31,13 +31,22 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   def index
     @filterrific  = 
       initialize_filterrific(Response, params[:filterrific],
+        default_filter_params: {
+          of_type: current_user.is_site_admin? ? 'SystemSurvey' : 'Form'
+        },
         select_options: {
-          of_type: [['Form', 'Form'], ['Survey', 'SystemSurvey']]
+          of_type: determine_type_rights
         }
       )
 
-    @type       = @filterrific.try(:of_type).try(:constantize).try(:yaml_klass)
-    @responses  = @filterrific.try(:find).try(:eager_load, [:survey, :question_responses])
+    @type       = @filterrific.of_type.constantize.yaml_klass
+    @responses  =
+      if @type == 'Survey'
+        @filterrific.find.eager_load(:survey, :question_responses)
+      else
+        @filterrific.find.eager_load(:survey, :question_responses).
+          where(survey: Form.for(current_user))
+      end
 
     respond_to do |format|
       format.html
@@ -147,5 +156,15 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   def preload_responses
     preloader = ActiveRecord::Associations::Preloader.new
     preloader.preload(@responses.select { |r| r.respondable_type == SubServiceRequest.name }, { respondable: { protocol: { primary_pi_role: :identity } } })
+  end
+
+  def determine_type_rights
+    types = []
+    types << ['Survey', 'SystemSurvey'] if current_user.is_site_admin?
+    types << ['Form', 'Form'] if current_user.is_super_user? || current_user.is_service_provider?
+    
+    raise ActionController::RoutingError.new('Not Found') if types.empty?
+
+    types
   end
 end

@@ -23,7 +23,11 @@ require 'rails_helper'
 RSpec.describe Surveyor::ResponsesController, type: :controller do
   stub_controller
   let!(:before_filters) { find_before_filters }
-  let!(:logged_in_user) { create(:identity) }
+  let!(:logged_in_user) { create(:identity, ldap_uid: 'jug2') }
+
+  before :each do
+    session[:identity_id] = logged_in_user.id
+  end
 
   describe '#index' do
     it 'should call before_filter #authenticate_identity!' do
@@ -31,6 +35,8 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
     end
 
     context 'format.html' do
+      stub_config("site_admins", ['jug2'])
+
       it 'should assign @filterrific' do
         get :index, params: {}, format: :html
 
@@ -49,7 +55,7 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
       end
 
       it 'should assign @responses' do
-        @resp = create(:response, survey: create(:form))
+        @resp = create(:response, survey: create(:system_survey))
 
         get :index, params: {}, format: :html
 
@@ -71,6 +77,8 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
     end
 
     context 'format.js' do
+      stub_config("site_admins", ['jug2'])
+
       it 'should assign @filterrific' do
         get :index, params: {}, format: :js, xhr: true
 
@@ -89,7 +97,7 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
       end
 
       it 'should assign @responses' do
-        @resp = create(:response, survey: create(:form))
+        @resp = create(:response, survey: create(:system_survey))
 
         get :index, params: {}, format: :js, xhr: true
 
@@ -111,6 +119,8 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
     end
 
     context 'format.json' do
+      stub_config("site_admins", ['jug2'])
+
       it 'should assign @filterrific' do
         get :index, params: {}, format: :json
 
@@ -129,7 +139,7 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
       end
 
       it 'should assign @responses' do
-        @resp = create(:response, survey: create(:form))
+        @resp = create(:response, survey: create(:system_survey))
 
         get :index, params: {}, format: :json
 
@@ -148,6 +158,81 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
 
         expect(response).to render_template(:index)
       end
+    end
+  end
+
+  context 'type == Form' do
+    it 'should return only responses for the user\'s forms (Form.for(current_user))' do
+      org1  = create(:organization)
+      org2  = create(:organization)
+      form1 = create(:form, surveyable: org1)
+      form2 = create(:form, surveyable: org2)
+      resp1 = create(:response, identity: logged_in_user, survey: form1)
+      resp2 = create(:response, identity: logged_in_user, survey: form2)
+              create(:super_user, identity: logged_in_user, organization: org1)
+
+      get :index, params: { type: 'Form' }
+
+      expect(assigns(:responses).count).to eq(1)
+      expect(assigns(:responses).first).to eq(resp1)
+    end
+  end
+
+  context 'user is a site admin' do
+    stub_config("site_admins", ['jug2'])
+
+    it 'should assign default with_type for surveys' do
+      get :index, params: {}
+
+      expect(assigns(:filterrific).with_type).to eq('SystemSurvey')
+    end
+
+    it 'should add Surveys to the with_type select' do
+      get :index, params: {}
+
+      expect(assigns(:filterrific).select_options[:with_type].first).to eq(['Survey', 'SystemSurvey'])
+    end
+  end
+
+  context 'user is a Super User' do
+    before :each do
+      create(:super_user, identity: logged_in_user, organization: create(:organization))
+    end
+
+    it 'should assign default with_type for forms' do
+      get :index, params: {}
+
+      expect(assigns(:filterrific).with_type).to eq('Form')
+    end
+
+    it 'should add Forms to the with_type select' do
+      get :index, params: {}
+
+      expect(assigns(:filterrific).select_options[:with_type].first).to eq(['Form', 'Form'])
+    end
+  end
+
+  context 'user is a Service Provider' do
+    before :each do
+      create(:service_provider, identity: logged_in_user, organization: create(:organization))
+    end
+
+    it 'should assign default with_type for forms' do
+      get :index, params: {}
+
+      expect(assigns(:filterrific).with_type).to eq('Form')
+    end
+
+    it 'should add Forms to the with_type select' do
+      get :index, params: {}
+
+      expect(assigns(:filterrific).select_options[:with_type].first).to eq(['Form', 'Form'])
+    end
+  end
+
+  context 'user is a general user' do
+    it 'should raise Not Found' do
+      expect { get :index, params: {} }.to raise_error('Not Found')
     end
   end
 end

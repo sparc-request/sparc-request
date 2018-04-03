@@ -24,8 +24,8 @@
         %h4.panel-title
           = @survey.title
       .panel-body
-        = render 'surveyor/responses/form/response_content', f: f, survey: @survey, sub_service_request: nil
+        = render 'surveyor/surveys/form/preview_form', survey: @survey, f: f
       .panel-footer
         .clearfix
-          %button.btn.btn-primary.pull-right.disabled
+          %button.btn.btn-primary.pull-right{ disabled: true }
             = t(:actions)[:submit]

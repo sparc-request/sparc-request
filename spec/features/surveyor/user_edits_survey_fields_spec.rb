@@ -88,7 +88,7 @@ RSpec.describe 'User edits survey fields', js: true do
     end
 
     scenario 'and sees updated display order' do
-      create(:system_survey, access_code: @survey.access_code, version: @survey.version+1, display_order: 0)
+      @new_survey = create(:system_survey, access_code: @survey.access_code, version: @survey.version+1, display_order: 0)
 
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
@@ -96,7 +96,7 @@ RSpec.describe 'User edits survey fields', js: true do
       first('.edit-survey').click
       wait_for_javascript_to_finish
 
-      bootstrap_select "#survey-#{@survey.id}-display_order", 'Add as last'
+      bootstrap_select "#survey-#{@new_survey.id}-display_order", 'Add as last'
       wait_for_javascript_to_finish
 
       expect(@survey.reload.display_order).to eq(2)

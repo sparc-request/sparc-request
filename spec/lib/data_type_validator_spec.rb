@@ -50,7 +50,7 @@ RSpec.describe DataTypeValidator do
 
   describe '#is_email?' do
     it 'should allow valid email' do
-      expect(is_email?('myname@email.co')).to eq(true)
+      expect(is_email?('myname@email.com')).to eq(true)
     end
 
     it 'should allow valid comma-separated emails' do
@@ -58,7 +58,7 @@ RSpec.describe DataTypeValidator do
     end
 
     it 'should not allow invalid email' do
-      expect(is_email?('my.name.email.co')).to eq(false)
+      expect(is_email?('my.name.email.com')).to eq(false)
     end
   end
 
@@ -91,6 +91,16 @@ RSpec.describe DataTypeValidator do
 
     it 'should not allow an invalid path' do
       expect(is_path?('https://sparc.musc.edu/dashboard/?service_request_id=1&admin=false')).to eq(false)
+    end
+  end
+
+  describe '#get_type' do
+    it 'should return the data type' do
+      expect(get_type('true')).to eq('boolean')
+      expect(get_type('{"key":"value"}')).to eq('json')
+      expect(get_type('myname@email.com')).to eq('email')
+      expect(get_type('https://sparc.musc.edu/dashboard/protocols/')).to eq('url')
+      expect(get_type('/dashboard/?service_request_id=1&admin=false')).to eq('path')
     end
   end
 end

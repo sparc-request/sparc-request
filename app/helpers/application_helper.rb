@@ -164,6 +164,8 @@ module ApplicationHelper
         !current_user.is_super_user?
       when 'sparc_funding'
         !current_user.is_funding_admin?
+      when 'sparc_forms'
+        !current_user.is_site_admin? && !current_user.is_super_user? && !current_user.is_service_provider?
       else
         false
       end

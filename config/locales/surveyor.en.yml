@@ -60,6 +60,10 @@ en:
       filter:
         header: "Filter Responses"
         type: "Type"
+        state: "State"
+        state_filters:
+          active: "Active"
+          inactive: "Inactive"
         completion_date: "Completion Date"
         from: "From"
         to: "To"
@@ -121,6 +125,7 @@ en:
             phone: "XXXXXXXXXX"
           option:
             content: "Option (Required)"
+      full_title: "%{title} (Version %{version})"
 
     systemsurveys:
       header: "System Surveys"

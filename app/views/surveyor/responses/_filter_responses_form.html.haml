@@ -33,14 +33,18 @@
         = form.label :of_type, t(:surveyor)[:responses][:filter][:type], class: 'col-lg-3 control-label text-left'
         .col-lg-9
           = form.select :of_type, filterrific.select_options[:of_type], {}, class: 'form-control selectpicker'
+      .form-group.row
+        = form.label :with_state, t(:surveyor)[:responses][:filter][:state], class: 'col-lg-3 control-label text-left'
+        .col-lg-9
+          = form.select :with_state, options_for_select(Response::STATE_FILTERS, filterrific.with_state), {}, class: 'form-control selectpicker', multiple: true
       .form-group.row{ id: "for-#{Form.name}", class: filterrific.of_type == Form.name ? "" : "hidden" }
         = form.label :with_survey, Form.name, class: 'col-lg-3 control-label text-left'
         .col-lg-9
-          = form.select :with_survey, options_from_collection_for_select(Form.all, :id, :title, filterrific.with_survey), {}, class: 'form-control selectpicker', multiple: true
+          = form.select :with_survey, grouped_options_for_select(Form.for(current_user).for_dropdown_select, filterrific.with_survey), {}, class: 'form-control selectpicker', multiple: true
       .form-group.row{ id: "for-#{SystemSurvey.name}", class: filterrific.of_type == SystemSurvey.name ? "" : "hidden" }
         = form.label :with_survey, Survey.name, class: 'col-lg-3 control-label text-left'
         .col-lg-9
-          = form.select :with_survey, options_from_collection_for_select(SystemSurvey.all, :id, :title, filterrific.with_survey), {}, class: 'form-control selectpicker', multiple: true
+          = form.select :with_survey, grouped_options_for_select(SystemSurvey.unscoped.for_dropdown_select, filterrific.with_survey), {}, class: 'form-control selectpicker', multiple: true
       .form-group.row
         .col-sm-12
           %label

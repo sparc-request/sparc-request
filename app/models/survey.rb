@@ -65,6 +65,12 @@ class Survey < ApplicationRecord
     'Multiple Dropdown': 'multiple_dropdown'
   }
   
+  def self.for_dropdown_select
+    self.all.order(:title).group_by(&:title).map{ |title, surveys|
+      [title, surveys.map{ |survey| ["Version #{survey.version}", survey.id] }]
+    }
+  end
+
   # Added because version could not be written as an attribute by FactoryGirl. Possible keyword issue?
   def version=(v)
     write_attribute(:version, v)
@@ -75,8 +81,12 @@ class Survey < ApplicationRecord
     read_attribute(:version)
   end
 
+  def full_title
+    I18n.t('surveyor.surveys.full_title', title: self.title, version: self.version)
+  end
+
   def insertion_name
-    "Before #{title} (Version #{version})"
+    "Before #{self.full_title}"
   end
 
   def report_title

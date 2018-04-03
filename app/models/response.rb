@@ -33,6 +33,7 @@ class Response < ActiveRecord::Base
     default_filter_params: {},
     available_filters: [
       :of_type,
+      :with_state,
       :with_survey,
       :from_date,
       :to_date,
@@ -42,6 +43,20 @@ class Response < ActiveRecord::Base
 
   scope :of_type, -> (type) {
     joins(:survey).where(surveys: { type: type })
+  }
+
+  STATE_FILTERS = [
+    [I18n.t(:surveyor)[:responses][:filter][:state_filters][:active], 1],
+    [I18n.t(:surveyor)[:responses][:filter][:state_filters][:inactive], 0]
+  ]
+
+  scope :with_state, -> (states) {
+    # Note: States are 0 for inactive and 1 for active
+    states.reject!(&:blank?)
+
+    return nil if states.empty?
+
+    joins(:survey).where(surveys: { active: states })
   }
 
   scope :with_survey, -> (survey_ids) {
@@ -55,13 +70,13 @@ class Response < ActiveRecord::Base
   scope :from_date, -> (date) {
     return nil if date.blank?
 
-    where("responses.created_at >= ?", date)
+    where("responses.created_at >= ?", DateTime.strptime(date, '%m/%d/%Y'))
   }
 
   scope :to_date, -> (date) {
     return nil if date.blank?
 
-    where("responses.created_at <= ?", date)
+    where("responses.created_at <= ?", DateTime.strptime(date, '%m/%d/%Y').end_of_day)
   }
 
   scope :include_incomplete, -> (boolean) {

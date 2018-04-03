@@ -222,7 +222,10 @@ class Organization < ApplicationRecord
     if is_available == "0"
       children = Organization.where(id: all_child_organizations << self)
       children.update_all(is_available: false)
-      Service.where(organization_id: children).update_all(is_available: false)
+      services = Service.where(organization_id: children)
+      services.each do |service|
+        service.update_attributes(is_available: false)
+      end
     end
   end
 

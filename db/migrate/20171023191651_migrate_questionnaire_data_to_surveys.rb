@@ -47,6 +47,9 @@ class MigrateQuestionnaireDataToSurveys < ActiveRecord::Migration[5.1]
     ####################################################################################
     puts "  Replacing data..."
 
+    # Store new questions by their old item_id
+    items_and_questions = {}
+
     questionnaires.each_with_index do |questionnaire, index|
       survey_params = ActionController::Parameters.new({
         title: questionnaire.name,
@@ -77,6 +80,7 @@ class MigrateQuestionnaireDataToSurveys < ActiveRecord::Migration[5.1]
           depender_id: nil
         })
         new_question = Question.create(question_params.permit!)
+        items_and_questions[item.id] = new_question
 
         # For Yes/No Questions, there are extra options left over that we don't want
         if item.item_type == 'yes_no'
@@ -115,13 +119,14 @@ class MigrateQuestionnaireDataToSurveys < ActiveRecord::Migration[5.1]
 
         questionnaire_responses.select{ |qr| qr.submission_id == submission.id }.each do |questionnaire_response|
           question_response_params = ActionController::Parameters.new({
-            question_id: questionnaire_response.item_id,
-            response_id: questionnaire_response.submission_id,
+            question_id: items_and_questions[questionnaire_response.item_id].id,
+            response_id: new_response.id,
             content: questionnaire_response.content,
             required: questionnaire_response.required,
             created_at: questionnaire_response.created_at,
             updated_at: questionnaire_response.updated_at
           })
+          QuestionResponse.create(question_response_params.permit!)
         end
       end
     end

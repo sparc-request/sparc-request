@@ -93,7 +93,7 @@ class MigrateQuestionnaireDataToSurveys < ActiveRecord::Migration[5.1]
             content: 'No'
           )
         else
-          item_options.select{ |io| io.item_id = item.id }.each do |item_option|
+          item_options.select{ |io| io.item_id == item.id }.each do |item_option|
             option_params = ActionController::Parameters.new({
               question: new_question,
               content: item_option.content,

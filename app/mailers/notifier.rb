@@ -221,39 +221,33 @@ class Notifier < ActionMailer::Base
   end
 
   def notify_primary_pi_for_epic_user_removal protocol, project_role
-    unless project_role.project_rights == 'none'
-      @protocol = protocol
-      @primary_pi = @protocol.primary_principal_investigator
-      @project_role = project_role
+    @protocol = protocol
+    @primary_pi = @protocol.primary_principal_investigator
+    @project_role = project_role
 
-      subject = "#{@protocol.id} - Epic User Removal"
+    subject = "#{@protocol.id} - Epic User Removal"
 
-      mail(:to => Setting.find_by_key("approve_epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
-    end
+    mail(:to => Setting.find_by_key("approve_epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
   end
 
   def notify_for_epic_access_removal protocol, project_role
-    unless project_role.project_rights == 'none'
-      @protocol = protocol
-      @project_role = project_role
+    @protocol = protocol
+    @project_role = project_role
 
-      subject = "#{@protocol.id} - Remove Epic Access"
+    subject = "#{@protocol.id} - Remove Epic Access"
 
-      mail(:to => Setting.find_by_key("approve_epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
-    end
+    mail(:to => Setting.find_by_key("approve_epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
   end
 
   def notify_for_epic_rights_changes protocol, project_role, previous_rights
-    unless project_role.project_rights == 'none'
-      @protocol = protocol
-      @project_role = project_role
-      @added_rights = project_role.epic_rights - previous_rights
-      @removed_rights = previous_rights - project_role.epic_rights
+    @protocol = protocol
+    @project_role = project_role
+    @added_rights = project_role.epic_rights - previous_rights
+    @removed_rights = previous_rights - project_role.epic_rights
 
-      subject = "#{@protocol.id} - Update Epic Access"
+    subject = "#{@protocol.id} - Update Epic Access"
 
-      mail(:to => Setting.find_by_key("approve_epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
-    end
+    mail(:to => Setting.find_by_key("approve_epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
   end
 
   def epic_queue_error protocol, error=nil

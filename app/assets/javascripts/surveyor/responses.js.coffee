@@ -51,13 +51,19 @@ $(document).ready ->
   $(document).on 'click', '#save-filters', ->
     data = {} # Grab form values
 
-    $.each $('form#filterrific_filter').serializeArray(), (i, field) ->
+    $.each $('form#filterrific_filter:visible').serializeArray(), (i, field) ->
       data[field.name] = field.value
 
-    if $(".form-group:visible #filterrific_with_survey").val()
-      data["filterrific[with_survey][]"] = $(".form-group:visible #filterrific_with_survey").val()
-    else
-      data["filterrific[with_survey][]"] = ""
+    if data["filterrific[with_state][]"].length
+      data["filterrific[with_state][]"] = $("#filterrific_with_state").val()
+
+    if data["filterrific[with_survey][]"].length
+      data["filterrific[with_survey][]"] = $(".form-group:not(.hidden) #filterrific_with_survey").val()
+
+    $.ajax
+      type: 'GET'
+      url: '/surveyor/response_filters/new'
+      data: data
 
   $(document).on 'change', '#filterrific_of_type', ->
     selected_value = $(this).find('option:selected').val()

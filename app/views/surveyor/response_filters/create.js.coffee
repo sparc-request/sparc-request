@@ -17,55 +17,10 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-class Surveyor::ResponseFiltersController < ApplicationController
-  respond_to :html, :js
-
-  before_action :authenticate_identity!
-
-  def new
-    @response_filter = current_user.response_filters.new(new_params)
-  end
-
-  def create
-    @response_filter = current_user.response_filters.new(create_params)
-
-    if @response_filter.save
-      flash[:success] = t(:surveyor)[:response_filters][:created]
-    else
-      @errors = @response_filter.errors
-    end
-  end
-
-  def destroy
-    @filter = ResponseFilter.find(params[:id])
-    
-    @filter.destroy
-
-    flash[:alert] = t(:surveyor)[:response_filters][:destroyed]
-  end
-
-  def new_params
-    params.require(:filterrific).permit(
-      :of_type,
-      :from_date,
-      :to_date,
-      :include_incomplete,
-      with_state: [],
-      with_survey: []
-    )
-  end
-
-  def create_params
-    params.require(:response_filter).permit(
-      :name,
-      :identity_id,
-      :of_type,
-      :from_date,
-      :to_date,
-      :include_incomplete,
-      with_state: [],
-      with_survey: []
-    )
-  end
-end
+<% if @errors %>
+$("#modal_errors").html("<%= j render 'shared/modal_errors', errors: @errors %>")
+<% else %>
+$("#saved-searches").html("<%= j render 'surveyor/response_filters/saved_searches' %>")
+$("#modal_place").modal('hide')
+$("#flashes_container").html("<%= j render 'shared/flash' %>")
+<% end %>

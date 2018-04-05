@@ -18,12 +18,34 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.panel.panel-default
-  .panel-heading
-    = t(:dashboard)[:protocol_filters][:saved_filters][:header]
-  .panel-body
-    %ul
-      - @protocol_filters.each do |pf|
-        %li
-          = link_to pf.search_name, pf.href, class: "saved_search_link"
-          = link_to "", dashboard_protocol_filter_path(pf.id), class: "glyphicon glyphicon-remove text-danger pull-right delete-filter", method: :delete, remote: true
+.modal-dialog
+  .modal-content
+    = form_for [:surveyor, response_filter], remote: true, html: { role: 'form' } do |form|
+      .modal-header
+        %button.close{ type: 'button', data: { dismiss: 'modal' } }
+          %span{ aria: { hidden:'true' } } &times;
+          %span.sr-only &times;
+        %h4.modal-title.text-center
+          = t(:surveyor)[:response_filters][:form][:header]
+      .modal-body
+        #modal_errors
+        .row
+          .col-md-12
+            = form.hidden_field :identity_id
+            = form.hidden_field :of_type
+            = form.hidden_field :from_date
+            = form.hidden_field :to_date
+            = form.hidden_field :include_incomplete
+            - response_filter.with_state.each do |state|
+              = form.hidden_field :with_state, multiple: true, value: state
+            - response_filter.with_survey.each do |survey_id|
+              = form.hidden_field :with_survey, multiple: true, value: survey_id
+            .form-group
+              = form.label :name, t(:surveyor)[:response_filters][:form][:name], class: 'col-sm-3 required text-right'
+              .col-sm-9
+                = form.text_field :name, class: 'form-control'
+      .modal-footer
+        .center-block
+          %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
+            = t(:actions)[:close]
+          %input.btn.btn-primary{ type: 'submit', value: t(:actions)[:save] }

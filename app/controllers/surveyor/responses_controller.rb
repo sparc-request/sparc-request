@@ -29,15 +29,15 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   end
 
   def index
-    @filterrific  = 
-      initialize_filterrific(Response, params[:filterrific],
+    @filterrific  =
+      initialize_filterrific(Response, params[:filterrific] && filterrific_params,
         default_filter_params: {
           of_type: current_user.is_site_admin? ? 'SystemSurvey' : 'Form'
         },
         select_options: {
           of_type: determine_type_rights
         }
-      )
+      ) || return
 
     @type       = @filterrific.of_type.constantize.yaml_klass
     @responses  =
@@ -145,7 +145,13 @@ class Surveyor::ResponsesController < Surveyor::BaseController
 
   def filterrific_params
     params.require(:filterrific).permit(
-      :with_type
+      :reset_filterrific,
+      :of_type,
+      :from_date,
+      :to_date,
+      :include_incomplete,
+      with_state: [],
+      with_survey: []
     )
   end
 

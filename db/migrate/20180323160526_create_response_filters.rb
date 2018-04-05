@@ -2,7 +2,9 @@ class CreateResponseFilters < ActiveRecord::Migration[5.1]
   def up
     create_table :response_filters do |t|
       t.integer   :identity_id
+      t.string    :name
       t.string    :of_type
+      t.string    :with_state
       t.string    :with_survey
       t.datetime  :from_date
       t.datetime  :to_date

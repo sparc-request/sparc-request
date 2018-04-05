@@ -46,8 +46,8 @@ class Response < ActiveRecord::Base
   }
 
   STATE_FILTERS = [
-    [I18n.t(:surveyor)[:responses][:filter][:state_filters][:active], 1],
-    [I18n.t(:surveyor)[:responses][:filter][:state_filters][:inactive], 0]
+    [I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active], 1],
+    [I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive], 0]
   ]
 
   scope :with_state, -> (states) {
@@ -70,13 +70,13 @@ class Response < ActiveRecord::Base
   scope :from_date, -> (date) {
     return nil if date.blank?
 
-    where("responses.created_at >= ?", DateTime.strptime(date, '%m/%d/%Y'))
+    where("responses.created_at >= ?", date.to_datetime)
   }
 
   scope :to_date, -> (date) {
     return nil if date.blank?
 
-    where("responses.created_at <= ?", DateTime.strptime(date, '%m/%d/%Y').end_of_day)
+    where("responses.created_at <= ?", date.to_datetime.end_of_day)
   }
 
   scope :include_incomplete, -> (boolean) {

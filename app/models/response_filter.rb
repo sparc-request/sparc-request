@@ -22,6 +22,9 @@ class ResponseFilter < ApplicationRecord
 
   belongs_to :identity
 
+  validates :name, presence: true
+
+  serialize :with_state, Array
   serialize :with_survey, Array
 
   MAX_FILTERS = 15
@@ -31,4 +34,18 @@ class ResponseFilter < ApplicationRecord
     order(created_at: :desc).
     limit(ResponseFilter::MAX_FILTERS)
   }
+
+  def href
+    Rails.application.routes.url_helpers.
+      surveyor_responses_path(
+        filterrific: {
+          of_type: self.of_type,
+          with_state: self.with_state,
+          with_survey: self.with_survey,
+          from_date: self.from_date,
+          to_date: self.to_date,
+          include_incomplete: self.include_incomplete
+        }
+      )
+  end
 end

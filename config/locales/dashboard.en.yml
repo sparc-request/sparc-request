@@ -59,7 +59,7 @@ en:
       headers:
         current: "Current"
         past: "Past"
-        authorized_user_update: "Authorized User Update"
+        protocol_update: "Protocol Update"
 
     #########
     # FORMS #

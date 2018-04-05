@@ -50,7 +50,7 @@ class MigrateQuestionnaireDataToSurveys < ActiveRecord::Migration[5.1]
     # Store new questions by their old item_id
     items_and_questions = {}
 
-    questionnaires.each_with_index do |questionnaire, index|
+    questionnaires.each_with_index do |questionnaire|
       survey_params = ActionController::Parameters.new({
         title: questionnaire.name,
         description: nil,
@@ -65,7 +65,7 @@ class MigrateQuestionnaireDataToSurveys < ActiveRecord::Migration[5.1]
       })
       
       new_survey = Form.create(survey_params.permit!)
-      new_section = Section.create(survey: new_survey, title: "Section #{index+1}")
+      new_section = Section.create(survey: new_survey, title: "Section 1")
 
       items.select{ |i| i.questionnaire_id == questionnaire.id }.each do |item|
         question_params = ActionController::Parameters.new({

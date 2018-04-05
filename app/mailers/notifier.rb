@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -42,7 +42,7 @@ class Notifier < ActionMailer::Base
     service_list_true = @service_request.service_list(true)
     controller = set_instance_variables(user_current, @service_request, service_list_false, service_list_true, @service_request.line_items, @protocol)
 
-    xls = controller.render_to_string action: 'show', formats: [:xlsx]
+    xls = controller.render_to_string action: 'request_report', formats: [:xlsx]
     ### END ATTACHMENTS ###
 
     @status = status(admin_delete_ssr, audit_report.present?, individual_ssr, ssr, @service_request)
@@ -51,12 +51,10 @@ class Notifier < ActionMailer::Base
     @role = project_role.role
     @full_name = @identity.full_name
     @audit_report = audit_report
-
-    @service_requester_id = service_requester_id(@service_request, deleted_ssrs)
     @portal_link = Setting.find_by_key("dashboard_link").value + "/protocols/#{@protocol.id}"
 
     if admin_delete_ssr
-      @ssrs_to_be_displayed = [deleted_ssrs]
+      @ssrs_to_be_displayed = [@deleted_ssrs]
     else
       @ssrs_to_be_displayed = individual_ssr ? [ssr] : @service_request.sub_service_requests
     end
@@ -81,7 +79,7 @@ class Notifier < ActionMailer::Base
     service_list_false = @service_request.service_list(false, nil, ssr)
     service_list_true = @service_request.service_list(true, nil, ssr)
     controller = set_instance_variables(user_current, @service_request, service_list_false, service_list_true, ssr.line_items, @protocol)
-    xls = controller.render_to_string action: 'show', formats: [:xlsx]
+    xls = controller.render_to_string action: 'request_report', formats: [:xlsx]
     ### END ATTACHMENTS ###
 
     @ssr_deleted = false
@@ -91,8 +89,6 @@ class Notifier < ActionMailer::Base
 
     @role = 'none'
     @full_name = submission_email_address
-
-    @service_requester_id = service_requester_id(@service_request, ssr)
     @ssrs_to_be_displayed = [ssr]
 
     @portal_link = Setting.find_by_key("dashboard_link").value + "/protocols/#{@protocol.id}"
@@ -119,8 +115,6 @@ class Notifier < ActionMailer::Base
 
     @role = 'none'
     @full_name = service_provider.identity.full_name
-
-    @service_requester_id = service_requester_id(@service_request, ssr)
     @audit_report = audit_report
 
     @portal_link = Setting.find_by_key("dashboard_link").value + "/protocols/#{@protocol.id}"
@@ -142,7 +136,7 @@ class Notifier < ActionMailer::Base
     line_items = line_items.flatten
     controller = set_instance_variables(user_current, @service_request, service_list_false, service_list_true, line_items, @protocol)
 
-    xls = controller.render_to_string action: 'show', formats: [:xlsx]
+    xls = controller.render_to_string action: 'request_report', formats: [:xlsx]
     attachments_to_add["service_request_#{@service_request.id}.xlsx"] = xls
     #TODO this is not very multi-institutional
     # generate the required forms pdf if it's required
@@ -213,7 +207,7 @@ class Notifier < ActionMailer::Base
 
     subject = "#{@protocol.id} - Epic Rights Approval"
 
-    mail(:to => Setting.find_by_key("epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
+    mail(:to => Setting.find_by_key("approve_epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
   end
 
   def notify_primary_pi_for_epic_user_final_review protocol
@@ -233,7 +227,7 @@ class Notifier < ActionMailer::Base
 
     subject = "#{@protocol.id} - Epic User Removal"
 
-    mail(:to => Setting.find_by_key("epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
+    mail(:to => Setting.find_by_key("approve_epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
   end
 
   def notify_for_epic_access_removal protocol, project_role
@@ -242,7 +236,7 @@ class Notifier < ActionMailer::Base
 
     subject = "#{@protocol.id} - Remove Epic Access"
 
-    mail(:to => Setting.find_by_key("epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
+    mail(:to => Setting.find_by_key("approve_epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
   end
 
   def notify_for_epic_rights_changes protocol, project_role, previous_rights
@@ -253,7 +247,7 @@ class Notifier < ActionMailer::Base
 
     subject = "#{@protocol.id} - Update Epic Access"
 
-    mail(:to => Setting.find_by_key("epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
+    mail(:to => Setting.find_by_key("approve_epic_rights_mail_to").value, :from => Setting.find_by_key("no_reply_from").value, :subject => subject)
   end
 
   def epic_queue_error protocol, error=nil
@@ -305,7 +299,7 @@ class Notifier < ActionMailer::Base
     when 'get_a_cost_estimate'
       "Get Cost Estimate"
     when 'request_amendment'
-      "Amendment Submitted "
+      "Amendment Submitted"
     when 'ssr_destroyed'
       "Request Deletion"
     when 'submitted'
@@ -317,9 +311,5 @@ class Notifier < ActionMailer::Base
     else
       t('mailer.email_title.general', email_status: email_status, type: "Protocol", id: protocol.id)
     end
-  end
-
-  def service_requester_id(service_request, deleted_ssr)
-    service_request.sub_service_requests.first.present? ? service_request.sub_service_requests.first.service_requester_id : AuditRecovery.where(auditable_id: deleted_ssr.id, auditable_type: 'SubServiceRequest', action: 'destroy').first.audited_changes['service_requester_id']
   end
 end

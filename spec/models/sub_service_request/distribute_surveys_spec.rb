@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -28,13 +28,13 @@ RSpec.describe SubServiceRequest, type: :model do
 
     context 'we have available surveys' do
       before :each do
-        @pi                    = create(:identity)
-        @service_requester = create(:identity)
+        @pi                   = create(:identity)
+        @service_requester    = create(:identity)
         @protocol             = create(:protocol_without_validations)
         create(:project_role, identity_id:  @pi.id, protocol_id:  @protocol.id, role: 'primary-pi')
         @service_request      = create(:service_request_without_validations, protocol: @protocol)
         @organization         = create(:organization)
-        @survey               = create(:survey, access_code: 'sctr-customer-satisfaction-survey')
+        @survey               = create(:system_survey, access_code: 'sctr-customer-satisfaction-survey')
         @sub_service_request  = create(:sub_service_request_without_validations,
                                         service_request: @service_request,
                                         organization: @organization,
@@ -70,7 +70,7 @@ RSpec.describe SubServiceRequest, type: :model do
         create(:project_role, identity_id:  @pi.id, protocol_id:  @protocol.id, role: 'primary-pi')
         @service_request      = create(:service_request_without_validations, protocol: @protocol)
         @organization         = create(:organization)
-        @survey               = create(:survey, access_code: 'sctr-customer-satisfaction-survey')
+        @survey               = create(:system_survey, access_code: 'sctr-customer-satisfaction-survey')
         @sub_service_request  = create(:sub_service_request_without_validations,
                                         service_request: @service_request,
                                         organization: @organization,

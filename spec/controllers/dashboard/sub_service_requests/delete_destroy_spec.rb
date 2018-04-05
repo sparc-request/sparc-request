@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -23,13 +23,14 @@ require 'rails_helper'
 RSpec.describe Dashboard::SubServiceRequestsController do
   describe 'DELETE #destroy' do
     before :each do
+      service_requester     = create(:identity)
       @logged_in_user = create(:identity)
       log_in_dashboard_identity(obj: @logged_in_user)
 
       @protocol             = create(:protocol_federally_funded, type: 'Study', primary_pi: @logged_in_user)
       @service_request      = create(:service_request_without_validations, protocol: @protocol)
       @organization         = create(:organization)
-      @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization, protocol_id: @protocol.id)
+      @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization, protocol_id: @protocol.id, service_requester: service_requester)
     end
 
     #####AUTHORIZATION#####

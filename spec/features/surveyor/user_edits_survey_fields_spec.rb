@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -26,91 +26,190 @@ RSpec.describe 'User edits survey fields', js: true do
 
   stub_config("site_admins", ["jug2"])
 
-  before :each do
-    @survey = create(:survey)
+  context 'surveys' do
+    before :each do
+      @survey = create(:system_survey, display_order: 1)
+    end
+
+    scenario 'and sees updated title' do
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+
+      find('.edit-survey').click
+      wait_for_javascript_to_finish
+
+      fill_in "survey-#{@survey.id}-title", with: 'Survey Me'
+      find('.modal-title').click
+      wait_for_javascript_to_finish
+
+      expect(@survey.reload.title).to eq('Survey Me')
+    end
+
+    scenario 'and sees updated description' do
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+
+      find('.edit-survey').click
+      wait_for_javascript_to_finish
+
+      fill_in "survey-#{@survey.id}-description", with: 'A survey is a form for receiving information from users'
+      find('.modal-title').click
+      wait_for_javascript_to_finish
+
+      expect(@survey.reload.description).to eq('A survey is a form for receiving information from users')
+    end
+
+    scenario 'and sees updated access code' do
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+
+      find('.edit-survey').click
+      wait_for_javascript_to_finish
+
+      fill_in "survey-#{@survey.id}-access_code", with: 'access-denied'
+      find('.modal-title').click
+      wait_for_javascript_to_finish
+
+      expect(@survey.reload.access_code).to eq('access-denied')
+    end
+
+    scenario 'and sees updated version' do
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+
+      find('.edit-survey').click
+      wait_for_javascript_to_finish
+
+      fill_in "survey-#{@survey.id}-version", with: '9000'
+      find('.modal-title').click
+      wait_for_javascript_to_finish
+
+      expect(@survey.reload.version).to eq(9000)
+    end
+
+    scenario 'and sees updated display order' do
+      @new_survey = create(:system_survey, access_code: @survey.access_code, version: @survey.version+1, display_order: 0)
+
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+
+      first('.edit-survey').click
+      wait_for_javascript_to_finish
+
+      bootstrap_select "#survey-#{@new_survey.id}-display_order", 'Add as last'
+      wait_for_javascript_to_finish
+
+      expect(@survey.reload.display_order).to eq(2)
+    end
+
+    scenario 'and sees updated active' do
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+
+      find('.edit-survey').click
+      wait_for_javascript_to_finish
+
+      find("#survey-#{@survey.id}-active").click
+      wait_for_javascript_to_finish
+
+      expect(@survey.reload.active).to eq(true)
+    end
   end
 
-  scenario 'and sees updated access code' do
-    visit surveyor_surveys_path
-    wait_for_javascript_to_finish
+  context 'forms' do
+    before :each do
+      @org = create(:institution)
+      create(:super_user, organization: @org, identity: jug2)
+      @form = create(:form, surveyable: @org)
+    end
 
-    find('.edit-survey').click
-    wait_for_javascript_to_finish
+    scenario 'and sees updated title' do
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
 
-    fill_in "survey-#{@survey.id}-access_code", with: 'access-denied'
-    find('.modal-title').click
-    wait_for_javascript_to_finish
+      find('.edit-survey').click
+      wait_for_javascript_to_finish
 
-    expect(@survey.reload.access_code).to eq('access-denied')
-  end
+      fill_in "survey-#{@form.id}-title", with: 'Form an Opinion'
+      find('.modal-title').click
+      wait_for_javascript_to_finish
 
-  scenario 'and sees updated version' do
-    visit surveyor_surveys_path
-    wait_for_javascript_to_finish
+      expect(@form.reload.title).to eq('Form an Opinion')
+    end
 
-    find('.edit-survey').click
-    wait_for_javascript_to_finish
+    scenario 'and sees updated description' do
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
 
-    fill_in "survey-#{@survey.id}-version", with: '9000'
-    find('.modal-title').click
-    wait_for_javascript_to_finish
+      find('.edit-survey').click
+      wait_for_javascript_to_finish
 
-    expect(@survey.reload.version).to eq(9000)
-  end
+      fill_in "survey-#{@form.id}-description", with: 'Forms allow providers to get information about their services'
+      find('.modal-title').click
+      wait_for_javascript_to_finish
 
-  scenario 'and sees updated display order' do
-    create(:survey, display_order: 1)
+      expect(@form.reload.description).to eq('Forms allow providers to get information about their services')
+    end
 
-    visit surveyor_surveys_path
-    wait_for_javascript_to_finish
+    scenario 'and sees updated access code' do
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
 
-    first('.edit-survey').click
-    wait_for_javascript_to_finish
+      find('.edit-survey').click
+      wait_for_javascript_to_finish
 
-    bootstrap_select "#survey-#{@survey.id}-display_order", 'Add as last'
-    wait_for_javascript_to_finish
+      fill_in "survey-#{@form.id}-access_code", with: 'access-denied'
+      find('.modal-title').click
+      wait_for_javascript_to_finish
 
-    expect(@survey.reload.display_order).to eq(2)
-  end
+      expect(@form.reload.access_code).to eq('access-denied')
+    end
 
-  scenario 'and sees updated active' do
-    visit surveyor_surveys_path
-    wait_for_javascript_to_finish
+    scenario 'and sees updated version' do
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
 
-    find('.edit-survey').click
-    wait_for_javascript_to_finish
+      find('.edit-survey').click
+      wait_for_javascript_to_finish
 
-    find("#survey-#{@survey.id}-active").click
-    wait_for_javascript_to_finish
+      fill_in "survey-#{@form.id}-version", with: '9000'
+      find('.modal-title').click
+      wait_for_javascript_to_finish
 
-    expect(@survey.reload.active).to eq(true)
-  end
+      expect(@form.reload.version).to eq(9000)
+    end
 
-  scenario 'and sees updated title' do
-    visit surveyor_surveys_path
-    wait_for_javascript_to_finish
+    scenario 'and sees updated association' do
+      service = create(:service, organization: @org, name: 'Helpful Service for all Your Service Needs')
 
-    find('.edit-survey').click
-    wait_for_javascript_to_finish
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
 
-    fill_in("survey-#{@survey.id}-title", with: 'This is a Terrible Survey')
-    find('.modal-title').click
-    wait_for_javascript_to_finish
+      first('.edit-survey').click
+      wait_for_javascript_to_finish
 
-    expect(@survey.reload.title).to eq('This is a Terrible Survey')
-  end
+      fill_in "survey-#{@form.id}-surveyable", with: "Helpful"
+      wait_for_javascript_to_finish
 
-  scenario 'and sees updated description' do
-    visit surveyor_surveys_path
-    wait_for_javascript_to_finish
+      expect(page).to have_selector('.tt-suggestion', text: service.name)
 
-    find('.edit-survey').click
-    wait_for_javascript_to_finish
+      first('.tt-suggestion').click
+      wait_for_javascript_to_finish
 
-    fill_in("survey-#{@survey.id}-description", with: 'How can I describe such a terrible survey?')
-    find('.modal-title').click
-    wait_for_javascript_to_finish
+      expect(@form.reload.surveyable).to eq(service)
+    end
 
-    expect(@survey.reload.description).to eq('How can I describe such a terrible survey?')
+    scenario 'and sees updated active' do
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+
+      find('.edit-survey').click
+      wait_for_javascript_to_finish
+
+      find("#survey-#{@form.id}-active").click
+      wait_for_javascript_to_finish
+
+      expect(@form.reload.active).to eq(true)
+    end
   end
 end

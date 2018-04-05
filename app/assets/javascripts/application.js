@@ -1,4 +1,4 @@
-// Copyright © 2011-2017 MUSC Foundation for Research Development
+// Copyright © 2011-2018 MUSC Foundation for Research Development
 // All rights reserved.
 
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -38,7 +38,6 @@
 //= require bootstrap-datetimepicker
 //= require jquery_ujs
 //= require jquery.remotipart
-//= require jquery_nested_form
 //= require jquery.cookie
 //= require jquery.form
 //= require editable/bootstrap-editable

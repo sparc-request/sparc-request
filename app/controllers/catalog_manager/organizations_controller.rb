@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,8 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
   def edit
     @organization = Organization.find(params[:id])
-    @organization.setup_available_statuses
+    # Removed as part of available and editable status changes
+    # @organization.setup_available_statuses
 
     respond_to do |format|
       format.js
@@ -43,7 +44,6 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     @attributes = updater.set_org_tags
     show_success = updater.update_organization
     updater.save_pricing_setups
-    @organization.setup_available_statuses
     @entity = @organization
     flash_update(show_success)
     render 'catalog_manager/organizations/update'
@@ -87,14 +87,11 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
       available_statuses_attributes: [:organization_id,
         :id,
         :status,
-        :new,
-        :position,
-        :_destroy],
+        :selected],
       editable_statuses_attributes: [:organization_id,
         :id,
         :status,
-        :new,
-        :_destroy])
+        :selected])
   end
 
   def flash_update(show_success)

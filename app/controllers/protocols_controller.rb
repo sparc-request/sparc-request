@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -34,8 +34,8 @@ class ProtocolsController < ApplicationController
     @protocol.requester_id  = current_user.id
     @service_request        = ServiceRequest.find(params[:srid])
     @protocol.populate_for_edit
-    gon.rm_id_api_url = Setting.find_by_key("research_master_api_url").value
-    gon.rm_id_api_token = Setting.find_by_key("research_master_api_token").value
+    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
+    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
     rmid_server_status(@protocol)
   end
 
@@ -83,8 +83,8 @@ class ProtocolsController < ApplicationController
     @protocol.populate_for_edit
     @protocol.valid?
     @errors = @protocol.errors
-    gon.rm_id_api_url = Setting.find_by_key("research_master_api_url").value
-    gon.rm_id_api_token = Setting.find_by_key("research_master_api_token").value
+    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
+    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
     rmid_server_status(@protocol)
 
     respond_to do |format|
@@ -127,6 +127,14 @@ class ProtocolsController < ApplicationController
 
     @protocol_type = params[:type]
     @protocol = @protocol.becomes(@protocol_type.constantize) unless @protocol_type.nil?
+
+    #### switching to a Project should clear out RMID and RMID validated flag ####
+    if @protocol_type && @protocol_type == 'Project'
+      @protocol.update_attribute :research_master_id, nil
+      @protocol.update_attribute :rmid_validated, false
+    end
+    #### end clearing RMID and RMID validated flag ####
+
     @protocol.populate_for_edit
 
     flash[:success] = t(:protocols)[:change_type][:updated]
@@ -182,6 +190,7 @@ class ProtocolsController < ApplicationController
     # Do the final push to epic in a separate thread.  The page which is
     # rendered will
     push_protocol_to_epic(@protocol)
+    epic_queue.destroy
 
     respond_to do |format|
       format.html
@@ -291,7 +300,7 @@ class ProtocolsController < ApplicationController
     # Thread.new do
     begin
       # Do the actual push.  This might take a while...
-      protocol.push_to_epic(EPIC_INTERFACE, "submission_push", current_user.id)
+      protocol.push_to_epic(EPIC_INTERFACE, "overlord_push", current_user.id)
       errors = EPIC_INTERFACE.errors
       session[:errors] = errors unless errors.empty?
       @epic_errors = true unless errors.empty?
@@ -322,8 +331,10 @@ class ProtocolsController < ApplicationController
   def fix_identity
     attrs               = protocol_params
     attrs[:project_roles_attributes].each do |index, project_role|
-      identity = Identity.find_or_create project_role[:identity_id]
-      project_role[:identity_id] = identity.id
+      if project_role[:identity_id].present?
+        identity = Identity.find_or_create project_role[:identity_id]
+        project_role[:identity_id] = identity.id
+      end
     end unless attrs[:project_roles_attributes].nil?
     attrs
   end

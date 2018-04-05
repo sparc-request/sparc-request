@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -68,8 +68,10 @@ class ApplicationController < ActionController::Base
   end
 
   def rmid_server_status(protocol)
-    @rmid_server_down = protocol.rmid_server_status
-    @rmid_server_down ? flash[:alert] = t(:protocols)[:summary][:tooltips][:rmid_server_down] : nil
+    if Setting.find_by_key("research_master_enabled").value
+      @rmid_server_down = protocol.rmid_server_status
+      @rmid_server_down ? flash[:alert] = t(:protocols)[:summary][:tooltips][:rmid_server_down] : nil
+    end
   end
 
   def authorization_error msg, ref
@@ -219,12 +221,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def authorize_site_admin
-    unless Setting.find_by_key("site_admins").value.include?(current_user.ldap_uid)
-      authorization_error "You do not have access to this page.", ""
-    end
-  end
-
   def in_dashboard?
     (params[:portal] && params[:portal] == 'true') || (params[:admin] && params[:admin] == 'true')
   end
@@ -283,5 +279,13 @@ class ApplicationController < ActionController::Base
 
   def xeditable? object=nil
     true
+  end
+
+  def authorize_funding_admin
+    if not_signed_in?
+      redirect_to_login
+    else
+      redirect_to root_path unless current_user.is_funding_admin?
+    end
   end
 end

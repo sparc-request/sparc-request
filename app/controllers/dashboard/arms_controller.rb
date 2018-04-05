@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,6 +21,15 @@
 class Dashboard::ArmsController < Dashboard::BaseController
   respond_to :json, :html
   before_action :find_arm, only: [:update]
+
+  def index
+    protocol = Protocol.find(params[:protocol_id])
+    @arms = protocol.arms
+
+    respond_to do |format|
+      format.json
+    end
+  end
 
   def new
     @protocol = Protocol.find(params[:protocol_id])

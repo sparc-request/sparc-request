@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -25,11 +25,14 @@ RSpec.describe 'dashboard/sub_service_requests/_request_details', type: :view do
 
   context "Export to excel" do
     it "should display service_request_id and sub_service_request_id in href" do
-      protocol = stub_protocol
-      service_request = stub_service_request(protocol: protocol)
-      sub_service_request = stub_sub_service_request(service_request: service_request)
+      protocol = create(:protocol, :without_validations, selected_for_epic: true)
+      service_request = create(:service_request, :without_validations, protocol: protocol)
+      org = create(:organization)
+      create(:service, organization: org, send_to_epic: true)
+      sub_service_request = create(:sub_service_request, protocol: protocol, service_request: service_request, organization: org)
+
       render_request_details(protocol: protocol, service_request: service_request, sub_service_request: sub_service_request)
-      expect(response).to have_tag('a', with: { href: "/service_requests/#{service_request.id}.xlsx?admin_offset=1&sub_service_request_id=#{sub_service_request.id}" }, text: "Export to Excel")
+      expect(response).to have_tag('a', with: { href: "/service_requests/#{service_request.id}.xlsx?admin_offset=1&report_type=request_report&sub_service_request_id=#{sub_service_request.id}" }, text: "Export to Excel")
     end
   end
 
@@ -37,9 +40,11 @@ RSpec.describe 'dashboard/sub_service_requests/_request_details', type: :view do
     stub_config("use_epic", true)
     
     it "should display 'Send to Epic' button" do
-      protocol = stub_protocol
-      service_request = stub_service_request(protocol: protocol)
-      sub_service_request = stub_sub_service_request(service_request: service_request)
+      protocol = create(:protocol, :without_validations, selected_for_epic: true)
+      service_request = create(:service_request, :without_validations, protocol: protocol)
+      org = create(:organization)
+      create(:service, organization: org, send_to_epic: true)
+      sub_service_request = create(:sub_service_request, protocol: protocol, service_request: service_request, organization: org)
 
       render_request_details(protocol: protocol, service_request: service_request, sub_service_request: sub_service_request)
 
@@ -48,10 +53,13 @@ RSpec.describe 'dashboard/sub_service_requests/_request_details', type: :view do
   end
 
   context "use_epic falsey" do
+    stub_config("use_epic", false)
     it "should not display 'Send to Epic' button" do
-      protocol = stub_protocol
-      service_request = stub_service_request(protocol: protocol)
-      sub_service_request = stub_sub_service_request(service_request: service_request)
+      protocol = create(:protocol, :without_validations, selected_for_epic: true)
+      service_request = create(:service_request, :without_validations, protocol: protocol)
+      org = create(:organization)
+      create(:service, organization: org, send_to_epic: true)
+      sub_service_request = create(:sub_service_request, protocol: protocol, service_request: service_request, organization: org)
 
       render_request_details(protocol: protocol, service_request: service_request, sub_service_request: sub_service_request)
 
@@ -61,9 +69,11 @@ RSpec.describe 'dashboard/sub_service_requests/_request_details', type: :view do
 
   context "SubServiceRequest associated with CTRC Organization" do
     it "should display 'Administrative Approvals' button" do
-      protocol = stub_protocol
-      service_request = stub_service_request(protocol: protocol)
-      sub_service_request = stub_sub_service_request(service_request: service_request, ctrc?: true)
+      protocol = create(:protocol, :without_validations, selected_for_epic: true)
+      service_request = create(:service_request, :without_validations, protocol: protocol)
+      org = create(:organization, :ctrc)
+      create(:service, organization: org, send_to_epic: true)
+      sub_service_request = create(:sub_service_request, protocol: protocol, service_request: service_request, organization: org)
 
       render_request_details(protocol: protocol, service_request: service_request, sub_service_request: sub_service_request)
 
@@ -75,7 +85,7 @@ RSpec.describe 'dashboard/sub_service_requests/_request_details', type: :view do
     it "should render subsidies" do
       protocol = stub_protocol
       service_request = stub_service_request(protocol: protocol)
-      sub_service_request = stub_sub_service_request(service_request: service_request, eligible_for_subsidy?: true)
+      sub_service_request = stub_sub_service_request(service_request: service_request, protocol: protocol, eligible_for_subsidy?: true)
 
       allow(sub_service_request).to receive_messages(approved_subsidy: nil, pending_subsidy: nil)
       render_request_details(protocol: protocol, service_request: service_request, sub_service_request: sub_service_request)
@@ -110,7 +120,7 @@ RSpec.describe 'dashboard/sub_service_requests/_request_details', type: :view do
   # specify protocol and organization
   def stub_sub_service_request(opts = {})
     obj = build_stubbed(:sub_service_request,
-      service_request: opts[:service_request])
+      service_request: opts[:service_request], protocol: opts[:protocol])
     allow(obj).to receive(:ctrc?).
       and_return(!!opts[:ctrc?])
     allow(obj).to receive(:eligible_for_subsidy?).

@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -23,6 +23,7 @@
 - default_classes = options[:required] ? "required" : ""
 - name            = options[:for] ? "report[#{options[:for]}]" : "report[#{field.name.underscore}_id]"
 - name           += "[]" if multiple
+- show_epic       = options[:field_label] == "Include Epic Interface Columns"
 
 = label_tag nil, field_label, class: ['col-sm-3 control-label', default_classes]
 - if grouping && multiple # we have a defined grouping
@@ -44,9 +45,8 @@
         = label_tag k, '', class: ['checkbox-inline', default_classes] do
           = check_box_tag name, k, selected.include?(v), class: default_classes, type: "checkbox"
           = v
-
 - else # for individual checkboxes that have true/false
   .col-sm-9
-    = check_box_tag name, true, selected.any?, class: default_classes, type: "checkbox"
+    = check_box_tag name, true, selected.any?, class: default_classes, type: "checkbox" unless (show_epic && !(Setting.find_by_key("use_epic").value)) # Only show Epic checkbox if use_epic is set to true
 
 -# TODO define behavior if multiple is a method or string representation of method chain

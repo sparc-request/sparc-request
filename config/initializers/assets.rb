@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -21,8 +21,7 @@
 SparcRails::Application.config.assets.paths.unshift "#{Rails.root}/themes/assets/stylesheets"
 SparcRails::Application.config.assets.paths.unshift "#{Rails.root}/themes/assets/images"
 SparcRails::Application.config.assets.paths.unshift "#{Rails.root}/themes/assets/javascripts"
-Rails.application.config.assets.precompile += %w( additional_details/application.css )
-Rails.application.config.assets.precompile += %w( additional_details/application.js )
+Rails.application.config.assets.paths << Rails.root.join('node_modules')
 Rails.application.config.assets.precompile += %w( admin/application.css )
 Rails.application.config.assets.precompile += %w( admin/application.js )
 Rails.application.config.assets.precompile += %w( admin/bootstrap-accessibility.min.js )
@@ -33,11 +32,9 @@ Rails.application.config.assets.precompile += %w( catalog.js )
 Rails.application.config.assets.precompile += %w( confirmation.js )
 Rails.application.config.assets.precompile += %w( custom.css )
 Rails.application.config.assets.precompile += %w( dashboard/application.js )
-Rails.application.config.assets.precompile += %w( dashboard/create_submission.js )
-Rails.application.config.assets.precompile += %w( dashboard/delete_submission.js )
-Rails.application.config.assets.precompile += %w( dashboard/update_submission.js )
 Rails.application.config.assets.precompile += %w( document_management.js )
 Rails.application.config.assets.precompile += %w( filterrific/filterrific-spinner.gif )
+Rails.application.config.assets.precompile += %w( forms.js )
 Rails.application.config.assets.precompile += %w( ie.css )
 Rails.application.config.assets.precompile += %w( ie7_warning.js )
 Rails.application.config.assets.precompile += %w( ie8_plus.css )
@@ -61,4 +58,4 @@ Rails.application.config.assets.precompile += %w( surveyor/responses.css )
 Rails.application.config.assets.precompile += %w( system_satisfaction.css )
 Rails.application.config.assets.precompile += %w( system_satisfaction.js )
 Rails.application.config.assets.precompile += %w( view_details.css )
-Rails.application.config.assets.precompile += %w( additional_details/styles/document_table.css )
+Rails.application.config.assets.precompile += %w( funding/documents.js )

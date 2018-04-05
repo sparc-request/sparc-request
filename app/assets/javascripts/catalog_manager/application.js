@@ -38,7 +38,6 @@
 //= require catalog_manager/catalog
 //= require jquery_ujs
 //= require jquery.remotipart
-//= require jquery_nested_form
 //= require jquery.cookie
 //= require jquery.form
 //= require jquery.toastmessage

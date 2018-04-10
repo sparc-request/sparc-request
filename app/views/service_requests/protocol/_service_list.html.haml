@@ -31,4 +31,4 @@
           = value[:name]
       .panel-body
         - value[:services].each do |service|
-          = render 'service_requests/protocol/service', service: service
+          = render 'service_requests/protocol/service', service: service, sub_service_request_id: value[:line_items].first.sub_service_request_id

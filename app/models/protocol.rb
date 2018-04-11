@@ -235,24 +235,28 @@ class Protocol < ApplicationRecord
   scope :for_admin, -> (identity_id) {
     # returns protocols with ssrs in orgs authorized for identity
     return nil if identity_id == '0'
+    service_provider_ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_service_provider(identity_id))
 
     if SuperUser.where(identity_id: identity_id).any?
-      self.for_super_user(identity_id)
+      self.for_super_user(identity_id, service_provider_ssrs)
     else
-      ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_service_provider(identity_id))
-      joins(:sub_service_requests).merge(ssrs).distinct
+      joins(:sub_service_requests).merge(service_provider_ssrs).distinct
     end
   }
 
-  scope :for_super_user, -> (identity_id) {
+  scope :for_super_user, -> (identity_id, service_provider_ssrs = nil) {
     # returns protocols with ssrs in orgs authorized for identity
     ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_super_user(identity_id))
 
     empty_protocol_ids  = includes(:sub_service_requests).where(sub_service_requests: { id: nil }).ids
     protocol_ids        = ssrs.distinct.pluck(:protocol_id)
-    all_protocol_ids    = (protocol_ids + empty_protocol_ids).uniq
+    all_protocol_ids    = protocol_ids + empty_protocol_ids
+    if service_provider_ssrs
+      all_protocol_ids << service_provider_ssrs.distinct.pluck(:protocol_id)
+      all_protocol_ids.flatten!
+    end
 
-    where(id: all_protocol_ids)
+    where(id: all_protocol_ids.uniq)
   }
 
   scope :show_archived, -> (boolean) {

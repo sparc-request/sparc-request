@@ -253,6 +253,7 @@ class Protocol < ApplicationRecord
     all_protocol_ids    = protocol_ids + empty_protocol_ids
     if service_provider_ssrs
       all_protocol_ids << service_provider_ssrs.distinct.pluck(:protocol_id)
+      all_protocol_ids.flatten!
     end
 
     where(id: all_protocol_ids.uniq)

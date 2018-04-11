@@ -25,5 +25,5 @@
       = option.content
     - else
       .col-lg-1.text-center
-        = radio_button_tag :content_radio, '', question_response.content.downcase == option.content.downcase, disabled: true
+        = radio_button_tag "question_response_#{question_response.id}", '', question_response.content.downcase == option.content.downcase, disabled: true, id: "question_response_#{question_response.id}"
       = option.content

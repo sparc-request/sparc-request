@@ -109,7 +109,7 @@ en:
       initial_budget_sponsor_received_date: "Initial Budget Sponsor Received Date"
       budget_agreed_upon_date: 'Budget Agreed Upon Date'
       initial_amount_clinical_services: 'Initial Amount Per Patient'
-      initial_amount_non_clinical_services: 'Initial Site Level Account Offered'
+      initial_amount_non_clinical_services: 'Initial Site Level Amount Offered'
       negotiated_amount_clinical_services: 'Negotiated Amount Per Patient'
       negotiated_amount_non_clinical_services: 'Negotiated Site Level Amount'
       tooltips:

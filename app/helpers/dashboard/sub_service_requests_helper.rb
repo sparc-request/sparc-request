@@ -42,6 +42,24 @@ module Dashboard::SubServiceRequestsHelper
     end
   end
 
+  def display_line_items_otf(sub_service_request, use_epic, lis)
+    if sub_service_request.nil?
+      # only show the services that are set to be pushed to Epic when use_epic = true
+      if use_epic
+        lis.select{ |li| Service.find(li.service_id).send_to_epic }
+      else
+        lis
+      end
+    else
+      # only show the services that are set to be pushed to Epic when use_epic = true
+      if use_epic
+        sub_service_request.one_time_fee_line_items.select{ |li| Service.find(li.service_id).send_to_epic }
+      else
+        sub_service_request.one_time_fee_line_items
+      end
+    end
+  end
+
   def service_request_owner_display sub_service_request
     if sub_service_request.status == "draft"
       content_tag(:span, 'Not available in draft status.')

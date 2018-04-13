@@ -57,6 +57,7 @@ en:
           complete: "Complete"
           date: "Date"
           actions: "Actions"
+          by: "By"
       filter:
         type: "Type"
       emails:

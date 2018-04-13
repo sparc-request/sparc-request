@@ -334,7 +334,9 @@ class Protocol < ApplicationRecord
     if Setting.find_by_key("send_authorized_user_emails").value && sub_service_requests.where.not(status: 'draft').any?
       alert_users = emailed_associated_users << modified_role
       alert_users.flatten.uniq.each do |project_role|
-        UserMailer.authorized_user_changed(project_role.identity, self, modified_role, action).deliver unless project_role.identity.email.blank?
+        unless project_role.project_rights == 'none'
+          UserMailer.authorized_user_changed(project_role.identity, self, modified_role, action).deliver unless project_role.identity.email.blank?
+        end
       end
     end
   end

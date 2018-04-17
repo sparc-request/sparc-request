@@ -1,5 +1,5 @@
 class CorrectAvailableStatuses < ActiveRecord::Migration[5.1]
   def change
-    AvailableStatus.where(status: ['draft', 'get_a_cost_estimate', 'submitted'], selected: false).update_all(status:true)
+    AvailableStatus.where(status: ['draft', 'get_a_cost_estimate', 'submitted'], selected: false).update_all(selected: true)
   end
 end

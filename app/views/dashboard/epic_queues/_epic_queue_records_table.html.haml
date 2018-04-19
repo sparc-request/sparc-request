@@ -25,6 +25,8 @@
       %tr
         %th{data: { field: "protocol", align: "left", sortable: 'true', class: 'text-primary' } }
           = t(:epic_queues)[:sent_protocols]
+        %th{data: { field: "notes", align: "left", sortable: 'true' } }
+          = t(:epic_queues)[:notes]
         %th{data: { field: "pis", align: "left", sortable: 'true' } }
           = t(:epic_queues)[:PIs]
         %th{data: { field: "date", align: "left", sortable: 'true', sorter: "dateSorter" } }

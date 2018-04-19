@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 desc 'Merge an old service into a new service (example only).'
-  task :merge_services, :environment do:
+task merge_services: :environment do
 # task :merge_services, [:services_list] => :environment do |t, args|
   # skipped_services = CSV.open("tmp/skipped_merged_services_#{Time.now.strftime('%m%d%Y%T')}.csv", "wb")
   ActiveRecord::Base.transaction do
@@ -93,7 +93,7 @@ desc 'Merge an old service into a new service (example only).'
 #           li.update!(sub_service_request_id: dest_ssr.id)
 #         end
 #       end # ssr.line_items.each
-#     end # ssrs.each
+    # end # ssrs.each
   end # ActiveRecord::Base.transaction
 end # task
 

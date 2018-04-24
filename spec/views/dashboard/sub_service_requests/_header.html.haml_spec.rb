@@ -120,7 +120,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
             render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
 
             expect(response).to have_tag("a", text: "Go to Fulfillment",
-              with: { href: Setting.find_by_key("clinical_work_fulfillment_url").value })
+              with: { href: fulfillment_sub_service_request_path(sub_service_request) })
           end
         end
 
@@ -142,7 +142,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
 
             render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
 
-            expect(response).to have_tag("a", text: "In Fulfillment", with: { href: Setting.find_by_key("clinical_work_fulfillment_url").value })
+            expect(response).to have_tag("a", text: "In Fulfillment", with: { href: fulfillment_sub_service_request_path(sub_service_request) })
           end
         end
       end

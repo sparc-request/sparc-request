@@ -226,6 +226,11 @@ SparcRails::Application.routes.draw do
     root to: 'catalog#index'
   end
 
+  ### redirect in sparc-fulfillment routes.rb ###
+  namespace :fulfillment do
+    resources :sub_service_request, only: [:show]
+  end
+
   namespace :dashboard do
 
     resources :approvals, only: [:new, :create]

@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -124,5 +124,5 @@ RSpec.describe QuestionResponse, type: :model do
   end
 
   # Callbacks
-  it { is_expected.to callback(:check_content_requirements).after(:save) }
+  it { is_expected.to callback(:remove_unanswered).before(:save) }
 end

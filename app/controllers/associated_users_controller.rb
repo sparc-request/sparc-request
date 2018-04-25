@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -99,6 +99,10 @@ class AssociatedUsersController < ApplicationController
   def destroy
     epic_access         = @protocol_role.epic_access
     protocol_role_clone = @protocol_role.clone
+    epic_queue_manager = EpicQueueManager.new(
+      @protocol_role.protocol, current_user, @protocol_role
+    )
+    epic_queue_manager.create_epic_queue
 
     @protocol_role.destroy
 

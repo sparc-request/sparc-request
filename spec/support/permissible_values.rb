@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -28,6 +28,7 @@ def populate_permissible_values_before_suite
     build_potential_funding_sources
     build_user_credentials
     build_document_types
+    build_funding_statuses
   end
 end
 
@@ -135,4 +136,10 @@ def build_document_types
   PermissibleValue.create(category: 'document_type', key: 'ocr_approval', value: 'OCR Approval')
   PermissibleValue.create(category: 'document_type', key: 'protocol', value: 'Protocol')
   PermissibleValue.create(category: 'document_type', key: 'other', value: 'Other')
+end
+
+
+def build_funding_statuses
+  PermissibleValue.create(category: 'funding_status', key: 'pending_funding', value: 'Pending Funding')
+  PermissibleValue.create(category: 'funding_status', key: 'funded', value: 'Funded')
 end

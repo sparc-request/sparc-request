@@ -32,6 +32,7 @@ en:
     continue: "Continue"
     delete: "Delete"
     edit: "Edit"
+    filter: "Filter"
     print: "Print"
     remove: "Remove"
     reply: "Reply"
@@ -49,22 +50,22 @@ en:
   activerecord:
     errors:
       models:
-        item:
+        form:
           attributes:
-            content:
-              blank: "Content can't be blank"
-        questionnaire:
+            active:
+              taken: "A different version of this Form is already active"
+        project_role:
           attributes:
-            name:
-              blank: "Name can't be blank"
-        item_option:
-          attributes:
-            content:
-              blank: "Content can't be blank"
+            identity_id:
+              blank: "^Primary PI can't be blank"
         question_response:
           attributes:
             content:
-              blank: "has to be answered"
+              blank: "required"
+        system_survey:
+          attributes:
+            active:
+              taken: "A different version of this Survey is already active"
       messages:
         spoofed_media_type: "has format errors. Please re-save the file in a different format and try again."
     attributes:
@@ -88,7 +89,9 @@ en:
       question:
         content: "Question"
       question_response:
-        content: "Required Question"
+        content: "Question"
+      survey:
+        active: ""
       visit:
         research_billing_qty: "Research Billing Quantity"
         insurance_billing_qty: "Insurance Billing Quantity"
@@ -279,6 +282,18 @@ en:
       visit_day: 'Day the anticipated visit occurs (incremental)'
       visit_name: 'Name of the visit'
 
+  calendar_structure:
+    header: "Calendar Structure"
+    lock_calendar: "Lock Calendar"
+    unlock_calendar: "Unlock Calendar"
+    table_fields:
+      arm_name: "Arm Name"
+      subject_count: "Subject Count"
+      visit_count: "Visit Count"
+    tooltips:
+      lock_calendar: 'Locking the calendar will prevent users from making changes to arm, subject, and visit information.'
+      arm_info: 'The calendar has been locked by an administrator. No changes to the stucture may be made at this time.'
+
   #############
   # CONSTANTS #
   #############
@@ -343,6 +358,17 @@ en:
       link_display: "Email: success@musc.edu"
       phone_href: "tel:843-792-8300"
       phone_display: "Call: 843-792-8300"
+
+  #########
+  # FORMS #
+  #########
+  forms:
+    table_fields:
+      srid: "SRID"
+      association: "Association"
+      title: "Form Title"
+      completed: "Completed"
+      options: "Options"
 
   ##############
   # IDENTITIES #
@@ -448,8 +474,8 @@ en:
         push_to_epic: "Publish Study in Epic:"
         study_type_questions: "Study Type Questions:"
         note: "Note: "
-      optional_information:
-        header: "Optional Information"
+      financial_information:
+        header: "Financial Information"
         subtext: "Used for reporting purposes and saved for your future use"
         udak_project_number: "Financial Account (UDAK #):"
         rate: "Indirect Cost Rate:"
@@ -531,8 +557,8 @@ en:
       nct_number: 'Clinicaltrials.gov Registry Number'
       pro_number: 'Institutional Review Board (IRB) Unique Identifier'
       ind_number: 'Investigational New Drug (IND) Number'
-      short_title: 'An abbreviated form of the title used to identify your study/project'
-      title: 'Full title of your study/project'
+      short_title: 'An abbreviated form of the title used to identify your study/project. Special characters outside the allowed range will be removed automatically.'
+      title: 'Full title of your study/project. Special characters outside the allowed range will be removed automatically.'
       funding_status: 'Indicates whether or not funding has been applied for or obtained'
       potential_funding_source: 'Funding source that has been applied for but not yet obtained. Pricing is logically driven off this field'
       funding_source: 'Funding source which drives research pricing for your study/project'
@@ -598,7 +624,7 @@ en:
   # VALIDATION ERROR MESSAGES #
   #############################
   errors:
-    user_note: "Fields with an Asterisk ( * ) are required"
+    user_note: "Fields marked with an asterisk ( * ) are required"
     arms:
       name_unique: "has to be unique within a study/project"
       bad_characters: "can not contain any of the following characters: [ ] * / \\ ? :"
@@ -1003,6 +1029,7 @@ en:
     send: 'Send'
     by: 'By'
     sent_protocols: 'Sent Protocols'
+    type: 'Type'
   footer:
     mail_to: "hundc@musc.edu"
     mail_link: "Sign Up For the SPARC Request Listserv"
@@ -1353,7 +1380,7 @@ en:
     proxy: "Proxy Rights:"
     request_amendment: "Request Amendment"
     request_amendment_intro:  "Services have been added or deleted in SPARCRequest and is awaiting your review in"
-    requester:  "(Requester)"
+    requester:  "Requester"
     role: "Role"
     s_name: "Sponsor Name"
     service: "Service"

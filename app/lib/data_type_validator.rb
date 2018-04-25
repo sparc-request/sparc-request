@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -44,5 +44,21 @@ module DataTypeValidator
 
   def is_path?(value)
     value.match?(/^(\/|(\/\w+)+\/?)(\?(\w+=\w+(&\w+=\w+)*)+)?$/)
+  end
+
+  def get_type(value)
+    if is_boolean?(value)
+      'boolean'
+    elsif is_json?(value)
+      'json'
+    elsif is_email?(value)
+      'email'
+    elsif is_url?(value)
+      'url'
+    elsif is_path?(value)
+      'path'
+    else
+      'string'
+    end
   end
 end

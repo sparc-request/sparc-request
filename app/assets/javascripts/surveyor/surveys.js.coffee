@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -18,17 +18,11 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 $(document).ready ->
+  $("[data-toggle='tooltip']").tooltip()
+
   ### Survey Table ###
-  $(document).on 'click', '.edit-survey', ->
-    survey_id = $(this).data('survey-id')
-
-    $.ajax
-      type: 'get'
-      url: "/surveyor/surveys/#{survey_id}"
-
   $(document).on 'click', '.delete-survey', ->
     survey_id = $(this).data('survey-id')
-
     swal {
       title: I18n['swal']['swal_confirm']['title']
       text: I18n['swal']['swal_confirm']['text']
@@ -42,12 +36,12 @@ $(document).ready ->
         type: 'delete'
         url: "/surveyor/surveys/#{survey_id}.js"
 
-  $(document).on 'click', '.preview-survey', ->
-    survey_id = $(this).data('survey-id')
-
-    $.ajax
-      type: 'get'
-      url: "/surveyor/surveys/#{survey_id}/preview.js"
+  ### Survey Modal ###
+  $(document).on 'hide.bs.modal', '#modal_place', ->
+    if $(this).children("#survey-modal").length > 0
+      $('.survey-table').bootstrapTable('refresh')
+    else if $(this).children("#form-modal").length > 0
+      $('.form-table').bootstrapTable('refresh')
 
   $(document).on 'click', '.add-section', ->
     $.ajax
@@ -100,10 +94,10 @@ $(document).ready ->
   $(document).on 'change', '.select-depender, .select-question-type', ->
     send_update_request($(this), $(this).val())
 
-  $(document).on 'focusout', '#survey-modal input[type="text"], #survey-modal textarea', ->
+  $(document).on 'focusout', '#survey-modal input[type="text"], #form-modal input[type="text"]:not([id$="-surveyable"]), #survey-modal textarea, #form-modal textarea', ->
     send_update_request($(this), $(this).val())
 
-  $(document).on 'change', '#survey-modal input[type="checkbox"]', ->
+  $(document).on 'change', '#survey-modal input[type="checkbox"], #form-modal input[type="checkbox"]', ->
     send_update_request($(this), $(this).prop('checked'))
 
   $(document).on 'change', '.is-dependent', ->

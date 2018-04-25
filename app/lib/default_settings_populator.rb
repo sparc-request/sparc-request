@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -23,7 +23,7 @@ class DefaultSettingsPopulator
 
   def initialize()
     @records = JSON.parse(File.read('config/defaults.json'))
-    @application_config = 
+    @application_config =
       if File.exists? Rails.root.join('config', 'application.yml')
         YAML.load_file(Rails.root.join('config', 'application.yml'))[Rails.env]
       else
@@ -49,23 +49,7 @@ class DefaultSettingsPopulator
         setting.save(validate: false)
       end
     end
-  end
-
-  private
-
-  def get_type(value)
-    if is_boolean?(value)
-      'boolean'
-    elsif is_json?(value)
-      'json'
-    elsif is_email?(value)
-      'email'
-    elsif is_url?(value)
-      'url'
-    elsif is_path?(value)
-      'path'
-    else
-      'string'
-    end
+    Rake::Task["data:import_epic_yml"].invoke
+    Rake::Task["data:import_ldap_yml"].invoke
   end
 end

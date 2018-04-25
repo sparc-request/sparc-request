@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -249,11 +249,13 @@ $(document).ready ->
     id = $(this).data('notable-id')
     type = $(this).data('notable-type')
     in_dashboard = $(this).data('in-dashboard')
+    review = $(this).data('review')
     data = 
       note:
         notable_id: id
         notable_type: type
       in_dashboard: in_dashboard
+      review: review
     $.ajax
       type: 'GET'
       url: '/notes.js'

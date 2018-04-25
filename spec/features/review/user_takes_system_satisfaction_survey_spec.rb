@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -64,10 +64,10 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
   end
 
   context 'and system is using system satisfaction survey' do
-    stub_config("use_system_satisfaction_survey", true)
+    stub_config("system_satisfaction_survey", true)
     
     before :each do
-      @survey = create(:survey, access_code: 'system-satisfaction-survey', title: 'System Satisfaction Survey', active: true)
+      @survey = create(:system_survey, access_code: 'system-satisfaction-survey', title: 'System Satisfaction Survey', active: true)
 
       visit review_service_request_path(@sr)
       wait_for_javascript_to_finish

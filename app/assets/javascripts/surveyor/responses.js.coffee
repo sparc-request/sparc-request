@@ -1,4 +1,4 @@
-  # Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -30,3 +30,20 @@ $(document).ready ->
       $(".dependent-for-option-#{option_id}").removeClass('hidden')
     else
       $(".dependent-for-option-#{option_id}").addClass('hidden')
+
+  $(document).on 'change', '.question .selectpicker:not([multiple=multiple])', ->
+    question_id = $(this).data('question-id')
+    option_id = $(this).find('.option:checked').data('option-id')
+
+    $(".dependent-for-question-#{question_id}").addClass('hidden')
+    $(".dependent-for-option-#{option_id}").removeClass('hidden')
+
+  $(document).on 'change', '.question .selectpicker[multiple=multiple]', ->
+    question_id = $(this).data('question-id')
+    option_ids = $(this).find('.option:checked').map( -> 
+      $(this).data('option-id')).get()
+
+    $(".dependent-for-question-#{question_id}").addClass('hidden')
+
+    for option_id in option_ids
+      $(".dependent-for-option-#{option_id}").removeClass('hidden')

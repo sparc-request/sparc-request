@@ -61,6 +61,12 @@ en:
         past: "Past"
         authorized_user_update: "Authorized User Update"
 
+    #########
+    # FORMS #
+    #########
+    forms:
+      header: "Form Submissions"
+
     ##################
     #  FULFILLMENTS  #
     ##################
@@ -120,13 +126,18 @@ en:
     ##########
     navbar:
       logged_in_as: "Logged in as "
-      surveys: "Surveys"
       epic_queue: "Epic Queue"
       messages: "All Notifications"
       tooltips:
-        surveys: "Survey builder"
         epic_queue: "View or edit protocols for Epic interface"
         messages: "Access to correspondence"
+
+    ##############
+    # NAVIGATION #
+    ##############
+    navigation:
+      bottom:
+        saving: "Saving..."
 
     ###########
     #  NOTES  #
@@ -170,7 +181,6 @@ en:
     protocol_filters:
       header: "Filter Protocols"
       search_by: "Search All"
-      search_by_options: ['Authorized User', 'HR#', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title']
       archived: "Archived"
       inactive: "(inactive)"
       status: "Status"
@@ -179,7 +189,6 @@ en:
       my_protocols: "My Protocols"
       my_admin_protocols: "My Admin Protocols"
       empty_protocols: "Empty Protocols (No Services)"
-      filter: "Filter"
       saved_filters:
         header: "Recently Saved Filters"
         modal:
@@ -212,7 +221,7 @@ en:
         requests: Requests
         tooltips:
           protocol_id: "System generated from SPARCRequest"
-          short_title: "An abbreviated form of the title used to identify your study/project"
+          short_title: "An abbreviated form of the title used to identify your study/project. Special characters outside the allowed range will be removed automatically."
           pi: "Principal Investigator(s)"
           export: "Export displayed protocols to Excel"
           requests: "Quick access to requests"
@@ -283,8 +292,8 @@ en:
           view: "Quick access to view services for selected provider"
           edit: "Ability to change services for a selected provider (routes to SPARCRequest)"
           admin: "Service Provider administrative access to track and manage services"
-      additional_details:
-        header: "Form Functionality"
+      forms:
+        header: "Forms"
         selectpicker: "Complete Form"
       tooltips:
         modify_request: "Allows Authorized User to add or edit services (routes to SPARCRequest)"
@@ -311,7 +320,8 @@ en:
         unit_type: "Unit Type"
         quantity_requested: "Qty Requested"
         quantity_type: "Qty Type"
-        cost: "Cost"
+        service_rate: "Service Rate"
+        cost: "Your Cost"
         in_process: "In Process"
         complete: "Complete"
         actions: "Actions"

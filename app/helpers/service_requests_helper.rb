@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -65,17 +65,17 @@ module ServiceRequestsHelper
   # RIGHT NAVIGATION BUTTONS
   def faq_helper
     if Setting.find_by_key("use_faq_link").value
-      link_to t(:proper)[:right_navigation][:faqs][:header], Setting.find_by_key("faq_url").value, target: :blank, class: 'btn btn-primary btn-lg btn-block help-faq-button'
+      link_to t(:proper)[:right_navigation][:faqs][:header], Setting.find_by_key("faq_url").value, target: :blank, class: 'btn btn-primary btn-lg btn-block help-faq-button no-margin-x'
     else
-      link_to t(:proper)[:right_navigation][:faqs][:header], get_help_service_request_path, remote: true, class: 'btn btn-primary btn-lg btn-block help-faq-button'
+      link_to t(:proper)[:right_navigation][:faqs][:header], get_help_service_request_path, remote: true, class: 'btn btn-primary btn-lg btn-block help-faq-button no-margin-x'
     end
   end
 
   def feedback_helper
     if Setting.find_by_key("use_feedback_link").value
-      link_to t(:proper)[:right_navigation][:feedback][:header], Setting.find_by_key("feedback_link").value, target: :blank, class: 'feedback-button btn btn-primary btn-lg btn-block'
+      link_to t(:proper)[:right_navigation][:feedback][:header], Setting.find_by_key("feedback_link").value, target: :blank, class: 'feedback-button btn btn-primary btn-lg btn-block no-margin-x'
     else
-      content_tag(:button, t(:proper)[:right_navigation][:feedback][:header], class: 'feedback-button btn btn-primary btn-lg btn-block')
+      content_tag(:button, t(:proper)[:right_navigation][:feedback][:header], class: 'feedback-button btn btn-primary btn-lg btn-block no-margin-x')
     end
   end
 

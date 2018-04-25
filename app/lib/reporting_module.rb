@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -123,7 +123,7 @@ private
     k,v = rp
 
     value = v
-    klass = k.safe_constantize
+    klass = k.delete(' ').safe_constantize
 
     if self.attrs.keys.include? klass # we've matched a class in our attrs hash
       obj = klass.find(v)

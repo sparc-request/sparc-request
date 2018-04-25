@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -67,8 +67,8 @@ RSpec.describe "User views documents table", js: true do
     let!(:super_user)           { create(:super_user, organization: organization, identity: logged_in_user) }
     let!(:service_request)      { create(:service_request_without_validations, protocol: protocol) }
     let!(:ssr)                  { create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft') }
-    let!(:document_with_access) { create(:document, protocol: protocol, doc_type: 'Protocol', document_file_name: 'accessible_doc') }
-    let!(:document_no_access)   { create(:document, protocol: protocol, doc_type: 'Consent', document_file_name: 'inaccessible_doc') }
+    let!(:document_with_access) { create(:document, protocol: protocol, doc_type: 'Protocol', document_file_name: 'accessible_doc.pdf') }
+    let!(:document_no_access)   { create(:document, protocol: protocol, doc_type: 'Consent', document_file_name: 'inaccessible_doc.pdf') }
 
     before :each do
       document_with_access.sub_service_requests = [ssr]

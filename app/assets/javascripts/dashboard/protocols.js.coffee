@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -24,6 +24,17 @@
 $(document).ready ->
   Sparc.protocol =
     ready: ->
+      $(document).on 'click', '.calendar-lock', ->
+        protocol_id = $(this).data('protocol-id')
+        locked = $(this).data('locked')
+        data =
+        'protocol_id'       : protocol_id,
+        'locked'            : locked
+        $.ajax
+          type: 'PUT'
+          url: "/dashboard/protocols/#{protocol_id}"
+          data: data
+
       #  Protocol Index Begin
       $(document).on 'click', '.protocols_index_row > .id, .protocols_index_row > .title, .protocols_index_row > .pis', ->
         #if you click on the row, it opens the protocol show
@@ -137,26 +148,21 @@ $(document).ready ->
             $('.service-requests-table').bootstrapTable()
             reset_service_requests_handlers()
 
-      $(document).on 'change', '.complete-details', ->
-        $selected_options = $('option:selected', this)
+      $(document).on 'change', '.complete-forms', ->
+        $option = $('option:selected', this)
+        $this   = $(this)
 
-        if $selected_options.length > 0
-          $selected_option    = $selected_options.first()
-          questionnaire_id    = $selected_option.data('questionnaire-id')
-          protocol_id         = $selected_option.data('protocol-id')
-          ssr_id              = $selected_option.data('ssr-id')
-          $this               = $(this)
-          
-          $.ajax
-            method: 'GET'
-            url: "/additional_details/submissions/new.js"
-            data:
-              protocol_id: protocol_id
-              ssr_id: ssr_id
-              questionnaire_id: questionnaire_id
-            success: ->
-              $this.selectpicker('deselectAll')
-              $this.selectpicker('render')
+        $.ajax
+          method: 'GET'
+          url: "/surveyor/responses/new.js"
+          data:
+            type:             $option.data('type')
+            survey_id:        $option.data('survey-id')
+            respondable_id:   $option.data('respondable-id')
+            respondable_type: $option.data('respondable-type')
+          success: ->
+            $this.selectpicker('deselectAll')
+            $this.selectpicker('render')
 
       reset_service_requests_handlers()
       # Protocol Show End
@@ -190,7 +196,11 @@ $(document).ready ->
           url: "/dashboard/protocols.js"
           data: data
 
-(exports ? this).reset_service_requests_handlers = -> 
+(exports ? this).reset_service_requests_handlers = ->
+  $('.view-consolidated').tooltip()
+  $('.export-consolidated').tooltip()
+  $('.coverage-analysis-report').tooltip()
+  
   $('.service-requests-table').on 'all.bs.table', ->
     #Enable selectpickers
     $(this).find('.selectpicker').selectpicker()

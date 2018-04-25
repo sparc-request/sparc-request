@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -58,12 +58,12 @@ class Identity < ApplicationRecord
   has_many :received_messages, class_name: 'Message', foreign_key: 'to'
   has_many :received_notifications, class_name: "Notification", foreign_key: 'other_user_id'
   has_many :received_toast_messages, class_name: 'ToastMessage', foreign_key: 'to', dependent: :destroy
+  has_many :responses, dependent: :destroy
   has_many :sent_messages, class_name: 'Message', foreign_key: 'from'
   has_many :sent_notifications, class_name: "Notification", foreign_key: 'originator_id'
   has_many :sent_toast_messages, class_name: 'ToastMessage', foreign_key: 'from', dependent: :destroy
   has_many :service_providers, dependent: :destroy
   has_many :studies, -> { where("protocols.type = 'Study'")}, through: :project_roles, source: :protocol
-  has_many :submissions
   has_many :super_users, dependent: :destroy
 
   cattr_accessor :current_user
@@ -130,6 +130,10 @@ class Identity < ApplicationRecord
   ############################ ATTRIBUTE METHODS ################################
   ###############################################################################
 
+  def is_site_admin?
+    Setting.find_by_key("site_admins").value.include?(self.ldap_uid)
+  end
+
   # Returns true if the user is a catalog overlord.  Should only be true for three uids:
   # lmf5, anc63, mas244
   def is_overlord?
@@ -140,20 +144,32 @@ class Identity < ApplicationRecord
     @is_super_user ||= self.super_users.count > 0
   end
 
-  def is_service_provider?(ssr)
-    is_provider = false
-    orgs =[]
-    orgs << ssr.organization << ssr.organization.parents
-    orgs.flatten!
+  def is_service_provider?(ssr=nil)
+    if ssr
+      is_provider = false
+      orgs =[]
+      orgs << ssr.organization << ssr.organization.parents
+      orgs.flatten!
 
-    orgs.each do |org|
-      provider_ids = org.service_providers_lookup.map{|x| x.identity_id}
-      if provider_ids.include?(self.id)
-        is_provider = true
+      orgs.each do |org|
+        provider_ids = org.service_providers_lookup.map{|x| x.identity_id}
+        if provider_ids.include?(self.id)
+          is_provider = true
+        end
       end
-    end
 
-    is_provider
+      is_provider
+    else
+      @is_service_provider ||= self.service_providers.count > 0
+    end
+  end
+
+  def is_catalog_manager?
+    @is_catalog_manager ||= self.catalog_managers.count > 0
+  end
+
+  def is_funding_admin?
+    Setting.find_by_key("funding_admins").value.include?(ldap_uid)
   end
 
   ###############################################################################
@@ -290,7 +306,8 @@ class Identity < ApplicationRecord
   ###############################################################################
 
   def authorized_admin_organizations
-    # returns organizations for which user is service provider or super user
+    # Returns the organizations for which the user has Super User or Service Provider
+    # privileges, plus all of their child organizations
     Organization.authorized_for_identity(self.id)
   end
 

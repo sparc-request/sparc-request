@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -47,13 +47,13 @@ $ ->
       url: "/dashboard/line_items/#{line_item_id}/edit"
       data: data
 
-  $(document).on 'click', '.otf_admin_rate', ->
+  $(document).on 'change', '.your-cost-edit', ->
     row_index   = $(this).parents('tr').data('index')
     line_item_id = $(this).parents('table.study_level_activities').bootstrapTable('getData')[row_index].id
-    data = 'modal' : 'sla_admin_rate_form'
+    data = 'line_item': 'displayed_cost' : $(this).val().replace('$', '')
     $.ajax
-      type: 'GET'
-      url: "/dashboard/line_items/#{line_item_id}/edit"
+      type: 'PATCH'
+      url: "/dashboard/line_items/#{line_item_id}"
       data: data
 
   $(document).on 'click', '.otf_delete', ->

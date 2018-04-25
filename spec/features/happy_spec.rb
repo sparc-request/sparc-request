@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -37,7 +37,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
            approved: true)
   end
 
-  stub_config("use_system_satisfaction_survey", true)
+  stub_config("system_satisfaction_survey", true)
   
   it "is happy" do
     allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
@@ -66,7 +66,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     ####################
     # Survey structure #
     ####################
-    survey      = create(:survey, :active, title: 'System Satisfaction Survey', access_code: 'system-satisfaction-survey')
+    survey      = create(:system_survey, :active, title: 'System Satisfaction Survey', access_code: 'system-satisfaction-survey', active: true)
     section     = create(:section, survey: survey)
     question_1  = create(:question, question_type: 'likert', content: '1) How satisfied are you with using SPARCRequest today?', section: section)
     option_1    = create(:option, content: 'Very Dissatisfied', question: question_1)

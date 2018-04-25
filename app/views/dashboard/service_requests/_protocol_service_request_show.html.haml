@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -40,5 +40,5 @@
           = t(:dashboard)[:service_requests][:notifications]
         %th.col-md-3{ data: { field: 'actions', align: 'center' } }
           = t(:dashboard)[:service_requests][:actions][:header]
-        %th.col-md-1{ data: { field: 'surveys', align: 'center', visible: protocol.has_incomplete_additional_details?.to_s, switchable: 'false' } }
-          = t(:dashboard)[:service_requests][:additional_details][:header]
+        %th.col-md-1{ data: { field: 'surveys', align: 'center', visible: (!protocol.all_forms_completed?).to_s, switchable: 'false' } }
+          = t(:dashboard)[:service_requests][:forms][:header]

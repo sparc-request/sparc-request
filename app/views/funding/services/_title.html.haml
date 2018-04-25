@@ -1,0 +1,5 @@
+.row#selected-opp
+  .col-lg-2.text-left.bold
+    = label_tag 'funding_opp',  t(:funding)[:download][:funding_opp]
+  .col-lg-10.text-left
+    = label_tag 'funding_title',  "#{service.organization.name} / #{service.abbreviation}", class: 'normal'

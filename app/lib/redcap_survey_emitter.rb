@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -59,7 +59,7 @@ class RedcapSurveyEmitter
     data = [record].to_json
 
     fields = {
-      :token => Setting.find_by_key("redcap_api_token").value,
+      :token => Setting.find_by_key("redcap_token").value,
       :content => 'record',
       :format => 'json',
       :type => 'flat',
@@ -78,7 +78,7 @@ class RedcapSurveyEmitter
 
   def latest_letter_id
     fields = {
-      :token => Setting.find_by_key("redcap_api_token").value,
+      :token => Setting.find_by_key("redcap_token").value,
       :content => 'record',
       :format => 'json',
       :type => 'flat'

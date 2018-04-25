@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,6 +21,10 @@
 class Protocol < ApplicationRecord
 
   include RemotelyNotifiable
+
+  include SanitizedData
+  sanitize_setter :short_title, :special_characters, :squish
+  sanitize_setter :title, :special_characters, :squish
 
   audited
 
@@ -45,7 +49,7 @@ class Protocol < ApplicationRecord
   has_many :notes, as: :notable,          dependent: :destroy
   has_many :study_type_questions,         through: :study_type_question_group
   has_many :documents,                    dependent: :destroy
-  has_many :submissions,                  dependent: :destroy
+  has_many :responses,                    through: :sub_service_requests
 
   has_many :principal_investigators, -> { where(project_roles: { role: %w(pi primary-pi) }) },
     source: :identity, through: :project_roles
@@ -62,7 +66,7 @@ class Protocol < ApplicationRecord
   validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
   validates :research_master_id, presence: true, if: :rmid_requires_validation?
 
-  validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 1000 }, allow_blank: true
+  validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 1000 }, allow_blank: true, if: :indirect_cost_enabled
 
   attr_accessor :requester_id
   attr_accessor :validate_nct
@@ -96,7 +100,7 @@ class Protocol < ApplicationRecord
 
   def rmid_requires_validation?
     # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]
-    self.bypass_rmid_validation ? false : Setting.find_by_key('use_research_master').value && has_human_subject_info?
+    self.bypass_rmid_validation ? false : Setting.find_by_key('research_master_enabled').value && has_human_subject_info?
   end
 
   def has_human_subject_info?
@@ -104,10 +108,10 @@ class Protocol < ApplicationRecord
   end
 
   validate :existing_rm_id,
-    if: -> record { Setting.find_by_key("use_research_master").value && !record.research_master_id.nil? }
+    if: -> record { Setting.find_by_key("research_master_enabled").value && !record.research_master_id.nil? }
 
   validate :unique_rm_id_to_protocol,
-    if: -> record { Setting.find_by_key("use_research_master").value && !record.research_master_id.nil? }
+    if: -> record { Setting.find_by_key("research_master_enabled").value && !record.research_master_id.nil? }
 
   def self.to_csv(protocols)
     CSV.generate do |csv|
@@ -121,13 +125,13 @@ class Protocol < ApplicationRecord
   end
 
   def existing_rm_id
-    rm_ids = HTTParty.get(Setting.find_by_key("research_master_api_url").value + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{Setting.find_by_key("research_master_api_token").value}\""})
+    rm_ids = HTTParty.get(Setting.find_by_key("research_master_api").value + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{Setting.find_by_key("rmid_api_token").value}\""})
     ids = rm_ids.map{ |rm_id| rm_id['id'] }
 
     if research_master_id.present? && !ids.include?(research_master_id)
       errors.add(:_, 'The entered Research Master ID does not exist. Please go to the Research Master website to create a new record.')
     end
-    
+
     rescue
       return "server_down"
   end
@@ -232,17 +236,23 @@ class Protocol < ApplicationRecord
     # returns protocols with ssrs in orgs authorized for identity
     return nil if identity_id == '0'
 
-    ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_identity(identity_id))
-
     if SuperUser.where(identity_id: identity_id).any?
-      empty_protocol_ids  = includes(:sub_service_requests).where(sub_service_requests: { id: nil }).ids
-      protocol_ids        = ssrs.distinct.pluck(:protocol_id)
-      all_protocol_ids    = (protocol_ids + empty_protocol_ids).uniq
-
-      where(id: all_protocol_ids)
+      self.for_super_user(identity_id)
     else
+      ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_service_provider(identity_id))
       joins(:sub_service_requests).merge(ssrs).distinct
     end
+  }
+
+  scope :for_super_user, -> (identity_id) {
+    # returns protocols with ssrs in orgs authorized for identity
+    ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_super_user(identity_id))
+
+    empty_protocol_ids  = includes(:sub_service_requests).where(sub_service_requests: { id: nil }).ids
+    protocol_ids        = ssrs.distinct.pluck(:protocol_id)
+    all_protocol_ids    = (protocol_ids + empty_protocol_ids).uniq
+
+    where(id: all_protocol_ids)
   }
 
   scope :show_archived, -> (boolean) {
@@ -338,11 +348,7 @@ class Protocol < ApplicationRecord
   end
 
   def primary_principal_investigator
-    primary_pi_project_role.try(:identity)
-  end
-
-  def primary_pi_project_role
-    project_roles.find_by(role: 'primary-pi')
+    primary_pi_role.try(:identity)
   end
 
   def billing_business_manager_email
@@ -452,7 +458,7 @@ class Protocol < ApplicationRecord
   end
 
   def ensure_epic_user
-    primary_pi_project_role.set_epic_rights.save
+    primary_pi_role.set_epic_rights.save
     project_roles.reload
   end
 
@@ -546,11 +552,26 @@ class Protocol < ApplicationRecord
     direct_cost_total(service_request) + indirect_cost_total(service_request)
   end
 
-  def has_incomplete_additional_details?
-    sub_service_requests.any?(&:has_incomplete_additional_details?)
+  def industry_funded?
+    potential_funding_source == "industry" or funding_source == "industry"
+  end
+
+  #############
+  ### FORMS ###
+  #############
+  def has_completed_forms?
+    self.sub_service_requests.any?(&:has_completed_forms?)
+  end
+
+  def all_forms_completed?
+    self.sub_service_requests.all?(&:all_forms_completed?)
   end
 
   private
+
+  def indirect_cost_enabled
+    Setting.find_by_key('use_indirect_cost').value
+  end
 
   def notify_remote_around_update?
     true

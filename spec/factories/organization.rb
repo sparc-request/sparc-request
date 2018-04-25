@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -31,7 +31,7 @@ FactoryGirl.define do
 
     trait :ctrc do
       after(:create) do |organization, evaluator|
-        organization.tag_list = "ctrc_clinical_services"
+        organization.tag_list = "ctrc"
 
         organization.save
       end
@@ -97,6 +97,11 @@ FactoryGirl.define do
       if evaluator.service_provider
         create(:service_provider, organization: organization, identity: evaluator.service_provider)
       end
+    end
+
+    after(:create) do |organization, evaluator|
+      organization.available_statuses.where(status: ['draft', 'submitted', 'get_a_cost_estimate']).update_all(selected: true)
+      organization.editable_statuses.where(status: ['draft', 'submitted', 'get_a_cost_estimate']).update_all(selected: true)
     end
 
     factory :organization_with_process_ssrs, traits: [:process_ssrs, :with_pricing_setup]

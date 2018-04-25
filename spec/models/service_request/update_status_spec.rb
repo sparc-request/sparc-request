@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -297,6 +297,7 @@ RSpec.describe ServiceRequest, type: :model do
         end
 
         context "updating status to 'get_a_cost_estimate'" do
+
           it "should return an array with ssr id" do
             expect(@sr.update_status('get_a_cost_estimate')).to eq([@ssr_with_submitted_status.id])
           end

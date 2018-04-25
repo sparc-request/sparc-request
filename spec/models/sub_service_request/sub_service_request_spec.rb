@@ -1,5 +1,5 @@
 # coding: utf-8
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -211,10 +211,6 @@ RSpec.describe SubServiceRequest, type: :model do
       let!(:service2)   { create(:service, organization_id: org2.id) }
       let!(:line_item1) { create(:line_item, sub_service_request_id: ssr1.id, service_request_id: service_request.id, service_id: service.id) }
       let!(:line_item2) { create(:line_item, sub_service_request_id: ssr2.id, service_request_id: service_request.id, service_id: service2.id) }
-
-      before :each do
-        sub_service_request.organization.editable_statuses.where(status: 'on_hold').destroy_all
-      end
 
       context "can be edited" do
 

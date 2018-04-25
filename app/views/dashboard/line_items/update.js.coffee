@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,9 +22,9 @@
 <% if @errors %>
 $("#modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
 <% else %>
-$("#study-level-activities-table").bootstrapTable 'refresh', {silent: true}
 $("#modal_place").modal('hide')
 <% end %>
+$("#study-level-activities-table").bootstrapTable 'refresh', {silent: true}
 <% end %>
 
 $("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")

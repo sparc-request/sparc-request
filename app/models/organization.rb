@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,12 +27,10 @@ class Organization < ApplicationRecord
 
   belongs_to :parent, :class_name => 'Organization'
   has_many :submission_emails, :dependent => :destroy
-  has_many :associated_surveys, as: :surveyable, dependent: :destroy
+  has_many :associated_surveys, as: :associable, dependent: :destroy
   has_many :pricing_setups, :dependent => :destroy
   has_one :subsidy_map, :dependent => :destroy
-
-  has_many :questionnaires, as: :questionable, dependent: :destroy
-
+  has_many :forms, -> { active }, as: :surveyable, dependent: :destroy
   has_many :super_users, :dependent => :destroy
   has_many :service_providers, :dependent => :destroy
   has_many :catalog_managers, :dependent => :destroy
@@ -48,16 +46,52 @@ class Organization < ApplicationRecord
   accepts_nested_attributes_for :subsidy_map
   accepts_nested_attributes_for :pricing_setups
   accepts_nested_attributes_for :submission_emails
-  accepts_nested_attributes_for :available_statuses, allow_destroy: true
-  accepts_nested_attributes_for :editable_statuses, allow_destroy: true
 
-  after_create :create_editable_statuses
+  accepts_nested_attributes_for :available_statuses
+  accepts_nested_attributes_for :editable_statuses
 
-  # TODO: In rails 5, the .or operator will be added for ActiveRecord queries. We should try to
-  #       condense this to a single query at that point
+  after_create :create_statuses
+
   scope :authorized_for_identity, -> (identity_id) {
-    orgs = includes(:super_users, :service_providers).where("super_users.identity_id = ? or service_providers.identity_id = ?", identity_id, identity_id).references(:super_users, :service_providers).distinct(:organizations)
-    where(id: orgs + Organization.authorized_child_organizations(orgs.map(&:id))).distinct
+    where(
+      id: Organization.authorized_child_organization_ids(
+        includes(:super_users, :service_providers).
+        where("super_users.identity_id = ? or service_providers.identity_id = ?", identity_id, identity_id).
+        references(:super_users, :service_providers).
+        distinct(:organizations).ids
+      ),
+      is_available: true
+    ).distinct
+  }
+
+  scope :authorized_for_super_user, -> (identity_id) {
+    where(
+      id: Organization.authorized_child_organization_ids(
+        joins(:super_users).
+        where(super_users: { identity_id: identity_id } ).
+        references(:super_users).
+        distinct(:organizations).ids)
+    ).distinct
+  }
+
+  scope :authorized_for_service_provider, -> (identity_id) {
+    where(
+      id: Organization.authorized_child_organization_ids(
+        joins(:service_providers).
+        where(service_providers: { identity_id: identity_id } ).
+        references(:service_providers).
+        distinct(:organizations).ids)
+    ).distinct
+  }
+
+  scope :authorized_for_catalog_manager, -> (identity_id) {
+    where(
+      id: Organization.authorized_child_organization_ids(
+        joins(:catalog_managers).
+        where(catalog_managers: { identity_id: identity_id } ).
+        references(:catalog_managers).
+        distinct(:organizations).ids)
+    ).distinct
   }
 
   scope :in_cwf, -> { joins(:tags).where(tags: { name: 'clinical work fulfillment' }) }
@@ -93,6 +127,25 @@ class Organization < ApplicationRecord
     end
   end
 
+  # Organization A, which belongs to
+  # Organization B, which belongs to Organization C, return "C > B > A".
+  # This "hierarchy" stops at a process_ssrs Organization.
+  def organization_hierarchy(include_self=false, process_ssrs=true, use_css=false)
+    parent_orgs = self.parents
+
+    if process_ssrs
+      root = parent_orgs.find_index { |org| org.process_ssrs? } || (parent_orgs.length - 1)
+    else
+      root = parent_orgs.length - 1
+    end
+
+    if use_css
+      parent_orgs[0..root].map{ |o| "<span class='#{o.css_class}-text'>#{o.abbreviation}</span>"}.reverse.join('<span> / </span>') + (include_self ? '<span> / </span>' + "<span class='#{self.css_class}-text'>#{self.abbreviation}</span>" : '')
+    else
+      parent_orgs[0..root].map(&:abbreviation).reverse.join(' > ') + (include_self ? ' > ' + self.abbreviation : '')
+    end
+  end
+
   #TODO SubServiceRequest.where(organization: self.all_child_organizations).each(:&update_org_tree)
   def update_ssr_org_name
     SubServiceRequest.where( organization: self.all_child_organizations<<self ).each(&:update_org_tree)
@@ -115,7 +168,7 @@ class Organization < ApplicationRecord
   end
 
   def has_editable_status?(status)
-    self.get_editable_statuses[status].present?
+    get_editable_statuses.include?(status)
   end
 
   # Returns the immediate children of this organization (shallow search)
@@ -361,36 +414,25 @@ class Organization < ApplicationRecord
   end
 
   def get_available_statuses
-    tmp_available_statuses = self.available_statuses.reject{|status| status.new_record?}
-    statuses = {}
-
+    selected_statuses = []
     if self.use_default_statuses
-      statuses = PermissibleValue.get_hash('status', true)
-    elsif tmp_available_statuses.empty?
-      self.parents.each do |parent|
-        if !parent.available_statuses.empty?
-          statuses = PermissibleValue.get_hash('status').select{|k,_| parent.available_statuses.pluck(:status).include?(k)}
-          return statuses
-        end
-      end
+      selected_statuses = AvailableStatus.defaults
+    elsif self.available_statuses.selected.present?
+      selected_statuses = self.available_statuses.selected.pluck(:status)
     else
-      statuses = PermissibleValue.get_hash('status').select{|k,_| tmp_available_statuses.map(&:status).include?(k)}
+      status_parent = self.parents.detect{ |parent| parent.available_statuses.selected.present? } || self
+      selected_statuses = status_parent.available_statuses.selected.pluck(:status)
     end
-    statuses
+
+    AvailableStatus.statuses.slice(*selected_statuses)
+  end
+
+  def get_editable_statuses
+    self.use_default_statuses ? AvailableStatus.defaults : self.editable_statuses.selected.pluck(:status)
   end
 
   def self.find_all_by_available_status status
     Organization.all.select{|x| x.get_available_statuses.keys.include? status}
-  end
-
-  def setup_editable_statuses
-    EditableStatus.statuses.each do |status|
-      self.editable_statuses.build(status: status, new: true) unless self.editable_statuses.detect{ |es| es.status == status }
-    end
-  end
-
-  def get_editable_statuses
-    self.use_default_statuses ? PermissibleValue.get_hash('status', true) : PermissibleValue.get_hash('status').select{|k,_| self.editable_statuses.pluck(:status).include?(k)}
   end
 
   def has_tag? tag
@@ -405,19 +447,17 @@ class Organization < ApplicationRecord
 
   private
 
-  def create_editable_statuses
-    EditableStatus.statuses.each do |status|
-      self.editable_statuses.create(status: status)
-    end
+  def create_statuses
+    EditableStatus.import EditableStatus.types.map{|status| EditableStatus.new(organization: self, status: status)}
+    AvailableStatus.import AvailableStatus.types.map{|status| AvailableStatus.new(organization: self, status: status)}
   end
 
-  def self.authorized_child_organizations(org_ids)
-    org_ids = org_ids.flatten.compact
-    if org_ids.empty?
-      []
+  def self.authorized_child_organization_ids(org_ids)
+    child_ids = Organization.where(parent_id: org_ids).ids
+    if child_ids.empty?
+      org_ids
     else
-      orgs = Organization.where(parent_id: org_ids)
-      orgs | authorized_child_organizations(orgs.pluck(:id))
+      org_ids + self.authorized_child_organization_ids(child_ids)
     end
   end
 end

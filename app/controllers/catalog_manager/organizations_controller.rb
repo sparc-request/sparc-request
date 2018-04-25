@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -28,7 +28,9 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   def edit
     @organization = Organization.find(params[:id])
     @user_rights  = user_rights(@organization.id)
-    @organization.setup_available_statuses
+
+    # Removed as part of available and editable status changes
+    # @organization.setup_available_statuses
 
     respond_to do |format|
       format.js
@@ -56,6 +58,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     respond_to do |format|
       format.js
     end
+
     render 'catalog_manager/organizations/update'
   end
 
@@ -90,8 +93,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     @attributes.delete(:id)
     #detects if incoming name/abbreviation is different from the old name/abbreviation
     name_change = @attributes[:name] != @organization.name || @attributes[:abbreviation] != @organization.abbreviation
-    @organization.available_statuses.destroy_all
-    @organization.editable_statuses.destroy_all
+
     if @organization.update_attributes(@attributes)
       @organization.update_ssr_org_name if name_change
       update_services
@@ -165,14 +167,11 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
       available_statuses_attributes: [:organization_id,
         :id,
         :status,
-        :new,
-        :position,
-        :_destroy],
+        :selected],
       editable_statuses_attributes: [:organization_id,
         :id,
         :status,
-        :new,
-        :_destroy])
+        :selected])
   end
 
   def pricing_setups_params(ps)

@@ -190,6 +190,7 @@ SparcRails::Application.routes.draw do
     match 'services/set_linked_quantity' => 'services#set_linked_quantity', via: [:get, :post]
     match 'services/set_linked_quantity_total' => 'services#set_linked_quantity_total', via: [:get, :post]
     match 'services/get_updated_rate_maps' => 'services#get_updated_rate_maps', via: [:get, :post]
+    match 'services/change_components' => 'services#change_components', via: [:post]
 
     resources :catalog, only: [:index] do
       collection do

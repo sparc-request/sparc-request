@@ -107,6 +107,10 @@ class CatalogManager::ServicesController < CatalogManager::AppController
 
   def update
     @service = Service.find(params[:id])
+    @programs = @service.provider.programs
+    @cores    = @service.program.cores
+
+
     saved = false
 
     program = params[:service][:program]
@@ -153,7 +157,27 @@ class CatalogManager::ServicesController < CatalogManager::AppController
 
     @service.reload
     @entity = @service
-    respond_with @service, :location => catalog_manager_service_path(@service)
+    # respond_with @service, :location => catalog_manager_service_path(@service)
+  end
+
+  def change_components
+    component = params["component"]
+    @service = Service.find(params["service_id"])
+    components_list = @service.components.split(',')
+
+    if components_list.include?(component)
+      #Delete component from list and save updated list
+      components_list.delete(component)
+      @service.update_attributes(components: components_list.join(','))
+    else
+      #Add new component to list and save updated list
+      components_list.push(component)
+      @service.update_attributes(components: components_list.join(','))
+    end
+
+    respond_to do |format|
+      format.js
+    end
   end
 
   def associate

@@ -76,34 +76,34 @@ $(document).ready ->
           $(changed_element).siblings().val('')
   }
 
-  add_service_level_component_input = (position) ->
-    html      = "<tr id='service_component_position_#{position}'><td><input class='service_component_field' position='#{position}' type='text'></td></tr>"
-    table     = $('fieldset.service_level_components table tbody')
-    table.append html
+  // add_service_level_component_input = (position) ->
+  //   html      = "<tr id='service_component_position_#{position}'><td><input class='service_component_field' position='#{position}' type='text'></td></tr>"
+  //   table     = $('fieldset.service_level_components table tbody')
+  //   table.append html
 
-  update_components_field = () ->
-    hidden_field = $("input[name='service[components]']")
-    inputs = $('fieldset.service_level_components input[type="text"]')
-    components_string = ""
-    inputs.each ->
-      input = $(@)
-      if input.val().length > 0
-        components_string += input.val() + ","
-    hidden_field.val(components_string)
+  // update_components_field = () ->
+  //   hidden_field = $("input[name='service[components]']")
+  //   inputs = $('fieldset.service_level_components input[type="text"]')
+  //   components_string = ""
+  //   inputs.each ->
+  //     input = $(@)
+  //     if input.val().length > 0
+  //       components_string += input.val() + ","
+  //   hidden_field.val(components_string)
 
-  $(document).on 'click', 'fieldset.service_level_components button.add', ->
-    input_count   = $('fieldset.service_level_components').find('input[type="text"]').length
-    new_input_ids = [input_count, input_count += 1, input_count += 1]
+  // $(document).on 'click', 'fieldset.service_level_components button.add', ->
+  //   input_count   = $('fieldset.service_level_components').find('input[type="text"]').length
+  //   new_input_ids = [input_count, input_count += 1, input_count += 1]
 
-    add_service_level_component_input new_input_id for new_input_id in new_input_ids
+  //   add_service_level_component_input new_input_id for new_input_id in new_input_ids
 
-  $(document).on 'change', '.service_component_field', ->
-    update_components_field()
+  // $(document).on 'change', '.service_component_field', ->
+  //   update_components_field()
 
-  $(document).on 'click', 'fieldset.service_level_components button.delete', ->
-    position = $(this).attr('position')
-    $("#service_component_position_#{position}").remove()
-    update_components_field()
+  // $(document).on 'click', 'fieldset.service_level_components button.delete', ->
+  //   position = $(this).attr('position')
+  //   $("#service_component_position_#{position}").remove()
+  //   update_components_field()
 
   $('.add_pricing_map').live('click', ->
     blank_pricing_map = $('.blank_pricing_map').html()

@@ -57,4 +57,20 @@ module CatalogManager::ServicesHelper
 
     style
   end
+
+  def service_header
+    content_tag(:span, "Service", class: "text-service")
+  end
+
+  def service_tree_header service
+    parents = service.organization.parents.map(&:name).reverse.push(service.organization.name)
+    header = content_tag :span do
+      parents.each do |p|
+        concat(content_tag(:span, p))
+        concat(content_tag(:span, '', class: 'inline-glyphicon glyphicon glyphicon-triangle-right'))
+      end
+    concat(content_tag(:span, service.name)) unless service.organization.type == 'Institution'
+    end
+    header
+  end
 end

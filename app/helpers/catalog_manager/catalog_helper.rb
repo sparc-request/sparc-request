@@ -78,9 +78,9 @@ end
 #     end
 #   end
 
-#   def pricing_map_ids service
-#     service.pricing_maps.map{|x| x.id}
-#   end
+  def pricing_map_ids service
+    service.pricing_maps.map{|x| x.id}
+  end
 
   def display_organization_tree(organization)
     tree = []

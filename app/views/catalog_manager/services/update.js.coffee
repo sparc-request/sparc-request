@@ -18,38 +18,12 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%h3
-  %small
-    = service_header
-%h3.no-margin-top
-  = service.name
-%h6.text-muted
-  = service_tree_header(service)
-.panel-group#cm-form-accordion
-  .panel.panel-default#general-info
-    .panel-heading
-      %h4.panel-title
-        = link_to t(:catalog_manager)[:organization_form][:headers][:general_info], '#general-info-collapse', data: {toggle: 'collapse', parent: '#cm-form-accordion'}
-    .panel-collapse.collapse.in#general-info-collapse
-      .panel-body
-        = render "catalog_manager/services/general_info_form", service: service, user: @user
+$("#org-form-container").html("<%= j render '/catalog_manager/services/form', service: @service, user_rights: @user_rights %>")
 
-  - if service.one_time_fee?
-    .panel.panel-default#service-components
-      .panel-heading
-        %h4.panel-title
-          = link_to t(:catalog_manager)[:organization_form][:service_level_components], '#service-components-collapse', data: {toggle: 'collapse', parent: '#cm-form-accordion'}
-      .panel-collapse.collapse#service-components-collapse
-        .panel-body
-          = render "catalog_manager/services/service_components_form", service: service, user: @user
+$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
 
-  - if service.tag_list.include?("epic")
-    .panel.panel-default#epic
-      .panel-heading
-        %h4.panel-title
-          = link_to t(:catalog_manager)[:organization_form][:epic_info], '#epic-collapse', data: {toggle: 'collapse', parent: '#cm-form-accordion'}
-      .panel-collapse.collapse#epic-collapse
-        .panel-body
-          = render "catalog_manager/services/epic_form", service: service, user: @user
-
-
+$('.selectpicker').selectpicker();
+$("[data-toggle='toggle']").bootstrapToggle(
+    on: 'Yes',
+    off: 'No'
+  );

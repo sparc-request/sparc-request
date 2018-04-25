@@ -1733,6 +1733,7 @@ en:
     clinical_work_fulfillment: "Fulfillment"
     ctrc_clinical_services: "Nexus Clinical Services"
     required_forms: "Required Forms"
+    epic: "Epic"
 
   # Tooltip help dialogs
   cart_help:

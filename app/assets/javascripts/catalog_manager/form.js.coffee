@@ -132,3 +132,32 @@ $ ->
           organization_id: $(this).data('organization-id')
       success: ->
         $("#user-rights-row-#{identity_id}").fadeOut(1000, () -> $(this).remove())
+
+  ##############################################
+  ###          Service Components            ###
+  ##############################################
+
+  $(document).on 'click', 'button.remove-service-component', (event) ->
+    component = $(this).closest('.form-group.row').find('input.component_string')[0].value
+    service_id = $(this).data('service')
+    if confirm (I18n['catalog_manager']['service_form']['remove_component_confirm'])
+      $.ajax
+        type: 'POST'
+        url: "catalog_manager/services/change_components"
+        data: 
+          component: component
+          service_id: service_id
+
+  $(document).on 'click', 'button.add-service-component', (event) ->
+    component = $(this).closest('.form-group.row').find('input.component_string')[0].value
+    service_id = $(this).data('service')
+    $.ajax
+      type: 'POST'
+      url: "catalog_manager/services/change_components"
+      data: 
+        component: component
+        service_id: service_id
+
+
+
+

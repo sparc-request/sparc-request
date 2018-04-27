@@ -400,19 +400,6 @@ class Organization < ApplicationRecord
     Identity.where(id: identity_ids)
   end
 
-  def setup_available_statuses
-    position = 1
-    obj_names = PermissibleValue.get_key_list('status')
-    obj_names.each do |obj_name|
-      available_status = available_statuses.detect { |obj| obj.status == obj_name }
-      available_status ||= available_statuses.build(status: obj_name, new: true)
-      available_status.position = position
-      position += 1
-    end
-
-    setup_editable_statuses
-  end
-
   def get_available_statuses
     selected_statuses = []
     if self.use_default_statuses

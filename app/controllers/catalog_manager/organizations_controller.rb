@@ -29,9 +29,6 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     @organization = Organization.find(params[:id])
     @user_rights  = user_rights(@organization.id)
 
-    # Removed as part of available and editable status changes
-    # @organization.setup_available_statuses
-
     respond_to do |format|
       format.js
     end
@@ -52,7 +49,6 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     end
     save_pricing_setups
 
-    @organization.setup_available_statuses
     @institutions = Institution.order('`order`')
 
     respond_to do |format|

@@ -1,0 +1,57 @@
+-# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+- if service.related_services.present?
+  .form-group.row
+    .col-sm-4
+      %h5= t(:catalog_manager)[:related_services_form][:service]
+    .col-sm-2
+      %h5= t(:catalog_manager)[:related_services_form][:required]
+    .col-sm-2
+      %h5= t(:catalog_manager)[:related_services_form][:linked_quantity]
+    .col-sm-2
+      %h5= t(:catalog_manager)[:related_services_form][:linked_quantity_total]
+    .col-sm-2.text-center
+      %h5= t(:catalog_manager)[:related_services_form][:remove_add]
+      
+    - service.service_relations.each do |service_relation|
+      - related_service = service_relation.related_service
+      .form-group.row
+        .col-sm-4
+          = text_field_tag :related_service_name, related_service.display_service_name, class: 'form-control'
+        .col-sm-2
+          = check_box_tag :required, { checked: service_relation.optional == false }, data: { toggle: 'toggle' }, class: 'form-control'
+        .col-sm-2
+          = check_box_tag "linked_quantity_#{service_relation.id}", !service_relation.linked_quantity, service_relation.linked_quantity, :"data-service_relation_id" => service_relation.id, :class => "linked_quantity", class: 'form-control'
+        .col-sm-2
+          - if service_relation.linked_quantity
+            = text_field_tag "linked_quantity_total_#{service_relation.id}", service_relation.linked_quantity_total, :"data-service_relation_id" => service_relation.id,  :class => "linked_quantity_total", class: 'form-control'
+        .col-sm-2.text-center
+          %button.btn.btn-xs.btn-danger.remove-related-services{ data:  {related_service: related_service.id } }
+            %span.glyphicon.glyphicon-remove
+.form-group.row
+  .col-sm-10
+    = text_field_tag 'new_related_service', t(:catalog_manager)[:organization_form][:new_related_services], class: 'form-control'
+  .col-sm-2.text-center
+    %button.btn.btn-xs.btn-success.add-related-services{ data: {service: service.id } }
+      %span.glyphicon.glyphicon-plus
+
+
+

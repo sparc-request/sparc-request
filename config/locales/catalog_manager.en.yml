@@ -186,6 +186,14 @@ en:
       subsidy_instructions: "Instructions"
       tag_list: "Tags"
 
+    related_services_form:
+      new_related_services: "New Related Service"
+      service: "Service"
+      required: "Required"
+      linked_quantity: "Linked Quantity?"
+      linked_quantity_total: "Linked Quantity Total"
+      remove_add: "Remove / Add"
+
     service_form:
       one_time_fee: "Non-clinical (Non-Per </br> Patient/Visit) Services"
       component: "Component"

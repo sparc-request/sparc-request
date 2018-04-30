@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,29 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogManager::ClinicalProvidersController < ApplicationController
-
-  def create
-    ClinicalProvider.create(clinical_provider_params)
-  end
-
-  def destroy
-    clinical_provider = ClinicalProvider.find_by(clinical_provider_params)
-    if clinical_provider.destroy
-      flash[:notice] = "Clinical provider deleted successfully."
-    else
-      flash[:alert] = "Error deleting clinical provider."
-    end
-    @organization = clinical_provider.organization
-
-    render 'catalog_manager/organizations/destroy_clinical_provider'
-  end
-
-  private
-
-  def clinical_provider_params
-    params.require(:clinical_provider).permit(
-      :identity_id,
-      :organization_id)
-  end
-end
+$("#org-form-container #fulfillment .panel-body").html("<%= j render '/catalog_manager/shared/clinical_providers', organization: @organization %>")
+$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")

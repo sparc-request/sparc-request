@@ -144,7 +144,7 @@ $ ->
       $.ajax
         type: 'POST'
         url: "catalog_manager/services/change_components"
-        data: 
+        data:
           component: component
           service_id: service_id
 
@@ -154,10 +154,47 @@ $ ->
     $.ajax
       type: 'POST'
       url: "catalog_manager/services/change_components"
-      data: 
+      data:
         component: component
         service_id: service_id
 
+  ##############################################
+  ###          Clinical Providers            ###
+  ##############################################
 
+  # $(document).on 'change', '.super-user-checkbox', ->
+  #   $.ajax
+  #     type: if $(this).prop('checked') then 'POST' else 'DELETE'
+  #     url: '/catalog_manager/super_user'
+  #     data:
+  #       super_user:
+  #         identity_id: $(this).data('identity-id')
+  #         organization_id: $(this).data('organization-id')
+
+  $(document).on 'click', 'button.remove-clinical-provider', (event) ->
+    if confirm I18n["catalog_manager_js"]["clinical_provider_remove"]
+      $.ajax
+        type: 'DELETE'
+        url: '/catalog_manager/clinical_provider'
+        data:
+          clinical_provider:
+            identity_id: $(this).data('identity-id')
+            organization_id: $(this).data('organization-id')
+
+
+  # # clinical providers
+  # $('input#new_cp').live 'focus', -> $(this).val('')
+  # $('input#new_cp').live 'keydown.autocomplete', ->
+  #   $(this).autocomplete
+  #     source: "/catalog_manager/identities/search",
+  #     minLength: 3,
+  #     select: (event, ui) ->
+  #       $.post '/catalog_manager/identities/associate_with_org_unit', {identity: ui.item.value, org_unit: $('#org_unit_id').val(), rel_type: "clinical_provider_organizational_unit"}, (data) ->
+  #         $('#cp_info').html(data)
+
+  # $('.cp_delete').live 'click', ->
+  #   if confirm I18n["catalog_manager_js"]["clinical_provider_remove"]
+  #     $.post '/catalog_manager/identities/disassociate_with_org_unit', {relationship: $(this).attr('id'), org_unit: $('#org_unit_id').val(), rel_type: "clinical_provider_organizational_unit"}, (data) ->
+  #       $('#cp_info').html(data)
 
 

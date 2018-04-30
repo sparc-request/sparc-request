@@ -124,6 +124,7 @@ en:
       fulfillment:
         name_email: "Name/Email"
         remove_add: "Remove / Add"
+        already_exists: "User already has clinical provider rights"
       remove: "Remove"
       abbreviation: "Abbreviation"
       ack_language: "Acknowledgment Language"

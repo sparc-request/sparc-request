@@ -26,7 +26,7 @@ $("[data-toggle='toggle']").bootstrapToggle(
   );
 
 
-# Identity Search Bloodhound
+## Identity Search Bloodhound
 services_bloodhound = new Bloodhound(
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -35,6 +35,9 @@ services_bloodhound = new Bloodhound(
     wildcard: '%QUERY'
 )
 services_bloodhound.initialize() # Initialize the Bloodhound suggestion engine
+
+
+## User Search for User Rights Sub-Form
 $('#user-rights-query').typeahead(
   {
     minLength: 3,
@@ -57,6 +60,39 @@ $('#user-rights-query').typeahead(
 
   if suggestion['identity_id'] in users_on_table
     $('#user-rights-query').parent().prepend("<div class='alert alert-danger alert-dismissable'>#{suggestion['name']} #{I18n['catalog_manager']['organization_form']['user_rights']['user_in_table']}</div>")
+    $('.alert-dismissable').delay(3000).fadeOut()
+  else
+    $.ajax
+      type: 'get'
+      url: "/catalog_manager/organizations/<%= @organization.id %>/refresh_user_rights.js"
+      data:
+        new_ur_identity_id: suggestion['identity_id']
+)
+
+
+##User Search for Fulfillment Sub-Form
+$('#fulfillment-rights-query').typeahead(
+  {
+    minLength: 3,
+    hint: false,
+  },
+  {
+    displayKey: 'term',
+    source: services_bloodhound,
+    limit: 100,
+    templates: {
+      suggestion: Handlebars.compile("<button class=\"text-left col-sm-12\">
+                                        <strong>{{name}}</strong> <span>{{email}}{{identity_id}}</span>
+                                      </button>")
+      notFound: '<div class="tt-suggestion">No Results</div>'
+    }
+  }
+).on('typeahead:select', (event, suggestion) ->
+  existing_users = $("[id*='fulfillment-rights-row-']").map ->
+    return $(this).data('identity-id')
+
+  if suggestion['identity_id'] in existing_users
+    $('#fulfillment-rights-query').parent().prepend("<div class='alert alert-danger alert-dismissable'>#{suggestion['name']} #{I18n['catalog_manager']['organization_form']['fulfillment']['already_exists']}</div>")
     $('.alert-dismissable').delay(3000).fadeOut()
   else
     $.ajax

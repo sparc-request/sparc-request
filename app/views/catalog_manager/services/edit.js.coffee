@@ -24,3 +24,45 @@ $("[data-toggle='toggle']").bootstrapToggle(
     on: 'Yes',
     off: 'No'
   );
+
+# RELATED SERVICES SEARCH #
+services_bloodhound = new Bloodhound(
+  datumTokenizer: (datum) ->
+    Bloodhound.tokenizers.whitespace datum.value
+  queryTokenizer: Bloodhound.tokenizers.whitespace
+  remote:
+    url: "/search/services_search?term=%QUERY",
+    wildcard: '%QUERY'
+)
+services_bloodhound.initialize() # Initialize the Bloodhound suggestion engine
+$('#new_related_services_search').typeahead(
+  # Instantiate the Typeahead UI
+  {
+    minLength: 3,
+    hint: false,
+    highlight: true
+  },
+  {
+    displayKey: 'term'
+    source: services_bloodhound.ttAdapter()
+    limit: 100
+    templates: {
+      suggestion: Handlebars.compile('<button class="text-left">
+                                        <strong><span class="text-service">Service</span><span>: {{name}}</span></strong><br>
+                                        <span>CPT Code: {{cpt_code}}</span>
+                                      </button>')
+      notFound: '<div class="tt-suggestion">No Results</div>'
+    }
+  }
+)
+.on 'typeahead:select', (event, suggestion) ->
+  $("#loading_authorized_user_spinner").removeClass('hidden')
+
+  $.ajax
+    type: 'get'
+    url: '/catalog_manager/services/associate'
+    data:
+      service: $(this).data('service')
+      related_service: suggestion.id
+    success: ->
+      $("#loading_authorized_user_spinner").addClass('hidden')

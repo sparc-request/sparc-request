@@ -181,7 +181,6 @@ class CatalogManager::ServicesController < CatalogManager::AppController
   end
 
   def associate
-
     service = Service.find params["service"]
     related_service = Service.find params["related_service"]
 
@@ -189,7 +188,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       service.service_relations.create :related_service_id => related_service.id, :optional => false
     end
 
-    render :partial => 'catalog_manager/shared/related_services', :locals => {:entity => service}
+    render :partial => 'catalog_manager/services/related_services_form', :locals => {:service => service}
   end
 
   def disassociate
@@ -198,7 +197,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
 
     service_relation.destroy
 
-    render :partial => 'catalog_manager/shared/related_services', :locals => {:entity => service}
+    render :partial => 'catalog_manager/services/related_services_form', :locals => {:service => service}
   end
 
   def set_optional

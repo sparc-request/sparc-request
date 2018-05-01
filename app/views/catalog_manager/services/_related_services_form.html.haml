@@ -20,13 +20,13 @@
 
 - if service.related_services.present?
   .form-group.row
-    .col-sm-4
+    .col-sm-4.text-center
       %h5= t(:catalog_manager)[:related_services_form][:service]
-    .col-sm-2
+    .col-sm-2.text-center
       %h5= t(:catalog_manager)[:related_services_form][:required]
-    .col-sm-2
+    .col-sm-2.text-center
       %h5= t(:catalog_manager)[:related_services_form][:linked_quantity]
-    .col-sm-2
+    .col-sm-2.text-center
       %h5= t(:catalog_manager)[:related_services_form][:linked_quantity_total]
     .col-sm-2.text-center
       %h5= t(:catalog_manager)[:related_services_form][:remove_add]
@@ -34,24 +34,27 @@
     - service.service_relations.each do |service_relation|
       - related_service = service_relation.related_service
       .form-group.row
-        .col-sm-4
-          = text_field_tag :related_service_name, related_service.display_service_name, class: 'form-control'
-        .col-sm-2
+        .col-sm-4.text-center
+          = related_service.display_service_name
+        .col-sm-2.text-center
           = check_box_tag :required, { checked: service_relation.optional == false }, data: { toggle: 'toggle' }, class: 'form-control'
-        .col-sm-2
+        .col-sm-2.text-center
           = check_box_tag "linked_quantity_#{service_relation.id}", !service_relation.linked_quantity, service_relation.linked_quantity, :"data-service_relation_id" => service_relation.id, :class => "linked_quantity", class: 'form-control'
-        .col-sm-2
+        .col-sm-2.text-center
           - if service_relation.linked_quantity
             = text_field_tag "linked_quantity_total_#{service_relation.id}", service_relation.linked_quantity_total, :"data-service_relation_id" => service_relation.id,  :class => "linked_quantity_total", class: 'form-control'
         .col-sm-2.text-center
-          %button.btn.btn-xs.btn-danger.remove-related-services{ data:  {related_service: related_service.id } }
+          %button.btn.btn-xs.btn-danger.remove-related-services{ data:  {service_relation_id: service_relation.id } }
             %span.glyphicon.glyphicon-remove
-.form-group.row
+#search.form-group.row
   .col-sm-10
-    = text_field_tag 'new_related_service', t(:catalog_manager)[:organization_form][:new_related_services], class: 'form-control'
+    = text_field_tag 'new_related_services_search', t(:catalog_manager)[:organization_form][:new_related_services], class: 'form-control input-lg', data: { service: service.id }
+    / = image_tag 'spinner.gif', id: 'loading_authorized_user_spinner', class: 'hidden'
   .col-sm-2.text-center
     %button.btn.btn-xs.btn-success.add-related-services{ data: {service: service.id } }
       %span.glyphicon.glyphicon-plus
 
+  / #search.form-group
+  /   = text_field_tag 'service-query', nil, placeholder: t(:proper)[:catalog][:center][:search_placeholder], class: "search-services form-control input-lg", data: { srid: service_request.id, ssrid: sub_service_request.try(:id) }
 
 

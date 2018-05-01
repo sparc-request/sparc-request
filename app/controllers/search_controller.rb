@@ -22,6 +22,20 @@ class SearchController < ApplicationController
   before_action :initialize_service_request, only: [:services]
   before_action :authorize_identity, only: [:services]
 
+  def services_search
+    term = params[:term].strip
+    results = Service.where("is_available=1 AND (name LIKE '%#{term}%' OR abbreviation LIKE '%#{term}%' OR cpt_code LIKE '%#{term}%')")
+
+    results.map{ |s|
+      {
+        name: s.name,
+        id: s.id,
+        cpt_code: "CPT code: #{s.cpt_code}"
+      }
+    }
+    render json: results.to_json
+  end
+
   def services
     term              = params[:term].strip
     locked_org_ids    = @service_request.
@@ -75,7 +89,6 @@ class SearchController < ApplicationController
         value_selector: "##{org.class.to_s.downcase}-#{org.id}"
       }
     }
-
     render json: results.to_json
   end
 

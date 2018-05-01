@@ -162,32 +162,16 @@ $ ->
   ###          Related Services              ###
   ##############################################
 
-  $('input#new_related_service').live 'focus', -> $(this).val('')
-  $('input#new_related_service').live 'keydown.autocomplete', ->
-    service_id = $(this).data('service')
-    $(this).autocomplete
-      source: "/catalog_manager/services/search",
-      minLength: 3,
-      select: (event, ui) ->
-        $.ajax
-          type: 'POST'
-          url: "catalog_manager/services/change_related_services"
-          data:
-            service: service_id
-
   $(document).on 'click', 'button.remove-related-services', (event) ->
-    component = $(this).closest('.form-group.row').find('input.component_string')[0].value
-    service_id = $(this).data('service')
-    if confirm (I18n['catalog_manager']['service_form']['remove_component_confirm'])
+    service_relation_id = $(this).data('service-relation-id')
+    if confirm (I18n['catalog_manager']['related_services_form']['remove_related_service_confirm'])
       $.ajax
         type: 'POST'
-        url: "catalog_manager/services/change_related_services"
+        url: "catalog_manager/services/disassociate"
         data: 
-          component: component
-          service_id: service_id
+          service_relation_id: service_relation_id
 
   $(document).on 'click', 'button.add-related-services', (event) ->
-    component = $(this).closest('.form-group.row').find('input.component_string')[0].value
     service_id = $(this).data('service')
     $.ajax
       type: 'POST'

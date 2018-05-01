@@ -158,6 +158,13 @@ $ ->
         component: component
         service_id: service_id
 
+  ##############################################
+  ###          EPIC Interface                ###
+  ##############################################
+
+  $(document).on 'click', '#close-epic', ->
+    $('#epic-collapse').collapse('hide')
+
 
 
 

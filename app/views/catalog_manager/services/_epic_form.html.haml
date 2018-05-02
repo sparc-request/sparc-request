@@ -18,4 +18,34 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-Not yet implemented
+= form_for service, url: catalog_manager_service_update_epic_info_path(service), method: :patch, id: 'service-epic-form', remote: true do |f|
+  .form-group.row
+    = f.label :eap_id, t(:catalog_manager)[:organization_form][:eap_id], class: 'col-sm-3 control-label'
+    .col-sm-9
+      = f.text_field :eap_id, { class: 'form-control'}
+  .form-group.row
+    = f.label :eap_id, t(:catalog_manager)[:organization_form][:cpt_code], class: 'col-sm-3 control-label'
+    .col-sm-9
+      = f.text_field :cpt_code, { class: 'form-control'}
+  .form-group.row
+    = f.label :charge_code, t(:catalog_manager)[:organization_form][:charge_code], class: 'col-sm-3 control-label'
+    .col-sm-9
+      = f.text_field :charge_code, { class: 'form-control'}
+  .form-group.row
+    = f.label :revenue_code, t(:catalog_manager)[:organization_form][:revenue_code], class: 'col-sm-3 control-label'
+    .col-sm-9
+      = f.text_field :revenue_code, { class: 'form-control'}
+  .form-group.row
+    = f.label :order_code, t(:catalog_manager)[:organization_form][:order_code], class: 'col-sm-3 control-label'
+    .col-sm-9
+      = f.text_field :order_code, { class: 'form-control'}
+  .form-group.row
+    = f.label :send_to_epic, t(:catalog_manager)[:organization_form][:send_to_epic], class: 'col-sm-3 control-label'
+    .col-sm-9
+      = f.check_box :send_to_epic, { checked: service.send_to_epic, data: {toggle: 'toggle'}}
+
+  %hr
+    .pull-right
+      %input.btn.btn-default#close-epic{ type: 'button', value: t(:actions)[:close], data: {toggle: 'collapse', target: '#epic-collapse'}}
+      %input.btn.btn-primary{ type: 'submit', value: t(:actions)[:save]}
+

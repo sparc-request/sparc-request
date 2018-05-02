@@ -151,6 +151,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     # end
     if saved
       flash[:notice] = "#{@service.name} saved correctly."
+      @epic_tag_present = params[:service][:tag_list].include?("epic")
     else
       flash[:alert] = "Failed to update #{@service.name}."
     end
@@ -181,6 +182,21 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       else
         flash[:alert] = "Failed to create new component."
       end
+    end
+
+    respond_to do |format|
+      format.js
+    end
+  end
+
+  def update_epic_info
+    @service = Service.find(params[:service_id])
+    saved = @service.update_attributes(service_params)
+
+    if saved
+      flash[:notice] = "#{@service.name} saved correctly."
+    else
+      flash[:alert] = "Failed to update #{@service.name}."
     end
 
     respond_to do |format|
@@ -296,9 +312,9 @@ class CatalogManager::ServicesController < CatalogManager::AppController
         :line_items_count,
         :one_time_fee,
         :components)
-      if !temp[:tag_list]
-        temp[:tag_list] = ""
-      end
+      #if !temp[:tag_list]
+        #temp[:tag_list] = ""
+      #end
       temp
     end
   end

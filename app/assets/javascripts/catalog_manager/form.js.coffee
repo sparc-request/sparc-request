@@ -33,9 +33,6 @@ $ ->
     else
       $('#enable-all-services').addClass('hidden')
 
-  $(document).on 'click', '#close-general-info', ->
-    $('#general-info-collapse').collapse('hide')
-
   ##############################################
   ###          Org User Rights               ###
   ##############################################
@@ -157,6 +154,13 @@ $ ->
       data:
         component: component
         service_id: service_id
+
+
+  ##############################################
+  ###          EPIC Interface                ###
+  ##############################################
+
+
 
   ##############################################
   ###          Clinical Providers            ###

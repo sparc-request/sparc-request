@@ -58,5 +58,5 @@
 
   %hr
     .pull-right
-      %input.btn.btn-default#close-general-info{ type: 'button', value: t(:actions)[:close] }
+      %input.btn.btn-default#close-general-info{ type: 'button', value: t(:actions)[:close], data: {toggle: 'collapse', target: '#general-info-collapse'}}
       %input.btn.btn-primary{ type: 'submit', value: t(:actions)[:save]}

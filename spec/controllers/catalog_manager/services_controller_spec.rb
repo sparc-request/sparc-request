@@ -54,10 +54,20 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
 
     context "success" do
 
-      it "should update the Service" do
-        service = create(:service)
+      before :each do
+        @institution = create(:institution)
+        @provider    = create(:provider, parent_id: @institution.id)
+        @program     = create(:program, parent_id: @provider.id)
+        @core        = create(:core, parent_id: @program.id)
+      end
 
-        put :update, params: { id: service.id, service: { name: "New name" } }
+      it "should update the Service" do
+        service = create(:service, organization: @core)
+
+        put :update, params: {
+          id: service.id,
+          service: { name: "New name" }
+        }, format: :js
 
         expect(service.reload.name).to eq("New name")
       end
@@ -65,9 +75,12 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
       context "Service has no pre-existing ServiceLevelComponents" do
 
         it "should create ServiceLevelComponents" do
-          service = create(:service)
+          service = create(:service, organization: @core)
 
-          put :update, params: { id: service.id, service: { name: "New name" }.merge!(service_level_component_params) }
+          put :update, params: {
+            id: service.id,
+            service: { name: "New name" }.merge!(service_level_component_params)
+          }, format: :js
 
           expect(service.reload.components.split(',').count).to eq(2)
         end
@@ -75,10 +88,13 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
 
       context "Service has pre-existing ServiceLevelComponents" do
 
-        before { @service = FactoryGirl.create(:service_with_components) }
+        before { @service = FactoryGirl.create(:service_with_components, organization: @core) }
 
         it "should create new ServiceLevelComponents" do
-          put :update, params: { id: @service.id, service: { name: "New name" }.merge!(service_level_component_params) }
+          put :update, params: {
+            id: @service.id,
+            service: { name: "New name" }.merge!(service_level_component_params)
+          }, format: :js
 
           expect(@service.reload.components.split(',').count).to eq(2)
         end
@@ -86,7 +102,10 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
         it "should destroy ServiceLevelComponents marked for destroy" do
           service_level_component = @service.components.split(',').first
 
-          put :update, params: { id: @service.id, service: service_level_component_destroy_params(@service, service_level_component) }
+          put :update, params: {
+            id: @service.id,
+            service: service_level_component_destroy_params(@service, service_level_component)
+          }, format: :js
 
           expect(@service.reload.components.split(',').count).to eq(2)
         end

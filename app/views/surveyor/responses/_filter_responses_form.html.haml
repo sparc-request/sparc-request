@@ -25,7 +25,7 @@
     .pull-right
       = link_to t(:actions)[:save], 'javascript:void(0)', id: 'save-filters'
       = " | "
-      = link_to t(:actions)[:reset], reset_filterrific_url(format: :js), id: 'reset-filters'
+      = link_to t(:actions)[:reset], reset_filterrific_url, id: 'reset-filters'
     .clearfix
   = form_for_filterrific filterrific, remote: true do |form|
     .panel-body

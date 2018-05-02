@@ -30,7 +30,7 @@ class Response < ActiveRecord::Base
   accepts_nested_attributes_for :question_responses
 
   filterrific(
-    default_filter_params: {},
+    default_filter_params: { include_incomplete: 'false' },
     available_filters: [
       :of_type,
       :with_state,

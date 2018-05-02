@@ -32,7 +32,8 @@ class Surveyor::ResponsesController < Surveyor::BaseController
     @filterrific  =
       initialize_filterrific(Response, params[:filterrific] && sanitize_dates(filterrific_params, [:start_date, :end_date]),
         default_filter_params: {
-          of_type: current_user.is_site_admin? ? 'SystemSurvey' : 'Form'
+          of_type: current_user.is_site_admin? ? 'SystemSurvey' : 'Form',
+          include_incomplete: 'false'
         },
         select_options: {
           of_type: determine_type_rights

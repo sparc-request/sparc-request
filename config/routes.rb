@@ -203,6 +203,7 @@ SparcRails::Application.routes.draw do
 
     resources :organizations, only: [:edit, :update, :create] do
       get :refresh_user_rights
+      post :add_clinical_provider
     end
     resources :institutions, only: [:edit, :update, :create]
     resources :providers, only: [:edit, :update, :create]

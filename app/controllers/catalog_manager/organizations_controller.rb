@@ -68,6 +68,13 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     @user_rights  = user_rights(@organization.id)
   end
 
+  def add_clinical_provider
+    
+    respond_to do |format|
+      format.js
+    end
+  end
+
   private
 
   # ================ Imported from OrganizationUpdater ========================

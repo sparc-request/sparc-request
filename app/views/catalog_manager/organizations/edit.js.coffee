@@ -96,8 +96,8 @@ $('#fulfillment-rights-query').typeahead(
     $('.alert-dismissable').delay(3000).fadeOut()
   else
     $.ajax
-      type: 'get'
-      url: "/catalog_manager/organizations/<%= @organization.id %>/refresh_user_rights.js"
+      type: 'post'
+      url: "/catalog_manager/organizations/<%= @organization.id %>/add_clinical_provider.js"
       data:
         new_ur_identity_id: suggestion['identity_id']
 )

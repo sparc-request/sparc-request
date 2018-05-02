@@ -20,6 +20,8 @@
 
 $("#org-form-container #general-info .panel-body").html("<%= j render '/catalog_manager/services/general_info_form', service: @service%>")
 
+$("#org-form-container #epic").css("display", "<%= j @epic_tag_present ? 'block' : 'none' %>")
+
 $("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
 
 $('.selectpicker').selectpicker();

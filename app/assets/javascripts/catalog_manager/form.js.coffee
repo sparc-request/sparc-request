@@ -33,9 +33,6 @@ $ ->
     else
       $('#enable-all-services').addClass('hidden')
 
-  $(document).on 'click', '#close-general-info', ->
-    $('#general-info-collapse').collapse('hide')
-
   ##############################################
   ###          Org User Rights               ###
   ##############################################
@@ -144,7 +141,7 @@ $ ->
       $.ajax
         type: 'POST'
         url: "catalog_manager/services/change_components"
-        data: 
+        data:
           component: component
           service_id: service_id
 
@@ -154,7 +151,7 @@ $ ->
     $.ajax
       type: 'POST'
       url: "catalog_manager/services/change_components"
-      data: 
+      data:
         component: component
         service_id: service_id
 
@@ -162,8 +159,7 @@ $ ->
   ###          EPIC Interface                ###
   ##############################################
 
-  $(document).on 'click', '#close-epic', ->
-    $('#epic-collapse').collapse('hide')
+
 
 
 

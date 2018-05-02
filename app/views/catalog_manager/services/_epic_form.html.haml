@@ -46,6 +46,6 @@
 
   %hr
     .pull-right
-      %input.btn.btn-default#close-epic{ type: 'button', value: t(:actions)[:close] }
+      %input.btn.btn-default#close-epic{ type: 'button', value: t(:actions)[:close], data: {toggle: 'collapse', target: '#epic-collapse'}}
       %input.btn.btn-primary{ type: 'submit', value: t(:actions)[:save]}
 

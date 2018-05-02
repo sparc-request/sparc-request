@@ -19,6 +19,6 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .service-view
   .name
-    = link_to service.display_service_name, 'javascript:void(0)', class: "service service-#{service.id} btn btn-default", data: { id: service.id }
-  .col-sm-12.service-description.hidden{ class: "service-description-#{service.id}" }
-    = organization_description_display(service)
+    = service_name_display(line_item)
+  .col-sm-12.service-description.hidden{ class: "service-description-#{line_item.service.id}" }
+    = organization_description_display(line_item.service)

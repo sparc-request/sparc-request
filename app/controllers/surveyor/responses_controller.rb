@@ -42,9 +42,9 @@ class Surveyor::ResponsesController < Surveyor::BaseController
     @type       = @filterrific.of_type.constantize.yaml_klass
     @responses  =
       if @type == 'Survey'
-        @filterrific.find.eager_load(:survey, :question_responses)
+        @filterrific.find.eager_load(:survey, :question_responses, :identity)
       else
-        @filterrific.find.eager_load(:survey, :question_responses).
+        @filterrific.find.eager_load(:survey, :question_responses, :identity).
           where(survey: Form.for(current_user))
       end
 

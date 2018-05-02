@@ -80,6 +80,7 @@ en:
           complete: "Complete"
           date: "Date"
           actions: "Actions"
+          by: "By"
       emails:
         system_satisfaction:
           subject: "System Satisfaction Survey Completed in %{site_name}"

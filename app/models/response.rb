@@ -35,8 +35,8 @@ class Response < ActiveRecord::Base
       :of_type,
       :with_state,
       :with_survey,
-      :from_date,
-      :to_date,
+      :start_date,
+      :end_date,
       :include_incomplete
     ]
   )
@@ -67,16 +67,16 @@ class Response < ActiveRecord::Base
     joins(:survey).where(surveys: { id: survey_ids })
   }
 
-  scope :from_date, -> (date) {
+  scope :start_date, -> (date) {
     return nil if date.blank?
 
-    where("responses.created_at >= ?", date.to_datetime)
+    where("responses.updated_at >= ?", date.to_datetime)
   }
 
-  scope :to_date, -> (date) {
+  scope :end_date, -> (date) {
     return nil if date.blank?
 
-    where("responses.created_at <= ?", date.to_datetime.end_of_day)
+    where("responses.updated_at <= ?", date.to_datetime.end_of_day)
   }
 
   scope :include_incomplete, -> (boolean) {

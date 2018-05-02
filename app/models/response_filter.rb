@@ -42,8 +42,8 @@ class ResponseFilter < ApplicationRecord
           of_type: self.of_type,
           with_state: self.with_state,
           with_survey: self.with_survey,
-          from_date: self.from_date,
-          to_date: self.to_date,
+          start_date: self.start_date,
+          end_date: self.end_date,
           include_incomplete: self.include_incomplete
         }
       )

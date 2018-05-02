@@ -67,7 +67,7 @@ class Survey < ApplicationRecord
   
   def self.for_dropdown_select
     self.all.order(:title).group_by(&:title).map{ |title, surveys|
-      [title, surveys.map{ |survey| ["Version #{survey.version}", survey.id] }]
+      [title, surveys.map{ |survey| ["Version #{survey.version} (#{survey.active ? 'Active' : 'Inactive'})", survey.id] }]
     }
   end
 

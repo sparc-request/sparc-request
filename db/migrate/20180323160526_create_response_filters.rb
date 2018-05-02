@@ -6,8 +6,8 @@ class CreateResponseFilters < ActiveRecord::Migration[5.1]
       t.string    :of_type
       t.string    :with_state
       t.string    :with_survey
-      t.datetime  :from_date
-      t.datetime  :to_date
+      t.datetime  :start_date
+      t.datetime  :end_date
       t.boolean   :include_incomplete
       t.timestamps
     end

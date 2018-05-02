@@ -33,8 +33,8 @@
           .col-md-12
             = form.hidden_field :identity_id
             = form.hidden_field :of_type
-            = form.hidden_field :from_date
-            = form.hidden_field :to_date
+            = form.hidden_field :start_date
+            = form.hidden_field :end_date
             = form.hidden_field :include_incomplete
             - response_filter.with_state.each do |state|
               = form.hidden_field :with_state, multiple: true, value: state

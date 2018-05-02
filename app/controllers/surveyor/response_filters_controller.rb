@@ -24,7 +24,7 @@ class Surveyor::ResponseFiltersController < ApplicationController
   before_action :authenticate_identity!
 
   def new
-    @response_filter = current_user.response_filters.new(new_params)
+    @response_filter = current_user.response_filters.new(sanitize_dates(new_params, [:start_date, :end_date]))
   end
 
   def create
@@ -38,9 +38,9 @@ class Surveyor::ResponseFiltersController < ApplicationController
   end
 
   def destroy
-    @filter = ResponseFilter.find(params[:id])
+    @response_filter = ResponseFilter.find(params[:id])
     
-    @filter.destroy
+    @response_filter.destroy
 
     flash[:alert] = t(:surveyor)[:response_filters][:destroyed]
   end
@@ -48,8 +48,8 @@ class Surveyor::ResponseFiltersController < ApplicationController
   def new_params
     params.require(:filterrific).permit(
       :of_type,
-      :from_date,
-      :to_date,
+      :start_date,
+      :end_date,
       :include_incomplete,
       with_state: [],
       with_survey: []
@@ -61,8 +61,8 @@ class Surveyor::ResponseFiltersController < ApplicationController
       :name,
       :identity_id,
       :of_type,
-      :from_date,
-      :to_date,
+      :start_date,
+      :end_date,
       :include_incomplete,
       with_state: [],
       with_survey: []

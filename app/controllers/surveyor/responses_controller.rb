@@ -30,7 +30,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
 
   def index
     @filterrific  =
-      initialize_filterrific(Response, params[:filterrific] && filterrific_params,
+      initialize_filterrific(Response, params[:filterrific] && sanitize_dates(filterrific_params, [:start_date, :end_date]),
         default_filter_params: {
           of_type: current_user.is_site_admin? ? 'SystemSurvey' : 'Form'
         },
@@ -147,8 +147,8 @@ class Surveyor::ResponsesController < Surveyor::BaseController
     params.require(:filterrific).permit(
       :reset_filterrific,
       :of_type,
-      :from_date,
-      :to_date,
+      :start_date,
+      :end_date,
       :include_incomplete,
       with_state: [],
       with_survey: []

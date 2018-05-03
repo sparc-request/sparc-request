@@ -32,7 +32,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
     @filterrific  =
       initialize_filterrific(Response, params[:filterrific] && sanitize_dates(filterrific_params, [:start_date, :end_date]),
         default_filter_params: {
-          of_type: current_user.is_site_admin? ? 'SystemSurvey' : 'Form',
+          of_type: current_user.is_site_admin? ? SystemSurvey.name : Form.name,
           include_incomplete: 'false'
         },
         select_options: {
@@ -42,7 +42,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
 
     @type       = @filterrific.of_type.constantize.yaml_klass
     @responses  =
-      if @type == 'Survey'
+      if @type == Survey.name
         @filterrific.find.eager_load(:survey, :question_responses, :identity)
       else
         @filterrific.find.eager_load(:survey, :question_responses, :identity).
@@ -167,8 +167,8 @@ class Surveyor::ResponsesController < Surveyor::BaseController
 
   def determine_type_rights
     types = []
-    types << ['Survey', 'SystemSurvey'] if current_user.is_site_admin?
-    types << ['Form', 'Form'] if current_user.is_super_user? || current_user.is_service_provider?
+    types << [Survey.name, SystemSurvey.name] if current_user.is_site_admin?
+    types << [Form.name, Form.name] if current_user.is_super_user? || current_user.is_service_provider?
     
     raise ActionController::RoutingError.new('Not Found') if types.empty?
 

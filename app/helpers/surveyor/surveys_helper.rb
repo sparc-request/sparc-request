@@ -83,21 +83,6 @@ module Surveyor::SurveysHelper
   end
 
   ### Surveys Form ###
-  def display_order_options(survey)
-    options_from_collection_for_select(
-      SystemSurvey.unscoped.where.not(id: survey.id).order(:display_order),
-      'display_order',
-      'insertion_name',
-      survey.display_order + 1
-    )+
-    content_tag(
-      :option,
-      t(:constants)[:add_as_last],
-      value: (SystemSurvey.maximum(:display_order) || 0)+1,
-      selected: survey.display_order == SystemSurvey.maximum(:display_order)
-    )
-  end
-
   def add_section_content
     raw(
       [ content_tag(:span, '', class: 'glyphicon glyphicon-th-list'),

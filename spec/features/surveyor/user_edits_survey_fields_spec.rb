@@ -73,6 +73,23 @@ RSpec.describe 'User edits survey fields', js: true do
       expect(@survey.reload.access_code).to eq('access-denied')
     end
 
+    context 'and changes access_code to an already-used access code' do
+      scenario 'and sees updated version' do
+        create(:system_survey, access_code: 'access-denied', version: 1)
+        visit surveyor_surveys_path
+        wait_for_javascript_to_finish
+
+        find("[href='/surveyor/surveys/#{@survey.id}/edit']").click
+        wait_for_javascript_to_finish
+
+        fill_in "survey-#{@survey.id}-access_code", with: 'access-denied'
+        find('.modal-title').click
+        wait_for_javascript_to_finish
+
+        expect(@survey.reload.version).to eq(2)
+      end
+    end
+
     scenario 'and sees updated version' do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish

@@ -91,8 +91,7 @@
                 .col-lg-2
                   .input-group
                     .input-group-addon $
-                    = f.number_field :initial_amount_clinical_services,
-                      class: 'form-control'
+                    = f.text_field :initial_amount_clinical_services, class: 'form-control', onkeydown: "validateMonetaryInput(event)", value: f.object.initial_amount_clinical_services ? "%.2f" % f.object.initial_amount_clinical_services : ""
             .initial-amount.hide
               = f.label :initial_amount,
                 t(:proper)[:service_details][:initial_amount_non_clinical_services],
@@ -100,8 +99,7 @@
               .col-lg-2
                 .input-group
                   .input-group-addon $
-                  = f.number_field :initial_amount,
-                    class: 'form-control'
+                  = f.text_field :initial_amount, class: 'form-control', onkeydown: "validateMonetaryInput(event)", value: f.object.initial_amount ? "%.2f" % f.object.initial_amount : ""
           .form-group.col-lg-12#budget-agreed-upon-date
             = f.label :budget_agreed_upon_date,
               t(:proper)[:service_details][:budget_agreed_upon_date],
@@ -120,8 +118,7 @@
                 .col-lg-2
                   .input-group
                     .input-group-addon $
-                    = f.number_field :negotiated_amount_clinical_services,
-                      class: 'form-control'
+                    = f.text_field :negotiated_amount_clinical_services, class: 'form-control', onkeydown: "validateMonetaryInput(event)", value: f.object.negotiated_amount_clinical_services ? "%.2f" % f.object.negotiated_amount_clinical_services : ""
             .negotiated-amount.hide
               = f.label :negotiated_amount,
                 t(:proper)[:service_details][:negotiated_amount_non_clinical_services],
@@ -129,5 +126,4 @@
               .col-lg-2
                 .input-group
                   .input-group-addon $
-                  = f.number_field :negotiated_amount,
-                    class: 'form-control'
+                  = f.text_field :negotiated_amount, class: 'form-control', onkeydown: "validateMonetaryInput(event)", value: f.object.negotiated_amount ? "%.2f" % f.object.negotiated_amount : ""

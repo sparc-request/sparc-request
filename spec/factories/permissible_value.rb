@@ -28,5 +28,6 @@ FactoryGirl.define do
     sort_order    nil
     default      true
     reserved     false
+    is_available true
   end
 end

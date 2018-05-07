@@ -22,4 +22,4 @@ $(document).ready ->
   $(document). on 'click', '.likert-option', ->
     $(this).find('input').prop('checked', true)
 
-  $("#disable-likert *").prop('disabled',true)
+  $(".disable-likert *").prop('disabled',true)

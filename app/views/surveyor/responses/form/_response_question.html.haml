@@ -36,7 +36,7 @@
     .form-group
       %p.question-description
         = raw(question.description)
-  .question-options{ id: ['new', 'edit', 'preview'].include?(action_name) ? '' : 'disable-likert' }
+  .question-options{ class: ['new', 'edit', 'preview'].include?(action_name) ? '' : 'disable-likert' }
     = render "surveyor/responses/form/form_partials/#{question.question_type}_form_partial", qr: qr, question: question, question_response: question_response
   - if question.errors.any?
     .alert.alert-danger

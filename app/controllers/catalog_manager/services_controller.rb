@@ -205,23 +205,35 @@ class CatalogManager::ServicesController < CatalogManager::AppController
   end
 
   def associate
-    service = Service.find params["service"]
+    @service = Service.find params["service"]
     related_service = Service.find params["related_service"]
 
-    if not service.related_services.include? related_service
-      service.service_relations.create :related_service_id => related_service.id, :optional => false
+    if !@service.related_services.include? related_service
+      if @service.service_relations.create :related_service_id => related_service.id, :optional => false
+        flash[:notice] = "#{@service.name} saved successfully."
+      else
+        flash[:alert] = "Failed to create new related service."
+      end
     end
 
-    render :partial => 'catalog_manager/services/related_services_form', :locals => {:service => service}
+    respond_to do |format|
+      format.js
+    end
   end
 
   def disassociate
     service_relation = ServiceRelation.find params[:service_relation_id]
-    service = service_relation.service
+    @service = service_relation.service
 
-    service_relation.destroy
+    if service_relation.destroy
+      flash[:notice] = "Related service deleted successfully."
+    else
+      flash[:alert] = "Error deleting related service."
+    end
 
-    render :partial => 'catalog_manager/services/related_services_form', :locals => {:service => service}
+    respond_to do |format|
+      format.js
+    end
   end
 
   def set_optional

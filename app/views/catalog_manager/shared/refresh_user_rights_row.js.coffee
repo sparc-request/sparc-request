@@ -18,29 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogManager::ClinicalProvidersController < ApplicationController
+$("#user-rights-row-<%= j @identity.id.to_s %>").replaceWith("<%= j render '/catalog_manager/shared/user_rights_row', organization: @organization, user_rights: @user_rights, ur: @identity %>")
 
-  def create
-    ClinicalProvider.create(clinical_provider_params)
-  end
-
-  def destroy
-    clinical_provider = ClinicalProvider.find_by(clinical_provider_params)
-    if clinical_provider.destroy
-      flash[:notice] = "Clinical provider deleted successfully."
-    else
-      flash[:alert] = "Error deleting clinical provider."
-    end
-    @organization = clinical_provider.organization
-
-    render 'catalog_manager/organizations/destroy_clinical_provider'
-  end
-
-  private
-
-  def clinical_provider_params
-    params.require(:clinical_provider).permit(
-      :identity_id,
-      :organization_id)
-  end
-end
+$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")

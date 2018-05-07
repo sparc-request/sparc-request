@@ -26,7 +26,7 @@ $("[data-toggle='toggle']").bootstrapToggle(
   );
 
 
-# Identity Search Bloodhound
+## Identity Search Bloodhound
 services_bloodhound = new Bloodhound(
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -35,6 +35,9 @@ services_bloodhound = new Bloodhound(
     wildcard: '%QUERY'
 )
 services_bloodhound.initialize() # Initialize the Bloodhound suggestion engine
+
+
+## User Search for User Rights Sub-Form
 $('#user-rights-query').typeahead(
   {
     minLength: 3,
@@ -61,7 +64,11 @@ $('#user-rights-query').typeahead(
   else
     $.ajax
       type: 'get'
-      url: "/catalog_manager/organizations/<%= @organization.id %>/refresh_user_rights.js"
+      url: "/catalog_manager/organizations/<%= @organization.id %>/add_user_rights_row.js"
       data:
         new_ur_identity_id: suggestion['identity_id']
 )
+
+
+##User Search for Fulfillment Sub-Form
+##ToDo After User Rights is re-done

@@ -18,25 +18,22 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%table.table.table-condensed.table-bordered{ class: user_rights_table_class(organization) }
-  %thead
-    %tr
-      %th.name-col
-        = t(:catalog_manager)[:organization_form][:user_rights][:name_email]
-      %th.su-col
-        = t(:catalog_manager)[:organization_form][:user_rights][:super_user]
-      %th.cm-col
-        = t(:catalog_manager)[:organization_form][:user_rights][:catalog_manager]
-      - unless organization.type == "Institution"
-        %th.sp-col
-          = t(:catalog_manager)[:organization_form][:user_rights][:service_provider]
-        - if organization.tag_list.include?("clinical work fulfillment")
-          %th.cp-col
-            = t(:catalog_manager)[:organization_form][:user_rights][:clinical_provider]
-      %th.text-center.remove-col
-        = t(:catalog_manager)[:organization_form][:remove]
-  %tbody#user-rights-table
-    - user_rights_identities(organization).each do |ur|
-      = render "catalog_manager/shared/user_rights_table_rows", organization: organization, user_rights: user_rights, ur: ur
+.row{style: 'margin-bottom: 25px;'}
+  %div{class: "#{organization.type == 'Institution' ? 'col-sm-6' : 'col-sm-3'}"}
+    %h5= t(:catalog_manager)[:organization_form][:user_rights][:name_email]
+  .col-sm-2.text-center
+    %h5= t(:catalog_manager)[:organization_form][:user_rights][:super_user]
+  .col-sm-3.text-center
+    %h5= t(:catalog_manager)[:organization_form][:user_rights][:catalog_manager]
+  - unless organization.type == "Institution"
+    .col-sm-3.text-center
+      %h5= t(:catalog_manager)[:organization_form][:user_rights][:service_provider]
+  .col-sm-1.text-center{style: 'padding: 0px;'}
+    %h5= t(:catalog_manager)[:organization_form][:remove]
+
+#user_rights_container
+  - user_rights_identities(organization).sort_by(&:last_name).each do |ur|
+    = render "catalog_manager/shared/user_rights_row", organization: organization, user_rights: user_rights, ur: ur
+
 .col-sm-12.no-padding
   = text_field_tag 'user-rights-query', nil, placeholder: t(:catalog_manager)[:organization_form][:user_rights][:add_user], class: "form-control"

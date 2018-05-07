@@ -48,8 +48,8 @@ module CatalogManager::OrganizationsHelper
   # Returns all Identities that have at least one user rights role
   def user_rights_identities organization
     include_service_providers = organization.type != 'Institution'
-    inclued_clinical_rpoviders = include_service_providers && organization.tag_list.include?("clinical work fulfillment")
-    organization.all_user_rights(include_service_providers, inclued_clinical_rpoviders)
+    include_clinical_providers = include_service_providers && organization.tag_list.include?("clinical work fulfillment")
+    organization.all_user_rights(include_service_providers, include_clinical_providers)
   end
 
   # Returns the first instance an identity's user rights from the given hash of all user rights,

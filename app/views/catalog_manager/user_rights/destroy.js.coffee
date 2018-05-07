@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2017 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,33 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# named AppController because Devise was having problems when it was named the same as the main ApplicationController
-class CatalogManager::AppController < ActionController::Base
-  layout 'catalog_manager/application'
-  protect_from_forgery
-  helper_method :current_user
+$("#user-rights-row-<%= escape_javascript(@identity_id) %>").fadeOut(1000, () -> $(this).remove())
 
-  before_action :authenticate_identity!
-  before_action :set_user
-  before_action :set_highlighted_link
-
-  def set_highlighted_link
-    @highlighted_link ||= 'sparc_catalog'
-  end
-
-  def current_user
-    current_identity
-  end
-
-  def set_user
-    @user = current_identity
-    session['uid'] = @user.nil? ? nil : @user.id
-  end
-
-  def user_rights organization_id
-    { super_users: SuperUser.where(organization_id: organization_id),
-      catalog_managers: CatalogManager.where(organization_id: organization_id),
-      service_providers: ServiceProvider.where(organization_id: organization_id),
-      clinical_providers: ClinicalProvider.where(organization_id: organization_id) }
-  end
-end
+$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")

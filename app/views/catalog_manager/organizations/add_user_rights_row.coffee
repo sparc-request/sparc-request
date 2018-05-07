@@ -18,4 +18,4 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$('#user-rights-table').append("<%= j render '/catalog_manager/shared/user_rights_table_rows', organization: @organization, user_rights: @user_rights, ur: @new_ur_identity %>")
+$('#user_rights_container').append("<%= j render '/catalog_manager/shared/user_rights_row', organization: @organization, user_rights: @user_rights, ur: @new_ur_identity, new_user: true %>")

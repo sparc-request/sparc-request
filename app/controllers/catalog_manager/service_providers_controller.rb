@@ -18,21 +18,53 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogManager::ServiceProvidersController < ApplicationController
+class CatalogManager::ServiceProvidersController < CatalogManager::AppController
 
   def create
-    ServiceProvider.create(service_provider_params)
+    @service_provider = ServiceProvider.new(service_provider_params)
+    @identity = Identity.find(@service_provider.identity_id)
+    @organization = @service_provider.organization
+    @user_rights  = user_rights(@organization.id)
+
+    if @service_provider.save
+      flash[:notice] = "Service Provider created successfully."
+    else
+     service_provider.errors.messages.each do |field, message|
+        flash[:alert] = "Error adding Service Provider: #{message.first}."
+      end
+    end
+
+    render 'catalog_manager/shared/refresh_user_rights_row'
   end
 
   def destroy
-    ServiceProvider.find_by(service_provider_params).destroy
+    @service_provider = ServiceProvider.find_by(service_provider_params)
+    @identity = Identity.find(@service_provider.identity_id)
+    @organization = @service_provider.organization
+    @user_rights  = user_rights(@organization.id)
+
+    if @service_provider.destroy
+      flash[:notice] = "Service Provider removed successfully."
+    else
+      flash[:alert] = "Error removing Service Provider."
+    end
+
+    render 'catalog_manager/shared/refresh_user_rights_row'
   end
 
   def update
-    cm = ServiceProvider.find_by(identity_id: service_provider_params[:identity_id], organization_id: service_provider_params[:organization_id])
-    primary_contact = service_provider_params[:is_primary_contact].nil? ? cm.is_primary_contact : service_provider_params[:is_primary_contact] == 'true'
-    hold_emails = service_provider_params[:hold_emails].nil? ? cm.hold_emails : service_provider_params[:hold_emails] == 'true'
-    cm.update_attributes(is_primary_contact: primary_contact, hold_emails: hold_emails)
+    @service_provider = ServiceProvider.find_by(identity_id: service_provider_params[:identity_id], organization_id: service_provider_params[:organization_id])
+    @identity = Identity.find(@service_provider.identity_id)
+    @organization = @service_provider.organization
+    @user_rights  = user_rights(@organization.id)
+
+    if @service_provider.update_attributes(service_provider_params)
+      flash[:notice] = "Service Provider successfully updated."
+    else
+      flash[:alert] = "Error updating Service Provider."
+    end
+
+    render 'catalog_manager/shared/refresh_user_rights_row'
   end
 
   private

@@ -186,9 +186,9 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     saved = @service.update_attributes(service_params)
 
     if saved
-      flash[:notice] = "#{@service.name} saved correctly."
+      flash[:notice] = "#{@service.name} saved successfully."
     else
-      flash[:alert] = "Failed to update #{@service.name}."
+      flash[:alert] = "Error updating #{@service.name}."
     end
 
     respond_to do |format|

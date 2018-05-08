@@ -20,54 +20,80 @@
 
 desc 'Moves a Service to another Organization'
 
-task :move_service, [:service_id, :organization_id] => :environment do |t, args|
-  ActiveRecord::Base.transaction do
-    service = Service.find(args[:service_id])
-    dest_org = Organization.find(args[:organization_id])
-    # service will now belong to SSR's with this organization:
-    dest_org_process_ssrs = dest_org.process_ssrs_parent
+task :move_service => :environment do
 
-    puts "Moving `#{service.name}` to `#{dest_org.name}`"
+  def prompt(*args)
+    print(*args)
+    STDIN.gets.strip
+  end
 
-    service.service_requests.each do |sr|
-      # SSR's that contain LineItems that need to be moved
-      ssrs = sr.sub_service_requests.
-        where.not(organization: dest_org_process_ssrs).
-        joins(:line_items).
-        where(line_items: { service_id: service.id })
+  def get_file(error=false)
+    puts "No import file specified or the file specified does not exist in db/imports" if error
+    file = prompt "Please specify the file name to import from db/imports (must be a CSV, see db/imports/example.csv for formatting): "
 
-      ssrs.each do |ssr|
-        if ssr_contains_just_this_service?(ssr, service)
-          # Don't really need to move anything. Just move the SSR
-          # to another Organization.
-          ssr.update!(organization_id: dest_org_process_ssrs.id)
-        else
-          # Find a destination SSR for service. Use an existing one
-          # or create one if necessary.
-          dest_ssr = sr.sub_service_requests.where(status: ssr.status).
-            find_or_create_by(organization_id: dest_org_process_ssrs)
+    while file.blank? or not File.exists?(Rails.root.join("db", "imports", file))
+      file = get_file(true)
+    end
 
-          # Is this probably a newly created SSR?
-          if !dest_ssr.ssr_id && !dest_ssr.service_requester_id && !dest_ssr.owner_id
-            # Move over old SSR attributes.
-            old_attributes = ssr.attributes
-            # ! needed, since only it will return the _other_ attributes.
-            copy_over_attributes = old_attributes.
-              slice!(*%w(id ssr_id organization_id org_tree_display status))
-            dest_ssr.attributes = copy_over_attributes
-            dest_ssr.update_attribute(:organization_id, dest_org_process_ssrs.id)
-            dest_ssr.save(validate: false)
-            dest_ssr.update_org_tree
-            ssr.service_request.ensure_ssr_ids
-          end
-          # Move LineItems.
-          ssr.line_items.where(service: service).each do |li|
-            li.update!(sub_service_request: dest_ssr)
+    file
+  end
+
+  input_file = Rails.root.join("db", "imports", get_file)
+  org_id = prompt("Enter the id of the organization the services are to be moved to: ")
+  continue = prompt('Preparing to modify the services. Are you sure you want to continue? (y/n): ')
+
+  if (continue == 'y') || (continue == 'Y')
+
+    CSV.foreach(input_file, headers: true, skip_blanks: true, skip_lines: /^(?:,\s*)+$/, :encoding => 'windows-1251:utf-8') do |row|
+      ActiveRecord::Base.transaction do
+        service = Service.find(row['SPARC Service ID'].to_i)
+        dest_org = Organization.find(org_id.to_i)
+        # service will now belong to SSR's with this organization:
+        dest_org_process_ssrs = dest_org.process_ssrs_parent
+
+        puts "Moving '#{service.name}' to '#{dest_org.name}'"
+
+        service.service_requests.each do |sr|
+          # SSR's that contain LineItems that need to be moved
+          ssrs = sr.sub_service_requests.
+            where.not(organization: dest_org_process_ssrs).
+            joins(:line_items).
+            where(line_items: { service_id: service.id })
+
+          ssrs.each do |ssr|
+            if ssr_contains_just_this_service?(ssr, service)
+              # Don't really need to move anything. Just move the SSR
+              # to another Organization.
+              ssr.update!(organization_id: dest_org_process_ssrs.id)
+            else
+              # Find a destination SSR for service. Use an existing one
+              # or create one if necessary.
+              dest_ssr = sr.sub_service_requests.where(status: ssr.status).
+                find_or_create_by(organization_id: dest_org_process_ssrs)
+
+              # Is this probably a newly created SSR?
+              if !dest_ssr.ssr_id && !dest_ssr.service_requester_id && !dest_ssr.owner_id
+                # Move over old SSR attributes.
+                old_attributes = ssr.attributes
+                # ! needed, since only it will return the _other_ attributes.
+                copy_over_attributes = old_attributes.
+                  slice!(*%w(id ssr_id organization_id org_tree_display status))
+                dest_ssr.attributes = copy_over_attributes
+                dest_ssr.update_attribute(:organization_id, dest_org_process_ssrs.id)
+                dest_ssr.save(validate: false)
+                dest_ssr.update_org_tree
+                ssr.service_request.ensure_ssr_ids
+              end
+              # Move LineItems.
+              ssr.line_items.where(service: service).each do |li|
+                li.update!(sub_service_request: dest_ssr)
+              end
+            end
           end
         end
+        service.update!(organization_id: dest_org.id)
       end
     end
-    service.update!(organization_id: dest_org.id)
   end
 end
 

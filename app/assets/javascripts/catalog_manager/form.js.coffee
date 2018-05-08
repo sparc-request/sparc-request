@@ -176,10 +176,40 @@ $ ->
     service_id = $(this).data('service')
     $.ajax
       type: 'POST'
-      url: "catalog_manager/services/change_related_services"
+      url: "catalog_manager/services/associate"
       data: 
-        component: component
         service_id: service_id
+
+  $(document).on 'click', '.linked_quantity', (event) ->
+    service_relation_id = $(this).data('service_relation_id')
+    linked_quantity = $(this).val()
+    $.ajax
+      type: 'POST'
+      url: "catalog_manager/services/set_linked_quantity"
+      data: 
+        service_relation_id: service_relation_id
+        linked_quantity: linked_quantity
+
+  $(document).on 'change', '.linked_quantity_total', (event) ->
+    service_relation_id = $(this).data('service_relation_id')
+    linked_quantity_total = $(this).val()
+    $.ajax
+      type: 'POST'
+      url: "catalog_manager/services/set_linked_quantity_total"
+      data: 
+        service_relation_id: service_relation_id
+        linked_quantity_total: linked_quantity_total
+
+  $(document).on 'change', '.optional', (event) ->
+    console.log 'optional'
+    service_relation_id = $(this).data('service-relation-id')
+    optional = $(this).val()
+    $.ajax
+      type: 'POST'
+      url: "catalog_manager/services/set_optional"
+      data: 
+        service_relation_id: service_relation_id
+        optional: optional
 
   ##############################################
   ###          Clinical Providers            ###

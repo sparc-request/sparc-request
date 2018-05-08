@@ -210,15 +210,13 @@ class CatalogManager::ServicesController < CatalogManager::AppController
 
     if !@service.related_services.include? related_service
       if @service.service_relations.create :related_service_id => related_service.id, :optional => false
-        flash[:notice] = "#{@service.name} saved successfully."
+        flash[:notice] = "Related service added successfully."
       else
         flash[:alert] = "Failed to create new related service."
       end
     end
 
-    respond_to do |format|
-      format.js
-    end
+    render 'change_related_services', format: :js
   end
 
   def disassociate
@@ -231,33 +229,53 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       flash[:alert] = "Error deleting related service."
     end
 
-    respond_to do |format|
-      format.js
-    end
+    render 'change_related_services', format: :js
   end
 
   def set_optional
     service_relation = ServiceRelation.find params[:service_relation_id]
-    service = service_relation.service
+    @service = service_relation.service
 
-    service_relation.update_attribute(:optional, params[:optional])
-    render :partial => 'catalog_manager/shared/related_services', :locals => {:entity => service}
+    if service_relation.update_attribute(:optional, params[:optional])
+      if params[:optional] == 'true'
+        flash[:notice] = "Related service set to optional."
+      else
+        flash[:notice] = "Related service set to required."
+      end
+    else
+      flash[:alert] = "Error setting  required/optional for related service."
+    end
+
+    render 'change_related_services', format: :js
   end
 
   def set_linked_quantity
     service_relation = ServiceRelation.find params[:service_relation_id]
-    service = service_relation.service
+    @service = service_relation.service
 
-    service_relation.update_attributes(:linked_quantity => params[:linked_quantity], :linked_quantity_total => nil)
-    render :partial => 'catalog_manager/shared/related_services', :locals => {:entity => service}
+    if service_relation.update_attributes(:linked_quantity => params[:linked_quantity], :linked_quantity_total => nil)
+      if params[:linked_quantity] == 'true'
+        flash[:notice] = "Set linked quantity to true."
+      else
+        flash[:notice] = "Set linked quantity to false."
+      end
+    else
+      flash[:alert] = "Error setting linked quantity for related service."
+    end
+
+    render 'change_related_services', format: :js
   end
 
   def set_linked_quantity_total
     service_relation = ServiceRelation.find params[:service_relation_id]
-    service = service_relation.service
+    @service = service_relation.service
 
-    service_relation.update_attribute(:linked_quantity_total, params[:linked_quantity_total])
-    render :partial => 'catalog_manager/shared/related_services', :locals => {:entity => service}
+    if service_relation.update_attribute(:linked_quantity_total, params[:linked_quantity_total])
+      flash[:notice] = "Set linked quantity total to #{params[:linked_quantity_total]}."
+    else
+      flash[:alert] = "Error setting linked quantity total."
+    end
+    render 'change_related_services', format: :js
   end
 
   def search

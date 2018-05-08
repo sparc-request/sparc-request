@@ -191,6 +191,7 @@ en:
       tag_list: "Tags"
 
     related_services_form:
+      add_service: "Add service to table"
       new_related_services: "New Related Service"
       service: "Service"
       required: "Required"

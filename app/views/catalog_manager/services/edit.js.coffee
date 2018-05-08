@@ -25,7 +25,10 @@ $("[data-toggle='toggle']").bootstrapToggle(
     off: 'No'
   );
 
-# RELATED SERVICES SEARCH #
+###############################
+### RELATED SERVICES SEARCH ###
+###############################
+
 services_bloodhound = new Bloodhound(
   datumTokenizer: (datum) ->
     Bloodhound.tokenizers.whitespace datum.value
@@ -49,7 +52,9 @@ $('#new_related_services_search').typeahead(
     templates: {
       suggestion: Handlebars.compile('<button class="text-left">
                                         <strong><span class="text-service">Service</span><span>: {{name}}</span></strong><br>
-                                        <span>CPT Code: {{cpt_code}}</span>
+                                        {{#if cpt_code}}
+                                          <span><strong>CPT Code: {{cpt_code}}</strong></span>
+                                        {{/if}}
                                       </button>')
       notFound: '<div class="tt-suggestion">No Results</div>'
     }

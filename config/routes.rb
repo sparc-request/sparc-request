@@ -172,7 +172,6 @@ SparcRails::Application.routes.draw do
   resources :search, only: [] do
     collection do
       get :services_search
-      get :related_services
       get :services
       get :organizations
       get :identities

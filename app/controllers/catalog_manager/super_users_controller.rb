@@ -18,14 +18,38 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogManager::SuperUsersController < ApplicationController
+class CatalogManager::SuperUsersController < CatalogManager::AppController
 
   def create
-    SuperUser.create(super_user_params)
+    @super_user = SuperUser.new(super_user_params)
+    @identity = Identity.find(@super_user.identity_id)
+    @organization = @super_user.organization
+    @user_rights  = user_rights(@organization.id)
+
+    if @super_user.save
+      flash[:notice] = "Super User created successfully."
+    else
+     super_user.errors.messages.each do |field, message|
+        flash[:alert] = "Error adding Super User: #{message.first}."
+      end
+    end
+
+    render 'catalog_manager/shared/refresh_user_rights_row'
   end
 
   def destroy
-    SuperUser.find_by(super_user_params).destroy
+    @super_user = SuperUser.find_by(super_user_params)
+    @identity = Identity.find(@super_user.identity_id)
+    @organization = @super_user.organization
+    @user_rights  = user_rights(@organization.id)
+
+    if @super_user.destroy
+      flash[:notice] = "Super User removed successfully."
+    else
+      flash[:alert] = "Error removing Super User."
+    end
+
+    render 'catalog_manager/shared/refresh_user_rights_row'
   end
 
   private

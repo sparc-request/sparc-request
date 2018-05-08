@@ -169,11 +169,19 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     if components_list.include?(component)
       #Delete component from list and save updated list
       components_list.delete(component)
-      @service.update_attributes(components: components_list.join(','))
+      if @service.update_attributes(components: components_list.join(','))
+        flash[:notice] = "Component deleted successfully."
+      else
+        flash[:alert] = "Error deleting component."
+      end
     else
       #Add new component to list and save updated list
       components_list.push(component)
-      @service.update_attributes(components: components_list.join(','))
+      if @service.update_attributes(components: components_list.join(','))
+        flash[:notice] = "New component saved successfully."
+      else
+        flash[:alert] = "Failed to create new component."
+      end
     end
 
     respond_to do |format|

@@ -60,6 +60,14 @@
         .panel-body
           Not Yet Implemented
 
+    .panel.panel-default#fulfillment{style: @organization.tag_list.include?("clinical work fulfillment") ? "display: block;" : "display: none;"}
+      .panel-heading
+        %h4.panel-title
+          = link_to t(:catalog_manager)[:organization_form][:clinical_providers], '#fulfillment-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
+      .panel-collapse.collapse#fulfillment-collapse
+        .panel-body
+          = render "catalog_manager/shared/clinical_providers", organization: organization, path: path
+
     .panel.panel-default#associated-surveys
       .panel-heading
         %h4.panel-title

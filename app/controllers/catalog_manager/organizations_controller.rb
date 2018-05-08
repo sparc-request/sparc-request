@@ -29,9 +29,6 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     @organization = Organization.find(params[:id])
     @user_rights  = user_rights(@organization.id)
 
-    # Removed as part of available and editable status changes
-    # @organization.setup_available_statuses
-
     respond_to do |format|
       format.js
     end
@@ -52,7 +49,6 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     end
     save_pricing_setups
 
-    @organization.setup_available_statuses
     @institutions = Institution.order('`order`')
 
     respond_to do |format|
@@ -62,7 +58,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     render 'catalog_manager/organizations/update'
   end
 
-  def refresh_user_rights
+  def add_user_rights_row
     respond_to do |format|
       format.js
     end
@@ -70,6 +66,13 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     @organization = Organization.find(params[:organization_id])
     @new_ur_identity = Identity.find(params[:new_ur_identity_id])
     @user_rights  = user_rights(@organization.id)
+  end
+
+  def add_clinical_provider
+
+    respond_to do |format|
+      format.js
+    end
   end
 
   private
@@ -80,13 +83,6 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     unless @attributes[:tag_list] || @organization.type == 'Institution'
       @attributes[:tag_list] = ""
     end
-  end
-
-  def user_rights organization_id
-    { super_users: SuperUser.where(organization_id: organization_id),
-      catalog_managers: CatalogManager.where(organization_id: organization_id),
-      service_providers: ServiceProvider.where(organization_id: organization_id),
-      clinical_providers: ClinicalProvider.where(organization_id: organization_id) }
   end
 
   def update_organization

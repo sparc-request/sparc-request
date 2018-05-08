@@ -40,4 +40,11 @@ class CatalogManager::AppController < ActionController::Base
     @user = current_identity
     session['uid'] = @user.nil? ? nil : @user.id
   end
+
+  def user_rights organization_id
+    { super_users: SuperUser.where(organization_id: organization_id),
+      catalog_managers: CatalogManager.where(organization_id: organization_id),
+      service_providers: ServiceProvider.where(organization_id: organization_id),
+      clinical_providers: ClinicalProvider.where(organization_id: organization_id) }
+  end
 end

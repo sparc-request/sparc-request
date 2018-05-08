@@ -25,7 +25,15 @@ class CatalogManager::ClinicalProvidersController < ApplicationController
   end
 
   def destroy
-    ClinicalProvider.find_by(clinical_provider_params).destroy
+    clinical_provider = ClinicalProvider.find_by(clinical_provider_params)
+    if clinical_provider.destroy
+      flash[:notice] = "Clinical provider deleted successfully."
+    else
+      flash[:alert] = "Error deleting clinical provider."
+    end
+    @organization = clinical_provider.organization
+
+    render 'catalog_manager/organizations/destroy_clinical_provider'
   end
 
   private

@@ -18,16 +18,37 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- if entity.clinical_providers
-  %table
-    %thead
-      %tr
-        %th= t("cm_shared.labels.name_email")
-        %th= t("cm_shared.labels.delete")
-    %tbody
-      - entity.clinical_providers.each do |cp|
-        %tr
-          %td= cp.identity.display_name
-          %td{:style => 'float:right;'}= image_tag 'cancel.png', :id => cp.id, :class => 'cp_delete'
+- if organization.clinical_providers
+  .form-group.row
+    .col-sm-8
+      %h5= t(:catalog_manager)[:organization_form][:fulfillment][:name_email]
+    .col-sm-4.text-center
+      %h5= t(:catalog_manager)[:organization_form][:fulfillment][:remove_add]
 
-= text_field_tag 'new_cp', t("cm_shared.labels.new_clinical_provider"), :class => "cwf_clear"
+  - organization.clinical_providers.each do |cp|
+    .form-group.row{ id: "fulfillment-rights-row-#{cp.identity_id}", data: { identity_id: cp.identity_id } }
+      .col-sm-8
+        %p= cp.identity.display_name
+      .col-sm-4.text-center
+        %button.btn.btn-xs.btn-danger.remove-clinical-provider{ data: { identity_id: cp.identity_id, organization_id: organization.id } }
+          %span.glyphicon.glyphicon-remove
+
+.form-group.row
+  .col-sm-8
+    = text_field_tag 'new_clinical_provider', '', class: 'form-control', id: "fulfillment-rights-query"
+  .col-sm-4.text-center
+    %button.btn.btn-xs.btn-success.add-clinical-provider{ data: { organization_id: organization.id } }
+      %span.glyphicon.glyphicon-plus
+
+/   %table
+/     %thead
+/       %tr
+/         %th= t("cm_shared.labels.name_email")
+/         %th= t("cm_shared.labels.delete")
+/     %tbody
+/       - organization.clinical_providers.each do |cp|
+/         %tr
+/           %td= cp.identity.display_name
+/           %td{:style => 'float:right;'}= image_tag 'cancel.png', :id => cp.id, :class => 'cp_delete'
+
+/ = text_field_tag 'new_cp', t("cm_shared.labels.new_clinical_provider"), :class => "cwf_clear"

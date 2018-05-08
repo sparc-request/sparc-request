@@ -119,16 +119,19 @@ $ ->
 
   $(document).on 'click', '.remove-user-rights', (event) ->
     event.preventDefault()
-    identity_id = $(this).data('identity-id')
-    $.ajax
-      type: 'DELETE'
-      url: 'catalog_manager/user_right'
-      data:
-        user_rights:
-          identity_id: identity_id
-          organization_id: $(this).data('organization-id')
-      success: ->
-        $("#user-rights-row-#{identity_id}").fadeOut(1000, () -> $(this).remove())
+    if confirm (I18n['catalog_manager']['organization_form']['user_rights']['remove_confirm'])
+      identity_id = $(this).data('identity-id')
+      $.ajax
+        type: 'DELETE'
+        url: 'catalog_manager/user_right'
+        data:
+          user_rights:
+            identity_id: identity_id
+            organization_id: $(this).data('organization-id')
+
+  $(document).on 'click', '.cancel-user-rights', (event) ->
+    event.preventDefault()
+    $(this).closest('.row').fadeOut(1000, () -> $(this).remove())
 
   ##############################################
   ###         Org Associated Surveys         ###
@@ -188,9 +191,7 @@ $ ->
         component: component
         service_id: service_id
 
-
-
-
-
-
+  ##############################################
+  ###          Clinical Providers            ###
+  ##############################################
 

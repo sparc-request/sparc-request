@@ -18,4 +18,12 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$('#user-rights-table').append("<%= j render '/catalog_manager/shared/user_rights_table_rows', organization: @organization, user_rights: @user_rights, ur: @new_ur_identity %>")
+$("#org-form-container #general-info .panel-body").html("<%= j render '/catalog_manager/shared/general_info_form', user: @user, organization: @organization, path: @path %>")
+
+$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+
+$('.selectpicker').selectpicker();
+$("[data-toggle='toggle']").bootstrapToggle(
+    on: 'Yes',
+    off: 'No'
+  );

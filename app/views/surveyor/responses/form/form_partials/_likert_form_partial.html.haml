@@ -31,5 +31,5 @@
         - if ['new', 'edit', 'preview'].include?(action_name)
           = qr.label :content, option.content, class: "radio-inline option no-padding", data: { question_id: question.id, option_id: option.id }
         - else
-          %label.radio-inline.option.no-padding
+          %label.radio-inline.option.no-padding.disabled
             = option.content

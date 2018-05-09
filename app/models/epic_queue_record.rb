@@ -21,6 +21,9 @@
 class EpicQueueRecord < ApplicationRecord
   belongs_to :protocol
   belongs_to :identity
+
+  has_many :notes, as: :notable, dependent: :destroy
+  
   audited
 
   def self.with_valid_protocols

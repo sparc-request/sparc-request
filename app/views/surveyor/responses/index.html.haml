@@ -18,6 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .col-lg-3
-  = render 'surveyor/responses/filter_responses_form', filterrific: @filterrific, type: @type
+  #filter-responses
+    = render 'surveyor/responses/filter_responses_form', filterrific: @filterrific, type: @type
 .col-lg-9
   = render 'surveyor/responses/table', responses: @responses, type: @type

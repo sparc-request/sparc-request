@@ -18,24 +18,14 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.associated_surveys
-  - unless entity.associated_surveys.empty?
-    %table.associated_surveys_table
-      %thead
-        %tr
-          %th= t("cm_shared.labels.survey_name")
-          %th.delete_button= t("cm_shared.labels.delete")
-      %tbody
-        - entity.associated_surveys.each do |associated_survey|
-          %tr
-            %td
-              = link_to "#{associated_survey.survey.title} - Version #{associated_survey.survey.version}", surveyor_survey_preview_path(associated_survey.survey, format: :html), target: 'blank', class: 'associated_survey_link'
-            %td= image_tag 'cancel.png', :"data-associated_survey_id" => associated_survey.id, :class => 'associated_survey_delete'
-
-  %table
-    %tr
-      %td= select_tag 'new_associated_survey', grouped_options_for_select(SystemSurvey.for_dropdown_select), { prompt: t(:cm_shared)[:labels][:select_survey] }
-      %td= button_tag t("cm_shared.labels.new_associated_survey"), :"data-surveyable_id" => entity.id, :"data-surveyable_type" => entity.class.to_s, :class => 'add_associated_survey'
-  .survey_warning_message
-    = t("cm_shared.labels.survey_warning")
-    
+- if current_user.response_filters.any?
+  .panel.panel-default
+    .panel-heading
+      %h2.panel-title
+        = t(:surveyor)[:response_filters][:saved][:header]
+    .panel-body
+      %ul
+        - ResponseFilter.latest_for_user(current_user.id).each do |rf|
+          %li
+            = link_to rf.name, rf.href, remote: true, class: 'apply-filter'
+            = link_to "", surveyor_response_filter_path(rf), class: 'glyphicon glyphicon-remove text-danger pull-right delete-filter', method: :delete, remote: true

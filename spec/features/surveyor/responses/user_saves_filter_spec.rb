@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,8 +17,41 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$('#filter-responses').html("<%= j render 'surveyor/responses/filter_responses_form', filterrific: @filterrific, type: @type %>")
-$('#responses-panel').replaceWith("<%= j render 'surveyor/responses/table', responses: @responses, type: @type %>")
-$('#responses-table').bootstrapTable()
-$('.selectpicker').selectpicker()
-$(".datetimepicker:not(.time)").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
+
+require 'rails_helper'
+
+RSpec.describe 'User saves a response filters', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
+
+  stub_config('site_admins', ['jug2'])
+
+  scenario 'and sees the saved filter' do
+    survey          = create(:system_survey, title: 'Serviceable Survey', active: true)
+    survey_response = create(:response, survey: survey)
+                      create(:question_response, response: survey_response)
+
+    visit surveyor_responses_path
+    wait_for_javascript_to_finish
+
+    bootstrap_multiselect '#filterrific_with_state', [I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active], I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]]
+    find('#filterrific_end_date').click
+    find('#filterrific_start_date').click
+    find('body').click
+    find('#filterrific_include_incomplete').click
+    click_link I18n.t(:actions)[:save]
+    wait_for_javascript_to_finish
+
+    fill_in 'response_filter_name', with: 'My Filters'
+    click_button I18n.t(:actions)[:save]
+    wait_for_javascript_to_finish
+
+    filter = ResponseFilter.first
+
+    expect(page).to have_selector('.apply-filter', text: 'My Filters')
+    expect(filter.with_state).to eq(['1','0'])
+    expect(filter.start_date.to_date).to eq(Date.today)
+    expect(filter.end_date.to_date).to eq(Date.today)
+    expect(filter.include_incomplete).to eq(true)
+  end
+end

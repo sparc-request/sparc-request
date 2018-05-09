@@ -18,56 +18,54 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Dashboard::ProtocolFiltersController < Dashboard::BaseController
-  respond_to :html, :json
+require 'rails_helper'
 
-  def new
-    @protocol_filter = @user.protocol_filters.new(new_params)
+RSpec.describe ResponseFilter, type: :model do
+  it 'should have a valid factory' do
+    expect(build(:response_filter)).to be_valid
+  end
+  
+  describe 'associations' do
+    it { is_expected.to belong_to(:identity) }
   end
 
-  def create
-    if ProtocolFilter.create(create_params)
-      flash[:success] = 'Search Saved!'
-    else
-      flash[:alert] = 'Search Failed to Save.'
+  describe 'validations' do
+    it { is_expected.to validate_presence_of(:name) }
+  end
+
+  describe 'serializations' do
+    it { is_expected.to serialize(:with_state).as(Array) }
+    it { is_expected.to serialize(:with_survey).as(Array) }
+  end
+
+  describe 'scopes' do
+    describe 'latest_for_user' do
+      it 'should return the latest ResponseFilters for the user' do
+        stub_const("ResponseFilter::MAX_FILTERS", 2)
+        user = create(:identity)
+        3.times{ create(:response_filter, identity: user) }
+
+        expect(ResponseFilter.latest_for_user(user.id).length).to eq(2)
+      end
     end
-
-    @protocol_filters = ProtocolFilter.latest_for_user(@user.id, ProtocolFilter::MAX_FILTERS)
   end
 
-  def destroy
-    filter = ProtocolFilter.find(params[:id])
-    filter.destroy
-    @protocol_filters = ProtocolFilter.latest_for_user(@user.id, ProtocolFilter::MAX_FILTERS)
-    
-    flash[:alert] = 'Search Deleted!'
-    
-    respond_to do |format|
-      format.js
+  describe 'public instance methods' do
+    describe 'href' do
+      it 'should generate the correct URL to load the filter' do
+        filter = create(:response_filter)
+
+        expect(filter.href).to eq(Rails.application.routes.url_helpers.surveyor_responses_path(
+          filterrific: {
+            of_type: filter.of_type,
+            with_state: filter.with_state,
+            with_survey: filter.with_survey,
+            start_date: filter.start_date,
+            end_date: filter.end_date,
+            include_incomplete: filter.include_incomplete
+          }
+        ))
+      end
     end
-  end
-
-  private
-
-  def create_params
-    params.require(:protocol_filter).permit(:identity_id,
-      :search_name,
-      :show_archived,
-      :admin_filter,
-      :search_query,
-      with_organization: [],
-      with_status: [],
-      with_owner: [])
-  end
-
-  def new_params
-    params.require(:filterrific).permit(:identity_id,
-      :search_name,
-      :show_archived,
-      :admin_filter,
-      search_query: [:search_drop, :search_text],
-      with_organization: [],
-      with_status: [],
-      with_owner: [])
   end
 end

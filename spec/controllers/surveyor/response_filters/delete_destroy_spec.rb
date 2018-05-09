@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,8 +17,36 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$('#filter-responses').html("<%= j render 'surveyor/responses/filter_responses_form', filterrific: @filterrific, type: @type %>")
-$('#responses-panel').replaceWith("<%= j render 'surveyor/responses/table', responses: @responses, type: @type %>")
-$('#responses-table').bootstrapTable()
-$('.selectpicker').selectpicker()
-$(".datetimepicker:not(.time)").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
+
+require 'rails_helper'
+
+RSpec.describe Surveyor::ResponseFiltersController, type: :controller do
+  stub_controller
+  let!(:before_filters) { find_before_filters }
+  let!(:logged_in_user) { create(:identity) }
+
+  before :each do
+    @filter = create(:response_filter)
+
+    session[:identity_id] = logged_in_user.id
+
+    delete :destroy, params: { id: @filter.id }, xhr: true
+  end
+
+  describe '#destroy' do
+    it 'should call before_filter #authenticate_identity!' do
+      expect(before_filters.include?(:authenticate_identity!)).to eq(true)
+    end
+
+    it 'should assign @response_filter' do
+      expect(assigns(:response_filter)).to eq(@filter)
+    end
+
+    it 'should destroy the ResponseFilter' do
+      expect(assigns(:response_filter).destroyed?).to eq(true)
+    end
+
+    it { is_expected.to respond_with(:ok) }
+    it { is_expected.to render_template(:destroy) }
+  end
+end

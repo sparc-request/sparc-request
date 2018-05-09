@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,8 +17,28 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$('#filter-responses').html("<%= j render 'surveyor/responses/filter_responses_form', filterrific: @filterrific, type: @type %>")
-$('#responses-panel').replaceWith("<%= j render 'surveyor/responses/table', responses: @responses, type: @type %>")
-$('#responses-table').bootstrapTable()
-$('.selectpicker').selectpicker()
-$(".datetimepicker:not(.time)").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
+
+require 'rails_helper'
+
+RSpec.describe 'User saves a response filters', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
+
+  stub_config('site_admins', ['jug2'])
+
+  scenario 'and sees the saved filter' do
+    survey          = create(:system_survey, title: 'Serviceable Survey', active: true)
+    survey_response = create(:response, survey: survey)
+    filter          = create(:response_filter, identity: jug2, of_type: SystemSurvey.name, include_incomplete: true)
+
+    visit surveyor_responses_path
+    wait_for_javascript_to_finish
+
+    expect(page).to_not have_selector('td', text: survey.title)
+
+    find('.apply-filter').click
+    wait_for_javascript_to_finish
+
+    expect(page).to have_selector('td', text: survey.title)
+  end
+end

@@ -18,24 +18,34 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.associated_surveys
-  - unless entity.associated_surveys.empty?
-    %table.associated_surveys_table
-      %thead
-        %tr
-          %th= t("cm_shared.labels.survey_name")
-          %th.delete_button= t("cm_shared.labels.delete")
-      %tbody
-        - entity.associated_surveys.each do |associated_survey|
-          %tr
-            %td
-              = link_to "#{associated_survey.survey.title} - Version #{associated_survey.survey.version}", surveyor_survey_preview_path(associated_survey.survey, format: :html), target: 'blank', class: 'associated_survey_link'
-            %td= image_tag 'cancel.png', :"data-associated_survey_id" => associated_survey.id, :class => 'associated_survey_delete'
-
-  %table
-    %tr
-      %td= select_tag 'new_associated_survey', grouped_options_for_select(SystemSurvey.for_dropdown_select), { prompt: t(:cm_shared)[:labels][:select_survey] }
-      %td= button_tag t("cm_shared.labels.new_associated_survey"), :"data-surveyable_id" => entity.id, :"data-surveyable_type" => entity.class.to_s, :class => 'add_associated_survey'
-  .survey_warning_message
-    = t("cm_shared.labels.survey_warning")
-    
+.modal-dialog
+  .modal-content
+    = form_for [:surveyor, response_filter], remote: true, html: { role: 'form' } do |form|
+      .modal-header
+        %button.close{ type: 'button', data: { dismiss: 'modal' } }
+          %span{ aria: { hidden:'true' } } &times;
+          %span.sr-only &times;
+        %h4.modal-title.text-center
+          = t(:surveyor)[:response_filters][:form][:header]
+      .modal-body
+        #modal_errors
+        .row
+          .col-md-12
+            = form.hidden_field :identity_id
+            = form.hidden_field :of_type
+            = form.hidden_field :start_date
+            = form.hidden_field :end_date
+            = form.hidden_field :include_incomplete
+            - response_filter.with_state.each do |state|
+              = form.hidden_field :with_state, multiple: true, value: state
+            - response_filter.with_survey.each do |survey_id|
+              = form.hidden_field :with_survey, multiple: true, value: survey_id
+            .form-group
+              = form.label :name, t(:surveyor)[:response_filters][:form][:name], class: 'col-sm-3 required text-right'
+              .col-sm-9
+                = form.text_field :name, class: 'form-control'
+      .modal-footer
+        .center-block
+          %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
+            = t(:actions)[:close]
+          %input.btn.btn-primary{ type: 'submit', value: t(:actions)[:save] }

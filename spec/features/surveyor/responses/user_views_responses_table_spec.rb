@@ -18,56 +18,54 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Dashboard::ProtocolFiltersController < Dashboard::BaseController
-  respond_to :html, :json
+require 'rails_helper'
 
-  def new
-    @protocol_filter = @user.protocol_filters.new(new_params)
-  end
+RSpec.describe 'User views the responses table', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
+  
+  let!(:organization) { create(:organization) }
+  let!(:super_user)   { create(:super_user, identity: jug2, organization: organization) }
+  let!(:form)         { create(:form, surveyable: organization) }
+  let!(:section)      { create(:section, survey: form) }
+  let!(:question)     { create(:question, section: section) }
+  let!(:resp)         { create(:response, survey: form) }
 
-  def create
-    if ProtocolFilter.create(create_params)
-      flash[:success] = 'Search Saved!'
-    else
-      flash[:alert] = 'Search Failed to Save.'
+  context 'completed responses' do
+    before :each do
+      create(:question_response, response: resp, question: question)
     end
 
-    @protocol_filters = ProtocolFilter.latest_for_user(@user.id, ProtocolFilter::MAX_FILTERS)
-  end
+    scenario 'user should see an active "View" button' do
+      visit surveyor_responses_path
+      wait_for_javascript_to_finish
 
-  def destroy
-    filter = ProtocolFilter.find(params[:id])
-    filter.destroy
-    @protocol_filters = ProtocolFilter.latest_for_user(@user.id, ProtocolFilter::MAX_FILTERS)
-    
-    flash[:alert] = 'Search Deleted!'
-    
-    respond_to do |format|
-      format.js
+      expect(page).to have_selector('.view-response:not(.disabled)')
+    end
+
+    scenario 'user should see an active "Edit" button' do
+      visit surveyor_responses_path
+      wait_for_javascript_to_finish
+
+      expect(page).to have_selector('.edit-response:not(.disabled)')
     end
   end
 
-  private
+  context 'incomplete responses' do
+    before :each do
+      visit surveyor_responses_path
+      wait_for_javascript_to_finish
 
-  def create_params
-    params.require(:protocol_filter).permit(:identity_id,
-      :search_name,
-      :show_archived,
-      :admin_filter,
-      :search_query,
-      with_organization: [],
-      with_status: [],
-      with_owner: [])
-  end
+      find('#filterrific_include_incomplete').click
+      click_button I18n.t(:actions)[:filter]
+      wait_for_javascript_to_finish
+    end
+    scenario 'user should see a disabled "View" button' do
+      expect(page).to have_selector('.view-response.disabled')
+    end
 
-  def new_params
-    params.require(:filterrific).permit(:identity_id,
-      :search_name,
-      :show_archived,
-      :admin_filter,
-      search_query: [:search_drop, :search_text],
-      with_organization: [],
-      with_status: [],
-      with_owner: [])
+    scenario 'user should see a disabled "Edit" button' do
+      expect(page).to have_selector('.edit-response.disabled')
+    end
   end
 end

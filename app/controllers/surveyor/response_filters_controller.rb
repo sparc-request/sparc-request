@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,8 +17,55 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$('#filter-responses').html("<%= j render 'surveyor/responses/filter_responses_form', filterrific: @filterrific, type: @type %>")
-$('#responses-panel').replaceWith("<%= j render 'surveyor/responses/table', responses: @responses, type: @type %>")
-$('#responses-table').bootstrapTable()
-$('.selectpicker').selectpicker()
-$(".datetimepicker:not(.time)").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
+
+class Surveyor::ResponseFiltersController < ApplicationController
+  respond_to :html, :js
+
+  before_action :authenticate_identity!
+
+  def new
+    @response_filter = current_user.response_filters.new(sanitize_dates(new_params, [:start_date, :end_date]))
+  end
+
+  def create
+    @response_filter = current_user.response_filters.new(create_params)
+
+    if @response_filter.save
+      flash[:success] = t(:surveyor)[:response_filters][:created]
+    else
+      @errors = @response_filter.errors
+    end
+  end
+
+  def destroy
+    @response_filter = ResponseFilter.find(params[:id])
+    
+    @response_filter.destroy
+
+    flash[:alert] = t(:surveyor)[:response_filters][:destroyed]
+  end
+
+  def new_params
+    params.require(:filterrific).permit(
+      :of_type,
+      :start_date,
+      :end_date,
+      :include_incomplete,
+      with_state: [],
+      with_survey: []
+    )
+  end
+
+  def create_params
+    params.require(:response_filter).permit(
+      :name,
+      :identity_id,
+      :of_type,
+      :start_date,
+      :end_date,
+      :include_incomplete,
+      with_state: [],
+      with_survey: []
+    )
+  end
+end

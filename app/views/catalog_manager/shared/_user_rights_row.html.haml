@@ -44,7 +44,7 @@
         = check_box_tag :hold_emails, '', get_user_rights(user_rights[:service_providers], ur.id).try(:hold_emails), { id: "sp-hold-emails-#{ur.id}", class: "sp-hold-emails", disabled: get_user_rights(user_rights[:service_providers], ur.id).nil?, data: { identity_id: ur.id, organization_id: organization.id } }
         = t(:catalog_manager)[:organization_form][:user_rights][:hold_emails]
   .col-sm-1.text-center
-    - if new_user
+    - if new_user or !user_rights.values.flatten.map(&:identity_id).include?(ur.id)
       %button.btn.btn-xs.btn-danger.cancel-user-rights
         %span.glyphicon.glyphicon-remove
     -else

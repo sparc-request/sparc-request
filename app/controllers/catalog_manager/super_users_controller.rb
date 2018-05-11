@@ -29,7 +29,7 @@ class CatalogManager::SuperUsersController < CatalogManager::AppController
     if @super_user.save
       flash[:notice] = "Super User created successfully."
     else
-     super_user.errors.messages.each do |field, message|
+      @super_user.errors.messages.each do |field, message|
         flash[:alert] = "Error adding Super User: #{message.first}."
       end
     end

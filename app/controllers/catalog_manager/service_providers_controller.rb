@@ -29,7 +29,7 @@ class CatalogManager::ServiceProvidersController < CatalogManager::AppController
     if @service_provider.save
       flash[:notice] = "Service Provider created successfully."
     else
-     service_provider.errors.messages.each do |field, message|
+      @service_provider.errors.messages.each do |field, message|
         flash[:alert] = "Error adding Service Provider: #{message.first}."
       end
     end

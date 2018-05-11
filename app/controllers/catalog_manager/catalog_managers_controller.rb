@@ -29,7 +29,7 @@ class CatalogManager::CatalogManagersController < CatalogManager::AppController
     if @catalog_manager.save
       flash[:notice] = "Catalog Manager created successfully."
     else
-     catalog_manager.errors.messages.each do |field, message|
+      @catalog_manager.errors.messages.each do |field, message|
         flash[:alert] = "Error adding Catalog Manager: #{message.first}."
       end
     end

@@ -67,11 +67,6 @@ class CatalogManager::CatalogController < CatalogManager::AppController
     end
   end
 
-  def verify_valid_pricing_setups
-    ps_array = Catalog.invalid_pricing_setups_for(@user)
-    render :plain => ps_array.empty? ? 'true' : ps_array.map(&:name).join(', ') + ' have invalid pricing setups'
-  end
-
   def validate_pricing_map_dates
     selector = params[:str]
     entity_id = params[:entity_id]

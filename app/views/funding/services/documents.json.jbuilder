@@ -5,7 +5,7 @@ json.(@funding_documents) do |document|
   json.srid display_srid_link(ssr)
   json.protocol ssr.protocol.title
   json.doc_title display_document_title(document)
-  json.uploaded format_date(document.document_updated_at)
+  json.uploaded format_datetime(document.document_updated_at)
   json.status PermissibleValue.get_value('status', ssr.status)
   json.id ssr.id
 end

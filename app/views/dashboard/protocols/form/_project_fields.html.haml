@@ -81,7 +81,7 @@
       .col-sm-8
         = form.text_area :brief_description, {class: 'form-control', rows: "6"}
 
-    - if Setting.find_by_key("use_indirect_cost").value
+    - if Setting.get_value("use_indirect_cost")
       .form-group.row.indirect_cost_rate
         = form.label :indirect_cost_rate, t(:protocols)[:projects][:information][:rate], class: 'col-lg-2 control-label'
         .col-lg-10

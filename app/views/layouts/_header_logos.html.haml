@@ -20,15 +20,15 @@
 
 .row.no-margin.text-center
   .col-md-3
-    %a{ href: Setting.find_by_key("header_link_1").value, class: 'org-logo' }
+    %a{ href: Setting.get_value("header_link_1"), class: 'org-logo' }
       = image_tag ENV['org_logo'] || 'sctr_header_sized.jpg', alt: 'org_logo', height: 140
   .col-md-6
     - if location == "proper"
-      %a{ href: Setting.find_by_key("header_link_2_proper").value, class: 'sparc-request-header' }
+      %a{ href: Setting.get_value("header_link_2_proper"), class: 'sparc-request-header' }
         = image_tag 'sparc_request_header.jpg', alt: 'sparc_logo', height: 110
     - elsif location == "dashboard"
-      %a{ href: Setting.find_by_key("header_link_2_dashboard").value, class: 'sparc-request-header' }
+      %a{ href: Setting.get_value("header_link_2_dashboard"), class: 'sparc-request-header' }
         = image_tag 'dashboard/logos/dashboard_logo.jpg', alt: 'dashboard_logo', height: 110
   .col-md-3
-    %a{ href: Setting.find_by_key("header_link_3").value, target: '_blank', class: 'institution-logo' }
+    %a{ href: Setting.get_value("header_link_3"), target: '_blank', class: 'institution-logo' }
       = image_tag ENV['institution_logo'] || 'musc_header.jpg', alt: 'institution_logo', height: 140

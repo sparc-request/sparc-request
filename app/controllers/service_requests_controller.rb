@@ -39,7 +39,7 @@ class ServiceRequestsController < ApplicationController
     @service_list_false = @service_request.service_list(false)
     @line_items = @service_request.line_items
     @display_all_services = params[:display_all_services] == 'true' ? true : false
-    @use_epic = Setting.find_by_key("use_epic").value
+    @use_epic = Setting.get_value("use_epic")
 
     @report_type = params[:report_type]
     respond_to do |format|
@@ -155,12 +155,12 @@ class ServiceRequestsController < ApplicationController
     @display_all_services = true
 
     should_push_to_epic = @sub_service_request ? @sub_service_request.should_push_to_epic? : @service_request.should_push_to_epic?
-    if should_push_to_epic && Setting.find_by_key("use_epic").value && @protocol.selected_for_epic
+    if should_push_to_epic && Setting.get_value("use_epic") && @protocol.selected_for_epic
       # Send a notification to Lane et al to create users in Epic.  Once
       # that has been done, one of them will click a link which calls
       # approve_epic_rights.
       @protocol.ensure_epic_user
-      if Setting.find_by_key("queue_epic").value
+      if Setting.get_value("queue_epic")
         EpicQueue.create(protocol_id: @protocol.id, identity_id: current_user.id) if should_queue_epic?(@protocol)
       else
         @protocol.awaiting_approval_for_epic_push
@@ -348,7 +348,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def setup_catalog_calendar
-    if Setting.find_by_key("use_google_calendar").value
+    if Setting.get_value("use_google_calendar")
       curTime = Time.now.utc
       startMin = curTime
       startMax  = (curTime + 1.month)
@@ -386,7 +386,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def setup_catalog_news_feed
-    if Setting.find_by_key("use_news_feed").value
+    if Setting.get_value("use_news_feed")
       @news = []
       begin
         page = Nokogiri::HTML(open("https://www.sparcrequestblog.com"))
@@ -419,7 +419,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def send_epic_notification_for_user_approval(protocol)
-    Notifier.notify_for_epic_user_approval(protocol).deliver unless Setting.find_by_key("queue_epic").value
+    Notifier.notify_for_epic_user_approval(protocol).deliver unless Setting.get_value("queue_epic")
   end
 
   def authorize_protocol_edit_request

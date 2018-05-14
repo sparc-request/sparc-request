@@ -47,8 +47,8 @@ SparcRails::Application.routes.draw do
   resources :feedback
 
   begin
-    use_shibboleth_only = Setting.find_by_key("use_shibboleth_only").try(:value)
-    use_cas_only        = Setting.find_by_key("use_cas_only").try(:value)
+    use_shibboleth_only = Setting.get_value("use_shibboleth_only")
+    use_cas_only        = Setting.get_value("use_cas_only")
   rescue
     use_shibboleth_only = nil
     use_cas_only        = nil

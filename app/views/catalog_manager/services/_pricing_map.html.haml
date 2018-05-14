@@ -112,7 +112,7 @@
           %th= t(:pricing_map_form)[:unit_maximum]
           %td{:colspan => 2}= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][units_per_qty_max]", pricing_map.try(:[], 'units_per_qty_max') || 10000, :class => 'unit_field otf_unit_max otf_validate', :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :display => 'Unit Maximum', :id => "otf_unit_max_#{pricing_map.try(:id)}"
 
-        - if Setting.find_by_key("use_indirect_cost").value
+        - if Setting.get_value("use_indirect_cost")
           %tr
             %th= t(:pricing_map_form)[:exclude_from_indirect_cost]
             %td{:colspan => 2}

@@ -74,10 +74,10 @@ module Dashboard::SubServiceRequestsHelper
       if sub_service_request.in_work_fulfillment?
         if user.clinical_provider_rights?
           # In fulfillment and user has rights
-          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:go_to_fulfillment], "#{Setting.find_by_key("clinical_work_fulfillment_url").value}/sub_service_request/#{sub_service_request.id}", target: "_blank", class: "btn btn-primary btn-md"
+          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:go_to_fulfillment], "#{Setting.get_value("clinical_work_fulfillment_url")}/sub_service_request/#{sub_service_request.id}", target: "_blank", class: "btn btn-primary btn-md"
         else
           # In fulfillment, user does not have rights, disable button
-          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:in_fulfillment], "#{Setting.find_by_key("clinical_work_fulfillment_url").value}/sub_service_request/#{sub_service_request.id}", target: "_blank", class: "btn btn-primary btn-md", disabled: true
+          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:in_fulfillment], "#{Setting.get_value("clinical_work_fulfillment_url")}/sub_service_request/#{sub_service_request.id}", target: "_blank", class: "btn btn-primary btn-md", disabled: true
         end
       else
         # Not in Fulfillment
@@ -300,7 +300,7 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def in_finished_status?(status)
-    Setting.find_by_key("finished_statuses").value.include?(status.last)
+    Setting.get_value("finished_statuses").include?(status.last)
   end
 end
 

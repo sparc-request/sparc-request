@@ -27,7 +27,7 @@ class AddService
   end
 
   def existing_service_ids
-    @service_request.line_items.reject{ |line_item| Setting.find_by_key("finished_statuses").value.include?(line_item.status) }.map(&:service_id)
+    @service_request.line_items.reject{ |line_item| Setting.get_value("finished_statuses").include?(line_item.status) }.map(&:service_id)
   end
 
   def generate_new_service_request

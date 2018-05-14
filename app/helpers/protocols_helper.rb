@@ -21,7 +21,7 @@
 module ProtocolsHelper
 
   def display_study_type_question?(protocol, study_type_answer, view_protocol=false)
-    if !Setting.find_by_key("use_epic").value || protocol.selected_for_epic == false
+    if !Setting.get_value("use_epic") || protocol.selected_for_epic == false
       # If read-only (Dashboard--> 'Edit Study Information' or 'View Study Details') do not show the first CofC question if unanswered
       if view_protocol
         ['certificate_of_conf_no_epic', 'higher_level_of_privacy_no_epic'].include?(study_type_answer.study_type_question.friendly_id) && study_type_answer.answer != nil
@@ -52,7 +52,7 @@ module ProtocolsHelper
   end
 
   def display_rmid_validated_protocol(protocol, option)
-    if Setting.find_by_key("research_master_enabled").value
+    if Setting.get_value("research_master_enabled")
       if protocol.rmid_validated?
         content_tag(
           :h6,
@@ -66,6 +66,6 @@ module ProtocolsHelper
   # If USE_EPIC is false and any of the CofC questions have been answered, display them OR
   # If USE_EPIC is true and any of the Epic questions have been answered, display them
   def display_readonly_study_type_questions?(protocol)
-    (Setting.find_by_key("use_epic").value && protocol.display_answers.where.not(answer: nil).any?) || (!Setting.find_by_key("use_epic").value && protocol.active? && protocol.display_answers.joins(:study_type_question).where(study_type_questions: { friendly_id: ['certificate_of_conf_no_epic', 'higher_level_of_privacy_no_epic'] }).where.not(answer: nil).any?)
+    (Setting.get_value("use_epic") && protocol.display_answers.where.not(answer: nil).any?) || (!Setting.get_value("use_epic") && protocol.active? && protocol.display_answers.joins(:study_type_question).where(study_type_questions: { friendly_id: ['certificate_of_conf_no_epic', 'higher_level_of_privacy_no_epic'] }).where.not(answer: nil).any?)
   end
 end

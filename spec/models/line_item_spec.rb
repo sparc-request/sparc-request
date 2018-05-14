@@ -211,7 +211,7 @@ RSpec.describe LineItem, type: :model do
       context "indirect cost rate" do
 
         it "should return the correct indirect cost rate related to the line item" do
-          if Setting.find_by_key("use_indirect_cost").value
+          if Setting.get_value("use_indirect_cost")
             expect(line_item.indirect_cost_rate).to eq(2.0)
           else
             expect(line_item.indirect_cost_rate).to eq(0)
@@ -224,7 +224,7 @@ RSpec.describe LineItem, type: :model do
         it "should return the correct indirect cost" do
           service.update_attributes(one_time_fee: true)
           line_item.update_attributes(quantity: 10)
-          if Setting.find_by_key("use_indirect_cost").value
+          if Setting.get_value("use_indirect_cost")
             expect(line_item.indirect_costs_for_one_time_fee).to eq(400)
           else
             expect(line_item.indirect_costs_for_one_time_fee).to eq(0)

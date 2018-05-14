@@ -53,4 +53,4 @@
         .col-sm-9
           = text_area_tag :reason, params[:reason], class: 'form-control', disabled: true
     %hr
-      = link_to t(:proper)[:confirmation][:to_dashboard], Setting.find_by_key("dashboard_link").value, class: 'btn btn-lg btn-success'
+      = link_to t(:proper)[:confirmation][:to_dashboard], Setting.get_value("dashboard_link"), class: 'btn btn-lg btn-success'

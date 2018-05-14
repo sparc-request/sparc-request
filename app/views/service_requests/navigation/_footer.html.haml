@@ -32,7 +32,7 @@
       - if service_request.submitted_at.blank? && service_request.protocol.present?
         = save_as_draft_button(sub_service_request_id)
   -# This was extracted because the surveyor gem requires an href location to redirect to post-submit and it was being cranky
-  - if Setting.find_by_key("system_satisfaction_survey").value && action_name == 'review'
+  - if Setting.get_value("system_satisfaction_survey") && action_name == 'review'
     .col-sm-3.text-right
       = link_to t(:proper)[:navigation][:bottom][:submit],
       confirmation_service_request_path(service_request, sub_service_request_id: sub_service_request_id),

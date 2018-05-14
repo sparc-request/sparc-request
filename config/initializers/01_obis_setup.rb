@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 begin
-  wkhtmltopdf_location = Setting.find_by_key('wkhtmltopdf_location').try(:value)
+  wkhtmltopdf_location = Setting.get_value('wkhtmltopdf_location')
 rescue
   wkhtmltopdf_location = nil
 end

@@ -29,5 +29,5 @@
           = raw(error)
       %br
       .text-center
-        = link_to t(:authorization_error)[:link], Setting.find_by_key("dashboard_link").value, class: 'btn btn-warning'
+        = link_to t(:authorization_error)[:link], Setting.get_value("dashboard_link"), class: 'btn btn-warning'
 .col-sm-3

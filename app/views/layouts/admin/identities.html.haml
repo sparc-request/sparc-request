@@ -47,7 +47,7 @@
               %li
                 %a{:href=> catalog_manager_root_path() }= t(:admin_identities)[:catalog_manager]
               %li
-                %a{:href=> Setting.find_by_key("dashboard_link").value }= t(:admin_identities)[:portal]
+                %a{:href=> Setting.get_value("dashboard_link") }= t(:admin_identities)[:portal]
               %li
                 %a{:href=> root_path() }= t(:admin_identities)[:request_services]
     .container-fluid

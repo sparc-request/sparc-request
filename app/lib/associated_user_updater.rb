@@ -45,7 +45,7 @@ class AssociatedUserUpdater
       # must come after the use of ActiveModel::Dirty methods above
       @protocol_role.save
 
-      if Setting.find_by_key("use_epic").value && protocol.selected_for_epic && !Setting.find_by_key("queue_epic").value
+      if Setting.get_value("use_epic") && protocol.selected_for_epic && !Setting.get_value("queue_epic")
         if access_removed
           Notifier.notify_for_epic_access_removal(protocol, @protocol_role).deliver
         elsif access_granted

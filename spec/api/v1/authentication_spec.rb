@@ -45,7 +45,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         before do
           bad_username = 'bad_username'
 
-          http_login(bad_username, Setting.find_by_key("remote_service_notifier_password").value)
+          http_login(bad_username, Setting.get_value("remote_service_notifier_password"))
 
           get "/v1/protocols/#{@protocol.id}.json", headers: @env
         end
@@ -64,7 +64,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         before do
           bad_password = 'bad_password'
 
-          http_login(Setting.find_by_key("remote_service_notifier_username").value, bad_password)
+          http_login(Setting.get_value("remote_service_notifier_username"), bad_password)
 
           get "/v1/protocols/#{@protocol.id}.json", headers: @env
         end

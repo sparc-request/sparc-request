@@ -89,7 +89,7 @@ class Arm < ApplicationRecord
   end
 
   def maximum_indirect_costs_per_patient line_items_visits=self.line_items_visits
-    if Setting.find_by_key("use_indirect_cost").value
+    if Setting.get_value("use_indirect_cost")
       self.maximum_direct_costs_per_patient(line_items_visits) * (self.protocol.indirect_cost_rate.to_f / 100)
     else
       return 0
@@ -110,7 +110,7 @@ class Arm < ApplicationRecord
 
   def indirect_costs_for_visit_based_service line_items_visits=self.line_items_visits
     total = 0.0
-    if Setting.find_by_key("use_indirect_cost").value
+    if Setting.get_value("use_indirect_cost")
       line_items_visits.each do |vg|
         total += vg.indirect_costs_for_visit_based_service
       end

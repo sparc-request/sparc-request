@@ -18,5 +18,5 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- link = @is_service_provider == 'true' ? Setting.find_by_key("dashboard_link").value + 'admin/sub_service_requests/' + @ssr_id : Setting.find_by_key("dashboard_link").value
+- link = @is_service_provider == 'true' ? Setting.get_value("dashboard_link") + 'admin/sub_service_requests/' + @ssr_id : Setting.get_value("dashboard_link")
 = t('mailer.received', :portal_root_url => link)

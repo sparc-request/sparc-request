@@ -21,12 +21,12 @@
   .footer.text-center
     %ul.footer-links
       %li
-        = mail_to Setting.find_by_key("listserv_mail_to").value, t(:proper)[:footer][:listserv], subject: t(:proper)[:footer][:listserv_subject]
+        = mail_to Setting.get_value("listserv_mail_to"), t(:proper)[:footer][:listserv], subject: t(:proper)[:footer][:listserv_subject]
       %li
         = link_to t(:proper)[:footer][:sparc_blog], t(:proper)[:footer][:sparc_blog_url], target: :blank
       %li
         = link_to t(:proper)[:footer][:sctr], t(:proper)[:footer][:sctr_url], target: :blank
       %li
-        = link_to t(:proper)[:footer][:about], Setting.find_by_key("about_sparc_url").value, target: :blank
+        = link_to t(:proper)[:footer][:about], Setting.get_value("about_sparc_url"), target: :blank
       %li
         = ENV['SPARC_VERSION']

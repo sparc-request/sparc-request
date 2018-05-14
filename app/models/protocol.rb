@@ -303,6 +303,38 @@ class Protocol < ApplicationRecord
     end
   }
 
+  def initial_amount=(amount)
+    write_attribute(:initial_amount, amount.to_f * 100)
+  end
+
+  def initial_amount
+    read_attribute(:initial_amount) / 100.0
+  end
+
+  def initial_amount_clinical_services=(amount)
+    write_attribute(:initial_amount_clinical_services, amount.to_f * 100)
+  end
+
+  def initial_amount_clinical_services
+    read_attribute(:initial_amount_clinical_services) / 100.0
+  end
+
+  def negotiated_amount=(amount)
+    write_attribute(:negotiated_amount, amount.to_f * 100)
+  end
+
+  def negotiated_amount
+    read_attribute(:negotiated_amount) / 100.0
+  end
+
+  def negotiated_amount_clinical_services=(amount)
+    write_attribute(:negotiated_amount_clinical_services, amount.to_f * 100)
+  end
+
+  def negotiated_amount_clinical_services
+    read_attribute(:negotiated_amount_clinical_services) / 100.0
+  end
+
   def is_study?
     self.type == 'Study'
   end

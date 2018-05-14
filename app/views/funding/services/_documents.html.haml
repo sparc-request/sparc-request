@@ -10,7 +10,7 @@
           = t(:funding)[:download][:application]
 
 .bootstrap-table-dropdown-overflow
-  %table.custom_striped.bootstrap_table{id: "document-table", data: {pagination: 'true', 'page-size' => 20, toggle: 'table', search: "true", url: documents_funding_service_path(id: service.id, table: "loi", format: :json ), 'sort-name' => 'pi', 'sort-order' => 'asc', 'row-style' => 'documents_row_style'}}
+  %table.custom_striped.bootstrap_table{id: "document-table", data: {pagination: 'true', 'page-size' => 20, toggle: 'table', search: "true", url: documents_funding_service_path(id: service.id, table: "loi", format: :json ), striped: "true", 'sort-name' => 'pi', 'sort-order' => 'asc', 'row-style' => 'documents_row_style'}}
     %thead.primary-header
       %tr
         %th{data: {class: 'col-sm-1 pi', align: "left", sortable: "true", field: "pi"}}

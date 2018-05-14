@@ -22,7 +22,7 @@
   = form.hidden_field :notable_type
   = form.hidden_field :identity_id
   = hidden_field_tag :in_dashboard, in_dashboard
-  - if notable_type_is_related_to_li_or_liv(@notable_type)
+  - if notable_type_is_related_to_li_or_liv_or_epic_queue(@notable_type)
     .row.text-center
       = display_service_name_and_code(@notable_type, @notable_id)
     %br
@@ -35,7 +35,7 @@
       %button.btn.btn-default.notes.cancel{type: 'button', data: {notable_id: @notable_id, notable_type: @notable_type}}
         = t(:actions)[:cancel]
     - else
-      - if notable_type_is_related_to_li_or_liv(@notable_type)
+      - if notable_type_is_related_to_li_or_liv_or_epic_queue(@notable_type)
         %button.btn.btn-default.notes.cancel{type: 'button', data: {notable_id: @notable_id, notable_type: @notable_type}}
           = t(:actions)[:cancel]
       - else

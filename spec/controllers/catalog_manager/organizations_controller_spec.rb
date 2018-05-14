@@ -30,14 +30,14 @@ RSpec.describe CatalogManager::OrganizationsController do
       and_return(logged_in_user)
   end
 
-  describe '#refresh_user_rights' do
+  describe '#add_user_rights_row' do
     before :each do
       @organization = create(:provider)
       @identity_1 = create(:identity)
       @identity_2 = create(:identity)
       @super_user = create(:super_user, organization_id: @organization.id, identity_id: @identity_1.id)
 
-      get :refresh_user_rights,
+      get :add_user_rights_row,
           params: {
             organization_id: @organization.id,
             new_ur_identity_id: @identity_2.id
@@ -57,7 +57,7 @@ RSpec.describe CatalogManager::OrganizationsController do
       expect(assigns(:user_rights))
     end
 
-    it { is_expected.to render_template "organizations/refresh_user_rights" }
+    it { is_expected.to render_template "organizations/add_user_rights_row" }
     it { is_expected.to respond_with :ok }
   end
 end

@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#org-form-container").html("<%= j render '/catalog_manager/shared/form', organization: @organization, user_rights: @user_rights, path: @path %>")
+$("#org-form-container").html("<%= j render '/catalog_manager/shared/form', organization: @organization, user_rights: @user_rights, fulfillment_rights: @fulfillment_rights, path: @path %>")
 $('.selectpicker').selectpicker();
 $("[data-toggle='toggle']").bootstrapToggle(
     on: 'Yes',
@@ -26,7 +26,7 @@ $("[data-toggle='toggle']").bootstrapToggle(
   );
 
 
-# Identity Search Bloodhound
+## Identity Search Bloodhound
 services_bloodhound = new Bloodhound(
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -35,6 +35,9 @@ services_bloodhound = new Bloodhound(
     wildcard: '%QUERY'
 )
 services_bloodhound.initialize() # Initialize the Bloodhound suggestion engine
+
+
+## User Search for User Rights Sub-Form
 $('#user-rights-query').typeahead(
   {
     minLength: 3,
@@ -61,7 +64,40 @@ $('#user-rights-query').typeahead(
   else
     $.ajax
       type: 'get'
-      url: "/catalog_manager/organizations/<%= @organization.id %>/refresh_user_rights.js"
+      url: "/catalog_manager/organizations/<%= @organization.id %>/add_user_rights_row.js"
       data:
         new_ur_identity_id: suggestion['identity_id']
+)
+
+
+##User Search for Fulfillment Sub-Form
+$('#fulfillment-rights-query').typeahead(
+  {
+    minLength: 3,
+    hint: false,
+  },
+  {
+    displayKey: 'term',
+    source: services_bloodhound,
+    limit: 100,
+    templates: {
+      suggestion: Handlebars.compile("<button class=\"text-left col-sm-12\">
+                                        <strong>{{name}}</strong> <span>{{email}}{{identity_id}}</span>
+                                      </button>")
+      notFound: '<div class="tt-suggestion">No Results</div>'
+    }
+  }
+).on('typeahead:select', (event, suggestion) ->
+  users_on_table = $("[id*='fulfillment-rights-row-']").map ->
+    return $(this).data('identity-id')
+
+  if suggestion['identity_id'] in users_on_table
+    $('#fulfillment-rights-query').parent().prepend("<div class='alert alert-danger alert-dismissable'>#{suggestion['name']} #{I18n['catalog_manager']['organization_form']['fulfillment_rights']['user_in_table']}</div>")
+    $('.alert-dismissable').delay(3000).fadeOut()
+  else
+    $.ajax
+      type: 'get'
+      url: "/catalog_manager/organizations/<%= @organization.id %>/add_fulfillment_rights_row.js"
+      data:
+        new_fr_identity_id: suggestion['identity_id']
 )

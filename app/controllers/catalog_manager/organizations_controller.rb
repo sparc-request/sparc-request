@@ -28,6 +28,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   def edit
     @organization = Organization.find(params[:id])
     @user_rights  = user_rights(@organization.id)
+    @fulfillment_rights = fulfillment_rights(@organization.id)
 
     respond_to do |format|
       format.js
@@ -58,14 +59,28 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     render 'catalog_manager/organizations/update'
   end
 
-  def refresh_user_rights
-    respond_to do |format|
-      format.js
-    end
-
+  def add_user_rights_row
     @organization = Organization.find(params[:organization_id])
     @new_ur_identity = Identity.find(params[:new_ur_identity_id])
     @user_rights  = user_rights(@organization.id)
+  end
+
+  def add_fulfillment_rights_row
+    @organization = Organization.find(params[:organization_id])
+    @new_fr_identity = Identity.find(params[:new_fr_identity_id])
+    @fulfillment_rights = fulfillment_rights(@organization_id)
+  end
+
+  def remove_fulfillment_rights_row
+    cp_destroyed = ClinicalProvider.find_by(fulfillment_rights_params).try(:destroy)
+    # iv_destroyed = Invoicer.find_by(fulfillment_rights_params).try(:destroy)
+
+    if cp_destroyed# or iv_destroyed
+      @identity_id = fulfillment_rights_params[:identity_id]
+      flash[:notice] = "Fulfillment rights removed successfully."
+    else
+      flash[:alert] = "Error removing fulfillment rights."
+    end
   end
 
   private
@@ -76,13 +91,6 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     unless @attributes[:tag_list] || @organization.type == 'Institution'
       @attributes[:tag_list] = ""
     end
-  end
-
-  def user_rights organization_id
-    { super_users: SuperUser.where(organization_id: organization_id),
-      catalog_managers: CatalogManager.where(organization_id: organization_id),
-      service_providers: ServiceProvider.where(organization_id: organization_id),
-      clinical_providers: ClinicalProvider.where(organization_id: organization_id) }
   end
 
   def update_organization
@@ -186,5 +194,11 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
       :investigator_rate_type,
       :internal_rate_type,
       :unfunded_rate_type)
+  end
+
+  def fulfillment_rights_params
+    params.require(:fulfillment_rights).permit(
+      :identity_id,
+      :organization_id)
   end
 end

@@ -43,13 +43,12 @@
         .panel-body
           = render "catalog_manager/services/service_components_form", service: service, user: @user
 
-  - if service.tag_list.include?("epic")
-    .panel.panel-default#epic
-      .panel-heading
-        %h4.panel-title
-          = link_to t(:catalog_manager)[:organization_form][:epic_info], '#epic-collapse', data: {toggle: 'collapse', parent: '#cm-form-accordion'}
-      .panel-collapse.collapse#epic-collapse
-        .panel-body
-          = render "catalog_manager/services/epic_form", service: service, user: @user
+  .panel.panel-default#epic{:style => service.tag_list.include?("epic") ? "display: block;" : "display: none;"}
+    .panel-heading
+      %h4.panel-title
+        = link_to t(:catalog_manager)[:organization_form][:epic_info], '#epic-collapse', data: {toggle: 'collapse', parent: '#cm-form-accordion'}
+    .panel-collapse.collapse#epic-collapse
+      .panel-body
+        = render "catalog_manager/services/epic_form", service: service, user: @user
 
 

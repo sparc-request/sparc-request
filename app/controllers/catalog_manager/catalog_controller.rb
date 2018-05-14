@@ -67,11 +67,6 @@ class CatalogManager::CatalogController < CatalogManager::AppController
     end
   end
 
-  def verify_valid_pricing_setups
-    ps_array = Catalog.invalid_pricing_setups_for(@user)
-    render :plain => ps_array.empty? ? 'true' : ps_array.map(&:name).join(', ') + ' have invalid pricing setups'
-  end
-
   def validate_pricing_map_dates
     selector = params[:str]
     entity_id = params[:entity_id]
@@ -148,25 +143,30 @@ class CatalogManager::CatalogController < CatalogManager::AppController
 
   def remove_associated_survey
     associated_survey = AssociatedSurvey.find(params[:associated_survey_id])
-    entity = associated_survey.associable
-    associated_survey.delete
+    @organization = associated_survey.associable
+    if associated_survey.delete
+      flash[:notice] = "Survey deleted successfully."
+    else
+      flash[:alert] = "Error deleting survey."
+    end
 
-    render :partial => 'catalog_manager/shared/associated_surveys', :locals => {:entity => entity}
+    render 'catalog_manager/organizations/change_associated_survey'
   end
 
   def add_associated_survey
-    entity = params[:surveyable_type].constantize.find params[:surveyable_id]
-    associated_survey = entity.associated_surveys.new :survey_id => params[:survey_id]
+    @organization = Organization.find(params[:surveyable_id])
+    associated_survey = @organization.associated_surveys.new :survey_id => params[:survey_id]
 
-    #keep the same survey from being associated multiple times, this is also done via the associated_survey model
-    if associated_survey.valid?
-      associated_survey.save
+    if associated_survey.save
+      flash[:notice] = "Survey added successfully."
     else
-      message = "The survey you are trying to add is already associated with this #{entity.class.to_s}"
+      @organization.reload
+      associated_survey.errors.messages.each do |field, message|
+        flash[:alert] = "Error adding survey: #{message.first}."
+      end
     end
 
-    entity.reload
-    render :partial => 'catalog_manager/shared/associated_surveys', :locals => {:entity => entity, :message => message}
+    render 'catalog_manager/organizations/change_associated_survey'
   end
 
   def remove_submission_email

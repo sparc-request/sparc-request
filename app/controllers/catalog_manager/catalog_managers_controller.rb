@@ -18,19 +18,53 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogManager::CatalogManagersController < ApplicationController
+class CatalogManager::CatalogManagersController < CatalogManager::AppController
 
   def create
-    CatalogManager.create(catalog_manager_params)
+    @catalog_manager = CatalogManager.new(catalog_manager_params)
+    @identity = Identity.find(@catalog_manager.identity_id)
+    @organization = @catalog_manager.organization
+    @user_rights  = user_rights(@organization.id)
+
+    if @catalog_manager.save
+      flash[:notice] = "Catalog Manager created successfully."
+    else
+      @catalog_manager.errors.messages.each do |field, message|
+        flash[:alert] = "Error adding Catalog Manager: #{message.first}."
+      end
+    end
+
+    render 'catalog_manager/shared/refresh_user_rights_row'
   end
 
   def destroy
-    CatalogManager.find_by(catalog_manager_params).destroy
+    @catalog_manager = CatalogManager.find_by(catalog_manager_params)
+    @identity = Identity.find(@catalog_manager.identity_id)
+    @organization = @catalog_manager.organization
+    @user_rights  = user_rights(@organization.id)
+
+    if @catalog_manager.destroy
+      flash[:notice] = "Catalog Manager removed successfully."
+    else
+      flash[:alert] = "Error removing Catalog Manager."
+    end
+
+    render 'catalog_manager/shared/refresh_user_rights_row'
   end
 
   def update
-    cm = CatalogManager.find_by(identity_id: catalog_manager_params[:identity_id], organization_id: catalog_manager_params[:organization_id])
-    cm.update_attribute(:edit_historic_data, catalog_manager_params[:edit_historic_data] == 'true')
+    @catalog_manager = CatalogManager.find_by(identity_id: catalog_manager_params[:identity_id], organization_id: catalog_manager_params[:organization_id])
+    @identity = Identity.find(@catalog_manager.identity_id)
+    @organization = @catalog_manager.organization
+    @user_rights  = user_rights(@organization.id)
+
+    if @catalog_manager.update_attributes(catalog_manager_params)
+      flash[:notice] = "Catalog Manager successfully updated."
+    else
+      flash[:alert] = "Error updating Catalog Manager."
+    end
+
+    render 'catalog_manager/shared/refresh_user_rights_row'
   end
 
   private

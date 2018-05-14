@@ -190,6 +190,11 @@ SparcRails::Application.routes.draw do
     match 'services/set_linked_quantity_total' => 'services#set_linked_quantity_total', via: [:get, :post]
     match 'services/get_updated_rate_maps' => 'services#get_updated_rate_maps', via: [:get, :post]
     match 'services/change_components' => 'services#change_components', via: [:post]
+    match 'organizations/remove_fulfillment_rights_row' => 'organizations#remove_fulfillment_rights_row', via: [:post]
+
+    resources :services do
+      patch :update_epic_info
+    end
 
     resources :catalog, only: [:index] do
       collection do
@@ -202,7 +207,8 @@ SparcRails::Application.routes.draw do
     end
 
     resources :organizations, only: [:edit, :update, :create] do
-      get :refresh_user_rights
+      get :add_user_rights_row
+      get :add_fulfillment_rights_row
     end
     resources :institutions, only: [:edit, :update, :create]
     resources :providers, only: [:edit, :update, :create]
@@ -230,7 +236,6 @@ SparcRails::Application.routes.draw do
     match 'update_pricing_maps' => 'catalog#update_pricing_maps', via: [:get, :post]
     match 'update_dates_on_pricing_maps' => 'catalog#update_dates_on_pricing_maps', via: [:get, :post]
     match 'validate_pricing_map_dates' => 'catalog#validate_pricing_map_dates', via: [:get, :post]
-    match '*verify_valid_pricing_setups' => 'catalog#verify_valid_pricing_setups', via: [:get, :post]
 
     root to: 'catalog#index'
   end

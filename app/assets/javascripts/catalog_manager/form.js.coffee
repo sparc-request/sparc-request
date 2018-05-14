@@ -33,9 +33,6 @@ $ ->
     else
       $('#enable-all-services').addClass('hidden')
 
-  $(document).on 'click', '#close-general-info', ->
-    $('#general-info-collapse').collapse('hide')
-
   ##############################################
   ###          Org User Rights               ###
   ##############################################
@@ -116,18 +113,83 @@ $ ->
 
   $(document).on 'click', '.remove-user-rights', (event) ->
     event.preventDefault()
-    identity_id = $(this).data('identity-id')
-    organization_id = $(this).data('organization-id')
+
+    if confirm (I18n['catalog_manager']['organization_form']['user_rights']['remove_confirm'])
+      identity_id = $(this).data('identity-id')
+      organization_id = $(this).data('organization-id')
+      $.ajax
+        type: 'DELETE'
+        url: "/catalog_manager/user_right?user_rights[identity_id]=#{identity_id}
+                                         &user_rights[organization_id]=#{organization_id}"
+        success: ->
+          $("#user-rights-row-#{identity_id}").fadeOut(1000, () -> $(this).remove())
+
+  $(document).on 'click', '.cancel-user-rights', (event) ->
+    event.preventDefault()
+    $(this).closest('.row').fadeOut(1000, () -> $(this).remove())
+
+  ##############################################
+  ###         Org Associated Surveys         ###
+  ##############################################
+
+  $(document).on 'click', 'button.remove-associated-survey', (event) ->
+    associated_survey_link = $(this).closest('.form-group.row').find('.associated_survey_link')[0]
+    associated_survey_id = $(associated_survey_link).data('id')
+    surveyable_id = $(this).data('id')
+    if confirm(I18n['catalog_manager']['organization_form']['surveys']['survey_delete'])
+      $.ajax
+        type: 'POST'
+        url: "catalog_manager/catalog/remove_associated_survey"
+        data:
+          associated_survey_id: associated_survey_id
+          surveyable_id: surveyable_id
+
+
+  $(document).on 'click', 'button.add-associated-survey', (event) ->
+    if $('#new_associated_survey').val() == ''
+      alert "No survey selected"
+    else
+      survey_id = $(this).closest('.form-group.row').find('.new_associated_survey')[0].value
+      surveyable_type = $(this).data('type')
+      surveyable_id = $(this).data('id')
+      $.ajax
+        type: 'POST'
+        url: "catalog_manager/catalog/add_associated_survey"
+        data:
+          survey_id: survey_id
+          surveyable_type : surveyable_type
+          surveyable_id : surveyable_id
+
+  ##############################################
+  ###          Org Fulfillment               ###
+  ##############################################
+
+  $(document).on 'change', '.clinical-provider-checkbox', ->
     $.ajax
-      type: 'DELETE'
-      url: "/catalog_manager/user_right?user_rights[identity_id]=#{identity_id}
-                                       &user_rights[organization_id]=#{organization_id}"
-      # data:
-      #   user_rights:
-      #     identity_id: identity_id
-      #     organization_id: $(this).data('organization-id')
-      success: ->
-        $("#user-rights-row-#{identity_id}").fadeOut(1000, () -> $(this).remove())
+      type: if $(this).prop('checked') then 'POST' else 'DELETE'
+      url: '/catalog_manager/super_user'
+      data:
+        super_user:
+          identity_id: $(this).data('identity-id')
+          organization_id: $(this).data('organization-id')
+
+  $(document).on 'click', '.remove-fulfillment-rights', (event) ->
+    event.preventDefault()
+    if confirm (I18n['catalog_manager']['organization_form']['user_rights']['remove_confirm'])
+      identity_id = $(this).data('identity-id')
+      $.ajax
+        type: 'POST'
+        url: 'catalog_manager/organizations/remove_fulfillment_rights_row'
+        data:
+          fulfillment_rights:
+            identity_id: identity_id
+            organization_id: $(this).data('organization-id')
+
+  $(document).on 'click', '.cancel-fulfillment-rights', (event) ->
+    event.preventDefault()
+    $(this).closest('.row').fadeOut(1000, () -> $(this).remove())
+
+>>>>>>> origin/saw-bootstrap-cm-forms
 
   ##############################################
   ###          Service Components            ###
@@ -140,7 +202,7 @@ $ ->
       $.ajax
         type: 'POST'
         url: "catalog_manager/services/change_components"
-        data: 
+        data:
           component: component
           service_id: service_id
 
@@ -150,10 +212,9 @@ $ ->
     $.ajax
       type: 'POST'
       url: "catalog_manager/services/change_components"
-      data: 
+      data:
         component: component
         service_id: service_id
-
 
 
 

@@ -18,26 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogManager::UserRightsController < ApplicationController
+$("#user-rights-row-<%= escape_javascript(@identity_id) %>").fadeOut(1000, () -> $(this).remove())
 
-  def destroy
-    su_destroyed = SuperUser.find_by(user_rights_params).try(:destroy)
-    cm_destroyed = CatalogManager.find_by(user_rights_params).try(:destroy)
-    sp_destroyed = ServiceProvider.find_by(user_rights_params).try(:destroy)
-
-    if su_destroyed or cm_destroyed or sp_destroyed
-      @identity_id = user_rights_params[:identity_id]
-      flash[:notice] = "User rights removed successfully."
-    else
-      flash[:alert] = "Error removing user rights."
-    end
-  end
-
-  private
-
-  def user_rights_params
-    params.require(:user_rights).permit(
-      :identity_id,
-      :organization_id)
-  end
-end
+$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")

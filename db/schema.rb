@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180326183336) do
+ActiveRecord::Schema.define(version: 20180503145651) do
 
   create_table "admin_rates", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer "line_item_id"
@@ -592,10 +592,10 @@ ActiveRecord::Schema.define(version: 20180326183336) do
     t.datetime "end_date"
     t.datetime "initial_budget_sponsor_received_date"
     t.datetime "budget_agreed_upon_date"
-    t.decimal "initial_amount", precision: 8, scale: 2
-    t.decimal "initial_amount_clinical_services", precision: 8, scale: 2
-    t.decimal "negotiated_amount", precision: 8, scale: 2
-    t.decimal "negotiated_amount_clinical_services", precision: 8, scale: 2
+    t.integer "initial_amount"
+    t.integer "initial_amount_clinical_services"
+    t.integer "negotiated_amount"
+    t.integer "negotiated_amount_clinical_services"
     t.string "billing_business_manager_static_email"
     t.datetime "recruitment_start_date"
     t.datetime "recruitment_end_date"
@@ -670,6 +670,19 @@ ActiveRecord::Schema.define(version: 20180326183336) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.index ["protocol_id"], name: "index_research_types_info_on_protocol_id"
+  end
+
+  create_table "response_filters", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.integer "identity_id"
+    t.string "name"
+    t.string "of_type"
+    t.string "with_state"
+    t.string "with_survey"
+    t.datetime "start_date"
+    t.datetime "end_date"
+    t.boolean "include_incomplete"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "responses", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|

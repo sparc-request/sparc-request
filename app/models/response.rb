@@ -30,14 +30,59 @@ class Response < ActiveRecord::Base
   accepts_nested_attributes_for :question_responses
 
   filterrific(
-    default_filter_params: {},
+    default_filter_params: { include_incomplete: 'false' },
     available_filters: [
-      :with_type
+      :of_type,
+      :with_state,
+      :with_survey,
+      :start_date,
+      :end_date,
+      :include_incomplete
     ]
   )
 
-  scope :with_type, -> (params) {
-    joins(:survey).where(surveys: { type: params })
+  scope :of_type, -> (type) {
+    joins(:survey).where(surveys: { type: type })
+  }
+
+  STATE_FILTERS = [
+    [I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active], 1],
+    [I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive], 0]
+  ]
+
+  scope :with_state, -> (states) {
+    # Note: States are 0 for inactive and 1 for active
+    states.reject!(&:blank?)
+
+    return nil if states.empty?
+
+    joins(:survey).where(surveys: { active: states })
+  }
+
+  scope :with_survey, -> (survey_ids) {
+    survey_ids.reject!(&:blank?)
+    
+    return nil if survey_ids.empty?
+
+    joins(:survey).where(surveys: { id: survey_ids })
+  }
+
+  scope :start_date, -> (date) {
+    return nil if date.blank?
+
+    where("responses.updated_at >= ?", date.to_datetime)
+  }
+
+  scope :end_date, -> (date) {
+    return nil if date.blank?
+
+    where("responses.updated_at <= ?", date.to_datetime.end_of_day)
+  }
+
+  scope :include_incomplete, -> (boolean) {
+    return nil if boolean == 'true'
+
+    joins(:question_responses)
   }
 
   def completed?

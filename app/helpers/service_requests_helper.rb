@@ -62,6 +62,18 @@ module ServiceRequestsHelper
     header
   end
 
+  def service_name_display(line_item)
+    ssr = line_item.sub_service_request
+    service = line_item.service
+    display_name = service.display_service_name + (ssr.ssr_id ? " (#{ssr.ssr_id})" : "")
+
+    if ssr.can_be_edited?
+      link_to(display_name, "javascript:void(0)", class: "service service-#{service.id} btn btn-default", data: { id: service.id })
+    else
+      link_to "<i class='glyphicon glyphicon-lock text-danger'></i> #{display_name}".html_safe, "javascript:void(0)", class: "text-danger list-group-item-danger service service-#{service.id} btn btn-default list-group-item", data: { id: service.id }
+    end
+  end
+
   # RIGHT NAVIGATION BUTTONS
   def faq_helper
     if Setting.find_by_key("use_faq_link").value

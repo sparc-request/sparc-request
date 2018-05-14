@@ -20,50 +20,25 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User views the responses table', js: true do
+RSpec.describe 'User saves a response filters', js: true do
   let_there_be_lane
   fake_login_for_each_test
-  
-  let!(:organization) { create(:organization) }
-  let!(:super_user)   { create(:super_user, identity: jug2, organization: organization) }
-  let!(:form)         { create(:form, surveyable: organization) }
-  let!(:section)      { create(:section, survey: form) }
-  let!(:question)     { create(:question, section: section) }
-  let!(:resp)         { create(:response, survey: form) }
 
-  context 'completed responses' do
-    before :each do
-      create(:question_response, response: resp, question: question)
-    end
+  stub_config('site_admins', ['jug2'])
 
-    scenario 'user should see an active "View" button' do
-      visit surveyor_responses_path
-      wait_for_javascript_to_finish
+  scenario 'and sees the saved filter' do
+    survey          = create(:system_survey, title: 'Serviceable Survey', active: true)
+    survey_response = create(:response, survey: survey)
+    filter          = create(:response_filter, identity: jug2, of_type: SystemSurvey.name, include_incomplete: true)
 
-      expect(page).to have_selector('.view-response:not(.disabled)')
-    end
+    visit surveyor_responses_path
+    wait_for_javascript_to_finish
 
-    scenario 'user should see an active "Edit" button' do
-      visit surveyor_responses_path
-      wait_for_javascript_to_finish
+    expect(page).to_not have_selector('td', text: survey.title)
 
-      expect(page).to have_selector('.edit-response:not(.disabled)')
-    end
-  end
+    find('.delete-filter').click
+    wait_for_javascript_to_finish
 
-  context 'incomplete responses' do
-    scenario 'user should see a disabled "View" button' do
-      visit surveyor_responses_path
-      wait_for_javascript_to_finish
-
-      expect(page).to have_selector('.view-response.disabled')
-    end
-
-    scenario 'user should see a disabled "Edit" button' do
-      visit surveyor_responses_path
-      wait_for_javascript_to_finish
-
-      expect(page).to have_selector('.edit-response.disabled')
-    end
+    expect(ResponseFilter.count).to eq(0)
   end
 end

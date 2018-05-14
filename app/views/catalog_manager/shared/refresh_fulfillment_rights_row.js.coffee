@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,26 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogManager::UserRightsController < ApplicationController
+$("#fulfillment-rights-row-<%= j @identity.id.to_s %>").replaceWith("<%= j render '/catalog_manager/shared/fulfillment_rights_row', organization: @organization, fulfillment_rights: @fulfillment_rights, fr: @identity %>")
 
-  def destroy
-    su_destroyed = SuperUser.find_by(user_rights_params).try(:destroy)
-    cm_destroyed = CatalogManager.find_by(user_rights_params).try(:destroy)
-    sp_destroyed = ServiceProvider.find_by(user_rights_params).try(:destroy)
-
-    if su_destroyed or cm_destroyed or sp_destroyed
-      @identity_id = user_rights_params[:identity_id]
-      flash[:notice] = "User rights removed successfully."
-    else
-      flash[:alert] = "Error removing user rights."
-    end
-  end
-
-  private
-
-  def user_rights_params
-    params.require(:user_rights).permit(
-      :identity_id,
-      :organization_id)
-  end
-end
+$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")

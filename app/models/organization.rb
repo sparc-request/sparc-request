@@ -392,11 +392,17 @@ class Organization < ApplicationRecord
   end
 
   # Returns all user rights on the organization, optionally including Service Providers
-  # and Clinical Providers
-  def all_user_rights(include_service_provicers=false, include_clinical_providers=false)
+  def all_user_rights(include_service_providers=false)
     identity_ids = self.super_users.pluck(:identity_id) + self.catalog_managers.pluck(:identity_id)
-    identity_ids += self.service_providers.pluck(:identity_id) if include_service_provicers
-    identity_ids += self.clinical_providers.pluck(:identity_id) if include_clinical_providers
+    identity_ids += self.service_providers.pluck(:identity_id) if include_service_providers
+    Identity.where(id: identity_ids)
+  end
+
+  # Returns all fulfillment user rights on the organization
+  def all_fulfillment_rights
+    identity_ids = self.clinical_providers.pluck(:identity_id)
+    # Placeholder for invoicers, which will be included later
+    # identity_ids += self.invoicers.pluck(:identity_id)
     Identity.where(id: identity_ids)
   end
 

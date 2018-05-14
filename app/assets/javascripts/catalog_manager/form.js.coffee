@@ -165,6 +165,35 @@ $ ->
           surveyable_type : surveyable_type
           surveyable_id : surveyable_id
 
+  ##############################################
+  ###          Org Fulfillment               ###
+  ##############################################
+
+  $(document).on 'change', '.clinical-provider-checkbox', ->
+    $.ajax
+      type: if $(this).prop('checked') then 'POST' else 'DELETE'
+      url: '/catalog_manager/super_user'
+      data:
+        super_user:
+          identity_id: $(this).data('identity-id')
+          organization_id: $(this).data('organization-id')
+
+  $(document).on 'click', '.remove-fulfillment-rights', (event) ->
+    event.preventDefault()
+    if confirm (I18n['catalog_manager']['organization_form']['user_rights']['remove_confirm'])
+      identity_id = $(this).data('identity-id')
+      $.ajax
+        type: 'POST'
+        url: 'catalog_manager/organizations/remove_fulfillment_rights_row'
+        data:
+          fulfillment_rights:
+            identity_id: identity_id
+            organization_id: $(this).data('organization-id')
+
+  $(document).on 'click', '.cancel-fulfillment-rights', (event) ->
+    event.preventDefault()
+    $(this).closest('.row').fadeOut(1000, () -> $(this).remove())
+
 
   ##############################################
   ###          Service Components            ###
@@ -191,7 +220,5 @@ $ ->
         component: component
         service_id: service_id
 
-  ##############################################
-  ###          Clinical Providers            ###
-  ##############################################
+
 

@@ -18,27 +18,23 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- if organization.clinical_providers
-  .form-group.row
-    .col-sm-8
-      %h5= t(:catalog_manager)[:organization_form][:fulfillment][:name_email]
-    .col-sm-4.text-center
-      %h5= t(:catalog_manager)[:organization_form][:fulfillment][:remove_add]
+.row{style: 'margin-bottom: 25px;'}
+  .col-sm-7
+    %h5= t(:catalog_manager)[:organization_form][:user_rights][:name_email]
+  .col-sm-3.text-center
+    %h5= t(:catalog_manager)[:organization_form][:fulfillment_rights][:clinical_provider]
+  -# Placeholder for invoiceing addition
+  -# .col-sm-3.text-center
+    -# %h5= t(:catalog_manager)[:organization_form][:fulfillment_rights][:invoicer]
+  .col-sm-2.text-center
+    %h5= t(:catalog_manager)[:organization_form][:remove]
 
-  - organization.clinical_providers.each do |cp|
-    .form-group.row{ id: "fulfillment-rights-row-#{cp.identity_id}", data: { identity_id: cp.identity_id } }
-      .col-sm-8
-        %p= cp.identity.display_name
-      .col-sm-4.text-center
-        %button.btn.btn-xs.btn-danger.remove-clinical-provider{ data: { identity_id: cp.identity_id, organization_id: organization.id } }
-          %span.glyphicon.glyphicon-remove
+#fulfillment_rights_container
+  - organization.all_fulfillment_rights.sort_by(&:last_name).each do |fr|
+    = render "catalog_manager/shared/fulfillment_rights_row", organization: organization, fr: fr, fulfillment_rights: fulfillment_rights
 
-.form-group.row
-  .col-sm-8
-    = text_field_tag 'new_clinical_provider', '', class: 'form-control', id: "fulfillment-rights-query"
-  .col-sm-4.text-center
-    %button.btn.btn-xs.btn-success.add-clinical-provider{ data: { organization_id: organization.id } }
-      %span.glyphicon.glyphicon-plus
+.col-sm-12.no-padding
+  = text_field_tag 'fulfillment-rights-query', nil, placeholder: t(:catalog_manager)[:organization_form][:fulfillment_rights][:add_user], class: "form-control"
 
 /   %table
 /     %thead

@@ -134,6 +134,39 @@ $ ->
     $(this).closest('.row').fadeOut(1000, () -> $(this).remove())
 
   ##############################################
+  ###         Org Associated Surveys         ###
+  ##############################################
+
+  $(document).on 'click', 'button.remove-associated-survey', (event) ->
+    associated_survey_link = $(this).closest('.form-group.row').find('.associated_survey_link')[0]
+    associated_survey_id = $(associated_survey_link).data('id')
+    surveyable_id = $(this).data('id')
+    if confirm(I18n['catalog_manager']['organization_form']['surveys']['survey_delete'])
+      $.ajax
+        type: 'POST'
+        url: "catalog_manager/catalog/remove_associated_survey"
+        data:
+          associated_survey_id: associated_survey_id
+          surveyable_id: surveyable_id
+
+
+  $(document).on 'click', 'button.add-associated-survey', (event) ->
+    if $('#new_associated_survey').val() == ''
+      alert "No survey selected"
+    else
+      survey_id = $(this).closest('.form-group.row').find('.new_associated_survey')[0].value
+      surveyable_type = $(this).data('type')
+      surveyable_id = $(this).data('id')
+      $.ajax
+        type: 'POST'
+        url: "catalog_manager/catalog/add_associated_survey"
+        data:
+          survey_id: survey_id
+          surveyable_type : surveyable_type
+          surveyable_id : surveyable_id
+
+
+  ##############################################
   ###          Service Components            ###
   ##############################################
 
@@ -157,12 +190,6 @@ $ ->
       data:
         component: component
         service_id: service_id
-
-
-  ##############################################
-  ###          EPIC Interface                ###
-  ##############################################
-
 
   ##############################################
   ###          Clinical Providers            ###

@@ -122,10 +122,11 @@ en:
         user_in_table: "is already on the User Rights Table"
         add_user: "Add new user to table"
         remove_confirm: "Are you sure you want to delete this user from the organization?"
-      fulfillment:
-        name_email: "Name/Email"
-        remove_add: "Remove / Add"
-        already_exists: "User already has clinical provider rights"
+      surveys:
+        name_version: "Name, Version"
+        select_survey: "Please select a survey"
+        survey_warning: "* The associated survey(s) will be sent out to the service requester(s) through email at the time of service completion."
+        survey_delete: "Are you sure you want to remove this Associated Survey?"
       remove: "Remove"
       abbreviation: "Abbreviation"
       ack_language: "Acknowledgment Language"

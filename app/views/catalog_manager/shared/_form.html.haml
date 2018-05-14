@@ -74,4 +74,4 @@
           = link_to t(:catalog_manager)[:organization_form][:headers][:associated_surveys], '#associated-surveys-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
       .panel-collapse.collapse#associated-surveys-collapse
         .panel-body
-          Not Yet Implemented
+          = render "catalog_manager/shared/surveys_form", organization: organization, user_rights: user_rights, user: @user, path: path

@@ -189,8 +189,6 @@ $ ->
     event.preventDefault()
     $(this).closest('.row').fadeOut(1000, () -> $(this).remove())
 
->>>>>>> origin/saw-bootstrap-cm-forms
-
   ##############################################
   ###          Service Components            ###
   ##############################################

@@ -1453,7 +1453,7 @@ en:
     contact_information: "Contact Information"
     delete_intro: "An Authorized User has been deleted in"
     epic_access: "Epic Access"
-    issue_contact: "Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have."
+    issue_contact: "Please contact the %{department_name} at %{phone} or <a href='mailto:%{email}'>%{email}</a> for assistance with this process or with any questions you may have."
     name: "Name:"
     p_id: "Protocol ID:"
     p_info: "Protocol Information"

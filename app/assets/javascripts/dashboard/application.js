@@ -30,6 +30,7 @@
 //= require bootstrap-table
 //= require bootstrap-table-export
 //= require bootstrap-table-custom
+//= require tableExport
 //= require moment
 //= require bootstrap-datetimepicker
 //= require jquery_ujs

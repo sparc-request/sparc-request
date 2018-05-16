@@ -29,6 +29,13 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     @organization = Organization.find(params[:id])
     @user_rights  = user_rights(@organization.id)
     @fulfillment_rights = fulfillment_rights(@organization.id)
+    if @organization.use_default_statuses
+      @available_statuses = AvailableStatus.defaults
+      @editable_statuses = EditableStatus.defaults
+    else
+      @available_statuses = @organization.available_statuses
+      @editable_statuses = @organization.editable_statuses
+    end
 
     respond_to do |format|
       format.js

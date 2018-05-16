@@ -28,6 +28,8 @@
             %tr
               %th= as.label :status, "#{as.object.humanize.gsub('CTRC', 'Nexus')}:"
               %td= as.check_box :selected, {class: 'available-status', checked: selected_avs.include?(as.object.status), disabled: as.object.disabled_status?, data: { status: as.object.status }}, 'true', 'false'
+              - if as.object.disabled_status?
+                = as.hidden_field :selected, value: 'true'
 
     - if current_user.is_overlord?
       %tr

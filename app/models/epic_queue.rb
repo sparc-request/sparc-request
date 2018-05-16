@@ -24,6 +24,7 @@ class EpicQueue < ApplicationRecord
   belongs_to :protocol
   belongs_to :identity
 
+
   #This callback and the method below is probably incorrect. Any insight as to
   #why we would do this?
 

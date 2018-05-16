@@ -288,4 +288,17 @@ class ApplicationController < ActionController::Base
       redirect_to root_path unless current_user.is_funding_admin?
     end
   end
+
+  def sanitize_dates(params, field_names)
+    attrs = {}
+    params.each do |k, v|
+      if field_names.include?(k.to_sym)
+        attrs[k] = v.blank? ? v : Date.strptime(v, '%m/%d/%Y')
+      else
+        attrs[k] = v
+      end
+    end
+
+    attrs
+  end
 end

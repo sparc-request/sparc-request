@@ -216,9 +216,12 @@ class Organization < ApplicationRecord
   end
 
   def update_descendants_availability(is_available)
-    children = Organization.where(id: all_child_organizations << self)
-    children.update_all(is_available: is_available)
-    Service.where(organization_id: children).update_all(is_available: is_available)
+    Organization.where(id: all_child_organizations << self). each do |org|
+      org.update_attributes(is_available: is_available)
+    end
+    Service.where(organization_id: children).each do |service|
+      service.update_attributes(is_available: is_available)
+    end
   end
 
   # Returns an array of all services that are offered by this organization as well of all of its

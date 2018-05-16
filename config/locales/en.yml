@@ -1024,6 +1024,7 @@ en:
     delete: "Delete"
     PIs: "PI(s)"
     protocol: "Queued Protocol"
+    notes: "Notes"
     status: "Last Queue Status"
     created_at: 'Current Queue Date'
     send: 'Send'

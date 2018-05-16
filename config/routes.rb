@@ -37,6 +37,7 @@ SparcRails::Application.routes.draw do
     resources :responses do
       get :complete
     end
+    resources :response_filters, only: [:new, :create, :destroy]
     resources :survey_updater, only: [:update]
     root to: 'surveys#index'
   end

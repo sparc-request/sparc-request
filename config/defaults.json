@@ -470,6 +470,26 @@
     "parent_value":   "true"
   },
   {
+    "key":            "homepage_tableau_url",
+    "value":          "https://anyl-tableau-v.mdc.musc.edu/javascripts/api/viz_v1.js",
+    "friendly_name":  "Homepage Tableau Url",
+    "description":    "The URL of the Tableau server used to embed a dashboard on the SPARCRequest homepage.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_tableau",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "homepage_tableau_dashboard",
+    "value":          "InstitutionalDashboard/RadialTreeDashboard",
+    "friendly_name":  "Homepage Tableau Dashboard",
+    "description":    "The name of the dashboard to be embedded on the SPARCRequest homepage.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_tableau",
+    "parent_value":   "true"
+  },
+  {
     "key":            "updatable_statuses",
     "value":          "[\"first_draft\", \"draft\", \"get_a_cost_estimate\", \"awaiting_pi_approval\"]",
     "friendly_name":  "Updatable Statuses",
@@ -608,6 +628,16 @@
     "version":        "",
     "parent_key":     "use_shibboleth",
     "parent_value":   "true"
+  },
+  {
+    "key":            "use_tableau",
+    "value":          "true",
+    "friendly_name":  "Use Tableau",
+    "description":    "Determines whether the application will integrate with Tableau.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
   },
   {
     "key":            "wkhtmltopdf_location",

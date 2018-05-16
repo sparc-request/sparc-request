@@ -30,3 +30,5 @@
       = render 'catalogs/news'
     - if Setting.get_value("use_google_calendar")
       = render 'catalogs/calendar'
+  - if Setting.get_value('use_tableau') && tableau_url = Setting.get_value('homepage_tableau_url')
+    = render 'catalogs/tableau', tableau_url: tableau_url

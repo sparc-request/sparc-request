@@ -18,10 +18,13 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.row.form_row{ id: "status-row-#{status_name}", data: { status_name: status_name} }
+- is_available_status = available_statuses.detect { |s| s.status == status_key }
+- is_editable_status = editable_statuses.detect { |s| s.status == status_key }
+
+.row.form_row{ id: "status-row-#{status_key}", data: { status_key: status_key} }
   .col-sm-6
-    = AvailableStatus.statuses[status_name]
+    = status_value
   .col-sm-3.text-center
-    = check_box_tag :available_status, '', available_statuses.detect { |s| s.status == status_name }.selected, { class: "available-status-checkbox", data: { status_name: status_name } }
+    = check_box_tag :available_status, '', is_available_status.try(:selected), { class: "available-status-checkbox", disabled: (using_defaults or is_available_status.nil? or is_available_status.disabled_status?), data: { status_value: status_value } }
   .col-sm-3.text-center
-    = check_box_tag :editable_status, '', editable_statuses.detect { |s| s.status == status_name }.selected, { class: "editable-status-checkbox", data: { status_name: status_name } }
+    = check_box_tag :editable_status, '', is_editable_status.try(:selected), { class: "editable-status-checkbox", disabled: (using_defaults or is_editable_status.nil?), data: { status_value: status_value } }

@@ -90,6 +90,10 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     end
   end
 
+  def toggle_default_statuses
+    @organzation = Organization.find
+  end
+
   private
 
   # ================ Imported from OrganizationUpdater ========================

@@ -18,18 +18,18 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= form_for organization, url: path, id: 'organization-general-info-form', remote: true do |f|
-  .form-group.row#use_default_statuses
-    = f.label :use_default_statuses, t(:catalog_manager)[:organization_form][:status_options][:use_default_statuses], class: 'col-sm-3 col-sm-offset-3 control-label text-right', style: "padding-top: 5px;"
-    .col-sm-6
-      = f.check_box :use_default_statuses, { checked: organization.use_default_statuses, data: { toggle: 'toggle', organization_id: organization.id} }
-  .form-group.row
-    .col-sm-6
-      %h5= t(:catalog_manager)[:organization_form][:status_options][:title]
-    .col-sm-3.text-center
-      %h5= t(:catalog_manager)[:organization_form][:status_options][:available_statuses]
-    .col-sm-3.text-center
-      %h5= t(:catalog_manager)[:organization_form][:status_options][:editable_statuses]
+.row#use_default_statuses{style: "margin:20px -15px 25px;"}
+  .col-sm-4.col-sm-offset-3.text-right
+    %h4{style: "margin-top:5px;"}= t(:catalog_manager)[:organization_form][:status_options][:use_default_statuses]
+  .col-sm-5
+    = check_box_tag :use_default_statuses, true, organization.use_default_statuses, data: { toggle: 'toggle', organization_id: organization.id}
+.row
+  .col-sm-6
+    %h5= t(:catalog_manager)[:organization_form][:status_options][:title]
+  .col-sm-3.text-center
+    %h5= t(:catalog_manager)[:organization_form][:status_options][:available_statuses]
+  .col-sm-3.text-center
+    %h5= t(:catalog_manager)[:organization_form][:status_options][:editable_statuses]
 
-  - PermissibleValue.get_hash("status").sort_by{ |key, value| value}.each do |status_key, status_value|
-    = render partial: 'catalog_manager/shared/status_row', locals: {f: f, status_key: status_key, status_value: status_value, available_statuses: available_statuses, editable_statuses: editable_statuses, using_defaults: false}
+- PermissibleValue.get_hash("status").sort_by{ |key, value| value}.each do |status_key, status_value|
+  = render partial: 'catalog_manager/shared/status_row', locals: {status_key: status_key, status_value: status_value, organization: organization, available_statuses: available_statuses, editable_statuses: editable_statuses, using_defaults: @using_defaults}

@@ -29,13 +29,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     @organization = Organization.find(params[:id])
     @user_rights  = user_rights(@organization.id)
     @fulfillment_rights = fulfillment_rights(@organization.id)
-    if @organization.use_default_statuses
-      @available_statuses = AvailableStatus.defaults
-      @editable_statuses = EditableStatus.defaults
-    else
-      @available_statuses = @organization.available_statuses
-      @editable_statuses = @organization.editable_statuses
-    end
+    set_status_variables
 
     respond_to do |format|
       format.js
@@ -66,12 +60,16 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     render 'catalog_manager/organizations/update'
   end
 
+
+  ##Actions for User Rights sub-form##
   def add_user_rights_row
     @organization = Organization.find(params[:organization_id])
     @new_ur_identity = Identity.find(params[:new_ur_identity_id])
     @user_rights  = user_rights(@organization.id)
   end
 
+
+  ##Actions for Fulfillment Rights sub-form##
   def add_fulfillment_rights_row
     @organization = Organization.find(params[:organization_id])
     @new_fr_identity = Identity.find(params[:new_fr_identity_id])
@@ -80,6 +78,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
   def remove_fulfillment_rights_row
     cp_destroyed = ClinicalProvider.find_by(fulfillment_rights_params).try(:destroy)
+    ##Invoicer support, uncomment when needed:
     # iv_destroyed = Invoicer.find_by(fulfillment_rights_params).try(:destroy)
 
     if cp_destroyed# or iv_destroyed
@@ -90,11 +89,45 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     end
   end
 
+
+  ##Actions for status sub-form##
   def toggle_default_statuses
-    @organzation = Organization.find
+    @organization = Organization.find(status_params[:organization_id])
+    if @organization.update_attributes(use_default_statuses: status_params[:checked])
+      flash[:notice] = "Organization updated successfully."
+    else
+      flash[:alert] = "Error updating organization."
+    end
+
+    set_status_variables
+  end
+
+  def update_status_option
+    @status = status_params[:status_type].constantize.find_or_create_by(organization_id: status_params[:organization_id], status: status_params[:status_key])
+
+    @organization = Organization.find(status_params[:organization_id])
+    @status_key = @status.status
+    @status_value = @status.humanize
+
+    if @status.update_attributes(selected: status_params[:selected])
+      flash[:notice] = "Status updated successfully."
+    else
+      flash[:alert] = "Error updating status."
+    end
+    set_status_variables
   end
 
   private
+
+  def set_status_variables
+    if @organization.use_default_statuses
+      @available_statuses = AvailableStatus.defaults
+    else
+      @available_statuses = @organization.available_statuses
+      @editable_statuses = @organization.editable_statuses
+    end
+    @using_defaults = @organization.use_default_statuses
+  end
 
   # ================ Imported from OrganizationUpdater ========================
 
@@ -145,6 +178,8 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
       @organization.services.update_all(is_available: params[:all_services_availability] == 'true')
     end
   end
+
+  # ================ end ========================
 
   def organization_params(type)
     params.require(type).permit(:name,
@@ -211,5 +246,14 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     params.require(:fulfillment_rights).permit(
       :identity_id,
       :organization_id)
+  end
+
+  def status_params
+    params.permit(
+      :organization_id,
+      :checked,
+      :status_key,
+      :selected,
+      :status_type)
   end
 end

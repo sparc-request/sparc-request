@@ -137,7 +137,6 @@ en:
         title: "Status"
         available_statuses: "Available"
         editable_statuses: "Editable"
-        default_statuses_confirm: "Are you sure you want to toggle default statuses on/off?"
       remove: "Remove"
       abbreviation: "Abbreviation"
       ack_language: "Acknowledgment Language"

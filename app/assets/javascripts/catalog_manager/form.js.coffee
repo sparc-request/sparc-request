@@ -199,15 +199,34 @@ $ ->
   ##############################################
 
   $(document).on 'click', '#use_default_statuses .toggle', ->
-    checked = $(this).find("[id*='_use_default_statuses']").prop('checked')
-    org_id = $(this).find("[id*='_use_default_statuses']").data('organization_id')
-    if confirm (I18n['catalog_manager']['organization_form']['status_options']['default_statuses_confirm'])
-      $.ajax
-        type: 'POST'
-        url: "catalog_manager/organizations/toggle_default_statuses"
-        data:
-          checked: checked
-          organization_id: org_id
+    checked = $(this).find("#use_default_statuses").prop('checked')
+    org_id = $(this).find("#use_default_statuses").data('organization-id')
+    $.ajax
+      type: 'POST'
+      url: "catalog_manager/organizations/toggle_default_statuses"
+      data:
+        checked: checked
+        organization_id: org_id
+
+  $(document).on 'change', '.available-status-checkbox', ->
+    $.ajax
+      type: "POST"
+      url: '/catalog_manager/organizations/update_status_option'
+      data:
+        status_key: $(this).data('status-key')
+        organization_id: $(this).data('organization-id')
+        selected: $(this).prop('checked')
+        status_type: "AvailableStatus"
+
+  $(document).on 'change', '.editable-status-checkbox', ->
+    $.ajax
+      type: "POST"
+      url: '/catalog_manager/organizations/update_status_option'
+      data:
+        status_key: $(this).data('status-key')
+        organization_id: $(this).data('organization-id')
+        selected: $(this).prop('checked')
+        status_type: "EditableStatus"
 
 
   ##############################################

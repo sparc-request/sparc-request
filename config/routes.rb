@@ -193,6 +193,7 @@ SparcRails::Application.routes.draw do
     match 'services/change_components' => 'services#change_components', via: [:post]
     match 'organizations/remove_fulfillment_rights_row' => 'organizations#remove_fulfillment_rights_row', via: [:post]
     match 'organizations/toggle_default_statuses' => 'organizations#toggle_default_statuses', via: [:post]
+    match 'organizations/update_status_option' => 'organizations#update_status_option', via: [:post]
 
     resources :services do
       patch :update_epic_info

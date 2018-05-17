@@ -21,7 +21,11 @@
 class CatalogManager::UserRightsController < ApplicationController
 
   def destroy
-    if SuperUser.find_by(user_rights_params).try(:destroy) or CatalogManager.find_by(user_rights_params).try(:destroy) or ServiceProvider.find_by(user_rights_params).try(:destroy) or ClinicalProvider.find_by(user_rights_params).try(:destroy)
+    su_destroyed = SuperUser.find_by(user_rights_params).try(:destroy)
+    cm_destroyed = CatalogManager.find_by(user_rights_params).try(:destroy)
+    sp_destroyed = ServiceProvider.find_by(user_rights_params).try(:destroy)
+
+    if su_destroyed or cm_destroyed or sp_destroyed
       @identity_id = user_rights_params[:identity_id]
       flash[:notice] = "User rights removed successfully."
     else

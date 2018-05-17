@@ -32,7 +32,7 @@
     %h5= t(:catalog_manager)[:organization_form][:remove]
 
 #user_rights_container
-  - user_rights_identities(organization).sort_by(&:last_name).each do |ur|
+  - organization.all_user_rights(organization.type != 'Institution').sort_by(&:last_name).each do |ur|
     = render "catalog_manager/shared/user_rights_row", organization: organization, user_rights: user_rights, ur: ur
 
 .col-sm-12.no-padding

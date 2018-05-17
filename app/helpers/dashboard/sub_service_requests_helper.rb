@@ -42,6 +42,24 @@ module Dashboard::SubServiceRequestsHelper
     end
   end
 
+  def display_line_items_otf(sub_service_request, use_epic, lis)
+    if sub_service_request.nil?
+      # only show the services that are set to be pushed to Epic when use_epic = true
+      if use_epic
+        lis.select{ |li| Service.find(li.service_id).send_to_epic }
+      else
+        lis
+      end
+    else
+      # only show the services that are set to be pushed to Epic when use_epic = true
+      if use_epic
+        sub_service_request.one_time_fee_line_items.select{ |li| Service.find(li.service_id).send_to_epic }
+      else
+        sub_service_request.one_time_fee_line_items
+      end
+    end
+  end
+
   def service_request_owner_display sub_service_request
     if sub_service_request.status == "draft"
       content_tag(:span, 'Not available in draft status.')
@@ -56,10 +74,10 @@ module Dashboard::SubServiceRequestsHelper
       if sub_service_request.in_work_fulfillment?
         if user.clinical_provider_rights?
           # In fulfillment and user has rights
-          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:go_to_fulfillment], Setting.find_by_key("clinical_work_fulfillment_url").value, target: "_blank", class: "btn btn-primary btn-md"
+          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:go_to_fulfillment], "#{Setting.find_by_key("clinical_work_fulfillment_url").value}/sub_service_request/#{sub_service_request.id}", target: "_blank", class: "btn btn-primary btn-md"
         else
           # In fulfillment, user does not have rights, disable button
-          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:in_fulfillment], Setting.find_by_key("clinical_work_fulfillment_url").value, target: "_blank", class: "btn btn-primary btn-md", disabled: true
+          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:in_fulfillment], "#{Setting.find_by_key("clinical_work_fulfillment_url").value}/sub_service_request/#{sub_service_request.id}", target: "_blank", class: "btn btn-primary btn-md", disabled: true
         end
       else
         # Not in Fulfillment

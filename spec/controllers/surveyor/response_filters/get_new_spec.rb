@@ -20,45 +20,35 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User filters responses', js: true do
-  let_there_be_lane
-  fake_login_for_each_test
-
-  stub_config('site_admins', ['jug2'])
-
-  let!(:organization)     { create(:organization) }
-  let!(:super_user)       { create(:super_user, identity: jug2, organization: organization) }
-  let!(:form)             { create(:form, title: 'Formal Form', surveyable: organization) }
-  let!(:survey)           { create(:system_survey, title: 'Serviceable Survey') }
-  let!(:form_response)    { create(:response, survey: form) }
-  let!(:survey_response)  { create(:response, survey: survey) }
+RSpec.describe Surveyor::ResponseFiltersController, type: :controller do
+  stub_controller
+  let!(:before_filters) { find_before_filters }
+  let!(:logged_in_user) { create(:identity) }
 
   before :each do
-    visit surveyor_responses_path
-    wait_for_javascript_to_finish
+    @filter = create(:response_filter)
+
+    session[:identity_id] = logged_in_user.id
+
+    get :new, params: {
+      filterrific: @filter.attributes
+    }, xhr: true
   end
 
-  describe 'type filter' do
-    context 'User filters Forms' do
-      scenario 'and sees only Forms' do
-        bootstrap_select '#filterrific_with_type', 'Form'
-        click_button 'Filter'
-        wait_for_javascript_to_finish
-
-        expect(page).to have_content(form.title)
-        expect(page).to_not have_content(survey.title)
-      end
+  describe '#new' do
+    it 'should call before_filter #authenticate_identity!' do
+      expect(before_filters.include?(:authenticate_identity!)).to eq(true)
     end
 
-    context 'User filters Surveys' do
-      scenario 'and sees only Surveys' do
-        bootstrap_select '#filterrific_with_type', 'Survey'
-        click_button 'Filter'
-        wait_for_javascript_to_finish
-
-        expect(page).to have_content(survey.title)
-        expect(page).to_not have_content(form.title)
-      end
+    it 'should assign @response_filter' do
+      expect(assigns(:response_filter)).to be_a_new(ResponseFilter)
     end
+
+    it 'should assign filterrific params to the ResponseFilter' do
+      expect(assigns(:response_filter).of_type).to eq(@filter.of_type)
+    end
+
+    it { is_expected.to respond_with(:ok) }
+    it { is_expected.to render_template(:new) }
   end
 end

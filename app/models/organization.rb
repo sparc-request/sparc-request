@@ -216,9 +216,12 @@ class Organization < ApplicationRecord
   end
 
   def update_descendants_availability(is_available)
-    children = Organization.where(id: all_child_organizations << self)
-    children.update_all(is_available: is_available)
-    Service.where(organization_id: children).update_all(is_available: is_available)
+    Organization.where(id: all_child_organizations << self). each do |org|
+      org.update_attributes(is_available: is_available)
+    end
+    Service.where(organization_id: children).each do |service|
+      service.update_attributes(is_available: is_available)
+    end
   end
 
   # Returns an array of all services that are offered by this organization as well of all of its
@@ -392,11 +395,17 @@ class Organization < ApplicationRecord
   end
 
   # Returns all user rights on the organization, optionally including Service Providers
-  # and Clinical Providers
-  def all_user_rights(include_service_provicers=false, include_clinical_providers=false)
+  def all_user_rights(include_service_providers=false)
     identity_ids = self.super_users.pluck(:identity_id) + self.catalog_managers.pluck(:identity_id)
-    identity_ids += self.service_providers.pluck(:identity_id) if include_service_provicers
-    identity_ids += self.clinical_providers.pluck(:identity_id) if include_clinical_providers
+    identity_ids += self.service_providers.pluck(:identity_id) if include_service_providers
+    Identity.where(id: identity_ids)
+  end
+
+  # Returns all fulfillment user rights on the organization
+  def all_fulfillment_rights
+    identity_ids = self.clinical_providers.pluck(:identity_id)
+    # Placeholder for invoicers, which will be included later
+    # identity_ids += self.invoicers.pluck(:identity_id)
     Identity.where(id: identity_ids)
   end
 

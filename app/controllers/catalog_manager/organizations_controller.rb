@@ -28,6 +28,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   def edit
     @organization = Organization.find(params[:id])
     @user_rights  = user_rights(@organization.id)
+    @fulfillment_rights = fulfillment_rights(@organization.id)
 
     respond_to do |format|
       format.js
@@ -59,19 +60,26 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   end
 
   def add_user_rights_row
-    respond_to do |format|
-      format.js
-    end
-
     @organization = Organization.find(params[:organization_id])
     @new_ur_identity = Identity.find(params[:new_ur_identity_id])
     @user_rights  = user_rights(@organization.id)
   end
 
-  def add_clinical_provider
+  def add_fulfillment_rights_row
+    @organization = Organization.find(params[:organization_id])
+    @new_fr_identity = Identity.find(params[:new_fr_identity_id])
+    @fulfillment_rights = fulfillment_rights(@organization_id)
+  end
 
-    respond_to do |format|
-      format.js
+  def remove_fulfillment_rights_row
+    cp_destroyed = ClinicalProvider.find_by(fulfillment_rights_params).try(:destroy)
+    # iv_destroyed = Invoicer.find_by(fulfillment_rights_params).try(:destroy)
+
+    if cp_destroyed# or iv_destroyed
+      @identity_id = fulfillment_rights_params[:identity_id]
+      flash[:notice] = "Fulfillment rights removed successfully."
+    else
+      flash[:alert] = "Error removing fulfillment rights."
     end
   end
 
@@ -186,5 +194,11 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
       :investigator_rate_type,
       :internal_rate_type,
       :unfunded_rate_type)
+  end
+
+  def fulfillment_rights_params
+    params.require(:fulfillment_rights).permit(
+      :identity_id,
+      :organization_id)
   end
 end

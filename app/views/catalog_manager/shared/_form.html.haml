@@ -63,10 +63,10 @@
     .panel.panel-default#fulfillment{style: @organization.tag_list.include?("clinical work fulfillment") ? "display: block;" : "display: none;"}
       .panel-heading
         %h4.panel-title
-          = link_to t(:catalog_manager)[:organization_form][:clinical_providers], '#fulfillment-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
+          = link_to t(:catalog_manager)[:organization_form][:fulfillment_rights][:title], '#fulfillment-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
       .panel-collapse.collapse#fulfillment-collapse
         .panel-body
-          = render "catalog_manager/shared/clinical_providers", organization: organization, path: path
+          = render "catalog_manager/shared/fulfillment_rights_form", organization: organization, path: path, fulfillment_rights: fulfillment_rights
 
     .panel.panel-default#associated-surveys
       .panel-heading
@@ -74,4 +74,4 @@
           = link_to t(:catalog_manager)[:organization_form][:headers][:associated_surveys], '#associated-surveys-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
       .panel-collapse.collapse#associated-surveys-collapse
         .panel-body
-          Not Yet Implemented
+          = render "catalog_manager/shared/surveys_form", organization: organization, user_rights: user_rights, user: @user, path: path

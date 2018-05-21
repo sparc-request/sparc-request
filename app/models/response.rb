@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MdUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,13 +19,26 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Response < ActiveRecord::Base
+  audited
+  
   belongs_to :survey
   belongs_to :identity
-  belongs_to :sub_service_request
+  belongs_to :respondable, polymorphic: true
   
   has_many :question_responses, dependent: :destroy
   
   accepts_nested_attributes_for :question_responses
+
+  filterrific(
+    default_filter_params: {},
+    available_filters: [
+      :with_type
+    ]
+  )
+
+  scope :with_type, -> (params) {
+    joins(:survey).where(surveys: { type: params })
+  }
 
   def completed?
     self.question_responses.any?

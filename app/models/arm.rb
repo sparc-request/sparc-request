@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -194,7 +194,7 @@ class Arm < ApplicationRecord
 
   def update_liv_subject_counts
     self.line_items_visits.each do |liv|
-      if liv.subject_count != self.subject_count && liv.line_item.sub_service_request.can_be_edited?
+      if !liv.subject_count? && liv.line_item.sub_service_request.can_be_edited?
         liv.update_attributes(subject_count: self.subject_count)
       end
     end

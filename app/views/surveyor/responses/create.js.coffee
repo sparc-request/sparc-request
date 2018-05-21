@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,20 +17,29 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-<% if @errors %>
+<% if @response.valid? %>
+if $('#modal_place:visible').length > 0
+  $('#modal_place').modal('hide')
+  <% if @protocol %>
+  $("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, user: current_user, view_only: false, show_view_ssr_back: false)) %>")
+  $('.service-requests-table').bootstrapTable()
+  reset_service_requests_handlers()
+  <% end %>
+  $('#forms-panel').show()
+  $('#forms-table').bootstrapTable('refresh')
+else
+  window.location = "/surveyor/responses/<%=@response.id%>/complete"
+<% else %>
 <% @response.question_responses.each do |qr| %>
-<% if qr.errors.any? %>
+<% if qr.valid? %>
+$(".question-<%=qr.question_id%> .question-label").removeClass('has-error')
+$(".question-<%=qr.question_id%> .question-label .help-block").remove()
+<% else %>
 if !$(".question-<%=qr.question_id%> .question-label").hasClass('has-error')
   $(".question-<%=qr.question_id%> .question-label").addClass('has-error')
   <% qr.errors.full_messages.each do |message| %>
   $(".question-<%=qr.question_id%> .question-label").append("<span class='help-block'><%= message %></span>")
   <% end %>
-<% else %>
-$(".question-<%=qr.question_id%> .question-label").removeClass('has-error')
-$(".question-<%=qr.question_id%> .question-label .help-block").remove()
 <% end %>
 <% end %>
-<% @response.destroy %>
-<% else %>
-$('#modal_place').modal('hide')
 <% end %>

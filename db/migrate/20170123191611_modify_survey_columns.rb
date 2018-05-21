@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -104,7 +104,7 @@ class ModifySurveyColumns < ActiveRecord::Migration[4.2]
     ####################################################################################
     puts "  Storing survey data..."
     # Remake Surveys
-    surveys = Survey.all.to_a
+    surveys = Survey.unscoped.all.to_a
     # Remake SurveySections as Sections
     sections = SurveySection.all.to_a
     # Remake Questions

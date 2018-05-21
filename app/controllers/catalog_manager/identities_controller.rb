@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -32,7 +32,7 @@ class CatalogManager::IdentitiesController < CatalogManager::AppController
     identity = Identity.find identity_id
 
     if rel_type == 'service_provider_organizational_unit'
-      if not oe.service_providers or (oe.service_providers and not oe.service_providers.map(&:id).include? identity_id)
+      if (oe.service_providers.size == 0) || !oe.service_providers.map(&:identity_id).include?(identity_id.to_i)
         # we have a new relationship to create
         #identity.create_relationship_to oe.id, 'service_provider_organizational_unit', {"view_draft_status" => false, "is_primary_contact" => false, "hold_emails" => false}
         service_provider = oe.service_providers.new
@@ -43,7 +43,7 @@ class CatalogManager::IdentitiesController < CatalogManager::AppController
       render :partial => 'catalog_manager/shared/service_providers', :locals => {:entity => oe}
 
     elsif rel_type == 'super_user_organizational_unit'
-      if not oe.super_users or (oe.super_users and not oe.super_users.map(&:id).include? identity_id)
+      if (oe.super_users.size == 0) || !oe.super_users.map(&:identity_id).include?(identity_id.to_i)
         # we have a new relationship to create
         #identity.create_relationship_to oe.id, 'super_user_organizational_unit'
         super_user = oe.super_users.new
@@ -54,9 +54,9 @@ class CatalogManager::IdentitiesController < CatalogManager::AppController
       render :partial => 'catalog_manager/shared/super_users', :locals => {:entity => oe}
 
     elsif rel_type == 'clinical_provider_organizational_unit'
-      if not oe.clinical_providers or (oe.clinical_providers and not oe.clinical_providers.map(&:id).include? identity_id)
+      if (oe.clinical_providers.size == 0) || !oe.clinical_providers.map(&:identity_id).include?(identity_id.to_i)
         # we have a new relationship to create
-        #identity.create_relationship_to oe.id, 'super_user_organizational_unit'
+        #identity.create_relationship_to oe.id, 'clinical_provider_organizational_unit'
         clinical_provider = oe.clinical_providers.new
         clinical_provider.identity = identity
         clinical_provider.save
@@ -65,7 +65,7 @@ class CatalogManager::IdentitiesController < CatalogManager::AppController
       render :partial => 'catalog_manager/shared/clinical_providers', :locals => {:entity => oe}
 
     elsif rel_type == 'catalog_manager_organizational_unit'
-      if not oe.catalog_managers or (oe.catalog_managers and not oe.catalog_managers.map(&:id).include? identity_id)
+      if (oe.catalog_managers.size == 0) || !oe.catalog_managers.map(&:identity_id).include?(identity_id.to_i)
         # we have a new relationship to create
         #identity.create_relationship_to oe.id, 'catalog_manager_organizational_unit'
         catalog_manager = oe.catalog_managers.new

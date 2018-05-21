@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -37,6 +37,8 @@
               = t(:dashboard)[:study_level_activities][:table][:quantity_requested]
             %th{data: {class: 'qty_rem', align: "left", sortable: "true", field: "quantity_type"}}
               = t(:dashboard)[:study_level_activities][:table][:quantity_type]
+            %th{data: {class: 'service_rate', align: "left", sortable: "true", field: "service_rate"}}
+              = t(:dashboard)[:study_level_activities][:table][:service_rate]
             %th{data: {class: 'started', align: "left", sortable: "true", field: "cost"}}
               = t(:dashboard)[:study_level_activities][:table][:cost]
             %th{data: {class: 'last_fulfillment', align: "left", sortable: "true", field: "date_started", sorter: "dateSorter"}}

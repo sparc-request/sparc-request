@@ -194,6 +194,40 @@ $ ->
     event.preventDefault()
     $(this).closest('.row').fadeOut(1000, () -> $(this).remove())
 
+  ##############################################
+  ###          Org Statuses                  ###
+  ##############################################
+
+  $(document).on 'click', '#use_default_statuses .toggle', ->
+    checked = $(this).find("#use_default_statuses").prop('checked')
+    org_id = $(this).find("#use_default_statuses").data('organization-id')
+    $.ajax
+      type: 'POST'
+      url: "catalog_manager/organizations/toggle_default_statuses"
+      data:
+        checked: checked
+        organization_id: org_id
+
+  $(document).on 'change', '.available-status-checkbox', ->
+    $.ajax
+      type: "POST"
+      url: '/catalog_manager/organizations/update_status_option'
+      data:
+        status_key: $(this).data('status-key')
+        organization_id: $(this).data('organization-id')
+        selected: $(this).prop('checked')
+        status_type: "AvailableStatus"
+
+  $(document).on 'change', '.editable-status-checkbox', ->
+    $.ajax
+      type: "POST"
+      url: '/catalog_manager/organizations/update_status_option'
+      data:
+        status_key: $(this).data('status-key')
+        organization_id: $(this).data('organization-id')
+        selected: $(this).prop('checked')
+        status_type: "EditableStatus"
+
 
   ##############################################
   ###          Service Components            ###
@@ -219,6 +253,3 @@ $ ->
       data:
         component: component
         service_id: service_id
-
-
-

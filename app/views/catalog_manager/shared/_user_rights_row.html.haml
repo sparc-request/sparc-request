@@ -20,7 +20,7 @@
 
 - new_user ||= false
 
-.row{ id: "user-rights-row-#{ur.id}", data: { identity_id: ur.id }, style: 'border-bottom: 1px solid #DDD; padding-bottom: 10px; margin-bottom: 10px;'}
+.row.form_row{ id: "user-rights-row-#{ur.id}", data: { identity_id: ur.id } }
   %div{class: "#{organization.type == 'Institution' ? 'col-sm-6' : 'col-sm-3'}"}
     = "#{ur.full_name}, #{ur.email}"
   .col-sm-2.text-center

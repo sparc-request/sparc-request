@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,19 +18,18 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- new_user ||= false
-
-.row.form_row{ id: "fulfillment-rights-row-#{fr.id}", data: { identity_id: fr.id } }
-  .col-sm-7
-    = "#{fr.full_name}, #{fr.email}"
+.row#use_default_statuses{style: "margin:20px -15px 25px;"}
+  .col-sm-4.col-sm-offset-3.text-right
+    %h4{style: "margin-top:5px;"}= t(:catalog_manager)[:organization_form][:status_options][:use_default_statuses]
+  .col-sm-5
+    = check_box_tag :use_default_statuses, true, organization.use_default_statuses, data: { toggle: 'toggle', organization_id: organization.id}
+.row
+  .col-sm-6
+    %h5= t(:catalog_manager)[:organization_form][:status_options][:title]
   .col-sm-3.text-center
-    = check_box_tag :clinical_provider, '', !get_user_rights(fulfillment_rights[:clinical_providers], fr.id).nil?, { class: "clinical-provider-checkbox", data: { identity_id: fr.id, organization_id: organization.id } }
-  -#.col-sm-3.text-center
-    -#= check_box_tag :invoicer, '', !get_user_rights(fulfillment_rights[:invoicers], fr.id).nil?, { class: "invoicer-checkbox", data: { identity_id: fr.id, organization_id: organization.id } }
-  .col-sm-2.text-center
-    - if new_user or !fulfillment_rights.values.flatten.map(&:identity_id).include?(fr.id)
-      %button.btn.btn-xs.btn-danger.cancel-fulfillment-rights
-        %span.glyphicon.glyphicon-remove
-    -else
-      %button.btn.btn-xs.btn-danger.remove-fulfillment-rights{ data: { identity_id: fr.id, organization_id: organization.id } }
-        %span.glyphicon.glyphicon-remove
+    %h5= t(:catalog_manager)[:organization_form][:status_options][:available_statuses]
+  .col-sm-3.text-center
+    %h5= t(:catalog_manager)[:organization_form][:status_options][:editable_statuses]
+
+- PermissibleValue.get_hash("status").sort_by{ |key, value| value}.each do |status_key, status_value|
+  = render partial: 'catalog_manager/shared/status_row', locals: {status_key: status_key, status_value: status_value, organization: organization, available_statuses: available_statuses, editable_statuses: editable_statuses, using_defaults: @using_defaults}

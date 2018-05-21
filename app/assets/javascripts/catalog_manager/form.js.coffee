@@ -194,6 +194,40 @@ $ ->
     event.preventDefault()
     $(this).closest('.row').fadeOut(1000, () -> $(this).remove())
 
+  ##############################################
+  ###          Org Statuses                  ###
+  ##############################################
+
+  $(document).on 'click', '#use_default_statuses .toggle', ->
+    checked = $(this).find("#use_default_statuses").prop('checked')
+    org_id = $(this).find("#use_default_statuses").data('organization-id')
+    $.ajax
+      type: 'POST'
+      url: "catalog_manager/organizations/toggle_default_statuses"
+      data:
+        checked: checked
+        organization_id: org_id
+
+  $(document).on 'change', '.available-status-checkbox', ->
+    $.ajax
+      type: "POST"
+      url: '/catalog_manager/organizations/update_status_option'
+      data:
+        status_key: $(this).data('status-key')
+        organization_id: $(this).data('organization-id')
+        selected: $(this).prop('checked')
+        status_type: "AvailableStatus"
+
+  $(document).on 'change', '.editable-status-checkbox', ->
+    $.ajax
+      type: "POST"
+      url: '/catalog_manager/organizations/update_status_option'
+      data:
+        status_key: $(this).data('status-key')
+        organization_id: $(this).data('organization-id')
+        selected: $(this).prop('checked')
+        status_type: "EditableStatus"
+
 
   ##############################################
   ###          Service Components            ###
@@ -230,7 +264,7 @@ $ ->
       $.ajax
         type: 'POST'
         url: "catalog_manager/services/disassociate"
-        data: 
+        data:
           service_relation_id: service_relation_id
 
   $(document).on 'click', 'button.add-related-services', (event) ->
@@ -238,7 +272,7 @@ $ ->
     $.ajax
       type: 'POST'
       url: "catalog_manager/services/associate"
-      data: 
+      data:
         service_id: service_id
 
   $(document).on 'click', '.linked_quantity', (event) ->
@@ -247,7 +281,7 @@ $ ->
     $.ajax
       type: 'POST'
       url: "catalog_manager/services/set_linked_quantity"
-      data: 
+      data:
         service_relation_id: service_relation_id
         linked_quantity: linked_quantity
 
@@ -257,7 +291,7 @@ $ ->
     $.ajax
       type: 'POST'
       url: "catalog_manager/services/set_linked_quantity_total"
-      data: 
+      data:
         service_relation_id: service_relation_id
         linked_quantity_total: linked_quantity_total
 
@@ -268,7 +302,7 @@ $ ->
     $.ajax
       type: 'POST'
       url: "catalog_manager/services/set_optional"
-      data: 
+      data:
         service_relation_id: service_relation_id
         optional: optional
 

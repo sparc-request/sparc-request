@@ -41,7 +41,7 @@
           = link_to t(:catalog_manager)[:organization_form][:headers][:status_options], '#status-options-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
       .panel-collapse.collapse#status-options-collapse
         .panel-body
-          Not Yet Implemented
+          = render "catalog_manager/shared/statuses_form", organization: organization, available_statuses: @available_statuses, editable_statuses: @editable_statuses
 
   .panel.panel-default#user-rights
     .panel-heading
@@ -60,7 +60,7 @@
         .panel-body
           Not Yet Implemented
 
-    .panel.panel-default#fulfillment{style: @organization.tag_list.include?("clinical work fulfillment") ? "display: block;" : "display: none;"}
+    .panel.panel-default#fulfillment{style: organization.tag_list.include?("clinical work fulfillment") ? "display: block;" : "display: none;"}
       .panel-heading
         %h4.panel-title
           = link_to t(:catalog_manager)[:organization_form][:fulfillment_rights][:title], '#fulfillment-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }

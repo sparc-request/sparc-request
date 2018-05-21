@@ -34,7 +34,7 @@ class PermissibleValue < ApplicationRecord
     end
   end
 
-  # Get a hash of PermissibleValue keys as they keys and values as values
+  # Get a hash of PermissibleValue keys as the keys and values as the values
   def self.get_hash(category, default=nil)
     unless default.nil?
       Hash[PermissibleValue.where(category: category, default: default).pluck(:key, :value)]
@@ -43,7 +43,7 @@ class PermissibleValue < ApplicationRecord
     end
   end
 
-  # Get a hash of PermissibleValue values as the keys and keys as values
+  # Get a hash of PermissibleValue values as the keys and keys as the values
   def self.get_inverted_hash(category, default=nil)
     unless default.nil?
       Hash[PermissibleValue.where(category: category, default: default).pluck(:value, :key)]

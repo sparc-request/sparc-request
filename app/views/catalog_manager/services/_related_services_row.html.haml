@@ -18,27 +18,21 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.form-group.row
-  .col-sm-8
-    %h5= t(:catalog_manager)[:service_form][:component]
-  .col-sm-4.text-center
-    %h5= t(:catalog_manager)[:service_form][:remove_add]
+- related_service = service_relation.related_service
+.row.form_row{id: "service-relation-id-#{service_relation.id}", data: { related_service_id: related_service.id } }
+  .col-sm-5
+    = service_relation.related_service.display_service_name
+  .col-sm-2.text-center
+    -# = label_tag :required, t(:catalog_manager)[:related_services_form][:required], class: 'non_bold_label'
+    = check_box_tag service_relation.id, true, !service_relation.optional, :class => 'required', data: { service_relation_id: service_relation.id }
+  .col-sm-3.text-center
+    -# = label_tag :linked_quantity, t(:catalog_manager)[:related_services_form][:linked_quantity], class: 'non_bold_label'
+    = check_box_tag "linked_quantity_#{service_relation.id}", true, service_relation.linked_quantity, data: { service_relation_id: service_relation.id }, class: 'linked_quantity'
 
-- if service.components
-  - components = service.components.split(",")
-  - components.each do |component|
-    .form-group.row
-      .col-sm-8
-        = text_field_tag "component_#{component.downcase.parameterize}", component, class: 'form-control component_string'
-      .col-sm-4.text-center
-        %button.btn.btn-xs.btn-danger.remove-service-component{ data:  {service: service.id } }
-          %span.glyphicon.glyphicon-remove
-
-.form-group.row
-  .col-sm-8
-    = text_field_tag 'new_component', '', class: 'form-control component_string'
-  .col-sm-4.text-center
-    %button.btn.btn-xs.btn-success.add-service-component{ data: {service: service.id } }
-      %span.glyphicon.glyphicon-plus
-
-
+    - if service_relation.linked_quantity
+      .form_row
+      = label_tag :linked_quantity_total, t(:catalog_manager)[:related_services_form][:linked_quantity_total], class: 'non_bold_label'
+      = text_field_tag "linked_quantity_total_#{service_relation.id}", service_relation.linked_quantity_total, data: { service_relation_id: service_relation.id }, class: 'linked_quantity_total text-center', style: "width:45px;"
+  .form-group.col-sm-2.text-center
+    %button.btn.btn-xs.btn-danger.remove-related-services{ data:  {service_relation_id: service_relation.id } }
+      %span.glyphicon.glyphicon-remove

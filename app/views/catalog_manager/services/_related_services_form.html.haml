@@ -17,28 +17,18 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-.form-group.row
-  .col-sm-8
-    %h5= t(:catalog_manager)[:service_form][:component]
-  .col-sm-4.text-center
-    %h5= t(:catalog_manager)[:service_form][:remove_add]
-
-- if service.components
-  - components = service.components.split(",")
-  - components.each do |component|
-    .form-group.row
-      .col-sm-8
-        = text_field_tag "component_#{component.downcase.parameterize}", component, class: 'form-control component_string'
-      .col-sm-4.text-center
-        %button.btn.btn-xs.btn-danger.remove-service-component{ data:  {service: service.id } }
-          %span.glyphicon.glyphicon-remove
-
-.form-group.row
-  .col-sm-8
-    = text_field_tag 'new_component', '', class: 'form-control component_string'
-  .col-sm-4.text-center
-    %button.btn.btn-xs.btn-success.add-service-component{ data: {service: service.id } }
-      %span.glyphicon.glyphicon-plus
-
-
+- if service.related_services.present?
+  .form-group.row
+    .col-sm-5.text-center
+      %h5= t(:catalog_manager)[:related_services_form][:service]
+    .col-sm-2.text-center
+      %h5= t(:catalog_manager)[:related_services_form][:required]
+    .col-sm-3.text-center
+      %h5= t(:catalog_manager)[:related_services_form][:linked_quantity]
+    .col-sm-2.text-center
+      %h5= t(:catalog_manager)[:organization_form][:remove]
+  #related-services-container
+    - service.service_relations.each do |service_relation|
+      = render "catalog_manager/services/related_services_row", service: service, service_relation: service_relation
+.col-sm-12.no-padding
+  = text_field_tag 'new_related_services_search', nil, placeholder: t(:catalog_manager)[:related_services_form][:add_service], class: "form-control", data: { service: service.id }

@@ -119,7 +119,7 @@ en:
         hold_emails: "Hold Emails"
         clinical_provider: "Clinical Provider"
         add_new_user: "Add New User to Table"
-        user_in_table: "is already on the User Rights Table"
+        user_in_table: "is already associated with this organization."
         add_user: "Add new user to table"
         remove_confirm: "Are you sure you want to delete this user from the organization?"
       surveys:
@@ -198,6 +198,17 @@ en:
       subsidy_default_percentage: "Default Percentage"
       subsidy_instructions: "Instructions"
       tag_list: "Tags"
+
+    related_services_form:
+      add_service: "Add service to table"
+      new_related_services: "New Related Service"
+      service: "Service"
+      required: "Required?"
+      linked_quantity: "Linked Quantity?"
+      linked_quantity_total: "Quantity Total:"
+      remove_add: "Remove / Add"
+      remove_related_service_confirm: "Are you sure you want to delete the selected related service from this service?"
+      service_in_list: "is already related to this service."
 
     service_form:
       one_time_fee: "Non-clinical (Non-Per </br> Patient/Visit) Services"

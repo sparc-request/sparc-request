@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,17 +19,16 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - if service.related_services.present?
   .form-group.row
-    .col-sm-4.text-center
+    .col-sm-5.text-center
       %h5= t(:catalog_manager)[:related_services_form][:service]
     .col-sm-2.text-center
       %h5= t(:catalog_manager)[:related_services_form][:required]
-    .col-sm-2.text-center
+    .col-sm-3.text-center
       %h5= t(:catalog_manager)[:related_services_form][:linked_quantity]
     .col-sm-2.text-center
-      %h5= t(:catalog_manager)[:related_services_form][:linked_quantity_total]
-    .col-sm-2.text-center
-      %h5= t(:catalog_manager)[:related_services_form][:remove_add]
-  #related-services-table
-    = render "catalog_manager/services/related_services_table", service: service
+      %h5= t(:catalog_manager)[:organization_form][:remove]
+  #related-services-container
+    - service.service_relations.each do |service_relation|
+      = render "catalog_manager/services/related_services_row", service: service, service_relation: service_relation
 .col-sm-12.no-padding
   = text_field_tag 'new_related_services_search', nil, placeholder: t(:catalog_manager)[:related_services_form][:add_service], class: "form-control", data: { service: service.id }

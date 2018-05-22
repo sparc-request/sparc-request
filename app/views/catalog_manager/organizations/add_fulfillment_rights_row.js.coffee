@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,4 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$('#fulfillment_rights_container').append("<%= j render '/catalog_manager/shared/fulfillment_rights_row', organization: @organization, fulfillment_rights: @fulfillment_rights, fr: @new_fr_identity, new_user: true %>")
+new_row = "<%= j render '/catalog_manager/shared/fulfillment_rights_row', organization: @organization, fulfillment_rights: @fulfillment_rights, fr: @new_fr_identity, new_user: true %>"
+
+$(new_row).hide().appendTo('#fulfillment_rights_container').fadeIn(1000)

@@ -33,76 +33,72 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     end
   end
 
-  def update_cores
-    @cores = Program.find(params[:id]).cores
-  end
-
   def new
-    if params[:parent_object_type] == 'program'
-      @program  = Program.find params[:parent_id]
-      @entity   = @program
-      @programs = @program.provider.programs
-      @cores    = @program.cores
-    elsif params[:parent_object_type] == 'core'
-      @core     = Core.find params[:parent_id]
-      @entity   = @core
-      @program  = @core.program
-      @programs = @program.provider.programs
-      @cores    = @program.cores
-    else
-      @programs = Program.all
-      @cores    = Core.all
-    end
+    # if params[:parent_object_type] == 'program'
+    #   @program  = Program.find params[:parent_id]
+    #   @entity   = @program
+    #   @programs = @program.provider.programs
+    #   @cores    = @program.cores
+    # elsif params[:parent_object_type] == 'core'
+    #   @core     = Core.find params[:parent_id]
+    #   @entity   = @core
+    #   @program  = @core.program
+    #   @programs = @program.provider.programs
+    #   @cores    = @program.cores
+    # else
+    #   @programs = Program.all
+    #   @cores    = Core.all
+    # end
 
-    service_attributes = {
-      name: "New Service",
-      abbreviation: "New Service",
-      organization_id: @entity.id
-    }
+    # service_attributes = {
+    #   name: "New Service",
+    #   abbreviation: "New Service",
+    #   organization_id: @entity.id
+    # }
 
-    @service = Service.new(service_attributes)
+    # @service = Service.new(service_attributes)
   end
 
   def create
-    if params[:service][:core] && params[:service][:core] != '0'
-      organization = Core.find(params[:service][:core])
+    # if params[:service][:core] && params[:service][:core] != '0'
+    #   organization = Core.find(params[:service][:core])
 
-      params[:service].delete(:program)
-      params[:service].delete(:core)
-    elsif params[:service][:program]
-      organization = Program.find(params[:service][:program])
+    #   params[:service].delete(:program)
+    #   params[:service].delete(:core)
+    # elsif params[:service][:program]
+    #   organization = Program.find(params[:service][:program])
 
-      params[:service].delete(:program)
-      params[:service].delete(:core)
-    end
+    #   params[:service].delete(:program)
+    #   params[:service].delete(:core)
+    # end
 
-    service_attributes = service_params.merge!(organization_id: organization.id)
+    # service_attributes = service_params.merge!(organization_id: organization.id)
 
-    @service = Service.new(service_attributes)
+    # @service = Service.new(service_attributes)
 
-    # This will correctly map the service.organization if a user changes the core of the service.
-    unless params[:service][:core].blank? && params[:service][:program].blank?
-      orgid = params[:service][:program]
-      orgid = params[:service][:core] unless (params[:service][:core].blank? || params[:service][:core] == '0')
-      unless @service.organization.id.to_s == orgid.to_s
-        new_org = Organization.find(orgid)
-        @service.update_attribute(:organization_id, orgid) if new_org
-      end
-    end
+    # # This will correctly map the service.organization if a user changes the core of the service.
+    # unless params[:service][:core].blank? && params[:service][:program].blank?
+    #   orgid = params[:service][:program]
+    #   orgid = params[:service][:core] unless (params[:service][:core].blank? || params[:service][:core] == '0')
+    #   unless @service.organization.id.to_s == orgid.to_s
+    #     new_org = Organization.find(orgid)
+    #     @service.update_attribute(:organization_id, orgid) if new_org
+    #   end
+    # end
 
-    # @service.pricing_maps.build(params[:pricing_map]) if params[:pricing_map]
-    params[:pricing_maps].each do |_, pm|
-      @service.pricing_maps.build(pricing_map_params(pm))
-    end if params[:pricing_maps]
+    # # @service.pricing_maps.build(params[:pricing_map]) if params[:pricing_map]
+    # params[:pricing_maps].each do |_, pm|
+    #   @service.pricing_maps.build(pricing_map_params(pm))
+    # end if params[:pricing_maps]
 
-    if params[:cancel]
-      render :action => 'cancel'
-    else
-      @service.save
-      @programs = @service.provider.programs
-      @cores = @service.program.cores
-      respond_with @service, :location => catalog_manager_services_path(@service)
-    end
+    # if params[:cancel]
+    #   render :action => 'cancel'
+    # else
+    #   @service.save
+    #   @programs = @service.provider.programs
+    #   @cores = @service.program.cores
+    #   respond_with @service, :location => catalog_manager_services_path(@service)
+    # end
   end
 
   def update
@@ -128,27 +124,23 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       end
     end
 
-    params[:pricing_maps].each do |_, pm|
-      if pm['id'].blank?
-        @service.pricing_maps.build(pricing_map_params(pm))
-      else
-        # saved = @service.pricing_maps.find(pm['id']).update_attributes(pm)
-        pm_id = pm['id']
-        pm.delete(:id)
+    # params[:pricing_maps].each do |_, pm|
+    #   if pm['id'].blank?
+    #     @service.pricing_maps.build(pricing_map_params(pm))
+    #   else
+    #     # saved = @service.pricing_maps.find(pm['id']).update_attributes(pm)
+    #     pm_id = pm['id']
+    #     pm.delete(:id)
 
-        saved = @service.pricing_maps.find(pm_id).update_attributes(pricing_map_params(pm))
-      end
-      if saved == true
-        saved = @service.save
-      else
-        @service.save
-      end
-    end if params[:pricing_maps]
+    #     saved = @service.pricing_maps.find(pm_id).update_attributes(pricing_map_params(pm))
+    #   end
+    #   if saved == true
+    #     saved = @service.save
+    #   else
+    #     @service.save
+    #   end
+    # end if params[:pricing_maps]
 
-    # past_maps = @service.pricing_maps.inject([]) do |arr, pm|
-    #   arr << pm if Date.parse(pm['effective_date']) < Date.today
-    #   arr
-    # end
     if saved
       flash[:notice] = "#{@service.name} saved correctly."
       @epic_tag_present = params[:service][:tag_list].include?("epic")
@@ -158,8 +150,9 @@ class CatalogManager::ServicesController < CatalogManager::AppController
 
     @service.reload
     @entity = @service
-    # respond_with @service, :location => catalog_manager_service_path(@service)
   end
+
+  ####Service Components Methods####
 
   def change_components
     component = params["component"]
@@ -189,6 +182,8 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     end
   end
 
+  ####Epic Info Methods####
+
   def update_epic_info
     @service = Service.find(params[:service_id])
     saved = @service.update_attributes(service_params)
@@ -204,79 +199,44 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     end
   end
 
-  def associate
+  ####Related Services Methods####
+
+  def add_related_service
     @service = Service.find params["service"]
     related_service = Service.find params["related_service"]
+    @service_relation = @service.service_relations.new(:related_service_id => related_service.id, :optional => false)
 
-    if !@service.related_services.include? related_service
-      if @service.service_relations.create :related_service_id => related_service.id, :optional => false
-        flash[:notice] = "Related service added successfully."
-      else
-        flash[:alert] = "Failed to create new related service."
-      end
+    if @service_relation.save
+      flash[:notice] = "Related service added successfully."
+    else
+      flash[:alert] = "Error creating new related service."
     end
-
-    render 'change_related_services', format: :js
   end
 
-  def disassociate
+  def remove_related_service
     service_relation = ServiceRelation.find params[:service_relation_id]
+    @service_relation_id = service_relation.id.to_s
     @service = service_relation.service
 
     if service_relation.destroy
-      flash[:notice] = "Related service deleted successfully."
+      flash[:notice] = "Related service removed successfully."
     else
-      flash[:alert] = "Error deleting related service."
+      flash[:alert] = "Error removing related service."
     end
-
-    render 'change_related_services', format: :js
   end
 
-  def set_optional
-    service_relation = ServiceRelation.find params[:service_relation_id]
-    @service = service_relation.service
+  def update_related_service
+    @service_relation = ServiceRelation.find(params[:service_relation_id])
+    @service = @service_relation.service
 
-    if service_relation.update_attribute(:optional, params[:optional])
-      if params[:optional] == 'true'
-        flash[:notice] = "Related service set to optional."
-      else
-        flash[:notice] = "Related service set to required."
-      end
+    if @service_relation.update_attributes(service_relation_params.except(:service_relation_id))
+      flash[:notice] = "Related service updated successfully."
     else
-      flash[:alert] = "Error setting  required/optional for related service."
+      flash[:alert] = "Error updating related service."
     end
-
-    render 'change_related_services', format: :js
   end
 
-  def set_linked_quantity
-    service_relation = ServiceRelation.find params[:service_relation_id]
-    @service = service_relation.service
-
-    if service_relation.update_attributes(:linked_quantity => params[:linked_quantity], :linked_quantity_total => nil)
-      if params[:linked_quantity] == 'true'
-        flash[:notice] = "Set linked quantity to true."
-      else
-        flash[:notice] = "Set linked quantity to false."
-      end
-    else
-      flash[:alert] = "Error setting linked quantity for related service."
-    end
-
-    render 'change_related_services', format: :js
-  end
-
-  def set_linked_quantity_total
-    service_relation = ServiceRelation.find params[:service_relation_id]
-    @service = service_relation.service
-
-    if service_relation.update_attribute(:linked_quantity_total, params[:linked_quantity_total])
-      flash[:notice] = "Set linked quantity total to #{params[:linked_quantity_total]}."
-    else
-      flash[:alert] = "Error setting linked quantity total."
-    end
-    render 'change_related_services', format: :js
-  end
+  ####Search####
 
   def search
     term = params[:term].strip
@@ -289,14 +249,18 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     render :json => reformatted_services.to_json
   end
 
+  ####Pricing Methods####
+
   def get_updated_rate_maps
-    new_rate = PricingMap.rates_from_full(params[:date].try(:to_date).try(:strftime, "%F"), params[:organization_id], Service.dollars_to_cents(params[:full_rate]))
-    new_rate["federal_rate"] = Service.fix_service_rate(new_rate.try(:[], :federal_rate))
-    new_rate["corporate_rate"] = Service.fix_service_rate(new_rate.try(:[], :corporate_rate))
-    new_rate["other_rate"] = Service.fix_service_rate(new_rate.try(:[], :other_rate))
-    new_rate["member_rate"] = Service.fix_service_rate(new_rate.try(:[], :member_rate))
-    render :json => new_rate.to_json
+    # new_rate = PricingMap.rates_from_full(params[:date].try(:to_date).try(:strftime, "%F"), params[:organization_id], Service.dollars_to_cents(params[:full_rate]))
+    # new_rate["federal_rate"] = Service.fix_service_rate(new_rate.try(:[], :federal_rate))
+    # new_rate["corporate_rate"] = Service.fix_service_rate(new_rate.try(:[], :corporate_rate))
+    # new_rate["other_rate"] = Service.fix_service_rate(new_rate.try(:[], :other_rate))
+    # new_rate["member_rate"] = Service.fix_service_rate(new_rate.try(:[], :member_rate))
+    # render :json => new_rate.to_json
   end
+
+  ####General Methods####
 
   def verify_parent_service_provider
     alert_text = ""
@@ -318,6 +282,11 @@ class CatalogManager::ServicesController < CatalogManager::AppController
 
     render :plain => alert_text
   end
+
+  def update_cores
+    @cores = Program.find(params[:id]).cores
+  end
+
 
   private
 
@@ -346,6 +315,15 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       #end
       temp
     end
+  end
+
+  def service_relation_params
+    params.permit(
+      :service_relation_id,
+      :optional,
+      :linked_quantity,
+      :linked_quantity_total
+      )
   end
 
   def pricing_map_params(pm)

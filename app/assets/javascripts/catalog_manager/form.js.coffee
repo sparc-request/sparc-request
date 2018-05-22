@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -195,12 +195,13 @@ $ ->
     $(this).closest('.row').fadeOut(1000, () -> $(this).remove())
 
   ##############################################
-  ###          Org Statuses                  ###
+  ###          Organization Statuses         ###
   ##############################################
 
   $(document).on 'click', '#use_default_statuses .toggle', ->
     checked = $(this).find("#use_default_statuses").prop('checked')
     org_id = $(this).find("#use_default_statuses").data('organization-id')
+    $("#status-options .panel-body").fadeOut(1000)
     $.ajax
       type: 'POST'
       url: "catalog_manager/organizations/toggle_default_statuses"
@@ -254,6 +255,7 @@ $ ->
         component: component
         service_id: service_id
 
+
   ##############################################
   ###          Related Services              ###
   ##############################################
@@ -263,49 +265,37 @@ $ ->
     if confirm (I18n['catalog_manager']['related_services_form']['remove_related_service_confirm'])
       $.ajax
         type: 'POST'
-        url: "catalog_manager/services/disassociate"
+        url: "catalog_manager/services/remove_related_service"
         data:
           service_relation_id: service_relation_id
 
-  $(document).on 'click', 'button.add-related-services', (event) ->
-    service_id = $(this).data('service')
+  $(document).on 'change', '.required', (event) ->
+    service_relation_id = $(this).data('service-relation-id')
+    required = !$(this).prop('checked')
     $.ajax
       type: 'POST'
-      url: "catalog_manager/services/associate"
+      url: "catalog_manager/services/update_related_service"
       data:
-        service_id: service_id
+        service_relation_id: service_relation_id
+        #TODO: Optional should be switched to 'required' once database is changed
+        optional: required
 
-  $(document).on 'click', '.linked_quantity', (event) ->
-    service_relation_id = $(this).data('service_relation_id')
-    linked_quantity = $(this).val()
+  $(document).on 'change', '.linked_quantity', (event) ->
+    service_relation_id = $(this).data('service-relation-id')
+    linked_quantity = $(this).prop('checked')
     $.ajax
       type: 'POST'
-      url: "catalog_manager/services/set_linked_quantity"
+      url: "catalog_manager/services/update_related_service"
       data:
         service_relation_id: service_relation_id
         linked_quantity: linked_quantity
 
   $(document).on 'change', '.linked_quantity_total', (event) ->
-    service_relation_id = $(this).data('service_relation_id')
+    service_relation_id = $(this).data('service-relation-id')
     linked_quantity_total = $(this).val()
     $.ajax
       type: 'POST'
-      url: "catalog_manager/services/set_linked_quantity_total"
+      url: "catalog_manager/services/update_related_service"
       data:
         service_relation_id: service_relation_id
         linked_quantity_total: linked_quantity_total
-
-  $(document).on 'change', '.optional', (event) ->
-    console.log 'optional'
-    service_relation_id = $(this).data('service-relation-id')
-    optional = $(this).val()
-    $.ajax
-      type: 'POST'
-      url: "catalog_manager/services/set_optional"
-      data:
-        service_relation_id: service_relation_id
-        optional: optional
-
-  ##############################################
-  ###          Clinical Providers            ###
-  ##############################################

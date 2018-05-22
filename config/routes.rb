@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -185,11 +185,9 @@ SparcRails::Application.routes.draw do
   ##### sparc-services routes brought in and namespaced
   namespace :catalog_manager do
     match 'services/search' => 'services#search', via: [:get, :post]
-    match 'services/associate' => 'services#associate', via: [:get, :post]
-    match 'services/disassociate' => 'services#disassociate', via: [:get, :post]
-    match 'services/set_optional' => 'services#set_optional', via: [:get, :post]
-    match 'services/set_linked_quantity' => 'services#set_linked_quantity', via: [:get, :post]
-    match 'services/set_linked_quantity_total' => 'services#set_linked_quantity_total', via: [:get, :post]
+    match 'services/update_related_service' => 'services#update_related_service', via: [:post]
+    match 'services/add_related_service' => 'services#add_related_service', via: [:post]
+    match 'services/remove_related_service' => 'services@remove_related_service', via: [:post]
     match 'services/get_updated_rate_maps' => 'services#get_updated_rate_maps', via: [:get, :post]
     match 'services/change_components' => 'services#change_components', via: [:post]
     match 'organizations/remove_fulfillment_rights_row' => 'organizations#remove_fulfillment_rights_row', via: [:post]

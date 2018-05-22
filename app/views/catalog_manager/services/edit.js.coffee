@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -60,14 +60,18 @@ $('#new_related_services_search').typeahead(
     }
   }
 )
-.on 'typeahead:select', (event, suggestion) ->
-  $("#loading_authorized_user_spinner").removeClass('hidden')
+.on('typeahead:select', (event, suggestion) ->
+  existing_services = $("[id*='service-relation-id-']").map ->
+    return $(this).data('related-service-id')
 
-  $.ajax
-    type: 'get'
-    url: '/catalog_manager/services/associate'
-    data:
-      service: $(this).data('service')
-      related_service: suggestion.id
-    success: ->
-      $("#loading_authorized_user_spinner").addClass('hidden')
+  if suggestion['id'] in existing_services
+    $('#new_related_services_search').parent().prepend("<div class='alert alert-danger alert-dismissable'>#{suggestion['name']} #{I18n['catalog_manager']['related_services_form']['service_in_list']}</div>")
+    $('.alert-dismissable').delay(3000).fadeOut()
+  else
+    $.ajax
+      type: 'post'
+      url: '/catalog_manager/services/add_related_service'
+      data:
+        service: $(this).data('service')
+        related_service: suggestion.id
+)

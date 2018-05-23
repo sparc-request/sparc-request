@@ -17,18 +17,17 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- if service.related_services.present?
-  .form-group.row
-    .col-sm-5.text-center
-      %h5= t(:catalog_manager)[:related_services_form][:service]
-    .col-sm-2.text-center
-      %h5= t(:catalog_manager)[:related_services_form][:required]
-    .col-sm-3.text-center
-      %h5= t(:catalog_manager)[:related_services_form][:linked_quantity]
-    .col-sm-2.text-center
-      %h5= t(:catalog_manager)[:organization_form][:remove]
-  #related-services-container
-    - service.service_relations.each do |service_relation|
-      = render "catalog_manager/services/related_services_row", service: service, service_relation: service_relation
+.form-group.row
+  .col-sm-5.text-center
+    %h5= t(:catalog_manager)[:related_services_form][:service]
+  .col-sm-2.text-center
+    %h5= t(:catalog_manager)[:related_services_form][:required]
+  .col-sm-3.text-center
+    %h5= t(:catalog_manager)[:related_services_form][:linked_quantity]
+  .col-sm-2.text-center
+    %h5= t(:catalog_manager)[:organization_form][:remove]
+#related-services-container
+  - service.service_relations.each do |service_relation|
+    = render "catalog_manager/services/related_services_row", service: service, service_relation: service_relation
 .col-sm-12.no-padding
   = text_field_tag 'new_related_services_search', nil, placeholder: t(:catalog_manager)[:related_services_form][:add_service], class: "form-control", data: { service: service.id }

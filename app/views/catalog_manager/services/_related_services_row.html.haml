@@ -30,9 +30,10 @@
     = check_box_tag "linked_quantity_#{service_relation.id}", true, service_relation.linked_quantity, data: { service_relation_id: service_relation.id }, class: 'linked_quantity'
 
     - if service_relation.linked_quantity
-      .form_row
-      = label_tag :linked_quantity_total, t(:catalog_manager)[:related_services_form][:linked_quantity_total], class: 'non_bold_label'
-      = text_field_tag "linked_quantity_total_#{service_relation.id}", service_relation.linked_quantity_total, data: { service_relation_id: service_relation.id }, class: 'linked_quantity_total text-center', style: "width:45px;"
+      .linked_quantity_container
+        .form_row
+        = label_tag :linked_quantity_total, t(:catalog_manager)[:related_services_form][:linked_quantity_total], class: 'non_bold_label'
+        = text_field_tag "linked_quantity_total_#{service_relation.id}", service_relation.linked_quantity_total, data: { service_relation_id: service_relation.id }, class: 'linked_quantity_total text-center', style: "width:45px;"
   .form-group.col-sm-2.text-center
     %button.btn.btn-xs.btn-danger.remove-related-services{ data:  {service_relation_id: service_relation.id } }
       %span.glyphicon.glyphicon-remove

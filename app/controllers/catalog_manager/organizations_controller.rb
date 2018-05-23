@@ -49,7 +49,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     else
       flash.now[:alert] = "Failed to update #{@organization.name}."
     end
-    save_pricing_setups
+    # save_pricing_setups
 
     @institutions = Institution.order('`order`')
 
@@ -61,7 +61,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   end
 
 
-  ##Actions for User Rights sub-form##
+  ####Actions for User Rights sub-form####
   def add_user_rights_row
     @organization = Organization.find(params[:organization_id])
     @new_ur_identity = Identity.find(params[:new_ur_identity_id])
@@ -69,7 +69,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   end
 
 
-  ##Actions for Fulfillment Rights sub-form##
+  ####Actions for Fulfillment Rights sub-form####
   def add_fulfillment_rights_row
     @organization = Organization.find(params[:organization_id])
     @new_fr_identity = Identity.find(params[:new_fr_identity_id])
@@ -90,7 +90,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   end
 
 
-  ##Actions for status sub-form##
+  ####Actions for status sub-form####
   def toggle_default_statuses
     @organization = Organization.find(status_params[:organization_id])
     if @organization.update_attributes(use_default_statuses: status_params[:checked])
@@ -116,6 +116,37 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     end
     set_status_variables
   end
+
+
+  ####Actions for Surveys sub-form####
+
+  def add_associated_survey
+    @organization = Organization.find(params[:surveyable_id])
+    @associated_survey = @organization.associated_surveys.new :survey_id => params[:survey_id]
+
+    if @associated_survey.save
+      flash[:notice] = "Survey added successfully."
+    else
+      @organization.reload
+      @associated_survey.errors.messages.each do |field, message|
+        flash[:alert] = "Error adding survey: #{message.first}."
+      end
+    end
+  end
+
+  def remove_associated_survey
+    associated_survey = AssociatedSurvey.find(params[:associated_survey_id])
+    @organization = associated_survey.associable
+
+    if associated_survey.destroy
+      @survey_id = associated_survey.id.to_s
+      flash[:notice] = "Survey deleted successfully."
+    else
+      @survey_id = nil
+      flash[:alert] = "Error deleting survey."
+    end
+  end
+
 
   private
 

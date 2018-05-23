@@ -18,29 +18,24 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- unless organization.associated_surveys.empty?
-  .form-group.row
-    .col-sm-8
-      %h5= t(:catalog_manager)[:organization_form][:surveys][:name_version]
-    .col-sm-4.text-center
-      %h5= t(:catalog_manager)[:service_form][:remove_add]
+.row
+  .col-sm-8
+    %h5= t(:catalog_manager)[:organization_form][:surveys][:name_version]
+  .col-sm-4.text-center
+    %h5= t(:catalog_manager)[:service_form][:remove_add]
 
-- organization.associated_surveys.each do |associated_survey|
-  .form-group.row
-    .col-sm-8
-      = link_to "#{associated_survey.survey.title} - Version #{associated_survey.survey.version}", surveyor_survey_preview_path(associated_survey.survey, format: :html), target: 'blank', class: 'associated_survey_link', data: {id: associated_survey.id}
-    .col-sm-4.text-center
-      %button.btn.btn-xs.btn-danger.remove-associated-survey{ data: {id: organization.id}}
-        %span.glyphicon.glyphicon-remove
+#surveys_container
+  - organization.associated_surveys.each do |associated_survey|
+    = render "catalog_manager/shared/survey_row", associated_survey: associated_survey, organization: organization
 
-.form-group.row
+.row
   .col-sm-8
     = select_tag 'new_associated_survey', grouped_options_for_select(SystemSurvey.active.group_by(&:title).map{|k,v| [k,v.map{|p| ["Version #{p.version}", p.id]}]}, nil, { prompt: t(:catalog_manager)[:organization_form][:surveys][:select_survey] }), {class: 'form-control select-type new_associated_survey'}
   .col-sm-4.text-center
     %button.btn.btn-xs.btn-success.add-associated-survey{ data: {type: organization.type, id: organization.id}}
       %span.glyphicon.glyphicon-plus
 
-.form-group.row
+.row
   .col-sm-12
     = t(:catalog_manager)[:organization_form][:surveys][:survey_warning]
 

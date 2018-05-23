@@ -193,6 +193,8 @@ SparcRails::Application.routes.draw do
     match 'organizations/remove_fulfillment_rights_row' => 'organizations#remove_fulfillment_rights_row', via: [:post]
     match 'organizations/toggle_default_statuses' => 'organizations#toggle_default_statuses', via: [:post]
     match 'organizations/update_status_option' => 'organizations#update_status_option', via: [:post]
+    match 'organizations/add_associated_survey' => 'organizations#add_associated_survey', via: [:post]
+    match 'organizations/remove_associated_survey' => 'organizations#remove_associated_survey', via: [:post]
 
     resources :services do
       patch :update_epic_info
@@ -202,8 +204,6 @@ SparcRails::Application.routes.draw do
       collection do
         post :add_excluded_funding_source
         delete :remove_excluded_funding_source
-        post :remove_associated_survey
-        post :add_associated_survey
         post :remove_submission_email
       end
     end
@@ -227,12 +227,6 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    match 'identities/associate_with_org_unit' => 'identities#associate_with_org_unit', via: [:get, :post]
-    match 'identities/disassociate_with_org_unit' => 'identities#disassociate_with_org_unit', via: [:get, :post]
-    match 'identities/set_view_draft_status' => 'identities#set_view_draft_status', via: [:get, :post]
-    match 'identities/set_primary_contact' => 'identities#set_primary_contact', via: [:get, :post]
-    match 'identities/set_hold_emails' => 'identities#set_hold_emails', via: [:get, :post]
-    match 'identities/set_edit_historic_data' => 'identities#set_edit_historic_data', via: [:get, :post]
     match 'identities/search' => 'identities#search', via: [:get, :post]
     match 'services/update_cores/:id' => 'services#update_cores', via: [:get, :post]
     match 'update_pricing_maps' => 'catalog#update_pricing_maps', via: [:get, :post]

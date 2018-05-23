@@ -141,34 +141,6 @@ class CatalogManager::CatalogController < CatalogManager::AppController
     render :nothing => true
   end
 
-  def remove_associated_survey
-    associated_survey = AssociatedSurvey.find(params[:associated_survey_id])
-    @organization = associated_survey.associable
-    if associated_survey.delete
-      flash[:notice] = "Survey deleted successfully."
-    else
-      flash[:alert] = "Error deleting survey."
-    end
-
-    render 'catalog_manager/organizations/change_associated_survey'
-  end
-
-  def add_associated_survey
-    @organization = Organization.find(params[:surveyable_id])
-    associated_survey = @organization.associated_surveys.new :survey_id => params[:survey_id]
-
-    if associated_survey.save
-      flash[:notice] = "Survey added successfully."
-    else
-      @organization.reload
-      associated_survey.errors.messages.each do |field, message|
-        flash[:alert] = "Error adding survey: #{message.first}."
-      end
-    end
-
-    render 'catalog_manager/organizations/change_associated_survey'
-  end
-
   def remove_submission_email
     entity = Organization.find(params["org_unit"])
     submission_email = SubmissionEmail.find(params["submission_email"])

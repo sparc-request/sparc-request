@@ -18,24 +18,9 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.associated_surveys
-  - unless entity.associated_surveys.empty?
-    %table.associated_surveys_table
-      %thead
-        %tr
-          %th= t("cm_shared.labels.survey_name")
-          %th.delete_button= t("cm_shared.labels.delete")
-      %tbody
-        - entity.associated_surveys.each do |associated_survey|
-          %tr
-            %td
-              = link_to "#{associated_survey.survey.title} - Version #{associated_survey.survey.version}", surveyor_survey_preview_path(associated_survey.survey, format: :html), target: 'blank', class: 'associated_survey_link'
-            %td= image_tag 'cancel.png', :"data-associated_survey_id" => associated_survey.id, :class => 'associated_survey_delete'
-
-  %table
-    %tr
-      %td= select_tag 'new_associated_survey', grouped_options_for_select(SystemSurvey.for_dropdown_select), { prompt: t(:cm_shared)[:labels][:select_survey] }
-      %td= button_tag t("cm_shared.labels.new_associated_survey"), :"data-surveyable_id" => entity.id, :"data-surveyable_type" => entity.class.to_s, :class => 'add_associated_survey'
-  .survey_warning_message
-    = t("cm_shared.labels.survey_warning")
-    
+.row.form_row{ id: "survey-row-#{associated_survey.id}"}
+  .col-sm-8
+    = link_to "#{associated_survey.survey.title} - Version #{associated_survey.survey.version}", surveyor_survey_preview_path(associated_survey.survey, format: :html), target: 'blank', class: 'associated_survey_link', data: {id: associated_survey.id}
+  .col-sm-4.text-center
+    %button.btn.btn-xs.btn-danger.remove-associated-survey{ data: {id: organization.id, survey_id: associated_survey.id}}
+      %span.glyphicon.glyphicon-remove

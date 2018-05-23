@@ -18,5 +18,11 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#associated-surveys .panel-body").html("<%= j render '/catalog_manager/shared/surveys_form', organization: @organization %>")
+
+<% if @survey_id %>
+
+$("#survey-row-<%= escape_javascript(@survey_id) %>").fadeOut(1000, () -> $(this).remove())
+
+<% end %>
+
 $("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")

@@ -18,10 +18,11 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-##############################################
-###          Org General Info              ###
-##############################################
 $ ->
+  ##############################################
+  ###         Organization General Info      ###
+  ##############################################
+
   $(document).on 'click', '#enable-all-services label', ->
     $(this).addClass('active')
     $(this).children('input').prop('checked')
@@ -34,7 +35,7 @@ $ ->
       $('#enable-all-services').addClass('hidden')
 
   ##############################################
-  ###          Org User Rights               ###
+  ###         Organization User Rights       ###
   ##############################################
 
   $(document).on 'change', '.super-user-checkbox', ->
@@ -134,19 +135,18 @@ $ ->
     $(this).closest('.row').fadeOut(1000, () -> $(this).remove())
 
   ##############################################
-  ###         Org Associated Surveys         ###
+  ###     Organization Associated Surveys    ###
   ##############################################
 
   $(document).on 'click', 'button.remove-associated-survey', (event) ->
-    associated_survey_link = $(this).closest('.form-group.row').find('.associated_survey_link')[0]
-    associated_survey_id = $(associated_survey_link).data('id')
+    survey_id = $(this).data('survey-id')
     surveyable_id = $(this).data('id')
     if confirm(I18n['catalog_manager']['organization_form']['surveys']['survey_delete'])
       $.ajax
         type: 'POST'
-        url: "catalog_manager/catalog/remove_associated_survey"
+        url: "catalog_manager/organizations/remove_associated_survey"
         data:
-          associated_survey_id: associated_survey_id
+          associated_survey_id: survey_id
           surveyable_id: surveyable_id
 
 
@@ -154,19 +154,19 @@ $ ->
     if $('#new_associated_survey').val() == ''
       alert "No survey selected"
     else
-      survey_id = $(this).closest('.form-group.row').find('.new_associated_survey')[0].value
+      survey_id = $(this).closest('.row').find('.new_associated_survey')[0].value
       surveyable_type = $(this).data('type')
       surveyable_id = $(this).data('id')
       $.ajax
         type: 'POST'
-        url: "catalog_manager/catalog/add_associated_survey"
+        url: "catalog_manager/organizations/add_associated_survey"
         data:
           survey_id: survey_id
           surveyable_type : surveyable_type
           surveyable_id : surveyable_id
 
   ##############################################
-  ###          Org Fulfillment               ###
+  ###         Organization Fulfillment       ###
   ##############################################
 
   $(document).on 'change', '.clinical-provider-checkbox', ->
@@ -283,12 +283,21 @@ $ ->
   $(document).on 'change', '.linked_quantity', (event) ->
     service_relation_id = $(this).data('service-relation-id')
     linked_quantity = $(this).prop('checked')
-    $.ajax
-      type: 'POST'
-      url: "catalog_manager/services/update_related_service"
-      data:
-        service_relation_id: service_relation_id
-        linked_quantity: linked_quantity
+
+    ajax_call = ->
+      $.ajax
+        type: 'POST'
+        url: "catalog_manager/services/update_related_service"
+        data:
+          service_relation_id: service_relation_id
+          linked_quantity: linked_quantity
+
+    if !linked_quantity
+      $(this).siblings('.linked_quantity_container').fadeOut(750, ->
+        ajax_call()
+        )
+    else
+      ajax_call()
 
   $(document).on 'change', '.linked_quantity_total', (event) ->
     service_relation_id = $(this).data('service-relation-id')

@@ -20,4 +20,6 @@
 
 $("#service-relation-id-<%= j @service_relation.id.to_s %>").replaceWith("<%= j render '/catalog_manager/services/related_services_row', service: @service, service_relation: @service_relation %>")
 
+$("#service-relation-id-<%= j @service_relation.id.to_s %> .linked_quantity_container").hide().fadeIn(1000)
+
 $("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")

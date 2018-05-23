@@ -111,12 +111,12 @@ en:
         user_rights: "User Rights"
       user_rights:
         name_email: "Name, Email"
-        super_user: "Super User"
-        catalog_manager: "Catalog Manager"
-        edit_historic_data: "Edit Historic Data"
-        service_provider: "Service Provider"
-        primary_contact: "Primary Contact"
-        hold_emails: "Hold Emails"
+        super_user: "Super User:"
+        catalog_manager: "Catalog Manager:"
+        edit_historic_data: "Edit Historic Data:"
+        service_provider: "Service Provider:"
+        primary_contact: "Primary Contact:"
+        hold_emails: "Hold Emails:"
         clinical_provider: "Clinical Provider"
         add_new_user: "Add New User to Table"
         user_in_table: "is already associated with this organization."
@@ -200,7 +200,7 @@ en:
       tag_list: "Tags"
 
     related_services_form:
-      add_service: "Add service to table"
+      add_service: "Search for service to link"
       new_related_services: "New Related Service"
       service: "Service"
       required: "Required?"

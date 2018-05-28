@@ -4,10 +4,18 @@
     #document_tabs{data: {selected: "loi"}}
       .col-lg-6
         %button.btn.btn-primary.btn-block.document_nav#documents_loi
-          = t(:funding)[:download][:loi]
+          %span.pull-left
+            %span.glyphicon.glyphicon-file
+            %span
+              = t(:funding)[:download][:loi]
+          %span.glyphicon.glyphicon-refresh.pull-right
       .col-lg-6
         %button.btn.btn-default.btn-block.document_nav#documents_application
-          = t(:funding)[:download][:application]
+          %span.pull-left
+            %span.glyphicon.glyphicon-file
+            %span
+              = t(:funding)[:download][:application]
+          %span.glyphicon.glyphicon-refresh.pull-right{style: "display: none;"}
 
 .bootstrap-table-dropdown-overflow
   %table.custom_striped.bootstrap_table{id: "document-table", data: {pagination: 'true', 'page-size' => 20, toggle: 'table', search: "true", url: documents_funding_service_path(id: service.id, table: "loi", format: :json ), striped: "true", 'sort-name' => 'pi', 'sort-order' => 'asc', 'row-style' => 'documents_row_style'}}

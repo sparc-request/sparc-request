@@ -147,6 +147,14 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     end
   end
 
+  ####Actions for Pricing sub-form####
+
+  def update_pricing_setup
+  end
+
+  def remove_pricing_setup
+  end
+
 
   private
 

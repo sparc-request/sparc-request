@@ -21,12 +21,7 @@
 %h3
   %a{:href => '#'}Effective on #{pricing_setup.try(:[], 'effective_date').try(:to_date).try(:strftime, "%-m/%d/%Y")} -  Display on #{pricing_setup.try(:[], 'display_date').try(:to_date).try(:strftime, "%-m/%d/%Y")}
 .pricing_setup_form
-  = hidden_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][id]", "#{pricing_setup ? pricing_setup.id : 'blank'}"
-  - if pricing_setup_disabled
-    %input{:name => "diabled_fields_present", :value => 'true', :type => 'hidden'}
-  - if pricing_setup.id.blank?
-    %input.remove_pricing_setup{:type => 'button', :value => 'Remove Pricing Setup', :style => 'width:auto; margin-bottom:12px;'}
-    / %a.button.remove_pricing_setup{:href => 'javascript:void(0);'} Remove Pricing Setup
+  / = hidden_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][id]", "#{pricing_setup ? pricing_setup.id : 'blank'}"
   %fieldset
     %legend= t("cm_shared.labels.dates")
     %table
@@ -98,8 +93,8 @@
     %legend= t("cm_shared.labels.rates")
     #rate_info= render 'catalog_manager/shared/rates', :rates => pricing_setup, :pricing_setup_disabled => pricing_setup_disabled
 
-:javascript
-  $(document).ready( function() {
-    Sparc.services.create_accordion('.pricing_setup_accordion')
-    $('.button').button()
-  })
+// :javascript
+//   $(document).ready( function() {
+//     Sparc.services.create_accordion('.pricing_setup_accordion')
+//     $('.button').button()
+//   })

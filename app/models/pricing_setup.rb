@@ -86,4 +86,14 @@ class PricingSetup < ApplicationRecord
       current_map.save
     end
   end
+
+  def disabled?(user)
+    if user.edit_historical_data
+      false
+    elsif (pricing_setup.effective_date <= Date.today) or (pricing_setup.display_date <= Date.today)
+      true
+    else
+      false
+    end
+  end
 end

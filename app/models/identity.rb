@@ -137,6 +137,7 @@ class Identity < ApplicationRecord
 
   # Returns true if the user is a catalog overlord.  Should only be true for three uids:
   # lmf5, anc63, mas244
+  #TODO: Why does this happen? Why create a variable and check it?
   def is_overlord?
     @is_overlord ||= self.catalog_overlord?
   end

@@ -39,6 +39,10 @@
     = f.label :order, t(:catalog_manager)[:organization_form][:order], class: 'col-sm-3 control-label'
     .col-sm-9
       = f.text_field :order, { class: 'form-control' }
+  .form-group.row
+    = f.label :process_ssrs, t(:catalog_manager)[:organization_form][:split_notify], class: 'col-sm-3 control-label'
+    .col-sm-9
+      = f.check_box :process_ssrs, { checked: organization.process_ssrs, disabled: false, data: {toggle: 'toggle'}}
 
   - if ['Institution','Provider'].include?(organization.type) && user.is_overlord?
     .form-group.row

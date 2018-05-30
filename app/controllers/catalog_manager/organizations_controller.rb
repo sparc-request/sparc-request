@@ -102,7 +102,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     set_status_variables
   end
 
-  def update_status_option
+  def update_status_row
     @status = status_params[:status_type].constantize.find_or_create_by(organization_id: status_params[:organization_id], status: status_params[:status_key])
 
     @organization = Organization.find(status_params[:organization_id])

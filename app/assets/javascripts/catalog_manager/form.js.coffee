@@ -212,7 +212,7 @@ $ ->
   $(document).on 'change', '.available-status-checkbox', ->
     $.ajax
       type: "POST"
-      url: '/catalog_manager/organizations/update_status_option'
+      url: '/catalog_manager/organizations/update_status_row'
       data:
         status_key: $(this).data('status-key')
         organization_id: $(this).data('organization-id')
@@ -222,7 +222,7 @@ $ ->
   $(document).on 'change', '.editable-status-checkbox', ->
     $.ajax
       type: "POST"
-      url: '/catalog_manager/organizations/update_status_option'
+      url: '/catalog_manager/organizations/update_status_row'
       data:
         status_key: $(this).data('status-key')
         organization_id: $(this).data('organization-id')

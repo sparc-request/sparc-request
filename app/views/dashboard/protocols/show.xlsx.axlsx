@@ -27,7 +27,7 @@ centered = wb.styles.add_style alignment: {horizontal: :center}
 # centered_bordered = wb.styles.add_style :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
 money = wb.styles.add_style :format_code => '$* #,##0.00_);[Red]-$*#,###.00;$* -??_;'
 bold_money = wb.styles.add_style :format_code => '$#,##0.00_);[Red]-$#,###.00;$* -??_;', b: true
-percent = wb.styles.add_style :format_code => '0.00\%', b: true, alignment: { horizontal: :left }
+percent = wb.styles.add_style :num_fmt => 9, b: true, alignment: { horizontal: :left }
 row_header_style = wb.styles.add_style b: true
 header_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :left, wrap_text: true}
 header_center_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :center, wrap_text: true}
@@ -48,7 +48,7 @@ arm_totals_ref = {}
     sheet.add_row ["RMID:", @protocol.research_master_id]
     sheet.add_row ["Short Title:",@protocol.short_title], :style => default
     sheet.add_row ["Primary PI Name:", @protocol.primary_principal_investigator.full_name], :style => default
-    sheet.add_row ["Indirect Cost Rate:", "=Summary!B10"], style: percent
+    sheet.add_row ["Indirect Cost Rate:", "=Summary!B10/100.0"], style: percent
 
     indirect_cost_ref = sheet.rows.last.cells.last.r
 
@@ -95,7 +95,7 @@ arm_totals_ref = {}
 
     sheet.add_row arm_label_row, :style => arm_label_style
 
-    r_columns = sheet.rows.last.cells[vg_start, arm.visit_groups.count].each_slice(2).map{|cs| cs.first.r[/([A-Z]+)/]}
+    r_columns = sheet.rows.last.cells[vg_start, arm.visit_groups.count*2].each_slice(2).map{|cs| cs.first.r[/([A-Z]+)/]}
     r_rows = []
 
     sheet.add_row label_row.flatten, :style => centered
@@ -223,7 +223,8 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
   sheet.add_row ["Primary PI Name:", @protocol.primary_principal_investigator.full_name], :style => [bold_default, default]
   sheet.add_row ["Business Manager:", @protocol.billing_managers.map(&:full_name).try(:join, ', ')], :style => [bold_default, default]
   sheet.add_row ["Funding Source:", @protocol.display_funding_source_value], :style => [bold_default, default]
-  sheet.add_row ["Indirect Cost Rate:", @protocol.indirect_cost_rate || 0], style: [bold_default, percent]
+  sheet.add_row ["Indirect Cost Rate:", @protocol.indirect_cost_rate/100.0 || 0.0], style: [bold_default, percent]
+  sheet.add_row ["Staff Fringe Rate:", nil], style: [bold_default, percent]
 
   indirect_cost_rate_row = sheet.rows.length
 
@@ -237,7 +238,8 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
 
   @protocol.project_roles.each do |pr|
     current_row += 1
-    sheet.add_row [pr.identity.full_name, PermissibleValue.get_value('user_role', pr.role), "0", "", "", "0", "0", "=SUM(F#{current_row}:G#{current_row})"], style: [default, default, money, percent, default, money, money, money]
+    #TODO (@protocol.end_date.year * 12 + @protocol.end_date.month) - (@protocol.start_date.year * 12 + @protocol.start_date.month) should probably be a model based method
+    sheet.add_row [pr.identity.full_name, PermissibleValue.get_value('user_role', pr.role), "0", "", "#{@protocol.start_date.present? ? (@protocol.end_date.year * 12 + @protocol.end_date.month) - (@protocol.start_date.year * 12 + @protocol.start_date.month) : ''}", "=IF(AND(ISNUMBER(D#{current_row}), ISNUMBER(E#{current_row})), C#{current_row}*D#{current_row}*E#{current_row}/12, 0)", "=F#{current_row}*$B$11", "=SUM(F#{current_row}:G#{current_row})"], style: [default, default, money, percent, default, money, money, money]
   end
 
   authorized_users_end_row = current_row
@@ -261,16 +263,11 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
   current_row = sheet.rows.length
   other_services_start_row = current_row
 
-  ["PI Start Up", "Administrative Start Up", "IDS Annual Review"].each do |service|
-    current_row += 1
-    sheet.add_row [service, "", "0", "0", "1", "Y", "=IF(F#{current_row}=\"Y\",(C#{current_row}*E#{current_row})*(1+($B$#{indirect_cost_rate_row}/100)),C#{current_row}*E#{current_row})", "=(C#{current_row}-D#{current_row})*E#{current_row}"], style: [default, default, money, money, default, money, money, money]
-  end
-
   @protocol.service_requests.each do |sr|
     sr.line_items.includes(:service).where(services: {one_time_fee: true}).each do |li|
       next if @statuses_hidden.include?(li.sub_service_request.status)
       li_row = sheet.rows.length + 1
-      sheet.add_row ["#{li.service.name} (#{li.sub_service_request.ssr_id})", PermissibleValue.get_value('status', li.sub_service_request.status), "0", cents_to_dollars(li.applicable_rate), li.quantity, "Y", "=C#{li_row}*E#{li_row}", "=D#{li_row}*E#{li_row}"], :style => [default, default, money, money, default, default, money, money]
+      sheet.add_row ["#{li.service.name} (#{li.sub_service_request.ssr_id})", PermissibleValue.get_value('status', li.sub_service_request.status), cents_to_dollars(li.service.displayed_pricing_map.full_rate), cents_to_dollars(li.applicable_rate), li.quantity, "Y", "=IF(F#{li_row}=\"Y\",(C#{li_row}*E#{li_row})*(1+$B$10),C#{li_row}*E#{li_row})", "=C#{li_row}*E#{li_row}-D#{li_row}*E#{li_row}"], :style => [default, default, money, money, default, default, money, money]
     end
   end
   sheet.add_row []

@@ -49,7 +49,7 @@ $('#user-rights-query').typeahead(
     limit: 100,
     templates: {
       suggestion: Handlebars.compile("<button class=\"text-left col-sm-12\">
-                                        <strong>{{name}}</strong> <span>{{email}}{{identity_id}}</span>
+                                        <strong>{{name}}</strong> <span>{{email}}</span>
                                       </button>")
       notFound: '<div class="tt-suggestion">No Results</div>'
     }
@@ -82,7 +82,7 @@ $('#fulfillment-rights-query').typeahead(
     limit: 100,
     templates: {
       suggestion: Handlebars.compile("<button class=\"text-left col-sm-12\">
-                                        <strong>{{name}}</strong> <span>{{email}}{{identity_id}}</span>
+                                        <strong>{{name}}</strong> <span>{{email}}</span>
                                       </button>")
       notFound: '<div class="tt-suggestion">No Results</div>'
     }

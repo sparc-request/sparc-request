@@ -111,10 +111,10 @@ en:
         user_rights: "User Rights"
       user_rights:
         name_email: "Name, Email"
-        super_user: "Super User:"
-        catalog_manager: "Catalog Manager:"
+        super_user: "Super User"
+        catalog_manager: "Catalog Manager"
         edit_historic_data: "Edit Historic Data:"
-        service_provider: "Service Provider:"
+        service_provider: "Service Provider"
         primary_contact: "Primary Contact:"
         hold_emails: "Hold Emails:"
         clinical_provider: "Clinical Provider"

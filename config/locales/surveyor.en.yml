@@ -40,6 +40,29 @@ en:
         tooltips:
           activate: "Select an association to activate this survey"
 
+    response_filters:
+      header: "Filter Responses"
+      created: "Search saved!"
+      destroyed: "Search deleted!"
+      fields:
+        type: "Type"
+        state: "State"
+        state_filters:
+          active: "Active"
+          inactive: "Inactive"
+        completion_date: "Completion Date"
+        from: "From"
+        to: "To"
+        include_incomplete: "Include Incomplete"
+      form:
+        header: "Choose a name for your search"
+        name: "Search Name:"
+      saved:
+        header: "Recently Saved Filters"
+      tooltips:
+        save: "Save current search"
+        reset: "Reset current search"
+
     responses:
       create: "Thank you for participating in this survey!"
       complete:
@@ -58,8 +81,6 @@ en:
           date: "Date"
           actions: "Actions"
           by: "By"
-      filter:
-        type: "Type"
       emails:
         system_satisfaction:
           subject: "System Satisfaction Survey Completed in %{site_name}"
@@ -117,6 +138,7 @@ en:
             phone: "XXXXXXXXXX"
           option:
             content: "Option (Required)"
+      full_title: "%{title} (Version %{version})"
 
     systemsurveys:
       header: "System Surveys"

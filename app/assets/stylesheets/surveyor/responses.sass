@@ -66,19 +66,25 @@
         .likert:before
           width: 50%
 
+#filter-responses
+  #filterrific_include_incomplete
+    margin-top: 11px
+
 #responses-panel
   .fixed-table-toolbar
-    display: inline-table
-    width: 100%
+    display: flex
+    flex-direction: row
+    align-items: center
     padding: 10px 15px
     background: $sparc-blue
     
-    .bars.pull-left
-      width: 73%
+    .columns
+      order: 3
 
+    .bars
+      flex-grow: 1
+      
       #responses-custom-toolbar
-        width: 100%
-        
         .panel-title
           color: white
 
@@ -87,6 +93,3 @@
 
   .fixed-table-pagination
     padding: 0 20px  
-
-  td.short-title, td.primary-pi, td.title
-    word-break: break-word

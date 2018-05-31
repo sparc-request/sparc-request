@@ -59,6 +59,7 @@ class Identity < ApplicationRecord
   has_many :received_notifications, class_name: "Notification", foreign_key: 'other_user_id'
   has_many :received_toast_messages, class_name: 'ToastMessage', foreign_key: 'to', dependent: :destroy
   has_many :responses, dependent: :destroy
+  has_many :response_filters, dependent: :destroy
   has_many :sent_messages, class_name: 'Message', foreign_key: 'from'
   has_many :sent_notifications, class_name: "Notification", foreign_key: 'originator_id'
   has_many :sent_toast_messages, class_name: 'ToastMessage', foreign_key: 'from', dependent: :destroy

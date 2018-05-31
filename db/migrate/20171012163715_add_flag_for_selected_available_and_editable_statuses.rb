@@ -19,6 +19,19 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class AddFlagForSelectedAvailableAndEditableStatuses < ActiveRecord::Migration[5.1]
+
+  class AvailableStatus < ApplicationRecord
+    def self.types
+      PermissibleValue.where(category: 'status').pluck(:key)
+    end
+  end
+
+  class EditableStatus < ApplicationRecord
+    def self.types
+      PermissibleValue.where(category: 'status').pluck(:key)
+    end
+  end
+
   def change
     add_column :available_statuses, :selected, :boolean, default: false
     add_column :editable_statuses, :selected, :boolean, default: false

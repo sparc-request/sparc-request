@@ -481,6 +481,7 @@ ActiveRecord::Schema.define(version: 2018_05_24_135959) do
     t.boolean "reserved"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_available"
   end
 
   create_table "pricing_maps", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
@@ -925,7 +926,6 @@ ActiveRecord::Schema.define(version: 2018_05_24_135959) do
     t.string "title", null: false
     t.text "description"
     t.string "access_code", null: false
-    t.integer "display_order"
     t.integer "version", null: false
     t.boolean "active", null: false
     t.datetime "created_at", null: false

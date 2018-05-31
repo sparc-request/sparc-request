@@ -29,8 +29,6 @@ RSpec.describe SystemSurvey, type: :model do
   it { expect(SystemSurvey.ancestors.include?(Survey)).to eq(true) }
 
   # Validations
-  it { is_expected.to validate_presence_of(:display_order) }
-
   context 'active scoping to access_code' do
     it 'should only allow 1 active survey to each access code' do
       survey1 = create(:system_survey, access_code: 'some-survey', active: true)

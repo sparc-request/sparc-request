@@ -28,8 +28,13 @@ class Surveyor::SurveyUpdaterController < Surveyor::BaseController
     @klass  = params[:klass]
     @object = @klass.capitalize.constantize.find(params[:id])
     @field  = survey_updater_params.keys[0]
-    
-    @object.assign_attributes(survey_updater_params)
+    @params = survey_updater_params
+
+    if @field == 'access_code'
+      @params['version'] = (@object.class.where.not(id: @object.id).where(access_code: @params[@field]).try(:maximum, :version) || 0) + 1
+    end
+
+    @object.assign_attributes(@params)
     @object.valid?
 
     if @object.errors.keys.include?(@field.to_sym)

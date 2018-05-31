@@ -22,7 +22,6 @@ FactoryGirl.define do
   factory :survey do
     title                     { Faker::Lorem.word }
     access_code               { Faker::Lorem.word }
-    sequence(:display_order)  { |n| n }
     sequence(:version)        { |n| n }
     active                    { false }
 

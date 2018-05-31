@@ -925,7 +925,6 @@ ActiveRecord::Schema.define(version: 20180503145651) do
     t.string "title", null: false
     t.text "description"
     t.string "access_code", null: false
-    t.integer "display_order"
     t.integer "version", null: false
     t.boolean "active", null: false
     t.datetime "created_at", null: false

@@ -27,6 +27,8 @@ class EditableStatus < ApplicationRecord
     @statuses ||= PermissibleValue.get_hash('status')
   end
 
+  validates :status, presence: true
+
   scope :selected, -> { where(selected: true) }
 
   scope :alphabetized, -> { all.sort{ |x, y| x.humanize <=> y.humanize } }

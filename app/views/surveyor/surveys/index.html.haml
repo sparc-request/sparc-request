@@ -26,17 +26,15 @@
       .bootstrap-table-dropdown-overflow
         #surveys-custom-toolbar
           = link_to t(:surveyor)[:systemsurveys][:new], surveyor_surveys_path(type: 'SystemSurvey'), method: :post, remote: true, class: "btn btn-success", id: "new-survey-button"
-        %table.survey-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: surveyor_surveys_path(type: 'SystemSurvey'), striped: 'true', toolbar: '#surveys-custom-toolbar', pagination: 'true', page_size: '20', sort_name: 'display_order' } }
+        %table.survey-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: surveyor_surveys_path(type: 'SystemSurvey'), striped: 'true', toolbar: '#surveys-custom-toolbar', pagination: 'true', page_size: '20' } }
           %thead.primary-header
             %tr
-              %th.col-sm-3{ data: { field: "title", align: "left", sortable: 'true' } }
+              %th.col-sm-4{ data: { field: "title", align: "left", sortable: 'true' } }
                 = t(:surveyor)[:systemsurveys][:table][:headers][:title]
-              %th.col-sm-2{ data: { field: "access_code", align: "left", sortable: 'true' } }
+              %th.col-sm-3{ data: { field: "access_code", align: "left", sortable: 'true' } }
                 = t(:surveyor)[:systemsurveys][:table][:headers][:access_code]
               %th.col-sm-1{ data: { field: "version", align: "left", sortable: 'true' } }
                 = t(:surveyor)[:systemsurveys][:table][:headers][:version]
-              %th.col-sm-2{ data: { field: "display_order", align: "left", sortable: 'true' } }
-                = t(:surveyor)[:systemsurveys][:table][:headers][:display_order]
               %th.col-sm-1{ data: { field: "active", align: "center" } }
                 = t(:surveyor)[:systemsurveys][:table][:headers][:active]
               %th.col-sm-3{ data: { field: "options", align: "center" } }

@@ -97,11 +97,11 @@ end
     tree.join(' / ')
   end
 
-#   def disabled_parent organization
-#     if (orgs = organization.parents.insert(0, organization).select{|org| !org.is_available}).any?
-#       I18n.t('organization_form.disabled_at', disabled_parent: orgs.last.name)
-#     end
-#   end
+  def disabled_parent organization
+    if (orgs = organization.parents.insert(0, organization).select{|org| !org.is_available}).any?
+      I18n.t('catalog_manager.organization_form.disabled_at', disabled_parent: orgs.last.name)
+    end
+  end
 # end
 
 # def display_name object

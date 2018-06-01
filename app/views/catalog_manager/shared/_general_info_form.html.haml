@@ -39,10 +39,12 @@
     = f.label :order, t(:catalog_manager)[:organization_form][:order], class: 'col-sm-3 control-label'
     .col-sm-9
       = f.text_field :order, { class: 'form-control' }
-  .form-group.row
-    = f.label :process_ssrs, t(:catalog_manager)[:organization_form][:split_notify], class: 'col-sm-3 control-label'
-    .col-sm-9
-      = f.check_box :process_ssrs, { checked: organization.process_ssrs, disabled: false, data: {toggle: 'toggle'}}
+
+  - unless organization.type == 'Institution'
+    .form-group.row
+      = f.label :process_ssrs, t(:catalog_manager)[:organization_form][:split_notify], class: 'col-sm-3 control-label'
+      .col-sm-9
+        = f.check_box :process_ssrs, { checked: organization.process_ssrs, disabled: false, data: {toggle: 'toggle'}}
 
   - if ['Institution','Provider'].include?(organization.type) && user.is_overlord?
     .form-group.row
@@ -50,11 +52,13 @@
       .col-sm-9
         = f.select :css_class, ACCORDION_COLOR_OPTIONS, { include_blank: t(:catalog_manager)[:organization_form][:color_blank] }, { class: 'selectpicker' }
 
-  - unless organization.type == 'Institution'
-    .form-group.row#display-in-sparc
-      = f.label :is_available, t(:catalog_manager)[:organization_form][:disabled], class: 'col-sm-3 control-label'
-      .col-sm-9
-        = f.check_box :is_available, { checked: organization.is_available, disabled: organization.parent ? !organization.parent.is_available : false, data: { toggle: 'toggle' } }
+  .form-group.row#display-in-sparc
+    = f.label :is_available, t(:catalog_manager)[:organization_form][:disabled], class: 'col-sm-3 control-label'
+    .col-sm-9
+      = f.check_box :is_available, { checked: organization.is_available, disabled: organization.parent ? !organization.parent.is_available : false, data: { toggle: 'toggle' } }
+      - if @organization.parent && !@organization.parent.is_available
+        %span{style: "padding-left: 15px;"}
+          = disabled_parent(@organization)
 
   - if organization.services.any?
     .form-group.row#enable-all-services{ class: organization.is_available? ? '' : 'hidden' }

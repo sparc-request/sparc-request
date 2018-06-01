@@ -143,7 +143,6 @@ class CatalogManager::ServicesController < CatalogManager::AppController
 
     if saved
       flash[:notice] = "#{@service.name} saved correctly."
-      @epic_tag_present = params[:service][:tag_list].include?("epic")
     else
       flash[:alert] = "Failed to update #{@service.name}."
     end

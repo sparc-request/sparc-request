@@ -308,7 +308,7 @@ class Protocol < ApplicationRecord
   end
 
   def initial_amount
-    read_attribute(:initial_amount) / 100.0
+    read_attribute(:initial_amount) / 100.0 rescue 0
   end
 
   def initial_amount_clinical_services=(amount)
@@ -316,15 +316,15 @@ class Protocol < ApplicationRecord
   end
 
   def initial_amount_clinical_services
-    read_attribute(:initial_amount_clinical_services) / 100.0
+    read_attribute(:initial_amount_clinical_services) / 100.0 rescue 0
   end
 
   def negotiated_amount=(amount)
-    write_attribute(:negotiated_amount, amount.to_f * 100)
+    write_attribute(:negotiated_amount, amount.to_f * 100) rescue 0
   end
 
   def negotiated_amount
-    read_attribute(:negotiated_amount) / 100.0
+    read_attribute(:negotiated_amount) / 100.0 rescue 0
   end
 
   def negotiated_amount_clinical_services=(amount)
@@ -332,7 +332,7 @@ class Protocol < ApplicationRecord
   end
 
   def negotiated_amount_clinical_services
-    read_attribute(:negotiated_amount_clinical_services) / 100.0
+    read_attribute(:negotiated_amount_clinical_services) / 100.0 rescue 0
   end
 
   def is_study?

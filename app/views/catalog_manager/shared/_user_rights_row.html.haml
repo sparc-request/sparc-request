@@ -24,7 +24,7 @@
 - cp = get_user_rights(user_rights[:service_providers], ur.id)
 
 .row.form_row{ id: "user-rights-row-#{ur.id}", data: { identity_id: ur.id } }
-  %div{class: "#{organization.type == 'Institution' ? 'col-sm-6' : 'col-sm-3'}"}
+  %div{class: "#{(organization.type == "Institution" or !organization.process_ssrs) ? 'col-sm-6' : 'col-sm-3'}"}
     = "#{ur.full_name}, #{ur.email}"
   .col-sm-2.text-center
     = check_box_tag :super_user, true, !su.nil?, { class: "super-user-checkbox", data: { identity_id: ur.id, organization_id: organization.id } }

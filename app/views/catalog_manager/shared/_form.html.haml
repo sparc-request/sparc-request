@@ -60,7 +60,7 @@
         .panel-body
           Not Yet Implemented
 
-    .panel.panel-default#fulfillment{style: organization.tag_list.include?("clinical work fulfillment") ? "display: block;" : "display: none;"}
+    .panel.panel-default#fulfillment{style: (organization.tag_list.include?("clinical work fulfillment") && organization.process_ssrs) ? "display: block;" : "display: none;"}
       .panel-heading
         %h4.panel-title
           = link_to t(:catalog_manager)[:organization_form][:fulfillment_rights][:title], '#fulfillment-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }

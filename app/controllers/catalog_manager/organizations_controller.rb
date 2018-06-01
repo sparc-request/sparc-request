@@ -34,30 +34,26 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     respond_to do |format|
       format.js
     end
-
-    #TODO: Validate user can edit organization
-    render 'catalog_manager/organizations/edit'
   end
 
   def update
     @organization = Organization.find(params[:id])
     @user_rights  = user_rights(@organization.id)
+    @fulfillment_rights = fulfillment_rights(@organization.id)
+    set_status_variables
 
-    set_org_tags
+    # set_org_tags
     if update_organization
       flash.now[:success] = "#{@organization.name} saved correctly."
     else
       flash.now[:alert] = "Failed to update #{@organization.name}."
     end
-    # save_pricing_setups
 
     @institutions = Institution.order('`order`')
 
     respond_to do |format|
       format.js
     end
-
-    render 'catalog_manager/organizations/update'
   end
 
 
@@ -162,11 +158,11 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
   # ================ Imported from OrganizationUpdater ========================
 
-  def set_org_tags
-    unless @attributes[:tag_list] || @organization.type == 'Institution'
-      @attributes[:tag_list] = ""
-    end
-  end
+  # def set_org_tags
+  #   unless @attributes[:tag_list] || @organization.type == 'Institution'
+  #     @attributes[:tag_list] = ""
+  #   end
+  # end
 
   def update_organization
     @attributes.delete(:id)

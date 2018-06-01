@@ -27,8 +27,7 @@
   %div{class: "#{organization.type == 'Institution' ? 'col-sm-6' : 'col-sm-3'}"}
     = "#{ur.full_name}, #{ur.email}"
   .col-sm-2.text-center
-    %div{style: "width:95px;"}
-      = check_box_tag :super_user, true, !su.nil?, { class: "super-user-checkbox", data: { identity_id: ur.id, organization_id: organization.id } }
+    = check_box_tag :super_user, true, !su.nil?, { class: "super-user-checkbox", data: { identity_id: ur.id, organization_id: organization.id } }
   .col-sm-3.text-center
     = check_box_tag :catalog_manager, true, !cm.nil?, { class: "catalog-manager-checkbox", data: { identity_id: ur.id, organization_id: organization.id } }
     - if !cm.nil?

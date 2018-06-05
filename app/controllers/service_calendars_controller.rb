@@ -136,11 +136,14 @@ class ServiceCalendarsController < ApplicationController
     @display_all_services = true
 
     new_position = params[:position].to_i
-
     if @visit_group.position < new_position
-      @visit_group.insert_at( new_position - 1 )
+      @visit_group.position = new_position - 1
     else
-      @visit_group.insert_at( new_position )
+      @visit_group.position = new_position
+    end
+
+    unless @visit_group.save
+      @errors = @visit_group.errors
     end
 
     respond_to do |format|

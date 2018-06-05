@@ -32,8 +32,8 @@
     %h5= t(:catalog_manager)[:organization_form][:remove]
 
 #user_rights_container
-  - organization.all_user_rights(organization.type != 'Institution').sort_by(&:last_name).each do |ur|
-    = render "catalog_manager/shared/user_rights_row", organization: organization, user_rights: user_rights, ur: ur
+  - organization.all_user_rights(organization.type != 'Institution').sort_by(&:last_name).each do |user|
+    = render "catalog_manager/shared/user_rights_row", organization: organization, user_rights: user_rights, user: user
 
 .col-sm-12.no-padding
   = text_field_tag 'user-rights-query', nil, placeholder: t(:catalog_manager)[:organization_form][:user_rights][:add_user], class: "form-control"

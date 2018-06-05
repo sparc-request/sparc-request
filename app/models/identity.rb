@@ -252,7 +252,7 @@ class Identity < ApplicationRecord
   end
 
   # If a user has request or approve rights AND the request is editable, then the user can edit.
-  def can_edit_sub_service_request? ssr
+  def can_edit_sub_service_request?(ssr)
     ssr.can_be_edited? && has_correct_project_role?(ssr)
   end
 
@@ -270,25 +270,23 @@ class Identity < ApplicationRecord
 
   # Determines whether this identity can edit a given organization's information in CatalogManager.
   # Returns true if this identity's catalog_manager_organizations includes the given organization.
-  def can_edit_entity? organization, deep_search=false
-    cm_org_ids = self.catalog_managers.map(&:organization_id)
-    if deep_search
-      org_ids = [organization.id].concat(organization.parents(true))
-      org_ids -  cm_org_ids != org_ids
-    else
-      cm_org_ids.include?(organization.id)
-    end
+  def can_edit_organization?(organization)
+    catalog_manager_organizations.include?(organization)
+  end
+
+  def can_edit_service?(service)
+    can_edit_organization?(service.organization)
   end
 
   # Used in clinical fulfillment to determine whether the user can edit a particular core.
-  def can_edit_core? org_id
+  def can_edit_core?(org_id)
     self.clinical_provider_organizations.map{|x| x.id}.include?(org_id) ? true : false
   end
 
   # Determines whether the user has permission to edit historical data for a given organization.
   # Returns true if the edit_historic_data flag is set to true on the relevant catalog_manager relationship.
-  def can_edit_historical_data_for? organization
-    if self.catalog_manager_organizations.include?(organization)
+  def can_edit_historical_data_for?(organization)
+    if catalog_manager_organizations.include?(organization)
       if self.catalog_managers.find_by_organization_id(organization.id)
         if self.catalog_managers.find_by_organization_id(organization.id).edit_historic_data
           return true
@@ -315,45 +313,27 @@ class Identity < ApplicationRecord
 
   # Collects all organizations that this identity has catalog manager permissions on, as well as
   # any child (deep) of any of those organizations.
-  # Returns an array of organizations.
+  # Returns an active record relation of organizations.
   def catalog_manager_organizations
-    organizations = Organization.all
-    orgs = []
-
-    self.catalog_managers.map(&:organization).each do |org|
-      orgs << org.all_children(organizations)
-    end
-
-    orgs.flatten.uniq
+    Organization.authorized_for_catalog_manager(self.id)
   end
 
   # Returns an array of organizations where the user has clinical provider rights.
   def clinical_provider_organizations
-    organizations = Organization.all
-    orgs = []
-
-    self.clinical_providers.map(&:organization).each do |org|
-      orgs << org.all_children(organizations)
-    end
-
-    self.admin_organizations({su_only: true}).each do |org|
-      orgs << org
-    end
-
-    orgs.flatten.uniq
+    Organization.authorized_for_clinical_provider(self.id)
   end
 
   # Collects all organizations that this identity has super user or service provider permissions
   # on, as well as any child (deep) of any of those organizations.
   # Returns an array of organizations.
   # If you pass in "su_only" it only returns organizations for whom you are a super user.
-  def admin_organizations su_only = {su_only: false}
+  def admin_organizations(su_only = {su_only: false})
     orgs = Organization.all
     organizations = []
     arr = organizations_for_users(orgs, su_only)
 
     arr.each do |org|
-      organizations << org.all_children(orgs)
+      organizations << org.all_child_organizations_with_self
     end
 
     ##In case orgs is empty, return an empty array, instead of crashing.

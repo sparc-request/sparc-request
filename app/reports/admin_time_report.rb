@@ -124,7 +124,7 @@ class AdminTimeReport < ReportingModule
     # get child organizations
     if not ssr_organization_ids.empty?
       org = Organization.find(selected_organization_id)
-      ssr_organization_ids = [ssr_organization_ids, org.all_children(organizations).map(&:id)].flatten
+      ssr_organization_ids = [ssr_organization_ids, org.all_child_organizations_with_self.map(&:id)].flatten
     end
 
     if args[:service_requests_submitted_at_from] and args[:service_requests_submitted_at_to]

@@ -25,53 +25,57 @@
   = organization.name
 %h6.text-muted
   = org_tree_header(organization)
-.panel-group#cm-form-accordion
-  .panel.panel-default#general-info
-    .panel-heading
-      %h4.panel-title
-        = link_to t(:catalog_manager)[:organization_form][:headers][:general_info], '#general-info-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
-    .panel-collapse.collapse.in#general-info-collapse
-      .panel-body
-        = render "catalog_manager/shared/general_info_form", organization: organization, user: @user, path: path
 
-  - if organization.process_ssrs?
-    .panel.panel-default#status-options
+- if !@user.can_edit_organization?(organization)
+  %h4= t(:catalog_manager)[:organization_form][:not_authorized]
+- else
+  .panel-group#cm-form-accordion
+    .panel.panel-default#general-info
       .panel-heading
         %h4.panel-title
-          = link_to t(:catalog_manager)[:organization_form][:headers][:status_options], '#status-options-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
-      .panel-collapse.collapse#status-options-collapse
+          = link_to t(:catalog_manager)[:organization_form][:headers][:general_info], '#general-info-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
+      .panel-collapse.collapse.in#general-info-collapse
         .panel-body
-          = render "catalog_manager/shared/statuses_form", organization: organization, available_statuses: @available_statuses, editable_statuses: @editable_statuses, user: @user
+          = render "catalog_manager/shared/general_info_form", organization: organization, user: @user, path: path
 
-  .panel.panel-default#user-rights
-    .panel-heading
-      %h4.panel-title
-        = link_to t(:catalog_manager)[:organization_form][:headers][:user_rights], '#user-rights-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
-    .panel-collapse.collapse#user-rights-collapse
-      .panel-body
-        = render "catalog_manager/shared/user_rights_form", organization: organization, user_rights: user_rights, user: @user, path: path
+    - if organization.process_ssrs?
+      .panel.panel-default#status-options
+        .panel-heading
+          %h4.panel-title
+            = link_to t(:catalog_manager)[:organization_form][:headers][:status_options], '#status-options-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
+        .panel-collapse.collapse#status-options-collapse
+          .panel-body
+            = render "catalog_manager/shared/statuses_form", organization: organization, available_statuses: @available_statuses, editable_statuses: @editable_statuses, user: @user
 
-  - unless organization.type == 'Institution'
-    .panel.panel-default#pricing
+    .panel.panel-default#user-rights
       .panel-heading
         %h4.panel-title
-          = link_to t(:catalog_manager)[:organization_form][:headers][:pricing], '#pricing-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
-      .panel-collapse.collapse#pricing-collapse
+          = link_to t(:catalog_manager)[:organization_form][:headers][:user_rights], '#user-rights-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
+      .panel-collapse.collapse#user-rights-collapse
         .panel-body
-          Not Yet Implemented
+          = render "catalog_manager/shared/user_rights_form", organization: organization, user_rights: user_rights, user: @user, path: path
 
-    .panel.panel-default#fulfillment{style: (organization.tag_list.include?("clinical work fulfillment") && organization.process_ssrs) ? "display: block;" : "display: none;"}
-      .panel-heading
-        %h4.panel-title
-          = link_to t(:catalog_manager)[:organization_form][:fulfillment_rights][:title], '#fulfillment-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
-      .panel-collapse.collapse#fulfillment-collapse
-        .panel-body
-          = render "catalog_manager/shared/fulfillment_rights_form", organization: organization, path: path, fulfillment_rights: fulfillment_rights
+    - unless organization.type == 'Institution'
+      .panel.panel-default#pricing
+        .panel-heading
+          %h4.panel-title
+            = link_to t(:catalog_manager)[:organization_form][:headers][:pricing], '#pricing-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
+        .panel-collapse.collapse#pricing-collapse
+          .panel-body
+            Not Yet Implemented
 
-    .panel.panel-default#associated-surveys
-      .panel-heading
-        %h4.panel-title
-          = link_to t(:catalog_manager)[:organization_form][:headers][:associated_surveys], '#associated-surveys-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
-      .panel-collapse.collapse#associated-surveys-collapse
-        .panel-body
-          = render "catalog_manager/shared/surveys_form", organization: organization, user_rights: user_rights, user: @user, path: path
+      .panel.panel-default#fulfillment{style: (organization.tag_list.include?("clinical work fulfillment") && organization.process_ssrs) ? "display: block;" : "display: none;"}
+        .panel-heading
+          %h4.panel-title
+            = link_to t(:catalog_manager)[:organization_form][:fulfillment_rights][:title], '#fulfillment-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
+        .panel-collapse.collapse#fulfillment-collapse
+          .panel-body
+            = render "catalog_manager/shared/fulfillment_rights_form", organization: organization, path: path, fulfillment_rights: fulfillment_rights
+
+      .panel.panel-default#associated-surveys
+        .panel-heading
+          %h4.panel-title
+            = link_to t(:catalog_manager)[:organization_form][:headers][:associated_surveys], '#associated-surveys-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
+        .panel-collapse.collapse#associated-surveys-collapse
+          .panel-body
+            = render "catalog_manager/shared/surveys_form", organization: organization, user_rights: user_rights, user: @user, path: path

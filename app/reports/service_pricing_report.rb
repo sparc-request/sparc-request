@@ -175,7 +175,7 @@ class ServicePricingReport < ReportingModule
     if selected_organization_id
       organizations = Organization.all
       org = Organization.find(selected_organization_id)
-      service_organization_ids = org.all_children(organizations).map(&:id)
+      service_organization_ids = org.all_child_organizations_with_self.map(&:id)
       service_organization_ids.flatten!
       service_organization_ids.uniq!
     end

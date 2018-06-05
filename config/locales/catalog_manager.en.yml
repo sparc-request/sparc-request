@@ -137,6 +137,7 @@ en:
         title: "Status"
         available_statuses: "Available"
         editable_statuses: "Editable"
+      not_authorized: "You do not have rights to edit this Organization."
       remove: "Remove"
       abbreviation: "Abbreviation"
       ack_language: "Acknowledgment Language"
@@ -211,6 +212,7 @@ en:
       service_in_list: "is already related to this service."
 
     service_form:
+      not_authorized: "You do not have authorization to edit this Service."
       one_time_fee: "Non-clinical (Non-Per </br> Patient/Visit) Services"
       component: "Component"
       remove_add: "Remove / Add"

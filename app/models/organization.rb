@@ -94,6 +94,16 @@ class Organization < ApplicationRecord
     ).distinct
   }
 
+  scope :authorized_for_clinical_provider, -> (identity_id) {
+    where(
+      id: Organization.authorized_child_organization_ids(
+        joins(:clinical_providers).
+        where(clinical_providers: { identity_id: identity_id } ).
+        references(:clinical_providers).
+        distinct(:organizations).ids)
+    ).distinct
+  }
+
   scope :in_cwf, -> { joins(:tags).where(tags: { name: 'clinical work fulfillment' }) }
 
   def label
@@ -171,24 +181,21 @@ class Organization < ApplicationRecord
     get_editable_statuses.include?(status)
   end
 
-  # Returns the immediate children of this organization (shallow search)
-  def children orgs
-    children = []
-
-    orgs.each do |org|
-      if org.parent_id == self.id
-        children << org
-      end
+  #Returns all child organizations, all the way down the tree
+  def all_child_organizations(ids_only=false)
+    if ids_only
+      [org_children.pluck(:id), org_children.map{|org| org.all_child_organizations(true)}].flatten
+    else
+      [org_children, org_children.map(&:all_child_organizations)].flatten
     end
-
-    children
   end
 
-  def all_child_organizations
-    [
-      org_children,
-      org_children.map(&:all_child_organizations)
-    ].flatten
+  def all_child_organizations_with_self(ids_only=false)
+    if ids_only
+      all_child_organizations(true) << self.id
+    else
+      all_child_organizations << self
+    end
   end
 
   def child_orgs_with_protocols
@@ -202,43 +209,21 @@ class Organization < ApplicationRecord
     organizations_with_protocols.flatten.uniq
   end
 
-  # Returns an array of all children (and children of children) of this organization (deep search).
-  # Optionally includes self
-  def all_children (all_children=[], include_self=true, orgs)
-    self.children(orgs).each do |child|
-      all_children << child
-      child.all_children(all_children, orgs)
-    end
-
-    all_children << self if include_self
-
-    all_children.uniq
-  end
-
   def update_descendants_availability(is_available)
-    child_organizations = Organization.where(id: all_child_organizations << self)
-    child_organizations.each do |org|
+    child_orgs_with_self = Organization.where(id: all_child_organizations_with_self)
+    child_orgs_with_self.each do |org|
       org.update_attributes(is_available: is_available)
     end
-    Service.where(organization_id: child_organizations).each do |service|
+    Service.where(organization_id: child_orgs_with_self).each do |service|
       service.update_attributes(is_available: is_available)
     end
   end
 
   # Returns an array of all services that are offered by this organization as well of all of its
   # deep children.
-  def all_child_services include_self=true
-    orgs = Organization.all
-    all_services = []
-    children = self.all_children [], include_self, orgs
-    children.each do |child|
-      if child.services
-        services = Service.where(:organization_id => child.id).includes(:pricing_maps)
-        all_services = all_services | services.sort_by{|x| x.name}
-      end
-    end
-
-    all_services
+  def all_child_services(include_self=true)
+    org_ids = include_self ? all_child_organizations_with_self(true) : all_child_organizations(true)
+    Service.where(organization_id: org_ids).sort_by{|x| x.name}
   end
 
   ###############################################################################
@@ -349,50 +334,34 @@ class Organization < ApplicationRecord
   # service providers, as well as the service providers on all parents.  If the process_ssrs flag
   # is true at this organization, also returns the service providers of all children.
   def all_service_providers(include_children=true)
-    orgs = Organization.all
-    all_service_providers = []
-
     # If process_ssrs is true, we need to also get our children's service providers
     if self.process_ssrs and include_children
-      self.all_children(orgs).each do |child|
-        all_service_providers << child.service_providers
-      end
+      org_ids = all_child_organizations_with_self(true)
+    else
+      org_ids = [self.id]
     end
-
-    # Get the service providers on self
-    all_service_providers << self.service_providers
 
     # Get the service providers on all parents
-    self.parents.each do |parent|
-      all_service_providers << parent.service_providers
-    end
+    org_ids << parents.map(&:id)
 
-    return all_service_providers.flatten.uniq {|x| x.identity_id}
+    ServiceProvider.where(organization_id: org_ids.flatten)
   end
 
   # Returns all *relevant* super users for an organization.  Returns this organization's
   # super users, as well as the super users on all parents.  If the process_ssrs flag
   # is true at this organization, also returns the super users of all children.
   def all_super_users
-    orgs = Organization.all
-    all_super_users = []
-
     # If process_ssrs is true, we need to also get our children's super users
     if self.process_ssrs
-      self.all_children(orgs).each do |child|
-        all_super_users << child.super_users
-      end
+      org_ids = all_child_organizations_with_self(true)
+    else
+      org_ids = [self.id]
     end
-
-    # Get the super users on self
-    all_super_users << self.super_users
 
     # Get the super users on all parents
-    self.parents.each do |parent|
-      all_super_users << parent.super_users
-    end
+    org_ids << parents.map(&:id)
 
-    return all_super_users.flatten.uniq {|x| x.identity_id}
+    SuperUser.where(organization_id: org_ids.flatten)
   end
 
   # Returns all user rights on the organization, optionally including Service Providers

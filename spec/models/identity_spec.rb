@@ -141,15 +141,15 @@ RSpec.describe Identity, type: :model do
         end
       end
 
-      describe "can edit entity" do
+      describe "can edit organization" do
 
         it "should return true if the user is a catalog manager for a given organization" do
-          expect(user.can_edit_entity?(institution)).to eq(true)
+          expect(user.can_edit_organization?(institution)).to eq(true)
         end
 
         it "should return false if the user is not a catalog manager for a given organization" do
           random_user = create(:identity)
-          expect(random_user.can_edit_entity?(institution)).to eq(false)
+          expect(random_user.can_edit_organization?(institution)).to eq(false)
         end
       end
 
@@ -208,7 +208,7 @@ RSpec.describe Identity, type: :model do
 
     describe "collection methods" do
 
-      describe "catalog manager organizations" do
+      describe "catalog manager organizations ids" do
 
         it "should collect all organizations that the user has catalog manager permissions on" do
           expect(user.catalog_manager_organizations).to include(institution)

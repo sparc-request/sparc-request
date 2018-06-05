@@ -112,7 +112,7 @@ group :test do
   gem 'capybara-webkit'
   gem 'database_cleaner'
   gem 'email_spec'
-  gem 'factory_girl_rails'
+  gem "factory_bot_rails"
   gem 'rails-controller-testing', require: false
   gem 'rspec-activemodel-mocks'
   gem 'rspec-html-matchers'

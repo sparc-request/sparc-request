@@ -269,7 +269,7 @@ class Identity < ApplicationRecord
   end
 
   # Determines whether this identity can edit a given organization's information in CatalogManager.
-  # Returns true if this identity's catalog_manager_organization ids includes the given organization id.
+  # Returns true if this identity's catalog_manager_organizations includes the given organization.
   def can_edit_organization?(organization)
     catalog_manager_organizations.include?(organization)
   end

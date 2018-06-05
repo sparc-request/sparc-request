@@ -311,9 +311,9 @@ class Identity < ApplicationRecord
     Organization.authorized_for_identity(self.id)
   end
 
-  # Collects all organization ids that this identity has catalog manager permissions on, as well as
+  # Collects all organizations that this identity has catalog manager permissions on, as well as
   # any child (deep) of any of those organizations.
-  # Returns an array of organization ids.
+  # Returns an active record relation of organizations.
   def catalog_manager_organizations
     Organization.authorized_for_catalog_manager(self.id)
   end

@@ -156,9 +156,8 @@ class Organization < ApplicationRecord
     end
   end
 
-  #TODO SubServiceRequest.where(organization: self.all_child_organizations).each(:&update_org_tree)
   def update_ssr_org_name
-    SubServiceRequest.where( organization: self.all_child_organizations<<self ).each(&:update_org_tree)
+    SubServiceRequest.where( organization: self.all_child_organizations_with_self ).each(&:update_org_tree)
   end
 
   def service_providers_lookup
@@ -182,20 +181,12 @@ class Organization < ApplicationRecord
   end
 
   #Returns all child organizations, all the way down the tree
-  def all_child_organizations(ids_only=false)
-    if ids_only
-      [org_children.pluck(:id), org_children.map{|org| org.all_child_organizations(true)}].flatten
-    else
-      [org_children, org_children.map(&:all_child_organizations)].flatten
-    end
+  def all_child_organizations
+    [org_children, org_children.map(&:all_child_organizations)].flatten
   end
 
-  def all_child_organizations_with_self(ids_only=false)
-    if ids_only
-      all_child_organizations(true) << self.id
-    else
-      all_child_organizations << self
-    end
+  def all_child_organizations_with_self
+    all_child_organizations << self
   end
 
   def child_orgs_with_protocols
@@ -222,7 +213,7 @@ class Organization < ApplicationRecord
   # Returns an array of all services that are offered by this organization as well of all of its
   # deep children.
   def all_child_services(include_self=true)
-    org_ids = include_self ? all_child_organizations_with_self(true) : all_child_organizations(true)
+    org_ids = include_self ? all_child_organizations_with_self.map(&:id) : all_child_organizations.map(&:id)
     Service.where(organization_id: org_ids).sort_by{|x| x.name}
   end
 
@@ -336,7 +327,7 @@ class Organization < ApplicationRecord
   def all_service_providers(include_children=true)
     # If process_ssrs is true, we need to also get our children's service providers
     if self.process_ssrs and include_children
-      org_ids = all_child_organizations_with_self(true)
+      org_ids = all_child_organizations_with_self.map(&:id)
     else
       org_ids = [self.id]
     end
@@ -353,7 +344,7 @@ class Organization < ApplicationRecord
   def all_super_users
     # If process_ssrs is true, we need to also get our children's super users
     if self.process_ssrs
-      org_ids = all_child_organizations_with_self(true)
+      org_ids = all_child_organizations_with_self.map(&:id)
     else
       org_ids = [self.id]
     end

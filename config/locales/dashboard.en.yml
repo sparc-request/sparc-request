@@ -242,8 +242,8 @@ en:
           export_consolidated_request: "Quick access to export all service requests to Excel"
       milestones:
         title: 'Milestones (Timeline)'
-        start_date: "(Estimated) Start Date"
-        end_date: "(Estimated) End Date"
+        start_date: "Estimated Start Date"
+        end_date: "Estimated End Date"
         recruitment_start: "Estimated Recruitment Start Date"
         recruitment_end: "Estimated Recruitment End Date"
         update_button: 'Update Milestones'

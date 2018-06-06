@@ -72,7 +72,7 @@ module Dashboard::SubServiceRequestsHelper
     display = content_tag(:div, "", class: "row")
     if sub_service_request.ready_for_fulfillment?
       if sub_service_request.in_work_fulfillment?
-        if user.clinical_provider_rights?
+        if user.cwf_rights?(sub_service_request.organization)
           # In fulfillment and user has rights
           display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:go_to_fulfillment], "#{Setting.find_by_key("clinical_work_fulfillment_url").value}/sub_service_request/#{sub_service_request.id}", target: "_blank", class: "btn btn-primary btn-md"
         else

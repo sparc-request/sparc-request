@@ -279,11 +279,6 @@ class Identity < ApplicationRecord
     can_edit_organization?(service.organization)
   end
 
-  # Used in clinical fulfillment to determine whether the user can edit a particular core.
-  def can_edit_core?(org_id)
-    self.clinical_provider_organizations.map{|x| x.id}.include?(org_id) ? true : false
-  end
-
   # Determines whether the user has permission to edit historical data for a given organization.
   # Returns true if the edit_historic_data flag is set to true on the relevant catalog_manager relationship.
   def can_edit_historical_data_for?(organization)
@@ -307,40 +302,30 @@ class Identity < ApplicationRecord
   ###############################################################################
 
   def authorized_admin_organizations
-    # Returns the organizations for which the user has Super User or Service Provider
-    # privileges, plus all of their child organizations
+    # Returns an active record relation of organizations where the user has super user, or service provider rights.
+    # Including all child organizations.
     Organization.authorized_for_identity(self.id)
   end
 
-  # Collects all organizations that this identity has catalog manager permissions on, as well as
-  # any child (deep) of any of those organizations.
-  # Returns an active record relation of organizations.
+  # Returns an active record relation of organizations where the user has catalog manager rights.
+  # Including all child organizations.
   def catalog_manager_organizations
     Organization.authorized_for_catalog_manager(self.id)
   end
 
-  # Returns an array of organizations where the user has clinical provider rights.
+  # Returns an active record relation of organizations where the user has clinical provider rights.
+  # Including all child organizations
   def clinical_provider_organizations
     Organization.authorized_for_clinical_provider(self.id)
   end
 
-  # Collects all organizations that this identity has super user or service provider permissions
-  # on, as well as any child (deep) of any of those organizations.
-  # Returns an array of organizations.
-  # If you pass in "su_only" it only returns organizations for whom you are a super user.
-  def admin_organizations(su_only = {su_only: false})
-    orgs = Organization.all
-    organizations = []
-    arr = organizations_for_users(orgs, su_only)
 
-    arr.each do |org|
-      organizations << org.all_child_organizations_with_self
-    end
+  def super_user_organizations
+    Organization.authorized_for_super_user(self.id)
+  end
 
-    ##In case orgs is empty, return an empty array, instead of crashing.
-    organizations.flatten!.compact.uniq rescue return []
-
-    organizations
+  def cwf_rights?(organization)
+    super_user_organizations.include?(organization) or clinical_provider_organizations.include?(organization)
   end
 
   def organizations_for_users(orgs, su_only)
@@ -365,16 +350,6 @@ class Identity < ApplicationRecord
     arr = arr.flatten.compact.uniq
 
     arr
-  end
-
-  def clinical_provider_rights?
-    #TODO should look at all tagged with CTRC
-    org = Organization.tagged_with("ctrc").first
-    if !self.clinical_providers.empty? or self.admin_organizations({su_only: true}).include?(org)
-      return true
-    else
-      return false
-    end
   end
 
   ###############################################################################

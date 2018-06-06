@@ -27,3 +27,5 @@ $("[data-toggle='toggle']").bootstrapToggle(
     on: 'Yes',
     off: 'No'
   );
+
+$('[data-toggle="tooltip"]').tooltip()

@@ -138,26 +138,6 @@ module Dashboard::SubServiceRequestsHelper
     return effective_current_total(sub_service_request) - pi_contribution
   end
 
-  #This is used to filter out ssr's on the cfw home page
-  #so that clinical providers can only see ones that are
-  #under their core.  Super users and clinical providers on the
-  #ctrc can see all ssr's.
-  def user_can_view_ssr?(study_tracker, ssr, user)
-    can_view = false
-    if user.is_super_user? || user.clinical_provider_for_ctrc? || (user.is_service_provider?(ssr) && (study_tracker == false))
-      can_view = true
-    else
-      ssr.line_items.each do |line_item|
-        clinical_provider_cores(user).each do |core|
-          if line_item.core == core
-            can_view = true
-          end
-        end
-      end
-    end
-    can_view
-  end
-
   def clinical_provider_cores(user)
     cores = []
     user.clinical_providers.each do |provider|

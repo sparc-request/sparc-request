@@ -25,6 +25,8 @@ $("[data-toggle='toggle']").bootstrapToggle(
     off: 'No'
   );
 
+$('[data-toggle="tooltip"]').tooltip()
+
 
 ## Identity Search Bloodhound
 services_bloodhound = new Bloodhound(

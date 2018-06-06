@@ -23,14 +23,23 @@
 - cm = get_user_rights(user_rights[:catalog_managers], user.id)
 - cp = get_user_rights(user_rights[:service_providers], user.id)
 - cm_disabled = !organization.parents.detect{|org| user.catalog_managers.pluck(:organization_id).include?(org.id)}.nil?
+- su_disabled = !organization.parents.detect{|org| user.super_users.pluck(:organization_id).include?(org.id)}.nil?
 
 .row.form_row{ id: "user-rights-row-#{user.id}", data: { identity_id: user.id } }
   %div{class: "#{(organization.type == "Institution" or !organization.process_ssrs) ? 'col-sm-6' : 'col-sm-3'}"}
     = "#{user.full_name}, #{user.email}"
   .col-sm-2.text-center
-    = check_box_tag :super_user, true, !su.nil?, { class: "super-user-checkbox", data: { identity_id: user.id, organization_id: organization.id } }
+    - if su_disabled
+      = check_box_tag :super_user, true, !su.nil?, { class: "super-user-checkbox", disabled: true, title: t(:catalog_manager)[:organization_form][:user_rights][:duplicate_super_user], data: { identity_id: user.id, organization_id: organization.id, toggle: 'tooltip', placement: 'top'} }
+    -else
+      = check_box_tag :super_user, true, !su.nil?, { class: "super-user-checkbox", data: { identity_id: user.id, organization_id: organization.id } }
+
   .col-sm-3.text-center
-    = check_box_tag :catalog_manager, true, !cm.nil?, { class: "catalog-manager-checkbox", disabled: cm_disabled, data: { identity_id: user.id, organization_id: organization.id } }
+    - if cm_disabled
+      = check_box_tag :catalog_manager, true, !cm.nil?, { class: "catalog-manager-checkbox", disabled: true, title: t(:catalog_manager)[:organization_form][:user_rights][:duplicate_catalog_manager], data: { identity_id: user.id, organization_id: organization.id, toggle: 'tooltip', placement: 'top'} }
+    -else
+      = check_box_tag :catalog_manager, true, !cm.nil?, { class: "catalog-manager-checkbox", data: { identity_id: user.id, organization_id: organization.id } }
+
     - if !cm.nil?
       .form_row
       = label_tag :edit_historic_data, t(:catalog_manager)[:organization_form][:user_rights][:edit_historic_data], class: 'non_bold_label'

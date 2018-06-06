@@ -21,3 +21,5 @@
 new_row = "<%= j render '/catalog_manager/shared/user_rights_row', organization: @organization, user_rights: @user_rights, user: @new_ur_identity, new_user: true %>"
 
 $(new_row).hide().appendTo('#user_rights_container').fadeIn(1000)
+
+$('[data-toggle="tooltip"]').tooltip()

@@ -181,19 +181,6 @@ RSpec.describe Identity, type: :model do
         end
       end
 
-      describe "clinical provider for ctrc" do
-
-        it "should return true if the user is a clinical provider on the ctrc" do
-          program.tag_list.add("ctrc")
-          program.save
-          expect(user2.clinical_provider_for_ctrc?).to eq(true)
-        end
-
-        it "should return false if the user is not a clinical provider on the ctrc" do
-          expect(user.clinical_provider_for_ctrc?).to eq(false)
-        end
-      end
-
       describe "is service provider" do
 
         it "should return true if the user is a service provider for a given ssr's organization or any of it's parents" do

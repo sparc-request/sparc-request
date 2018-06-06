@@ -21,3 +21,5 @@
 $("#user-rights-row-<%= j @identity.id.to_s %>").replaceWith("<%= j render '/catalog_manager/shared/user_rights_row', organization: @organization, user_rights: @user_rights, user: @identity %>")
 
 $("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+
+$('[data-toggle="tooltip"]').tooltip()

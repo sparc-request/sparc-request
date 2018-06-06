@@ -122,6 +122,8 @@ en:
         user_in_table: "is already associated with this organization."
         add_user: "Add new user to table"
         remove_confirm: "Are you sure you want to delete this user from the organization?"
+        duplicate_super_user: "User already has super user rights at a higher level"
+        duplicate_catalog_manager: "User already has catalog manager rights at a higher level"
       surveys:
         name_version: "Name, Version"
         select_survey: "Please select a survey"

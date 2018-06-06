@@ -147,6 +147,7 @@ class Identity < ApplicationRecord
   end
 
   def is_service_provider?(ssr=nil)
+    ####TODO pretty sure this is totally unnecessary, and can be done in like, 2 lines.
     if ssr
       is_provider = false
       orgs =[]
@@ -374,19 +375,6 @@ class Identity < ApplicationRecord
     else
       return false
     end
-  end
-
-  def clinical_provider_for_ctrc?
-    #TODO should look at all tagged with CTRC
-    org = Organization.tagged_with("ctrc").first
-    return false if org.nil? #if no orgs have nexus tag
-    self.clinical_providers.each do |provider|
-      if provider.organization_id == org.id
-        return true
-      end
-    end
-
-    return false
   end
 
   ###############################################################################

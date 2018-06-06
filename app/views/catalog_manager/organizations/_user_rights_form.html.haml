@@ -18,23 +18,22 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.sps
-  - if entity.service_providers
-    - if @service_provider_error_message
-      .service_provider_error= @service_provider_error_message
-    %table
-      %thead
-        %tr
-          %th= t("cm_shared.labels.name_email")
-          %th.check= t("cm_shared.labels.primary")
-          %th.check= t("cm_shared.labels.hold")
-          %th= t("cm_shared.labels.delete")
-      %tbody
-        - entity.service_providers.each do |sp|
-          %tr
-            %td= sp.identity.display_name
-            %td.check= check_box_tag "#{sp.id}_contact", true, sp.is_primary_contact, :class => 'primary_contact', :org_id => entity.id, :contact_flag => sp.is_primary_contact, :identity => sp.id, :emails_flag => sp.hold_emails
-            %td.check= check_box_tag "#{sp.id}_emails", true, sp.hold_emails, :class => 'hold_emails', :org_id => entity.id, :contact_flag => sp.is_primary_contact, :identity => sp.id, :emails_flag => sp.hold_emails
-            %td= image_tag 'cancel.png', :id => sp.id, :class => 'sp_delete'
+.row{style: 'margin-bottom: 25px;'}
+  %div{class: "#{(organization.type == "Institution" or !organization.process_ssrs) ? 'col-sm-6' : 'col-sm-3'}"}
+    %h5= t(:catalog_manager)[:organization_form][:user_rights][:name_email]
+  .col-sm-2.text-center
+    %h5= t(:catalog_manager)[:organization_form][:user_rights][:super_user]
+  .col-sm-3.text-center
+    %h5= t(:catalog_manager)[:organization_form][:user_rights][:catalog_manager]
+  - unless organization.type == "Institution" or !organization.process_ssrs
+    .col-sm-3.text-center
+      %h5= t(:catalog_manager)[:organization_form][:user_rights][:service_provider]
+  .col-sm-1.text-center{style: 'padding: 0px;'}
+    %h5= t(:catalog_manager)[:organization_form][:remove]
 
-  = text_field_tag 'new_sp', t(:organization_form)[:new_sp]
+#user_rights_container
+  - organization.all_user_rights(organization.type != 'Institution').sort_by(&:last_name).each do |user|
+    = render "user_rights_row", organization: organization, user_rights: user_rights, user: user
+
+.col-sm-12.no-padding
+  = text_field_tag 'user-rights-query', nil, placeholder: t(:catalog_manager)[:organization_form][:user_rights][:add_user], class: "form-control"

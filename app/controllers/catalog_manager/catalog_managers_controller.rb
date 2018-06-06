@@ -34,7 +34,7 @@ class CatalogManager::CatalogManagersController < CatalogManager::AppController
       end
     end
 
-    render 'catalog_manager/shared/refresh_user_rights_row'
+    render 'catalog_manager/organizations/refresh_user_rights_row'
   end
 
   def destroy
@@ -49,7 +49,7 @@ class CatalogManager::CatalogManagersController < CatalogManager::AppController
       flash[:alert] = "Error removing Catalog Manager."
     end
 
-    render 'catalog_manager/shared/refresh_user_rights_row'
+    render 'catalog_manager/organizations/refresh_user_rights_row'
   end
 
   def update
@@ -64,7 +64,7 @@ class CatalogManager::CatalogManagersController < CatalogManager::AppController
       flash[:alert] = "Error updating Catalog Manager."
     end
 
-    render 'catalog_manager/shared/refresh_user_rights_row'
+    render 'catalog_manager/organizations/refresh_user_rights_row'
   end
 
   private

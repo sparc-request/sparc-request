@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-new_row = "<%= j render '/catalog_manager/shared/survey_row', organization: @organization, associated_survey: @associated_survey %>"
+new_row = "<%= j render 'survey_row', organization: @organization, associated_survey: @associated_survey %>"
 
 $(new_row).hide().appendTo('#surveys_container').fadeIn(1000)
 

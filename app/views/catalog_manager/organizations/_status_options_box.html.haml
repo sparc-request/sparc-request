@@ -17,28 +17,29 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#all_statuses{style: @organization.use_default_statuses ? "display: none;" : "display: block;"}
-  %table
-    %tr
-      %td
-        %legend= t(:organization_form)[:available_statuses]
-        - selected_avs = @organization.get_available_statuses
-        %table
-          = f.fields_for :available_statuses, @organization.available_statuses.alphabetized do |as|
-            %tr
-              %th= as.label :status, "#{as.object.humanize.gsub('CTRC', 'Nexus')}:"
-              %td= as.check_box :selected, {class: 'available-status', checked: selected_avs.include?(as.object.status), disabled: as.object.disabled_status?, data: { status: as.object.status }}, 'true', 'false'
-              - if as.object.disabled_status?
-                = as.hidden_field :selected, value: 'true'
 
-    - if current_user.is_overlord?
-      %tr
-        %td
-          %br
-          - selected_eds = @organization.get_editable_statuses
-          %legend= t(:organization_form)[:editable_statuses]
-          %table
-            = f.fields_for :editable_statuses, @organization.editable_statuses.alphabetized do |es|
-              %tr{ class: "#{es.object.status}-dependent", style: selected_avs.include?(es.object.status) ? "display:table-row;" : "display:none;" }
-                %th= es.label :status, "#{es.object.humanize.gsub('CTRC', 'Nexus')}:"
-                %td= es.check_box :selected, {checked: selected_eds.include?(es.object.status)}, 'true', 'false'
+%fieldset#available_statuses_fieldset.parent
+  .legend= t(:organization_form)[:status_legend]
+  %fieldset.single_fieldset
+    %label
+      = t(:organization_form)[:use_default_statuses]
+    = f.check_box :use_default_statuses
+    #default_statuses{style: @organization.use_default_statuses? ? "display: block;" : "display: none;"}
+      %table
+        %tr
+          %td
+            %legend= t(:organization_form)[:default_available_statuses]
+            %table
+              - AvailableStatus.defaults.sort.each do |status|
+                %tr
+                  %th= f.label :status, "#{AvailableStatus.statuses[status].titleize}"
+        - if current_user.is_overlord?
+          %tr
+            %td
+              %br
+              %legend= t(:organization_form)[:default_editable_statuses]
+              %table
+                - EditableStatus.defaults.sort.each do |status|
+                  %tr
+                    %th= f.label :status, "#{EditableStatus.statuses[status].titleize}"
+    = render partial: 'available_statuses', locals: {f: f}

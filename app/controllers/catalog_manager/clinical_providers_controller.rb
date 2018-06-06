@@ -34,7 +34,7 @@ class CatalogManager::ClinicalProvidersController < CatalogManager::AppControlle
       end
     end
 
-    render 'catalog_manager/shared/refresh_fulfillment_rights_row'
+    render 'catalog_manager/organizations/refresh_fulfillment_rights_row'
   end
 
   def destroy
@@ -49,7 +49,7 @@ class CatalogManager::ClinicalProvidersController < CatalogManager::AppControlle
       flash[:alert] = "Error removing Clinical Provider."
     end
 
-    render 'catalog_manager/shared/refresh_fulfillment_rights_row'
+    render 'catalog_manager/organizations/refresh_fulfillment_rights_row'
   end
 
   private

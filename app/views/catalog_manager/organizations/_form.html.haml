@@ -36,7 +36,7 @@
           = link_to t(:catalog_manager)[:organization_form][:headers][:general_info], '#general-info-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
       .panel-collapse.collapse.in#general-info-collapse
         .panel-body
-          = render "catalog_manager/shared/general_info_form", organization: organization, user: @user, path: path
+          = render "general_info_form", organization: organization, user: @user, path: path
 
     - if organization.process_ssrs?
       .panel.panel-default#status-options
@@ -45,7 +45,7 @@
             = link_to t(:catalog_manager)[:organization_form][:headers][:status_options], '#status-options-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
         .panel-collapse.collapse#status-options-collapse
           .panel-body
-            = render "catalog_manager/shared/statuses_form", organization: organization, available_statuses: @available_statuses, editable_statuses: @editable_statuses, user: @user
+            = render "statuses_form", organization: organization, available_statuses: @available_statuses, editable_statuses: @editable_statuses, user: @user
 
     .panel.panel-default#user-rights
       .panel-heading
@@ -53,7 +53,7 @@
           = link_to t(:catalog_manager)[:organization_form][:headers][:user_rights], '#user-rights-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
       .panel-collapse.collapse#user-rights-collapse
         .panel-body
-          = render "catalog_manager/shared/user_rights_form", organization: organization, user_rights: user_rights, user: @user, path: path
+          = render "user_rights_form", organization: organization, user_rights: user_rights, user: @user, path: path
 
     - unless organization.type == 'Institution'
       .panel.panel-default#pricing
@@ -70,7 +70,7 @@
             = link_to t(:catalog_manager)[:organization_form][:fulfillment_rights][:title], '#fulfillment-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
         .panel-collapse.collapse#fulfillment-collapse
           .panel-body
-            = render "catalog_manager/shared/fulfillment_rights_form", organization: organization, path: path, fulfillment_rights: fulfillment_rights
+            = render "fulfillment_rights_form", organization: organization, path: path, fulfillment_rights: fulfillment_rights
 
       .panel.panel-default#associated-surveys
         .panel-heading
@@ -78,4 +78,4 @@
             = link_to t(:catalog_manager)[:organization_form][:headers][:associated_surveys], '#associated-surveys-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
         .panel-collapse.collapse#associated-surveys-collapse
           .panel-body
-            = render "catalog_manager/shared/surveys_form", organization: organization, user_rights: user_rights, user: @user, path: path
+            = render "surveys_form", organization: organization, user_rights: user_rights, user: @user, path: path

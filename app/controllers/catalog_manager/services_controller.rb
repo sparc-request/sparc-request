@@ -248,16 +248,6 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     render :json => reformatted_services.to_json
   end
 
-  ####Pricing Methods####
-
-  def get_updated_rate_maps
-    # new_rate = PricingMap.rates_from_full(params[:date].try(:to_date).try(:strftime, "%F"), params[:organization_id], Service.dollars_to_cents(params[:full_rate]))
-    # new_rate["federal_rate"] = Service.fix_service_rate(new_rate.try(:[], :federal_rate))
-    # new_rate["corporate_rate"] = Service.fix_service_rate(new_rate.try(:[], :corporate_rate))
-    # new_rate["other_rate"] = Service.fix_service_rate(new_rate.try(:[], :other_rate))
-    # new_rate["member_rate"] = Service.fix_service_rate(new_rate.try(:[], :member_rate))
-    # render :json => new_rate.to_json
-  end
 
   ####General Methods####
 
@@ -280,10 +270,6 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     end
 
     render :plain => alert_text
-  end
-
-  def update_cores
-    @cores = Program.find(params[:id]).cores
   end
 
 

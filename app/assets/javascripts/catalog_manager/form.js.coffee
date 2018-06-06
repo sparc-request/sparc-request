@@ -79,15 +79,6 @@ $ ->
           $("#sp-is-primary-contact-#{identity_id}").prop('checked', false)
           $("#sp-hold-emails-#{identity_id}").prop('checked', false)
 
-  $(document).on 'change', '.clinical-provider-checkbox', ->
-    $.ajax
-      type: if $(this).prop('checked') then 'POST' else 'DELETE'
-      url: '/catalog_manager/clinical_provider'
-      data:
-        clinical_provider:
-          identity_id: $(this).data('identity-id')
-          organization_id: $(this).data('organization-id')
-
   $(document).on 'change', '.cm-edit-historic-data', ->
     $.ajax
       type: 'PUT'
@@ -123,8 +114,8 @@ $ ->
     if confirm (I18n['catalog_manager']['organization_form']['user_rights']['remove_confirm'])
       identity_id = $(this).data('identity-id')
       $.ajax
-        type: 'DELETE'
-        url: 'catalog_manager/user_right'
+        type: 'POST'
+        url: 'catalog_manager/organizations/remove_user_rights_row'
         data:
           user_rights:
             identity_id: identity_id
@@ -172,9 +163,9 @@ $ ->
   $(document).on 'change', '.clinical-provider-checkbox', ->
     $.ajax
       type: if $(this).prop('checked') then 'POST' else 'DELETE'
-      url: '/catalog_manager/super_user'
+      url: '/catalog_manager/clinical_provider'
       data:
-        super_user:
+        clinical_provider:
           identity_id: $(this).data('identity-id')
           organization_id: $(this).data('organization-id')
 

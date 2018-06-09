@@ -18,6 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#fulfillment-rights-row-<%= j @identity.id.to_s %>").replaceWith("<%= j render 'fulfillment_rights_row', organization: @organization, fulfillment_rights: @fulfillment_rights, fr: @identity %>")
+$("#fulfillment-rights-row-<%= j @identity.id.to_s %>").replaceWith("<%= j render '/catalog_manager/organizations/fulfillment_rights_row', organization: @organization, fulfillment_rights: @fulfillment_rights, fr: @identity %>")
 
 $("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")

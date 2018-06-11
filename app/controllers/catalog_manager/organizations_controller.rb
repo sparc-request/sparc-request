@@ -49,7 +49,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
       flash.now[:alert] = "Failed to update #{@organization.name}."
     end
 
-    @institutions = Institution.order('`order`')
+    @institutions = Institution.order(Arel.sql('`order`,`name`'))
 
     respond_to do |format|
       format.js

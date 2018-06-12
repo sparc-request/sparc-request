@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -51,6 +51,8 @@ RSpec.describe "protocols/view_details.html.haml", type: :view do
   end
 
   describe "view details of a study" do
+    stub_config("use_epic", true)
+    
     before(:each) do
       protocol = create(
         :study_without_validations_with_questions,
@@ -65,7 +67,7 @@ RSpec.describe "protocols/view_details.html.haml", type: :view do
       expect(response).to render_template("protocols/_view_details.html.haml")
       expect(response).to render_template(partial: "protocols/view_details/_study_fields")
       expect(response).to render_template(partial: "protocols/view_details/_study_information")
-      expect(response).to render_template(partial: "protocols/view_details/_optional_information")
+      expect(response).to render_template(partial: "protocols/view_details/_financial_information")
       expect(response).to render_template(partial: "protocols/view_details/_research_involving")
       expect(response).to render_template(partial: "protocols/view_details/_study_type")
       expect(response).to render_template(partial: "protocols/view_details/_impact_areas")

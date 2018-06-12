@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -36,7 +36,7 @@ class AdminTimeReport < ReportingModule
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id', :required => true},
       Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
       Service => {:field_type => :select_tag, :dependency => '#program_id, #core_id', :dependency_id => 'organization_id', :required => true},
-      "Current Status" => {:field_type => :check_box_tag, :for => 'status', :multiple => AVAILABLE_STATUSES}
+      "Current Status" => {:field_type => :check_box_tag, :for => 'status', :multiple => PermissibleValue.get_hash('status')}
     }
   end
 
@@ -136,7 +136,7 @@ class AdminTimeReport < ReportingModule
 
     # submitted_at ||= self.default_options["Date Range"][:from]..self.default_options["Date Range"][:to]
     submitted_at = "2012-03-01".to_date..Date.today
-    statuses = args[:status] || AVAILABLE_STATUSES.keys # use all if none are selected
+    statuses = args[:status] || PermissibleValue.get_key_list('status') # use all if none are selected
 
     return :sub_service_requests => {:organization_id => ssr_organization_ids, :status => statuses}, :service_requests => {:submitted_at => submitted_at}, :services => {:id => args[:service_id]}
   end

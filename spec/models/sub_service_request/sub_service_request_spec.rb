@@ -1,5 +1,5 @@
 # coding: utf-8
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -123,7 +123,7 @@ RSpec.describe SubServiceRequest, type: :model do
       context "indirect cost total" do
 
         it "should return the indirect cost for one time fees" do
-          if USE_INDIRECT_COST
+          if Setting.find_by_key("use_indirect_cost").value
             expect(sub_service_request.indirect_cost_total).to eq(1000)
           else
             expect(sub_service_request.indirect_cost_total).to eq(0.0)
@@ -131,7 +131,7 @@ RSpec.describe SubServiceRequest, type: :model do
         end
 
         it "should return the indirect cost for visit based services" do
-          if USE_INDIRECT_COST
+          if Setting.find_by_key("use_indirect_cost").value
             expect(sub_service_request.indirect_cost_total).to eq(1000)
           else
             expect(sub_service_request.indirect_cost_total).to eq(0.0)
@@ -142,7 +142,7 @@ RSpec.describe SubServiceRequest, type: :model do
       context "grand total" do
 
         it "should return the grand total cost of the sub service request" do
-          if USE_INDIRECT_COST
+          if Setting.find_by_key("use_indirect_cost").value
             expect(sub_service_request.grand_total).to eq(1500)
           else
             expect(sub_service_request.grand_total).to eq(5000.0)
@@ -212,10 +212,6 @@ RSpec.describe SubServiceRequest, type: :model do
       let!(:line_item1) { create(:line_item, sub_service_request_id: ssr1.id, service_request_id: service_request.id, service_id: service.id) }
       let!(:line_item2) { create(:line_item, sub_service_request_id: ssr2.id, service_request_id: service_request.id, service_id: service2.id) }
 
-      before :each do
-        sub_service_request.organization.editable_statuses.where(status: 'on_hold').destroy_all
-      end
-
       context "can be edited" do
 
         it "should return true if the status is draft" do
@@ -239,7 +235,6 @@ RSpec.describe SubServiceRequest, type: :model do
         end
 
         it 'should should return false if the status is complete' do
-          stub_const("FINISHED_STATUSES", ['complete'])
           sub_service_request.update_attributes(status: 'complete')
           expect(sub_service_request.can_be_edited?).to eq(false)
         end

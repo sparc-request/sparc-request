@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -198,8 +198,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
 
   def search
     term = params[:term].strip
-    services = Service.where("name LIKE '%#{term}%' OR abbreviation LIKE '%#{term}%' OR cpt_code LIKE '%#{term}%'")
-
+    services = Service.where("is_available=1 AND (name LIKE '%#{term}%' OR abbreviation LIKE '%#{term}%' OR cpt_code LIKE '%#{term}%')")
     reformatted_services = []
     services.each do |service|
       reformatted_services << {"label" => service.display_service_name, "value" => service.name, "id" => service.id}
@@ -251,6 +250,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
         :cpt_code,
         :eap_id,
         :charge_code,
+        :order_code,
         :revenue_code,
         :organization_id,
         :send_to_epic,

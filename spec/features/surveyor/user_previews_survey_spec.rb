@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,36 +22,69 @@ require 'rails_helper'
 
 RSpec.describe 'User previews a survey', js: true do
   let_there_be_lane
-
   fake_login_for_each_test
 
-  before :each do
-    stub_const("SITE_ADMINS", ['jug2'])
+  stub_config("site_admins", ["jug2"])
 
-    @survey = create(:survey)
-    s1      = create(:section, survey: @survey)
-    s2      = create(:section, survey: @survey)
-    s3      = create(:section, survey: @survey)
-    q1      = create(:question, section: s1, question_type: 'dropdown')
-    q2      = create(:question, section: s1)
-    q3      = create(:question, section: s2)
-    o1      = create(:option, question: q1)
-    o2      = create(:option, question: q1)
+  context 'surveys' do
+    before :each do
+      @survey = create(:system_survey)
+      s1      = create(:section, survey: @survey)
+      s2      = create(:section, survey: @survey)
+      s3      = create(:section, survey: @survey)
+      q1      = create(:question, section: s1, question_type: 'dropdown')
+      q2      = create(:question, section: s1)
+      q3      = create(:question, section: s2)
+      o1      = create(:option, question: q1)
+      o2      = create(:option, question: q1)
 
-    visit surveyor_surveys_path
-    wait_for_javascript_to_finish
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
 
-    click_button 'Preview'
-    wait_for_javascript_to_finish
+      click_link 'Preview'
+      wait_for_javascript_to_finish
+    end
+
+    scenario 'and sees the preview modal' do
+      expect(page).to have_selector('#preview-modal')
+    end
+
+    scenario 'and sees all proper content' do
+      expect(all('.section').count).to eq(@survey.sections.count)
+      expect(all('.question').count).to eq(@survey.questions.count)
+      expect(all('.option').count).to eq(@survey.questions.map(&:options).flatten.count)
+    end
   end
 
-  scenario 'and sees the preview modal' do
-    expect(page).to have_selector('#preview-modal')
-  end
+  context 'forms' do
+    before :each do
+      org = create(:institution)
+      create(:super_user, organization: org, identity: jug2)
+      @form = create(:form, surveyable: org)
+      s1      = create(:section, survey: @form)
+      s2      = create(:section, survey: @form)
+      s3      = create(:section, survey: @form)
+      q1      = create(:question, section: s1, question_type: 'dropdown')
+      q2      = create(:question, section: s1)
+      q3      = create(:question, section: s2)
+      o1      = create(:option, question: q1)
+      o2      = create(:option, question: q1)
 
-  scenario 'and sees all proper content' do
-    expect(all('.section').count).to eq(@survey.sections.count)
-    expect(all('.question').count).to eq(@survey.questions.count)
-    expect(all('.option').count).to eq(@survey.questions.map(&:options).count)
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+
+      click_link 'Preview'
+      wait_for_javascript_to_finish
+    end
+
+    scenario 'and sees the preview modal' do
+      expect(page).to have_selector('#preview-modal')
+    end
+
+    scenario 'and sees all proper content' do
+      expect(all('.section').count).to eq(@form.sections.count)
+      expect(all('.question').count).to eq(@form.questions.count)
+      expect(all('.option').count).to eq(@form.questions.map(&:options).flatten.count)
+    end
   end
 end

@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -48,7 +48,7 @@ RSpec.describe 'service request list', js: true do
         status: 'draft')
     end
     let!(:arm) do
-      create(:arm_without_validations, visit_count: 1, line_item_count: 3,
+      create(:arm_without_validations, visit_count: 1, line_item_count: 4,
         service_request: service_request, protocol: protocol)
     end
 
@@ -61,6 +61,8 @@ RSpec.describe 'service request list', js: true do
       arm.line_items[0].update(sub_service_request_id: first_draft_ssr.id)
       @first_draft_li = arm.line_items[0]
       create(:pricing_map_without_validations, service_id: arm.line_items[0].service_id)
+      liv_first_draft = create(:line_items_visit, arm: arm, line_item: @first_draft_li, sub_service_request: first_draft_ssr)
+      create(:visit, line_items_visit_id: liv_first_draft.id, research_billing_qty: 1)
 
       draft_ssr = create(:sub_service_request,
         service_request: service_request,
@@ -70,6 +72,8 @@ RSpec.describe 'service request list', js: true do
       arm.line_items[1].update(sub_service_request_id: draft_ssr.id)
       @draft_li = arm.line_items[1]
       create(:pricing_map_without_validations, service_id: arm.line_items[1].service_id)
+      liv_draft = create(:line_items_visit, arm: arm, line_item: @draft_li, sub_service_request: draft_ssr)
+      create(:visit, line_items_visit_id: liv_draft.id, research_billing_qty: 1)
 
       complete_ssr = create(:sub_service_request,
         service_request: service_request,
@@ -79,19 +83,44 @@ RSpec.describe 'service request list', js: true do
       arm.line_items[2].update(sub_service_request_id: complete_ssr.id)
       @complete_li = arm.line_items[2]
       create(:pricing_map_without_validations, service_id: arm.line_items[2].service_id)
+      liv_complete = create(:line_items_visit, arm: arm, line_item: @complete_li, sub_service_request: complete_ssr)
+      create(:visit, line_items_visit_id: liv_complete.id, research_billing_qty: 1)
+
+      not_chosen_ssr = create(:sub_service_request,
+        service_request: service_request,
+        organization: create(:organization),
+        status: 'complete',
+        protocol: protocol)
+      arm.line_items[2].update(sub_service_request_id: not_chosen_ssr.id)
+      @not_chosen_li = arm.line_items[3]
+      create(:pricing_map_without_validations, service_id: arm.line_items[3].service_id)
+      liv_not_chosen = create(:line_items_visit, arm: arm, line_item: @not_chosen_li, sub_service_request: not_chosen_ssr)
+      create(:visit, line_items_visit_id: liv_not_chosen.id, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0)
 
       @page = go_to_show_protocol(protocol.id)
       @page.view_consolidated_request_button.click
     end
 
     context "user clicks All" do
-      it "should show SSR's of each status except for first-draft" do
-        @page.consolidated_request_all.click
+      context "user clicks 'Show Chosen Services'" do # research_billing_qty, insurance_billing_qty, or effort_billing_qty is 1
+        it "should show SSR's of each status that are 'chosen' except for first-draft" do
+          @page.consolidated_request_all.click
+          #defaults to 'Show Chosen Services'
+          expect(@page.consolidated_request_modal).to have_content(@complete_li.service.display_service_name)
+          expect(@page.consolidated_request_modal).to have_content(@draft_li.service.display_service_name)
+          expect(@page.consolidated_request_modal).to_not have_content(@first_draft_li.service.display_service_name)
+          expect(@page.consolidated_request_modal).to_not have_content(@not_chosen_li.service.display_service_name)
+        end
+      end
 
-        within(@page.consolidated_request_modal) do
-          expect(page).to have_content(@complete_li.service.display_service_name)
-          expect(page).to have_content(@draft_li.service.display_service_name)
-          expect(page).to_not have_content(@first_draft_li.service.display_service_name)
+      context "user clicks 'Show All Services'" do
+        it "should show SSR's of each status that are 'chosen' except for first-draft" do
+          @page.consolidated_request_all.click
+          @page.consolidated_request_modal.show_all_services_button.click
+          expect(@page.consolidated_request_modal).to have_content(@complete_li.service.display_service_name)
+          expect(@page.consolidated_request_modal).to have_content(@not_chosen_li.service.display_service_name)
+          expect(@page.consolidated_request_modal).to have_content(@draft_li.service.display_service_name)
+          expect(@page.consolidated_request_modal).to_not have_content(@first_draft_li.service.display_service_name)
         end
       end
     end
@@ -99,12 +128,11 @@ RSpec.describe 'service request list', js: true do
     context "user clicks Exclude Drafts" do
       it "should show SSR's of each status except for (first-)draft" do
         @page.consolidated_request_exclude_draft.click
-
-        within(@page.consolidated_request_modal) do
-          expect(page).to have_content(@complete_li.service.display_service_name)
-          expect(page).to_not have_content(@draft_li.service.display_service_name)
-          expect(page).to_not have_content(@first_draft_li.service.display_service_name)
-        end
+        #defaults to 'Show Chosen Services'
+        expect(@page.consolidated_request_modal).to have_content(@complete_li.service.display_service_name)
+        expect(@page.consolidated_request_modal).to_not have_content(@draft_li.service.display_service_name)
+        expect(@page.consolidated_request_modal).to_not have_content(@first_draft_li.service.display_service_name)
+        expect(@page.consolidated_request_modal).to_not have_content(@not_chosen_li.service.display_service_name)
       end
     end
   end

@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,10 +27,11 @@ FactoryGirl.define do
     ack_language  { Faker::Lorem.paragraph(4) }
     process_ssrs  { false }
     is_available  { true }
+    use_default_statuses { true }
 
     trait :ctrc do
       after(:create) do |organization, evaluator|
-        organization.tag_list = "ctrc_clinical_services"
+        organization.tag_list = "ctrc"
 
         organization.save
       end
@@ -98,6 +99,11 @@ FactoryGirl.define do
       end
     end
 
+    after(:create) do |organization, evaluator|
+      organization.available_statuses.where(status: ['draft', 'submitted', 'get_a_cost_estimate']).update_all(selected: true)
+      organization.editable_statuses.where(status: ['draft', 'submitted', 'get_a_cost_estimate']).update_all(selected: true)
+    end
+
     factory :organization_with_process_ssrs, traits: [:process_ssrs, :with_pricing_setup]
     factory :organization_ctrc, traits: [:ctrc]
     factory :organization_without_validations, traits: [:without_validations]
@@ -110,6 +116,7 @@ FactoryGirl.define do
     ack_language  { Faker::Lorem.paragraph(4) }
     process_ssrs  { false }
     is_available  { true }
+    use_default_statuses { true }
 
     trait :disabled do
       is_available false
@@ -142,6 +149,7 @@ FactoryGirl.define do
     ack_language  { Faker::Lorem.paragraph(4) }
     process_ssrs  { false }
     is_available  { true }
+    use_default_statuses { true }
 
     trait :process_ssrs do
       process_ssrs true
@@ -193,6 +201,7 @@ FactoryGirl.define do
     ack_language  { Faker::Lorem.paragraph(4) }
     process_ssrs  { false }
     is_available  { true }
+    use_default_statuses { true }
 
     trait :process_ssrs do
       process_ssrs true
@@ -261,6 +270,7 @@ FactoryGirl.define do
     ack_language  { Faker::Lorem.paragraph(4) }
     process_ssrs  { false }
     is_available  { true }
+    use_default_statuses { true }
 
     trait :process_ssrs do
       process_ssrs true

@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -43,7 +43,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
       professional_organization_id: @division.id)
   end
 
-  before(:each) { stub_const('USE_LDAP', false) }
+  stub_config("use_ldap", false)
 
   context 'which is not assigned to themselves' do
     let!(:protocol) do

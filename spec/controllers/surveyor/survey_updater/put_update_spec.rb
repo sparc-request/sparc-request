@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -24,9 +24,9 @@ RSpec.describe Surveyor::SurveyUpdaterController, type: :controller do
   stub_controller
   let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity, ldap_uid: 'weh6@musc.edu') }
-
+  stub_config("site_admins", ["weh6@musc.edu"])
+  
   before :each do
-    stub_const('SITE_ADMINS', ['weh6@musc.edu'])
     session[:identity_id] = logged_in_user.id
   end
 
@@ -35,8 +35,8 @@ RSpec.describe Surveyor::SurveyUpdaterController, type: :controller do
       expect(before_filters.include?(:authenticate_identity!)).to eq(true)
     end
 
-    it 'should call before_filter #authorize_site_admin' do
-      expect(before_filters.include?(:authorize_site_admin)).to eq(true)
+    it 'should call before_filter #authorize_survey_builder_access' do
+      expect(before_filters.include?(:authorize_survey_builder_access)).to eq(true)
     end
 
     it 'should assign @klass to params[:klass]' do
@@ -86,7 +86,7 @@ RSpec.describe Surveyor::SurveyUpdaterController, type: :controller do
 
     context 'object valid' do
       it 'should update object' do
-        survey = create(:survey, version: 0)
+        survey = create(:survey, version: 2)
         klass = 'survey'
 
         put :update, params: {

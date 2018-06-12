@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,6 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$('#modal_place').html("<%= escape_javascript(render( 'dashboard/sub_service_requests/user_modal_ssr_show', sub_service_request: @sub_service_request, show_view_ssr_back: @show_view_ssr_back, service_request: @service_request, service_list: @service_list, tab: @tab, portal: @portal, admin: @admin, review: @review, consolidated: @consolidated, pages: @pages, merged: @merged, protocol: @protocol, statuses_hidden: %w(first_draft) )) %>")
+$('#modal_place').html("<%= escape_javascript(render( 'dashboard/sub_service_requests/user_modal_ssr_show', sub_service_request: @sub_service_request, show_view_ssr_back: @show_view_ssr_back, service_request: @service_request, service_list: @service_list, tab: @tab, portal: @portal, admin: @admin, review: @review, consolidated: @consolidated, pages: @pages, merged: @merged, protocol: @protocol, statuses_hidden: %w(first_draft), display_all_services: @display_all_services )) %>")
 $('#modal_place').modal 'show'
 $('.selectpicker').selectpicker()

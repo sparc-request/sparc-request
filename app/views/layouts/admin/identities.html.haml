@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development~
+-# Copyright © 2011-2018 MUSC Foundation for Research Development~
 -# All rights reserved.~
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -23,7 +23,7 @@
   %head
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
     %meta{:name => "viewport", :content => "width=device-width, initial-scale=1"}/
-    %meta{ "http-equiv"=>"X-UA-Compatible", "content"=>"IE=edge"}    
+    %meta{ "http-equiv"=>"X-UA-Compatible", "content"=>"IE=edge"}
     %title= t(:mailer)[:application_title]
     = stylesheet_link_tag    "admin/application"
     = javascript_include_tag "admin/application"
@@ -41,13 +41,13 @@
             %span.icon-bar
           %a.navbar-brand{:href => admin_identities_path()}= t(:admin_identities)[:home]
         -# Don't display other links if the user came from another page (e.g., the service request flow)
-        - if !request.referer  
+        - if !request.referer
           .collapse.navbar-collapse{:id=>"bs-example-navbar-collapse-1"}
             %ul.nav.navbar-nav
               %li
                 %a{:href=> catalog_manager_root_path() }= t(:admin_identities)[:catalog_manager]
               %li
-                %a{:href=> DASHBOARD_LINK }= t(:admin_identities)[:portal]
+                %a{:href=> Setting.find_by_key("dashboard_link").value }= t(:admin_identities)[:portal]
               %li
                 %a{:href=> root_path() }= t(:admin_identities)[:request_services]
     .container-fluid

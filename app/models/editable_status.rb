@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,13 +19,29 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class EditableStatus < ApplicationRecord
-  TYPES = AVAILABLE_STATUSES.keys
-
   audited
 
   belongs_to :organization
 
-  validates :status, inclusion: { in: TYPES }, presence: true
+  def self.statuses
+    @statuses ||= PermissibleValue.get_hash('status')
+  end
 
-  attr_accessor :new
+  validates :status, inclusion: { in: EditableStatus.statuses.keys }, presence: true
+
+  scope :selected, -> { where(selected: true) }
+
+  scope :alphabetized, -> { all.sort{ |x, y| x.humanize <=> y.humanize } }
+
+  def self.types
+    self.statuses.keys
+  end
+
+  def self.defaults
+    @defaults ||= PermissibleValue.get_key_list('status', true)
+  end
+
+  def humanize
+    EditableStatus.statuses[self.status]
+  end
 end

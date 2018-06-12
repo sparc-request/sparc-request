@@ -1,0 +1,13 @@
+.panel.panel-default
+  .panel-heading
+    %h4.panel-title.pull-left
+      = t(:funding)[:download][:header]
+    .pull-right
+      = link_to "/funding?back=true",title: "Back to funding opportunities" do
+        %span.glyphicon.glyphicon-arrow-left{aria: {hidden: "true"}}
+        Back
+    .clearfix
+  .panel-body
+    = render 'funding/services/title', service: @service
+    = render 'funding/services/documents', service: @service, table: @table
+  

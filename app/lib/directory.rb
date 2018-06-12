@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,25 +21,37 @@
 require 'net/ldap'
 
 class Directory
+
+  begin
+    use_ldap = Setting.find_by_key("use_ldap").value || Rails.env == 'test'
+  rescue
+    use_ldap = true
+  end
+
   # Only initialize LDAP if it is enabled
-  if USE_LDAP
-    # Load the YAML file for ldap configuration and set constants
-    begin
-      ldap_config   ||= YAML.load_file(Rails.root.join('config', 'ldap.yml'))[Rails.env]
-      LDAP_HOST       = ldap_config['ldap_host']
-      LDAP_PORT       = ldap_config['ldap_port']
-      LDAP_BASE       = ldap_config['ldap_base']
-      LDAP_ENCRYPTION = ldap_config['ldap_encryption'].to_sym
-      DOMAIN          = ldap_config['ldap_domain']
-      LDAP_UID        = ldap_config['ldap_uid']
-      LDAP_LAST_NAME  = ldap_config['ldap_last_name']
-      LDAP_FIRST_NAME = ldap_config['ldap_first_name']
-      LDAP_EMAIL      = ldap_config['ldap_email']
-      LDAP_AUTH_USERNAME      = ldap_config['ldap_auth_username']
-      LDAP_AUTH_PASSWORD      = ldap_config['ldap_auth_password']
-      LDAP_FILTER      = ldap_config['ldap_filter']
-    rescue
-      raise "ldap.yml not found, see config/ldap.yml.example"
+  if use_ldap
+    # Load the ldap settings and create a hash
+    if ActiveRecord::Base.connection.table_exists?('settings') && (ldap_settings = Setting.where(group: "ldap_settings")).any?
+      ldap_config = Hash.new
+      ldap_settings.each{|setting| ldap_config[setting.key] = setting.value}
+      begin
+        LDAP_HOST       = ldap_config['ldap_host']
+        LDAP_PORT       = ldap_config['ldap_port']
+        LDAP_BASE       = ldap_config['ldap_base']
+        LDAP_ENCRYPTION = ldap_config['ldap_encryption'].to_sym
+        DOMAIN          = ldap_config['ldap_domain']
+        LDAP_UID        = ldap_config['ldap_uid']
+        LDAP_LAST_NAME  = ldap_config['ldap_last_name']
+        LDAP_FIRST_NAME = ldap_config['ldap_first_name']
+        LDAP_EMAIL      = ldap_config['ldap_email']
+        LDAP_AUTH_USERNAME      = ldap_config['ldap_auth_username']
+        LDAP_AUTH_PASSWORD      = ldap_config['ldap_auth_password']
+        LDAP_FILTER      = ldap_config['ldap_filter']
+      rescue
+        raise "ldap settings incorrect, unable to load ldap configuration"
+      end
+    else
+      puts "WARNING: You have ldap turned on, but no settings populated for ldap. You must configure your ldap settings to have ldap turned on (Disregard if currently importing ldap.yml)"
     end
   end
 
@@ -49,19 +61,28 @@ class Directory
   # Returns an array of Identities that match the query.
   def self.search(term)
     # Search ldap (if enabled) and the database
-    if USE_LDAP && !SUPPRESS_LDAP_FOR_USER_SEARCH
-      ldap_results = search_ldap(term)
-      db_results = search_database(term)
+    if Setting.find_by_key("use_ldap").value && !Setting.find_by_key("suppress_ldap_for_user_search").value
       # If there are any entries returned from ldap that were not in the
       # database, then create them
-      create_or_update_database_from_ldap(ldap_results, db_results)
-      # Finally, search the database a second time and return the results.
-      # If there were no new identities created, then this should return
-      # the same as the original call to search_database().
-      return search_database(term)
+      if Setting.find_by_key("lazy_load_ldap").value
+        return self.search_and_merge_ldap_and_database_results(term)
+      else
+        return self.search_and_merge_and_update_ldap_and_database_results(term)
+      end
+
     else # only search database once
       return search_database(term)
     end
+  end
+
+  def self.search_and_merge_and_update_ldap_and_database_results(term)
+    ldap_results = self.search_ldap(term)
+    db_results = self.search_database(term)
+    self.create_or_update_database_from_ldap(ldap_results, db_results)
+    # Finally, search the database a second time and return the results.
+    # If there were no new identities created, then this should return
+    # the same as the original call to search_database().
+    return self.search_database(term)
   end
 
   # Searches the database only for a given search string.  Returns an
@@ -70,6 +91,16 @@ class Directory
     search_query = query(term)
     identities = Identity.find_by_sql(search_query)
     return identities
+  end
+
+  def self.find_or_create(ldap_uid)
+    identity = Identity.find_by_ldap_uid(ldap_uid)
+    return identity if identity
+    # search the ldap using unid, create the record in database, and then return it
+    m = /(.*)@#{DOMAIN}/.match(ldap_uid)
+    ldap_results = self.search_ldap(m[1])
+    self.create_or_update_database_from_ldap(ldap_results, [])
+    Identity.find_by_ldap_uid(ldap_uid)
   end
 
   # Searches LDAP only for the given search string.  Returns an array of
@@ -186,9 +217,20 @@ class Directory
       end
     end
   end
-  
+
+  def self.find_for_cas_oauth(cas_uid)
+    # first check if the identity already exists, ldap_uid is cas_uid@utah.edu
+    ldap_uid = "#{cas_uid}@#{DOMAIN}"
+    db_result = Identity.find_by_ldap_uid(ldap_uid)
+    return db_result unless db_result.nil?
+    # if this is the first time, the user tries to login via cas, create an identity for it
+    ldap_results = Directory.search_ldap(cas_uid)
+    Directory.create_or_update_database_from_ldap(ldap_results, [])
+    Identity.find_by_ldap_uid(ldap_uid)
+  end
+
   # search and merge results but don't change the database
-  # this assumes USE_LDAP = true, otherwise you wouldn't use this function
+  # this assumes Setting.find_by_key("use_ldap").value = true, otherwise you wouldn't use this function
   def self.search_and_merge_ldap_and_database_results(term)
     results = []
     database_results = Directory.search_database(term)
@@ -202,11 +244,11 @@ class Directory
       uid = "#{ldap_result[LDAP_UID].try(:first).try(:downcase)}@#{DOMAIN}"
       if identities[uid]
         results << identities[uid]
-      else 
+      else
         email = ldap_result[LDAP_EMAIL].try(:first)
         if email && email.strip.length > 0 # all SPARC users must have an email, this filters out some of the inactive LDAP users.
           results << Identity.new(ldap_uid: uid, first_name: ldap_result[LDAP_FIRST_NAME].try(:first), last_name: ldap_result[LDAP_LAST_NAME].try(:first), email: email)
-        end  
+        end
       end
     end
     results

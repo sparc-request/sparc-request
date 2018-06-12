@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -43,9 +43,7 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
            approved: true)
   end
 
-  before(:each) do
-    stub_const('USE_LDAP', false)
-  end
+  stub_config("use_ldap", false)
 
   let!(:protocol) { create(:unarchived_project_without_validations, primary_pi: logged_in_user) }
 

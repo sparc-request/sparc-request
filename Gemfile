@@ -2,16 +2,16 @@ source 'https://rubygems.org'
 
 gem 'activerecord-import'
 gem 'activerecord-session_store'
-gem 'acts_as_list', github: 'swanandp/acts_as_list'
+gem 'acts_as_list', :git => 'https://github.com/swanandp/acts_as_list.git'
 gem 'acts-as-taggable-on'
 gem 'audited', '~> 4.3'
-gem 'axlsx'
+gem 'axlsx', git: 'https://github.com/randym/axlsx', branch: 'master'
 gem 'axlsx_rails'
 gem 'bluecloth'
 gem 'bootstrap-sass'
 gem 'bootstrap-select-rails'
 gem 'bootstrap3-datetimepicker-rails'
-gem 'capistrano', '~> 3.8'
+gem 'capistrano', '~> 3.9'
 gem 'capistrano-bundler', require: false
 gem 'capistrano-rvm', require: false
 gem 'capistrano-rails', require: false
@@ -21,6 +21,7 @@ gem 'coffee-rails'
 gem 'country_select'
 gem 'curb', '~> 0.9.3'
 gem 'delayed_job_active_record'
+gem 'delayed_job'
 gem 'devise', '~> 4.2'
 gem 'dynamic_form'
 gem 'execjs'
@@ -41,7 +42,7 @@ gem 'jbuilder', '~> 2.0'
 gem 'json', '>= 1.8'
 gem 'letter_opener'
 gem 'momentjs-rails', '>= 2.8.1'
-gem 'mysql2', '~> 0.3.18'
+gem 'mysql2', '~> 0.4'
 gem 'nested_form'
 gem 'nested_form_fields'
 gem 'newrelic_rpm'
@@ -51,29 +52,33 @@ gem 'nprogress-rails'
 gem 'net-ldap', '~> 0.16.0'
 gem 'omniauth'
 gem 'omniauth-shibboleth'
-gem 'paperclip', '~> 4.3', '>= 4.3.7'
+gem 'paperclip', '~> 5.2', '>= 5.2.1'
 gem 'pdfkit'
 gem 'prawn', '0.12.0'
 gem 'premailer-rails'
 gem 'rack-mini-profiler'
-gem 'rails', '~> 5.1', '>= 5.1.3'
+gem 'rails', '~> 5.1', '>= 5.1.5'
 gem 'rails-html-sanitizer'
 # Needed to used audited-activerecord w/ Rails 5
 gem "rails-observers", github: 'rails/rails-observers'
 gem 'redcarpet'
 gem 'remotipart'
 gem 'rest-client'
+gem 'sanitized_data',  git: 'https://github.com/HSSC/sanitized_data.git'
+gem 'rubyzip', '>= 1.2.1'
 gem 'sass'
 gem 'sass-rails'
 gem 'savon', '~> 2.2.0'
 gem 'simplecov', require: false, group: :test
-gem 'therubyracer', '0.10.2', :platforms => :ruby, group: :production
+gem 'therubyracer', '0.12.3', :platforms => :ruby, group: :production
 gem 'twitter-typeahead-rails'
 gem 'uglifier', '>= 1.0.3'
 gem 'whenever', require: false
 gem 'will_paginate'
 gem 'will_paginate-bootstrap'
 gem 'x-editable-rails'
+gem 'omniauth-cas'
+gem 'dotenv-rails'
 
 group :development, :test, :profile do
   gem 'addressable', '~> 2.3.6'
@@ -82,10 +87,10 @@ group :development, :test, :profile do
   gem 'equivalent-xml'
   gem 'faker'
   gem 'launchy'
-  gem 'puma', '~> 3.0'
   gem 'timecop'
   gem 'progress_bar'
 end
+gem 'puma', '~> 3.0'
 
 group :development, :test do
   gem 'pry'
@@ -96,6 +101,7 @@ end
 group :development do
   gem 'highline'
   gem 'spring-commands-rspec'
+  gem 'byebug'
   gem 'spring'
   gem 'sqlite3'
   gem 'traceroute'
@@ -114,6 +120,18 @@ group :test do
   gem 'shoulda-callback-matchers'
   gem 'site_prism'
   gem 'webmock'
+end
+
+group :assets do
+  # We don't require this because we only have it so
+  # that we can run asset precompile during build without
+  # connecting to a database
+  # If we allow it to be required though it will screw up
+  # schema load / migrations because monkey patching.
+  # So what we do is not require it and then generate the
+  # require statement in the database.yml that we generate
+  # in the hab package build
+  gem "activerecord-nulldb-adapter", require: false
 end
 
 group :profile do

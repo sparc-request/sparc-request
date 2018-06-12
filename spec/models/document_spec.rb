@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -30,15 +30,17 @@ RSpec.describe Document, type: :model do
   end
 
   describe 'display_document_type' do
-    let!(:document1) { create(:document, doc_type: 'other', doc_type_other: 'support') }
-    let!(:document2) { create(:document, doc_type: 'hipaa') }
+    before :each do
+      @document1 = create(:document, doc_type: 'other', doc_type_other: 'support')
+      @document2 = create(:document, doc_type: 'hipaa')
+    end
 
     it 'should display correctly for doc type other' do
-      expect(document1.display_document_type).to eq('support')
+      expect(@document1.display_document_type).to eq('support')
     end
 
     it 'should display correctly for typical doc type' do
-      expect(document2.display_document_type).to eq('HIPAA')
+      expect(@document2.display_document_type).to eq('HIPAA')
     end
   end
 

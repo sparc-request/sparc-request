@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,35 +22,67 @@ require 'rails_helper'
 
 RSpec.describe 'User activates a survey', js: true do
   let_there_be_lane
-
   fake_login_for_each_test
 
-  before :each do
-    stub_const("SITE_ADMINS", ['jug2'])
-
-    @survey = create(:survey)
-
-    visit surveyor_surveys_path
-    wait_for_javascript_to_finish
-
-    click_link 'Activate'
-    wait_for_javascript_to_finish 
-  end
-
-  scenario 'and sees the activated survey' do
-    expect(@survey.reload.active).to eq(true)
-    expect(page).to have_content('Disable')
-  end
-
-  context 'and changes their mind and clicks disable' do
+  stub_config("site_admins", ["jug2"])
+  
+  context 'surveys' do
     before :each do
-      click_link 'Disable'
+      @survey = create(:system_survey)
+
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+
+      click_link 'Activate'
       wait_for_javascript_to_finish
     end
 
-    scenario 'and sees the disabled survey' do
-      expect(@survey.reload.active).to eq(false)
-      expect(page).to have_content('Activate')
+    scenario 'and sees the activated survey' do
+      expect(@survey.reload.active).to eq(true)
+      expect(page).to have_content('Disable')
+    end
+
+    context 'and changes their mind and clicks disable' do
+      before :each do
+        click_link 'Disable'
+        wait_for_javascript_to_finish
+      end
+
+      scenario 'and sees the disabled survey' do
+        expect(@survey.reload.active).to eq(false)
+        expect(page).to have_content('Activate')
+      end
+    end
+  end
+
+  context 'forms' do
+    before :each do
+      org = create(:institution)
+      create(:super_user, organization: org, identity: jug2)
+      @form = create(:form, surveyable: org)
+
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+
+      click_link 'Activate'
+      wait_for_javascript_to_finish
+    end
+
+    scenario 'and sees the activated form' do
+      expect(@form.reload.active).to eq(true)
+      expect(page).to have_content('Disable')
+    end
+
+    context 'and changes their mind and clicks disable' do
+      before :each do
+        click_link 'Disable'
+        wait_for_javascript_to_finish
+      end
+
+      scenario 'and sees the disabled form' do
+        expect(@form.reload.active).to eq(false)
+        expect(page).to have_content('Activate')
+      end
     end
   end
 end

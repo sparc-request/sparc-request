@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -58,6 +58,7 @@ RSpec.describe Dashboard::ProtocolsController do
           end
           allow(@protocol).to receive(:update_attribute)
           allow(@protocol).to receive(:populate_for_edit)
+          allow(@protocol).to receive(:rmid_server_status).and_return(false)
           authorize(@logged_in_user, @protocol, can_edit: true)
 
           put :update_protocol_type, params: { id: @protocol.id, type: "Project"}, xhr: true
@@ -65,6 +66,11 @@ RSpec.describe Dashboard::ProtocolsController do
 
         it 'should set protocol_type' do
           expect(@protocol.type).to eq("Project")
+        end
+
+        it 'should set reset research_master_id and rmid_validated' do
+          expect(@protocol.research_master_id).to eq(nil)
+          expect(@protocol.rmid_validated).to eq(false)
         end
 
         it 'should set study_type_question_group to active' do
@@ -85,7 +91,7 @@ RSpec.describe Dashboard::ProtocolsController do
         before :each do
           @logged_in_user = create(:identity)
           @protocol       = create(:protocol_without_validations, type: 'Project')
-
+          allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
           log_in_dashboard_identity(obj: @logged_in_user)
 
           put :update_protocol_type, params: { id: @protocol.id }, xhr: true
@@ -109,6 +115,8 @@ RSpec.describe Dashboard::ProtocolsController do
                             create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft', protocol_id: @protocol.id)
                             create(:super_user, identity: @logged_in_user, organization: organization)
 
+          allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
+
           log_in_dashboard_identity(obj: @logged_in_user)
 
           put :update_protocol_type, params: { id: @protocol.id }, xhr: true
@@ -130,6 +138,8 @@ RSpec.describe Dashboard::ProtocolsController do
           service_request = create(:service_request_without_validations, protocol: @protocol)
                             create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft', protocol_id: @protocol.id)
                             create(:service_provider, identity: @logged_in_user, organization: organization)
+
+          allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
 
           log_in_dashboard_identity(obj: @logged_in_user)
 

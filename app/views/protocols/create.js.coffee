@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -23,4 +23,5 @@ window.location = "<%= protocol_service_request_path(@service_request) %>"
 <% else %>
 $("#flashes_container").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
 $('#body').scrollTop(0)
+$('#protocol_research_master_id').prop('disabled', <%=@rmid_server_down%>)
 <% end %>

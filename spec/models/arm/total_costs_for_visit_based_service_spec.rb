@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -32,10 +32,10 @@ RSpec.describe Arm, type: :model do
     before(:each) do
       allow(arm).to receive(:line_items_visits).and_return livs
     end
-
-    context 'with USE_INDIRECT_COST' do
-      before(:each) { stub_const('USE_INDIRECT_COST', true) }
-
+    
+    context 'using indirect cost' do
+      stub_config("use_indirect_cost", true)
+      
       context 'with no argument' do
         it 'should return total cost' do
           expect(arm.total_costs_for_visit_based_service).to eq(3+4+5+6+7+8)
@@ -49,7 +49,7 @@ RSpec.describe Arm, type: :model do
       end
     end
 
-    context 'without USE_INDIRECT_COST' do
+    context 'not using indirect cost' do
       context 'with no argument' do
         it 'should return total cost' do
           expect(arm.total_costs_for_visit_based_service).to eq(3+4+5)

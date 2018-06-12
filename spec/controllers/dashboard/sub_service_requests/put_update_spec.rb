@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -78,8 +78,6 @@ RSpec.describe Dashboard::SubServiceRequestsController do
     #####SURVEYS#####
     context 'ssr status is complete' do
       it 'should distribute surveys' do
-        stub_const("FINISHED_STATUSES", ['complete'])
-
         create(:super_user, identity: @logged_in_user, organization: @organization)
         @service         = create(:service_without_validations, organization_id:  @organization.id)
         @line_item      = create(:line_item_without_validations,

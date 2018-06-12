@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -22,6 +22,8 @@ require 'rails_helper'
 
 RSpec.describe Dashboard::ProtocolsController do
   describe 'PUT #update' do
+    stub_config("research_master_enabled", true)
+    
     context 'user is an Authorized User' do
       context "user is not authorized to edit Protocol" do
         before(:each) do
@@ -127,13 +129,11 @@ RSpec.describe Dashboard::ProtocolsController do
         end
 
         it 'should set @admin to true' do
-
           get :update, params: { id: @protocol.id, protocol: { title: "some value", selected_for_epic: "true", study_type_question_group_id: @study_type_question_group_version_3.id } }, xhr: true
           expect(assigns(:admin)).to eq(true)
         end
 
         it 'should allow blank Research Master ID with human subjects' do
-          stub_const("RESEARCH_MASTER_ENABLED", true)
           @protocol.research_master_id = 1
           @protocol.save(validate: false)
 
@@ -144,7 +144,6 @@ RSpec.describe Dashboard::ProtocolsController do
         end
 
         it 'should not save with blank RMID with other invalid params' do
-          stub_const("RESEARCH_MASTER_ENABLED", true)
           @protocol.research_master_id = 1
           @protocol.save(validate: false)
 
@@ -181,7 +180,6 @@ RSpec.describe Dashboard::ProtocolsController do
         end
 
         it 'should allow blank Research Master ID with human subjects' do
-          stub_const("RESEARCH_MASTER_ENABLED", true)
           @protocol.research_master_id = 1
           @protocol.save(validate: false)
 
@@ -192,7 +190,6 @@ RSpec.describe Dashboard::ProtocolsController do
         end
 
         it 'should not save with blank RMID with other invalid params' do
-          stub_const("RESEARCH_MASTER_ENABLED", true)
           @protocol.research_master_id = 1
           @protocol.save(validate: false)
 

@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -39,7 +39,7 @@
       %label.col-lg-4
         = t(:protocols)[:projects][:information][:funding_status]
       .col-lg-8
-        = protocol.funding_status
+        = protocol.funding_status.try(&:titleize)
 
     /funding source
     .form-group.row
@@ -58,7 +58,7 @@
         = protocol.brief_description
 
     /indirect cost
-    - if USE_INDIRECT_COST
+    - if Setting.find_by_key("use_indirect_cost").value
       .form-group.row
         %label.col-lg-4
           = t(:protocols)[:projects][:information][:rate]

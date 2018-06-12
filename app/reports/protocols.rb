@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -34,7 +34,8 @@ class ProtocolsReport < ReportingModule
       Institution => {:field_type => :select_tag, :has_dependencies => "true"},
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
-      Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'}
+      Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
+      "Include Epic Interface Columns" => {:field_type => :check_box_tag, :for => 'show_epic_cols', :field_label => 'Include Epic Interface Columns'}
     }
   end
 
@@ -73,6 +74,11 @@ class ProtocolsReport < ReportingModule
     attrs["Business Manager(s)"] = "service_request.try(:protocol).try(:billing_managers).try(:map){|x| x.full_name}.try(:join, ', ')"
     attrs["Business Manager Email(s)"] = "service_request.try(:protocol).try(:billing_business_manager_email)"
 
+    if params[:show_epic_cols]
+      attrs["Selected For Epic"] = "service_request.try(:protocol).try(:selected_for_epic) ? 'Yes' : service_request.try(:protocol).try(:selected_for_epic).nil? ? '' : 'No'"
+      attrs["Last Epic Push Date"] = "service_request.try(:protocol).try(:last_epic_push_time)"
+      attrs["Last Epic Push Status"] = "service_request.try(:protocol).try(:last_epic_push_status)"
+    end
 
     attrs
   end
@@ -128,7 +134,7 @@ class ProtocolsReport < ReportingModule
     ssr_organization_ids = Organization.all.map(&:id) if ssr_organization_ids.compact.empty? # use all if none are selected
 
     submitted_at ||= self.default_options["Date Range"][:from]..self.default_options["Date Range"][:to]
-    statuses = args[:status] || AVAILABLE_STATUSES.keys # use all if none are selected
+    statuses = args[:status] || PermissibleValue.get_key_list('status') # use all if none are selected
 
     return :sub_service_requests => {:organization_id => ssr_organization_ids, :status => statuses}, :service_requests => {:submitted_at => submitted_at}, :services => {:organization_id => service_organization_ids}
   end

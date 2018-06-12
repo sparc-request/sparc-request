@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,6 +27,8 @@ RSpec.describe Protocol, type: :model do
   build_study_type_questions()
   build_study_type_answers()
 
+  stub_config("use_epic", true)
+  
   before :each do 
     study.update_attribute(:selected_for_epic, true)
   end

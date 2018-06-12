@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -210,7 +210,6 @@ module V1
     expose  :formatted_status, as: :status
 
     with_options(format_with: :iso_timestamp) do
-      expose :status_date
       expose :consult_arranged_date
       expose :requester_contacted_date
     end

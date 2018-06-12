@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -31,7 +31,7 @@ class SurveyResponseReport < ReportingModule
   def default_options
     {
       "Date Range" => {:field_type => :date_range, :for => "created_at", :from => "2012-03-01".to_date, :to => Date.today},
-      Survey => {:field_type => :select_tag, :custom_name_method => :title, :required => true},
+      SystemSurvey => {:field_type => :select_tag, :custom_name_method => :report_title, :required => true},
       "Include Pending Responses" => { field_type: :check_box_tag, for: "show_pending" }
     }
   end
@@ -40,13 +40,13 @@ class SurveyResponseReport < ReportingModule
   def column_attrs
     attrs = {}
 
-    attrs["SSR ID"] = "sub_service_request.try(:display_id)"
+    attrs["SRID"] = "respondable.is_a?(ServiceRequest) ? respondable.id : respondable.try(:display_id)"
     attrs["User ID"] = :identity_id
     attrs["User Name"] = "identity.try(:full_name)"
     attrs["Submitted Date"] = "created_at.try(:strftime, \"%D\")"
 
-    if params[:survey_id]
-      survey = Survey.find(params[:survey_id])
+    if params[:system_survey_id]
+      survey = Survey.find(params[:system_survey_id])
       survey.sections.each do |section|
         section.questions.each do |question|
           question.question_responses.each do |qr|
@@ -89,7 +89,7 @@ class SurveyResponseReport < ReportingModule
   def where args={}
     created_at = (args[:created_at_from] ? args[:created_at_from] : self.default_options["Date Range"][:from]).to_time.strftime("%Y-%m-%d 00:00:00")..(args[:created_at_to] ? args[:created_at_to] : self.default_options["Date Range"][:to]).to_time.strftime("%Y-%m-%d 23:59:59")
 
-    return :responses => {:created_at => created_at, :survey_id => args[:survey_id]}
+    return :responses => {:created_at => created_at, :survey_id => args[:system_survey_id]}
   end
 
   # Return only uniq records for
@@ -111,12 +111,12 @@ class SurveyResponseReport < ReportingModule
   def create_report(worksheet)
     super
 
-    start_date = (params[:created_at_from] ? params[:created_at_from] : "2012-03-01".to_date).to_time.strftime("%Y-%m-%d 00:00:00")
-    end_date = (params[:created_at_to] ? params[:created_at_to] : Date.today).to_time.strftime("%Y-%m-%d 23:59:59")
+    start_date                = (params[:created_at_from] ? params[:created_at_from] : "2012-03-01".to_date).to_time.strftime("%Y-%m-%d 00:00:00")
+    end_date                  = (params[:created_at_to] ? params[:created_at_to] : Date.today).to_time.strftime("%Y-%m-%d 23:59:59")
     # assumes the first question where only one option can be picked is the satisfaction question
-    survey                    = Survey.find(params[:survey_id])
+    survey                    = Survey.find(params[:system_survey_id])
     questions                 = Question.where(question_type: ['yes_no', 'likert', 'radio_button'], section: Section.where(survey: survey))
-    responses                 = QuestionResponse.where(question: questions, created_at: start_date..end_date).where.not(content: [nil, ""])
+    responses                 = QuestionResponse.includes(:response).where(question: questions, responses: { created_at: start_date..end_date }).where.not(content: [nil, ""])
     total_percent_satisfied   = responses.map{ |qr| percent_satisfied(qr.content.downcase) }.sum
     average_percent_satisifed = responses.count == 0 ? 0 : (total_percent_satisfied.to_f / responses.count.to_f).round(2)
 

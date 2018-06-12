@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,34 +17,28 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.panel.panel-primary.service-request-info
-  .panel-heading
-    %h4.panel-title.pull-left
-      = protocol_panel_header_line(service_request)
-    .pull-right
-      - permission_to_edit = permission_to_edit || user.catalog_overlord
-      - if permission_to_edit
+
+.bootstrap-table-dropdown-overflow
+  %div{ class: "service-requests-custom-toolbar-#{service_request.id}" }
+    - permission_to_edit = permission_to_edit || user.catalog_overlord
+    - if permission_to_edit
+      %div.tooltip-wrapper{ data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' }, title: t(:dashboard)[:service_requests][:tooltips][:modify_request] }
         %button.btn.btn-warning.btn-sm.edit-service-request{ class: permission_to_edit ? '' : 'disabled', type: 'button', data: { permission: permission_to_edit.to_s, url: modify_request_button_url(service_request) } }
           = t(:dashboard)[:service_requests][:modify_request]
-      = link_to t(:dashboard)[:protocols][:service_requests][:coverage_report], service_request_path(service_request, format: :xlsx, show_signature_section: 1), class: 'btn btn-sm btn-success'
-    .clearfix
-  .panel-body
-    .bootstrap-table-dropdown-overflow
-      %div{ class: "service-requests-custom-toolbar-#{service_request.id}" }
-      %table.service-requests-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: dashboard_sub_service_requests_path(format: :json, srid: service_request.id, show_view_ssr_back: show_view_ssr_back), striped: 'true', toolbar: ".service-requests-custom-toolbar-#{service_request.id}", sort_name: 'srid', sort_order: 'ASC' } }
-        %thead.primary-header
-          %tr
-            %th.col-md-1{ data: { field: 'srid', align: 'left', sortable: 'true' } }
-              = t(:dashboard)[:service_requests][:srid]
-            %th.col-md-3{ data: { field: 'organization', align: 'left', sortable: 'true' } }
-              = t(:dashboard)[:service_requests][:organization]
-            %th.col-md-2{ data: { field: 'owner', align: 'left', sortable: 'true' } }
-              = t(:dashboard)[:service_requests][:owner]
-            %th.col-md-1{ data: { field: 'status', align: 'left', sortable: 'true' } }
-              = t(:dashboard)[:service_requests][:status]
-            %th.col-md-1{ data: {field: 'notifications', align: 'center' } }
-              = t(:dashboard)[:service_requests][:notifications]
-            %th.col-md-3{ data: { field: 'actions', align: 'center' } }
-              = t(:dashboard)[:service_requests][:actions][:header]
-            %th.col-md-1{ data: { field: 'surveys', align: 'center', visible: protocol.has_incomplete_additional_details?.to_s, switchable: 'false' } }
-              = t(:dashboard)[:service_requests][:additional_details][:header]
+  %table.service-requests-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: dashboard_sub_service_requests_path(format: :json, srid: service_request.id, show_view_ssr_back: show_view_ssr_back), striped: 'true', toolbar: ".service-requests-custom-toolbar-#{service_request.id}", sort_name: 'srid', sort_order: 'ASC' } }
+    %thead.primary-header
+      %tr
+        %th.col-md-1{ data: { field: 'srid', align: 'left', sortable: 'true' } }
+          = t(:dashboard)[:service_requests][:srid]
+        %th.col-md-3{ data: { field: 'organization', align: 'left', sortable: 'true' } }
+          = t(:dashboard)[:service_requests][:organization]
+        %th.col-md-2{ data: { field: 'owner', align: 'left', sortable: 'true' } }
+          = t(:dashboard)[:service_requests][:owner]
+        %th.col-md-1{ data: { field: 'status', align: 'left', sortable: 'true' } }
+          = t(:dashboard)[:service_requests][:status]
+        %th.col-md-1{ data: {field: 'notifications', align: 'center' } }
+          = t(:dashboard)[:service_requests][:notifications]
+        %th.col-md-3{ data: { field: 'actions', align: 'center' } }
+          = t(:dashboard)[:service_requests][:actions][:header]
+        %th.col-md-1{ data: { field: 'surveys', align: 'center', visible: (!protocol.all_forms_completed?).to_s, switchable: 'false' } }
+          = t(:dashboard)[:service_requests][:forms][:header]

@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -20,7 +20,7 @@
 
 module ApiAuthenticationHelper
 
-  def http_login(username=REMOTE_SERVICE_NOTIFIER_USERNAME, password=REMOTE_SERVICE_NOTIFIER_PASSWORD)
+  def http_login username=Setting.find_by_key('remote_service_notifier_username').value, password=Setting.find_by_key('remote_service_notifier_password').value
     @env ||= {}
 
     @env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(username, password)

@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -56,10 +56,10 @@ module Dashboard::SubServiceRequestsHelper
       if sub_service_request.in_work_fulfillment?
         if user.clinical_provider_rights?
           # In fulfillment and user has rights
-          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:go_to_fulfillment], CLINICAL_WORK_FULFILLMENT_URL, target: "_blank", class: "btn btn-primary btn-md"
+          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:go_to_fulfillment], Setting.find_by_key("clinical_work_fulfillment_url").value, target: "_blank", class: "btn btn-primary btn-md"
         else
           # In fulfillment, user does not have rights, disable button
-          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:in_fulfillment], CLINICAL_WORK_FULFILLMENT_URL, target: "_blank", class: "btn btn-primary btn-md", disabled: true
+          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:in_fulfillment], Setting.find_by_key("clinical_work_fulfillment_url").value, target: "_blank", class: "btn btn-primary btn-md", disabled: true
         end
       else
         # Not in Fulfillment
@@ -191,8 +191,8 @@ module Dashboard::SubServiceRequestsHelper
     total
   end
 
-  def ssr_notifications_display(ssr, user)
-    render 'dashboard/notifications/dropdown.html', sub_service_request: ssr, user: user
+  def ssr_notifications_display(ssr, user, sr_table)
+    render 'dashboard/notifications/dropdown.html', sub_service_request: ssr, user: user, sr_table: sr_table
   end
 
   def ssr_actions_display(ssr, user, permission_to_edit, admin_orgs, show_view_ssr_back)
@@ -208,49 +208,33 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def display_ssr_submissions(ssr)
-    line_items = ssr.line_items.includes(service: :questionnaires).includes(:submission).to_a.select(&:has_incomplete_additional_details?)
+    forms                     = ssr.forms_to_complete
+    form_list                 = {}
+    form_list[:Organization]  = [] if forms.detect{ |f| f.surveyable_type == 'Organization' }
+    form_list[:Service]       = [] if forms.detect{ |f| f.surveyable_type == 'Service' }
 
-    if line_items.any?
-      protocol    = ssr.protocol
-      submissions = ""
+    forms.each do |f|
+      form_list[f.surveyable_type.to_sym] << [f.surveyable.name, f.surveyable.name, data: { type: 'Form', survey_id: f.id, respondable_id: ssr.id, respondable_type: 'SubServiceRequest' }]
+    end
 
-      line_items.each do |li|
-        submissions +=  content_tag(
-                          :option,
-                          "#{li.service.name}",
-                          data: {
-                            service_id: li.service.id,
-                            protocol_id: protocol.id,
-                            line_item_id: li.id
-                          }
-                        )
-      end
-
-      content_tag(
-        :select,
-        submissions.html_safe,
-        title: t(:dashboard)[:service_requests][:additional_details][:selectpicker],
-        class: 'selectpicker complete-details',
-        data: {
-          style: 'btn-danger',
-          counter: 'true'
-        }
-      )
-    else
+    if form_list.empty?
       ''
+    else
+      content_tag(:select, grouped_options_for_select(form_list).html_safe, title: t(:dashboard)[:service_requests][:forms][:selectpicker],
+        class: 'selectpicker complete-forms', data: { style: 'btn-danger', counter: 'true' })
     end
   end
 
   private
 
   def ssr_view_button(ssr, show_view_ssr_back)
-    content_tag(:button, t(:dashboard)[:service_requests][:actions][:view], class: 'view-service-request btn btn-primary btn-sm', type: 'button', data: { sub_service_request_id: ssr.id, show_view_ssr_back: show_view_ssr_back.to_s })
+    content_tag(:button, t(:dashboard)[:service_requests][:actions][:view], class: 'view-service-request btn btn-primary btn-sm', type: 'button', data: { sub_service_request_id: ssr.id, show_view_ssr_back: show_view_ssr_back.to_s, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:dashboard)[:service_requests][:actions][:tooltips][:view])
   end
 
   def ssr_edit_button(ssr, user, permission_to_edit)
     # The SSR must not be locked, and the user must either be an authorized user or an authorized admin
     if ssr.can_be_edited? && permission_to_edit
-      content_tag(:button, t(:dashboard)[:service_requests][:actions][:edit], class: 'edit-service-request btn btn-warning btn-sm', type: 'button', data: { permission: permission_to_edit.to_s, url: "/service_requests/#{ssr.service_request.id}/catalog?sub_service_request_id=#{ssr.id}"})
+      content_tag(:button, t(:dashboard)[:service_requests][:actions][:edit], class: 'edit-service-request btn btn-warning btn-sm', type: 'button', data: { permission: permission_to_edit.to_s, url: "/service_requests/#{ssr.service_request.id}/catalog?sub_service_request_id=#{ssr.id}", toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}', title: t(:dashboard)[:service_requests][:actions][:tooltips][:edit]})
     else
       ''
     end
@@ -258,26 +242,47 @@ module Dashboard::SubServiceRequestsHelper
 
   def ssr_admin_button(ssr, user, permission_to_edit, admin_access)
     if admin_access
-      content_tag(:button, t(:dashboard)[:service_requests][:actions][:admin_edit], class: "edit-service-request btn btn-warning btn-sm", type: 'button', data: { permission: admin_access.to_s, url: "/dashboard/sub_service_requests/#{ssr.id}" })
+      content_tag(:button, t(:dashboard)[:service_requests][:actions][:admin_edit], class: "edit-service-request btn btn-warning btn-sm", type: 'button', data: { permission: admin_access.to_s, url: "/dashboard/sub_service_requests/#{ssr.id}", toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:dashboard)[:service_requests][:actions][:tooltips][:admin])
     else
       ''
     end
   end
 
   def ssr_select_options(ssr)
-    ssr.nil? ? [] : statuses_with_classes(ssr)
+    if ssr.is_complete?
+      finished_statuses(ssr)
+    else
+      ssr.nil? ? [] : statuses_with_classes(ssr)
+    end
   end
 
   private
 
   def statuses_with_classes(ssr)
     ssr.organization.get_available_statuses.invert.map do |status|
-      if status.include?('Complete') || status.include?('Withdrawn')
+      if in_finished_status?(status)
         status.push(:class=> 'finished-status')
       else
         status
       end
     end
+  end
+
+  def finished_statuses(ssr)
+    new_statuses = []
+    ssr.organization.get_available_statuses.invert.map do |status|
+      if in_finished_status?(status)
+        new_statuses << status
+      end
+    end
+
+    new_statuses.each do |status|
+      status.push(:class=> 'finished-status')
+    end
+  end
+
+  def in_finished_status?(status)
+    Setting.find_by_key("finished_statuses").value.include?(status.last)
   end
 end
 

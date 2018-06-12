@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -176,9 +176,6 @@ def build_per_patient_per_visit_services
   let!(:super_user)          { create(:super_user, organization_id: program.id, identity_id: jpl6.id)}
   let!(:catalog_manager)     { create(:catalog_manager, organization_id: program.id, identity_id: jpl6.id) }
   let!(:clinical_provider)   { create(:clinical_provider, organization_id: program.id, identity_id: jug2.id) }
-  let!(:available_status)    { create(:available_status, organization_id: program.id, status: 'submitted')}
-  let!(:available_status2)   { create(:available_status, organization_id: program.id, status: 'draft')}
-  let!(:available_status3)   { create(:available_status, organization_id: program.id, status: 'administrative_review')}
   let!(:subsidy)             { Subsidy.auditing_enabled = false; create(:subsidy_without_validations, percent_subsidy: 0.45, sub_service_request_id: sub_service_request.id)}
   let!(:subsidy_map)         { create(:subsidy_map, organization_id: program.id) }
 end
@@ -186,9 +183,9 @@ end
 def build_service_request
   let!(:service_request)     { create(:service_request_without_validations, status: "draft") }
   let!(:institution)         { create(:institution,name: 'Medical University of South Carolina', order: 1, abbreviation: 'MUSC', is_available: 1)}
-  let!(:provider)            { create(:provider,parent_id:institution.id,name: 'South Carolina Clinical and Translational Institute (SCTR)',order: 1,css_class: 'blue-provider', abbreviation: 'SCTR1',process_ssrs: 0,is_available: 1)}
-  let!(:program)             { create(:program,type:'Program',parent_id:provider.id,name:'Office of Biomedical Informatics',order:1, abbreviation:'Informatics', process_ssrs:  0, is_available: 1)}
-  let!(:core)                { create(:core, parent_id: program.id)}
+  let!(:provider)            { create(:provider,parent_id:institution.id,name: 'South Carolina Clinical and Translational Institute (SCTR)',order: 1,css_class: 'blue-provider', abbreviation: 'SCTR1',process_ssrs: 0, is_available: 1)}
+  let!(:program)             { create(:program,type:'Program',parent_id:provider.id,name:'Office of Biomedical Informatics',order:1, abbreviation:'Informatics', process_ssrs:  0, is_available: 1, use_default_statuses: false)}
+  let!(:core)                { create(:core, parent_id: program.id, use_default_statuses: false)}
   let!(:core_17)             { create(:core, parent_id: program.id, abbreviation: "Nutrition") }
   let!(:core_13)             { create(:core, parent_id: program.id, abbreviation: "Nursing") }
   let!(:core_16)             { create(:core, parent_id: program.id, abbreviation: "Lab and Biorepository") }
@@ -199,6 +196,8 @@ def build_service_request
 
   before :each do
     program.tag_list.add("ctrc")
+    program.available_statuses.where(status: ['draft', 'submitted', 'get_a_cost_estimate', 'administrative_review']).update_all(selected: true)
+    program.editable_statuses.where(status: ['draft', 'submitted', 'get_a_cost_estimate', 'administrative_review']).update_all(selected: true)
 
     [program, core_13, core_15, core_16, core_17, core_62].each do |organization|
       organization.tag_list.add("clinical work fulfillment")

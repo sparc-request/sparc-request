@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -37,7 +37,7 @@ RSpec.describe Dashboard::ProtocolsController do
 
         allow( StudyTypeQuestionGroup ).to receive( :active_id ).
           and_return( "active group id" )
-
+        allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
         log_in_dashboard_identity( obj: @logged_in_user )
       end
 
@@ -86,7 +86,7 @@ RSpec.describe Dashboard::ProtocolsController do
 
         allow( StudyTypeQuestionGroup ).to receive( :active_id ).
           and_return( "active group id" )
-
+        allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
         log_in_dashboard_identity( obj: @logged_in_user )
       end
 

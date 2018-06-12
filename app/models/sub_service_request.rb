@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -36,6 +36,7 @@ class SubServiceRequest < ApplicationRecord
   has_many :past_statuses, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
   has_many :line_items_visits, through: :line_items
+  has_many :services, through: :line_items
   has_and_belongs_to_many :documents
   has_many :notes, as: :notable, dependent: :destroy
   has_many :approvals, :dependent => :destroy
@@ -44,7 +45,7 @@ class SubServiceRequest < ApplicationRecord
   has_many :reports, :dependent => :destroy
   has_many :notifications, :dependent => :destroy
   has_many :subsidies
-  has_many :responses
+  has_many :responses, as: :respondable, dependent: :destroy
   has_one :approved_subsidy, :dependent => :destroy
   has_one :pending_subsidy, :dependent => :destroy
 
@@ -58,11 +59,11 @@ class SubServiceRequest < ApplicationRecord
   scope :in_work_fulfillment, -> { where(in_work_fulfillment: true) }
 
   def consult_arranged_date=(date)
-    write_attribute(:consult_arranged_date, Time.strptime(date, "%m/%d/%Y")) if date.present?
+    write_attribute(:consult_arranged_date, date.present? ? Time.strptime(date, "%m/%d/%Y") : nil)
   end
 
   def requester_contacted_date=(date)
-    write_attribute(:requester_contacted_date, Time.strptime(date, "%m/%d/%Y")) if date.present?
+    write_attribute(:requester_contacted_date, date.present? ? Time.strptime(date, "%m/%d/%Y") : nil)
   end
 
   def status= status
@@ -75,10 +76,11 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def formatted_status
-    if AVAILABLE_STATUSES.has_key? status
-      AVAILABLE_STATUSES[status]
-    else
+    formatted_status = PermissibleValue.get_value('status', self.status)
+    if formatted_status.nil?
       "STATUS MAPPING NOT PRESENT"
+    else
+      formatted_status
     end
   end
 
@@ -240,10 +242,10 @@ class SubServiceRequest < ApplicationRecord
   ######################## FULFILLMENT RELATED METHODS ##########################
   ###############################################################################
   def ready_for_fulfillment?
-    # return true if work fulfillment has already been turned "on" or global variable FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is set to false or nil
-    # otherwise, return true only if FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is true and the parent organization has tag 'clinical work fulfillment'
-    if self.in_work_fulfillment || !FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER ||
-        (FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER && self.organization.tag_list.include?('clinical work fulfillment'))
+    # return true if work fulfillment has already been turned "on" or global variable fulfillment_contingent_on_catalog_manager is set to false or nil
+    # otherwise, return true only if fulfillment_contingent_on_catalog_manager is true and the parent organization has tag 'clinical work fulfillment'
+    if self.in_work_fulfillment || !Setting.find_by_key("fulfillment_contingent_on_catalog_manager").value ||
+        (Setting.find_by_key("fulfillment_contingent_on_catalog_manager").value && self.organization.tag_list.include?('clinical work fulfillment'))
       return true
     else
       return false
@@ -254,30 +256,30 @@ class SubServiceRequest < ApplicationRecord
   ## SSR STATUS METHODS ##
   ########################
 
-  # Returns the SSR id that need an initial submission email and updates 
+  # Returns the SSR id that need an initial submission email and updates
   # the SSR status to new status if appropriate
   def update_status_and_notify(new_status)
     to_notify = []
     if can_be_edited?
-      available = AVAILABLE_STATUSES.keys
+      available = PermissibleValue.get_key_list('status')
       editable = self.is_locked? || available
       changeable = available & editable
       if changeable.include?(new_status)
         #  See Pivotal Stories: #133049647 & #135639799
-        if (status != new_status) && ((new_status == 'submitted' && UPDATABLE_STATUSES.include?(status)) || new_status != 'submitted')
+        if (status != new_status) && ((new_status == 'submitted' && Setting.find_by_key("updatable_statuses").value.include?(status)) || new_status != 'submitted')
           ### For 'submitted' status ONLY:
           # Since adding/removing services changes a SSR status to 'draft', we have to look at the past status to see if we should notify users of a status change
-          # We do NOT notify if updating from an un-updatable status or we're updating to a status that we already were previously 
+          # We do NOT notify if updating from an un-updatable status or we're updating to a status that we already were previously
           if new_status == 'submitted'
             past_status = PastStatus.where(sub_service_request_id: id).last
             past_status = past_status.nil? ? nil : past_status.status
-            if status == 'draft' && ((UPDATABLE_STATUSES.include?(past_status) && past_status != new_status) || past_status == nil) # past_status == nil indicates a newly created SSR
+            if status == 'draft' && ((Setting.find_by_key("updatable_statuses").value.include?(past_status) && past_status != new_status) || past_status == nil) # past_status == nil indicates a newly created SSR
               to_notify << id
             elsif status != 'draft'
-              to_notify << id 
+              to_notify << id
             end
           else
-            to_notify << id 
+            to_notify << id
           end
 
           new_status == 'submitted' ? update_attributes(status: new_status, submitted_at: Time.now, nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false) : update_attribute(:status, new_status)
@@ -302,7 +304,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def is_complete?
-    FINISHED_STATUSES.include?(self.status)
+    return Setting.find_by_key("finished_statuses").value.include?(status)
   end
 
   def set_to_draft
@@ -403,6 +405,28 @@ class SubServiceRequest < ApplicationRecord
     end
   end
 
+  #############
+  ### FORMS ###
+  #############
+  def forms_to_complete
+    Form.where(surveyable: self.services).where.not(id: self.responses.pluck(:survey_id)).active +
+      Form.where(surveyable: self.organization).where.not(id: self.responses.pluck(:survey_id)).active
+  end
+
+  def form_completed?(form)
+    self.responses.where(survey: form).any?
+  end
+
+  def has_completed_forms?
+    Response.where(respondable: self, survey: Form.where(surveyable: self.services).active.ids + Form.where(surveyable: self.organization).active.ids).any?
+  end
+
+  def all_forms_completed?
+    form_ids = Form.where(surveyable: self.services).active.ids + 
+                Form.where(surveyable: self.organization).active.ids
+    Response.where(respondable: self, survey_id: form_ids).count == form_ids.count
+  end
+
   ##########################
   ## SURVEY DISTRIBUTTION ##
   ##########################
@@ -412,7 +436,7 @@ class SubServiceRequest < ApplicationRecord
     # send all available surveys at once
     available_surveys = line_items.map{|li| li.service.available_surveys}.flatten.compact.uniq
     # do nothing if we don't have any available surveys
-    unless available_surveys.blank?
+    unless available_surveys.empty?
       SurveyNotification.service_survey(available_surveys, primary_pi, self).deliver
     # only send survey email to both users if they are unique
       if primary_pi != service_requester
@@ -422,7 +446,10 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def surveys_completed?
-    self.responses.all?(&:completed?)
+    self.line_items.
+      eager_load(service: [:associated_surveys, :organization]).
+      map{ |li| li.service.available_surveys }.flatten.compact.uniq.
+      all?{ |s| s.responses.where(respondable_id: self.id, respondable_type: self.class.name).any? }
   end
 
   ###############################
@@ -448,9 +475,9 @@ class SubServiceRequest < ApplicationRecord
     end_date = Time.now.utc
 
     deleted_line_item_audits = AuditRecovery.where("audited_changes LIKE '%sub_service_request_id: #{id}%' AND auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('destroy') AND created_at BETWEEN '#{start_date}' AND '#{end_date}'")
-                             
+
     added_line_item_audits = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{service_request.id}%' AND auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('create') AND created_at BETWEEN '#{start_date}' AND '#{end_date}'")
-    
+
     ### Takes all the added LIs and filters them down to the ones specific to this SSR ###
     added_li_ids = added_line_item_audits.present? ? added_line_item_audits.map(&:auditable_id) : []
     li_ids_added_to_this_ssr = line_items.present? ? line_items.map(&:id) : []
@@ -495,7 +522,8 @@ class SubServiceRequest < ApplicationRecord
       audit = audits.sort_by(&:created_at).last
       # create action
       if audit.audited_changes["sub_service_request_id"].nil?
-        filtered_audit_trail[:line_items] << audit if LineItem.find(audit.auditable_id).sub_service_request_id == self.id
+        line_item = LineItem.where(id: audit.auditable_id).first
+        filtered_audit_trail[:line_items] << audit if (line_item && (line_item.sub_service_request_id == self.id))
       # destroy action
       else
         filtered_audit_trail[:line_items] << audit if audit.audited_changes["sub_service_request_id"] == self.id

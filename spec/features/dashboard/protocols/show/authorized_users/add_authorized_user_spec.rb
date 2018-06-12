@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,11 +21,11 @@
 require 'rails_helper'
 
 RSpec.feature 'User wants to add an authorized user', js: true do
+  
   let!(:logged_in_user) { create(:identity, last_name: "Doe", first_name: "John", ldap_uid: "johnd", email: "johnd@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
-
   let!(:other_user) { create(:identity, last_name: "Doe", first_name: "Jane", ldap_uid: "janed", email: "janed@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
 
-  before(:each) { stub_const('USE_LDAP', false) }
+  stub_config("use_ldap", false)
 
   context 'which is not assigned to themself' do
     let!(:protocol) { create(:unarchived_project_without_validations, primary_pi: logged_in_user) }
@@ -218,7 +218,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
       end
 
       scenario 'and sees the Modify Request button for all SRs' do
-        expect(@page).to have_selector('.panel-heading .edit-service-request')
+        expect(@page).to have_selector('.panel-body .edit-service-request')
       end
     end
   end

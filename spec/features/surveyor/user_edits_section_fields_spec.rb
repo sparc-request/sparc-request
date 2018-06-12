@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,73 +22,143 @@ require 'rails_helper'
 
 RSpec.describe 'User edits section fields', js: true do
   let_there_be_lane
-
   fake_login_for_each_test
 
-  before :each do
-    @survey = create(:survey)
-    @section = create(:section, survey: @survey)
+  stub_config("site_admins", ["jug2"])
 
-    stub_const("SITE_ADMINS", ['jug2'])
-  end
+  context 'surveys' do
+    before :each do
+      @survey = create(:system_survey)
+      @section = create(:section, survey: @survey)
+    end
 
-  scenario 'and sees updated title' do
-    visit surveyor_surveys_path
-    wait_for_javascript_to_finish
-
-    find('.edit-survey').click
-    wait_for_javascript_to_finish
-
-    fill_in("section-#{@section.id}-title", with: 'This is a Terrible Section')
-    find('.modal-title').click
-    wait_for_javascript_to_finish
-
-    expect(@section.reload.title).to eq('This is a Terrible Section')
-  end
-
-  scenario 'and sees updated description' do
-    visit surveyor_surveys_path
-    wait_for_javascript_to_finish
-
-    find('.edit-survey').click
-    wait_for_javascript_to_finish
-
-    fill_in("section-#{@section.id}-description", with: 'How can I describe such a terrible section?')
-    find('.modal-title').click
-    wait_for_javascript_to_finish
-
-    expect(@section.reload.description).to eq('How can I describe such a terrible section?')
-  end
-
-  context 'and adds a section' do
-    scenario 'and sees the new section' do
+    scenario 'and sees updated title' do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
       find('.edit-survey').click
       wait_for_javascript_to_finish
 
-      find('.add-section').click
+      fill_in("section-#{@section.id}-title", with: 'This is a Terrible Section')
+      find('.modal-title').click
       wait_for_javascript_to_finish
 
-      expect(page).to have_selector('.section', count: 2)
-      expect(@survey.sections.count).to eq(2)
+      expect(@section.reload.title).to eq('This is a Terrible Section')
+    end
+
+    scenario 'and sees updated description' do
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+
+      find('.edit-survey').click
+      wait_for_javascript_to_finish
+
+      fill_in("section-#{@section.id}-description", with: 'How can I describe such a terrible section?')
+      find('.modal-title').click
+      wait_for_javascript_to_finish
+
+      expect(@section.reload.description).to eq('How can I describe such a terrible section?')
+    end
+
+    context 'and adds a section' do
+      scenario 'and sees the new section' do
+        visit surveyor_surveys_path
+        wait_for_javascript_to_finish
+
+        find('.edit-survey').click
+        wait_for_javascript_to_finish
+
+        find('.add-section').click
+        wait_for_javascript_to_finish
+
+        expect(page).to have_selector('.section', count: 2)
+        expect(@survey.sections.count).to eq(2)
+      end
+    end
+
+    context 'and removes a section' do
+      scenario 'and does not see the deleted section' do
+        visit surveyor_surveys_path
+        wait_for_javascript_to_finish
+
+        find('.edit-survey').click
+        wait_for_javascript_to_finish
+
+        find('.delete-section').click
+        wait_for_javascript_to_finish
+
+        expect(page).to_not have_selector('.section')
+        expect(@survey.sections.count).to eq(0)
+      end
     end
   end
 
-  context 'and removes a section' do
-    scenario 'and does not see the deleted section' do
+  context 'forms' do
+    before :each do
+      org = create(:institution)
+      create(:super_user, organization: org, identity: jug2)
+      @form = create(:form, surveyable: org)
+      @section = create(:section, survey: @form)
+    end
+
+    scenario 'and sees updated title' do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
       find('.edit-survey').click
       wait_for_javascript_to_finish
 
-      find('.delete-section').click
+      fill_in("section-#{@section.id}-title", with: 'This is a Terrible Section')
+      find('.modal-title').click
       wait_for_javascript_to_finish
 
-      expect(page).to_not have_selector('.section')
-      expect(@survey.sections.count).to eq(0)
+      expect(@section.reload.title).to eq('This is a Terrible Section')
+    end
+
+    scenario 'and sees updated description' do
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+
+      find('.edit-survey').click
+      wait_for_javascript_to_finish
+
+      fill_in("section-#{@section.id}-description", with: 'How can I describe such a terrible section?')
+      find('.modal-title').click
+      wait_for_javascript_to_finish
+
+      expect(@section.reload.description).to eq('How can I describe such a terrible section?')
+    end
+
+    context 'and adds a section' do
+      scenario 'and sees the new section' do
+        visit surveyor_surveys_path
+        wait_for_javascript_to_finish
+
+        find('.edit-survey').click
+        wait_for_javascript_to_finish
+
+        find('.add-section').click
+        wait_for_javascript_to_finish
+
+        expect(page).to have_selector('.section', count: 2)
+        expect(@form.sections.count).to eq(2)
+      end
+    end
+
+    context 'and removes a section' do
+      scenario 'and does not see the deleted section' do
+        visit surveyor_surveys_path
+        wait_for_javascript_to_finish
+
+        find('.edit-survey').click
+        wait_for_javascript_to_finish
+
+        find('.delete-section').click
+        wait_for_javascript_to_finish
+
+        expect(page).to_not have_selector('.section')
+        expect(@form.sections.count).to eq(0)
+      end
     end
   end
 end

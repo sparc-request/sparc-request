@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -37,6 +37,11 @@
     = Gon::Base.render_data
 
   %body#body
+    - if ENV.key?("site_name")
+      .alert.alert-danger
+        %p.text-center{:style => "letter-spacing: 8px"}
+          = ENV['site_name']
+
     - if @service_request
       = hidden_field_tag :service_request_id, @service_request.id, disabled: true
     - if @sub_service_request
@@ -53,6 +58,6 @@
         = yield
   %footer
     = render 'layouts/footer'
-    = render 'shared/piwik_tracking' if Rails.env == 'production'
+    = render 'shared/analytics' if Rails.env == 'production'
     = render 'shared/ie7_modal'
     = render 'shared/modal'

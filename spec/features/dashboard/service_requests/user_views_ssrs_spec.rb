@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -50,7 +50,7 @@ RSpec.describe "User views SSR table", js: true do
       context 'for a locked SSR' do
         let!(:protocol)             { create(:unarchived_study_without_validations, primary_pi: jug2) }
         let!(:service_request)      { create(:service_request_without_validations, protocol: protocol, status: 'draft') }
-        let!(:organization)         { create(:organization,type: 'Institution', name: 'Megacorp', admin: bob, service_provider: bob) }
+        let!(:organization)         { create(:organization,type: 'Institution', name: 'Megacorp', admin: bob, service_provider: bob, use_default_statuses: false) }
 
         scenario 'and sees View but not Edit' do
           organization.editable_statuses.where(status: 'on_hold').destroy_all
@@ -102,17 +102,17 @@ RSpec.describe "User views SSR table", js: true do
   context 'for an SSR with forms to complete' do
     let!(:organization)         { create(:organization) }
     let!(:service)              { create(:service, organization: organization) }
-    let!(:questionnaire)        { create(:questionnaire, :without_validations, service: service, active: true) }
     let!(:protocol)             { create(:protocol_federally_funded, primary_pi: jug2, type: 'Study') }
     let!(:service_request)      { create(:service_request_without_validations, protocol: protocol) }
     let!(:sub_service_request)  { create(:sub_service_request, service_request: service_request, organization: organization, status: 'draft', protocol: protocol) }
     let!(:line_item)            { create(:line_item, service_request: service_request, sub_service_request: sub_service_request, service: service) }
+    let!(:form)                 { create(:form, :with_question, surveyable: service, active: true) }
 
     scenario 'and sees the complete form dropdown' do
       page = go_to_show_protocol(protocol.id)
 
       expect(page).to have_content('Complete Form')
-      expect(page).to have_selector('.complete-details .badge', text: /\A1\z/)
+      expect(page).to have_selector('.complete-forms .badge', text: /\A1\z/)
     end
   end
 
@@ -127,8 +127,8 @@ RSpec.describe "User views SSR table", js: true do
     scenario 'and does not see the complete form dropdown' do
       page = go_to_show_protocol(protocol.id)
 
-      expect(page).to_not have_selector('.complete-details button .filter-option', text: /\AComplete Form\z/)
-      expect(page).to_not have_selector('.complete-details button .filter-option .badge', text: /\A1\z/)
+      expect(page).to_not have_selector('.complete-forms button .filter-option', text: /\AComplete Form\z/)
+      expect(page).to_not have_selector('.complete-forms button .filter-option .badge', text: /\A1\z/)
     end
   end
 end

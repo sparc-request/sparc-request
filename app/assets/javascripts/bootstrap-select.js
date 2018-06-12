@@ -1,4 +1,4 @@
-// Copyright © 2011-2017 MUSC Foundation for Research Development~
+// Copyright © 2011-2018 MUSC Foundation for Research Development~
 // All rights reserved.~
 
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -675,7 +675,7 @@
       this.$button.children('.filter-option').html(title);
 
       if (this.options.counter) {
-        var badge = "<span class='badge bootstrap-select-badge'>"+this.$lis.length+"</span>"
+        var badge = "<span class='badge bootstrap-select-badge'>"+this.$lis.filter("[data-original-index]").length+"</span>"
         this.$button.children('.filter-option').append(badge)
       }
 

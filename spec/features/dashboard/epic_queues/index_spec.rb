@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -50,6 +50,9 @@ RSpec.describe 'Notifications index', js: true do
     page
   end
 
+  stub_config("use_epic", true)
+  stub_config("epic_queue_access", ['jug2'])
+  
   describe "Epic Queue Table" do
     context 'panel title' do
       it 'should display a title of current and past' do

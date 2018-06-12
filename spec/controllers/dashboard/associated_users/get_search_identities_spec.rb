@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -30,10 +30,12 @@ RSpec.describe Dashboard::AssociatedUsersController do
       before(:each) do
         matching_record1 = instance_double(Identity,
           display_name: "My Good Name",
+          suggestion_value: 1,
           id: 1,
           email: "user1@email.com")
         matching_record2 = instance_double(Identity,
           display_name: "Person",
+          suggestion_value: 2,
           id: 2,
           email: "user2@email.com")
         allow(Identity).to receive(:search).with("ABC").and_return([matching_record1, matching_record2])

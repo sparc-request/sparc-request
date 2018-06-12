@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -45,8 +45,7 @@ class OrganizationUpdater
                        else
                          true
                        end
-    @organization.available_statuses.destroy_all
-    @organization.editable_statuses.destroy_all
+                       
     if services_updated && @organization.update_attributes(@attributes)
       @organization.update_ssr_org_name if name_change
       @organization.update_descendants_availability(@attributes[:is_available])

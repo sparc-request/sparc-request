@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -119,15 +119,13 @@ module Dashboard
       # appears after clicking Requests button in Search Results table
       section :requests_modal, "#requests-modal" do
         # the collection of all blue-header'd tables titled by 'Service Request: <digits>''
-        sections :service_requests, ".panel", text: /Service Request: [\d]+/ do
-          element :notes_button, :button, "Notes"
-          element :modify_request_button, :button, "Modify Request"
+        element :notes_button, :button, "Notes"
+        element :modify_request_button, :button, "Modify Request"
 
-          sections :sub_service_requests, "tbody tr" do
-            element :view_button, :button, "View"
-            element :edit_button, :button, "Edit"
-            element :admin_edit_button, :button, "Admin Edit"
-          end
+        sections :sub_service_requests, "tbody tr" do
+          element :view_button, :button, "View"
+          element :edit_button, :button, "Edit"
+          element :admin_edit_button, :button, "Admin Edit"
         end
       end
 

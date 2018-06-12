@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -52,17 +52,14 @@ RSpec.describe AssociatedUserUpdater do
     end
   end
 
-  context "USE_EPIC == true && Protocol selected for epic && QUEUE_EPIC == false" do
+  context "use_epic is true and Protocol selected for epic and queue_epic is false" do
     let(:protocol) do
       create(:protocol_without_validations,
         primary_pi: primary_pi,
         selected_for_epic: true)
     end
 
-    before(:each) do
-      stub_const("USE_EPIC", true)
-      stub_const("QUEUE_EPIC", false)
-    end
+    stub_config("use_epic", true)
 
     context "epic access removed from ProjectRole" do
       it "should deliver a notification regarding epic access removal with updated ProjectRole" do

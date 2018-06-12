@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -47,7 +47,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       initialize_filterrific(Protocol, params[:filterrific] && filterrific_params,
         default_filter_params: @default_filter_params,
         select_options: {
-          with_status: AVAILABLE_STATUSES.invert,
+          with_status: PermissibleValue.get_inverted_hash('status'),
           with_organization: Dashboard::GroupedOrganizations.new(@organizations).collect_grouped_options,
           with_owner: build_with_owner_params
         },
@@ -57,7 +57,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocols        = @filterrific.find.page(params[:page])
     @admin_protocols  = Protocol.for_admin(@user.id).pluck(:id)
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, ProtocolFilter::MAX_FILTERS)
-    
+
     #toggles the display of the navigation bar, instead of breadcrumbs
     @show_navbar      = true
     @show_messages    = true
@@ -73,7 +73,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def show
-    @submissions = @protocol.submissions
     respond_to do |format|
       format.html {
         session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id)
@@ -96,13 +95,15 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol.requester_id  = current_user.id
     @protocol.populate_for_edit
     session[:protocol_type] = params[:protocol_type]
-    gon.rm_id_api_url = RESEARCH_MASTER_API
-    gon.rm_id_api_token = RMID_API_TOKEN
+    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
+    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
+    rmid_server_status(@protocol)
   end
 
   def create
     protocol_class                          = protocol_params[:type].capitalize.constantize
-    attrs                                   = fix_date_params
+    ### if lazy load enabled, we need create the identiy if necessary here
+    attrs                                   = Setting.find_by_key("use_ldap").value && Setting.find_by_key("lazy_load_ldap").value ? fix_identity : fix_date_params
     @protocol                               = protocol_class.new(attrs)
     @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id
 
@@ -116,15 +117,16 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
       @protocol.service_requests.new(status: 'draft').save(validate: false)
 
-      if USE_EPIC && @protocol.selected_for_epic
+      if Setting.find_by_key("use_epic").value && @protocol.selected_for_epic
         @protocol.ensure_epic_user
-        Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
+        Notifier.notify_for_epic_user_approval(@protocol).deliver unless Setting.find_by_key("queue_epic").value
       end
 
       flash[:success] = I18n.t('protocols.created', protocol_type: @protocol.type)
     else
       @errors = @protocol.errors
     end
+    rmid_server_status(@protocol)
   end
 
   def edit
@@ -132,8 +134,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @permission_to_edit = @authorization.nil? ? false : @authorization.can_edit?
     @in_dashboard       = true
     @protocol.populate_for_edit
-    gon.rm_id_api_url = RESEARCH_MASTER_API
-    gon.rm_id_api_token = RMID_API_TOKEN
+    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
+    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
 
     session[:breadcrumbs].
       clear.
@@ -143,39 +145,45 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @errors = @protocol.errors
     @errors.delete(:research_master_id) if @bypass_rmid_validation
 
+    rmid_server_status(@protocol)
+
     respond_to do |format|
       format.html
     end
   end
 
   def update
-    protocol_type = protocol_params[:type]
-    @protocol = @protocol.becomes(protocol_type.constantize) unless protocol_type.nil?
-    if (params[:updated_protocol_type] == 'true' && protocol_type == 'Study') || params[:can_edit] == 'true'
-      @protocol.assign_attributes(study_type_question_group_id: StudyTypeQuestionGroup.active_id)
-      @protocol.assign_attributes(selected_for_epic: protocol_params[:selected_for_epic]) if protocol_params[:selected_for_epic]
-      if @protocol.valid?
-        @protocol.update_attribute(:type, protocol_type)
-        @protocol.activate
-        @protocol.reload
+    unless params[:locked]
+      protocol_type = protocol_params[:type]
+      @protocol = @protocol.becomes(protocol_type.constantize) unless protocol_type.nil?
+      if (params[:updated_protocol_type] == 'true' && protocol_type == 'Study') || params[:can_edit] == 'true'
+        @protocol.assign_attributes(study_type_question_group_id: StudyTypeQuestionGroup.active_id)
+        @protocol.assign_attributes(selected_for_epic: protocol_params[:selected_for_epic]) if protocol_params[:selected_for_epic]
+        if @protocol.valid?
+          @protocol.update_attribute(:type, protocol_type)
+          @protocol.activate
+          @protocol.reload
+        end
       end
-    end
 
-    attrs               = fix_date_params
-    permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
-    # admin is not able to activate study_type_question_group
+      attrs               = fix_date_params
+      permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
+      # admin is not able to activate study_type_question_group
 
-    @protocol.bypass_rmid_validation = @bypass_rmid_validation
+      @protocol.bypass_rmid_validation = @bypass_rmid_validation
 
-    if @protocol.update_attributes(attrs)
-      flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
+      if @protocol.update_attributes(attrs)
+        flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
+      else
+        @errors = @protocol.errors
+      end
+
+      if params[:sub_service_request]
+        @sub_service_request = SubServiceRequest.find params[:sub_service_request][:id]
+        render "/dashboard/sub_service_requests/update"
+      end
     else
-      @errors = @protocol.errors
-    end
-
-    if params[:sub_service_request]
-      @sub_service_request = SubServiceRequest.find params[:sub_service_request][:id]
-      render "/dashboard/sub_service_requests/update"
+      perform_protocol_lock(@protocol, params[:locked])
     end
   end
 
@@ -190,12 +198,22 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol_type = params[:type]
 
     @protocol = @protocol.becomes(@protocol_type.constantize) unless @protocol_type.nil?
+
+    #### switching to a Project should clear out RMID and RMID validated flag ####
+    if @protocol_type && @protocol_type == 'Project'
+      @protocol.update_attribute :research_master_id, nil
+      @protocol.update_attribute :rmid_validated, false
+    end
+    #### end clearing RMID and RMID validated flag ####
+
     @protocol.populate_for_edit
 
     flash[:success] = t(:protocols)[:change_type][:updated]
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
       flash[:alert] = t(:protocols)[:change_type][:new_study_warning]
     end
+
+    rmid_server_status(@protocol)
   end
 
   def archive
@@ -262,6 +280,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         :selected_for_epic,
         :short_title,
         :sponsor_name,
+        :locked,
         {:study_phase_ids => []},
         :start_date,
         :study_type_question_group_id,
@@ -319,6 +338,19 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     attrs
   end
 
+  ### fix identity id nil problem when lazy loading is enabled
+  ### when lazy loadin is enabled, identity_id is merely ldap_uid, the identity may not exist in database yet, so we create it if necessary here
+  def fix_identity
+    attrs               = protocol_params
+    attrs[:project_roles_attributes].each do |index, project_role|
+      if project_role[:identity_id].present?
+        identity = Identity.find_or_create project_role[:identity_id]
+        project_role[:identity_id] = identity.id
+      end
+    end unless attrs[:project_roles_attributes].nil?
+    attrs
+  end
+
   def fix_date_params
     attrs               = protocol_params
 
@@ -339,5 +371,13 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     end
 
     attrs
+  end
+
+  def perform_protocol_lock(protocol, lock_status)
+    if lock_status == 'true'
+      protocol.update_attributes(locked: false)
+    else
+      protocol.update_attributes(locked: true)
+    end
   end
 end

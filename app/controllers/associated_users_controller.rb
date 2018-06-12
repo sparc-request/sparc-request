@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -40,7 +40,7 @@ class AssociatedUsersController < ApplicationController
     @dashboard    = false
 
     if params[:identity_id] # if user selected
-      @identity     = Identity.find(params[:identity_id])
+      @identity     = Identity.find_or_create(params[:identity_id])
       @project_role = @protocol.project_roles.new(identity_id: @identity.id)
       @current_pi   = @protocol.primary_principal_investigator
 
@@ -67,7 +67,7 @@ class AssociatedUsersController < ApplicationController
   end
 
   def create
-    creator = AssociatedUserCreator.new(project_role_params)
+    creator = AssociatedUserCreator.new(project_role_params, current_user)
 
     if creator.successful?
       flash.now[:success] = t(:authorized_users)[:created]
@@ -81,7 +81,7 @@ class AssociatedUsersController < ApplicationController
   end
 
   def update
-    updater               = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params)
+    updater               = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params, current_identity: current_user)
     protocol_role         = updater.protocol_role
     @return_to_dashboard  = protocol_role.identity_id == current_user.id && ['none', 'view'].include?(protocol_role.project_rights)
 
@@ -99,12 +99,16 @@ class AssociatedUsersController < ApplicationController
   def destroy
     epic_access         = @protocol_role.epic_access
     protocol_role_clone = @protocol_role.clone
+    epic_queue_manager = EpicQueueManager.new(
+      @protocol_role.protocol, current_user, @protocol_role
+    )
+    epic_queue_manager.create_epic_queue
 
     @protocol_role.destroy
 
     flash.now[:alert] = t(:authorized_users)[:destroyed]
 
-    if USE_EPIC && @protocol.selected_for_epic && epic_access && !QUEUE_EPIC
+    if Setting.find_by_key("use_epic").value && @protocol.selected_for_epic && epic_access && !Setting.find_by_key("queue_epic").value
       Notifier.notify_primary_pi_for_epic_user_removal(@protocol, protocol_role_clone).deliver
     end
 
@@ -117,7 +121,7 @@ class AssociatedUsersController < ApplicationController
   def search_identities
     # Like SearchController#identities, but without ssr/sr authorization
     term    = params[:term].strip
-    results = Identity.search(term).map { |i| { label: i.display_name, value: i.id, email: i.email } }
+    results = Identity.search(term).map { |i| { label: i.display_name, value: i.suggestion_value, email: i.email } }
     results = [{ label: 'No Results' }] if results.empty?
 
     render json: results.to_json

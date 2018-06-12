@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -26,7 +26,14 @@ class Dashboard::EpicQueuesController < Dashboard::BaseController
   def index
     respond_to do |format|
       format.json do
-        @epic_queues = EpicQueue.where(attempted_push: false)
+        if params[:user_change]
+          @epic_queues = EpicQueue.where(
+            attempted_push: false,
+            user_change: true
+          )
+        else
+          @epic_queues = EpicQueue.where(attempted_push: false, user_change: false)
+        end
 
         render
       end
@@ -50,7 +57,7 @@ class Dashboard::EpicQueuesController < Dashboard::BaseController
 
   # Check to see if user has rights to view epic queues
   def authorize_overlord
-    unless EPIC_QUEUE_ACCESS.include?(@user.ldap_uid)
+    unless Setting.find_by_key("use_epic").value && Setting.find_by_key("epic_queue_access").value.include?(@user.ldap_uid)
       @epic_queues = nil
       @epic_queue = nil
       render partial: 'service_requests/authorization_error', locals: { error: 'You do not have access to view the Epic Queues', in_dashboard: false }

@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -29,7 +29,7 @@
           %tr.row
             %td
               .col-lg-12
-                = "- " + Affiliation::TYPES[affiliation.name]
+                = "- " + PermissibleValue.get_value('affiliation_type', affiliation.name)
   - else
     .panel-body
       = render partial: 'shared/alert', locals: { message: t(:protocols)[:studies][:affiliations][:none] }

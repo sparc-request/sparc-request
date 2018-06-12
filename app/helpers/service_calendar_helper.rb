@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -30,22 +30,22 @@ module ServiceCalendarHelper
     currency_converter(full_rate)
   end
 
-  def display_liv_notes(liv, portal)
+  def display_liv_notes(liv, portal, review)
   has_notes = liv.notes.length > 0
-  raw(content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-list-alt note-icon #{has_notes ? "blue-note" : "black-note"}", aria: {hidden: "true"}))+raw(content_tag(:span, liv.notes.length, class: "#{has_notes ? "badge blue-badge" : "badge"}", id: "lineitemsvisit_#{liv.id}_notes")), type: 'button', class: 'btn btn-link form-control actions-button notes', data: {notable_id: liv.id, notable_type: "LineItemsVisit", in_dashboard: portal}))
+  raw(content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-list-alt note-icon #{has_notes ? "blue-note" : "black-note"}", aria: {hidden: "true"}))+raw(content_tag(:span, liv.notes.length, class: "#{has_notes ? "badge blue-badge" : "badge"}", id: "lineitemsvisit_#{liv.id}_notes")), type: 'button', class: 'btn btn-link form-control actions-button notes', data: {notable_id: liv.id, notable_type: "LineItemsVisit", in_dashboard: portal, review: review}))
   end
 
-  def display_li_notes(li, portal)
+  def display_li_notes(li, portal, review)
     has_notes = li.notes.length > 0
-    raw(content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-list-alt note-icon #{has_notes ? "blue-note" : "black-note"}", aria: {hidden: "true"}))+raw(content_tag(:span, li.notes.length, class: "#{has_notes ? "badge blue-badge" : "badge"}", id: "lineitem_#{li.id}_notes")), type: 'button', class: 'btn btn-link form-control actions-button notes', data: {notable_id: li.id, notable_type: "LineItem", in_dashboard: portal}))
+    raw(content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-list-alt note-icon #{has_notes ? "blue-note" : "black-note"}", aria: {hidden: "true"}))+raw(content_tag(:span, li.notes.length, class: "#{has_notes ? "badge blue-badge" : "badge"}", id: "lineitem_#{li.id}_notes")), type: 'button', class: 'btn btn-link form-control actions-button notes', data: {notable_id: li.id, notable_type: "LineItem", in_dashboard: portal, review: review}))
   end
 
   def notable_type_is_related_to_li_or_liv(notable_type)
     notable_type == "LineItemsVisit" || notable_type == "LineItem"
   end
 
-  def display_freeze_header_button_pppv?(arm, service_request, sub_service_request, portal, merged, statuses_hidden)
-    livs_and_ssrs = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, statuses_hidden: statuses_hidden)
+  def display_freeze_header_button_pppv?(arm, service_request, sub_service_request, portal, merged, statuses_hidden, display_all_services)
+    livs_and_ssrs = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, statuses_hidden: statuses_hidden, display_all_services: display_all_services)
     
     if portal && !merged
       livs_and_ssrs.values.flatten.count > 9

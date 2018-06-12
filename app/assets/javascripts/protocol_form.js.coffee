@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -65,6 +65,8 @@ $(document).ready ->
     if $(this).val() == ''
       resetRmIdFields('.rm-id-dependent', '')
       toggleFields('.rm-locked-fields', false)
+    else
+      toggleFields('.rm-locked-fields', true)
 
   $(document).on 'click', '.edit-rmid', ->
     $('#protocol_research_master_id').prop('readonly', false)

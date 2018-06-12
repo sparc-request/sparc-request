@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -52,8 +52,9 @@ class ServiceCalendarsController < ApplicationController
       @admin = @portal && @sub_service_request.present?
     end
 
-    @merged       = false
-    @consolidated = false
+    @merged               = false
+    @consolidated         = false
+    @display_all_services = true
     setup_calendar_pages
 
     respond_to do |format|
@@ -63,14 +64,15 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def merged_calendar
-    @tab              = params[:tab]
-    @review           = params[:review] == 'true'
-    @portal           = params[:portal] == 'true'
-    @admin            = @portal && @sub_service_request.present?
-    @merged           = true
-    @consolidated     = false
-    @statuses_hidden  = []
-    @scroll_true        = params[:scroll].present? && params[:scroll] == 'true'
+    @tab                      = params[:tab]
+    @review                   = params[:review] == 'true'
+    @portal                   = params[:portal] == 'true'
+    @admin                    = @portal && @sub_service_request.present?
+    @merged                   = true
+    @consolidated             = false
+    @statuses_hidden          = []
+    @scroll_true              = params[:scroll].present? && params[:scroll] == 'true'
+    @display_all_services     = params[:display_all_services] == 'true' ? true : false
     setup_calendar_pages
 
     respond_to do |format|
@@ -90,6 +92,7 @@ class ServiceCalendarsController < ApplicationController
     @statuses_hidden       = params[:statuses_hidden]
     @scroll_true           = params[:scroll].present? && params[:scroll] == 'true'
     @visit_dropdown_change = params[:pages].present?
+    @display_all_services  = params[:display_all_services] == 'true' ? true : false
     setup_calendar_pages
 
     respond_to do |format|
@@ -130,6 +133,7 @@ class ServiceCalendarsController < ApplicationController
     @arm                  = Arm.find( params[:arm_id] )
     @visit_group          = VisitGroup.find(params[:visit_group].to_i)
     @visit_groups         = @arm.visit_groups.page(@page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] } })
+    @display_all_services = true
 
     new_position = params[:position].to_i
 

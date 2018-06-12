@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -30,7 +30,7 @@ module RemotelyNotifiable
 
   def remote_service_callback_url
     if self.persisted?
-      "#{REMOTE_SERVICE_NOTIFIER_PROTOCOL}://#{HOST}/#{CURRENT_API_VERSION}/#{self.class.to_s.pluralize.underscore}/#{self.id}.json"
+      "#{Setting.find_by_key("remote_service_notifier_protocol").value}://#{Setting.find_by_key("host").value}/#{Setting.find_by_key("current_api_version").value}/#{self.class.to_s.pluralize.underscore}/#{self.id}.json"
     end
   end
 

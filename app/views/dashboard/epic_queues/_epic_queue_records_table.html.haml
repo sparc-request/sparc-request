@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development~
+-# Copyright © 2011-2018 MUSC Foundation for Research Development~
 -# All rights reserved.~
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -31,5 +31,7 @@
           = t(:epic_queues)[:date]
         %th{data: { field: "status", align: "left", sortable: 'true' } }
           = t(:epic_queues)[:status]
+        %th{data: { field: 'type', align: 'left', sortable: 'true' } }
+          = t(:epic_queues)[:type]
         %th{data: { field: 'by', align: 'left', sortable: 'true' } }
           = t(:epic_queues)[:by]

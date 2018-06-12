@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,6 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $(".arm-calendar-container-<%= @arm.id %> .pppv-thead").html('<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_header", service_request: @service_request, sub_service_request: @sub_service_request, arm: @arm, tab: @tab, pages: @pages, page: @page.to_i, review: @review, portal: @portal, admin: @admin, merged: @merged, consolidated: @consolidated, statuses_hidden: @statuses_hidden, visit_groups: @visit_groups %>')
-$(".arm-calendar-container-<%= @arm.id %> .pppv-tbody").html('<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_line_items", service_request: @service_request, sub_service_request: @sub_service_request, arm: @arm, tab: @tab, pages: @pages, page: @page.to_i, review: @review, portal: @portal, admin: @admin, merged: @merged, consolidated: @consolidated, statuses_hidden: @statuses_hidden, visit_groups: @visit_groups %>')
+$(".arm-calendar-container-<%= @arm.id %> .pppv-tbody").html('<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_line_items", service_request: @service_request, sub_service_request: @sub_service_request, arm: @arm, tab: @tab, pages: @pages, page: @page.to_i, review: @review, portal: @portal, admin: @admin, merged: @merged, consolidated: @consolidated, statuses_hidden: @statuses_hidden, visit_groups: @visit_groups, display_all_services: @display_all_services %>')
 $('.selectpicker').selectpicker()
 $('#modal_place').modal('hide')

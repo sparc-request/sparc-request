@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,29 +22,55 @@ require 'rails_helper'
 
 RSpec.describe 'User deletes a survey', js: true do
   let_there_be_lane
-
   fake_login_for_each_test
 
-  before :each do
-    stub_const("SITE_ADMINS", ['jug2'])
+  stub_config("site_admins", ["jug2"])
+  
+  context 'surveys' do
+    before :each do
+      create(:system_survey)
 
-    create(:survey)
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+    end
 
-    visit surveyor_surveys_path
-    wait_for_javascript_to_finish
+    scenario 'and sees the survey is deleted' do
+      find('.delete-survey').click
+      wait_for_javascript_to_finish
+
+      find('.sweet-alert.visible button.confirm').trigger('click')
+      wait_for_javascript_to_finish
+
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+
+      expect(page).to have_selector('.survey-table td', text: 'No matching records found')
+      expect(SystemSurvey.count).to eq(0)
+    end
   end
 
-  scenario 'and sees the survey is deleted' do
-    find('.delete-survey').click
-    wait_for_javascript_to_finish
+  context 'forms' do
+    before :each do
+      org = create(:institution)
+      create(:super_user, organization: org, identity: jug2)
+      create(:form, surveyable: org)
 
-    find('.sweet-alert.visible button.confirm').trigger('click')
-    wait_for_javascript_to_finish
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+    end
 
-    visit surveyor_surveys_path
-    wait_for_javascript_to_finish
-    
-    expect(page).to have_content('No matching records found')
-    expect(Survey.count).to eq(0)
+    scenario 'and sees the form is deleted' do
+      find('.delete-survey').click
+      wait_for_javascript_to_finish
+
+      find('.sweet-alert.visible button.confirm').trigger('click')
+      wait_for_javascript_to_finish
+
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+
+      expect(page).to have_selector('.form-table td', text: 'No matching records found')
+      expect(Form.count).to eq(0)
+    end
   end
 end

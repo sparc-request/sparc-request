@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -25,5 +25,5 @@ class Affiliation < ApplicationRecord
   attr_accessor :position
 
   belongs_to :protocol
-  TYPES = AFFILIATION_TYPES
+  TYPES = PermissibleValue.get_hash('affiliation_type')
 end

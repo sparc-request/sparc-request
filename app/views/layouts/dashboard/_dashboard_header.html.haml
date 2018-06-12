@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -23,7 +23,7 @@
     .navbar-header
       - if @show_navbar
         %ul.nav.navbar-nav
-          - NAVBAR_LINKS.each do |identifier, details|
+          - Setting.find_by_key("navbar_links").value.each do |identifier, details|
             = navbar_link(identifier, details, @highlighted_link)
       - else
         %ol.breadcrumb
@@ -31,17 +31,13 @@
 
     .navbar-right
       %ul.nav.navbar-nav.pull-right
-        - if SITE_ADMINS.include?(user.ldap_uid)
+        - if Setting.find_by_key("use_epic").value && Setting.find_by_key("epic_queue_access").value.include?(user.ldap_uid)
           %li
-            %button.btn.btn-info.navbar-btn#survey-btn{ type: 'button'}
-              = t(:dashboard)[:navbar][:surveys]
-        - if EPIC_QUEUE_ACCESS.include?(user.ldap_uid)
-          %li
-            %button.btn.btn-info.navbar-btn#epic-queue-btn{ type: 'button'}
+            %button.btn.btn-info.navbar-btn#epic-queue-btn{ type: 'button', title: t(:dashboard)[:navbar][:tooltips][:epic_queue], data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}'} }
               = t(:dashboard)[:navbar][:epic_queue]
         - if @show_messages
           %li
-            %button.btn.btn-danger.navbar-btn#messages-btn{ type: 'button'}
+            %button.btn.btn-danger.navbar-btn#messages-btn{ type: 'button', title: t(:dashboard)[:navbar][:tooltips][:messages], data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}'} }
               = t(:dashboard)[:navbar][:messages]
               %span.badge
                 = user.unread_notification_count

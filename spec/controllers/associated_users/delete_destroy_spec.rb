@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -73,15 +73,14 @@ RSpec.describe AssociatedUsersController, type: :controller do
       expect(ProjectRole.count).to eq(1)
     end
 
-    context 'USE_EPIC && protocol.selected_for_epic && epic_access && !QUEUE_EPIC' do
+    context 'use_epic is true and protocol.selected_for_epic is true and epic_access is true and queue_epic is false' do
+      stub_config("use_epic", true)
+      
       it 'should notify primary pi' do
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user, selected_for_epic: true)
         sr        = create(:service_request_without_validations, protocol: protocol)
         pr        = create(:project_role, identity: other_user, protocol: protocol, epic_access: true)
-
-        stub_const("USE_EPIC", true)
-        stub_const("QUEUE_EPIC", false)
-
+        
         expect {
           delete :destroy, params: {
             service_request_id: sr.id,

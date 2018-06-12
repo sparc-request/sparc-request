@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -24,6 +24,8 @@ RSpec.describe 'User edits study', js: true do
   let_there_be_lane
   fake_login_for_each_test
   build_study_phases
+  
+  stub_config("research_master_enabled", false)
 
   before :each do
     institution = create(:institution, name: "Institution")
@@ -35,7 +37,8 @@ RSpec.describe 'User edits study', js: true do
     ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                   create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
     StudyTypeQuestionGroup.create(active: 1)
-    stub_const("RESEARCH_MASTER_ENABLED", false)
+
+    allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
   end
 
   context 'selects multiple study phases' do
@@ -48,7 +51,7 @@ RSpec.describe 'User edits study', js: true do
       wait_for_javascript_to_finish
 
       find('[data-id="protocol_study_phase_ids"]').click
-      first('.dropdown-menu.open span.text', text: "IV").click   
+      first('.dropdown-menu.open span.text', text: "IV").click
     end
 
     it 'and sees updated study phases (IV)' do

@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -80,7 +80,7 @@ class Arm < ApplicationRecord
   end
 
   def maximum_indirect_costs_per_patient line_items_visits=self.line_items_visits
-    if USE_INDIRECT_COST
+    if Setting.find_by_key("use_indirect_cost").value
       self.maximum_direct_costs_per_patient(line_items_visits) * (self.protocol.indirect_cost_rate.to_f / 100)
     else
       return 0
@@ -101,7 +101,7 @@ class Arm < ApplicationRecord
 
   def indirect_costs_for_visit_based_service line_items_visits=self.line_items_visits
     total = 0.0
-    if USE_INDIRECT_COST
+    if Setting.find_by_key("use_indirect_cost").value
       line_items_visits.each do |vg|
         total += vg.indirect_costs_for_visit_based_service
       end
@@ -194,17 +194,17 @@ class Arm < ApplicationRecord
 
   def update_liv_subject_counts
     self.line_items_visits.each do |liv|
-      if liv.subject_count != self.subject_count && liv.line_item.sub_service_request.can_be_edited?
+      if !liv.subject_count? && liv.line_item.sub_service_request.can_be_edited?
         liv.update_attributes(subject_count: self.subject_count)
       end
     end
   end
-  
+
   def mass_create_visit_groups
     last_position = self.visit_groups.any? ? self.visit_groups.last.position : 0
     position      = last_position + 1
     count         = self.visit_count - last_position
-    
+
     count.times do |index|
       self.visit_groups.new(name: "Visit #{position}", position: position).save(validate: false)
       position += 1

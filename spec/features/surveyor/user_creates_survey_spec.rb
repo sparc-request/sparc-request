@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,20 +22,37 @@ require 'rails_helper'
 
 RSpec.describe 'User creates a survey', js: true do
   let_there_be_lane
-
   fake_login_for_each_test
 
-  before :each do
-    stub_const("SITE_ADMINS", ['jug2'])
+  stub_config("site_admins", ["jug2"])
 
-    visit surveyor_surveys_path
-    wait_for_javascript_to_finish
+  context 'surveys' do
+    before :each do
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+    end
+
+    scenario 'and sees the newly created survey' do
+      click_link 'New Survey'
+      wait_for_javascript_to_finish
+
+      expect(page).to have_selector('#survey-modal', visible: true)
+      expect(SystemSurvey.count).to eq(1)
+    end
   end
 
-  scenario 'and sees the newly created survey' do
-    click_link 'New Survey'
-    wait_for_javascript_to_finish
+  context 'forms' do
+    before :each do
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
+    end
 
-    expect(page).to have_selector('#survey-modal')
+    scenario 'and sees the newly created form' do
+      click_link 'New Form'
+      wait_for_javascript_to_finish
+
+      expect(page).to have_selector('#form-modal', visible: true)
+      expect(Form.count).to eq(1)
+    end
   end
 end

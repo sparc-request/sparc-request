@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -22,6 +22,6 @@ class ContactMailer < ApplicationMailer
 
   def contact_us_email(contact_form)
     @contact_form = contact_form
-    mail(to: CONTACT_US_MAIL_TO, cc: CONTACT_US_CC, from: "#{contact_form.email}", subject: "#{contact_form.subject}")
+    mail(to: Setting.find_by_key("contact_us_mail_to").value, cc: Setting.find_by_key("contact_us_cc").value, from: "#{contact_form.email}", subject: "#{contact_form.subject}")
   end
 end

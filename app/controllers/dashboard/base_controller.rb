@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -46,6 +46,13 @@ class Dashboard::BaseController < ActionController::Base
   end
 
   private
+
+  def rmid_server_status(protocol)
+    if Setting.find_by_key("research_master_enabled").value
+      @rmid_server_down = protocol.rmid_server_status
+      @rmid_server_down ? flash[:alert] = t(:protocols)[:summary][:tooltips][:rmid_server_down] : nil
+    end
+  end
 
   def protocol_authorizer_view
     @authorization  = ProtocolAuthorizer.new(@protocol, @user)

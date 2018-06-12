@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -24,5 +24,9 @@ every 1.week, at: '12:00am' do
 end
 
 every 1.day, :at => '4:30 am' do
-  rake "update_protocol_with_validated_rm"
+  rake "data:update_protocol_with_validated_rm"
+end
+
+every 1.day, :at => '5:00 pm' do
+  rake 'send_to_epic'
 end

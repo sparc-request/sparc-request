@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -59,6 +59,8 @@ RSpec.describe Identity, type: :model do
   end
 
   describe "searching identities" do
+    stub_config("use_ldap", true)
+    stub_config("suppress_ldap_for_user_search", false)
 
     # Several of these tests will put a bunch of stuff into the logs,
     # So while the tests are passing you will see a bunch of text in the spec logs.
@@ -105,15 +107,9 @@ RSpec.describe Identity, type: :model do
     let!(:project_role)         {create(:project_role, identity_id: user.id, protocol_id: project.id, project_rights: 'approve')}
     let!(:request)              {create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id, ssr_id: '0002')}
 
-    before :each do
-      stub_const("FINISHED_STATUSES", ['complete'])
-    end
-
     describe "permission methods" do
 
-
       describe "can edit service request " do
-
 
         it "should return false if the users rights are not 'approve' or request" do
           project_role.update_attributes(project_rights: 'none')

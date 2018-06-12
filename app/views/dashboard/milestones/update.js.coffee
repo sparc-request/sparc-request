@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -18,8 +18,16 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-$('.milestones-panel').html("<%= j render 'dashboard/protocols/milestone', protocol: @protocol %>")
+$('.milestones-panel').replaceWith("<%= j render 'dashboard/protocols/milestone', protocol: @protocol %>")
 $(".datetimepicker:not(.time)").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
 $('.datetimepicker.time').datetimepicker(format: 'hh:mm A', allowInputToggle: true)
 $(".selectpicker").selectpicker()
 $('[data-toggle="tooltip"]').tooltip()
+if $('.initial-budget-sponsor-received-date-picker').val() != ''
+  $('.initial-amount').removeClass('hide')
+  $('.initial-amount-cs').removeClass('hide')
+
+if $('.budget-agreed-upon-date-picker').val() != ''
+  $('.negotiated-amount').removeClass('hide')
+  $('.negotiated-amount-cs').removeClass('hide')
+

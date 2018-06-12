@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -26,7 +26,7 @@ RSpec.describe 'User views a locked SSR', js: true do
   fake_login_for_each_test
 
   before :each do
-    org       = create(:organization)
+    org       = create(:organization, use_default_statuses: false)
                 create(:pricing_setup, organization: org)
     pppv      = create(:service, organization: org, one_time_fee: false)
     otf       = create(:service, organization: org, one_time_fee: true)

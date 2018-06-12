@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -130,7 +130,7 @@ RSpec.describe ServiceRequest, type: :model do
 
       context "past status is updatable ('get_a_cost_estimate')" do
         before :each do
-          @org         = create(:organization_with_process_ssrs)
+          @org         = create(:organization_with_process_ssrs, use_default_statuses: false)
           identity     = create(:identity)
           service     = create(:service, organization: @org, one_time_fee: true)
           protocol    = create(:protocol_federally_funded, primary_pi: identity, type: 'Study')
@@ -297,6 +297,7 @@ RSpec.describe ServiceRequest, type: :model do
         end
 
         context "updating status to 'get_a_cost_estimate'" do
+
           it "should return an array with ssr id" do
             expect(@sr.update_status('get_a_cost_estimate')).to eq([@ssr_with_submitted_status.id])
           end

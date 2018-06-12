@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,8 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module ProtocolsHelper
+
   def display_study_type_question?(protocol, study_type_answer, view_protocol=false)
-    if !USE_EPIC || protocol.selected_for_epic == false
+    if !Setting.find_by_key("use_epic").value || protocol.selected_for_epic == false
       # If read-only (Dashboard--> 'Edit Study Information' or 'View Study Details') do not show the first CofC question if unanswered
       if view_protocol
         ['certificate_of_conf_no_epic', 'higher_level_of_privacy_no_epic'].include?(study_type_answer.study_type_question.friendly_id) && study_type_answer.answer != nil
@@ -51,7 +52,7 @@ module ProtocolsHelper
   end
 
   def display_rmid_validated_protocol(protocol, option)
-    if RESEARCH_MASTER_ENABLED
+    if Setting.find_by_key("research_master_enabled").value
       if protocol.rmid_validated?
         content_tag(
           :h6,
@@ -65,6 +66,6 @@ module ProtocolsHelper
   # If USE_EPIC is false and any of the CofC questions have been answered, display them OR
   # If USE_EPIC is true and any of the Epic questions have been answered, display them
   def display_readonly_study_type_questions?(protocol)
-    (USE_EPIC && protocol.display_answers.where.not(answer: nil).any?) || (!USE_EPIC && protocol.active? && protocol.display_answers.joins(:study_type_question).where(study_type_questions: { friendly_id: ['certificate_of_conf_no_epic', 'higher_level_of_privacy_no_epic'] }).where.not(answer: nil).any?)
+    (Setting.find_by_key("use_epic").value && protocol.display_answers.where.not(answer: nil).any?) || (!Setting.find_by_key("use_epic").value && protocol.active? && protocol.display_answers.joins(:study_type_question).where(study_type_questions: { friendly_id: ['certificate_of_conf_no_epic', 'higher_level_of_privacy_no_epic'] }).where.not(answer: nil).any?)
   end
 end

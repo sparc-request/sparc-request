@@ -37,7 +37,6 @@ scratch
 .#*
 *.jar
 *.war
-*.csv
 public/assets
 public/system
 *~
@@ -47,6 +46,7 @@ config/ldap.yml
 config/application.yml
 config/ldap.yml
 config/epic.yml
+config/cas.yml
 config/initializers/abstract_mysql_adapter.rb
 public/portal
 public/catalog_manager
@@ -79,3 +79,11 @@ spec/examples.txt
 .tags
 .tags1
 /themes
+.env
+
+# Ignore habitat outputs
+results
+habitat/*/results
+
+# Pretty sure you don't want vagrant box in git
+.vagrant

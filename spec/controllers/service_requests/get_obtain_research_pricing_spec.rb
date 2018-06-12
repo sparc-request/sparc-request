@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -193,7 +193,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
     context 'editing a service request that has been previously submitted' do
       context 'ssr status is set to a locked status' do
         before :each do
-          @org     = create(:organization)
+          @org     = create(:organization, use_default_statuses: false)
           service  = create(:service, organization: @org, one_time_fee: true)
           protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
           @sr      = create(:service_request_without_validations, protocol: protocol, original_submitted_date: Time.now.yesterday)
@@ -249,8 +249,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       context 'ssr status is set to "complete"' do
          before :each do
-          stub_const("FINISHED_STATUSES", ['complete'])
-          
           @org      = create(:organization)
           service  = create(:service, organization: @org, one_time_fee: true)
           protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')

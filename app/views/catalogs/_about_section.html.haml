@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,8 +20,8 @@
 
 .col-sm-12.no-padding.about-section
   .col-sm-3.text-center
-    %a{ href: t(:proper)[:footer][:about_url] }
-      = image_tag 'about.jpg', alt: 'About Sparc Request', height: 30
+    %a{ href: Setting.find_by_key("about_sparc_url").value }
+      = image_tag 'about.jpg', alt: t(:proper)[:footer][:about_alt], height: 30
   .col-sm-6
   .col-sm-3
     -# Insert custom link here if requested

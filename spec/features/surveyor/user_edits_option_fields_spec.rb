@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,96 +22,189 @@ require 'rails_helper'
 
 RSpec.describe 'User edits option fields', js: true do
   let_there_be_lane
-
   fake_login_for_each_test
 
-  before :each do
-    @survey = create(:survey)
-    @section = create(:section, survey: @survey)
-    @question = create(:question, section: @section, question_type: 'dropdown')
-    @option = create(:option, question: @question)
+  stub_config("site_admins", ["jug2"])
 
-    stub_const("SITE_ADMINS", ['jug2'])
-  end
-
-  scenario 'and sees updated content' do
-    visit surveyor_surveys_path
-    wait_for_javascript_to_finish
-
-    find('.edit-survey').click
-    wait_for_javascript_to_finish
-
-    fill_in("option-#{@option.id}-content", with: 'This is a Terrible Option')
-    find('.modal-title').click
-    wait_for_javascript_to_finish
-
-    expect(@option.reload.content).to eq('This is a Terrible Option')
-  end
-
-  context 'and adds and option' do
-    scenario 'and sees a new option' do
-      visit surveyor_surveys_path
-      wait_for_javascript_to_finish
-
-      find('.edit-survey').click
-      wait_for_javascript_to_finish
-
-      find('.add-option').click
-      wait_for_javascript_to_finish
-
-      expect(page).to have_selector('.option', count: 2)
-      expect(@question.options.count).to eq(2)
+  context 'surveys' do
+    before :each do
+      @survey = create(:system_survey)
+      @section = create(:section, survey: @survey)
+      @question = create(:question, section: @section, question_type: 'dropdown')
+      @option = create(:option, question: @question)
     end
 
-    scenario 'and sees updated dependent selectpickers' do
-      @question2 = create(:question, section: @section, is_dependent: true)
-
+    scenario 'and sees updated content' do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
       find('.edit-survey').click
       wait_for_javascript_to_finish
 
-      find('.add-option').click
+      fill_in("option-#{@option.id}-content", with: 'This is a Terrible Option')
+      find('.modal-title').click
       wait_for_javascript_to_finish
 
-      new_opt = Option.last
+      expect(@option.reload.content).to eq('This is a Terrible Option')
+    end
 
-      find('.select-depender').click
-      wait_for_javascript_to_finish
+    context 'and adds and option' do
+      scenario 'and sees a new option' do
+        visit surveyor_surveys_path
+        wait_for_javascript_to_finish
 
-      expect(page).to have_selector('.select-depender .text', text: new_opt.content, visible: true)
+        find('.edit-survey').click
+        wait_for_javascript_to_finish
+
+        find('.add-option').click
+        wait_for_javascript_to_finish
+
+        expect(page).to have_selector('.option', count: 2)
+        expect(@question.options.count).to eq(2)
+      end
+
+      scenario 'and sees updated dependent selectpickers' do
+        @question2 = create(:question, section: @section, is_dependent: true)
+
+        visit surveyor_surveys_path
+        wait_for_javascript_to_finish
+
+        find('.edit-survey').click
+        wait_for_javascript_to_finish
+
+        find('.add-option').click
+        wait_for_javascript_to_finish
+
+        new_opt = Option.last
+
+        find('.select-depender').click
+        wait_for_javascript_to_finish
+
+        expect(page).to have_selector('.select-depender .text', text: new_opt.content, visible: true)
+      end
+    end
+
+    context 'and removes an option' do
+      scenario 'and does not see the deleted option' do
+        visit surveyor_surveys_path
+        wait_for_javascript_to_finish
+
+        find('.edit-survey').click
+        wait_for_javascript_to_finish
+
+        find('.delete-option').click
+        wait_for_javascript_to_finish
+
+        expect(page).to_not have_selector('.option')
+        expect(@question.options.count).to eq(0)
+      end
+
+      scenario 'and sees updated dependent selectpickers' do
+        @question2 = create(:question, section: @section, is_dependent: true)
+
+        visit surveyor_surveys_path
+        wait_for_javascript_to_finish
+
+        find('.edit-survey').click
+        wait_for_javascript_to_finish
+
+        find('.delete-option').click
+        wait_for_javascript_to_finish
+
+        expect(page).to_not have_selector('.select-depender .text', text: @option.content, visible: true)
+      end
     end
   end
 
-  context 'and removes an option' do
-    scenario 'and does not see the deleted option' do
-      visit surveyor_surveys_path
-      wait_for_javascript_to_finish
-
-      find('.edit-survey').click
-      wait_for_javascript_to_finish
-
-      find('.delete-option').click
-      wait_for_javascript_to_finish
-
-      expect(page).to_not have_selector('.option')
-      expect(@question.options.count).to eq(0)
+  context 'forms' do
+    before :each do
+      org = create(:institution)
+      create(:super_user, organization: org, identity: jug2)
+      @form = create(:form, surveyable: org)
+      @section = create(:section, survey: @form)
+      @question = create(:question, section: @section, question_type: 'dropdown')
+      @option = create(:option, question: @question)
     end
 
-    scenario 'and sees updated dependent selectpickers' do
-      @question2 = create(:question, section: @section, is_dependent: true)
-
+    scenario 'and sees updated content' do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
       find('.edit-survey').click
       wait_for_javascript_to_finish
 
-      find('.delete-option').click
+      fill_in("option-#{@option.id}-content", with: 'This is a Terrible Option')
+      find('.modal-title').click
       wait_for_javascript_to_finish
 
-      expect(page).to_not have_selector('.select-depender .text', text: @option.content, visible: true)
+      expect(@option.reload.content).to eq('This is a Terrible Option')
+    end
+
+    context 'and adds and option' do
+      scenario 'and sees a new option' do
+        visit surveyor_surveys_path
+        wait_for_javascript_to_finish
+
+        find('.edit-survey').click
+        wait_for_javascript_to_finish
+
+        find('.add-option').click
+        wait_for_javascript_to_finish
+
+        expect(page).to have_selector('.option', count: 2)
+        expect(@question.options.count).to eq(2)
+      end
+
+      scenario 'and sees updated dependent selectpickers' do
+        @question2 = create(:question, section: @section, is_dependent: true)
+
+        visit surveyor_surveys_path
+        wait_for_javascript_to_finish
+
+        find('.edit-survey').click
+        wait_for_javascript_to_finish
+
+        find('.add-option').click
+        wait_for_javascript_to_finish
+
+        new_opt = Option.last
+
+        find('.select-depender').click
+        wait_for_javascript_to_finish
+
+        expect(page).to have_selector('.select-depender .text', text: new_opt.content, visible: true)
+      end
+    end
+
+    context 'and removes an option' do
+      scenario 'and does not see the deleted option' do
+        visit surveyor_surveys_path
+        wait_for_javascript_to_finish
+
+        find('.edit-survey').click
+        wait_for_javascript_to_finish
+
+        find('.delete-option').click
+        wait_for_javascript_to_finish
+
+        expect(page).to_not have_selector('.option')
+        expect(@question.options.count).to eq(0)
+      end
+
+      scenario 'and sees updated dependent selectpickers' do
+        @question2 = create(:question, section: @section, is_dependent: true)
+
+        visit surveyor_surveys_path
+        wait_for_javascript_to_finish
+
+        find('.edit-survey').click
+        wait_for_javascript_to_finish
+
+        find('.delete-option').click
+        wait_for_javascript_to_finish
+
+        expect(page).to_not have_selector('.select-depender .text', text: @option.content, visible: true)
+      end
     end
   end
 end

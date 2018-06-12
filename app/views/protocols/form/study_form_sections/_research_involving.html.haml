@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -65,7 +65,7 @@
           .form-group.row
             = hs_form.label :submission_type, t(:protocols)[:studies][:research_involving][:humans][:submission_type], class: 'col-lg-2 control-label'
             .col-lg-10
-              = hs_form.select :submission_type, options_for_select(SUBMISSION_TYPES, protocol.human_subjects_info.submission_type), { include_blank: t(:protocols)[:prompts][:submission_type] }, class: 'selectpicker'
+              = hs_form.select :submission_type, options_for_select(PermissibleValue.order(:sort_order).get_inverted_hash('submission_type'), protocol.human_subjects_info.submission_type), { include_blank: t(:protocols)[:prompts][:submission_type] }, class: 'selectpicker'
 
           .form-group.row.approval_pending
             = hs_form.label :approval_pending, t(:protocols)[:studies][:research_involving][:humans][:pending_approval], class: 'col-lg-2 control-label'

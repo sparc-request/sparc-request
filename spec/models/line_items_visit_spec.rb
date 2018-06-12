@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -156,9 +156,9 @@ RSpec.describe LineItemsVisit, type: :model do
       end
 
       describe "indirect cost" do
-
+        stub_config("use_indirect_cost", true)
+        
         before :each do
-          stub_const("USE_INDIRECT_COST", true)
           study.update_attribute(:indirect_cost_rate, 200)
         end
 

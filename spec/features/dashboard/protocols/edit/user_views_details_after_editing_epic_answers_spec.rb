@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,6 +27,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
   build_study_type_questions
 
   context 'use epic = true' do
+    stub_config("use_epic", true)
+    
     context 'Study, selected for epic: true, question group 3' do
       context 'user views epic answers in view details' do
         before :each do
@@ -41,6 +43,7 @@ RSpec.describe 'User views details after editing epic answers', js: true do
           organization    = create(:organization)
           create(:super_user, identity: jug2,
                 organization: organization)
+          allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
         end
 
         ### PUBLISH STUDY IN EPIC IS TRUE ###
@@ -126,6 +129,7 @@ RSpec.describe 'User views details after editing epic answers', js: true do
           organization    = create(:organization)
           create(:super_user, identity: jug2,
                 organization: organization)
+          allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
         end
 
         ### PUBLISH STUDY IN EPIC IS FALSE ###
@@ -212,6 +216,7 @@ RSpec.describe 'User views details after editing epic answers', js: true do
           create(:super_user, identity: jug2,
                 organization: organization)
           setup_data_for_version_2_study(@protocol)
+          allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
         end
 
         ### STUDY TYPE QUESTION GROUP 2 ###
@@ -319,9 +324,6 @@ RSpec.describe 'User views details after editing epic answers', js: true do
   end
 
   context 'use epic = false' do
-    before :each do
-      stub_const('USE_EPIC', false)
-    end
     ### SELECTED FOR EPIC IS FALSE IS IRRELEVANT BECAUSE USE_EPIC = FALSE ###
     context 'Study, selected for epic: false, question group 3' do
       context 'user views epic answers in view details' do
@@ -337,6 +339,7 @@ RSpec.describe 'User views details after editing epic answers', js: true do
           organization    = create(:organization)
           create(:super_user, identity: jug2,
                 organization: organization)
+          allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
         end
 
         context 'only answers the first question' do
@@ -417,6 +420,7 @@ RSpec.describe 'User views details after editing epic answers', js: true do
           organization    = create(:organization)
           create(:super_user, identity: jug2,
                 organization: organization)
+          allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
         end
 
         context 'only answers the first question' do
@@ -498,6 +502,7 @@ RSpec.describe 'User views details after editing epic answers', js: true do
             organization    = create(:organization)
             create(:super_user, identity: jug2,
                   organization: organization)
+            allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
             setup_data_for_version_2_study(@protocol)
             visit dashboard_protocol_path(@protocol)
             wait_for_javascript_to_finish

@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -40,9 +40,9 @@ module Dashboard::ProjectsHelper
 
   def display_funding_source(project)
     if project.funding_status == 'funded'
-      (FUNDING_SOURCES.invert)[project.funding_source]
+      PermissibleValue.get_value('funding_source', project.funding_source)
     elsif project.funding_status == 'pending_funding'
-      (POTENTIAL_FUNDING_SOURCES.invert)[project.potential_funding_source]
+      PermissibleValue.get_value('potential_funding_source', project.potential_funding_source)
     else
       ''
     end

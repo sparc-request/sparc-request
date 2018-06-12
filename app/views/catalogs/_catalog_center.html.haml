@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -26,7 +26,7 @@
     - else
       = render 'catalogs/welcome'
   #calendar-blog.full
-    - if USE_NEWS_FEED
+    - if Setting.find_by_key("use_news_feed").value
       = render 'catalogs/news'
-    - if USE_GOOGLE_CALENDAR
+    - if Setting.find_by_key("use_google_calendar").value
       = render 'catalogs/calendar'

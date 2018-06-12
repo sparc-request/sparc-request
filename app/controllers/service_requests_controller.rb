@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -38,11 +38,11 @@ class ServiceRequestsController < ApplicationController
     @service_list_true = @service_request.service_list(true)
     @service_list_false = @service_request.service_list(false)
     @line_items = @service_request.line_items
-
-
+    @display_all_services = params[:display_all_services] == 'true' ? true : false
+    @report_type = params[:report_type]
     respond_to do |format|
       format.xlsx do
-        render xlsx: "show", filename: "service_request_#{@protocol.id}", disposition: "inline"
+        render xlsx: "#{@report_type}", filename: "service_request_#{@protocol.id}", disposition: "inline"
       end
     end
   end
@@ -129,6 +129,7 @@ class ServiceRequestsController < ApplicationController
     @admin        = false
     @merged       = true
     @consolidated = false
+    @display_all_services = true
 
     # Reset all the page numbers to 1 at the start of the review request
     # step.
@@ -149,16 +150,16 @@ class ServiceRequestsController < ApplicationController
   def confirmation
     @protocol = @service_request.protocol
     @service_request.previous_submitted_at = @service_request.submitted_at
+    @display_all_services = true
 
     should_push_to_epic = @sub_service_request ? @sub_service_request.should_push_to_epic? : @service_request.should_push_to_epic?
-
-    if should_push_to_epic && USE_EPIC && @protocol.selected_for_epic
+    if should_push_to_epic && Setting.find_by_key("use_epic").value && @protocol.selected_for_epic
       # Send a notification to Lane et al to create users in Epic.  Once
       # that has been done, one of them will click a link which calls
       # approve_epic_rights.
       @protocol.ensure_epic_user
-      if QUEUE_EPIC
-        EpicQueue.create(protocol_id: @protocol.id, identity_id: current_user.id) unless EpicQueue.where(protocol_id: @protocol.id).size == 1
+      if Setting.find_by_key("queue_epic").value
+        EpicQueue.create(protocol_id: @protocol.id, identity_id: current_user.id) if should_queue_epic?(@protocol)
       else
         @protocol.awaiting_approval_for_epic_push
         send_epic_notification_for_user_approval(@protocol)
@@ -203,7 +204,7 @@ class ServiceRequestsController < ApplicationController
     ssr       = line_item.sub_service_request
 
     if ssr.can_be_edited?
-      ssr.line_items.where(service: line_item.service.related_services).update_all(optional: true)
+      @service_request.line_items.where(service: line_item.service.related_services).update_all(optional: true)
 
       line_item.destroy
 
@@ -261,10 +262,10 @@ class ServiceRequestsController < ApplicationController
       required_keys = params[:study] ? :study : params[:project] ? :project : nil
       if required_keys.present?
         temp = params.require(required_keys).permit(:start_date, :end_date,
-          :recruitment_start_date, :recruitment_end_date).to_h
+          :recruitment_start_date, :recruitment_end_date, :initial_budget_sponsor_received_date, :budget_agreed_upon_date, :initial_amount, :negotiated_amount, :initial_amount_clinical_services, :negotiated_amount_clinical_services).to_h
 
         # Finally, transform date attributes.
-        date_attrs = %w(start_date end_date recruitment_start_date recruitment_end_date)
+        date_attrs = %w(start_date end_date recruitment_start_date recruitment_end_date initial_budget_sponsor_received_date budget_agreed_upon_date)
         temp.inject({}) do |h, (k, v)|
           if date_attrs.include?(k) && v.present?
             h.merge(k => Time.strptime(v, "%m/%d/%Y"))
@@ -345,7 +346,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def setup_catalog_calendar
-    if USE_GOOGLE_CALENDAR
+    if Setting.find_by_key("use_google_calendar").value
       curTime = Time.now.utc
       startMin = curTime
       startMax  = (curTime + 1.month)
@@ -383,7 +384,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def setup_catalog_news_feed
-    if USE_NEWS_FEED
+    if Setting.find_by_key("use_news_feed").value
       @news = []
       begin
         page = Nokogiri::HTML(open("https://www.sparcrequestblog.com"))
@@ -416,7 +417,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def send_epic_notification_for_user_approval(protocol)
-    Notifier.notify_for_epic_user_approval(protocol).deliver unless QUEUE_EPIC
+    Notifier.notify_for_epic_user_approval(protocol).deliver unless Setting.find_by_key("queue_epic").value
   end
 
   def authorize_protocol_edit_request
@@ -440,5 +441,15 @@ class ServiceRequestsController < ApplicationController
 
   def set_highlighted_link
     @highlighted_link ||= 'sparc_request'
+  end
+
+  def should_queue_epic?(protocol)
+    queues = EpicQueue.where(protocol_id: protocol.id)
+    if (queues.size == 1)
+      queues.first.update_attributes(user_change: false)
+      return false
+    else
+      return true
+    end
   end
 end

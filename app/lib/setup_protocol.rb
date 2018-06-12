@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -47,7 +47,7 @@ class SetupProtocol
 
   def set_epic_services
     unless @portal == 'true'
-      @epic_services = @service_request.should_push_to_epic? if USE_EPIC
+      @epic_services = @service_request.should_push_to_epic? if Setting.find_by_key("use_epic").value
 
       @epic_services
     end

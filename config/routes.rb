@@ -21,50 +21,64 @@
 SparcRails::Application.routes.draw do
   post 'study_type/determine_study_type_note'
 
-  resources :services do
-    namespace :additional_details do
-      resources :questionnaires
-      resource :questionnaire do
-        resource :preview, only: [:create]
-      end
-      resources :submissions
-      resources :update_questionnaires, only: [:update]
-    end
-  end
+  resources :services
 
   namespace :surveyor do
-    resources :surveys, only: [:index, :show, :create, :destroy] do
+    resources :surveys, only: [:index, :edit, :create, :destroy] do
       get :preview
       get :update_dependents_list
+    end
+    resource :survey, only: [] do
+      get :search_surveyables
     end
     resources :sections, only: [:create, :destroy]
     resources :questions, only: [:create, :destroy]
     resources :options, only: [:create, :destroy]
-    resources :responses, only: [:show, :new, :edit, :create, :update] do
+    resources :responses do
       get :complete
     end
     resources :survey_updater, only: [:update]
+    root to: 'surveys#index'
   end
+
+  resources :forms, only: [:index]
 
   resources :feedback
 
-  if USE_SHIBBOLETH_ONLY
+  begin
+    use_shibboleth_only = Setting.find_by_key("use_shibboleth_only").try(:value)
+    use_cas_only        = Setting.find_by_key("use_cas_only").try(:value)
+  rescue
+    use_shibboleth_only = nil
+    use_cas_only        = nil
+  end
+
+  if use_shibboleth_only
     devise_for :identities,
                controllers: {
                  omniauth_callbacks: 'identities/omniauth_callbacks',
                  sessions: 'identities/sessions',
                  registrations: 'identities/registrations'
                }, path_names: { sign_in: 'auth/shibboleth' }
-  else
+
+  elsif use_cas_only
     devise_for :identities,
                controllers: {
                  omniauth_callbacks: 'identities/omniauth_callbacks',
                  sessions: 'identities/sessions',
                  registrations: 'identities/registrations'
+               }, path_names: { sign_in: 'auth/cas' }
+  else
+    devise_for :identities,
+               controllers: {
+                 omniauth_callbacks: 'identities/omniauth_callbacks',
+                 sessions: 'identities/sessions',
+                 registrations:      'identities/registrations'
                }
   end
 
   resources :identities, only: [] do
+
     member do
       get 'approve_account'
       get 'disapprove_account'
@@ -103,6 +117,7 @@ SparcRails::Application.routes.draw do
   end
 
   resources :protocols, except: [:index, :destroy] do
+    resource :research_master, only: [:update]
     member do
       put :update_protocol_type
       get :approve_epic_rights
@@ -141,7 +156,7 @@ SparcRails::Application.routes.draw do
   resources :line_items_visits, only: [:update, :destroy]
   resources :visit_groups, only: [:edit, :update]
   resources :visits, only: [:edit, :update, :destroy]
-  
+
   resources :documents, only: [:index, :new, :create, :edit, :update, :destroy]
 
   resources :notes, only: [:index, :new, :create]
@@ -215,7 +230,7 @@ SparcRails::Application.routes.draw do
 
     resources :approvals, only: [:new, :create]
 
-    resources :arms, only: [:new, :create, :update, :destroy] do
+    resources :arms, only: [:new, :create, :update, :destroy, :index] do
       collection do
         get :navigate
       end
@@ -339,11 +354,21 @@ SparcRails::Application.routes.draw do
     resources :identities, only: [:index, :show, :create, :update]
   end
 
+  ##### Funding Download #####
+  namespace :funding do
+    root :to => 'services#index'
+    resources :services do
+      member do
+        get :documents
+      end
+    end
+  end
+
   mount API::Base => '/'
 
   root to: 'service_requests#catalog'
-  
+
   ## error page routes ##
   match "/404", :to => "error_pages#not_found", :via => :all
-  match "/500", :to => "error_pages#internal_server_error", :via => :all  
+  match "/500", :to => "error_pages#internal_server_error", :via => :all
 end

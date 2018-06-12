@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -28,7 +28,7 @@
     %th Epic Responsibilities Removed
   %tr{:id => "project_role_#{@project_role.id}"}
     %td.name= @project_role.identity.full_name
-    %td.role= USER_ROLES.invert[@project_role.role]
+    %td.role= PermissibleValue.get_value('user_role', pr.role)
     %td.epic_rights_added
       %ul
         - @added_rights.each do |ar|

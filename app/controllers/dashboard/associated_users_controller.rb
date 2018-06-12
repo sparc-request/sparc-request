@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -49,9 +49,9 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   def new
     @header_text  = t(:authorized_users)[:add][:header]
     @dashboard    = true
-    
+
     if params[:identity_id] # if user selected
-      @identity     = Identity.find(params[:identity_id])
+      @identity     = Identity.find_or_create(params[:identity_id])
       @project_role = @protocol.project_roles.new(identity_id: @identity.id)
       @current_pi   = @protocol.primary_principal_investigator
 
@@ -67,7 +67,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
   def create
-    creator = AssociatedUserCreator.new(project_role_params)
+    creator = AssociatedUserCreator.new(project_role_params, @user)
 
     if creator.successful?
       if @current_user_created = params[:project_role][:identity_id].to_i == @user.id
@@ -85,7 +85,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
   def update
-    updater = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params)
+    updater = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params, current_identity: @user)
 
     if updater.successful?
       # We care about this because the new rights will determine what is rendered
@@ -119,6 +119,10 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     @protocol           = @protocol_role.protocol
     epic_access         = @protocol_role.epic_access
     protocol_role_clone = @protocol_role.clone
+    epic_queue_manager = EpicQueueManager.new(
+      @protocol, @user, @protocol_role
+    )
+    epic_queue_manager.create_epic_queue
 
     @protocol_role.destroy
 
@@ -136,7 +140,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
       @protocol.email_about_change_in_authorized_user(@protocol_role, "destroy")
     end
 
-    if USE_EPIC && @protocol.selected_for_epic && epic_access && !QUEUE_EPIC
+    if Setting.find_by_key("use_epic").value && @protocol.selected_for_epic && epic_access && !Setting.find_by_key("queue_epic").value
       Notifier.notify_primary_pi_for_epic_user_removal(@protocol, protocol_role_clone).deliver
     end
 
@@ -149,7 +153,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   def search_identities
     # Like SearchController#identities, but without ssr/sr authorization
     term    = params[:term].strip
-    results = Identity.search(term).map { |i| { label: i.display_name, value: i.id, email: i.email } }
+    results = Identity.search(term).map { |i| { label: i.display_name, value: i.suggestion_value, email: i.email } }
     results = [{ label: 'No Results' }] if results.empty?
 
     render json: results.to_json

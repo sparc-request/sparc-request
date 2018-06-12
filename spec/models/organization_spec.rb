@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -463,10 +463,10 @@ RSpec.describe Organization, type: :model do
       end
 
       it 'should return false otherwise' do
-        organization1 = Organization.create
-        organization2 = Organization.create
-        organization2.editable_statuses.destroy_all
-        expect(organization2.has_editable_status?('draft')).to eq(false)
+        org1 = create(:organization)
+        org2 = create(:organization, use_default_statuses: false)
+        org2.editable_statuses.destroy_all
+        expect(org2.has_editable_status?('draft')).to eq(false)
       end
     end
   end

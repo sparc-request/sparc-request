@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,5 +18,5 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- link = @is_service_provider == 'true' ? DASHBOARD_LINK + 'admin/sub_service_requests/' + @ssr_id : DASHBOARD_LINK
+- link = @is_service_provider == 'true' ? Setting.find_by_key("dashboard_link").value + 'admin/sub_service_requests/' + @ssr_id : Setting.find_by_key("dashboard_link").value
 = t('mailer.received', :portal_root_url => link)

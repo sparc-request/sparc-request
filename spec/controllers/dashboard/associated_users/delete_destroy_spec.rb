@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -137,15 +137,14 @@ RSpec.describe Dashboard::AssociatedUsersController do
         end
       end
 
-      context 'USE_EPIC == true, QUEUE_EPIC == false, Protocol associated with @protocol_role is selected for epic, and @protocol_role had epic access' do
+      context 'use_epic is true, queue_epic is false, Protocol associated with @protocol_role is selected for epic, and @protocol_role had epic access' do
+        stub_config("use_epic", true)
+        
         before :each do
           @user           = create(:identity)
           @protocol       = create(:protocol_without_validations, selected_for_epic: true, funding_status: 'funded', funding_source: 'federal')
                             create(:project_role, protocol: @protocol, identity: @user, project_rights: 'approve', role: 'primary-pi')
           @protocol_role  = create(:project_role, protocol: @protocol, identity: create(:identity), project_rights: 'approve', role: 'consultant', epic_access: true)
-
-          stub_const('USE_EPIC', true)
-          stub_const('QUEUE_EPIC', false)
 
           allow(Notifier).to receive(:notify_primary_pi_for_epic_user_removal).
             with(@protocol, @protocol_role) do
@@ -167,7 +166,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
         it { is_expected.to respond_with :ok }
       end
 
-      context "USE_EPIC == false, QUEUE_EPIC == false, Protocol associated with ProjectRole is not selected for epic, and @protocol_role did not have epic access" do
+      context "use_epic is false, queue_epic is false, Protocol associated with ProjectRole is not selected for epic, and @protocol_role did not have epic access" do
         before :each do
           @user           = create(:identity)
           @protocol       = create(:protocol_without_validations, selected_for_epic: false, funding_status: 'funded', funding_source: 'federal')

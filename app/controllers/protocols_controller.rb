@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -34,13 +34,15 @@ class ProtocolsController < ApplicationController
     @protocol.requester_id  = current_user.id
     @service_request        = ServiceRequest.find(params[:srid])
     @protocol.populate_for_edit
-    gon.rm_id_api_url = RESEARCH_MASTER_API
-    gon.rm_id_api_token = RMID_API_TOKEN
+    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
+    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
+    rmid_server_status(@protocol)
   end
 
   def create
     protocol_class                          = protocol_params[:type].capitalize.constantize
-    attrs                                   = fix_date_params
+    ### if lazy load enabled, we need create the identiy if necessary here
+    attrs                                   = Setting.find_by_key("use_ldap").value && Setting.find_by_key("lazy_load_ldap").value ? fix_identity : fix_date_params
     @protocol                               = protocol_class.new(attrs)
     @service_request                        = ServiceRequest.find(params[:srid])
     @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id if protocol_class == Study
@@ -57,17 +59,20 @@ class ProtocolsController < ApplicationController
       @service_request.update_attribute(:status, 'draft')
       @service_request.sub_service_requests.update_all(status: 'draft')
 
-      @protocol.update_attribute(:next_ssr_id, @service_request.sub_service_requests.count + 1)
+      last_ssr_id = @service_request.sub_service_requests.sort_by(&:ssr_id).last.ssr_id.to_i
 
-      if USE_EPIC && @protocol.selected_for_epic
+      @protocol.update_attribute(:next_ssr_id, last_ssr_id + 1)
+
+      if Setting.find_by_key("use_epic").value && @protocol.selected_for_epic
         @protocol.ensure_epic_user
-        Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
+        Notifier.notify_for_epic_user_approval(@protocol).deliver unless Setting.find_by_key("queue_epic").value
       end
 
       flash[:success] = I18n.t('protocols.created', protocol_type: @protocol.type)
     else
       @errors = @protocol.errors
     end
+    rmid_server_status(@protocol)
   end
 
   def edit
@@ -78,8 +83,9 @@ class ProtocolsController < ApplicationController
     @protocol.populate_for_edit
     @protocol.valid?
     @errors = @protocol.errors
-    gon.rm_id_api_url = RESEARCH_MASTER_API
-    gon.rm_id_api_token = RMID_API_TOKEN
+    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
+    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
+    rmid_server_status(@protocol)
 
     respond_to do |format|
       format.html
@@ -121,12 +127,21 @@ class ProtocolsController < ApplicationController
 
     @protocol_type = params[:type]
     @protocol = @protocol.becomes(@protocol_type.constantize) unless @protocol_type.nil?
+
+    #### switching to a Project should clear out RMID and RMID validated flag ####
+    if @protocol_type && @protocol_type == 'Project'
+      @protocol.update_attribute :research_master_id, nil
+      @protocol.update_attribute :rmid_validated, false
+    end
+    #### end clearing RMID and RMID validated flag ####
+
     @protocol.populate_for_edit
 
     flash[:success] = t(:protocols)[:change_type][:updated]
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
       flash[:alert] = t(:protocols)[:change_type][:new_study_warning]
     end
+    rmid_server_status(@protocol)
   end
 
   def show
@@ -175,6 +190,7 @@ class ProtocolsController < ApplicationController
     # Do the final push to epic in a separate thread.  The page which is
     # rendered will
     push_protocol_to_epic(@protocol)
+    epic_queue.destroy
 
     respond_to do |format|
       format.html
@@ -264,7 +280,7 @@ class ProtocolsController < ApplicationController
   end
 
   def send_epic_notification_for_final_review(protocol)
-    Notifier.notify_primary_pi_for_epic_user_final_review(protocol).deliver unless QUEUE_EPIC
+    Notifier.notify_primary_pi_for_epic_user_final_review(protocol).deliver unless Setting.find_by_key("queue_epic").value
   end
 
   def push_protocol_to_epic protocol
@@ -284,7 +300,7 @@ class ProtocolsController < ApplicationController
     # Thread.new do
     begin
       # Do the actual push.  This might take a while...
-      protocol.push_to_epic(EPIC_INTERFACE, "pi_email_approval", current_user.id)
+      protocol.push_to_epic(EPIC_INTERFACE, "overlord_push", current_user.id)
       errors = EPIC_INTERFACE.errors
       session[:errors] = errors unless errors.empty?
       @epic_errors = true unless errors.empty?
@@ -307,6 +323,19 @@ class ProtocolsController < ApplicationController
       attrs[date_field] = Time.strptime(attrs[date_field], "%m/%d/%Y")
     end
 
+    attrs
+  end
+
+  ### fix identity id nil problem when lazy loading is enabled
+  ### when lazy loadin is enabled, identity_id is merely ldap_uid, the identity may not exist in database yet, so we create it if necessary here
+  def fix_identity
+    attrs               = protocol_params
+    attrs[:project_roles_attributes].each do |index, project_role|
+      if project_role[:identity_id].present?
+        identity = Identity.find_or_create project_role[:identity_id]
+        project_role[:identity_id] = identity.id
+      end
+    end unless attrs[:project_roles_attributes].nil?
     attrs
   end
 

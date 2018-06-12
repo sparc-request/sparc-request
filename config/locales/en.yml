@@ -32,6 +32,7 @@ en:
     continue: "Continue"
     delete: "Delete"
     edit: "Edit"
+    filter: "Filter"
     print: "Print"
     remove: "Remove"
     reply: "Reply"
@@ -49,22 +50,22 @@ en:
   activerecord:
     errors:
       models:
-        item:
+        form:
           attributes:
-            content:
-              blank: "Content can't be blank"
-        questionnaire:
+            active:
+              taken: "A different version of this Form is already active"
+        project_role:
           attributes:
-            name:
-              blank: "Name can't be blank"
-        item_option:
-          attributes:
-            content:
-              blank: "Content can't be blank"
+            identity_id:
+              blank: "^Primary PI can't be blank"
         question_response:
           attributes:
             content:
-              blank: "has to be answered"
+              blank: "required"
+        system_survey:
+          attributes:
+            active:
+              taken: "A different version of this Survey is already active"
       messages:
         spoofed_media_type: "has format errors. Please re-save the file in a different format and try again."
     attributes:
@@ -88,7 +89,9 @@ en:
       question:
         content: "Question"
       question_response:
-        content: "Required Question"
+        content: "Question"
+      survey:
+        active: ""
       visit:
         research_billing_qty: "Research Billing Quantity"
         insurance_billing_qty: "Insurance Billing Quantity"
@@ -182,6 +185,7 @@ en:
     tooltips:
       epic_access: 'Granting Epic EMR access populates study personnel in Epic Research Record as long as they have an Epic login'
       rights: 'Defines access to protocol in SPARCDashboard'
+      add_user: "Ability to add an Authorized User to a protocol"
 
   #############
   # CALENDARS #
@@ -189,6 +193,8 @@ en:
   calendars:
     confirm_row_select: "This will reset custom values for this row, do you wish to continue?"
     confirm_column_select: "This will reset custom values for this column, do you wish to continue?"
+    show_all_services: 'Show All Services'
+    show_chosen_services: 'Show Chosen Services'
     tabs:
       template: "Template Tab"
       billing: "Quantity/Billing Tab"
@@ -276,6 +282,18 @@ en:
       visit_day: 'Day the anticipated visit occurs (incremental)'
       visit_name: 'Name of the visit'
 
+  calendar_structure:
+    header: "Calendar Structure"
+    lock_calendar: "Lock Calendar"
+    unlock_calendar: "Unlock Calendar"
+    table_fields:
+      arm_name: "Arm Name"
+      subject_count: "Subject Count"
+      visit_count: "Visit Count"
+    tooltips:
+      lock_calendar: 'Locking the calendar will prevent users from making changes to arm, subject, and visit information.'
+      arm_info: 'The calendar has been locked by an administrator. No changes to the stucture may be made at this time.'
+
   #############
   # CONSTANTS #
   #############
@@ -316,6 +334,7 @@ en:
       access: "Allow Access:"
     tooltips:
       access: "Uploaded documents are made viewable to all service providers unless checkmark is removed"
+      add_document: "Upload document(s) in repository"
     select_type: "Please Select Type"
     delete_confirm: "Are you sure you want to delete the selected Document from this protocol?"
 
@@ -339,6 +358,17 @@ en:
       link_display: "Email: success@musc.edu"
       phone_href: "tel:843-792-8300"
       phone_display: "Call: 843-792-8300"
+
+  #########
+  # FORMS #
+  #########
+  forms:
+    table_fields:
+      srid: "SRID"
+      association: "Association"
+      title: "Form Title"
+      completed: "Completed"
+      options: "Options"
 
   ##############
   # IDENTITIES #
@@ -401,6 +431,13 @@ en:
       rmid_validated: "Updated to corresponding Research Master ID %{title}"
       rmid_short_title: "Short Title"
       rmid_title: "Title"
+      tooltips:
+        notes: "Protocol notes viewable to Administrators and Authorized Users"
+        details: "Quick access to protocol information"
+        edit: "Quick access to edit protocol information"
+        archive_study: "Ability to hide study from all Authorized User dashboards"
+        unarchive_study: "Click to reveal on all associated Authorized User dashboards"
+        rmid_server_down: "Research Master ID Server is down.  You cannot edit the Research Master ID field at this time."
     view_details:
       button: "View %{protocol_type} Details"
       header: "%{protocol_type} Details: #%{protocol_id}"
@@ -437,8 +474,8 @@ en:
         push_to_epic: "Publish Study in Epic:"
         study_type_questions: "Study Type Questions:"
         note: "Note: "
-      optional_information:
-        header: "Optional Information"
+      financial_information:
+        header: "Financial Information"
         subtext: "Used for reporting purposes and saved for your future use"
         udak_project_number: "Financial Account (UDAK #):"
         rate: "Indirect Cost Rate:"
@@ -520,8 +557,8 @@ en:
       nct_number: 'Clinicaltrials.gov Registry Number'
       pro_number: 'Institutional Review Board (IRB) Unique Identifier'
       ind_number: 'Investigational New Drug (IND) Number'
-      short_title: 'An abbreviated form of the title used to identify your study/project'
-      title: 'Full title of your study/project'
+      short_title: 'An abbreviated form of the title used to identify your study/project. Special characters outside the allowed range will be removed automatically.'
+      title: 'Full title of your study/project. Special characters outside the allowed range will be removed automatically.'
       funding_status: 'Indicates whether or not funding has been applied for or obtained'
       potential_funding_source: 'Funding source that has been applied for but not yet obtained. Pricing is logically driven off this field'
       funding_source: 'Funding source which drives research pricing for your study/project'
@@ -587,7 +624,7 @@ en:
   # VALIDATION ERROR MESSAGES #
   #############################
   errors:
-    user_note: "Fields with an Asterisk ( * ) are required"
+    user_note: "Fields marked with an asterisk ( * ) are required"
     arms:
       name_unique: "has to be unique within a study/project"
       bad_characters: "can not contain any of the following characters: [ ] * / \\ ? :"
@@ -852,7 +889,8 @@ en:
     cpt_code: "CPT Code"
     css_class: "Color"
     ctrc_label: "Administrative Approvals"
-    default_statuses: "Default Statuses:"
+    default_available_statuses: "Default Statuses:"
+    default_editable_statuses: "Default Editable Statuses:"
     description: "Description"
     disabled: "Display in SPARC"
     disabled_all_services: "Disable All Services"
@@ -870,6 +908,7 @@ en:
     new_sp: "New Service Provider"
     one_time_fee: "Non-clinical (Non-Per </br> Patient/Visit) Services"
     order: "Order"
+    order_code: "Order Code"
     otf_field_errors: "If the Pricing Map is a non-clinical service (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required."
     per_patient_errors: "Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps."
     pricing_maps: "Pricing Maps"
@@ -897,6 +936,7 @@ en:
     super_users: "Super Users"
     tag_list: "Tags"
     user_rights: "User Rights"
+    use_default_statuses: "Use Default Statuses"
 
   pricing_map_form:
     clinical_quantity_type: "Clinical Quantity Type (hours, each, slides, etc.)"
@@ -1164,6 +1204,7 @@ en:
     send: 'Send'
     by: 'By'
     sent_protocols: 'Sent Protocols'
+    type: 'Type'
   footer:
     mail_to: "hundc@musc.edu"
     mail_link: "Sign Up For the SPARC Request Listserv"
@@ -1514,7 +1555,7 @@ en:
     proxy: "Proxy Rights:"
     request_amendment: "Request Amendment"
     request_amendment_intro:  "Services have been added or deleted in SPARCRequest and is awaiting your review in"
-    requester:  "(Requester)"
+    requester:  "Requester"
     role: "Role"
     s_name: "Sponsor Name"
     service: "Service"

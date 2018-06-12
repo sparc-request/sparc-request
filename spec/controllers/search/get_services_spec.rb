@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -120,10 +120,10 @@ RSpec.describe SearchController do
 
     it 'should not return services from a locked organization' do
       sr    = create(:service_request_without_validations)
-      org   = create(:organization)
+      org   = create(:organization, use_default_statuses: false)
       inst  = create(:institution)
       prvdr = create(:provider, parent: inst)
-      org2  = create(:program, parent: prvdr)
+      org2  = create(:program, parent: prvdr, use_default_statuses: false)
       ssr   = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'on_hold')
       s1    = create(:service, organization: org, name: 'Service 123')
       s2    = create(:service, organization: org2, name: 'Service 321')

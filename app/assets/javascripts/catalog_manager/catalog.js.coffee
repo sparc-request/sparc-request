@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -534,6 +534,12 @@ $ ->
 
   $(document).on('change', 'input[id*="_process_ssrs"]', ->
     $('#available_statuses_wrapper').toggle()
+    $('#questionnaires').toggle()
+  )
+
+  $(document).on('change', 'input[id*="_use_default_statuses"]', ->
+    $('#all_statuses').toggle()
+    $('#default_statuses').toggle()
   )
 
   $(document).on('change', 'input[id*="_tag_list_clinical_work_fulfillment"]', ->
@@ -549,7 +555,6 @@ $ ->
   )
 
   $(document).on 'change', '.available-status', ->
-    if $(this).prop('checked')
-      $(".#{$(this).data('status')}-dependent").show()
-    else
-      $(".#{$(this).data('status')}-dependent").hide()
+    editable_status = $(".#{$(this).data('status')}-dependent")
+    editable_status.toggle()
+    editable_status.find("td > input").prop("checked", $(this).prop("checked"))

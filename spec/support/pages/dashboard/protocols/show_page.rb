@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -105,7 +105,7 @@ module Dashboard
       element :consolidated_request_exclude_draft, "a", text: /Exclude Draft/
 
       # actual service request panels
-      sections :service_requests, '.panel-primary', text: /Service Request: \d+/ do
+      sections :service_requests, '#service-requests-panel' do
         element :modify_request_button, :button, text: "Modify Request"
 
         sections :ssrs, 'tbody tr' do
@@ -134,7 +134,10 @@ module Dashboard
       element :view_ssr_modal, ".user-view-ssr-modal"
 
       # Modal displaying consolidated request
-      element :consolidated_request_modal, ".modal-dialog", text: /Consolidated Request Summary/
+      section :consolidated_request_modal, ".modal-dialog", text: /Consolidated Request Summary/ do
+        element :show_all_services_button, "label#all-services.btn"
+        element :show_chosen_services_button, "label#chosen-services.btn"
+      end
     end
   end
 end

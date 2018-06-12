@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,12 +19,32 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class AvailableStatus < ApplicationRecord
+  
   audited
 
   belongs_to :organization
 
-  attr_accessor :new
-  attr_accessor :position
+  scope :selected, -> { where(selected: true) }
+  scope :alphabetized, -> { all.sort{ |x, y| x.humanize <=> y.humanize } }
 
-  TYPES = AVAILABLE_STATUSES
+  def disabled_status?
+    ["Draft", "Get a Cost Estimate", "Submitted"].include?(self.humanize)
+  end
+
+  def self.statuses
+    @statuses ||= PermissibleValue.get_hash('status')
+  end
+
+  def self.defaults
+    @defaults ||= PermissibleValue.get_key_list('status', true)
+  end
+
+  def humanize
+    AvailableStatus.statuses[self.status]
+  end
+
+  def self.types
+    self.statuses.keys
+  end
+
 end

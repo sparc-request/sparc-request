@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -24,7 +24,6 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
   include RSpecHtmlMatchers
 
   before(:each) do
-    stub_const("CLINICAL_WORK_FULFILLMENT_URL", "www.future-url.org")
     allow(view).to receive(:user_display_protocol_total).and_return(100)
   end
 
@@ -121,7 +120,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
             render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
 
             expect(response).to have_tag("a", text: "Go to Fulfillment",
-              with: { href: CLINICAL_WORK_FULFILLMENT_URL })
+              with: { href: Setting.find_by_key("clinical_work_fulfillment_url").value })
           end
         end
 
@@ -143,7 +142,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
 
             render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
 
-            expect(response).to have_tag("a", text: "In Fulfillment", with: { href: CLINICAL_WORK_FULFILLMENT_URL })
+            expect(response).to have_tag("a", text: "In Fulfillment", with: { href: Setting.find_by_key("clinical_work_fulfillment_url").value })
           end
         end
       end

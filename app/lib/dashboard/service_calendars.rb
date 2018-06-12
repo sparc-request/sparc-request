@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -51,7 +51,7 @@ module Dashboard
 
       returning_html += select_tag("jump_to_visit_#{arm.id}", visits_select_options(arm, pages), class: 'jump_to_visit selectpicker', url: path_method.call(service_request, pages: pages, arm_id: arm.id, tab: tab, sub_service_request_id: ssr_id, portal: portal))
 
-      unless portal || @merged || @review
+      unless portal || @merged || @review || service_request.protocol.locked
         returning_html += link_to 'Move Visit', 'javascript:void(0)', class: 'move_visits', data: { 'arm-id' => arm.id, tab: tab, 'sr-id' => service_request.id, portal: portal }
       end
 
@@ -68,23 +68,23 @@ module Dashboard
       raw(returning_html)
     end
 
-    # Given line_items_visit belonging to Organization A, which belongs to
-    # Organization B, which belongs to Organization C, return "C > B > A".
-    # This "hierarchy" stops at a process_ssrs Organization.
-    def self.display_organization_hierarchy(line_item)
-      parent_organizations = line_item.service.parents.reverse
-      root = parent_organizations.find_index { |org| org.process_ssrs? } || (parent_organizations.length - 1)
-      parent_organizations[0..root].map(&:abbreviation).reverse.join(' > ')
-    end
-
     def self.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, opts = {})
       statuses_hidden = opts[:statuses_hidden] || %w(first_draft)
       if opts[:merged]
-        arm.line_items_visits.
-          eager_load(:visits, :notes).
-          includes(sub_service_request: :organization, line_item: [:admin_rates, :service_request, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).
-          where.not(sub_service_requests: { status: statuses_hidden }).
-          where(services: { one_time_fee: false })
+        if opts[:display_all_services]
+          arm.line_items_visits.
+            eager_load(:visits, :notes).
+            includes(sub_service_request: :organization, line_item: [:admin_rates, :service_request, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).
+            where.not(sub_service_requests: { status: statuses_hidden }).
+            where(services: { one_time_fee: false })
+        else
+          arm.line_items_visits.
+            eager_load(:visits, :notes).
+            includes(sub_service_request: :organization, line_item: [:admin_rates, :service_request, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).
+            where.not(sub_service_requests: { status: statuses_hidden }).
+            where(services: { one_time_fee: false }).
+            where.not( "research_billing_qty = 0 and insurance_billing_qty = 0 and effort_billing_qty = 0" )
+        end
       else
         (sub_service_request || service_request).line_items_visits.
           eager_load(:visits, :notes).

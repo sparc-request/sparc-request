@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,6 +27,15 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   protected
+
+  def not_signed_in?
+    !current_user.present?
+  end
+
+  def redirect_to_login
+    redirect_to identity_session_path(service_request_id: nil)
+    flash[:alert] = t(:devise)[:failure][:unauthenticated]
+  end
 
   def after_sign_in_path_for(resource)
     stored_location_for(resource) || root_path
@@ -58,6 +67,12 @@ class ApplicationController < ActionController::Base
     }
   end
 
+  def rmid_server_status(protocol)
+    if Setting.find_by_key("research_master_enabled").value
+      @rmid_server_down = protocol.rmid_server_status
+      @rmid_server_down ? flash[:alert] = t(:protocols)[:summary][:tooltips][:rmid_server_down] : nil
+    end
+  end
 
   def authorization_error msg, ref
     error = msg
@@ -179,7 +194,6 @@ class ApplicationController < ActionController::Base
   def authorize_identity
     # can the user edit the service request
     # can the user edit the sub service request
-
     # we have a current user
     if current_user
       if @sub_service_request.nil? and (@service_request && (@service_request.status == 'first_draft' || current_user.can_edit_service_request?(@service_request)))
@@ -187,6 +201,9 @@ class ApplicationController < ActionController::Base
       elsif @sub_service_request and current_user.can_edit_sub_service_request?(@sub_service_request)
         return true
       end
+    elsif !@service_request.present? && not_signed_in?
+      redirect_to_login
+      return true
     # the service request is in first draft and has yet to be submitted (catalog page only)
     elsif @service_request.status == 'first_draft' && controller_name != 'protocols' && action_name != 'protocol'
       return true
@@ -201,12 +218,6 @@ class ApplicationController < ActionController::Base
     else
       authorization_error "The service request you are trying to access is not editable.",
                           "SSR#{params[:sub_service_request_id]}"
-    end
-  end
-
-  def authorize_site_admin
-    unless SITE_ADMINS.include?(current_user.ldap_uid)
-      authorization_error "You do not have access to this page.", ""
     end
   end
 
@@ -237,13 +248,16 @@ class ApplicationController < ActionController::Base
   end
 
   def authorize_admin
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @service_request     = @sub_service_request.service_request
-
-    unless (current_user.authorized_admin_organizations & @sub_service_request.org_tree).any?
-      @sub_service_request = nil
-      @service_request = nil
-      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
+    if not_signed_in?
+      redirect_to_login
+    else
+      @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+      @service_request     = @sub_service_request.service_request
+      unless (current_user.authorized_admin_organizations & @sub_service_request.org_tree).any?
+        @sub_service_request = nil
+        @service_request = nil
+        render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
+      end
     end
   end
 
@@ -265,5 +279,13 @@ class ApplicationController < ActionController::Base
 
   def xeditable? object=nil
     true
+  end
+
+  def authorize_funding_admin
+    if not_signed_in?
+      redirect_to_login
+    else
+      redirect_to root_path unless current_user.is_funding_admin?
+    end
   end
 end

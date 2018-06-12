@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -34,6 +34,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     @admin_orgs           = @user.authorized_admin_organizations
     @sub_service_requests = service_request.sub_service_requests.where.not(status: 'first_draft') # TODO: Remove Historical first_draft SSRs and remove this
     @show_view_ssr_back   = params[:show_view_ssr_back]
+    @sr_table             = params[:sr_table] || false
   end
 
   def show
@@ -59,18 +60,19 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
           session[:service_calendar_pages][arm_id]  = page
         end
 
-        @service_request    = @sub_service_request.service_request
-        @service_list       = @service_request.service_list
-        @line_items         = @sub_service_request.line_items
-        @protocol           = @service_request.protocol
-        @tab                = 'calendar'
-        @portal             = true
-        @admin              = false
-        @review             = true
-        @merged             = false
-        @consolidated       = false
-        @show_view_ssr_back = params[:show_view_ssr_back] == "true"
-        @pages              = {}
+        @service_request        = @sub_service_request.service_request
+        @service_list           = @service_request.service_list
+        @line_items             = @sub_service_request.line_items
+        @protocol               = @service_request.protocol
+        @tab                    = 'calendar'
+        @portal                 = true
+        @admin                  = false
+        @review                 = true
+        @merged                 = false
+        @consolidated           = false
+        @show_view_ssr_back     = params[:show_view_ssr_back] == "true"
+        @display_all_services   = true
+        @pages                  = {}
         @service_request.arms.each do |arm|
           new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
           @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
@@ -82,8 +84,15 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   end
 
   def update
+    if params[:check_sr_calendar] == 'true'
+      sr = @sub_service_request.service_request
+      sr.validate_service_calendar
+      if sr.errors[:base].length > 0
+        raise 'error'
+      end
+    end
     if @sub_service_request.update_attributes(sub_service_request_params)
-      @sub_service_request.distribute_surveys if @sub_service_request.is_complete?
+      @sub_service_request.distribute_surveys if (@sub_service_request.status == 'complete' && sub_service_request_params[:status].present?)
       flash[:success] = 'Request Updated!'
     else
       @errors = @sub_service_request.errors
@@ -97,7 +106,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       ToastMessage.where(sending_class_id: params[:id], sending_class: 'SubServiceRequest').each(&:destroy)
       notifier_logic = NotifierLogic.new(@sub_service_request.service_request, nil, current_user)
       notifier_logic.ssr_deletion_emails(deleted_ssr: @sub_service_request, ssr_destroyed: false, request_amendment: false, admin_delete_ssr: true)
-    
+
       flash[:alert] = 'Request Destroyed!'
       session[:breadcrumbs].clear(:sub_service_request_id)
     end
@@ -126,11 +135,17 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   end
 
   def push_to_epic
-    begin
-      @sub_service_request.protocol.push_to_epic(EPIC_INTERFACE, "admin_push", current_user.id)
-      flash[:success] = 'Request Pushed to Epic!'
-    rescue
-      flash[:alert] = $!.message
+    sr = @sub_service_request.service_request
+    sr.validate_service_calendar
+    unless sr.errors[:base].length > 0
+      begin
+        @sub_service_request.protocol.push_to_epic(EPIC_INTERFACE, "admin_push", current_user.id)
+        flash[:success] = 'Request Pushed to Epic!'
+      rescue
+        flash[:alert] = $!.message
+      end
+    else
+      raise 'error'
     end
   end
 
@@ -184,7 +199,6 @@ private
         :ssr_id,
         :organization_id,
         :owner_id,
-        :status_date,
         :status,
         :consult_arranged_date,
         :nursing_nutrition_approved,

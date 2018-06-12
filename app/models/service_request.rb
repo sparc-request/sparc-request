@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -109,7 +109,7 @@ class ServiceRequest < ApplicationRecord
       errors.add(:base, I18n.t('errors.visit_groups.days_out_of_order', arm_name: vg.arm.name))
     end
 
-    if USE_EPIC
+    if Setting.find_by_key("use_epic").value
       self.arms.each do |arm|
         days = arm.visit_groups.map(&:day)
 
@@ -349,7 +349,7 @@ class ServiceRequest < ApplicationRecord
 
   def total_indirect_costs_per_patient arms=self.arms, line_items=nil
     total = 0.0
-    if USE_INDIRECT_COST
+    if Setting.find_by_key("use_indirect_cost").value
       arms.each do |arm|
         livs = (line_items.nil? ? arm.line_items_visits : arm.line_items_visits.where(line_item: line_items)).eager_load(line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]])
         total += arm.indirect_costs_for_visit_based_service(livs)
@@ -373,7 +373,7 @@ class ServiceRequest < ApplicationRecord
 
   def total_indirect_costs_one_time(line_items=self.line_items)
     total = 0.0
-    if USE_INDIRECT_COST
+    if Setting.find_by_key("use_indirect_cost").value
       total += line_items.
         eager_load(:admin_rates, service_request: :protocol).
         includes(service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]).
@@ -399,6 +399,33 @@ class ServiceRequest < ApplicationRecord
     self.direct_cost_total(line_items) + self.indirect_cost_total(line_items)
   end
 
+  #############
+  ### Forms ###
+  #############
+  def has_associated_forms?
+    self.services.joins(:forms).where(surveys: { active: true }).any? || self.sub_service_requests.joins(organization: :forms).where(surveys: { active: true }).any?
+  end
+  
+  def associated_forms
+    forms = []
+    # Because there can be multiple SSRs with the same services/organizations we need to loop over each one
+    self.sub_service_requests.each do |ssr|
+      Form.where(surveyable: ssr.organization).active.each{ |f| forms << [f, ssr] }
+      Form.where(surveyable: ssr.services).active.each{ |f| forms << [f, ssr] }
+    end
+    forms
+  end
+
+  def completed_forms
+    forms = []
+    # Because there can be multiple SSRs with the same services/organizations we need to loop over each one
+    self.sub_service_requests.each do |ssr|
+      Form.where(surveyable: ssr.organization).active.joins(:responses).where(responses: { respondable: ssr }).each{ |f| forms << [f, ssr] }
+      Form.where(surveyable: ssr.services).active.joins(:responses).where(responses: { respondable: ssr }).each{ |f| forms << [f, ssr] }
+    end
+    forms
+  end
+
   def relevant_service_providers_and_super_users
     identities = []
 
@@ -412,10 +439,6 @@ class ServiceRequest < ApplicationRecord
     end
 
     identities.flatten.uniq
-  end
-
-  def additional_detail_services
-    services.joins(:questionnaires).where(questionnaires: { active: true })
   end
 
   # Returns the SSR ids that need an initial submission email, updates the SR status,
@@ -470,8 +493,8 @@ class ServiceRequest < ApplicationRecord
     line_item_audits = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{self.id}%' AND
                                       auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('create', 'destroy') AND
                                       created_at BETWEEN '#{start_date}' AND '#{end_date}'")
-                                    
-    line_item_audits = line_item_audits.present? ? line_item_audits.group_by(&:auditable_id) : {}                         
+
+    line_item_audits = line_item_audits.present? ? line_item_audits.group_by(&:auditable_id) : {}
 
     {:line_items => line_item_audits}
   end

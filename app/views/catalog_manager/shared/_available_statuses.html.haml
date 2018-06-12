@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -28,6 +28,8 @@
             %tr
               %th= as.label :status, "#{as.object.humanize.gsub('CTRC', 'Nexus')}:"
               %td= as.check_box :selected, {class: 'available-status', checked: selected_avs.include?(as.object.status), disabled: as.object.disabled_status?, data: { status: as.object.status }}, 'true', 'false'
+              - if as.object.disabled_status?
+                = as.hidden_field :selected, value: 'true'
 
     - if current_user.is_overlord?
       %tr

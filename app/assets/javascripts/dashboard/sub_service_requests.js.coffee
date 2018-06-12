@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -54,7 +54,7 @@ $(document).ready ->
       url: "/dashboard/sub_service_requests/#{sub_service_request_id}?check_sr_calendar=true"
       data: data
       error: (xhr, ajaxOptions, thrownError) ->
-        swal('Error', 'This protocol has failed to be sent to Epic because of failed validation. Please make sure the service calendar is intact before trying again.', 'error')
+        swal('Error', 'This protocol has failed to be sent to SPARCFulfillment because of failed validation. Please make sure the service calendar is intact before trying again.', 'error')
 
   $(document).on 'click', '#send_to_epic_button', ->
     $(this).prop( "disabled", true )
@@ -62,6 +62,8 @@ $(document).ready ->
     $.ajax
       type: 'PUT'
       url: "/dashboard/sub_service_requests/#{sub_service_request_id}/push_to_epic"
+      error: (xhr, ajaxOptions, thrownError) ->
+        swal('Error', 'This protocol has failed to be sent to Epic because of failed validation. Please make sure the service calendar is intact before trying again.', 'error')
 
   $(document).on 'click', '#resend-surveys-button', ->
     $(this).prop('disabled', true)

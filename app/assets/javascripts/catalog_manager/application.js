@@ -1,4 +1,4 @@
-// Copyright © 2011-2017 MUSC Foundation for Research Development
+// Copyright © 2011-2018 MUSC Foundation for Research Development
 // All rights reserved.
 
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -33,7 +33,6 @@
 //= require jquery.toastmessage
 //= require catalog_manager/jquery.jstree
 //= require jquery-ui
-//= require jquery_nested_form
 //= require catalog_manager/jquery.formatCurrency-1.4.0.min
 //= require catalog_manager/catalog
 //= require catalog_manager/services

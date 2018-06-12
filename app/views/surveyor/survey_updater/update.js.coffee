@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,16 +22,29 @@
 if !$("#<%=@klass%>-<%=@object.id%>-<%=error[0]%>").parents('.form-group').hasClass('has-error')
   $("#<%=@klass%>-<%=@object.id%>-<%=error[0]%>").parents('.form-group').addClass('has-error')
   $("#<%=@klass%>-<%=@object.id%>-<%=error[0]%>").after("<span class='help-block'><%=message%></span>")
+  <% if @field == 'active' %>
+  if $('#modal_place:visible').length > 0
+    $("#<%=@klass%>-<%=@object.id%>-<%=@field%>").attr("checked", false)
+  else
+    swal("Error", "<%= @object.errors.generate_message(:active, :taken) %>","error")
+  <% end %>
 <% end %>
 <% else %>
 $("#<%=@klass%>-<%=@object.id%>-<%=@field%>").parents('.form-group').removeClass('has-error')
 $("#<%=@klass%>-<%=@object.id%>-<%=@field%>").siblings('.help-block').remove()
 
-<% if @klass == 'survey' %>
-$('.survey-table').bootstrapTable('refresh')
+<% if @field == 'access_code' %>
+$('[id^=survey][id$=version]').val("<%= @object.version %>")
+$('[id^=survey][id$=version]').parents('.form-group').removeClass('has-error')
+$('[id^=survey][id$=version]').siblings('.help-block').remove()
 <% end %>
 
-<% if @klass == 'question' %>
+<% if @field == 'active' %>
+if $('#modal_place:visible').length == 0
+  $(".<%=@object.class.yaml_klass.downcase%>-table").bootstrapTable('refresh')
+<% end %>
+
+<% if @object.is_a?(Question) %>
 $(".question-options[data-question-id='<%=@object.id%>']").html('<%= j render "surveyor/surveys/form/form_partials/#{@object.question_type}_example", question: @object %>')
 $('.selectpicker').selectpicker()
 <% end %>

@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -31,6 +31,28 @@ $ ->
 
 (exports ? this).getSSRId = ->
   $("input[name='sub_service_request_id']").val()
+
+VALID_MONETARY_KEYS = [
+  8, # backspace
+  37, 38, 39, 40, # arrow keys
+  46, # Delete
+  48, 49, 50, 51, 52, 53, 54, 55, 56, 57, # 0-9
+  96, 97, 98, 99, 100, 101, 102, 103, 104, 105, # numpad 0-9
+  110, # decimal
+  190 # period
+]
+
+(exports ? this).validateMonetaryInput = (e) ->
+  charCode = if e.which then e.which else event.keyCode
+  element  = e.target
+
+  # dont allow multiple decimal points
+  if (charCode == 110 || charCode == 190) && $(element).val().indexOf('.') >= 0
+    e.preventDefault()
+
+  # make sure only valid keys are allowed
+  if !VALID_MONETARY_KEYS.includes(charCode)
+    e.preventDefault()
 
 (exports ? this).formatMoney = (n, t=',', d='.', c='$') ->
   s = if n < 0 then "-#{c}" else c

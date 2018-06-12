@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,7 +20,7 @@
 <% if @errors %>
 $("#modal_place #modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
 <% elsif @in_dashboard %>
-<% if notable_type_is_related_to_li_or_liv(@notable_type) %>
+<% if notable_type_is_related_to_li_or_liv_or_epic_queue(@notable_type) %>
 $("#modal_place").html("<%= escape_javascript(render( 'index', notable_id: @notable_id, notable_type: @notable_type, in_dashboard: @in_dashboard, notable: @notable )) %>")
 $("span#<%= @selector %>").html("<%= escape_javascript(@notes.count.to_s) %>").addClass('blue-badge').siblings().removeClass("black-note").addClass("blue-note")
 $('#notes-table').bootstrapTable()
@@ -30,7 +30,7 @@ $("span#<%= @selector %>").html("<%= escape_javascript(@notes.count.to_s) %>")
 $('#notes-table').bootstrapTable()
 <% end %>
 <% else %>
-<% if notable_type_is_related_to_li_or_liv(@notable_type) %>
+<% if notable_type_is_related_to_li_or_liv_or_epic_queue(@notable_type) %>
 $("#modal_place").html("<%= escape_javascript(render( 'index', notable_id: @notable_id, notable_type: @notable_type, in_dashboard: @in_dashboard, notable: @notable )) %>")
 $("span#<%= @selector %>").html("<%= escape_javascript(@notes.count.to_s) %>").addClass('blue-badge').siblings().removeClass("black-note").addClass("blue-note")
 $('#notes-table').bootstrapTable()

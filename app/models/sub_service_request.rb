@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -36,6 +36,7 @@ class SubServiceRequest < ApplicationRecord
   has_many :past_statuses, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
   has_many :line_items_visits, through: :line_items
+  has_many :services, through: :line_items
   has_and_belongs_to_many :documents
   has_many :notes, as: :notable, dependent: :destroy
   has_many :approvals, :dependent => :destroy
@@ -44,8 +45,7 @@ class SubServiceRequest < ApplicationRecord
   has_many :reports, :dependent => :destroy
   has_many :notifications, :dependent => :destroy
   has_many :subsidies
-  has_many :submissions, dependent: :destroy
-  has_many :responses
+  has_many :responses, as: :respondable, dependent: :destroy
   has_one :approved_subsidy, :dependent => :destroy
   has_one :pending_subsidy, :dependent => :destroy
 
@@ -344,7 +344,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def update_past_status
-    if self.status_changed? && !@prev_status.blank?
+    if saved_change_to_status? && !@prev_status.blank?
       past_status = self.past_statuses.create(status: @prev_status, date: Time.now)
       user_id = AuditRecovery.where(auditable_id: past_status.id, auditable_type: 'PastStatus').first.user_id
       past_status.update_attribute(:changed_by_id, user_id)
@@ -405,32 +405,26 @@ class SubServiceRequest < ApplicationRecord
     end
   end
 
-  ##########################
-  ### ADDITIONAL DETAILS ###
-  ##########################
-
-  def completed_questionnaire?(questionnaire)
-    submissions.where(questionnaire_id: questionnaire.id).present?
+  #############
+  ### FORMS ###
+  #############
+  def forms_to_complete
+    Form.where(surveyable: self.services).where.not(id: self.responses.pluck(:survey_id)).active +
+      Form.where(surveyable: self.organization).where.not(id: self.responses.pluck(:survey_id)).active
   end
 
-  def find_submission(questionnaire)
-    submissions.where(questionnaire_id: questionnaire.id).first
+  def form_completed?(form)
+    self.responses.where(survey: form).any?
   end
 
-  def has_incomplete_additional_details?
-    has_incomplete_additional_details_services? || has_incomplete_additional_details_organization?
+  def has_completed_forms?
+    Response.where(respondable: self, survey: Form.where(surveyable: self.services).active.ids + Form.where(surveyable: self.organization).active.ids).any?
   end
 
-  def has_incomplete_additional_details_services?
-    line_items.includes(:service).map(&:service).detect{|service|
-      questionnaire = service.questionnaires.active.first
-      !completed_questionnaire?(questionnaire) if questionnaire
-    }.present?
-  end
-
-  def has_incomplete_additional_details_organization?
-    questionnaire = organization.questionnaires.active.first
-    questionnaire.present? && !completed_questionnaire?(questionnaire)
+  def all_forms_completed?
+    form_ids = Form.where(surveyable: self.services).active.ids + 
+                Form.where(surveyable: self.organization).active.ids
+    Response.where(respondable: self, survey_id: form_ids).count == form_ids.count
   end
 
   ##########################
@@ -442,7 +436,7 @@ class SubServiceRequest < ApplicationRecord
     # send all available surveys at once
     available_surveys = line_items.map{|li| li.service.available_surveys}.flatten.compact.uniq
     # do nothing if we don't have any available surveys
-    unless available_surveys.blank?
+    unless available_surveys.empty?
       SurveyNotification.service_survey(available_surveys, primary_pi, self).deliver
     # only send survey email to both users if they are unique
       if primary_pi != service_requester
@@ -452,7 +446,10 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def surveys_completed?
-    self.responses.all?(&:completed?)
+    self.line_items.
+      eager_load(service: [:associated_surveys, :organization]).
+      map{ |li| li.service.available_surveys }.flatten.compact.uniq.
+      all?{ |s| s.responses.where(respondable_id: self.id, respondable_type: self.class.name).any? }
   end
 
   ###############################
@@ -525,7 +522,8 @@ class SubServiceRequest < ApplicationRecord
       audit = audits.sort_by(&:created_at).last
       # create action
       if audit.audited_changes["sub_service_request_id"].nil?
-        filtered_audit_trail[:line_items] << audit if LineItem.find(audit.auditable_id).sub_service_request_id == self.id
+        line_item = LineItem.where(id: audit.auditable_id).first
+        filtered_audit_trail[:line_items] << audit if (line_item && (line_item.sub_service_request_id == self.id))
       # destroy action
       else
         filtered_audit_trail[:line_items] << audit if audit.audited_changes["sub_service_request_id"] == self.id

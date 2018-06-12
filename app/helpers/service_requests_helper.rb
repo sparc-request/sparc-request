@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -62,20 +62,32 @@ module ServiceRequestsHelper
     header
   end
 
+  def service_name_display(line_item)
+    ssr = line_item.sub_service_request
+    service = line_item.service
+    display_name = service.display_service_name + (ssr.ssr_id ? " (#{ssr.ssr_id})" : "")
+
+    if ssr.can_be_edited?
+      link_to(display_name, "javascript:void(0)", class: "service service-#{service.id} btn btn-default", data: { id: service.id })
+    else
+      link_to "<i class='glyphicon glyphicon-lock text-danger'></i> #{display_name}".html_safe, "javascript:void(0)", class: "text-danger list-group-item-danger service service-#{service.id} btn btn-default list-group-item", data: { id: service.id }
+    end
+  end
+
   # RIGHT NAVIGATION BUTTONS
   def faq_helper
     if Setting.find_by_key("use_faq_link").value
-      link_to t(:proper)[:right_navigation][:faqs][:header], Setting.find_by_key("faq_url").value, target: :blank, class: 'btn btn-primary btn-lg btn-block help-faq-button'
+      link_to t(:proper)[:right_navigation][:faqs][:header], Setting.find_by_key("faq_url").value, target: :blank, class: 'btn btn-primary btn-lg btn-block help-faq-button no-margin-x'
     else
-      link_to t(:proper)[:right_navigation][:faqs][:header], get_help_service_request_path, remote: true, class: 'btn btn-primary btn-lg btn-block help-faq-button'
+      link_to t(:proper)[:right_navigation][:faqs][:header], get_help_service_request_path, remote: true, class: 'btn btn-primary btn-lg btn-block help-faq-button no-margin-x'
     end
   end
 
   def feedback_helper
     if Setting.find_by_key("use_feedback_link").value
-      link_to t(:proper)[:right_navigation][:feedback][:header], Setting.find_by_key("feedback_link").value, target: :blank, class: 'feedback-button btn btn-primary btn-lg btn-block'
+      link_to t(:proper)[:right_navigation][:feedback][:header], Setting.find_by_key("feedback_link").value, target: :blank, class: 'feedback-button btn btn-primary btn-lg btn-block no-margin-x'
     else
-      content_tag(:button, t(:proper)[:right_navigation][:feedback][:header], class: 'feedback-button btn btn-primary btn-lg btn-block')
+      content_tag(:button, t(:proper)[:right_navigation][:feedback][:header], class: 'feedback-button btn btn-primary btn-lg btn-block no-margin-x')
     end
   end
 

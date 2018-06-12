@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -29,6 +29,9 @@ Bundler.require(*Rails.groups)
 
 module SparcRails
   class Application < Rails::Application
+
+    Dotenv::Railtie.load
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
@@ -47,7 +50,7 @@ module SparcRails
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
-    config.time_zone = 'Eastern Time (US & Canada)'
+    config.time_zone = ENV['time_zone'] || 'Eastern Time (US & Canada)'
 
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
@@ -56,7 +59,6 @@ module SparcRails
     # and, you don't need to override all of the text, only the sets of texts you need customized
     config.i18n.load_path += Dir[Rails.root.join('config/locales/proper', '*.{rb,yml}').to_s]
     config.i18n.load_path += Dir[Rails.root.join('config/locales/dashboard', '*.{rb,yml}').to_s]
-    config.i18n.load_path += Dir[Rails.root.join('config/locales/additional_details', '*.{rb,yml}').to_s]
     config.i18n.load_path += Dir[Rails.root.join('config/locales/surveyor', '*.{rb,yml}').to_s]
     config.i18n.fallbacks = [:en]
 

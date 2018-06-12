@@ -20,12 +20,67 @@
 
 en:
   surveyor:
+    forms:
+      header: "My Forms"
+      tooltip: "Forms to collect additional information related to requesting a service"
+      new: "New Form"
+      missing_association: "Please select an association for this Form before leaving."
+      table:
+        headers:
+          surveyable: "Association"
+          title: "Title"
+          access_code: "Access Code"
+          version: "Version"
+          active: "Active"
+          options: "Options"
+        fields:
+          activate: "Activate"
+          disable: "Disable"
+          preview: "Preview"
+        tooltips:
+          activate: "Select an association to activate this survey"
+
+    response_filters:
+      header: "Filter Responses"
+      created: "Search saved!"
+      destroyed: "Search deleted!"
+      fields:
+        type: "Type"
+        state: "State"
+        state_filters:
+          active: "Active"
+          inactive: "Inactive"
+        completion_date: "Completion Date"
+        from: "From"
+        to: "To"
+        include_incomplete: "Include Incomplete"
+      form:
+        header: "Choose a name for your search"
+        name: "Search Name:"
+      saved:
+        header: "Recently Saved Filters"
+      tooltips:
+        save: "Save current search"
+        reset: "Reset current search"
+
     responses:
-      update: "Thank you for participating in this survey!"
+      create: "Thank you for participating in this survey!"
       complete:
         header: "Survey Completed"
         thanks: "Thank you for completing the survey!"
         to_dashboard: "Return to Dashboard"
+      table:
+        header: "%{type} Responses"
+        export: "Export Responses"
+        headers:
+          srid: "SRID"
+          short_title: "Short Title"
+          primary_pi: "Primary PI"
+          title: "%{type} Title"
+          complete: "Complete"
+          date: "Date"
+          actions: "Actions"
+          by: "By"
       emails:
         system_satisfaction:
           subject: "System Satisfaction Survey Completed in %{site_name}"
@@ -43,7 +98,51 @@ en:
 
 
     surveys:
-      header: "Surveys"
+      form:
+        header: "Live Editing %{klass}"
+        survey_information:
+          header: "%{klass} Information"
+          title: "Title:"
+          description: "Description:"
+          access_code: "Access Code:"
+          version: "Version:"
+          display_order: "Display Order:"
+          surveyable: "Association:"
+          active: "Active:"
+        content:
+          section:
+            add: "Add Section"
+            delete: "Delete Section"
+          question:
+            add: "Add Question"
+            delete: "Delete Question"
+            required: "Required:"
+            dependent:
+              label: "Dependent:"
+              dropdown:
+                label: "Display If:"
+          option:
+            add: "Add Option"
+            delete: "Delete Option"
+        placeholders:
+          survey:
+            description: "Describe this %{klass} (Recommended)"
+            surveyable: "Select an Organization or Service for this form"
+          section:
+            title: "Section Title (Required)"
+            description: "Describe this section (Optional)"
+          question:
+            content: "Question (Required)"
+            description: "Describe this question (Optional)"
+            zipcode: "XXXXX or XXXXX-XXXX"
+            phone: "XXXXXXXXXX"
+          option:
+            content: "Option (Required)"
+      full_title: "%{title} (Version %{version})"
+
+    systemsurveys:
+      header: "System Surveys"
+      tooltip: "Surveys to collect feedback from users"
       new: "New Survey"
       table:
         headers:
@@ -54,50 +153,6 @@ en:
           active: "Active"
           options: "Options"
         fields:
-          edit: "Edit Survey"
-          delete: "Delete Survey"
           activate: "Activate"
           disable: "Disable"
           preview: "Preview"
-      form:
-        header: "Live Editing Survey"
-        survey_information:
-          header: "Survey Information"
-          access_code: "Access Code:"
-          version: "Version:"
-          display_order: "Display Order:"
-          active: "Active:"
-        content:
-          survey:
-            title:
-              placeholder: "Survey Title (Required)"
-            description:
-              placeholder: "Survey Description (Recommended)"
-          section:
-            add: "Add Section"
-            delete: "Delete Section"
-            title:
-              placeholder: "Section Title (Recommended)"
-            description:
-              placeholder: "Section Description (Optional)"
-          question:
-            add: "Add Question"
-            delete: "Delete Question"
-            content:
-              placeholder: "Question (Required)"
-            description:
-              placeholder: "Question Description (Optional)"
-            required: "Required:"
-            dependent:
-              label: "Dependent:"
-              dropdown:
-                label: "Display If:"
-            zipcode:
-              placeholder: 'XXXXX'
-            phone:
-              placeholder: 'XXXXXXXXXX'
-          option:
-            add: "Add Option"
-            delete: "Delete Option"
-            content:
-              placeholder: "Option (Required)"

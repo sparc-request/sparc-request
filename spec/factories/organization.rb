@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -31,7 +31,7 @@ FactoryGirl.define do
 
     trait :ctrc do
       after(:create) do |organization, evaluator|
-        organization.tag_list = "ctrc_clinical_services"
+        organization.tag_list = "ctrc"
 
         organization.save
       end

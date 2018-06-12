@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,10 +27,10 @@
         %div.tooltip-wrapper{ data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' }, title: t(:calendar_structure)[:tooltips][:lock_calendar] }
           - if @user.catalog_overlord
             %button.btn.btn-success#calendar-lock-button{ class: "calendar-lock", data: { protocol_id: protocol.id, locked: protocol.locked.to_s } }
-              -if protocol.locked == false
-                = t(:calendar_structure)[:lock_calendar]
-              -else
+              -if protocol.locked
                 = t(:calendar_structure)[:unlock_calendar]
+              -else
+                = t(:calendar_structure)[:lock_calendar]
       %table#calendar-structure-table{ data: { toggle: 'table', 'show-columns' => 'true', 'show-toggle' => 'true', url: dashboard_arms_path(format: :json, protocol_id: protocol.id), striped: 'true', toolbar: '#calendar-structure-custom-toolbar' } }
         %thead.primary-header
           %tr

@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -26,6 +26,5 @@ RSpec.describe EditableStatus, type: :model do
   end
 
   it { is_expected.to belong_to(:organization) }
-  it { is_expected.to validate_inclusion_of(:status).in_array(PermissibleValue.get_key_list('status')) }
   it { is_expected.to validate_presence_of(:status) }
 end

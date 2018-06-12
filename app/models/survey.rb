@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,37 +18,78 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Survey < ActiveRecord::Base
+class Survey < ApplicationRecord
+  audited
+  
   has_many :responses, dependent: :destroy
   has_many :sections, dependent: :destroy
   has_many :questions, through: :sections
-  has_many :associated_surveys, as: :surveyable, dependent: :destroy
-  
-  has_many :questions, through: :sections
+  has_many :associated_surveys, dependent: :destroy
 
-  acts_as_list column: :display_order
-  
+  belongs_to :surveyable, polymorphic: true
+
   validates :title,
             :access_code,
-            :display_order,
-            :version,
             presence: true
 
-  validates_inclusion_of :active, in: [true, false]
+  validates_uniqueness_of :version, scope: [:access_code, :type]
 
-  validates_uniqueness_of :version, scope: :access_code
+  validates :version, numericality: { only_integer: true, greater_than: 0 }, presence: true
 
   accepts_nested_attributes_for :sections, allow_destroy: true
+
+  default_scope -> {
+    order(:title, :version)
+  }
 
   scope :active, -> {
     where(active: true)
   }
 
+  QUESTION_TYPES = {
+    'Text': 'text',
+    'Text Area': 'textarea',
+    'Radio Button': 'radio_button',
+    'Likert Scale': 'likert',
+    'Checkbox': 'checkbox',
+    'Yes/No': 'yes_no',
+    'Email': 'email',
+    'Date': 'date',
+    'Number': 'number',
+    'Zipcode': 'zipcode',
+    'State': 'state',
+    'Country': 'country',
+    'Time': 'time',
+    'Phone': 'phone',
+    'Dropdown': 'dropdown',
+    'Multiple Dropdown': 'multiple_dropdown'
+  }
+  
+  def self.for_dropdown_select
+    self.all.order(:title).group_by(&:title).map{ |title, surveys|
+      [title, surveys.map{ |survey| ["Version #{survey.version} (#{survey.active ? I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active] : I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]})", survey.id] }]
+    }
+  end
+
+  # Added because version could not be written as an attribute by FactoryGirl. Possible keyword issue?
+  def version=(v)
+    write_attribute(:version, v)
+  end
+
+  # Added because version could not be read as an attribute by FactoryGirl. Possible keyword issue?
+  def version
+    read_attribute(:version)
+  end
+
+  def full_title
+    I18n.t('surveyor.surveys.full_title', title: self.title, version: self.version)
+  end
+
   def insertion_name
-    "Before #{title} (Version #{version})"
+    "Before #{self.full_title}"
   end
 
   def report_title
-    "#{self.title} - Version #{self.version.to_s} #{self.active ? '(Active)' : '(Inactive)'}"
+    "#{self.title} - Version #{self.version.to_s} (#{self.active ? I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active] : I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]})"
   end
 end

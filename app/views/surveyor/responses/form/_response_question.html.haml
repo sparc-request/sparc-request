@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,23 +17,30 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- qr ||= nil
+- question_response ||= nil
 .question{ class: [dependency_classes(question), "question-#{question.id}"], data: survey_data(question) }
   - unless section.description.blank? && index == 0
     %br
     %hr
-  = qr.hidden_field :required, value: question.required?
-  = qr.hidden_field :question_id, value: question.id
+  - if qr
+    = qr.hidden_field :required, value: question.required?
+    = qr.hidden_field :question_id, value: question.id
   .form-group.question-label
-    = qr.label :content, raw(question.content), class: ['control-label text-left', question.required? ? "required" : ""]
+    - if qr
+      = qr.label :content, raw(question.content), class: ['control-label text-left', question.required? ? "required" : ""]
+    - else
+      %label.control-label.text-left{ class: question.required? ? "required" : "" }
+        = raw(question.content)
   - unless question.description.blank?
     .form-group
       %p.question-description
         = raw(question.description)
-  .question-options
-    = render "surveyor/responses/form/form_partials/#{question.question_type}_form_partial", question: question, qr: qr
+  .question-options{ class: ['new', 'edit', 'preview'].include?(action_name) ? '' : 'disable-likert' }
+    = render "surveyor/responses/form/form_partials/#{question.question_type}_form_partial", qr: qr, question: question, question_response: question_response
   - if question.errors.any?
     .alert.alert-danger
       %ul.list-unstyled
-        - qr.object.errors.full_messages.each do |message|
+        - question.errors.full_messages.each do |message|
           %li
             = message

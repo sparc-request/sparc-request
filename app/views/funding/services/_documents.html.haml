@@ -1,0 +1,29 @@
+= javascript_include_tag 'funding/documents'
+#custom-toolbar
+  .row.tabs{role: 'tabpanel'}
+    #document_tabs{data: {selected: "loi"}}
+      .col-lg-6
+        %button.btn.btn-primary.btn-block.document_nav#documents_loi
+          = t(:funding)[:download][:loi]
+      .col-lg-6
+        %button.btn.btn-default.btn-block.document_nav#documents_application
+          = t(:funding)[:download][:application]
+
+.bootstrap-table-dropdown-overflow
+  %table.custom_striped.bootstrap_table{id: "document-table", data: {pagination: 'true', 'page-size' => 20, toggle: 'table', search: "true", url: documents_funding_service_path(id: service.id, table: "loi", format: :json ), striped: "true", 'sort-name' => 'pi', 'sort-order' => 'asc', 'row-style' => 'documents_row_style'}}
+    %thead.primary-header
+      %tr
+        %th{data: {class: 'col-sm-1 pi', align: "left", sortable: "true", field: "pi"}}
+          = t(:funding)[:download][:table][:pi]
+        %th{data: {class: 'col-sm-1 institution', align: "left", sortable: "true", field: "institution"}}
+          = t(:funding)[:download][:table][:institution]
+        %th{data: {class: 'col-sm-1 srid', align: "left", sortable: "true", field: "srid"}}
+          = t(:funding)[:download][:table][:srid]
+        %th{data: {class: 'col-sm-3 protocol', align: "left", sortable: "false", field: "protocol"}}
+          = t(:funding)[:download][:table][:protocol]
+        %th{data: {class: 'col-sm-3 doc_title', align: "left", sortable: "false", field: "doc_title"}}
+          = t(:funding)[:download][:table][:doc_title]
+        %th{data: {class: 'col-sm-1 uploaded', align: "right", sortable: "true", field: "uploaded", sorter: "dateSorter"}}
+          = t(:funding)[:download][:table][:uploaded]
+        %th{data: {class: 'col-sm-2 status', align: "left", sortable: "true", field: "status"}}
+          = t(:funding)[:download][:table][:status]

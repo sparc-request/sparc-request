@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -42,6 +42,24 @@ module Dashboard::SubServiceRequestsHelper
     end
   end
 
+  def display_line_items_otf(sub_service_request, use_epic, lis)
+    if sub_service_request.nil?
+      # only show the services that are set to be pushed to Epic when use_epic = true
+      if use_epic
+        lis.select{ |li| Service.find(li.service_id).send_to_epic }
+      else
+        lis
+      end
+    else
+      # only show the services that are set to be pushed to Epic when use_epic = true
+      if use_epic
+        sub_service_request.one_time_fee_line_items.select{ |li| Service.find(li.service_id).send_to_epic }
+      else
+        sub_service_request.one_time_fee_line_items
+      end
+    end
+  end
+
   def service_request_owner_display sub_service_request
     if sub_service_request.status == "draft"
       content_tag(:span, 'Not available in draft status.')
@@ -56,10 +74,10 @@ module Dashboard::SubServiceRequestsHelper
       if sub_service_request.in_work_fulfillment?
         if user.clinical_provider_rights?
           # In fulfillment and user has rights
-          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:go_to_fulfillment], Setting.find_by_key("clinical_work_fulfillment_url").value, target: "_blank", class: "btn btn-primary btn-md"
+          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:go_to_fulfillment], "#{Setting.find_by_key("clinical_work_fulfillment_url").value}/sub_service_request/#{sub_service_request.id}", target: "_blank", class: "btn btn-primary btn-md"
         else
           # In fulfillment, user does not have rights, disable button
-          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:in_fulfillment], Setting.find_by_key("clinical_work_fulfillment_url").value, target: "_blank", class: "btn btn-primary btn-md", disabled: true
+          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:in_fulfillment], "#{Setting.find_by_key("clinical_work_fulfillment_url").value}/sub_service_request/#{sub_service_request.id}", target: "_blank", class: "btn btn-primary btn-md", disabled: true
         end
       else
         # Not in Fulfillment
@@ -208,45 +226,20 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def display_ssr_submissions(ssr)
-    has_incomplete_service = ssr.has_incomplete_additional_details_services?
-    has_incomplete_organization = ssr.has_incomplete_additional_details_organization?
+    forms                     = ssr.forms_to_complete
+    form_list                 = {}
+    form_list[:Organization]  = [] if forms.detect{ |f| f.surveyable_type == 'Organization' }
+    form_list[:Service]       = [] if forms.detect{ |f| f.surveyable_type == 'Service' }
 
-    if has_incomplete_service or has_incomplete_organization
-      protocol    = ssr.protocol
-      submissions = {}
-      if has_incomplete_service
-        submissions[:Services] = []
-        ssr.line_items.includes(:service).map(&:service).each do |service|
-          next unless service.questionnaires.active.present?
-          submissions[:Services] << [service.name, service.name, data: {
-                                                                  questionnaire_id: service.questionnaires.active.first.id,
-                                                                  protocol_id: protocol.id,
-                                                                  ssr_id: ssr.id
-                                                                }]
-        end
-      end
-      if has_incomplete_organization
-        submissions[:Organization] = []
-        submissions[:Organization] << [ssr.organization.name, ssr.organization.name, data: {
-                                                                                      questionnaire_id: ssr.organization.questionnaires.active.first.id,
-                                                                                      protocol_id: protocol.id,
-                                                                                      ssr_id: ssr.id
-                                                                                    }]
-      end
-      submission_list = grouped_options_for_select(submissions)
+    forms.each do |f|
+      form_list[f.surveyable_type.to_sym] << [f.surveyable.name, f.surveyable.name, data: { type: 'Form', survey_id: f.id, respondable_id: ssr.id, respondable_type: 'SubServiceRequest' }]
+    end
 
-      content_tag(
-        :select,
-        submission_list.html_safe,
-        title: t(:dashboard)[:service_requests][:additional_details][:selectpicker],
-        class: 'selectpicker complete-details',
-        data: {
-          style: 'btn-danger',
-          counter: 'true'
-        }
-      )
-    else
+    if form_list.empty?
       ''
+    else
+      content_tag(:select, grouped_options_for_select(form_list).html_safe, title: t(:dashboard)[:service_requests][:forms][:selectpicker],
+        class: 'selectpicker complete-forms', data: { style: 'btn-danger', counter: 'true' })
     end
   end
 
@@ -274,19 +267,40 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def ssr_select_options(ssr)
-    ssr.nil? ? [] : statuses_with_classes(ssr)
+    if ssr.is_complete?
+      finished_statuses(ssr)
+    else
+      ssr.nil? ? [] : statuses_with_classes(ssr)
+    end
   end
 
   private
 
   def statuses_with_classes(ssr)
     ssr.organization.get_available_statuses.invert.map do |status|
-      if status.include?('Complete') || status.include?('Withdrawn')
+      if in_finished_status?(status)
         status.push(:class=> 'finished-status')
       else
         status
       end
     end
+  end
+
+  def finished_statuses(ssr)
+    new_statuses = []
+    ssr.organization.get_available_statuses.invert.map do |status|
+      if in_finished_status?(status)
+        new_statuses << status
+      end
+    end
+
+    new_statuses.each do |status|
+      status.push(:class=> 'finished-status')
+    end
+  end
+
+  def in_finished_status?(status)
+    Setting.find_by_key("finished_statuses").value.include?(status.last)
   end
 end
 

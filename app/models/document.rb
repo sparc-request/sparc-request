@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -25,7 +25,22 @@ class Document < ApplicationRecord
   has_and_belongs_to_many :sub_service_requests
   belongs_to :protocol
   has_attached_file :document #, :preserve_files => true
-  do_not_validate_attachment_file_type :document
+  validates_attachment_file_name :document, matches: [
+    /\.pdf$/i,
+    /\.docx?$/i,
+    /\.xlsx?$/i,
+    /\.rtf$/i,
+    /\.txt$/i,
+    /\.csv$/i,
+    /\.ppt?$/i,
+    /\.msg$/i,
+    /\.eml$/i,
+    /\.jpg$/i,
+    /\.gif$/i,
+    /\.png$/i,
+    /\.tiff$/i,
+    /\.jpeg$/i
+  ]
 
   validates :doc_type, :document, presence: true
   validates :doc_type_other, presence: true, if: Proc.new { |doc| doc.doc_type == 'other' }

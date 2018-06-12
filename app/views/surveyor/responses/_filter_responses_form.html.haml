@@ -1,0 +1,76 @@
+-# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+.panel.panel-default
+  .panel-heading
+    .pull-left
+      = t(:surveyor)[:response_filters][:header]
+    .pull-right
+      = link_to t(:actions)[:save], 'javascript:void(0)', id: 'save-filters'
+      = " | "
+      = link_to t(:actions)[:reset], reset_filterrific_url, id: 'reset-filters'
+    .clearfix
+  = form_for_filterrific filterrific, remote: true do |form|
+    .panel-body
+      .form-group.row
+        = form.label :of_type, t(:surveyor)[:response_filters][:fields][:type], class: 'col-lg-3 control-label text-left'
+        .col-lg-9
+          = form.select :of_type, filterrific.select_options[:of_type], {}, class: 'form-control selectpicker'
+      .form-group.row
+        = form.label :with_state, t(:surveyor)[:response_filters][:fields][:state], class: 'col-lg-3 control-label text-left'
+        .col-lg-9
+          = form.select :with_state, options_for_select(Response::STATE_FILTERS, filterrific.with_state), {}, class: 'form-control selectpicker', multiple: true
+      .form-group.row{ id: "for-#{Form.name}", class: filterrific.of_type == Form.name ? "" : "hidden" }
+        = form.label :with_survey, Form.name, class: 'col-lg-3 control-label text-left'
+        .col-lg-9
+          = form.select :with_survey, grouped_options_for_select(Form.for(current_user).for_dropdown_select, filterrific.with_survey), {}, class: 'form-control selectpicker', multiple: true
+      .form-group.row{ id: "for-#{SystemSurvey.name}", class: filterrific.of_type == SystemSurvey.name ? "" : "hidden" }
+        = form.label :with_survey, Survey.name, class: 'col-lg-3 control-label text-left'
+        .col-lg-9
+          = form.select :with_survey, grouped_options_for_select(SystemSurvey.unscoped.for_dropdown_select, filterrific.with_survey), {}, class: 'form-control selectpicker', multiple: true
+      .form-group.row
+        .col-sm-12
+          %label
+            = t(:surveyor)[:response_filters][:fields][:completion_date]
+        = form.label :start_date, t(:surveyor)[:response_filters][:fields][:from], class: 'col-lg-3 control-label text-left'
+        .col-lg-9
+          .input-group.datetimepicker
+            = form.text_field :start_date, class: 'form-control', value: filterrific.start_date ? filterrific.start_date.to_date.strftime('%m/%d/%Y') : ''
+            %span.input-group-addon
+              %span.glyphicon.glyphicon-calendar
+      .form-group.row
+        = form.label :end_date, t(:surveyor)[:response_filters][:fields][:to], class: 'col-lg-3 control-label text-left'
+        .col-lg-9
+          .input-group.datetimepicker
+            = form.text_field :end_date, class: 'form-control', value: filterrific.end_date ? filterrific.end_date.to_date.strftime('%m/%d/%Y') : ''
+            %span.input-group-addon
+              %span.glyphicon.glyphicon-calendar
+      .form-group.row
+        = form.label :include_incomplete, t(:surveyor)[:response_filters][:fields][:include_incomplete], class: 'col-lg-10 control-label text-left'
+        .col-lg-2
+          = form.check_box :include_incomplete, {}, 'true', 'false'
+    .panel-footer
+      .pull-right
+        %button.btn.btn-default{ type: 'submit' }
+          = t(:actions)[:filter]
+      .clearfix
+
+#saved-searches
+  = render 'surveyor/response_filters/saved_searches'

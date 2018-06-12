@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -399,6 +399,33 @@ class ServiceRequest < ApplicationRecord
     self.direct_cost_total(line_items) + self.indirect_cost_total(line_items)
   end
 
+  #############
+  ### Forms ###
+  #############
+  def has_associated_forms?
+    self.services.joins(:forms).where(surveys: { active: true }).any? || self.sub_service_requests.joins(organization: :forms).where(surveys: { active: true }).any?
+  end
+  
+  def associated_forms
+    forms = []
+    # Because there can be multiple SSRs with the same services/organizations we need to loop over each one
+    self.sub_service_requests.each do |ssr|
+      Form.where(surveyable: ssr.organization).active.each{ |f| forms << [f, ssr] }
+      Form.where(surveyable: ssr.services).active.each{ |f| forms << [f, ssr] }
+    end
+    forms
+  end
+
+  def completed_forms
+    forms = []
+    # Because there can be multiple SSRs with the same services/organizations we need to loop over each one
+    self.sub_service_requests.each do |ssr|
+      Form.where(surveyable: ssr.organization).active.joins(:responses).where(responses: { respondable: ssr }).each{ |f| forms << [f, ssr] }
+      Form.where(surveyable: ssr.services).active.joins(:responses).where(responses: { respondable: ssr }).each{ |f| forms << [f, ssr] }
+    end
+    forms
+  end
+
   def relevant_service_providers_and_super_users
     identities = []
 
@@ -412,14 +439,6 @@ class ServiceRequest < ApplicationRecord
     end
 
     identities.flatten.uniq
-  end
-
-  def additional_detail_services
-    services.joins(:questionnaires).where(questionnaires: { active: true })
-  end
-
-  def additional_detail_organizations
-    sub_service_requests.joins(organization: [:questionnaires]).where(questionnaires: {active: true })
   end
 
   # Returns the SSR ids that need an initial submission email, updates the SR status,
@@ -497,7 +516,7 @@ class ServiceRequest < ApplicationRecord
   end
 
   def set_ssr_protocol_id
-    if protocol_id_changed?
+    if saved_change_to_protocol_id?
       sub_service_requests.each do |ssr|
         ssr.update_attributes(protocol_id: protocol_id)
       end

@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,18 +18,23 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Surveyor::SurveyUpdaterController < ApplicationController
+class Surveyor::SurveyUpdaterController < Surveyor::BaseController
   respond_to :js
 
   before_action :authenticate_identity!
-  before_action :authorize_site_admin
+  before_action :authorize_survey_builder_access
   
   def update
     @klass  = params[:klass]
     @object = @klass.capitalize.constantize.find(params[:id])
     @field  = survey_updater_params.keys[0]
+    @params = survey_updater_params
 
-    @object.assign_attributes(survey_updater_params)
+    if @field == 'access_code'
+      @params['version'] = (@object.class.where.not(id: @object.id).where(access_code: @params[@field]).try(:maximum, :version) || 0) + 1
+    end
+
+    @object.assign_attributes(@params)
     @object.valid?
 
     if @object.errors.keys.include?(@field.to_sym)
@@ -42,6 +47,35 @@ class Surveyor::SurveyUpdaterController < ApplicationController
   private
 
   def survey_updater_params
-    params.require(@klass.to_sym).permit!
+    case @klass
+    when 'survey'
+      params.require(:survey).permit(
+        :title,
+        :description,
+        :access_code,
+        :version,
+        :active,
+        :surveyable_id,
+        :surveyable_type
+      )
+    when 'section'
+      params.require(:section).permit(
+        :title,
+        :description
+      )
+    when 'question'
+      params.require(:question).permit(
+        :content,
+        :description,
+        :question_type,
+        :required,
+        :is_dependent,
+        :depender_id
+      )
+    when 'option'
+      params.require(:option).permit(
+        :content
+      )
+    end
   end
 end

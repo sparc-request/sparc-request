@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -31,8 +31,9 @@
         .text-center
           %span{class: 'glyphicon glyphicon-lock locked', style: 'font-size:50px;color:black;', data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' }, title: t(:calendar_structure)[:tooltips][:arm_info] }
       .pull-right
-        %button.btn.btn-warning.move-visit-button{ data: { arm_id: arm.id, pages: pages.to_s, page: page, review: review.to_s, portal: portal.to_s, admin: admin.to_s, tab: tab, merged: merged.to_s, consolidated: consolidated.to_s, statuses_hidden: statuses_hidden, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:calendars)[:tooltips][:move_visit_button]}
-          = t(:proper)[:service_calendar][:move_visit][:header]
+        - unless arm.protocol.locked
+          %button.btn.btn-warning.move-visit-button{ data: { arm_id: arm.id, pages: pages.to_s, page: page, review: review.to_s, portal: portal.to_s, admin: admin.to_s, tab: tab, merged: merged.to_s, consolidated: consolidated.to_s, statuses_hidden: statuses_hidden, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:calendars)[:tooltips][:move_visit_button]}
+            = t(:proper)[:service_calendar][:move_visit][:header]
         .divider
     .clearfix
   = hidden_field_tag :service_request_id, service_request.id

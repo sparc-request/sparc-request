@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -21,6 +21,29 @@
 require 'rails_helper'
 
 RSpec.describe PermissibleValue, type: :model do
+
+  # Scopes
+  describe '#available' do
+    it 'should return only available PermissibleValues' do
+      pv_avail    = create(:permissible_value, is_available: true)
+      pv_unavail  = create(:permissible_value, is_available: false)
+
+      expect(PermissibleValue.available.include?(pv_avail)).to eq(true)
+      expect(PermissibleValue.available.include?(pv_unavail)).to eq(false)
+    end
+  end
+
+  describe '#unavailable' do
+    it 'should return only unavailable PermissibleValues' do
+      pv_avail    = create(:permissible_value, is_available: true)
+      pv_unavail  = create(:permissible_value, is_available: false)
+
+      expect(PermissibleValue.unavailable.include?(pv_unavail)).to eq(true)
+      expect(PermissibleValue.unavailable.include?(pv_avail)).to eq(false)
+    end
+  end
+
+  # Class methods
   context 'get_value' do
     it 'should return the first value with the given key and category' do
       pv = create(:permissible_value, category: 'category', key: 'key1')

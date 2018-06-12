@@ -1,0 +1,45 @@
+-# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+.panel.panel-primary#responses-panel
+  .bootstrap-table-dropdown-overflow
+    #responses-custom-toolbar
+      %h2.panel-title
+        = t('surveyor.responses.table.header', type: type)
+        -# = link_to t(:surveyor)[:responses][:table][:export], 'javascript:void(0)', class: 'btn btn-success pull-right'
+    %table#responses-table{ data: { toggle: 'table', url: surveyor_responses_path(format: :json), search: 'true', 'show-columns' => 'true', pagination: 'true', page_size: '25', sort_name: 'completion_date', sort_order: 'desc', toolbar: '#responses-custom-toolbar' } }
+      %thead
+        %tr
+          %th{ data: { class: 'srid col-sm-2', align: 'left', sortable: 'true', field: 'srid' } }
+            = t(:surveyor)[:responses][:table][:headers][:srid]
+          %th{ data: { class: 'short-title col-sm-2', align: 'left', sortable: 'true', field: 'short_title' } }
+            = t(:surveyor)[:responses][:table][:headers][:short_title]
+          %th{ data: { class: 'primary-pi col-sm-1', align: 'left', sortable: 'true', field: 'primary_pi' } }
+            = t(:surveyor)[:responses][:table][:headers][:primary_pi]
+          %th{ data: { class: 'title col-sm-2', align: 'left', sortable: 'true', field: 'title' } }
+            = t('surveyor.responses.table.headers.title', type: type)
+          %th{ data: { class: 'complete col-sm-1', align: 'center', sortable: 'true', field: 'by' } }
+            = t(:surveyor)[:responses][:table][:headers][:by]
+          %th{ data: { class: 'complete col-sm-1', align: 'center', sortable: 'true', field: 'complete', visible: 'false' } }
+            = t(:surveyor)[:responses][:table][:headers][:complete]
+          %th{ data: { class: 'completion-date col-sm-1', align: 'left', sortable: 'true', sorter: 'dateSorter', field: 'completion_date' } }
+            = t(:surveyor)[:responses][:table][:headers][:date]
+          %th{ data: { class: 'actions col-sm-2', align: 'center', sortable: 'false', field: 'actions' } }
+            = t(:surveyor)[:responses][:table][:headers][:actions]

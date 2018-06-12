@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MdUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,13 +19,71 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Response < ActiveRecord::Base
+  audited
+  
   belongs_to :survey
   belongs_to :identity
-  belongs_to :sub_service_request
+  belongs_to :respondable, polymorphic: true
   
   has_many :question_responses, dependent: :destroy
   
   accepts_nested_attributes_for :question_responses
+
+  filterrific(
+    default_filter_params: { include_incomplete: 'false' },
+    available_filters: [
+      :of_type,
+      :with_state,
+      :with_survey,
+      :start_date,
+      :end_date,
+      :include_incomplete
+    ]
+  )
+
+  scope :of_type, -> (type) {
+    joins(:survey).where(surveys: { type: type })
+  }
+
+  STATE_FILTERS = [
+    [I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active], 1],
+    [I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive], 0]
+  ]
+
+  scope :with_state, -> (states) {
+    # Note: States are 0 for inactive and 1 for active
+    states.reject!(&:blank?)
+
+    return nil if states.empty?
+
+    joins(:survey).where(surveys: { active: states })
+  }
+
+  scope :with_survey, -> (survey_ids) {
+    survey_ids.reject!(&:blank?)
+    
+    return nil if survey_ids.empty?
+
+    joins(:survey).where(surveys: { id: survey_ids })
+  }
+
+  scope :start_date, -> (date) {
+    return nil if date.blank?
+
+    where("responses.updated_at >= ?", date.to_datetime)
+  }
+
+  scope :end_date, -> (date) {
+    return nil if date.blank?
+
+    where("responses.updated_at <= ?", date.to_datetime.end_of_day)
+  }
+
+  scope :include_incomplete, -> (boolean) {
+    return nil if boolean == 'true'
+
+    joins(:question_responses)
+  }
 
   def completed?
     self.question_responses.any?

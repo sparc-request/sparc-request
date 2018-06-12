@@ -241,7 +241,7 @@
   },
   {
     "key":            "navbar_links",
-    "value":          "{ \"sparc_request\": [\"SPARCRequest\", \"http://localhost:3000/\"], \"sparc_dashboard\": [\"SPARCDashboard\", \"http://localhost:3000/dashboard\"], \"sparc_fulfillment\": [\"SPARCFulfillment\", \"https://cwf-d.obis.musc.edu/identities/sign_in\"], \"sparc_catalog\": [\"SPARCCatalog\", \"http://localhost:3000/catalog_manager\"], \"sparc_report\": [\"SPARCReport\", \"http://localhost:3000/reports\"] }",
+    "value":          "{ \"sparc_request\": [\"SPARCRequest\", \"http://localhost:3000/\"], \"sparc_dashboard\": [\"SPARCDashboard\", \"http://localhost:3000/dashboard\"], \"sparc_fulfillment\": [\"SPARCFulfillment\", \"https://cwf-d.obis.musc.edu/identities/sign_in\"], \"sparc_catalog\": [\"SPARCCatalog\", \"http://localhost:3000/catalog_manager\"], \"sparc_report\": [\"SPARCReport\", \"http://localhost:3000/reports\"], \"sparc_forms\": [\"SPARCForms\", \"http://localhost:3000/surveyor/responses\"] }",
     "friendly_name":  "Navbar Links",
     "description":    "Links which appear in the header navbar.",
     "group":          "",
@@ -614,6 +614,26 @@
     "value":          "/usr/local/bin/wkhtmltopdf",
     "friendly_name":  "WKHTMLTOPDF Location",
     "description":    "Optional location for wkhtmltopdf if not using one supplied by a gem. eg. \"/usr/local/bin/wkhtmltopdf\"",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "funding_admins",
+    "value":          "[]",
+    "friendly_name":  "Funding Admins",
+    "description":    "Determines which users will have access to the Funding module.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "funding_org_ids",
+    "value":          "[]",
+    "friendly_name":  "Funding Opportunities Organizations",
+    "description":    "Organization ID of the organizations under the Funding Opportunities.",
     "group":          "",
     "version":        "",
     "parent_key":     "",

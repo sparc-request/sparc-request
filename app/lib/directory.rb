@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -30,23 +30,35 @@ class Directory
 
   # Only initialize LDAP if it is enabled
   if use_ldap
-    # Load the YAML file for ldap configuration and set constants
+    # Load the ldap settings and create a hash
+    ## For running rake db:create ##
     begin
-      ldap_config   ||= YAML.load_file(Rails.root.join('config', 'ldap.yml'))[Rails.env]
-      LDAP_HOST       = ldap_config['ldap_host']
-      LDAP_PORT       = ldap_config['ldap_port']
-      LDAP_BASE       = ldap_config['ldap_base']
-      LDAP_ENCRYPTION = ldap_config['ldap_encryption'].to_sym
-      DOMAIN          = ldap_config['ldap_domain']
-      LDAP_UID        = ldap_config['ldap_uid']
-      LDAP_LAST_NAME  = ldap_config['ldap_last_name']
-      LDAP_FIRST_NAME = ldap_config['ldap_first_name']
-      LDAP_EMAIL      = ldap_config['ldap_email']
-      LDAP_AUTH_USERNAME      = ldap_config['ldap_auth_username']
-      LDAP_AUTH_PASSWORD      = ldap_config['ldap_auth_password']
-      LDAP_FILTER      = ldap_config['ldap_filter']
+      ActiveRecord::Base.connection
     rescue
-      raise "ldap.yml not found, see config/ldap.yml.example"
+      puts "WARNING: Database does not exist (Disregard if installing SPARCRequest for the first time)"
+    else
+      if ActiveRecord::Base.connection.table_exists?('settings') && (ldap_settings = Setting.where(group: "ldap_settings")).any?
+        ldap_config = Hash.new
+        ldap_settings.each{|setting| ldap_config[setting.key] = setting.value}
+        begin
+          LDAP_HOST       = ldap_config['ldap_host']
+          LDAP_PORT       = ldap_config['ldap_port']
+          LDAP_BASE       = ldap_config['ldap_base']
+          LDAP_ENCRYPTION = ldap_config['ldap_encryption'].to_sym
+          DOMAIN          = ldap_config['ldap_domain']
+          LDAP_UID        = ldap_config['ldap_uid']
+          LDAP_LAST_NAME  = ldap_config['ldap_last_name']
+          LDAP_FIRST_NAME = ldap_config['ldap_first_name']
+          LDAP_EMAIL      = ldap_config['ldap_email']
+          LDAP_AUTH_USERNAME      = ldap_config['ldap_auth_username']
+          LDAP_AUTH_PASSWORD      = ldap_config['ldap_auth_password']
+          LDAP_FILTER      = ldap_config['ldap_filter']
+        rescue
+          raise "ldap settings incorrect, unable to load ldap configuration"
+        end
+      else
+        puts "WARNING: You have ldap turned on, but no settings populated for ldap. You must configure your ldap settings to have ldap turned on (Disregard if currently importing ldap.yml)"
+      end
     end
   end
 
@@ -103,27 +115,38 @@ class Directory
   def self.search_ldap(term)
     # Set the search fields from the constants provided
     fields = [LDAP_UID, LDAP_LAST_NAME, LDAP_FIRST_NAME, LDAP_EMAIL]
+    combined_res = nil
 
     # query ldap and create new identities
     begin
-      ldap = Net::LDAP.new(
-         host: LDAP_HOST,
-         port: LDAP_PORT,
-         base: LDAP_BASE,
-         encryption: LDAP_ENCRYPTION)
-      ldap.auth LDAP_AUTH_USERNAME, LDAP_AUTH_PASSWORD unless !LDAP_AUTH_USERNAME || !LDAP_AUTH_PASSWORD
-      # use LDAP_FILTER to override default filter with custom string
-      filter = (LDAP_FILTER && LDAP_FILTER.gsub('#{term}', term)) || fields.map { |f| Net::LDAP::Filter.contains(f, term) }.inject(:|)
-      res = ldap.search(:attributes => fields, :filter => filter)
-      Rails.logger.info ldap.get_operation_result unless res
+      LDAP_BASE.each do |base|
+        ldap = Net::LDAP.new(
+           host: LDAP_HOST,
+           port: LDAP_PORT,
+           base: base,
+           encryption: LDAP_ENCRYPTION)
+        ldap.auth LDAP_AUTH_USERNAME, LDAP_AUTH_PASSWORD unless !LDAP_AUTH_USERNAME || !LDAP_AUTH_PASSWORD
+        # use LDAP_FILTER to override default filter with custom string
+        filter = (LDAP_FILTER && LDAP_FILTER.gsub('#{term}', term)) || fields.map { |f| Net::LDAP::Filter.contains(f, term) }.inject(:|)
+        res = ldap.search(:attributes => fields, :filter => filter)
+        if res
+          if combined_res.is_a? Array  # we have results from a previous base search
+            combined_res += res
+          else
+            combined_res = res
+          end
+        else
+          Rails.logger.info ldap.get_operation_result
+        end
+      end
     rescue => e
       Rails.logger.info '#'*100
       Rails.logger.info "#{e.message} (#{e.class})"
       Rails.logger.info '#'*100
-      res = nil
+      combined_res = nil
     end
 
-    return res
+    return combined_res
   end
 
   # SQL query that returns identities

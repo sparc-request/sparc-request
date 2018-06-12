@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -34,6 +34,16 @@ module Dashboard::StudyLevelActivitiesHelper
     return "$#{cost}"
   end
 
+  def sla_service_rate_display line_item
+    cost = number_with_precision(Service.cents_to_dollars(line_item.service.current_pricing_map.full_rate), precision: 2)
+
+    "$#{cost}"
+  end
+
+  def sla_your_cost_field line_item
+    raw( text_field(:line_item, :service, class: 'your-cost-edit', value: sla_cost_display(line_item)) )
+  end
+
   def sla_options_buttons line_item
     options = raw(
       content_tag(:li, raw(
@@ -41,9 +51,6 @@ module Dashboard::StudyLevelActivitiesHelper
       )+
       content_tag(:li, raw(
         content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-list-alt", aria: {hidden: "true"}))+t(:dashboard)[:study_level_activities][:actions][:notes]+raw(content_tag(:span, line_item.notes.count, class: "badge", id: "lineitem_#{line_item.id}_notes")), type: 'button', class: 'btn btn-default form-control actions-button notes list dropdown_badge', data: {notable_id: line_item.id, notable_type: "LineItem"}))
-      )+
-      content_tag(:li, raw(
-        content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-usd", aria: {hidden: "true"}))+t(:dashboard)[:study_level_activities][:actions][:admin_rate], type: 'button', class: 'btn btn-default form-control actions-button otf_admin_rate'))
       )+
       content_tag(:li, raw(
         content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-edit", aria: {hidden: "true"}))+t(:dashboard)[:study_level_activities][:actions][:edit], type: 'button', class: 'btn btn-default form-control actions-button otf_edit'))

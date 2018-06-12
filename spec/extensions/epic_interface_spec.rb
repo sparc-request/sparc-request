@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -171,7 +171,7 @@ RSpec.describe EpicInterface do
                    xmlns='urn:hl7-org:v3'
                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
           <studyCharacteristic classCode="OBS" moodCode="EVN">
-            <code code="RC" />
+            <code code="SC" />
             <value code="#{identity.netid.upcase}" codeSystem="netid" />
           </studyCharacteristic>
         </subjectOf>
@@ -1003,7 +1003,7 @@ RSpec.describe EpicInterface do
       'env' => 'http://www.w3.org/2003/05/soap-envelope',
       'rpe' => 'urn:ihe:qrph:rpe:2009',
       'hl7' => 'urn:hl7-org:v3')
-      
+
       expect(node[0]).to be_equivalent_to(expected.root)
     end
 

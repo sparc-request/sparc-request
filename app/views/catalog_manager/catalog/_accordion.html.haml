@@ -38,7 +38,7 @@
             = link_to plus_glyphicon(), 'javascript:void(0)', data: { parent: ".institution-#{institution.id}" }
           .col-sm-11.no-padding-y
             = link_to create_new_text(:provider), 'javascript:void(0)', class: 'org-form-label panel-title'
-        - institution.providers.where(is_available: availability).order("`order`").each do |provider|
+        - institution.providers.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |provider|
           .panel-heading.no-padding-y
             .col-sm-1.no-padding-y
               = link_to folder_glyphicon(), 'javascript:void(0)', id: "provider-#{provider.id}", data: { toggle: 'collapse', target: "#provider-#{provider.id}-collapse", parent: "#institution-#{institution.id}" }
@@ -51,7 +51,7 @@
                   = link_to plus_glyphicon(), 'javascript:void(0)', data: { parent: ".provider-#{provider.id}" }
                 .col-sm-11.no-padding-y
                   = link_to create_new_text(:program), 'javascript:void(0)', class: 'org-form-label panel-title'
-              - provider.programs.where(is_available: availability).order("`order`").each do |program|
+              - provider.programs.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |program|
                 .panel-heading.no-padding-y
                   .col-sm-1.no-padding-y
                     = link_to folder_glyphicon(), 'javascript:void(0)', id: "program-#{program.id}", data: { toggle: 'collapse', target: "#program-#{program.id}-collapse", parent: "provider-#{provider.id}" }
@@ -69,7 +69,7 @@
                         = link_to plus_glyphicon(), 'javascript:void(0)', data: { parent: ".program-#{program.id}" }
                       .col-sm-11.no-padding-y
                         = link_to create_new_text(:service), 'javascript:void(0)', class: 'org-form-label panel-title'
-                    - program.cores.where(is_available: availability).order("`order`").each do |core|
+                    - program.cores.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |core|
                       .panel-heading.no-padding-y
                         .col-sm-1.no-padding-y
                           = link_to folder_glyphicon(), 'javascript:void(0)', id: "core-#{core.id}", data: { toggle: 'collapse', target: "#core-#{core.id}-collapse", parent: "program-#{program.id}" }
@@ -82,13 +82,13 @@
                               = link_to plus_glyphicon(), 'javascript:void(0)', data: { parent: ".core-#{core.id}" }
                             .col-sm-11.no-padding-y{style: "width:91%"}
                               = link_to create_new_text(:service), 'javascript:void(0)', class: 'org-form-label panel-title'
-                          - core.services.where(is_available: availability).order("`order`, `name`").each do |service|
+                          - core.services.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |service|
                             .panel-heading.no-padding-y
                               .col-sm-1.no-padding-y
                                 = link_to file_glyphicon(), edit_catalog_manager_service_path(service), id: "service-#{service.id}", data: { parent: "core-#{core.id}" }, remote: true
                               .col-sm-11.no-padding-y{style: "width:91%"}
                                 = link_to accordion_link_text(service), edit_catalog_manager_service_path(service), class: 'org-form-label panel-title', remote: true
-                    - program.services.where(is_available: availability).order("`order`, `name`").each do |service|
+                    - program.services.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |service|
                       .panel-heading.no-padding-y
                         .col-sm-1.no-padding-y
                           = link_to file_glyphicon(), edit_catalog_manager_service_path(service), id: "service-#{service.id}", data: { parent: "program-#{program.id}" }, remote: true

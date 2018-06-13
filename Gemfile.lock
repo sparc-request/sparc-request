@@ -1,11 +1,4 @@
 GIT
-  remote: git://github.com/rails/rails-observers.git
-  revision: fb6b95509c3f1a50c973280ddc2b56648e33623f
-  specs:
-    rails-observers (0.2.0)
-      activemodel (>= 4.2)
-
-GIT
   remote: https://github.com/Fodoj/acts-as-taggable-on.git
   revision: ef3797a848bd76a5290d209ff856e55a9f9053c5
   branch: rails-5.2
@@ -32,6 +25,13 @@ GIT
   branch: master
   specs:
     grouped_validations (0.3.3)
+
+GIT
+  remote: https://github.com/rails/rails-observers.git
+  revision: fb6b95509c3f1a50c973280ddc2b56648e33623f
+  specs:
+    rails-observers (0.2.0)
+      activemodel (>= 4.2)
 
 GIT
   remote: https://github.com/randym/axlsx

@@ -61,7 +61,7 @@ gem 'rack-mini-profiler'
 gem 'rails', '5.2'
 gem 'rails-html-sanitizer'
 # Needed to used audited-activerecord w/ Rails 5
-gem "rails-observers", github: 'rails/rails-observers'
+gem "rails-observers", git: 'https://github.com/rails/rails-observers.git'
 gem 'redcarpet'
 gem 'remotipart'
 gem 'rest-client'

@@ -20,8 +20,4 @@
 
 accordion = "<%= j render '/catalog_manager/catalog/core_accordion', core: @core, program: @core.parent, availability: @availability %>"
 
-$("#core_service_list_<%= j @core.id.to_s %>").hide().html(accordion).fadeIn(1000)
-
-# $(accordion).hide().appendTo("#core_service_list_<%= j @core.id.to_s %>").fadeIn(1000)
-
-# $("#core_service_list_<%= j @core.id.to_s %>").html()
+$("#core_accordion_<%= j @core.id.to_s %>").hide().html(accordion).slideDown(500)

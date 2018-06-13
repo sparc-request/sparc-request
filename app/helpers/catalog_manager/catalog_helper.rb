@@ -32,14 +32,20 @@ module CatalogManager::CatalogHelper
     content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-plus')
   end
 
-  def accordion_link_text(org)
+  def accordion_link_text(org, disabled=false)
     if org.is_a?(Service)
       css_class = org.is_available ? 'text-service' : 'text-service unavailable-org'
-      content_tag(:span, org.name, class: css_class)
+      returning_html = content_tag(:span, org.name, class: css_class)
     else
       css_class = org.is_available ? "text-#{org.type.downcase}" : "text-#{org.type.downcase} unavailable-org"
-      content_tag(:span, org.name, class: css_class)
+      returning_html = content_tag(:span, org.name, class: css_class)
     end
+
+    if disabled
+      returning_html.insert(0, content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-ban-circle'))
+    end
+
+    returning_html
   end
 
   def create_new_text(org_key)

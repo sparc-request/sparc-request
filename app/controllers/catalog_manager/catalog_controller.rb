@@ -32,6 +32,8 @@ class CatalogManager::CatalogController < CatalogManager::AppController
   end
 
   def load_program_accordion
+    @program = Organization.find(params[:program_id])
+    @availability = [params[:show_available_only] ? params[:show_available_only] == "true" : true, true]
   end
 
   def load_core_accordion

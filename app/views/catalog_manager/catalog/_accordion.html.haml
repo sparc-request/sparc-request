@@ -30,7 +30,7 @@
       .col-sm-1.no-padding-y
         = link_to folder_glyphicon(), 'javascript:void(0)', id: "institution-#{institution.id}", data: { toggle: 'collapse', target: "#institution-#{institution.id}-collapse", parent: '#cm-accordion' }
       .col-sm-11.no-padding-y
-        = link_to accordion_link_text(institution), edit_catalog_manager_institution_path(institution), class: 'org-form-label panel-title', remote: true
+        = link_to accordion_link_text(institution, !institution.is_available), edit_catalog_manager_institution_path(institution), class: 'org-form-label panel-title', remote: true
     .panel-collapse.collapse{ id: "institution-#{institution.id}-collapse" }
       .panel-body.no-padding-y.col-sm-12
         .panel-heading.no-padding-y
@@ -43,7 +43,7 @@
             .col-sm-1.no-padding-y
               = link_to folder_glyphicon(), 'javascript:void(0)', id: "provider-#{provider.id}", data: { toggle: 'collapse', target: "#provider-#{provider.id}-collapse", parent: "#institution-#{institution.id}" }
             .col-sm-11.no-padding-y
-              = link_to accordion_link_text(provider), edit_catalog_manager_provider_path(provider), class: 'org-form-label panel-title', remote: true
+              = link_to accordion_link_text(provider, !provider.is_available), edit_catalog_manager_provider_path(provider), class: 'org-form-label panel-title', remote: true
           .panel-collapse.collapse{ id: "provider-#{provider.id}-collapse" }
             .panel-body.no-padding-y.col-sm-12
               .panel-heading.no-padding-y
@@ -54,9 +54,9 @@
               - provider.programs.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |program|
                 .panel-heading.no-padding-y
                   .col-sm-1.no-padding-y
-                    = link_to folder_glyphicon(), 'javascript:void(0)', id: "program-#{program.id}", data: { toggle: 'collapse', target: "#program-#{program.id}-collapse", parent: "provider-#{provider.id}" }
+                    = link_to folder_glyphicon(), 'javascript:void(0)', id: "program-#{program.id}", class: "load_program_accordion", data: {program_id: program.id, show_available_only: availability[0], toggle: 'collapse', target: "#program-#{program.id}-collapse", parent: "provider-#{provider.id}" }
                   .col-sm-11.no-padding-y
-                    = link_to accordion_link_text(program), edit_catalog_manager_program_path(program), class: 'org-form-label panel-title', remote: true
+                    = link_to accordion_link_text(program, !program.is_available), edit_catalog_manager_program_path(program), class: 'org-form-label panel-title', remote: true
                 .panel-collapse.collapse{ id: "program-#{program.id}-collapse" }
                   .panel-body.no-padding-y.col-sm-12
                     .panel-heading.no-padding-y
@@ -69,4 +69,8 @@
                         = link_to plus_glyphicon(), 'javascript:void(0)', data: { parent: ".program-#{program.id}" }
                       .col-sm-11.no-padding-y
                         = link_to create_new_text(:service), 'javascript:void(0)', class: 'org-form-label panel-title'
-                    = render "program_accordion", program: program, availability: availability
+                    %div{id: "program_accordion_#{program.id}"}
+                    / = render "program_accordion", program: program, availability: availability
+                  .clearfix
+            .clearfix
+      .clearfix

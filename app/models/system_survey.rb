@@ -20,16 +20,8 @@
 
 class SystemSurvey < Survey
 
-  acts_as_list column: :display_order, scope: [:type]
-
-  validates_presence_of :display_order
-
   # 2 surveys can't have the same access code and both be active
   validates_uniqueness_of :active, scope: [:type, :access_code], if: -> { self.active }
-
-  default_scope -> {
-    order(:display_order)
-  }
 
   def self.yaml_klass
     Survey.name

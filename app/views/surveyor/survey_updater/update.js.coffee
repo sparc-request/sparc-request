@@ -33,10 +33,18 @@ if !$("#<%=@klass%>-<%=@object.id%>-<%=error[0]%>").parents('.form-group').hasCl
 $("#<%=@klass%>-<%=@object.id%>-<%=@field%>").parents('.form-group').removeClass('has-error')
 $("#<%=@klass%>-<%=@object.id%>-<%=@field%>").siblings('.help-block').remove()
 
+<% if @field == 'access_code' %>
+$('[id^=survey][id$=version]').val("<%= @object.version %>")
+$('[id^=survey][id$=version]').parents('.form-group').removeClass('has-error')
+$('[id^=survey][id$=version]').siblings('.help-block').remove()
+<% end %>
+
 <% if @field == 'active' %>
 if $('#modal_place:visible').length == 0
   $(".<%=@object.class.yaml_klass.downcase%>-table").bootstrapTable('refresh')
-<% elsif @object.is_a?(Question) %>
+<% end %>
+
+<% if @object.is_a?(Question) %>
 $(".question-options[data-question-id='<%=@object.id%>']").html('<%= j render "surveyor/surveys/form/form_partials/#{@object.question_type}_example", question: @object %>')
 $('.selectpicker').selectpicker()
 <% end %>

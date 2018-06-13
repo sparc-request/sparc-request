@@ -202,9 +202,8 @@ SparcRails::Application.routes.draw do
 
     resources :catalog, only: [:index] do
       collection do
-        post :add_excluded_funding_source
-        delete :remove_excluded_funding_source
-        post :remove_submission_email
+        get :load_core_accordion
+        get :load_program_accordion
       end
     end
 

@@ -31,6 +31,14 @@ class CatalogManager::CatalogController < CatalogManager::AppController
     end
   end
 
+  def load_program_accordion
+  end
+
+  def load_core_accordion
+    @core = Organization.find(params[:core_id])
+    @availability = [params[:show_available_only] ? params[:show_available_only] == "true" : true, true]
+  end
+
   # def update_pricing_maps
   #   percentage = params[:percentage]
   #   effective_date = params[:effective_date]

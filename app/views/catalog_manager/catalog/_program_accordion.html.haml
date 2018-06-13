@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- program.cores.where(is_available: availability).order("`order`").each do |core|
+- program.cores.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |core|
   .panel-heading.no-padding-y
     .col-sm-1.no-padding-y
       = link_to folder_glyphicon(), 'javascript:void(0)', class: "load_core_accordion", data: {core_id: core.id, show_available_only: availability[0], toggle: 'collapse', target: "#core-#{core.id}-collapse", parent: "program-#{program.id}"}
@@ -35,7 +35,7 @@
       %div{id: "core_service_list_#{core.id}"}
   -# = render "core_accordion", core: core, availability: availability, program: program
 
--# - program.services.where(is_available: availability).order("`order`, `name`").each do |service|
+-# - program.services.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |service|
   -# .panel-heading.no-padding-y
     -# .col-sm-1.no-padding-y
       -# = link_to file_glyphicon(), edit_catalog_manager_service_path(service), id: "service-#{service.id}", data: { parent: "program-#{program.id}" }, remote: true

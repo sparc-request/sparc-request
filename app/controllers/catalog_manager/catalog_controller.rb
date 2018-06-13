@@ -22,7 +22,7 @@ class CatalogManager::CatalogController < CatalogManager::AppController
   respond_to :js, :haml, :json
 
   def index
-    @institutions = Institution.order('`order`')
+    @institutions = Institution.order(Arel.sql('`order`,`name`'))
     @show_available_only = params[:show_available_only] ? params[:show_available_only] == "true" : true
 
     respond_to do |format|

@@ -24,12 +24,9 @@
 
 $ ->
   initialize_org_search()
+  initialize_glyphicon()
 
-  $('.collapse').on('show.bs.collapse', (e) ->
-    $(e.target).prev('.panel-heading').find('.glyphicon-folder-close').removeClass('glyphicon-folder-close').addClass('glyphicon-folder-open')
-  ).on('hide.bs.collapse', (e) ->
-    $(e.target).prev('.panel-heading').find('.glyphicon-folder-open').removeClass('glyphicon-folder-open').addClass('glyphicon-folder-close')
-  )
+
 
   $(document).on 'click','#clear-search-button', ->
     $('.search-result').removeClass('search-result')
@@ -42,6 +39,7 @@ $ ->
       url: "/catalog_manager.js?show_available_only=#{show_available_only}"
       success: ->
         initialize_org_search()
+        initialize_glyphicon()
 
 
 ##############################################
@@ -70,6 +68,17 @@ $ ->
         program_id: program_id
         show_available_only: show_available_only
 
+
+##############################################
+########## Glyphicon Change Function #########
+##############################################
+
+initialize_glyphicon = () ->
+  $('.collapse').on('show.bs.collapse', (e) ->
+    $(e.target).prev('.panel-heading').find('.glyphicon-folder-close').removeClass('glyphicon-folder-close').addClass('glyphicon-folder-open')
+  ).on('hide.bs.collapse', (e) ->
+    $(e.target).prev('.panel-heading').find('.glyphicon-folder-open').removeClass('glyphicon-folder-open').addClass('glyphicon-folder-close')
+  )
 
 ##############################################
 ### ORGANIZATION/SERVICE SEARCH BLOODHOUND ###

@@ -29,7 +29,7 @@ RSpec.describe 'User saves a response filters', js: true do
   scenario 'and sees the saved filter' do
     survey          = create(:system_survey, title: 'Serviceable Survey', active: true)
     survey_response = create(:response, survey: survey)
-    filter          = create(:response_filter, identity: jug2, of_type: SystemSurvey.name, include_incomplete: true)
+    filter          = create(:response_filter, identity: jug2, of_type: SystemSurvey.name, include_incomplete: true, start_date: '01/27/1990', end_date: '02/27/1990')
 
     visit surveyor_responses_path
     wait_for_javascript_to_finish

@@ -18,20 +18,26 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.row{style: 'margin-bottom: 25px;'}
-  .col-sm-7
-    %h5= t(:catalog_manager)[:organization_form][:user_rights][:name_email]
-  .col-sm-3.text-center
-    %h5= t(:catalog_manager)[:organization_form][:fulfillment_rights][:clinical_provider]
-  -# Placeholder for invoiceing addition
-  -# .col-sm-3.text-center
-    -# %h5= t(:catalog_manager)[:organization_form][:fulfillment_rights][:invoicer]
-  .col-sm-2.text-center
-    %h5= t(:catalog_manager)[:organization_form][:remove]
+- program.cores.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |core|
+  .panel-heading.no-padding-y
+    .col-sm-1.no-padding-y
+      = link_to folder_glyphicon(), 'javascript:void(0)', class: "load_core_accordion", data: {core_id: core.id, show_available_only: availability[0], toggle: 'collapse', target: "#core-#{core.id}-collapse", parent: "program-#{program.id}"}
+    .col-sm-11.no-padding-y
+      = link_to accordion_link_text(core, !core.is_available), edit_catalog_manager_core_path(core), class: 'org-form-label panel-title', remote: true
+  .panel-collapse.collapse{ id: "core-#{core.id}-collapse" }
+    .panel-body.no-padding-y.col-sm-12
+      .panel-heading.no-padding-y
+        .col-sm-1.no-padding-y
+          = link_to plus_glyphicon(), 'javascript:void(0)', data: { parent: ".core-#{core.id}" }
+        .col-sm-11.no-padding-y{style: "width:91%"}
+          = link_to create_new_text(:service), 'javascript:void(0)', class: 'org-form-label panel-title'
 
-#fulfillment_rights_container
-  - organization.all_fulfillment_rights.sort_by(&:last_name).each do |fr|
-    = render "catalog_manager/shared/fulfillment_rights_row", organization: organization, fr: fr, fulfillment_rights: fulfillment_rights
+      %div{id: "core_accordion_#{core.id}"}
+    .clearfix
 
-.col-sm-12.no-padding
-  = text_field_tag 'fulfillment-rights-query', nil, placeholder: t(:catalog_manager)[:organization_form][:fulfillment_rights][:add_user], class: "form-control"
+- program.services.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |service|
+  .panel-heading.no-padding-y
+    .col-sm-1.no-padding-y
+      = link_to file_glyphicon(), edit_catalog_manager_service_path(service), id: "service-#{service.id}", data: { parent: "program-#{program.id}" }, remote: true
+    .col-sm-11.no-padding-y
+      = link_to accordion_link_text(service), edit_catalog_manager_service_path(service), class: 'org-form-label panel-title', remote: true

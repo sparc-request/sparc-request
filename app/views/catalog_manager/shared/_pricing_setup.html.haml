@@ -18,80 +18,85 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%h3
-  %a{:href => '#'}Effective on #{pricing_setup.try(:[], 'effective_date').try(:to_date).try(:strftime, "%-m/%d/%Y")} -  Display on #{pricing_setup.try(:[], 'display_date').try(:to_date).try(:strftime, "%-m/%d/%Y")}
-.pricing_setup_form
-  / = hidden_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][id]", "#{pricing_setup ? pricing_setup.id : 'blank'}"
-  %fieldset
-    %legend= t("cm_shared.labels.dates")
-    %table
-      %tbody
-        %tr
-          %th
-            = t("cm_shared.labels.display_date")
-            *
-          %td
-            %input.display_date{:type => 'text', :value => pricing_setup.try(:[], 'display_date'), :class => "#{pricing_setup_disabled ? 'disabled_datepicker' : 'datepicker'} ", :disabled => pricing_setup_disabled, :past_date => (can_edit_historical_data ? 'true' : 'false'), :display => 'display_date'}
-            = hidden_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][display_date]", pricing_setup.try(:[], 'display_date'), :class => "submitted_date display_date_hidden #{pricing_setup.id ? 'fix_pricing_maps_on_change' : ''}", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled, :date_type => '.display_date_hidden', :old_value => pricing_setup.try(:[], 'display_date'), :entity_name => entity.try(:name), :entity_id => entity.try(:id)
-        %tr
-          %th
-            = t("cm_shared.labels.effective_date")
-            *
-          %td
-            %input.effective_date{:type => 'text', :value => pricing_setup.try(:[], 'effective_date'), :class => "#{pricing_setup_disabled ? 'disabled_datepicker' : 'datepicker'} ", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled, :past_date => (can_edit_historical_data ? 'true' : 'false'), :display => 'effective_date'}
-            = hidden_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][effective_date]", pricing_setup.try(:[], 'effective_date'), :class => "submitted_date effective_date_hidden #{pricing_setup.id ? 'fix_pricing_maps_on_change' : ''}", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled, :date_type => '.effective_date_hidden', :old_value => pricing_setup.try(:[], 'effective_date'), :entity_name => entity.try(:name), :entity_id => entity.try(:id)
-        %tr
-          %th &nbsp;
-          %td.footnote= t("cm_shared.labels.required_field")
+/ %h3
+/   %a{:href => '#'}Effective on #{pricing_setup.try(:[], 'effective_date').try(:to_date).try(:strftime, "%-m/%d/%Y")} -  Display on #{pricing_setup.try(:[], 'display_date').try(:to_date).try(:strftime, "%-m/%d/%Y")}
+/ .pricing_setup_form
+/   = hidden_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][id]", "#{pricing_setup ? pricing_setup.id : 'blank'}"
+/   - if pricing_setup_disabled
+/     %input{:name => "diabled_fields_present", :value => 'true', :type => 'hidden'}
+/   - if pricing_setup.id.blank?
+/     %input.remove_pricing_setup{:type => 'button', :value => 'Remove Pricing Setup', :style => 'width:auto; margin-bottom:12px;'}
+/     / %a.button.remove_pricing_setup{:href => 'javascript:void(0);'} Remove Pricing Setup
+/   %fieldset
+/     %legend= t("cm_shared.labels.dates")
+/     %table
+/       %tbody
+/         %tr
+/           %th
+/             = t("cm_shared.labels.display_date")
+/             *
+/           %td
+/             %input.display_date{:type => 'text', :value => pricing_setup.try(:[], 'display_date'), :class => "#{pricing_setup_disabled ? 'disabled_datepicker' : 'datepicker'} ", :disabled => pricing_setup_disabled, :past_date => (can_edit_historical_data ? 'true' : 'false'), :display => 'display_date'}
+/             = hidden_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][display_date]", pricing_setup.try(:[], 'display_date'), :class => "submitted_date display_date_hidden #{pricing_setup.id ? 'fix_pricing_maps_on_change' : ''}", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled, :date_type => '.display_date_hidden', :old_value => pricing_setup.try(:[], 'display_date'), :entity_name => entity.try(:name), :entity_id => entity.try(:id)
+/         %tr
+/           %th
+/             = t("cm_shared.labels.effective_date")
+/             *
+/           %td
+/             %input.effective_date{:type => 'text', :value => pricing_setup.try(:[], 'effective_date'), :class => "#{pricing_setup_disabled ? 'disabled_datepicker' : 'datepicker'} ", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled, :past_date => (can_edit_historical_data ? 'true' : 'false'), :display => 'effective_date'}
+/             = hidden_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][effective_date]", pricing_setup.try(:[], 'effective_date'), :class => "submitted_date effective_date_hidden #{pricing_setup.id ? 'fix_pricing_maps_on_change' : ''}", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled, :date_type => '.effective_date_hidden', :old_value => pricing_setup.try(:[], 'effective_date'), :entity_name => entity.try(:name), :entity_id => entity.try(:id)
+/         %tr
+/           %th &nbsp;
+/           %td.footnote= t("cm_shared.labels.required_field")
 
 
-  %fieldset
-    %legend= t("cm_shared.labels.source_of_price")
-    %table
-      %tbody
-        %tr
-          %th= t("cm_shared.labels.self_defined")
-          %td= radio_button_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][charge_master]", false, pricing_setup.try(:[], 'charge_master') == false, :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
-        %tr
-          %th= t("cm_shared.labels.charge_master")
-          %td= radio_button_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][charge_master]", true, pricing_setup.try(:[], 'charge_master') == true, :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
+/   %fieldset
+/     %legend= t("cm_shared.labels.source_of_price")
+/     %table
+/       %tbody
+/         %tr
+/           %th= t("cm_shared.labels.self_defined")
+/           %td= radio_button_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][charge_master]", false, pricing_setup.try(:[], 'charge_master') == false, :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
+/         %tr
+/           %th= t("cm_shared.labels.charge_master")
+/           %td= radio_button_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][charge_master]", true, pricing_setup.try(:[], 'charge_master') == true, :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
 
-  %fieldset
-    %legend= t("cm_shared.labels.percent_of_fee")
-    %table
-      %tbody
-        %tr.federal_row
-          %th= t("cm_shared.labels.federal")
-          %td{:class => "#{pricing_setup_disabled ? 'disabled_inputs' : ''}"}
-            = text_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][federal]", pricing_setup.try(:[], 'federal'), :display => "Federal", :class => "federal_percentage_field percentage_field", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
-            = '%'
-        %tr
-          %th &nbsp;
-          %td.apply_federal_to_all
-            %a{:href => 'javascript:void(0)', :class => "#{pricing_setup_disabled ? '' : 'apply_federal_to_all_link'}"}= t("cm_shared.labels.apply_federal")
+/   %fieldset
+/     %legend= t("cm_shared.labels.percent_of_fee")
+/     %table
+/       %tbody
+/         %tr.federal_row
+/           %th= t("cm_shared.labels.federal")
+/           %td{:class => "#{pricing_setup_disabled ? 'disabled_inputs' : ''}"}
+/             = text_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][federal]", pricing_setup.try(:[], 'federal'), :display => "Federal", :class => "federal_percentage_field percentage_field", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
+/             = '%'
+/         %tr
+/           %th &nbsp;
+/           %td.apply_federal_to_all
+/             %a{:href => 'javascript:void(0)', :class => "#{pricing_setup_disabled ? '' : 'apply_federal_to_all_link'}"}= t("cm_shared.labels.apply_federal")
 
-        %tr.corporate_row
-          %th= t("cm_shared.labels.corporate")
-          %td{:class => "#{pricing_setup_disabled ? 'disabled_inputs' : ''}"}
-            = text_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][corporate]", pricing_setup.try(:[], 'corporate'), :display => "Corporate", :class => "corporate_percentage_field percentage_field", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
-            = '%'
-        %tr.other_row
-          %th= t("cm_shared.labels.other")
-          %td{:class => "#{pricing_setup_disabled ? 'disabled_inputs' : ''}"}
-            = text_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][other]", pricing_setup.try(:[], 'other'), :display => "Other", :class => "other_percentage_field percentage_field", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
-            = '%'
-        %tr.member_row
-          %th= t("cm_shared.labels.member")
-          %td{:class => "#{pricing_setup_disabled ? 'disabled_inputs' : ''}"}
-            = text_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][member]", pricing_setup.try(:[], 'member'), :display => "Member", :class => "member_percentage_field percentage_field", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
-            = '%'
-        %tr
-          %th &nbsp;
-          %td.footnote= t("cm_shared.labels.must_be_greater")
+/         %tr.corporate_row
+/           %th= t("cm_shared.labels.corporate")
+/           %td{:class => "#{pricing_setup_disabled ? 'disabled_inputs' : ''}"}
+/             = text_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][corporate]", pricing_setup.try(:[], 'corporate'), :display => "Corporate", :class => "corporate_percentage_field percentage_field", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
+/             = '%'
+/         %tr.other_row
+/           %th= t("cm_shared.labels.other")
+/           %td{:class => "#{pricing_setup_disabled ? 'disabled_inputs' : ''}"}
+/             = text_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][other]", pricing_setup.try(:[], 'other'), :display => "Other", :class => "other_percentage_field percentage_field", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
+/             = '%'
+/         %tr.member_row
+/           %th= t("cm_shared.labels.member")
+/           %td{:class => "#{pricing_setup_disabled ? 'disabled_inputs' : ''}"}
+/             = text_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][member]", pricing_setup.try(:[], 'member'), :display => "Member", :class => "member_percentage_field percentage_field", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
+/             = '%'
+/         %tr
+/           %th &nbsp;
+/           %td.footnote= t("cm_shared.labels.must_be_greater")
 
-  %fieldset
-    %legend= t("cm_shared.labels.rates")
-    #rate_info= render 'catalog_manager/shared/rates', :rates => pricing_setup, :pricing_setup_disabled => pricing_setup_disabled
+/   %fieldset
+/     %legend= t("cm_shared.labels.rates")
+/     #rate_info= render 'catalog_manager/shared/rates', :rates => pricing_setup, :pricing_setup_disabled => pricing_setup_disabled
 
 // :javascript
 //   $(document).ready( function() {

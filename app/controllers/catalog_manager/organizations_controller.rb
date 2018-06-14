@@ -34,30 +34,26 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     respond_to do |format|
       format.js
     end
-
-    #TODO: Validate user can edit organization
-    render 'catalog_manager/organizations/edit'
   end
 
   def update
     @organization = Organization.find(params[:id])
     @user_rights  = user_rights(@organization.id)
+    @fulfillment_rights = fulfillment_rights(@organization.id)
+    set_status_variables
 
-    set_org_tags
+    # set_org_tags
     if update_organization
       flash.now[:success] = "#{@organization.name} saved correctly."
     else
       flash.now[:alert] = "Failed to update #{@organization.name}."
     end
-    # save_pricing_setups
 
-    @institutions = Institution.order('`order`')
+    @institutions = Institution.order(Arel.sql('`order`,`name`'))
 
     respond_to do |format|
       format.js
     end
-
-    render 'catalog_manager/organizations/update'
   end
 
 
@@ -66,6 +62,19 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     @organization = Organization.find(params[:organization_id])
     @new_ur_identity = Identity.find(params[:new_ur_identity_id])
     @user_rights  = user_rights(@organization.id)
+  end
+
+  def remove_user_rights_row
+    su_destroyed = SuperUser.find_by(user_rights_params).try(:destroy)
+    cm_destroyed = CatalogManager.find_by(user_rights_params).try(:destroy)
+    sp_destroyed = ServiceProvider.find_by(user_rights_params).try(:destroy)
+
+    if su_destroyed or cm_destroyed or sp_destroyed
+      @identity_id = user_rights_params[:identity_id]
+      flash[:notice] = "User rights removed successfully."
+    else
+      flash[:alert] = "Error removing user rights."
+    end
   end
 
 
@@ -102,7 +111,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     set_status_variables
   end
 
-  def update_status_option
+  def update_status_row
     @status = status_params[:status_type].constantize.find_or_create_by(organization_id: status_params[:organization_id], status: status_params[:status_key])
 
     @organization = Organization.find(status_params[:organization_id])
@@ -168,13 +177,9 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     @using_defaults = @organization.use_default_statuses
   end
 
+
   # ================ Imported from OrganizationUpdater ========================
 
-  def set_org_tags
-    unless @attributes[:tag_list] || @organization.type == 'Institution'
-      @attributes[:tag_list] = ""
-    end
-  end
 
   def update_organization
     @attributes.delete(:id)
@@ -285,6 +290,13 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     params.require(:fulfillment_rights).permit(
       :identity_id,
       :organization_id)
+  end
+
+  def user_rights_params
+    params.require(:user_rights).permit(
+      :identity_id,
+      :organization_id
+      )
   end
 
   def status_params

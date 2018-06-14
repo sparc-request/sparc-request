@@ -18,30 +18,22 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%fieldset#available_statuses_fieldset.parent
-  .legend= t(:organization_form)[:status_legend]
-  %fieldset.single_fieldset
-    %label
-      = t(:organization_form)[:use_default_statuses]
-    = f.check_box :use_default_statuses
-    #default_statuses{style: @organization.use_default_statuses? ? "display: block;" : "display: none;"}
-      %table
-        %tr
-          %td
-            %legend= t(:organization_form)[:default_available_statuses]
-            %table
-              - AvailableStatus.defaults.sort.each do |status|
-                %tr
-                  %th= f.label :status, "#{AvailableStatus.statuses[status].titleize}"
-        - if current_user.is_overlord?
-          %tr
-            %td
-              %br
-              %legend= t(:organization_form)[:default_editable_statuses]
-              %table
-                - EditableStatus.defaults.sort.each do |status|
-                  %tr
-                    %th= f.label :status, "#{EditableStatus.statuses[status].titleize}"
-    = render partial: 'catalog_manager/shared/available_statuses', locals: {f: f}
+.row.form_row{style: 'margin-bottom: 25px;'}
+  %div{class: "#{(organization.type == "Institution" or !organization.process_ssrs) ? 'col-sm-6' : 'col-sm-3'}"}
+    %h5= t(:catalog_manager)[:organization_form][:user_rights][:name_email]
+  .col-sm-2.text-center
+    %h5= t(:catalog_manager)[:organization_form][:user_rights][:super_user]
+  .col-sm-3.text-center
+    %h5= t(:catalog_manager)[:organization_form][:user_rights][:catalog_manager]
+  - unless organization.type == "Institution" or !organization.process_ssrs
+    .col-sm-3.text-center
+      %h5= t(:catalog_manager)[:organization_form][:user_rights][:service_provider]
+  .col-sm-1.text-center{style: 'padding: 0px;'}
+    %h5= t(:catalog_manager)[:organization_form][:remove]
 
+#user_rights_container
+  - organization.all_user_rights(organization.type != 'Institution').sort_by(&:last_name).each do |user|
+    = render "user_rights_row", organization: organization, user_rights: user_rights, user: user
 
+.col-sm-12.no-padding
+  = text_field_tag 'user-rights-query', nil, placeholder: t(:catalog_manager)[:organization_form][:user_rights][:add_user], class: "form-control"

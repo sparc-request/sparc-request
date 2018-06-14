@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#status-options .panel-body").html("<%= j render '/catalog_manager/shared/statuses_form', organization: @organization, available_statuses: @available_statuses, editable_statuses: @editable_statuses, using_defaults: @using_defaults %>").fadeIn(1000)
+$("#status-options .panel-body").html("<%= j render 'statuses_form', organization: @organization, available_statuses: @available_statuses, editable_statuses: @editable_statuses, using_defaults: @using_defaults %>").fadeIn(1000)
 
 $("[data-toggle='toggle']").bootstrapToggle(
     on: 'Yes',

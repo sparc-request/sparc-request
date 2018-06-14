@@ -18,29 +18,20 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+.row{style: 'margin-bottom: 25px;'}
+  .col-sm-7
+    %h5= t(:catalog_manager)[:organization_form][:user_rights][:name_email]
+  .col-sm-3.text-center
+    %h5= t(:catalog_manager)[:organization_form][:fulfillment_rights][:clinical_provider]
+  -# Placeholder for invoiceing addition
+  -# .col-sm-3.text-center
+    -# %h5= t(:catalog_manager)[:organization_form][:fulfillment_rights][:invoicer]
+  .col-sm-2.text-center
+    %h5= t(:catalog_manager)[:organization_form][:remove]
 
--####View is much simpler for defaults vs actual organization statuses####
-- if using_defaults
-  - checked = available_statuses.include?(status_key)
+#fulfillment_rights_container
+  - organization.all_fulfillment_rights.sort_by(&:last_name).each do |fr|
+    = render "fulfillment_rights_row", organization: organization, fr: fr, fulfillment_rights: fulfillment_rights
 
-  .row.form_row
-    .col-sm-6
-      = status_value
-    .col-sm-3.text-center
-      = check_box_tag :available_status, true, checked, { class: "available-status-checkbox", disabled: true}
-    .col-sm-3.text-center
-      = check_box_tag :editable_status, true, checked, { class: "editable-status-checkbox", disabled: true}
-
-
-- else####Not using defaults, more complex view####
-  - available_status = available_statuses.detect { |s| s.status == status_key }
-  - editable_status = editable_statuses.detect { |s| s.status == status_key }
-  - mandatory_status = available_status.try(:disabled_status?)
-
-  .row.form_row{ id: "status-row-#{status_key}"}
-    .col-sm-6
-      = status_value
-    .col-sm-3.text-center
-      = check_box_tag :available_status, true, available_status.try(:selected), { class: "available-status-checkbox", disabled: (mandatory_status or editable_status.try(:selected)), data: {organization_id: organization.id, status_key: status_key } }
-    .col-sm-3.text-center
-      = check_box_tag :editable_status, true, editable_status.try(:selected), { class: "editable-status-checkbox", disabled: (mandatory_status or !available_status.try(:selected)), data: {organization_id: organization.id, status_key: status_key } }
+.col-sm-12.no-padding
+  = text_field_tag 'fulfillment-rights-query', nil, placeholder: t(:catalog_manager)[:organization_form][:fulfillment_rights][:add_user], class: "form-control"

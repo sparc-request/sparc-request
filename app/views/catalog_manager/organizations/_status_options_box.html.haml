@@ -18,4 +18,28 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= display_service_user_rights(@user, '/catalog_manager/shared/form', @organization)
+%fieldset#available_statuses_fieldset.parent
+  .legend= t(:organization_form)[:status_legend]
+  %fieldset.single_fieldset
+    %label
+      = t(:organization_form)[:use_default_statuses]
+    = f.check_box :use_default_statuses
+    #default_statuses{style: @organization.use_default_statuses? ? "display: block;" : "display: none;"}
+      %table
+        %tr
+          %td
+            %legend= t(:organization_form)[:default_available_statuses]
+            %table
+              - AvailableStatus.defaults.sort.each do |status|
+                %tr
+                  %th= f.label :status, "#{AvailableStatus.statuses[status].titleize}"
+        - if current_user.is_overlord?
+          %tr
+            %td
+              %br
+              %legend= t(:organization_form)[:default_editable_statuses]
+              %table
+                - EditableStatus.defaults.sort.each do |status|
+                  %tr
+                    %th= f.label :status, "#{EditableStatus.statuses[status].titleize}"
+    = render partial: 'available_statuses', locals: {f: f}

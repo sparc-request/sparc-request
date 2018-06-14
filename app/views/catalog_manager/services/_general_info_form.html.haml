@@ -22,11 +22,11 @@
   .form-group.row
     = f.label :program, t(:catalog_manager)[:organization_form][:program], class: 'col-sm-3 control-label'
     .col-sm-9
-      = f.select :program, options_for_select(@programs.map{|p| [p.name, p.id]}, service.program.id), {}, {class: 'form-control select-type'}
+      = f.select :program, options_for_select(@programs.map{|p| [p.name, p.id]}, service.program.id), {}, {class: 'form-control select-type selectpicker'}
   .form-group.row
     = f.label :core, t(:catalog_manager)[:organization_form][:core], class: 'col-sm-3 control-label'
     .col-sm-9
-      = f.select :core, options_for_select(@cores.map{|c| [c.name, c.id]}.insert(0, ['None',0]), (service.core.id if service.core)), {}, {class: 'form-control select-type'}
+      = f.select :core, options_for_select(@cores.map{|c| [c.name, c.id]}.insert(0, ['None',0]), (service.core.id if service.core)), {}, {class: 'form-control select-type selectpicker'}
   .form-group.row
     = f.label :name, t(:catalog_manager)[:organization_form][:name], class: 'col-sm-3 control-label'
     .col-sm-9
@@ -46,7 +46,7 @@
   .form-group.row
     = f.label :one_time_fee, raw(t(:catalog_manager)[:service_form][:one_time_fee]), class: 'col-sm-3 control-label'
     .col-sm-9
-      = f.check_box :one_time_fee, { checked: service.one_time_fee, disabled: (service.line_items_count > 0), data: {toggle: 'toggle', 'data-pricing_map_ids': pricing_map_ids(service)}}
+      = f.check_box :one_time_fee, { checked: service.one_time_fee, disabled: (service.line_items_count > 0), data: {toggle: 'toggle'}}
   .form-group.row
     = f.label :is_available, t(:catalog_manager)[:organization_form][:disabled], class: 'col-sm-3 control-label'
     .col-sm-9

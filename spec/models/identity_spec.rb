@@ -141,15 +141,15 @@ RSpec.describe Identity, type: :model do
         end
       end
 
-      describe "can edit entity" do
+      describe "can edit organization" do
 
         it "should return true if the user is a catalog manager for a given organization" do
-          expect(user.can_edit_entity?(institution)).to eq(true)
+          expect(user.can_edit_organization?(institution)).to eq(true)
         end
 
         it "should return false if the user is not a catalog manager for a given organization" do
           random_user = create(:identity)
-          expect(random_user.can_edit_entity?(institution)).to eq(false)
+          expect(random_user.can_edit_organization?(institution)).to eq(false)
         end
       end
 
@@ -162,35 +162,6 @@ RSpec.describe Identity, type: :model do
 
         it "should return false if the flag is not set" do
           expect(user.can_edit_historical_data_for?(institution)).to eq(false)
-        end
-      end
-
-      describe "can edit core" do
-
-        it "should return true if the user is a clinical provider on the given core" do
-          expect(user2.can_edit_core?(core.id)).to eq(true)
-        end
-
-        it "should return true if the user is a super user on the given core" do
-          expect(user.can_edit_core?(core.id)).to eq(true)
-        end
-
-        it "should return false if the user is not a clinical provider on a given core" do
-          random_user = create(:identity)
-          expect(random_user.can_edit_core?(core.id)).to eq(false)
-        end
-      end
-
-      describe "clinical provider for ctrc" do
-
-        it "should return true if the user is a clinical provider on the ctrc" do
-          program.tag_list.add("ctrc")
-          program.save
-          expect(user2.clinical_provider_for_ctrc?).to eq(true)
-        end
-
-        it "should return false if the user is not a clinical provider on the ctrc" do
-          expect(user.clinical_provider_for_ctrc?).to eq(false)
         end
       end
 
@@ -216,22 +187,6 @@ RSpec.describe Identity, type: :model do
 
         it "should also collect all child organizations" do
           expect(user.catalog_manager_organizations).to include(provider, program)
-        end
-      end
-
-      describe "admin organizations" do
-
-        it "should collect all organizations that the user has super user permissions on" do
-          expect(user.admin_organizations).to include(institution)
-        end
-
-        it "should also collect all child organizations" do
-          expect(user.admin_organizations).to include(provider, program)
-        end
-
-        it "should not ignore nil organizations" do
-          create(:service_provider, identity_id: user.id, organization_id: 9999)
-          expect(lambda {user.admin_organizations}).not_to raise_exception
         end
       end
     end

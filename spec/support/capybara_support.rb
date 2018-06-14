@@ -177,7 +177,6 @@ module CapybaraSupport
       title: "System Satisfaction survey",
       description: nil,
       access_code: "system-satisfaction-survey",
-      display_order: 1,
       version: 1,
       active: true)
   end

@@ -18,25 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Catalog
+$("#fulfillment-rights-row-<%= j @identity.id.to_s %>").replaceWith("<%= j render '/catalog_manager/organizations/fulfillment_rights_row', organization: @organization, fulfillment_rights: @fulfillment_rights, fr: @identity %>")
 
-  def self.invalid_pricing_setups_for user
-    # should only validate against providers and programs the user has access to
-    # if provider has it then no need to look at programs
-    # if provider doesn't then all programs underneath must
-    ps_array = []
-
-    Provider.all.each do |provider|
-      if !provider.pricing_setups or provider.pricing_setups.empty? # all programs better have a setup
-        provider.programs.each do |program|
-          if user.can_edit_entity?(program, true) and (!program.pricing_setups or program.pricing_setups.empty?)
-            ps_array << provider if user.can_edit_entity?(provider, true) and not ps_array.include?(provider)
-            ps_array << program
-          end
-        end
-      end
-    end
-    ps_array.flatten
-  end
-  
-end
+$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")

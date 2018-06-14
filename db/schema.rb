@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_24_135959) do
+ActiveRecord::Schema.define(version: 2018_06_07_172058) do
 
   create_table "admin_rates", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin", force: :cascade do |t|
     t.integer "line_item_id"
@@ -481,6 +481,7 @@ ActiveRecord::Schema.define(version: 2018_05_24_135959) do
     t.boolean "reserved"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_available"
   end
 
   create_table "pricing_maps", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
@@ -925,7 +926,6 @@ ActiveRecord::Schema.define(version: 2018_05_24_135959) do
     t.string "title", null: false
     t.text "description"
     t.string "access_code", null: false
-    t.integer "display_order"
     t.integer "version", null: false
     t.boolean "active", null: false
     t.datetime "created_at", null: false

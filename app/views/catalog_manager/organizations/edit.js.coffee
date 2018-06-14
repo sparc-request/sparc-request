@@ -18,12 +18,14 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#org-form-container").html("<%= j render '/catalog_manager/shared/form', organization: @organization, user_rights: @user_rights, fulfillment_rights: @fulfillment_rights, path: @path %>")
+$("#org-form-container").html("<%= j render 'form', organization: @organization, user_rights: @user_rights, fulfillment_rights: @fulfillment_rights, path: @path %>")
 $('.selectpicker').selectpicker();
 $("[data-toggle='toggle']").bootstrapToggle(
     on: 'Yes',
     off: 'No'
   );
+
+$('[data-toggle="tooltip"]').tooltip()
 
 
 ## Identity Search Bloodhound
@@ -49,7 +51,7 @@ $('#user-rights-query').typeahead(
     limit: 100,
     templates: {
       suggestion: Handlebars.compile("<button class=\"text-left col-sm-12\">
-                                        <strong>{{name}}</strong> <span>{{email}}{{identity_id}}</span>
+                                        <strong>{{name}}</strong> <span>{{email}}</span>
                                       </button>")
       notFound: '<div class="tt-suggestion">No Results</div>'
     }
@@ -82,7 +84,7 @@ $('#fulfillment-rights-query').typeahead(
     limit: 100,
     templates: {
       suggestion: Handlebars.compile("<button class=\"text-left col-sm-12\">
-                                        <strong>{{name}}</strong> <span>{{email}}{{identity_id}}</span>
+                                        <strong>{{name}}</strong> <span>{{email}}</span>
                                       </button>")
       notFound: '<div class="tt-suggestion">No Results</div>'
     }

@@ -81,7 +81,7 @@ RSpec.describe Organization, type: :model do
     end
   end
 
-  describe 'heirarchy methods' do
+  describe 'hierarchy methods' do
 
     let!(:program2) { create(:program, parent_id: provider.id) }
     let!(:core2) { create(:core, parent_id: program2.id) }
@@ -115,42 +115,6 @@ RSpec.describe Organization, type: :model do
         program2.save
         expect(core.process_ssrs_parent).to eq(program)
         expect(core2.process_ssrs_parent).to eq(program2)
-      end
-    end
-
-    describe 'children' do
-
-      it 'should return only the provider if it is an institution' do
-        expect(institution.children(Organization.all)).to include(provider)
-        expect(institution.children(Organization.all)).not_to include(program)
-      end
-
-      it 'should return the program if it is a provider' do
-        expect(provider.children(Organization.all)).to include(program)
-      end
-
-      it 'should return the core if it is a program' do
-        expect(program.children(Organization.all)).to include(core)
-      end
-    end
-
-    describe 'all children' do
-
-      it 'should return itself if it is a core' do
-        expect(core.all_children(Organization.all)).to eq([core])
-      end
-
-      it 'should return the core if it is a program' do
-        expect(program.all_children(Organization.all)).to include(core)
-        expect(program.all_children(Organization.all)).not_to include(core2)
-      end
-
-      it 'should return multiple programs and cores if it is a provider' do
-        expect(provider.all_children(Organization.all)).to include(core, core2, program, program2)
-      end
-
-      it 'should return everything if it is an institution' do
-        expect(institution.all_children(Organization.all)).to include(core, core2, program, program2, provider)
       end
     end
 

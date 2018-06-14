@@ -344,7 +344,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def update_past_status
-    if self.status_changed? && !@prev_status.blank?
+    if saved_change_to_status? && !@prev_status.blank?
       past_status = self.past_statuses.create(status: @prev_status, date: Time.now)
       user_id = AuditRecovery.where(auditable_id: past_status.id, auditable_type: 'PastStatus').first.user_id
       past_status.update_attribute(:changed_by_id, user_id)
@@ -381,10 +381,10 @@ class SubServiceRequest < ApplicationRecord
       candidates << sp.identity
     end
     if self.owner
-      candidates << self.owner unless candidates.detect {|x| x.id == self.owner_id}
+      candidates << self.owner
     end
 
-    candidates
+    candidates.uniq
   end
 
   def generate_approvals current_user, params
@@ -422,7 +422,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def all_forms_completed?
-    form_ids = Form.where(surveyable: self.services).active.ids + 
+    form_ids = Form.where(surveyable: self.services).active.ids +
                 Form.where(surveyable: self.organization).active.ids
     Response.where(respondable: self, survey_id: form_ids).count == form_ids.count
   end

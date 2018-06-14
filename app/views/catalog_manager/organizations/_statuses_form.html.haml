@@ -18,26 +18,18 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.rls
-  - if entity.related_services
-    %table
-      %thead
-        %tr
-          %th= t("cm_shared.labels.service")
-          %th= t("cm_shared.labels.required")
-          %th= t("cm_shared.labels.linked_quantity")
-          %th= t("cm_shared.labels.linked_total")
-          %th= t("cm_shared.lables.delete")
-      %tbody
-        - entity.service_relations.each do |service_relation|
-          - service = service_relation.related_service
-          %tr
-            %td= service.display_service_name
-            %td= check_box_tag service_relation.id, !service_relation.optional, service_relation.optional == false, :class => 'optional'
-            %td= check_box_tag "linked_quantity_#{service_relation.id}", !service_relation.linked_quantity, service_relation.linked_quantity, :"data-service_relation_id" => service_relation.id, :class => "linked_quantity"
-            %td
-              - if service_relation.linked_quantity
-                = text_field_tag "linked_quantity_total_#{service_relation.id}", service_relation.linked_quantity_total, :"data-service_relation_id" => service_relation.id,  :class => "linked_quantity_total"
-            %td= image_tag 'cancel.png', :"data-service_relation_id" => service_relation.id, :class => 'rs_delete'
+.row#use_default_statuses{style: "margin:20px -15px 25px;"}
+  .col-sm-4.col-sm-offset-3.text-right
+    %h4{style: "margin-top:5px;"}= t(:catalog_manager)[:organization_form][:status_options][:use_default_statuses]
+  .col-sm-5
+    = check_box_tag :use_default_statuses, true, organization.use_default_statuses, data: { toggle: 'toggle', organization_id: organization.id}
+.row
+  .col-sm-6
+    %h5= t(:catalog_manager)[:organization_form][:status_options][:title]
+  .col-sm-3.text-center
+    %h5= t(:catalog_manager)[:organization_form][:status_options][:available_statuses]
+  .col-sm-3.text-center
+    %h5= t(:catalog_manager)[:organization_form][:status_options][:editable_statuses]
 
-  = text_field_tag 'new_rs', t("cm_shared.labels.new_related")
+- PermissibleValue.get_hash("status").sort_by{ |key, value| value}.each do |status_key, status_value|
+  = render partial: 'status_row', locals: {status_key: status_key, status_value: status_value, organization: organization, available_statuses: available_statuses, editable_statuses: editable_statuses, using_defaults: @using_defaults, user: @user}

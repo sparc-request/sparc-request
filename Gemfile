@@ -69,7 +69,7 @@ gem 'sanitized_data',  git: 'https://github.com/HSSC/sanitized_data.git'
 gem 'rubyzip', '>= 1.2.1'
 gem 'sass'
 gem 'sass-rails'
-gem 'savon', '~> 2.2.0'
+gem 'savon', '~> 2.12.0'
 gem 'simplecov', require: false, group: :test
 gem 'therubyracer', '0.12.3', :platforms => :ruby, group: :production
 gem 'twitter-typeahead-rails'

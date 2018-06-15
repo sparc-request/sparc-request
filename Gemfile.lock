@@ -111,7 +111,7 @@ GEM
     afm (0.2.2)
     airbrussh (1.3.0)
       sshkit (>= 1.6.1, != 1.7.0)
-    akami (1.2.2)
+    akami (1.3.1)
       gyoku (>= 0.4.0)
       nokogiri
     arel (9.0.0)
@@ -262,7 +262,7 @@ GEM
     grape-entity (0.4.8)
       activesupport
       multi_json (>= 1.3.2)
-    gyoku (1.0.0)
+    gyoku (1.3.1)
       builder (>= 2.1.2)
     haml (5.0.4)
       temple (>= 0.8.0)
@@ -279,8 +279,9 @@ GEM
     httparty (0.13.7)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
-    httpi (2.0.2)
+    httpi (2.4.3)
       rack
+      socksify
     i18n (1.0.1)
       concurrent-ruby (~> 1.0)
     i18n_data (0.8.0)
@@ -338,7 +339,7 @@ GEM
     nio4r (2.3.1)
     nokogiri (1.8.2)
       mini_portile2 (~> 2.3.0)
-    nori (2.1.0)
+    nori (2.6.0)
     nprogress-rails (0.2.0.2)
     omniauth (1.8.1)
       hashie (>= 3.4.6, < 3.6.0)
@@ -487,14 +488,14 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
-    savon (2.2.0)
-      akami (~> 1.2.0)
+    savon (2.12.0)
+      akami (~> 1.2)
       builder (>= 2.1.2)
-      gyoku (~> 1.0.0)
-      httpi (~> 2.0.2)
-      nokogiri (>= 1.4.0)
-      nori (~> 2.1.0)
-      wasabi (~> 3.1.0)
+      gyoku (~> 1.2)
+      httpi (~> 2.3)
+      nokogiri (>= 1.8.1)
+      nori (~> 2.4)
+      wasabi (~> 3.4)
     shoulda-callback-matchers (1.1.4)
       activesupport (>= 3)
     shoulda-matchers (3.1.2)
@@ -508,6 +509,7 @@ GEM
       addressable (>= 2.3.3, < 3.0)
       capybara (>= 2.1, < 3.0)
     sixarm_ruby_unaccent (1.2.0)
+    socksify (1.7.1)
     sort_alphabetical (1.1.0)
       unicode_utils (>= 1.2.2)
     spring (2.0.2)
@@ -558,9 +560,9 @@ GEM
       equalizer (~> 0.0, >= 0.0.9)
     warden (1.2.7)
       rack (>= 1.0)
-    wasabi (3.1.0)
+    wasabi (3.5.0)
       httpi (~> 2.0)
-      nokogiri (>= 1.4.0)
+      nokogiri (>= 1.4.2)
     webmock (3.4.2)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -675,7 +677,7 @@ DEPENDENCIES
   sanitized_data!
   sass
   sass-rails
-  savon (~> 2.2.0)
+  savon (~> 2.12.0)
   shoulda-callback-matchers
   shoulda-matchers
   simplecov

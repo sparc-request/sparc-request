@@ -34,14 +34,34 @@ class CatalogManager::PricingSetupsController < CatalogManager::AppController
 
   def update
     @pricing_setup = PricingSetup.find_by(pricing_setup_params[:id])
+
+    if @pricing_setup.update_attributes(pricing_setup_params[:pricing_setup])
+      #
+    else
+      #
+    end
   end
 
 
   private
 
   def pricing_setup_params
-    params.permit(
-      :id
-      )
+    params.permit(:id,
+      pricing_setup: [
+      :display_date,
+      :effective_date,
+      :charge_master,
+      :federal,
+      :corporate,
+      :other,
+      :member,
+      :college_rate_type,
+      :federal_rate_type,
+      :industry_rate_type,
+      :investigator_rate_type,
+      :internal_rate_type,
+      :foundation_rate_type,
+      :unfunded_rate_type
+      ])
   end
 end

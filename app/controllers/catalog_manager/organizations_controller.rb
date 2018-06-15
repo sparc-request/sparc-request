@@ -229,53 +229,8 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
       :is_available,
       :use_default_statuses,
       { tag_list:  [] },
-      subsidy_map_attributes: [:organization_id,
-        :max_dollar_cap,
-        :max_percentage,
-        :default_percentage,
-        :instructions],
-      pricing_setups_attributes: [:organization_id,
-        :display_date,
-        :effective_date,
-        :charge_master,
-        :federal,
-        :corporate,
-        :other,
-        :member,
-        :college_rate_type,
-        :federal_rate_type,
-        :foundation_rate_type,
-        :industry_rate_type,
-        :investigator_rate_type,
-        :internal_rate_type,
-        :unfunded_rate_type],
-      submission_emails_attributes: [:organization_id, :email],
-      available_statuses_attributes: [:organization_id,
-        :id,
-        :status,
-        :selected],
-      editable_statuses_attributes: [:organization_id,
-        :id,
-        :status,
-        :selected])
-  end
-
-  def pricing_setups_params(ps)
-    ps.permit(:organization_id,
-      :display_date,
-      :effective_date,
-      :charge_master,
-      :federal,
-      :corporate,
-      :other,
-      :member,
-      :college_rate_type,
-      :federal_rate_type,
-      :foundation_rate_type,
-      :industry_rate_type,
-      :investigator_rate_type,
-      :internal_rate_type,
-      :unfunded_rate_type)
+      submission_emails_attributes: [:organization_id, :email]
+      )
   end
 
   def fulfillment_rights_params

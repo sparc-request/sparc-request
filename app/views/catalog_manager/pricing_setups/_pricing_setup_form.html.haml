@@ -21,18 +21,18 @@
 #pricing_setup_modal
   .modal-dialog
     .modal-content
-      .modal-header
-        %button.close{"aria-label" => "Close", data: {dismiss: 'modal'}, type: "button"}
-          %span{"aria-hidden" => "true"} ×
-        %h4.modal-title Edit Pricing Setup
-      .modal-body
-        = form_for [:catalog_manager, pricing_setup], remote: true, html: {class: 'form-horizontal'} do |f|
+      = form_for [:catalog_manager, pricing_setup], remote: true, html: {class: 'form-horizontal'} do |f|
+        .modal-header
+          %button.close{"aria-label" => "Close", data: {dismiss: 'modal'}, type: "button"}
+            %span{"aria-hidden" => "true"} ×
+          %h4.modal-title Edit Pricing Setup
+        .modal-body
           .form-group
-            = f.label :display_date, "Display Date", class: 'col-sm-4 control-label datetimepicker'
-            .col-sm-7= f.text_field :display_date, {class: 'form-control'}
+            = f.label :display_date, "Display Date", class: 'col-sm-4 control-label'
+            .col-sm-7= f.text_field :display_date, {class: 'form-control datetimepicker'}
           .form-group
-            = f.label :effective_date, "Effective Date", class: 'col-sm-4 control-label datetimepicker'
-            .col-sm-7= f.text_field :effective_date, { class: 'form-control' }
+            = f.label :effective_date, "Effective Date", class: 'col-sm-4 control-label'
+            .col-sm-7= f.text_field :effective_date, { class: 'form-control datetimepicker' }
 
           %hr
 
@@ -90,7 +90,7 @@
 
 
 
-          .clearfix
-      .modal-footer
-        %button.btn.btn-default{data: {dismiss: 'modal'}, type: 'button'} Close
-        %input.btn.btn-primary{type: 'submit', value: t(:actions)[:save]}
+            .clearfix
+        .modal-footer
+          %button.btn.btn-default{data: {dismiss: 'modal'}, type: 'button'} Close
+          %input.btn.btn-primary{type: 'submit', value: t(:actions)[:save]}

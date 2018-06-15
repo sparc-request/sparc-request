@@ -347,6 +347,22 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
+  def create_calendar_event event, occurence
+    all_day = !occurence.start_time.to_s.include?("UTC")
+    start_time = Time.parse(occurence.start_time.to_s).in_time_zone("Eastern Time (US & Canada)")
+    end_time = Time.parse(occurence.end_time.to_s).in_time_zone("Eastern Time (US & Canada)")
+    { month: start_time.strftime("%b"),
+      day: start_time.day,
+      title: event.summary,
+      all_day: all_day,
+      start_time: start_time.strftime("%l:%M %p"),
+      end_time: end_time.strftime("%l:%M %p"),
+      sort_by_start: start_time.strftime("%Y%m%d"),
+      where: event.location
+    }
+  end
+
+
   def setup_catalog_calendar
     if Setting.find_by_key("use_google_calendar").value
       curTime = Time.now.utc
@@ -360,19 +376,23 @@ class ServiceRequestsController < ApplicationController
           #to parse file and get events
           cal_file = File.open(path)
 
-          cals = Icalendar.parse(cal_file)
+          cals = Icalendar::Calendar.parse(cal_file)
 
           cal = cals.first
 
-          events = cal.try(:events).try(:sort) { |x, y| y.dtstart <=> x.dtstart } || []
-
-          events.each do |event|
-            next if Time.parse(event.dtstart.to_s) > startMax
-            break if Time.parse(event.dtstart.to_s) < startMin
-            @events << create_calendar_event(event)
+          cal.events.each do |event|
+            if event.occurrences_between(startMin, startMax).present?
+              event.occurrences_between(startMin, startMax).each do |occurence|
+                @events << create_calendar_event(event, occurence)
+              end
+            end
           end
 
-          @events.reverse!
+          if @events.present?
+            @events.sort!{ |x, y| y[:sort_by_start].to_i <=> x[:sort_by_start].to_i }
+            @events.reverse!
+          end
+
           Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).update_all(status: ALERT_STATUSES['clear'])
         end
       rescue Exception, ArgumentError => e

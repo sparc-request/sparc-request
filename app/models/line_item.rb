@@ -55,6 +55,16 @@ class LineItem < ApplicationRecord
 
   default_scope { order('line_items.id ASC') }
 
+  ### These only pertain to OTF services
+  def otf_unit_type
+    service.displayed_pricing_map.try(:otf_unit_type)
+  end
+
+  def quantity_type
+    service.displayed_pricing_map.try(:quantity_type)
+  end
+  ### End OTF services only methods (may be more below but these were added)
+
   def displayed_cost_valid?(displayed_cost)
     return true if displayed_cost.nil?
     is_float  = /\A-?[0-9]+(\.[0-9]*)?\z/ =~ displayed_cost

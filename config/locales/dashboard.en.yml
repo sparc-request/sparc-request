@@ -316,7 +316,7 @@ en:
       destroyed: "Non-clinical Services Destroyed!"
       table:
         service: "Service"
-        unit_requested: "Unit Requested"
+        unit_requested: "Units / Quantity"
         unit_type: "Unit Type"
         quantity_requested: "Qty Requested"
         quantity_type: "Qty Type"
@@ -327,6 +327,7 @@ en:
         actions: "Actions"
       form:
         service: "Service:"
+        unit_per_quantity: "Units / Quantity:"
         quantity_requested: "Quantity Requested:"
         in_process: "In Process Date:"
         complete: "Complete Date:"

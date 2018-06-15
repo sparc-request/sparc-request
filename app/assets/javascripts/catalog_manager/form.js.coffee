@@ -222,6 +222,17 @@ $ ->
 
 
   ##############################################
+  ###          Organization Pricing          ###
+  ##############################################
+
+  $(document).on 'click', '.edit_pricing_setup_link', ->
+    pricing_setup_id = $(this).data('pricing-setup-id')
+    $.ajax
+      type: "GET"
+      url: "/catalog_manager/pricing_setups/#{pricing_setup_id}/edit"
+
+
+  ##############################################
   ###          Service Components            ###
   ##############################################
 

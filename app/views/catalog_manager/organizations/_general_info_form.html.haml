@@ -18,41 +18,41 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= form_for organization, url: path, id: 'organization-general-info-form', remote: true do |f|
-  .form-group.row
+= form_for organization, url: path, html: {class: 'form-horizontal'}, remote: true do |f|
+  .form-group
     = f.label :name,  t(:catalog_manager)[:organization_form][:name], class: 'col-sm-3 control-label'
     .col-sm-9
       = f.text_field :name, { class: 'form-control' }
-  .form-group.row
+  .form-group
     = f.label :abbreviation, t(:catalog_manager)[:organization_form][:abbreviation], class: 'col-sm-3 control-label'
     .col-sm-9
       = f.text_field :abbreviation, { class: 'form-control' }
-  .form-group.row
+  .form-group
     = f.label :description, t(:catalog_manager)[:organization_form][:description], class: 'col-sm-3 control-label'
     .col-sm-9
       = f.text_area :description, { rows: 8, class: 'form-control' }
-  .form-group.row
+  .form-group
     = f.label :ack_language, t(:catalog_manager)[:organization_form][:ack_language], class: 'col-sm-3 control-label'
     .col-sm-9
       = f.text_area :ack_language, { rows: 8, class: 'form-control' }
-  .form-group.row
+  .form-group
     = f.label :order, t(:catalog_manager)[:organization_form][:order], class: 'col-sm-3 control-label'
     .col-sm-9
       = f.text_field :order, { class: 'form-control' }
 
   - unless organization.type == 'Institution'
-    .form-group.row
+    .form-group
       = f.label :process_ssrs, t(:catalog_manager)[:organization_form][:split_notify], class: 'col-sm-3 control-label'
       .col-sm-9
         = f.check_box :process_ssrs, { checked: organization.process_ssrs, disabled: false, data: {toggle: 'toggle'}}
 
   - if ['Institution','Provider'].include?(organization.type) && user.is_overlord?
-    .form-group.row
+    .form-group
       = f.label :css_class, t(:catalog_manager)[:organization_form][:css_class], class: 'col-sm-3 control-label'
       .col-sm-9
         = f.select :css_class, ACCORDION_COLOR_OPTIONS, { include_blank: t(:catalog_manager)[:organization_form][:color_blank] }, { class: 'selectpicker' }
 
-  .form-group.row#display-in-sparc
+  .form-group#display-in-sparc
     = f.label :is_available, t(:catalog_manager)[:organization_form][:disabled], class: 'col-sm-3 control-label'
     .col-sm-9
       = f.check_box :is_available, { checked: organization.is_available, disabled: organization.parent ? !organization.parent.is_available : false, data: { toggle: 'toggle' } }
@@ -61,7 +61,7 @@
           = disabled_parent(@organization)
 
   - if organization.services.any?
-    .form-group.row#enable-all-services{ class: organization.is_available? ? '' : 'hidden' }
+    .form-group#enable-all-services{ class: organization.is_available? ? '' : 'hidden' }
       = label_tag 'all_services_availability', t(:catalog_manager)[:organization_form][:all_services_availability], class: 'col-sm-3 control-label'
       .col-sm-9
         .btn-group{ role: 'group', data: { toggle: 'labels' } }
@@ -75,7 +75,7 @@
             = radio_button_tag 'all_services_availability', 'true', false, class: 'hidden'
             = 'Enable All'
   - unless organization.type == 'Institution'
-    .form-group.row
+    .form-group
       = f.label :tag_list, t(:catalog_manager)[:organization_form][:tag_list], class: 'col-sm-3 control-label'
       .col-sm-9
         = f.select :tag_list, options_from_collection_for_select(Tag.where.not(name: 'epic'), :name, :humanized_name, organization.tags.pluck(:name)), {}, class: 'form-control selectpicker', multiple: true, data: { none_selected_text: t(:constants)[:prompts][:none] }

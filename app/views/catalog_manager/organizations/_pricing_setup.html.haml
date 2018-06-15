@@ -20,9 +20,7 @@
 
 .panel.panel-info{data: {pricing_setup_id: pricing_setup.id}}
   .panel-heading
-    %h4.panel-title
-      = link_to "Effective on #{pricing_setup.effective_date.to_date.strftime('%-m/%d/%Y')} -  Display on #{pricing_setup.display_date.to_date.strftime('%-m/%d/%Y')}", "#pricing_setup_collapse_#{pricing_setup.id}", data: {toggle:'collapse', parent:'#pricing-setup-accordion'}
-  .panel-collapse.collapse{id: "pricing_setup_collapse_#{pricing_setup.id}"}
-    .panel-body
-      = form_for pricing_setup, url: catalog_manager_, id: 'organization-general-info-form', remote: true do |f|
-
+    %h4.text-primary
+      = link_to 'javascript:void(0)', class: 'edit_pricing_setup_link', data: {pricing_setup_id: pricing_setup.id} do
+        %span.glyphicon.glyphicon-edit
+      = "Pricing Setup: Effective on #{pricing_setup.effective_date.to_date.strftime('%-m/%d/%Y')} -  Display on #{pricing_setup.display_date.to_date.strftime('%-m/%d/%Y')}"

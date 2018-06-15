@@ -124,23 +124,6 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       end
     end
 
-    # params[:pricing_maps].each do |_, pm|
-    #   if pm['id'].blank?
-    #     @service.pricing_maps.build(pricing_map_params(pm))
-    #   else
-    #     # saved = @service.pricing_maps.find(pm['id']).update_attributes(pm)
-    #     pm_id = pm['id']
-    #     pm.delete(:id)
-
-    #     saved = @service.pricing_maps.find(pm_id).update_attributes(pricing_map_params(pm))
-    #   end
-    #   if saved == true
-    #     saved = @service.save
-    #   else
-    #     @service.save
-    #   end
-    # end if params[:pricing_maps]
-
     if saved
       flash[:notice] = "#{@service.name} saved correctly."
     else
@@ -250,28 +233,6 @@ class CatalogManager::ServicesController < CatalogManager::AppController
 
 
   ####General Methods####
-
-  def verify_parent_service_provider
-    alert_text = ""
-    if params[:parent_object_type] == 'program'
-      @org = Program.find params[:parent_id]
-      @program = @org
-    elsif params[:parent_object_type] == 'core'
-      @org = Core.find params[:parent_id]
-      @program = @org.program
-    end
-
-    if @org.all_service_providers(false).size < 1
-      alert_text << "There needs to be at least one service provider on a parent organization to create a new service. "
-    end
-
-    if @program && !@program.has_active_pricing_setup
-      alert_text << "Before creating services, please configure an active pricing setup for either the program '" << @program.name << "' or the provider '" << @program.provider.name << "'."
-    end
-
-    render :plain => alert_text
-  end
-
 
   private
 

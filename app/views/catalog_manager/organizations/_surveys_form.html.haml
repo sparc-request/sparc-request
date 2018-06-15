@@ -30,7 +30,7 @@
 
 .row
   .col-sm-8
-    = select_tag 'new_associated_survey', grouped_options_for_select(SystemSurvey.active.group_by(&:title).map{|k,v| [k,v.map{|p| ["Version #{p.version}", p.id]}]}, nil, { prompt: t(:catalog_manager)[:organization_form][:surveys][:select_survey] }), {class: 'form-control select-type new_associated_survey'}
+    = select_tag 'new_associated_survey', grouped_options_for_select(SystemSurvey.active.group_by(&:title).map{|k,v| [k,v.map{|p| ["Version #{p.version}", p.id]}]}, nil, { prompt: t(:catalog_manager)[:organization_form][:surveys][:select_survey] }), {class: 'form-control select-type new_associated_survey selectpicker'}
   .col-sm-4.text-center
     %button.btn.btn-xs.btn-success.add-associated-survey{ data: {type: organization.type, id: organization.id}}
       %span.glyphicon.glyphicon-plus

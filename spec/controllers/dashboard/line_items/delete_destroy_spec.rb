@@ -18,10 +18,34 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-FactoryBot.define do
-  factory :contact_form, class: ContactForm do
-    subject 'SPARC-Request'
-    email 'example@example.com'
-    message 'this is a sample message'
+require "rails_helper"
+
+RSpec.describe Dashboard::LineItemsController do
+  describe 'DELETE #destroy' do
+
+    context 'one time fee' do
+      it 'should delete a line item' do
+        line_item = create(:line_item, :one_time_fee, :without_validations)
+
+        log_in_dashboard_identity(obj: build_stubbed(:identity))
+        delete :destroy, params: { id: line_item.id }, xhr: true
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context 'not a one time fee' do
+      it 'should delete line item' do
+        sr = create(:service_request, :without_validations)
+        ssr = create(:sub_service_request, :without_validations, :with_organization, service_request: sr)
+        line_item = create(:line_item, :with_service, :without_validations, sub_service_request: ssr)
+
+        log_in_dashboard_identity(obj: build_stubbed(:identity))
+        delete :destroy, params: { id: line_item.id }, xhr: true
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
   end
 end
+

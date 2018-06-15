@@ -106,7 +106,8 @@ GEM
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
-    addressable (2.3.8)
+    addressable (2.5.2)
+      public_suffix (>= 2.0.2, < 4.0)
     afm (0.2.2)
     airbrussh (1.3.0)
       sshkit (>= 1.6.1, != 1.7.0)
@@ -382,6 +383,7 @@ GEM
     pry (0.11.3)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
+    public_suffix (3.0.2)
     puma (3.11.4)
     rack (2.0.5)
     rack-accept (0.4.5)
@@ -585,7 +587,7 @@ DEPENDENCIES
   activerecord-session_store
   acts-as-taggable-on!
   acts_as_list!
-  addressable (~> 2.3.6)
+  addressable (~> 2.5.2)
   audited (~> 4.3)
   axlsx!
   axlsx_rails

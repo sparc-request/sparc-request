@@ -23,7 +23,7 @@ require 'rails_helper'
 RSpec.describe LineItem, type: :model do
 
   let!(:new_service) { create(:service, name: "New Service") }
-  let!(:service_request) { FactoryGirl.create(:service_request_without_validations) }
+  let!(:service_request) { FactoryBot.create(:service_request_without_validations) }
 
   describe "creating line items" do
 

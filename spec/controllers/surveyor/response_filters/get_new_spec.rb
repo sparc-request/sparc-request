@@ -26,7 +26,7 @@ RSpec.describe Surveyor::ResponseFiltersController, type: :controller do
   let!(:logged_in_user) { create(:identity) }
 
   before :each do
-    @filter = create(:response_filter)
+    @filter = create(:response_filter, start_date: '01/27/1990', end_date: '02/27/1990')
 
     session[:identity_id] = logged_in_user.id
 

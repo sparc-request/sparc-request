@@ -18,15 +18,15 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :response_filter do
     identity            { nil }
     name                { Faker::Lorem.word }
     of_type             { 'Form' }
     with_state          { [] }
     with_survey         { [] }
-    start_date          { '' }
-    end_date            { '' }
+    start_date          { '1990-01-27' }
+    end_date            { '1990-02-27' }
     include_incomplete  { 0 }
 
     trait :without_validations do

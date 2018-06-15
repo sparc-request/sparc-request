@@ -106,7 +106,8 @@ GEM
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
-    addressable (2.3.8)
+    addressable (2.5.2)
+      public_suffix (>= 2.0.2, < 4.0)
     afm (0.2.2)
     airbrussh (1.3.0)
       sshkit (>= 1.6.1, != 1.7.0)
@@ -127,6 +128,8 @@ GEM
       axlsx (>= 2.0.1)
     bcrypt (3.1.12)
     bluecloth (2.2.0)
+    bootsnap (1.3.0)
+      msgpack (~> 1.0)
     bootstrap-sass (3.3.7)
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
@@ -233,10 +236,10 @@ GEM
       actionmailer (>= 4.0, < 6)
       activesupport (>= 4.0, < 6)
     execjs (2.7.0)
-    factory_girl (4.9.0)
+    factory_bot (4.10.0)
       activesupport (>= 3.0.0)
-    factory_girl_rails (4.9.0)
-      factory_girl (~> 4.9.0)
+    factory_bot_rails (4.10.0)
+      factory_bot (~> 4.10.0)
       railties (>= 3.0.0)
     faker (1.8.7)
       i18n (>= 0.7)
@@ -318,6 +321,7 @@ GEM
       railties (>= 3.1)
     money (6.11.3)
       i18n (>= 0.6.4, < 1.1)
+    msgpack (1.2.4)
     multi_json (1.13.1)
     multi_xml (0.6.0)
     mysql2 (0.5.1)
@@ -380,6 +384,7 @@ GEM
     pry (0.11.3)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
+    public_suffix (3.0.2)
     puma (3.11.4)
     rack (2.0.5)
     rack-accept (0.4.5)
@@ -583,11 +588,12 @@ DEPENDENCIES
   activerecord-session_store
   acts-as-taggable-on!
   acts_as_list!
-  addressable (~> 2.3.6)
+  addressable (~> 2.5.2)
   audited (~> 4.3)
   axlsx!
   axlsx_rails
   bluecloth
+  bootsnap
   bootstrap-sass
   bootstrap-select-rails
   bootstrap-toggle-rails
@@ -615,7 +621,7 @@ DEPENDENCIES
   equivalent-xml
   exception_notification
   execjs
-  factory_girl_rails
+  factory_bot_rails
   faker
   filterrific!
   gon (~> 6.1)

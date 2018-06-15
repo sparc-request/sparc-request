@@ -25,8 +25,8 @@ FactoryBot.define do
     of_type             { 'Form' }
     with_state          { [] }
     with_survey         { [] }
-    start_date          { '' }
-    end_date            { '' }
+    start_date          { '1990-01-27' }
+    end_date            { '1990-02-27' }
     include_incomplete  { 0 }
 
     trait :without_validations do

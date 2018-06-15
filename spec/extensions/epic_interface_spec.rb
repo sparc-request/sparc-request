@@ -1192,7 +1192,7 @@ RSpec.describe EpicInterface do
     end
 
     it 'should send an arm as a cell' do
-      FactoryGirl.create(:service_request_without_validations,
+      FactoryBot.create(:service_request_without_validations,
                                             protocol: study,
                                             status: 'draft')
 
@@ -1273,7 +1273,7 @@ RSpec.describe EpicInterface do
     end
 
     it 'should send two arms as two cells' do
-      FactoryGirl.create(:service_request_without_validations,
+      FactoryBot.create(:service_request_without_validations,
                                             protocol: study,
                                             status: 'draft')
 
@@ -1405,7 +1405,7 @@ RSpec.describe EpicInterface do
     context 'with line items' do
 
       let!(:service_request) {
-        FactoryGirl.create(:service_request_without_validations,
+        FactoryBot.create(:service_request_without_validations,
                             protocol: study,
                             status: 'submitted')
       }

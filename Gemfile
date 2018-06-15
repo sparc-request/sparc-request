@@ -8,6 +8,7 @@ gem 'audited', '~> 4.3'
 gem 'axlsx', git: 'https://github.com/randym/axlsx', branch: 'master'
 gem 'axlsx_rails'
 gem 'bluecloth'
+gem 'bootsnap', require: false
 gem 'bootstrap-sass'
 gem 'bootstrap-select-rails'
 gem 'bootstrap3-datetimepicker-rails'
@@ -81,7 +82,7 @@ gem 'omniauth-cas'
 gem 'dotenv-rails'
 
 group :development, :test, :profile do
-  gem 'addressable', '~> 2.3.6'
+  gem 'addressable', '~> 2.5.2'
   gem 'bullet'
   gem 'connection_pool'
   gem 'equivalent-xml'
@@ -112,7 +113,7 @@ group :test do
   gem 'capybara-webkit'
   gem 'database_cleaner'
   gem 'email_spec'
-  gem 'factory_girl_rails'
+  gem "factory_bot_rails"
   gem 'rails-controller-testing', require: false
   gem 'rspec-activemodel-mocks'
   gem 'rspec-html-matchers'

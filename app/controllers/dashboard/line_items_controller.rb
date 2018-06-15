@@ -112,7 +112,8 @@ class Dashboard::LineItemsController < Dashboard::BaseController
       @line_items = @sub_service_request.line_items
 
       if @line_item.destroy
-        render 'dashboard/sub_service_requests/add_line_item'
+        # I don't think this ever was called since this view does not exist.
+        #render 'dashboard/sub_service_requests/add_line_item'
       end
     end
   end

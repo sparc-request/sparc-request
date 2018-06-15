@@ -1,11 +1,4 @@
 GIT
-  remote: git://github.com/rails/rails-observers.git
-  revision: fb6b95509c3f1a50c973280ddc2b56648e33623f
-  specs:
-    rails-observers (0.2.0)
-      activemodel (>= 4.2)
-
-GIT
   remote: https://github.com/Fodoj/acts-as-taggable-on.git
   revision: ef3797a848bd76a5290d209ff856e55a9f9053c5
   branch: rails-5.2
@@ -34,6 +27,13 @@ GIT
     grouped_validations (0.3.3)
 
 GIT
+  remote: https://github.com/rails/rails-observers.git
+  revision: fb6b95509c3f1a50c973280ddc2b56648e33623f
+  specs:
+    rails-observers (0.2.0)
+      activemodel (>= 4.2)
+
+GIT
   remote: https://github.com/randym/axlsx
   revision: c593a08b2a929dac7aa8dc418b55e26b4c49dc34
   branch: master
@@ -46,9 +46,9 @@ GIT
 
 GIT
   remote: https://github.com/swanandp/acts_as_list.git
-  revision: 882ea56b6851532e837da04f90e62db7daf3ad93
+  revision: 0ba054095abc7ad2c5b9aa84131a5a2320bc760e
   specs:
-    acts_as_list (0.9.14)
+    acts_as_list (0.9.12)
       activerecord (>= 3.0)
 
 GEM
@@ -106,7 +106,8 @@ GEM
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
-    addressable (2.3.8)
+    addressable (2.5.2)
+      public_suffix (>= 2.0.2, < 4.0)
     afm (0.2.2)
     airbrussh (1.3.0)
       sshkit (>= 1.6.1, != 1.7.0)
@@ -116,7 +117,7 @@ GEM
     arel (9.0.0)
     audited (4.7.1)
       activerecord (>= 4.0, < 5.3)
-    autoprefixer-rails (8.6.2)
+    autoprefixer-rails (8.5.0)
       execjs
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
@@ -127,6 +128,8 @@ GEM
       axlsx (>= 2.0.1)
     bcrypt (3.1.12)
     bluecloth (2.2.0)
+    bootsnap (1.3.0)
+      msgpack (~> 1.0)
     bootstrap-sass (3.3.7)
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
@@ -181,7 +184,7 @@ GEM
       execjs
     coffee-script-source (1.12.2)
     concurrent-ruby (1.0.5)
-    connection_pool (2.2.2)
+    connection_pool (2.2.1)
     countries (2.1.4)
       i18n_data (~> 0.8.0)
       money (~> 6.9)
@@ -195,7 +198,7 @@ GEM
     crass (1.0.4)
     css_parser (1.6.0)
       addressable
-    curb (0.9.6)
+    curb (0.9.4)
     daemons (1.2.6)
     database_cleaner (1.7.0)
     delayed_job (4.1.5)
@@ -212,7 +215,7 @@ GEM
       responders
       warden (~> 1.2.3)
     diff-lcs (1.3)
-    docile (1.3.1)
+    docile (1.3.0)
     domain_name (0.5.20180417)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.4.0)
@@ -232,14 +235,14 @@ GEM
       actionmailer (>= 4.0, < 6)
       activesupport (>= 4.0, < 6)
     execjs (2.7.0)
-    factory_girl (4.9.0)
+    factory_bot (4.10.0)
       activesupport (>= 3.0.0)
-    factory_girl_rails (4.9.0)
-      factory_girl (~> 4.9.0)
+    factory_bot_rails (4.10.0)
+      factory_bot (~> 4.10.0)
       railties (>= 3.0.0)
     faker (1.8.7)
       i18n (>= 0.7)
-    ffi (1.9.25)
+    ffi (1.9.23)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
     gon (6.2.0)
@@ -321,6 +324,7 @@ GEM
       railties (>= 3.1)
     money (6.11.3)
       i18n (>= 0.6.4, < 1.1)
+    msgpack (1.2.4)
     multi_json (1.13.1)
     multi_xml (0.6.0)
     mysql2 (0.5.1)
@@ -383,6 +387,7 @@ GEM
     pry (0.11.3)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
+    public_suffix (3.0.2)
     puma (3.11.4)
     rack (2.0.5)
     rack-accept (0.4.5)
@@ -543,7 +548,7 @@ GEM
       railties (>= 3.1)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
-    uglifier (4.1.11)
+    uglifier (4.1.10)
       execjs (>= 0.3.0, < 3)
     unf (0.1.4)
       unf_ext
@@ -574,7 +579,7 @@ GEM
       will_paginate (>= 3.0.3)
     x-editable-rails (1.5.5.1)
       railties
-    xpath (3.1.0)
+    xpath (3.0.0)
       nokogiri (~> 1.8)
 
 PLATFORMS
@@ -586,11 +591,12 @@ DEPENDENCIES
   activerecord-session_store
   acts-as-taggable-on!
   acts_as_list!
-  addressable (~> 2.3.6)
+  addressable (~> 2.5.2)
   audited (~> 4.3)
   axlsx!
   axlsx_rails
   bluecloth
+  bootsnap
   bootstrap-sass
   bootstrap-select-rails
   bootstrap3-datetimepicker-rails
@@ -617,7 +623,7 @@ DEPENDENCIES
   equivalent-xml
   exception_notification
   execjs
-  factory_girl_rails
+  factory_bot_rails
   faker
   filterrific!
   gon (~> 6.1)
@@ -694,4 +700,4 @@ DEPENDENCIES
   x-editable-rails
 
 BUNDLED WITH
-   1.16.0
+   1.16.1

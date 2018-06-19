@@ -18,61 +18,11 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogManager::PricingSetupsController < CatalogManager::AppController
-
-  def new
-    @pricing_setup = PricingSetup.new()
-    @organization_id = params[:organization_id]
-  end
-
-  def create
-    @pricing_setup = PricingSetup.new(pricing_setup_params[:pricing_setup])
-
-    if @pricing_setup.save
-      flash[:success] = "Pricing Setup created successfully."
-      @organization = @pricing_setup.organization
-    else
-      @errors = @pricing_setup.errors
-      @organization_id = pricing_setup_params[:pricing_setup][:organization_id]
-    end
-  end
-
-  def edit
-    @pricing_setup = PricingSetup.find(pricing_setup_params[:id])
-  end
-
-  def update
-    @pricing_setup = PricingSetup.find(pricing_setup_params[:id])
-
-    if @pricing_setup.update_attributes(pricing_setup_params[:pricing_setup])
-      flash[:success] = "Pricing Setup updated successfully."
-      @organization = @pricing_setup.organization
-    else
-      @errors = @pricing_setup.errors
-    end
-  end
-
-
-  private
-
-  def pricing_setup_params
-    params.permit(:id,
-      pricing_setup: [
-      :display_date,
-      :effective_date,
-      :charge_master,
-      :federal,
-      :corporate,
-      :other,
-      :member,
-      :college_rate_type,
-      :federal_rate_type,
-      :industry_rate_type,
-      :investigator_rate_type,
-      :internal_rate_type,
-      :foundation_rate_type,
-      :unfunded_rate_type,
-      :organization_id
-      ])
-  end
-end
+<% if @errors %>
+$("#modal_place #modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
+$("#pricing_setup_submit").removeAttr('disabled')
+<% else %>
+$("#modal_place").modal('hide')
+$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+$("#pricing_setups_container").html("<%= j render '/catalog_manager/organizations/pricing_form', organization: @organization, user: @user %>")
+<% end %>

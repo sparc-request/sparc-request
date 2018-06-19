@@ -25,9 +25,13 @@ class PricingSetup < ApplicationRecord
 
   after_create :create_pricing_maps
 
-  validates :display_date, :effective_date, :corporate, :other, :member, :college_rate_type,
+  validates :display_date, :effective_date, :federal, :corporate, :other, :member, :college_rate_type,
             :foundation_rate_type, :industry_rate_type, :investigator_rate_type,
-            :internal_rate_type, presence: true
+            :internal_rate_type, :foundation_rate_type, :unfunded_rate_type, presence: true
+
+  validates :federal, :corporate, :other, :member, numericality: true
+
+  validate :effective_date_after_display_date
 
   def rate_type(funding_source)
     case funding_source
@@ -88,12 +92,23 @@ class PricingSetup < ApplicationRecord
   end
 
   def disabled?(user)
-    if user.edit_historical_data
+    if user.can_edit_historical_data_for?(organization)
       false
-    elsif (pricing_setup.effective_date <= Date.today) or (pricing_setup.display_date <= Date.today)
+    elsif (effective_date <= Date.today) or (display_date <= Date.today)
       true
     else
       false
     end
   end
+
+  private
+
+  def effective_date_after_display_date
+    if effective_date.present? && display_date.present?
+      if effective_date < display_date
+        errors.add(:effective_date, "must be the same, or later than display date.")
+      end
+    end
+  end
+
 end

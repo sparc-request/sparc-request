@@ -18,61 +18,16 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogManager::PricingSetupsController < CatalogManager::AppController
+$('#modal_place').html("<%= j render '/catalog_manager/pricing_setups/pricing_setup_form', pricing_setup: @pricing_setup, organization_id: @organization_id%>")
+$('#modal_place').modal('show')
 
-  def new
-    @pricing_setup = PricingSetup.new()
-    @organization_id = params[:organization_id]
-  end
+$('.selectpicker').selectpicker()
+$("[data-toggle='toggle']").bootstrapToggle(
+    on: 'Yes',
+    off: 'No'
+  )
 
-  def create
-    @pricing_setup = PricingSetup.new(pricing_setup_params[:pricing_setup])
+$('[data-toggle="tooltip"]').tooltip()
 
-    if @pricing_setup.save
-      flash[:success] = "Pricing Setup created successfully."
-      @organization = @pricing_setup.organization
-    else
-      @errors = @pricing_setup.errors
-      @organization_id = pricing_setup_params[:pricing_setup][:organization_id]
-    end
-  end
+$('.datetimepicker').datetimepicker(format: 'YYYY-MM-DD', allowInputToggle: false, useCurrent: false)
 
-  def edit
-    @pricing_setup = PricingSetup.find(pricing_setup_params[:id])
-  end
-
-  def update
-    @pricing_setup = PricingSetup.find(pricing_setup_params[:id])
-
-    if @pricing_setup.update_attributes(pricing_setup_params[:pricing_setup])
-      flash[:success] = "Pricing Setup updated successfully."
-      @organization = @pricing_setup.organization
-    else
-      @errors = @pricing_setup.errors
-    end
-  end
-
-
-  private
-
-  def pricing_setup_params
-    params.permit(:id,
-      pricing_setup: [
-      :display_date,
-      :effective_date,
-      :charge_master,
-      :federal,
-      :corporate,
-      :other,
-      :member,
-      :college_rate_type,
-      :federal_rate_type,
-      :industry_rate_type,
-      :investigator_rate_type,
-      :internal_rate_type,
-      :foundation_rate_type,
-      :unfunded_rate_type,
-      :organization_id
-      ])
-  end
-end

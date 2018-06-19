@@ -18,6 +18,9 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+- organization_id = nil unless defined?(organization_id)
+- pricing_setup_disabled = (organization_id ? false : pricing_setup.disabled?(@user))
+
 #pricing_setup_modal
   .modal-dialog
     .modal-content
@@ -27,64 +30,67 @@
             %span{"aria-hidden" => "true"} ×
           %h4.modal-title Edit Pricing Setup
         .modal-body
+          - if organization_id
+            = f.hidden_field :organization_id, value: organization_id
+          #modal_errors
           .form-group
-            = f.label :display_date, "Display Date", class: 'col-sm-4 control-label'
-            .col-sm-7= f.text_field :display_date, {class: 'form-control datetimepicker'}
+            = f.label :display_date, "Display Date:", class: 'col-sm-4 control-label'
+            .col-sm-7= f.text_field :display_date, {disabled: pricing_setup_disabled, class: 'form-control datetimepicker'}
           .form-group
-            = f.label :effective_date, "Effective Date", class: 'col-sm-4 control-label'
-            .col-sm-7= f.text_field :effective_date, { class: 'form-control datetimepicker' }
+            = f.label :effective_date, "Effective Date:", class: 'col-sm-4 control-label'
+            .col-sm-7= f.text_field :effective_date, {disabled: pricing_setup_disabled, class: 'form-control datetimepicker' }
 
           %hr
 
           .form-group
             = f.label :charge_master, "Charge Master:", class: 'col-sm-4 control-label'
             .col-sm-7
-              = f.check_box :charge_master, { checked: pricing_setup.charge_master, data: {toggle: 'toggle'}}
+              = f.check_box :charge_master, {disabled: pricing_setup_disabled, checked: pricing_setup.charge_master, data: {toggle: 'toggle'}}
 
           %hr
 
           .form-group
             = f.label :federal, "Federal %:", class: 'col-sm-4 control-label'
-            .col-sm-7= f.text_field :federal, {class: 'form-control'}
+            .col-sm-7= f.text_field :federal, {disabled: pricing_setup_disabled, class: 'form-control'}
           .form-group
             = f.label :corporate, "Corporate %:", class: 'col-sm-4 control-label'
-            .col-sm-7= f.text_field :corporate, {class: 'form-control'}
+            .col-sm-7= f.text_field :corporate, {disabled: pricing_setup_disabled, class: 'form-control'}
           .form-group
             = f.label :other, "Other %:", class: 'col-sm-4 control-label'
-            .col-sm-7= f.text_field :other, {class: 'form-control'}
+            .col-sm-7= f.text_field :other, {disabled: pricing_setup_disabled, class: 'form-control'}
           .form-group
             = f.label :member, "Member %:", class: 'col-sm-4 control-label'
-            .col-sm-7= f.text_field :member, {class: 'form-control'}
+            .col-sm-7= f.text_field :member, {disabled: pricing_setup_disabled, class: 'form-control'}
 
           %hr
 
           .form-group
             = f.label :college_rate_type, "College:", class: 'col-sm-4 control-label'
-            .col-sm-7= f.select :college_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.college_rate_type), {}, class: 'form-control select-type selectpicker'
+            .col-sm-7= f.select :college_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.college_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
 
           .form-group
             = f.label :federal_rate_type, "Federal:", class: 'col-sm-4 control-label'
-            .col-sm-7= f.select :federal_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.federal_rate_type), {}, class: 'form-control select-type selectpicker'
+            .col-sm-7= f.select :federal_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.federal_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
 
           .form-group
             = f.label :industry_rate_type, "Industry:", class: 'col-sm-4 control-label'
-            .col-sm-7= f.select :industry_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.industry_rate_type), {}, class: 'form-control select-type selectpicker'
+            .col-sm-7= f.select :industry_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.industry_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
 
           .form-group
             = f.label :investigator_rate_type, "Investigator:", class: 'col-sm-4 control-label'
-            .col-sm-7= f.select :investigator_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.investigator_rate_type), {}, class: 'form-control select-type selectpicker'
+            .col-sm-7= f.select :investigator_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.investigator_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
 
           .form-group
             = f.label :internal_rate_type, "Internal:", class: 'col-sm-4 control-label'
-            .col-sm-7= f.select :internal_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.internal_rate_type), {}, class: 'form-control select-type selectpicker'
+            .col-sm-7= f.select :internal_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.internal_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
 
           .form-group
             = f.label :foundation_rate_type, "Foundation:", class: 'col-sm-4 control-label'
-            .col-sm-7= f.select :foundation_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.foundation_rate_type), {}, class: 'form-control select-type selectpicker'
+            .col-sm-7= f.select :foundation_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.foundation_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
 
           .form-group
             = f.label :unfunded_rate_type, "Unfunded Student Research:", class: 'col-sm-4 control-label'
-            .col-sm-7= f.select :unfunded_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.unfunded_rate_type), {}, class: 'form-control select-type selectpicker'
+            .col-sm-7= f.select :unfunded_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.unfunded_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
 
           %hr
 
@@ -93,4 +99,4 @@
             .clearfix
         .modal-footer
           %button.btn.btn-default{data: {dismiss: 'modal'}, type: 'button'} Close
-          %input.btn.btn-primary{type: 'submit', value: t(:actions)[:save]}
+          %input#pricing_setup_submit.btn.btn-primary{type: 'submit', value: t(:actions)[:save]}

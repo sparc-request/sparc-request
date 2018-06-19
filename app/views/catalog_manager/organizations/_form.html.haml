@@ -62,7 +62,8 @@
             = link_to t(:catalog_manager)[:organization_form][:headers][:pricing], '#pricing-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
         .panel-collapse.collapse#pricing-collapse
           .panel-body
-            = render "pricing_form", organization: organization, user: @user
+            #pricing_setups_container
+              = render "pricing_form", organization: organization, user: @user
 
       .panel.panel-default#fulfillment{style: (organization.tag_list.include?("clinical work fulfillment") && organization.process_ssrs) ? "display: block;" : "display: none;"}
         .panel-heading

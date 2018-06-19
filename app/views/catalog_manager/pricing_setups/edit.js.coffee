@@ -30,5 +30,3 @@ $("[data-toggle='toggle']").bootstrapToggle(
 $('[data-toggle="tooltip"]').tooltip()
 
 $('.datetimepicker').datetimepicker(format: 'YYYY-MM-DD', allowInputToggle: false, useCurrent: false)
-
-# $('.datepicker').datepicker()

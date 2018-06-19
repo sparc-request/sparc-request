@@ -125,7 +125,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     end
 
     if saved
-      flash[:notice] = "#{@service.name} saved correctly."
+      flash[:success] = "#{@service.name} saved correctly."
     else
       flash[:alert] = "Failed to update #{@service.name}."
     end
@@ -145,7 +145,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       #Delete component from list and save updated list
       components_list.delete(component)
       if @service.update_attributes(components: components_list.join(','))
-        flash[:notice] = "Component deleted successfully."
+        flash[:success] = "Component deleted successfully."
       else
         flash[:alert] = "Error deleting component."
       end
@@ -153,7 +153,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       #Add new component to list and save updated list
       components_list.push(component)
       if @service.update_attributes(components: components_list.join(','))
-        flash[:notice] = "New component saved successfully."
+        flash[:success] = "New component saved successfully."
       else
         flash[:alert] = "Failed to create new component."
       end
@@ -171,7 +171,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     saved = @service.update_attributes(service_params)
 
     if saved
-      flash[:notice] = "#{@service.name} saved successfully."
+      flash[:success] = "#{@service.name} saved successfully."
     else
       flash[:alert] = "Error updating #{@service.name}."
     end
@@ -189,7 +189,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     @service_relation = @service.service_relations.new(:related_service_id => related_service.id, :optional => false)
 
     if @service_relation.save
-      flash[:notice] = "Related service added successfully."
+      flash[:success] = "Related service added successfully."
     else
       flash[:alert] = "Error creating new related service."
     end
@@ -201,7 +201,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     @service = service_relation.service
 
     if service_relation.destroy
-      flash[:notice] = "Related service removed successfully."
+      flash[:success] = "Related service removed successfully."
     else
       flash[:alert] = "Error removing related service."
     end
@@ -212,7 +212,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     @service = @service_relation.service
 
     if @service_relation.update_attributes(service_relation_params.except(:service_relation_id))
-      flash[:notice] = "Related service updated successfully."
+      flash[:success] = "Related service updated successfully."
     else
       flash[:alert] = "Error updating related service."
     end

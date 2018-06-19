@@ -231,6 +231,17 @@ $ ->
       type: "GET"
       url: "/catalog_manager/pricing_setups/#{pricing_setup_id}/edit"
 
+  $(document).on 'click', '#new_pricing_setup_link', ->
+    org_id = $(this).data('organization-id')
+    $.ajax
+      type: "GET"
+      url: "/catalog_manager/pricing_setups/new"
+      data:
+        organization_id: org_id
+
+  $(document).on 'click', '#pricing_setup_modal .modal-footer .btn-primary', ->
+    $(this).attr('disabled','disabled')
+
 
   ##############################################
   ###          Service Components            ###

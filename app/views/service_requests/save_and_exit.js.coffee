@@ -17,5 +17,5 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$("#modal_place").html("<%= escape_javascript(render( 'service_requests/modals/save_as_draft_modal' )) %>")
+$("#modal_place").html("<%= escape_javascript(render( 'service_requests/modals/save_as_draft_modal', sub_service_request_id: @sub_service_request.try(:id) )) %>")
 $("#modal_place").modal 'show'

@@ -39,8 +39,10 @@
               = t(:dashboard)[:study_level_activities][:table][:quantity_type]
             %th{data: {class: 'service_rate', align: "left", sortable: "true", field: "service_rate"}}
               = t(:dashboard)[:study_level_activities][:table][:service_rate]
-            %th{data: {class: 'started', align: "left", sortable: "true", field: "cost"}}
+            %th{data: {class: 'cost', align: "left", sortable: "true", field: "cost"}}
               = t(:dashboard)[:study_level_activities][:table][:cost]
+            %th{data: {class: 'total', align: "left", sortable: "true", field: "total", visible: "false"}}
+              = t(:dashboard)[:study_level_activities][:table][:total]
             %th{data: {class: 'last_fulfillment', align: "left", sortable: "true", field: "date_started", sorter: "dateSorter"}}
               = t(:dashboard)[:study_level_activities][:table][:in_process]
             %th{data: {class: 'last_fulfillment', align: "left", sortable: "true", field: "date_completed", sorter: "dateSorter"}}

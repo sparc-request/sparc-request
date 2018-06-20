@@ -41,7 +41,7 @@ module Dashboard::StudyLevelActivitiesHelper
   end
 
   def sla_your_cost_field line_item
-    raw( text_field(:line_item, :service, class: 'your-cost-edit', value: number_with_precision(Service.cents_to_dollars(line_item.per_unit_cost), precision: 2)) )
+    raw( text_field(:line_item, :service, class: 'your-cost-edit', value: number_with_precision(Service.cents_to_dollars(line_item.applicable_rate), precision: 2)) )
   end
 
   def sla_options_buttons line_item

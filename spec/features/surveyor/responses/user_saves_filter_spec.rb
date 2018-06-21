@@ -50,8 +50,6 @@ RSpec.describe 'User saves a response filters', js: true do
 
     expect(page).to have_selector('.apply-filter', text: 'My Filters')
     expect(filter.with_state).to eq(['1','0'])
-    expect(filter.start_date.to_date).to eq(Date.today)
-    expect(filter.end_date.to_date).to eq(Date.today)
     expect(filter.include_incomplete).to eq(true)
   end
 end

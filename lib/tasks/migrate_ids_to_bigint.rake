@@ -26,7 +26,7 @@ task :migrate_ids_to_bigint => :environment do
   foreign_keys = Hash.new{ |h, k| h[k] = [] }
   ActiveRecord::Base.transaction do
 
-    db_models.except("documents").each do |table_name, model|
+    db_models.each do |table_name, model|
       fks = ActiveRecord::Base.connection.foreign_keys(table_name)
       foreign_keys[table_name] = fks if fks.present?
       references[table_name] = get_references(model) unless get_references(model).empty?

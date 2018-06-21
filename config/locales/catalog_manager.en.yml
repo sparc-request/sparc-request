@@ -55,7 +55,6 @@ en:
       availability_button:
         show_all: "Show All"
         show_available: "Show Available"
-      clear_search_button: "Clear Search Results"
       new:
         core: "Create New Core"
         institution: "Create New Institution"

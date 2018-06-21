@@ -32,6 +32,7 @@ class PricingSetup < ApplicationRecord
   validates :federal, :corporate, :other, :member, numericality: true
 
   validate :effective_date_after_display_date
+  validate :rate_percentages
 
   def rate_type(funding_source)
     case funding_source
@@ -111,4 +112,15 @@ class PricingSetup < ApplicationRecord
     end
   end
 
+  def rate_percentages
+    if corporate.present? && (corporate < federal)
+      errors.add(:corporate, "must be greater than or equal to Federal Rate.")
+    end
+    if other.present? && (other < federal)
+      errors.add(:other, "must be greater than or equal to Federal Rate.")
+    end
+    if member.present? && (member < federal)
+      errors.add(:member, "must be greater than or equal to Federal Rate.")
+    end
+  end
 end

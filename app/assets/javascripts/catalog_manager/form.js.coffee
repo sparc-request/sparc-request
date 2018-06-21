@@ -242,6 +242,10 @@ $ ->
   $(document).on 'click', '#pricing_setup_modal .modal-footer .btn-primary', ->
     $(this).attr('disabled','disabled')
 
+  $(document).on 'click', '#apply_federal_percent', ->
+    federal_value = $('.federal_rate_field').val()
+    $('.linked_to_federal').val(federal_value)
+
 
   ##############################################
   ###          Service Components            ###

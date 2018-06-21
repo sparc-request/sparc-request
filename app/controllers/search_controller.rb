@@ -79,6 +79,7 @@ class SearchController < ApplicationController
 
     results.map! { |org|
       {
+        id: org.id,
         name: org.name,
         abbreviation: org.abbreviation,
         type: org.class.to_s,
@@ -86,7 +87,7 @@ class SearchController < ApplicationController
         cpt_code: cpt_code_text(org),
         inactive_tag: inactive_text(org),
         parents: org.parents.reverse.map{ |p| "##{p.class.to_s.downcase}-#{p.id}" },
-        value_selector: "##{org.class.to_s.downcase}-#{org.id}"
+        breadcrumb: breadcrumb_text(org)
       }
     }
     render json: results.to_json
@@ -112,5 +113,17 @@ class SearchController < ApplicationController
 
   def inactive_text(org)
     text = org.is_available ? "" : "(Inactive)"
+  end
+
+  def breadcrumb_text(item)
+    if item.parents.any?
+      breadcrumb = []
+      item.parents.map(&:abbreviation).each do |parent_abbreviation|
+        breadcrumb << "<span>#{parent_abbreviation} </span>"
+        breadcrumb << "<span class='inline-glyphicon glyphicon glyphicon-triangle-right'> </span>"
+      end
+      breadcrumb.pop
+      breadcrumb.join.html_safe
+    end
   end
 end

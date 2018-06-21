@@ -27,11 +27,6 @@ $ ->
   initialize_glyphicon()
 
 
-
-  $(document).on 'click','#clear-search-button', ->
-    $('.search-result').removeClass('search-result')
-    $('#cm-accordion .panel-collapse.in').collapse('hide')
-
   $(document).on 'click','#availability-button', ->
     show_available_only = $(this).data('show-available-only')
     $.ajax
@@ -105,6 +100,7 @@ initialize_org_search = () ->
       templates: {
         suggestion: Handlebars.compile('<button class="text-left">
                                           <strong><span class="{{text_color}}">{{type}}</span><span>: {{name}}</span></strong><span class="text-danger"> {{inactive_tag}}</span><br>
+                                          {{{breadcrumb}}}<br>
                                           <span>Abbreviation: {{abbreviation}}</span><br>
                                           <span>{{cpt_code}}</span>
                                         </button>')
@@ -112,11 +108,10 @@ initialize_org_search = () ->
       }
     }
   ).on('typeahead:select', (event, suggestion) ->
-    for parent in suggestion['parents']
-      target = $(parent).data('target')
-      $(target).collapse('show')
-    form_link = $(suggestion['value_selector']).parent()
-    form_link.parent().addClass("search-result")
-    form_link.siblings().find(".org-form-label").click()
+    type = suggestion['type'].toLowerCase()
+    id = suggestion['id']
+    $.ajax
+      type: 'GET'
+      url: "catalog_manager/#{type}s/#{id}/edit"
   )
 

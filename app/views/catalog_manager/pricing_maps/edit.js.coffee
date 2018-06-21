@@ -18,62 +18,15 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogManager::PricingMapsController < CatalogManager::AppController
+$('#modal_place').html("<%= j render '/catalog_manager/pricing_maps/pricing_map_form', pricing_map: @pricing_map %>")
+$('#modal_place').modal('show')
 
-  def new
-    @pricing_map = PricingMap.new()
-    @service_id = params[:service_id]
-  end
+$('.selectpicker').selectpicker()
+$("[data-toggle='toggle']").bootstrapToggle(
+    on: 'Yes',
+    off: 'No'
+  )
 
-  def create
-    @pricing_map = PricingMap.new(pricing_map_params[:pricing_map])
+$('[data-toggle="tooltip"]').tooltip()
 
-    if @pricing_map.save
-      flash[:success] = "Pricing Map created successfully."
-      @service = @pricing_map.service
-    else
-      @errors = @pricing_map.errors
-      @service_id = pricing_map_params[:pricing_map][:service_id]
-    end
-  end
-
-  def edit
-    @pricing_map = PricingMap.find(pricing_map_params[:id])
-  end
-
-  def update
-    @pricing_map = PricingMap.find(pricing_map_params[:id])
-
-    if @pricing_map.update_attributes(pricing_map_params[:pricing_map])
-      flash[:success] = "Pricing Map updated successfully."
-      @service = @pricing_map.service
-    else
-      @errors = @pricing_map.errors
-    end
-  end
-
-
-  private
-
-  def pricing_map_params
-    params.permit(:id,
-      pricing_map: [
-      :display_date,
-      :effective_date,
-      :full_rate,
-      :federal_rate,
-      :corporate_rate,
-      :other_rate,
-      :member_rate,
-      :unit_type,
-      :unit_factor,
-      :unit_minimum,
-      :units_per_qty_max,
-      :otf_unit_type,
-      :quantity_minimum,
-      :quantity_type,
-      :exclude_from_indirect_cost,
-      :service_id
-      ])
-  end
-end
+$('.datetimepicker').datetimepicker(format: 'YYYY-MM-DD', allowInputToggle: false, useCurrent: false)

@@ -23,7 +23,7 @@
 - service_id = nil unless defined?(service_id)
 - pricing_map_disabled = (service_id ? false : pricing_map.disabled?(@user))
 
-#pricing_setup_modal
+#pricing_map_modal
   .modal-dialog
     .modal-content
       = form_for [:catalog_manager, pricing_map], remote: true, html: {class: 'form-horizontal'} do |f|
@@ -71,66 +71,6 @@
             .form-group
               = f.label :member_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:member_rate], class: 'col-sm-4 control-label'
               .col-sm-7= f.text_field :member_rate, {disabled: pricing_map_disabled, class: 'form-control'}
-
-
-
-            .form-group
-              = f.label :corporate, t(:catalog_manager)[:organization_form][:pricing][:corporate], class: 'col-sm-4 control-label'
-              .col-sm-7= f.text_field :corporate, {disabled: pricing_setup_disabled, class: 'form-control linked_to_federal'}
-
-            .form-group
-              = f.label :other, t(:catalog_manager)[:organization_form][:pricing][:other], class: 'col-sm-4 control-label'
-              .col-sm-7= f.text_field :other, {disabled: pricing_setup_disabled, class: 'form-control linked_to_federal'}
-
-            .form-group
-              = f.label :member, t(:catalog_manager)[:organization_form][:pricing][:member], class: 'col-sm-4 control-label'
-              .col-sm-7= f.text_field :member, {disabled: pricing_setup_disabled, class: 'form-control linked_to_federal'}
-
-            .form-group
-              .col-sm-7.col-sm-offset-4.small
-                = t(:catalog_manager)[:organization_form][:pricing][:must_be_greater]
-
-
-          %fieldset
-            %legend= t(:catalog_manager)[:organization_form][:pricing][:rates]
-            .form-group
-              .col-sm-4.text-right
-                %h4= t(:catalog_manager)[:organization_form][:pricing][:funding_source]
-              .col-sm-7
-                %h4= t(:catalog_manager)[:organization_form][:pricing][:rate]
-            .form-group
-              = f.label :college_rate_type, t(:catalog_manager)[:organization_form][:pricing][:college], class: 'col-sm-4 control-label'
-              .col-sm-7= f.select :college_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.college_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
-
-            .form-group
-              = f.label :federal_rate_type, t(:catalog_manager)[:organization_form][:pricing][:federal], class: 'col-sm-4 control-label'
-              .col-sm-7= f.select :federal_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.federal_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
-
-            .form-group
-              = f.label :industry_rate_type, t(:catalog_manager)[:organization_form][:pricing][:industry], class: 'col-sm-4 control-label'
-              .col-sm-7= f.select :industry_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.industry_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
-
-            .form-group
-              = f.label :investigator_rate_type, t(:catalog_manager)[:organization_form][:pricing][:investigator], class: 'col-sm-4 control-label'
-              .col-sm-7= f.select :investigator_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.investigator_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
-
-            .form-group
-              = f.label :internal_rate_type, t(:catalog_manager)[:organization_form][:pricing][:internal], class: 'col-sm-4 control-label'
-              .col-sm-7= f.select :internal_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.internal_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
-
-            .form-group
-              = f.label :foundation_rate_type, t(:catalog_manager)[:organization_form][:pricing][:foundation], class: 'col-sm-4 control-label'
-              .col-sm-7= f.select :foundation_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.foundation_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
-
-            .form-group
-              = f.label :unfunded_rate_type, t(:catalog_manager)[:organization_form][:pricing][:unfunded], class: 'col-sm-4 control-label'
-              .col-sm-7= f.select :unfunded_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.unfunded_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
-
-            .form-group
-              .col-sm-7.col-sm-offset-4.small
-                = t(:catalog_manager)[:organization_form][:pricing][:required_field]
-
-
 
 
             .clearfix

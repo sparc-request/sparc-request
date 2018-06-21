@@ -47,6 +47,15 @@
           .panel-body
             = render "catalog_manager/services/service_components_form", service: service, user: @user
 
+    .panel.panel-default#pricing
+      .panel-heading
+        %h4.panel-title
+          = link_to t(:catalog_manager)[:organization_form][:headers][:pricing], '#pricing-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
+      .panel-collapse.collapse#pricing-collapse
+        .panel-body
+          #pricing_setups_container
+            = render "pricing_form", service: service, user: @user
+
     .panel.panel-default#related-services
       .panel-heading
         %h4.panel-title

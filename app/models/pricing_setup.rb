@@ -92,6 +92,7 @@ class PricingSetup < ApplicationRecord
     end
   end
 
+  ##Checks user rights for given user, to be allowed to access historical pricing setups
   def disabled?(user)
     if user.can_edit_historical_data_for?(organization)
       false

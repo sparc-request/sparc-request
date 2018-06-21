@@ -239,8 +239,8 @@ $ ->
       data:
         organization_id: org_id
 
-  $(document).on 'click', '#pricing_setup_modal .modal-footer .btn-primary', ->
-    $(this).attr('disabled','disabled')
+  $(document).on 'submit', '#pricing_setup_modal form', ->
+    $('#pricing_setup_modal .modal-footer .btn-primary').attr('disabled','disabled')
 
   $(document).on 'click', '#apply_federal_percent', ->
     federal_value = $('.federal_rate_field').val()

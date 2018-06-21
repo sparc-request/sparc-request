@@ -409,7 +409,7 @@ class ServiceRequestsController < ApplicationController
     if Setting.find_by_key("use_news_feed").value
       @news = []
       begin
-        page = Nokogiri::HTML(open("https://www.sparcrequestblog.com"))
+        page = Nokogiri::HTML(open("https://www.sparcrequestblog.com", open_timeout: 5))
         articles = page.css('article.post').take(3)
         articles.each do |article|
           @news << {title: (article.at_css('.entry-title') ? article.at_css('.entry-title').text : ""),

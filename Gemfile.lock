@@ -276,8 +276,7 @@ GEM
     htmlentities (4.3.4)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    httparty (0.13.7)
-      json (~> 1.8)
+    httparty (0.16.2)
       multi_xml (>= 0.5.2)
     httpi (2.0.2)
       rack
@@ -299,7 +298,7 @@ GEM
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
     jquery_datepicker (0.4)
-    json (1.8.6)
+    json (2.1.0)
     launchy (2.4.3)
       addressable (~> 2.3)
     letter_opener (1.6.0)
@@ -634,7 +633,7 @@ DEPENDENCIES
   haml
   hashie-forbidden_attributes
   highline
-  httparty (~> 0.13.7)
+  httparty (~> 0.16.2)
   icalendar
   icalendar-recurrence
   jbuilder (~> 2.0)

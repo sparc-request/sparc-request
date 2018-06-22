@@ -71,7 +71,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
     if su_destroyed or cm_destroyed or sp_destroyed
       @identity_id = user_rights_params[:identity_id]
-      flash[:notice] = "User rights removed successfully."
+      flash[:success] = "User rights removed successfully."
     else
       flash[:alert] = "Error removing user rights."
     end
@@ -92,7 +92,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
     if cp_destroyed# or iv_destroyed
       @identity_id = fulfillment_rights_params[:identity_id]
-      flash[:notice] = "Fulfillment rights removed successfully."
+      flash[:success] = "Fulfillment rights removed successfully."
     else
       flash[:alert] = "Error removing fulfillment rights."
     end
@@ -103,7 +103,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   def toggle_default_statuses
     @organization = Organization.find(status_params[:organization_id])
     if @organization.update_attributes(use_default_statuses: status_params[:checked])
-      flash[:notice] = "Organization updated successfully."
+      flash[:success] = "Organization updated successfully."
     else
       flash[:alert] = "Error updating organization."
     end
@@ -119,7 +119,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     @status_value = @status.humanize
 
     if @status.update_attributes(selected: status_params[:selected])
-      flash[:notice] = "Status updated successfully."
+      flash[:success] = "Status updated successfully."
     else
       flash[:alert] = "Error updating status."
     end
@@ -134,7 +134,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     @associated_survey = @organization.associated_surveys.new :survey_id => params[:survey_id]
 
     if @associated_survey.save
-      flash[:notice] = "Survey added successfully."
+      flash[:success] = "Survey added successfully."
     else
       @organization.reload
       @associated_survey.errors.messages.each do |field, message|
@@ -149,7 +149,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
     if associated_survey.destroy
       @survey_id = associated_survey.id.to_s
-      flash[:notice] = "Survey deleted successfully."
+      flash[:success] = "Survey deleted successfully."
     else
       @survey_id = nil
       flash[:alert] = "Error deleting survey."
@@ -187,24 +187,6 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     end
   end
 
-  def save_pricing_setups
-    if params[:pricing_setups] && ['Program', 'Provider'].include?(@organization.type)
-      params[:pricing_setups].each do |_, ps|
-        if ps['id'].blank?
-          ps.delete("id")
-          ps.delete("newly_created")
-          @organization.pricing_setups.build(pricing_setups_params(pricing_setups_params(ps)))
-        else
-          # @organization.pricing_setups.find(ps['id']).update_attributes(ps)
-          ps_id = ps['id']
-          ps.delete("id")
-          @organization.pricing_setups.find(ps_id).update_attributes(pricing_setups_params(ps))
-        end
-        @organization.save
-      end
-    end
-  end
-
   def update_services
     if @attributes[:is_available] == '0'
       # disable ALL children
@@ -229,53 +211,8 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
       :is_available,
       :use_default_statuses,
       { tag_list:  [] },
-      subsidy_map_attributes: [:organization_id,
-        :max_dollar_cap,
-        :max_percentage,
-        :default_percentage,
-        :instructions],
-      pricing_setups_attributes: [:organization_id,
-        :display_date,
-        :effective_date,
-        :charge_master,
-        :federal,
-        :corporate,
-        :other,
-        :member,
-        :college_rate_type,
-        :federal_rate_type,
-        :foundation_rate_type,
-        :industry_rate_type,
-        :investigator_rate_type,
-        :internal_rate_type,
-        :unfunded_rate_type],
-      submission_emails_attributes: [:organization_id, :email],
-      available_statuses_attributes: [:organization_id,
-        :id,
-        :status,
-        :selected],
-      editable_statuses_attributes: [:organization_id,
-        :id,
-        :status,
-        :selected])
-  end
-
-  def pricing_setups_params(ps)
-    ps.permit(:organization_id,
-      :display_date,
-      :effective_date,
-      :charge_master,
-      :federal,
-      :corporate,
-      :other,
-      :member,
-      :college_rate_type,
-      :federal_rate_type,
-      :foundation_rate_type,
-      :industry_rate_type,
-      :investigator_rate_type,
-      :internal_rate_type,
-      :unfunded_rate_type)
+      submission_emails_attributes: [:organization_id, :email]
+      )
   end
 
   def fulfillment_rights_params

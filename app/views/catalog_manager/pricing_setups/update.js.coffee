@@ -18,43 +18,13 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module CatalogManager::CatalogHelper
+<% if @errors %>
+$("#modal_place #modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
+$("#pricing_setup_submit").removeAttr('disabled')
+<% else %>
+$("#modal_place").modal('hide')
+$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+$("#pricing_setups_container").html("<%= j render '/catalog_manager/organizations/pricing_form', organization: @organization, user: @user %>")
+<% end %>
 
-  def folder_glyphicon()
-    content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-folder-close')
-  end
-
-  def file_glyphicon()
-    content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-file')
-  end
-
-  def plus_glyphicon()
-    content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-plus')
-  end
-
-  def accordion_link_text(org, disabled=false)
-    if org.is_a?(Service)
-      css_class = org.is_available ? 'text-service' : 'text-service unavailable-org'
-      returning_html = content_tag(:span, org.name, class: css_class)
-    else
-      css_class = org.is_available ? "text-#{org.type.downcase}" : "text-#{org.type.downcase} unavailable-org"
-      returning_html = content_tag(:span, org.name, class: css_class)
-    end
-
-    if disabled
-      returning_html.insert(0, content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-ban-circle'))
-    end
-
-    returning_html
-  end
-
-  def create_new_text(org_key)
-    content_tag(:span, t(:catalog_manager)[:catalog][:new][org_key], class: "text-#{org_key}")
-  end
-
-  def disabled_parent organization
-    if (orgs = organization.parents.insert(0, organization).select{|org| !org.is_available}).any?
-      I18n.t('catalog_manager.organization_form.disabled_at', disabled_parent: orgs.last.name)
-    end
-  end
-end
+# $("#add-arm-form-button").removeAttr('disabled')

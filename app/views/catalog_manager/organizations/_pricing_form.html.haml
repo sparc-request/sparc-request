@@ -18,24 +18,10 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.row
-  .col-sm-8
-    %h5= t(:catalog_manager)[:organization_form][:surveys][:name_version]
-  .col-sm-4.text-center
-    %h5= t(:catalog_manager)[:service_form][:remove_add]
+#new_pricing_setup_link.btn.btn-info{data: {organization_id: organization.id}}
+  = t(:catalog_manager)[:organization_form][:pricing][:add_pricing]
 
-#surveys_container
-  - organization.associated_surveys.each do |associated_survey|
-    = render "survey_row", associated_survey: associated_survey, organization: organization
-
-.row
-  .col-sm-8
-    = select_tag 'new_associated_survey', grouped_options_for_select(SystemSurvey.active.group_by(&:title).map{|k,v| [k,v.map{|p| ["Version #{p.version}", p.id]}]}, nil, { prompt: t(:catalog_manager)[:organization_form][:surveys][:select_survey] }), {class: 'form-control select-type new_associated_survey selectpicker'}
-  .col-sm-4.text-center
-    %button.btn.btn-xs.btn-success.add-associated-survey{ data: {type: organization.type, id: organization.id}}
-      %span.glyphicon.glyphicon-plus
-
-.row
-  .col-sm-12
-    = t(:catalog_manager)[:organization_form][:surveys][:survey_warning]
+#pricing_setup_list
+  - organization.pricing_setups.sort_by(&:effective_date).each do |pricing_setup|
+    = render "/catalog_manager/organizations/pricing_setup", pricing_setup: pricing_setup
 

@@ -18,43 +18,61 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module CatalogManager::CatalogHelper
+class CatalogManager::PricingSetupsController < CatalogManager::AppController
 
-  def folder_glyphicon()
-    content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-folder-close')
+  def new
+    @pricing_setup = PricingSetup.new()
+    @organization_id = params[:organization_id]
   end
 
-  def file_glyphicon()
-    content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-file')
-  end
+  def create
+    @pricing_setup = PricingSetup.new(pricing_setup_params[:pricing_setup])
 
-  def plus_glyphicon()
-    content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-plus')
-  end
-
-  def accordion_link_text(org, disabled=false)
-    if org.is_a?(Service)
-      css_class = org.is_available ? 'text-service' : 'text-service unavailable-org'
-      returning_html = content_tag(:span, org.name, class: css_class)
+    if @pricing_setup.save
+      flash[:success] = "Pricing Setup created successfully."
+      @organization = @pricing_setup.organization
     else
-      css_class = org.is_available ? "text-#{org.type.downcase}" : "text-#{org.type.downcase} unavailable-org"
-      returning_html = content_tag(:span, org.name, class: css_class)
+      @errors = @pricing_setup.errors
+      @organization_id = pricing_setup_params[:pricing_setup][:organization_id]
     end
-
-    if disabled
-      returning_html.insert(0, content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-ban-circle'))
-    end
-
-    returning_html
   end
 
-  def create_new_text(org_key)
-    content_tag(:span, t(:catalog_manager)[:catalog][:new][org_key], class: "text-#{org_key}")
+  def edit
+    @pricing_setup = PricingSetup.find(pricing_setup_params[:id])
   end
 
-  def disabled_parent organization
-    if (orgs = organization.parents.insert(0, organization).select{|org| !org.is_available}).any?
-      I18n.t('catalog_manager.organization_form.disabled_at', disabled_parent: orgs.last.name)
+  def update
+    @pricing_setup = PricingSetup.find(pricing_setup_params[:id])
+
+    if @pricing_setup.update_attributes(pricing_setup_params[:pricing_setup])
+      flash[:success] = "Pricing Setup updated successfully."
+      @organization = @pricing_setup.organization
+    else
+      @errors = @pricing_setup.errors
     end
+  end
+
+
+  private
+
+  def pricing_setup_params
+    params.permit(:id,
+      pricing_setup: [
+      :display_date,
+      :effective_date,
+      :charge_master,
+      :federal,
+      :corporate,
+      :other,
+      :member,
+      :college_rate_type,
+      :federal_rate_type,
+      :industry_rate_type,
+      :investigator_rate_type,
+      :internal_rate_type,
+      :foundation_rate_type,
+      :unfunded_rate_type,
+      :organization_id
+      ])
   end
 end

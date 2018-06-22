@@ -222,6 +222,32 @@ $ ->
 
 
   ##############################################
+  ###          Organization Pricing          ###
+  ##############################################
+
+  $(document).on 'click', '.edit_pricing_setup_link', ->
+    pricing_setup_id = $(this).data('pricing-setup-id')
+    $.ajax
+      type: "GET"
+      url: "/catalog_manager/pricing_setups/#{pricing_setup_id}/edit"
+
+  $(document).on 'click', '#new_pricing_setup_link', ->
+    org_id = $(this).data('organization-id')
+    $.ajax
+      type: "GET"
+      url: "/catalog_manager/pricing_setups/new"
+      data:
+        organization_id: org_id
+
+  $(document).on 'submit', '#pricing_setup_modal form', ->
+    $('#pricing_setup_modal .modal-footer .btn-primary').attr('disabled','disabled')
+
+  $(document).on 'click', '#apply_federal_percent', ->
+    federal_value = $('.federal_rate_field').val()
+    $('.linked_to_federal').val(federal_value)
+
+
+  ##############################################
   ###          Service Components            ###
   ##############################################
 

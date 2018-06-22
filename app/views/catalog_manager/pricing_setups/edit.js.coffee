@@ -18,43 +18,15 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module CatalogManager::CatalogHelper
+$('#modal_place').html("<%= j render '/catalog_manager/pricing_setups/pricing_setup_form', pricing_setup: @pricing_setup %>")
+$('#modal_place').modal('show')
 
-  def folder_glyphicon()
-    content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-folder-close')
-  end
+$('.selectpicker').selectpicker()
+$("[data-toggle='toggle']").bootstrapToggle(
+    on: 'Yes',
+    off: 'No'
+  )
 
-  def file_glyphicon()
-    content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-file')
-  end
+$('[data-toggle="tooltip"]').tooltip()
 
-  def plus_glyphicon()
-    content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-plus')
-  end
-
-  def accordion_link_text(org, disabled=false)
-    if org.is_a?(Service)
-      css_class = org.is_available ? 'text-service' : 'text-service unavailable-org'
-      returning_html = content_tag(:span, org.name, class: css_class)
-    else
-      css_class = org.is_available ? "text-#{org.type.downcase}" : "text-#{org.type.downcase} unavailable-org"
-      returning_html = content_tag(:span, org.name, class: css_class)
-    end
-
-    if disabled
-      returning_html.insert(0, content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-ban-circle'))
-    end
-
-    returning_html
-  end
-
-  def create_new_text(org_key)
-    content_tag(:span, t(:catalog_manager)[:catalog][:new][org_key], class: "text-#{org_key}")
-  end
-
-  def disabled_parent organization
-    if (orgs = organization.parents.insert(0, organization).select{|org| !org.is_available}).any?
-      I18n.t('catalog_manager.organization_form.disabled_at', disabled_parent: orgs.last.name)
-    end
-  end
-end
+$('.datetimepicker').datetimepicker(format: 'YYYY-MM-DD', allowInputToggle: false, useCurrent: false)

@@ -114,14 +114,16 @@ class PricingSetup < ApplicationRecord
   end
 
   def rate_percentages
-    if corporate.present? && (corporate < federal)
-      errors.add(:corporate, "must be greater than or equal to Federal Rate.")
-    end
-    if other.present? && (other < federal)
-      errors.add(:other, "must be greater than or equal to Federal Rate.")
-    end
-    if member.present? && (member < federal)
-      errors.add(:member, "must be greater than or equal to Federal Rate.")
+    if federal.present?
+      if corporate.present? && (corporate < federal)
+        errors.add(:corporate, "must be greater than or equal to Federal Rate.")
+      end
+      if other.present? && (other < federal)
+        errors.add(:other, "must be greater than or equal to Federal Rate.")
+      end
+      if member.present? && (member < federal)
+        errors.add(:member, "must be greater than or equal to Federal Rate.")
+      end
     end
   end
 end

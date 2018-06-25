@@ -350,3 +350,7 @@ $ ->
   $(document).on 'change', '#pricing_map_quantity_type', ->
     new_value = $(this).val()
     $('.input-group-addon').text(new_value)
+
+  $(document).on 'change', '#pricing_map_unit_type', ->
+    new_value = $(this).val()
+    $('.input-group-addon').text(new_value)

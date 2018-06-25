@@ -211,7 +211,7 @@ en:
       remove_component_confirm: "Are you sure you want to delete the selected service component from this service?"
 
       pricing_map_form:
-        add_pricing: "Add Pricing Setup"
+        add_pricing: "Add Pricing Map"
         title: "Pricing Map"
         clinical_service: "Clinical Service"
         non_clinical_service: "Non-Clinical Service"
@@ -223,6 +223,7 @@ en:
         quantity_minimum: "Quantity Minimum"
         units_per_qty_max: "Unit Maximum"
         exclude_from_indirect_cost: "Exclude from Indirect Cost"
+        full_rate: "Service Rate"
         # corporate_rate: "Corporate Rate"
         #
         # federal_rate: "Federal Rate"
@@ -236,7 +237,7 @@ en:
         #
         # rate_disclaimer: "*IF N/A, NO PRICING SET-UP IS DEFINED FOR THE CURRENT DATES"
         # rates: "Rates"
-        # service_rate: "Service Rate"
+        #
 
         #
         #

@@ -57,7 +57,7 @@
           %fieldset
             %legend= t(:catalog_manager)[:organization_form][:pricing][:rates]
             .form-group
-              = f.label :full_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:service_rate], class: 'col-sm-4 control-label'
+              = f.label :full_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:full_rate], class: 'col-sm-4 control-label'
               .col-sm-7= f.text_field :full_rate, {disabled: pricing_map_disabled, class: 'form-control'}
             .form-group
               = f.label :federal_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:federal_rate], class: 'col-sm-4 control-label'
@@ -109,7 +109,10 @@
                 .col-sm-7= f.text_field :unit_factor, {disabled: pricing_map_disabled, class: 'form-control'}
               .form-group
                 = f.label :unit_minimum, t(:catalog_manager)[:service_form][:pricing_map_form][:unit_minimum], class: 'col-sm-4 control-label'
-                .col-sm-7= f.text_field :unit_minimum, {disabled: pricing_map_disabled, class: 'form-control'}
+                .col-sm-7
+                  .input-group
+                    = f.text_field :unit_minimum, {disabled: pricing_map_disabled, class: 'form-control'}
+                    %span.input-group-addon= pricing_map.unit_type
 
 
             .clearfix

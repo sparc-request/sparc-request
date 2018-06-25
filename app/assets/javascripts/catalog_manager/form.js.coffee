@@ -346,3 +346,7 @@ $ ->
 
   $(document).on 'submit', '#pricing_map_modal form', ->
     $('#pricing_map_modal .modal-footer .btn-primary').attr('disabled','disabled')
+
+  $(document).on 'change', '#pricing_map_quantity_type', ->
+    new_value = $(this).val()
+    $('.input-group-addon').text(new_value)

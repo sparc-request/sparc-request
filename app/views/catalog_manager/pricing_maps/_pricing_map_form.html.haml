@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/ = t(:catalog_manager)[:organization_form][:pricing][]
+/ = t(:catalog_manager)[:organization_form][:pricing_map_form][]
 
 - service_id = nil unless defined?(service_id)
 - pricing_map_disabled = (service_id ? false : pricing_map.disabled?(@user))
@@ -71,6 +71,45 @@
             .form-group
               = f.label :member_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:member_rate], class: 'col-sm-4 control-label'
               .col-sm-7= f.text_field :member_rate, {disabled: pricing_map_disabled, class: 'form-control'}
+
+          - if pricing_map.is_one_time_fee?
+            %fieldset
+              %legend= t(:catalog_manager)[:service_form][:pricing_map_form][:non_clinical_service]
+              .form-group
+                = f.label :otf_unit_type, t(:catalog_manager)[:service_form][:pricing_map_form][:otf_unit_type], class: 'col-sm-4 control-label'
+                .col-sm-7= f.text_field :otf_unit_type, {disabled: pricing_map_disabled, class: 'form-control'}
+              .form-group
+                = f.label :quantity_type, t(:catalog_manager)[:service_form][:pricing_map_form][:quantity_type], class: 'col-sm-4 control-label'
+                .col-sm-7= f.text_field :quantity_type, {disabled: pricing_map_disabled, class: 'form-control'}
+              .form-group
+                = f.label :quantity_minimum, t(:catalog_manager)[:service_form][:pricing_map_form][:quantity_minimum], class: 'col-sm-4 control-label'
+                .col-sm-7
+                  .input-group
+                    = f.text_field :quantity_minimum, {disabled: pricing_map_disabled, class: 'form-control'}
+                    %span.input-group-addon= pricing_map.quantity_type
+              .form-group
+                = f.label :unit_factor, t(:catalog_manager)[:service_form][:pricing_map_form][:unit_factor], class: 'col-sm-4 control-label'
+                .col-sm-7= f.text_field :unit_factor, {disabled: pricing_map_disabled, class: 'form-control'}
+              .form-group
+                = f.label :units_per_qty_max, t(:catalog_manager)[:service_form][:pricing_map_form][:units_per_qty_max], class: 'col-sm-4 control-label'
+                .col-sm-7= f.text_field :units_per_qty_max, {disabled: pricing_map_disabled, class: 'form-control'}
+              - if Setting.find_by_key("use_indirect_cost").value
+                .form-group
+                  = f.label :exclude_from_indirect_cost, t(:catalog_manager)[:service_form][:pricing_map_form][:exclude_from_indirect_cost], class: 'col-sm-4 control-label'
+                  .col-sm-7= f.check_box :exclude_from_indirect_cost, {disabled: pricing_setup_disabled, checked: pricing_map.exclude_from_indirect_cost, data: {toggle: 'toggle'}}
+
+          - else
+            %fieldset
+              %legend= t(:catalog_manager)[:service_form][:pricing_map_form][:clinical_service]
+              .form-group
+                = f.label :unit_type, t(:catalog_manager)[:service_form][:pricing_map_form][:unit_type], class: 'col-sm-4 control-label'
+                .col-sm-7= f.text_field :unit_type, {disabled: pricing_map_disabled, class: 'form-control'}
+              .form-group
+                = f.label :unit_factor, t(:catalog_manager)[:service_form][:pricing_map_form][:unit_factor], class: 'col-sm-4 control-label'
+                .col-sm-7= f.text_field :unit_factor, {disabled: pricing_map_disabled, class: 'form-control'}
+              .form-group
+                = f.label :unit_minimum, t(:catalog_manager)[:service_form][:pricing_map_form][:unit_minimum], class: 'col-sm-4 control-label'
+                .col-sm-7= f.text_field :unit_minimum, {disabled: pricing_map_disabled, class: 'form-control'}
 
 
             .clearfix

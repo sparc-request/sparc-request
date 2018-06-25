@@ -213,24 +213,30 @@ en:
       pricing_map_form:
         add_pricing: "Add Pricing Setup"
         title: "Pricing Map"
-        # clinical_quantity_type: "Clinical Quantity Type (hours, each, slides, etc.)"
+        clinical_service: "Clinical Service"
+        non_clinical_service: "Non-Clinical Service"
+        unit_type: "Clinical Quantity Type (hours, each, slides, etc.)"
+        unit_factor: "Unit Factor"
+        unit_minimum: "Quantity Minimum"
+        otf_unit_type: "Unit Type (weeks, days, samples, etc.)"
+        quantity_type: "Quantity Type (hours, each, slides, etc.)"
+        quantity_minimum: "Quantity Minimum"
+        units_per_qty_max: "Unit Maximum"
+        exclude_from_indirect_cost: "Exclude from Indirect Cost"
         # corporate_rate: "Corporate Rate"
-        # dates: "Dates"
-        # display_date: "Display Dates"
-        # effective_date: "Effective Date"
-        # exclude_from_indirect_cost: "Exclude from Indirect Cost"
+        #
         # federal_rate: "Federal Rate"
         # is_one_time_fee: "Is One Time Fee"
         # member_rate: "Member Rate"
         # one_time_fee: "One Time Fee"
-        # otf_quantity_minimum: "Quantity Minimum"
-        # otf_unit_type: "Unit Type (weeks, days, samples, etc.)"
+        #
+        #
         # other_rate: "Other Rate"
         # per_patient: "Per Patient"
-        # quantity_type: "Quantity Type (hours, each, slides, etc.)"
+        #
         # rate_disclaimer: "*IF N/A, NO PRICING SET-UP IS DEFINED FOR THE CURRENT DATES"
         # rates: "Rates"
         # service_rate: "Service Rate"
-        # unit_factor: "Unit Factor"
-        # unit_maximum: "Unit Maximum"
-        # unit_minimum: "Quantity Minimum"
+
+        #
+        #

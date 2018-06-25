@@ -30,7 +30,7 @@ class PricingMap < ApplicationRecord
             :federal_rate,
             :corporate_rate,
             :other_rate,
-            :mamber_rate,
+            :member_rate,
             :unit_factor,
             presence: true
   validates :full_rate,

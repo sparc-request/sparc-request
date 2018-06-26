@@ -22,6 +22,7 @@
 
 - service_id = nil unless defined?(service_id)
 - pricing_map_disabled = (service_id ? false : pricing_map.disabled?(@user))
+- rate_map = pricing_map.service.get_rate_maps(pricing_map.display_date.to_date.strftime("%F"), pricing_map.full_rate) rescue nil
 
 #pricing_map_modal
   .modal-dialog
@@ -58,19 +59,32 @@
             %legend= t(:catalog_manager)[:organization_form][:pricing][:rates]
             .form-group
               = f.label :full_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:full_rate], class: 'col-sm-4 control-label'
-              .col-sm-7= f.text_field :full_rate, {disabled: pricing_map_disabled, class: 'form-control'}
+              .col-sm-7= f.text_field :full_rate, {value: Service.cents_to_dollars(pricing_map.full_rate), disabled: pricing_map_disabled, class: 'form-control'}
+
+            .form-group
+              .col-sm-2.col-sm-offset-4.text-center= t(:catalog_manager)[:service_form][:pricing_map_form][:calculated]
+              .col-sm-5= t(:catalog_manager)[:service_form][:pricing_map_form][:override]
+
             .form-group
               = f.label :federal_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:federal_rate], class: 'col-sm-4 control-label'
-              .col-sm-7= f.text_field :federal_rate, {disabled: pricing_map_disabled, class: 'form-control'}
+              .col-sm-2.text-center= (rate_map ? rate_map['federal_rate'] : "N/A") + " *"
+              .col-sm-5= f.text_field :federal_rate, {value: Service.cents_to_dollars(pricing_map.federal_rate), disabled: pricing_map_disabled, class: 'form-control'}
             .form-group
               = f.label :corporate_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:corporate_rate], class: 'col-sm-4 control-label'
-              .col-sm-7= f.text_field :corporate_rate, {disabled: pricing_map_disabled, class: 'form-control'}
+              .col-sm-2.text-center= (rate_map ? rate_map['corporate_rate'] : "N/A") + " *"
+              .col-sm-5= f.text_field :corporate_rate, {value: Service.cents_to_dollars(pricing_map.corporate_rate), disabled: pricing_map_disabled, class: 'form-control'}
             .form-group
               = f.label :other_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:other_rate], class: 'col-sm-4 control-label'
-              .col-sm-7= f.text_field :other_rate, {disabled: pricing_map_disabled, class: 'form-control'}
+              .col-sm-2.text-center= (rate_map ? rate_map['other_rate'] : "N/A") + " *"
+              .col-sm-5= f.text_field :other_rate, {value: Service.cents_to_dollars(pricing_map.other_rate), disabled: pricing_map_disabled, class: 'form-control'}
             .form-group
               = f.label :member_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:member_rate], class: 'col-sm-4 control-label'
-              .col-sm-7= f.text_field :member_rate, {disabled: pricing_map_disabled, class: 'form-control'}
+              .col-sm-2.text-center= (rate_map ? rate_map['member_rate'] : "N/A") + " *"
+              .col-sm-5= f.text_field :member_rate, {value: Service.cents_to_dollars(pricing_map.member_rate), disabled: pricing_map_disabled, class: 'form-control'}
+
+            .form-group
+              .col-sm-7.col-sm-offset-4.small
+                = t(:catalog_manager)[:service_form][:pricing_map_form][:rate_disclaimer]
 
           - if pricing_map.is_one_time_fee?
             %fieldset
@@ -93,10 +107,15 @@
               .form-group
                 = f.label :units_per_qty_max, t(:catalog_manager)[:service_form][:pricing_map_form][:units_per_qty_max], class: 'col-sm-4 control-label'
                 .col-sm-7= f.text_field :units_per_qty_max, {disabled: pricing_map_disabled, class: 'form-control'}
+
               - if Setting.find_by_key("use_indirect_cost").value
                 .form-group
                   = f.label :exclude_from_indirect_cost, t(:catalog_manager)[:service_form][:pricing_map_form][:exclude_from_indirect_cost], class: 'col-sm-4 control-label'
                   .col-sm-7= f.check_box :exclude_from_indirect_cost, {disabled: pricing_setup_disabled, checked: pricing_map.exclude_from_indirect_cost, data: {toggle: 'toggle'}}
+
+              .form-group
+                .col-sm-7.col-sm-offset-4.small
+                  = t(:catalog_manager)[:organization_form][:pricing][:required_field]
 
           - else
             %fieldset
@@ -113,6 +132,9 @@
                   .input-group
                     = f.text_field :unit_minimum, {disabled: pricing_map_disabled, class: 'form-control'}
                     %span.input-group-addon= pricing_map.unit_type
+              .form-group
+                .col-sm-7.col-sm-offset-4.small
+                  = t(:catalog_manager)[:organization_form][:pricing][:required_field]
 
 
             .clearfix

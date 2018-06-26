@@ -56,7 +56,7 @@ class CatalogManager::PricingMapsController < CatalogManager::AppController
   private
 
   def pricing_map_params
-    params.permit(:id,
+    temp = params.permit(:id,
       pricing_map: [
       :display_date,
       :effective_date,
@@ -75,5 +75,15 @@ class CatalogManager::PricingMapsController < CatalogManager::AppController
       :exclude_from_indirect_cost,
       :service_id
       ])
+
+    if temp[:pricing_map]
+      temp[:pricing_map][:full_rate] = Service.dollars_to_cents(temp[:pricing_map][:full_rate]) unless temp[:pricing_map][:full_rate].blank?
+      temp[:pricing_map][:federal_rate] = Service.dollars_to_cents(temp[:pricing_map][:federal_rate]) unless temp[:pricing_map][:federal_rate].blank?
+      temp[:pricing_map][:corporate_rate] = Service.dollars_to_cents(temp[:pricing_map][:corporate_rate]) unless temp[:pricing_map][:corporate_rate].blank?
+      temp[:pricing_map][:other_rate] = Service.dollars_to_cents(temp[:pricing_map][:other_rate]) unless temp[:pricing_map][:other_rate].blank?
+      temp[:pricing_map][:member_rate] = Service.dollars_to_cents(temp[:pricing_map][:member_rate]) unless temp[:pricing_map][:member_rate].blank?
+    end
+
+    temp
   end
 end

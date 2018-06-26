@@ -118,7 +118,7 @@ class SearchController < ApplicationController
   def breadcrumb_text(item)
     if item.parents.any?
       breadcrumb = []
-      item.parents.map(&:abbreviation).each do |parent_abbreviation|
+      item.parents.reverse.map(&:abbreviation).each do |parent_abbreviation|
         breadcrumb << "<span>#{parent_abbreviation} </span>"
         breadcrumb << "<span class='inline-glyphicon glyphicon glyphicon-triangle-right'> </span>"
       end

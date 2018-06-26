@@ -215,15 +215,18 @@ en:
         title: "Pricing Map"
         clinical_service: "Clinical Service"
         non_clinical_service: "Non-Clinical Service"
-        unit_type: "Clinical Quantity Type (hours, each, slides, etc.)"
-        unit_factor: "Unit Factor"
-        unit_minimum: "Quantity Minimum"
-        otf_unit_type: "Unit Type (weeks, days, samples, etc.)"
-        quantity_type: "Quantity Type (hours, each, slides, etc.)"
-        quantity_minimum: "Quantity Minimum"
-        units_per_qty_max: "Unit Maximum"
+        unit_type: "Quantity Type (hours, each, slides, etc.) *"
+        unit_factor: "Unit Factor *"
+        unit_minimum: "Quantity Minimum *"
+        otf_unit_type: "Unit Type (weeks, days, samples, etc.) *"
+        quantity_type: "Quantity Type (hours, each, slides, etc.) *"
+        quantity_minimum: "Quantity Minimum *"
+        units_per_qty_max: "Unit Maximum *"
         exclude_from_indirect_cost: "Exclude from Indirect Cost"
         full_rate: "Service Rate"
+        calculated: "Calculated"
+        override: "Override"
+        rate_disclaimer: "*IF N/A, NO PRICING SET-UP IS DEFINED FOR THE CURRENT DATES"
         # corporate_rate: "Corporate Rate"
         #
         # federal_rate: "Federal Rate"
@@ -235,7 +238,7 @@ en:
         # other_rate: "Other Rate"
         # per_patient: "Per Patient"
         #
-        # rate_disclaimer: "*IF N/A, NO PRICING SET-UP IS DEFINED FOR THE CURRENT DATES"
+        #
         # rates: "Rates"
         #
 

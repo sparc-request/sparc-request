@@ -27,14 +27,9 @@ class PricingMap < ApplicationRecord
   validates :full_rate,
             :display_date,
             :effective_date,
-            :federal_rate,
-            :corporate_rate,
             :unit_factor,
             presence: true
-  validates :full_rate,
-            :federal_rate,
-            :corporate_rate,
-            :unit_factor,
+  validates :unit_factor,
             numericality: true
 
   validate :effective_date_after_display_date

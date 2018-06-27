@@ -111,7 +111,7 @@
               - if Setting.find_by_key("use_indirect_cost").value
                 .form-group
                   = f.label :exclude_from_indirect_cost, t(:catalog_manager)[:service_form][:pricing_map_form][:exclude_from_indirect_cost], class: 'col-sm-4 control-label'
-                  .col-sm-7= f.check_box :exclude_from_indirect_cost, {disabled: pricing_setup_disabled, checked: pricing_map.exclude_from_indirect_cost, data: {toggle: 'toggle'}}
+                  .col-sm-7= f.check_box :exclude_from_indirect_cost, {disabled: pricing_map_disabled, checked: pricing_map.exclude_from_indirect_cost, data: {toggle: 'toggle'}}
 
               .form-group
                 .col-sm-7.col-sm-offset-4.small
@@ -140,4 +140,4 @@
             .clearfix
         .modal-footer
           %button.btn.btn-default{data: {dismiss: 'modal'}, type: 'button'} Close
-          %input#pricing_setup_submit.btn.btn-primary{type: 'submit', value: t(:actions)[:save]}
+          %input#pricing_map_submit.btn.btn-primary{type: 'submit', value: t(:actions)[:save]}

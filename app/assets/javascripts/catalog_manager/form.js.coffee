@@ -228,6 +228,15 @@ $ ->
         selected: $(this).prop('checked')
         status_type: "EditableStatus"
 
+  ##############################################
+  ###          Create New Organization       ###
+  ##############################################
+
+  $(document).on 'click', '.new-institution', ->
+    $.ajax
+      type: 'GET'
+      url: 'catalog_manager/organizations/new.js'
+    return false
 
   ##############################################
   ###          Service Components            ###

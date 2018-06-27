@@ -24,7 +24,7 @@
     .col-sm-1.no-padding-y
       = link_to plus_glyphicon(), 'javascript:void(0)', data: { parent: '#cm-accordion' }
     .col-sm-11.no-padding-y
-      = link_to create_new_text(:institution), 'javascript:void(0)', class: 'org-form-label panel-title'
+      = link_to create_new_text(:institution), new_catalog_manager_organization_path, class: 'org-form-label panel-title new-institution'
   - institutions.where(is_available: availability).each do |institution|
     .panel-heading.no-padding-y
       .col-sm-1.no-padding-y

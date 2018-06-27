@@ -209,7 +209,7 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :organizations, only: [:edit, :update, :create] do
+    resources :organizations, only: [:edit, :update, :create, :new] do
       get :add_user_rights_row
       get :add_fulfillment_rights_row
     end

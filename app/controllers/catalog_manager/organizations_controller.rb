@@ -20,6 +20,10 @@
 class CatalogManager::OrganizationsController < CatalogManager::AppController
   layout false
 
+  def new
+     @organization = Organization.new
+  end
+
   def create
     @organization.build_subsidy_map() unless @organization.type == 'Institution'
     @organization.save

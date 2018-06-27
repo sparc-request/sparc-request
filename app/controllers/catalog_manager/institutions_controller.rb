@@ -20,8 +20,24 @@
 
 class CatalogManager::InstitutionsController < CatalogManager::OrganizationsController
   def create
-    @organization = Institution.create({name: params[:name], abbreviation: params[:name], is_available: false})
-    @user.catalog_manager_rights.create( organization_id: @organization.id )
+    @organization = Institution.create({name: params[:name], abbreviation: params[:name], is_available: true})
+    @user.catalog_manager_rights.create(organization_id: @organization.id)
+
+    @user_rights  = user_rights(@organization.id)
+    @path = new_catalog_manager_organization_path
+
+    if @organization.valid?
+      flash[:notice] = "#{@organization.name} created successfully."
+    else
+      @errors = @organization.errors
+    end
+
+    @institutions = Institution.order('`order`')
+
+    respond_to do |format|
+      format.js
+    end
+
   end
 
   def edit

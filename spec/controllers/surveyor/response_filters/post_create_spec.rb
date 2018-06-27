@@ -49,7 +49,7 @@ RSpec.describe Surveyor::ResponseFiltersController, type: :controller do
 
       it 'should save @response_filter' do
         expect(assigns(:response_filter).new_record?).to eq(false)
-        expect(assigns(:response_filter).attributes.except('id', 'created_at', 'updated_at')).to eq(@filter.attributes.except('id', 'created_at', 'updated_at'))
+        expect(assigns(:response_filter).attributes.except('id', 'created_at', 'updated_at', 'start_date', 'end_date')).to eq(@filter.attributes.except('id', 'created_at', 'updated_at', 'start_date', 'end_date'))
       end
 
       it { is_expected.to respond_with(:ok) }

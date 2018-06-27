@@ -20,7 +20,7 @@
 
 # Relationships with protocols must be created manually through the id's
 # because of validations on protocol
-FactoryGirl.define do
+FactoryBot.define do
   factory :project_role do
     protocol nil
     identity nil

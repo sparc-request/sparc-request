@@ -35,7 +35,7 @@ class LineItem < ApplicationRecord
   has_many :admin_rates, dependent: :destroy
   has_many :notes, as: :notable, dependent: :destroy
   has_one :protocol, through: :service_request
-  
+
   attr_accessor :pricing_scheme
 
   accepts_nested_attributes_for :fulfillments, allow_destroy: true
@@ -52,8 +52,18 @@ class LineItem < ApplicationRecord
 
   after_create :build_line_items_visits_if_pppv
   before_destroy :destroy_arms_if_last_pppv_line_item
-  
+
   default_scope { order('line_items.id ASC') }
+
+  ### These only pertain to OTF services
+  def otf_unit_type
+    service.displayed_pricing_map.try(:otf_unit_type)
+  end
+
+  def quantity_type
+    service.displayed_pricing_map.try(:quantity_type)
+  end
+  ### End OTF services only methods (may be more below but these were added)
 
   def displayed_cost_valid?(displayed_cost)
     return true if displayed_cost.nil?
@@ -118,8 +128,7 @@ class LineItem < ApplicationRecord
   end
 
   def has_admin_rates?
-    has_admin_rates = !self.admin_rates.empty? && !self.admin_rates.last.admin_cost.blank?
-    has_admin_rates
+    self.admin_rates.present? && self.admin_rates.last.admin_cost.present?
   end
 
   def attached_to_submitted_request

@@ -23,7 +23,10 @@
       %button.close{ type: 'button', data: { dismiss: 'modal' } }
         %span{ aria: { hidden:'true' } } &times;
       %h4.modal-title.text-center
-        = I18n.t('dashboard.notes.header', notable_type: notable_type == 'Protocol' ? notable.type : notable_type)
+        - if notable_type == 'EpicQueueRecord'
+          = "Epic Queue Record Notes | Study: #{EpicQueueRecord.find(notable_id).protocol_id}"
+        - else
+          = I18n.t('dashboard.notes.header', notable_type: notable_type == 'Protocol' ? notable.type : notable_type)
     .modal-body
       #modal_errors
       .form-content

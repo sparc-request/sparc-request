@@ -361,7 +361,7 @@ RSpec.describe Service, type: :model do
     context "around_update" do
 
       it "should create a Delayed::Job" do
-        service = FactoryGirl.create(:service_with_components)
+        service = FactoryBot.create(:service_with_components)
         work_off
         service.update_attribute(:components, "dum,spiro,spero,")
 

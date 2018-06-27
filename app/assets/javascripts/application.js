@@ -33,6 +33,7 @@
 //= require bootstrap-select
 //= require bootstrap-table
 //= require bootstrap-table-export
+//= require tableExport
 //= require bootstrap-table-custom
 //= require moment
 //= require bootstrap-datetimepicker

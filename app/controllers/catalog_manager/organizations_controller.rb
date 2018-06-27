@@ -157,40 +157,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     else
       flash[:notice] = "Successfully updated the pricing maps for all of the services under #{@organization.name} except for the following: #{services_not_updated.join(', ')}"
     end
-
   end
-
-
-
-  # def update_pricing_maps
-  #   percentage = params[:percentage]
-  #   effective_date = params[:effective_date]
-  #   display_date = params[:display_date]
-  #   entity_id = params[:entity_id]
-
-  #   organization = Organization.find(entity_id)
-  #   services = organization.all_child_services
-  #   @entity = organization
-
-  #   services_not_updated = []
-  #   services.each do |service|
-  #     old_effective_dates = service.pricing_maps.map{ |pm| pm.effective_date }
-  #     old_display_dates = service.pricing_maps.map{ |pm| pm.display_date }
-  #     if old_effective_dates.include?(effective_date.to_date) || old_display_dates.include?(display_date.to_date)
-  #       services_not_updated << service.name
-  #     else
-  #       service.increase_decrease_pricing_map(percentage, display_date, effective_date)
-  #     end
-  #   end
-
-  #   if services_not_updated.empty?
-  #     @rsp = "Successfully updated the pricing maps for all of the services under #{@entity.name}."
-  #   else
-  #     @rsp = "Successfully updated the pricing maps for all of the services under #{@entity.name} except for the following: #{services_not_updated.join(', ')}"
-  #   end
-
-  # end
-
 
 
   ####Actions for Surveys sub-form####

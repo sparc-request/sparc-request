@@ -20,7 +20,7 @@
 
 #pricing_setups_container
   %h4.form_row= t(:catalog_manager)[:organization_form][:pricing][:pricing_setups]
-  #new_pricing_setup_link.btn.btn-info{data: {organization_id: organization.id}}
+  #new_pricing_setup_link.btn.btn-primary{data: {organization_id: organization.id}}
     = t(:catalog_manager)[:organization_form][:pricing][:add_pricing]
 
   #pricing_setup_list
@@ -29,8 +29,14 @@
 
 #increase_decrease_container
   %h4.form_row= t(:catalog_manager)[:organization_form][:pricing][:auto_price_adj]
-  #increase_decrease_button.btn.btn-info{data: {organization_id: organization.id}}
+  #increase_decrease_button.btn.btn-primary{data: {organization_id: organization.id}}
     = t(:catalog_manager)[:organization_form][:pricing][:increase_decrease]
 
 #subsidy_container
   %h4.form_row= t(:catalog_manager)[:organization_form][:pricing][:subsidy_info]
+  - if organization.subsidy_map
+    #edit_subsidy_map_button.btn.btn-primary{data: {subsidy_map_id: organization.subsidy_map.id}}
+      = t(:catalog_manager)[:organization_form][:pricing][:edit_subsidy_map]
+  - else
+    #new_subsidy_map_button.btn.btn-primary{data: {organization_id: organization.id}}
+      = t(:catalog_manager)[:organization_form][:pricing][:new_subsidy_map]

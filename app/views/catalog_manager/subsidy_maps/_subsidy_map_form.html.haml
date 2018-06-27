@@ -1,0 +1,50 @@
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+#subsidy_map_modal
+  .modal-dialog
+    .modal-content
+      = form_for [:catalog_manager, subsidy_map], remote: true, html: {class: 'form-horizontal'} do |f|
+        .modal-header
+          %button.close{"aria-label" => "Close", data: {dismiss: 'modal'}, type: "button"}
+            %span{"aria-hidden" => "true"} ×
+          %h4.modal-title= t(:catalog_manager)[:organization_form][:pricing][:subsidy_map]
+
+        .modal-body
+          -#- if organization_id
+            -#= f.hidden_field :organization_id, value: organization_id
+          #modal_errors
+          .form-group
+            = f.label :max_percentage, t(:catalog_manager)[:organization_form][:pricing][:max_percentage], class: 'col-sm-4 control-label'
+            .col-sm-7= f.text_field :max_percentage, {class: 'form-control'}
+          .form-group
+            = f.label :default_percentage, t(:catalog_manager)[:organization_form][:pricing][:default_percentage], class: 'col-sm-4 control-label'
+            .col-sm-7= f.text_field :default_percentage, {class: 'form-control'}
+          .form-group
+            = f.label :max_dollar_cap, t(:catalog_manager)[:organization_form][:pricing][:max_dollar_cap], class: 'col-sm-4 control-label'
+            .col-sm-7= f.text_field :max_dollar_cap, {class: 'form-control'}
+          .form-group
+            -#
+          .form-group
+            = f.label :instructions, t(:catalog_manager)[:organization_form][:pricing][:instructions], class: 'col-sm-4 control-label'
+            .col-sm-7= f.text_field :instructions, {class: 'form-control'}
+        .modal-footer
+          %button.btn.btn-default{data: {dismiss: 'modal'}, type: 'button'} Close
+          %input#pricing_setup_submit.btn.btn-primary{type: 'submit', value: t(:actions)[:save]}

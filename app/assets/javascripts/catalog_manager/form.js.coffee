@@ -259,6 +259,17 @@ $ ->
   $(document).on 'submit', '#increase_decrease_modal form', ->
     $('#increase_decrease_submit').attr('disabled','disabled')
 
+  $(document).on 'click', '#edit_subsidy_map_button', ->
+    subsidy_map_id = $(this).data('subsidy-map-id')
+    $.ajax
+      type: "GET"
+      url: "/catalog_manager/subsidy_maps/#{subsidy_map_id}/edit"
+
+  $(document).on 'click', '#new_subsidy_map_button', ->
+    org_id = $(this).data('organization-id')
+    #Stuff
+
+
   ##############################################
   ###          Service Components            ###
   ##############################################

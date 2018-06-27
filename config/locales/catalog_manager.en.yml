@@ -132,6 +132,13 @@ en:
         subsidy_info: "Subsidy Information"
         auto_price_adj: "Automatic Pricing Adjustment"
         percent_of_change: "Percent of Change"
+        subsidy_map: "Subsidy Map"
+        edit_subsidy_map: "Edit Subsidy Map"
+        new_subsidy_map: "New Subsidy Map"
+        max_percentage: "Max Percentage"
+        default_percentage: "Default Percentage"
+        max_dollar_cap: "Max Dollar Cap"
+        subsidy_instructions: "Instructions"
 
       not_authorized: "You do not have rights to edit this Organization."
       remove: "Remove"
@@ -186,10 +193,6 @@ en:
       status_legend: "Status Options (Use default statuses below or click to create custom service request statuses)"
       submission_emails: "Submission E-mails"
       submit_button: "Save"
-      subsidy_max_dollar: "Max Dollar Cap"
-      subsidy_max_percent: "Max Percentage"
-      subsidy_default_percentage: "Default Percentage"
-      subsidy_instructions: "Instructions"
       tag_list: "Tags"
 
     related_services_form:

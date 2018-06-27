@@ -24,7 +24,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
   describe 'GET /v1/identities.json' do
     before do
-      FactoryGirl.create_list(:identity, 5)
+      FactoryBot.create_list(:identity, 5)
     end
     ##################################
     # Shallow records
@@ -801,9 +801,9 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         before do
           @identity = Identity.first
           5.times do
-            protocol = FactoryGirl.build(:protocol)
+            protocol = FactoryBot.build(:protocol)
             protocol.save validate: false
-            FactoryGirl.create(:project_role_with_identity_and_protocol, identity: @identity, protocol: protocol)
+            FactoryBot.create(:project_role_with_identity_and_protocol, identity: @identity, protocol: protocol)
           end
 
           params = { :depth => 'full_with_shallow_reflections',
@@ -831,9 +831,9 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         before do
           @identity = Identity.first
           5.times do
-            protocol = FactoryGirl.build(:protocol)
+            protocol = FactoryBot.build(:protocol)
             protocol.save validate: false
-            FactoryGirl.create(:project_role_with_identity_and_protocol, identity: @identity, protocol: protocol)
+            FactoryBot.create(:project_role_with_identity_and_protocol, identity: @identity, protocol: protocol)
           end
 
           params = { :depth => 'full_with_shallow_reflections',
@@ -863,9 +863,9 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         before do
           @identity = Identity.first
           5.times do
-            protocol = FactoryGirl.build(:protocol)
+            protocol = FactoryBot.build(:protocol)
             protocol.save validate: false
-            FactoryGirl.create(:project_role_with_identity_and_protocol, identity: @identity, protocol: protocol)
+            FactoryBot.create(:project_role_with_identity_and_protocol, identity: @identity, protocol: protocol)
           end
 
           params = { :depth => 'full_with_shallow_reflections',
@@ -895,9 +895,9 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         before do
           @identity = Identity.first
           5.times do
-            protocol = FactoryGirl.build(:protocol)
+            protocol = FactoryBot.build(:protocol)
             protocol.save validate: false
-            FactoryGirl.create(:project_role_with_identity_and_protocol, identity: @identity, protocol: protocol)
+            FactoryBot.create(:project_role_with_identity_and_protocol, identity: @identity, protocol: protocol)
           end
           # update all identities to have the same institution
           Identity.all.each do |identity|

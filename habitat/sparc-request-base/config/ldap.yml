@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,28 +17,18 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-require 'rails_helper'
-
-RSpec.describe 'User saves a response filters', js: true do
-  let_there_be_lane
-  fake_login_for_each_test
-
-  stub_config('site_admins', ['jug2'])
-
-  scenario 'and sees the saved filter' do
-    survey          = create(:system_survey, title: 'Serviceable Survey', active: true)
-    survey_response = create(:response, survey: survey)
-    filter          = create(:response_filter, identity: jug2, of_type: SystemSurvey.name, include_incomplete: true)
-
-    visit surveyor_responses_path
-    wait_for_javascript_to_finish
-
-    expect(page).to_not have_selector('td', text: survey.title)
-
-    find('.apply-filter').click
-    wait_for_javascript_to_finish
-
-    expect(page).to have_selector('td', text: survey.title)
-  end
-end
+{{#with cfg.ldap}}
+production:
+  ldap_host: {{host}}
+  ldap_port: {{port}}
+  ldap_base: '{{base}}'
+  ldap_encryption: {{encryption}}
+  ldap_domain: {{domain}}
+  ldap_uid: {{uid}}
+  ldap_last_name: {{last_name}}
+  ldap_first_name: {{first_name}}
+  ldap_email: {{email}}
+  ldap_auth_username: '{{auth_username}}'
+  ldap_auth_password: '{{auth_password}}'
+  ldap_filter: "{{filter}}"
+{{/with}}

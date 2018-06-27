@@ -56,7 +56,6 @@ class Surveyor::SurveysController < Surveyor::BaseController
                 access_code: "new-#{klass.downcase}",
                 version: 1,
                 active: false,
-                display_order: klass == 'Form' ? nil : (SystemSurvey.maximum(:display_order) || 0) + 1,
                 surveyable: klass == 'Form' ? current_user : nil
               )
     @survey.save(validate: false)

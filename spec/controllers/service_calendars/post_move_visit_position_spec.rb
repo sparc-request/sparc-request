@@ -34,52 +34,6 @@ RSpec.describe ServiceCalendarsController do
       expect(before_filters.include?(:authorize_identity)).to eq(true)
     end
 
-    it 'should move visit' do
-      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-      sr       = create(:service_request_without_validations, protocol: protocol)
-      arm      = create(:arm, protocol: protocol, name: "Arm")
-      vg1      = create(:visit_group, arm: arm, position: 1)
-      vg2      = create(:visit_group, arm: arm, position: 2)
-      vg3      = create(:visit_group, arm: arm, position: 3)
-
-
-      post :move_visit_position, params: {
-        service_request_id: sr.id,
-        arm_id: arm.id,
-        visit_group: vg1.id,
-        page: 1,
-        position: 3
-      }, xhr: true
-
-      expect(vg1.reload.position).to eq(2)
-      expect(vg2.reload.position).to eq(1)
-      expect(vg3.reload.position).to eq(3)
-    end
-
-    context 'add as last' do
-      it 'should add as last' do
-        protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-        sr       = create(:service_request_without_validations, protocol: protocol)
-        arm      = create(:arm, protocol: protocol, name: "Arm")
-        vg1      = create(:visit_group, arm: arm, position: 1)
-        vg2      = create(:visit_group, arm: arm, position: 2)
-        vg3      = create(:visit_group, arm: arm, position: 3)
-
-
-        post :move_visit_position, params: {
-        service_request_id: sr.id,
-          arm_id: arm.id,
-          visit_group: vg1.id,
-          position: 4,
-          page: 1
-        }, xhr: true
-
-        expect(vg1.reload.position).to eq(3)
-        expect(vg2.reload.position).to eq(1)
-        expect(vg3.reload.position).to eq(2)
-      end
-    end
-
     it 'should render template' do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)

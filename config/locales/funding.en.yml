@@ -48,19 +48,20 @@ en:
     # DOCUMENTS TABLE #
     ###################
     download:
-      header: "Document Download"
-      funding_opp: "Funding Opportunity:"
-      tabs:
-        loi: "loi"
-        application: "application"
-      loi: "Pre-Application / Letter of Intent"
       application: "Application"
+      funding_opp: "Funding Opportunity:"
+      header: "Document Download"
+      loi: "Pre-Application / Letter of Intent"
       table:
-        pi: "PI"
-        institution: "Institution"
-        srid: "SRID"
-        protocol: "Protocol Title"
+        actions:
+          label: "Actions"
+          admin_edit: "Admin Edit"
+          protocol: "Protocol"
         doc_title: "Document"
-        uploaded: "Uploaded"
+        institution: "Institution"
+        pi: "Primary PI"
+        short_title: "Protocol Short Title"
+        srid: "SRID"
         status: "SSR Status"
-      
+        uploaded: "Uploaded"
+

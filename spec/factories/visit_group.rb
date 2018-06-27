@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FactoryGirl.define do
+FactoryBot.define do
   sequence :position do |n|
     n
   end
@@ -43,7 +43,7 @@ FactoryGirl.define do
   end
 
   trait :with_arm do
-    arm         { FactoryGirl.create(:arm) }
+    arm         { FactoryBot.create(:arm) }
   end
 
   factory :visit_group_without_validations, traits: [:without_validations]

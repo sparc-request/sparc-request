@@ -40,13 +40,13 @@ en:
     #   exclude_funding: "Exclude These Funding Sources"
     #   exclude_instructions: "(college, federal, foundation, industry, investigator, internal, unfunded)"
     #
-    #   increase_decrease: "Increase or Decrease Rates"
+    #
     #
     #
     #
     #   negative_to_change: "Enter a negative percent to decrease."
     #
-    #   percent_of_change: "Percent of Change"
+    #
     #
     #
     #   required_list: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
@@ -105,6 +105,7 @@ en:
       pricing:
         add_pricing: "Add Pricing Setup"
         title: "Pricing Setup"
+        pricing_setups: "Pricing Setups"
         dates: "Dates"
         source_of_price: "Source of Price / Rate"
         percent_of_fee: "Percent of Fee"
@@ -127,6 +128,10 @@ en:
         apply_federal: "Apply Federal % to All"
         funding_source: "Funding Source"
         rate: "Rate"
+        increase_decrease: "Increase or Decrease Rates"
+        subsidy_info: "Subsidy Information"
+        auto_price_adj: "Automatic Pricing Adjustment"
+        percent_of_change: "Percent of Change"
 
       not_authorized: "You do not have rights to edit this Organization."
       remove: "Remove"
@@ -135,7 +140,6 @@ en:
       actions: "Actions:"
       add_map: "Add Pricing Map"
       associated_surveys: "Surveys"
-      auto_price_adj: "Automatic Pricing Adjustment"
       blank_field_errors: "Name and Order are required on the Service.  Effective Date, Display Date, and Service Rate are required on all Pricing Maps."
       cancel_button: "Cancel"
       change_rates: "Increase or Decrease Rates"
@@ -168,8 +172,6 @@ en:
       order: "Order"
       otf_field_errors: "If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required."
       per_patient_errors: "Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps."
-      pricing_maps: "Pricing Maps"
-      pricing_setup: "Pricing Setup"
       program: "Program"
       related_services: "Related Services"
       revenue_code: "Revenue Code"
@@ -184,7 +186,6 @@ en:
       status_legend: "Status Options (Use default statuses below or click to create custom service request statuses)"
       submission_emails: "Submission E-mails"
       submit_button: "Save"
-      subsidy_info: "Subsidy Information"
       subsidy_max_dollar: "Max Dollar Cap"
       subsidy_max_percent: "Max Percentage"
       subsidy_default_percentage: "Default Percentage"

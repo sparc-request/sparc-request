@@ -240,12 +240,24 @@ $ ->
         organization_id: org_id
 
   $(document).on 'submit', '#pricing_setup_modal form', ->
-    $('#pricing_setup_modal .modal-footer .btn-primary').attr('disabled','disabled')
+    $('#pricing_setup_submit').attr('disabled','disabled')
 
   $(document).on 'click', '#apply_federal_percent', ->
     federal_value = $('.federal_rate_field').val()
     $('.linked_to_federal').val(federal_value)
 
+
+  $(document).on 'click', '#increase_decrease_button', ->
+    org_id = $(this).data('organization-id')
+    $.ajax
+      type: "GET"
+      url: "/catalog_manager/organizations/increase_decrease_modal"
+      data:
+        organization_id: org_id
+
+
+  $(document).on 'submit', '#increase_decrease_modal form', ->
+    $('#increase_decrease_submit').attr('disabled','disabled')
 
   ##############################################
   ###          Service Components            ###

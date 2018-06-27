@@ -271,32 +271,4 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       :linked_quantity_total
       )
   end
-
-  def pricing_map_params(pm)
-    temp = pm.permit(:service_id,
-      :unit_type,
-      :unit_factor,
-      :percent_of_fee,
-      :full_rate,
-      :exclude_from_indirect_cost,
-      :unit_minimum,
-      :units_per_qty_max,
-      :federal_rate,
-      :corporate_rate,
-      :other_rate,
-      :member_rate,
-      :effective_date,
-      :display_date,
-      :quantity_type,
-      :quantity_minimum,
-      :otf_unit_type)
-
-    temp[:full_rate] = Service.dollars_to_cents(temp[:full_rate]) unless temp[:full_rate].blank?
-    temp[:federal_rate] = Service.dollars_to_cents(temp[:federal_rate]) unless temp[:federal_rate].blank?
-    temp[:corporate_rate] = Service.dollars_to_cents(temp[:corporate_rate]) unless temp[:corporate_rate].blank?
-    temp[:other_rate] = Service.dollars_to_cents(temp[:other_rate]) unless temp[:other_rate].blank?
-    temp[:member_rate] = Service.dollars_to_cents(temp[:member_rate]) unless temp[:member_rate].blank?
-
-    temp
-  end
 end

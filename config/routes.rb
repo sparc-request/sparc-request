@@ -195,6 +195,8 @@ SparcRails::Application.routes.draw do
     match 'organizations/update_status_row' => 'organizations#update_status_row', via: [:post]
     match 'organizations/add_associated_survey' => 'organizations#add_associated_survey', via: [:post]
     match 'organizations/remove_associated_survey' => 'organizations#remove_associated_survey', via: [:post]
+    match 'organizations/increase_decrease_modal' => 'organizations#increase_decrease_modal', via: [:get]
+    match 'organizations/increase_decrease_rates' => 'organizations#increase_decrease_rates', via: [:post]
 
     resources :services do
       patch :update_epic_info

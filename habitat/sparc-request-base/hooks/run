@@ -1,0 +1,7 @@
+#!{{pkgPathFor "core/busybox-static"}}/bin/bash
+
+. /hab/svc/sparc-request/config/dotenv
+
+exec 2>&1
+
+exec {{pkgPathFor "chrisortman/eye"}}/bin/leye load -f

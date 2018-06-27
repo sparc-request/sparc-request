@@ -53,20 +53,6 @@ class ApplicationController < ActionController::Base
     current_identity
   end
 
-  def create_calendar_event event
-    all_day = !event.dtstart.to_s.include?("UTC")
-    start_time = Time.parse(event.dtstart.to_s).in_time_zone("Eastern Time (US & Canada)")
-    end_time = Time.parse(event.dtend.to_s).in_time_zone("Eastern Time (US & Canada)")
-    { month: start_time.strftime("%b"),
-      day: start_time.day,
-      title: event.summary,
-      all_day: all_day,
-      start_time: start_time.strftime("%l:%M %p"),
-      end_time: end_time.strftime("%l:%M %p"),
-      where: event.location
-    }
-  end
-
   def rmid_server_status(protocol)
     if Setting.get_value("research_master_enabled")
       @rmid_server_down = protocol.rmid_server_status

@@ -39,7 +39,7 @@ class Survey < ApplicationRecord
   accepts_nested_attributes_for :sections, allow_destroy: true
 
   default_scope -> {
-    order(:display_order)
+    order(:title, :version)
   }
 
   scope :active, -> {
@@ -71,12 +71,12 @@ class Survey < ApplicationRecord
     }
   end
 
-  # Added because version could not be written as an attribute by FactoryGirl. Possible keyword issue?
+  # Added because version could not be written as an attribute by FactoryBot. Possible keyword issue?
   def version=(v)
     write_attribute(:version, v)
   end
 
-  # Added because version could not be read as an attribute by FactoryGirl. Possible keyword issue?
+  # Added because version could not be read as an attribute by FactoryBot. Possible keyword issue?
   def version
     read_attribute(:version)
   end

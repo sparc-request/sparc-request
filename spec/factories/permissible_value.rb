@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :permissible_value do
     key          { Faker::Lorem.word.humanize }
     value        { Faker::Lorem.word.humanize }
@@ -28,5 +28,6 @@ FactoryGirl.define do
     sort_order    nil
     default      true
     reserved     false
+    is_available true
   end
 end

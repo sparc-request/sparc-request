@@ -344,7 +344,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def update_past_status
-    if self.status_changed? && !@prev_status.blank?
+    if saved_change_to_status? && !@prev_status.blank?
       past_status = self.past_statuses.create(status: @prev_status, date: Time.now)
       user_id = AuditRecovery.where(auditable_id: past_status.id, auditable_type: 'PastStatus').first.user_id
       past_status.update_attribute(:changed_by_id, user_id)
@@ -389,19 +389,19 @@ class SubServiceRequest < ApplicationRecord
 
   def generate_approvals current_user, params
     if params[:nursing_nutrition_approved]
-      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Date.today, :approval_type => "Nursing/Nutrition Approved"})
+      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Time.now, :approval_type => "Nursing/Nutrition Approved"})
     end
 
     if params[:lab_approved]
-      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Date.today, :approval_type => "Lab Approved"})
+      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Time.now, :approval_type => "Lab Approved"})
     end
 
     if params[:imaging_approved]
-      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Date.today, :approval_type => "Imaging Approved"})
+      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Time.now, :approval_type => "Imaging Approved"})
     end
 
     if params[:committee_approved]
-      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Date.today, :approval_type => "Committee Approved"})
+      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Time.now, :approval_type => "Committee Approved"})
     end
   end
 

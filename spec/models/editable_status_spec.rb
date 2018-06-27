@@ -26,6 +26,5 @@ RSpec.describe EditableStatus, type: :model do
   end
 
   it { is_expected.to belong_to(:organization) }
-  it { is_expected.to validate_inclusion_of(:status).in_array(PermissibleValue.get_key_list('status')) }
   it { is_expected.to validate_presence_of(:status) }
 end

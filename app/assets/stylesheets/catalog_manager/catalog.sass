@@ -1,4 +1,4 @@
-/* Copyright © 2011-2016 MUSC Foundation for Research Development*/
+/* Copyright © 2011-2018 MUSC Foundation for Research Development*/
 /* All rights reserved.*/
 
 /* Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:*/
@@ -60,13 +60,6 @@ $result-highlight: #ffff99
 .text-core
   color: $core-blue !important
 
-.search-result
-  background: $result-highlight
-  background: -webkit-linear-gradient(left, $result-highlight, white)
-  background: -o-linear-gradient(right, $result-highlight, white)
-  background: -moz-linear-gradient(right, $result-highlight, white)
-  background: linear-gradient(to right, $result-highlight , white)
-
 #catalog, #org-form-container
   margin-top: 25px
 
@@ -83,3 +76,23 @@ $result-highlight: #ffff99
   border-bottom: 1px solid #DDD
   padding-bottom: 10px
   margin-bottom: 10px
+
+.non_bold_label
+  font-weight: normal
+
+#new_pricing_setup_link
+  margin-bottom: 20px
+
+#pricing_setup_list
+  h4.text-primary a
+    margin: 0 15px 0 10px
+    &:hover, &:focus
+      text-decoration: none
+
+#pricing_setup_modal
+  fieldset
+    legend
+      margin: 25px 0
+
+#increase_decrease_container
+  margin: 50px 0

@@ -75,7 +75,7 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
 
       context "Service has pre-existing ServiceLevelComponents" do
 
-        before { @service = FactoryGirl.create(:service_with_components) }
+        before { @service = FactoryBot.create(:service_with_components) }
 
         it "should create new ServiceLevelComponents" do
           put :update, params: { id: @service.id, service: { name: "New name" }.merge!(service_level_component_params) }
@@ -98,7 +98,7 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
       context "Service with pre-existing ServiceLevelComponents" do
 
         it "should build ServiceLevelComponents with the correct :position" do
-          service = FactoryGirl.create(:service_with_components, organization: organization)
+          service = FactoryBot.create(:service_with_components, organization: organization)
 
           get :edit, params: { id: service.id }, xhr: true
 

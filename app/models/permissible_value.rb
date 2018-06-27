@@ -19,6 +19,15 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class PermissibleValue < ApplicationRecord
+  belongs_to :parent, :class_name => 'PermissibleValue'
+
+  scope :available, -> {
+    where(is_available: true)
+  }
+
+  scope :unavailable, -> {
+    where(is_available: false)
+  }
 
   # Get the first PermissibleValue value using a category and key
   def self.get_value(category, key)
@@ -28,27 +37,27 @@ class PermissibleValue < ApplicationRecord
   # Get an array of PermissibleValue keys with the given category
   def self.get_key_list(category, default=nil)
     unless default.nil?
-      PermissibleValue.where(category: category, default: default).pluck(:key)
+      PermissibleValue.available.where(category: category, default: default).pluck(:key)
     else
-      PermissibleValue.where(category: category).pluck(:key)
+      PermissibleValue.available.where(category: category).pluck(:key)
     end
   end
 
   # Get a hash of PermissibleValue keys as the keys and values as the values
   def self.get_hash(category, default=nil)
     unless default.nil?
-      Hash[PermissibleValue.where(category: category, default: default).pluck(:key, :value)]
+      Hash[PermissibleValue.available.where(category: category, default: default).pluck(:key, :value)]
     else
-      Hash[PermissibleValue.where(category: category).pluck(:key, :value)]
+      Hash[PermissibleValue.available.where(category: category).pluck(:key, :value)]
     end
   end
 
   # Get a hash of PermissibleValue values as the keys and keys as the values
   def self.get_inverted_hash(category, default=nil)
     unless default.nil?
-      Hash[PermissibleValue.where(category: category, default: default).pluck(:value, :key)]
+      Hash[PermissibleValue.available.where(category: category, default: default).pluck(:value, :key)]
     else
-      Hash[PermissibleValue.where(category: category).pluck(:value, :key)]
+      Hash[PermissibleValue.available.where(category: category).pluck(:value, :key)]
     end
   end
 end

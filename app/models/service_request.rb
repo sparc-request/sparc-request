@@ -516,7 +516,7 @@ class ServiceRequest < ApplicationRecord
   end
 
   def set_ssr_protocol_id
-    if protocol_id_changed?
+    if saved_change_to_protocol_id?
       sub_service_requests.each do |ssr|
         ssr.update_attributes(protocol_id: protocol_id)
       end

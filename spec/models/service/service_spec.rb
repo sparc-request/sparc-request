@@ -274,37 +274,6 @@ RSpec.describe Service, type: :model do
     # current_effective_pricing_map
   end
 
-  describe "can_edit_historical_data_on_new" do
-
-    it "should return whether or not the user can edit historical data" do
-      identity = create(:identity)
-      parent = create(:organization)
-
-      catalog_manager = create(:catalog_manager, :can_edit_historic_data, identity: identity, organization: parent)
-
-      child = create(:organization, parent_id: parent.id)
-
-      service = create(:service, organization: child)
-
-      expect(service.can_edit_historical_data_on_new?(identity)).to eq(true)
-
-    end
-
-    it "should return whether or not the user can edit historical data" do
-      identity = create(:identity)
-      parent = create(:organization)
-
-      catalog_manager = create(:catalog_manager, identity: identity, organization: parent)
-
-      child = create(:organization, parent_id: parent.id)
-
-      service = create(:service, organization: child)
-
-      expect(service.can_edit_historical_data_on_new?(identity)).to eq(false)
-
-    end
-  end
-
   describe "get rate maps" do
 
     let!(:core) { create(:core) }
@@ -361,7 +330,7 @@ RSpec.describe Service, type: :model do
     context "around_update" do
 
       it "should create a Delayed::Job" do
-        service = FactoryGirl.create(:service_with_components)
+        service = FactoryBot.create(:service_with_components)
         work_off
         service.update_attribute(:components, "dum,spiro,spero,")
 

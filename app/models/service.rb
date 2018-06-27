@@ -88,7 +88,7 @@ class Service < ApplicationRecord
   # This "hierarchy" stops at a process_ssrs Organization.
   def organization_hierarchy(include_self=false, process_ssrs=true, use_css=false)
     parent_orgs = self.parents.reverse
-    
+
     if process_ssrs
       root = parent_orgs.find_index { |org| org.process_ssrs? } || (parent_orgs.length - 1)
     else
@@ -284,10 +284,6 @@ class Service < ApplicationRecord
       rate = sprintf( '%0.2f', Service.cents_to_dollars(rate).to_f.round(2) )
       return "#{rate}"
     end
-  end
-
-  def can_edit_historical_data_on_new?(user)
-    user.can_edit_historical_data_for?(self.organization)
   end
 
   def increase_decrease_pricing_map(percent_of_change, display_date, effective_date)

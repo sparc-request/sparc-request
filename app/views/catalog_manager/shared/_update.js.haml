@@ -18,76 +18,76 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- unless @entity.errors.messages.empty?
-  - @entity_errors = @entity.errors.to_json
-  :plain
-    $('#flash').hide();
-    $('#flash').html("There were errors saving #{escape_javascript(@entity.name)}.");
-    Sparc.catalog.handle_ajax_errors("#{escape_javascript(@entity_errors)}", "#{@entity.class.name == 'Service' ? 'Service' : @entity.type}")
+/ - unless @entity.errors.messages.empty?
+/   - @entity_errors = @entity.errors.to_json
+/   :plain
+/     $('#flash').hide();
+/     $('#flash').html("There were errors saving #{escape_javascript(@entity.name)}.");
+/     Sparc.catalog.handle_ajax_errors("#{escape_javascript(@entity_errors)}", "#{@entity.class.name == 'Service' ? 'Service' : @entity.type}")
 
-- else
-  :plain
-    Sparc.catalog.clear_error_fields()
-    $('#flash').hide();
-    $('#flash').html("#{escape_javascript(@entity.name)} saved successfully");
+/ - else
+/   :plain
+/     Sparc.catalog.clear_error_fields()
+/     $('#flash').hide();
+/     $('#flash').html("#{escape_javascript(@entity.name)} saved successfully");
 
--# re-render available_statuses
--#TODO this is ugly and wrong, refactor
-- if not @entity.instance_of? Service and @entity
-  - my_class = @entity.class.to_s.downcase
-  - url = eval("catalog_manager_#{my_class}_path")
-  - @f = nil; form_for(@entity, :url => url) {|f| @f = f}
-  $('#available_statuses_wrapper').html("#{escape_javascript(render :partial => 'catalog_manager/shared/status_options_box', :locals => {:f => @f})}")
+/ -# re-render available_statuses
+/ -#TODO this is ugly and wrong, refactor
+/ - if not @entity.instance_of? Service and @entity
+/   - my_class = @entity.class.to_s.downcase
+/   - url = eval("catalog_manager_#{my_class}_path")
+/   - @f = nil; form_for(@entity, :url => url) {|f| @f = f}
+/   $('#available_statuses_wrapper').html("#{escape_javascript(render :partial => 'catalog_manager/shared/status_options_box', :locals => {:f => @f})}")
 
--# re-render pricing_setups if the entity is a Provider or Program
-- if @entity.instance_of? Provider or @entity.instance_of? Program
-  $('.pricing_setup_accordion').empty()
-  - @entity.pricing_setups.each do |pricing_setup|
-    :plain
-      $('.pricing_setup_accordion').append("#{escape_javascript(render :partial => 'catalog_manager/shared/pricing_setup', :locals => {:pricing_setup => pricing_setup, :pricing_setup_disabled => disable_pricing_setup(pricing_setup, @user.can_edit_historical_data_for?(@entity)), :can_edit_historical_data => @user.can_edit_historical_data_for?(@entity), :entity => @entity })}");
+/ -# re-render pricing_setups if the entity is a Provider or Program
+/ - if @entity.instance_of? Provider or @entity.instance_of? Program
+/   $('.pricing_setup_accordion').empty()
+/   - @entity.pricing_setups.each do |pricing_setup|
+/     :plain
+/       $('.pricing_setup_accordion').append("#{escape_javascript(render :partial => 'catalog_manager/shared/pricing_setup', :locals => {:pricing_setup => pricing_setup, :pricing_setup_disabled => disable_pricing_setup(pricing_setup, @user.can_edit_historical_data_for?(@entity)), :can_edit_historical_data => @user.can_edit_historical_data_for?(@entity), :entity => @entity })}");
 
-  Sparc.config.setDatePicker("with button image")
-  Sparc.config.displayDatesForUser($('.datepicker, .disabled_datepicker'))
+/   Sparc.config.setDatePicker("with button image")
+/   Sparc.config.displayDatesForUser($('.datepicker, .disabled_datepicker'))
 
--# re-render pricing_maps if the entity is a Service
-- if @entity.instance_of? Service
-  $('.pricing_map_accordion').empty()
-  - @entity.pricing_maps.each do |pricing_map|
-    :plain
-      $('.pricing_map_accordion').append("#{escape_javascript(render :partial => 'catalog_manager/services/pricing_map', :locals => {:pricing_map => pricing_map, :pricing_map_disabled => disable_pricing_map(pricing_map, @user.can_edit_historical_data_for?(@entity.organization)), :can_edit_historical_data => @user.can_edit_historical_data_for?(@entity.organization), :entity => @entity})}");
-  
-  Sparc.config.setDatePicker("with button image")
-  Sparc.config.displayDatesForUser($('.datepicker, .disabled_datepicker'))
+/ -# re-render pricing_maps if the entity is a Service
+/ - if @entity.instance_of? Service
+/   $('.pricing_map_accordion').empty()
+/   - @entity.pricing_maps.each do |pricing_map|
+/     :plain
+/       $('.pricing_map_accordion').append("#{escape_javascript(render :partial => 'catalog_manager/services/pricing_map', :locals => {:pricing_map => pricing_map, :pricing_map_disabled => disable_pricing_map(pricing_map, @user.can_edit_historical_data_for?(@entity.organization)), :can_edit_historical_data => @user.can_edit_historical_data_for?(@entity.organization), :entity => @entity})}");
 
-- # re-render submission emails if entity is a core, program, or provider
-- if @entity.instance_of? Core or @entity.instance_of? Program or @entity.instance_of? Provider
-  :plain
-    $('#se_info').html("#{escape_javascript(render :partial => 'catalog_manager/shared/submission_emails', :locals => {:entity => @entity})}")
+/   Sparc.config.setDatePicker("with button image")
+/   Sparc.config.displayDatesForUser($('.datepicker, .disabled_datepicker'))
 
-show_unavailable = $("#show_all_services").find('.unavailable_button').data('show-unavailable')
+/ - # re-render submission emails if entity is a core, program, or provider
+/ - if @entity.instance_of? Core or @entity.instance_of? Program or @entity.instance_of? Provider
+/   :plain
+/     $('#se_info').html("#{escape_javascript(render :partial => 'catalog_manager/shared/submission_emails', :locals => {:entity => @entity})}")
 
-- if @entity.is_available == false
-  :plain
-    if (show_unavailable  == false) {
-      $("##{@entity.class.name.upcase}#{@entity.id}").remove();
-      $('#details').empty();
-    }
-    else {
-      $("##{@entity.class.name.upcase}#{@entity.id}").addClass("entity_visibility");
-      $("##{@entity.class.name.upcase}#{@entity.id} li").addClass("entity_visibility");
-    }
-- else
-  :plain
-    $("##{@entity.class.name.upcase}#{@entity.id}").removeClass("entity_visibility");
-    $("##{@entity.class.name.upcase}#{@entity.id} > ul > li[id*='SERVICE']").removeClass("entity_visibility");
-    $("##{@entity.class.name.upcase}#{@entity.id} > ul > li.new").removeClass("entity_visibility");
+/ show_unavailable = $("#show_all_services").find('.unavailable_button').data('show-unavailable')
+
+/ - if @entity.is_available == false
+/   :plain
+/     if (show_unavailable  == false) {
+/       $("##{@entity.class.name.upcase}#{@entity.id}").remove();
+/       $('#details').empty();
+/     }
+/     else {
+/       $("##{@entity.class.name.upcase}#{@entity.id}").addClass("entity_visibility");
+/       $("##{@entity.class.name.upcase}#{@entity.id} li").addClass("entity_visibility");
+/     }
+/ - else
+/   :plain
+/     $("##{@entity.class.name.upcase}#{@entity.id}").removeClass("entity_visibility");
+/     $("##{@entity.class.name.upcase}#{@entity.id} > ul > li[id*='SERVICE']").removeClass("entity_visibility");
+/     $("##{@entity.class.name.upcase}#{@entity.id} > ul > li.new").removeClass("entity_visibility");
 
 
-:plain
-  $('#flash').slideDown();
-  $('#flash').delay(3000);
-  $('#flash').slideUp();
-  $('.spinner').hide();
-  $('.save_button').removeAttr('disabled');
+/ :plain
+/   $('#flash').slideDown();
+/   $('#flash').delay(3000);
+/   $('#flash').slideUp();
+/   $('.spinner').hide();
+/   $('.save_button').removeAttr('disabled');
 
 

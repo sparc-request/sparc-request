@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,10 +18,11 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-##############################################
-###          Org General Info              ###
-##############################################
 $ ->
+  ##############################################
+  ###         Organization General Info      ###
+  ##############################################
+
   $(document).on 'click', '#enable-all-services label', ->
     $(this).addClass('active')
     $(this).children('input').prop('checked')
@@ -34,7 +35,7 @@ $ ->
       $('#enable-all-services').addClass('hidden')
 
   ##############################################
-  ###          Org User Rights               ###
+  ###         Organization User Rights       ###
   ##############################################
 
   $(document).on 'change', '.super-user-checkbox', ->
@@ -78,15 +79,6 @@ $ ->
           $("#sp-is-primary-contact-#{identity_id}").prop('checked', false)
           $("#sp-hold-emails-#{identity_id}").prop('checked', false)
 
-  $(document).on 'change', '.clinical-provider-checkbox', ->
-    $.ajax
-      type: if $(this).prop('checked') then 'POST' else 'DELETE'
-      url: '/catalog_manager/clinical_provider'
-      data:
-        clinical_provider:
-          identity_id: $(this).data('identity-id')
-          organization_id: $(this).data('organization-id')
-
   $(document).on 'change', '.cm-edit-historic-data', ->
     $.ajax
       type: 'PUT'
@@ -122,8 +114,8 @@ $ ->
     if confirm (I18n['catalog_manager']['organization_form']['user_rights']['remove_confirm'])
       identity_id = $(this).data('identity-id')
       $.ajax
-        type: 'DELETE'
-        url: 'catalog_manager/user_right'
+        type: 'POST'
+        url: 'catalog_manager/organizations/remove_user_rights_row'
         data:
           user_rights:
             identity_id: identity_id
@@ -134,19 +126,18 @@ $ ->
     $(this).closest('.row').fadeOut(1000, () -> $(this).remove())
 
   ##############################################
-  ###         Org Associated Surveys         ###
+  ###     Organization Associated Surveys    ###
   ##############################################
 
   $(document).on 'click', 'button.remove-associated-survey', (event) ->
-    associated_survey_link = $(this).closest('.form-group.row').find('.associated_survey_link')[0]
-    associated_survey_id = $(associated_survey_link).data('id')
+    survey_id = $(this).data('survey-id')
     surveyable_id = $(this).data('id')
     if confirm(I18n['catalog_manager']['organization_form']['surveys']['survey_delete'])
       $.ajax
         type: 'POST'
-        url: "catalog_manager/catalog/remove_associated_survey"
+        url: "catalog_manager/organizations/remove_associated_survey"
         data:
-          associated_survey_id: associated_survey_id
+          associated_survey_id: survey_id
           surveyable_id: surveyable_id
 
 
@@ -154,27 +145,27 @@ $ ->
     if $('#new_associated_survey').val() == ''
       alert "No survey selected"
     else
-      survey_id = $(this).closest('.form-group.row').find('.new_associated_survey')[0].value
+      survey_id = $(this).closest('.row').find('.new_associated_survey')[0].value
       surveyable_type = $(this).data('type')
       surveyable_id = $(this).data('id')
       $.ajax
         type: 'POST'
-        url: "catalog_manager/catalog/add_associated_survey"
+        url: "catalog_manager/organizations/add_associated_survey"
         data:
           survey_id: survey_id
           surveyable_type : surveyable_type
           surveyable_id : surveyable_id
 
   ##############################################
-  ###          Org Fulfillment               ###
+  ###         Organization Fulfillment       ###
   ##############################################
 
   $(document).on 'change', '.clinical-provider-checkbox', ->
     $.ajax
       type: if $(this).prop('checked') then 'POST' else 'DELETE'
-      url: '/catalog_manager/super_user'
+      url: '/catalog_manager/clinical_provider'
       data:
-        super_user:
+        clinical_provider:
           identity_id: $(this).data('identity-id')
           organization_id: $(this).data('organization-id')
 
@@ -195,12 +186,13 @@ $ ->
     $(this).closest('.row').fadeOut(1000, () -> $(this).remove())
 
   ##############################################
-  ###          Org Statuses                  ###
+  ###          Organization Statuses         ###
   ##############################################
 
   $(document).on 'click', '#use_default_statuses .toggle', ->
     checked = $(this).find("#use_default_statuses").prop('checked')
     org_id = $(this).find("#use_default_statuses").data('organization-id')
+    $("#status-options .panel-body").fadeOut(1000)
     $.ajax
       type: 'POST'
       url: "catalog_manager/organizations/toggle_default_statuses"
@@ -211,7 +203,7 @@ $ ->
   $(document).on 'change', '.available-status-checkbox', ->
     $.ajax
       type: "POST"
-      url: '/catalog_manager/organizations/update_status_option'
+      url: '/catalog_manager/organizations/update_status_row'
       data:
         status_key: $(this).data('status-key')
         organization_id: $(this).data('organization-id')
@@ -221,7 +213,7 @@ $ ->
   $(document).on 'change', '.editable-status-checkbox', ->
     $.ajax
       type: "POST"
-      url: '/catalog_manager/organizations/update_status_option'
+      url: '/catalog_manager/organizations/update_status_row'
       data:
         status_key: $(this).data('status-key')
         organization_id: $(this).data('organization-id')
@@ -237,6 +229,55 @@ $ ->
       type: 'GET'
       url: 'catalog_manager/organizations/new.js'
     return false
+
+  ##############################################
+  ###          Organization Pricing          ###
+  ##############################################
+
+  $(document).on 'click', '.edit_pricing_setup_link', ->
+    pricing_setup_id = $(this).data('pricing-setup-id')
+    $.ajax
+      type: "GET"
+      url: "/catalog_manager/pricing_setups/#{pricing_setup_id}/edit"
+
+  $(document).on 'click', '#new_pricing_setup_link', ->
+    org_id = $(this).data('organization-id')
+    $.ajax
+      type: "GET"
+      url: "/catalog_manager/pricing_setups/new"
+      data:
+        organization_id: org_id
+
+  $(document).on 'submit', '#pricing_setup_modal form', ->
+    $('#pricing_setup_submit').attr('disabled','disabled')
+
+  $(document).on 'click', '#apply_federal_percent', ->
+    federal_value = $('.federal_rate_field').val()
+    $('.linked_to_federal').val(federal_value)
+
+
+  $(document).on 'click', '#increase_decrease_button', ->
+    org_id = $(this).data('organization-id')
+    $.ajax
+      type: "GET"
+      url: "/catalog_manager/organizations/increase_decrease_modal"
+      data:
+        organization_id: org_id
+
+
+  $(document).on 'submit', '#increase_decrease_modal form', ->
+    $('#increase_decrease_submit').attr('disabled','disabled')
+
+  $(document).on 'click', '#edit_subsidy_map_button', ->
+    subsidy_map_id = $(this).data('subsidy-map-id')
+    $.ajax
+      type: "GET"
+      url: "/catalog_manager/subsidy_maps/#{subsidy_map_id}/edit"
+
+  $(document).on 'click', '#new_subsidy_map_button', ->
+    org_id = $(this).data('organization-id')
+    #Stuff
+
 
   ##############################################
   ###          Service Components            ###
@@ -262,3 +303,57 @@ $ ->
       data:
         component: component
         service_id: service_id
+
+
+  ##############################################
+  ###          Related Services              ###
+  ##############################################
+
+  $(document).on 'click', 'button.remove-related-services', (event) ->
+    service_relation_id = $(this).data('service-relation-id')
+    if confirm (I18n['catalog_manager']['related_services_form']['remove_related_service_confirm'])
+      $.ajax
+        type: 'POST'
+        url: "catalog_manager/services/remove_related_service"
+        data:
+          service_relation_id: service_relation_id
+
+  $(document).on 'change', '.required', (event) ->
+    service_relation_id = $(this).data('service-relation-id')
+    required = !$(this).prop('checked')
+    $.ajax
+      type: 'POST'
+      url: "catalog_manager/services/update_related_service"
+      data:
+        service_relation_id: service_relation_id
+        #TODO: Optional should be switched to 'required' once database is changed
+        optional: required
+
+  $(document).on 'change', '.linked_quantity', (event) ->
+    service_relation_id = $(this).data('service-relation-id')
+    linked_quantity = $(this).prop('checked')
+
+    ajax_call = ->
+      $.ajax
+        type: 'POST'
+        url: "catalog_manager/services/update_related_service"
+        data:
+          service_relation_id: service_relation_id
+          linked_quantity: linked_quantity
+
+    if !linked_quantity
+      $(this).siblings('.linked_quantity_container').fadeOut(750, ->
+        ajax_call()
+        )
+    else
+      ajax_call()
+
+  $(document).on 'change', '.linked_quantity_total', (event) ->
+    service_relation_id = $(this).data('service-relation-id')
+    linked_quantity_total = $(this).val()
+    $.ajax
+      type: 'POST'
+      url: "catalog_manager/services/update_related_service"
+      data:
+        service_relation_id: service_relation_id
+        linked_quantity_total: linked_quantity_total

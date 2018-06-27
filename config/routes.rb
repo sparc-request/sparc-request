@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -172,6 +172,7 @@ SparcRails::Application.routes.draw do
 
   resources :search, only: [] do
     collection do
+      get :services_search
       get :services
       get :organizations
       get :identities
@@ -181,19 +182,21 @@ SparcRails::Application.routes.draw do
   match 'service_requests/:id/add_service/:service_id' => 'service_requests#add_service', via: [:get, :post]
   match 'service_requests/:id/remove_service/:line_item_id' => 'service_requests#remove_service', via: [:all]
 
-  ##### sparc-services routes brought in and namespaced
+  ##### sparc-services routes brought in and name-spaced
   namespace :catalog_manager do
     match 'services/search' => 'services#search', via: [:get, :post]
-    match 'services/associate' => 'services#associate', via: [:get, :post]
-    match 'services/disassociate' => 'services#disassociate', via: [:get, :post]
-    match 'services/set_optional' => 'services#set_optional', via: [:get, :post]
-    match 'services/set_linked_quantity' => 'services#set_linked_quantity', via: [:get, :post]
-    match 'services/set_linked_quantity_total' => 'services#set_linked_quantity_total', via: [:get, :post]
-    match 'services/get_updated_rate_maps' => 'services#get_updated_rate_maps', via: [:get, :post]
+    match 'services/update_related_service' => 'services#update_related_service', via: [:post]
+    match 'services/add_related_service' => 'services#add_related_service', via: [:post]
+    match 'services/remove_related_service' => 'services@remove_related_service', via: [:post]
     match 'services/change_components' => 'services#change_components', via: [:post]
     match 'organizations/remove_fulfillment_rights_row' => 'organizations#remove_fulfillment_rights_row', via: [:post]
+    match 'organizations/remove_user_rights_row' => 'organizations#remove_user_rights_row', via: [:post]
     match 'organizations/toggle_default_statuses' => 'organizations#toggle_default_statuses', via: [:post]
-    match 'organizations/update_status_option' => 'organizations#update_status_option', via: [:post]
+    match 'organizations/update_status_row' => 'organizations#update_status_row', via: [:post]
+    match 'organizations/add_associated_survey' => 'organizations#add_associated_survey', via: [:post]
+    match 'organizations/remove_associated_survey' => 'organizations#remove_associated_survey', via: [:post]
+    match 'organizations/increase_decrease_modal' => 'organizations#increase_decrease_modal', via: [:get]
+    match 'organizations/increase_decrease_rates' => 'organizations#increase_decrease_rates', via: [:post]
 
     resources :services do
       patch :update_epic_info
@@ -201,11 +204,8 @@ SparcRails::Application.routes.draw do
 
     resources :catalog, only: [:index] do
       collection do
-        post :add_excluded_funding_source
-        delete :remove_excluded_funding_source
-        post :remove_associated_survey
-        post :add_associated_survey
-        post :remove_submission_email
+        get :load_core_accordion
+        get :load_program_accordion
       end
     end
 
@@ -221,24 +221,14 @@ SparcRails::Application.routes.draw do
     resource :catalog_manager, only: [:create, :destroy, :update]
     resource :service_provider, only: [:create, :destroy, :update]
     resource :clinical_provider, only: [:create, :destroy]
-    resource :user_right, only: [:destroy]
-    resources :services, except: [:index, :show, :destroy] do
-      collection do
-        get :verify_parent_service_provider
-      end
-    end
+    resources :services, except: [:index, :show, :destroy]
+    resources :pricing_setups, except: [:index, :show, :destroy]
+    resources :subsidy_maps, except: [:index, :show, :destroy]
 
-    match 'identities/associate_with_org_unit' => 'identities#associate_with_org_unit', via: [:get, :post]
-    match 'identities/disassociate_with_org_unit' => 'identities#disassociate_with_org_unit', via: [:get, :post]
-    match 'identities/set_view_draft_status' => 'identities#set_view_draft_status', via: [:get, :post]
-    match 'identities/set_primary_contact' => 'identities#set_primary_contact', via: [:get, :post]
-    match 'identities/set_hold_emails' => 'identities#set_hold_emails', via: [:get, :post]
-    match 'identities/set_edit_historic_data' => 'identities#set_edit_historic_data', via: [:get, :post]
     match 'identities/search' => 'identities#search', via: [:get, :post]
-    match 'services/update_cores/:id' => 'services#update_cores', via: [:get, :post]
-    match 'update_pricing_maps' => 'catalog#update_pricing_maps', via: [:get, :post]
-    match 'update_dates_on_pricing_maps' => 'catalog#update_dates_on_pricing_maps', via: [:get, :post]
-    match 'validate_pricing_map_dates' => 'catalog#validate_pricing_map_dates', via: [:get, :post]
+    # match 'update_pricing_maps' => 'catalog#update_pricing_maps', via: [:get, :post]
+    # match 'update_dates_on_pricing_maps' => 'catalog#update_dates_on_pricing_maps', via: [:get, :post]
+    # match 'validate_pricing_map_dates' => 'catalog#validate_pricing_map_dates', via: [:get, :post]
 
     root to: 'catalog#index'
   end

@@ -22,6 +22,20 @@ class SearchController < ApplicationController
   before_action :initialize_service_request, only: [:services]
   before_action :authorize_identity, only: [:services]
 
+  def services_search
+    term = params[:term].strip
+    results = Service.where("is_available=1 AND (name LIKE '%#{term}%' OR abbreviation LIKE '%#{term}%' OR cpt_code LIKE '%#{term}%')")
+
+    results.map{ |s|
+      {
+        name: s.name,
+        id: s.id,
+        cpt_code: "CPT code: #{s.cpt_code}"
+      }
+    }
+    render json: results.to_json
+  end
+
   def services
     term              = params[:term].strip
     locked_org_ids    = @service_request.
@@ -65,6 +79,7 @@ class SearchController < ApplicationController
 
     results.map! { |org|
       {
+        id: org.id,
         name: org.name,
         abbreviation: org.abbreviation,
         type: org.class.to_s,
@@ -72,10 +87,9 @@ class SearchController < ApplicationController
         cpt_code: cpt_code_text(org),
         inactive_tag: inactive_text(org),
         parents: org.parents.reverse.map{ |p| "##{p.class.to_s.downcase}-#{p.id}" },
-        value_selector: "##{org.class.to_s.downcase}-#{org.id}"
+        breadcrumb: breadcrumb_text(org)
       }
     }
-
     render json: results.to_json
   end
 
@@ -99,5 +113,17 @@ class SearchController < ApplicationController
 
   def inactive_text(org)
     text = org.is_available ? "" : "(Inactive)"
+  end
+
+  def breadcrumb_text(item)
+    if item.parents.any?
+      breadcrumb = []
+      item.parents.map(&:abbreviation).each do |parent_abbreviation|
+        breadcrumb << "<span>#{parent_abbreviation} </span>"
+        breadcrumb << "<span class='inline-glyphicon glyphicon glyphicon-triangle-right'> </span>"
+      end
+      breadcrumb.pop
+      breadcrumb.join.html_safe
+    end
   end
 end

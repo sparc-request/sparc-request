@@ -2,12 +2,13 @@ source 'https://rubygems.org'
 
 gem 'activerecord-import'
 gem 'activerecord-session_store'
-gem 'acts_as_list', github: 'swanandp/acts_as_list'
-gem 'acts-as-taggable-on'
+gem 'acts_as_list', :git => 'https://github.com/swanandp/acts_as_list.git'
+gem 'acts-as-taggable-on', :git => 'https://github.com/Fodoj/acts-as-taggable-on.git', branch: 'rails-5.2'
 gem 'audited', '~> 4.3'
 gem 'axlsx', git: 'https://github.com/randym/axlsx', branch: 'master'
 gem 'axlsx_rails'
 gem 'bluecloth'
+gem 'bootsnap', require: false
 gem 'bootstrap-sass'
 gem 'bootstrap-select-rails'
 gem 'bootstrap3-datetimepicker-rails'
@@ -22,6 +23,7 @@ gem 'coffee-rails'
 gem 'country_select'
 gem 'curb', '~> 0.9.3'
 gem 'delayed_job_active_record'
+gem 'delayed_job'
 gem 'devise', '~> 4.2'
 gem 'dynamic_form'
 gem 'execjs'
@@ -36,13 +38,16 @@ gem 'haml'
 gem 'hashie-forbidden_attributes'
 gem 'httparty', '~> 0.13.7'
 gem 'icalendar'
+gem 'icalendar-recurrence'
 gem 'jquery_datepicker'
 gem 'jquery-rails'
 gem 'jbuilder', '~> 2.0'
 gem 'json', '>= 1.8'
 gem 'letter_opener'
 gem 'momentjs-rails', '>= 2.8.1'
-gem 'mysql2', '~> 0.3.18'
+gem 'mysql2', '~> 0.4'
+gem 'nested_form'
+gem 'nested_form_fields'
 gem 'newrelic_rpm'
 gem 'nokogiri'
 gem 'nori'
@@ -55,10 +60,10 @@ gem 'pdfkit'
 gem 'prawn', '0.12.0'
 gem 'premailer-rails'
 gem 'rack-mini-profiler'
-gem 'rails', '~> 5.1', '>= 5.1.5'
+gem 'rails', '5.2'
 gem 'rails-html-sanitizer'
 # Needed to used audited-activerecord w/ Rails 5
-gem "rails-observers", github: 'rails/rails-observers'
+gem "rails-observers", git: 'https://github.com/rails/rails-observers.git'
 gem 'redcarpet'
 gem 'remotipart'
 gem 'rest-client'
@@ -79,16 +84,16 @@ gem 'omniauth-cas'
 gem 'dotenv-rails'
 
 group :development, :test, :profile do
-  gem 'addressable', '~> 2.3.6'
+  gem 'addressable', '~> 2.5.2'
   gem 'bullet'
   gem 'connection_pool'
   gem 'equivalent-xml'
   gem 'faker'
   gem 'launchy'
-  gem 'puma', '~> 3.0'
   gem 'timecop'
   gem 'progress_bar'
 end
+gem 'puma', '~> 3.0'
 
 group :development, :test do
   gem 'pry'
@@ -99,6 +104,7 @@ end
 group :development do
   gem 'highline'
   gem 'spring-commands-rspec'
+  gem 'byebug'
   gem 'spring'
   gem 'sqlite3'
   gem 'traceroute'
@@ -109,7 +115,7 @@ group :test do
   gem 'capybara-webkit'
   gem 'database_cleaner'
   gem 'email_spec'
-  gem 'factory_girl_rails'
+  gem "factory_bot_rails"
   gem 'rails-controller-testing', require: false
   gem 'rspec-activemodel-mocks'
   gem 'rspec-html-matchers'
@@ -117,6 +123,18 @@ group :test do
   gem 'shoulda-callback-matchers'
   gem 'site_prism'
   gem 'webmock'
+end
+
+group :assets do
+  # We don't require this because we only have it so
+  # that we can run asset precompile during build without
+  # connecting to a database
+  # If we allow it to be required though it will screw up
+  # schema load / migrations because monkey patching.
+  # So what we do is not require it and then generate the
+  # require statement in the database.yml that we generate
+  # in the hab package build
+  gem "activerecord-nulldb-adapter", require: false
 end
 
 group :profile do

@@ -337,3 +337,32 @@ $ ->
       data:
         service_relation_id: service_relation_id
         linked_quantity_total: linked_quantity_total
+
+  ##############################################
+  ###             Service Pricing            ###
+  ##############################################
+
+  $(document).on 'click', '.edit_pricing_map_link', ->
+    pricing_map_id = $(this).data('pricing-map-id')
+    $.ajax
+      type: "GET"
+      url: "/catalog_manager/pricing_maps/#{pricing_map_id}/edit"
+
+  $(document).on 'click', '#new_pricing_map_link', ->
+    service_id = $(this).data('service-id')
+    $.ajax
+      type: "GET"
+      url: "/catalog_manager/pricing_maps/new"
+      data:
+        service_id: service_id
+
+  $(document).on 'submit', '#pricing_map_modal form', ->
+    $('#pricing_map_modal .modal-footer .btn-primary').attr('disabled','disabled')
+
+  $(document).on 'change', '#pricing_map_quantity_type', ->
+    new_value = $(this).val()
+    $('.input-group-addon').text(new_value)
+
+  $(document).on 'change', '#pricing_map_unit_type', ->
+    new_value = $(this).val()
+    $('.input-group-addon').text(new_value)

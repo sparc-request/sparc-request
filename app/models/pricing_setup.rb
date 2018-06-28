@@ -92,6 +92,7 @@ class PricingSetup < ApplicationRecord
     end
   end
 
+  ##Checks user rights for given user, to be allowed to access historical pricing setups
   def disabled?(user)
     if user.can_edit_historical_data_for?(organization)
       false
@@ -113,14 +114,16 @@ class PricingSetup < ApplicationRecord
   end
 
   def rate_percentages
-    if corporate.present? && (corporate < federal)
-      errors.add(:corporate, "must be greater than or equal to Federal Rate.")
-    end
-    if other.present? && (other < federal)
-      errors.add(:other, "must be greater than or equal to Federal Rate.")
-    end
-    if member.present? && (member < federal)
-      errors.add(:member, "must be greater than or equal to Federal Rate.")
+    if federal.present?
+      if corporate.present? && (corporate < federal)
+        errors.add(:corporate, "must be greater than or equal to Federal Rate.")
+      end
+      if other.present? && (other < federal)
+        errors.add(:other, "must be greater than or equal to Federal Rate.")
+      end
+      if member.present? && (member < federal)
+        errors.add(:member, "must be greater than or equal to Federal Rate.")
+      end
     end
   end
 end

@@ -1,0 +1,143 @@
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+/ = t(:catalog_manager)[:organization_form][:pricing_map_form][]
+
+- service_id = nil unless defined?(service_id)
+- pricing_map_disabled = (service_id ? false : pricing_map.disabled?(@user))
+- rate_map = pricing_map.service.get_rate_maps(pricing_map.display_date.to_date.strftime("%F"), pricing_map.full_rate) rescue nil
+
+#pricing_map_modal
+  .modal-dialog
+    .modal-content
+      = form_for [:catalog_manager, pricing_map], remote: true, html: {class: 'form-horizontal'} do |f|
+        .modal-header
+          %button.close{"aria-label" => "Close", data: {dismiss: 'modal'}, type: "button"}
+            %span{"aria-hidden" => "true"} ×
+          %h4.modal-title= t(:catalog_manager)[:service_form][:pricing_map_form][:title]
+        .modal-body
+          - if service_id
+            = f.hidden_field :service_id, value: service_id
+          #modal_errors
+          %fieldset
+            %legend= t(:catalog_manager)[:organization_form][:pricing][:dates]
+            .form-group.has-feedback
+              = f.label :display_date, t(:catalog_manager)[:organization_form][:pricing][:display_date], class: 'col-sm-4 control-label'
+              .col-sm-7
+                = f.text_field :display_date, {disabled: pricing_map_disabled, class: 'form-control datetimepicker'}
+                %span.glyphicon.glyphicon-calendar.form-control-feedback
+
+            .form-group.has-feedback
+              = f.label :effective_date, t(:catalog_manager)[:organization_form][:pricing][:effective_date], class: 'col-sm-4 control-label'
+              .col-sm-7
+                = f.text_field :effective_date, {disabled: pricing_map_disabled, class: 'form-control datetimepicker' }
+                %span.glyphicon.glyphicon-calendar.form-control-feedback
+
+            .form-group
+              .col-sm-7.col-sm-offset-4.small
+                = t(:catalog_manager)[:organization_form][:pricing][:required_field]
+
+
+          %fieldset
+            %legend= t(:catalog_manager)[:organization_form][:pricing][:rates]
+            .form-group
+              = f.label :full_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:full_rate], class: 'col-sm-4 control-label'
+              .col-sm-7= f.text_field :full_rate, {value: Service.cents_to_dollars(pricing_map.full_rate), disabled: pricing_map_disabled, class: 'form-control'}
+
+            .form-group
+              .col-sm-2.col-sm-offset-4.text-center= t(:catalog_manager)[:service_form][:pricing_map_form][:calculated]
+              .col-sm-5= t(:catalog_manager)[:service_form][:pricing_map_form][:override]
+
+            .form-group
+              = f.label :federal_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:federal_rate], class: 'col-sm-4 control-label'
+              .col-sm-2.text-center= (rate_map ? rate_map['federal_rate'] : "N/A") + " *"
+              .col-sm-5= f.text_field :federal_rate, {value: Service.cents_to_dollars(pricing_map.federal_rate), disabled: pricing_map_disabled, class: 'form-control'}
+            .form-group
+              = f.label :corporate_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:corporate_rate], class: 'col-sm-4 control-label'
+              .col-sm-2.text-center= (rate_map ? rate_map['corporate_rate'] : "N/A") + " *"
+              .col-sm-5= f.text_field :corporate_rate, {value: Service.cents_to_dollars(pricing_map.corporate_rate), disabled: pricing_map_disabled, class: 'form-control'}
+            .form-group
+              = f.label :other_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:other_rate], class: 'col-sm-4 control-label'
+              .col-sm-2.text-center= (rate_map ? rate_map['other_rate'] : "N/A") + " *"
+              .col-sm-5= f.text_field :other_rate, {value: Service.cents_to_dollars(pricing_map.other_rate), disabled: pricing_map_disabled, class: 'form-control'}
+            .form-group
+              = f.label :member_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:member_rate], class: 'col-sm-4 control-label'
+              .col-sm-2.text-center= (rate_map ? rate_map['member_rate'] : "N/A") + " *"
+              .col-sm-5= f.text_field :member_rate, {value: Service.cents_to_dollars(pricing_map.member_rate), disabled: pricing_map_disabled, class: 'form-control'}
+
+            .form-group
+              .col-sm-7.col-sm-offset-4.small
+                = t(:catalog_manager)[:service_form][:pricing_map_form][:rate_disclaimer]
+
+          - if pricing_map.is_one_time_fee?
+            %fieldset
+              %legend= t(:catalog_manager)[:service_form][:pricing_map_form][:non_clinical_service]
+              .form-group
+                = f.label :otf_unit_type, t(:catalog_manager)[:service_form][:pricing_map_form][:otf_unit_type], class: 'col-sm-4 control-label'
+                .col-sm-7= f.text_field :otf_unit_type, {disabled: pricing_map_disabled, class: 'form-control'}
+              .form-group
+                = f.label :quantity_type, t(:catalog_manager)[:service_form][:pricing_map_form][:quantity_type], class: 'col-sm-4 control-label'
+                .col-sm-7= f.text_field :quantity_type, {disabled: pricing_map_disabled, class: 'form-control'}
+              .form-group
+                = f.label :quantity_minimum, t(:catalog_manager)[:service_form][:pricing_map_form][:quantity_minimum], class: 'col-sm-4 control-label'
+                .col-sm-7
+                  .input-group
+                    = f.text_field :quantity_minimum, {disabled: pricing_map_disabled, class: 'form-control'}
+                    %span.input-group-addon= pricing_map.quantity_type
+              .form-group
+                = f.label :unit_factor, t(:catalog_manager)[:service_form][:pricing_map_form][:unit_factor], class: 'col-sm-4 control-label'
+                .col-sm-7= f.text_field :unit_factor, {disabled: pricing_map_disabled, class: 'form-control'}
+              .form-group
+                = f.label :units_per_qty_max, t(:catalog_manager)[:service_form][:pricing_map_form][:units_per_qty_max], class: 'col-sm-4 control-label'
+                .col-sm-7= f.text_field :units_per_qty_max, {disabled: pricing_map_disabled, class: 'form-control'}
+
+              - if Setting.find_by_key("use_indirect_cost").value
+                .form-group
+                  = f.label :exclude_from_indirect_cost, t(:catalog_manager)[:service_form][:pricing_map_form][:exclude_from_indirect_cost], class: 'col-sm-4 control-label'
+                  .col-sm-7= f.check_box :exclude_from_indirect_cost, {disabled: pricing_map_disabled, checked: pricing_map.exclude_from_indirect_cost, data: {toggle: 'toggle'}}
+
+              .form-group
+                .col-sm-7.col-sm-offset-4.small
+                  = t(:catalog_manager)[:organization_form][:pricing][:required_field]
+
+          - else
+            %fieldset
+              %legend= t(:catalog_manager)[:service_form][:pricing_map_form][:clinical_service]
+              .form-group
+                = f.label :unit_type, t(:catalog_manager)[:service_form][:pricing_map_form][:unit_type], class: 'col-sm-4 control-label'
+                .col-sm-7= f.text_field :unit_type, {disabled: pricing_map_disabled, class: 'form-control'}
+              .form-group
+                = f.label :unit_factor, t(:catalog_manager)[:service_form][:pricing_map_form][:unit_factor], class: 'col-sm-4 control-label'
+                .col-sm-7= f.text_field :unit_factor, {disabled: pricing_map_disabled, class: 'form-control'}
+              .form-group
+                = f.label :unit_minimum, t(:catalog_manager)[:service_form][:pricing_map_form][:unit_minimum], class: 'col-sm-4 control-label'
+                .col-sm-7
+                  .input-group
+                    = f.text_field :unit_minimum, {disabled: pricing_map_disabled, class: 'form-control'}
+                    %span.input-group-addon= pricing_map.unit_type
+              .form-group
+                .col-sm-7.col-sm-offset-4.small
+                  = t(:catalog_manager)[:organization_form][:pricing][:required_field]
+
+
+            .clearfix
+        .modal-footer
+          %button.btn.btn-default{data: {dismiss: 'modal'}, type: 'button'} Close
+          %input#pricing_map_submit.btn.btn-primary{type: 'submit', value: t(:actions)[:save]}

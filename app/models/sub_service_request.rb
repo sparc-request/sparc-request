@@ -46,7 +46,6 @@ class SubServiceRequest < ApplicationRecord
   has_many :notifications, :dependent => :destroy
   has_many :subsidies
   has_many :responses, as: :respondable, dependent: :destroy
-  has_many :forms, -> (ssr) { where(surveyable: ssr.services).or(where(surveyable: ssr.organization)).active }, through: :services
   has_many :service_forms, -> { active }, through: :services, source: :forms
   has_many :organization_forms, -> { active }, through: :organization, source: :forms
   has_one :approved_subsidy, :dependent => :destroy
@@ -422,11 +421,11 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def has_completed_forms?
-    self.responses.where(survey: self.forms).any?
+    self.responses.where(survey: self.service_forms + self.organization_forms).any?
   end
 
   def all_forms_completed?
-    self.forms.count == self.responses.count
+    (self.service_forms + self.organization_forms).count == self.responses.count
   end
 
   ##########################

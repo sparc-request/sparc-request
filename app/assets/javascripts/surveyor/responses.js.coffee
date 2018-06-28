@@ -76,3 +76,15 @@ $(document).ready ->
       $("#for-Form").addClass('hidden')
       $("#for-Form .selectpicker").selectpicker('deselectAll')
       $("#for-SystemSurvey").removeClass('hidden')
+
+  $(document).on 'change', '#filterrific_with_state', ->
+    selected = $(this).find('option:selected')
+
+    if selected.length == 1
+      selected_value = selected.val()
+
+      $(".survey-select option:not([data-active='#{selected_value}'])").prop('disabled', true)
+      $('.survey-select').selectpicker('refresh')
+    else
+      $('.survey-select option').prop('disabled', false)
+      $('.survey-select').selectpicker('refresh')

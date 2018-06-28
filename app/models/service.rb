@@ -59,6 +59,10 @@ class Service < ApplicationRecord
 
   validate :validate_pricing_maps_present
 
+  default_scope -> {
+    where(is_available: [true, nil]).order(:order, :name)
+  }
+
   # Services listed under the funding organizations
   scope :funding_opportunities, -> { where(organization_id: Setting.find_by_key("funding_org_ids").value) }
 

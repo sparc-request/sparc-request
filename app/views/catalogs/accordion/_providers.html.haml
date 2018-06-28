@@ -33,9 +33,9 @@
             %h4.panel-title.text-left
               = organization_name_display(p, locked)
           .col-lg-2
-            - if p.all_child_organizations.any?
+            - if p.programs.any?
               %span.caret
       .panel-collapse.collapse{ class: "provider-#{p.id}" }
         .panel-body
-          = render 'catalogs/accordion/programs', programs: p.programs.where(is_available: [nil, true]).order('`order`'), locked_ids: locked_ids, ssr_org: ssr_org, provider_is_process_ssr: provider_is_process_ssr
+          = render 'catalogs/accordion/programs', programs: p.programs, locked_ids: locked_ids, ssr_org: ssr_org, provider_is_process_ssr: provider_is_process_ssr
 

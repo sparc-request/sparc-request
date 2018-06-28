@@ -54,7 +54,11 @@ class Organization < ApplicationRecord
   accepts_nested_attributes_for :editable_statuses
 
   after_create :create_statuses
-  
+
+  default_scope -> {
+    where(is_available: [true, nil]).order(:order)
+  }
+
   scope :authorized_for_identity, -> (identity_id) {
     where(
       id: Organization.authorized_child_organization_ids(

@@ -46,6 +46,9 @@ class SubServiceRequest < ApplicationRecord
   has_many :notifications, :dependent => :destroy
   has_many :subsidies
   has_many :responses, as: :respondable, dependent: :destroy
+  has_many :forms, -> (ssr) { where(surveyable: ssr.services).or(where(surveyable: ssr.organization)).active }, through: :services
+  has_many :service_forms, -> { active }, through: :services, source: :forms
+  has_many :organization_forms, -> { active }, through: :organization, source: :forms
   has_one :approved_subsidy, :dependent => :destroy
   has_one :pending_subsidy, :dependent => :destroy
 
@@ -409,8 +412,9 @@ class SubServiceRequest < ApplicationRecord
   ### FORMS ###
   #############
   def forms_to_complete
-    Form.where(surveyable: self.services).where.not(id: self.responses.pluck(:survey_id)).active +
-      Form.where(surveyable: self.organization).where.not(id: self.responses.pluck(:survey_id)).active
+    completed_ids = self.responses.pluck(:survey_id)
+
+    (self.service_forms + self.organization_forms).select{ |f| !completed_ids.include?(f.id) }
   end
 
   def form_completed?(form)
@@ -418,13 +422,11 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def has_completed_forms?
-    Response.where(respondable: self, survey: Form.where(surveyable: self.services).active.ids + Form.where(surveyable: self.organization).active.ids).any?
+    self.responses.where(survey: self.forms).any?
   end
 
   def all_forms_completed?
-    form_ids = Form.where(surveyable: self.services).active.ids + 
-                Form.where(surveyable: self.organization).active.ids
-    Response.where(respondable: self, survey_id: form_ids).count == form_ids.count
+    self.forms.count == self.responses.count
   end
 
   ##########################

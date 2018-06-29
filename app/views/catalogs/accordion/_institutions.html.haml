@@ -20,7 +20,7 @@
 - institution_is_process_ssr = false
 
 .panel-group#institution-accordion
-  - institutions.includes(providers: :programs).where(is_available: [nil, true]).each do |i|
+  - institutions.includes(providers: :programs).select{ |inst| inst.is_available != false }.each do |i|
     - # Skip the institution if:
     - # 1. We are editing an SSR
     - # 2. The institution is not the ssr_org or an ancestor of ssr_org

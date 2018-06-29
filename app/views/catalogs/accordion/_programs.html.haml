@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %table
   %tbody
-    - programs.each do |p|
+    - programs.select{ |prog| prog.is_available != false }.each do |p|
       - # Skip the program if:
       - # 1. We are editing an SSR
       - # 2. The provider was not the process_ssr organization

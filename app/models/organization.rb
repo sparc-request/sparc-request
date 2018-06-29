@@ -56,7 +56,7 @@ class Organization < ApplicationRecord
   after_create :create_statuses
 
   default_scope -> {
-    where(is_available: [true, nil]).order(:order)
+    order(:order)
   }
 
   scope :authorized_for_identity, -> (identity_id) {

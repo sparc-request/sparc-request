@@ -60,7 +60,7 @@ class Service < ApplicationRecord
   validate :validate_pricing_maps_present
 
   default_scope -> {
-    where(is_available: [true, nil]).order(:order, :name)
+    order(:order, :name)
   }
 
   # Services listed under the funding organizations

@@ -30,7 +30,7 @@
           = render 'catalogs/accordion/services', services: ssr_org.services, service_request: service_request, sub_service_request: sub_service_request
   - else
     .panel-group{ id: "program-#{program.id}"}
-      - cores.each do |c|
+      - cores.select{ |core| core.is_available != false }.each do |c|
         - locked = locked_ids.include?(c.id)
         .panel.panel-default
           .panel-heading.core-header{ class: [css_class(program), locked ? 'bg-danger text-danger' : ''], data: { toggle: 'collapse', target: ".core-#{c.id}", parent: "#program-#{program.id}" } }

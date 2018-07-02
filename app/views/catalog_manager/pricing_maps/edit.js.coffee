@@ -18,11 +18,15 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-<% if @errors %>
-$("#modal_place #modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
-$("#pricing_setup_submit").removeAttr('disabled')
-<% else %>
-$("#modal_place").modal('hide')
-$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
-$("#pricing_setups_container").html("<%= j render '/catalog_manager/organizations/pricing_form', organization: @organization, user: @user %>")
-<% end %>
+$('#modal_place').html("<%= j render '/catalog_manager/pricing_maps/pricing_map_form', pricing_map: @pricing_map %>")
+$('#modal_place').modal('show')
+
+$('.selectpicker').selectpicker()
+$("[data-toggle='toggle']").bootstrapToggle(
+    on: 'Yes',
+    off: 'No'
+  )
+
+$('[data-toggle="tooltip"]').tooltip()
+
+$('.datetimepicker').datetimepicker(format: 'YYYY-MM-DD', allowInputToggle: false, useCurrent: false)

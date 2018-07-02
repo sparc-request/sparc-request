@@ -28,8 +28,6 @@
           %h4.modal-title= t(:catalog_manager)[:organization_form][:pricing][:subsidy_map]
 
         .modal-body
-          -#- if organization_id
-            -#= f.hidden_field :organization_id, value: organization_id
           #modal_errors
           .form-group
             = f.label :max_percentage, t(:catalog_manager)[:organization_form][:pricing][:max_percentage], class: 'col-sm-4 control-label'
@@ -47,4 +45,4 @@
             .col-sm-7= f.text_field :instructions, {class: 'form-control'}
         .modal-footer
           %button.btn.btn-default{data: {dismiss: 'modal'}, type: 'button'} Close
-          %input#pricing_setup_submit.btn.btn-primary{type: 'submit', value: t(:actions)[:save]}
+          %input#subsidy_map_submit.btn.btn-primary{type: 'submit', value: t(:actions)[:save]}

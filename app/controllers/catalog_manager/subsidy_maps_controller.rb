@@ -19,17 +19,18 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class CatalogManager::SubsidyMapsController < CatalogManager::AppController
-  def new
-  end
-
-  def create
-  end
-
   def edit
     @subsidy_map = SubsidyMap.find(subsidy_map_params[:id])
   end
 
   def update
+    @subsidy_map = SubsidyMap.find(subsidy_map_params[:id])
+
+    if @subsidy_map.update_attributes(subsidy_map_params[:subsidy_map])
+      flash[:success] = "Subsidy Map updated successfully."
+    else
+      @errors = @subsidy_map.errors
+    end
   end
 
   private
@@ -40,8 +41,7 @@ class CatalogManager::SubsidyMapsController < CatalogManager::AppController
       :max_percentage,
       :default_percentage,
       :max_dollar_cap,
-      :instructions,
-      :organization_id
+      :instructions
       ])
   end
 

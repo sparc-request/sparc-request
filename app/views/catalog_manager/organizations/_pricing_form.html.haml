@@ -34,9 +34,5 @@
 
 #subsidy_container
   %h4.form_row= t(:catalog_manager)[:organization_form][:pricing][:subsidy_info]
-  - if organization.subsidy_map
-    #edit_subsidy_map_button.btn.btn-primary{data: {subsidy_map_id: organization.subsidy_map.id}}
-      = t(:catalog_manager)[:organization_form][:pricing][:edit_subsidy_map]
-  - else
-    #new_subsidy_map_button.btn.btn-primary{data: {organization_id: organization.id}}
-      = t(:catalog_manager)[:organization_form][:pricing][:new_subsidy_map]
+  #edit_subsidy_map_button.btn.btn-primary{data: {subsidy_map_id: organization.subsidy_map.id}}
+    = t(:catalog_manager)[:organization_form][:pricing][:edit_subsidy_map]

@@ -18,7 +18,10 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$('#modal_place').html("<%= j render '/catalog_manager/subsidy_maps/form', subsidy_map: @subsidy_map %>")
-$('#modal_place').modal('show')
-
-$('.selectpicker').selectpicker()
+<% if @errors %>
+$("#modal_place #modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
+$("#subsidy_map_submit").removeAttr('disabled')
+<% else %>
+$("#modal_place").modal('hide')
+$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+<% end %>

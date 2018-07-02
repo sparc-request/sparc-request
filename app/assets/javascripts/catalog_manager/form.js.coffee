@@ -265,10 +265,8 @@ $ ->
       type: "GET"
       url: "/catalog_manager/subsidy_maps/#{subsidy_map_id}/edit"
 
-  $(document).on 'click', '#new_subsidy_map_button', ->
-    org_id = $(this).data('organization-id')
-    #Stuff
-
+  $(document).on 'submit', '#subsidy_map_modal form', ->
+    $('#subsidy_map_submit').attr('disabled','disabled')
 
   ##############################################
   ###          Service Components            ###

@@ -314,6 +314,17 @@ $(document).ready ->
       $('#sub_service_request_header').html(data['header'])
       $('.selectpicker').selectpicker()
 
+  $('.your-cost').editable
+    params: (params) ->
+      {
+        line_item:
+          displayed_cost: params.value
+        service_request_id: getSRId()
+      }
+    success: (response, newValue) ->
+      $('.study_level_activities').bootstrapTable('refresh', silent: true)
+
+
   $('.edit-subject-count').editable
     params: (params) ->
       {

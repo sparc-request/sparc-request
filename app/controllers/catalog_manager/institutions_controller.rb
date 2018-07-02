@@ -19,27 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class CatalogManager::InstitutionsController < CatalogManager::OrganizationsController
-  def create
-    @organization = Institution.create({name: params[:name], abbreviation: params[:name], is_available: true})
-    @user.catalog_manager_rights.create(organization_id: @organization.id)
-
-    @user_rights  = user_rights(@organization.id)
-    @path = new_catalog_manager_organization_path
-
-    if @organization.valid?
-      flash[:notice] = "#{@organization.name} created successfully."
-    else
-      @errors = @organization.errors
-    end
-
-    @institutions = Institution.order('`order`')
-
-    respond_to do |format|
-      format.js
-    end
-
-  end
-
   def edit
     @path = catalog_manager_institution_path
     super

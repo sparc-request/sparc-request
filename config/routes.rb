@@ -213,10 +213,10 @@ SparcRails::Application.routes.draw do
       get :add_user_rights_row
       get :add_fulfillment_rights_row
     end
-    resources :institutions, only: [:edit, :update, :create]
-    resources :providers, only: [:edit, :update, :create]
-    resources :programs, only: [:edit, :update, :create]
-    resources :cores, only: [:edit, :update, :create]
+    resources :institutions, only: [:edit, :update]
+    resources :providers, only: [:edit, :update]
+    resources :programs, only: [:edit, :update]
+    resources :cores, only: [:edit, :update]
     resource :super_user, only: [:create, :destroy]
     resource :catalog_manager, only: [:create, :destroy, :update]
     resource :service_provider, only: [:create, :destroy, :update]

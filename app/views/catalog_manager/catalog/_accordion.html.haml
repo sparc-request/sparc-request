@@ -24,7 +24,7 @@
     .col-sm-1.no-padding-y
       = link_to plus_glyphicon(), 'javascript:void(0)', data: { parent: '#cm-accordion' }
     .col-sm-11.no-padding-y
-      = link_to create_new_text(:institution), new_catalog_manager_organization_path, class: 'org-form-label panel-title new-institution'
+      = link_to create_new_text(:institution), 'javascript:void(0)', class: 'org-form-label panel-title new_organization_link', data: {organization_type: "Institution"}
   - institutions.where(is_available: availability).each do |institution|
     .panel-heading.no-padding-y
       .col-sm-1.no-padding-y
@@ -37,7 +37,7 @@
           .col-sm-1.no-padding-y
             = link_to plus_glyphicon(), 'javascript:void(0)', data: { parent: ".institution-#{institution.id}" }
           .col-sm-11.no-padding-y
-            = link_to create_new_text(:provider), 'javascript:void(0)', class: 'org-form-label panel-title'
+            = link_to create_new_text(:provider), 'javascript:void(0)', class: 'org-form-label panel-title new_organization_link', data: {organization_type: "Provider", parent_id: institution.id}
         - institution.providers.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |provider|
           .panel-heading.no-padding-y
             .col-sm-1.no-padding-y
@@ -50,7 +50,7 @@
                 .col-sm-1.no-padding-y
                   = link_to plus_glyphicon(), 'javascript:void(0)', data: { parent: ".provider-#{provider.id}" }
                 .col-sm-11.no-padding-y
-                  = link_to create_new_text(:program), 'javascript:void(0)', class: 'org-form-label panel-title'
+                  = link_to create_new_text(:program), 'javascript:void(0)', class: 'org-form-label panel-title new_organization_link', data: {organization_type: "Program", parent_id: provider.id}
               - provider.programs.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |program|
                 .panel-heading.no-padding-y
                   .col-sm-1.no-padding-y
@@ -63,14 +63,13 @@
                       .col-sm-1.no-padding-y
                         = link_to plus_glyphicon(), 'javascript:void(0)', data: { parent: ".program-#{program.id}" }
                       .col-sm-11.no-padding-y
-                        = link_to create_new_text(:core), 'javascript:void(0)', class: 'org-form-label panel-title'
+                        = link_to create_new_text(:core), 'javascript:void(0)', class: 'org-form-label panel-title new_organization_link', data: {organization_type: "Core", parent_id: program.id}
                     .panel-heading.no-padding-y
                       .col-sm-1.no-padding-y
                         = link_to plus_glyphicon(), 'javascript:void(0)', data: { parent: ".program-#{program.id}" }
                       .col-sm-11.no-padding-y
                         = link_to create_new_text(:service), 'javascript:void(0)', class: 'org-form-label panel-title'
                     %div{id: "program_accordion_#{program.id}"}
-                    / = render "program_accordion", program: program, availability: availability
                   .clearfix
             .clearfix
       .clearfix

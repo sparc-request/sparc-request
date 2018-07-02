@@ -21,12 +21,24 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   layout false
 
   def new
-     @organization = Organization.new
+    @organization = Organization.new(type: params[:type], parent_id: params[:parent_id])
   end
 
   def create
-    @organization.build_subsidy_map() unless @organization.type == 'Institution'
-    @organization.save
+    @organization = Organization.new(new_organization_params[:organization])
+    if @organization.save
+      @organization.build_subsidy_map() unless @organization.type == 'Institution'
+      @user.catalog_manager_rights.create(organization_id: @organization.id)
+
+      @institutions = Institution.order('`order`')
+      @path = new_catalog_manager_organization_path
+      @user_rights  = user_rights(@organization.id)
+      @fulfillment_rights = fulfillment_rights(@organization.id)
+
+      flash[:success] = "New Organization created successfully."
+    else
+      @errors = @organization.errors
+    end
   end
 
   def edit
@@ -236,20 +248,28 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
   # ================ end ========================
 
-  def organization_params(type)
-    params.require(type).permit(:name,
-      :order,
-      :css_class,
-      :description,
-      :parent_id,
-      :abbreviation,
-      :ack_language,
-      :process_ssrs,
-      :is_available,
-      :use_default_statuses,
-      { tag_list:  [] },
-      submission_emails_attributes: [:organization_id, :email]
-      )
+  # def organization_params
+  #   params.permit(:name,
+  #     :order,
+  #     :css_class,
+  #     :description,
+  #     :parent_id,
+  #     :abbreviation,
+  #     :ack_language,
+  #     :process_ssrs,
+  #     :is_available,
+  #     :use_default_statuses,
+  #     { tag_list:  [] },
+  #     submission_emails_attributes: [:organization_id, :email]
+  #     )
+  # end
+
+  def new_organization_params
+    params.permit(organization: [
+      :type,
+      :name,
+      :is_available
+      ])
   end
 
   def fulfillment_rights_params

@@ -1,4 +1,3 @@
-
 -# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
@@ -19,9 +18,10 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.panel.panel-info
-  .panel-heading
-    %h4.text-primary
-      = link_to 'javascript:void(0)', class: 'edit_pricing_map_link', data: {pricing_map_id: pricing_map.id} do
-        %span.glyphicon.glyphicon-edit
-      = "Pricing Map: Effective on #{pricing_map.effective_date.to_date.strftime('%-m/%d/%Y')} -  Display on #{pricing_map.display_date.to_date.strftime('%-m/%d/%Y')}"
+#new_pricing_map_link.btn.btn-info{data: {service_id: service.id}}
+  = t(:catalog_manager)[:service_form][:pricing_map_form][:add_pricing]
+
+#pricing_map_list
+  - service.pricing_maps.sort_by(&:effective_date).each do |pricing_map|
+    = render "/catalog_manager/services/pricing_map", pricing_map: pricing_map
+

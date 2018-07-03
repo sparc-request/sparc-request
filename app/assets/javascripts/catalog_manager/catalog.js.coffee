@@ -27,14 +27,15 @@ $ ->
   initialize_glyphicon()
 
 
-  $(document).on 'click','#availability-button', ->
-    show_available_only = $(this).data('show-available-only')
+  $(document).on 'change','#show_available_only', ->
+    show_available_only = $(this).prop('checked')
     $.ajax
       method: "GET"
       url: "/catalog_manager.js?show_available_only=#{show_available_only}"
       success: ->
         initialize_org_search()
         initialize_glyphicon()
+        $("[data-toggle='toggle']").bootstrapToggle()
 
 
   ##############################################
@@ -98,7 +99,7 @@ initialize_org_search = () ->
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     remote:
-      url: "/search/organizations?term=%QUERY&show_available_only=#{$('#availability-button').data('show-available-only')}",
+      url: "/search/organizations?term=%QUERY&show_available_only=#{$('#show_available_only').prop('checked')}",
       wildcard: '%QUERY'
   )
   services_bloodhound.initialize() # Initialize the Bloodhound suggestion engine

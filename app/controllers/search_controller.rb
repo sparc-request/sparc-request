@@ -70,7 +70,7 @@ class SearchController < ApplicationController
 
   def organizations
     term = params[:term].strip
-    if params[:show_available_only] == 'false' #the param name is the opposite of what is currently displayed
+    if params[:show_available_only] == 'true'
       query_available = " AND is_available = 1"
     end
 

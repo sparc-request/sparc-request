@@ -21,10 +21,14 @@
 .col-sm-6
   = text_field_tag 'organization-query', nil, placeholder: t(:catalog_manager)[:catalog][:search_placeholder], class: "form-control input-lg"
 
-%button.btn.btn-lg.btn-info#availability-button{ data: { show_available_only: (!show_available_only).to_s } }
-  - if show_available_only
-    = t(:catalog_manager)[:catalog][:availability_button][:show_all]
-  - else
-    = t(:catalog_manager)[:catalog][:availability_button][:show_available]
+= check_box_tag 'show_available_only', true, show_available_only, data: {toggle: 'toggle', on: 'Show Available', off: 'Show All', size: 'large', offstyle: 'primary', onstyle: 'info'}
+
 
 = link_to 'My Forms and Surveys', surveyor_surveys_path, class: 'btn btn-lg btn-info survey-link', target: '_blank'
+
+= show_available_only.to_s
+/ %button.btn.btn-lg.btn-info#availability-button{ data: { show_available_only: (!show_available_only).to_s } }
+/   - if show_available_only
+/     = t(:catalog_manager)[:catalog][:availability_button][:show_all]
+/   - else
+/     = t(:catalog_manager)[:catalog][:availability_button][:show_available]

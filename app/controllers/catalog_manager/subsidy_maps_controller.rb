@@ -26,7 +26,10 @@ class CatalogManager::SubsidyMapsController < CatalogManager::AppController
   def update
     @subsidy_map = SubsidyMap.find(subsidy_map_params[:id])
 
-    if @subsidy_map.update_attributes(subsidy_map_params[:subsidy_map])
+    if @subsidy_map.update_attributes(subsidy_map_params[:subsidy_map].except(:excluded_funding_sources))
+      ##Update the excluded funding sources
+      update_excluded_funding_sources(subsidy_map_params[:subsidy_map][:excluded_funding_sources], @subsidy_map)
+
       flash[:success] = "Subsidy Map updated successfully."
     else
       @errors = @subsidy_map.errors
@@ -35,12 +38,25 @@ class CatalogManager::SubsidyMapsController < CatalogManager::AppController
 
   private
 
+  def update_excluded_funding_sources(new_funding_source_list, subsidy_map)
+    ##Destroy any that are no longer selected
+    subsidy_map.excluded_funding_sources.each do |excluded_funding_source|
+      excluded_funding_source.destroy unless new_funding_source_list.include?(excluded_funding_source.funding_source)
+    end
+
+    ##Create any that are newly selected
+    new_funding_source_list.each do |funding_source|
+      subsidy_map.excluded_funding_sources.create(funding_source: funding_source) unless subsidy_map.excluded_funding_sources.map(&:funding_source).include?(funding_source)
+    end
+  end
+
   def subsidy_map_params
     params.permit(:id,
       subsidy_map: [
       :max_percentage,
       :default_percentage,
       :max_dollar_cap,
+      {excluded_funding_sources: []},
       :instructions
       ])
   end

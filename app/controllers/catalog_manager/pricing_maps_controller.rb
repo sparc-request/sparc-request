@@ -22,7 +22,7 @@ class CatalogManager::PricingMapsController < CatalogManager::AppController
 
   def new
     @pricing_map = PricingMap.new()
-    @service_id = params[:service_id]
+    @service = Service.find(params[:service_id])
   end
 
   def create
@@ -33,12 +33,12 @@ class CatalogManager::PricingMapsController < CatalogManager::AppController
       @service = @pricing_map.service
     else
       @errors = @pricing_map.errors
-      @service_id = pricing_map_params[:pricing_map][:service_id]
     end
   end
 
   def edit
     @pricing_map = PricingMap.find(pricing_map_params[:id])
+    @service = @pricing_map.service
   end
 
   def update

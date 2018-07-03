@@ -18,10 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/ = t(:catalog_manager)[:organization_form][:pricing_map_form][]
-
-- service_id = nil unless defined?(service_id)
-- pricing_map_disabled = (service_id ? false : pricing_map.disabled?(@user))
+- pricing_map_disabled = (pricing_map.new_record? ? false : pricing_map.disabled?(@user))
 - rate_map = pricing_map.service.get_rate_maps(pricing_map.display_date.to_date.strftime("%F"), pricing_map.full_rate) rescue nil
 
 #pricing_map_modal
@@ -33,8 +30,8 @@
             %span{"aria-hidden" => "true"} ×
           %h4.modal-title= t(:catalog_manager)[:service_form][:pricing_map_form][:title]
         .modal-body
-          - if service_id
-            = f.hidden_field :service_id, value: service_id
+          - if pricing_map.new_record?
+            = f.hidden_field :service_id, value: service.id
           #modal_errors
           %fieldset
             %legend= t(:catalog_manager)[:organization_form][:pricing][:dates]
@@ -86,7 +83,7 @@
               .col-sm-7.col-sm-offset-4.small
                 = t(:catalog_manager)[:service_form][:pricing_map_form][:rate_disclaimer]
 
-          - if pricing_map.is_one_time_fee?
+          - if service.one_time_fee
             %fieldset
               %legend= t(:catalog_manager)[:service_form][:pricing_map_form][:non_clinical_service]
               .form-group
@@ -140,4 +137,5 @@
             .clearfix
         .modal-footer
           %button.btn.btn-default{data: {dismiss: 'modal'}, type: 'button'} Close
-          %input#pricing_map_submit.btn.btn-primary{type: 'submit', value: t(:actions)[:save]}
+          - unless pricing_map_disabled
+            %input#pricing_map_submit.btn.btn-primary{type: 'submit', value: t(:actions)[:save]}

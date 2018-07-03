@@ -22,7 +22,7 @@ class CatalogManager::PricingSetupsController < CatalogManager::AppController
 
   def new
     @pricing_setup = PricingSetup.new()
-    @organization_id = params[:organization_id]
+    @organization = Organization.find(params[:organization_id])
   end
 
   def create
@@ -33,12 +33,12 @@ class CatalogManager::PricingSetupsController < CatalogManager::AppController
       @organization = @pricing_setup.organization
     else
       @errors = @pricing_setup.errors
-      @organization_id = pricing_setup_params[:pricing_setup][:organization_id]
     end
   end
 
   def edit
     @pricing_setup = PricingSetup.find(pricing_setup_params[:id])
+    @organization = @pricing_setup.organization
   end
 
   def update

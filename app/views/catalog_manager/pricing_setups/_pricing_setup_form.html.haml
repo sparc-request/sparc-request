@@ -18,8 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- organization_id = nil unless defined?(organization_id)
-- pricing_setup_disabled = (organization_id ? false : pricing_setup.disabled?(@user))
+- pricing_setup_disabled = (pricing_setup.new_record? ? false : pricing_setup.disabled?(@user))
 
 #pricing_setup_modal
   .modal-dialog
@@ -30,8 +29,8 @@
             %span{"aria-hidden" => "true"} ×
           %h4.modal-title= t(:catalog_manager)[:organization_form][:pricing][:title]
         .modal-body
-          - if organization_id
-            = f.hidden_field :organization_id, value: organization_id
+          - if pricing_setup.new_record?
+            = f.hidden_field :organization_id, value: organization.id
           #modal_errors
           %fieldset
             %legend= t(:catalog_manager)[:organization_form][:pricing][:dates]
@@ -66,10 +65,11 @@
               = f.label :federal, t(:catalog_manager)[:organization_form][:pricing][:federal], class: 'col-sm-4 control-label'
               .col-sm-7= f.text_field :federal, {disabled: pricing_setup_disabled, class: 'form-control federal_rate_field'}
 
-            .form-group
-              .col-sm-7.col-sm-offset-4
-                #apply_federal_percent.btn.btn-primary.btn-xs
-                  = t(:catalog_manager)[:organization_form][:pricing][:apply_federal]
+            - unless pricing_setup_disabled
+              .form-group
+                .col-sm-7.col-sm-offset-4
+                  #apply_federal_percent.btn.btn-primary.btn-xs
+                    = t(:catalog_manager)[:organization_form][:pricing][:apply_federal]
 
             .form-group
               = f.label :corporate, t(:catalog_manager)[:organization_form][:pricing][:corporate], class: 'col-sm-4 control-label'
@@ -133,4 +133,5 @@
             .clearfix
         .modal-footer
           %button.btn.btn-default{data: {dismiss: 'modal'}, type: 'button'} Close
-          %input#pricing_setup_submit.btn.btn-primary{type: 'submit', value: t(:actions)[:save]}
+          - unless pricing_setup_disabled
+            %input#pricing_setup_submit.btn.btn-primary{type: 'submit', value: t(:actions)[:save]}

@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$('#modal_place').html("<%= j render '/catalog_manager/pricing_maps/pricing_map_form', pricing_map: @pricing_map, service_id: @service_id%>")
+$('#modal_place').html("<%= j render '/catalog_manager/pricing_maps/pricing_map_form', pricing_map: @pricing_map, service: @service%>")
 $('#modal_place').modal('show')
 
 $('.selectpicker').selectpicker()

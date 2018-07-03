@@ -22,7 +22,7 @@
   .col-sm-4.col-sm-offset-3.text-right
     %h4{style: "margin-top:5px;"}= t(:catalog_manager)[:organization_form][:status_options][:use_default_statuses]
   .col-sm-5
-    = check_box_tag :use_default_statuses, true, organization.use_default_statuses, data: { toggle: 'toggle', organization_id: organization.id}
+    = check_box_tag :use_default_statuses, true, organization.use_default_statuses, data: { toggle: 'toggle', organization_id: organization.id, on: 'Yes', off: 'No'}
 .row
   .col-sm-6
     %h5= t(:catalog_manager)[:organization_form][:status_options][:title]

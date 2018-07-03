@@ -20,19 +20,15 @@
 
 $("#org-form-container").html("<%= j render '/catalog_manager/services/form', service: @service %>")
 $('.selectpicker').selectpicker();
-$("[data-toggle='toggle']").bootstrapToggle(
-    on: 'Yes',
-    off: 'No'
-  );
+$("#org-form-container [data-toggle='toggle']").bootstrapToggle();
 
 ###############################
 ### RELATED SERVICES SEARCH ###
 ###############################
 
 services_bloodhound = new Bloodhound(
-  datumTokenizer: (datum) ->
-    Bloodhound.tokenizers.whitespace datum.value
-  queryTokenizer: Bloodhound.tokenizers.whitespace
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
   remote:
     url: "/search/services_search?term=%QUERY",
     wildcard: '%QUERY'
@@ -43,18 +39,16 @@ $('#new_related_services_search').typeahead(
   {
     minLength: 3,
     hint: false,
-    highlight: true
   },
   {
-    displayKey: 'term'
-    source: services_bloodhound.ttAdapter()
-    limit: 100
+    displayKey: 'term',
+    source: services_bloodhound,
+    limit: 100,
     templates: {
       suggestion: Handlebars.compile('<button class="text-left">
                                         <strong><span class="text-service">Service</span><span>: {{name}}</span></strong><br>
-                                        {{#if cpt_code}}
-                                          <span><strong>CPT Code: {{cpt_code}}</strong></span>
-                                        {{/if}}
+                                        {{{breadcrumb}}}<br>
+                                        <span>{{cpt_code}}</span><br>
                                       </button>')
       notFound: '<div class="tt-suggestion">No Results</div>'
     }

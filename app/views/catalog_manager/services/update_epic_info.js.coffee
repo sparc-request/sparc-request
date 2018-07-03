@@ -22,7 +22,4 @@ $("#epic .panel-body").html("<%= j render '/catalog_manager/services/epic_form',
 
 $("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
 
-$("[data-toggle='toggle']").bootstrapToggle(
-    on: 'Yes',
-    off: 'No'
-  );
+$("#org-form-container [data-toggle='toggle']").bootstrapToggle();

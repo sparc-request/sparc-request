@@ -23,9 +23,6 @@ $("#org-form-container").html("<%= j render 'form', organization: @organization,
 $("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
 
 $('.selectpicker').selectpicker();
-$("[data-toggle='toggle']").bootstrapToggle(
-    on: 'Yes',
-    off: 'No'
-  );
+$("#org-form-container [data-toggle='toggle']").bootstrapToggle();
 
 $('[data-toggle="tooltip"]').tooltip()

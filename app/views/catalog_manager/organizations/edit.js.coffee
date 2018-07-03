@@ -20,10 +20,7 @@
 
 $("#org-form-container").html("<%= j render 'form', organization: @organization, user_rights: @user_rights, fulfillment_rights: @fulfillment_rights, path: @path %>")
 $('.selectpicker').selectpicker();
-$("[data-toggle='toggle']").bootstrapToggle(
-    on: 'Yes',
-    off: 'No'
-  );
+$("#org-form-container [data-toggle='toggle']").bootstrapToggle();
 
 $('[data-toggle="tooltip"]').tooltip()
 

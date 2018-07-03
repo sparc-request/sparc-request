@@ -23,7 +23,4 @@ $("#org-form-container").html("<%= j render '/catalog_manager/services/form', se
 $("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
 
 $('.selectpicker').selectpicker();
-$("[data-toggle='toggle']").bootstrapToggle(
-    on: 'Yes',
-    off: 'No'
-  );
+$("#org-form-container [data-toggle='toggle']").bootstrapToggle();

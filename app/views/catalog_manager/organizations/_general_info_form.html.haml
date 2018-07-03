@@ -44,7 +44,7 @@
     .form-group
       = f.label :process_ssrs, t(:catalog_manager)[:organization_form][:split_notify], class: 'col-sm-3 control-label'
       .col-sm-9
-        = f.check_box :process_ssrs, { checked: organization.process_ssrs, disabled: false, data: {toggle: 'toggle'}}
+        = f.check_box :process_ssrs, { checked: organization.process_ssrs, disabled: false, data: {toggle: 'toggle', on: 'Yes', off: 'No'}}
 
   - if ['Institution','Provider'].include?(organization.type) && user.is_overlord?
     .form-group
@@ -55,7 +55,7 @@
   .form-group#display-in-sparc
     = f.label :is_available, t(:catalog_manager)[:organization_form][:disabled], class: 'col-sm-3 control-label'
     .col-sm-9
-      = f.check_box :is_available, { checked: organization.is_available, disabled: organization.parent ? !organization.parent.is_available : false, data: { toggle: 'toggle' } }
+      = f.check_box :is_available, { checked: organization.is_available, disabled: organization.parent ? !organization.parent.is_available : false, data: {toggle: 'toggle', on: 'Yes', off: 'No'} }
       - if @organization.parent && !@organization.parent.is_available
         %span{style: "padding-left: 15px;"}
           = disabled_parent(@organization)

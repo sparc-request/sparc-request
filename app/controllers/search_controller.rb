@@ -24,13 +24,14 @@ class SearchController < ApplicationController
 
   def services_search
     term = params[:term].strip
-    results = Service.where("is_available=1 AND (name LIKE '%#{term}%' OR abbreviation LIKE '%#{term}%' OR cpt_code LIKE '%#{term}%')")
+    results = Service.where("is_available=1 AND (name LIKE '%#{term}%' OR abbreviation LIKE '%#{term}%' OR cpt_code LIKE '%#{term}%')").to_a
 
-    results.map{ |s|
+    results.map!{ |service|
       {
-        name: s.name,
-        id: s.id,
-        cpt_code: "CPT code: #{s.cpt_code}"
+        name: service.name,
+        id: service.id,
+        cpt_code: cpt_code_text(service),
+        breadcrumb: breadcrumb_text(service)
       }
     }
     render json: results.to_json
@@ -77,17 +78,17 @@ class SearchController < ApplicationController
     results = Organization.where("(name LIKE ? OR abbreviation LIKE ?)#{query_available}", "%#{term}%", "%#{term}%") +
               Service.where("(name LIKE ? OR abbreviation LIKE ? OR cpt_code LIKE ?)#{query_available}", "%#{term}%", "%#{term}%", "%#{term}%")
 
-    results.map! { |org|
+    results.map! { |item|
       {
-        id: org.id,
-        name: org.name,
-        abbreviation: org.abbreviation,
-        type: org.class.to_s,
-        text_color: "text-#{org.class.to_s.downcase}",
-        cpt_code: cpt_code_text(org),
-        inactive_tag: inactive_text(org),
-        parents: org.parents.reverse.map{ |p| "##{p.class.to_s.downcase}-#{p.id}" },
-        breadcrumb: breadcrumb_text(org)
+        id: item.id,
+        name: item.name,
+        abbreviation: item.abbreviation,
+        type: item.class.to_s,
+        text_color: "text-#{item.class.to_s.downcase}",
+        cpt_code: cpt_code_text(item),
+        inactive_tag: inactive_text(item),
+        parents: item.parents.reverse.map{ |p| "##{p.class.to_s.downcase}-#{p.id}" },
+        breadcrumb: breadcrumb_text(item)
       }
     }
     render json: results.to_json
@@ -107,12 +108,18 @@ class SearchController < ApplicationController
 
   private
 
-  def cpt_code_text(org)
-    text = org.class == Service ? "CPT code: #{org.cpt_code}" : ""
+  def cpt_code_text(item)
+    if item.class == Service
+      if item.cpt_code
+        "CPT Code: #{item.cpt_code.blank? ? 'N/A' : item.cpt_code}"
+      else
+        "CPT Code: N/A"
+      end
+    end
   end
 
-  def inactive_text(org)
-    text = org.is_available ? "" : "(Inactive)"
+  def inactive_text(item)
+    text = item.is_available ? "" : "(Inactive)"
   end
 
   def breadcrumb_text(item)

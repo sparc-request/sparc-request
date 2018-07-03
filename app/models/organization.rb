@@ -43,6 +43,9 @@ class Organization < ApplicationRecord
   has_many :editable_statuses, :dependent => :destroy
   has_many :org_children, class_name: "Organization", foreign_key: :parent_id
 
+  # validates :name, presence: true
+  validates :name, uniqueness: true
+
   accepts_nested_attributes_for :submission_emails
 
   after_create :create_statuses

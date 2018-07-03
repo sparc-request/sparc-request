@@ -19,11 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class CatalogManager::InstitutionsController < CatalogManager::OrganizationsController
-  def create
-    @organization = Institution.create({name: params[:name], abbreviation: params[:name], is_available: false})
-    @user.catalog_manager_rights.create( organization_id: @organization.id )
-  end
-
   def edit
     @path = catalog_manager_institution_path
     super

@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,27 +18,24 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-:plain
-  $('#catalog').jstree(
-    'create_node',
-    $("#catalog"),
-    1,
-    { attr:
-      { id: "INSTITUTION#{@organization.id}"},
-      data:
-      { attr:
-        { cid: "#{@organization.id}",
-        class: "institution",
-        object_type: "institution"},
-      title: "#{@organization.name}"
-      }
-    },
+.modal-dialog#add-new-organization
+  .modal-content
+    = form_for organization.becomes(Organization), url:  catalog_manager_organizations_path, remote: true do |f|
+      = f.hidden_field :type
+      = f.hidden_field :is_available, value: false
+      = f.hidden_field :parent_id
+      .modal-header
+        %button.close{ type: 'button', data: { dismiss: 'modal'} }
+          %span{ aria: { hidden: 'true' } } &times;
+        %h4.text-center#modal-title
+          = t(:catalog_manager)[:catalog][:new][organization.type.downcase.to_sym]
 
-    function(){
-      $('#catalog').jstree('create_node',
-        $("#INSTITUTION#{@organization.id}"),
-        'inside',
-        {data: 'Create New Provider'},
-        true)
-    }
-  );
+      .modal-body
+        #modal_errors
+        .form-group
+          = f.label :name, t(:catalog_manager)[:organization_form][:name], class: 'col-sm-4 control-label'
+          .col-sm-7= f.text_field :name, {class: 'form-control'}
+        .clearfix
+      .modal-footer
+        %button.btn.btn-default{data: {dismiss: 'modal'}, type: 'button'} Close
+        %input#create_organization_submit.btn.btn-primary{type: 'submit', value: t(:actions)[:save]}

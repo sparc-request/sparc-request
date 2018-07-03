@@ -37,6 +37,20 @@ $ ->
         initialize_glyphicon()
 
 
+  ##############################################
+  ###          Create New Organization       ###
+  ##############################################
+
+  $(document).on 'click', '.new_organization_link', ->
+    org_type = $(this).data('organization-type')
+    parent_id = $(this).data('parent-id')
+    $.ajax
+      type: 'GET'
+      url: 'catalog_manager/organizations/new.js'
+      data:
+        type: org_type
+        parent_id: parent_id
+
 ##############################################
 ########## Accordion Ajax Functions ##########
 ##############################################

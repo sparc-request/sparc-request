@@ -18,16 +18,12 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogManager::CoresController < CatalogManager::OrganizationsController
-  def edit
-    @path = catalog_manager_core_path
-    super
-  end
-
-  def update
-    @attributes = organization_params(:core)
-    @path = catalog_manager_core_path
-    super
-  end
-
-end
+<% if @errors %>
+$("#modal_place #modal_errors").html("<%= escape_javascript(render( '/shared/modal_errors', errors: @errors )) %>")
+<% else %>
+$("#flashes_container").html("<%= escape_javascript(render( '/shared/flash' )) %>")
+$("#modal_place").modal 'hide'
+$("#org-form-container").html("<%= j render '/catalog_manager/organizations/form', organization: @organization, user_rights: @user_rights, fulfillment_rights: @fulfillment_rights, path: @path %>")
+$('.selectpicker').selectpicker();
+$('#cm-accordion').replaceWith("<%= j render '/catalog_manager/catalog/accordion', institutions: @institutions, show_available_only: false %>")
+<% end %>

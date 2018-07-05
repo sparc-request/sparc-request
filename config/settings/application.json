@@ -90,36 +90,6 @@
     "parent_value":   ""
   },
   {
-    "key":            "epic_queue_access",
-    "value":          "[]",
-    "friendly_name":  "Epic Queue Access",
-    "description":    "Determines which users will have access to the EPIC Queue.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "queue_epic",
-    "parent_value":   "true"
-  },
-  {
-    "key":            "epic_queue_report_to",
-    "value":          "catesa@musc.edu, forney@musc.edu, crossoml@musc.edu, moreira@musc.edu, powersp@musc.edu, rogersbr@musc.edu",
-    "friendly_name":  "Epic Queue Report To",
-    "description":    "Email addresses of users who are e-mailed the EPIC queue report.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "queue_epic",
-    "parent_value":   "true"
-  },
-  {
-    "key":            "approve_epic_rights_mail_to",
-    "value":          "forney@musc.edu, crossoml@musc.edu",
-    "friendly_name":  "EPIC Rights Mail-To",
-    "description":    "Email addresses of users who are e-mailed for EPIC rights approval",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "",
-    "parent_value":   ""
-  },
-  {
     "key":            "faq_url",
     "value":          "http://academicdepartments.musc.edu/sctr/sparc_request/faq.html",
     "friendly_name":  "FAQs URL",
@@ -164,6 +134,26 @@
     "value":          "true",
     "friendly_name":  "Fulfillment Contingent on Catalog Manager",
     "description":    "",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "funding_admins",
+    "value":          "[]",
+    "friendly_name":  "Funding Admins",
+    "description":    "Determines which users will have access to the Funding module.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "funding_org_ids",
+    "value":          "[]",
+    "friendly_name":  "Funding Opportunities Organizations",
+    "description":    "Organization ID of the organizations under the Funding Opportunities.",
     "group":          "",
     "version":        "",
     "parent_key":     "",
@@ -220,16 +210,6 @@
     "parent_value":   ""
   },
   {
-    "key":            "lazy_load_ldap",
-    "value":          "false",
-    "friendly_name":  "Lazy Load LDAP Results",
-    "description":    "When enabled, the database will return only LDAP Identities found in the database and will not create new entries. When disabled, if an LDAP Identity is not found in the database, a record will be created for that user and returned.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "use_ldap",
-    "parent_value":   "true"
-  },
-  {
     "key":            "listserv_mail_to",
     "value":          "hewwe@musc.edu, hutsonk@musc.edu",
     "friendly_name":  "Listserv Mail-To",
@@ -268,26 +248,6 @@
     "version":        "",
     "parent_key":     "",
     "parent_value":   ""
-  },
-  {
-    "key":            "queue_epic",
-    "value":          "false",
-    "friendly_name":  "Queue EPIC",
-    "description":    "Determines whether EPIC pushes will be queued or not. Emptying the queue is done via rake epic:batch_load. This can setup as a cronjob to run at a certain interval.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "use_epic",
-    "parent_value":   "true"
-  },
-  {
-    "key":            "queue_epic_load_error_to",
-    "value":          "hutsonk@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu",
-    "friendly_name":  "Epic Queue Errors To",
-    "description":    "Email addresses of users who are e-mailed when there is an EPIC error.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "queue_epic",
-    "parent_value":   "true"
   },
   {
     "key":            "redcap_token",
@@ -360,46 +320,6 @@
     "parent_value":   ""
   },
   {
-    "key":            "research_master_api",
-    "value":          "https://research-master-staging.musc.edu/api/",
-    "friendly_name":  "Research Master API URL",
-    "description":    "The URL of the Research Master ID API.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "research_master_enabled",
-    "parent_value":   "true"
-  },
-  {
-    "key":            "rmid_api_token",
-    "value":          "e754d4e002bd58b4b1a55a3f5808ec37",
-    "friendly_name":  "Research Master API Token",
-    "description":    "The token used to access the Research Master ID API.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "research_master_enabled",
-    "parent_value":   "true"
-  },
-  {
-    "key":            "research_master_enabled",
-    "value":          "false",
-    "friendly_name":  "Use Research Master ID",
-    "description":    "Determines whether the Research Master ID application should be used.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "",
-    "parent_value":   ""
-  },
-  {
-    "key":            "research_master_link",
-    "value":          "https://research-master-staging.musc.edu/",
-    "friendly_name":  "Research Master ID URL",
-    "description":    "The URL of the Research Master ID application.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "research_master_enabled",
-    "parent_value":   "true"
-  },
-  {
     "key":            "root_url",
     "value":          "https://andrews-mac-pro.thurmond-gazes.musc.edu",
     "friendly_name":  "Root URL",
@@ -438,16 +358,6 @@
     "version":        "",
     "parent_key":     "",
     "parent_value":   ""
-  },
-  {
-    "key":            "suppress_ldap_for_user_search",
-    "value":          "false",
-    "friendly_name":  "Suppress LDAP for User Search",
-    "description":    "Allow the use of LDAP but suppress its use within the Project/Study user search.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "use_ldap",
-    "parent_value":   "true"
   },
   {
     "key":            "system_satisfaction_survey",
@@ -500,16 +410,6 @@
     "parent_value":   "true"
   },
   {
-    "key":            "use_epic",
-    "value":          "false",
-    "friendly_name":  "Use EPIC",
-    "description":    "Determines whether or not EPIC integration will be used.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "",
-    "parent_value":   ""
-  },
-  {
     "key":            "use_faq_link",
     "value":          "false",
     "friendly_name":  "Use FAQ Link",
@@ -544,16 +444,6 @@
     "value":          "false",
     "friendly_name":  "Use Indirect Cost",
     "description":    "Determines whether the application will display direct costs to users. If true, then in addition to direct costs and direct cost subtotals, users will also see indirect costs and indirect cost subtotals, and indirect costs will also be included in the grand total. If false, then indirect costs will not be included in the totals.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "",
-    "parent_value":   ""
-  },
-  {
-    "key":            "use_ldap",
-    "value":          "false",
-    "friendly_name":  "Use LDAP",
-    "description":    "Determines whether the authorized user search will attempt to connect to an LDAP server. If false, it will simply search the database. NOTE: Even if this is set to false at least a blank \"ldap.yml\" is required.",
     "group":          "",
     "version":        "",
     "parent_key":     "",
@@ -614,26 +504,6 @@
     "value":          "/usr/local/bin/wkhtmltopdf",
     "friendly_name":  "WKHTMLTOPDF Location",
     "description":    "Optional location for wkhtmltopdf if not using one supplied by a gem. eg. \"/usr/local/bin/wkhtmltopdf\"",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "",
-    "parent_value":   ""
-  },
-  {
-    "key":            "funding_admins",
-    "value":          "[]",
-    "friendly_name":  "Funding Admins",
-    "description":    "Determines which users will have access to the Funding module.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "",
-    "parent_value":   ""
-  },
-  {
-    "key":            "funding_org_ids",
-    "value":          "[]",
-    "friendly_name":  "Funding Opportunities Organizations",
-    "description":    "Organization ID of the organizations under the Funding Opportunities.",
     "group":          "",
     "version":        "",
     "parent_key":     "",

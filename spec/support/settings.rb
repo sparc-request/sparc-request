@@ -19,14 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 def populate_settings_before_suite
-  require 'rake'
-
-  load File.expand_path("../../../lib/tasks/import_epic_yml.rake", __FILE__)
-  load File.expand_path("../../../lib/tasks/import_ldap_yml.rake", __FILE__)
-
-  Rake::Task.define_task(:environment)
-
-  DefaultSettingsPopulator.new().populate
+  SettingsPopulator.new().populate
 
   Setting.find_by_key("use_epic").update_attribute(:value, true)
   Setting.find_by_key("use_ldap").update_attribute(:value, true)

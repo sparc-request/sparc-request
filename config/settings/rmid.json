@@ -1,0 +1,42 @@
+[
+  {
+    "key":            "research_master_api",
+    "value":          "https://research-master-staging.musc.edu/api/",
+    "friendly_name":  "Research Master API URL",
+    "description":    "The URL of the Research Master ID API.",
+    "group":          "rmid_settings",
+    "version":        "",
+    "parent_key":     "research_master_enabled",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "research_master_enabled",
+    "value":          "false",
+    "friendly_name":  "Use Research Master ID",
+    "description":    "Determines whether the Research Master ID application should be used.",
+    "group":          "rmid_settings",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "research_master_link",
+    "value":          "https://research-master-staging.musc.edu/",
+    "friendly_name":  "Research Master ID URL",
+    "description":    "The URL of the Research Master ID application.",
+    "group":          "rmid_settings",
+    "version":        "",
+    "parent_key":     "research_master_enabled",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "rmid_api_token",
+    "value":          "e754d4e002bd58b4b1a55a3f5808ec37",
+    "friendly_name":  "Research Master API Token",
+    "description":    "The token used to access the Research Master ID API.",
+    "group":          "rmid_settings",
+    "version":        "",
+    "parent_key":     "research_master_enabled",
+    "parent_value":   "true"
+  }
+]

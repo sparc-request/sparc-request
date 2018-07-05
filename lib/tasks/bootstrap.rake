@@ -54,7 +54,7 @@ namespace :sparc do
 
     if Setting.count == 0
       puts "Populating settings table"
-      DefaultSettingsPopulator.new().populate
+      SettingsPopulator.new().populate
     end
   end
 

@@ -51,14 +51,14 @@ $(document).ready ->
 
   $(document).on 'click', '.delete-survey', ->
     survey_id = $(this).data('survey-id')
-    swal {
+    swal({
       title: I18n['swal']['swal_confirm']['title']
       text: I18n['swal']['swal_confirm']['text']
       type: 'warning'
       showCancelButton: true
       confirmButtonColor: '#DD6B55'
       confirmButtonText: 'Delete'
-    }, ->
+    }).then ->
       $.ajax
         type: 'delete'
         url: "/surveyor/surveys/#{survey_id}.js"

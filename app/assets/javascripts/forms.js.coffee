@@ -22,14 +22,14 @@ $ ->
     event.preventDefault()
 
     form_id = $(this).data('response-id')
-    swal {
+    swal({
       title: I18n['swal']['swal_confirm']['title']
       text: I18n['swal']['swal_confirm']['text']
       type: 'warning'
       showCancelButton: true
       confirmButtonColor: '#DD6B55'
       confirmButtonText: 'Delete'
-    }, ->
+    }).then ->
       $.ajax
         type: 'delete'
         url: "/surveyor/responses/#{form_id}.js"

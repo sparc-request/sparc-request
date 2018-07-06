@@ -51,7 +51,7 @@
   },
   {
     "key":            "ldap_email",
-    "value":          "test@e.mail",
+    "value":          "mail",
     "friendly_name":  "LDAP Email",
     "description":    "",
     "group":          "ldap_settings",

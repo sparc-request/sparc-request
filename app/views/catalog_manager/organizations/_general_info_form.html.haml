@@ -18,7 +18,8 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= form_for organization, url: path, html: {class: 'form-horizontal'}, remote: true do |f|
+= form_for organization.becomes(Organization), url: catalog_manager_organization_path(organization), html: {class: 'form-horizontal'}, remote: true do |f|
+  #error_place.form-group
   .form-group
     = f.label :name,  t(:catalog_manager)[:organization_form][:name], class: 'col-sm-3 control-label'
     .col-sm-9
@@ -82,5 +83,5 @@
 
   %hr
   .pull-right
-    %input.btn.btn-default#close-general-info{ type: 'button', value: t(:actions)[:close] }
+    %input.btn.btn-default#close-general-info{ type: 'button', value: t(:actions)[:close], data: {toggle: 'collapse', target: '#general-info-collapse'}}
     %input.btn.btn-primary{ type: 'submit', value: t(:actions)[:save] }

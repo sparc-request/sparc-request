@@ -57,7 +57,13 @@ class Service < ApplicationRecord
   # Surveys associated with this service
   has_many :associated_surveys, as: :associable, dependent: :destroy
 
-  validate :validate_pricing_maps_present
+  validates :abbreviation,
+            :description,
+            :order,
+            presence: true, on: :update
+  validates :name, presence: true
+  validates :order, numericality: { only_integer: true }, on: :update
+  validate :validate_pricing_maps_present, on: :update
 
   # Services listed under the funding organizations
   scope :funding_opportunities, -> { where(organization_id: Setting.find_by_key("funding_org_ids").value) }

@@ -18,10 +18,4 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.col-sm-6
-  = text_field_tag 'organization-query', nil, placeholder: t(:catalog_manager)[:catalog][:search_placeholder], class: "form-control input-lg"
-
-%span#availability_toggle_container
-  = render 'availability_toggle', show_available_only: show_available_only
-
-= link_to 'My Forms and Surveys', surveyor_surveys_path, class: 'btn btn-lg btn-info survey-link', target: '_blank'
+= check_box_tag 'show_available_only', true, show_available_only, data: {toggle: 'toggle', on: 'Show Available', off: 'Show All', size: 'large', offstyle: 'primary', onstyle: 'info'}

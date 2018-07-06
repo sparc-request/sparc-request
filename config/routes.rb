@@ -198,7 +198,7 @@ SparcRails::Application.routes.draw do
     match 'organizations/increase_decrease_modal' => 'organizations#increase_decrease_modal', via: [:get]
     match 'organizations/increase_decrease_rates' => 'organizations#increase_decrease_rates', via: [:post]
 
-    resources :services do
+    resources :services, only: [:edit, :update, :create, :new] do
       patch :update_epic_info
     end
 

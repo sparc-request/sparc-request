@@ -18,11 +18,17 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
 $("#org-form-container").html("<%= j render 'form', organization: @organization, user_rights: @user_rights, fulfillment_rights: @fulfillment_rights, path: @path %>")
 
-$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+<% if @errors %>
+$("#error_place").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
+$("#org-form-container [data-toggle='toggle']").bootstrapToggle();
+<% else %>
+$('#cm-accordion').replaceWith("<%= j render '/catalog_manager/catalog/accordion', institutions: @institutions, show_available_only: @show_available_only %>")
+$('#availability_toggle_container').html("<%= j render '/catalog_manager/catalog/availability_toggle', show_available_only: @show_available_only %>")
+$("[data-toggle='toggle']").bootstrapToggle();
+<% end %>
 
 $('.selectpicker').selectpicker();
-$("#org-form-container [data-toggle='toggle']").bootstrapToggle();
-
 $('[data-toggle="tooltip"]').tooltip()

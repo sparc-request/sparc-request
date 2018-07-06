@@ -22,8 +22,12 @@
 $("#modal_place #modal_errors").html("<%= escape_javascript(render( '/shared/modal_errors', errors: @errors )) %>")
 <% else %>
 $("#flashes_container").html("<%= escape_javascript(render( '/shared/flash' )) %>")
-$("#modal_place").modal 'hide'
-$("#org-form-container").html("<%= j render '/catalog_manager/services/form', service: @service, user: @user %>")
+$("#org-form-container").html("<%= j render 'form', service: @service, user: @user %>")
+$('#cm-accordion').replaceWith("<%= j render '/catalog_manager/catalog/accordion', institutions: @institutions, show_available_only: false %>")
+$('#availability_toggle_container').html("<%= j render '/catalog_manager/catalog/availability_toggle', show_available_only: false %>")
+
+$("[data-toggle='toggle']").bootstrapToggle();
 $('.selectpicker').selectpicker();
-#$('#cm-accordion').replaceWith("<%= j render '/catalog_manager/catalog/accordion', institutions: @institutions, show_available_only: false %>")
+
+$("#modal_place").modal 'hide'
 <% end %>

@@ -18,7 +18,8 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= form_for service, url: catalog_manager_service_path, html: {class: 'form-horizontal'}, remote: true do |f|
+= form_for service, url: catalog_manager_service_path(service), html: {class: 'form-horizontal'}, remote: true do |f|
+  #error_place.form-group
   .form-group
     = f.label :program, t(:catalog_manager)[:organization_form][:program], class: 'col-sm-3 control-label'
     .col-sm-9

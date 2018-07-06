@@ -20,8 +20,9 @@
 
 .modal-dialog#add-new-service
   .modal-content
-    = form_for service.becomes(Service), url: catalog_manager_services_path, remote: true do |f|
+    = form_for service, url: catalog_manager_services_path, remote: true do |f|
       = f.hidden_field :organization_id
+      = f.hidden_field :is_available, value: false
       .modal-header
         %button.close{ type: 'button', data: {dismiss: 'modal'} }
           %span{ aria: {hidden: 'true'} } &times;

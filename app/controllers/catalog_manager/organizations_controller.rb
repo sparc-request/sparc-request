@@ -31,7 +31,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
       @user.catalog_manager_rights.create(organization_id: @organization.id)
 
       @institutions = Institution.order('`order`')
-      @path = new_catalog_manager_organization_path
+      @path = catalog_manager_organization_path(@organization)
       @user_rights  = user_rights(@organization.id)
       @fulfillment_rights = fulfillment_rights(@organization.id)
 
@@ -62,10 +62,12 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     if update_organization
       flash.now[:success] = "#{@organization.name} saved correctly."
     else
-      flash.now[:alert] = "Failed to update #{@organization.name}."
+      flash.now[:alert] = "Failed to update organization."
+      @errors = @organization.errors
     end
 
     @institutions = Institution.order(Arel.sql('`order`,`name`'))
+    @show_available_only = @organization.is_available
 
     respond_to do |format|
       format.js
@@ -223,12 +225,13 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
 
   def update_organization
+    @attributes = organization_params[:organization]
     @attributes.delete(:id)
     #detects if incoming name/abbreviation is different from the old name/abbreviation
     name_change = @attributes[:name] != @organization.name || @attributes[:abbreviation] != @organization.abbreviation
 
     if @organization.update_attributes(@attributes)
-      @organization.update_ssr_org_name if name_change
+      @organization.update_ssr_org_name if (@organization.type != "Institution" && name_change)
       update_services
       true
     else
@@ -248,21 +251,22 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
   # ================ end ========================
 
-  # def organization_params
-  #   params.permit(:name,
-  #     :order,
-  #     :css_class,
-  #     :description,
-  #     :parent_id,
-  #     :abbreviation,
-  #     :ack_language,
-  #     :process_ssrs,
-  #     :is_available,
-  #     :use_default_statuses,
-  #     { tag_list:  [] },
-  #     submission_emails_attributes: [:organization_id, :email]
-  #     )
-  # end
+  def organization_params
+    params.permit(organization: [
+      :name,
+      :order,
+      :css_class,
+      :description,
+      :parent_id,
+      :abbreviation,
+      :ack_language,
+      :process_ssrs,
+      :is_available,
+      :use_default_statuses,
+      { tag_list:  [] },
+      submission_emails_attributes: [:organization_id, :email]
+      ])
+  end
 
   def new_organization_params
     params.permit(organization: [

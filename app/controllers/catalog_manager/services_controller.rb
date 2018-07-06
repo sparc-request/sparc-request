@@ -40,9 +40,10 @@ class CatalogManager::ServicesController < CatalogManager::AppController
   def create
     @service = Service.new(service_params)
 
-    #@service.pricing_maps.build
-
     if @service.save
+      @programs = @service.provider.programs
+      @cores    = @service.program.cores
+      @institutions = Institution.order('`order`')
       flash[:success] = "New Service created successfully."
     else
       @errors = @service.errors
@@ -51,9 +52,6 @@ class CatalogManager::ServicesController < CatalogManager::AppController
 
   def update
     @service = Service.find(params[:id])
-    @programs = @service.provider.programs
-    @cores    = @service.program.cores
-
 
     saved = false
 
@@ -74,12 +72,16 @@ class CatalogManager::ServicesController < CatalogManager::AppController
 
     if saved
       flash[:success] = "#{@service.name} saved correctly."
+      @institutions = Institution.order('`order`')
     else
-      flash[:alert] = "Failed to update #{@service.name}."
+      flash[:alert] = "Failed to update service."
+      @errors = @service.errors
     end
 
     @service.reload
-    @entity = @service
+    @programs = @service.provider.programs
+    @cores    = @service.program.cores
+    @show_available_only = @service.is_available
   end
 
   ####Service Components Methods####

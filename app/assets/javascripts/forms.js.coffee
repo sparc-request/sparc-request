@@ -29,7 +29,6 @@ $ ->
       showCancelButton: true
       confirmButtonColor: '#DD6B55'
       confirmButtonText: 'Delete'
-      closeOnConfirm: true
     }, ->
       $.ajax
         type: 'delete'

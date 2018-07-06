@@ -30,7 +30,7 @@
         .col-sm-1.no-padding-y
           = link_to plus_glyphicon(), 'javascript:void(0)', data: { parent: ".core-#{core.id}" }
         .col-sm-11.no-padding-y{style: "width:91%"}
-          = link_to create_new_text(:service), 'javascript:void(0)', class: 'org-form-label panel-title'
+          = link_to create_new_text(:service), 'javascript:void(0)', class: 'org-form-label panel-title new_service_link', data: {organization_id: core.id}
 
       %div{id: "core_accordion_#{core.id}"}
     .clearfix

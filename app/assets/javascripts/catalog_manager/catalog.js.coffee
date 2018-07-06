@@ -52,6 +52,19 @@ $ ->
         type: org_type
         parent_id: parent_id
 
+  ##############################################
+  ###          Create New Service            ###
+  ##############################################
+
+  $(document).on 'click', '.new_service_link', ->
+    organization_id = $(this).data('organization-id')
+    $.ajax
+      type: 'GET'
+      url: 'catalog_manager/services/new.js'
+      data:
+        organization_id: organization_id
+
+
 ##############################################
 ########## Accordion Ajax Functions ##########
 ##############################################

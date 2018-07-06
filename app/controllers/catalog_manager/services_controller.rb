@@ -34,71 +34,19 @@ class CatalogManager::ServicesController < CatalogManager::AppController
   end
 
   def new
-    # if params[:parent_object_type] == 'program'
-    #   @program  = Program.find params[:parent_id]
-    #   @entity   = @program
-    #   @programs = @program.provider.programs
-    #   @cores    = @program.cores
-    # elsif params[:parent_object_type] == 'core'
-    #   @core     = Core.find params[:parent_id]
-    #   @entity   = @core
-    #   @program  = @core.program
-    #   @programs = @program.provider.programs
-    #   @cores    = @program.cores
-    # else
-    #   @programs = Program.all
-    #   @cores    = Core.all
-    # end
-
-    # service_attributes = {
-    #   name: "New Service",
-    #   abbreviation: "New Service",
-    #   organization_id: @entity.id
-    # }
-
-    # @service = Service.new(service_attributes)
+    @service = Service.new(organization_id: params[:organization_id])
   end
 
   def create
-    # if params[:service][:core] && params[:service][:core] != '0'
-    #   organization = Core.find(params[:service][:core])
+    @service = Service.new(service_params)
 
-    #   params[:service].delete(:program)
-    #   params[:service].delete(:core)
-    # elsif params[:service][:program]
-    #   organization = Program.find(params[:service][:program])
+    #@service.pricing_maps.build
 
-    #   params[:service].delete(:program)
-    #   params[:service].delete(:core)
-    # end
-
-    # service_attributes = service_params.merge!(organization_id: organization.id)
-
-    # @service = Service.new(service_attributes)
-
-    # # This will correctly map the service.organization if a user changes the core of the service.
-    # unless params[:service][:core].blank? && params[:service][:program].blank?
-    #   orgid = params[:service][:program]
-    #   orgid = params[:service][:core] unless (params[:service][:core].blank? || params[:service][:core] == '0')
-    #   unless @service.organization.id.to_s == orgid.to_s
-    #     new_org = Organization.find(orgid)
-    #     @service.update_attribute(:organization_id, orgid) if new_org
-    #   end
-    # end
-
-    # # @service.pricing_maps.build(params[:pricing_map]) if params[:pricing_map]
-    # params[:pricing_maps].each do |_, pm|
-    #   @service.pricing_maps.build(pricing_map_params(pm))
-    # end if params[:pricing_maps]
-
-    # if params[:cancel]
-    #   render :action => 'cancel'
-    # else
-    #   @service.save
-    #   @programs = @service.provider.programs
-    #   @cores = @service.program.cores
-    #   respond_with @service, :location => catalog_manager_services_path(@service)
-    # end
+    if @service.save
+      flash[:success] = "New Service created successfully."
+    else
+      @errors = @service.errors
+    end
   end
 
   def update

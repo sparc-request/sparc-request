@@ -404,6 +404,7 @@ class Organization < ApplicationRecord
     end
   end
 
+
   private
 
   def create_statuses

@@ -214,6 +214,7 @@ en:
       remove_add: "Remove / Add"
       add_component: "Add new component"
       remove_component_confirm: "Are you sure you want to delete the selected service component from this service?"
+      org_is_disabled: "Parent Organization is disabled."
 
       pricing_map_form:
         add_pricing: "Add Pricing Map"

@@ -63,17 +63,9 @@ class Service < ApplicationRecord
             presence: true, on: :update
   validates :name, presence: true
   validates :order, numericality: { only_integer: true }, on: :update
-  validate :validate_pricing_maps_present, on: :update
 
   # Services listed under the funding organizations
   scope :funding_opportunities, -> { where(organization_id: Setting.find_by_key("funding_org_ids").value) }
-
-  ###############################################
-  # Validations
-  def validate_pricing_maps_present
-    errors.add(:service, "must contain at least 1 pricing map.") if pricing_maps.length < 1
-  end
-  ###############################################
 
   def humanized_status
     self.is_available ? I18n.t(:reporting)[:service_pricing][:available] : I18n.t(:reporting)[:service_pricing][:unavailable]
@@ -345,4 +337,7 @@ class Service < ApplicationRecord
   def remotely_notifiable_attributes_to_watch_for_change
     ["components"]
   end
+
+  private
+
 end

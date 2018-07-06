@@ -52,6 +52,9 @@
     = f.label :is_available, t(:catalog_manager)[:organization_form][:disabled], class: 'col-sm-3 control-label'
     .col-sm-9
       = f.check_box :is_available, { checked: service.is_available, disabled: service.organization ? !service.organization.is_available : false, data: {toggle: 'toggle', on: 'Yes', off: 'No'}}
+      - if !service.organization.parent.is_available
+        %span{style: "padding-left: 15px;"}
+          = t(:catalog_manager)[:service_form][:org_is_disabled]
   .form-group
     = f.label :tag_list, t(:catalog_manager)[:organization_form][:tag_list], class: 'col-sm-3 control-label'
     .col-sm-9

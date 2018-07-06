@@ -4,7 +4,7 @@
     "value":          "false",
     "friendly_name":  "Lazy Load LDAP Results",
     "description":    "When enabled, the database will return only LDAP Identities found in the database and will not create new entries. When disabled, if an LDAP Identity is not found in the database, a record will be created for that user and returned.",
-    "group":          "ldap_settings",
+    "group":          "",
     "version":        "",
     "parent_key":     "use_ldap",
     "parent_value":   "true"
@@ -134,7 +134,7 @@
     "value":          "false",
     "friendly_name":  "Suppress LDAP for User Search",
     "description":    "Allow the use of LDAP but suppress its use within the Project/Study user search.",
-    "group":          "ldap_settings",
+    "group":          "",
     "version":        "",
     "parent_key":     "use_ldap",
     "parent_value":   "true"
@@ -144,7 +144,7 @@
     "value":          "false",
     "friendly_name":  "Use LDAP",
     "description":    "Determines whether the authorized user search will attempt to connect to an LDAP server. If false, it will simply search the database. NOTE: Even if this is set to false at least a blank \"ldap.yml\" is required.",
-    "group":          "ldap_settings",
+    "group":          "",
     "version":        "",
     "parent_key":     "",
     "parent_value":   ""

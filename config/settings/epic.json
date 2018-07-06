@@ -4,7 +4,7 @@
     "value":          "forney@musc.edu, crossoml@musc.edu",
     "friendly_name":  "EPIC Rights Mail-To",
     "description":    "Email addresses of users who are e-mailed for EPIC rights approval",
-    "group":          "epic_settings",
+    "group":          "",
     "version":        "",
     "parent_key":     "use_epic",
     "parent_value":   "true"
@@ -34,7 +34,7 @@
     "value":          "[]",
     "friendly_name":  "Epic Queue Access",
     "description":    "Determines which users will have access to the EPIC Queue.",
-    "group":          "epic_settings",
+    "group":          "",
     "version":        "",
     "parent_key":     "queue_epic",
     "parent_value":   "true"
@@ -44,7 +44,7 @@
     "value":          "catesa@musc.edu, forney@musc.edu, crossoml@musc.edu, moreira@musc.edu, powersp@musc.edu, rogersbr@musc.edu",
     "friendly_name":  "Epic Queue Report To",
     "description":    "Email addresses of users who are e-mailed the EPIC queue report.",
-    "group":          "epic_settings",
+    "group":          "",
     "version":        "",
     "parent_key":     "queue_epic",
     "parent_value":   "true"
@@ -71,7 +71,7 @@
   },
   {
     "key":            "epic_wsdl",
-    "value":          "true",
+    "value":          "http://localhost:#{FAKE_EPIC_SERVER.port}/wsdl",
     "friendly_name":  "Epic WSDL",
     "description":    "",
     "group":          "epic_settings",
@@ -84,7 +84,7 @@
     "value":          "false",
     "friendly_name":  "Queue EPIC",
     "description":    "Determines whether EPIC pushes will be queued or not. Emptying the queue is done via rake epic:batch_load. This can setup as a cronjob to run at a certain interval.",
-    "group":          "epic_settings",
+    "group":          "",
     "version":        "",
     "parent_key":     "use_epic",
     "parent_value":   "true"
@@ -94,7 +94,7 @@
     "value":          "hutsonk@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu",
     "friendly_name":  "Epic Queue Errors To",
     "description":    "Email addresses of users who are e-mailed when there is an EPIC error.",
-    "group":          "epic_settings",
+    "group":          "",
     "version":        "",
     "parent_key":     "queue_epic",
     "parent_value":   "true"
@@ -104,7 +104,7 @@
     "value":          "false",
     "friendly_name":  "Use EPIC",
     "description":    "Determines whether or not EPIC integration will be used.",
-    "group":          "epic_settings",
+    "group":          "",
     "version":        "",
     "parent_key":     "",
     "parent_value":   ""

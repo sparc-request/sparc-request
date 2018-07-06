@@ -73,19 +73,15 @@ if use_epic
 
       # The fake epic server itself
       FAKE_EPIC_SERVER = start_fake_epic_server(EPIC_RECEIVED, EPIC_RESULTS)
+      epic_config.delete('epic_namespace')
+      epic_config.delete('epic_endpoint')
       epic_config['epic_wsdl'] = "http://localhost:#{FAKE_EPIC_SERVER.port}/wsdl"
       epic_config['epic_study_root'] ||= '1.2.3.4'
     end
 
     # Finally, construct the interface itself
     Rails.logger.info("Creating epic interface")
-    EPIC_INTERFACE = EpicInterface.new({
-      study_root: epic_config['epic_study_root'],
-      endpoint:   epic_config['epic_endpoint'],
-      namespace:  epic_config['epic_namespace'],
-      wsdl:       epic_config['epic_wsdl'],
-      test_mode:  epic_config['epic_test_mode']
-    })
+    EPIC_INTERFACE = EpicInterface.new(epic_config)
   else
     puts "WARNING: You have Epic turned on, but no settings populated for epic. You must configure your epic settings to have epic turned on (Disregard if currently importing epic.yml)"
   end

@@ -54,7 +54,7 @@ class Surveyor::SurveysController < Surveyor::BaseController
                 type: params[:type],
                 title: "New #{klass}",
                 access_code: "new-#{klass.downcase}",
-                version: 1,
+                version: (params[:type].constantize.where(access_code: "new-#{klass.downcase}").pluck(:version).max || 0) + 1,
                 active: false,
                 surveyable: klass == 'Form' ? current_user : nil
               )

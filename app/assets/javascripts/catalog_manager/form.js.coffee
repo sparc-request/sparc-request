@@ -268,6 +268,33 @@ $ ->
   $(document).on 'submit', '#subsidy_map_modal form', ->
     $('#subsidy_map_submit').attr('disabled','disabled')
 
+
+  ##############################################
+  ###          Service Components            ###
+  ##############################################
+
+  $(document).on 'click', 'button.remove-submission-email', (event) ->
+    component = $(this).closest('.form-group.row').find('input.component_string')[0].value
+    service_id = $(this).data('service')
+    if confirm (I18n['catalog_manager']['service_form']['remove_component_confirm'])
+      $.ajax
+        type: 'POST'
+        url: "catalog_manager/services/change_components"
+        data:
+          component: component
+          service_id: service_id
+
+  $(document).on 'click', 'button.add-submission-email', (event) ->
+    component = $(this).closest('.form-group.row').find('input.component_string')[0].value
+    service_id = $(this).data('service')
+    $.ajax
+      type: 'POST'
+      url: "catalog_manager/services/change_components"
+      data:
+        component: component
+        service_id: service_id
+
+
   ##############################################
   ###          Service Components            ###
   ##############################################

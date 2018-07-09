@@ -89,7 +89,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
   def change_components
     component = params["component"]
     @service = Service.find(params["service_id"])
-    components_list = @service.components.split(',')
+    components_list = (@service.components ? @service.components.split(',') : [])
 
     if components_list.include?(component)
       #Delete component from list and save updated list

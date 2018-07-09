@@ -28,28 +28,8 @@ en:
       pricing: "Pricing Setup"
       save: "Save"
       service: "Service Providers"
-
-      submission: "Submission E-mails"
       subsidy: "Subsidy Information"
       super: "Super Users"
-
-    # labels:
-    #
-    #
-    #   exclude_button: "Exclude"
-    #   exclude_funding: "Exclude These Funding Sources"
-    #   exclude_instructions: "(college, federal, foundation, industry, investigator, internal, unfunded)"
-    #
-    #
-    #
-    #
-    #
-    #   negative_to_change: "Enter a negative percent to decrease."
-    #
-    #
-    #
-    #
-    #   required_list: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
 
     catalog:
       availability_button:
@@ -72,6 +52,7 @@ en:
         pricing: "Pricing"
         status_options: "Status Options"
         user_rights: "User Rights"
+        submission_emails: "Submission E-mails"
       user_rights:
         name_email: "Name, Email"
         super_user: "Super User"
@@ -140,6 +121,9 @@ en:
         max_dollar_cap: "Max Dollar Cap"
         subsidy_instructions: "Instructions"
         excluded_funding_sources: "Excluded Funding Sources"
+      submission_emails:
+        email: "E-Mail"
+        remove_add: "Remove / Add"
 
       not_authorized: "You do not have rights to edit this Organization."
       remove: "Remove"
@@ -192,7 +176,6 @@ en:
       # service_providers: "Service Providers"
       split_notify: "Split/Notify Here"
       status_legend: "Status Options (Use default statuses below or click to create custom service request statuses)"
-      submission_emails: "Submission E-mails"
       submit_button: "Save"
       tag_list: "Tags"
 

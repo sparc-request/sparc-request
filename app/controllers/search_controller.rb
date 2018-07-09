@@ -83,7 +83,7 @@ class SearchController < ApplicationController
         id: item.id,
         name: item.name,
         abbreviation: item.abbreviation,
-        type: item.class.to_s,
+        type: item.class.base_class.to_s,
         text_color: "text-#{item.class.to_s.downcase}",
         cpt_code: cpt_code_text(item),
         inactive_tag: inactive_text(item),

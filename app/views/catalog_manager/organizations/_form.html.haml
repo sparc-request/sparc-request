@@ -47,6 +47,14 @@
           .panel-body
             = render "statuses_form", organization: organization, available_statuses: @available_statuses, editable_statuses: @editable_statuses, user: @user
 
+      .panel.panel-default#submission-emails
+        .panel-heading
+          %h4.panel-title
+            = link_to t(:catalog_manager)[:organization_form][:headers][:submission_emails], '#submission-emails-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
+        .panel-collapse.collapse#submission-emails-collapse
+          .panel-body
+            = render "/catalog_manager/submission_emails/form", organization: organization, user: @user
+
     .panel.panel-default#user-rights
       .panel-heading
         %h4.panel-title

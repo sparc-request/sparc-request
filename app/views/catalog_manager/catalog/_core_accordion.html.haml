@@ -24,4 +24,4 @@
       .col-sm-1.no-padding-y
         = link_to file_glyphicon(), edit_catalog_manager_service_path(service), id: "service-#{service.id}", data: { parent: "core-#{core.id}" }, remote: true
       .col-sm-11.no-padding-y{style: "width:91%"}
-        = link_to accordion_link_text(service), edit_catalog_manager_service_path(service), class: 'org-form-label panel-title', remote: true
+        = link_to accordion_link_text(service, !service.is_available), edit_catalog_manager_service_path(service), class: 'org-form-label panel-title', remote: true

@@ -272,7 +272,8 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     params.permit(organization: [
       :type,
       :name,
-      :is_available
+      :is_available,
+      :parent_id
       ])
   end
 

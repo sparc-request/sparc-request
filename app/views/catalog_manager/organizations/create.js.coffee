@@ -29,5 +29,8 @@ $('#availability_toggle_container').html("<%= j render '/catalog_manager/catalog
 $("[data-toggle='toggle']").bootstrapToggle();
 $('.selectpicker').selectpicker();
 
-$("#modal_place").modal 'hide'
+$("#modal_place").modal('hide');
+
+initialize_user_rights_search();
+initialize_fulfillment_rights_search();
 <% end %>

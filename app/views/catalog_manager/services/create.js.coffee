@@ -30,4 +30,6 @@ $("[data-toggle='toggle']").bootstrapToggle();
 $('.selectpicker').selectpicker();
 
 $("#modal_place").modal 'hide'
+
+initialize_related_services_search()
 <% end %>

@@ -143,3 +143,147 @@ initialize_org_search = () ->
       url: "catalog_manager/#{type}s/#{id}/edit"
   )
 
+
+##############################################
+###      USER RIGHTS SEARCH BLOODHOUND     ###
+##############################################
+
+window.initialize_user_rights_search = () ->
+  services_bloodhound = new Bloodhound(
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    remote:
+      url: "/search/identities?term=%QUERY",
+      wildcard: '%QUERY'
+  )
+  services_bloodhound.initialize() # Initialize the Bloodhound suggestion engine
+
+
+  ## User Search for User Rights Sub-Form
+  $('#user-rights-query').typeahead(
+    {
+      minLength: 3,
+      hint: false,
+    },
+    {
+      displayKey: 'term',
+      source: services_bloodhound,
+      limit: 100,
+      templates: {
+        suggestion: Handlebars.compile("<button class=\"text-left col-sm-12\">
+                                          <strong>{{name}}</strong> <span>{{email}}</span>
+                                        </button>")
+        notFound: '<div class="tt-suggestion">No Results</div>'
+      }
+    }
+  ).on('typeahead:select', (event, suggestion) ->
+    users_on_table = $("[id*='user-rights-row-']").map ->
+      return $(this).data('identity-id')
+
+    if suggestion['identity_id'] in users_on_table
+      $('#user-rights-query').parent().prepend("<div class='alert alert-danger alert-dismissable'>#{suggestion['name']} #{I18n['catalog_manager']['organization_form']['user_rights']['user_in_table']}</div>")
+      $('.alert-dismissable').delay(3000).fadeOut()
+    else
+      $.ajax
+        type: 'get'
+        url: "/catalog_manager/organizations/<%= @organization.id %>/add_user_rights_row.js"
+        data:
+          new_ur_identity_id: suggestion['identity_id']
+  );
+
+
+##############################################
+###  FULFILLMENT RIGHTS SEARCH BLOODHOUND  ###
+##############################################
+
+window.initialize_fulfillment_rights_search = () ->
+  services_bloodhound = new Bloodhound(
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    remote:
+      url: "/search/identities?term=%QUERY",
+      wildcard: '%QUERY'
+  )
+  services_bloodhound.initialize() # Initialize the Bloodhound suggestion engine
+
+
+  $('#fulfillment-rights-query').typeahead(
+    {
+      minLength: 3,
+      hint: false,
+    },
+    {
+      displayKey: 'term',
+      source: services_bloodhound,
+      limit: 100,
+      templates: {
+        suggestion: Handlebars.compile("<button class=\"text-left col-sm-12\">
+                                          <strong>{{name}}</strong> <span>{{email}}</span>
+                                        </button>")
+        notFound: '<div class="tt-suggestion">No Results</div>'
+      }
+    }
+  ).on('typeahead:select', (event, suggestion) ->
+    users_on_table = $("[id*='fulfillment-rights-row-']").map ->
+      return $(this).data('identity-id')
+
+    if suggestion['identity_id'] in users_on_table
+      $('#fulfillment-rights-query').parent().prepend("<div class='alert alert-danger alert-dismissable'>#{suggestion['name']} #{I18n['catalog_manager']['organization_form']['fulfillment_rights']['user_in_table']}</div>")
+      $('.alert-dismissable').delay(3000).fadeOut()
+    else
+      $.ajax
+        type: 'get'
+        url: "/catalog_manager/organizations/<%= @organization.id %>/add_fulfillment_rights_row.js"
+        data:
+          new_fr_identity_id: suggestion['identity_id']
+  );
+
+
+###############################
+### RELATED SERVICES SEARCH ###
+###############################
+
+window.initialize_related_services_search = () ->
+  services_bloodhound = new Bloodhound(
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    remote:
+      url: "/search/services_search?term=%QUERY",
+      wildcard: '%QUERY'
+  )
+  services_bloodhound.initialize() # Initialize the Bloodhound suggestion engine
+  $('#new_related_services_search').typeahead(
+    # Instantiate the Typeahead UI
+    {
+      minLength: 3,
+      hint: false,
+    },
+    {
+      displayKey: 'term',
+      source: services_bloodhound,
+      limit: 100,
+      templates: {
+        suggestion: Handlebars.compile('<button class="text-left">
+                                          <strong><span class="text-service">Service</span><span>: {{name}}</span></strong><br>
+                                          {{{breadcrumb}}}<br>
+                                          <span>{{cpt_code}}</span><br>
+                                        </button>')
+        notFound: '<div class="tt-suggestion">No Results</div>'
+      }
+    }
+  )
+  .on('typeahead:select', (event, suggestion) ->
+    existing_services = $("[id*='service-relation-id-']").map ->
+      return $(this).data('related-service-id')
+
+    if suggestion['id'] in existing_services
+      $('#new_related_services_search').parent().prepend("<div class='alert alert-danger alert-dismissable'>#{suggestion['name']} #{I18n['catalog_manager']['related_services_form']['service_in_list']}</div>")
+      $('.alert-dismissable').delay(3000).fadeOut()
+    else
+      $.ajax
+        type: 'post'
+        url: '/catalog_manager/services/add_related_service'
+        data:
+          service: $(this).data('service')
+          related_service: suggestion.id
+  );

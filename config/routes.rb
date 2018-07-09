@@ -225,6 +225,7 @@ SparcRails::Application.routes.draw do
     resources :pricing_setups, except: [:index, :show, :destroy]
     resources :subsidy_maps, except: [:index, :show, :destroy]
     resources :pricing_maps, except: [:index, :show, :destroy]
+    resources :submission_emails, only: [:create, :destroy]
 
     match 'identities/search' => 'identities#search', via: [:get, :post]
     # match 'update_pricing_maps' => 'catalog#update_pricing_maps', via: [:get, :post]

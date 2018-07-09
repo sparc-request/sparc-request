@@ -270,29 +270,25 @@ $ ->
 
 
   ##############################################
-  ###          Service Components            ###
+  ###           Submission Emails            ###
   ##############################################
 
   $(document).on 'click', 'button.remove-submission-email', (event) ->
-    component = $(this).closest('.form-group.row').find('input.component_string')[0].value
-    service_id = $(this).data('service')
-    if confirm (I18n['catalog_manager']['service_form']['remove_component_confirm'])
+    id = $(this).data('submission-id')
+    if confirm (I18n['catalog_manager']['organization_form']['submission_emails']['remove_confirm'])
       $.ajax
-        type: 'POST'
-        url: "catalog_manager/services/change_components"
-        data:
-          component: component
-          service_id: service_id
+        type: 'DELETE'
+        url: "catalog_manager/submission_emails/#{id}"
 
   $(document).on 'click', 'button.add-submission-email', (event) ->
-    component = $(this).closest('.form-group.row').find('input.component_string')[0].value
-    service_id = $(this).data('service')
+    new_submission_email = $('#new_submission_email').val()
+    org_id = $(this).data('organization-id')
     $.ajax
       type: 'POST'
-      url: "catalog_manager/services/change_components"
+      url: "catalog_manager/submission_emails"
       data:
-        component: component
-        service_id: service_id
+        email: new_submission_email
+        organization_id: org_id
 
 
   ##############################################

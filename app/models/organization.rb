@@ -135,7 +135,7 @@ class Organization < ApplicationRecord
     if self.process_ssrs
       return self
     else
-      return self.parents.detect {|x| x.process_ssrs} || self
+      return self.parents.detect {|x| x.process_ssrs}
     end
   end
 

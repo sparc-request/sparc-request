@@ -21,18 +21,33 @@
 class CatalogManager::SubmissionEmailsController < CatalogManager::AppController
 
   def create
+    @submission_email = SubmissionEmail.new(submission_email_params)
+
+    if @submission_email.save
+      flash[:success] = "Submission Email added successfully."
+    else
+      @errors = @submission_email.errors
+    end
   end
 
   def destroy
+    submission_email = SubmissionEmail.find(submission_email_params[:id])
+    @organization = submission_email.organization
+
+    if submission_email.destroy
+      flash[:success] = "Submission Email removed successfully."
+    else
+      flash[:alert] = "Problem removing submission email."
+    end
   end
 
   private
 
   def submission_email_params
-    params.permit(:id,
-      submission_email: [
+    params.permit(
+      :id,
       :organization_id,
       :email
-      ])
+      )
   end
 end

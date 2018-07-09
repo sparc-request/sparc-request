@@ -53,7 +53,7 @@
             = link_to t(:catalog_manager)[:organization_form][:headers][:submission_emails], '#submission-emails-collapse', data: { toggle: 'collapse', parent: '#cm-form-accordion' }
         .panel-collapse.collapse#submission-emails-collapse
           .panel-body
-            = render "/catalog_manager/submission_emails/form", organization: organization, user: @user
+            = render "/catalog_manager/submission_emails/form", organization: organization
 
     .panel.panel-default#user-rights
       .panel-heading

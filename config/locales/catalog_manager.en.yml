@@ -124,6 +124,7 @@ en:
       submission_emails:
         email: "E-Mail"
         remove_add: "Remove / Add"
+        remove_confirm: "Are you sure you want to delete the selected submission email from this organization?"
 
       not_authorized: "You do not have rights to edit this Organization."
       remove: "Remove"

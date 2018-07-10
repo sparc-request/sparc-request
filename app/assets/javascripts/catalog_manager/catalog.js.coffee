@@ -177,6 +177,7 @@ window.initialize_user_rights_search = () ->
       }
     }
   ).on('typeahead:select', (event, suggestion) ->
+    org_id = $('#user-rights-query').data('organization-id')
     users_on_table = $("[id*='user-rights-row-']").map ->
       return $(this).data('identity-id')
 
@@ -186,7 +187,7 @@ window.initialize_user_rights_search = () ->
     else
       $.ajax
         type: 'get'
-        url: "/catalog_manager/organizations/<%= @organization.id %>/add_user_rights_row.js"
+        url: "/catalog_manager/organizations/#{org_id}/add_user_rights_row.js"
         data:
           new_ur_identity_id: suggestion['identity_id']
   );
@@ -224,6 +225,7 @@ window.initialize_fulfillment_rights_search = () ->
       }
     }
   ).on('typeahead:select', (event, suggestion) ->
+    org_id = $('#fulfillment-rights-query').data('organization-id')
     users_on_table = $("[id*='fulfillment-rights-row-']").map ->
       return $(this).data('identity-id')
 
@@ -233,7 +235,7 @@ window.initialize_fulfillment_rights_search = () ->
     else
       $.ajax
         type: 'get'
-        url: "/catalog_manager/organizations/<%= @organization.id %>/add_fulfillment_rights_row.js"
+        url: "/catalog_manager/organizations/#{org_id}/add_fulfillment_rights_row.js"
         data:
           new_fr_identity_id: suggestion['identity_id']
   );

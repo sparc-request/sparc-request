@@ -36,4 +36,4 @@
     = render "user_rights_row", organization: organization, user_rights: user_rights, user: user
 
 .col-sm-12.no-padding
-  = text_field_tag 'user-rights-query', nil, placeholder: t(:catalog_manager)[:organization_form][:user_rights][:add_user], class: "form-control"
+  = text_field_tag 'user-rights-query', nil, placeholder: t(:catalog_manager)[:organization_form][:user_rights][:add_user], class: "form-control", data: {organization_id: organization.id}

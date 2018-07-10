@@ -34,4 +34,4 @@
     = render "fulfillment_rights_row", organization: organization, fr: fr, fulfillment_rights: fulfillment_rights
 
 .col-sm-12.no-padding
-  = text_field_tag 'fulfillment-rights-query', nil, placeholder: t(:catalog_manager)[:organization_form][:fulfillment_rights][:add_user], class: "form-control"
+  = text_field_tag 'fulfillment-rights-query', nil, placeholder: t(:catalog_manager)[:organization_form][:fulfillment_rights][:add_user], class: "form-control", data: {organization_id: organization.id}

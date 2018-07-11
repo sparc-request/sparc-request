@@ -37,6 +37,7 @@ RSpec.describe 'Notifications index', js: true do
   def visit_notifications_index_page
     page = Dashboard::Notifications::IndexPage.new
     page.load
+    wait_for_javascript_to_finish
     page
   end
 

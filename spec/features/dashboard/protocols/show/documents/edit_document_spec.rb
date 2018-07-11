@@ -64,7 +64,7 @@ RSpec.feature 'User wants to edit a document', js: true do
       dropdown_choices(text: 'Consent').first.click
     end
 
-    attach_file 'document_document', './spec/fixtures/files/text_document.txt'
+    attach_file 'document_document', Rails.root.join('spec', 'fixtures', 'files', 'text_document.txt')
 
     @page.document_modal.upload_button.click
   end

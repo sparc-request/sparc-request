@@ -170,8 +170,8 @@ RSpec.describe 'service request list', js: true do
             first_ssr.send_notification_select.click
             first_ssr.wait_until_recipients_visible
 
-            accept_alert(with: 'You can not send a message to yourself.') do
-                first_ssr.recipients.find { |li| li.text == 'Primary-pi: John Doe' }.click
+            accept_alert do
+              first_ssr.recipients.find { |li| li.text == 'Primary-pi: John Doe' }.click
             end
           end
         end

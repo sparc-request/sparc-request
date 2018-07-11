@@ -35,3 +35,9 @@ Capybara.configure do |config|
   config.default_driver = IS_DEBUG_MODE.call
   config.javascript_driver = IS_DEBUG_MODE.call
 end
+
+RSpec.configure do |config|
+  config.before :each do
+    Capybara.page.current_window.resize_to(1920, 1080) if IS_DEBUG_MODE
+  end
+end

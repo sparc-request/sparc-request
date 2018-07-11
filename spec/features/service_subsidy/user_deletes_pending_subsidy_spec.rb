@@ -44,7 +44,9 @@ RSpec.describe 'User deletes a pending subsidy', js: true do
       visit service_subsidy_service_request_path(@sr)
       wait_for_javascript_to_finish
       
-      find('.delete-subsidy-button').click
+      accept_confirm do
+        find('.delete-subsidy-button').click
+      end
       wait_for_javascript_to_finish
 
       expect(Subsidy.count).to eq(0)

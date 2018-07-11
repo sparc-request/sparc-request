@@ -57,7 +57,7 @@ RSpec.describe 'User adds a new document', js: true do
         wait_for_javascript_to_finish
 
         bootstrap_select '#document_doc_type', 'Protocol'
-        attach_file 'document_document', './spec/fixtures/files/text_document.txt'
+        attach_file 'document_document', Rails.root.join('spec', 'fixtures', 'files', 'text_document.txt')
 
         click_button 'Upload'
         wait_for_javascript_to_finish

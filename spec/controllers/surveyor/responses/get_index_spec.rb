@@ -54,16 +54,6 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
         expect(assigns(:type)).to eq('Survey')
       end
 
-      it 'should assign @responses' do
-        @resp = create(:response, survey: create(:system_survey))
-                create(:question_response, response: @resp)
-
-        get :index, params: {}, format: :html
-
-        expect(assigns(:responses)).to be_a(ActiveRecord::Relation)
-        expect(assigns(:responses).first).to eq(@resp)
-      end
-
       it 'should respond ok' do
         get :index, params: {}, format: :html
 
@@ -95,16 +85,6 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
         }, format: :js, xhr: true
 
         expect(assigns(:type)).to eq('Survey')
-      end
-
-      it 'should assign @responses' do
-        @resp = create(:response, survey: create(:system_survey))
-                create(:question_response, response: @resp)
-
-        get :index, params: {}, format: :js, xhr: true
-
-        expect(assigns(:responses)).to be_a(ActiveRecord::Relation)
-        expect(assigns(:responses).first).to eq(@resp)
       end
 
       it 'should respond ok' do
@@ -176,7 +156,7 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
               create(:question_response, response: resp2)
               create(:super_user, identity: logged_in_user, organization: org1)
 
-      get :index, params: { type: 'Form' }
+      get :index, params: { type: 'Form' }, format: :json
 
       expect(assigns(:responses).count).to eq(1)
       expect(assigns(:responses).first).to eq(resp1)

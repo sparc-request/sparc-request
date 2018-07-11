@@ -21,6 +21,8 @@
 $("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
 $("#org-form-container").html("<%= j render 'form', service: @service %>")
 
+initialize_related_services_search()
+
 <% if @errors %>
 $("#error_place").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
 $("#org-form-container [data-toggle='toggle']").bootstrapToggle();

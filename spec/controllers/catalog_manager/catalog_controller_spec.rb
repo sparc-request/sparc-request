@@ -21,27 +21,5 @@
 require 'rails_helper'
 
 RSpec.describe CatalogManager::CatalogController do
-
-  describe '#remove_associated_survey' do
-    let!(:logged_in_user) {create(:identity)}
-
-    before :each do
-      allow(controller).to receive(:authenticate_identity!).and_return(true)
-      allow(controller).to receive(:current_identity).and_return(logged_in_user)
-      
-      @organization       = create(:organization)
-      @associated_survey  = create(:associated_survey, associable: @organization)
-
-      post :remove_associated_survey, params: { 
-        associated_survey_id: @associated_survey.id
-      }
-    end
-
-    it 'should delete the associated survey' do
-      expect(@organization.associated_surveys.count).to eq(0)
-    end
-
-    it { is_expected.to respond_with(:ok) }
-    it { is_expected.to render_template(partial: 'catalog_manager/shared/associated_surveys', locals: { entity: @organization }) }
-  end
+  #TODO: Write Specs here
 end

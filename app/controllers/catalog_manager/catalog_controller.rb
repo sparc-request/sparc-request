@@ -40,12 +40,4 @@ class CatalogManager::CatalogController < CatalogManager::AppController
     @core = Organization.find(params[:core_id])
     @availability = [params[:show_available_only] ? params[:show_available_only] == "true" : true, true]
   end
-
-  # def remove_submission_email
-  #   entity = Organization.find(params["org_unit"])
-  #   submission_email = SubmissionEmail.find(params["submission_email"])
-
-  #   submission_email.destroy
-  #   render :partial => 'catalog_manager/shared/submission_emails', :locals => {:entity => entity}
-  # end
 end

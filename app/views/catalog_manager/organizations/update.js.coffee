@@ -21,6 +21,9 @@
 $("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
 $("#org-form-container").html("<%= j render 'form', organization: @organization, user_rights: @user_rights, fulfillment_rights: @fulfillment_rights, path: @path %>")
 
+initialize_user_rights_search();
+initialize_fulfillment_rights_search();
+
 <% if @errors %>
 $("#error_place").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
 $("#org-form-container [data-toggle='toggle']").bootstrapToggle();

@@ -72,7 +72,7 @@ class Service < ApplicationRecord
   end
 
   def process_ssrs_organization
-    organization.process_ssrs_parent
+    organization.process_ssrs_parent || organization
   end
 
   # Return the parent organizations of the service.
@@ -311,7 +311,8 @@ class Service < ApplicationRecord
   end
 
   def has_service_providers?
-    organization.process_ssrs_parent.service_providers.present? rescue true
+    process_ssrs_org = organization.process_ssrs_parent || organization
+    process_ssrs_org.service_providers.present? rescue true
   end
 
   def is_ctrc_clinical_service?

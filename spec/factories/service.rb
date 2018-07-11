@@ -81,7 +81,7 @@ FactoryBot.define do
 
     transient do
       line_item_count 0
-      pricing_map_count 1
+      pricing_map_count 0
       service_provider_count 0
       service_relation_count 0
     end

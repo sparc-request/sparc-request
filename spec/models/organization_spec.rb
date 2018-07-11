@@ -49,7 +49,6 @@ RSpec.describe Organization, type: :model do
 
         # now let's add the core back
         submission_email_4 = core.submission_emails.create(email: submission_email_3.email)
-        core.save!
         sub_service_request.reload
         expect(sub_service_request.organization.submission_emails_lookup).to include(submission_email_4)
       end

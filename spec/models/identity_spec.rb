@@ -25,7 +25,6 @@ RSpec.describe Identity, type: :model do
   let_there_be_j
   build_service_request_with_project
 
-
   describe "helper methods" do
 
     let!(:identity) { create(:identity, first_name: "ash", last_name: "ketchum", email: "ash@theverybest.com") }

@@ -32,6 +32,8 @@ class PricingMap < ApplicationRecord
   validates :unit_factor,
             numericality: true
 
+  validates :display_date, :effective_date, uniqueness: true
+
   validate :effective_date_after_display_date
   # One time fee pricing maps require: units_per_qty_max, otf_unit_type, quantity_type, and quantity_minimum
   with_options :if => :is_one_time_fee? do |one_time_fee|

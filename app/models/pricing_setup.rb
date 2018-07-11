@@ -30,6 +30,7 @@ class PricingSetup < ApplicationRecord
             :internal_rate_type, :foundation_rate_type, :unfunded_rate_type, presence: true
 
   validates :federal, :corporate, :other, :member, numericality: true
+  validates :display_date, :effective_date, uniqueness: true
 
   validate :effective_date_after_display_date
   validate :rate_percentages

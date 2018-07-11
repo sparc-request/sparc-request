@@ -100,6 +100,7 @@ en:
     surveys:
       new:
         text: "Please enter an access code for your new"
+        placeholder: "Access Code"
         error: "Access code can't be blank"
       form:
         header: "Live Editing %{klass}"

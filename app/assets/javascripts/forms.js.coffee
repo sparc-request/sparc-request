@@ -29,7 +29,8 @@ $ ->
       showCancelButton: true
       confirmButtonColor: '#DD6B55'
       confirmButtonText: 'Delete'
-    }).then ->
-      $.ajax
-        type: 'delete'
-        url: "/surveyor/responses/#{form_id}.js"
+    }).then (data) ->
+      if data['value']
+        $.ajax
+          type: 'delete'
+          url: "/surveyor/responses/#{form_id}.js"

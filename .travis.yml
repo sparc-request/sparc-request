@@ -8,9 +8,12 @@ addons:
     packages:
       - libqtwebkit-dev
       - libqtwebkit4
+  chrome: stable
 
 before_install:
   - export TZ=America/New_York
+  - # start your web application and listen on `localhost`
+  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
 before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"

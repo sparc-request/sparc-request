@@ -92,4 +92,8 @@ class Survey < ApplicationRecord
   def report_title
     "#{self.title} - Version #{self.version.to_s} (#{self.active ? I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active] : I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]})"
   end
+
+  def has_responses?
+    self.responses.any? ? true : false
+  end
 end

@@ -296,7 +296,7 @@ $ ->
   ##############################################
 
   $(document).on 'click', 'button.remove-service-component', (event) ->
-    component = $(this).closest('.form-group.row').find('input.component_string')[0].value
+    component = $(this).data('component')
     service_id = $(this).data('service')
     if confirm (I18n['catalog_manager']['service_form']['remove_component_confirm'])
       $.ajax
@@ -307,7 +307,7 @@ $ ->
           service_id: service_id
 
   $(document).on 'click', 'button.add-service-component', (event) ->
-    component = $(this).closest('.form-group.row').find('input.component_string')[0].value
+    component = $('input#new_component').val()
     service_id = $(this).data('service')
     $.ajax
       type: 'POST'
@@ -387,6 +387,19 @@ $ ->
       url: "/catalog_manager/pricing_maps/new"
       data:
         service_id: service_id
+
+  $(document).on 'change', '#pricing_map_full_rate', ->
+    full_rate = $(this).val()
+    pricing_map_id = $(this).data('pricing-map-id')
+    display_date = $('#pricing_map_display_date').val()
+    $.ajax
+      type: "GET"
+      url: "/catalog_manager/pricing_maps/#{pricing_map_id}/refresh_rates"
+      data:
+        pricing_map:
+          full_rate: full_rate
+          display_date: display_date
+
 
   $(document).on 'submit', '#pricing_map_modal form', ->
     $('#pricing_map_modal .modal-footer .btn-primary').attr('disabled','disabled')

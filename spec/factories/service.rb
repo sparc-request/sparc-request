@@ -28,6 +28,7 @@ FactoryBot.define do
     service_center_cost { Random.rand(100) }
     charge_code         { Faker::Lorem.words().first }
     revenue_code        { Faker::Lorem.words().first }
+    order               { 1 }
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }

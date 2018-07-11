@@ -28,6 +28,7 @@ FactoryBot.define do
     process_ssrs  { false }
     is_available  { true }
     use_default_statuses { true }
+    order         { 1 }
 
     trait :ctrc do
       after(:create) do |organization, evaluator|
@@ -117,6 +118,7 @@ FactoryBot.define do
     process_ssrs  { false }
     is_available  { true }
     use_default_statuses { true }
+    order         { 1 }
 
     trait :disabled do
       is_available false
@@ -150,6 +152,7 @@ FactoryBot.define do
     process_ssrs  { false }
     is_available  { true }
     use_default_statuses { true }
+    order         { 1 }
 
     trait :process_ssrs do
       process_ssrs true
@@ -202,6 +205,7 @@ FactoryBot.define do
     process_ssrs  { false }
     is_available  { true }
     use_default_statuses { true }
+    order         { 1 }
 
     trait :process_ssrs do
       process_ssrs true
@@ -271,6 +275,7 @@ FactoryBot.define do
     process_ssrs  { false }
     is_available  { true }
     use_default_statuses { true }
+    order         { 1 }
 
     trait :process_ssrs do
       process_ssrs true

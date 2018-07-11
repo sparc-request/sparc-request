@@ -223,14 +223,13 @@ SparcRails::Application.routes.draw do
     resource :clinical_provider, only: [:create, :destroy]
     resources :services, except: [:index, :show, :destroy]
     resources :pricing_setups, except: [:index, :show, :destroy]
-    resources :subsidy_maps, except: [:index, :show, :destroy]
-    resources :pricing_maps, except: [:index, :show, :destroy]
+    resources :subsidy_maps, only: [:edit, :update]
+    resources :pricing_maps, only: [:new, :create, :edit, :update] do
+      get :refresh_rates, on: :member
+    end
     resources :submission_emails, only: [:create, :destroy]
 
     match 'identities/search' => 'identities#search', via: [:get, :post]
-    # match 'update_pricing_maps' => 'catalog#update_pricing_maps', via: [:get, :post]
-    # match 'update_dates_on_pricing_maps' => 'catalog#update_dates_on_pricing_maps', via: [:get, :post]
-    # match 'validate_pricing_map_dates' => 'catalog#validate_pricing_map_dates', via: [:get, :post]
 
     root to: 'catalog#index'
   end

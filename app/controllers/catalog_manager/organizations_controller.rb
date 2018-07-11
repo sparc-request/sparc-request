@@ -245,7 +245,9 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
       @organization.update_descendants_availability(false)
     elsif params[:all_services_availability] != 'keep'
       # enable immediate child services
-      @organization.services.update_all(is_available: params[:all_services_availability] == 'true')
+      @organization.services.each do |service|
+        service.update_attributes(is_available: params[:all_services_availability] == 'true')
+      end
     end
   end
 

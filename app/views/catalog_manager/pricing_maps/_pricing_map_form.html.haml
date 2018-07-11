@@ -56,28 +56,14 @@
             %legend= t(:catalog_manager)[:organization_form][:pricing][:rates]
             .form-group
               = f.label :full_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:full_rate], class: 'col-sm-4 control-label'
-              .col-sm-7= f.text_field :full_rate, {value: Service.cents_to_dollars(pricing_map.full_rate), disabled: pricing_map_disabled, class: 'form-control'}
+              .col-sm-7= f.text_field :full_rate, {value: Service.cents_to_dollars(pricing_map.full_rate), disabled: pricing_map_disabled, class: 'form-control', data: {pricing_map_id: pricing_map.id}}
 
             .form-group
               .col-sm-2.col-sm-offset-4.text-center= t(:catalog_manager)[:service_form][:pricing_map_form][:calculated]
               .col-sm-5= t(:catalog_manager)[:service_form][:pricing_map_form][:override]
 
-            .form-group
-              = f.label :federal_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:federal_rate], class: 'col-sm-4 control-label'
-              .col-sm-2.text-center= (rate_map ? rate_map['federal_rate'] : "N/A") + " *"
-              .col-sm-5= f.text_field :federal_rate, {value: Service.cents_to_dollars(pricing_map.federal_rate), disabled: pricing_map_disabled, class: 'form-control'}
-            .form-group
-              = f.label :corporate_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:corporate_rate], class: 'col-sm-4 control-label'
-              .col-sm-2.text-center= (rate_map ? rate_map['corporate_rate'] : "N/A") + " *"
-              .col-sm-5= f.text_field :corporate_rate, {value: Service.cents_to_dollars(pricing_map.corporate_rate), disabled: pricing_map_disabled, class: 'form-control'}
-            .form-group
-              = f.label :other_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:other_rate], class: 'col-sm-4 control-label'
-              .col-sm-2.text-center= (rate_map ? rate_map['other_rate'] : "N/A") + " *"
-              .col-sm-5= f.text_field :other_rate, {value: Service.cents_to_dollars(pricing_map.other_rate), disabled: pricing_map_disabled, class: 'form-control'}
-            .form-group
-              = f.label :member_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:member_rate], class: 'col-sm-4 control-label'
-              .col-sm-2.text-center= (rate_map ? rate_map['member_rate'] : "N/A") + " *"
-              .col-sm-5= f.text_field :member_rate, {value: Service.cents_to_dollars(pricing_map.member_rate), disabled: pricing_map_disabled, class: 'form-control'}
+            #calculated_rates_container
+              = render 'rates', pricing_map: pricing_map, pricing_map_disabled: pricing_map_disabled, rate_map: rate_map
 
             .form-group
               .col-sm-7.col-sm-offset-4.small

@@ -121,6 +121,7 @@ en:
               label: "Dependent:"
               dropdown:
                 label: "Display If:"
+            warning: "*Warning* This question has responses attached to it."
           option:
             add: "Add Option"
             delete: "Delete Option"

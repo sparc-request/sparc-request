@@ -19,7 +19,5 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 $(document).ready ->
-  $(document). on 'click', '.likert-option', ->
+  $(document). on 'click', '.likert-group:not(.disabled) .likert-option', ->
     $(this).find('input').prop('checked', true)
-
-  $(".disable-likert *").prop('disabled',true)

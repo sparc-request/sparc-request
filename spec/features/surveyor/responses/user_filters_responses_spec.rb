@@ -196,8 +196,8 @@ RSpec.describe 'User filters responses', js: true do
   describe 'incomplete filter' do
     before :each do
       @other_survey   = create(:system_survey, title: 'Hollywoo Stars and Celebrities. Do they know things? What do they know? Let\'s find out', active: true)
-      survey_response = create(:response, survey: @survey, updated_at: Time.now - 5.days)
-      other_response  = create(:response, survey: @other_survey, updated_at: Time.now + 5.days)
+      survey_response = create(:response, survey: @survey)
+      other_response  = create(:response, survey: @other_survey)
                         create(:question_response, response: survey_response)
                         # other_response is incomplete
     end
@@ -213,13 +213,31 @@ RSpec.describe 'User filters responses', js: true do
     end
 
     context 'user filters including incomplete responses' do
-      scenario 'and sees both complete and incomplete responses' do
-        find('#filterrific_include_incomplete').click
-        click_button I18n.t(:actions)[:filter]
-        wait_for_javascript_to_finish
+      context 'for surveys' do
+        scenario 'and sees both complete and incomplete responses' do
+          find('#filterrific_include_incomplete').click
+          click_button I18n.t(:actions)[:filter]
+          wait_for_javascript_to_finish
 
-        expect(page).to have_selector('td', text: @survey.title)
-        expect(page).to have_selector('td', text: @other_survey.title)
+          expect(page).to have_selector('td', text: @survey.title)
+          expect(page).to have_selector('td', text: @other_survey.title)
+        end
+      end
+
+      context 'for forms' do
+        scenario 'and sees both complete and incomplete responses' do
+          @other_form     = create(:form, surveyable: @organization, title: 'Formula One', active: true)
+          other_response  = create(:response, survey: @other_form)
+          ssr             = create(:sub_service_request, organization: @organization)
+
+          bootstrap_select '#filterrific_of_type', Form.name
+          find('#filterrific_include_incomplete').click
+          click_button I18n.t(:actions)[:filter]
+          wait_for_javascript_to_finish
+
+          expect(page).to have_selector('td', text: @form.title)
+          expect(page).to have_selector('td', text: @other_form.title)
+        end
       end
     end
   end

@@ -38,6 +38,8 @@ end
 
 RSpec.configure do |config|
   config.before :each, type: :feature do
-    Capybara.page.current_window.resize_to(1920, 1080) if IS_DEBUG_MODE
+    if IS_DEBUG_MODE.call == :chrome
+      Capybara.page.current_window.resize_to(1920, 1080)
+    end
   end
 end

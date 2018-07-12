@@ -6,20 +6,16 @@ env:
   DISPLAY: :99.0
   RAILS_ENV: test
   CHROME_DRIVER_VERSION: '2.40'
-
 addons:
-  chrome: stable
+  apt:
+    sources:
+      - google-chrome
+    packages:
+      - google-chrome-stable
 
 before_install:
   - export TZ=America/New_York
 before_script:
-  - wget "http://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip"
-  - unzip chromedriver_linux64.zip
-  - rm chromedriver_linux64.zip
-  - sudo mv -f chromedriver /usr/local/bin
-  - sudo chmod +x /usr/local/bin/chromedriver
-  - google-chrome-stable --headless --no-sandbox
-  - bundle install
   - "sh -e /etc/init.d/xvfb start"
   - cp config/database.yml.example config/database.yml
   - cp config/epic.yml.example config/epic.yml

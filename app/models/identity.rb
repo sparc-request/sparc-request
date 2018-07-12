@@ -66,6 +66,7 @@ class Identity < ApplicationRecord
   has_many :service_providers, dependent: :destroy
   has_many :studies, -> { where("protocols.type = 'Study'")}, through: :project_roles, source: :protocol
   has_many :super_users, dependent: :destroy
+  has_many :short_interactions, :dependent => :destroy
 
   cattr_accessor :current_user
 

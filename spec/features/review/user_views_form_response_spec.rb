@@ -35,8 +35,8 @@ RSpec.describe 'User views form response', js: true do
                     create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
                     create(:arm, protocol: @protocol, visit_count: 1)
     @form         = create(:form, surveyable: service, active: true)
-                    create(:response, survey: @form, respondable: ssr)
-
+    response      = create(:response, survey: @form, respondable: ssr)
+                    create(:question_response, response: response)
     @sr.reload
   end
 

@@ -414,7 +414,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def form_completed?(form)
-    self.responses.where(survey: form).any?
+    self.responses.joins(:question_responses).where(survey: form).any?
   end
 
   def has_completed_forms?

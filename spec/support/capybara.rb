@@ -37,7 +37,7 @@ Capybara.configure do |config|
 end
 
 RSpec.configure do |config|
-  config.before :each do
+  config.before :each, type: :feature do
     Capybara.page.current_window.resize_to(1920, 1080) if IS_DEBUG_MODE
   end
 end

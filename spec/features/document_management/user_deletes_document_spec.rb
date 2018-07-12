@@ -43,7 +43,9 @@ RSpec.describe 'User deletes an existing document', js: true do
       visit document_management_service_request_path(@sr)
       wait_for_javascript_to_finish
 
-      find('.document-delete').click
+      accept_confirm do
+        find('.document-delete').click
+      end
       wait_for_javascript_to_finish
 
       expect(@protocol.documents.count).to eq(0)

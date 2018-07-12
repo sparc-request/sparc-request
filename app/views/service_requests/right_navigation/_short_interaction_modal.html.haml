@@ -32,11 +32,11 @@
           .form-group.row
             = f.label :subject, t(:proper)[:right_navigation][:short_interaction][:subject], class: 'col-lg-4 control-label'
             .col-lg-8
-              = f.select :subject, options_for_select(PermissibleValue.get_inverted_hash('interaction_subject')), :prompt =>t(:proper)[:right_navigation][:short_interaction][:subject_select], class: 'form-control'
+              = f.select :subject, options_for_select(PermissibleValue.get_inverted_hash('interaction_subject')), { prompt: t(:proper)[:right_navigation][:short_interaction][:subject_select]}, class: 'form-control'
           .form-group.row
             = f.label :interaction_type, t(:proper)[:right_navigation][:short_interaction][:type], class: 'col-lg-4 control-label'
             .col-lg-8
-              = f.select :interaction_type, options_for_select(PermissibleValue.get_inverted_hash('interaction_type')), :prompt =>t(:proper)[:right_navigation][:short_interaction][:type_select], class: 'form-control'
+              = f.select :interaction_type, options_for_select(PermissibleValue.get_inverted_hash('interaction_type')), { prompt: t(:proper)[:right_navigation][:short_interaction][:type_select]}, class: 'form-control'
           .form-group.row
             = f.label :duration_in_minutes, t(:proper)[:right_navigation][:short_interaction][:duration], class: 'col-lg-4 control-label'
             .col-lg-8
@@ -44,15 +44,15 @@
           .form-group.row
             = f.label :name, t(:proper)[:right_navigation][:short_interaction][:investigator_name], class: 'col-lg-4 control-label'
             .col-lg-8
-              = f.text_field :name,  placeholder: t(:proper)[:right_navigation][:short_interaction][:investigator_name],  size: 65, class: 'form-control'
+              = f.text_field :name,  placeholder: t(:proper)[:right_navigation][:short_interaction][:investigator_name_placeholder],  size: 65, class: 'form-control'
           .form-group.row
             = f.label :email, t(:proper)[:right_navigation][:short_interaction][:investigator_email], class: 'col-lg-4 control-label'
             .col-lg-8
-              = f.text_field :email,  placeholder: t(:proper)[:right_navigation][:short_interaction][:investigator_email],  size: 65, class: 'form-control'
+              = f.text_field :email,  placeholder: t(:proper)[:right_navigation][:short_interaction][:investigator_email_placeholder],  size: 65, class: 'form-control'
           .form-group.row
             = f.label :institution, t(:proper)[:right_navigation][:short_interaction][:institution], class: 'col-lg-4 control-label'
             .col-lg-8
-              = f.select :institution, options_for_select(INSTITUTIONS), :prompt =>t(:proper)[:right_navigation][:short_interaction][:institution_select], class: 'form-control'
+              = f.select :institution, options_for_select(INSTITUTIONS), { prompt: t(:proper)[:right_navigation][:short_interaction][:institution_select]}, class: 'form-control'
           .form-group.row
             = f.label :note, t(:proper)[:right_navigation][:short_interaction][:note], class: 'col-lg-4 control-label required'
             .col-lg-8

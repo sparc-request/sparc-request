@@ -22,27 +22,19 @@ require 'selenium/webdriver'
 
 IS_DEBUG_MODE = -> { ENV['DEBUG'].present? ? :chrome : :headless_chrome }
 
-RSpec.configure do |config|
-  Capybara.register_driver :chrome do |app|
-    Capybara::Selenium::Driver.new(app, browser: :chrome)
-  end
+Capybara.default_wait_time = 15
 
-  Capybara.register_driver :headless_chrome do |app|
-    options = Selenium::WebDriver::Chrome::Options.new
-    options.add_argument 'headless'
-    options.add_argument 'disable-gpu'
-    options.add_argument 'window-size=1920,1080' if IS_DEBUG_MODE.call == :chrome
-    options.add_argument 'no-sandbox' if ENV['CONTINUOUS_INTEGRATION']
-    options.add_argument 'disable-dev-shm-usage' if ENV['CONTINUOUS_INTEGRATION']
-    Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
-  end
-
-  Capybara.configure do |config|
-    config.default_max_wait_time = 15
-    config.javascript_driver = IS_DEBUG_MODE.call
-  end
-
-  config.before :each, type: :system do
-    driven_by "selenium_#{IS_DEBUG_MODE.call.to_s}".to_sym
-  end
+Capybara.register_driver :chrome do |app|
+  Capybara::Selenium::Driver.new(app, browser: :chrome)
 end
+
+Capybara.register_driver :headless_chrome do |app|
+  options = Selenium::WebDriver::Chrome::Options.new
+  options.add_argument('--headless')
+  options.add_argument('--no-sandbox')
+  options.add_argument('--disable-popup-blocking')
+  options.add_argument('--window-size=1366,768')
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+end
+
+Capybara.javascript_driver = IS_DEBUG_MODE.call

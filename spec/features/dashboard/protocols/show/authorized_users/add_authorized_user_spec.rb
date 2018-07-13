@@ -274,6 +274,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
   def when_i_submit_the_form
     @page.authorized_user_modal.save_button.click
+    wait_for_javascript_to_finish
   end
 
   def when_i_have_an_error

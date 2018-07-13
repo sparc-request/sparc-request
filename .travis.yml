@@ -1,28 +1,19 @@
-sudo: false
+sudo: required
 language: ruby
 cache: bundler
 dist: trusty
-env:
-  DISPLAY: :99.0
-  RAILS_ENV: test
-  CHROME_DRIVER_VERSION: '2.40'
 addons:
-  apt:
-    sources:
-      - google-chrome
-    packages:
-      - google-chrome-stable
+  chrome: stable
 
 before_install:
   - export TZ=America/New_York
 before_script:
-  - "sh -e /etc/init.d/xvfb start"
   - cp config/database.yml.example config/database.yml
   - cp config/epic.yml.example config/epic.yml
   - cp config/ldap.yml.example config/ldap.yml
   - mysql -e 'create database test_sparc_request;'
-  - bundle exec rake db:migrate
-  - bundle exec rake assets:precompile
+  - RAILS_ENV=test bundle exec rake db:migrate
+  - RAILS_ENV=test bundle exec rake assets:precompile
 jobs:
   include:
     - script:

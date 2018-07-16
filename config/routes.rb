@@ -87,6 +87,7 @@ SparcRails::Application.routes.draw do
   end
 
   resources :contact_forms, only: [:new, :create]
+  resources :short_interactions, only: [:new, :create]
 
   resource :locked_organizations, only: [:show]
 

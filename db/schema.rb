@@ -806,6 +806,20 @@ ActiveRecord::Schema.define(version: 2018_07_09_184154) do
     t.index ["key"], name: "index_settings_on_key", unique: true
   end
 
+  create_table "short_interactions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "identity_id"
+    t.string "name"
+    t.string "email"
+    t.string "institution"
+    t.integer "duration_in_minutes"
+    t.string "subject"
+    t.text "note"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string "interaction_type"
+    t.index ["identity_id"], name: "index_short_interactions_on_identity_id"
+  end
+
   create_table "study_phases", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin", force: :cascade do |t|
     t.integer "order"
     t.string "phase"

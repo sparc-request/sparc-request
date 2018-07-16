@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,48 +17,9 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-class AvailableStatus < ApplicationRecord
-
-  audited
-
-  belongs_to :organization
-
-  before_update :sync_editable_status
-
-  scope :selected, -> { where(selected: true) }
-  scope :alphabetized, -> { all.sort{ |x, y| x.humanize <=> y.humanize } }
-
-  def disabled_status?
-    ["Draft", "Get a Cost Estimate", "Submitted"].include?(self.humanize)
-  end
-
-  def self.statuses
-    @statuses ||= PermissibleValue.order(:sort_order).get_hash('status')
-  end
-
-  def self.defaults
-    @defaults ||= PermissibleValue.order(:sort_order).get_key_list('status', true)
-  end
-
-  def humanize
-    AvailableStatus.statuses[self.status]
-  end
-
-  def self.types
-    self.statuses.keys
-  end
-
-  def editable_status
-    EditableStatus.find_by(organization_id: organization_id, status: status)
-  end
-
-  private
-
-  def sync_editable_status
-    if selected_changed?
-      editable_status.update_attribute(:selected, selected)
-    end
-  end
-
-end
+<% if @errors.present? %>
+$(".modal #modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
+<% else %>
+$("#modal_place").modal 'hide'
+$('.flash').html("<%= escape_javascript(render('shared/flash')) %>")
+<% end %>

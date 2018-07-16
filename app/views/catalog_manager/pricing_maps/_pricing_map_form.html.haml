@@ -56,7 +56,7 @@
             %legend= t(:catalog_manager)[:organization_form][:pricing][:rates]
             .form-group
               = f.label :full_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:full_rate], class: 'col-sm-4 control-label'
-              .col-sm-7= f.text_field :full_rate, {value: Service.cents_to_dollars(pricing_map.full_rate), disabled: pricing_map_disabled, class: 'form-control', data: {pricing_map_id: pricing_map.id}}
+              .col-sm-7= f.text_field :full_rate, {value: number_with_precision(Service.cents_to_dollars(pricing_map.full_rate), precision: 2), disabled: pricing_map_disabled, class: 'form-control', data: {pricing_map_id: pricing_map.id}}
 
             .form-group
               .col-sm-2.col-sm-offset-4.text-center= t(:catalog_manager)[:service_form][:pricing_map_form][:calculated]

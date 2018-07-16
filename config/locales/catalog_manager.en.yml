@@ -217,6 +217,7 @@ en:
         calculated: "Calculated"
         override: "Override"
         rate_disclaimer: "*IF N/A, NO PRICING SET-UP IS DEFINED FOR THE CURRENT DATES"
+        change_override_alert: "Changing this value will override the pre-calculated rate for this service."
         # corporate_rate: "Corporate Rate"
         #
         # federal_rate: "Federal Rate"

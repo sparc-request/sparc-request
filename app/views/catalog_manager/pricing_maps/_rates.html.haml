@@ -22,16 +22,16 @@
   .form-group
     = f.label :federal_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:federal_rate], class: 'col-sm-4 control-label'
     .col-sm-2.text-center= (rate_map ? rate_map['federal_rate'] : "N/A") + " *"
-    .col-sm-5= f.text_field :federal_rate, {value: Service.cents_to_dollars(pricing_map.federal_rate), disabled: pricing_map_disabled, class: 'form-control'}
+    .col-sm-5= f.text_field :federal_rate, {value: number_with_precision(Service.cents_to_dollars(pricing_map.federal_rate), precision: 2), disabled: pricing_map_disabled, class: 'form-control override_field'}
   .form-group
     = f.label :corporate_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:corporate_rate], class: 'col-sm-4 control-label'
     .col-sm-2.text-center= (rate_map ? rate_map['corporate_rate'] : "N/A") + " *"
-    .col-sm-5= f.text_field :corporate_rate, {value: Service.cents_to_dollars(pricing_map.corporate_rate), disabled: pricing_map_disabled, class: 'form-control'}
+    .col-sm-5= f.text_field :corporate_rate, {value: number_with_precision(Service.cents_to_dollars(pricing_map.corporate_rate), precision: 2), disabled: pricing_map_disabled, class: 'form-control override_field'}
   .form-group
     = f.label :other_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:other_rate], class: 'col-sm-4 control-label'
     .col-sm-2.text-center= (rate_map ? rate_map['other_rate'] : "N/A") + " *"
-    .col-sm-5= f.text_field :other_rate, {value: Service.cents_to_dollars(pricing_map.other_rate), disabled: pricing_map_disabled, class: 'form-control'}
+    .col-sm-5= f.text_field :other_rate, {value: number_with_precision(Service.cents_to_dollars(pricing_map.other_rate), precision: 2), disabled: pricing_map_disabled, class: 'form-control override_field'}
   .form-group
     = f.label :member_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:member_rate], class: 'col-sm-4 control-label'
     .col-sm-2.text-center= (rate_map ? rate_map['member_rate'] : "N/A") + " *"
-    .col-sm-5= f.text_field :member_rate, {value: Service.cents_to_dollars(pricing_map.member_rate), disabled: pricing_map_disabled, class: 'form-control'}
+    .col-sm-5= f.text_field :member_rate, {value: number_with_precision(Service.cents_to_dollars(pricing_map.member_rate), precision: 2), disabled: pricing_map_disabled, class: 'form-control override_field'}

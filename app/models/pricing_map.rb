@@ -53,7 +53,7 @@ class PricingMap < ApplicationRecord
 
   # Determines the rate for a particular service.
   #
-  # +default_percentage+:: a number between 0 and 1
+  # +default_percentage+:: a number between 0 and 100
   #
   # +rate_type+:: a string representing the rate type (e.g. federal,
   # corporate, member, or other)

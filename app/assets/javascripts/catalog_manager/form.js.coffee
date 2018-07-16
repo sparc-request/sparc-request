@@ -411,3 +411,6 @@ $ ->
   $(document).on 'change', '#pricing_map_unit_type', ->
     new_value = $(this).val()
     $('.input-group-addon').text(new_value)
+
+  $(document).on 'change', 'input.override_field', ->
+    alert(I18n['catalog_manager']['service_form']['pricing_map_form']['change_override_alert'])

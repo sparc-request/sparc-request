@@ -28,7 +28,9 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     @organization = Organization.new(new_organization_params[:organization])
     if @organization.save
       @organization.create_subsidy_map() unless @organization.type == 'Institution'
-      @user.catalog_manager_rights.create(organization_id: @organization.id)
+      unless @user.catalog_manager_organizations.include?(@organization)
+        @user.catalog_manager_rights.create(organization_id: @organization.id)
+      end
 
       @institutions = Institution.order('`order`')
       @path = catalog_manager_organization_path(@organization)

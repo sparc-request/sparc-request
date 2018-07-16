@@ -1,0 +1,42 @@
+[
+  {
+    "key":            "use_cas",
+    "value":          "false",
+    "friendly_name":  "Use CAS",
+    "description":    "Determines whether or not Omniauth will use CAS.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "use_cas_only",
+    "value":          "false",
+    "friendly_name":  "Use CAS Only",
+    "description":    "Determines whether the application will only use CAS authentication for user login. Set to true to turn off database authentication login options.<br>Note: This has a lower precedence than \"Use Shibboleth Only\" when both are enabled.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_cas",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "use_shibboleth",
+    "value":          "true",
+    "friendly_name":  "Use Shibboleth",
+    "description":    "Determines whether the single user login option will be displayed in the application. Currently this is only shibboleth. If you would like to use another OmniAuth module, this will need to be set to true.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "use_shibboleth_only",
+    "value":          "false",
+    "friendly_name":  "Use Shibboleth Only",
+    "description":    "Determines whether the application will only use Shibboleth authentication for user login. Set to true to turn off database authentication login options.<br>Note: This has a higher precedence than \"Use CAS Only\" when both are enabled.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_shibboleth",
+    "parent_value":   "true"
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "key":            "use_funding_module",
+    "value":          "false",
+    "friendly_name":  "Use SPARCFunding Module",
+    "description":    "Determines whether the application will use the SPARCFunding module.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "funding_admins",
+    "value":          "[]",
+    "friendly_name":  "Funding Admins",
+    "description":    "Determines which users will have access to the SPARCFunding module.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_funding_module",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "funding_org_ids",
+    "value":          "[]",
+    "friendly_name":  "Funding Opportunities Organizations",
+    "description":    "Organization ID of the organizations under the SPARCFunding Opportunities.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_funding_module",
+    "parent_value":   "true"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "key":            "use_google_calendar",
+    "value":          "true",
+    "friendly_name":  "Use Google Calendar",
+    "description":    "Determines whether the application will display calendar events on the homepage.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "calendar_url",
+    "value":          "https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics",
+    "friendly_name":  "Calendar URL",
+    "description":    "The web address used by the application to pull Google Calendar data to populate calendar events on the homepage.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_google_calendar",
+    "parent_value":   "true"
+  }
+]

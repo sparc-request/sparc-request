@@ -1,10 +1,70 @@
 [
   {
+    "key":            "use_epic",
+    "value":          "false",
+    "friendly_name":  "Use Epic",
+    "description":    "Determines whether or not Epic integration will be used.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
     "key":            "approve_epic_rights_mail_to",
     "value":          "forney@musc.edu, crossoml@musc.edu",
-    "friendly_name":  "EPIC Rights Mail-To",
-    "description":    "Email addresses of users who are e-mailed for EPIC rights approval",
+    "friendly_name":  "Epic Rights Mail-To",
+    "description":    "Email addresses of users who are e-mailed for Epic rights approval",
     "group":          "",
+    "version":        "",
+    "parent_key":     "use_epic",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "queue_epic",
+    "value":          "false",
+    "friendly_name":  "Queue Epic",
+    "description":    "Determines whether Epic pushes will be queued or not. Emptying the queue is done via rake epic:batch_load. This can setup as a cronjob to run at a certain interval.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_epic",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "epic_queue_access",
+    "value":          "[]",
+    "friendly_name":  "Epic Queue Access",
+    "description":    "Determines which users will have access to the Epic Queue.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "queue_epic",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "epic_queue_report_to",
+    "value":          "catesa@musc.edu, forney@musc.edu, crossoml@musc.edu, moreira@musc.edu, powersp@musc.edu, rogersbr@musc.edu",
+    "friendly_name":  "Epic Queue Report To",
+    "description":    "Email addresses of users who are e-mailed the Epic queue report.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "queue_epic",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "queue_epic_load_error_to",
+    "value":          "hutsonk@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu",
+    "friendly_name":  "Epic Queue Errors To",
+    "description":    "Email addresses of users who are e-mailed when there is an Epic error.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "queue_epic",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "epic_study_root",
+    "value":          "1.2.3.4",
+    "friendly_name":  "Epic Study Root",
+    "description":    "",
+    "group":          "epic_settings",
     "version":        "",
     "parent_key":     "use_epic",
     "parent_value":   "true"
@@ -30,29 +90,9 @@
     "parent_value":   "true"
   },
   {
-    "key":            "epic_queue_access",
-    "value":          "[]",
-    "friendly_name":  "Epic Queue Access",
-    "description":    "Determines which users will have access to the EPIC Queue.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "queue_epic",
-    "parent_value":   "true"
-  },
-  {
-    "key":            "epic_queue_report_to",
-    "value":          "catesa@musc.edu, forney@musc.edu, crossoml@musc.edu, moreira@musc.edu, powersp@musc.edu, rogersbr@musc.edu",
-    "friendly_name":  "Epic Queue Report To",
-    "description":    "Email addresses of users who are e-mailed the EPIC queue report.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "queue_epic",
-    "parent_value":   "true"
-  },
-  {
-    "key":            "epic_study_root",
-    "value":          "1.2.3.4",
-    "friendly_name":  "Epic Study Root",
+    "key":            "epic_wsdl",
+    "value":          "http://localhost:#{FAKE_EPIC_SERVER.port}/wsdl",
+    "friendly_name":  "Epic WSDL",
     "description":    "",
     "group":          "epic_settings",
     "version":        "",
@@ -68,45 +108,5 @@
     "version":        "",
     "parent_key":     "use_epic",
     "parent_value":   "true"
-  },
-  {
-    "key":            "epic_wsdl",
-    "value":          "http://localhost:#{FAKE_EPIC_SERVER.port}/wsdl",
-    "friendly_name":  "Epic WSDL",
-    "description":    "",
-    "group":          "epic_settings",
-    "version":        "",
-    "parent_key":     "use_epic",
-    "parent_value":   "true"
-  },
-  {
-    "key":            "queue_epic",
-    "value":          "false",
-    "friendly_name":  "Queue EPIC",
-    "description":    "Determines whether EPIC pushes will be queued or not. Emptying the queue is done via rake epic:batch_load. This can setup as a cronjob to run at a certain interval.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "use_epic",
-    "parent_value":   "true"
-  },
-  {
-    "key":            "queue_epic_load_error_to",
-    "value":          "hutsonk@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu",
-    "friendly_name":  "Epic Queue Errors To",
-    "description":    "Email addresses of users who are e-mailed when there is an EPIC error.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "queue_epic",
-    "parent_value":   "true"
-  },
-  {
-    "key":            "use_epic",
-    "value":          "false",
-    "friendly_name":  "Use EPIC",
-    "description":    "Determines whether or not EPIC integration will be used.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "",
-    "parent_value":   ""
   }
 ]

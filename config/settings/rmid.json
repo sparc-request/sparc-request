@@ -1,15 +1,5 @@
 [
   {
-    "key":            "research_master_api",
-    "value":          "https://research-master-staging.musc.edu/api/",
-    "friendly_name":  "Research Master API URL",
-    "description":    "The URL of the Research Master ID API.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "research_master_enabled",
-    "parent_value":   "true"
-  },
-  {
     "key":            "research_master_enabled",
     "value":          "false",
     "friendly_name":  "Use Research Master ID",
@@ -24,6 +14,16 @@
     "value":          "https://research-master-staging.musc.edu/",
     "friendly_name":  "Research Master ID URL",
     "description":    "The URL of the Research Master ID application.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "research_master_enabled",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "research_master_api",
+    "value":          "https://research-master-staging.musc.edu/api/",
+    "friendly_name":  "Research Master API URL",
+    "description":    "The URL of the Research Master ID API.",
     "group":          "",
     "version":        "",
     "parent_key":     "research_master_enabled",

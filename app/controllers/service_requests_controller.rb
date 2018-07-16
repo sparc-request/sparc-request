@@ -409,12 +409,14 @@ class ServiceRequestsController < ApplicationController
     if Setting.find_by_key("use_news_feed").value
       @news = []
       begin
-        page = Nokogiri::HTML(open("https://www.sparcrequestblog.com", open_timeout: 5))
-        articles = page.css('article.post').take(3)
+        page = Nokogiri::HTML(open(Setting.find_by_key("news_feed_url"), open_timeout: 5))
+        articles = page.css(Setting.find_by_key("news_feed_post_selector").value).take(3)
         articles.each do |article|
-          @news << {title: (article.at_css('.entry-title') ? article.at_css('.entry-title').text : ""),
-                  link: (article.at_css('.entry-title a') ? article.at_css('.entry-title a')[:href] : ""),
-                  date: (article.at_css('.date') ? article.at_css('.date').text : "") }
+          @news << {
+            title: article.at_css(Setting.find_by_key("news_feed_title_selector").value).try(:text) || "",
+            link: article.at_css(Setting.find_by_key("news_feed_link_selector").value).try(:[], :href) || "",
+            date: article.at_css(Setting.find_by_key("news_feed_date_selector").value).try(:text) || ""
+          }
         end
       rescue Net::OpenTimeout
       end

@@ -1,0 +1,92 @@
+[
+  {
+    "key":            "use_feedback_link",
+    "value":          "true",
+    "friendly_name":  "Use Feedback Link",
+    "description":    "Determines whether the application will use an internal or external feedback system.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "feedback_link",
+    "value":          "http://something.com",
+    "friendly_name":  "Feedback URL",
+    "description":    "The URL of an external feedback system.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_feedback_link",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "feedback_mail_to",
+    "value":          "hutsonk@musc.edu",
+    "friendly_name":  "Feedback Mail-To",
+    "description":    "This field will overwrite the feedback mailers in the application to instead mail to this address. This is overwritten in development/testing/staging environments in order to prevent real emails from being sent out to users.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_feedback_link",
+    "parent_value":   "false"
+  },
+  {
+    "key":            "use_redcap_api",
+    "value":          "false",
+    "friendly_name":  "Use REDCap API",
+    "description":    "This determines whether the application will use an external REDCap feedback module.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "redcap_api_url",
+    "value":          "https://redcap.musc.edu/api/",
+    "friendly_name":  "REDCap API URL",
+    "description":    "",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_redcap_api",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "redcap_token",
+    "value":          "",
+    "friendly_name":  "REDCap API Token",
+    "description":    "The token used to access the REDCap API.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_redcap_api",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "use_faq_link",
+    "value":          "false",
+    "friendly_name":  "Use FAQ Link",
+    "description":    "Determines whether the application will use an internal list of frequently asked questions or link to an external resource.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "faq_url",
+    "value":          "http://academicdepartments.musc.edu/sctr/sparc_request/faq.html",
+    "friendly_name":  "FAQs URL",
+    "description":    "The URL of the SPARCRequest frequently asked questions page.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_faq_link",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "use_short_interaction",
+    "value":          "true",
+    "friendly_name":  "Use Short Interaction",
+    "description":    "Determines whether or not the application will use Short Interaction.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  }
+]

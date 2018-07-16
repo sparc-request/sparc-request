@@ -1,0 +1,62 @@
+[
+  {
+    "key":            "use_news_feed",
+    "value":          "true",
+    "friendly_name":  "Use News Feed",
+    "description":    "Determines whether the application will display news on the homepage.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "news_feed_url",
+    "value":          "https://www.sparcrequestblog.com",
+    "friendly_name":  "News Feed URL",
+    "description":    "The web address used by the application to populate the news feed on the homepage.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_news_feed",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "news_feed_post_selector",
+    "value":          "article.post",
+    "friendly_name":  "Post CSS Selector",
+    "description":    "The CSS selector of a post from the news feed URL.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_news_feed",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "news_feed_title_selector",
+    "value":          ".entry-title",
+    "friendly_name":  "Post Title CSS Selector",
+    "description":    "The CSS selector of the title of a post from the news feed URL.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_news_feed",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "news_feed_link_selector",
+    "value":          ".entry-title a",
+    "friendly_name":  "Post Link CSS Selector",
+    "description":    "The CSS selector of the link to a post from the news feed URL.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_news_feed",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "news_feed_date_selector",
+    "value":          ".date",
+    "friendly_name":  "Post Date CSS Selector",
+    "description":    "The CSS selector of the date of a post from the news feed URL.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_news_feed",
+    "parent_value":   "true"
+  }
+]

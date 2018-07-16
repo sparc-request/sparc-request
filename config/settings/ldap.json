@@ -1,5 +1,15 @@
 [
   {
+    "key":            "use_ldap",
+    "value":          "false",
+    "friendly_name":  "Use LDAP",
+    "description":    "Determines whether the authorized user search will attempt to connect to an LDAP server. If false, it will simply search the database. NOTE: Even if this is set to false at least a blank \"ldap.yml\" is required.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
     "key":            "lazy_load_ldap",
     "value":          "false",
     "friendly_name":  "Lazy Load LDAP Results",
@@ -10,9 +20,19 @@
     "parent_value":   "true"
   },
   {
-    "key":            "ldap_auth_password",
-    "value":          "password",
-    "friendly_name":  "LDAP Authorization Password",
+    "key":            "suppress_ldap_for_user_search",
+    "value":          "false",
+    "friendly_name":  "Suppress LDAP for User Search",
+    "description":    "Allow the use of LDAP but suppress its use within the Project/Study user search.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_ldap",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "ldap_host",
+    "value":          "authldap.musc.edu",
+    "friendly_name":  "LDAP Host",
     "description":    "",
     "group":          "ldap_settings",
     "version":        "",
@@ -20,9 +40,9 @@
     "parent_value":   "true"
   },
   {
-    "key":            "ldap_auth_username",
-    "value":          "username",
-    "friendly_name":  "LDAP Authorization Username",
+    "key":            "ldap_port",
+    "value":          "636",
+    "friendly_name":  "LDAP Port",
     "description":    "",
     "group":          "ldap_settings",
     "version":        "",
@@ -40,26 +60,6 @@
     "parent_value":   "true"
   },
   {
-    "key":            "ldap_domain",
-    "value":          "musc.edu",
-    "friendly_name":  "LDAP Domain",
-    "description":    "",
-    "group":          "ldap_settings",
-    "version":        "",
-    "parent_key":     "use_ldap",
-    "parent_value":   "true"
-  },
-  {
-    "key":            "ldap_email",
-    "value":          "mail",
-    "friendly_name":  "LDAP Email",
-    "description":    "",
-    "group":          "ldap_settings",
-    "version":        "",
-    "parent_key":     "use_ldap",
-    "parent_value":   "true"
-  },
-  {
     "key":            "ldap_encryption",
     "value":          "simple_tls",
     "friendly_name":  "LDAP Encryption",
@@ -70,49 +70,9 @@
     "parent_value":   "true"
   },
   {
-    "key":            "ldap_filter",
-    "value":          "(&(|(|(|(cn=#{term}*)(sn=#{term}*))(givenName=#{term}*))(mail=#{term}*))(msRTCSIP-UserEnabled=TRUE))",
-    "friendly_name":  "LDAP Filter",
-    "description":    "",
-    "group":          "ldap_settings",
-    "version":        "",
-    "parent_key":     "use_ldap",
-    "parent_value":   "true"
-  },
-  {
-    "key":            "ldap_first_name",
-    "value":          "givenname",
-    "friendly_name":  "LDAP First Name",
-    "description":    "",
-    "group":          "ldap_settings",
-    "version":        "",
-    "parent_key":     "use_ldap",
-    "parent_value":   "true"
-  },
-  {
-    "key":            "ldap_host",
-    "value":          "authldap.musc.edu",
-    "friendly_name":  "LDAP Host",
-    "description":    "",
-    "group":          "ldap_settings",
-    "version":        "",
-    "parent_key":     "use_ldap",
-    "parent_value":   "true"
-  },
-  {
-    "key":            "ldap_last_name",
-    "value":          "sn",
-    "friendly_name":  "LDAP Last Name",
-    "description":    "",
-    "group":          "ldap_settings",
-    "version":        "",
-    "parent_key":     "use_ldap",
-    "parent_value":   "true"
-  },
-  {
-    "key":            "ldap_post",
-    "value":          "636",
-    "friendly_name":  "LDAP Port",
+    "key":            "ldap_domain",
+    "value":          "musc.edu",
+    "friendly_name":  "LDAP Domain",
     "description":    "",
     "group":          "ldap_settings",
     "version":        "",
@@ -130,23 +90,63 @@
     "parent_value":   "true"
   },
   {
-    "key":            "suppress_ldap_for_user_search",
-    "value":          "false",
-    "friendly_name":  "Suppress LDAP for User Search",
-    "description":    "Allow the use of LDAP but suppress its use within the Project/Study user search.",
-    "group":          "",
+    "key":            "ldap_last_name",
+    "value":          "sn",
+    "friendly_name":  "LDAP Last Name",
+    "description":    "",
+    "group":          "ldap_settings",
     "version":        "",
     "parent_key":     "use_ldap",
     "parent_value":   "true"
   },
   {
-    "key":            "use_ldap",
-    "value":          "false",
-    "friendly_name":  "Use LDAP",
-    "description":    "Determines whether the authorized user search will attempt to connect to an LDAP server. If false, it will simply search the database. NOTE: Even if this is set to false at least a blank \"ldap.yml\" is required.",
-    "group":          "",
+    "key":            "ldap_first_name",
+    "value":          "givenname",
+    "friendly_name":  "LDAP First Name",
+    "description":    "",
+    "group":          "ldap_settings",
     "version":        "",
-    "parent_key":     "",
-    "parent_value":   ""
+    "parent_key":     "use_ldap",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "ldap_email",
+    "value":          "mail",
+    "friendly_name":  "LDAP Email",
+    "description":    "",
+    "group":          "ldap_settings",
+    "version":        "",
+    "parent_key":     "use_ldap",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "ldap_auth_username",
+    "value":          "username",
+    "friendly_name":  "LDAP Authorization Username",
+    "description":    "",
+    "group":          "ldap_settings",
+    "version":        "",
+    "parent_key":     "use_ldap",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "ldap_auth_password",
+    "value":          "password",
+    "friendly_name":  "LDAP Authorization Password",
+    "description":    "",
+    "group":          "ldap_settings",
+    "version":        "",
+    "parent_key":     "use_ldap",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "ldap_filter",
+    "value":          "(&(|(|(|(cn=#{term}*)(sn=#{term}*))(givenName=#{term}*))(mail=#{term}*))(msRTCSIP-UserEnabled=TRUE))",
+    "friendly_name":  "LDAP Filter",
+    "description":    "",
+    "group":          "ldap_settings",
+    "version":        "",
+    "parent_key":     "use_ldap",
+    "parent_value":   "true"
   }
 ]

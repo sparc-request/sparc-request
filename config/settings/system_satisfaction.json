@@ -1,0 +1,22 @@
+[
+  {
+    "key":            "system_satisfaction_survey",
+    "value":          "false",
+    "friendly_name":  "Use System Satisfaction Survey",
+    "description":    "Determines whether or not to display a System Satisfaction Survey prior to submitting a Service Request.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "system_satisfaction_survey_cc",
+    "value":          "amcates@gmail.com, catesa@musc.edu",
+    "friendly_name":  "System Satisfaction Survey CC",
+    "description":    "This field will overwrite the system satisfaction survey mailers in the application to instead cc to this address. This is overwritten in development/testing/staging environments in order to prevent real emails from being sent out to general users.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "system_satisfaction_survey",
+    "parent_value":   "true"
+  }
+]

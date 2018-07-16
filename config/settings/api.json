@@ -1,0 +1,62 @@
+[
+  {
+    "key":            "current_api_version",
+    "value":          "v1",
+    "friendly_name":  "Current API Version",
+    "description":    "The current version of the SPARCRequest API.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "remote_service_notifier_protocol",
+    "value":          "https",
+    "friendly_name":  "Remote Service Notifier Protocol",
+    "description":    "",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "remote_service_notifier_username",
+    "value":          "",
+    "friendly_name":  "Remote Service Notifier Username",
+    "description":    "",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "remote_service_notifier_password",
+    "value":          "",
+    "friendly_name":  "Remote Service Notifier Password",
+    "description":    "",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "remote_service_notifier_host",
+    "value":          "127.0.0.1:5001",
+    "friendly_name":  "Remote Service Notifier",
+    "description":    "",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "remote_service_notifier_path",
+    "value":          "/v1/notifications.json",
+    "friendly_name":  "Remote Service Notifier Path",
+    "description":    "",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  }
+]

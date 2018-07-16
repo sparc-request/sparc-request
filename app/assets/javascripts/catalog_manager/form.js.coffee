@@ -390,15 +390,18 @@ $ ->
 
   $(document).on 'change', '#pricing_map_full_rate', ->
     full_rate = $(this).val()
+    service_id = $(this).data('service-id')
     pricing_map_id = $(this).data('pricing-map-id')
     display_date = $('#pricing_map_display_date').val()
     $.ajax
       type: "GET"
-      url: "/catalog_manager/pricing_maps/#{pricing_map_id}/refresh_rates"
+      url: "/catalog_manager/pricing_maps/refresh_rates"
       data:
+        id: pricing_map_id
         pricing_map:
           full_rate: full_rate
           display_date: display_date
+          service_id: service_id
 
 
   $(document).on 'submit', '#pricing_map_modal form', ->

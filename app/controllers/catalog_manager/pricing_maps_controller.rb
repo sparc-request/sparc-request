@@ -53,8 +53,13 @@ class CatalogManager::PricingMapsController < CatalogManager::AppController
   end
 
   def refresh_rates
-    @pricing_map = PricingMap.find(pricing_map_params[:id])
-    @pricing_map_disabled = (@pricing_map.new_record? ? false : @pricing_map.disabled?(@user))
+    if pricing_map_params[:id]
+      @pricing_map = PricingMap.find(pricing_map_params[:id])
+      @pricing_map_disabled = @pricing_map.disabled?(@user)
+    else
+      @pricing_map = PricingMap.new(service_id: pricing_map_params[:pricing_map][:service_id])
+      @pricing_map_disabled = false
+    end
     @rate_map = @pricing_map.service.get_rate_maps(pricing_map_params[:pricing_map][:display_date].to_date.strftime("%F"), pricing_map_params[:pricing_map][:full_rate]) rescue nil
   end
 

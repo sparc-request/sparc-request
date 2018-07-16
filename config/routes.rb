@@ -198,6 +198,7 @@ SparcRails::Application.routes.draw do
     match 'organizations/remove_associated_survey' => 'organizations#remove_associated_survey', via: [:post]
     match 'organizations/increase_decrease_modal' => 'organizations#increase_decrease_modal', via: [:get]
     match 'organizations/increase_decrease_rates' => 'organizations#increase_decrease_rates', via: [:post]
+    match 'pricing_maps/refresh_rates' => 'pricing_maps#refresh_rates', via: [:get]
 
     resources :services, only: [:edit, :update, :create, :new] do
       patch :update_epic_info
@@ -225,9 +226,7 @@ SparcRails::Application.routes.draw do
     resources :services, except: [:index, :show, :destroy]
     resources :pricing_setups, except: [:index, :show, :destroy]
     resources :subsidy_maps, only: [:edit, :update]
-    resources :pricing_maps, only: [:new, :create, :edit, :update] do
-      get :refresh_rates, on: :member
-    end
+    resources :pricing_maps, only: [:new, :create, :edit, :update]
     resources :submission_emails, only: [:create, :destroy]
 
     match 'identities/search' => 'identities#search', via: [:get, :post]

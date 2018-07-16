@@ -74,8 +74,8 @@ class Surveyor::ResponseFiltersController < ApplicationController
 
   def fix_dates_for_saved_searches(response_filter)
     response_filter.update_attributes(
-      start_date: response_filter.start_date.to_date.strftime('%m/%d/%Y'),
-      end_date: response_filter.end_date.to_date.strftime('%m/%d/%Y')
+      start_date: response_filter.start_date.to_date.try(:strftime, '%m/%d/%Y'),
+      end_date: response_filter.end_date.to_date.try(:strftime, '%m/%d/%Y')
     )
   end
 

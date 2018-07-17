@@ -79,6 +79,10 @@ class VisitGroup < ApplicationRecord
   def per_patient_subtotals
     self.visits.sum{ |v| v.cost || 0.00 }
   end
+
+  def in_order?
+    day_must_be_in_order
+  end
     
   private
 

@@ -23,6 +23,7 @@ class PricingMap < ApplicationRecord
 
   belongs_to :service
   before_save :upcase_otf_unit_type
+  before_save :zero_out_negatives
 
   validates :full_rate,
             :display_date,
@@ -134,6 +135,12 @@ class PricingMap < ApplicationRecord
   def upcase_otf_unit_type
     if (self.otf_unit_type == "n/A") or (self.otf_unit_type == "n/a") or (self.otf_unit_type == "N/a")
       self.otf_unit_type.upcase!
+    end
+  end
+
+  def zero_out_negatives
+    if full_rate < 0.0
+      self.full_rate = 0.0
     end
   end
 

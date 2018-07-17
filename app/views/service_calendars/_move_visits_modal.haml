@@ -39,6 +39,7 @@
               = label_tag :position, t(:visit_groups)[:form_fields][:position], class: 'col-lg-4 control-label required'
               .col-lg-7
                 = select_tag :position, visit_position_options(arm, visit_group), class: 'form-control selectpicker'
+                = hidden_field_tag :day, visit_group.day
       .modal-footer
         .center-block
           %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }

@@ -136,11 +136,10 @@ class ServiceCalendarsController < ApplicationController
     @display_all_services = true
 
     new_position = params[:position].to_i
-
-    if @visit_group.position < new_position
-      perform_visit_insertion(@visit_group, new_position - 1)
-    else
-      perform_visit_insertion(@visit_group, new_position)
+    day = params[:day].to_i
+  
+    unless @visit_group.update_attributes(position: new_position, day: day)
+      @errors = @visit_group.errors
     end
 
     respond_to do |format|
@@ -231,12 +230,6 @@ class ServiceCalendarsController < ApplicationController
     @service_request.arms.each do |arm|
       new_page        = (session[:service_calendar_pages].nil? || session[:service_calendar_pages][arm.id].nil?) ? 1 : session[:service_calendar_pages][arm.id]
       @pages[arm.id]  = @service_request.set_visit_page(new_page, arm)
-    end
-  end
-
-  def perform_visit_insertion(visit_group, position)
-    unless visit_group.insert_at(position)
-      @errors = @visit_group.errors
     end
   end
 end

@@ -97,35 +97,37 @@ class VisitGroup < ApplicationRecord
   end
 
   def day_must_be_in_order
-    already_there = arm.visit_groups.find_by(position: position) || arm.visit_groups.find_by(id: id)
-    last_persisted_pos = arm.visit_groups.last.try(:position) || 0
+    unless day.blank?
+      already_there = arm.visit_groups.find_by(position: position) || arm.visit_groups.find_by(id: id)
+      last_persisted_pos = arm.visit_groups.last.try(:position) || 0
 
-    # determine neighbors that will be after save
-    left_neighbor, right_neighbor =
-      if id.nil? # inserting new record
-        if position.nil? # insert as last
-          [arm.visit_groups.last, nil]
-        elsif position <= last_persisted_pos # inserting before
-          [already_there.try(:higher_item), already_there]
-        end
-      else # moving present record
-        if already_there.try(:id) == id # not changing position, get our neighbors
-          [higher_item, lower_item]
-        else # position must be changing
-          if already_there.position < changed_attributes[:position]
+      # determine neighbors that will be after save
+      left_neighbor, right_neighbor =
+        if id.nil? # inserting new record
+          if position.nil? # insert as last
+            [arm.visit_groups.last, nil]
+          elsif position <= last_persisted_pos # inserting before
             [already_there.try(:higher_item), already_there]
-          else
-            [already_there, already_there.try(:lower_item)]
+          end
+        else # moving present record
+          if already_there.try(:id) == id # not changing position, get our neighbors
+            [higher_item, lower_item]
+          else # position must be changing
+            if already_there.position < changed_attributes[:position]
+              [already_there.try(:higher_item), already_there]
+            else
+              [already_there, already_there.try(:lower_item)]
+            end
           end
         end
+
+      if left_neighbor.try(:id) == id
+        left_neighbor = nil
       end
 
-    if left_neighbor.try(:id) == id
-      left_neighbor = nil
-    end
-
-    unless day > (left_neighbor.try(:day) || day - 1) && day < (right_neighbor.try(:day) || day + 1)
-      errors.add(:day, 'must be in order')
+      unless day > (left_neighbor.try(:day) || day - 1) && day < (right_neighbor.try(:day) || day + 1)
+        errors.add(:day, 'must be in order')
+      end
     end
   end
 end

@@ -18,8 +18,14 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#new_pricing_map_link.btn.btn-info{data: {service_id: service.id}}
-  = t(:catalog_manager)[:service_form][:pricing_map_form][:add_pricing]
+- if (service.organization.parents << service.organization).detect{|org| !org.pricing_setups.empty?}
+  #new_pricing_map_link.btn.btn-info{data: {service_id: service.id}}
+    = t(:catalog_manager)[:service_form][:pricing_map_form][:add_pricing]
+
+-else
+  .btn.btn-info{disabled: 'disabled'}
+    = t(:catalog_manager)[:service_form][:pricing_map_form][:add_pricing]
+  %span= t(:catalog_manager)[:service_form][:pricing_map_form][:no_pricing_setups]
 
 #pricing_map_list
   - service.pricing_maps.sort_by(&:effective_date).each do |pricing_map|

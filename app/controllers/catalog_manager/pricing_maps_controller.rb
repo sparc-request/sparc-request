@@ -31,6 +31,8 @@ class CatalogManager::PricingMapsController < CatalogManager::AppController
     if @pricing_map.save
       flash[:success] = "Pricing Map created successfully."
       @service = @pricing_map.service
+      @programs = @service.provider.programs
+      @cores    = @service.program.cores
     else
       @errors = @pricing_map.errors
     end

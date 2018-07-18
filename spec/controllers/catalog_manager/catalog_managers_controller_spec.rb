@@ -23,14 +23,15 @@ require 'rails_helper'
 RSpec.describe CatalogManager::CatalogManagersController, type: :controller do
 
   before :each do
-    @identity_id = create(:identity).id
+    @identity = create(:identity)
     @organization_id = create(:provider).id
+    log_in_catalog_manager_identity(obj: @identity)
   end
 
   describe '#create' do
     it 'should create a Catalog Manager' do
       post :create,
-        params: { catalog_manager: { identity_id: @identity_id, organization_id: @organization_id } },
+        params: { catalog_manager: { identity_id: @identity.id, organization_id: @organization_id } },
         xhr: true
 
       expect(CatalogManager.count).to eq(1)
@@ -39,18 +40,18 @@ RSpec.describe CatalogManager::CatalogManagersController, type: :controller do
 
   describe '#update' do
     it 'should update edit_historic_data to true' do
-      cm = create(:catalog_manager, identity_id: @identity_id, organization_id: @organization_id, edit_historic_data: false)
+      cm = create(:catalog_manager, identity_id: @identity.id, organization_id: @organization_id, edit_historic_data: false)
       put :update,
-        params: { catalog_manager: { identity_id: @identity_id, organization_id: @organization_id, edit_historic_data: 'true' } },
+        params: { catalog_manager: { identity_id: @identity.id, organization_id: @organization_id, edit_historic_data: 'true' } },
         xhr: true
 
       expect(cm.reload.edit_historic_data).to eq(true)
     end
 
     it 'should update edit_historic_data to false' do
-      cm = create(:catalog_manager, identity_id: @identity_id, organization_id: @organization_id, edit_historic_data: true)
+      cm = create(:catalog_manager, identity_id: @identity.id, organization_id: @organization_id, edit_historic_data: true)
       put :update,
-        params: { catalog_manager: { identity_id: @identity_id, organization_id: @organization_id, edit_historic_data: 'false' } },
+        params: { catalog_manager: { identity_id: @identity.id, organization_id: @organization_id, edit_historic_data: 'false' } },
         xhr: true
 
       expect(cm.reload.edit_historic_data).to eq(false)
@@ -59,9 +60,9 @@ RSpec.describe CatalogManager::CatalogManagersController, type: :controller do
 
   describe '#destroy' do
     it 'should delete an existing Catalog Manager' do
-      cm = create(:catalog_manager, identity_id: @identity_id, organization_id: @organization_id)
+      cm = create(:catalog_manager, identity_id: @identity.id, organization_id: @organization_id)
       delete :destroy,
-        params: { catalog_manager: { identity_id: @identity_id, organization_id: @organization_id } },
+        params: { catalog_manager: { identity_id: @identity.id, organization_id: @organization_id } },
         xhr: true
 
       expect(CatalogManager.count).to eq(0)

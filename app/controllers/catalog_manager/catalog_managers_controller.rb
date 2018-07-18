@@ -22,7 +22,7 @@ class CatalogManager::CatalogManagersController < CatalogManager::AppController
 
   def create
     @catalog_manager = CatalogManager.new(catalog_manager_params)
-    @identity = Identity.find(@catalog_manager.identity_id)
+    @identity = @catalog_manager.identity
     @organization = @catalog_manager.organization
     @user_rights  = user_rights(@organization.id)
 
@@ -39,7 +39,7 @@ class CatalogManager::CatalogManagersController < CatalogManager::AppController
 
   def destroy
     @catalog_manager = CatalogManager.find_by(catalog_manager_params)
-    @identity = Identity.find(@catalog_manager.identity_id)
+    @identity = @catalog_manager.identity
     @organization = @catalog_manager.organization
     @user_rights  = user_rights(@organization.id)
 
@@ -54,7 +54,7 @@ class CatalogManager::CatalogManagersController < CatalogManager::AppController
 
   def update
     @catalog_manager = CatalogManager.find_by(identity_id: catalog_manager_params[:identity_id], organization_id: catalog_manager_params[:organization_id])
-    @identity = Identity.find(@catalog_manager.identity_id)
+    @identity = @catalog_manager.identity
     @organization = @catalog_manager.organization
     @user_rights  = user_rights(@organization.id)
 

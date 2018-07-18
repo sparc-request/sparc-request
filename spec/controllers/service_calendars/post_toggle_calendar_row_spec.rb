@@ -29,7 +29,7 @@ RSpec.describe ServiceCalendarsController do
     context 'check' do
       it 'should update visits' do
         org       = create(:organization)
-        service   = create(:service)
+        service   = create(:service, pricing_map_count: 1)
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol)
         ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr)
@@ -59,7 +59,7 @@ RSpec.describe ServiceCalendarsController do
     context 'uncheck' do
       it 'should update visits' do
         org       = create(:organization)
-        service   = create(:service)
+        service   = create(:service, pricing_map_count: 1)
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
         ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
@@ -88,7 +88,7 @@ RSpec.describe ServiceCalendarsController do
     context '@admin false' do
       it 'should update sub service request to draft' do
         org       = create(:organization)
-        service   = create(:service)
+        service   = create(:service, pricing_map_count: 1)
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
         ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
@@ -115,7 +115,7 @@ RSpec.describe ServiceCalendarsController do
     context '@admin true' do
       it 'should not update sub service requests to draft' do
         org       = create(:organization)
-        service   = create(:service)
+        service   = create(:service, pricing_map_count: 1)
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
         ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')

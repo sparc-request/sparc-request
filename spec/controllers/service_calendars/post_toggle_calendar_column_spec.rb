@@ -7,7 +7,7 @@
 
 # 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
 # disclaimer in the documentation and/or other materials provided with the distribution.
-  
+
 # 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
 # derived from this software without specific prior written permission.
 
@@ -29,7 +29,7 @@ RSpec.describe ServiceCalendarsController do
     context 'check' do
       it 'should update visits' do
         org       = create(:organization)
-        service   = create(:service, organization: org)
+        service   = create(:service, organization: org, pricing_map_count: 1)
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
         ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
@@ -58,7 +58,7 @@ RSpec.describe ServiceCalendarsController do
     context 'uncheck' do
       it 'should update visits' do
         org       = create(:organization)
-        service   = create(:service, organization: org)
+        service   = create(:service, organization: org, pricing_map_count: 1)
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
         ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
@@ -87,7 +87,7 @@ RSpec.describe ServiceCalendarsController do
     context '@admin false' do
       it 'should update sub service requests to draft' do
         org       = create(:organization)
-        service   = create(:service, organization: org)
+        service   = create(:service, organization: org, pricing_map_count: 1)
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol)
         ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
@@ -111,7 +111,7 @@ RSpec.describe ServiceCalendarsController do
     context '@admin true' do
       it 'should not update sub service requests to draft' do
         org       = create(:organization)
-        service   = create(:service, organization: org)
+        service   = create(:service, organization: org, pricing_map_count: 1)
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol)
         ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
@@ -136,7 +136,7 @@ RSpec.describe ServiceCalendarsController do
       it 'should not update other sub service requests statuses' do
         org       = create(:organization)
         org2      = create(:organization)
-        service   = create(:service, organization: org)
+        service   = create(:service, organization: org, pricing_map_count: 1)
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol)
         ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')

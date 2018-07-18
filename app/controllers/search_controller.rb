@@ -48,7 +48,7 @@ class SearchController < ApplicationController
     results = Service.
                 where("(name LIKE ? OR abbreviation LIKE ? OR cpt_code LIKE ?) AND is_available = 1", "%#{term}%", "%#{term}%", "%#{term}%").
                 where.not(organization_id: locked_org_ids + locked_child_ids).
-                reject { |s| (s.current_pricing_map rescue false) == false } # Why is this here?
+                reject { |s| (s.current_pricing_map rescue false) == false } # Why is this here? ##Agreed, why????
 
     unless @sub_service_request.nil?
       results.reject!{ |s| s.parents.exclude?(@sub_service_request.organization) }

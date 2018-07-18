@@ -46,7 +46,7 @@ RSpec.describe SearchController do
         results = JSON.parse(response.body)
 
         expect(results.count).to eq(1)
-        expect(results[0]['name']).to eq(core1.name)        
+        expect(results[0]['name']).to eq(core1.name)
       end
 
       it 'should return services with similar name' do
@@ -61,7 +61,7 @@ RSpec.describe SearchController do
         results = JSON.parse(response.body)
 
         expect(results.count).to eq(1)
-        expect(results[0]['name']).to eq(service1.name) 
+        expect(results[0]['name']).to eq(service1.name)
       end
     end
 
@@ -84,7 +84,7 @@ RSpec.describe SearchController do
         results = JSON.parse(response.body)
 
         expect(results.count).to eq(1)
-        expect(results[0]['name']).to eq(core1.name)   
+        expect(results[0]['name']).to eq(core1.name)
       end
       it 'should return services with similar abbreviation' do
         service1 = create(:service, organization: @program, name: 'first service', abbreviation: 'first')
@@ -98,7 +98,7 @@ RSpec.describe SearchController do
         results = JSON.parse(response.body)
 
         expect(results.count).to eq(1)
-        expect(results[0]['name']).to eq(service1.name) 
+        expect(results[0]['name']).to eq(service1.name)
       end
     end
 
@@ -120,9 +120,9 @@ RSpec.describe SearchController do
 
       expect(results.count).to eq(1)
       expect(results[0]['name']).to eq(service1.name)
-    end    
+    end
 
-    it 'should not return unavailable organizations or services if showing available' do
+    it 'should not return unavailable organizations or services if showing available only' do
       institution = create(:institution)
       provider = create(:provider, parent: institution)
       program = create(:program, parent: provider)
@@ -132,7 +132,7 @@ RSpec.describe SearchController do
 
       # show_available_only is what the state of the button is after the next click
       get :organizations, params: {
-        show_available_only: 'false',
+        show_available_only: 'true',
         term: 'core'
       }, xhr: true
 
@@ -152,7 +152,7 @@ RSpec.describe SearchController do
 
       # show_available_only is what the state of the button is after the next click
       get :organizations, params: {
-        show_available_only: 'true',
+        show_available_only: 'false',
         term: 'core'
       }, xhr: true
 

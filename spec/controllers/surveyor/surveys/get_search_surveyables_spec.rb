@@ -205,7 +205,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
         context 'service is available' do
           it 'should return the service' do
             org             = create(:core, name: 'Testing Organization', abbreviation: 'test.org', process_ssrs: false)
-            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org)
+            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org, pricing_map_count: 1)
 
             get :search_surveyables, params: { term: 'test' }, xhr: true
 
@@ -219,7 +219,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
         context 'service is not available' do
           it 'should not return the service' do
             org             = create(:core, name: 'Testing Organization', abbreviation: 'test.org', process_ssrs: false)
-            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org, is_available: false)
+            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org, is_available: false, pricing_map_count: 1)
 
             get :search_surveyables, params: { term: 'test' }, xhr: true
 
@@ -234,7 +234,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
         context 'service is available' do
           it 'should return the service' do
             org             = create(:core, name: 'Testing Organization', abbreviation: 'test.org', process_ssrs: false)
-            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org)
+            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org, pricing_map_count: 1)
                               create(:super_user, organization: org, identity: logged_in_user)
 
             get :search_surveyables, params: { term: 'test' }, xhr: true
@@ -249,7 +249,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
         context 'service is not available' do
           it 'should not return the service' do
             org             = create(:core, name: 'Testing Organization', abbreviation: 'test.org', process_ssrs: false)
-            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org, is_available: false)
+            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org, is_available: false, pricing_map_count: 1)
                               create(:super_user, organization: org, identity: logged_in_user)
 
             get :search_surveyables, params: { term: 'test' }, xhr: true
@@ -265,7 +265,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
         context 'service is available' do
           it 'should return the service' do
             org             = create(:core, name: 'Testing Organization', abbreviation: 'test.org', process_ssrs: false)
-            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org)
+            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org, pricing_map_count: 1)
                               create(:service_provider, organization: org, identity: logged_in_user)
 
             get :search_surveyables, params: { term: 'test' }, xhr: true
@@ -280,7 +280,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
         context 'service is not available' do
           it 'should not return the service' do
             org             = create(:core, name: 'Testing Organization', abbreviation: 'test.org', process_ssrs: false)
-            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org, is_available: false)
+            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org, is_available: false, pricing_map_count: 1)
                               create(:service_provider, organization: org, identity: logged_in_user)
 
             get :search_surveyables, params: { term: 'test' }, xhr: true
@@ -296,7 +296,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
         context 'service is available' do
           it 'should return the service' do
             org             = create(:core, name: 'Testing Organization', abbreviation: 'test.org', process_ssrs: false)
-            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org)
+            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org, pricing_map_count: 1)
                               create(:catalog_manager, organization: org, identity: logged_in_user)
 
             get :search_surveyables, params: { term: 'test' }, xhr: true
@@ -311,7 +311,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
         context 'service is not available' do
           it 'should not return the service' do
             org             = create(:core, name: 'Testing Organization', abbreviation: 'test.org', process_ssrs: false)
-            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org, is_available: false)
+            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org, is_available: false, pricing_map_count: 1)
                               create(:catalog_manager, organization: org, identity: logged_in_user)
 
             get :search_surveyables, params: { term: 'test' }, xhr: true

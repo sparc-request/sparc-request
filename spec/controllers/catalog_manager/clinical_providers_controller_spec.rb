@@ -23,14 +23,15 @@ require 'rails_helper'
 RSpec.describe CatalogManager::ClinicalProvidersController, type: :controller do
 
   before :each do
-    @identity_id = create(:identity).id
+    @identity = create(:identity)
     @organization_id = create(:provider).id
+    log_in_catalog_manager_identity(obj: @identity)
   end
 
   describe '#create' do
     it 'should create a Clinical Provider' do
       post :create,
-        params: { clinical_provider: { identity_id: @identity_id, organization_id: @organization_id } },
+        params: { clinical_provider: { identity_id: @identity.id, organization_id: @organization_id } },
         xhr: true
 
       expect(ClinicalProvider.count).to eq(1)
@@ -39,9 +40,9 @@ RSpec.describe CatalogManager::ClinicalProvidersController, type: :controller do
 
   describe '#destroy' do
     it 'should delete an existing Clinical Provider' do
-      cm = create(:clinical_provider, identity_id: @identity_id, organization_id: @organization_id)
+      cm = create(:clinical_provider, identity_id: @identity.id, organization_id: @organization_id)
       delete :destroy,
-        params: { clinical_provider: { identity_id: @identity_id, organization_id: @organization_id } },
+        params: { clinical_provider: { identity_id: @identity.id, organization_id: @organization_id } },
         xhr: true
 
       expect(ClinicalProvider.count).to eq(0)

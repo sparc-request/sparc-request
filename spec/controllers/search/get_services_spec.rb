@@ -39,13 +39,13 @@ RSpec.describe SearchController do
       inst  = create(:institution)
       prvdr = create(:provider, parent: inst)
       org   = create(:program, parent: prvdr)
-      s1    = create(:service, organization: org, name: 'Serve me Well')
-      s2    = create(:service, organization: org, name: 'Evres me Poorly')
+      s1    = create(:service, organization: org, name: 'Serve me Well', pricing_map_count: 1)
+      s2    = create(:service, organization: org, name: 'Serves me Poorly', pricing_map_count: 1)
 
 
       get :services, params: {
         service_request_id: sr.id,
-        term: 'Serve'
+        term: 'Well'
       }, xhr: true
 
       results = JSON.parse(response.body)
@@ -60,12 +60,12 @@ RSpec.describe SearchController do
       inst  = create(:institution)
       prvdr = create(:provider, parent: inst)
       org   = create(:program, parent: prvdr)
-      s1    = create(:service, organization: org, abbreviation: 'Serve me Well')
-      s2    = create(:service, organization: org, abbreviation: 'Evres me Poorly')
+      s1    = create(:service, organization: org, abbreviation: 'Serve me Well', pricing_map_count: 1)
+      s2    = create(:service, organization: org, abbreviation: 'Serves me Poorly', pricing_map_count: 1)
 
       get :services, params: {
         service_request_id: sr.id,
-        term: 'Serve'
+        term: 'Well'
       }, xhr: true
 
       results = JSON.parse(response.body)
@@ -79,8 +79,8 @@ RSpec.describe SearchController do
       inst  = create(:institution)
       prvdr = create(:provider, parent: inst)
       org   = create(:program, parent: prvdr)
-      s1    = create(:service, organization: org, cpt_code: 1234)
-      s2    = create(:service, organization: org, cpt_code: 4321)
+      s1    = create(:service, organization: org, cpt_code: 1234, pricing_map_count: 1)
+      s2    = create(:service, organization: org, cpt_code: 4321, pricing_map_count: 1)
 
 
      get :services, params: {
@@ -99,8 +99,8 @@ RSpec.describe SearchController do
       inst  = create(:institution)
       prvdr = create(:provider, parent: inst)
       org   = create(:program, parent: prvdr)
-      s1    = create(:service, organization: org, name: 'Service 123', is_available: 1)
-      s2    = create(:service, organization: org, name: 'Service 321', is_available: 0)
+      s1    = create(:service, organization: org, name: 'Service 123', is_available: 1, pricing_map_count: 1)
+      s2    = create(:service, organization: org, name: 'Service 321', is_available: 0, pricing_map_count: 1)
 
 
       get :services, params: {
@@ -125,8 +125,8 @@ RSpec.describe SearchController do
       prvdr = create(:provider, parent: inst)
       org2  = create(:program, parent: prvdr, use_default_statuses: false)
       ssr   = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'on_hold')
-      s1    = create(:service, organization: org, name: 'Service 123')
-      s2    = create(:service, organization: org2, name: 'Service 321')
+      s1    = create(:service, organization: org, name: 'Service 123', pricing_map_count: 1)
+      s2    = create(:service, organization: org2, name: 'Service 321', pricing_map_count: 1)
 
       org.editable_statuses.where(status: 'on_hold').destroy_all
 
@@ -149,8 +149,8 @@ RSpec.describe SearchController do
         org   = create(:program, parent: prvdr)
         org2  = create(:organization)
         ssr   = create(:sub_service_request_without_validations, service_request: sr, organization: org)
-        s1    = create(:service, organization: org, name: 'Service 123')
-        s2    = create(:service, organization: org2, name: 'Service 321')
+        s1    = create(:service, organization: org, name: 'Service 123', pricing_map_count: 1)
+        s2    = create(:service, organization: org2, name: 'Service 321', pricing_map_count: 1)
 
         get :services, params: {
           service_request_id: sr.id,

@@ -81,6 +81,11 @@ RSpec.describe PricingSetup, type: :model do
     it "should return pricing maps with correct effective and display dates" do
       pricing_setup.create_pricing_maps
       service.reload
+      puts '#' * 50
+      puts pricing_setup.inspect
+      puts '#' * 50
+      puts service.pricing_maps.inspect
+      puts '#' * 50
       expect(service.pricing_maps[1].display_date.to_date).to eq(pricing_setup.display_date.to_date)
       expect(service.pricing_maps[1].effective_date.to_date).to eq(pricing_setup.effective_date.to_date)
     end

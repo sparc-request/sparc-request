@@ -31,6 +31,7 @@ class PricingMap < ApplicationRecord
             :unit_factor,
             presence: true
   validates :unit_factor,
+            :full_rate,
             numericality: true
 
   validates :display_date, :effective_date, uniqueness: { scope: :service_id }
@@ -39,8 +40,7 @@ class PricingMap < ApplicationRecord
   # One time fee pricing maps require: units_per_qty_max, otf_unit_type, quantity_type, and quantity_minimum
   with_options :if => :is_one_time_fee? do |one_time_fee|
     one_time_fee.validates :otf_unit_type, :quantity_type, :units_per_qty_max, presence: true
-    one_time_fee.validates :units_per_qty_max, numericality: true
-    one_time_fee.validates :quantity_minimum, numericality: { only_integer: true }
+    one_time_fee.validates :units_per_qty_max, :quantity_minimum, numericality: { only_integer: true }
   end
   # Per patient pricing maps require: unit_type and unit_minimum
   with_options :unless => :is_one_time_fee? do |per_patient|

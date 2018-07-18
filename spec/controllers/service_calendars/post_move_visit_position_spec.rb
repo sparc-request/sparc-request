@@ -38,7 +38,7 @@ RSpec.describe ServiceCalendarsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
       arm      = create(:arm, protocol: protocol, name: "Arm")
-      vg1      = create(:visit_group, arm: arm, position: 1)
+      vg1      = create(:visit_group_without_validations, arm: arm, position: 1)
       vg2      = create(:visit_group, arm: arm, position: 2)
       vg3      = create(:visit_group, arm: arm, position: 3)
 
@@ -58,7 +58,7 @@ RSpec.describe ServiceCalendarsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
       arm      = create(:arm, protocol: protocol, name: "Arm")
-      vg1      = create(:visit_group, arm: arm, position: 1)
+      vg1      = create(:visit_group_without_validations, arm: arm, position: 1)
       vg2      = create(:visit_group, arm: arm, position: 2)
       vg3      = create(:visit_group, arm: arm, position: 3)
 

@@ -29,7 +29,7 @@ RSpec.describe '/service_calendar/master_calendar/_merged_grand_totals', type: :
     @service_request = create(:service_request_without_validations, protocol: @protocol)
     @arm1            = create(:arm, protocol: @protocol, name: 'Left Arm')
     @arm2            = create(:arm, protocol: @protocol, name: 'Right Arm')
-    @visit_group1    = create(:visit_group, arm: @arm1)
+    @visit_group1    = create(:visit_group_without_validations, arm: @arm1)
     @visit_group2    = create(:visit_group, arm: @arm2)
   end
 

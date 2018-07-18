@@ -55,6 +55,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
       arm      = create(:arm, protocol: protocol)
+                 create(:visit_group_without_validations, arm: arm)
                  create(:subsidy, sub_service_request: ssr)
 
       get :document_management, params: {
@@ -73,6 +74,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
       arm      = create(:arm, protocol: protocol)
+                 create(:visit_group_without_validations, arm: arm)
                  create(:subsidy, sub_service_request: ssr)
 
       get :document_management, params: {
@@ -91,6 +93,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
       arm      = create(:arm, protocol: protocol)
+                 create(:visit_group_without_validations, arm: arm)
                  create(:subsidy, sub_service_request: ssr)
 
       get :document_management, params: {
@@ -109,6 +112,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
       arm      = create(:arm, protocol: protocol)
+                 create(:visit_group_without_validations, arm: arm)
 
       get :document_management, params: {
         id: sr.id

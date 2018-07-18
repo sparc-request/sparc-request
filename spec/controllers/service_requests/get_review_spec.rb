@@ -129,7 +129,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
       arm1     = create(:arm, protocol: protocol)
+                 create(:visit_group_without_validations, arm: arm1)
       arm2     = create(:arm, protocol: protocol)
+                 create(:visit_group_without_validations, arm: arm2)
       pages    = { arm1.id => 1, arm2.id => 1 }
 
       get :review, params: {

@@ -97,7 +97,7 @@ RSpec.describe Dashboard::VisitGroupsController do
         @sr       = create(:service_request_without_validations, protocol: @protocol)
         @ssr      = create(:sub_service_request, service_request: @sr, organization: org)
         @arm      = create(:arm, protocol: @protocol)
-        @vg       = create(:visit_group, arm: @arm)
+        @vg       = create(:visit_group_without_validations, arm: @arm)
 
         delete :destroy, params: {
           id: @vg.id,

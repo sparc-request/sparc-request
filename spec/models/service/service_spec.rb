@@ -197,7 +197,7 @@ RSpec.describe Service, type: :model do
 
     it "should raise an exception if there are no current pricing maps" do
       service.pricing_maps.delete_all
-      pricing_map = create(:pricing_map, service_id: service.id, display_date: Date.today + 1)
+      pricing_map = create(:pricing_map, service_id: service.id, display_date: Date.today + 1, effective_date: Date.today + 1)
       expect(lambda { service.displayed_pricing_map }).to raise_exception(ArgumentError)
     end
 
@@ -279,7 +279,7 @@ RSpec.describe Service, type: :model do
     let!(:core) { create(:core) }
     let!(:service) { create(:service, organization_id: core.id) }
     let!(:pricing_map) { service.pricing_maps[0] }
-    let!(:pricing_setup) { create(:pricing_setup, display_date: Date.today - 1, federal: 25,
+    let!(:pricing_setup) { create(:pricing_setup, display_date: Date.today - 1, effective_date: Date.today - 1, federal: 25,
                            corporate: 25, other: 25, member: 25, organization_id: core.id)}
 
     before(:each) do

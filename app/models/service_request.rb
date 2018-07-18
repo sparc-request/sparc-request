@@ -405,7 +405,7 @@ class ServiceRequest < ApplicationRecord
   def has_associated_forms?
     self.services.joins(:forms).where(surveys: { active: true }).any? || self.sub_service_requests.joins(organization: :forms).where(surveys: { active: true }).any?
   end
-  
+
   def associated_forms
     forms = []
     # Because there can be multiple SSRs with the same services/organizations we need to loop over each one

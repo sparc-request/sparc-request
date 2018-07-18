@@ -37,14 +37,14 @@ RSpec.describe Notifier do
           before :each do
             service_requester     = create(:identity)
             @organization         = create(:organization)
-            @service              = create(:service, organization: @organization, one_time_fee: true)
+            @service              = create(:service, organization: @organization, one_time_fee: true, pricing_map_count: 1)
             create(:pricing_setup_without_validations, organization_id: @organization.id)
             @service_provider     = create(:service_provider, identity: identity, organization: @organization)
             @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, funding_status: 'funded')
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
             @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
-  
+
 
             @service_request.reload
             deleted_and_created_line_item_audit_trail(@service_request, @service, identity)
@@ -56,7 +56,7 @@ RSpec.describe Notifier do
           it 'should display correct subject' do
             expect(@mail).to have_subject("SPARCRequest Amendment Submitted (Protocol #{@protocol.id})")
           end
-          
+
           # Expected service provider message is defined under request_amendment_intro
           it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
             request_amendment_intro(@mail)
@@ -78,14 +78,14 @@ RSpec.describe Notifier do
           before :each do
             service_requester     = create(:identity)
             @organization         = create(:organization)
-            @service              = create(:service, organization: @organization, one_time_fee: true)
+            @service              = create(:service, organization: @organization, one_time_fee: true, pricing_map_count: 1)
             create(:pricing_setup_without_validations, organization_id: @organization.id)
             @service_provider     = create(:service_provider, identity: identity, organization: @organization)
             @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, selected_for_epic: true, funding_status: 'funded')
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
             @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
-  
+
 
             @service_request.reload
             deleted_and_created_line_item_audit_trail(@service_request, @service, identity)
@@ -107,14 +107,14 @@ RSpec.describe Notifier do
           before :each do
             service_requester     = create(:identity)
             @organization         = create(:organization)
-            @service              = create(:service, organization: @organization, one_time_fee: true)
+            @service              = create(:service, organization: @organization, one_time_fee: true, pricing_map_count: 1)
             create(:pricing_setup_without_validations, organization_id: @organization.id)
             @service_provider     = create(:service_provider, identity: identity, organization: @organization)
             @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, funding_status: 'funded')
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
             @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
-  
+
 
             @service_request.reload
             created_line_item_audit_trail(@service_request, @service, identity)
@@ -143,14 +143,14 @@ RSpec.describe Notifier do
           before :each do
             service_requester     = create(:identity)
             @organization         = create(:organization)
-            @service              = create(:service, organization: @organization, one_time_fee: true)
+            @service              = create(:service, organization: @organization, one_time_fee: true, pricing_map_count: 1)
             create(:pricing_setup_without_validations, organization_id: @organization.id)
             @service_provider     = create(:service_provider, identity: identity, organization: @organization)
             @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, selected_for_epic: true, funding_status: 'funded')
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
             @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
-  
+
 
             @service_request.reload
             created_line_item_audit_trail(@service_request, @service, identity)
@@ -170,7 +170,7 @@ RSpec.describe Notifier do
           before :each do
             service_requester     = create(:identity)
             @organization         = create(:organization)
-            @service              = create(:service, organization: @organization, one_time_fee: true)
+            @service              = create(:service, organization: @organization, one_time_fee: true, pricing_map_count: 1)
             create(:pricing_setup_without_validations, organization_id: @organization.id)
             @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, funding_status: 'funded')
             @project_role         = create(:project_role, identity: jug2, protocol: @protocol, project_rights: 'view')
@@ -178,7 +178,7 @@ RSpec.describe Notifier do
             @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
             @approval             = create(:approval, service_request: @service_request)
-  
+
 
             @service_request.reload
             created_line_item_audit_trail(@service_request, @service, identity)
@@ -207,7 +207,7 @@ RSpec.describe Notifier do
           before :each do
             service_requester     = create(:identity)
             @organization         = create(:organization)
-            @service              = create(:service, organization: @organization, one_time_fee: true)
+            @service              = create(:service, organization: @organization, one_time_fee: true, pricing_map_count: 1)
             create(:pricing_setup_without_validations, organization_id: @organization.id)
             @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, selected_for_epic: true, funding_status: 'funded')
             @project_role         = create(:project_role, identity: jug2, protocol: @protocol, project_rights: 'view')
@@ -215,7 +215,7 @@ RSpec.describe Notifier do
             @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
             @approval             = create(:approval, service_request: @service_request)
-  
+
 
             @service_request.reload
             created_line_item_audit_trail(@service_request, @service, identity)
@@ -234,7 +234,7 @@ RSpec.describe Notifier do
         before :each do
           service_requester     = create(:identity)
           @organization         = create(:organization)
-          @service              = create(:service, organization: @organization, one_time_fee: true)
+          @service              = create(:service, organization: @organization, one_time_fee: true, pricing_map_count: 1)
           create(:pricing_setup_without_validations, organization_id: @organization.id)
           @service_provider     = create(:service_provider, identity: identity, organization: @organization)
           @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, funding_status: 'funded')
@@ -268,14 +268,14 @@ RSpec.describe Notifier do
           before do
             service_requester     = create(:identity)
             @organization         = create(:organization)
-            @service              = create(:service, organization: @organization, one_time_fee: true)
+            @service              = create(:service, organization: @organization, one_time_fee: true, pricing_map_count: 1)
             create(:pricing_setup_without_validations, organization_id: @organization.id)
             @service_provider     = create(:service_provider, identity: identity, organization: @organization)
             @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, funding_status: 'funded')
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
             @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
-  
+
 
             @service_request.reload
             deleted_line_item_audit_trail(@service_request, @service, identity)
@@ -304,14 +304,14 @@ RSpec.describe Notifier do
           before :each do
             service_requester     = create(:identity)
             @organization         = create(:organization)
-            @service              = create(:service, organization: @organization, one_time_fee: true)
+            @service              = create(:service, organization: @organization, one_time_fee: true, pricing_map_count: 1)
             create(:pricing_setup_without_validations, organization_id: @organization.id)
             @service_provider     = create(:service_provider, identity: identity, organization: @organization)
             @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, selected_for_epic: true, funding_status: 'funded')
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
             @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
-  
+
 
             @service_request.reload
             deleted_line_item_audit_trail(@service_request, @service, identity)
@@ -331,7 +331,7 @@ RSpec.describe Notifier do
           before :each do
             service_requester     = create(:identity)
             @organization         = create(:organization)
-            @service              = create(:service, organization: @organization, one_time_fee: true)
+            @service              = create(:service, organization: @organization, one_time_fee: true, pricing_map_count: 1)
             create(:pricing_setup_without_validations, organization_id: @organization.id)
             @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, funding_status: 'funded')
             @project_role         = create(:project_role, identity: jug2, protocol: @protocol, project_rights: 'view')
@@ -339,7 +339,7 @@ RSpec.describe Notifier do
             @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
             @approval             = create(:approval, service_request: @service_request)
-  
+
 
             @service_request.reload
             deleted_line_item_audit_trail(@service_request, @service, identity)
@@ -368,7 +368,7 @@ RSpec.describe Notifier do
           before :each do
             service_requester     = create(:identity)
             @organization         = create(:organization)
-            @service              = create(:service, organization: @organization, one_time_fee: true)
+            @service              = create(:service, organization: @organization, one_time_fee: true, pricing_map_count: 1)
             create(:pricing_setup_without_validations, organization_id: @organization.id)
             @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, selected_for_epic: true, funding_status: 'funded')
             @project_role         = create(:project_role, identity: jug2, protocol: @protocol, project_rights: 'view')
@@ -376,7 +376,7 @@ RSpec.describe Notifier do
             @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
             @approval             = create(:approval, service_request: @service_request)
-  
+
 
             @service_request.reload
             deleted_line_item_audit_trail(@service_request, @service, identity)
@@ -390,12 +390,12 @@ RSpec.describe Notifier do
           end
         end
       end
-      
+
       context 'admin' do
         before do
           service_requester     = create(:identity)
           @organization         = create(:organization)
-          @service              = create(:service, organization: @organization, one_time_fee: true)
+          @service              = create(:service, organization: @organization, one_time_fee: true, pricing_map_count: 1)
           create(:pricing_setup_without_validations, organization_id: @organization.id)
           @service_provider     = create(:service_provider, identity: identity, organization: @organization)
           @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, funding_status: 'funded')
@@ -430,7 +430,7 @@ RSpec.describe Notifier do
       before :each do
         service_requester     = create(:identity)
         @organization         = create(:organization)
-        @service              = create(:service, organization: @organization, one_time_fee: true)
+        @service              = create(:service, organization: @organization, one_time_fee: true, pricing_map_count: 1)
         create(:pricing_setup_without_validations, organization_id: @organization.id)
         @service_provider     = create(:service_provider, identity: identity, organization: @organization)
         @protocol             = create(:project_without_validations, funding_source: 'college', primary_pi: jpl6, funding_status: 'funded')

@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,27 +18,26 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.form-group.row
-  .col-sm-8
-    %h5= t(:catalog_manager)[:service_form][:component]
-  .col-sm-4.text-center
-    %h5= t(:catalog_manager)[:service_form][:remove_add]
+.form-horizontal
+  .form-group
+    .col-sm-8
+      %h5= t(:catalog_manager)[:service_form][:component]
+    .col-sm-4.text-center
+      %h5= t(:catalog_manager)[:service_form][:remove_add]
 
-- if service.components
-  - components = service.components.split(",")
-  - components.each do |component|
-    .form-group.row
-      .col-sm-8
-        = text_field_tag "component_#{component.downcase.parameterize}", component, class: 'form-control component_string'
-      .col-sm-4.text-center
-        %button.btn.btn-xs.btn-danger.remove-service-component{ data:  {service: service.id } }
-          %span.glyphicon.glyphicon-remove
+  - if service.components
+    - components = service.components.split(",")
+    - components.each do |component|
+      .form-group
+        .col-sm-8
+          %span= component
+        .col-sm-4.text-center
+          %button.btn.btn-xs.btn-danger.remove-service-component{ data:  {service: service.id, component: component} }
+            %span.glyphicon.glyphicon-remove
 
-.form-group.row
-  .col-sm-8
-    = text_field_tag 'new_component', '', class: 'form-control component_string'
-  .col-sm-4.text-center
-    %button.btn.btn-xs.btn-success.add-service-component{ data: {service: service.id } }
-      %span.glyphicon.glyphicon-plus
-
-
+  .form-group
+    .col-sm-8
+      = text_field_tag 'new_component', '', class: 'form-control component_string'
+    .col-sm-4.text-center
+      %button.btn.btn-xs.btn-success.add-service-component{ data: {service: service.id } }
+        %span.glyphicon.glyphicon-plus

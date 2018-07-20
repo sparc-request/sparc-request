@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FactoryGirl.define do
+FactoryBot.define do
   rate_types = ["federal", "corporate", "member", "other"]
 
 
@@ -34,8 +34,9 @@ FactoryGirl.define do
     industry_rate_type          { rate_types.sample }
     investigator_rate_type      { rate_types.sample }
     internal_rate_type          { rate_types.sample }
-    display_date                Date.parse('2000-01-01')
-    effective_date              Date.parse('2000-01-01')
+    unfunded_rate_type          { rate_types.sample }
+    sequence(:display_date)     {|n| Date.parse('2000-01-01') + n}
+    sequence(:effective_date)   {|n| Date.parse('2000-01-01') + n}
 
     trait :charge_master do
       charge_master true

@@ -21,45 +21,4 @@
 require 'rails_helper'
 
 RSpec.describe CatalogManager::ServicesHelper do
-
-  let(:user)          { double('User') }
-  let(:form_name)     { 'form' }
-  let(:institution)   { double('Institution') }
-  let(:provider)      { double('Provider') }
-  let(:program)       { double('Program') }
-  let(:core)          { double('Provider') }
-
-  before { allow(user).to receive(:can_edit_entity?) { true } }
-
-  describe '#display_service_user_rights' do
-
-
-    it 'should return render form_name if a user has access at the institution level' do
-      expect(helper).to receive(:render).and_return("render #{form_name}")
-      expect(display_service_user_rights(user, form_name, institution)).to eq "render #{form_name}"
-    end
-
-    it 'should return render form_name if a user has access at the provider level' do
-      expect(helper).to receive(:render).and_return("render #{form_name}")
-      expect(display_service_user_rights(user, form_name, provider)).to eq "render #{form_name}"
-    end
-
-    it 'should return render form_name if a user has access at the program level' do
-      expect(helper).to receive(:render).and_return("render #{form_name}")
-      expect(display_service_user_rights(user, form_name, program)).to eq "render #{form_name}"
-    end
-
-    it 'should return render form_name if a user has access at the core level' do
-      expect(helper).to receive(:render).and_return("render #{form_name}")
-      expect(display_service_user_rights(user, form_name, core)).to eq "render #{form_name}"
-    end
-
-    it 'should return a sorry message if a user DOES NOT have access' do
-      allow(user).to receive(:can_edit_entity?).and_return(false)
-
-      expect(self).to receive(:content_tag).with(:h1, 'Sorry, you are not allowed to access this page.').and_return('Sorry, you are not allowed to access this page.')
-      expect(self).to receive(:content_tag).with(:h3, 'Please contact your system administrator.', style: 'color:#999').and_return('Please contact your system administrator.')
-      expect(display_service_user_rights(user, form_name, institution)).to eq "Sorry, you are not allowed to access this page.Please contact your system administrator."
-    end
-  end
 end

@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,7 +22,7 @@ class CatalogManager::CatalogManagersController < CatalogManager::AppController
 
   def create
     @catalog_manager = CatalogManager.new(catalog_manager_params)
-    @identity = Identity.find(@catalog_manager.identity_id)
+    @identity = @catalog_manager.identity
     @organization = @catalog_manager.organization
     @user_rights  = user_rights(@organization.id)
 
@@ -34,12 +34,12 @@ class CatalogManager::CatalogManagersController < CatalogManager::AppController
       end
     end
 
-    render 'catalog_manager/shared/refresh_user_rights_row'
+    render 'catalog_manager/organizations/refresh_user_rights_row'
   end
 
   def destroy
     @catalog_manager = CatalogManager.find_by(catalog_manager_params)
-    @identity = Identity.find(@catalog_manager.identity_id)
+    @identity = @catalog_manager.identity
     @organization = @catalog_manager.organization
     @user_rights  = user_rights(@organization.id)
 
@@ -49,12 +49,12 @@ class CatalogManager::CatalogManagersController < CatalogManager::AppController
       flash[:alert] = "Error removing Catalog Manager."
     end
 
-    render 'catalog_manager/shared/refresh_user_rights_row'
+    render 'catalog_manager/organizations/refresh_user_rights_row'
   end
 
   def update
     @catalog_manager = CatalogManager.find_by(identity_id: catalog_manager_params[:identity_id], organization_id: catalog_manager_params[:organization_id])
-    @identity = Identity.find(@catalog_manager.identity_id)
+    @identity = @catalog_manager.identity
     @organization = @catalog_manager.organization
     @user_rights  = user_rights(@organization.id)
 
@@ -64,7 +64,7 @@ class CatalogManager::CatalogManagersController < CatalogManager::AppController
       flash[:alert] = "Error updating Catalog Manager."
     end
 
-    render 'catalog_manager/shared/refresh_user_rights_row'
+    render 'catalog_manager/organizations/refresh_user_rights_row'
   end
 
   private

@@ -70,7 +70,6 @@ RSpec.describe PricingSetup, type: :model do
     end
 
   describe "create pricing maps" do
-
     let!(:program)       { create(:program) }
     let!(:service)       { create(:service, organization_id: program.id) }
     let!(:pricing_setup) { create(:pricing_setup,
@@ -79,10 +78,12 @@ RSpec.describe PricingSetup, type: :model do
                            effective_date: Time.now) }
 
     it "should return pricing maps with correct effective and display dates" do
-      pricing_setup.create_pricing_maps
+      ##No need for this, 'create_pricing_maps' is ran on pricing_setup.create, so it has already been ran.
+      # pricing_setup.create_pricing_maps
       service.reload
-      expect(service.pricing_maps[1].display_date.to_date).to eq(pricing_setup.display_date.to_date)
-      expect(service.pricing_maps[1].effective_date.to_date).to eq(pricing_setup.effective_date.to_date)
+
+      expect(service.pricing_maps.first.display_date.to_date).to eq(pricing_setup.display_date.to_date)
+      expect(service.pricing_maps.first.effective_date.to_date).to eq(pricing_setup.effective_date.to_date)
     end
 
     it "should return nil if there is no organization" do

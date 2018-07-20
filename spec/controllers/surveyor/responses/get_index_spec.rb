@@ -47,20 +47,11 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
       it 'should assign @type' do
         get :index, params: {
           filterrific: {
-            with_type: 'SystemSurvey'
+            of_type: 'SystemSurvey'
           }
         }, format: :html
 
         expect(assigns(:type)).to eq('Survey')
-      end
-
-      it 'should assign @responses' do
-        @resp = create(:response, survey: create(:system_survey))
-
-        get :index, params: {}, format: :html
-
-        expect(assigns(:responses)).to be_a(ActiveRecord::Relation)
-        expect(assigns(:responses).first).to eq(@resp)
       end
 
       it 'should respond ok' do
@@ -89,20 +80,11 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
       it 'should assign @type' do
         get :index, params: {
           filterrific: {
-            with_type: 'SystemSurvey'
+            of_type: 'SystemSurvey'
           }
         }, format: :js, xhr: true
 
         expect(assigns(:type)).to eq('Survey')
-      end
-
-      it 'should assign @responses' do
-        @resp = create(:response, survey: create(:system_survey))
-
-        get :index, params: {}, format: :js, xhr: true
-
-        expect(assigns(:responses)).to be_a(ActiveRecord::Relation)
-        expect(assigns(:responses).first).to eq(@resp)
       end
 
       it 'should respond ok' do
@@ -131,7 +113,7 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
       it 'should assign @type' do
         get :index, params: {
           filterrific: {
-            with_type: 'SystemSurvey'
+            of_type: 'SystemSurvey'
           }
         }, format: :json
 
@@ -140,6 +122,7 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
 
       it 'should assign @responses' do
         @resp = create(:response, survey: create(:system_survey))
+                create(:question_response, response: @resp)
 
         get :index, params: {}, format: :json
 
@@ -169,9 +152,11 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
       form2 = create(:form, surveyable: org2)
       resp1 = create(:response, identity: logged_in_user, survey: form1)
       resp2 = create(:response, identity: logged_in_user, survey: form2)
+              create(:question_response, response: resp1)
+              create(:question_response, response: resp2)
               create(:super_user, identity: logged_in_user, organization: org1)
 
-      get :index, params: { type: 'Form' }
+      get :index, params: { type: 'Form' }, format: :json
 
       expect(assigns(:responses).count).to eq(1)
       expect(assigns(:responses).first).to eq(resp1)
@@ -181,16 +166,16 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
   context 'user is a site admin' do
     stub_config("site_admins", ['jug2'])
 
-    it 'should assign default with_type for surveys' do
+    it 'should assign default of_type for surveys' do
       get :index, params: {}
 
-      expect(assigns(:filterrific).with_type).to eq('SystemSurvey')
+      expect(assigns(:filterrific).of_type).to eq('SystemSurvey')
     end
 
-    it 'should add Surveys to the with_type select' do
+    it 'should add Surveys to the of_type select' do
       get :index, params: {}
 
-      expect(assigns(:filterrific).select_options[:with_type].first).to eq(['Survey', 'SystemSurvey'])
+      expect(assigns(:filterrific).select_options[:of_type].first).to eq(['Survey', 'SystemSurvey'])
     end
   end
 
@@ -199,16 +184,16 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
       create(:super_user, identity: logged_in_user, organization: create(:organization))
     end
 
-    it 'should assign default with_type for forms' do
+    it 'should assign default of_type for forms' do
       get :index, params: {}
 
-      expect(assigns(:filterrific).with_type).to eq('Form')
+      expect(assigns(:filterrific).of_type).to eq('Form')
     end
 
-    it 'should add Forms to the with_type select' do
+    it 'should add Forms to the of_type select' do
       get :index, params: {}
 
-      expect(assigns(:filterrific).select_options[:with_type].first).to eq(['Form', 'Form'])
+      expect(assigns(:filterrific).select_options[:of_type].first).to eq(['Form', 'Form'])
     end
   end
 
@@ -217,16 +202,16 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
       create(:service_provider, identity: logged_in_user, organization: create(:organization))
     end
 
-    it 'should assign default with_type for forms' do
+    it 'should assign default of_type for forms' do
       get :index, params: {}
 
-      expect(assigns(:filterrific).with_type).to eq('Form')
+      expect(assigns(:filterrific).of_type).to eq('Form')
     end
 
-    it 'should add Forms to the with_type select' do
+    it 'should add Forms to the of_type select' do
       get :index, params: {}
 
-      expect(assigns(:filterrific).select_options[:with_type].first).to eq(['Form', 'Form'])
+      expect(assigns(:filterrific).select_options[:of_type].first).to eq(['Form', 'Form'])
     end
   end
 

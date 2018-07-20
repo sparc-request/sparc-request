@@ -40,7 +40,7 @@ RSpec.describe NotifierLogic do
         ### ADMIN EMAIL ###
         @org2.submission_emails.create(email: 'hedwig@owlpost.com')
         @admin_email = 'hedwig@owlpost.com'
-        service      = create(:service, organization: @org, one_time_fee: true)
+        service      = create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1)
         protocol     = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
@@ -62,17 +62,17 @@ RSpec.describe NotifierLogic do
 
       it 'should not notify authorized users (deletion email)' do
         allow(Notifier).to receive(:notify_user) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver_now)
           mailer
         end
         NotifierLogic.new(@sr, nil, logged_in_user).ssr_deletion_emails(deleted_ssr: @ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
-        expect(Notifier).not_to have_received(:notify_user) 
+        expect(Notifier).not_to have_received(:notify_user)
       end
 
       it 'should notify service providers (deletion email)' do
         allow(Notifier).to receive(:notify_service_provider) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver_now)
           mailer
         end
@@ -83,12 +83,12 @@ RSpec.describe NotifierLogic do
 
       it 'should notify admin (deletion email)' do
         allow(Notifier).to receive(:notify_admin) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver_now)
           mailer
-        end 
-        
-        NotifierLogic.new(@sr, nil, logged_in_user).ssr_deletion_emails(deleted_ssr: @ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false) 
+        end
+
+        NotifierLogic.new(@sr, nil, logged_in_user).ssr_deletion_emails(deleted_ssr: @ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
         expect(Notifier).to have_received(:notify_admin).with(@admin_email, logged_in_user, @ssr, nil, true, false)
       end
     end

@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -31,13 +31,15 @@
             = t(:surveyor)[:responses][:table][:headers][:srid]
           %th{ data: { class: 'short-title col-sm-2', align: 'left', sortable: 'true', field: 'short_title' } }
             = t(:surveyor)[:responses][:table][:headers][:short_title]
-          %th{ data: { class: 'primary-pi col-sm-2', align: 'left', sortable: 'true', field: 'primary_pi' } }
+          %th{ data: { class: 'primary-pi col-sm-1', align: 'left', sortable: 'true', field: 'primary_pi' } }
             = t(:surveyor)[:responses][:table][:headers][:primary_pi]
           %th{ data: { class: 'title col-sm-2', align: 'left', sortable: 'true', field: 'title' } }
             = t('surveyor.responses.table.headers.title', type: type)
-          %th{ data: { class: 'complete col-sm-1', align: 'center', sortable: 'true', field: 'complete' } }
+          %th{ data: { class: 'complete col-sm-1', align: 'center', sortable: 'true', field: 'by' } }
+            = t(:surveyor)[:responses][:table][:headers][:by]
+          %th{ data: { class: 'complete col-sm-1', align: 'center', sortable: 'true', field: 'complete', visible: 'false' } }
             = t(:surveyor)[:responses][:table][:headers][:complete]
           %th{ data: { class: 'completion-date col-sm-1', align: 'left', sortable: 'true', sorter: 'dateSorter', field: 'completion_date' } }
             = t(:surveyor)[:responses][:table][:headers][:date]
-          %th{ data: { class: 'actions col-sm-3', align: 'center', sortable: 'false', field: 'actions' } }
+          %th{ data: { class: 'actions col-sm-2', align: 'center', sortable: 'false', field: 'actions' } }
             = t(:surveyor)[:responses][:table][:headers][:actions]

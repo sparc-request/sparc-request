@@ -30,8 +30,8 @@ RSpec.describe 'User adds a line items visit note', js: true do
     org2      = create(:organization)
                 create(:pricing_setup, organization: org)
                 create(:pricing_setup, organization: org2)
-    service   = create(:service, organization: org, one_time_fee: false, cpt_code: "4015")
-    service2  = create(:service, organization: org2, one_time_fee: false)
+    service   = create(:service, organization: org, one_time_fee: false, cpt_code: "4015", pricing_map_count: 1)
+    service2  = create(:service, organization: org2, one_time_fee: false, pricing_map_count: 1)
 
     protocol  = create(:protocol_federally_funded, primary_pi: jug2)
     @sr       = create(:service_request_without_validations, protocol: protocol)

@@ -46,6 +46,15 @@ class Arm < ApplicationRecord
     write_attribute(:name, name.squish)
   end
 
+  def display_line_items_visits(use_epic, display_all_services)
+    if use_epic
+      # only show the services that are set to be pushed to Epic
+      display_all_services ? line_items_visits.joins(:service).where(services: {send_to_epic: true}) : line_items_visits.joins(:service).where(services: {send_to_epic: true}).joins(:visits).where.not( "research_billing_qty = 0 and insurance_billing_qty = 0 and effort_billing_qty = 0" ).uniq
+    else
+      display_all_services ? line_items_visits : line_items_visits.joins(:visits).where.not( "research_billing_qty = 0 and insurance_billing_qty = 0 and effort_billing_qty = 0" ).uniq
+    end
+  end
+
   def name_formatted_properly
     if !name.blank? && name.match(/\A([ ]*[A-Za-z0-9``~!@#$%^&()\-_+={}|<>.,;'"][ ]*)+\z/).nil?
       errors.add(:name, I18n.t(:errors)[:arms][:bad_characters])
@@ -194,7 +203,7 @@ class Arm < ApplicationRecord
 
   def update_liv_subject_counts
     self.line_items_visits.each do |liv|
-      if liv.subject_count != self.subject_count && liv.line_item.sub_service_request.can_be_edited?
+      if !liv.subject_count.present? && liv.line_item.sub_service_request.can_be_edited?
         liv.update_attributes(subject_count: self.subject_count)
       end
     end

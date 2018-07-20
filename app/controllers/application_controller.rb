@@ -53,20 +53,6 @@ class ApplicationController < ActionController::Base
     current_identity
   end
 
-  def create_calendar_event event
-    all_day = !event.dtstart.to_s.include?("UTC")
-    start_time = Time.parse(event.dtstart.to_s).in_time_zone("Eastern Time (US & Canada)")
-    end_time = Time.parse(event.dtend.to_s).in_time_zone("Eastern Time (US & Canada)")
-    { month: start_time.strftime("%b"),
-      day: start_time.day,
-      title: event.summary,
-      all_day: all_day,
-      start_time: start_time.strftime("%l:%M %p"),
-      end_time: end_time.strftime("%l:%M %p"),
-      where: event.location
-    }
-  end
-
   def rmid_server_status(protocol)
     if Setting.find_by_key("research_master_enabled").value
       @rmid_server_down = protocol.rmid_server_status
@@ -267,7 +253,7 @@ class ApplicationController < ActionController::Base
       @service_request.sub_service_requests.each do |ssr|
         if ssr.is_locked?
           @locked_org_ids << ssr.organization_id
-          @locked_org_ids << ssr.organization.all_children(Organization.all).map(&:id)
+          @locked_org_ids << ssr.organization.all_child_organizations_with_self.map(&:id)
         end
       end
 
@@ -287,5 +273,18 @@ class ApplicationController < ActionController::Base
     else
       redirect_to root_path unless current_user.is_funding_admin?
     end
+  end
+
+  def sanitize_dates(params, field_names)
+    attrs = {}
+    params.each do |k, v|
+      if field_names.include?(k.to_sym)
+        attrs[k] = v.blank? ? v : Date.strptime(v, '%m/%d/%Y')
+      else
+        attrs[k] = v
+      end
+    end
+
+    attrs
   end
 end

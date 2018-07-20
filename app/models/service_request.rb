@@ -405,7 +405,7 @@ class ServiceRequest < ApplicationRecord
   def has_associated_forms?
     self.services.joins(:forms).where(surveys: { active: true }).any? || self.sub_service_requests.joins(organization: :forms).where(surveys: { active: true }).any?
   end
-  
+
   def associated_forms
     forms = []
     # Because there can be multiple SSRs with the same services/organizations we need to loop over each one
@@ -516,7 +516,7 @@ class ServiceRequest < ApplicationRecord
   end
 
   def set_ssr_protocol_id
-    if protocol_id_changed?
+    if saved_change_to_protocol_id?
       sub_service_requests.each do |ssr|
         ssr.update_attributes(protocol_id: protocol_id)
       end

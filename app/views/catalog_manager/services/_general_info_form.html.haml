@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,40 +18,47 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= form_for service, url: catalog_manager_service_path, id: 'service-general-info-form', remote: true do |f|
-  .form-group.row
+= form_for service, url: catalog_manager_service_path(service), html: {class: 'form-horizontal'}, remote: true do |f|
+  #error_place.form-group
+  .form-group
     = f.label :program, t(:catalog_manager)[:organization_form][:program], class: 'col-sm-3 control-label'
     .col-sm-9
-      = f.select :program, options_for_select(@programs.map{|p| [p.name, p.id]}, service.program.id), {}, {class: 'form-control select-type'}
-  .form-group.row
+      = f.select :program, options_for_select(@programs.map{|p| [p.name, p.id]}, service.program.id), {}, {class: 'form-control select-type selectpicker'}
+  .form-group
     = f.label :core, t(:catalog_manager)[:organization_form][:core], class: 'col-sm-3 control-label'
     .col-sm-9
-      = f.select :core, options_for_select(@cores.map{|c| [c.name, c.id]}.insert(0, ['None',0]), (service.core.id if service.core)), {}, {class: 'form-control select-type'}
-  .form-group.row
+      = f.select :core, options_for_select(@cores.map{|c| [c.name, c.id]}.insert(0, ['None',0]), (service.core.id if service.core)), {}, {class: 'form-control select-type selectpicker'}
+  .form-group
     = f.label :name, t(:catalog_manager)[:organization_form][:name], class: 'col-sm-3 control-label'
     .col-sm-9
       = f.text_field :name, { class: 'form-control'}
-  .form-group.row
+  .form-group
     = f.label :abbreviation, t(:catalog_manager)[:organization_form][:abbreviation], class: 'col-sm-3 control-label'
     .col-sm-9
       = f.text_field :abbreviation, { class: 'form-control'}
-  .form-group.row
+  .form-group
     = f.label :description, t(:catalog_manager)[:organization_form][:description], class: 'col-sm-3 control-label'
     .col-sm-9
       = f.text_area :description, { rows: 8, class: 'form-control'}
-  .form-group.row
+  .form-group
     = f.label :order, t(:catalog_manager)[:organization_form][:order], class: 'col-sm-3 control-label'
     .col-sm-9
       = f.text_field :order, { class: 'form-control'}
-  .form-group.row
+  .form-group
     = f.label :one_time_fee, raw(t(:catalog_manager)[:service_form][:one_time_fee]), class: 'col-sm-3 control-label'
     .col-sm-9
-      = f.check_box :one_time_fee, { checked: service.one_time_fee, disabled: (service.line_items_count > 0), data: {toggle: 'toggle', 'data-pricing_map_ids': pricing_map_ids(service)}}
-  .form-group.row
+      = f.check_box :one_time_fee, { checked: service.one_time_fee, disabled: (service.line_items_count > 0), data: {toggle: 'toggle', on: 'Yes', off: 'No'}}
+  .form-group
     = f.label :is_available, t(:catalog_manager)[:organization_form][:disabled], class: 'col-sm-3 control-label'
     .col-sm-9
-      = f.check_box :is_available, { checked: service.is_available, disabled: service.organization ? !service.organization.is_available : false, data: {toggle: 'toggle'}}
-  .form-group.row
+      = f.check_box :is_available, { checked: service.is_available, disabled: (!service.organization.is_available or service.pricing_maps.empty?), data: {toggle: 'toggle', on: 'Yes', off: 'No'}}
+      - if !service.organization.parent.is_available
+        %span{style: "padding-left: 15px;"}
+          = t(:catalog_manager)[:service_form][:org_is_disabled]
+      - elsif service.pricing_maps.empty?
+        %span{style: "padding-left: 15px;"}
+          = t(:catalog_manager)[:service_form][:no_pricing_maps]
+  .form-group
     = f.label :tag_list, t(:catalog_manager)[:organization_form][:tag_list], class: 'col-sm-3 control-label'
     .col-sm-9
       = f.select :tag_list, options_from_collection_for_select(Tag.all, :name, :humanized_name, service.tags.pluck(:name)), {}, class: 'form-control selectpicker', multiple: true, data: { none_selected_text: t(:constants)[:prompts][:none]}

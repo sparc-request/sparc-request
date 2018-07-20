@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2018 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -23,14 +23,15 @@ require 'rails_helper'
 RSpec.describe CatalogManager::SuperUsersController, type: :controller do
 
   before :each do
-    @identity_id = create(:identity).id
+    @identity = create(:identity)
     @organization_id = create(:provider).id
+    log_in_catalog_manager_identity(obj: @identity)
   end
 
   describe '#create' do
     it 'should create a Super User' do
       post :create,
-        params: { super_user: { identity_id: @identity_id, organization_id: @organization_id } },
+        params: { super_user: { identity_id: @identity.id, organization_id: @organization_id } },
         xhr: true
 
       expect(SuperUser.count).to eq(1)
@@ -39,9 +40,9 @@ RSpec.describe CatalogManager::SuperUsersController, type: :controller do
 
   describe '#destroy' do
     it 'should delete an existing Super User' do
-      cm = create(:super_user, identity_id: @identity_id, organization_id: @organization_id)
+      cm = create(:super_user, identity_id: @identity.id, organization_id: @organization_id)
       delete :destroy,
-        params: { super_user: { identity_id: @identity_id, organization_id: @organization_id } },
+        params: { super_user: { identity_id: @identity.id, organization_id: @organization_id } },
         xhr: true
 
       expect(SuperUser.count).to eq(0)

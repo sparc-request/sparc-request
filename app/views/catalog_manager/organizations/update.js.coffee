@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,12 +18,20 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#org-form-container #general-info .panel-body").html("<%= j render '/catalog_manager/shared/general_info_form', user: @user, organization: @organization, path: @path %>")
-
 $("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+$("#org-form-container").html("<%= j render 'form', organization: @organization, user_rights: @user_rights, fulfillment_rights: @fulfillment_rights, path: @path %>")
+
+initialize_user_rights_search();
+initialize_fulfillment_rights_search();
+
+<% if @errors %>
+$("#error_place").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
+$("#org-form-container [data-toggle='toggle']").bootstrapToggle();
+<% else %>
+$('#cm-accordion').replaceWith("<%= j render '/catalog_manager/catalog/accordion', institutions: @institutions, show_available_only: @show_available_only %>")
+$('#availability_toggle_container').html("<%= j render '/catalog_manager/catalog/availability_toggle', show_available_only: @show_available_only %>")
+$("[data-toggle='toggle']").bootstrapToggle();
+<% end %>
 
 $('.selectpicker').selectpicker();
-$("[data-toggle='toggle']").bootstrapToggle(
-    on: 'Yes',
-    off: 'No'
-  );
+$('[data-toggle="tooltip"]').tooltip()

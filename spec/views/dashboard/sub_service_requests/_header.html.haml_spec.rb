@@ -112,7 +112,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
               in_work_fulfillment?: true)
             logged_in_user = build_stubbed(:identity)
             allow(logged_in_user).to receive_messages(unread_notification_count: 12345,
-              clinical_provider_rights?: true)
+              cwf_rights?: true)
             stub_current_user(logged_in_user)
             allow(sub_service_request).to receive(:notes).and_return(["1"])
             allow(sub_service_request).to receive(:is_complete?).and_return(false)
@@ -120,7 +120,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
             render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
 
             expect(response).to have_tag("a", text: "Go to Fulfillment",
-              with: { href: Setting.find_by_key("clinical_work_fulfillment_url").value })
+              with: { href: "#{Setting.find_by_key("clinical_work_fulfillment_url").value}/sub_service_request/#{sub_service_request.id}" })
           end
         end
 
@@ -135,14 +135,14 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
               in_work_fulfillment?: true)
             logged_in_user = build_stubbed(:identity)
             allow(logged_in_user).to receive_messages(unread_notification_count: 12345,
-              clinical_provider_rights?: false)
+              cwf_rights?: false)
             stub_current_user(logged_in_user)
             allow(sub_service_request).to receive(:notes).and_return(["1"])
             allow(sub_service_request).to receive(:is_complete?).and_return(false)
 
             render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
 
-            expect(response).to have_tag("a", text: "In Fulfillment", with: { href: Setting.find_by_key("clinical_work_fulfillment_url").value })
+            expect(response).to have_tag("a", text: "In Fulfillment", with: { href: "#{Setting.find_by_key("clinical_work_fulfillment_url").value}/sub_service_request/#{sub_service_request.id}" })
           end
         end
       end

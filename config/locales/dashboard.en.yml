@@ -59,7 +59,7 @@ en:
       headers:
         current: "Current"
         past: "Past"
-        authorized_user_update: "Authorized User Update"
+        protocol_update: "Protocol Update"
 
     #########
     # FORMS #
@@ -242,8 +242,8 @@ en:
           export_consolidated_request: "Quick access to export all service requests to Excel"
       milestones:
         title: 'Milestones (Timeline)'
-        start_date: "Start Date"
-        end_date: "End Date"
+        start_date: "Estimated Start Date"
+        end_date: "Estimated End Date"
         recruitment_start: "Estimated Recruitment Start Date"
         recruitment_end: "Estimated Recruitment End Date"
         update_button: 'Update Milestones'
@@ -316,17 +316,19 @@ en:
       destroyed: "Non-clinical Services Destroyed!"
       table:
         service: "Service"
-        unit_requested: "Unit Requested"
+        unit_requested: "Units Requested"
         unit_type: "Unit Type"
         quantity_requested: "Qty Requested"
         quantity_type: "Qty Type"
         service_rate: "Service Rate"
         cost: "Your Cost"
+        total: "Total Per Study"
         in_process: "In Process"
         complete: "Complete"
         actions: "Actions"
       form:
         service: "Service:"
+        unit_per_quantity: "Units Requested:"
         quantity_requested: "Quantity Requested:"
         in_process: "In Process Date:"
         complete: "Complete Date:"
@@ -339,7 +341,7 @@ en:
       details:
         header: "Non-clinical Services Details"
         charge_code: "Charge Code"
-        unit_quantity: "Units / Quantity"
+        unit_quantity: "Units Requested"
         unit_type: "Unit Type"
         quantity_requested: "Quantity Requested"
         quantity_type: "Quantity Type"

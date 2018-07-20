@@ -39,7 +39,7 @@ class Survey < ApplicationRecord
   accepts_nested_attributes_for :sections, allow_destroy: true
 
   default_scope -> {
-    order(:display_order)
+    order(:title, :version)
   }
 
   scope :active, -> {
@@ -65,21 +65,47 @@ class Survey < ApplicationRecord
     'Multiple Dropdown': 'multiple_dropdown'
   }
   
-  # Added because version could not be written as an attribute by FactoryGirl. Possible keyword issue?
+  def self.for_dropdown_select(filtered_states=nil)
+    self.all.order(:title).group_by(&:title).map{ |title, surveys|
+      [
+        title,
+        surveys.map{ |survey|
+          [
+            "Version #{survey.version} (#{survey.active ? I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active] : I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]})",
+            survey.id,
+            {
+              disabled: filtered_states && !filtered_states.include?(survey.active ? 1 : 0),
+              data: { active: survey.active ? '1' : '0' }
+            }
+          ]
+        }
+      ]
+    }
+  end
+
+  # Added because version could not be written as an attribute by FactoryBot. Possible keyword issue?
   def version=(v)
     write_attribute(:version, v)
   end
 
-  # Added because version could not be read as an attribute by FactoryGirl. Possible keyword issue?
+  # Added because version could not be read as an attribute by FactoryBot. Possible keyword issue?
   def version
     read_attribute(:version)
   end
 
+  def full_title
+    I18n.t('surveyor.surveys.full_title', title: self.title, version: self.version)
+  end
+
   def insertion_name
-    "Before #{title} (Version #{version})"
+    "Before #{self.full_title}"
   end
 
   def report_title
-    "#{self.title} - Version #{self.version.to_s} #{self.active ? '(Active)' : '(Inactive)'}"
+    "#{self.title} - Version #{self.version.to_s} (#{self.active ? I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active] : I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]})"
+  end
+
+  def has_responses?
+    self.responses.any? ? true : false
   end
 end

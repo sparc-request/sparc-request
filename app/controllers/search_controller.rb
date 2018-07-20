@@ -22,6 +22,21 @@ class SearchController < ApplicationController
   before_action :initialize_service_request, only: [:services]
   before_action :authorize_identity, only: [:services]
 
+  def services_search
+    term = params[:term].strip
+    results = Service.where("is_available=1 AND (name LIKE '%#{term}%' OR abbreviation LIKE '%#{term}%' OR cpt_code LIKE '%#{term}%')").to_a
+
+    results.map!{ |service|
+      {
+        name: service.name,
+        id: service.id,
+        cpt_code: cpt_code_text(service),
+        breadcrumb: breadcrumb_text(service)
+      }
+    }
+    render json: results.to_json
+  end
+
   def services
     term              = params[:term].strip
     locked_org_ids    = @service_request.
@@ -33,7 +48,7 @@ class SearchController < ApplicationController
     results = Service.
                 where("(name LIKE ? OR abbreviation LIKE ? OR cpt_code LIKE ?) AND is_available = 1", "%#{term}%", "%#{term}%", "%#{term}%").
                 where.not(organization_id: locked_org_ids + locked_child_ids).
-                reject { |s| (s.current_pricing_map rescue false) == false } # Why is this here?
+                reject { |s| (s.current_pricing_map rescue false) == false } # Why is this here? ##Agreed, why????
 
     unless @sub_service_request.nil?
       results.reject!{ |s| s.parents.exclude?(@sub_service_request.organization) }
@@ -56,26 +71,26 @@ class SearchController < ApplicationController
 
   def organizations
     term = params[:term].strip
-    if params[:show_available_only] == 'false' #the param name is the opposite of what is currently displayed
+    if params[:show_available_only] == 'true'
       query_available = " AND is_available = 1"
     end
 
     results = Organization.where("(name LIKE ? OR abbreviation LIKE ?)#{query_available}", "%#{term}%", "%#{term}%") +
               Service.where("(name LIKE ? OR abbreviation LIKE ? OR cpt_code LIKE ?)#{query_available}", "%#{term}%", "%#{term}%", "%#{term}%")
 
-    results.map! { |org|
+    results.map! { |item|
       {
-        name: org.name,
-        abbreviation: org.abbreviation,
-        type: org.class.to_s,
-        text_color: "text-#{org.class.to_s.downcase}",
-        cpt_code: cpt_code_text(org),
-        inactive_tag: inactive_text(org),
-        parents: org.parents.reverse.map{ |p| "##{p.class.to_s.downcase}-#{p.id}" },
-        value_selector: "##{org.class.to_s.downcase}-#{org.id}"
+        id: item.id,
+        name: item.name,
+        abbreviation: item.abbreviation,
+        type: item.class.base_class.to_s,
+        text_color: "text-#{item.class.to_s.downcase}",
+        cpt_code: cpt_code_text(item),
+        inactive_tag: inactive_text(item),
+        parents: item.parents.reverse.map{ |p| "##{p.class.to_s.downcase}-#{p.id}" },
+        breadcrumb: breadcrumb_text(item)
       }
     }
-
     render json: results.to_json
   end
 
@@ -93,11 +108,29 @@ class SearchController < ApplicationController
 
   private
 
-  def cpt_code_text(org)
-    text = org.class == Service ? "CPT code: #{org.cpt_code}" : ""
+  def cpt_code_text(item)
+    if item.class == Service
+      if item.cpt_code
+        "CPT Code: #{item.cpt_code.blank? ? 'N/A' : item.cpt_code}"
+      else
+        "CPT Code: N/A"
+      end
+    end
   end
 
-  def inactive_text(org)
-    text = org.is_available ? "" : "(Inactive)"
+  def inactive_text(item)
+    text = item.is_available ? "" : "(Inactive)"
+  end
+
+  def breadcrumb_text(item)
+    if item.parents.any?
+      breadcrumb = []
+      item.parents.reverse.map(&:abbreviation).each do |parent_abbreviation|
+        breadcrumb << "<span>#{parent_abbreviation} </span>"
+        breadcrumb << "<span class='inline-glyphicon glyphicon glyphicon-triangle-right'> </span>"
+      end
+      breadcrumb.pop
+      breadcrumb.join.html_safe
+    end
   end
 end

@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :organization do
     name          { Faker::Lorem.sentence(3) }
@@ -28,6 +28,7 @@ FactoryGirl.define do
     process_ssrs  { false }
     is_available  { true }
     use_default_statuses { true }
+    order         { 1 }
 
     trait :ctrc do
       after(:create) do |organization, evaluator|
@@ -117,6 +118,7 @@ FactoryGirl.define do
     process_ssrs  { false }
     is_available  { true }
     use_default_statuses { true }
+    order         { 1 }
 
     trait :disabled do
       is_available false
@@ -150,6 +152,7 @@ FactoryGirl.define do
     process_ssrs  { false }
     is_available  { true }
     use_default_statuses { true }
+    order         { 1 }
 
     trait :process_ssrs do
       process_ssrs true
@@ -202,6 +205,7 @@ FactoryGirl.define do
     process_ssrs  { false }
     is_available  { true }
     use_default_statuses { true }
+    order         { 1 }
 
     trait :process_ssrs do
       process_ssrs true
@@ -271,6 +275,7 @@ FactoryGirl.define do
     process_ssrs  { false }
     is_available  { true }
     use_default_statuses { true }
+    order         { 1 }
 
     trait :process_ssrs do
       process_ssrs true

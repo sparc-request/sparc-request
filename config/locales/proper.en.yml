@@ -102,14 +102,14 @@ en:
       enter_dates_instructions: "Used for Study/Project metric tracking"
       arm_information_notice: "Arm Information"
       arm_information_instructions: "Used to build your Calendar Structure"
-      start_date: "Start Date"
-      end_date: "End Date"
+      start_date: "Estimated Start Date"
+      end_date: "Estimated End Date"
       recruitment_start: "Estimated Recruitment Start Date"
       recruitment_end: "Estimated Recruitment End Date"
       initial_budget_sponsor_received_date: "Initial Budget Sponsor Received Date"
       budget_agreed_upon_date: 'Budget Agreed Upon Date'
       initial_amount_clinical_services: 'Initial Amount Per Patient'
-      initial_amount_non_clinical_services: 'Initial Site Level Account Offered'
+      initial_amount_non_clinical_services: 'Initial Site Level Amount Offered'
       negotiated_amount_clinical_services: 'Negotiated Amount Per Patient'
       negotiated_amount_non_clinical_services: 'Negotiated Site Level Amount'
       tooltips:
@@ -285,3 +285,22 @@ en:
         message: "Message:"
         submitted: "Message sent successfully!"
       ctrc_lock: "SCTR Research Nexus services are already present on this request (%{protocol_id}-%{ssr_id}) pertaining to this %{protocol_type}, '%{short_title}'. Please call (843) 792-8688 to edit the existing request."
+      #### short_interaction ####
+      short_interaction:
+        header: "Short Interaction"
+        subject: "Subject of Interaction:*"
+        subject_select: " - Select Category - "
+        type: "Type of Interaction:* "
+        type_select: "- Select Type -"
+        duration: "Duration (in minutes):*"
+        duration_placeholder: "Enter an integer"
+        institution: "Investigator Institution:*"
+        institution_select: " - Select Institution - "
+        investigator_email: "Email:*"
+        investigator_email_placeholder: "Investigator's Email"
+        investigator_name: "Name:*"
+        investigator_name_placeholder: "Investigator's Name"
+        note: "Note:"
+        subject: "Subject of Interaction:* "
+        title: "Short Interaction"
+        submitted: "Interaction saved successfully!"

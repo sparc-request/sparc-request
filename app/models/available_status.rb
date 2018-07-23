@@ -32,11 +32,11 @@ class AvailableStatus < ApplicationRecord
   end
 
   def self.statuses
-    @statuses ||= PermissibleValue.get_hash('status')
+    @statuses ||= PermissibleValue.order(:sort_order).get_hash('status')
   end
 
   def self.defaults
-    @defaults ||= PermissibleValue.get_key_list('status', true)
+    @defaults ||= PermissibleValue.order(:sort_order).get_key_list('status', true)
   end
 
   def humanize

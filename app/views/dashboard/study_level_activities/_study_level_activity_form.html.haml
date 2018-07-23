@@ -37,7 +37,7 @@
               = form.label "service", t(:dashboard)[:study_level_activities][:form][:service], class: "col-sm-4 control-label required"
               .col-sm-7
                 = sla_form_services_select(form, line_item)
-            - if line_item.otf_unit_type != 'N/A'
+            - if !line_item.new_record? && line_item.otf_unit_type != 'N/A'
               .form-group
                 = form.label "units_per_quantity", t(:dashboard)[:study_level_activities][:form][:unit_per_quantity], class: "col-sm-4 control-label required"
                 .col-sm-7

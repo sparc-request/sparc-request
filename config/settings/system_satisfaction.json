@@ -3,7 +3,7 @@
     "key":            "system_satisfaction_survey",
     "value":          "false",
     "friendly_name":  "Use System Satisfaction Survey",
-    "description":    "Determines whether or not to display a System Satisfaction Survey prior to submitting a Service Request.",
+    "description":    "This determines whether the application will prompt users to fill out a system satisfaction survey prior to submitting a service request.",
     "group":          "",
     "version":        "",
     "parent_key":     "",

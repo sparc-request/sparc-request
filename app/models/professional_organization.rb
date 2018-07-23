@@ -25,6 +25,22 @@ class ProfessionalOrganization < ApplicationRecord
 
   belongs_to :parent, class_name: "ProfessionalOrganization"
 
+  scope :institutions, -> {
+    where(org_type: 'institution')
+  }
+
+  scope :colleges, -> {
+    where(org_type: 'college')
+  }
+
+  scope :departments, -> {
+    where(org_type: 'department')
+  }
+
+  scope :divisions, -> {
+    where(org_type: 'division')
+  }
+
   # Returns collection like [greatgrandparent, grandparent, parent].
   def parents
     parent ? (parent.parents + [parent]) : []

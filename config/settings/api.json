@@ -3,7 +3,7 @@
     "key":            "current_api_version",
     "value":          "v1",
     "friendly_name":  "Current API Version",
-    "description":    "The current version of the SPARCRequest API.",
+    "description":    "This is the current version of the SPARCRequest API.",
     "group":          "",
     "version":        "",
     "parent_key":     "",

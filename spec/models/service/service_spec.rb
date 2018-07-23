@@ -277,7 +277,7 @@ RSpec.describe Service, type: :model do
   describe "get rate maps" do
 
     let!(:core) { create(:core) }
-    let!(:service) { create(:service, organization_id: core.id) }
+    let!(:service) { create(:service, organization_id: core.id, pricing_map_count: 1) }
     let!(:pricing_map) { service.pricing_maps[0] }
     let!(:pricing_setup) { create(:pricing_setup, display_date: Date.today - 1, effective_date: Date.today - 1, federal: 25,
                            corporate: 25, other: 25, member: 25, organization_id: core.id)}

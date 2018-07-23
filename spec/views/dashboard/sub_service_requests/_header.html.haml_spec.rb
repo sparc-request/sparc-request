@@ -43,7 +43,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
 
       expect(response).to have_tag("select#sub_service_request_status") do
         with_option("Draft")
-        with_option("NotDraft")
+        with_option("Invoiced")
       end
     end
   end
@@ -254,7 +254,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
   end
 
   def stub_organization(opts = {})
-    default_statuses = { "draft" => "Draft", "not_draft" => "NotDraft" }
+    default_statuses = { "draft" => "Draft", "invoiced" => "Invoiced" }
     instance_double(Organization,
       name: "MegaCorp",
       abbreviation: "MC",

@@ -159,8 +159,6 @@ en:
       hospital_based_services: "Hospital Based Services"
       is_ctrc: "Is CTRC?"
       name: "Name"
-      # new_cm: "New Catalog Manager"
-      # new_sp: "New Service Provider"
       one_time_fee: "One Time Fee"
       order: "Order"
       otf_field_errors: "If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required."
@@ -174,7 +172,6 @@ en:
       service_error: "There are no service providers anywhere on this tree."
       service_level_components: "Service Level Components (for SPARCFulfillment)"
       service_provider_required_message: "You must have at least one service provider either at the provider, program, or core level"
-      # service_providers: "Service Providers"
       split_notify: "Split/Notify Here"
       status_legend: "Status Options (Use default statuses below or click to create custom service request statuses)"
       submit_button: "Save"
@@ -194,6 +191,7 @@ en:
     service_form:
       not_authorized: "You do not have authorization to edit this Service."
       one_time_fee: "Non-clinical (Non-Per </br> Patient/Visit) Services"
+      new_one_time_fee: "One Time Fee / Clinical"
       component: "Component"
       remove_add: "Remove / Add"
       add_component: "Add new component"
@@ -220,20 +218,3 @@ en:
         rate_disclaimer: "*IF N/A, NO PRICING SET-UP IS DEFINED FOR THE CURRENT DATES"
         change_override_alert: "Changing this value will override the pre-calculated rate for this service."
         no_pricing_setups: "There must be a pricing setup defined in order to add a pricing map."
-        # corporate_rate: "Corporate Rate"
-        #
-        # federal_rate: "Federal Rate"
-        # is_one_time_fee: "Is One Time Fee"
-        # member_rate: "Member Rate"
-        # one_time_fee: "One Time Fee"
-        #
-        #
-        # other_rate: "Other Rate"
-        # per_patient: "Per Patient"
-        #
-        #
-        # rates: "Rates"
-        #
-
-        #
-        #

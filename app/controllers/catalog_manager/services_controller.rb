@@ -206,9 +206,6 @@ class CatalogManager::ServicesController < CatalogManager::AppController
         :line_items_count,
         :one_time_fee,
         :components)
-      #if !temp[:tag_list]
-        #temp[:tag_list] = ""
-      #end
       temp
     end
   end

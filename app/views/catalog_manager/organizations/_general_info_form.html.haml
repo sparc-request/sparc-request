@@ -62,7 +62,7 @@
           = disabled_parent(@organization)
 
   - if organization.services.any?
-    .form-group#enable-all-services{ class: organization.is_available? ? '' : 'hidden' }
+    .form-group.multi_toggle{ class: organization.is_available? ? '' : 'hidden' }
       = label_tag 'all_services_availability', t(:catalog_manager)[:organization_form][:all_services_availability], class: 'col-sm-3 control-label'
       .col-sm-9
         .btn-group{ role: 'group', data: { toggle: 'labels' } }

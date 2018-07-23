@@ -32,7 +32,7 @@ class Surveyor::BaseController < ApplicationController
   def current_user
     current_identity
   end
-
+  
   def authorize_survey_builder_access
     # If SystemSurvey-specific actions, verify the user is a Site Admin
     if params[:type] && params[:type] == 'SystemSurvey' && !user_has_survey_access?
@@ -51,7 +51,7 @@ class Surveyor::BaseController < ApplicationController
 
   def user_has_form_access?
     if params[:type] == 'Form' && params[:id]
-      Form.for(current_user).ids.include?(params[:id])
+      Form.for(current_user).where(id: params[:id]).any?
     else
       current_user.is_super_user? || current_user.is_service_provider? || current_user.is_catalog_manager?
     end

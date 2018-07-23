@@ -61,6 +61,7 @@ class Service < ApplicationRecord
             :order,
             presence: true, on: :update
   validates :name, presence: true
+  validate  :one_time_fee_choice
   validates :order, numericality: { only_integer: true }, on: :update
 
   # Services listed under the funding organizations
@@ -339,5 +340,11 @@ class Service < ApplicationRecord
   end
 
   private
+
+  def one_time_fee_choice
+    if one_time_fee.nil?
+      errors[:base] << "You must choose either One Time Fee, or Clinical Service."
+    end
+  end
 
 end

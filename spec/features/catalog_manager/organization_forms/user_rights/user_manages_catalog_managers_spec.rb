@@ -28,13 +28,14 @@ RSpec.describe 'User manages Catalog Managers', js: true do
     @institution = create(:institution)
     @provider = create(:provider, parent_id: @institution.id)
     @identity    = create(:identity)
+    create(:catalog_manager, organization_id: @institution.id, identity_id: Identity.where(ldap_uid: "jug2").first.id)
   end
 
   context 'on a Provider' do
     context 'and the identity is already a Catalog Manager' do
       context 'with edit historic data access' do
         before :each do
-          @super_user  = create(:catalog_manager, identity: @identity, organization: @provider, edit_historic_data: true)
+          @catalog_manager = create(:catalog_manager, identity: @identity, organization: @provider, edit_historic_data: true)
 
           visit catalog_manager_catalog_index_path
           wait_for_javascript_to_finish
@@ -48,22 +49,11 @@ RSpec.describe 'User manages Catalog Managers', js: true do
           wait_for_javascript_to_finish
         end
 
-        # Move to View Spec
-        # it 'should see the identity\'s Catalog Manager checkbox checked' do
-        #   expect(page).to have_selector('#catalog_manager:checked')
-        # end
-
-        # it 'should see the edit historic data checked' do
-        #   expect(page).to have_selector('.cm-edit-historic-data:checked')
-        # end
-
         it 'should delete the Catalog Manager for the identity' do
           find('#catalog_manager').click
           wait_for_javascript_to_finish
 
           expect(CatalogManager.where(identity_id: @identity.id, organization_id: @provider.id).count).to eq(0)
-          expect(page).to have_selector('.cm-edit-historic-data:not(:checked)')
-          expect(page).to have_selector('.cm-edit-historic-data:disabled')
         end
 
         it 'should remove edit historic data access' do
@@ -76,7 +66,7 @@ RSpec.describe 'User manages Catalog Managers', js: true do
 
       context 'without edit historic data access' do
         before :each do
-          @super_user  = create(:catalog_manager, identity: @identity, organization: @provider, edit_historic_data: false)
+          @catalog_manager  = create(:catalog_manager, identity: @identity, organization: @provider, edit_historic_data: false)
 
           visit catalog_manager_catalog_index_path
           wait_for_javascript_to_finish
@@ -90,22 +80,11 @@ RSpec.describe 'User manages Catalog Managers', js: true do
           wait_for_javascript_to_finish
         end
 
-        # Move to view spec
-        # it 'should see the identity\'s Catalog Manager checkbox checked' do
-        #   expect(page).to have_selector('#catalog_manager:checked')
-        # end
-
-        # it 'should see the edit historic data is uchecked' do
-        #   expect(page).to have_selector('.cm-edit-historic-data:not(:checked)')
-        # end
-
         it 'should delete the Catalog Manager for the identity' do
           find('#catalog_manager').click
           wait_for_javascript_to_finish
 
           expect(CatalogManager.where(identity_id: @identity.id, organization_id: @provider.id).count).to eq(0)
-          expect(page).to have_selector('.cm-edit-historic-data:not(:checked)')
-          expect(page).to have_selector('.cm-edit-historic-data:disabled')
         end
 
         it 'should add edit historic data access' do
@@ -132,19 +111,6 @@ RSpec.describe 'User manages Catalog Managers', js: true do
         click_link 'User Rights'
         wait_for_javascript_to_finish
       end
-
-      # Move to view spec
-      # it 'should see the identity\'s Catalog Manager checkbox is unchecked' do
-      #   expect(page).to have_selector('#catalog_manager:not(:checked)')
-      # end
-
-      # it 'should see the edit historic data is uchecked' do
-      #   expect(page).to have_selector('.cm-edit-historic-data:not(:checked)')
-      # end
-
-      # it 'should see the edit historic data is disabled' do
-      #   expect(page).to have_selector('.cm-edit-historic-data:disabled')
-      # end
 
       it 'should create a Catalog Manager for the identity' do
         find('#catalog_manager').click

@@ -28,11 +28,12 @@ RSpec.describe 'User manages Super Users', js: true do
     @institution = create(:institution)
     @provider = create(:provider, parent_id: @institution.id)
     @identity    = create(:identity)
+    create(:catalog_manager, organization_id: @institution.id, identity_id: Identity.where(ldap_uid: "jug2").first.id)
   end
 
   context 'and the identity is already a Super User' do
     before :each do
-      @super_user  = create(:super_user, identity: @identity, organization: @provider)
+      @super_user = create(:super_user, identity: @identity, organization: @provider)
 
       visit catalog_manager_catalog_index_path
       wait_for_javascript_to_finish
@@ -45,11 +46,6 @@ RSpec.describe 'User manages Super Users', js: true do
       click_link 'User Rights'
       wait_for_javascript_to_finish
     end
-
-    # Move to view spec
-    # it 'should see the identity\'s Super User checkbox checked' do
-    #   expect(page).to have_selector('#super_user:checked')
-    # end
 
     it 'should delete the Super User for the identity' do
       find('#super_user').click
@@ -74,11 +70,6 @@ RSpec.describe 'User manages Super Users', js: true do
       click_link 'User Rights'
       wait_for_javascript_to_finish
     end
-
-    # Move to view spec
-    # it 'should see the identity\'s Super User checkbox is unchecked' do
-    #   expect(page).to have_selector('#super_user:not(:checked)')
-    # end
 
     it 'should create a Super User for the identity' do
       find('#super_user').click

@@ -26,17 +26,18 @@ RSpec.describe 'User manages Catalog Managers', js: true do
 
   before :each do
     @institution = create(:institution)
-    @provider = create(:provider, parent_id: @institution.id)
+    @provider = create(:provider, parent_id: @institution.id, process_ssrs: true)
     @program  = create(:program, parent_id: @provider.id)
     @core     = create(:core, parent_id: @program.id)
     @identity    = create(:identity)
+    create(:catalog_manager, organization_id: @institution.id, identity_id: Identity.where(ldap_uid: "jug2").first.id)
   end
 
   context 'and the identity is already a Service Provider' do
     context 'with primary contact' do
       before :each do
         @identity    = create(:identity)
-        @super_user  = create(:service_provider, identity: @identity, organization: @provider, is_primary_contact: true)
+        @service_provider = create(:service_provider, identity: @identity, organization: @provider, is_primary_contact: true)
 
         visit catalog_manager_catalog_index_path
         wait_for_javascript_to_finish
@@ -55,8 +56,6 @@ RSpec.describe 'User manages Catalog Managers', js: true do
         wait_for_javascript_to_finish
 
         expect(ServiceProvider.where(identity_id: @identity.id, organization_id: @provider.id).count).to eq(0)
-        expect(page).to have_selector('.sp-is-primary-contact:not(:checked)')
-        expect(page).to have_selector('.sp-is-primary-contact:disabled')
       end
 
       it 'should remove edit historic data access' do
@@ -76,7 +75,7 @@ RSpec.describe 'User manages Catalog Managers', js: true do
 
     context 'with hold emails' do
       before :each do
-        @super_user  = create(:service_provider, identity: @identity, organization: @provider, hold_emails: true)
+        @service_provider = create(:service_provider, identity: @identity, organization: @provider, hold_emails: true)
 
         visit catalog_manager_catalog_index_path
         wait_for_javascript_to_finish
@@ -95,8 +94,6 @@ RSpec.describe 'User manages Catalog Managers', js: true do
         wait_for_javascript_to_finish
 
         expect(ServiceProvider.where(identity_id: @identity.id, organization_id: @provider.id).count).to eq(0)
-        expect(page).to have_selector('.sp-hold-emails:not(:checked)')
-        expect(page).to have_selector('.sp-hold-emails:disabled')
       end
 
       it 'should add edit historic data access' do

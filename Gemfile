@@ -35,7 +35,7 @@ gem 'grouped_validations', :git => 'https://github.com/jleonardw9/grouped_valida
 gem 'gyoku'
 gem 'haml'
 gem 'hashie-forbidden_attributes'
-gem 'httparty', '~> 0.13.7'
+gem 'httparty', '~> 0.16.2'
 gem 'icalendar'
 gem 'icalendar-recurrence'
 gem 'jquery_datepicker'

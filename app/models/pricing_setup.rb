@@ -23,8 +23,6 @@ class PricingSetup < ApplicationRecord
 
   belongs_to :organization
 
-  after_create :create_pricing_maps
-
   validates :display_date, :effective_date, :federal, :corporate, :other, :member, :college_rate_type,
             :foundation_rate_type, :industry_rate_type, :investigator_rate_type,
             :internal_rate_type, :foundation_rate_type, :unfunded_rate_type, presence: true
@@ -61,36 +59,6 @@ class PricingSetup < ApplicationRecord
     applied_percentage = applied_percentage / 100.0 rescue nil
 
     return applied_percentage || 1.0
-  end
-
-  def create_pricing_maps
-    # If there is no organization, then there are no pricing maps
-    return if self.organization.nil?
-
-    self.organization.all_child_services.each do |service|
-      current_map = nil
-      begin
-        effective_pricing_map = service.effective_pricing_map_for_date(self.effective_date).attributes
-
-        ## Deleting the attributes to prevent mass-assignment errors.
-        effective_pricing_map.delete('id')
-        effective_pricing_map.delete('created_at')
-        effective_pricing_map.delete('updated_at')
-        effective_pricing_map.delete('deleted_at')
-
-        current_map = PricingMap.new(effective_pricing_map)
-      rescue
-        current_map = service.pricing_maps.build
-        current_map.full_rate = 0
-        current_map.unit_factor = 1
-        current_map.unit_minimum = 1
-        current_map.unit_type = "Each"
-      end
-
-      current_map.effective_date = self.effective_date.to_date
-      current_map.display_date = self.display_date.to_date
-      current_map.save
-    end
   end
 
   ##Checks user rights for given user, to be allowed to access historical pricing setups

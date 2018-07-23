@@ -19,14 +19,19 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $ ->
+
   ##############################################
-  ###         Organization General Info      ###
+  ###                Multi-Use               ###
   ##############################################
 
-  $(document).on 'click', '#enable-all-services label', ->
+  $(document).on 'click', '.multi_toggle label', ->
     $(this).addClass('active')
     $(this).children('input').prop('checked')
     $(this).siblings('.active').removeClass('active')
+
+  ##############################################
+  ###         Organization General Info      ###
+  ##############################################
 
   $(document).on 'click', '#display-in-sparc .toggle', ->
     if $(this).find("[id*='_is_available']").prop('checked')
@@ -402,7 +407,6 @@ $ ->
           full_rate: full_rate
           display_date: display_date
           service_id: service_id
-
 
   $(document).on 'submit', '#pricing_map_modal form', ->
     $('#pricing_map_modal .modal-footer .btn-primary').attr('disabled','disabled')

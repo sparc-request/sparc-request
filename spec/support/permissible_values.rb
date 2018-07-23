@@ -29,6 +29,7 @@ def populate_permissible_values_before_suite
     build_user_credentials
     build_document_types
     build_funding_statuses
+    build_short_interactions
   end
 end
 
@@ -142,4 +143,12 @@ end
 def build_funding_statuses
   FactoryBot.create(:permissible_value, category: 'funding_status', key: 'pending_funding', value: 'Pending Funding')
   FactoryBot.create(:permissible_value, category: 'funding_status', key: 'funded', value: 'Funded')
+end
+
+def build_short_interactions
+  FactoryBot.create(:permissible_value, category: 'interaction_type', key: 'phone', value: 'Telephone')
+  FactoryBot.create(:permissible_value, category: 'interaction_type', key: 'email', value: 'Email')
+  FactoryBot.create(:permissible_value, category: 'interaction_type', key: 'in_person', value: 'In-Person')
+  FactoryBot.create(:permissible_value, category: 'interaction_subject', key: 'general_question', value: 'General Questionn')
+  FactoryBot.create(:permissible_value, category: 'institution', key: 'other', value: 'Other')
 end

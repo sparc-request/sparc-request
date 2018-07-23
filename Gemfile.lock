@@ -326,7 +326,7 @@ GEM
     msgpack (1.2.4)
     multi_json (1.13.1)
     multi_xml (0.6.0)
-    mysql2 (0.5.1)
+    mysql2 (0.5.2)
     nested_form (0.3.2)
     nested_form_fields (0.8.2)
       coffee-rails (>= 3.2.1)
@@ -643,7 +643,7 @@ DEPENDENCIES
   launchy
   letter_opener
   momentjs-rails (>= 2.8.1)
-  mysql2 (~> 0.4)
+  mysql2 (~> 0.5)
   nested_form
   nested_form_fields
   net-ldap (~> 0.16.0)

@@ -277,7 +277,8 @@ module Dashboard::SubServiceRequestsHelper
   private
 
   def statuses_with_classes(ssr)
-    ssr.organization.get_available_statuses.invert.map do |status|
+    
+    sorted_by_permissible_values(ssr.organization.get_available_statuses).invert.map do |status|
       if in_finished_status?(status)
         status.push(:class=> 'finished-status')
       else
@@ -288,7 +289,7 @@ module Dashboard::SubServiceRequestsHelper
 
   def finished_statuses(ssr)
     new_statuses = []
-    ssr.organization.get_available_statuses.invert.map do |status|
+    sorted_by_permissible_values(ssr.organization.get_available_statuses).invert.map do |status|
       if in_finished_status?(status)
         new_statuses << status
       end
@@ -301,6 +302,18 @@ module Dashboard::SubServiceRequestsHelper
 
   def in_finished_status?(status)
     Setting.find_by_key("finished_statuses").value.include?(status.last)
+  end
+
+  def sorted_by_permissible_values(statuses)
+    values = PermissibleValue.order(:sort_order).get_hash('status')
+    sorted_hash = {}
+    values.each do |k, v|
+      if statuses.has_key?(k)
+        sorted_hash[k] = v
+      end
+    end
+
+    sorted_hash
   end
 end
 

@@ -26,4 +26,6 @@
   = feedback_helper
   = render 'service_requests/right_navigation/feedback_modal'
 = link_to t(:proper)[:right_navigation][:contact][:header], new_contact_form_path, remote: true, class: 'btn btn-primary btn-lg btn-block contact-us-button no-margin-x'
+- if Setting.find_by_key("use_short_interaction") && Setting.find_by_key("use_short_interaction").value && current_user && current_user.is_service_provider?
+  = link_to t(:proper)[:right_navigation][:short_interaction][:header], new_short_interaction_path, remote: true, class: 'btn btn-primary btn-lg btn-block short-interaction-button no-margin-x'
 

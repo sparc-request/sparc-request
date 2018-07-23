@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2016 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -18,6 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-$(document).ready ->
-  $(document). on 'click', '.likert-group:not(.disabled) .likert-option', ->
-    $(this).find('input').prop('checked', true)
+$('#modal_place').html("<%= escape_javascript(render( 'service_requests/right_navigation/short_interaction_modal', short_interaction: @short_interaction, identity: @identity )) %>")
+$("#modal_place").modal 'show'
+set_required_fields()

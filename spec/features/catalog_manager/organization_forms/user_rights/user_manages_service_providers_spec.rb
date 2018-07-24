@@ -119,6 +119,7 @@ RSpec.describe 'User manages Catalog Managers', js: true do
       visit catalog_manager_catalog_index_path
       wait_for_javascript_to_finish
 
+      save_and_open_screenshot
       find("#institution-#{@institution.id}").click
       wait_for_javascript_to_finish
       click_link @provider.name

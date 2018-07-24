@@ -39,7 +39,6 @@ RSpec.describe 'User manages Catalog Managers', js: true do
 
           visit catalog_manager_catalog_index_path
           wait_for_javascript_to_finish
-          sleep 10
           find("#institution-#{@institution.id}").click
           wait_for_javascript_to_finish
           click_link @provider.name
@@ -70,7 +69,6 @@ RSpec.describe 'User manages Catalog Managers', js: true do
 
           visit catalog_manager_catalog_index_path
           wait_for_javascript_to_finish
-          sleep 10
           find("#institution-#{@institution.id}").click
           wait_for_javascript_to_finish
           click_link @provider.name
@@ -102,7 +100,6 @@ RSpec.describe 'User manages Catalog Managers', js: true do
 
         visit catalog_manager_catalog_index_path
         wait_for_javascript_to_finish
-        sleep 10
         find("#institution-#{@institution.id}").click
         wait_for_javascript_to_finish
         click_link @provider.name

@@ -28,18 +28,18 @@ RSpec.describe 'User manages Catalog Managers', js: true do
     @institution = create(:institution)
     @provider = create(:provider, parent_id: @institution.id)
     @identity    = create(:identity)
-    create(:catalog_manager, organization_id: @institution.id, identity_id: Identity.where(ldap_uid: "jug2").first.id)
+    create(:catalog_manager, organization_id: @institution.id, identity_id: Identity.where(ldap_uid: 'jug2').first.id)
   end
 
   context 'on a Provider' do
     context 'and the identity is already a Catalog Manager' do
       context 'with edit historic data access' do
         before :each do
-          @catalog_manager = create(:catalog_manager, identity: @identity, organization: @provider, edit_historic_data: true)
+          create(:catalog_manager, identity: @identity, organization: @provider, edit_historic_data: true)
 
           visit catalog_manager_catalog_index_path
           wait_for_javascript_to_finish
-
+          sleep 10
           find("#institution-#{@institution.id}").click
           wait_for_javascript_to_finish
           click_link @provider.name
@@ -66,11 +66,11 @@ RSpec.describe 'User manages Catalog Managers', js: true do
 
       context 'without edit historic data access' do
         before :each do
-          @catalog_manager  = create(:catalog_manager, identity: @identity, organization: @provider, edit_historic_data: false)
+          create(:catalog_manager, identity: @identity, organization: @provider, edit_historic_data: false)
 
           visit catalog_manager_catalog_index_path
           wait_for_javascript_to_finish
-
+          sleep 10
           find("#institution-#{@institution.id}").click
           wait_for_javascript_to_finish
           click_link @provider.name
@@ -102,7 +102,7 @@ RSpec.describe 'User manages Catalog Managers', js: true do
 
         visit catalog_manager_catalog_index_path
         wait_for_javascript_to_finish
-
+        sleep 10
         find("#institution-#{@institution.id}").click
         wait_for_javascript_to_finish
         click_link @provider.name

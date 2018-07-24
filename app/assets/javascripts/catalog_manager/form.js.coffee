@@ -49,8 +49,7 @@ $ ->
 
     $.ajax
       type: if $(this).prop('checked') then 'POST' else 'DELETE'
-      url: "/catalog_manager/super_user?super_user[identity_id]=#{identity_id}
-                                        &super_user[organization_id]=#{organization_id}"
+      url: "/catalog_manager/super_user?super_user[identity_id]=#{identity_id}&super_user[organization_id]=#{organization_id}"
 
 
   $(document).on 'change', '.catalog-manager-checkbox', ->
@@ -60,8 +59,7 @@ $ ->
 
     $.ajax
       type: if checked then 'POST' else 'DELETE'
-      url: "/catalog_manager/catalog_manager?catalog_manager[identity_id]=#{identity_id}
-                                            &catalog_manager[organization_id]=#{organization_id}"
+      url: "/catalog_manager/catalog_manager?catalog_manager[identity_id]=#{identity_id}&catalog_manager[organization_id]=#{organization_id}"
 
       success: ->
         $("#cm-edit-historic-data-#{identity_id}").prop('disabled', !checked)
@@ -75,8 +73,7 @@ $ ->
 
     $.ajax
       type: if checked then 'POST' else 'DELETE'
-      url: "/catalog_manager/service_provider?service_provider[identity_id]=#{identity_id}
-                                            &service_provider[organization_id]=#{organization_id}"
+      url: "/catalog_manager/service_provider?service_provider[identity_id]=#{identity_id}&service_provider[organization_id]=#{organization_id}"
 
       success: ->
         $("#sp-is-primary-contact-#{identity_id}").prop('disabled', !checked)
@@ -92,9 +89,7 @@ $ ->
 
     $.ajax
       type: 'PUT'
-      url: "/catalog_manager/catalog_manager?catalog_manager[identity_id]=#{identity_id}
-                                            &catalog_manager[organization_id]=#{organization_id}
-                                            &catalog_manager[edit_historic_data]=#{edit_historic_data}"
+      url: "/catalog_manager/catalog_manager?catalog_manager[identity_id]=#{identity_id}&catalog_manager[organization_id]=#{organization_id}&catalog_manager[edit_historic_data]=#{edit_historic_data}"
 
 
   $(document).on 'change', '.sp-is-primary-contact', ->
@@ -104,9 +99,7 @@ $ ->
 
     $.ajax
       type: 'PUT'
-      url: "/catalog_manager/service_provider?service_provider[identity_id]=#{identity_id}
-                                             &service_provider[organization_id]=#{organization_id}
-                                             &service_provider[is_primary_contact]=#{is_primary_contact}"
+      url: "/catalog_manager/service_provider?service_provider[identity_id]=#{identity_id}&service_provider[organization_id]=#{organization_id}&service_provider[is_primary_contact]=#{is_primary_contact}"
 
   $(document).on 'change', '.sp-hold-emails', ->
     identity_id = $(this).data('identity-id')
@@ -115,9 +108,7 @@ $ ->
 
     $.ajax
       type: 'PUT'
-      url: "/catalog_manager/service_provider?service_provider[identity_id]=#{identity_id}
-                                             &service_provider[organization_id]=#{organization_id}
-                                             &service_provider[hold_emails]=#{hold_emails}"
+      url: "/catalog_manager/service_provider?service_provider[identity_id]=#{identity_id}&service_provider[organization_id]=#{organization_id}&service_provider[hold_emails]=#{hold_emails}"
 
   $(document).on 'click', '.remove-user-rights', (event) ->
     event.preventDefault()
@@ -175,8 +166,7 @@ $ ->
     organization_id = $(this).data('organization-id')
     $.ajax
       type: if $(this).prop('checked') then 'POST' else 'DELETE'
-      url: "/catalog_manager/clinical_provider?clinical_provider[identity_id]=#{identity_id}
-                                              &clinical_provider[organization_id]=#{organization_id}"
+      url: "/catalog_manager/clinical_provider?clinical_provider[identity_id]=#{identity_id}&clinical_provider[organization_id]=#{organization_id}"
 
 
   $(document).on 'click', '.remove-fulfillment-rights', (event) ->

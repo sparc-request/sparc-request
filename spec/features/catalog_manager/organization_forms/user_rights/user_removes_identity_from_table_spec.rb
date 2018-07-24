@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User manages Clinical Providers', js: true do
+RSpec.describe 'User manages user rights', js: true do
   let_there_be_lane
   fake_login_for_each_test
 
@@ -28,14 +28,13 @@ RSpec.describe 'User manages Clinical Providers', js: true do
     @institution        = create(:institution)
     @provider           = create(:provider, parent_id: @institution.id, tag_list: 'clinical work fulfillment')
     @identity           = create(:identity)
-    @super_user         = create(:super_user, identity: @identity, organization: @provider)
-    @catalog_manager    = create(:catalog_manager, identity: @identity, organization: @provider)
-    @service_provider   = create(:service_provider, identity: @identity, organization: @provider)
-    @clinical_provider  = create(:clinical_provider, identity: @identity, organization: @provider)
+    create(:catalog_manager, organization_id: @institution.id, identity_id: Identity.where(ldap_uid: 'jug2').first.id)
+    create(:super_user, identity: @identity, organization: @provider)
+    create(:catalog_manager, identity: @identity, organization: @provider)
+    create(:service_provider, identity: @identity, organization: @provider)
 
     visit catalog_manager_catalog_index_path
     wait_for_javascript_to_finish
-
     find("#institution-#{@institution.id}").click
     wait_for_javascript_to_finish
     click_link @provider.name
@@ -52,7 +51,6 @@ RSpec.describe 'User manages Clinical Providers', js: true do
     expect(SuperUser.where(identity_id: @identity.id, organization_id: @provider.id).count).to eq(0)
     expect(CatalogManager.where(identity_id: @identity.id, organization_id: @provider.id).count).to eq(0)
     expect(ServiceProvider.where(identity_id: @identity.id, organization_id: @provider.id).count).to eq(0)
-    expect(ClinicalProvider.where(identity_id: @identity.id, organization_id: @provider.id).count).to eq(0)
   end
 
   it 'should remove the identity from the table' do

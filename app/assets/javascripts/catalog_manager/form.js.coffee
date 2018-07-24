@@ -114,13 +114,11 @@ $ ->
     event.preventDefault()
     if confirm (I18n['catalog_manager']['organization_form']['user_rights']['remove_confirm'])
       identity_id = $(this).data('identity-id')
+      organization_id = $(this).data('organization-id')
       $.ajax
         type: 'POST'
-        url: 'catalog_manager/organizations/remove_user_rights_row'
-        data:
-          user_rights:
-            identity_id: identity_id
-            organization_id: $(this).data('organization-id')
+        url: "/catalog_manager/organizations/remove_user_rights_row?user_rights[identity_id]=#{identity_id}&user_rights[organization_id]=#{organization_id}"
+
 
   $(document).on 'click', '.cancel-user-rights', (event) ->
     event.preventDefault()

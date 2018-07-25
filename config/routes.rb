@@ -229,8 +229,6 @@ SparcRails::Application.routes.draw do
     resources :pricing_maps, only: [:new, :create, :edit, :update]
     resources :submission_emails, only: [:create, :destroy]
 
-    match 'identities/search' => 'identities#search', via: [:get, :post]
-
     root to: 'catalog#index'
   end
 

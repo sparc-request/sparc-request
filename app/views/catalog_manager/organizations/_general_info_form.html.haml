@@ -42,7 +42,7 @@
       = f.text_field :order, { class: 'form-control' }
 
   - unless organization.type == 'Institution'
-    .form-group
+    .form-group.split_notify_container
       = f.label :process_ssrs, t(:catalog_manager)[:organization_form][:split_notify], class: 'col-sm-3 control-label'
       .col-sm-9
         = f.check_box :process_ssrs, { checked: organization.process_ssrs, disabled: false, data: {toggle: 'toggle', on: 'Yes', off: 'No'}}

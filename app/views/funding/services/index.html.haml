@@ -11,7 +11,7 @@
               = t(:funding)[:index][:table][:headers][:title]
             %th.col-md-2{ data: { field: "program", align: "left", sortable: 'true' } }
               = t(:funding)[:index][:table][:headers][:program]
-            %th.col-md-2{ data: { field: "created", align: "left", sortable: 'true' } }
+            %th.col-md-2{ data: { field: "created", align: "left", sortable: 'true' , sorter: "dateSorter"  } }
               = t(:funding)[:index][:table][:headers][:created]
             %th.col-md-2{ data: { field: "action", align: "center" } }
               = t(:funding)[:index][:table][:headers][:action]

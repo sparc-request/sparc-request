@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2016 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -18,6 +18,26 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-$(document).ready ->
-  $(document). on 'click', '.likert-group:not(.disabled) .likert-option', ->
-    $(this).find('input').prop('checked', true)
+class ShortInteractionsController < ApplicationController
+  protect_from_forgery except: :new
+
+  def new
+    @short_interaction = ShortInteraction.new
+    @identity = current_identity
+  end
+
+  def create
+    @short_interaction = ShortInteraction.new(short_interaction_params)
+    if @short_interaction.save
+      flash.now[:success] = t(:proper)[:right_navigation][:short_interaction][:submitted]
+    else
+      @errors = @short_interaction.errors
+    end
+  end
+
+  private
+
+  def short_interaction_params
+    params.require(:short_interaction).permit(:identity_id, :name, :email, :institution, :duration_in_minutes, :subject, :note, :interaction_type)
+  end
+end

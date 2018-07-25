@@ -36,7 +36,7 @@ module Surveyor::ResponsesHelper
   def view_response_button(response)
     link_to(
       content_tag(:span, '', class: 'glyphicon glyphicon-search', aria: { hidden: 'true' }),
-      surveyor_response_path(response),
+      response.new_record? ? '' : surveyor_response_path(response),
       remote: true,
       class: ['btn btn-info view-response', response.completed? ? '' : 'disabled']
     )
@@ -45,7 +45,7 @@ module Surveyor::ResponsesHelper
   def edit_response_button(response)
     link_to(
       content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' }),
-      edit_surveyor_response_path(response),
+      response.new_record? ? '' : edit_surveyor_response_path(response),
       remote: true,
       class: ['btn btn-warning edit-response', response.completed? ? '' : 'disabled']
     )

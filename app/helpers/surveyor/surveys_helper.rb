@@ -35,22 +35,26 @@ module Surveyor::SurveysHelper
   end
 
   def edit_survey_button(survey)
-    link_to(
-      content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' }),
-      edit_surveyor_survey_path(survey),
-      remote: true,
-      class: 'btn btn-warning edit-survey'
-    )
+    unless survey.active?
+      link_to(
+        content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' }),
+        edit_surveyor_survey_path(survey),
+        remote: true,
+        class: 'btn btn-warning edit-survey'
+      )
+    end
   end
 
   def delete_survey_button(survey)
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
-      ),
-      data: { survey_id: survey.id },
-      class: 'btn btn-danger delete-survey'
-    )
+    if !(survey.active? || survey.has_responses?)
+      content_tag(:button,
+        raw(
+          content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
+        ),
+        data: { survey_id: survey.id },
+        class: 'btn btn-danger delete-survey'
+      )
+    end
   end
 
   def activate_survey_button(survey)

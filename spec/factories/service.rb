@@ -103,7 +103,6 @@ FactoryBot.define do
       # create any additional pricing maps.
       line_item_count = evaluator.line_items.count > 0 ? 0 : evaluator.line_item_count
       pricing_map_count = evaluator.pricing_maps.count > 0 ? 0 : evaluator.pricing_map_count
-      service_provider_count = evaluator.service_providers.count > 0 ? 0 : evaluator.service_provider_count
       service_relation_count = evaluator.service_relations.count > 0 ? 0 : evaluator.service_relation_count
 
       # We were using create_list, but this will not
@@ -115,10 +114,6 @@ FactoryBot.define do
 
       pricing_map_count.times do
         service.pricing_maps.build(attributes_for(:pricing_map))
-      end
-
-      service_provider_count.times do
-        service.service_providers.build(attributes_for(:service_provider))
       end
 
       service_relation_count.times do

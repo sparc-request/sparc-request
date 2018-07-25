@@ -20,34 +20,63 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User deletes a pending subsidy', js: true do
+RSpec.describe 'User manages Super Users', js: true do
   let_there_be_lane
-
   fake_login_for_each_test
 
   before :each do
-    institution = create(:institution, name: "Institution")
-    provider    = create(:provider, name: "Provider", parent: institution)
-    program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
-    service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
-    @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2)
-    @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
-    ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
-                  create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-                  create(:arm, protocol: @protocol, visit_count: 1)
-    program.subsidy_map.update_attributes(max_dollar_cap: 100, max_percentage: 100)
-    @subsidy    = create(:pending_subsidy, sub_service_request: ssr)
+    @institution = create(:institution)
+    @provider = create(:provider, parent_id: @institution.id)
+    @identity    = create(:identity)
+    create(:catalog_manager, organization_id: @institution.id, identity_id: Identity.where(ldap_uid: "jug2").first.id)
   end
 
-  context 'and clicks the delete button' do
-    scenario 'and sees the subsidy was destroyed' do
-      visit service_subsidy_service_request_path(@sr)
+  context 'and the identity is already a Super User' do
+    before :each do
+      @super_user = create(:super_user, identity: @identity, organization: @provider)
+
+      visit catalog_manager_catalog_index_path
       wait_for_javascript_to_finish
 
-      find('.delete-subsidy-button').click
+      find("#institution-#{@institution.id}").click
+      wait_for_javascript_to_finish
+      click_link @provider.name
       wait_for_javascript_to_finish
 
-      expect(Subsidy.count).to eq(0)
+      click_link 'User Rights'
+      wait_for_javascript_to_finish
+    end
+
+    it 'should delete the Super User for the identity' do
+      find('#super_user').click
+      wait_for_javascript_to_finish
+
+      expect(SuperUser.where(identity_id: @identity.id, organization_id: @provider.id).count).to eq(0)
     end
   end
+
+  context 'and the identity is not already a Super User' do
+    before :each do
+      allow_any_instance_of(Organization).to receive(:all_user_rights).and_return( [@identity] )
+
+      visit catalog_manager_catalog_index_path
+      wait_for_javascript_to_finish
+
+      find("#institution-#{@institution.id}").click
+      wait_for_javascript_to_finish
+      click_link @provider.name
+      wait_for_javascript_to_finish
+
+      click_link 'User Rights'
+      wait_for_javascript_to_finish
+    end
+
+    it 'should create a Super User for the identity' do
+      find('#super_user').click
+      wait_for_javascript_to_finish
+
+      expect(SuperUser.where(identity_id: @identity.id, organization_id: @provider.id).count).to eq(1)
+    end
+  end
+
 end

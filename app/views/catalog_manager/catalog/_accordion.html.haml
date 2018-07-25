@@ -28,7 +28,7 @@
   - institutions.where(is_available: availability).each do |institution|
     .panel-heading.no-padding-y
       .col-sm-1.no-padding-y
-        = link_to folder_glyphicon(), 'javascript:void(0)', id: "institution-#{institution.id}", data: { toggle: 'collapse', target: "#institution-#{institution.id}-collapse", parent: '#cm-accordion' }
+        = link_to folder_glyphicon(), 'javascript:void(0)', id: "institution-#{institution.id}", class: "fix_spec_overlap", data: { toggle: 'collapse', target: "#institution-#{institution.id}-collapse", parent: '#cm-accordion' }
       .col-sm-11.no-padding-y
         = link_to accordion_link_text(institution, !institution.is_available), edit_catalog_manager_organization_path(institution), class: 'org-form-label panel-title', remote: true
     .panel-collapse.collapse{ id: "institution-#{institution.id}-collapse" }
@@ -41,7 +41,7 @@
         - institution.providers.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |provider|
           .panel-heading.no-padding-y
             .col-sm-1.no-padding-y
-              = link_to folder_glyphicon(), 'javascript:void(0)', id: "provider-#{provider.id}", data: { toggle: 'collapse', target: "#provider-#{provider.id}-collapse", parent: "#institution-#{institution.id}" }
+              = link_to folder_glyphicon(), 'javascript:void(0)', id: "provider-#{provider.id}", class: "fix_spec_overlap", data: { toggle: 'collapse', target: "#provider-#{provider.id}-collapse", parent: "#institution-#{institution.id}" }
             .col-sm-11.no-padding-y
               = link_to accordion_link_text(provider, !provider.is_available), edit_catalog_manager_organization_path(provider), class: 'org-form-label panel-title', remote: true
           .panel-collapse.collapse{ id: "provider-#{provider.id}-collapse" }
@@ -54,7 +54,7 @@
               - provider.programs.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |program|
                 .panel-heading.no-padding-y
                   .col-sm-1.no-padding-y
-                    = link_to folder_glyphicon(), 'javascript:void(0)', id: "program-#{program.id}", class: "load_program_accordion", data: {program_id: program.id, show_available_only: availability[0], toggle: 'collapse', target: "#program-#{program.id}-collapse", parent: "provider-#{provider.id}" }
+                    = link_to folder_glyphicon(), 'javascript:void(0)', id: "program-#{program.id}", class: "load_program_accordion fix_spec_overlap", data: {program_id: program.id, show_available_only: availability[0], toggle: 'collapse', target: "#program-#{program.id}-collapse", parent: "provider-#{provider.id}" }
                   .col-sm-11.no-padding-y
                     = link_to accordion_link_text(program, !program.is_available), edit_catalog_manager_organization_path(program), class: 'org-form-label panel-title', remote: true
                 .panel-collapse.collapse{ id: "program-#{program.id}-collapse" }

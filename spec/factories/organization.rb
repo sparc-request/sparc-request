@@ -194,6 +194,11 @@ FactoryBot.define do
       create_list(:submission_email, evaluator.submission_email_count,
        organization: organization)
     end
+
+    after(:create) do |organization, evaluator|
+      organization.create_subsidy_map()
+    end
+
     factory :provider_without_validations, traits: [:without_validations]
   end
 
@@ -262,6 +267,10 @@ FactoryBot.define do
        organization: organization)
     end
 
+    after(:create) do |organization, evaluator|
+      organization.create_subsidy_map()
+    end
+
     factory :program_with_provider, traits: [:with_provider]
     factory :program_with_pricing_setup, traits: [:with_pricing_setup]
     factory :program_without_validations, traits: [:without_validations]
@@ -316,6 +325,10 @@ FactoryBot.define do
 
       create_list(:submission_email, evaluator.submission_email_count,
        organization: organization)
+    end
+
+    after(:create) do |organization, evaluator|
+      organization.create_subsidy_map()
     end
 
     factory :core_without_validations, traits: [:without_validations]

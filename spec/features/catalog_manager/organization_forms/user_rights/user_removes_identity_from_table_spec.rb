@@ -20,34 +20,40 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User deletes a pending subsidy', js: true do
+RSpec.describe 'User manages user rights', js: true do
   let_there_be_lane
-
   fake_login_for_each_test
 
   before :each do
-    institution = create(:institution, name: "Institution")
-    provider    = create(:provider, name: "Provider", parent: institution)
-    program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
-    service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
-    @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2)
-    @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
-    ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
-                  create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-                  create(:arm, protocol: @protocol, visit_count: 1)
-    program.subsidy_map.update_attributes(max_dollar_cap: 100, max_percentage: 100)
-    @subsidy    = create(:pending_subsidy, sub_service_request: ssr)
+    @institution        = create(:institution)
+    @provider           = create(:provider, parent_id: @institution.id, tag_list: 'clinical work fulfillment')
+    @identity           = create(:identity)
+    create(:catalog_manager, organization_id: @institution.id, identity_id: Identity.where(ldap_uid: 'jug2').first.id)
+    create(:super_user, identity: @identity, organization: @provider)
+    create(:catalog_manager, identity: @identity, organization: @provider)
+    create(:service_provider, identity: @identity, organization: @provider)
+
+    visit catalog_manager_catalog_index_path
+    wait_for_javascript_to_finish
+    find("#institution-#{@institution.id}").click
+    wait_for_javascript_to_finish
+    click_link @provider.name
+    wait_for_javascript_to_finish
+
+    click_link 'User Rights'
+    wait_for_javascript_to_finish
+
+    find('.remove-user-rights').click
+    wait_for_javascript_to_finish
   end
 
-  context 'and clicks the delete button' do
-    scenario 'and sees the subsidy was destroyed' do
-      visit service_subsidy_service_request_path(@sr)
-      wait_for_javascript_to_finish
+  it 'should delete the all user rights for the identity' do
+    expect(SuperUser.where(identity_id: @identity.id, organization_id: @provider.id).count).to eq(0)
+    expect(CatalogManager.where(identity_id: @identity.id, organization_id: @provider.id).count).to eq(0)
+    expect(ServiceProvider.where(identity_id: @identity.id, organization_id: @provider.id).count).to eq(0)
+  end
 
-      find('.delete-subsidy-button').click
-      wait_for_javascript_to_finish
-
-      expect(Subsidy.count).to eq(0)
-    end
+  it 'should remove the identity from the table' do
+    expect(page).to_not have_selector("user-rights-row-#{@identity.id}")
   end
 end

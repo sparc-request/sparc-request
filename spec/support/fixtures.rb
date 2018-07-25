@@ -177,7 +177,7 @@ def build_per_patient_per_visit_services
   let!(:catalog_manager)     { create(:catalog_manager, organization_id: program.id, identity_id: jpl6.id) }
   let!(:clinical_provider)   { create(:clinical_provider, organization_id: program.id, identity_id: jug2.id) }
   let!(:subsidy)             { Subsidy.auditing_enabled = false; create(:subsidy_without_validations, percent_subsidy: 0.45, sub_service_request_id: sub_service_request.id)}
-  let!(:subsidy_map)         { create(:subsidy_map, organization_id: program.id) }
+  let!(:subsidy_map)         { SubsidyMap.find_by_organization_id(program.id) }
 end
 
 def build_service_request

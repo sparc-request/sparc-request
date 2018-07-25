@@ -20,21 +20,22 @@
 
 require 'selenium/webdriver'
 
-IS_DEBUG_MODE = -> { ENV['DEBUG'].present? ? :chrome : :headless_chrome }
-
-Capybara.default_wait_time = 15
-
-Capybara.register_driver :chrome do |app|
-  Capybara::Selenium::Driver.new(app, browser: :chrome)
-end
+DEBUG         = ENV['DEBUG']
+WINDOW_WIDTH  = ENV['WINDOW_WIDTH'] || 1280
+WINDOW_HEIGHT = ENV['WINDOW_HEIGHT'] || 1024
 
 Capybara.register_driver :headless_chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new
-  options.add_argument('--headless')
-  options.add_argument('--no-sandbox')
-  options.add_argument('--disable-popup-blocking')
-  options.add_argument('--window-size=1366,768')
+  options.args << "--headless"
+  options.args << "--no-sandbox"
+  options.args << "--disable-popup-blocking"
+  options.args << "--window-size=#{WINDOW_WIDTH},#{WINDOW_HEIGHT}" if DEBUG
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
 
-Capybara.javascript_driver = IS_DEBUG_MODE.call
+Capybara.default_driver     = DEBUG ? :selenium_chrome : :selenium_chrome_headless
+Capybara.javascript_driver  = DEBUG ? :selenium_chrome : :selenium_chrome_headless
+
+Capybara.page.driver.browser.manage.window.resize_to(WINDOW_WIDTH, WINDOW_HEIGHT) if DEBUG
+
+Capybara.default_max_wait_time = 15

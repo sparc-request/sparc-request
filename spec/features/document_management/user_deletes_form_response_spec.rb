@@ -47,7 +47,7 @@ RSpec.describe 'User deletes a form response', js: true do
     first('.delete-response').click
     wait_for_javascript_to_finish
 
-    find('.sweet-alert.visible button.confirm').trigger('click')
+    find('.swal2-confirm').click
     wait_for_javascript_to_finish
 
     expect(Response.count).to eq(0)

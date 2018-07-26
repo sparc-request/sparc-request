@@ -42,7 +42,9 @@ RSpec.describe 'User sets timeline dates', js: true do
       visit service_details_service_request_path(@sr)
       wait_for_javascript_to_finish
 
+      find('#study_start_date').click
       fill_in 'study_start_date', with: '01/02/2016'
+      find('#study_end_date').click
       fill_in 'study_end_date', with: '03/04/2016'
 
       click_link 'Save and Continue →'

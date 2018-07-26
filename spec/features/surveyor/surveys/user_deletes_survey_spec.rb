@@ -38,7 +38,7 @@ RSpec.describe 'User deletes a survey', js: true do
       find('.delete-survey').click
       wait_for_javascript_to_finish
 
-      find('.sweet-alert.visible button.confirm').trigger('click')
+      find('.swal2-confirm').click
       wait_for_javascript_to_finish
 
       visit surveyor_surveys_path
@@ -63,7 +63,7 @@ RSpec.describe 'User deletes a survey', js: true do
       find('.delete-survey').click
       wait_for_javascript_to_finish
 
-      find('.sweet-alert.visible button.confirm').trigger('click')
+      find('.swal2-confirm').click
       wait_for_javascript_to_finish
 
       visit surveyor_surveys_path

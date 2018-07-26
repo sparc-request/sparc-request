@@ -127,11 +127,6 @@ RSpec.configure do |config|
 
 end
 
-Capybara.register_driver :webkit do |app|
-  driver = Capybara::Webkit::Driver.new(app, { set_skip_image_loading: true })
-  driver
-end
-
 SitePrism.configure do |config|
   config.use_implicit_waits = true
 end

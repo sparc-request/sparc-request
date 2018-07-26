@@ -50,7 +50,7 @@
 //= require form_fx_manager
 //= require twitter/typeahead.min
 //= require filterrific/filterrific-jquery
-//= require sweetalert.min
+//= require sweetalert2.min
 //= require_tree .
 
 //= require ../service_calendar

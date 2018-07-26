@@ -96,7 +96,9 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
         page.load(id: protocol.id)
         wait_for_javascript_to_finish
 
-        page.authorized_users(text: "John Doe").first.enabled_remove_button.click
+        accept_confirm do
+          page.authorized_users(text: "John Doe").first.enabled_remove_button.click
+        end
         wait_for_javascript_to_finish
       end
 
@@ -122,7 +124,9 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
         page.load(id: protocol.id)
         wait_for_javascript_to_finish
 
-        page.authorized_users(text: "John Doe").first.enabled_remove_button.click
+        accept_confirm do
+          page.authorized_users(text: "John Doe").first.enabled_remove_button.click
+        end
         wait_for_javascript_to_finish
 
         expect(URI.parse(current_url).path).to eq("/dashboard")
@@ -131,11 +135,13 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
   end
 
   def given_i_have_clicked_the_delete_authorized_user_button_and_confirmed
-    @page.authorized_users(text: "Jane Doe").first.enabled_remove_button.click
+    accept_confirm do
+      @page.authorized_users(text: "Jane Doe").first.enabled_remove_button.click
+    end
   end
 
   def given_i_have_clicked_the_delete_authorized_user_button_for_the_primary_pi
-    accept_alert do
+    accept_confirm do
       @page.authorized_users(text: "John Doe").first.enabled_remove_button.click
     end
   end
@@ -147,7 +153,7 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
   def then_i_should_see_an_error_of_type error_type
     case error_type
       when 'need Primary PI'
-        #Because of deprecation, we can't directly access the alert.
+        #Because of deprecation, we can't directly access the confirm.
         #Instead, we will test that the Primary PI is still there after
         #the confirm.
         expect(page).to have_text("Primary PI")

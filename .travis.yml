@@ -1,16 +1,13 @@
 sudo: false
 language: ruby
 cache: bundler
-dist: precise
-
+dist: trusty
 addons:
-  apt:
-    packages:
-      - libqtwebkit-dev
-      - libqtwebkit4
+  chrome: stable
 
 before_install:
   - export TZ=America/New_York
+  - google-chrome-stable --headless --no-sandbox --disable-dev-shm-usage --disable-gpu --remote-debugging-port=9222 http://localhost &
 before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
@@ -33,4 +30,4 @@ jobs:
       - bundle exec rspec spec/views
       - bundle exec rspec spec/controllers
     - script:
-      - bundle exec rspec spec/features
+      - bundle exec rspec spec/features --fail-fast

@@ -18,5 +18,25 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-Capybara.javascript_driver = :webkit
+require 'selenium/webdriver'
+
+DEBUG         = ENV['DEBUG']
+WINDOW_WIDTH  = ENV['WINDOW_WIDTH'] || 1280
+WINDOW_HEIGHT = ENV['WINDOW_HEIGHT'] || 1024
+
+Capybara.register_driver :headless_chrome do |app|
+  options = Selenium::WebDriver::Chrome::Options.new
+  options.args << "--headless"
+  options.args << "--no-sandbox"
+  options.args << "--disable-dev-shm-usage"
+  options.args << "--disable-gpu"
+  options.args << "--window-size=#{WINDOW_WIDTH},#{WINDOW_HEIGHT}" if DEBUG
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+end
+
+Capybara.default_driver     = DEBUG ? :selenium_chrome : :selenium_chrome_headless
+Capybara.javascript_driver  = DEBUG ? :selenium_chrome : :selenium_chrome_headless
+
+Capybara.page.driver.browser.manage.window.resize_to(WINDOW_WIDTH, WINDOW_HEIGHT) if DEBUG
+
 Capybara.default_max_wait_time = 15

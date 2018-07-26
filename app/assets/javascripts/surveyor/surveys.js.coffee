@@ -21,20 +21,48 @@ $(document).ready ->
   $("[data-toggle='tooltip']").tooltip()
 
   ### Survey Table ###
+  $(document).on 'click', '#new-survey-button, #new-form-button', ->
+    type = $(this).data('type')
+    klass = $(this).data('klass')
+
+    swal({
+      title: if type == 'Form' then I18n['surveyor']['forms']['new'] else I18n['surveyor']['systemsurveys']['new']
+      text: "#{I18n['surveyor']['surveys']['new']['text']} #{klass}."
+      input: 'text'
+      inputPlaceholder: I18n['surveyor']['surveys']['new']['placeholder']
+      showCancelButton: true
+      inputValidator: (access_code) ->
+        return new Promise((resolve) ->
+          if !access_code
+            resolve("#{I18n['surveyor']['surveys']['new']['error']}")
+          else
+            resolve()
+        )
+    }).then (data) ->
+      access_code = data['value']
+
+      if access_code
+        $.ajax
+          type: 'post'
+          url: '/surveyor/surveys'
+          data:
+            type: type
+            access_code: access_code
+
   $(document).on 'click', '.delete-survey', ->
     survey_id = $(this).data('survey-id')
-    swal {
+    swal({
       title: I18n['swal']['swal_confirm']['title']
       text: I18n['swal']['swal_confirm']['text']
       type: 'warning'
       showCancelButton: true
       confirmButtonColor: '#DD6B55'
       confirmButtonText: 'Delete'
-      closeOnConfirm: true
-    }, ->
-      $.ajax
-        type: 'delete'
-        url: "/surveyor/surveys/#{survey_id}.js"
+    }).then (data) ->
+      if data['value']
+        $.ajax
+          type: 'delete'
+          url: "/surveyor/surveys/#{survey_id}.js"
 
   ### Survey Modal ###
   $(document).on 'hide.bs.modal', '#modal_place', ->

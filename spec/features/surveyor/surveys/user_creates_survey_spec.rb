@@ -33,11 +33,16 @@ RSpec.describe 'User creates a survey', js: true do
     end
 
     scenario 'and sees the newly created survey' do
-      click_link 'New Survey'
+      click_button I18n.t(:surveyor)[:systemsurveys][:new]
+      wait_for_javascript_to_finish
+
+      fill_in placeholder: I18n.t(:surveyor)[:surveys][:new][:placeholder], with: 'new-survey'
+      find('.swal2-confirm').click
       wait_for_javascript_to_finish
 
       expect(page).to have_selector('#survey-modal', visible: true)
       expect(SystemSurvey.count).to eq(1)
+      expect(SystemSurvey.first.access_code).to eq('new-survey')
     end
   end
 
@@ -48,11 +53,16 @@ RSpec.describe 'User creates a survey', js: true do
     end
 
     scenario 'and sees the newly created form' do
-      click_link 'New Form'
+      click_button I18n.t(:surveyor)[:forms][:new]
+      wait_for_javascript_to_finish
+
+      fill_in placeholder: I18n.t(:surveyor)[:surveys][:new][:placeholder], with: 'new-form'
+      find('.swal2-confirm').click
       wait_for_javascript_to_finish
 
       expect(page).to have_selector('#form-modal', visible: true)
       expect(Form.count).to eq(1)
+      expect(Form.first.access_code).to eq('new-form')
     end
   end
 end

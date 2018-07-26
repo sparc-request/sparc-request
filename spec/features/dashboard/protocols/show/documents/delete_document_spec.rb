@@ -34,7 +34,9 @@ RSpec.feature 'User wants to edit a document', js: true do
       @page.load(id: @protocol.id)
       wait_for_javascript_to_finish
 
-      @page.documents.first.enabled_remove_button.click
+      accept_confirm do
+        @page.documents.first.enabled_remove_button.click
+      end
       wait_for_javascript_to_finish
 
       expect(@page.documents(text: 'Protocol').count).to eq(0)

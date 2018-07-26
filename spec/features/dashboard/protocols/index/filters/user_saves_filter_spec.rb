@@ -44,8 +44,16 @@ RSpec.describe "User saves a filter", js: :true do
     context "and clicks save" do
       before :each do
         find("#filterrific_show_archived").click
-        bootstrap_multiselect("#filterrific_with_status", ["Complete", "Active"])
-        bootstrap_multiselect("#filterrific_with_organization", [@organization.name])
+        
+        first('#filterrific_with_status + .btn-group').click
+        first('.dropdown-menu.open span.text', text: "Complete").click
+        first('.dropdown-menu.open span.text', text: "Active").click
+        first('#filterrific_results .panel-heading').click
+
+        first('#filterrific_with_organization + .btn-group').click
+        first('.dropdown-menu.open span.text', text: @organization.name).click
+        first('#filterrific_results .panel-heading').click
+
         find("#save_filters_link").click
         wait_for_javascript_to_finish
       end

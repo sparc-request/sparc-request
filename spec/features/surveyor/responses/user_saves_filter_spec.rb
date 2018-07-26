@@ -34,11 +34,16 @@ RSpec.describe 'User saves a response filters', js: true do
     visit surveyor_responses_path
     wait_for_javascript_to_finish
 
-    bootstrap_multiselect '#filterrific_with_state', [I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active], I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]]
-    find('#filterrific_end_date').click
+    first('#filterrific_with_state + .btn-group').click
+    first('.dropdown-menu.open span.text', text: I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active]).click
+    first('.dropdown-menu.open span.text', text: I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]).click
+    first('.panel-heading').click
     find('#filterrific_start_date').click
-    find('body').click
+    first('.panel-heading').click
+    find('#filterrific_end_date').click
+    first('.panel-heading').click
     find('#filterrific_include_incomplete').click
+
     click_link I18n.t(:actions)[:save]
     wait_for_javascript_to_finish
 

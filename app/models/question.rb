@@ -39,7 +39,7 @@ class Question < ActiveRecord::Base
 
   accepts_nested_attributes_for :options, allow_destroy: true
   
-  after_update :update_options_based_on_question_type, if: :question_type_changed?
+  before_update :update_options_based_on_question_type, if: :question_type_changed?
 
   def previous_questions
     self.survey.questions.select{ |q| q.id < self.id }
@@ -52,7 +52,9 @@ class Question < ActiveRecord::Base
   private
 
   def update_options_based_on_question_type
-    self.options.destroy_all
+    unless ['radio_button', 'likert', 'checkbox', 'dropdown', 'multiple_dropdown'].include?(self.question_type)
+      self.options.destroy_all
+    end
 
     if self.question_type == 'yes_no'
       self.options.create(content: 'Yes')

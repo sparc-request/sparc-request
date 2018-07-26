@@ -60,5 +60,5 @@
 //= require subsidy_form
 //= require surveyor/responses
 //= require surveyor/surveys
-//= require sweetalert.min
+//= require sweetalert2.min
 //= require feedback

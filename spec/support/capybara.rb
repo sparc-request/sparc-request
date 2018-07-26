@@ -28,7 +28,8 @@ Capybara.register_driver :headless_chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new
   options.args << "--headless"
   options.args << "--no-sandbox"
-  options.args << "--disable-popup-blocking"
+  options.args << "--disable-dev-shm-usage"
+  options.args << "--disable-gpu"
   options.args << "--window-size=#{WINDOW_WIDTH},#{WINDOW_HEIGHT}" if DEBUG
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end

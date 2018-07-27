@@ -26,7 +26,7 @@ class CatalogManager::PricingMapsController < CatalogManager::AppController
   end
 
   def create
-    @pricing_map = PricingMap.new(pricing_map_params[:pricing_map])
+    @pricing_map = PricingMap.new(pricing_map_params)
 
     if @pricing_map.save
       flash[:success] = "Pricing Map created successfully."
@@ -39,14 +39,14 @@ class CatalogManager::PricingMapsController < CatalogManager::AppController
   end
 
   def edit
-    @pricing_map = PricingMap.find(pricing_map_params[:id])
+    @pricing_map = PricingMap.find(params[:id])
     @service = @pricing_map.service
   end
 
   def update
-    @pricing_map = PricingMap.find(pricing_map_params[:id])
+    @pricing_map = PricingMap.find(params[:id])
 
-    if @pricing_map.update_attributes(pricing_map_params[:pricing_map])
+    if @pricing_map.update_attributes(pricing_map_params)
       flash[:success] = "Pricing Map updated successfully."
       @service = @pricing_map.service
     else
@@ -55,22 +55,20 @@ class CatalogManager::PricingMapsController < CatalogManager::AppController
   end
 
   def refresh_rates
-    if pricing_map_params[:id]
-      @pricing_map = PricingMap.find(pricing_map_params[:id])
+    if params[:id]
+      @pricing_map = PricingMap.find(params[:id])
       @pricing_map_disabled = @pricing_map.disabled?(@user)
     else
-      @pricing_map = PricingMap.new(service_id: pricing_map_params[:pricing_map][:service_id])
+      @pricing_map = PricingMap.new(service_id: pricing_map_params[:service_id])
       @pricing_map_disabled = false
     end
-    @rate_map = @pricing_map.service.get_rate_maps(pricing_map_params[:pricing_map][:display_date].to_date.strftime("%F"), pricing_map_params[:pricing_map][:full_rate]) rescue nil
+    @rate_map = @pricing_map.service.get_rate_maps(pricing_map_params[:display_date].to_date.strftime("%F"), pricing_map_params[:full_rate]) rescue nil
   end
-
 
   private
 
   def pricing_map_params
-    temp = params.permit(:id,
-      pricing_map: [
+    temp = params.require(:pricing_map).permit(
       :display_date,
       :effective_date,
       :full_rate,
@@ -87,15 +85,13 @@ class CatalogManager::PricingMapsController < CatalogManager::AppController
       :quantity_type,
       :exclude_from_indirect_cost,
       :service_id
-      ])
+    )
 
-    if temp[:pricing_map]
-      temp[:pricing_map][:full_rate] = Service.dollars_to_cents(temp[:pricing_map][:full_rate]) unless temp[:pricing_map][:full_rate].blank?
-      temp[:pricing_map][:federal_rate] = Service.dollars_to_cents(temp[:pricing_map][:federal_rate]) unless temp[:pricing_map][:federal_rate].blank?
-      temp[:pricing_map][:corporate_rate] = Service.dollars_to_cents(temp[:pricing_map][:corporate_rate]) unless temp[:pricing_map][:corporate_rate].blank?
-      temp[:pricing_map][:other_rate] = Service.dollars_to_cents(temp[:pricing_map][:other_rate]) unless temp[:pricing_map][:other_rate].blank?
-      temp[:pricing_map][:member_rate] = Service.dollars_to_cents(temp[:pricing_map][:member_rate]) unless temp[:pricing_map][:member_rate].blank?
-    end
+    temp[:full_rate] = Service.dollars_to_cents(temp[:full_rate]) unless temp[:full_rate].blank?
+    temp[:federal_rate] = Service.dollars_to_cents(temp[:federal_rate]) unless temp[:federal_rate].blank?
+    temp[:corporate_rate] = Service.dollars_to_cents(temp[:corporate_rate]) unless temp[:corporate_rate].blank?
+    temp[:other_rate] = Service.dollars_to_cents(temp[:other_rate]) unless temp[:other_rate].blank?
+    temp[:member_rate] = Service.dollars_to_cents(temp[:member_rate]) unless temp[:member_rate].blank?
 
     temp
   end

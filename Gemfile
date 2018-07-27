@@ -92,7 +92,7 @@ group :development, :test, :profile do
   gem 'timecop'
   gem 'progress_bar'
 end
-gem 'puma', '~> 3.0'
+gem 'puma', '~> 3.12'
 
 group :development, :test do
   gem 'pry'

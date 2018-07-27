@@ -26,7 +26,7 @@ class CatalogManager::PricingSetupsController < CatalogManager::AppController
   end
 
   def create
-    @pricing_setup = PricingSetup.new(pricing_setup_params[:pricing_setup])
+    @pricing_setup = PricingSetup.new(pricing_setup_params)
 
     if @pricing_setup.save
       flash[:success] = "Pricing Setup created successfully."
@@ -37,14 +37,14 @@ class CatalogManager::PricingSetupsController < CatalogManager::AppController
   end
 
   def edit
-    @pricing_setup = PricingSetup.find(pricing_setup_params[:id])
+    @pricing_setup = PricingSetup.find(params[:id])
     @organization = @pricing_setup.organization
   end
 
   def update
-    @pricing_setup = PricingSetup.find(pricing_setup_params[:id])
+    @pricing_setup = PricingSetup.find(params[:id])
 
-    if @pricing_setup.update_attributes(pricing_setup_params[:pricing_setup])
+    if @pricing_setup.update_attributes(pricing_setup_params)
       flash[:success] = "Pricing Setup updated successfully."
       @organization = @pricing_setup.organization
     else
@@ -56,8 +56,7 @@ class CatalogManager::PricingSetupsController < CatalogManager::AppController
   private
 
   def pricing_setup_params
-    params.permit(:id,
-      pricing_setup: [
+    params.require(:pricing_setup).permit(
       :display_date,
       :effective_date,
       :charge_master,
@@ -73,6 +72,6 @@ class CatalogManager::PricingSetupsController < CatalogManager::AppController
       :foundation_rate_type,
       :unfunded_rate_type,
       :organization_id
-      ])
+    )
   end
 end

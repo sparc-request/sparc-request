@@ -41,4 +41,27 @@ RSpec.describe Question, type: :model do
   it { is_expected.to accept_nested_attributes_for(:options) }
 
   it { is_expected.to delegate_method(:survey).to(:section) }
+
+  # Callbacks
+  describe 'update_options_based_on_question_type' do
+    it 'should be called on update' do
+      @question = create(:question, question_type: 'text')
+      expect(@question).to receive(:update_options_based_on_question_type)
+      @question.update_attribute(:question_type, 'email')
+    end
+
+    it 'should destroy options when if not a type with options' do
+      @question = create(:question, question_type: 'likert', option_count: 2)
+      expect(@question.options.count).to eq(2)
+      @question.update_attribute(:question_type, 'text')
+      expect(@question.options.count).to eq(0)
+    end
+
+    it 'should create yes/no options' do
+      @question = create(:question, question_type: 'text')
+      expect(@question.options.count).to eq(0)
+      @question.update_attribute(:question_type, 'yes_no')
+      expect(@question.options.count).to eq(2)
+    end
+  end
 end

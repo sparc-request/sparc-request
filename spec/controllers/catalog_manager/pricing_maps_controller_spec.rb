@@ -20,6 +20,35 @@
 
 require 'rails_helper'
 
-RSpec.describe CatalogManager::CatalogController do
-  #TODO: Write Specs here
+RSpec.describe CatalogManager::PricingMapsController, type: :controller do
+
+  before :each do
+    log_in_catalog_manager_identity(obj: build_stubbed(:identity))
+  end
+
+  describe '#create' do
+    it 'should create a Pricing Map' do
+      provider  = create(:provider)
+      program   = create(:program, parent: provider)
+      service   = create(:service, organization: program)
+
+      expect{
+        post :create,
+          params: { pricing_map: attributes_for(:pricing_map).merge({ service_id: service.id }) },
+          xhr: true
+        }.to change(PricingMap, :count).by(1)
+    end
+  end
+
+  describe '#update' do
+    it 'should update an existing Pricing Map' do
+      map = create(:pricing_map, federal_rate: 1234)
+      expect{
+        put :update,
+          params: { id: map.id, pricing_map: { federal_rate: 567.8 } },
+          xhr: true
+        map.reload
+      }.to change(map, :federal_rate).to(567.8.to_d * 100)
+    end
+  end
 end

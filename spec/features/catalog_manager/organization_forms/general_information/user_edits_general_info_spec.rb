@@ -28,6 +28,7 @@ RSpec.describe 'User edits organization general info', js: true do
     @institution = create(:institution)
     @provider = create(:provider, parent_id: @institution.id)
     create(:catalog_manager, organization_id: @institution.id, identity_id: Identity.where(ldap_uid: 'jug2').first.id)
+    create(:tag, name: "clinical work fulfillment")
   end
 
   context 'on a Provider' do
@@ -38,9 +39,6 @@ RSpec.describe 'User edits organization general info', js: true do
         find("#institution-#{@institution.id}").click
         wait_for_javascript_to_finish
         click_link @provider.name
-        wait_for_javascript_to_finish
-
-        click_link 'General Information'
         wait_for_javascript_to_finish
       end
 
@@ -77,7 +75,7 @@ RSpec.describe 'User edits organization general info', js: true do
         wait_for_javascript_to_finish
 
         @provider.reload
-        expect(@provider.organization_ack_language).to eq("You Killed My Father, Prepare To Die")
+        expect(@provider.ack_language).to eq("You Killed My Father, Prepare To Die")
       end
 
       it 'should edit the order' do
@@ -86,7 +84,6 @@ RSpec.describe 'User edits organization general info', js: true do
         wait_for_javascript_to_finish
 
         @provider.reload
-        expect(page).to have_text("2")
         expect(@provider.order).to eq(2)
       end
 
@@ -100,12 +97,12 @@ RSpec.describe 'User edits organization general info', js: true do
       end
 
       it 'should select a color' do
-        bootstrap_select '#organization_css_class', 'blue'
+        bootstrap_select('#organization_css_class', 'blue')
         click_button 'Save'
         wait_for_javascript_to_finish
 
         @provider.reload
-        expect(@provider.process_ssrs).to eq("blue-provider")
+        expect(@provider.css_class).to eq("blue-provider")
       end
 
       it 'should toggle display in sparc' do
@@ -118,7 +115,8 @@ RSpec.describe 'User edits organization general info', js: true do
       end
 
       it 'should select a tag' do
-        bootstrap_select '#organization_tag_list', 'Fulfillment'
+        bootstrap_select('#organization_tag_list', 'Fulfillment')
+        find('form.form-horizontal').click
         click_button 'Save'
         wait_for_javascript_to_finish
 

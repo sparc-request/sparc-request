@@ -18,35 +18,39 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogManager::SubmissionEmailsController < CatalogManager::AppController
+require 'rails_helper'
 
-  def create
-    @submission_email = SubmissionEmail.new(submission_email_params)
+RSpec.describe 'User manages fulfillment rights', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
 
-    if @submission_email.save
-      flash[:success] = "Submission Email added successfully."
-    else
-      @errors = @submission_email.errors
-    end
+  before :each do
+    @institution        = create(:institution)
+    @provider           = create(:provider, parent_id: @institution.id, tag_list: 'clinical work fulfillment', process_ssrs: true)
+    @identity           = create(:identity)
+    create(:catalog_manager, organization_id: @institution.id, identity_id: Identity.where(ldap_uid: 'jug2').first.id)
+    create(:clinical_provider, identity: @identity, organization: @provider)
+
+    visit catalog_manager_catalog_index_path
+    wait_for_javascript_to_finish
+    find("#institution-#{@institution.id}").click
+    wait_for_javascript_to_finish
+    click_link @provider.name
+    wait_for_javascript_to_finish
+
+    click_link 'Fulfillment Rights'
+    wait_for_javascript_to_finish
+
+    find('.remove-fulfillment-rights').click
+    wait_for_javascript_to_finish
   end
 
-  def destroy
-    submission_email = SubmissionEmail.find(params[:id])
-    @organization = submission_email.organization
-
-    if submission_email.destroy
-      flash[:success] = "Submission Email removed successfully."
-    else
-      flash[:alert] = "Problem removing submission email."
-    end
+  it 'should delete the fulfillment rights for the identity' do
+    expect(ClinicalProvider.where(identity_id: @identity.id, organization_id: @provider.id).count).to eq(0)
   end
 
-  private
-
-  def submission_email_params
-    params.require(:submission_email).permit(
-      :organization_id,
-      :email
-    )
+  it 'should remove the identity from the table' do
+    expect(page).to_not have_selector("fulfillment-rights-row-#{@identity.id}")
   end
+
 end

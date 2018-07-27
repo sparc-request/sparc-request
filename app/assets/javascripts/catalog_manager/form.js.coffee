@@ -171,13 +171,11 @@ $ ->
     event.preventDefault()
     if confirm (I18n['catalog_manager']['organization_form']['user_rights']['remove_confirm'])
       identity_id = $(this).data('identity-id')
+      organization_id = $(this).data('organization-id')
       $.ajax
         type: 'POST'
-        url: 'catalog_manager/organizations/remove_fulfillment_rights_row'
-        data:
-          fulfillment_rights:
-            identity_id: identity_id
-            organization_id: $(this).data('organization-id')
+        url: "/catalog_manager/organizations/remove_fulfillment_rights_row?fulfillment_rights[identity_id]=#{identity_id}&fulfillment_rights[organization_id]=#{organization_id}"
+
 
   $(document).on 'click', '.cancel-fulfillment-rights', (event) ->
     event.preventDefault()
@@ -285,8 +283,9 @@ $ ->
       type: 'POST'
       url: "catalog_manager/submission_emails"
       data:
-        email: new_submission_email
-        organization_id: org_id
+        submission_email:
+          email: new_submission_email
+          organization_id: org_id
 
 
   ##############################################

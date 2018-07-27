@@ -31,7 +31,7 @@ class CatalogManager::SubmissionEmailsController < CatalogManager::AppController
   end
 
   def destroy
-    submission_email = SubmissionEmail.find(submission_email_params[:id])
+    submission_email = SubmissionEmail.find(params[:id])
     @organization = submission_email.organization
 
     if submission_email.destroy
@@ -44,10 +44,9 @@ class CatalogManager::SubmissionEmailsController < CatalogManager::AppController
   private
 
   def submission_email_params
-    params.permit(
-      :id,
+    params.require(:submission_email).permit(
       :organization_id,
       :email
-      )
+    )
   end
 end

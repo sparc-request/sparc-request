@@ -285,8 +285,9 @@ $ ->
       type: 'POST'
       url: "catalog_manager/submission_emails"
       data:
-        email: new_submission_email
-        organization_id: org_id
+        submission_email:
+          email: new_submission_email
+          organization_id: org_id
 
 
   ##############################################

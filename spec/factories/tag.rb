@@ -18,19 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogManager::IdentitiesController < CatalogManager::AppController
-  respond_to :json
-  layout false
+FactoryBot.define do
 
-  def search
-    term = params[:term].strip
-    results = Identity.search(term).map do |i|
-      {
-       :label => i.display_name, :value => i.id, :email => i.email, :institution => i.professional_org_lookup("institution"), :phone => i.phone, :era_commons_name => i.era_commons_name,
-       :college => i.professional_org_lookup("college"), :department => i.professional_org_lookup("department"), :credentials => i.credentials, :credentials_other => i.credentials_other
-      }
-    end
-    results = [{:label => 'No Results'}] if results.empty?
-    render :json => results.to_json
+  factory :tag do
+
   end
 end

@@ -46,12 +46,12 @@ class LineItem < ApplicationRecord
   validates :service_id, numericality: true, presence: true
   validates :service_request_id, numericality:  true
 
-  validates :quantity, numericality: { only_integer: true }, on: :update, if: Proc.new { |li| li.service.one_time_fee }
+  validates :quantity, numericality: true, on: :update, if: Proc.new { |li| li.service.one_time_fee }
   validate :quantity_must_be_smaller_than_max_and_greater_than_min, on: :update, if: Proc.new { |li| li.service.one_time_fee }
   validates :units_per_quantity, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, on: :update, if: Proc.new { |li| li.service.one_time_fee }
 
   after_create :build_line_items_visits_if_pppv
-  before_destroy :destroy_arms_if_last_pppv_line_item
+  before_destroy :destroy_arms_if_last_pppv_line_item, if: Proc.new { |li| !li.one_time_fee }
 
   default_scope { order('line_items.id ASC') }
 
@@ -355,7 +355,7 @@ class LineItem < ApplicationRecord
 
   def destroy_arms_if_last_pppv_line_item
     if self.try(:protocol).try(:service_requests).try(:none?) { |sr| sr.has_per_patient_per_visit_services? }
-      self.service_request.try(:arms).try(:destroy_all)
+      self.service_request.protocol.try(:arms).try(:destroy_all)
     end
   end
 end

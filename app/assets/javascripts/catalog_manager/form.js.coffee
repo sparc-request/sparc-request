@@ -134,10 +134,7 @@ $ ->
     if confirm(I18n['catalog_manager']['organization_form']['surveys']['survey_delete'])
       $.ajax
         type: 'POST'
-        url: "catalog_manager/organizations/remove_associated_survey"
-        data:
-          associated_survey_id: survey_id
-          surveyable_id: surveyable_id
+        url: "/catalog_manager/organizations/remove_associated_survey?associated_survey_id=#{survey_id}&surveyable_id=#{surveyable_id}"
 
 
   $(document).on 'click', 'button.add-associated-survey', (event) ->
@@ -149,7 +146,7 @@ $ ->
       surveyable_id = $(this).data('id')
       $.ajax
         type: 'POST'
-        url: "catalog_manager/organizations/add_associated_survey"
+        url: "/catalog_manager/organizations/add_associated_survey"
         data:
           survey_id: survey_id
           surveyable_type : surveyable_type

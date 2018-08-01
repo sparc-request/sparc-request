@@ -431,6 +431,10 @@ class Protocol < ApplicationRecord
     epic_title.truncate(195)
   end
 
+  def duration_in_months
+    (self.end_date.year * 12 + self.end_date.month) - (self.start_date.year * 12 + self.start_date.month)
+  end
+
   def display_funding_source_value
     if funding_status == "funded"
       if funding_source == "internal"

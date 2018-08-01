@@ -117,7 +117,11 @@ $ ->
       organization_id = $(this).data('organization-id')
       $.ajax
         type: 'POST'
-        url: "/catalog_manager/organizations/remove_user_rights_row?user_rights[identity_id]=#{identity_id}&user_rights[organization_id]=#{organization_id}"
+        url: "/catalog_manager/organizations/remove_user_rights_row"
+        data:
+          user_rights:
+            identity_id: identity_id
+            organization_id: organization_id
 
 
   $(document).on 'click', '.cancel-user-rights', (event) ->
@@ -134,8 +138,10 @@ $ ->
     if confirm(I18n['catalog_manager']['organization_form']['surveys']['survey_delete'])
       $.ajax
         type: 'POST'
-        url: "/catalog_manager/organizations/remove_associated_survey?associated_survey_id=#{survey_id}&surveyable_id=#{surveyable_id}"
-
+        url: "/catalog_manager/organizations/remove_associated_survey"
+        data:
+          associated_survey_id: survey_id
+          surveyable_id: surveyable_id
 
   $(document).on 'click', 'button.add-associated-survey', (event) ->
     if $('#new_associated_survey').val() == ''

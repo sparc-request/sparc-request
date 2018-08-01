@@ -48,9 +48,6 @@ RSpec.describe 'User manages associated surveys', js: true do
 
   it 'should delete the associated survey for the organization' do
     expect(AssociatedSurvey.where(associable_id: @provider.id).count).to eq(0)
-  end
-
-  it 'should remove the associated survey from the list' do
     expect(page).to_not have_selector("survey-row-#{@associated_survey.id}")
   end
 

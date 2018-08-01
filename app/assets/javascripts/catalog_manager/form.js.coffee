@@ -294,24 +294,24 @@ $ ->
 
   $(document).on 'click', 'button.remove-service-component', (event) ->
     component = $(this).data('component')
-    service_id = $(this).data('service')
+    service_id = $(this).data('service-id')
     if confirm (I18n['catalog_manager']['service_form']['remove_component_confirm'])
       $.ajax
-        type: 'POST'
-        url: "catalog_manager/services/change_components"
+        type: 'PATCH'
+        url: "catalog_manager/services/#{service_id}/change_components"
         data:
-          component: component
-          service_id: service_id
+          service:
+            component: component
 
   $(document).on 'click', 'button.add-service-component', (event) ->
     component = $('input#new_component').val()
-    service_id = $(this).data('service')
+    service_id = $(this).data('service-id')
     $.ajax
-      type: 'POST'
-      url: "catalog_manager/services/change_components"
+      type: 'PATCH'
+      url: "catalog_manager/services/#{service_id}/change_components"
       data:
-        component: component
-        service_id: service_id
+        service:
+          component: component
 
 
   ##############################################
@@ -335,8 +335,8 @@ $ ->
       url: "catalog_manager/services/update_related_service"
       data:
         service_relation_id: service_relation_id
-        #TODO: Optional should be switched to 'required' once database is changed
-        optional: required
+        service_relation:
+          optional: required #TODO: Optional should be switched to 'required' once database is changed
 
   $(document).on 'change', '.linked_quantity', (event) ->
     service_relation_id = $(this).data('service-relation-id')
@@ -348,7 +348,8 @@ $ ->
         url: "catalog_manager/services/update_related_service"
         data:
           service_relation_id: service_relation_id
-          linked_quantity: linked_quantity
+          service_relation:
+            linked_quantity: linked_quantity
 
     if !linked_quantity
       $(this).siblings('.linked_quantity_container').fadeOut(750, ->
@@ -365,7 +366,8 @@ $ ->
       url: "catalog_manager/services/update_related_service"
       data:
         service_relation_id: service_relation_id
-        linked_quantity_total: linked_quantity_total
+        service_relation:
+          linked_quantity_total: linked_quantity_total
 
   ##############################################
   ###             Service Pricing            ###

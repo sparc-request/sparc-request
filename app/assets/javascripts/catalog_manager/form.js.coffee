@@ -134,7 +134,7 @@ $ ->
     if confirm(I18n['catalog_manager']['organization_form']['surveys']['survey_delete'])
       $.ajax
         type: 'POST'
-        url: "catalog_manager/organizations/remove_associated_survey"
+        url: "/catalog_manager/organizations/remove_associated_survey"
         data:
           associated_survey_id: survey_id
           surveyable_id: surveyable_id
@@ -149,7 +149,7 @@ $ ->
       surveyable_id = $(this).data('id')
       $.ajax
         type: 'POST'
-        url: "catalog_manager/organizations/add_associated_survey"
+        url: "/catalog_manager/organizations/add_associated_survey"
         data:
           survey_id: survey_id
           surveyable_type : surveyable_type
@@ -191,7 +191,7 @@ $ ->
     $("#status-options .panel-body").fadeOut(1000)
     $.ajax
       type: 'POST'
-      url: "catalog_manager/organizations/toggle_default_statuses"
+      url: "/catalog_manager/organizations/toggle_default_statuses"
       data:
         checked: checked
         organization_id: org_id
@@ -274,14 +274,14 @@ $ ->
     if confirm (I18n['catalog_manager']['organization_form']['submission_emails']['remove_confirm'])
       $.ajax
         type: 'DELETE'
-        url: "catalog_manager/submission_emails/#{id}"
+        url: "/catalog_manager/submission_emails/#{id}"
 
   $(document).on 'click', 'button.add-submission-email', (event) ->
     new_submission_email = $('#new_submission_email').val()
     org_id = $(this).data('organization-id')
     $.ajax
       type: 'POST'
-      url: "catalog_manager/submission_emails"
+      url: "/catalog_manager/submission_emails"
       data:
         submission_email:
           email: new_submission_email
@@ -298,7 +298,7 @@ $ ->
     if confirm (I18n['catalog_manager']['service_form']['remove_component_confirm'])
       $.ajax
         type: 'POST'
-        url: "catalog_manager/services/change_components"
+        url: "/catalog_manager/services/change_components"
         data:
           component: component
           service_id: service_id
@@ -308,7 +308,7 @@ $ ->
     service_id = $(this).data('service')
     $.ajax
       type: 'POST'
-      url: "catalog_manager/services/change_components"
+      url: "/catalog_manager/services/change_components"
       data:
         component: component
         service_id: service_id
@@ -323,7 +323,7 @@ $ ->
     if confirm (I18n['catalog_manager']['related_services_form']['remove_related_service_confirm'])
       $.ajax
         type: 'POST'
-        url: "catalog_manager/services/remove_related_service"
+        url: "/catalog_manager/services/remove_related_service"
         data:
           service_relation_id: service_relation_id
 
@@ -332,7 +332,7 @@ $ ->
     required = !$(this).prop('checked')
     $.ajax
       type: 'POST'
-      url: "catalog_manager/services/update_related_service"
+      url: "/catalog_manager/services/update_related_service"
       data:
         service_relation_id: service_relation_id
         #TODO: Optional should be switched to 'required' once database is changed
@@ -345,7 +345,7 @@ $ ->
     ajax_call = ->
       $.ajax
         type: 'POST'
-        url: "catalog_manager/services/update_related_service"
+        url: "/catalog_manager/services/update_related_service"
         data:
           service_relation_id: service_relation_id
           linked_quantity: linked_quantity
@@ -362,7 +362,7 @@ $ ->
     linked_quantity_total = $(this).val()
     $.ajax
       type: 'POST'
-      url: "catalog_manager/services/update_related_service"
+      url: "/catalog_manager/services/update_related_service"
       data:
         service_relation_id: service_relation_id
         linked_quantity_total: linked_quantity_total

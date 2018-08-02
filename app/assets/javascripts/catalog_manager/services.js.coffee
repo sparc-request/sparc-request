@@ -166,7 +166,7 @@ $(document).ready ->
     data = {full_rate: rate, organization_id: organization_id, date: display_date}
     service_rate = $(this)
     $.ajax({
-      url: "catalog_manager/services/get_updated_rate_maps"
+      url: "/catalog_manager/services/get_updated_rate_maps"
       data: data
       success: (data) ->
         service_rate.closest('tr').siblings('.federal_rate_row').find('.set_rate').html("#{data.federal_rate}")

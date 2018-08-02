@@ -132,7 +132,7 @@ $(document).ready ->
       new_value = $('.fix_pricing_maps_new_value').val()
       data = {entity_id: entity_id, old_value: old_value, old_value_type: old_value_type, new_value: new_value}
       $.ajax({
-        url: "catalog_manager/update_dates_on_pricing_maps"
+        url: "/catalog_manager/update_dates_on_pricing_maps"
         data: data
         success: (data) ->
           $('.pricing_map_fix_spinner').hide()

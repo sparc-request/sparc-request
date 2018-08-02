@@ -126,18 +126,14 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
 
       context 'your cost' do
         before :each do
-          find('.edit-your-cost.editable', match: :first).click
+          find('.your-cost.editable', match: :first).click
           find('.editable-input input').set(100)
           find('.editable-submit').click
           wait_for_javascript_to_finish
         end
 
         it 'updates your cost' do
-          expect(page).to have_css('.edit-your-cost', text: '$100.00')
-        end
-
-        it 'should update header total cost' do
-          expect(page).to have_css('.display_cost', text: '$1,001.00')
+          expect(page).to have_css('.your-cost', text: '$100.00')
         end
       end
     end
@@ -154,24 +150,6 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         it 'should throw error' do
           expect(page).to have_selector('.editable-error-block', visible: true)
           expect(page).to have_content('Subject Count is not a number')
-        end
-
-        it 'should not update header total' do
-          expect(page).to have_css('.display_cost', text: '$11.00')
-        end
-      end
-
-      context 'your cost' do
-        before :each do
-          find('.edit-your-cost.editable', match: :first).click
-          find('.editable-input input').set('a number')
-          find('.editable-submit').click
-          wait_for_javascript_to_finish
-        end
-
-        it 'should throw error' do
-          expect(page).to have_selector('.editable-error-block', visible: true)
-          expect(page).to have_content('Displayed Cost must be a number')
         end
 
         it 'should not update header total' do

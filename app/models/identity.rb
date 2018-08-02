@@ -66,6 +66,7 @@ class Identity < ApplicationRecord
   has_many :service_providers, dependent: :destroy
   has_many :studies, -> { where("protocols.type = 'Study'")}, through: :project_roles, source: :protocol
   has_many :super_users, dependent: :destroy
+  has_many :short_interactions, :dependent => :destroy
 
   cattr_accessor :current_user
 
@@ -408,6 +409,32 @@ class Identity < ApplicationRecord
     return false
   end
 
+  # short_interactions report
+  # Display first available Provider/Program to which the SP user rights is assigned
+  def display_available_provider_program_name
+    name = "N/A"
+    orgs = self.service_providers.map {|sp| sp.organization}.reject{|o| o.is_available == false}
+    unless orgs.empty?
+      providers = orgs.select {|o| o.type == "Provider"}
+
+      #SP not assigned @Provider-level
+      if providers.empty?
+        programs = orgs.select {|o| o.type == "Program"}
+        ## SP assigned @Program-level SP
+        if !programs.empty?
+          program = programs[0]
+        ## SP assigned @Core-level
+        else
+          program = Organization.find(orgs[0].parent_id)
+        end
+        provider = Organization.find(program.parent_id)
+        name = "#{provider.name}/#{program.name}"
+      else
+        name = providers[0].name
+      end
+    end
+    name
+  end
   ###############################################################################
   ########################## NOTIFICATION METHODS ###############################
   ###############################################################################

@@ -14,7 +14,6 @@ namespace :sparc do
       Institution.create(name: 'MUHA', abbreviation: 'muha', is_available: true)
       Institution.create(name: 'MUSCP', abbreviation: 'muscp', is_available: true)
       Institution.create(name: 'MUSC', abbreviation: 'musc', is_available: true)
-      end
     end
 
     if ProfessionalOrganization.count == 0

@@ -308,6 +308,7 @@ en:
       search_for_user: "Search for a User"
       select_one: "Select One"
     add_as_last: "Add as last"
+    other: "Other"
 
   #############
   # DOCUMENTS #

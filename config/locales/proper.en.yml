@@ -270,7 +270,7 @@ en:
         answer_4: "A Research Study is an individual research protocol with defined aims and outcomes."
         question_5: "How is SPARC Request calculating my indirect costs?"
         answer_5: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARC Request uses this data to calculate your total overall indirect costs."
-        question_6: "I\'m stuck! Who can I contact for assistance with SPARC Request?"
+        question_6: "I'm stuck! Who can I contact for assistance with SPARC Request?"
         answer_6: "The SUCCESS Center is happy to assist you! Please contact us at success@musc.edu or (843) 792-3357."
       feedback:
         header: "Feedback"

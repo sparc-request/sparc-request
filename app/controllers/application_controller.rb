@@ -268,7 +268,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authorize_funding_admin
-    redirect_to root_path unless Setting.find_by_key("use_sparc_funding").value && current_user.is_funding_admin?
+    redirect_to root_path unless Setting.find_by_key("use_funding_module").value && current_user.is_funding_admin?
   end
 
   def sanitize_dates(params, field_names)

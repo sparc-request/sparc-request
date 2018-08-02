@@ -409,7 +409,7 @@ class ServiceRequestsController < ApplicationController
     if Setting.find_by_key("use_news_feed").value
       @news = []
       begin
-        page = Nokogiri::HTML(open(Setting.find_by_key("news_feed_url"), open_timeout: 5))
+        page = Nokogiri::HTML(open(Setting.find_by_key("news_feed_url").value, open_timeout: 5))
         articles = page.css(Setting.find_by_key("news_feed_post_selector").value).take(3)
         articles.each do |article|
           @news << {

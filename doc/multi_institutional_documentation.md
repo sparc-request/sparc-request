@@ -1,31 +1,31 @@
 ## SPARCRequest Customization Options
 ### Contents
   
-  1. Database Settings
-    1.1 Adapters
-    1.2 Environments
-  2. Settings & Configuration
-    2.1 Generic Settings
-    2.2 Configuring Omniauth
-    2.3 Configuring LDAP
-    2.4 Configuring Epic
-    2.5 Configuring RMID
-    2.6 SPARCFulfillment
-    2.7 SPARCFunding
-    2.8 SPARCRequest API
-    2.9 Right Navigation
-    2.10 Google Calendar
-    2.11 News Feed
-    2.12 System Satisfaction Survey
-    2.13 navigation.yml
+    1. Database Settings
+      1.1 Adapters
+      1.2 Environments
+    2. Settings & Configuration
+      2.1 Generic Settings
+      2.2 Configuring Omniauth
+      2.3 Configuring LDAP
+      2.4 Configuring Epic
+      2.5 Configuring RMID
+      2.6 SPARCFulfillment
+      2.7 SPARCFunding
+      2.8 SPARCRequest API
+      2.9 Right Navigation
+      2.10 Google Calendar
+      2.11 News Feed
+      2.12 System Satisfaction Survey
+      2.13 navigation.yml
     3. Permissible Values & Constants
       3.1 Permissible Values
       3.2 constants.yml
-  4. DotENV
-  5. Localization
-  6. Data Flags
-    6.1 Organization Tags
-    6.2 Catalog Overlords
+    4. DotENV
+    5. Localization
+    6. Data Flags
+      6.1 Organization Tags
+      6.2 Catalog Overlords
 
 ### 1. Database Settings
 #### 1.1 Adapters
@@ -97,11 +97,11 @@ SPARCRequest has many settings that are used internally to customize content and
 - **finished_statuses**: This defines the statuses in which a SubServiceRequest is considered complete. When in these statuses, SubServiceRequests can't be updated. New services from those organizations will be added to new SubServiceRequests.
 
 ##### Other Settings
-- **host**: ???
+- **host**: This is the host domain of your instance of SPARCRequest.
 - **site_admins**: This is a list of users who will have full access to the Survey/Form builder and SPARCForms.
 - **use_indirect_cost**: This determines how the application displays costs to users. If turned on, then in addition to direct costs and direct cost subtotals, users will also see indirect costs and indirect cost subtotals, and indirect costs will also be included in the grand total. If turned off, then indirect costs will not be displayed to users, nor included in the grand total.
-- **use_separate_audit_database**: ???
-- **wkhtmltopdf_location**: ???
+- **use_separate_audit_database**: This determines whether the application will store audits in a separate datebase. The application expects this database to be named `audit_#{Rails.env}`.
+- **wkhtmltopdf_location**: This is a customizable path pointing to the binary for the `wkhtmltopdf` gem which is used to generate PDFs of HTML content. The default value provided by the gem is `/usr/local/bin/wkhtmltopdf`.
 
 #### 2.2 Configuring Omniauth
 Your institution may opt to use [Omniauth](https://github.com/omniauth/omniauth) authentication plugins such as [CAS](https://apereo.github.io/cas/5.2.x/index.html) and [Shibboleth](https://www.shibboleth.net/) for user authentication in SPARCRequest. Only CAS and Shibboleth are supported at this time, but support for other Omniauth plugins may be implemented. These settings are generated from `config/settings/oauth.json`.
@@ -129,28 +129,28 @@ Your institution may opt to use [LDAP](https://ldap.com/) for managing identitie
 - **ldap_last_name**: This is the key in your institution's LDAP records that corresponds to the last name/surname of a given user.
 - **ldap_first_name**: This is the key in your institution's LDAP records that corresponds to the first name/given name of a given user.
 - **ldap_email**: This is the key in your institution's LDAP records that corresponds to the email of a given user.
-- **ldap_auth_username**: ???
-- **ldap_auth_password**: ???
-- **ldap_filter**: ???
+- **ldap_auth_username**: This is an optional username to access your institution's LDAP.
+- **ldap_auth_password**: This is an optional password to access your institution's LDAP.
+- **ldap_filter**: This is an optional filter that allows you to control how LDAP searches for an identity. Filter documentation can be found [here](https://ldap.com/ldap-filters/).
 
 
 #### 2.4 Configuring Epic
 Your institution may opt to use [Epic](https://www.epic.com/) to store health records from SPARCRequest. These settings are generated from `config/settings/epic.json`.
 
-##### EPIC Configuration
+##### Epic Configuration
 - **use_epic**: This determines whether the application will use Epic integration.
 - **approve_epic_rights_mail_to**:
 - **queue_epic**: This determines whether Epic pushes will be queued. Emptying the queue is done via `rake epic:batch_load`. This can be set up as a cronjob to run at a certain interval.
 - **epic_queue_access**: This is a list of users who will have full access to the Epic queue from SPARCDashboard.
-- **epic_queue_report_to**:
-- **queue_epic_load_error_to**:
+- **epic_queue_report_to**: This is the email(s) that will be sent Epic queue reports when they are generated.
+- **queue_epic_load_error_to**: This is the email(s) that will be notified when errors occur in the Epic queue.
 
-##### EPIC Fields
-- **epic_study_root**: ???
-- **epic_endpoint**: ???
-- **epic_namespace**: ???
-- **epic_wsdl**: ???
-- **epic_test_mode**: This tells the application to use a fake Epic server. This is turned on automatically when running specs.
+##### Epic Fields
+- **epic_study_root**: This is the root URL of your institution's Epic API.
+- **epic_endpoint**: This is the endpoint address for your institution's Epic SOAP message receiver.
+- **epic_namespace**: This is the namespace of your institution's Epic API.
+- **epic_wsdl**: This is the Web Service Description Language (WSDL) which describes how to communicate with the Epic interface.
+- **epic_test_mode**: This tells the application to use a fake Epic server, rather than connecting to the Epic interface. This is primarily intended to be used in the test suite.
 
 #### 2.5 Configuring RMID
 Your institution may opt to use Research Master ID (RMID) to connect records between SPARCRequest and other systems, such as eIRB and Coeus. These settings are generated from `config/settings/rmid.json`.
@@ -164,7 +164,7 @@ Your institution may opt to use Research Master ID (RMID) to connect records bet
 Your institution may opt to use [SPARCFulfillment](https://github.com/sparc-request/sparc-fulfillment), aka Clinical Work Fulfillment (CWF) to allow service providers to fulfill and track the clinical and non-clinical services they provide. These settings are generated from `config/settings/cwf.json`.
 
 - **clinical_work_fulfillment_url**: This is the URL of your institution's SPARCFulfillment application.
-- **fulfillment_contingent_on_catalog_manager**: ???
+- **fulfillment_contingent_on_catalog_manager**: This determines whether users will have the ability to push a request to SPARCFulfillment from the Admin Dashboard.
 
 #### 2.7 SPARCFunding
 Your institution may opt to use the SPARCFunding module to keep track of funding opportunities. These settings are generated from `config/settings/funding.json`.
@@ -177,11 +177,11 @@ Your institution may opt to use the SPARCFunding module to keep track of funding
 Your institution may opt to use the SPARCRequest API to communicate with external applications, such as SPARCFulfillment. These settings are generated from `config/settings/api.json`.
 
 - **current_api_version**: This is the current version of the SPARCRequest API.
-- **remote_service_notifier_protocol**: ???
-- **remote_service_notifier_username**: ???
-- **remote_service_notifier_password**: ???
-- **remote_service_notifier_host**: ???
-- **remote_service_notifier_path**: ???
+- **remote_service_notifier_protocol**: This is the HTTP protocol (HTTP/HTTPS) of the SPARCRequest API.
+- **remote_service_notifier_username**: This is the authentication username of the SPARCRequest API.
+- **remote_service_notifier_password**: This is the authentication password of the SPARCRequest API.
+- **remote_service_notifier_host**: This is the host domain of the SPARCRequest API.
+- **remote_service_notifier_path**: This is the URL path of the SPARCRequest API.
 
 #### 2.9 Right Navigation
 
@@ -253,10 +253,9 @@ Your institution may opt to provide users with a system satisfaction survey prio
 This would mean that on the service details page, when navigating to the catalog page, protocol page, or the save_and_exit page, that the 'service_details_back' group of validations should fire.  If the user attempts to navigate to the 'service_calendar' page (which in this case would be by pressing the 'Save and Continue' button) it will fire the validations in the 'service_details' category (fields which are validated can be found in the Service Request model).
 
 ### 3. Permissible Values & Constants
-Describe Permissible Values & Constants ???
 
 #### 3.1 Permissible Values
-Describe Permissible Values ???
+Permissible Values are options and labels used across SPARCRequest, most of which can be customized for your institution. These are stored in the `permissible_values` database table and categorized by their `category` attribute.
 
 ##### Protocol Options
 These Permissible Values are used when creating or updating a Study or Project
@@ -288,21 +287,21 @@ These Permissible Values are used when creating or updating an Authorized User o
 - **interaction_type**: These are the methods of contact for a Short Interaction request.
 
 #### 3.2 constants.yml
-Describe Constants ???
+`config/constants.yml` contains a number of labels and environment settings. These should remain unchanged. Changing these could require substantial other changes throughout the application.
 
 - **accordion_color_options**: This is a list of colors for displaying Institutions and Providers in the service catalog on the SPARCRequest homepage. These are selected in SPARCCatalog.
-- **alert_statuses**: ???
-- **alert_types**: ???
-- **audit_actions**: ???
-- **epic_push_status_text**: ???
-- **epic_rights**: ???
-- **study_type_answers**: ???
-- **study_type_answers_version_2**: ???
-- **study_type_answers_version_3**: ???
-- **study_type_notes**: ???
-- **study_type_questions**: ???
-- **study_type_questions_version_2**: ???
-- **study_type_questions_version_3**: ???
+- **alert_statuses**: This is a list of statuses for alerts. Alerts can be used on a production server to warn you when an external component fails.
+- **alert_types**: This is a list of types of alerts. Currently alerts are only used for the news feed and Google calendar on the homepage.
+- **audit_actions**: This is a list of audit actions used in auditing reports.
+- **epic_push_status_text**: This is a list containing various statuses of Protocols when being pushed to Epic.
+- **epic_rights**: This is a list of Epic user rights for given to authorized users.
+- **study_type_answers**: This list maps answers to the first version of study type questions to a corresponding study-type note. Each column corresponds to a different question. `true` maps to questions answered "yes", `false` to questions answered "no", and `~` to questions that will not be displayed in the sequence.
+- **study_type_answers_version_2**: This list maps answers to the second version of study type questions to a corresponding study-type note. Each column corresponds to a different question. `true` maps to questions answered "yes", `false` to questions answered "no", and `~` to questions that will not be displayed in the sequence.
+- **study_type_answers_version_3**: This list maps answers to the third version of study type questions to a corresponding study-type note. Each column corresponds to a different question. `true` maps to questions answered "yes", `false` to questions answered "no", and `~` to questions that will not be displayed in the sequence.
+- **study_type_notes**: This is a list of study-type notes displayed based on a user's answers to study-type questions. These notes explain what each type of study means.
+- **study_type_questions**: This is a list of the first version of study-type questions displayed to users when creating or updating a study.
+- **study_type_questions_version_2**: This is a list of the second version of study-type questions displayed to users when creating or updating a study.
+- **study_type_questions_version_3**: This is a list of the third version of study-type questions displayed to users when creating or updating a study.
 - **browser_versions**: This is a list of browsers for when a user submits feedback via the built-in feedback system.
 
 
@@ -313,7 +312,7 @@ SPARCRequest stores several environment variables specific to each institution. 
     
 The environment variables are as follows:
 
-- **site_name**: ???
+- **site_name**: This is an optional name that will be displayed as an alert at the top of SPARCRequest. This can be useful for keeping track of the current environment.
 - **SPARC_VERSION**: This is the version of SPARCRequest your institution is using and will be displayed in the footer of the application.
 - **institution**: This is the name of your institution. This is currently only used for the CAS and Shibboleth login buttons.
 - **institution_logo**: This is the path to your institution's logo image. This image should be placed in `app/assets/images` and should be 1206x791 pixels or a similar ratio.

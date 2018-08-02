@@ -13,7 +13,7 @@
     "key":            "fulfillment_contingent_on_catalog_manager",
     "value":          "true",
     "friendly_name":  "Fulfillment Contingent on Catalog Manager",
-    "description":    "",
+    "description":    "This determines whether users will have the ability to push a request to SPARCFulfillment from the Admin Dashboard.",
     "group":          "",
     "version":        "",
     "parent_key":     "",

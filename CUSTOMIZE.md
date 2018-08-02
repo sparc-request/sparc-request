@@ -1,17 +1,8 @@
 # How to Customize SPARC
 SPARC can be customized to meet the look and feel requirements for your institution. Customizable features include header images, CSS, displayable text, and the constants (which are used primarily for select lists and checkboxes). The example institution referenced in this doc is **uofexample (a.k.a., U of Example)**
 
-## 1. Configure Application.yml
-	# insert sub-directory path to override the three header images + account sign-in image and override application.css
-	custom_asset_path: uofexample/
-	# override the MUSC specific displayable text inside config/locales/en.yml with your own text (e.g., institution.yml)
-	locale_override: uofexample
-	# override the MUSC specific constants (e.g., constants-institution.yml)
-	constants_yml_override: -uofexample
-	# turn off the system satisfaction survey
-	system_satisfaction_survey: false
-	# turn off database login and registration forms
-	use_shibboleth_only: true
+## 1. Configure the Application
+See the Multi-Institutional Doc for detailed instructions on configuring SPARCRequest to work for your institution.
 
 ## 2. Set Up a Second Project to Hold Customizations
 A secondary project's directory structure is flexible but needs to be organized to fit with the Capistrano deployment. A sample directory structure using an institution named uofexample:

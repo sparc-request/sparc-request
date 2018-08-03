@@ -235,7 +235,7 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
   sheet.add_row ["Primary PI Name:", @protocol.primary_principal_investigator.full_name], :style => [bold_default, default]
   sheet.add_row ["Business Manager:", @protocol.billing_managers.map(&:full_name).try(:join, ', ')], :style => [bold_default, default]
   sheet.add_row ["Funding Source:", @protocol.display_funding_source_value], :style => [bold_default, default]
-  sheet.add_row ["Indirect Cost Rate:", @protocol.indirect_cost_rate / 100.0 || 0.0], style: [bold_default, percent]
+  sheet.add_row ["Indirect Cost Rate:", @protocol.indirect_cost_rate.try(:/, 100.0) || 0.0], style: [bold_default, percent]
   sheet.add_row ["Staff Fringe Rate:", 0], style: [bold_default, percent]
 
   indirect_cost_rate_row = sheet.rows.length

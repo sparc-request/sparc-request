@@ -191,7 +191,7 @@ $ ->
     $("#status-options .panel-body").fadeOut(1000)
     $.ajax
       type: 'POST'
-      url: "catalog_manager/organizations/toggle_default_statuses"
+      url: "/catalog_manager/organizations/toggle_default_statuses"
       data:
         checked: checked
         organization_id: org_id

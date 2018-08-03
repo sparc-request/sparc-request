@@ -30,4 +30,4 @@
   - service.service_relations.each do |service_relation|
     = render "catalog_manager/services/related_services_row", service: service, service_relation: service_relation
 .col-sm-12.no-padding
-  = text_field_tag 'new_related_services_search', nil, placeholder: t(:catalog_manager)[:related_services_form][:add_service], class: "form-control", data: { service: service.id }
+  = text_field_tag 'new_related_services_search', nil, placeholder: t(:catalog_manager)[:related_services_form][:add_service], class: "form-control", data: { service_id: service.id }

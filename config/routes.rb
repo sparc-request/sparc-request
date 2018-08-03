@@ -189,7 +189,6 @@ SparcRails::Application.routes.draw do
     match 'services/update_related_service' => 'services#update_related_service', via: [:post]
     match 'services/add_related_service' => 'services#add_related_service', via: [:post]
     match 'services/remove_related_service' => 'services@remove_related_service', via: [:post]
-    match 'services/change_components' => 'services#change_components', via: [:post]
     match 'organizations/remove_fulfillment_rights_row' => 'organizations#remove_fulfillment_rights_row', via: [:post]
     match 'organizations/remove_user_rights_row' => 'organizations#remove_user_rights_row', via: [:post]
     match 'organizations/toggle_default_statuses' => 'organizations#toggle_default_statuses', via: [:post]
@@ -201,6 +200,7 @@ SparcRails::Application.routes.draw do
     match 'pricing_maps/refresh_rates' => 'pricing_maps#refresh_rates', via: [:get]
 
     resources :services, only: [:edit, :update, :create, :new] do
+      patch :change_components
       patch :update_epic_info
     end
 

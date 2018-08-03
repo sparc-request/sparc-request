@@ -20,13 +20,5 @@ class AddShortInteractionPermissibleValues < ActiveRecord::Migration[5.2]
       PermissibleValue.create(category: 'interaction_subject', key: 'regulatory_question', value: 'Regulatory Question')
       PermissibleValue.where(category: 'interaction_subject').update_all(is_available: true)
     end
-
-    ## move institutions from constant.yml to permissible_values
-    unless PermissibleValue.where(category: 'institution').exists?
-      INSTITUTIONS.each do |name, key|
-        PermissibleValue.create(category: 'institution', key: key, value: name)
-      end
-      PermissibleValue.where(category: 'institution').update_all(is_available: true)
-    end
   end
 end

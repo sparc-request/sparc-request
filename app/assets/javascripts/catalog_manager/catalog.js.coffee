@@ -290,4 +290,4 @@ window.initialize_related_services_search = () ->
         data:
           service_id: $(this).data('service-id')
           related_service_id: suggestion.id
-  );
+);

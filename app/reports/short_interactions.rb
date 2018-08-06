@@ -48,7 +48,7 @@ class ShortInteractionsReport < ReportingModule
     attrs["Duration in minutes"] = :duration_in_minutes
     attrs["Investigator Name"] = :name
     attrs["Investigator Email"] = :email
-    attrs["Investigator Institution"] = :display_institution
+    attrs["Investigator Institution"] = :institution
     attrs["Notes"] = :note
     
     attrs

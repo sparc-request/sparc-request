@@ -301,7 +301,7 @@ $ ->
     if confirm (I18n['catalog_manager']['service_form']['remove_component_confirm'])
       $.ajax
         type: 'PATCH'
-        url: "catalog_manager/services/#{service_id}/change_components"
+        url: "/catalog_manager/services/#{service_id}/change_components"
         data:
           service:
             component: component
@@ -311,7 +311,7 @@ $ ->
     service_id = $(this).data('service-id')
     $.ajax
       type: 'PATCH'
-      url: "catalog_manager/services/#{service_id}/change_components"
+      url: "/catalog_manager/services/#{service_id}/change_components"
       data:
         service:
           component: component

@@ -33,11 +33,12 @@ RSpec.describe 'User adds new service level components', js: true do
 
     visit catalog_manager_catalog_index_path
     wait_for_javascript_to_finish
-    find("#institution-#{@institution.id}").click
-    find("#provider-#{@provider.id}").click
-    find("#program-#{@program.id}").click
+    find("#institution-#{@institution.id} .glyphicon").click
+    find("#provider-#{@provider.id} .glyphicon").click
+    find("#program-#{@program.id} .glyphicon").click
     wait_for_javascript_to_finish
-    click_link @service.name
+    expect(page).to have_selector('a span', text: @service.name)
+    find('a span', text: @service.name).click
     wait_for_javascript_to_finish
 
     click_link I18n.t(:catalog_manager)[:organization_form][:service_level_components]

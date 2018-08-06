@@ -37,7 +37,8 @@ RSpec.describe 'User removes service level components', js: true do
     find("#provider-#{@provider.id}").click
     find("#program-#{@program.id}").click
     wait_for_javascript_to_finish
-    click_link @service.name
+    expect(page).to have_selector('a span', text: @service.name)
+    find('a span', text: @service.name).click
     wait_for_javascript_to_finish
 
     click_link I18n.t(:catalog_manager)[:organization_form][:service_level_components]

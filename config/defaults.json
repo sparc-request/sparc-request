@@ -180,6 +180,16 @@
     "parent_value":   ""
   },
   {
+    "key":            "header_link_2_catalog",
+    "value":          "http://localhost:3000/catalog_manager",
+    "friendly_name":  "Header Logo 2 URL (SPARCCatalog)",
+    "description":    "The URL for the second image in the header logos in SPARCCatalog.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
     "key":            "header_link_2_dashboard",
     "value":          "http://localhost:3000/dashboard",
     "friendly_name":  "Header Logo 2 URL (SPARCDashboard)",

@@ -28,6 +28,7 @@ FactoryBot.define do
     service_center_cost { Random.rand(100) }
     charge_code         { Faker::Lorem.words().first }
     revenue_code        { Faker::Lorem.words().first }
+    order               { 1 }
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }
@@ -81,7 +82,7 @@ FactoryBot.define do
 
     transient do
       line_item_count 0
-      pricing_map_count 1
+      pricing_map_count 0
       service_provider_count 0
       service_relation_count 0
     end

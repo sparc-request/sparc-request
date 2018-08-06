@@ -25,12 +25,12 @@ FactoryBot.define do
     percent_of_fee             { 50 }
     full_rate                  { 100 }
     exclude_from_indirect_cost { false }
-    display_date               Date.parse('2000-01-01')
-    effective_date             Date.parse('2000-01-01')
+    sequence(:display_date)    {|n| Date.parse('2000-01-01') + n}
+    sequence(:effective_date)  {|n| Date.parse('2000-01-01') + n}
     # one time fee specific fields
     units_per_qty_max          { 52 }
     otf_unit_type              { "N/A" }
-    quantity_type              { Faker::Lorem.word }   
+    quantity_type              { Faker::Lorem.word }
     quantity_minimum           { 1 }
     # per patient specific fields
     unit_type                  { Faker::Lorem.word }
@@ -41,5 +41,5 @@ FactoryBot.define do
     end
 
     factory :pricing_map_without_validations, traits: [:without_validations]
-  end  
+  end
 end

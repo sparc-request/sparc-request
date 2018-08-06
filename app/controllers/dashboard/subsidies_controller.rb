@@ -27,7 +27,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
     @admin = params[:admin] == 'true'
     @path = dashboard_subsidies_path
     @action = 'new'
-    @subsidy.percent_subsidy = @subsidy.default_percentage
+    @subsidy.percent_subsidy = (@subsidy.default_percentage / 100.0)
   end
 
   def create

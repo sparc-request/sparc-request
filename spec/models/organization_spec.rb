@@ -49,7 +49,6 @@ RSpec.describe Organization, type: :model do
 
         # now let's add the core back
         submission_email_4 = core.submission_emails.create(email: submission_email_3.email)
-        core.save!
         sub_service_request.reload
         expect(sub_service_request.organization.submission_emails_lookup).to include(submission_email_4)
       end
@@ -81,7 +80,7 @@ RSpec.describe Organization, type: :model do
     end
   end
 
-  describe 'heirarchy methods' do
+  describe 'hierarchy methods' do
 
     let!(:program2) { create(:program, parent_id: provider.id) }
     let!(:core2) { create(:core, parent_id: program2.id) }
@@ -115,42 +114,6 @@ RSpec.describe Organization, type: :model do
         program2.save
         expect(core.process_ssrs_parent).to eq(program)
         expect(core2.process_ssrs_parent).to eq(program2)
-      end
-    end
-
-    describe 'children' do
-
-      it 'should return only the provider if it is an institution' do
-        expect(institution.children(Organization.all)).to include(provider)
-        expect(institution.children(Organization.all)).not_to include(program)
-      end
-
-      it 'should return the program if it is a provider' do
-        expect(provider.children(Organization.all)).to include(program)
-      end
-
-      it 'should return the core if it is a program' do
-        expect(program.children(Organization.all)).to include(core)
-      end
-    end
-
-    describe 'all children' do
-
-      it 'should return itself if it is a core' do
-        expect(core.all_children(Organization.all)).to eq([core])
-      end
-
-      it 'should return the core if it is a program' do
-        expect(program.all_children(Organization.all)).to include(core)
-        expect(program.all_children(Organization.all)).not_to include(core2)
-      end
-
-      it 'should return multiple programs and cores if it is a provider' do
-        expect(provider.all_children(Organization.all)).to include(core, core2, program, program2)
-      end
-
-      it 'should return everything if it is an institution' do
-        expect(institution.all_children(Organization.all)).to include(core, core2, program, program2, provider)
       end
     end
 
@@ -233,19 +196,6 @@ RSpec.describe Organization, type: :model do
       expect(core.reload.is_available).to eq(false)
       expect(service.reload.is_available).to eq(false)
     end
-
-    it 'should only make immediate child Services available if organization is made available' do
-      provider   = create(:provider, is_available: true)
-      program    = create(:program, parent: provider, is_available: false)
-      service   = create(:service, organization: program, is_available: false)
-      core       = create(:core, parent: program, is_available: false)
-
-      program.update_descendants_availability("1")
-
-      expect(core.reload.is_available).to eq(false)
-      expect(service.reload.is_available).to eq(false)
-    end
-
   end
 
   describe 'current_pricing_setup' do

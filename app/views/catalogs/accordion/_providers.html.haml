@@ -37,5 +37,5 @@
               %span.caret
       .panel-collapse.collapse{ class: "provider-#{p.id}" }
         .panel-body
-          = render 'catalogs/accordion/programs', programs: p.programs.where(is_available: [nil, true]).order('`order`'), locked_ids: locked_ids, ssr_org: ssr_org, provider_is_process_ssr: provider_is_process_ssr
+          = render 'catalogs/accordion/programs', programs: p.programs.where(is_available: [nil, true]).order(Arel.sql('`order`, `name`')), locked_ids: locked_ids, ssr_org: ssr_org, provider_is_process_ssr: provider_is_process_ssr
 

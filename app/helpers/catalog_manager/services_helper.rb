@@ -19,36 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module CatalogManager::ServicesHelper
-  def display_otf_attributes(pricing_map)
-    if pricing_map
-      attributes = ""
-      if pricing_map.service.one_time_fee
-        if pricing_map.otf_unit_type == "N/A"
-          attributes = ['#', pricing_map.try(:quantity_type)].compact.join
-        else
-          attributes = ['#', pricing_map.try(:otf_unit_type), '/', '#', pricing_map.try(:quantity_type)].compact.join
-        end
-      end
-
-      attributes
-    end
-  end
-
-
-  def per_patient_display_style pricing_map
-    style = ""
-
-    if pricing_map
-      if pricing_map.service.one_time_fee
-        style = "display:none;"
-      end
-    else
-      style = ""
-    end
-
-    style
-  end
-
   def service_header
     content_tag(:span, "Service", class: "text-service")
   end

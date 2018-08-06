@@ -33,9 +33,9 @@ RSpec.describe 'User removes service level components', js: true do
 
     visit catalog_manager_catalog_index_path
     wait_for_javascript_to_finish
-    find("#institution-#{@institution.id}").click
-    find("#provider-#{@provider.id}").click
-    find("#program-#{@program.id}").click
+    find("#institution-#{@institution.id} .glyphicon").click
+    find("#provider-#{@provider.id} .glyphicon").click
+    find("#program-#{@program.id} .glyphicon").click
     wait_for_javascript_to_finish
     expect(page).to have_selector('a span', text: @service.name)
     find('a span', text: @service.name).click

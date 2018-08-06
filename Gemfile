@@ -98,7 +98,7 @@ gem 'puma', '~> 3.12'
 group :development, :test do
   gem 'pry'
   gem 'rails-erd'
-  gem 'rspec-rails', '~> 3.4'
+  gem 'rspec-rails', '~> 3.8'
 end
 
 group :development do

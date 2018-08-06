@@ -18,5 +18,37 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("<%= j render '/catalog_manager/services/related_services_row', service: @service, service_relation: @service_relation %>").hide().appendTo('#related-services-container').fadeIn(1000)
-$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+require 'rails_helper'
+
+RSpec.describe 'User manages associated surveys', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
+
+  before :each do
+    @institution        = create(:institution)
+    @provider           = create(:provider, parent_id: @institution.id)
+    @survey             = create(:survey, active: true, type: 'SystemSurvey')
+    @associated_survey  = create(:associated_survey, associable_id: @provider.id, survey_id: @survey.id, associable_type: 'Organization')
+    create(:catalog_manager, organization_id: @institution.id, identity_id: Identity.where(ldap_uid: 'jug2').first.id)
+
+    visit catalog_manager_catalog_index_path
+    wait_for_javascript_to_finish
+    find("#institution-#{@institution.id}").click
+    wait_for_javascript_to_finish
+    click_link @provider.name
+    wait_for_javascript_to_finish
+
+    click_link 'Associated Surveys'
+    wait_for_javascript_to_finish
+
+    find('.remove-associated-survey').click
+    wait_for_javascript_to_finish
+
+  end
+
+  it 'should delete the associated survey for the organization' do
+    expect(AssociatedSurvey.where(associable_id: @provider.id).count).to eq(0)
+    expect(page).to_not have_selector("survey-row-#{@associated_survey.id}")
+  end
+
+end

@@ -56,7 +56,7 @@
             .form-group
               = f.label :charge_master, t(:catalog_manager)[:organization_form][:pricing][:charge_master], class: 'col-sm-4 control-label'
               .col-sm-7
-                = f.check_box :charge_master, {disabled: pricing_setup_disabled, checked: pricing_setup.charge_master, data: {toggle: 'toggle'}}
+                = f.check_box :charge_master, {disabled: pricing_setup_disabled, checked: pricing_setup.charge_master, data: {toggle: 'toggle', on: 'Yes', off: 'No'}}
 
 
           %fieldset

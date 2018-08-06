@@ -32,12 +32,12 @@
         .col-sm-8
           %span= component
         .col-sm-4.text-center
-          %button.btn.btn-xs.btn-danger.remove-service-component{ data:  {service: service.id, component: component} }
+          %button.btn.btn-xs.btn-danger.remove-service-component{ data:  {service_id: service.id, component: component} }
             %span.glyphicon.glyphicon-remove
 
   .form-group
     .col-sm-8
       = text_field_tag 'new_component', '', class: 'form-control component_string'
     .col-sm-4.text-center
-      %button.btn.btn-xs.btn-success.add-service-component{ data: {service: service.id } }
+      %button.btn.btn-xs.btn-success.add-service-component{ data: {service_id: service.id } }
         %span.glyphicon.glyphicon-plus

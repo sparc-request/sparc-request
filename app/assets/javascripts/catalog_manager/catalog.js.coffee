@@ -288,6 +288,6 @@ window.initialize_related_services_search = () ->
         type: 'post'
         url: '/catalog_manager/services/add_related_service'
         data:
-          service: $(this).data('service')
-          related_service: suggestion.id
+          service_id: $(this).data('service-id')
+          related_service_id: suggestion.id
   );

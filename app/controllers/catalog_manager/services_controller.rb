@@ -22,17 +22,6 @@ class CatalogManager::ServicesController < CatalogManager::AppController
   layout false
   respond_to :html, :json, except: :edit
 
-  def edit
-    @service  = Service.find params[:id]
-    @programs = @service.provider.programs
-    @cores    = @service.program.cores
-
-    #TODO: Validate user can edit service
-    respond_to do |format|
-      format.js
-    end
-  end
-
   def new
     @service = Service.new(organization_id: params[:organization_id])
   end
@@ -50,15 +39,24 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     end
   end
 
+  def edit
+    @service  = Service.find params[:id]
+    @programs = @service.provider.programs
+    @cores    = @service.program.cores
+
+    #TODO: Validate user can edit service
+    respond_to do |format|
+      format.js
+    end
+  end
+
   def update
     @service = Service.find(params[:id])
 
     saved = false
 
-    program = params[:service][:program]
-    core = params[:service][:core]
-
-    saved = @service.update_attributes(service_params)
+    program = service_params[:program]
+    core = service_params[:core]
 
     # This will update the service.organization if a user changes the core of the service.
     unless core.blank? && program.blank?
@@ -70,7 +68,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       end
     end
 
-    if saved
+    if @service.update_attributes(service_params.except(:program, :core))
       flash[:success] = "#{@service.name} saved correctly."
       @institutions = Institution.order('`order`')
     else
@@ -87,14 +85,14 @@ class CatalogManager::ServicesController < CatalogManager::AppController
   ####Service Components Methods####
 
   def change_components
-    component = params["component"]
-    @service = Service.find(params["service_id"])
+    @service = Service.find(params[:service_id])
+    component = service_params[:component]
     components_list = (@service.components ? @service.components.split(',') : [])
 
     if components_list.include?(component)
       #Delete component from list and save updated list
       components_list.delete(component)
-      if @service.update_attributes(components: components_list.join(','))
+      if @service.update_attribute(:components, components_list.join(','))
         flash[:success] = "Component deleted successfully."
       else
         flash[:alert] = "Error deleting component."
@@ -102,7 +100,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     else
       #Add new component to list and save updated list
       components_list.push(component)
-      if @service.update_attributes(components: components_list.join(','))
+      if @service.update_attribute(:components, components_list.join(','))
         flash[:success] = "New component saved successfully."
       else
         flash[:alert] = "Failed to create new component."
@@ -118,9 +116,8 @@ class CatalogManager::ServicesController < CatalogManager::AppController
 
   def update_epic_info
     @service = Service.find(params[:service_id])
-    saved = @service.update_attributes(service_params)
 
-    if saved
+    if @service.update_attributes(service_params)
       flash[:success] = "#{@service.name} saved successfully."
     else
       flash[:alert] = "Error updating #{@service.name}."
@@ -134,9 +131,9 @@ class CatalogManager::ServicesController < CatalogManager::AppController
   ####Related Services Methods####
 
   def add_related_service
-    @service = Service.find params["service"]
-    related_service = Service.find params["related_service"]
-    @service_relation = @service.service_relations.new(:related_service_id => related_service.id, :optional => false)
+    @service = Service.find(params[:service_id])
+    related_service = Service.find(params[:related_service_id])
+    @service_relation = @service.service_relations.new(related_service_id: related_service.id, optional: false)
 
     if @service_relation.save
       flash[:success] = "Related service added successfully."
@@ -145,26 +142,24 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     end
   end
 
-  def remove_related_service
-    service_relation = ServiceRelation.find params[:service_relation_id]
-    @service_relation_id = service_relation.id.to_s
-    @service = service_relation.service
-
-    if service_relation.destroy
-      flash[:success] = "Related service removed successfully."
-    else
-      flash[:alert] = "Error removing related service."
-    end
-  end
-
   def update_related_service
     @service_relation = ServiceRelation.find(params[:service_relation_id])
     @service = @service_relation.service
 
-    if @service_relation.update_attributes(service_relation_params.except(:service_relation_id))
+    if @service_relation.update_attributes(service_relation_params)
       flash[:success] = "Related service updated successfully."
     else
       flash[:alert] = "Error updating related service."
+    end
+  end
+
+  def remove_related_service
+    @service_relation = ServiceRelation.find(params[:service_relation_id])
+
+    if @service_relation.destroy
+      flash[:success] = "Related service removed successfully."
+    else
+      flash[:alert] = "Error removing related service."
     end
   end
 
@@ -187,35 +182,33 @@ class CatalogManager::ServicesController < CatalogManager::AppController
   private
 
   def service_params
-    @service_params ||= begin
-      temp = params.require(:service).permit(:name,
-        :abbreviation,
-        :order,
-        :description,
-        :is_available,
-        :service_center_cost,
-        :cpt_code,
-        :eap_id,
-        :charge_code,
-        :order_code,
-        :revenue_code,
-        :organization_id,
-        :send_to_epic,
-        { tag_list: [] },
-        :revenue_code_range_id,
-        :line_items_count,
-        :one_time_fee,
-        :components)
-      temp
-    end
+    params.require(:service).permit(
+      :name,
+      :abbreviation,
+      :order,
+      :description,
+      :is_available,
+      :service_center_cost,
+      :cpt_code,
+      :eap_id,
+      :charge_code,
+      :order_code,
+      :revenue_code,
+      :organization_id,
+      :send_to_epic,
+      { tag_list: [] },
+      :revenue_code_range_id,
+      :line_items_count,
+      :one_time_fee,
+      :component
+    )
   end
 
   def service_relation_params
-    params.permit(
-      :service_relation_id,
+    params.require(:service_relation).permit(
       :optional,
       :linked_quantity,
       :linked_quantity_total
-      )
+    )
   end
 end

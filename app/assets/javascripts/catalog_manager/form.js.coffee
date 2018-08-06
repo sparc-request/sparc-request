@@ -277,14 +277,14 @@ $ ->
     if confirm (I18n['catalog_manager']['organization_form']['submission_emails']['remove_confirm'])
       $.ajax
         type: 'DELETE'
-        url: "catalog_manager/submission_emails/#{id}"
+        url: "/catalog_manager/submission_emails/#{id}"
 
   $(document).on 'click', 'button.add-submission-email', (event) ->
     new_submission_email = $('#new_submission_email').val()
     org_id = $(this).data('organization-id')
     $.ajax
       type: 'POST'
-      url: "catalog_manager/submission_emails"
+      url: "/catalog_manager/submission_emails"
       data:
         submission_email:
           email: new_submission_email

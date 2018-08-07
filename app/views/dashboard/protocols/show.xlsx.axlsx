@@ -205,13 +205,13 @@ arm_totals_ref = {}
     arm_summary_row = ["#{arm.sanitized_name}: Summary"] + [""] * (6 + arm.visit_groups.count * 2 + 2)
     sheet.add_row arm_summary_row, :style => header_style
 
-    sheet.add_row ["#{arm.sanitized_name}: Total Cost (-OH) per Patient", "", "", "", "=#{r_columns.join(total_research_row.to_s + '+') + total_research_row.to_s} + #{totals_column}#{total_research_row}"], style: [default, default, default, default, money]
+    sheet.add_row ["#{arm.sanitized_name}: Total Cost (-OH) per Patient", "", "", "", "=#{r_columns.join(total_research_row.to_s + '+') + total_research_row.to_s}"], style: [default, default, default, default, money]
 
-    sheet.add_row ["#{arm.sanitized_name}: Total Cost (+OH) per Patient", "", "", "", "=#{r_columns.join(total_sponsor_row.to_s + '+') + total_sponsor_row.to_s} + #{totals_column}#{total_sponsor_row}"], style: [default, default, default, default, money]
+    sheet.add_row ["#{arm.sanitized_name}: Total Cost (+OH) per Patient", "", "", "", "=#{r_columns.join(total_sponsor_row.to_s + '+') + total_sponsor_row.to_s}"], style: [default, default, default, default, money]
 
     total_sponsor_ppv_ref = sheet.rows.last.cells.last.r
 
-    sheet.add_row ["#{arm.sanitized_name}: Total Margin per Patient", "", "", "", "=#{r_columns.join(total_margin_row.to_s + '+') + total_margin_row.to_s} + #{totals_column}#{total_margin_row}" ], style: [default, default, default, default, money]
+    sheet.add_row ["#{arm.sanitized_name}: Total Margin per Patient", "", "", "", "=#{r_columns.join(total_margin_row.to_s + '+') + total_margin_row.to_s}" ], style: [default, default, default, default, money]
 
     cells_to_merge.each{|cells| sheet.merge_cells "#{cells[:from]}:#{cells[:to]}"}
 

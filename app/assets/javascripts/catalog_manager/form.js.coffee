@@ -277,14 +277,14 @@ $ ->
     if confirm (I18n['catalog_manager']['organization_form']['submission_emails']['remove_confirm'])
       $.ajax
         type: 'DELETE'
-        url: "catalog_manager/submission_emails/#{id}"
+        url: "/catalog_manager/submission_emails/#{id}"
 
   $(document).on 'click', 'button.add-submission-email', (event) ->
     new_submission_email = $('#new_submission_email').val()
     org_id = $(this).data('organization-id')
     $.ajax
       type: 'POST'
-      url: "catalog_manager/submission_emails"
+      url: "/catalog_manager/submission_emails"
       data:
         submission_email:
           email: new_submission_email
@@ -313,8 +313,8 @@ $ ->
     service_id = $(this).data('service-id')
     if confirm (I18n['catalog_manager']['service_form']['remove_component_confirm'])
       $.ajax
-        type: 'PATCH'
-        url: "catalog_manager/services/#{service_id}/change_components"
+        type: 'POST'
+        url: "/catalog_manager/services/#{service_id}/change_components"
         data:
           service:
             component: component
@@ -323,8 +323,8 @@ $ ->
     component = $('input#new_component').val()
     service_id = $(this).data('service-id')
     $.ajax
-      type: 'PATCH'
-      url: "catalog_manager/services/#{service_id}/change_components"
+      type: 'POST'
+      url: "/catalog_manager/services/#{service_id}/change_components"
       data:
         service:
           component: component
@@ -339,7 +339,7 @@ $ ->
     if confirm (I18n['catalog_manager']['related_services_form']['remove_related_service_confirm'])
       $.ajax
         type: 'POST'
-        url: "catalog_manager/services/remove_related_service"
+        url: "/catalog_manager/services/remove_related_service"
         data:
           service_relation_id: service_relation_id
 
@@ -348,7 +348,7 @@ $ ->
     required = !$(this).prop('checked')
     $.ajax
       type: 'POST'
-      url: "catalog_manager/services/update_related_service"
+      url: "/catalog_manager/services/update_related_service"
       data:
         service_relation_id: service_relation_id
         service_relation:
@@ -361,7 +361,7 @@ $ ->
     ajax_call = ->
       $.ajax
         type: 'POST'
-        url: "catalog_manager/services/update_related_service"
+        url: "/catalog_manager/services/update_related_service"
         data:
           service_relation_id: service_relation_id
           service_relation:
@@ -379,7 +379,7 @@ $ ->
     linked_quantity_total = $(this).val()
     $.ajax
       type: 'POST'
-      url: "catalog_manager/services/update_related_service"
+      url: "/catalog_manager/services/update_related_service"
       data:
         service_relation_id: service_relation_id
         service_relation:

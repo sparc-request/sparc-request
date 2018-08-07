@@ -201,7 +201,7 @@ SparcRails::Application.routes.draw do
 
     resources :services, only: [:edit, :update, :create, :new] do
       get :reload_core_dropdown
-      patch :change_components
+      post :change_components
       patch :update_epic_info
     end
 

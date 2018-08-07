@@ -24,8 +24,4 @@ class ShortInteraction < ApplicationRecord
     interaction_type.nil? ? "" : "#{PermissibleValue.get_value('interaction_type', interaction_type)}"
   end
 
-  def display_institution
-    institution.nil? ? "" : "#{PermissibleValue.get_value('institution', institution)}"
-  end
-
 end

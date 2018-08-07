@@ -53,8 +53,6 @@ class CatalogManager::ServicesController < CatalogManager::AppController
   def update
     @service = Service.find(params[:id])
 
-    saved = false
-
     program = service_params[:program]
     core = service_params[:core]
 

@@ -181,6 +181,8 @@ class CatalogManager::ServicesController < CatalogManager::AppController
 
   def service_params
     params.require(:service).permit(
+      :program,
+      :core,
       :name,
       :abbreviation,
       :order,

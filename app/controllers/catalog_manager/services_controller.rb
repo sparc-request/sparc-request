@@ -179,6 +179,10 @@ class CatalogManager::ServicesController < CatalogManager::AppController
 
   ####General Methods####
 
+  def reload_core_dropdown
+    @cores = Program.find(params[:program_id]).cores
+  end
+
   private
 
   def service_params

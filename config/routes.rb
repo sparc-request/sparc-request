@@ -189,6 +189,7 @@ SparcRails::Application.routes.draw do
     match 'services/update_related_service' => 'services#update_related_service', via: [:post]
     match 'services/add_related_service' => 'services#add_related_service', via: [:post]
     match 'services/remove_related_service' => 'services@remove_related_service', via: [:post]
+    match 'services/reload_core_dropdown' => 'services#reload_core_dropdown', via: [:get]
     match 'organizations/remove_fulfillment_rights_row' => 'organizations#remove_fulfillment_rights_row', via: [:post]
     match 'organizations/remove_user_rights_row' => 'organizations#remove_user_rights_row', via: [:post]
     match 'organizations/toggle_default_statuses' => 'organizations#toggle_default_statuses', via: [:post]

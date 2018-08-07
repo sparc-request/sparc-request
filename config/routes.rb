@@ -200,6 +200,7 @@ SparcRails::Application.routes.draw do
     match 'pricing_maps/refresh_rates' => 'pricing_maps#refresh_rates', via: [:get]
 
     resources :services, only: [:edit, :update, :create, :new] do
+      get :reload_core_dropdown
       post :change_components
       patch :update_epic_info
     end

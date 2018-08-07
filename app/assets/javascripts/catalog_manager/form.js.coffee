@@ -290,6 +290,19 @@ $ ->
           email: new_submission_email
           organization_id: org_id
 
+  ##############################################
+  ###          Service General Info          ###
+  ##############################################
+  $(document).on 'change', '#service_program', ->
+    service_id = $(this).data('service-id')
+    program_id = $(this).find('option:selected').val()
+
+    $.ajax
+      type: 'GET'
+      dataType: 'script'
+      url: "/catalog_manager/services/#{service_id}/reload_core_dropdown"
+      data:
+        program_id: program_id
 
   ##############################################
   ###          Service Components            ###

@@ -23,11 +23,11 @@
   .form-group
     = f.label :program, t(:catalog_manager)[:organization_form][:program], class: 'col-sm-3 control-label'
     .col-sm-9
-      = f.select :program, options_for_select(@programs.map{|p| [p.name, p.id]}, service.program.id), {}, {class: 'form-control select-type selectpicker'}
+      = f.select :program, options_for_select(@programs.map{|p| [p.name, p.id]}, service.program.id), {}, {class: 'form-control select-type selectpicker', data: { service_id: service.id }}
   .form-group
     = f.label :core, t(:catalog_manager)[:organization_form][:core], class: 'col-sm-3 control-label'
     .col-sm-9
-      = f.select :core, options_for_select(@cores.map{|c| [c.name, c.id]}.insert(0, ['None',0]), (service.core.id if service.core)), {}, {class: 'form-control select-type selectpicker'}
+      = render 'catalog_manager/services/core_dropdown', cores: @cores, service: service
   .form-group
     = f.label :name, t(:catalog_manager)[:organization_form][:name], class: 'col-sm-3 control-label'
     .col-sm-9

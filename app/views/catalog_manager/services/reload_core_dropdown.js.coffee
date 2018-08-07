@@ -17,9 +17,6 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$('#service_core option').remove()
-$('#service_core').append("<option value='0'>None</option>")
-<% @cores.each do |core| %>
-$('#service_core').append("<option value='<%= core.id %>'><%= core.name %></option>")
-<% end %>
-$('#service_core').selectpicker('refresh')
+$('#service_core').replaceWith("<%= j render 'catalog_manager/services/core_dropdown', cores: @cores, service: @service %>")
+$('#service_core + .bootstrap-select').remove()
+$('#service_core').selectpicker()

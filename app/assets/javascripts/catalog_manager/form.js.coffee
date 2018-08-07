@@ -300,7 +300,7 @@ $ ->
     service_id = $(this).data('service-id')
     if confirm (I18n['catalog_manager']['service_form']['remove_component_confirm'])
       $.ajax
-        type: 'PATCH'
+        type: 'POST'
         url: "/catalog_manager/services/#{service_id}/change_components"
         data:
           service:
@@ -310,7 +310,7 @@ $ ->
     component = $('input#new_component').val()
     service_id = $(this).data('service-id')
     $.ajax
-      type: 'PATCH'
+      type: 'POST'
       url: "/catalog_manager/services/#{service_id}/change_components"
       data:
         service:

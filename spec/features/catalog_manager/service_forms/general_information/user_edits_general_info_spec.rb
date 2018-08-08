@@ -48,6 +48,32 @@ RSpec.describe 'User edits Service General Info', js: true do
         wait_for_javascript_to_finish
       end
 
+      it 'should edit the program' do
+        @program1 = create(:program, parent_id: @provider.id)
+        click_link @service.name
+        wait_for_javascript_to_finish
+
+        bootstrap_select('#service_program', @program1.name)
+        click_button 'Save'
+        wait_for_javascript_to_finish
+
+        @service.reload
+        expect(@service.program).to eq(@program1)
+      end
+
+      it 'should edit the core' do
+        @core = create(:core, parent_id: @program.id)
+        click_link @service.name
+        wait_for_javascript_to_finish
+
+        bootstrap_select('#service_core', @core.name)
+        click_button 'Save'
+        wait_for_javascript_to_finish
+
+        @service.reload
+        expect(@service.core).to eq(@core)
+      end
+
       it 'should edit the name' do
         fill_in 'service_name', with: "Daffodil"
         click_button 'Save'
@@ -105,13 +131,12 @@ RSpec.describe 'User edits Service General Info', js: true do
         wait_for_javascript_to_finish
         find("#program-#{@program.id}").click
         wait_for_javascript_to_finish
+        click_link @service.name
+        wait_for_javascript_to_finish
 
       end
 
       it 'should toggle Clinical/Non-clinical services if there is no pricing map' do
-        click_link @service.name
-        wait_for_javascript_to_finish
-
         first('#general-info div.toggle.btn').click
         click_button 'Save'
         wait_for_javascript_to_finish
@@ -158,6 +183,8 @@ RSpec.describe 'User edits Service General Info', js: true do
         wait_for_javascript_to_finish
         find("#program-#{@program.id}").click
         wait_for_javascript_to_finish
+        click_link @service.name
+        wait_for_javascript_to_finish
       end
 
       it 'should toggle Display in Sparc' do
@@ -174,9 +201,6 @@ RSpec.describe 'User edits Service General Info', js: true do
       end
 
       it 'should disable Display in Sparc if there is no pricing map' do
-        click_link @service.name
-        wait_for_javascript_to_finish
-
         first('#general-info div.toggle.btn').click
         wait_for_javascript_to_finish
 

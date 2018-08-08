@@ -35,16 +35,6 @@ module CatalogManager::OrganizationsHelper
     content_tag(:span, organization.type, class: "text-#{organization.type.downcase}")
   end
 
-  def user_rights_table_class organization
-    if organization.type == 'Institution'
-      'ur-table-institution'
-    elsif organization.tag_list.include?('clinical work fulfillment')
-      'ur-table'
-    else
-      'ur-table-no-cwf'
-    end
-  end
-
   # Returns the first instance an identity's user rights from the given hash of all user rights,
   # nil if the identity has no user rights in the hash
   def get_user_rights all_user_rights, identity_id

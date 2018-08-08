@@ -8,6 +8,7 @@ RSpec.describe 'Service Provider clicks Short Interaction', js: true do
     institution    = create(:institution, name: "Institution")
     provider       = create(:provider, name: "Provider", parent: institution)
     create(:service_provider, identity_id: jug2.id, organization_id: provider.id)
+    other_institution = ProfessionalOrganization.create(name: "Other Institution", org_type: "institution")
   end
 
   scenario 'and sees the short interaction modal' do
@@ -32,7 +33,7 @@ RSpec.describe 'Service Provider clicks Short Interaction', js: true do
       fill_in 'short_interaction_name', with: 'Tester'
       fill_in 'short_interaction_email', with: 'test@abc.com'
       fill_in 'short_interaction_note', with: 'testing'
-      select('Other', from: 'short_interaction_institution')
+      select('Other Institution', from: 'short_interaction_institution')
       select('General Question', from: 'short_interaction_subject')
       select('Email', from: 'short_interaction_interaction_type')
 

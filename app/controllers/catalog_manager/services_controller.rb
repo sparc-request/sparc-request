@@ -53,8 +53,6 @@ class CatalogManager::ServicesController < CatalogManager::AppController
   def update
     @service = Service.find(params[:id])
 
-    saved = false
-
     program = service_params[:program]
     core = service_params[:core]
 
@@ -179,10 +177,17 @@ class CatalogManager::ServicesController < CatalogManager::AppController
 
   ####General Methods####
 
+  def reload_core_dropdown
+    @service = Service.find(params[:service_id])
+    @cores = Program.find(params[:program_id]).cores
+  end
+
   private
 
   def service_params
     params.require(:service).permit(
+      :program,
+      :core,
       :name,
       :abbreviation,
       :order,

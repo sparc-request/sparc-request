@@ -18,10 +18,34 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(document).ready ->
-  $('input.edit_historical_data_checkbox').live('change', ->
-    if $(this).attr('checked')
-      $(this).val('true')
-    else
-      $(this).val('false')
-  )
+require 'rails_helper'
+
+RSpec.describe 'User manages submission emails', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
+
+  before :each do
+    @institution        = create(:institution)
+    @provider           = create(:provider, parent_id: @institution.id, process_ssrs: true)
+    create(:catalog_manager, organization_id: @institution.id, identity_id: Identity.where(ldap_uid: 'jug2').first.id)
+    create(:submission_email, organization_id: @provider.id, email: 'test@musc.edu')
+
+    visit catalog_manager_catalog_index_path
+    wait_for_javascript_to_finish
+    find("#institution-#{@institution.id}").click
+    wait_for_javascript_to_finish
+    click_link @provider.name
+    wait_for_javascript_to_finish
+
+    click_link 'Submission E-mails'
+    wait_for_javascript_to_finish
+
+    find('.remove-submission-email').click
+    wait_for_javascript_to_finish
+  end
+
+  it 'should delete the submission email for the organization' do
+    expect(SubmissionEmail.where(organization_id: @provider.id).count).to eq(0)
+  end
+
+end

@@ -18,10 +18,38 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(document).ready ->
-  $('input.edit_historical_data_checkbox').live('change', ->
-    if $(this).attr('checked')
-      $(this).val('true')
-    else
-      $(this).val('false')
-  )
+require 'rails_helper'
+
+RSpec.describe 'User removes service level components', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
+
+  before :each do
+    @institution  = create(:institution)
+    @provider     = create(:provider, parent: @institution)
+    @program      = create(:program, parent: @provider)
+    @service      = create(:service, organization: @program, components: "test component", one_time_fee: true)
+    create(:catalog_manager, organization: @institution, identity: jug2)
+
+    visit catalog_manager_catalog_index_path
+    wait_for_javascript_to_finish
+    find("#institution-#{@institution.id} .glyphicon").click
+    find("#provider-#{@provider.id} .glyphicon").click
+    find("#program-#{@program.id} .glyphicon").click
+    wait_for_javascript_to_finish
+    find('a span', text: @service.name).click
+    wait_for_javascript_to_finish
+
+    click_link I18n.t(:catalog_manager)[:organization_form][:service_level_components]
+
+    accept_confirm do
+      find('.remove-service-component').click
+    end
+    wait_for_javascript_to_finish
+  end
+
+  it 'should remove the component' do
+    components = @service.reload.components.split(",")
+    expect(components.length).to eq(0)
+  end
+end

@@ -60,7 +60,7 @@ $ ->
     organization_id = $(this).data('organization-id')
     $.ajax
       type: 'GET'
-      url: 'catalog_manager/services/new.js'
+      url: '/catalog_manager/services/new.js'
       data:
         organization_id: organization_id
 
@@ -75,6 +75,7 @@ $ ->
     $("#core_accordion_#{core_id}").empty()
     $.ajax
       type: 'GET'
+      dataType: 'script'
       url: '/catalog_manager/catalog/load_core_accordion'
       data:
         core_id: core_id
@@ -86,6 +87,7 @@ $ ->
     $("#program_accordion_#{program_id}").empty()
     $.ajax
       type: 'GET'
+      dataType: 'script'
       url: '/catalog_manager/catalog/load_program_accordion'
       data:
         program_id: program_id
@@ -140,7 +142,7 @@ initialize_org_search = () ->
     id = suggestion['id']
     $.ajax
       type: 'GET'
-      url: "catalog_manager/#{type}s/#{id}/edit"
+      url: "/catalog_manager/#{type}s/#{id}/edit"
   )
 
 
@@ -288,4 +290,4 @@ window.initialize_related_services_search = () ->
         data:
           service_id: $(this).data('service-id')
           related_service_id: suggestion.id
-  );
+);

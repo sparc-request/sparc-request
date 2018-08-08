@@ -48,7 +48,7 @@ class ShortInteractionsReport < ReportingModule
     attrs["Duration in minutes"] = :duration_in_minutes
     attrs["Investigator Name"] = :name
     attrs["Investigator Email"] = :email
-    attrs["Investigator Institution"] = :display_institution
+    attrs["Investigator Institution"] = :institution
     attrs["Notes"] = :note
     
     attrs
@@ -87,7 +87,7 @@ class ShortInteractionsReport < ReportingModule
     service_organization_ids = [selected_organization_id]
     if selected_organization_id
       org = Organization.find(selected_organization_id)
-      service_organization_ids = org.all_children(organizations).pluck(:id)
+      service_organization_ids = org.all_child_organizations_with_self.pluck(:id)
       service_organization_ids.flatten.uniq
     end
 

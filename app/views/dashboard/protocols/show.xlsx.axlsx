@@ -28,6 +28,7 @@ centered = wb.styles.add_style alignment: {horizontal: :center}
 money = wb.styles.add_style :format_code => '$* #,##0.00_);[Red]-$*#,###.00;$* -??_;'
 bold_money = wb.styles.add_style :format_code => '$#,##0.00_);[Red]-$#,###.00;$* -??_;', b: true
 percent = wb.styles.add_style :num_fmt => 9, b: true, alignment: { horizontal: :left }
+hide_zeros = wb.styles.add_style format_code: '#;[Red]-#;-;', alignment: { horizontal: :center }
 row_header_style = wb.styles.add_style b: true
 header_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :left, wrap_text: true}
 header_center_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :center, wrap_text: true}
@@ -121,7 +122,7 @@ arm_totals_ref = {}
 
         liv.ordered_visits.each_with_index do |visit, index|
           line_item_row += [visit.research_billing_qty, visit.insurance_billing_qty]
-          @line_item_style_array += [centered, centered]
+          @line_item_style_array += [hide_zeros, hide_zeros]
         end
 
         total_sponsor_unit_costs_formula = "=#{negotiated_reimbursement_column + current_row.to_s}*(#{r_columns.join(current_row.to_s + '+') + current_row.to_s})"
@@ -205,13 +206,13 @@ arm_totals_ref = {}
     arm_summary_row = ["#{arm.sanitized_name}: Summary"] + [""] * (6 + arm.visit_groups.count * 2 + 2)
     sheet.add_row arm_summary_row, :style => header_style
 
-    sheet.add_row ["#{arm.sanitized_name}: Total Cost (-OH) per Patient", "", "", "", "=#{r_columns.join(total_research_row.to_s + '+') + total_research_row.to_s} + #{totals_column}#{total_research_row}"], style: [default, default, default, default, money]
+    sheet.add_row ["#{arm.sanitized_name}: Total Cost (-OH) per Patient", "", "", "", "=#{r_columns.join(total_research_row.to_s + '+') + total_research_row.to_s}"], style: [default, default, default, default, money]
 
-    sheet.add_row ["#{arm.sanitized_name}: Total Cost (+OH) per Patient", "", "", "", "=#{r_columns.join(total_sponsor_row.to_s + '+') + total_sponsor_row.to_s} + #{totals_column}#{total_sponsor_row}"], style: [default, default, default, default, money]
+    sheet.add_row ["#{arm.sanitized_name}: Total Cost (+OH) per Patient", "", "", "", "=#{r_columns.join(total_sponsor_row.to_s + '+') + total_sponsor_row.to_s}"], style: [default, default, default, default, money]
 
     total_sponsor_ppv_ref = sheet.rows.last.cells.last.r
 
-    sheet.add_row ["#{arm.sanitized_name}: Total Margin per Patient", "", "", "", "=#{r_columns.join(total_margin_row.to_s + '+') + total_margin_row.to_s} + #{totals_column}#{total_margin_row}" ], style: [default, default, default, default, money]
+    sheet.add_row ["#{arm.sanitized_name}: Total Margin per Patient", "", "", "", "=#{r_columns.join(total_margin_row.to_s + '+') + total_margin_row.to_s}" ], style: [default, default, default, default, money]
 
     cells_to_merge.each{|cells| sheet.merge_cells "#{cells[:from]}:#{cells[:to]}"}
 

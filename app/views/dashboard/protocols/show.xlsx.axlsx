@@ -28,7 +28,7 @@ centered = wb.styles.add_style alignment: {horizontal: :center}
 money = wb.styles.add_style :format_code => '$* #,##0.00_);[Red]-$*#,###.00;$* -??_;'
 bold_money = wb.styles.add_style :format_code => '$#,##0.00_);[Red]-$#,###.00;$* -??_;', b: true
 percent = wb.styles.add_style :num_fmt => 9, b: true, alignment: { horizontal: :left }
-hide_zeros = wb.styles.add_style format_code: '#;[Red]-#;-;', alignment: { horizontal: :center }
+hide_zeros = wb.styles.add_style format_code: '#;[Red]-#; ;', alignment: { horizontal: :center }
 row_header_style = wb.styles.add_style b: true
 header_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :left, wrap_text: true}
 header_center_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :center, wrap_text: true}

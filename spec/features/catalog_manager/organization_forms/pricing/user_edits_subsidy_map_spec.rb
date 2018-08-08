@@ -20,19 +20,19 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User edits organization general info', js: true do
+RSpec.describe 'User edits organization subsidy map', js: true do
   let_there_be_lane
   fake_login_for_each_test
 
   before :each do
     @institution = create(:institution)
     @provider = create(:provider, parent_id: @institution.id)
+    @subsidy_map = @provider.subsidy_map
     create(:catalog_manager, organization_id: @institution.id, identity_id: Identity.where(ldap_uid: 'jug2').first.id)
-    create(:tag, name: "clinical work fulfillment")
   end
 
   context 'on a Provider' do
-    context 'and the user edits the organization general info' do
+    context 'and the user edits the organization subsidy map' do
       before :each do
         visit catalog_manager_catalog_index_path
         wait_for_javascript_to_finish
@@ -40,90 +40,57 @@ RSpec.describe 'User edits organization general info', js: true do
         wait_for_javascript_to_finish
         click_link @provider.name
         wait_for_javascript_to_finish
+        click_link 'Pricing'
+        wait_for_javascript_to_finish
+        find("#edit_subsidy_map_button").click
+        wait_for_javascript_to_finish
       end
 
-      it 'should edit the name' do
-        fill_in 'organization_name', with: "Inigo Montoya"
+      it 'should edit the max percentage' do
+        fill_in 'subsidy_map_max_percentage', with: "100"
         click_button 'Save'
         wait_for_javascript_to_finish
 
-        @provider.reload
-        expect(@provider.name).to eq("Inigo Montoya")
+        @subsidy_map.reload
+        expect(@subsidy_map.max_percentage).to eq(100)
       end
 
-      it 'should edit the abbreviation' do
-        fill_in 'organization_abbreviation', with: "Mandy Patinkin"
+      it 'should edit the default percentage' do
+        fill_in 'subsidy_map_default_percentage', with: "75"
         click_button 'Save'
         wait_for_javascript_to_finish
 
-        @provider.reload
-        expect(@provider.abbreviation).to eq("Mandy Patinkin")
+        @subsidy_map.reload
+        expect(@subsidy_map.default_percentage).to eq(75)
       end
-
-      it 'should edit the description' do
-        fill_in 'organization_description', with: "Swordsman/Actor"
+      it 'should edit the max dollar cap' do
+        fill_in 'subsidy_map_max_dollar_cap', with: "150"
         click_button 'Save'
         wait_for_javascript_to_finish
 
-        @provider.reload
-        expect(@provider.description).to eq("Swordsman/Actor")
+        @subsidy_map.reload
+        expect(@subsidy_map.max_dollar_cap).to eq(150)
       end
 
-      it 'should edit the acceptance language' do
-        fill_in 'organization_ack_language', with: "You Killed My Father, Prepare To Die"
+      it 'should edit the excluded funding sources' do
+        bootstrap_select('#subsidy_map_excluded_funding_sources', 'Federal')
+        find('form.form-horizontal').click
         click_button 'Save'
         wait_for_javascript_to_finish
 
-        @provider.reload
-        expect(@provider.ack_language).to eq("You Killed My Father, Prepare To Die")
+        @subsidy_map.reload
+        expect(@subsidy_map.excluded_funding_sources.size).to eq(1)
+        expect(@subsidy_map.excluded_funding_sources.first.funding_source).to eq('federal')
       end
 
-      it 'should edit the order' do
-        fill_in 'organization_order', with: "2"
+      it 'should edit the instructions' do
+        fill_in 'subsidy_map_instructions', with: "Use the subsidy!"
         click_button 'Save'
         wait_for_javascript_to_finish
 
-        @provider.reload
-        expect(@provider.order).to eq(2)
+        @subsidy_map.reload
+        expect(@subsidy_map.instructions).to eq("Use the subsidy!")
       end
-
-      it 'should toggle split/notify' do
-        find('.split_notify_container div.toggle.btn').click
-        click_button 'Save'
-        wait_for_javascript_to_finish
-
-        @provider.reload
-        expect(@provider.process_ssrs).to eq(true)
-      end
-
-      it 'should select a color' do
-        bootstrap_select('#organization_css_class', 'blue')
-        click_button 'Save'
-        wait_for_javascript_to_finish
-
-        @provider.reload
-        expect(@provider.css_class).to eq("blue-provider")
-      end
-
-      it 'should toggle display in sparc' do
-        find('#display-in-sparc div.toggle.btn').click
-        click_button 'Save'
-        wait_for_javascript_to_finish
-
-        @provider.reload
-        expect(@provider.is_available).to eq(false)
-      end
-
-      it 'should select a tag' do
-        bootstrap_multiselect('#organization_tag_list', ['Fulfillment'])
-        click_button 'Save'
-        wait_for_javascript_to_finish
-
-        @provider.reload
-        expect(@provider.tag_list.include?("clinical work fulfillment")).to eq(true)
-      end
-
     end
   end
-
 end

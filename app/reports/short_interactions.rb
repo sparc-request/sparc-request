@@ -87,7 +87,7 @@ class ShortInteractionsReport < ReportingModule
     service_organization_ids = [selected_organization_id]
     if selected_organization_id
       org = Organization.find(selected_organization_id)
-      service_organization_ids = org.all_children(organizations).pluck(:id)
+      service_organization_ids = org.all_child_organizations_with_self.pluck(:id)
       service_organization_ids.flatten.uniq
     end
 

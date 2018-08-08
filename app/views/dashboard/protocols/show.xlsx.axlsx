@@ -28,7 +28,7 @@ centered = wb.styles.add_style alignment: {horizontal: :center}
 money = wb.styles.add_style :format_code => '$* #,##0.00_);[Red]-$*#,###.00;$* -??_;'
 bold_money = wb.styles.add_style :format_code => '$#,##0.00_);[Red]-$#,###.00;$* -??_;', b: true
 percent = wb.styles.add_style :num_fmt => 9, b: true, alignment: { horizontal: :left }
-hide_zeros = wb.styles.add_style format_code: '#;[Red]-#;-;', alignment: { horizontal: :center }
+hide_zeros = wb.styles.add_style format_code: '#;[Red]-#; ;', alignment: { horizontal: :center }
 row_header_style = wb.styles.add_style b: true
 header_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :left, wrap_text: true}
 header_center_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :center, wrap_text: true}
@@ -38,8 +38,10 @@ org_header_style = wb.styles.add_style sz: 12, b: true, bg_color: 'CCCCCC', alig
 
 arm_totals_ref = {}
 
+statuses = PermissibleValue.get_hash('status')
+
 # Page for each arm
-@protocol.arms.each do |arm|
+@protocol.arms.includes(:visit_groups, line_items_visits: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups] ] ] ], service_request: :protocol]}).each do |arm|
   wb.add_worksheet(name: "#{arm.sanitized_name}") do |sheet|
 
     #Repeating protocol information on the top of each page
@@ -102,19 +104,19 @@ arm_totals_ref = {}
     sheet.add_row label_row.flatten, :style => centered
 
     #Displays line_items_visits, grouped by organization from the sub service request
-    arm.line_items_visits.includes(:line_item).group_by{|liv| liv.line_item.sub_service_request}.each do |sub_service_request, line_items_visits|
+    arm.sub_service_requests.distinct.includes(:organization).each do |sub_service_request|
       next if @statuses_hidden.include?(sub_service_request.status)
 
       sheet.add_row ["#{sub_service_request.organization.name}(#{sub_service_request.ssr_id})"] + [""] * (6 + (arm.visit_groups.count * 2) + 2), style: org_header_style
 
       current_row = sheet.rows.length + 1
 
-      line_items_visits.each do |liv|
+      arm.line_items_visits.select{ |liv| liv.line_item.sub_service_request_id == sub_service_request.id }.each do |liv|
         @line_item_style_array = [default, default, default, money, money, money, default]
 
         line_item_row = [ liv.line_item.service.name,
                           liv.line_item.service.cpt_code,
-                          PermissibleValue.get_value('status', liv.line_item.sub_service_request.status),
+                          statuses[sub_service_request.status],
                           cents_to_dollars(liv.line_item.service.current_effective_pricing_map.full_rate),
                           cents_to_dollars(liv.line_item.service.current_effective_pricing_map.full_rate),
                           cents_to_dollars(liv.line_item.applicable_rate),
@@ -224,6 +226,7 @@ arm_totals_ref = {}
   end
 end
 
+user_roles = PermissibleValue.get_hash('user_role')
 
 wb.insert_worksheet(0, name: "Summary") do |sheet|
   sheet.add_row ["#{@protocol.class.to_s} Information", "", "", "", "", "", "", "", ""], :style => header_style
@@ -251,7 +254,7 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
 
   @protocol.project_roles.each do |pr|
     current_row += 1
-    sheet.add_row [pr.identity.full_name, PermissibleValue.get_value('user_role', pr.role), 0, 0, @protocol.duration_in_months, "=IF(AND(ISNUMBER(D#{current_row}), ISNUMBER(E#{current_row})), C#{current_row}*D#{current_row}*E#{current_row}/12, 0)", "=F#{current_row}*$B$11", "=SUM(F#{current_row}:G#{current_row})"], style: [default, default, money, percent, default, money, money, money]
+    sheet.add_row [pr.identity.full_name, user_roles[pr.role], 0, 0, @protocol.duration_in_months, "=IF(AND(ISNUMBER(D#{current_row}), ISNUMBER(E#{current_row})), C#{current_row}*D#{current_row}*E#{current_row}/12, 0)", "=F#{current_row}*$B$11", "=SUM(F#{current_row}:G#{current_row})"], style: [default, default, money, percent, default, money, money, money]
   end
 
   authorized_users_end_row = current_row
@@ -276,10 +279,10 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
   other_services_start_row = current_row
 
   @protocol.service_requests.each do |sr|
-    sr.line_items.includes(:service).where(services: {one_time_fee: true}).each do |li|
+    sr.line_items.includes(:admin_rates, :sub_service_request, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups] ] ] ]).where(services: {one_time_fee: true}).each do |li|
       next if @statuses_hidden.include?(li.sub_service_request.status)
       li_row = sheet.rows.length + 1
-      sheet.add_row ["#{li.service.name} (#{li.sub_service_request.ssr_id})", PermissibleValue.get_value('status', li.sub_service_request.status), cents_to_dollars(li.service.current_effective_pricing_map.full_rate), cents_to_dollars(li.service.current_effective_pricing_map.full_rate), cents_to_dollars(li.applicable_rate), li.quantity, "Y", "=IF(G#{li_row}=\"Y\",(D#{li_row}*F#{li_row})*(1+$B$10),D#{li_row}*F#{li_row})", "=D#{li_row}*F#{li_row} - E#{li_row}*F#{li_row}"], :style => [default, default, money, money, money, default, default, money, money]
+      sheet.add_row ["#{li.service.name} (#{li.sub_service_request.ssr_id})", statuses[li.sub_service_request.status], cents_to_dollars(li.service.current_effective_pricing_map.full_rate), cents_to_dollars(li.service.current_effective_pricing_map.full_rate), cents_to_dollars(li.applicable_rate), li.quantity, "Y", "=IF(G#{li_row}=\"Y\",(D#{li_row}*F#{li_row})*(1+$B$10),D#{li_row}*F#{li_row})", "=D#{li_row}*F#{li_row} - E#{li_row}*F#{li_row}"], :style => [default, default, money, money, money, default, default, money, money]
     end
   end
   sheet.add_row []

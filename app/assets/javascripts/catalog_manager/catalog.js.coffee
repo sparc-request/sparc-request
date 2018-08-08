@@ -75,7 +75,7 @@ $ ->
     $("#core_accordion_#{core_id}").empty()
     $.ajax
       type: 'GET'
-      url: 'catalog_manager/catalog/load_core_accordion'
+      url: '/catalog_manager/catalog/load_core_accordion'
       data:
         core_id: core_id
         show_available_only: show_available_only
@@ -86,7 +86,7 @@ $ ->
     $("#program_accordion_#{program_id}").empty()
     $.ajax
       type: 'GET'
-      url: 'catalog_manager/catalog/load_program_accordion'
+      url: '/catalog_manager/catalog/load_program_accordion'
       data:
         program_id: program_id
         show_available_only: show_available_only

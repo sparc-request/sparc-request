@@ -121,6 +121,7 @@ en:
         max_dollar_cap: "Max Dollar Cap"
         subsidy_instructions: "Instructions"
         excluded_funding_sources: "Excluded Funding Sources"
+        adjust_rates: "Adjust Rates"
       submission_emails:
         email: "E-Mail"
         remove_add: "Remove / Add"

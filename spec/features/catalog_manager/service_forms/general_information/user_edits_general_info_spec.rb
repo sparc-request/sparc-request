@@ -38,13 +38,11 @@ RSpec.describe 'User edits Service General Info', js: true do
       before :each do
         visit catalog_manager_catalog_index_path
         wait_for_javascript_to_finish
-        find("#institution-#{@institution.id}").click
+        find("#institution-#{@institution.id} .glyphicon").click
+        find("#provider-#{@provider.id} .glyphicon").click
+        find("#program-#{@program.id} .glyphicon").click
         wait_for_javascript_to_finish
-        find("#provider-#{@provider.id}").click
-        wait_for_javascript_to_finish
-        find("#program-#{@program.id}").click
-        wait_for_javascript_to_finish
-        click_link @service.name
+        find('a span', text: @service.name).click
         wait_for_javascript_to_finish
       end
 

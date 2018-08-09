@@ -37,7 +37,6 @@ RSpec.describe 'User adds new service level components', js: true do
     find("#provider-#{@provider.id} .glyphicon").click
     find("#program-#{@program.id} .glyphicon").click
     wait_for_javascript_to_finish
-    expect(page).to have_selector('a span', text: @service.name)
     find('a span', text: @service.name).click
     wait_for_javascript_to_finish
 

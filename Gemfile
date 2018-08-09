@@ -12,6 +12,7 @@ gem 'bootsnap', require: false
 gem 'bootstrap-sass'
 gem 'bootstrap-select-rails'
 gem 'bootstrap3-datetimepicker-rails'
+gem 'bootstrap-toggle-rails'
 gem 'capistrano', '~> 3.9'
 gem 'capistrano-bundler', require: false
 gem 'capistrano-rvm', require: false
@@ -97,7 +98,7 @@ gem 'puma', '~> 3.12'
 group :development, :test do
   gem 'pry'
   gem 'rails-erd'
-  gem 'rspec-rails', '~> 3.4'
+  gem 'rspec-rails', '~> 3.8'
 end
 
 group :development do

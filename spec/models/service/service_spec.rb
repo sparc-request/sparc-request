@@ -197,7 +197,7 @@ RSpec.describe Service, type: :model do
 
     it "should raise an exception if there are no current pricing maps" do
       service.pricing_maps.delete_all
-      pricing_map = create(:pricing_map, service_id: service.id, display_date: Date.today + 1)
+      pricing_map = create(:pricing_map, service_id: service.id, display_date: Date.today + 1, effective_date: Date.today + 1)
       expect(lambda { service.displayed_pricing_map }).to raise_exception(ArgumentError)
     end
 
@@ -274,43 +274,12 @@ RSpec.describe Service, type: :model do
     # current_effective_pricing_map
   end
 
-  describe "can_edit_historical_data_on_new" do
-
-    it "should return whether or not the user can edit historical data" do
-      identity = create(:identity)
-      parent = create(:organization)
-
-      catalog_manager = create(:catalog_manager, :can_edit_historic_data, identity: identity, organization: parent)
-
-      child = create(:organization, parent_id: parent.id)
-
-      service = create(:service, organization: child)
-
-      expect(service.can_edit_historical_data_on_new?(identity)).to eq(true)
-
-    end
-
-    it "should return whether or not the user can edit historical data" do
-      identity = create(:identity)
-      parent = create(:organization)
-
-      catalog_manager = create(:catalog_manager, identity: identity, organization: parent)
-
-      child = create(:organization, parent_id: parent.id)
-
-      service = create(:service, organization: child)
-
-      expect(service.can_edit_historical_data_on_new?(identity)).to eq(false)
-
-    end
-  end
-
   describe "get rate maps" do
 
     let!(:core) { create(:core) }
-    let!(:service) { create(:service, organization_id: core.id) }
+    let!(:service) { create(:service, organization_id: core.id, pricing_map_count: 1) }
     let!(:pricing_map) { service.pricing_maps[0] }
-    let!(:pricing_setup) { create(:pricing_setup, display_date: Date.today - 1, federal: 25,
+    let!(:pricing_setup) { create(:pricing_setup, display_date: Date.today - 1, effective_date: Date.today - 1, federal: 25,
                            corporate: 25, other: 25, member: 25, organization_id: core.id)}
 
     before(:each) do

@@ -132,10 +132,6 @@ module ApplicationHelper
     content_tag(:span, t(:calendars)[:inactive], class: 'inactive-text')
   end
 
-  def other_option
-    raw("<option value=\"#{t(:constants)[:other]}\">#{t(:constants)[:other]}</option>")
-  end
-
   ##Sets css bootstrap classes for rails flash message types##
   def twitterized_type type
     case type.to_sym

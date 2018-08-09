@@ -76,7 +76,7 @@ class ServiceRequestsController < ApplicationController
     if @sub_service_request
       @institutions = Institution.where(id: @sub_service_request.organization.parents.select{|x| x.type == 'Institution'}.map(&:id))
     else
-      @institutions = Institution.order('`order`')
+      @institutions = Institution.order(Arel.sql('`order`,`name`'))
     end
 
     setup_catalog_calendar

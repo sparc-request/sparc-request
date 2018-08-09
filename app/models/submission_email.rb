@@ -24,5 +24,6 @@ class SubmissionEmail < ApplicationRecord
   belongs_to :organization
 
   validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i }
+  validates :email, uniqueness: { scope: :organization_id }
 
 end

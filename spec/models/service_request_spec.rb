@@ -167,9 +167,9 @@ RSpec.describe ServiceRequest, type: :model do
 
     describe "create_line_items_for_service" do
       before :each do
-        @new_service      = create(:service, organization_id: program.id, name: 'New One Time Fee')
-        @optional_service = create(:service, organization_id: program.id, name: 'Optional One Time Fee')
-        @required_service = create(:service, organization_id: program.id, name: 'Required One Time Fee')
+        @new_service      = create(:service, organization_id: program.id, name: 'New One Time Fee', pricing_map_count: 1)
+        @optional_service = create(:service, organization_id: program.id, name: 'Optional One Time Fee', pricing_map_count: 1)
+        @required_service = create(:service, organization_id: program.id, name: 'Required One Time Fee', pricing_map_count: 1)
         @disabled_program = create(:program, type: 'Program', parent_id: provider.id, name: 'Disabled', order: 1, abbreviation: 'Disabled Informatics', process_ssrs: 0, is_available: 0)
         @disabled_service = create(:service, organization_id: @disabled_program.id, name: 'Disabled Program Service')
         create(:service_relation, service_id: @new_service.id, related_service_id: @optional_service.id, optional: true)

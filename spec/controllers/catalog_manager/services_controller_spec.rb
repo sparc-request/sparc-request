@@ -20,152 +20,95 @@
 
 require 'rails_helper'
 
-RSpec.describe CatalogManager::ServicesController, type: :controller do
+RSpec.describe CatalogManager::ServicesController do
+  before :each do
+    provider = build_stubbed(:provider)
+    program = build_stubbed(:program, parent: provider)
+    allow_any_instance_of(Service).to receive(:provider).and_return(provider)
+    allow_any_instance_of(Service).to receive(:program).and_return(program)
+    log_in_catalog_manager_identity(obj: build_stubbed(:identity))
+  end
 
-  stub_catalog_manager_controller
+  describe '#create' do
+    it 'should create a service' do
+      expect{
+        post :create, params: { service: attributes_for(:service) }, xhr: true
+      }.to change(Service, :count).by(1)
+    end
+  end
 
-  describe "#new" do
+  describe '#update' do
+    it 'should update an existing service' do
+      service = create(:service, name: 'Serviceable')
+      expect{
+        put :update, params: { id: service.id, service: { name: 'Serve Me, Luke' } }, xhr: true
+        service.reload
+      }.to change(service, :name).to('Serve Me, Luke')
+    end
+  end
 
-    context "success" do
+  describe '#change_components' do
+    context 'new component' do
+      it 'should add a component' do
+        service = create(:service, components: 'a,b,c')
+        expect{
+          patch :change_components, params: { service_id: service.id, service: { component: 'd' } }, format: :js, xhr: true
+          service.reload
+        }.to change(service, :components).to('a,b,c,d')
+      end
+    end
 
-      before { get :new, params: get_new_valid_params }
-
-      it "should assign a new Service with default values" do
-        expect(assigns(:service).name).to eq("New Service")
-        expect(assigns(:service).abbreviation).to eq("New Service")
-        expect(assigns(:service).organization_id).to eq(organization.id)
+    context 'remove component' do
+      it 'should delete the component' do
+        service = create(:service, components: 'a,b,c')
+        expect{
+          patch :change_components, params: { service_id: service.id, service: { component: 'c' } }, format: :js, xhr: true
+          service.reload
+        }.to change(service, :components).to('a,b')
       end
     end
   end
 
-  describe "#create" do
-
-    context "success" do
-
-      before(:each) { post :create, params: post_create_valid_params }
-
-      it "should persist a Service" do
-        expect(Service.count).to eq(1)
-      end
+  describe '#update_epic_info' do
+    it 'should update epic info' do
+      service = create(:service, cpt_code: '55555')
+      expect{
+        patch :update_epic_info, params: { service_id: service.id, service: { cpt_code: '12345' } }, xhr: true
+        service.reload
+      }.to change(service, :cpt_code).to('12345')
     end
   end
 
-  describe "#update" do
-
-    context "success" do
-
-      it "should update the Service" do
-        service = create(:service)
-
-        put :update, params: { id: service.id, service: { name: "New name" } }
-
-        expect(service.reload.name).to eq("New name")
-      end
-
-      context "Service has no pre-existing ServiceLevelComponents" do
-
-        it "should create ServiceLevelComponents" do
-          service = create(:service)
-
-          put :update, params: { id: service.id, service: { name: "New name" }.merge!(service_level_component_params) }
-
-          expect(service.reload.components.split(',').count).to eq(2)
-        end
-      end
-
-      context "Service has pre-existing ServiceLevelComponents" do
-
-        before { @service = FactoryBot.create(:service_with_components) }
-
-        it "should create new ServiceLevelComponents" do
-          put :update, params: { id: @service.id, service: { name: "New name" }.merge!(service_level_component_params) }
-
-          expect(@service.reload.components.split(',').count).to eq(2)
-        end
-
-        it "should destroy ServiceLevelComponents marked for destroy" do
-          service_level_component = @service.components.split(',').first
-
-          put :update, params: { id: @service.id, service: service_level_component_destroy_params(@service, service_level_component) }
-
-          expect(@service.reload.components.split(',').count).to eq(2)
-        end
-      end
-    end
-
-    describe "#show" do
-
-      context "Service with pre-existing ServiceLevelComponents" do
-
-        it "should build ServiceLevelComponents with the correct :position" do
-          service = FactoryBot.create(:service_with_components, organization: organization)
-
-          get :show, params: { id: service.id }
-
-          expect(assigns(:service).components.split(',').count).to eq(3)
-        end
-      end
+  describe 'add_related_service' do
+    it 'should add a service relation' do
+      service = create(:service)
+      related_service = create(:service)
+      expect{
+        post :add_related_service, params: { service_id: service.id, related_service_id: related_service }, xhr: true
+        service.reload
+      }.to change(service.related_services, :count).by(1)
     end
   end
 
-  def service_level_component_destroy_params(service, component)
-    {
-      components: (service.components.split(',') - [component]).join(',')
-    }
+  describe '#update_related_service' do
+    it 'should update a service relation' do
+      service = create(:service)
+      related_service = create(:service)
+      relation = create(:service_relation, service: service, related_service: related_service, optional: false)
+      expect{
+        post :update_related_service, params: { service_relation_id: relation.id, service_relation: { optional: true } }, xhr: true
+        relation.reload
+      }.to change(relation, :optional).to(true)
+
+    end
   end
 
-  def service_level_component_params
-    {
-      components: "ServiceLevelComponent 1,ServiceLevelComponent 2,"
-    }
-  end
-
-  def post_create_valid_params
-    {
-      service: {
-        program: organization.id,
-        core: 0,
-        name: "New Service",
-        abbreviation: "New Service",
-        description: "xxx",
-        order: 1,
-        is_available: true,
-        one_time_fee: false,
-        components: "ServiceLevelComponent 1,ServiceLevelComponent 2,",
-        cpt_code: "",
-        charge_code: "",
-        revenue_code: "",
-        send_to_epic: 0
-      },
-      pricing_maps: {
-        blank_pricing_map: {
-          display_date: "2015-04-22",
-          effective_date: "2015-04-29",
-          full_rate: "123.00",
-          federal_rate: "",
-          corporate_rate: "",
-          other_rate: "",
-          member_rate: "",
-          unit_type: "Per Infusion",
-          unit_factor: 1,
-          unit_minimum: 1,
-          otf_unit_type: "N/A",
-          quantity_type: "",
-          quantity_minimum: 1,
-          units_per_qty_max: 1
-        }
-      }
-    }
-  end
-
-  def get_new_valid_params
-    {
-      parent_id: organization.id,
-      parent_object_type: "program"
-    }
-  end
-
-  def organization
-    @organization ||= create(:program_with_provider)
+  describe 'remove_related_service' do
+    it 'should remove a service relation' do
+      relation = create(:service_relation)
+      expect{
+        post :remove_related_service, params: { service_relation_id: relation.id }, xhr: true
+      }.to change(ServiceRelation, :count).by(-1)
+    end
   end
 end

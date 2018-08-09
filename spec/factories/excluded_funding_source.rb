@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 FactoryBot.define do
-
   factory :excluded_funding_source do
+    funding_source { PermissibleValue.get_key_list('funding_source').sample }
   end
 end

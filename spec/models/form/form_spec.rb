@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -24,7 +24,7 @@ RSpec.describe Form, type: :model do
   it 'should have a valid factory' do
     expect(build(:form)).to be_valid
   end
-  
+
   # Inheritance
   it { expect(Form.ancestors.include?(Survey)).to eq(true) }
 

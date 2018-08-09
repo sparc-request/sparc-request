@@ -339,7 +339,6 @@ An organization can be given tags to either aid in categorization, or to apply s
 There are currently two tags which ascribe additional functionality:
 
 - ctrc - Any organization that has this tag gets a set of features activated in the application which are unique to CTRC (Clinical and Translational Research Center -- aka GCRC) organizations, for instance the 'CTRC Approved' status for service requests.
-- required forms - This flag is currently used to attach a particular pdf to the emails set out when a service request is submitted for services from any organization with this tag.
 
 Any _functional_ tags that your organization will need will need to have changes made in the codebase to take effect, otherwise they will simply be _non-functional_.
 

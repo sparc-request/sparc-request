@@ -20,8 +20,4 @@
 
 class Institution < Organization
   has_many :providers, :dependent => :destroy, :foreign_key => "parent_id"
-
-  def populate_for_edit
-    self.setup_available_statuses
-  end
 end

@@ -52,7 +52,7 @@
           .form-group.row
             = f.label :institution, t(:proper)[:right_navigation][:short_interaction][:institution], class: 'col-lg-4 control-label'
             .col-lg-8
-              = f.select :institution, options_from_collection_for_select(ProfessionalOrganization.institutions, :name, :name) + other_option, { prompt: t(:proper)[:right_navigation][:short_interaction][:institution_select]}, class: 'form-control'
+              = f.select :institution, options_for_select(ProfessionalOrganization.institutions.pluck(:name)), { prompt: t(:proper)[:right_navigation][:short_interaction][:institution_select]}, class: 'form-control'
           .form-group.row
             = f.label :note, t(:proper)[:right_navigation][:short_interaction][:note], class: 'col-lg-4 control-label required'
             .col-lg-8

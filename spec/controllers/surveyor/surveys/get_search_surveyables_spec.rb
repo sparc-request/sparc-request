@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -48,7 +48,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
             get :search_surveyables, params: { term: 'test' }, xhr: true
 
             results = JSON.parse(response.body)
-            
+
             expect(results.count).to eq(0)
           end
         end
@@ -63,7 +63,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
               get :search_surveyables, params: { term: 'test' }, xhr: true
 
               results = JSON.parse(response.body)
-              
+
               expect(results.count).to eq(1)
               expect(results[0]['value']).to eq(process_ssrs_org.id)
             end
@@ -76,7 +76,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
               get :search_surveyables, params: { term: 'test' }, xhr: true
 
               results = JSON.parse(response.body)
-              
+
               expect(results.count).to eq(0)
             end
           end
@@ -91,7 +91,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
               get :search_surveyables, params: { term: 'test' }, xhr: true
 
               results = JSON.parse(response.body)
-              
+
               expect(results.count).to eq(1)
               expect(results[0]['value']).to eq(process_ssrs_org.id)
             end
@@ -105,7 +105,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
               get :search_surveyables, params: { term: 'test' }, xhr: true
 
               results = JSON.parse(response.body)
-              
+
               expect(results.count).to eq(0)
             end
           end
@@ -120,7 +120,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
               get :search_surveyables, params: { term: 'test' }, xhr: true
 
               results = JSON.parse(response.body)
-              
+
               expect(results.count).to eq(1)
               expect(results[0]['value']).to eq(process_ssrs_org.id)
             end
@@ -134,7 +134,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
               get :search_surveyables, params: { term: 'test' }, xhr: true
 
               results = JSON.parse(response.body)
-              
+
               expect(results.count).to eq(0)
             end
           end
@@ -150,7 +150,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
             get :search_surveyables, params: { term: 'test' }, xhr: true
 
             results = JSON.parse(response.body)
-            
+
             expect(results.count).to eq(1)
             expect(results[0]['value']).to eq(process_ssrs_org.id)
           end
@@ -164,7 +164,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
             get :search_surveyables, params: { term: 'test' }, xhr: true
 
             results = JSON.parse(response.body)
-            
+
             expect(results.count).to eq(0)
           end
         end
@@ -178,7 +178,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
           get :search_surveyables, params: { term: 'test' }, xhr: true
 
           results = JSON.parse(response.body)
-          
+
           expect(results.count).to eq(0)
         end
       end
@@ -194,7 +194,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
           get :search_surveyables, params: { term: 'test' }, xhr: true
 
           results = JSON.parse(response.body)
-          
+
           expect(results.count).to eq(0)
         end
       end
@@ -205,12 +205,12 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
         context 'service is available' do
           it 'should return the service' do
             org             = create(:core, name: 'Testing Organization', abbreviation: 'test.org', process_ssrs: false)
-            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org)
+            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org, pricing_map_count: 1)
 
             get :search_surveyables, params: { term: 'test' }, xhr: true
 
             results = JSON.parse(response.body)
-            
+
             expect(results.count).to eq(1)
             expect(results[0]['value']).to eq(service.id)
           end
@@ -219,12 +219,12 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
         context 'service is not available' do
           it 'should not return the service' do
             org             = create(:core, name: 'Testing Organization', abbreviation: 'test.org', process_ssrs: false)
-            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org, is_available: false)
+            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org, is_available: false, pricing_map_count: 1)
 
             get :search_surveyables, params: { term: 'test' }, xhr: true
 
             results = JSON.parse(response.body)
-            
+
             expect(results.count).to eq(0)
           end
         end
@@ -234,13 +234,13 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
         context 'service is available' do
           it 'should return the service' do
             org             = create(:core, name: 'Testing Organization', abbreviation: 'test.org', process_ssrs: false)
-            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org)
+            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org, pricing_map_count: 1)
                               create(:super_user, organization: org, identity: logged_in_user)
 
             get :search_surveyables, params: { term: 'test' }, xhr: true
 
             results = JSON.parse(response.body)
-            
+
             expect(results.count).to eq(1)
             expect(results[0]['value']).to eq(service.id)
           end
@@ -249,13 +249,13 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
         context 'service is not available' do
           it 'should not return the service' do
             org             = create(:core, name: 'Testing Organization', abbreviation: 'test.org', process_ssrs: false)
-            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org, is_available: false)
+            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org, is_available: false, pricing_map_count: 1)
                               create(:super_user, organization: org, identity: logged_in_user)
 
             get :search_surveyables, params: { term: 'test' }, xhr: true
 
             results = JSON.parse(response.body)
-            
+
             expect(results.count).to eq(0)
           end
         end
@@ -265,13 +265,13 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
         context 'service is available' do
           it 'should return the service' do
             org             = create(:core, name: 'Testing Organization', abbreviation: 'test.org', process_ssrs: false)
-            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org)
+            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org, pricing_map_count: 1)
                               create(:service_provider, organization: org, identity: logged_in_user)
 
             get :search_surveyables, params: { term: 'test' }, xhr: true
 
             results = JSON.parse(response.body)
-            
+
             expect(results.count).to eq(1)
             expect(results[0]['value']).to eq(service.id)
           end
@@ -280,13 +280,13 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
         context 'service is not available' do
           it 'should not return the service' do
             org             = create(:core, name: 'Testing Organization', abbreviation: 'test.org', process_ssrs: false)
-            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org, is_available: false)
+            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org, is_available: false, pricing_map_count: 1)
                               create(:service_provider, organization: org, identity: logged_in_user)
 
             get :search_surveyables, params: { term: 'test' }, xhr: true
 
             results = JSON.parse(response.body)
-            
+
             expect(results.count).to eq(0)
           end
         end
@@ -296,13 +296,13 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
         context 'service is available' do
           it 'should return the service' do
             org             = create(:core, name: 'Testing Organization', abbreviation: 'test.org', process_ssrs: false)
-            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org)
+            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org, pricing_map_count: 1)
                               create(:catalog_manager, organization: org, identity: logged_in_user)
 
             get :search_surveyables, params: { term: 'test' }, xhr: true
 
             results = JSON.parse(response.body)
-            
+
             expect(results.count).to eq(1)
             expect(results[0]['value']).to eq(service.id)
           end
@@ -311,13 +311,13 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
         context 'service is not available' do
           it 'should not return the service' do
             org             = create(:core, name: 'Testing Organization', abbreviation: 'test.org', process_ssrs: false)
-            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org, is_available: false)
+            service         = create(:service, name: 'Testing Service', abbreviation: 'test.serv', organization: org, is_available: false, pricing_map_count: 1)
                               create(:catalog_manager, organization: org, identity: logged_in_user)
 
             get :search_surveyables, params: { term: 'test' }, xhr: true
 
             results = JSON.parse(response.body)
-            
+
             expect(results.count).to eq(0)
           end
         end

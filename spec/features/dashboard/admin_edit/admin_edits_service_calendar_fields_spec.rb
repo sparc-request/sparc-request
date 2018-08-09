@@ -28,8 +28,8 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
   before :each do
     org       = create(:organization, admin: jug2, service_provider: jug2)
     pricing   = create(:pricing_setup, organization: org)
-    pppv      = create(:service, organization: org, one_time_fee: false)
-    otf       = create(:service, organization: org, one_time_fee: true)
+    pppv      = create(:service, organization: org, one_time_fee: false, pricing_map_count: 1)
+    otf       = create(:service, organization: org, one_time_fee: true, pricing_map_count: 1)
     otf.pricing_maps.first.update_attributes(otf_unit_type: 'total')
 
     protocol  = create(:protocol_federally_funded, primary_pi: jug2)

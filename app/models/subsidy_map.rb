@@ -24,7 +24,8 @@ class SubsidyMap < ApplicationRecord
   belongs_to :organization
   has_many :excluded_funding_sources
 
-  def default_percentage=(percentage)
-    write_attribute(:default_percentage, percentage.to_f / 100.0) if percentage.present?
-  end
+  validates :max_percentage,
+            :default_percentage,
+            :max_dollar_cap,
+            numericality: true
 end

@@ -182,7 +182,7 @@ RSpec.describe 'User edits survey fields', js: true do
     end
 
     scenario 'and sees updated association' do
-      service = create(:service, organization: @org, name: 'Helpful Service for all Your Service Needs')
+      service = create(:service, organization: @org, name: 'Helpful Service for all Your Service Needs', pricing_map_count: 1)
 
       visit surveyor_surveys_path
       wait_for_javascript_to_finish

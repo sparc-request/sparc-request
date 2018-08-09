@@ -68,26 +68,4 @@ RSpec.describe PricingSetup, type: :model do
       pricing_setup.federal = 0
       expect(pricing_setup.applied_percentage('federal')).to eq 0.0
     end
-
-  describe "create pricing maps" do
-
-    let!(:program)       { create(:program) }
-    let!(:service)       { create(:service, organization_id: program.id) }
-    let!(:pricing_setup) { create(:pricing_setup,
-                           organization_id: program.id,
-                           display_date: Time.now,
-                           effective_date: Time.now) }
-
-    it "should return pricing maps with correct effective and display dates" do
-      pricing_setup.create_pricing_maps
-      service.reload
-      expect(service.pricing_maps[1].display_date.to_date).to eq(pricing_setup.display_date.to_date)
-      expect(service.pricing_maps[1].effective_date.to_date).to eq(pricing_setup.effective_date.to_date)
-    end
-
-    it "should return nil if there is no organization" do
-      pricing_setup.update_attributes(organization_id: nil)
-      expect(pricing_setup.create_pricing_maps).to eq(nil)
-    end
-  end
 end

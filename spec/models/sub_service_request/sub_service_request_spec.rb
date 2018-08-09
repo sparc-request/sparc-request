@@ -173,8 +173,6 @@ RSpec.describe SubServiceRequest, type: :model do
 
       context "subsidy organization" do
 
-        let!(:subsidy_map2) { create(:subsidy_map, organization_id: program.id, max_dollar_cap: 100) }
-
         it "should return the core if max dollar cap or max percentage is > 0" do
           subsidy_map.update_attributes(max_dollar_cap: 100)
           expect(sub_service_request.organization).to eq(program)
@@ -195,7 +193,7 @@ RSpec.describe SubServiceRequest, type: :model do
 
         it "should return false is organization is excluded from subsidy" do
           subsidy_map.update_attributes(max_dollar_cap: 100)
-          excluded_funding_source = create(:excluded_funding_source, subsidy_map_id: subsidy_map.id, funding_source: "federal")
+          create(:excluded_funding_source, subsidy_map_id: subsidy_map.id, funding_source: "federal")
           expect(sub_service_request.eligible_for_subsidy?).to eq(false)
         end
       end

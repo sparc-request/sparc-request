@@ -1,4 +1,4 @@
-[//]: # (Copyright © 2011-2016 MUSC Foundation for Research Development)
+[//]: # (Copyright © 2011-2018 MUSC Foundation for Research Development)
 [//]: # (All rights reserved.)
 
 [//]: # (Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:)
@@ -17,7 +17,7 @@
 
 ### When submitting a PR: ###
 
-* Cleanup your commit history (if needed) to make it easier for reviewers to follow. 
+* Cleanup your commit history (if needed) to make it easier for reviewers to follow.
 
 * The title should contain your initials followed by the name of the Pivotal Story.(“AC- (SPARCRequest) Taste The Rainbow” )
 
@@ -47,7 +47,7 @@
 
 * Be as objective as possible.  Ignore your own personal design preferences.  There is more than one way to solve a problem.
 
-* Only request changes when you see a bug or something functionally wrong, otherwise, approach the person and have a face-to-face conversation or contact them on slack. 
+* Only request changes when you see a bug or something functionally wrong, otherwise, approach the person and have a face-to-face conversation or contact them on slack.
 
 * When approaching someone offline, site specific, objective reasons why one implementation is better than another and provide sources.
 

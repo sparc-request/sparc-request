@@ -138,13 +138,7 @@ class Notifier < ActionMailer::Base
 
     xls = controller.render_to_string action: 'request_report', formats: [:xlsx]
     attachments_to_add["service_request_#{@service_request.id}.xlsx"] = xls
-    #TODO this is not very multi-institutional
-    # generate the required forms pdf if it's required
 
-    if ssr.organization.tag_list.include? 'required forms'
-      request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf @service_request
-      attachments_to_add["request_for_grant_billing_#{@service_request.id}.pdf"] = request_for_grant_billing_form
-    end
     ### END ATTACHMENTS ###
 
     # only display the ssrs that are associated with service_provider

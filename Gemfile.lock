@@ -46,9 +46,9 @@ GIT
 
 GIT
   remote: https://github.com/swanandp/acts_as_list.git
-  revision: 0ba054095abc7ad2c5b9aa84131a5a2320bc760e
+  revision: 882ea56b6851532e837da04f90e62db7daf3ad93
   specs:
-    acts_as_list (0.9.12)
+    acts_as_list (0.9.14)
       activerecord (>= 3.0)
 
 GEM
@@ -117,7 +117,7 @@ GEM
     arel (9.0.0)
     audited (4.7.1)
       activerecord (>= 4.0, < 5.3)
-    autoprefixer-rails (8.5.0)
+    autoprefixer-rails (8.6.2)
       execjs
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
@@ -134,6 +134,7 @@ GEM
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
     bootstrap-select-rails (1.12.4)
+    bootstrap-toggle-rails (2.2.1.0)
     bootstrap3-datetimepicker-rails (4.17.47)
       momentjs-rails (>= 2.8.1)
     builder (3.2.3)
@@ -215,7 +216,7 @@ GEM
       responders
       warden (~> 1.2.3)
     diff-lcs (1.3)
-    docile (1.3.0)
+    docile (1.3.1)
     domain_name (0.5.20180417)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.5.0)
@@ -446,34 +447,34 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    rspec (3.7.0)
-      rspec-core (~> 3.7.0)
-      rspec-expectations (~> 3.7.0)
-      rspec-mocks (~> 3.7.0)
+    rspec (3.8.0)
+      rspec-core (~> 3.8.0)
+      rspec-expectations (~> 3.8.0)
+      rspec-mocks (~> 3.8.0)
     rspec-activemodel-mocks (1.0.3)
       activemodel (>= 3.0)
       activesupport (>= 3.0)
       rspec-mocks (>= 2.99, < 4.0)
-    rspec-core (3.7.1)
-      rspec-support (~> 3.7.0)
-    rspec-expectations (3.7.0)
+    rspec-core (3.8.0)
+      rspec-support (~> 3.8.0)
+    rspec-expectations (3.8.0)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.7.0)
+      rspec-support (~> 3.8.0)
     rspec-html-matchers (0.9.1)
       nokogiri (~> 1)
       rspec (>= 3.0.0.a, < 4)
-    rspec-mocks (3.7.0)
+    rspec-mocks (3.8.0)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.7.0)
-    rspec-rails (3.7.2)
+      rspec-support (~> 3.8.0)
+    rspec-rails (3.8.0)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       railties (>= 3.0)
-      rspec-core (~> 3.7.0)
-      rspec-expectations (~> 3.7.0)
-      rspec-mocks (~> 3.7.0)
-      rspec-support (~> 3.7.0)
-    rspec-support (3.7.1)
+      rspec-core (~> 3.8.0)
+      rspec-expectations (~> 3.8.0)
+      rspec-mocks (~> 3.8.0)
+      rspec-support (~> 3.8.0)
+    rspec-support (3.8.0)
     ruby-graphviz (1.2.3)
     ruby-prof (0.17.0)
     ruby-rc4 (0.1.5)
@@ -578,7 +579,7 @@ GEM
       will_paginate (>= 3.0.3)
     x-editable-rails (1.5.5.1)
       railties
-    xpath (3.0.0)
+    xpath (3.1.0)
       nokogiri (~> 1.8)
 
 PLATFORMS
@@ -598,6 +599,7 @@ DEPENDENCIES
   bootsnap
   bootstrap-sass
   bootstrap-select-rails
+  bootstrap-toggle-rails
   bootstrap3-datetimepicker-rails
   bullet
   byebug
@@ -673,7 +675,7 @@ DEPENDENCIES
   rest-client
   rspec-activemodel-mocks
   rspec-html-matchers
-  rspec-rails (~> 3.4)
+  rspec-rails (~> 3.8)
   ruby-prof
   rubyzip (>= 1.2.1)
   sanitized_data!
@@ -699,4 +701,4 @@ DEPENDENCIES
   x-editable-rails
 
 BUNDLED WITH
-   1.16.1
+   1.16.2

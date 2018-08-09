@@ -112,7 +112,7 @@ class ProtocolsReport < ReportingModule
     service_organization_ids = [selected_organization_id]
     if selected_organization_id
       org = Organization.find(selected_organization_id)
-      service_organization_ids = org.all_children(organizations).map(&:id)
+      service_organization_ids = org.all_child_organizations_with_self.map(&:id)
       service_organization_ids.flatten!
     end
 
@@ -121,7 +121,7 @@ class ProtocolsReport < ReportingModule
     # get child organizations
     if not ssr_organization_ids.empty?
       org = Organization.find(selected_organization_id)
-      ssr_organization_ids = [ssr_organization_ids, org.all_children(organizations).map(&:id)].flatten
+      ssr_organization_ids = [ssr_organization_ids, org.all_child_organizations_with_self.map(&:id)].flatten
     end
 
     if args[:service_requests_original_submitted_date_from] and args[:service_requests_original_submitted_date_to]

@@ -1,0 +1,43 @@
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+- program.cores.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |core|
+  .panel-heading.no-padding-y
+    .col-sm-1.no-padding-y
+      = link_to folder_glyphicon(), 'javascript:void(0)', class: "load_core_accordion fix_spec_overlap", data: {core_id: core.id, show_available_only: availability[0], toggle: 'collapse', target: "#core-#{core.id}-collapse", parent: "program-#{program.id}"}
+    .col-sm-11.no-padding-y
+      = link_to accordion_link_text(core, !core.is_available), edit_catalog_manager_organization_path(core), class: 'org-form-label panel-title', remote: true
+  .panel-collapse.collapse{ id: "core-#{core.id}-collapse" }
+    .panel-body.no-padding-y.col-sm-12
+      .panel-heading.no-padding-y
+        .col-sm-1.no-padding-y
+          = link_to plus_glyphicon(), 'javascript:void(0)', class: 'new_service_link', data: {organization_id: core.id}
+        .col-sm-11.no-padding-y{style: "width:91%"}
+          = link_to create_new_text(:service), 'javascript:void(0)', class: 'org-form-label panel-title new_service_link', data: {organization_id: core.id}
+
+      %div{id: "core_accordion_#{core.id}"}
+    .clearfix
+
+- program.services.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |service|
+  .panel-heading.no-padding-y
+    .col-sm-1.no-padding-y
+      = link_to file_glyphicon(), edit_catalog_manager_service_path(service), id: "service-#{service.id}", data: { parent: "program-#{program.id}" }, remote: true
+    .col-sm-11.no-padding-y
+      = link_to accordion_link_text(service, !service.is_available), edit_catalog_manager_service_path(service), class: 'org-form-label panel-title', remote: true

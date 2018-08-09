@@ -112,7 +112,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
               in_work_fulfillment?: true)
             logged_in_user = build_stubbed(:identity)
             allow(logged_in_user).to receive_messages(unread_notification_count: 12345,
-              clinical_provider_rights?: true)
+              cwf_rights?: true)
             stub_current_user(logged_in_user)
             allow(sub_service_request).to receive(:notes).and_return(["1"])
             allow(sub_service_request).to receive(:is_complete?).and_return(false)
@@ -135,7 +135,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
               in_work_fulfillment?: true)
             logged_in_user = build_stubbed(:identity)
             allow(logged_in_user).to receive_messages(unread_notification_count: 12345,
-              clinical_provider_rights?: false)
+              cwf_rights?: false)
             stub_current_user(logged_in_user)
             allow(sub_service_request).to receive(:notes).and_return(["1"])
             allow(sub_service_request).to receive(:is_complete?).and_return(false)

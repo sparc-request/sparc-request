@@ -34,7 +34,7 @@ RSpec.describe 'User edits Service General Info', js: true do
   end
 
   context 'on a Service' do
-    context 'and the user edits the organization general info' do
+    context 'and the user edits the service general info' do
       before :each do
         visit catalog_manager_catalog_index_path
         wait_for_javascript_to_finish
@@ -48,7 +48,7 @@ RSpec.describe 'User edits Service General Info', js: true do
 
       it 'should edit the program' do
         @program1 = create(:program, parent_id: @provider.id)
-        click_link @service.name
+        find('a span', text: @service.name).click
         wait_for_javascript_to_finish
 
         bootstrap_select('#service_program', @program1.name)
@@ -61,7 +61,7 @@ RSpec.describe 'User edits Service General Info', js: true do
 
       it 'should edit the core' do
         @core = create(:core, parent_id: @program.id)
-        click_link @service.name
+        find('a span', text: @service.name).click
         wait_for_javascript_to_finish
 
         bootstrap_select('#service_core', @core.name)
@@ -117,22 +117,6 @@ RSpec.describe 'User edits Service General Info', js: true do
         @service.reload
         expect(@service.tag_list.include?("clinical work fulfillment")).to eq(true)
       end
-    end
-
-    context ' and the user toggles the Clinical/Non-clinical' do
-      before :each do
-        visit catalog_manager_catalog_index_path
-        wait_for_javascript_to_finish
-        find("#institution-#{@institution.id}").click
-        wait_for_javascript_to_finish
-        find("#provider-#{@provider.id}").click
-        wait_for_javascript_to_finish
-        find("#program-#{@program.id}").click
-        wait_for_javascript_to_finish
-        click_link @service.name
-        wait_for_javascript_to_finish
-
-      end
 
       it 'should toggle Clinical/Non-clinical services if there is no pricing map' do
         first('#general-info div.toggle.btn').click
@@ -144,10 +128,11 @@ RSpec.describe 'User edits Service General Info', js: true do
       end
 
       it 'should disable Clinical/Non-clinical services if there is a pricing map' do
+        ##Create Pricing Map for this specific spec, and reload the service form
         create(:pricing_map, service_id: @service.id, display_date: Date.today, effective_date: Date.today)
-
-        click_link @service.name
+        find('a span', text: @service.name).click
         wait_for_javascript_to_finish
+        ##
 
         first('#general-info div.toggle.btn').click
         wait_for_javascript_to_finish
@@ -156,12 +141,13 @@ RSpec.describe 'User edits Service General Info', js: true do
       end
 
       it 'should disable Clinical/Non-clinical services if the service has line items' do
+        ##Create calendar data for this specific spec, and reload the service form
         @sr = create(:service_request, :without_validations)
         @ssr = create(:sub_service_request, :without_validations, :with_organization, service_request: @sr)
         create(:line_item_without_validations, service_request_id: @sr.id, service_id:  @service.id, sub_service_request_id: @ssr.id)
-
-        click_link @service.name
+        find('a span', text: @service.name).click
         wait_for_javascript_to_finish
+        ##
 
         first('#general-info div.toggle.btn').click
         wait_for_javascript_to_finish
@@ -169,26 +155,12 @@ RSpec.describe 'User edits Service General Info', js: true do
         expect(first('#general-info div.toggle.btn')).to be_disabled
       end
 
-    end
-
-    context ' and the user toggles Display in Sparc' do
-      before :each do
-        visit catalog_manager_catalog_index_path
-        wait_for_javascript_to_finish
-        find("#institution-#{@institution.id}").click
-        wait_for_javascript_to_finish
-        find("#provider-#{@provider.id}").click
-        wait_for_javascript_to_finish
-        find("#program-#{@program.id}").click
-        wait_for_javascript_to_finish
-        click_link @service.name
-        wait_for_javascript_to_finish
-      end
-
       it 'should toggle Display in Sparc' do
+        ##Create Pricing Map for the specific spec, and reload the service form
         create(:pricing_map, service_id: @service.id, display_date: Date.today, effective_date: Date.today)
-        click_link @service.name
+        find('a span', text: @service.name).click
         wait_for_javascript_to_finish
+        ##
 
         page.all('#general-info div.toggle.btn')[1].click
         click_button 'Save'
@@ -204,8 +176,6 @@ RSpec.describe 'User edits Service General Info', js: true do
 
         expect(page.all('#general-info div.toggle.btn')[1]).to be_disabled
       end
-
     end
   end
-
 end

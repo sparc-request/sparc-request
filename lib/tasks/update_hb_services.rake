@@ -126,10 +126,16 @@ task :update_hb_services => :environment do
             updated = true
           end
 
-          unless service.current_effective_pricing_map.full_rate == (row['Service Rate'].to_i * 100)
-            pricing_maps << [service.id, service.current_effective_pricing_map.full_rate]
-            puts "Altering service #{service.id} cost from a rate of #{service.current_effective_pricing_map.full_rate} to #{row['Service Rate'].to_i * 100}"
+          current_rates = [service.current_effective_pricing_map.full_rate.to_f, service.current_effective_pricing_map.corporate_rate.to_f,
+                           service.current_effective_pricing_map.federal_rate.to_f, service.current_effective_pricing_map.member_rate.to_f,
+                           service.current_effective_pricing_map.other_rate.to_f]
+          csv_rates     = [row['Service Rate'].to_f * 100, row['Corporate Rate'].to_f * 100, row['Federal Rate'].to_f * 100,
+                           row['Member Rate'].to_f * 100, row['Other Rate'].to_f * 100]
+
+          unless current_rates == csv_rates
+            puts "Altering the pricing of service #{service.id}. Old rates = #{current_rates}. New rates = #{csv_rates}"
             update_service_pricing(service, row)
+            pricing_maps << [service.id, csv_rates, current_rates]
             updated = true
           end
 
@@ -137,13 +143,13 @@ task :update_hb_services => :environment do
             service.audit_comment = 'updated by script'
           end
 
-          service.save
+          service.save(validate: false)
         end
       end
     end
 
     CSV.open("tmp/altered_service_report.csv", "w+") do |csv|
-      csv << ['Service Name', 'Service Id', 'Column Changed', 'New Attribute', 'Old Attribute']
+      csv << ['Service Name', 'Service Id', 'Column Changed', 'New Attribute', 'Old Attribute', 'New rates', 'Old Rates']
       unless revenue_codes.empty?
         revenue_codes.each do |id_and_code|
           service = Service.find(id_and_code[0])
@@ -168,7 +174,7 @@ task :update_hb_services => :environment do
       unless pricing_maps.empty?
         pricing_maps.each do |id_and_rate|
           service = Service.find(id_and_rate[0])
-          csv << [service.name, id_and_rate[0], 'Pricing Map', service.current_effective_pricing_map.full_rate, id_and_rate[1]]
+          csv << [service.name, id_and_rate[0], 'Pricing Map', '', '', id_and_rate[1], id_and_rate[2]]
         end
       end
     end

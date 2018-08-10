@@ -57,7 +57,6 @@ class Service < ApplicationRecord
   has_many :associated_surveys, as: :associable, dependent: :destroy
 
   validates :abbreviation,
-            :description,
             :order,
             presence: true, on: :update
   validates :name, presence: true

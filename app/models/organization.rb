@@ -44,7 +44,6 @@ class Organization < ApplicationRecord
   has_many :org_children, class_name: "Organization", foreign_key: :parent_id
 
   validates :abbreviation,
-            :description,
             :order,
             presence: true, on: :update
   validates :name, presence: true, uniqueness: true

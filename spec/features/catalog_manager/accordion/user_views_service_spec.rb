@@ -59,7 +59,7 @@ RSpec.describe 'User views a service', js: true do
 
       find("#program-#{@program.id} .glyphicon").click
       wait_for_javascript_to_finish
-      find("#core-#{@core.id}").click
+      find("#core-#{@core.id} .glyphicon").click
       wait_for_javascript_to_finish
       find('a span', text: @service.name).click
       wait_for_javascript_to_finish

@@ -28,10 +28,6 @@ class Program < Organization
   # Surveys associated with this service
   has_many :associated_surveys, as: :associable, dependent: :destroy
 
-  def populate_for_edit
-    self.setup_available_statuses
-  end
-
   def has_active_pricing_setup
     active_pricing_setup = false
     if self.pricing_setups.size > 0

@@ -30,8 +30,8 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
     org2      = create(:organization, use_default_statuses: false)
                 create(:pricing_setup, organization: org)
                 create(:pricing_setup, organization: org2)
-    service   = create(:service, organization: org, one_time_fee: false)
-    service2  = create(:service, organization: org2, one_time_fee: false)
+    service   = create(:service, organization: org, one_time_fee: false, pricing_map_count: 1)
+    service2  = create(:service, organization: org2, one_time_fee: false, pricing_map_count: 1)
 
     protocol  = create(:protocol_federally_funded, primary_pi: jug2)
     @sr       = create(:service_request_without_validations, protocol: protocol)

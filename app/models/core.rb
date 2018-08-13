@@ -24,8 +24,4 @@ class Core < Organization
 
   # Surveys associated with this service
   has_many :associated_surveys, as: :associable, dependent: :destroy
-
-  def populate_for_edit
-    setup_available_statuses
-  end
 end

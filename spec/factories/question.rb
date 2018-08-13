@@ -26,10 +26,16 @@ FactoryBot.define do
     question_type { 'text' }
     required      { false }
 
-    after(:create) do |question|
+    transient do
+      option_count 0
+    end
+
+    after(:create) do |question, evaluator|
       if question.question_type == 'yes_no'
         create(:option, question: question, content: 'Yes')
         create(:option, question: question, content: 'No')
+      elsif evaluator.option_count > 0
+        create_list(:option, evaluator.option_count, question: question)
       end
     end
 

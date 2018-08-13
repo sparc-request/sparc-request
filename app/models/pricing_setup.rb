@@ -23,11 +23,15 @@ class PricingSetup < ApplicationRecord
 
   belongs_to :organization
 
-  after_create :create_pricing_maps
-
-  validates :display_date, :effective_date, :corporate, :other, :member, :college_rate_type,
+  validates :display_date, :effective_date, :federal, :corporate, :other, :member, :college_rate_type,
             :foundation_rate_type, :industry_rate_type, :investigator_rate_type,
-            :internal_rate_type, presence: true
+            :internal_rate_type, :foundation_rate_type, :unfunded_rate_type, presence: true
+
+  validates :federal, :corporate, :other, :member, numericality: true
+  validates :display_date, :effective_date, uniqueness: { scope: :organization_id }
+
+  validate :effective_date_after_display_date
+  validate :rate_percentages
 
   def rate_type(funding_source)
     case funding_source
@@ -57,33 +61,38 @@ class PricingSetup < ApplicationRecord
     return applied_percentage || 1.0
   end
 
-  def create_pricing_maps
-    # If there is no organization, then there are no pricing maps
-    return if self.organization.nil?
+  ##Checks user rights for given user, to be allowed to access historical pricing setups
+  def disabled?(user)
+    if user.can_edit_historical_data_for?(organization)
+      false
+    elsif (effective_date <= Date.today) or (display_date <= Date.today)
+      true
+    else
+      false
+    end
+  end
 
-    self.organization.all_child_services.each do |service|
-      current_map = nil
-      begin
-        effective_pricing_map = service.effective_pricing_map_for_date(self.effective_date).attributes
+  private
 
-        ## Deleting the attributes to prevent mass-assignment errors.
-        effective_pricing_map.delete('id')
-        effective_pricing_map.delete('created_at')
-        effective_pricing_map.delete('updated_at')
-        effective_pricing_map.delete('deleted_at')
-
-        current_map = PricingMap.new(effective_pricing_map)
-      rescue
-        current_map = service.pricing_maps.build
-        current_map.full_rate = 0
-        current_map.unit_factor = 1
-        current_map.unit_minimum = 1
-        current_map.unit_type = "Each"
+  def effective_date_after_display_date
+    if effective_date.present? && display_date.present?
+      if effective_date < display_date
+        errors.add(:effective_date, "must be the same, or later than display date.")
       end
+    end
+  end
 
-      current_map.effective_date = self.effective_date.to_date
-      current_map.display_date = self.display_date.to_date
-      current_map.save
+  def rate_percentages
+    if federal.present?
+      if corporate.present? && (corporate < federal)
+        errors.add(:corporate, "must be greater than or equal to Federal Rate.")
+      end
+      if other.present? && (other < federal)
+        errors.add(:other, "must be greater than or equal to Federal Rate.")
+      end
+      if member.present? && (member < federal)
+        errors.add(:member, "must be greater than or equal to Federal Rate.")
+      end
     end
   end
 end

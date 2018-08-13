@@ -26,7 +26,7 @@ class SubsidiesController < ApplicationController
     @header_text = t(:subsidies)[:new]
     @admin = false
     @path = subsidies_path
-    @subsidy.percent_subsidy = @subsidy.default_percentage
+    @subsidy.percent_subsidy = (@subsidy.default_percentage / 100.0)
     @action = 'new'
   end
 

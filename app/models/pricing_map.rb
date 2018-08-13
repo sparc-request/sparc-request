@@ -23,24 +23,29 @@ class PricingMap < ApplicationRecord
 
   belongs_to :service
   before_save :upcase_otf_unit_type
+  before_save :zero_out_negatives
 
   validates :full_rate,
             :display_date,
             :effective_date,
             :unit_factor,
             presence: true
-  validates :full_rate,
-            :unit_factor,
+  validates :unit_factor,
+            :full_rate,
             numericality: true
+
+  validates :display_date, :effective_date, uniqueness: { scope: :service_id }
+
+  validate :effective_date_after_display_date
   # One time fee pricing maps require: units_per_qty_max, otf_unit_type, quantity_type, and quantity_minimum
   with_options :if => :is_one_time_fee? do |one_time_fee|
-    one_time_fee.validates :otf_unit_type, :quantity_type, :presence => true
-    one_time_fee.validates :units_per_qty_max, :quantity_minimum, :numericality => { :only_integer => true }
+    one_time_fee.validates :otf_unit_type, :quantity_type, :units_per_qty_max, presence: true
+    one_time_fee.validates :units_per_qty_max, :quantity_minimum, numericality: { only_integer: true }
   end
   # Per patient pricing maps require: unit_type and unit_minimum
   with_options :unless => :is_one_time_fee? do |per_patient|
-    per_patient.validates :unit_type, :presence => true
-    per_patient.validates :unit_minimum, :numericality => { :only_integer => true }
+    per_patient.validates :unit_type, :unit_minimum, presence: true
+    per_patient.validates :unit_minimum, numericality: { only_integer: true }
   end
 
   def is_one_time_fee?
@@ -49,7 +54,7 @@ class PricingMap < ApplicationRecord
 
   # Determines the rate for a particular service.
   #
-  # +default_percentage+:: a number between 0 and 1
+  # +default_percentage+:: a number between 0 and 100
   #
   # +rate_type+:: a string representing the rate type (e.g. federal,
   # corporate, member, or other)
@@ -112,11 +117,38 @@ class PricingMap < ApplicationRecord
                       other_rate: other }
   end
 
+
+  ##Checks user rights for given user, to be allowed to access historical pricing maps
+  def disabled?(user)
+    if user.can_edit_historical_data_for?(service.organization)
+      false
+    elsif (effective_date <= Date.today) or (display_date <= Date.today)
+      true
+    else
+      false
+    end
+  end
+
+
   private
 
   def upcase_otf_unit_type
     if (self.otf_unit_type == "n/A") or (self.otf_unit_type == "n/a") or (self.otf_unit_type == "N/a")
       self.otf_unit_type.upcase!
+    end
+  end
+
+  def zero_out_negatives
+    if full_rate < 0.0
+      self.full_rate = 0.0
+    end
+  end
+
+  def effective_date_after_display_date
+    if effective_date.present? && display_date.present?
+      if effective_date < display_date
+        errors.add(:effective_date, "must be the same, or later than display date.")
+      end
     end
   end
 

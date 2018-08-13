@@ -66,6 +66,7 @@ class Identity < ApplicationRecord
   has_many :service_providers, dependent: :destroy
   has_many :studies, -> { where("protocols.type = 'Study'")}, through: :project_roles, source: :protocol
   has_many :super_users, dependent: :destroy
+  has_many :short_interactions, :dependent => :destroy
 
   cattr_accessor :current_user
 
@@ -137,6 +138,7 @@ class Identity < ApplicationRecord
 
   # Returns true if the user is a catalog overlord.  Should only be true for three uids:
   # lmf5, anc63, mas244
+  #TODO: Why does this happen? Why create a variable and check it?
   def is_overlord?
     @is_overlord ||= self.catalog_overlord?
   end
@@ -146,6 +148,7 @@ class Identity < ApplicationRecord
   end
 
   def is_service_provider?(ssr=nil)
+    ####TODO pretty sure this is totally unnecessary, and can be done in like, 2 lines.
     if ssr
       is_provider = false
       orgs =[]
@@ -251,7 +254,7 @@ class Identity < ApplicationRecord
   end
 
   # If a user has request or approve rights AND the request is editable, then the user can edit.
-  def can_edit_sub_service_request? ssr
+  def can_edit_sub_service_request?(ssr)
     ssr.can_be_edited? && has_correct_project_role?(ssr)
   end
 
@@ -269,25 +272,18 @@ class Identity < ApplicationRecord
 
   # Determines whether this identity can edit a given organization's information in CatalogManager.
   # Returns true if this identity's catalog_manager_organizations includes the given organization.
-  def can_edit_entity? organization, deep_search=false
-    cm_org_ids = self.catalog_managers.map(&:organization_id)
-    if deep_search
-      org_ids = [organization.id].concat(organization.parents(true))
-      org_ids -  cm_org_ids != org_ids
-    else
-      cm_org_ids.include?(organization.id)
-    end
+  def can_edit_organization?(organization)
+    catalog_manager_organizations.include?(organization)
   end
 
-  # Used in clinical fulfillment to determine whether the user can edit a particular core.
-  def can_edit_core? org_id
-    self.clinical_provider_organizations.map{|x| x.id}.include?(org_id) ? true : false
+  def can_edit_service?(service)
+    can_edit_organization?(service.organization)
   end
 
   # Determines whether the user has permission to edit historical data for a given organization.
   # Returns true if the edit_historic_data flag is set to true on the relevant catalog_manager relationship.
-  def can_edit_historical_data_for? organization
-    if self.catalog_manager_organizations.include?(organization)
+  def can_edit_historical_data_for?(organization)
+    if catalog_manager_organizations.include?(organization)
       if self.catalog_managers.find_by_organization_id(organization.id)
         if self.catalog_managers.find_by_organization_id(organization.id).edit_historic_data
           return true
@@ -307,58 +303,30 @@ class Identity < ApplicationRecord
   ###############################################################################
 
   def authorized_admin_organizations
-    # Returns the organizations for which the user has Super User or Service Provider
-    # privileges, plus all of their child organizations
+    # Returns an active record relation of organizations where the user has super user, or service provider rights.
+    # Including all child organizations.
     Organization.authorized_for_identity(self.id)
   end
 
-  # Collects all organizations that this identity has catalog manager permissions on, as well as
-  # any child (deep) of any of those organizations.
-  # Returns an array of organizations.
+  # Returns an active record relation of organizations where the user has catalog manager rights.
+  # Including all child organizations.
   def catalog_manager_organizations
-    organizations = Organization.all
-    orgs = []
-
-    self.catalog_managers.map(&:organization).each do |org|
-      orgs << org.all_children(organizations)
-    end
-
-    orgs.flatten.uniq
+    Organization.authorized_for_catalog_manager(self.id)
   end
 
-  # Returns an array of organizations where the user has clinical provider rights.
+  # Returns an active record relation of organizations where the user has clinical provider rights.
+  # Including all child organizations
   def clinical_provider_organizations
-    organizations = Organization.all
-    orgs = []
-
-    self.clinical_providers.map(&:organization).each do |org|
-      orgs << org.all_children(organizations)
-    end
-
-    self.admin_organizations({su_only: true}).each do |org|
-      orgs << org
-    end
-
-    orgs.flatten.uniq
+    Organization.authorized_for_clinical_provider(self.id)
   end
 
-  # Collects all organizations that this identity has super user or service provider permissions
-  # on, as well as any child (deep) of any of those organizations.
-  # Returns an array of organizations.
-  # If you pass in "su_only" it only returns organizations for whom you are a super user.
-  def admin_organizations su_only = {su_only: false}
-    orgs = Organization.all
-    organizations = []
-    arr = organizations_for_users(orgs, su_only)
 
-    arr.each do |org|
-      organizations << org.all_children(orgs)
-    end
+  def super_user_organizations
+    Organization.authorized_for_super_user(self.id)
+  end
 
-    ##In case orgs is empty, return an empty array, instead of crashing.
-    organizations.flatten!.compact.uniq rescue return []
-
-    organizations
+  def cwf_rights?(organization)
+    super_user_organizations.include?(organization) or clinical_provider_organizations.include?(organization)
   end
 
   def organizations_for_users(orgs, su_only)
@@ -385,27 +353,31 @@ class Identity < ApplicationRecord
     arr
   end
 
-  def clinical_provider_rights?
-    #TODO should look at all tagged with CTRC
-    org = Organization.tagged_with("ctrc").first
-    if !self.clinical_providers.empty? or self.admin_organizations({su_only: true}).include?(org)
-      return true
-    else
-      return false
-    end
-  end
+  # short_interactions report
+  # Display first available Provider/Program to which the SP user rights is assigned
+  def display_available_provider_program_name
+    name = "N/A"
+    orgs = self.service_providers.map {|sp| sp.organization}.reject{|o| o.is_available == false}
+    unless orgs.empty?
+      providers = orgs.select {|o| o.type == "Provider"}
 
-  def clinical_provider_for_ctrc?
-    #TODO should look at all tagged with CTRC
-    org = Organization.tagged_with("ctrc").first
-    return false if org.nil? #if no orgs have nexus tag
-    self.clinical_providers.each do |provider|
-      if provider.organization_id == org.id
-        return true
+      #SP not assigned @Provider-level
+      if providers.empty?
+        programs = orgs.select {|o| o.type == "Program"}
+        ## SP assigned @Program-level SP
+        if !programs.empty?
+          program = programs[0]
+        ## SP assigned @Core-level
+        else
+          program = Organization.find(orgs[0].parent_id)
+        end
+        provider = Organization.find(program.parent_id)
+        name = "#{provider.name}/#{program.name}"
+      else
+        name = providers[0].name
       end
     end
-
-    return false
+    name
   end
 
   ###############################################################################

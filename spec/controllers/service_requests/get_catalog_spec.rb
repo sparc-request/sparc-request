@@ -44,8 +44,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
     context 'editing service request' do
       it 'should assign @institutions' do
-        i1       = create(:institution)
-        i2       = create(:institution)
+        i1       = create(:institution, order: 1)
+        i2       = create(:institution, order: 2)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 

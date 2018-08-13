@@ -54,7 +54,7 @@
         = PermissibleValue.get_value('status', ssr.status)
       %td.service-rate.text-center.sm-col-width
         = display_service_rate(liv.line_item)
-      %td.your-cost.text-center.sm-col-width
+      %td.text-center.sm-col-width
         - if portal
           %a.edit-your-cost{ href: 'javascript:void(0)', data: { name: 'displayed_cost', title: t(:calendars)[:pppv][:editable_fields][:your_cost], value: number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2), id: liv.line_item.id, url: dashboard_line_item_path(liv.line_item) } }
         - else

@@ -21,7 +21,7 @@
 - program.cores.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |core|
   .panel-heading.no-padding-y
     .col-sm-1.no-padding-y
-      = link_to folder_glyphicon(), 'javascript:void(0)', class: "load_core_accordion fix_spec_overlap", data: {core_id: core.id, show_available_only: availability[0], toggle: 'collapse', target: "#core-#{core.id}-collapse", parent: "program-#{program.id}"}
+      = link_to folder_glyphicon(), 'javascript:void(0)', id: "core-#{core.id}", class: "load_core_accordion fix_spec_overlap", data: {core_id: core.id, show_available_only: availability[0], toggle: 'collapse', target: "#core-#{core.id}-collapse", parent: "program-#{program.id}"}
     .col-sm-11.no-padding-y
       = link_to accordion_link_text(core, !core.is_available), edit_catalog_manager_organization_path(core), class: 'org-form-label panel-title', remote: true
   .panel-collapse.collapse{ id: "core-#{core.id}-collapse" }

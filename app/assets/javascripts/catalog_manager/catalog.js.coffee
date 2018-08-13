@@ -47,7 +47,7 @@ $ ->
     parent_id = $(this).data('parent-id')
     $.ajax
       type: 'GET'
-      url: 'catalog_manager/organizations/new.js'
+      url: '/catalog_manager/organizations/new.js'
       data:
         type: org_type
         parent_id: parent_id

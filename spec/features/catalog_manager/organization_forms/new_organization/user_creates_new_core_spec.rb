@@ -35,11 +35,9 @@ RSpec.describe 'User creates new organization', js: true do
     before :each do
       visit catalog_manager_catalog_index_path
       wait_for_javascript_to_finish
-      find("#institution-#{@institution.id}").click
-      wait_for_javascript_to_finish
-      find("#provider-#{@provider.id}").click
-      wait_for_javascript_to_finish
-      find("#program-#{@program.id}").click
+      find("#institution-#{@institution.id} .glyphicon").click
+      find("#provider-#{@provider.id} .glyphicon").click
+      find("#program-#{@program.id} .glyphicon").click
       wait_for_javascript_to_finish
       click_link 'Create New Core'
       wait_for_javascript_to_finish
@@ -59,11 +57,9 @@ RSpec.describe 'User creates new organization', js: true do
     end
 
     it 'should disable the new core after it is created' do
-      find("#institution-#{@institution.id}").click
-      wait_for_javascript_to_finish
-      find("#provider-#{@provider.id}").click
-      wait_for_javascript_to_finish
-      find("#program-#{@program.id}").click
+      find("#institution-#{@institution.id} .glyphicon").click
+      find("#provider-#{@provider.id} .glyphicon").click
+      find("#program-#{@program.id} .glyphicon").click
       wait_for_javascript_to_finish
 
       expect(Core.where(name: 'Test Core').first.is_available).to eq(false)
@@ -71,11 +67,9 @@ RSpec.describe 'User creates new organization', js: true do
     end
 
     it 'should throw error if the same program name is added again' do
-      find("#institution-#{@institution.id}").click
-      wait_for_javascript_to_finish
-      find("#provider-#{@provider.id}").click
-      wait_for_javascript_to_finish
-      find("#program-#{@program.id}").click
+      find("#institution-#{@institution.id} .glyphicon").click
+      find("#provider-#{@provider.id} .glyphicon").click
+      find("#program-#{@program.id} .glyphicon").click
       wait_for_javascript_to_finish
       click_link 'Create New Core'
       wait_for_javascript_to_finish

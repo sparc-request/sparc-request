@@ -41,7 +41,7 @@ module Dashboard::StudyLevelActivitiesHelper
   end
 
   def sla_your_cost_field line_item
-    link_to 'javascript:void(0);', class: [("your-cost editable"), ('text-danger' if line_item.admin_rates.present?)], data: { url: dashboard_line_item_path(line_item), title: line_item.admin_rates.present? ? t(:dashboard)[:study_level_activities][:tooltips][:modified_rate] : t(:dashboard)[:study_level_activities][:tooltips][:admin_rate] }do
+    link_to 'javascript:void(0);', class: [("your-cost editable"), ('text-success' if line_item.admin_rates.present?)], data: { url: dashboard_line_item_path(line_item), title: line_item.admin_rates.present? ? t(:dashboard)[:study_level_activities][:tooltips][:modified_rate] : t(:dashboard)[:study_level_activities][:tooltips][:admin_rate] }do
       number_with_precision(Service.cents_to_dollars(line_item.applicable_rate), precision: 2)
     end
   end

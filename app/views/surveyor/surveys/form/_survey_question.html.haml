@@ -34,7 +34,7 @@
   .form-group
     = label_tag "question-#{question.id}-required", t(:surveyor)[:surveys][:form][:content][:question][:required], class: 'col-sm-1 control-label no-padding-x text-left'
     .col-sm-1
-      = check_box_tag "question-#{question.id}-required", question.required, question.required
+      = check_box_tag "question-#{question.id}-required", question.required, question.required, disabled: question.question_responses.any?
     = label_tag "question-#{question.id}-is_dependent", t(:surveyor)[:surveys][:form][:content][:question][:dependent][:label], class: 'col-sm-2 control-label no-padding-x text-right'
     .col-sm-3
       = check_box_tag "question-#{question.id}-is_dependent", question.is_dependent, question.is_dependent, class: 'is-dependent', disabled: question.previous_questions.empty?

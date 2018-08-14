@@ -314,19 +314,30 @@ class Identity < ApplicationRecord
     Organization.authorized_for_catalog_manager(self.id)
   end
 
+  # Returns an active record relation of organizations where the user has service provider rights.
+  # Including all child organizations.
+  def service_provider_organizations
+    Organization.authorized_for_service_provider(self.id)
+  end
+
   # Returns an active record relation of organizations where the user has clinical provider rights.
   # Including all child organizations
   def clinical_provider_organizations
     Organization.authorized_for_clinical_provider(self.id)
   end
 
-
+  # Returns an active record relation of organizations where the user has super user rights.
+  # Including all child organizations
   def super_user_organizations
     Organization.authorized_for_super_user(self.id)
   end
 
-  def cwf_rights?(organization)
+  def go_to_cwf_rights?(organization)
     super_user_organizations.include?(organization) or clinical_provider_organizations.include?(organization)
+  end
+
+  def send_to_cwf_rights?(organization)
+    authorized_admin_organizations.include?(organization)
   end
 
   def organizations_for_users(orgs, su_only)

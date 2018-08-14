@@ -72,16 +72,21 @@ module Dashboard::SubServiceRequestsHelper
     display = content_tag(:div, "", class: "row")
     if sub_service_request.ready_for_fulfillment?
       if sub_service_request.in_work_fulfillment?
-        if user.cwf_rights?(sub_service_request.organization)
-          # In fulfillment and user has rights
+        if user.go_to_cwf_rights?(sub_service_request.organization)
+          # In fulfillment, and user has rights to view in Fulfillment
           display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:go_to_fulfillment], "#{Setting.find_by_key("clinical_work_fulfillment_url").value}/sub_service_request/#{sub_service_request.id}", target: "_blank", class: "btn btn-primary btn-md"
         else
-          # In fulfillment, user does not have rights, disable button
-          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:in_fulfillment], "#{Setting.find_by_key("clinical_work_fulfillment_url").value}/sub_service_request/#{sub_service_request.id}", target: "_blank", class: "btn btn-primary btn-md", disabled: true
+          # In fulfillment, but user has no rights to view in Fulfillment
+          display += button_tag t(:dashboard)[:sub_service_requests][:header][:fulfillment][:in_fulfillment], class: "btn btn-primary btn-md form-control", disabled: true
         end
       else
-        # Not in Fulfillment
-        display += button_tag t(:dashboard)[:sub_service_requests][:header][:fulfillment][:send_to_fulfillment], data: { sub_service_request_id: sub_service_request.id }, id: "send_to_fulfillment_button", class: "btn btn-success btn-md form-control"
+        if user.send_to_cwf_rights?(sub_service_request.organization)
+          # Not in Fulfillment, and user has rights to send to Fulfillment
+          display += button_tag t(:dashboard)[:sub_service_requests][:header][:fulfillment][:send_to_fulfillment], data: { sub_service_request_id: sub_service_request.id }, id: "send_to_fulfillment_button", class: "btn btn-success btn-md form-control"
+        else
+          # Not in Fulfillment, but user has no rights to send to Fulfillment
+          display += button_tag t(:dashboard)[:sub_service_requests][:header][:fulfillment][:send_to_fulfillment], class: "btn btn-success btn-md form-control", disabled: true
+        end
       end
     else
       # Not ready for Fulfillment
@@ -257,7 +262,7 @@ module Dashboard::SubServiceRequestsHelper
   private
 
   def statuses_with_classes(ssr)
-    
+
     sorted_by_permissible_values(ssr.organization.get_available_statuses).invert.map do |status|
       if in_finished_status?(status)
         status.push(:class=> 'finished-status')

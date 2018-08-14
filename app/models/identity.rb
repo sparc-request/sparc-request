@@ -136,13 +136,6 @@ class Identity < ApplicationRecord
     Setting.find_by_key("site_admins").value.include?(self.ldap_uid)
   end
 
-  # Returns true if the user is a catalog overlord.  Should only be true for three uids:
-  # lmf5, anc63, mas244
-  #TODO: Why does this happen? Why create a variable and check it?
-  def is_overlord?
-    @is_overlord ||= self.catalog_overlord?
-  end
-
   def is_super_user?
     @is_super_user ||= self.super_users.count > 0
   end
@@ -250,7 +243,7 @@ class Identity < ApplicationRecord
 
   # Only users with request or approve rights can edit.
   def can_edit_service_request?(sr)
-    has_correct_project_role?(sr) || self.is_overlord?
+    has_correct_project_role?(sr) || self.catalog_overlord?
   end
 
   # If a user has request or approve rights AND the request is editable, then the user can edit.

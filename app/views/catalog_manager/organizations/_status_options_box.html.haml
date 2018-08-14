@@ -33,7 +33,7 @@
               - AvailableStatus.defaults.sort.each do |status|
                 %tr
                   %th= f.label :status, "#{AvailableStatus.statuses[status].titleize}"
-        - if current_user.is_overlord?
+        - if current_user.catalog_overlord?
           %tr
             %td
               %br

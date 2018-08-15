@@ -21,7 +21,22 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   layout false
 
   def new
-    @organization = Organization.new(type: params[:type], parent_id: params[:parent_id])
+    if params[:type] == "Institution"
+      #Institutions have different access rights for creation
+      if @user.catalog_overlord?
+        @organization = Organization.new(type: params[:type])
+      else
+        flash[:alert] = "You must be a Catalog Overlord to create new institutions."
+      end
+    else
+      ##Check if user has catalog manager rights to the parent of this new org.
+      parent_org = Organization.find(params[:parent_id])
+      if @user.can_edit_organization?(parent_org)
+        @organization = Organization.new(type: params[:type], parent_id: params[:parent_id])
+      else
+        flash[:alert] = "You must have catalog manager rights above this level, to create a new organization here."
+      end
+    end
   end
 
   def create

@@ -157,21 +157,23 @@ module ApplicationHelper
     if current_user
       conditions = case identifier
       when 'sparc_fulfillment'
-        current_user.clinical_providers.empty? && !current_user.is_super_user?
+        !current_user.clinical_providers.empty? || current_user.is_super_user?
       when 'sparc_catalog'
-        current_user.catalog_managers.empty?
+        !current_user.catalog_managers.empty?
       when 'sparc_report'
-        !current_user.is_super_user?
+        current_user.is_super_user?
       when 'sparc_funding'
-        !current_user.is_funding_admin?
+        current_user.is_funding_admin?
       when 'sparc_forms'
-        !current_user.is_site_admin? && !current_user.is_super_user? && !current_user.is_service_provider?
+        current_user.is_site_admin? || current_user.is_super_user? || current_user.is_service_provider?
       else
-        false
+        true
       end
+    else ## show base module when logged out
+      conditions = true if ['sparc_dashboard', 'sparc_request'].include? identifier
     end
 
-    render_navbar_link(name, path, highlighted) unless conditions
+    render_navbar_link(name, path, highlighted) if conditions
   end
 
   def render_navbar_link(name, path, highlighted)

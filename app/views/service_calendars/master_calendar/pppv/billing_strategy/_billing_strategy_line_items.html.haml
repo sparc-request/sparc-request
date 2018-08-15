@@ -56,9 +56,13 @@
         = display_service_rate(liv.line_item)
       %td.text-center.sm-col-width
         - if portal
-          %a.edit-your-cost{ href: 'javascript:void(0)', data: { name: 'displayed_cost', title: liv.line_item.admin_rates.present? ? t(:dashboard)[:study_level_activities][:tooltips][:modified_rate] : t(:dashboard)[:study_level_activities][:tooltips][:admin_rate], value: number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2), id: liv.line_item.id, url: dashboard_line_item_path(liv.line_item) }, class: (liv.line_item.admin_rates.present? ? 'text-success' : '') }
+          %a.edit-your-cost{ href: 'javascript:void(0)', data: { name: 'displayed_cost', title: liv.line_item.admin_rates.present? ? t(:dashboard)[:study_level_activities][:tooltips][:modified_rate] : t(:dashboard)[:study_level_activities][:tooltips][:change_rate], value: number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2), id: liv.line_item.id, url: dashboard_line_item_path(liv.line_item) }, class: (liv.line_item.admin_rates.present? ? 'text-danger' : '') }
         - else
-          = "$#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}"
+          - if liv.line_item.admin_rates.present?
+            %span.text-danger{data: {toggle: 'tooltip', title: t(:dashboard)[:study_level_activities][:tooltips][:modified_rate]}}
+              = "$#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}"
+          - else
+            = "$#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}"
 
       - unless portal
         %td.unit-type.text-center.unit-type-width

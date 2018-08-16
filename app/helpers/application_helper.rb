@@ -152,10 +152,10 @@ module ApplicationHelper
     name, path = details
     highlighted = identifier == highlighted_link
 
-    conditions = false
+    accessible = false
 
     if current_user
-      conditions = case identifier
+      accessible = case identifier
       when 'sparc_fulfillment'
         !current_user.clinical_providers.empty? || current_user.is_super_user?
       when 'sparc_catalog'
@@ -170,10 +170,10 @@ module ApplicationHelper
         true
       end
     else ## show base module when logged out
-      conditions = true if ['sparc_dashboard', 'sparc_request'].include? identifier
+      accessible = true if ['sparc_dashboard', 'sparc_request'].include? identifier
     end
 
-    render_navbar_link(name, path, highlighted) if conditions
+    render_navbar_link(name, path, highlighted) if accessible
   end
 
   def render_navbar_link(name, path, highlighted)

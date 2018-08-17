@@ -196,8 +196,10 @@ def build_service_request
 
   before :each do
     program.tag_list.add("ctrc")
-    program.available_statuses.where(status: ['draft', 'submitted', 'get_a_cost_estimate', 'administrative_review']).update_all(selected: true)
-    program.editable_statuses.where(status: ['draft', 'submitted', 'get_a_cost_estimate', 'administrative_review']).update_all(selected: true)
+    program.available_statuses.where(status: 'administrative_review').first.update_attributes(selected: true)
+
+    # program.available_statuses.where(status: ['draft', 'submitted', 'get_a_cost_estimate', 'administrative_review']).update_all(selected: true)
+    # program.editable_statuses.where(status: ['draft', 'submitted', 'get_a_cost_estimate', 'administrative_review']).update_all(selected: true)
 
     [program, core_13, core_15, core_16, core_17, core_62].each do |organization|
       organization.tag_list.add("clinical work fulfillment")

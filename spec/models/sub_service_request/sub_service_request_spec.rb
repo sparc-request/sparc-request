@@ -201,15 +201,6 @@ RSpec.describe SubServiceRequest, type: :model do
 
     describe "sub service request status" do
 
-      let!(:org1)       { create(:organization) }
-      let!(:org2)       { create(:organization) }
-      let!(:ssr1)       { create(:sub_service_request, service_request_id: service_request.id, organization_id: org1.id) }
-      let!(:ssr2)       { create(:sub_service_request, service_request_id: service_request.id, organization_id: org2.id) }
-      let!(:service)    { create(:service, organization_id: org1.id) }
-      let!(:service2)   { create(:service, organization_id: org2.id) }
-      let!(:line_item1) { create(:line_item, sub_service_request_id: ssr1.id, service_request_id: service_request.id, service_id: service.id) }
-      let!(:line_item2) { create(:line_item, sub_service_request_id: ssr2.id, service_request_id: service_request.id, service_id: service2.id) }
-
       context "can be edited" do
 
         it "should return true if the status is draft" do
@@ -228,7 +219,7 @@ RSpec.describe SubServiceRequest, type: :model do
         end
 
         it "should return false if status is anything other than above states" do
-          sub_service_request.update_attributes(status: "on_hold")
+          sub_service_request.update_attributes(status: "incomplete")
           expect(sub_service_request.can_be_edited?).to eq(false)
         end
 

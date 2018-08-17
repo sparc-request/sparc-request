@@ -411,8 +411,8 @@ class Organization < ApplicationRecord
   private
 
   def create_statuses
-    EditableStatus.import EditableStatus.types.map{|status| EditableStatus.new(organization: self, status: status)}
-    AvailableStatus.import AvailableStatus.types.map{|status| AvailableStatus.new(organization: self, status: status)}
+    EditableStatus.import PermissibleValue.where(category: 'status').map{|pv| EditableStatus.new(organization: self, status: pv.key, selected: pv.default)}
+    AvailableStatus.import PermissibleValue.where(category: 'status').map{|pv| AvailableStatus.new(organization: self, status: pv.key, selected: pv.default)}
   end
 
   def self.authorized_child_organization_ids(org_ids)

@@ -29,6 +29,8 @@ RSpec.describe 'User activates a survey', js: true do
   context 'surveys' do
     before :each do
       @survey = create(:system_survey)
+      section = create(:section, survey: @survey)
+      create(:question, question_type: 'dropdown', section: section)
 
       visit surveyor_surveys_path
       wait_for_javascript_to_finish

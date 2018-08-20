@@ -44,7 +44,7 @@ RSpec.describe 'User creates new service', js: true do
     wait_for_javascript_to_finish
 
     find('.modal-body').fill_in 'service_name', with: 'Test Service'
-    first('.btn.btn-default').click
+    first('.btn.btn-default').set(true)
     find('.modal-footer').click_button 'Save'
     wait_for_javascript_to_finish
     save_and_open_screenshot

@@ -376,21 +376,29 @@ class Organization < ApplicationRecord
   end
 
   def get_available_statuses
-    selected_statuses = []
-    if self.use_default_statuses
-      selected_statuses = AvailableStatus.defaults
-    elsif self.available_statuses.selected.present?
-      selected_statuses = self.available_statuses.selected.pluck(:status)
+    if process_ssrs
+      if use_default_statuses
+        selected_statuses = AvailableStatus.defaults
+      else
+        selected_statuses = available_statuses.selected.pluck(:status)
+      end
     else
-      status_parent = self.parents.detect{ |parent| parent.available_statuses.selected.present? } || self
-      selected_statuses = status_parent.available_statuses.selected.pluck(:status)
+      if process_ssrs_parent.use_default_statuses
+        selected_statuses = AvailableStatus.defaults
+      else
+        selected_statuses = process_ssrs_parent.available_statuses.selected.pluck(:status)
+      end
     end
 
     AvailableStatus.statuses.slice(*selected_statuses)
   end
 
   def get_editable_statuses
-    self.use_default_statuses ? AvailableStatus.defaults : self.editable_statuses.selected.pluck(:status)
+    if process_ssrs
+      self.use_default_statuses ? AvailableStatus.defaults : self.editable_statuses.selected.pluck(:status)
+    else
+      process_ssrs_parent.get_editable_statuses
+    end
   end
 
   def self.find_all_by_available_status status

@@ -21,43 +21,140 @@
 require 'rails_helper'
 
 RSpec.describe CatalogManager::OrganizationsController do
-  let!(:logged_in_user) {create(:identity)}
-
+  
   before :each do
-    allow(controller).to receive(:authenticate_identity!).
-      and_return(true)
-    allow(controller).to receive(:current_identity).
-      and_return(logged_in_user)
+    @user = create(:identity)
+    log_in_catalog_manager_identity(obj: @user)
   end
 
-  describe '#add_user_rights_row' do
+  describe '#create' do
+    it 'should create an organization with user access' do
+      expect{
+        post :create, params: { organization: attributes_for(:organization) }, xhr: true
+      }.to change(Organization, :count).by(1)
+      expect(@user.catalog_manager_rights.pluck(:organization_id).include?(Organization.first.id)).to eq(true)
+    end
+  end
+
+  describe '#update' do
     before :each do
-      @organization = create(:provider)
-      @identity_1 = create(:identity)
-      @identity_2 = create(:identity)
-      @super_user = create(:super_user, organization_id: @organization.id, identity_id: @identity_1.id)
-
-      get :add_user_rights_row,
-          params: {
-            organization_id: @organization.id,
-            new_ur_identity_id: @identity_2.id
-          },
-          xhr: true
+      @org = create(:organization, name: 'disorganized')
     end
 
-    it 'should assign @organization' do
-      expect(assigns(:organization))
+    it 'should update an existing organization' do
+      expect{
+        put :update, params: { id: @org.id, organization: { name: 'organized' } }, xhr: true
+        @org.reload
+      }.to change(@org, :name).to('organized')
+    end
+  end
+
+  describe '#remove_user_rights_row' do
+    before :each do
+      @org  = create(:organization)
+              create(:super_user, identity: @user, organization: @org)
+              create(:catalog_manager, identity: @user, organization: @org)
+              create(:service_provider, identity: @user, organization: @org)
     end
 
-    it 'should assign @new_ur_identity' do
-      expect(assigns(:new_ur_identity))
+    it 'should destroy existing user rights' do
+      post :remove_user_rights_row, params: { user_rights: { identity_id: @user.id, organization_id: @org.id } }, xhr: true
+
+      expect(@user.super_users.count).to eq(0)
+      expect(@user.catalog_managers.count).to eq(0)
+      expect(@user.service_providers.count).to eq(0)
+    end
+  end
+
+  describe '#remove_fulfillment_rights_row' do
+    before :each do
+      @org  = create(:organization)
+              create(:clinical_provider, identity: @user, organization: @org)
     end
 
-    it 'should assign @user_rights' do
-      expect(assigns(:user_rights))
+    it 'should destroy existing clinical providers' do
+      expect{
+        post :remove_fulfillment_rights_row, params: { fulfillment_rights: { identity_id: @user.id, organization_id: @org.id } }, xhr: true
+      }.to change(@user.clinical_providers, :count).by(-1)
+    end
+  end
+
+  describe '#toggle_default_statuses' do
+    before :each do
+      @org = create(:organization, use_default_statuses: true)
     end
 
-    it { is_expected.to render_template "organizations/add_user_rights_row" }
-    it { is_expected.to respond_with :ok }
+    it 'should toggle use_default_statuses' do
+      expect{
+        post :toggle_default_statuses, params: { organization_id: @org.id, checked: false }, xhr: true
+        @org.reload
+      }.to change(@org, :use_default_statuses).to(false)
+    end
+  end
+
+  describe '#update_status_row' do
+    before :each do
+      @org = create(:organization)
+    end
+
+    it 'should update available statuses' do
+      @status = @org.available_statuses.first
+
+      expect{
+        post :update_status_row, params: { organization_id: @org.id, status_type: 'AvailableStatus', status_key: @status.status, selected: true }, xhr: true
+        @status.reload
+      }.to change(@status, :selected).to(true)
+    end
+
+    it 'should update editable statuses' do
+      @status = @org.editable_statuses.first
+
+      expect{
+        post :update_status_row, params: { organization_id: @org.id, status_type: 'EditableStatus', status_key: @status.status, selected: true }, xhr: true
+        @status.reload
+      }.to change(@status, :selected).to(true)
+    end
+  end
+
+  describe '#increase_decrease_rates' do
+    before :each do
+      @org      = create(:organization)
+      @service  = create(:service, organization: @org)
+      @pm       = create(:pricing_map, service: @service, effective_date: Date.new(2018, 1, 1), display_date: Date.new(2018, 1, 1))
+    end
+
+    it 'should change pricing map rates' do
+      expect_any_instance_of(Service).to receive(:increase_decrease_pricing_map)
+      post :increase_decrease_rates, params: { organization_id: @org.id, effective_date: Date.new(2018, 1, 2).to_s, display_date: Date.new(2018, 1, 2).to_s }, xhr: true
+    end
+  end
+
+  describe '#add_associated_survey' do
+    before :each do
+      @org    = create(:organization)
+      @survey = create(:system_survey)
+    end
+
+    it 'should add an associated survey' do
+      expect{
+        post :add_associated_survey, params: { surveyable_id: @org.id, survey_id: @survey.id }, xhr: true
+        @org.reload
+      }.to change(@org.associated_surveys, :count).by(1)
+    end
+  end
+
+  describe '#remove_associated_survey' do
+    before :each do
+      @org                = create(:organization)
+      @survey             = create(:system_survey)
+      @associated_survey  = create(:associated_survey, associable: @org, survey: @survey)
+    end
+
+    it 'should remove an existing associated survey' do
+      expect{
+        post :remove_associated_survey, params: { associated_survey_id: @associated_survey.id }, xhr: true
+        @org.reload
+      }.to change(@org.associated_surveys, :count).by(-1)
+    end
   end
 end

@@ -49,19 +49,10 @@ RSpec.describe 'User creates new service', js: true do
       wait_for_javascript_to_finish
     end
 
-    it 'should add a one time fee service and show the form' do
+    it 'should add a one time fee service and show the form and disable the new service after creation' do
       expect(Service.where(one_time_fee: true).count).to eq(1)
-      expect(page).to have_selector("h3", text: 'Test Service')
-    end
-
-    it 'should disable the new service after it is created' do
-      find("#institution-#{@institution.id} .glyphicon").click
-      find("#provider-#{@provider.id} .glyphicon").click
-      find("#program-#{@program.id} .glyphicon").click
-      wait_for_javascript_to_finish
-
       expect(Service.where(name: 'Test Service').first.is_available).to eq(false)
-      expect(page).to have_selector('.text-service.unavailable-org', text: 'Test Service')
+      expect(page).to have_selector("h3", text: 'Test Service')
     end
 
     it 'should throw error if One Time Fee / Clinical is not selected' do

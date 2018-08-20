@@ -62,6 +62,8 @@ RSpec.describe 'User activates a survey', js: true do
       org = create(:institution)
       create(:super_user, organization: org, identity: jug2)
       @form = create(:form, surveyable: org)
+      section = create(:section, survey: @form)
+      create(:question, question_type: 'dropdown', section: section)
 
       visit surveyor_surveys_path
       wait_for_javascript_to_finish

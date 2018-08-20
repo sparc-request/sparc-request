@@ -31,7 +31,7 @@ RSpec.describe 'User creates new service', js: true do
     create(:catalog_manager, organization_id: @institution.id, identity_id: Identity.where(ldap_uid: 'jug2').first.id)
   end
 
-  context 'and the user creates a new service' do
+  context 'and the user completes the form' do
     before :each do
       visit catalog_manager_catalog_index_path
       wait_for_javascript_to_finish
@@ -49,11 +49,8 @@ RSpec.describe 'User creates new service', js: true do
       wait_for_javascript_to_finish
     end
 
-    it 'should add a one time fee service' do
+    it 'should add a one time fee service and show the form' do
       expect(Service.where(one_time_fee: true).count).to eq(1)
-    end
-
-    it 'should show the service form' do
       expect(page).to have_selector("h3", text: 'Test Service')
     end
 
@@ -81,27 +78,6 @@ RSpec.describe 'User creates new service', js: true do
 
       expect(page).to have_content('You must choose either One Time Fee, or Clinical Service.')
     end
-
-    it 'should add a clinical service' do
-      find("#institution-#{@institution.id} .glyphicon").click
-      find("#provider-#{@provider.id} .glyphicon").click
-      find("#program-#{@program.id} .glyphicon").click
-      wait_for_javascript_to_finish
-      click_link 'Create New Service'
-      wait_for_javascript_to_finish
-
-      find('.modal-body').fill_in 'service_name', with: 'Test Service'
-      choose('service_one_time_fee_false', allow_label_click: true)
-      find('.modal-footer').click_button 'Save'
-      wait_for_javascript_to_finish
-
-      expect(Service.where(one_time_fee: false).count).to eq(1)
-    end
-
   end
-
 end
-
-
-
 

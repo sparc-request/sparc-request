@@ -45,9 +45,6 @@ RSpec.describe 'User manages status options', js: true do
       end
 
       it 'should add the available status' do
-        puts '#' * 50
-        @provider.available_statuses.each{|status| puts "#{status.status}/#{status.selected}"}
-        puts '#' * 50
         first('.available-status-checkbox').click
         wait_for_javascript_to_finish
         expect(AvailableStatus.where(organization_id: @provider.id).first.selected).to eq(true)

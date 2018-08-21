@@ -120,7 +120,7 @@ RSpec.describe SearchController do
 
     it 'should not return services from a locked organization' do
       sr    = create(:service_request_without_validations)
-      org   = create(:organization, use_default_statuses: false)
+      org   = create(:organization, use_default_statuses: false, process_ssrs: true)
       inst  = create(:institution)
       prvdr = create(:provider, parent: inst)
       org2  = create(:program, parent: prvdr, use_default_statuses: false)

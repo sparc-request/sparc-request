@@ -47,7 +47,6 @@ RSpec.describe 'User manages status options', js: true do
       it 'should add the available status' do
         first('.available-status-checkbox').click
         wait_for_javascript_to_finish
-
         expect(AvailableStatus.where(organization_id: @provider.id).first.selected).to eq(true)
         expect(first('.available-status-checkbox')).to_not be_disabled
       end

@@ -25,7 +25,7 @@ FactoryBot.define do
     description   { Faker::Lorem.paragraph(4) }
     abbreviation  { Faker::Lorem.word }
     ack_language  { Faker::Lorem.paragraph(4) }
-    process_ssrs  { true }
+    process_ssrs  { false }
     is_available  { true }
     use_default_statuses { true }
     order         { 1 }

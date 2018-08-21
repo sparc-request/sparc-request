@@ -382,12 +382,14 @@ class Organization < ApplicationRecord
       else
         selected_statuses = available_statuses.selected.pluck(:status)
       end
-    else
+    elsif process_ssrs_parent
       if process_ssrs_parent.use_default_statuses
         selected_statuses = AvailableStatus.defaults
       else
         selected_statuses = process_ssrs_parent.available_statuses.selected.pluck(:status)
       end
+    else
+      selected_statuses = AvailableStatus.defaults
     end
 
     AvailableStatus.statuses.slice(*selected_statuses)

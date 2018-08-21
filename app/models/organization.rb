@@ -398,8 +398,10 @@ class Organization < ApplicationRecord
   def get_editable_statuses
     if process_ssrs
       self.use_default_statuses ? AvailableStatus.defaults : self.editable_statuses.selected.pluck(:status)
-    else
+    elsif process_ssrs_parent
       process_ssrs_parent.get_editable_statuses
+    else
+      AvailableStatus.defaults
     end
   end
 

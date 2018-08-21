@@ -23,7 +23,7 @@ require 'rails_helper'
 RSpec.describe CatalogManager::SubsidyMapsController, type: :controller do
 
   before :each do
-    log_in_catalog_manager_identity(obj: build_stubbed(:identity))
+    log_in_catalog_manager_identity(obj: build_stubbed(:identity, catalog_overlord: true))
   end
 
   describe '#update' do

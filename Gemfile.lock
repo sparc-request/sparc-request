@@ -115,7 +115,7 @@ GEM
       gyoku (>= 0.4.0)
       nokogiri
     arel (9.0.0)
-    audited (4.7.1)
+    audited (4.8.0)
       activerecord (>= 4.0, < 5.3)
     autoprefixer-rails (8.6.2)
       execjs
@@ -592,7 +592,7 @@ DEPENDENCIES
   acts-as-taggable-on!
   acts_as_list!
   addressable (~> 2.5.2)
-  audited (~> 4.3)
+  audited (~> 4.8)
   axlsx!
   axlsx_rails
   bluecloth

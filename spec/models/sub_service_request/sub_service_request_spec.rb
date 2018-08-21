@@ -214,6 +214,8 @@ RSpec.describe SubServiceRequest, type: :model do
         end
 
         it "should return true if the status is get a cost estimate" do
+          sub_service_request.organization.update_attributes(process_ssrs: true)
+          sub_service_request.organization.available_statuses.where(status: "get_a_cost_estimate").first.update_attributes(selected: true)
           sub_service_request.update_attributes(status: 'get_a_cost_estimate')
           expect(sub_service_request.can_be_edited?).to eq(true)
         end

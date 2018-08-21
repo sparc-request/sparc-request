@@ -26,7 +26,7 @@ RSpec.describe 'User views a locked SSR', js: true do
   fake_login_for_each_test
 
   before :each do
-    org       = create(:organization, use_default_statuses: false)
+    org       = create(:organization, use_default_statuses: false, process_ssrs: true)
                 create(:pricing_setup, organization: org)
     pppv      = create(:service, organization: org, one_time_fee: false, pricing_map_count: 1)
     otf       = create(:service, organization: org, one_time_fee: true, pricing_map_count: 1)

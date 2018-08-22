@@ -25,8 +25,8 @@ centered = wb.styles.add_style alignment: {horizontal: :center}
 # centered = wb.styles.add_style alignment: { horizontal: :center }
 # bordered = wb.styles.add_style :border=> {:style => :thin, :color => "00000000"}
 # centered_bordered = wb.styles.add_style :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
-money = wb.styles.add_style :format_code => '$* #,##0.00_);[Red]-$*#,###.00;$* -??_;'
-bold_money = wb.styles.add_style :format_code => '$#,##0.00_);[Red]-$#,###.00;$* -??_;', b: true
+money = wb.styles.add_style :format_code => '$* #,##0.00_);[Red]$* - #,###.00;$* - ??_;'
+bold_money = wb.styles.add_style :format_code => '$* #,##0.00_);[Red]$* - #,###.00;$* - ??_;', b: true
 percent = wb.styles.add_style :num_fmt => 9, b: true, alignment: { horizontal: :left }
 hide_zeros = wb.styles.add_style format_code: '#;[Red]-#; ;', alignment: { horizontal: :center }
 row_header_style = wb.styles.add_style b: true

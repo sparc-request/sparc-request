@@ -21,9 +21,9 @@
 require 'rails_helper'
 
 RSpec.describe CatalogManager::OrganizationsController do
-  
+
   before :each do
-    @user = create(:identity)
+    @user = create(:identity, catalog_overlord: true)
     log_in_catalog_manager_identity(obj: @user)
   end
 

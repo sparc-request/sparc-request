@@ -23,7 +23,7 @@ require 'rails_helper'
 RSpec.describe CatalogManager::ServiceProvidersController, type: :controller do
 
   before :each do
-    @identity = create(:identity)
+    @identity = create(:identity, catalog_overlord: true)
     @organization_id = create(:provider).id
     log_in_catalog_manager_identity(obj: @identity)
   end

@@ -191,7 +191,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
       p.sub_service_requests.each do |ssr|
         ssr.forms_to_complete.select do |f|
           # Apply the State, Survey/Form, and Start/End Date filters manually
-          (@filterrific.with_state.try(&:empty?) || (@filterrific.with_state.try(&:any?) && @filterrific.with_state.include?(f.active))) &&
+          (@filterrific.with_state.try(&:empty?) || (@filterrific.with_state.try(&:any?) && @filterrific.with_state.include?(f.active ? 1 : 0))) &&
           (@filterrific.with_survey.try(&:empty?) || (@filterrific.with_survey.try(&:any?) && @filterrific.with_survey.include?(f.id)))
         end.each do |f|
           responses << Response.new(survey: f,respondable: ssr)

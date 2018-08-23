@@ -80,13 +80,15 @@ namespace :data do
                                               :member_rate => (row['member_rate'].blank? ? nil : Service.dollars_to_cents(row['member_rate'].to_s.strip.gsub("$", "").gsub(",", ""))),
                                               :other_rate => (row['other_rate'].blank? ? nil : Service.dollars_to_cents(row['other_rate'].to_s.strip.gsub("$", "").gsub(",", ""))),
                                               :unit_type => row['unit_type'],
+                                              :otf_unit_type => (row['one_time_fee'] == '0') ? 'N/A' : row['otf_unit_type'],
                                               :quantity_type => row['quantity_type'],
                                               :unit_factor => row['unit_factor'],
                                               :unit_minimum => row['unit_minimum'],
                                               :quantity_minimum => row['quantity_minimum'],
                                               :units_per_qty_max => row['units_per_qty_max'],
                                               :display_date => Date.strptime(row['display_date'], "%m/%d/%y"),
-                                              :effective_date => Date.strptime(row['effective_date'], "%m/%d/%y")
+                                              :effective_date => Date.strptime(row['effective_date'], "%m/%d/%y"),
+                                              audit_comment: 'created by script'
                                               )
 
         if pricing_map.valid?

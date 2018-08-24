@@ -34,7 +34,6 @@ class Service < ApplicationRecord
   belongs_to :revenue_code_range
   # set ":inverse_of => :service" so that the first pricing map can be validated before the service has been saved
   has_many :pricing_maps, :inverse_of => :service, :dependent => :destroy
-  has_many :service_providers, :dependent => :destroy
   has_many :sub_service_requests, through: :line_items
   has_many :service_requests, through: :sub_service_requests
   has_many :line_items, :dependent => :destroy
@@ -57,31 +56,28 @@ class Service < ApplicationRecord
   # Surveys associated with this service
   has_many :associated_surveys, as: :associable, dependent: :destroy
 
-  validate :validate_pricing_maps_present
+  validates :abbreviation,
+            :order,
+            presence: true, on: :update
+  validates :name, presence: true
+  validate  :one_time_fee_choice
+  validates :order, numericality: { only_integer: true }, on: :update
 
   # Services listed under the funding organizations
   scope :funding_opportunities, -> { where(organization_id: Setting.find_by_key("funding_org_ids").value) }
-
-  ###############################################
-  # Validations
-  def validate_pricing_maps_present
-    errors.add(:service, "must contain at least 1 pricing map.") if pricing_maps.length < 1
-  end
-  ###############################################
 
   def humanized_status
     self.is_available ? I18n.t(:reporting)[:service_pricing][:available] : I18n.t(:reporting)[:service_pricing][:unavailable]
   end
 
   def process_ssrs_organization
-    organization.process_ssrs_parent
+    organization.process_ssrs_parent || organization
   end
 
-  # Return the parent organizations of the service.  Note that this
-  # returns the organizations in the reverse order of
-  # Organization#parents.
-  def parents
-    return organization.parents.reverse + [ organization ]
+  # Return the parent organizations of the service.
+  def parents id_only=false
+    parent_org = id_only ? organization.id : organization
+    return [ parent_org ] + organization.parents(id_only)
   end
 
   # Service belongs to Organization A, which belongs to
@@ -89,7 +85,7 @@ class Service < ApplicationRecord
   # This "hierarchy" stops at a process_ssrs Organization.
   def organization_hierarchy(include_self=false, process_ssrs=true, use_css=false)
     parent_orgs = self.parents.reverse
-    
+
     if process_ssrs
       root = parent_orgs.find_index { |org| org.process_ssrs? } || (parent_orgs.length - 1)
     else
@@ -133,7 +129,8 @@ class Service < ApplicationRecord
   def available_surveys
     available = nil
 
-    parents.each do |parent|
+    #TODO: Should we get all parent surveys instead of the closest parent's surveys?
+    parents.reverse.each do |parent|
       next if parent.type == 'Institution' # Institutions can't define associated surveys
       available = parent.associated_surveys.map(&:survey) unless parent.associated_surveys.empty?
     end
@@ -286,10 +283,6 @@ class Service < ApplicationRecord
     end
   end
 
-  def can_edit_historical_data_on_new?(user)
-    user.can_edit_historical_data_for?(self.organization)
-  end
-
   def increase_decrease_pricing_map(percent_of_change, display_date, effective_date)
     current_map = nil
     begin
@@ -317,7 +310,8 @@ class Service < ApplicationRecord
   end
 
   def has_service_providers?
-    organization.process_ssrs_parent.service_providers.present? rescue true
+    process_ssrs_org = organization.process_ssrs_parent || organization
+    process_ssrs_org.service_providers.present? rescue true
   end
 
   def is_ctrc_clinical_service?
@@ -343,4 +337,13 @@ class Service < ApplicationRecord
   def remotely_notifiable_attributes_to_watch_for_change
     ["components"]
   end
+
+  private
+
+  def one_time_fee_choice
+    if one_time_fee.nil?
+      errors[:base] << "You must choose either One Time Fee, or Clinical Service."
+    end
+  end
+
 end

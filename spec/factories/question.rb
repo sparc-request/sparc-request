@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :question do
     section       nil
     is_dependent  { false }
@@ -26,10 +26,16 @@ FactoryGirl.define do
     question_type { 'text' }
     required      { false }
 
-    after(:create) do |question|
+    transient do
+      option_count 0
+    end
+
+    after(:create) do |question, evaluator|
       if question.question_type == 'yes_no'
         create(:option, question: question, content: 'Yes')
         create(:option, question: question, content: 'No')
+      elsif evaluator.option_count > 0
+        create_list(:option, evaluator.option_count, question: question)
       end
     end
 

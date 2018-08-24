@@ -27,7 +27,7 @@ RSpec.describe 'User interacts with Template tab', js: true do
   scenario 'and sees the tab rendered in the first place (.html action)' do
     org       = create(:organization, admin: jug2, service_provider: jug2)
                 create(:pricing_setup, organization: org)
-    service   = create(:service, organization: org)
+    service   = create(:service, organization: org, pricing_map_count: 1)
     protocol  = create(:protocol_federally_funded, primary_pi: jug2)
     @sr       = create(:service_request_without_validations, protocol: protocol)
     ssr       = create(:sub_service_request, service_request: @sr, organization: org)
@@ -51,7 +51,7 @@ RSpec.describe 'User interacts with Template tab', js: true do
     before :each do
       org       = create(:organization, admin: jug2, service_provider: jug2)
                   create(:pricing_setup, organization: org)
-      service   = create(:per_patient_per_visit_service, organization: org)
+      service   = create(:per_patient_per_visit_service, organization: org, pricing_map_count: 1)
       protocol  = create(:protocol_federally_funded, primary_pi: jug2)
       @sr       = create(:service_request_without_validations, protocol: protocol)
       ssr       = create(:sub_service_request, service_request: @sr, organization: org)
@@ -76,7 +76,7 @@ RSpec.describe 'User interacts with Template tab', js: true do
     scenario 'and sees the otf calendar' do
       org       = create(:organization, admin: jug2, service_provider: jug2)
                   create(:pricing_setup, organization: org)
-      service   = create(:one_time_fee_service, organization: org)
+      service   = create(:one_time_fee_service, organization: org, pricing_map_count: 1)
       protocol  = create(:protocol_federally_funded, primary_pi: jug2)
       @sr       = create(:service_request_without_validations, protocol: protocol)
       ssr       = create(:sub_service_request, service_request: @sr, organization: org)
@@ -99,7 +99,7 @@ RSpec.describe 'User interacts with Template tab', js: true do
     scenario 'and sees the tab is rendered correctly' do
       org       = create(:organization, admin: jug2, service_provider: jug2)
                   create(:pricing_setup, organization: org)
-      service   = create(:service, organization: org)
+      service   = create(:service, organization: org, pricing_map_count: 1)
       protocol  = create(:protocol_federally_funded, primary_pi: jug2)
       @sr       = create(:service_request_without_validations, protocol: protocol)
       ssr       = create(:sub_service_request, service_request: @sr, organization: org)

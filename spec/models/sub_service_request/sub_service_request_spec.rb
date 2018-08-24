@@ -173,8 +173,6 @@ RSpec.describe SubServiceRequest, type: :model do
 
       context "subsidy organization" do
 
-        let!(:subsidy_map2) { create(:subsidy_map, organization_id: program.id, max_dollar_cap: 100) }
-
         it "should return the core if max dollar cap or max percentage is > 0" do
           subsidy_map.update_attributes(max_dollar_cap: 100)
           expect(sub_service_request.organization).to eq(program)
@@ -195,22 +193,13 @@ RSpec.describe SubServiceRequest, type: :model do
 
         it "should return false is organization is excluded from subsidy" do
           subsidy_map.update_attributes(max_dollar_cap: 100)
-          excluded_funding_source = create(:excluded_funding_source, subsidy_map_id: subsidy_map.id, funding_source: "federal")
+          create(:excluded_funding_source, subsidy_map_id: subsidy_map.id, funding_source: "federal")
           expect(sub_service_request.eligible_for_subsidy?).to eq(false)
         end
       end
     end
 
     describe "sub service request status" do
-
-      let!(:org1)       { create(:organization) }
-      let!(:org2)       { create(:organization) }
-      let!(:ssr1)       { create(:sub_service_request, service_request_id: service_request.id, organization_id: org1.id) }
-      let!(:ssr2)       { create(:sub_service_request, service_request_id: service_request.id, organization_id: org2.id) }
-      let!(:service)    { create(:service, organization_id: org1.id) }
-      let!(:service2)   { create(:service, organization_id: org2.id) }
-      let!(:line_item1) { create(:line_item, sub_service_request_id: ssr1.id, service_request_id: service_request.id, service_id: service.id) }
-      let!(:line_item2) { create(:line_item, sub_service_request_id: ssr2.id, service_request_id: service_request.id, service_id: service2.id) }
 
       context "can be edited" do
 
@@ -225,12 +214,14 @@ RSpec.describe SubServiceRequest, type: :model do
         end
 
         it "should return true if the status is get a cost estimate" do
+          sub_service_request.organization.update_attributes(process_ssrs: true)
+          sub_service_request.organization.available_statuses.where(status: "get_a_cost_estimate").first.update_attributes(selected: true)
           sub_service_request.update_attributes(status: 'get_a_cost_estimate')
           expect(sub_service_request.can_be_edited?).to eq(true)
         end
 
         it "should return false if status is anything other than above states" do
-          sub_service_request.update_attributes(status: "on_hold")
+          sub_service_request.update_attributes(status: "incomplete")
           expect(sub_service_request.can_be_edited?).to eq(false)
         end
 

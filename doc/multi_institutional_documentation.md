@@ -1,6 +1,6 @@
 ##SPARC Request Customization Options
 ###Contents
-	
+
 	1 Database Settings
 		1.1 Adapters
 		1.2 Environments
@@ -44,12 +44,12 @@ Several important settings can be found in config/application.yml.  There is an 
 - admin_mail_to: Same as above except for admin emails.
 - feedback_mail_to: Same as above except for the recipients of feedback emails.
 - new_user_cc: Same as above except for users cc'd when a new user request is submitted.
-- system_satisfaction_survey_cc: Sames as above except for users cc'd when a system satisfaction survey is submitted 
-- root_url: This is the root url for the application 
+- system_satisfaction_survey_cc: Sames as above except for users cc'd when a system satisfaction survey is submitted
+- root_url: This is the root url for the application
 - dashboard_link: This is the url for the user dashboard
-- header_link_1: This is the url for the first image in the header 
+- header_link_1: This is the url for the first image in the header
 - header_link_2: This is the url for the second image in the header
-- header_link_3: This is the url for the third image in the header 
+- header_link_3: This is the url for the third image in the header
 - use_indirect_cost: This is a true/false setting which determines whether the application will display indirect costs to the users.  If true, than in addition to direct costs and direct cost subtotals, users will also see indirect costs and indirect cost subtotals, and indirect costs will also be included in the grand total.  If set to false, indirect costs will not be displayed, and they will not be included in the totals.
 - use_shibboleth: This option controls whether the single user sign on option will be displayed in the application.  Currently this is only shibboleth, if you would like to use another oAuth module, this will need to be set to true.
 - use_ldap: This option controls whether the associated user search will attempt to connect to an LDAP server.  If false, it will simply search the database. NOTE: Even if this is set to false at least a blank ldap.yml is required.
@@ -58,10 +58,10 @@ Several important settings can be found in config/application.yml.  There is an 
 - use_epic: This option controls whether or not EPIC integration will be used, true/false
 - queue_epic: This options controls whether EPIC pushes will be queued or not, true/false, emptying the queue is done via rake epic:batch_load, this can setup as a cronjob to run at a certain interval
 - queue_epic_load_error_to: This is a list of users who will receive messages about the status of EPIC loads via queue
-- epic_users_team: This is a list of email addresses to send notifications to after a protocol has been added to the EPIC queue 
+- epic_users_team: This is a list of email addresses to send notifications to after a protocol has been added to the EPIC queue
 - use_google_calendar: This options controls whether or not to show a google calendar on the home page, true/false
 - use_news_feed: This options controls whether or not to pull a news feed, true/false, should be set to false for all except MUSC
-- google_username: The username used to login to retrieve calendar data 
+- google_username: The username used to login to retrieve calendar data
 - google_password: The password used to login to retrieve calendar data
 - send_authorized_user_emails: This options controls whether authorized user changes should send a notification, true/false
 
@@ -116,7 +116,7 @@ This file lays out the navigation instructions for the service request portion o
 - css_class: This is the color value for the step, the current color values are matched with the arrows in the graphic at the top of the page.
 - back: What page the application should navigate to if the user presses the 'Go Back' button at the bottom of the page.
 - catalog: What page the application should navigate to if the user presses the 'Back to Catalog' button under the shopping cart throughout the application.
-- forward: What page the application should navigate to if the user presses the 'Save and Continue' button at the bottom of the page.- 
+- forward: What page the application should navigate to if the user presses the 'Save and Continue' button at the bottom of the page.-
 - validation_groups: This is where the service request validations that must be passed for the step to continue are specified.  Due to the 'wizard' mechanism by which Service Requests are assembled, the validations for required fields and such must be split up so that only relevant validations are run at any given step. The first option present under the 'validation_groups' option is the destination for which you want a given group of validations to fire.  Thus if the setup is as follows:
 
 		service_details:
@@ -136,7 +136,7 @@ PLEASE NOTE: Even if you do not intend to use LDAP you will need an empty ldap.y
 
 ####2.5 epic.yml
 Settings relevant to your institution's EPIC setup. There is an example file found at config/epic.yml.example
-  
+
 - study_root: eg. '1.2.3.4'
 - endpoint: eg. 'http://TODO/'
 - namespace: eg. 'urn:ihe:qrph:rpe:2009'
@@ -165,7 +165,6 @@ An organization can be given tags to either aid in categorization, or to apply s
 There are currently two tags which ascribe additional functionality:
 
 - ctrc - Any organization that has this tag gets a set of features activated in the application which are unique to CTRC (Clinical and Translational Research Center -- aka GCRC) organizations, for instance the 'CTRC Approved' status for service requests.
-- required forms - This flag is currently used to attach a particular pdf to the emails set out when a service request is submitted for services from any organization with this tag.
 
 Any 'functional' tags that your organization will need will need to have changes made in the codebase to take effect, otherwise they will simply be 'non-functional'.
 

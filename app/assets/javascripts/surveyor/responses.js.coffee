@@ -47,3 +47,44 @@ $(document).ready ->
 
     for option_id in option_ids
       $(".dependent-for-option-#{option_id}").removeClass('hidden')
+
+  $(document).on 'click', '#save-filters', ->
+    data = {} # Grab form values
+
+    $.each $('form#filterrific_filter:visible').serializeArray(), (i, field) ->
+      data[field.name] = field.value
+
+    if data["filterrific[with_state][]"].length
+      data["filterrific[with_state][]"] = $("#filterrific_with_state").val()
+
+    if data["filterrific[with_survey][]"].length
+      data["filterrific[with_survey][]"] = $(".form-group:not(.hidden) #filterrific_with_survey").val()
+
+    $.ajax
+      type: 'GET'
+      url: '/surveyor/response_filters/new'
+      data: data
+
+  $(document).on 'change', '#filterrific_of_type', ->
+    selected_value = $(this).find('option:selected').val()
+
+    if selected_value == 'Form'
+      $("#for-SystemSurvey").addClass('hidden')
+      $("#for-SystemSurvey .selectpicker").selectpicker('deselectAll')
+      $("#for-Form").removeClass('hidden')
+    else
+      $("#for-Form").addClass('hidden')
+      $("#for-Form .selectpicker").selectpicker('deselectAll')
+      $("#for-SystemSurvey").removeClass('hidden')
+
+  $(document).on 'change', '#filterrific_with_state', ->
+    selected = $(this).find('option:selected')
+
+    if selected.length == 1
+      selected_value = selected.val()
+
+      $(".survey-select option:not([data-active='#{selected_value}'])").prop('disabled', true)
+      $('.survey-select').selectpicker('refresh')
+    else
+      $('.survey-select option').prop('disabled', false)
+      $('.survey-select').selectpicker('refresh')

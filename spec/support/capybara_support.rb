@@ -164,9 +164,9 @@ module CapybaraSupport
       unfunded_rate_type:           'full')
     pricing_setup.save!
 
-    project = FactoryGirl.create(:protocol_without_validations)
+    project = FactoryBot.create(:protocol_without_validations)
 
-    service_request = FactoryGirl.create(:service_request_without_validations, protocol_id: project.id, status: "draft")
+    service_request = FactoryBot.create(:service_request_without_validations, protocol_id: project.id, status: "draft")
 
     sub_service_request = create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id,status: "draft", service_requester_id: Identity.find_by_ldap_uid("jug2@musc.edu").id)
 
@@ -177,7 +177,6 @@ module CapybaraSupport
       title: "System Satisfaction survey",
       description: nil,
       access_code: "system-satisfaction-survey",
-      display_order: 1,
       version: 1,
       active: true)
   end
@@ -230,15 +229,6 @@ module CapybaraSupport
       is_available:         true,
       pricing_maps:         [core_service_pricing_map])
     core_service.save!
-  end
-
-  def default_catalog_manager_setup
-    create_default_data
-    login_as(Identity.find_by_ldap_uid('jug2@musc.edu'))
-    ## Logs in the default identity.
-    visit catalog_manager_root_path
-    ## This is used to reveal all nodes in the js tree to make it easier to access during testing.
-    page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
   end
 
   def increase_wait_time(seconds)

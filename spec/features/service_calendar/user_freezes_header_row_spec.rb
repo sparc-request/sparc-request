@@ -34,7 +34,7 @@ RSpec.describe 'User freezes header row', js: true do
                   create(:pricing_setup, organization: org)
       services = []
       7.times do
-        services << create(:service, organization: org, one_time_fee: true)
+        services << create(:service, organization: org, one_time_fee: true, pricing_map_count: 1)
       end
 
       protocol  = create(:protocol_federally_funded, primary_pi: jug2)
@@ -65,7 +65,7 @@ RSpec.describe 'User freezes header row', js: true do
                   create(:pricing_setup, organization: org)
       services = []
       10.times do
-        services << create(:service, organization: org, one_time_fee: true)
+        services << create(:service, organization: org, one_time_fee: true, pricing_map_count: 1)
       end
 
       protocol  = create(:protocol_federally_funded, primary_pi: jug2)

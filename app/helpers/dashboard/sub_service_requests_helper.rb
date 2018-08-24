@@ -42,6 +42,24 @@ module Dashboard::SubServiceRequestsHelper
     end
   end
 
+  def display_line_items_otf(sub_service_request, use_epic, lis)
+    if sub_service_request.nil?
+      # only show the services that are set to be pushed to Epic when use_epic = true
+      if use_epic
+        lis.select{ |li| Service.find(li.service_id).send_to_epic }
+      else
+        lis
+      end
+    else
+      # only show the services that are set to be pushed to Epic when use_epic = true
+      if use_epic
+        sub_service_request.one_time_fee_line_items.select{ |li| Service.find(li.service_id).send_to_epic }
+      else
+        sub_service_request.one_time_fee_line_items
+      end
+    end
+  end
+
   def service_request_owner_display sub_service_request
     if sub_service_request.status == "draft"
       content_tag(:span, 'Not available in draft status.')
@@ -54,16 +72,21 @@ module Dashboard::SubServiceRequestsHelper
     display = content_tag(:div, "", class: "row")
     if sub_service_request.ready_for_fulfillment?
       if sub_service_request.in_work_fulfillment?
-        if user.clinical_provider_rights?
-          # In fulfillment and user has rights
-          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:go_to_fulfillment], Setting.find_by_key("clinical_work_fulfillment_url").value, target: "_blank", class: "btn btn-primary btn-md"
+        if user.go_to_cwf_rights?(sub_service_request.organization)
+          # In fulfillment, and user has rights to view in Fulfillment
+          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:go_to_fulfillment], "#{Setting.find_by_key("clinical_work_fulfillment_url").value}/sub_service_request/#{sub_service_request.id}", target: "_blank", class: "btn btn-primary btn-md"
         else
-          # In fulfillment, user does not have rights, disable button
-          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:in_fulfillment], Setting.find_by_key("clinical_work_fulfillment_url").value, target: "_blank", class: "btn btn-primary btn-md", disabled: true
+          # In fulfillment, but user has no rights to view in Fulfillment
+          display += button_tag t(:dashboard)[:sub_service_requests][:header][:fulfillment][:in_fulfillment], class: "btn btn-primary btn-md form-control", disabled: true
         end
       else
-        # Not in Fulfillment
-        display += button_tag t(:dashboard)[:sub_service_requests][:header][:fulfillment][:send_to_fulfillment], data: { sub_service_request_id: sub_service_request.id }, id: "send_to_fulfillment_button", class: "btn btn-success btn-md form-control"
+        if user.send_to_cwf_rights?(sub_service_request.organization)
+          # Not in Fulfillment, and user has rights to send to Fulfillment
+          display += button_tag t(:dashboard)[:sub_service_requests][:header][:fulfillment][:send_to_fulfillment], data: { sub_service_request_id: sub_service_request.id }, id: "send_to_fulfillment_button", class: "btn btn-success btn-md form-control"
+        else
+          # Not in Fulfillment, but user has no rights to send to Fulfillment
+          display += button_tag t(:dashboard)[:sub_service_requests][:header][:fulfillment][:send_to_fulfillment], class: "btn btn-success btn-md form-control", disabled: true
+        end
       end
     else
       # Not ready for Fulfillment
@@ -118,26 +141,6 @@ module Dashboard::SubServiceRequestsHelper
     pi_contribution = (subsidy.pi_contribution / 100.0)
 
     return effective_current_total(sub_service_request) - pi_contribution
-  end
-
-  #This is used to filter out ssr's on the cfw home page
-  #so that clinical providers can only see ones that are
-  #under their core.  Super users and clinical providers on the
-  #ctrc can see all ssr's.
-  def user_can_view_ssr?(study_tracker, ssr, user)
-    can_view = false
-    if user.is_super_user? || user.clinical_provider_for_ctrc? || (user.is_service_provider?(ssr) && (study_tracker == false))
-      can_view = true
-    else
-      ssr.line_items.each do |line_item|
-        clinical_provider_cores(user).each do |core|
-          if line_item.core == core
-            can_view = true
-          end
-        end
-      end
-    end
-    can_view
   end
 
   def clinical_provider_cores(user)
@@ -259,7 +262,8 @@ module Dashboard::SubServiceRequestsHelper
   private
 
   def statuses_with_classes(ssr)
-    ssr.organization.get_available_statuses.invert.map do |status|
+
+    sorted_by_permissible_values(ssr.organization.get_available_statuses).invert.map do |status|
       if in_finished_status?(status)
         status.push(:class=> 'finished-status')
       else
@@ -270,7 +274,7 @@ module Dashboard::SubServiceRequestsHelper
 
   def finished_statuses(ssr)
     new_statuses = []
-    ssr.organization.get_available_statuses.invert.map do |status|
+    sorted_by_permissible_values(ssr.organization.get_available_statuses).invert.map do |status|
       if in_finished_status?(status)
         new_statuses << status
       end
@@ -283,6 +287,18 @@ module Dashboard::SubServiceRequestsHelper
 
   def in_finished_status?(status)
     Setting.find_by_key("finished_statuses").value.include?(status.last)
+  end
+
+  def sorted_by_permissible_values(statuses)
+    values = PermissibleValue.order(:sort_order).get_hash('status')
+    sorted_hash = {}
+    values.each do |k, v|
+      if statuses.has_key?(k)
+        sorted_hash[k] = v
+      end
+    end
+
+    sorted_hash
   end
 end
 

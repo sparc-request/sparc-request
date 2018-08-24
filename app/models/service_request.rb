@@ -271,7 +271,7 @@ class ServiceRequest < ApplicationRecord
       last_parent = nil
       last_parent_name = nil
       found_parent = false
-      service.parents.reverse.each do |parent|
+      service.parents.each do |parent|
         next if !parent.process_ssrs? && !found_parent
         found_parent = true
         last_parent = last_parent || parent.id
@@ -280,7 +280,7 @@ class ServiceRequest < ApplicationRecord
         acks << parent.ack_language unless parent.ack_language.blank?
       end
       if found_parent == false
-        service.parents.reverse.each do |parent|
+        service.parents.each do |parent|
           name << parent.abbreviation
           acks << parent.ack_language unless parent.ack_language.blank?
         end
@@ -405,7 +405,7 @@ class ServiceRequest < ApplicationRecord
   def has_associated_forms?
     self.services.joins(:forms).where(surveys: { active: true }).any? || self.sub_service_requests.joins(organization: :forms).where(surveys: { active: true }).any?
   end
-  
+
   def associated_forms
     forms = []
     # Because there can be multiple SSRs with the same services/organizations we need to loop over each one
@@ -516,7 +516,7 @@ class ServiceRequest < ApplicationRecord
   end
 
   def set_ssr_protocol_id
-    if protocol_id_changed?
+    if saved_change_to_protocol_id?
       sub_service_requests.each do |ssr|
         ssr.update_attributes(protocol_id: protocol_id)
       end

@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,54 +18,59 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.panel.panel-default#filter-responses
+.panel.panel-default
   .panel-heading
     .pull-left
-      = "Filter Responses"
+      = t(:surveyor)[:response_filters][:header]
     .pull-right
-      -# %a#save-filters{ href: 'javascript:void(0)' }
-      -#  = t(:actions)[:save]
-      -# = " | "
-      -# = link_to t(:actions)[:reset], 'javascript:void(0)', id: '#reset-filters'
+      = link_to t(:actions)[:save], 'javascript:void(0)', id: 'save-filters'
+      = " | "
+      = link_to t(:actions)[:reset], reset_filterrific_url, id: 'reset-filters'
     .clearfix
   = form_for_filterrific filterrific, remote: true do |form|
     .panel-body
-      - if current_user.is_site_admin? && (current_user.is_super_user? || current_user.is_service_provider?)
-        .form-group.row
-          = form.label :with_type, t(:surveyor)[:responses][:filter][:type], class: 'col-lg-3 control-label text-left'
-          .col-lg-9
-            = form.select :with_type, filterrific.select_options[:with_type], {}, class: 'form-control selectpicker'
-      - else
-        .form-group.row
-          .col-sm-12
-            %label
-              = 'Coming soon!'
-      -#.form-group.row
-      -#  = form.label :to_survey, t('surveyor.responses.filter.select', type: type), class: 'col-lg-3 control-label text-left'
-      -#  .col-lg-9
-      -#    = form.select :to_survey, options_from_collection_for_select(type.constantize.all, :id, :title), {}, class: 'form-control selectpicker', multiple: true
-      -#.form-group.row
-      -#  .col-sm-12
-      -#    %label
-      -#      = t(:surveyor)[:responses][:filter][:completion_date]
-      -#  = form.label :from_date, t(:surveyor)[:responses][:filter][:from], class: 'col-lg-3 control-label text-left'
-      -#  .col-lg-9
-      -#    .input-group.datetimepicker
-      -#      = form.text_field :from_date, class: 'form-control'
-      -#      %span.input-group-addon
-      -#        %span.glyphicon.glyphicon-calendar
-      -#  = form.label :to_date, t(:surveyor)[:responses][:filter][:to], class: 'col-lg-3 control-label text-left'
-      -#  .col-lg-9
-      -#    .input-group.datetimepicker
-      -#      = form.text_field :to_date, class: 'form-control'
-      -#      %span.input-group-addon
-      -#        %span.glyphicon.glyphicon-calendar
-      -#.form-group.row
-      -#  = form.label :include_incomplete, t(:surveyor)[:responses][:filter][:include_incomplete], class: 'col-lg-10 control-label text-left'
-      -#  .col-lg-2
-      -#    = form.check_box :include_incomplete, {}, 'true', 'false'
+      .form-group.row
+        = form.label :of_type, t(:surveyor)[:response_filters][:fields][:type], class: 'col-lg-3 control-label text-left'
+        .col-lg-9
+          = form.select :of_type, filterrific.select_options[:of_type], {}, class: 'form-control selectpicker'
+      .form-group.row
+        = form.label :with_state, t(:surveyor)[:response_filters][:fields][:state], class: 'col-lg-3 control-label text-left'
+        .col-lg-9
+          = form.select :with_state, options_for_select(Response::STATE_FILTERS, filterrific.with_state), {}, class: 'form-control selectpicker', multiple: true
+      .form-group.row{ id: "for-#{Form.name}", class: filterrific.of_type == Form.name ? "" : "hidden" }
+        = form.label :with_survey, Form.name, class: 'col-lg-3 control-label text-left'
+        .col-lg-9
+          = form.select :with_survey, grouped_options_for_select(Form.for(current_user).for_dropdown_select(filterrific.with_state, filterrific.with_survey)), {}, class: 'form-control selectpicker survey-select', multiple: true, data: { hide_disabled: 'true' }
+      .form-group.row{ id: "for-#{SystemSurvey.name}", class: filterrific.of_type == SystemSurvey.name ? "" : "hidden" }
+        = form.label :with_survey, Survey.name, class: 'col-lg-3 control-label text-left'
+        .col-lg-9
+          = form.select :with_survey, grouped_options_for_select(SystemSurvey.unscoped.for_dropdown_select(filterrific.with_state, filterrific.with_survey)), {}, class: 'form-control selectpicker survey-select', multiple: true, data: { hide_disabled: 'true' }
+      .form-group.row
+        .col-sm-12
+          %label
+            = t(:surveyor)[:response_filters][:fields][:completion_date]
+        = form.label :start_date, t(:surveyor)[:response_filters][:fields][:from], class: 'col-lg-3 control-label text-left'
+        .col-lg-9
+          .input-group.datetimepicker
+            = form.text_field :start_date, class: 'form-control', value: filterrific.start_date ? filterrific.start_date.to_date.strftime('%m/%d/%Y') : ''
+            %span.input-group-addon
+              %span.glyphicon.glyphicon-calendar
+      .form-group.row
+        = form.label :end_date, t(:surveyor)[:response_filters][:fields][:to], class: 'col-lg-3 control-label text-left'
+        .col-lg-9
+          .input-group.datetimepicker
+            = form.text_field :end_date, class: 'form-control', value: filterrific.end_date ? filterrific.end_date.to_date.strftime('%m/%d/%Y') : ''
+            %span.input-group-addon
+              %span.glyphicon.glyphicon-calendar
+      .form-group.row
+        = form.label :include_incomplete, t(:surveyor)[:response_filters][:fields][:include_incomplete], class: 'col-lg-10 control-label text-left'
+        .col-lg-2
+          = form.check_box :include_incomplete, {}, 'true', 'false'
     .panel-footer
       .pull-right
         %button.btn.btn-default{ type: 'submit' }
           = t(:actions)[:filter]
       .clearfix
+
+#saved-searches
+  = render 'surveyor/response_filters/saved_searches'

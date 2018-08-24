@@ -87,7 +87,7 @@ wb.add_worksheet(name: "Review") do |sheet|
 
   ##### beginning of arms
   if has_per_patient_per_visit_services
-
+    
     arms_to_be_displayed = @display_all_services ? @service_request.arms : Arm.where(protocol: @service_request.protocol).joins(:line_items_visits).joins(:visits).where.not( "research_billing_qty = 0 and insurance_billing_qty = 0 and effort_billing_qty = 0" ).uniq
 
     arms_to_be_displayed.each do |arm|
@@ -152,7 +152,7 @@ wb.add_worksheet(name: "Review") do |sheet|
       @service_list_false.each do |key, value|
         next if @sub_service_request.present? && @sub_service_request.organization.name != value[:process_ssr_organization_name]
 
-        line_items_visits = @display_all_services ? arm.line_items_visits : arm.line_items_visits.joins(:visits).where.not( "research_billing_qty = 0 and insurance_billing_qty = 0 and effort_billing_qty = 0" ).uniq
+        line_items_visits = arm.display_line_items_visits(@use_epic, @display_all_services)
 
         #Only show value[:name] when it hasn't been filtered out by the above line
         if (value[:line_items].map(&:id) & line_items_visits.map(&:line_item_id) ).present?
@@ -219,10 +219,14 @@ wb.add_worksheet(name: "Review") do |sheet|
   service_rows = []
   services_sub_header_rows = []
   services_sub_header_rows << sheet.add_row(['Other Services'], :style => name_header_style)
+
   @service_list_true.each do |key, value|
     next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
+
+    line_items = display_line_items_otf(@sub_service_request, @use_epic, value[:line_items])
+
+    next if line_items.empty?
     services_sub_header_rows << sheet.add_row([value[:name]], :style => sub_header_style)
-    line_items = @sub_service_request.nil? ? value[:line_items] : @sub_service_request.one_time_fee_line_items
 
     line_items.each do |line_item|
       service_row = [line_item.service.name, "", "", ""]
@@ -285,17 +289,9 @@ wb.add_worksheet(name: "Review") do |sheet|
   ###### style and merge cells ######
 
   end_column = "G"
+  num_cols = (visit_count*2 + 5)
 
-  alpha_array = ("A".."Z").to_a
-  additional_alpha_arrays_needed = ((visit_count*2 + 5)/26.0).ceil + 1 #add one since some columns get pushed over, safety.  doesn't matter if we have extra here
-
-  additional_alpha_arrays = []
-  additional_alpha_arrays_needed.times do |n|
-    additional_alpha_arrays << alpha_array.map{|char| alpha_array[n] + char}
-  end
-
-  alpha_array = alpha_array + additional_alpha_arrays.flatten
-
+  alpha_array = sheet.get_headers(num_cols)
   end_column = alpha_array[visit_count*2 + 4]
 
   sheet.merge_cells("A1:#{end_column}1") #info header

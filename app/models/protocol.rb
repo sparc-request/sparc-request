@@ -303,6 +303,38 @@ class Protocol < ApplicationRecord
     end
   }
 
+  def initial_amount=(amount)
+    write_attribute(:initial_amount, amount.to_f * 100)
+  end
+
+  def initial_amount
+    read_attribute(:initial_amount) / 100.0 rescue 0
+  end
+
+  def initial_amount_clinical_services=(amount)
+    write_attribute(:initial_amount_clinical_services, amount.to_f * 100)
+  end
+
+  def initial_amount_clinical_services
+    read_attribute(:initial_amount_clinical_services) / 100.0 rescue 0
+  end
+
+  def negotiated_amount=(amount)
+    write_attribute(:negotiated_amount, amount.to_f * 100) rescue 0
+  end
+
+  def negotiated_amount
+    read_attribute(:negotiated_amount) / 100.0 rescue 0
+  end
+
+  def negotiated_amount_clinical_services=(amount)
+    write_attribute(:negotiated_amount_clinical_services, amount.to_f * 100)
+  end
+
+  def negotiated_amount_clinical_services
+    read_attribute(:negotiated_amount_clinical_services) / 100.0 rescue 0
+  end
+
   def is_study?
     self.type == 'Study'
   end
@@ -334,7 +366,9 @@ class Protocol < ApplicationRecord
     if Setting.find_by_key("send_authorized_user_emails").value && sub_service_requests.where.not(status: 'draft').any?
       alert_users = emailed_associated_users << modified_role
       alert_users.flatten.uniq.each do |project_role|
-        UserMailer.authorized_user_changed(project_role.identity, self, modified_role, action).deliver unless project_role.identity.email.blank?
+        unless project_role.project_rights == 'none'
+          UserMailer.authorized_user_changed(project_role.identity, self, modified_role, action).deliver unless project_role.identity.email.blank?
+        end
       end
     end
   end
@@ -395,6 +429,10 @@ class Protocol < ApplicationRecord
   def epic_title
     epic_title = "#{self.short_title} - #{self.title}"
     epic_title.truncate(195)
+  end
+
+  def duration_in_months
+    (self.end_date.year * 12 + self.end_date.month) - (self.start_date.year * 12 + self.start_date.month)
   end
 
   def display_funding_source_value

@@ -180,6 +180,16 @@
     "parent_value":   ""
   },
   {
+    "key":            "header_link_2_catalog",
+    "value":          "http://localhost:3000/catalog_manager",
+    "friendly_name":  "Header Logo 2 URL (SPARCCatalog)",
+    "description":    "The URL for the second image in the header logos in SPARCCatalog.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
     "key":            "header_link_2_dashboard",
     "value":          "http://localhost:3000/dashboard",
     "friendly_name":  "Header Logo 2 URL (SPARCDashboard)",
@@ -634,6 +644,16 @@
     "value":          "[]",
     "friendly_name":  "Funding Opportunities Organizations",
     "description":    "Organization ID of the organizations under the Funding Opportunities.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "use_short_interaction",
+    "value":          "true",
+    "friendly_name":  "Use Short Interaction",
+    "description":    "Determines whether or not the application will use Short Interaction.",
     "group":          "",
     "version":        "",
     "parent_key":     "",

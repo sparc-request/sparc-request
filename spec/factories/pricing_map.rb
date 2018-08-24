@@ -18,19 +18,19 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :pricing_map do
     unit_factor                { 1 }
     percent_of_fee             { 50 }
     full_rate                  { 100 }
     exclude_from_indirect_cost { false }
-    display_date               Date.parse('2000-01-01')
-    effective_date             Date.parse('2000-01-01')
+    sequence(:display_date)    {|n| Date.parse('2000-01-01') + n}
+    sequence(:effective_date)  {|n| Date.parse('2000-01-01') + n}
     # one time fee specific fields
     units_per_qty_max          { 52 }
     otf_unit_type              { "N/A" }
-    quantity_type              { Faker::Lorem.word }   
+    quantity_type              { Faker::Lorem.word }
     quantity_minimum           { 1 }
     # per patient specific fields
     unit_type                  { Faker::Lorem.word }
@@ -41,5 +41,5 @@ FactoryGirl.define do
     end
 
     factory :pricing_map_without_validations, traits: [:without_validations]
-  end  
+  end
 end

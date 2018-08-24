@@ -41,7 +41,9 @@ module Dashboard::StudyLevelActivitiesHelper
   end
 
   def sla_your_cost_field line_item
-    raw( text_field(:line_item, :service, class: 'your-cost-edit', value: sla_cost_display(line_item)) )
+    link_to 'javascript:void(0);', class: [("your-cost editable"), ('text-danger' if line_item.admin_rates.present?)], data: { url: dashboard_line_item_path(line_item), title: line_item.admin_rates.present? ? t(:dashboard)[:study_level_activities][:tooltips][:modified_rate] : t(:dashboard)[:study_level_activities][:tooltips][:change_rate] } do
+      number_with_precision(Service.cents_to_dollars(line_item.applicable_rate), precision: 2)
+    end
   end
 
   def sla_options_buttons line_item

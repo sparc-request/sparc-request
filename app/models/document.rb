@@ -26,20 +26,20 @@ class Document < ApplicationRecord
   belongs_to :protocol
   has_attached_file :document #, :preserve_files => true
   validates_attachment_file_name :document, matches: [
-    /\.pdf$/,
-    /\.docx?$/,
-    /\.xlsx?$/,
-    /\.rtf$/,
-    /\.txt$/,
-    /\.csv$/,
-    /\.ppt?$/,
-    /\.msg$/,
-    /\.eml$/,
-    /\.jpg$/,
-    /\.gif$/,
-    /\.png$/,
-    /\.tiff$/,
-    /\.jpeg$/
+    /\.pdf$/i,
+    /\.docx?$/i,
+    /\.xlsx?$/i,
+    /\.rtf$/i,
+    /\.txt$/i,
+    /\.csv$/i,
+    /\.ppt?$/i,
+    /\.msg$/i,
+    /\.eml$/i,
+    /\.jpg$/i,
+    /\.gif$/i,
+    /\.png$/i,
+    /\.tiff$/i,
+    /\.jpeg$/i
   ]
 
   validates :doc_type, :document, presence: true

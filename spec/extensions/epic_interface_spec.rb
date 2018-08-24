@@ -171,7 +171,7 @@ RSpec.describe EpicInterface do
                    xmlns='urn:hl7-org:v3'
                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
           <studyCharacteristic classCode="OBS" moodCode="EVN">
-            <code code="RC" />
+            <code code="SC" />
             <value code="#{identity.netid.upcase}" codeSystem="netid" />
           </studyCharacteristic>
         </subjectOf>
@@ -1003,7 +1003,7 @@ RSpec.describe EpicInterface do
       'env' => 'http://www.w3.org/2003/05/soap-envelope',
       'rpe' => 'urn:ihe:qrph:rpe:2009',
       'hl7' => 'urn:hl7-org:v3')
-      
+
       expect(node[0]).to be_equivalent_to(expected.root)
     end
 
@@ -1192,7 +1192,7 @@ RSpec.describe EpicInterface do
     end
 
     it 'should send an arm as a cell' do
-      FactoryGirl.create(:service_request_without_validations,
+      FactoryBot.create(:service_request_without_validations,
                                             protocol: study,
                                             status: 'draft')
 
@@ -1273,7 +1273,7 @@ RSpec.describe EpicInterface do
     end
 
     it 'should send two arms as two cells' do
-      FactoryGirl.create(:service_request_without_validations,
+      FactoryBot.create(:service_request_without_validations,
                                             protocol: study,
                                             status: 'draft')
 
@@ -1405,7 +1405,7 @@ RSpec.describe EpicInterface do
     context 'with line items' do
 
       let!(:service_request) {
-        FactoryGirl.create(:service_request_without_validations,
+        FactoryBot.create(:service_request_without_validations,
                             protocol: study,
                             status: 'submitted')
       }

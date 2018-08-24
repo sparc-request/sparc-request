@@ -71,7 +71,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         parsed_body         = JSON.parse(response.body)
         expected_attributes = build(:service).attributes.
                                 keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'order_code'].include?(key) }.
+                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'order_code', 'tag_list'].include?(key) }.
                                 push('callback_url', 'sparc_id', 'process_ssrs_organization').
                                 sort
 
@@ -87,7 +87,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         parsed_body         = JSON.parse(response.body)
         expected_attributes = build(:service).attributes.
                                 keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'order_code'].include?(key) }.
+                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'order_code', 'tag_list'].include?(key) }.
                                 push('callback_url', 'sparc_id', 'process_ssrs_organization', 'line_items').
                                 sort
 

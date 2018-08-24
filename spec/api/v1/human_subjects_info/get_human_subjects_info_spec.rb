@@ -25,8 +25,8 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
   describe 'GET /v1/human_subjects_infos/:id.json' do
 
     before do
-      human_subjects_info = FactoryGirl.build(:human_subjects_info, pro_number: nil, hr_number: nil)
-      @study = FactoryGirl.build(:study, human_subjects_info: human_subjects_info)
+      human_subjects_info = FactoryBot.build(:human_subjects_info, pro_number: nil, hr_number: nil)
+      @study = FactoryBot.build(:study, human_subjects_info: human_subjects_info)
       @study.save(validate: false)
 
     end
@@ -65,7 +65,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       it 'should respond with a HumanSubjectsInfo' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryGirl.build(:human_subjects_info).attributes.
+        expected_attributes = FactoryBot.build(:human_subjects_info).attributes.
                                 keys.
                                 reject { |key| ['id','created_at', 'updated_at', 'deleted_at'].include?(key) }.
                                 push('callback_url', 'sparc_id').
@@ -81,7 +81,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       it 'should respond with an array of human_subjects_info and their attributes and their shallow reflections' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryGirl.build(:human_subjects_info).attributes.
+        expected_attributes = FactoryBot.build(:human_subjects_info).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
                                 push('callback_url', 'sparc_id', 'protocol').

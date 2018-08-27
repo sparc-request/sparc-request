@@ -40,26 +40,26 @@ class Surveyor::SurveysController < Surveyor::BaseController
     end
   end
 
+  def new
+    @survey = Survey.new(type: params[:type])
+  end
+
+  def create
+    @survey = build_survey
+
+    if @survey.save
+      redirect_to edit_surveyor_survey_path(@survey, type: params[:type]), format: :js
+    else
+      @errors = @survey.errors
+    end
+  end
+
   def edit
     @survey = Survey.eager_load(sections: { questions: :options }).find(params[:id])
 
     respond_to do |format|
       format.js
     end
-  end
-
-  def create
-    klass = params[:type].constantize.yaml_klass
-    @survey = Survey.new(
-                type: params[:type],
-                title: "New #{klass}",
-                access_code: "new-#{klass.downcase}",
-                version: 1,
-                active: false,
-                surveyable: klass == 'Form' ? current_user : nil
-              )
-    @survey.save(validate: false)
-    redirect_to edit_surveyor_survey_path(@survey, type: params[:type]), format: :js
   end
 
   def destroy

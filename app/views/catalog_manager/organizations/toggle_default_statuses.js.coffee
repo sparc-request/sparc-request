@@ -20,6 +20,6 @@
 
 $("#status-options .panel-body").html("<%= j render 'statuses_form', organization: @organization, available_statuses: @available_statuses, editable_statuses: @editable_statuses, using_defaults: @using_defaults %>").fadeIn(1000)
 
-$("#org-form-container [data-toggle='toggle']").bootstrapToggle();
+$("#use_default_statuses [data-toggle='toggle']").bootstrapToggle();
 
 $("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")

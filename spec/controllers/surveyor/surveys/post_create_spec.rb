@@ -40,49 +40,31 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
     end
 
     context "params[:type] == 'SystemSurvey'" do
-      it 'should assign @survey to a new SystemSurvey' do
+      it 'should assign create a new SystemSurvey' do
         expect{
-          post :create, xhr: true, params: { type: 'SystemSurvey' }
+          post :create, xhr: true, params: { type: 'SystemSurvey', system_survey: { access_code: 'test' } }
         }.to change{ SystemSurvey.count }.by(1)
-        expect(assigns(:survey)).to be_a(SystemSurvey)
       end
 
       it 'should redirect to edit' do
-        post :create, xhr: true, params: { type: 'SystemSurvey' }
+        post :create, xhr: true, params: { type: 'SystemSurvey', system_survey: { access_code: 'test' } }
 
-        expect(controller).to redirect_to(edit_surveyor_survey_path(assigns(:survey), type: 'SystemSurvey'))
-      end
-
-      it 'should respond ok' do
-        post :create, xhr: true, params: { type: 'SystemSurvey' }
-
-        expect(controller).to respond_with(302)
+        expect(controller).to redirect_to(edit_surveyor_survey_path(Survey.first, type: 'SystemSurvey'))
       end
     end
 
     context "params[:type] == 'Form'" do
-      it 'should assign @survey to a new SystemSurvey' do
+      it 'should assign create a new Form' do
         expect{
-          post :create, xhr: true, params: { type: 'Form' }
+          post :create, xhr: true, params: { type: 'Form', form: { access_code: 'test'  } }
         }.to change{ Form.count }.by(1)
-        expect(assigns(:survey)).to be_a(Form)
-      end
-
-      it 'should associate the new Form to the current user' do
-        post :create, xhr: true, params: { type: 'Form' }
-        expect(assigns(:survey).surveyable).to eq(logged_in_user)
+        expect(Survey.first.surveyable).to eq(logged_in_user)
       end
 
       it 'should redirect to edit' do
-        post :create, xhr: true, params: { type: 'Form' }
+        post :create, xhr: true, params: { type: 'Form', form: { access_code: 'test' } }
 
         expect(controller).to redirect_to(edit_surveyor_survey_path(assigns(:survey), type: 'Form'))
-      end
-
-      it 'should respond ok' do
-        post :create, xhr: true, params: { type: 'Form' }
-
-        expect(controller).to respond_with(302)
       end
     end
   end

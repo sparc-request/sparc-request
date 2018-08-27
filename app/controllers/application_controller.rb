@@ -253,7 +253,7 @@ class ApplicationController < ActionController::Base
       @service_request.sub_service_requests.each do |ssr|
         if ssr.is_locked?
           @locked_org_ids << ssr.organization_id
-          @locked_org_ids << ssr.organization.all_children(Organization.all).map(&:id)
+          @locked_org_ids << ssr.organization.all_child_organizations_with_self.map(&:id)
         end
       end
 

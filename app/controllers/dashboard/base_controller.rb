@@ -90,6 +90,6 @@ class Dashboard::BaseController < ActionController::Base
   end
 
   def bypass_rmid_validations? # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]
-    @bypass_rmid_validation = @user.is_overlord? || @admin
+    @bypass_rmid_validation = @user.catalog_overlord? || @admin
   end
 end

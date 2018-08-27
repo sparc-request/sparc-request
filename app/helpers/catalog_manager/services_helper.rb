@@ -19,42 +19,19 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module CatalogManager::ServicesHelper
-  def display_service_user_rights user, form_name, organization
-    if user.can_edit_entity? organization, true
-      render form_name
-    else
-      content_tag(:h1, "Sorry, you are not allowed to access this page.") +
-      content_tag(:h3, "Please contact your system administrator.", :style => 'color:#999')
-    end
+  def service_header
+    content_tag(:span, "Service", class: "text-service")
   end
 
-  def display_otf_attributes(pricing_map)
-    if pricing_map
-      attributes = ""
-      if pricing_map.service.one_time_fee
-        if pricing_map.otf_unit_type == "N/A"
-          attributes = ['#', pricing_map.try(:quantity_type)].compact.join
-        else
-          attributes = ['#', pricing_map.try(:otf_unit_type), '/', '#', pricing_map.try(:quantity_type)].compact.join
-        end
+  def service_tree_header service
+    parents = service.organization.parents.map(&:name).reverse.push(service.organization.name)
+    header = content_tag :span do
+      parents.each do |p|
+        concat(content_tag(:span, p))
+        concat(content_tag(:span, '', class: 'inline-glyphicon glyphicon glyphicon-triangle-right'))
       end
-
-      attributes
+    concat(content_tag(:span, service.name)) unless service.organization.type == 'Institution'
     end
-  end
-
-
-  def per_patient_display_style pricing_map
-    style = ""
-
-    if pricing_map
-      if pricing_map.service.one_time_fee
-        style = "display:none;"
-      end
-    else
-      style = ""
-    end
-
-    style
+    header
   end
 end

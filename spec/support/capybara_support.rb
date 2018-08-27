@@ -231,15 +231,6 @@ module CapybaraSupport
     core_service.save!
   end
 
-  def default_catalog_manager_setup
-    create_default_data
-    login_as(Identity.find_by_ldap_uid('jug2@musc.edu'))
-    ## Logs in the default identity.
-    visit catalog_manager_root_path
-    ## This is used to reveal all nodes in the js tree to make it easier to access during testing.
-    page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
-  end
-
   def increase_wait_time(seconds)
     orig_seconds = seconds
     begin

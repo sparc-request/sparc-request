@@ -36,7 +36,7 @@ RSpec.describe NotifierLogic do
   after :each do
     Delayed::Worker.delay_jobs = true
   end
-  
+
   ### update_ssrs_and_send_emails ###
   context '#update_ssrs_and_send_emails for an entire SR' do
     context 'create a new SR with all new services' do
@@ -49,7 +49,7 @@ RSpec.describe NotifierLogic do
         ### ADMIN EMAIL ###
         @org.submission_emails.create(email: 'hedwig@owlpost.com')
         @admin_email = 'hedwig@owlpost.com'
-        service     = create(:service, organization: @org, one_time_fee: true)
+        service     = create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1)
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: nil)
         ### SSR SETUP ###
@@ -65,7 +65,7 @@ RSpec.describe NotifierLogic do
 
       it 'should notify authorized users (initial submission email)' do
         allow(Notifier).to receive(:notify_user) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver)
           mailer
         end
@@ -76,7 +76,7 @@ RSpec.describe NotifierLogic do
 
       it 'should notify service providers (initial submission email)' do
         allow(Notifier).to receive(:notify_service_provider) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver)
           mailer
         end
@@ -87,12 +87,12 @@ RSpec.describe NotifierLogic do
 
       it 'should notify admin (initial submission email)' do
         allow(Notifier).to receive(:notify_admin) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver)
           mailer
-        end 
-        
-        NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails 
+        end
+
+        NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails
         expect(Notifier).to have_received(:notify_admin).with(@admin_email, logged_in_user, @ssr2, nil, false, false)
       end
 
@@ -128,7 +128,7 @@ RSpec.describe NotifierLogic do
         ### ADMIN EMAIL ###
         @org.submission_emails.create(email: 'hedwig@owlpost.com')
         @admin_email = 'hedwig@owlpost.com'
-        service     = create(:service, organization: @org, one_time_fee: true)
+        service     = create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1)
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
@@ -157,7 +157,7 @@ RSpec.describe NotifierLogic do
 
       it 'should notify authorized users' do
         allow(Notifier).to receive(:notify_user) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver)
           mailer
         end
@@ -169,7 +169,7 @@ RSpec.describe NotifierLogic do
       end
 
       it 'should NOT notify service providers' do
-        allow(Notifier).to receive(:notify_service_provider) 
+        allow(Notifier).to receive(:notify_service_provider)
         audit = { :line_items => @deleted_li }
         NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails
 
@@ -178,9 +178,9 @@ RSpec.describe NotifierLogic do
 
       it 'should NOT notify admin' do
         @sr.previous_submitted_at = @sr.submitted_at
-        allow(Notifier).to receive(:notify_admin) 
-        
-        NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails 
+        allow(Notifier).to receive(:notify_admin)
+
+        NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails
         expect(Notifier).not_to have_received(:notify_admin)
       end
 
@@ -215,7 +215,7 @@ RSpec.describe NotifierLogic do
         @org2         = create(:organization_with_process_ssrs)
         ### ADMIN EMAIL ###
         @org.submission_emails.create(email: 'hedwig@owlpost.com')
-        service     = create(:service, organization: @org, one_time_fee: true)
+        service     = create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1)
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
@@ -226,24 +226,24 @@ RSpec.describe NotifierLogic do
         li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
         li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service)
                       create(:service_provider, identity: logged_in_user, organization: @org)
-        @sr.reload 
-        add_li_creating_a_new_ssr_then_delete_li_destroying_ssr(@sr, ssr, @ssr2)   
+        @sr.reload
+        add_li_creating_a_new_ssr_then_delete_li_destroying_ssr(@sr, ssr, @ssr2)
       end
 
       it 'NO EMAILS' do
         allow(Notifier).to receive(:notify_user) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver)
           mailer
         end
 
         NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails
-        expect(Notifier).not_to have_received(:notify_user) 
+        expect(Notifier).not_to have_received(:notify_user)
       end
 
       it 'NO EMAILS' do
         allow(Notifier).to receive(:notify_service_provider) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver)
           mailer
         end
@@ -254,12 +254,12 @@ RSpec.describe NotifierLogic do
 
       it 'NO EMAILS' do
         allow(Notifier).to receive(:notify_admin) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver)
           mailer
-        end 
-        
-        NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails 
+        end
+
+        NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails
         expect(Notifier).not_to have_received(:notify_admin)
       end
 
@@ -295,7 +295,7 @@ RSpec.describe NotifierLogic do
         ### ADMIN EMAIL ###
         @org.submission_emails.create(email: 'hedwig@owlpost.com')
         @admin_email = 'hedwig@owlpost.com'
-        service     = create(:service, organization: @org, one_time_fee: true)
+        service     = create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1)
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
@@ -306,16 +306,16 @@ RSpec.describe NotifierLogic do
         li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service)
         @service_provider = create(:service_provider, identity: logged_in_user, organization: @org)
         @sr.reload
-        add_li_adding_a_new_ssr(@sr, ssr, @ssr2) 
+        add_li_adding_a_new_ssr(@sr, ssr, @ssr2)
 
         @added_li = AuditRecovery.where("audited_changes LIKE '%sub_service_request_id: #{@ssr2.id}%' AND auditable_type = 'LineItem' AND action IN ('create')")
         @added_li.first.update_attribute(:created_at, Time.now.utc - 5.minutes)
-        @added_li.first.update_attribute(:user_id, logged_in_user.id)  
+        @added_li.first.update_attribute(:user_id, logged_in_user.id)
       end
 
       it 'should notify authorized users (request_amendment_email)' do
         allow(Notifier).to receive(:notify_user) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver)
           mailer
         end
@@ -327,7 +327,7 @@ RSpec.describe NotifierLogic do
 
       it 'should notify service providers (initial submission email)' do
         allow(Notifier).to receive(:notify_service_provider) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver)
           mailer
         end
@@ -338,12 +338,12 @@ RSpec.describe NotifierLogic do
 
       it 'should notify admin (initial submission email)' do
         allow(Notifier).to receive(:notify_admin) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver)
           mailer
-        end 
-        
-        NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails 
+        end
+
+        NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails
         expect(Notifier).to have_received(:notify_admin).with(@admin_email, logged_in_user, @ssr2, nil, false, false)
       end
 
@@ -379,7 +379,7 @@ RSpec.describe NotifierLogic do
         ### ADMIN EMAIL ###
         @org.submission_emails.create(email: 'hedwig@owlpost.com')
         @admin_email = 'hedwig@owlpost.com'
-        service     = create(:service, organization: @org, one_time_fee: true)
+        service     = create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1)
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
@@ -390,7 +390,7 @@ RSpec.describe NotifierLogic do
         li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service)
         li_2        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service)
         @service_provider = create(:service_provider, identity: logged_in_user, organization: @org)
-        
+
         @ssr2.update_attribute(:status, 'draft')
         @sr.reload
         add_li_to_exisiting_ssr(@sr, ssr, @ssr2, li_2)
@@ -401,7 +401,7 @@ RSpec.describe NotifierLogic do
 
       it 'should notify authorized users' do
         allow(Notifier).to receive(:notify_user) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver)
           mailer
         end
@@ -413,7 +413,7 @@ RSpec.describe NotifierLogic do
 
       it 'should notify service providers' do
         allow(Notifier).to receive(:notify_service_provider) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver)
           mailer
         end
@@ -424,12 +424,12 @@ RSpec.describe NotifierLogic do
 
       it 'should notify admin' do
         allow(Notifier).to receive(:notify_admin) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver)
           mailer
         end
         audit = { :line_items => @added_li, :sub_service_request_id => @ssr2.id }
-        NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails 
+        NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails
         expect(Notifier).to have_received(:notify_admin).with(@admin_email, logged_in_user, @ssr2, audit, false, false)
       end
 
@@ -466,7 +466,7 @@ RSpec.describe NotifierLogic do
         @service_provider = create(:service_provider, identity: logged_in_user, organization: @org)
         @org.submission_emails.create(email: 'hedwig@owlpost.com')
         @admin_email = 'hedwig@owlpost.com'
-        service     = create(:service, organization: @org, one_time_fee: true)
+        service     = create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1)
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
@@ -491,7 +491,7 @@ RSpec.describe NotifierLogic do
 
       it 'should notify authorized users' do
         allow(Notifier).to receive(:notify_user) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver)
           mailer
         end
@@ -503,7 +503,7 @@ RSpec.describe NotifierLogic do
 
       it 'should notify service providers' do
         allow(Notifier).to receive(:notify_service_provider) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver)
           mailer
         end
@@ -516,13 +516,13 @@ RSpec.describe NotifierLogic do
 
       it 'should notify admin' do
         allow(Notifier).to receive(:notify_admin) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver)
           mailer
         end
         audit = { :line_items => @deleted_li, :sub_service_request_id => @ssr2.id }
 
-        NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails 
+        NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails
         expect(Notifier).to have_received(:notify_admin).with(@admin_email, logged_in_user, @ssr2, audit, false, false)
       end
 
@@ -557,7 +557,7 @@ RSpec.describe NotifierLogic do
         @org2         = create(:organization_with_process_ssrs)
         ### ADMIN EMAIL ###
         @org.submission_emails.create(email: 'hedwig@owlpost.com')
-        service     = create(:service, organization: @org, one_time_fee: true)
+        service     = create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1)
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
@@ -570,7 +570,7 @@ RSpec.describe NotifierLogic do
         li_2        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service)
 
         destroyed_li_id = li_2.id
-        
+
         li_2.destroy
         @ssr2.update_attribute(:status, 'draft')
         @sr.reload
@@ -579,18 +579,18 @@ RSpec.describe NotifierLogic do
 
       it 'should notify authorized users' do
         allow(Notifier).to receive(:notify_user) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver)
           mailer
         end
 
         NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails
-        expect(Notifier).to have_received(:notify_user) 
+        expect(Notifier).to have_received(:notify_user)
       end
 
       it 'should notify service providers' do
         allow(Notifier).to receive(:notify_service_provider) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver)
           mailer
         end
@@ -601,12 +601,12 @@ RSpec.describe NotifierLogic do
 
       it 'should notify admin' do
         allow(Notifier).to receive(:notify_admin) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver)
           mailer
         end
-        
-        NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails 
+
+        NotifierLogic.new(@sr, nil, logged_in_user).update_ssrs_and_send_emails
         expect(Notifier).to have_received(:notify_admin)
       end
 
@@ -643,7 +643,7 @@ RSpec.describe NotifierLogic do
     added_li = AuditRecovery.where("audited_changes LIKE '%sub_service_request_id: #{ssr2.id}%' AND auditable_type = 'LineItem' AND action IN ('create')")
     added_li.first.update_attribute(:created_at, Time.now.utc)
     added_li.first.update_attribute(:user_id, logged_in_user.id)
-    
+
     ssr2.line_items.first.destroy!
     sr.sub_service_requests.last.destroy!
     sr.reload
@@ -669,11 +669,11 @@ RSpec.describe NotifierLogic do
     ### Change last status to an 'unupdatable' status ###
     destroyed_ssr = AuditRecovery.where("auditable_id = #{ssr.id} AND action = 'update'").order(created_at: :desc).first
     destroyed_ssr.update_attributes(audited_changes: {'status'=>["submitted", "blah"]} )
-   
+
 
     sr.previous_submitted_at = sr.submitted_at
   end
-  
+
 
   def add_li_adding_a_new_ssr(sr, ssr, ssr2)
     audit_of_ssr_create = AuditRecovery.where("auditable_id = '#{ssr.id}' AND auditable_type = 'SubServiceRequest' AND action = 'create'")

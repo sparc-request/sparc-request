@@ -58,22 +58,24 @@ module Surveyor::SurveysHelper
   end
 
   def activate_survey_button(survey)
-    if survey.surveyable_type == 'Identity'
-      content_tag(:button,
-        survey.active? ? t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:disable] : t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:activate],
-        class: survey.active? ? 'btn btn-danger activate-survey' : 'btn btn-success disable-survey',
-        title: t(:surveyor)[:forms][:table][:tooltips][:activate],
-        data: { toggle: 'tooltip', container: 'body' },
-        disabled: 'disabled'
-      )
-    else
-      link_to(
-        survey.active? ? t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:disable] : t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:activate],
-        surveyor_survey_updater_path(survey, klass: 'survey', survey: { active: !survey.active }),
-        method: :patch,
-        remote: true,
-        class: survey.active? ? 'btn btn-danger activate-survey' : 'btn btn-success disable-survey',
-      )
+    if survey.questions.any?
+      if survey.surveyable_type == 'Identity'
+        content_tag(:button,
+          survey.active? ? t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:disable] : t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:activate],
+          class: survey.active? ? 'btn btn-danger activate-survey' : 'btn btn-success disable-survey',
+          title: t(:surveyor)[:forms][:table][:tooltips][:activate],
+          data: { toggle: 'tooltip', container: 'body' },
+          disabled: 'disabled'
+        )
+      else
+        link_to(
+          survey.active? ? t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:disable] : t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:activate],
+          surveyor_survey_updater_path(survey, klass: 'survey', survey: { active: !survey.active }),
+          method: :patch,
+          remote: true,
+          class: survey.active? ? 'btn btn-danger activate-survey' : 'btn btn-success disable-survey',
+        )
+      end
     end
   end
 

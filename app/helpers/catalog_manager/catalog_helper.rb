@@ -19,56 +19,42 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module CatalogManager::CatalogHelper
-  def node object, can_access=true, id=nil
-    link_to display_name(object), '#', :id => id, :cid => object.id, :object_type => object.class.to_s.downcase, :class => can_access ? "#{object.class.to_s.downcase}" : "#{object.class.to_s.downcase} disabled_node"
+
+  def folder_glyphicon()
+    content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-folder-close')
   end
 
-  def disable_pricing_setup(pricing_setup, can_edit_historical_data)
-    begin
-      if can_edit_historical_data == false
-        (pricing_setup.effective_date <= Date.today) || (pricing_setup.display_date <= Date.today) ? true : false
-      else
-        false
-      end
-    rescue
-      false
-    end
+  def file_glyphicon()
+    content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-file')
   end
 
-  def disable_pricing_map(pricing_map, can_edit_historical_data)
-    if can_edit_historical_data == false
-      (pricing_map.effective_date <= Date.today) || (pricing_map.display_date <= Date.today) ? true : false
+  def plus_glyphicon()
+    content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-plus')
+  end
+
+  def accordion_link_text(org, disabled=false)
+    if org.is_a?(Service)
+      css_class = org.is_available ? 'text-service' : 'text-service unavailable-org'
+      returning_html = content_tag(:span, org.name, class: css_class)
     else
-      false
-    end
-  end
-
-  def pricing_map_ids service
-    service.pricing_maps.map{|x| x.id}
-  end
-
-  def display_organization_tree(organization)
-    tree = []
-
-    if organization.parents.empty?
-      tree << organization.name
-    else
-      organization.parents.reverse_each do |parent|
-        tree << parent.name
-      end
-      tree << organization.name
+      css_class = org.is_available ? "text-#{org.type.downcase}" : "text-#{org.type.downcase} unavailable-org"
+      returning_html = content_tag(:span, org.name, class: css_class)
     end
 
-    tree.join(' / ')
+    if disabled
+      returning_html.insert(0, content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-ban-circle'))
+    end
+
+    returning_html
+  end
+
+  def create_new_text(org_key)
+    content_tag(:span, t(:catalog_manager)[:catalog][:new][org_key], class: "text-#{org_key}")
   end
 
   def disabled_parent organization
     if (orgs = organization.parents.insert(0, organization).select{|org| !org.is_available}).any?
-      I18n.t('organization_form.disabled_at', disabled_parent: orgs.last.name)
+      I18n.t('catalog_manager.organization_form.disabled_at', disabled_parent: orgs.last.name)
     end
   end
-end
-
-def display_name object
-  (object.respond_to?(:cpt_code) or object.respond_to?(:charge_code)) ? object.display_service_name(charge_code = true) : object.name
 end

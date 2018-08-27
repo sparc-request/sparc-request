@@ -42,7 +42,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
     context 'service already in cart' do
       it 'should assign @duplicate_service' do
         org      = create(:organization, process_ssrs: true)
-        service  = create(:service, organization: org)
+        service  = create(:service, organization: org, pricing_map_count: 1)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
         ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
@@ -58,7 +58,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       it 'should not create line item' do
         org      = create(:organization, process_ssrs: true)
-        service  = create(:service, organization: org)
+        service  = create(:service, organization: org, pricing_map_count: 1)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
         ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
@@ -74,7 +74,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       it 'should render template' do
         org      = create(:organization, process_ssrs: true)
-        service  = create(:service, organization: org)
+        service  = create(:service, organization: org, pricing_map_count: 1)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
         ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
@@ -90,7 +90,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       it 'should respond ok' do
         org      = create(:organization, process_ssrs: true)
-        service  = create(:service, organization: org)
+        service  = create(:service, organization: org, pricing_map_count: 1)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
         ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
@@ -109,7 +109,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       context 'ssr not present for organization' do
         it 'should create ssr' do
           org      = create(:organization, process_ssrs: true)
-          service  = create(:service, organization: org)
+          service  = create(:service, organization: org, pricing_map_count: 1)
           protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
           sr       = create(:service_request_without_validations, protocol: protocol)
 
@@ -125,8 +125,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
       context 'ssr already present for organization' do
         it 'should not create ssr' do
           org      = create(:organization, process_ssrs: true)
-          service  = create(:service, organization: org)
-          service2 = create(:service, organization: org)
+          service  = create(:service, organization: org, pricing_map_count: 1)
+          service2 = create(:service, organization: org, pricing_map_count: 1)
           protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
           sr       = create(:service_request_without_validations, protocol: protocol)
           ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
@@ -143,7 +143,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       it 'should create line item' do
         org      = create(:organization, process_ssrs: true)
-        service  = create(:service, organization: org)
+        service  = create(:service, organization: org, pricing_map_count: 1)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
@@ -158,8 +158,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       it 'should create any required services' do
         org      = create(:organization, process_ssrs: true)
-        service  = create(:service, organization: org)
-        service2 = create(:service, organization: org)
+        service  = create(:service, organization: org, pricing_map_count: 1)
+        service2 = create(:service, organization: org, pricing_map_count: 1)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
         ServiceRelation.create(service_id: service.id, related_service_id: service2.id, optional: false)
@@ -180,7 +180,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       context 'service request is first_draft' do
         it 'should set ssr status to first_draft' do
           org      = create(:organization, process_ssrs: true)
-          service  = create(:service, organization: org)
+          service  = create(:service, organization: org, pricing_map_count: 1)
           protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
           sr       = create(:service_request_without_validations, protocol: protocol, status: 'first_draft')
 
@@ -197,7 +197,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       context 'service request not first_draft' do
         it 'should set ssr status to draft' do
           org      = create(:organization, process_ssrs: true)
-          service  = create(:service, organization: org)
+          service  = create(:service, organization: org, pricing_map_count: 1)
           protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
           sr       = create(:service_request_without_validations, protocol: protocol)
           ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
@@ -215,7 +215,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       it 'should assign @line_items_count' do
         org      = create(:organization, process_ssrs: true)
-        service  = create(:service, organization: org)
+        service  = create(:service, organization: org, pricing_map_count: 1)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
@@ -229,7 +229,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       it 'should assign @sub_service_requests' do
         org      = create(:organization, process_ssrs: true)
-        service  = create(:service, organization: org)
+        service  = create(:service, organization: org, pricing_map_count: 1)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
@@ -243,7 +243,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       it 'should render template' do
         org      = create(:organization, process_ssrs: true)
-        service  = create(:service, organization: org)
+        service  = create(:service, organization: org, pricing_map_count: 1)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
@@ -251,13 +251,13 @@ RSpec.describe ServiceRequestsController, type: :controller do
           id: sr.id,
           service_id: service.id
         }, xhr: true
-        
+
         expect(controller).to render_template(:add_service)
       end
 
       it 'should respond ok' do
         org      = create(:organization, process_ssrs: true)
-        service  = create(:service, organization: org)
+        service  = create(:service, organization: org, pricing_map_count: 1)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 

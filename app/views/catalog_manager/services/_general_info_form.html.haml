@@ -1,0 +1,71 @@
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+= form_for service, url: catalog_manager_service_path(service), html: {class: 'form-horizontal'}, remote: true do |f|
+  #error_place.form-group
+  .form-group
+    = f.label :program, t(:catalog_manager)[:organization_form][:program], class: 'col-sm-3 control-label'
+    .col-sm-9
+      = f.select :program, options_for_select(@programs.available.order(:order, :name).map{|p| [p.name, p.id]}, service.program.id), {}, {class: 'form-control select-type selectpicker', data: { service_id: service.id }}
+  .form-group
+    = f.label :core, t(:catalog_manager)[:organization_form][:core], class: 'col-sm-3 control-label'
+    .col-sm-9
+      = render 'catalog_manager/services/core_dropdown', cores: @cores, service: service
+  .form-group
+    = f.label :name, t(:catalog_manager)[:organization_form][:name], class: 'col-sm-3 control-label'
+    .col-sm-9
+      = f.text_field :name, { class: 'form-control'}
+  .form-group
+    = f.label :abbreviation, t(:catalog_manager)[:organization_form][:abbreviation], class: 'col-sm-3 control-label'
+    .col-sm-9
+      = f.text_field :abbreviation, { class: 'form-control'}
+  .form-group
+    = f.label :description, t(:catalog_manager)[:organization_form][:description], class: 'col-sm-3 control-label'
+    .col-sm-9
+      = f.text_area :description, { rows: 8, class: 'form-control'}
+  .form-group
+    = f.label :order, t(:catalog_manager)[:organization_form][:order], class: 'col-sm-3 control-label'
+    .col-sm-9
+      = f.text_field :order, { class: 'form-control'}
+  .form-group
+    = f.label :one_time_fee, raw(t(:catalog_manager)[:service_form][:one_time_fee]), class: 'col-sm-3 control-label'
+    .col-sm-9
+      = f.check_box :one_time_fee, { checked: service.one_time_fee, disabled: (service.line_items_count > 0 or !service.pricing_maps.empty?), data: {toggle: 'toggle', on: 'Yes', off: 'No'}}
+  .form-group
+    = f.label :is_available, t(:catalog_manager)[:organization_form][:disabled], class: 'col-sm-3 control-label'
+    .col-sm-9
+      = f.check_box :is_available, { checked: service.is_available, disabled: (!service.organization.is_available or service.pricing_maps.empty?), data: {toggle: 'toggle', on: 'Yes', off: 'No'}}
+      - if !service.organization.parent.is_available
+        %span{style: "padding-left: 15px;"}
+          = t(:catalog_manager)[:service_form][:org_is_disabled]
+      - elsif service.pricing_maps.empty?
+        %span{style: "padding-left: 15px;"}
+          = t(:catalog_manager)[:service_form][:no_pricing_maps]
+  .form-group
+    = f.label :tag_list, t(:catalog_manager)[:organization_form][:tag_list], class: 'col-sm-3 control-label'
+    .col-sm-9
+      = f.select :tag_list, options_from_collection_for_select(Tag.all, :name, :humanized_name, service.tags.pluck(:name)), {}, class: 'form-control selectpicker', multiple: true, data: { none_selected_text: t(:constants)[:prompts][:none]}
+
+  %hr
+  .pull-right
+    %input.btn.btn-default#close-general-info{ type: 'button', value: t(:actions)[:close], data: {toggle: 'collapse', target: '#general-info-collapse'}}
+    %input.btn.btn-primary{ type: 'submit', value: t(:actions)[:save]}
+
+  .clearfix

@@ -193,7 +193,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
     context 'editing a service request that has been previously submitted' do
       context 'ssr status is set to a locked status' do
         before :each do
-          @org     = create(:organization, use_default_statuses: false)
+          @org     = create(:organization, use_default_statuses: false, process_ssrs: true)
           service  = create(:service, organization: @org, one_time_fee: true)
           protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
           @sr      = create(:service_request_without_validations, protocol: protocol, original_submitted_date: Time.now.yesterday)

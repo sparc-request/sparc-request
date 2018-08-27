@@ -49,7 +49,6 @@ RSpec.describe Organization, type: :model do
 
         # now let's add the core back
         submission_email_4 = core.submission_emails.create(email: submission_email_3.email)
-        core.save!
         sub_service_request.reload
         expect(sub_service_request.organization.submission_emails_lookup).to include(submission_email_4)
       end
@@ -81,7 +80,7 @@ RSpec.describe Organization, type: :model do
     end
   end
 
-  describe 'heirarchy methods' do
+  describe 'hierarchy methods' do
 
     let!(:program2) { create(:program, parent_id: provider.id) }
     let!(:core2) { create(:core, parent_id: program2.id) }
@@ -115,42 +114,6 @@ RSpec.describe Organization, type: :model do
         program2.save
         expect(core.process_ssrs_parent).to eq(program)
         expect(core2.process_ssrs_parent).to eq(program2)
-      end
-    end
-
-    describe 'children' do
-
-      it 'should return only the provider if it is an institution' do
-        expect(institution.children(Organization.all)).to include(provider)
-        expect(institution.children(Organization.all)).not_to include(program)
-      end
-
-      it 'should return the program if it is a provider' do
-        expect(provider.children(Organization.all)).to include(program)
-      end
-
-      it 'should return the core if it is a program' do
-        expect(program.children(Organization.all)).to include(core)
-      end
-    end
-
-    describe 'all children' do
-
-      it 'should return itself if it is a core' do
-        expect(core.all_children(Organization.all)).to eq([core])
-      end
-
-      it 'should return the core if it is a program' do
-        expect(program.all_children(Organization.all)).to include(core)
-        expect(program.all_children(Organization.all)).not_to include(core2)
-      end
-
-      it 'should return multiple programs and cores if it is a provider' do
-        expect(provider.all_children(Organization.all)).to include(core, core2, program, program2)
-      end
-
-      it 'should return everything if it is an institution' do
-        expect(institution.all_children(Organization.all)).to include(core, core2, program, program2, provider)
       end
     end
 
@@ -233,19 +196,6 @@ RSpec.describe Organization, type: :model do
       expect(core.reload.is_available).to eq(false)
       expect(service.reload.is_available).to eq(false)
     end
-
-    it 'should only make immediate child Services available if organization is made available' do
-      provider   = create(:provider, is_available: true)
-      program    = create(:program, parent: provider, is_available: false)
-      service   = create(:service, organization: program, is_available: false)
-      core       = create(:core, parent: program, is_available: false)
-
-      program.update_descendants_availability("1")
-
-      expect(core.reload.is_available).to eq(false)
-      expect(service.reload.is_available).to eq(false)
-    end
-
   end
 
   describe 'current_pricing_setup' do
@@ -440,33 +390,44 @@ RSpec.describe Organization, type: :model do
 
     describe "get available statuses" do
 
-      it "should set inherit the parent's status if there is one" do
-        expect(core.get_available_statuses).to include({"administrative_review"=>"Administrative Review"})
+      context "process_ssrs is false" do
+        it "should return parent statuses" do
+          core.parent.update_attributes(process_ssrs: true, use_default_statuses: false)
+          core.parent.available_statuses.where(status: 'administrative_review').first.update_attributes(selected: true)
+
+          expect(core.get_available_statuses).to include({"administrative_review"=>"Administrative Review"})
+        end
       end
 
-      it "should set the status to the default if there are no parent statuses" do
-        expect(provider.get_available_statuses).to include("draft" => "Draft", "submitted" => "Submitted", "complete" => "Complete", "in_process" => "In Process", "awaiting_pi_approval" => "Awaiting Requester Response", "on_hold" => "On Hold")
-      end
+      context "process_ssrs is true" do
+        it "should return default statuses if use_default_statuses is true" do
+          core.update_attributes(process_ssrs: true)
 
-      it "should not get the parent's status if it already has a non-default status" do
-        expect(program.get_available_statuses).to include({"administrative_review"=>"Administrative Review"})
+          expect(core.get_available_statuses).to include(AvailableStatus.statuses.slice(*AvailableStatus.defaults))
+        end
+
+        it "should return custom statuses if use_default_statuses is false" do
+          core.update_attributes(process_ssrs: true)
+          core.available_statuses.where(status: 'administrative_review').first.update_attributes(selected: true)
+
+          expect(core.get_available_statuses).to include({"administrative_review"=>"Administrative Review"})
+        end
       end
     end
 
     describe 'has_editable_status?' do
 
-      it 'should return true if the current organization or its parent have editable statuses' do
-        organization1 = Organization.create
-        organization2 = Organization.create(parent_id: organization1.id)
-        expect(organization2.has_editable_status?('draft')).to eq(true)
-        expect(organization1.has_editable_status?('draft')).to eq(true)
+      it 'should return true if the current organization or its process_ssrs_parent have editable status in question' do
+        org1 = create(:organization, process_ssrs: true)
+        org2 = create(:organization, parent_id: org1.id)
+        expect(org2.has_editable_status?('draft')).to eq(true)
+        expect(org1.has_editable_status?('draft')).to eq(true)
       end
 
       it 'should return false otherwise' do
-        org1 = create(:organization)
-        org2 = create(:organization, use_default_statuses: false)
-        org2.editable_statuses.destroy_all
-        expect(org2.has_editable_status?('draft')).to eq(false)
+        org1 = create(:organization, use_default_statuses: false, process_ssrs: true)
+        org1.editable_statuses.destroy_all
+        expect(org1.has_editable_status?('draft')).to eq(false)
       end
     end
   end

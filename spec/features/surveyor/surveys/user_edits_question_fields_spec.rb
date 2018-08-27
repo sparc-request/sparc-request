@@ -37,7 +37,7 @@ RSpec.describe 'User edits question fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      find('.edit-survey').click
+      bootstrap_select '.survey-actions', /Edit/
       wait_for_javascript_to_finish
 
       fill_in("question-#{@question.id}-content", with: 'This is a Terrible Question')
@@ -51,7 +51,7 @@ RSpec.describe 'User edits question fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      find('.edit-survey').click
+      bootstrap_select '.survey-actions', /Edit/
       wait_for_javascript_to_finish
 
       fill_in("question-#{@question.id}-description", with: 'How can I describe such a terrible question?')
@@ -65,7 +65,7 @@ RSpec.describe 'User edits question fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      find('.edit-survey').click
+      bootstrap_select '.survey-actions', /Edit/
       wait_for_javascript_to_finish
 
       bootstrap_select "#question-#{@question.id}-question_type", 'Text Area'
@@ -78,7 +78,7 @@ RSpec.describe 'User edits question fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      find('.edit-survey').click
+      bootstrap_select '.survey-actions', /Edit/
       wait_for_javascript_to_finish
 
       find("#question-#{@question.id}-required").click
@@ -93,7 +93,7 @@ RSpec.describe 'User edits question fields', js: true do
           visit surveyor_surveys_path
           wait_for_javascript_to_finish
 
-          find('.edit-survey').click
+          bootstrap_select '.survey-actions', /Edit/
           wait_for_javascript_to_finish
 
           expect(page).to have_selector("#question-#{@question.id}-is_dependent:disabled")
@@ -108,7 +108,7 @@ RSpec.describe 'User edits question fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find("#question-#{@question2.id}-is_dependent").click
@@ -126,7 +126,7 @@ RSpec.describe 'User edits question fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find("#question-#{@question2.id}-is_dependent").click
@@ -145,7 +145,7 @@ RSpec.describe 'User edits question fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find("#question-#{@question2.id}-is_dependent").click
@@ -163,7 +163,7 @@ RSpec.describe 'User edits question fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find("#question-#{@question2.id}-is_dependent").click
@@ -181,7 +181,7 @@ RSpec.describe 'User edits question fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find('.add-question').click
@@ -197,7 +197,7 @@ RSpec.describe 'User edits question fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find('.delete-question').click
@@ -215,7 +215,7 @@ RSpec.describe 'User edits question fields', js: true do
           visit surveyor_surveys_path
           wait_for_javascript_to_finish
 
-          find('.edit-survey').click
+          bootstrap_select '.survey-actions', /Edit/
           wait_for_javascript_to_finish
 
           first('.delete-question').click
@@ -243,7 +243,7 @@ RSpec.describe 'User edits question fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      find('.edit-survey').click
+      bootstrap_select '.survey-actions', /Edit/
       wait_for_javascript_to_finish
 
       fill_in("question-#{@question.id}-content", with: 'This is a Terrible Question')
@@ -257,7 +257,7 @@ RSpec.describe 'User edits question fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      find('.edit-survey').click
+      bootstrap_select '.survey-actions', /Edit/
       wait_for_javascript_to_finish
 
       fill_in("question-#{@question.id}-description", with: 'How can I describe such a terrible question?')
@@ -271,7 +271,7 @@ RSpec.describe 'User edits question fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      find('.edit-survey').click
+      bootstrap_select '.survey-actions', /Edit/
       wait_for_javascript_to_finish
 
       bootstrap_select "#question-#{@question.id}-question_type", 'Text Area'
@@ -284,7 +284,7 @@ RSpec.describe 'User edits question fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      find('.edit-survey').click
+      bootstrap_select '.survey-actions', /Edit/
       wait_for_javascript_to_finish
 
       find("#question-#{@question.id}-required").click
@@ -299,7 +299,7 @@ RSpec.describe 'User edits question fields', js: true do
           visit surveyor_surveys_path
           wait_for_javascript_to_finish
 
-          find('.edit-survey').click
+          bootstrap_select '.survey-actions', /Edit/
           wait_for_javascript_to_finish
 
           expect(page).to have_selector("#question-#{@question.id}-is_dependent:disabled")
@@ -314,7 +314,7 @@ RSpec.describe 'User edits question fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find("#question-#{@question2.id}-is_dependent").click
@@ -332,7 +332,7 @@ RSpec.describe 'User edits question fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find("#question-#{@question2.id}-is_dependent").click
@@ -351,7 +351,7 @@ RSpec.describe 'User edits question fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find("#question-#{@question2.id}-is_dependent").click
@@ -369,7 +369,7 @@ RSpec.describe 'User edits question fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find("#question-#{@question2.id}-is_dependent").click
@@ -387,7 +387,7 @@ RSpec.describe 'User edits question fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find('.add-question').click
@@ -403,7 +403,7 @@ RSpec.describe 'User edits question fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find('.delete-question').click
@@ -421,7 +421,7 @@ RSpec.describe 'User edits question fields', js: true do
           visit surveyor_surveys_path
           wait_for_javascript_to_finish
 
-          find('.edit-survey').click
+          bootstrap_select '.survey-actions', /Edit/
           wait_for_javascript_to_finish
 
           first('.delete-question').click

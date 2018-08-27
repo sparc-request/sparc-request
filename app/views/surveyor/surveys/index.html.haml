@@ -37,8 +37,8 @@
                 = t(:surveyor)[:systemsurveys][:table][:headers][:version]
               %th.col-sm-1{ data: { field: "active", align: "center" } }
                 = t(:surveyor)[:systemsurveys][:table][:headers][:active]
-              %th.col-sm-3{ data: { field: "options", align: "center" } }
-                = t(:surveyor)[:systemsurveys][:table][:headers][:options]
+              %th.col-sm-3{ data: { field: "actions", align: "center" } }
+                = t(:surveyor)[:systemsurveys][:table][:headers][:actions]
 
 - if current_user.is_site_admin? || current_user.is_super_user? || current_user.is_service_provider? || current_user.is_catalog_manager?
   .panel.panel-default
@@ -62,5 +62,5 @@
                 = t(:surveyor)[:forms][:table][:headers][:version]
               %th.col-sm-1{ data: { field: "active", align: "center" } }
                 = t(:surveyor)[:forms][:table][:headers][:active]
-              %th.col-sm-3{ data: { field: "options", align: "center" } }
-                = t(:surveyor)[:forms][:table][:headers][:options]
+              %th.col-sm-3{ data: { field: "actions", align: "center" } }
+                = t(:surveyor)[:forms][:table][:headers][:actions]

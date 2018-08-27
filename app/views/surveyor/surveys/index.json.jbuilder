@@ -4,5 +4,5 @@ json.(@surveys) do |survey|
   json.access_code    survey.access_code
   json.version        survey.version
   json.active         survey_active_display(survey)
-  json.options        survey_options(survey)
+  json.actions        survey_options(survey)
 end

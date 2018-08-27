@@ -93,6 +93,11 @@ class Surveyor::SurveysController < Surveyor::BaseController
     end
   end
 
+  def copy
+    @survey = Survey.find(params[:survey_id]).clone
+    @survey.save
+  end
+
   def search_surveyables
     term            = params[:term].strip
     org_ids         =
@@ -129,14 +134,7 @@ class Surveyor::SurveysController < Surveyor::BaseController
     klass = params[:type].constantize
 
     if existing = klass.where(survey_params).last
-      @survey = klass.new(
-        title: existing.title,
-        description: existing.description,
-        access_code: survey_params[:access_code],
-        version: existing.version + 1,
-        active: false,
-        surveyable: klass == Form ? current_user : nil
-      )
+      @survey = existing.clone
     else
       @survey = klass.new(
         title: "New #{klass.yaml_klass}",

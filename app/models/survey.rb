@@ -109,4 +109,13 @@ class Survey < ApplicationRecord
   def has_responses?
     self.responses.any? ? true : false
   end
+
+  def clone
+    self.deep_clone include: { sections: { questions: { options: :dependents } } }, use_dictionary: true do |old_record, new_record|
+      if new_record.is_a?(Survey)
+        new_record.version = old_record.version + 1
+        new_record.active = false
+      end
+    end
+  end
 end

@@ -35,7 +35,7 @@ RSpec.describe 'User edits survey fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      find('.edit-survey').click
+      bootstrap_select '.survey-actions', /Edit/
       wait_for_javascript_to_finish
 
       fill_in "survey-#{@survey.id}-title", with: 'Survey Me'
@@ -49,7 +49,7 @@ RSpec.describe 'User edits survey fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      find('.edit-survey').click
+      bootstrap_select '.survey-actions', /Edit/
       wait_for_javascript_to_finish
 
       fill_in "survey-#{@survey.id}-description", with: 'A survey is a form for receiving information from users'
@@ -63,7 +63,7 @@ RSpec.describe 'User edits survey fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      find('.edit-survey').click
+      bootstrap_select '.survey-actions', /Edit/
       wait_for_javascript_to_finish
 
       fill_in "survey-#{@survey.id}-access_code", with: 'access-denied'
@@ -79,7 +79,10 @@ RSpec.describe 'User edits survey fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find("[href='/surveyor/surveys/#{@survey.id}/edit']").click
+        all('.survey-actions + .bootstrap-select').last.click
+        within '.dropdown-menu.open' do
+          find('a', text: /Edit/).click
+        end
         wait_for_javascript_to_finish
 
         fill_in "survey-#{@survey.id}-access_code", with: 'access-denied'
@@ -94,7 +97,7 @@ RSpec.describe 'User edits survey fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      find('.edit-survey').click
+      bootstrap_select '.survey-actions', /Edit/
       wait_for_javascript_to_finish
 
       fill_in "survey-#{@survey.id}-version", with: '9000'
@@ -116,7 +119,7 @@ RSpec.describe 'User edits survey fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      find('.edit-survey').click
+      bootstrap_select '.survey-actions', /Edit/
       wait_for_javascript_to_finish
 
       fill_in "survey-#{@form.id}-title", with: 'Form an Opinion'
@@ -130,7 +133,7 @@ RSpec.describe 'User edits survey fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      find('.edit-survey').click
+      bootstrap_select '.survey-actions', /Edit/
       wait_for_javascript_to_finish
 
       fill_in "survey-#{@form.id}-description", with: 'Forms allow providers to get information about their services'
@@ -144,7 +147,7 @@ RSpec.describe 'User edits survey fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      find('.edit-survey').click
+      bootstrap_select '.survey-actions', /Edit/
       wait_for_javascript_to_finish
 
       fill_in "survey-#{@form.id}-access_code", with: 'access-denied'
@@ -158,7 +161,7 @@ RSpec.describe 'User edits survey fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      find('.edit-survey').click
+      bootstrap_select '.survey-actions', /Edit/
       wait_for_javascript_to_finish
 
       fill_in "survey-#{@form.id}-version", with: '9000'
@@ -174,7 +177,7 @@ RSpec.describe 'User edits survey fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      first('.edit-survey').click
+      bootstrap_select '.survey-actions', /Edit/
       wait_for_javascript_to_finish
 
       fill_in "survey-#{@form.id}-surveyable", with: "Helpful"

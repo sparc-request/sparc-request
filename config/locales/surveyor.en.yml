@@ -32,11 +32,7 @@ en:
           access_code: "Access Code"
           version: "Version"
           active: "Active"
-          options: "Options"
-        fields:
-          activate: "Activate"
-          disable: "Disable"
-          preview: "Preview"
+          actions: "Actions"
         tooltips:
           activate: "Select an association to activate this survey"
 
@@ -154,8 +150,4 @@ en:
           version: "Version"
           display_order: "Display Order"
           active: "Active"
-          options: "Options"
-        fields:
-          activate: "Activate"
-          disable: "Disable"
-          preview: "Preview"
+          actions: "Actions"

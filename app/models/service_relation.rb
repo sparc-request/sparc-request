@@ -23,4 +23,6 @@ class ServiceRelation < ApplicationRecord
 
   belongs_to :service
   belongs_to :related_service, :class_name => "Service", :foreign_key => "related_service_id"
+
+  validates :related_service_id, uniqueness: { scope: :service_id}
 end

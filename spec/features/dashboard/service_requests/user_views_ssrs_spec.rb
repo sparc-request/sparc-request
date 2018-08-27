@@ -50,7 +50,7 @@ RSpec.describe "User views SSR table", js: true do
       context 'for a locked SSR' do
         let!(:protocol)             { create(:unarchived_study_without_validations, primary_pi: jug2) }
         let!(:service_request)      { create(:service_request_without_validations, protocol: protocol, status: 'draft') }
-        let!(:organization)         { create(:organization,type: 'Institution', name: 'Megacorp', admin: bob, service_provider: bob, use_default_statuses: false) }
+        let!(:organization)         { create(:organization,type: 'Institution', name: 'Megacorp', admin: bob, service_provider: bob, use_default_statuses: false, process_ssrs: true) }
 
         scenario 'and sees View but not Edit' do
           organization.editable_statuses.where(status: 'on_hold').destroy_all

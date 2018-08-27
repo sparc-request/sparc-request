@@ -26,12 +26,12 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
   fake_login_for_each_test
 
   before :each do
-    org       = create(:organization, use_default_statuses: false)
-    org2      = create(:organization, use_default_statuses: false)
+    org       = create(:organization, use_default_statuses: false, process_ssrs: true)
+    org2      = create(:organization, use_default_statuses: false, process_ssrs: true)
                 create(:pricing_setup, organization: org)
                 create(:pricing_setup, organization: org2)
-    service   = create(:service, organization: org, one_time_fee: false)
-    service2  = create(:service, organization: org2, one_time_fee: false)
+    service   = create(:service, organization: org, one_time_fee: false, pricing_map_count: 1)
+    service2  = create(:service, organization: org2, one_time_fee: false, pricing_map_count: 1)
 
     protocol  = create(:protocol_federally_funded, primary_pi: jug2)
     @sr       = create(:service_request_without_validations, protocol: protocol)

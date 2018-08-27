@@ -87,7 +87,7 @@ def build_study_type_questions
   let!(:stq_restrict_sending_version_3)        { StudyTypeQuestion.create("order"=>5, "question"=>"Is it appropriate for all study participants to receive associated test results, such as labs and/or imaging findings, via MyChart?", "friendly_id"=>"restrict_sending", "study_type_question_group_id" => study_type_question_group_version_3.id) }
   let!(:stq_certificate_of_conf_no_epic_version_3)     { StudyTypeQuestion.create("order"=>6, "question"=>"1. Does your Informed Consent provide information to the participant specifically stating their study participation will be kept private from anyone outside the research team? (i.e. your study has a Certificate of Confidentiality or involves sensitive data collection which requires de-identification of the research participant.)", "friendly_id"=>"certificate_of_conf_no_epic", "study_type_question_group_id" => study_type_question_group_version_3.id) }
   let!(:stq_higher_level_of_privacy_no_epic_version_3) { StudyTypeQuestion.create("order"=>7, "question"=>'2. Does your study require a higher level of privacy protection for the participants? (Your study needs "break the glass" functionality because it is collection sensitive data, such as HIV/sexually transmitted disease, sexual practice/attitudes, illegal substance, etc., which needs higher privacy protection, yet not complete de-identification of the study participant.)', "friendly_id"=>"higher_level_of_privacy_no_epic", "study_type_question_group_id" => study_type_question_group_version_3.id) }
-  
+
 end
 
 
@@ -162,22 +162,22 @@ def build_one_time_fee_services
   # One time fee service
   let!(:service)             { create(:service, organization_id: program.id, name: 'One Time Fee', one_time_fee: true) }
   let!(:line_item)           { create(:line_item, service_request_id: service_request.id, service_id: service.id, sub_service_request_id: sub_service_request.id, quantity: 5, units_per_quantity: 1) }
-  let!(:pricing_setup)       { create(:pricing_setup, organization_id: program.id, display_date: Time.now - 1.day, federal: 50, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal')}
-  let!(:pricing_map)         { create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service.id, quantity_type: "Each", quantity_minimum: 5, otf_unit_type: "Week", display_date: Time.now - 1.day, full_rate: 2000, units_per_qty_max: 20) }
+  let!(:pricing_setup)       { create(:pricing_setup, organization_id: program.id, display_date: Time.now - 1.day, effective_date: Time.now - 1.day, federal: 50, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal', unfunded_rate_type: 'federal')}
+  let!(:pricing_map)         { create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service.id, quantity_type: "Each", quantity_minimum: 5, otf_unit_type: "Week", display_date: Time.now - 1.day, effective_date: Time.now - 1.day, full_rate: 2000, units_per_qty_max: 20) }
 end
 
 def build_per_patient_per_visit_services
   # Per patient per visit service
   let!(:service2)            { create(:service, organization_id: program.id, name: 'Per Patient') }
-  let!(:pricing_setup)       { create(:pricing_setup, organization_id: program.id, display_date: Time.now - 1.day, federal: 50, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal')}
-  let!(:pricing_map2)        { create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service2.id, display_date: Time.now - 1.day, full_rate: 2000, federal_rate: 3000, units_per_qty_max: 20) }
+  let!(:pricing_setup)       { create(:pricing_setup, organization_id: program.id, display_date: Time.now - 1.day, effective_date: Time.now - 1.day, federal: 50, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal', unfunded_rate_type: 'federal')}
+  let!(:pricing_map2)        { create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service2.id, display_date: Time.now - 1.day, effective_date: Time.now - 1.day, full_rate: 2000, federal_rate: 3000, units_per_qty_max: 20) }
   let!(:line_item2)          { create(:line_item, service_request_id: service_request.id, service_id: service2.id, sub_service_request_id: sub_service_request.id, quantity: 0) }
   let!(:service_provider)    { create(:service_provider, organization_id: program.id, identity_id: jug2.id)}
   let!(:super_user)          { create(:super_user, organization_id: program.id, identity_id: jpl6.id)}
   let!(:catalog_manager)     { create(:catalog_manager, organization_id: program.id, identity_id: jpl6.id) }
   let!(:clinical_provider)   { create(:clinical_provider, organization_id: program.id, identity_id: jug2.id) }
   let!(:subsidy)             { Subsidy.auditing_enabled = false; create(:subsidy_without_validations, percent_subsidy: 0.45, sub_service_request_id: sub_service_request.id)}
-  let!(:subsidy_map)         { create(:subsidy_map, organization_id: program.id) }
+  let!(:subsidy_map)         { SubsidyMap.find_by_organization_id(program.id) }
 end
 
 def build_service_request
@@ -191,13 +191,15 @@ def build_service_request
   let!(:core_16)             { create(:core, parent_id: program.id, abbreviation: "Lab and Biorepository") }
   let!(:core_15)             { create(:core, parent_id: program.id, abbreviation: "Imaging") }
   let!(:core_62)             { create(:core, parent_id: program.id, abbreviation: "PWF Services") }
-  let!(:sub_service_request) { create(:sub_service_request, ssr_id: "0001", service_request_id: service_request.id, organization_id: program.id,status: "draft", org_tree_display: "SCTR1/Office of Biomedical Informatics")}
+  let!(:sub_service_request) { create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id,status: "draft", org_tree_display: "SCTR1/Office of Biomedical Informatics")}
 
 
   before :each do
     program.tag_list.add("ctrc")
-    program.available_statuses.where(status: ['draft', 'submitted', 'get_a_cost_estimate', 'administrative_review']).update_all(selected: true)
-    program.editable_statuses.where(status: ['draft', 'submitted', 'get_a_cost_estimate', 'administrative_review']).update_all(selected: true)
+    program.available_statuses.where(status: 'administrative_review').first.update_attributes(selected: true)
+
+    # program.available_statuses.where(status: ['draft', 'submitted', 'get_a_cost_estimate', 'administrative_review']).update_all(selected: true)
+    # program.editable_statuses.where(status: ['draft', 'submitted', 'get_a_cost_estimate', 'administrative_review']).update_all(selected: true)
 
     [program, core_13, core_15, core_16, core_17, core_62].each do |organization|
       organization.tag_list.add("clinical work fulfillment")
@@ -303,8 +305,8 @@ def build_service_request_with_services
                                organization_id: core.id, one_time_fee: true) }
   let!(:service2)     { create(:service, name: 'Breast Milk Collection', abbreviation: 'Breast Milk Collection', order: 1, cpt_code: '',
                                organization_id: core.id) }
-  let!(:pricing_map)  { create(:pricing_map, service_id: service.id, unit_type: 'Per Query', unit_factor: 1, full_rate: 0,
+  let!(:pricing_map)  { create(:pricing_map, service_id: service.id, display_date: Time.now - 1.day, effective_date: Time.now - 1.day, unit_type: 'Per Query', unit_factor: 1, full_rate: 0,
                                exclude_from_indirect_cost: 0, unit_minimum: 1) }
-  let!(:pricing_map2) { create(:pricing_map, service_id: service2.id, unit_type: 'Per patient/visit', unit_factor: 1, full_rate: 636,
+  let!(:pricing_map2) { create(:pricing_map, service_id: service2.id, display_date: Time.now - 1.day, effective_date: Time.now - 1.day, unit_type: 'Per patient/visit', unit_factor: 1, full_rate: 636,
                                exclude_from_indirect_cost: 0, unit_minimum: 1) }
 end

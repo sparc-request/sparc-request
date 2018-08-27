@@ -1,0 +1,35 @@
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+.row#use_default_statuses{style: "margin:20px -15px 25px;"}
+  .col-sm-4.col-sm-offset-3.text-right
+    %h4{style: "margin-top:5px;"}= t(:catalog_manager)[:organization_form][:status_options][:use_default_statuses]
+  .col-sm-5
+    = check_box_tag :use_default_statuses, true, organization.use_default_statuses, data: { toggle: 'toggle', organization_id: organization.id, on: 'Yes', off: 'No'}
+.row
+  .col-sm-6
+    %h5= t(:catalog_manager)[:organization_form][:status_options][:title]
+  .col-sm-3.text-center
+    %h5= t(:catalog_manager)[:organization_form][:status_options][:available_statuses]
+  .col-sm-3.text-center
+    %h5= t(:catalog_manager)[:organization_form][:status_options][:editable_statuses]
+
+- PermissibleValue.get_hash("status").sort_by{ |key, value| value}.each do |status_key, status_value|
+  = render partial: 'status_row', locals: {status_key: status_key, status_value: status_value, organization: organization, available_statuses: available_statuses, editable_statuses: editable_statuses, using_defaults: @using_defaults, user: @user}

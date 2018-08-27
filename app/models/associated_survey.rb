@@ -20,9 +20,9 @@
 
 class AssociatedSurvey < ApplicationRecord
   audited
-  
+
   belongs_to :survey, -> { where(type: 'SystemSurvey') }
   belongs_to :associable, polymorphic: true
-  
-  validates_uniqueness_of :survey_id, scope: [:associable_id, :associable_type]
+
+  validates_uniqueness_of :survey_id, scope: [:associable_id, :associable_type], message: "The survey you are trying to add is already associated with this Organization"
 end

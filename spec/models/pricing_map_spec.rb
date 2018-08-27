@@ -52,36 +52,36 @@ RSpec.describe PricingMap, type: :model do
                                   effective_date: nil, service_id: service.id).save! }.to raise_exception(ActiveRecord::RecordInvalid)
     end
   end
-  
+
   describe "is_one_time_fee?" do
     it 'should return true' do
       service = Service.new
       service.one_time_fee = true
       service.save(validate: false)
-      
+
       pricing_map = service.pricing_maps.new
       expect(pricing_map.is_one_time_fee?).to eq(true)
     end
-      
+
     it 'should return false if one_time_fee is false' do
       service = Service.new
       service.one_time_fee = false
       service.save(validate: false)
-      
+
       pricing_map = service.pricing_maps.new
       expect(pricing_map.is_one_time_fee?).to eq(false)
     end
-    
-    it 'should return nil if service is nil' do      
+
+    it 'should return nil if service is nil' do
       pricing_map = PricingMap.new
       expect(pricing_map.is_one_time_fee?).to eq(nil)
     end
   end
-  
-  describe "dynamic validations" do       
+
+  describe "dynamic validations" do
     # test all of the validations for two scenarios: 1) the service has already been saved and 2) the service has yet to be saved
     service_saved = [true, false]
-    service_saved.each do |persist_service| 
+    service_saved.each do |persist_service|
       describe "for one time fee with service saved=#{persist_service}" do
         before :each do
           @service = Service.new
@@ -90,20 +90,20 @@ RSpec.describe PricingMap, type: :model do
             @service.save(validate: false)
           end
         end
-        # One time fee pricing maps require: units_per_qty_max, otf_unit_type, quantity_type, and quantity_minimum  
+        # One time fee pricing maps require: units_per_qty_max, otf_unit_type, quantity_type, and quantity_minimum
         it 'should all pass' do
           pricing_map = @service.pricing_maps.build(:display_date => Date.today - 2.days, :effective_date => Date.today - 2.days,:full_rate => 100,
-                                  :unit_factor => "1", 
+                                  :unit_factor => "1",
                                   # one time fee specific fields
                                   :units_per_qty_max => 52, :otf_unit_type => "N/A", :quantity_type => "hours", :quantity_minimum => 1,
                                   # per patient specific fields
                                   :unit_type => nil, :unit_minimum => nil)
           expect(pricing_map.valid?).to eq(true)
         end
-        
+
         it 'should require presence of unit_factor' do
           pricing_map = @service.pricing_maps.build(:display_date => Date.today - 2.days, :effective_date => Date.today - 2.days,:full_rate => 100,
-                                  :unit_factor => nil, 
+                                  :unit_factor => nil,
                                   # one time fee specific fields
                                   :units_per_qty_max => 12, :otf_unit_type => "N/A", :quantity_type => "hours", :quantity_minimum => 1,
                                   # per patient specific fields
@@ -112,10 +112,10 @@ RSpec.describe PricingMap, type: :model do
           expect(pricing_map.errors[:unit_factor].count).to eq(2)
           expect(pricing_map.errors.count).to eq(2)
         end
-        
+
         it 'should require that unit_factor be numeric' do
           pricing_map = @service.pricing_maps.build(:display_date => Date.today - 2.days, :effective_date => Date.today - 2.days,:full_rate => 100,
-                                  :unit_factor => "adsfasdfsdf", 
+                                  :unit_factor => "adsfasdfsdf",
                                   # one time fee specific fields
                                   :units_per_qty_max => 12, :otf_unit_type => "N/A", :quantity_type => "hours", :quantity_minimum => 1,
                                   # per patient specific fields
@@ -124,22 +124,22 @@ RSpec.describe PricingMap, type: :model do
           expect(pricing_map.errors[:unit_factor].count).to eq(1)
           expect(pricing_map.errors.count).to eq(1)
         end
-        
+
         it 'should require units_per_qty_max' do
           pricing_map = @service.pricing_maps.build(:display_date => Date.today - 2.days, :effective_date => Date.today - 2.days,:full_rate => 100,
-                                  :unit_factor => "1", 
+                                  :unit_factor => "1",
                                   # one time fee specific fields
                                   :units_per_qty_max => nil, :otf_unit_type => "N/A", :quantity_type => "hours", :quantity_minimum => 1,
                                   # per patient specific fields
                                   :unit_type => nil, :unit_minimum => nil)
           expect(pricing_map.valid?).to eq(false)
-          expect(pricing_map.errors[:units_per_qty_max].count).to eq(1)
-          expect(pricing_map.errors.count).to eq(1)
+          expect(pricing_map.errors[:units_per_qty_max].count).to eq(2)
+          expect(pricing_map.errors.count).to eq(2)
         end
-        
+
         it 'should require that units_per_qty_max be an integer not a string' do
           pricing_map = @service.pricing_maps.build(:display_date => Date.today - 2.days, :effective_date => Date.today - 2.days,:full_rate => 100,
-                                  :unit_factor => "1", 
+                                  :unit_factor => "1",
                                   # one time fee specific fields
                                   :units_per_qty_max => "not a number", :otf_unit_type => "N/A", :quantity_type => "hours", :quantity_minimum => 1,
                                   # per patient specific fields
@@ -148,10 +148,10 @@ RSpec.describe PricingMap, type: :model do
           expect(pricing_map.errors[:units_per_qty_max].count).to eq(1)
           expect(pricing_map.errors.count).to eq(1)
         end
-        
+
         it 'should require that units_per_qty_max be an integer not a decimal' do
           pricing_map = @service.pricing_maps.build(:display_date => Date.today - 2.days, :effective_date => Date.today - 2.days,:full_rate => 100,
-                                  :unit_factor => "1", 
+                                  :unit_factor => "1",
                                   # one time fee specific fields
                                   :units_per_qty_max => 12.23, :otf_unit_type => "N/A", :quantity_type => "hours", :quantity_minimum => 1,
                                   # per patient specific fields
@@ -160,10 +160,10 @@ RSpec.describe PricingMap, type: :model do
           expect(pricing_map.errors[:units_per_qty_max].count).to eq(1)
           expect(pricing_map.errors.count).to eq(1)
         end
-        
+
         it 'should require presence of otf_unit_type' do
           pricing_map = @service.pricing_maps.build(:display_date => Date.today - 2.days, :effective_date => Date.today - 2.days,:full_rate => 100,
-                                  :unit_factor => "1", 
+                                  :unit_factor => "1",
                                   # one time fee specific fields
                                   :units_per_qty_max => 12, :otf_unit_type => nil, :quantity_type => "hours", :quantity_minimum => 1,
                                   # per patient specific fields
@@ -172,10 +172,10 @@ RSpec.describe PricingMap, type: :model do
           expect(pricing_map.errors[:otf_unit_type].count).to eq(1)
           expect(pricing_map.errors.count).to eq(1)
         end
-        
+
         it 'should require presence of quantity_type' do
           pricing_map = @service.pricing_maps.build(:display_date => Date.today - 2.days, :effective_date => Date.today - 2.days,:full_rate => 100,
-                                  :unit_factor => "1", 
+                                  :unit_factor => "1",
                                   # one time fee specific fields
                                   :units_per_qty_max => 12, :otf_unit_type => "N/A", :quantity_type => nil, :quantity_minimum => 1,
                                   # per patient specific fields
@@ -184,10 +184,10 @@ RSpec.describe PricingMap, type: :model do
           expect(pricing_map.errors[:quantity_type].count).to eq(1)
           expect(pricing_map.errors.count).to eq(1)
         end
-        
+
         it 'should require presence of quantity_minimum' do
           pricing_map = @service.pricing_maps.build(:display_date => Date.today - 2.days, :effective_date => Date.today - 2.days,:full_rate => 100,
-                                  :unit_factor => "1", 
+                                  :unit_factor => "1",
                                   # one time fee specific fields
                                   :units_per_qty_max => 12, :otf_unit_type => "N/A", :quantity_type => "hours", :quantity_minimum => nil,
                                   # per patient specific fields
@@ -196,10 +196,10 @@ RSpec.describe PricingMap, type: :model do
           expect(pricing_map.errors[:quantity_minimum].count).to eq(1)
           expect(pricing_map.errors.count).to eq(1)
         end
-        
+
         it 'should require that quantity_minimum be an integer not a string' do
           pricing_map = @service.pricing_maps.build(:display_date => Date.today - 2.days, :effective_date => Date.today - 2.days,:full_rate => 100,
-                                  :unit_factor => "1", 
+                                  :unit_factor => "1",
                                   # one time fee specific fields
                                   :units_per_qty_max => 12, :otf_unit_type => "N/A", :quantity_type => "hours", :quantity_minimum => "adsfasd",
                                   # per patient specific fields
@@ -208,10 +208,10 @@ RSpec.describe PricingMap, type: :model do
           expect(pricing_map.errors[:quantity_minimum].count).to eq(1)
           expect(pricing_map.errors.count).to eq(1)
         end
-        
+
         it 'should require that quantity_minimum be an integer not a decimal' do
           pricing_map = @service.pricing_maps.build(:display_date => Date.today - 2.days, :effective_date => Date.today - 2.days,:full_rate => 100,
-                                  :unit_factor => "1", 
+                                  :unit_factor => "1",
                                   # one time fee specific fields
                                   :units_per_qty_max => 12, :otf_unit_type => "N/A", :quantity_type => "hours", :quantity_minimum => 56.78,
                                   # per patient specific fields
@@ -221,7 +221,7 @@ RSpec.describe PricingMap, type: :model do
           expect(pricing_map.errors.count).to eq(1)
         end
       end
-      
+
       describe "for per patient" do
         before :each do
           @service = Service.new
@@ -231,17 +231,17 @@ RSpec.describe PricingMap, type: :model do
         # Per patient pricing maps require: unit_type and unit_minimum
         it 'should all pass' do
           pricing_map = @service.pricing_maps.build(:display_date => Date.today - 2.days, :effective_date => Date.today - 2.days,:full_rate => 100,
-                                  :unit_factor => "1", 
+                                  :unit_factor => "1",
                                   # one time fee specific fields
                                   :units_per_qty_max => nil, :otf_unit_type => nil, :quantity_type => nil, :quantity_minimum => nil,
                                   # per patient specific fields
                                   :unit_type => "Per Infusion", :unit_minimum => 1)
           expect(pricing_map.valid?).to eq(true)
         end
-        
+
         it 'should require presence of unit_factor' do
           pricing_map = @service.pricing_maps.build(:display_date => Date.today - 2.days, :effective_date => Date.today - 2.days,:full_rate => 100,
-                                  :unit_factor => nil, 
+                                  :unit_factor => nil,
                                   # one time fee specific fields
                                   :units_per_qty_max => nil, :otf_unit_type => nil, :quantity_type => nil, :quantity_minimum => nil,
                                   # per patient specific fields
@@ -250,10 +250,10 @@ RSpec.describe PricingMap, type: :model do
           expect(pricing_map.errors[:unit_factor].count).to eq(2)
           expect(pricing_map.errors.count).to eq(2)
         end
-        
+
         it 'should require that unit_factor be numeric' do
           pricing_map = @service.pricing_maps.build(:display_date => Date.today - 2.days, :effective_date => Date.today - 2.days,:full_rate => 100,
-                                  :unit_factor => "abad", 
+                                  :unit_factor => "abad",
                                   # one time fee specific fields
                                   :units_per_qty_max => nil, :otf_unit_type => nil, :quantity_type => nil, :quantity_minimum => nil,
                                   # per patient specific fields
@@ -261,11 +261,11 @@ RSpec.describe PricingMap, type: :model do
           expect(pricing_map.valid?).to eq(false)
           expect(pricing_map.errors[:unit_factor].count).to eq(1)
           expect(pricing_map.errors.count).to eq(1)
-        end      
-        
+        end
+
         it 'should require presence of unit_type' do
           pricing_map = @service.pricing_maps.build(:display_date => Date.today - 2.days, :effective_date => Date.today - 2.days,:full_rate => 100,
-                                  :unit_factor => "1", 
+                                  :unit_factor => "1",
                                   # one time fee specific fields
                                   :units_per_qty_max => nil, :otf_unit_type => nil, :quantity_type => nil, :quantity_minimum => nil,
                                   # per patient specific fields
@@ -274,22 +274,22 @@ RSpec.describe PricingMap, type: :model do
           expect(pricing_map.errors[:unit_type].count).to eq(1)
           expect(pricing_map.errors.count).to eq(1)
         end
-        
+
         it 'should require presence of unit_minimum' do
           pricing_map = @service.pricing_maps.build(:display_date => Date.today - 2.days, :effective_date => Date.today - 2.days,:full_rate => 100,
-                                  :unit_factor => "1", 
+                                  :unit_factor => "1",
                                   # one time fee specific fields
                                   :units_per_qty_max => nil, :otf_unit_type => nil, :quantity_type => nil, :quantity_minimum => nil,
                                   # per patient specific fields
                                   :unit_type => "Per Infusion", :unit_minimum => nil)
           expect(pricing_map.valid?).to eq(false)
-          expect(pricing_map.errors[:unit_minimum].count).to eq(1)
-          expect(pricing_map.errors.count).to eq(1)
+          expect(pricing_map.errors[:unit_minimum].count).to eq(2)
+          expect(pricing_map.errors.count).to eq(2)
         end
-        
+
         it 'should require unit_minimum be an integer not a string' do
           pricing_map = @service.pricing_maps.build(:display_date => Date.today - 2.days, :effective_date => Date.today - 2.days,:full_rate => 100,
-                                  :unit_factor => "1", 
+                                  :unit_factor => "1",
                                   # one time fee specific fields
                                   :units_per_qty_max => nil, :otf_unit_type => nil, :quantity_type => nil, :quantity_minimum => nil,
                                   # per patient specific fields
@@ -298,10 +298,10 @@ RSpec.describe PricingMap, type: :model do
           expect(pricing_map.errors[:unit_minimum].count).to eq(1)
           expect(pricing_map.errors.count).to eq(1)
         end
-        
+
         it 'should require unit_minimum be an integer not a decimal' do
           pricing_map = @service.pricing_maps.build(:display_date => Date.today - 2.days, :effective_date => Date.today - 2.days,:full_rate => 100,
-                                  :unit_factor => "1", 
+                                  :unit_factor => "1",
                                   # one time fee specific fields
                                   :units_per_qty_max => nil, :otf_unit_type => nil, :quantity_type => nil, :quantity_minimum => nil,
                                   # per patient specific fields
@@ -313,7 +313,7 @@ RSpec.describe PricingMap, type: :model do
       end
     end
   end
-  
+
   describe 'applicable_rate' do
     it 'should return the full rate if full rate is requested' do
       pricing_map = create(:pricing_map)
@@ -374,8 +374,6 @@ RSpec.describe PricingMap, type: :model do
 
     it 'should return a hash with the correct rates' do
       ps = PricingSetup.find(pricing_setup.id)
-      hash = { federal_rate: 25, corporate_rate: 25, other_rate: 25, member_rate: 25 }
-      # pricing_map.rates_from_full(ps.display_date).should eq(hash)
       PricingMap.rates_from_full(ps.display_date, core.id, 100)
     end
   end

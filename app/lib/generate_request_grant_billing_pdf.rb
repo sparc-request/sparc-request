@@ -30,12 +30,12 @@ class RequestGrantBillingPdf
     template_file_name = File.expand_path('../../config/pdf_templates/request_grant_billing_template.pdf', __FILE__)
     pdf = Prawn::Document.new :template => template_file_name
     pdf.font_size = 9
-   
+
     #get data for pdf
     protocol = service_request.protocol
-    
-    principal_investigators = protocol.project_roles.where(:role => "pi").map{|pr| pr.identity.full_name}.join(", ") 
-    billing_business_managers = protocol.project_roles.where(:role => "business-grants-manager").map{|pr| pr.identity.full_name}.join(", ") 
+
+    principal_investigators = protocol.project_roles.where(:role => "pi").map{|pr| pr.identity.full_name}.join(", ")
+    billing_business_managers = protocol.project_roles.where(:role => "business-grants-manager").map{|pr| pr.identity.full_name}.join(", ")
 
     hr_pro_numbers = ""
     hr_pro_numbers = [protocol.human_subjects_info.hr_number, protocol.human_subjects_info.pro_number].compact.join(", ") if protocol.human_subjects_info
@@ -54,7 +54,7 @@ class RequestGrantBillingPdf
     pdf.text_box short_title, text_box_options(:at => [116, 565], :width => 270)
 
     # question 4
-    case protocol.funding_source_based_on_status  
+    case protocol.funding_source_based_on_status
     when "industry", "investigator"
       pdf.fill_and_stroke_rectangle [118, 539], 5, 6 # funded by Corporate
     when "federal"
@@ -63,69 +63,43 @@ class RequestGrantBillingPdf
       pdf.fill_and_stroke_rectangle [334, 539], 5, 6 # funded by Other
       pdf.text_box protocol.display_funding_source_value, text_box_options(:at => [375, 542], :width => 120)
     end
-   
+
     # question 5
     if service_request.sub_service_requests.map(&:ctrc?).any?
       pdf.fill_and_stroke_rectangle [150, 505], 5, 6 # yes
     else
       pdf.fill_and_stroke_rectangle [226, 505], 5, 6 # no
     end
-    
+
     # question 6
     start_date = service_request.protocol.start_date.nil? ? "" : service_request.protocol.start_date.strftime('%m/%d/%Y')
     pdf.text_box start_date, text_box_options(:at => [130, 486])
-    
+
     # question 7
     end_date = service_request.protocol.end_date.nil? ? "" : service_request.protocol.end_date.strftime('%m/%d/%Y')
     pdf.text_box end_date, text_box_options(:at => [125, 463])
 
     # question 8
-    
+
     # question 9
     subject_count = service_request.arms.map{|arm| arm.subject_count}.sum
     pdf.text_box subject_count.to_s, text_box_options(:at => [192, 415])
-    
+
     # question 10
     # question 11
     # question 12
-    
+
     # question 13
     pdf.text_box billing_business_managers, text_box_options(:at => [48, 279], :width => 335)
-    
-    # question 14
-    
-    # question 15, max 58 characters then put it on attached page
-    # get only 'required forms' studies
-    muha_service_names = service_request.sub_service_requests
-                               .select{|x| x.organization.tag_list.include? 'required forms'}
-                               .map(&:line_items)
-                               .flatten
-                               .uniq
-                               .map{|line_item| line_item.service.display_service_name}
-                               
-
-    muha_service_display = muha_service_names.join(', ').size > 58 ? "See Attached" : muha_service_names.join(', ')
-    pdf.text_box muha_service_display, text_box_options(:at => [48, 211], :width => 338)
-
 
     # add signatures and submitted_at
     # principal_investigators
     pdf.text_box principal_investigators, text_box_options(:at => [70, 64], :width => 240)
     pdf.text_box service_request.submitted_at.strftime('%m/%d/%Y'), text_box_options(:at => [358, 64])
-    
+
     #billing/business managers
     pdf.text_box billing_business_managers, text_box_options(:at => [70, 21], :width => 240)
     pdf.text_box service_request.submitted_at.strftime('%m/%d/%Y'), text_box_options(:at => [358, 21])
-
-    if muha_service_display == "See Attached" # too long to list on original form
-      pdf.start_new_page
-      pdf.text "Tests to be included in the study (Question 15)", :size => 14
-      pdf.stroke_horizontal_rule
-      pdf.move_down 10
-      muha_service_names.each do |name|
-        pdf.text name
-      end
-    end
 
     pdf.render # for testing only, _file File.expand_path('../../tmp/pdfs/xyz.pdf', __FILE__)
   end

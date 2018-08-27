@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -48,7 +48,7 @@ RSpec.describe 'User edits a form response', js: true do
     wait_for_javascript_to_finish
 
     fill_in 'response_question_responses_attributes_0_content', with: 'Not respondable at all'
-    
+
     click_button 'Submit'
     wait_for_javascript_to_finish
 

@@ -87,7 +87,7 @@ end
 
 def get_references model
   bt_associations = model.reflect_on_all_associations.select do |association|
-    association.foreign_key.present? && model.columns_hash[association.foreign_key.to_s].present? && column_is_integer?(model, association.foreign_key.to_s)
+    (association.foreign_key.present? && model.columns_hash[association.foreign_key.to_s].present? && column_is_integer?(model, association.foreign_key.to_s)) rescue false
   end
   bt_associations.map{ |association| association.foreign_key.to_s }
 end

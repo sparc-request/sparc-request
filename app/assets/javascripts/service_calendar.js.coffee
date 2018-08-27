@@ -65,7 +65,7 @@ $(document).ready ->
         else
           arm_container = $(".arm-calendar-container-#{arm}")
 
-        freezeHeader(arm_container)  
+        freezeHeader(arm_container)
 
   $(document).on 'click', '.services-toggle', (e) ->
     if !($(this).hasClass('active'))
@@ -250,7 +250,7 @@ $(document).ready ->
     type = $(this).data('notable-type')
     in_dashboard = $(this).data('in-dashboard')
     review = $(this).data('review')
-    data = 
+    data =
       note:
         notable_id: id
         notable_type: type
@@ -265,7 +265,7 @@ $(document).ready ->
     id = $(this).data('notable-id')
     type = $(this).data('notable-type')
     in_dashboard = $(this).data('in-dashboard')
-    data = 
+    data =
       note:
         notable_id: id
         notable_type: type
@@ -314,6 +314,20 @@ $(document).ready ->
       $('#sub_service_request_header').html(data['header'])
       $('.selectpicker').selectpicker()
 
+  $('.your-cost').editable
+    display: (value) ->
+      # display field as currency, edit as quantity
+      $(this).text("$" + parseFloat(value).toFixed(2))
+    params: (params) ->
+      {
+        line_item:
+          displayed_cost: params.value
+        service_request_id: getSRId()
+      }
+    success: (response, newValue) ->
+      $('.study_level_activities').bootstrapTable('refresh', silent: true)
+
+
   $('.edit-subject-count').editable
     params: (params) ->
       {
@@ -324,11 +338,11 @@ $(document).ready ->
       }
     success: (data) ->
       arm_id = $(this).data('arm-id')
-      
+
       # Replace Per Patient / Study Totals
       $(this).parent().siblings('.pppv-per-patient-line-item-total').replaceWith(data['total_per_patient'])
       $(this).parent().siblings('.pppv-per-study-line-item-total').replaceWith(data['total_per_study'])
-      
+
       # Replace Totals
       $(".arm-#{arm_id}.maximum-total-direct-cost-per-patient").replaceWith(data['max_total_direct'])
       $(".arm-#{arm_id}.maximum-total-per-patient").replaceWith(data['max_total_per_patient'])

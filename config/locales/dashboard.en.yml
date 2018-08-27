@@ -354,6 +354,8 @@ en:
         cost: "Cost:"
       tooltips:
         add_non_clinical_services: "Add Non-clinical services related to selected organization"
+        modified_rate: 'Modified Rate'
+        change_rate: "Click to modify rate"
 
     ##########################
     #  SUB SERVICE REQUESTS  #

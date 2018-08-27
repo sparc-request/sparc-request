@@ -12,6 +12,7 @@ gem 'bootsnap', require: false
 gem 'bootstrap-sass'
 gem 'bootstrap-select-rails'
 gem 'bootstrap3-datetimepicker-rails'
+gem 'bootstrap-toggle-rails'
 gem 'capistrano', '~> 3.9'
 gem 'capistrano-bundler', require: false
 gem 'capistrano-rvm', require: false
@@ -54,7 +55,7 @@ gem 'nprogress-rails'
 gem 'net-ldap', '~> 0.16.0'
 gem 'omniauth'
 gem 'omniauth-shibboleth'
-gem 'paperclip', '~> 5.2', '>= 5.2.1'
+gem 'paperclip', '~> 6.1'
 gem 'pdfkit'
 gem 'prawn', '0.12.0'
 gem 'premailer-rails'
@@ -92,12 +93,12 @@ group :development, :test, :profile do
   gem 'timecop'
   gem 'progress_bar'
 end
-gem 'puma', '~> 3.0'
+gem 'puma', '~> 3.12'
 
 group :development, :test do
   gem 'pry'
   gem 'rails-erd'
-  gem 'rspec-rails', '~> 3.4'
+  gem 'rspec-rails', '~> 3.8'
 end
 
 group :development do

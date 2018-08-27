@@ -35,7 +35,7 @@ RSpec.describe 'User deletes a pending subsidy', js: true do
     ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                   create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
                   create(:arm, protocol: @protocol, visit_count: 1)
-                  create(:subsidy_map, organization: program, max_dollar_cap: 100, max_percentage: 100)
+    program.subsidy_map.update_attributes(max_dollar_cap: 100, max_percentage: 100)
     @subsidy    = create(:pending_subsidy, sub_service_request: ssr)
   end
 
@@ -43,7 +43,7 @@ RSpec.describe 'User deletes a pending subsidy', js: true do
     scenario 'and sees the subsidy was destroyed' do
       visit service_subsidy_service_request_path(@sr)
       wait_for_javascript_to_finish
-      
+
       find('.delete-subsidy-button').click
       wait_for_javascript_to_finish
 

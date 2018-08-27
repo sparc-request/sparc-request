@@ -23,4 +23,17 @@ class SuperUser < ApplicationRecord
 
   belongs_to :organization
   belongs_to :identity
+
+  after_create :remove_lower_access
+
+
+  private
+
+  def remove_lower_access
+    identity.super_users.includes(:organization).where.not(id: self.id).each do |su|
+      if su.organization.parents.include?(self.organization)
+        su.destroy
+      end
+    end
+  end
 end

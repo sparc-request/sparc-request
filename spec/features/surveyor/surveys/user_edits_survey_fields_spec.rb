@@ -103,19 +103,6 @@ RSpec.describe 'User edits survey fields', js: true do
 
       expect(@survey.reload.version).to eq(9000)
     end
-
-    scenario 'and sees updated active' do
-      visit surveyor_surveys_path
-      wait_for_javascript_to_finish
-
-      find('.edit-survey').click
-      wait_for_javascript_to_finish
-
-      find("#survey-#{@survey.id}-active").click
-      wait_for_javascript_to_finish
-
-      expect(@survey.reload.active).to eq(true)
-    end
   end
 
   context 'forms' do
@@ -182,7 +169,7 @@ RSpec.describe 'User edits survey fields', js: true do
     end
 
     scenario 'and sees updated association' do
-      service = create(:service, organization: @org, name: 'Helpful Service for all Your Service Needs')
+      service = create(:service, organization: @org, name: 'Helpful Service for all Your Service Needs', pricing_map_count: 1)
 
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
@@ -199,19 +186,6 @@ RSpec.describe 'User edits survey fields', js: true do
       wait_for_javascript_to_finish
 
       expect(@form.reload.surveyable).to eq(service)
-    end
-
-    scenario 'and sees updated active' do
-      visit surveyor_surveys_path
-      wait_for_javascript_to_finish
-
-      find('.edit-survey').click
-      wait_for_javascript_to_finish
-
-      find("#survey-#{@form.id}-active").click
-      wait_for_javascript_to_finish
-
-      expect(@form.reload.active).to eq(true)
     end
   end
 end

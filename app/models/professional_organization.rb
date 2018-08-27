@@ -30,6 +30,8 @@ class ProfessionalOrganization < ApplicationRecord
     parent ? (parent.parents + [parent]) : []
   end
 
+  scope :institutions, -> { where(org_type: 'institution').order(:name) }
+
   # Returns collection like [greatgrandparent, grandparent, parent, self].
   def parents_and_self
     parents + [self]

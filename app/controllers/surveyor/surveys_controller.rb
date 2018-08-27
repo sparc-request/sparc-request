@@ -40,26 +40,26 @@ class Surveyor::SurveysController < Surveyor::BaseController
     end
   end
 
-  def new
-    @survey = Survey.new(type: params[:type])
-  end
-
-  def create
-    @survey = build_survey
-
-    if @survey.save
-      redirect_to edit_surveyor_survey_path(@survey, type: params[:type]), format: :js
-    else
-      @errors = @survey.errors
-    end
-  end
-
   def edit
     @survey = Survey.eager_load(sections: { questions: :options }).find(params[:id])
 
     respond_to do |format|
       format.js
     end
+  end
+
+  def create
+    klass = params[:type].constantize.yaml_klass
+    @survey = Survey.new(
+                type: params[:type],
+                title: "New #{klass}",
+                access_code: "new-#{klass.downcase}",
+                version: 1,
+                active: false,
+                surveyable: klass == 'Form' ? current_user : nil
+              )
+    @survey.save(validate: false)
+    redirect_to edit_surveyor_survey_path(@survey, type: params[:type]), format: :js
   end
 
   def destroy
@@ -121,36 +121,5 @@ class Surveyor::SurveysController < Surveyor::BaseController
     }
 
     render json: results.to_json
-  end
-
-  private
-
-  def build_survey
-    klass = params[:type].constantize
-
-    if existing = klass.where(survey_params).last
-      @survey = klass.new(
-        title: existing.title,
-        description: existing.description,
-        access_code: survey_params[:access_code],
-        version: existing.version + 1,
-        active: false,
-        surveyable: klass == Form ? current_user : nil
-      )
-    else
-      @survey = klass.new(
-        title: "New #{klass.yaml_klass}",
-        access_code: survey_params[:access_code],
-        version: 1,
-        active: false,
-        surveyable: klass == Form ? current_user : nil
-      )
-    end
-  end
-
-  def survey_params
-    params.require(params[:type].underscore).permit(
-      :access_code
-    )
   end
 end

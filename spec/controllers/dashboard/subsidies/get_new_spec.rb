@@ -53,7 +53,7 @@ RSpec.describe Dashboard::SubsidiesController do
     it 'should set @subsidy to a new PendingSubsidy with default percentage and the current SSR id' do
       expect(assigns(:subsidy).class.name).to eq('PendingSubsidy')
       expect(assigns(:subsidy).sub_service_request_id).to eq(@ssr.id)
-      expect(assigns(:subsidy).percent_subsidy).to eq(@subsidy_map.default_percentage)
+      expect(assigns(:subsidy).percent_subsidy).to eq(@subsidy_map.default_percentage / 100.0)
     end
 
     it 'should assign header text' do

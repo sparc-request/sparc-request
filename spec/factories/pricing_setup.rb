@@ -34,8 +34,9 @@ FactoryBot.define do
     industry_rate_type          { rate_types.sample }
     investigator_rate_type      { rate_types.sample }
     internal_rate_type          { rate_types.sample }
-    display_date                Date.parse('2000-01-01')
-    effective_date              Date.parse('2000-01-01')
+    unfunded_rate_type          { rate_types.sample }
+    sequence(:display_date)     {|n| Date.parse('2000-01-01') + n}
+    sequence(:effective_date)   {|n| Date.parse('2000-01-01') + n}
 
     trait :charge_master do
       charge_master true

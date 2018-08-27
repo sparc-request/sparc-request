@@ -19,33 +19,260 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class CatalogManager::OrganizationsController < CatalogManager::AppController
   layout false
-  respond_to :js, :html, :json
 
-  def create
-    @organization.build_subsidy_map() unless @organization.type == 'Institution'
-    @organization.save
+  def new
+    if params[:type] == "Institution"
+      #Institutions have different access rights for creation
+      if @user.catalog_overlord?
+        @organization = Organization.new(type: params[:type])
+      else
+        flash[:alert] = "You must be a Catalog Overlord to create new institutions."
+      end
+    else
+      ##Check if user has catalog manager rights to the parent of this new org.
+      parent_org = Organization.find(params[:parent_id])
+      if @user.can_edit_organization?(parent_org)
+        @organization = Organization.new(type: params[:type], parent_id: params[:parent_id])
+      else
+        flash[:alert] = "You must have catalog manager rights above this level, to create a new organization here."
+      end
+    end
   end
 
-  def show
+  def create
+    @organization = Organization.new(new_organization_params[:organization])
+    if @organization.save
+      @organization.create_subsidy_map() unless @organization.type == 'Institution'
+      unless @user.catalog_manager_organizations.include?(@organization)
+        @user.catalog_manager_rights.create(organization_id: @organization.id)
+      end
+
+      @institutions = Institution.order('`order`')
+      @path = catalog_manager_organization_path(@organization)
+      @user_rights  = user_rights(@organization.id)
+      @fulfillment_rights = fulfillment_rights(@organization.id)
+
+      flash[:success] = "New Organization created successfully."
+    else
+      @errors = @organization.errors
+    end
+  end
+
+  def edit
     @organization = Organization.find(params[:id])
-    render 'catalog_manager/organizations/show'
+    @user_rights  = user_rights(@organization.id)
+    @fulfillment_rights = fulfillment_rights(@organization.id)
+    set_status_variables
+
+    respond_to do |format|
+      format.js
+    end
   end
 
   def update
     @organization = Organization.find(params[:id])
-    updater = OrganizationUpdater.new(@attributes, @organization, params)
-    @attributes = updater.set_org_tags
-    show_success = updater.update_organization
-    updater.save_pricing_setups
-    @entity = @organization
-    flash_update(show_success)
-    render 'catalog_manager/organizations/update'
+    @user_rights  = user_rights(@organization.id)
+    @fulfillment_rights = fulfillment_rights(@organization.id)
+    set_status_variables
+
+    # set_org_tags
+    if update_organization
+      flash.now[:success] = "#{@organization.name} saved correctly."
+    else
+      flash.now[:alert] = "Failed to update organization."
+      @errors = @organization.errors
+    end
+
+    @institutions = Institution.order(Arel.sql('`order`,`name`'))
+    @show_available_only = @organization.is_available
+
+    respond_to do |format|
+      format.js
+    end
   end
+
+
+  ####Actions for User Rights sub-form####
+  def add_user_rights_row
+    @organization = Organization.find(params[:organization_id])
+    @new_ur_identity = Identity.find(params[:new_ur_identity_id])
+    @user_rights  = user_rights(@organization.id)
+  end
+
+  def remove_user_rights_row
+    su_destroyed = SuperUser.find_by(user_rights_params).try(:destroy)
+    cm_destroyed = CatalogManager.find_by(user_rights_params).try(:destroy)
+    sp_destroyed = ServiceProvider.find_by(user_rights_params).try(:destroy)
+
+    if su_destroyed or cm_destroyed or sp_destroyed
+      @identity_id = user_rights_params[:identity_id]
+      flash[:success] = "User rights removed successfully."
+    else
+      flash[:alert] = "Error removing user rights."
+    end
+  end
+
+
+  ####Actions for Fulfillment Rights sub-form####
+  def add_fulfillment_rights_row
+    @organization = Organization.find(params[:organization_id])
+    @new_fr_identity = Identity.find(params[:new_fr_identity_id])
+    @fulfillment_rights = fulfillment_rights(@organization_id)
+  end
+
+  def remove_fulfillment_rights_row
+    cp_destroyed = ClinicalProvider.find_by(fulfillment_rights_params).try(:destroy)
+    ##Invoicer support, uncomment when needed:
+    # iv_destroyed = Invoicer.find_by(fulfillment_rights_params).try(:destroy)
+
+    if cp_destroyed# or iv_destroyed
+      @identity_id = fulfillment_rights_params[:identity_id]
+      flash[:success] = "Fulfillment rights removed successfully."
+    else
+      flash[:alert] = "Error removing fulfillment rights."
+    end
+  end
+
+
+  ####Actions for status sub-form####
+  def toggle_default_statuses
+    @organization = Organization.find(status_params[:organization_id])
+    if @organization.update_attributes(use_default_statuses: status_params[:checked])
+      flash[:success] = "Organization updated successfully."
+    else
+      flash[:alert] = "Error updating organization."
+    end
+
+    set_status_variables
+  end
+
+  def update_status_row
+    @status = status_params[:status_type].constantize.find_or_create_by(organization_id: status_params[:organization_id], status: status_params[:status_key])
+
+    @organization = Organization.find(status_params[:organization_id])
+    @status_key = @status.status
+    @status_value = @status.humanize
+
+    if @status.update_attributes(selected: status_params[:selected])
+      flash[:success] = "Status updated successfully."
+    else
+      flash[:alert] = "Error updating status."
+    end
+    set_status_variables
+  end
+
+
+  ####Actions for the pricing sub-form####
+  def increase_decrease_modal
+    @organization = Organization.find(params[:organization_id])
+    @can_edit_historical = @user.can_edit_historical_data_for?(@organization)
+
+  end
+
+  def increase_decrease_rates
+    percentage = params[:percent_of_change]
+    effective_date = params[:effective_date]
+    display_date = params[:display_date]
+    @organization = Organization.find(params[:organization_id])
+    services = @organization.all_child_services
+
+    services_not_updated = []
+    services.each do |service|
+      old_effective_dates = service.pricing_maps.map{ |pm| pm.effective_date }
+      old_display_dates = service.pricing_maps.map{ |pm| pm.display_date }
+      if old_effective_dates.include?(effective_date.to_date) || old_display_dates.include?(display_date.to_date)
+        services_not_updated << service.name
+      else
+        service.increase_decrease_pricing_map(percentage, display_date, effective_date)
+      end
+    end
+
+    if services_not_updated.empty?
+      flash[:success] = "Successfully updated the pricing maps for all of the services under #{@organization.name}."
+    else
+      flash[:notice] = "Successfully updated the pricing maps for all of the services under #{@organization.name} except for the following: #{services_not_updated.join(', ')}"
+    end
+  end
+
+
+  ####Actions for Surveys sub-form####
+
+  def add_associated_survey
+    @organization = Organization.find(params[:surveyable_id])
+    @associated_survey = @organization.associated_surveys.new :survey_id => params[:survey_id]
+
+    if @associated_survey.save
+      flash[:success] = "Survey added successfully."
+    else
+      @organization.reload
+      @associated_survey.errors.messages.each do |field, message|
+        flash[:alert] = "Error adding survey: #{message.first}."
+      end
+    end
+  end
+
+  def remove_associated_survey
+    associated_survey = AssociatedSurvey.find(params[:associated_survey_id])
+    @organization = associated_survey.associable
+
+    if associated_survey.destroy
+      @survey_id = associated_survey.id.to_s
+      flash[:success] = "Survey deleted successfully."
+    else
+      @survey_id = nil
+      flash[:alert] = "Error deleting survey."
+    end
+  end
+
 
   private
 
-  def organization_params(type)
-    params.require(type).permit(:name,
+  def set_status_variables
+    if @organization.use_default_statuses
+      @available_statuses = AvailableStatus.defaults
+    else
+      @available_statuses = @organization.available_statuses
+      @editable_statuses = @organization.editable_statuses
+    end
+    @using_defaults = @organization.use_default_statuses
+  end
+
+
+  # ================ Imported from OrganizationUpdater ========================
+
+
+  def update_organization
+    @attributes = organization_params[:organization]
+    @attributes.delete(:id)
+    #detects if incoming name/abbreviation is different from the old name/abbreviation
+    name_change = @attributes[:name] != @organization.name || @attributes[:abbreviation] != @organization.abbreviation
+
+    if @organization.update_attributes(@attributes)
+      @organization.update_ssr_org_name if (@organization.type != "Institution" && name_change)
+      update_services
+      true
+    else
+      false
+    end
+  end
+
+  def update_services
+    if @attributes[:is_available] == '0'
+      # disable ALL children
+      @organization.update_descendants_availability(false)
+    elsif params[:all_services_availability] != 'keep'
+      # enable immediate child services
+      @organization.services.each do |service|
+        service.update_attributes(is_available: params[:all_services_availability] == 'true')
+      end
+    end
+  end
+
+  # ================ end ========================
+
+  def organization_params
+    params.permit(organization: [
+      :name,
       :order,
       :css_class,
       :description,
@@ -56,42 +283,38 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
       :is_available,
       :use_default_statuses,
       { tag_list:  [] },
-      subsidy_map_attributes: [:organization_id,
-        :max_dollar_cap,
-        :max_percentage,
-        :default_percentage,
-        :instructions],
-      pricing_setups_attributes: [:organization_id,
-        :display_date,
-        :effective_date,
-        :charge_master,
-        :federal,
-        :corporate,
-        :other,
-        :member,
-        :college_rate_type,
-        :federal_rate_type,
-        :foundation_rate_type,
-        :industry_rate_type,
-        :investigator_rate_type,
-        :internal_rate_type,
-        :unfunded_rate_type],
-      submission_emails_attributes: [:organization_id, :email],
-      available_statuses_attributes: [:organization_id,
-        :id,
-        :status,
-        :selected],
-      editable_statuses_attributes: [:organization_id,
-        :id,
-        :status,
-        :selected])
+      submission_emails_attributes: [:organization_id, :email]
+      ])
   end
 
-  def flash_update(show_success)
-    if show_success
-      flash[:notice] = "#{@organization.name} saved correctly."
-    else
-      flash[:alert] = "Failed to update #{@organization.name}."
-    end
+  def new_organization_params
+    params.permit(organization: [
+      :type,
+      :name,
+      :is_available,
+      :parent_id
+      ])
+  end
+
+  def fulfillment_rights_params
+    params.require(:fulfillment_rights).permit(
+      :identity_id,
+      :organization_id)
+  end
+
+  def user_rights_params
+    params.require(:user_rights).permit(
+      :identity_id,
+      :organization_id
+      )
+  end
+
+  def status_params
+    params.permit(
+      :organization_id,
+      :checked,
+      :status_key,
+      :selected,
+      :status_type)
   end
 end

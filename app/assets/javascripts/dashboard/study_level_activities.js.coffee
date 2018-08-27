@@ -47,15 +47,6 @@ $ ->
       url: "/dashboard/line_items/#{line_item_id}/edit"
       data: data
 
-  $(document).on 'change', '.your-cost-edit', ->
-    row_index   = $(this).parents('tr').data('index')
-    line_item_id = $(this).parents('table.study_level_activities').bootstrapTable('getData')[row_index].id
-    data = 'line_item': 'displayed_cost' : $(this).val().replace('$', '')
-    $.ajax
-      type: 'PATCH'
-      url: "/dashboard/line_items/#{line_item_id}"
-      data: data
-
   $(document).on 'click', '.otf_delete', ->
     row_index   = $(this).parents('tr').data('index')
     line_item_id = $(this).parents('table.study_level_activities').bootstrapTable('getData')[row_index].id
@@ -105,3 +96,12 @@ $ ->
       $.ajax
         type: 'DELETE'
         url: "/dashboard/fulfillments/#{fulfillment_id}"
+
+  $(document).on 'load-success.bs.table', '.study_level_activities', ->
+    setup_xeditable_fields()
+
+  $('body').tooltip(
+    selector: '[data-title]'
+    delay: {show: 500}
+  )
+

@@ -28,6 +28,8 @@
         %br
         %small
           = t(:reporting)[:index][:subtext]
+    - if !Setting.find_by_key('use_short_interaction').value
+      - $canned_reports.delete("ShortInteractionsReport")
     - $canned_reports.sort.each do |report|
       = link_to report.constantize.title, setup_reports_path(report: report), method: :get, remote: true, class: "btn btn-primary btn-lg"
       - @counter += 1

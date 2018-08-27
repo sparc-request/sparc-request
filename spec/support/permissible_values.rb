@@ -29,6 +29,7 @@ def populate_permissible_values_before_suite
     build_user_credentials
     build_document_types
     build_funding_statuses
+    build_short_interactions
   end
 end
 
@@ -44,22 +45,22 @@ def build_impact_areas
 end
 
 def build_statuses
-  FactoryBot.create(:permissible_value, category: 'status', key: 'ctrc_approved', value: 'Active')
-  FactoryBot.create(:permissible_value, category: 'status', key: 'administrative_review', value: 'Administrative Review')
-  FactoryBot.create(:permissible_value, category: 'status', key: 'approved', value: 'Approved')
+  FactoryBot.create(:permissible_value, category: 'status', key: 'ctrc_approved', value: 'Active', default: false)
+  FactoryBot.create(:permissible_value, category: 'status', key: 'administrative_review', value: 'Administrative Review', default: false)
+  FactoryBot.create(:permissible_value, category: 'status', key: 'approved', value: 'Approved', default: false)
   FactoryBot.create(:permissible_value, category: 'status', key: 'awaiting_pi_approval', value: 'Awaiting Requester Response', default: true)
   FactoryBot.create(:permissible_value, category: 'status', key: 'complete', value: 'Complete', default: true)
-  FactoryBot.create(:permissible_value, category: 'status', key: 'declined', value: 'Declined')
+  FactoryBot.create(:permissible_value, category: 'status', key: 'declined', value: 'Declined', default: false)
   FactoryBot.create(:permissible_value, category: 'status', key: 'draft', value: 'Draft', default: true)
-  FactoryBot.create(:permissible_value, category: 'status', key: 'get_a_cost_estimate', value: 'Get a Cost Estimate')
-  FactoryBot.create(:permissible_value, category: 'status', key: 'invoiced', value: 'Invoiced')
-  FactoryBot.create(:permissible_value, category: 'status', key: 'ctrc_review', value: 'In Admin review')
-  FactoryBot.create(:permissible_value, category: 'status', key: 'committee_review', value: 'In Committee Review')
-  FactoryBot.create(:permissible_value, category: 'status', key: 'fulfillment_queue', value: 'In Fulfillment Queue')
+  FactoryBot.create(:permissible_value, category: 'status', key: 'get_a_cost_estimate', value: 'Get a Cost Estimate', default: false)
+  FactoryBot.create(:permissible_value, category: 'status', key: 'invoiced', value: 'Invoiced', default: false)
+  FactoryBot.create(:permissible_value, category: 'status', key: 'ctrc_review', value: 'In Admin review', default: false)
+  FactoryBot.create(:permissible_value, category: 'status', key: 'committee_review', value: 'In Committee Review', default: false)
+  FactoryBot.create(:permissible_value, category: 'status', key: 'fulfillment_queue', value: 'In Fulfillment Queue', default: false)
   FactoryBot.create(:permissible_value, category: 'status', key: 'in_process', value: 'In Process', default: true)
   FactoryBot.create(:permissible_value, category: 'status', key: 'on_hold', value: 'On Hold', default: true)
   FactoryBot.create(:permissible_value, category: 'status', key: 'submitted', value: 'Submitted', default: true)
-  FactoryBot.create(:permissible_value, category: 'status', key: 'withdrawn', value: 'Withdrawn')
+  FactoryBot.create(:permissible_value, category: 'status', key: 'withdrawn', value: 'Withdrawn', default: false)
 end
 
 def build_user_roles
@@ -142,4 +143,12 @@ end
 def build_funding_statuses
   FactoryBot.create(:permissible_value, category: 'funding_status', key: 'pending_funding', value: 'Pending Funding')
   FactoryBot.create(:permissible_value, category: 'funding_status', key: 'funded', value: 'Funded')
+end
+
+def build_short_interactions
+  FactoryBot.create(:permissible_value, category: 'interaction_type', key: 'phone', value: 'Telephone')
+  FactoryBot.create(:permissible_value, category: 'interaction_type', key: 'email', value: 'Email')
+  FactoryBot.create(:permissible_value, category: 'interaction_type', key: 'in_person', value: 'In-Person')
+  FactoryBot.create(:permissible_value, category: 'interaction_subject', key: 'general_question', value: 'General Questionn')
+  FactoryBot.create(:permissible_value, category: 'institution', key: 'other', value: 'Other')
 end

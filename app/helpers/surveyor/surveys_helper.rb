@@ -35,41 +35,47 @@ module Surveyor::SurveysHelper
   end
 
   def edit_survey_button(survey)
-    link_to(
-      content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' }),
-      edit_surveyor_survey_path(survey),
-      remote: true,
-      class: 'btn btn-warning edit-survey'
-    )
+    unless survey.active?
+      link_to(
+        content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' }),
+        edit_surveyor_survey_path(survey),
+        remote: true,
+        class: 'btn btn-warning edit-survey'
+      )
+    end
   end
 
   def delete_survey_button(survey)
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
-      ),
-      data: { survey_id: survey.id },
-      class: 'btn btn-danger delete-survey'
-    )
+    if !(survey.active? || survey.has_responses?)
+      content_tag(:button,
+        raw(
+          content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
+        ),
+        data: { survey_id: survey.id },
+        class: 'btn btn-danger delete-survey'
+      )
+    end
   end
 
   def activate_survey_button(survey)
-    if survey.surveyable_type == 'Identity'
-      content_tag(:button,
-        survey.active? ? t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:disable] : t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:activate],
-        class: survey.active? ? 'btn btn-danger activate-survey' : 'btn btn-success disable-survey',
-        title: t(:surveyor)[:forms][:table][:tooltips][:activate],
-        data: { toggle: 'tooltip', container: 'body' },
-        disabled: 'disabled'
-      )
-    else
-      link_to(
-        survey.active? ? t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:disable] : t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:activate],
-        surveyor_survey_updater_path(survey, klass: 'survey', survey: { active: !survey.active }),
-        method: :patch,
-        remote: true,
-        class: survey.active? ? 'btn btn-danger activate-survey' : 'btn btn-success disable-survey',
-      )
+    if survey.questions.any?
+      if survey.surveyable_type == 'Identity'
+        content_tag(:button,
+          survey.active? ? t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:disable] : t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:activate],
+          class: survey.active? ? 'btn btn-danger activate-survey' : 'btn btn-success disable-survey',
+          title: t(:surveyor)[:forms][:table][:tooltips][:activate],
+          data: { toggle: 'tooltip', container: 'body' },
+          disabled: 'disabled'
+        )
+      else
+        link_to(
+          survey.active? ? t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:disable] : t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:activate],
+          surveyor_survey_updater_path(survey, klass: 'survey', survey: { active: !survey.active }),
+          method: :patch,
+          remote: true,
+          class: survey.active? ? 'btn btn-danger activate-survey' : 'btn btn-success disable-survey',
+        )
+      end
     end
   end
 

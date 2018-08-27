@@ -1,4 +1,4 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -121,6 +121,7 @@ en:
               label: "Dependent:"
               dropdown:
                 label: "Display If:"
+            warning: "*Warning* This question has responses attached to it."
           option:
             add: "Add Option"
             delete: "Delete Option"

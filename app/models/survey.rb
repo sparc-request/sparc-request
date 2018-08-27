@@ -65,10 +65,23 @@ class Survey < ApplicationRecord
     'Multiple Dropdown': 'multiple_dropdown'
   }
   
-  def self.for_dropdown_select
-    self.all.order(:title).group_by(&:title).map{ |title, surveys|
-      [title, surveys.map{ |survey| ["Version #{survey.version} (#{survey.active ? I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active] : I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]})", survey.id] }]
-    }
+  def self.for_dropdown_select(filtered_states=nil, filtered_surveys=nil)
+    self.all.order(:title).group_by(&:title).map do |title, surveys|
+      [
+        title,
+        surveys.map do |survey|
+          [
+            "Version #{survey.version} (#{survey.active ? I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active] : I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]})",
+            survey.id,
+            {
+              disabled: filtered_states && filtered_states.length > 1 && !filtered_states.include?(survey.active ? 1 : 0),
+              selected: filtered_surveys && filtered_surveys.include?(survey.id),
+              data: { active: survey.active ? '1' : '0' }
+            }
+          ]
+        end
+      ]
+    end
   end
 
   # Added because version could not be written as an attribute by FactoryBot. Possible keyword issue?
@@ -91,5 +104,9 @@ class Survey < ApplicationRecord
 
   def report_title
     "#{self.title} - Version #{self.version.to_s} (#{self.active ? I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active] : I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]})"
+  end
+
+  def has_responses?
+    self.responses.any? ? true : false
   end
 end

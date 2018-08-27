@@ -28,6 +28,7 @@ FactoryBot.define do
     service_center_cost { Random.rand(100) }
     charge_code         { Faker::Lorem.words().first }
     revenue_code        { Faker::Lorem.words().first }
+    order               { 1 }
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }
@@ -81,7 +82,7 @@ FactoryBot.define do
 
     transient do
       line_item_count 0
-      pricing_map_count 1
+      pricing_map_count 0
       service_provider_count 0
       service_relation_count 0
     end
@@ -103,7 +104,6 @@ FactoryBot.define do
       # create any additional pricing maps.
       line_item_count = evaluator.line_items.count > 0 ? 0 : evaluator.line_item_count
       pricing_map_count = evaluator.pricing_maps.count > 0 ? 0 : evaluator.pricing_map_count
-      service_provider_count = evaluator.service_providers.count > 0 ? 0 : evaluator.service_provider_count
       service_relation_count = evaluator.service_relations.count > 0 ? 0 : evaluator.service_relation_count
 
       # We were using create_list, but this will not
@@ -115,10 +115,6 @@ FactoryBot.define do
 
       pricing_map_count.times do
         service.pricing_maps.build(attributes_for(:pricing_map))
-      end
-
-      service_provider_count.times do
-        service.service_providers.build(attributes_for(:service_provider))
       end
 
       service_relation_count.times do

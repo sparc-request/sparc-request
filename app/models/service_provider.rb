@@ -23,5 +23,4 @@ class ServiceProvider < ApplicationRecord
 
   belongs_to :organization
   belongs_to :identity
-  belongs_to :service
 end

@@ -43,7 +43,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
 
       expect(response).to have_tag("select#sub_service_request_status") do
         with_option("Draft")
-        with_option("NotDraft")
+        with_option("Invoiced")
       end
     end
   end
@@ -101,7 +101,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
   describe "fulfillment button" do
     context "SubServiceRequest ready for fulfillment" do
       context "and in fulfillment" do
-        context "user has clinical provider rights" do
+        context "user has go to cwf rights" do
           it "should display the 'Go to Fulfillment' button, linking to CWF" do
             protocol = stub_protocol
             organization = stub_organization
@@ -112,7 +112,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
               in_work_fulfillment?: true)
             logged_in_user = build_stubbed(:identity)
             allow(logged_in_user).to receive_messages(unread_notification_count: 12345,
-              clinical_provider_rights?: true)
+              go_to_cwf_rights?: true)
             stub_current_user(logged_in_user)
             allow(sub_service_request).to receive(:notes).and_return(["1"])
             allow(sub_service_request).to receive(:is_complete?).and_return(false)
@@ -124,7 +124,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
           end
         end
 
-        context "user does not have clinical provider rights" do
+        context "user does not have go to fulfillment rights" do
           it "should display the 'In Fulfillment' button, linking to CWF" do
             protocol = stub_protocol
             organization = stub_organization
@@ -135,36 +135,61 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
               in_work_fulfillment?: true)
             logged_in_user = build_stubbed(:identity)
             allow(logged_in_user).to receive_messages(unread_notification_count: 12345,
-              clinical_provider_rights?: false)
+              go_to_cwf_rights?: false)
             stub_current_user(logged_in_user)
             allow(sub_service_request).to receive(:notes).and_return(["1"])
             allow(sub_service_request).to receive(:is_complete?).and_return(false)
 
             render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
 
-            expect(response).to have_tag("a", text: "In Fulfillment", with: { href: "#{Setting.find_by_key("clinical_work_fulfillment_url").value}/sub_service_request/#{sub_service_request.id}" })
+            expect(response).to have_tag("button", text: "In Fulfillment", with: {disabled: "disabled"})
           end
         end
       end
 
       context "and not in fulfillment" do
-        it "should display the 'Send to FulFillment' button" do
-          protocol = stub_protocol
-          organization = stub_organization
-          sub_service_request = stub_sub_service_request(protocol: protocol,
-            organization: organization,
-            status: "draft")
-          allow(sub_service_request).to receive_messages(ready_for_fulfillment?: true,
-            in_work_fulfillment?: false)
-          logged_in_user = build_stubbed(:identity)
-          allow(logged_in_user).to receive_messages(unread_notification_count: 12345)
-          stub_current_user(logged_in_user)
-          allow(sub_service_request).to receive(:notes).and_return(["1"])
-          allow(sub_service_request).to receive(:is_complete?).and_return(false)
+        context "user has send to cwf rights" do
+          it "should display the 'Send to FulFillment' button" do
+            protocol = stub_protocol
+            organization = stub_organization
+            sub_service_request = stub_sub_service_request(protocol: protocol,
+              organization: organization,
+              status: "draft")
+            allow(sub_service_request).to receive_messages(ready_for_fulfillment?: true,
+              in_work_fulfillment?: false)
+            logged_in_user = build_stubbed(:identity)
+            allow(logged_in_user).to receive_messages(unread_notification_count: 12345,
+              send_to_cwf_rights?: true)
+            stub_current_user(logged_in_user)
+            allow(sub_service_request).to receive(:notes).and_return(["1"])
+            allow(sub_service_request).to receive(:is_complete?).and_return(false)
 
-          render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
+            render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
 
-          expect(response).to have_tag("button", text: "Send to Fulfillment")
+            expect(response).to have_tag("button", text: "Send to Fulfillment")
+          end
+        end
+
+        context "user does not have send to cwf rights" do
+          it "should display the disabled 'Send to FulFillment' button" do
+            protocol = stub_protocol
+            organization = stub_organization
+            sub_service_request = stub_sub_service_request(protocol: protocol,
+              organization: organization,
+              status: "draft")
+            allow(sub_service_request).to receive_messages(ready_for_fulfillment?: true,
+              in_work_fulfillment?: false)
+            logged_in_user = build_stubbed(:identity)
+            allow(logged_in_user).to receive_messages(unread_notification_count: 12345,
+              send_to_cwf_rights?: false)
+            stub_current_user(logged_in_user)
+            allow(sub_service_request).to receive(:notes).and_return(["1"])
+            allow(sub_service_request).to receive(:is_complete?).and_return(false)
+
+            render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
+
+            expect(response).to have_tag("button", text: "Send to Fulfillment", with: {disabled: "disabled"})
+          end
         end
       end
     end
@@ -254,7 +279,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
   end
 
   def stub_organization(opts = {})
-    default_statuses = { "draft" => "Draft", "not_draft" => "NotDraft" }
+    default_statuses = { "draft" => "Draft", "invoiced" => "Invoiced" }
     instance_double(Organization,
       name: "MegaCorp",
       abbreviation: "MC",

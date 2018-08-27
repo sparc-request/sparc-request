@@ -29,7 +29,7 @@ RSpec.describe 'User sets timeline dates', js: true do
     institution = create(:institution, name: "Institution")
     provider    = create(:provider, name: "Provider", parent: institution)
     program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
-    service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
+    service     = create(:service, name: "Service", abbreviation: "Service", organization: program, pricing_map_count: 1)
     @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2, start_date: nil, end_date: nil)
     @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
     ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')

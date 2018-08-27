@@ -40,19 +40,26 @@ class Surveyor::ResponsesController < Surveyor::BaseController
         }
       ) || return
 
-    @type       = @filterrific.of_type.constantize.yaml_klass
-    @responses  =
-      if @type == Survey.name
-        @filterrific.find.eager_load(:survey, :question_responses, :identity)
-      else
-        @filterrific.find.eager_load(:survey, :question_responses, :identity).
-          where(survey: Form.for(current_user))
-      end
+    @type = @filterrific.of_type.constantize.yaml_klass
 
     respond_to do |format|
       format.html
       format.js
       format.json {
+        @responses =
+          if @type == Survey.name
+            @filterrific.find.eager_load(:survey, :question_responses, :identity)
+          else
+            existing_responses = @filterrific.find.eager_load(:survey, :question_responses, :identity).
+              where(survey: Form.for(current_user))
+
+            if @filterrific.include_incomplete == 'false'
+              existing_responses
+            else
+              incomplete_responses = get_incomplete_form_responses
+              existing_responses + incomplete_responses
+            end
+          end
         preload_responses
       }
       # format.xlsx
@@ -173,5 +180,25 @@ class Surveyor::ResponsesController < Surveyor::BaseController
     raise ActionController::RoutingError.new('Not Found') if types.empty?
 
     types
+  end
+
+  def get_incomplete_form_responses
+    @filterrific.with_state.reject!(&:blank?) if @filterrific.with_state
+    @filterrific.with_survey.reject!(&:blank?) if @filterrific.with_survey
+
+    responses = []
+    Protocol.eager_load(sub_service_requests: [:responses, :service_forms, :organization_forms]).distinct.each do |p|
+      p.sub_service_requests.each do |ssr|
+        ssr.forms_to_complete.select do |f|
+          # Apply the State, Survey/Form, and Start/End Date filters manually
+          (@filterrific.with_state.try(&:empty?) || (@filterrific.with_state.try(&:any?) && @filterrific.with_state.include?(f.active ? 1 : 0))) &&
+          (@filterrific.with_survey.try(&:empty?) || (@filterrific.with_survey.try(&:any?) && @filterrific.with_survey.include?(f.id)))
+        end.each do |f|
+          responses << Response.new(survey: f,respondable: ssr)
+        end
+      end
+    end
+
+    responses
   end
 end

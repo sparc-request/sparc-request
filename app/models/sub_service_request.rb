@@ -46,6 +46,8 @@ class SubServiceRequest < ApplicationRecord
   has_many :notifications, :dependent => :destroy
   has_many :subsidies
   has_many :responses, as: :respondable, dependent: :destroy
+  has_many :service_forms, -> { active }, through: :services, source: :forms
+  has_many :organization_forms, -> { active }, through: :organization, source: :forms
   has_one :approved_subsidy, :dependent => :destroy
   has_one :pending_subsidy, :dependent => :destroy
 
@@ -295,12 +297,14 @@ class SubServiceRequest < ApplicationRecord
 
   #A request is locked if the organization it's in isn't editable
   def is_locked?
-    self.status != 'first_draft' && !self.organization.process_ssrs_parent.has_editable_status?(status)
+    process_ssrs_org = self.organization.process_ssrs_parent || self.organization
+    self.status != 'first_draft' && !process_ssrs_org.has_editable_status?(status)
   end
 
   # Can't edit a request if it's placed in an uneditable status
   def can_be_edited?
-     self.status == 'first_draft' || (self.organization.process_ssrs_parent.has_editable_status?(self.status) && !self.is_complete?)
+    process_ssrs_org = self.organization.process_ssrs_parent || self.organization
+    self.status == 'first_draft' || (process_ssrs_org.has_editable_status?(self.status) && !self.is_complete?)
   end
 
   def is_complete?
@@ -381,10 +385,10 @@ class SubServiceRequest < ApplicationRecord
       candidates << sp.identity
     end
     if self.owner
-      candidates << self.owner unless candidates.detect {|x| x.id == self.owner_id}
+      candidates << self.owner
     end
 
-    candidates
+    candidates.uniq
   end
 
   def generate_approvals current_user, params
@@ -409,8 +413,9 @@ class SubServiceRequest < ApplicationRecord
   ### FORMS ###
   #############
   def forms_to_complete
-    Form.where(surveyable: self.services).where.not(id: self.responses.pluck(:survey_id)).active +
-      Form.where(surveyable: self.organization).where.not(id: self.responses.pluck(:survey_id)).active
+    completed_ids = self.responses.pluck(:survey_id)
+
+    (self.service_forms + self.organization_forms).select{ |f| !completed_ids.include?(f.id) }
   end
 
   def form_completed?(form)
@@ -418,13 +423,11 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def has_completed_forms?
-    Response.where(respondable: self, survey: Form.where(surveyable: self.services).active.ids + Form.where(surveyable: self.organization).active.ids).any?
+    self.responses.where(survey: self.service_forms + self.organization_forms).any?
   end
 
   def all_forms_completed?
-    form_ids = Form.where(surveyable: self.services).active.ids + 
-                Form.where(surveyable: self.organization).active.ids
-    Response.where(respondable: self, survey_id: form_ids).count == form_ids.count
+    (self.service_forms + self.organization_forms).count == self.responses.count
   end
 
   ##########################

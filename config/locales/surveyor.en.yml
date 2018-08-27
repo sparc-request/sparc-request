@@ -94,8 +94,6 @@ en:
 
 
     surveys:
-      new_form:
-        header: "New %{klass}"
       form:
         header: "Live Editing %{klass}"
         survey_information:

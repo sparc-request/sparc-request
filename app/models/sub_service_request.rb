@@ -452,7 +452,7 @@ class SubServiceRequest < ApplicationRecord
     self.line_items.
       eager_load(service: [:associated_surveys, :organization]).
       map{ |li| li.service.available_surveys }.flatten.compact.uniq.
-      all?{ |s| s.responses.where(respondable_id: self.id, respondable_type: self.class.name).any? }
+      all?{ |s| s.responses.where(respondable: self).joins(:question_responses).any? }
   end
 
   ###############################

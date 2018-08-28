@@ -28,7 +28,7 @@ RSpec.describe 'User edits survey fields', js: true do
 
   context 'surveys' do
     before :each do
-      @survey = create(:system_survey)
+      @survey = create(:system_survey, title: 'Survey 1')
     end
 
     scenario 'and sees updated title' do
@@ -75,11 +75,11 @@ RSpec.describe 'User edits survey fields', js: true do
 
     context 'and changes access_code to an already-used access code' do
       scenario 'and sees updated version' do
-        create(:system_survey, access_code: 'access-denied', version: 1)
+        create(:system_survey, title: 'Survey 2', access_code: 'access-denied', version: 1)
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        all('.survey-actions + .bootstrap-select').last.click
+        first('.survey-actions + .bootstrap-select').click
         within '.dropdown-menu.open' do
           find('a', text: /Edit/).click
         end

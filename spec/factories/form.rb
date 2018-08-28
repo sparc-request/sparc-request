@@ -21,7 +21,7 @@
 FactoryBot.define do
   factory :form do
     title                     { Faker::Lorem.word }
-    access_code               { Faker::Lorem.word }
+    sequence(:access_code)    { |n| "survey-#{n}" }
     sequence(:version)        { |n| n }
     active                    { false }
     type                      { 'Form' }

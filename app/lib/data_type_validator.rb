@@ -39,7 +39,7 @@ module DataTypeValidator
   end
 
   def is_url?(value)
-    value.match?(/^((ftp|http|https):\/\/)?[a-zA-Z0-9]+(((\.[a-zA-Z0-9]+)+(:\d+)?)|(:\d+))(\/\w+)*(\/)?(\?(\w+=\w+(&\w+=\w+)*)+)?$/)
+    value.match?(/^((ftp|http|https):\/\/)?[\w\-]+(((\.[a-zA-Z0-9]+)+(:\d+)?)|(:\d+))(\/[\w\-]+)*((\.[a-zA-Z]+)|(\/))?(\?([\w\-]+=.+(&[\w\-]+=.+)*)+)?$/)
   end
 
   def is_path?(value)

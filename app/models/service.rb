@@ -63,6 +63,10 @@ class Service < ApplicationRecord
   validate  :one_time_fee_choice
   validates :order, numericality: { only_integer: true }, on: :update
 
+  default_scope -> {
+    order(:order, :name)
+  }
+
   # Services listed under the funding organizations
   scope :funding_opportunities, -> { where(organization_id: Setting.get_value("funding_org_ids")) }
 

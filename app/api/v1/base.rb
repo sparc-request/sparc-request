@@ -25,6 +25,7 @@ module SPARCCWF
     require_relative 'entities.rb'
 
     class APIv1 < Grape::API
+      include Grape::Extensions::Hashie::Mash::ParamBuilder
 
       require_relative 'validators_v1.rb'
       require_relative 'shared_params_v1.rb'

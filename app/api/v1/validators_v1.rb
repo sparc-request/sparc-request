@@ -20,7 +20,7 @@
 
 module ValidatorsV1
 
-  class RecordPresence < Grape::Validations::SingleOptionValidator
+  class RecordPresence < Grape::Validations::Base
 
     def validate_param!(attr_name, params)
 

@@ -64,7 +64,7 @@
             = user_form_group(name: :role_specify, classes: ['role_dependent other', form.object.role == 'other' ? '' : 'hidden'], form: form, required: true) do
               = form.text_field :role_other, class: 'form-control'
 
-            - if Setting.find_by_key("use_epic").value && protocol != nil && protocol.selected_for_epic
+            - if Setting.get_value("use_epic") && protocol != nil && protocol.selected_for_epic
               = user_form_group(name: :epic_access, form: form, required: true,
                 data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
                 title: t(:authorized_users)[:tooltips][:epic_access]) do

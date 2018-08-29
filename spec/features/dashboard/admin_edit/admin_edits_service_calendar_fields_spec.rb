@@ -126,14 +126,14 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
 
       context 'your cost' do
         before :each do
-          find('.your-cost.editable', match: :first).click
+          find('.edit-your-cost.editable', match: :first).click
           find('.editable-input input').set(100)
           find('.editable-submit').click
           wait_for_javascript_to_finish
         end
 
         it 'updates your cost' do
-          expect(page).to have_css('.your-cost', text: '$100.00')
+          expect(page).to have_css('.edit-your-cost', text: '$100.00')
         end
       end
     end

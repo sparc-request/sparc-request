@@ -27,7 +27,7 @@ $("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>
 $("#pricing_maps_container").html("<%= j render '/catalog_manager/services/pricing_form', service: @service, user: @user %>")
 
 ##Re render general info form, to refresh availability toggle, etc.
-$("#general-info").html("<%= j render '/catalog_manager/services/general_info_form', service: @service, user: @user %>")
+$("#general-info .panel-body").html("<%= j render '/catalog_manager/services/general_info_form', service: @service, user: @user %>")
 $("[data-toggle='toggle']").bootstrapToggle();
 $('.selectpicker').selectpicker();
 

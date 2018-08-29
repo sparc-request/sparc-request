@@ -48,7 +48,7 @@ class Dashboard::BaseController < ActionController::Base
   private
 
   def rmid_server_status(protocol)
-    if Setting.find_by_key("research_master_enabled").value
+    if Setting.get_value("research_master_enabled")
       @rmid_server_down = protocol.rmid_server_status
       @rmid_server_down ? flash[:alert] = t(:protocols)[:summary][:tooltips][:rmid_server_down] : nil
     end
@@ -90,6 +90,6 @@ class Dashboard::BaseController < ActionController::Base
   end
 
   def bypass_rmid_validations? # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]
-    @bypass_rmid_validation = @user.is_overlord? || @admin
+    @bypass_rmid_validation = @user.catalog_overlord? || @admin
   end
 end

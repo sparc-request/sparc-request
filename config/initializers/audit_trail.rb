@@ -31,7 +31,7 @@ module Audited
     module ActiveRecord
       class Audit < ::ActiveRecord::Base
         begin
-          use_separate_audit_database = Setting.find_by_key("use_separate_audit_database").try(:value)
+          use_separate_audit_database = Setting.get_value("use_separate_audit_database")
         rescue
           use_separate_audit_database = nil
         end

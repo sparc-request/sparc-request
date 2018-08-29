@@ -140,7 +140,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
       @protocol.email_about_change_in_authorized_user(@protocol_role, "destroy")
     end
 
-    if Setting.find_by_key("use_epic").value && @protocol.selected_for_epic && epic_access && !Setting.find_by_key("queue_epic").value
+    if Setting.get_value("use_epic") && @protocol.selected_for_epic && epic_access && !Setting.get_value("queue_epic")
       Notifier.notify_primary_pi_for_epic_user_removal(@protocol, protocol_role_clone).deliver
     end
 

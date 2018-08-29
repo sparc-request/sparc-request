@@ -42,7 +42,7 @@ RSpec.describe 'RemoteServiceNotifierJob', type: :model do
       it 'should send a POST request to the remote service' do
         @job.perform
 
-        expect(a_request(:post, /#{Setting.find_by_key("remote_service_notifier_host").value}/)).to have_been_made.once
+        expect(a_request(:post, /#{Setting.get_value("remote_service_notifier_host")}/)).to have_been_made.once
       end
     end
 

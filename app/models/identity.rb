@@ -93,7 +93,7 @@ class Identity < ApplicationRecord
   end
 
   def suggestion_value
-    Setting.find_by_key("use_ldap").value && Setting.find_by_key("lazy_load_ldap").value ? ldap_uid : id
+    Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") ? ldap_uid : id
   end
 
   ###############################################################################
@@ -116,7 +116,7 @@ class Identity < ApplicationRecord
 
   # Return the netid (ldap_uid without the @musc.edu)
   def netid
-    if Setting.find_by_key("use_ldap").value then
+    if Setting.get_value("use_ldap") then
       return ldap_uid.sub(/@#{Directory::DOMAIN}/, '')
     else
       return ldap_uid
@@ -133,14 +133,7 @@ class Identity < ApplicationRecord
   ###############################################################################
 
   def is_site_admin?
-    Setting.find_by_key("site_admins").value.include?(self.ldap_uid)
-  end
-
-  # Returns true if the user is a catalog overlord.  Should only be true for three uids:
-  # lmf5, anc63, mas244
-  #TODO: Why does this happen? Why create a variable and check it?
-  def is_overlord?
-    @is_overlord ||= self.catalog_overlord?
+    Setting.get_value("site_admins").include?(self.ldap_uid)
   end
 
   def is_super_user?
@@ -173,7 +166,7 @@ class Identity < ApplicationRecord
   end
 
   def is_funding_admin?
-    Setting.find_by_key("funding_admins").value.include?(ldap_uid)
+    Setting.get_value("funding_admins").include?(ldap_uid)
   end
 
   ###############################################################################
@@ -185,7 +178,7 @@ class Identity < ApplicationRecord
   end
 
   def self.find_or_create(id)
-    if Setting.find_by_key("use_ldap").value && Setting.find_by_key("lazy_load_ldap").value
+    if Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap")
       return Directory.find_or_create(id)
     else
       return self.find(id)
@@ -250,7 +243,7 @@ class Identity < ApplicationRecord
 
   # Only users with request or approve rights can edit.
   def can_edit_service_request?(sr)
-    has_correct_project_role?(sr) || self.is_overlord?
+    has_correct_project_role?(sr) || self.catalog_overlord?
   end
 
   # If a user has request or approve rights AND the request is editable, then the user can edit.
@@ -314,19 +307,30 @@ class Identity < ApplicationRecord
     Organization.authorized_for_catalog_manager(self.id)
   end
 
+  # Returns an active record relation of organizations where the user has service provider rights.
+  # Including all child organizations.
+  def service_provider_organizations
+    Organization.authorized_for_service_provider(self.id)
+  end
+
   # Returns an active record relation of organizations where the user has clinical provider rights.
   # Including all child organizations
   def clinical_provider_organizations
     Organization.authorized_for_clinical_provider(self.id)
   end
 
-
+  # Returns an active record relation of organizations where the user has super user rights.
+  # Including all child organizations
   def super_user_organizations
     Organization.authorized_for_super_user(self.id)
   end
 
-  def cwf_rights?(organization)
+  def go_to_cwf_rights?(organization)
     super_user_organizations.include?(organization) or clinical_provider_organizations.include?(organization)
+  end
+
+  def send_to_cwf_rights?(organization)
+    authorized_admin_organizations.include?(organization)
   end
 
   def organizations_for_users(orgs, su_only)

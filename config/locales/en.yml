@@ -23,6 +23,7 @@ en:
   # ACTIONS #
   ###########
   actions:
+    activate: "Activate"
     add: "Add"
     adding: "Adding..."
     back: "Back"
@@ -30,10 +31,13 @@ en:
     cancel: "Cancel"
     close: "Close"
     continue: "Continue"
+    copy: "Copy"
     create: "Create"
     delete: "Delete"
+    disable: "Disable"
     edit: "Edit"
     filter: "Filter"
+    preview: "Preview"
     print: "Print"
     remove: "Remove"
     reply: "Reply"
@@ -305,8 +309,9 @@ en:
       none: "Nothing Selected"
       any: "- Any -"
       please_specify: "Please specify: *"
-      select: "---Please Select---"
       search_for_user: "Search for a User"
+      select: "---Please Select---"
+      select_action: "Select an action"
       select_one: "Select One"
     add_as_last: "Add as last"
 

@@ -20,57 +20,31 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User deletes a survey', js: true do
-  let_there_be_lane
-  fake_login_for_each_test
-
-  stub_config("site_admins", ["jug2"])
+RSpec.describe Surveyor::SurveysController, type: :controller do
+  stub_controller
+  let!(:before_filters) { find_before_filters }
+  let!(:logged_in_user) { create(:identity, ldap_uid: 'weh6@musc.edu') }
+  stub_config("site_admins", ["weh6@musc.edu"])
   
-  context 'surveys' do
-    before :each do
-      create(:system_survey)
-
-      visit surveyor_surveys_path
-      wait_for_javascript_to_finish
-    end
-
-    scenario 'and sees the survey is deleted' do
-      bootstrap_select '.survey-actions', /Delete/
-      wait_for_javascript_to_finish
-
-      find('.sweet-alert.visible button.confirm').trigger('click')
-      wait_for_javascript_to_finish
-
-      visit surveyor_surveys_path
-      wait_for_javascript_to_finish
-
-      expect(page).to have_selector('.survey-table td', text: 'No matching records found')
-      expect(SystemSurvey.count).to eq(0)
-    end
+  before :each do
+    session[:identity_id] = logged_in_user.id
   end
 
-  context 'forms' do
-    before :each do
-      org = create(:institution)
-      create(:super_user, organization: org, identity: jug2)
-      create(:form, surveyable: org)
-
-      visit surveyor_surveys_path
-      wait_for_javascript_to_finish
+  describe '#copy' do
+    it 'should call before_filter #authenticate_identity!' do
+      expect(before_filters.include?(:authenticate_identity!)).to eq(true)
     end
 
-    scenario 'and sees the form is deleted' do
-      bootstrap_select '.survey-actions', /Delete/
-      wait_for_javascript_to_finish
+    it 'should call before_filter #authorize_survey_builder_access' do
+      expect(before_filters.include?(:authorize_survey_builder_access)).to eq(true)
+    end
 
-      find('.sweet-alert.visible button.confirm').trigger('click')
-      wait_for_javascript_to_finish
+    it 'should make a copy of the survey' do
+      survey = create(:survey_without_validations)
 
-      visit surveyor_surveys_path
-      wait_for_javascript_to_finish
-
-      expect(page).to have_selector('.form-table td', text: 'No matching records found')
-      expect(Form.count).to eq(0)
+      expect{
+        post :copy, params: { survey_id: survey.id }, xhr: true
+      }.to change(Survey, :count).by(1)
     end
   end
 end

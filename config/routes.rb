@@ -27,6 +27,7 @@ SparcRails::Application.routes.draw do
     resources :surveys, only: [:index, :new, :create, :edit, :destroy] do
       get :preview
       get :update_dependents_list
+      post :copy
     end
     resource :survey, only: [] do
       get :search_surveyables

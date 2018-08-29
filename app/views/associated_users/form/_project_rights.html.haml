@@ -33,7 +33,7 @@
     .form-group.text-center.project-rights-redirect-warning.hidden
       %span.text-danger
         = t(:authorized_users)[:rights][:change_warning][:dashboard]
-  - elsif !dashboard && !user.is_overlord?
+  - elsif !dashboard && !user.catalog_overlord?
     .form-group.text-center.project-rights-redirect-warning.hidden
       %span.text-danger
         = t(:authorized_users)[:rights][:change_warning][:proper]

@@ -46,7 +46,7 @@
               = t(:proper)[:right_navigation][:faqs][:answer_5]
             = link_to t(:proper)[:right_navigation][:faqs][:question_6], 'javascript:void(0)', class: 'list-group-item list-group-item-action list-group-item-info help-question', data: { id: 6 }
             %li.list-group-item.help-answer.hidden{ id: "help-answer-6" }
-              = t(:proper)[:right_navigation][:faqs][:answer_6]
+              = raw t('proper.right_navigation.faqs.answer_6', department_name: Setting.get_value('contact_us_department'), phone: Setting.get_value('contact_us_phone'), email: Setting.get_value('contact_us_mail_to'))
       .modal-footer
         .center-block
           %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}

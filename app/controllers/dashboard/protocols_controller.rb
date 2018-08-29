@@ -95,15 +95,15 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol.requester_id  = current_user.id
     @protocol.populate_for_edit
     session[:protocol_type] = params[:protocol_type]
-    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
-    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
+    gon.rm_id_api_url = Setting.get_value("research_master_api")
+    gon.rm_id_api_token = Setting.get_value("rmid_api_token")
     rmid_server_status(@protocol)
   end
 
   def create
     protocol_class                          = protocol_params[:type].capitalize.constantize
     ### if lazy load enabled, we need create the identiy if necessary here
-    attrs                                   = Setting.find_by_key("use_ldap").value && Setting.find_by_key("lazy_load_ldap").value ? fix_identity : fix_date_params
+    attrs                                   = Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") ? fix_identity : fix_date_params
     @protocol                               = protocol_class.new(attrs)
     @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id
 
@@ -117,9 +117,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
       @protocol.service_requests.new(status: 'draft').save(validate: false)
 
-      if Setting.find_by_key("use_epic").value && @protocol.selected_for_epic
+      if Setting.get_value("use_epic") && @protocol.selected_for_epic
         @protocol.ensure_epic_user
-        Notifier.notify_for_epic_user_approval(@protocol).deliver unless Setting.find_by_key("queue_epic").value
+        Notifier.notify_for_epic_user_approval(@protocol).deliver unless Setting.get_value("queue_epic")
       end
 
       flash[:success] = I18n.t('protocols.created', protocol_type: @protocol.type)
@@ -134,8 +134,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @permission_to_edit = @authorization.nil? ? false : @authorization.can_edit?
     @in_dashboard       = true
     @protocol.populate_for_edit
-    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
-    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
+    gon.rm_id_api_url = Setting.get_value("research_master_api")
+    gon.rm_id_api_token = Setting.get_value("rmid_api_token")
 
     session[:breadcrumbs].
       clear.

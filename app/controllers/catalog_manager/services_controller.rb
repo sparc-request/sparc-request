@@ -23,7 +23,12 @@ class CatalogManager::ServicesController < CatalogManager::AppController
   respond_to :html, :json, except: :edit
 
   def new
-    @service = Service.new(organization_id: params[:organization_id])
+    parent_org = Organization.find(params[:organization_id])
+    if @user.can_edit_organization?(parent_org)
+      @service = Service.new(organization_id: params[:organization_id])
+    else
+      flash[:alert] = "You must have catalog manager rights to the parent organization. to create a new service."
+    end
   end
 
   def create

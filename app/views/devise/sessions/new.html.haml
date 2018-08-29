@@ -24,9 +24,9 @@
     %h1.page-header
       = t(:devise)[:sessions][:header]
     .form-group.login-buttons
-      - if Setting.find_by_key("use_cas").value
+      - if Setting.get_value("use_cas")
         = link_to t('devise.sessions.institution_users', institution: ENV['institution']), identity_cas_omniauth_authorize_path(service_request_id: @service_request.try(:id)), class: 'btn btn-primary omniauth-login-button'
-      - if Setting.find_by_key("use_shibboleth").value
+      - if Setting.get_value("use_shibboleth")
         = link_to t('devise.sessions.institution_users', institution: ENV['institution']), identity_shibboleth_omniauth_authorize_path(service_request_id: @service_request.try(:id)), class: 'btn btn-primary omniauth-login-button'
       %a.btn.btn-primary.standard-login-button
         = t(:devise)[:sessions][:other_users]

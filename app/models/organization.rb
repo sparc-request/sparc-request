@@ -44,7 +44,6 @@ class Organization < ApplicationRecord
   has_many :org_children, class_name: "Organization", foreign_key: :parent_id
 
   validates :abbreviation,
-            :description,
             :order,
             presence: true, on: :update
   validates :name, presence: true, uniqueness: true
@@ -104,6 +103,10 @@ class Organization < ApplicationRecord
         references(:clinical_providers).
         distinct(:organizations).ids)
     ).distinct
+  }
+
+  scope :available, -> {
+    where(is_available: true)
   }
 
   scope :in_cwf, -> { joins(:tags).where(tags: { name: 'clinical work fulfillment' }) }
@@ -373,21 +376,33 @@ class Organization < ApplicationRecord
   end
 
   def get_available_statuses
-    selected_statuses = []
-    if self.use_default_statuses
-      selected_statuses = AvailableStatus.defaults
-    elsif self.available_statuses.selected.present?
-      selected_statuses = self.available_statuses.selected.pluck(:status)
+    if process_ssrs
+      if use_default_statuses
+        selected_statuses = AvailableStatus.defaults
+      else
+        selected_statuses = available_statuses.selected.pluck(:status)
+      end
+    elsif process_ssrs_parent
+      if process_ssrs_parent.use_default_statuses
+        selected_statuses = AvailableStatus.defaults
+      else
+        selected_statuses = process_ssrs_parent.available_statuses.selected.pluck(:status)
+      end
     else
-      status_parent = self.parents.detect{ |parent| parent.available_statuses.selected.present? } || self
-      selected_statuses = status_parent.available_statuses.selected.pluck(:status)
+      selected_statuses = AvailableStatus.defaults
     end
 
     AvailableStatus.statuses.slice(*selected_statuses)
   end
 
   def get_editable_statuses
-    self.use_default_statuses ? AvailableStatus.defaults : self.editable_statuses.selected.pluck(:status)
+    if process_ssrs
+      self.use_default_statuses ? AvailableStatus.defaults : self.editable_statuses.selected.pluck(:status)
+    elsif process_ssrs_parent
+      process_ssrs_parent.get_editable_statuses
+    else
+      AvailableStatus.defaults
+    end
   end
 
   def self.find_all_by_available_status status
@@ -408,8 +423,8 @@ class Organization < ApplicationRecord
   private
 
   def create_statuses
-    EditableStatus.import EditableStatus.types.map{|status| EditableStatus.new(organization: self, status: status)}
-    AvailableStatus.import AvailableStatus.types.map{|status| AvailableStatus.new(organization: self, status: status)}
+    EditableStatus.import PermissibleValue.available.where(category: 'status').map{|pv| EditableStatus.new(organization: self, status: pv.key, selected: pv.default)}
+    AvailableStatus.import PermissibleValue.available.where(category: 'status').map{|pv| AvailableStatus.new(organization: self, status: pv.key, selected: pv.default)}
   end
 
   def self.authorized_child_organization_ids(org_ids)

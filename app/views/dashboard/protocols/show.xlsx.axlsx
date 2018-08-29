@@ -25,8 +25,8 @@ centered = wb.styles.add_style alignment: {horizontal: :center}
 # centered = wb.styles.add_style alignment: { horizontal: :center }
 # bordered = wb.styles.add_style :border=> {:style => :thin, :color => "00000000"}
 # centered_bordered = wb.styles.add_style :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
-money = wb.styles.add_style :format_code => '$* #,##0.00_);[Red]-$*#,###.00;$* -??_;'
-bold_money = wb.styles.add_style :format_code => '$#,##0.00_);[Red]-$#,###.00;$* -??_;', b: true
+money = wb.styles.add_style :format_code => '$* #,##0.00_);[Red]$* - #,###.00;$* - ??_;'
+bold_money = wb.styles.add_style :format_code => '$* #,##0.00_);[Red]$* - #,###.00;$* - ??_;', b: true
 percent = wb.styles.add_style :num_fmt => 9, b: true, alignment: { horizontal: :left }
 hide_zeros = wb.styles.add_style format_code: '#;[Red]-#; ;', alignment: { horizontal: :center }
 row_header_style = wb.styles.add_style b: true
@@ -268,7 +268,7 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
   sheet.add_row ["Arm", "", "# of Subjects", "# of Visits", "", "", "", "", ""], :style => sub_header_style
 
   @protocol.arms.each do |arm|
-    sheet.add_row [arm.sanitized_name, "", arm.subject_count, arm.visit_count, "", "", ""], :style => default
+    sheet.add_row [arm.sanitized_name, "", "='#{arm.name}'!B8", arm.visit_count, "", "", ""], :style => default
   end
   sheet.add_row []
 
@@ -287,7 +287,7 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
   end
   sheet.add_row []
   previous_row = sheet.rows.length
-  sheet.add_row ["Study Level Services: Total Cost", "", "", "", "", "", "", "=Sum(H#{other_services_start_row}:H#{previous_row})", "=SUM(I#{other_services_start_row}:I#{previous_row})"], :style => [row_header_style, row_header_style, bold_money, bold_money, row_header_style, bold_money, bold_money, bold_money]
+  sheet.add_row ["Study Level Services: Total Cost", "", "", "", "", "", "", "=Sum(H#{other_services_start_row}:H#{previous_row})", "=SUM(I#{other_services_start_row}:I#{previous_row})"], :style => [row_header_style, default, default, default, default, default, default, bold_money, bold_money]
   margin_to_cover_ref = "I#{previous_row+1}"
   total_cost_to_sponsor_ref = "H#{previous_row+1}"
 
@@ -298,8 +298,8 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
   total_cost_cells = []
 
   arm_totals_ref.keys.each do |arm|
-    total_study_cost_cells << "'#{arm.to_s}'!" + arm_totals_ref[arm][:total_sponsor_per_visit]
-    total_margin_cost_cells << "'#{arm.to_s}'!" + arm_totals_ref[arm][:total_margin_ppv]
+    total_study_cost_cells << "('#{arm.to_s}'!#{arm_totals_ref[arm][:total_sponsor_per_visit]}*'#{arm.to_s}'!B8)"
+    total_margin_cost_cells << "('#{arm.to_s}'!#{arm_totals_ref[arm][:total_margin_ppv]}*'#{arm.to_s}'!B8)"
     total_cost_cells << "'#{arm.to_s}'!#{arm_totals_ref[arm][:total_sponsor_ppv]}*'#{arm.to_s}'!#{arm_totals_ref[arm][:subject_count]}"
   end
 

@@ -31,4 +31,4 @@
       = render 'service_requests/confirmation/confirmation_details', service_request: @service_request
     .form-group.text-center
       = link_to t(:proper)[:confirmation][:download_request], service_request_path(format: :xlsx, report_type: 'request_report'), class: 'btn btn-lg btn-success'
-      = link_to t(:proper)[:confirmation][:to_dashboard], Setting.find_by_key("dashboard_link").value, class: 'btn btn-lg btn-success'
+      = link_to t(:proper)[:confirmation][:to_dashboard], Setting.get_value("dashboard_link"), class: 'btn btn-lg btn-success'

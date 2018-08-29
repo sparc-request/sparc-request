@@ -22,9 +22,9 @@ module Dashboard::StudyLevelActivitiesHelper
 
   def sla_service_name_display line_item
     if line_item.service.is_available
-      line_item.service.name
+      line_item.service.display_service_name
     else
-      line_item.service.name + ' (Disabled)'
+      line_item.service.display_service_name + ' (Disabled)'
     end
   end
 
@@ -41,7 +41,7 @@ module Dashboard::StudyLevelActivitiesHelper
   end
 
   def sla_your_cost_field line_item
-    link_to 'javascript:void(0);', class: [("your-cost editable"), ('text-danger' if line_item.admin_rates.present?)], data: { url: dashboard_line_item_path(line_item), title: line_item.admin_rates.present? ? t(:dashboard)[:study_level_activities][:tooltips][:modified_rate] : t(:dashboard)[:study_level_activities][:tooltips][:admin_rate] }do
+    link_to 'javascript:void(0);', class: [("your-cost editable"), ('text-danger' if line_item.admin_rates.present?)], data: { url: dashboard_line_item_path(line_item), title: line_item.admin_rates.present? ? t(:dashboard)[:study_level_activities][:tooltips][:modified_rate] : t(:dashboard)[:study_level_activities][:tooltips][:change_rate] } do
       number_with_precision(Service.cents_to_dollars(line_item.applicable_rate), precision: 2)
     end
   end

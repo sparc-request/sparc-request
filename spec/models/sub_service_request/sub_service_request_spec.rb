@@ -123,7 +123,7 @@ RSpec.describe SubServiceRequest, type: :model do
       context "indirect cost total" do
 
         it "should return the indirect cost for one time fees" do
-          if Setting.find_by_key("use_indirect_cost").value
+          if Setting.get_value("use_indirect_cost")
             expect(sub_service_request.indirect_cost_total).to eq(1000)
           else
             expect(sub_service_request.indirect_cost_total).to eq(0.0)
@@ -131,7 +131,7 @@ RSpec.describe SubServiceRequest, type: :model do
         end
 
         it "should return the indirect cost for visit based services" do
-          if Setting.find_by_key("use_indirect_cost").value
+          if Setting.get_value("use_indirect_cost")
             expect(sub_service_request.indirect_cost_total).to eq(1000)
           else
             expect(sub_service_request.indirect_cost_total).to eq(0.0)
@@ -142,7 +142,7 @@ RSpec.describe SubServiceRequest, type: :model do
       context "grand total" do
 
         it "should return the grand total cost of the sub service request" do
-          if Setting.find_by_key("use_indirect_cost").value
+          if Setting.get_value("use_indirect_cost")
             expect(sub_service_request.grand_total).to eq(1500)
           else
             expect(sub_service_request.grand_total).to eq(5000.0)
@@ -201,15 +201,6 @@ RSpec.describe SubServiceRequest, type: :model do
 
     describe "sub service request status" do
 
-      let!(:org1)       { create(:organization) }
-      let!(:org2)       { create(:organization) }
-      let!(:ssr1)       { create(:sub_service_request, service_request_id: service_request.id, organization_id: org1.id) }
-      let!(:ssr2)       { create(:sub_service_request, service_request_id: service_request.id, organization_id: org2.id) }
-      let!(:service)    { create(:service, organization_id: org1.id) }
-      let!(:service2)   { create(:service, organization_id: org2.id) }
-      let!(:line_item1) { create(:line_item, sub_service_request_id: ssr1.id, service_request_id: service_request.id, service_id: service.id) }
-      let!(:line_item2) { create(:line_item, sub_service_request_id: ssr2.id, service_request_id: service_request.id, service_id: service2.id) }
-
       context "can be edited" do
 
         it "should return true if the status is draft" do
@@ -223,12 +214,14 @@ RSpec.describe SubServiceRequest, type: :model do
         end
 
         it "should return true if the status is get a cost estimate" do
+          sub_service_request.organization.update_attributes(process_ssrs: true)
+          sub_service_request.organization.available_statuses.where(status: "get_a_cost_estimate").first.update_attributes(selected: true)
           sub_service_request.update_attributes(status: 'get_a_cost_estimate')
           expect(sub_service_request.can_be_edited?).to eq(true)
         end
 
         it "should return false if status is anything other than above states" do
-          sub_service_request.update_attributes(status: "on_hold")
+          sub_service_request.update_attributes(status: "incomplete")
           expect(sub_service_request.can_be_edited?).to eq(false)
         end
 

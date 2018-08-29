@@ -40,11 +40,11 @@
       .form-group.row{ id: "for-#{Form.name}", class: filterrific.of_type == Form.name ? "" : "hidden" }
         = form.label :with_survey, Form.name, class: 'col-lg-3 control-label text-left'
         .col-lg-9
-          = form.select :with_survey, grouped_options_for_select(Form.for(current_user).for_dropdown_select(filterrific.with_state), filterrific.with_survey), {}, class: 'form-control selectpicker survey-select', multiple: true, data: { hide_disabled: 'true' }
+          = form.select :with_survey, grouped_options_for_select(Form.for(current_user).for_dropdown_select(filterrific.with_state, filterrific.with_survey)), {}, class: 'form-control selectpicker survey-select', multiple: true, data: { hide_disabled: 'true' }
       .form-group.row{ id: "for-#{SystemSurvey.name}", class: filterrific.of_type == SystemSurvey.name ? "" : "hidden" }
         = form.label :with_survey, Survey.name, class: 'col-lg-3 control-label text-left'
         .col-lg-9
-          = form.select :with_survey, grouped_options_for_select(SystemSurvey.unscoped.for_dropdown_select(filterrific.with_state), filterrific.with_survey), {}, class: 'form-control selectpicker survey-select', multiple: true, data: { hide_disabled: 'true' }
+          = form.select :with_survey, grouped_options_for_select(SystemSurvey.unscoped.for_dropdown_select(filterrific.with_state, filterrific.with_survey)), {}, class: 'form-control selectpicker survey-select', multiple: true, data: { hide_disabled: 'true' }
       .form-group.row
         .col-sm-12
           %label

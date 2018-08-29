@@ -27,6 +27,7 @@ class CatalogManager::AppController < ActionController::Base
   before_action :authenticate_identity!
   before_action :set_user
   before_action :set_highlighted_link
+  before_action :check_access_rights
 
   def set_highlighted_link
     @highlighted_link ||= 'sparc_catalog'
@@ -39,6 +40,13 @@ class CatalogManager::AppController < ActionController::Base
   def set_user
     @user = current_identity
     session['uid'] = @user.nil? ? nil : @user.id
+  end
+
+  def check_access_rights
+    unless @user.catalog_overlord or @user.catalog_managers.any?
+      flash[:alert] = "You do not have catalog manager rights."
+      redirect_to root_url
+    end
   end
 
   def user_rights organization_id

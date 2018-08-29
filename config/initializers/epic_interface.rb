@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 begin
-  use_epic = Setting.find_by_key("use_epic").value
+  use_epic = Setting.get_value("use_epic")
 rescue
   use_epic = false
 end

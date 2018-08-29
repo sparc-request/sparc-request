@@ -26,7 +26,7 @@
       = text_field_tag "question-#{question.id}-content", question.content, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:placeholders][:question][:content], maxlength: 255
   .col-lg-4.no-padding
     .form-group
-      = select_tag "question-#{question.id}-question_type", options_for_select(Survey::QUESTION_TYPES, question.question_type), class: 'selectpicker select-question-type pull-right', data: { question_id: question.id }
+      = select_tag "question-#{question.id}-question_type", options_for_select(Survey::QUESTION_TYPES, question.question_type), class: 'selectpicker select-question-type pull-right', data: { question_id: question.id }, disabled: question.question_responses.any?
 
   .form-group
     = text_area_tag "question-#{question.id}-description", question.description, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:placeholders][:question][:description]
@@ -34,7 +34,7 @@
   .form-group
     = label_tag "question-#{question.id}-required", t(:surveyor)[:surveys][:form][:content][:question][:required], class: 'col-sm-1 control-label no-padding-x text-left'
     .col-sm-1
-      = check_box_tag "question-#{question.id}-required", question.required, question.required
+      = check_box_tag "question-#{question.id}-required", question.required, question.required, disabled: question.survey.has_responses?
     = label_tag "question-#{question.id}-is_dependent", t(:surveyor)[:surveys][:form][:content][:question][:dependent][:label], class: 'col-sm-2 control-label no-padding-x text-right'
     .col-sm-3
       = check_box_tag "question-#{question.id}-is_dependent", question.is_dependent, question.is_dependent, class: 'is-dependent', disabled: question.previous_questions.empty?

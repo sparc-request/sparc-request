@@ -26,7 +26,7 @@ RSpec.describe CatalogManager::ServicesController do
     program = build_stubbed(:program, parent: provider)
     allow_any_instance_of(Service).to receive(:provider).and_return(provider)
     allow_any_instance_of(Service).to receive(:program).and_return(program)
-    log_in_catalog_manager_identity(obj: build_stubbed(:identity))
+    log_in_catalog_manager_identity(obj: build_stubbed(:identity, catalog_overlord: true))
   end
 
   describe '#create' do

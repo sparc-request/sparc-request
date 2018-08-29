@@ -29,28 +29,30 @@ RSpec.describe 'User activates a survey', js: true do
   context 'surveys' do
     before :each do
       @survey = create(:system_survey)
+      section = create(:section, survey: @survey)
+      create(:question, question_type: 'dropdown', section: section)
 
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      click_link 'Activate'
+      bootstrap_select '.survey-actions', /Activate/
       wait_for_javascript_to_finish
     end
 
     scenario 'and sees the activated survey' do
       expect(@survey.reload.active).to eq(true)
-      expect(page).to have_content('Disable')
+      expect(page).to have_selector('.glyphicon-ok.text-success')
     end
 
     context 'and changes their mind and clicks disable' do
       before :each do
-        click_link 'Disable'
+        bootstrap_select '.survey-actions', /Disable/
         wait_for_javascript_to_finish
       end
 
       scenario 'and sees the disabled survey' do
         expect(@survey.reload.active).to eq(false)
-        expect(page).to have_content('Activate')
+        expect(page).to have_selector('.glyphicon-remove.text-danger')
       end
     end
   end
@@ -60,28 +62,30 @@ RSpec.describe 'User activates a survey', js: true do
       org = create(:institution)
       create(:super_user, organization: org, identity: jug2)
       @form = create(:form, surveyable: org)
+      section = create(:section, survey: @form)
+      create(:question, question_type: 'dropdown', section: section)
 
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      click_link 'Activate'
+      bootstrap_select '.survey-actions', /Activate/
       wait_for_javascript_to_finish
     end
 
     scenario 'and sees the activated form' do
       expect(@form.reload.active).to eq(true)
-      expect(page).to have_content('Disable')
+      expect(page).to have_selector('.glyphicon-ok.text-success')
     end
 
     context 'and changes their mind and clicks disable' do
       before :each do
-        click_link 'Disable'
+        bootstrap_select '.survey-actions', /Disable/
         wait_for_javascript_to_finish
       end
 
       scenario 'and sees the disabled form' do
         expect(@form.reload.active).to eq(false)
-        expect(page).to have_content('Activate')
+        expect(page).to have_selector('.glyphicon-remove.text-danger')
       end
     end
   end

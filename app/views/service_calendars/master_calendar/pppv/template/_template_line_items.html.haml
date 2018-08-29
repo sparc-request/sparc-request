@@ -40,18 +40,22 @@
         = PermissibleValue.get_value('status', ssr.status)
       %td.service-rate.text-center.sm-col-width
         = display_service_rate(liv.line_item)
-      %td.your-cost.text-center.sm-col-width
+      %td.text-center.sm-col-width
         - if portal
-          %a.edit-your-cost{ href: 'javascript:void(0)', data: { name: 'displayed_cost', title: t(:calendars)[:pppv][:editable_fields][:your_cost], value: number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2), id: liv.line_item.id, url: dashboard_line_item_path(liv.line_item) } }
+          %a.edit-your-cost{ href: 'javascript:void(0)', data: { name: 'displayed_cost', title: liv.line_item.admin_rates.present? ? t(:dashboard)[:study_level_activities][:tooltips][:modified_rate] : t(:dashboard)[:study_level_activities][:tooltips][:change_rate], value: number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2), id: liv.line_item.id, url: dashboard_line_item_path(liv.line_item) }, class: (liv.line_item.admin_rates.present? ? 'text-danger' : '') }
         - else
-          = "$#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}"
+          - if liv.line_item.admin_rates.present?
+            %span.text-danger{data: {toggle: 'tooltip', title: t(:dashboard)[:study_level_activities][:tooltips][:modified_rate]}}
+              = "$#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}"
+          - else
+            = "$#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}"
 
       - unless portal
         %td.unit-type.text-center.sm-col-width
           = display_unit_type(liv)
 
       = render 'service_calendars/master_calendar/pppv/subject_count', liv: liv, arm: arm, page: page, tab: tab, locked: locked, portal: portal
-      
+
       %td.text-center.xs-col-width
         = render 'service_calendars/master_calendar/pppv/template/select_row', liv: liv, service_request: service_request, sub_service_request: sub_service_request, admin: admin, locked: locked, page: page
       - visits = liv.ordered_visits.page(page).eager_load(line_items_visit: { line_item: { service: :pricing_maps } })

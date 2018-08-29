@@ -21,7 +21,7 @@
 class AddRequestUuidToAudits < ActiveRecord::Migration[4.2]
   # switch to separate audit database to run migration
   begin
-    @@use_separate_audit_database = Setting.find_by_key("use_separate_audit_database").value
+    @@use_separate_audit_database = Setting.get_value("use_separate_audit_database")
   rescue
     @@use_separate_audit_database = false
   end

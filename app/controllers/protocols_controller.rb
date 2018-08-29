@@ -34,15 +34,15 @@ class ProtocolsController < ApplicationController
     @protocol.requester_id  = current_user.id
     @service_request        = ServiceRequest.find(params[:srid])
     @protocol.populate_for_edit
-    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
-    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
+    gon.rm_id_api_url = Setting.get_value("research_master_api")
+    gon.rm_id_api_token = Setting.get_value("rmid_api_token")
     rmid_server_status(@protocol)
   end
 
   def create
     protocol_class                          = protocol_params[:type].capitalize.constantize
     ### if lazy load enabled, we need create the identiy if necessary here
-    attrs                                   = Setting.find_by_key("use_ldap").value && Setting.find_by_key("lazy_load_ldap").value ? fix_identity : fix_date_params
+    attrs                                   = Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") ? fix_identity : fix_date_params
     @protocol                               = protocol_class.new(attrs)
     @service_request                        = ServiceRequest.find(params[:srid])
     @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id if protocol_class == Study
@@ -63,9 +63,9 @@ class ProtocolsController < ApplicationController
 
       @protocol.update_attribute(:next_ssr_id, last_ssr_id + 1)
 
-      if Setting.find_by_key("use_epic").value && @protocol.selected_for_epic
+      if Setting.get_value("use_epic") && @protocol.selected_for_epic
         @protocol.ensure_epic_user
-        Notifier.notify_for_epic_user_approval(@protocol).deliver unless Setting.find_by_key("queue_epic").value
+        Notifier.notify_for_epic_user_approval(@protocol).deliver unless Setting.get_value("queue_epic")
       end
 
       flash[:success] = I18n.t('protocols.created', protocol_type: @protocol.type)
@@ -83,8 +83,8 @@ class ProtocolsController < ApplicationController
     @protocol.populate_for_edit
     @protocol.valid?
     @errors = @protocol.errors
-    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
-    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
+    gon.rm_id_api_url = Setting.get_value("research_master_api")
+    gon.rm_id_api_token = Setting.get_value("rmid_api_token")
     rmid_server_status(@protocol)
 
     respond_to do |format|
@@ -280,7 +280,7 @@ class ProtocolsController < ApplicationController
   end
 
   def send_epic_notification_for_final_review(protocol)
-    Notifier.notify_primary_pi_for_epic_user_final_review(protocol).deliver unless Setting.find_by_key("queue_epic").value
+    Notifier.notify_primary_pi_for_epic_user_final_review(protocol).deliver unless Setting.get_value("queue_epic")
   end
 
   def push_protocol_to_epic protocol

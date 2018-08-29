@@ -27,7 +27,7 @@
     = form.hidden_field :requester_id
     = form.hidden_field :type
     - if protocol.type.capitalize == "Study"
-      = hidden_field_tag :epic_config, Setting.find_by_key("use_epic").value
+      = hidden_field_tag :epic_config, Setting.get_value("use_epic")
       .edit-study-view.container-fluid
         .row.user-edit-protocol-view
           = render 'protocols/form/study_fields', form: form, protocol: protocol, rmid_server_down: rmid_server_down

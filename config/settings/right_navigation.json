@@ -80,6 +80,26 @@
     "parent_value":   "true"
   },
   {
+    "key":            "contact_us_department",
+    "value":          "SUCCESS Center",
+    "friendly_name":  "Contact us Department",
+    "description":    "This is the name of the department that users may contact for assistance.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "contact_us_phone",
+    "value":          "(843) 792-8300",
+    "friendly_name":  "Contact us Phone Number",
+    "description":    "This is the phone number for users to contact the department for assistance.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
     "key":            "contact_us_mail_to",
     "value":          "success@musc.edu",
     "friendly_name":  "Contact Us Mail-To",

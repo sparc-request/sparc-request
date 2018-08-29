@@ -200,6 +200,8 @@ SPARCRequest provides various configurable help links below the service cart (AK
 - **faq_url**: This is the URL of the external FAQs resource.
 
 ##### "Contact Us" Button
+- **contact_us_department**: This is the name of the department that users may contact for assistance.
+- **contact_us_phone**: This is the phone number for users to contact the department for assistance.
 - **contact_us_mail_to**: This is the email that help messages will be sent to.
 - **contact_us_cc**: This is the email(s) that will be CCed in help messages.
 

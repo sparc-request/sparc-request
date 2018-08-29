@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .panel-group{ id: "institution-#{i.id}" }
-  - providers.each do |p|
+  - providers.select{ |prov| prov.is_available != false }.each do |p|
     - # Skip the provider if:
     - # 1. We are editing an SSR
     - # 2. The institution was not the process_ssr organization
@@ -33,9 +33,8 @@
             %h4.panel-title.text-left
               = organization_name_display(p, locked)
           .col-lg-2
-            - if p.all_child_organizations.any?
+            - if p.programs.any?
               %span.caret
       .panel-collapse.collapse{ class: "provider-#{p.id}" }
         .panel-body
-          = render 'catalogs/accordion/programs', programs: p.programs.where(is_available: [nil, true]).order(Arel.sql('`order`, `name`')), locked_ids: locked_ids, ssr_org: ssr_org, provider_is_process_ssr: provider_is_process_ssr
-
+          = render 'catalogs/accordion/programs', programs: p.programs, locked_ids: locked_ids, ssr_org: ssr_org, provider_is_process_ssr: provider_is_process_ssr

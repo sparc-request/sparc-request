@@ -53,6 +53,10 @@ class Organization < ApplicationRecord
 
   after_create :create_statuses
 
+  default_scope -> {
+    order(:order, :name)
+  }
+
   scope :authorized_for_identity, -> (identity_id) {
     where(
       id: Organization.authorized_child_organization_ids(

@@ -20,7 +20,7 @@
 - institution_is_process_ssr = false
 
 .panel-group#institution-accordion
-  - institutions.where(is_available: [nil, true]).each do |i|
+  - institutions.includes(providers: :programs).select{ |inst| inst.is_available != false }.each do |i|
     - # Skip the institution if:
     - # 1. We are editing an SSR
     - # 2. The institution is not the ssr_org or an ancestor of ssr_org
@@ -34,8 +34,8 @@
             %h4.panel-title.text-left
               = organization_name_display(i, locked)
           .col-lg-2
-            - if i.all_child_organizations.any?
+            - if i.providers.any?
               %span.caret
       .panel-collapse.collapse.in{ class: "institution-#{i.id}" }
         .panel-body
-          = render 'catalogs/accordion/providers', providers: i.providers.where(is_available: [nil, true]).order(Arel.sql('`order`, `name`')), locked_ids: locked_ids, ssr_org: ssr_org, institution_is_process_ssr: institution_is_process_ssr, i: i
+          = render 'catalogs/accordion/providers', providers: i.providers, locked_ids: locked_ids, ssr_org: ssr_org, institution_is_process_ssr: institution_is_process_ssr, i: i

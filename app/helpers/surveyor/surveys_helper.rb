@@ -27,65 +27,41 @@ module Surveyor::SurveysHelper
   end
 
   def survey_options(survey)
-    [ edit_survey_button(survey),
-      delete_survey_button(survey),
-      activate_survey_button(survey),
-      preview_survey_button(survey)
-    ].join('')
+    render 'surveyor/surveys/actions_dropdown.html', survey: survey
   end
 
-  def edit_survey_button(survey)
-    unless survey.active?
-      link_to(
-        content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' }),
-        edit_surveyor_survey_path(survey),
-        remote: true,
-        class: 'btn btn-warning edit-survey'
-      )
-    end
+  def preview_survey
+    content_tag(:span, '', class: 'glyphicon glyphicon-search text-info', aria: { hidden: 'true' }) +
+    content_tag(:span, t(:actions)[:preview], class: 'text text-info')
   end
 
-  def delete_survey_button(survey)
-    if !(survey.active? || survey.has_responses?)
-      content_tag(:button,
-        raw(
-          content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
-        ),
-        data: { survey_id: survey.id },
-        class: 'btn btn-danger delete-survey'
-      )
-    end
-  end
-
-  def activate_survey_button(survey)
-    if survey.questions.any?
-      if survey.surveyable_type == 'Identity'
-        content_tag(:button,
-          survey.active? ? t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:disable] : t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:activate],
-          class: survey.active? ? 'btn btn-danger activate-survey' : 'btn btn-success disable-survey',
-          title: t(:surveyor)[:forms][:table][:tooltips][:activate],
-          data: { toggle: 'tooltip', container: 'body' },
-          disabled: 'disabled'
-        )
+  def activate_survey(survey, disabled)
+    context_class =
+      if disabled
+        ''
+      elsif survey.active?
+        'text-danger'
       else
-        link_to(
-          survey.active? ? t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:disable] : t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:activate],
-          surveyor_survey_updater_path(survey, klass: 'survey', survey: { active: !survey.active }),
-          method: :patch,
-          remote: true,
-          class: survey.active? ? 'btn btn-danger activate-survey' : 'btn btn-success disable-survey',
-        )
+        'text-success'
       end
-    end
+
+    content_tag(:span, '', class: [context_class, survey.active? ? 'glyphicon glyphicon-remove' : 'glyphicon glyphicon-ok'], aria: { hidden: 'true' }) +
+    content_tag(:span, (survey.active? ? t(:actions)[:disable] : t(:actions)[:activate]), class: ['text', context_class])
   end
 
-  def preview_survey_button(survey)
-    link_to(
-      content_tag(:span, '', class: 'glyphicon glyphicon-search', aria: { hidden: 'true' }) + t(:surveyor)["#{survey.class.name.downcase}s".to_sym][:table][:fields][:preview],
-      surveyor_survey_preview_path(survey),
-      remote: true,
-      class: 'btn btn-info preview-survey'
-    )
+  def copy_survey
+    content_tag(:span, '', class: 'glyphicon glyphicon-copy text-primary', aria: { hidden: 'true' }) +
+    content_tag(:span, t(:actions)[:copy], class: 'text text-primary')
+  end
+
+  def edit_survey(disabled)
+    content_tag(:span, '', class: ['glyphicon glyphicon-edit', disabled ? '' : 'text-warning'], aria: { hidden: 'true' }) +
+    content_tag(:span, t(:actions)[:edit], class: ['text', disabled ? '' : 'text-warning'])
+  end
+
+  def delete_survey(disabled)
+    content_tag(:span, '', class: ['glyphicon glyphicon-trash', disabled ? '' : 'text-danger'], aria: { hidden: 'true' }) +
+    content_tag(:span, t(:actions)[:delete], class: ['text', disabled ? '' : 'text-danger'])
   end
 
   ### Surveys Form ###

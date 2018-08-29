@@ -22,9 +22,9 @@ module Dashboard::StudyLevelActivitiesHelper
 
   def sla_service_name_display line_item
     if line_item.service.is_available
-      line_item.service.name
+      line_item.service.display_service_name
     else
-      line_item.service.name + ' (Disabled)'
+      line_item.service.display_service_name + ' (Disabled)'
     end
   end
 

@@ -22,7 +22,7 @@ $('#modal_place').html("<%= j render '/catalog_manager/pricing_maps/pricing_map_
 $('#modal_place').modal('show')
 
 $('.selectpicker').selectpicker()
-$("#org-form-container [data-toggle='toggle']").bootstrapToggle();
+$("#pricing_map_modal [data-toggle='toggle']").bootstrapToggle();
 
 $('[data-toggle="tooltip"]').tooltip()
 

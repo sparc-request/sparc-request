@@ -38,7 +38,7 @@ RSpec.describe 'User edits option fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      find('.edit-survey').click
+      bootstrap_select '.survey-actions', /Edit/
       wait_for_javascript_to_finish
 
       fill_in("option-#{@option.id}-content", with: 'This is a Terrible Option')
@@ -53,7 +53,7 @@ RSpec.describe 'User edits option fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find('.add-option').click
@@ -69,7 +69,7 @@ RSpec.describe 'User edits option fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find('.add-option').click
@@ -89,7 +89,7 @@ RSpec.describe 'User edits option fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find('.delete-option').click
@@ -105,7 +105,7 @@ RSpec.describe 'User edits option fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find('.delete-option').click
@@ -130,7 +130,7 @@ RSpec.describe 'User edits option fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      find('.edit-survey').click
+      bootstrap_select '.survey-actions', /Edit/
       wait_for_javascript_to_finish
 
       fill_in("option-#{@option.id}-content", with: 'This is a Terrible Option')
@@ -145,7 +145,7 @@ RSpec.describe 'User edits option fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find('.add-option').click
@@ -161,7 +161,7 @@ RSpec.describe 'User edits option fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find('.add-option').click
@@ -181,7 +181,7 @@ RSpec.describe 'User edits option fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find('.delete-option').click
@@ -197,7 +197,7 @@ RSpec.describe 'User edits option fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find('.delete-option').click

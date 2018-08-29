@@ -42,8 +42,18 @@
   {
     "key":            "contact_us_cc",
     "value":          "sparcrequest@gmail.com",
-    "friendly_name":  "Contact Us CC",
-    "description":    "",
+    "friendly_name":  "Contact us CC",
+    "description":    "The email to be CCed when users contact the department for assistance.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "contact_us_department",
+    "value":          "SUCCESS Center",
+    "friendly_name":  "Contact us Department",
+    "description":    "The name of the department that users may contact for assistance.",
     "group":          "",
     "version":        "",
     "parent_key":     "",
@@ -52,8 +62,18 @@
   {
     "key":            "contact_us_mail_to",
     "value":          "success@musc.edu",
-    "friendly_name":  "Contact Us Mail-To",
-    "description":    "",
+    "friendly_name":  "Contact us Mail-To",
+    "description":    "The email for users to contact the department for assistance.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "contact_us_phone",
+    "value":          "(843) 792-8300",
+    "friendly_name":  "Contact us Phone Number",
+    "description":    "The phone number for users to contact the department for assistance.",
     "group":          "",
     "version":        "",
     "parent_key":     "",

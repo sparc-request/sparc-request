@@ -20,7 +20,7 @@
 
 .col-sm-12.no-padding.about-section
   .col-sm-3.text-center
-    %a{ href: Setting.find_by_key("about_sparc_url").value }
+    %a{ href: Setting.get_value("about_sparc_url") }
       = image_tag 'about.jpg', alt: t(:proper)[:footer][:about_alt], height: 30
   .col-sm-6
   .col-sm-3

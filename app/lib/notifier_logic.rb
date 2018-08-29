@@ -106,7 +106,7 @@ class NotifierLogic
     ssrs_that_have_been_updated_from_a_un_updatable_status = []
     draft_ssrs.each do |ssr|
       past_status = PastStatus.where(sub_service_request_id: ssr.id).last
-      un_updatable_statuses = SubServiceRequest.all.map(&:status).uniq - Setting.find_by_key("updatable_statuses").value
+      un_updatable_statuses = SubServiceRequest.all.map(&:status).uniq - Setting.get_value("updatable_statuses")
       if past_status.present?
         if un_updatable_statuses.include?(past_status.status)
           ssrs_that_have_been_updated_from_a_un_updatable_status << ssr
@@ -251,7 +251,7 @@ class NotifierLogic
     destroyed_ssr_audit = @service_request.deleted_ssrs_since_previous_submission
 
     destroyed_ssr_audit.each do |ssr_audit|
-      un_updatable_statuses = SubServiceRequest.all.map(&:status).uniq - Setting.find_by_key("updatable_statuses").value
+      un_updatable_statuses = SubServiceRequest.all.map(&:status).uniq - Setting.get_value("updatable_statuses")
       latest_action_update_audit = AuditRecovery.where("auditable_id = #{ssr_audit.auditable_id} AND action = 'update'")
       latest_action_update_audit = latest_action_update_audit.present? ? latest_action_update_audit.order(created_at: :desc).first : nil
       if latest_action_update_audit.nil? || latest_action_update_audit.audited_changes['status'].nil?

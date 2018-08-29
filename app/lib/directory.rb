@@ -23,7 +23,7 @@ require 'net/ldap'
 class Directory
 
   begin
-    use_ldap = Setting.find_by_key("use_ldap").value || Rails.env == 'test'
+    use_ldap = Setting.get_value("use_ldap") || Rails.env == 'test'
   rescue
     use_ldap = true
   end
@@ -68,10 +68,10 @@ class Directory
   # Returns an array of Identities that match the query.
   def self.search(term)
     # Search ldap (if enabled) and the database
-    if Setting.find_by_key("use_ldap").value && !Setting.find_by_key("suppress_ldap_for_user_search").value
+    if Setting.get_value("use_ldap") && !Setting.get_value("suppress_ldap_for_user_search")
       # If there are any entries returned from ldap that were not in the
       # database, then create them
-      if Setting.find_by_key("lazy_load_ldap").value
+      if Setting.get_value("lazy_load_ldap")
         return self.search_and_merge_ldap_and_database_results(term)
       else
         return self.search_and_merge_and_update_ldap_and_database_results(term)
@@ -248,7 +248,7 @@ class Directory
   end
 
   # search and merge results but don't change the database
-  # this assumes Setting.find_by_key("use_ldap").value = true, otherwise you wouldn't use this function
+  # this assumes Setting.get_value("use_ldap") = true, otherwise you wouldn't use this function
   def self.search_and_merge_ldap_and_database_results(term)
     results = []
     database_results = Directory.search_database(term)

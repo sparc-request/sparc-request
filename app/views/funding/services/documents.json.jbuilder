@@ -1,5 +1,5 @@
 json.(@funding_documents) do |document|
-  ssr = document.sub_service_requests.where(organization_id: Setting.find_by_key("funding_org_ids").value).first
+  ssr = document.sub_service_requests.where(organization_id: Setting.get_value("funding_org_ids")).first
 
   json.pi display_pi(ssr)
   json.institution display_pi_institution(ssr)

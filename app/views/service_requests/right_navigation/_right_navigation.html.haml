@@ -20,12 +20,12 @@
 = javascript_include_tag 'right_navigation'
 
 = faq_helper
-- if Setting.find_by_key("use_redcap_api").value
+- if Setting.get_value("use_redcap_api")
   = link_to 'Feedback', new_feedback_path, remote: true, class: 'btn btn-primary btn-lg btn-block feedback-button no-margin-x'
 - else
   = feedback_helper
   = render 'service_requests/right_navigation/feedback_modal'
 = link_to t(:proper)[:right_navigation][:contact][:header], new_contact_form_path, remote: true, class: 'btn btn-primary btn-lg btn-block contact-us-button no-margin-x'
-- if Setting.find_by_key("use_short_interaction").try(:value) && current_user.try(&:is_service_provider?)
+- if Setting.get_value("use_short_interaction") && current_user.try(&:is_service_provider?)
   = link_to t(:proper)[:right_navigation][:short_interaction][:header], new_short_interaction_path, remote: true, class: 'btn btn-primary btn-lg btn-block short-interaction-button no-margin-x'
 

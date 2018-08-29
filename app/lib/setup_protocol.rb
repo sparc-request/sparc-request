@@ -47,7 +47,7 @@ class SetupProtocol
 
   def set_epic_services
     unless @portal == 'true'
-      @epic_services = @service_request.should_push_to_epic? if Setting.find_by_key("use_epic").value
+      @epic_services = @service_request.should_push_to_epic? if Setting.get_value("use_epic")
 
       @epic_services
     end

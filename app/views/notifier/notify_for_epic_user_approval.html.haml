@@ -29,7 +29,7 @@
 %br
 
 Thank you! Please contact the SUCCESS Center at 792-8300 or
-= link_to Setting.find_by_key("contact_us_mail_to").value, "mailto:#{Setting.find_by_key("contact_us_mail_to").value}"
+= link_to Setting.get_value("contact_us_mail_to"), "mailto:#{Setting.get_value("contact_us_mail_to")}"
 with any questions.
 
 :scss

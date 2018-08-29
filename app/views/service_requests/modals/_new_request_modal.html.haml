@@ -33,5 +33,5 @@
         .center-block
           %a.btn.btn-success.same-size-button.pull-left.yes-button{ data: { dismiss: 'modal' } }
             = raw(t(:proper)[:catalog][:new_request][:yes_button])
-          %a.btn.btn-danger.same-size-button.pull-right{ href: Setting.find_by_key("dashboard_link").value }
+          %a.btn.btn-danger.same-size-button.pull-right{ href: Setting.get_value("dashboard_link") }
             = raw(t(:proper)[:catalog][:new_request][:no_button])

@@ -100,7 +100,7 @@ class Protocol < ApplicationRecord
 
   def rmid_requires_validation?
     # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]
-    self.bypass_rmid_validation ? false : Setting.find_by_key('research_master_enabled').value && has_human_subject_info?
+    self.bypass_rmid_validation ? false : Setting.get_value('research_master_enabled') && has_human_subject_info?
   end
 
   def has_human_subject_info?
@@ -108,10 +108,10 @@ class Protocol < ApplicationRecord
   end
 
   validate :existing_rm_id,
-    if: -> record { Setting.find_by_key("research_master_enabled").value && !record.research_master_id.nil? }
+    if: -> record { Setting.get_value("research_master_enabled") && !record.research_master_id.nil? }
 
   validate :unique_rm_id_to_protocol,
-    if: -> record { Setting.find_by_key("research_master_enabled").value && !record.research_master_id.nil? }
+    if: -> record { Setting.get_value("research_master_enabled") && !record.research_master_id.nil? }
 
   def self.to_csv(protocols)
     CSV.generate do |csv|
@@ -125,7 +125,7 @@ class Protocol < ApplicationRecord
   end
 
   def existing_rm_id
-    rm_ids = HTTParty.get(Setting.find_by_key("research_master_api").value + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{Setting.find_by_key("rmid_api_token").value}\""})
+    rm_ids = HTTParty.get(Setting.get_value("research_master_api") + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{Setting.get_value("rmid_api_token")}\""})
     ids = rm_ids.map{ |rm_id| rm_id['id'] }
 
     if research_master_id.present? && !ids.include?(research_master_id)
@@ -340,7 +340,7 @@ class Protocol < ApplicationRecord
   end
 
   def is_epic?
-    Setting.find_by_key("use_epic").value
+    Setting.get_value("use_epic")
   end
 
   def is_project?
@@ -363,7 +363,7 @@ class Protocol < ApplicationRecord
     # Alert authorized users of deleted authorized user
     # Send emails if send_authorized_user_emails is set to true and if there are any non-draft SSRs
     # For example:  if a SR has SSRs all with a status of 'draft', don't send emails
-    if Setting.find_by_key("send_authorized_user_emails").value && sub_service_requests.where.not(status: 'draft').any?
+    if Setting.get_value("send_authorized_user_emails") && sub_service_requests.where.not(status: 'draft').any?
       alert_users = emailed_associated_users << modified_role
       alert_users.flatten.uniq.each do |project_role|
         unless project_role.project_rights == 'none'
@@ -579,7 +579,7 @@ class Protocol < ApplicationRecord
   end
 
   def indirect_cost_total(service_request)
-    if Setting.find_by_key("use_indirect_cost").value
+    if Setting.get_value("use_indirect_cost")
       self.service_requests.
         where(id: service_request.id).
         or(service_requests.where.not(status: ['first_draft', 'draft'])).
@@ -612,7 +612,7 @@ class Protocol < ApplicationRecord
   private
 
   def indirect_cost_enabled
-    Setting.find_by_key('use_indirect_cost').value
+    Setting.get_value('use_indirect_cost')
   end
 
   def notify_remote_around_update?

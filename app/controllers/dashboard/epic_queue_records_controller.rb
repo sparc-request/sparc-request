@@ -32,7 +32,7 @@ class Dashboard::EpicQueueRecordsController < Dashboard::BaseController
 
   # Check to see if user has rights to view epic queues
   def authorize_overlord
-    unless Setting.find_by_key("epic_queue_access").value.include?(@user.ldap_uid)
+    unless Setting.get_value("epic_queue_access").include?(@user.ldap_uid)
       @epic_queues = nil
       @epic_queue = nil
       render partial: 'service_requests/authorization_error',

@@ -91,7 +91,7 @@
                 = f.label :units_per_qty_max, t(:catalog_manager)[:service_form][:pricing_map_form][:units_per_qty_max], class: 'col-sm-4 control-label'
                 .col-sm-7= f.text_field :units_per_qty_max, {disabled: pricing_map_disabled, class: 'form-control'}
 
-              - if Setting.find_by_key("use_indirect_cost").value
+              - if Setting.get_value("use_indirect_cost")
                 .form-group
                   = f.label :exclude_from_indirect_cost, t(:catalog_manager)[:service_form][:pricing_map_form][:exclude_from_indirect_cost], class: 'col-sm-4 control-label'
                   .col-sm-7= f.check_box :exclude_from_indirect_cost, {disabled: pricing_map_disabled, checked: pricing_map.exclude_from_indirect_cost, data: {toggle: 'toggle'}}

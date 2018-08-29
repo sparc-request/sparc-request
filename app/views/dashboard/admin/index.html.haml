@@ -32,7 +32,7 @@
     = link_to "Create A Request", root_path, :class => 'create_new_request header_button btn btn-primary btn-md'
     - if @user.is_super_user?
       = link_to "Reporting", reports_path, :class => 'reporting header_button btn btn-primary btn-md'
-    - if Setting.find_by_key("epic_queue_access").value.include?(current_user.ldap_uid)
+    - if Setting.get_value("epic_queue_access").include?(current_user.ldap_uid)
       = link_to "View Epic Queue", dashboard_epic_queues_path, :class => 'epic_queues header_button btn btn-primary btn-md'
 
 = render :partial => 'ssr_list'

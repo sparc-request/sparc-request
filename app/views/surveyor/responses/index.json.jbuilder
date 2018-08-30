@@ -8,5 +8,5 @@ json.(@responses) do |response|
   json.by               response.identity.try(:full_name) || 'N/A'
   json.complete         complete_display(response)
   json.completion_date  format_date(response.created_at)
-  json.actions          response_options(response)
+  json.actions          response_options(response, current_user)
 end

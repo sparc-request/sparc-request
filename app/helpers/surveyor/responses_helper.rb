@@ -27,37 +27,44 @@ module Surveyor::ResponsesHelper
   end
 
   def response_options(response, identity)
-    [ view_response_button(response, identity),
-      edit_response_button(response, identity)#,
+    view_permissions =
+      if response.survey.is_a?(SystemSurvey)
+        if response.survey.system_satisfaction?
+          identity.is_site_admin?
+        else
+          response.survey.authorized_for_super_user?(identity)
+        end
+      else
+        Form.for(identity).where(id: response.survey_id).none?
+      end
+    edit_permissions =
+      if response.survey.is_a?(SystemSurvey)
+        identity.is_site_admin?
+      else
+        Form.for(identity).where(id: response.survey_id).none?
+      end
+
+    [ view_response_button(response, view_permissions),
+      edit_response_button(response, edit_permissions)#,
       # download_response_button(response)
     ].join('')
   end
 
-  def view_response_button(response, identity)
-    disabled = 
-      !response.completed? ||
-      (response.survey.is_a?(SystemSurvey) && ((response.survey.system_satisfaction? && !identity.is_site_admin?) || (!response.survey.system_satisfaction? && !response.survey.authorized_for_super_user?(identity)))) ||
-      (response.survey.is_a?(Form) && Form.for(identity).where(id: response.survey_id).none?)
-
+  def view_response_button(response, permissions=true)
     link_to(
       content_tag(:span, '', class: 'glyphicon glyphicon-search', aria: { hidden: 'true' }),
       response.new_record? ? '' : surveyor_response_path(response),
       remote: true,
-      class: ['btn btn-info view-response', disabled ? 'disabled' : '']
+      class: ['btn btn-info view-response', permissions && response.completed? ? '' : 'disabled']
     )
   end
 
-  def edit_response_button(response, identity)
-    disabled =
-      !response.completed? ||
-      (response.survey.is_a?(SystemSurvey) && !identity.is_site_admin?) ||
-      (response.survey.is_a?(Form) && Form.for(identity).where(id: response.survey_id).none?)
-
+  def edit_response_button(response, permissions=true)
     link_to(
       content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' }),
       response.new_record? ? '' : edit_surveyor_response_path(response),
       remote: true,
-      class: ['btn btn-warning edit-response', disabled ? 'disabled' : '']
+      class: ['btn btn-warning edit-response', permissions && response.completed? ? '' : 'disabled']
     )
   end
 

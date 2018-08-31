@@ -7,6 +7,6 @@ json.(@responses) do |response|
   json.title            response.survey.full_title
   json.by               response.identity.try(:full_name) || 'N/A'
   json.complete         complete_display(response)
-  json.completion_date  format_date(response.created_at)
+  json.completion_date  response.completed? ? format_date(response.created_at) : ""
   json.actions          response_options(response)
 end

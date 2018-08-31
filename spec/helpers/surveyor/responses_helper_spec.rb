@@ -27,198 +27,200 @@ RSpec.describe Surveyor::ResponsesHelper, type: :helper do
   let!(:user)         { create(:identity) }
   let!(:organization) { create(:organization) }
 
-  describe 'view_response_button' do
-    context 'for System Surveys' do
-      context 'system satisfaction surveys' do
-        let!(:survey)   { create(:system_survey, access_code: 'system-satisfaction-survey', active: true) }
-        let!(:response) { create(:response, survey: survey, identity: build(:identity)) }
+  describe 'response_options' do
+    context 'view_response_button' do
+      context 'for System Surveys' do
+        context 'system satisfaction surveys' do
+          let!(:survey)   { create(:system_survey, access_code: 'system-satisfaction-survey', active: true) }
+          let!(:response) { create(:response, survey: survey, identity: build(:identity)) }
 
-        before :each do
-          allow(response).to receive(:completed?).and_return(true)
+          before :each do
+            allow(response).to receive(:completed?).and_return(true)
+          end
+
+          context 'user is a site admin' do
+            it 'should return enabled button' do
+              expect(helper.response_options(response, site_admin).split("</a>").first.include?('disabled')).to eq(false)
+            end
+          end
+
+          context 'user is not a site admin' do
+            it 'should return disabled button' do
+              expect(helper.response_options(response, user).split("</a>").first.include?('disabled')).to eq(true)
+            end
+          end
         end
 
-        context 'user is a site admin' do
+        context 'service surveys' do
+          let!(:survey)     { create(:system_survey, active: true) }
+          let!(:response)   { create(:response, survey: survey, identity: build(:identity)) }
+          let!(:asso_surv)  { create(:associated_survey, associable: organization, survey: survey) }
+
+          before :each do
+            allow(response).to receive(:completed?).and_return(true)
+          end
+
+          context 'user is a super user' do
+            let!(:su) { create(:super_user, organization: organization, identity: user) }
+
+            it 'should return enabled button' do
+              expect(helper.response_options(response, user).split("</a>").first.include?('disabled')).to eq(false)
+            end
+          end
+
+          context 'user is not a super user' do
+            it 'should return disabled button' do
+              expect(helper.response_options(response, user).split("</a>").first.include?('disabled')).to eq(true)
+            end
+          end
+        end
+
+        context 'response is incomplete' do
+          let!(:survey)   { create(:system_survey, active: true) }
+          let!(:response) { create(:response, survey: survey, identity: build(:identity)) }
+
+          before :each do
+            allow(response).to receive(:completed?).and_return(false)
+          end
+
+          it 'should return disabled button' do
+            expect(helper.response_options(response, user).split("</a>").first.include?('disabled')).to eq(true)
+          end
+        end
+      end
+
+      context 'for Forms' do
+        let!(:form)     { create(:form, surveyable: organization, active: true) }
+        let!(:response) { create(:response, survey: form, identity: build(:identity)) }
+
+        context 'user is a super user for surveyable' do
+          let!(:su) { create(:super_user, organization: organization, identity: user) }
+
+          before :each do
+            allow(response).to receive(:completed?).and_return(true)
+          end
+
           it 'should return enabled button' do
-            expect(helper.view_response_button(response, site_admin).include?('disabled')).to eq(false)
+            expect(helper.response_options(response, user).split("</a>").first.include?('disabled')).to eq(false)
+          end
+        end
+
+        context 'user is a service provider for association' do
+          let!(:sp) { create(:service_provider, organization: organization, identity: user) }
+
+          before :each do
+            allow(response).to receive(:completed?).and_return(true)
+          end
+
+          it 'should return enabled button' do
+            expect(helper.response_options(response, user).split("</a>").first.include?('disabled')).to eq(false)
+          end
+        end
+
+        context 'user is not a super user or service provider for surveyable' do
+          before :each do
+            allow(response).to receive(:completed?).and_return(true)
+          end
+
+          it 'should return disabled button' do
+            expect(helper.response_options(response, user).split("</a>").first.include?('disabled')).to eq(true)
+          end
+        end
+
+        context 'response is incomplete' do
+          before :each do
+            allow(response).to receive(:completed?).and_return(false)
+          end
+
+          it 'should return disabled button' do
+            expect(helper.response_options(response, user).split("</a>").first.include?('disabled')).to eq(true)
+          end
+        end
+      end
+    end
+
+    context 'edit_response_button' do
+      context 'for System Surveys' do
+        let!(:survey)     { create(:system_survey, active: true) }
+        let!(:response)   { create(:response, survey: survey, identity: build(:identity)) }
+
+        context 'user is a site admin' do
+          before :each do
+            allow(response).to receive(:completed?).and_return(true)
+          end
+
+          it 'should return enabled button' do
+            expect(helper.response_options(response, site_admin).split("</a>").last.include?('disabled')).to eq(false)
           end
         end
 
         context 'user is not a site admin' do
+          before :each do
+            allow(response).to receive(:completed?).and_return(true)
+          end
+
           it 'should return disabled button' do
-            expect(helper.view_response_button(response, user).include?('disabled')).to eq(true)
+            expect(helper.response_options(response, user).split("</a>").last.include?('disabled')).to eq(true)
+          end
+        end
+
+        context 'response is incomplete' do
+          before :each do
+            allow(response).to receive(:completed?).and_return(false)
+          end
+
+          it 'should return disabled button' do
+            expect(helper.response_options(response, user).split("</a>").last.include?('disabled')).to eq(true)
           end
         end
       end
 
-      context 'service surveys' do
-        let!(:survey)     { create(:system_survey, active: true) }
-        let!(:response)   { create(:response, survey: survey, identity: build(:identity)) }
-        let!(:asso_surv)  { create(:associated_survey, associable: organization, survey: survey) }
+      context 'for Forms' do
+        let!(:form)     { create(:form, surveyable: organization, active: true) }
+        let!(:response) { create(:response, survey: form, identity: build(:identity)) }
 
-        before :each do
-          allow(response).to receive(:completed?).and_return(true)
-        end
-
-        context 'user is a super user' do
+        context 'user is a super user for surveyable' do
           let!(:su) { create(:super_user, organization: organization, identity: user) }
-          
+
+          before :each do
+            allow(response).to receive(:completed?).and_return(true)
+          end
+
           it 'should return enabled button' do
-            expect(helper.view_response_button(response, user).include?('disabled')).to eq(false)
+            expect(helper.response_options(response, user).split("</a>").last.include?('disabled')).to eq(false)
           end
         end
 
-        context 'user is not a super user' do
+        context 'user is a service provider for surveyable' do
+          let!(:sp) { create(:service_provider, organization: organization, identity: user) }
+
+          before :each do
+            allow(response).to receive(:completed?).and_return(true)
+          end
+
+          it 'should return enabled button' do
+            expect(helper.response_options(response, user).split("</a>").last.include?('disabled')).to eq(false)
+          end
+        end
+
+        context 'user is not a super user or service provider for surveyable' do
+          before :each do
+            allow(response).to receive(:completed?).and_return(true)
+          end
+
           it 'should return disabled button' do
-            expect(helper.view_response_button(response, user).include?('disabled')).to eq(true)
+            expect(helper.response_options(response, user).split("</a>").last.include?('disabled')).to eq(true)
           end
         end
-      end
 
-      context 'response is incomplete' do
-        let!(:survey)   { create(:system_survey, active: true) }
-        let!(:response) { create(:response, survey: survey, identity: build(:identity)) }
+        context 'response is incomplete' do
+          before :each do
+            allow(response).to receive(:completed?).and_return(false)
+          end
 
-        before :each do
-          allow(response).to receive(:completed?).and_return(false)
-        end
-
-        it 'should return disabled button' do
-          expect(helper.view_response_button(response, user).include?('disabled')).to eq(true)
-        end
-      end
-    end
-
-    context 'for Forms' do
-      let!(:form)     { create(:form, surveyable: organization, active: true) }
-      let!(:response) { create(:response, survey: form, identity: build(:identity)) }
-
-      context 'user is a super user for surveyable' do
-        let!(:su) { create(:super_user, organization: organization, identity: user) }
-
-        before :each do
-          allow(response).to receive(:completed?).and_return(true)
-        end
-
-        it 'should return enabled button' do
-          expect(helper.view_response_button(response, user).include?('disabled')).to eq(false)
-        end
-      end
-
-      context 'user is a service provider for association' do
-        let!(:sp) { create(:service_provider, organization: organization, identity: user) }
-
-        before :each do
-          allow(response).to receive(:completed?).and_return(true)
-        end
-
-        it 'should return enabled button' do
-          expect(helper.view_response_button(response, user).include?('disabled')).to eq(false)
-        end
-      end
-      
-      context 'user is not a super user or service provider for surveyable' do
-        before :each do
-          allow(response).to receive(:completed?).and_return(true)
-        end
-
-        it 'should return disabled button' do
-          expect(helper.view_response_button(response, user).include?('disabled')).to eq(true)
-        end
-      end
-
-      context 'response is incomplete' do
-        before :each do
-          allow(response).to receive(:completed?).and_return(false)
-        end
-
-        it 'should return disabled button' do
-          expect(helper.view_response_button(response, user).include?('disabled')).to eq(true)
-        end
-      end
-    end
-  end
-
-  describe 'edit_response_button' do
-    context 'for System Surveys' do
-      let!(:survey)     { create(:system_survey, active: true) }
-      let!(:response)   { create(:response, survey: survey, identity: build(:identity)) }
-
-      context 'user is a site admin' do
-        before :each do
-          allow(response).to receive(:completed?).and_return(true)
-        end
-
-        it 'should return enabled button' do
-          expect(helper.edit_response_button(response, site_admin).include?('disabled')).to eq(false)
-        end
-      end
-
-      context 'user is not a site admin' do
-        before :each do
-          allow(response).to receive(:completed?).and_return(true)
-        end
-
-        it 'should return disabled button' do
-          expect(helper.edit_response_button(response, user).include?('disabled')).to eq(true)
-        end
-      end
-
-      context 'response is incomplete' do
-        before :each do
-          allow(response).to receive(:completed?).and_return(false)
-        end
-
-        it 'should return disabled button' do
-          expect(helper.edit_response_button(response, user).include?('disabled')).to eq(true)
-        end
-      end
-    end
-
-    context 'for Forms' do
-      let!(:form)     { create(:form, surveyable: organization, active: true) }
-      let!(:response) { create(:response, survey: form, identity: build(:identity)) }
-
-      context 'user is a super user for surveyable' do
-        let!(:su) { create(:super_user, organization: organization, identity: user) }
-
-        before :each do
-          allow(response).to receive(:completed?).and_return(true)
-        end
-
-        it 'should return enabled button' do
-          expect(helper.edit_response_button(response, user).include?('disabled')).to eq(false)
-        end
-      end
-
-      context 'user is a service provider for surveyable' do
-        let!(:sp) { create(:service_provider, organization: organization, identity: user) }
-
-        before :each do
-          allow(response).to receive(:completed?).and_return(true)
-        end
-
-        it 'should return enabled button' do
-          expect(helper.edit_response_button(response, user).include?('disabled')).to eq(false)
-        end
-      end
-
-      context 'user is not a super user or service provider for surveyable' do
-        before :each do
-          allow(response).to receive(:completed?).and_return(true)
-        end
-
-        it 'should return disabled button' do
-          expect(helper.edit_response_button(response, user).include?('disabled')).to eq(true)
-        end
-      end
-
-      context 'response is incomplete' do
-        before :each do
-          allow(response).to receive(:completed?).and_return(false)
-        end
-
-        it 'should return disabled button' do
-          expect(helper.edit_response_button(response, user).include?('disabled')).to eq(true)
+          it 'should return disabled button' do
+            expect(helper.response_options(response, user).split("</a>").last.include?('disabled')).to eq(true)
+          end
         end
       end
     end

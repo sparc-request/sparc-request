@@ -35,13 +35,13 @@ module Surveyor::ResponsesHelper
           response.survey.authorized_for_super_user?(identity)
         end
       else
-        Form.for(identity).where(id: response.survey_id).none?
+        Form.for(identity).where(id: response.survey_id).any?
       end
     edit_permissions =
       if response.survey.is_a?(SystemSurvey)
         identity.is_site_admin?
       else
-        Form.for(identity).where(id: response.survey_id).none?
+        Form.for(identity).where(id: response.survey_id).any?
       end
 
     [ view_response_button(response, view_permissions),

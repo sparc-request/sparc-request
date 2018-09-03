@@ -34,7 +34,6 @@
               %li
                 %a.view-full-calendar-button{ data: { protocol_id: protocol.id, statuses_hidden: %w(draft first_draft) } }
                   = t(:dashboard)[:protocols][:service_requests][:consolidated_exclude_drafts]
-          - if protocol.industry_funded?
             .dropdown
               %button.btn.btn-primary.btn-sm.dropdown-toggle.export-consolidated{ data: { protocol_id: protocol.id, toggle: 'dropdown', placement: 'top', delay: '{"show":"500"}' }, title: t(:dashboard)[:protocols][:service_requests][:tooltips][:export_consolidated_request] }
                 = t(:dashboard)[:protocols][:service_requests][:export_consolidated]

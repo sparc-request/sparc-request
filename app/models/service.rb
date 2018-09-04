@@ -63,8 +63,12 @@ class Service < ApplicationRecord
   validate  :one_time_fee_choice
   validates :order, numericality: { only_integer: true }, on: :update
 
+  default_scope -> {
+    order(:order, :name)
+  }
+
   # Services listed under the funding organizations
-  scope :funding_opportunities, -> { where(organization_id: Setting.find_by_key("funding_org_ids").value) }
+  scope :funding_opportunities, -> { where(organization_id: Setting.get_value("funding_org_ids")) }
 
   def humanized_status
     self.is_available ? I18n.t(:reporting)[:service_pricing][:available] : I18n.t(:reporting)[:service_pricing][:unavailable]

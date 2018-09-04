@@ -108,7 +108,7 @@ class AssociatedUsersController < ApplicationController
 
     flash.now[:alert] = t(:authorized_users)[:destroyed]
 
-    if Setting.find_by_key("use_epic").value && @protocol.selected_for_epic && epic_access && !Setting.find_by_key("queue_epic").value
+    if Setting.get_value("use_epic") && @protocol.selected_for_epic && epic_access && !Setting.get_value("queue_epic")
       Notifier.notify_primary_pi_for_epic_user_removal(@protocol, protocol_role_clone).deliver
     end
 

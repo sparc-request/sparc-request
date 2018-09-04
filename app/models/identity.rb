@@ -93,7 +93,7 @@ class Identity < ApplicationRecord
   end
 
   def suggestion_value
-    Setting.find_by_key("use_ldap").value && Setting.find_by_key("lazy_load_ldap").value ? ldap_uid : id
+    Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") ? ldap_uid : id
   end
 
   ###############################################################################
@@ -116,7 +116,7 @@ class Identity < ApplicationRecord
 
   # Return the netid (ldap_uid without the @musc.edu)
   def netid
-    if Setting.find_by_key("use_ldap").value then
+    if Setting.get_value("use_ldap") then
       return ldap_uid.sub(/@#{Directory::DOMAIN}/, '')
     else
       return ldap_uid
@@ -133,7 +133,7 @@ class Identity < ApplicationRecord
   ###############################################################################
 
   def is_site_admin?
-    Setting.find_by_key("site_admins").value.include?(self.ldap_uid)
+    Setting.get_value("site_admins").include?(self.ldap_uid)
   end
 
   def is_super_user?
@@ -166,7 +166,7 @@ class Identity < ApplicationRecord
   end
 
   def is_funding_admin?
-    Setting.find_by_key("funding_admins").value.include?(ldap_uid)
+    Setting.get_value("funding_admins").include?(ldap_uid)
   end
 
   ###############################################################################
@@ -178,7 +178,7 @@ class Identity < ApplicationRecord
   end
 
   def self.find_or_create(id)
-    if Setting.find_by_key("use_ldap").value && Setting.find_by_key("lazy_load_ldap").value
+    if Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap")
       return Directory.find_or_create(id)
     else
       return self.find(id)

@@ -24,7 +24,7 @@
   #report-fields
     - report.options.each do |field, options|
       .form-group
-        - next if (field == "Include Epic Interface Columns" && !Setting.find_by_key("use_epic").value) # Only show Epic field if use_epic is set to true
+        - next if (field == "Include Epic Interface Columns" && !Setting.get_value("use_epic")) # Only show Epic field if use_epic is set to true
         - field_type  = options[:field_type] || 'text_field_tag'
         - field_label = "#{options[:field_label] || field.to_s.titleize}:"
         = render "reports/form_partials/#{options[:field_type]}_form_partial", options: options, field_label: field_label, field: field

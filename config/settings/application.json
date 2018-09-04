@@ -1,0 +1,232 @@
+[
+  {
+    "key":            "send_emails_to_real_users",
+    "value":          "false",
+    "friendly_name":  "Send Emails to Real Users",
+    "description":    "This tells the application whether or not to send emails to users. When turned off, emails will be generated in the browser but not sent. This should be turned off in development environments.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "send_authorized_user_emails",
+    "value":          "true",
+    "friendly_name":  "Send Authorized User Emails",
+    "description":    "This determines whether the application will send emails to all authorized users with \"View\" or greater rights.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "root_url",
+    "value":          "https://andrews-mac-pro.thurmond-gazes.musc.edu",
+    "friendly_name":  "Root URL",
+    "description":    "This is the root URL for the application for use in emails.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "dashboard_link",
+    "value":          "/dashboard",
+    "friendly_name":  "Dashboard URL",
+    "description":    "This is the URL of SPARCDashboard for use in emails.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "admin_mail_to", 
+    "value":          "catesa@musc.edu",
+    "friendly_name":  "Admin Mail-To",
+    "description":    "This field will overwrite the admin user mailers in the application to instead mail to this address. This is overwritten in development/testing/staging environments in order to prevent real emails from being sent out to admin users.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "default_mail_to",
+    "value":          "catesa@musc.edu",
+    "friendly_name":  "Default Mail-To",
+    "description":    "This field will overwrite the mailers in the application to instead mail to this address. This is overwritten in development/testing/staging environments in order to prevent real emails from being sent out to general users.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "listserv_mail_to",
+    "value":          "hewwe@musc.edu, hutsonk@musc.edu",
+    "friendly_name":  "Listserv Mail-To",
+    "description":    "This is the email(s) of users who are emailed by the Listserv link in the footer.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "new_user_cc",
+    "value":          "amcates@gmail.com, no-reply@musc.edu",
+    "friendly_name":  "New User CC",
+    "description":    "This field will overwrite the new user mailers in the application to instead cc to this email(s). This is overwritten in development/testing/staging environments in order to prevent real emails from being sent out to general users.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "no_reply_from",
+    "value":          "no-reply@musc.edu",
+    "friendly_name":  "No Reply From",
+    "description":    "This is the email that will appear as the sender of all emails sent from the application.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  { 
+    "key":            "about_sparc_url",
+    "value":          "http://academicdepartments.musc.edu/sctr/sparc_request",
+    "friendly_name":  "\"About SPARCRequest\" URL",
+    "description":    "This is the URL linked to by the \"About SPARCRequest\" button on the homepage.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "header_link_1",
+    "value":          "http://sctr.musc.edu",
+    "friendly_name":  "Header Logo 1 URL",
+    "description":    "This is the URL for the \"Organization Logo\" - the left image in the SPARCRequest header.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "header_link_2_proper",
+    "value":          "http://localhost:3000/",
+    "friendly_name":  "Header Logo 2 URL (SPARCRequest)",
+    "description":    "This is the URL for the \"SPARCRequest Logo\" in the SPARCRequest header.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "header_link_2_dashboard",
+    "value":          "http://localhost:3000/dashboard",
+    "friendly_name":  "Header Logo 2 URL (SPARCDashboard)",
+    "description":    "This is the URL for the \"SPARCDashboard Logo\" in the SPARCDashboard header.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "header_link_2_catalog",
+    "value":          "http://localhost:3000/dashboard",
+    "friendly_name":  "Header Logo 2 URL (SPARCCatalog)",
+    "description":    "This is the URL for the \"SPARCCatalog Logo\" in the SPARCCatalog header.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "header_link_3",
+    "value":          "http://www.musc.edu",
+    "friendly_name":  "Header Logo 3 URL",
+    "description":    "This is the URL for the right image in the header logos.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "navbar_links",
+    "value":          "{ \"sparc_request\": [\"SPARCRequest\", \"http://localhost:3000/\"], \"sparc_dashboard\": [\"SPARCDashboard\", \"http://localhost:3000/dashboard\"], \"sparc_fulfillment\": [\"SPARCFulfillment\", \"https://cwf-d.obis.musc.edu/identities/sign_in\"], \"sparc_catalog\": [\"SPARCCatalog\", \"http://localhost:3000/catalog_manager\"], \"sparc_report\": [\"SPARCReport\", \"http://localhost:3000/reports\"], \"sparc_forms\": [\"SPARCForms\", \"http://localhost:3000/surveyor/responses\"] }",
+    "friendly_name":  "Navbar Links",
+    "description":    "This defines the links that appear in the header navbar. New links may be added by using the following syntax: \"key\": [\"Link Text\", \"Full URL\"].",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "updatable_statuses",
+    "value":          "[\"first_draft\", \"draft\", \"get_a_cost_estimate\", \"awaiting_pi_approval\"]",
+    "friendly_name":  "Updatable Statuses",
+    "description":    "This defines the statuses that a SubServiceRequest can be updated from. Any other statuses are considered \"un-updatable\".",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "finished_statuses",
+    "value":          "[\"complete\", \"withdrawn\"]",
+    "friendly_name":  "Finished Statuses",
+    "description":    "This defines the statuses in which a SubServiceRequest is considered complete. When in these statuses, SubServiceRequests can't be updated. New services from those organizations will be added to new SubServiceRequests.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "host",
+    "value":          "127.0.0.1:5000",
+    "friendly_name":  "Host",
+    "description":    "This is the host domain of your instance of SPARCRequest.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "site_admins",
+    "value":          "[]",
+    "friendly_name":  "Site Admins",
+    "description":    "This is a list of users who will have full access to the Survey/Form builder and SPARCForms.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "use_indirect_cost",
+    "value":          "false",
+    "friendly_name":  "Use Indirect Cost",
+    "description":    "This determines how the application displays costs to users. If turned on, then in addition to direct costs and direct cost subtotals, users will also see indirect costs and indirect cost subtotals, and indirect costs will also be included in the grand total. If turned off, then indirect costs will not be displayed to users, nor included in the grand total.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "use_separate_audit_database",
+    "value":          "false" , "description": " needs to be false at outset since new institutions may not use a separate audit database",
+    "friendly_name":  "Use Separate Audit Database",
+    "description":    "Determines whether the application will use a separate database to track audits.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "wkhtmltopdf_location",
+    "value":          "/usr/local/bin/wkhtmltopdf",
+    "friendly_name":  "WKHTMLTOPDF Location",
+    "description":    "This is a customizable path pointing to the binary for the \"wkhtmltopdf\" gem which is used to generate PDFs of HTML content. The default value provided by the gem is \"/usr/local/bin/wkhtmltopdf\".",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  }
+]

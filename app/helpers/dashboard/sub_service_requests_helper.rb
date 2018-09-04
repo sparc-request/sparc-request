@@ -74,7 +74,7 @@ module Dashboard::SubServiceRequestsHelper
       if sub_service_request.in_work_fulfillment?
         if user.go_to_cwf_rights?(sub_service_request.organization)
           # In fulfillment, and user has rights to view in Fulfillment
-          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:go_to_fulfillment], "#{Setting.find_by_key("clinical_work_fulfillment_url").value}/sub_service_request/#{sub_service_request.id}", target: "_blank", class: "btn btn-primary btn-md"
+          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:go_to_fulfillment], "#{Setting.get_value("clinical_work_fulfillment_url")}/sub_service_request/#{sub_service_request.id}", target: "_blank", class: "btn btn-primary btn-md"
         else
           # In fulfillment, but user has no rights to view in Fulfillment
           display += button_tag t(:dashboard)[:sub_service_requests][:header][:fulfillment][:in_fulfillment], class: "btn btn-primary btn-md form-control", disabled: true
@@ -286,7 +286,7 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def in_finished_status?(status)
-    Setting.find_by_key("finished_statuses").value.include?(status.last)
+    Setting.get_value("finished_statuses").include?(status.last)
   end
 
   def sorted_by_permissible_values(statuses)

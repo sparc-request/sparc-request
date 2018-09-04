@@ -24,9 +24,10 @@ SparcRails::Application.routes.draw do
   resources :services
 
   namespace :surveyor do
-    resources :surveys, only: [:index, :edit, :create, :destroy] do
+    resources :surveys, only: [:index, :new, :create, :edit, :destroy] do
       get :preview
       get :update_dependents_list
+      post :copy
     end
     resource :survey, only: [] do
       get :search_surveyables
@@ -47,8 +48,8 @@ SparcRails::Application.routes.draw do
   resources :feedback
 
   begin
-    use_shibboleth_only = Setting.find_by_key("use_shibboleth_only").try(:value)
-    use_cas_only        = Setting.find_by_key("use_cas_only").try(:value)
+    use_shibboleth_only = Setting.get_value("use_shibboleth_only")
+    use_cas_only        = Setting.get_value("use_cas_only")
   rescue
     use_shibboleth_only = nil
     use_cas_only        = nil

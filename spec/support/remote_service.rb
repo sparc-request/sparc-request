@@ -21,10 +21,10 @@
 RSpec.configure do |config|
 
   config.before(:each) do
-    stub_request(:post, /#{Setting.find_by_key("remote_service_notifier_host").value}/).to_return(status: 201)
+    stub_request(:post, /#{Setting.get_value("remote_service_notifier_host")}/).to_return(status: 201)
   end
 
   config.before(:each, remote_service: :unavailable) do
-    stub_request(:post, /#{Setting.find_by_key("remote_service_notifier_host").value}/).to_return(status: 500)
+    stub_request(:post, /#{Setting.get_value("remote_service_notifier_host")}/).to_return(status: 500)
   end
 end

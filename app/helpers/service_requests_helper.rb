@@ -76,16 +76,16 @@ module ServiceRequestsHelper
 
   # RIGHT NAVIGATION BUTTONS
   def faq_helper
-    if Setting.find_by_key("use_faq_link").value
-      link_to t(:proper)[:right_navigation][:faqs][:header], Setting.find_by_key("faq_url").value, target: :blank, class: 'btn btn-primary btn-lg btn-block help-faq-button no-margin-x'
+    if Setting.get_value("use_faq_link")
+      link_to t(:proper)[:right_navigation][:faqs][:header], Setting.get_value("faq_url"), target: :blank, class: 'btn btn-primary btn-lg btn-block help-faq-button no-margin-x'
     else
       link_to t(:proper)[:right_navigation][:faqs][:header], get_help_service_request_path, remote: true, class: 'btn btn-primary btn-lg btn-block help-faq-button no-margin-x'
     end
   end
 
   def feedback_helper
-    if Setting.find_by_key("use_feedback_link").value
-      link_to t(:proper)[:right_navigation][:feedback][:header], Setting.find_by_key("feedback_link").value, target: :blank, class: 'feedback-button btn btn-primary btn-lg btn-block no-margin-x'
+    if Setting.get_value("use_feedback_link")
+      link_to t(:proper)[:right_navigation][:feedback][:header], Setting.get_value("feedback_link"), target: :blank, class: 'feedback-button btn btn-primary btn-lg btn-block no-margin-x'
     else
       content_tag(:button, t(:proper)[:right_navigation][:feedback][:header], class: 'feedback-button btn btn-primary btn-lg btn-block no-margin-x')
     end

@@ -36,7 +36,7 @@
           = display_total_cost_per_study_otfs(service_request)
       %tr.bg-primary
         %td{ colspan: 13 }
-      - if Setting.find_by_key("use_indirect_cost").value
+      - if Setting.get_value("use_indirect_cost")
         %tr.total-direct-cost
           %th{ colspan: 10 }
             = t(:calendar_page)[:labels][:direct_cost]

@@ -18,38 +18,33 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class DefaultSettingsPopulator
-  include DataTypeValidator
+require 'rails_helper'
 
-  def initialize()
-    @records = JSON.parse(File.read('config/defaults.json'))
-    @application_config =
-      if File.exists? Rails.root.join('config', 'application.yml')
-        YAML.load_file(Rails.root.join('config', 'application.yml'))[Rails.env]
-      else
-        {}
-      end
+RSpec.describe Surveyor::SurveysController, type: :controller do
+  stub_controller
+  let!(:before_filters) { find_before_filters }
+  let!(:logged_in_user) { create(:identity, ldap_uid: 'weh6@musc.edu') }
+  stub_config("site_admins", ["weh6@musc.edu"])
+  
+  before :each do
+    session[:identity_id] = logged_in_user.id
   end
 
-  def populate
-    ActiveRecord::Base.transaction do
-      @records.each do |hash|
-        setting = Setting.create(
-          key:            hash['key'],
-          value:          @application_config[hash['key']] || hash['value'],
-          data_type:      get_type(hash['value']),
-          friendly_name:  hash['friendly_name'],
-          description:    hash['description'],
-          group:          hash['group'],
-          version:        hash['version'],
-        )
-
-        setting.parent_key    = hash['parent_key']
-        setting.parent_value  = hash['parent_value']
-        setting.save(validate: false)
-      end
+  describe '#copy' do
+    it 'should call before_filter #authenticate_identity!' do
+      expect(before_filters.include?(:authenticate_identity!)).to eq(true)
     end
-    Rake::Task["data:import_epic_yml"].invoke
-    Rake::Task["data:import_ldap_yml"].invoke
+
+    it 'should call before_filter #authorize_survey_builder_access' do
+      expect(before_filters.include?(:authorize_survey_builder_access)).to eq(true)
+    end
+
+    it 'should make a copy of the survey' do
+      survey = create(:survey_without_validations)
+
+      expect{
+        post :copy, params: { survey_id: survey.id }, xhr: true
+      }.to change(Survey, :count).by(1)
+    end
   end
 end

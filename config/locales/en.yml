@@ -314,6 +314,7 @@ en:
       select_action: "Select an action"
       select_one: "Select One"
     add_as_last: "Add as last"
+    other: "Other"
 
   #############
   # DOCUMENTS #

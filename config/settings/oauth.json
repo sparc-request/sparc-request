@@ -1,0 +1,42 @@
+[
+  {
+    "key":            "use_cas",
+    "value":          "false",
+    "friendly_name":  "Use CAS",
+    "description":    "This determines whether the application will allow users to log in using CAS.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "use_cas_only",
+    "value":          "false",
+    "friendly_name":  "Use CAS Only",
+    "description":    "This determines whether the application will only allow users to log in using CAS. This has lower precedence than \"use_shibboleth_only\" when both are enabled.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_cas",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "use_shibboleth",
+    "value":          "true",
+    "friendly_name":  "Use Shibboleth",
+    "description":    "This determines whether the application will allow users to log in using Shibboleth.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "use_shibboleth_only",
+    "value":          "false",
+    "friendly_name":  "Use Shibboleth Only",
+    "description":    "This determines whether the application will only allow users to log in using Shibboleth. This has higher precedence than \"use_cas_only\" when both are enabled.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_shibboleth",
+    "parent_value":   "true"
+  }
+]

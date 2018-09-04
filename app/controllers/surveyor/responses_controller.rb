@@ -32,11 +32,11 @@ class Surveyor::ResponsesController < Surveyor::BaseController
     @filterrific  =
       initialize_filterrific(Response, params[:filterrific] && sanitize_dates(filterrific_params, [:start_date, :end_date]),
         default_filter_params: {
-          of_type: current_user.is_site_admin? ? SystemSurvey.name : Form.name,
-          include_incomplete: 'false'
+          include_incomplete: 'false',
+          of_type: 'SystemSurvey'
         },
         select_options: {
-          of_type: determine_type_rights
+          of_type: [['Survey', 'SystemSurvey'], ['Form', 'Form']]
         }
       ) || return
 
@@ -170,16 +170,6 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   def preload_responses
     preloader = ActiveRecord::Associations::Preloader.new
     preloader.preload(@responses.select { |r| r.respondable_type == SubServiceRequest.name }, { respondable: { protocol: { primary_pi_role: :identity } } })
-  end
-
-  def determine_type_rights
-    types = []
-    types << [Survey.name, SystemSurvey.name] if current_user.is_site_admin?
-    types << [Form.name, Form.name] if current_user.is_super_user? || current_user.is_service_provider?
-    
-    raise ActionController::RoutingError.new('Not Found') if types.empty?
-
-    types
   end
 
   def get_incomplete_form_responses

@@ -26,28 +26,45 @@ module Surveyor::ResponsesHelper
     content_tag(:h4, content_tag(:span, '', class: klass))
   end
 
-  def response_options(response)
-    [ view_response_button(response),
-      edit_response_button(response)#,
+  def response_options(response, identity)
+    view_permissions =
+      if response.survey.is_a?(SystemSurvey)
+        if response.survey.system_satisfaction?
+          identity.is_site_admin?
+        else
+          response.survey.authorized_for_super_user?(identity)
+        end
+      else
+        Form.for(identity).where(id: response.survey_id).any?
+      end
+    edit_permissions =
+      if response.survey.is_a?(SystemSurvey)
+        identity.is_site_admin?
+      else
+        Form.for(identity).where(id: response.survey_id).any?
+      end
+
+    [ view_response_button(response, view_permissions),
+      edit_response_button(response, edit_permissions)#,
       # download_response_button(response)
     ].join('')
   end
 
-  def view_response_button(response)
+  def view_response_button(response, permissions=true)
     link_to(
       content_tag(:span, '', class: 'glyphicon glyphicon-search', aria: { hidden: 'true' }),
       response.new_record? ? '' : surveyor_response_path(response),
       remote: true,
-      class: ['btn btn-info view-response', response.completed? ? '' : 'disabled']
+      class: ['btn btn-info view-response', permissions && response.completed? ? '' : 'disabled']
     )
   end
 
-  def edit_response_button(response)
+  def edit_response_button(response, permissions=true)
     link_to(
       content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' }),
       response.new_record? ? '' : edit_surveyor_response_path(response),
       remote: true,
-      class: ['btn btn-warning edit-response', response.completed? ? '' : 'disabled']
+      class: ['btn btn-warning edit-response', permissions && response.completed? ? '' : 'disabled']
     )
   end
 

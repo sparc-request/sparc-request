@@ -595,7 +595,7 @@ class Protocol < ApplicationRecord
   end
 
   def industry_funded?
-    potential_funding_source == "industry" or funding_source == "industry"
+    self.funding_source_based_on_status == 'industry'
   end
 
   #############

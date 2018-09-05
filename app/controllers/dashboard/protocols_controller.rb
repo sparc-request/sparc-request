@@ -84,7 +84,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       }
       format.xlsx {
         @statuses_hidden = params[:statuses_hidden] || %w(draft first_draft)
-        response.headers['Content-Disposition'] = "attachment; filename=\"(#{@protocol.id}) Consolidated #{@protocol.industry_funded ? 'Corporate ' : ''}Study Budget.xlsx\""
+        response.headers['Content-Disposition'] = "attachment; filename=\"(#{@protocol.id}) Consolidated #{@protocol.industry_funded? ? 'Corporate ' : ''}Study Budget.xlsx\""
       }
     end
   end

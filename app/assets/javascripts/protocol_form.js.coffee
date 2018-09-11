@@ -55,6 +55,9 @@ $(document).ready ->
         success: (data) ->
           $('#protocol_short_title').val(data.short_title)
           $('#protocol_title').val(data.long_title)
+          $('#protocol_human_subjects_info_attributes_initial_irb_approval_date').val(data.date_initially_approved)
+          $('#protocol_human_subjects_info_attributes_irb_approval_date').val(data.date_approved)
+          $('#protocol_human_subjects_info_attributes_irb_expiration_date').val(data.date_expiration)
           toggleFields('.rm-locked-fields', true)
         error: ->
           swal("Error", "Research Master Record not found", "error")

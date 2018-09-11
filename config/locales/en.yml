@@ -501,7 +501,8 @@ en:
           record_irb: "IRB of Record:"
           submission_type: "Submission Type:"
           pending_approval: "Application/Approval Pending?:"
-          irb_approval_date: "IRB Approval Date:"
+          initial_irb_approval_date: "Initial IRB Approval Date:"
+          irb_approval_date: "Current IRB Approval Date:"
           irb_expiration_date: "IRB Expiration Date:"
         tooltips:
           ide: 'Investigation Device Exemption (IDE) Number'

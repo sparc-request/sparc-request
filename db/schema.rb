@@ -247,6 +247,7 @@ ActiveRecord::Schema.define(version: 2018_07_17_181258) do
     t.string "pro_number"
     t.string "irb_of_record"
     t.string "submission_type"
+    t.datetime "initial_irb_approval_date"
     t.datetime "irb_approval_date"
     t.datetime "irb_expiration_date"
     t.datetime "created_at", null: false

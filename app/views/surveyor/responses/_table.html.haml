@@ -23,8 +23,7 @@
     #responses-custom-toolbar
       %h2.panel-title
         = t('surveyor.responses.table.header', type: type)
-        -# = link_to t(:surveyor)[:responses][:table][:export], 'javascript:void(0)', class: 'btn btn-success pull-right'
-    %table#responses-table{ data: { toggle: 'table', url: surveyor_responses_path(format: :json), search: 'true', 'show-columns' => 'true', pagination: 'true', page_size: '25', sort_name: 'completion_date', sort_order: 'desc', toolbar: '#responses-custom-toolbar' } }
+    %table#responses-table{ data: { toggle: 'table', url: surveyor_responses_path(format: :json), search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-export' => 'true', pagination: 'true', page_size: '25', sort_name: 'completion_date', sort_order: 'desc', toolbar: '#responses-custom-toolbar' } }
       %thead
         %tr
           %th{ data: { class: 'srid col-sm-2', align: 'left', sortable: 'true', field: 'srid' } }

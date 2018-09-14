@@ -30,6 +30,7 @@ en:
     approve: "Approve"
     cancel: "Cancel"
     close: "Close"
+    complete: "Complete"
     continue: "Continue"
     copy: "Copy"
     create: "Create"
@@ -617,6 +618,7 @@ en:
       pi: "PI Contribution:"
       cost: "Subsidy Cost:"
     tooltips:
+      request_subsidy: "Add a Subsidy request."
       request_cost: "Total cost of services eligible for a subsidy"
       percent: "Percent of Current Request Cost to be covered by Service Provider"
       pi: "Amount PI is responsible to provide to Service Provider"

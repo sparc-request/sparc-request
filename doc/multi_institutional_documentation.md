@@ -259,6 +259,12 @@ This would mean that on the service details page, when navigating to the catalog
 #### 3.1 Permissible Values
 Permissible Values are options and labels used across SPARCRequest, most of which can be customized for your institution. These are stored in the `permissible_values` database table and categorized by their `category` attribute.
 
+The data that generates Permissible Values is stored in various CSV files located in `db/seeds/permissible_values/2.0.5` (see below for descriptions of the various types of Permissible Values). To customize these values for your institution, simply edit these files, then run the following rake task in your terminal:
+
+```
+rake:import_permissible_values
+```
+
 ##### Protocol Options
 These Permissible Values are used when creating or updating a Study or Project
 

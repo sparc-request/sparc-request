@@ -34,9 +34,10 @@ class DefaultSettingsPopulator
   def populate
     ActiveRecord::Base.transaction do
       @records.each do |hash|
+        custom_value = @application_config[hash['key']]
         setting = Setting.create(
           key:            hash['key'],
-          value:          @application_config[hash['key']] || hash['value'],
+          value:          hash['value'],
           data_type:      get_type(hash['value']),
           friendly_name:  hash['friendly_name'],
           description:    hash['description'],
@@ -44,6 +45,7 @@ class DefaultSettingsPopulator
           version:        hash['version'],
         )
 
+        setting.value         = custom_value unless custom_value.nil?
         setting.parent_key    = hash['parent_key']
         setting.parent_value  = hash['parent_value']
         setting.save(validate: false)

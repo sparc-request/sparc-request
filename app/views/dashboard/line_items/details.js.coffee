@@ -19,4 +19,5 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $("#modal_place").html("<%= escape_javascript(render(:partial =>'dashboard/line_items/details_modal', locals: {line_item: @line_item})) %>");
-$("#modal_place").modal 'show'
+$("#modal_place").modal('show')
+$('[data-toggle=tooltip]').tooltip()

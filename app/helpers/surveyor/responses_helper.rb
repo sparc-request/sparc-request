@@ -26,22 +26,19 @@ module Surveyor::ResponsesHelper
     content_tag(:h4, content_tag(:span, '', class: klass))
   end
 
-  def response_options(response, identity)
+  def response_options(response, identity, accessible_surveys, is_site_admin)
     view_permissions =
-      if response.survey.is_a?(SystemSurvey)
-        if response.survey.system_satisfaction?
-          identity.is_site_admin?
-        else
-          response.survey.authorized_for_super_user?(identity)
-        end
+      if response.survey.is_a?(SystemSurvey) && response.survey.system_satisfaction?
+        is_site_admin
       else
-        Form.for(identity).where(id: response.survey_id).any?
+        accessible_surveys.include?(response.survey)
       end
+
     edit_permissions =
       if response.survey.is_a?(SystemSurvey)
-        identity.is_site_admin?
+        is_site_admin
       else
-        Form.for(identity).where(id: response.survey_id).any?
+        accessible_surveys.include?(response.survey)
       end
 
     [ view_response_button(response, view_permissions),

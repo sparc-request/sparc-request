@@ -123,9 +123,9 @@ en:
       visit_count: "Visit Count"
     delete_warning: "Are you sure you want to delete this arm?"
     screening_tooltip: "Enter the number of subjects you expect to screen as well as how many screening visits are required. If no screening phase is required, you can change the name of the Arm to meet your needs."
-    name_tooltip: "Arm Name must be unique within a protocol, and the following special characters are not allowed: [ ] * / \\ ? : )."
     tooltips:
-      add_arm: 'A group, or subgroup, of participants in a clinical trial that receives specific intervention, or no intervention, according to the study protocol'
+      add_arm: 'A group, or subgroup, of participants in a clinical trial that receive specific intervention, or no intervention, according to the study protocol.'
+      name: "A group, or subgroup, of participants in a clinical trial that receive specific intervention, or no intervention, according to the study protocol. Arm Name must be unique within a protocol, and the following special characters are not allowed: []*/\\?:)."
       subject_count: 'Total number of estimated participants per arm'
       visit_count: 'Total number of visits per arm'
 
@@ -188,9 +188,12 @@ en:
       rights: "Proxy Rights"
       epic_emr_access: 'EPIC EMR </br> Access'
     tooltips:
-      epic_access: 'Granting Epic EMR access populates study personnel in Epic Research Record as long as they have an Epic login'
-      rights: 'Defines access to protocol in SPARCDashboard'
       add_user: "Ability to add an Authorized User to a protocol"
+      epic_access: 'Granting Epic EMR access populates study personnel in Epic Research Record as long as they have Epic certification/training.'
+      rights: 'Defines access to protocol in SPARCDashboard'
+      approve: 'Full protocol access.'
+      view: 'View only access.'
+      none: 'No protocol access or email notifications.'
 
   #############
   # CALENDARS #
@@ -273,7 +276,8 @@ en:
     tooltips:
       total_per_study: 'Total proposed cost of Non-clinical Services per study'
       move_visit_button: 'Ability to change visit position'
-      pppv_total_costs: 'Total proposed cost of services per arm'
+      pppv_total_costs: 'Total proposed cost of Clinical Services per arm.'
+      otf_total_costs: 'Total proposed cost of Non-Clinical Services per Study/Project.'
       line_item_notes: 'Line Item Notes'
       pppv_status: 'Used to track the progress of a service'
       quantity_type: 'Unit of measurement'

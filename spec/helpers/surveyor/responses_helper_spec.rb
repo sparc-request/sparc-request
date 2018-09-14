@@ -40,13 +40,13 @@ RSpec.describe Surveyor::ResponsesHelper, type: :helper do
 
           context 'user is a site admin' do
             it 'should return enabled button' do
-              expect(helper.response_options(response, site_admin).split("</a>").first.include?('disabled')).to eq(false)
+              expect(helper.response_options(response, site_admin, [], true).split("</a>").first.include?('disabled')).to eq(false)
             end
           end
 
           context 'user is not a site admin' do
             it 'should return disabled button' do
-              expect(helper.response_options(response, user).split("</a>").first.include?('disabled')).to eq(true)
+              expect(helper.response_options(response, user, [], false).split("</a>").first.include?('disabled')).to eq(true)
             end
           end
         end
@@ -64,13 +64,13 @@ RSpec.describe Surveyor::ResponsesHelper, type: :helper do
             let!(:su) { create(:super_user, organization: organization, identity: user) }
 
             it 'should return enabled button' do
-              expect(helper.response_options(response, user).split("</a>").first.include?('disabled')).to eq(false)
+              expect(helper.response_options(response, user, [survey], false).split("</a>").first.include?('disabled')).to eq(false)
             end
           end
 
           context 'user is not a super user' do
             it 'should return disabled button' do
-              expect(helper.response_options(response, user).split("</a>").first.include?('disabled')).to eq(true)
+              expect(helper.response_options(response, user, [], false).split("</a>").first.include?('disabled')).to eq(true)
             end
           end
         end
@@ -84,7 +84,7 @@ RSpec.describe Surveyor::ResponsesHelper, type: :helper do
           end
 
           it 'should return disabled button' do
-            expect(helper.response_options(response, user).split("</a>").first.include?('disabled')).to eq(true)
+            expect(helper.response_options(response, user, [], false).split("</a>").first.include?('disabled')).to eq(true)
           end
         end
       end
@@ -101,7 +101,7 @@ RSpec.describe Surveyor::ResponsesHelper, type: :helper do
           end
 
           it 'should return enabled button' do
-            expect(helper.response_options(response, user).split("</a>").first.include?('disabled')).to eq(false)
+            expect(helper.response_options(response, user, [form], false).split("</a>").first.include?('disabled')).to eq(false)
           end
         end
 
@@ -113,7 +113,7 @@ RSpec.describe Surveyor::ResponsesHelper, type: :helper do
           end
 
           it 'should return enabled button' do
-            expect(helper.response_options(response, user).split("</a>").first.include?('disabled')).to eq(false)
+            expect(helper.response_options(response, user, [form], false).split("</a>").first.include?('disabled')).to eq(false)
           end
         end
 
@@ -123,7 +123,7 @@ RSpec.describe Surveyor::ResponsesHelper, type: :helper do
           end
 
           it 'should return disabled button' do
-            expect(helper.response_options(response, user).split("</a>").first.include?('disabled')).to eq(true)
+            expect(helper.response_options(response, user, [], false).split("</a>").first.include?('disabled')).to eq(true)
           end
         end
 
@@ -133,7 +133,7 @@ RSpec.describe Surveyor::ResponsesHelper, type: :helper do
           end
 
           it 'should return disabled button' do
-            expect(helper.response_options(response, user).split("</a>").first.include?('disabled')).to eq(true)
+            expect(helper.response_options(response, user, [], false).split("</a>").first.include?('disabled')).to eq(true)
           end
         end
       end
@@ -150,7 +150,7 @@ RSpec.describe Surveyor::ResponsesHelper, type: :helper do
           end
 
           it 'should return enabled button' do
-            expect(helper.response_options(response, site_admin).split("</a>").last.include?('disabled')).to eq(false)
+            expect(helper.response_options(response, site_admin, [], true).split("</a>").last.include?('disabled')).to eq(false)
           end
         end
 
@@ -160,7 +160,7 @@ RSpec.describe Surveyor::ResponsesHelper, type: :helper do
           end
 
           it 'should return disabled button' do
-            expect(helper.response_options(response, user).split("</a>").last.include?('disabled')).to eq(true)
+            expect(helper.response_options(response, user, [], false).split("</a>").last.include?('disabled')).to eq(true)
           end
         end
 
@@ -170,7 +170,7 @@ RSpec.describe Surveyor::ResponsesHelper, type: :helper do
           end
 
           it 'should return disabled button' do
-            expect(helper.response_options(response, user).split("</a>").last.include?('disabled')).to eq(true)
+            expect(helper.response_options(response, user, [], false).split("</a>").last.include?('disabled')).to eq(true)
           end
         end
       end
@@ -187,7 +187,7 @@ RSpec.describe Surveyor::ResponsesHelper, type: :helper do
           end
 
           it 'should return enabled button' do
-            expect(helper.response_options(response, user).split("</a>").last.include?('disabled')).to eq(false)
+            expect(helper.response_options(response, user, [form], false).split("</a>").last.include?('disabled')).to eq(false)
           end
         end
 
@@ -199,7 +199,7 @@ RSpec.describe Surveyor::ResponsesHelper, type: :helper do
           end
 
           it 'should return enabled button' do
-            expect(helper.response_options(response, user).split("</a>").last.include?('disabled')).to eq(false)
+            expect(helper.response_options(response, user, [form], false).split("</a>").last.include?('disabled')).to eq(false)
           end
         end
 
@@ -209,7 +209,7 @@ RSpec.describe Surveyor::ResponsesHelper, type: :helper do
           end
 
           it 'should return disabled button' do
-            expect(helper.response_options(response, user).split("</a>").last.include?('disabled')).to eq(true)
+            expect(helper.response_options(response, user, [], false).split("</a>").last.include?('disabled')).to eq(true)
           end
         end
 
@@ -219,7 +219,7 @@ RSpec.describe Surveyor::ResponsesHelper, type: :helper do
           end
 
           it 'should return disabled button' do
-            expect(helper.response_options(response, user).split("</a>").last.include?('disabled')).to eq(true)
+            expect(helper.response_options(response, user, [], false).split("</a>").last.include?('disabled')).to eq(true)
           end
         end
       end

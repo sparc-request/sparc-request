@@ -555,20 +555,20 @@ en:
       phase: "Select Study Phase(s)"
       submission_type: "Select a Submission Type"
     tooltips:
-      short_title: 'An abbreviated form of the title used to identify your study/project. Special characters outside the allowed range will be removed automatically.'
-      title: 'Full title of your study/project. Special characters outside the allowed range will be removed automatically.'
-      funding_status: 'Indicates whether or not funding has been applied for or obtained'
-      potential_funding_source: 'Funding source that has been applied for but not yet obtained. Pricing is logically driven off this field'
-      funding_source: 'Funding source which drives research pricing for your study/project'
-      sponsor_name: 'Specify name of the entity funding the project/study'
-      epic: 'Defines whether record will interface to Epic EMR upon submission'
-      study_type_questions: 'Information needed to determine confidentiality of patients/protocols'
-      nct_number: 'Clinicaltrials.gov Registry Number'
-      pro_number: 'Institutional Review Board (IRB) Unique Identifier'
-      ind_number: 'Investigational New Drug (IND) Number'
-      ide: 'Investigation Device Exemption (IDE) Number'
-      hde: 'Humanitarian Device Exemption (HDE) Number'
-      hud: 'Humanitarian Use Device (HUD) Number'
+      short_title: 'An abbreviated form of the title used to identify your Study/Project.'
+      title: 'Full title of your Study/Project.'
+      funding_status: 'Indicates whether or not funding has been applied for or obtained.'
+      potential_funding_source: 'Funding source that has been applied for but not yet obtained, which also drives research pricing.'
+      funding_source: 'Funding source which drives research pricing for your Study/Project'
+      sponsor_name: 'Specify name of the entity funding the Study/Project.'
+      epic: 'Defines whether record will interface to Epic EMR.'
+      study_type_questions: 'Information needed to determine confidentiality of patients/protocols.'
+      nct_number: 'Clinicaltrials.gov Registry Number.'
+      pro_number: 'Institutional Review Board (IRB) Unique Identifier.'
+      ind_number: 'Investigational New Drug Number'
+      ide: 'Investigation Device Exemption Number'
+      hde: 'Humanitarian Device Exemption Number'
+      hud: 'Humanitarian Use Device Number'
     authorized_users:
       header: "Add Primary PI"
       primary_pi: "Primary PI:"

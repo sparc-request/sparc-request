@@ -20,6 +20,7 @@
 .col-md-6.catalog-center
   #search.form-group
     = text_field_tag 'service-query', nil, placeholder: t(:proper)[:catalog][:center][:search_placeholder], class: "search-services form-control input-lg", data: { srid: service_request.id, ssrid: sub_service_request.try(:id) }
+    %span.glyphicon.glyphicon-search.form-control-feedback.text-primary{ aria: { hidden: true } }
   #welcome-message
     - if organization
       = render 'catalogs/description', organization: organization, service_request: service_request, from_portal: from_portal

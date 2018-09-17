@@ -88,3 +88,11 @@ $(document).ready ->
     else
       $('.survey-select option').prop('disabled', false)
       $('.survey-select').selectpicker('refresh')
+
+  $('.export button').removeClass('dropdown-toggle').removeAttr('data-toggle')
+  $('.export button .caret').remove()
+  $('.export .dropdown-menu').remove()
+
+  $(document).on 'click', '.export button', ->
+    $(this).parent().removeClass('open')
+    window.location = '/surveyor/responses.xlsx'

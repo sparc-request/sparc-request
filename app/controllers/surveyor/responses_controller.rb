@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Surveyor::ResponsesController < Surveyor::BaseController
-  respond_to :html, :js, :json
+  respond_to :html, :js, :json, :xlsx
 
   before_action :authenticate_identity!
   before_action :find_response, only: [:show, :edit, :update]
@@ -46,23 +46,12 @@ class Surveyor::ResponsesController < Surveyor::BaseController
       format.html
       format.js
       format.json {
-        @responses =
-          if @type == Survey.name
-            @filterrific.find.eager_load(:survey, :question_responses, :identity)
-          else
-            existing_responses = @filterrific.find.eager_load(:survey, :question_responses, :identity).
-              where(survey: Form.for(current_user))
-
-            if @filterrific.include_incomplete == 'false'
-              existing_responses
-            else
-              incomplete_responses = get_incomplete_form_responses
-              existing_responses + incomplete_responses
-            end
-          end
-        preload_responses
+        load_responses
       }
-      # format.xlsx
+      format.xlsx {
+        load_responses
+        response.headers['Content-Disposition'] = "attachment; filename=\"#{@type} Responses.xlsx\""
+      }
     end
   end
 
@@ -165,6 +154,24 @@ class Surveyor::ResponsesController < Surveyor::BaseController
 
   def response_params
     params.require(:response).permit!
+  end
+
+  def load_responses
+    @responses =
+      if @type == Survey.name
+        @filterrific.find.eager_load(:survey, :question_responses, :identity)
+      else
+        existing_responses = @filterrific.find.eager_load(:survey, :question_responses, :identity).
+          where(survey: Form.for(current_user))
+
+        if @filterrific.include_incomplete == 'false'
+          existing_responses
+        else
+          incomplete_responses = get_incomplete_form_responses
+          existing_responses + incomplete_responses
+        end
+      end
+    preload_responses
   end
 
   def preload_responses

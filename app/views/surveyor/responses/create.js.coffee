@@ -27,6 +27,8 @@ if $('#protocol_show_information_panel').length >= 1
   $("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, user: current_user, view_only: false, show_view_ssr_back: false)) %>")
   $('.service-requests-table').bootstrapTable()
   reset_service_requests_handlers()
+<% elsif @response.survey.is_a?(SystemSurvey) && @response.survey.system_satisfaction? %>
+$('#modal_place').modal('hide')
 <% else %>
   window.location = "/surveyor/responses/<%=@response.id%>/complete"
 <% end %>

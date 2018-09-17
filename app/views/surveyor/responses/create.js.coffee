@@ -18,16 +18,18 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <% if @response.valid? %>
-if $('#modal_place:visible').length > 0
-  $('#forms-panel').show()
-  $('#forms-table').bootstrapTable('refresh')
-  if $('#protocol_show_information_panel').length > 0
-    $("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, user: current_user, view_only: false, show_view_ssr_back: false)) %>")
-    $('.service-requests-table').bootstrapTable()
-    reset_service_requests_handlers()
-  $('#modal_place').modal('hide')
-else
+<% if @response.survey.is_a?(Form) %>
+$('#forms-panel').show()
+$('#forms-table').bootstrapTable('refresh')
+$('#modal_place').modal('hide')
+
+if $('#protocol_show_information_panel').length >= 1
+  $("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, user: current_user, view_only: false, show_view_ssr_back: false)) %>")
+  $('.service-requests-table').bootstrapTable()
+  reset_service_requests_handlers()
+<% else %>
   window.location = "/surveyor/responses/<%=@response.id%>/complete"
+<% end %>
 <% else %>
 <% @response.question_responses.each do |qr| %>
 <% if qr.valid? %>

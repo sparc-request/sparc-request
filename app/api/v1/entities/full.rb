@@ -60,6 +60,7 @@ module V1
             :approval_pending
 
     with_options(format_with: :iso_timestamp) do
+      expose :initial_irb_approval_date
       expose :irb_approval_date
       expose :irb_expiration_date
     end

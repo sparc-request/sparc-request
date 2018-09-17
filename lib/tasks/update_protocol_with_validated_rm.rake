@@ -52,7 +52,12 @@ namespace :data do
         if protocol_to_update.has_human_subject_info?
           protocol_to_update
             .human_subjects_info
-            .update_attribute(:pro_number, vrm['pro_number'])
+            .update_attributes(
+              pro_number: vrm['pro_number'],
+              initial_irb_approval_date: vrm['date_initially_approved'],
+              irb_approval_date: vrm['date_approved'],
+              irb_expiration_date: vrm['date_expiration']
+            )
         end
       end
       progress_bar.increment!

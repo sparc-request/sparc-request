@@ -80,10 +80,15 @@
             %tr
               %td
                 %label.col-lg-4
+                  = t(:protocols)[:studies][:research_involving][:humans][:initial_irb_approval_date]
+                .col-lg-8
+                  = format_date(human_info.initial_irb_approval_date)
+            %tr
+              %td
+                %label.col-lg-4
                   = t(:protocols)[:studies][:research_involving][:humans][:irb_approval_date]
                 .col-lg-8
                   = format_date(human_info.irb_approval_date)
-
             %tr
               %td
                 %label.col-lg-4

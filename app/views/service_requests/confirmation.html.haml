@@ -26,12 +26,12 @@
     = hidden_field_tag :validates, ''
     .form-group
       %p.instructions.text-danger
-        = t(:proper)[:confirmation][:confirmation_warning]
+        = raw t('proper.confirmation.confirmation_warning', department_name: Setting.get_value('contact_us_department'), phone: Setting.get_value('contact_us_phone'), email: Setting.get_value('contact_us_mail_to'))
     .form-group
       = render 'service_requests/confirmation/confirmation_details', service_request: @service_request
-    - if Setting.find_by_key("use_epic").value && !Setting.find_by_key("queue_epic").value
+    - if Setting.get_value("use_epic") && !Setting.get_value("queue_epic")
       .form-group
         = render 'protocols/push_to_epic', protocol: @protocol
     .form-group.text-center
       = link_to t(:proper)[:confirmation][:download_request], service_request_path(format: :xlsx, report_type: 'request_report'), class: 'btn btn-lg btn-success'
-      = link_to t(:proper)[:confirmation][:to_dashboard], Setting.find_by_key("dashboard_link").value, class: 'btn btn-lg btn-success'
+      = link_to t(:proper)[:confirmation][:to_dashboard], Setting.get_value("dashboard_link"), class: 'btn btn-lg btn-success'

@@ -26,4 +26,12 @@ class SystemSurvey < Survey
   def self.yaml_klass
     Survey.name
   end
+
+  def self.for_super_user(identity)
+    Survey.where(id: AssociatedSurvey.where(associable: Organization.authorized_for_super_user(identity.id)).pluck(:survey_id))
+  end
+
+  def system_satisfaction?
+    self.access_code == 'system-satisfaction-survey'
+  end
 end

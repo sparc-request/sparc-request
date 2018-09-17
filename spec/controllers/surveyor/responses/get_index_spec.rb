@@ -156,68 +156,10 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
               create(:question_response, response: resp2)
               create(:super_user, identity: logged_in_user, organization: org1)
 
-      get :index, params: { type: 'Form' }, format: :json
+      get :index, params: { type: 'Form', filterrific: { of_type: 'Form' } }, format: :json
 
       expect(assigns(:responses).count).to eq(1)
       expect(assigns(:responses).first).to eq(resp1)
-    end
-  end
-
-  context 'user is a site admin' do
-    stub_config("site_admins", ['jug2'])
-
-    it 'should assign default of_type for surveys' do
-      get :index, params: {}
-
-      expect(assigns(:filterrific).of_type).to eq('SystemSurvey')
-    end
-
-    it 'should add Surveys to the of_type select' do
-      get :index, params: {}
-
-      expect(assigns(:filterrific).select_options[:of_type].first).to eq(['Survey', 'SystemSurvey'])
-    end
-  end
-
-  context 'user is a Super User' do
-    before :each do
-      create(:super_user, identity: logged_in_user, organization: create(:organization))
-    end
-
-    it 'should assign default of_type for forms' do
-      get :index, params: {}
-
-      expect(assigns(:filterrific).of_type).to eq('Form')
-    end
-
-    it 'should add Forms to the of_type select' do
-      get :index, params: {}
-
-      expect(assigns(:filterrific).select_options[:of_type].first).to eq(['Form', 'Form'])
-    end
-  end
-
-  context 'user is a Service Provider' do
-    before :each do
-      create(:service_provider, identity: logged_in_user, organization: create(:organization))
-    end
-
-    it 'should assign default of_type for forms' do
-      get :index, params: {}
-
-      expect(assigns(:filterrific).of_type).to eq('Form')
-    end
-
-    it 'should add Forms to the of_type select' do
-      get :index, params: {}
-
-      expect(assigns(:filterrific).select_options[:of_type].first).to eq(['Form', 'Form'])
-    end
-  end
-
-  context 'user is a general user' do
-    it 'should raise Not Found' do
-      expect { get :index, params: {} }.to raise_error('Not Found')
     end
   end
 end

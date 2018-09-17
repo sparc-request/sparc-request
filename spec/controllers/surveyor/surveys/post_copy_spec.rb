@@ -20,52 +20,31 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User views the responses table', js: true do
-  let_there_be_lane
-  fake_login_for_each_test
+RSpec.describe Surveyor::SurveysController, type: :controller do
+  stub_controller
+  let!(:before_filters) { find_before_filters }
+  let!(:logged_in_user) { create(:identity, ldap_uid: 'weh6@musc.edu') }
+  stub_config("site_admins", ["weh6@musc.edu"])
   
-  let!(:organization) { create(:organization) }
-  let!(:super_user)   { create(:super_user, identity: jug2, organization: organization) }
-  let!(:form)         { create(:form, surveyable: organization) }
-  let!(:section)      { create(:section, survey: form) }
-  let!(:question)     { create(:question, section: section) }
-  let!(:resp)         { create(:response, survey: form) }
-
-  context 'completed responses' do
-    before :each do
-      create(:question_response, response: resp, question: question)
-    end
-
-    scenario 'user should see an active "View" button' do
-      visit surveyor_responses_path
-      wait_for_javascript_to_finish
-
-      expect(page).to have_selector('.view-response:not(.disabled)')
-    end
-
-    scenario 'user should see an active "Edit" button' do
-      visit surveyor_responses_path
-      wait_for_javascript_to_finish
-
-      expect(page).to have_selector('.edit-response:not(.disabled)')
-    end
+  before :each do
+    session[:identity_id] = logged_in_user.id
   end
 
-  context 'incomplete responses' do
-    before :each do
-      visit surveyor_responses_path
-      wait_for_javascript_to_finish
-
-      find('#filterrific_include_incomplete').click
-      click_button I18n.t(:actions)[:filter]
-      wait_for_javascript_to_finish
-    end
-    scenario 'user should see a disabled "View" button' do
-      expect(page).to have_selector('.view-response.disabled')
+  describe '#copy' do
+    it 'should call before_filter #authenticate_identity!' do
+      expect(before_filters.include?(:authenticate_identity!)).to eq(true)
     end
 
-    scenario 'user should see a disabled "Edit" button' do
-      expect(page).to have_selector('.edit-response.disabled')
+    it 'should call before_filter #authorize_survey_builder_access' do
+      expect(before_filters.include?(:authorize_survey_builder_access)).to eq(true)
+    end
+
+    it 'should make a copy of the survey' do
+      survey = create(:survey_without_validations)
+
+      expect{
+        post :copy, params: { survey_id: survey.id }, xhr: true
+      }.to change(Survey, :count).by(1)
     end
   end
 end

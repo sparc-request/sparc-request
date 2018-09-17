@@ -19,20 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 namespace :data do
-  desc "Import epic.yml settings into Settings db table"
-  task :import_epic_yml => :environment do
-    include DataTypeValidator
-
-    begin
-      epic_yml = YAML.load_file(Rails.root.join('config', 'epic.yml'))[Rails.env]
-
-      epic_yml.each do |key, value|
-        setting = Setting.new(key: key, value: value, friendly_name: key.humanize.titleize, parent_key: "use_epic", group: "epic_settings", parent_value: "true")
-        setting.data_type = get_type(setting.read_attribute(:value))
-        setting.save
-      end
-    rescue
-      puts "WARNING: You have no epic.yml, so there is nothing to import"
-    end
+  desc "Import any missing settings from config/settings into the Settings database table"
+  task import_settings: :environment do
+    SettingsPopulator.new().populate
   end
 end

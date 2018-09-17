@@ -24,7 +24,7 @@
   - visit_groups.each do |vg|
     %td.text-center.visit-width{ class: "max-total-per-patient visit-#{vg.id}" }
       %strong
-        - if Setting.find_by_key("use_indirect_cost").value
+        - if Setting.get_value("use_indirect_cost")
           = currency_converter(vg.per_patient_subtotals * (1 + (arm.protocol.indirect_cost_rate.nil? ? 0 : (arm.protocol.indirect_cost_rate / 100))))
         - else
           = currency_converter(vg.per_patient_subtotals)

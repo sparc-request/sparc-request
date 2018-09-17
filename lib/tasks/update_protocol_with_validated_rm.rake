@@ -25,10 +25,10 @@ namespace :data do
   task update_protocol_with_validated_rm: :environment do
     print('Fetching from Research Master API...')
     validated_research_masters = HTTParty.get(
-      "#{Setting.find_by_key('research_master_api').value}validated_records.json",
+      "#{Setting.get_value('research_master_api')}validated_records.json",
       headers:{
         'Content-Type' => 'application/json',
-        'Authorization' => "Token token=\"#{Setting.find_by_key('rmid_api_token').value}\""
+        'Authorization' => "Token token=\"#{Setting.get_value('rmid_api_token')}\""
       }
     )
     puts 'Done'
@@ -52,7 +52,12 @@ namespace :data do
         if protocol_to_update.has_human_subject_info?
           protocol_to_update
             .human_subjects_info
-            .update_attribute(:pro_number, vrm['pro_number'])
+            .update_attributes(
+              pro_number: vrm['pro_number'],
+              initial_irb_approval_date: vrm['date_initially_approved'],
+              irb_approval_date: vrm['date_approved'],
+              irb_expiration_date: vrm['date_expiration']
+            )
         end
       end
       progress_bar.increment!

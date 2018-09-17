@@ -23,9 +23,11 @@ module Features
   module BootstrapHelpers
 
     def bootstrap_multiselect(class_or_id, selections = ['all'])
-      bootstrap_multiselect = find("select#{class_or_id} + .btn-group")
+      expect(page).to have_selector("select#{class_or_id} + .btn-group")
+      bootstrap_multiselect = first("select#{class_or_id} + .btn-group")
       bootstrap_multiselect.click
 
+      expect(page).to have_selector('.dropdown-menu.open')
       if selections.first == 'all'
         first('.dropdown-menu.open span.text', text: 'Select all').click
       else
@@ -38,9 +40,11 @@ module Features
     end
 
     def bootstrap_select(class_or_id, choice)
-      bootstrap_select = page.find("select#{class_or_id} + .bootstrap-select")
+      expect(page).to have_selector("select#{class_or_id} + .bootstrap-select")
+      bootstrap_select = page.first("select#{class_or_id} + .bootstrap-select")
 
       bootstrap_select.click
+      expect(page).to have_selector('.dropdown-menu.open')
       first('.dropdown-menu.open span.text', text: choice).click
       wait_for_javascript_to_finish
     end

@@ -18,27 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-development:
-  ldap_host: authldap.musc.edu
-  ldap_port: 636
-  ldap_base: ['ou=people,dc=musc,dc=edu']
-  ldap_encryption: simple_tls
-  ldap_domain: musc.edu
-  ldap_uid: uid
-  ldap_last_name: sn
-  ldap_first_name: givenname
-  ldap_email: mail
-  ldap_auth_username: 'username'
-  ldap_auth_password: 'password'
-  ldap_filter: "(&(|(|(|(cn=#{term}*)(sn=#{term}*))(givenName=#{term}*))(mail=#{term}*))(msRTCSIP-UserEnabled=TRUE))"
-
-test:
-  ldap_host: authldap.musc.edu
-  ldap_port: 636
-  ldap_base: ['ou=people,dc=musc,dc=edu']
-  ldap_encryption: simple_tls
-  ldap_domain: musc.edu
-  ldap_uid: uid
-  ldap_last_name: sn
-  ldap_first_name: givenname
-  ldap_email: mail
+$('#modal_place').html("<%= j render 'surveyor/surveys/new_form', survey: @survey %>")
+$('#modal_place').modal('show')

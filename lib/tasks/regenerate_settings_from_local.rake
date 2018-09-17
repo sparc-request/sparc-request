@@ -25,6 +25,6 @@ namespace :data do
     ActiveRecord::Base.connection.execute("TRUNCATE settings")
 
     #Rerun populator
-    DefaultSettingsPopulator.new().populate
+    SettingsPopulator.new().populate
   end
 end

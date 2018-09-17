@@ -36,7 +36,7 @@
             .form-group
               = label_tag "remove_service_id", t(:dashboard)[:multiple_line_items][:service], class: "col-sm-4 control-label"
               .col-sm-7
-                = select_tag "remove_service_id", options_from_collection_for_select(all_services, 'id' , 'name', service.id), class: "form-control selectpicker"
+                = select_tag "remove_service_id", options_from_collection_for_select(all_services, 'id' , 'display_service_name', service.id), class: "form-control selectpicker"
       .modal-footer
         .center-block
           %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}

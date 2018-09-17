@@ -18,26 +18,4 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-production:
-  study_root: '1.2.3.4'
-  endpoint: 'http://TODO/'
-  namespace: 'urn:ihe:qrph:rpe:2009'
-
-development:
-  study_root: '1.2.3.4'
-  test_mode: true
-
-# This is to push to POC server for EPIC. You should only use this if you are testing EPIC.
-#development:
-#  study_root: '1.2.5.2.3.4'
-#  endpoint: 'http://ep14intcon05.clinlan.local/Interconnect-SPARC/Wcf/Epic.Edi.SoapReceiver/SoapReceiverSync.svc'
-#  wsdl: 'http://ep14intcon05.mdc.musc.edu/Interconnect-SPARC/Wcf/Epic.Edi.SoapReceiver/SoapReceiverSync.svc?wsdl'
-#  namespace: 'urn:ihe:qrph:rpe:2009'
-
-test:
-  study_root: '1.2.3.4'
-  test_mode: true
-
-
-
-
+$("#modal_errors").html("<%= j render 'shared/modal_errors', errors: @errors %>")

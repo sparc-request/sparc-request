@@ -72,15 +72,20 @@
             .col-lg-1
               = hs_form.check_box :approval_pending, class: 'form-control'
 
+          .form-group.row.initial_irb_approval_date
+            = hs_form.label :initial_irb_approval_date, t(:protocols)[:studies][:research_involving][:humans][:initial_irb_approval_date], class: 'col-lg-2 control-label'
+            .col-lg-10
+              = hs_form.text_field :initial_irb_approval_date, class: ['datetimepicker form-control', Setting.get_value("research_master_enabled") ? 'rm-id-dependent rm-locked-fields' : ''], value: (protocol.human_subjects_info.initial_irb_approval_date.strftime('%_m/%d/%Y') rescue nil)
+
           .form-group.row.irb_approval_date
             = hs_form.label :irb_approval_date, t(:protocols)[:studies][:research_involving][:humans][:irb_approval_date], class: 'col-lg-2 control-label'
             .col-lg-10
-              = hs_form.text_field :irb_approval_date, class: 'datetimepicker form-control', value: (protocol.human_subjects_info.irb_approval_date.strftime('%_m/%d/%Y') rescue nil)
+              = hs_form.text_field :irb_approval_date, class: ['datetimepicker form-control', Setting.get_value("research_master_enabled") ? 'rm-id-dependent rm-locked-fields' : ''], value: (protocol.human_subjects_info.irb_approval_date.strftime('%_m/%d/%Y') rescue nil)
 
           .form-group.row.irb_expiration_date
             = hs_form.label :irb_expiration_date, t(:protocols)[:studies][:research_involving][:humans][:irb_expiration_date], class: 'col-lg-2 control-label'
             .col-lg-10
-              = hs_form.text_field :irb_expiration_date, class: 'datetimepicker form-control', value: (protocol.human_subjects_info.irb_expiration_date.strftime('%_m/%d/%Y') rescue nil)
+              = hs_form.text_field :irb_expiration_date, class: ['datetimepicker form-control', Setting.get_value("research_master_enabled") ? 'rm-id-dependent rm-locked-fields' : ''], value: (protocol.human_subjects_info.irb_expiration_date.strftime('%_m/%d/%Y') rescue nil)
 
           .form-group.row
             = form.label :study_phase, t(:protocols)[:studies][:information][:phase], class: 'col-lg-2 control-label'

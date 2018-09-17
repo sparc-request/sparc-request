@@ -27,6 +27,6 @@
   = render "user_info_table"
   %br
   %br
-  %p= t(:mailer)[:issue_contact]
+  %p= raw t('mailer.issue_contact', department_name: Setting.get_value('contact_us_department'), phone: Setting.get_value('contact_us_phone'), email: Setting.get_value('contact_us_mail_to'))
   %br
   = render "acknowledgments"

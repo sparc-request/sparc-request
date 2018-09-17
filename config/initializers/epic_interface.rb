@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 begin
-  use_epic = Setting.find_by_key("use_epic").value
+  use_epic = Setting.get_value("use_epic")
 rescue
   use_epic = false
 end
@@ -60,11 +60,11 @@ if use_epic
     end
 
     # Load the settings from the db
-      epic_config = Hash.new
-      epic_settings.each{|setting| epic_config[setting.key] = setting.value}
+    epic_config = Hash.new
+    epic_settings.each{|setting| epic_config[setting.key] = setting.value}
 
     # If we are in test mode, start a fake epic interconnect server
-    if epic_config['test_mode'] then
+    if epic_config['epic_test_mode']
       # To be used by the tests to validate what was sent in to the server
       EPIC_RECEIVED = EpicReceivedMessages.new
 
@@ -73,8 +73,10 @@ if use_epic
 
       # The fake epic server itself
       FAKE_EPIC_SERVER = start_fake_epic_server(EPIC_RECEIVED, EPIC_RESULTS)
-      epic_config['wsdl'] = "http://localhost:#{FAKE_EPIC_SERVER.port}/wsdl"
-      epic_config['study_root'] ||= '1.2.3.4'
+      epic_config.delete('epic_namespace')
+      epic_config.delete('epic_endpoint')
+      epic_config['epic_wsdl'] = "http://localhost:#{FAKE_EPIC_SERVER.port}/wsdl"
+      epic_config['epic_study_root'] ||= '1.2.3.4'
     end
 
     # Finally, construct the interface itself

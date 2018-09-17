@@ -1,0 +1,42 @@
+[
+  {
+    "key":            "research_master_enabled",
+    "value":          "false",
+    "friendly_name":  "Use Research Master ID",
+    "description":    "This determines whether SPARCRequest protocols will be connected with a research master record.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "research_master_link",
+    "value":          "https://research-master-staging.musc.edu/",
+    "friendly_name":  "Research Master ID URL",
+    "description":    "This is the URL of your institution's RMID application.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "research_master_enabled",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "research_master_api",
+    "value":          "https://research-master-staging.musc.edu/api/",
+    "friendly_name":  "Research Master API URL",
+    "description":    "This is the URL of your institution's RMID API.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "research_master_enabled",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "rmid_api_token",
+    "value":          "e754d4e002bd58b4b1a55a3f5808ec37",
+    "friendly_name":  "Research Master API Token",
+    "description":    "This is the token used to access your institution's RMID API.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "research_master_enabled",
+    "parent_value":   "true"
+  }
+]

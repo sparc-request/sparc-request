@@ -36,7 +36,7 @@ RSpec.describe 'User edits section fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      find('.edit-survey').click
+      bootstrap_select '.survey-actions', /Edit/
       wait_for_javascript_to_finish
 
       fill_in("section-#{@section.id}-title", with: 'This is a Terrible Section')
@@ -50,7 +50,7 @@ RSpec.describe 'User edits section fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      find('.edit-survey').click
+      bootstrap_select '.survey-actions', /Edit/
       wait_for_javascript_to_finish
 
       fill_in("section-#{@section.id}-description", with: 'How can I describe such a terrible section?')
@@ -65,7 +65,7 @@ RSpec.describe 'User edits section fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find('.add-section').click
@@ -81,7 +81,7 @@ RSpec.describe 'User edits section fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find('.delete-section').click
@@ -105,7 +105,7 @@ RSpec.describe 'User edits section fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      find('.edit-survey').click
+      bootstrap_select '.survey-actions', /Edit/
       wait_for_javascript_to_finish
 
       fill_in("section-#{@section.id}-title", with: 'This is a Terrible Section')
@@ -119,7 +119,7 @@ RSpec.describe 'User edits section fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      find('.edit-survey').click
+      bootstrap_select '.survey-actions', /Edit/
       wait_for_javascript_to_finish
 
       fill_in("section-#{@section.id}-description", with: 'How can I describe such a terrible section?')
@@ -134,7 +134,7 @@ RSpec.describe 'User edits section fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find('.add-section').click
@@ -150,7 +150,7 @@ RSpec.describe 'User edits section fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find('.delete-section').click

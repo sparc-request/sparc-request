@@ -43,7 +43,7 @@ RSpec.describe SurveyNotification do
 
     #ensure that the sender is correct
     it 'should render the sender email' do
-      expect(mail).to deliver_to(Setting.find_by_key("admin_mail_to").value)
+      expect(mail).to deliver_to(Setting.get_value("admin_mail_to"))
     end
 
     #ensure that the e-mail contains a link to the survey

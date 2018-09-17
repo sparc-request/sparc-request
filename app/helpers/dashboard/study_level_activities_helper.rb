@@ -22,9 +22,9 @@ module Dashboard::StudyLevelActivitiesHelper
 
   def sla_service_name_display line_item
     if line_item.service.is_available
-      line_item.service.name
+      line_item.service.display_service_name
     else
-      line_item.service.name + ' (Disabled)'
+      line_item.service.display_service_name + ' (Disabled)'
     end
   end
 
@@ -72,11 +72,11 @@ module Dashboard::StudyLevelActivitiesHelper
   def sla_form_services_select form, line_item
     service = line_item.service
     if service.present? and not service.is_available
-      service_name = service.name + ' (Disabled)'
+      service_name = service.display_service_name + ' (Disabled)'
       form.select "service_id", options_for_select([service_name], service_name), {include_blank: true}, class: 'form-control selectpicker', disabled: 'disabled'
     else
       service_list = line_item.sub_service_request.candidate_services.select {|x| x.one_time_fee}
-      form.select "service_id", options_from_collection_for_select(service_list, 'id', 'name', line_item.service_id), {include_blank: true}, class: 'form-control selectpicker'
+      form.select "service_id", options_from_collection_for_select(service_list, 'id', 'display_service_name', line_item.service_id), {include_blank: true}, class: 'form-control selectpicker'
     end
   end
 

@@ -59,7 +59,7 @@ class RedcapSurveyEmitter
     data = [record].to_json
 
     fields = {
-      :token => Setting.find_by_key("redcap_token").value,
+      :token => Setting.get_value("redcap_token"),
       :content => 'record',
       :format => 'json',
       :type => 'flat',
@@ -67,7 +67,7 @@ class RedcapSurveyEmitter
     }
 
     ch = Curl::Easy.http_post(
-      Setting.find_by_key("redcap_api_url").value,
+      Setting.get_value("redcap_api_url"),
       fields.collect{|k, v| Curl::PostField.content(k.to_s, v)}
     )
 
@@ -78,14 +78,14 @@ class RedcapSurveyEmitter
 
   def latest_letter_id
     fields = {
-      :token => Setting.find_by_key("redcap_token").value,
+      :token => Setting.get_value("redcap_token"),
       :content => 'record',
       :format => 'json',
       :type => 'flat'
     }
 
     ch = Curl::Easy.http_post(
-      Setting.find_by_key("redcap_api_url").value,
+      Setting.get_value("redcap_api_url"),
       fields.collect{|k, v| Curl::PostField.content(k.to_s, v)}
     )
 

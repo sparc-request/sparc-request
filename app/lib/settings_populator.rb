@@ -30,12 +30,12 @@ class SettingsPopulator
 
   def populate
     @data.each do |namespace, settings|
-      puts "Populating #{namespace} settings"
+      puts "Populating #{namespace} settings" unless Rails.env == 'test'
       ActiveRecord::Base.transaction do
         settings.each do |hash|
           if Setting.where(key: hash['key']).any?
             Setting.find_by_key(hash['key']).update_attributes(hash.without('key', 'value'))
-            puts "- Setting #{hash['key']} already exists... Updated details (this does not change the value!)..."
+            puts "- Setting #{hash['key']} already exists... Updated details (this does not change the value!)..." unless Rails.env == 'test'
           else
             setting = Setting.create(
               key:            hash['key'],
@@ -51,12 +51,12 @@ class SettingsPopulator
             setting.parent_value  = hash['parent_value']
             setting.save(validate: false)
 
-            puts "- Added new setting #{hash['key']}..."
+            puts "- Added new setting #{hash['key']}..." unless Rails.env == 'test'
           end
         end
       end
 
-      puts "\n\n"
+      puts "\n\n" unless Rails.env == 'test'
     end
   end
 

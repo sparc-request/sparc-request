@@ -414,7 +414,7 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
       line_item_style_array  = [default, default, money]
       line_item_style_array << money if @industry_funded
       line_item_style_array += [money, default]
-      line_item_style_array += [[default, money, money]] if @industry_funded
+      line_item_style_array += [default, money, money] if @industry_funded
 
       line_item_row          = ["#{li.service.name} (#{li.sub_service_request.ssr_id})", statuses[li.sub_service_request.status], cents_to_dollars(li.service.current_effective_pricing_map.full_rate)]
       line_item_row         << cents_to_dollars(li.service.current_effective_pricing_map.full_rate) if @industry_funded

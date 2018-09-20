@@ -66,7 +66,7 @@ RSpec.describe 'User interacts with Template tab', js: true do
       click_link 'Template Tab'
       wait_for_javascript_to_finish
 
-      expect(page).to have_selector('.panel-title', text: "Clinical Services Arm: #{@arm.name}")
+      expect(page).to have_text("Clinical Services Arm: #{@arm.name}", normalize_ws: true)
     end
   end
 

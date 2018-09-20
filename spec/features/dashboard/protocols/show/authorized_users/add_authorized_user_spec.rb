@@ -21,7 +21,7 @@
 require 'rails_helper'
 
 RSpec.feature 'User wants to add an authorized user', js: true do
-  
+
   let!(:logged_in_user) { create(:identity, last_name: "Doe", first_name: "John", ldap_uid: "johnd", email: "johnd@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
   let!(:other_user) { create(:identity, last_name: "Doe", first_name: "Jane", ldap_uid: "janed", email: "janed@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
 
@@ -293,7 +293,8 @@ RSpec.feature 'User wants to add an authorized user', js: true do
   end
 
   def then_i_should_see_the_user_has_been_added
-    @page.wait_for_authorized_users(text: /Jane Doe.*Co-Investigator.*Authorize/)
+    # @page.wait_for_authorized_users(text: /Jane Doe.*Co-Investigator.*Authorize/)
+    wait_for_javascript_to_finish
     expect(@page).to have_authorized_users(text: /Jane Doe.*Co-Investigator.*Authorize/)
   end
 

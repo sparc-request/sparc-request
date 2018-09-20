@@ -63,7 +63,7 @@ RSpec.feature 'User wants to add a document', js: true do
         end
 
         scenario 'and sees the new document' do
-          @page.wait_for_documents(text: 'Protocol')
+          wait_for_javascript_to_finish
           expect(@page).to have_documents(text: 'Protocol')
         end
       end

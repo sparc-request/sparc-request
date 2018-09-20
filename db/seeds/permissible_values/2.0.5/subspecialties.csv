@@ -1,198 +1,198 @@
-id,key,value,concept_code,parent_id,sort_order,category,default,reserved
-,1000,Predominantly Non-Clinical or Lab-Based Research Training (1000),,,1,subspecialty,,
-,1100,BIOCHEMISTRY (1100),,,2,subspecialty,,
-,1110,Biological Chemistry (1110),,,3,subspecialty,,
-,1120,Bioenergetics (1120),,,4,subspecialty,,
-,1130,Enzymology (1130),,,5,subspecialty,,
-,1140,Metabolism (1140),,,6,subspecialty,,
-,1200,BIOENGINEERING (1200),,,7,subspecialty,,
-,1210,Bioelectric/Biomagnetic (1210),,,8,subspecialty,,
-,1220,Biomaterials (1220),,,9,subspecialty,,
-,1230,Biomechanical Engineering (1230),,,10,subspecialty,,
-,1240,Imaging (1240),,,11,subspecialty,,
-,1250,Instrumentation and Devices (1250),,,12,subspecialty,,
-,1260,Mathematical Modeling (1260),,,13,subspecialty,,
-,1270,Medical Implant Science (1270),,,14,subspecialty,,
-,1280,Nanotechnology (1280),,,15,subspecialty,,
-,1290,Rehabilitation Engineering (1290),,,16,subspecialty,,
-,1310,Tissue Engineering (1310),,,17,subspecialty,,
-,1400,BIOPHYSICS (1400),,,18,subspecialty,,
-,1410,Kinetics (1410),,,19,subspecialty,,
-,1420,Spectroscopy (1420),,,20,subspecialty,,
-,1430,Structural Biology (1430),,,21,subspecialty,,
-,1440,Theoretical Biophysics (1440),,,22,subspecialty,,
-,1500,BIOTECHNOLOGY (1500),,,23,subspecialty,,
-,1510,Applied Molecular Biology (1510),,,24,subspecialty,,
-,1520,Bioprocessing and Fermentation (1520),,,25,subspecialty,,
-,1530,Metabolic Engineering (1530),,,26,subspecialty,,
-,1600,CELL AND DEVELOPMENTAL BIOLOGY (1600),,,27,subspecialty,,
-,1610,Cell Biology (1610),,,28,subspecialty,,
-,1620,Developmental Biology (1620),,,29,subspecialty,,
-,1700,CHEMISTRY (1700),,,30,subspecialty,,
-,1710,Analytical Chemistry (1710),,,31,subspecialty,,
-,1720,Bioinorganic Chemistry (1720),,,32,subspecialty,,
-,1730,Bioorganic Chemistry (1730),,,33,subspecialty,,
-,1740,Biophysical Chemistry (1740),,,34,subspecialty,,
-,1750,Medicinal Chemistry (1750),,,35,subspecialty,,
-,1760,Physical Chemistry (1760),,,36,subspecialty,,
-,1770,Synthetic Chemistry (1770),,,37,subspecialty,,
-,1900,ENVIRONMENTAL SCIENCES (1900),,,38,subspecialty,,
-,2000,GENETICS (2000),,,39,subspecialty,,
-,2010,Behavioral Genetics (2010),,,40,subspecialty,,
-,2020,Developmental Genetics (2020),,,41,subspecialty,,
-,2030,Genetic Epidemiology (2030),,,42,subspecialty,,
-,2040,Genetics of Aging (2040),,,43,subspecialty,,
-,2050,Genomics (2050),,,44,subspecialty,,
-,2060,Human Genetics (2060),,,45,subspecialty,,
-,2070,Molecular Genetics (2070),,,46,subspecialty,,
-,2080,Population Genetics (2080),,,47,subspecialty,,
-,2200,IMMUNOLOGY (2200),,,48,subspecialty,,
-,2210,Asthma and Allergic Mechanisms (2210),,,49,subspecialty,,
-,2220,Autoimmunity (2220),,,50,subspecialty,,
-,2230,Immunodeficiency (2230),,,51,subspecialty,,
-,2240,Immunogenetics (2240),,,52,subspecialty,,
-,2250,Immunopathology (2250),,,53,subspecialty,,
-,2260,Immunoregulation (2260),,,54,subspecialty,,
-,2270,Inflammation (2270),,,55,subspecialty,,
-,2280,Structural Immunology (2280),,,56,subspecialty,,
-,2290,Transplantation Biology (2290),,,57,subspecialty,,
-,2310,Vaccine Development (2310),,,58,subspecialty,,
-,2400,MICROBIOLOGY AND INFECTIOUS DISEASES (2400),,,59,subspecialty,,
-,2410,Bacteriology (2410),,,60,subspecialty,,
-,2420,Etiology (2420),,,61,subspecialty,,
-,2430,HIV/AIDS (2430),,,62,subspecialty,,
-,2440,Mycology (2440),,,63,subspecialty,,
-,2450,Parasitology (2450),,,64,subspecialty,,
-,2460,Pathogenesis of Infectious Diseases (2460),,,65,subspecialty,,
-,2470,Virology (2470),,,66,subspecialty,,
-,2600,MOLECULAR BIOLOGY (2600),,,67,subspecialty,,
-,2800,NEUROSCIENCE (2800),,,68,subspecialty,,
-,2810,Behavioral Neuroscience (2810),,,69,subspecialty,,
-,2820,Cellular Neuroscience (2820),,,70,subspecialty,,
-,2830,Cognitive Neuroscience (2830),,,71,subspecialty,,
-,2840,Communication Neuroscience (2840),,,72,subspecialty,,
-,2850,Computational Neuroscience (2850),,,73,subspecialty,,
-,2860,Developmental Neuroscience (2860),,,74,subspecialty,,
-,2870,Molecular Neuroscience (2870),,,75,subspecialty,,
-,2880,Neurochemistry (2880),,,76,subspecialty,,
-,2890,Neurodegeneration (2890),,,77,subspecialty,,
-,2910,Neuropharmacology (2910),,,78,subspecialty,,
-,2920,Systems/Integrative Neuroscience (2920),,,79,subspecialty,,
-,3100,NUTRITIONAL SCIENCES (3100),,,80,subspecialty,,
-,3200,PHARMACOLOGY (3200),,,81,subspecialty,,
-,3210,Molecular Pharmacology (3210),,,82,subspecialty,,
-,3220,Pharmacodynamics (3220),,,83,subspecialty,,
-,3230,Pharmacogenetics (3230),,,84,subspecialty,,
-,3240,Toxicology (3240),,,85,subspecialty,,
-,3300,PHYSIOLOGY (3300),,,86,subspecialty,,
-,3310,Aging (3310),,,87,subspecialty,,
-,3320,Anesthesiology (basic science) (3320),,,88,subspecialty,,
-,3330,Endocrinology (basic science) (3330),,,89,subspecialty,,
-,3340,Exercise Physiology (basic science) (3340),,,90,subspecialty,,
-,3350,Integrative Biology (3350),,,91,subspecialty,,
-,3360,Molecular Medicine (3360),,,92,subspecialty,,
-,3370,Physiological Optics (3370),,,93,subspecialty,,
-,3380,Reproductive Physiology (3380),,,94,subspecialty,,
-,3500,PLANT BIOLOGY (3500),,,95,subspecialty,,
-,3600,"PSYCHOLOGY, NON-CLINICAL (3600)",,,96,subspecialty,,
-,3610,Behavioral Communication Sciences (3610),,,97,subspecialty,,
-,3620,Behavioral Medicine (non-clinical) (3620),,,98,subspecialty,,
-,3630,Cognitive Psychology (3630),,,99,subspecialty,,
-,3640,Developmental and Child Psychology (3640),,,100,subspecialty,,
-,3650,Experimental and General Psychology (3650),,,101,subspecialty,,
-,3660,Mind-Body Studies (3660),,,102,subspecialty,,
-,3680,Neuropsychology (3680),,,103,subspecialty,,
-,3690,Personality and Emotion (3690),,,104,subspecialty,,
-,3710,Physiological Psychology and Psychobiology (3710),,,105,subspecialty,,
-,3720,Psychology of Aging (3720),,,106,subspecialty,,
-,3730,Psychometrics (3730),,,107,subspecialty,,
-,3740,Psychophysics (3740),,,108,subspecialty,,
-,3750,Social Psychology (3750),,,109,subspecialty,,
-,3900,PUBLIC HEALTH (3900),,,110,subspecialty,,
-,3910,Disease Prevention and Control (3910),,,111,subspecialty,,
-,3920,Epidemiology (3920),,,112,subspecialty,,
-,3930,Health Economics (3930),,,113,subspecialty,,
-,3940,Health Education (3940),,,114,subspecialty,,
-,3950,Health Policy Research (3950),,,115,subspecialty,,
-,3960,Health Services Research (3960),,,116,subspecialty,,
-,3970,Occupational and Environmental Health (3970),,,117,subspecialty,,
-,4100,"RADIATION, NON-CLINICAL (4100)",,,118,subspecialty,,
-,4110,Nuclear Chemistry (4110),,,119,subspecialty,,
-,4120,Radiation Physics (4120),,,120,subspecialty,,
-,4130,Radiobiology (4130),,,121,subspecialty,,
-,4200,SOCIAL SCIENCES (4200),,,122,subspecialty,,
-,4210,Anthropology (4210),,,123,subspecialty,,
-,4220,Bioethics (4220),,,124,subspecialty,,
-,4230,Demography and Population Studies (4230),,,125,subspecialty,,
-,4240,Economics (4240),,,126,subspecialty,,
-,4250,Education (4250),,,127,subspecialty,,
-,4260,Language and Linguistics (4260),,,128,subspecialty,,
-,4270,Sociology (4270),,,129,subspecialty,,
-,4400,STATISTICS AND/OR RESEARCH METHODS AND/OR INFORMATICS (4400),,,130,subspecialty,,
-,4410,Biostatistics and/or Biometry (4410),,,131,subspecialty,,
-,4420,Bioinformatics (4420),,,132,subspecialty,,
-,4430,Computational Science (4430),,,133,subspecialty,,
-,4440,Information Science (4440),,,134,subspecialty,,
-,4450,Clinical Trials Methodology (4450),,,135,subspecialty,,
-,4600,"TRAUMA, NON-CLINICAL (4600)",,,136,subspecialty,,
-,6000,Predominantly Clinical Research Training (6000),,,137,subspecialty,,
-,6100,ALLIED HEALTH (6100),,,138,subspecialty,,
-,6110,Audiology (6110),,,139,subspecialty,,
-,6120,Community Psychology (6120),,,140,subspecialty,,
-,6130,Exercise Physiology (clinical) (6130),,,141,subspecialty,,
-,6140,Medical Genetics (6140),,,142,subspecialty,,
-,6150,Occupational Health (6150),,,143,subspecialty,,
-,6160,Palliative Care (6160),,,144,subspecialty,,
-,6170,Physical Therapy (6170),,,145,subspecialty,,
-,6180,Pharmacy (6180),,,146,subspecialty,,
-,6190,Social Work (6190),,,147,subspecialty,,
-,6210,Speech-language Pathology (6210),,,148,subspecialty,,
-,6211,Rehabilitation (6211),,,149,subspecialty,,
-,6400,CLINICAL DENTISTRY (6400),,,150,subspecialty,,
-,6500,MEDICAL DISCIPLINES (6500),,,151,subspecialty,,
-,6510,Allergy (6510),,,152,subspecialty,,
-,6520,Anesthesiology (6520),,,153,subspecialty,,
-,6530,Behavioral Medicine (clinical) (6530),,,154,subspecialty,,
-,6540,Cardiovascular Diseases (6540),,,155,subspecialty,,
-,6550,Clinical Laboratory Medicine (6550),,,156,subspecialty,,
-,6560,Clinical Nutrition (6560),,,157,subspecialty,,
-,6570,Clinical Pharmacology (6570),,,158,subspecialty,,
-,6580,Complementary and Alternative Medicine (6580),,,159,subspecialty,,
-,6590,Clinical Psychology (6590),,,160,subspecialty,,
-,6610,Connective Tissue Diseases (6610),,,161,subspecialty,,
-,6620,Dermatology (6620),,,162,subspecialty,,
-,6630,Diabetes (6630),,,163,subspecialty,,
-,6640,Gastroenterology (6640),,,164,subspecialty,,
-,6650,Endocrinology (6650),,,165,subspecialty,,
-,6660,Immunology (6660),,,166,subspecialty,,
-,6670,Gene Therapy (clinical) (6670),,,167,subspecialty,,
-,6680,Geriatrics (6680),,,168,subspecialty,,
-,6690,Hematology (6690),,,169,subspecialty,,
-,6710,HIV/AIDS (6710),,,170,subspecialty,,
-,6820,Infectious Diseases (6820),,,171,subspecialty,,
-,6830,Liver Diseases (6830),,,172,subspecialty,,
-,6840,Metabolic Diseases (6840),,,173,subspecialty,,
-,6850,Nephrology (6850),,,174,subspecialty,,
-,6860,Neurology (6860),,,175,subspecialty,,
-,6870,Ophthalmology (6870),,,176,subspecialty,,
-,6880,Nuclear Medicine (6880),,,177,subspecialty,,
-,6890,OB-GYN (6890),,,178,subspecialty,,
-,6910,Oncology (6910),,,179,subspecialty,,
-,6920,Orthopedics (6920),,,180,subspecialty,,
-,6930,Otorhinolarynology (6930),,,181,subspecialty,,
-,6940,Preventive Medicine (6940),,,182,subspecialty,,
-,6950,"Radiation, Interventional (6950)",,,183,subspecialty,,
-,6960,Pulmonary Diseases (6960),,,184,subspecialty,,
-,6970,"Radiology, Diagnostic (6970)",,,185,subspecialty,,
-,6980,Rehabilitation Medicine (6980),,,186,subspecialty,,
-,6990,Psychiatry (6990),,,187,subspecialty,,
-,7110,Surgery (7110),,,188,subspecialty,,
-,7120,Trauma (7120),,,189,subspecialty,,
-,7130,Urology (7130),,,190,subspecialty,,
-,7300,PEDIATRIC DISCIPLINES (7300),,,191,subspecialty,,
-,7310,Pediatric Endocrinology (7310),,,192,subspecialty,,
-,7320,Pediatric Hematology (7320),,,193,subspecialty,,
-,7330,Pediatric Oncology (7330),,,194,subspecialty,,
-,7340,"Pediatric, Prematurity and Newborn (7340)",,,195,subspecialty,,
-,7500,NURSING (7500),,,196,subspecialty,,
-,7700,VETERINARY MEDICINE (7700),,,197,subspecialty,,
+id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_available
+,1000,Predominantly Non-Clinical or Lab-Based Research Training (1000),,,1,subspecialty,,,1
+,1100,BIOCHEMISTRY (1100),,,2,subspecialty,,,1
+,1110,Biological Chemistry (1110),,,3,subspecialty,,,1
+,1120,Bioenergetics (1120),,,4,subspecialty,,,1
+,1130,Enzymology (1130),,,5,subspecialty,,,1
+,1140,Metabolism (1140),,,6,subspecialty,,,1
+,1200,BIOENGINEERING (1200),,,7,subspecialty,,,1
+,1210,Bioelectric/Biomagnetic (1210),,,8,subspecialty,,,1
+,1220,Biomaterials (1220),,,9,subspecialty,,,1
+,1230,Biomechanical Engineering (1230),,,10,subspecialty,,,1
+,1240,Imaging (1240),,,11,subspecialty,,,1
+,1250,Instrumentation and Devices (1250),,,12,subspecialty,,,1
+,1260,Mathematical Modeling (1260),,,13,subspecialty,,,1
+,1270,Medical Implant Science (1270),,,14,subspecialty,,,1
+,1280,Nanotechnology (1280),,,15,subspecialty,,,1
+,1290,Rehabilitation Engineering (1290),,,16,subspecialty,,,1
+,1310,Tissue Engineering (1310),,,17,subspecialty,,,1
+,1400,BIOPHYSICS (1400),,,18,subspecialty,,,1
+,1410,Kinetics (1410),,,19,subspecialty,,,1
+,1420,Spectroscopy (1420),,,20,subspecialty,,,1
+,1430,Structural Biology (1430),,,21,subspecialty,,,1
+,1440,Theoretical Biophysics (1440),,,22,subspecialty,,,1
+,1500,BIOTECHNOLOGY (1500),,,23,subspecialty,,,1
+,1510,Applied Molecular Biology (1510),,,24,subspecialty,,,1
+,1520,Bioprocessing and Fermentation (1520),,,25,subspecialty,,,1
+,1530,Metabolic Engineering (1530),,,26,subspecialty,,,1
+,1600,CELL AND DEVELOPMENTAL BIOLOGY (1600),,,27,subspecialty,,,1
+,1610,Cell Biology (1610),,,28,subspecialty,,,1
+,1620,Developmental Biology (1620),,,29,subspecialty,,,1
+,1700,CHEMISTRY (1700),,,30,subspecialty,,,1
+,1710,Analytical Chemistry (1710),,,31,subspecialty,,,1
+,1720,Bioinorganic Chemistry (1720),,,32,subspecialty,,,1
+,1730,Bioorganic Chemistry (1730),,,33,subspecialty,,,1
+,1740,Biophysical Chemistry (1740),,,34,subspecialty,,,1
+,1750,Medicinal Chemistry (1750),,,35,subspecialty,,,1
+,1760,Physical Chemistry (1760),,,36,subspecialty,,,1
+,1770,Synthetic Chemistry (1770),,,37,subspecialty,,,1
+,1900,ENVIRONMENTAL SCIENCES (1900),,,38,subspecialty,,,1
+,2000,GENETICS (2000),,,39,subspecialty,,,1
+,2010,Behavioral Genetics (2010),,,40,subspecialty,,,1
+,2020,Developmental Genetics (2020),,,41,subspecialty,,,1
+,2030,Genetic Epidemiology (2030),,,42,subspecialty,,,1
+,2040,Genetics of Aging (2040),,,43,subspecialty,,,1
+,2050,Genomics (2050),,,44,subspecialty,,,1
+,2060,Human Genetics (2060),,,45,subspecialty,,,1
+,2070,Molecular Genetics (2070),,,46,subspecialty,,,1
+,2080,Population Genetics (2080),,,47,subspecialty,,,1
+,2200,IMMUNOLOGY (2200),,,48,subspecialty,,,1
+,2210,Asthma and Allergic Mechanisms (2210),,,49,subspecialty,,,1
+,2220,Autoimmunity (2220),,,50,subspecialty,,,1
+,2230,Immunodeficiency (2230),,,51,subspecialty,,,1
+,2240,Immunogenetics (2240),,,52,subspecialty,,,1
+,2250,Immunopathology (2250),,,53,subspecialty,,,1
+,2260,Immunoregulation (2260),,,54,subspecialty,,,1
+,2270,Inflammation (2270),,,55,subspecialty,,,1
+,2280,Structural Immunology (2280),,,56,subspecialty,,,1
+,2290,Transplantation Biology (2290),,,57,subspecialty,,,1
+,2310,Vaccine Development (2310),,,58,subspecialty,,,1
+,2400,MICROBIOLOGY AND INFECTIOUS DISEASES (2400),,,59,subspecialty,,,1
+,2410,Bacteriology (2410),,,60,subspecialty,,,1
+,2420,Etiology (2420),,,61,subspecialty,,,1
+,2430,HIV/AIDS (2430),,,62,subspecialty,,,1
+,2440,Mycology (2440),,,63,subspecialty,,,1
+,2450,Parasitology (2450),,,64,subspecialty,,,1
+,2460,Pathogenesis of Infectious Diseases (2460),,,65,subspecialty,,,1
+,2470,Virology (2470),,,66,subspecialty,,,1
+,2600,MOLECULAR BIOLOGY (2600),,,67,subspecialty,,,1
+,2800,NEUROSCIENCE (2800),,,68,subspecialty,,,1
+,2810,Behavioral Neuroscience (2810),,,69,subspecialty,,,1
+,2820,Cellular Neuroscience (2820),,,70,subspecialty,,,1
+,2830,Cognitive Neuroscience (2830),,,71,subspecialty,,,1
+,2840,Communication Neuroscience (2840),,,72,subspecialty,,,1
+,2850,Computational Neuroscience (2850),,,73,subspecialty,,,1
+,2860,Developmental Neuroscience (2860),,,74,subspecialty,,,1
+,2870,Molecular Neuroscience (2870),,,75,subspecialty,,,1
+,2880,Neurochemistry (2880),,,76,subspecialty,,,1
+,2890,Neurodegeneration (2890),,,77,subspecialty,,,1
+,2910,Neuropharmacology (2910),,,78,subspecialty,,,1
+,2920,Systems/Integrative Neuroscience (2920),,,79,subspecialty,,,1
+,3100,NUTRITIONAL SCIENCES (3100),,,80,subspecialty,,,1
+,3200,PHARMACOLOGY (3200),,,81,subspecialty,,,1
+,3210,Molecular Pharmacology (3210),,,82,subspecialty,,,1
+,3220,Pharmacodynamics (3220),,,83,subspecialty,,,1
+,3230,Pharmacogenetics (3230),,,84,subspecialty,,,1
+,3240,Toxicology (3240),,,85,subspecialty,,,1
+,3300,PHYSIOLOGY (3300),,,86,subspecialty,,,1
+,3310,Aging (3310),,,87,subspecialty,,,1
+,3320,Anesthesiology (basic science) (3320),,,88,subspecialty,,,1
+,3330,Endocrinology (basic science) (3330),,,89,subspecialty,,,1
+,3340,Exercise Physiology (basic science) (3340),,,90,subspecialty,,,1
+,3350,Integrative Biology (3350),,,91,subspecialty,,,1
+,3360,Molecular Medicine (3360),,,92,subspecialty,,,1
+,3370,Physiological Optics (3370),,,93,subspecialty,,,1
+,3380,Reproductive Physiology (3380),,,94,subspecialty,,,1
+,3500,PLANT BIOLOGY (3500),,,95,subspecialty,,,1
+,3600,"PSYCHOLOGY, NON-CLINICAL (3600)",,,96,subspecialty,,,1
+,3610,Behavioral Communication Sciences (3610),,,97,subspecialty,,,1
+,3620,Behavioral Medicine (non-clinical) (3620),,,98,subspecialty,,,1
+,3630,Cognitive Psychology (3630),,,99,subspecialty,,,1
+,3640,Developmental and Child Psychology (3640),,,100,subspecialty,,,1
+,3650,Experimental and General Psychology (3650),,,101,subspecialty,,,1
+,3660,Mind-Body Studies (3660),,,102,subspecialty,,,1
+,3680,Neuropsychology (3680),,,103,subspecialty,,,1
+,3690,Personality and Emotion (3690),,,104,subspecialty,,,1
+,3710,Physiological Psychology and Psychobiology (3710),,,105,subspecialty,,,1
+,3720,Psychology of Aging (3720),,,106,subspecialty,,,1
+,3730,Psychometrics (3730),,,107,subspecialty,,,1
+,3740,Psychophysics (3740),,,108,subspecialty,,,1
+,3750,Social Psychology (3750),,,109,subspecialty,,,1
+,3900,PUBLIC HEALTH (3900),,,110,subspecialty,,,1
+,3910,Disease Prevention and Control (3910),,,111,subspecialty,,,1
+,3920,Epidemiology (3920),,,112,subspecialty,,,1
+,3930,Health Economics (3930),,,113,subspecialty,,,1
+,3940,Health Education (3940),,,114,subspecialty,,,1
+,3950,Health Policy Research (3950),,,115,subspecialty,,,1
+,3960,Health Services Research (3960),,,116,subspecialty,,,1
+,3970,Occupational and Environmental Health (3970),,,117,subspecialty,,,1
+,4100,"RADIATION, NON-CLINICAL (4100)",,,118,subspecialty,,,1
+,4110,Nuclear Chemistry (4110),,,119,subspecialty,,,1
+,4120,Radiation Physics (4120),,,120,subspecialty,,,1
+,4130,Radiobiology (4130),,,121,subspecialty,,,1
+,4200,SOCIAL SCIENCES (4200),,,122,subspecialty,,,1
+,4210,Anthropology (4210),,,123,subspecialty,,,1
+,4220,Bioethics (4220),,,124,subspecialty,,,1
+,4230,Demography and Population Studies (4230),,,125,subspecialty,,,1
+,4240,Economics (4240),,,126,subspecialty,,,1
+,4250,Education (4250),,,127,subspecialty,,,1
+,4260,Language and Linguistics (4260),,,128,subspecialty,,,1
+,4270,Sociology (4270),,,129,subspecialty,,,1
+,4400,STATISTICS AND/OR RESEARCH METHODS AND/OR INFORMATICS (4400),,,130,subspecialty,,,1
+,4410,Biostatistics and/or Biometry (4410),,,131,subspecialty,,,1
+,4420,Bioinformatics (4420),,,132,subspecialty,,,1
+,4430,Computational Science (4430),,,133,subspecialty,,,1
+,4440,Information Science (4440),,,134,subspecialty,,,1
+,4450,Clinical Trials Methodology (4450),,,135,subspecialty,,,1
+,4600,"TRAUMA, NON-CLINICAL (4600)",,,136,subspecialty,,,1
+,6000,Predominantly Clinical Research Training (6000),,,137,subspecialty,,,1
+,6100,ALLIED HEALTH (6100),,,138,subspecialty,,,1
+,6110,Audiology (6110),,,139,subspecialty,,,1
+,6120,Community Psychology (6120),,,140,subspecialty,,,1
+,6130,Exercise Physiology (clinical) (6130),,,141,subspecialty,,,1
+,6140,Medical Genetics (6140),,,142,subspecialty,,,1
+,6150,Occupational Health (6150),,,143,subspecialty,,,1
+,6160,Palliative Care (6160),,,144,subspecialty,,,1
+,6170,Physical Therapy (6170),,,145,subspecialty,,,1
+,6180,Pharmacy (6180),,,146,subspecialty,,,1
+,6190,Social Work (6190),,,147,subspecialty,,,1
+,6210,Speech-language Pathology (6210),,,148,subspecialty,,,1
+,6211,Rehabilitation (6211),,,149,subspecialty,,,1
+,6400,CLINICAL DENTISTRY (6400),,,150,subspecialty,,,1
+,6500,MEDICAL DISCIPLINES (6500),,,151,subspecialty,,,1
+,6510,Allergy (6510),,,152,subspecialty,,,1
+,6520,Anesthesiology (6520),,,153,subspecialty,,,1
+,6530,Behavioral Medicine (clinical) (6530),,,154,subspecialty,,,1
+,6540,Cardiovascular Diseases (6540),,,155,subspecialty,,,1
+,6550,Clinical Laboratory Medicine (6550),,,156,subspecialty,,,1
+,6560,Clinical Nutrition (6560),,,157,subspecialty,,,1
+,6570,Clinical Pharmacology (6570),,,158,subspecialty,,,1
+,6580,Complementary and Alternative Medicine (6580),,,159,subspecialty,,,1
+,6590,Clinical Psychology (6590),,,160,subspecialty,,,1
+,6610,Connective Tissue Diseases (6610),,,161,subspecialty,,,1
+,6620,Dermatology (6620),,,162,subspecialty,,,1
+,6630,Diabetes (6630),,,163,subspecialty,,,1
+,6640,Gastroenterology (6640),,,164,subspecialty,,,1
+,6650,Endocrinology (6650),,,165,subspecialty,,,1
+,6660,Immunology (6660),,,166,subspecialty,,,1
+,6670,Gene Therapy (clinical) (6670),,,167,subspecialty,,,1
+,6680,Geriatrics (6680),,,168,subspecialty,,,1
+,6690,Hematology (6690),,,169,subspecialty,,,1
+,6710,HIV/AIDS (6710),,,170,subspecialty,,,1
+,6820,Infectious Diseases (6820),,,171,subspecialty,,,1
+,6830,Liver Diseases (6830),,,172,subspecialty,,,1
+,6840,Metabolic Diseases (6840),,,173,subspecialty,,,1
+,6850,Nephrology (6850),,,174,subspecialty,,,1
+,6860,Neurology (6860),,,175,subspecialty,,,1
+,6870,Ophthalmology (6870),,,176,subspecialty,,,1
+,6880,Nuclear Medicine (6880),,,177,subspecialty,,,1
+,6890,OB-GYN (6890),,,178,subspecialty,,,1
+,6910,Oncology (6910),,,179,subspecialty,,,1
+,6920,Orthopedics (6920),,,180,subspecialty,,,1
+,6930,Otorhinolarynology (6930),,,181,subspecialty,,,1
+,6940,Preventive Medicine (6940),,,182,subspecialty,,,1
+,6950,"Radiation, Interventional (6950)",,,183,subspecialty,,,1
+,6960,Pulmonary Diseases (6960),,,184,subspecialty,,,1
+,6970,"Radiology, Diagnostic (6970)",,,185,subspecialty,,,1
+,6980,Rehabilitation Medicine (6980),,,186,subspecialty,,,1
+,6990,Psychiatry (6990),,,187,subspecialty,,,1
+,7110,Surgery (7110),,,188,subspecialty,,,1
+,7120,Trauma (7120),,,189,subspecialty,,,1
+,7130,Urology (7130),,,190,subspecialty,,,1
+,7300,PEDIATRIC DISCIPLINES (7300),,,191,subspecialty,,,1
+,7310,Pediatric Endocrinology (7310),,,192,subspecialty,,,1
+,7320,Pediatric Hematology (7320),,,193,subspecialty,,,1
+,7330,Pediatric Oncology (7330),,,194,subspecialty,,,1
+,7340,"Pediatric, Prematurity and Newborn (7340)",,,195,subspecialty,,,1
+,7500,NURSING (7500),,,196,subspecialty,,,1
+,7700,VETERINARY MEDICINE (7700),,,197,subspecialty,,,1

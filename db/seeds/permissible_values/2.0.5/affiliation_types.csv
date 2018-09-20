@@ -1,8 +1,8 @@
-id,key,value,concept_code,parent_id,sort_order,category,default,reserved
-,cancer_center,Cancer Center,,,,affiliation_type,,
-,lipidomics_cobre,Lipidomics COBRE,,,,affiliation_type,,
-,oral_health_cobre,Center for Oral Health Research,,,,affiliation_type,,
-,cardiovascular_cobre,Cardiovascular COBRE,,,,affiliation_type,,
-,cchp,CCHP,,,,affiliation_type,,
-,inbre,INBRE,,,,affiliation_type,,
-,reach,REACH,,,,affiliation_type,,
+id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_available
+,cancer_center,Cancer Center,,,,affiliation_type,,,1
+,lipidomics_cobre,Lipidomics COBRE,,,,affiliation_type,,,1
+,oral_health_cobre,Center for Oral Health Research,,,,affiliation_type,,,1
+,cardiovascular_cobre,Cardiovascular COBRE,,,,affiliation_type,,,1
+,cchp,CCHP,,,,affiliation_type,,,1
+,inbre,INBRE,,,,affiliation_type,,,1
+,reach,REACH,,,,affiliation_type,,,1

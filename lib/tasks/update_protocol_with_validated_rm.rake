@@ -48,6 +48,7 @@ namespace :data do
         # update attributes but don't perform validation
         protocol_to_update.short_title = vrm['short_title']
         protocol_to_update.title = vrm['long_title']
+        protocol_to_update.project_number = vrm['coeus_project_number']
         protocol_to_update.rmid_validated = true
         protocol_to_update.save(validate: false)
 

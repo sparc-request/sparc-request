@@ -44,11 +44,13 @@ namespace :data do
     validated_research_masters.each do |vrm|
       if Protocol.exists?(research_master_id: vrm['id'])
         protocol_to_update = Protocol.find_by(research_master_id: vrm['id'])
-        protocol_to_update.update_attributes(
-          short_title: vrm['short_title'],
-          title: vrm['long_title'],
-          rmid_validated: true
-        )
+
+        # update attributes but don't perform validation
+        protocol_to_update.short_title = vrm['short_title']
+        protocol_to_update.title = vrm['long_title']
+        protocol_to_update.rmid_validated = true
+        protocol_to_update.save(validate: false)
+
         if protocol_to_update.has_human_subject_info?
           protocol_to_update
             .human_subjects_info

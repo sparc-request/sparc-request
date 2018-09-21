@@ -17,7 +17,7 @@ task move_process_ssrs: :environment do
   sub_service_requests = SubServiceRequest.where(organization_id: 77)
 
   CSV.open("tmp/ssr_altered_data_report.csv", "w+") do |csv|
-    csv << ['SSR ID', 'Line Item ID', 'Assigned or Created', 'New SSR ID', 'Sparc ID',
+    csv << ['SSR ID', 'Line Item ID', 'Is One Time Fee?', 'Assigned or Created', 'New SSR ID', 'Sparc ID',
             'Sponsor Name', 'Udak Number', 'Start Date', 'End Date', 'Recruitment Start',
             'Recruitment End', 'Study Cost']
     sub_service_requests.each do |ssr|
@@ -34,7 +34,7 @@ task move_process_ssrs: :environment do
           elsif org_ids_used.include?(org_id) && (org_id != ssr.organization.id)
             puts "Assigning request to line item"
             assign_to_ssr = find_existing_ssr(protocol, org_id)
-            (csv << ["#{ssr.id}", "#{line_item.id}", "Assigned", "#{assign_to_ssr.id}", '',
+            (csv << ["#{ssr.id}", "#{line_item.id}", '', "Assigned", "#{assign_to_ssr.id}", '',
                      '', '', '', '', '', '', '']) if ssr.in_work_fulfillment 
             line_item.update_attributes(sub_service_request_id: assign_to_ssr.id)
           else
@@ -46,7 +46,7 @@ task move_process_ssrs: :environment do
                                             service_requester_id: ssr.service_requester.id, submitted_at: ssr.submitted_at,
                                             protocol_id: protocol.id, in_work_fulfillment: ssr.in_work_fulfillment)
             new_ssr.save(validate: false)
-            (csv << ["#{ssr.id}", "#{line_item.id}", "Created", "#{new_ssr.id}", "#{protocol.id}", "#{protocol.sponsor_name}",
+            (csv << ["#{ssr.id}", "#{line_item.id}", "#{line_item.service.one_time_fee}", "Created", "#{new_ssr.id}", "#{protocol.id}", "#{protocol.sponsor_name}",
                      "#{protocol.udak_project_number}", "#{protocol.start_date}", "#{protocol.end_date}",
                      "#{protocol.recruitment_start_date}", "#{protocol.recruitment_end_date}", "#{protocol.direct_cost_total(ssr.service_request)}"]) if ssr.in_work_fulfillment
             line_item.update_attributes(sub_service_request_id: new_ssr.id)

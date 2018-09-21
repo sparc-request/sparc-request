@@ -55,7 +55,7 @@
               data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
               title: t(:protocols)[:tooltips][:pro_number]
             .col-lg-10
-              = hs_form.text_field :pro_number, class: 'form-control'
+              = hs_form.text_field :pro_number, class: ['form-control', Setting.get_value("research_master_enabled") ? 'rm-id-dependent rm-locked-fields' : '']
 
           .form-group.row
             = hs_form.label :irb_of_record, t(:protocols)[:studies][:research_involving][:humans][:record_irb], class: 'col-lg-2 control-label'

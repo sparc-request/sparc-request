@@ -362,6 +362,9 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
   sheet.add_row ["Business Manager:", @protocol.billing_managers.map(&:full_name).try(:join, ', ')], :style => [bold_default, default]
   sheet.add_row ["Funding Source:", @protocol.display_funding_source_value], :style => [bold_default, default]
   sheet.add_row ["Indirect Cost Rate:", @protocol.indirect_cost_rate.try(:/, 100.0) || 0.0], style: [bold_default, percent]
+
+  indirect_cost_ref = sheet.rows.last.cells.last.r
+
   sheet.add_row ["Staff Fringe Rate:", 0], style: [bold_default, percent]
 
   indirect_cost_rate_row = sheet.rows.length
@@ -411,7 +414,7 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
       line_item_style_array  = [default, default, money]
       line_item_style_array << money if @industry_funded
       line_item_style_array += [money, default]
-      line_item_style_array += [[default, money, money]] if @industry_funded
+      line_item_style_array += [default, money, money] if @industry_funded
 
       line_item_row          = ["#{li.service.name} (#{li.sub_service_request.ssr_id})", statuses[li.sub_service_request.status], cents_to_dollars(li.service.current_effective_pricing_map.full_rate)]
       line_item_row         << cents_to_dollars(li.service.current_effective_pricing_map.full_rate) if @industry_funded
@@ -448,11 +451,13 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
   if @industry_funded
     total_study_cost    = @protocol.arms.any? ? "=#{total_cost_ref}+#{total_study_cost_cells.join('+')}" : "=#{total_cost_ref}"
     total_margin        = @protocol.arms.any? ? "=#{margin_to_cover_ref}+#{total_margin_cost_cells.join('+')}" : "=#{margin_to_cover_ref}"
-    margin_cell         = sheet.rows.last.cells.last.r
     breakeven_analysis  = @protocol.arms.any? ? "=ROUND((#{total_users_cost_cell}-#{margin_to_cover_ref})/(#{total_margin_cost_cells.join('+')}),0)" : "=ROUND(#{total_users_cost_cell}-#{margin_to_cover_ref}, 0)"
 
     sheet.add_row ["Total Study Cost (Sponsor Cost)", total_study_cost], :style => [default, money]
     sheet.add_row ["Total Margin", total_margin], :style => [default, money]
+
+    margin_cell = sheet.rows.last.cells.last.r
+    
     sheet.add_row ["Study Contingency", "=#{margin_cell}-#{total_users_cost_cell}"], :style => [default, money]
     sheet.add_row ["Breakeven Analysis", breakeven_analysis]
   end

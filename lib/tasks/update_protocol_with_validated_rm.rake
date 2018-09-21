@@ -53,10 +53,10 @@ namespace :data do
           protocol_to_update
             .human_subjects_info
             .update_attributes(
-              pro_number: vrm['pro_number'],
-              initial_irb_approval_date: vrm['date_initially_approved'],
-              irb_approval_date: vrm['date_approved'],
-              irb_expiration_date: vrm['date_expiration']
+              pro_number:                 vrm['eirb_pro_number'],
+              initial_irb_approval_date:  vrm['date_initially_approved'],
+              irb_approval_date:          vrm['date_approved'],
+              irb_expiration_date:        vrm['date_expiration']
             )
         end
       end

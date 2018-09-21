@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_09_05_143632) do
+ActiveRecord::Schema.define(version: 2018_09_21_145517) do
 
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
@@ -562,7 +562,7 @@ ActiveRecord::Schema.define(version: 2018_09_05_143632) do
     t.text "brief_description"
     t.decimal "indirect_cost_rate", precision: 6, scale: 2
     t.string "study_phase"
-    t.string "udak_project_number"
+    t.string "project_number"
     t.string "funding_rfa"
     t.string "funding_status"
     t.string "potential_funding_source"

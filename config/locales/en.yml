@@ -484,7 +484,7 @@ en:
       financial_information:
         header: "Financial Information"
         subtext: "Used for reporting purposes and saved for your future use"
-        udak_project_number: "Financial Account (UDAK #):"
+        project_number: "Financial Account:"
         rate: "Indirect Cost Rate:"
         rfa: "Funding Opportunity # / RFA:"
         potential_start_date: "Potential Funding Start Date:"
@@ -936,7 +936,7 @@ en:
     submission_type: "Submission Type:"
     title: "Protocol Title:*"
     type: "Study Type (Check all that apply)"
-    udak_project_number: "Financial Account (UDAK#):"
+    project_number: "Financial Account (UDAK#):"
     vertebrate_animals: "Vertebrate Animals:"
 
   # Fulfillment tab

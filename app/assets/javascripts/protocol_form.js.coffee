@@ -55,6 +55,7 @@ $(document).ready ->
         success: (data) ->
           $('#protocol_short_title').val(data.short_title)
           $('#protocol_title').val(data.long_title)
+          $('#protocol_project_number').val(data.coeus_project_number)
           $('#protocol_human_subjects_info_attributes_initial_irb_approval_date').val(data.date_initially_approved)
           $('#protocol_human_subjects_info_attributes_irb_approval_date').val(data.date_approved)
           $('#protocol_human_subjects_info_attributes_irb_expiration_date').val(data.date_expiration)

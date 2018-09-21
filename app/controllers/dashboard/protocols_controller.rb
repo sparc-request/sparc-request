@@ -286,7 +286,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         :study_type_question_group_id,
         :title,
         :type,
-        :udak_project_number,
+        :project_number,
         :research_master_id,
         research_types_info_attributes: [:id, :human_subjects, :vertebrate_animals, :investigational_products, :ip_patents],
         study_types_attributes: [:id, :name, :new, :position, :_destroy],

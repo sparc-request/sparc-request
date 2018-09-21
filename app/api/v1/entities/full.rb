@@ -118,7 +118,7 @@ module V1
             :sponsor_name,
             :brief_description,
             :indirect_cost_rate,
-            :udak_project_number,
+            :project_number,
             :funding_rfa,
             :funding_status,
             :potential_funding_source,

@@ -39,7 +39,7 @@ class RequestGrantBillingPdf
 
     hr_pro_numbers = ""
     hr_pro_numbers = [protocol.human_subjects_info.hr_number, protocol.human_subjects_info.pro_number].compact.join(", ") if protocol.human_subjects_info
-    udak_number = protocol.udak_project_number || ""
+    project_number = protocol.project_number || ""
     short_title = protocol.short_title
 
     # question 1
@@ -47,7 +47,7 @@ class RequestGrantBillingPdf
 
     # question 2
     pdf.text_box hr_pro_numbers, text_box_options(:at => [280, 636], :width => 100)
-    pdf.text_box udak_number, text_box_options(:at => [210, 620], :width => 220)
+    pdf.text_box project_number, text_box_options(:at => [210, 620], :width => 220)
     pdf.text_box billing_business_managers, text_box_options(:at => [275, 592], :width => 160)
 
     # question 3

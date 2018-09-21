@@ -42,10 +42,12 @@ module FormsHelper
 
   def complete_form_button(form, respondable)
     link_to(
-      'Complete',
+      t(:actions)[:complete],
       new_surveyor_response_path(type: form.class.name, survey_id: form.id, respondable_id: respondable.id, respondable_type: respondable.class.name),
       remote: true,
-      class: 'btn btn-success new-form-response'
+      class: 'btn btn-success new-form-response',
+      title: t(:surveyor)[:responses][:tooltips][:complete],
+      data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}', container: 'body' }
     )
   end
 end

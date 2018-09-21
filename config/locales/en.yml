@@ -30,6 +30,7 @@ en:
     approve: "Approve"
     cancel: "Cancel"
     close: "Close"
+    complete: "Complete"
     continue: "Continue"
     copy: "Copy"
     create: "Create"
@@ -123,9 +124,9 @@ en:
       visit_count: "Visit Count"
     delete_warning: "Are you sure you want to delete this arm?"
     screening_tooltip: "Enter the number of subjects you expect to screen as well as how many screening visits are required. If no screening phase is required, you can change the name of the Arm to meet your needs."
-    name_tooltip: "Arm Name must be unique within a protocol, and the following special characters are not allowed: [ ] * / \\ ? : )."
     tooltips:
-      add_arm: 'A group, or subgroup, of participants in a clinical trial that receives specific intervention, or no intervention, according to the study protocol'
+      add_arm: 'A group, or subgroup, of participants in a clinical trial that receive specific intervention, or no intervention, according to the study protocol.'
+      name: "A group, or subgroup, of participants in a clinical trial that receive specific intervention, or no intervention, according to the study protocol. Arm Name must be unique within a protocol, and the following special characters are not allowed: []*/\\?:)."
       subject_count: 'Total number of estimated participants per arm'
       visit_count: 'Total number of visits per arm'
 
@@ -188,9 +189,12 @@ en:
       rights: "Proxy Rights"
       epic_emr_access: 'EPIC EMR </br> Access'
     tooltips:
-      epic_access: 'Granting Epic EMR access populates study personnel in Epic Research Record as long as they have an Epic login'
-      rights: 'Defines access to protocol in SPARCDashboard'
       add_user: "Ability to add an Authorized User to a protocol"
+      epic_access: 'Granting Epic EMR access populates study personnel in Epic Research Record as long as they have Epic certification/training.'
+      rights: 'Defines access to protocol in SPARCDashboard'
+      approve: 'Full protocol access.'
+      view: 'View only access.'
+      none: 'No protocol access or email notifications.'
 
   #############
   # CALENDARS #
@@ -273,7 +277,8 @@ en:
     tooltips:
       total_per_study: 'Total proposed cost of Non-clinical Services per study'
       move_visit_button: 'Ability to change visit position'
-      pppv_total_costs: 'Total proposed cost of services per arm'
+      pppv_total_costs: 'Total proposed cost of Clinical Services per arm.'
+      otf_total_costs: 'Total proposed cost of Non-Clinical Services per Study/Project.'
       line_item_notes: 'Line Item Notes'
       pppv_status: 'Used to track the progress of a service'
       quantity_type: 'Unit of measurement'
@@ -504,10 +509,6 @@ en:
           initial_irb_approval_date: "Initial IRB Approval Date:"
           irb_approval_date: "Current IRB Approval Date:"
           irb_expiration_date: "IRB Expiration Date:"
-        tooltips:
-          ide: 'Investigation Device Exemption (IDE) Number'
-          hde: 'Humanitarian Device Exemption (HDE) Number'
-          hud: 'Humanitarian Use Device (HUD) Number'
         vertebrates:
           header: "Vertebrate Animals"
           iacuc_number: "IACUC #:"
@@ -560,17 +561,20 @@ en:
       phase: "Select Study Phase(s)"
       submission_type: "Select a Submission Type"
     tooltips:
-      epic: 'Defines whether record will interface to Epic EMR upon submission'
-      study_type_questions: 'Information needed to determine confidentiality of patients/protocols'
-      nct_number: 'Clinicaltrials.gov Registry Number'
-      pro_number: 'Institutional Review Board (IRB) Unique Identifier'
-      ind_number: 'Investigational New Drug (IND) Number'
-      short_title: 'An abbreviated form of the title used to identify your study/project. Special characters outside the allowed range will be removed automatically.'
-      title: 'Full title of your study/project. Special characters outside the allowed range will be removed automatically.'
-      funding_status: 'Indicates whether or not funding has been applied for or obtained'
-      potential_funding_source: 'Funding source that has been applied for but not yet obtained. Pricing is logically driven off this field'
-      funding_source: 'Funding source which drives research pricing for your study/project'
-      sponsor_name: 'Specify name of the entity funding the project/study'
+      short_title: 'An abbreviated form of the title used to identify your Study/Project.'
+      title: 'Full title of your Study/Project.'
+      funding_status: 'Indicates whether or not funding has been applied for or obtained.'
+      potential_funding_source: 'Funding source that has been applied for but not yet obtained, which also drives research pricing.'
+      funding_source: 'Funding source which drives research pricing for your Study/Project'
+      sponsor_name: 'Specify name of the entity funding the Study/Project.'
+      epic: 'Defines whether record will interface to Epic EMR.'
+      study_type_questions: 'Information needed to determine confidentiality of patients/protocols.'
+      nct_number: 'Clinicaltrials.gov Registry Number.'
+      pro_number: 'Institutional Review Board (IRB) Unique Identifier.'
+      ind_number: 'Investigational New Drug Number'
+      ide: 'Investigation Device Exemption Number'
+      hde: 'Humanitarian Device Exemption Number'
+      hud: 'Humanitarian Use Device Number'
     authorized_users:
       header: "Add Primary PI"
       primary_pi: "Primary PI:"
@@ -615,6 +619,7 @@ en:
       pi: "PI Contribution:"
       cost: "Subsidy Cost:"
     tooltips:
+      request_subsidy: "Add a Subsidy request."
       request_cost: "Total cost of services eligible for a subsidy"
       percent: "Percent of Current Request Cost to be covered by Service Provider"
       pi: "Amount PI is responsible to provide to Service Provider"

@@ -53,11 +53,11 @@ SPARCRequest utilizes a number of settings to allow you to customize content and
 
 You may opt to manually import new settings or update your existing settings by running the following command:
 
-  rake data:import_settings
+    rake data:import_settings
 
 or you may entirely refresh your settings by running the following command:
 
-  rake data:regenerate_settings
+    rake data:regenerate_settings
 
 **Note** If you are upgrading from an older version of SPARCRequest, your application may still be utilizing `config/application.yml`, `config/epic.yml`, and `config/ldap.yml` for settings. Your settings will automatically be imported from these files when running the settings import task. Once your settings have been imported, these files are not longer needed and may be deleted.
 
@@ -106,6 +106,7 @@ SPARCRequest has many settings that are used internally to customize content and
 #### 2.2 Configuring Omniauth
 Your institution may opt to use [Omniauth](https://github.com/omniauth/omniauth) authentication plugins such as [CAS](https://apereo.github.io/cas/5.2.x/index.html) and [Shibboleth](https://www.shibboleth.net/) for user authentication in SPARCRequest. Only CAS and Shibboleth are supported at this time, but support for other Omniauth plugins may be implemented. These settings are generated from `config/settings/oauth.json`.
 
+##### Omniauth Configuration
 - **use_cas**: This determines whether the application will allow users to log in using CAS.
 - **use_cas_only**: This determines whether the application will only allow users to log in using CAS. This has lower precedence than `use_shibboleth_only` when both are enabled.
 - **use_shibboleth**: This determines whether the application will allow users to log in using Shibboleth.
@@ -155,6 +156,7 @@ Your institution may opt to use [Epic](https://www.epic.com/) to store health re
 #### 2.5 Configuring RMID
 Your institution may opt to use Research Master ID (RMID) to connect records between SPARCRequest and other systems, such as eIRB and Coeus. These settings are generated from `config/settings/rmid.json`.
 
+##### RMID Configuration
 - **research_master_enabled**: This determines whether SPARCRequest protocols will be connected with a research master record.
 - **research_master_link**: This is the URL of your institution's RMID application.
 - **research_master_api**: This is the URL of your institution's RMID API.

@@ -22,9 +22,6 @@ class SettingsPopulator
   include DataTypeValidator
 
   def initialize()
-    @data   = {}
-    @config = {}
-
     load_data_and_config
   end
 
@@ -39,7 +36,7 @@ class SettingsPopulator
           else
             setting = Setting.create(
               key:            hash['key'],
-              value:          @config[namespace][hash['key']] || hash['value'],
+              value:          @config[namespace][hash['key']].present? ? @config[namespace][hash['key']] : hash['value'],
               data_type:      get_type(hash['value']),
               friendly_name:  hash['friendly_name'],
               description:    hash['description'],
@@ -63,6 +60,9 @@ class SettingsPopulator
   private
 
   def load_data_and_config
+    @data   = {}
+    @config = {}
+
     Dir.glob('config/settings/*.json').each do |file|
       filename  = file.split('/').last
       namespace = filename.gsub('.json', '')

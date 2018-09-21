@@ -135,7 +135,7 @@
               t(:protocols)[:studies][:research_involving][:products][:ind_number],
               class: 'col-lg-2 control-label',
               data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
-              title: 'Investigational New Drug (IND) Number'
+              title: t(:protocols)[:tooltips][:ind_number]
             .col-lg-10
               = ip_form.text_field :ind_number, class: 'form-control'
 
@@ -152,7 +152,7 @@
                 t(:protocols)[:studies][:research_involving][:products][:numbers][exemption_type.to_sym],
                 class: 'col-lg-2 control-label',
                 data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
-                title: t(:protocols)[:studies][:research_involving][:tooltips][exemption_type.to_sym]
+                title: t(:protocols)[:tooltips][exemption_type.to_sym]
               .col-lg-1.text-center
                 = ip_form.radio_button :exemption_type, exemption_type, class: "form-control exemption-radio", data: { type: exemption_type }
               - if exemption_type == ip_form.object.exemption_type

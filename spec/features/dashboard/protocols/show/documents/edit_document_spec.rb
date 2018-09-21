@@ -51,7 +51,7 @@ RSpec.feature 'User wants to edit a document', js: true do
       end
 
       scenario 'and sees the updated document' do
-        @page.wait_for_documents(text: 'Protocol')
+        wait_for_javascript_to_finish
         expect(@page).to have_documents(text: 'Consent')
       end
     end

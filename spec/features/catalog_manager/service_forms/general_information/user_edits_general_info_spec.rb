@@ -30,7 +30,7 @@ RSpec.describe 'User edits Service General Info', js: true do
     @program     = create(:program, parent_id: @provider.id)
     @service     = create(:service, organization: @program)
     create(:catalog_manager, organization_id: @institution.id, identity_id: Identity.where(ldap_uid: 'jug2').first.id)
-    create(:tag, name: "clinical work fulfillment")
+    create(:tag, name: "epic")
   end
 
   context 'on a Service' do
@@ -109,13 +109,13 @@ RSpec.describe 'User edits Service General Info', js: true do
       end
 
       it 'should select a tag' do
-        bootstrap_select('#service_tag_list', 'Fulfillment')
+        bootstrap_select('#service_tag_list', 'Epic')
         find('form.form-horizontal').click
         click_button 'Save'
         wait_for_javascript_to_finish
 
         @service.reload
-        expect(@service.tag_list.include?("clinical work fulfillment")).to eq(true)
+        expect(@service.tag_list.include?("epic")).to eq(true)
       end
 
       it 'should toggle Clinical/Non-clinical services if there is no pricing map' do

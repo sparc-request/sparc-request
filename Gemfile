@@ -113,7 +113,7 @@ group :development do
 end
 
 group :test do
-  gem 'capybara-webkit'
+  gem 'capybara-webkit', git: 'https://github.com/thoughtbot/capybara-webkit', branch: 'master'
   gem 'database_cleaner'
   gem 'email_spec'
   gem "factory_bot_rails"

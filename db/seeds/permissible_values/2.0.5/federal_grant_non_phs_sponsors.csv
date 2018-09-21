@@ -1,35 +1,35 @@
-id,key,value,concept_code,parent_id,sort_order,category,default,reserved
-,ACF,ACF Administration for Children and Families,,,1,federal_grant_non_phs_sponsor,,
-,ADD,ADD Administration on Developmental Disabilities,,,2,federal_grant_non_phs_sponsor,,
-,AID,AID Agency for International Development,,,3,federal_grant_non_phs_sponsor,,
-,AOA,AOA Administration on Aging,,,4,federal_grant_non_phs_sponsor,,
-,ARC,ARC Appalachian Regional Commission,,,5,federal_grant_non_phs_sponsor,,
-,CNCS,CNCS Corporation for National and Community Service,,,6,federal_grant_non_phs_sponsor,,
-,DOD,DOD U.S. Department of Defense,,,7,federal_grant_non_phs_sponsor,,
-,DOE,DOE U.S. Department of Energy,,,8,federal_grant_non_phs_sponsor,,
-,ED,ED U.S. Department of Education,,,9,federal_grant_non_phs_sponsor,,
-,EPA,EPA U.S. Environmental Protection Agency,,,10,federal_grant_non_phs_sponsor,,
-,FEMA,FEMA Federal Emergency Management Administration,,,11,federal_grant_non_phs_sponsor,,
-,HUD,HUD U.S. Department of Housing and Urban Development,,,12,federal_grant_non_phs_sponsor,,
-,NASA,NASA National Aeronautics and Space Administration,,,13,federal_grant_non_phs_sponsor,,
-,NEA,NEA National Endowment for the Arts,,,14,federal_grant_non_phs_sponsor,,
-,NEH,NEH National Endowment for the Humanities,,,15,federal_grant_non_phs_sponsor,,
-,NHRPC,NHRPC National Historical Records and Publications Commission,,,16,federal_grant_non_phs_sponsor,,
-,NSF,NSF National Science Foundation,,,17,federal_grant_non_phs_sponsor,,
-,NWP,NWP National Writing Project,,,18,federal_grant_non_phs_sponsor,,
-,PC,PC Peace Corps,,,19,federal_grant_non_phs_sponsor,,
-,SBA,SBA U.S. Small Business Administration,,,20,federal_grant_non_phs_sponsor,,
-,TVA,TVA Tennessee Valley Authority,,,21,federal_grant_non_phs_sponsor,,
-,UCARC,UCARC U.S. China Advanced Research Center,,,22,federal_grant_non_phs_sponsor,,
-,USDA,USDA U.S. Department of Agriculture,,,23,federal_grant_non_phs_sponsor,,
-,USDC,USDC U.S. Department of Commerce,,,24,federal_grant_non_phs_sponsor,,
-,USDI,USDI U.S. Department of Interior,,,25,federal_grant_non_phs_sponsor,,
-,USDJ,USDJ U.S. Department of Justice,,,26,federal_grant_non_phs_sponsor,,
-,USDL,USDL U.S. Department of Labor,,,27,federal_grant_non_phs_sponsor,,
-,USDS,USDS U.S. Department of State,,,28,federal_grant_non_phs_sponsor,,
-,USDT,USDT U.S. Department of Transportation,,,29,federal_grant_non_phs_sponsor,,
-,USGS,USGS U.S. Geological Survey,,,30,federal_grant_non_phs_sponsor,,
-,USIA,USIA U.S. Information Agency,,,31,federal_grant_non_phs_sponsor,,
-,USIP,USIP U.S. Institute of Peace,,,32,federal_grant_non_phs_sponsor,,
-,USOC,USOC U.S. Olympic Committee,,,33,federal_grant_non_phs_sponsor,,
-,VA,VA Veterans Administration,,,34,federal_grant_non_phs_sponsor,,
+id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_available
+,ACF,ACF Administration for Children and Families,,,1,federal_grant_non_phs_sponsor,,,1
+,ADD,ADD Administration on Developmental Disabilities,,,2,federal_grant_non_phs_sponsor,,,1
+,AID,AID Agency for International Development,,,3,federal_grant_non_phs_sponsor,,,1
+,AOA,AOA Administration on Aging,,,4,federal_grant_non_phs_sponsor,,,1
+,ARC,ARC Appalachian Regional Commission,,,5,federal_grant_non_phs_sponsor,,,1
+,CNCS,CNCS Corporation for National and Community Service,,,6,federal_grant_non_phs_sponsor,,,1
+,DOD,DOD U.S. Department of Defense,,,7,federal_grant_non_phs_sponsor,,,1
+,DOE,DOE U.S. Department of Energy,,,8,federal_grant_non_phs_sponsor,,,1
+,ED,ED U.S. Department of Education,,,9,federal_grant_non_phs_sponsor,,,1
+,EPA,EPA U.S. Environmental Protection Agency,,,10,federal_grant_non_phs_sponsor,,,1
+,FEMA,FEMA Federal Emergency Management Administration,,,11,federal_grant_non_phs_sponsor,,,1
+,HUD,HUD U.S. Department of Housing and Urban Development,,,12,federal_grant_non_phs_sponsor,,,1
+,NASA,NASA National Aeronautics and Space Administration,,,13,federal_grant_non_phs_sponsor,,,1
+,NEA,NEA National Endowment for the Arts,,,14,federal_grant_non_phs_sponsor,,,1
+,NEH,NEH National Endowment for the Humanities,,,15,federal_grant_non_phs_sponsor,,,1
+,NHRPC,NHRPC National Historical Records and Publications Commission,,,16,federal_grant_non_phs_sponsor,,,1
+,NSF,NSF National Science Foundation,,,17,federal_grant_non_phs_sponsor,,,1
+,NWP,NWP National Writing Project,,,18,federal_grant_non_phs_sponsor,,,1
+,PC,PC Peace Corps,,,19,federal_grant_non_phs_sponsor,,,1
+,SBA,SBA U.S. Small Business Administration,,,20,federal_grant_non_phs_sponsor,,,1
+,TVA,TVA Tennessee Valley Authority,,,21,federal_grant_non_phs_sponsor,,,1
+,UCARC,UCARC U.S. China Advanced Research Center,,,22,federal_grant_non_phs_sponsor,,,1
+,USDA,USDA U.S. Department of Agriculture,,,23,federal_grant_non_phs_sponsor,,,1
+,USDC,USDC U.S. Department of Commerce,,,24,federal_grant_non_phs_sponsor,,,1
+,USDI,USDI U.S. Department of Interior,,,25,federal_grant_non_phs_sponsor,,,1
+,USDJ,USDJ U.S. Department of Justice,,,26,federal_grant_non_phs_sponsor,,,1
+,USDL,USDL U.S. Department of Labor,,,27,federal_grant_non_phs_sponsor,,,1
+,USDS,USDS U.S. Department of State,,,28,federal_grant_non_phs_sponsor,,,1
+,USDT,USDT U.S. Department of Transportation,,,29,federal_grant_non_phs_sponsor,,,1
+,USGS,USGS U.S. Geological Survey,,,30,federal_grant_non_phs_sponsor,,,1
+,USIA,USIA U.S. Information Agency,,,31,federal_grant_non_phs_sponsor,,,1
+,USIP,USIP U.S. Institute of Peace,,,32,federal_grant_non_phs_sponsor,,,1
+,USOC,USOC U.S. Olympic Committee,,,33,federal_grant_non_phs_sponsor,,,1
+,VA,VA Veterans Administration,,,34,federal_grant_non_phs_sponsor,,,1

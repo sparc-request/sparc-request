@@ -62,6 +62,6 @@
               %span.glyphicon.glyphicon-remove
 - else
   .col-xs-12
-    %button.btn.btn-sm.btn-success.add-subsidy-button{ data: { ssrid: sub_service_request.id, admin: admin.to_s } }
+    %button.btn.btn-sm.btn-success.add-subsidy-button{ title: t(:subsidies)[:tooltips][:request_subsidy], data: { ssrid: sub_service_request.id, admin: admin.to_s, toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }
       %span
         = t(:subsidies)[:add]

@@ -30,8 +30,12 @@ class CreateStudyTypeQuestions < ActiveRecord::Migration[4.2]
 
     friendly_ids = ['higher_level_of_privacy', 'certificate_of_conf', 'access_study_info', 'epic_inbasket', 'research_active', 'restrict_sending']
 
+    StudyTypeQuestion.auditing_enabled = false
+
     STUDY_TYPE_QUESTIONS.each_with_index do |stq, index|
       StudyTypeQuestion.create(order: index + 1, question: stq, friendly_id: friendly_ids[index])
     end
+
+    StudyTypeQuestion.auditing_enabled = true
   end
 end

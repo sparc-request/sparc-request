@@ -5,7 +5,7 @@ task restore_ssr_data: :environment do
   # protocol2 = Protocol.find(12168)
   service_request = ServiceRequest.find(1808431)
   # service_request2 = ServiceRequest.find(1764044)
-"status"=>"draft", "organization_id"=>166, "service_request_id"=>1808431, "owner_id"=>17231, "ssr_id"=>"0001", "deleted_at"=>nil, "consult_arranged_date"=>nil, "requester_contacted_date"=>nil, "nursing_nutrition_approved"=>false, "lab_approved"=>false, "imaging_approved"=>false, "committee_approved"=>false, "in_work_fulfillment"=>true, "routing"=>nil, "org_tree_display"=>"SCTR/Self-Service Research Data & Feasibility", "service_requester_id"=>12591, "submitted_at"=>Thu, 02 Aug 2018 11:00:00 EDT -04:00, "protocol_id"=>12374
+
   ssr1 = SubServiceRequest.create(service_request_id: service_request.id, organization_id: 166, owner_id: 17231, ssr_id: "0001", status: "draft", created_at: "2018-08-02 18:04:21", updated_at: "2018-08-14 18:07:04", deleted_at: nil, nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false, in_work_fulfillment: true, routing: nil, org_tree_display: "SCTR/Self-Service Research Data & Feasibility", service_requester_id: 12591, submitted_at: "2018-08-02 17:11:57", protocol_id: protocol.id)
 
   ssr1_line_item = LineItem.create(service_request_id: service_request.id, sub_service_request_id: ssr1.id, service_id: 10200, optional: true, quantity: 1, complete_date: nil, in_process_date: nil, created_at: "2018-08-02 14:43:10", updated_at: "2018-08-14 16:54:01", deleted_at: nil, units_per_quantity: 1)
@@ -17,7 +17,7 @@ task restore_ssr_data: :environment do
   # ssr2_line_item3 = LineItem.create(service_request_id: service_request2.id, sub_service_request_id: ssr2.id, service_id: 10229, optional: true, quantity: 1, complete_date: nil, in_process_date: nil, created_at: "2016-05-31 14:43:10", updated_at: "2017-08-24 18:55:28", deleted_at: nil, units_per_quantity: 1)
 
   
-  puts "Sub service request #{30835} now has id of #{ssr1.id}"
+  puts "Sub service request #{31911} now has id of #{ssr1.id}"
   # puts "Sub service request #{30912} now has id of #{ssr2.id}"
   # arm = Arm.create(name: "ARM 1", visit_count: 3, created_at: "2014-08-05 14:21:19", updated_at: "2016-11-04 20:34:39",
   #                       subject_count: 20, protocol_id: protocol.id, new_with_draft: true, minimum_visit_count: 3, minimum_subject_count: 20)

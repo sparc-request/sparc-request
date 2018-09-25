@@ -34,4 +34,6 @@ require ::File.expand_path('../config/environment',  __FILE__)
 #  Rails.backtrace_cleaner.remove_filters!
 #end
 
-run SparcRails::Application
+map ENV['RAILS_RELATIVE_URL_ROOT'] || "/" do
+  run SparcRails::Application
+end

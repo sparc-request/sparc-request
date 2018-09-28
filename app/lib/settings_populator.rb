@@ -69,8 +69,8 @@ class SettingsPopulator
 
       @data[namespace]    = JSON.parse(File.read(Rails.root.join('config', 'settings', "#{filename}")))
       @config[namespace]  =
-        if File.exists?(Rails.root.join('config', "#{namespace}.yml"))
-          YAML.load_file(Rails.root.join('config', "#{namespace}.yml"))[Rails.env]
+        if File.exists?(Rails.root.join('config', "#{filename}.yml"))
+          YAML.load_file(Rails.root.join('config', "#{filename}.yml"))[Rails.env]
         else
           {}
         end

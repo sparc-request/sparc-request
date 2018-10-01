@@ -21,59 +21,50 @@
 class SettingsPopulator
   include DataTypeValidator
 
-  def initialize()
-    @data   = {}
-    @config = {}
-
+  def initialize
     load_data_and_config
   end
 
   def populate
-    @data.each do |namespace, settings|
-      puts "Populating #{namespace} settings" unless Rails.env == 'test'
-      ActiveRecord::Base.transaction do
-        settings.each do |hash|
-          if Setting.where(key: hash['key']).any?
-            Setting.find_by_key(hash['key']).update_attributes(hash.without('key', 'value'))
-            puts "- Setting #{hash['key']} already exists... Updated details (this does not change the value!)..." unless Rails.env == 'test'
-          else
-            setting = Setting.create(
-              key:            hash['key'],
-              value:          @config[namespace][hash['key']] || hash['value'],
-              data_type:      get_type(hash['value']),
-              friendly_name:  hash['friendly_name'],
-              description:    hash['description'],
-              group:          hash['group'],
-              version:        hash['version'],
-            )
+    ActiveRecord::Base.transaction do
+      @defaults.each do |hash|
+        if Setting.exists?(key: hash['key'])
+          Setting.find_by_key(hash['key']).update_attributes(hash.without('key', 'value'))
+        else
+          setting = Setting.create(
+            key:            hash['key'],
+            value:          @stored[hash['key']].present? ? @stored[hash['key']] : hash['value'],
+            data_type:      get_type(hash['value']),
+            friendly_name:  hash['friendly_name'],
+            description:    hash['description'],
+            group:          hash['group'],
+            version:        hash['version'],
+          )
 
-            setting.parent_key    = hash['parent_key']
-            setting.parent_value  = hash['parent_value']
-            setting.save(validate: false)
-
-            puts "- Added new setting #{hash['key']}..." unless Rails.env == 'test'
-          end
+          setting.parent_key    = hash['parent_key']
+          setting.parent_value  = hash['parent_value']
+          setting.save(validate: false)
         end
       end
-
-      puts "\n\n" unless Rails.env == 'test'
     end
   end
 
   private
 
   def load_data_and_config
-    Dir.glob('config/settings/*.json').each do |file|
-      filename  = file.split('/').last
-      namespace = filename.gsub('.json', '')
+    @defaults = JSON.parse(File.read(Rails.root.join('config', 'defaults.json')))
+    @stored   = {}
 
-      @data[namespace]    = JSON.parse(File.read(Rails.root.join('config', 'settings', "#{filename}")))
-      @config[namespace]  =
-        if File.exists?(Rails.root.join('config', "#{namespace}.yml"))
-          YAML.load_file(Rails.root.join('config', "#{namespace}.yml"))[Rails.env]
-        else
-          {}
-        end
+    if File.exists? Rails.root.join('config', 'application.yml')
+      @stored.merge!(YAML.load_file(Rails.root.join('config', 'application.yml'))[Rails.env])
+    end
+
+    if File.exists? Rails.root.join('config', 'epic.yml')
+      @stored.merge!(YAML.load_file(Rails.root.join('config', 'epic.yml'))[Rails.env])
+    end
+
+    if File.exists? Rails.root.join('config', 'ldap.yml')
+      @stored.merge!(YAML.load_file(Rails.root.join('config', 'ldap.yml'))[Rails.env])
     end
   end
 end

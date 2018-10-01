@@ -752,7 +752,7 @@
   {
     "key":            "use_cas",
     "value":          "false",
-    "friendly_namfe":  "Use CAS",
+    "friendly_name":  "Use CAS",
     "description":    "This determines whether the application will allow users to log in using CAS.",
     "group":          "",
     "version":        "",

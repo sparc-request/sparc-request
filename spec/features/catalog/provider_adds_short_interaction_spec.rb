@@ -4,6 +4,8 @@ RSpec.describe 'Service Provider clicks Short Interaction', js: true do
   let_there_be_lane
   fake_login_for_each_test
 
+  stub_config('use_short_interaction', true)
+
   before :each do
     institution    = create(:institution, name: "Institution")
     provider       = create(:provider, name: "Provider", parent: institution)

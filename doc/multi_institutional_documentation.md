@@ -49,20 +49,31 @@ In the production environment ExceptionNotifier is setup, and its options will n
       exception_recipients: ['user@example.com']
 
 ### 2. Settings & Configuration
-SPARCRequest utilizes a number of settings to allow you to customize content and enable or disable functionality based on your institution's needs. These settings can be found in the `settings` database table after running `rake db:migrate`.
+SPARCRequest utilizes a number of settings to allow you to customize content and enable or disable functionality based on your institution's needs. These settings are stored in the `settings` database table and are populated from `config/defaults.json`.
 
-You may opt to manually import new settings or update your existing settings by running the following command:
+We highly recommend saving your environment's settings to avoid losing your settings. To do this, first run the following commands:
+
+    # application.yml will hold the majority of your stored setting values
+    cp config/application.yml.example config/application.yml
+
+    # epic.yml will hold your epic configuration values
+    cp config/epic.yml.example config/epic.yml
+
+    # ldap.yml will hold your ldap configuration values
+    cp config/ldap.yml.example config/ldap.yml
+
+These files will hold your setting values. When the application imports settings, it will prioritize the values specified in these files for your current environment. **Note:** You may add or remove environemnts from these files as needed.
+
+To manually import new settings, run the following command:
 
     rake data:import_settings
 
-or you may entirely refresh your settings by running the following command:
+To entirely refresh your settings, run the following command:
 
     rake data:regenerate_settings
 
-**Note** If you are upgrading from an older version of SPARCRequest, your application may still be utilizing `config/application.yml`, `config/epic.yml`, and `config/ldap.yml` for settings. Your settings will automatically be imported from these files when running the settings import task. Once your settings have been imported, these files are not longer needed and may be deleted.
-
 #### 2.1 Generic Settings
-SPARCRequest has many settings that are used internally to customize content and configurations. These settings are generated from `config/settings/application.json`.
+SPARCRequest has many settings that are used internally to customize content and configurations.
 
 ##### Emails
 - **send_emails_to_real_users**: This tells the application whether or not to send emails to users. When turned off, emails will be generated in the browser but not sent. This should be turned off in development environments.
@@ -104,7 +115,7 @@ SPARCRequest has many settings that are used internally to customize content and
 - **wkhtmltopdf_location**: This is a customizable path pointing to the binary for the `wkhtmltopdf` gem which is used to generate PDFs of HTML content. The default value provided by the gem is `/usr/local/bin/wkhtmltopdf`.
 
 #### 2.2 Configuring Omniauth
-Your institution may opt to use [Omniauth](https://github.com/omniauth/omniauth) authentication plugins such as [CAS](https://apereo.github.io/cas/5.2.x/index.html) and [Shibboleth](https://www.shibboleth.net/) for user authentication in SPARCRequest. Only CAS and Shibboleth are supported at this time, but support for other Omniauth plugins may be implemented. These settings are generated from `config/settings/oauth.json`.
+Your institution may opt to use [Omniauth](https://github.com/omniauth/omniauth) authentication plugins such as [CAS](https://apereo.github.io/cas/5.2.x/index.html) and [Shibboleth](https://www.shibboleth.net/) for user authentication in SPARCRequest. Only CAS and Shibboleth are supported at this time, but support for other Omniauth plugins may be implemented.
 
 ##### Omniauth Configuration
 - **use_cas**: This determines whether the application will allow users to log in using CAS.
@@ -113,7 +124,7 @@ Your institution may opt to use [Omniauth](https://github.com/omniauth/omniauth)
 - **use_shibboleth_only**: This determines whether the application will only allow users to log in using Shibboleth. This has higher precedence than `use_shibboleth_only` when both are enabled.
 
 #### 2.3 Configuring LDAP
-Your institution may opt to use [LDAP](https://ldap.com/) for managing identities in SPARCRequest. These settings are generated from `config/settings/ldap.json`.
+Your institution may opt to use [LDAP](https://ldap.com/) for managing identities in SPARCRequest. You should save your environment's LDAP settings by overriding the values in `config/ldap.yml`.
 
 ##### LDAP Configuration
 - **use_ldap**: This determines whether the authorized user search will attempt to connect to an LDAP server. If turned off, it will simply search the database.
@@ -136,7 +147,7 @@ Your institution may opt to use [LDAP](https://ldap.com/) for managing identitie
 
 
 #### 2.4 Configuring Epic
-Your institution may opt to use [Epic](https://www.epic.com/) to store health records from SPARCRequest. These settings are generated from `config/settings/epic.json`.
+Your institution may opt to use [Epic](https://www.epic.com/) to store health records from SPARCRequest. You should save your environment's Epic settings by overriding the values in `config/epic.yml`.
 
 ##### Epic Configuration
 - **use_epic**: This determines whether the application will use Epic integration.
@@ -154,7 +165,7 @@ Your institution may opt to use [Epic](https://www.epic.com/) to store health re
 - **epic_test_mode**: This tells the application to use a fake Epic server, rather than connecting to the Epic interface. This is primarily intended to be used in the test suite.
 
 #### 2.5 Configuring RMID
-Your institution may opt to use Research Master ID (RMID) to connect records between SPARCRequest and other systems, such as eIRB and Coeus. These settings are generated from `config/settings/rmid.json`.
+Your institution may opt to use Research Master ID (RMID) to connect records between SPARCRequest and other systems, such as eIRB and Coeus.
 
 ##### RMID Configuration
 - **research_master_enabled**: This determines whether SPARCRequest protocols will be connected with a research master record.
@@ -163,20 +174,20 @@ Your institution may opt to use Research Master ID (RMID) to connect records bet
 - **rmid_api_token**: This is the token used to access your institution's RMID API.
 
 #### 2.6 SPARCFulfillment
-Your institution may opt to use [SPARCFulfillment](https://github.com/sparc-request/sparc-fulfillment), aka Clinical Work Fulfillment (CWF) to allow service providers to fulfill and track the clinical and non-clinical services they provide. These settings are generated from `config/settings/cwf.json`.
+Your institution may opt to use [SPARCFulfillment](https://github.com/sparc-request/sparc-fulfillment), aka Clinical Work Fulfillment (CWF) to allow service providers to fulfill and track the clinical and non-clinical services they provide.
 
 - **clinical_work_fulfillment_url**: This is the URL of your institution's SPARCFulfillment application.
 - **fulfillment_contingent_on_catalog_manager**: This determines whether users will have the ability to push a request to SPARCFulfillment from the Admin Dashboard.
 
 #### 2.7 SPARCFunding
-Your institution may opt to use the SPARCFunding module to keep track of funding opportunities. These settings are generated from `config/settings/funding.json`.
+Your institution may opt to use the SPARCFunding module to keep track of funding opportunities.
 
 - **use_funding_module**: This determines whether the application will use the SPARCFunding module.
 - **funding_admins**: This is a list of users who will have full access to the SPARCFunding module.
 - **funding_org_ids**: This is a list of organization ids that are offering SPARCFunding opportunities.
 
 #### 2.8 SPARCRequest API
-Your institution may opt to use the SPARCRequest API to communicate with external applications, such as SPARCFulfillment. These settings are generated from `config/settings/api.json`.
+Your institution may opt to use the SPARCRequest API to communicate with external applications, such as SPARCFulfillment.
 
 - **current_api_version**: This is the current version of the SPARCRequest API.
 - **remote_service_notifier_protocol**: This is the HTTP protocol (HTTP/HTTPS) of the SPARCRequest API.
@@ -187,7 +198,7 @@ Your institution may opt to use the SPARCRequest API to communicate with externa
 
 #### 2.9 Right Navigation
 
-SPARCRequest provides various configurable help links below the service cart (AKA Right Navigation). These include Feedback, Frequently Asked Questions, Contact Us, and Short Interaction buttons. These settings are generated from `config/settings/right_navigation.json`.
+SPARCRequest provides various configurable help links below the service cart (AKA Right Navigation). These include Feedback, Frequently Asked Questions, Contact Us, and Short Interaction buttons.
 
 ##### "Feedback" Button
 - **use_feedback_link**: This determines whether the application will use an external resource for users to provide feedback. This has lower precedence than `use_redcap_api` when both are enabled.
@@ -211,13 +222,13 @@ SPARCRequest provides various configurable help links below the service cart (AK
 - **use_short_interaction**: This determines whether the application will display the `Short Interaction` button.
 
 #### 2.10 Google Calendar
-Your institution may opt to integrate Google Calendar to display events on the SPARCRequest homepage. These settings are generated from `config/settings/calendar.json`.
+Your institution may opt to integrate Google Calendar to display events on the SPARCRequest homepage.
 
 - **use_google_calendar**: This determines whether Google Calendar events will be displayed on the homepage.
 - **calendar_url**: This is the URL of the Google Calendar used to display events.
 
 #### 2.11 News Feed
-Your institution may opt to integrate an external blog for the news feed on the SPARCRequest homepage. These settings are generated from `config/settings/news.json`.
+Your institution may opt to integrate an external blog for the news feed on the SPARCRequest homepage.
 
 - **use_news_feed**: This determines whether a news feed of blog posts will be displayed on the homepage.
 - **news_feed_url**: This is the URL used to retrieve news feed posts.
@@ -227,7 +238,7 @@ Your institution may opt to integrate an external blog for the news feed on the 
 - **news_feed_date_selector**: This is the CSS selector of a post's date at the news_feed_url to be used in the news feed.
 
 #### 2.12 System Satisfaction Survey
-Your institution may opt to provide users with a system satisfaction survey prior to submitting a service request. These settings are generated from `config/settings/system_satisfaction.json`.
+Your institution may opt to provide users with a system satisfaction survey prior to submitting a service request.
 
 - **system_satisfaction_survey**: This determines whether the application will prompt users to fill out a system satisfaction survey prior to submitting a service request.
 - **system_satisfaction_survey_cc**: This field will overwrite the system satisfaction survey mailers in the application to instead cc to this address. This is overwritten in development/testing/staging environments in order to prevent real emails from being sent out to general users.

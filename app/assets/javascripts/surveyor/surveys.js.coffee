@@ -23,6 +23,7 @@ $(document).ready ->
   ### Survey Table ###
   $(document).on 'change', '.survey-actions', ->
     $selected = $(this).find('option:selected')
+    $(this).selectpicker('deselectAll')
 
     if $selected.data('url')
       $.ajax

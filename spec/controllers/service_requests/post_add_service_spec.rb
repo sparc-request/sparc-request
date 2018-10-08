@@ -162,7 +162,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         service2 = create(:service, organization: org, pricing_map_count: 1)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
-        ServiceRelation.create(service_id: service.id, related_service_id: service2.id, optional: false)
+        ServiceRelation.create(service_id: service.id, related_service_id: service2.id, required: true)
 
         session[:identity_id] = logged_in_user.id
 

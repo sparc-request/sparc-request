@@ -14,7 +14,9 @@ task move_process_ssrs: :environment do
   new_process_ssr_orgs.each do |org|
     org.update_attributes(process_ssrs: true)
   end
-  sub_service_requests = SubServiceRequest.where(organization_id: 77)
+  # sub_service_requests = SubServiceRequest.where(organization_id: 77)
+  sub_service_requests = []
+  sub_service_requests << SubServiceRequest.find(15596)
 
   CSV.open("tmp/ssr_altered_data_report.csv", "w+") do |csv|
     csv << ['SSR ID', 'Line Item ID', 'Is One Time Fee?', 'Assigned or Created', 'New SSR ID', 'Sparc ID',
@@ -24,13 +26,16 @@ task move_process_ssrs: :environment do
       protocol = ssr.protocol
       org_ids_used = []
       ssr.line_items.each do |line_item|
+        puts line_item.id
         unless (line_item.service.id == 2908) 
           org_id = line_item.service.organization_id
 
           if ssr.organization_id == 77 # take care of first line item
             puts "Updating first line item"
             org_ids_used << org_id
-            ssr.update_attributes(organization_id: org_id)
+            # ssr.update_attributes(organization_id: org_id)
+            ssr.organization_id = org_id
+            ssr.save(validate: false)
           elsif org_ids_used.include?(org_id) && (org_id != ssr.organization.id)
             puts "Assigning request to line item"
             assign_to_ssr = find_existing_ssr(protocol, org_id)
@@ -55,7 +60,7 @@ task move_process_ssrs: :environment do
           end
         else
           # puts "Taking care of ssr for inactive service 2908"
-          ssr.update_attributes(organization_id: 286)
+          ssr.update_attributes(organization_id: 290)
         end
       end
     end 

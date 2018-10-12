@@ -122,7 +122,11 @@
 
 #   ### News Feed ###
 #   use_news_feed:                              "false"
-#   news_feed_url:                              "https://www.sparcrequestblog.com"
+#   news_feed_url:                              "https://sparcrequest.atlassian.net/wiki"
+#   news_feed_post_limit:                       3
+#   use_news_feed_api:                          "false"
+#   news_feed_api:                              "Atlassian"
+#   news_feed_atlassian_space:                  "RD"
 #   news_feed_post_selector:                    ".article.post"
 #   news_feed_title_selector:                   ".entry-title"
 #   news_feed_link_selector:                    ".entry-title a"
@@ -236,7 +240,11 @@
 
 #   ### News Feed ###
 #   use_news_feed:                              "false"
-#   news_feed_url:                              "https://www.sparcrequestblog.com"
+#   news_feed_url:                              "https://sparcrequest.atlassian.net/wiki"
+#   news_feed_post_limit:                       3
+#   use_news_feed_api:                          "false"
+#   news_feed_api:                              "Atlassian"
+#   news_feed_atlassian_space:                  "RD"
 #   news_feed_post_selector:                    ".article.post"
 #   news_feed_title_selector:                   ".entry-title"
 #   news_feed_link_selector:                    ".entry-title a"
@@ -350,7 +358,11 @@
 
 #   ### News Feed ###
 #   use_news_feed:                              "false"
-#   news_feed_url:                              "https://www.sparcrequestblog.com"
+#   news_feed_url:                              "https://sparcrequest.atlassian.net/wiki"
+#   news_feed_post_limit:                       3
+#   use_news_feed_api:                          "false"
+#   news_feed_api:                              "Atlassian"
+#   news_feed_atlassian_space:                  "RD"
 #   news_feed_post_selector:                    ".article.post"
 #   news_feed_title_selector:                   ".entry-title"
 #   news_feed_link_selector:                    ".entry-title a"
@@ -464,7 +476,11 @@ development:
 
   ### News Feed ###
   use_news_feed:                              "false"
-  news_feed_url:                              "https://www.sparcrequestblog.com"
+  news_feed_url:                              "https://sparcrequest.atlassian.net/wiki"
+  news_feed_post_limit:                       3
+  use_news_feed_api:                          "false"
+  news_feed_api:                              "Atlassian"
+  news_feed_atlassian_space:                  "RD"
   news_feed_post_selector:                    ".article.post"
   news_feed_title_selector:                   ".entry-title"
   news_feed_link_selector:                    ".entry-title a"
@@ -578,7 +594,11 @@ test:
 
   ### News Feed ###
   use_news_feed:                              "false"
-  news_feed_url:                              "https://www.sparcrequestblog.com"
+  news_feed_url:                              "https://sparcrequest.atlassian.net/wiki"
+  news_feed_post_limit:                       3
+  use_news_feed_api:                          "false"
+  news_feed_api:                              "Atlassian"
+  news_feed_atlassian_space:                  "RD"
   news_feed_post_selector:                    ".article.post"
   news_feed_title_selector:                   ".entry-title"
   news_feed_link_selector:                    ".entry-title a"

@@ -130,9 +130,14 @@ initialize_org_search = () ->
       templates: {
         suggestion: Handlebars.compile('<button class="text-left">
                                           <strong><span class="{{text_color}}">{{type}}</span><span>: {{name}}</span></strong><span class="text-danger"> {{inactive_tag}}</span><br>
-                                          {{{breadcrumb}}}<br>
+                                          <span>{{{breadcrumb}}}</span><br>
                                           <span>Abbreviation: {{abbreviation}}</span><br>
-                                          <span>{{cpt_code}}</span>
+                                          {{#if cpt_code}}
+                                            <span>CPT Code: {{cpt_code}}</span><br>
+                                          {{/if}}
+                                          {{#if eap_id}}
+                                            <span>EAP ID: {{eap_id}}</span>
+                                          {{/if}}
                                         </button>')
         notFound: '<div class="tt-suggestion">No Results</div>'
       }

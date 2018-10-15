@@ -407,19 +407,12 @@ class ServiceRequestsController < ApplicationController
 
   def setup_catalog_news_feed
     if Setting.get_value("use_news_feed")
-      @news = []
-      begin
-        page = Nokogiri::HTML(open(Setting.find_by_key("news_feed_url").value, open_timeout: 5))
-        articles = page.css(Setting.find_by_key("news_feed_post_selector").value).take(3)
-        articles.each do |article|
-          @news << {
-            title: article.at_css(Setting.find_by_key("news_feed_title_selector").value).try(:text) || "",
-            link: article.at_css(Setting.find_by_key("news_feed_link_selector").value).try(:[], :href) || "",
-            date: article.at_css(Setting.find_by_key("news_feed_date_selector").value).try(:text) || ""
-          }
+      @news =
+        if Setting.get_value("use_news_feed_api")
+          NewsFeed.const_get("#{Setting.get_value("news_feed_api")}Adapter").new.posts
+        else
+          @news = NewsFeed::PageParser.new.posts
         end
-      rescue Net::OpenTimeout
-      end
     end
   end
 

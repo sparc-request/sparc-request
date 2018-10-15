@@ -46,8 +46,8 @@ class Service < ApplicationRecord
   # Services that this service depends on
   has_many :service_relations, :dependent => :destroy
   has_many :related_services, :through => :service_relations
-  has_many :required_services, -> { where("optional = ? and is_available = ?", false, true) }, :through => :service_relations, :source => :related_service
-  has_many :optional_services, -> { where("optional = ? and is_available = ?", true, true) }, :through => :service_relations, :source => :related_service
+  has_many :required_services, -> { where("required = ? and is_available = ?", true, true) }, :through => :service_relations, :source => :related_service
+  has_many :optional_services, -> { where("required = ? and is_available = ?", false, true) }, :through => :service_relations, :source => :related_service
 
   # Services that depend on this service
   has_many :depending_service_relations, :class_name => 'ServiceRelation', :foreign_key => 'related_service_id'

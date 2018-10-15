@@ -24,7 +24,7 @@
     = service_relation.related_service.display_service_name
   .col-sm-2.text-center
     -# = label_tag :required, t(:catalog_manager)[:related_services_form][:required], class: 'non_bold_label'
-    = check_box_tag service_relation.id, true, !service_relation.optional, :class => 'required', data: { service_relation_id: service_relation.id }
+    = check_box_tag service_relation.id, true, service_relation.required, :class => 'required', data: { service_relation_id: service_relation.id }
   .col-sm-3.text-center
     -# = label_tag :linked_quantity, t(:catalog_manager)[:related_services_form][:linked_quantity], class: 'non_bold_label'
     = check_box_tag "linked_quantity_#{service_relation.id}", true, service_relation.linked_quantity, data: { service_relation_id: service_relation.id }, class: 'linked_quantity'

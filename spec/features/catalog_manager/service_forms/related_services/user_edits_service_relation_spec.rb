@@ -30,7 +30,7 @@ RSpec.describe 'User edits a related service', js: true do
     @program      = create(:program, parent: @provider)
     @service      = create(:service, organization: @program)
     @rel_serv     = create(:service, organization: @program)
-    @relation     = create(:service_relation, service: @service, related_service: @rel_serv, optional: false, linked_quantity: false)
+    @relation     = create(:service_relation, service: @service, related_service: @rel_serv, required: true, linked_quantity: false)
     create(:catalog_manager, organization: @institution, identity: jug2)
 
     visit catalog_manager_catalog_index_path
@@ -51,7 +51,7 @@ RSpec.describe 'User edits a related service', js: true do
       first('.required').click
       wait_for_javascript_to_finish
 
-      expect(@relation.reload.optional).to eq(true)
+      expect(@relation.reload.required).to eq(false)
     end
   end
 

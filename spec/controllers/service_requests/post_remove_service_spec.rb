@@ -43,7 +43,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, protocol_id: protocol.id)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
       li2      = create(:line_item, service_request: sr, sub_service_request: ssr, service: service2)
-      ServiceRelation.create(service_id: service.id, related_service_id: service2.id, optional: false)
+      ServiceRelation.create(service_id: service.id, related_service_id: service2.id, required: true)
 
 
       post :remove_service, params: {

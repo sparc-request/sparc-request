@@ -16,8 +16,9 @@
       2.9 Right Navigation
       2.10 Google Calendar
       2.11 News Feed
-      2.12 System Satisfaction Survey
-      2.13 navigation.yml
+      2.12 Tableau
+      2.13 System Satisfaction Survey
+      2.14 navigation.yml
     3. Permissible Values & Constants
       3.1 Permissible Values
       3.2 constants.yml
@@ -253,13 +254,21 @@ You may also opt to simply parse an HTML document for CSS selectors. This will b
 - **news_feed_link_selector**: This is the CSS selector of a link to the post at the news_feed_url to be used in the news feed.
 - **news_feed_date_selector**: This is the CSS selector of a post's date at the news_feed_url to be used in the news feed.
 
-#### 2.12 System Satisfaction Survey
+#### 2.12 Tableau
+Your institution may opt to integrate a Tableau Dashboard on the SPARCRequest homepage. You will need to enable guest viewing access to allow user to view the dashboard without logging in. In addition, the Dashboard may need to be scaled to fit properly onto the homepage.
+
+- **use_tableau**: This determines whether the application will display a Tableau dashboard on the homepage.
+- **homepage_tableau_dashboard**: This is the name of the Tableau Dashboard to be displayed on the homepage.
+- **homepage_tableau_url**: This is the URL of the Tableau Dashboard to be displayed on the homepage.
+
+
+#### 2.13 System Satisfaction Survey
 Your institution may opt to provide users with a system satisfaction survey prior to submitting a service request.
 
 - **system_satisfaction_survey**: This determines whether the application will prompt users to fill out a system satisfaction survey prior to submitting a service request.
 - **system_satisfaction_survey_cc**: This field will overwrite the system satisfaction survey mailers in the application to instead cc to this address. This is overwritten in development/testing/staging environments in order to prevent real emails from being sent out to general users.
 
-#### 2.13 navigation.yml
+#### 2.14 navigation.yml
 `config/navigation.yml` lays out the navigation instructions for the service request portion of SPARCRequest. Aside from changing the 'step_text' or the 'css_class' of steps, the contents of this file should not be edited unless you have made significant changes to the application.  Each 'step' has certain parameters:
 
 - **step_text**: This is the name of the step which shows up on the page

@@ -38,7 +38,7 @@ $(document).ready ->
 
   # Guarantor Fields required toggle
 
-  if $('#study_selected_for_epic_true_button').hasClass('active')
+  if $('#protocol_selected_for_epic').val() == "true"
     $('.guarantor_toggle').addClass('required')
 
   $(document).on 'click', '#study_selected_for_epic_true_button', ->

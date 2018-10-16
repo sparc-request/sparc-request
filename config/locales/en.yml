@@ -95,6 +95,7 @@ en:
         guarantor_contact: "Contact"
         guarantor_phone: "Phone"
         guarantor_address: "Address"
+        guarantor_city: "City"
         guarantor_state: "State"
         guarantor_zip: "Zip"
         guarantor_county: "County"

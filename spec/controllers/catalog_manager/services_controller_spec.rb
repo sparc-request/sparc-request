@@ -94,11 +94,11 @@ RSpec.describe CatalogManager::ServicesController do
     it 'should update a service relation' do
       service = create(:service)
       related_service = create(:service)
-      relation = create(:service_relation, service: service, related_service: related_service, optional: false)
+      relation = create(:service_relation, service: service, related_service: related_service, required: true)
       expect{
-        post :update_related_service, params: { service_relation_id: relation.id, service_relation: { optional: true } }, xhr: true
+        post :update_related_service, params: { service_relation_id: relation.id, service_relation: { required: false } }, xhr: true
         relation.reload
-      }.to change(relation, :optional).to(true)
+      }.to change(relation, :required).to(false)
 
     end
   end

@@ -18,11 +18,16 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-WebMock.disable_net_connect!(allow_localhost: true)
+namespace :data do
+  task professional_org_name_change: :environment do
+    def prompt(*args)
+      print(*args)
+      STDIN.gets.strip
+    end
 
-RSpec.configure do |config|
-  config.before(:each) do
-    stub_request(:get, "https://sparcrequest.atlassian.net/wiki").
-     to_return(status: 200, body: "")
+    current_org_name = prompt("Please enter the current Professional Organization name that you wish to change: ")
+    new_org_name = prompt("Please enter the new Professional Organization name: ")
+
+    ProfessionalOrganization.where(name: current_org_name).first.update_attribute(:name, new_org_name)
   end
 end

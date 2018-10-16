@@ -228,10 +228,26 @@ Your institution may opt to integrate Google Calendar to display events on the S
 - **calendar_url**: This is the URL of the Google Calendar used to display events.
 
 #### 2.11 News Feed
-Your institution may opt to integrate an external blog for the news feed on the SPARCRequest homepage.
+Your institution may opt to integrate an external blog to display posts in the news feed on the SPARCRequest homepage.
 
 - **use_news_feed**: This determines whether a news feed of blog posts will be displayed on the homepage.
 - **news_feed_url**: This is the URL used to retrieve news feed posts.
+- **news_feed_post_limit**: This is the maximum number of posts that will be displayed in the News Feed.
+
+There are currently two ways to retrieve posts for the news feed - through an external API, or by parsing an HTML document for specific CSS selectors.
+
+You may opt to use an external API to retrieve posts. Currently the application allows the use of an Atlassian Confluence API. If you wish to integrate new APIs, you will need to create an adapter in `app/lib/news_feed` that extends the `ApiAdapter` class. This adapter should be named `<YourAPIName>Adapter`, where `<YourAPIName>` is the value of the `news_feed_api` setting.
+
+- **use_news_feed_api**: This determines whether the news feed will be retrieved using an external API. When disabled, the application will attempt to retrieve content through CSS selectors.
+- **news_feed_api**: This is the name of the API to pull the news feed from. This name is used to find a corresponding adapter for that API.
+
+Your API may require additional settings to be added in order to properly configure.
+
+For an Atlassian Confluence API:
+- **news_feed_atlassian_space**: This is the identifier for the Atlassian space that contains posts.
+
+You may also opt to simply parse an HTML document for CSS selectors. This will be done by default if `use_news_feed_api` is set to `false`. Simply assign the CSS selectors for individual posts (generally some kind of container), title, link, and date.
+
 - **news_feed_post_selector**: This is the CSS selector of a post at the news_feed_url to be used to gather data for the news feed.
 - **news_feed_title_selector**: This is the CSS selector of a post's title at the news_feed_url to be used in the news feed.
 - **news_feed_link_selector**: This is the CSS selector of a link to the post at the news_feed_url to be used in the news feed.

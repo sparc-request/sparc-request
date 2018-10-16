@@ -172,10 +172,10 @@ RSpec.describe ServiceRequest, type: :model do
         @required_service = create(:service, organization_id: program.id, name: 'Required One Time Fee', pricing_map_count: 1)
         @disabled_program = create(:program, type: 'Program', parent_id: provider.id, name: 'Disabled', order: 1, abbreviation: 'Disabled Informatics', process_ssrs: 0, is_available: 0)
         @disabled_service = create(:service, organization_id: @disabled_program.id, name: 'Disabled Program Service')
-        create(:service_relation, service_id: @new_service.id, related_service_id: @optional_service.id, optional: true)
-        create(:service_relation, service_id: @new_service.id, related_service_id: @required_service.id, optional: false)
-        create(:service_relation, service_id: @new_service.id, related_service_id: @disabled_service.id, optional: false)
-        @line_items = service_request.create_line_items_for_service(service: @new_service, optional: true, existing_service_ids: [], allow_duplicates: true, recursive_call: false)
+        create(:service_relation, service_id: @new_service.id, related_service_id: @optional_service.id, required: false)
+        create(:service_relation, service_id: @new_service.id, related_service_id: @required_service.id, required: true)
+        create(:service_relation, service_id: @new_service.id, related_service_id: @disabled_service.id, required: true)
+        @line_items = service_request.create_line_items_for_service(service: @new_service, required: true, existing_service_ids: [], allow_duplicates: true, recursive_call: false)
       end
 
       it 'should add optional services' do

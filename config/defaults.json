@@ -480,6 +480,26 @@
     "parent_value":   ""
   },
   {
+    "key":            "news_feed_api",
+    "value":          "Atlassian",
+    "friendly_name":  "News Feed API",
+    "description":    "This is the name of the API to pull the news feed from. This name is used to find a corresponding adapter for that API.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_news_feed_api",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "news_feed_atlassian_space",
+    "value":          "RD",
+    "friendly_name":  "Atlassian Space ID",
+    "description":    "This is the identifier for the Atlassian space that contains posts.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_news_feed_api",
+    "parent_value":   "true"
+  },
+  {
     "key":            "news_feed_date_selector",
     "value":          ".date",
     "friendly_name":  "Post Date CSS Selector",
@@ -494,6 +514,16 @@
     "value":          ".entry-title a",
     "friendly_name":  "Post Link CSS Selector",
     "description":    "This is the CSS selector of a link to the post at the news_feed_url to be used in the news feed.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_news_feed",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "news_feed_post_limit",
+    "value":          "3",
+    "friendly_name":  "News Feed Post Limit",
+    "description":    "This is the maximum number of posts that will be displayed in the News Feed.",
     "group":          "",
     "version":        "",
     "parent_key":     "use_news_feed",
@@ -521,7 +551,7 @@
   },
   {
     "key":            "news_feed_url",
-    "value":          "https://www.sparcrequestblog.com",
+    "value":          "https://sparcrequest.atlassian.net/wiki",
     "friendly_name":  "News Feed URL",
     "description":    "This is the URL used to retrieve news feed posts.",
     "group":          "",
@@ -848,6 +878,16 @@
     "version":        "",
     "parent_key":     "",
     "parent_value":   ""
+  },
+  {
+    "key":            "use_news_feed_api",
+    "value":          "false",
+    "friendly_name":  "Use News Feed API",
+    "description":    "This determines whether the news feed will be retrieved using an external API. When disabled, the application will attempt to retrieve content through CSS selectors.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_news_feed",
+    "parent_value":   "true"
   },
   {
     "key":            "use_redcap_api",

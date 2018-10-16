@@ -345,14 +345,14 @@ $ ->
 
   $(document).on 'change', '.required', (event) ->
     service_relation_id = $(this).data('service-relation-id')
-    required = !$(this).prop('checked')
+    required = $(this).prop('checked')
     $.ajax
       type: 'POST'
       url: "/catalog_manager/services/update_related_service"
       data:
         service_relation_id: service_relation_id
         service_relation:
-          optional: required #TODO: Optional should be switched to 'required' once database is changed
+          required: required
 
   $(document).on 'change', '.linked_quantity', (event) ->
     service_relation_id = $(this).data('service-relation-id')

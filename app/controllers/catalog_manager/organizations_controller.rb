@@ -22,12 +22,8 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
   def new
     if params[:type] == "Institution"
-      #Institutions have different access rights for creation
-      if @user.catalog_overlord?
-        @organization = Organization.new(type: params[:type])
-      else
-        flash[:alert] = "You must be a Catalog Overlord to create new institutions."
-      end
+      #Institutions have different parameters
+      @organization = Organization.new(type: params[:type])
     else
       ##Check if user has catalog manager rights to the parent of this new org.
       parent_org = Organization.find(params[:parent_id])

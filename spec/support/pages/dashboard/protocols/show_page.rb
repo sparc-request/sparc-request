@@ -27,7 +27,7 @@ module Dashboard
       set_url '/dashboard/protocols{/id}'
 
       section :protocol_summary, '#protocol_show_information_panel' do
-        element :study_notes_button, 'button', text: 'Study Notes'
+        element :study_notes_button, 'a', text: 'Study Notes'
         element :edit_study_info_button, 'button', text: 'Edit Study Information'
       end
 

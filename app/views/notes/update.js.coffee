@@ -27,5 +27,5 @@ $('#notes-table').bootstrapTable()
 $("#modal_place").modal('hide')
 $('#notes-table').bootstrapTable('refresh')
 <% end %>
-$("span#<%= @note.unique_selector %>_notes").html("<%= @notes.count %>")
+$("#flashes_container").html("<%= j render 'shared/flash' %>")
 <% end %>

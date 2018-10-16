@@ -39,10 +39,10 @@ class NotesController < ApplicationController
   end
 
   def create
-    @note  = current_user.notes.create(note_params)
+    @note  = current_user.notes.new(note_params)
     @notes = @notable.notes
-    if @note.valid?
-      @selector = "#{@note.unique_selector}_notes"
+
+    if @note.save
       flash[:success] = t(:notes)[:created]
     else
       @errors = @note.errors

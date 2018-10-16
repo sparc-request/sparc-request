@@ -18,9 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $('#notes-table').bootstrapTable('refresh')
-
 <% if @notes.count > 0 %>
 $("span#<%= @note.unique_selector %>_notes").html("<%= @notes.count %>").addClass('blue-badge').siblings().removeClass("black-note").addClass("blue-note")
 <% else %>
 $("span#<%= @note.unique_selector %>_notes").html("<%= @notes.count %>").removeClass('blue-badge').siblings().removeClass("blue-note").addClass("black-note")
 <% end %>
+$("#flashes_container").html("<%= j render 'shared/flash' %>")

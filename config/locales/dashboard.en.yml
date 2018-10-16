@@ -139,12 +139,6 @@ en:
       bottom:
         saving: "Saving..."
 
-    ###########
-    #  NOTES  #
-    ###########
-    notes:
-      header: "%{notable_type} Notes"
-
     ###################
     #  NOTIFICATIONS  #
     ###################

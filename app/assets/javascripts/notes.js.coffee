@@ -19,29 +19,19 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $ ->
+  $(document).on 'click', '.delete-note:not(.disabled)', ->
+    id = $(this).data('note-id')
 
-  # NOTES LISTENERS BEGIN
-  $(document).on 'click', 'button.notes.list',  ->
-    id = $(this).data('notable-id')
-    type = $(this).data('notable-type')
-    data = 
-      note:
-        notable_id: id
-        notable_type: type
-      in_dashboard: true
-    $.ajax
-      type: 'GET'
-      url: '/notes.js'
-      data: data
-
-  $(document).on 'click', 'button.notes.cancel',  ->
-    id = $(this).data('notable-id')
-    type = $(this).data('notable-type')
-    data = note:
-      notable_id: id
-      notable_type: type
-    $.ajax
-      type: 'GET'
-      url: '/notes'
-      data: data
-  # NOTES LISTENERS END
+    swal {
+      title: I18n['swal']['swal_confirm']['title']
+      text: I18n['swal']['swal_confirm']['text']
+      type: 'warning'
+      showCancelButton: true
+      confirmButtonColor: '#DD6B55'
+      confirmButtonText: 'Delete'
+      closeOnConfirm: true
+    }, ->
+      $.ajax
+        type: 'DELETE'
+        dataType: 'script'
+        url: "/notes/#{id}"

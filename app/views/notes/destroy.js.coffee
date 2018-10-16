@@ -17,41 +17,10 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+$('#notes-table').bootstrapTable('refresh')
 
-#= require navigation
-#= require cart
-#= require forms
-
-$(document).ready ->
-  $(document).on 'click', '#document-new', ->
-    data =
-      protocol_id: $(this).data('protocol-id')
-      service_request_id: getSRId()
-    $.ajax
-      type: 'GET'
-      url: '/documents/new'
-      data: data
-    return false
-
-  $(document).on 'click', '.document-edit', ->
-    row_index   = $(this).parents('tr').data('index')
-    document_id = $(this).parents('table#documents-table').bootstrapTable('getData')[row_index].id
-    $.ajax
-      type: 'GET'
-      url: "/documents/#{document_id}/edit"
-      data:
-        service_request_id: getSRId()
-
-  $(document).on 'click', '.document-delete', ->
-    row_index   = $(this).parents('tr').data('index')
-    document_id = $(this).parents('table#documents-table').bootstrapTable('getData')[row_index].id
-    if confirm I18n['documents']['delete_confirm']
-      $.ajax
-        type: 'DELETE'
-        url: "/documents/#{document_id}?service_request_id=#{getSRId()}"
-
-  $(document).on 'change', '#document_doc_type', ->
-    if $(this).val() == 'other'
-      $('#doc-type-other-field').show()
-    else
-      $('#doc-type-other-field').hide()
+<% if @notes.count > 0 %>
+$("span#<%= @note.unique_selector %>_notes").html("<%= @notes.count %>").addClass('blue-badge').siblings().removeClass("black-note").addClass("blue-note")
+<% else %>
+$("span#<%= @note.unique_selector %>_notes").html("<%= @notes.count %>").removeClass('blue-badge').siblings().removeClass("blue-note").addClass("black-note")
+<% end %>

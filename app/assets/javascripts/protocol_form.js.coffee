@@ -36,6 +36,19 @@ higher_level_of_privacy_no_epic = '#study_type_answer_higher_level_of_privacy_no
 
 $(document).ready ->
 
+  # Guarantor Fields required toggle
+
+  if $('#study_selected_for_epic_true_button').hasClass('active')
+    $('.guarantor_toggle').addClass('required')
+
+  $(document).on 'click', '#study_selected_for_epic_true_button', ->
+    $('.guarantor_toggle').addClass('required')
+
+  $(document).on 'click', '#study_selected_for_epic_false_button', ->
+    $('.guarantor_toggle').removeClass('required')
+
+  # Human Subjects required toggles
+
   if $('.human-subjects:checkbox:checked').length > 0
     $('.rm-id').addClass('required')
 
@@ -256,7 +269,7 @@ determine_study_type = (answers) ->
         $('#study_type_note').show()
       errors: ->
         sweetAlert("Oops...", "Something went wrong!", "error")
-          
+
 (exports ? this).setup_epic_question_config = () ->
   if $('#study_selected_for_epic_true_button').hasClass('active')
     $(study_type_form).show()
@@ -294,7 +307,7 @@ determine_study_type = (answers) ->
         $(certificate_of_confidence_no_epic).show_elt()
     $(study_type_form).hide()
     $(study_type_form).show()
-    
+
 
   $(document).on 'change', certificate_of_confidence_dropdown, (e) ->
     new_value = $(e.target).val()
@@ -368,4 +381,4 @@ determine_study_type = (answers) ->
     return
 
   ###END EPIC BUTTON FIELDS DISPLAY###
-  
+

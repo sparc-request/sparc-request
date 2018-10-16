@@ -52,12 +52,12 @@
         = form.text_field :funding_start_date, class: 'datetimepicker form-control', value: (protocol.funding_start_date.strftime('%-m/%d/%Y') rescue nil)
 
     .form-group.row
-      = form.label :guarantor_contact, t(:protocols)[:studies][:financial_information][:contact], class: 'col-lg-2 control-label'
+      = form.label :guarantor_contact, t(:protocols)[:studies][:financial_information][:contact], class: 'col-lg-2 control-label guarantor_toggle'
       .col-lg-10
         = form.text_field :guarantor_contact, class: 'form-control'
 
     .form-group.row
-      = form.label :guarantor_phone, t(:protocols)[:studies][:financial_information][:phone], class: 'col-lg-2 control-label'
+      = form.label :guarantor_phone, t(:protocols)[:studies][:financial_information][:phone], class: 'col-lg-2 control-label guarantor_toggle'
       .col-lg-10
         = form.text_field :guarantor_phone, class: 'form-control'
 
@@ -67,34 +67,31 @@
         = form.text_field :guarantor_fax, class: 'form-control'
 
     .form-group.row
-      = form.label :guarantor_address, t(:protocols)[:studies][:financial_information][:address], class: 'col-lg-2 control-label'
+      = form.label :guarantor_address, t(:protocols)[:studies][:financial_information][:address], class: 'col-lg-2 control-label guarantor_toggle'
       .col-lg-10
         = form.text_field :guarantor_address, class: 'form-control'
 
     .form-group.row
-      = form.label :guarantor_city, t(:protocols)[:studies][:financial_information][:city], class: 'col-lg-2 control-label'
+      = form.label :guarantor_city, t(:protocols)[:studies][:financial_information][:city], class: 'col-lg-2 control-label guarantor_toggle'
       .col-lg-10
         = form.text_field :guarantor_city, class: 'form-control'
 
     .form-group.row
-      = form.label :guarantor_state, t(:protocols)[:studies][:financial_information][:state], class: 'col-lg-2 control-label'
+      = form.label :guarantor_state, t(:protocols)[:studies][:financial_information][:state], class: 'col-lg-2 control-label guarantor_toggle'
       .col-lg-10
         = form.text_field :guarantor_state, class: 'form-control'
 
     .form-group.row
-      = form.label :guarantor_zip, t(:protocols)[:studies][:financial_information][:zip], class: 'col-lg-2 control-label'
+      = form.label :guarantor_zip, t(:protocols)[:studies][:financial_information][:zip], class: 'col-lg-2 control-label guarantor_toggle'
       .col-lg-10
         = form.text_field :guarantor_zip, class: 'form-control'
 
     .form-group.row
-      = form.label :guarantor_county, t(:protocols)[:studies][:financial_information][:county], class: 'col-lg-2 control-label'
+      = form.label :guarantor_county, t(:protocols)[:studies][:financial_information][:county], class: 'col-lg-2 control-label guarantor_toggle'
       .col-lg-10
         = form.text_field :guarantor_county, class: 'form-control'
 
     .form-group.row
-      = form.label :guarantor_country, t(:protocols)[:studies][:financial_information][:country], class: 'col-lg-2 control-label'
+      = form.label :guarantor_country, t(:protocols)[:studies][:financial_information][:country], class: 'col-lg-2 control-label guarantor_toggle'
       .col-lg-10
         = form.text_field :guarantor_country, class: 'form-control'
-  .panel-footer
-    .sub-text
-      = t(:protocols)[:studies][:financial_information][:required_footnote]

@@ -20,6 +20,7 @@
 
 require 'rails_helper'
 require 'support/pages/dashboard/notes/index_modal'
+require 'support/pages/dashboard/notes/form_modal'
 
 module Dashboard
   module Protocols
@@ -32,6 +33,7 @@ module Dashboard
       end
 
       section :index_notes_modal, Dashboard::Notes::IndexModal, '#notes-modal'
+      section :note_form_modal, Dashboard::Notes::FormModal, '#note-form-modal'
 
       element :enabled_add_authorized_user_button, 'button:not(.disabled)', text: 'Add an Authorized User'
       element :disabled_add_authorized_user_button, 'button.disabled', text: 'Add an Authorized User'

@@ -18,48 +18,14 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-require 'rails_helper'
+module Dashboard
+  module Notes
+    class FormModal < SitePrism::Section
+      # appears after clicking :new_note_button
+      element :message_area, 'textarea[name="note[body]"]'
 
-RSpec.describe 'Show protocol Study notes spec', js: true do
-  let!(:user) do
-    create(:identity,
-           last_name: "Doe",
-           first_name: "John",
-           ldap_uid: "johnd",
-           email: "johnd@musc.edu",
-           password: "p4ssword",
-           password_confirmation: "p4ssword",
-           approved: true)
-  end
-
-  fake_login_for_each_test("johnd")
-
-  let!(:protocol) { create(:unarchived_study_without_validations, primary_pi: user) }
-
-  before :each do
-    @page = Dashboard::Protocols::ShowPage.new
-    @page.load(id: protocol.id)
-    @page.protocol_summary.study_notes_button.click
-    @page.wait_for_index_notes_modal
-  end
-
-  context 'when user presses Add Note button and saves a note' do
-    it 'should create a new Note and display it in modal' do
-      @page.index_notes_modal.instance_exec do
-        new_note_button.click
-      end
-
-      @page.wait_for_note_form_modal
-
-      @page.note_form_modal.instance_exec do
-        message_area.set('my important note')
-        add_note_button.click
-      end
-
-      @page.wait_for_index_notes_modal
-
-      expect(@page.index_notes_modal).to have_notes(text: 'my important note')
-      expect(Note.count).to eq 1
+      # send note button
+      element :add_note_button, "input[type='submit']"
     end
   end
 end

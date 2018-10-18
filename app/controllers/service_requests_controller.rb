@@ -50,7 +50,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def navigate
-    redirect_to "/service_requests/#{@service_request.id}/#{@forward}"
+    redirect_to eval("#{@forward}_service_request_path(@service_request, sub_service_request_id: @sub_service_request.try(:id))")
   end
 
   # service request wizard pages
@@ -262,8 +262,12 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
+  def current_page
+    action_name == 'navigate' ? Rails.application.routes.recognize_path(request.referrer)[:action] : action_name
+  end
+
   def validate_step
-    case action_name
+    case current_page
     when -> (n) { ['protocol', 'save_and_exit'].include?(n) }
       validate_catalog && validate_protocol
     when 'service_details'
@@ -275,7 +279,7 @@ class ServiceRequestsController < ApplicationController
 
   def validate_catalog
     unless @service_request.group_valid?(:catalog)
-      redirect_to catalog_service_request_path(@service_request) and return false unless action_name == 'catalog'
+      redirect_to catalog_service_request_path(@service_request, sub_service_request_id: @sub_service_request.try(:id)) and return false unless action_name == 'catalog'
       @errors = @service_request.errors
     end
     return true
@@ -283,7 +287,7 @@ class ServiceRequestsController < ApplicationController
 
   def validate_protocol
     unless @service_request.group_valid?(:protocol)
-      redirect_to protocol_service_request_path(@service_request) and return false unless action_name == 'protocol'
+      redirect_to protocol_service_request_path(@service_request, sub_service_request_id: @sub_service_request.try(:id)) and return false unless action_name == 'protocol'
       @errors = @service_request.errors
     end
     return true
@@ -293,7 +297,7 @@ class ServiceRequestsController < ApplicationController
     @service_request.protocol.update_attributes(details_params) if details_params
 
     unless @service_request.group_valid?(:service_details)
-      redirect_to service_details_service_request_path(@service_request) and return false unless action_name == 'service_details'
+      redirect_to service_details_service_request_path(@service_request, sub_service_request_id: @sub_service_request.try(:id)) and return false unless action_name == 'service_details'
       @errors = @service_request.errors
     end
     return true
@@ -301,16 +305,14 @@ class ServiceRequestsController < ApplicationController
 
   def validate_service_calendar
     unless @service_request.group_valid?(:service_calendar)
-      redirect_to service_calendar_service_request_path(@service_request) and return false unless action_name == 'service_calendar'
+      redirect_to service_calendar_service_request_path(@service_request, sub_service_request_id: @sub_service_request.try(:id)) and return false unless action_name == 'service_calendar'
       @errors = @service_request.errors
     end
     return true
   end
 
   def setup_navigation
-    page = action_name == 'navigate' ? Rails.application.routes.recognize_path(request.referrer)[:action] : action_name
-
-    if c = YAML.load_file(Rails.root.join('config', 'navigation.yml'))[page]
+    if c = YAML.load_file(Rails.root.join('config', 'navigation.yml'))[current_page]
       @step_text   = c['step_text']
       @css_class   = c['css_class']
       @back        = c['back']

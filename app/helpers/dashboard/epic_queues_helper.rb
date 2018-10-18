@@ -25,11 +25,7 @@ module Dashboard::EpicQueuesHelper
   end
 
   def format_pis(protocol)
-    pis = protocol.principal_investigators.map(&:full_name).each do |pi|
-      "#{pi}"
-    end
-    #bootstrap-table can't search within arrays
-    pis.join(',')
+    protocol.principal_investigators.map(&:full_name).join(', ')
   end
 
   def epic_queue_delete_button(epic_queue)

@@ -20,7 +20,7 @@
 
 .bootstrap-table-dropdown-overflow
   #epic-queues-custom-toolbar
-  %table.epic-queue-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: dashboard_epic_queues_path, striped: 'true', toolbar: '#epic-queues-custom-toolbar' } }
+  %table.epic-queue-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', pagination: 'true', side_pagination: 'server', url: dashboard_epic_queues_path, striped: 'true', toolbar: '#epic-queues-custom-toolbar' } }
     %thead.primary-header
       %tr
         %th{data: { field: "protocol", align: "left", sortable: 'true', class: 'text-primary' } }
@@ -35,7 +35,7 @@
           = t(:epic_queues)[:date]
         %th{data: { field: "status", align: "left", sortable: 'true' } }
           = t(:epic_queues)[:status]
-        %th{data: { field: 'send', align: 'center', sortable: 'true' } }
+        %th{data: { field: 'send', align: 'center' } }
           = t(:epic_queues)[:send]
         %th.last{data: { field: "delete", align: "center" } }
           = t(:epic_queues)[:delete]

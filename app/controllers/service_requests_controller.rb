@@ -24,7 +24,7 @@ class ServiceRequestsController < ApplicationController
   respond_to :js, :json, :html
 
   before_action :initialize_service_request,      except: [:approve_changes, :get_help, :feedback]
-  before_action :validate_step,                   only:   [:protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation, :save_and_exit]
+  before_action :validate_step,                   only:   [:navigate, :protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation, :save_and_exit]
   before_action :setup_navigation,                only:   [:navigate, :catalog, :protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
   before_action :authorize_identity,              except: [:approve_changes, :get_help, :feedback, :show]
   before_action :authenticate_identity!,          except: [:catalog, :add_service, :remove_service, :get_help, :feedback]
@@ -50,24 +50,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def navigate
-    case session[:current_location]
-    when 'protocol'
-      @service_request.group_valid?(:protocol)
-    when 'service_details'
-      @service_request.protocol.update_attributes(details_params) if @service_request.protocol && details_params
-      @service_request.group_valid?(:service_details)
-    when 'service_calendar'
-      @service_request.group_valid?(:service_calendar)
-    end
-
-    @errors = @service_request.errors
-
-    if @errors.any?
-      render action: @page
-    else
-      ssr_id_params = @sub_service_request ? "?sub_service_request_id=#{@sub_service_request.id}" : ""
-      redirect_to "/service_requests/#{@service_request.id}/#{@forward}" + ssr_id_params
-    end
+    redirect_to "/service_requests/#{@service_request.id}/#{@forward}"
   end
 
   # service request wizard pages
@@ -279,15 +262,11 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  # Each of these helper methods assigns session[:errors] to persist the errors through the
-  # redirect_to so that the user has an explanation
   def validate_step
     case action_name
-    when 'protocol'
-      validate_catalog
-    when -> (n) { ['service_details', 'save_and_exit'].include?(n) }
+    when -> (n) { ['protocol', 'save_and_exit'].include?(n) }
       validate_catalog && validate_protocol
-    when 'service_calendar'
+    when 'service_details'
       validate_catalog && validate_protocol && validate_service_details
     else
       validate_catalog && validate_protocol && validate_service_details && validate_service_calendar
@@ -296,50 +275,42 @@ class ServiceRequestsController < ApplicationController
 
   def validate_catalog
     unless @service_request.group_valid?(:catalog)
-      @service_request.errors.full_messages.each do |m|
-        flash[:error] = m
-      end
-      redirect_to catalog_service_request_path(@service_request, sub_service_request_id: @sub_service_request.try(:id)) and return false
+      redirect_to catalog_service_request_path(@service_request) and return false unless action_name == 'catalog'
+      @errors = @service_request.errors
     end
     return true
   end
 
   def validate_protocol
     unless @service_request.group_valid?(:protocol)
-      @service_request.errors.full_messages.each do |m|
-        flash[:error] = m
-      end
-      redirect_to protocol_service_request_path(@service_request, sub_service_request_id: @sub_service_request.try(:id)) and return false
+      redirect_to protocol_service_request_path(@service_request) and return false unless action_name == 'protocol'
+      @errors = @service_request.errors
     end
     return true
   end
 
   def validate_service_details
+    @service_request.protocol.update_attributes(details_params) if details_params
+
     unless @service_request.group_valid?(:service_details)
-      @service_request.errors.full_messages.each do |m|
-        flash[:error] = m
-      end
-      redirect_to service_details_service_request_path(@service_request, sub_service_request_id: @sub_service_request.try(:id)) and return false
+      redirect_to service_details_service_request_path(@service_request) and return false unless action_name == 'service_details'
+      @errors = @service_request.errors
     end
     return true
   end
 
   def validate_service_calendar
     unless @service_request.group_valid?(:service_calendar)
-      @service_request.errors.full_messages.each do |m|
-        flash[:error] = m
-      end
-      redirect_to service_calendar_service_request_path(@service_request, sub_service_request_id: @sub_service_request.try(:id)) and return false
+      redirect_to service_calendar_service_request_path(@service_request) and return false unless action_name == 'service_calendar'
+      @errors = @service_request.errors
     end
     return true
   end
 
   def setup_navigation
-    session[:current_location]  = action_name unless action_name == 'navigate'
-    @page                       = session[:current_location]
+    page = action_name == 'navigate' ? Rails.application.routes.recognize_path(request.referrer)[:action] : action_name
 
-    c = YAML.load_file(Rails.root.join('config', 'navigation.yml'))[@page]
-    unless c.nil?
+    if c = YAML.load_file(Rails.root.join('config', 'navigation.yml'))[page]
       @step_text   = c['step_text']
       @css_class   = c['css_class']
       @back        = c['back']

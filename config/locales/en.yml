@@ -677,7 +677,7 @@ en:
     service_requests:
       line_items_missing: "You must add Services to your cart before continuing"
       protocol_missing: "You must create a Protocol before continuing"
-      protocol_errors: "The selected Protocol has errors which must be fixed. Please edit the Protocol before continuing"
+      protocol_errors: "This Protocol has errors which must be fixed before continuing."
       arms_missing: "You must create Arms before proceeding to the Service Calendar"
     visit_groups:
       days_out_of_order: "Please make sure visit days are in sequential order (%{arm_name})."

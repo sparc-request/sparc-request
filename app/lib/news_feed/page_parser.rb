@@ -1,5 +1,3 @@
-require_relative 'base'
-
 module NewsFeed
   class PageParser < NewsFeed::Base
     def initialize

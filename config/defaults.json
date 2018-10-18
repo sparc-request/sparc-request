@@ -30,6 +30,16 @@
     "parent_value":   "true"
   },
   {
+    "key":            "calendar_event_limit",
+    "value":          "3",
+    "friendly_name":  "Calendar Event Limit",
+    "description":    "This is the maximum number of events that will be displayed in the homepage Calendar.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_news_feed",
+    "parent_value":   "true"
+  },
+  {
     "key":            "calendar_url",
     "value":          "https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics",
     "friendly_name":  "Calendar URL",
@@ -523,7 +533,7 @@
     "key":            "news_feed_post_limit",
     "value":          "3",
     "friendly_name":  "News Feed Post Limit",
-    "description":    "This is the maximum number of posts that will be displayed in the News Feed.",
+    "description":    "This is the maximum number of posts that will be displayed in the homepage News Feed.",
     "group":          "",
     "version":        "",
     "parent_key":     "use_news_feed",

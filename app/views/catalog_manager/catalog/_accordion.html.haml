@@ -20,11 +20,12 @@
 
 - availability = [show_available_only, true]
 .panel-group#cm-accordion
-  .panel-heading.no-padding-y
-    .col-sm-1.no-padding-y
-      = link_to plus_glyphicon(), 'javascript:void(0)', class: 'new_organization_link', data: {organization_type: "Institution"}
-    .col-sm-11.no-padding-y
-      = link_to create_new_text(:institution), 'javascript:void(0)', class: 'org-form-label panel-title new_organization_link', data: {organization_type: "Institution"}
+  - if current_user.catalog_overlord?
+    .panel-heading.no-padding-y
+      .col-sm-1.no-padding-y
+        = link_to plus_glyphicon(), 'javascript:void(0)', class: 'new_organization_link', data: {organization_type: "Institution"}
+      .col-sm-11.no-padding-y
+        = link_to create_new_text(:institution), 'javascript:void(0)', class: 'org-form-label panel-title new_organization_link', data: {organization_type: "Institution"}
   - institutions.where(is_available: availability).each do |institution|
     .panel-heading.no-padding-y
       .col-sm-1.no-padding-y

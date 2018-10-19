@@ -1419,6 +1419,7 @@ en:
     service_request: "Service Request"
     sparc_dashboard: "SPARCDashboard"
     sparc_dashboard_period: "SPARCDashboard."
+    potential_source: "Potential Funding Source"
     source: "Funding Source"
     srid_info: "Service Request Information"
     sr_id: "Service Request ID:"

@@ -91,8 +91,9 @@ $ ->
       type: 'PUT'
       url: "/catalog_manager/catalog_manager?catalog_manager[identity_id]=#{identity_id}&catalog_manager[organization_id]=#{organization_id}&catalog_manager[edit_historic_data]=#{edit_historic_data}"
 
-
   $(document).on 'change', '.sp-is-primary-contact', ->
+    togglePrimaryContactChecks()
+
     identity_id = $(this).data('identity-id')
     organization_id = $(this).data('organization-id')
     is_primary_contact = $(this).prop('checked')
@@ -431,3 +432,9 @@ $ ->
 
   $(document).on 'change', 'input.override_field', ->
     alert(I18n['catalog_manager']['service_form']['pricing_map_form']['change_override_alert'])
+
+(exports ? this).togglePrimaryContactChecks = () ->
+  if $('.sp-is-primary-contact:checked').length >= 3
+    $('.sp-is-primary-contact:not(:checked)').prop('disabled', 'disabled')
+  else
+    $('.sp-is-primary-contact:not(:checked)').prop('disabled', '')

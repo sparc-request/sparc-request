@@ -24,6 +24,6 @@ $("#org-form-container [data-toggle='toggle']").bootstrapToggle();
 
 $('[data-toggle="tooltip"]').tooltip();
 
-
 initialize_user_rights_search();
+togglePrimaryContactChecks()
 initialize_fulfillment_rights_search();

@@ -17,23 +17,27 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
+
 %table.table{cellpadding: 3}
   %thead
     %tr.skinny-black-border
-      %td{:colspan => 3}
-        %strong= t(:notifier)[:srid_info]
-  %tr
-    %th.skinny-black-border= t(:notifier)[:sr_id_acronym]
-    %th.skinny-black-border= t(:notifier)[:organization]
-    %th.skinny-black-border= t(:notifier)[:requester]
+      %th.table-header.left{colspan: 5}<
+        = t('notifier.protocol_notes', type: protocol.type)
+    %tr.skinny-black-border
+      %th.table-header.center{colspan: 1}<
+        = t(:notifier)[:note_user]
+      %th.table-header.center{colspan: 1}<
+        = t(:notifier)[:note_date]
+      %th.table-header.center{colspan: 2}<
+        = t(:notifier)[:note]
   %tbody
-    - @ssrs_to_be_displayed.each do |ssr|
+    - notes.each do |note|
       %tr.skinny-black-border
-        %td.skinny-black-border.center<
-          %strike= ssr.display_id
-        %td.skinny-black-border.center<
-          %strike= ssr.org_tree_display
-        %td.skinny-black-border.center<
-          %strike= ssr.service_requester.try(&:full_name) || 'N/A'
+        %td.skinny-black-border.center{colspan: 1}<
+          = note.identity.full_name
+        %td.skinny-black-border.center{colspan: 1}<
+          = format_date(note.created_at)
+        %td.skinny-black-border.center{colspan: 2}<
+          = note.body
 %br
 %br

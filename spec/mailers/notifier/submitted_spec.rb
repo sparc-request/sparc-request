@@ -56,8 +56,7 @@ RSpec.describe Notifier do
           assert_notification_email_tables_for_service_provider
         end
 
-        it 'should have a notes reminder message but not a submission reminder' do
-          does_not_have_a_reminder_note(@mail)
+        it 'should not have a submission reminder' do
           does_not_have_a_submission_reminder(@mail)
         end
 
@@ -109,8 +108,7 @@ RSpec.describe Notifier do
           assert_notification_email_tables_for_user
         end
 
-        it 'should have a notes reminder message but not a submission reminder' do
-          does_not_have_a_reminder_note(@mail.body.parts.first.body)
+        it 'should not have a submission reminder' do
           does_have_a_submission_reminder(@mail.body.parts.first.body)
         end
       end
@@ -159,8 +157,7 @@ RSpec.describe Notifier do
           assert_notification_email_tables_for_admin
         end
 
-        it 'should have a notes reminder message but not a submission reminder' do
-          does_not_have_a_reminder_note(@mail.body.parts.first.body)
+        it 'should not have a submission reminder' do
           does_not_have_a_submission_reminder(@mail.body.parts.first.body)
         end
       end
@@ -211,8 +208,7 @@ RSpec.describe Notifier do
         assert_notification_email_tables_for_service_provider
       end
 
-      it 'should have a notes reminder message but not a submission reminder' do
-        does_have_a_reminder_note(@mail)
+      it 'should not have a submission reminder' do
         does_not_have_a_submission_reminder(@mail)
       end
 
@@ -245,8 +241,7 @@ RSpec.describe Notifier do
         assert_notification_email_tables_for_user
       end
 
-      it 'should NOT have a notes reminder message but have a submission reminder' do
-        does_not_have_a_reminder_note(@mail.body.parts.first.body)
+      it 'should not have a submission reminder' do
         does_have_a_submission_reminder(@mail.body.parts.first.body)
       end
     end
@@ -275,8 +270,7 @@ RSpec.describe Notifier do
         assert_notification_email_tables_for_admin
       end
 
-      it 'should have a notes reminder message but not a submission reminder' do
-        does_have_a_reminder_note(@mail)
+      it 'should not have a submission reminder' do
         does_not_have_a_submission_reminder(@mail)
       end
     end

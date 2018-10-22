@@ -48,5 +48,9 @@
     %tr.skinny-black-border
       %th.table-header.left= t(:notifier)[:source]
       %td.skinny-black-border= (protocol.funding_source or protocol.potential_funding_source or "").capitalize
+    - if protocol.type.capitalize == "Project"
+      %tr.skinny-black-border
+        %th.table-header.left= t(:notifier)[:description]
+        %td.skinny-black-border= protocol.brief_description
 %br
 %br

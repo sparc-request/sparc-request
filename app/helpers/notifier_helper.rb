@@ -54,10 +54,6 @@ module NotifierHelper
     end   
   end
 
-  def display_notes?(status, role, notes)
-    (status == "submitted" || status == "request_amendment") && role == 'none' && !notes.empty?
-  end
-
   def determine_ssr(last_change, action_name, deleted_ssrs)
     ssr_id = last_change.audited_changes['sub_service_request_id']
     if last_change.action == 'destroy'

@@ -199,28 +199,16 @@
   border-color: #4C4C4C !important
 
 /* HANDLING CORE AND SERVICE LIST STYLING */
-.service-view
-  display: inline-block
-  .title
-    div
-      margin: auto
-      .service
-        text-align: left
-        border: 0
-        color: $link
-        white-space: pre-wrap
+.service
+  display: flex
+  flex-flow: column
+  .service-name
+    margin-bottom: 3px
 
-.service-view:not(:last-child)
-  padding-bottom: 5px
-  border-bottom: 1px solid #EEE
-  margin-bottom: 5px
-
-.program-services,
-.core-accordion
-  padding-top: 15px !important
-
-.description
-  font-size: 14px
+.service-view:not(:first-child)
+  padding-top: 10px
+  border-top: 1px solid #EEE
+  margin-top: 10px
 
 .core-description
   padding-top: 15px

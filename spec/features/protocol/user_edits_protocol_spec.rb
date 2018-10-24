@@ -36,8 +36,8 @@ RSpec.describe 'User edits protocol', js: true do
     before :each do
       institution = create(:institution, name: "Institution")
       provider    = create(:provider, name: "Provider", parent: institution)
-      program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
-      service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
+      program     = create(:program, name: "Program", parent: provider, process_ssrs: true, pricing_setup_count: 1)
+      service     = create(:service, name: "Service", abbreviation: "Service", organization: program, pricing_map_count: 1)
       @protocol   = create(:protocol_federally_funded, type: 'Project', primary_pi: jug2)
       @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
       ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
@@ -81,8 +81,8 @@ RSpec.describe 'User edits protocol', js: true do
     before :each do
       institution = create(:institution, name: "Institution")
       provider    = create(:provider, name: "Provider", parent: institution)
-      program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
-      service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
+      program     = create(:program, name: "Program", parent: provider, process_ssrs: true, pricing_setup_count: 1)
+      service     = create(:service, name: "Service", abbreviation: "Service", organization: program, pricing_map_count: 1)
       @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2)
       @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
       ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')

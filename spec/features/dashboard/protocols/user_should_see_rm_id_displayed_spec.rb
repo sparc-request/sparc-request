@@ -77,10 +77,10 @@ RSpec.describe 'User should see RM ID displayed', js: true do
     institution = create(:institution, name: "Institution")
     provider    = create(:provider, name: "Provider", parent: institution)
     program     = create(
-      :program, name: "Program", parent: provider, process_ssrs: true
+      :program, name: "Program", parent: provider, process_ssrs: true, pricing_setup_count: 1
     )
     service     = create(
-      :service, name: "Service", abbreviation: "Service", organization: program
+      :service, name: "Service", abbreviation: "Service", organization: program, pricing_map_count: 1
     )
     protocol = create(
       :unarchived_study_without_validations,
@@ -116,10 +116,10 @@ RSpec.describe 'User should see RM ID displayed', js: true do
     institution = create(:institution, name: "Institution")
     provider    = create(:provider, name: "Provider", parent: institution)
     program     = create(
-      :program, name: "Program", parent: provider, process_ssrs: true
+      :program, name: "Program", parent: provider, process_ssrs: true, pricing_setup_count: 1
     )
     service     = create(
-      :service, name: "Service", abbreviation: "Service", organization: program
+      :service, name: "Service", abbreviation: "Service", organization: program, pricing_map_count: 1
     )
     protocol = create(
       :unarchived_study_without_validations,
@@ -154,10 +154,10 @@ RSpec.describe 'User should see RM ID displayed', js: true do
     institution = create(:institution, name: "Institution")
     provider    = create(:provider, name: "Provider", parent: institution)
     program     = create(
-      :program, name: "Program", parent: provider, process_ssrs: true
+      :program, name: "Program", parent: provider, process_ssrs: true, pricing_setup_count: 1
     )
     service     = create(
-      :service, name: "Service", abbreviation: "Service", organization: program
+      :service, name: "Service", abbreviation: "Service", organization: program, pricing_map_count: 1
     )
     protocol = create(
       :unarchived_study_without_validations,

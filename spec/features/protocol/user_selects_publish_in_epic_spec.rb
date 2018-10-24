@@ -36,8 +36,8 @@ RSpec.describe 'User creates study', js: true do
   before :each do
     institution = create(:institution, name: "Institution")
     provider    = create(:provider, name: "Provider", parent: institution)
-    program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
-    service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
+    program     = create(:program, name: "Program", parent: provider, process_ssrs: true, pricing_setup_count: 1)
+    service     = create(:service, name: "Service", abbreviation: "Service", organization: program, pricing_map_count: 1)
     @sr         = create(:service_request_without_validations, status: 'first_draft')
     ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                   create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
@@ -99,6 +99,7 @@ RSpec.describe 'User creates study', js: true do
   end
 
   context 'Not Using Epic' do
+    stub_config('use_epic', false)
 
     before :each do
       visit_create_study_form

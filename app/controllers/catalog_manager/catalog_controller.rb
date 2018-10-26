@@ -37,12 +37,12 @@ class CatalogManager::CatalogController < CatalogManager::AppController
     @editable_organizations = @user.catalog_manager_organizations
     @program = Organization.find(params[:program_id])
     @program_editable = @editable_organizations.include?(@program)
-    @availability = [params[:show_available_only] ? params[:show_available_only] == "true" : true, true]
+    @availability = params[:show_available_only] ? params[:show_available_only] == "true" : true, true
   end
 
   def load_core_accordion
     @core = Organization.find(params[:core_id])
     @core_editable = @user.catalog_manager_organizations.include?(@core)
-    @availability = [params[:show_available_only] ? params[:show_available_only] == "true" : true, true]
+    @availability = params[:show_available_only] ? params[:show_available_only] == "true" : true, true
   end
 end

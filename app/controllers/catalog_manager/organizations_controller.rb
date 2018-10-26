@@ -46,6 +46,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
       @institutions = Institution.order('`order`')
       @path = catalog_manager_organization_path(@organization)
       @user_rights  = user_rights(@organization.id)
+      @editable_organizations = @user.catalog_manager_organizations
       @fulfillment_rights = fulfillment_rights(@organization.id)
 
       flash[:success] = "New Organization created successfully."
@@ -80,6 +81,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     end
 
     @institutions = Institution.order(Arel.sql('`order`,`name`'))
+    @editable_organizations = @user.catalog_manager_organizations
     @show_available_only = @organization.is_available
 
     respond_to do |format|

@@ -20,4 +20,4 @@
 
 .services_list
   - services = core.services.where(is_available: availability).order(Arel.sql("`order`, `name`"))
-  = render partial: 'accordion_edit_link', collection: services, as: :service, locals: { type: "service", editable: @core_editable, parent_link: "#core-#{core.id}" }
+  = render partial: '/catalog_manager/catalog/accordion_edit_link', collection: services, as: :service, locals: { type: "service", editable: @core_editable, parent_link: "#core-#{core.id}" }

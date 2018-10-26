@@ -168,6 +168,7 @@ def project_role_params
     :role_other,
     :epic_access,
     identity_attributes: [
+      :orcid,
       :credentials,
       :credentials_other,
       :email,

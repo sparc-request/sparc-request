@@ -86,6 +86,7 @@ en:
         first_name: "First Name"
         last_name: "Last Name"
         password_confirmation: "Password Confirmation"
+        orcid: "ORCID"
       note:
         body: "Note"
       option:
@@ -166,7 +167,8 @@ en:
     updated: "Authorized User Updated!"
     destroyed: "Authorized User Removed!"
     form_fields:
-      era: "ERA Commons Name:"
+      orcid: "ORCID:"
+      era_commons_name: "ERA Commons Name:"
       credentials: "Credentials:"
       credentials_prompt: "Select a Credential"
       credentials_specify: "Please Specify:"
@@ -178,6 +180,10 @@ en:
       role_specify: "Please Specify:"
       epic_access: "Epic EMR Access?:"
       rights: "Proxy Rights:"
+      placeholders:
+        orcid: "XXXX-XXXX-XXXX-XXXX"
+      links:
+        orcid: "https://orcid.org/"
     rights:
       none: Member Only
       view: "View Rights"

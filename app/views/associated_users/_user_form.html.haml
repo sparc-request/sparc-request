@@ -41,6 +41,9 @@
         .row
           .col-lg-12
             = form.fields_for :identity do |identity_form|
+              = user_form_group(name: :orcid, form: identity_form, link: t(:authorized_users)[:form_fields][:links][:orcid] ) do
+                = identity_form.text_field :orcid, class: 'form-control', placeholder: t(:authorized_users)[:form_fields][:placeholders][:orcid], maxlength: 19
+
               = user_form_group(name: :era_commons_name, classes: ['role_dependent commons_name', ['pi', 'primary-pi'].include?(form.object.role) ? '' : 'hidden'], form: identity_form) do
                 = identity_form.text_field :era_commons_name, class: 'form-control'
 

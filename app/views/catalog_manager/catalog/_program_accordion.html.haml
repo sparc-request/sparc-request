@@ -20,7 +20,7 @@
 
 - program.cores.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |core|
   - core_editable = @editable_organizations.include?(core)
-  = render '/catalog_manager/catalog/accordion_edit_link', organization: core, type: "core", editable: core_editable, parent_link: "#program-#{program.id}", ajax_loader_class: "load_core_accordion"
+  = render '/catalog_manager/catalog/accordion_edit_link', organization: core, type: "core", editable: core_editable, parent_link: "#program-#{program.id}", availability: availability, ajax_loader_class: "load_core_accordion"
 
   .panel-collapse.collapse{ id: "core-#{core.id}-collapse" }
     .panel-body.no-padding-y.col-sm-12
@@ -36,4 +36,4 @@
     .clearfix
 
 - services = program.services.where(is_available: availability).order(Arel.sql("`order`, `name`"))
-= render partial: '/catalog_manager/catalog/accordion_edit_link', collection: services, as: :service, locals: { type: "service", editable: @program_editable, parent_link: "#program-#{program.id}" }
+= render partial: '/catalog_manager/catalog/accordion_edit_link', collection: services, as: :service, locals: { type: "service", editable: @program_editable, availability: availability, parent_link: "#program-#{program.id}" }

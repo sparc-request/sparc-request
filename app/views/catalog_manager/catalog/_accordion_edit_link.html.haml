@@ -35,12 +35,12 @@
   - else #Item is an organization
     - if editable
       .col-sm-1.no-padding-y
-        = link_to folder_glyphicon(), 'javascript:void(0)', id: "#{type}-#{organization.id}", class: "fix_spec_overlap #{ajax_loader_class}", data: { org_id: organization.id, toggle: 'collapse', target: "##{type}-#{organization.id}-collapse", parent: parent_link }
+        = link_to folder_glyphicon(), 'javascript:void(0)', id: "#{type}-#{organization.id}", class: "fix_spec_overlap #{ajax_loader_class}", data: { org_id: organization.id, show_available_only: availability[0], toggle: 'collapse', target: "##{type}-#{organization.id}-collapse", parent: parent_link }
       .col-sm-11.no-padding-y{style: "width:90%"}
         = link_to accordion_link_text(organization, !organization.is_available), edit_catalog_manager_organization_path(organization), class: 'org-form-label panel-title', remote: true
 
     - else
       .col-sm-1.no-padding-y
-        = link_to folder_glyphicon(), 'javascript:void(0)', id: "#{type}-#{organization.id}", class: "fix_spec_overlap #{ajax_loader_class}", data: { org_id: organization.id, toggle: 'collapse', target: "##{type}-#{organization.id}-collapse", parent: parent_link }
+        = link_to folder_glyphicon(), 'javascript:void(0)', id: "#{type}-#{organization.id}", class: "fix_spec_overlap #{ajax_loader_class}", data: { org_id: organization.id, show_available_only: availability[0], toggle: 'collapse', target: "##{type}-#{organization.id}-collapse", parent: parent_link }
       .col-sm-11.no-padding-y{style: "width:90%"}
         %span.org-form-label.panel-title= accordion_link_text(organization, !organization.is_available)

@@ -30,7 +30,7 @@
 
   - institutions.where(is_available: availability).each do |institution|
     - institution_editable = @editable_organizations.include?(institution)
-    = render '/catalog_manager/catalog/accordion_edit_link', organization: institution, type: "institution", editable: institution_editable, parent_link: "#cm-accordion", ajax_loader_class: ""
+    = render '/catalog_manager/catalog/accordion_edit_link', organization: institution, type: "institution", editable: institution_editable, parent_link: "#cm-accordion", availability: availability, ajax_loader_class: ""
 
     .panel-collapse.collapse{ id: "institution-#{institution.id}-collapse" }
       .panel-body.no-padding-y.col-sm-12
@@ -44,7 +44,7 @@
 
         - institution.providers.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |provider|
           - provider_editable = @editable_organizations.include?(provider)
-          = render '/catalog_manager/catalog/accordion_edit_link', organization: provider, type: "provider", editable: provider_editable, parent_link: "#institution-#{institution.id}", ajax_loader_class: ""
+          = render '/catalog_manager/catalog/accordion_edit_link', organization: provider, type: "provider", editable: provider_editable, parent_link: "#institution-#{institution.id}", availability: availability, ajax_loader_class: ""
 
           .panel-collapse.collapse{ id: "provider-#{provider.id}-collapse" }
             .panel-body.no-padding-y.col-sm-12
@@ -58,7 +58,7 @@
 
               - provider.programs.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |program|
                 - program_editable = @editable_organizations.include?(program)
-                = render '/catalog_manager/catalog/accordion_edit_link', organization: program, type: "program", editable: program_editable, parent_link: "#provider-#{provider.id}", ajax_loader_class: "load_program_accordion"
+                = render '/catalog_manager/catalog/accordion_edit_link', organization: program, type: "program", editable: program_editable, parent_link: "#provider-#{provider.id}", availability: availability, ajax_loader_class: "load_program_accordion"
 
                 .panel-collapse.collapse{ id: "program-#{program.id}-collapse" }
                   .panel-body.no-padding-y.col-sm-12

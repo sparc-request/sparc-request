@@ -27,14 +27,9 @@ class SettingsPopulator
 
   def populate
     ActiveRecord::Base.transaction do
-      puts "#{@defaults.size}"
-      updated = 0
-      inserted = 0
       @defaults.each do |hash|
         if Setting.exists?(key: hash['key'])
           Setting.find_by_key(hash['key']).update_attributes(hash.without('key', 'value'))
-          updated += 1
-          puts "#{updated}: #{hash['key']} updated" 
         else
           setting = Setting.create(
             key:            hash['key'],
@@ -49,10 +44,8 @@ class SettingsPopulator
           setting.parent_key    = hash['parent_key']
           setting.parent_value  = hash['parent_value']
           setting.save(validate: false)
-          inserted += 1
         end
       end
-      puts "Updated: #{updated}       Inserted: #{inserted}"
     end
   end
 

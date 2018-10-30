@@ -38,14 +38,13 @@
         .panel-body
           = render "catalog_manager/services/general_info_form", service: service, user: @user
 
-    - if service.one_time_fee?
-      .panel.panel-default#service-components
-        .panel-heading
-          %h4.panel-title
-            = link_to t(:catalog_manager)[:organization_form][:service_level_components], '#service-components-collapse', data: {toggle: 'collapse', parent: '#cm-form-accordion'}
-        .panel-collapse.collapse#service-components-collapse
-          .panel-body
-            = render "catalog_manager/services/service_components_form", service: service, user: @user
+    .panel.panel-default#service-components{ class: service.one_time_fee? && service.process_ssrs_organization.tag_list.include?("clinical work fulfillment") ? '' : 'hidden' }
+      .panel-heading
+        %h4.panel-title
+          = link_to t(:catalog_manager)[:organization_form][:service_level_components], '#service-components-collapse', data: {toggle: 'collapse', parent: '#cm-form-accordion'}
+      .panel-collapse.collapse#service-components-collapse
+        .panel-body
+          = render "catalog_manager/services/service_components_form", service: service, user: @user
 
     .panel.panel-default#pricing
       .panel-heading

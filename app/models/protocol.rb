@@ -186,7 +186,7 @@ class Protocol < ApplicationRecord
     # Searches protocols based on 'Authorized User', 'HR#', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title', OR 'Search All'
     # Protects against SQL Injection with ActiveRecord::Base::sanitize
     # inserts ! so that we can escape special characters
-    escaped_search_term = search_attrs[:search_text].to_s.gsub(/[!%_]/, '')
+    escaped_search_term = search_attrs[:search_text].to_s.gsub(/[!%_]/) { |x| "\\#{x}" }
     like_search_term    = "%#{escaped_search_term}%"
 
     ### SEARCH QUERIES ###
@@ -202,7 +202,7 @@ class Protocol < ApplicationRecord
     when "Authorized User"
       # To prevent overlap between the for_identity or for_admin scope, run the query unscoped
       # and combine with the old scope's values
-      unscoped  = self.unscoped.joins(non_pi_authorized_users: :identity).where(identity_query)
+      unscoped  = self.unscoped.joins(:non_pi_authorized_users).where(identity_query)
       others    = self.current_scope
 
       where(id: others & unscoped).distinct
@@ -224,7 +224,7 @@ class Protocol < ApplicationRecord
     when "Short/Long Title"
       where(title_query).distinct
     when ""
-      joins(:identities, :human_subjects_info).
+      joins(:identities).left_outer_joins(:human_subjects_info).
         where(identity_query.or(protocol_id_query).or(title_query).or(hr_query).or(pro_num_query).or(rmid_query)).
         distinct
     end

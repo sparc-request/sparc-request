@@ -113,13 +113,14 @@ group :development do
 end
 
 group :test do
-  gem 'capybara-webkit', git: 'https://github.com/thoughtbot/capybara-webkit', branch: 'master'
   gem 'database_cleaner'
   gem 'email_spec'
   gem "factory_bot_rails"
+  gem 'geckodriver-helper'
   gem 'rails-controller-testing', require: false
   gem 'rspec-activemodel-mocks'
   gem 'rspec-html-matchers'
+  gem 'selenium-webdriver'
   gem 'shoulda-matchers', require: false
   gem 'shoulda-callback-matchers'
   gem 'site_prism'

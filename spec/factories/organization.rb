@@ -52,6 +52,12 @@ FactoryBot.define do
       end
     end
 
+    trait :with_subsidy_map do
+      after(:create) do |organization, evaluator|
+        create(:subsidy_map, organization: organization)
+      end
+    end
+
     trait :process_ssrs do
       process_ssrs true
     end
@@ -106,10 +112,6 @@ FactoryBot.define do
       if evaluator.service_provider
         create(:service_provider, organization: organization, identity: evaluator.service_provider)
       end
-    end
-
-    after(:create) do |organization, evaluator|
-      organization.create_subsidy_map unless organization.is_a?(Institution)
     end
 
     factory :organization_with_process_ssrs, traits: [:process_ssrs, :with_pricing_setup]

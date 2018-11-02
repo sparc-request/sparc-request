@@ -369,6 +369,7 @@ en:
           header: "Fulfillment"
           go_to_fulfillment: "Go to Fulfillment"
           in_fulfillment: "In Fulfillment"
+          pending: "Pending"
           send_to_fulfillment: "Send to Fulfillment"
           not_enabled: "Not enabled in SPARCCatalog."
         cost: "Cost"

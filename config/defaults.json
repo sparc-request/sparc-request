@@ -250,6 +250,16 @@
     "parent_value":   ""
   },
   {
+    "key":            "use_funding_module",
+    "value":          "false",
+    "friendly_name":  "Use SPARCFunding Module",
+    "description":    "This determines whether the application will use the SPARCFunding module.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
     "key":            "funding_admins",
     "value":          "[]",
     "friendly_name":  "Funding Admins",
@@ -834,16 +844,6 @@
     "value":          "false",
     "friendly_name":  "Use Feedback Link",
     "description":    "This determines whether the application will use an external resource for users to provide feedback. This has lower precedence than \"use_redcap_api\" when both are enabled.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "",
-    "parent_value":   ""
-  },
-  {
-    "key":            "use_funding_module",
-    "value":          "false",
-    "friendly_name":  "Use SPARCFunding Module",
-    "description":    "This determines whether the application will use the SPARCFunding module.",
     "group":          "",
     "version":        "",
     "parent_key":     "",

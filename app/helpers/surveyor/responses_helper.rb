@@ -86,13 +86,13 @@ module Surveyor::ResponsesHelper
     )
   end
 
-  def dependency_classes(question)
+  def dependency_classes(question, question_response)
     if question.is_dependent?
-      ["dependent-for-option-#{question.depender_id}",
-      "dependent-for-question-#{question.depender.question_id}",
-      "hidden"].join(' ')
-    else
-      ""
+      [
+        "dependent-for-option-#{question.depender_id}",
+        "dependent-for-question-#{question.depender.question_id}",
+        (!question_response.new_record? && question_response.depender_selected? ? "" : "hidden")
+      ].join(' ')
     end
   end
 

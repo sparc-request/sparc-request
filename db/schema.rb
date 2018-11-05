@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_03_143643) do
+ActiveRecord::Schema.define(version: 2018_10_25_193140) do
 
   create_table "admin_rates", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "line_item_id"
@@ -247,9 +247,9 @@ ActiveRecord::Schema.define(version: 2018_10_03_143643) do
     t.string "pro_number"
     t.string "irb_of_record"
     t.string "submission_type"
-    t.datetime "initial_irb_approval_date"
-    t.datetime "irb_approval_date"
-    t.datetime "irb_expiration_date"
+    t.date "initial_irb_approval_date"
+    t.date "irb_approval_date"
+    t.date "irb_expiration_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"

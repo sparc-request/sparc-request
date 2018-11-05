@@ -26,7 +26,7 @@ RSpec.describe 'User manages associated surveys', js: true do
 
   before :each do
     @institution        = create(:institution)
-    @provider           = create(:provider, parent_id: @institution.id)
+    @provider           = create(:provider, :with_subsidy_map, parent_id: @institution.id)
     @survey             = create(:survey, active: true, type: 'SystemSurvey')
     @associated_survey  = create(:associated_survey, associable_id: @provider.id, survey_id: @survey.id, associable_type: 'Organization')
     create(:catalog_manager, organization_id: @institution.id, identity_id: Identity.where(ldap_uid: 'jug2').first.id)

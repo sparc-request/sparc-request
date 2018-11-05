@@ -136,6 +136,15 @@ class Protocol < ApplicationRecord
   validate :unique_rm_id_to_protocol,
     if: -> record { Setting.get_value("research_master_enabled") && !record.research_master_id.nil? }
 
+  def self.rmid_status
+    begin
+      HTTParty.get(Setting.get_value("research_master_api") + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{Setting.get_value("rmid_api_token")}\""})
+      return true
+    rescue
+      return false
+    end
+  end
+
   def self.to_csv(protocols)
     CSV.generate do |csv|
       ##Insert headers
@@ -148,15 +157,16 @@ class Protocol < ApplicationRecord
   end
 
   def existing_rm_id
-    rm_ids = HTTParty.get(Setting.get_value("research_master_api") + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{Setting.get_value("rmid_api_token")}\""})
-    ids = rm_ids.map{ |rm_id| rm_id['id'] }
+    begin
+      rm_ids = HTTParty.get(Setting.get_value("research_master_api") + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{Setting.get_value("rmid_api_token")}\""})
+      ids = rm_ids.map{ |rm_id| rm_id['id'] }
 
-    if research_master_id.present? && !ids.include?(research_master_id)
-      errors.add(:_, 'The entered Research Master ID does not exist. Please go to the Research Master website to create a new record.')
-    end
-
+      if research_master_id.present? && !ids.include?(research_master_id)
+        errors.add(:_, 'The entered Research Master ID does not exist. Please go to the Research Master website to create a new record.')
+      end
     rescue
-      return "server_down"
+      return false
+    end
   end
 
   def unique_rm_id_to_protocol

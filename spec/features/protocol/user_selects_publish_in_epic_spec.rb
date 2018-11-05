@@ -99,6 +99,7 @@ RSpec.describe 'User creates study', js: true do
   end
 
   context 'Not Using Epic' do
+    stub_config('use_epic', false)
 
     before :each do
       visit_create_study_form

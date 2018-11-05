@@ -53,10 +53,9 @@ class ApplicationController < ActionController::Base
     current_identity
   end
 
-  def rmid_server_status(protocol)
-    if Setting.get_value("research_master_enabled")
-      @rmid_server_down = protocol.rmid_server_status
-      @rmid_server_down ? flash[:alert] = t(:protocols)[:summary][:tooltips][:rmid_server_down] : nil
+  def check_rmid_server_status
+    if Setting.get_value("research_master_enabled") && (@rmid_server_down = !Protocol.rmid_status)
+      flash[:alert] = t(:protocols)[:summary][:tooltips][:rmid_server_down]
     end
   end
 

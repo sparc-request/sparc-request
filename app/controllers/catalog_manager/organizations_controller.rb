@@ -22,12 +22,8 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
   def new
     if params[:type] == "Institution"
-      #Institutions have different access rights for creation
-      if @user.catalog_overlord?
-        @organization = Organization.new(type: params[:type])
-      else
-        flash[:alert] = "You must be a Catalog Overlord to create new institutions."
-      end
+      #Institutions have different parameters
+      @organization = Organization.new(type: params[:type])
     else
       ##Check if user has catalog manager rights to the parent of this new org.
       parent_org = Organization.find(params[:parent_id])
@@ -50,6 +46,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
       @institutions = Institution.order('`order`')
       @path = catalog_manager_organization_path(@organization)
       @user_rights  = user_rights(@organization.id)
+      @editable_organizations = @user.catalog_manager_organizations
       @fulfillment_rights = fulfillment_rights(@organization.id)
 
       flash[:success] = "New Organization created successfully."
@@ -84,6 +81,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     end
 
     @institutions = Institution.order(Arel.sql('`order`,`name`'))
+    @editable_organizations = @user.catalog_manager_organizations
     @show_available_only = @organization.is_available
 
     respond_to do |format|

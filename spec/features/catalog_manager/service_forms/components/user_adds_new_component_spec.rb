@@ -27,7 +27,7 @@ RSpec.describe 'User adds new service level components', js: true do
   before :each do
     @institution  = create(:institution)
     @provider     = create(:provider, parent: @institution)
-    @program      = create(:program, parent: @provider)
+    @program      = create(:program, :in_fulfillment, :process_ssrs, parent: @provider)
     @service      = create(:service, organization: @program, components: "", one_time_fee: true)
     create(:catalog_manager, organization: @institution, identity: jug2)
 

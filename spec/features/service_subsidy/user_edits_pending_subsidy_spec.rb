@@ -28,7 +28,7 @@ RSpec.describe 'User edits a pending subsidy', js: true do
   before :each do
     institution = create(:institution, name: "Institution")
     provider    = create(:provider, name: "Provider", parent: institution)
-    program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
+    program     = create(:program, :with_subsidy_map, name: "Program", parent: provider, process_ssrs: true)
     service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
     @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2)
     @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)

@@ -26,7 +26,7 @@ RSpec.describe 'User manages Catalog Managers', js: true do
 
   before :each do
     @institution = create(:institution)
-    @provider = create(:provider, parent_id: @institution.id, process_ssrs: true)
+    @provider = create(:provider, :with_subsidy_map, parent_id: @institution.id, process_ssrs: true)
     @program  = create(:program, parent_id: @provider.id)
     @core     = create(:core, parent_id: @program.id)
     @identity    = create(:identity)

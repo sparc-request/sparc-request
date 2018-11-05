@@ -39,10 +39,10 @@ RSpec.describe 'User should see notes', js: true do
   end
 
   scenario 'User creates note and then views it on Review page' do
-    click_button 'Add a Note'
-    expect(page).to have_css('#new-note-modal')
+    click_link I18n.t(:notes)[:add]
+    expect(page).to have_css('#note-form-modal')
     fill_in 'note_body', with: 'test'
-    click_button 'Add'
+    click_button I18n.t(:actions)[:submit]
     wait_for_javascript_to_finish
     expect(page).to have_css('td.note', text: 'test')
     click_link 'Save and Continue'

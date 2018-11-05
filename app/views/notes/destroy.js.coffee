@@ -17,31 +17,10 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-$ ->
-
-  # NOTES LISTENERS BEGIN
-  $(document).on 'click', 'button.notes.list',  ->
-    id = $(this).data('notable-id')
-    type = $(this).data('notable-type')
-    data = 
-      note:
-        notable_id: id
-        notable_type: type
-      in_dashboard: true
-    $.ajax
-      type: 'GET'
-      url: '/notes.js'
-      data: data
-
-  $(document).on 'click', 'button.notes.cancel',  ->
-    id = $(this).data('notable-id')
-    type = $(this).data('notable-type')
-    data = note:
-      notable_id: id
-      notable_type: type
-    $.ajax
-      type: 'GET'
-      url: '/notes'
-      data: data
-  # NOTES LISTENERS END
+$('#notes-table').bootstrapTable('refresh')
+<% if @notes.count > 0 %>
+$("span#<%= @note.unique_selector %>_notes").html("<%= @notes.count %>").addClass('blue-badge').siblings().removeClass("black-note").addClass("blue-note")
+<% else %>
+$("span#<%= @note.unique_selector %>_notes").html("<%= @notes.count %>").removeClass('blue-badge').siblings().removeClass("blue-note").addClass("black-note")
+<% end %>
+$("#flashes_container").html("<%= j render 'shared/flash' %>")

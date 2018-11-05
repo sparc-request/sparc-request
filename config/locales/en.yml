@@ -418,15 +418,21 @@ en:
   ###########
   notes:
     add: "Add a Note"
-    new: "New %{notable_type} Note"
-    created: "Note Created!"
+    created: "Note created!"
+    updated: "Note updated!"
+    destroyed: "Note deleted!"
     none: "This %{notable_type} currently has no notes."
     table_fields:
       user: "User"
       date: "Date"
       note: "Note"
+      actions: "Actions"
     form_fields:
       note: "Note:"
+    headers:
+      index: "%{notable_type} Notes"
+      new: "New %{notable_type} Note"
+      edit: "Edit %{notable_type} Note"
 
   #############
   # PROTOCOLS #

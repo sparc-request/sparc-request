@@ -20,6 +20,7 @@
 
 require 'rails_helper'
 require 'support/pages/dashboard/notes/index_modal'
+require 'support/pages/dashboard/notes/form_modal'
 
 module Dashboard
   module Protocols
@@ -27,11 +28,12 @@ module Dashboard
       set_url '/dashboard/protocols{/id}'
 
       section :protocol_summary, '#protocol_show_information_panel' do
-        element :study_notes_button, 'button', text: 'Study Notes'
+        element :study_notes_button, 'a', text: 'Study Notes'
         element :edit_study_info_button, 'button', text: 'Edit Study Information'
       end
 
       section :index_notes_modal, Dashboard::Notes::IndexModal, '#notes-modal'
+      section :note_form_modal, Dashboard::Notes::FormModal, '#note-form-modal'
 
       element :enabled_add_authorized_user_button, 'button:not(.disabled)', text: 'Add an Authorized User'
       element :disabled_add_authorized_user_button, 'button.disabled', text: 'Add an Authorized User'

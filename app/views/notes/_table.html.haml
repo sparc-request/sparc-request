@@ -17,19 +17,20 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- cancel ||= nil
+
 .bootstrap-table-dropdown-overflow
-  - if notable_type_is_related_to_li_or_liv_or_epic_queue(notable_type)
-    = display_service_name_and_code(notable_type, notable_id)
-  - if !in_dashboard && !notable_type_is_related_to_li_or_liv_or_epic_queue(notable_type)
+  - if controller_name == 'service_requests'
     #notes-custom-toolbar
-      %button.btn.btn-success#note-new{ title: t(:proper)[:document_management][:tooltips][:notes], data: { notable_id: notable_id, notable_type: notable_type, in_dashboard: in_dashboard, toggle: 'tooltip', delay: '{"show":"500"}' } }
-        = t(:notes)[:add]
-  %table.table-striped#notes-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: notes_path(format: :json, note: { notable_id: notable_id, notable_type: notable_type, in_dashboard: in_dashboard }), striped: "true", toolbar: "#notes-custom-toolbar" } }
+      = link_to t(:notes)[:add], new_note_path(note: { notable_id: notable_id, notable_type: notable_type }), remote: true, title: t(:proper)[:document_management][:tooltips][:notes], class: 'btn btn-success', data: { toggle: 'tooltip', delay: '{"show":"500"}' }
+  %table.table-striped#notes-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: notes_path(format: :json, note: { notable_id: notable_id, notable_type: notable_type }, cancel: cancel), striped: "true", toolbar: "#notes-custom-toolbar" } }
     %thead.primary-header
       %tr
-        %th{ data: { class: 'col-sm-2 user', align: "left", sortable: "true", field: "user" } }
+        %th.col-sm-2.user{ data: { align: "left", sortable: "true", field: "user" } }
           = t(:notes)[:table_fields][:user]
-        %th{ data: { class: 'col-sm-2 date', align: "left", sortable: "true", field: "date", sorter: 'dateSorter' } }
+        %th.col-sm-2.date{ data: { align: "left", sortable: "true", field: "date", sorter: 'dateSorter' } }
           = t(:notes)[:table_fields][:date]
-        %th{ data: { class: 'col-sm-8 note', align: "left", sortable: "true", field: "note" } }
+        %th.col-sm-6.note{ data: { align: "left", sortable: "true", field: "note" } }
           = t(:notes)[:table_fields][:note]
+        %th.col-sm-2.actions{ data: { align: "center", sortable: "true", field: "actions" } }
+          = t(:notes)[:table_fields][:actions]

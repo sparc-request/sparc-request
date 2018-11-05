@@ -19,4 +19,49 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 module NotesHelper
+  def notes_button(notable)
+    has_notes = notable.notes.length > 0
+
+    content_tag(:button, type: 'button', class: 'btn btn-link no-padding notes', data: { notable_id: notable.id, notable_type: notable.class.name }) do
+      content_tag(:span, '', class: ["glyphicon glyphicon-list-alt note-icon", has_notes ? "blue-note" : "black-note"], aria: {hidden: "true"}) +
+      content_tag(:span, notable.notes.length, class: has_notes ? "badge blue-badge" : "badge", id: "#{notable.class.name.downcase}_#{notable.id}_notes")
+    end
+  end
+
+  def note_actions(note)
+    [
+      edit_note_button(note),
+      delete_note_button(note)
+    ].join('')
+  end
+
+  def edit_note_button(note)
+    link_to edit_note_path(note, note: { notable_id: note.notable_id, notable_type: note.notable_type }, cancel: params[:cancel]), remote: true, class: ['btn btn-warning', note.identity_id == current_user.id ? '' : 'disabled'] do
+      content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: {hidden: "true"})
+    end
+  end
+
+  def delete_note_button(note)
+    content_tag(:button, type: 'button', class: ['btn btn-danger delete-note', note.identity_id == current_user.id ? '' : 'disabled'], data: { note_id: note.id } ) do
+      content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: {hidden: "true"})
+    end
+  end
+
+  def note_header(notable)
+    header =
+      if notable.is_a?(EpicQueueRecord)
+        t("notes.headers.#{action_name}", notable_type: "Epic Queue Record")
+      elsif notable.is_a?(LineItemsVisit)
+        t("notes.headers.#{action_name}", notable_type: "Service")
+      elsif notable.is_a?(Protocol)
+        t("notes.headers.#{action_name}", notable_type: "Protocol")
+      else
+        t("notes.headers.#{action_name}", notable_type: notable.class.name)
+      end
+
+    header += " | Study: #{notable.protocol_id}" if notable.is_a?(EpicQueueRecord)
+    header += " | Service: #{notable.service.display_service_name}" if [LineItem, LineItemsVisit].include?(notable.class)
+
+    header
+  end
 end

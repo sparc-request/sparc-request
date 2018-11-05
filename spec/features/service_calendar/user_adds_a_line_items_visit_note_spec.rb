@@ -82,12 +82,12 @@ RSpec.describe 'User adds a line items visit note', js: true do
       find("#lineitemsvisit_#{@liv.id}_notes").click
       wait_for_javascript_to_finish
 
-      click_button 'Add a Note'
+      click_link I18n.t(:notes)[:add]
       wait_for_javascript_to_finish
     end
 
     scenario 'and sees new notes modal' do
-      expect(page).to have_css('#new-note-modal')  
+      expect(page).to have_css('#note-form-modal')  
     end
 
     scenario 'and sees service name' do
@@ -103,11 +103,11 @@ RSpec.describe 'User adds a line items visit note', js: true do
       find("#lineitemsvisit_#{@liv.id}_notes").click
       wait_for_javascript_to_finish
 
-      click_button 'Add a Note'
+      click_link I18n.t(:notes)[:add]
       wait_for_javascript_to_finish
 
       fill_in 'note_body', with: 'test'
-      click_button 'Add'
+      click_button I18n.t(:actions)[:submit]
       wait_for_javascript_to_finish
     end
 

@@ -86,6 +86,7 @@ en:
         first_name: "First Name"
         last_name: "Last Name"
         password_confirmation: "Password Confirmation"
+        orcid: "ORCID"
       note:
         body: "Note"
       option:
@@ -166,7 +167,8 @@ en:
     updated: "Authorized User Updated!"
     destroyed: "Authorized User Removed!"
     form_fields:
-      era: "ERA Commons Name:"
+      orcid: "ORCID:"
+      era_commons_name: "ERA Commons Name:"
       credentials: "Credentials:"
       credentials_prompt: "Select a Credential"
       credentials_specify: "Please Specify:"
@@ -178,6 +180,10 @@ en:
       role_specify: "Please Specify:"
       epic_access: "Epic EMR Access?:"
       rights: "Proxy Rights:"
+      placeholders:
+        orcid: "XXXX-XXXX-XXXX-XXXX"
+      links:
+        orcid: "https://orcid.org/"
     rights:
       none: Member Only
       view: "View Rights"
@@ -683,7 +689,7 @@ en:
     service_requests:
       line_items_missing: "You must add Services to your cart before continuing"
       protocol_missing: "You must create a Protocol before continuing"
-      protocol_errors: "The selected Protocol has errors which must be fixed. Please edit the Protocol before continuing"
+      protocol_errors: "This Protocol has errors which must be fixed before continuing."
       arms_missing: "You must create Arms before proceeding to the Service Calendar"
     visit_groups:
       days_out_of_order: "Please make sure visit days are in sequential order (%{arm_name})."
@@ -1281,12 +1287,6 @@ en:
   js_confirm: "Are you sure?"
   notifications_js:
     send: "Message has been sent."
-  service_calendar_toasts:
-    jump_to_visit: "Select the visit you would like to view."
-    visit_day: "Click to set the visits day. All days must be in numerical order. Ex. 1, 2, 4, 9"
-    visit_name: "Click to rename your visits."
-    visit_window_after: "Click to set the window after the day that the visit can be completed."
-    visit_window_before: "Click to set the window before the day that the visit can be completed."
   service_deleted: "Service has been deleted."
   service_details_alerts:
     subject_count: "This arm has completed subject data in Fulfillment. The subject count cannot be decreased."
@@ -1429,6 +1429,7 @@ en:
     service_request: "Service Request"
     sparc_dashboard: "SPARCDashboard"
     sparc_dashboard_period: "SPARCDashboard."
+    potential_source: "Potential Funding Source"
     source: "Funding Source"
     srid_info: "Service Request Information"
     sr_id: "Service Request ID:"

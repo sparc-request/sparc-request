@@ -42,7 +42,6 @@
 //= require jquery.remotipart
 //= require jquery.cookie
 //= require jquery.form
-//= require jquery.toastmessage
 //= require nprogress
 //= require nprogress-ajax
 //= require json2

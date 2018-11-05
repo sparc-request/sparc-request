@@ -20,6 +20,8 @@
 
 class Dashboard::StudyTypeAnswersController < Dashboard::BaseController
 
+  before_action :check_rmid_server_status
+
   def edit
     @protocol = Protocol.find(params[:protocol_id])
     @edit_answers = params[:edit_answers].present?
@@ -27,6 +29,5 @@ class Dashboard::StudyTypeAnswersController < Dashboard::BaseController
     respond_to do |format|
       format.js
     end
-    rmid_server_status(@protocol)
   end
 end

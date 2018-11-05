@@ -28,7 +28,7 @@ module EmailHelpers
     expect(mail_response).to have_xpath "//th[text()='Short Title']/following-sibling::td[text()='#{@service_request.protocol.short_title}']"
     expect(mail_response).to have_xpath "//th[text()='#{@service_request.protocol.type} Title']/following-sibling::td[text()='#{@service_request.protocol.title}']"
     expect(mail_response).to have_xpath "//th[text()='Sponsor Name']/following-sibling::td[text()='#{@service_request.protocol.sponsor_name}']"
-    expect(mail_response).to have_xpath "//th[text()='Funding Source']/following-sibling::td[text()='#{@service_request.protocol.funding_source.capitalize}']"
+    expect(mail_response).to have_xpath "//th[text()='#{@service_request.protocol.funding_status == 'funded' ? I18n.t(:notifier)[:source] : I18n.t(:notifier)[:potential_source]}']/following-sibling::td[text()='#{@service_request.protocol.display_funding_source_value}']"
     expect(mail_response).to have_xpath "//th[text()='#{I18n.t(:notifier)[:description]}']/following-sibling::td[text()='#{@protocol.brief_description}']" if @protocol.is_a?(Project)
   end
 

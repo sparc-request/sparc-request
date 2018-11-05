@@ -37,7 +37,6 @@
 //= require jquery.remotipart
 //= require jquery.cookie
 //= require jquery.form
-//= require jquery.toastmessage
 //= require jquery.printElement
 //= require editable/bootstrap-editable
 //= require editable/rails

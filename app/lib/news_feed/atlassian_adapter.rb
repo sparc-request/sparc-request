@@ -1,5 +1,3 @@
-require_relative 'api_adapter'
-
 # See Atlassian Confluence API docs here:
 # https://developer.atlassian.com/cloud/confluence/rest-api-examples/
 module NewsFeed

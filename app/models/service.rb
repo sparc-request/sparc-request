@@ -26,9 +26,10 @@ class Service < ApplicationRecord
   audited
   acts_as_taggable
 
-  RATE_TYPES = [{:display => "Service Rate", :value => "full"}, {:display => "Federal Rate", :value => "federal"},
-                {:display => "Corporate Rate", :value => "corporate"}, {:display => "Other Rate", :value => "other"},
-                {:display => "Member Rate", :value => "member"}]
+  RATE_TYPES = {
+    full: "Service Rate", federal: "Federal Rate", corporate: "Corporate Rate",
+    member: "Member Rate", other: "Other Rate"
+  }
 
   belongs_to :organization, -> { includes(:pricing_setups) }
   belongs_to :revenue_code_range

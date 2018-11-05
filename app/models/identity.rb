@@ -75,6 +75,7 @@ class Identity < ApplicationRecord
   validates_presence_of :email
   validates_format_of   :email, with: email_regexp, allow_blank: true, if: :email_changed?
   validates             :ldap_uid, uniqueness: {case_sensitive: false}, presence: true
+  validates             :orcid, format: { with: /\A([0-9]{4}-){3}[0-9]{3}[0-9X]\z/ }, allow_blank: true
 
   validates_presence_of     :password, if: :password_required?
   validates_length_of       :password, within: password_length, allow_blank: true

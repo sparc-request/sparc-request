@@ -286,6 +286,7 @@ ActiveRecord::Schema.define(version: 2018_10_25_193140) do
     t.boolean "approved", default: false, null: false
     t.string "time_zone", default: "Eastern Time (US & Canada)"
     t.integer "professional_organization_id"
+    t.string "orcid", limit: 16
     t.index ["approved"], name: "index_identities_on_approved"
     t.index ["email"], name: "index_identities_on_email"
     t.index ["last_name"], name: "index_identities_on_last_name"
@@ -743,7 +744,7 @@ ActiveRecord::Schema.define(version: 2018_10_25_193140) do
   create_table "service_relations", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "service_id"
     t.integer "related_service_id"
-    t.boolean "optional"
+    t.boolean "required"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"

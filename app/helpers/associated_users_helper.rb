@@ -24,17 +24,13 @@ module AssociatedUsersHelper
   #        Also used in form helpers.
   # classes - HTML classes to add to form-group.
   # label - Override localized label text.
-  def user_form_group(form: nil, name:, classes: [], label: nil, data: {}, title: nil, required: false)
+  def user_form_group(form: nil, name:, classes: [], label: nil, data: {}, title: nil, required: false, link: nil)
     form_group_classes = %w(row form-group) + [classes]
     label_class = 'col-lg-3 control-label' + (required ? ' required' : '')
     label_text = label || t(:authorized_users)[:form_fields][name.to_sym]
+    label_text = link_to(label_text, link, target: :blank) if link
     label = if form
-              form.label(name,
-                         label_text,
-                         class: label_class,
-                         data: data,
-                         title: title
-                        )
+              form.label(name, label_text, class: label_class, data: data, title: title)
             else
               content_tag(:label, label_text, class: label_class)
             end

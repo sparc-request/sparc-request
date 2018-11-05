@@ -1287,12 +1287,6 @@ en:
   js_confirm: "Are you sure?"
   notifications_js:
     send: "Message has been sent."
-  service_calendar_toasts:
-    jump_to_visit: "Select the visit you would like to view."
-    visit_day: "Click to set the visits day. All days must be in numerical order. Ex. 1, 2, 4, 9"
-    visit_name: "Click to rename your visits."
-    visit_window_after: "Click to set the window after the day that the visit can be completed."
-    visit_window_before: "Click to set the window before the day that the visit can be completed."
   service_deleted: "Service has been deleted."
   service_details_alerts:
     subject_count: "This arm has completed subject data in Fulfillment. The subject count cannot be decreased."

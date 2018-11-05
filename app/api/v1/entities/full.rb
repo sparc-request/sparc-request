@@ -206,7 +206,8 @@ module V1
             :routing,
             :org_tree_display,
             :grand_total,
-            :service_requester_id
+            :service_requester_id,
+            :imported_to_fulfillment
 
     expose  :formatted_status, as: :status
 

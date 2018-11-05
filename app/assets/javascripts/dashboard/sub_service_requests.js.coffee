@@ -55,6 +55,15 @@ $(document).ready ->
       data: data
       error: (xhr, ajaxOptions, thrownError) ->
         swal('Error', 'This protocol has failed to be sent to SPARCFulfillment because of failed validation. Please make sure the service calendar is intact before trying again.', 'error')
+      success: ->
+        refresh = window.setInterval((->
+          imported_to_fulfillment = $('.fulfillment_status').data('imported-to-fulfillment')
+          if imported_to_fulfillment == false
+            $("#ssr_fulfillment_status").load(location.href + " .fulfillment_status")
+          else
+            window.clearInterval refresh
+          return
+        ), 5000)
 
   $(document).on 'click', '#send_to_epic_button', ->
     $(this).prop( "disabled", true )

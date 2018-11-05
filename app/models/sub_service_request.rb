@@ -59,6 +59,7 @@ class SubServiceRequest < ApplicationRecord
   validates :ssr_id, presence: true, uniqueness: { scope: :service_request_id }
 
   scope :in_work_fulfillment, -> { where(in_work_fulfillment: true) }
+  scope :imported_to_fulfillment, -> { where(imported_to_fulfillment: true) }
 
   def consult_arranged_date=(date)
     write_attribute(:consult_arranged_date, date.present? ? Time.strptime(date, "%m/%d/%Y") : nil)

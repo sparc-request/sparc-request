@@ -210,6 +210,7 @@ private
         :service_requester_id,
         :requester_contacted_date,
         :submitted_at,
+        :imported_to_fulfillment,
         line_items_attributes: [:service_request_id,
           :sub_service_request_id,
           :service_id,

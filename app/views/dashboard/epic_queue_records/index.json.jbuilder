@@ -9,3 +9,4 @@ json.rows do
     json.type     eqr.origin.try(:titleize)
     json.by       eqr.try(:identity).try(:full_name)
   end
+end

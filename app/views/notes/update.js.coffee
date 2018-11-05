@@ -17,41 +17,15 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-#= require navigation
-#= require cart
-#= require forms
-
-$(document).ready ->
-  $(document).on 'click', '#document-new', ->
-    data =
-      protocol_id: $(this).data('protocol-id')
-      service_request_id: getSRId()
-    $.ajax
-      type: 'GET'
-      url: '/documents/new'
-      data: data
-    return false
-
-  $(document).on 'click', '.document-edit', ->
-    row_index   = $(this).parents('tr').data('index')
-    document_id = $(this).parents('table#documents-table').bootstrapTable('getData')[row_index].id
-    $.ajax
-      type: 'GET'
-      url: "/documents/#{document_id}/edit"
-      data:
-        service_request_id: getSRId()
-
-  $(document).on 'click', '.document-delete', ->
-    row_index   = $(this).parents('tr').data('index')
-    document_id = $(this).parents('table#documents-table').bootstrapTable('getData')[row_index].id
-    if confirm I18n['documents']['delete_confirm']
-      $.ajax
-        type: 'DELETE'
-        url: "/documents/#{document_id}?service_request_id=#{getSRId()}"
-
-  $(document).on 'change', '#document_doc_type', ->
-    if $(this).val() == 'other'
-      $('#doc-type-other-field').show()
-    else
-      $('#doc-type-other-field').hide()
+<% if @errors %>
+$("#modal_errors").html("<%= j render 'shared/modal_errors', errors: @errors %>")
+<% else %>
+<% if params[:cancel] %>
+$("#modal_place").html("<%= j render 'index', notable_id: @notable_id, notable_type: @notable_type, in_dashboard: @in_dashboard, notable: @notable %>")
+$('#notes-table').bootstrapTable()
+<% else %>
+$("#modal_place").modal('hide')
+$('#notes-table').bootstrapTable('refresh')
+<% end %>
+$("#flashes_container").html("<%= j render 'shared/flash' %>")
+<% end %>

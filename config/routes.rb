@@ -162,7 +162,7 @@ SparcRails::Application.routes.draw do
 
   resources :documents, only: [:index, :new, :create, :edit, :update, :destroy]
 
-  resources :notes, only: [:index, :new, :create]
+  resources :notes, only: [:index, :new, :create, :edit, :update, :destroy]
 
   resources :sub_service_requests, only: [:show]
 

@@ -196,30 +196,23 @@ class Protocol < ApplicationRecord
     # Searches protocols based on 'Authorized User', 'HR#', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title', OR 'Search All'
     # Protects against SQL Injection with ActiveRecord::Base::sanitize
     # inserts ! so that we can escape special characters
-    escaped_search_term = search_attrs[:search_text].to_s.gsub(/[!%_]/) { |x| '!' + x }
-
-    escaped_search_term = search_attrs[:search_text].to_s.gsub(/[!%_]/) { |x| '!' + x }
-
-    like_search_term = ActiveRecord::Base.connection.quote("%#{escaped_search_term}%")
-    exact_search_term = ActiveRecord::Base.connection.quote(search_attrs[:search_text])
+    escaped_search_term = search_attrs[:search_text].to_s.gsub(/[!%_]/) { |x| "\\#{x}" }
+    like_search_term    = "%#{escaped_search_term}%"
 
     ### SEARCH QUERIES ###
-    authorized_user_query  = "CONCAT(identities.first_name, ' ', identities.last_name) LIKE #{like_search_term} escape '!'"
-    hr_query               = "human_subjects_info.hr_number LIKE #{like_search_term} escape '!'"
-    pi_query               = "CONCAT(identities.first_name, ' ', identities.last_name) LIKE #{like_search_term} escape '!'"
-    protocol_id_query      = "protocols.id = #{exact_search_term}"
-    pro_num_query          = "human_subjects_info.pro_number LIKE #{like_search_term} escape '!'"
-    rmid_query             = "protocols.research_master_id = #{exact_search_term}"
-    title_query            = ["protocols.short_title LIKE #{like_search_term} escape '!'", "protocols.title LIKE #{like_search_term} escape '!'"]
+    identity_query    = Arel::Nodes::NamedFunction.new('concat', [Identity.arel_table[:first_name], Arel::Nodes.build_quoted(' '), Identity.arel_table[:last_name]]).matches(like_search_term).or(Identity.arel_table[:email].matches(like_search_term))
+    hr_query          = HumanSubjectsInfo.arel_table[:hr_number].matches(like_search_term)
+    protocol_id_query = Protocol.arel_table[:id].eq(search_attrs[:search_text])
+    pro_num_query     = HumanSubjectsInfo.arel_table[:pro_number].matches(like_search_term)
+    rmid_query        = Protocol.arel_table[:research_master_id].eq(search_attrs[:search_text])
+    title_query       = Protocol.arel_table[:short_title].matches(like_search_term).or(Protocol.arel_table[:title].matches(like_search_term))
     ### END SEARCH QUERIES ###
-    hr_pro_ids = HumanSubjectsInfo.where([hr_query, pro_num_query].join(' OR ')).pluck(:protocol_id)
-    hr_protocol_id_query = hr_pro_ids.empty? ? nil : "protocols.id in (#{hr_pro_ids.join(', ')})"
 
     case search_attrs[:search_drop]
     when "Authorized User"
       # To prevent overlap between the for_identity or for_admin scope, run the query unscoped
       # and combine with the old scope's values
-      unscoped  = self.unscoped.joins(:non_pi_authorized_users).joins(:identities).where(authorized_user_query)
+      unscoped  = self.unscoped.joins(:non_pi_authorized_users).where(identity_query)
       others    = self.current_scope
 
       where(id: others & unscoped).distinct
@@ -227,7 +220,7 @@ class Protocol < ApplicationRecord
       joins(:human_subjects_info).
         where(hr_query).distinct
     when "PI"
-      unscoped  = self.unscoped.joins(:principal_investigators).where(pi_query)
+      unscoped  = self.unscoped.joins(:principal_investigators).where(identity_query)
       others    = self.current_scope
 
       where(id: others & unscoped).distinct
@@ -239,11 +232,10 @@ class Protocol < ApplicationRecord
     when "RMID"
       where(rmid_query).distinct
     when "Short/Long Title"
-      where(title_query.join(' OR ')).distinct
+      where(title_query).distinct
     when ""
-      all_query = [authorized_user_query, pi_query, protocol_id_query, title_query, hr_protocol_id_query, rmid_query]
-      joins(:identities).
-        where(all_query.compact.join(' OR ')).
+      joins(:identities).left_outer_joins(:human_subjects_info).
+        where(identity_query.or(protocol_id_query).or(title_query).or(hr_query).or(pro_num_query).or(rmid_query)).
         distinct
     end
   }

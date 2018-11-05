@@ -17,15 +17,15 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-class CatalogsController < ApplicationController
-  before_action :initialize_service_request
-  before_action :authorize_identity
-  before_action :find_locked_org_ids,       only: [:update_description]
-  
-  def update_description
-    @organization       = Organization.find(params[:id])
-    @process_ssr_found  = params[:process_ssr_found] == 'true'
-    @ssr_org            = @sub_service_request.organization if @sub_service_request
-  end
-end
+<% if @errors %>
+$("#modal_errors").html("<%= j render 'shared/modal_errors', errors: @errors %>")
+<% else %>
+<% if params[:cancel] %>
+$("#modal_place").html("<%= j render 'index', notable_id: @notable_id, notable_type: @notable_type, in_dashboard: @in_dashboard, notable: @notable %>")
+$('#notes-table').bootstrapTable()
+<% else %>
+$("#modal_place").modal('hide')
+$('#notes-table').bootstrapTable('refresh')
+<% end %>
+$("#flashes_container").html("<%= j render 'shared/flash' %>")
+<% end %>

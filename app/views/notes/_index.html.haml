@@ -23,20 +23,15 @@
       %button.close{ type: 'button', data: { dismiss: 'modal' } }
         %span{ aria: { hidden:'true' } } &times;
       %h4.modal-title.text-center
-        - if notable_type == 'EpicQueueRecord'
-          = "Epic Queue Record Notes | Study: #{EpicQueueRecord.find(notable_id).protocol_id}"
-        - else
-          = I18n.t('dashboard.notes.header', notable_type: notable_type == 'Protocol' ? notable.type : notable_type)
+        = note_header(notable)
     .modal-body
       #modal_errors
-      .form-content
-        = render 'notes/table', notable_id: notable_id, notable_type: notable_type, in_dashboard: @in_dashboard
+      = render 'notes/table', notable_id: notable_id, notable_type: notable_type, cancel: 'true'
     .modal-footer
       .center-block
         %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
           = t(:actions)[:close]
-        - if !@review
-          %button.btn.btn-primary.note.new{ type: "button", aria: { label: t(:notes)[:add] }, data: { notable_id: notable_id, notable_type: notable_type, in_dashboard: @in_dashboard.to_s } }
-            %span.glyphicon.glyphicon-plus{ aria: { hidden: "true" } }
-            %span
-              = t(:notes)[:add]
+        - unless @review
+          = link_to new_note_path(note: { notable_id: notable_id, notable_type: notable_type }, cancel: 'true'), remote: true, class: 'btn btn-primary' do
+            %span.glyphicon.glyphicon-plus{ aria: {hidden: "true"} }
+            = t(:notes)[:add]

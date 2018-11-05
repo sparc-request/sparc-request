@@ -17,13 +17,19 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- services.select{ |serv| serv.is_available != false && serv.current_pricing_map }.each do |service|
-  .service-view.full
-    .title.full
-      .name.col-sm-10
-        = link_to service.display_service_name, 'javascript:void(0)', class: "service service-#{service.id} btn btn-default full", data: { id: service.id }
+- services.each do |service|
+  .service-view.col-sm-12.no-padding-x
+    = link_to 'javascript:void(0)', class: ["service service-#{service.id} no-padding", action_name == 'update_description' ?  'col-sm-10' : 'col-sm-12'], title: organization_description_display(service), data: { id: service.id, toggle: 'tooltip', placement: 'left', delay: '{"show":"500"}' } do
+      %h4.service-name.no-margin-top
+        = service.display_service_name
+      %small.text-black
+        = raw cpt_code_text(service)
+      %small.text-black
+        = raw eap_id_text(service)
+      - if current_user.present?
+        %small.service-pricing.text-black
+          = raw service_pricing_text(service)
+    - if action_name == 'update_description'
       .col-sm-2
         %button.add-service.pull-right.btn.btn-success{ data: { id: service.id, srid: service_request.id, ssrid: sub_service_request.try(:id) } }
           = t(:actions)[:add]
-    .col-sm-12.service-description.hidden{ class: "service-description-#{service.id}" }
-      = organization_description_display(service)

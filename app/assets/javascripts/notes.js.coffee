@@ -18,14 +18,20 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogsController < ApplicationController
-  before_action :initialize_service_request
-  before_action :authorize_identity
-  before_action :find_locked_org_ids,       only: [:update_description]
-  
-  def update_description
-    @organization       = Organization.find(params[:id])
-    @process_ssr_found  = params[:process_ssr_found] == 'true'
-    @ssr_org            = @sub_service_request.organization if @sub_service_request
-  end
-end
+$ ->
+  $(document).on 'click', '.delete-note:not(.disabled)', ->
+    id = $(this).data('note-id')
+
+    swal {
+      title: I18n['swal']['swal_confirm']['title']
+      text: I18n['swal']['swal_confirm']['text']
+      type: 'warning'
+      showCancelButton: true
+      confirmButtonColor: '#DD6B55'
+      confirmButtonText: 'Delete'
+      closeOnConfirm: true
+    }, ->
+      $.ajax
+        type: 'DELETE'
+        dataType: 'script'
+        url: "/notes/#{id}"

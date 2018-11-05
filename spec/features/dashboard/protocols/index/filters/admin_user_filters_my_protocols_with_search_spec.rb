@@ -263,9 +263,9 @@ RSpec.describe "Admin User filters My Protocols using Search functionality", js:
 
 
   context "RMID search" do
-    context 'Setting.find_by_key("research_master_enabled").update_attribute(:value, true)' do
+    context 'RMID enabled' do
+      stub_config('research_master_enabled', true)
       before :each do
-        Setting.find_by_key("research_master_enabled").update_attribute(:value, true)
         @protocol1 = create(:study_without_validations, primary_pi: jug2, title: "title%", short_title: "Protocol1")
         @protocol2 = create(:study_without_validations, primary_pi: jug2, title: "xTitle", short_title: "Protocol2")
         @protocol3 = create(:study_without_validations, primary_pi: jug2, title: "a%a", short_title: "Protocol3", research_master_id: 1234)
@@ -297,9 +297,9 @@ RSpec.describe "Admin User filters My Protocols using Search functionality", js:
       end
     end
 
-    context 'Setting.find_by_key("research_master_enabled").update_attribute(:value, false)' do
+    context 'RMID disabled' do
+      stub_config('research_master_enabled', false)
       before :each do
-        Setting.find_by_key("research_master_enabled").update_attribute(:value, false)
         @protocol1 = create(:study_without_validations, primary_pi: jug2, title: "title%", short_title: "Protocol1")
         @protocol2 = create(:study_without_validations, primary_pi: jug2, title: "xTitle", short_title: "Protocol2")
         @protocol3 = create(:study_without_validations, primary_pi: jug2, title: "a%a", short_title: "Protocol3", research_master_id: 1234)
@@ -376,7 +376,7 @@ RSpec.describe "Admin User filters My Protocols using Search functionality", js:
 
     it "should not have any HR# matches" do
       bootstrap_select '#filterrific_search_query_search_drop', 'HR#'
-      fill_in 'filterrific_search_query_search_text', with: '11111111111
+      fill_in 'filterrific_search_query_search_text', with: '123123'
       find('#apply-filter-button').click
       wait_for_javascript_to_finish
 
@@ -423,7 +423,7 @@ RSpec.describe "Admin User filters My Protocols using Search functionality", js:
 
     it "should not have any PRO# matches" do
       bootstrap_select '#filterrific_search_query_search_drop', 'PRO#'
-      fill_in 'filterrific_search_query_search_text', with: '11111111111
+      fill_in 'filterrific_search_query_search_text', with: '123123'
       find('#apply-filter-button').click
       wait_for_javascript_to_finish
 
@@ -644,7 +644,7 @@ RSpec.describe "Admin User filters My Protocols using Search functionality", js:
       end
 
       it "should not have any HR# matches" do
-        fill_in 'filterrific_search_query_search_text', with: '11111111111'
+        fill_in 'filterrific_search_query_search_text', with: '123123'
         find('#apply-filter-button').click
         wait_for_javascript_to_finish
 
@@ -670,7 +670,7 @@ RSpec.describe "Admin User filters My Protocols using Search functionality", js:
       end
 
       it "should not have any PRO# matches" do
-        fill_in 'filterrific_search_query_search_text', with: '11111111111'
+        fill_in 'filterrific_search_query_search_text', with: '123123'
         find('#apply-filter-button').click
         wait_for_javascript_to_finish
 

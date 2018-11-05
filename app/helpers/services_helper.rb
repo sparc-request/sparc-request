@@ -18,48 +18,31 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-require 'rails_helper'
+module ServicesHelper
+  include ActionView::Helpers::TagHelper
+  include ActionView::Context
 
-RSpec.describe 'Show protocol Study notes spec', js: true do
-  let!(:user) do
-    create(:identity,
-           last_name: "Doe",
-           first_name: "John",
-           ldap_uid: "johnd",
-           email: "johnd@musc.edu",
-           password: "p4ssword",
-           password_confirmation: "p4ssword",
-           approved: true)
+  def cpt_code_text(service)
+    content_tag(:span) do
+      content_tag(:strong, "CPT Code: ") + (service.cpt_code.blank? ? "N/A" : service.cpt_code)
+    end
   end
 
-  fake_login_for_each_test("johnd")
-
-  let!(:protocol) { create(:unarchived_study_without_validations, primary_pi: user) }
-
-  before :each do
-    @page = Dashboard::Protocols::ShowPage.new
-    @page.load(id: protocol.id)
-    @page.protocol_summary.study_notes_button.click
-    @page.wait_for_index_notes_modal
+  def eap_id_text(service)
+    content_tag(:span) do
+      content_tag(:strong, "EAP ID: ") + (service.eap_id.blank? ? "N/A" : service.eap_id)
+    end
   end
 
-  context 'when user presses Add Note button and saves a note' do
-    it 'should create a new Note and display it in modal' do
-      @page.index_notes_modal.instance_exec do
-        new_note_button.click
+  def service_pricing_text(service)
+    if current_user.present?
+      content_tag(:span) do
+        raw(service.displayed_pricing_map.true_rate_hash.map do |label, value|
+          content_tag(:span, class: 'col-sm-4 no-padding') do
+            content_tag(:strong, "#{Service::RATE_TYPES[label]}: ") + "$#{'%.2f' % (value/100)}"
+          end
+        end.join(''))
       end
-
-      @page.wait_for_note_form_modal
-
-      @page.note_form_modal.instance_exec do
-        message_area.set('my important note')
-        add_note_button.click
-      end
-
-      @page.wait_for_index_notes_modal
-
-      expect(@page.index_notes_modal).to have_notes(text: 'my important note')
-      expect(Note.count).to eq 1
     end
   end
 end

@@ -119,6 +119,7 @@
 #   ### Google Calendar ###
 #   use_google_calendar:                        "false"
 #   calendar_url:                               "https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics"
+#   calendar_event_limit:                       3
 
 #   ### News Feed ###
 #   use_news_feed:                              "false"
@@ -237,6 +238,7 @@
 #   ### Google Calendar ###
 #   use_google_calendar:                        "false"
 #   calendar_url:                               "https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics"
+#   calendar_event_limit:                       3
 
 #   ### News Feed ###
 #   use_news_feed:                              "false"
@@ -355,6 +357,7 @@
 #   ### Google Calendar ###
 #   use_google_calendar:                        "false"
 #   calendar_url:                               "https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics"
+#   calendar_event_limit:                       3
 
 #   ### News Feed ###
 #   use_news_feed:                              "false"
@@ -473,6 +476,7 @@ development:
   ### Google Calendar ###
   use_google_calendar:                        "false"
   calendar_url:                               "https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics"
+  calendar_event_limit:                       3
 
   ### News Feed ###
   use_news_feed:                              "false"
@@ -591,6 +595,7 @@ test:
   ### Google Calendar ###
   use_google_calendar:                        "false"
   calendar_url:                               "https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics"
+  calendar_event_limit:                       3
 
   ### News Feed ###
   use_news_feed:                              "false"

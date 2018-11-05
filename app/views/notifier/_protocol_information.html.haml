@@ -46,7 +46,9 @@
       %th.table-header.left= t(:notifier)[:s_name]
       %td.skinny-black-border= protocol.sponsor_name
     %tr.skinny-black-border
-      %th.table-header.left= t(:notifier)[:source]
-      %td.skinny-black-border= (protocol.funding_source or protocol.potential_funding_source or "").capitalize
+      %th.table-header.left<
+        = protocol.funding_status == 'funded' ? t(:notifier)[:source] : t(:notifier)[:potential_source]
+      %td.skinny-black-border<
+        = protocol.display_funding_source_value
 %br
 %br

@@ -136,10 +136,31 @@ RSpec.describe 'User manages Catalog Managers', js: true do
                                    organization_id: @provider.id,
                                    is_primary_contact: nil,
                                    hold_emails: nil).count).to eq(1)
-      expect(page).to have_selector('.sp-is-primary-contact:not(:checked)')
-      expect(page).to have_selector('.sp-is-primary-contact:not(:disabled)')
-      expect(page).to have_selector('.sp-hold-emails:not(:checked)')
+      expect(page).to have_selector('.sp-is-primary-contact:not(:checked):not(:disabled)')
+      expect(page).to have_selector('.sp-hold-emails:not(:checked):not(:disabled)')
       expect(page).to have_selector('.sp-hold-emails:not(:disabled)')
     end
+  end
+
+  it 'should limit primary contacts to 3 people' do
+    create(:service_provider, organization: @provider, identity: create(:identity), is_primary_contact: true)
+    create(:service_provider, organization: @provider, identity: create(:identity), is_primary_contact: true)
+    create(:service_provider, organization: @provider, identity: create(:identity), is_primary_contact: true)
+    create(:service_provider, organization: @provider, identity: create(:identity), is_primary_contact: false)
+
+    visit catalog_manager_catalog_index_path
+    wait_for_javascript_to_finish
+
+    find("#institution-#{@institution.id}").click
+    wait_for_javascript_to_finish
+
+    click_link @provider.name
+    wait_for_javascript_to_finish
+
+    click_link 'User Rights'
+    wait_for_javascript_to_finish
+
+    expect(page).to have_selector('.sp-is-primary-contact:not(:disabled)', count: 3)
+    expect(page).to have_selector('.sp-is-primary-contact:disabled', count: 1)
   end
 end

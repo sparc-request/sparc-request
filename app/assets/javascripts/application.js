@@ -62,3 +62,4 @@
 //= require surveyor/surveys
 //= require sweetalert.min
 //= require feedback
+//= require notes

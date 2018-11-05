@@ -27,9 +27,9 @@ RSpec.describe 'User searches for services and organizations', js: true do
   before :each do
     @institution  = create(:institution)
     @provider     = create(:provider, parent: @institution)
-    @program      = create(:program, parent: @provider)
+    @program      = create(:program, parent: @provider, process_ssrs: true, pricing_setup_count: 1)
     @core         = create(:core, parent: @program)
-    @service      = create(:service, organization: @core)
+    @service      = create(:service, organization: @core, pricing_map_count: 1)
     create(:catalog_manager, organization: @available, identity: jug2)
 
     visit catalog_manager_catalog_index_path

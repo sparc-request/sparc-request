@@ -23,16 +23,6 @@
 #= require associated_users
 
 $(document).ready ->
-  $(document).on 'click', '.service-view a', ->
-    description = $(".service-description-#{$(this).data('id')}")
-    if description.hasClass('hidden')
-      $('.service-description').addClass('hidden')
-      description.removeClass('hidden')
-    else
-      description.addClass('hidden')
-
-  $('.protocol-select-help a').tooltip()
-
   $(document).on 'click', '.view-protocol-details-button', ->
     protocol_id = $(this).data('protocol-id')
     $.ajax

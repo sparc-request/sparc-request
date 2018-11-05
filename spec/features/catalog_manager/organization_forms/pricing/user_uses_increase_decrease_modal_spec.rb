@@ -26,7 +26,7 @@ RSpec.describe 'User edits organization subsidy map', js: true do
 
   before :each do
     @institution = create(:institution)
-    @provider = create(:provider, parent_id: @institution.id)
+    @provider = create(:provider, :with_subsidy_map, parent_id: @institution.id)
     @program      = create(:program, parent: @provider)
     @service      = create(:service, organization: @program, components: "", one_time_fee: true, pricing_map_count: 1)
     create(:catalog_manager, organization_id: @institution.id, identity_id: Identity.where(ldap_uid: 'jug2').first.id)

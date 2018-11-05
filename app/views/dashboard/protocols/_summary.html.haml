@@ -21,8 +21,8 @@
   .panel-heading
     %h4.panel-title.pull-left
       = I18n.t('protocols.summary.header', protocol_type: protocol_type)
-    .pull-right
-      %button.btn.btn-sm.btn-default.notes.list{ data: { notable_type: "Protocol", notable_id: protocol.id, toggle: 'tooltip', placement: 'left', delay: '{"show":"500"}' }, title: t(:protocols)[:summary][:tooltips][:notes] }
+    .pull-right<
+      = link_to notes_path(note: { notable_id: protocol.id, notable_type: Protocol.name }), remote: true, class: 'btn btn-sm btn-default', title: t(:protocols)[:summary][:tooltips][:notes], data: { toggle: 'tooltip', placement: 'left', delay: '{"show":"500"}' } do
         = "#{protocol_type} #{t(:models)[:note][:plural]}"
         %span.badge{id: "protocol_#{protocol.id}_notes"}
           = protocol.notes.count

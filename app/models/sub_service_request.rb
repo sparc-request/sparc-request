@@ -108,6 +108,10 @@ class SubServiceRequest < ApplicationRecord
     orgs << organization
   end
 
+  def process_ssrs_organization
+    self.organization.process_ssrs_parent
+  end
+
   def set_effective_date_for_cost_calculations
     self.line_items.each{|li| li.pricing_scheme = 'effective'}
   end

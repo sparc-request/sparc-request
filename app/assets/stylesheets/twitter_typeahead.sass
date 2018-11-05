@@ -35,19 +35,16 @@
   width: 100%
   padding: 0 20px
   background-color: #fff
-  border-top: 1px solid #eee
-  border-bottom: 1px solid #eee
-  border-left: 0
-  border-right: 0
+  border: 0
   cursor: pointer
   font-size: 18px
 
-.tt-suggestion:first-child
-  border-top-width: 2px
-.tt-suggestion:last-child
-  border-bottom-width: 2px
-.tt-suggestion:hover
-  background-color: #EEE
+  &:not(:first-child)
+    padding-top: 5px
+    border-top: 1px solid #eee
+    margin-top: 5px
+  &:hover
+    background-color: #EEE
 
 .catalog-center, #search-header, #form-modal, #related-services
   .tt-suggestion

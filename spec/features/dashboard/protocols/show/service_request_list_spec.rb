@@ -221,6 +221,7 @@ RSpec.describe 'service request list', js: true do
     end
     let!(:organization) do
       create(:organization,
+        :process_ssrs,
         type: 'Institution',
         name: 'Megacorp',
         admin: user,

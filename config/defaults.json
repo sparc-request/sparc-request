@@ -30,6 +30,16 @@
     "parent_value":   "true"
   },
   {
+    "key":            "calendar_event_limit",
+    "value":          "3",
+    "friendly_name":  "Calendar Event Limit",
+    "description":    "This is the maximum number of events that will be displayed in the homepage Calendar.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_news_feed",
+    "parent_value":   "true"
+  },
+  {
     "key":            "calendar_url",
     "value":          "https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics",
     "friendly_name":  "Calendar URL",
@@ -234,6 +244,16 @@
     "value":          "true",
     "friendly_name":  "Fulfillment Contingent on Catalog Manager",
     "description":    "This determines whether users will have the ability to push a request to SPARCFulfillment from the Admin Dashboard.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "use_funding_module",
+    "value":          "false",
+    "friendly_name":  "Use SPARCFunding Module",
+    "description":    "This determines whether the application will use the SPARCFunding module.",
     "group":          "",
     "version":        "",
     "parent_key":     "",
@@ -523,7 +543,7 @@
     "key":            "news_feed_post_limit",
     "value":          "3",
     "friendly_name":  "News Feed Post Limit",
-    "description":    "This is the maximum number of posts that will be displayed in the News Feed.",
+    "description":    "This is the maximum number of posts that will be displayed in the homepage News Feed.",
     "group":          "",
     "version":        "",
     "parent_key":     "use_news_feed",
@@ -824,16 +844,6 @@
     "value":          "false",
     "friendly_name":  "Use Feedback Link",
     "description":    "This determines whether the application will use an external resource for users to provide feedback. This has lower precedence than \"use_redcap_api\" when both are enabled.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "",
-    "parent_value":   ""
-  },
-  {
-    "key":            "use_funding_module",
-    "value":          "false",
-    "friendly_name":  "Use SPARCFunding Module",
-    "description":    "This determines whether the application will use the SPARCFunding module.",
     "group":          "",
     "version":        "",
     "parent_key":     "",

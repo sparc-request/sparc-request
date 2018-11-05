@@ -21,8 +21,8 @@
 class NotesController < ApplicationController
   respond_to :js, :json
 
-  before_action :find_notable
-  before_action :set_in_dashboard
+  before_action :find_notable, except: [:destroy]
+  before_action :find_note, only: [:edit, :update, :destroy]
   before_action :set_review
 
   def index
@@ -35,18 +35,38 @@ class NotesController < ApplicationController
   end
 
   def new
-    @note = Note.new(note_params.merge(identity_id: current_user.id))
+    @note = current_user.notes.new(note_params)
   end
 
   def create
-    @note  = Note.create(note_params.merge(identity_id: current_user.id))
+    @note  = current_user.notes.new(note_params)
     @notes = @notable.notes
-    if @note.valid?
-      @selector = "#{@note.unique_selector}_notes"
+
+    if @note.save
       flash[:success] = t(:notes)[:created]
     else
       @errors = @note.errors
     end
+  end
+
+  def edit
+  end
+
+  def update
+    @notes = @notable.notes
+
+    if @note.update_attributes(note_params)
+      flash[:success] = t(:notes)[:updated]
+    else
+      @errors = @note.errors
+    end
+  end
+
+  def destroy
+    @note.destroy
+    @notes = @note.notable.notes
+
+    flash[:success] = t(:notes)[:destroyed]
   end
 
   private
@@ -56,13 +76,13 @@ class NotesController < ApplicationController
   end
 
   def find_notable
-    @notable_id = params[:note][:notable_id]
-    @notable_type = params[:note][:notable_type]
+    @notable_id = note_params[:notable_id]
+    @notable_type = note_params[:notable_type]
     @notable = @notable_type.constantize.find(@notable_id)
   end
 
-  def set_in_dashboard
-    @in_dashboard = (params[:in_dashboard] || params[:note][:in_dashboard]) == 'true'
+  def find_note
+    @note = Note.find(params[:id])
   end
 
   def set_review

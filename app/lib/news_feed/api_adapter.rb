@@ -1,5 +1,3 @@
-require_relative 'base'
-
 module NewsFeed
   class ApiAdapter < NewsFeed::Base
     def initialize(api_string="", content_type='application/json', parameters={limit: NewsFeed::Base::POST_LIMIT})

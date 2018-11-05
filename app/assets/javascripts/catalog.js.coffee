@@ -51,17 +51,6 @@ $(document).ready ->
       type: 'GET'
       url: "/locked_organizations?org_id=#{organizationId}&protocol_id=#{protocolId}&service_request_id=#{serviceRequestId}"
 
-  $(document).on 'click', '.core-header', ->
-    $('.service-description').addClass('hidden')
-
-  $(document).on 'click', '.service', ->
-    description = $(".service-description-#{$(this).data('id')}")
-    if description.hasClass('hidden')
-      $('.service-description').addClass('hidden')
-      description.removeClass('hidden')
-    else
-      description.addClass('hidden')
-
   ### SERVICE SEARCH BLOODHOUND ###
   services_bloodhound = new Bloodhound(
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
@@ -81,15 +70,18 @@ $(document).ready ->
       source: services_bloodhound,
       limit: 100,
       templates: {
-        suggestion: Handlebars.compile('<button class="text-left" data-container="body" data-placement="right" data-toggle="tooltip" data-animation="false" data-html="true" title="{{description}}">
-                                          <span><strong>Service: {{label}}</strong></span><br>
+        suggestion: Handlebars.compile('<button class="service text-left" data-container="body" data-placement="right" data-toggle="tooltip" data-animation="false" data-html="true" title="{{description}}">
+                                          <h4 class="service-name no-margin-top"><span class="text-service">Service</span><span>: {{label}}</span></h4>
                                           <span>{{{breadcrumb}}}</span><br>
                                           <span>Abbreviation: {{abbreviation}}</span><br>
-                                          {{#if cpt_code}}
-                                            <span>CPT Code: {{cpt_code}}</span><br>
+                                          {{#if cpt_code_text}}
+                                            {{{cpt_code_text}}}<br>
                                           {{/if}}
-                                          {{#if eap_id}}
-                                            <span>EAP ID: {{eap_id}}</span>
+                                          {{#if eap_id_text}}
+                                            {{{eap_id_text}}}<br>
+                                          {{/if}}
+                                          {{#if pricing_text}}
+                                            {{{pricing_text}}}
                                           {{/if}}
                                         </button>')
         notFound: '<div class="tt-suggestion">No Results</div>'

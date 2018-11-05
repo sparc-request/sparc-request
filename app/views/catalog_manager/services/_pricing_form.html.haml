@@ -28,6 +28,6 @@
   %span= t(:catalog_manager)[:service_form][:pricing_map_form][:no_pricing_setups]
 
 #pricing_map_list
-  - service.pricing_maps.sort_by(&:effective_date).each do |pricing_map|
+  - service.pricing_maps.order(effective_date: :desc).each do |pricing_map|
     = render "/catalog_manager/services/pricing_map", pricing_map: pricing_map
 

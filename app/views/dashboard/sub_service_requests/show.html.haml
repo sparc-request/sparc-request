@@ -26,10 +26,12 @@
   %ul.nav.nav-tabs.nav-justified{role: 'tablist', data: {protocol_id: @protocol.id, ssr_id: @sub_service_request.id}}
     %li.custom-tab.ssr_tab{role: 'presentation', class: cookies['admin-tab'] ? (cookies['admin-tab'] == 'details-tab' ? 'active' : '') : 'active'}
       = link_to t(:dashboard)[:sub_service_requests][:tabs][:request_details][:header], "#details", {id: 'details-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'details-tab', data: {partial_name: 'sub_service_requests/request_details'}}
-    %li.custom-tab.ssr_tab{role: 'presentation', class: cookies['admin-tab'] == 'study_schedule-tab' ? 'active' : ''}
-      = link_to t(:dashboard)[:sub_service_requests][:tabs][:study_schedule][:header], "#study_schedule", {id: 'study_schedule-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'study_schedule-tab', data: {partial_name: 'sub_service_requests/per_patient_per_visit'}}
-    %li.custom-tab.ssr_tab{role: 'presentation', class: cookies['admin-tab'] == 'study_level_activities-tab' ? 'active' : ''}
-      = link_to t(:dashboard)[:sub_service_requests][:tabs][:study_level_activities][:header], "#study_level_activities", {id: 'study_level_activities-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'study_level_activities-tab', data: {partial_name: 'study_level_activities/study_level_activities_table'}}
+    - if @sub_service_request.process_ssrs_organization.has_per_patient_per_visit_services?
+      %li.custom-tab.ssr_tab{role: 'presentation', class: cookies['admin-tab'] == 'study_schedule-tab' ? 'active' : ''}
+        = link_to t(:dashboard)[:sub_service_requests][:tabs][:study_schedule][:header], "#study_schedule", {id: 'study_schedule-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'study_schedule-tab', data: {partial_name: 'sub_service_requests/per_patient_per_visit'}}
+    - if @sub_service_request.process_ssrs_organization.has_one_time_fee_services?
+      %li.custom-tab.ssr_tab{role: 'presentation', class: cookies['admin-tab'] == 'study_level_activities-tab' ? 'active' : ''}
+        = link_to t(:dashboard)[:sub_service_requests][:tabs][:study_level_activities][:header], "#study_level_activities", {id: 'study_level_activities-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'study_level_activities-tab', data: {partial_name: 'study_level_activities/study_level_activities_table'}}
     %li.custom-tab.ssr_tab{role: 'presentation', class: cookies['admin-tab'] == 'history-tab' ? 'active' : ''}
       = link_to t(:dashboard)[:sub_service_requests][:tabs][:history][:header], "#history", {id: 'history-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'history-tab', data: {partial_name: 'sub_service_requests/history/status_changes'}}
     %li.custom-tab.ssr_tab{role: 'presentation', class: cookies['admin-tab'] == 'notifications-tab' ? 'active' : ''}

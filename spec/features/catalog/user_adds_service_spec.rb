@@ -27,7 +27,7 @@ RSpec.describe 'User adds service to cart', js: true do
   before :each do
     institution = create(:institution, name: "Institution")
     provider    = create(:provider, name: "Provider", parent: institution)
-    @program    = create(:program, name: "Program", parent: provider, process_ssrs: true)
+    @program    = create(:program, name: "Program", parent: provider, process_ssrs: true, pricing_setup_count: 1)
     @service    = create(:service, name: "Service", abbreviation: "Service", organization: @program, pricing_map_count: 1)
   end
 

@@ -250,34 +250,42 @@
       margin-top: 0
 
   #calendar-blog
-    display: inline-block
-    @media( min-width: 768px )
-      .news-container
-        padding-left: 0
-        padding-right: 8px
-
-      .catalog-calendar
-        padding-left: 8px
-        padding-right: 0
-        .calendar-event
-          display: inline-block
-          .date
-            background: $sparc-blue-green
-            border-radius: 3px
-            .day
-              font-size: 20px
-          .location
-            padding-right: 0
-            .title
-              display: inline-block
-
-    .col-sm-12
+    display: flex
+    .news-container
       padding-left: 0
+      padding-right: 8px
+    .catalog-calendar
+      padding-left: 8px
       padding-right: 0
-
-    .panel-info
-      .blog-link:not(:last-child),
-      .calendar-event:not(:last-child)
+      .calendar-event
+        display: flex
+        overflow-x: hidden
+        .event-date
+          border-radius: 3px
+        .event-details-container
+          padding-right: 0
+    .news-container, .catalog-calendar
+      display: flex
+      &.col-sm-12
+        .blog-link, .calendar-event
+          font-size: 18px
+          .event-date
+            padding: 15px
+      &.col-sm-6
+        .calendar-event
+          .event-date
+            padding: 5px 15px
+      .panel
+        overflow-x: hidden
+        .panel-title
+          display: flex
+          .glyphicon
+            margin-right: 5px
+      .event-date, .event-details, .event-details-container, .blog-link
+        display: flex
+        flex-flow: column
+        justify-content: space-between
+      .blog-link:not(:last-child), .calendar-event:not(:last-child)
         padding-bottom: 5px
         margin-bottom: 5px
         border-bottom: 1px solid #eee

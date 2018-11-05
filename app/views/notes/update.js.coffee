@@ -17,32 +17,15 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-class CatalogManager::CatalogController < CatalogManager::AppController
-  respond_to :js, :haml, :json
-
-  def index
-    @institutions = Institution.order(Arel.sql('`order`,`name`'))
-    @show_available_only = params[:show_available_only] ? params[:show_available_only] == "true" : true
-
-    @editable_organizations = @user.catalog_manager_organizations
-
-    respond_to do |format|
-      format.html
-      format.js
-    end
-  end
-
-  def load_program_accordion
-    @editable_organizations = @user.catalog_manager_organizations
-    @program = Organization.find(params[:program_id])
-    @program_editable = @editable_organizations.include?(@program)
-    @availability = params[:show_available_only] ? params[:show_available_only] == "true" : true, true
-  end
-
-  def load_core_accordion
-    @core = Organization.find(params[:core_id])
-    @core_editable = @user.catalog_manager_organizations.include?(@core)
-    @availability = params[:show_available_only] ? params[:show_available_only] == "true" : true, true
-  end
-end
+<% if @errors %>
+$("#modal_errors").html("<%= j render 'shared/modal_errors', errors: @errors %>")
+<% else %>
+<% if params[:cancel] %>
+$("#modal_place").html("<%= j render 'index', notable_id: @notable_id, notable_type: @notable_type, in_dashboard: @in_dashboard, notable: @notable %>")
+$('#notes-table').bootstrapTable()
+<% else %>
+$("#modal_place").modal('hide')
+$('#notes-table').bootstrapTable('refresh')
+<% end %>
+$("#flashes_container").html("<%= j render 'shared/flash' %>")
+<% end %>

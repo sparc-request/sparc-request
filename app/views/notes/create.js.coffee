@@ -18,25 +18,20 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <% if @errors %>
-$("#modal_place #modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
-<% elsif @in_dashboard %>
-<% if notable_type_is_related_to_li_or_liv_or_epic_queue(@notable_type) %>
-$("#modal_place").html("<%= escape_javascript(render( 'index', notable_id: @notable_id, notable_type: @notable_type, in_dashboard: @in_dashboard, notable: @notable )) %>")
-$("span#<%= @selector %>").html("<%= escape_javascript(@notes.count.to_s) %>").addClass('blue-badge').siblings().removeClass("black-note").addClass("blue-note")
+$("#modal_errors").html("<%= j render 'shared/modal_errors', errors: @errors %>")
+<% else %>
+<% if params[:cancel] %>
+$("#modal_place").html("<%= j render 'index', notable_id: @notable_id, notable_type: @notable_type, in_dashboard: @in_dashboard, notable: @notable %>")
 $('#notes-table').bootstrapTable()
 <% else %>
-$("#modal_place").html("<%= escape_javascript(render( 'index', notable_id: @notable_id, notable_type: @notable_type, in_dashboard: @in_dashboard, notable: @notable )) %>")
-$("span#<%= @selector %>").html("<%= escape_javascript(@notes.count.to_s) %>")
-$('#notes-table').bootstrapTable()
+$("#modal_place").modal('hide')
+$('#notes-table').bootstrapTable('refresh')
 <% end %>
+
+<% if @notes.count > 0 %>
+$("span#<%= @note.unique_selector %>_notes").html("<%= @notes.count %>").addClass('blue-badge').siblings().removeClass("black-note").addClass("blue-note")
 <% else %>
-<% if notable_type_is_related_to_li_or_liv_or_epic_queue(@notable_type) %>
-$("#modal_place").html("<%= escape_javascript(render( 'index', notable_id: @notable_id, notable_type: @notable_type, in_dashboard: @in_dashboard, notable: @notable )) %>")
-$("span#<%= @selector %>").html("<%= escape_javascript(@notes.count.to_s) %>").addClass('blue-badge').siblings().removeClass("black-note").addClass("blue-note")
-$('#notes-table').bootstrapTable()
-<% else %>
-$("#notes-table").bootstrapTable 'refresh', {silent: true}
-$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
-$("#modal_place").modal 'hide'
+$("span#<%= @note.unique_selector %>_notes").html("<%= @notes.count %>").removeClass('blue-badge').siblings().removeClass("blue-note").addClass("black-note")
 <% end %>
+$("#flashes_container").html("<%= j render 'shared/flash' %>")
 <% end %>

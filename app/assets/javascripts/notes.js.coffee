@@ -18,31 +18,20 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogManager::CatalogController < CatalogManager::AppController
-  respond_to :js, :haml, :json
+$ ->
+  $(document).on 'click', '.delete-note:not(.disabled)', ->
+    id = $(this).data('note-id')
 
-  def index
-    @institutions = Institution.order(Arel.sql('`order`,`name`'))
-    @show_available_only = params[:show_available_only] ? params[:show_available_only] == "true" : true
-
-    @editable_organizations = @user.catalog_manager_organizations
-
-    respond_to do |format|
-      format.html
-      format.js
-    end
-  end
-
-  def load_program_accordion
-    @editable_organizations = @user.catalog_manager_organizations
-    @program = Organization.find(params[:program_id])
-    @program_editable = @editable_organizations.include?(@program)
-    @availability = params[:show_available_only] ? params[:show_available_only] == "true" : true, true
-  end
-
-  def load_core_accordion
-    @core = Organization.find(params[:core_id])
-    @core_editable = @user.catalog_manager_organizations.include?(@core)
-    @availability = params[:show_available_only] ? params[:show_available_only] == "true" : true, true
-  end
-end
+    swal {
+      title: I18n['swal']['swal_confirm']['title']
+      text: I18n['swal']['swal_confirm']['text']
+      type: 'warning'
+      showCancelButton: true
+      confirmButtonColor: '#DD6B55'
+      confirmButtonText: 'Delete'
+      closeOnConfirm: true
+    }, ->
+      $.ajax
+        type: 'DELETE'
+        dataType: 'script'
+        url: "/notes/#{id}"

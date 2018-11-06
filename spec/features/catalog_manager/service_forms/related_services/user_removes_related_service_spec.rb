@@ -45,9 +45,8 @@ RSpec.describe 'User removes a related service', js: true do
 
     click_link I18n.t(:catalog_manager)[:organization_form][:related_services]
 
-    accept_confirm do
-      first('.remove-related-services').click
-    end
+    first('.remove-related-services').click
+    accept_confirm
     wait_for_javascript_to_finish
   end
 

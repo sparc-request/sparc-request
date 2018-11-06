@@ -18,23 +18,36 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-module WaitForJavascript
+require 'rails_helper'
 
-  def wait_for_javascript_to_finish(seconds=15)
-    Timeout.timeout(Capybara.default_max_wait_time) do
-      loop until finished_all_ajax_requests? && finished_all_animations?
+RSpec.describe 'protocols/view_details/study_information', type: :view do
+  def render_information_for protocol
+    render 'protocols/view_details/study_information', protocol: protocol
+  end
+
+  context 'Protocol is a Study' do
+    context 'RMID is enabled' do
+      stub_config('research_master_enabled', true)
+
+      it 'should display Research Master ID' do
+        protocol = build_stubbed(:study, research_master_id: 1234)
+
+        render_information_for protocol
+
+        expect(response).to have_content('1234')
+      end
+    end
+
+    context 'RMID is disabled' do
+      stub_config('research_master_enabled', false)
+
+      it 'should not display Research Master ID' do
+        protocol = build_stubbed(:study, research_master_id: 1234)
+
+        render_information_for protocol
+
+        expect(response).to_not have_content('1234')
+      end
     end
   end
-
-  def finished_all_ajax_requests?
-    page.evaluate_script('jQuery.active') == 0
-  end
-
-  def finished_all_animations?
-    page.evaluate_script('$(":animated").length') == 0
-  end
-end
-
-RSpec.configure do |config|
-  config.include WaitForJavascript, type: :feature
 end

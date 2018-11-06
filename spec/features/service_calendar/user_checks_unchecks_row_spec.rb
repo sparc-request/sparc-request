@@ -45,6 +45,7 @@ RSpec.describe 'User checks and unchecks calendar rows', js: true do
         wait_for_javascript_to_finish
 
         first('.service-calendar-row').click
+        accept_confirm
         wait_for_javascript_to_finish
 
         all('.visit-quantity').each do |checkbox|
@@ -61,6 +62,7 @@ RSpec.describe 'User checks and unchecks calendar rows', js: true do
         wait_for_javascript_to_finish
 
         first('.service-calendar-row').click
+        accept_confirm
         wait_for_javascript_to_finish
 
         all('.visit-quantity').each do |checkbox|

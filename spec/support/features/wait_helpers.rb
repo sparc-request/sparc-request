@@ -18,19 +18,28 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-module WaitForAjax
-
-  def wait_for_javascript_to_finish(seconds=15)
-    Timeout.timeout(Capybara.default_max_wait_time) do
-      loop until finished_all_ajax_requests?
+module Features
+  module WaitHelpers
+    def wait_for_page(path)
+      Selenium::WebDriver::Wait.new(timeout: Capybara.default_max_wait_time).until{ current_path == path }
     end
-  end
 
-  def finished_all_ajax_requests?
-    page.evaluate_script('jQuery.active').zero?
+    def wait_for_javascript_to_finish(seconds=15)
+      Timeout.timeout(Capybara.default_max_wait_time) do
+        loop until finished_all_ajax_requests? && finished_all_animations?
+      end
+    end
+
+    def finished_all_ajax_requests?
+      page.evaluate_script('jQuery.active') == 0
+    end
+
+    def finished_all_animations?
+      page.evaluate_script('$(":animated").length') == 0
+    end
   end
 end
 
 RSpec.configure do |config|
-  config.include WaitForAjax, type: :feature
+  config.include Features::WaitHelpers, type: :feature
 end

@@ -18,32 +18,14 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CreatedProtocolsReport < Reporting
-  def self.description
-    "Provide a total of Protocols created by month"
-  end
+FactoryBot.define do
+  factory :project, parent: :protocol, class: 'Project' do
+    type "Project"
 
-  def default_output_file
-    return 'created_protocols.csv'
-  end
-
-  def run
-    header = [
-      'Month',
-      "Number of Protocols"
-    ]
-
-    CSV.open(@output_file, 'wb') do |csv|
-      csv << header
-      months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-      total = 0
-      12.times do |index|
-        count = Protocol.select { |prot| prot.created_at.try(:month) == (index + 1) }.count
-        row = [months[index], count]
-        csv << row
-        total += count
-      end
-      csv << ["Total Protocols", total]
-    end
+    factory :project_federally_funded,                    traits: [:funded, :federal]
+    factory :project_without_validations,                 traits: [:without_validations]
+    factory :unarchived_project_without_validations,      traits: [:without_validations, :unarchived]
+    factory :archived_project_without_validations,        traits: [:without_validations, :archived]
+    factory :project_with_blank_dates,                    traits: [:pending, :blank_funding_start_dates, :blank_start_and_end_dates]
   end
 end

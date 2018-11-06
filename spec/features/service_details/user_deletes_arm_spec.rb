@@ -44,6 +44,7 @@ RSpec.describe 'User deletes an arm', js: true do
       wait_for_javascript_to_finish
 
       first('.delete-arm-button').click
+      accept_alert
       wait_for_javascript_to_finish
 
       expect(@protocol.arms.count).to eq(1)

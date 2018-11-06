@@ -42,8 +42,10 @@ RSpec.describe 'User sets timeline dates', js: true do
       visit service_details_service_request_path(@sr)
       wait_for_javascript_to_finish
 
-      fill_in 'study_start_date', with: '01/02/2016'
-      fill_in 'study_end_date', with: '03/04/2016'
+      bootstrap_datepicker '#study_start_date', '01/02/2016'
+      first('.page-header').click
+      bootstrap_datepicker '#study_end_date', '03/04/2016'
+      first('.page-header').click
 
       click_link 'Save and Continue →'
       wait_for_javascript_to_finish

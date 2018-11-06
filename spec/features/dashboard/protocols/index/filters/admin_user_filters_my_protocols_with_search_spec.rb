@@ -376,7 +376,7 @@ RSpec.describe "Admin User filters My Protocols using Search functionality", js:
 
     it "should not have any HR# matches" do
       bootstrap_select '#filterrific_search_query_search_drop', 'HR#'
-      fill_in 'filterrific_search_query_search_text', with: '11111111111
+      fill_in 'filterrific_search_query_search_text', with: '11111111111'
       find('#apply-filter-button').click
       wait_for_javascript_to_finish
 
@@ -423,7 +423,7 @@ RSpec.describe "Admin User filters My Protocols using Search functionality", js:
 
     it "should not have any PRO# matches" do
       bootstrap_select '#filterrific_search_query_search_drop', 'PRO#'
-      fill_in 'filterrific_search_query_search_text', with: '11111111111
+      fill_in 'filterrific_search_query_search_text', with: '11111111111'
       find('#apply-filter-button').click
       wait_for_javascript_to_finish
 

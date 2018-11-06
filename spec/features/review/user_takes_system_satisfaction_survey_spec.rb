@@ -47,9 +47,9 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
     context 'by clicking Get a Cost Estimate' do
       scenario 'and is taken directly to Obtain Research Pricing' do
         click_link 'Get a Cost Estimate'
-        wait_for_javascript_to_finish
-
-        expect(current_path).to eq(obtain_research_pricing_service_request_path(@sr))
+        cost_estimate_page = obtain_research_pricing_service_request_path(@sr)
+        wait_for_page(cost_estimate_page)
+        expect(current_path).to eq(cost_estimate_page)
       end
     end
 
@@ -87,8 +87,9 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
         scenario 'and is redirected to Obtain Research Pricing' do
           find('#modal_place .no-button').click
           wait_for_javascript_to_finish
-
-          expect(current_path).to eq(obtain_research_pricing_service_request_path(@sr))
+          cost_estimate_page = obtain_research_pricing_service_request_path(@sr)
+          wait_for_page(cost_estimate_page)
+          expect(current_path).to eq(cost_estimate_page)
         end
       end
 
@@ -113,7 +114,9 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
           end
 
           scenario 'and is redirected to Obtain Research Pricing' do
-            expect(current_path).to eq(obtain_research_pricing_service_request_path(@sr))
+            cost_estimate_page = obtain_research_pricing_service_request_path(@sr)
+            wait_for_page(cost_estimate_page)
+            expect(current_path).to eq(cost_estimate_page)
           end
         end
       end
@@ -133,8 +136,9 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
         scenario 'and is redirected to Confirmation ' do
           find('#modal_place .no-button').click
           wait_for_javascript_to_finish
-
-          expect(current_path).to eq(confirmation_service_request_path(@sr))
+          confirmation_page = confirmation_service_request_path(@sr)
+          wait_for_page(confirmation_page)
+          expect(current_path).to eq(confirmation_page)
         end
       end
 
@@ -159,7 +163,9 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
           end
 
           scenario 'and is redirected to Confirmation' do
-            expect(current_path).to eq(confirmation_service_request_path(@sr))
+            confirmation_page = confirmation_service_request_path(@sr)
+            wait_for_page(confirmation_page)
+            expect(current_path).to eq(confirmation_page)
           end
         end
       end

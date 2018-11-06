@@ -44,6 +44,7 @@ RSpec.describe 'User deletes an existing document', js: true do
       wait_for_javascript_to_finish
 
       find('.document-delete').click
+      accept_confirm
       wait_for_javascript_to_finish
 
       expect(@protocol.documents.count).to eq(0)

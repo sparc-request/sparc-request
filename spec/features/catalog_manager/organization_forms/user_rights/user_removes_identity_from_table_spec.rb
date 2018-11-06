@@ -44,6 +44,7 @@ RSpec.describe 'User manages user rights', js: true do
     wait_for_javascript_to_finish
 
     find('.remove-user-rights').click
+    accept_confirm
     wait_for_javascript_to_finish
   end
 

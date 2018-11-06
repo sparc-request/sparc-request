@@ -20,51 +20,55 @@
 
 require 'rails_helper'
 
-RSpec.describe 'dashboard/protocols/summary', type: :view do
-  def render_summary_for protocol
-    render 'dashboard/protocols/summary',
+RSpec.describe 'protocols/summary', type: :view do
+  def render_summary_for protocol, action_name=nil
+    render '/protocols/summary',
       protocol: protocol,
       protocol_type: protocol.type,
-      permission_to_edit: true,
-      admin: true,
-      user: jug2
+      user: jug2,
+      action_name: action_name,
+      service_request: build_stubbed(:service_request),
+      sub_service_request_id: 1
   end
 
   let_there_be_lane
 
   context 'Protocol is a Study' do
     it 'should be titled "Study Summary"' do
-      protocol = build(:protocol_federally_funded,
-        :without_validations,
-        primary_pi: jug2,
-        type: 'Study',
-        archived: false,
-        short_title: 'My Awesome Short Title')
+      protocol = build_stubbed(:study_federally_funded, primary_pi: jug2)
 
       render_summary_for protocol
 
       expect(response).to have_content('Study Summary')
     end
 
-    it 'should display a "Study Notes" button' do
-      protocol = build(:protocol_federally_funded,
-        :without_validations,
-        primary_pi: jug2,
-        type: 'Study',
-        archived: false,
-        title: 'Study_Title',
-        short_title: 'Study_Short_Title')
+    describe 'Edit button' do
+      context 'on Step 2: Protocol' do
+        it 'should show the Edit button' do
+          protocol = build_stubbed(:study_without_validations, primary_pi: jug2)
 
-      render_summary_for protocol
+          render_summary_for protocol, 'protocol'
 
-      expect(response).to have_selector('button', text: 'Study Notes')
+          expect(response).to have_selector('.edit-protocol-information-button', text: I18n.t('protocols.edit', protocol_type: protocol.type))
+        end
+      end
+
+      context 'in Review' do
+        it 'should show the edit button' do
+          protocol = build_stubbed(:study_without_validations, primary_pi: jug2)
+
+          render_summary_for protocol, 'review'
+
+          expect(response).to_not have_selector('.edit-protocol-information-button', text: I18n.t('protocols.edit', protocol_type: protocol.type))
+        end
+      end
     end
 
     context 'RMID is enabled' do
       stub_config('research_master_enabled', true)
 
       it 'should display Research Master ID' do
-        protocol = build(:study, research_master_id: 1234)
+        protocol = build_stubbed(:study, research_master_id: 1234)
 
         render_summary_for protocol
 
@@ -76,7 +80,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
       stub_config('research_master_enabled', false)
 
       it 'should not display Research Master ID' do
-        protocol = build(:study, research_master_id: 1234)
+        protocol = build_stubbed(:study, research_master_id: 1234)
 
         render_summary_for protocol
 
@@ -86,14 +90,11 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
 
     context 'Study has potential funding source' do
       it 'should display Study ID, Title, Short Title, and potential funding source' do
-        protocol = build(:protocol_federally_funded,
-          :without_validations,
+        protocol = build_stubbed(:study_federally_funded,
           primary_pi: jug2,
-          type: 'Study',
-          archived: false,
+          id: 9999,
           title: 'My Awesome Full Title',
           short_title: 'My Awesome Short Title',
-          id: 9999,
           potential_funding_source: 'federal',
           funding_source: 'college',
           funding_status: 'pending_funding')
@@ -111,14 +112,11 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
 
     context 'Study has a funding source' do
       it 'should display Study ID, Title, Short Title, and potential funding source' do
-        protocol = build(:protocol_federally_funded,
-          :without_validations,
+        protocol = build_stubbed(:study_federally_funded,
           primary_pi: jug2,
-          type: 'Study',
-          archived: false,
+          id: 9999,
           title: 'My Awesome Full Title',
           short_title: 'My Awesome Short Title',
-          id: 9999,
           potential_funding_source: 'federal',
           funding_source: 'college',
           funding_status: 'funded')
@@ -134,62 +132,46 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
         expect(response).to have_content('College Department')
       end
     end
-
-    context 'Study is not archived' do
-      it 'should display the archive button' do
-        protocol = create(:unarchived_study_without_validations, primary_pi: jug2)
-        render_summary_for protocol
-        expect(response).to have_content('Archive Study')
-      end
-    end
-
-    context 'Study is archived' do
-      it 'should display the archive button' do
-        protocol = create(:archived_study_without_validations, primary_pi: jug2)
-        render_summary_for protocol
-        expect(response).to have_content('Unarchive Study')
-      end
-    end
   end
 
   context 'Protocol is a Project' do
-    it 'should display a "Project Notes" button' do
-      protocol = build(:protocol_federally_funded,
-        :without_validations,
-        primary_pi: jug2,
-        type: 'Project',
-        archived: false,
-        title: 'Project_Title',
-        short_title: 'Project_Short_Title')
-
-      render_summary_for protocol
-
-      expect(response).to have_selector('button', text: 'Project Notes')
-    end
-
     it 'should be titled "Project Summary"' do
-      protocol = build(:protocol_federally_funded,
-        :without_validations,
-        primary_pi: jug2,
-        type: 'Project',
-        archived: false,
-        short_title: 'My Awesome Short Title')
+      protocol = build_stubbed(:project_federally_funded, primary_pi: jug2)
 
       render_summary_for protocol
 
       expect(response).to have_content('Project Summary')
     end
 
+    describe 'Edit button' do
+      context 'on Step 2: Protocol' do
+        it 'should show the Edit button' do
+          protocol = build_stubbed(:project_without_validations, primary_pi: jug2)
+
+          render_summary_for protocol, 'protocol'
+
+          expect(response).to have_selector('.edit-protocol-information-button', text: I18n.t('protocols.edit', protocol_type: protocol.type))
+        end
+      end
+
+      context 'in Review' do
+        it 'should show the edit button' do
+          protocol = build_stubbed(:project_without_validations, primary_pi: jug2)
+
+          render_summary_for protocol, 'review'
+
+          expect(response).to_not have_selector('.edit-protocol-information-button', text: I18n.t('protocols.edit', protocol_type: protocol.type))
+        end
+      end
+    end
+
     context 'Project has potential funding source' do
       it 'should display Project ID, Title, Short Title, and potential funding source' do
-        protocol = build(:protocol_federally_funded,
-          :without_validations,
+        protocol = build_stubbed(:project_federally_funded,
           primary_pi: jug2,
-          type: 'Project',
-          archived: false,
+          id: 9999,
           title: 'My Awesome Full Title',
           short_title: 'My Awesome Short Title',
-          id: 9999,
           potential_funding_source: 'federal',
           funding_source: 'college',
           funding_status: 'pending_funding')
@@ -207,14 +189,11 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
 
     context 'Project has a funding source' do
       it 'should display Project ID, Title, Short Title, and potential funding source' do
-        protocol = build(:protocol_federally_funded,
-          :without_validations,
+        protocol = build_stubbed(:project_federally_funded,
           primary_pi: jug2,
-          type: 'Project',
-          archived: false,
+          id: 9999,
           title: 'My Awesome Full Title',
           short_title: 'My Awesome Short Title',
-          id: 9999,
           potential_funding_source: 'federal',
           funding_source: 'college',
           funding_status: 'funded')
@@ -228,22 +207,6 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
         expect(response).not_to have_content('Potential Funding Source')
         expect(response).to have_content('Funding Source')
         expect(response).to have_content('College Department')
-      end
-    end
-
-    context 'Project is not archived' do
-      it 'should display the archive button' do
-        protocol = create(:unarchived_project_without_validations, primary_pi: jug2)
-        render_summary_for protocol
-        expect(response).to have_content('Archive Project')
-      end
-    end
-
-    context 'Project is archived' do
-      it 'should display the archive button' do
-        protocol = create(:archived_project_without_validations, primary_pi: jug2)
-        render_summary_for protocol
-        expect(response).to have_content('Unarchive Project')
       end
     end
   end

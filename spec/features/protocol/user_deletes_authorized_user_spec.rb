@@ -44,6 +44,7 @@ RSpec.describe 'User wants to delete an authorized user', js: true do
       wait_for_javascript_to_finish
 
       all('.delete-associated-user-button').last.click
+      accept_confirm
       wait_for_javascript_to_finish
 
       expect(ProjectRole.count).to eq(1)

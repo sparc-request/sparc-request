@@ -37,6 +37,10 @@ module ApplicationHelper
     raw(returning_html)
   end
 
+  def format_date(date)
+    date.try(:strftime, '%D') || ""
+  end
+
   def css_class(organization)
     case organization.type
     when 'Institution'

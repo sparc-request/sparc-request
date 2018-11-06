@@ -50,6 +50,8 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
         wait_for_javascript_to_finish
 
         find('.service-calendar-column').click
+        accept_confirm
+        wait_for_javascript_to_finish
 
         expect(page).to have_css('.visit-quantity[checked]', count: 2)
      end
@@ -61,6 +63,7 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
         visit service_calendar_service_request_path(@sr)
 
         find('.service-calendar-column').click
+        accept_confirm
         wait_for_javascript_to_finish
 
         expect(page).to have_css('.visit-quantity[checked]', count: 0)
@@ -79,6 +82,7 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
         wait_for_javascript_to_finish
 
         find('.service-calendar-column').click
+        accept_confirm
         wait_for_javascript_to_finish
 
         expect(page).to have_css('.visit-quantity[checked]', count: 1)
@@ -96,6 +100,7 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
         wait_for_javascript_to_finish
 
         find('.service-calendar-column').click
+        accept_confirm
         wait_for_javascript_to_finish
 
         expect(page).to have_css('.visit-quantity:checked', count: 1)

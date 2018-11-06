@@ -188,6 +188,7 @@ RSpec.describe 'User edits epic answers', js: true do
   end
 
   context 'use epic = false' do
+    stub_config('use_epic', false)
     scenario 'Study, selected for epic: false, question group 3' do
       @protocol.update_attribute(:selected_for_epic, false)
       @protocol.update_attribute(:study_type_question_group_id, 3)

@@ -75,6 +75,7 @@ RSpec.describe 'User creates study', js: true do
 
         fill_in 'protocol_project_roles_attributes_0_identity_id', with: 'Julia'
         page.execute_script %Q{ $('#protocol_project_roles_attributes_0_identity_id').trigger("keydown") }
+        wait_for_javascript_to_finish
         expect(page).to have_selector('.tt-suggestion')
         
         first('.tt-suggestion').click
@@ -83,7 +84,9 @@ RSpec.describe 'User creates study', js: true do
         click_button 'Save'
         wait_for_javascript_to_finish
 
-        expect(page).to have_current_path(protocol_service_request_path(@sr))
+        sr_protocol_page = protocol_service_request_path(@sr)
+        wait_for_page(sr_protocol_page)
+        expect(current_path).to eq(sr_protocol_page)
         expect(Study.count).to eq(1)
       end
 

@@ -18,26 +18,15 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-module AsyncHelper
-
-  def eventually(options={})
-    timeout = options[:timeout] || 2
-    interval = options[:interval] || 0.1
-    time_limit = Time.now + timeout
-
-    loop do
-      begin
-        yield
-      rescue => error
-      end
-      return if error.nil?
-      
-      raise error if Time.now >= time_limit
-      sleep interval
+module Features
+  module PageHelpers
+    def accept_confirm(&block)
+      block.call if block_given?
+      page.driver.browser.switch_to.alert.accept
     end
   end
 end
 
 RSpec.configure do |config|
-  config.include AsyncHelper, type: :feature
+  config.include Features::PageHelpers, type: :feature
 end

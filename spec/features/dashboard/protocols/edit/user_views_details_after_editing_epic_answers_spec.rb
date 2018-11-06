@@ -324,6 +324,7 @@ RSpec.describe 'User views details after editing epic answers', js: true do
   end
 
   context 'use epic = false' do
+    stub_config('use_epic', false)
     ### SELECTED FOR EPIC IS FALSE IS IRRELEVANT BECAUSE USE_EPIC = FALSE ###
     context 'Study, selected for epic: false, question group 3' do
       context 'user views epic answers in view details' do

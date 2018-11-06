@@ -30,5 +30,4 @@
         %h1.panel-title
           = value[:name]
       .panel-body
-        - value[:line_items].each do |li|
-          = render 'service_requests/protocol/service', line_item: li
+        = render 'catalogs/accordion/services', services: value[:line_items].map(&:service)

@@ -23,6 +23,7 @@
       = t(:proper)[:service_details][:enter_dates_notice]
       %small
         = t(:proper)[:service_details][:enter_dates_instructions]
+  = render 'shared/modal_errors', errors: @errors
   = fields_for protocol do |f|
     .form-group.col-lg-12
       = f.label :start_date,

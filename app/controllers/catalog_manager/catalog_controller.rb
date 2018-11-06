@@ -25,6 +25,8 @@ class CatalogManager::CatalogController < CatalogManager::AppController
     @institutions = Institution.order(Arel.sql('`order`,`name`'))
     @show_available_only = params[:show_available_only] ? params[:show_available_only] == "true" : true
 
+    @editable_organizations = @user.catalog_manager_organizations
+
     respond_to do |format|
       format.html
       format.js
@@ -32,12 +34,15 @@ class CatalogManager::CatalogController < CatalogManager::AppController
   end
 
   def load_program_accordion
+    @editable_organizations = @user.catalog_manager_organizations
     @program = Organization.find(params[:program_id])
-    @availability = [params[:show_available_only] ? params[:show_available_only] == "true" : true, true]
+    @program_editable = @editable_organizations.include?(@program)
+    @availability = params[:show_available_only] ? params[:show_available_only] == "true" : true, true
   end
 
   def load_core_accordion
     @core = Organization.find(params[:core_id])
-    @availability = [params[:show_available_only] ? params[:show_available_only] == "true" : true, true]
+    @core_editable = @user.catalog_manager_organizations.include?(@core)
+    @availability = params[:show_available_only] ? params[:show_available_only] == "true" : true, true
   end
 end

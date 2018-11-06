@@ -57,7 +57,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
 
       render_summary_for protocol
 
-      expect(response).to have_selector('button', text: 'Study Notes')
+      expect(response).to have_selector('a', text: 'Study Notes')
     end
 
     context 'RMID is enabled' do
@@ -164,7 +164,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
 
       render_summary_for protocol
 
-      expect(response).to have_selector('button', text: 'Project Notes')
+      expect(response).to have_selector('a', text: 'Project Notes')
     end
 
     it 'should be titled "Project Summary"' do

@@ -226,13 +226,14 @@ Your institution may opt to integrate Google Calendar to display events on the S
 
 - **use_google_calendar**: This determines whether Google Calendar events will be displayed on the homepage.
 - **calendar_url**: This is the URL of the Google Calendar used to display events.
+- **calendar_event_limit**: This is the maximum number of events that will be displayed in the homepage Calendar.
 
 #### 2.11 News Feed
 Your institution may opt to integrate an external blog to display posts in the news feed on the SPARCRequest homepage.
 
 - **use_news_feed**: This determines whether a news feed of blog posts will be displayed on the homepage.
 - **news_feed_url**: This is the URL used to retrieve news feed posts.
-- **news_feed_post_limit**: This is the maximum number of posts that will be displayed in the News Feed.
+- **news_feed_post_limit**: This is the maximum number of posts that will be displayed in the homepage News Feed.
 
 There are currently two ways to retrieve posts for the news feed - through an external API, or by parsing an HTML document for specific CSS selectors.
 

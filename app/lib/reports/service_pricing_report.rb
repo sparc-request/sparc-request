@@ -119,19 +119,19 @@ class ServicePricingReport < ReportingModule
       end
 
       if params[:rate_types].include?("federal_rate")
-        attrs["Federal Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", organization_id)[:federal_rate]) rescue 'N/A'"
+        attrs["Federal Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", Organization.find(organization_id))[:federal]) rescue 'N/A'"
       end
 
       if params[:rate_types].include?("corporate_rate")
-        attrs["Corporate Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", organization_id)[:corporate_rate]) rescue 'N/A'"
+        attrs["Corporate Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", Organization.find(organization_id))[:corporate]) rescue 'N/A'"
       end
 
       if params[:rate_types].include?("other_rate")
-        attrs["Other Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", organization_id)[:other_rate]) rescue 'N/A'"
+        attrs["Other Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", Organization.find(organization_id))[:other]) rescue 'N/A'"
       end
 
       if params[:rate_types].include?("member_rate")
-        attrs["Member Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", organization_id)[:member_rate]) rescue 'N/A'"
+        attrs["Member Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", Organization.find(organization_id))[:member]) rescue 'N/A'"
       end
 
     end

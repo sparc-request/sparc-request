@@ -17,14 +17,15 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-class ToastMessage < ApplicationRecord
-  audited
-
-  belongs_to :sender, :class_name => 'Identity', :foreign_key => 'from'
-  belongs_to :recipient, :class_name => 'Identity', :foreign_key => 'to'
-
-  def sending_object
-    self.sending_class.constantize.send(:find, self.sending_class_id)
-  end
-end
+<% if @errors %>
+$("#modal_errors").html("<%= j render 'shared/modal_errors', errors: @errors %>")
+<% else %>
+<% if params[:cancel] %>
+$("#modal_place").html("<%= j render 'index', notable_id: @notable_id, notable_type: @notable_type, in_dashboard: @in_dashboard, notable: @notable %>")
+$('#notes-table').bootstrapTable()
+<% else %>
+$("#modal_place").modal('hide')
+$('#notes-table').bootstrapTable('refresh')
+<% end %>
+$("#flashes_container").html("<%= j render 'shared/flash' %>")
+<% end %>

@@ -26,7 +26,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
   fake_login_for_each_test
 
   before :each do
-    org       = create(:organization, admin: jug2, service_provider: jug2)
+    org       = create(:organization, admin: jug2, service_provider: jug2, process_ssrs: true)
     pricing   = create(:pricing_setup, organization: org)
     pppv      = create(:service, organization: org, one_time_fee: false, pricing_map_count: 1)
     otf       = create(:service, organization: org, one_time_fee: true, pricing_map_count: 1)

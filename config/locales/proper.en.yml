@@ -66,6 +66,8 @@ en:
           header: "Calendar"
           all_day: "All Day"
           none: "No events scheduled within a month from today."
+          show_details: "Show Details"
+          hide_details: "Hide Details"
       new_request:
         header: "New or Existing"
         warning: "Would you like to enter a new study or project into SPARCRequest?"

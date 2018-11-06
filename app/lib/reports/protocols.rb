@@ -68,10 +68,10 @@ class ProtocolsReport < ReportingModule
     attrs["Primary PI Department"]  = "service_request.try(:protocol).try(:primary_principal_investigator).try(:professional_org_lookup, 'department')"
     attrs["Primary PI Division"]    = "service_request.try(:protocol).try(:primary_principal_investigator).try(:professional_org_lookup, 'division')"
 
-    attrs["Primary Coordinator(s)"] = "service_request.try(:protocol).try(:coordinators).try(:map){|x| x.full_name}.try(:join, ', ')"
+    attrs["Primary Coordinator(s)"] = "service_request.try(:protocol).try(:coordinators).try(:map, &:full_name).try(:join, ', ')"
     attrs["Primary Coordinator Email(s)"] = "service_request.try(:protocol).try(:coordinator_emails)"
 
-    attrs["Business Manager(s)"] = "service_request.try(:protocol).try(:billing_managers).try(:map){|x| x.full_name}.try(:join, ', ')"
+    attrs["Business Manager(s)"] = "service_request.try(:protocol).try(:billing_managers).try(:map, &:full_name).try(:join, ', ')"
     attrs["Business Manager Email(s)"] = "service_request.try(:protocol).try(:billing_business_manager_email)"
 
     if params[:show_epic_cols]

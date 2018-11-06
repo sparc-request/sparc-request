@@ -44,6 +44,7 @@ RSpec.describe 'requests modal', js: true do
 
   let!(:organization) do
     create(:organization,
+      :process_ssrs,
       admin: jug2,
       type: 'Institution')
   end

@@ -118,7 +118,7 @@ class Protocol < ApplicationRecord
   # validates :guarantor_zip, length: { maximum: 9 }
 
   validates :guarantor_phone, numericality: {allow_blank: true, only_integer: true}
-  validates_format_of :guarantor_email, with: (/\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/)
+  validates_format_of :guarantor_email, with: (/\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/), allow_blank: true
 
   validates :guarantor_contact, length: { maximum: 192 }
   validates :guarantor_phone, length: { maximum: 10 }

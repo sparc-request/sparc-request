@@ -36,16 +36,16 @@ higher_level_of_privacy_no_epic = '#study_type_answer_higher_level_of_privacy_no
 
 $(document).ready ->
 
-  # Guarantor Fields required toggle
+  # Guarantor Fields required toggle, removed for now.
 
-  if $('#protocol_selected_for_epic').val() == "true"
-    $('.guarantor_toggle').addClass('required')
+  # if $('#protocol_selected_for_epic').val() == "true"
+  #   $('.guarantor_toggle').addClass('required')
 
-  $(document).on 'click', '#study_selected_for_epic_true_button', ->
-    $('.guarantor_toggle').addClass('required')
+  # $(document).on 'click', '#study_selected_for_epic_true_button', ->
+  #   $('.guarantor_toggle').addClass('required')
 
-  $(document).on 'click', '#study_selected_for_epic_false_button', ->
-    $('.guarantor_toggle').removeClass('required')
+  # $(document).on 'click', '#study_selected_for_epic_false_button', ->
+  #   $('.guarantor_toggle').removeClass('required')
 
   # Human Subjects required toggles
 

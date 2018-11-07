@@ -28,6 +28,12 @@
   %span= t(:catalog_manager)[:service_form][:pricing_map_form][:no_pricing_setups]
 
 #pricing_map_list
-  - service.pricing_maps.order(effective_date: :desc).each do |pricing_map|
+  - pricing_maps = service.pricing_maps.order(effective_date: :desc)
+  - pricing_maps[0..2].each do |pricing_map|
     = render "/catalog_manager/services/pricing_map", pricing_map: pricing_map
-
+  - if pricing_maps.length > 3
+    %h4
+      = link_to '...', "#service#{service.id}PricingMapsExpand", data: { toggle: 'collapse' }, aria: { expanded: 'false' }
+    .collapse{ id: "service#{service.id}PricingMapsExpand" }
+      - pricing_maps[3..-1].each do |pricing_map|
+        = render "/catalog_manager/services/pricing_map", pricing_map: pricing_map

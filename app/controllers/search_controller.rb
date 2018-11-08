@@ -83,7 +83,7 @@ class SearchController < ApplicationController
                 includes(parent: { parent: :parent }).
                 where("(name LIKE ? OR abbreviation LIKE ?)#{org_available_query}", "%#{term}%", "%#{term}%") +
               Service.
-                eager_load(organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]).
+                eager_load(:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]).
                 where("(services.name LIKE ? OR services.abbreviation LIKE ? OR services.cpt_code LIKE ? OR services.eap_id LIKE ?)#{serv_available_query}", "%#{term}%", "%#{term}%", "%#{term}%", "%#{term}%")
 
     results.map! { |item|
@@ -124,8 +124,8 @@ class SearchController < ApplicationController
   def breadcrumb_text(item)
     if item.parents.any?
       breadcrumb = []
-      item.parents.reverse.map(&:abbreviation).each do |parent_abbreviation|
-        breadcrumb << "<span>#{parent_abbreviation} </span>"
+      item.parents.reverse.each do |parent|
+        breadcrumb << "<span class='text-#{parent.type.downcase}'>#{parent.abbreviation} </span>"
         breadcrumb << "<span class='inline-glyphicon glyphicon glyphicon-triangle-right'> </span>"
       end
       breadcrumb.pop

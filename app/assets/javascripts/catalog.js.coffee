@@ -72,13 +72,13 @@ $(document).ready ->
       templates: {
         suggestion: Handlebars.compile('<button class="service text-left" data-container="body" data-placement="right" data-toggle="tooltip" data-animation="false" data-html="true" title="{{description}}">
                                           <h4 class="service-name no-margin-top"><span class="text-service">Service</span><span>: {{label}}</span></h4>
-                                          <span>{{{breadcrumb}}}</span><br>
-                                          <span>Abbreviation: {{abbreviation}}</span><br>
+                                          <span class="col-sm-12 no-padding">{{{breadcrumb}}}</span>
+                                          <span class="col-sm-12 no-padding"><strong>Abbreviation:</strong> {{abbreviation}}</span>
                                           {{#if cpt_code_text}}
-                                            {{{cpt_code_text}}}<br>
+                                            {{{cpt_code_text}}}
                                           {{/if}}
                                           {{#if eap_id_text}}
-                                            {{{eap_id_text}}}<br>
+                                            {{{eap_id_text}}}
                                           {{/if}}
                                           {{#if pricing_text}}
                                             {{{pricing_text}}}

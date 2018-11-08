@@ -32,7 +32,7 @@ class Setting < ApplicationRecord
   validate :parent_value_matches_parent_data_type, if: Proc.new{ self.parent_key.present? }
 
   def self.get_value(key)
-    value           = Setting.find_by_key(key).try(:value)
+    value = Setting.find_by_key(key).try(:value)
   end
 
   # Needed to correctly write boolean true and false as value in specs

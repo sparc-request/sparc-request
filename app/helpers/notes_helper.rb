@@ -19,10 +19,10 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 module NotesHelper
-  def notes_button(notable)
+  def notes_button(notable, disabled=false)
     has_notes = notable.notes.length > 0
 
-    content_tag(:button, type: 'button', class: 'btn btn-link no-padding notes', data: { notable_id: notable.id, notable_type: notable.class.name }) do
+    content_tag(:button, type: 'button', class: 'btn btn-link no-padding notes', disabled: disabled, data: { notable_id: notable.id, notable_type: notable.class.name }) do
       content_tag(:span, '', class: ["glyphicon glyphicon-list-alt note-icon", has_notes ? "blue-note" : "black-note"], aria: {hidden: "true"}) +
       content_tag(:span, notable.notes.length, class: has_notes ? "badge blue-badge" : "badge", id: "#{notable.class.name.downcase}_#{notable.id}_notes")
     end
@@ -48,19 +48,21 @@ module NotesHelper
   end
 
   def note_header(notable)
+    action = ['create', 'update'].include?(action_name) ? 'index' : action_name
+
     header =
       if notable.is_a?(EpicQueueRecord)
-        t("notes.headers.#{action_name}", notable_type: "Epic Queue Record")
-      elsif notable.is_a?(LineItemsVisit)
-        t("notes.headers.#{action_name}", notable_type: "Service")
+        t("notes.headers.#{action}", notable_type: "Epic Queue Record")
       elsif notable.is_a?(Protocol)
-        t("notes.headers.#{action_name}", notable_type: "Protocol")
+        t("notes.headers.#{action}", notable_type: "Protocol")
+      elsif [LineItem, LineItemsVisit].include?(notable.class)
+        t("notes.headers.#{action}", notable_type: "Service")
       else
-        t("notes.headers.#{action_name}", notable_type: notable.class.name)
+        t("notes.headers.#{action}", notable_type: notable.class.name)
       end
 
     header += " | Study: #{notable.protocol_id}" if notable.is_a?(EpicQueueRecord)
-    header += " | Service: #{notable.service.display_service_name}" if [LineItem, LineItemsVisit].include?(notable.class)
+    header += " | #{notable.service.display_service_name}" if [LineItem, LineItemsVisit].include?(notable.class)
 
     header
   end

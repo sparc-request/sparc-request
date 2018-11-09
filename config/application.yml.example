@@ -133,6 +133,11 @@
 #   news_feed_link_selector:                    ".entry-title a"
 #   news_feed_date_selector:                    ".date"
 
+#   ### Tableau Dashboard ###
+#   use_tableau:                                "true"
+#   homepage_tableau_dashboard:                 "InstitutionalDashboard/InstitutionalDashboard"
+#   homepage_tableau_url:                       "https://anyl-tableau-v.mdc.musc.edu/javascripts/api/viz_v1.js"
+
 #   ### System Satisfaction Survey ###
 #   system_satisfaction_survey:                 "false"
 #   system_satisfaction_survey_cc:              "sparcrequest@gmail.com"
@@ -251,6 +256,11 @@
 #   news_feed_title_selector:                   ".entry-title"
 #   news_feed_link_selector:                    ".entry-title a"
 #   news_feed_date_selector:                    ".date"
+
+#   ### Tableau Dashboard ###
+#   use_tableau:                                "true"
+#   homepage_tableau_dashboard:                 "InstitutionalDashboard/InstitutionalDashboard"
+#   homepage_tableau_url:                       "https://anyl-tableau-v.mdc.musc.edu/javascripts/api/viz_v1.js"
 
 #   ### System Satisfaction Survey ###
 #   system_satisfaction_survey:                 "false"
@@ -371,6 +381,11 @@
 #   news_feed_link_selector:                    ".entry-title a"
 #   news_feed_date_selector:                    ".date"
 
+#   ### Tableau Dashboard ###
+#   use_tableau:                                "true"
+#   homepage_tableau_dashboard:                 "InstitutionalDashboard/InstitutionalDashboard"
+#   homepage_tableau_url:                       "https://anyl-tableau-v.mdc.musc.edu/javascripts/api/viz_v1.js"
+
 #   ### System Satisfaction Survey ###
 #   system_satisfaction_survey:                 "false"
 #   system_satisfaction_survey_cc:              "sparcrequest@gmail.com"
@@ -490,6 +505,11 @@ development:
   news_feed_link_selector:                    ".entry-title a"
   news_feed_date_selector:                    ".date"
 
+  ### Tableau Dashboard ###
+  use_tableau:                                "true"
+  homepage_tableau_dashboard:                 "InstitutionalDashboard/InstitutionalDashboard"
+  homepage_tableau_url:                       "https://anyl-tableau-v.mdc.musc.edu/javascripts/api/viz_v1.js"
+
   ### System Satisfaction Survey ###
   system_satisfaction_survey:                 "false"
   system_satisfaction_survey_cc:              "sparcrequest@gmail.com"
@@ -608,6 +628,11 @@ test:
   news_feed_title_selector:                   ".entry-title"
   news_feed_link_selector:                    ".entry-title a"
   news_feed_date_selector:                    ".date"
+
+  ### Tableau Dashboard ###
+  use_tableau:                                "true"
+  homepage_tableau_dashboard:                 "InstitutionalDashboard/InstitutionalDashboard"
+  homepage_tableau_url:                       "https://anyl-tableau-v.mdc.musc.edu/javascripts/api/viz_v1.js"
 
   ### System Satisfaction Survey ###
   system_satisfaction_survey:                 "false"

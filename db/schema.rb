@@ -605,14 +605,8 @@ ActiveRecord::Schema.define(version: 2018_11_07_162157) do
     t.boolean "rmid_validated", default: false
     t.boolean "locked"
     t.string "guarantor_contact"
-    t.text "guarantor_address"
-    t.string "guarantor_city"
     t.string "guarantor_phone"
-    t.string "guarantor_state"
-    t.string "guarantor_zip"
-    t.string "guarantor_county"
-    t.string "guarantor_country"
-    t.string "guarantor_fax"
+    t.string "guarantor_email"
     t.index ["next_ssr_id"], name: "index_protocols_on_next_ssr_id"
   end
 

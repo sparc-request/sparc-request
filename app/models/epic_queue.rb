@@ -24,6 +24,26 @@ class EpicQueue < ApplicationRecord
   belongs_to :protocol
   belongs_to :identity
 
+  scope :ordered, -> (sort, order) {
+    if sort
+      case sort
+      when 'protocol'
+        eager_load(:protocol).order(Arel.sql("protocols.id #{order}"))
+      when 'pis'
+        joins(protocol: :principal_investigators).order(Arel.sql("identities.first_name #{order}, identities.last_name #{order}"))
+      when 'date'
+        eager_load(:protocol).order(Arel.sql("protocol.last_epic_push_time #{order}"))
+      when 'status'
+        eager_load(:protocol).order(Arel.sql("protocol.last_epic_push_status #{order}"))
+      when 'created_at'
+        order(Arel.sql("epic_queues.created_at #{order}"))
+      when 'name'
+        eager_load(:identity).order(Arel.sql("identities.first_name #{order}, identities.last_name #{order}"))
+      end
+    else
+      order(created_at: :desc)
+    end
+  }
 
   #This callback and the method below is probably incorrect. Any insight as to
   #why we would do this?

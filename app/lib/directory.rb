@@ -127,7 +127,7 @@ class Directory
            encryption: LDAP_ENCRYPTION)
         ldap.auth LDAP_AUTH_USERNAME, LDAP_AUTH_PASSWORD if LDAP_AUTH_USERNAME.present? && LDAP_AUTH_PASSWORD.present?
         # use LDAP_FILTER to override default filter with custom string
-        filter = (LDAP_FILTER && LDAP_FILTER.gsub('#{term}', term)) || fields.map { |f| Net::LDAP::Filter.contains(f, term) }.inject(:|)
+        filter = (LDAP_FILTER.present? && LDAP_FILTER.gsub('#{term}', term)) || fields.map { |f| Net::LDAP::Filter.contains(f, term) }.inject(:|)
         res = ldap.search(:attributes => fields, :filter => filter)
         if res
           if combined_res.is_a? Array  # we have results from a previous base search

@@ -89,10 +89,10 @@ $(document).ready ->
       $('.survey-select option').prop('disabled', false)
       $('.survey-select').selectpicker('refresh')
 
-  $('.export button').removeClass('dropdown-toggle').removeAttr('data-toggle')
-  $('.export button .caret').remove()
-  $('.export .dropdown-menu').remove()
+  $('#responses-panel .export button').removeClass('dropdown-toggle').removeAttr('data-toggle')
+  $('#responses-panel .export button .caret').remove()
+  $('#responses-panel .export .dropdown-menu').remove()
 
-  $(document).on 'click', '.export button', ->
+  $(document).on 'click', '#responses-panel .export button', ->
     $(this).parent().removeClass('open')
     window.location = '/surveyor/responses.xlsx'

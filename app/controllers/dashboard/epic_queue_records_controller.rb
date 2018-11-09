@@ -21,8 +21,10 @@ class Dashboard::EpicQueueRecordsController < Dashboard::BaseController
   before_action :authorize_overlord
 
   def index
-    @epic_queue_records = EpicQueueRecord.with_valid_protocols
-      .order(created_at: :desc)
+    @epic_queue_records = EpicQueueRecord.with_valid_protocols.
+                            eager_load(:identity, :notes, protocol: :principal_investigators).
+                            ordered(params[:sort], params[:order])
+
     respond_to do |format|
       format.json
     end

@@ -39,14 +39,6 @@ FactoryBot.define do
     start_date                   { '2015-10-15' }
     end_date                     { '2015-10-15' }
     selected_for_epic            false
-    guarantor_contact            { Faker::Lorem.word }
-    guarantor_phone              { Random.rand(500).to_s }
-    guarantor_address            { Faker::Lorem.word }
-    guarantor_city               { Faker::Lorem.word }
-    guarantor_state              { "SC" }
-    guarantor_zip                { "29402"}
-    guarantor_county             { Faker::Lorem.word}
-    guarantor_country            { Faker::Lorem.word}
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }

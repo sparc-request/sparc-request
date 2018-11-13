@@ -29,11 +29,11 @@
   %tbody
     - @ssrs_to_be_displayed.each do |ssr|
       %tr.skinny-black-border
-        %td.skinny-black-border.center
+        %td.skinny-black-border.center<
           %strike= ssr.display_id
-        %td.skinny-black-border.center
+        %td.skinny-black-border.center<
           %strike= ssr.org_tree_display
-        %td.skinny-black-border.center
+        %td.skinny-black-border.center<
           %strike= ssr.service_requester.try(&:full_name) || 'N/A'
 %br
 %br

@@ -22,13 +22,17 @@ class IdentitiesController < ApplicationController
 
   def approve_account
     @identity = Identity.find params[:id]
-    @identity.update_attribute(:approved, true)
-    Notifier.account_status_change(@identity, true).deliver unless @identity.email.blank?
+    unless @identity.try(:approved)
+      @identity.update_attribute(:approved, true)
+      Notifier.account_status_change(@identity, true).deliver unless @identity.email.blank?
+    end
   end
 
   def disapprove_account
     @identity = Identity.find params[:id]
-    @identity.update_attribute(:approved, false)
-    Notifier.account_status_change(@identity, false).deliver unless @identity.email.blank?
+    unless @identity.try(:approved) == false
+      @identity.update_attribute(:approved, false)
+      Notifier.account_status_change(@identity, false).deliver unless @identity.email.blank?
+    end
   end
 end

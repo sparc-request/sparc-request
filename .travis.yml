@@ -29,6 +29,4 @@ jobs:
     - script:
       - bundle exec rspec spec/features/dashboard
     - script:
-      - bundle exec rspec spec/features/catalog_manager spec/features/surveyor
-    - script:
-      - bundle exec rspec spec/features/proper
+      - bundle exec rspec spec/features/proper spec/features/catalog_manager spec/features/surveyor

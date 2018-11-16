@@ -88,26 +88,31 @@ RSpec.describe 'User edits epic answers', js: true do
       ### EDIT AGAIN TO SEE CORRRECT ANSWERS AND NOTE DISPLAYED ###
       find('.edit-protocol-information-button').click
 
+      expect(page).to have_selector('#study_type_answer_certificate_of_conf')
       within '#study_type_answer_certificate_of_conf' do
         expect(page).to have_css('div.col-lg-4', text: 'No')
         expect(page).to have_css('a.edit-answers')
       end
 
+      expect(page).to have_selector('#study_type_answer_higher_level_of_privacy')
       within '#study_type_answer_higher_level_of_privacy' do
         expect(page).to have_css('div.col-lg-4', text: 'No')
         expect(page).to have_css('a.edit-answers')
       end
 
+      expect(page).to have_selector('#study_type_answer_epic_inbasket')
       within '#study_type_answer_epic_inbasket' do
         expect(page).to have_css('div.col-lg-4', text: 'No')
         expect(page).to have_css('a.edit-answers')
       end
 
+      expect(page).to have_selector('#study_type_answer_research_active')
       within '#study_type_answer_research_active' do
         expect(page).to have_css('div.col-lg-4', text: 'No')
         expect(page).to have_css('a.edit-answers')
       end
 
+      expect(page).to have_selector('#study_type_answer_restrict_sending')
       within '#study_type_answer_restrict_sending' do
         expect(page).to have_css('div.col-lg-4', text: 'No')
         expect(page).to have_css('a.edit-answers')
@@ -290,11 +295,15 @@ RSpec.describe 'User edits epic answers', js: true do
         click_button 'Save'
         wait_for_javascript_to_finish
         find('.edit-protocol-information-button').click
+        wait_for_javascript_to_finish
+
+        expect(page).to have_selector('#study_type_answer_certificate_of_conf_no_epic')
         within '#study_type_answer_certificate_of_conf_no_epic' do
           expect(page).to have_css('div.col-lg-4', text: 'No')
           expect(page).to have_css('a.edit-answers')
         end
 
+        expect(page).to have_selector('#study_type_answer_higher_level_of_privacy_no_epic')
         within '#study_type_answer_higher_level_of_privacy_no_epic' do
           expect(page).to have_css('div.col-lg-4', text: '')
           expect(page).to have_css('a.edit-answers')
@@ -307,36 +316,42 @@ RSpec.describe 'User edits epic answers', js: true do
   end
 
   def version_2_study_type_questions_and_answers_are_displayed
+    expect(page).to have_selector('#study_type_answer_certificate_of_conf')
     within '#study_type_answer_certificate_of_conf' do
       expect(page).to have_text(stq_certificate_of_conf_version_2.question)
       expect(page).to have_css('div.col-lg-4', text: 'No')
       expect(page).to have_css('a.edit-answers')
     end
 
+    expect(page).to have_selector('#study_type_answer_higher_level_of_privacy')
     within '#study_type_answer_higher_level_of_privacy' do
       expect(page).to have_text(stq_higher_level_of_privacy_version_2.question)
       expect(page).to have_css('div.col-lg-4', text: 'Yes')
       expect(page).to have_css('a.edit-answers')
     end
 
+    expect(page).to have_selector('#study_type_answer_access_study_info')
      within '#study_type_answer_access_study_info' do
       expect(page).to have_text(stq_access_study_info_version_2.question)
       expect(page).to have_css('div.col-lg-4', text: 'No')
       expect(page).to have_css('a.edit-answers')
     end
 
+    expect(page).to have_selector('#study_type_answer_epic_inbasket')
     within '#study_type_answer_epic_inbasket' do
       expect(page).to have_text(stq_epic_inbasket_version_2.question)
       expect(page).to have_css('div.col-lg-4', text: 'No')
       expect(page).to have_css('a.edit-answers')
     end
 
+    expect(page).to have_selector('#study_type_answer_research_active')
     within '#study_type_answer_research_active' do
       expect(page).to have_text(stq_research_active_version_2.question)
       expect(page).to have_css('div.col-lg-4', text: 'Yes')
       expect(page).to have_css('a.edit-answers')
     end
 
+    expect(page).to have_selector('#study_type_answer_restrict_sending')
     within '#study_type_answer_restrict_sending' do
       expect(page).to have_text(stq_restrict_sending_version_2.question)
       expect(page).to have_css('div.col-lg-4', text: 'Yes')
@@ -355,6 +370,7 @@ RSpec.describe 'User edits epic answers', js: true do
   end
 
   def and_sees_correct_answers_for_selected_for_epic_true_and_cofc_true
+    expect(page).to have_selector('#study_type_answer_certificate_of_conf')
     within '#study_type_answer_certificate_of_conf' do
       expect(page).to have_css('div.col-lg-4', text: 'Yes')
       expect(page).to have_css('a.edit-answers')
@@ -403,6 +419,7 @@ RSpec.describe 'User edits epic answers', js: true do
   end
 
   def and_sees_the_correct_answer_and_no_note_displayed(use_epic)
+    expect(page).to have_selector('#study_type_answer_certificate_of_conf_no_epic')
     within '#study_type_answer_certificate_of_conf_no_epic' do
       expect(page).to have_css('div.col-lg-4', text: 'Yes')
       expect(page).to have_css('a.edit-answers')
@@ -418,11 +435,13 @@ RSpec.describe 'User edits epic answers', js: true do
   end
 
   def and_sees_the_correct_answers_and_no_note(use_epic)
+    expect(page).to have_selector('#study_type_answer_certificate_of_conf_no_epic')
     within '#study_type_answer_certificate_of_conf_no_epic' do
       expect(page).to have_css('div.col-lg-4', text: 'No')
       expect(page).to have_css('a.edit-answers')
     end
 
+    expect(page).to have_selector('#study_type_answer_higher_level_of_privacy_no_epic')
     within '#study_type_answer_higher_level_of_privacy_no_epic' do
       expect(page).to have_css('div.col-lg-4', text: 'No')
       expect(page).to have_css('a.edit-answers')

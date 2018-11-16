@@ -22,14 +22,17 @@ require 'selenium/webdriver'
 
 Capybara.default_max_wait_time = 5
 
-Capybara.register_driver :firefox_headless do |app|
+Capybara.register_driver :chrome do |app|
   options = ::Selenium::WebDriver::Firefox::Options.new
 
-  if ENV['MOZ_HEADLESS']
+  unless ENV['DEBUG']
     options.args << '--headless'
   end
+
+  options.args << '--disable-gpu'
+  options.args << '--disable-addons'
 
   Capybara::Selenium::Driver.new(app, browser: :firefox, options: options)
 end
 
-Capybara.javascript_driver = :firefox_headless
+Capybara.javascript_driver = :chrome

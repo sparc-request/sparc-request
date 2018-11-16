@@ -23,14 +23,18 @@ module ServicesHelper
   include ActionView::Context
 
   def cpt_code_text(service)
-    content_tag(:span, class: 'col-sm-3 no-padding text-black') do
-      content_tag(:strong, "CPT Code: ") + (service.cpt_code.blank? ? "N/A" : service.cpt_code)
+    unless service.cpt_code.blank?
+      content_tag(:span, class: 'col-sm-3 no-padding text-black') do
+        content_tag(:strong, "#{t(:catalog_manager)[:organization_form][:cpt_code]}: #{service.cpt_code}")
+      end
     end
   end
 
   def eap_id_text(service)
-    content_tag(:span, class: 'col-sm-3 no-padding text-black') do
-      content_tag(:strong, "EAP ID: ") + (service.eap_id.blank? ? "N/A" : service.eap_id)
+    unless service.eap_id.blank?
+      content_tag(:span, class: 'col-sm-3 no-padding text-black') do
+        content_tag(:strong, "#{t(:catalog_manager)[:organization_form][:eap_id]}: #{service.eap_id}")
+      end
     end
   end
 

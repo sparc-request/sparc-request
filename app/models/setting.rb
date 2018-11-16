@@ -32,14 +32,21 @@ class Setting < ApplicationRecord
   validate :parent_value_matches_parent_data_type, if: Proc.new{ self.parent_key.present? }
 
   # Cache settings for the current request
-  @settings = Setting.all.map{ |s| [s.key, { value: s.value, data_type: s.data_type }] }.to_h
+  @@settings = Setting.all.map{ |s| [s.key, { value: s.read_attribute(:value), data_type: s.data_type }] }.to_h
 
   def self.get_value(key)
-    converted_value(@settings[key][:value], @settings[key][:data_type]) if @settings[key]
+    if @@settings && @@settings[key]
+      converted_value(@@settings[key][:value], @@settings[key][:data_type])
+    else
+      s = Setting.find_by_key(key)
+      converted_value(s.value, s.data_type)
+    end
   end
 
-  # Needed to correctly write boolean true and false as value in specs
   def value=(val)
+    @@settings[self.key][:value] = val.to_s if @@settings && @@settings[self.key]
+    
+    # Needed to correctly write boolean true and false as value in specs
     if [TrueClass, FalseClass].include?(val.class)
       value_will_change!
       write_attribute(:value, val ? "true" : "false")

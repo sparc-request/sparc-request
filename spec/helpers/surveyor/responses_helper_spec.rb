@@ -21,11 +21,14 @@
 require 'rails_helper'
 
 RSpec.describe Surveyor::ResponsesHelper, type: :helper do
-  stub_config('site_admins', ['abc123'])
+  stub_config('site_admins', ["abc123"])
 
-  let!(:site_admin)   { create(:identity, ldap_uid: 'abc123') }
-  let!(:user)         { create(:identity) }
   let!(:organization) { create(:organization) }
+
+  before :each do
+    @site_admin = create(:identity, ldap_uid: 'abc123')
+    @user       = create(:identity)
+  end
 
   describe 'response_options' do
     context 'view_response_button' do
@@ -39,14 +42,22 @@ RSpec.describe Surveyor::ResponsesHelper, type: :helper do
           end
 
           context 'user is a site admin' do
+            before :each do
+              ActionView::Base.send(:define_method, :current_user) { @site_admin }
+            end
+
             it 'should return enabled button' do
-              expect(helper.response_options(response, site_admin, [], true).split("</a>").first.include?('disabled')).to eq(false)
+              expect(helper.response_options(response, []).split("</a>").first.include?('disabled')).to eq(false)
             end
           end
 
           context 'user is not a site admin' do
+            before :each do
+              ActionView::Base.send(:define_method, :current_user) { @user }
+            end
+
             it 'should return disabled button' do
-              expect(helper.response_options(response, user, [], false).split("</a>").first.include?('disabled')).to eq(true)
+              expect(helper.response_options(response, []).split("</a>").first.include?('disabled')).to eq(true)
             end
           end
         end
@@ -57,20 +68,21 @@ RSpec.describe Surveyor::ResponsesHelper, type: :helper do
           let!(:asso_surv)  { create(:associated_survey, associable: organization, survey: survey) }
 
           before :each do
+            ActionView::Base.send(:define_method, :current_user) { @user }
             allow(response).to receive(:completed?).and_return(true)
           end
 
           context 'user is a super user' do
-            let!(:su) { create(:super_user, organization: organization, identity: user) }
+            let!(:su) { create(:super_user, organization: organization, identity: @user) }
 
             it 'should return enabled button' do
-              expect(helper.response_options(response, user, [survey], false).split("</a>").first.include?('disabled')).to eq(false)
+              expect(helper.response_options(response, [survey]).split("</a>").first.include?('disabled')).to eq(false)
             end
           end
 
           context 'user is not a super user' do
             it 'should return disabled button' do
-              expect(helper.response_options(response, user, [], false).split("</a>").first.include?('disabled')).to eq(true)
+              expect(helper.response_options(response, []).split("</a>").first.include?('disabled')).to eq(true)
             end
           end
         end
@@ -84,7 +96,7 @@ RSpec.describe Surveyor::ResponsesHelper, type: :helper do
           end
 
           it 'should return disabled button' do
-            expect(helper.response_options(response, user, [], false).split("</a>").first.include?('disabled')).to eq(true)
+            expect(helper.response_options(response, []).split("</a>").first.include?('disabled')).to eq(true)
           end
         end
       end
@@ -93,27 +105,31 @@ RSpec.describe Surveyor::ResponsesHelper, type: :helper do
         let!(:form)     { create(:form, surveyable: organization, active: true) }
         let!(:response) { create(:response, survey: form, identity: build(:identity)) }
 
+        before :each do
+          ActionView::Base.send(:define_method, :current_user) { @user }
+        end
+
         context 'user is a super user for surveyable' do
-          let!(:su) { create(:super_user, organization: organization, identity: user) }
+          let!(:su) { create(:super_user, organization: organization, identity: @user) }
 
           before :each do
             allow(response).to receive(:completed?).and_return(true)
           end
 
           it 'should return enabled button' do
-            expect(helper.response_options(response, user, [form], false).split("</a>").first.include?('disabled')).to eq(false)
+            expect(helper.response_options(response, [form]).split("</a>").first.include?('disabled')).to eq(false)
           end
         end
 
         context 'user is a service provider for association' do
-          let!(:sp) { create(:service_provider, organization: organization, identity: user) }
+          let!(:sp) { create(:service_provider, organization: organization, identity: @user) }
 
           before :each do
             allow(response).to receive(:completed?).and_return(true)
           end
 
           it 'should return enabled button' do
-            expect(helper.response_options(response, user, [form], false).split("</a>").first.include?('disabled')).to eq(false)
+            expect(helper.response_options(response, [form]).split("</a>").first.include?('disabled')).to eq(false)
           end
         end
 
@@ -123,7 +139,7 @@ RSpec.describe Surveyor::ResponsesHelper, type: :helper do
           end
 
           it 'should return disabled button' do
-            expect(helper.response_options(response, user, [], false).split("</a>").first.include?('disabled')).to eq(true)
+            expect(helper.response_options(response, []).split("</a>").first.include?('disabled')).to eq(true)
           end
         end
 
@@ -133,7 +149,7 @@ RSpec.describe Surveyor::ResponsesHelper, type: :helper do
           end
 
           it 'should return disabled button' do
-            expect(helper.response_options(response, user, [], false).split("</a>").first.include?('disabled')).to eq(true)
+            expect(helper.response_options(response, []).split("</a>").first.include?('disabled')).to eq(true)
           end
         end
       end
@@ -146,31 +162,34 @@ RSpec.describe Surveyor::ResponsesHelper, type: :helper do
 
         context 'user is a site admin' do
           before :each do
+            ActionView::Base.send(:define_method, :current_user) { @site_admin }
             allow(response).to receive(:completed?).and_return(true)
           end
 
           it 'should return enabled button' do
-            expect(helper.response_options(response, site_admin, [], true).split("</a>").last.include?('disabled')).to eq(false)
+            expect(helper.response_options(response, []).split("</a>").last.include?('disabled')).to eq(false)
           end
         end
 
         context 'user is not a site admin' do
           before :each do
+            ActionView::Base.send(:define_method, :current_user) { @user }
             allow(response).to receive(:completed?).and_return(true)
           end
 
           it 'should return disabled button' do
-            expect(helper.response_options(response, user, [], false).split("</a>").last.include?('disabled')).to eq(true)
+            expect(helper.response_options(response, []).split("</a>").last.include?('disabled')).to eq(true)
           end
         end
 
         context 'response is incomplete' do
           before :each do
+            ActionView::Base.send(:define_method, :current_user) { @user }
             allow(response).to receive(:completed?).and_return(false)
           end
 
           it 'should return disabled button' do
-            expect(helper.response_options(response, user, [], false).split("</a>").last.include?('disabled')).to eq(true)
+            expect(helper.response_options(response, []).split("</a>").last.include?('disabled')).to eq(true)
           end
         end
       end
@@ -179,27 +198,31 @@ RSpec.describe Surveyor::ResponsesHelper, type: :helper do
         let!(:form)     { create(:form, surveyable: organization, active: true) }
         let!(:response) { create(:response, survey: form, identity: build(:identity)) }
 
+        before :each do
+          ActionView::Base.send(:define_method, :current_user) { @user }
+        end
+
         context 'user is a super user for surveyable' do
-          let!(:su) { create(:super_user, organization: organization, identity: user) }
+          let!(:su) { create(:super_user, organization: organization, identity: @user) }
 
           before :each do
             allow(response).to receive(:completed?).and_return(true)
           end
 
           it 'should return enabled button' do
-            expect(helper.response_options(response, user, [form], false).split("</a>").last.include?('disabled')).to eq(false)
+            expect(helper.response_options(response, [form]).split("</a>").last.include?('disabled')).to eq(false)
           end
         end
 
         context 'user is a service provider for surveyable' do
-          let!(:sp) { create(:service_provider, organization: organization, identity: user) }
+          let!(:sp) { create(:service_provider, organization: organization, identity: @user) }
 
           before :each do
             allow(response).to receive(:completed?).and_return(true)
           end
 
           it 'should return enabled button' do
-            expect(helper.response_options(response, user, [form], false).split("</a>").last.include?('disabled')).to eq(false)
+            expect(helper.response_options(response, [form]).split("</a>").last.include?('disabled')).to eq(false)
           end
         end
 
@@ -209,7 +232,7 @@ RSpec.describe Surveyor::ResponsesHelper, type: :helper do
           end
 
           it 'should return disabled button' do
-            expect(helper.response_options(response, user, [], false).split("</a>").last.include?('disabled')).to eq(true)
+            expect(helper.response_options(response, []).split("</a>").last.include?('disabled')).to eq(true)
           end
         end
 
@@ -219,7 +242,7 @@ RSpec.describe Surveyor::ResponsesHelper, type: :helper do
           end
 
           it 'should return disabled button' do
-            expect(helper.response_options(response, user, [], false).split("</a>").last.include?('disabled')).to eq(true)
+            expect(helper.response_options(response, []).split("</a>").last.include?('disabled')).to eq(true)
           end
         end
       end

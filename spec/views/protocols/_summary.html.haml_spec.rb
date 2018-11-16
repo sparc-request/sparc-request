@@ -59,7 +59,7 @@ RSpec.describe 'protocols/summary', type: :view do
 
           render_summary_for protocol, 'review'
 
-          expect(response).to_not have_selector('.edit-protocol-information-button', text: I18n.t('protocols.edit', protocol_type: protocol.type))
+          expect(response).to have_no_selector('.edit-protocol-information-button', text: I18n.t('protocols.edit', protocol_type: protocol.type))
         end
       end
     end
@@ -160,7 +160,7 @@ RSpec.describe 'protocols/summary', type: :view do
 
           render_summary_for protocol, 'review'
 
-          expect(response).to_not have_selector('.edit-protocol-information-button', text: I18n.t('protocols.edit', protocol_type: protocol.type))
+          expect(response).to have_no_selector('.edit-protocol-information-button', text: I18n.t('protocols.edit', protocol_type: protocol.type))
         end
       end
     end

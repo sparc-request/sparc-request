@@ -51,6 +51,6 @@ RSpec.describe 'User removes a related service', js: true do
   end
 
   it 'should remove the related service' do
-    expect(page).to_not have_selector('#related-services-container div', text: @rel_serv.display_service_name)
+    expect(page).to have_no_selector('#related-services-container div', text: @rel_serv.display_service_name)
   end
 end

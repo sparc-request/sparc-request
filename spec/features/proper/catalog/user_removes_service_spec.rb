@@ -42,7 +42,7 @@ RSpec.describe 'User removes service from cart', js: true do
     find('.line-item .remove-service').click
     wait_for_javascript_to_finish
 
-    expect(page).to_not have_selector('.line-item div', text: @service.abbreviation)
+    expect(page).to have_no_selector('.line-item div', text: @service.abbreviation)
   end
 
   context 'which is the last one in the ssr' do
@@ -57,7 +57,7 @@ RSpec.describe 'User removes service from cart', js: true do
       find('.line-item .remove-service').click
       wait_for_javascript_to_finish
 
-      expect(page).to_not have_selector('.ssr-header span', text: @program.name)
+      expect(page).to have_no_selector('.ssr-header span', text: @program.name)
     end
   end
 end

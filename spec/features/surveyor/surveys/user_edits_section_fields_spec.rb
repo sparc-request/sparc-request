@@ -87,7 +87,7 @@ RSpec.describe 'User edits section fields', js: true do
         find('.delete-section').click
         wait_for_javascript_to_finish
 
-        expect(page).to_not have_selector('.section')
+        expect(page).to have_no_selector('.section')
         expect(@survey.sections.count).to eq(0)
       end
     end
@@ -156,7 +156,7 @@ RSpec.describe 'User edits section fields', js: true do
         find('.delete-section').click
         wait_for_javascript_to_finish
 
-        expect(page).to_not have_selector('.section')
+        expect(page).to have_no_selector('.section')
         expect(@form.sections.count).to eq(0)
       end
     end

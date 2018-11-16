@@ -55,6 +55,6 @@ RSpec.describe 'User manages user rights', js: true do
   end
 
   it 'should remove the identity from the table' do
-    expect(page).to_not have_selector("user-rights-row-#{@identity.id}")
+    expect(page).to have_no_selector("user-rights-row-#{@identity.id}")
   end
 end

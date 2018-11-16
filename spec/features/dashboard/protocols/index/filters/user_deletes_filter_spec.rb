@@ -46,7 +46,7 @@ RSpec.describe "User deletes a filter", js: :true do
     page.execute_script("$('.delete-filter').click()")
     wait_for_javascript_to_finish
 
-    expect(page).to_not have_selector('.delete-filter')
+    expect(page).to have_no_selector('.delete-filter')
   end
 
   context 'which is their last filter' do
@@ -54,7 +54,7 @@ RSpec.describe "User deletes a filter", js: :true do
       page.execute_script("$('.delete-filter').click()")
       wait_for_javascript_to_finish
 
-      expect(page).to_not have_selector('#saved_searches .panel')
+      expect(page).to have_no_selector('#saved_searches .panel')
     end
   end
 end

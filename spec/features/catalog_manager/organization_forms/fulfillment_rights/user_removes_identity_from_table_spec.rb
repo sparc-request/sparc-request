@@ -51,6 +51,6 @@ RSpec.describe 'User manages fulfillment rights', js: true do
   end
 
   it 'should remove the identity from the table' do
-    expect(page).to_not have_selector("fulfillment-rights-row-#{@identity.id}")
+    expect(page).to have_no_selector("fulfillment-rights-row-#{@identity.id}")
   end
 end

@@ -1,14 +1,15 @@
-sudo: required
 language: ruby
 cache: bundler
-dist: trusty
+dist: precise
 addons:
-  chrome: stable
+  firefox: latest
+env:
+  - MOZ_HEADLESS=1
 
 before_install:
-  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
   - export TZ=America/New_York
 before_script:
+  - export DISPLAY=:99.0
   - cp config/database.yml.example config/database.yml
   - mysql -e 'create database test_sparc_request;'
   - RAILS_ENV=test bundle exec rake db:migrate

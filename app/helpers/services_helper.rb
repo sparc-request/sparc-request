@@ -23,22 +23,22 @@ module ServicesHelper
   include ActionView::Context
 
   def cpt_code_text(service)
-    content_tag(:span) do
+    content_tag(:span, class: 'col-sm-3 no-padding') do
       content_tag(:strong, "CPT Code: ") + (service.cpt_code.blank? ? "N/A" : service.cpt_code)
     end
   end
 
   def eap_id_text(service)
-    content_tag(:span) do
+    content_tag(:span, class: 'col-sm-3 no-padding') do
       content_tag(:strong, "EAP ID: ") + (service.eap_id.blank? ? "N/A" : service.eap_id)
     end
   end
 
   def service_pricing_text(service)
     if current_user.present?
-      content_tag(:span) do
+      content_tag(:span, class: 'service-pricing-container') do
         raw(service.displayed_pricing_map.true_rate_hash.map do |label, value|
-          content_tag(:span, class: 'col-sm-4 no-padding') do
+          content_tag(:span, class: ['no-padding', label == :full ? 'col-sm-12' : 'col-sm-3']) do
             content_tag(:strong, "#{Service::RATE_TYPES[label]}: ") + "$#{'%.2f' % (value/100)}"
           end
         end.join(''))

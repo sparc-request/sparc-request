@@ -330,6 +330,26 @@
     "parent_value":   ""
   },
   {
+    "key":            "homepage_tableau_dashboard",
+    "value":          "InstitutionalDashboard/InstitutionalDashboard",
+    "friendly_name":  "Homepage Tableau Dashboard",
+    "description":    "This is the name of the Tableau Dashboard to be displayed on the homepage.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_tableau",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "homepage_tableau_url",
+    "value":          "https://anyl-tableau-v.mdc.musc.edu/javascripts/api/viz_v1.js",
+    "friendly_name":  "Homepage Tableau URL",
+    "description":    "This is the URL of the Tableau Dashboard to be displayed on the homepage.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_tableau",
+    "parent_value":   "true"
+  },
+  {
     "key":            "host",
     "value":          "127.0.0.1:5000",
     "friendly_name":  "Host",
@@ -944,6 +964,16 @@
     "value":          "false",
     "friendly_name":  "Use Short Interaction",
     "description":    "This determines whether the application will display the \"Short Interaction\" button.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "use_tableau",
+    "value":          "false",
+    "friendly_name":  "Use Tableau",
+    "description":    "This determines whether the application will display a Tableau dashboard on the homepage.",
     "group":          "",
     "version":        "",
     "parent_key":     "",

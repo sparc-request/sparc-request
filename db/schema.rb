@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_30_190152) do
+ActiveRecord::Schema.define(version: 2018_11_07_162157) do
 
   create_table "admin_rates", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "line_item_id"
@@ -286,7 +286,7 @@ ActiveRecord::Schema.define(version: 2018_10_30_190152) do
     t.boolean "approved", default: false, null: false
     t.string "time_zone", default: "Eastern Time (US & Canada)"
     t.integer "professional_organization_id"
-    t.string "orcid", limit: 16
+    t.string "orcid", limit: 19
     t.index ["approved"], name: "index_identities_on_approved"
     t.index ["email"], name: "index_identities_on_email"
     t.index ["last_name"], name: "index_identities_on_last_name"
@@ -605,14 +605,8 @@ ActiveRecord::Schema.define(version: 2018_10_30_190152) do
     t.boolean "rmid_validated", default: false
     t.boolean "locked"
     t.string "guarantor_contact"
-    t.text "guarantor_address"
-    t.string "guarantor_city"
     t.string "guarantor_phone"
-    t.string "guarantor_state"
-    t.string "guarantor_zip"
-    t.string "guarantor_county"
-    t.string "guarantor_country"
-    t.string "guarantor_fax"
+    t.string "guarantor_email"
     t.index ["next_ssr_id"], name: "index_protocols_on_next_ssr_id"
   end
 
@@ -888,6 +882,7 @@ ActiveRecord::Schema.define(version: 2018_10_30_190152) do
     t.integer "service_requester_id"
     t.datetime "submitted_at"
     t.integer "protocol_id"
+    t.boolean "imported_to_fulfillment", default: false
     t.index ["organization_id"], name: "index_sub_service_requests_on_organization_id"
     t.index ["owner_id"], name: "index_sub_service_requests_on_owner_id"
     t.index ["protocol_id"], name: "index_sub_service_requests_on_protocol_id"

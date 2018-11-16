@@ -48,3 +48,7 @@
     %tr{:style => 'border: 1px solid black;'}
       %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:source]
       %td{:style => 'border: 1px solid black;'}= (@protocol.funding_source or @protocol.potential_funding_source or "").capitalize
+    - if @protocol.type == 'Project'
+      %tr{:style => 'border: 1px solid black;'}
+        %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:description]
+        %td{:style => 'border: 1px solid black;'}= protocol.brief_description

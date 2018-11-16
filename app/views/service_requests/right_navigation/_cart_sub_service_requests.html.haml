@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - if sub_service_requests.any?
   - sub_service_requests.each do |ssr|
-    = render 'service_requests/right_navigation/cart_sub_service_request', service_request: service_request, sub_service_request: ssr, allow_delete: allow_delete, editing_ssr: editing_ssr
+    = render 'service_requests/right_navigation/cart_sub_service_request', service_request: service_request, sub_service_request: ssr, allow_delete: allow_delete
 - else
   - if tab == 'active'
     - message = t(:proper)[:cart][:no_active_services_message]

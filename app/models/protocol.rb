@@ -99,27 +99,29 @@ class Protocol < ApplicationRecord
     validate :primary_pi_exists
   end
 
-  validation_group :guarantor_fields, if: :selected_for_epic do
-    validates :guarantor_contact,
-              :guarantor_phone,
-              :guarantor_address,
-              :guarantor_city,
-              :guarantor_state,
-              :guarantor_zip,
-              :guarantor_county,
-              :guarantor_country, presence: true
-  end
+  ##Removed for now, perhaps to be added later
+  # validation_group :guarantor_fields, if: :selected_for_epic do
+  #   validates :guarantor_contact,
+  #             :guarantor_phone,
+  #             :guarantor_address,
+  #             :guarantor_city,
+  #             :guarantor_state,
+  #             :guarantor_zip,
+  #             :guarantor_county,
+  #             :guarantor_country, presence: true
+  # end
+  # validates :guarantor_fax, numericality: {allow_blank: true, only_integer: true}
+  # validates :guarantor_fax, length: { maximum: 10 }
+  # validates :guarantor_address, length: { maximum: 500 }
+  # validates :guarantor_city, length: { maximum: 40 }
+  # validates :guarantor_state, length: { maximum: 2 }
+  # validates :guarantor_zip, length: { maximum: 9 }
 
-  validates :guarantor_phone,
-            :guarantor_fax, numericality: {allow_blank: true, only_integer: true}
+  validates :guarantor_phone, numericality: {allow_blank: true, only_integer: true}
+  validates_format_of :guarantor_email, with: (/\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/), allow_blank: true
 
   validates :guarantor_contact, length: { maximum: 192 }
   validates :guarantor_phone, length: { maximum: 10 }
-  validates :guarantor_fax, length: { maximum: 10 }
-  validates :guarantor_address, length: { maximum: 500 }
-  validates :guarantor_city, length: { maximum: 40 }
-  validates :guarantor_state, length: { maximum: 2 }
-  validates :guarantor_zip, length: { maximum: 9 }
 
   def rmid_requires_validation?
     # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]

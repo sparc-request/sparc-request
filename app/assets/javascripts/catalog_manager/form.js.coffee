@@ -75,13 +75,6 @@ $ ->
       type: if checked then 'POST' else 'DELETE'
       url: "/catalog_manager/service_provider?service_provider[identity_id]=#{identity_id}&service_provider[organization_id]=#{organization_id}"
 
-      success: ->
-        $("#sp-is-primary-contact-#{identity_id}").prop('disabled', !checked)
-        $("#sp-hold-emails-#{identity_id}").prop('disabled', !checked)
-        if !checked
-          $("#sp-is-primary-contact-#{identity_id}").prop('checked', false)
-          $("#sp-hold-emails-#{identity_id}").prop('checked', false)
-
   $(document).on 'change', '.cm-edit-historic-data', ->
     identity_id = $(this).data('identity-id')
     organization_id = $(this).data('organization-id')

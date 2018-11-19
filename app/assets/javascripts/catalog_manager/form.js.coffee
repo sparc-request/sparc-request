@@ -51,6 +51,10 @@ $ ->
       type: if $(this).prop('checked') then 'POST' else 'DELETE'
       url: "/catalog_manager/super_user?super_user[identity_id]=#{identity_id}&super_user[organization_id]=#{organization_id}"
 
+      success: ->
+        $("#su-access-empty-protocols-#{identity_id}").prop('disabled', !checked)
+        if !checked
+          $("#su-access-empty-protocols-#{identity_id}").prop('checked', false)
 
   $(document).on 'change', '.catalog-manager-checkbox', ->
     identity_id = $(this).data('identity-id')
@@ -74,6 +78,16 @@ $ ->
     $.ajax
       type: if checked then 'POST' else 'DELETE'
       url: "/catalog_manager/service_provider?service_provider[identity_id]=#{identity_id}&service_provider[organization_id]=#{organization_id}"
+
+  $(document).on 'change', '.su-access-empty-protocols', ->
+    identity_id = $(this).data('identity-id')
+    organization_id = $(this).data('organization-id')
+    access_empty_protocols = $(this).prop('checked')
+
+    $.ajax
+      type: 'PUT'
+      url: "/catalog_manager/super_user?super_user[identity_id]=#{identity_id}&super_user[organization_id]=#{organization_id}&super_user[access_empty_protocols]=#{access_empty_protocols}"
+
 
   $(document).on 'change', '.cm-edit-historic-data', ->
     identity_id = $(this).data('identity-id')

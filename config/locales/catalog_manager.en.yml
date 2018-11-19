@@ -56,6 +56,7 @@ en:
       user_rights:
         name_email: "Name, Email"
         super_user: "Super User"
+        access_empty_protocols: "Access Empty Protocols:"
         catalog_manager: "Catalog Manager"
         edit_historic_data: "Edit Historic Data:"
         service_provider: "Service Provider"

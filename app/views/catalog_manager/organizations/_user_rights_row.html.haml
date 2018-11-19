@@ -34,6 +34,11 @@
     -else
       = check_box_tag :super_user, true, !su.nil?, { class: "super-user-checkbox", data: { identity_id: user.id, organization_id: organization.id } }
 
+    - if !su.nil?
+      .form_row
+      = label_tag :access_empty_protocols, t(:catalog_manager)[:organization_form][:user_rights][:access_empty_protocols], class: 'non_bold_label'
+      = check_box_tag :access_empty_protocols, true, su.try(:access_empty_protocols), { id: "su-access-empty-protocols-#{user.id}", class: "su-access-empty-protocols", data: { identity_id: user.id, organization_id: organization.id } }
+
   .col-sm-3.text-center
     - if cm_disabled
       = check_box_tag :catalog_manager, true, !cm.nil?, { class: "catalog-manager-checkbox", disabled: true, title: t(:catalog_manager)[:organization_form][:user_rights][:duplicate_catalog_manager], data: { identity_id: user.id, organization_id: organization.id, toggle: 'tooltip', placement: 'top'} }

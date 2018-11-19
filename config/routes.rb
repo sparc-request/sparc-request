@@ -221,7 +221,7 @@ SparcRails::Application.routes.draw do
     resources :providers, only: [:edit, :update]
     resources :programs, only: [:edit, :update]
     resources :cores, only: [:edit, :update]
-    resource :super_user, only: [:create, :destroy]
+    resource :super_user, only: [:create, :destroy, :update]
     resource :catalog_manager, only: [:create, :destroy, :update]
     resource :service_provider, only: [:create, :destroy, :update]
     resource :clinical_provider, only: [:create, :destroy]

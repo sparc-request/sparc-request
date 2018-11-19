@@ -28,7 +28,7 @@
 .row.form_row{ id: "user-rights-row-#{user.id}", data: { identity_id: user.id } }
   %div{class: "#{(organization.type == "Institution" or !organization.process_ssrs) ? 'col-sm-6' : 'col-sm-3'}"}
     = "#{user.full_name}, #{user.email}"
-  .col-sm-2.text-center
+  .col-sm-3.text-center
     - if su_disabled
       = check_box_tag :super_user, true, !su.nil?, { class: "super-user-checkbox", disabled: true, title: t(:catalog_manager)[:organization_form][:user_rights][:duplicate_super_user], data: { identity_id: user.id, organization_id: organization.id, toggle: 'tooltip', placement: 'top'} }
     -else
@@ -39,7 +39,7 @@
       = label_tag :access_empty_protocols, t(:catalog_manager)[:organization_form][:user_rights][:access_empty_protocols], class: 'non_bold_label'
       = check_box_tag :access_empty_protocols, true, su.try(:access_empty_protocols), { id: "su-access-empty-protocols-#{user.id}", class: "su-access-empty-protocols", data: { identity_id: user.id, organization_id: organization.id } }
 
-  .col-sm-3.text-center
+  .col-sm-2.text-center
     - if cm_disabled
       = check_box_tag :catalog_manager, true, !cm.nil?, { class: "catalog-manager-checkbox", disabled: true, title: t(:catalog_manager)[:organization_form][:user_rights][:duplicate_catalog_manager], data: { identity_id: user.id, organization_id: organization.id, toggle: 'tooltip', placement: 'top'} }
     -else

@@ -264,7 +264,7 @@ class Protocol < ApplicationRecord
     return nil if identity_id == '0'
     service_provider_ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_service_provider(identity_id))
 
-    if SuperUser.where(identity_id: identity_id).any?
+    if SuperUser.where(identity_id: identity_id).where(access_empty_protocols: true).exists?
       self.for_super_user(identity_id, service_provider_ssrs)
     else
       joins(:sub_service_requests).merge(service_provider_ssrs).distinct

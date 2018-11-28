@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'activerecord-import'
+gem 'activeresource'
 gem 'activerecord-session_store'
 gem 'acts_as_list', :git => 'https://github.com/swanandp/acts_as_list.git'
 gem 'acts-as-taggable-on', :git => 'https://github.com/Fodoj/acts-as-taggable-on.git', branch: 'rails-5.2'

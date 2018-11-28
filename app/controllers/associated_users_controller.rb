@@ -41,6 +41,11 @@ class AssociatedUsersController < ApplicationController
 
     if params[:identity_id] # if user selected
       @identity     = Identity.find_or_create(params[:identity_id])
+
+      if Setting.find_by_key("use_epic").value && @protocol != nil && @protocol.selected_for_epic
+        @epic_user    = EpicUser.get(:viewuser, userid: @identity.ldap_uid.split('@').first)
+      end
+
       @project_role = @protocol.project_roles.new(identity_id: @identity.id)
       @current_pi   = @protocol.primary_principal_investigator
 
@@ -57,6 +62,11 @@ class AssociatedUsersController < ApplicationController
 
   def edit
     @identity     = @protocol_role.identity
+
+    if Setting.find_by_key("use_epic").value && @protocol != nil && @protocol.selected_for_epic
+      @epic_user    = EpicUser.get(:viewuser, userid: @identity.ldap_uid.split('@').first)
+    end
+
     @header_text  = t(:authorized_users)[:edit][:header]
     @dashboard    = false
     @admin        = false

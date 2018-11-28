@@ -19,9 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 module Features
-
   module BootstrapHelpers
-
     def bootstrap_multiselect(class_or_id, selections = ['all'])
       expect(page).to have_selector("select#{class_or_id} + .btn-group")
       bootstrap_multiselect = first("select#{class_or_id} + .btn-group")
@@ -51,6 +49,13 @@ module Features
 
     def bootstrap_selected?(element, choice)
       page.find("button.selectpicker[data-id='#{element}'][title='#{choice}']")
+    end
+
+    def bootstrap_datepicker(element, text)
+      e = page.find(element)
+      e.click
+      e.send_keys(:delete)
+      e.set(text)
     end
   end
 end

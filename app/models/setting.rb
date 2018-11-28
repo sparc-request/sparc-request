@@ -31,37 +31,36 @@ class Setting < ApplicationRecord
   validate :value_matches_type, if: Proc.new{ !self.read_attribute(:value).nil? }
   validate :parent_value_matches_parent_data_type, if: Proc.new{ self.parent_key.present? }
 
+  # Cache settings for the current request
+  @@settings = Setting.all.map{ |s| [s.key, { value: s.read_attribute(:value), data_type: s.data_type }] }.to_h
+
   def self.get_value(key)
-    value = Setting.find_by_key(key).try(:value)
+    if @@settings && @@settings[key]
+      converted_value(@@settings[key][:value], @@settings[key][:data_type])
+    else
+      s = Setting.find_by_key(key)
+      converted_value(s.value, s.data_type)
+    end
   end
 
-  # Needed to correctly write boolean true and false as value in specs
-  def value=(value)
-    if [TrueClass, FalseClass].include?(value.class)
+  def value=(val)
+    @@settings[self.key][:value] = val.to_s if @@settings && @@settings[self.key]
+    
+    # Needed to correctly write boolean true and false as value in specs
+    if [TrueClass, FalseClass].include?(val.class)
       value_will_change!
-      write_attribute(:value, value ? "true" : "false")
+      write_attribute(:value, val ? "true" : "false")
     else
-      write_attribute(:value, value)
+      write_attribute(:value, val)
     end
   end
 
   def value
-    case data_type
-    when 'boolean'
-      read_attribute(:value) == 'true'
-    when 'json'
-      begin
-        JSON.parse(read_attribute(:value).gsub("=>", ": "))
-      rescue
-        nil
-      end
-    else
-      read_attribute(:value)
-    end
+    Setting.converted_value(read_attribute(:value), self.data_type)
   end
 
   def parent
-    parent_key.blank? ? nil : Setting.find_by_key(parent_key)
+    Setting.find_by_key(parent_key) unless parent_key.blank?
   end
 
   def children
@@ -69,6 +68,21 @@ class Setting < ApplicationRecord
   end
 
   private
+
+  def self.converted_value(val, data_type)
+    case data_type
+    when 'boolean'
+      val == 'true'
+    when 'json'
+      begin
+        JSON.parse(val.gsub("=>", ": "))
+      rescue
+        nil
+      end
+    else
+      val
+    end
+  end
 
   def value_matches_type
     errors.add(:value, 'does not match the provided data type') unless

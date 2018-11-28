@@ -51,15 +51,6 @@ GIT
     acts_as_list (0.9.16)
       activerecord (>= 3.0)
 
-GIT
-  remote: https://github.com/thoughtbot/capybara-webkit
-  revision: 41c43062677c1628e09f9dc00dc24528ba161ed7
-  branch: master
-  specs:
-    capybara-webkit (1.15.0)
-      capybara (>= 2.3, < 4.0)
-      json
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -123,6 +114,8 @@ GEM
     akami (1.2.2)
       gyoku (>= 0.4.0)
       nokogiri
+    archive-zip (0.11.0)
+      io-like (~> 0.3.0)
     arel (9.0.0)
     audited (4.8.0)
       activerecord (>= 4.0, < 5.3)
@@ -177,6 +170,8 @@ GEM
       rack (>= 1.6.0)
       rack-test (>= 0.6.3)
       xpath (~> 3.1)
+    childprocess (0.9.0)
+      ffi (~> 1.0, >= 1.0.11)
     choice (0.2.0)
     chronic (0.10.2)
     climate_control (0.2.0)
@@ -252,6 +247,8 @@ GEM
     faker (1.9.1)
       i18n (>= 0.7)
     ffi (1.9.25)
+    geckodriver-helper (0.21.0)
+      archive-zip (~> 0.7)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
     gon (6.2.1)
@@ -296,6 +293,7 @@ GEM
     ice_cube (0.16.2)
     ice_nine (0.11.2)
     iconv (1.0.5)
+    io-like (0.3.0)
     jbuilder (2.7.0)
       activesupport (>= 4.2.0)
       multi_json (>= 1.2)
@@ -505,6 +503,9 @@ GEM
       nokogiri (>= 1.4.0)
       nori (~> 2.1.0)
       wasabi (~> 3.1.0)
+    selenium-webdriver (3.14.1)
+      childprocess (~> 0.5)
+      rubyzip (~> 1.2, >= 1.2.2)
     shoulda-callback-matchers (1.1.4)
       activesupport (>= 3)
     shoulda-matchers (3.1.2)
@@ -615,7 +616,6 @@ DEPENDENCIES
   capistrano-rails
   capistrano-rvm
   capistrano3-delayed-job (~> 1.0)
-  capybara-webkit!
   coffee-rails
   connection_pool
   country_select
@@ -634,6 +634,7 @@ DEPENDENCIES
   factory_bot_rails
   faker
   filterrific!
+  geckodriver-helper
   gon (~> 6.2)
   grape (= 1.1.0)
   grape-entity (~> 0.4.4)
@@ -689,6 +690,7 @@ DEPENDENCIES
   sass
   sass-rails
   savon (~> 2.2.0)
+  selenium-webdriver
   shoulda-callback-matchers
   shoulda-matchers
   simplecov

@@ -41,6 +41,7 @@ RSpec.describe 'User manages submission emails', js: true do
     wait_for_javascript_to_finish
 
     find('.remove-submission-email').click
+    accept_confirm
     wait_for_javascript_to_finish
   end
 

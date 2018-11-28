@@ -57,7 +57,7 @@ en:
         name_email: "Name, Email"
         super_user: "Super User"
         catalog_manager: "Catalog Manager"
-        edit_historic_data: "Edit Historic Data:"
+        edit_historic_data: "Edit Historical Data:"
         service_provider: "Service Provider"
         primary_contact: "Primary Contact:"
         hold_emails: "Hold Emails:"

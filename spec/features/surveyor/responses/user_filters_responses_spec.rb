@@ -53,7 +53,7 @@ RSpec.describe 'User filters responses', js: true do
         wait_for_javascript_to_finish
 
         expect(page).to have_selector('td', text: @form.title)
-        expect(page).to_not have_selector('td', text: @survey.title)
+        expect(page).to have_no_selector('td', text: @survey.title)
       end
     end
 
@@ -64,7 +64,7 @@ RSpec.describe 'User filters responses', js: true do
         wait_for_javascript_to_finish
 
         expect(page).to have_selector('td', text: @survey.title)
-        expect(page).to_not have_selector('td', text: @form.title)
+        expect(page).to have_no_selector('td', text: @form.title)
       end
     end
   end
@@ -86,7 +86,7 @@ RSpec.describe 'User filters responses', js: true do
         wait_for_javascript_to_finish
 
         expect(page).to have_selector('td', text: @survey.title)
-        expect(page).to_not have_selector('td', text: @inactive_survey.title)
+        expect(page).to have_no_selector('td', text: @inactive_survey.title)
       end
     end
 
@@ -97,7 +97,7 @@ RSpec.describe 'User filters responses', js: true do
         wait_for_javascript_to_finish
 
         expect(page).to have_selector('td', text: @inactive_survey.title)
-        expect(page).to_not have_selector('td', text: @survey.title)
+        expect(page).to have_no_selector('td', text: @survey.title)
       end
     end
 
@@ -131,7 +131,7 @@ RSpec.describe 'User filters responses', js: true do
         wait_for_javascript_to_finish
 
         expect(page).to have_selector('td', text: @survey.title)
-        expect(page).to_not have_selector('td', text: @other_survey.title)
+        expect(page).to have_no_selector('td', text: @other_survey.title)
       end
     end
 
@@ -153,7 +153,7 @@ RSpec.describe 'User filters responses', js: true do
         wait_for_javascript_to_finish
 
         expect(page).to have_selector('td', text: @form.title)
-        expect(page).to_not have_selector('td', text: @other_form.title)
+        expect(page).to have_no_selector('td', text: @other_form.title)
       end
     end
   end
@@ -176,7 +176,7 @@ RSpec.describe 'User filters responses', js: true do
 
 
         expect(page).to have_selector('td', text: @other_survey.title)
-        expect(page).to_not have_selector('td', text: @survey.title)
+        expect(page).to have_no_selector('td', text: @survey.title)
       end
     end
 
@@ -188,7 +188,7 @@ RSpec.describe 'User filters responses', js: true do
         wait_for_javascript_to_finish
 
         expect(page).to have_selector('td', text: @survey.title)
-        expect(page).to_not have_selector('td', text: @other_survey.title)
+        expect(page).to have_no_selector('td', text: @other_survey.title)
       end
     end
   end
@@ -208,7 +208,7 @@ RSpec.describe 'User filters responses', js: true do
         wait_for_javascript_to_finish
 
         expect(page).to have_selector('td', text: @survey.title)
-        expect(page).to_not have_selector('td', text: @other_survey.title)
+        expect(page).to have_no_selector('td', text: @other_survey.title)
       end
     end
 

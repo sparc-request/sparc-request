@@ -97,6 +97,7 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
         wait_for_javascript_to_finish
 
         page.authorized_users(text: "John Doe").first.enabled_remove_button.click
+        accept_confirm
         wait_for_javascript_to_finish
       end
 
@@ -123,21 +124,25 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
         wait_for_javascript_to_finish
 
         page.authorized_users(text: "John Doe").first.enabled_remove_button.click
+        accept_confirm
         wait_for_javascript_to_finish
 
-        expect(URI.parse(current_url).path).to eq("/dashboard")
+        wait_for_page(dashboard_root_path)
+        expect(current_path).to eq(dashboard_root_path)
       end
     end
   end
 
   def given_i_have_clicked_the_delete_authorized_user_button_and_confirmed
     @page.authorized_users(text: "Jane Doe").first.enabled_remove_button.click
+    accept_confirm
+    wait_for_javascript_to_finish
   end
 
   def given_i_have_clicked_the_delete_authorized_user_button_for_the_primary_pi
-    accept_alert do
-      @page.authorized_users(text: "John Doe").first.enabled_remove_button.click
-    end
+    @page.authorized_users(text: "John Doe").first.enabled_remove_button.click
+    accept_confirm
+    wait_for_javascript_to_finish
   end
 
   def then_i_should_not_see_the_authorized_user

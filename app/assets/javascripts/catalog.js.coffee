@@ -71,7 +71,7 @@ $(document).ready ->
       limit: 100,
       templates: {
         suggestion: Handlebars.compile('<button class="service text-left" data-container="body" data-placement="right" data-toggle="tooltip" data-animation="false" data-html="true" title="{{description}}">
-                                          <h4 class="service-name no-margin-top"><span class="text-service">Service</span><span>: {{label}}</span></h4>
+                                          <h4 class="service-name col-sm-12 no-padding no-margin-top"><span class="text-service">Service</span><span>: {{label}}</span></h4>
                                           <span class="col-sm-12 no-padding">{{{breadcrumb}}}</span>
                                           <span class="col-sm-12 no-padding"><strong>Abbreviation:</strong> {{abbreviation}}</span>
                                           {{#if cpt_code_text}}

@@ -84,7 +84,7 @@ RSpec.describe 'dashboard/sub_service_requests/show', type: :view do
         end
 
         it 'should not show the tab' do
-          expect(response).to_not have_selector('.custom-tab', text: I18n.t(:dashboard)[:sub_service_requests][:tabs][:study_schedule][:header])
+          expect(response).to have_no_selector('.custom-tab', text: I18n.t(:dashboard)[:sub_service_requests][:tabs][:study_schedule][:header])
         end
       end
     end
@@ -108,7 +108,7 @@ RSpec.describe 'dashboard/sub_service_requests/show', type: :view do
         end
 
         it 'should not show the tab' do
-          expect(response).to_not have_selector('.custom-tab', text: I18n.t(:dashboard)[:sub_service_requests][:tabs][:study_level_activities][:header])
+          expect(response).to have_no_selector('.custom-tab', text: I18n.t(:dashboard)[:sub_service_requests][:tabs][:study_level_activities][:header])
         end
       end
     end

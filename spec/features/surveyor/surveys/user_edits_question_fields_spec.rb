@@ -97,7 +97,7 @@ RSpec.describe 'User edits question fields', js: true do
           wait_for_javascript_to_finish
 
           expect(page).to have_selector("#question-#{@question.id}-is_dependent:disabled")
-          expect(page).to_not have_selector("#question-#{@question.id}-is_dependent:not(:disabled)")
+          expect(page).to have_no_selector("#question-#{@question.id}-is_dependent:not(:disabled)")
         end
       end
 
@@ -153,7 +153,7 @@ RSpec.describe 'User edits question fields', js: true do
 
         find("button[data-id='question-#{@question2.id}-depender_id']").click
 
-        expect(page).to_not have_selector('.text', text: @option.content)
+        expect(page).to have_no_selector('.text', text: @option.content)
       end
 
       scenario 'and sees updated depender_id' do
@@ -203,7 +203,7 @@ RSpec.describe 'User edits question fields', js: true do
         find('.delete-question').click
         wait_for_javascript_to_finish
 
-        expect(page).to_not have_selector('.question')
+        expect(page).to have_no_selector('.question')
         expect(@section.questions.count).to eq(0)
       end
 
@@ -224,7 +224,7 @@ RSpec.describe 'User edits question fields', js: true do
           find('.select-depender').click
           wait_for_javascript_to_finish
 
-          expect(page).to_not have_selector('.select-depender .text', text: @option.content, visible: true)
+          expect(page).to have_no_selector('.select-depender .text', text: @option.content, visible: true)
         end
       end
     end
@@ -303,7 +303,7 @@ RSpec.describe 'User edits question fields', js: true do
           wait_for_javascript_to_finish
 
           expect(page).to have_selector("#question-#{@question.id}-is_dependent:disabled")
-          expect(page).to_not have_selector("#question-#{@question.id}-is_dependent:not(:disabled)")
+          expect(page).to have_no_selector("#question-#{@question.id}-is_dependent:not(:disabled)")
         end
       end
 
@@ -359,7 +359,7 @@ RSpec.describe 'User edits question fields', js: true do
 
         find("button[data-id='question-#{@question2.id}-depender_id']").click
 
-        expect(page).to_not have_selector('.text', text: @option.content)
+        expect(page).to have_no_selector('.text', text: @option.content)
       end
 
       scenario 'and sees updated depender_id' do
@@ -409,7 +409,7 @@ RSpec.describe 'User edits question fields', js: true do
         find('.delete-question').click
         wait_for_javascript_to_finish
 
-        expect(page).to_not have_selector('.question')
+        expect(page).to have_no_selector('.question')
         expect(@section.questions.count).to eq(0)
       end
 
@@ -430,7 +430,7 @@ RSpec.describe 'User edits question fields', js: true do
           find('.select-depender').click
           wait_for_javascript_to_finish
 
-          expect(page).to_not have_selector('.select-depender .text', text: @option.content, visible: true)
+          expect(page).to have_no_selector('.select-depender .text', text: @option.content, visible: true)
         end
       end
     end

@@ -36,6 +36,6 @@
         %td.skinny-black-border.center= pr.identity.email
         %td.skinny-black-border.center= pr.role.titleize
         - if @protocol.selected_for_epic
-          %td.skinny-black-border.center= pr.epic_access == true ? "Yes" : "No"
+          %td.skinny-black-border.center= pr.epic_access == true ? t(:constants)[:yes_select] : t(:constants)[:no_select]
 %br
 %br

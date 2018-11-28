@@ -56,8 +56,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
               find('.view-protocol-details-button').click
               wait_for_javascript_to_finish
 
-              expect(page).to have_css('label.col-lg-4', text: 'Publish Study in Epic:')
-              expect(page).to have_css('div.col-lg-8', text: 'Yes')
+              expect(page).to have_selector('label.col-lg-4', text: 'Publish Study in Epic:')
+              expect(page).to have_selector('div.col-lg-8', text: 'Yes')
             end
 
             it 'should display "Yes" as the answer for the first Question' do
@@ -66,8 +66,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
               find('.view-protocol-details-button').click
               wait_for_javascript_to_finish
 
-              expect(page).to have_css('h5.col-lg-12', text: 'Study Type Questions:')
-              expect(page).to have_css('div.col-lg-2', text: 'Yes', count: 1)
+              expect(page).to have_selector('h5.col-lg-12', text: 'Study Type Questions:')
+              expect(page).to have_selector('div.col-lg-2', text: 'Yes', count: 1)
             end
 
             it 'should display the correct note' do
@@ -88,8 +88,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
               find('.view-protocol-details-button').click
               wait_for_javascript_to_finish
 
-              expect(page).to have_css('label.col-lg-4', text: 'Publish Study in Epic:')
-              expect(page).to have_css('div.col-lg-8', text: 'Yes')
+              expect(page).to have_selector('label.col-lg-4', text: 'Publish Study in Epic:')
+              expect(page).to have_selector('div.col-lg-8', text: 'Yes')
             end
 
             it 'should display "No" for all answers' do
@@ -98,8 +98,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
               find('.view-protocol-details-button').click
               wait_for_javascript_to_finish
 
-              expect(page).to have_css('h5.col-lg-12', text: 'Study Type Questions:')
-              expect(page).to have_css('div.col-lg-2', text: 'No', count: 5)
+              expect(page).to have_selector('h5.col-lg-12', text: 'Study Type Questions:')
+              expect(page).to have_selector('div.col-lg-2', text: 'No', count: 5)
             end
 
             it 'should display the correct note' do
@@ -142,8 +142,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
               find('.view-protocol-details-button').click
               wait_for_javascript_to_finish
 
-              expect(page).to have_css('label.col-lg-4', text: 'Publish Study in Epic:')
-              expect(page).to have_css('div.col-lg-8', text: 'No')
+              expect(page).to have_selector('label.col-lg-4', text: 'Publish Study in Epic:')
+              expect(page).to have_selector('div.col-lg-8', text: 'No')
             end
 
             it 'should display "No" as the answer for the first Question' do
@@ -152,8 +152,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
               find('.view-protocol-details-button').click
               wait_for_javascript_to_finish
 
-              expect(page).to have_css('h5.col-lg-12', text: 'Study Type Questions:')
-              expect(page).to have_css('div.col-lg-2', text: 'Yes', count: 1)
+              expect(page).to have_selector('h5.col-lg-12', text: 'Study Type Questions:')
+              expect(page).to have_selector('div.col-lg-2', text: 'Yes', count: 1)
             end
 
             it 'should display the correct note' do
@@ -174,8 +174,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
               find('.view-protocol-details-button').click
               wait_for_javascript_to_finish
 
-              expect(page).to have_css('label.col-lg-4', text: 'Publish Study in Epic:')
-              expect(page).to have_css('div.col-lg-8', text: 'No')
+              expect(page).to have_selector('label.col-lg-4', text: 'Publish Study in Epic:')
+              expect(page).to have_selector('div.col-lg-8', text: 'No')
             end
 
             it 'should display "No" for all answers' do
@@ -184,8 +184,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
               find('.view-protocol-details-button').click
               wait_for_javascript_to_finish
 
-              expect(page).to have_css('h5.col-lg-12', text: 'Study Type Questions:')
-              expect(page).to have_css('div.col-lg-2', text: 'No', count: 2)
+              expect(page).to have_selector('h5.col-lg-12', text: 'Study Type Questions:')
+              expect(page).to have_selector('div.col-lg-2', text: 'No', count: 2)
             end
 
             it 'should not display a note' do
@@ -231,14 +231,14 @@ RSpec.describe 'User views details after editing epic answers', js: true do
             end
 
             it 'should display correct selected for epic' do
-              expect(page).to have_css('label.col-lg-4', text: 'Publish Study in Epic:')
-              expect(page).to have_css('div.col-lg-8', text: 'Yes')
+              expect(page).to have_selector('label.col-lg-4', text: 'Publish Study in Epic:')
+              expect(page).to have_selector('div.col-lg-8', text: 'Yes')
             end
 
             it 'should display question group 2 study type questions and answers' do
-              expect(page).to have_css('h5.col-lg-12', text: 'Study Type Questions:')
+              expect(page).to have_selector('h5.col-lg-12', text: 'Study Type Questions:')
               expect(page).to have_content(@stq_certificate_of_conf_version_2.question)
-              expect(page).to have_css('div.col-lg-2', text: 'Yes')
+              expect(page).to have_selector('div.col-lg-2', text: 'Yes')
               expect(page).not_to have_content(@stq_higher_level_of_privacy_version_2.question)
               expect(page).not_to have_content(@stq_access_study_info_version_2.question)
               expect(page).not_to have_content(@stq_epic_inbasket_version_2.question)
@@ -261,8 +261,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
               find('.view-protocol-details-button').click
               wait_for_javascript_to_finish
 
-              expect(page).to have_css('label.col-lg-4', text: 'Publish Study in Epic:')
-              expect(page).to have_css('div.col-lg-8', text: 'No')
+              expect(page).to have_selector('label.col-lg-4', text: 'Publish Study in Epic:')
+              expect(page).to have_selector('div.col-lg-8', text: 'No')
             end
 
             it 'should display "No" as the answer for the first Question' do
@@ -271,8 +271,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
               find('.view-protocol-details-button').click
               wait_for_javascript_to_finish
 
-              expect(page).to have_css('h5.col-lg-12', text: 'Study Type Questions:')
-              expect(page).to have_css('div.col-lg-2', text: 'Yes', count: 1)
+              expect(page).to have_selector('h5.col-lg-12', text: 'Study Type Questions:')
+              expect(page).to have_selector('div.col-lg-2', text: 'Yes', count: 1)
             end
 
             it 'should display the correct note' do
@@ -294,8 +294,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
                 find('.view-protocol-details-button').click
                 wait_for_javascript_to_finish
 
-                expect(page).to have_css('label.col-lg-4', text: 'Publish Study in Epic:')
-                expect(page).to have_css('div.col-lg-8', text: 'Yes')
+                expect(page).to have_selector('label.col-lg-4', text: 'Publish Study in Epic:')
+                expect(page).to have_selector('div.col-lg-8', text: 'Yes')
               end
 
               it 'should display "Yes" as the answer for the first Question' do
@@ -304,8 +304,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
                 find('.view-protocol-details-button').click
                 wait_for_javascript_to_finish
 
-                expect(page).to have_css('h5.col-lg-12', text: 'Study Type Questions:')
-                expect(page).to have_css('div.col-lg-2', text: 'Yes', count: 1)
+                expect(page).to have_selector('h5.col-lg-12', text: 'Study Type Questions:')
+                expect(page).to have_selector('div.col-lg-2', text: 'Yes', count: 1)
               end
 
               it 'should display the correct note' do
@@ -324,6 +324,7 @@ RSpec.describe 'User views details after editing epic answers', js: true do
   end
 
   context 'use epic = false' do
+    stub_config('use_epic', false)
     ### SELECTED FOR EPIC IS FALSE IS IRRELEVANT BECAUSE USE_EPIC = FALSE ###
     context 'Study, selected for epic: false, question group 3' do
       context 'user views epic answers in view details' do
@@ -350,7 +351,7 @@ RSpec.describe 'User views details after editing epic answers', js: true do
             find('.view-protocol-details-button').click
             wait_for_javascript_to_finish
 
-            expect(page).not_to have_css('label.col-lg-4', text: 'Publish Study in Epic:')
+            expect(page).not_to have_selector('label.col-lg-4', text: 'Publish Study in Epic:')
           end
 
           it 'should display "No" as the answer for the first Question' do
@@ -359,8 +360,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
             find('.view-protocol-details-button').click
             wait_for_javascript_to_finish
 
-            expect(page).to have_css('h5.col-lg-12', text: 'Study Type Questions:')
-            expect(page).to have_css('div.col-lg-2', text: 'Yes', count: 1)
+            expect(page).to have_selector('h5.col-lg-12', text: 'Study Type Questions:')
+            expect(page).to have_selector('div.col-lg-2', text: 'Yes', count: 1)
           end
 
           it 'should not display a note' do
@@ -381,7 +382,7 @@ RSpec.describe 'User views details after editing epic answers', js: true do
             find('.view-protocol-details-button').click
             wait_for_javascript_to_finish
 
-            expect(page).not_to have_css('label.col-lg-4', text: 'Publish Study in Epic:')
+            expect(page).not_to have_selector('label.col-lg-4', text: 'Publish Study in Epic:')
           end
 
           it 'should display "No" for all answers' do
@@ -390,8 +391,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
             find('.view-protocol-details-button').click
             wait_for_javascript_to_finish
 
-            expect(page).to have_css('h5.col-lg-12', text: 'Study Type Questions:')
-            expect(page).to have_css('div.col-lg-2', text: 'No', count: 2)
+            expect(page).to have_selector('h5.col-lg-12', text: 'Study Type Questions:')
+            expect(page).to have_selector('div.col-lg-2', text: 'No', count: 2)
           end
 
           it 'should not display a note' do
@@ -431,7 +432,7 @@ RSpec.describe 'User views details after editing epic answers', js: true do
             find('.view-protocol-details-button').click
             wait_for_javascript_to_finish
 
-            expect(page).not_to have_css('label.col-lg-4', text: 'Publish Study in Epic:')
+            expect(page).not_to have_selector('label.col-lg-4', text: 'Publish Study in Epic:')
           end
 
           it 'should display "No" as the answer for the first Question' do
@@ -440,8 +441,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
             find('.view-protocol-details-button').click
             wait_for_javascript_to_finish
 
-            expect(page).to have_css('h5.col-lg-12', text: 'Study Type Questions:')
-            expect(page).to have_css('div.col-lg-2', text: 'Yes', count: 1)
+            expect(page).to have_selector('h5.col-lg-12', text: 'Study Type Questions:')
+            expect(page).to have_selector('div.col-lg-2', text: 'Yes', count: 1)
           end
 
           it 'should not display a note' do
@@ -462,7 +463,7 @@ RSpec.describe 'User views details after editing epic answers', js: true do
             find('.view-protocol-details-button').click
             wait_for_javascript_to_finish
 
-            expect(page).not_to have_css('label.col-lg-4', text: 'Publish Study in Epic:')
+            expect(page).not_to have_selector('label.col-lg-4', text: 'Publish Study in Epic:')
           end
 
           it 'should display "No" for all answers' do
@@ -471,8 +472,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
             find('.view-protocol-details-button').click
             wait_for_javascript_to_finish
 
-            expect(page).to have_css('h5.col-lg-12', text: 'Study Type Questions:')
-            expect(page).to have_css('div.col-lg-2', text: 'No', count: 2)
+            expect(page).to have_selector('h5.col-lg-12', text: 'Study Type Questions:')
+            expect(page).to have_selector('div.col-lg-2', text: 'No', count: 2)
           end
 
           it 'should not display a note' do
@@ -519,11 +520,11 @@ RSpec.describe 'User views details after editing epic answers', js: true do
               end
 
               it 'should not display selected for epic' do
-                expect(page).not_to have_css('label.col-lg-4', text: 'Publish Study in Epic:')
+                expect(page).not_to have_selector('label.col-lg-4', text: 'Publish Study in Epic:')
               end
 
               it 'should display question group 2 study type questions and answers' do
-                expect(page).not_to have_css('h5.col-lg-12', text: 'Study Type Questions:')
+                expect(page).not_to have_selector('h5.col-lg-12', text: 'Study Type Questions:')
               end
 
               it 'should not display a note' do
@@ -539,7 +540,7 @@ RSpec.describe 'User views details after editing epic answers', js: true do
                 find('.view-protocol-details-button').click
                 wait_for_javascript_to_finish
 
-                expect(page).not_to have_css('label.col-lg-4', text: 'Publish Study in Epic:')
+                expect(page).not_to have_selector('label.col-lg-4', text: 'Publish Study in Epic:')
               end
 
               it 'should display "No" as the answer for the first Question' do
@@ -548,8 +549,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
                 find('.view-protocol-details-button').click
                 wait_for_javascript_to_finish
 
-                expect(page).to have_css('h5.col-lg-12', text: 'Study Type Questions:')
-                expect(page).to have_css('div.col-lg-2', text: 'Yes', count: 1)
+                expect(page).to have_selector('h5.col-lg-12', text: 'Study Type Questions:')
+                expect(page).to have_selector('div.col-lg-2', text: 'Yes', count: 1)
               end
 
               it 'should not display a note' do
@@ -570,7 +571,7 @@ RSpec.describe 'User views details after editing epic answers', js: true do
                 find('.view-protocol-details-button').click
                 wait_for_javascript_to_finish
 
-                expect(page).not_to have_css('label.col-lg-4', text: 'Publish Study in Epic:')
+                expect(page).not_to have_selector('label.col-lg-4', text: 'Publish Study in Epic:')
               end
 
               it 'should display "No" for all answers' do
@@ -579,8 +580,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
                 find('.view-protocol-details-button').click
                 wait_for_javascript_to_finish
 
-                expect(page).to have_css('h5.col-lg-12', text: 'Study Type Questions:')
-                expect(page).to have_css('div.col-lg-2', text: 'No', count: 2)
+                expect(page).to have_selector('h5.col-lg-12', text: 'Study Type Questions:')
+                expect(page).to have_selector('div.col-lg-2', text: 'No', count: 2)
               end
 
               it 'should not display a note' do

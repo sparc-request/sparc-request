@@ -141,6 +141,19 @@ RSpec.describe CatalogManager::OrganizationsController do
         @org.reload
       }.to change(@org.associated_surveys, :count).by(1)
     end
+
+    context 'survey is already associated' do
+      before :each do
+        create(:associated_survey, survey_id: @survey.id, associable: @org)
+      end
+
+      it 'should not add the survey' do
+        expect{
+          post :add_associated_survey, params: { surveyable_id: @org.id, survey_id: @survey.id }, xhr: true
+          @org.reload
+        }.to change(@org.associated_surveys, :count).by(0)
+      end
+    end
   end
 
   describe '#remove_associated_survey' do

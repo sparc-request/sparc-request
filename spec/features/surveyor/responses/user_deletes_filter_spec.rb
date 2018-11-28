@@ -34,7 +34,7 @@ RSpec.describe 'User saves a response filters', js: true do
     visit surveyor_responses_path
     wait_for_javascript_to_finish
 
-    expect(page).to_not have_selector('td', text: survey.title)
+    expect(page).to have_no_selector('td', text: survey.title)
 
     find('.delete-filter').click
     wait_for_javascript_to_finish

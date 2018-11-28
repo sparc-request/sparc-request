@@ -67,7 +67,7 @@ class ReportsController < ApplicationController
 
     # generate excel
     tempfile = @report.to_excel
-    send_file tempfile.path, :filename => 'report.xlsx', :disposition => 'inline', :type =>  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    send_file tempfile.path, :filename => "#{Time.now.strftime('%F')} #{@report.title}.xlsx", :disposition => 'inline', :type =>  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
     # generate csv
     #tempfile = @report.to_csv

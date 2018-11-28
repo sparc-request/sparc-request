@@ -68,11 +68,6 @@ class Arm < ApplicationRecord
     errors.add(:name, I18n.t(:errors)[:arms][:name_unique]) if arm_names.include?(self.name.downcase)
   end
 
-  def sanitized_name
-    # Sanitized for Excel
-    name.gsub(/\[|\]|\*|\/|\\|\?|\:/, ' ').truncate(31)
-  end
-
   def per_patient_per_visit_line_items
     line_items_visits.each.map do |liv|
       liv.line_item

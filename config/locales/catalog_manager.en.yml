@@ -78,6 +78,7 @@ en:
       fulfillment_rights:
         title: "Fulfillment Rights"
         clinical_provider: "Clinical Provider"
+        patient_registrar: "Patient Registrar"
         add_user: "Add New Fulfillment Provider"
         user_in_table: "is already on the Fulfillment Rights Table"
       status_options:

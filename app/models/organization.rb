@@ -35,6 +35,7 @@ class Organization < ApplicationRecord
   has_many :service_providers, :dependent => :destroy
   has_many :catalog_managers, :dependent => :destroy
   has_many :clinical_providers, :dependent => :destroy
+  has_many :patient_registrars, :dependent => :destroy
 
   has_many :services, :dependent => :destroy
   has_many :sub_service_requests, :dependent => :destroy
@@ -382,6 +383,7 @@ class Organization < ApplicationRecord
   # Returns all fulfillment user rights on the organization
   def all_fulfillment_rights
     identity_ids = self.clinical_providers.pluck(:identity_id)
+    identity_ids += self.patient_registrars.pluck(:identity_id)
     # Placeholder for invoicers, which will be included later
     # identity_ids += self.invoicers.pluck(:identity_id)
     Identity.where(id: identity_ids)

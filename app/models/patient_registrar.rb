@@ -18,45 +18,18 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# named AppController because Devise was having problems when it was named the same as the main ApplicationController
-class CatalogManager::AppController < ActionController::Base
-  layout 'catalog_manager/application'
-  protect_from_forgery
-  helper_method :current_user
+class PatientRegistrar < ApplicationRecord
 
-  before_action :authenticate_identity!
-  before_action :set_user
-  before_action :set_highlighted_link
-  before_action :check_access_rights
+  include RemotelyNotifiable
 
-  def set_highlighted_link
-    @highlighted_link ||= 'sparc_catalog'
-  end
+  audited
 
-  def current_user
-    current_identity
-  end
+  belongs_to :organization
+  belongs_to :identity
 
-  def set_user
-    @user = current_identity
-    session['uid'] = @user.nil? ? nil : @user.id
-  end
+  def core
+    org = Organization.find(self.organization_id)
 
-  def check_access_rights
-    unless @user.catalog_overlord or @user.catalog_managers.any?
-      flash[:alert] = "You do not have catalog manager rights."
-      redirect_to root_url
-    end
-  end
-
-  def user_rights organization_id
-    { super_users: SuperUser.where(organization_id: organization_id),
-      catalog_managers: CatalogManager.where(organization_id: organization_id),
-      service_providers: ServiceProvider.where(organization_id: organization_id)}
-  end
-
-  def fulfillment_rights organization_id
-    { clinical_providers: ClinicalProvider.where(organization_id: organization_id),
-      patient_registrars: PatientRegistrar.where(organization_id: organization_id)}
+    org
   end
 end

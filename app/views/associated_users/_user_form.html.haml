@@ -69,14 +69,15 @@
                 data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
                 title: t(:authorized_users)[:tooltips][:epic_access]) do
                 = label_tag nil, nil, class: 'radio-inline' do
-                  = form.radio_button :epic_access, false, class: 'epic_access', disabled: (!@epic_user.key?('IsActive') && !@epic_user['IsActive'])
-                  No
+                  = form.radio_button :epic_access, false, class: 'epic_access', disabled: !EpicUser.is_active?(@epic_user)
+                  = t(:constants)[:no_select]
                 = label_tag nil, nil, class: 'radio-inline' do
-                  = form.radio_button :epic_access, true, class: 'epic_access', disabled: (!@epic_user.key?('IsActive') && !@epic_user['IsActive'])
-                  Yes
-                - if !@epic_user.key?('IsActive') && !@epic_user['IsActive']
+                  = form.radio_button :epic_access, true, class: 'epic_access', disabled: !EpicUser.is_active?(@epic_user)
+                  = t(:constants)[:yes_select]
+                - unless EpicUser.is_active?(@epic_user)
                   %br
-                  .text-danger User does not have Epic access.
+                  %p.text-danger
+                    = t(:authorized_users)[:form_fields][:no_epic_access]
 
             = render 'associated_users/form/project_rights', form: form, dashboard: dashboard, admin: admin
 

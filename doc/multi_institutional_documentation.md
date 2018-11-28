@@ -129,7 +129,10 @@ There are several settings related to [LDAP](https://ldap.com/) (_see 2.2 Config
 There are several settings related to [Epic](https://www.epic.com/) (_see 2.3 Configuring Epic_). Should your institution choose to use EPIC, you should modify these settings accordingly.
 
 - **use_epic**: This determines whether the application will use Epic integration.
-- **approve_epic_rights_mail_to**:
+- **validate_epic_users**: This determines whether or not the application will validate Authorized Users with Epic access against a list of users from Epic.
+- **epic_user_endpoint**: This is the endpoint for the Epic interface to retrieve users to validate Authorized Users with Epic access.
+- **epic_user_collection_name**: This is the name of the collection of users from the Epic User Endpoint.
+- **approve_epic_rights_mail_to**: Email addresses of users who are e-mailed for EPIC rights approval.
 - **queue_epic**: This determines whether Epic pushes will be queued. Emptying the queue is done via `rake epic:batch_load`. This can be set up as a cronjob to run at a certain interval.
 - **epic_queue_access**: This is a list of users who will have full access to the Epic queue from SPARCDashboard.
 - **epic_queue_report_to**: This is the email(s) that will be sent Epic queue reports when they are generated.

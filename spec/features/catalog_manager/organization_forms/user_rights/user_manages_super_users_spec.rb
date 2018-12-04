@@ -56,7 +56,7 @@ RSpec.describe 'User manages Super Users', js: true do
       end
 
       it 'should remove access empty protocols' do
-        find("#su-access-empty-protocols-data-#{{@identity.id}").click
+        find("#su-access-empty-protocols-data-#{@identity.id}").click
         wait_for_javascript_to_finish
 
         expect(SuperUser.where(identity_id: @identity.id, organization_id: @provider.id).first.access_empty_protocols).to eq(false)
@@ -87,7 +87,7 @@ RSpec.describe 'User manages Super Users', js: true do
       end
 
       it 'should add access to empty protocols' do
-        find("#su-access-empty-protocols-data-#{{@identity.id}").click
+        find("#su-access-empty-protocols-data-#{@identity.id}").click
         wait_for_javascript_to_finish
 
         expect(SuperUser.where(identity_id: @identity.id, organization_id: @provider.id).first.access_empty_protocols).to eq(true)

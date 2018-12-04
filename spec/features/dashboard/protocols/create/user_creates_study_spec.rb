@@ -79,16 +79,17 @@ RSpec.describe 'User creates study', js: true do
         fill_in 'protocol_project_roles_attributes_0_identity_id', with: 'Julia'
         page.execute_script("$('#protocol_project_roles_attributes_0_identity_id').trigger('focus');")
         wait_for_javascript_to_finish
+        expect(page).to have_selector('.tt-suggestion')
 
-        while (suggestion = first('.tt-suggestion')).nil?
-        end
-
-        suggestion.click
+        first('.tt-suggestion').click
+        wait_for_javascript_to_finish
 
         click_button 'Save'
-        wait_for_javascript_to_finish
-        expect(page).to have_current_path(dashboard_protocol_path(Study.first))
+
         expect(Study.count).to eq(1)
+        protocol_show = dashboard_protocol_path(Study.first)
+        wait_for_page(protocol_show)
+        expect(current_path).to eq(protocol_show)
       end
 
       scenario 'clicks other checkbox and sees text field' do

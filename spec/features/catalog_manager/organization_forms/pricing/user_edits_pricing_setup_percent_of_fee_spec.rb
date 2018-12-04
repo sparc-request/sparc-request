@@ -150,7 +150,7 @@ RSpec.describe 'User edits Organization Pricing', js: true do
         find(".edit_pricing_setup_link").click
         wait_for_javascript_to_finish
 
-        expect(page).to_not have_selector('#apply_federal_percent')
+        expect(page).to have_no_selector('#apply_federal_percent')
       end
 
     end

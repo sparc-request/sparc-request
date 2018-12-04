@@ -75,8 +75,8 @@ RSpec.describe 'User manages status options', js: true do
     end
 
     it 'should disable all available and editable statuses' do
-      expect(page).to_not have_selector('.available-status-checkbox:not(:disabled)')
-      expect(page).to_not have_selector('.editable-status-checkbox:not(:disabled)')
+      expect(page).to have_no_selector('.available-status-checkbox:not(:disabled)')
+      expect(page).to have_no_selector('.editable-status-checkbox:not(:disabled)')
     end
 
   end

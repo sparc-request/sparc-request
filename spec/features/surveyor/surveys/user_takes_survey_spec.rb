@@ -564,9 +564,11 @@ RSpec.describe 'User takes a survey', js: true do
       wait_for_javascript_to_finish
 
       click_button 'Submit'
-      wait_for_javascript_to_finish
 
-      expect(current_path).to eq(surveyor_response_complete_path(Response.last))
+      complete_page = surveyor_response_complete_path(Response.last)
+      wait_for_page(complete_page)
+
+      expect(current_path).to eq(complete_page)
     end
   end
 end

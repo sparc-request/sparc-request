@@ -42,9 +42,9 @@ RSpec.describe 'User removes service level components', js: true do
 
     click_link I18n.t(:catalog_manager)[:organization_form][:service_level_components]
 
-    accept_confirm do
-      find('.remove-service-component').click
-    end
+    find('.remove-service-component').click
+    accept_confirm
+
     wait_for_javascript_to_finish
   end
 

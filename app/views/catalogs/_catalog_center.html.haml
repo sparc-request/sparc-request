@@ -27,12 +27,9 @@
     - else
       = render 'catalogs/welcome'
   #calendar-blog.full
-    - use_news_feed       = Setting.get_value("use_news_feed")
-    - use_google_calendar = Setting.get_value("use_google_calendar")
-
-    - if @use_news_feed
-      = render 'catalogs/news', use_google_calendar: @use_google_calendar
-    - if @use_google_calendar
-      = render 'catalogs/calendar', use_news_feed: @use_news_feed
+    - if Setting.get_value('use_news_feed')
+      = render 'catalogs/news'
+    - if Setting.get_value('use_google_calendar')
+      = render 'catalogs/calendar'
   - if Setting.get_value('use_tableau') && tableau_url = Setting.get_value('homepage_tableau_url')
     = render 'catalogs/tableau', tableau_url: tableau_url

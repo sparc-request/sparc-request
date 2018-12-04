@@ -42,6 +42,7 @@ RSpec.describe 'User manages fulfillment rights', js: true do
     wait_for_javascript_to_finish
 
     find('.remove-fulfillment-rights').click
+    accept_confirm
     wait_for_javascript_to_finish
   end
 
@@ -50,7 +51,6 @@ RSpec.describe 'User manages fulfillment rights', js: true do
   end
 
   it 'should remove the identity from the table' do
-    expect(page).to_not have_selector("fulfillment-rights-row-#{@identity.id}")
+    expect(page).to have_no_selector("fulfillment-rights-row-#{@identity.id}")
   end
-
 end

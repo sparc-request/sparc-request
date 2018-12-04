@@ -60,6 +60,30 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
       expect(response).to have_selector('a', text: 'Study Notes')
     end
 
+    context 'RMID is enabled' do
+      stub_config('research_master_enabled', true)
+
+      it 'should display Research Master ID' do
+        protocol = build(:study, research_master_id: 1234)
+
+        render_summary_for protocol
+
+        expect(response).to have_content('1234')
+      end
+    end
+
+    context 'RMID is disabled' do
+      stub_config('research_master_enabled', false)
+
+      it 'should not display Research Master ID' do
+        protocol = build(:study, research_master_id: 1234)
+
+        render_summary_for protocol
+
+        expect(response).to_not have_content('1234')
+      end
+    end
+
     context 'Study has potential funding source' do
       it 'should display Study ID, Title, Short Title, and potential funding source' do
         protocol = build(:protocol_federally_funded,

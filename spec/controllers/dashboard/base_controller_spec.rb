@@ -155,6 +155,14 @@ RSpec.describe Dashboard::BaseController, type: :controller do
         get :index
         expect(controller).to render_template(partial: 'dashboard/shared/_authorization_error')
       end
+      it 'should not render an error message for super users with access to empty protocols' do
+        @organization    = create(:organization)
+        create(:super_user, identity: @user, organization: @organization, access_empty_protocols: true)
+        log_in_dashboard_identity({id: @user.id})
+
+        get :index
+        expect(controller).to_not render_template(partial: 'dashboard/shared/_authorization_error')
+      end
     end
   end
 
@@ -231,6 +239,14 @@ RSpec.describe Dashboard::BaseController, type: :controller do
 
         get :new
         expect(controller).to render_template(partial: 'dashboard/shared/_authorization_error')
+      end
+      it 'should not render an error message for super users with access to empty protocols' do
+        @organization    = create(:organization)
+        create(:super_user, identity: @user, organization: @organization, access_empty_protocols: true)
+        log_in_dashboard_identity({id: @user.id})
+
+        get :index
+        expect(controller).to_not render_template(partial: 'dashboard/shared/_authorization_error')
       end
     end
   end

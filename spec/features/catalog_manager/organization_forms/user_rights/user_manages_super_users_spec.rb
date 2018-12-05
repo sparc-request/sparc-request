@@ -27,13 +27,14 @@ RSpec.describe 'User manages Super Users', js: true do
   before :each do
     @institution = create(:institution)
     @provider = create(:provider, :with_subsidy_map, parent_id: @institution.id)
-    @identity    = create(:identity)
+    @identity = create(:identity)
     create(:catalog_manager, organization_id: @institution.id, identity_id: Identity.where(ldap_uid: "jug2").first.id)
   end
 
   context 'and the identity is already a Super User' do
     context 'with access to empty protocols' do
       before :each do
+        @identity   = create(:identity)
         @super_user = create(:super_user, identity: @identity, organization: @provider, access_empty_protocols: true)
 
         visit catalog_manager_catalog_index_path
@@ -56,7 +57,7 @@ RSpec.describe 'User manages Super Users', js: true do
       end
 
       it 'should remove access empty protocols' do
-        find("#su-access-empty-protocols-data-#{@identity.id}").click
+        find("#su-access-empty-protocols-#{@identity.id}").click
         wait_for_javascript_to_finish
 
         expect(SuperUser.where(identity_id: @identity.id, organization_id: @provider.id).first.access_empty_protocols).to eq(false)
@@ -87,7 +88,7 @@ RSpec.describe 'User manages Super Users', js: true do
       end
 
       it 'should add access to empty protocols' do
-        find("#su-access-empty-protocols-data-#{@identity.id}").click
+        find("#su-access-empty-protocols-#{@identity.id}").click
         wait_for_javascript_to_finish
 
         expect(SuperUser.where(identity_id: @identity.id, organization_id: @provider.id).first.access_empty_protocols).to eq(true)

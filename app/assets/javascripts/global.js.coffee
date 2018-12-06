@@ -26,6 +26,12 @@ $ ->
   $(document).ajaxComplete ->
     $('[data-toggle="tooltip"]').tooltip()
 
+  $(document).on 'click', '.view-more', ->
+    if $(this).hasClass('collapsed')
+      $(this).text(I18n['constants']['more'])
+    else
+      $(this).text(I18n['constants']['less'])
+
 (exports ? this).getSRId = ->
   $("input[name='service_request_id']").val()
 

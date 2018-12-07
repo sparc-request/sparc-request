@@ -18,45 +18,45 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# named AppController because Devise was having problems when it was named the same as the main ApplicationController
-class CatalogManager::AppController < ActionController::Base
-  layout 'catalog_manager/application'
-  protect_from_forgery
-  helper_method :current_user
+class CatalogManager::PatientRegistrarsController < CatalogManager::AppController
 
-  before_action :authenticate_identity!
-  before_action :set_user
-  before_action :set_highlighted_link
-  before_action :check_access_rights
+  def create
+    @patient_registrar = PatientRegistrar.new(patient_registrar_params)
+    @identity = Identity.find(@patient_registrar.identity_id)
+    @organization = @patient_registrar.organization
+    @fulfillment_rights = fulfillment_rights(@organization.id)
 
-  def set_highlighted_link
-    @highlighted_link ||= 'sparc_catalog'
-  end
-
-  def current_user
-    current_identity
-  end
-
-  def set_user
-    @user = current_identity
-    session['uid'] = @user.nil? ? nil : @user.id
-  end
-
-  def check_access_rights
-    unless @user.catalog_overlord or @user.catalog_managers.any?
-      flash[:alert] = "You do not have catalog manager rights."
-      redirect_to root_url
+    if @patient_registrar.save
+      flash[:notice] = "Patient Registrar created successfully."
+    else
+      @patient_registrar.errors.messages.each do |field, message|
+        flash[:alert] = "Error adding Patient Registrar: #{message.first}."
+      end
     end
+
+    render 'catalog_manager/organizations/refresh_fulfillment_rights_row'
   end
 
-  def user_rights organization_id
-    { super_users: SuperUser.where(organization_id: organization_id),
-      catalog_managers: CatalogManager.where(organization_id: organization_id),
-      service_providers: ServiceProvider.where(organization_id: organization_id)}
+  def destroy
+    @patient_registrar = PatientRegistrar.find_by(patient_registrar_params)
+    @identity = Identity.find(@patient_registrar.identity_id)
+    @organization = @patient_registrar.organization
+    @fulfillment_rights = fulfillment_rights(@organization.id)
+
+    if @patient_registrar.destroy
+      flash[:notice] = "Patient Registrar removed successfully."
+    else
+      flash[:alert] = "Error removing Patient Registrar."
+    end
+
+    render 'catalog_manager/organizations/refresh_fulfillment_rights_row'
   end
 
-  def fulfillment_rights organization_id
-    { clinical_providers: ClinicalProvider.where(organization_id: organization_id),
-      patient_registrars: PatientRegistrar.where(organization_id: organization_id)}
+  private
+
+  def patient_registrar_params
+    params.require(:patient_registrar).permit(
+      :identity_id,
+      :organization_id)
   end
 end

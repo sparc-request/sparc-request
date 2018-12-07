@@ -449,10 +449,10 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
   total_cost_cells          = []
 
   arm_totals_ref.keys.each do |arm|
-    total_study_cost_cells    << "('#{arm.to_s}'!#{arm_totals_ref[arm][:total_sponsor_per_visit]}*'#{arm.to_s}'!B8)"
-    total_margin_cost_cells   << "('#{arm.to_s}'!#{arm_totals_ref[arm][:total_margin_ppv]}*'#{arm.to_s}'!B8)"
-    breakeven_analysis_cells  << "'#{arm.to_s}'!#{arm_totals_ref[arm][:total_margin_ppv]}"
-    total_cost_cells          << "'#{arm.to_s}'!#{arm_totals_ref[arm][:total_sponsor_ppv]}*'#{arm.to_s}'!#{arm_totals_ref[arm][:subject_count]}"
+    total_study_cost_cells    << "('#{sanitize_name(arm)}'!#{arm_totals_ref[arm][:total_sponsor_per_visit]}*'#{sanitize_name(arm)}'!B8)"
+    total_margin_cost_cells   << "('#{sanitize_name(arm)}'!#{arm_totals_ref[arm][:total_margin_ppv]}*'#{sanitize_name(arm)}'!B8)"
+    breakeven_analysis_cells  << "'#{sanitize_name(arm)}'!#{arm_totals_ref[arm][:total_margin_ppv]}"
+    total_cost_cells          << "'#{sanitize_name(arm)}'!#{arm_totals_ref[arm][:total_sponsor_ppv]}*'#{sanitize_name(arm)}'!#{arm_totals_ref[arm][:subject_count]}"
   end
 
   if @industry_funded

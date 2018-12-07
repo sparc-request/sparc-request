@@ -1,5 +1,5 @@
 if @type == 'Form'
-  accessible_surveys = Form.for(current_user)
+  accessible_surveys = Form.for_super_user(current_user).or(Form.for_service_provider(current_user))
 else
   accessible_surveys = SystemSurvey.for_super_user(current_user)
 end

@@ -24,10 +24,15 @@ module Features
       Selenium::WebDriver::Wait.new(timeout: Capybara.default_max_wait_time).until{ current_path == path }
     end
 
-    def wait_for_javascript_to_finish(seconds=15)
+    def wait_for_javascript_to_finish(seconds=Capybara.default_max_wait_time)
       Timeout.timeout(Capybara.default_max_wait_time) do
+        loop until jquery_defined?
         loop until finished_all_ajax_requests? && finished_all_animations?
       end
+    end
+
+    def jquery_defined?
+      page.evaluate_script(%Q{typeof jQuery !== 'undefined'}) && page.evaluate_script(%Q{typeof $ !== 'undefined'})
     end
 
     def finished_all_ajax_requests?

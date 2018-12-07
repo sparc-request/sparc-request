@@ -40,18 +40,19 @@ class Setting < ApplicationRecord
     if RequestStore.store[:settings_map] && RequestStore.store[:settings_map][key]
       converted_value(RequestStore.store[:settings_map][key][:value], RequestStore.store[:settings_map][key][:data_type])
     else
-      s = Setting.find_by_key(key)
-      converted_value(s.value, s.data_type)
+      Setting.find_by_key(key).value rescue nil
     end
   end
 
   def value=(val)
-    RequestStore.store[:settings_map][self.key][:value] = val.to_s if RequestStore.store[:settings_map] && RequestStore.store[:settings_map][self.key]
+    RequestStore.store[:settings_map][key][:value] = val.to_s if RequestStore.store[:settings_map] && RequestStore.store[:settings_map][key]
     
     # Needed to correctly write boolean true and false as value in specs
     if [TrueClass, FalseClass].include?(val.class)
       value_will_change!
       write_attribute(:value, val ? "true" : "false")
+    elsif data_type == 'json'
+      write_attribute(:value, val.to_json)
     else
       write_attribute(:value, val)
     end

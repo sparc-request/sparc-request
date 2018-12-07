@@ -95,7 +95,7 @@ RSpec.describe 'User edits option fields', js: true do
         find('.delete-option').click
         wait_for_javascript_to_finish
 
-        expect(page).to_not have_selector('.option')
+        expect(page).to have_no_selector('.option')
         expect(@question.options.count).to eq(0)
       end
 
@@ -111,7 +111,7 @@ RSpec.describe 'User edits option fields', js: true do
         find('.delete-option').click
         wait_for_javascript_to_finish
 
-        expect(page).to_not have_selector('.select-depender .text', text: @option.content, visible: true)
+        expect(page).to have_no_selector('.select-depender .text', text: @option.content, visible: true)
       end
     end
   end
@@ -187,7 +187,7 @@ RSpec.describe 'User edits option fields', js: true do
         find('.delete-option').click
         wait_for_javascript_to_finish
 
-        expect(page).to_not have_selector('.option')
+        expect(page).to have_no_selector('.option')
         expect(@question.options.count).to eq(0)
       end
 
@@ -203,7 +203,7 @@ RSpec.describe 'User edits option fields', js: true do
         find('.delete-option').click
         wait_for_javascript_to_finish
 
-        expect(page).to_not have_selector('.select-depender .text', text: @option.content, visible: true)
+        expect(page).to have_no_selector('.select-depender .text', text: @option.content, visible: true)
       end
     end
   end

@@ -26,17 +26,17 @@ module Surveyor::ResponsesHelper
     content_tag(:h4, content_tag(:span, '', class: klass))
   end
 
-  def response_options(response, identity, accessible_surveys, is_site_admin)
+  def response_options(response, accessible_surveys)
     view_permissions =
       if response.survey.is_a?(SystemSurvey) && response.survey.system_satisfaction?
-        is_site_admin
+        current_user.is_site_admin?
       else
         accessible_surveys.include?(response.survey)
       end
 
     edit_permissions =
       if response.survey.is_a?(SystemSurvey)
-        is_site_admin
+        current_user.is_site_admin?
       else
         accessible_surveys.include?(response.survey)
       end

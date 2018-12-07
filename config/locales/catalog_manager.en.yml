@@ -57,7 +57,7 @@ en:
         name_email: "Name, Email"
         super_user: "Super User"
         catalog_manager: "Catalog Manager"
-        edit_historic_data: "Edit Historic Data:"
+        edit_historic_data: "Edit Historical Data:"
         service_provider: "Service Provider"
         primary_contact: "Primary Contact:"
         hold_emails: "Hold Emails:"
@@ -78,6 +78,7 @@ en:
       fulfillment_rights:
         title: "Fulfillment Rights"
         clinical_provider: "Clinical Provider"
+        patient_registrar: "Patient Registrar"
         add_user: "Add New Fulfillment Provider"
         user_in_table: "is already on the Fulfillment Rights Table"
       status_options:

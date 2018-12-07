@@ -134,10 +134,7 @@ RSpec.describe 'User edits Service General Info', js: true do
         wait_for_javascript_to_finish
         ##
 
-        first('#general-info div.toggle.btn').click
-        wait_for_javascript_to_finish
-
-        expect(first('#general-info div.toggle.btn')).to be_disabled
+        expect(page).to have_selector('[name="service[one_time_fee]"] + .toggle[disabled=disabled]')
       end
 
       it 'should disable Clinical/Non-clinical services if the service has line items' do
@@ -149,10 +146,7 @@ RSpec.describe 'User edits Service General Info', js: true do
         wait_for_javascript_to_finish
         ##
 
-        first('#general-info div.toggle.btn').click
-        wait_for_javascript_to_finish
-
-        expect(first('#general-info div.toggle.btn')).to be_disabled
+        expect(page).to have_selector('[name="service[one_time_fee]"] + .toggle[disabled=disabled]')
       end
 
       it 'should toggle Display in Sparc' do
@@ -171,10 +165,7 @@ RSpec.describe 'User edits Service General Info', js: true do
       end
 
       it 'should disable Display in Sparc if there is no pricing map' do
-        first('#general-info div.toggle.btn').click
-        wait_for_javascript_to_finish
-
-        expect(page.all('#general-info div.toggle.btn')[1]).to be_disabled
+        expect(page).to have_selector('[name="service[is_available]"] + .toggle[disabled=disabled]')
       end
     end
   end

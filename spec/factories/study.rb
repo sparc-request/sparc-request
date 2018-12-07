@@ -36,6 +36,7 @@ FactoryBot.define do
       protocol.build_vertebrate_animals_info(attributes_for(:vertebrate_animals_info)) unless protocol.vertebrate_animals_info
     end
 
+    factory :study_federally_funded,                    traits: [:funded, :federal]
     factory :study_without_validations,                 traits: [:without_validations]
     factory :unarchived_study_without_validations,      traits: [:without_validations, :unarchived]
     factory :archived_study_without_validations,        traits: [:without_validations, :archived]

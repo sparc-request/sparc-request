@@ -225,6 +225,7 @@ SparcRails::Application.routes.draw do
     resource :catalog_manager, only: [:create, :destroy, :update]
     resource :service_provider, only: [:create, :destroy, :update]
     resource :clinical_provider, only: [:create, :destroy]
+    resource :patient_registrar, only: [:create, :destroy]
     resources :services, except: [:index, :show, :destroy]
     resources :pricing_setups, except: [:index, :show, :destroy]
     resources :subsidy_maps, only: [:edit, :update]

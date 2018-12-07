@@ -23,25 +23,43 @@ module ServicesHelper
   include ActionView::Context
 
   def cpt_code_text(service)
-    content_tag(:span, class: 'col-sm-3 no-padding') do
-      content_tag(:strong, "CPT Code: ") + (service.cpt_code.blank? ? "N/A" : service.cpt_code)
+    unless service.cpt_code.blank?
+      content_tag(:span, class: 'col-sm-3 no-padding text-black') do
+        content_tag(:strong, "#{t(:catalog_manager)[:organization_form][:cpt_code]}: #{service.cpt_code}")
+      end
     end
   end
 
   def eap_id_text(service)
-    content_tag(:span, class: 'col-sm-3 no-padding') do
-      content_tag(:strong, "EAP ID: ") + (service.eap_id.blank? ? "N/A" : service.eap_id)
+    unless service.eap_id.blank?
+      content_tag(:span, class: 'col-sm-3 no-padding text-black') do
+        content_tag(:strong, "#{t(:catalog_manager)[:organization_form][:eap_id]}: #{service.eap_id}")
+      end
     end
   end
 
   def service_pricing_text(service)
     if current_user.present?
-      content_tag(:span, class: 'service-pricing-container') do
-        raw(service.displayed_pricing_map.true_rate_hash.map do |label, value|
-          content_tag(:span, class: ['no-padding', label == :full ? 'col-sm-12' : 'col-sm-3']) do
-            content_tag(:strong, "#{Service::RATE_TYPES[label]}: ") + "$#{'%.2f' % (value/100)}"
+      rates = service.displayed_pricing_map.true_rate_hash
+
+      content_tag(:div, class: 'service-pricing-container col-sm-12 no-padding text-black') do
+        content_tag(:span, class: 'col-sm-12 no-padding') do
+          content_tag(:strong, "#{Service::RATE_TYPES[:full].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:full]/100)}"
+        end +
+        content_tag(:span, class: 'col-sm-3 no-padding') do
+          content_tag(:strong, "#{Service::RATE_TYPES[:federal].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:federal]/100)}"
+        end +
+        content_tag(:div, class: 'pricing-subcontainer') do
+          content_tag(:span) do
+            content_tag(:strong, "#{Service::RATE_TYPES[:corporate].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:corporate]/100)}"
+          end +
+          content_tag(:span) do
+            content_tag(:strong, "#{Service::RATE_TYPES[:member].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:member]/100)}"
+          end +
+          content_tag(:span) do
+            content_tag(:strong, "#{Service::RATE_TYPES[:other].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:other]/100)}"
           end
-        end.join(''))
+        end
       end
     end
   end

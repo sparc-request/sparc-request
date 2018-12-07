@@ -20,15 +20,11 @@
 - services.each do |service|
   .service-view.col-sm-12.no-padding-x
     = link_to 'javascript:void(0)', class: ["service service-#{service.id} add-service no-padding", action_name == 'update_description' ?  'col-sm-10' : 'col-sm-12'], title: organization_description_display(service), data: { id: service.id, toggle: 'tooltip', placement: 'left', delay: '{"show":"500"}' } do
-      %h4.service-name.no-margin-top
+      %h4.service-name.col-sm-12.no-padding.no-margin-top
         = service.display_service_name
-      %small.text-black
-        = raw cpt_code_text(service)
-      %small.text-black
-        = raw eap_id_text(service)
-      - if current_user.present?
-        %small.service-pricing.text-black
-          = raw service_pricing_text(service)
+      = cpt_code_text(service)
+      = eap_id_text(service)
+      = raw service_pricing_text(service)
     - if action_name == 'update_description'
       .col-sm-2
         %button.add-service.pull-right.btn.btn-success{ data: { id: service.id } }

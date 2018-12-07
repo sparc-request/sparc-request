@@ -41,7 +41,6 @@ class ServiceRequestsController < ApplicationController
     @service_list_false = @service_request.service_list(false)
     @line_items = @service_request.line_items
     @display_all_services = params[:display_all_services] == 'true' ? true : false
-    @use_epic = Setting.get_value("use_epic")
 
     @report_type = params[:report_type]
     respond_to do |format|
@@ -341,7 +340,7 @@ class ServiceRequestsController < ApplicationController
 
 
   def setup_catalog_calendar
-    if @use_google_calendar = Setting.get_value("use_google_calendar")
+    if Setting.get_value("use_google_calendar")
       curTime   = Time.now.utc
       startMin  = curTime
       startMax  = (curTime + 1.month)
@@ -383,7 +382,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def setup_catalog_news_feed
-    if @use_news_feed = Setting.get_value("use_news_feed")
+    if Setting.get_value("use_news_feed")
       @news =
         if Setting.get_value("use_news_feed_api")
           NewsFeed.const_get("#{Setting.get_value("news_feed_api")}Adapter").new.posts

@@ -41,18 +41,18 @@ class Directory
         ldap_config = Hash.new
         ldap_settings.each{|setting| ldap_config[setting.key] = setting.value}
         begin
-          LDAP_HOST       = ldap_config['ldap_host']
-          LDAP_PORT       = ldap_config['ldap_port']
-          LDAP_BASE       = ldap_config['ldap_base']
-          LDAP_ENCRYPTION = ldap_config['ldap_encryption'].to_sym
-          DOMAIN          = ldap_config['ldap_domain']
-          LDAP_UID        = ldap_config['ldap_uid']
-          LDAP_LAST_NAME  = ldap_config['ldap_last_name']
-          LDAP_FIRST_NAME = ldap_config['ldap_first_name']
-          LDAP_EMAIL      = ldap_config['ldap_email']
-          LDAP_AUTH_USERNAME      = ldap_config['ldap_auth_username']
-          LDAP_AUTH_PASSWORD      = ldap_config['ldap_auth_password']
-          LDAP_FILTER      = ldap_config['ldap_filter']
+          LDAP_HOST           = ldap_config['ldap_host']
+          LDAP_PORT           = ldap_config['ldap_port']
+          LDAP_BASE           = ldap_config['ldap_base']
+          LDAP_ENCRYPTION     = ldap_config['ldap_encryption'].to_sym
+          DOMAIN              = ldap_config['ldap_domain']
+          LDAP_UID            = ldap_config['ldap_uid']
+          LDAP_LAST_NAME      = ldap_config['ldap_last_name']
+          LDAP_FIRST_NAME     = ldap_config['ldap_first_name']
+          LDAP_EMAIL          = ldap_config['ldap_email']
+          LDAP_AUTH_USERNAME  = ldap_config['ldap_auth_username']
+          LDAP_AUTH_PASSWORD  = ldap_config['ldap_auth_password']
+          LDAP_FILTER         = ldap_config['ldap_filter']
         rescue
           raise "ldap settings incorrect, unable to load ldap configuration"
         end
@@ -125,9 +125,9 @@ class Directory
            port: LDAP_PORT,
            base: base,
            encryption: LDAP_ENCRYPTION)
-        ldap.auth LDAP_AUTH_USERNAME, LDAP_AUTH_PASSWORD unless !LDAP_AUTH_USERNAME || !LDAP_AUTH_PASSWORD
+        ldap.auth LDAP_AUTH_USERNAME, LDAP_AUTH_PASSWORD if LDAP_AUTH_USERNAME.present? && LDAP_AUTH_PASSWORD.present?
         # use LDAP_FILTER to override default filter with custom string
-        filter = (LDAP_FILTER && LDAP_FILTER.gsub('#{term}', term)) || fields.map { |f| Net::LDAP::Filter.contains(f, term) }.inject(:|)
+        filter = (LDAP_FILTER.present? && LDAP_FILTER.gsub('#{term}', term)) || fields.map { |f| Net::LDAP::Filter.contains(f, term) }.inject(:|)
         res = ldap.search(:attributes => fields, :filter => filter)
         if res
           if combined_res.is_a? Array  # we have results from a previous base search

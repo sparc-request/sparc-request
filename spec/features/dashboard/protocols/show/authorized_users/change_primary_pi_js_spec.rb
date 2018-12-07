@@ -273,11 +273,11 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
   def then_i_should_not_see_the obj_str
     case obj_str
       when 'add form'
-        expect(page).to_not have_selector("form#new_project_role", visible: true)
+        expect(page).to have_no_selector("form#new_project_role", visible: true)
       when 'search'
-        expect(page).to_not have_selector("input#user_search", visible: true)
+        expect(page).to have_no_selector("input#user_search", visible: true)
       when 'edit form'
-        expect(page).to_not have_selector("form.associated_users_form", visible: true)
+        expect(page).to have_no_selector("form.associated_users_form", visible: true)
       when 'warning'
         expect(page).to_not have_text("**Warning**")
         expect(page).to_not have_text("Adding the new Primary PI")

@@ -66,7 +66,6 @@ require 'rails_helper'
 # # modified:   app/models/subsidy.rb
 # # modified:   app/models/subsidy_map.rb
 # # modified:   app/models/super_user.rb
-# # modified:   app/models/toast_message.rb
 # # modified:   app/models/token.rb
 # # modified:   app/models/user_notification.rb
 # # modified:   app/models/vertebrate_animals_info.rb

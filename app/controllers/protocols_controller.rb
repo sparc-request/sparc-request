@@ -27,6 +27,7 @@ class ProtocolsController < ApplicationController
   before_action :authorize_identity,          unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
   before_action :set_portal
   before_action :find_protocol,               only: [:edit, :update, :show]
+  before_action :check_rmid_server_status,    only: [:new, :create, :edit, :update, :update_protocol_type]
 
   def new
     @protocol_type          = params[:protocol_type]
@@ -36,7 +37,6 @@ class ProtocolsController < ApplicationController
     @protocol.populate_for_edit
     gon.rm_id_api_url = Setting.get_value("research_master_api")
     gon.rm_id_api_token = Setting.get_value("rmid_api_token")
-    rmid_server_status(@protocol)
   end
 
   def create
@@ -72,7 +72,6 @@ class ProtocolsController < ApplicationController
     else
       @errors = @protocol.errors
     end
-    rmid_server_status(@protocol)
   end
 
   def edit
@@ -85,7 +84,6 @@ class ProtocolsController < ApplicationController
     @errors = @protocol.errors
     gon.rm_id_api_url = Setting.get_value("research_master_api")
     gon.rm_id_api_token = Setting.get_value("rmid_api_token")
-    rmid_server_status(@protocol)
 
     respond_to do |format|
       format.html
@@ -141,7 +139,6 @@ class ProtocolsController < ApplicationController
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
       flash[:alert] = t(:protocols)[:change_type][:new_study_warning]
     end
-    rmid_server_status(@protocol)
   end
 
   def show
@@ -242,13 +239,7 @@ class ProtocolsController < ApplicationController
         :udak_project_number,
         :guarantor_contact,
         :guarantor_phone,
-        :guarantor_fax,
-        :guarantor_address,
-        :guarantor_city,
-        :guarantor_state,
-        :guarantor_zip,
-        :guarantor_county,
-        :guarantor_country,
+        :guarantor_email,
         :research_master_id,
         {:study_phase_ids => []},
         research_types_info_attributes: [:id, :human_subjects, :vertebrate_animals, :investigational_products, :ip_patents],

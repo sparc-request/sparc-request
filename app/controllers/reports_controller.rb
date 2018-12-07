@@ -21,7 +21,6 @@
 class ReportsController < ApplicationController
   layout "reporting"
   protect_from_forgery
-  helper_method :current_user
 
   before_action :authenticate_identity!
   before_action :require_super_user, :only => [:index, :setup, :generate]
@@ -30,10 +29,6 @@ class ReportsController < ApplicationController
 
   def set_highlighted_link
     @highlighted_link ||= 'sparc_report'
-  end
-
-  def current_user
-    current_identity
   end
 
   def set_user
@@ -67,7 +62,7 @@ class ReportsController < ApplicationController
 
     # generate excel
     tempfile = @report.to_excel
-    send_file tempfile.path, :filename => 'report.xlsx', :disposition => 'inline', :type =>  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    send_file tempfile.path, :filename => "#{Time.now.strftime('%F')} #{@report.title}.xlsx", :disposition => 'inline', :type =>  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
     # generate csv
     #tempfile = @report.to_csv

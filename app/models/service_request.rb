@@ -77,7 +77,7 @@ class ServiceRequest < ApplicationRecord
     if self.protocol_id.blank?
       errors.add(:base, I18n.t(:errors)[:service_requests][:protocol_missing])
     elsif !self.protocol.valid?
-      errors.add(:base, I18n.t(:errors)[:service_requests][:protocol_errors])
+      self.protocol.errors.full_messages.each{ |e| errors.add(:base, e) }
     end
   end
 

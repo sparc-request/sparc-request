@@ -48,3 +48,7 @@
     %tr{:style => 'border: 1px solid black;'}
       %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= @protocol.funding_status == 'funded' ? t(:notifier)[:source] : t(:notifier)[:potential_source]
       %td{:style => 'border: 1px solid black;'}= @protocol.display_funding_source_value
+    - if @protocol.type == 'Project'
+      %tr{:style => 'border: 1px solid black;'}
+        %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:description]
+        %td{:style => 'border: 1px solid black;'}= @protocol.brief_description

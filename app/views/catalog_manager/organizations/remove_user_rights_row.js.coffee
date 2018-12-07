@@ -18,6 +18,8 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#user-rights-row-<%= escape_javascript(@identity_id) %>").fadeOut(1000, () -> $(this).remove())
-
+$("#user-rights-row-<%= escape_javascript(@identity_id) %>").fadeOut(1000, () ->
+  $(this).remove()
+  togglePrimaryContactChecks()
+)
 $("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")

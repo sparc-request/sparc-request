@@ -86,6 +86,7 @@ en:
         first_name: "First Name"
         last_name: "Last Name"
         password_confirmation: "Password Confirmation"
+        orcid: "ORCID"
       note:
         body: "Note"
       option:
@@ -94,12 +95,7 @@ en:
         human_subjects_info: "The NCT #"
         guarantor_contact: "Contact"
         guarantor_phone: "Phone"
-        guarantor_address: "Address"
-        guarantor_city: "City"
-        guarantor_state: "State"
-        guarantor_zip: "Zip"
-        guarantor_county: "County"
-        guarantor_country: "Country"
+        guarantor_email: "Email"
       question:
         content: "Question"
       question_response:
@@ -166,7 +162,8 @@ en:
     updated: "Authorized User Updated!"
     destroyed: "Authorized User Removed!"
     form_fields:
-      era: "ERA Commons Name:"
+      orcid: "ORCID:"
+      era_commons_name: "ERA Commons Name:"
       credentials: "Credentials:"
       credentials_prompt: "Select a Credential"
       credentials_specify: "Please Specify:"
@@ -178,6 +175,10 @@ en:
       role_specify: "Please Specify:"
       epic_access: "Epic EMR Access?:"
       rights: "Proxy Rights:"
+      placeholders:
+        orcid: "XXXX-XXXX-XXXX-XXXX"
+      links:
+        orcid: "https://orcid.org/"
     rights:
       none: Member Only
       view: "View Rights"
@@ -418,15 +419,21 @@ en:
   ###########
   notes:
     add: "Add a Note"
-    new: "New %{notable_type} Note"
-    created: "Note Created!"
+    created: "Note created!"
+    updated: "Note updated!"
+    destroyed: "Note deleted!"
     none: "This %{notable_type} currently has no notes."
     table_fields:
       user: "User"
       date: "Date"
       note: "Note"
+      actions: "Actions"
     form_fields:
       note: "Note:"
+    headers:
+      index: "%{notable_type} Notes"
+      new: "New %{notable_type} Note"
+      edit: "Edit %{notable_type} Note"
 
   #############
   # PROTOCOLS #
@@ -503,15 +510,8 @@ en:
         potential_start_date: "Potential Funding Start Date:"
         start_date: "Funding Start Date:"
         contact: "Contact:"
-        address: "Address:"
-        city: "City:"
-        state: "State:"
-        zip: "Zip:"
         phone: "Phone:"
-        county: "County:"
-        country: "Country:"
-        fax: "Fax:"
-        required_footnote: "Fields with (*) are required, only if study will be published to Epic."
+        email: "Email:"
       research_involving:
         none: "No Research Types selected"
         header: "Research Involving"
@@ -677,7 +677,7 @@ en:
     service_requests:
       line_items_missing: "You must add Services to your cart before continuing"
       protocol_missing: "You must create a Protocol before continuing"
-      protocol_errors: "The selected Protocol has errors which must be fixed. Please edit the Protocol before continuing"
+      protocol_errors: "This Protocol has errors which must be fixed before continuing."
       arms_missing: "You must create Arms before proceeding to the Service Calendar"
     visit_groups:
       days_out_of_order: "Please make sure visit days are in sequential order (%{arm_name})."
@@ -1275,12 +1275,6 @@ en:
   js_confirm: "Are you sure?"
   notifications_js:
     send: "Message has been sent."
-  service_calendar_toasts:
-    jump_to_visit: "Select the visit you would like to view."
-    visit_day: "Click to set the visits day. All days must be in numerical order. Ex. 1, 2, 4, 9"
-    visit_name: "Click to rename your visits."
-    visit_window_after: "Click to set the window after the day that the visit can be completed."
-    visit_window_before: "Click to set the window before the day that the visit can be completed."
   service_deleted: "Service has been deleted."
   service_details_alerts:
     subject_count: "This arm has completed subject data in Fulfillment. The subject count cannot be decreased."
@@ -1384,16 +1378,19 @@ en:
     body6: "A list of requested services is attached."
     body7: "To approve the charges associated with the selected services please click"
     contact_info: "Contact Information"
+    description: "Brief Description"
     deleted_all_services_from_cart: "All services have been deleted in SPARCRequest for the %{protocol_type} below to which you have been granted access."
     epic_access: "Epic Access"
+    epic_notice: "*Note: upon submission, services selected to go to Epic will be sent daily at 4:30pm."
     link: "HERE"
     name: "User Name"
     non_service_provider_message: "%{welcome} in SPARCRequest. You can review or edit this request in %{href}. An email has been sent to the service provider(s) to review and ensure the services are appropriate. <b>Please note the services will not start until this request is submitted through SPARCDashboard.</b>"
     service_provider_message: "%{welcome} in SPARCRequest and is awaiting your review in %{href}. Please ensure services chosen are appropriate and can be provided. Communicate any necessary changes to the study team and request they “Submit to Start Services” once ready to proceed."
     non_service_provider_submitted_message:  "%{welcome} in SPARCRequest. Visit %{href} to view the status or make any updates to your request."
     service_provider_submitted_message:  "%{welcome} in SPARCRequest and is awaiting your review in %{href}."
-    note: "*Note: upon submission, services selected to go to Epic will be sent daily at 4:30pm."
-    notes_present:  "*Note(s) are included with this submission."
+    note: "Note"
+    note_date: "Date"
+    note_user: "User"
     notice:
       approve: "Approve Account"
       body1: "Request for new SPARCRequest account submitted and awaiting approval"
@@ -1409,6 +1406,7 @@ en:
     p_id: "Project ID"
     p_info: "Project Information"
     p_title: "Project Title"
+    protocol_notes: "%{type} Notes"
     proxy: "Proxy Rights:"
     request_amendment: "Request Amendment"
     request_amendment_intro:  "Services have been added or deleted in SPARCRequest and is awaiting your review in"

@@ -23,15 +23,16 @@
 #################
 
 wb = xlsx_package.workbook
-default = wb.styles.add_style alignment: { horizontal: :left }
-bold_default = wb.styles.add_style alignment: {horizontal: :left}, b: true
-bold_centered = wb.styles.add_style alignment: {horizontal: :center}
+default       = wb.styles.add_style alignment: { horizontal: :left }
+bold_default  = wb.styles.add_style alignment: {horizontal: :left}, b: true
+bold_centered = wb.styles.add_style alignment: {horizontal: :center}, b: true
+bold_right    = wb.styles.add_style alignment: { horizontal: :right }, b: true
 # centered = wb.styles.add_style alignment: { horizontal: :center }
 # bordered = wb.styles.add_style :border=> {:style => :thin, :color => "00000000"}
 # centered_bordered = wb.styles.add_style :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
 money = wb.styles.add_style :format_code => '$* #,##0.00_);[Red]$* - #,###.00;$* - ??_;'
 bold_money = wb.styles.add_style :format_code => '$* #,##0.00_);[Red]$* - #,###.00;$* - ??_;', b: true
-percent = wb.styles.add_style :num_fmt => 9, b: true, alignment: { horizontal: :left }
+percent = wb.styles.add_style :num_fmt => 9, alignment: { horizontal: :left }
 hide_zeros = wb.styles.add_style format_code: '#;[Red]-#; ;', alignment: { horizontal: :center }
 row_header_style = wb.styles.add_style b: true
 header_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :left, wrap_text: true}
@@ -67,7 +68,7 @@ def arm_header_row_totals
 end
 
 def arm_label_row_cols(arm)
-  cols  = [arm.sanitized_name, "", "", "", "", ""]
+  cols  = [arm.name, "", "", "", "", ""]
   cols << "" if @industry_funded
 
   cols
@@ -136,27 +137,31 @@ def study_budget_header_row
   row
 end
 
+def sanitize_name(name)
+  name.gsub(/\[|\]|\*|\/|\\|\?|\:/, ' ').truncate(31)
+end
+
 ################
 ### WORKBOOK ###
 ################
 
 # Page for each arm
 @protocol.arms.includes(:visit_groups, line_items_visits: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups] ] ] ], service_request: :protocol]}).each do |arm|
-  wb.add_worksheet(name: "#{arm.sanitized_name}") do |sheet|
+  wb.add_worksheet(name: "#{sanitize_name(arm.name)}") do |sheet|
 
     #Repeating protocol information on the top of each page
     protocol_header_row = ["#{@protocol.class.to_s} Information"] + [""] * ((@industry_funded ? 6 : 5) + (arm.visit_groups.count * 2) + (@industry_funded ? 2 : 1))
     sheet.add_row protocol_header_row, :style => header_style
-    sheet.add_row ["SPARC #{@protocol.class.to_s} ID:",@protocol.id], :style => default
-    sheet.add_row ["RMID:", @protocol.research_master_id]
-    sheet.add_row ["Short Title:",@protocol.short_title], :style => default
-    sheet.add_row ["Primary PI Name:", @protocol.primary_principal_investigator.full_name], :style => default
-    sheet.add_row ["Indirect Cost Rate:", "=Summary!B10"], style: percent
+    sheet.add_row ["SPARC #{@protocol.class.to_s} ID:",@protocol.id], style: [bold_default, default]
+    sheet.add_row ["RMID:", @protocol.research_master_id], style: [bold_default, default]
+    sheet.add_row ["Short Title:",@protocol.short_title], style: [bold_default, default]
+    sheet.add_row ["Primary PI Name:", @protocol.primary_principal_investigator.full_name], style: [bold_default, default]
+    sheet.add_row ["Indirect Cost Rate:", "=Summary!B10"], style: [bold_default, percent]
 
     indirect_cost_ref = sheet.rows.last.cells.last.r
 
     sheet.add_row []
-    sheet.add_row ["#{arm.name}: Subject Count", arm.subject_count]
+    sheet.add_row ["#{arm.name}: Subject Count", arm.subject_count], style: [bold_default, default]
 
     subject_count_ref = sheet.rows.last.cells.last.r
 
@@ -320,29 +325,29 @@ end
 
       total_margin_row = sheet.rows.length
 
-      sheet.add_row ["Total Margin per Study for per Patient Assessments", "=SUM(#{r_columns.first + total_margin_row.to_s}:#{r_columns.last + total_margin_row.to_s})*#{subject_count_ref}"], style: [default, money]
+      sheet.add_row ["Total Margin per Study for per Patient Assessments", "=SUM(#{r_columns.first + total_margin_row.to_s}:#{r_columns.last + total_margin_row.to_s})*#{subject_count_ref}"], style: [bold_default, bold_money]
     end
 
     sheet.add_row []
 
-    arm_summary_row = ["#{arm.sanitized_name}: Summary"] + [""] * ((@industry_funded ? 6 : 5) + arm.visit_groups.count * 2 + (@industry_funded ? 2 : 1))
+    arm_summary_row = ["#{arm.name}: Summary"] + [""] * ((@industry_funded ? 6 : 5) + arm.visit_groups.count * 2 + (@industry_funded ? 2 : 1))
     sheet.add_row arm_summary_row, :style => header_style
 
-    sheet.add_row ["#{arm.sanitized_name}: Total Cost (-OH) per Patient", "", "", "", "=#{r_columns.join(total_research_row.to_s + '+') + total_research_row.to_s}"], style: [default, default, default, default, money]
+    sheet.add_row ["#{arm.name}: Total Cost (-OH) per Patient", "", "", "", "=#{r_columns.join(total_research_row.to_s + '+') + total_research_row.to_s}"], style: [bold_default, default, default, default, bold_money]
 
-    sheet.add_row ["#{arm.sanitized_name}: Total Cost (+OH) per Patient", "", "", "", "=#{r_columns.join(total_sponsor_row.to_s + '+') + total_sponsor_row.to_s}"], style: [default, default, default, default, money]
+    sheet.add_row ["#{arm.name}: Total Cost (+OH) per Patient", "", "", "", "=#{r_columns.join(total_sponsor_row.to_s + '+') + total_sponsor_row.to_s}"], style: [bold_default, default, default, default, bold_money]
 
     total_sponsor_ppv_ref = sheet.rows.last.cells.last.r
 
     if @industry_funded
-      sheet.add_row ["#{arm.sanitized_name}: Total Margin per Patient", "", "", "", "=#{r_columns.join(total_margin_row.to_s + '+') + total_margin_row.to_s}" ], style: [default, default, default, default, money]
+      sheet.add_row ["#{arm.name}: Total Margin per Patient", "", "", "", "=#{r_columns.join(total_margin_row.to_s + '+') + total_margin_row.to_s}" ], style: [bold_default, default, default, default, bold_money]
     end
 
     cells_to_merge.each{|cells| sheet.merge_cells "#{cells[:from]}:#{cells[:to]}"}
 
     total_margin_ref = sheet.rows.last.cells.last.r
 
-    arm_totals_ref[arm.sanitized_name] = { total_sponsor_per_visit: total_sponsor_ref, total_margin_ppv: total_margin_ref, total_sponsor_ppv: total_sponsor_ppv_ref, subject_count: subject_count_ref }
+    arm_totals_ref[arm.name] = { total_sponsor_per_visit: total_sponsor_ref, total_margin_ppv: total_margin_ref, total_sponsor_ppv: total_sponsor_ppv_ref, subject_count: subject_count_ref }
 
     sheet.column_widths *( [40, 20, 10, 18, 18, 18] + ( [12] * arm.visit_groups.count * 2 ) + [18, 18] )
   end
@@ -395,7 +400,7 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
   sheet.add_row summary_arms_subheader_row, :style => sub_header_style
 
   @protocol.arms.each do |arm|
-    sheet.add_row [arm.sanitized_name, "", "='#{arm.name}'!B8", arm.visit_count, "", "", ""], :style => default
+    sheet.add_row [arm.name, "", "='#{sanitize_name(arm.name)}'!B8", arm.visit_count, "", "", ""], :style => default
   end
 
   sheet.add_row []
@@ -438,33 +443,35 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
 
   sheet.add_row study_budget_header_row, :style => header_style
 
-  total_study_cost_cells  = []
-  total_margin_cost_cells = []
-  total_cost_cells        = []
+  total_study_cost_cells    = []
+  total_margin_cost_cells   = []
+  breakeven_analysis_cells  = []
+  total_cost_cells          = []
 
   arm_totals_ref.keys.each do |arm|
-    total_study_cost_cells  << "('#{arm.to_s}'!#{arm_totals_ref[arm][:total_sponsor_per_visit]}*'#{arm.to_s}'!B8)"
-    total_margin_cost_cells << "('#{arm.to_s}'!#{arm_totals_ref[arm][:total_margin_ppv]}*'#{arm.to_s}'!B8)"
-    total_cost_cells        << "'#{arm.to_s}'!#{arm_totals_ref[arm][:total_sponsor_ppv]}*'#{arm.to_s}'!#{arm_totals_ref[arm][:subject_count]}"
+    total_study_cost_cells    << "('#{arm.to_s}'!#{arm_totals_ref[arm][:total_sponsor_per_visit]}*'#{arm.to_s}'!B8)"
+    total_margin_cost_cells   << "('#{arm.to_s}'!#{arm_totals_ref[arm][:total_margin_ppv]}*'#{arm.to_s}'!B8)"
+    breakeven_analysis_cells  << "'#{arm.to_s}'!#{arm_totals_ref[arm][:total_margin_ppv]}"
+    total_cost_cells          << "'#{arm.to_s}'!#{arm_totals_ref[arm][:total_sponsor_ppv]}*'#{arm.to_s}'!#{arm_totals_ref[arm][:subject_count]}"
   end
 
   if @industry_funded
     total_study_cost    = @protocol.arms.any? ? "=#{total_cost_ref}+#{total_study_cost_cells.join('+')}" : "=#{total_cost_ref}"
     total_margin        = @protocol.arms.any? ? "=#{margin_to_cover_ref}+#{total_margin_cost_cells.join('+')}" : "=#{margin_to_cover_ref}"
-    breakeven_analysis  = @protocol.arms.any? ? "=ROUND((#{total_users_cost_cell}-#{margin_to_cover_ref})/(#{total_margin_cost_cells.join('+')}),0)" : "=ROUND(#{total_users_cost_cell}-#{margin_to_cover_ref}, 0)"
+    breakeven_analysis  = @protocol.arms.any? ? "=ROUND(IF(#{breakeven_analysis_cells.join('+')},(#{total_users_cost_cell}-#{margin_to_cover_ref})/(#{breakeven_analysis_cells.join('+')}),0),0)" : "=ROUND(#{total_users_cost_cell}-#{margin_to_cover_ref}, 0)"
 
-    sheet.add_row ["Total Study Cost (Sponsor Cost)", total_study_cost], :style => [default, money]
-    sheet.add_row ["Total Margin", total_margin], :style => [default, money]
+    sheet.add_row ["Total Study Cost (Sponsor Cost)", total_study_cost], style: [bold_default, bold_money]
+    sheet.add_row ["Total Margin", total_margin], style: [bold_default, bold_money]
 
     margin_cell = sheet.rows.last.cells.last.r
     
-    sheet.add_row ["Study Contingency", "=#{margin_cell}-#{total_users_cost_cell}"], :style => [default, money]
-    sheet.add_row ["Breakeven Analysis", breakeven_analysis]
+    sheet.add_row ["Study Contingency", "=#{margin_cell}-#{total_users_cost_cell}"], style: [bold_default, bold_money]
+    sheet.add_row ["Breakeven Analysis", breakeven_analysis], style: [bold_default, bold_right]
   end
 
   total_budget = @protocol.arms.any? ? "=#{total_cost_ref}+#{total_cost_cells.join("+")}" : "=#{total_cost_ref}"
 
-  sheet.add_row ["Total Budget", total_budget], :style => [row_header_style, bold_money]
+  sheet.add_row ["Total Budget", total_budget], style: [bold_default, bold_money]
 
   sheet.column_widths 40, 40, 15, 18, 25, 25, 25, 25
 end

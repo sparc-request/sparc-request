@@ -25,9 +25,9 @@ RSpec.describe 'User manages fulfillment rights', js: true do
   fake_login_for_each_test
 
   before :each do
-    @institution        = create(:institution)
-    @provider           = create(:provider, parent_id: @institution.id, tag_list: 'clinical work fulfillment', process_ssrs: true)
-    @identity           = create(:identity)
+    @institution  = create(:institution)
+    @provider     = create(:provider, :with_subsidy_map, parent_id: @institution.id, tag_list: 'clinical work fulfillment', process_ssrs: true)
+    @identity     = create(:identity)
     create(:catalog_manager, organization_id: @institution.id, identity_id: Identity.where(ldap_uid: 'jug2').first.id)
     create(:clinical_provider, identity: @identity, organization: @provider)
 
@@ -42,6 +42,7 @@ RSpec.describe 'User manages fulfillment rights', js: true do
     wait_for_javascript_to_finish
 
     find('.remove-fulfillment-rights').click
+    accept_confirm
     wait_for_javascript_to_finish
   end
 
@@ -50,7 +51,6 @@ RSpec.describe 'User manages fulfillment rights', js: true do
   end
 
   it 'should remove the identity from the table' do
-    expect(page).to_not have_selector("fulfillment-rights-row-#{@identity.id}")
+    expect(page).to have_no_selector("fulfillment-rights-row-#{@identity.id}")
   end
-
 end

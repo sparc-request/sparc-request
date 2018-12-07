@@ -104,4 +104,3 @@ class Reporting
     return 'reports'
   end
 end
-

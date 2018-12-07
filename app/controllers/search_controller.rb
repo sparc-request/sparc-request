@@ -19,6 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class SearchController < ApplicationController
+  include ServicesHelper
+
   before_action :initialize_service_request, only: [:services]
   before_action :authorize_identity, only: [:services]
 
@@ -62,8 +64,9 @@ class SearchController < ApplicationController
         value:          s.id,
         description:    (s.description.nil? || s.description.blank?) ? t(:proper)[:catalog][:no_description] : s.description,
         abbreviation:   s.abbreviation,
-        cpt_code:       cpt_code_text(s),
-        eap_id:         eap_id_text(s),
+        cpt_code_text:  cpt_code_text(s),
+        eap_id_text:    eap_id_text(s),
+        pricing_text:   service_pricing_text(s),
         term:           term
       }
     }
@@ -80,21 +83,21 @@ class SearchController < ApplicationController
                 includes(parent: { parent: :parent }).
                 where("(name LIKE ? OR abbreviation LIKE ?)#{org_available_query}", "%#{term}%", "%#{term}%") +
               Service.
-                eager_load(organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]).
+                eager_load(:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]).
                 where("(services.name LIKE ? OR services.abbreviation LIKE ? OR services.cpt_code LIKE ? OR services.eap_id LIKE ?)#{serv_available_query}", "%#{term}%", "%#{term}%", "%#{term}%", "%#{term}%")
 
     results.map! { |item|
       {
-        id:           item.id,
-        name:         item.name,
-        abbreviation: item.abbreviation,
-        type:         item.class.base_class.to_s,
-        text_color:   "text-#{item.class.to_s.downcase}",
-        cpt_code:     cpt_code_text(item),
-        eap_id:       eap_id_text(item),
-        inactive_tag: inactive_text(item),
-        parents:      item.parents.reverse.map{ |p| "##{p.class.to_s.downcase}-#{p.id}" },
-        breadcrumb:   breadcrumb_text(item)
+        id:             item.id,
+        name:           item.name,
+        abbreviation:   item.abbreviation,
+        type:           item.class.base_class.to_s,
+        text_color:     "text-#{item.class.to_s.downcase}",
+        cpt_code_text:  item.is_a?(Service) ? cpt_code_text(item) : "",
+        eap_id_text:    item.is_a?(Service) ? eap_id_text(item) : "",
+        inactive_tag:   inactive_text(item),
+        breadcrumb:     breadcrumb_text(item),
+        pricing_text:   item.is_a?(Service) ? service_pricing_text(item) : ""
       }
     }
     render json: results.to_json
@@ -114,14 +117,6 @@ class SearchController < ApplicationController
 
   private
 
-  def cpt_code_text(item)
-    item.cpt_code.blank? ? "N/A" : item.cpt_code if item.class == Service
-  end
-
-  def eap_id_text(item)
-    item.eap_id.blank? ? "N/A" : item.eap_id if item.class == Service
-  end
-
   def inactive_text(item)
     text = item.is_available ? "" : "(Inactive)"
   end
@@ -129,8 +124,8 @@ class SearchController < ApplicationController
   def breadcrumb_text(item)
     if item.parents.any?
       breadcrumb = []
-      item.parents.reverse.map(&:abbreviation).each do |parent_abbreviation|
-        breadcrumb << "<span>#{parent_abbreviation} </span>"
+      item.parents.reverse.each do |parent|
+        breadcrumb << "<span class='text-#{parent.type.downcase}'>#{parent.abbreviation} </span>"
         breadcrumb << "<span class='inline-glyphicon glyphicon glyphicon-triangle-right'> </span>"
       end
       breadcrumb.pop

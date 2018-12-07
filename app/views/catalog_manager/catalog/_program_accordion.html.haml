@@ -19,25 +19,21 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 - program.cores.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |core|
-  .panel-heading.no-padding-y
-    .col-sm-1.no-padding-y
-      = link_to folder_glyphicon(), 'javascript:void(0)', id: "core-#{core.id}", class: "load_core_accordion fix_spec_overlap", data: {core_id: core.id, show_available_only: availability[0], toggle: 'collapse', target: "#core-#{core.id}-collapse", parent: "program-#{program.id}"}
-    .col-sm-11.no-padding-y
-      = link_to accordion_link_text(core, !core.is_available), edit_catalog_manager_organization_path(core), class: 'org-form-label panel-title', remote: true
+  - core_editable = @editable_organizations.include?(core)
+  = render '/catalog_manager/catalog/accordion_edit_link', organization: core, type: "core", editable: core_editable, parent_link: "#program-#{program.id}", availability: availability, ajax_loader_class: "load_core_accordion"
+
   .panel-collapse.collapse{ id: "core-#{core.id}-collapse" }
     .panel-body.no-padding-y.col-sm-12
-      .panel-heading.no-padding-y
-        .col-sm-1.no-padding-y
-          = link_to plus_glyphicon(), 'javascript:void(0)', class: 'new_service_link', data: {organization_id: core.id}
-        .col-sm-11.no-padding-y{style: "width:91%"}
-          = link_to create_new_text(:service), 'javascript:void(0)', class: 'org-form-label panel-title new_service_link', data: {organization_id: core.id}
+      - if core_editable
+        -# New service link
+        .panel-heading.no-padding-y
+          .col-sm-1.no-padding-y
+            = link_to plus_glyphicon(), 'javascript:void(0)', class: 'new_service_link', data: {organization_id: core.id}
+          .col-sm-11.no-padding-y{style: "width:91%"}
+            = link_to create_new_text(:service), 'javascript:void(0)', class: 'org-form-label panel-title new_service_link', data: {organization_id: core.id}
 
       %div{id: "core_accordion_#{core.id}"}
     .clearfix
 
-- program.services.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |service|
-  .panel-heading.no-padding-y
-    .col-sm-1.no-padding-y
-      = link_to file_glyphicon(), edit_catalog_manager_service_path(service), id: "service-#{service.id}", data: { parent: "program-#{program.id}" }, remote: true
-    .col-sm-11.no-padding-y
-      = link_to accordion_link_text(service, !service.is_available), edit_catalog_manager_service_path(service), class: 'org-form-label panel-title', remote: true
+- services = program.services.where(is_available: availability).order(Arel.sql("`order`, `name`"))
+= render partial: '/catalog_manager/catalog/accordion_edit_link', collection: services, as: :service, locals: { type: "service", editable: @program_editable, availability: availability, parent_link: "#program-#{program.id}" }

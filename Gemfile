@@ -61,7 +61,7 @@ gem 'pdfkit'
 gem 'prawn', '0.12.0'
 gem 'premailer-rails'
 gem 'rack-mini-profiler'
-gem 'rails', '5.2.1'
+gem 'rails', '5.2.1.1'
 gem 'rails-html-sanitizer'
 # Needed to used audited-activerecord w/ Rails 5
 gem "rails-observers", git: 'https://github.com/rails/rails-observers.git'
@@ -113,13 +113,14 @@ group :development do
 end
 
 group :test do
-  gem 'capybara-webkit', git: 'https://github.com/thoughtbot/capybara-webkit', branch: 'master'
   gem 'database_cleaner'
   gem 'email_spec'
   gem "factory_bot_rails"
+  gem 'geckodriver-helper'
   gem 'rails-controller-testing', require: false
   gem 'rspec-activemodel-mocks'
   gem 'rspec-html-matchers'
+  gem 'selenium-webdriver'
   gem 'shoulda-matchers', require: false
   gem 'shoulda-callback-matchers'
   gem 'site_prism'

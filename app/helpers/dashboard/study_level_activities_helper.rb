@@ -51,9 +51,13 @@ module Dashboard::StudyLevelActivitiesHelper
       content_tag(:li, raw(
         content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-sunglasses", aria: {hidden: "true"}))+t(:dashboard)[:study_level_activities][:actions][:details], type: 'button', class: 'btn btn-default form-control actions-button otf_details list'))
       )+
-      content_tag(:li, raw(
-        content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-list-alt", aria: {hidden: "true"}))+t(:dashboard)[:study_level_activities][:actions][:notes]+raw(content_tag(:span, line_item.notes.count, class: "badge", id: "lineitem_#{line_item.id}_notes")), type: 'button', class: 'btn btn-default form-control actions-button notes list dropdown_badge', data: {notable_id: line_item.id, notable_type: "LineItem"}))
-      )+
+      content_tag(:li) do
+        link_to notes_path(note: { notable_id: line_item.id, notable_type: LineItem.name }), remote: true, class: 'btn btn-default dropdown_badge' do
+          content_tag(:span, '', class: "glyphicon glyphicon-list-alt", aria: {hidden: "true"}) +
+          t(:dashboard)[:study_level_activities][:actions][:notes] +
+          content_tag(:span, line_item.notes.count, class: "badge", id: "lineitem_#{line_item.id}_notes")
+        end
+      end +
       content_tag(:li, raw(
         content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-edit", aria: {hidden: "true"}))+t(:dashboard)[:study_level_activities][:actions][:edit], type: 'button', class: 'btn btn-default form-control actions-button otf_edit'))
       )+

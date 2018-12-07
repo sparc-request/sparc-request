@@ -75,13 +75,6 @@ $ ->
       type: if checked then 'POST' else 'DELETE'
       url: "/catalog_manager/service_provider?service_provider[identity_id]=#{identity_id}&service_provider[organization_id]=#{organization_id}"
 
-      success: ->
-        $("#sp-is-primary-contact-#{identity_id}").prop('disabled', !checked)
-        $("#sp-hold-emails-#{identity_id}").prop('disabled', !checked)
-        if !checked
-          $("#sp-is-primary-contact-#{identity_id}").prop('checked', false)
-          $("#sp-hold-emails-#{identity_id}").prop('checked', false)
-
   $(document).on 'change', '.cm-edit-historic-data', ->
     identity_id = $(this).data('identity-id')
     organization_id = $(this).data('organization-id')
@@ -91,8 +84,9 @@ $ ->
       type: 'PUT'
       url: "/catalog_manager/catalog_manager?catalog_manager[identity_id]=#{identity_id}&catalog_manager[organization_id]=#{organization_id}&catalog_manager[edit_historic_data]=#{edit_historic_data}"
 
-
   $(document).on 'change', '.sp-is-primary-contact', ->
+    togglePrimaryContactChecks()
+
     identity_id = $(this).data('identity-id')
     organization_id = $(this).data('organization-id')
     is_primary_contact = $(this).prop('checked')
@@ -431,3 +425,9 @@ $ ->
 
   $(document).on 'change', 'input.override_field', ->
     alert(I18n['catalog_manager']['service_form']['pricing_map_form']['change_override_alert'])
+
+(exports ? this).togglePrimaryContactChecks = () ->
+  if $('.sp-is-primary-contact:checked').length >= 3
+    $('.sp-is-primary-contact:not(:checked)').prop('disabled', 'disabled')
+  else
+    $('.sp-is-primary-contact:not(:checked)').prop('disabled', '')

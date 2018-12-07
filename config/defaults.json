@@ -30,6 +30,16 @@
     "parent_value":   "true"
   },
   {
+    "key":            "calendar_event_limit",
+    "value":          "3",
+    "friendly_name":  "Calendar Event Limit",
+    "description":    "This is the maximum number of events that will be displayed in the homepage Calendar.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_news_feed",
+    "parent_value":   "true"
+  },
+  {
     "key":            "calendar_url",
     "value":          "https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics",
     "friendly_name":  "Calendar URL",
@@ -240,6 +250,16 @@
     "parent_value":   ""
   },
   {
+    "key":            "use_funding_module",
+    "value":          "false",
+    "friendly_name":  "Use SPARCFunding Module",
+    "description":    "This determines whether the application will use the SPARCFunding module.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
     "key":            "funding_admins",
     "value":          "[]",
     "friendly_name":  "Funding Admins",
@@ -308,6 +328,26 @@
     "version":        "",
     "parent_key":     "",
     "parent_value":   ""
+  },
+  {
+    "key":            "homepage_tableau_dashboard",
+    "value":          "InstitutionalDashboard/InstitutionalDashboard",
+    "friendly_name":  "Homepage Tableau Dashboard",
+    "description":    "This is the name of the Tableau Dashboard to be displayed on the homepage.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_tableau",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "homepage_tableau_url",
+    "value":          "https://anyl-tableau-v.mdc.musc.edu/javascripts/api/viz_v1.js",
+    "friendly_name":  "Homepage Tableau URL",
+    "description":    "This is the URL of the Tableau Dashboard to be displayed on the homepage.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_tableau",
+    "parent_value":   "true"
   },
   {
     "key":            "host",
@@ -523,7 +563,7 @@
     "key":            "news_feed_post_limit",
     "value":          "3",
     "friendly_name":  "News Feed Post Limit",
-    "description":    "This is the maximum number of posts that will be displayed in the News Feed.",
+    "description":    "This is the maximum number of posts that will be displayed in the homepage News Feed.",
     "group":          "",
     "version":        "",
     "parent_key":     "use_news_feed",
@@ -830,16 +870,6 @@
     "parent_value":   ""
   },
   {
-    "key":            "use_funding_module",
-    "value":          "false",
-    "friendly_name":  "Use SPARCFunding Module",
-    "description":    "This determines whether the application will use the SPARCFunding module.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "",
-    "parent_value":   ""
-  },
-  {
     "key":            "use_google_calendar",
     "value":          "false",
     "friendly_name":  "Use Google Calendar",
@@ -934,6 +964,16 @@
     "value":          "false",
     "friendly_name":  "Use Short Interaction",
     "description":    "This determines whether the application will display the \"Short Interaction\" button.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "use_tableau",
+    "value":          "false",
+    "friendly_name":  "Use Tableau",
+    "description":    "This determines whether the application will display a Tableau dashboard on the homepage.",
     "group":          "",
     "version":        "",
     "parent_key":     "",

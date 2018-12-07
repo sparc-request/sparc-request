@@ -27,7 +27,7 @@ RSpec.describe 'User removes service level components', js: true do
   before :each do
     @institution  = create(:institution)
     @provider     = create(:provider, parent: @institution)
-    @program      = create(:program, parent: @provider)
+    @program      = create(:program, :in_fulfillment, :process_ssrs, parent: @provider)
     @service      = create(:service, organization: @program, components: "test component", one_time_fee: true)
     create(:catalog_manager, organization: @institution, identity: jug2)
 
@@ -42,9 +42,9 @@ RSpec.describe 'User removes service level components', js: true do
 
     click_link I18n.t(:catalog_manager)[:organization_form][:service_level_components]
 
-    accept_confirm do
-      find('.remove-service-component').click
-    end
+    find('.remove-service-component').click
+    accept_confirm
+
     wait_for_javascript_to_finish
   end
 

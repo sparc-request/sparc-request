@@ -23,6 +23,7 @@ FactoryBot.define do
     service_requester_id { Random.rand(1000) }
     sequence(:ssr_id) { |n| "000#{n}" }
     status "draft"
+    imported_to_fulfillment true
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }

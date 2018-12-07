@@ -26,17 +26,17 @@ module Surveyor::ResponsesHelper
     content_tag(:h4, content_tag(:span, '', class: klass))
   end
 
-  def response_options(response, identity, accessible_surveys, is_site_admin)
+  def response_options(response, accessible_surveys)
     view_permissions =
       if response.survey.is_a?(SystemSurvey) && response.survey.system_satisfaction?
-        is_site_admin
+        current_user.is_site_admin?
       else
         accessible_surveys.include?(response.survey)
       end
 
     edit_permissions =
       if response.survey.is_a?(SystemSurvey)
-        is_site_admin
+        current_user.is_site_admin?
       else
         accessible_surveys.include?(response.survey)
       end
@@ -86,13 +86,13 @@ module Surveyor::ResponsesHelper
     )
   end
 
-  def dependency_classes(question)
+  def dependency_classes(question, question_response)
     if question.is_dependent?
-      ["dependent-for-option-#{question.depender_id}",
-      "dependent-for-question-#{question.depender.question_id}",
-      "hidden"].join(' ')
-    else
-      ""
+      [
+        "dependent-for-option-#{question.depender_id}",
+        "dependent-for-question-#{question.depender.question_id}",
+        (!question_response.new_record? && question_response.depender_selected? ? "" : "hidden")
+      ].join(' ')
     end
   end
 

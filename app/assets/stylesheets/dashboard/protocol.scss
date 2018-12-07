@@ -106,8 +106,10 @@ textarea {
   width: 50% !important;
 }
 
-.export-consolidated-request .dropdown {
-  display: inline-block;
+#service-requests-panel {
+  .dropdown {
+    display: inline-block;
+  }
 }
 
 .service-requests-table {

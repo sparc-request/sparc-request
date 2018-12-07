@@ -26,7 +26,7 @@ RSpec.describe 'User manages status options', js: true do
 
   before :each do
     @institution        = create(:institution)
-    @provider           = create(:provider, parent_id: @institution.id, process_ssrs: true)
+    @provider           = create(:provider, :with_subsidy_map, parent_id: @institution.id, process_ssrs: true)
     create(:catalog_manager, organization_id: @institution.id, identity_id: Identity.where(ldap_uid: 'jug2').first.id)
   end
 
@@ -75,8 +75,8 @@ RSpec.describe 'User manages status options', js: true do
     end
 
     it 'should disable all available and editable statuses' do
-      expect(page).to_not have_selector('.available-status-checkbox:not(:disabled)')
-      expect(page).to_not have_selector('.editable-status-checkbox:not(:disabled)')
+      expect(page).to have_no_selector('.available-status-checkbox:not(:disabled)')
+      expect(page).to have_no_selector('.editable-status-checkbox:not(:disabled)')
     end
 
   end

@@ -57,7 +57,7 @@ en:
         name_email: "Name, Email"
         super_user: "Super User"
         catalog_manager: "Catalog Manager"
-        edit_historic_data: "Edit Historic Data:"
+        edit_historic_data: "Edit Historical Data:"
         service_provider: "Service Provider"
         primary_contact: "Primary Contact:"
         hold_emails: "Hold Emails:"
@@ -68,6 +68,8 @@ en:
         remove_confirm: "Are you sure you want to delete this user from the organization?"
         duplicate_super_user: "User already has super user rights at a higher level"
         duplicate_catalog_manager: "User already has catalog manager rights at a higher level"
+        tooltips:
+          primary_contact: "This person's contact information will be shown at submission of a request. Limit 3 people."
       surveys:
         name_version: "Name, Version"
         select_survey: "Please select a survey"

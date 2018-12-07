@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_03_143643) do
+ActiveRecord::Schema.define(version: 2018_11_07_162157) do
 
   create_table "admin_rates", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "line_item_id"
@@ -247,9 +247,9 @@ ActiveRecord::Schema.define(version: 2018_10_03_143643) do
     t.string "pro_number"
     t.string "irb_of_record"
     t.string "submission_type"
-    t.datetime "initial_irb_approval_date"
-    t.datetime "irb_approval_date"
-    t.datetime "irb_expiration_date"
+    t.date "initial_irb_approval_date"
+    t.date "irb_approval_date"
+    t.date "irb_expiration_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
@@ -286,6 +286,7 @@ ActiveRecord::Schema.define(version: 2018_10_03_143643) do
     t.boolean "approved", default: false, null: false
     t.string "time_zone", default: "Eastern Time (US & Canada)"
     t.integer "professional_organization_id"
+    t.string "orcid", limit: 19
     t.index ["approved"], name: "index_identities_on_approved"
     t.index ["email"], name: "index_identities_on_email"
     t.index ["last_name"], name: "index_identities_on_last_name"
@@ -350,11 +351,6 @@ ActiveRecord::Schema.define(version: 2018_10_03_143643) do
     t.datetime "updated_at", null: false
     t.index ["arm_id"], name: "index_line_items_visits_on_arm_id"
     t.index ["line_item_id"], name: "index_line_items_visits_on_line_item_id"
-  end
-
-  create_table "lookups", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
-    t.integer "new_id"
-    t.string "old_id"
   end
 
   create_table "messages", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
@@ -609,14 +605,8 @@ ActiveRecord::Schema.define(version: 2018_10_03_143643) do
     t.boolean "rmid_validated", default: false
     t.boolean "locked"
     t.string "guarantor_contact"
-    t.text "guarantor_address"
-    t.string "guarantor_city"
     t.string "guarantor_phone"
-    t.string "guarantor_state"
-    t.string "guarantor_zip"
-    t.string "guarantor_county"
-    t.string "guarantor_country"
-    t.string "guarantor_fax"
+    t.string "guarantor_email"
     t.index ["next_ssr_id"], name: "index_protocols_on_next_ssr_id"
   end
 
@@ -743,7 +733,7 @@ ActiveRecord::Schema.define(version: 2018_10_03_143643) do
   create_table "service_relations", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "service_id"
     t.integer "related_service_id"
-    t.boolean "optional"
+    t.boolean "required"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
@@ -892,6 +882,7 @@ ActiveRecord::Schema.define(version: 2018_10_03_143643) do
     t.integer "service_requester_id"
     t.datetime "submitted_at"
     t.integer "protocol_id"
+    t.boolean "imported_to_fulfillment", default: false
     t.index ["organization_id"], name: "index_sub_service_requests_on_organization_id"
     t.index ["owner_id"], name: "index_sub_service_requests_on_owner_id"
     t.index ["protocol_id"], name: "index_sub_service_requests_on_protocol_id"
@@ -979,17 +970,6 @@ ActiveRecord::Schema.define(version: 2018_10_03_143643) do
     t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
-  create_table "toast_messages", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
-    t.integer "from"
-    t.integer "to"
-    t.string "sending_class"
-    t.integer "sending_class_id"
-    t.string "message"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["sending_class_id"], name: "index_toast_messages_on_sending_class_id"
-  end
-
   create_table "tokens", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "service_request_id"
     t.integer "identity_id"
@@ -999,16 +979,6 @@ ActiveRecord::Schema.define(version: 2018_10_03_143643) do
     t.datetime "deleted_at"
     t.index ["identity_id"], name: "index_tokens_on_identity_id"
     t.index ["service_request_id"], name: "index_tokens_on_service_request_id"
-  end
-
-  create_table "versions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
-    t.string "item_type", null: false
-    t.integer "item_id", null: false
-    t.string "event", null: false
-    t.string "whodunnit"
-    t.text "object"
-    t.datetime "created_at"
-    t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
   create_table "vertebrate_animals_info", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|

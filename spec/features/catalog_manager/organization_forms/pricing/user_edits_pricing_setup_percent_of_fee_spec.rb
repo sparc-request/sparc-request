@@ -26,7 +26,7 @@ RSpec.describe 'User edits Organization Pricing', js: true do
 
   before :each do
     @institution     = create(:institution)
-    @provider        = create(:provider, parent_id: @institution.id)
+    @provider        = create(:provider, :with_subsidy_map, parent_id: @institution.id)
     @catalog_manager = create(:catalog_manager, organization_id: @institution.id, identity_id: Identity.where(ldap_uid: 'jug2').first.id, edit_historic_data: true)
     create(:pricing_setup, organization: @provider, display_date: Date.today - 1, effective_date: Date.today - 1, federal: 100, corporate: 100, other: 100, member: 100)
   end
@@ -150,7 +150,7 @@ RSpec.describe 'User edits Organization Pricing', js: true do
         find(".edit_pricing_setup_link").click
         wait_for_javascript_to_finish
 
-        expect(page).to_not have_selector('#apply_federal_percent')
+        expect(page).to have_no_selector('#apply_federal_percent')
       end
 
     end

@@ -46,7 +46,7 @@ class Notifier < ActionMailer::Base
     ### END ATTACHMENTS ###
 
     @status = status(admin_delete_ssr, audit_report.present?, individual_ssr, ssr, @service_request)
-    @notes = []
+    @notes = @protocol.notes.eager_load(:identity)
     @identity = project_role.identity
     @role = project_role.role
     @full_name = @identity.full_name
@@ -83,7 +83,7 @@ class Notifier < ActionMailer::Base
     ### END ATTACHMENTS ###
 
     @ssr_deleted = false
-    @notes = @protocol.notes
+    @notes = @protocol.notes.eager_load(:identity)
 
     @status = status(ssr_destroyed, audit_report.present?, individual_ssr, ssr, @service_request)
 
@@ -109,7 +109,7 @@ class Notifier < ActionMailer::Base
   def notify_service_provider(service_provider, service_request, user_current, ssr, audit_report=nil, ssr_destroyed=false, request_amendment=false, individual_ssr=false)
     @protocol = service_request.protocol
     @service_request = service_request
-    @notes = @protocol.notes
+    @notes = @protocol.notes.eager_load(:identity)
 
     @status = status(ssr_destroyed, request_amendment, individual_ssr, ssr, @service_request)
 

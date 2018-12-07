@@ -119,6 +119,7 @@
 #   ### Google Calendar ###
 #   use_google_calendar:                        "false"
 #   calendar_url:                               "https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics"
+#   calendar_event_limit:                       3
 
 #   ### News Feed ###
 #   use_news_feed:                              "false"
@@ -131,6 +132,11 @@
 #   news_feed_title_selector:                   ".entry-title"
 #   news_feed_link_selector:                    ".entry-title a"
 #   news_feed_date_selector:                    ".date"
+
+#   ### Tableau Dashboard ###
+#   use_tableau:                                "true"
+#   homepage_tableau_dashboard:                 "InstitutionalDashboard/InstitutionalDashboard"
+#   homepage_tableau_url:                       "https://anyl-tableau-v.mdc.musc.edu/javascripts/api/viz_v1.js"
 
 #   ### System Satisfaction Survey ###
 #   system_satisfaction_survey:                 "false"
@@ -237,6 +243,7 @@
 #   ### Google Calendar ###
 #   use_google_calendar:                        "false"
 #   calendar_url:                               "https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics"
+#   calendar_event_limit:                       3
 
 #   ### News Feed ###
 #   use_news_feed:                              "false"
@@ -249,6 +256,11 @@
 #   news_feed_title_selector:                   ".entry-title"
 #   news_feed_link_selector:                    ".entry-title a"
 #   news_feed_date_selector:                    ".date"
+
+#   ### Tableau Dashboard ###
+#   use_tableau:                                "true"
+#   homepage_tableau_dashboard:                 "InstitutionalDashboard/InstitutionalDashboard"
+#   homepage_tableau_url:                       "https://anyl-tableau-v.mdc.musc.edu/javascripts/api/viz_v1.js"
 
 #   ### System Satisfaction Survey ###
 #   system_satisfaction_survey:                 "false"
@@ -355,6 +367,7 @@
 #   ### Google Calendar ###
 #   use_google_calendar:                        "false"
 #   calendar_url:                               "https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics"
+#   calendar_event_limit:                       3
 
 #   ### News Feed ###
 #   use_news_feed:                              "false"
@@ -367,6 +380,11 @@
 #   news_feed_title_selector:                   ".entry-title"
 #   news_feed_link_selector:                    ".entry-title a"
 #   news_feed_date_selector:                    ".date"
+
+#   ### Tableau Dashboard ###
+#   use_tableau:                                "true"
+#   homepage_tableau_dashboard:                 "InstitutionalDashboard/InstitutionalDashboard"
+#   homepage_tableau_url:                       "https://anyl-tableau-v.mdc.musc.edu/javascripts/api/viz_v1.js"
 
 #   ### System Satisfaction Survey ###
 #   system_satisfaction_survey:                 "false"
@@ -473,6 +491,7 @@ development:
   ### Google Calendar ###
   use_google_calendar:                        "false"
   calendar_url:                               "https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics"
+  calendar_event_limit:                       3
 
   ### News Feed ###
   use_news_feed:                              "false"
@@ -485,6 +504,11 @@ development:
   news_feed_title_selector:                   ".entry-title"
   news_feed_link_selector:                    ".entry-title a"
   news_feed_date_selector:                    ".date"
+
+  ### Tableau Dashboard ###
+  use_tableau:                                "true"
+  homepage_tableau_dashboard:                 "InstitutionalDashboard/InstitutionalDashboard"
+  homepage_tableau_url:                       "https://anyl-tableau-v.mdc.musc.edu/javascripts/api/viz_v1.js"
 
   ### System Satisfaction Survey ###
   system_satisfaction_survey:                 "false"
@@ -591,6 +615,7 @@ test:
   ### Google Calendar ###
   use_google_calendar:                        "false"
   calendar_url:                               "https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics"
+  calendar_event_limit:                       3
 
   ### News Feed ###
   use_news_feed:                              "false"
@@ -603,6 +628,11 @@ test:
   news_feed_title_selector:                   ".entry-title"
   news_feed_link_selector:                    ".entry-title a"
   news_feed_date_selector:                    ".date"
+
+  ### Tableau Dashboard ###
+  use_tableau:                                "true"
+  homepage_tableau_dashboard:                 "InstitutionalDashboard/InstitutionalDashboard"
+  homepage_tableau_url:                       "https://anyl-tableau-v.mdc.musc.edu/javascripts/api/viz_v1.js"
 
   ### System Satisfaction Survey ###
   system_satisfaction_survey:                 "false"

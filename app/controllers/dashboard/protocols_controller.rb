@@ -22,11 +22,12 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   respond_to :html, :json, :xlsx
 
-  before_action :find_protocol,                                   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
-  before_action :find_admin_for_protocol,                         only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
-  before_action :protocol_authorizer_view,                        only: [:show, :view_full_calendar, :display_requests]
-  before_action :protocol_authorizer_edit,                        only: [:edit, :update, :update_protocol_type, :archive]
-  before_action :bypass_rmid_validations?,                        only: [:update, :edit]
+  before_action :find_protocol,             only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
+  before_action :find_admin_for_protocol,   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
+  before_action :protocol_authorizer_view,  only: [:show, :view_full_calendar, :display_requests]
+  before_action :protocol_authorizer_edit,  only: [:edit, :update, :update_protocol_type, :archive]
+  before_action :bypass_rmid_validations?,  only: [:update, :edit]
+  before_action :check_rmid_server_status,  only: [:new, :create, :edit, :update, :update_protocol_type]
 
   def index
     admin_orgs = @user.authorized_admin_organizations
@@ -97,7 +98,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     session[:protocol_type] = params[:protocol_type]
     gon.rm_id_api_url = Setting.get_value("research_master_api")
     gon.rm_id_api_token = Setting.get_value("rmid_api_token")
-    rmid_server_status(@protocol)
   end
 
   def create
@@ -126,7 +126,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     else
       @errors = @protocol.errors
     end
-    rmid_server_status(@protocol)
   end
 
   def edit
@@ -144,8 +143,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol.valid?
     @errors = @protocol.errors
     @errors.delete(:research_master_id) if @bypass_rmid_validation
-
-    rmid_server_status(@protocol)
 
     respond_to do |format|
       format.html
@@ -212,8 +209,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
       flash[:alert] = t(:protocols)[:change_type][:new_study_warning]
     end
-
-    rmid_server_status(@protocol)
   end
 
   def archive
@@ -289,13 +284,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         :udak_project_number,
         :guarantor_contact,
         :guarantor_phone,
-        :guarantor_fax,
-        :guarantor_address,
-        :guarantor_city,
-        :guarantor_state,
-        :guarantor_zip,
-        :guarantor_county,
-        :guarantor_country,
+        :guarantor_email,
         :research_master_id,
         research_types_info_attributes: [:id, :human_subjects, :vertebrate_animals, :investigational_products, :ip_patents],
         study_types_attributes: [:id, :name, :new, :position, :_destroy],

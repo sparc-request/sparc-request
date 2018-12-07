@@ -51,7 +51,7 @@ class Setting < ApplicationRecord
     if [TrueClass, FalseClass].include?(val.class)
       value_will_change!
       write_attribute(:value, val ? "true" : "false")
-    elsif data_type == 'json'
+    elsif data_type == 'json' && val.is_a?(Hash)
       write_attribute(:value, val.to_json)
     else
       write_attribute(:value, val)

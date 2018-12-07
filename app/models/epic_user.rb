@@ -14,6 +14,6 @@ class EpicUser < ActiveResource::Base
   end
 
   def self.is_active?(epic_user)
-    epic_user && epic_user.key?('IsActive') && epic_user['IsActive']
+    epic_user.present? ? epic_user.key?('IsActive') && epic_user['IsActive'] : true
   end
 end

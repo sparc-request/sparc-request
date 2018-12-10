@@ -23,12 +23,15 @@ class SystemSurvey < Survey
   # 2 surveys can't have the same access code and both be active
   validates_uniqueness_of :active, scope: [:type, :access_code], if: -> { self.active }
 
+  scope :for_super_user, -> (identity) {
+    joins(:associated_surveys).
+    where(associated_surveys: {
+      associable: Organization.authorized_for_super_user(identity.id)
+    })
+  }
+
   def self.yaml_klass
     Survey.name
-  end
-
-  def self.for_super_user(identity)
-    Survey.where(id: AssociatedSurvey.where(associable: Organization.authorized_for_super_user(identity.id)).pluck(:survey_id))
   end
 
   def system_satisfaction?

@@ -53,3 +53,4 @@
 //= require assert
 //= require ajax_handler
 //= require sweetalert.min
+//= require ../global

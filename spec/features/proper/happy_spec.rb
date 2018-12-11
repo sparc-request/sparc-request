@@ -119,8 +119,8 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     find("span", text: core1.name).click
     wait_for_javascript_to_finish
 
-    expect(page).to have_selector('a.service', text: otf_service_core_1.name, visible: true)
-    expect(page).to have_selector('a.service', text: pppv_service_core_1.name, visible: true)
+    expect(page).to have_selector('.core-accordion .service', text: otf_service_core_1.name, visible: true)
+    expect(page).to have_selector('.core-accordion .service', text: pppv_service_core_1.name, visible: true)
 
     click_add_service_for(otf_service_core_1)
     find("a", text: /Yes/).click
@@ -152,8 +152,8 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     find("span", text: core2.name).click
     wait_for_javascript_to_finish
 
-    expect(page).to have_selector('a.service', text: otf_service_core_2.name, visible: true)
-    expect(page).to have_selector('a.service', text: pppv_service_core_2.name, visible: true)
+    expect(page).to have_selector('.core-accordion .service', text: otf_service_core_2.name, visible: true)
+    expect(page).to have_selector('.core-accordion .service', text: pppv_service_core_2.name, visible: true)
 
     click_add_service_for(otf_service_core_2)
 

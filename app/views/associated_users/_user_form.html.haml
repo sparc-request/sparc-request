@@ -65,16 +65,17 @@
               = form.text_field :role_other, class: 'form-control'
 
             - if Setting.find_by_key("use_epic").value && protocol != nil && protocol.selected_for_epic
+              - Setting.find_by_key("validate_epic_users").try(:value)
               = user_form_group(name: :epic_access, form: form, required: true,
                 data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
                 title: t(:authorized_users)[:tooltips][:epic_access]) do
                 = label_tag nil, nil, class: 'radio-inline' do
-                  = form.radio_button :epic_access, false, class: 'epic_access', disabled: !EpicUser.is_active?(@epic_user)
+                  = form.radio_button :epic_access, false, class: 'epic_access', disabled: Setting.find_by_key("validate_epic_users").try(:value) && !EpicUser.is_active?(@epic_user)
                   = t(:constants)[:no_select]
                 = label_tag nil, nil, class: 'radio-inline' do
-                  = form.radio_button :epic_access, true, class: 'epic_access', disabled: !EpicUser.is_active?(@epic_user)
+                  = form.radio_button :epic_access, true, class: 'epic_access', disabled: Setting.find_by_key("validate_epic_users").try(:value) && !EpicUser.is_active?(@epic_user)
                   = t(:constants)[:yes_select]
-                - unless EpicUser.is_active?(@epic_user)
+                - if Setting.find_by_key("validate_epic_users").try(:value) && !EpicUser.is_active?(@epic_user)
                   %br
                   %p.text-danger
                     = t(:authorized_users)[:form_fields][:no_epic_access]

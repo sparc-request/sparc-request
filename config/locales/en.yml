@@ -329,6 +329,8 @@ en:
       select_one: "Select One"
     add_as_last: "Add as last"
     other: "Other"
+    show: "Show Details"
+    hide: "Hide Details"
     more: "More..."
     less: "Less..."
 

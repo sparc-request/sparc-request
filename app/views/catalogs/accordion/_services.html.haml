@@ -18,14 +18,20 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - services.each do |service|
-  .service-view.col-sm-12.no-padding-x
-    = link_to 'javascript:void(0)', class: ["service service-#{service.id} add-service no-padding", action_name == 'update_description' ?  'col-sm-10' : 'col-sm-12'], title: organization_description_display(service), data: { id: service.id, toggle: 'tooltip', placement: 'left', delay: '{"show":"500"}' } do
-      %h4.service-name.col-sm-12.no-padding.no-margin-top
+  .service.col-sm-12.no-padding-x{ id: "#service#{service.id}" }
+    .service-name.no-padding{ class: action_name == 'update_description' ?  'col-sm-10' : 'col-sm-12' }
+      %h3.col-sm-12.no-padding.no-margin
         = service.display_service_name
-      = cpt_code_text(service)
-      = eap_id_text(service)
-      = raw service_pricing_text(service)
     - if action_name == 'update_description'
-      .col-sm-2
+      .col-sm-2.no-padding
         %button.add-service.pull-right.btn.btn-success{ data: { id: service.id } }
           = t(:actions)[:add]
+    .col-sm-12.no-padding
+      = link_to t(:constants)[:show], "#service#{service.id}Description", class: 'collapsed', alt: t(:constants)[:hide], data: { toggle: 'collapse' }, aria: { expanded: 'false', controls: "service#{service.id}Description" }
+    - if service.description.present?
+      .collapse.service-description.col-sm-12.no-padding{ id: "service#{service.id}Description" }
+        %p.no-margin
+          = raw service.description
+    = cpt_code_text(service)
+    = eap_id_text(service)
+    = raw service_pricing_text(service)

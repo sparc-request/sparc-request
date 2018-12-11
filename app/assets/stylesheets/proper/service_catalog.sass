@@ -198,20 +198,18 @@
   background: $sparc-red-focus !important
   border-color: #4C4C4C !important
 
-/* HANDLING CORE AND SERVICE LIST STYLING */
-.service-view:not(:first-child)
-  padding-top: 10px
-  border-top: 1px solid #EEE
-  margin-top: 10px
-
-.core-description
-  padding-top: 15px
-  padding-bottom: 10px
-
-.service-description
-  padding-top: 5px
-
 /* RELATED TO THE CENTER CATALOG ELEMENTS */
+.service
+  display: flex
+  flex-wrap: wrap
+  &:not(:first-child)
+    padding-top: 10px
+    border-top: 1px solid #EEE
+    margin-top: 10px
+  .service-name
+    display: flex
+    align-items: center
+
 .catalog-center
   padding-left: 0 !important
   padding-right: 0 !important
@@ -243,6 +241,10 @@
     h3
       margin-top: 0
 
+  .core-accordion
+    .core-description
+      padding-top: 15px
+      padding-bottom: 10px
   #calendar-blog
     display: flex
     .news-container

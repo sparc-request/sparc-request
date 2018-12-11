@@ -49,8 +49,8 @@
                     = [event[:start_time], event[:end_time]].join(' - ')
                   = " - #{event[:where]}" unless event[:where].blank?
               .collapse.event-description{ id: "event#{index}Description" }
-                %small.event-description
+                %small
                   = raw event[:description]
             .expand-event
               %small
-                = link_to t(:proper)[:catalog][:center][:calendar][:show_details], "#event#{index}Description", class: 'collapsed', data: { toggle: 'collapse' }, aria: { expanded: 'false', controls: "event#{index}Description" }, onclick: "if($(this).hasClass('collapsed')){$(this).text('#{t(:proper)[:catalog][:center][:calendar][:hide_details]}');}else{$(this).text('#{t(:proper)[:catalog][:center][:calendar][:show_details]}');}"
+                = link_to t(:constants)[:show], "#event#{index}Description", class: 'collapsed', alt: t(:constants)[:hide], data: { toggle: 'collapse' }, aria: { expanded: 'false', controls: "event#{index}Description" }

@@ -65,21 +65,5 @@ RSpec.describe 'User creates new organization', js: true do
       expect(Core.where(name: 'Test Core').first.is_available).to eq(false)
       expect(page).to have_selector('.text-core.unavailable-org', text: 'Test Core')
     end
-
-    it 'should throw error if the same program name is added again' do
-      find("#institution-#{@institution.id} .glyphicon").click
-      find("#provider-#{@provider.id} .glyphicon").click
-      find("#program-#{@program.id} .glyphicon").click
-      wait_for_javascript_to_finish
-      click_link 'Create New Core'
-      wait_for_javascript_to_finish
-
-      find('.modal-body').fill_in 'organization_name', with: 'Test Core'
-      find('.modal-footer').click_button 'Save'
-      wait_for_javascript_to_finish
-
-      expect(page).to have_content('Name has already been taken')
-    end
-
   end
 end

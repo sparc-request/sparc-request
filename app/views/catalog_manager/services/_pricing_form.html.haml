@@ -32,8 +32,7 @@
   - pricing_maps[0..2].each do |pricing_map|
     = render "/catalog_manager/services/pricing_map", pricing_map: pricing_map
   - if pricing_maps.length > 3
-    %h4
-      = link_to '...', "#service#{service.id}PricingMapsExpand", data: { toggle: 'collapse' }, aria: { expanded: 'false' }
+    = link_to t(:constants)[:more], "#service#{service.id}PricingMapsExpand", class: 'view-more btn btn-primary collapsed', data: { toggle: 'collapse' }, aria: { expanded: 'false' }
     .collapse{ id: "service#{service.id}PricingMapsExpand" }
       - pricing_maps[3..-1].each do |pricing_map|
         = render "/catalog_manager/services/pricing_map", pricing_map: pricing_map

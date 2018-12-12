@@ -53,13 +53,21 @@ $(document).ready ->
       return false
     else if isDelete && [6, 11, 16].includes(val.length)
       $(this).val(val.substr(0, val.length - 1))
-    else if !isDelete && [4, 9, 14].includes(val.length)
+    if !isDelete && [4, 9, 14].includes(val.length)
       $(this).val(val + "-")
-    else if !isDelete && [5, 10, 15].includes(val.length)
+    else if !isDelete && [5, 10, 15].includes(val.length) && val[val.length-1] != "-"
       $(this).val(val.substr(0, val.length - 1) + "-" + val.substr(val.length - 1, val.length))
     else if key == 88 && val.length == 18
       event.stopImmediatePropagation()
       $(this).val(val.substr(0, val.length) + String.fromCharCode(key).toUpperCase())
+
+  $(document).on 'keyup', '#project_role_identity_attributes_orcid', (event) ->
+    key = event.keyCode || event.charCode
+    val = $(this).val()
+    isDelete = [8, 46].includes(key)
+
+    if !isDelete && [4, 9, 14].includes(val.length)
+      $(this).val(val + "-")
 
   # Credentials - Dropdown
   $(document).on 'changed.bs.select', '#project_role_identity_attributes_credentials', ->

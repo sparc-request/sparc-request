@@ -20,13 +20,21 @@
 
 class ApplicationController < ActionController::Base
   protect_from_forgery prepend: true
+
   helper :all
+
   helper_method :current_user
   helper_method :xeditable?
+
+  before_action :preload_settings
   before_action :set_highlighted_link  # default is to not highlight a link
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   protected
+
+  def preload_settings
+    Setting.preload_values
+  end
 
   def not_signed_in?
     !current_user.present?

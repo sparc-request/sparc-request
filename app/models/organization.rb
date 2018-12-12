@@ -47,7 +47,7 @@ class Organization < ApplicationRecord
   validates :abbreviation,
             :order,
             presence: true, on: :update
-  validates :name, presence: true, uniqueness: true
+  validates :name, presence: true
   validates :order, numericality: { only_integer: true }, on: :update
 
   accepts_nested_attributes_for :submission_emails

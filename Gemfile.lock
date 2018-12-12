@@ -680,6 +680,7 @@ DEPENDENCIES
   rails-observers!
   redcarpet
   remotipart
+  request_store
   rest-client
   rspec-activemodel-mocks
   rspec-html-matchers

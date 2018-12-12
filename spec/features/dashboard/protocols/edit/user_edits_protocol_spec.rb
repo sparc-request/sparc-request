@@ -45,7 +45,7 @@ RSpec.describe 'User edits epic answers', js: true do
                         create(:super_user, identity: jug2,
                                 organization: organization)
 
-      allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
+      allow(Protocol).to receive(:rmid_status).and_return(true)
     end
 
     context 'and clicks Edit Information' do
@@ -94,7 +94,7 @@ RSpec.describe 'User edits epic answers', js: true do
                         create(:super_user, identity: jug2,
                                 organization: organization)
 
-      allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(true)
+      allow(Protocol).to receive(:rmid_status).and_return(false)
     end
 
     context 'and clicks Edit Information' do

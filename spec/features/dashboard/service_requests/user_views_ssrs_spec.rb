@@ -27,6 +27,7 @@ RSpec.describe "User views SSR table", js: true do
   def go_to_show_protocol(protocol_id)
     page = Dashboard::Protocols::ShowPage.new
     page.load(id: protocol_id)
+    wait_for_javascript_to_finish
     page
   end
 
@@ -41,7 +42,6 @@ RSpec.describe "User views SSR table", js: true do
 
       scenario 'and sees View and Edit' do
         page = go_to_show_protocol(protocol.id)
-
         expect(page).to have_selector('button', text: /\AView\z/)
         expect(page).to have_selector('button', text: /\AEdit\z/)
         expect(page).not_to have_selector('button', text: 'Admin Edit')

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_07_162157) do
+ActiveRecord::Schema.define(version: 2018_11_28_192700) do
 
   create_table "admin_rates", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "line_item_id"
@@ -283,7 +283,7 @@ ActiveRecord::Schema.define(version: 2018_11_07_162157) do
     t.string "last_sign_in_ip"
     t.text "reason"
     t.string "company"
-    t.boolean "approved", default: false, null: false
+    t.boolean "approved"
     t.string "time_zone", default: "Eastern Time (US & Canada)"
     t.integer "professional_organization_id"
     t.string "orcid", limit: 19
@@ -440,6 +440,15 @@ ActiveRecord::Schema.define(version: 2018_11_07_162157) do
     t.float "percent_subsidy", default: 0.0
     t.index ["approved_by"], name: "index_past_subsidies_on_approved_by"
     t.index ["sub_service_request_id"], name: "index_past_subsidies_on_sub_service_request_id"
+  end
+
+  create_table "patient_registrars", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+    t.integer "identity_id"
+    t.integer "organization_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["identity_id"], name: "index_patient_registrars_on_identity_id"
+    t.index ["organization_id"], name: "index_patient_registrars_on_organization_id"
   end
 
   create_table "payment_uploads", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|

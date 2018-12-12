@@ -42,24 +42,20 @@ module ServicesHelper
     if current_user.present?
       rates = service.displayed_pricing_map.true_rate_hash
 
-      content_tag(:div, class: 'service-pricing-container col-sm-12 no-padding text-black') do
-        content_tag(:span, class: 'col-sm-12 no-padding') do
-          content_tag(:strong, "#{Service::RATE_TYPES[:full].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:full]/100)}"
-        end +
-        content_tag(:span, class: 'col-sm-3 no-padding') do
-          content_tag(:strong, "#{Service::RATE_TYPES[:federal].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:federal]/100)}"
-        end +
-        content_tag(:div, class: 'pricing-subcontainer') do
-          content_tag(:span) do
-            content_tag(:strong, "#{Service::RATE_TYPES[:corporate].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:corporate]/100)}"
-          end +
-          content_tag(:span) do
-            content_tag(:strong, "#{Service::RATE_TYPES[:member].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:member]/100)}"
-          end +
-          content_tag(:span) do
-            content_tag(:strong, "#{Service::RATE_TYPES[:other].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:other]/100)}"
-          end
-        end
+      content_tag(:span, class: 'col-sm-12 no-padding') do
+        content_tag(:strong, "#{Service::RATE_TYPES[:full]}: ") + "$#{'%.2f' % (rates[:full]/100)}"
+      end +
+      content_tag(:span, class: 'col-sm-3 no-padding') do
+        content_tag(:strong, "#{Service::RATE_TYPES[:federal].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:federal]/100)}"
+      end +
+      content_tag(:span, class: 'col-sm-3 no-padding') do
+        content_tag(:strong, "#{Service::RATE_TYPES[:corporate].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:corporate]/100)}"
+      end +
+      content_tag(:span, class: 'col-sm-3 no-padding') do
+        content_tag(:strong, "#{Service::RATE_TYPES[:member].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:member]/100)}"
+      end +
+      content_tag(:span, class: 'col-sm-3 no-padding') do
+        content_tag(:strong, "#{Service::RATE_TYPES[:other].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:other]/100)}"
       end
     end
   end

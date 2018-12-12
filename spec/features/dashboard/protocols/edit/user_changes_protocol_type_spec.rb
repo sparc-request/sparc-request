@@ -50,22 +50,19 @@ RSpec.describe 'User changes protocol type', js: true do
 
     context 'use epic = true' do
       stub_config("use_epic", true)
-      
+
       context "changes the protocol type" do
         before :each do
           bootstrap_select '#protocol_type', 'Study'
+          find('#protocol-type-button').click
 
-          accept_confirm do
-            find('#protocol-type-button').click
-          end
-
+          accept_confirm
           wait_for_javascript_to_finish
         end
 
         context "does not fill out 'Publish Study in Epic'" do
           it 'should throw an error for selected for epic' do
             click_button 'Save'
-            wait_for_javascript_to_finish
             expect(page).to have_content("Selected for epic is not included in the list")
           end
         end
@@ -76,7 +73,6 @@ RSpec.describe 'User changes protocol type', js: true do
               find('#study_selected_for_epic_true_button').click
               wait_for_javascript_to_finish
               click_button 'Save'
-              wait_for_javascript_to_finish
               expect(page).to have_content("Study type answers must be selected")
             end
           end
@@ -90,7 +86,6 @@ RSpec.describe 'User changes protocol type', js: true do
               wait_for_javascript_to_finish
 
               click_button 'Save'
-              wait_for_javascript_to_finish
               expect(page).to have_content("Study Updated!")
             end
           end
@@ -103,7 +98,6 @@ RSpec.describe 'User changes protocol type', js: true do
               find('#study_selected_for_epic_false_button').click
               wait_for_javascript_to_finish
               click_button 'Save'
-              wait_for_javascript_to_finish
               expect(page).to have_content("Study Updated!")
             end
           end
@@ -112,14 +106,13 @@ RSpec.describe 'User changes protocol type', js: true do
     end
 
     context 'use epic = false' do
+      stub_config("use_epic", false)
       context "changes the protocol type" do
         before :each do
           bootstrap_select '#protocol_type', 'Study'
+          find('#protocol-type-button').click
 
-          accept_confirm do
-            find('#protocol-type-button').click
-          end
-
+          accept_confirm
           wait_for_javascript_to_finish
         end
 
@@ -131,20 +124,16 @@ RSpec.describe 'User changes protocol type', js: true do
           it 'should save successfully' do
             wait_for_javascript_to_finish
             click_button 'Save'
-            wait_for_javascript_to_finish
             expect(page).to have_content("Study Updated!")
           end
         end
 
         context 'fills out the first study type question and saves' do
           it 'should save successfully' do
-
             bootstrap_select'#study_type_answer_certificate_of_conf_no_epic_answer', 'Yes'
             wait_for_javascript_to_finish
 
             click_button 'Save'
-            wait_for_javascript_to_finish
-
             expect(page).to have_content("Study Updated!")
           end
         end

@@ -38,7 +38,7 @@ RSpec.describe 'User edits option fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      find('.edit-survey').click
+      bootstrap_select '.survey-actions', /Edit/
       wait_for_javascript_to_finish
 
       fill_in("option-#{@option.id}-content", with: 'This is a Terrible Option')
@@ -53,7 +53,7 @@ RSpec.describe 'User edits option fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find('.add-option').click
@@ -69,7 +69,7 @@ RSpec.describe 'User edits option fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find('.add-option').click
@@ -89,13 +89,13 @@ RSpec.describe 'User edits option fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find('.delete-option').click
         wait_for_javascript_to_finish
 
-        expect(page).to_not have_selector('.option')
+        expect(page).to have_no_selector('.option')
         expect(@question.options.count).to eq(0)
       end
 
@@ -105,13 +105,13 @@ RSpec.describe 'User edits option fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find('.delete-option').click
         wait_for_javascript_to_finish
 
-        expect(page).to_not have_selector('.select-depender .text', text: @option.content, visible: true)
+        expect(page).to have_no_selector('.select-depender .text', text: @option.content, visible: true)
       end
     end
   end
@@ -130,7 +130,7 @@ RSpec.describe 'User edits option fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      find('.edit-survey').click
+      bootstrap_select '.survey-actions', /Edit/
       wait_for_javascript_to_finish
 
       fill_in("option-#{@option.id}-content", with: 'This is a Terrible Option')
@@ -145,7 +145,7 @@ RSpec.describe 'User edits option fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find('.add-option').click
@@ -161,7 +161,7 @@ RSpec.describe 'User edits option fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find('.add-option').click
@@ -181,13 +181,13 @@ RSpec.describe 'User edits option fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find('.delete-option').click
         wait_for_javascript_to_finish
 
-        expect(page).to_not have_selector('.option')
+        expect(page).to have_no_selector('.option')
         expect(@question.options.count).to eq(0)
       end
 
@@ -197,13 +197,13 @@ RSpec.describe 'User edits option fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        find('.edit-survey').click
+        bootstrap_select '.survey-actions', /Edit/
         wait_for_javascript_to_finish
 
         find('.delete-option').click
         wait_for_javascript_to_finish
 
-        expect(page).to_not have_selector('.select-depender .text', text: @option.content, visible: true)
+        expect(page).to have_no_selector('.select-depender .text', text: @option.content, visible: true)
       end
     end
   end

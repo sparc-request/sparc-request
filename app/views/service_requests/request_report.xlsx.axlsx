@@ -27,8 +27,8 @@ wrap_bordered = wb.styles.add_style :border=> {:style => :thin, :color => "00000
 centered_bordered = wb.styles.add_style :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
 rt_hdr_even_style = wb.styles.add_style bg_color: 'E8E8E8', :alignment => {:horizontal => :center}
 rt_hdr_odd_style = wb.styles.add_style :alignment => {:horizontal => :center}
-rt_even_style = wb.styles.add_style bg_color: 'E8E8E8', :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
-rt_odd_style = wb.styles.add_style :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
+rt_even_style = wb.styles.add_style format_code: '#;[Red]-#; ;', bg_color: 'E8E8E8', :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
+rt_odd_style = wb.styles.add_style format_code: '#;[Red]-#; ;', :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
 row_header_style = wb.styles.add_style b: true
 wrapped_row_header_style = wb.styles.add_style b: true, alignment: { wrap_text: true }
 header_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :left }
@@ -53,7 +53,19 @@ wb.add_worksheet(name: "Review") do |sheet|
   sheet.add_row ["Authorized Users"], :style => header_style
   proxy_row = ["Name", "Role", "", "", "Proxy Rights"]
 
-  has_per_patient_per_visit_services = !@service_list_false.empty?
+  has_per_patient_per_visit_services =
+    if @sub_service_request.present?
+      @sub_service_request.process_ssrs_organization.has_per_patient_per_visit_services?
+    else
+      @service_list_false.any?
+    end
+
+  has_one_time_fee_services =
+    if @sub_service_request.present?
+      @sub_service_request.process_ssrs_organization.has_one_time_fee_services?
+    else
+      @service_list_true.any?
+    end
 
   visit_count = 0
   if has_per_patient_per_visit_services
@@ -254,72 +266,74 @@ wb.add_worksheet(name: "Review") do |sheet|
   end
   ############ end of arms.each
 
-  services_row = ["Selected Services", "", "", ""]
-  services_row << "Service Rate" if @admin_offset
-  services_row += ["Your Cost", ""]
+  if has_one_time_fee_services
+    services_row = ["Selected Services", "", "", ""]
+    services_row << "Service Rate" if @admin_offset
+    services_row += ["Your Cost", ""]
 
-  (visit_count*2 + 1).times do
-    services_row << ""
-  end
+    (visit_count*2 + 1).times do
+      services_row << ""
+    end
 
-  services_row << "Total Per Study"
+    services_row << "Total Per Study"
 
-  services_row = sheet.add_row services_row, :style => header_style
-  merge_services_row << services_row
+    services_row = sheet.add_row services_row, :style => header_style
+    merge_services_row << services_row
 
-  service_rows = []
-  services_sub_header_rows = []
-  services_sub_header_rows << sheet.add_row(['Other Services'], :style => name_header_style)
-  @service_list_true.each do |key, value|
-    next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
-    services_sub_header_rows << sheet.add_row([value[:name]], :style => sub_header_style)
-    line_items = @sub_service_request.nil? ? value[:line_items] : @sub_service_request.one_time_fee_line_items
+    service_rows = []
+    services_sub_header_rows = []
+    services_sub_header_rows << sheet.add_row(['Other Services'], :style => name_header_style)
+    @service_list_true.each do |key, value|
+      next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
+      services_sub_header_rows << sheet.add_row([value[:name]], :style => sub_header_style)
+      line_items = @sub_service_request.nil? ? value[:line_items] : @sub_service_request.one_time_fee_line_items
 
-    line_items.each do |line_item|
-      service_row = [line_item.service.name, "", "", ""]
-      line_item_total = display_one_time_fee_direct_cost(line_item)
-      if @admin_offset
-        line_item.pricing_scheme = 'effective'
+      line_items.each do |line_item|
+        service_row = [line_item.service.name, "", "", ""]
         line_item_total = display_one_time_fee_direct_cost(line_item)
-        service_row << display_service_rate(line_item)
-        line_item.pricing_scheme = 'displayed'
-      end
+        if @admin_offset
+          line_item.pricing_scheme = 'effective'
+          line_item_total = display_one_time_fee_direct_cost(line_item)
+          service_row << display_service_rate(line_item)
+          line_item.pricing_scheme = 'displayed'
+        end
 
-      if !@service_list_true.empty? && !@service_list_false.empty?
-        service_row += [display_your_cost(line_item), ""]
-      else
-        service_row += [display_your_cost(line_item), "", ""]
-      end
+        if !@service_list_true.empty? && !@service_list_false.empty?
+          service_row += [display_your_cost(line_item), ""]
+        else
+          service_row += [display_your_cost(line_item), "", ""]
+        end
 
+        if has_per_patient_per_visit_services
+          (visit_count*2 + 1).times do
+            service_row << ''
+          end
+        end
+
+        service_row << line_item_total
+        service_rows << sheet.add_row(service_row, :style => default)
+      end
+    end
+
+    merge_service_rows << service_rows
+    merge_sub_header_rows << services_sub_header_rows
+
+    line_items = @sub_service_request ? @sub_service_request.line_items : @service_request.line_items
+    line_items.each{|li| li.pricing_scheme = 'effective'} if @admin_offset
+
+
+    ##SSR Total
+    if @sub_service_request
+      ssr_total_row = ["", "", "", "", "", "", ""]
       if has_per_patient_per_visit_services
-        (visit_count*2 + 1).times do
-          service_row << ''
+        (visit_count*2).times do
+          ssr_total_row << ""
         end
       end
 
-      service_row << line_item_total
-      service_rows << sheet.add_row(service_row, :style => default)
+      ssr_total_row += ["#{@sub_service_request.organization.abbreviation} Total", display_ssr_grand_total(@sub_service_request)]
+      ssr_total_row = sheet.add_row(ssr_total_row, :style => row_header_style)
     end
-  end
-
-  merge_service_rows << service_rows
-  merge_sub_header_rows << services_sub_header_rows
-
-  line_items = @sub_service_request ? @sub_service_request.line_items : @service_request.line_items
-  line_items.each{|li| li.pricing_scheme = 'effective'} if @admin_offset
-
-
-  ##SSR Total
-  if @sub_service_request
-    ssr_total_row = ["", "", "", "", "", "", ""]
-    if has_per_patient_per_visit_services
-      (visit_count*2).times do
-        ssr_total_row << ""
-      end
-    end
-
-    ssr_total_row += ["#{@sub_service_request.organization.abbreviation} Total", display_ssr_grand_total(@sub_service_request)]
-    ssr_total_row = sheet.add_row(ssr_total_row, :style => row_header_style)
   end
 
   ##Total

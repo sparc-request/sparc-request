@@ -32,11 +32,7 @@ en:
           access_code: "Access Code"
           version: "Version"
           active: "Active"
-          options: "Options"
-        fields:
-          activate: "Activate"
-          disable: "Disable"
-          preview: "Preview"
+          actions: "Actions"
         tooltips:
           activate: "Select an association to activate this survey"
 
@@ -71,7 +67,6 @@ en:
         to_dashboard: "Return to Dashboard"
       table:
         header: "%{type} Responses"
-        export: "Export Responses"
         headers:
           srid: "SRID"
           short_title: "Short Title"
@@ -95,9 +90,15 @@ en:
         sctr_customer_satisfaction:
           grant_reminder: "Please remember to cite the CTSA grant in any related publications:"
           grant_info: "&quot;This publication [or project] was supported by the South Carolina Clinical & Translation Research (SCTR) Institute, with an academic home at the Medical University of South Carolina <strong class='din-gray-text'>NIH - NCATS Grant Number UL1 TR001450.</strong>&quot;"
-
+      tooltips:
+        complete: "Forms to collect additional information related to requesting a service"
+        view: "View existing %{klass} answers."
+        edit: "Edit existing %{klass} answers."
+        delete: "Delete existing %{klass} answers."
 
     surveys:
+      new_form:
+        header: "New %{klass}"
       form:
         header: "Live Editing %{klass}"
         survey_information:
@@ -152,8 +153,4 @@ en:
           version: "Version"
           display_order: "Display Order"
           active: "Active"
-          options: "Options"
-        fields:
-          activate: "Activate"
-          disable: "Disable"
-          preview: "Preview"
+          actions: "Actions"

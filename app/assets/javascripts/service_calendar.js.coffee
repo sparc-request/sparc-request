@@ -244,48 +244,18 @@ $(document).ready ->
         consolidated:             $(move_visit_button).data('consolidated')
         statuses_hidden:          $(move_visit_button).data('statuses-hidden')
 
-  # NOTES LISTENERS BEGIN
-  $(document).on 'click', 'button.btn-link.notes',  ->
+  $(document).on 'click', 'button.notes',  ->
     id = $(this).data('notable-id')
     type = $(this).data('notable-type')
-    in_dashboard = $(this).data('in-dashboard')
-    review = $(this).data('review')
-    data =
-      note:
-        notable_id: id
-        notable_type: type
-      in_dashboard: in_dashboard
-      review: review
-    $.ajax
-      type: 'GET'
-      url: '/notes.js'
-      data: data
 
-  $(document).on 'click', 'button.note.new',  ->
-    id = $(this).data('notable-id')
-    type = $(this).data('notable-type')
-    in_dashboard = $(this).data('in-dashboard')
-    data =
-      note:
-        notable_id: id
-        notable_type: type
-      in_dashboard : in_dashboard
     $.ajax
       type: 'GET'
-      url: '/notes/new'
-      data: data
-
-  $(document).on 'click', 'button.notes.cancel',  ->
-    id = $(this).data('notable-id')
-    type = $(this).data('notable-type')
-    data = note:
-      notable_id: id
-      notable_type: type
-    $.ajax
-      type: 'GET'
+      dataType: 'script'
       url: '/notes'
-      data: data
-  # NOTES LISTENERS END
+      data:
+        note:
+          notable_id: id
+          notable_type: type
 
 (exports ? this).setup_xeditable_fields = (scroll) ->
   # Override x-editable defaults

@@ -1,9 +1,9 @@
-id,key,value,concept_code,parent_id,sort_order,category,default,reserved
-,pediatrics,Pediatrics,,,1,impact_area,,
-,hiv_aids,HIV/AIDS,,,2,impact_area,,
-,hypertension,Hypertension,,,3,impact_area,,
-,stroke,Stroke,,,4,impact_area,,
-,diabetes,Diabetes,,,5,impact_area,,
-,cancer,Cancer,,,6,impact_area,,
-,community,Community Engagement,,,7,impact_area,,
-,other,Other,,,8,impact_area,,
+id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_available
+,pediatrics,Pediatrics,,,1,impact_area,,,1
+,hiv_aids,HIV/AIDS,,,2,impact_area,,,1
+,hypertension,Hypertension,,,3,impact_area,,,1
+,stroke,Stroke,,,4,impact_area,,,1
+,diabetes,Diabetes,,,5,impact_area,,,1
+,cancer,Cancer,,,6,impact_area,,,1
+,community,Community Engagement,,,7,impact_area,,,1
+,other,Other,,,8,impact_area,,,1

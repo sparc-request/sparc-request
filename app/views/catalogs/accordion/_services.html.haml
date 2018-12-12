@@ -17,15 +17,15 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- services.order(Arel.sql('`order`, `name`')).includes(:pricing_maps).each do |service|
-  - # This was extracted from a helper and partial render to significantly increase efficiency
-  - if [true, nil].include?(service.is_available) && service.current_pricing_map
-    .service-view.full
-      .title.full
-        .name.col-sm-10
-          = link_to service.display_service_name, 'javascript:void(0)', class: "service service-#{service.id} btn btn-default full", data: { id: service.id }
-        .col-sm-2
-          %button.add-service.pull-right.btn.btn-success{ data: { id: service.id, srid: service_request.id, ssrid: sub_service_request.try(:id) } }
-            = t(:actions)[:add]
-      .col-sm-12.service-description.hidden{ class: "service-description-#{service.id}" }
-        = organization_description_display(service)
+- services.each do |service|
+  .service-view.col-sm-12.no-padding-x
+    = link_to 'javascript:void(0)', class: ["service service-#{service.id} add-service no-padding", action_name == 'update_description' ?  'col-sm-10' : 'col-sm-12'], title: organization_description_display(service), data: { id: service.id, toggle: 'tooltip', placement: 'left', delay: '{"show":"500"}' } do
+      %h4.service-name.col-sm-12.no-padding.no-margin-top
+        = service.display_service_name
+      = cpt_code_text(service)
+      = eap_id_text(service)
+      = raw service_pricing_text(service)
+    - if action_name == 'update_description'
+      .col-sm-2
+        %button.add-service.pull-right.btn.btn-success{ data: { id: service.id } }
+          = t(:actions)[:add]

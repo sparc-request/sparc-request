@@ -23,7 +23,7 @@ require 'net/ldap'
 class Directory
 
   begin
-    use_ldap = Setting.find_by_key("use_ldap").value || Rails.env == 'test'
+    use_ldap = Setting.get_value("use_ldap") || Rails.env == 'test'
   rescue
     use_ldap = true
   end
@@ -41,18 +41,18 @@ class Directory
         ldap_config = Hash.new
         ldap_settings.each{|setting| ldap_config[setting.key] = setting.value}
         begin
-          LDAP_HOST       = ldap_config['ldap_host']
-          LDAP_PORT       = ldap_config['ldap_port']
-          LDAP_BASE       = ldap_config['ldap_base']
-          LDAP_ENCRYPTION = ldap_config['ldap_encryption'].to_sym
-          DOMAIN          = ldap_config['ldap_domain']
-          LDAP_UID        = ldap_config['ldap_uid']
-          LDAP_LAST_NAME  = ldap_config['ldap_last_name']
-          LDAP_FIRST_NAME = ldap_config['ldap_first_name']
-          LDAP_EMAIL      = ldap_config['ldap_email']
-          LDAP_AUTH_USERNAME      = ldap_config['ldap_auth_username']
-          LDAP_AUTH_PASSWORD      = ldap_config['ldap_auth_password']
-          LDAP_FILTER      = ldap_config['ldap_filter']
+          LDAP_HOST           = ldap_config['ldap_host']
+          LDAP_PORT           = ldap_config['ldap_port']
+          LDAP_BASE           = ldap_config['ldap_base']
+          LDAP_ENCRYPTION     = ldap_config['ldap_encryption'].to_sym
+          DOMAIN              = ldap_config['ldap_domain']
+          LDAP_UID            = ldap_config['ldap_uid']
+          LDAP_LAST_NAME      = ldap_config['ldap_last_name']
+          LDAP_FIRST_NAME     = ldap_config['ldap_first_name']
+          LDAP_EMAIL          = ldap_config['ldap_email']
+          LDAP_AUTH_USERNAME  = ldap_config['ldap_auth_username']
+          LDAP_AUTH_PASSWORD  = ldap_config['ldap_auth_password']
+          LDAP_FILTER         = ldap_config['ldap_filter']
         rescue
           raise "ldap settings incorrect, unable to load ldap configuration"
         end
@@ -68,10 +68,10 @@ class Directory
   # Returns an array of Identities that match the query.
   def self.search(term)
     # Search ldap (if enabled) and the database
-    if Setting.find_by_key("use_ldap").value && !Setting.find_by_key("suppress_ldap_for_user_search").value
+    if Setting.get_value("use_ldap") && !Setting.get_value("suppress_ldap_for_user_search")
       # If there are any entries returned from ldap that were not in the
       # database, then create them
-      if Setting.find_by_key("lazy_load_ldap").value
+      if Setting.get_value("lazy_load_ldap")
         return self.search_and_merge_ldap_and_database_results(term)
       else
         return self.search_and_merge_and_update_ldap_and_database_results(term)
@@ -125,9 +125,9 @@ class Directory
            port: LDAP_PORT,
            base: base,
            encryption: LDAP_ENCRYPTION)
-        ldap.auth LDAP_AUTH_USERNAME, LDAP_AUTH_PASSWORD unless !LDAP_AUTH_USERNAME || !LDAP_AUTH_PASSWORD
+        ldap.auth LDAP_AUTH_USERNAME, LDAP_AUTH_PASSWORD if LDAP_AUTH_USERNAME.present? && LDAP_AUTH_PASSWORD.present?
         # use LDAP_FILTER to override default filter with custom string
-        filter = (LDAP_FILTER && LDAP_FILTER.gsub('#{term}', term)) || fields.map { |f| Net::LDAP::Filter.contains(f, term) }.inject(:|)
+        filter = (LDAP_FILTER.present? && LDAP_FILTER.gsub('#{term}', term)) || fields.map { |f| Net::LDAP::Filter.contains(f, term) }.inject(:|)
         res = ldap.search(:attributes => fields, :filter => filter)
         if res
           if combined_res.is_a? Array  # we have results from a previous base search
@@ -248,7 +248,7 @@ class Directory
   end
 
   # search and merge results but don't change the database
-  # this assumes Setting.find_by_key("use_ldap").value = true, otherwise you wouldn't use this function
+  # this assumes Setting.get_value("use_ldap") = true, otherwise you wouldn't use this function
   def self.search_and_merge_ldap_and_database_results(term)
     results = []
     database_results = Directory.search_database(term)

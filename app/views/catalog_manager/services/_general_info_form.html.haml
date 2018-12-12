@@ -58,10 +58,11 @@
       - elsif service.pricing_maps.empty?
         %span{style: "padding-left: 15px;"}
           = t(:catalog_manager)[:service_form][:no_pricing_maps]
-  .form-group
-    = f.label :tag_list, t(:catalog_manager)[:organization_form][:tag_list], class: 'col-sm-3 control-label'
-    .col-sm-9
-      = f.select :tag_list, options_from_collection_for_select(Tag.all, :name, :humanized_name, service.tags.pluck(:name)), {}, class: 'form-control selectpicker', multiple: true, data: { none_selected_text: t(:constants)[:prompts][:none]}
+  - if (tags = Tag.for_services).any?
+    .form-group
+      = f.label :tag_list, t(:catalog_manager)[:organization_form][:tag_list], class: 'col-sm-3 control-label'
+      .col-sm-9
+        = f.select :tag_list, options_from_collection_for_select(tags, :name, :humanized_name, service.tags.pluck(:name)), {}, class: 'form-control selectpicker', multiple: true, data: { none_selected_text: t(:constants)[:prompts][:none]}
 
   %hr
   .pull-right

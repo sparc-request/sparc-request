@@ -47,7 +47,7 @@ RSpec.describe 'User creates study', js: true do
 
   context 'Using Epic' do
     stub_config("use_epic", true)
-    
+
     context 'selects "Publish Study in Epic" and selects answers that give study_type 1' do
       scenario 'should show note for study_type 1' do
         visit_create_study_form
@@ -59,7 +59,7 @@ RSpec.describe 'User creates study', js: true do
         bootstrap_select '#study_type_answer_certificate_of_conf_answer', 'Yes'
         wait_for_javascript_to_finish
 
-        expect(page).to have_content('De-identified  Research  Participant')
+        expect(page).to have_content('De-identified Research Participant')
       end
     end
     context 'selects "Publish Study in Epic" and selects answers that give study_type 11' do
@@ -77,7 +77,7 @@ RSpec.describe 'User creates study', js: true do
         bootstrap_select '#study_type_answer_restrict_sending_answer', 'No'
         wait_for_javascript_to_finish
 
-        expect(page).to have_content('Full Epic  Functionality: no  notification, no  pink  header, no  MyChart access.')
+        expect(page).to have_content('Full Epic Functionality: no notification, no pink header, no MyChart access.')
       end
     end
 
@@ -89,17 +89,19 @@ RSpec.describe 'User creates study', js: true do
         find('#study_selected_for_epic_false_button').click
         wait_for_javascript_to_finish
 
-        expect(page).to have_content(STUDY_TYPE_QUESTIONS_VERSION_3[5])
+        expect(page).to have_content(STUDY_TYPE_QUESTIONS_VERSION_3[5], normalize_ws: true)
 
         bootstrap_select '#study_type_answer_certificate_of_conf_no_epic_answer', 'No'
         wait_for_javascript_to_finish
 
-        expect(page).to have_content(STUDY_TYPE_QUESTIONS_VERSION_3[6])
+        expect(page).to have_content(STUDY_TYPE_QUESTIONS_VERSION_3[6], normalize_ws: true)
       end
     end
   end
 
   context 'Not Using Epic' do
+    stub_config("use_epic", false)
+
     before :each do
       visit_create_study_form
       wait_for_javascript_to_finish
@@ -107,12 +109,12 @@ RSpec.describe 'User creates study', js: true do
 
     it 'defaults to the "No" answer for the epic question' do
       expect(page).not_to have_selector('#study_selected_for_epic_true_button')
-      expect(page).to have_content(STUDY_TYPE_QUESTIONS_VERSION_3[5])
+      expect(page).to have_content(STUDY_TYPE_QUESTIONS_VERSION_3[5], normalize_ws: true)
     end
 
     it 'shows the second question when "No" is selected for the first' do
       bootstrap_select '#study_type_answer_certificate_of_conf_no_epic_answer', 'No'
-      expect(page).to have_content(STUDY_TYPE_QUESTIONS_VERSION_3[6])
+      expect(page).to have_content(STUDY_TYPE_QUESTIONS_VERSION_3[6], normalize_ws: true)
     end
 
     it 'does not show notes when the form is completed' do

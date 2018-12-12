@@ -20,13 +20,16 @@
 .col-md-6.catalog-center
   #search.form-group
     = text_field_tag 'service-query', nil, placeholder: t(:proper)[:catalog][:center][:search_placeholder], class: "search-services form-control input-lg", data: { srid: service_request.id, ssrid: sub_service_request.try(:id) }
+    %span.glyphicon.glyphicon-search.form-control-feedback.text-primary{ aria: { hidden: true } }
   #welcome-message
     - if organization
       = render 'catalogs/description', organization: organization, service_request: service_request, from_portal: from_portal
     - else
       = render 'catalogs/welcome'
   #calendar-blog.full
-    - if Setting.find_by_key("use_news_feed").value
+    - if Setting.get_value('use_news_feed')
       = render 'catalogs/news'
-    - if Setting.find_by_key("use_google_calendar").value
+    - if Setting.get_value('use_google_calendar')
       = render 'catalogs/calendar'
+  - if Setting.get_value('use_tableau') && tableau_url = Setting.get_value('homepage_tableau_url')
+    = render 'catalogs/tableau', tableau_url: tableau_url

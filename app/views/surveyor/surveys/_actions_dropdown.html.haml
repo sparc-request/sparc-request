@@ -1,0 +1,8 @@
+%select.selectpicker.survey-actions
+  %option
+    = t(:constants)[:prompts][:select_action]
+  %option.preview-survey{ data: { url: surveyor_survey_preview_path(survey), content: preview_survey } }
+  %option{ class: survey.active? ? "disable-survey" : "activate-survey", disabled: survey.questions.none? || survey.surveyable_type == 'Identity', data: { url: surveyor_survey_updater_path(survey, klass: 'survey', survey: { active: !survey.active }), method: :put, content: activate_survey(survey, survey.questions.none? || survey.surveyable_type == 'Identity') } }
+  %option.copy-survey{ data: { url: surveyor_survey_copy_path(survey), method: :post, content: copy_survey } }
+  %option.edit-survey{ disabled: survey.active?, data: { url: edit_surveyor_survey_path(survey), content: edit_survey(survey.active?) } }
+  %option.delete-survey{ disabled: survey.active? || survey.has_responses?, data: { survey_id: survey.id, content: delete_survey(survey.active? || survey.has_responses?) } }

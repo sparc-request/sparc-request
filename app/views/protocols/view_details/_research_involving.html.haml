@@ -41,7 +41,7 @@
           %tbody
             %tr
               %td
-                %label.col-lg-4
+                %label.col-lg-4{ title: t(:protocols)[:tooltips][:nct_number], data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }
                   = t(:protocols)[:studies][:research_involving][:humans][:nct_number]
                 .col-lg-8
                   = human_info.nct_number
@@ -53,7 +53,7 @@
                   = human_info.hr_number
             %tr
               %td
-                %label.col-lg-4
+                %label.col-lg-4{ title: t(:protocols)[:tooltips][:pro_number], data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }
                   = t(:protocols)[:studies][:research_involving][:humans][:pro_number]
                 .col-lg-8
                   = human_info.pro_number
@@ -80,10 +80,15 @@
             %tr
               %td
                 %label.col-lg-4
+                  = t(:protocols)[:studies][:research_involving][:humans][:initial_irb_approval_date]
+                .col-lg-8
+                  = format_date(human_info.initial_irb_approval_date)
+            %tr
+              %td
+                %label.col-lg-4
                   = t(:protocols)[:studies][:research_involving][:humans][:irb_approval_date]
                 .col-lg-8
                   = format_date(human_info.irb_approval_date)
-
             %tr
               %td
                 %label.col-lg-4
@@ -144,22 +149,22 @@
           %tbody
             %tr
               %td
-                %label.col-lg-4
+                %label.col-lg-4{ title: t(:protocols)[:tooltips][:ind_number], data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }
                   = t(:protocols)[:studies][:research_involving][:products][:ind_number]
                 .col-lg-8
                   = products_info.ind_number
             %tr
               %td
-                %label.col-lg-3
+                %label.col-lg-4
                   = t(:protocols)[:studies][:research_involving][:products][:ind_on_hold]
-                .col-lg-9
+                .col-lg-8
                   = products_info.ind_on_hold ? t(:constants)[:yes_select] : t(:constants)[:no_select]
             - if products_info.exemption_type.present?
               %tr
                 %td
-                  %label.col-lg-3
+                  %label.col-lg-4{ title: t(:protocols)[:tooltips][products_info.exemption_type.to_sym], data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }
                     = t(:protocols)[:studies][:research_involving][:products][:numbers][products_info.exemption_type.to_sym]
-                  .col-lg-9
+                  .col-lg-8
                     = products_info.inv_device_number
 
     / IP/Patents

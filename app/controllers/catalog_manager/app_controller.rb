@@ -56,6 +56,7 @@ class CatalogManager::AppController < ActionController::Base
   end
 
   def fulfillment_rights organization_id
-    {clinical_providers: ClinicalProvider.where(organization_id: organization_id)}
+    { clinical_providers: ClinicalProvider.where(organization_id: organization_id),
+      patient_registrars: PatientRegistrar.where(organization_id: organization_id)}
   end
 end

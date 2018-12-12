@@ -102,25 +102,48 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
     context "SubServiceRequest ready for fulfillment" do
       context "and in fulfillment" do
         context "user has go to cwf rights" do
-          it "should display the 'Go to Fulfillment' button, linking to CWF" do
-            protocol = stub_protocol
-            organization = stub_organization
-            sub_service_request = stub_sub_service_request(protocol: protocol,
-              organization: organization,
-              status: "draft")
-            allow(sub_service_request).to receive_messages(ready_for_fulfillment?: true,
-              in_work_fulfillment?: true)
-            logged_in_user = build_stubbed(:identity)
-            allow(logged_in_user).to receive_messages(unread_notification_count: 12345,
-              go_to_cwf_rights?: true)
-            stub_current_user(logged_in_user)
-            allow(sub_service_request).to receive(:notes).and_return(["1"])
-            allow(sub_service_request).to receive(:is_complete?).and_return(false)
+          context "ssr has been imported to fulfillment" do
+            it "should display the 'Go to Fulfillment' button, linking to CWF" do
+              protocol = stub_protocol
+              organization = stub_organization
+              sub_service_request = stub_sub_service_request(protocol: protocol,
+                organization: organization,
+                status: "draft")
+              allow(sub_service_request).to receive_messages(ready_for_fulfillment?: true,
+                in_work_fulfillment?: true, imported_to_fulfillment?: true)
+              logged_in_user = build_stubbed(:identity)
+              allow(logged_in_user).to receive_messages(unread_notification_count: 12345,
+                go_to_cwf_rights?: true)
+              stub_current_user(logged_in_user)
+              allow(sub_service_request).to receive(:notes).and_return(["1"])
+              allow(sub_service_request).to receive(:is_complete?).and_return(false)
 
-            render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
+              render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
 
-            expect(response).to have_tag("a", text: "Go to Fulfillment",
-              with: { href: "#{Setting.find_by_key("clinical_work_fulfillment_url").value}/sub_service_request/#{sub_service_request.id}" })
+              expect(response).to have_tag("a", text: "Go to Fulfillment",
+                with: { href: "#{Setting.get_value("clinical_work_fulfillment_url")}/sub_service_request/#{sub_service_request.id}" })
+            end
+          end
+          context "ssr has not yet been imported to fulfillment" do
+            it "should display the 'Pending' button" do
+              protocol = stub_protocol
+              organization = stub_organization
+              sub_service_request = stub_sub_service_request(protocol: protocol,
+                organization: organization,
+                status: "draft")
+              allow(sub_service_request).to receive_messages(ready_for_fulfillment?: true,
+                in_work_fulfillment?: true, imported_to_fulfillment?: false)
+              logged_in_user = build_stubbed(:identity)
+              allow(logged_in_user).to receive_messages(unread_notification_count: 12345,
+                go_to_cwf_rights?: true)
+              stub_current_user(logged_in_user)
+              allow(sub_service_request).to receive(:notes).and_return(["1"])
+              allow(sub_service_request).to receive(:is_complete?).and_return(false)
+
+              render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
+
+              expect(response).to have_tag("button", text: "Pending", with: {disabled: "disabled"})
+            end
           end
         end
 
@@ -260,6 +283,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
       ssr_id: "0001",
       status: opts[:status] || "NotDraft",             # default "NotDraft"
       candidate_owners: opts[:candidate_owners] || [], # default []
+      imported_to_fulfillment?: opts[:imported_to_fulfillment?].nil? || opts[:imported_to_fulfillment?], # default true
       ready_for_fulfillment?: opts[:ready_for_fulfillment?].nil? || opts[:ready_for_fulfillment?], # default true
       in_work_fulfillment?: opts[:in_work_fulfillment?].nil? || opts[:in_work_fulfillment?])       # default true
 

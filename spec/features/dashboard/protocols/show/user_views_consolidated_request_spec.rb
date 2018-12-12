@@ -34,8 +34,10 @@ RSpec.describe "User views Consolidated Request", js: true do
       visit dashboard_protocol_path(protocol)
       wait_for_javascript_to_finish
 
-      click_button 'View Consolidated Request'
-      first('.view-full-calendar-button').click
+      find('.view-consolidated').click
+      within '.dropdown.open .dropdown-menu' do
+        first('.view-full-calendar-button').click
+      end
       wait_for_javascript_to_finish
 
       expect(page).to have_selector('.full-calendar-modal', visible: true)
@@ -52,8 +54,10 @@ RSpec.describe "User views Consolidated Request", js: true do
       visit dashboard_protocol_path(protocol)
       wait_for_javascript_to_finish
 
-      click_button 'View Consolidated Request'
-      all('.view-full-calendar-button')[1].click
+      find('.view-consolidated').click
+      within '.dropdown.open .dropdown-menu' do
+        all('.view-full-calendar-button')[1].click
+      end
       wait_for_javascript_to_finish
 
       expect(page).to have_selector('.full-calendar-modal', visible: true)

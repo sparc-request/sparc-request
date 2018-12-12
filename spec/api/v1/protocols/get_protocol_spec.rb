@@ -66,7 +66,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         parsed_body         = JSON.parse(response.body)
         expected_attributes = build(:protocol).attributes.
                                 keys.
-                                reject { |key| ['study_phase', 'id', 'created_at', 'updated_at', 'deleted_at', 'research_master_id', 'sub_service_requests_count', 'rmid_validated', 'locked', 'budget_agreed_upon_date', 'initial_budget_sponsor_received_date', 'initial_amount', 'negotiated_amount', 'initial_amount_clinical_services', 'negotiated_amount_clinical_services'].include?(key) }.
+                                reject { |key| ['study_phase', 'id', 'created_at', 'updated_at', 'deleted_at', 'research_master_id', 'sub_service_requests_count', 'rmid_validated', 'locked', 'budget_agreed_upon_date', 'initial_budget_sponsor_received_date', 'initial_amount', 'negotiated_amount', 'initial_amount_clinical_services', 'negotiated_amount_clinical_services', 'guarantor_contact', 'guarantor_phone', 'guarantor_email'].include?(key) }.
                                 push('callback_url', 'sparc_id').
                                 sort
         expect(parsed_body['protocol'].keys.sort).to eq(expected_attributes)
@@ -81,7 +81,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         parsed_body         = JSON.parse(response.body)
         expected_attributes = build(:protocol).attributes.
                                 keys.
-                                reject { |key| ['study_phase', 'id', 'created_at', 'updated_at', 'deleted_at', 'research_master_id', 'sub_service_requests_count', 'rmid_validated', 'locked', 'budget_agreed_upon_date', 'initial_budget_sponsor_received_date', 'initial_amount', 'negotiated_amount', 'initial_amount_clinical_services', 'negotiated_amount_clinical_services'].include?(key) }.
+                                reject { |key| ['study_phase', 'id', 'created_at', 'updated_at', 'deleted_at', 'research_master_id', 'sub_service_requests_count', 'rmid_validated', 'locked', 'budget_agreed_upon_date', 'initial_budget_sponsor_received_date', 'initial_amount', 'negotiated_amount', 'initial_amount_clinical_services', 'negotiated_amount_clinical_services', 'guarantor_contact', 'guarantor_phone', 'guarantor_email'].include?(key) }.
                                 push('callback_url', 'sparc_id', 'arms', 'service_requests', 'project_roles', 'human_subjects_info').
                                 sort
 

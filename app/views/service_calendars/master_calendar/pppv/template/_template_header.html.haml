@@ -21,29 +21,21 @@
   %th.text-center.service-header.template-service-header{colspan: 4, rowspan: 2 }
     = t(:calendars)[:pppv][:header_fields][:service]
   %th.text-center.notes-width{ rowspan: 2 }
-    = link_to 'javascript:void(0)',
-      data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
-      title: t(:calendars)[:tooltips][:line_item_notes] do
+    %span{ title: t(:calendars)[:tooltips][:line_item_notes], data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' } }
       = t(:calendars)[:pppv][:header_fields][:notes]
   %th.text-center.status-width{ rowspan: 2 }
-    = link_to 'javascript:void(0)',
-      data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
-      title: t(:calendars)[:tooltips][:pppv_status] do
+    %span{ title: t(:calendars)[:tooltips][:pppv_status], data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' } }
       = t(:calendars)[:pppv][:header_fields][:status]
   %th.text-center.unit-cost-width{ colspan: 2 }
     = t(:calendars)[:pppv][:header_fields][:unit_cost]
 
   - unless portal
     %th.text-center.sm-col-width{ rowspan: 2 }
-      = link_to 'javascript:void(0)',
-        data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' },
-        title: t(:calendars)[:tooltips][:quantity_type] do
+      %span{ title: t(:calendars)[:tooltips][:quantity_type], data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' } }
         = t(:calendars)[:pppv][:header_fields][:quantity_type]
 
   %th.text-center.subject-count-header.xs-col-width{ rowspan: 2 }
-    = link_to 'javascript:void(0)',
-      data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
-      title: t(:calendars)[:tooltips][:subject_count] do
+    %span{ title: t(:calendars)[:tooltips][:subject_count], data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' } }
       = t(:calendars)[:pppv][:header_fields][:subject_count]
   %th.select-row-header.xs-col-width{ rowspan: 2 }
   %th.visit-group-select.text-center{ colspan: 5 }
@@ -57,14 +49,10 @@
 
 %tr
   %th.text-center.sm-col-width
-    = link_to 'javascript:void(0)',
-      data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' },
-      title: t(:calendars)[:tooltips][:service_rate] do
+    %span{ title: t(:calendars)[:tooltips][:service_rate], data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' } }
       = raw(t(:calendars)[:pppv][:header_fields][:service_rate])
   %th.text-center.sm-col-width
-    = link_to 'javascript:void(0)',
-      data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
-      title: t(:calendars)[:tooltips][:your_cost] do
+    %span{ title: t(:calendars)[:tooltips][:your_cost], data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' } }
       = raw(t(:calendars)[:pppv][:header_fields][:your_cost])
   = render 'service_calendars/master_calendar/pppv/visit_groups', visit_groups: visit_groups, page: page, pages: pages, tab: tab, portal: portal, admin: admin, review: review, merged: merged, consolidated: consolidated, statuses_hidden: statuses_hidden
 

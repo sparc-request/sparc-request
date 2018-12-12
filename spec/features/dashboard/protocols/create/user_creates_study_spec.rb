@@ -36,7 +36,7 @@ RSpec.describe 'User creates study', js: true do
 
   stub_config("use_epic", true)
   stub_config("research_master_enabled", true)
-  
+
   context "RMID server is up and running" do
     before :each do
       institution = create(:institution, name: "Institution")
@@ -79,16 +79,17 @@ RSpec.describe 'User creates study', js: true do
         fill_in 'protocol_project_roles_attributes_0_identity_id', with: 'Julia'
         page.execute_script("$('#protocol_project_roles_attributes_0_identity_id').trigger('focus');")
         wait_for_javascript_to_finish
+        expect(page).to have_selector('.tt-suggestion')
 
-        while (suggestion = first('.tt-suggestion')).nil?
-        end
-
-        suggestion.click
+        first('.tt-suggestion').click
+        wait_for_javascript_to_finish
 
         click_button 'Save'
-        wait_for_javascript_to_finish
-        expect(page).to have_current_path(dashboard_protocol_path(Study.first))
+
         expect(Study.count).to eq(1)
+        protocol_show = dashboard_protocol_path(Study.first)
+        wait_for_page(protocol_show)
+        expect(current_path).to eq(protocol_show)
       end
 
       scenario 'clicks other checkbox and sees text field' do
@@ -120,7 +121,7 @@ RSpec.describe 'User creates study', js: true do
       @sr         = create(:service_request_without_validations, status: 'first_draft')
       ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                     create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-      
+
       allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(true)
       StudyTypeQuestionGroup.create(active: true)
     end

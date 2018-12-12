@@ -177,14 +177,14 @@ def build_per_patient_per_visit_services
   let!(:catalog_manager)     { create(:catalog_manager, organization_id: program.id, identity_id: jpl6.id) }
   let!(:clinical_provider)   { create(:clinical_provider, organization_id: program.id, identity_id: jug2.id) }
   let!(:subsidy)             { Subsidy.auditing_enabled = false; create(:subsidy_without_validations, percent_subsidy: 0.45, sub_service_request_id: sub_service_request.id)}
-  let!(:subsidy_map)         { SubsidyMap.find_by_organization_id(program.id) }
+  let!(:subsidy_map)         { program.subsidy_map }
 end
 
 def build_service_request
   let!(:service_request)     { create(:service_request_without_validations, status: "draft") }
   let!(:institution)         { create(:institution,name: 'Medical University of South Carolina', order: 1, abbreviation: 'MUSC', is_available: 1)}
   let!(:provider)            { create(:provider,parent_id:institution.id,name: 'South Carolina Clinical and Translational Institute (SCTR)',order: 1,css_class: 'blue-provider', abbreviation: 'SCTR1',process_ssrs: 0, is_available: 1)}
-  let!(:program)             { create(:program,type:'Program',parent_id:provider.id,name:'Office of Biomedical Informatics',order:1, abbreviation:'Informatics', process_ssrs:  0, is_available: 1, use_default_statuses: false)}
+  let!(:program)             { create(:program,:with_subsidy_map,parent_id:provider.id,name:'Office of Biomedical Informatics',order:1, abbreviation:'Informatics', process_ssrs:  0, is_available: 1, use_default_statuses: false)}
   let!(:core)                { create(:core, parent_id: program.id, use_default_statuses: false)}
   let!(:core_17)             { create(:core, parent_id: program.id, abbreviation: "Nutrition") }
   let!(:core_13)             { create(:core, parent_id: program.id, abbreviation: "Nursing") }

@@ -24,13 +24,13 @@
         %h4.panel-title.text-center
           = organization_name_display(ssr_org, false)
       .panel-body.core-display
-        .description
+        %p.description
           = organization_description_display(ssr_org)
         .core-services
-          = render 'catalogs/accordion/services', services: ssr_org.services, service_request: service_request, sub_service_request: sub_service_request
+          = render 'catalogs/accordion/services', services: ssr_org.services.select{ |serv| serv.is_available != false && serv.current_pricing_map }, service_request: service_request, sub_service_request: sub_service_request
   - else
     .panel-group{ id: "program-#{program.id}"}
-      - cores.each do |c|
+      - cores.select{ |core| core.is_available != false }.each do |c|
         - locked = locked_ids.include?(c.id)
         .panel.panel-default
           .panel-heading.core-header{ class: [css_class(program), locked ? 'bg-danger text-danger' : ''], data: { toggle: 'collapse', target: ".core-#{c.id}", parent: "#program-#{program.id}" } }
@@ -38,8 +38,7 @@
               = organization_name_display(c, locked)
           .panel-collapse.collapse{ class: "core-#{c.id}" }
             .panel-body.core-display
-              .description
+              %p.description
                 = organization_description_display(c)
               .core-services
-                = render 'catalogs/accordion/services', services: c.services, service_request: service_request, sub_service_request: sub_service_request
-
+                = render 'catalogs/accordion/services', services: c.services.select{ |serv| serv.is_available != false && serv.current_pricing_map }, service_request: service_request, sub_service_request: sub_service_request

@@ -33,27 +33,37 @@
 .calendar-container
   width: 100%
 
-  .black-note
-    color: black
-
-  .blue-note
-    color: blue
-
-  .blue-badge
-    background-color: blue
+  .zero-cell
+    color: lightgrey
 
   .divider
     width: 5px
     height: auto
     display: inline-block
 
-  .notes:hover
+  button.notes
+    position: relative
+
+    &:hover
+      .note-icon
+        &.black-note
+          color: black
+        &.blue-note
+          color: blue
+
+      .badge
+        &.blue-badge
+          background-color: blue
+
     .note-icon
       color: grey
+      font-size: 18px
+
     .badge
       background-color: grey
-  .notes.btn-link
-    padding: 0px
+      position: absolute
+      top: -10px
+      left: 10px
 
   .panel-title
     width: 100%
@@ -80,7 +90,7 @@
   .service-calendar-column.btn-xs
     padding: 0px 2px
 
-  .table-bordered
+  .table
     width: 100%
     .non-scrolling-table
       height: 100%
@@ -173,6 +183,10 @@
         width: 55.1%
       td.total-costs-width-template
         width: 41.7%
+
+      td
+        vertical-align: middle
+
       .unit-type.col-sm-6,
       .qty-type
         border-right: 1px solid #DDD

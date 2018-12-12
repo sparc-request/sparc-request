@@ -57,12 +57,10 @@ class Identity < ApplicationRecord
   has_many :protocols, through: :project_roles
   has_many :received_messages, class_name: 'Message', foreign_key: 'to'
   has_many :received_notifications, class_name: "Notification", foreign_key: 'other_user_id'
-  has_many :received_toast_messages, class_name: 'ToastMessage', foreign_key: 'to', dependent: :destroy
   has_many :responses, dependent: :destroy
   has_many :response_filters, dependent: :destroy
   has_many :sent_messages, class_name: 'Message', foreign_key: 'from'
   has_many :sent_notifications, class_name: "Notification", foreign_key: 'originator_id'
-  has_many :sent_toast_messages, class_name: 'ToastMessage', foreign_key: 'from', dependent: :destroy
   has_many :service_providers, dependent: :destroy
   has_many :studies, -> { where("protocols.type = 'Study'")}, through: :project_roles, source: :protocol
   has_many :super_users, dependent: :destroy
@@ -75,6 +73,7 @@ class Identity < ApplicationRecord
   validates_presence_of :email
   validates_format_of   :email, with: email_regexp, allow_blank: true, if: :email_changed?
   validates             :ldap_uid, uniqueness: {case_sensitive: false}, presence: true
+  validates             :orcid, format: { with: /\A([0-9]{4}-){3}[0-9]{3}[0-9X]\z/ }, allow_blank: true
 
   validates_presence_of     :password, if: :password_required?
   validates_length_of       :password, within: password_length, allow_blank: true
@@ -93,7 +92,7 @@ class Identity < ApplicationRecord
   end
 
   def suggestion_value
-    Setting.find_by_key("use_ldap").value && Setting.find_by_key("lazy_load_ldap").value ? ldap_uid : id
+    Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") ? ldap_uid : id
   end
 
   ###############################################################################
@@ -116,7 +115,7 @@ class Identity < ApplicationRecord
 
   # Return the netid (ldap_uid without the @musc.edu)
   def netid
-    if Setting.find_by_key("use_ldap").value then
+    if Setting.get_value("use_ldap") then
       return ldap_uid.sub(/@#{Directory::DOMAIN}/, '')
     else
       return ldap_uid
@@ -133,7 +132,7 @@ class Identity < ApplicationRecord
   ###############################################################################
 
   def is_site_admin?
-    Setting.find_by_key("site_admins").value.include?(self.ldap_uid)
+    Setting.get_value("site_admins").include?(self.ldap_uid)
   end
 
   def is_super_user?
@@ -166,7 +165,7 @@ class Identity < ApplicationRecord
   end
 
   def is_funding_admin?
-    Setting.find_by_key("funding_admins").value.include?(ldap_uid)
+    Setting.get_value("funding_admins").include?(ldap_uid)
   end
 
   ###############################################################################
@@ -178,7 +177,7 @@ class Identity < ApplicationRecord
   end
 
   def self.find_or_create(id)
-    if Setting.find_by_key("use_ldap").value && Setting.find_by_key("lazy_load_ldap").value
+    if Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap")
       return Directory.find_or_create(id)
     else
       return self.find(id)

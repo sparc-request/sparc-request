@@ -26,7 +26,7 @@ RSpec.describe 'User edits Organization Pricing', js: true do
 
   before :each do
     @institution     = create(:institution)
-    @provider        = create(:provider, parent_id: @institution.id)
+    @provider        = create(:provider, :with_subsidy_map, parent_id: @institution.id)
     @catalog_manager = create(:catalog_manager, organization_id: @institution.id, identity_id: Identity.where(ldap_uid: 'jug2').first.id, edit_historic_data: true)
     create(:pricing_setup, organization: @provider, display_date: Date.today - 1, effective_date: Date.today - 1)
   end
@@ -92,12 +92,10 @@ RSpec.describe 'User edits Organization Pricing', js: true do
         find(".edit_pricing_setup_link").click
         wait_for_javascript_to_finish
 
-        expect(find_by_id('pricing_setup_display_date')).to be_disabled
-        expect(find_by_id('pricing_setup_effective_date')).to be_disabled
-        expect(first('.modal-body div.toggle.btn')).to be_disabled
+        expect(find('#pricing_setup_display_date')).to be_disabled
+        expect(find('#pricing_setup_effective_date')).to be_disabled
+        expect(page).to have_selector('[name="pricing_setup[charge_master]"] + .toggle[disabled=disabled]')
       end
-
     end
   end
-
 end

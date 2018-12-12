@@ -170,9 +170,8 @@ RSpec.describe 'service request list', js: true do
             first_ssr.send_notification_select.click
             first_ssr.wait_until_recipients_visible
 
-            accept_alert(with: 'You can not send a message to yourself.') do
-                first_ssr.recipients.find { |li| li.text == 'Primary-pi: John Doe' }.click
-            end
+            first_ssr.recipients.find { |li| li.text == 'Primary-pi: John Doe' }.click
+            accept_confirm
           end
         end
 
@@ -221,6 +220,7 @@ RSpec.describe 'service request list', js: true do
     end
     let!(:organization) do
       create(:organization,
+        :process_ssrs,
         type: 'Institution',
         name: 'Megacorp',
         admin: user,

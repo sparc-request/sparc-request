@@ -28,9 +28,7 @@
 
 %br
 
-Thank you! Please contact the SUCCESS Center at 792-8300 or
-= link_to Setting.find_by_key("contact_us_mail_to").value, "mailto:#{Setting.find_by_key("contact_us_mail_to").value}"
-with any questions.
+= raw t('mailer.issue_contact', department_name: Setting.get_value('contact_us_department'), phone: Setting.get_value('contact_us_phone'), email: Setting.get_value('contact_us_mail_to'))
 
 :scss
   table, th, td {

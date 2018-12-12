@@ -69,8 +69,8 @@ RSpec.describe EpicInterface do
 
   let!(:epic_interface) {
     EpicInterface.new(
-        'wsdl' => "http://localhost:#{server.port}/wsdl",
-        'study_root' => '1.2.3.4')
+        'epic_wsdl' => "http://localhost:#{server.port}/wsdl",
+        'epic_study_root' => '1.2.3.4')
   }
 
   build_study_type_question_groups

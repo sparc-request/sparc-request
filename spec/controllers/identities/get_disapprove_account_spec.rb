@@ -34,26 +34,6 @@ RSpec.describe IdentitiesController do
       expect(assigns(:identity)).to eq(identity)
     end
 
-    it 'should update approved status' do
-      identity = create(:identity)
-
-      get :disapprove_account, params: {
-        id: identity.id
-      }, xhr: true
-
-      expect(identity.reload.approved).to eq(false)      
-    end
-
-    it 'should send notifications' do
-      identity = create(:identity)
-
-      expect {
-        get :disapprove_account, params: {
-          id: identity.id
-        }, xhr: true
-      }.to change(ActionMailer::Base.deliveries, :count).by(1)
-    end
-
     it 'should render template' do
       identity = create(:identity)
 
@@ -73,5 +53,62 @@ RSpec.describe IdentitiesController do
 
       expect(controller).to respond_with(:ok)
     end
+
+    context 'identity.approved is false' do
+      it 'should send not notifications' do
+        identity = create(:identity, approved: false)
+
+        expect {
+          get :disapprove_account, params: {
+            id: identity.id
+          }, xhr: true
+        }.to change(ActionMailer::Base.deliveries, :count).by(0)
+      end
+    end
+
+    context 'identity.approved is true' do
+      it 'should send notifications' do
+        identity = create(:identity, approved: true)
+
+        expect {
+          get :disapprove_account, params: {
+            id: identity.id
+          }, xhr: true
+        }.to change(ActionMailer::Base.deliveries, :count).by(1)
+      end
+
+      it 'should update approved status' do
+        identity = create(:identity, approved: true)
+
+        get :disapprove_account, params: {
+            id: identity.id
+        }, xhr: true
+
+        expect(identity.reload.approved).to eq(false)
+      end
+    end
+
+    context 'Identity.approved is nil' do
+      it 'should update approved status' do
+      identity = create(:identity)
+
+        get :disapprove_account, params: {
+            id: identity.id
+        }, xhr: true
+
+        expect(identity.reload.approved).to eq(false)
+      end
+
+      it 'should send notifications' do
+      identity = create(:identity)
+
+        expect {
+          get :approve_account, params: {
+            id: identity.id
+          }, xhr: true
+        }.to change(ActionMailer::Base.deliveries, :count).by(1)
+      end
+    end
+
   end
 end

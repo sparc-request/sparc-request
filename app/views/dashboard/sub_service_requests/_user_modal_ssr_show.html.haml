@@ -55,7 +55,7 @@
                     %td
                       = link_to document.document_file_name, document.document.url
                     %td
-                      = service_list[sub_service_request.organization_id][:name]
+                      = sub_service_request.org_tree_display
         - if sub_service_request.eligible_for_subsidy?
           = render 'dashboard/subsidies/subsidy', sub_service_request: sub_service_request, admin: false
 

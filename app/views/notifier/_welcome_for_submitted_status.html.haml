@@ -22,12 +22,12 @@
 - if @role != 'none'
   %p= I18n.t('notifier.body1', :full_name => @full_name)
   %p.inline
-    = raw(I18n.t('notifier.non_service_provider_submitted_message', :welcome => welcome_text, :href => link_to( t(:notifier)[:sparc_dashboard],@portal_link), :application_title => t(:mailer)[:application_title], :root_url => Setting.find_by_key("root_url").value, :protocol_type => @protocol.type.downcase))
-  %p= t(:notifier)[:note]
+    = raw(I18n.t('notifier.non_service_provider_submitted_message', :welcome => welcome_text, :href => link_to( t(:notifier)[:sparc_dashboard],@portal_link), :application_title => t(:mailer)[:application_title], :root_url => Setting.get_value("root_url"), :protocol_type => @protocol.type.downcase))
+  %p= t(:notifier)[:epic_notice]
 - else
   %p= I18n.t('notifier.body1', :full_name => @full_name)
   %p.inline
-    = raw(I18n.t('notifier.service_provider_submitted_message', :welcome => welcome_text, :href => link_to( t(:notifier)[:sparc_dashboard],@portal_link), :application_title => t(:mailer)[:application_title], :root_url => Setting.find_by_key("root_url").value, :protocol_type => @protocol.type.downcase))
+    = raw(I18n.t('notifier.service_provider_submitted_message', :welcome => welcome_text, :href => link_to( t(:notifier)[:sparc_dashboard],@portal_link), :application_title => t(:mailer)[:application_title], :root_url => Setting.get_value("root_url"), :protocol_type => @protocol.type.downcase))
 %br
 - if @portal_text
   %p

@@ -18,8 +18,10 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %tr.total-one-time-fee-cost-per-study
-  %th.total-one-time-fee-width{ colspan: 10 }
-    = t(:calendars)[:otf][:totals][:total_costs]
+  %td.total-one-time-fee-width{ colspan: 10 }
+    %span{ title: t(:calendars)[:tooltips][:otf_total_costs], data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }
+      %strong
+        = t(:calendars)[:otf][:totals][:total_costs]
   %td.text-center
     %strong
       = display_total_cost_per_study_otfs(service_request)

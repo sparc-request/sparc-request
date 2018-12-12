@@ -85,7 +85,7 @@ RSpec.describe 'view SSR back button', js: true do
       click_button 'View'
       wait_for_javascript_to_finish
 
-      expect(page).to_not have_selector('.view-ssr-back-button')
+      expect(page).to have_no_selector('.view-ssr-back-button')
     end
   end
 

@@ -102,8 +102,6 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   def destroy
     @protocol = @sub_service_request.protocol
     if @sub_service_request.destroy
-      # Delete all related toast messages
-      ToastMessage.where(sending_class_id: params[:id], sending_class: 'SubServiceRequest').each(&:destroy)
       notifier_logic = NotifierLogic.new(@sub_service_request.service_request, nil, current_user)
       notifier_logic.ssr_deletion_emails(deleted_ssr: @sub_service_request, ssr_destroyed: false, request_amendment: false, admin_delete_ssr: true)
 
@@ -212,6 +210,7 @@ private
         :service_requester_id,
         :requester_contacted_date,
         :submitted_at,
+        :imported_to_fulfillment,
         line_items_attributes: [:service_request_id,
           :sub_service_request_id,
           :service_id,

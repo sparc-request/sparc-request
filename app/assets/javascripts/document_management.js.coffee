@@ -55,17 +55,3 @@ $(document).ready ->
       $('#doc-type-other-field').show()
     else
       $('#doc-type-other-field').hide()
-
-  $(document).on 'click', '#note-new', ->
-    notable_type = $(this).data('notable-type')
-    notable_id = $(this).data('notable-id')
-    $.ajax
-      type: 'GET'
-      url: '/notes/new'
-      data:
-        note:
-          notable_type: notable_type
-          notable_id: notable_id
-        in_dashboard: false
-        service_request_id: getSRId()
-    return false

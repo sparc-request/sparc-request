@@ -25,11 +25,7 @@ module Dashboard::EpicQueuesHelper
   end
 
   def format_pis(protocol)
-    pis = protocol.principal_investigators.map(&:full_name).each do |pi|
-      "#{pi}"
-    end
-    #bootstrap-table can't search within arrays
-    pis.join(',')
+    protocol.principal_investigators.map(&:full_name).join(', ')
   end
 
   def epic_queue_delete_button(epic_queue)
@@ -68,10 +64,5 @@ module Dashboard::EpicQueuesHelper
     else
       ''
     end
-  end
-
-  def display_epic_notes(epic_queue_record)
-    has_notes = epic_queue_record.notes.length > 0
-    raw(content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-list-alt note-icon #{has_notes ? "blue-note" : "black-note"}", aria: {hidden: "true"}))+raw(content_tag(:span, epic_queue_record.notes.length, class: "#{has_notes ? "badge blue-badge" : "badge"}", id: "epicqueuerecord_#{epic_queue_record.id}_notes")), type: 'button', class: 'btn btn-link form-control actions-button notes', data: {notable_id: epic_queue_record.id, notable_type: "EpicQueueRecord"}))
   end
 end

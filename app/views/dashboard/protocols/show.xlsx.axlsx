@@ -18,16 +18,21 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#################
+### VARIABLES ###
+#################
+
 wb = xlsx_package.workbook
-default = wb.styles.add_style alignment: { horizontal: :left }
-bold_default = wb.styles.add_style alignment: {horizontal: :left}, b: true
-centered = wb.styles.add_style alignment: {horizontal: :center}
+default       = wb.styles.add_style alignment: { horizontal: :left }
+bold_default  = wb.styles.add_style alignment: {horizontal: :left}, b: true
+bold_centered = wb.styles.add_style alignment: {horizontal: :center}, b: true
+bold_right    = wb.styles.add_style alignment: { horizontal: :right }, b: true
 # centered = wb.styles.add_style alignment: { horizontal: :center }
 # bordered = wb.styles.add_style :border=> {:style => :thin, :color => "00000000"}
 # centered_bordered = wb.styles.add_style :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
 money = wb.styles.add_style :format_code => '$* #,##0.00_);[Red]$* - #,###.00;$* - ??_;'
 bold_money = wb.styles.add_style :format_code => '$* #,##0.00_);[Red]$* - #,###.00;$* - ??_;', b: true
-percent = wb.styles.add_style :num_fmt => 9, b: true, alignment: { horizontal: :left }
+percent = wb.styles.add_style :num_fmt => 9, alignment: { horizontal: :left }
 hide_zeros = wb.styles.add_style format_code: '#;[Red]-#; ;', alignment: { horizontal: :center }
 row_header_style = wb.styles.add_style b: true
 header_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :left, wrap_text: true}
@@ -38,102 +43,209 @@ org_header_style = wb.styles.add_style sz: 12, b: true, bg_color: 'CCCCCC', alig
 
 arm_totals_ref = {}
 
+@negotiated_reimbursement_label  = "Sponsor Unit Cost (Negotiated Reimbursement)"
+@research_cost_label             = "Research Cost (Your Cost)"
+
 statuses = PermissibleValue.get_hash('status')
+@industry_funded = @protocol.industry_funded?
+
+#########################
+### Arm Sheet Methods ###
+#########################
+def arm_header_row_cols
+  cols  = ["Selected Services", "CPT Code", "Status", "Service Rate"]
+  cols << @negotiated_reimbursement_label if @industry_funded
+  cols += [@research_cost_label, "# of Subjects"]
+
+  cols
+end
+
+def arm_header_row_totals
+  cols  = ["Total Research Cost Per Patient"]
+  cols.unshift "Total Sponsor Unit Cost Per Patient" if @industry_funded
+
+  cols
+end
+
+def arm_label_row_cols(arm)
+  cols  = [arm.name, "", "", "", "", ""]
+  cols << "" if @industry_funded
+
+  cols
+end
+
+def label_row_cols
+  cols  = ["", "", "", "", "", ""]
+  cols << "" if @industry_funded
+
+  cols
+end
+
+#############################
+### Summary Sheet Methods ###
+#############################
+def summary_authorized_users_header_row
+  row  = ["Authorized Users", "", "", "", "", "", "", ""]
+  row << "" if @industry_funded
+
+  row
+end
+
+def summary_arms_header_row
+  row  = ["Protocol Arms", "", "", "", ""]
+  row += ["", "", "", ""] if @industry_funded
+
+  row
+end
+
+def summary_arms_subheader_row
+  row  = ["Arm", "", "# of Subjects", "# of Visits", ""]
+  row += ["", "", "", ""] if @industry_funded
+
+  row
+end
+
+def other_services_header_row
+  row  = ["Other Services", "", "Service Rate"]
+  row << @negotiated_reimbursement_label if @industry_funded
+  row += [@research_cost_label, "Procedure Occurence (N)"]
+  row += ["F&A Applies?", "Total Cost to Sponsor (+OH)", "Margin to Cover Personnel Effort", ""] if @industry_funded
+
+  row
+end
+
+def other_services_subheader_row
+  row  = ["Study Level Services (Pass Through)", "Status", "", "", ""]
+  row += ["", "", "", ""] if @industry_funded
+
+  row
+end
+
+def other_services_total_row(other_services_start_row, previous_row)
+  row  = ["Study Level Services: Total Cost", "", ""]
+  row += ["", "", "", ""] if @industry_funded
+  row << "=Sum(#{@industry_funded ? 'H' : 'D'}#{other_services_start_row}:#{@industry_funded ? 'H' : 'D'}#{previous_row})"
+  row << "=SUM(I#{other_services_start_row}:I#{previous_row})" if @industry_funded
+
+  row
+end
+
+def study_budget_header_row
+  row  = ["Study Budget", "", "", "", ""]
+  row += ["", "", "", ""] if @industry_funded
+
+  row
+end
+
+def sanitize_name(name)
+  name.gsub(/\[|\]|\*|\/|\\|\?|\:/, ' ').truncate(31)
+end
+
+################
+### WORKBOOK ###
+################
 
 # Page for each arm
 @protocol.arms.includes(:visit_groups, line_items_visits: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups] ] ] ], service_request: :protocol]}).each do |arm|
-  wb.add_worksheet(name: "#{arm.sanitized_name}") do |sheet|
+  wb.add_worksheet(name: "#{sanitize_name(arm.name)}") do |sheet|
 
     #Repeating protocol information on the top of each page
-    protocol_header_row = ["#{@protocol.class.to_s} Information"] + [""] * (6 + (arm.visit_groups.count * 2) + 2)
+    protocol_header_row = ["#{@protocol.class.to_s} Information"] + [""] * ((@industry_funded ? 6 : 5) + (arm.visit_groups.count * 2) + (@industry_funded ? 2 : 1))
     sheet.add_row protocol_header_row, :style => header_style
-    sheet.add_row ["SPARC #{@protocol.class.to_s} ID:",@protocol.id], :style => default
-    sheet.add_row ["RMID:", @protocol.research_master_id]
-    sheet.add_row ["Short Title:",@protocol.short_title], :style => default
-    sheet.add_row ["Primary PI Name:", @protocol.primary_principal_investigator.full_name], :style => default
-    sheet.add_row ["Indirect Cost Rate:", "=Summary!B10"], style: percent
+    sheet.add_row ["SPARC #{@protocol.class.to_s} ID:",@protocol.id], style: [bold_default, default]
+    sheet.add_row ["RMID:", @protocol.research_master_id], style: [bold_default, default]
+    sheet.add_row ["Short Title:",@protocol.short_title], style: [bold_default, default]
+    sheet.add_row ["Primary PI Name:", @protocol.primary_principal_investigator.full_name], style: [bold_default, default]
+    sheet.add_row ["Indirect Cost Rate:", "=Summary!B10"], style: [bold_default, percent]
 
     indirect_cost_ref = sheet.rows.last.cells.last.r
 
     sheet.add_row []
-    sheet.add_row ["#{arm.name}: Subject Count", arm.subject_count]
+    sheet.add_row ["#{arm.name}: Subject Count", arm.subject_count], style: [bold_default, default]
 
     subject_count_ref = sheet.rows.last.cells.last.r
 
     #Header Section
-    research_cost_label = "Research Cost (Your Cost)"
-    negotiated_reimbursement_label = "Sponsor Unit Cost (Negotiated Reimbursement)"
-
-    arm_header_row = ["Selected Services", "CPT Code", "Status", "Service Rate", negotiated_reimbursement_label, research_cost_label, "# of Subjects"]
-    arm_label_row = [arm.sanitized_name, "", "", "", "", "", ""]
-    label_row = ["", "", "", "", "", "", ""]
-    arm_label_style = [sub_header_style] * arm_label_row.count
-    arm_header_style = [header_style] * arm_header_row.count
-    cells_to_merge = []
+    arm_header_row    = arm_header_row_cols
+    arm_label_row     = arm_label_row_cols(arm)
+    label_row         = label_row_cols
+    arm_label_style   = [sub_header_style] * arm_label_row.count
+    arm_header_style  = [header_style] * arm_header_row.count
+    cells_to_merge    = []
 
     #Column headers and labels for each visit_group, meaning each visit / appointment
     arm_start = sheet.rows.length
-    vg_start = arm_label_row.length
+    vg_start  = arm_label_row.length
 
     arm.visit_groups.each_with_index do |vg, index|
-      arm_header_row += [vg.name, ""]
-      arm_label_row += [vg.day, ""]
-      arm_header_style += [header_center_style, header_center_style]
-      arm_label_style += [sub_header_center_style, sub_header_center_style]
-      label_row += ["R", "T"]
-      last_group = arm_header_row.length - 2
-      cells_to_merge << {from: Axlsx::cell_r(last_group, arm_start), to: Axlsx::cell_r(last_group + 1, arm_start)}
-      cells_to_merge << {from: Axlsx::cell_r(last_group, arm_start+1), to: Axlsx::cell_r(last_group + 1, arm_start+1)}
+      arm_header_row    += [vg.name, ""]
+      arm_label_row     += [vg.day, ""]
+      arm_header_style  += [header_center_style, header_center_style]
+      arm_label_style   += [sub_header_center_style, sub_header_center_style]
+      label_row         += ["R", "T"]
+      last_group         = arm_header_row.length - 2
+      cells_to_merge    << {from: Axlsx::cell_r(last_group, arm_start), to: Axlsx::cell_r(last_group + 1, arm_start)}
+      cells_to_merge    << {from: Axlsx::cell_r(last_group, arm_start+1), to: Axlsx::cell_r(last_group + 1, arm_start+1)}
     end
 
-    arm_header_row += ["Total Sponsor Unit Cost Per Patient", "Total Research Cost Per Patient"]
-    arm_label_row += ["", ""]
-    arm_header_style += [header_style, header_style]
-    arm_label_style += [sub_header_style, sub_header_style]
+    arm_header_row    += arm_header_row_totals
+    arm_label_row     << ""
+    arm_header_style  << header_style
+    arm_label_style   << sub_header_style
+
+    if @industry_funded
+      arm_label_row     << ""
+      arm_header_style  << header_style
+      arm_label_style   << sub_header_style
+    end
 
     sheet.add_row arm_header_row, :style => arm_header_style
 
-    research_cost_column = Axlsx::col_ref(sheet.rows.last.cells.index{|c| c.value == research_cost_label})
-    negotiated_reimbursement_column = Axlsx::col_ref(sheet.rows.last.cells.index{|c| c.value == negotiated_reimbursement_label})
+    research_cost_column            = Axlsx::col_ref(sheet.rows.last.cells.index{|c| c.value == @research_cost_label})
+    negotiated_reimbursement_column = Axlsx::col_ref(sheet.rows.last.cells.index{|c| c.value == @negotiated_reimbursement_label}) if @industry_funded
 
     sheet.add_row arm_label_row, :style => arm_label_style
 
     r_columns = sheet.rows.last.cells[vg_start, arm.visit_groups.count * 2].each_slice(2).map{|cs| cs.first.r[/([A-Z]+)/]}
     r_rows = []
 
-    sheet.add_row label_row.flatten, :style => centered
+    sheet.add_row label_row.flatten, :style => bold_centered
 
     #Displays line_items_visits, grouped by organization from the sub service request
     arm.sub_service_requests.distinct.includes(:organization).each do |sub_service_request|
       next if @statuses_hidden.include?(sub_service_request.status)
 
-      sheet.add_row ["#{sub_service_request.organization.name}(#{sub_service_request.ssr_id})"] + [""] * (6 + (arm.visit_groups.count * 2) + 2), style: org_header_style
+      sheet.add_row ["#{sub_service_request.organization.name}(#{sub_service_request.ssr_id})"] + [""] * ((@industry_funded ? 6 : 5) + (arm.visit_groups.count * 2) + (@industry_funded ? 2 : 1)), style: org_header_style
 
       current_row = sheet.rows.length + 1
 
       arm.line_items_visits.select{ |liv| liv.line_item.sub_service_request_id == sub_service_request.id }.each do |liv|
-        @line_item_style_array = [default, default, default, money, money, money, default]
+        line_item_style_array  = [default, default, default, money]
+        line_item_style_array << money if @industry_funded
+        line_item_style_array += [money, default]
 
-        line_item_row = [ liv.line_item.service.name,
-                          liv.line_item.service.cpt_code,
-                          statuses[sub_service_request.status],
-                          cents_to_dollars(liv.line_item.service.current_effective_pricing_map.full_rate),
-                          cents_to_dollars(liv.line_item.service.current_effective_pricing_map.full_rate),
-                          cents_to_dollars(liv.line_item.applicable_rate),
-                          liv.subject_count ]
+        line_item_row          = [liv.line_item.service.name, liv.line_item.service.cpt_code, statuses[sub_service_request.status], cents_to_dollars(liv.line_item.service.current_effective_pricing_map.full_rate)]
+        line_item_row         << cents_to_dollars(liv.line_item.service.current_effective_pricing_map.full_rate) if @industry_funded
+        line_item_row         += [cents_to_dollars(liv.line_item.applicable_rate), liv.subject_count]
 
         liv.ordered_visits.each_with_index do |visit, index|
-          line_item_row += [visit.research_billing_qty, visit.insurance_billing_qty]
-          @line_item_style_array += [hide_zeros, hide_zeros]
+          line_item_row         += [visit.research_billing_qty, visit.insurance_billing_qty]
+          line_item_style_array += [hide_zeros, hide_zeros]
         end
 
-        total_sponsor_unit_costs_formula = "=#{negotiated_reimbursement_column + current_row.to_s}*(#{r_columns.join(current_row.to_s + '+') + current_row.to_s})"
-        total_research_costs_formula = "=#{research_cost_column + current_row.to_s}*(#{r_columns.join(current_row.to_s + '+') + current_row.to_s})"
-        line_item_row += [total_sponsor_unit_costs_formula, total_research_costs_formula]
-        @line_item_style_array += [money, money]
+        if @industry_funded
+          total_sponsor_unit_costs_formula = "=#{negotiated_reimbursement_column + current_row.to_s}*(#{r_columns.join(current_row.to_s + '+') + current_row.to_s})"
+          line_item_row                   << total_sponsor_unit_costs_formula
+          line_item_style_array           << money
+        end
 
-        sheet.add_row line_item_row.flatten, :style => @line_item_style_array
-        r_rows << current_row
+        total_research_costs_formula = "=#{research_cost_column + current_row.to_s}*(#{r_columns.join(current_row.to_s + '+') + current_row.to_s})"
+        line_item_row                << total_research_costs_formula
+        line_item_style_array        << money
+
+        sheet.add_row line_item_row.flatten, :style => line_item_style_array
+
+        r_rows      << current_row
         current_row += 1
       end
     end
@@ -142,41 +254,52 @@ statuses = PermissibleValue.get_hash('status')
 
     current_row = sheet.rows.length
 
-    total_research_cost_ppv = ["Total per Patient per Visit (-OH)"] + [""] * 6
-
-    total_research_cost_style = [default] * 7
+    total_research_cost_ppv   = ["Total per Patient per Visit (-OH)"] + [""] * (@industry_funded ? 6 : 5)
+    total_research_cost_style = [bold_default] * (@industry_funded ? 7 : 6)
 
     r_columns.each do |col|
       r_col_with_rows = (col + r_rows.join(" " + col)).split(" ")
-      research_cost_col_with_rows = (negotiated_reimbursement_column + r_rows.join(" " + negotiated_reimbursement_column)).split(" ")
+      research_cost_col_with_rows =
+        if @industry_funded
+          (negotiated_reimbursement_column + r_rows.join(" " + negotiated_reimbursement_column)).split(" ")
+        else
+          (research_cost_column + r_rows.join(" " + research_cost_column)).split(" ")
+        end
       multiplied = r_col_with_rows.zip(research_cost_col_with_rows).map{|vals| vals.join("*")}
       total_research_cost_ppv += [ "=#{multiplied.join('+')}", "" ]
-      total_research_cost_style += [ money, default ]
+      total_research_cost_style += [ bold_money, default ]
     end
 
     totals_column = Axlsx::col_ref(total_research_cost_ppv.length)
     total_research_cost_ppv << "=SUM(#{totals_column + r_rows.first.to_s}:#{totals_column + r_rows.last.to_s})"
-    total_research_cost_style += [ money, default ]
+    total_research_cost_style += [ bold_money, default ]
 
     sheet.add_row total_research_cost_ppv, style: total_research_cost_style
 
     total_research_row = sheet.rows.length
 
-    total_overheard_cost_ppv = ["Total Overhead Cost per Visit"] + [""] * 6
+    if @industry_funded
+      total_overheard_cost_ppv = ["Total Overhead Cost per Visit"] + [""] * (@industry_funded ? 6 : 5)
 
-    (r_columns + [totals_column]).each do |col|
-      r_col_with_rows = (col + r_rows.join(" " + col)).split(" ")
-      total_overheard_cost_ppv += ["=#{col + total_research_row.to_s} * #{indirect_cost_ref}", ""]
+      (r_columns + [totals_column]).each do |col|
+        r_col_with_rows = (col + r_rows.join(" " + col)).split(" ")
+        total_overheard_cost_ppv += ["=#{col + total_research_row.to_s} * #{indirect_cost_ref}", ""]
+      end
+
+      sheet.add_row total_overheard_cost_ppv, style: total_research_cost_style
+
+      total_overhead_row = sheet.rows.length
     end
 
-    sheet.add_row total_overheard_cost_ppv, style: total_research_cost_style
-
-    total_overhead_row = sheet.rows.length
-
-    total_sponsor_cost_ppv = ["Total per Patient per Visit (+OH)"] + [""] * 6
+    total_sponsor_cost_ppv = ["Total per Patient per Visit (+OH)"] + [""] * (@industry_funded ? 6 : 5)
 
     (r_columns + [ totals_column ]).each do |col|
-      total_sponsor_cost_ppv += ["=#{col + total_research_row.to_s} + #{col + total_overhead_row.to_s}", ""]
+      total_sponsor_cost_ppv +=
+        if @industry_funded
+          ["=#{col + total_research_row.to_s} + #{col + total_overhead_row.to_s}", ""]
+        else
+          ["=#{col + total_research_row.to_s} * (1 + #{indirect_cost_ref})", ""]
+        end
     end
 
     sheet.add_row total_sponsor_cost_ppv, style: total_research_cost_style
@@ -184,43 +307,47 @@ statuses = PermissibleValue.get_hash('status')
     total_sponsor_row = sheet.rows.length
     total_sponsor_ref = totals_column + total_sponsor_row.to_s
 
-    total_margin_ppv = ["Total Margin per Patient per Visit"] + [""] * 6
-    total_margin_ppv_style = [default] * 7
+    if @industry_funded
+      total_margin_ppv = ["Total Margin per Patient per Visit"] + [""] * (@industry_funded ? 6 : 5)
+      total_margin_ppv_style = [bold_default] * (@industry_funded ? 7 : 6)
 
-    r_columns.each do |col|
-      r_col_with_rows = (col + r_rows.join(" " + col)).split(" ")
-      research_cost_col_with_rows = (research_cost_column + r_rows.join(" " + research_cost_column)).split(" ")
-      negotiated_cost_col_with_rows = (negotiated_reimbursement_column + r_rows.join(" " + negotiated_reimbursement_column)).split(" ")
-      subtracted = negotiated_cost_col_with_rows.zip(research_cost_col_with_rows).map{|vals| "(#{vals.join('-')})" }
-      multiplied = subtracted.zip(r_col_with_rows).map{|vals| vals.join('*')}
-      total_margin_ppv += [ "=#{multiplied.join('+')}", "" ]
-      total_margin_ppv_style += [money, default]
+      r_columns.each do |col|
+        r_col_with_rows = (col + r_rows.join(" " + col)).split(" ")
+        research_cost_col_with_rows = (research_cost_column + r_rows.join(" " + research_cost_column)).split(" ")
+        negotiated_cost_col_with_rows = (negotiated_reimbursement_column + r_rows.join(" " + negotiated_reimbursement_column)).split(" ")
+        subtracted = negotiated_cost_col_with_rows.zip(research_cost_col_with_rows).map{|vals| "(#{vals.join('-')})" }
+        multiplied = subtracted.zip(r_col_with_rows).map{|vals| vals.join('*')}
+        total_margin_ppv += [ "=#{multiplied.join('+')}", "" ]
+        total_margin_ppv_style += [bold_money, default]
+      end
+
+      sheet.add_row total_margin_ppv, style: total_margin_ppv_style
+
+      total_margin_row = sheet.rows.length
+
+      sheet.add_row ["Total Margin per Study for per Patient Assessments", "=SUM(#{r_columns.first + total_margin_row.to_s}:#{r_columns.last + total_margin_row.to_s})*#{subject_count_ref}"], style: [bold_default, bold_money]
     end
-
-    sheet.add_row total_margin_ppv, style: total_margin_ppv_style
-
-    total_margin_row = sheet.rows.length
-
-    sheet.add_row ["Total Margin per Study for per Patient Assessments", "=SUM(#{r_columns.first + total_margin_row.to_s}:#{r_columns.last + total_margin_row.to_s})*#{subject_count_ref}"], style: [default, money]
 
     sheet.add_row []
 
-    arm_summary_row = ["#{arm.sanitized_name}: Summary"] + [""] * (6 + arm.visit_groups.count * 2 + 2)
+    arm_summary_row = ["#{arm.name}: Summary"] + [""] * ((@industry_funded ? 6 : 5) + arm.visit_groups.count * 2 + (@industry_funded ? 2 : 1))
     sheet.add_row arm_summary_row, :style => header_style
 
-    sheet.add_row ["#{arm.sanitized_name}: Total Cost (-OH) per Patient", "", "", "", "=#{r_columns.join(total_research_row.to_s + '+') + total_research_row.to_s}"], style: [default, default, default, default, money]
+    sheet.add_row ["#{arm.name}: Total Cost (-OH) per Patient", "", "", "", "=#{r_columns.join(total_research_row.to_s + '+') + total_research_row.to_s}"], style: [bold_default, default, default, default, bold_money]
 
-    sheet.add_row ["#{arm.sanitized_name}: Total Cost (+OH) per Patient", "", "", "", "=#{r_columns.join(total_sponsor_row.to_s + '+') + total_sponsor_row.to_s}"], style: [default, default, default, default, money]
+    sheet.add_row ["#{arm.name}: Total Cost (+OH) per Patient", "", "", "", "=#{r_columns.join(total_sponsor_row.to_s + '+') + total_sponsor_row.to_s}"], style: [bold_default, default, default, default, bold_money]
 
     total_sponsor_ppv_ref = sheet.rows.last.cells.last.r
 
-    sheet.add_row ["#{arm.sanitized_name}: Total Margin per Patient", "", "", "", "=#{r_columns.join(total_margin_row.to_s + '+') + total_margin_row.to_s}" ], style: [default, default, default, default, money]
+    if @industry_funded
+      sheet.add_row ["#{arm.name}: Total Margin per Patient", "", "", "", "=#{r_columns.join(total_margin_row.to_s + '+') + total_margin_row.to_s}" ], style: [bold_default, default, default, default, bold_money]
+    end
 
     cells_to_merge.each{|cells| sheet.merge_cells "#{cells[:from]}:#{cells[:to]}"}
 
     total_margin_ref = sheet.rows.last.cells.last.r
 
-    arm_totals_ref[arm.sanitized_name] = { total_sponsor_per_visit: total_sponsor_ref, total_margin_ppv: total_margin_ref, total_sponsor_ppv: total_sponsor_ppv_ref, subject_count: subject_count_ref }
+    arm_totals_ref[arm.name] = { total_sponsor_per_visit: total_sponsor_ref, total_margin_ppv: total_margin_ref, total_sponsor_ppv: total_sponsor_ppv_ref, subject_count: subject_count_ref }
 
     sheet.column_widths *( [40, 20, 10, 18, 18, 18] + ( [12] * arm.visit_groups.count * 2 ) + [18, 18] )
   end
@@ -229,7 +356,7 @@ end
 user_roles = PermissibleValue.get_hash('user_role')
 
 wb.insert_worksheet(0, name: "Summary") do |sheet|
-  sheet.add_row ["#{@protocol.class.to_s} Information", "", "", "", "", "", "", "", ""], :style => header_style
+  sheet.add_row ["#{@protocol.class.to_s} Information"] + [""] * (@industry_funded ? 8 : 7), :style => header_style
 
   sheet.add_row ["SPARC #{@protocol.class.to_s} ID:", @protocol.id], :style => [bold_default, default]
   sheet.add_row ["RMID:", @protocol.research_master_id], style: [bold_default, default]
@@ -240,14 +367,17 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
   sheet.add_row ["Business Manager:", @protocol.billing_managers.map(&:full_name).try(:join, ', ')], :style => [bold_default, default]
   sheet.add_row ["Funding Source:", @protocol.display_funding_source_value], :style => [bold_default, default]
   sheet.add_row ["Indirect Cost Rate:", @protocol.indirect_cost_rate.try(:/, 100.0) || 0.0], style: [bold_default, percent]
+
+  indirect_cost_ref = sheet.rows.last.cells.last.r
+
   sheet.add_row ["Staff Fringe Rate:", 0], style: [bold_default, percent]
 
   indirect_cost_rate_row = sheet.rows.length
 
   sheet.add_row []
 
-  sheet.add_row ["Authorized Users", "", "", "", "", "", "", "", ""], style: header_style
-  sheet.add_row ["Name", "Role", "Institutional Base Salary", "% Effort", "Project Period (in months)", "Salary Requested", "Fringe", "Total"]
+  sheet.add_row summary_authorized_users_header_row, style: header_style
+  sheet.add_row ["Name", "Role", "Institutional Base Salary", "% Effort", "Project Period (in months)", "Salary Requested", "Fringe", "Total"], style: bold_default
 
   current_row = sheet.rows.length
   authorized_users_start_row = current_row
@@ -260,63 +390,88 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
   authorized_users_end_row = current_row
 
   sheet.add_row []
-  sheet.add_row ["Total" , "", "", "", "", "=SUM(F#{authorized_users_start_row}:F#{authorized_users_end_row})", "=SUM(G#{authorized_users_start_row}:G#{authorized_users_end_row})", "=SUM(H#{authorized_users_start_row}:H#{authorized_users_end_row})"], style: money
+  sheet.add_row ["Total" , "", "", "", "", "=SUM(F#{authorized_users_start_row}:F#{authorized_users_end_row})", "=SUM(G#{authorized_users_start_row}:G#{authorized_users_end_row})", "=SUM(H#{authorized_users_start_row}:H#{authorized_users_end_row})"], style: [bold_default, default, default, default, default, bold_money, bold_money, bold_money]
+
   total_users_cost_cell = sheet.rows.last.cells.last.r
+
   sheet.add_row []
 
-  sheet.add_row ["Protocol Arms", "", "", "", "", "", "", "", ""], :style => header_style
-  sheet.add_row ["Arm", "", "# of Subjects", "# of Visits", "", "", "", "", ""], :style => sub_header_style
+  sheet.add_row summary_arms_header_row, :style => header_style
+  sheet.add_row summary_arms_subheader_row, :style => sub_header_style
 
   @protocol.arms.each do |arm|
-    sheet.add_row [arm.sanitized_name, "", "='#{arm.name}'!B8", arm.visit_count, "", "", ""], :style => default
+    sheet.add_row [arm.name, "", "='#{sanitize_name(arm.name)}'!B8", arm.visit_count, "", "", ""], :style => default
   end
+
   sheet.add_row []
 
-  sheet.add_row ["Other Services", "", "Service Rate", "Sponsor Unit Cost (Negotiated Reimbursement)", "Research Cost (Your Cost)", "Procedure Occurence (N)", "F&A Applies?", "Total Cost to Sponsor (+OH)", "Margin to Cover Personnel Effort", ""], :style => header_style
-  sheet.add_row ["Study Level Services (Pass Through)", "Status", "", "", "", "", "", "", ""], :style => sub_header_style
+  sheet.add_row other_services_header_row, :style => header_style
+  sheet.add_row other_services_subheader_row, :style => sub_header_style
 
-  current_row = sheet.rows.length
-  other_services_start_row = current_row
+  current_row               = sheet.rows.length
+  other_services_start_row  = current_row
 
   @protocol.service_requests.each do |sr|
     sr.line_items.includes(:admin_rates, :sub_service_request, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups] ] ] ]).where(services: {one_time_fee: true}).each do |li|
       next if @statuses_hidden.include?(li.sub_service_request.status)
       li_row = sheet.rows.length + 1
-      sheet.add_row ["#{li.service.name} (#{li.sub_service_request.ssr_id})", statuses[li.sub_service_request.status], cents_to_dollars(li.service.current_effective_pricing_map.full_rate), cents_to_dollars(li.service.current_effective_pricing_map.full_rate), cents_to_dollars(li.applicable_rate), li.quantity, "Y", "=IF(G#{li_row}=\"Y\",(D#{li_row}*F#{li_row})*(1+$B$10),D#{li_row}*F#{li_row})", "=D#{li_row}*F#{li_row} - E#{li_row}*F#{li_row}"], :style => [default, default, money, money, money, default, default, money, money]
+
+      line_item_style_array  = [default, default, money]
+      line_item_style_array << money if @industry_funded
+      line_item_style_array += [money, default]
+      line_item_style_array += [default, money, money] if @industry_funded
+
+      line_item_row          = ["#{li.service.name} (#{li.sub_service_request.ssr_id})", statuses[li.sub_service_request.status], cents_to_dollars(li.service.current_effective_pricing_map.full_rate)]
+      line_item_row         << cents_to_dollars(li.service.current_effective_pricing_map.full_rate) if @industry_funded
+      line_item_row         += [cents_to_dollars(li.applicable_rate), li.quantity]
+      line_item_row         += ["Y", "=IF(G#{li_row}=\"Y\",(D#{li_row}*F#{li_row})*(1+#{indirect_cost_ref}),D#{li_row}*F#{li_row})", "=D#{li_row}*F#{li_row} - E#{li_row}*F#{li_row}"] if @industry_funded
+
+      sheet.add_row line_item_row, :style => line_item_style_array
     end
   end
+
   sheet.add_row []
+
   previous_row = sheet.rows.length
-  sheet.add_row ["Study Level Services: Total Cost", "", "", "", "", "", "", "=Sum(H#{other_services_start_row}:H#{previous_row})", "=SUM(I#{other_services_start_row}:I#{previous_row})"], :style => [row_header_style, default, default, default, default, default, default, bold_money, bold_money]
+
+  sheet.add_row other_services_total_row(other_services_start_row, previous_row), :style => [row_header_style, default, default, bold_money, default, default, default, bold_money, bold_money]
+
   margin_to_cover_ref = "I#{previous_row+1}"
-  total_cost_to_sponsor_ref = "H#{previous_row+1}"
+  total_cost_ref      = "#{@industry_funded ? 'H' : 'D'}#{previous_row+1}"
 
   sheet.add_row []
 
-  total_study_cost_cells = []
-  total_margin_cost_cells = []
-  total_cost_cells = []
+  sheet.add_row study_budget_header_row, :style => header_style
+
+  total_study_cost_cells    = []
+  total_margin_cost_cells   = []
+  breakeven_analysis_cells  = []
+  total_cost_cells          = []
 
   arm_totals_ref.keys.each do |arm|
-    total_study_cost_cells << "('#{arm.to_s}'!#{arm_totals_ref[arm][:total_sponsor_per_visit]}*'#{arm.to_s}'!B8)"
-    total_margin_cost_cells << "('#{arm.to_s}'!#{arm_totals_ref[arm][:total_margin_ppv]}*'#{arm.to_s}'!B8)"
-    total_cost_cells << "'#{arm.to_s}'!#{arm_totals_ref[arm][:total_sponsor_ppv]}*'#{arm.to_s}'!#{arm_totals_ref[arm][:subject_count]}"
+    total_study_cost_cells    << "('#{sanitize_name(arm)}'!#{arm_totals_ref[arm][:total_sponsor_per_visit]}*'#{sanitize_name(arm)}'!B8)"
+    total_margin_cost_cells   << "('#{sanitize_name(arm)}'!#{arm_totals_ref[arm][:total_margin_ppv]}*'#{sanitize_name(arm)}'!B8)"
+    breakeven_analysis_cells  << "'#{sanitize_name(arm)}'!#{arm_totals_ref[arm][:total_margin_ppv]}"
+    total_cost_cells          << "'#{sanitize_name(arm)}'!#{arm_totals_ref[arm][:total_sponsor_ppv]}*'#{sanitize_name(arm)}'!#{arm_totals_ref[arm][:subject_count]}"
   end
 
-  total_study_cost = @protocol.arms.any? ? "=#{total_cost_to_sponsor_ref}+#{total_study_cost_cells.join('+')}" : "=#{total_cost_to_sponsor_ref}"
-  total_margin = @protocol.arms.any? ? "=#{margin_to_cover_ref}+#{total_margin_cost_cells.join('+')}" : "=#{margin_to_cover_ref}"
-  breakeven_analysis = @protocol.arms.any? ? "=ROUND((#{total_users_cost_cell}-#{margin_to_cover_ref})/(#{total_margin_cost_cells.join('+')}),0)" : "=ROUND(#{total_users_cost_cell}-#{margin_to_cover_ref}, 0)"
-  total_budget = @protocol.arms.any? ? "=#{total_cost_to_sponsor_ref}+#{total_cost_cells.join("+")}" : "=#{total_cost_to_sponsor_ref}"
+  if @industry_funded
+    total_study_cost    = @protocol.arms.any? ? "=#{total_cost_ref}+#{total_study_cost_cells.join('+')}" : "=#{total_cost_ref}"
+    total_margin        = @protocol.arms.any? ? "=#{margin_to_cover_ref}+#{total_margin_cost_cells.join('+')}" : "=#{margin_to_cover_ref}"
+    breakeven_analysis  = @protocol.arms.any? ? "=ROUND(IF(#{breakeven_analysis_cells.join('+')},(#{total_users_cost_cell}-#{margin_to_cover_ref})/(#{breakeven_analysis_cells.join('+')}),0),0)" : "=ROUND(#{total_users_cost_cell}-#{margin_to_cover_ref}, 0)"
 
-  sheet.add_row ["Study Budget", "", "", "", "", "", "", "", ""], :style => header_style
-  sheet.add_row ["Total Study Cost (Sponsor Cost)", total_study_cost], :style => [default, money]
-  sheet.add_row ["Total Margin", total_margin], :style => [default, money]
-  margin_cell = sheet.rows.last.cells.last.r
-  sheet.add_row ["Study Contingency", "=#{margin_cell}-#{total_users_cost_cell}"], :style => [default, money]
+    sheet.add_row ["Total Study Cost (Sponsor Cost)", total_study_cost], style: [bold_default, bold_money]
+    sheet.add_row ["Total Margin", total_margin], style: [bold_default, bold_money]
 
-  sheet.add_row ["Breakeven Analysis", breakeven_analysis]
+    margin_cell = sheet.rows.last.cells.last.r
+    
+    sheet.add_row ["Study Contingency", "=#{margin_cell}-#{total_users_cost_cell}"], style: [bold_default, bold_money]
+    sheet.add_row ["Breakeven Analysis", breakeven_analysis], style: [bold_default, bold_right]
+  end
 
-  sheet.add_row ["Total Budget", total_budget], :style => [row_header_style, money]
+  total_budget = @protocol.arms.any? ? "=#{total_cost_ref}+#{total_cost_cells.join("+")}" : "=#{total_cost_ref}"
+
+  sheet.add_row ["Total Budget", total_budget], style: [bold_default, bold_money]
 
   sheet.column_widths 40, 40, 15, 18, 25, 25, 25, 25
 end

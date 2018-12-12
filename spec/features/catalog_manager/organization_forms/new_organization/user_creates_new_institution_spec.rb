@@ -49,17 +49,5 @@ RSpec.describe 'User creates new organization', js: true do
       expect(Institution.where(name: 'Test Institution').first.is_available).to eq(false)
       expect(page).to have_selector('.text-institution.unavailable-org', text: 'Test Institution')
     end
-
-    it 'should throw error if the same institution name is added again' do
-      click_link 'Create New Institution'
-      wait_for_javascript_to_finish
-
-      find('.modal-body').fill_in 'organization_name', with: 'Test Institution'
-      find('.modal-footer').click_button 'Save'
-      wait_for_javascript_to_finish
-
-      expect(page).to have_content('Name has already been taken')
-    end
-
   end
 end

@@ -58,7 +58,7 @@
         = protocol.brief_description
 
     /indirect cost
-    - if Setting.find_by_key("use_indirect_cost").value
+    - if Setting.get_value("use_indirect_cost")
       .form-group.row
         %label.col-lg-4
           = t(:protocols)[:projects][:information][:rate]

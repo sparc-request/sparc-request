@@ -30,12 +30,16 @@ RSpec.describe 'User creates a survey', js: true do
     before :each do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
-    end
 
-    scenario 'and sees the newly created survey' do
       click_link 'New Survey'
       wait_for_javascript_to_finish
 
+      fill_in 'system_survey_access_code', with: 'test-survey'
+      click_button 'Create'
+      wait_for_javascript_to_finish
+    end
+
+    scenario 'and sees the newly created survey' do
       expect(page).to have_selector('#survey-modal', visible: true)
       expect(SystemSurvey.count).to eq(1)
     end
@@ -45,12 +49,16 @@ RSpec.describe 'User creates a survey', js: true do
     before :each do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
-    end
 
-    scenario 'and sees the newly created form' do
       click_link 'New Form'
       wait_for_javascript_to_finish
 
+      fill_in 'form_access_code', with: 'test-survey'
+      click_button 'Create'
+      wait_for_javascript_to_finish
+    end
+
+    scenario 'and sees the newly created form' do
       expect(page).to have_selector('#form-modal', visible: true)
       expect(Form.count).to eq(1)
     end

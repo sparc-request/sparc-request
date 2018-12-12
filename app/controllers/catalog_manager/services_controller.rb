@@ -38,6 +38,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       @programs = @service.provider.programs
       @cores    = @service.program.cores
       @institutions = Institution.order('`order`')
+      @editable_organizations = @user.catalog_manager_organizations
       flash[:success] = "New Service created successfully."
     else
       @errors = @service.errors
@@ -74,6 +75,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     if @service.update_attributes(service_params.except(:program, :core))
       flash[:success] = "#{@service.name} saved correctly."
       @institutions = Institution.order('`order`')
+      @editable_organizations = @user.catalog_manager_organizations
     else
       flash[:alert] = "Failed to update service."
       @errors = @service.errors
@@ -136,7 +138,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
   def add_related_service
     @service = Service.find(params[:service_id])
     related_service = Service.find(params[:related_service_id])
-    @service_relation = @service.service_relations.new(related_service_id: related_service.id, optional: false)
+    @service_relation = @service.service_relations.new(related_service_id: related_service.id, required: true)
 
     if @service_relation.save
       flash[:success] = "Related service added successfully."
@@ -216,7 +218,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
 
   def service_relation_params
     params.require(:service_relation).permit(
-      :optional,
+      :required,
       :linked_quantity,
       :linked_quantity_total
     )

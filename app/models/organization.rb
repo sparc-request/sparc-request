@@ -35,6 +35,7 @@ class Organization < ApplicationRecord
   has_many :service_providers, :dependent => :destroy
   has_many :catalog_managers, :dependent => :destroy
   has_many :clinical_providers, :dependent => :destroy
+  has_many :patient_registrars, :dependent => :destroy
 
   has_many :services, :dependent => :destroy
   has_many :sub_service_requests, :dependent => :destroy
@@ -46,12 +47,16 @@ class Organization < ApplicationRecord
   validates :abbreviation,
             :order,
             presence: true, on: :update
-  validates :name, presence: true, uniqueness: true
+  validates :name, presence: true
   validates :order, numericality: { only_integer: true }, on: :update
 
   accepts_nested_attributes_for :submission_emails
 
   after_create :create_statuses
+
+  default_scope -> {
+    order(:order, :name)
+  }
 
   scope :authorized_for_identity, -> (identity_id) {
     where(
@@ -222,6 +227,14 @@ class Organization < ApplicationRecord
     Service.where(organization_id: org_ids).sort_by{|x| x.name}
   end
 
+  def has_one_time_fee_services?
+    Service.where(one_time_fee: true, organization_id: Organization.authorized_child_organization_ids([self.id])).any?
+  end
+
+  def has_per_patient_per_visit_services?
+    Service.where(one_time_fee: false, organization_id: Organization.authorized_child_organization_ids([self.id])).any?
+  end
+
   ###############################################################################
   ############################## PRICING METHODS ################################
   ###############################################################################
@@ -370,6 +383,7 @@ class Organization < ApplicationRecord
   # Returns all fulfillment user rights on the organization
   def all_fulfillment_rights
     identity_ids = self.clinical_providers.pluck(:identity_id)
+    identity_ids += self.patient_registrars.pluck(:identity_id)
     # Placeholder for invoicers, which will be included later
     # identity_ids += self.invoicers.pluck(:identity_id)
     Identity.where(id: identity_ids)

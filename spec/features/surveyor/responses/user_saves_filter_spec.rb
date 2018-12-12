@@ -36,8 +36,9 @@ RSpec.describe 'User saves a response filters', js: true do
 
     bootstrap_multiselect '#filterrific_with_state', [I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active], I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]]
     find('#filterrific_end_date').click
+    find('#filter-responses .panel-heading .pull-left').click
     find('#filterrific_start_date').click
-    find('body').click
+    find('#filter-responses .panel-heading .pull-left').click
     find('#filterrific_include_incomplete').click
     click_link I18n.t(:actions)[:save]
     wait_for_javascript_to_finish

@@ -20,7 +20,6 @@
 
 FactoryBot.define do
   factory :service_request do
-    protocol_id          { Random.rand(10000) }
     status               { Faker::Lorem.sentence(3) }
     approved             { false }
 

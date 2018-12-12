@@ -35,10 +35,10 @@ RSpec.describe 'User deletes a survey', js: true do
     end
 
     scenario 'and sees the survey is deleted' do
-      find('.delete-survey').click
+      bootstrap_select '.survey-actions', /Delete/
       wait_for_javascript_to_finish
 
-      find('.sweet-alert.visible button.confirm').trigger('click')
+      find('.sweet-alert.visible button.confirm').click
       wait_for_javascript_to_finish
 
       visit surveyor_surveys_path
@@ -60,10 +60,10 @@ RSpec.describe 'User deletes a survey', js: true do
     end
 
     scenario 'and sees the form is deleted' do
-      find('.delete-survey').click
+      bootstrap_select '.survey-actions', /Delete/
       wait_for_javascript_to_finish
 
-      find('.sweet-alert.visible button.confirm').trigger('click')
+      find('.sweet-alert.visible button.confirm').click
       wait_for_javascript_to_finish
 
       visit surveyor_surveys_path

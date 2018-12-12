@@ -24,7 +24,7 @@
         = t(:protocols)[:studies][:information][:header]
   %table.table
     %tbody
-      - if Setting.find_by_key("research_master_enabled").value
+      - if Setting.get_value("research_master_enabled")
         %tr.row
           %td
             %label.col-lg-4
@@ -36,21 +36,21 @@
                 = protocol.research_master_id
       %tr.row
         %td
-          %label.col-lg-4
+          %label.col-lg-4{ title: t(:protocols)[:tooltips][:short_title], data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }
             = t(:protocols)[:studies][:information][:short_title]
           .col-lg-8
             = protocol.short_title
             = display_rmid_validated_protocol(protocol, t('protocols.summary.rmid_short_title'))
       %tr.row
         %td
-          %label.col-lg-4
+          %label.col-lg-4{ title: t(:protocols)[:tooltips][:title], data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }
             = t(:protocols)[:studies][:information][:title]
           .col-lg-8
             = protocol.title
             = display_rmid_validated_protocol(protocol, t('protocols.summary.rmid_title'))
       %tr.row
         %td
-          %label.col-lg-4
+          %label.col-lg-4{ title: t(:protocols)[:tooltips][:funding_status], data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }
             = t(:protocols)[:studies][:information][:funding_status]
           .col-lg-8
             = protocol.funding_status.nil? ? '' : protocol.funding_status.titleize
@@ -58,7 +58,7 @@
       / Funding Source
       %tr.row
         %td
-          %label.col-lg-4
+          %label.col-lg-4{ title: protocol.funding_status == "funded" ? t(:protocols)[:tooltips][:funding_source] : t(:protocols)[:tooltips][:potential_funding_source], data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }
             - if protocol.funding_status == "funded"
               = t(:protocols)[:studies][:information][:funding_source]
             - else
@@ -101,11 +101,11 @@
 
       %tr.row
         %td
-          %label.col-lg-4
+          %label.col-lg-4{ title: t(:protocols)[:tooltips][:sponsor_name], data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }
             = t(:protocols)[:studies][:information][:sponsor]
           .col-lg-8
             = protocol.sponsor_name
-      - if Setting.find_by_key("use_epic").value
+      - if Setting.get_value("use_epic")
         %tr.row
           %td
             %label.col-lg-4
@@ -121,12 +121,12 @@
                 %thead.default-header
                   %th
                     %h5.col-lg-12
-                      %strong{ data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' }, title: t(:protocols)[:tooltips][:study_type_questions] }
-                      = t(:protocols)[:studies][:information][:study_type_questions]
+                      %span{ data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' }, title: t(:protocols)[:tooltips][:study_type_questions] }
+                        = t(:protocols)[:studies][:information][:study_type_questions]
                 - protocol.display_answers.each do |answer|
                   - if answer.study_type_question.study_type_question_group.active && protocol.active? && display_study_type_question?(protocol, answer, true)
                     = render partial: 'protocols/view_details/epic_questions_answers', locals: { answer: answer }
                   - elsif !answer.study_type_question.study_type_question_group.active && !protocol.active? && display_study_type_question?(protocol, answer, true)
                     = render partial: 'protocols/view_details/epic_questions_answers', locals: { answer: answer }
-              - if Setting.find_by_key("use_epic").value && protocol.selected_for_epic
+              - if Setting.get_value("use_epic") && protocol.selected_for_epic
                 = render partial: 'protocols/view_details/study_type_note', locals: { protocol: protocol }         

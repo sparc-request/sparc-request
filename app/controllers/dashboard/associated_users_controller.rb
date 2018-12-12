@@ -39,7 +39,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   def edit
     @identity     = @protocol_role.identity
 
-    if Setting.find_by_key("use_epic").try(:value) && Setting.find_by_key("validate_epic_users").try(:value) && @protocol != nil && @protocol.selected_for_epic
+    if Setting.get_value("use_epic") && Setting.get_value("validate_epic_users") && @protocol != nil && @protocol.selected_for_epic
       @epic_user = EpicUser.for_identity(@identity)
     end
 
@@ -58,7 +58,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     if params[:identity_id] # if user selected
       @identity     = Identity.find_or_create(params[:identity_id])
 
-      if Setting.find_by_key("use_epic").try(:value) && Setting.find_by_key("validate_epic_users").try(:value) && @protocol != nil && @protocol.selected_for_epic
+      if Setting.get_value("use_epic") && Setting.get_value("validate_epic_users") && @protocol != nil && @protocol.selected_for_epic
         @epic_user = EpicUser.for_identity(@identity)
       end
 
@@ -150,7 +150,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
       @protocol.email_about_change_in_authorized_user(@protocol_role, "destroy")
     end
 
-    if Setting.find_by_key("use_epic").value && @protocol.selected_for_epic && epic_access && !Setting.find_by_key("queue_epic").value
+    if Setting.get_value("use_epic") && @protocol.selected_for_epic && epic_access && !Setting.get_value("queue_epic")
       Notifier.notify_primary_pi_for_epic_user_removal(@protocol, protocol_role_clone).deliver
     end
 
@@ -178,6 +178,7 @@ def project_role_params
     :role_other,
     :epic_access,
     identity_attributes: [
+      :orcid,
       :credentials,
       :credentials_other,
       :email,

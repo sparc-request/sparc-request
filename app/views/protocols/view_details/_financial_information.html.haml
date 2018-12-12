@@ -30,7 +30,7 @@
             = t(:protocols)[:studies][:financial_information][:udak_project_number]
           .col-lg-8
             = protocol.udak_project_number
-      - if Setting.find_by_key("use_indirect_cost").value
+      - if Setting.get_value("use_indirect_cost")
         %tr.row
           %td
             %label.col-lg-4

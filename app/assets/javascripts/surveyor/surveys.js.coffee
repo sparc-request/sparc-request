@@ -21,20 +21,33 @@ $(document).ready ->
   $("[data-toggle='tooltip']").tooltip()
 
   ### Survey Table ###
-  $(document).on 'click', '.delete-survey', ->
-    survey_id = $(this).data('survey-id')
-    swal {
-      title: I18n['swal']['swal_confirm']['title']
-      text: I18n['swal']['swal_confirm']['text']
-      type: 'warning'
-      showCancelButton: true
-      confirmButtonColor: '#DD6B55'
-      confirmButtonText: 'Delete'
-      closeOnConfirm: true
-    }, ->
+  $(document).on 'change', '.survey-actions', ->
+    $selected = $(this).find('option:selected')
+    $(this).selectpicker('deselectAll')
+
+    if $selected.data('url')
       $.ajax
-        type: 'delete'
-        url: "/surveyor/surveys/#{survey_id}.js"
+        type: $selected.data('method') || 'get'
+        dataType: 'script'
+        url: $selected.data('url')
+    else if $selected.hasClass('delete-survey')
+      survey_id = $selected.data('survey-id')
+      swal {
+        title: I18n['swal']['swal_confirm']['title']
+        text: I18n['swal']['swal_confirm']['text']
+        type: 'warning'
+        showCancelButton: true
+        confirmButtonColor: '#DD6B55'
+        confirmButtonText: 'Delete'
+        closeOnConfirm: true
+      }, ->
+        $.ajax
+          type: 'delete'
+          dataType: 'script'
+          url: "/surveyor/surveys/#{survey_id}"
+
+  $(document).on 'load-success.bs.table', '.survey-table, .form-table', ->
+    $('.selectpicker').selectpicker()
 
   ### Survey Modal ###
   $(document).on 'hide.bs.modal', '#modal_place', ->

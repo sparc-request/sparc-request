@@ -32,7 +32,7 @@ class Funding::ServicesController < ApplicationController
 
   private
   def find_funding_opp
-    unless @service = Service.exists?(id: params[:id], organization_id: Setting.find_by_key("funding_org_ids").value)
+    unless @service = Service.exists?(id: params[:id], organization_id: Setting.get_value("funding_org_ids"))
       flash[:alert] = t(:funding)[:flash_message][:not_found]
       redirect_to funding_root_path
     end

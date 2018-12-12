@@ -106,7 +106,7 @@ class Study < Protocol
   FRIENDLY_IDS = ["certificate_of_conf", "higher_level_of_privacy", "epic_inbasket", "research_active", "restrict_sending"]
 
   def validate_study_type_answers
-    if Setting.find_by_key("use_epic").value && self.selected_for_epic && StudyTypeQuestionGroup.active.ids.first == self.study_type_question_group_id
+    if Setting.get_value("use_epic") && self.selected_for_epic && StudyTypeQuestionGroup.active.ids.first == self.study_type_question_group_id
       answers = {}
       FRIENDLY_IDS.each do |fid|
         q = StudyTypeQuestion.active.find_by_friendly_id(fid)
@@ -139,6 +139,6 @@ class Study < Protocol
   end
 
   def is_epic?
-    Setting.find_by_key("use_epic").value
+    Setting.get_value("use_epic")
   end
 end

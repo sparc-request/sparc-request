@@ -1,8 +1,8 @@
-id,key,value,concept_code,parent_id,sort_order,category,default,reserved
-,college,College Department,,,1,funding_source,,
-,federal,Federal,,,2,funding_source,,
-,foundation,Foundation/Organization,,,3,funding_source,,
-,industry,Industry-Initiated/Industry-Sponsored,,,4,funding_source,,
-,investigator,Investigator-Initiated/Industry-Sponsored,,,5,funding_source,,
-,internal,Internal Funded Pilot Project,,,6,funding_source,,
-,unfunded,Student Funded Research,,,7,funding_source,,
+id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_available
+,college,College Department,,,1,funding_source,,,1
+,federal,Federal,,,2,funding_source,,,1
+,foundation,Foundation/Organization,,,3,funding_source,,,1
+,industry,Industry-Initiated/Industry-Sponsored,,,4,funding_source,,,1
+,investigator,Investigator-Initiated/Industry-Sponsored,,,5,funding_source,,,1
+,internal,Internal Funded Pilot Project,,,6,funding_source,,,1
+,unfunded,Student Funded Research,,,7,funding_source,,,1

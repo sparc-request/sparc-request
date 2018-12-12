@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Surveyor::ResponsesController < Surveyor::BaseController
-  respond_to :html, :js, :json
+  respond_to :html, :js, :json, :xlsx
 
   before_action :authenticate_identity!
   before_action :find_response, only: [:show, :edit, :update]
@@ -32,11 +32,11 @@ class Surveyor::ResponsesController < Surveyor::BaseController
     @filterrific  =
       initialize_filterrific(Response, params[:filterrific] && sanitize_dates(filterrific_params, [:start_date, :end_date]),
         default_filter_params: {
-          of_type: current_user.is_site_admin? ? SystemSurvey.name : Form.name,
-          include_incomplete: 'false'
+          include_incomplete: 'false',
+          of_type: 'SystemSurvey'
         },
         select_options: {
-          of_type: determine_type_rights
+          of_type: [['Survey', 'SystemSurvey'], ['Form', 'Form']]
         }
       ) || return
 
@@ -46,23 +46,12 @@ class Surveyor::ResponsesController < Surveyor::BaseController
       format.html
       format.js
       format.json {
-        @responses =
-          if @type == Survey.name
-            @filterrific.find.eager_load(:survey, :question_responses, :identity)
-          else
-            existing_responses = @filterrific.find.eager_load(:survey, :question_responses, :identity).
-              where(survey: Form.for(current_user))
-
-            if @filterrific.include_incomplete == 'false'
-              existing_responses
-            else
-              incomplete_responses = get_incomplete_form_responses
-              existing_responses + incomplete_responses
-            end
-          end
-        preload_responses
+        load_responses
       }
-      # format.xlsx
+      format.xlsx {
+        load_responses
+        response.headers['Content-Disposition'] = "attachment; filename=\"#{@type} Responses.xlsx\""
+      }
     end
   end
 
@@ -167,19 +156,27 @@ class Surveyor::ResponsesController < Surveyor::BaseController
     params.require(:response).permit!
   end
 
+  def load_responses
+    @responses =
+      if @type == Survey.name
+        @filterrific.find.eager_load(:survey, :question_responses, :identity)
+      else
+        existing_responses = @filterrific.find.eager_load(:survey, :question_responses, :identity).
+          where(survey: Form.for(current_user))
+
+        if @filterrific.include_incomplete == 'false'
+          existing_responses
+        else
+          incomplete_responses = get_incomplete_form_responses
+          existing_responses + incomplete_responses
+        end
+      end
+    preload_responses
+  end
+
   def preload_responses
     preloader = ActiveRecord::Associations::Preloader.new
     preloader.preload(@responses.select { |r| r.respondable_type == SubServiceRequest.name }, { respondable: { protocol: { primary_pi_role: :identity } } })
-  end
-
-  def determine_type_rights
-    types = []
-    types << [Survey.name, SystemSurvey.name] if current_user.is_site_admin?
-    types << [Form.name, Form.name] if current_user.is_super_user? || current_user.is_service_provider?
-    
-    raise ActionController::RoutingError.new('Not Found') if types.empty?
-
-    types
   end
 
   def get_incomplete_form_responses

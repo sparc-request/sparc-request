@@ -233,9 +233,9 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
           page.authorized_users(text: "John Doe").first.edit_button.click
           page.authorized_user_modal.none_rights.click
           page.authorized_user_modal.save_button.click
-          wait_for_javascript_to_finish
 
-          expect(URI.parse(current_url).path).to eq("/dashboard")
+          wait_for_page(dashboard_root_path)
+          expect(current_path).to eq(dashboard_root_path)
         end
       end
     end

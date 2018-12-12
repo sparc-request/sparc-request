@@ -1,4 +1,4 @@
-id,key,value,concept_code,parent_id,sort_order,category,default,reserved
-,approve,Authorize/Change Study Charges,,,1,proxy_right,,
-,view,View Rights,,,2,proxy_right,,
-,none,Member Only,,,3,proxy_right,,
+id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_available
+,approve,Authorize/Change Study Charges,,,1,proxy_right,,,1
+,view,View Rights,,,2,proxy_right,,,1
+,none,Member Only,,,3,proxy_right,,,1

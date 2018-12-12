@@ -18,26 +18,44 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-production:
-  study_root: '1.2.3.4'
-  endpoint: 'http://TODO/'
-  namespace: 'urn:ihe:qrph:rpe:2009'
+# production:
+#   epic_study_root:  "1.2.3.4"
+#   epic_endpoint:    "http://TODO/"
+#   epic_namespace:   "urn:ihe:qrph:rpe:2009"
+#   epic_wsdl:        "http://localhost:#{FAKE_EPIC_SERVER.port}/wsdl"
+#   epic_test_mode:   false
+
+# staging:
+#   epic_study_root:  "1.2.3.4"
+#   epic_endpoint:    "http://TODO/"
+#   epic_namespace:   "urn:ihe:qrph:rpe:2009"
+#   epic_wsdl:        "http://localhost:#{FAKE_EPIC_SERVER.port}/wsdl"
+#   epic_test_mode:   false
+
+# testing:
+#   epic_study_root:  "1.2.3.4"
+#   epic_endpoint:    "http://TODO/"
+#   epic_namespace:   "urn:ihe:qrph:rpe:2009"
+#   epic_wsdl:        "http://localhost:#{FAKE_EPIC_SERVER.port}/wsdl"
+#   epic_test_mode:   false
 
 development:
-  study_root: '1.2.3.4'
-  test_mode: true
+  epic_study_root:  "1.2.3.4"
+  epic_endpoint:    "http://TODO/"
+  epic_namespace:   "urn:ihe:qrph:rpe:2009"
+  epic_wsdl:        "http://localhost:#{FAKE_EPIC_SERVER.port}/wsdl"
+  epic_test_mode:   false
 
 # This is to push to POC server for EPIC. You should only use this if you are testing EPIC.
-#development:
-#  study_root: '1.2.5.2.3.4'
-#  endpoint: 'http://ep14intcon05.clinlan.local/Interconnect-SPARC/Wcf/Epic.Edi.SoapReceiver/SoapReceiverSync.svc'
-#  wsdl: 'http://ep14intcon05.mdc.musc.edu/Interconnect-SPARC/Wcf/Epic.Edi.SoapReceiver/SoapReceiverSync.svc?wsdl'
-#  namespace: 'urn:ihe:qrph:rpe:2009'
+# development:
+#   epic_study_root:  "1.2.5.2.3.4"
+#   epic_endpoint:    "http://ep14intcon05.clinlan.local/Interconnect-SPARC/Wcf/Epic.Edi.SoapReceiver/SoapReceiverSync.svc"
+#   epic_namespace:   "urn:ihe:qrph:rpe:2009"
+#   wsdl:             "http://ep14intcon05.mdc.musc.edu/Interconnect-SPARC/Wcf/Epic.Edi.SoapReceiver/SoapReceiverSync.svc?wsdl"
 
 test:
-  study_root: '1.2.3.4'
-  test_mode: true
-
-
-
-
+  epic_study_root:  "1.2.3.4"
+  epic_endpoint:    "http://TODO/"
+  epic_namespace:   "urn:ihe:qrph:rpe:2009"
+  epic_wsdl:        "http://localhost:#{FAKE_EPIC_SERVER.port}/wsdl"
+  epic_test_mode:   true

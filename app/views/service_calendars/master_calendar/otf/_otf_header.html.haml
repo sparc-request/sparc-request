@@ -21,29 +21,26 @@
   %th.otf-header-width.text-center{ colspan: 2, rowspan: 2 }
     = t(:calendars)[:otf][:header_fields][:service]
   %th.text-center{ rowspan: 2 }
-    - if @tab == 'template'
-      = link_to 'javascript:void(0)',
-        data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
-        title: t(:calendars)[:tooltips][:line_item_notes] do
-        = t(:calendars)[:pppv][:header_fields][:notes]
-    - else
+    %span{ title: t(:calendars)[:tooltips][:line_item_notes], data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' } }
       = t(:calendars)[:pppv][:header_fields][:notes]
   %th.text-center{ rowspan: 2 }
-    = t(:calendars)[:otf][:header_fields][:status]
+    %span{ title: t(:calendars)[:tooltips][:pppv_status], data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' } }
+      = t(:calendars)[:otf][:header_fields][:status]
   %th.text-center{ colspan: 2 }
     = t(:calendars)[:otf][:header_fields][:unit_cost]
   %th.text-center{ colspan: 2, rowspan: 2 }
     = t(:calendars)[:otf][:header_fields][:unit_type]
   %th.text-center{ colspan: 2, rowspan: 2 }
-    = t(:calendars)[:otf][:header_fields][:qty_type]
+    %span{ title: t(:calendars)[:tooltips][:quantity_type], data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' } }
+      = t(:calendars)[:otf][:header_fields][:qty_type]
   %th.text-center{ colspan: 1, rowspan: 2 }
-    = link_to 'javascript:void(0)',
-      data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
-      title: t(:calendars)[:tooltips][:total_per_study] do
+    %span{ title: t(:calendars)[:tooltips][:total_per_study], data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' } }
       = t(:calendars)[:otf][:header_fields][:total_per_study]
 
 %tr
   %th.text-center
-    = t(:calendars)[:otf][:header_fields][:service_rate]
+    %span{ title: t(:calendars)[:tooltips][:service_rate], data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' } }
+      = t(:calendars)[:otf][:header_fields][:service_rate]
   %th.text-center
-    = raw(t(:calendars)[:otf][:header_fields][:your_cost])
+    %span{ title: t(:calendars)[:tooltips][:your_cost], data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' } }
+      = raw(t(:calendars)[:otf][:header_fields][:your_cost])

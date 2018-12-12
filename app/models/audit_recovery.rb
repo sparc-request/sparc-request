@@ -22,7 +22,7 @@ class AuditRecovery < ApplicationRecord
   self.table_name = 'audits'
 
   begin
-    use_separate_audit_database = Setting.find_by_key("use_separate_audit_database").value
+    use_separate_audit_database = Setting.get_value("use_separate_audit_database")
   rescue
     use_separate_audit_database = nil
   end

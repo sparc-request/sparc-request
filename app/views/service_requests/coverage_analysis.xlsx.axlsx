@@ -27,8 +27,8 @@ wrap_bordered = wb.styles.add_style :border=> {:style => :thin, :color => "00000
 centered_bordered = wb.styles.add_style :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
 rt_hdr_even_style = wb.styles.add_style bg_color: 'E8E8E8', :alignment => {:horizontal => :center}
 rt_hdr_odd_style = wb.styles.add_style :alignment => {:horizontal => :center}
-rt_even_style = wb.styles.add_style bg_color: 'E8E8E8', :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
-rt_odd_style = wb.styles.add_style :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
+rt_even_style = wb.styles.add_style format_code: '#;[Red]-#; ;', bg_color: 'E8E8E8', :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
+rt_odd_style = wb.styles.add_style format_code: '#;[Red]-#; ;', :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
 row_header_style = wb.styles.add_style b: true
 wrapped_row_header_style = wb.styles.add_style b: true, alignment: { wrap_text: true }
 header_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :left }

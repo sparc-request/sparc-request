@@ -33,7 +33,7 @@
     %table#arms-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: arms_path(format: :json, srid: service_request.id), striped: 'true', toolbar: '#arms-custom-toolbar' } }
       %thead.primary-header
         %tr
-          %th.name-validation{ title: t(:arms)[:name_tooltip], data: { field: 'name', align: 'left', sortable: 'true', toggle: 'tooltip', container: 'body', delay: '{"show":"500"}' } }
+          %th.name-validation{ title: t(:arms)[:tooltips][:name], data: { field: 'name', align: 'left', sortable: 'true', toggle: 'tooltip', container: 'body', delay: '{"show":"500"}' } }
             = t(:arms)[:table_fields][:name]
           %th.subject-count{ title: t(:arms)[:tooltips][:subject_count], data: { field: 'subject_count', align: 'left', sortable: 'true', toggle: 'tooltip', container: 'body', delay: '{"show":"500"}' } }
             = t(:arms)[:table_fields][:subject_count]

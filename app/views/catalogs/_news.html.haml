@@ -17,17 +17,20 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.news-container{ class: Setting.find_by_key("use_google_calendar").value ? 'col-sm-6' : 'col-sm-12' }
+.news-container{ class: Setting.get_value('use_google_calendar') ? 'col-sm-6' : 'col-sm-12' }
   .panel.panel-info
     .panel-heading
       %h1.panel-title
+        %span.glyphicon.glyphicon-comment
         = t(:proper)[:catalog][:center][:news][:header]
     .panel-body
       - if @news.empty?
         = t(:proper)[:catalog][:center][:news][:none]
       - @news.each do |article|
         .blog-link
-          .title
-            = link_to article[:title], article[:link], target: :_blank
-          .date
-            = article[:date]
+          %span.blog-title
+            %strong
+              = link_to article[:title], article[:link], target: :_blank
+          %small.blog-date
+            %em
+              = article[:date]

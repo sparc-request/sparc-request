@@ -5,25 +5,20 @@
       1.1 Adapters
       1.2 Environments
     2. Settings & Configuration
-      2.1 Settings
-        2.1.1 Emails
-        2.1.2 Links and URLs
-        2.1.3 Statuses
-        2.1.4 Omniauth Configuration
-        2.1.5 LDAP Configuration
-        2.1.6 Epic Configuration
-        2.1.7 RMID Configuration
-        2.1.8 SPARCFulfillment Configuration
-        2.1.9 SPARCFunding Configuration
-        2.1.10 SPARCRequest API
-        2.1.11 Right Navigation
-        2.1.12 Google Calendar
-        2.1.13 News Feed
-        2.1.14 System Satisfaction Survey
-        2.1.15 Other Settings
-      2.2 Configuring LDAP
-      2.3 Configuring Epic 
-      2.4 navigation.yml
+      2.1 Generic Settings
+      2.2 Configuring Omniauth
+      2.3 Configuring LDAP
+      2.4 Configuring Epic
+      2.5 Configuring RMID
+      2.6 SPARCFulfillment
+      2.7 SPARCFunding
+      2.8 SPARCRequest API
+      2.9 Right Navigation
+      2.10 Google Calendar
+      2.11 News Feed
+      2.12 Tableau
+      2.13 System Satisfaction Survey
+      2.14 navigation.yml
     3. Permissible Values & Constants
       3.1 Permissible Values
       3.2 constants.yml
@@ -55,20 +50,33 @@ In the production environment ExceptionNotifier is setup, and its options will n
       exception_recipients: ['user@example.com']
 
 ### 2. Settings & Configuration
-SPARCRequest utilizes a number of settings to allow you to customize content and enable or disable functionality based on your institution's needs. These settings can be found in the `settings` database table after running `rake db:migrate`.
+SPARCRequest utilizes a number of settings to allow you to customize content and enable or disable functionality based on your institution's needs. These settings are stored in the `settings` database table and are populated from `config/defaults.json`.
 
-You may opt to manually import new settings or update your existing settings by running the following command:
+We highly recommend saving your environment's settings to avoid losing your settings. To do this, first run the following commands:
+
+    # application.yml will hold the majority of your stored setting values
+    cp config/application.yml.example config/application.yml
+
+    # epic.yml will hold your epic configuration values
+    cp config/epic.yml.example config/epic.yml
+
+    # ldap.yml will hold your ldap configuration values
+    cp config/ldap.yml.example config/ldap.yml
+
+These files will hold your setting values. When the application imports settings, it will prioritize the values specified in these files for your current environment. **Note:** You may add or remove environemnts from these files as needed.
+
+To manually import new settings, run the following command:
+
+    rake data:import_settings
+
+To entirely refresh your settings, run the following command:
 
     rake data:regenerate_settings
 
-**Note** If you are upgrading from an older version of SPARCRequest, your application may still be utilizing `config/application.yml` for settings. Your settings will automatically be imported from this file when running the settings import task. Once your settings have been imported, these files are not longer needed and may be deleted.
+#### 2.1 Generic Settings
+SPARCRequest has many settings that are used internally to customize content and configurations.
 
-#### 2.1 Settings
-SPARCRequest has many settings that are used internally to customize content and configurations. These settings are generated from `config/defaults.json`.
-
----
-
-##### 2.1.1 Emails
+##### Emails
 - **send_emails_to_real_users**: This tells the application whether or not to send emails to users. When turned off, emails will be generated in the browser but not sent. This should be turned off in development environments.
 - **send_authorized_user_emails**: This determines whether the application will send emails to all authorized users with `View` or greater rights.
 - **root_url**: This is the root URL for the application for use in emails.
@@ -79,10 +87,8 @@ SPARCRequest has many settings that are used internally to customize content and
 - **new_user_cc**: This field will overwrite the new user mailers in the application to instead cc to this address. This is overwritten in development/testing/staging environments in order to prevent real emails from being sent out to general users.
 - **no_reply_from**: This is the email that will appear as the sender of all emails sent from the application.
 
----
-
-##### 2.1.2 Links and URLs
-- **about_sparc_url**w: This is the URL linked to by the `About SPARCRequest` button on the homepage.
+##### Links and URLs
+- **about_sparc_url**: This is the URL linked to by the `About SPARCRequest` button on the homepage.
 - **header_link_1**: This is the URL for the _**Organization Logo**_ - the left image in the SPARCRequest header.
 - **header_link_2_proper**: This is the URL for the _**SPARCRequest Logo**_ in the SPARCRequest header.
 - **header_link_2_dashboard**: This is the URL for the _**SPARCDashboard Logo**_ in the SPARCDashboard header.
@@ -98,36 +104,53 @@ SPARCRequest has many settings that are used internally to customize content and
   - **SPARCFunding**: This is an optional link to the SPARCFunding module.
   - **Other Links**: New links may be added by using the following syntax: `\"key\": [\"Link Text\", \"Full URL\"]`.
 
----
-
-##### 2.1.3 Statuses
+##### Statuses
 - **updatable_statuses**: This defines the statuses that a SubServiceRequest can be updated from. Any other statuses are considered `un-updatable`.
 - **finished_statuses**: This defines the statuses in which a SubServiceRequest is considered complete. When in these statuses, SubServiceRequests can't be updated. New services from those organizations will be added to new SubServiceRequests.
 
----
+##### Other Settings
+- **host**: This is the host domain of your instance of SPARCRequest.
+- **site_admins**: This is a list of users who will have full access to the Survey/Form builder and SPARCForms.
+- **use_indirect_cost**: This determines how the application displays costs to users. If turned on, then in addition to direct costs and direct cost subtotals, users will also see indirect costs and indirect cost subtotals, and indirect costs will also be included in the grand total. If turned off, then indirect costs will not be displayed to users, nor included in the grand total.
+- **use_separate_audit_database**: This determines whether the application will store audits in a separate datebase. The application expects this database to be named `audit_#{Rails.env}`.
+- **wkhtmltopdf_location**: This is a customizable path pointing to the binary for the `wkhtmltopdf` gem which is used to generate PDFs of HTML content. The default value provided by the gem is `/usr/local/bin/wkhtmltopdf`.
 
-##### 2.1.4 Omniauth Configuration
-Your institution may opt to use [Omniauth](https://github.com/omniauth/omniauth) authentication plugins such as [CAS](https://apereo.github.io/cas/5.2.x/index.html) and [Shibboleth](https://www.shibboleth.net/) for user authentication in SPARCRequest. Only CAS and Shibboleth are supported at this time, but support for other Omniauth plugins may be implemented. Omniauth settings are as follows:
+#### 2.2 Configuring Omniauth
+Your institution may opt to use [Omniauth](https://github.com/omniauth/omniauth) authentication plugins such as [CAS](https://apereo.github.io/cas/5.2.x/index.html) and [Shibboleth](https://www.shibboleth.net/) for user authentication in SPARCRequest. Only CAS and Shibboleth are supported at this time, but support for other Omniauth plugins may be implemented.
 
+##### Omniauth Configuration
 - **use_cas**: This determines whether the application will allow users to log in using CAS.
 - **use_cas_only**: This determines whether the application will only allow users to log in using CAS. This has lower precedence than `use_shibboleth_only` when both are enabled.
 - **use_shibboleth**: This determines whether the application will allow users to log in using Shibboleth.
 - **use_shibboleth_only**: This determines whether the application will only allow users to log in using Shibboleth. This has higher precedence than `use_shibboleth_only` when both are enabled.
 
----
+#### 2.3 Configuring LDAP
+Your institution may opt to use [LDAP](https://ldap.com/) for managing identities in SPARCRequest. You should save your environment's LDAP settings by overriding the values in `config/ldap.yml`.
 
-##### 2.1.5 LDAP Configuration
-There are several settings related to [LDAP](https://ldap.com/) (_see 2.2 Configuring LDAP_). Should your institution choose to use LDAP, you should modify these settings accordingly.
-
+##### LDAP Configuration
 - **use_ldap**: This determines whether the authorized user search will attempt to connect to an LDAP server. If turned off, it will simply search the database.
 - **lazy_load_ldap**: When enabled, the database will return only LDAP Identities found in the database and will not create new entries. When disabled, if an LDAP Identity is not found in the database, a record will be created for that user and returned.
 - **suppress_ldap_for_user_search**: Allow the use of LDAP but suppress its use within the authorized user search.
 
----
+##### LDAP Fields
+- **ldap_host**: This is the host server for your institution's LDAP.
+- **ldap_port**: This is the port at which LDAP is accessible on the server.
+- **ldap_base**: This is the LDAP base suffixes for your institution's LDAP.
+- **ldap_encryption**: This is the type of encryption present on your institution's LDAP.
+- **ldap_domain**: This is the domain suffix found on the ldap_uid of your users. (Ex: The domain of `anc63@musc.edu` is `musc.edu`)
+- **ldap_uid**: This is the key in your institution's LDAP records that corresponds to the uid of a given user.
+- **ldap_last_name**: This is the key in your institution's LDAP records that corresponds to the last name/surname of a given user.
+- **ldap_first_name**: This is the key in your institution's LDAP records that corresponds to the first name/given name of a given user.
+- **ldap_email**: This is the key in your institution's LDAP records that corresponds to the email of a given user.
+- **ldap_auth_username**: This is an optional username to access your institution's LDAP.
+- **ldap_auth_password**: This is an optional password to access your institution's LDAP.
+- **ldap_filter**: This is an optional filter that allows you to control how LDAP searches for an identity. Filter documentation can be found [here](https://ldap.com/ldap-filters/).
 
-##### 2.1.6 Epic Configuration
-There are several settings related to [Epic](https://www.epic.com/) (_see 2.3 Configuring Epic_). Should your institution choose to use EPIC, you should modify these settings accordingly.
 
+#### 2.4 Configuring Epic
+Your institution may opt to use [Epic](https://www.epic.com/) to store health records from SPARCRequest. You should save your environment's Epic settings by overriding the values in `config/epic.yml`.
+
+##### Epic Configuration
 - **use_epic**: This determines whether the application will use Epic integration.
 - **validate_epic_users**: This determines whether or not the application will validate Authorized Users with Epic access against a list of users from Epic.
 - **epic_user_endpoint**: This is the endpoint for the Epic interface to retrieve users to validate Authorized Users with Epic access.
@@ -138,36 +161,37 @@ There are several settings related to [Epic](https://www.epic.com/) (_see 2.3 Co
 - **epic_queue_report_to**: This is the email(s) that will be sent Epic queue reports when they are generated.
 - **queue_epic_load_error_to**: This is the email(s) that will be notified when errors occur in the Epic queue.
 
----
+##### Epic Fields
+- **epic_study_root**: This is the root URL of your institution's Epic API.
+- **epic_endpoint**: This is the endpoint address for your institution's Epic SOAP message receiver.
+- **epic_namespace**: This is the namespace of your institution's Epic API.
+- **epic_wsdl**: This is the Web Service Description Language (WSDL) which describes how to communicate with the Epic interface.
+- **epic_test_mode**: This tells the application to use a fake Epic server, rather than connecting to the Epic interface. This is primarily intended to be used in the test suite.
 
-##### 2.1.7 RMID Configuration
-There are several settings related to Research Master ID (RMID) - another tool in the SPARC suite designed to connect records between SPARCRequest and other records systems, such as eIRB and Coeus. Should your institution choose to use RMID, you should modify these settings accordingly.
+#### 2.5 Configuring RMID
+Your institution may opt to use Research Master ID (RMID) to connect records between SPARCRequest and other systems, such as eIRB and Coeus.
 
+##### RMID Configuration
 - **research_master_enabled**: This determines whether SPARCRequest protocols will be connected with a research master record.
 - **research_master_link**: This is the URL of your institution's RMID application.
 - **research_master_api**: This is the URL of your institution's RMID API.
 - **rmid_api_token**: This is the token used to access your institution's RMID API.
 
----
-
-##### 2.1.8 SPARCFulfillment Configuration
-There are several settings related to [SPARCFulfillment](https://github.com/sparc-request/sparc-fulfillment), aka Clinical Work Fulfillment (CWF) - another tool in the SPARC suite that allows service providers to fulfill and track the clinical and non-clinical services they provide. Should your institution choose to use CWF, you should modify these settings accordingly.
+#### 2.6 SPARCFulfillment
+Your institution may opt to use [SPARCFulfillment](https://github.com/sparc-request/sparc-fulfillment), aka Clinical Work Fulfillment (CWF) to allow service providers to fulfill and track the clinical and non-clinical services they provide.
 
 - **clinical_work_fulfillment_url**: This is the URL of your institution's SPARCFulfillment application.
 - **fulfillment_contingent_on_catalog_manager**: This determines whether users will have the ability to push a request to SPARCFulfillment from the Admin Dashboard.
 
----
+#### 2.7 SPARCFunding
+Your institution may opt to use the SPARCFunding module to keep track of funding opportunities.
 
-##### 2.1.9 SPARCFunding Configuration
-There are several settings related to SPARCFunding - an internal module of SPARCRequest that allows tracking of funding opportunities. Should your institution choose to use SPARCFunding, you should modify these settings accordingly.
-
+- **use_funding_module**: This determines whether the application will use the SPARCFunding module.
 - **funding_admins**: This is a list of users who will have full access to the SPARCFunding module.
 - **funding_org_ids**: This is a list of organization ids that are offering SPARCFunding opportunities.
 
----
-
-##### 2.1.10 SPARCRequest API
-There are several settings related to the SPARCRequest API which is used to communicate with exgernal applications, such as SPARCFulfillment. Should your institution choose to use the SPARCRequest API, you should modify these settings accordingly.
+#### 2.8 SPARCRequest API
+Your institution may opt to use the SPARCRequest API to communicate with external applications, such as SPARCFulfillment.
 
 - **current_api_version**: This is the current version of the SPARCRequest API.
 - **remote_service_notifier_protocol**: This is the HTTP protocol (HTTP/HTTPS) of the SPARCRequest API.
@@ -176,10 +200,9 @@ There are several settings related to the SPARCRequest API which is used to comm
 - **remote_service_notifier_host**: This is the host domain of the SPARCRequest API.
 - **remote_service_notifier_path**: This is the URL path of the SPARCRequest API.
 
----
+#### 2.9 Right Navigation
 
-##### 2.1.11 Right Navigation
-SPARCRequest provides various configurable help links below the service cart (AKA Right Navigation). These include Feedback, Frequently Asked Questions, Contact Us, and Short Interaction buttons. Some of these settings allow you to use built-in systems, but others will require configuration to work with 3rd party tools.
+SPARCRequest provides various configurable help links below the service cart (AKA Right Navigation). These include Feedback, Frequently Asked Questions, Contact Us, and Short Interaction buttons.
 
 ##### "Feedback" Button
 - **use_feedback_link**: This determines whether the application will use an external resource for users to provide feedback. This has lower precedence than `use_redcap_api` when both are enabled.
@@ -202,82 +225,54 @@ SPARCRequest provides various configurable help links below the service cart (AK
 ##### "Short Interaction" Button
 - **use_short_interaction**: This determines whether the application will display the `Short Interaction` button.
 
----
-
-##### 2.1.12 Google Calendar
-Your institution may opt to integrate Google Calendar to display events on the SPARCRequest homepage. The Google Calendar settings are as follows:
+#### 2.10 Google Calendar
+Your institution may opt to integrate Google Calendar to display events on the SPARCRequest homepage.
 
 - **use_google_calendar**: This determines whether Google Calendar events will be displayed on the homepage.
 - **calendar_url**: This is the URL of the Google Calendar used to display events.
+- **calendar_event_limit**: This is the maximum number of events that will be displayed in the homepage Calendar.
 
----
-
-##### 2.1.13 News Feed
-Your institution may opt to integrate an external blog for the news feed on the SPARCRequest homepage. You may enable the News Feed via the `use_news_feed` setting. In addition, you should replace the URL in `ServiceRequestsController#setup_catalog_news_feed` with the URL of your institution's feed source, and change CSS selectors as necessary to retrieve a title, link, and date for articles.
+#### 2.11 News Feed
+Your institution may opt to integrate an external blog to display posts in the news feed on the SPARCRequest homepage.
 
 - **use_news_feed**: This determines whether a news feed of blog posts will be displayed on the homepage.
 - **news_feed_url**: This is the URL used to retrieve news feed posts.
+- **news_feed_post_limit**: This is the maximum number of posts that will be displayed in the homepage News Feed.
+
+There are currently two ways to retrieve posts for the news feed - through an external API, or by parsing an HTML document for specific CSS selectors.
+
+You may opt to use an external API to retrieve posts. Currently the application allows the use of an Atlassian Confluence API. If you wish to integrate new APIs, you will need to create an adapter in `app/lib/news_feed` that extends the `ApiAdapter` class. This adapter should be named `<YourAPIName>Adapter`, where `<YourAPIName>` is the value of the `news_feed_api` setting.
+
+- **use_news_feed_api**: This determines whether the news feed will be retrieved using an external API. When disabled, the application will attempt to retrieve content through CSS selectors.
+- **news_feed_api**: This is the name of the API to pull the news feed from. This name is used to find a corresponding adapter for that API.
+
+Your API may require additional settings to be added in order to properly configure.
+
+For an Atlassian Confluence API:
+- **news_feed_atlassian_space**: This is the identifier for the Atlassian space that contains posts.
+
+You may also opt to simply parse an HTML document for CSS selectors. This will be done by default if `use_news_feed_api` is set to `false`. Simply assign the CSS selectors for individual posts (generally some kind of container), title, link, and date.
+
 - **news_feed_post_selector**: This is the CSS selector of a post at the news_feed_url to be used to gather data for the news feed.
 - **news_feed_title_selector**: This is the CSS selector of a post's title at the news_feed_url to be used in the news feed.
 - **news_feed_link_selector**: This is the CSS selector of a link to the post at the news_feed_url to be used in the news feed.
 - **news_feed_date_selector**: This is the CSS selector of a post's date at the news_feed_url to be used in the news feed.
 
----
+#### 2.12 Tableau
+Your institution may opt to integrate a Tableau Dashboard on the SPARCRequest homepage. You will need to enable guest viewing access to allow user to view the dashboard without logging in. In addition, the Dashboard may need to be scaled to fit properly onto the homepage.
 
-##### 2.1.14 System Satisfaction Survey
-Your institution may opt to provide users with a system satisfaction survey prior to submitting a service request. The System Satisfaction Survey settings are as follows:
+- **use_tableau**: This determines whether the application will display a Tableau dashboard on the homepage.
+- **homepage_tableau_dashboard**: This is the name of the Tableau Dashboard to be displayed on the homepage.
+- **homepage_tableau_url**: This is the URL of the Tableau Dashboard to be displayed on the homepage.
+
+
+#### 2.13 System Satisfaction Survey
+Your institution may opt to provide users with a system satisfaction survey prior to submitting a service request.
 
 - **system_satisfaction_survey**: This determines whether the application will prompt users to fill out a system satisfaction survey prior to submitting a service request.
 - **system_satisfaction_survey_cc**: This field will overwrite the system satisfaction survey mailers in the application to instead cc to this address. This is overwritten in development/testing/staging environments in order to prevent real emails from being sent out to general users.
 
----
-
-##### 2.1.15 Other Settings
-- **host**: This is the host domain of your instance of SPARCRequest.
-- **site_admins**: This is a list of users who will have full access to the Survey/Form builder and SPARCForms.
-- **use_indirect_cost**: This determines how the application displays costs to users. If turned on, then in addition to direct costs and direct cost subtotals, users will also see indirect costs and indirect cost subtotals, and indirect costs will also be included in the grand total. If turned off, then indirect costs will not be displayed to users, nor included in the grand total.
-- **use_separate_audit_database**: This determines whether the application will store audits in a separate datebase. The application expects this database to be named `audit_#{Rails.env}`.
-- **wkhtmltopdf_location**: This is a customizable path pointing to the binary for the `wkhtmltopdf` gem which is used to generate PDFs of HTML content. The default value provided by the gem is `/usr/local/bin/wkhtmltopdf`.
-
----
-
-#### 2.2 Configuring LDAP
-Your institution may opt to use [LDAP](https://ldap.com/) for managing identities in SPARCRequest. Your LDAP configuration will be stored in `config/ldap.yml`. To create this file, run the following command:
-
-```
-cp config/ldap.yml.example config/ldap.yml
-```
-
-##### LDAP Fields
-- **ldap_host**: This is the host server for your institution's LDAP.
-- **ldap_port**: This is the port at which LDAP is accessible on the server.
-- **ldap_base**: This is the LDAP base suffixes for your institution's LDAP.
-- **ldap_encryption**: This is the type of encryption present on your institution's LDAP.
-- **ldap_domain**: This is the domain suffix found on the ldap_uid of your users. (Ex: The domain of `anc63@musc.edu` is `musc.edu`)
-- **ldap_uid**: This is the key in your institution's LDAP records that corresponds to the uid of a given user.
-- **ldap_last_name**: This is the key in your institution's LDAP records that corresponds to the last name/surname of a given user.
-- **ldap_first_name**: This is the key in your institution's LDAP records that corresponds to the first name/given name of a given user.
-- **ldap_email**: This is the key in your institution's LDAP records that corresponds to the email of a given user.
-- **ldap_auth_username**: This is an optional username to access your institution's LDAP.
-- **ldap_auth_password**: This is an optional password to access your institution's LDAP.
-- **ldap_filter**: This is an optional filter that allows you to control how LDAP searches for an identity. Filter documentation can be found [here](https://ldap.com/ldap-filters/).
-
-
-#### 2.3 Configuring Epic
-Your institution may opt to use [Epic](https://www.epic.com/) to store health records from SPARCRequest. Your Epic configuration will be stored in `config/epic.yml`. To create this file, run the following command:
-
-```
-cp config/epic.yml.example config/epic.yml
-```
-
-##### Epic Fields
-- **study_root**: This is the root URL of your institution's Epic API.
-- **endpoint**: This is the endpoint address for your institution's Epic SOAP message receiver.
-- **namespace**: This is the namespace of your institution's Epic API.
-- **wsdl**: This is the Web Service Description Language (WSDL) which describes how to communicate with the Epic interface.
-- **test_mode**: This tells the application to use a fake Epic server, rather than connecting to the Epic interface. This is primarily intended to be used in the test suite.
-
-#### 2.4 navigation.yml
+#### 2.14 navigation.yml
 `config/navigation.yml` lays out the navigation instructions for the service request portion of SPARCRequest. Aside from changing the 'step_text' or the 'css_class' of steps, the contents of this file should not be edited unless you have made significant changes to the application.  Each 'step' has certain parameters:
 
 - **step_text**: This is the name of the step which shows up on the page
@@ -348,8 +343,6 @@ These Permissible Values are used when creating or updating an Authorized User o
 - **alert_statuses**: This is a list of statuses for alerts. Alerts can be used on a production server to warn you when an external component fails.
 - **alert_types**: This is a list of types of alerts. Currently alerts are only used for the news feed and Google calendar on the homepage.
 - **audit_actions**: This is a list of audit actions used in auditing reports.
-- **colleges**: This is deprecated and is being removed in the `3.4.0` release. Colleges can be found in the `professional_organizations` database table with `org_type='college'`.
-- **departments**: This is deprecated and is being removed in the `3.4.0` release. Departments can be found in the `professional_organizations` database table with `org_type='department'`.
 - **epic_push_status_text**: This is a list containing various statuses of Protocols when being pushed to Epic.
 - **epic_rights**: This is a list of Epic user rights for given to authorized users.
 - **study_type_answers**: This list maps answers to the first version of study type questions to a corresponding study-type note. Each column corresponds to a different question. `true` maps to questions answered "yes", `false` to questions answered "no", and `~` to questions that will not be displayed in the sequence.
@@ -359,9 +352,8 @@ These Permissible Values are used when creating or updating an Authorized User o
 - **study_type_questions**: This is a list of the first version of study-type questions displayed to users when creating or updating a study.
 - **study_type_questions_version_2**: This is a list of the second version of study-type questions displayed to users when creating or updating a study.
 - **study_type_questions_version_3**: This is a list of the third version of study-type questions displayed to users when creating or updating a study.
-- **subject_ethnicities**: This is deprecated and is being removed in the `3.4.0` release.
-- **subject_genders**: This is deprecated and is being removed in the `3.4.0` release.
 - **browser_versions**: This is a list of browsers for when a user submits feedback via the built-in feedback system.
+
 
 ### 4. DotENV
 SPARCRequest stores several environment variables specific to each institution. To access these variables, first you must create a `.env` file. The easiest way to do this is to copy the example file:

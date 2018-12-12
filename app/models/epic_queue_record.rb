@@ -26,6 +26,27 @@ class EpicQueueRecord < ApplicationRecord
   
   audited
 
+  scope :ordered, -> (sort, order) {
+    if sort
+      case sort
+      when 'protocol'
+        eager_load(:protocol).order(Arel.sql("protocols.id #{order}"))
+      when 'pis'
+        joins(protocol: :principal_investigators).order(Arel.sql("identities.first_name #{order}, identities.last_name #{order}"))
+      when 'date'
+        order(Arel.sql("epic_queue_records.created_at #{order}"))
+      when 'status'
+        order(Arel.sql("epic_queue_records.status #{order}"))
+      when 'type'
+        order(Arel.sql("epic_queue_records.origin #{order}"))
+      when 'by'
+        eager_load(:identity).order(Arel.sql("identities.first_name #{order}, identities.last_name #{order}"))
+      end
+    else
+      order(created_at: :desc)
+    end
+  }
+
   def self.with_valid_protocols
     joins(:protocol).where.not(protocols: { id: nil } )
   end

@@ -1,17 +1,17 @@
-id,key,value,concept_code,parent_id,sort_order,category,default,reserved
-,primary-pi,Primary PI,,,1,user_role,,1
-,pi,PD/PI,,,2,user_role,,1
-,co-investigator,Co-Investigator,,,3,user_role,,1
-,faculty-collaborator,Faculty Collaborator,,,4,user_role,,1
-,consultant,Consultant,,,5,user_role,,1
-,staff-scientist,Staff scientist (doctoral level),,,6,user_role,,1
-,postdoc,"Postdoctoral Scholar, Fellow, or Other Postdoctoral Position",,,7,user_role,,1
-,grad-research-assistant,Graduate Research Assistant,,,8,user_role,,1
-,undergrad-research-assistant,Undergraduate Research Assistant,,,9,user_role,,1
-,research-assistant-coordinator,Research Assistant/Coordinator,,,10,user_role,,1
-,technician,Technician,,,11,user_role,,1
-,mentor,Mentor,,,12,user_role,,1
-,general-access-user,General Access User,,,13,user_role,,1
-,business-grants-manager,Billing/Business Manager,,,14,user_role,,1
-,research-nurse,Research Nurse,,,15,user_role,,1
-,other,Other,,,16,user_role,,0
+id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_available
+,primary-pi,Primary PI,,,1,user_role,,1,1
+,pi,PD/PI,,,2,user_role,,1,1
+,co-investigator,Co-Investigator,,,3,user_role,,1,1
+,faculty-collaborator,Faculty Collaborator,,,4,user_role,,1,1
+,consultant,Consultant,,,5,user_role,,1,1
+,staff-scientist,Staff scientist (doctoral level),,,6,user_role,,1,1
+,postdoc,"Postdoctoral Scholar, Fellow, or Other Postdoctoral Position",,,7,user_role,,1,1
+,grad-research-assistant,Graduate Research Assistant,,,8,user_role,,1,1
+,undergrad-research-assistant,Undergraduate Research Assistant,,,9,user_role,,1,1
+,research-assistant-coordinator,Research Assistant/Coordinator,,,10,user_role,,1,1
+,technician,Technician,,,11,user_role,,1,1
+,mentor,Mentor,,,12,user_role,,1,1
+,general-access-user,General Access User,,,13,user_role,,1,1
+,business-grants-manager,Billing/Business Manager,,,14,user_role,,1,1
+,research-nurse,Research Nurse,,,15,user_role,,1,1
+,other,Other,,,16,user_role,,0,1

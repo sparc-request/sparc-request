@@ -38,6 +38,11 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
 
   def edit
     @identity     = @protocol_role.identity
+
+    if Setting.get_value("use_epic") && Setting.get_value("validate_epic_users") && @protocol != nil && @protocol.selected_for_epic
+      @epic_user = EpicUser.for_identity(@identity)
+    end
+
     @header_text  = t(:authorized_users)[:edit][:header]
     @dashboard    = true
 
@@ -52,6 +57,11 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
 
     if params[:identity_id] # if user selected
       @identity     = Identity.find_or_create(params[:identity_id])
+
+      if Setting.get_value("use_epic") && Setting.get_value("validate_epic_users") && @protocol != nil && @protocol.selected_for_epic
+        @epic_user = EpicUser.for_identity(@identity)
+      end
+
       @project_role = @protocol.project_roles.new(identity_id: @identity.id)
       @current_pi   = @protocol.primary_principal_investigator
 

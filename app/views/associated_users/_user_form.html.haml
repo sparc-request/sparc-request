@@ -72,11 +72,15 @@
                 data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
                 title: t(:authorized_users)[:tooltips][:epic_access]) do
                 = label_tag nil, nil, class: 'radio-inline' do
-                  = form.radio_button :epic_access, false, class: 'epic_access'
-                  No
+                  = form.radio_button :epic_access, false, class: 'epic_access', disabled: Setting.get_value("validate_epic_users") && !EpicUser.is_active?(@epic_user)
+                  = t(:constants)[:no_select]
                 = label_tag nil, nil, class: 'radio-inline' do
-                  = form.radio_button :epic_access, true, class: 'epic_access'
-                  Yes
+                  = form.radio_button :epic_access, true, class: 'epic_access', disabled: Setting.get_value("validate_epic_users") && !EpicUser.is_active?(@epic_user)
+                  = t(:constants)[:yes_select]
+                - if Setting.get_value("validate_epic_users") && !EpicUser.is_active?(@epic_user)
+                  %br
+                  %p.text-danger
+                    = t(:authorized_users)[:form_fields][:no_epic_access]
 
             = render 'associated_users/form/project_rights', form: form, dashboard: dashboard, admin: admin
 

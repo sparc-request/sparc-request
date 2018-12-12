@@ -190,6 +190,26 @@
     "parent_value":   "true"
   },
   {
+    "key":            "epic_user_collection_name",
+    "value":          "epicintc",
+    "friendly_name":  "Epic User Collection Name",
+    "description":    "This is the name of the collection of users from the Epic User Endpoint.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "validate_epic_users",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "epic_user_endpoint",
+    "value":          "https://c3po-hadoop-s2-v.obis.musc.edu:8484/v1/",
+    "friendly_name":  "Epic User Endpoint",
+    "description":    "This is the endpoint for the Epic interface to retrieve users to validate Authorized Users with Epic access.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "validate_epic_users",
+    "parent_value":   "true"
+  },
+  {
     "key":            "epic_wsdl",
     "value":          "http://localhost:#{FAKE_EPIC_SERVER.port}/wsdl",
     "friendly_name":  "Epic WSDL",
@@ -988,5 +1008,15 @@
     "version":        "",
     "parent_key":     "",
     "parent_value":   ""
+  },
+  {
+    "key":            "validate_epic_users",
+    "value":          "false",
+    "friendly_name":  "Validate Epic Users",
+    "description":    "This determines whether or not the application will validate Authorized Users with Epic access against a list of users from Epic.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_epic",
+    "parent_value":   "true"
   }
 ]

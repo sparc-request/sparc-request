@@ -26,6 +26,19 @@ $ ->
   $(document).ajaxComplete ->
     $('[data-toggle="tooltip"]').tooltip()
 
+  $(document).on 'show.bs.collapse hide.bs.collapse', '.collapse, .collapsing', ->
+    $control = $("[href='##{$(this).attr('id')}']")
+
+    if $control.length == 0
+      $control = $("[data-target='##{$(this).attr('id')}']")
+
+    if $control.attr('alt')
+      text  = $control.text()
+      alt   = $control.attr('alt')
+
+      $control.text(alt)
+      $control.attr('alt', text)
+
 (exports ? this).getSRId = ->
   $("input[name='service_request_id']").val()
 

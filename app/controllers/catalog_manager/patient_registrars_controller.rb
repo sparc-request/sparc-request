@@ -18,47 +18,45 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'rails_helper'
+class CatalogManager::PatientRegistrarsController < CatalogManager::AppController
 
-RSpec.describe 'User creates new organization', js: true do
-  let_there_be_lane
-  fake_login_for_each_test
+  def create
+    @patient_registrar = PatientRegistrar.new(patient_registrar_params)
+    @identity = Identity.find(@patient_registrar.identity_id)
+    @organization = @patient_registrar.organization
+    @fulfillment_rights = fulfillment_rights(@organization.id)
 
-  before :each do
-    @institution = create(:institution)
-    create(:catalog_manager, organization_id: @institution.id, identity_id: Identity.where(ldap_uid: 'jug2').first.id)
+    if @patient_registrar.save
+      flash[:notice] = "Patient Registrar created successfully."
+    else
+      @patient_registrar.errors.messages.each do |field, message|
+        flash[:alert] = "Error adding Patient Registrar: #{message.first}."
+      end
+    end
+
+    render 'catalog_manager/organizations/refresh_fulfillment_rights_row'
   end
 
-  context 'and the user creates a new provider' do
-    before :each do
-      visit catalog_manager_catalog_index_path
-      wait_for_javascript_to_finish
-      find("#institution-#{@institution.id}").click
-      wait_for_javascript_to_finish
-      click_link 'Create New Provider'
-      wait_for_javascript_to_finish
+  def destroy
+    @patient_registrar = PatientRegistrar.find_by(patient_registrar_params)
+    @identity = Identity.find(@patient_registrar.identity_id)
+    @organization = @patient_registrar.organization
+    @fulfillment_rights = fulfillment_rights(@organization.id)
 
-      fill_in 'organization_name', with: 'Test Provider'
-      click_button 'Save'
-      wait_for_javascript_to_finish
-
+    if @patient_registrar.destroy
+      flash[:notice] = "Patient Registrar removed successfully."
+    else
+      flash[:alert] = "Error removing Patient Registrar."
     end
 
-    it 'should add a new provider' do
-      expect(Provider.count).to eq(1)
-      expect(Provider.where(name: 'Test Provider').first.parent).to eq(@institution)
-    end
+    render 'catalog_manager/organizations/refresh_fulfillment_rights_row'
+  end
 
-    it 'should show the provider form' do
-      expect(page).to have_selector("h3", text: 'Test Provider')
-    end
+  private
 
-    it 'should disable the new provider after it is created' do
-      find("#institution-#{@institution.id}").click
-      wait_for_javascript_to_finish
-
-      expect(Provider.where(name: 'Test Provider').first.is_available).to eq(false)
-      expect(page).to have_selector('.text-provider.unavailable-org', text: 'Test Provider')
-    end
+  def patient_registrar_params
+    params.require(:patient_registrar).permit(
+      :identity_id,
+      :organization_id)
   end
 end

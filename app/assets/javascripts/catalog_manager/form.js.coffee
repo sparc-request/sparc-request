@@ -177,6 +177,13 @@ $ ->
       type: if $(this).prop('checked') then 'POST' else 'DELETE'
       url: "/catalog_manager/clinical_provider?clinical_provider[identity_id]=#{identity_id}&clinical_provider[organization_id]=#{organization_id}"
 
+  $(document).on 'change', '.patient-registrar-checkbox', ->
+    identity_id = $(this).data('identity-id')
+    organization_id = $(this).data('organization-id')
+    $.ajax
+      type: if $(this).prop('checked') then 'POST' else 'DELETE'
+      url: "/catalog_manager/patient_registrar?patient_registrar[identity_id]=#{identity_id}&patient_registrar[organization_id]=#{organization_id}"
+
 
   $(document).on 'click', '.remove-fulfillment-rights', (event) ->
     event.preventDefault()

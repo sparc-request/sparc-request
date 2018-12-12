@@ -629,7 +629,7 @@ RSpec.describe 'User views details after editing epic answers', js: true do
 
     wait_for_javascript_to_finish
     click_button 'Save'
-    wait_for_javascript_to_finish
+    wait_for_page(dashboard_protocol_path(protocol))
   end
 
   def answer_all_questions(protocol, use_epic=true, selected_for_epic=true)
@@ -666,7 +666,7 @@ RSpec.describe 'User views details after editing epic answers', js: true do
     end
     wait_for_javascript_to_finish
     click_button 'Save'
-    wait_for_javascript_to_finish
+    wait_for_page(dashboard_protocol_path(protocol))
   end
 
   def setup_data_for_version_2_study(protocol)

@@ -174,6 +174,7 @@ en:
       role_prompt: "Select a Role"
       role_specify: "Please Specify:"
       epic_access: "Epic EMR Access?:"
+      no_epic_access: "User does not have Epic access"
       rights: "Proxy Rights:"
       placeholders:
         orcid: "XXXX-XXXX-XXXX-XXXX"
@@ -329,6 +330,10 @@ en:
       select_one: "Select One"
     add_as_last: "Add as last"
     other: "Other"
+    show: "Show Details"
+    hide: "Hide Details"
+    more: "More..."
+    less: "Less..."
 
   #############
   # DOCUMENTS #

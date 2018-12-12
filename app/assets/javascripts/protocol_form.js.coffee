@@ -127,14 +127,31 @@ $(document).ready ->
   ###FUNDING STATUS FIELDS DISPLAY###
   $(document).on 'change', '#protocol_funding_status', ->
     $('.funding_status_dependent').hide()
-    switch $(this).val()
-      when 'funded' then $('.funded').show()
-      when 'pending_funding' then $('.pending_funding').show()
+    status_value = $(this).val()
+    source_value = ''
+
+    if status_value == 'funded'
+      $('.funded').show()
+      source_value = $('#protocol_funding_source').val()
+    else if status_value == 'pending_funding'
+      $('.pending_funding').show()
+      source_value = $('#protocol_potential_funding_source').val()
+
+    if source_value == 'federal'
+      $(".federal").show()
+    else
+      $(".federal").hide()
   ###END FUNDING STATUS FIELDS DISPLAY###
 
-
+  
 
   ###FUNDING SOURCE FIELDS DISPLAY###
+  $(document).on 'change', '#protocol_potential_funding_source', ->
+    if $(this).val() == 'federal'
+      $('.federal').show()
+    else
+      $('.federal').hide()
+
   $(document).on 'change', '#protocol_funding_source', ->
     $('.funding_source_dependent').hide()
     switch $(this).val()

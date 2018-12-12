@@ -27,9 +27,13 @@ module Surveyor::ResponsesHelper
   end
 
   def response_options(response, accessible_surveys)
+    # See https://www.pivotaltracker.com/story/show/157749896 for scenarios
+
     view_permissions =
       if response.survey.is_a?(SystemSurvey) && response.survey.system_satisfaction?
         current_user.is_site_admin?
+      elsif response.survey.is_a?(SystemSurvey)
+        current_user.is_site_admin? || accessible_surveys.include?(response.survey)
       else
         accessible_surveys.include?(response.survey)
       end
@@ -42,8 +46,7 @@ module Surveyor::ResponsesHelper
       end
 
     [ view_response_button(response, view_permissions),
-      edit_response_button(response, edit_permissions)#,
-      # download_response_button(response)
+      edit_response_button(response, edit_permissions)
     ].join('')
   end
 

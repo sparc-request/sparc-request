@@ -28,8 +28,7 @@
     - pricing_setups[0..2].each do |pricing_setup|
       = render "/catalog_manager/organizations/pricing_setup", pricing_setup: pricing_setup
     - if pricing_setups.length > 3
-      %h4
-        = link_to '...', "#org#{organization.id}PricingSetupsExpand", data: { toggle: 'collapse' }, aria: { expanded: 'false' }
+      = link_to t(:constants)[:more], "#org#{organization.id}PricingSetupsExpand", class: 'btn btn-primary collapsed', alt: t(:constants)[:less], data: { toggle: 'collapse' }, aria: { expanded: 'false' }
       .collapse{ id: "org#{organization.id}PricingSetupsExpand" }
         - pricing_setups[3..-1].each do |pricing_setup|
           = render "/catalog_manager/organizations/pricing_setup", pricing_setup: pricing_setup

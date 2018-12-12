@@ -44,3 +44,9 @@ def stub_config(key, value)
     setting.update_attribute(:value, default_value)
   end
 end
+
+RSpec.configure do |config|
+  config.before :each do
+    Setting.preload_values
+  end
+end

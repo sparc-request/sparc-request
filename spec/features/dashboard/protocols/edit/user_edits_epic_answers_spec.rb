@@ -42,7 +42,8 @@ RSpec.describe 'User edits epic answers', js: true do
                       create(:super_user, identity: jug2,
                               organization: organization,
                               access_empty_protocols: true)
-    allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
+    
+    allow(Protocol).to receive(:rmid_status).and_return(true)
   end
 
   context 'use epic = true' do
@@ -60,10 +61,11 @@ RSpec.describe 'User edits epic answers', js: true do
       edit_study_type_answers_selected_for_epic_true_cofc_true_and_see_note
 
       click_button 'Save'
-      wait_for_javascript_to_finish
+      wait_for_page(dashboard_protocol_path(@protocol))
 
       ### GO BACK INTO EDIT ###
       find('.edit-protocol-information-button').click
+      wait_for_page(edit_dashboard_protocol_path(@protocol))
 
       ### SEE THAT CORRECT ANSWERS ARE DISPLAYED WITH CORRECT NOTE ###
       and_sees_correct_answers_for_selected_for_epic_true_and_cofc_true
@@ -84,10 +86,11 @@ RSpec.describe 'User edits epic answers', js: true do
       expect(page).to have_selector('#study_type_note', text: 'Note: Full Epic Functionality: no notification, no pink header, no MyChart access.')
 
       click_button 'Save'
-      wait_for_javascript_to_finish
+      wait_for_page(dashboard_protocol_path(@protocol))
 
       ### EDIT AGAIN TO SEE CORRRECT ANSWERS AND NOTE DISPLAYED ###
       find('.edit-protocol-information-button').click
+      wait_for_page(edit_dashboard_protocol_path(@protocol))
 
       expect(page).to have_selector('#study_type_answer_certificate_of_conf')
       within '#study_type_answer_certificate_of_conf' do
@@ -133,10 +136,11 @@ RSpec.describe 'User edits epic answers', js: true do
       edit_study_type_answers_selected_for_epic_false_cofc_true_and_see_no_note(true)
 
       click_button 'Save'
-      wait_for_javascript_to_finish
+      wait_for_page(dashboard_protocol_path(@protocol))
 
       ### GO BACK INTO EDIT ###
       find('.edit-protocol-information-button').click
+      wait_for_page(edit_dashboard_protocol_path(@protocol))
 
       ### SEE THAT CORRECT ANSWERS ARE DISPLAYED ###
       and_sees_the_correct_answer_and_no_note_displayed(true)
@@ -145,10 +149,11 @@ RSpec.describe 'User edits epic answers', js: true do
       edit_study_type_answers_all_answers_no_and_no_note(true)
 
       click_button 'Save'
-      wait_for_javascript_to_finish
+      wait_for_page(dashboard_protocol_path(@protocol))
 
       ### EDIT AGAIN TO SEE CORRRECT ANSWERS ARE DISPLAYED ###
       find('.edit-protocol-information-button').click
+      wait_for_page(edit_dashboard_protocol_path(@protocol))
 
       and_sees_the_correct_answers_and_no_note(true)
     end
@@ -183,10 +188,11 @@ RSpec.describe 'User edits epic answers', js: true do
         edit_study_type_answers_selected_for_epic_true_cofc_true_and_see_note
 
         click_button 'Save'
-        wait_for_javascript_to_finish
+        wait_for_page(dashboard_protocol_path(@protocol))
 
         ### SEE THAT CORRECT ANSWER IS DISPLAYING ###
         find('.edit-protocol-information-button').click
+        wait_for_page(edit_dashboard_protocol_path(@protocol))
 
         and_sees_correct_answers_for_selected_for_epic_true_and_cofc_true
       end
@@ -204,8 +210,9 @@ RSpec.describe 'User edits epic answers', js: true do
       edit_study_type_answers_selected_for_epic_false_cofc_true_and_see_no_note(false)
       
       click_button 'Save'
-      wait_for_javascript_to_finish
+      wait_for_page(dashboard_protocol_path(@protocol))
       find('.edit-protocol-information-button').click
+      wait_for_page(edit_dashboard_protocol_path(@protocol))
 
       and_sees_the_correct_answer_and_no_note_displayed(false)
       ### SEE APPROPRIATE STUDY TYPE NOTE ###
@@ -214,8 +221,9 @@ RSpec.describe 'User edits epic answers', js: true do
       edit_study_type_answers_all_answers_no_and_no_note(false)
 
       click_button 'Save'
-      wait_for_javascript_to_finish
+      wait_for_page(dashboard_protocol_path(@protocol))
       find('.edit-protocol-information-button').click
+      wait_for_page(edit_dashboard_protocol_path(@protocol))
 
       and_sees_the_correct_answers_and_no_note(false)
     end
@@ -229,8 +237,9 @@ RSpec.describe 'User edits epic answers', js: true do
       edit_study_type_answers_selected_for_epic_false_cofc_true_and_see_no_note(false)
 
       click_button 'Save'
-      wait_for_javascript_to_finish
+      wait_for_page(dashboard_protocol_path(@protocol))
       find('.edit-protocol-information-button').click
+      wait_for_page(edit_dashboard_protocol_path(@protocol))
 
       and_sees_the_correct_answer_and_no_note_displayed(false)
 
@@ -240,8 +249,9 @@ RSpec.describe 'User edits epic answers', js: true do
       edit_study_type_answers_all_answers_no_and_no_note(false)
       
       click_button 'Save'
-      wait_for_javascript_to_finish
+      wait_for_page(dashboard_protocol_path(@protocol))
       find('.edit-protocol-information-button').click
+      wait_for_page(edit_dashboard_protocol_path(@protocol))
 
 
       and_sees_the_correct_answers_and_no_note(false)
@@ -261,8 +271,9 @@ RSpec.describe 'User edits epic answers', js: true do
         edit_study_type_answers_selected_for_epic_false_cofc_true_and_see_no_note(false)
 
         click_button 'Save'
-        wait_for_javascript_to_finish
+        wait_for_page(dashboard_protocol_path(@protocol))
         find('.edit-protocol-information-button').click
+        wait_for_page(edit_dashboard_protocol_path(@protocol))
 
         and_sees_the_correct_answer_and_no_note_displayed(false)
 
@@ -271,8 +282,9 @@ RSpec.describe 'User edits epic answers', js: true do
         edit_study_type_answers_all_answers_no_and_no_note(false)
 
         click_button 'Save'
-        wait_for_javascript_to_finish
+        wait_for_page(dashboard_protocol_path(@protocol))
         find('.edit-protocol-information-button').click
+        wait_for_page(edit_dashboard_protocol_path(@protocol))
 
         and_sees_the_correct_answers_and_no_note(false)
       end
@@ -294,9 +306,9 @@ RSpec.describe 'User edits epic answers', js: true do
         expect(page).not_to have_selector('#study_type_note')
 
         click_button 'Save'
-        wait_for_javascript_to_finish
+        wait_for_page(dashboard_protocol_path(@protocol))
         find('.edit-protocol-information-button').click
-        wait_for_javascript_to_finish
+        wait_for_page(edit_dashboard_protocol_path(@protocol))
 
         expect(page).to have_selector('#study_type_answer_certificate_of_conf_no_epic')
         within '#study_type_answer_certificate_of_conf_no_epic' do

@@ -20,13 +20,21 @@
 
 class ApplicationController < ActionController::Base
   protect_from_forgery prepend: true
+
   helper :all
+
   helper_method :current_user
   helper_method :xeditable?
+
+  before_action :preload_settings
   before_action :set_highlighted_link  # default is to not highlight a link
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   protected
+
+  def preload_settings
+    Setting.preload_values
+  end
 
   def not_signed_in?
     !current_user.present?
@@ -267,7 +275,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authorize_funding_admin
-    redirect_to root_path unless Setting.find_by_key("use_funding_module").value && current_user.is_funding_admin?
+    redirect_to root_path unless Setting.get_value("use_funding_module") && current_user.is_funding_admin?
   end
 
   def sanitize_dates(params, field_names)

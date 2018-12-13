@@ -24,16 +24,24 @@ $program-orange: #ff9933
 $core-blue: #003366
 
 .text-institution, .text-service
-  color: $institution-service-blue !important
+  color: $institution-service-blue
 
 .text-provider
-  color: $provider-green !important
+  color: $provider-green
 
 .text-program
-  color: $program-orange !important
+  color: $program-orange
 
 .text-core
-  color: $core-blue !important
+  color: $core-blue
+
+.no_access
+  .text-institution,
+  .text-service,
+  .text-provider,
+  .text-program,
+  .text-core
+    color: grey
 
 #container
   #header

@@ -105,7 +105,7 @@ RSpec.describe 'dashboard index', js: :true do
           end
         end
         describe 'protocol does not have ssr' do
-          scenario 'user should see requests button' do
+          scenario 'user should not see requests button' do
             page = visit_protocols_index_page
 
             expect(page.search_results.protocols.first).to have_no_requests_button

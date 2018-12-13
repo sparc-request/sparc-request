@@ -42,7 +42,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
                           )
           organization    = create(:organization)
           create(:super_user, identity: jug2,
-                organization: organization)
+                organization: organization,
+                access_empty_protocols: true)
           allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
         end
 
@@ -128,7 +129,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
                           )
           organization    = create(:organization)
           create(:super_user, identity: jug2,
-                organization: organization)
+                organization: organization,
+                access_empty_protocols: true)
           allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
         end
 
@@ -214,7 +216,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
                           )
           organization    = create(:organization)
           create(:super_user, identity: jug2,
-                organization: organization)
+                organization: organization,
+                access_empty_protocols: true)
           setup_data_for_version_2_study(@protocol)
           allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
         end
@@ -339,7 +342,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
                           )
           organization    = create(:organization)
           create(:super_user, identity: jug2,
-                organization: organization)
+                organization: organization,
+                access_empty_protocols: true)
           allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
         end
 
@@ -420,7 +424,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
                           )
           organization    = create(:organization)
           create(:super_user, identity: jug2,
-                organization: organization)
+                organization: organization,
+                access_empty_protocols: true)
           allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
         end
 
@@ -502,7 +507,8 @@ RSpec.describe 'User views details after editing epic answers', js: true do
                             )
             organization    = create(:organization)
             create(:super_user, identity: jug2,
-                  organization: organization)
+                  organization: organization,
+                  access_empty_protocols: true)
             allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
             setup_data_for_version_2_study(@protocol)
             visit dashboard_protocol_path(@protocol)

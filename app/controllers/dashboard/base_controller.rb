@@ -69,7 +69,7 @@ class Dashboard::BaseController < ApplicationController
   end
 
   def find_admin_for_protocol
-    if @user.super_users.any? && @protocol.sub_service_requests.empty?
+    if @user.super_users.where(access_empty_protocols: true).exists? && @protocol.sub_service_requests.empty?
       @admin = true
     else
       @admin = Protocol.for_admin(@user.id).include?(@protocol)

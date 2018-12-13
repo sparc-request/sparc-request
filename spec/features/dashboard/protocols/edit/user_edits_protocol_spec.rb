@@ -43,7 +43,8 @@ RSpec.describe 'User edits epic answers', js: true do
                                 service_request: service_request,
                                 status: 'draft')
                         create(:super_user, identity: jug2,
-                                organization: organization)
+                                organization: organization,
+                                access_empty_protocols: true)
 
       allow(Protocol).to receive(:rmid_status).and_return(true)
     end

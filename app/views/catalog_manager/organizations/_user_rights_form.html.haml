@@ -21,9 +21,9 @@
 .row.form_row{style: 'margin-bottom: 25px;'}
   %div{class: "#{(organization.type == "Institution" or !organization.process_ssrs) ? 'col-sm-6' : 'col-sm-3'}"}
     %h5= t(:catalog_manager)[:organization_form][:user_rights][:name_email]
-  .col-sm-2.text-center
-    %h5= t(:catalog_manager)[:organization_form][:user_rights][:super_user]
   .col-sm-3.text-center
+    %h5= t(:catalog_manager)[:organization_form][:user_rights][:super_user]
+  .col-sm-2.text-center
     %h5= t(:catalog_manager)[:organization_form][:user_rights][:catalog_manager]
   - unless organization.type == "Institution" or !organization.process_ssrs
     .col-sm-3.text-center

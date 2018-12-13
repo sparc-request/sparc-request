@@ -277,7 +277,12 @@ class Protocol < ApplicationRecord
 
     empty_protocol_ids  = includes(:sub_service_requests).where(sub_service_requests: { id: nil }).ids
     protocol_ids        = ssrs.distinct.pluck(:protocol_id)
-    all_protocol_ids    = protocol_ids + empty_protocol_ids
+    if SuperUser.where(identity_id: identity_id).where(access_empty_protocols: true).exists?
+      all_protocol_ids    = protocol_ids + empty_protocol_ids
+    else
+      all_protocol_ids    = protocol_ids
+    end
+
     if service_provider_ssrs
       all_protocol_ids << service_provider_ssrs.distinct.pluck(:protocol_id)
       all_protocol_ids.flatten!

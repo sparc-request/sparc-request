@@ -151,7 +151,7 @@ class Organization < ApplicationRecord
   # Organization B, which belongs to Organization C, return "C > B > A".
   # This "hierarchy" stops at a process_ssrs Organization.
   def organization_hierarchy(include_self=false, process_ssrs=true, use_css=false)
-    parent_orgs = self.parents
+    parent_orgs = self.parents.reverse
 
     if process_ssrs
       root = parent_orgs.find_index { |org| org.process_ssrs? } || (parent_orgs.length - 1)
@@ -160,9 +160,9 @@ class Organization < ApplicationRecord
     end
 
     if use_css
-      parent_orgs[0..root].map{ |o| "<span class='#{o.css_class}-text'>#{o.abbreviation}</span>"}.reverse.join('<span> / </span>') + (include_self ? '<span> / </span>' + "<span class='#{self.css_class}-text'>#{self.abbreviation}</span>" : '')
+      parent_orgs[0..root].map{ |o| "<span class='#{o.css_class}-text'>#{o.abbreviation}</span>"}.join('<span> / </span>') + (include_self ? '<span> / </span>' + "<span class='#{self.css_class}-text'>#{self.abbreviation}</span>" : '')
     else
-      parent_orgs[0..root].map(&:abbreviation).reverse.join(' > ') + (include_self ? ' > ' + self.abbreviation : '')
+      parent_orgs[0..root].map(&:abbreviation).join(' > ') + (include_self ? ' > ' + self.abbreviation : '')
     end
   end
 

@@ -78,7 +78,10 @@ module Dashboard::SubServiceRequestsHelper
             display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:go_to_fulfillment], "#{Setting.get_value("clinical_work_fulfillment_url")}/sub_service_request/#{sub_service_request.id}", target: "_blank", class: "btn btn-primary btn-md fulfillment_status"
           else
             # Pending button displayed until ssr is imported to fulfillment
-            display += button_tag t(:dashboard)[:sub_service_requests][:header][:fulfillment][:pending], data: { imported_to_fulfillment: sub_service_request.imported_to_fulfillment? }, class: "btn btn-primary btn-md form-control fulfillment_status", disabled: true
+            display += content_tag(:button, data: { imported_to_fulfillment: sub_service_request.imported_to_fulfillment? }, class: "btn btn-primary btn-md form-control fulfillment_status", disabled: true) do
+              content = content_tag(:span, "Pending")
+              content.concat image_tag 'spinner.gif', id: 'pending_fulfillment_status', class: 'pull-right'
+            end
           end
         else
           # In fulfillment, but user has no rights to view in Fulfillment

@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .modal-dialog
   .modal-content
-    = form_for ([:dashboard, document]), remote: true, multipart: true, authenticity_token: form_authenticity_token, html: { class: 'form-horizontal', role: 'form' } do |form|
+    = form_for [:dashboard, document], remote: true, multipart: true, authenticity_token: form_authenticity_token, html: { class: 'form-horizontal', role: 'form' } do |form|
       .modal-header
         %button.close{ type: 'button', data: { dismiss: 'modal' } }
           %span{ aria: { hidden:'true' } } &times;

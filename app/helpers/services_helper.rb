@@ -25,7 +25,7 @@ module ServicesHelper
   def cpt_code_text(service)
     unless service.cpt_code.blank?
       content_tag(:span, class: 'col-sm-3 no-padding text-black') do
-        content_tag(:strong, "#{t(:catalog_manager)[:organization_form][:cpt_code]}: #{service.cpt_code}")
+        content_tag(:strong, "#{t(:catalog_manager)[:organization_form][:cpt_code]}: ") + content_tag(:span, service.cpt_code)
       end
     end
   end
@@ -33,7 +33,7 @@ module ServicesHelper
   def eap_id_text(service)
     unless service.eap_id.blank?
       content_tag(:span, class: 'col-sm-3 no-padding text-black') do
-        content_tag(:strong, "#{t(:catalog_manager)[:organization_form][:eap_id]}: #{service.eap_id}")
+        content_tag(:strong, "#{t(:catalog_manager)[:organization_form][:eap_id]}: ") + content_tag(:span, service.eap_id)
       end
     end
   end

@@ -27,6 +27,9 @@ class Dashboard::EpicQueueRecordsController < Dashboard::BaseController
 
     respond_to do |format|
       format.json
+      format.xlsx {
+        response.headers['Content-Disposition'] = "attachment; filename=\"#{@type} Epic Queue Records.xlsx\""
+      }
     end
   end
 

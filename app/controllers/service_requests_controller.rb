@@ -298,8 +298,12 @@ class ServiceRequestsController < ApplicationController
     @service_request.protocol.update_attributes(details_params) if details_params
 
     unless @service_request.group_valid?(:service_details)
-      redirect_to service_details_service_request_path(@service_request, sub_service_request_id: @sub_service_request.try(:id)) and return false unless action_name == 'service_details'
-      @errors = @service_request.errors
+      unless action_name == 'service_details' 
+        @errors = @service_request.errors
+        flash[:alert] = @service_request.errors.full_messages.join("<br />").html_safe
+        redirect_to service_details_service_request_path(@service_request, sub_service_request_id: @sub_service_request.try(:id))
+        return false
+      end
     end
     return true
   end

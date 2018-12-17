@@ -39,7 +39,7 @@
               = t(:authorized_users)[:table_fields][:phone]
             %th.col-sm-2{ data: { field: 'proxy_rights', align: 'left', sortable: 'true' } }
               = t(:authorized_users)[:table_fields][:rights]
-            - if protocol.selected_for_epic?
+            - if Setting.get_value('use_epic') && protocol.selected_for_epic?
               %th{ data: { field: 'epic_emr_access', align: 'center', sortable: 'true' } }
                 = raw(t(:authorized_users)[:table_fields][:epic_emr_access])
             %th.edit-delete-col{ data: { field: 'edit', align: 'center', sortable: 'false' } }

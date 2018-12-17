@@ -41,15 +41,30 @@ class Form < Survey
   }
 
   scope :for_super_user, -> (identity) {
-    where(surveyable: Organization.authorized_for_super_user(identity.id))
+    orgs      = Organization.authorized_for_super_user(identity.id)
+    services  = Service.where(organization: orgs)
+
+    where(surveyable: orgs).
+    or(where(surveyable: services)).
+    or(where(surveyable: identity))
   }
 
   scope :for_service_provider, -> (identity) {
-    where(surveyable: Organization.authorized_for_service_provider(identity.id))
+    orgs      = Organization.authorized_for_service_provider(identity.id)
+    services  = Service.where(organization: orgs)
+
+    where(surveyable: orgs).
+    or(where(surveyable: services)).
+    or(where(surveyable: identity))
   }
 
   scope :for_catalog_manager, -> (identity) {
-    where(surveyable: Organization.authorized_for_catalog_manager(identity.id))
+    orgs      = Organization.authorized_for_catalog_manager(identity.id)
+    services  = Service.where(organization: orgs)
+
+    where(surveyable: orgs).
+    or(where(surveyable: services)).
+    or(where(surveyable: identity))
   }
 
   def self.yaml_klass

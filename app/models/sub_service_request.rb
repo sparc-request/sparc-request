@@ -432,7 +432,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def all_forms_completed?
-    (self.service_forms + self.organization_forms).count == self.responses.count
+    (self.service_forms + self.organization_forms).count == self.responses.joins(:survey).where(surveys: { type: 'Form' }).count
   end
 
   ##########################

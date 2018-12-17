@@ -410,8 +410,8 @@ class ServiceRequest < ApplicationRecord
     forms = []
     # Because there can be multiple SSRs with the same services/organizations we need to loop over each one
     self.sub_service_requests.each do |ssr|
-      Form.where(surveyable: ssr.organization).active.each{ |f| forms << [f, ssr] }
-      Form.where(surveyable: ssr.services).active.each{ |f| forms << [f, ssr] }
+      ssr.organization_forms.each{ |f| forms << [f, ssr] }
+      ssr.service_forms.each{ |f| forms << [f, ssr] }
     end
     forms
   end
@@ -420,8 +420,8 @@ class ServiceRequest < ApplicationRecord
     forms = []
     # Because there can be multiple SSRs with the same services/organizations we need to loop over each one
     self.sub_service_requests.each do |ssr|
-      Form.where(surveyable: ssr.organization).active.joins(:responses).where(responses: { respondable: ssr }).each{ |f| forms << [f, ssr] }
-      Form.where(surveyable: ssr.services).active.joins(:responses).where(responses: { respondable: ssr }).each{ |f| forms << [f, ssr] }
+      ssr.organization_forms.joins(:responses).where(responses: { respondable: ssr }).each{ |f| forms << [f, ssr] }
+      ssr.service_forms.joins(:responses).where(responses: { respondable: ssr }).each{ |f| forms << [f, ssr] }
     end
     forms
   end

@@ -36,7 +36,7 @@ class Dashboard::EpicQueuesController < Dashboard::BaseController
           else
             EpicQueue.where(attempted_push: false, user_change: false)
           end.eager_load(:identity, protocol: :principal_investigators).
-              ordered(params[:sort], params[:order])
+              search(params[:search]).ordered(params[:sort], params[:order])
       }
     end
   end

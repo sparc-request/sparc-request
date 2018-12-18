@@ -23,7 +23,7 @@ class Dashboard::EpicQueueRecordsController < Dashboard::BaseController
   def index
     @epic_queue_records = EpicQueueRecord.with_valid_protocols.
                             eager_load(:identity, :notes, protocol: :principal_investigators).
-                            ordered(params[:sort], params[:order])
+                            search(params[:search]).ordered(params[:sort], params[:order])
 
     respond_to do |format|
       format.json

@@ -942,6 +942,7 @@ ActiveRecord::Schema.define(version: 2018_11_28_192700) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
+    t.boolean "access_empty_protocols", default: false
     t.index ["identity_id"], name: "index_super_users_on_identity_id"
     t.index ["organization_id"], name: "index_super_users_on_organization_id"
   end

@@ -221,8 +221,8 @@ module Dashboard::SubServiceRequestsHelper
   def display_ssr_submissions(ssr)
     forms                     = ssr.forms_to_complete
     form_list                 = {}
-    form_list[:Organization]  = [] if forms.detect{ |f| f.surveyable_type == 'Organization' }
-    form_list[:Service]       = [] if forms.detect{ |f| f.surveyable_type == 'Service' }
+    form_list[:Organization]  = [] if forms.any?{ |f| f.surveyable_type == 'Organization' }
+    form_list[:Service]       = [] if forms.any?{ |f| f.surveyable_type == 'Service' }
 
     forms.each do |f|
       form_list[f.surveyable_type.to_sym] << [f.surveyable.name, f.surveyable.name, data: { type: 'Form', survey_id: f.id, respondable_id: ssr.id, respondable_type: 'SubServiceRequest' }]

@@ -30,12 +30,7 @@ $(document).ready ->
         type: 'DELETE'
         url: "/dashboard/epic_queues/#{eq_id}.js"
 
-  $('.epic-queue-table').on 'click-cell.bs.table', (field, value, row, $element) ->
-    if value == 'protocol'
-      protocolId = $element.protocol_id
-      window.open("/dashboard/protocols/#{protocolId}")
-
-  $('.epic-queue-records-table').on 'click-cell.bs.table', (field, value, row, $element) ->
+  $(document).on 'click-cell.bs.table', '.epic-queue-table, .epic-queue-records-table', (field, value, row, $element) ->
     if value == 'protocol'
       protocolId = $element.protocol_id
       window.open("/dashboard/protocols/#{protocolId}")

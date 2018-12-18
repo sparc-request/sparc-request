@@ -68,11 +68,14 @@ $(document).ready ->
         success: (data) ->
           $('#protocol_short_title').val(data.short_title)
           $('#protocol_title').val(data.long_title)
-          $('#protocol_human_subjects_info_attributes_pro_number').val(data.eirb_pro_number)
-          $('#protocol_human_subjects_info_attributes_initial_irb_approval_date').val(data.date_initially_approved)
-          $('#protocol_human_subjects_info_attributes_irb_approval_date').val(data.date_approved)
-          $('#protocol_human_subjects_info_attributes_irb_expiration_date').val(data.date_expiration)
-          toggleFields('.rm-locked-fields', true)
+          if data.eirb_validated
+            $('#protocol_human_subjects_info_attributes_pro_number').val(data.eirb_pro_number)
+            $('#protocol_human_subjects_info_attributes_initial_irb_approval_date').val(data.date_initially_approved)
+            $('#protocol_human_subjects_info_attributes_irb_approval_date').val(data.date_approved)
+            $('#protocol_human_subjects_info_attributes_irb_expiration_date').val(data.date_expiration)
+            toggleFields('.rm-locked-fields', true)
+          else
+            toggleFields('.rm-locked-fields:not(.hr-field)', true)
         error: ->
           swal("Error", "Research Master Record not found", "error")
           resetRmIdFields('.rm-id-dependent', '')
@@ -82,8 +85,6 @@ $(document).ready ->
     if $(this).val() == ''
       resetRmIdFields('.rm-id-dependent', '')
       toggleFields('.rm-locked-fields', false)
-    else
-      toggleFields('.rm-locked-fields', true)
 
   $(document).on 'click', '.edit-rmid', ->
     $('#protocol_research_master_id').prop('readonly', false)

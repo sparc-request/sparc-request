@@ -32,7 +32,7 @@ namespace :data do
           'Content-Type' => 'application/json',
           'Authorization' => "Token token=\"#{Setting.get_value('rmid_api_token')}\""
         }
-      ).parsed_response
+      ).parsed_response.reject{ |rm| rm['eirb_pro_number'].blank? }
       
       puts "Done"
 
@@ -40,25 +40,37 @@ namespace :data do
 
       records_changed = 0
 
-      CSV.open("tmp/#{Date.today}_historical_protocols_missing_rmids_report.csv", "wb") do |csv|
-        csv << ["SPARC Protocol ID", "eIRB Pro Number", "Recommended Research Master ID"]
-        Protocol.joins(:human_subjects_info).where(research_master_id: nil).where.not(human_subjects_info: { pro_number: nil }).each do |protocol|
-          if rmid_record = research_masters.detect{ |rm| rm['eirb_pro_number'] == protocol.human_subjects_info.pro_number }
-            csv << ["#{protocol.id}", "#{protocol.human_subjects_info.pro_number}", "#{rmid_record['id']}"]
+      ActiveRecord::Base.transaction do
+        CSV.open("tmp/#{Date.today}_historical_protocols_missing_rmids_report.csv", "wb") do |csv|
+          csv << ["SPARC Protocol ID", "eIRB Pro Number", "Match Found", "Recommended Research Master ID", "Initial Approval Date", "Approval Date", "Expiration Date"]
+          Protocol.joins(:human_subjects_info).where(research_master_id: nil).where.not(human_subjects_info: { pro_number: [nil,""] }).each do |protocol|
+            rmid_record = research_masters.detect{ |rm| pro_matches?(protocol.human_subjects_info.pro_number, rm['eirb_pro_number']) }
 
-            protocol.human_subjects_info.update_attributes(
-              initial_irb_approval_date:  rmid_record['date_initially_approved'],
-              irb_approval_date:          rmid_record['date_approved'],
-              irb_expiration_date:        rmid_record['date_expiration']
-            )
+            csv << [
+              protocol.id.to_s,
+              protocol.human_subjects_info.pro_number,
+              rmid_record ? "Yes" : "No",
+              rmid_record.try(:[], 'id'),
+              rmid_record ? rmid_record['date_initially_approved']  : protocol.human_subjects_info.initial_irb_approval_date,
+              rmid_record ? rmid_record['date_approved']            : protocol.human_subjects_info.irb_approval_date,
+              rmid_record ? rmid_record['date_expiration']          : protocol.human_subjects_info.irb_expiration_date
+            ]
 
-            records_changed += 1
-          else
-            protocol.human_subjects_info.update_attributes(
-              initial_irb_approval_date:  nil,
-              irb_approval_date:          nil,
-              irb_expiration_date:        nil
-            )
+            if rmid_record
+              protocol.human_subjects_info.update_attributes(
+                initial_irb_approval_date:  rmid_record['date_initially_approved'],
+                irb_approval_date:          rmid_record['date_approved'],
+                irb_expiration_date:        rmid_record['date_expiration']
+              )
+
+              records_changed += 1
+            else
+              protocol.human_subjects_info.update_attributes(
+                initial_irb_approval_date:  nil,
+                irb_approval_date:          nil,
+                irb_expiration_date:        nil
+              )
+            end
           end
         end
       end
@@ -70,4 +82,13 @@ namespace :data do
       puts "Research Master ID must be turned on. Aborting..."
     end
   end
+end
+
+def pro_matches?(old_val, new_val)
+  return false unless old_val && new_val
+
+  old_val = old_val.strip.gsub(/\A((I|i)(R|r)(B|b):?\s*)?((P|p)(R|r)(O|o|0))?\s*0+|\z/, '')
+  new_val = new_val.strip.gsub(/\A((I|i)(R|r)(B|b):?\s*)?((P|p)(R|r)(O|o|0))?\s*0+|\z/, '')
+
+  old_val == new_val
 end

@@ -128,6 +128,17 @@ class Protocol < ApplicationRecord
     self.bypass_rmid_validation ? false : Setting.get_value('research_master_enabled') && has_human_subject_info?
   end
 
+  def eirb_validated?
+    @validated ||= Setting.get_value("research_master_enabled") &&
+      begin
+        research_master = HTTParty.get(Setting.get_value("research_master_api") + "research_masters/#{self.research_master_id}.json", headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{Setting.get_value("rmid_api_token")}\""})
+
+        research_master['eirb_validated']
+      rescue
+        return false
+      end
+  end
+
   def has_human_subject_info?
     self.research_types_info.try(:human_subjects) || false
   end

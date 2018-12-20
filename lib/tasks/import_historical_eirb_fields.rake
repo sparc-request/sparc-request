@@ -26,13 +26,13 @@ namespace :data do
 
     if Setting.get_value('research_master_enabled')
       puts 'Fetching from Research Master API...'
-      research_masters = HTTParty.get(
-        "#{Setting.get_value('research_master_api')}research_masters.json",
+      protocols = HTTParty.get(
+        "#{Setting.get_value('research_master_api')}protocols.json?type=EIRB",
         headers:{
           'Content-Type' => 'application/json',
           'Authorization' => "Token token=\"#{Setting.get_value('rmid_api_token')}\""
         }
-      ).parsed_response.reject{ |rm| rm['eirb_pro_number'].blank? }
+      ).parsed_response.reject{ |rm| rm['eirb_id'].blank? }
       
       puts "Done"
 
@@ -44,7 +44,7 @@ namespace :data do
         CSV.open("tmp/#{Date.today}_historical_protocols_missing_rmids_report.csv", "wb") do |csv|
           csv << ["SPARC Protocol ID", "eIRB Pro Number", "Match Found", "Recommended Research Master ID", "Initial Approval Date", "Approval Date", "Expiration Date"]
           Protocol.joins(:human_subjects_info).where(research_master_id: nil).where.not(human_subjects_info: { pro_number: [nil,""] }).each do |protocol|
-            rmid_record = research_masters.detect{ |rm| pro_matches?(protocol.human_subjects_info.pro_number, rm['eirb_pro_number']) }
+            rmid_record = protocols.detect{ |p| pro_matches?(protocol.human_subjects_info.pro_number, p['eirb_id']) }
 
             csv << [
               protocol.id.to_s,

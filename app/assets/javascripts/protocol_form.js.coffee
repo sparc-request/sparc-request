@@ -20,7 +20,7 @@
 
 (exports ? this).updateRmidFields = () ->
   rmId = $('.research-master-field').val()
-  unless rmId == ''
+  if rmId
     $.ajax
       url: "#{gon.rm_id_api_url}research_masters/#{rmId}.json"
       type: 'GET'

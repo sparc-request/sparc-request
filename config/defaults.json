@@ -671,7 +671,7 @@
   },
   {
     "key":            "remote_service_notifier_host",
-    "value":          "http://127.0.0.1:5001",
+    "value":          "127.0.0.1:5001",
     "friendly_name":  "Remote Service Notifier",
     "description":    "This is the host domain of the SPARCRequest API.",
     "group":          "",

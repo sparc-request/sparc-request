@@ -18,6 +18,29 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+(exports ? this).updateRmidFields = () ->
+  rmId = $('.research-master-field').val()
+  if rmId
+    $.ajax
+      url: "#{gon.rm_id_api_url}research_masters/#{rmId}.json"
+      type: 'GET'
+      headers: {"Authorization": "Token token=\"#{gon.rm_id_api_token}\""}
+      success: (data) ->
+        $('#protocol_short_title').val(data.short_title)
+        $('#protocol_title').val(data.long_title)
+        if data.eirb_validated
+          $('#protocol_human_subjects_info_attributes_pro_number').val(data.eirb_pro_number)
+          $('#protocol_human_subjects_info_attributes_initial_irb_approval_date').val(data.date_initially_approved)
+          $('#protocol_human_subjects_info_attributes_irb_approval_date').val(data.date_approved)
+          $('#protocol_human_subjects_info_attributes_irb_expiration_date').val(data.date_expiration)
+          toggleFields('.rm-locked-fields', true)
+        else
+          toggleFields('.rm-locked-fields:not(.hr-field)', true)
+      error: ->
+        swal("Error", "Research Master Record not found", "error")
+        resetRmIdFields('.rm-id-dependent', '')
+        toggleFields('.rm-locked-fields', false)
+
 toggleFields = (fields, state) ->
   $(fields).prop('disabled', state)
 
@@ -58,28 +81,10 @@ $(document).ready ->
     else
       $('.rm-id').addClass('required')
 
+  updateRmidFields()
+
   $(document).on 'blur', '.research-master-field', ->
-    rmId = $('.research-master-field').val()
-    unless $(this).val() == ''
-      $.ajax
-        url: "#{gon.rm_id_api_url}research_masters/#{rmId}.json"
-        type: 'GET'
-        headers: {"Authorization": "Token token=\"#{gon.rm_id_api_token}\""}
-        success: (data) ->
-          $('#protocol_short_title').val(data.short_title)
-          $('#protocol_title').val(data.long_title)
-          if data.eirb_validated
-            $('#protocol_human_subjects_info_attributes_pro_number').val(data.eirb_pro_number)
-            $('#protocol_human_subjects_info_attributes_initial_irb_approval_date').val(data.date_initially_approved)
-            $('#protocol_human_subjects_info_attributes_irb_approval_date').val(data.date_approved)
-            $('#protocol_human_subjects_info_attributes_irb_expiration_date').val(data.date_expiration)
-            toggleFields('.rm-locked-fields', true)
-          else
-            toggleFields('.rm-locked-fields:not(.hr-field)', true)
-        error: ->
-          swal("Error", "Research Master Record not found", "error")
-          resetRmIdFields('.rm-id-dependent', '')
-          toggleFields('.rm-locked-fields', false)
+    updateRmidFields()
 
   $(document).on 'change', '.research-master-field', ->
     if $(this).val() == ''

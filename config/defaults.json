@@ -371,7 +371,7 @@
   },
   {
     "key":            "host",
-    "value":          "http://127.0.0.1:5000",
+    "value":          "127.0.0.1:5000",
     "friendly_name":  "Host",
     "description":    "This is the host domain of your instance of SPARCRequest.",
     "group":          "",

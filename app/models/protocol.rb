@@ -29,27 +29,30 @@ class Protocol < ApplicationRecord
 
   audited
 
-  has_many :study_types,                  dependent: :destroy
+  belongs_to :study_type_question_group
   has_one :research_types_info,           dependent: :destroy
   has_one :human_subjects_info,           dependent: :destroy
   has_one :vertebrate_animals_info,       dependent: :destroy
   has_one :investigational_products_info, dependent: :destroy
   has_one :ip_patents_info,               dependent: :destroy
-  has_many :project_roles,                dependent: :destroy
   has_one :primary_pi_role,               -> { where(role: 'primary-pi') }, class_name: "ProjectRole", dependent: :destroy
-  has_many :identities,                   through: :project_roles
+  has_many :study_types,                  dependent: :destroy
+  has_many :project_roles,                dependent: :destroy
   has_many :service_requests,             dependent: :destroy
-  has_many :services,                     through: :service_requests
   has_many :sub_service_requests
-  has_many :line_items,                   through: :service_requests
-  has_many :organizations,                through: :sub_service_requests
   has_many :affiliations,                 dependent: :destroy
   has_many :impact_areas,                 dependent: :destroy
   has_many :arms,                         dependent: :destroy
   has_many :study_type_answers,           dependent: :destroy
   has_many :notes, as: :notable,          dependent: :destroy
-  has_many :study_type_questions,         through: :study_type_question_group
   has_many :documents,                    dependent: :destroy
+  has_and_belongs_to_many :study_phases
+
+  has_many :identities,                   through: :project_roles
+  has_many :services,                     through: :service_requests
+  has_many :line_items,                   through: :service_requests
+  has_many :organizations,                through: :sub_service_requests
+  has_many :study_type_questions,         through: :study_type_question_group
   has_many :responses,                    through: :sub_service_requests
 
   has_many :principal_investigators, -> { where(project_roles: { role: %w(pi primary-pi) }) },
@@ -61,8 +64,6 @@ class Protocol < ApplicationRecord
   has_many :coordinators, -> { where(project_roles: { role: 'research-assistant-coordinator' }) },
     source: :identity, through: :project_roles
 
-  has_and_belongs_to_many :study_phases
-  belongs_to :study_type_question_group
 
   validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
   validates :research_master_id, presence: true, if: :rmid_requires_validation?

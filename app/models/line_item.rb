@@ -28,12 +28,12 @@ class LineItem < ApplicationRecord
   belongs_to :service, counter_cache: true
   belongs_to :sub_service_request
   has_many :fulfillments, dependent: :destroy
-
   has_many :line_items_visits, dependent: :destroy
-  has_many :arms, through: :line_items_visits
   has_many :procedures
   has_many :admin_rates, dependent: :destroy
   has_many :notes, as: :notable, dependent: :destroy
+  
+  has_many :arms, through: :line_items_visits
   has_one :protocol, through: :service_request
 
   attr_accessor :pricing_scheme

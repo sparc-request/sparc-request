@@ -21,12 +21,12 @@
 class Survey < ApplicationRecord
   audited
   
+  belongs_to :surveyable, polymorphic: true
   has_many :responses, dependent: :destroy
   has_many :sections, dependent: :destroy
-  has_many :questions, through: :sections
   has_many :associated_surveys, dependent: :destroy
 
-  belongs_to :surveyable, polymorphic: true
+  has_many :questions, through: :sections
 
   validates :title,
             :access_code,

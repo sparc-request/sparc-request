@@ -27,15 +27,16 @@ class ServiceRequest < ApplicationRecord
   belongs_to :protocol
   has_many :sub_service_requests, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
-  has_many :services, through: :line_items
-  has_many :line_items_visits, through: :line_items
-  has_many :subsidies, through: :sub_service_requests
   has_many :charges, :dependent => :destroy
   has_many :tokens, :dependent => :destroy
   has_many :approvals, :dependent => :destroy
-  has_many :arms, :through => :protocol
-  has_many :visit_groups, through: :arms
   has_many :notes, as: :notable, dependent: :destroy
+
+  has_many :arms, through: :protocol
+  has_many :services, through: :line_items
+  has_many :line_items_visits, through: :line_items
+  has_many :subsidies, through: :sub_service_requests
+  has_many :visit_groups, through: :arms
 
   after_save :set_original_submitted_date
   after_save :set_ssr_protocol_id

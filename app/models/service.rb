@@ -33,29 +33,28 @@ class Service < ApplicationRecord
 
   belongs_to :organization, -> { includes(:pricing_setups) }
   belongs_to :revenue_code_range
+
   # set ":inverse_of => :service" so that the first pricing map can be validated before the service has been saved
   has_many :pricing_maps, :inverse_of => :service, :dependent => :destroy
+  has_many :line_items, :dependent => :destroy
+  has_many :forms, -> { active }, as: :surveyable, dependent: :destroy# Surveys associated with this service
+  has_many :service_relations, :dependent => :destroy
+  has_many :depending_service_relations, :class_name => 'ServiceRelation', :foreign_key => 'related_service_id'# Services that depend on this service
+  has_many :associated_surveys, as: :associable, dependent: :destroy
+
   has_many :sub_service_requests, through: :line_items
   has_many :service_requests, through: :sub_service_requests
-  has_many :line_items, :dependent => :destroy
-  has_many :identities, :through => :service_providers
-  has_many :forms, -> { active }, as: :surveyable, dependent: :destroy
-  ## commented out to remove tags, but will likely be added in later ##
-  # has_many :taggings, through: :organization
-  # has_many :tags, through: :taggings
 
   # Services that this service depends on
-  has_many :service_relations, :dependent => :destroy
   has_many :related_services, :through => :service_relations
   has_many :required_services, -> { where("required = ? and is_available = ?", true, true) }, :through => :service_relations, :source => :related_service
   has_many :optional_services, -> { where("required = ? and is_available = ?", false, true) }, :through => :service_relations, :source => :related_service
 
-  # Services that depend on this service
-  has_many :depending_service_relations, :class_name => 'ServiceRelation', :foreign_key => 'related_service_id'
-  has_many :depending_services, :through => :depending_service_relations, :source => :service
+  has_many :depending_services, :through => :depending_service_relations, :source => :service# Services that depend on this service
 
-  # Surveys associated with this service
-  has_many :associated_surveys, as: :associable, dependent: :destroy
+  ## commented out to remove tags, but will likely be added in later ##
+  # has_many :taggings, through: :organization
+  # has_many :tags, through: :taggings
 
   validates :abbreviation,
             :order,

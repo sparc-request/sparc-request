@@ -33,9 +33,10 @@ class ServiceRequest < ApplicationRecord
   has_many :charges, :dependent => :destroy
   has_many :tokens, :dependent => :destroy
   has_many :approvals, :dependent => :destroy
-  has_many :arms, :through => :protocol
   has_many :visit_groups, through: :arms
   has_many :notes, as: :notable, dependent: :destroy
+
+  has_many :arms, :through => :protocol
 
   after_save :set_original_submitted_date
   after_save :set_ssr_protocol_id

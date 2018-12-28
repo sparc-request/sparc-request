@@ -33,11 +33,12 @@ class SubServiceRequest < ApplicationRecord
   belongs_to :service_request
   belongs_to :organization
   belongs_to :protocol, counter_cache: true
+
+  has_one :approved_subsidy, :dependent => :destroy
+  has_one :pending_subsidy, :dependent => :destroy
+
   has_many :past_statuses, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
-  has_many :line_items_visits, through: :line_items
-  has_many :services, through: :line_items
-  has_and_belongs_to_many :documents
   has_many :notes, as: :notable, dependent: :destroy
   has_many :approvals, :dependent => :destroy
   has_many :payments, :dependent => :destroy
@@ -46,10 +47,14 @@ class SubServiceRequest < ApplicationRecord
   has_many :notifications, :dependent => :destroy
   has_many :subsidies
   has_many :responses, as: :respondable, dependent: :destroy
+  has_and_belongs_to_many :documents
+
+  has_many :line_items_visits, through: :line_items
+  has_many :services, through: :line_items
+
   has_many :service_forms, -> { active }, through: :services, source: :forms
   has_many :organization_forms, -> { active }, through: :organization, source: :forms
-  has_one :approved_subsidy, :dependent => :destroy
-  has_one :pending_subsidy, :dependent => :destroy
+
 
   delegate :percent_subsidy, to: :approved_subsidy, allow_nil: true
 

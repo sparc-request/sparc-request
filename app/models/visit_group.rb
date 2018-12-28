@@ -25,9 +25,10 @@ class VisitGroup < ApplicationRecord
   include Comparable
 
   audited
+
   belongs_to :arm
-  
   has_many :visits, :dependent => :destroy
+  
   has_many :line_items_visits, through: :visits
   
   acts_as_list scope: :arm

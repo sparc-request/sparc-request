@@ -22,12 +22,12 @@ class Question < ActiveRecord::Base
 
   belongs_to :section
   belongs_to :depender, class_name: 'Option'
-  
-  delegate :survey, to: :section
-
   has_many :options, dependent: :destroy
   has_many :question_responses, dependent: :destroy
+
   has_many :dependents, through: :options
+
+  delegate :survey, to: :section
 
   validates :content,
             :question_type,

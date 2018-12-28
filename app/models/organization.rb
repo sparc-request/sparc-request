@@ -26,23 +26,23 @@ class Organization < ApplicationRecord
   acts_as_taggable
 
   belongs_to :parent, :class_name => 'Organization'
+  has_one :subsidy_map, :dependent => :destroy
   has_many :submission_emails, :dependent => :destroy
   has_many :associated_surveys, as: :associable, dependent: :destroy
   has_many :pricing_setups, :dependent => :destroy
-  has_one :subsidy_map, :dependent => :destroy
   has_many :forms, -> { active }, as: :surveyable, dependent: :destroy
   has_many :super_users, :dependent => :destroy
   has_many :service_providers, :dependent => :destroy
   has_many :catalog_managers, :dependent => :destroy
   has_many :clinical_providers, :dependent => :destroy
   has_many :patient_registrars, :dependent => :destroy
-
   has_many :services, :dependent => :destroy
   has_many :sub_service_requests, :dependent => :destroy
-  has_many :protocols, through: :sub_service_requests
   has_many :available_statuses, :dependent => :destroy
   has_many :editable_statuses, :dependent => :destroy
   has_many :org_children, class_name: "Organization", foreign_key: :parent_id
+
+  has_many :protocols, through: :sub_service_requests
 
   validates :abbreviation,
             :order,

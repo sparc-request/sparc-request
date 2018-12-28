@@ -51,10 +51,7 @@ class Identity < ApplicationRecord
   has_many :clinical_providers, dependent: :destroy
   has_many :notes, dependent: :destroy
   has_many :project_roles, dependent: :destroy
-  has_many :projects, -> { where("protocols.type = 'Project'")}, through: :project_roles, source: :protocol
   has_many :protocol_filters, dependent: :destroy
-  has_many :protocol_service_requests, through: :protocols, source: :service_requests
-  has_many :protocols, through: :project_roles
   has_many :received_messages, class_name: 'Message', foreign_key: 'to'
   has_many :received_notifications, class_name: "Notification", foreign_key: 'other_user_id'
   has_many :responses, dependent: :destroy
@@ -62,9 +59,13 @@ class Identity < ApplicationRecord
   has_many :sent_messages, class_name: 'Message', foreign_key: 'from'
   has_many :sent_notifications, class_name: "Notification", foreign_key: 'originator_id'
   has_many :service_providers, dependent: :destroy
-  has_many :studies, -> { where("protocols.type = 'Study'")}, through: :project_roles, source: :protocol
   has_many :super_users, dependent: :destroy
   has_many :short_interactions, :dependent => :destroy
+
+  has_many :protocols, through: :project_roles
+  has_many :projects, -> { where("protocols.type = 'Project'")}, through: :project_roles, source: :protocol
+  has_many :protocol_service_requests, through: :protocols, source: :service_requests
+  has_many :studies, -> { where("protocols.type = 'Study'")}, through: :project_roles, source: :protocol
 
   cattr_accessor :current_user
 

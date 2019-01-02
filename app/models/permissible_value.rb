@@ -37,27 +37,27 @@ class PermissibleValue < ApplicationRecord
   # Get an array of PermissibleValue keys with the given category
   def self.get_key_list(category, default=nil)
     unless default.nil?
-      PermissibleValue.available.where(category: category, default: default).pluck(:key)
+      PermissibleValue.available.where(category: category, default: default).order(:sort_order).pluck(:key)
     else
-      PermissibleValue.available.where(category: category).pluck(:key)
+      PermissibleValue.available.where(category: category).order(:sort_order).pluck(:key)
     end
   end
 
   # Get a hash of PermissibleValue keys as the keys and values as the values
   def self.get_hash(category, default=nil)
     unless default.nil?
-      Hash[PermissibleValue.available.where(category: category, default: default).pluck(:key, :value)]
+      Hash[PermissibleValue.available.where(category: category, default: default).order(:sort_order).pluck(:key, :value)]
     else
-      Hash[PermissibleValue.available.where(category: category).pluck(:key, :value)]
+      Hash[PermissibleValue.available.where(category: category).order(:sort_order).pluck(:key, :value)]
     end
   end
 
   # Get a hash of PermissibleValue values as the keys and keys as the values
   def self.get_inverted_hash(category, default=nil)
     unless default.nil?
-      Hash[PermissibleValue.available.where(category: category, default: default).pluck(:value, :key)]
+      Hash[PermissibleValue.available.where(category: category, default: default).order(:sort_order).pluck(:value, :key)]
     else
-      Hash[PermissibleValue.available.where(category: category).pluck(:value, :key)]
+      Hash[PermissibleValue.available.where(category: category).order(:sort_order).pluck(:value, :key)]
     end
   end
 end

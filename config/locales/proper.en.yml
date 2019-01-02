@@ -50,7 +50,6 @@ en:
     # CATALOG #
     ###########
     catalog:
-      no_description: "No description available."
       accordion:
         header: "Browse Service Catalog"
       back_to_top: "Back to Top"

@@ -33,6 +33,14 @@ namespace :data do
           'Authorization' => "Token token=\"#{Setting.get_value('rmid_api_token')}\""
         }
       ).parsed_response.reject{ |rm| rm['eirb_id'].blank? }
+
+      research_masters = HTTParty.get(
+        "#{Setting.get_value('research_master_api')}research_masters.json",
+        headers:{
+          'Content-Type' => 'application/json',
+          'Authorization' => "Token token=\"#{Setting.get_value('rmid_api_token')}\""
+        }
+      ).parsed_response
       
       puts "Done"
 
@@ -50,7 +58,7 @@ namespace :data do
               protocol.id.to_s,
               protocol.human_subjects_info.pro_number,
               rmid_record ? "Yes" : "No",
-              rmid_record.try(:[], 'id'),
+              rmid_record ? research_masters.detect{ |rm| rm['eirb_pro_number'] == rmid_record['eirb_id'] }.try(:[], 'id') : "",
               rmid_record ? rmid_record['date_initially_approved']  : protocol.human_subjects_info.initial_irb_approval_date,
               rmid_record ? rmid_record['date_approved']            : protocol.human_subjects_info.irb_approval_date,
               rmid_record ? rmid_record['date_expiration']          : protocol.human_subjects_info.irb_expiration_date
@@ -58,6 +66,7 @@ namespace :data do
 
             if rmid_record
               protocol.human_subjects_info.update_attributes(
+                pro_number:                 rmid_record['eirb_id'],
                 initial_irb_approval_date:  rmid_record['date_initially_approved'],
                 irb_approval_date:          rmid_record['date_approved'],
                 irb_expiration_date:        rmid_record['date_expiration']

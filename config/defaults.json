@@ -10,7 +10,7 @@
     "parent_value":   ""
   },
   {
-    "key":            "admin_mail_to", 
+    "key":            "admin_mail_to",
     "value":          "sparcrequest@gmail.com",
     "friendly_name":  "Admin Mail-To",
     "description":    "This field will overwrite the admin user mailers in the application to instead mail to this address. This is overwritten in development/testing/staging environments in order to prevent real emails from being sent out to admin users.",
@@ -214,7 +214,7 @@
     "value":          "http://localhost:#{FAKE_EPIC_SERVER.port}/wsdl",
     "friendly_name":  "Epic WSDL",
     "description":    "This is the Web Service Description Language (WSDL) which describes how to communicate with the Epic interface.",
-    "group":          "epic_settings",
+    "group":          "",
     "version":        "",
     "parent_key":     "use_epic",
     "parent_value":   "true"

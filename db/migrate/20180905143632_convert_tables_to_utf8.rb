@@ -5,7 +5,7 @@ class ConvertTablesToUtf8 < ActiveRecord::Migration[5.2]
     db = ActiveRecord::Base.connection
 
     execute "ALTER DATABASE `#{db.current_database}` CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
-    db.tables.each do |table|
+    db.tables.select{|table| table != "audits"}.each do |table|
       execute "ALTER TABLE `#{table}` CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
 
       db.columns(table).each do |column|

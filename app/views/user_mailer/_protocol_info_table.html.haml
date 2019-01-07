@@ -46,5 +46,9 @@
       %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:s_name]
       %td{:style => 'border: 1px solid black;'}= @protocol.try(:sponsor_name)
     %tr{:style => 'border: 1px solid black;'}
-      %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:source]
-      %td{:style => 'border: 1px solid black;'}= (@protocol.funding_source or @protocol.potential_funding_source or "").capitalize
+      %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= @protocol.funding_status == 'funded' ? t(:notifier)[:source] : t(:notifier)[:potential_source]
+      %td{:style => 'border: 1px solid black;'}= @protocol.display_funding_source_value
+    - if @protocol.type == 'Project'
+      %tr{:style => 'border: 1px solid black;'}
+        %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:description]
+        %td{:style => 'border: 1px solid black;'}= @protocol.brief_description

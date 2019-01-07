@@ -49,13 +49,9 @@
               = hs_form.text_field :hr_number, class: 'form-control'
 
           .form-group.row
-            = hs_form.label :pro_number,
-              t(:protocols)[:studies][:research_involving][:humans][:pro_number],
-              class: 'col-lg-2 control-label',
-              data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
-              title: t(:protocols)[:tooltips][:pro_number]
+            = hs_form.label :pro_number, t(:protocols)[:studies][:research_involving][:humans][:pro_number], class: 'col-lg-2 control-label', data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' }, title: t(:protocols)[:tooltips][:pro_number]
             .col-lg-10
-              = hs_form.text_field :pro_number, class: 'form-control'
+              = hs_form.text_field :pro_number, class: ['form-control', Setting.get_value("research_master_enabled") ? 'rm-id-dependent rm-locked-fields hr-field' : '']
 
           .form-group.row
             = hs_form.label :irb_of_record, t(:protocols)[:studies][:research_involving][:humans][:record_irb], class: 'col-lg-2 control-label'
@@ -72,15 +68,20 @@
             .col-lg-1
               = hs_form.check_box :approval_pending, class: 'form-control'
 
+          .form-group.row.initial_irb_approval_date
+            = hs_form.label :initial_irb_approval_date, t(:protocols)[:studies][:research_involving][:humans][:initial_irb_approval_date], class: 'col-lg-2 control-label'
+            .col-lg-10
+              = hs_form.text_field :initial_irb_approval_date, class: ['datetimepicker form-control', Setting.get_value("research_master_enabled") ? 'rm-id-dependent rm-locked-fields hr-field' : ''], value: (protocol.human_subjects_info.initial_irb_approval_date.strftime('%_m/%d/%Y') rescue nil)
+
           .form-group.row.irb_approval_date
             = hs_form.label :irb_approval_date, t(:protocols)[:studies][:research_involving][:humans][:irb_approval_date], class: 'col-lg-2 control-label'
             .col-lg-10
-              = hs_form.text_field :irb_approval_date, class: 'datetimepicker form-control', value: (protocol.human_subjects_info.irb_approval_date.strftime('%_m/%d/%Y') rescue nil)
+              = hs_form.text_field :irb_approval_date, class: ['datetimepicker form-control', Setting.get_value("research_master_enabled") ? 'rm-id-dependent rm-locked-fields hr-field' : ''], value: (protocol.human_subjects_info.irb_approval_date.strftime('%_m/%d/%Y') rescue nil)
 
           .form-group.row.irb_expiration_date
             = hs_form.label :irb_expiration_date, t(:protocols)[:studies][:research_involving][:humans][:irb_expiration_date], class: 'col-lg-2 control-label'
             .col-lg-10
-              = hs_form.text_field :irb_expiration_date, class: 'datetimepicker form-control', value: (protocol.human_subjects_info.irb_expiration_date.strftime('%_m/%d/%Y') rescue nil)
+              = hs_form.text_field :irb_expiration_date, class: ['datetimepicker form-control', Setting.get_value("research_master_enabled") ? 'rm-id-dependent rm-locked-fields hr-field' : ''], value: (protocol.human_subjects_info.irb_expiration_date.strftime('%_m/%d/%Y') rescue nil)
 
           .form-group.row
             = form.label :study_phase, t(:protocols)[:studies][:information][:phase], class: 'col-lg-2 control-label'
@@ -126,11 +127,11 @@
       .investigational_products_dependent{ display_if(rt_form.object.investigational_products) }
         = form.fields_for :investigational_products_info do |ip_form|
           .form-group.row
-            = ip_form.label :ind_number, t(:protocols)[:studies][:research_involving][:products][:ind_number], class: 'col-lg-2 control-label'
+            = ip_form.label :ind_number, t(:protocols)[:studies][:research_involving][:products][:ind_number], class: 'col-lg-2 control-label',
+              data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
+              title: t(:protocols)[:tooltips][:ind_number]
             .col-lg-10
-              = ip_form.text_field :ind_number, class: 'form-control',
-                data: { toggle: 'tooltip', placement: 'bottom' },
-                title: 'Investigational New Drug (IND) Number'
+              = ip_form.text_field :ind_number, class: 'form-control'
 
           .form-group.row#ind-on-hold-group{ display_if(!ip_form.object.ind_number.blank?) }
             = ip_form.label :ind_on_hold, t(:protocols)[:studies][:research_involving][:products][:ind_on_hold], class: 'col-lg-2 control-label'
@@ -144,7 +145,7 @@
                 t(:protocols)[:studies][:research_involving][:products][:numbers][exemption_type.to_sym],
                 class: 'col-lg-2 control-label',
                 data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
-                title: t(:protocols)[:studies][:research_involving][:tooltips][exemption_type.to_sym]
+                title: t(:protocols)[:tooltips][exemption_type.to_sym]
               .col-lg-1.text-center
                 = ip_form.radio_button :exemption_type, exemption_type, class: 'form-control exemption-radio', data: { type: exemption_type }
               - if exemption_type == ip_form.object.exemption_type

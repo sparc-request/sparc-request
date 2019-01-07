@@ -22,9 +22,9 @@ module Dashboard::StudyLevelActivitiesHelper
 
   def sla_service_name_display line_item
     if line_item.service.is_available
-      line_item.service.name
+      line_item.service.display_service_name
     else
-      line_item.service.name + ' (Disabled)'
+      line_item.service.display_service_name + ' (Disabled)'
     end
   end
 
@@ -51,9 +51,13 @@ module Dashboard::StudyLevelActivitiesHelper
       content_tag(:li, raw(
         content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-sunglasses", aria: {hidden: "true"}))+t(:dashboard)[:study_level_activities][:actions][:details], type: 'button', class: 'btn btn-default form-control actions-button otf_details list'))
       )+
-      content_tag(:li, raw(
-        content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-list-alt", aria: {hidden: "true"}))+t(:dashboard)[:study_level_activities][:actions][:notes]+raw(content_tag(:span, line_item.notes.count, class: "badge", id: "lineitem_#{line_item.id}_notes")), type: 'button', class: 'btn btn-default form-control actions-button notes list dropdown_badge', data: {notable_id: line_item.id, notable_type: "LineItem"}))
-      )+
+      content_tag(:li) do
+        link_to notes_path(note: { notable_id: line_item.id, notable_type: LineItem.name }), remote: true, class: 'btn btn-default dropdown_badge' do
+          content_tag(:span, '', class: "glyphicon glyphicon-list-alt", aria: {hidden: "true"}) +
+          t(:dashboard)[:study_level_activities][:actions][:notes] +
+          content_tag(:span, line_item.notes.count, class: "badge", id: "lineitem_#{line_item.id}_notes")
+        end
+      end +
       content_tag(:li, raw(
         content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-edit", aria: {hidden: "true"}))+t(:dashboard)[:study_level_activities][:actions][:edit], type: 'button', class: 'btn btn-default form-control actions-button otf_edit'))
       )+
@@ -72,11 +76,11 @@ module Dashboard::StudyLevelActivitiesHelper
   def sla_form_services_select form, line_item
     service = line_item.service
     if service.present? and not service.is_available
-      service_name = service.name + ' (Disabled)'
+      service_name = service.display_service_name + ' (Disabled)'
       form.select "service_id", options_for_select([service_name], service_name), {include_blank: true}, class: 'form-control selectpicker', disabled: 'disabled'
     else
       service_list = line_item.sub_service_request.candidate_services.select {|x| x.one_time_fee}
-      form.select "service_id", options_from_collection_for_select(service_list, 'id', 'name', line_item.service_id), {include_blank: true}, class: 'form-control selectpicker'
+      form.select "service_id", options_from_collection_for_select(service_list, 'id', 'display_service_name', line_item.service_id), {include_blank: true}, class: 'form-control selectpicker'
     end
   end
 

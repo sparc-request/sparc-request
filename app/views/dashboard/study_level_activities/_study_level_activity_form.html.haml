@@ -20,7 +20,7 @@
 
 .modal-dialog
   .modal-content
-    = form_for ([:dashboard, line_item]), {remote: true, html: {class: "form-horizontal", role: "form"}} do |form|
+    = form_for [:dashboard, line_item], {remote: true, html: {class: "form-horizontal", role: "form"}} do |form|
       .modal-header
         %button.close{type: 'button', data: {dismiss: 'modal'}}
           %span{aria: {hidden:'true'}} &times;

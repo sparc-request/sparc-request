@@ -18,6 +18,31 @@
 /* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
 /* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
 
+$institution-service-blue: #0078AE
+$provider-green: #339933
+$program-orange: #ff9933
+$core-blue: #003366
+
+.text-institution, .text-service
+  color: $institution-service-blue
+
+.text-provider
+  color: $provider-green
+
+.text-program
+  color: $program-orange
+
+.text-core
+  color: $core-blue
+
+.no_access
+  .text-institution,
+  .text-service,
+  .text-provider,
+  .text-program,
+  .text-core
+    color: grey
+
 #container
   #header
     height: 102px
@@ -103,3 +128,12 @@ label.required:after
 
 .no-margin
   margin: 0 !important
+
+.no-margin-top
+  margin-top: 0 !important
+
+.no-margin-bottom
+  margin-bottom: 0 !important
+
+a
+  text-decoration: none !important

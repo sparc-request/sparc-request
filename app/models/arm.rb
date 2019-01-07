@@ -24,11 +24,11 @@ class Arm < ApplicationRecord
   audited
 
   belongs_to :protocol
-
   has_many :line_items_visits, :dependent => :destroy
+  has_many :visit_groups, -> { order("position") }, :dependent => :destroy
+
   has_many :line_items, :through => :line_items_visits
   has_many :sub_service_requests, through: :line_items
-  has_many :visit_groups, -> { order("position") }, :dependent => :destroy
   has_many :visits, :through => :line_items_visits
 
   after_create :create_calendar_objects, if: Proc.new { |arm| arm.protocol.present? }
@@ -68,11 +68,6 @@ class Arm < ApplicationRecord
     errors.add(:name, I18n.t(:errors)[:arms][:name_unique]) if arm_names.include?(self.name.downcase)
   end
 
-  def sanitized_name
-    # Sanitized for Excel
-    name.gsub(/\[|\]|\*|\/|\\|\?|\:/, ' ').truncate(31)
-  end
-
   def per_patient_per_visit_line_items
     line_items_visits.each.map do |liv|
       liv.line_item
@@ -89,7 +84,7 @@ class Arm < ApplicationRecord
   end
 
   def maximum_indirect_costs_per_patient line_items_visits=self.line_items_visits
-    if Setting.find_by_key("use_indirect_cost").value
+    if Setting.get_value("use_indirect_cost")
       self.maximum_direct_costs_per_patient(line_items_visits) * (self.protocol.indirect_cost_rate.to_f / 100)
     else
       return 0
@@ -110,7 +105,7 @@ class Arm < ApplicationRecord
 
   def indirect_costs_for_visit_based_service line_items_visits=self.line_items_visits
     total = 0.0
-    if Setting.find_by_key("use_indirect_cost").value
+    if Setting.get_value("use_indirect_cost")
       line_items_visits.each do |vg|
         total += vg.indirect_costs_for_visit_based_service
       end

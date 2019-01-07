@@ -17,15 +17,23 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- services.order(Arel.sql('`order`, `name`')).includes(:pricing_maps).each do |service|
-  - # This was extracted from a helper and partial render to significantly increase efficiency
-  - if [true, nil].include?(service.is_available) && service.current_pricing_map
-    .service-view.full
-      .title.full
-        .name.col-sm-10
-          = link_to service.display_service_name, 'javascript:void(0)', class: "service service-#{service.id} btn btn-default full", data: { id: service.id }
-        .col-sm-2
-          %button.add-service.pull-right.btn.btn-success{ data: { id: service.id, srid: service_request.id, ssrid: sub_service_request.try(:id) } }
-            = t(:actions)[:add]
-      .col-sm-12.service-description.hidden{ class: "service-description-#{service.id}" }
-        = organization_description_display(service)
+- services.each do |service|
+  .service.col-sm-12.no-padding-x{ id: "#service#{service.id}" }
+    .service-details.no-padding-x{ class: action_name == 'update_description' ?  'col-sm-10' : 'col-sm-12' }
+      .service-name.no-padding
+        %strong.col-sm-12.no-padding.no-margin
+          = service.display_service_name
+      - if service.description.present?
+        .col-sm-12.no-padding
+          = link_to t(:constants)[:show], "#service#{service.id}Description", class: 'collapsed', alt: t(:constants)[:hide], data: { toggle: 'collapse' }, aria: { expanded: 'false', controls: "service#{service.id}Description" }
+      - if service.description.present?
+        .collapse.service-description.col-sm-12.no-padding{ id: "service#{service.id}Description" }
+          %p.no-margin
+            = raw service.description
+      = cpt_code_text(service)
+      = eap_id_text(service)
+    - if action_name == 'update_description'
+      .col-sm-2.no-padding
+        %button.add-service.pull-right.btn.btn-success{ data: { id: service.id } }
+          = t(:actions)[:add]
+    = raw service_pricing_text(service)

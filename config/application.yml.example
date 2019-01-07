@@ -1,0 +1,639 @@
+# Copyright © 2011-2018 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+##################
+### PRODUCTION ###
+##################
+# production:
+#   ### Generic Email Settings ###
+#   send_emails_to_real_users:                  "false"
+#   send_authorized_user_emails:                "true"
+#   root_url:                                   "127.0.0.1:3000"
+#   dashboard_link:                             "/dashboard"
+#   admin_mail_to:                              "sparcrequest@gmail.com"
+#   default_mail_to:                            "sparcrequest@gmail.com"
+#   listserv_mail_to:                           "hewwe@musc.edu, hutsonk@musc.edu"
+#   new_user_cc:                                "sparcrequest@gmail.com"
+#   no_reply_from:                              "no-reply@musc.edu"
+
+#   ### Generic Links & URLs ###
+#   about_sparc_url:                            "http://academicdepartments.musc.edu/sctr/sparc_request"
+#   header_link_1:                              "http://sctr.musc.edu"
+#   header_link_2_proper:                       "127.0.0.1:3000"
+#   header_link_2_dashboard:                    "127.0.0.1:3000/dashboard"
+#   header_link_2_catalog:                      "127.0.0.1:3000/catalog_manager"
+#   header_link_3:                              "http://www.musc.edu"
+#   navbar_links:
+#     sparc_request:                            ['SPARCRequest',      '127.0.0.1:3000/']
+#     sparc_dashboard:                          ['SPARCDashboard',    '127.0.0.1:3000/dashboard']
+#     sparc_fulfillment:                        ['SPARCFulfillment',  'https://cwf-d.obis.musc.edu/identities/sign_in']
+#     sparc_catalog:                            ['SPARCCatalog',      '127.0.0.1:3000/catalog_manager']
+#     sparc_report:                             ['SPARCReport',       '127.0.0.1:3000/reports']
+#     sparc_forms:                              ['SPARCForms',        '127.0.0.1:3000/surveyor/responses']
+
+#   ### Statuses ###
+#   updatable_statuses:                         ['first_draft', 'draft', 'get_a_cost_estimate', 'awaiting_pi_approval']
+#   finished_statuses:                          ['complete', 'withdrawn']
+
+#   ### Other Generic Settings ###
+#   host:                                       "127.0.0.1:3000"
+#   site_admins:                                []
+#   use_indirect_cost:                          "false"
+#   use_separate_audit_database:                "false"
+#   wkhtmltopdf_location:                       "/usr/local/bin/wkhtmltopdf"
+
+#   ### Oauth Configuration ###
+#   use_cas:                                    "false"
+#   use_cas_only:                               "false"
+#   use_shibboleth:                             "true"
+#   use_shibboleth_only:                        "false"
+
+#   ### LDAP Configuration ###
+#   use_ldap:                                   "false"
+#   lazy_load_ldap:                             "false"
+#   suppress_ldap_for_user_search:              "false"
+
+#   ### Epic Configuration ###
+#   use_epic:                                   "false"
+#   approve_epic_rights_mail_to:                "sparcrequest@gmail.com"
+#   queue_epic:                                 "false"
+#   epic_queue_access:                          []
+#   epic_queue_report_to:                       "sparcrequest@gmail.com"
+#   queue_epic_load_error_to:                   "sparcrequest@gmail.com"
+
+#   ### RMID Configuration ###
+#   research_master_enabled:                    "false"
+#   research_master_link:                       "127.0.0.1:4000"
+#   research_master_api:                        "127.0.0.1:4000/api/"
+#   rmid_api_token:                             "some token"
+
+#   ### CWF Configuration ###
+#   clinical_work_fulfillment_url:              "127.0.0.1:6000"
+#   fulfillment_contingent_on_catalog_manager:  "true"
+
+#   ### Funding Configuration ###
+#   use_funding_module:                         "false"
+#   funding_admins:                             []
+#   funding_org_ids:                            []
+
+#   ### API ###
+#   current_api_version:                        "v1"
+#   remote_service_notifier_protocol:           "https"
+#   remote_service_notifier_username:           ""
+#   remote_service_notifier_password:           ""
+#   remote_service_notifier_host:               "127.0.0.1:5001"
+#   remote_service_notifier_path:               "/v1/notifications.json"
+
+#   ### Right Navigation ###
+#   use_feedback_link:                          "false"
+#   feedback_link:                              "http://something.com"
+#   use_redcap_api:                             "false"
+#   redcap_api_url:                             "https://redcap.musc.edu/api/"
+#   redcap_api_token:                           ""
+#   feedback_mail_to:                           "sparcrequest@gmail.com"
+#   use_faq_link:                               "false"
+#   faq_url:                                    "http://academicdepartments.musc.edu/sctr/sparc_request/faq.html"
+#   contact_us_department:                      "SUCCESS Center"
+#   contact_us_phone:                           "(843) 792-8300"
+#   contact_us_mail_to:                         "success@musc.edu"
+#   contact_us_cc:                              "sparcrequest@gmail.com"
+#   use_short_interaction:                      "false"
+
+#   ### Google Calendar ###
+#   use_google_calendar:                        "false"
+#   calendar_url:                               "https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics"
+#   calendar_event_limit:                       3
+
+#   ### News Feed ###
+#   use_news_feed:                              "false"
+#   news_feed_url:                              "https://sparcrequest.atlassian.net/wiki"
+#   news_feed_post_limit:                       3
+#   use_news_feed_api:                          "false"
+#   news_feed_api:                              "Atlassian"
+#   news_feed_atlassian_space:                  "RD"
+#   news_feed_post_selector:                    ".article.post"
+#   news_feed_title_selector:                   ".entry-title"
+#   news_feed_link_selector:                    ".entry-title a"
+#   news_feed_date_selector:                    ".date"
+
+#   ### Tableau Dashboard ###
+#   use_tableau:                                "true"
+#   homepage_tableau_dashboard:                 "InstitutionalDashboard/InstitutionalDashboard"
+#   homepage_tableau_url:                       "https://anyl-tableau-v.mdc.musc.edu/javascripts/api/viz_v1.js"
+
+#   ### System Satisfaction Survey ###
+#   system_satisfaction_survey:                 "false"
+#   system_satisfaction_survey_cc:              "sparcrequest@gmail.com"
+
+###############
+### STAGING ###
+###############
+# staging:
+#   ### Generic Email Settings ###
+#   send_emails_to_real_users:                  "false"
+#   send_authorized_user_emails:                "true"
+#   root_url:                                   "127.0.0.1:3000"
+#   dashboard_link:                             "/dashboard"
+#   admin_mail_to:                              "sparcrequest@gmail.com"
+#   default_mail_to:                            "sparcrequest@gmail.com"
+#   listserv_mail_to:                           "hewwe@musc.edu, hutsonk@musc.edu"
+#   new_user_cc:                                "sparcrequest@gmail.com"
+#   no_reply_from:                              "no-reply@musc.edu"
+
+#   ### Generic Links & URLs ###
+#   about_sparc_url:                            "http://academicdepartments.musc.edu/sctr/sparc_request"
+#   header_link_1:                              "http://sctr.musc.edu"
+#   header_link_2_proper:                       "127.0.0.1:3000"
+#   header_link_2_dashboard:                    "127.0.0.1:3000/dashboard"
+#   header_link_2_catalog:                      "127.0.0.1:3000/catalog_manager"
+#   header_link_3:                              "http://www.musc.edu"
+#   navbar_links:
+#     sparc_request:                            ['SPARCRequest',      '127.0.0.1:3000/']
+#     sparc_dashboard:                          ['SPARCDashboard',    '127.0.0.1:3000/dashboard']
+#     sparc_fulfillment:                        ['SPARCFulfillment',  'https://cwf-d.obis.musc.edu/identities/sign_in']
+#     sparc_catalog:                            ['SPARCCatalog',      '127.0.0.1:3000/catalog_manager']
+#     sparc_report:                             ['SPARCReport',       '127.0.0.1:3000/reports']
+#     sparc_forms:                              ['SPARCForms',        '127.0.0.1:3000/surveyor/responses']
+
+#   ### Statuses ###
+#   updatable_statuses:                         ['first_draft', 'draft', 'get_a_cost_estimate', 'awaiting_pi_approval']
+#   finished_statuses:                          ['complete', 'withdrawn']
+
+#   ### Other Generic Settings ###
+#   host:                                       "127.0.0.1:3000"
+#   site_admins:                                []
+#   use_indirect_cost:                          "false"
+#   use_separate_audit_database:                "false"
+#   wkhtmltopdf_location:                       "/usr/local/bin/wkhtmltopdf"
+
+#   ### Oauth Configuration ###
+#   use_cas:                                    "false"
+#   use_cas_only:                               "false"
+#   use_shibboleth:                             "true"
+#   use_shibboleth_only:                        "false"
+
+#   ### LDAP Configuration ###
+#   use_ldap:                                   "false"
+#   lazy_load_ldap:                             "false"
+#   suppress_ldap_for_user_search:              "false"
+
+#   ### Epic Configuration ###
+#   use_epic:                                   "false"
+#   approve_epic_rights_mail_to:                "sparcrequest@gmail.com"
+#   queue_epic:                                 "false"
+#   epic_queue_access:                          []
+#   epic_queue_report_to:                       "sparcrequest@gmail.com"
+#   queue_epic_load_error_to:                   "sparcrequest@gmail.com"
+
+#   ### RMID Configuration ###
+#   research_master_enabled:                    "false"
+#   research_master_link:                       "127.0.0.1:4000"
+#   research_master_api:                        "127.0.0.1:4000/api/"
+#   rmid_api_token:                             "some token"
+
+#   ### CWF Configuration ###
+#   clinical_work_fulfillment_url:              "127.0.0.1:6000"
+#   fulfillment_contingent_on_catalog_manager:  "true"
+
+#   ### Funding Configuration ###
+#   use_funding_module:                         "false"
+#   funding_admins:                             []
+#   funding_org_ids:                            []
+
+#   ### API ###
+#   current_api_version:                        "v1"
+#   remote_service_notifier_protocol:           "https"
+#   remote_service_notifier_username:           ""
+#   remote_service_notifier_password:           ""
+#   remote_service_notifier_host:               "127.0.0.1:5001"
+#   remote_service_notifier_path:               "/v1/notifications.json"
+
+#   ### Right Navigation ###
+#   use_feedback_link:                          "false"
+#   feedback_link:                              "http://something.com"
+#   use_redcap_api:                             "false"
+#   redcap_api_url:                             "https://redcap.musc.edu/api/"
+#   redcap_api_token:                           ""
+#   feedback_mail_to:                           "sparcrequest@gmail.com"
+#   use_faq_link:                               "false"
+#   faq_url:                                    "http://academicdepartments.musc.edu/sctr/sparc_request/faq.html"
+#   contact_us_department:                      "SUCCESS Center"
+#   contact_us_phone:                           "(843) 792-8300"
+#   contact_us_mail_to:                         "success@musc.edu"
+#   contact_us_cc:                              "sparcrequest@gmail.com"
+#   use_short_interaction:                      "false"
+
+#   ### Google Calendar ###
+#   use_google_calendar:                        "false"
+#   calendar_url:                               "https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics"
+#   calendar_event_limit:                       3
+
+#   ### News Feed ###
+#   use_news_feed:                              "false"
+#   news_feed_url:                              "https://sparcrequest.atlassian.net/wiki"
+#   news_feed_post_limit:                       3
+#   use_news_feed_api:                          "false"
+#   news_feed_api:                              "Atlassian"
+#   news_feed_atlassian_space:                  "RD"
+#   news_feed_post_selector:                    ".article.post"
+#   news_feed_title_selector:                   ".entry-title"
+#   news_feed_link_selector:                    ".entry-title a"
+#   news_feed_date_selector:                    ".date"
+
+#   ### Tableau Dashboard ###
+#   use_tableau:                                "true"
+#   homepage_tableau_dashboard:                 "InstitutionalDashboard/InstitutionalDashboard"
+#   homepage_tableau_url:                       "https://anyl-tableau-v.mdc.musc.edu/javascripts/api/viz_v1.js"
+
+#   ### System Satisfaction Survey ###
+#   system_satisfaction_survey:                 "false"
+#   system_satisfaction_survey_cc:              "sparcrequest@gmail.com"
+
+###############
+### TESTING ###
+###############
+# testing:
+#   ### Generic Email Settings ###
+#   send_emails_to_real_users:                  "false"
+#   send_authorized_user_emails:                "true"
+#   root_url:                                   "127.0.0.1:3000"
+#   dashboard_link:                             "/dashboard"
+#   admin_mail_to:                              "sparcrequest@gmail.com"
+#   default_mail_to:                            "sparcrequest@gmail.com"
+#   listserv_mail_to:                           "hewwe@musc.edu, hutsonk@musc.edu"
+#   new_user_cc:                                "sparcrequest@gmail.com"
+#   no_reply_from:                              "no-reply@musc.edu"
+
+#   ### Generic Links & URLs ###
+#   about_sparc_url:                            "http://academicdepartments.musc.edu/sctr/sparc_request"
+#   header_link_1:                              "http://sctr.musc.edu"
+#   header_link_2_proper:                       "127.0.0.1:3000"
+#   header_link_2_dashboard:                    "127.0.0.1:3000/dashboard"
+#   header_link_2_catalog:                      "127.0.0.1:3000/catalog_manager"
+#   header_link_3:                              "http://www.musc.edu"
+#   navbar_links:
+#     sparc_request:                            ['SPARCRequest',      '127.0.0.1:3000/']
+#     sparc_dashboard:                          ['SPARCDashboard',    '127.0.0.1:3000/dashboard']
+#     sparc_fulfillment:                        ['SPARCFulfillment',  'https://cwf-d.obis.musc.edu/identities/sign_in']
+#     sparc_catalog:                            ['SPARCCatalog',      '127.0.0.1:3000/catalog_manager']
+#     sparc_report:                             ['SPARCReport',       '127.0.0.1:3000/reports']
+#     sparc_forms:                              ['SPARCForms',        '127.0.0.1:3000/surveyor/responses']
+
+#   ### Statuses ###
+#   updatable_statuses:                         ['first_draft', 'draft', 'get_a_cost_estimate', 'awaiting_pi_approval']
+#   finished_statuses:                          ['complete', 'withdrawn']
+
+#   ### Other Generic Settings ###
+#   host:                                       "127.0.0.1:3000"
+#   site_admins:                                []
+#   use_indirect_cost:                          "false"
+#   use_separate_audit_database:                "false"
+#   wkhtmltopdf_location:                       "/usr/local/bin/wkhtmltopdf"
+
+#   ### Oauth Configuration ###
+#   use_cas:                                    "false"
+#   use_cas_only:                               "false"
+#   use_shibboleth:                             "true"
+#   use_shibboleth_only:                        "false"
+
+#   ### LDAP Configuration ###
+#   use_ldap:                                   "false"
+#   lazy_load_ldap:                             "false"
+#   suppress_ldap_for_user_search:              "false"
+
+#   ### Epic Configuration ###
+#   use_epic:                                   "false"
+#   approve_epic_rights_mail_to:                "sparcrequest@gmail.com"
+#   queue_epic:                                 "false"
+#   epic_queue_access:                          []
+#   epic_queue_report_to:                       "sparcrequest@gmail.com"
+#   queue_epic_load_error_to:                   "sparcrequest@gmail.com"
+
+#   ### RMID Configuration ###
+#   research_master_enabled:                    "false"
+#   research_master_link:                       "127.0.0.1:4000"
+#   research_master_api:                        "127.0.0.1:4000/api/"
+#   rmid_api_token:                             "some token"
+
+#   ### CWF Configuration ###
+#   clinical_work_fulfillment_url:              "127.0.0.1:6000"
+#   fulfillment_contingent_on_catalog_manager:  "true"
+
+#   ### Funding Configuration ###
+#   use_funding_module:                         "false"
+#   funding_admins:                             []
+#   funding_org_ids:                            []
+
+#   ### API ###
+#   current_api_version:                        "v1"
+#   remote_service_notifier_protocol:           "https"
+#   remote_service_notifier_username:           ""
+#   remote_service_notifier_password:           ""
+#   remote_service_notifier_host:               "127.0.0.1:5001"
+#   remote_service_notifier_path:               "/v1/notifications.json"
+
+#   ### Right Navigation ###
+#   use_feedback_link:                          "false"
+#   feedback_link:                              "http://something.com"
+#   use_redcap_api:                             "false"
+#   redcap_api_url:                             "https://redcap.musc.edu/api/"
+#   redcap_api_token:                           ""
+#   feedback_mail_to:                           "sparcrequest@gmail.com"
+#   use_faq_link:                               "false"
+#   faq_url:                                    "http://academicdepartments.musc.edu/sctr/sparc_request/faq.html"
+#   contact_us_department:                      "SUCCESS Center"
+#   contact_us_phone:                           "(843) 792-8300"
+#   contact_us_mail_to:                         "success@musc.edu"
+#   contact_us_cc:                              "sparcrequest@gmail.com"
+#   use_short_interaction:                      "false"
+
+#   ### Google Calendar ###
+#   use_google_calendar:                        "false"
+#   calendar_url:                               "https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics"
+#   calendar_event_limit:                       3
+
+#   ### News Feed ###
+#   use_news_feed:                              "false"
+#   news_feed_url:                              "https://sparcrequest.atlassian.net/wiki"
+#   news_feed_post_limit:                       3
+#   use_news_feed_api:                          "false"
+#   news_feed_api:                              "Atlassian"
+#   news_feed_atlassian_space:                  "RD"
+#   news_feed_post_selector:                    ".article.post"
+#   news_feed_title_selector:                   ".entry-title"
+#   news_feed_link_selector:                    ".entry-title a"
+#   news_feed_date_selector:                    ".date"
+
+#   ### Tableau Dashboard ###
+#   use_tableau:                                "true"
+#   homepage_tableau_dashboard:                 "InstitutionalDashboard/InstitutionalDashboard"
+#   homepage_tableau_url:                       "https://anyl-tableau-v.mdc.musc.edu/javascripts/api/viz_v1.js"
+
+#   ### System Satisfaction Survey ###
+#   system_satisfaction_survey:                 "false"
+#   system_satisfaction_survey_cc:              "sparcrequest@gmail.com"
+
+###################
+### DEVELOPMENT ###
+###################
+development:
+  ### Generic Email Settings ###
+  send_emails_to_real_users:                  "false"
+  send_authorized_user_emails:                "true"
+  root_url:                                   "127.0.0.1:3000"
+  dashboard_link:                             "/dashboard"
+  admin_mail_to:                              "sparcrequest@gmail.com"
+  default_mail_to:                            "sparcrequest@gmail.com"
+  listserv_mail_to:                           "hewwe@musc.edu, hutsonk@musc.edu"
+  new_user_cc:                                "sparcrequest@gmail.com"
+  no_reply_from:                              "no-reply@musc.edu"
+
+  ### Generic Links & URLs ###
+  about_sparc_url:                            "http://academicdepartments.musc.edu/sctr/sparc_request"
+  header_link_1:                              "http://sctr.musc.edu"
+  header_link_2_proper:                       "127.0.0.1:3000"
+  header_link_2_dashboard:                    "127.0.0.1:3000/dashboard"
+  header_link_2_catalog:                      "127.0.0.1:3000/catalog_manager"
+  header_link_3:                              "http://www.musc.edu"
+  navbar_links:
+    sparc_request:                            ['SPARCRequest',      '127.0.0.1:3000/']
+    sparc_dashboard:                          ['SPARCDashboard',    '127.0.0.1:3000/dashboard']
+    sparc_fulfillment:                        ['SPARCFulfillment',  'https://cwf-d.obis.musc.edu/identities/sign_in']
+    sparc_catalog:                            ['SPARCCatalog',      '127.0.0.1:3000/catalog_manager']
+    sparc_report:                             ['SPARCReport',       '127.0.0.1:3000/reports']
+    sparc_forms:                              ['SPARCForms',        '127.0.0.1:3000/surveyor/responses']
+
+  ### Statuses ###
+  updatable_statuses:                         ['first_draft', 'draft', 'get_a_cost_estimate', 'awaiting_pi_approval']
+  finished_statuses:                          ['complete', 'withdrawn']
+
+  ### Other Generic Settings ###
+  host:                                       "127.0.0.1:3000"
+  site_admins:                                []
+  use_indirect_cost:                          "false"
+  use_separate_audit_database:                "false"
+  wkhtmltopdf_location:                       "/usr/local/bin/wkhtmltopdf"
+
+  ### Oauth Configuration ###
+  use_cas:                                    "false"
+  use_cas_only:                               "false"
+  use_shibboleth:                             "true"
+  use_shibboleth_only:                        "false"
+
+  ### LDAP Configuration ###
+  use_ldap:                                   "false"
+  lazy_load_ldap:                             "false"
+  suppress_ldap_for_user_search:              "false"
+
+  ### Epic Configuration ###
+  use_epic:                                   "false"
+  approve_epic_rights_mail_to:                "sparcrequest@gmail.com"
+  queue_epic:                                 "false"
+  epic_queue_access:                          []
+  epic_queue_report_to:                       "sparcrequest@gmail.com"
+  queue_epic_load_error_to:                   "sparcrequest@gmail.com"
+
+  ### RMID Configuration ###
+  research_master_enabled:                    "false"
+  research_master_link:                       "127.0.0.1:4000"
+  research_master_api:                        "127.0.0.1:4000/api/"
+  rmid_api_token:                             "some token"
+
+  ### CWF Configuration ###
+  clinical_work_fulfillment_url:              "127.0.0.1:6000"
+  fulfillment_contingent_on_catalog_manager:  "true"
+
+  ### Funding Configuration ###
+  use_funding_module:                         "false"
+  funding_admins:                             []
+  funding_org_ids:                            []
+
+  ### API ###
+  current_api_version:                        "v1"
+  remote_service_notifier_protocol:           "https"
+  remote_service_notifier_username:           ""
+  remote_service_notifier_password:           ""
+  remote_service_notifier_host:               "127.0.0.1:5001"
+  remote_service_notifier_path:               "/v1/notifications.json"
+
+  ### Right Navigation ###
+  use_feedback_link:                          "false"
+  feedback_link:                              "http://something.com"
+  use_redcap_api:                             "false"
+  redcap_api_url:                             "https://redcap.musc.edu/api/"
+  redcap_api_token:                           ""
+  feedback_mail_to:                           "sparcrequest@gmail.com"
+  use_faq_link:                               "false"
+  faq_url:                                    "http://academicdepartments.musc.edu/sctr/sparc_request/faq.html"
+  contact_us_department:                      "SUCCESS Center"
+  contact_us_phone:                           "(843) 792-8300"
+  contact_us_mail_to:                         "success@musc.edu"
+  contact_us_cc:                              "sparcrequest@gmail.com"
+  use_short_interaction:                      "false"
+
+  ### Google Calendar ###
+  use_google_calendar:                        "false"
+  calendar_url:                               "https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics"
+  calendar_event_limit:                       3
+
+  ### News Feed ###
+  use_news_feed:                              "false"
+  news_feed_url:                              "https://sparcrequest.atlassian.net/wiki"
+  news_feed_post_limit:                       3
+  use_news_feed_api:                          "false"
+  news_feed_api:                              "Atlassian"
+  news_feed_atlassian_space:                  "RD"
+  news_feed_post_selector:                    ".article.post"
+  news_feed_title_selector:                   ".entry-title"
+  news_feed_link_selector:                    ".entry-title a"
+  news_feed_date_selector:                    ".date"
+
+  ### Tableau Dashboard ###
+  use_tableau:                                "true"
+  homepage_tableau_dashboard:                 "InstitutionalDashboard/InstitutionalDashboard"
+  homepage_tableau_url:                       "https://anyl-tableau-v.mdc.musc.edu/javascripts/api/viz_v1.js"
+
+  ### System Satisfaction Survey ###
+  system_satisfaction_survey:                 "false"
+  system_satisfaction_survey_cc:              "sparcrequest@gmail.com"
+
+############
+### TEST ###
+############
+test:
+  ### Generic Email Settings ###
+  send_emails_to_real_users:                  "false"
+  send_authorized_user_emails:                "true"
+  root_url:                                   "127.0.0.1:3000"
+  dashboard_link:                             "/dashboard"
+  admin_mail_to:                              "sparcrequest@gmail.com"
+  default_mail_to:                            "sparcrequest@gmail.com"
+  listserv_mail_to:                           "hewwe@musc.edu, hutsonk@musc.edu"
+  new_user_cc:                                "sparcrequest@gmail.com"
+  no_reply_from:                              "no-reply@musc.edu"
+
+  ### Generic Links & URLs ###
+  about_sparc_url:                            "http://academicdepartments.musc.edu/sctr/sparc_request"
+  header_link_1:                              "http://sctr.musc.edu"
+  header_link_2_proper:                       "127.0.0.1:3000"
+  header_link_2_dashboard:                    "127.0.0.1:3000/dashboard"
+  header_link_2_catalog:                      "127.0.0.1:3000/catalog_manager"
+  header_link_3:                              "http://www.musc.edu"
+  navbar_links:
+    sparc_request:                            ['SPARCRequest',      '127.0.0.1:3000/']
+    sparc_dashboard:                          ['SPARCDashboard',    '127.0.0.1:3000/dashboard']
+    sparc_fulfillment:                        ['SPARCFulfillment',  'https://cwf-d.obis.musc.edu/identities/sign_in']
+    sparc_catalog:                            ['SPARCCatalog',      '127.0.0.1:3000/catalog_manager']
+    sparc_report:                             ['SPARCReport',       '127.0.0.1:3000/reports']
+    sparc_forms:                              ['SPARCForms',        '127.0.0.1:3000/surveyor/responses']
+
+  ### Statuses ###
+  updatable_statuses:                         ['first_draft', 'draft', 'get_a_cost_estimate', 'awaiting_pi_approval']
+  finished_statuses:                          ['complete', 'withdrawn']
+
+  ### Other Generic Settings ###
+  host:                                       "127.0.0.1:3000"
+  site_admins:                                []
+  use_indirect_cost:                          "false"
+  use_separate_audit_database:                "false"
+  wkhtmltopdf_location:                       "/usr/local/bin/wkhtmltopdf"
+
+  ### Oauth Configuration ###
+  use_cas:                                    "false"
+  use_cas_only:                               "false"
+  use_shibboleth:                             "true"
+  use_shibboleth_only:                        "false"
+
+  ### LDAP Configuration ###
+  use_ldap:                                   "false"
+  lazy_load_ldap:                             "false"
+  suppress_ldap_for_user_search:              "false"
+
+  ### Epic Configuration ###
+  use_epic:                                   "false"
+  approve_epic_rights_mail_to:                "sparcrequest@gmail.com"
+  queue_epic:                                 "false"
+  epic_queue_access:                          []
+  epic_queue_report_to:                       "sparcrequest@gmail.com"
+  queue_epic_load_error_to:                   "sparcrequest@gmail.com"
+
+  ### RMID Configuration ###
+  research_master_enabled:                    "false"
+  research_master_link:                       "127.0.0.1:4000"
+  research_master_api:                        "127.0.0.1:4000/api/"
+  rmid_api_token:                             "some token"
+
+  ### CWF Configuration ###
+  clinical_work_fulfillment_url:              "127.0.0.1:6000"
+  fulfillment_contingent_on_catalog_manager:  "true"
+
+  ### Funding Configuration ###
+  use_funding_module:                         "false"
+  funding_admins:                             []
+  funding_org_ids:                            []
+
+  ### API ###
+  current_api_version:                        "v1"
+  remote_service_notifier_protocol:           "https"
+  remote_service_notifier_username:           ""
+  remote_service_notifier_password:           ""
+  remote_service_notifier_host:               "127.0.0.1:5001"
+  remote_service_notifier_path:               "/v1/notifications.json"
+
+  ### Right Navigation ###
+  use_feedback_link:                          "false"
+  feedback_link:                              "http://something.com"
+  use_redcap_api:                             "false"
+  redcap_api_url:                             "https://redcap.musc.edu/api/"
+  redcap_api_token:                           ""
+  feedback_mail_to:                           "sparcrequest@gmail.com"
+  use_faq_link:                               "false"
+  faq_url:                                    "http://academicdepartments.musc.edu/sctr/sparc_request/faq.html"
+  contact_us_department:                      "SUCCESS Center"
+  contact_us_phone:                           "(843) 792-8300"
+  contact_us_mail_to:                         "success@musc.edu"
+  contact_us_cc:                              "sparcrequest@gmail.com"
+  use_short_interaction:                      "false"
+
+  ### Google Calendar ###
+  use_google_calendar:                        "false"
+  calendar_url:                               "https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics"
+  calendar_event_limit:                       3
+
+  ### News Feed ###
+  use_news_feed:                              "false"
+  news_feed_url:                              "https://sparcrequest.atlassian.net/wiki"
+  news_feed_post_limit:                       3
+  use_news_feed_api:                          "false"
+  news_feed_api:                              "Atlassian"
+  news_feed_atlassian_space:                  "RD"
+  news_feed_post_selector:                    ".article.post"
+  news_feed_title_selector:                   ".entry-title"
+  news_feed_link_selector:                    ".entry-title a"
+  news_feed_date_selector:                    ".date"
+
+  ### Tableau Dashboard ###
+  use_tableau:                                "true"
+  homepage_tableau_dashboard:                 "InstitutionalDashboard/InstitutionalDashboard"
+  homepage_tableau_url:                       "https://anyl-tableau-v.mdc.musc.edu/javascripts/api/viz_v1.js"
+
+  ### System Satisfaction Survey ###
+  system_satisfaction_survey:                 "false"
+  system_satisfaction_survey_cc:              "sparcrequest@gmail.com"

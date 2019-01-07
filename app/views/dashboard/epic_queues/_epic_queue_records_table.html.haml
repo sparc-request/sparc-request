@@ -20,12 +20,12 @@
 
 .bootstrap-table-dropdown-overflow
   #epic-queues-custom-toolbar
-  %table.epic-queue-records-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', 'show-export' => 'true', "export-types" => ['excel'], url: dashboard_epic_queue_records_path, striped: 'true', toolbar: '#epic-queues-custom-toolbar' } }
+  %table.epic-queue-records-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', 'show-export' => 'true', pagination: 'true', side_pagination: 'server', url: dashboard_epic_queue_records_path, striped: 'true', toolbar: '#epic-queues-custom-toolbar' } }
     %thead.primary-header
       %tr
         %th{data: { field: "protocol", align: "left", sortable: 'true', class: 'text-primary' } }
           = t(:epic_queues)[:sent_protocols]
-        %th{data: { field: "notes", align: "left", sortable: 'true' } }
+        %th{data: { field: "notes", align: "left" } }
           = t(:epic_queues)[:notes]
         %th{data: { field: "pis", align: "left", sortable: 'true' } }
           = t(:epic_queues)[:PIs]

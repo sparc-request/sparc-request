@@ -18,6 +18,29 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+(exports ? this).updateRmidFields = () ->
+  rmId = $('.research-master-field').val()
+  if rmId
+    $.ajax
+      url: "#{gon.rm_id_api_url}research_masters/#{rmId}.json"
+      type: 'GET'
+      headers: {"Authorization": "Token token=\"#{gon.rm_id_api_token}\""}
+      success: (data) ->
+        $('#protocol_short_title').val(data.short_title)
+        $('#protocol_title').val(data.long_title)
+        if data.eirb_validated
+          $('#protocol_human_subjects_info_attributes_pro_number').val(data.eirb_pro_number)
+          $('#protocol_human_subjects_info_attributes_initial_irb_approval_date').val(data.date_initially_approved)
+          $('#protocol_human_subjects_info_attributes_irb_approval_date').val(data.date_approved)
+          $('#protocol_human_subjects_info_attributes_irb_expiration_date').val(data.date_expiration)
+          toggleFields('.rm-locked-fields', true)
+        else
+          toggleFields('.rm-locked-fields:not(.hr-field)', true)
+      error: ->
+        swal("Error", "Research Master Record not found", "error")
+        resetRmIdFields('.rm-id-dependent', '')
+        toggleFields('.rm-locked-fields', false)
+
 toggleFields = (fields, state) ->
   $(fields).prop('disabled', state)
 
@@ -36,6 +59,19 @@ higher_level_of_privacy_no_epic = '#study_type_answer_higher_level_of_privacy_no
 
 $(document).ready ->
 
+  # Guarantor Fields required toggle, removed for now.
+
+  # if $('#protocol_selected_for_epic').val() == "true"
+  #   $('.guarantor_toggle').addClass('required')
+
+  # $(document).on 'click', '#study_selected_for_epic_true_button', ->
+  #   $('.guarantor_toggle').addClass('required')
+
+  # $(document).on 'click', '#study_selected_for_epic_false_button', ->
+  #   $('.guarantor_toggle').removeClass('required')
+
+  # Human Subjects required toggles
+
   if $('.human-subjects:checkbox:checked').length > 0
     $('.rm-id').addClass('required')
 
@@ -45,28 +81,15 @@ $(document).ready ->
     else
       $('.rm-id').addClass('required')
 
+  updateRmidFields()
+
   $(document).on 'blur', '.research-master-field', ->
-    rmId = $('.research-master-field').val()
-    unless $(this).val() == ''
-      $.ajax
-        url: "#{gon.rm_id_api_url}research_masters/#{rmId}.json"
-        type: 'GET'
-        headers: {"Authorization": "Token token=\"#{gon.rm_id_api_token}\""}
-        success: (data) ->
-          $('#protocol_short_title').val(data.short_title)
-          $('#protocol_title').val(data.long_title)
-          toggleFields('.rm-locked-fields', true)
-        error: ->
-          swal("Error", "Research Master Record not found", "error")
-          resetRmIdFields('.rm-id-dependent', '')
-          toggleFields('.rm-locked-fields', false)
+    updateRmidFields()
 
   $(document).on 'change', '.research-master-field', ->
     if $(this).val() == ''
       resetRmIdFields('.rm-id-dependent', '')
       toggleFields('.rm-locked-fields', false)
-    else
-      toggleFields('.rm-locked-fields', true)
 
   $(document).on 'click', '.edit-rmid', ->
     $('#protocol_research_master_id').prop('readonly', false)
@@ -110,14 +133,31 @@ $(document).ready ->
   ###FUNDING STATUS FIELDS DISPLAY###
   $(document).on 'change', '#protocol_funding_status', ->
     $('.funding_status_dependent').hide()
-    switch $(this).val()
-      when 'funded' then $('.funded').show()
-      when 'pending_funding' then $('.pending_funding').show()
+    status_value = $(this).val()
+    source_value = ''
+
+    if status_value == 'funded'
+      $('.funded').show()
+      source_value = $('#protocol_funding_source').val()
+    else if status_value == 'pending_funding'
+      $('.pending_funding').show()
+      source_value = $('#protocol_potential_funding_source').val()
+
+    if source_value == 'federal'
+      $(".federal").show()
+    else
+      $(".federal").hide()
   ###END FUNDING STATUS FIELDS DISPLAY###
 
-
+  
 
   ###FUNDING SOURCE FIELDS DISPLAY###
+  $(document).on 'change', '#protocol_potential_funding_source', ->
+    if $(this).val() == 'federal'
+      $('.federal').show()
+    else
+      $('.federal').hide()
+
   $(document).on 'change', '#protocol_funding_source', ->
     $('.funding_source_dependent').hide()
     switch $(this).val()
@@ -252,7 +292,7 @@ determine_study_type = (answers) ->
         $('#study_type_note').show()
       errors: ->
         sweetAlert("Oops...", "Something went wrong!", "error")
-          
+
 (exports ? this).setup_epic_question_config = () ->
   if $('#study_selected_for_epic_true_button').hasClass('active')
     $(study_type_form).show()
@@ -290,7 +330,7 @@ determine_study_type = (answers) ->
         $(certificate_of_confidence_no_epic).show_elt()
     $(study_type_form).hide()
     $(study_type_form).show()
-    
+
 
   $(document).on 'change', certificate_of_confidence_dropdown, (e) ->
     new_value = $(e.target).val()
@@ -364,4 +404,4 @@ determine_study_type = (answers) ->
     return
 
   ###END EPIC BUTTON FIELDS DISPLAY###
-  
+

@@ -52,11 +52,27 @@ class CatalogManager::SuperUsersController < CatalogManager::AppController
     render 'catalog_manager/organizations/refresh_user_rights_row'
   end
 
+  def update
+    @super_user = SuperUser.find_by(identity_id: super_user_params[:identity_id], organization_id: super_user_params[:organization_id])
+    @identity = @super_user.identity
+    @organization = @super_user.organization
+    @user_rights  = user_rights(@organization.id)
+
+    if @super_user.update_attributes(super_user_params)
+      flash[:notice] = "Super User successfully updated."
+    else
+      flash[:alert] = "Error updating Super Userr."
+    end
+
+    render 'catalog_manager/organizations/refresh_user_rights_row'
+  end
+
   private
 
   def super_user_params
     params.require(:super_user).permit(
       :identity_id,
-      :organization_id)
+      :organization_id,
+      :access_empty_protocols)
   end
 end

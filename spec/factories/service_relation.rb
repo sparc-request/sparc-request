@@ -22,10 +22,10 @@ FactoryBot.define do
 
   factory :service_relation do
     related_service_id { Random.rand(10000) }
-    optional           { false }
+    required           { false }
 
-    trait :is_optional do
-      is_optional true
+    trait :is_required do
+      is_required true
     end
   end
 end

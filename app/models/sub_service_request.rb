@@ -33,11 +33,12 @@ class SubServiceRequest < ApplicationRecord
   belongs_to :service_request
   belongs_to :organization
   belongs_to :protocol, counter_cache: true
+
+  has_one :approved_subsidy, :dependent => :destroy
+  has_one :pending_subsidy, :dependent => :destroy
+
   has_many :past_statuses, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
-  has_many :line_items_visits, through: :line_items
-  has_many :services, through: :line_items
-  has_and_belongs_to_many :documents
   has_many :notes, as: :notable, dependent: :destroy
   has_many :approvals, :dependent => :destroy
   has_many :payments, :dependent => :destroy
@@ -46,10 +47,14 @@ class SubServiceRequest < ApplicationRecord
   has_many :notifications, :dependent => :destroy
   has_many :subsidies
   has_many :responses, as: :respondable, dependent: :destroy
+  has_and_belongs_to_many :documents
+
+  has_many :line_items_visits, through: :line_items
+  has_many :services, through: :line_items
+
   has_many :service_forms, -> { active }, through: :services, source: :forms
   has_many :organization_forms, -> { active }, through: :organization, source: :forms
-  has_one :approved_subsidy, :dependent => :destroy
-  has_one :pending_subsidy, :dependent => :destroy
+
 
   delegate :percent_subsidy, to: :approved_subsidy, allow_nil: true
 
@@ -59,6 +64,7 @@ class SubServiceRequest < ApplicationRecord
   validates :ssr_id, presence: true, uniqueness: { scope: :service_request_id }
 
   scope :in_work_fulfillment, -> { where(in_work_fulfillment: true) }
+  scope :imported_to_fulfillment, -> { where(imported_to_fulfillment: true) }
 
   def consult_arranged_date=(date)
     write_attribute(:consult_arranged_date, date.present? ? Time.strptime(date, "%m/%d/%Y") : nil)
@@ -106,6 +112,10 @@ class SubServiceRequest < ApplicationRecord
   def org_tree
     orgs = organization.parents
     orgs << organization
+  end
+
+  def process_ssrs_organization
+    self.organization.process_ssrs_parent
   end
 
   def set_effective_date_for_cost_calculations
@@ -246,8 +256,8 @@ class SubServiceRequest < ApplicationRecord
   def ready_for_fulfillment?
     # return true if work fulfillment has already been turned "on" or global variable fulfillment_contingent_on_catalog_manager is set to false or nil
     # otherwise, return true only if fulfillment_contingent_on_catalog_manager is true and the parent organization has tag 'clinical work fulfillment'
-    if self.in_work_fulfillment || !Setting.find_by_key("fulfillment_contingent_on_catalog_manager").value ||
-        (Setting.find_by_key("fulfillment_contingent_on_catalog_manager").value && self.organization.tag_list.include?('clinical work fulfillment'))
+    if self.in_work_fulfillment || !Setting.get_value("fulfillment_contingent_on_catalog_manager") ||
+        (Setting.get_value("fulfillment_contingent_on_catalog_manager") && self.organization.tag_list.include?('clinical work fulfillment'))
       return true
     else
       return false
@@ -268,14 +278,14 @@ class SubServiceRequest < ApplicationRecord
       changeable = available & editable
       if changeable.include?(new_status)
         #  See Pivotal Stories: #133049647 & #135639799
-        if (status != new_status) && ((new_status == 'submitted' && Setting.find_by_key("updatable_statuses").value.include?(status)) || new_status != 'submitted')
+        if (status != new_status) && ((new_status == 'submitted' && Setting.get_value("updatable_statuses").include?(status)) || new_status != 'submitted')
           ### For 'submitted' status ONLY:
           # Since adding/removing services changes a SSR status to 'draft', we have to look at the past status to see if we should notify users of a status change
           # We do NOT notify if updating from an un-updatable status or we're updating to a status that we already were previously
           if new_status == 'submitted'
             past_status = PastStatus.where(sub_service_request_id: id).last
             past_status = past_status.nil? ? nil : past_status.status
-            if status == 'draft' && ((Setting.find_by_key("updatable_statuses").value.include?(past_status) && past_status != new_status) || past_status == nil) # past_status == nil indicates a newly created SSR
+            if status == 'draft' && ((Setting.get_value("updatable_statuses").include?(past_status) && past_status != new_status) || past_status == nil) # past_status == nil indicates a newly created SSR
               to_notify << id
             elsif status != 'draft'
               to_notify << id
@@ -308,7 +318,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def is_complete?
-    return Setting.find_by_key("finished_statuses").value.include?(status)
+    return Setting.get_value("finished_statuses").include?(status)
   end
 
   def set_to_draft
@@ -427,7 +437,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def all_forms_completed?
-    (self.service_forms + self.organization_forms).count == self.responses.count
+    (self.service_forms + self.organization_forms).count == self.responses.joins(:survey).where(surveys: { type: 'Form' }).count
   end
 
   ##########################

@@ -20,55 +20,63 @@
 
 - availability = [show_available_only, true]
 .panel-group#cm-accordion
-  .panel-heading.no-padding-y
-    .col-sm-1.no-padding-y
-      = link_to plus_glyphicon(), 'javascript:void(0)', class: 'new_organization_link', data: {organization_type: "Institution"}
-    .col-sm-11.no-padding-y
-      = link_to create_new_text(:institution), 'javascript:void(0)', class: 'org-form-label panel-title new_organization_link', data: {organization_type: "Institution"}
-  - institutions.where(is_available: availability).each do |institution|
+  - if @user.catalog_overlord?
+    -# New Institution link
     .panel-heading.no-padding-y
       .col-sm-1.no-padding-y
-        = link_to folder_glyphicon(), 'javascript:void(0)', id: "institution-#{institution.id}", class: "fix_spec_overlap", data: { toggle: 'collapse', target: "#institution-#{institution.id}-collapse", parent: '#cm-accordion' }
+        = link_to plus_glyphicon(), 'javascript:void(0)', class: 'new_organization_link', data: {organization_type: "Institution"}
       .col-sm-11.no-padding-y
-        = link_to accordion_link_text(institution, !institution.is_available), edit_catalog_manager_organization_path(institution), class: 'org-form-label panel-title', remote: true
+        = link_to create_new_text(:institution), 'javascript:void(0)', class: 'org-form-label panel-title new_organization_link', data: {organization_type: "Institution"}
+
+  - institutions.where(is_available: availability).each do |institution|
+    - institution_editable = @editable_organizations.include?(institution)
+    = render '/catalog_manager/catalog/accordion_edit_link', organization: institution, type: "institution", editable: institution_editable, parent_link: "#cm-accordion", availability: availability, ajax_loader_class: ""
+
     .panel-collapse.collapse{ id: "institution-#{institution.id}-collapse" }
       .panel-body.no-padding-y.col-sm-12
-        .panel-heading.no-padding-y
-          .col-sm-1.no-padding-y
-            = link_to plus_glyphicon(), 'javascript:void(0)', class: 'new_organization_link', data: {organization_type: "Provider", parent_id: institution.id}
-          .col-sm-11.no-padding-y
-            = link_to create_new_text(:provider), 'javascript:void(0)', class: 'org-form-label panel-title new_organization_link', data: {organization_type: "Provider", parent_id: institution.id}
-        - institution.providers.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |provider|
+        - if institution_editable
+          -# New Provider link
           .panel-heading.no-padding-y
             .col-sm-1.no-padding-y
-              = link_to folder_glyphicon(), 'javascript:void(0)', id: "provider-#{provider.id}", class: "fix_spec_overlap", data: { toggle: 'collapse', target: "#provider-#{provider.id}-collapse", parent: "#institution-#{institution.id}" }
+              = link_to plus_glyphicon(), 'javascript:void(0)', class: 'new_organization_link', data: {organization_type: "Provider", parent_id: institution.id}
             .col-sm-11.no-padding-y
-              = link_to accordion_link_text(provider, !provider.is_available), edit_catalog_manager_organization_path(provider), class: 'org-form-label panel-title', remote: true
+              = link_to create_new_text(:provider), 'javascript:void(0)', class: 'org-form-label panel-title new_organization_link', data: {organization_type: "Provider", parent_id: institution.id}
+
+        - institution.providers.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |provider|
+          - provider_editable = @editable_organizations.include?(provider)
+          = render '/catalog_manager/catalog/accordion_edit_link', organization: provider, type: "provider", editable: provider_editable, parent_link: "#institution-#{institution.id}", availability: availability, ajax_loader_class: ""
+
           .panel-collapse.collapse{ id: "provider-#{provider.id}-collapse" }
             .panel-body.no-padding-y.col-sm-12
-              .panel-heading.no-padding-y
-                .col-sm-1.no-padding-y
-                  = link_to plus_glyphicon(), 'javascript:void(0)', class: 'new_organization_link', data: {organization_type: "Program", parent_id: provider.id}
-                .col-sm-11.no-padding-y
-                  = link_to create_new_text(:program), 'javascript:void(0)', class: 'org-form-label panel-title new_organization_link', data: {organization_type: "Program", parent_id: provider.id}
-              - provider.programs.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |program|
+              - if provider_editable
+                -# New Program link
                 .panel-heading.no-padding-y
                   .col-sm-1.no-padding-y
-                    = link_to folder_glyphicon(), 'javascript:void(0)', id: "program-#{program.id}", class: "load_program_accordion fix_spec_overlap", data: {program_id: program.id, show_available_only: availability[0], toggle: 'collapse', target: "#program-#{program.id}-collapse", parent: "provider-#{provider.id}" }
+                    = link_to plus_glyphicon(), 'javascript:void(0)', class: 'new_organization_link', data: {organization_type: "Program", parent_id: provider.id}
                   .col-sm-11.no-padding-y
-                    = link_to accordion_link_text(program, !program.is_available), edit_catalog_manager_organization_path(program), class: 'org-form-label panel-title', remote: true
+                    = link_to create_new_text(:program), 'javascript:void(0)', class: 'org-form-label panel-title new_organization_link', data: {organization_type: "Program", parent_id: provider.id}
+
+              - provider.programs.where(is_available: availability).order(Arel.sql("`order`, `name`")).each do |program|
+                - program_editable = @editable_organizations.include?(program)
+                = render '/catalog_manager/catalog/accordion_edit_link', organization: program, type: "program", editable: program_editable, parent_link: "#provider-#{provider.id}", availability: availability, ajax_loader_class: "load_program_accordion"
+
                 .panel-collapse.collapse{ id: "program-#{program.id}-collapse" }
                   .panel-body.no-padding-y.col-sm-12
-                    .panel-heading.no-padding-y
-                      .col-sm-1.no-padding-y
-                        = link_to plus_glyphicon(), 'javascript:void(0)', class: 'new_organization_link', data: {organization_type: "Core", parent_id: program.id}
-                      .col-sm-11.no-padding-y
-                        = link_to create_new_text(:core), 'javascript:void(0)', class: 'org-form-label panel-title new_organization_link', data: {organization_type: "Core", parent_id: program.id}
-                    .panel-heading.no-padding-y
-                      .col-sm-1.no-padding-y
-                        = link_to plus_glyphicon(), 'javascript:void(0)', class: 'new_service_link', data: {organization_id: program.id}
-                      .col-sm-11.no-padding-y
-                        = link_to create_new_text(:service), 'javascript:void(0)', class: 'org-form-label panel-title new_service_link', data: {organization_id: program.id}
+                    - if program_editable
+                      -# New Core link
+                      .panel-heading.no-padding-y
+                        .col-sm-1.no-padding-y
+                          = link_to plus_glyphicon(), 'javascript:void(0)', class: 'new_organization_link', data: {organization_type: "Core", parent_id: program.id}
+                        .col-sm-11.no-padding-y
+                          = link_to create_new_text(:core), 'javascript:void(0)', class: 'org-form-label panel-title new_organization_link', data: {organization_type: "Core", parent_id: program.id}
+                    - if program_editable
+                      -# New Service link
+                      .panel-heading.no-padding-y
+                        .col-sm-1.no-padding-y
+                          = link_to plus_glyphicon(), 'javascript:void(0)', class: 'new_service_link', data: {organization_id: program.id}
+                        .col-sm-11.no-padding-y
+                          = link_to create_new_text(:service), 'javascript:void(0)', class: 'org-form-label panel-title new_service_link', data: {organization_id: program.id}
+
                     %div{id: "program_accordion_#{program.id}"}
                   .clearfix
             .clearfix

@@ -25,7 +25,7 @@
     .panel-body
       .bootstrap-table-dropdown-overflow
         #surveys-custom-toolbar
-          = link_to t(:surveyor)[:systemsurveys][:new], surveyor_surveys_path(type: 'SystemSurvey'), method: :post, remote: true, class: "btn btn-success", id: "new-survey-button"
+          = link_to t(:surveyor)[:systemsurveys][:new], new_surveyor_survey_path(type: 'SystemSurvey'), remote: true, class: "btn btn-success", id: "new-survey-button"
         %table.survey-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: surveyor_surveys_path(type: 'SystemSurvey'), striped: 'true', toolbar: '#surveys-custom-toolbar', pagination: 'true', page_size: '20' } }
           %thead.primary-header
             %tr
@@ -37,8 +37,8 @@
                 = t(:surveyor)[:systemsurveys][:table][:headers][:version]
               %th.col-sm-1{ data: { field: "active", align: "center" } }
                 = t(:surveyor)[:systemsurveys][:table][:headers][:active]
-              %th.col-sm-3{ data: { field: "options", align: "center" } }
-                = t(:surveyor)[:systemsurveys][:table][:headers][:options]
+              %th.col-sm-3{ data: { field: "actions", align: "center" } }
+                = t(:surveyor)[:systemsurveys][:table][:headers][:actions]
 
 - if current_user.is_site_admin? || current_user.is_super_user? || current_user.is_service_provider? || current_user.is_catalog_manager?
   .panel.panel-default
@@ -48,7 +48,7 @@
     .panel-body
       .bootstrap-table-dropdown-overflow
         #forms-custom-toolbar
-          = link_to t(:surveyor)[:forms][:new], surveyor_surveys_path(type: 'Form'), method: :post, remote: true, class: "btn btn-success", id: "new-form-button"
+          = link_to t(:surveyor)[:forms][:new], new_surveyor_survey_path(type: 'Form'), remote: true, class: "btn btn-success", id: "new-form-button"
         %table.form-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: surveyor_surveys_path(type: 'Form'), striped: 'true', toolbar: '#forms-custom-toolbar', pagination: 'true', page_size: '20' } }
           %thead.primary-header
             %tr
@@ -62,5 +62,5 @@
                 = t(:surveyor)[:forms][:table][:headers][:version]
               %th.col-sm-1{ data: { field: "active", align: "center" } }
                 = t(:surveyor)[:forms][:table][:headers][:active]
-              %th.col-sm-3{ data: { field: "options", align: "center" } }
-                = t(:surveyor)[:forms][:table][:headers][:options]
+              %th.col-sm-3{ data: { field: "actions", align: "center" } }
+                = t(:surveyor)[:forms][:table][:headers][:actions]

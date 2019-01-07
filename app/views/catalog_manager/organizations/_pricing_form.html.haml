@@ -24,8 +24,14 @@
     = t(:catalog_manager)[:organization_form][:pricing][:add_pricing]
 
   #pricing_setup_list
-    - organization.pricing_setups.sort_by(&:effective_date).each do |pricing_setup|
+    - pricing_setups = organization.pricing_setups.order(effective_date: :desc)
+    - pricing_setups[0..2].each do |pricing_setup|
       = render "/catalog_manager/organizations/pricing_setup", pricing_setup: pricing_setup
+    - if pricing_setups.length > 3
+      = link_to t(:constants)[:more], "#org#{organization.id}PricingSetupsExpand", class: 'btn btn-primary collapsed', alt: t(:constants)[:less], data: { toggle: 'collapse' }, aria: { expanded: 'false' }
+      .collapse{ id: "org#{organization.id}PricingSetupsExpand" }
+        - pricing_setups[3..-1].each do |pricing_setup|
+          = render "/catalog_manager/organizations/pricing_setup", pricing_setup: pricing_setup
 
 #increase_decrease_container
   %h4.form_row= t(:catalog_manager)[:organization_form][:pricing][:auto_price_adj]

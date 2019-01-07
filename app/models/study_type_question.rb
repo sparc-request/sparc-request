@@ -19,6 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class StudyTypeQuestion < ApplicationRecord
+  audited
+  
   default_scope { order('`order`') }
   belongs_to :study_type_question_group
   has_many :study_type_answers

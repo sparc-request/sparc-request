@@ -41,6 +41,9 @@
         .row
           .col-lg-12
             = form.fields_for :identity do |identity_form|
+              = user_form_group(name: :orcid, form: identity_form, link: t(:authorized_users)[:form_fields][:links][:orcid] ) do
+                = identity_form.text_field :orcid, class: 'form-control', placeholder: t(:authorized_users)[:form_fields][:placeholders][:orcid], maxlength: 19
+
               = user_form_group(name: :era_commons_name, classes: ['role_dependent commons_name', ['pi', 'primary-pi'].include?(form.object.role) ? '' : 'hidden'], form: identity_form) do
                 = identity_form.text_field :era_commons_name, class: 'form-control'
 
@@ -64,16 +67,20 @@
             = user_form_group(name: :role_specify, classes: ['role_dependent other', form.object.role == 'other' ? '' : 'hidden'], form: form, required: true) do
               = form.text_field :role_other, class: 'form-control'
 
-            - if Setting.find_by_key("use_epic").value && protocol != nil && protocol.selected_for_epic
+            - if Setting.get_value("use_epic") && protocol != nil && protocol.selected_for_epic
               = user_form_group(name: :epic_access, form: form, required: true,
                 data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
                 title: t(:authorized_users)[:tooltips][:epic_access]) do
                 = label_tag nil, nil, class: 'radio-inline' do
-                  = form.radio_button :epic_access, false, class: 'epic_access'
-                  No
+                  = form.radio_button :epic_access, false, class: 'epic_access', disabled: Setting.get_value("validate_epic_users") && !EpicUser.is_active?(@epic_user)
+                  = t(:constants)[:no_select]
                 = label_tag nil, nil, class: 'radio-inline' do
-                  = form.radio_button :epic_access, true, class: 'epic_access'
-                  Yes
+                  = form.radio_button :epic_access, true, class: 'epic_access', disabled: Setting.get_value("validate_epic_users") && !EpicUser.is_active?(@epic_user)
+                  = t(:constants)[:yes_select]
+                - if Setting.get_value("validate_epic_users") && !EpicUser.is_active?(@epic_user)
+                  %br
+                  %p.text-danger
+                    = t(:authorized_users)[:form_fields][:no_epic_access]
 
             = render 'associated_users/form/project_rights', form: form, dashboard: dashboard, admin: admin
 

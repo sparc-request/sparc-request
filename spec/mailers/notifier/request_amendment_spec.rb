@@ -68,8 +68,7 @@ RSpec.describe Notifier do
             assert_email_request_amendment_for_deleted(@mail.body.parts.first.body)
           end
 
-          it 'should not have a reminder note or submission reminder' do
-            does_not_have_a_reminder_note(@mail)
+          it 'should not have a submission reminder' do
             does_not_have_a_submission_reminder(@mail)
           end
         end
@@ -133,8 +132,7 @@ RSpec.describe Notifier do
             assert_email_request_amendment_for_added(@mail.body.parts.first.body)
           end
 
-          it 'should not have a reminder note or submission reminder' do
-            does_not_have_a_reminder_note(@mail)
+          it 'should not have a submission reminder' do
             does_not_have_a_submission_reminder(@mail)
           end
         end
@@ -197,8 +195,7 @@ RSpec.describe Notifier do
             assert_email_request_amendment_for_added(@mail.body.parts.first.body, true)
           end
 
-          it 'should not have a reminder note or submission reminder' do
-            does_not_have_a_reminder_note(@mail)
+          it 'should not have a submission reminder' do
             does_not_have_a_submission_reminder(@mail)
           end
         end
@@ -294,8 +291,7 @@ RSpec.describe Notifier do
             assert_email_request_amendment_for_deleted(@mail.body.parts.first.body)
           end
 
-          it 'should not have a reminder note or submission reminder' do
-            does_not_have_a_reminder_note(@mail)
+          it 'should not have a submission reminder' do
             does_not_have_a_submission_reminder(@mail)
           end
         end
@@ -358,8 +354,7 @@ RSpec.describe Notifier do
             assert_email_request_amendment_for_deleted(@mail.body.parts.first.body, true)
           end
 
-          it 'should not have a reminder note or submission reminder' do
-            does_not_have_a_reminder_note(@mail)
+          it 'should not have a submission reminder' do
             does_not_have_a_submission_reminder(@mail)
           end
         end
@@ -457,8 +452,7 @@ RSpec.describe Notifier do
         assert_email_request_amendment_for_deleted(@mail.body.parts.first.body)
       end
 
-      it 'should have a notes reminder message but not a submission reminder' do
-        does_have_a_reminder_note(@mail)
+      it 'should not have a submission reminder' do
         does_not_have_a_submission_reminder(@mail)
       end
     end

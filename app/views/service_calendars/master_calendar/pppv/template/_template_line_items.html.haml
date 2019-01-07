@@ -35,7 +35,7 @@
         - unless liv.line_item.service.is_available
           = inactive_tag
       %td.notes.text-center.notes-width
-        = display_liv_notes(liv, portal, review)
+        = notes_button(liv, locked)
       %td.status.text-center.status-width
         = PermissibleValue.get_value('status', ssr.status)
       %td.service-rate.text-center.sm-col-width

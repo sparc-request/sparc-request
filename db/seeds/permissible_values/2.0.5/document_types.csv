@@ -1,16 +1,16 @@
-id,key,value,concept_code,parent_id,sort_order,category,default,reserved
-,biosketch,Biosketch,,,1,document_type,,
-,budget,Budget,,,2,document_type,,
-,cofc,Certificate of Confidentiality,,,3,document_type,,
-,consent,Consent,,,4,document_type,,
-,contract,Contract,,,5,document_type,,
-,coverage_analysis,Coverage Analysis,,,6,document_type,,
-,dsmp,DSMP,,,7,document_type,,
-,feasibility,Feasibility / Site Selection,,,8,document_type,,
-,hipaa,HIPAA,,,9,document_type,,
-,investigator_brochure,Investigator Brochure,,,10,document_type,,
-,justification,Justification,,,11,document_type,,
-,manuals,"Manuals (Pharmacy, Lab, Imaging, etc)",,,12,document_type,,
-,ocr_approval,OCR Approval,,,13,document_type,,
-,protocol,Protocol,,,14,document_type,,
-,other,Other,,,15,document_type,,
+id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_available
+,biosketch,Biosketch,,,1,document_type,,,1
+,budget,Budget,,,2,document_type,,,1
+,cofc,Certificate of Confidentiality,,,3,document_type,,,1
+,consent,Consent,,,4,document_type,,,1
+,contract,Contract,,,5,document_type,,,1
+,coverage_analysis,Coverage Analysis,,,6,document_type,,,1
+,dsmp,DSMP,,,7,document_type,,,1
+,feasibility,Feasibility / Site Selection,,,8,document_type,,,1
+,hipaa,HIPAA,,,9,document_type,,,1
+,investigator_brochure,Investigator Brochure,,,10,document_type,,,1
+,justification,Justification,,,11,document_type,,,1
+,manuals,"Manuals (Pharmacy, Lab, Imaging, etc)",,,12,document_type,,,1
+,ocr_approval,OCR Approval,,,13,document_type,,,1
+,protocol,Protocol,,,14,document_type,,,1
+,other,Other,,,15,document_type,,,1

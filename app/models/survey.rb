@@ -21,12 +21,12 @@
 class Survey < ApplicationRecord
   audited
   
+  belongs_to :surveyable, polymorphic: true
   has_many :responses, dependent: :destroy
   has_many :sections, dependent: :destroy
-  has_many :questions, through: :sections
   has_many :associated_surveys, dependent: :destroy
 
-  belongs_to :surveyable, polymorphic: true
+  has_many :questions, through: :sections
 
   validates :title,
             :access_code,
@@ -108,5 +108,14 @@ class Survey < ApplicationRecord
 
   def has_responses?
     self.responses.any? ? true : false
+  end
+
+  def clone
+    self.deep_clone include: { sections: { questions: { options: :dependents } } }, use_dictionary: true do |old_record, new_record|
+      if new_record.is_a?(Survey)
+        new_record.version = self.class.where(access_code: new_record.access_code).maximum(:version) + 1
+        new_record.active = false
+      end
+    end
   end
 end

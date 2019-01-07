@@ -139,12 +139,6 @@ en:
       bottom:
         saving: "Saving..."
 
-    ###########
-    #  NOTES  #
-    ###########
-    notes:
-      header: "%{notable_type} Notes"
-
     ###################
     #  NOTIFICATIONS  #
     ###################
@@ -369,6 +363,7 @@ en:
           header: "Fulfillment"
           go_to_fulfillment: "Go to Fulfillment"
           in_fulfillment: "In Fulfillment"
+          pending: "Pending"
           send_to_fulfillment: "Send to Fulfillment"
           not_enabled: "Not enabled in SPARCCatalog."
         cost: "Cost"
@@ -414,7 +409,7 @@ en:
             to: "Status Changed To"
             by: "Changed by"
           approval:
-            header: "Approval History"
+            header: "Administrative Approvals"
             date: "Date Approved"
             type: "Type"
             by: "Approved By"

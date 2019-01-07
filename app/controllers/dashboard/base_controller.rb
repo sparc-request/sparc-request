@@ -18,22 +18,16 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Dashboard::BaseController < ActionController::Base
+class Dashboard::BaseController < ApplicationController
   layout 'dashboard/application'
   protect_from_forgery
-  helper_method :current_user
 
   before_action :authenticate_identity!
   before_action :set_user
   before_action :establish_breadcrumber
-  before_action :set_highlighted_link
 
   def set_highlighted_link
     @highlighted_link ||= 'sparc_dashboard'
-  end
-
-  def current_user
-    current_identity
   end
 
   def set_user
@@ -46,13 +40,6 @@ class Dashboard::BaseController < ActionController::Base
   end
 
   private
-
-  def rmid_server_status(protocol)
-    if Setting.find_by_key("research_master_enabled").value
-      @rmid_server_down = protocol.rmid_server_status
-      @rmid_server_down ? flash[:alert] = t(:protocols)[:summary][:tooltips][:rmid_server_down] : nil
-    end
-  end
 
   def protocol_authorizer_view
     @authorization  = ProtocolAuthorizer.new(@protocol, @user)
@@ -82,7 +69,7 @@ class Dashboard::BaseController < ActionController::Base
   end
 
   def find_admin_for_protocol
-    if @user.super_users.any? && @protocol.sub_service_requests.empty?
+    if @user.super_users.where(access_empty_protocols: true).exists? && @protocol.sub_service_requests.empty?
       @admin = true
     else
       @admin = Protocol.for_admin(@user.id).include?(@protocol)

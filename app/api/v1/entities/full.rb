@@ -60,6 +60,7 @@ module V1
             :approval_pending
 
     with_options(format_with: :iso_timestamp) do
+      expose :initial_irb_approval_date
       expose :irb_approval_date
       expose :irb_expiration_date
     end
@@ -205,7 +206,8 @@ module V1
             :routing,
             :org_tree_display,
             :grand_total,
-            :service_requester_id
+            :service_requester_id,
+            :imported_to_fulfillment
 
     expose  :formatted_status, as: :status
 

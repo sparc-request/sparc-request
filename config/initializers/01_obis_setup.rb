@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 begin
-  wkhtmltopdf_location = Setting.find_by_key('wkhtmltopdf_location').try(:value)
+  wkhtmltopdf_location = Setting.get_value('wkhtmltopdf_location')
 rescue
   wkhtmltopdf_location = nil
 end
@@ -37,7 +37,6 @@ begin
   config                         = YAML::load_file(constant_file)
   BROWSER_VERSIONS               = config['browser_versions']
   EPIC_RIGHTS                    = config['epic_rights']
-  EPIC_RIGHTS_INFO               = config['epic_rights_info']
   EPIC_PUSH_STATUS_TEXT          = config['epic_push_status_text']
   STUDY_TYPE_QUESTIONS           = config['study_type_questions']
   STUDY_TYPE_QUESTIONS_VERSION_2 = config['study_type_questions_version_2']
@@ -47,12 +46,6 @@ begin
   STUDY_TYPE_ANSWERS_VERSION_3   = config['study_type_answers_version_3']
   STUDY_TYPE_NOTES               = config['study_type_notes']
   ACCORDION_COLOR_OPTIONS        = config['accordion_color_options']
-  STUDY_PHASES                   = config['study_phases']
-  INSTITUTIONS                   = config['institutions']
-  COLLEGES                       = config['colleges']
-  DEPARTMENTS                    = config['departments']
-  SUBJECT_ETHNICITIES            = config['subject_ethnicities']
-  SUBJECT_GENDERS                = config['subject_genders']
   AUDIT_ACTIONS                  = config['audit_actions']
   ALERT_TYPES                    = config['alert_types']
   ALERT_STATUSES                 = config['alert_statuses']

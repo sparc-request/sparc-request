@@ -24,9 +24,10 @@ SparcRails::Application.routes.draw do
   resources :services
 
   namespace :surveyor do
-    resources :surveys, only: [:index, :edit, :create, :destroy] do
+    resources :surveys, only: [:index, :new, :create, :edit, :destroy] do
       get :preview
       get :update_dependents_list
+      post :copy
     end
     resource :survey, only: [] do
       get :search_surveyables
@@ -47,8 +48,8 @@ SparcRails::Application.routes.draw do
   resources :feedback
 
   begin
-    use_shibboleth_only = Setting.find_by_key("use_shibboleth_only").try(:value)
-    use_cas_only        = Setting.find_by_key("use_cas_only").try(:value)
+    use_shibboleth_only = Setting.get_value("use_shibboleth_only")
+    use_cas_only        = Setting.get_value("use_cas_only")
   rescue
     use_shibboleth_only = nil
     use_cas_only        = nil
@@ -161,7 +162,7 @@ SparcRails::Application.routes.draw do
 
   resources :documents, only: [:index, :new, :create, :edit, :update, :destroy]
 
-  resources :notes, only: [:index, :new, :create]
+  resources :notes, only: [:index, :new, :create, :edit, :update, :destroy]
 
   resources :sub_service_requests, only: [:show]
 
@@ -220,10 +221,11 @@ SparcRails::Application.routes.draw do
     resources :providers, only: [:edit, :update]
     resources :programs, only: [:edit, :update]
     resources :cores, only: [:edit, :update]
-    resource :super_user, only: [:create, :destroy]
+    resource :super_user, only: [:create, :destroy, :update]
     resource :catalog_manager, only: [:create, :destroy, :update]
     resource :service_provider, only: [:create, :destroy, :update]
     resource :clinical_provider, only: [:create, :destroy]
+    resource :patient_registrar, only: [:create, :destroy]
     resources :services, except: [:index, :show, :destroy]
     resources :pricing_setups, except: [:index, :show, :destroy]
     resources :subsidy_maps, only: [:edit, :update]

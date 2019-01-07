@@ -27,15 +27,16 @@ class ServiceRequest < ApplicationRecord
   belongs_to :protocol
   has_many :sub_service_requests, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
-  has_many :services, through: :line_items
-  has_many :line_items_visits, through: :line_items
-  has_many :subsidies, through: :sub_service_requests
   has_many :charges, :dependent => :destroy
   has_many :tokens, :dependent => :destroy
   has_many :approvals, :dependent => :destroy
-  has_many :arms, :through => :protocol
-  has_many :visit_groups, through: :arms
   has_many :notes, as: :notable, dependent: :destroy
+
+  has_many :arms, through: :protocol
+  has_many :services, through: :line_items
+  has_many :line_items_visits, through: :line_items
+  has_many :subsidies, through: :sub_service_requests
+  has_many :visit_groups, through: :arms
 
   after_save :set_original_submitted_date
   after_save :set_ssr_protocol_id
@@ -77,7 +78,7 @@ class ServiceRequest < ApplicationRecord
     if self.protocol_id.blank?
       errors.add(:base, I18n.t(:errors)[:service_requests][:protocol_missing])
     elsif !self.protocol.valid?
-      errors.add(:base, I18n.t(:errors)[:service_requests][:protocol_errors])
+      self.protocol.errors.full_messages.each{ |e| errors.add(:base, e) }
     end
   end
 
@@ -109,7 +110,7 @@ class ServiceRequest < ApplicationRecord
       errors.add(:base, I18n.t('errors.visit_groups.days_out_of_order', arm_name: vg.arm.name))
     end
 
-    if Setting.find_by_key("use_epic").value
+    if Setting.get_value("use_epic")
       self.arms.each do |arm|
         days = arm.visit_groups.map(&:day)
 
@@ -349,7 +350,7 @@ class ServiceRequest < ApplicationRecord
 
   def total_indirect_costs_per_patient arms=self.arms, line_items=nil
     total = 0.0
-    if Setting.find_by_key("use_indirect_cost").value
+    if Setting.get_value("use_indirect_cost")
       arms.each do |arm|
         livs = (line_items.nil? ? arm.line_items_visits : arm.line_items_visits.where(line_item: line_items)).eager_load(line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]])
         total += arm.indirect_costs_for_visit_based_service(livs)
@@ -373,7 +374,7 @@ class ServiceRequest < ApplicationRecord
 
   def total_indirect_costs_one_time(line_items=self.line_items)
     total = 0.0
-    if Setting.find_by_key("use_indirect_cost").value
+    if Setting.get_value("use_indirect_cost")
       total += line_items.
         eager_load(:admin_rates, service_request: :protocol).
         includes(service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]).
@@ -410,8 +411,8 @@ class ServiceRequest < ApplicationRecord
     forms = []
     # Because there can be multiple SSRs with the same services/organizations we need to loop over each one
     self.sub_service_requests.each do |ssr|
-      Form.where(surveyable: ssr.organization).active.each{ |f| forms << [f, ssr] }
-      Form.where(surveyable: ssr.services).active.each{ |f| forms << [f, ssr] }
+      ssr.organization_forms.each{ |f| forms << [f, ssr] }
+      ssr.service_forms.each{ |f| forms << [f, ssr] }
     end
     forms
   end
@@ -420,8 +421,8 @@ class ServiceRequest < ApplicationRecord
     forms = []
     # Because there can be multiple SSRs with the same services/organizations we need to loop over each one
     self.sub_service_requests.each do |ssr|
-      Form.where(surveyable: ssr.organization).active.joins(:responses).where(responses: { respondable: ssr }).each{ |f| forms << [f, ssr] }
-      Form.where(surveyable: ssr.services).active.joins(:responses).where(responses: { respondable: ssr }).each{ |f| forms << [f, ssr] }
+      ssr.organization_forms.joins(:responses).where(responses: { respondable: ssr }).each{ |f| forms << [f, ssr] }
+      ssr.service_forms.joins(:responses).where(responses: { respondable: ssr }).each{ |f| forms << [f, ssr] }
     end
     forms
   end

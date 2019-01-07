@@ -342,7 +342,7 @@ RSpec.describe "General User filters using Search functionality", js: :true do
 
     it "should not have any HR# matches" do
       bootstrap_select '#filterrific_search_query_search_drop', 'HR#'
-      fill_in 'filterrific_search_query_search_text', with: '11111111111'
+      fill_in 'filterrific_search_query_search_text', with: '123123'
       find('#apply-filter-button').click
       wait_for_javascript_to_finish
 
@@ -385,7 +385,7 @@ RSpec.describe "General User filters using Search functionality", js: :true do
 
     it "should not have any PRO# matches" do
       bootstrap_select '#filterrific_search_query_search_drop', 'PRO#'
-      fill_in 'filterrific_search_query_search_text', with: '11111111111'
+      fill_in 'filterrific_search_query_search_text', with: '123123'
       find('#apply-filter-button').click
       wait_for_javascript_to_finish
 
@@ -602,7 +602,7 @@ RSpec.describe "General User filters using Search functionality", js: :true do
       end
 
       it "should not have any HR# matches" do
-        fill_in 'filterrific_search_query_search_text', with: '11111111111'
+        fill_in 'filterrific_search_query_search_text', with: '123123'
         find('#apply-filter-button').click
         wait_for_javascript_to_finish
 
@@ -628,7 +628,7 @@ RSpec.describe "General User filters using Search functionality", js: :true do
       end
 
       it "should not have any PRO# matches" do
-        fill_in 'filterrific_search_query_search_text', with: '11111111111'
+        fill_in 'filterrific_search_query_search_text', with: '123123'
         find('#apply-filter-button').click
         wait_for_javascript_to_finish
 

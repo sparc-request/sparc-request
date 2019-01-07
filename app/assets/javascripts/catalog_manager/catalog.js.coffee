@@ -69,20 +69,8 @@ $ ->
 ########## Accordion Ajax Functions ##########
 ##############################################
 
-  $(document).on 'click', '.load_core_accordion .glyphicon-folder-close', ->
-    core_id = $(this).parent().data('core-id')
-    show_available_only = $(this).parent().data('show-available-only')
-    $("#core_accordion_#{core_id}").empty()
-    $.ajax
-      type: 'GET'
-      dataType: 'script'
-      url: '/catalog_manager/catalog/load_core_accordion'
-      data:
-        core_id: core_id
-        show_available_only: show_available_only
-
   $(document).on 'click', '.load_program_accordion .glyphicon-folder-close', ->
-    program_id = $(this).parent().data('program-id')
+    program_id = $(this).parent().data('org-id')
     show_available_only = $(this).parent().data('show-available-only')
     $("#program_accordion_#{program_id}").empty()
     $.ajax
@@ -91,6 +79,18 @@ $ ->
       url: '/catalog_manager/catalog/load_program_accordion'
       data:
         program_id: program_id
+        show_available_only: show_available_only
+
+  $(document).on 'click', '.load_core_accordion .glyphicon-folder-close', ->
+    core_id = $(this).parent().data('org-id')
+    show_available_only = $(this).parent().data('show-available-only')
+    $("#core_accordion_#{core_id}").empty()
+    $.ajax
+      type: 'GET'
+      dataType: 'script'
+      url: '/catalog_manager/catalog/load_core_accordion'
+      data:
+        core_id: core_id
         show_available_only: show_available_only
 
 
@@ -128,11 +128,19 @@ initialize_org_search = () ->
       source: services_bloodhound,
       limit: 100,
       templates: {
-        suggestion: Handlebars.compile('<button class="text-left">
-                                          <strong><span class="{{text_color}}">{{type}}</span><span>: {{name}}</span></strong><span class="text-danger"> {{inactive_tag}}</span><br>
-                                          {{{breadcrumb}}}<br>
-                                          <span>Abbreviation: {{abbreviation}}</span><br>
-                                          <span>{{cpt_code}}</span>
+        suggestion: Handlebars.compile('<button class="service text-left">
+                                          <h5 class="service-name col-sm-12 no-padding no-margin"><span class="{{text_color}}">{{type}}</span><span>: {{name}}</span> <small class="text-danger">{{inactive_tag}}</small></h5>
+                                          <span class="col-sm-12 no-padding">{{{breadcrumb}}}</span>
+                                          <span class="col-sm-12 no-padding"><strong>Abbreviation:</strong> {{abbreviation}}</span>
+                                          {{#if cpt_code_text}}
+                                            {{{cpt_code_text}}}
+                                          {{/if}}
+                                          {{#if eap_id_text}}
+                                            {{{eap_id_text}}}
+                                          {{/if}}
+                                          {{#if pricing_text}}
+                                            {{{pricing_text}}}
+                                          {{/if}}
                                         </button>')
         notFound: '<div class="tt-suggestion">No Results</div>'
       }

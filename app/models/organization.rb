@@ -26,32 +26,37 @@ class Organization < ApplicationRecord
   acts_as_taggable
 
   belongs_to :parent, :class_name => 'Organization'
+  has_one :subsidy_map, :dependent => :destroy
   has_many :submission_emails, :dependent => :destroy
   has_many :associated_surveys, as: :associable, dependent: :destroy
   has_many :pricing_setups, :dependent => :destroy
-  has_one :subsidy_map, :dependent => :destroy
   has_many :forms, -> { active }, as: :surveyable, dependent: :destroy
   has_many :super_users, :dependent => :destroy
   has_many :service_providers, :dependent => :destroy
   has_many :catalog_managers, :dependent => :destroy
   has_many :clinical_providers, :dependent => :destroy
-
+  has_many :patient_registrars, :dependent => :destroy
   has_many :services, :dependent => :destroy
   has_many :sub_service_requests, :dependent => :destroy
-  has_many :protocols, through: :sub_service_requests
   has_many :available_statuses, :dependent => :destroy
   has_many :editable_statuses, :dependent => :destroy
   has_many :org_children, class_name: "Organization", foreign_key: :parent_id
 
+  has_many :protocols, through: :sub_service_requests
+
   validates :abbreviation,
             :order,
             presence: true, on: :update
-  validates :name, presence: true, uniqueness: true
+  validates :name, presence: true
   validates :order, numericality: { only_integer: true }, on: :update
 
   accepts_nested_attributes_for :submission_emails
 
   after_create :create_statuses
+
+  default_scope -> {
+    order(:order, :name)
+  }
 
   scope :authorized_for_identity, -> (identity_id) {
     where(
@@ -146,7 +151,7 @@ class Organization < ApplicationRecord
   # Organization B, which belongs to Organization C, return "C > B > A".
   # This "hierarchy" stops at a process_ssrs Organization.
   def organization_hierarchy(include_self=false, process_ssrs=true, use_css=false)
-    parent_orgs = self.parents
+    parent_orgs = self.parents.reverse
 
     if process_ssrs
       root = parent_orgs.find_index { |org| org.process_ssrs? } || (parent_orgs.length - 1)
@@ -155,9 +160,9 @@ class Organization < ApplicationRecord
     end
 
     if use_css
-      parent_orgs[0..root].map{ |o| "<span class='#{o.css_class}-text'>#{o.abbreviation}</span>"}.reverse.join('<span> / </span>') + (include_self ? '<span> / </span>' + "<span class='#{self.css_class}-text'>#{self.abbreviation}</span>" : '')
+      parent_orgs[0..root].map{ |o| "<span class='#{o.css_class}-text'>#{o.abbreviation}</span>"}.join('<span> / </span>') + (include_self ? '<span> / </span>' + "<span class='#{self.css_class}-text'>#{self.abbreviation}</span>" : '')
     else
-      parent_orgs[0..root].map(&:abbreviation).reverse.join(' > ') + (include_self ? ' > ' + self.abbreviation : '')
+      parent_orgs[0..root].map(&:abbreviation).join(' > ') + (include_self ? ' > ' + self.abbreviation : '')
     end
   end
 
@@ -220,6 +225,14 @@ class Organization < ApplicationRecord
   def all_child_services(include_self=true)
     org_ids = include_self ? all_child_organizations_with_self.map(&:id) : all_child_organizations.map(&:id)
     Service.where(organization_id: org_ids).sort_by{|x| x.name}
+  end
+
+  def has_one_time_fee_services?
+    Service.where(one_time_fee: true, organization_id: Organization.authorized_child_organization_ids([self.id])).any?
+  end
+
+  def has_per_patient_per_visit_services?
+    Service.where(one_time_fee: false, organization_id: Organization.authorized_child_organization_ids([self.id])).any?
   end
 
   ###############################################################################
@@ -370,6 +383,7 @@ class Organization < ApplicationRecord
   # Returns all fulfillment user rights on the organization
   def all_fulfillment_rights
     identity_ids = self.clinical_providers.pluck(:identity_id)
+    identity_ids += self.patient_registrars.pluck(:identity_id)
     # Placeholder for invoicers, which will be included later
     # identity_ids += self.invoicers.pluck(:identity_id)
     Identity.where(id: identity_ids)

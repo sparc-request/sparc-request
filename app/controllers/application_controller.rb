@@ -20,13 +20,21 @@
 
 class ApplicationController < ActionController::Base
   protect_from_forgery prepend: true
+
   helper :all
+
   helper_method :current_user
   helper_method :xeditable?
+
+  before_action :preload_settings
   before_action :set_highlighted_link  # default is to not highlight a link
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   protected
+
+  def preload_settings
+    Setting.preload_values
+  end
 
   def not_signed_in?
     !current_user.present?
@@ -53,10 +61,9 @@ class ApplicationController < ActionController::Base
     current_identity
   end
 
-  def rmid_server_status(protocol)
-    if Setting.find_by_key("research_master_enabled").value
-      @rmid_server_down = protocol.rmid_server_status
-      @rmid_server_down ? flash[:alert] = t(:protocols)[:summary][:tooltips][:rmid_server_down] : nil
+  def check_rmid_server_status
+    if Setting.get_value("research_master_enabled") && (@rmid_server_down = !Protocol.rmid_status)
+      flash[:alert] = t(:protocols)[:summary][:tooltips][:rmid_server_down]
     end
   end
 
@@ -268,11 +275,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authorize_funding_admin
-    if not_signed_in?
-      redirect_to_login
-    else
-      redirect_to root_path unless current_user.is_funding_admin?
-    end
+    redirect_to root_path unless Setting.get_value("use_funding_module") && current_user.is_funding_admin?
   end
 
   def sanitize_dates(params, field_names)

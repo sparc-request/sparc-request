@@ -97,31 +97,31 @@
                 %h4= t(:catalog_manager)[:organization_form][:pricing][:rate]
             .form-group
               = f.label :college_rate_type, t(:catalog_manager)[:organization_form][:pricing][:college], class: 'col-sm-4 control-label'
-              .col-sm-7= f.select :college_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.college_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
+              .col-sm-7= f.select :college_rate_type, options_for_select(Service::RATE_TYPES.invert, pricing_setup.college_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
 
             .form-group
               = f.label :federal_rate_type, t(:catalog_manager)[:organization_form][:pricing][:federal], class: 'col-sm-4 control-label'
-              .col-sm-7= f.select :federal_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.federal_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
+              .col-sm-7= f.select :federal_rate_type, options_for_select(Service::RATE_TYPES.invert, pricing_setup.federal_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
 
             .form-group
               = f.label :industry_rate_type, t(:catalog_manager)[:organization_form][:pricing][:industry], class: 'col-sm-4 control-label'
-              .col-sm-7= f.select :industry_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.industry_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
+              .col-sm-7= f.select :industry_rate_type, options_for_select(Service::RATE_TYPES.invert, pricing_setup.industry_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
 
             .form-group
               = f.label :investigator_rate_type, t(:catalog_manager)[:organization_form][:pricing][:investigator], class: 'col-sm-4 control-label'
-              .col-sm-7= f.select :investigator_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.investigator_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
+              .col-sm-7= f.select :investigator_rate_type, options_for_select(Service::RATE_TYPES.invert, pricing_setup.investigator_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
 
             .form-group
               = f.label :internal_rate_type, t(:catalog_manager)[:organization_form][:pricing][:internal], class: 'col-sm-4 control-label'
-              .col-sm-7= f.select :internal_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.internal_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
+              .col-sm-7= f.select :internal_rate_type, options_for_select(Service::RATE_TYPES.invert, pricing_setup.internal_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
 
             .form-group
               = f.label :foundation_rate_type, t(:catalog_manager)[:organization_form][:pricing][:foundation], class: 'col-sm-4 control-label'
-              .col-sm-7= f.select :foundation_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.foundation_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
+              .col-sm-7= f.select :foundation_rate_type, options_for_select(Service::RATE_TYPES.invert, pricing_setup.foundation_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
 
             .form-group
               = f.label :unfunded_rate_type, t(:catalog_manager)[:organization_form][:pricing][:unfunded], class: 'col-sm-4 control-label'
-              .col-sm-7= f.select :unfunded_rate_type, options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, pricing_setup.unfunded_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
+              .col-sm-7= f.select :unfunded_rate_type, options_for_select(Service::RATE_TYPES.invert, pricing_setup.unfunded_rate_type), {prompt: "--Please Select--"}, disabled: pricing_setup_disabled, class: 'form-control select-type selectpicker'
 
             .form-group
               .col-sm-7.col-sm-offset-4.small

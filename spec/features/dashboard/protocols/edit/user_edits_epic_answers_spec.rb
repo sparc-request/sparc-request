@@ -40,8 +40,10 @@ RSpec.describe 'User edits epic answers', js: true do
                               service_request: service_request,
                               status: 'draft')
                       create(:super_user, identity: jug2,
-                              organization: organization)
-    allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
+                              organization: organization,
+                              access_empty_protocols: true)
+    
+    allow(Protocol).to receive(:rmid_status).and_return(true)
   end
 
   context 'use epic = true' do
@@ -59,10 +61,11 @@ RSpec.describe 'User edits epic answers', js: true do
       edit_study_type_answers_selected_for_epic_true_cofc_true_and_see_note
 
       click_button 'Save'
-      wait_for_javascript_to_finish
+      wait_for_page(dashboard_protocol_path(@protocol))
 
       ### GO BACK INTO EDIT ###
       find('.edit-protocol-information-button').click
+      wait_for_page(edit_dashboard_protocol_path(@protocol))
 
       ### SEE THAT CORRECT ANSWERS ARE DISPLAYED WITH CORRECT NOTE ###
       and_sees_correct_answers_for_selected_for_epic_true_and_cofc_true
@@ -83,31 +86,37 @@ RSpec.describe 'User edits epic answers', js: true do
       expect(page).to have_selector('#study_type_note', text: 'Note: Full Epic Functionality: no notification, no pink header, no MyChart access.')
 
       click_button 'Save'
-      wait_for_javascript_to_finish
+      wait_for_page(dashboard_protocol_path(@protocol))
 
       ### EDIT AGAIN TO SEE CORRRECT ANSWERS AND NOTE DISPLAYED ###
       find('.edit-protocol-information-button').click
+      wait_for_page(edit_dashboard_protocol_path(@protocol))
 
+      expect(page).to have_selector('#study_type_answer_certificate_of_conf')
       within '#study_type_answer_certificate_of_conf' do
         expect(page).to have_css('div.col-lg-4', text: 'No')
         expect(page).to have_css('a.edit-answers')
       end
 
+      expect(page).to have_selector('#study_type_answer_higher_level_of_privacy')
       within '#study_type_answer_higher_level_of_privacy' do
         expect(page).to have_css('div.col-lg-4', text: 'No')
         expect(page).to have_css('a.edit-answers')
       end
 
+      expect(page).to have_selector('#study_type_answer_epic_inbasket')
       within '#study_type_answer_epic_inbasket' do
         expect(page).to have_css('div.col-lg-4', text: 'No')
         expect(page).to have_css('a.edit-answers')
       end
 
+      expect(page).to have_selector('#study_type_answer_research_active')
       within '#study_type_answer_research_active' do
         expect(page).to have_css('div.col-lg-4', text: 'No')
         expect(page).to have_css('a.edit-answers')
       end
 
+      expect(page).to have_selector('#study_type_answer_restrict_sending')
       within '#study_type_answer_restrict_sending' do
         expect(page).to have_css('div.col-lg-4', text: 'No')
         expect(page).to have_css('a.edit-answers')
@@ -127,10 +136,11 @@ RSpec.describe 'User edits epic answers', js: true do
       edit_study_type_answers_selected_for_epic_false_cofc_true_and_see_no_note(true)
 
       click_button 'Save'
-      wait_for_javascript_to_finish
+      wait_for_page(dashboard_protocol_path(@protocol))
 
       ### GO BACK INTO EDIT ###
       find('.edit-protocol-information-button').click
+      wait_for_page(edit_dashboard_protocol_path(@protocol))
 
       ### SEE THAT CORRECT ANSWERS ARE DISPLAYED ###
       and_sees_the_correct_answer_and_no_note_displayed(true)
@@ -139,10 +149,11 @@ RSpec.describe 'User edits epic answers', js: true do
       edit_study_type_answers_all_answers_no_and_no_note(true)
 
       click_button 'Save'
-      wait_for_javascript_to_finish
+      wait_for_page(dashboard_protocol_path(@protocol))
 
       ### EDIT AGAIN TO SEE CORRRECT ANSWERS ARE DISPLAYED ###
       find('.edit-protocol-information-button').click
+      wait_for_page(edit_dashboard_protocol_path(@protocol))
 
       and_sees_the_correct_answers_and_no_note(true)
     end
@@ -177,10 +188,11 @@ RSpec.describe 'User edits epic answers', js: true do
         edit_study_type_answers_selected_for_epic_true_cofc_true_and_see_note
 
         click_button 'Save'
-        wait_for_javascript_to_finish
+        wait_for_page(dashboard_protocol_path(@protocol))
 
         ### SEE THAT CORRECT ANSWER IS DISPLAYING ###
         find('.edit-protocol-information-button').click
+        wait_for_page(edit_dashboard_protocol_path(@protocol))
 
         and_sees_correct_answers_for_selected_for_epic_true_and_cofc_true
       end
@@ -188,6 +200,7 @@ RSpec.describe 'User edits epic answers', js: true do
   end
 
   context 'use epic = false' do
+    stub_config('use_epic', false)
     scenario 'Study, selected for epic: false, question group 3' do
       @protocol.update_attribute(:selected_for_epic, false)
       @protocol.update_attribute(:study_type_question_group_id, 3)
@@ -197,8 +210,9 @@ RSpec.describe 'User edits epic answers', js: true do
       edit_study_type_answers_selected_for_epic_false_cofc_true_and_see_no_note(false)
       
       click_button 'Save'
-      wait_for_javascript_to_finish
+      wait_for_page(dashboard_protocol_path(@protocol))
       find('.edit-protocol-information-button').click
+      wait_for_page(edit_dashboard_protocol_path(@protocol))
 
       and_sees_the_correct_answer_and_no_note_displayed(false)
       ### SEE APPROPRIATE STUDY TYPE NOTE ###
@@ -207,8 +221,9 @@ RSpec.describe 'User edits epic answers', js: true do
       edit_study_type_answers_all_answers_no_and_no_note(false)
 
       click_button 'Save'
-      wait_for_javascript_to_finish
+      wait_for_page(dashboard_protocol_path(@protocol))
       find('.edit-protocol-information-button').click
+      wait_for_page(edit_dashboard_protocol_path(@protocol))
 
       and_sees_the_correct_answers_and_no_note(false)
     end
@@ -222,8 +237,9 @@ RSpec.describe 'User edits epic answers', js: true do
       edit_study_type_answers_selected_for_epic_false_cofc_true_and_see_no_note(false)
 
       click_button 'Save'
-      wait_for_javascript_to_finish
+      wait_for_page(dashboard_protocol_path(@protocol))
       find('.edit-protocol-information-button').click
+      wait_for_page(edit_dashboard_protocol_path(@protocol))
 
       and_sees_the_correct_answer_and_no_note_displayed(false)
 
@@ -233,8 +249,9 @@ RSpec.describe 'User edits epic answers', js: true do
       edit_study_type_answers_all_answers_no_and_no_note(false)
       
       click_button 'Save'
-      wait_for_javascript_to_finish
+      wait_for_page(dashboard_protocol_path(@protocol))
       find('.edit-protocol-information-button').click
+      wait_for_page(edit_dashboard_protocol_path(@protocol))
 
 
       and_sees_the_correct_answers_and_no_note(false)
@@ -254,8 +271,9 @@ RSpec.describe 'User edits epic answers', js: true do
         edit_study_type_answers_selected_for_epic_false_cofc_true_and_see_no_note(false)
 
         click_button 'Save'
-        wait_for_javascript_to_finish
+        wait_for_page(dashboard_protocol_path(@protocol))
         find('.edit-protocol-information-button').click
+        wait_for_page(edit_dashboard_protocol_path(@protocol))
 
         and_sees_the_correct_answer_and_no_note_displayed(false)
 
@@ -264,8 +282,9 @@ RSpec.describe 'User edits epic answers', js: true do
         edit_study_type_answers_all_answers_no_and_no_note(false)
 
         click_button 'Save'
-        wait_for_javascript_to_finish
+        wait_for_page(dashboard_protocol_path(@protocol))
         find('.edit-protocol-information-button').click
+        wait_for_page(edit_dashboard_protocol_path(@protocol))
 
         and_sees_the_correct_answers_and_no_note(false)
       end
@@ -287,13 +306,17 @@ RSpec.describe 'User edits epic answers', js: true do
         expect(page).not_to have_selector('#study_type_note')
 
         click_button 'Save'
-        wait_for_javascript_to_finish
+        wait_for_page(dashboard_protocol_path(@protocol))
         find('.edit-protocol-information-button').click
+        wait_for_page(edit_dashboard_protocol_path(@protocol))
+
+        expect(page).to have_selector('#study_type_answer_certificate_of_conf_no_epic')
         within '#study_type_answer_certificate_of_conf_no_epic' do
           expect(page).to have_css('div.col-lg-4', text: 'No')
           expect(page).to have_css('a.edit-answers')
         end
 
+        expect(page).to have_selector('#study_type_answer_higher_level_of_privacy_no_epic')
         within '#study_type_answer_higher_level_of_privacy_no_epic' do
           expect(page).to have_css('div.col-lg-4', text: '')
           expect(page).to have_css('a.edit-answers')
@@ -306,36 +329,42 @@ RSpec.describe 'User edits epic answers', js: true do
   end
 
   def version_2_study_type_questions_and_answers_are_displayed
+    expect(page).to have_selector('#study_type_answer_certificate_of_conf')
     within '#study_type_answer_certificate_of_conf' do
       expect(page).to have_text(stq_certificate_of_conf_version_2.question)
       expect(page).to have_css('div.col-lg-4', text: 'No')
       expect(page).to have_css('a.edit-answers')
     end
 
+    expect(page).to have_selector('#study_type_answer_higher_level_of_privacy')
     within '#study_type_answer_higher_level_of_privacy' do
       expect(page).to have_text(stq_higher_level_of_privacy_version_2.question)
       expect(page).to have_css('div.col-lg-4', text: 'Yes')
       expect(page).to have_css('a.edit-answers')
     end
 
+    expect(page).to have_selector('#study_type_answer_access_study_info')
      within '#study_type_answer_access_study_info' do
       expect(page).to have_text(stq_access_study_info_version_2.question)
       expect(page).to have_css('div.col-lg-4', text: 'No')
       expect(page).to have_css('a.edit-answers')
     end
 
+    expect(page).to have_selector('#study_type_answer_epic_inbasket')
     within '#study_type_answer_epic_inbasket' do
       expect(page).to have_text(stq_epic_inbasket_version_2.question)
       expect(page).to have_css('div.col-lg-4', text: 'No')
       expect(page).to have_css('a.edit-answers')
     end
 
+    expect(page).to have_selector('#study_type_answer_research_active')
     within '#study_type_answer_research_active' do
       expect(page).to have_text(stq_research_active_version_2.question)
       expect(page).to have_css('div.col-lg-4', text: 'Yes')
       expect(page).to have_css('a.edit-answers')
     end
 
+    expect(page).to have_selector('#study_type_answer_restrict_sending')
     within '#study_type_answer_restrict_sending' do
       expect(page).to have_text(stq_restrict_sending_version_2.question)
       expect(page).to have_css('div.col-lg-4', text: 'Yes')
@@ -354,6 +383,7 @@ RSpec.describe 'User edits epic answers', js: true do
   end
 
   def and_sees_correct_answers_for_selected_for_epic_true_and_cofc_true
+    expect(page).to have_selector('#study_type_answer_certificate_of_conf')
     within '#study_type_answer_certificate_of_conf' do
       expect(page).to have_css('div.col-lg-4', text: 'Yes')
       expect(page).to have_css('a.edit-answers')
@@ -402,6 +432,7 @@ RSpec.describe 'User edits epic answers', js: true do
   end
 
   def and_sees_the_correct_answer_and_no_note_displayed(use_epic)
+    expect(page).to have_selector('#study_type_answer_certificate_of_conf_no_epic')
     within '#study_type_answer_certificate_of_conf_no_epic' do
       expect(page).to have_css('div.col-lg-4', text: 'Yes')
       expect(page).to have_css('a.edit-answers')
@@ -417,11 +448,13 @@ RSpec.describe 'User edits epic answers', js: true do
   end
 
   def and_sees_the_correct_answers_and_no_note(use_epic)
+    expect(page).to have_selector('#study_type_answer_certificate_of_conf_no_epic')
     within '#study_type_answer_certificate_of_conf_no_epic' do
       expect(page).to have_css('div.col-lg-4', text: 'No')
       expect(page).to have_css('a.edit-answers')
     end
 
+    expect(page).to have_selector('#study_type_answer_higher_level_of_privacy_no_epic')
     within '#study_type_answer_higher_level_of_privacy_no_epic' do
       expect(page).to have_css('div.col-lg-4', text: 'No')
       expect(page).to have_css('a.edit-answers')

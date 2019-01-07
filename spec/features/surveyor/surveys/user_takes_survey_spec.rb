@@ -298,15 +298,17 @@ RSpec.describe 'User takes a survey', js: true do
     scenario 'and sees correctly saved value' do
       @q_date = create(:question, section: @section, question_type: 'date', content: 'Date Question')
 
-      visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
-      wait_for_javascript_to_finish
+      Timecop.freeze do
+        visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
+        wait_for_javascript_to_finish
 
-      first('input').click
+        first('input').click
 
-      click_button 'Submit'
-      wait_for_javascript_to_finish
+        click_button 'Submit'
+        wait_for_javascript_to_finish
 
-      expect(QuestionResponse.find_by(question_id: @q_date.id).content).to eq(Date.today.strftime("%m/%d/%Y"))
+        expect(QuestionResponse.find_by(question_id: @q_date.id).content).to eq(Date.today.strftime("%m/%d/%Y"))
+      end
     end
   end
 
@@ -441,9 +443,8 @@ RSpec.describe 'User takes a survey', js: true do
 
     scenario 'and sees correctly saved value' do
       @q_time = create(:question, section: @section, question_type: 'time', content: 'Time Question')
-      time = Time.now
-      
-      Timecop.freeze(time) do
+
+      Timecop.freeze do
         visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
         wait_for_javascript_to_finish
 
@@ -452,7 +453,7 @@ RSpec.describe 'User takes a survey', js: true do
         click_button 'Submit'
         wait_for_javascript_to_finish
         
-        expect(Time.parse(QuestionResponse.find_by(question_id: @q_time.id).content).strftime("%I:%M %p")).to eq(time.strftime("%I:%M %p"))
+        expect(Time.parse(QuestionResponse.find_by(question_id: @q_time.id).content).strftime("%I:%M %p")).to eq(Time.now.strftime("%I:%M %p"))
       end
     end
   end
@@ -563,9 +564,11 @@ RSpec.describe 'User takes a survey', js: true do
       wait_for_javascript_to_finish
 
       click_button 'Submit'
-      wait_for_javascript_to_finish
 
-      expect(current_path).to eq(surveyor_response_complete_path(Response.last))
+      complete_page = surveyor_response_complete_path(Response.last)
+      wait_for_page(complete_page)
+
+      expect(current_path).to eq(complete_page)
     end
   end
 end

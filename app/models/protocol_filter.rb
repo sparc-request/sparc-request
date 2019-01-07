@@ -49,7 +49,7 @@ class ProtocolFilter < ApplicationRecord
   end
 
   def self.search_filters
-    if Setting.find_by_key("research_master_enabled").value
+    if Setting.get_value("research_master_enabled")
         ['Authorized User', 'HR#', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title']
     else
         ['Authorized User', 'HR#', 'PI', 'Protocol ID', 'PRO#', 'Short/Long Title']

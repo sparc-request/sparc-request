@@ -28,13 +28,18 @@
 .row.form_row{ id: "user-rights-row-#{user.id}", data: { identity_id: user.id } }
   %div{class: "#{(organization.type == "Institution" or !organization.process_ssrs) ? 'col-sm-6' : 'col-sm-3'}"}
     = "#{user.full_name}, #{user.email}"
-  .col-sm-2.text-center
+  .col-sm-3.text-center
     - if su_disabled
       = check_box_tag :super_user, true, !su.nil?, { class: "super-user-checkbox", disabled: true, title: t(:catalog_manager)[:organization_form][:user_rights][:duplicate_super_user], data: { identity_id: user.id, organization_id: organization.id, toggle: 'tooltip', placement: 'top'} }
     -else
       = check_box_tag :super_user, true, !su.nil?, { class: "super-user-checkbox", data: { identity_id: user.id, organization_id: organization.id } }
 
-  .col-sm-3.text-center
+    - if !su.nil?
+      .form_row
+      = label_tag :access_empty_protocols, t(:catalog_manager)[:organization_form][:user_rights][:access_empty_protocols], class: 'non_bold_label'
+      = check_box_tag :access_empty_protocols, true, su.try(:access_empty_protocols), { id: "su-access-empty-protocols-#{user.id}", class: "su-access-empty-protocols", data: { identity_id: user.id, organization_id: organization.id } }
+
+  .col-sm-2.text-center
     - if cm_disabled
       = check_box_tag :catalog_manager, true, !cm.nil?, { class: "catalog-manager-checkbox", disabled: true, title: t(:catalog_manager)[:organization_form][:user_rights][:duplicate_catalog_manager], data: { identity_id: user.id, organization_id: organization.id, toggle: 'tooltip', placement: 'top'} }
     -else
@@ -49,7 +54,7 @@
       = check_box_tag :service_provider, true, !cp.nil?, { class: "service-provider-checkbox", data: { identity_id: user.id, organization_id: organization.id } }
       - if !cp.nil?
         .form_row
-        = label_tag :primary_contact, t(:catalog_manager)[:organization_form][:user_rights][:primary_contact], class: 'non_bold_label'
+        = label_tag :primary_contact, t(:catalog_manager)[:organization_form][:user_rights][:primary_contact], class: 'non_bold_label', title: t(:catalog_manager)[:organization_form][:user_rights][:tooltips][:primary_contact], data: { toggle: 'tooltip', placement: 'left', delay: '{"show":"500"}'}
         = check_box_tag :is_primary_contact, true, cp.try(:is_primary_contact), { id: "sp-is-primary-contact-#{user.id}", class: "sp-is-primary-contact", data: { identity_id: user.id, organization_id: organization.id } }
 
         = label_tag :hold_emails, t(:catalog_manager)[:organization_form][:user_rights][:hold_emails], class: 'non_bold_label'

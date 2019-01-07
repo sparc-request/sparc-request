@@ -25,30 +25,34 @@ class Protocol < ApplicationRecord
   include SanitizedData
   sanitize_setter :short_title, :special_characters, :squish
   sanitize_setter :title, :special_characters, :squish
+  sanitize_setter :brief_description, :special_characters, :squish
 
   audited
 
-  has_many :study_types,                  dependent: :destroy
+  belongs_to :study_type_question_group
   has_one :research_types_info,           dependent: :destroy
   has_one :human_subjects_info,           dependent: :destroy
   has_one :vertebrate_animals_info,       dependent: :destroy
   has_one :investigational_products_info, dependent: :destroy
   has_one :ip_patents_info,               dependent: :destroy
-  has_many :project_roles,                dependent: :destroy
   has_one :primary_pi_role,               -> { where(role: 'primary-pi') }, class_name: "ProjectRole", dependent: :destroy
-  has_many :identities,                   through: :project_roles
+  has_many :study_types,                  dependent: :destroy
+  has_many :project_roles,                dependent: :destroy
   has_many :service_requests,             dependent: :destroy
-  has_many :services,                     through: :service_requests
   has_many :sub_service_requests
-  has_many :line_items,                   through: :service_requests
-  has_many :organizations,                through: :sub_service_requests
   has_many :affiliations,                 dependent: :destroy
   has_many :impact_areas,                 dependent: :destroy
   has_many :arms,                         dependent: :destroy
   has_many :study_type_answers,           dependent: :destroy
   has_many :notes, as: :notable,          dependent: :destroy
-  has_many :study_type_questions,         through: :study_type_question_group
   has_many :documents,                    dependent: :destroy
+  has_and_belongs_to_many :study_phases
+
+  has_many :identities,                   through: :project_roles
+  has_many :services,                     through: :service_requests
+  has_many :line_items,                   through: :service_requests
+  has_many :organizations,                through: :sub_service_requests
+  has_many :study_type_questions,         through: :study_type_question_group
   has_many :responses,                    through: :sub_service_requests
 
   has_many :principal_investigators, -> { where(project_roles: { role: %w(pi primary-pi) }) },
@@ -60,8 +64,6 @@ class Protocol < ApplicationRecord
   has_many :coordinators, -> { where(project_roles: { role: 'research-assistant-coordinator' }) },
     source: :identity, through: :project_roles
 
-  has_and_belongs_to_many :study_phases
-  belongs_to :study_type_question_group
 
   validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
   validates :research_master_id, presence: true, if: :rmid_requires_validation?
@@ -98,9 +100,33 @@ class Protocol < ApplicationRecord
     validate :primary_pi_exists
   end
 
+  ##Removed for now, perhaps to be added later
+  # validation_group :guarantor_fields, if: :selected_for_epic do
+  #   validates :guarantor_contact,
+  #             :guarantor_phone,
+  #             :guarantor_address,
+  #             :guarantor_city,
+  #             :guarantor_state,
+  #             :guarantor_zip,
+  #             :guarantor_county,
+  #             :guarantor_country, presence: true
+  # end
+  # validates :guarantor_fax, numericality: {allow_blank: true, only_integer: true}
+  # validates :guarantor_fax, length: { maximum: 10 }
+  # validates :guarantor_address, length: { maximum: 500 }
+  # validates :guarantor_city, length: { maximum: 40 }
+  # validates :guarantor_state, length: { maximum: 2 }
+  # validates :guarantor_zip, length: { maximum: 9 }
+
+  validates :guarantor_phone, numericality: {allow_blank: true, only_integer: true}
+  validates_format_of :guarantor_email, with: (/\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/), allow_blank: true
+
+  validates :guarantor_contact, length: { maximum: 192 }
+  validates :guarantor_phone, length: { maximum: 10 }
+
   def rmid_requires_validation?
     # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]
-    self.bypass_rmid_validation ? false : Setting.find_by_key('research_master_enabled').value && has_human_subject_info?
+    self.bypass_rmid_validation ? false : Setting.get_value('research_master_enabled') && has_human_subject_info?
   end
 
   def has_human_subject_info?
@@ -108,10 +134,19 @@ class Protocol < ApplicationRecord
   end
 
   validate :existing_rm_id,
-    if: -> record { Setting.find_by_key("research_master_enabled").value && !record.research_master_id.nil? }
+    if: -> record { Setting.get_value("research_master_enabled") && !record.research_master_id.nil? }
 
   validate :unique_rm_id_to_protocol,
-    if: -> record { Setting.find_by_key("research_master_enabled").value && !record.research_master_id.nil? }
+    if: -> record { Setting.get_value("research_master_enabled") && !record.research_master_id.nil? }
+
+  def self.rmid_status
+    begin
+      HTTParty.get(Setting.get_value("research_master_api") + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{Setting.get_value("rmid_api_token")}\""})
+      return true
+    rescue
+      return false
+    end
+  end
 
   def self.to_csv(protocols)
     CSV.generate do |csv|
@@ -125,15 +160,16 @@ class Protocol < ApplicationRecord
   end
 
   def existing_rm_id
-    rm_ids = HTTParty.get(Setting.find_by_key("research_master_api").value + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{Setting.find_by_key("rmid_api_token").value}\""})
-    ids = rm_ids.map{ |rm_id| rm_id['id'] }
+    begin
+      rm_ids = HTTParty.get(Setting.get_value("research_master_api") + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{Setting.get_value("rmid_api_token")}\""})
+      ids = rm_ids.map{ |rm_id| rm_id['id'] }
 
-    if research_master_id.present? && !ids.include?(research_master_id)
-      errors.add(:_, 'The entered Research Master ID does not exist. Please go to the Research Master website to create a new record.')
-    end
-
+      if research_master_id.present? && !ids.include?(research_master_id)
+        errors.add(:_, 'The entered Research Master ID does not exist. Please go to the Research Master website to create a new record.')
+      end
     rescue
-      return "server_down"
+      return false
+    end
   end
 
   def unique_rm_id_to_protocol
@@ -163,30 +199,23 @@ class Protocol < ApplicationRecord
     # Searches protocols based on 'Authorized User', 'HR#', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title', OR 'Search All'
     # Protects against SQL Injection with ActiveRecord::Base::sanitize
     # inserts ! so that we can escape special characters
-    escaped_search_term = search_attrs[:search_text].to_s.gsub(/[!%_]/) { |x| '!' + x }
-
-    escaped_search_term = search_attrs[:search_text].to_s.gsub(/[!%_]/) { |x| '!' + x }
-
-    like_search_term = ActiveRecord::Base.connection.quote("%#{escaped_search_term}%")
-    exact_search_term = ActiveRecord::Base.connection.quote(search_attrs[:search_text])
+    escaped_search_term = search_attrs[:search_text].to_s.gsub(/[!%_]/) { |x| "\\#{x}" }
+    like_search_term    = "%#{escaped_search_term}%"
 
     ### SEARCH QUERIES ###
-    authorized_user_query  = "CONCAT(identities.first_name, ' ', identities.last_name) LIKE #{like_search_term} escape '!'"
-    hr_query               = "human_subjects_info.hr_number LIKE #{like_search_term} escape '!'"
-    pi_query               = "CONCAT(identities.first_name, ' ', identities.last_name) LIKE #{like_search_term} escape '!'"
-    protocol_id_query      = "protocols.id = #{exact_search_term}"
-    pro_num_query          = "human_subjects_info.pro_number LIKE #{like_search_term} escape '!'"
-    rmid_query             = "protocols.research_master_id = #{exact_search_term}"
-    title_query            = ["protocols.short_title LIKE #{like_search_term} escape '!'", "protocols.title LIKE #{like_search_term} escape '!'"]
+    identity_query    = Arel::Nodes::NamedFunction.new('concat', [Identity.arel_table[:first_name], Arel::Nodes.build_quoted(' '), Identity.arel_table[:last_name]]).matches(like_search_term).or(Identity.arel_table[:email].matches(like_search_term))
+    hr_query          = HumanSubjectsInfo.arel_table[:hr_number].matches(like_search_term)
+    protocol_id_query = Protocol.arel_table[:id].eq(search_attrs[:search_text])
+    pro_num_query     = HumanSubjectsInfo.arel_table[:pro_number].matches(like_search_term)
+    rmid_query        = Protocol.arel_table[:research_master_id].eq(search_attrs[:search_text])
+    title_query       = Protocol.arel_table[:short_title].matches(like_search_term).or(Protocol.arel_table[:title].matches(like_search_term))
     ### END SEARCH QUERIES ###
-    hr_pro_ids = HumanSubjectsInfo.where([hr_query, pro_num_query].join(' OR ')).pluck(:protocol_id)
-    hr_protocol_id_query = hr_pro_ids.empty? ? nil : "protocols.id in (#{hr_pro_ids.join(', ')})"
 
     case search_attrs[:search_drop]
     when "Authorized User"
       # To prevent overlap between the for_identity or for_admin scope, run the query unscoped
       # and combine with the old scope's values
-      unscoped  = self.unscoped.joins(:non_pi_authorized_users).joins(:identities).where(authorized_user_query)
+      unscoped  = self.unscoped.joins(:non_pi_authorized_users).where(identity_query)
       others    = self.current_scope
 
       where(id: others & unscoped).distinct
@@ -194,7 +223,7 @@ class Protocol < ApplicationRecord
       joins(:human_subjects_info).
         where(hr_query).distinct
     when "PI"
-      unscoped  = self.unscoped.joins(:principal_investigators).where(pi_query)
+      unscoped  = self.unscoped.joins(:principal_investigators).where(identity_query)
       others    = self.current_scope
 
       where(id: others & unscoped).distinct
@@ -206,11 +235,10 @@ class Protocol < ApplicationRecord
     when "RMID"
       where(rmid_query).distinct
     when "Short/Long Title"
-      where(title_query.join(' OR ')).distinct
+      where(title_query).distinct
     when ""
-      all_query = [authorized_user_query, pi_query, protocol_id_query, title_query, hr_protocol_id_query, rmid_query]
-      joins(:identities).
-        where(all_query.compact.join(' OR ')).
+      joins(:identities).left_outer_joins(:human_subjects_info).
+        where(identity_query.or(protocol_id_query).or(title_query).or(hr_query).or(pro_num_query).or(rmid_query)).
         distinct
     end
   }
@@ -250,7 +278,12 @@ class Protocol < ApplicationRecord
 
     empty_protocol_ids  = includes(:sub_service_requests).where(sub_service_requests: { id: nil }).ids
     protocol_ids        = ssrs.distinct.pluck(:protocol_id)
-    all_protocol_ids    = protocol_ids + empty_protocol_ids
+    if SuperUser.where(identity_id: identity_id).where(access_empty_protocols: true).exists?
+      all_protocol_ids    = protocol_ids + empty_protocol_ids
+    else
+      all_protocol_ids    = protocol_ids
+    end
+
     if service_provider_ssrs
       all_protocol_ids << service_provider_ssrs.distinct.pluck(:protocol_id)
       all_protocol_ids.flatten!
@@ -340,7 +373,7 @@ class Protocol < ApplicationRecord
   end
 
   def is_epic?
-    Setting.find_by_key("use_epic").value
+    Setting.get_value("use_epic")
   end
 
   def is_project?
@@ -363,7 +396,7 @@ class Protocol < ApplicationRecord
     # Alert authorized users of deleted authorized user
     # Send emails if send_authorized_user_emails is set to true and if there are any non-draft SSRs
     # For example:  if a SR has SSRs all with a status of 'draft', don't send emails
-    if Setting.find_by_key("send_authorized_user_emails").value && sub_service_requests.where.not(status: 'draft').any?
+    if Setting.get_value("send_authorized_user_emails") && sub_service_requests.where.not(status: 'draft').any?
       alert_users = emailed_associated_users << modified_role
       alert_users.flatten.uniq.each do |project_role|
         unless project_role.project_rights == 'none'
@@ -579,7 +612,7 @@ class Protocol < ApplicationRecord
   end
 
   def indirect_cost_total(service_request)
-    if Setting.find_by_key("use_indirect_cost").value
+    if Setting.get_value("use_indirect_cost")
       self.service_requests.
         where(id: service_request.id).
         or(service_requests.where.not(status: ['first_draft', 'draft'])).
@@ -595,7 +628,7 @@ class Protocol < ApplicationRecord
   end
 
   def industry_funded?
-    potential_funding_source == "industry" or funding_source == "industry"
+    self.funding_source_based_on_status == 'industry'
   end
 
   #############
@@ -612,7 +645,7 @@ class Protocol < ApplicationRecord
   private
 
   def indirect_cost_enabled
-    Setting.find_by_key('use_indirect_cost').value
+    Setting.get_value('use_indirect_cost')
   end
 
   def notify_remote_around_update?

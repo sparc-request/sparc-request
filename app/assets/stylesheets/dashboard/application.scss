@@ -21,6 +21,7 @@
 @import 'bootstrap-custom';
 
 // replaced require_tree .
+@import 'admin_edit';
 @import 'cover_letters';
 @import 'documents';
 @import 'epic_queues';
@@ -49,7 +50,6 @@
 @import 'bootstrap-datetimepicker';
 @import 'editable/bootstrap-editable';
 @import '960';
-@import 'jquery.toastmessage';
 @import '../layout';
 @import 'twitter_typeahead';
 @import 'associated_user_form';

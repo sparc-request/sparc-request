@@ -30,7 +30,7 @@
       .col-lg-10
         = form.text_field :udak_project_number, class: 'form-control'
 
-    - if Setting.find_by_key("use_indirect_cost").value
+    - if Setting.get_value("use_indirect_cost")
       .form-group.row
         = form.label :indirect_cost_rate, t(:protocols)[:studies][:financial_information][:rate], class: 'col-lg-2 control-label'
         .col-lg-10
@@ -50,3 +50,18 @@
       = form.label :funding_start_date, t(:protocols)[:studies][:financial_information][:start_date], class: 'col-lg-2 control-label'
       .col-lg-10
         = form.text_field :funding_start_date, class: 'datetimepicker form-control', value: (protocol.funding_start_date.strftime('%-m/%d/%Y') rescue nil)
+
+    .form-group.row
+      = form.label :guarantor_contact, t(:protocols)[:studies][:financial_information][:contact], class: 'col-lg-2 control-label'
+      .col-lg-10
+        = form.text_field :guarantor_contact, class: 'form-control'
+
+    .form-group.row
+      = form.label :guarantor_phone, t(:protocols)[:studies][:financial_information][:phone], class: 'col-lg-2 control-label'
+      .col-lg-10
+        = form.text_field :guarantor_phone, class: 'form-control'
+
+    .form-group.row
+      = form.label :guarantor_email, t(:protocols)[:studies][:financial_information][:email], class: 'col-lg-2 control-label'
+      .col-lg-10
+        = form.text_field :guarantor_email, class: 'form-control'

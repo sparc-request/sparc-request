@@ -45,13 +45,13 @@
     /***** END EMAIL TABLES *****
 
     /***** OTHER EMAIL TIDBITS *****
-    - if display_notes?(@status, @role, @notes)
-      %p= t(:notifier)[:notes_present]
+    - if @notes.any?
+      = render 'notes', notes: @notes, protocol: @protocol
     
     - if @status != 'ssr_destroyed'
       %p= t(:notifier)[:body6]
     
-    %p= t(:mailer)[:issue_contact]
+    %p= raw t('mailer.issue_contact', department_name: Setting.get_value('contact_us_department'), phone: Setting.get_value('contact_us_phone'), email: Setting.get_value('contact_us_mail_to'))
     
     - if @role != 'none'
       = render "acknowledgments"

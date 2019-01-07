@@ -20,11 +20,6 @@
 
 /* Color variables */
 $manila: #ecd08d
-$institution-service-blue: #0078AE
-$provider-green: #339933
-$program-orange: #ff9933
-$core-blue: #003366
-$result-highlight: #ffff99
 
 .no-margin-top
   margin-top: 0px
@@ -52,18 +47,6 @@ $result-highlight: #ffff99
   margin-right: 10px
   color: $manila
 
-.text-institution, .text-service
-  color: $institution-service-blue !important
-
-.text-provider
-  color: $provider-green !important
-
-.text-program
-  color: $program-orange !important
-
-.text-core
-  color: $core-blue !important
-
 #catalog, #org-form-container
   margin-top: 25px
 
@@ -71,11 +54,6 @@ $result-highlight: #ffff99
   font-style: italic
 
 /* Form Styling */
-.inline-glyphicon
-  font-size: 90%
-  padding-left: 2px
-  padding-right: 2px
-
 .form_row
   border-bottom: 1px solid #DDD
   padding-bottom: 10px
@@ -88,12 +66,11 @@ $result-highlight: #ffff99
 #new_pricing_map_link
   margin-bottom: 20px
 
+
 #pricing_setup_list,
 #pricing_map_list
-  h4.text-primary a
-    margin: 0 15px 0 10px
-    &:hover, &:focus
-      text-decoration: none
+  [data-toggle=collapse]
+    margin: 20px 0
 
 #pricing_setup_modal,
 #pricing_map_modal

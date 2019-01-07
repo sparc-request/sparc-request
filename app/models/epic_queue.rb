@@ -24,6 +24,54 @@ class EpicQueue < ApplicationRecord
   belongs_to :protocol
   belongs_to :identity
 
+  scope :search, -> (term) {
+    return if term.blank?
+
+    records = includes(:protocol).where(
+      Protocol.arel_table[:type].matches("%#{term}%")
+    ).or(
+      includes(:protocol).where(Protocol.arel_table[:id].matches(term))
+    ).or(
+      includes(:protocol).where(Protocol.arel_table[:short_title].matches("%#{term}%"))
+    ).or(
+      includes(:protocol).where(Protocol.arel_table[:last_epic_push_status].matches("%#{term}%"))
+    )
+
+    identity_records = includes(:identity).where(
+      Identity.arel_table[:first_name].matches("%#{term}%")
+    ).or(
+      includes(:identity).where(Identity.arel_table[:last_name].matches("%#{term}%"))
+    )
+
+    pi_records = unscoped.joins(protocol: :principal_investigators).where(
+      Identity.arel_table[:first_name].matches("%#{term}%")
+    ).or(
+      unscoped.joins(protocol: :principal_investigators).where(Identity.arel_table[:last_name].matches("%#{term}%"))
+    )
+
+    where(id: records + identity_records + pi_records).distinct
+  }
+
+  scope :ordered, -> (sort, order) {
+    if sort
+      case sort
+      when 'protocol'
+        eager_load(:protocol).order(Arel.sql("protocols.id #{order}"))
+      when 'pis'
+        joins(protocol: :principal_investigators).order(Arel.sql("identities.first_name #{order}, identities.last_name #{order}"))
+      when 'date'
+        eager_load(:protocol).order(Arel.sql("protocol.last_epic_push_time #{order}"))
+      when 'status'
+        eager_load(:protocol).order(Arel.sql("protocol.last_epic_push_status #{order}"))
+      when 'created_at'
+        order(Arel.sql("epic_queues.created_at #{order}"))
+      when 'name'
+        eager_load(:identity).order(Arel.sql("identities.first_name #{order}, identities.last_name #{order}"))
+      end
+    else
+      order(created_at: :desc)
+    end
+  }
 
   #This callback and the method below is probably incorrect. Any insight as to
   #why we would do this?

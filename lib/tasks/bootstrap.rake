@@ -11,15 +11,15 @@ namespace :sparc do
 
     if Institution.count == 0
       puts "Creating institutions"
-      INSTITUTIONS.each do |abbr,name|
-	Institution.create({name: name, abbreviation: abbr, is_available: true})
-      end
+      Institution.create(name: 'MUHA', abbreviation: 'muha', is_available: true)
+      Institution.create(name: 'MUSCP', abbreviation: 'muscp', is_available: true)
+      Institution.create(name: 'MUSC', abbreviation: 'musc', is_available: true)
     end
 
     if ProfessionalOrganization.count == 0
       puts "Creating professional organizations"
       Institution.all.each do |inst|
-	ProfessionalOrganization.create(name: inst.name, org_type: 'institution')
+        ProfessionalOrganization.create(name: inst.name, org_type: 'institution')
       end
     end
 
@@ -43,7 +43,7 @@ namespace :sparc do
     if CatalogManager.count == 0 && admin
       puts "Creating catalog managers"
       Institution.all.each do |inst|
-	CatalogManager.create(organization_id: inst.id, identity_id: admin.id)
+        CatalogManager.create(organization_id: inst.id, identity_id: admin.id)
       end
     end
 
@@ -54,7 +54,7 @@ namespace :sparc do
 
     if Setting.count == 0
       puts "Populating settings table"
-      DefaultSettingsPopulator.new().populate
+      SettingsPopulator.new().populate
     end
   end
 

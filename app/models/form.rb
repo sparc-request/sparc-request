@@ -23,7 +23,7 @@ class Form < Survey
   # 2 Forms can't have the same access_code, surveyable_id, and surveyable_type and both be active
   validates_uniqueness_of :active, scope: [:type, :surveyable_id, :surveyable_type, :access_code], if: -> { self.active }
 
-  def self.for(identity)
+  scope :for, -> (identity) {
     orgs =
       if identity.is_site_admin?
         Organization.all
@@ -35,8 +35,37 @@ class Form < Survey
       
     services = Service.where(organization: orgs)
     
-    Form.where(surveyable: orgs).or(where(surveyable: services)).or(where(surveyable: identity))
-  end
+    where(surveyable: orgs).
+    or(where(surveyable: services)).
+    or(where(surveyable: identity))
+  }
+
+  scope :for_super_user, -> (identity) {
+    orgs      = Organization.authorized_for_super_user(identity.id)
+    services  = Service.where(organization: orgs)
+
+    where(surveyable: orgs).
+    or(where(surveyable: services)).
+    or(where(surveyable: identity))
+  }
+
+  scope :for_service_provider, -> (identity) {
+    orgs      = Organization.authorized_for_service_provider(identity.id)
+    services  = Service.where(organization: orgs)
+
+    where(surveyable: orgs).
+    or(where(surveyable: services)).
+    or(where(surveyable: identity))
+  }
+
+  scope :for_catalog_manager, -> (identity) {
+    orgs      = Organization.authorized_for_catalog_manager(identity.id)
+    services  = Service.where(organization: orgs)
+
+    where(surveyable: orgs).
+    or(where(surveyable: services)).
+    or(where(surveyable: identity))
+  }
 
   def self.yaml_klass
     Form.name

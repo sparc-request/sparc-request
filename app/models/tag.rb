@@ -21,6 +21,18 @@
 class Tag < ApplicationRecord
   audited
 
+  scope :for_services, -> {
+    where(name: ['epic'])
+  }
+
+  scope :for_organization, -> (organization) {
+    if organization.process_ssrs
+      where(name: ['ctrc', 'clinical work fulfillment'])
+    else
+      where(name: [])
+    end
+  }
+
   def self.to_hash
     tags = {}
     where.not(name: 'epic').each do |tag|

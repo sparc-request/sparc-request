@@ -26,7 +26,7 @@ RSpec.describe 'User manages submission emails', js: true do
 
   before :each do
     @institution        = create(:institution)
-    @provider           = create(:provider, parent_id: @institution.id, process_ssrs: true)
+    @provider           = create(:provider, :with_subsidy_map, parent_id: @institution.id, process_ssrs: true)
     create(:catalog_manager, organization_id: @institution.id, identity_id: Identity.where(ldap_uid: 'jug2').first.id)
     create(:submission_email, organization_id: @provider.id, email: 'test@musc.edu')
 
@@ -41,6 +41,7 @@ RSpec.describe 'User manages submission emails', js: true do
     wait_for_javascript_to_finish
 
     find('.remove-submission-email').click
+    accept_confirm
     wait_for_javascript_to_finish
   end
 

@@ -49,9 +49,9 @@ RSpec.describe 'protocol sorting', js: :true do
     page.first('.protocol-sort').click()
     wait_for_javascript_to_finish
 
-    expect(page.search_results.protocols.first.text.include?("1 A")).to eq(true) #B
-    expect(page.search_results.protocols.second.text.include?("2 B")).to eq(true) #A
-    expect(page.search_results.protocols.third.text.include?("3 C")).to eq(true) #C
+    expect(page.search_results.protocols.first.text.gsub(/[^A-Za-z0-9 ]/, '').include?("1 A")).to eq(true) #B
+    expect(page.search_results.protocols.second.text.gsub(/[^A-Za-z0-9 ]/, '').include?("2 B")).to eq(true) #A
+    expect(page.search_results.protocols.third.text.gsub(/[^A-Za-z0-9 ]/, '').include?("3 C")).to eq(true) #C
   end
 
   it 'should sort protocols by requests' do
@@ -70,9 +70,9 @@ RSpec.describe 'protocol sorting', js: :true do
 
     wait_for_javascript_to_finish
 
-    expect(page.search_results.protocols.first.text.include?("2 B")).to eq(true) #B
-    expect(page.search_results.protocols.second.text.include?("1 A")).to eq(true) #A
-    expect(page.search_results.protocols.third.text.include?("3 C")).to eq(true) #C
+    expect(page.search_results.protocols.first.text.gsub(/[^A-Za-z0-9 ]/, '').include?("2 B")).to eq(true) #B
+    expect(page.search_results.protocols.second.text.gsub(/[^A-Za-z0-9 ]/, '').include?("1 A")).to eq(true) #A
+    expect(page.search_results.protocols.third.text.gsub(/[^A-Za-z0-9 ]/, '').include?("3 C")).to eq(true) #C
   end
 
   it 'should have a visual cue' do

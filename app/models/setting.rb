@@ -31,33 +31,39 @@ class Setting < ApplicationRecord
   validate :value_matches_type, if: Proc.new{ !self.read_attribute(:value).nil? }
   validate :parent_value_matches_parent_data_type, if: Proc.new{ self.parent_key.present? }
 
-  # Needed to correctly write boolean true and false as value in specs
-  def value=(value)
-    if [TrueClass, FalseClass].include?(value.class)
-      value_will_change!
-      write_attribute(:value, value ? "true" : "false")
+  def self.preload_values
+    # Cache settings for the current request thread for the current request
+    RequestStore.store[:settings_map] ||= Setting.all.map{ |s| [s.key, { value: s.read_attribute(:value), data_type: s.data_type }] }.to_h
+  end
+
+  def self.get_value(key)
+    if RequestStore.store[:settings_map] && RequestStore.store[:settings_map][key]
+      converted_value(RequestStore.store[:settings_map][key][:value], RequestStore.store[:settings_map][key][:data_type])
     else
-      write_attribute(:value, value)
+      Setting.find_by_key(key).value rescue nil
+    end
+  end
+
+  def value=(val)
+    RequestStore.store[:settings_map][key][:value] = val.to_s if RequestStore.store[:settings_map] && RequestStore.store[:settings_map][key]
+    
+    # Needed to correctly write boolean true and false as value in specs
+    if [TrueClass, FalseClass].include?(val.class)
+      value_will_change!
+      write_attribute(:value, val ? "true" : "false")
+    elsif data_type == 'json' && val.is_a?(Hash)
+      write_attribute(:value, val.to_json)
+    else
+      write_attribute(:value, val)
     end
   end
 
   def value
-    case data_type
-    when 'boolean'
-      read_attribute(:value) == 'true'
-    when 'json'
-      begin
-        JSON.parse(read_attribute(:value).gsub("=>", ": "))
-      rescue
-        nil
-      end
-    else
-      read_attribute(:value)
-    end
+    Setting.converted_value(read_attribute(:value), self.data_type)
   end
 
   def parent
-    parent_key.blank? ? nil : Setting.find_by_key(parent_key)
+    Setting.find_by_key(parent_key) unless parent_key.blank?
   end
 
   def children
@@ -65,6 +71,21 @@ class Setting < ApplicationRecord
   end
 
   private
+
+  def self.converted_value(val, data_type)
+    case data_type
+    when 'boolean'
+      val == 'true'
+    when 'json'
+      begin
+        JSON.parse(val.gsub("=>", ": "))
+      rescue
+        nil
+      end
+    else
+      val
+    end
+  end
 
   def value_matches_type
     errors.add(:value, 'does not match the provided data type') unless

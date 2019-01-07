@@ -26,35 +26,35 @@ class Service < ApplicationRecord
   audited
   acts_as_taggable
 
-  RATE_TYPES = [{:display => "Service Rate", :value => "full"}, {:display => "Federal Rate", :value => "federal"},
-                {:display => "Corporate Rate", :value => "corporate"}, {:display => "Other Rate", :value => "other"},
-                {:display => "Member Rate", :value => "member"}]
+  RATE_TYPES = {
+    full: "Service Rate", federal: "Federal Rate", corporate: "Corporate Rate",
+    member: "Member Rate", other: "Other Rate"
+  }
 
   belongs_to :organization, -> { includes(:pricing_setups) }
   belongs_to :revenue_code_range
+
   # set ":inverse_of => :service" so that the first pricing map can be validated before the service has been saved
   has_many :pricing_maps, :inverse_of => :service, :dependent => :destroy
+  has_many :line_items, :dependent => :destroy
+  has_many :forms, -> { active }, as: :surveyable, dependent: :destroy# Surveys associated with this service
+  has_many :service_relations, :dependent => :destroy
+  has_many :depending_service_relations, :class_name => 'ServiceRelation', :foreign_key => 'related_service_id'# Services that depend on this service
+  has_many :associated_surveys, as: :associable, dependent: :destroy
+
   has_many :sub_service_requests, through: :line_items
   has_many :service_requests, through: :sub_service_requests
-  has_many :line_items, :dependent => :destroy
-  has_many :identities, :through => :service_providers
-  has_many :forms, -> { active }, as: :surveyable, dependent: :destroy
+
+  # Services that this service depends on
+  has_many :related_services, :through => :service_relations
+  has_many :required_services, -> { where("required = ? and is_available = ?", true, true) }, :through => :service_relations, :source => :related_service
+  has_many :optional_services, -> { where("required = ? and is_available = ?", false, true) }, :through => :service_relations, :source => :related_service
+
+  has_many :depending_services, :through => :depending_service_relations, :source => :service# Services that depend on this service
+
   ## commented out to remove tags, but will likely be added in later ##
   # has_many :taggings, through: :organization
   # has_many :tags, through: :taggings
-
-  # Services that this service depends on
-  has_many :service_relations, :dependent => :destroy
-  has_many :related_services, :through => :service_relations
-  has_many :required_services, -> { where("optional = ? and is_available = ?", false, true) }, :through => :service_relations, :source => :related_service
-  has_many :optional_services, -> { where("optional = ? and is_available = ?", true, true) }, :through => :service_relations, :source => :related_service
-
-  # Services that depend on this service
-  has_many :depending_service_relations, :class_name => 'ServiceRelation', :foreign_key => 'related_service_id'
-  has_many :depending_services, :through => :depending_service_relations, :source => :service
-
-  # Surveys associated with this service
-  has_many :associated_surveys, as: :associable, dependent: :destroy
 
   validates :abbreviation,
             :order,
@@ -63,8 +63,12 @@ class Service < ApplicationRecord
   validate  :one_time_fee_choice
   validates :order, numericality: { only_integer: true }, on: :update
 
+  default_scope -> {
+    order(:order, :name)
+  }
+
   # Services listed under the funding organizations
-  scope :funding_opportunities, -> { where(organization_id: Setting.find_by_key("funding_org_ids").value) }
+  scope :funding_opportunities, -> { where(organization_id: Setting.get_value("funding_org_ids")) }
 
   def humanized_status
     self.is_available ? I18n.t(:reporting)[:service_pricing][:available] : I18n.t(:reporting)[:service_pricing][:unavailable]
@@ -93,9 +97,9 @@ class Service < ApplicationRecord
     end
 
     if use_css
-      parent_orgs[0..root].map{ |o| "<span class='#{o.css_class}-text'>#{o.abbreviation}</span>"}.reverse.join('<span> / </span>') + (include_self ? '<span> / </span>' + "<span>#{self.abbreviation}</span>" : '')
+      parent_orgs[0..root].map{ |o| "<span class='#{o.css_class}-text'>#{o.abbreviation}</span>"}.join('<span> / </span>') + (include_self ? '<span> / </span>' + "<span>#{self.abbreviation}</span>" : '')
     else
-      parent_orgs[0..root].map(&:abbreviation).reverse.join(' > ') + (include_self ? ' > ' + self.abbreviation : '')
+      parent_orgs[0..root].map(&:abbreviation).join(' > ') + (include_self ? ' > ' + self.abbreviation : '')
     end
   end
 

@@ -21,6 +21,8 @@
 require 'rails_helper'
 
 RSpec.describe 'dashboard/sub_service_requests/show', type: :view do
+  let!(:organization)         { build_stubbed(:organization, name: 'MegaCorp', process_ssrs: true) }
+  
   before(:each) do
     @protocol = build_stubbed(:protocol_without_validations)
 
@@ -28,29 +30,87 @@ RSpec.describe 'dashboard/sub_service_requests/show', type: :view do
     assign(:service_request, @service_request)
 
     @sub_service_request = build_stubbed(:sub_service_request, service_request: @service_request)
-
-    organization = Organization.new(name: "MegaCorp")
     allow(@sub_service_request).to receive(:organization).and_return(organization)
     allow(@sub_service_request).to receive(:protocol).and_return(@protocol)
     assign(:sub_service_request, @sub_service_request)
 
     @logged_in_user = build_stubbed(:identity)
+
     allow(@logged_in_user).to receive(:unread_notification_count).
-      with(@sub_service_request.id).
-      and_return("12345")
+      with(@sub_service_request.id).and_return("12345")
     ActionView::Base.send(:define_method, :current_user) { @logged_in_user }
 
     assign(:user, @logged_in_user)
     assign(:admin, "ADMIN")
-
-    render
   end
 
-  it "should display user's unread notifications count" do
-    expect(response).to have_css("#notification_count", text: "12345")
+  describe 'navbar content' do
+    before :each do
+      render
+    end
+
+    it "should display user's unread notifications count" do
+      expect(response).to have_css("#notification_count", text: "12345")
+    end
   end
 
-  it "should render header" do
-    expect(response).to render_template(partial: "dashboard/sub_service_requests/_header", locals: { sub_service_request: @sub_service_request })
+  describe 'header content' do
+    before :each do
+      render
+    end
+
+    it "should render header" do
+      expect(response).to render_template(partial: "dashboard/sub_service_requests/_header", locals: { sub_service_request: @sub_service_request })
+    end
+  end
+
+  describe 'tabs content' do
+    describe 'Clinical Services tab' do
+      context 'Split/Notify Org has PPPV Services' do
+        before :each do
+          allow(organization).to receive(:has_per_patient_per_visit_services?).and_return(true)
+          render
+        end
+
+        it 'should show the tab' do
+          expect(response).to have_selector('.custom-tab', text: I18n.t(:dashboard)[:sub_service_requests][:tabs][:study_schedule][:header])
+        end
+      end
+
+      context 'Split/Notify Org has no PPPV Services' do
+        before :each do
+          allow(organization).to receive(:has_per_patient_per_visit_services?).and_return(false)
+          render
+        end
+
+        it 'should not show the tab' do
+          expect(response).to have_no_selector('.custom-tab', text: I18n.t(:dashboard)[:sub_service_requests][:tabs][:study_schedule][:header])
+        end
+      end
+    end
+
+    describe 'Non-Clinical Services tab' do
+      context 'Split/Notify Org has OTF Services' do
+        before :each do
+          allow(organization).to receive(:has_one_time_fee_services?).and_return(true)
+          render
+        end
+
+        it 'should show the tab' do
+          expect(response).to have_selector('.custom-tab', text: I18n.t(:dashboard)[:sub_service_requests][:tabs][:study_level_activities][:header])
+        end
+      end
+
+      context 'Split/Notify Org has no OTF Services' do
+        before :each do
+          allow(organization).to receive(:has_one_time_fee_services?).and_return(false)
+          render
+        end
+
+        it 'should not show the tab' do
+          expect(response).to have_no_selector('.custom-tab', text: I18n.t(:dashboard)[:sub_service_requests][:tabs][:study_level_activities][:header])
+        end
+      end
+    end
   end
 end

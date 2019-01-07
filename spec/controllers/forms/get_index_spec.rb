@@ -30,10 +30,6 @@ RSpec.describe FormsController, type: :controller do
       expect(before_filters.include?(:initialize_service_request)).to eq(true)
     end
 
-    it 'should call before_filter #authorize_identity' do
-      expect(before_filters.include?(:authorize_identity)).to eq(true)
-    end
-
     context "params[:complete] == 'false'" do
       it 'should assign @forms to the service request\'s associated forms' do
         org       = create(:provider)

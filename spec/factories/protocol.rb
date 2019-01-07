@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 FactoryBot.define do
-  factory :protocol, aliases: [:project] do
+  factory :protocol do
     next_ssr_id                  { Random.rand(10000) }
     short_title                  { Faker::Lorem.sentence(2) }
     title                        { Faker::Lorem.sentence(3) }
@@ -39,7 +39,7 @@ FactoryBot.define do
     start_date                   { '2015-10-15' }
     end_date                     { '2015-10-15' }
     selected_for_epic            false
-    
+
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }
     end
@@ -112,9 +112,6 @@ FactoryBot.define do
     end
 
     factory :protocol_without_validations,              traits: [:without_validations]
-    factory :project_without_validations,               traits: [:without_validations, :project]
-    factory :unarchived_project_without_validations,    traits: [:without_validations, :project, :unarchived]
-    factory :archived_project_without_validations,      traits: [:without_validations, :project, :archived]
     factory :protocol_federally_funded,                 traits: [:funded, :federal]
     factory :protocol_with_sub_service_request_in_cwf,  traits: [:with_sub_service_request_in_cwf, :funded, :federal]
   end

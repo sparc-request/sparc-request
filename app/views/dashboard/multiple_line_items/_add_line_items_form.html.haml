@@ -37,7 +37,7 @@
             .form-group
               = label_tag "add_service_id", t(:dashboard)[:multiple_line_items][:service], class: "col-sm-4 control-label"
               .col-sm-7
-                = select_tag "add_service_id", options_from_collection_for_select(services, 'id' , 'name'), class: "form-control selectpicker"
+                = select_tag "add_service_id", options_from_collection_for_select(services, 'id' , 'display_service_name'), class: "form-control selectpicker"
             -#.form-group
             -#  - label_tag "arm_id", options_from_collection_for_select(arms, "id", "name")
       .modal-footer

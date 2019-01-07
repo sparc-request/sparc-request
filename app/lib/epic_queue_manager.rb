@@ -27,7 +27,7 @@ class EpicQueueManager
   end
 
   def create_epic_queue
-    if Setting.find_by_key("use_epic").value && withheld_from_epic?(@protocol)
+    if Setting.get_value("use_epic") && withheld_from_epic?(@protocol)
       unless withheld_epic_queue?(@protocol)
         EpicQueue.create(
           protocol_id: @protocol.id,

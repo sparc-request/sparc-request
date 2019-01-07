@@ -75,11 +75,11 @@
           %label.radio-inline.btn.btn-default
             = radio_button_tag 'all_services_availability', 'true', false, class: 'hidden'
             = 'Enable All'
-  - unless organization.type == 'Institution'
+  - unless organization.type == 'Institution' || (tags = Tag.for_organization(organization)).empty?
     .form-group
       = f.label :tag_list, t(:catalog_manager)[:organization_form][:tag_list], class: 'col-sm-3 control-label'
       .col-sm-9
-        = f.select :tag_list, options_from_collection_for_select(Tag.where.not(name: 'epic'), :name, :humanized_name, organization.tags.pluck(:name)), {}, class: 'form-control selectpicker', multiple: true, data: { none_selected_text: t(:constants)[:prompts][:none] }
+        = f.select :tag_list, options_from_collection_for_select(tags, :name, :humanized_name, organization.tags.pluck(:name)), {}, class: 'form-control selectpicker', multiple: true, data: { none_selected_text: t(:constants)[:prompts][:none] }
 
   %hr
   .pull-right

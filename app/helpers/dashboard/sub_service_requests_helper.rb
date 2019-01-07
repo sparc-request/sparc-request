@@ -73,8 +73,16 @@ module Dashboard::SubServiceRequestsHelper
     if sub_service_request.ready_for_fulfillment?
       if sub_service_request.in_work_fulfillment?
         if user.go_to_cwf_rights?(sub_service_request.organization)
-          # In fulfillment, and user has rights to view in Fulfillment
-          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:go_to_fulfillment], "#{Setting.find_by_key("clinical_work_fulfillment_url").value}/sub_service_request/#{sub_service_request.id}", target: "_blank", class: "btn btn-primary btn-md"
+          if sub_service_request.imported_to_fulfillment?
+            # In fulfillment, and user has rights to view in Fulfillment
+            display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:go_to_fulfillment], "#{Setting.get_value("clinical_work_fulfillment_url")}/sub_service_request/#{sub_service_request.id}", target: "_blank", class: "btn btn-primary btn-md fulfillment_status"
+          else
+            # Pending button displayed until ssr is imported to fulfillment
+            display += content_tag(:button, data: { imported_to_fulfillment: sub_service_request.imported_to_fulfillment? }, class: "btn btn-primary btn-md form-control fulfillment_status", disabled: true) do
+              content = content_tag(:span, "Pending")
+              content.concat image_tag 'spinner.gif', id: 'pending_fulfillment_status', class: 'pull-right'
+            end
+          end
         else
           # In fulfillment, but user has no rights to view in Fulfillment
           display += button_tag t(:dashboard)[:sub_service_requests][:header][:fulfillment][:in_fulfillment], class: "btn btn-primary btn-md form-control", disabled: true
@@ -213,8 +221,8 @@ module Dashboard::SubServiceRequestsHelper
   def display_ssr_submissions(ssr)
     forms                     = ssr.forms_to_complete
     form_list                 = {}
-    form_list[:Organization]  = [] if forms.detect{ |f| f.surveyable_type == 'Organization' }
-    form_list[:Service]       = [] if forms.detect{ |f| f.surveyable_type == 'Service' }
+    form_list[:Organization]  = [] if forms.any?{ |f| f.surveyable_type == 'Organization' }
+    form_list[:Service]       = [] if forms.any?{ |f| f.surveyable_type == 'Service' }
 
     forms.each do |f|
       form_list[f.surveyable_type.to_sym] << [f.surveyable.name, f.surveyable.name, data: { type: 'Form', survey_id: f.id, respondable_id: ssr.id, respondable_type: 'SubServiceRequest' }]
@@ -286,7 +294,7 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def in_finished_status?(status)
-    Setting.find_by_key("finished_statuses").value.include?(status.last)
+    Setting.get_value("finished_statuses").include?(status.last)
   end
 
   def sorted_by_permissible_values(statuses)

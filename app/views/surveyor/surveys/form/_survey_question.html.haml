@@ -36,19 +36,20 @@
     .col-sm-1
       = check_box_tag "question-#{question.id}-required", question.required, question.required, disabled: question.survey.has_responses?
     = label_tag "question-#{question.id}-is_dependent", t(:surveyor)[:surveys][:form][:content][:question][:dependent][:label], class: 'col-sm-2 control-label no-padding-x text-right'
-    .col-sm-3
-      = check_box_tag "question-#{question.id}-is_dependent", question.is_dependent, question.is_dependent, class: 'is-dependent', disabled: question.previous_questions.empty?
-    .dependent-dropdown-container{ class: question.is_dependent ? '' : 'hidden' }
-      = label_tag "question-#{question.id}-depender_id", t(:surveyor)[:surveys][:form][:content][:question][:dependent][:dropdown][:label], class: 'col-sm-2 control-label no-padding-x'
-      .col-sm-4.no-padding
-        .col-sm-4
-          = render 'surveyor/surveys/form/dependent_dropdown', survey: survey, question: question
-    .col-sm-3{ style: 'color:red;' }
-      - if question.question_responses.any?
-        = t(:surveyor)[:surveys][:form][:content][:question][:warning]
+    .col-sm-1
+      = check_box_tag "question-#{question.id}-is_dependent", question.is_dependent, question.is_dependent, class: 'is-dependent', disabled: question.previous_questions.empty? || question.survey.has_responses?
+    .dependent-dropdown-container.col-sm-6{ class: question.is_dependent ? '' : 'hidden' }
+      = label_tag "question-#{question.id}-depender_id", t(:surveyor)[:surveys][:form][:content][:question][:dependent][:dropdown][:label], class: 'col-sm-4 control-label no-padding-x'
+      .col-sm-8
+        = render 'surveyor/surveys/form/dependent_dropdown', survey: survey, question: question
     .col-sm-1.no-padding.pull-right
       %button.btn.btn-sm.btn-danger.pull-right.delete-question{ title: t(:surveyor)[:surveys][:form][:content][:question][:delete], data: { toggle: 'tooltip', animation: 'false' } }
         %span.glyphicon.glyphicon-trash
+  - if question.question_responses.any?
+    .form-group
+      .col-sm-12.no-padding
+        %span.text-danger
+          = t(:surveyor)[:surveys][:form][:content][:question][:warning]
 
   .question-options{ data: { question_id: question.id } }
     = render "surveyor/surveys/form/form_partials/#{question.question_type}_example", question: question

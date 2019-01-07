@@ -46,11 +46,16 @@ $ ->
   $(document).on 'change', '.super-user-checkbox', ->
     identity_id = $(this).data('identity-id')
     organization_id = $(this).data('organization-id')
+    checked = $(this).prop('checked')
 
     $.ajax
       type: if $(this).prop('checked') then 'POST' else 'DELETE'
       url: "/catalog_manager/super_user?super_user[identity_id]=#{identity_id}&super_user[organization_id]=#{organization_id}"
 
+      success: ->
+        $("#su-access-empty-protocols-#{identity_id}").prop('disabled', !checked)
+        if !checked
+          $("#su-access-empty-protocols-#{identity_id}").prop('checked', false)
 
   $(document).on 'change', '.catalog-manager-checkbox', ->
     identity_id = $(this).data('identity-id')
@@ -75,12 +80,14 @@ $ ->
       type: if checked then 'POST' else 'DELETE'
       url: "/catalog_manager/service_provider?service_provider[identity_id]=#{identity_id}&service_provider[organization_id]=#{organization_id}"
 
-      success: ->
-        $("#sp-is-primary-contact-#{identity_id}").prop('disabled', !checked)
-        $("#sp-hold-emails-#{identity_id}").prop('disabled', !checked)
-        if !checked
-          $("#sp-is-primary-contact-#{identity_id}").prop('checked', false)
-          $("#sp-hold-emails-#{identity_id}").prop('checked', false)
+  $(document).on 'change', '.su-access-empty-protocols', ->
+    identity_id = $(this).data('identity-id')
+    organization_id = $(this).data('organization-id')
+    access_empty_protocols = $(this).prop('checked')
+
+    $.ajax
+      type: 'PUT'
+      url: "/catalog_manager/super_user?super_user[identity_id]=#{identity_id}&super_user[organization_id]=#{organization_id}&super_user[access_empty_protocols]=#{access_empty_protocols}"
 
   $(document).on 'change', '.cm-edit-historic-data', ->
     identity_id = $(this).data('identity-id')
@@ -91,8 +98,9 @@ $ ->
       type: 'PUT'
       url: "/catalog_manager/catalog_manager?catalog_manager[identity_id]=#{identity_id}&catalog_manager[organization_id]=#{organization_id}&catalog_manager[edit_historic_data]=#{edit_historic_data}"
 
-
   $(document).on 'change', '.sp-is-primary-contact', ->
+    togglePrimaryContactChecks()
+
     identity_id = $(this).data('identity-id')
     organization_id = $(this).data('organization-id')
     is_primary_contact = $(this).prop('checked')
@@ -168,6 +176,13 @@ $ ->
     $.ajax
       type: if $(this).prop('checked') then 'POST' else 'DELETE'
       url: "/catalog_manager/clinical_provider?clinical_provider[identity_id]=#{identity_id}&clinical_provider[organization_id]=#{organization_id}"
+
+  $(document).on 'change', '.patient-registrar-checkbox', ->
+    identity_id = $(this).data('identity-id')
+    organization_id = $(this).data('organization-id')
+    $.ajax
+      type: if $(this).prop('checked') then 'POST' else 'DELETE'
+      url: "/catalog_manager/patient_registrar?patient_registrar[identity_id]=#{identity_id}&patient_registrar[organization_id]=#{organization_id}"
 
 
   $(document).on 'click', '.remove-fulfillment-rights', (event) ->
@@ -345,14 +360,14 @@ $ ->
 
   $(document).on 'change', '.required', (event) ->
     service_relation_id = $(this).data('service-relation-id')
-    required = !$(this).prop('checked')
+    required = $(this).prop('checked')
     $.ajax
       type: 'POST'
       url: "/catalog_manager/services/update_related_service"
       data:
         service_relation_id: service_relation_id
         service_relation:
-          optional: required #TODO: Optional should be switched to 'required' once database is changed
+          required: required
 
   $(document).on 'change', '.linked_quantity', (event) ->
     service_relation_id = $(this).data('service-relation-id')
@@ -431,3 +446,9 @@ $ ->
 
   $(document).on 'change', 'input.override_field', ->
     alert(I18n['catalog_manager']['service_form']['pricing_map_form']['change_override_alert'])
+
+(exports ? this).togglePrimaryContactChecks = () ->
+  if $('.sp-is-primary-contact:checked').length >= 3
+    $('.sp-is-primary-contact:not(:checked)').prop('disabled', 'disabled')
+  else
+    $('.sp-is-primary-contact:not(:checked)').prop('disabled', '')

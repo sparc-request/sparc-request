@@ -44,7 +44,7 @@ RSpec.describe 'RMID validated Protocol', js: true do
   
   describe 'RMID validated Protocol' do
     before(:each) do
-      create(:super_user, identity_id: user.id)
+      create(:super_user, identity_id: user.id, access_empty_protocols: true)
     end
 
     scenario 'User sees updated RMID validated Protocol' do

@@ -1,3 +1,9 @@
+if @type == 'Form'
+  accessible_surveys = Form.for_super_user(current_user).or(Form.for_service_provider(current_user))
+else
+  accessible_surveys = SystemSurvey.for_super_user(current_user)
+end
+
 json.(@responses) do |response|
   srid = response.try(:respondable).try(:display_id) || response.try(:respondable).try(:protocol_id) || 'N/A'
 
@@ -8,5 +14,5 @@ json.(@responses) do |response|
   json.by               response.identity.try(:full_name) || 'N/A'
   json.complete         complete_display(response)
   json.completion_date  response.completed? ? format_date(response.created_at) : ""
-  json.actions          response_options(response)
+  json.actions          response_options(response, accessible_surveys)
 end

@@ -23,11 +23,16 @@
     = t(:catalog_manager)[:service_form][:pricing_map_form][:add_pricing]
 
 -else
-  .btn.btn-info{disabled: 'disabled'}
+  #new_pricing_map_link.btn.btn-info{disabled: 'disabled'}
     = t(:catalog_manager)[:service_form][:pricing_map_form][:add_pricing]
   %span= t(:catalog_manager)[:service_form][:pricing_map_form][:no_pricing_setups]
 
 #pricing_map_list
-  - service.pricing_maps.sort_by(&:effective_date).each do |pricing_map|
+  - pricing_maps = service.pricing_maps.order(effective_date: :desc)
+  - pricing_maps[0..2].each do |pricing_map|
     = render "/catalog_manager/services/pricing_map", pricing_map: pricing_map
-
+  - if pricing_maps.length > 3
+    = link_to t(:constants)[:more], "#service#{service.id}PricingMapsExpand", class: 'btn btn-primary collapsed', alt: t(:constants)[:less], data: { toggle: 'collapse' }, aria: { expanded: 'false' }
+    .collapse{ id: "service#{service.id}PricingMapsExpand" }
+      - pricing_maps[3..-1].each do |pricing_map|
+        = render "/catalog_manager/services/pricing_map", pricing_map: pricing_map

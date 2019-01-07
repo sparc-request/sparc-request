@@ -17,26 +17,40 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.catalog-calendar{ class: Setting.find_by_key("use_news_feed").value ? 'col-sm-6' : 'col-sm-12' }
+.catalog-calendar{ class: Setting.get_value('use_news_feed') ? 'col-sm-6' : 'col-sm-12' }
   .panel.panel-info
     .panel-heading
       %h1.panel-title
+        %span.glyphicon.glyphicon-calendar
         = t(:proper)[:catalog][:center][:calendar][:header]
     .panel-body
       - if @events.empty?
         = t(:proper)[:catalog][:center][:calendar][:none]
-      - @events.each do |event|
-        .calendar-event
-          %strong.date.col-sm-3.bg-primary.text-center
-            = event[:month]
-            .day
-              = event[:day]
-          .location.col-sm-9
-            %strong.title.col-sm-12
-              = event[:title]
-            %em.time.col-sm-12
-              - if event[:all_day]
-                = t(:proper)[:catalog][:center][:calendar][:all_day]
-              - else
-                = [event[:start_time], event[:end_time]].join(' - ')
-              = " - #{event[:where]}" unless event[:where].blank?
+      - @events.first(Setting.get_value("calendar_event_limit")).each_with_index do |event, index|
+        .calendar-event.col-sm-12.no-padding-x
+          .event-date-container.no-padding{ class: Setting.get_value('use_news_feed') ? 'col-sm-3' : 'col-sm-2' }
+            .event-date.bg-primary.text-center
+              %span.month
+                %strong
+                  = event[:month]
+              %span.day
+                %strong
+                  = event[:day]
+          .event-details-container{ class: Setting.get_value('use_news_feed') ? 'col-sm-9' : 'col-sm-10' }
+            .event-details
+              %span.event-title
+                %strong
+                  = event[:title]
+              %small.event-time
+                %em
+                  - if event[:all_day]
+                    = t(:proper)[:catalog][:center][:calendar][:all_day]
+                  - else
+                    = [event[:start_time], event[:end_time]].join(' - ')
+                  = " - #{event[:where]}" unless event[:where].blank?
+              .collapse.event-description{ id: "event#{index}Description" }
+                %small
+                  = raw event[:description]
+            .expand-event
+              %small
+                = link_to t(:constants)[:show], "#event#{index}Description", class: 'collapsed', alt: t(:constants)[:hide], data: { toggle: 'collapse' }, aria: { expanded: 'false', controls: "event#{index}Description" }

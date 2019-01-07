@@ -80,6 +80,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
     end
 
     context 'use_google_calendar is true' do
+      stub_config('use_google_calendar', true)
+
       it 'should assign @events' do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
@@ -93,6 +95,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
     end
 
     context 'use_news_feed is true' do
+      stub_config('use_news_feed', true)
+
       it 'should assign @news' do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)

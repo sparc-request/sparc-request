@@ -63,7 +63,7 @@ RSpec.feature 'User wants to add a document', js: true do
         end
 
         scenario 'and sees the new document' do
-          @page.wait_for_documents(text: 'Protocol')
+          wait_for_javascript_to_finish
           expect(@page).to have_documents(text: 'Protocol')
         end
       end
@@ -98,7 +98,7 @@ RSpec.feature 'User wants to add a document', js: true do
       dropdown_choices(text: 'Protocol').first.click
     end
 
-    attach_file 'document_document', './spec/fixtures/files/text_document.txt'
+    attach_file 'document_document', File.expand_path('spec/fixtures/files/text_document.txt')
 
     @page.document_modal.upload_button.click
   end

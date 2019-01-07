@@ -49,4 +49,24 @@ RSpec.describe CatalogManager::SuperUsersController, type: :controller do
     end
   end
 
+  describe '#update' do
+    it 'should update access_empty_protocols to true' do
+      su = create(:super_user, identity_id: @identity.id, organization_id: @organization_id, access_empty_protocols: false)
+      put :update,
+        params: { super_user: { identity_id: @identity.id, organization_id: @organization_id, access_empty_protocols: 'true' } },
+        xhr: true
+
+      expect(su.reload.access_empty_protocols).to eq(true)
+    end
+
+    it 'should update access_empty_protocols to false' do
+      su = create(:super_user, identity_id: @identity.id, organization_id: @organization_id, access_empty_protocols: true)
+      put :update,
+        params: { super_user: { identity_id: @identity.id, organization_id: @organization_id, access_empty_protocols: 'false' } },
+        xhr: true
+
+      expect(su.reload.access_empty_protocols).to eq(false)
+    end
+  end
+
 end

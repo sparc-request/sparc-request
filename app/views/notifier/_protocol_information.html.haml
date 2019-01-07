@@ -22,13 +22,13 @@
   %thead
     %tr.skinny-black-border
       %td{:colspan => 2}
-        - if protocol.type.capitalize == "Project"
+        - if protocol.is_a?(Project)
           %strong= t(:notifier)[:p_info]
         - else
           %strong= t(:notifier)[:study_info]
   %tbody
     %tr.skinny-black-border
-      - if protocol.type.capitalize == "Project"
+      - if protocol.is_a?(Project)
         %th.table-header.left= t(:notifier)[:p_id]
       - else
         %th.table-header.left= t(:notifier)[:study_id]
@@ -37,7 +37,7 @@
       %th.table-header.left= t(:notifier)[:title1]
       %td.skinny-black-border= protocol.short_title
     %tr.skinny-black-border
-      - if protocol.type.capitalize == "Project"
+      - if protocol.is_a?(Project)
         %th.table-header.left= t(:notifier)[:p_title]
       - else
         %th.table-header.left= t(:notifier)[:study_title]
@@ -46,7 +46,11 @@
       %th.table-header.left= t(:notifier)[:s_name]
       %td.skinny-black-border= protocol.sponsor_name
     %tr.skinny-black-border
-      %th.table-header.left= t(:notifier)[:source]
-      %td.skinny-black-border= (protocol.funding_source or protocol.potential_funding_source or "").capitalize
+      %th.table-header.left= protocol.funding_status == 'funded' ? t(:notifier)[:source] : t(:notifier)[:potential_source]
+      %td.skinny-black-border= protocol.display_funding_source_value
+    - if protocol.type.capitalize == "Project"
+      %tr.skinny-black-border
+        %th.table-header.left= t(:notifier)[:description]
+        %td.skinny-black-border= protocol.brief_description
 %br
 %br

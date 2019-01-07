@@ -172,10 +172,10 @@ RSpec.describe ServiceRequest, type: :model do
         @required_service = create(:service, organization_id: program.id, name: 'Required One Time Fee', pricing_map_count: 1)
         @disabled_program = create(:program, type: 'Program', parent_id: provider.id, name: 'Disabled', order: 1, abbreviation: 'Disabled Informatics', process_ssrs: 0, is_available: 0)
         @disabled_service = create(:service, organization_id: @disabled_program.id, name: 'Disabled Program Service')
-        create(:service_relation, service_id: @new_service.id, related_service_id: @optional_service.id, optional: true)
-        create(:service_relation, service_id: @new_service.id, related_service_id: @required_service.id, optional: false)
-        create(:service_relation, service_id: @new_service.id, related_service_id: @disabled_service.id, optional: false)
-        @line_items = service_request.create_line_items_for_service(service: @new_service, optional: true, existing_service_ids: [], allow_duplicates: true, recursive_call: false)
+        create(:service_relation, service_id: @new_service.id, related_service_id: @optional_service.id, required: false)
+        create(:service_relation, service_id: @new_service.id, related_service_id: @required_service.id, required: true)
+        create(:service_relation, service_id: @new_service.id, related_service_id: @disabled_service.id, required: true)
+        @line_items = service_request.create_line_items_for_service(service: @new_service, required: true, existing_service_ids: [], allow_duplicates: true, recursive_call: false)
       end
 
       it 'should add optional services' do
@@ -211,7 +211,7 @@ RSpec.describe ServiceRequest, type: :model do
 
     context "total indirect cost one time" do
       it "should return the sum of all line items one time fee indirect cost" do
-        if Setting.find_by_key("use_indirect_cost").value
+        if Setting.get_value("use_indirect_cost")
           expect(service_request.total_indirect_costs_one_time).to eq(10000)
         else
           expect(service_request.total_indirect_costs_one_time).to eq(0.0)
@@ -221,7 +221,7 @@ RSpec.describe ServiceRequest, type: :model do
 
     context "total cost one time" do
       it "should return the sum of all line items one time fee direct and indirect costs" do
-        if Setting.find_by_key("use_indirect_cost").value
+        if Setting.get_value("use_indirect_cost")
           expect(service_request.total_costs_one_time).to eq(15000)
         else
           expect(service_request.total_costs_one_time).to eq(5000)
@@ -237,7 +237,7 @@ RSpec.describe ServiceRequest, type: :model do
 
     context "total indirect cost" do
       it "should return the sum of all line items indirect cost" do
-        if Setting.find_by_key("use_indirect_cost").value
+        if Setting.get_value("use_indirect_cost")
           expect(service_request.indirect_cost_total).to eq(1210000)
         else
           expect(service_request.indirect_cost_total).to eq(0.0)
@@ -247,7 +247,7 @@ RSpec.describe ServiceRequest, type: :model do
 
     context "grand total" do
       it "should return the grand total of all costs" do
-        if Setting.find_by_key("use_indirect_cost").value
+        if Setting.get_value("use_indirect_cost")
           expect(service_request.grand_total).to eq(1815000)
         else
           expect(service_request.grand_total).to eq(605000)
@@ -265,7 +265,7 @@ RSpec.describe ServiceRequest, type: :model do
     context "total indirect cost per patient" do
 
       it "should return the sum of all line items visit-based indirect cost" do
-        if Setting.find_by_key("use_indirect_cost").value
+        if Setting.get_value("use_indirect_cost")
           expect(service_request.total_indirect_costs_per_patient).to eq(1200000)
         else
           expect(service_request.total_indirect_costs_per_patient).to eq(0.0)
@@ -276,7 +276,7 @@ RSpec.describe ServiceRequest, type: :model do
     context "total costs per patient" do
 
       it "should return the total of the direct and indirect costs" do
-        if Setting.find_by_key("use_indirect_cost").value
+        if Setting.get_value("use_indirect_cost")
           expect(service_request.total_costs_per_patient).to eq(1800000)
         else
           expect(service_request.total_costs_per_patient).to eq(600000.0)

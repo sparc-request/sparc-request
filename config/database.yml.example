@@ -25,6 +25,8 @@ development:
   database: sparc_rails_development
   pool: 5
   timeout: 5000
+  variables:
+    sql_mode: TRADITIONAL
 
 profile:
   username: sparc
@@ -34,6 +36,8 @@ profile:
   database: sparc_development
   pool: 5
   timeout: 5000
+  variables:
+    sql_mode: TRADITIONAL
 
 # configured for travis-ci
 test:
@@ -43,4 +47,5 @@ test:
   username: travis
   pool: 5
   timeout: 5000
-
+  variables:
+    sql_mode: TRADITIONAL

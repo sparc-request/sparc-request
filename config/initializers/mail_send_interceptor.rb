@@ -24,15 +24,15 @@ class MailSendInterceptor
     def delivering_email(mail)
       cc_to = " AND CC TO #{mail.cc}" if mail.cc.present?
 
-      mail.subject = "[#{Setting.find_by_key("host").value} - EMAIL TO #{mail.to} #{cc_to}] #{mail.subject}"
-      mail.to = Setting.find_by_key("default_mail_to").value
+      mail.subject = "[#{Setting.get_value("host")} - EMAIL TO #{mail.to} #{cc_to}] #{mail.subject}"
+      mail.to = Setting.get_value("default_mail_to")
       mail.cc = nil
     end
   end
 end
 
 begin
-  send_emails_to_real_users = Setting.find_by_key("send_emails_to_real_users").try(:value)
+  send_emails_to_real_users = Setting.get_value("send_emails_to_real_users")
 rescue
   send_emails_to_real_users = nil
 end

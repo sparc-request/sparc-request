@@ -30,7 +30,7 @@ RSpec.describe 'User edits Service General Info', js: true do
     @program     = create(:program, parent_id: @provider.id)
     @service     = create(:service, organization: @program)
     create(:catalog_manager, organization_id: @institution.id, identity_id: Identity.where(ldap_uid: 'jug2').first.id)
-    create(:tag, name: "clinical work fulfillment")
+    create(:tag, name: "epic")
   end
 
   context 'on a Service' do
@@ -109,13 +109,13 @@ RSpec.describe 'User edits Service General Info', js: true do
       end
 
       it 'should select a tag' do
-        bootstrap_select('#service_tag_list', 'Fulfillment')
+        bootstrap_select('#service_tag_list', 'Epic')
         find('form.form-horizontal').click
         click_button 'Save'
         wait_for_javascript_to_finish
 
         @service.reload
-        expect(@service.tag_list.include?("clinical work fulfillment")).to eq(true)
+        expect(@service.tag_list.include?("epic")).to eq(true)
       end
 
       it 'should toggle Clinical/Non-clinical services if there is no pricing map' do
@@ -134,10 +134,7 @@ RSpec.describe 'User edits Service General Info', js: true do
         wait_for_javascript_to_finish
         ##
 
-        first('#general-info div.toggle.btn').click
-        wait_for_javascript_to_finish
-
-        expect(first('#general-info div.toggle.btn')).to be_disabled
+        expect(page).to have_selector('[name="service[one_time_fee]"] + .toggle[disabled=disabled]')
       end
 
       it 'should disable Clinical/Non-clinical services if the service has line items' do
@@ -149,10 +146,7 @@ RSpec.describe 'User edits Service General Info', js: true do
         wait_for_javascript_to_finish
         ##
 
-        first('#general-info div.toggle.btn').click
-        wait_for_javascript_to_finish
-
-        expect(first('#general-info div.toggle.btn')).to be_disabled
+        expect(page).to have_selector('[name="service[one_time_fee]"] + .toggle[disabled=disabled]')
       end
 
       it 'should toggle Display in Sparc' do
@@ -171,10 +165,7 @@ RSpec.describe 'User edits Service General Info', js: true do
       end
 
       it 'should disable Display in Sparc if there is no pricing map' do
-        first('#general-info div.toggle.btn').click
-        wait_for_javascript_to_finish
-
-        expect(page.all('#general-info div.toggle.btn')[1]).to be_disabled
+        expect(page).to have_selector('[name="service[is_available]"] + .toggle[disabled=disabled]')
       end
     end
   end

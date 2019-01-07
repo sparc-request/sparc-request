@@ -20,14 +20,6 @@
 
 module Dashboard::ApplicationHelper
 
-  def format_date date
-    if date.present?
-      date.strftime('%D')
-    else
-      ''
-    end
-  end
-
   def format_datetime date
     if date.present?
       date.strftime('%D %I:%M:%S %p')

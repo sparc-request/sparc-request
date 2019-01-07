@@ -25,21 +25,19 @@ class Dashboard::EpicQueuesController < Dashboard::BaseController
 
   def index
     respond_to do |format|
-      format.json do
-        if params[:user_change]
-          @epic_queues = EpicQueue.where(
-            attempted_push: false,
-            user_change: true
-          )
-        else
-          @epic_queues = EpicQueue.where(attempted_push: false, user_change: false)
-        end
-
-        render
-      end
-      format.html do
-        render
-      end
+      format.html
+      format.json {
+        @epic_queues =
+          if params[:user_change]
+            EpicQueue.where(
+              attempted_push: false,
+              user_change: true
+            )
+          else
+            EpicQueue.where(attempted_push: false, user_change: false)
+          end.eager_load(:identity, protocol: :principal_investigators).
+              search(params[:search]).ordered(params[:sort], params[:order])
+      }
     end
   end
 
@@ -57,7 +55,7 @@ class Dashboard::EpicQueuesController < Dashboard::BaseController
 
   # Check to see if user has rights to view epic queues
   def authorize_overlord
-    unless Setting.find_by_key("use_epic").value && Setting.find_by_key("epic_queue_access").value.include?(@user.ldap_uid)
+    unless Setting.get_value("use_epic") && Setting.get_value("epic_queue_access").include?(@user.ldap_uid)
       @epic_queues = nil
       @epic_queue = nil
       render partial: 'service_requests/authorization_error', locals: { error: 'You do not have access to view the Epic Queues', in_dashboard: false }

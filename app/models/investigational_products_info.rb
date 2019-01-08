@@ -19,13 +19,18 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class InvestigationalProductsInfo < ApplicationRecord
-  EXEMPTION_TYPES = ["ide", "hde", "hud", ""].freeze
+  EXEMPTION_TYPES = {
+    ide: I18n.t(:protocols)[:studies][:research_involving][:products][:numbers][:ide],
+    hde: I18n.t(:protocols)[:studies][:research_involving][:products][:numbers][:hde],
+    hud: I18n.t(:protocols)[:studies][:research_involving][:products][:numbers][:hud]
+  }
+
   self.table_name = 'investigational_products_info'
 
   audited
 
   belongs_to :protocol
-  validates :exemption_type, inclusion: { in: EXEMPTION_TYPES, message: "not among #{EXEMPTION_TYPES.map(&:upcase).join(', ')}" }
+  validates :exemption_type, inclusion: { in: EXEMPTION_TYPES, message: "not among #{EXEMPTION_TYPES.values.map(&:upcase).join(', ')}" }
   validate :inv_device_number_present_when_exemption_type_present
 
   private

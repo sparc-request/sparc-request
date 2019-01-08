@@ -35,7 +35,8 @@ class ProtocolsReport < ReportingModule
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
       Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
-      "Include Epic Interface Columns" => {:field_type => :check_box_tag, :for => 'show_epic_cols', :field_label => 'Include Epic Interface Columns'}
+      "Include Epic Interface Columns" => {:field_type => :check_box_tag, :for => 'show_epic_cols', :field_label => 'Include Epic Interface Columns'},
+      "Include Investigational Device Columns" => { field_type: :check_box_tag, for: 'show_device_cols', field_label: "Include Investigational Device Columns" }
     }
   end
 
@@ -80,6 +81,12 @@ class ProtocolsReport < ReportingModule
       attrs["Last Epic Push Status"] = "service_request.try(:protocol).try(:last_epic_push_status)"
     end
 
+    if params[:show_device_cols]
+      attrs["IND #"]            = "service_request.try(:protocol).try(:investigational_products_info).try(:ind_number)"
+      attrs["IDE/HDE/HUD Type"] = "InvestigationalProductsInfo::EXEMPTION_TYPES[service_request.try(:protocol).try(:investigational_products_info).try(:exemption_type)]"
+      attrs["IDE/HDE/HUD #"]    = "service_request.try(:protocol).try(:investigational_products_info).try(:inv_device_number)"
+    end
+
     attrs
   end
 
@@ -100,7 +107,7 @@ class ProtocolsReport < ReportingModule
 
   # Other tables to include
   def includes
-    return :organization, :service_request => {:line_items => :service}
+    [:organization, { service_request: { protocol: [:project_roles, :study_phases, :human_subjects_info, :investigational_products_info, primary_pi_role: { identity: { professional_organization: { parent: { parent: :parent } } } }] } }, { line_items: :service }]
   end
 
   # Conditions

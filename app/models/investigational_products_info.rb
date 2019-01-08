@@ -30,7 +30,7 @@ class InvestigationalProductsInfo < ApplicationRecord
   audited
 
   belongs_to :protocol
-  validates :exemption_type, inclusion: { in: EXEMPTION_TYPES, message: "not among #{EXEMPTION_TYPES.values.map(&:upcase).join(', ')}" }
+  validates :exemption_type, inclusion: { in: EXEMPTION_TYPES.keys.map(&:upcase), message: "not among #{EXEMPTION_TYPES.keys.map(&:upcase).join(', ')}" }
   validate :inv_device_number_present_when_exemption_type_present
 
   private

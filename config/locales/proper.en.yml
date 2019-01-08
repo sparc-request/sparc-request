@@ -55,7 +55,7 @@ en:
         header: "Browse Service Catalog"
       back_to_top: "Back to Top"
       center:
-        search_placeholder: "Search by Service Name or CPT Code..."
+        search_placeholder: "Search by Service Name, CPT Code, or EAP ID"
         welcome: "Welcome to SPARCRequest:<br>Storefront of Research Services"
         description: "Search for services above or browse the providers/services on the left sidebar"
         notice: "** You may only select services applicable to ONE Study/Project at a time **"

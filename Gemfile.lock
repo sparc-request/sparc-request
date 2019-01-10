@@ -28,7 +28,7 @@ GIT
 
 GIT
   remote: https://github.com/rails/rails-observers.git
-  revision: 3a7a6271cc73c11c99661e750b7bd74676346818
+  revision: 25eb685d68e8fcd0675fff33852ee341f7ec2a53
   specs:
     rails-observers (0.2.0)
       activemodel (>= 4.2)
@@ -193,7 +193,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    concurrent-ruby (1.1.3)
+    concurrent-ruby (1.1.4)
     connection_pool (2.2.2)
     countries (2.1.4)
       i18n_data (~> 0.8.0)

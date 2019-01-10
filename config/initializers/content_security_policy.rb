@@ -9,7 +9,7 @@ Rails.application.config.content_security_policy do |policy|
   #policy.font_src    :self, :https, :data
   policy.img_src     :self, :https, :data
   policy.object_src  :none
-  policy.script_src  :self, ENV["script_src_domain"]
+  policy.script_src  :self, (ENV["script_src_domain"] ||= "*.musc.edu")
   policy.style_src   :self, 'unsafe-inline'
 
   # Specify URI for violation reports

@@ -152,7 +152,7 @@ wb.add_worksheet(name: "Review") do |sheet|
       @service_list_false.each do |key, value|
         next if @sub_service_request.present? && @sub_service_request.organization.name != value[:process_ssr_organization_name]
 
-        line_items_visits = arm.display_line_items_visits(@use_epic, @display_all_services)
+        line_items_visits = arm.display_line_items_visits(Setting.get_value('use_epic'), @display_all_services)
 
         #Only show value[:name] when it hasn't been filtered out by the above line
         if (value[:line_items].map(&:id) & line_items_visits.map(&:line_item_id) ).present?
@@ -223,7 +223,7 @@ wb.add_worksheet(name: "Review") do |sheet|
   @service_list_true.each do |key, value|
     next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
 
-    line_items = display_line_items_otf(@sub_service_request, @use_epic, value[:line_items])
+    line_items = display_line_items_otf(@sub_service_request, Setting.get_value('use_epic'), value[:line_items])
 
     next if line_items.empty?
     services_sub_header_rows << sheet.add_row([value[:name]], :style => sub_header_style)

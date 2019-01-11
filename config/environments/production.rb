@@ -60,13 +60,6 @@ SparcRails::Application.configure do
 
   # Set HTTP/S security headers
   config.action_dispatch.default_headers = {
-    'Content-Security-Policy' =>
-      "default-src 'self'; " \
-      "img-src 'self' ; " \
-      "media-src 'none'; " \
-      "object-src 'none'; " \
-      "script-src 'self' 'unsafe-eval' 'unsafe-inline'; " \
-      "style-src 'self' 'unsafe-inline'; ",
     'Referrer-Policy' => 'strict-origin-when-cross-origin',
     'X-Content-Type-Options' => 'nosniff',
     'X-Frame-Options' => 'SAMEORIGIN',

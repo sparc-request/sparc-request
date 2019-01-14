@@ -23,7 +23,6 @@
 window.cart =
   selectService: (id) ->
     srid = getSRId()
-    ssrid = getSSRId()
     has_protocol = parseInt($('#has_protocol').val())
     li_count = parseInt($('#line_item_count').val())
 
@@ -35,27 +34,17 @@ window.cart =
       $('#modal_place .yes-button').on 'click', (e) ->
         $.ajax
           type: 'POST'
-          data:
-            sub_service_request_id: ssrid
           url: "/service_requests/#{srid}/add_service/#{id}"
     else
       $.ajax
         type: 'POST'
-        data:
-          sub_service_request_id: ssrid
         url: "/service_requests/#{srid}/add_service/#{id}"
 
   removeService: (id, move_on, spinner) ->
     srid = getSRId()
-    ssrid = getSSRId()
 
-    if ssrid
-      data = sub_service_request_id: ssrid
-    else
-      data = null
     $.ajax
       type: 'POST'
-      data: data
       url: "/service_requests/#{srid}/remove_service/#{id}"
       success: (data, textStatus, jqXHR) ->
         if move_on
@@ -81,12 +70,11 @@ $(document).ready ->
 
   $(document).on 'click', '.remove-service', ->
     id = $(this).data('id')
-    ssrid = getSSRId()
     li_count = parseInt($('#line_item_count').val())
     request_submitted = $(this).data('request-submitted')
     spinner = $('<span class="spinner"><img src="/assets/catalog_manager/spinner_small.gif"/></span>')
 
-    if request_submitted == 1 && !ssrid
+    if request_submitted == 1
       button = $(this)
       $('#modal_place').html($('#request-submitted-modal').html())
       $('#modal_place').modal('show')
@@ -94,13 +82,6 @@ $(document).ready ->
       $('#modal_place .yes-button').on 'click', (e) ->
         button.replaceWith(spinner)
         window.cart.removeService(id, false, spinner)
-    else if ssrid && li_count == 1
-      # Redirect to the Dashboard if the user deletes the last Service on an SSR
-      $('#modal_place').html($('#remove-request-modal').html())
-      $('#modal_place').modal('show')
-
-      $('#modal_place .yes-button').on 'click', (e) ->
-        window.cart.removeService(id, true, spinner)
     else if li_count == 1 && window.location.pathname.indexOf('catalog') == -1
       # Do not allow the user to remove the last service except in the catalog
       $('#modal_place').html($('#line-item-required-modal').html())

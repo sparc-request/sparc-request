@@ -446,9 +446,11 @@ class ServiceRequest < ApplicationRecord
   # and updates the SSR status to new status if appropriate
   def update_status(new_status)
     to_notify = []
-    update_attribute(:status, new_status)
+    # Do not change the Service Request if it has been submitted
+
+    update_attribute(:status, new_status) unless self.previously_submitted?
     sub_service_requests.each do |ssr|
-      to_notify << ssr.update_status_and_notify(new_status)
+      to_notify << ssr.update_status_and_notify(new_status) unless ssr.previously_submitted?
     end
     to_notify.flatten
   end
@@ -470,6 +472,10 @@ class ServiceRequest < ApplicationRecord
       protocol.next_ssr_id = next_ssr_id
       protocol.save(validate: false)
     end
+  end
+
+  def previously_submitted?
+    self.submitted_at.present?
   end
 
   def should_push_to_epic?

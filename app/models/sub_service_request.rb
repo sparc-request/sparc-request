@@ -80,7 +80,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def previously_submitted?
-    !submitted_at.nil?
+    self.submitted_at.present?
   end
 
   def formatted_status
@@ -318,7 +318,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def is_complete?
-    return Setting.get_value("finished_statuses").include?(status)
+    Setting.get_value("finished_statuses").include?(status)
   end
 
   def set_to_draft

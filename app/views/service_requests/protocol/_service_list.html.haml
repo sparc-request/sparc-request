@@ -24,7 +24,6 @@
       %small
         = t(:proper)[:protocol][:review_services_instructions]
   - service_request.service_list.each do |key, value|
-    - next if sub_service_request && sub_service_request.organization.name != value[:process_ssr_organization_name]
     .panel.panel-primary.sub-service-request-review
       .panel-heading
         %h1.panel-title

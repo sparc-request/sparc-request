@@ -128,10 +128,6 @@ $(document).ready ->
           url: "/dashboard/sub_service_requests/#{id}.js"
           data: show_view_ssr_back: show_view_ssr_back
 
-      $(document).on 'click', '.edit-service-request', ->
-        if $(this).data('permission')
-          window.location = $(this).data('url')
-
       $(document).on 'click', '#add-services-button', ->
         if $(this).data('permission')
           protocol_id         = $(this).data('protocol-id')

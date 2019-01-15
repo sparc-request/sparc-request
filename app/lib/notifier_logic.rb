@@ -44,7 +44,6 @@ class NotifierLogic
     @to_notify = []
     @to_notify = @service_request.update_status('submitted')
     @service_request.previous_submitted_at = @service_request.submitted_at
-    @service_request.update_attribute(:submitted_at, Time.now)
     @service_request.update_arm_minimum_counts
     send_request_amendment_email_evaluation
     send_initial_submission_email

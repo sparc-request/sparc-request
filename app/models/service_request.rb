@@ -445,14 +445,13 @@ class ServiceRequest < ApplicationRecord
   # Returns the SSR ids that need an initial submission email, updates the SR status,
   # and updates the SSR status to new status if appropriate
   def update_status(new_status)
-    to_notify = []
     # Do not change the Service Request if it has been submitted
-
     update_attribute(:status, new_status) unless self.previously_submitted?
-    sub_service_requests.each do |ssr|
-      to_notify << ssr.update_status_and_notify(new_status) unless ssr.previously_submitted?
-    end
-    to_notify.flatten
+    update_attribute(:submitted_at, Time.now) if new_status == 'submitted' && !self.previously_submitted?
+
+    self.sub_service_requests.map do |ssr|
+      ssr.update_status_and_notify(new_status)
+    end.compact
   end
 
   # Make sure that all the sub service requests have an ssr id

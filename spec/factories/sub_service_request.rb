@@ -35,6 +35,11 @@ FactoryBot.define do
       end
     end
 
+    trait :submitted do
+      status        'submitted'
+      submitted_at  Time.now
+    end
+
     transient do
       line_item_count 0
       past_status_count 0

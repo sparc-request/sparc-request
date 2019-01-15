@@ -271,34 +271,27 @@ class SubServiceRequest < ApplicationRecord
   # Returns the SSR id that need an initial submission email and updates
   # the SSR status to new status if appropriate
   def update_status_and_notify(new_status)
-    to_notify = []
-    if can_be_edited?
-      available = PermissibleValue.get_key_list('status')
-      editable = self.is_locked? || available
-      changeable = available & editable
-      if changeable.include?(new_status)
-        #  See Pivotal Stories: #133049647 & #135639799
-        if (status != new_status) && ((new_status == 'submitted' && Setting.get_value("updatable_statuses").include?(status)) || new_status != 'submitted')
+    unless self.is_locked? || self.previously_submitted?
+      available   = PermissibleValue.get_key_list('status')
+      editable    = self.is_locked? || available
+      changeable  = (available & editable).include?(new_status) && Status.updatable?(self.status)
+
+      if self.status != new_status && changeable
+        if new_status == 'submitted'
           ### For 'submitted' status ONLY:
           # Since adding/removing services changes a SSR status to 'draft', we have to look at the past status to see if we should notify users of a status change
           # We do NOT notify if updating from an un-updatable status or we're updating to a status that we already were previously
-          if new_status == 'submitted'
-            past_status = PastStatus.where(sub_service_request_id: id).last
-            past_status = past_status.nil? ? nil : past_status.status
-            if status == 'draft' && ((Setting.get_value("updatable_statuses").include?(past_status) && past_status != new_status) || past_status == nil) # past_status == nil indicates a newly created SSR
-              to_notify << id
-            elsif status != 'draft'
-              to_notify << id
-            end
-          else
-            to_notify << id
-          end
-
-          new_status == 'submitted' ? update_attributes(status: new_status, submitted_at: Time.now, nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false) : update_attribute(:status, new_status)
+          # See Pivotal Stories: #133049647 & #135639799
+          old_status  = self.status
+          past_status = PastStatus.where(sub_service_request_id: id).last.try(:status)
+          self.update_attributes(status: new_status, submitted_at: Time.now, nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
+          return self.id if old_status != 'draft' || (old_status == 'draft' && (past_status.nil? || (past_status != new_status && Status.updatable?(past_status)))) # past_status == nil indicates a newly created SSR
+        else
+          self.update_attribute(:status, new_status)
+          return self.id
         end
       end
     end
-    to_notify
   end
 
   def ctrc?
@@ -318,7 +311,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def is_complete?
-    Setting.get_value("finished_statuses").include?(status)
+    Status.complete?(self.status)
   end
 
   def set_to_draft

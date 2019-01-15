@@ -35,6 +35,11 @@ FactoryBot.define do
       approved true
     end
 
+    trait :submitted do
+      status        'submitted'
+      submitted_at  Time.now
+    end
+
     transient do
       sub_service_count 0
       line_item_count 0

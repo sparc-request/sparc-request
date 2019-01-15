@@ -108,15 +108,14 @@ module Dashboard
 
       # actual service request panels
       sections :service_requests, '#service-requests-panel' do
-        element :modify_request_button, :button, text: "Modify Request"
+        element :modify_request_button, "a", text: "Add / Modify Request"
 
         sections :ssrs, 'tbody tr' do
           element :send_notification_select, :button, text: "Send Notification"
           elements :recipients, '.new-notification ul li'
           element :send_notification_select, :button, text: "Send"
           element :view_button, :button, "View"
-          element :edit_button, :button, "Edit"
-          element :admin_edit_button, :button, "Admin Edit"
+          element :admin_edit_button, "a", text: "Admin Edit"
           element :complete_details_select, :button, text: "Complete Details"
         end
       end

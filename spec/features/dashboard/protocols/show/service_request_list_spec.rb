@@ -255,15 +255,6 @@ RSpec.describe 'service request list', js: true do
       expect(page).to have_view_ssr_modal
     end
 
-    scenario 'user clicks "Edit" button' do
-      page = go_to_show_protocol(protocol.id)
-      wait_for_javascript_to_finish
-
-      page.service_requests.first.ssrs.first.edit_button.click
-
-      expect(URI.parse(current_url).path).to eq "/service_requests/#{service_request.id}/catalog"
-    end
-
     scenario 'user clicks "Admin Edit" button' do
       page = go_to_show_protocol(protocol.id)
       wait_for_javascript_to_finish

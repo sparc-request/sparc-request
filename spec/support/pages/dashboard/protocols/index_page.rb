@@ -120,12 +120,11 @@ module Dashboard
       section :requests_modal, "#requests-modal" do
         # the collection of all blue-header'd tables titled by 'Service Request: <digits>''
         element :notes_button, :button, "Notes"
-        element :modify_request_button, :button, "Modify Request"
+        element :modify_request_button, "a", text: "Add / Modify Request"
 
         sections :sub_service_requests, "tbody tr" do
           element :view_button, :button, "View"
-          element :edit_button, :button, "Edit"
-          element :admin_edit_button, :button, "Admin Edit"
+          element :admin_edit_button, "a", text: "Admin Edit"
         end
       end
 

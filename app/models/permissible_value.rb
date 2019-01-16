@@ -21,6 +21,8 @@
 class PermissibleValue < ApplicationRecord
   belongs_to :parent, :class_name => 'PermissibleValue'
 
+  default_scope { order(:sort_order) }
+
   scope :available, -> {
     where(is_available: true)
   }

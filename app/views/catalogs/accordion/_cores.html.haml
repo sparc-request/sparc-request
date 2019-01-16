@@ -28,7 +28,8 @@
             = organization_name_display(c, locked)
         .panel-collapse.collapse{ class: "core-#{c.id}" }
           .panel-body.core-display
-            %p.description
-              = organization_description_display(c)
+            - if c.description
+              %p.description
+                = organization_description_display(c)
             .core-services
               = render 'catalogs/accordion/services', services: c.services.select{ |serv| serv.is_available != false && serv.current_pricing_map }, service_request: service_request

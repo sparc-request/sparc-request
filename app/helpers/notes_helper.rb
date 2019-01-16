@@ -24,7 +24,7 @@ module NotesHelper
 
     content_tag(:button, type: 'button', class: 'btn btn-link no-padding notes', disabled: disabled, data: { notable_id: notable.id, notable_type: notable.class.name }) do
       content_tag(:span, '', class: ["glyphicon glyphicon-list-alt note-icon", has_notes ? "blue-note" : "black-note"], aria: {hidden: "true"}) +
-      content_tag(:span, notable.notes.length, class: has_notes ? "badge blue-badge" : "badge", id: "#{notable.class.name.downcase}_#{notable.id}_notes")
+      content_tag(:span, notable.notes.length, class: ["badge", has_notes ? "blue-badge" : ""], id: "#{notable.class.name.downcase}_#{notable.id}_notes")
     end
   end
 

@@ -35,10 +35,6 @@ module ServiceRequestsHelper
     header
   end
 
-  def organization_description_display(organization)
-    organization.description.present? ? raw(organization.description) : t(:proper)[:catalog][:no_description]
-  end
-
   def ssr_name_display(sub_service_request)
     header  = content_tag(:span, sub_service_request.organization.name + (sub_service_request.ssr_id ? " (#{sub_service_request.ssr_id})" : ""))
     header += content_tag(:span, '', class: 'glyphicon glyphicon-lock locked') if !sub_service_request.can_be_edited?

@@ -279,7 +279,7 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def sorted_by_permissible_values(statuses)
-    values = PermissibleValue.order(:sort_order).get_hash('status')
+    values = PermissibleValue.get_hash('status')
     sorted_hash = {}
     values.each do |k, v|
       if statuses.has_key?(k)

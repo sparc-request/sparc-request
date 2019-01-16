@@ -23,9 +23,9 @@
     %h1.panel-title.text-center
       = organization.name
   .panel-body{ class: "#{organization.type.downcase}-display" }
-    %p.description
-      = organization_description_display(organization)
-
+    - if organization.description
+      %p.description
+        = organization.description
     - if organization.type == "Program"
       - if organization.services.any?
         .program-services

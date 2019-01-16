@@ -87,7 +87,7 @@ $(document).ready ->
       }
     }
   ).on('typeahead:render', (event, a, b, c) ->
-    $('[data-toggle="tooltip"]').tooltip({ 'delay' : { show: 1000, hide: 500 } })
+    $('.twitter-typeahead [data-toggle="tooltip"]').tooltip({ 'delay' : { show: 1000, hide: 500 } })
   ).on('typeahead:select', (event, suggestion) ->
     window.cart.selectService(suggestion.value)
   )

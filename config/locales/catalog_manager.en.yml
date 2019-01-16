@@ -41,7 +41,7 @@ en:
         program: "Create New Program"
         provider: "Create New Provider"
         service: "Create New Service"
-      search_placeholder: "Search by Organization or Service Name..."
+      search_placeholder: "Search by Organization or Service Name, CPT Code, or EAP ID"
       pricing_map1: "No Pricing Map Changes"
       pricing_map2: "Save and Apply to Pricing Maps"
 

@@ -49,7 +49,7 @@ RSpec.describe Notifier do
         deleted_and_created_line_item_audit_trail(@service_request, @service, identity)
 
         @report               = @sub_service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)
-        @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, identity, @sub_service_request, @report, true, false, false)
+        @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, identity, @sub_service_request, @report, true, false)
       end
 
       it 'should display correct subject' do
@@ -91,7 +91,7 @@ RSpec.describe Notifier do
         deleted_and_created_line_item_audit_trail(@service_request, @service, identity)
 
         @report               = @sub_service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)
-        @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, identity, @sub_service_request, @report, true, false, false)
+        @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, identity, @sub_service_request, @report, true, false)
       end
 
       it 'should show epic column' do

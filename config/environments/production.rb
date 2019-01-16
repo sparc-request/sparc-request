@@ -59,12 +59,12 @@ SparcRails::Application.configure do
   config.force_ssl = true
 
   # Set HTTP/S security headers
-  config.action_dispatch.default_headers = {
-    'Referrer-Policy' => 'strict-origin-when-cross-origin',
-    'X-Content-Type-Options' => 'nosniff',
-    'X-Frame-Options' => 'SAMEORIGIN',
-    'X-XSS-Protection' => '1; mode=block'
-  }
+  # config.action_dispatch.default_headers = {
+  #   'Referrer-Policy' => 'strict-origin-when-cross-origin',
+  #   'X-Content-Type-Options' => 'nosniff',
+  #   'X-Frame-Options' => 'SAMEORIGIN',
+  #   'X-XSS-Protection' => '1; mode=block'
+  # }
 
   # See everything in the log (default is :info)
   # config.log_level = :debug

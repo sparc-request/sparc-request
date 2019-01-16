@@ -24,8 +24,9 @@
         %h4.panel-title.text-center
           = organization_name_display(ssr_org, false)
       .panel-body.core-display
-        %p.description
-          = organization_description_display(ssr_org)
+        - if ssr_org.description
+          %p.description
+            = ssr_org.description
         .core-services
           = render 'catalogs/accordion/services', services: ssr_org.services.select{ |serv| serv.is_available != false && serv.current_pricing_map }, service_request: service_request, sub_service_request: sub_service_request
   - else
@@ -38,7 +39,8 @@
               = organization_name_display(c, locked)
           .panel-collapse.collapse{ class: "core-#{c.id}" }
             .panel-body.core-display
-              %p.description
-                = organization_description_display(c)
+              - if c.description
+                %p.description
+                  = c.description
               .core-services
                 = render 'catalogs/accordion/services', services: c.services.select{ |serv| serv.is_available != false && serv.current_pricing_map }, service_request: service_request, sub_service_request: sub_service_request

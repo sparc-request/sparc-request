@@ -26,7 +26,6 @@
       - if service.description.present?
         .col-sm-12.no-padding
           = link_to t(:constants)[:show], "#service#{service.id}Description", class: 'collapsed', alt: t(:constants)[:hide], data: { toggle: 'collapse' }, aria: { expanded: 'false', controls: "service#{service.id}Description" }
-      - if service.description.present?
         .collapse.service-description.col-sm-12.no-padding{ id: "service#{service.id}Description" }
           %p.no-margin
             = raw service.description

@@ -47,7 +47,7 @@ en:
 
     organization_form:
       headers:
-        associated_surveys: "Associated Surveys"
+        associated_surveys: "Surveys"
         general_info: "General Information"
         pricing: "Pricing"
         status_options: "Status Options"

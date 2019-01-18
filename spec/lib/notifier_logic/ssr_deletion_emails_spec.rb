@@ -78,7 +78,7 @@ RSpec.describe NotifierLogic do
         end
 
         NotifierLogic.new(@sr, logged_in_user).ssr_deletion_emails(deleted_ssr: @ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
-        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, logged_in_user, @ssr, nil, true, false, false)
+        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, logged_in_user, @ssr, nil, true, false)
       end
 
       it 'should notify admin (deletion email)' do
@@ -89,7 +89,7 @@ RSpec.describe NotifierLogic do
         end
 
         NotifierLogic.new(@sr, logged_in_user).ssr_deletion_emails(deleted_ssr: @ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
-        expect(Notifier).to have_received(:notify_admin).with(@admin_email, logged_in_user, @ssr, nil, true, false)
+        expect(Notifier).to have_received(:notify_admin).with(@admin_email, logged_in_user, @ssr, nil, true)
       end
     end
   end

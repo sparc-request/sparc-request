@@ -59,26 +59,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       end
     end
 
-    context 'editing sub service request' do
-      it 'should assign @institutions' do
-        i1       = create(:institution)
-        i2       = create(:institution)
-        prvdr    = create(:provider, parent: i1)
-        prgrm    = create(:program, parent: prvdr)
-        protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-        sr       = create(:service_request_without_validations, protocol: protocol)
-        ssr      = create(:sub_service_request_without_validations, organization: prgrm, service_request: sr)
-
-        get :catalog, params: {
-          sub_service_request_id: ssr.id,
-          id: sr.id
-        }, xhr: true
-
-        expect(assigns(:institutions).count).to eq(1)
-        expect(assigns(:institutions)[0]).to eq(i1)
-      end
-    end
-
     context 'use_google_calendar is true' do
       stub_config('use_google_calendar', true)
 

@@ -140,29 +140,5 @@ RSpec.describe SearchController do
       expect(results.count).to eq(1)
       expect(results[0]['value']).to eq(s2.id)
     end
-
-    context 'editing sub service request' do
-      it 'should not return services which are not in the ssr\'s org tree' do
-        sr    = create(:service_request_without_validations)
-        inst  = create(:institution)
-        prvdr = create(:provider, parent: inst)
-        org   = create(:program, parent: prvdr)
-        org2  = create(:organization)
-        ssr   = create(:sub_service_request_without_validations, service_request: sr, organization: org)
-        s1    = create(:service, organization: org, name: 'Service 123', pricing_map_count: 1)
-        s2    = create(:service, organization: org2, name: 'Service 321', pricing_map_count: 1)
-
-        get :services, params: {
-          service_request_id: sr.id,
-          sub_service_request_id: ssr.id,
-          term: 'Service'
-        }, xhr: true
-
-        results = JSON.parse(response.body)
-
-        expect(results.count).to eq(1)
-        expect(results[0]['value']).to eq(s1.id)
-      end
-    end
   end
 end

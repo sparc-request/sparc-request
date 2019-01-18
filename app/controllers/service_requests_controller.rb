@@ -175,6 +175,8 @@ class ServiceRequestsController < ApplicationController
     end
 
     @service_request.reload
+
+    @line_items_count = @service_request.line_items.count
     find_cart_ssrs
   end
 
@@ -197,6 +199,8 @@ class ServiceRequestsController < ApplicationController
     end
 
     @service_request.reload
+
+    @line_items_count = @service_request.line_items.count
     find_cart_ssrs
 
     respond_to do |format|

@@ -121,25 +121,6 @@ RSpec.describe Identity, type: :model do
         end
       end
 
-      describe "can edit sub service request" do
-
-        it "should return true if the user has the correct rights, and if nexus ssr has the correct status" do
-          program.tag_list = 'ctrc'
-          program.save
-          expect(user.can_edit_sub_service_request?(sub_service_request)).to eq(true)
-        end
-
-        it "should return false if not a nexus request, if completed" do
-          request.update_attributes(status: "complete")
-          expect(user.can_edit_sub_service_request?(request)).to eq(false)
-        end
-
-        it "should return false if the user does not have correct rights" do
-          project_role.update_attributes(project_rights: 'none')
-          expect(user.can_edit_sub_service_request?(sub_service_request)).to eq(false)
-        end
-      end
-
       describe "can edit organization" do
 
         it "should return true if the user is a catalog manager for a given organization" do

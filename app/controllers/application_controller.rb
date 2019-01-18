@@ -151,7 +151,6 @@ class ApplicationController < ActionController::Base
 
   def authorize_identity
     # can the user edit the service request
-    # can the user edit the sub service request
     # we have a current user
     if current_user
       if @service_request && (@service_request.status == 'first_draft' || current_user.can_edit_service_request?(@service_request))
@@ -167,8 +166,8 @@ class ApplicationController < ActionController::Base
       authenticate_identity!
       return true
     end
-    
-    authorization_error "The service request you are trying to access is not editable.", "SR#{params[:id]}" if @service_request.nil?
+
+    authorization_error "The service request you are trying to access is not editable.", "SR#{params[:id]}"
   end
 
   def in_dashboard?

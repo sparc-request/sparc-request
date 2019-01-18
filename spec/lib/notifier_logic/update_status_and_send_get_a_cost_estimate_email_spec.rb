@@ -71,7 +71,7 @@ RSpec.describe NotifierLogic do
         end
         project_role = @sr.protocol.project_roles.first
         NotifierLogic.new(@sr, logged_in_user).update_status_and_send_get_a_cost_estimate_email
-        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, nil, false, logged_in_user, nil, false, anything, false)
+        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, false, logged_in_user, nil, anything, false)
       end
 
       it 'should notify service providers (initial submission email)' do
@@ -82,7 +82,7 @@ RSpec.describe NotifierLogic do
         end
 
         NotifierLogic.new(@sr, logged_in_user).update_status_and_send_get_a_cost_estimate_email
-        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, logged_in_user, @ssr2, nil, false, false, false)
+        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, logged_in_user, @ssr2, nil, false, false)
       end
 
       it 'should notify admin (initial submission email)' do
@@ -93,7 +93,7 @@ RSpec.describe NotifierLogic do
         end
 
         NotifierLogic.new(@sr, logged_in_user).update_status_and_send_get_a_cost_estimate_email
-        expect(Notifier).to have_received(:notify_admin).with(@admin_email, logged_in_user, @ssr2, nil, false, false)
+        expect(Notifier).to have_received(:notify_admin).with(@admin_email, logged_in_user, @ssr2, nil, false)
       end
 
       it 'should send_user_notifications request_amendment=>false' do
@@ -229,7 +229,7 @@ RSpec.describe NotifierLogic do
         end
         project_role = @sr.protocol.project_roles.first
         NotifierLogic.new(@sr, logged_in_user).update_status_and_send_get_a_cost_estimate_email
-        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, nil, false, logged_in_user, nil, false, anything, false)
+        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, false, logged_in_user, nil, anything, false)
       end
 
       it 'should notify service providers (initial submission email)' do
@@ -240,7 +240,7 @@ RSpec.describe NotifierLogic do
         end
 
         NotifierLogic.new(@sr, logged_in_user).update_status_and_send_get_a_cost_estimate_email
-        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, logged_in_user, @ssr2, nil, false, false, false)
+        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, logged_in_user, @ssr2, nil, false, false)
       end
 
       it 'should notify admin (initial submission email)' do
@@ -251,7 +251,7 @@ RSpec.describe NotifierLogic do
         end
 
         NotifierLogic.new(@sr, logged_in_user).update_status_and_send_get_a_cost_estimate_email
-        expect(Notifier).to have_received(:notify_admin).with(@admin_email, logged_in_user, @ssr2, nil, false, false)
+        expect(Notifier).to have_received(:notify_admin).with(@admin_email, logged_in_user, @ssr2, nil, false)
       end
 
       it 'should send_user_notifications request_amendment=>false' do
@@ -308,7 +308,7 @@ RSpec.describe NotifierLogic do
         end
         project_role = @sr.protocol.project_roles.first
         NotifierLogic.new(@sr, logged_in_user).update_status_and_send_get_a_cost_estimate_email
-        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, nil, false, logged_in_user, nil, false, anything, false)
+        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, false, logged_in_user, nil, anything, false)
       end
 
       it 'should notify service providers (initial submission email)' do
@@ -319,7 +319,7 @@ RSpec.describe NotifierLogic do
         end
 
         NotifierLogic.new(@sr, logged_in_user).update_status_and_send_get_a_cost_estimate_email
-        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, logged_in_user, @ssr2, nil, false, false, false)
+        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, logged_in_user, @ssr2, nil, false, false)
       end
 
       it 'should notify admin (initial submission email)' do
@@ -330,7 +330,7 @@ RSpec.describe NotifierLogic do
         end
 
         NotifierLogic.new(@sr, logged_in_user).update_status_and_send_get_a_cost_estimate_email
-        expect(Notifier).to have_received(:notify_admin).with(@admin_email, logged_in_user, @ssr2, nil, false, false)
+        expect(Notifier).to have_received(:notify_admin).with(@admin_email, logged_in_user, @ssr2, nil, false)
       end
 
       it 'should send_user_notifications request_amendment=>false' do
@@ -340,18 +340,18 @@ RSpec.describe NotifierLogic do
         expect(@notifier_logic).to have_received(:send_user_notifications).with({:request_amendment=>false, :admin_delete_ssr=>false, :deleted_ssr=>nil})
       end
 
-      it 'should send_service_provider_notifications with the updatable SSRs equest_amendment=>false' do
+      it 'should send_service_provider_notifications with the updatable SSRs request_amendment=>false' do
         @notifier_logic =  NotifierLogic.new(@sr, logged_in_user)
         allow(@notifier_logic).to receive(:send_service_provider_notifications)
         @notifier_logic.update_status_and_send_get_a_cost_estimate_email
-        expect(@notifier_logic).to have_received(:send_service_provider_notifications).with([@ssr, @ssr2],{:request_amendment=>false})
+        expect(@notifier_logic).to have_received(:send_service_provider_notifications).with([@ssr2],{:request_amendment=>false})
       end
 
       it 'should send_admin_notifications with the updatable SSRs request_amendment=>false' do
         @notifier_logic =  NotifierLogic.new(@sr, logged_in_user)
         allow(@notifier_logic).to receive(:send_admin_notifications)
         @notifier_logic.update_status_and_send_get_a_cost_estimate_email
-        expect(@notifier_logic).to have_received(:send_admin_notifications).with([@ssr, @ssr2],{:request_amendment=>false})
+        expect(@notifier_logic).to have_received(:send_admin_notifications).with([@ssr2],{:request_amendment=>false})
       end
     end
   end

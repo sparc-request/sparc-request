@@ -58,7 +58,7 @@ RSpec.describe ApplicationController, type: :controller do
         allow(controller).to receive(:current_user).and_return(jug2)
       end
 
-      context '@sub_service_request nil and Identity can edit @service_request' do
+      context 'Identity can edit @service_request' do
         it 'should authorize Identity' do
           sr = build(:service_request)
           controller.instance_variable_set(:@service_request, sr)
@@ -70,34 +70,12 @@ RSpec.describe ApplicationController, type: :controller do
         end
       end
 
-      context '@sub_service_request set and Identity can edit @sub_service_request' do
-        it 'should authorize Identity' do
-          controller.instance_variable_set(:@sub_service_request, :sub_service_request)
-          allow(jug2).to receive(:can_edit_sub_service_request?)
-            .with(:sub_service_request)
-            .and_return(true)
-          expect(controller).to_not receive(:authorization_error)
-          controller.send(:authorize_identity)
-        end
-      end
-
-      context '@sub_service_request nil and Identity cannot edit @service_request' do
+      context 'Identity cannot edit @service_request' do
         it 'should not authorize Identity' do
           sr = build(:service_request)
           controller.instance_variable_set(:@service_request, sr)
           allow(jug2).to receive(:can_edit_service_request?)
             .with(sr)
-            .and_return(false)
-          expect(controller).to receive(:authorization_error)
-          controller.send(:authorize_identity)
-        end
-      end
-
-      context '@sub_service_request set and Identity cannot edit @sub_service_request' do
-        it 'should not authorize Identity' do
-          controller.instance_variable_set(:@sub_service_request, :sub_service_request)
-          allow(jug2).to receive(:can_edit_sub_service_request?)
-            .with(:sub_service_request)
             .and_return(false)
           expect(controller).to receive(:authorization_error)
           controller.send(:authorize_identity)
@@ -160,25 +138,6 @@ RSpec.describe ApplicationController, type: :controller do
         it 'should set @service_request' do
           get :index, params: { service_request_id: service_request.id }
           expect(assigns(:service_request)).to eq service_request
-        end
-
-        context 'params[:sub_service_request_id] present' do
-          before(:each) do
-            get :index, params: { service_request_id: service_request.id,
-              sub_service_request_id: sub_service_request.id }
-          end
-
-          it 'should set @sub_service_request' do
-            expect(assigns(:sub_service_request)).to eq sub_service_request
-          end
-        end
-
-        context 'session[:sub_service_request_id] absent' do
-          before(:each) { get :index, params: { service_request_id: service_request.id } }
-
-          it 'should not set @sub_service_request' do
-            expect(assigns(:sub_service_request)).to_not be
-          end
         end
       end
     end

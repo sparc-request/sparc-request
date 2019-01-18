@@ -9,8 +9,8 @@ Rails.application.config.content_security_policy do |policy|
   #policy.font_src    :self, :https, :data
   policy.img_src     :self, :https, :data
   policy.object_src  :none
-  policy.script_src  :self, (ENV["script_src_domain"] || "*.musc.edu")
-  policy.style_src   :self, 'unsafe-inline'
+  policy.script_src  :self, :unsafe_inline, :unsafe_eval, (ENV["script_src_domain"] || "*.musc.edu")
+  policy.style_src   :self, :unsafe_inline, :unsafe_eval
 
   # Specify URI for violation reports
   # policy.report_uri "/csp-violation-report-endpoint"

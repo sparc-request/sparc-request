@@ -37,7 +37,7 @@ class RequestGrantBillingPdf
     principal_investigators = protocol.project_roles.where(:role => "pi").map{|pr| pr.identity.full_name}.join(", ")
     billing_business_managers = protocol.project_roles.where(:role => "business-grants-manager").map{|pr| pr.identity.full_name}.join(", ")
 
-    pro_number  = protocol.human_subjects_info.pro_number] if protocol.human_subjects_info
+    pro_number  = protocol.human_subjects_info.pro_number if protocol.human_subjects_info
     udak_number = protocol.udak_project_number || ""
     short_title = protocol.short_title
 

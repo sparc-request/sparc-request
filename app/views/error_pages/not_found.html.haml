@@ -29,7 +29,9 @@
 .row
   .col-sm-6.text-center
     %h4
-      %a{href: t(:error_pages)[:not_found][:link_href] }= t(:error_pages)[:not_found][:link_display]
+      = t(:error_pages)[:not_found][:link_label]
+      %a{href: t(:error_pages)[:not_found][:link_label] }= Setting.get_value("contact_us_cc")
   .col-sm-6.text-center
     %h4
-      %a{href: t(:error_pages)[:not_found][:phone_href]}= t(:error_pages)[:not_found][:phone_display]
+      = t(:error_pages)[:not_found][:phone_label]
+      %a{href: t(:error_pages)[:not_found][:phone_label] }= Setting.get_value("contact_us_phone")

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_28_192700) do
+ActiveRecord::Schema.define(version: 2019_01_22_144657) do
 
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
@@ -219,7 +219,7 @@ ActiveRecord::Schema.define(version: 2018_11_28_192700) do
     t.index ["subsidy_map_id"], name: "index_excluded_funding_sources_on_subsidy_map_id"
   end
 
-  create_table "feedbacks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+  create_table "feedbacks", id: :bigint, default: nil, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.text "message"
     t.string "email"
     t.datetime "created_at", null: false
@@ -243,7 +243,6 @@ ActiveRecord::Schema.define(version: 2018_11_28_192700) do
 
   create_table "human_subjects_info", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "protocol_id"
-    t.string "hr_number"
     t.string "pro_number"
     t.string "irb_of_record"
     t.string "submission_type"
@@ -569,7 +568,7 @@ ActiveRecord::Schema.define(version: 2018_11_28_192700) do
 
   create_table "protocols", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "type"
-    t.bigint "next_ssr_id"
+    t.integer "next_ssr_id"
     t.string "short_title"
     t.text "title"
     t.string "sponsor_name"
@@ -609,7 +608,7 @@ ActiveRecord::Schema.define(version: 2018_11_28_192700) do
     t.boolean "selected_for_epic"
     t.boolean "archived", default: false
     t.bigint "study_type_question_group_id"
-    t.bigint "research_master_id"
+    t.integer "research_master_id"
     t.integer "sub_service_requests_count", default: 0
     t.boolean "rmid_validated", default: false
     t.boolean "locked"
@@ -708,8 +707,8 @@ ActiveRecord::Schema.define(version: 2018_11_28_192700) do
   end
 
   create_table "revenue_code_ranges", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
-    t.bigint "from"
-    t.bigint "to"
+    t.integer "from"
+    t.integer "to"
     t.float "percentage"
     t.bigint "applied_org_id"
     t.string "vendor"
@@ -961,7 +960,7 @@ ActiveRecord::Schema.define(version: 2018_11_28_192700) do
     t.index ["surveyable_id", "surveyable_type"], name: "index_surveys_on_surveyable_id_and_surveyable_type"
   end
 
-  create_table "taggings", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+  create_table "taggings", id: :bigint, default: nil, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "tag_id"
     t.bigint "taggable_id"
     t.string "taggable_type"

@@ -55,7 +55,6 @@ class ProtocolsReport < ReportingModule
     attrs["Study Phase"] = "service_request.try(:protocol).try{study_phases.map(&:phase).join(', ')}"
 
     attrs["NCT #"] = "service_request.try(:protocol).try(:human_subjects_info).try(:nct_number).try{prepend(' ')}"
-    attrs["HR #"] = "service_request.try(:protocol).try(:human_subjects_info).try(:hr_number).try{prepend(' ')}"
     attrs["PRO #"] = "service_request.try(:protocol).try(:human_subjects_info).try(:pro_number).try{prepend(' ')}"
     attrs["IRB of Record"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_of_record)"
     attrs["IRB Expiration Date"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_expiration_date)"

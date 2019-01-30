@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_16_193113) do
+ActiveRecord::Schema.define(version: 2019_01_18_194740) do
 
   create_table "admin_rates", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "line_item_id"
@@ -72,7 +72,7 @@ ActiveRecord::Schema.define(version: 2018_11_16_193113) do
     t.index ["survey_id"], name: "index_associated_surveys_on_survey_id"
   end
 
-  create_table "audits", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+  create_table "audits", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.integer "auditable_id"
     t.string "auditable_type"
     t.integer "associated_id"
@@ -441,6 +441,15 @@ ActiveRecord::Schema.define(version: 2018_11_16_193113) do
     t.float "percent_subsidy", default: 0.0
     t.index ["approved_by"], name: "index_past_subsidies_on_approved_by"
     t.index ["sub_service_request_id"], name: "index_past_subsidies_on_sub_service_request_id"
+  end
+
+  create_table "patient_registrars", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+    t.integer "identity_id"
+    t.integer "organization_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["identity_id"], name: "index_patient_registrars_on_identity_id"
+    t.index ["organization_id"], name: "index_patient_registrars_on_organization_id"
   end
 
   create_table "payment_uploads", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|

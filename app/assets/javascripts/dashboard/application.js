@@ -61,5 +61,6 @@
 //= require surveyor/responses
 //= require surveyor/surveys
 //= require dashboard/navbar
+//= require notes
 
 window.Sparc = {};

@@ -62,7 +62,7 @@ class SearchController < ApplicationController
         breadcrumb:     breadcrumb_text(s),
         label:          s.name,
         value:          s.id,
-        description:    (s.description.nil? || s.description.blank?) ? t(:proper)[:catalog][:no_description] : s.description,
+        description:    s.description,
         abbreviation:   s.abbreviation,
         cpt_code_text:  cpt_code_text(s),
         eap_id_text:    eap_id_text(s),
@@ -97,7 +97,8 @@ class SearchController < ApplicationController
         eap_id_text:    item.is_a?(Service) ? eap_id_text(item) : "",
         inactive_tag:   inactive_text(item),
         breadcrumb:     breadcrumb_text(item),
-        pricing_text:   item.is_a?(Service) ? service_pricing_text(item) : ""
+        pricing_text:   item.is_a?(Service) ? service_pricing_text(item) : "",
+        description:    item.description
       }
     }
     render json: results.to_json

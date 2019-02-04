@@ -24,7 +24,7 @@
   .panel-body{ class: "#{organization.type.downcase}-display" }
     - if organization.description
       %p.description
-        = organization.description
+        = raw(organization.description)
     - if organization.type == "Program"
       - if organization.services.any? && (sub_service_request.nil? || process_ssr_found || organization.parents.include?(ssr_org))
         .program-services

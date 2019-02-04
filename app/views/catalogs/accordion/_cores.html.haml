@@ -41,6 +41,6 @@
             .panel-body.core-display
               - if c.description
                 %p.description
-                  = c.description
+                  = raw(c.description)
               .core-services
                 = render 'catalogs/accordion/services', services: c.services.select{ |serv| serv.is_available != false && serv.current_pricing_map }, service_request: service_request, sub_service_request: sub_service_request

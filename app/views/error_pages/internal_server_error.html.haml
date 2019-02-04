@@ -29,9 +29,9 @@
 .row
   .col-sm-6.text-center
     %h4
-      = t(:error_pages)[:server_error][:link_label]
-      %a{href: t(:error_pages)[:server_error][:link_label] }= Setting.get_value("contact_us_cc")
+      = t(:error_pages)[:link_display]
+      %a{href: "#{t(:error_pages)[:link_href]}#{Setting.get_value('contact_us_cc')}"}= Setting.get_value("contact_us_cc")
   .col-sm-6.text-center
     %h4
-      = t(:error_pages)[:server_error][:phone_label]
-      %a{href: t(:error_pages)[:server_error][:phone_label] }= Setting.get_value("contact_us_phone")
+      = t(:error_pages)[:phone_display]
+      %a{href: "#{t(:error_pages)[:phone_href]}#{Setting.get_value('contact_us_phone')}"}= Setting.get_value("contact_us_phone")

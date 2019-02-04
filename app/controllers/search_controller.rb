@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -62,7 +62,7 @@ class SearchController < ApplicationController
         breadcrumb:     breadcrumb_text(s),
         label:          s.name,
         value:          s.id,
-        description:    s.description,
+        description:    raw(s.description),
         abbreviation:   s.abbreviation,
         cpt_code_text:  cpt_code_text(s),
         eap_id_text:    eap_id_text(s),
@@ -98,7 +98,7 @@ class SearchController < ApplicationController
         inactive_tag:   inactive_text(item),
         breadcrumb:     breadcrumb_text(item),
         pricing_text:   item.is_a?(Service) ? service_pricing_text(item) : "",
-        description:    item.description
+        description:    raw(item.description)
       }
     }
     render json: results.to_json

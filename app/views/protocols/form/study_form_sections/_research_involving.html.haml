@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -42,11 +42,6 @@
               title: t(:protocols)[:tooltips][:nct_number]
             .col-lg-10
               = hs_form.text_field :nct_number, class: 'form-control'
-
-          .form-group.row
-            = hs_form.label :hr_number, t(:protocols)[:studies][:research_involving][:humans][:hr_number], class: 'col-lg-2 control-label'
-            .col-lg-10
-              = hs_form.text_field :hr_number, class: 'form-control'
 
           .form-group.row
             = hs_form.label :pro_number, t(:protocols)[:studies][:research_involving][:humans][:pro_number], class: 'col-lg-2 control-label', data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' }, title: t(:protocols)[:tooltips][:pro_number]

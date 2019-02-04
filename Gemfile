@@ -10,7 +10,7 @@ gem 'axlsx', git: 'https://github.com/randym/axlsx', branch: 'master'
 gem 'axlsx_rails'
 gem 'bluecloth'
 gem 'bootsnap', require: false
-gem 'bootstrap-sass'
+gem 'bootstrap-sass', '3.3.7'
 gem 'bootstrap-select-rails'
 gem 'bootstrap3-datetimepicker-rails'
 gem 'bootstrap-toggle-rails'

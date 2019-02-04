@@ -196,7 +196,7 @@ class Protocol < ApplicationRecord
   )
 
   scope :search_query, lambda { |search_attrs|
-    # Searches protocols based on 'Authorized User', 'HR#', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title', OR 'Search All'
+    # Searches protocols based on 'Authorized User', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title', OR 'Search All'
     # Protects against SQL Injection with ActiveRecord::Base::sanitize
     # inserts ! so that we can escape special characters
     escaped_search_term = search_attrs[:search_text].to_s.gsub(/[!%_]/) { |x| "\\#{x}" }
@@ -204,7 +204,6 @@ class Protocol < ApplicationRecord
 
     ### SEARCH QUERIES ###
     identity_query    = Arel::Nodes::NamedFunction.new('concat', [Identity.arel_table[:first_name], Arel::Nodes.build_quoted(' '), Identity.arel_table[:last_name]]).matches(like_search_term).or(Identity.arel_table[:email].matches(like_search_term))
-    hr_query          = HumanSubjectsInfo.arel_table[:hr_number].matches(like_search_term)
     protocol_id_query = Protocol.arel_table[:id].eq(search_attrs[:search_text])
     pro_num_query     = HumanSubjectsInfo.arel_table[:pro_number].matches(like_search_term)
     rmid_query        = Protocol.arel_table[:research_master_id].eq(search_attrs[:search_text])
@@ -219,9 +218,6 @@ class Protocol < ApplicationRecord
       others    = self.current_scope
 
       where(id: others & unscoped).distinct
-    when "HR#"
-      joins(:human_subjects_info).
-        where(hr_query).distinct
     when "PI"
       unscoped  = self.unscoped.joins(:principal_investigators).where(identity_query)
       others    = self.current_scope
@@ -238,7 +234,7 @@ class Protocol < ApplicationRecord
       where(title_query).distinct
     when ""
       joins(:identities).left_outer_joins(:human_subjects_info).
-        where(identity_query.or(protocol_id_query).or(title_query).or(hr_query).or(pro_num_query).or(rmid_query)).
+        where(identity_query.or(protocol_id_query).or(title_query).or(pro_num_query).or(rmid_query)).
         distinct
     end
   }

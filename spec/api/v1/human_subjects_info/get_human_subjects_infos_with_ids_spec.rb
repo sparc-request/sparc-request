@@ -27,7 +27,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
     before do
       5.times do
-        human_subjects_info = FactoryBot.build(:human_subjects_info, pro_number: nil, hr_number: nil)
+        human_subjects_info = FactoryBot.build(:human_subjects_info, pro_number: nil)
         @study = FactoryBot.build(:study, human_subjects_info: human_subjects_info)
         @study.save(validate: false)
       end

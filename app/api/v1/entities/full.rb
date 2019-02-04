@@ -53,7 +53,6 @@ module V1
 
     expose  :protocol_id,
             :nct_number,
-            :hr_number,
             :pro_number,
             :irb_of_record,
             :submission_type,

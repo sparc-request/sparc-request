@@ -25,7 +25,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
   describe 'GET /v1/human_subjects_infos/:id.json' do
 
     before do
-      human_subjects_info = FactoryBot.build(:human_subjects_info, pro_number: nil, hr_number: nil)
+      human_subjects_info = FactoryBot.build(:human_subjects_info, pro_number: nil)
       @study = FactoryBot.build(:study, human_subjects_info: human_subjects_info)
       @study.save(validate: false)
 

@@ -255,7 +255,7 @@ class ProtocolsController < ApplicationController
           :ind_on_hold],
         ip_patents_info_attributes: [:id, :patent_number, :inventors],
         impact_areas_attributes: [:id, :name, :other_text, :new, :_destroy],
-        human_subjects_info_attributes: [:id, :nct_number, :hr_number, :pro_number, :irb_of_record, :submission_type, :initial_irb_approval_date, :irb_approval_date, :irb_expiration_date, :approval_pending],
+        human_subjects_info_attributes: [:id, :nct_number, :pro_number, :irb_of_record, :submission_type, :initial_irb_approval_date, :irb_approval_date, :irb_expiration_date, :approval_pending],
         affiliations_attributes: [:id, :name, :new, :position, :_destroy],
         project_roles_attributes: [:id, :identity_id, :role, :project_rights, :_destroy],
         study_type_answers_attributes: [:id, :answer, :study_type_question_id, :_destroy])

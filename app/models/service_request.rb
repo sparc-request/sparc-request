@@ -473,6 +473,10 @@ class ServiceRequest < ApplicationRecord
     end
   end
 
+  def previously_submitted?
+    self.submitted_at.present?
+  end
+
   def should_push_to_epic?
     return self.line_items.any? { |li| li.should_push_to_epic? }
   end

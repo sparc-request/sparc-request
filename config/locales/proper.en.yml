@@ -266,9 +266,9 @@ en:
         answer_3: "Add as many Authorized Users as you feel is pertinent. There is no limit."
         question_4: "What is the difference  between a Research Study and a Project?"
         answer_4: "A Research Study is an individual research protocol with defined aims and outcomes."
-        question_5: "How is SPARC Request calculating my indirect costs?"
-        answer_5: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARC Request uses this data to calculate your total overall indirect costs."
-        question_6: "I'm stuck! Who can I contact for assistance with SPARC Request?"
+        question_5: "How is SPARCRequest calculating my indirect costs?"
+        answer_5: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARCRequest uses this data to calculate your total overall indirect costs."
+        question_6: "I'm stuck! Who can I contact for assistance with SPARCRequest?"
         answer_6: "The %{department_name} is happy to assist you! Please contact us at %{phone} or <a href='mailto:%{email}'>%{email}</a>."
       feedback:
         header: "Feedback"

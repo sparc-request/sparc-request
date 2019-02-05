@@ -368,22 +368,20 @@ en:
   # ERROR PAGES #
   ###############
   error_pages:
+    link_href: "mailto:"
+    link_display: "Email: "
+    phone_href: "tel:"
+    phone_display: "Call: "
+
     not_found:
       heading: "Uh, oh.  You've hit a"
       error: "Page Not Found (404)"
       help_text: "For help, contact us:"
-      link_href: "mailto:success@musc.edu"
-      link_display: "Email: success@musc.edu"
-      phone_href: "tel:843-792-8300"
-      phone_display: "Call: 843-792-8300"
+
     server_error:
       heading: "Uh, oh.  You've hit an"
       error: "Internal Server Error (500)"
       help_text: "For help, contact us:"
-      link_href: "mailto:success@musc.edu"
-      link_display: "Email: success@musc.edu"
-      phone_href: "tel:843-792-8300"
-      phone_display: "Call: 843-792-8300"
 
   #########
   # FORMS #

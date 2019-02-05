@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -59,12 +59,12 @@ SparcRails::Application.configure do
   config.force_ssl = true
 
   # Set HTTP/S security headers
-  config.action_dispatch.default_headers = {
-    'Referrer-Policy' => 'strict-origin-when-cross-origin',
-    'X-Content-Type-Options' => 'nosniff',
-    'X-Frame-Options' => 'SAMEORIGIN',
-    'X-XSS-Protection' => '1; mode=block'
-  }
+  # config.action_dispatch.default_headers = {
+  #   'Referrer-Policy' => 'strict-origin-when-cross-origin',
+  #   'X-Content-Type-Options' => 'nosniff',
+  #   'X-Frame-Options' => 'SAMEORIGIN',
+  #   'X-XSS-Protection' => '1; mode=block'
+  # }
 
   # See everything in the log (default is :info)
   # config.log_level = :debug

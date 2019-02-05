@@ -368,22 +368,20 @@ en:
   # ERROR PAGES #
   ###############
   error_pages:
+    link_href: "mailto:"
+    link_display: "Email: "
+    phone_href: "tel:"
+    phone_display: "Call: "
+
     not_found:
       heading: "Uh, oh.  You've hit a"
       error: "Page Not Found (404)"
       help_text: "For help, contact us:"
-      link_href: "mailto:success@musc.edu"
-      link_display: "Email: success@musc.edu"
-      phone_href: "tel:843-792-8300"
-      phone_display: "Call: 843-792-8300"
+
     server_error:
       heading: "Uh, oh.  You've hit an"
       error: "Internal Server Error (500)"
       help_text: "For help, contact us:"
-      link_href: "mailto:success@musc.edu"
-      link_display: "Email: success@musc.edu"
-      phone_href: "tel:843-792-8300"
-      phone_display: "Call: 843-792-8300"
 
   #########
   # FORMS #
@@ -524,7 +522,6 @@ en:
         humans:
           header: "Human Subjects"
           nct_number: "NCT# (National Clinical Trials Number):"
-          hr_number: "HR #:"
           pro_number: "PRO #:"
           record_irb: "IRB of Record:"
           submission_type: "Submission Type:"
@@ -921,7 +918,6 @@ en:
     funding_rfa: "Funding Opportunity #/RFA:"
     funding_source_other: "Please Specify"
     funding_start_date: "Funding Start Date:"
-    hr_number: "HR #:"
     human_subjects: "Human Subjects:"
     iacuc_approval_date: "IACUC Approval Date:"
     iacuc_expiration_date: "IACUC Expiration Date:"

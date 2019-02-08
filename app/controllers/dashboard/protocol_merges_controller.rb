@@ -6,11 +6,11 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
   end
 
   def perform_protocol_merge
-    master_protocol = Protocol.find(params[:master_protocol_id].to_i)
-    sub_protocol = Protocol.find(params[:sub_protocol_id].to_i)
+    master_protocol = Protocol.where(id: params[:master_protocol_id].to_i).first
+    sub_protocol = Protocol.where(id: params[:sub_protocol_id].to_i).first
 
-    
-    # flash[:alert] = 'Approval Submitted!'
+    if (master_protocol == nil) || (sub_protocol == nil)
+      flash[:alert] = 'Protocol(s) not found. Check IDs and try again.'
+    end 
   end
-
 end

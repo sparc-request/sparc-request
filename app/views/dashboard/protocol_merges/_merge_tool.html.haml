@@ -6,7 +6,7 @@
   %p &nbsp
   %p
     = label_tag 'master_protocol', 'Enter the id of the Master Protocol:' 
-    = text_field_tag 'master_protocol'
+    = text_field_tag 'master_protocol', nil, style: 'margin-left:207px'
   %p &nbsp
   %p &nbsp
   %p
@@ -15,5 +15,5 @@
   %p &nbsp
   %p &nbsp
   %p{style: 'text-align:center;'}
-    %button.btn.btn-info.navbar-btn#merge_button{ type: 'button', title: "Perform Protocol Merge"}
+    %button.btn.btn-info.navbar-btn#merge-button{ type: 'button', title: "Perform Protocol Merge"}
       = "Perform Protocol Merge"

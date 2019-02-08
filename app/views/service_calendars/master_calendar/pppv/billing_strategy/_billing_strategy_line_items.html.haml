@@ -72,7 +72,7 @@
 
       - visits = liv.ordered_visits.page(page).eager_load(line_items_visit: { line_item: { service: :pricing_maps } })
       - visits.each do |v|
-        %td.text-center.visit.visit-width{ class: "visit-#{v.id}" }
+        %td.text-center.visit.billing-visit.visit-width{ class: "visit-#{v.id}" }
           = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", visit: v, page: page, admin: admin, locked: locked
       - (Visit.per_page - visits.size).times do
         %td.visit-width &nbsp;

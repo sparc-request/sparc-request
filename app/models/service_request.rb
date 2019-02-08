@@ -128,7 +128,6 @@ class ServiceRequest < ApplicationRecord
       line_item = visit.line_items_visit.line_item
       unless line_item.valid_pppv_service_relation_quantity? visit
         line_item.reload.errors.full_messages.each{|message| (errors[:base] << message) unless errors[:base].include?(message)}
-        line_item.reload.errors.each{ |k,v| errors.add(k, v) unless errors[k].include?(v)}
       end
     end
     self.one_time_fee_line_items.each do |li|

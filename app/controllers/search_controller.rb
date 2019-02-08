@@ -28,7 +28,8 @@ class SearchController < ApplicationController
     term = params[:term].strip
     results = Service.
                 eager_load(:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]).
-                where("(services.name LIKE ? OR services.abbreviation LIKE ? OR services.cpt_code LIKE ? OR services.eap_id LIKE ?) AND services.is_available = 1", "%#{term}%", "%#{term}%", "%#{term}%", "%#{term}%").to_a
+                where("(services.name LIKE ? OR services.abbreviation LIKE ? OR services.cpt_code LIKE ? OR services.eap_id LIKE ?) AND services.is_available = 1", "%#{term}%", "%#{term}%", "%#{term}%", "%#{term}%").
+                sort_by{ |s| s.organization_hierarchy(true, false, false, true).map{ |o| [o.order, o.abbreviation] }.flatten }
 
     results.map!{ |service|
       {
@@ -59,7 +60,8 @@ class SearchController < ApplicationController
                 eager_load(:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]).
                 where("(services.name LIKE ? OR services.abbreviation LIKE ? OR services.cpt_code LIKE ? OR services.eap_id LIKE ?) AND services.is_available = 1", "%#{term}%", "%#{term}%", "%#{term}%", "%#{term}%").
                 where.not(organization_id: locked_org_ids + locked_child_ids).
-                reject { |s| (s.current_pricing_map rescue false) == false } # Why is this here? ##Agreed, why????
+                reject { |s| (s.current_pricing_map rescue false) == false }. # Why is this here? ##Agreed, why????
+                sort_by{ |s| s.organization_hierarchy(true, false, false, true).map{ |o| [o.order, o.abbreviation] }.flatten }
 
     unless @sub_service_request.nil?
       results.reject!{ |s| s.parents.exclude?(@sub_service_request.organization) }
@@ -87,19 +89,20 @@ class SearchController < ApplicationController
     org_available_query   = params[:show_available_only] == 'true' ? " AND is_available = 1" : ""
     serv_available_query  = params[:show_available_only] == 'true' ? " AND services.is_available = 1" : ""
 
-    results = Organization.
+    results = (Organization.
                 includes(parent: { parent: :parent }).
                 where("(name LIKE ? OR abbreviation LIKE ?)#{org_available_query}", "%#{term}%", "%#{term}%") +
               Service.
                 eager_load(:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]).
-                where("(services.name LIKE ? OR services.abbreviation LIKE ? OR services.cpt_code LIKE ? OR services.eap_id LIKE ?)#{serv_available_query}", "%#{term}%", "%#{term}%", "%#{term}%", "%#{term}%")
+                where("(services.name LIKE ? OR services.abbreviation LIKE ? OR services.cpt_code LIKE ? OR services.eap_id LIKE ?)#{serv_available_query}", "%#{term}%", "%#{term}%", "%#{term}%", "%#{term}%")).
+              sort_by{ |item| item.organization_hierarchy(true, false, false, true).map{ |o| [o.order, o.abbreviation] }.flatten }
 
     results.map! { |item|
       {
         id:             item.id,
         name:           item.name,
         abbreviation:   item.abbreviation,
-        type:           item.class.base_class.to_s,
+        type:           item.class.to_s,
         text_color:     "text-#{item.class.to_s.downcase}",
         cpt_code_text:  item.is_a?(Service) ? cpt_code_text(item) : "",
         eap_id_text:    item.is_a?(Service) ? eap_id_text(item) : "",

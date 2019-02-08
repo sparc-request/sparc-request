@@ -7,6 +7,7 @@ $ ->
     data =
         'master_protocol_id'  : master_protocol_id,
         'sub_protocol_id'     : sub_protocol_id
+        
     if confirm("Preparing to merge protocol #{master_protocol_id} and protocol #{sub_protocol_id}. Do you wish to continue?")
       $.ajax
             type: 'GET'

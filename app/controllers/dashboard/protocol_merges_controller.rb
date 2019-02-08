@@ -1,4 +1,5 @@
 class Dashboard::ProtocolMergesController < Dashboard::BaseController
+  before_action :authorize_overlord
   respond_to :json, :html
 
   def show
@@ -12,5 +13,16 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
     if (master_protocol == nil) || (sub_protocol == nil)
       flash[:alert] = 'Protocol(s) not found. Check IDs and try again.'
     end 
+  end
+
+  private
+
+  def authorize_overlord
+    unless @user.catalog_overlord?
+      render partial: 'service_requests/authorization_error',
+        locals: { error: 'You do not have access to perform a Protocol Merge',
+                  in_dashboard: false
+      }
+    end
   end
 end

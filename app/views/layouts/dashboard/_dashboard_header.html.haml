@@ -35,8 +35,8 @@
           %li
             %button.btn.btn-info.navbar-btn#epic-queue-btn{ type: 'button', title: t(:dashboard)[:navbar][:tooltips][:epic_queue], data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}'} }
               = t(:dashboard)[:navbar][:epic_queue]
-        - if Setting.get_value("epic_queue_access").include?(current_user.ldap_uid)
-          = link_to "Protocol Merge", dashboard_protocol_merge_path, :class => ' header_button btn btn-primary btn-md'
+        - if current_user.catalog_overlord?
+          = link_to "Protocol Merge", dashboard_protocol_merge_path, :class => ' header_button btn btn-primary btn-md', style: 'margin-top:7px;'
         - if @show_messages
           %li
             %button.btn.btn-danger.navbar-btn#messages-btn{ type: 'button', title: t(:dashboard)[:navbar][:tooltips][:messages], data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}'} }

@@ -35,6 +35,7 @@ class SurveyNotification < ActionMailer::Base
     @identity   = identity
     @ssr        = ssr
     @surveys    = surveys
+    @protocol   = @ssr.protocol
     email       = @identity.email
     subject     = t('surveyor.responses.emails.service_survey.subject', site_name: t(:proper)[:header], ssr_id: @ssr.display_id)
 

@@ -182,7 +182,7 @@ RSpec.describe Notifier do
             created_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = setup_authorized_user_audit_report
-            @mail                 = Notifier.notify_user(@project_role, @service_request, nil, @approval, identity, @report)
+            @mail                 = Notifier.notify_user(@project_role, @service_request, @approval, identity, @report)
           end
 
           # Expected service provider message is defined under request_amendment_intro
@@ -218,7 +218,7 @@ RSpec.describe Notifier do
             created_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = setup_authorized_user_audit_report
-            @mail                 = Notifier.notify_user(@project_role, @service_request, nil, @approval, identity, @report)
+            @mail                 = Notifier.notify_user(@project_role, @service_request, @approval, identity, @report)
           end
 
           it 'should show epic column' do
@@ -341,7 +341,7 @@ RSpec.describe Notifier do
             deleted_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = setup_authorized_user_audit_report
-            @mail                 = Notifier.notify_user(@project_role, @service_request, nil, @approval, identity, @report)
+            @mail                 = Notifier.notify_user(@project_role, @service_request, @approval, identity, @report)
           end
 
           # Expected service provider message is defined under request_amendment_intro
@@ -377,7 +377,7 @@ RSpec.describe Notifier do
             deleted_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = setup_authorized_user_audit_report
-            @mail                 = Notifier.notify_user(@project_role, @service_request, nil, @approval, identity, @report)
+            @mail                 = Notifier.notify_user(@project_role, @service_request, @approval, identity, @report)
           end
 
           it 'should show epic column' do

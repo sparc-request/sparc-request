@@ -86,15 +86,11 @@ class ApplicationController < ActionController::Base
 
   # Initialize the instance variables used with service requests:
   #   @service_request
-  #   @sub_service_request
-  #   @line_items_count
+  #   @sub_service_requests
   #
   # These variables are initialized from params (if set) or cookies.
   def initialize_service_request
     @service_request = nil
-    @sub_service_request = nil
-    @line_items_count = nil
-    @sub_service_requests = {}
 
     if params[:controller] == 'service_requests'
       if ServiceRequest.exists?(id: params[:id])
@@ -102,8 +98,6 @@ class ApplicationController < ActionController::Base
         # the service request is not found, display an error.
         use_existing_service_request(params[:id])
         validate_existing_service_request
-      elsif params[:from_portal]
-        create_or_use_request_from_portal(params)
       else
         # If the cookie is nil (as with visiting the main catalog for
         # the first time), then create a new service request.
@@ -120,35 +114,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # If a request is initiated by clicking the 'Add Services' button in user
-  # portal, we need to set it to 'draft' status. If we already have a draft
-  # request created this way, use that one
-  def create_or_use_request_from_portal(params)
-    protocol = Protocol.find(params[:protocol_id].to_i)
-    if (params[:has_draft] == 'true')
-      @service_request = protocol.service_requests.last
-      @line_items_count = @service_request.try(:line_items).try(:count)
-      @sub_service_requests = @service_request.cart_sub_service_requests
-      @sub_service_request = @service_request.sub_service_requests.last
-    else
-      create_new_service_request(true)
-    end
-  end
-
-  # Set @service_request, @sub_service_request, and @line_items_count from the
-  # ids stored in the session.
+  # Set @service_request from the id stored in the session.
   def use_existing_service_request(id)
     @service_request = ServiceRequest.find(id)
-    if params[:sub_service_request_id]
-      @sub_service_request = @service_request.sub_service_requests.find params[:sub_service_request_id]
-      @line_items_count = @sub_service_request.try(:line_items).try(:count)
-    else
-      @line_items_count = @service_request.try(:line_items).try(:count)
-      @sub_service_requests = @service_request.cart_sub_service_requests
-    end
   end
 
-  # Validate @service_request and @sub_service_request (after having
+  # Validate @service_request (after having
   # been set by use_existing_service_request).  Renders an error page if
   # they were not found.
   #
@@ -156,13 +127,7 @@ class ApplicationController < ActionController::Base
   # or SubServiceRequest, it will throw an error, not render a friendly
   # authorization_error. So how is this being used?
   def validate_existing_service_request
-    if @service_request.nil?
-      authorization_error "The service request you are trying to access can not be found.",
-                          "SR#{params[:id]}"
-    elsif params[:sub_service_request_id] and @sub_service_request.nil?
-      authorization_error "The service request you are trying to access can not be found.",
-                          "SSR#{params[:sub_service_request_id]}"
-    end
+    authorization_error "The service request you are trying to access can not be found.", "SR#{params[:id]}" if @service_request.nil?
   end
 
   # Create a new service request and assign it to @service_request.
@@ -186,12 +151,9 @@ class ApplicationController < ActionController::Base
 
   def authorize_identity
     # can the user edit the service request
-    # can the user edit the sub service request
     # we have a current user
     if current_user
-      if @sub_service_request.nil? and (@service_request && (@service_request.status == 'first_draft' || current_user.can_edit_service_request?(@service_request)))
-        return true
-      elsif @sub_service_request and current_user.can_edit_sub_service_request?(@sub_service_request)
+      if @service_request && (@service_request.status == 'first_draft' || current_user.can_edit_service_request?(@service_request))
         return true
       end
     elsif !@service_request.present? && not_signed_in?
@@ -205,13 +167,7 @@ class ApplicationController < ActionController::Base
       return true
     end
 
-    if @sub_service_request.nil?
-      authorization_error "The service request you are trying to access is not editable.",
-                          "SR#{params[:id]}"
-    else
-      authorization_error "The service request you are trying to access is not editable.",
-                          "SSR#{params[:sub_service_request_id]}"
-    end
+    authorization_error "The service request you are trying to access is not editable.", "SR#{params[:id]}"
   end
 
   def in_dashboard?

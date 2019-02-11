@@ -50,38 +50,6 @@ RSpec.describe CatalogsController, type: :controller do
       expect(assigns(:organization)).to eq(org)
     end
 
-    it 'should assign @process_ssr_found' do
-      protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
-      sr        = create(:service_request_without_validations, protocol: protocol)
-      org       = create(:organization)
-
-      post :update_description, params: {
-        id: org.id,
-        process_ssr_found: 'true',
-        service_request_id: sr.id
-      }, xhr: true
-
-      expect(assigns(:process_ssr_found)).to eq(true)
-    end
-
-    context '@sub_service_request present' do
-      it 'should assign @ssr_org' do
-        protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
-        sr        = create(:service_request_without_validations, protocol: protocol)
-        org       = create(:organization)
-        ssr       = create(:sub_service_request_without_validations, service_request: sr, organization: org)
-
-      post :update_description, params: {
-        id: org.id,
-        process_ssr_found: 'true',
-        service_request_id: sr.id,
-        sub_service_request_id: ssr.id
-      }, xhr: true
-
-      expect(assigns(:ssr_org)).to eq(org)
-      end
-    end
-
     it 'should render template' do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr        = create(:service_request_without_validations, protocol: protocol)

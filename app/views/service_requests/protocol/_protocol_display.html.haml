@@ -28,7 +28,7 @@
       %h4.text-danger
         = t(:errors)[:service_requests][:protocol_errors]
       = render 'shared/modal_errors', errors: @errors
-    = render 'protocols/summary', protocol: protocol, protocol_type: protocol.type, service_request: service_request, sub_service_request_id: sub_service_request_id, allow_edit: true
+    = render 'protocols/summary', protocol: protocol, protocol_type: protocol.type, service_request: service_request, allow_edit: true
     = render 'associated_users/table', protocol: protocol, service_request: service_request
   - else
     .page-header

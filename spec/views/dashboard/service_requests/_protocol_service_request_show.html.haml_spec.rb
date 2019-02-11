@@ -66,7 +66,7 @@ RSpec.describe 'dashboard/service_requests/protocol_service_request_show', type:
         
         render_protocol_service_request_show(service_request, true)
 
-        expect(response).to have_selector('button:not(.disabled)', text: 'Modify Request')
+        expect(response).to have_selector('a:not(.disabled)', text: 'Modify Request')
       end
     end
 
@@ -76,7 +76,7 @@ RSpec.describe 'dashboard/service_requests/protocol_service_request_show', type:
 
         render_protocol_service_request_show service_request
 
-        expect(response).not_to have_selector('button', text: 'Modify Request')
+        expect(response).not_to have_selector('a', text: 'Modify Request')
       end
     end
 
@@ -86,7 +86,7 @@ RSpec.describe 'dashboard/service_requests/protocol_service_request_show', type:
 
         render_protocol_service_request_show(service_request, true)
 
-        expect(response).to have_selector('button:not(.disabled)', text: 'Modify Request')
+        expect(response).to have_selector('a:not(.disabled)', text: 'Modify Request')
       end
     end
   end

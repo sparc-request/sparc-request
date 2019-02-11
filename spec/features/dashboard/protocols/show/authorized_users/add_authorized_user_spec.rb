@@ -212,11 +212,6 @@ RSpec.feature 'User wants to add an authorized user', js: true do
         wait_for_javascript_to_finish
       end
 
-      scenario 'and sees the edit button for all non-locked SSRs' do
-        expect(@page.service_requests.first.ssrs.first).to have_edit_button
-        expect(@page.service_requests.first.ssrs.second).to have_edit_button
-      end
-
       scenario 'and sees the Modify Request button for all SRs' do
         expect(@page).to have_selector('.panel-body .edit-service-request')
       end

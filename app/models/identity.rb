@@ -246,11 +246,6 @@ class Identity < ApplicationRecord
     has_correct_project_role?(sr) || self.catalog_overlord?
   end
 
-  # If a user has request or approve rights AND the request is editable, then the user can edit.
-  def can_edit_sub_service_request?(ssr)
-    ssr.can_be_edited? && has_correct_project_role?(ssr)
-  end
-
   def has_correct_project_role?(request)
     can_edit_protocol?(request.protocol)
   end

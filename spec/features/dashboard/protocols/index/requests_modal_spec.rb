@@ -86,21 +86,6 @@ RSpec.describe 'requests modal', js: true do
     end
   end
 
-  context 'user clicks "Edit" button' do
-    it 'should take user to SPARC homepage' do
-      page = visit_protocols_index_page
-      page.search_results.protocols.first.requests_button.click
-      wait_for_javascript_to_finish
-
-      expect(page).to have_requests_modal
-
-      page.requests_modal.sub_service_requests.first.edit_button.click
-        wait_for_javascript_to_finish
-
-      expect(URI.parse(current_url).path).to eq "/service_requests/#{service_request.id}/catalog"
-    end
-  end
-
   context 'user clicks "Admin Edit" button' do
     it 'should take user to Dashboard SubServiceRequest show' do
       page = visit_protocols_index_page

@@ -21,11 +21,9 @@
 class CatalogsController < ApplicationController
   before_action :initialize_service_request
   before_action :authorize_identity
-  before_action :find_locked_org_ids,       only: [:update_description]
+  before_action :find_locked_org_ids, only: [:update_description]
   
   def update_description
-    @organization       = Organization.find(params[:id])
-    @process_ssr_found  = params[:process_ssr_found] == 'true'
-    @ssr_org            = @sub_service_request.organization if @sub_service_request
+    @organization = Organization.find(params[:id])
   end
 end

@@ -14,6 +14,8 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
 
     if (master_protocol == nil) || (sub_protocol == nil)
       flash[:alert] = 'Protocol(s) not found. Check IDs and try again.'
+    elsif (master_protocol.has_clinical_services? && sub_protocol.has_clinical_services?)
+      flash[:alert] = 'Both protocols have calendars. Only one protocol may have a calendar for merge to work.'
     else
       ActiveRecord::Base.transaction do
 
@@ -107,5 +109,9 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
                   in_dashboard: false
       }
     end
+  end
+
+  def has_research?(protocol, research_type)
+    protocol.research_types_info.try(research_type) || false
   end
 end

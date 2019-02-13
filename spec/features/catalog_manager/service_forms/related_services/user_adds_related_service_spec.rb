@@ -47,7 +47,7 @@ RSpec.describe 'User adds new related service', js: true do
     fill_in 'new_related_services_search', with: @rel_serv.name
     page.execute_script %Q{ $('#new_related_services_search').trigger("keydown") }
     expect(page).to have_selector('.tt-suggestion')
-    binding.pry
+
     first('.tt-suggestion').click
     wait_for_javascript_to_finish
   end

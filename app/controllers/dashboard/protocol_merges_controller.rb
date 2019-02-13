@@ -7,6 +7,8 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
   end
 
   def perform_protocol_merge
+    merge_srs = Dashboard::MergeSrs.new()
+
     master_protocol = Protocol.where(id: params[:master_protocol_id].to_i).first
     sub_protocol = Protocol.where(id: params[:sub_protocol_id].to_i).first
 
@@ -79,8 +81,9 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
 
         #delete sub protocol
         sub_protocol.delete
-          end
-        end 
+
+        #cleanup
+        merge_srs.perform_sr_merge
       end
       flash[:success] = 'Protocol merge succesful'
     end

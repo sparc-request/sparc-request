@@ -194,7 +194,8 @@ class Identity < ApplicationRecord
     identity = Identity.where(ldap_uid: auth.uid).first
 
     unless identity
-      identity = Identity.create ldap_uid: auth.uid, first_name: auth.info.first_name, last_name: auth.info.last_name, email: auth.info.email, password: Devise.friendly_token[0,20], approved: true
+      email = auth.info.email.blank? ? auth.uid : auth.info.email # in case shibboleth doesn't return the required parameters
+      identity = Identity.create ldap_uid: auth.uid, first_name: auth.info.first_name, last_name: auth.info.last_name, email: email, password: Devise.friendly_token[0,20], approved: true
     end
     identity
   end

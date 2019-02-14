@@ -35,7 +35,7 @@ module Dashboard
 
         if latest_submitted_at
           recent_service_request.submitted_at = latest_submitted_at
-          # recent_service_request.audit_comment = AUDIT_COMMENT
+          recent_service_request.audit_comment = 'merge_srs'
           recent_service_request.save(validate: false)
         end
 
@@ -48,27 +48,27 @@ module Dashboard
 
         if earliest_original_submitted_date
           recent_service_request.original_submitted_date = earliest_original_submitted_date
-          # recent_service_request.audit_comment = AUDIT_COMMENT
+          recent_service_request.audit_comment = 'merge_srs'
           recent_service_request.save(validate: false)
         end
 
         # Move all SSR's, LineItems and ServiceRequest Notes under this recent_service_request
         protocol.sub_service_requests.where.not(service_request_id: recent_service_request.id).each do |ssr|
           ssr.service_request_id = recent_service_request.id
-          # ssr.audit_comment = AUDIT_COMMENT
+          ssr.audit_comment = 'merge_srs'
           ssr.save(validate: false)
         end
         line_items = LineItem.joins(:service_request).where(service_requests: { protocol_id: protocol.id }).where.not(service_request_id: recent_service_request.id)
         line_items.each do |li|
           li.service_request_id = recent_service_request.id
-          # li.audit_comment = AUDIT_COMMENT
+          li.audit_comment = 'merge_srs'
           li.save(validate: false)
         end
 
         protocol.service_requests.where.not(id: recent_service_request.id).each do |sr|
           sr.notes.each do |note|
             note.notable_id = recent_service_request.id
-            # note.audit_comment = AUDIT_COMMENT
+            note.audit_comment = 'merge_srs'
             note.save(validate: false)
           end
         end
@@ -83,16 +83,16 @@ module Dashboard
       protocol.service_requests.includes(:sub_service_requests).where(sub_service_requests: { id: nil }).each do |sr|
         begin
           sr.destroy
-          # sr.audits.last.update(comment: AUDIT_COMMENT)
+          sr.audits.last.update(comment: 'merge_srs')
         rescue
           # Probably a funky Note body...
           sr.notes.each do |note|
             note.notable_id = nil
-            # note.audit_comment = AUDIT_COMMENT
+            note.audit_comment = 'merge_srs'
             note.save(validate: false)
           end
           sr.reload.destroy
-          # sr.audits.last.update(comment: AUDIT_COMMENT)
+          sr.audits.last.update(comment: 'merge_srs')
         end
       end
     end

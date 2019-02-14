@@ -7,10 +7,11 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
   end
 
   def perform_protocol_merge
-    merge_srs = Dashboard::MergeSrs.new()
-
     master_protocol = Protocol.where(id: params[:master_protocol_id].to_i).first
     sub_protocol = Protocol.where(id: params[:sub_protocol_id].to_i).first
+
+    merge_srs = Dashboard::MergeSrs.new()
+    fix_ssr_ids = Dashboard::FixSsrIds.new(master_protocol)
 
     if (master_protocol == nil) || (sub_protocol == nil)
       flash[:alert] = 'Protocol(s) not found. Check IDs and try again.'
@@ -86,6 +87,7 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
 
         #cleanup
         merge_srs.perform_sr_merge
+        fix_ssr_ids.perform_id_fix
       end
       flash[:success] = 'Protocol merge succesful'
     end

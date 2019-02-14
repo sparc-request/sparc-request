@@ -25,11 +25,11 @@ RSpec.describe 'User adds new related service', js: true do
   fake_login_for_each_test
 
   before :each do
-    @institution  = create(:institution)
-    @provider     = create(:provider, parent: @institution)
-    @program      = create(:program, parent: @provider)
-    @service      = create(:service, organization: @program)
-    @rel_serv     = create(:service, organization: @program)
+    @institution  = create(:institution, :with_pricing_setup)
+    @provider     = create(:provider, :with_pricing_setup, parent: @institution)
+    @program      = create(:program, :with_pricing_setup, parent: @provider)
+    @service      = create(:service, :with_pricing_map, organization: @program)
+    @rel_serv     = create(:service, :with_pricing_map, organization: @program)
     create(:catalog_manager, organization: @institution, identity: jug2)
 
     visit catalog_manager_catalog_index_path

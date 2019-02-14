@@ -159,9 +159,21 @@
         width: 55.1%
       td.total-costs-width-template
         width: 41.7%
-
       td
         vertical-align: middle
+      td.visit.template-visit, td.visit.billing-visit:not(.locked-visit)
+        cursor: pointer
+
+        &:hover
+          a
+            color: #22527b
+          .visit-quantity
+            box-shadow: 0 0 2px 2px #ddd
+
+        .visit-quantity
+          transform: scale(1.75)
+          cursor: pointer
+
 
       .unit-type.col-sm-6,
       .qty-type

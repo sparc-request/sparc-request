@@ -82,7 +82,7 @@ class ProtocolsReport < ReportingModule
 
     if params[:show_device_cols]
       attrs["IND #"]            = "service_request.try(:protocol).try(:investigational_products_info).try(:ind_number)"
-      attrs["IDE/HDE/HUD Type"] = "InvestigationalProductsInfo::EXEMPTION_TYPES[service_request.try(:protocol).try(:investigational_products_info).try(:exemption_type)]"
+      attrs["IDE/HDE/HUD Type"] = "InvestigationalProductsInfo::EXEMPTION_TYPES.detect{ |et| et == service_request.try(:protocol).try(:investigational_products_info).try(:exemption_type) }"
       attrs["IDE/HDE/HUD #"]    = "service_request.try(:protocol).try(:investigational_products_info).try(:inv_device_number)"
     end
 

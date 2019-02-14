@@ -26,7 +26,6 @@
   = hidden_field_tag :protocol_id, @service_request.protocol.id, class: 'protocol-id'
 
 = render '/service_requests/navigation/steps', service_request: @service_request, step_text: @step_text, css_class: @css_class
-= render 'catalogs/about_section'
 = render 'catalogs/service_accordion', institutions: @institutions, locked_org_ids: @locked_org_ids
 = render 'catalogs/catalog_center', service_request: @service_request, from_portal: @from_portal, organization: nil
 = render 'catalogs/catalog_right', service_request: @service_request, sub_service_requests: @sub_service_requests

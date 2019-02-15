@@ -377,6 +377,7 @@ en:
             send_to_epic: "Send to Epic"
             core_approvals: "Administrative Approvals"
             export_to_excel: "Export to Excel"
+            survey_sent_on: "Survey Sent on: "
             resend_surveys: "Resend Surveys"
             delete_request: "Delete Request"
           timeline:

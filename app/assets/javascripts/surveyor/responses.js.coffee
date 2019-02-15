@@ -20,12 +20,14 @@
 #= require likert
 
 $(document).ready ->
+  $("[data-toggle='tooltip']").tooltip()
+
   $(document).on 'change', '.option input', ->
     question_id = $(this).parents('.option').data('question-id')
     option_id = $(this).parents('.option').data('option-id')
 
     $(".dependent-for-question-#{question_id}").addClass('hidden')
-    
+
     if $(this).is(":checked")
       $(".dependent-for-option-#{option_id}").removeClass('hidden')
     else
@@ -40,7 +42,7 @@ $(document).ready ->
 
   $(document).on 'change', '.question .selectpicker[multiple=multiple]', ->
     question_id = $(this).data('question-id')
-    option_ids = $(this).find('.option:checked').map( -> 
+    option_ids = $(this).find('.option:checked').map( ->
       $(this).data('option-id')).get()
 
     $(".dependent-for-question-#{question_id}").addClass('hidden')
@@ -96,3 +98,14 @@ $(document).ready ->
   $(document).on 'click', '#responses-panel .export button', ->
     $(this).parent().removeClass('open')
     window.location = '/surveyor/responses.xlsx'
+
+  $(document).on 'click', '.resend-survey', ->
+    $(this).prop('disabled', true)
+    response_id = $(this).data("response-id")
+    $.ajax
+      type: 'PUT'
+      url: "/surveyor/responses/#{response_id}/resend_survey"
+      data:
+        id: response_id
+      success: ->
+

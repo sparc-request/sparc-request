@@ -125,13 +125,26 @@ class Surveyor::ResponsesController < Surveyor::BaseController
     @permission_to_edit = @protocol_role.nil? ? false : @protocol_role.can_edit? if @protocol
 
     @response.destroy
-    
+
     respond_to do |format|
       format.js
     end
   end
 
   def complete
+  end
+
+  def resend_survey
+    @response = Response.find(params[:id])
+    if @response.survey.access_code == 'system-satisfaction-survey'
+      SurveyNotification.system_satisfaction_survey(@response).deliver
+      @response.update_attribute(:updated_at, Time.now)
+    else
+      SurveyNotification.service_survey([@response.survey], @response.identity, @response.try(:respondable)).deliver
+    end
+
+    @refresh = true
+    flash[:success] = 'Survey re-sent!'
   end
 
   private
@@ -198,4 +211,5 @@ class Surveyor::ResponsesController < Surveyor::BaseController
 
     responses
   end
+
 end

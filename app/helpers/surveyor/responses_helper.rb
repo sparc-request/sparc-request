@@ -45,8 +45,14 @@ module Surveyor::ResponsesHelper
         accessible_surveys.include?(response.survey)
       end
 
+    resend_permissions =
+      if !response.completed?
+        current_user.is_site_admin? || accessible_surveys.include?(response.survey)
+      end
+
     [ view_response_button(response, view_permissions),
-      edit_response_button(response, edit_permissions)
+      edit_response_button(response, edit_permissions),
+      resend_survey_button(response, resend_permissions)
     ].join('')
   end
 
@@ -87,6 +93,17 @@ module Surveyor::ResponsesHelper
       'javascript:void(0)',
       class: 'btn btn-success download-response'
     )
+  end
+
+  def resend_survey_button(response, permissions=true)
+    if @type == 'Survey'
+      content_tag(:button,
+        content_tag(:span, '', class: 'glyphicon glyphicon-share-alt', aria: { hidden: 'true'}),
+        class: ['btn btn-info resend-survey', permissions ? '' : 'disabled'],
+        title: I18n.t('surveyor.responses.tooltips.resend', klass: response.survey.class.yaml_klass),
+        data: { response_id: response.id, toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}', container: 'body'}
+      )
+    end
   end
 
   def dependency_classes(question, question_response)

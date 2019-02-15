@@ -465,6 +465,10 @@ class SubServiceRequest < ApplicationRecord
       all?{ |s| s.responses.where(respondable: self).joins(:question_responses).any? }
   end
 
+  def survey_latest_sent_date
+    self.responses.first.updated_at
+  end
+
   ###############################
   ### AUDIT REPORTING METHODS ###
   ###############################

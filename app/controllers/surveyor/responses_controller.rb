@@ -100,7 +100,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
 
     if @response.save
       SurveyNotification.system_satisfaction_survey(@response).deliver_now if @response.survey.access_code == 'system-satisfaction-survey' && Rails.application.routes.recognize_path(request.referrer)[:action] == 'review'
-      flash[:success] = t(:surveyor)[:responses][:create]
+      flash[:success] = t(:surveyor)[:responses][:completed]
     end
 
     respond_to do |format|
@@ -110,7 +110,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
 
   def update
     if @response.update_attributes(response_params)
-      flash[:success] = t(:surveyor)[:responses][:update]
+      flash[:success] = t(:surveyor)[:responses][:completed]
     end
 
     respond_to do |format|
@@ -135,16 +135,14 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   end
 
   def resend_survey
-    @response = Response.find(params[:id])
+    @response = Response.find(params[:response_id])
     if @response.survey.access_code == 'system-satisfaction-survey'
       SurveyNotification.system_satisfaction_survey(@response).deliver
       @response.update_attribute(:updated_at, Time.now)
     else
       SurveyNotification.service_survey([@response.survey], @response.identity, @response.try(:respondable)).deliver
     end
-
-    @refresh = true
-    flash[:success] = 'Survey re-sent!'
+    flash[:success] = t(:surveyor)[:responses][:resent]
   end
 
   private
@@ -190,6 +188,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   def preload_responses
     preloader = ActiveRecord::Associations::Preloader.new
     preloader.preload(@responses.select { |r| r.respondable_type == SubServiceRequest.name }, { respondable: { protocol: { primary_pi_role: :identity } } })
+    preloader.preload(@responses.select { |r| r.respondable_type == ServiceRequest.name }, { respondable: { protocol: { primary_pi_role: :identity } } })
   end
 
   def get_incomplete_form_responses

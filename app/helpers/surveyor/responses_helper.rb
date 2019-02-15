@@ -46,7 +46,9 @@ module Surveyor::ResponsesHelper
       end
 
     resend_permissions =
-      if !response.completed?
+      if response.completed?
+        false
+      else
         current_user.is_site_admin? || accessible_surveys.include?(response.survey)
       end
 
@@ -61,7 +63,7 @@ module Surveyor::ResponsesHelper
       content_tag(:span, '', class: 'glyphicon glyphicon-search', aria: { hidden: 'true' }),
       response.new_record? ? '' : surveyor_response_path(response),
       remote: true,
-      class: ['btn btn-info view-response', permissions && response.completed? ? '' : 'disabled'],
+      class: ['btn btn-primary view-response', permissions && response.completed? ? '' : 'disabled'],
       title: I18n.t('surveyor.responses.tooltips.view', klass: response.survey.class.yaml_klass),
       data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}', container: 'body' }
     )
@@ -87,18 +89,11 @@ module Surveyor::ResponsesHelper
     )
   end
 
-  def download_response_button(response)
-    link_to(
-      content_tag(:span, '', class: 'glyphicon glyphicon-download-alt', aria: { hidden: 'true' }),
-      'javascript:void(0)',
-      class: 'btn btn-success download-response'
-    )
-  end
-
   def resend_survey_button(response, permissions=true)
     if @type == 'Survey'
-      content_tag(:button,
+      link_to(
         content_tag(:span, '', class: 'glyphicon glyphicon-share-alt', aria: { hidden: 'true'}),
+        surveyor_response_resend_survey_path(response), method: :put, remote: true,
         class: ['btn btn-info resend-survey', permissions ? '' : 'disabled'],
         title: I18n.t('surveyor.responses.tooltips.resend', klass: response.survey.class.yaml_klass),
         data: { response_id: response.id, toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}', container: 'body'}

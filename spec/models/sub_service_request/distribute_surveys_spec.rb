@@ -38,7 +38,9 @@ RSpec.describe SubServiceRequest, type: :model do
         @sub_service_request  = create(:sub_service_request_without_validations,
                                         service_request: @service_request,
                                         organization: @organization,
-                                        service_requester_id:  @service_requester.id)
+                                        service_requester_id:  @service_requester.id,
+                                        owner: build(:identity))
+
         @service              = create(:service_without_validations, organization_id:  @organization.id)
         @line_item            = create(:line_item_without_validations,
                                         service_request_id: @service_request.id,

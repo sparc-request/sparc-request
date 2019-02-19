@@ -466,7 +466,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def survey_latest_sent_date
-    self.responses.first.updated_at
+    self.responses.joins(:survey).where(surveys: { type: 'SystemSurvey' }).first.updated_at
   end
 
   ###############################

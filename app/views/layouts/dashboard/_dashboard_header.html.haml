@@ -21,11 +21,10 @@
 %nav.navbar.navbar-default.portal-nav
   .container-fluid
     .navbar-header
-      - if @show_navbar
-        %ul.nav.navbar-nav
-          - Setting.get_value("navbar_links").each do |identifier, details|
-            = navbar_link(identifier, details, @highlighted_link)
-      - else
+      %ul.nav.navbar-nav
+        - Setting.get_value("navbar_links").each do |identifier, details|
+          = navbar_link(identifier, details, @highlighted_link)
+      - unless @disable_breadcrumb
         %ol.breadcrumb
           = session[:breadcrumbs].breadcrumbs
 

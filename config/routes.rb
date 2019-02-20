@@ -37,6 +37,7 @@ SparcRails::Application.routes.draw do
     resources :options, only: [:create, :destroy]
     resources :responses do
       get :complete
+      put :resend_survey
     end
     resources :response_filters, only: [:new, :create, :destroy]
     resources :survey_updater, only: [:update]

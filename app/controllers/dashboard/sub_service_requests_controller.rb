@@ -153,6 +153,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       flash[:alert] = 'All surveys have already been completed.'
     else
       @sub_service_request.distribute_surveys
+      @refresh = true
       flash[:success] = 'Surveys re-sent!'
     end
   end

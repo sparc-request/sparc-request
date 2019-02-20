@@ -24,10 +24,9 @@ RSpec.describe SurveyNotification do
 
   let(:identity)  { create(:identity, email: 'nobody@nowhere.com') }
   let(:org)       { create(:organization) }
-  let(:ssr)       { create(:sub_service_request_without_validations, organization: org) }
-  let(:protocol)  { create(:protocol_without_validations, type: "Study")}
-  let(:service_request) { create(:service_request_without_validations, protocol: protocol)}
-  let(:ssr)       { create(:sub_service_request_without_validations, organization: org, protocol: protocol, service_request: service_request) }
+  let(:ssr)       { create(:sub_service_request_without_validations, organization: org, protocol: protocol, service_request: service_request, owner: build(:identity)) }
+  let(:protocol)  { create(:protocol_without_validations, type: "Study") }
+  let(:service_request) { create(:service_request_without_validations, protocol: protocol) }
   let(:pi)        { create(:project_role, identity_id:  identity.id, protocol:  protocol) }
 
   before :each do

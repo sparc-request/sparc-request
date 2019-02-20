@@ -19,19 +19,12 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 def create_ldap_filter(term)
-  ldap_settings = Setting.where(group: "ldap_settings")
-  ldap_config = Hash.new
-  ldap_settings.each{|setting| ldap_config[setting.key] = setting.value}
-  ldap_uid            = ldap_config['ldap_uid']
-  ldap_last_name      = ldap_config['ldap_last_name']
-  ldap_first_name     = ldap_config['ldap_first_name']
-  ldap_email          = ldap_config['ldap_email']
 
   fields = [
-    ldap_uid,
-    ldap_last_name,
-    ldap_first_name,
-    ldap_email
+    Directory.ldap_uid,
+    Directory.ldap_last_name,
+    Directory.ldap_first_name,
+    Directory.ldap_email
   ]
 
   return fields.map {|f| Net::LDAP::Filter.contains(f, term)}.inject(:|)

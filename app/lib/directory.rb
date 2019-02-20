@@ -21,6 +21,18 @@
 require 'net/ldap'
 
 class Directory
+  mattr_accessor :ldap_host
+  mattr_accessor :ldap_post
+  mattr_accessor :ldap_base
+  mattr_accessor :ldap_encryption
+  mattr_accessor :ldap_domain
+  mattr_accessor :ldap_uid
+  mattr_accessor :ldap_last_name
+  mattr_accessor :ldap_first_name
+  mattr_accessor :ldap_email
+  mattr_accessor :ldap_auth_username
+  mattr_accessor :ldap_auth_password
+  mattr_accessor :ldap_filter
 
   begin
     use_ldap = Setting.get_value("use_ldap") || Rails.env == 'test'
@@ -41,18 +53,18 @@ class Directory
         ldap_config = Hash.new
         ldap_settings.each{|setting| ldap_config[setting.key] = setting.value}
         begin
-          $ldap_host           = ldap_config['ldap_host']
-          $ldap_port           = ldap_config['ldap_port']
-          $ldap_base           = ldap_config['ldap_base']
-          $ldap_encryption     = ldap_config['ldap_encryption'].to_sym
-          $domain              = ldap_config['ldap_domain']
-          $ldap_uid            = ldap_config['ldap_uid']
-          $ldap_last_name      = ldap_config['ldap_last_name']
-          $ldap_first_name     = ldap_config['ldap_first_name']
-          $ldap_email          = ldap_config['ldap_email']
-          $ldap_auth_username  = ldap_config['ldap_auth_username']
-          $ldap_auth_password  = ldap_config['ldap_auth_password']
-          $ldap_filter         = ldap_config['ldap_filter']
+          @@ldap_host           = ldap_config['ldap_host']
+          @@ldap_port           = ldap_config['ldap_port']
+          @@ldap_base           = ldap_config['ldap_base']
+          @@ldap_encryption     = ldap_config['ldap_encryption'].to_sym
+          @@domain              = ldap_config['ldap_domain']
+          @@ldap_uid            = ldap_config['ldap_uid']
+          @@ldap_last_name      = ldap_config['ldap_last_name']
+          @@ldap_first_name     = ldap_config['ldap_first_name']
+          @@ldap_email          = ldap_config['ldap_email']
+          @@ldap_auth_username  = ldap_config['ldap_auth_username']
+          @@ldap_auth_password  = ldap_config['ldap_auth_password']
+          @@ldap_filter         = ldap_config['ldap_filter']
         rescue
           raise "ldap settings incorrect, unable to load ldap configuration"
         end
@@ -104,7 +116,7 @@ class Directory
     identity = Identity.find_by_ldap_uid(ldap_uid)
     return identity if identity
     # search the ldap using unid, create the record in database, and then return it
-    m = /(.*)@#{$domain}/.match(ldap_uid)
+    m = /(.*)@#{@@domain}/.match(ldap_uid)
     ldap_results = self.search_ldap(m[1])
     self.create_or_update_database_from_ldap(ldap_results, [])
     Identity.find_by_ldap_uid(ldap_uid)
@@ -114,20 +126,20 @@ class Directory
   # Net::LDAP::Entry.
   def self.search_ldap(term)
     # Set the search fields from the constants provided
-    fields = [$ldap_uid, $ldap_last_name, $ldap_first_name, $ldap_email]
+    fields = [@@ldap_uid, @@ldap_last_name, @@ldap_first_name, @@ldap_email]
     combined_res = nil
 
     # query ldap and create new identities
     begin
-      $ldap_base.each do |base|
+      @@ldap_base.each do |base|
         ldap = Net::LDAP.new(
-           host: $ldap_host,
-           port: $ldap_port,
+           host: @@ldap_host,
+           port: @@ldap_port,
            base: base,
-           encryption: $ldap_encryption)
-        ldap.auth $ldap_auth_username, $ldap_auth_password if $ldap_auth_username.present? && $ldap_auth_password.present?
-        # use $ldap_filter to override default filter with custom string
-        filter = ($ldap_filter.present? && $ldap_filter.gsub('#{term}', term)) || fields.map { |f| Net::LDAP::Filter.contains(f, term) }.inject(:|)
+           encryption: @@ldap_encryption)
+        ldap.auth @@ldap_auth_username, @@ldap_auth_password if @@ldap_auth_username.present? && @@ldap_auth_password.present?
+        # use @@ldap_filter to override default filter with custom string
+        filter = (@@ldap_filter.present? && @@ldap_filter.gsub('#{term}', term)) || fields.map { |f| Net::LDAP::Filter.contains(f, term) }.inject(:|)
         res = ldap.search(:attributes => fields, :filter => filter)
         if res
           if combined_res.is_a? Array  # we have results from a previous base search
@@ -187,10 +199,10 @@ class Directory
 
     ldap_results.each do |r|
       begin
-        uid         = "#{r[$ldap_uid].try(:first).try(:downcase)}@#{$domain}"
-        email       = r[$ldap_email].try(:first)
-        first_name  = r[$ldap_first_name].try(:first)
-        last_name   = r[$ldap_last_name].try(:first)
+        uid         = "#{r[@@ldap_uid].try(:first).try(:downcase)}@#{@@domain}"
+        email       = r[@@ldap_email].try(:first)
+        first_name  = r[@@ldap_first_name].try(:first)
+        last_name   = r[@@ldap_last_name].try(:first)
 
         # Check to see if the identity is already in the database
         if (identity = identities[uid]) or (identity = Identity.find_by_ldap_uid uid) then
@@ -238,7 +250,7 @@ class Directory
 
   def self.find_for_cas_oauth(cas_uid)
     # first check if the identity already exists, ldap_uid is cas_uid@utah.edu
-    ldap_uid = "#{cas_uid}@#{$domain}"
+    ldap_uid = "#{cas_uid}@#{@@domain}"
     db_result = Identity.find_by_ldap_uid(ldap_uid)
     return db_result unless db_result.nil?
     # if this is the first time, the user tries to login via cas, create an identity for it
@@ -259,13 +271,13 @@ class Directory
     end
     ldap_results = Directory.search_ldap(term)
     ldap_results.each do |ldap_result|
-      uid = "#{ldap_result[$ldap_uid].try(:first).try(:downcase)}@#{$domain}"
+      uid = "#{ldap_result[@@ldap_uid].try(:first).try(:downcase)}@#{@@domain}"
       if identities[uid]
         results << identities[uid]
       else
-        email = ldap_result[$ldap_email].try(:first)
+        email = ldap_result[@@ldap_email].try(:first)
         if email && email.strip.length > 0 # all SPARC users must have an email, this filters out some of the inactive LDAP users.
-          results << Identity.new(ldap_uid: uid, first_name: ldap_result[$ldap_first_name].try(:first), last_name: ldap_result[$ldap_last_name].try(:first), email: email)
+          results << Identity.new(ldap_uid: uid, first_name: ldap_result[@@ldap_first_name].try(:first), last_name: ldap_result[@@ldap_last_name].try(:first), email: email)
         end
       end
     end

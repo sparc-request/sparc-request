@@ -71,6 +71,7 @@ en:
           srid: "SRID"
           short_title: "Short Title"
           primary_pi: "Primary PI"
+          request_owner: "Request Owner"
           title: "%{type} Title"
           complete: "Complete"
           date: "Date"

@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2018 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,28 +18,12 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class SurveyNotification < ActionMailer::Base
-  add_template_helper(ApplicationHelper)
-
-  def system_satisfaction_survey(response)
-    @response = response
-    @identity = Identity.find(response.identity_id)
-    email     = Setting.get_value("admin_mail_to")
-    cc        = Setting.get_value("system_satisfaction_survey_cc")
-    subject   = t('surveyor.responses.emails.system_satisfaction.subject', site_name: t(:proper)[:header])
-
-    mail(to: email, cc: cc, from: @identity.email, subject: subject)
+class Status
+  def self.updatable?(status)
+    Setting.get_value('updatable_statuses').include?(status)
   end
 
-  def service_survey(surveys, identity, ssr)
-    @identity   = identity
-    @ssr        = ssr
-    @surveys    = surveys
-    @protocol   = @ssr.protocol
-    email       = @identity.email
-    subject     = t('surveyor.responses.emails.service_survey.subject', site_name: t(:proper)[:header], ssr_id: @ssr.display_id)
-
-    mail(to: email, from: Setting.get_value("no_reply_from"), subject: subject)
+  def self.complete?(status)
+    Setting.get_value('finished_statuses').include?(status)
   end
-
 end

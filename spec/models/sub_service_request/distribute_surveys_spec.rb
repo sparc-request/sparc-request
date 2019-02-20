@@ -30,7 +30,7 @@ RSpec.describe SubServiceRequest, type: :model do
       before :each do
         @pi                   = create(:identity)
         @service_requester    = create(:identity)
-        @protocol             = create(:protocol_without_validations)
+        @protocol             = create(:protocol_without_validations, type: "Study")
         create(:project_role, identity_id:  @pi.id, protocol_id:  @protocol.id, role: 'primary-pi')
         @service_request      = create(:service_request_without_validations, protocol: @protocol)
         @organization         = create(:organization)

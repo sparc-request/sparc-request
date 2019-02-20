@@ -21,5 +21,5 @@
 $('#modal_place').html("<%= escape_javascript(render( 'service_requests/modals/service_already_added_modal' )) %>")
 $('#modal_place').modal('show')
 <% else %>
-$('.shopping-cart').html("<%= escape_javascript(render( 'service_requests/right_navigation/cart', service_request: @service_request, sub_service_request: @sub_service_request, sub_service_requests: @sub_service_requests, line_items_count: @line_items_count, allow_delete: true )) %>")
+$('.shopping-cart').html("<%= escape_javascript(render( 'service_requests/right_navigation/cart', service_request: @service_request, sub_service_requests: @sub_service_requests, allow_delete: true )) %>")
 <% end %>

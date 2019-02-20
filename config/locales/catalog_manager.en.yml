@@ -20,7 +20,7 @@
 
 en:
   catalog_manager:
-    header: "SPARC Request Services Catalog"
+    header: "SPARCRequest Services Catalog"
     headers:
       actions: "Actions"
       automatic: "Automatic Pricing Adjustment"

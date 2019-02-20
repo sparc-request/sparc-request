@@ -257,6 +257,10 @@ SparcRails::Application.routes.draw do
     resources :epic_queues, only: [:index, :destroy]
     resources :epic_queue_records, only: [:index]
 
+    resource :protocol_merge do
+      get :perform_protocol_merge
+    end
+
     resources :fulfillments
 
     resources :line_items do

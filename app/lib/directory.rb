@@ -25,7 +25,7 @@ class Directory
   mattr_accessor :ldap_port
   mattr_accessor :ldap_base
   mattr_accessor :ldap_encryption
-  mattr_accessor :ldap_domain
+  mattr_accessor :domain
   mattr_accessor :ldap_uid
   mattr_accessor :ldap_last_name
   mattr_accessor :ldap_first_name

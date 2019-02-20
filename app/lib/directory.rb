@@ -22,7 +22,7 @@ require 'net/ldap'
 
 class Directory
   mattr_accessor :ldap_host
-  mattr_accessor :ldap_post
+  mattr_accessor :ldap_port
   mattr_accessor :ldap_base
   mattr_accessor :ldap_encryption
   mattr_accessor :ldap_domain

@@ -148,8 +148,8 @@ initialize_org_search = () ->
   ).on('typeahead:render', (event, a, b, c) ->
     $('.twitter-typeahead [data-toggle="tooltip"]').tooltip({ 'delay' : { show: 1000, hide: 500 } })
   ).on('typeahead:select', (event, suggestion) ->
-    type = suggestion['type'].toLowerCase()
-    id = suggestion['id']
+    type = suggestion.type
+    id = suggestion.id
     $.ajax
       type: 'GET'
       url: "/catalog_manager/#{type}s/#{id}/edit"

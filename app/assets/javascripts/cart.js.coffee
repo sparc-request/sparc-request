@@ -29,23 +29,21 @@ window.cart =
     if has_protocol == 0 && li_count == 0
       $('#modal_place').html($('#new-request-modal').html())
       $('#modal_place').modal('show')
-      $('#modal_place .yes-button').data('srid', srid)
-      $('#modal_place .yes-button').data('service-id', id)
       $('#modal_place .yes-button').on 'click', (e) ->
         $.ajax
           type: 'POST'
-          url: "/service_requests/#{srid}/add_service/#{id}"
+          url: "/service_request/add_service/#{id}"
     else
       $.ajax
         type: 'POST'
-        url: "/service_requests/#{srid}/add_service/#{id}"
+        url: "/service_request/add_service/#{id}"
 
   removeService: (id, move_on, spinner) ->
     srid = getSRId()
 
     $.ajax
-      type: 'POST'
-      url: "/service_requests/#{srid}/remove_service/#{id}"
+      type: 'DELETE'
+      url: "/service_request/remove_service/#{id}"
       success: (data, textStatus, jqXHR) ->
         if move_on
           window.location = '/dashboard'
@@ -82,7 +80,7 @@ $(document).ready ->
       $('#modal_place .yes-button').on 'click', (e) ->
         button.replaceWith(spinner)
         window.cart.removeService(id, false, spinner)
-    else if li_count == 1 && window.location.pathname.indexOf('catalog') == -1
+    else if li_count == 1 && window.location.pathname != '/' && window.location.pathname.indexOf('catalog') == -1
       # Do not allow the user to remove the last service except in the catalog
       $('#modal_place').html($('#line-item-required-modal').html())
       $('#modal_place').modal('show')

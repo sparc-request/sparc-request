@@ -21,8 +21,6 @@
 SparcRails::Application.routes.draw do
   post 'study_type/determine_study_type_note'
 
-  resources :services
-
   namespace :surveyor do
     resources :surveys, only: [:index, :new, :create, :edit, :destroy] do
       get :preview
@@ -94,29 +92,22 @@ SparcRails::Application.routes.draw do
 
   resources :subsidies, only: [:new, :create, :edit, :update, :destroy]
 
-  resources :service_requests, only: [:show] do
-    resources :projects, except: [:index, :show, :destroy]
-    resources :studies, except: [:index, :show, :destroy]
-    member do
-      get 'catalog'
-      get 'protocol'
-      get 'review'
-      get 'obtain_research_pricing'
-      get 'confirmation'
-      get 'service_details'
-      get 'service_calendar'
-      get 'service_subsidy'
-      get 'document_management'
-      post 'navigate'
-      get 'refresh_service_calendar'
-      get 'save_and_exit'
-      get 'get_help'
-      get 'approve_changes'
-    end
+  resource :service_request, only: [:show] do
+    get :catalog
+    get :protocol
+    get :service_details
+    get :service_calendar
+    get :service_subsidy
+    get :document_management
+    get :review
+    get :obtain_research_pricing
+    get :confirmation
+    get :save_and_exit
+    get :get_help
+    get :approve_changes
 
-    collection do
-      post 'feedback'
-    end
+    post :navigate
+    post :feedback
   end
 
   resources :protocols, except: [:index, :destroy] do
@@ -181,8 +172,9 @@ SparcRails::Application.routes.draw do
     end
   end
 
-  match 'service_requests/:id/add_service/:service_id' => 'service_requests#add_service', via: [:get, :post]
-  match 'service_requests/:id/remove_service/:line_item_id' => 'service_requests#remove_service', via: [:all]
+  match 'services/:service_id' => 'service_requests#catalog', via: [:get]
+  match 'service_request/add_service/:service_id' => 'service_requests#add_service', via: [:post]
+  match 'service_request/remove_service/:line_item_id' => 'service_requests#remove_service', via: [:delete]
 
   ##### sparc-services routes brought in and name-spaced
   namespace :catalog_manager do
@@ -316,8 +308,6 @@ SparcRails::Application.routes.draw do
     end
 
     resources :protocol_filters, only: [:new, :create, :destroy]
-
-    resources :service_requests, only: [:show]
 
     resources :studies, controller: :protocols, except: [:destroy]
 

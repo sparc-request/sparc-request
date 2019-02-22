@@ -33,5 +33,5 @@
       .form-group
         = render 'protocols/push_to_epic', protocol: @protocol
     .form-group.text-center
-      = link_to t(:proper)[:confirmation][:download_request], service_request_path(format: :xlsx, report_type: 'request_report'), class: 'btn btn-lg btn-success'
+      = link_to t(:proper)[:confirmation][:download_request], service_request_path(srid: @service_request.id, format: :xlsx, report_type: 'request_report'), class: 'btn btn-lg btn-success'
       = link_to t(:proper)[:confirmation][:to_dashboard], Setting.get_value("dashboard_link"), class: 'btn btn-lg btn-success'

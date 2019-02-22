@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .col-md-3.catalog-right
   .shopping-cart
-    = render 'service_requests/right_navigation/cart', service_request: service_request, sub_service_request: sub_service_request, sub_service_requests: sub_service_requests, line_items_count: line_items_count, allow_delete: true
+    = render 'service_requests/right_navigation/cart', service_request: service_request, sub_service_requests: sub_service_requests, allow_delete: true
   .nav-buttons
-    = link_to t(:actions)[:continue], protocol_service_request_path(service_request, sub_service_request_id: sub_service_request.try(:id)), class: 'submit-request-button btn btn-success btn-lg btn-block'
+    = link_to t(:actions)[:continue], protocol_service_request_path(service_request), class: 'submit-request-button btn btn-success btn-lg btn-block'
     = render 'service_requests/right_navigation/right_navigation'

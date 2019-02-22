@@ -26,16 +26,24 @@ class SearchController < ApplicationController
 
   def services_search
     term = params[:term].strip
-    results = Service.where("is_available=1 AND (name LIKE '%#{term}%' OR abbreviation LIKE '%#{term}%' OR cpt_code LIKE '%#{term}%')").to_a
+    results = Service.
+                eager_load(:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]).
+                where("(services.name LIKE ? OR services.abbreviation LIKE ? OR services.cpt_code LIKE ? OR services.eap_id LIKE ?) AND services.is_available = 1", "%#{term}%", "%#{term}%", "%#{term}%", "%#{term}%").to_a
 
     results.map!{ |service|
       {
-        name: service.name,
-        id: service.id,
-        cpt_code: cpt_code_text(service),
-        breadcrumb: breadcrumb_text(service)
+        breadcrumb:     breadcrumb_text(service),
+        label:          service.name,
+        value:          service.id,
+        description:    raw(service.description),
+        abbreviation:   service.abbreviation,
+        cpt_code_text:  cpt_code_text(service),
+        eap_id_text:    eap_id_text(service),
+        pricing_text:   service_pricing_text(service),
+        term:           term
       }
     }
+
     render json: results.to_json
   end
 

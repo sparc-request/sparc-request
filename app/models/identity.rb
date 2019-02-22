@@ -194,7 +194,8 @@ class Identity < ApplicationRecord
     identity = Identity.where(ldap_uid: auth.uid).first
 
     unless identity
-      identity = Identity.create ldap_uid: auth.uid, first_name: auth.info.first_name, last_name: auth.info.last_name, email: auth.info.email, password: Devise.friendly_token[0,20], approved: true
+      email = auth.info.email.blank? ? auth.uid : auth.info.email # in case shibboleth doesn't return the required parameters
+      identity = Identity.create ldap_uid: auth.uid, first_name: auth.info.first_name, last_name: auth.info.last_name, email: email, password: Devise.friendly_token[0,20], approved: true
     end
     identity
   end
@@ -244,11 +245,6 @@ class Identity < ApplicationRecord
   # Only users with request or approve rights can edit.
   def can_edit_service_request?(sr)
     has_correct_project_role?(sr) || self.catalog_overlord?
-  end
-
-  # If a user has request or approve rights AND the request is editable, then the user can edit.
-  def can_edit_sub_service_request?(ssr)
-    ssr.can_be_edited? && has_correct_project_role?(ssr)
   end
 
   def has_correct_project_role?(request)

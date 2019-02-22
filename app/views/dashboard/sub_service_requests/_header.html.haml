@@ -44,8 +44,8 @@
 
       %tbody
         %tr
-          %td.text-center#service_request_status_dropdown
-            = select_tag "sub_service_request_status", options_for_select(ssr_select_options(sub_service_request), sub_service_request.try(:status)), :'data-sub_service_request_id' => sub_service_request.id, class: 'selectpicker'
+          %td.text-center#service_request_status_dropdown{ title: sub_service_request.previously_submitted? ? '' : t(:dashboard)[:sub_service_requests][:header][:not_submitted], data: { toggle: 'tooltip', container: 'body' } }
+            = select_tag "sub_service_request_status", options_for_select(ssr_select_options(sub_service_request), sub_service_request.try(:status)), :'data-sub_service_request_id' => sub_service_request.id, class: 'selectpicker', disabled: !sub_service_request.previously_submitted?
           %td.text-center#service_request_owner_dropdown
             = service_request_owner_display(sub_service_request)
           %td.text-center#ssr_fulfillment_status

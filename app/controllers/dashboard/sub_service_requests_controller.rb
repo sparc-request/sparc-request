@@ -102,7 +102,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   def destroy
     @protocol = @sub_service_request.protocol
     if @sub_service_request.destroy
-      notifier_logic = NotifierLogic.new(@sub_service_request.service_request, nil, current_user)
+      notifier_logic = NotifierLogic.new(@sub_service_request.service_request, current_user)
       notifier_logic.ssr_deletion_emails(deleted_ssr: @sub_service_request, ssr_destroyed: false, request_amendment: false, admin_delete_ssr: true)
 
       flash[:alert] = 'Request Destroyed!'
@@ -153,6 +153,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       flash[:alert] = 'All surveys have already been completed.'
     else
       @sub_service_request.distribute_surveys
+      @refresh = true
       flash[:success] = 'Surveys re-sent!'
     end
   end

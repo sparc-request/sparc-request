@@ -25,7 +25,6 @@
           = @survey.title
       .panel-body
         = render 'surveyor/surveys/form/preview_form', survey: @survey, f: f
-      .panel-footer
-        .clearfix
-          %button.btn.btn-primary.pull-right{ disabled: true }
-            = t(:actions)[:submit]
+      .panel-footer.justify-content-end
+        %button.btn.btn-primary{ disabled: true }
+          = t(:actions)[:submit]

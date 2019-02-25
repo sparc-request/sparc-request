@@ -17,55 +17,6 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-class ReportsController < ApplicationController
-  layout "reporting"
-  protect_from_forgery
-
-  before_action :authenticate_identity!
-  before_action :require_super_user, :only => [:index, :setup, :generate]
-  before_action :set_user
-  before_action :set_disable_breadcrumb
-
-  def set_highlighted_link
-    @highlighted_link ||= 'sparc_report'
-  end
-
-  def set_user
-    @user = current_identity
-    session['uid'] = @user.nil? ? nil : @user.id
-  end
-
-  def set_disable_breadcrumb
-    @disable_breadcrumb = true
-  end
-
-  def require_super_user
-    redirect_to root_path unless current_identity.is_super_user?
-  end
-
-  def index
-    @location = "proper"
-  end
-
-  def setup
-    report = params[:report]
-    @report = report.constantize.new
-    @date_ranges = @report.options.select{|k,v| v[:field_type] == :date_range} # select out the date ranges
-    render :layout => false
-  end
-
-  def generate
-    report_params = params[:report]
-    report = report_params[:type]
-    @report = report.constantize.new report_params
-
-    # generate excel
-    tempfile = @report.to_excel
-    send_file tempfile.path, :filename => "#{Time.now.strftime('%F')} #{@report.title}.xlsx", :disposition => 'inline', :type =>  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-
-    # generate csv
-    #tempfile = @report.to_csv
-    #send_file tempfile.path, :type => 'text/csv', :disposition => 'inline', :filename => 'report.csv'
-  end
-end
+$("#flashes_container").html("<%= j render 'shared/flash' %>")
+$('#responses-table').bootstrapTable('refresh')
+$("[data-toggle='tooltip']").tooltip()

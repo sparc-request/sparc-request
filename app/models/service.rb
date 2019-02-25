@@ -87,7 +87,7 @@ class Service < ApplicationRecord
   # Service belongs to Organization A, which belongs to
   # Organization B, which belongs to Organization C, return "C > B > A".
   # This "hierarchy" stops at a process_ssrs Organization.
-  def organization_hierarchy(include_self=false, process_ssrs=true, use_css=false)
+  def organization_hierarchy(include_self=false, process_ssrs=true, use_css=false, use_array=false)
     parent_orgs = self.parents.reverse
 
     if process_ssrs
@@ -96,7 +96,9 @@ class Service < ApplicationRecord
       root = parent_orgs.length - 1
     end
 
-    if use_css
+    if use_array
+      parent_orgs[0..root]
+    elsif use_css
       parent_orgs[0..root].map{ |o| "<span class='#{o.css_class}-text'>#{o.abbreviation}</span>"}.join('<span> / </span>') + (include_self ? '<span> / </span>' + "<span>#{self.abbreviation}</span>" : '')
     else
       parent_orgs[0..root].map(&:abbreviation).join(' > ') + (include_self ? ' > ' + self.abbreviation : '')
@@ -108,25 +110,18 @@ class Service < ApplicationRecord
   end
 
   def program
-    return core.parent if organization.type == 'Core'
+    return core.parent  if organization.type == 'Core'
     return organization if organization.type == 'Program'
   end
 
   def provider
-    org = nil
-    org = core.program.parent if organization.type == 'Core'
-    org = program.parent if organization.type == 'Program'
-    org = organization if organization.type == 'Provider'
-    org
+    return program.parent if ['Core', 'Program'].include?(organization.type)
+    return organization   if organization.type == 'Provider'
   end
 
   def institution
-    org = nil
-    org = core.program.provider.parent if organization.type == 'Core'
-    org = program.provider.parent if organization.type == 'Program'
-    org = provider.parent if organization.type == 'Provider'
-    org = organization if organization.type == 'Institution'
-    org
+    return provider.parent  if ['Core', 'Program', 'Provider'].include?(organization.type)
+    return organization     if organization.type == 'Institution'
   end
 
   # do i have any available surveys, otherwise, look up tree and return first available surveys

@@ -20,7 +20,12 @@
 .panel.panel-primary#authorized-users-panel
   .panel-heading
     %h4.panel-title
-      = link_to t(:authorized_users)[:header], '#authorized-users', data: { toggle: 'collapse' }
+      - if service_request.previously_submitted?
+        = link_to '#authorized-users', data: { toggle: 'collapse' } do
+          %span.caret
+          = t(:authorized_users)[:header]
+      - else
+        = t(:authorized_users)[:header]
   .collapse#authorized-users{ class: service_request.previously_submitted? ? '' : 'in' }
     .panel-body
       .bootstrap-table-dropdown-overflow

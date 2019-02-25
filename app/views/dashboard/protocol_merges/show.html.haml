@@ -1,4 +1,4 @@
--# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# Copyright © 2011-2018 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,25 +17,10 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.section{ class: "section-#{section.id}", data: { section_id: section.id } }
-  %br
-  %br
-  .panel.panel-default
-    .panel-heading
-      .col-sm-11.no-padding
-        = text_field_tag "section-#{section.id}-title", section.title, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:placeholders][:section][:title], maxlength: 255
-      .col-sm-1.no-padding
-        %button.btn.btn-sm.btn-danger.pull-right.delete-section{ title: t(:surveyor)[:surveys][:form][:content][:section][:delete], data: { toggle: 'tooltip', animation: 'false' } }
-          %span.glyphicon.glyphicon-trash
-    .panel-body
-      .form-group
-        .col-lg-12.no-padding
-          = text_area_tag "section-#{section.id}-description", section.description, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:placeholders][:section][:description]
 
-      .section-questions{ class: "section-#{section.id}-questions" }
-        - section.questions.each do |question|
-          = render 'surveyor/surveys/form/survey_question', survey: survey, section: section, question: question
+= render 'dashboard/protocol_merges/merge_tool.html.haml'
 
-      .form-group
-        %button.btn.btn-sm.btn-primary.add-question
-          = add_question_content
+:javascript
+  $(document).ready( function() {
+    Sparc.protocol.ready();
+  })

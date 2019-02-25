@@ -242,7 +242,7 @@ RSpec.describe 'service request list', js: true do
 
       page.service_requests.first.modify_request_button.click
 
-      expect(URI.parse(current_url).path).to eq catalog_service_request_path(srid: service_request.id)
+      expect(URI.parse(current_url).path).to eq catalog_service_request_path
     end
 
     scenario 'user clicks "View" button' do

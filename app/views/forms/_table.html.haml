@@ -22,7 +22,7 @@
 .bootstrap-table-dropdown-overflow
   #forms-custom-toolbar
 .bootstrap-table-dropdown-overflow
-  %table#forms-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: forms_path(format: :json,service_request_id: service_request.id, complete: complete.to_s, review: review.to_s), striped: "true", toolbar: "#forms-custom-toolbar" } }
+  %table#forms-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: forms_path(format: :json, srid: service_request.id, complete: complete.to_s, review: review.to_s), striped: "true", toolbar: "#forms-custom-toolbar" } }
     %thead.primary-header
       %tr
         %th.col-sm-2{ data: { field: "srid", align: "left", sortable: "true" } }

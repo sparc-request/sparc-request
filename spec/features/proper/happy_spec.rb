@@ -196,7 +196,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     wait_for_javascript_to_finish
 
     click_button 'Save'
-    wait_for_page(protocol_service_request_path(ServiceRequest.first.id))
+    wait_for_page(protocol_service_request_path)
 
     click_link 'Save and Continue'
     wait_for_javascript_to_finish

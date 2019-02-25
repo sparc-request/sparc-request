@@ -71,9 +71,8 @@ RSpec.describe 'User creates project', js: true do
       click_button 'Save'
       wait_for_javascript_to_finish
 
-      sr_protocol_page = protocol_service_request_path(@sr)
-      wait_for_page(sr_protocol_page)
-      expect(current_path).to eq(sr_protocol_page)
+      wait_for_page(protocol_service_request_path)
+      expect(current_path).to eq(protocol_service_request_path)
       expect(Project.count).to eq(1)
     end
   end

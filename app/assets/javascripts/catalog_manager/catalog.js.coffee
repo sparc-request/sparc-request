@@ -129,7 +129,7 @@ initialize_org_search = () ->
       limit: 100,
       templates: {
         suggestion: Handlebars.compile('<button class="service text-left" data-container="body" data-placement="right" data-toggle="tooltip" data-animation="false" data-html="true" title="{{description}}">
-                                          <h5 class="service-name col-sm-12 no-padding no-margin"><span class="{{text_color}}">{{type}}</span><span>: {{name}}</span> <small class="text-danger">{{inactive_tag}}</small></h5>
+                                          <h5 class="service-name col-sm-12 no-padding no-margin {{text_color}}">{{type}}: {{name}} <small class="text-danger">{{inactive_tag}}</small></h5>
                                           <span class="col-sm-12 no-padding">{{{breadcrumb}}}</span>
                                           <span class="col-sm-12 no-padding"><strong>Abbreviation:</strong> {{abbreviation}}</span>
                                           {{#if cpt_code_text}}
@@ -148,8 +148,8 @@ initialize_org_search = () ->
   ).on('typeahead:render', (event, a, b, c) ->
     $('.twitter-typeahead [data-toggle="tooltip"]').tooltip({ 'delay' : { show: 1000, hide: 500 } })
   ).on('typeahead:select', (event, suggestion) ->
-    type = suggestion['type'].toLowerCase()
-    id = suggestion['id']
+    type = suggestion.type
+    id = suggestion.id
     $.ajax
       type: 'GET'
       url: "/catalog_manager/#{type}s/#{id}/edit"

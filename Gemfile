@@ -76,6 +76,7 @@ gem 'sass'
 gem 'sass-rails'
 gem 'savon', '~> 2.2.0'
 gem 'simplecov', require: false, group: :test
+gem 'slack-notifier'
 gem 'therubyracer', '0.12.3', :platforms => :ruby, group: :production
 gem 'twitter-typeahead-rails'
 gem 'uglifier', '>= 1.0.3'

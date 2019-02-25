@@ -20,7 +20,8 @@
 
 .panel.panel-default
   .panel-heading.justify-content-between
-    = t(:dashboard)[:protocol_filters][:header]
+    %h1.panel-title
+      = t(:dashboard)[:protocol_filters][:header]
     .filter-links-container
       %a#save_filters_link{ href: "#", data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' }, title: t(:dashboard)[:protocol_filters][:tooltips][:save] }
         = t(:actions)[:save]

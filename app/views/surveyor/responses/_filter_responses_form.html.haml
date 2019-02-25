@@ -20,7 +20,8 @@
 
 .panel.panel-default
   .panel-heading.justify-content-between
-    = t(:surveyor)[:response_filters][:header]
+    %h1.panel-title
+      = t(:surveyor)[:response_filters][:header]
     .filter-links-container
       = link_to t(:actions)[:save], 'javascript:void(0)', id: 'save-filters'
       = " | "

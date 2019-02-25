@@ -38,7 +38,7 @@ RSpec.describe 'User creates project', js: true do
 
   context 'and clicks \'New Project\'' do
     scenario 'and sees the project form' do
-      visit protocol_service_request_path(@sr)
+      visit protocol_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
       click_link 'New Project'
@@ -50,7 +50,7 @@ RSpec.describe 'User creates project', js: true do
 
   context 'and fills out and submits the form' do
     scenario 'and sees the newly created protocol' do
-      visit protocol_service_request_path(@sr)
+      visit protocol_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
       click_link 'New Project'

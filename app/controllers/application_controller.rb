@@ -103,16 +103,12 @@ class ApplicationController < ActionController::Base
   def authorize_identity
     # can the user edit the service request
     # we have a current user
-    if current_user
-      if @service_request && (@service_request.status == 'first_draft' || current_user.can_edit_service_request?(@service_request))
-        return true
-      end
-    else
-      if ['catalog', 'add_service', 'remove_service', 'update_description'].include?(action_name)
-        return true
-      else
-        authenticate_identity!
-      end
+    if current_user && @service_request && (@service_request.status == 'first_draft' || current_user.can_edit_service_request?(@service_request))
+      return true
+    elsif @service_request.status == 'first_draft' && controller_name != 'protocols' && action_name != 'protocol'
+      return true
+    elsif !@service_request.new_record? && not_signed_in?
+      authenticate_identity!
     end
 
     authorization_error "The service request you are trying to access is not editable.", "SR#{params[:id]}"

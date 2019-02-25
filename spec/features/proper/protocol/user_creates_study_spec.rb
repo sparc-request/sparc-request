@@ -25,7 +25,7 @@ RSpec.describe 'User creates study', js: true do
   fake_login_for_each_test
 
   def click_new_research_study(sr)
-    visit protocol_service_request_path(sr)
+    visit protocol_service_request_path(srid: sr)
     wait_for_javascript_to_finish
 
     click_link 'New Research Study'

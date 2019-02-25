@@ -51,12 +51,8 @@ RSpec.describe 'User returns to catalog', js: true do
     create(:line_item, service_request: @sr, sub_service_request: ssr2, service: service2)
   end
 
-  def visit_protocol_page(service_request)
-    visit "/service_requests/#{service_request.id}/protocol/"
-  end
-
   before(:each) do
-    visit_protocol_page(@sr)
+    visit protocol_service_request_path(srid: @sr.id)
     click_link("Return to Catalog")
     expect(page).to have_content("Browse Service Catalog")
   end

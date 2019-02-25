@@ -108,6 +108,9 @@ SparcRails::Application.routes.draw do
 
     post :navigate
     post :feedback
+
+    resources :projects, except: [:index, :show, :destroy]
+    resources :studies, except: [:index, :show, :destroy]
   end
 
   resources :protocols, except: [:index, :destroy] do

@@ -41,7 +41,7 @@ RSpec.describe 'User deletes a form response', js: true do
   end
 
   scenario 'and sees the response was deleted' do
-    visit document_management_service_request_path(@sr)
+    visit document_management_service_request_path(srid: @sr)
     wait_for_javascript_to_finish
 
     first('.delete-response').click

@@ -81,7 +81,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     ##########
     # Step 1 #
     ##########
-    visit "/"
+    visit root_path
     wait_for_javascript_to_finish
 
     expect(page).to have_selector('.step-header', text: 'STEP 1')

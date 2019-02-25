@@ -39,7 +39,7 @@ RSpec.describe 'User completes a form', js: true do
   end
 
   scenario 'and sees the completed form' do
-    visit document_management_service_request_path(@sr)
+    visit document_management_service_request_path(srid: @sr.id)
     wait_for_javascript_to_finish
 
     first('.new-form-response').click

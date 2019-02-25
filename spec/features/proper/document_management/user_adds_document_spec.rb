@@ -39,7 +39,7 @@ RSpec.describe 'User adds a new document', js: true do
 
   context 'and clicks \'Add a Document\'' do
     scenario 'and sees the document modal' do
-      visit document_management_service_request_path(@sr)
+      visit document_management_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
       click_button 'Add a Document'
@@ -50,7 +50,7 @@ RSpec.describe 'User adds a new document', js: true do
 
     context 'and fills out the form and submits' do
       scenario 'and sees the created doument' do
-        visit document_management_service_request_path(@sr)
+        visit document_management_service_request_path(srid: @sr.id)
         wait_for_javascript_to_finish
 
         click_button 'Add a Document'

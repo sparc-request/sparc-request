@@ -67,7 +67,7 @@ RSpec.describe 'requests modal', js: true do
       page.requests_modal.modify_request_button.click
       wait_for_javascript_to_finish
 
-      expect(URI.parse(current_url).path).to eq "/service_requests/#{service_request.id}/catalog"
+      expect(URI.parse(current_url).path).to eq catalog_service_request_path(srid: service_request.id)
     end
   end
 

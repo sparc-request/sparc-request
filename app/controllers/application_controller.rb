@@ -87,7 +87,7 @@ class ApplicationController < ActionController::Base
   def initialize_service_request
     if params[:srid]
       @service_request = ServiceRequest.find(params[:srid])
-      session[:srid] = params[:srid]
+      session[:srid] = @service_request.id
       redirect_to request.path
     elsif session[:srid]
       @service_request = ServiceRequest.find(session[:srid])
@@ -103,12 +103,13 @@ class ApplicationController < ActionController::Base
   def authorize_identity
     # can the user edit the service request
     # we have a current user
-    if current_user && @service_request && (@service_request.status == 'first_draft' || current_user.can_edit_service_request?(@service_request))
+    if @service_request.status == 'first_draft'
       return true
-    elsif @service_request.status == 'first_draft' && controller_name != 'protocols' && action_name != 'protocol'
+    elsif current_user && current_user.can_edit_service_request?(@service_request)
       return true
-    elsif !@service_request.new_record? && not_signed_in?
+    elsif not_signed_in?
       authenticate_identity!
+      return true
     end
 
     authorization_error "The service request you are trying to access is not editable.", "SR#{params[:id]}"

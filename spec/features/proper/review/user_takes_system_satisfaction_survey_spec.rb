@@ -57,7 +57,7 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
         click_link 'Submit Request'
         wait_for_javascript_to_finish
 
-        expect(current_path).to eq(confirmation_service_request_path(@sr))
+        expect(current_path).to eq(confirmation_service_request_path)
       end
     end
   end

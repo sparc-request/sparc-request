@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -128,8 +128,8 @@ initialize_org_search = () ->
       source: services_bloodhound,
       limit: 100,
       templates: {
-        suggestion: Handlebars.compile('<button class="service text-left">
-                                          <h5 class="service-name col-sm-12 no-padding no-margin"><span class="{{text_color}}">{{type}}</span><span>: {{name}}</span> <small class="text-danger">{{inactive_tag}}</small></h5>
+        suggestion: Handlebars.compile('<button class="service text-left" data-container="body" data-placement="right" data-toggle="tooltip" data-animation="false" data-html="true" title="{{description}}">
+                                          <h5 class="service-name col-sm-12 no-padding no-margin {{text_color}}">{{type}}: {{name}} <small class="text-danger">{{inactive_tag}}</small></h5>
                                           <span class="col-sm-12 no-padding">{{{breadcrumb}}}</span>
                                           <span class="col-sm-12 no-padding"><strong>Abbreviation:</strong> {{abbreviation}}</span>
                                           {{#if cpt_code_text}}
@@ -145,9 +145,11 @@ initialize_org_search = () ->
         notFound: '<div class="tt-suggestion">No Results</div>'
       }
     }
+  ).on('typeahead:render', (event, a, b, c) ->
+    $('.twitter-typeahead [data-toggle="tooltip"]').tooltip({ 'delay' : { show: 1000, hide: 500 } })
   ).on('typeahead:select', (event, suggestion) ->
-    type = suggestion['type'].toLowerCase()
-    id = suggestion['id']
+    type = suggestion.type
+    id = suggestion.id
     $.ajax
       type: 'GET'
       url: "/catalog_manager/#{type}s/#{id}/edit"
@@ -275,10 +277,19 @@ window.initialize_related_services_search = () ->
       source: services_bloodhound,
       limit: 100,
       templates: {
-        suggestion: Handlebars.compile('<button class="text-left">
-                                          <strong><span class="text-service">Service</span><span>: {{name}}</span></strong><br>
-                                          {{{breadcrumb}}}<br>
-                                          <span>{{cpt_code}}</span><br>
+        suggestion: Handlebars.compile('<button class="service text-left" data-container="body" data-placement="right" data-toggle="tooltip" data-animation="false" data-html="true" title="{{description}}">
+                                          <h5 class="service-name col-sm-12 no-padding no-margin"><span class="text-service">Service</span><span>: {{label}}</span></h5>
+                                          <span class="col-sm-12 no-padding">{{{breadcrumb}}}</span>
+                                          <span class="col-sm-12 no-padding"><strong>Abbreviation:</strong> {{abbreviation}}</span>
+                                          {{#if cpt_code_text}}
+                                            {{{cpt_code_text}}}
+                                          {{/if}}
+                                          {{#if eap_id_text}}
+                                            {{{eap_id_text}}}
+                                          {{/if}}
+                                          {{#if pricing_text}}
+                                            {{{pricing_text}}}
+                                          {{/if}}
                                         </button>')
         notFound: '<div class="tt-suggestion">No Results</div>'
       }
@@ -288,8 +299,8 @@ window.initialize_related_services_search = () ->
     existing_services = $("[id*='service-relation-id-']").map ->
       return $(this).data('related-service-id')
 
-    if suggestion['id'] in existing_services
-      $('#new_related_services_search').parent().prepend("<div class='alert alert-danger alert-dismissable'>#{suggestion['name']} #{I18n['catalog_manager']['related_services_form']['service_in_list']}</div>")
+    if suggestion.value in existing_services
+      $('#new_related_services_search').parent().prepend("<div class='alert alert-danger alert-dismissable'>#{suggestion.label} #{I18n['catalog_manager']['related_services_form']['service_in_list']}</div>")
       $('.alert-dismissable').delay(3000).fadeOut()
     else
       $.ajax
@@ -297,5 +308,5 @@ window.initialize_related_services_search = () ->
         url: '/catalog_manager/services/add_related_service'
         data:
           service_id: $(this).data('service-id')
-          related_service_id: suggestion.id
+          related_service_id: suggestion.value
 );

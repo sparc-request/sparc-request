@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -59,9 +59,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @admin_protocols  = Protocol.for_admin(@user.id).pluck(:id)
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, ProtocolFilter::MAX_FILTERS)
 
-    #toggles the display of the navigation bar, instead of breadcrumbs
-    @show_navbar      = true
-    @show_messages    = true
+    #toggles the display of the breadcrumbs, navbar always displays
+    @disable_breadcrumb  = true
+    @show_messages       = true
     session[:breadcrumbs].clear
 
     setup_sorting_variables
@@ -299,7 +299,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
           :ind_on_hold],
         ip_patents_info_attributes: [:id, :patent_number, :inventors],
         impact_areas_attributes: [:id, :name, :other_text, :new, :_destroy],
-        human_subjects_info_attributes: [:id, :nct_number, :hr_number, :pro_number, :irb_of_record, :submission_type, :initial_irb_approval_date, :irb_approval_date, :irb_expiration_date, :approval_pending],
+        human_subjects_info_attributes: [:id, :nct_number, :pro_number, :irb_of_record, :submission_type, :initial_irb_approval_date, :irb_approval_date, :irb_expiration_date, :approval_pending],
         affiliations_attributes: [:id, :name, :new, :position, :_destroy],
         project_roles_attributes: [:id, :identity_id, :role, :project_rights, :_destroy],
         study_type_answers_attributes: [:id, :answer, :study_type_question_id, :_destroy])

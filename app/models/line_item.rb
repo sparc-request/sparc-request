@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -32,7 +32,7 @@ class LineItem < ApplicationRecord
   has_many :procedures
   has_many :admin_rates, dependent: :destroy
   has_many :notes, as: :notable, dependent: :destroy
-  
+
   has_many :arms, through: :line_items_visits
   has_one :protocol, through: :service_request
 
@@ -292,7 +292,7 @@ class LineItem < ApplicationRecord
       total_quantity_between_line_items = self.quantity + line_item.quantity
 
       unless (total_quantity_between_line_items == 0 or total_quantity_between_line_items == sr.linked_quantity_total)
-        self.errors.add(:invalid_total, "The quantity between #{self.service.name} and #{line_item.service.name}is not equal to the total quantity amount which is #{sr.linked_quantity_total}")
+        self.errors.add(:invalid_total, "The quantity between #{sr.service.name} and #{sr.related_service.name}is not equal to the total quantity amount which is #{sr.linked_quantity_total}")
         return false
       end
     end
@@ -316,7 +316,7 @@ class LineItem < ApplicationRecord
       v = line_item_visit.ordered_visits[visit_position]
       total_quantity_between_visits = visit.quantity_total + v.quantity_total
       if not(total_quantity_between_visits == 0 or total_quantity_between_visits == sr.linked_quantity_total)
-        first_service, second_service = [self.service.name, line_item.service.name].sort
+        first_service, second_service = [sr.service.name, sr.related_service.name].sort
         self.errors.add(:invalid_total, "The quantity on #{visit_group.name} on #{arm.name} between #{first_service} and #{second_service} is not equal to the total quantity amount which is #{sr.linked_quantity_total}")
         return false
       end

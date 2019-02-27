@@ -21,10 +21,12 @@
 %p="Dear #{@primary_pi.full_name},"
 
 %p
-  The following SPARCRequest user have been removed from your study ##{@protocol.id} (#{@protocol.short_title.strip}).
+  The following SPARCRequest user(s) have been removed from your study ##{@protocol.id} (#{@protocol.short_title.strip}).
 
 %ul
-  %li= "#{@project_role.identity.full_name}"
+  - @project_roles.each do |pr|
+    %li
+      = @pr.identity.full_name
 
 %p
   The following users are still present on the study. Each individual is listed below with the Epic responsibilities requested. Please review carefully. When ready, please click the Approve link. This will send your study information to Epic automatically. If you

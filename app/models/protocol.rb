@@ -388,17 +388,14 @@ class Protocol < ApplicationRecord
     update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
   end
 
-  def email_about_change_in_authorized_user(modified_role, action)
+  def email_about_change_in_authorized_user(modified_roles, action)
     # Alert authorized users of deleted authorized user
     # Send emails if send_authorized_user_emails is set to true and if there are any non-draft SSRs
     # For example:  if a SR has SSRs all with a status of 'draft', don't send emails
-    if Setting.get_value("send_authorized_user_emails") && sub_service_requests.where.not(status: 'draft').any?
-      alert_users = emailed_associated_users << modified_role
-      alert_users.flatten.uniq.each do |project_role|
-        unless project_role.project_rights == 'none'
-          UserMailer.authorized_user_changed(project_role.identity, self, modified_role, action).deliver unless project_role.identity.email.blank?
-        end
-      end
+    if Setting.get_value("send_authorized_user_emails") && self.service_requests.any?(&:previously_submitted?)
+      alert_users = self.emailed_associated_users + modified_roles.where.not(project_rights: 'none')
+
+      UserMailer.authorized_user_changed(self, alert_users, modified_roles, action).deliver_later
     end
   end
 
@@ -427,7 +424,7 @@ class Protocol < ApplicationRecord
   end
 
   def emailed_associated_users
-    project_roles.reject {|pr| pr.project_rights == 'none'}
+    self.project_roles.where.not(project_rights: 'none')
   end
 
   def primary_pi_exists

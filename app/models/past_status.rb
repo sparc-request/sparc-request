@@ -29,7 +29,8 @@ class PastStatus < ApplicationRecord
 
   default_scope { order('date ASC') }
 
-### audit reporting methods ###
+
+  ### audit reporting methods ###
 
   def audit_excluded_fields
     {'create' => ['sub_service_request_id', 'date']}

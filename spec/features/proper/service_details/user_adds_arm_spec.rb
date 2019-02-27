@@ -38,7 +38,7 @@ RSpec.describe 'User creates an arm', js: true do
 
   context 'and clicks the \'Add Arm\', fills out the form, and submits' do
     scenario 'and sees the created arm' do
-      visit service_details_service_request_path(@sr)
+      visit service_details_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
       click_button 'Add Arm'
       wait_for_javascript_to_finish

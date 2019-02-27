@@ -37,7 +37,7 @@ RSpec.describe 'User interacts with Consolidated Request tab', js: true do
     liv       = create(:line_items_visit, line_item: li, arm: @arm)
     visit     = create(:visit, line_items_visit: liv, visit_group: vg)
 
-    visit service_calendar_service_request_path(@sr)
+    visit service_calendar_service_request_path(srid: @sr.id)
     wait_for_javascript_to_finish
 
     click_link 'Consolidated Request Tab'
@@ -60,7 +60,7 @@ RSpec.describe 'User interacts with Consolidated Request tab', js: true do
       liv       = create(:line_items_visit, line_item: li, arm: @arm)
       visit     = create(:visit, line_items_visit: liv, visit_group: vg)
 
-      visit service_calendar_service_request_path(@sr)
+      visit service_calendar_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
       click_link 'Consolidated Request Tab'
@@ -84,7 +84,7 @@ RSpec.describe 'User interacts with Consolidated Request tab', js: true do
       liv       = create(:line_items_visit, line_item: li, arm: @arm)
       visit     = create(:visit, line_items_visit: liv, visit_group: vg)
 
-      visit service_calendar_service_request_path(@sr)
+      visit service_calendar_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
       click_link 'Consolidated Request Tab'
@@ -108,7 +108,7 @@ RSpec.describe 'User interacts with Consolidated Request tab', js: true do
       liv       = create(:line_items_visit, line_item: li, arm: @arm)
       visit     = create(:visit, line_items_visit: liv, visit_group: vg)
 
-      visit service_calendar_service_request_path(@sr)
+      visit service_calendar_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
       click_link 'Consolidated Request Tab'

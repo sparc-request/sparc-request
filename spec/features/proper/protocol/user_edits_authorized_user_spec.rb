@@ -40,7 +40,7 @@ RSpec.describe 'User wants to edit an authorized user', js: true do
 
   context 'and clicks the edit button' do
     scenario 'and sees the edit user modal' do
-      visit protocol_service_request_path(@sr)
+      visit protocol_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
       all('.edit-associated-user-button').last.click
@@ -51,7 +51,7 @@ RSpec.describe 'User wants to edit an authorized user', js: true do
 
     context 'and fills out and submits the form' do
       scenario 'and sees the updated authorized user' do
-        visit protocol_service_request_path(@sr)
+        visit protocol_service_request_path(srid: @sr.id)
         wait_for_javascript_to_finish
 
         all('.edit-associated-user-button').last.click

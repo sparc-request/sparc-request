@@ -40,7 +40,7 @@ RSpec.describe 'User deletes an arm', js: true do
 
   context 'and and clicks the delete button' do
     scenario 'and sees the arm was removed' do
-      visit service_details_service_request_path(@sr)
+      visit service_details_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
       first('.delete-arm-button').click

@@ -43,7 +43,7 @@ RSpec.describe 'User views a completed SSR', js: true do
 
     arm.visits.first.update_attributes(research_billing_qty: 5, insurance_billing_qty: 5, effort_billing_qty: 5)
 
-    visit service_calendar_service_request_path(@sr)
+    visit service_calendar_service_request_path(srid: @sr.id)
     wait_for_javascript_to_finish
   end
 

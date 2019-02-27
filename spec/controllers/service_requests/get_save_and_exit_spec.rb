@@ -51,9 +51,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
         ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
                    create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-        get :save_and_exit, params: {
-          id: sr.id
-        }, xhr: true
+        session[:srid] = sr.id
+
+        get :save_and_exit, xhr: true
 
         expect(controller).to render_template(:save_and_exit)
       end
@@ -66,9 +66,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
         ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
                    create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-        get :save_and_exit, params: {
-          id: sr.id
-        }, xhr: true
+        session[:srid] = sr.id
+
+        get :save_and_exit, xhr: true
 
         expect(controller).to respond_with(:ok)
       end
@@ -84,9 +84,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
           ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'first_draft')
                      create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
+          session[:srid] = sr.id
 
           get :save_and_exit, params: {
-            id: sr.id,
             format: :html
           }, xhr: true
 
@@ -103,8 +103,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
         ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
                    create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
+        session[:srid] = sr.id
+
         get :save_and_exit, params: {
-          id: sr.id,
           format: :html
         }, xhr: true
 
@@ -119,8 +120,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
         ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
                    create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
+        session[:srid] = sr.id
+
         get :save_and_exit, params: {
-          id: sr.id,
           format: :html
         }, xhr: true
 

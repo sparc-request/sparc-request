@@ -38,8 +38,9 @@ RSpec.describe ServiceRequestsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
+      session[:srid] = sr.id
+
       get :show, params: {
-        id: sr.id,
         report_type: 'request_report'
       }, xhr: true
 
@@ -50,8 +51,9 @@ RSpec.describe ServiceRequestsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
+      session[:srid] = sr.id
+
       get :show, params: {
-        id: sr.id,
         admin_offset: '10',
         report_type: 'request_report'
       }, xhr: true
@@ -63,8 +65,9 @@ RSpec.describe ServiceRequestsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
+      session[:srid] = sr.id
+
       get :show, params: {
-        id: sr.id,
         report_type: 'request_report'
       }, xhr: true
 
@@ -75,8 +78,9 @@ RSpec.describe ServiceRequestsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
+      session[:srid] = sr.id
+
       get :show, params: {
-        id: sr.id,
         report_type: 'coverage_analysis'
       }, xhr: true
 
@@ -87,8 +91,9 @@ RSpec.describe ServiceRequestsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
+      session[:srid] = sr.id
+
       get :show, params: {
-        id: sr.id,
         report_type: 'request_report'
       }, xhr: true
 

@@ -40,7 +40,7 @@ RSpec.describe 'User views a SSR', js: true do
 
   context 'and clicks the row' do
     scenario 'and sees the view SSR modal' do
-      visit obtain_research_pricing_service_request_path(@sr)
+      visit obtain_research_pricing_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
       find('#request-ssrs-table tbody tr').click

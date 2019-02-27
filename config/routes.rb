@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,8 +21,6 @@
 SparcRails::Application.routes.draw do
   post 'study_type/determine_study_type_note'
 
-  resources :services
-
   namespace :surveyor do
     resources :surveys, only: [:index, :new, :create, :edit, :destroy] do
       get :preview
@@ -37,6 +35,7 @@ SparcRails::Application.routes.draw do
     resources :options, only: [:create, :destroy]
     resources :responses do
       get :complete
+      put :resend_survey
     end
     resources :response_filters, only: [:new, :create, :destroy]
     resources :survey_updater, only: [:update]
@@ -94,29 +93,25 @@ SparcRails::Application.routes.draw do
 
   resources :subsidies, only: [:new, :create, :edit, :update, :destroy]
 
-  resources :service_requests, only: [:show] do
+  resource :service_request, only: [:show] do
+    get :catalog
+    get :protocol
+    get :service_details
+    get :service_calendar
+    get :service_subsidy
+    get :document_management
+    get :review
+    get :obtain_research_pricing
+    get :confirmation
+    get :save_and_exit
+    get :get_help
+    get :approve_changes
+
+    post :navigate
+    post :feedback
+
     resources :projects, except: [:index, :show, :destroy]
     resources :studies, except: [:index, :show, :destroy]
-    member do
-      get 'catalog'
-      get 'protocol'
-      get 'review'
-      get 'obtain_research_pricing'
-      get 'confirmation'
-      get 'service_details'
-      get 'service_calendar'
-      get 'service_subsidy'
-      get 'document_management'
-      post 'navigate'
-      get 'refresh_service_calendar'
-      get 'save_and_exit'
-      get 'get_help'
-      get 'approve_changes'
-    end
-
-    collection do
-      post 'feedback'
-    end
   end
 
   resources :protocols, except: [:index, :destroy] do
@@ -181,8 +176,9 @@ SparcRails::Application.routes.draw do
     end
   end
 
-  match 'service_requests/:id/add_service/:service_id' => 'service_requests#add_service', via: [:get, :post]
-  match 'service_requests/:id/remove_service/:line_item_id' => 'service_requests#remove_service', via: [:all]
+  match 'services/:service_id' => 'service_requests#catalog', via: [:get]
+  match 'service_request/add_service/:service_id' => 'service_requests#add_service', via: [:post]
+  match 'service_request/remove_service/:line_item_id' => 'service_requests#remove_service', via: [:delete]
 
   ##### sparc-services routes brought in and name-spaced
   namespace :catalog_manager do
@@ -257,6 +253,10 @@ SparcRails::Application.routes.draw do
     resources :epic_queues, only: [:index, :destroy]
     resources :epic_queue_records, only: [:index]
 
+    resource :protocol_merge do
+      get :perform_protocol_merge
+    end
+
     resources :fulfillments
 
     resources :line_items do
@@ -316,8 +316,6 @@ SparcRails::Application.routes.draw do
     end
 
     resources :protocol_filters, only: [:new, :create, :destroy]
-
-    resources :service_requests, only: [:show]
 
     resources :studies, controller: :protocols, except: [:destroy]
 

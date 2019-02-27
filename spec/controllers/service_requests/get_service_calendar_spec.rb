@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -56,8 +56,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       arm      = create(:arm, protocol: protocol)
       pages    = { arm.id.to_s => '3' }
 
+      session[:srid] = sr.id
+
       get :service_calendar, params: {
-        id: sr.id,
         pages: pages
       }, xhr: true
 
@@ -73,9 +74,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                  create(:arm, protocol: protocol)
 
-      get :service_calendar, params: {
-        id: sr.id
-      }, xhr: true
+      session[:srid] = sr.id
+
+      get :service_calendar, xhr: true
 
       expect(controller).to render_template(:service_calendar)
     end
@@ -89,9 +90,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                  create(:arm, protocol: protocol)
 
-      get :service_calendar, params: {
-        id: sr.id
-      }, xhr: true
+      session[:srid] = sr.id
+
+      get :service_calendar, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

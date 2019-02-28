@@ -46,8 +46,13 @@ SparcRails::Application.routes.draw do
 
   resources :feedback
 
-  use_shibboleth_only = Setting.get_value("use_shibboleth_only")
-  use_cas_only        = Setting.get_value("use_cas_only")
+  begin
+    use_shibboleth_only = Setting.get_value("use_shibboleth_only")
+    use_cas_only        = Setting.get_value("use_cas_only")
+  rescue
+    use_shibboleth_only = nil
+    use_cas_only = nil
+  end
 
   if use_shibboleth_only
     devise_for :identities,

@@ -128,7 +128,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   def destroy
     @epic_access = @protocol_roles.any?(&:epic_access)
     @protocol_roles.each{ |pr| EpicQueueManager.new(@protocol, current_user, pr).create_epic_queue }
-    Notifier.notify_primary_pi_for_epic_user_removal(@protocol, @protocol_roles).deliver_later if is_epic?
+    Notifier.delay.notify_primary_pi_for_epic_user_removal(@protocol, @protocol_roles) if is_epic?
     @protocol.email_about_change_in_authorized_user(@protocol_roles, "destroy")
 
     if @current_user_destroyed = @protocol_roles.map(&:identity_id).include?(@user.id)
@@ -183,7 +183,6 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
   def find_protocol_role
-    binding.pry
     if /^[0-9]+$/ =~ params[:id]
       @protocol_role  = ProjectRole.find(params[:id])
       @protocol_roles = ProjectRole.where(id: @protocol_role)

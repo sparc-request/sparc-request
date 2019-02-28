@@ -392,10 +392,11 @@ class Protocol < ApplicationRecord
     # Alert authorized users of deleted authorized user
     # Send emails if send_authorized_user_emails is set to true and if there are any non-draft SSRs
     # For example:  if a SR has SSRs all with a status of 'draft', don't send emails
-    if Setting.get_value("send_authorized_user_emails") && self.service_requests.any?(&:previously_submitted?)
-      alert_users = self.emailed_associated_users + modified_roles.where.not(project_rights: 'none')
 
-      UserMailer.authorized_user_changed(self, alert_users, modified_roles, action).deliver_later
+    if Setting.get_value("send_authorized_user_emails") && self.service_requests.any?(&:previously_submitted?)
+      alert_users = Identity.where(id: (self.emailed_associated_users + modified_roles.reject{ |pr| pr.project_rights == 'none' }).map(&:identity_id))
+
+      UserMailer.delay.authorized_user_changed(self, alert_users, modified_roles, action)
     end
   end
 

@@ -31,7 +31,7 @@ module Dashboard::AssociatedUsersHelper
   end
 
   def associated_users_delete_button(pr, permission_to_edit)
-    data  = { id: pr.id, identity_role: pr.role, toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' }
+    data  = { id: pr.id, toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' }
 
     if current_user.id == pr.identity_id && !permission_to_edit
       data[:batch_select] = {

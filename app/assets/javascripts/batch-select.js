@@ -125,6 +125,8 @@ $(document).ready( function() {
     });
 
     $el.on('click', function () {
+      var $el = $(this);
+
       swal({
         title: that.options.swalTitle,
         text: that.options.swalText,

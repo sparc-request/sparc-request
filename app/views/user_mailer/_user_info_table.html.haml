@@ -33,14 +33,14 @@
   %tbody
     - @modified_roles.each do |pr|
       %tr{:style => 'border: 1px solid black;'}
-        %td{:style => 'border: 1px solid black; text-align: center;'}
+        %td{:style => 'border: 1px solid black; text-align: center;'}<
           = pr.identity.full_name
-        %td{:style => 'border: 1px solid black; text-align: center;'}
+        %td{:style => 'border: 1px solid black; text-align: center;'}<
           = pr.identity.email
-        %td{:style => 'border: 1px solid black; text-align: center;'}
+        %td{:style => 'border: 1px solid black; text-align: center;'}<
           = pr.role.upcase
-        %td{:style => 'border: 1px solid black; text-align: center;'}
+        %td{:style => 'border: 1px solid black; text-align: center;'}<
           = pr.display_rights
         - if @protocol.selected_for_epic
-          %td{:style => 'border: 1px solid black; text-align: center;'}
+          %td{:style => 'border: 1px solid black; text-align: center;'}<
             = pr.epic_access == true ? "Yes" : "No"

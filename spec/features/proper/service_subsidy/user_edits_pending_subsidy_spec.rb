@@ -41,7 +41,7 @@ RSpec.describe 'User edits a pending subsidy', js: true do
 
   context 'and clicks the edit button' do
     scenario 'and sees the subsidy modal' do
-      visit service_subsidy_service_request_path(@sr)
+      visit service_subsidy_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
       find('.edit-subsidy-button').click
@@ -52,7 +52,7 @@ RSpec.describe 'User edits a pending subsidy', js: true do
 
     context 'and fills out the form and submits' do
       scenario 'and sees the updated pending subsidy' do
-        visit service_subsidy_service_request_path(@sr)
+        visit service_subsidy_service_request_path(srid: @sr.id)
         wait_for_javascript_to_finish
 
         find('.edit-subsidy-button').click

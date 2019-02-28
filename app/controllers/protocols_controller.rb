@@ -33,7 +33,6 @@ class ProtocolsController < ApplicationController
     @protocol_type          = params[:protocol_type]
     @protocol               = @protocol_type.capitalize.constantize.new
     @protocol.requester_id  = current_user.id
-    @service_request        = ServiceRequest.find(params[:srid])
     @protocol.populate_for_edit
     gon.rm_id_api_url = Setting.get_value("research_master_api")
     gon.rm_id_api_token = Setting.get_value("rmid_api_token")
@@ -44,7 +43,6 @@ class ProtocolsController < ApplicationController
     ### if lazy load enabled, we need create the identiy if necessary here
     attrs                                   = Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") ? fix_identity : fix_date_params
     @protocol                               = protocol_class.new(attrs)
-    @service_request                        = ServiceRequest.find(params[:srid])
     @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id if protocol_class == Study
 
     if @protocol.valid?
@@ -76,8 +74,6 @@ class ProtocolsController < ApplicationController
 
   def edit
     @protocol_type                          = @protocol.type
-    @service_request                        = ServiceRequest.find(params[:srid])
-    @sub_service_request                    = SubServiceRequest.find(params[:sub_service_request_id]) if params[:sub_service_request_id]
     @in_dashboard                           = false
     @protocol.populate_for_edit
     @protocol.valid?
@@ -99,12 +95,9 @@ class ProtocolsController < ApplicationController
       @protocol.reload
     end
 
-    attrs            = fix_date_params
-    @service_request = ServiceRequest.find(params[:srid])
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id]) if params[:sub_service_request_id]
+    attrs = fix_date_params
 
     if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
-
       flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
     else
       @errors = @protocol.errors

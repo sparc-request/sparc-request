@@ -81,7 +81,7 @@ RSpec.describe 'User should no longer see request/approve auth user', js: true d
       :subsidy_map, organization: program, max_dollar_cap: 100, max_percentage: 100
     )
 
-    visit protocol_service_request_path(sr)
+    visit protocol_service_request_path(srid: sr.id)
     find('.edit-associated-user-button').click
     wait_for_javascript_to_finish
 

@@ -31,7 +31,6 @@ class ServiceRequestsController < ApplicationController
   before_action :setup_navigation,                only:   [:navigate, :catalog, :protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
   before_action :authorize_identity,              except: [:approve_changes, :get_help, :feedback, :show]
   before_action :authenticate_identity!,          except: [:catalog, :add_service, :remove_service, :get_help, :feedback]
-  before_action :authorize_protocol_edit_request, only:   [:catalog]
   before_action :find_locked_org_ids,             only:   [:catalog]
 
   def show
@@ -52,13 +51,20 @@ class ServiceRequestsController < ApplicationController
   end
 
   def navigate
-    redirect_to eval("#{@forward}_service_request_path(@service_request)")
+    redirect_to eval("#{@forward}_service_request_path")
   end
 
   # service request wizard pages
 
   def catalog
     @institutions = Institution.all
+
+    if params[:service_id]
+      @service  = Service.find(params[:service_id])
+      @provider = @service.provider
+      @program  = @service.program
+      @core     = @service.core
+    end
 
     setup_catalog_calendar
     setup_catalog_news_feed
@@ -87,7 +93,7 @@ class ServiceRequestsController < ApplicationController
     @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
 
     if !@has_subsidy && !@eligible_for_subsidy
-      redirect_to document_management_service_request_path(@service_request)
+      redirect_to document_management_service_request_path
     end
   end
 
@@ -278,7 +284,7 @@ class ServiceRequestsController < ApplicationController
 
   def validate_catalog
     unless @service_request.group_valid?(:catalog)
-      redirect_to catalog_service_request_path(@service_request) and return false unless action_name == 'catalog'
+      redirect_to catalog_service_request_path and return false unless action_name == 'catalog'
       @errors = @service_request.errors
     end
     return true
@@ -286,7 +292,7 @@ class ServiceRequestsController < ApplicationController
 
   def validate_protocol
     unless @service_request.group_valid?(:protocol)
-      redirect_to protocol_service_request_path(@service_request) and return false unless action_name == 'protocol'
+      redirect_to protocol_service_request_path and return false unless action_name == 'protocol'
       @errors = @service_request.errors
     end
     return true
@@ -392,19 +398,6 @@ class ServiceRequestsController < ApplicationController
 
   def send_epic_notification_for_user_approval(protocol)
     Notifier.notify_for_epic_user_approval(protocol).deliver unless Setting.get_value("queue_epic")
-  end
-
-  def authorize_protocol_edit_request
-    if current_user
-      authorized  = @service_request.status == 'first_draft' || current_user.can_edit_service_request?(@service_request)
-      protocol    = @service_request.protocol
-
-      unless authorized || protocol.project_roles.find_by(identity: current_user).present?
-        @service_request     = nil
-
-        render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to edit this Request.' }
-      end
-    end
   end
 
   def set_highlighted_link

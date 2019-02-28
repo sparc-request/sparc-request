@@ -19,10 +19,10 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - protocol.service_requests.each do |sr|
   .panel.panel-default#service-requests-panel
-    .panel-heading
-      %h4.panel-title.pull-left.center-title
+    .panel-heading.justify-content-between
+      %h4.panel-title
         = "#{t(:dashboard)[:protocols][:service_requests][:header]} - #{protocol_panel_header_line(sr)}"
-      .pull-right
+      .service-request-links-container
         .dropdown>
           %button.btn.btn-primary.btn-sm.dropdown-toggle.view-consolidated{ data: { placement: 'top', delay: '{"show":"500"}', toggle: 'dropdown' }, title: t(:dashboard)[:protocols][:service_requests][:tooltips][:consolidated_request] }<
             = t(:dashboard)[:protocols][:service_requests][:view_consolidated]
@@ -48,12 +48,9 @@
             = t(:dashboard)[:protocols][:service_requests][:coverage_report]
           %ul.dropdown-menu
             %li
-              = link_to t(:calendars)[:show_chosen_services],
-                service_request_path(sr, display_all_services: false, format: :xlsx, report_type: 'coverage_analysis', show_signature_section: 1)
+              = link_to t(:calendars)[:show_chosen_services], service_request_path(srid: sr.id, display_all_services: false, format: :xlsx, report_type: 'coverage_analysis', show_signature_section: 1)
             %li
-              = link_to t(:calendars)[:show_all_services],
-                service_request_path(sr, display_all_services: true, format: :xlsx, report_type: 'coverage_analysis', show_signature_section: 1)
-      .clearfix
+              = link_to t(:calendars)[:show_all_services], service_request_path(srid: sr.id, display_all_services: true, format: :xlsx, report_type: 'coverage_analysis', show_signature_section: 1)
     .panel-body
       = render 'dashboard/service_requests/protocol_service_request_show',
         service_request: sr,

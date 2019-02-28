@@ -20,18 +20,23 @@
 @import 'proper/colors'
 
 // Panels
-.panel-primary
-  border-color: $sparc-blue !important
-  > .panel-heading
-    background: $sparc-blue !important
+.panel
+  &.panel-primary
     border-color: $sparc-blue !important
+    > .panel-heading
+      background: $sparc-blue !important
+      border-color: $sparc-blue !important
 
-.panel-info
-  border-color: $sparc-light-blue !important
-  > .panel-heading
-    background: $sparc-light-blue !important
+  &.panel-info
     border-color: $sparc-light-blue !important
-    color: white !important
+    > .panel-heading
+      background: $sparc-light-blue !important
+      border-color: $sparc-light-blue !important
+      color: white !important
+
+  .panel-heading, .panel-footer
+    @extend .d-flex
+    @extend .align-items-center
 
 
 

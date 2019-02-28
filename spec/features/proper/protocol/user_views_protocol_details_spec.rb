@@ -80,7 +80,7 @@ RSpec.describe 'User should be able to view the protocol details', js: true do
       :subsidy_map, organization: program, max_dollar_cap: 100, max_percentage: 100
     )
 
-    visit protocol_service_request_path(sr)
+    visit protocol_service_request_path(srid: sr.id)
     wait_for_javascript_to_finish
     find('.view-protocol-details-button').click
     wait_for_javascript_to_finish

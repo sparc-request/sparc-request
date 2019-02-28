@@ -31,6 +31,6 @@
           .col-lg-2
             - if p.programs.any?
               %span.caret
-      .panel-collapse.collapse{ class: "provider-#{p.id}" }
+      .panel-collapse.collapse{ class: ["provider-#{p.id}", @provider == p ? 'in' : ''] }
         .panel-body
           = render 'catalogs/accordion/programs', programs: p.programs, locked_ids: locked_ids

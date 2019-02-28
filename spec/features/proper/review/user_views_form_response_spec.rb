@@ -40,7 +40,7 @@ RSpec.describe 'User views form response', js: true do
   end
 
   scenario 'and sees it on the review page' do
-    visit review_service_request_path(@sr)
+    visit review_service_request_path(srid: @sr.id)
     wait_for_javascript_to_finish
 
     first('.view-response').click

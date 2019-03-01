@@ -99,8 +99,8 @@ RSpec.describe Dashboard::AssociatedUsersController do
           @user          = create(:identity)
           @protocol      = create(:protocol_without_validations, selected_for_epic: false, funding_status: 'funded', funding_source: 'federal')
                            create(:project_role, protocol: @protocol, identity: @user, project_rights: 'approve', role: 'primary-pi')
-          sr             = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now)
-          @ssr = create(:sub_service_request, status: 'not_draft', protocol_id: @protocol.id, organization: create(:organization), service_request: sr)
+          @sr            = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now)
+          @ssr = create(:sub_service_request, status: 'not_draft', protocol_id: @protocol.id, organization: create(:organization), service_request: @sr)
           @user_to_delete = create(:identity)
           @protocol_role = create(:project_role, protocol: @protocol, identity: @user_to_delete, project_rights: 'approve', role: 'consultant')
 
@@ -138,9 +138,9 @@ RSpec.describe Dashboard::AssociatedUsersController do
           expect(response.status).to eq(200)
         end
 
-        context "SSRs with status draft" do
+        context "SR not submitted" do
           it 'should not email user' do
-            @ssr.update_attribute(:status, 'draft')
+            @sr.update_attribute(:submitted_at, nil)
             delete :destroy, params: { id: @protocol_role.id }, xhr: true
             expect(UserMailer).not_to have_received(:authorized_user_changed)
           end

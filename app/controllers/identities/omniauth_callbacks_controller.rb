@@ -23,11 +23,6 @@ class Identities::OmniauthCallbacksController < Devise::OmniauthCallbacksControl
     @identity = Identity.find_for_shibboleth_oauth(request.env["omniauth.auth"], current_identity)
 
     if @identity.persisted?
-      if params[:srid]
-        # redirect back to catalog page
-        store_location_for @identity, catalog_service_request_path
-      end
-
       sign_in_and_redirect @identity, :event => :authentication #this will throw if @identity is not activated
       set_flash_message(:notice, :success, :kind => "Shibboleth") if is_navigational_format?
     else
@@ -40,11 +35,6 @@ class Identities::OmniauthCallbacksController < Devise::OmniauthCallbacksControl
     @identity = Identity.find_for_cas_oauth(request.env['omniauth.auth'], current_identity)
 
     if @identity.persisted?
-      if params[:srid]
-        # redirect back to catalog page
-        store_location_for @identity, catalog_service_request_path
-      end
-
       sign_in_and_redirect @identity, :event => :authentication #this will throw if @identity is not activated
       set_flash_message(:notice, :success, :kind => "CAS") if is_navigational_format?
     else

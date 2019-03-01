@@ -51,30 +51,24 @@ SparcRails::Application.routes.draw do
     use_cas_only        = Setting.get_value("use_cas_only")
   rescue
     use_shibboleth_only = nil
-    use_cas_only        = nil
+    use_cas_only = nil
   end
 
   if use_shibboleth_only
     devise_for :identities,
                controllers: {
                  omniauth_callbacks: 'identities/omniauth_callbacks',
-                 sessions: 'identities/sessions',
-                 registrations: 'identities/registrations'
                }, path_names: { sign_in: 'auth/shibboleth' }
 
   elsif use_cas_only
     devise_for :identities,
                controllers: {
                  omniauth_callbacks: 'identities/omniauth_callbacks',
-                 sessions: 'identities/sessions',
-                 registrations: 'identities/registrations'
                }, path_names: { sign_in: 'auth/cas' }
   else
     devise_for :identities,
                controllers: {
                  omniauth_callbacks: 'identities/omniauth_callbacks',
-                 sessions: 'identities/sessions',
-                 registrations:      'identities/registrations'
                }
   end
 

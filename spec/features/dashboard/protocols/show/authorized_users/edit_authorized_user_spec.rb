@@ -190,8 +190,8 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
           expect(page).not_to have_css '.edit-associated-user-button.disabled'
           expect(page).to have_css '.edit-associated-user-button:not(.disabled)'
 
-          expect(page).not_to have_css '.delete-associated-user-button.disabled'
-          expect(page).to have_css '.delete-associated-user-button:not(.disabled)'
+          expect(page).to have_selector('.delete-associated-user-button.disabled')
+          expect(page).to have_selector('.delete-associated-user-button:not(.disabled)')
         end
       end
 

@@ -216,7 +216,7 @@ class Notifier < ActionMailer::Base
   def notify_primary_pi_for_epic_user_removal(protocol, project_roles)
     @protocol       = protocol
     @primary_pi     = @protocol.primary_principal_investigator
-    @project_roles  = project_role_or_roles
+    @project_roles  = project_roles
 
     subject = "#{@protocol.id} - Epic User Removal"
 

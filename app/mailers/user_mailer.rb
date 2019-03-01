@@ -36,7 +36,7 @@ class UserMailer < ActionMailer::Base
 
     if ssr.present?
       @ssr_id = ssr.id
-      @is_service_provider = @send_to.is_service_provider?(ssr)
+      @is_service_provider = user.is_service_provider?(ssr)
     end
 
     send_message("#{t(:mailer)[:email_title][:new]} #{t('mailer.email_title.general', email_status: 'Notification', type: 'Protocol', id: ssr.protocol.id)}")

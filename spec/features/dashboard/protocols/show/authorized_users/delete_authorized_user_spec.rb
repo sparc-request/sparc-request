@@ -72,7 +72,7 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
     let!(:protocol) do
       protocol  = create(:unarchived_project_without_validations, primary_pi: other_user)
                   create(:project_role, protocol: protocol, identity: logged_in_user, project_rights: 'approve', role: 'mentor')
-                  create(:project_role, protocol: protocol, identity: create(:identity))
+                  create(:project_role, protocol: protocol, identity: create(:identity), project_rights: 'approve', role: 'mentor')
       protocol
     end
 
@@ -107,7 +107,7 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
         expect(page).not_to have_css '.edit-associated-user-button.disabled'
         expect(page).to have_css '.edit-associated-user-button:not(.disabled)'
 
-        expect(page).to have_selector('.delete-associated-user-button.disabled', count: 1)
+        expect(page).to have_selector('.delete-associated-user-button.disabled')
         expect(page).to have_selector('.delete-associated-user-button:not(.disabled)')
       end
     end

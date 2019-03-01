@@ -25,6 +25,7 @@
 // the compiled file.
 //
 //= require jquery
+//= require batch-select
 //= require bootstrap-sprockets
 //= require bootstrap-select
 //= require bootstrap-table

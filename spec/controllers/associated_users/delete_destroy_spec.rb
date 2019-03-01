@@ -25,6 +25,14 @@ RSpec.describe AssociatedUsersController, type: :controller do
   let!(:logged_in_user) { create(:identity) }
   let!(:other_user)     { create(:identity) }
 
+  before :each do
+    Delayed::Worker.delay_jobs = false
+  end
+
+  after :each do
+    Delayed::Worker.delay_jobs = true
+  end
+
   describe '#destroy' do
     it 'should call before_filter #initialize_service_request' do
       expect(before_filters.include?(:initialize_service_request)).to eq(true)

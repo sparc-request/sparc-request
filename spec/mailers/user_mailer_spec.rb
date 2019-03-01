@@ -37,7 +37,7 @@ RSpec.describe UserMailer do
         @ssr            = create(:sub_service_request_without_validations, service_request: @sr, protocol: @protocol, organization: program)
         @li             = create(:line_item, sub_service_request: @ssr, service_request: @sr, service: service)
         @protocol_role  = create(:project_role, protocol: @protocol, identity: modified_identity, project_rights: 'approve', role: 'consultant')
-        @mail           = UserMailer.authorized_user_changed(identity, @protocol, @protocol_role, 'add')
+        @mail           = UserMailer.authorized_user_changed(@protocol, [identity], [@protocol_role], 'add')
       end
 
       it 'should display correct subject' do
@@ -72,7 +72,7 @@ RSpec.describe UserMailer do
         @ssr            = create(:sub_service_request_without_validations, service_request: @sr, protocol: @protocol, organization: program)
         @li             = create(:line_item, sub_service_request: @ssr, service_request: @sr, service: service)
         @protocol_role  = create(:project_role, protocol: @protocol, identity: modified_identity, project_rights: 'approve', role: 'consultant')
-        @mail           = UserMailer.authorized_user_changed(identity, @protocol, @protocol_role, 'add')
+        @mail           = UserMailer.authorized_user_changed(@protocol, [identity], [@protocol_role], 'add')
       end
 
       it 'should show epic column' do
@@ -87,7 +87,7 @@ RSpec.describe UserMailer do
         @ssr            = create(:sub_service_request_without_validations, service_request: @sr, protocol: @protocol, organization: program)
         @li             = create(:line_item, sub_service_request: @ssr, service_request: @sr, service: service)
         @protocol_role  = create(:project_role, protocol: @protocol, identity: modified_identity, project_rights: 'approve', role: 'consultant')
-        @mail           = UserMailer.authorized_user_changed(identity, @protocol, @protocol_role, 'add')
+        @mail           = UserMailer.authorized_user_changed(@protocol, [identity], [@protocol_role], 'add')
       end
 
       it 'should not show epic col' do
@@ -104,7 +104,7 @@ RSpec.describe UserMailer do
         @ssr            = create(:sub_service_request_without_validations, service_request: @sr, protocol: @protocol, organization: program)
         @li             = create(:line_item, sub_service_request: @ssr, service_request: @sr, service: service)
         @protocol_role  = create(:project_role, protocol: @protocol, identity: modified_identity, project_rights: 'approve', role: 'consultant')
-        @mail           = UserMailer.authorized_user_changed(identity, @protocol, @protocol_role, 'destroy')
+        @mail           = UserMailer.authorized_user_changed(@protocol, [identity], [@protocol_role], 'destroy')
       end
 
       it "should display the 'deleted' message" do
@@ -135,7 +135,7 @@ RSpec.describe UserMailer do
         @ssr            = create(:sub_service_request_without_validations, service_request: @sr, protocol: @protocol, organization: program)
         @li             = create(:line_item, sub_service_request: @ssr, service_request: @sr, service: service)
         @protocol_role  = create(:project_role, protocol: @protocol, identity: modified_identity, project_rights: 'approve', role: 'consultant')
-        @mail           = UserMailer.authorized_user_changed(identity, @protocol, @protocol_role, 'destroy')
+        @mail           = UserMailer.authorized_user_changed(@protocol, [identity], [@protocol_role], 'destroy')
       end
 
       it 'should show epic column' do
@@ -150,7 +150,7 @@ RSpec.describe UserMailer do
         @ssr            = create(:sub_service_request_without_validations, service_request: @sr, protocol: @protocol, organization: program)
         @li             = create(:line_item, sub_service_request: @ssr, service_request: @sr, service: service)
         @protocol_role  = create(:project_role, protocol: @protocol, identity: modified_identity, project_rights: 'approve', role: 'consultant')
-        @mail           = UserMailer.authorized_user_changed(identity, @protocol, @protocol_role, 'destroy')
+        @mail           = UserMailer.authorized_user_changed(@protocol, [identity], [@protocol_role], 'destroy')
       end
 
       it 'should not show epic col' do

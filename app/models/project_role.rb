@@ -46,6 +46,10 @@ class ProjectRole < ApplicationRecord
     project_rights != 'none'
   end
 
+  def primary_pi?
+    self.role == 'primary-pi'
+  end
+
   def unique_to_protocol?
     duplicate_project_roles = ProjectRole.where(protocol_id: self.protocol.id).select {|x| x.identity_id == self.identity_id}
     duplicate_project_roles << self

@@ -110,8 +110,8 @@ class ServiceRequest < ApplicationRecord
       errors.add(:base, I18n.t('errors.visit_groups.days_out_of_order', arm_name: vg.arm.name))
     end
 
-    if Setting.get_value("use_epic") && self.arms.joins(:visit_groups).where(visit_groups: { day: nil }).any?
-      errors.add(:base, I18n.t('errors.arms.visit_day_missing', arm_name: arm.name))
+    if Setting.get_value("use_epic") && (arms = self.arms.joins(:visit_groups).where(visit_groups: { day: nil })).any?
+      arms.each{ |arm| errors.add(:base, I18n.t('errors.arms.visit_day_missing', arm_name: arm.name)) }
     end
   end
 

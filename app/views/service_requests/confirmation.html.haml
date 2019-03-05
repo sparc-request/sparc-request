@@ -25,7 +25,7 @@
     = hidden_field_tag :location, ''
     = hidden_field_tag :validates, ''
     .form-group
-      %p.instructions.text-danger
+      %p.instructions.text-success
         = raw t('proper.confirmation.confirmation_warning', department_name: Setting.get_value('contact_us_department'), phone: Setting.get_value('contact_us_phone'), email: Setting.get_value('contact_us_mail_to'))
     .form-group
       = render 'service_requests/confirmation/confirmation_details', service_request: @service_request

@@ -396,7 +396,7 @@ class Protocol < ApplicationRecord
     if Setting.get_value("send_authorized_user_emails") && self.service_requests.any?(&:previously_submitted?)
       alert_users = Identity.where(id: (self.emailed_associated_users + modified_roles.reject{ |pr| pr.project_rights == 'none' }).map(&:identity_id))
 
-      UserMailer.delay.authorized_user_changed(self, alert_users, modified_roles, action)
+      UserMailer.authorized_user_changed(self, alert_users, modified_roles, action)
     end
   end
 

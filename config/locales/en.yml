@@ -410,6 +410,22 @@ en:
     text1: "Your browser version is out of date. SPARCRequest does not support Internet Explorer versions older than version 8."
     text2: "Using versions lower than 8 can cause data curruption and other serious problems using this tool."
 
+  ###########
+  # MAILERS #
+  ###########
+  mailers:
+    greeting: "Dear %{name}"
+    protocol_mailer:
+      archive_email:
+        archive:
+          subject: "SPARCRequest Protocol Archive Notification (Protocol %{protocol_id})"
+          introduction: "Protocol %{protocol_id} has been archived in SPARCRequest by %{archiver_name}. Your protocol can still be accessed through archived protocols or by <a href='%{link}' target='blank'>this direct link to SPARCDashboard</a>."
+          archiver: "(Archiver)"
+        unarchive:
+          subject: "SPARCRequest Protocol Unarchive Notification (Protocol %{protocol_id})"
+          introduction: "Protocol %{protocol_id} has been unarchived in SPARCRequest by %{archiver_name}. Your protocol can still be accessed through archived protocols or by <a href='%{link}' target='blank'>this direct link to SPARCDashboard</a>."
+          unarchiver: "(Unarchiver)"
+
   ##########
   # MODELS #
   ##########
@@ -450,7 +466,9 @@ en:
     summary:
       header: "%{protocol_type} Summary"
       archive: "Archive"
+      archive_note: "%{protocol_type} was archived."
       unarchive: "Unarchive"
+      unarchive_note: "%{protocol_type} was unarchived."
       id: "%{protocol_type} ID:"
       title: "Title:"
       short_title: "Short Title:"

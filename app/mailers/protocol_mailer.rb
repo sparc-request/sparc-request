@@ -18,38 +18,34 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-SparcRails::Application.configure do
-  # Settings specified here will take precedence over those in config/application.rb
+class ProtocolMailer < ActionMailer::Base
+  helper ApplicationHelper
+  helper NotifierHelper
 
-  # In the development environment your application's code is reloaded on
-  # every request. This slows down response time but is perfect for development
-  # since you don't have to restart the web server when you make code changes.
-  config.cache_classes = false
+  default from: Setting.get_value("no_reply_from")
 
-  # Do not eager load code on boot.
-  config.eager_load = true
+  # https://www.pivotaltracker.com/story/show/161483270
+  def archive_email
+    @protocol             = params[:protocol]
+    @archiver             = params[:archiver]
+    @action               = params[:action]
+    @service_request      = @protocol.service_requests.first
+    @ssrs_to_be_displayed = @protocol.sub_service_requests.where.not(status: Setting.get_value('finished_statuses') << 'draft')
 
-  # Show full error reports and disable caching
-  config.consider_all_requests_local       = true
-  config.action_controller.perform_caching = false
+    archive_email_recipients.each do |recipient|
+      send_email(recipient, t('mailers.protocol_mailer.archive_email.subject', protocol_id: @protocol.id))
+    end
+  end
 
-  # Don't care if the mailer can't send
-  config.action_mailer.raise_delivery_errors = false
+  private
 
-  # Print deprecation notices to the Rails logger
-  config.active_support.deprecation = :log
+  def send_email(recipient, subject)
+    @send_to = recipient
 
-  # Expands the lines which load the assets
-  config.assets.debug = true
+    mail(to: recipient.email, subject: subject)
+  end
 
-  config.action_mailer.default_url_options = { :host => 'localhost:3000' }
-  config.action_mailer.delivery_method = :letter_opener
-  config.action_mailer.perform_deliveries = true
-
-  config.log_level = :debug
-
-  # Stuff to do on each request
-  config.to_prepare do
-    DeviseFilters.add_filters
+  def archive_email_recipients
+    (@protocol.identities + @ssrs_to_be_displayed.map(&:candidate_owners).flatten).uniq
   end
 end

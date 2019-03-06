@@ -383,14 +383,8 @@ class SubServiceRequest < ApplicationRecord
   ## SSR OWNERSHIP ##
   ###################
   def candidate_owners
-    candidates = []
-    self.organization.all_service_providers.each do |sp|
-      candidates << sp.identity
-    end
-    if self.owner
-      candidates << self.owner
-    end
-
+    candidates = Identity.where(id: self.organization.all_service_providers.pluck(:identity_id)).distinct.to_a
+    candidates << self.owner if self.owner
     candidates.uniq
   end
 

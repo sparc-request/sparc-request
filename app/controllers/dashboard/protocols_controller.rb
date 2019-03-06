@@ -213,8 +213,14 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def archive
     @protocol.toggle!(:archived)
-    @protocol_type = @protocol.type
+
+    @protocol_type      = @protocol.type
     @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
+    action = @protocol.archived ? 'archive' : 'unarchive'
+
+    @protocol.notes.create(identity: current_user, body: t("protocols.summary.#{action}_note", protocol_type: @protocol_type))
+    ProtocolMailer.with(protocol: @protocol, archiver: current_user, action: action).archive_email.deliver
+
     respond_to do |format|
       format.js
     end

@@ -18,10 +18,12 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+- show_add_button = action_name == 'update_description' || @service
+
 - services.each do |service|
   - if !@service || @service == service
     .service.col-sm-12.no-padding-x{ id: "#service#{service.id}" }
-      .service-details.col-sm-10.no-padding-x
+      .service-details.no-padding-x{ class: show_add_button ? 'col-sm-10' : 'col-sm-12' }
         .service-name.no-padding
           %strong.col-sm-12.no-padding.no-margin
             = service.display_service_name
@@ -34,7 +36,8 @@
               = raw(service.description)
         = cpt_code_text(service)
         = eap_id_text(service)
-      .col-sm-2.no-padding
-        %button.add-service.pull-right.btn.btn-success{ data: { id: service.id } }
-          = t(:actions)[:add]
+      - if show_add_button
+        .col-sm-2.no-padding
+          %button.add-service.pull-right.btn.btn-success{ data: { id: service.id } }
+            = t(:actions)[:add]
       = raw service_pricing_text(service)

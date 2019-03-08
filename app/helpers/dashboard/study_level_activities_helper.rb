@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -47,15 +47,17 @@ module Dashboard::StudyLevelActivitiesHelper
   end
 
   def sla_options_buttons line_item
+    has_notes = line_item.notes.length > 0
+
     options = raw(
       content_tag(:li, raw(
         content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-sunglasses", aria: {hidden: "true"}))+t(:dashboard)[:study_level_activities][:actions][:details], type: 'button', class: 'btn btn-default form-control actions-button otf_details list'))
       )+
       content_tag(:li) do
-        link_to notes_path(note: { notable_id: line_item.id, notable_type: LineItem.name }), remote: true, class: 'btn btn-default dropdown_badge' do
-          content_tag(:span, '', class: "glyphicon glyphicon-list-alt", aria: {hidden: "true"}) +
+        link_to notes_path(note: { notable_id: line_item.id, notable_type: LineItem.name }), remote: true, class: 'btn btn-default notes dropdown_badge' do
+          content_tag(:span, '', class: ["glyphicon glyphicon-list-alt note-icon", has_notes ? "blue-note" : "black-note"], aria: {hidden: "true"}) +
           t(:dashboard)[:study_level_activities][:actions][:notes] +
-          content_tag(:span, line_item.notes.count, class: "badge", id: "lineitem_#{line_item.id}_notes")
+          content_tag(:span, line_item.notes.count, class: ["badge", has_notes ? "blue-badge" : ""], id: "lineitem_#{line_item.id}_notes")
         end
       end +
       content_tag(:li, raw(
@@ -89,9 +91,14 @@ module Dashboard::StudyLevelActivitiesHelper
   end
 
   def fulfillment_options_buttons fulfillment
+    has_notes = fulfillment.notes.length > 0
+
     options = raw(
       content_tag(:li, raw(
-        content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-list-alt", aria: {hidden: "true"}))+t(:dashboard)[:fulfillments][:actions][:notes]+raw(content_tag(:span, fulfillment.notes.count, class: "badge", id: "fulfillment_#{fulfillment.id}_notes")), type: 'button', class: 'btn btn-default form-control actions-button notes list dropdown_badge', data: {notable_id: fulfillment.id, notable_type: "Fulfillment"}))
+        content_tag(:button,
+          raw(content_tag(:span, '', class: ["glyphicon glyphicon-list-alt note-icon", has_notes ? "blue-note" : "black-note"], aria: {hidden: "true"}))+t(:dashboard)[:fulfillments][:actions][:notes]+
+          raw(content_tag(:span, fulfillment.notes.count, class: ["badge", has_notes ? "blue-badge" : ""], id: "fulfillment_#{fulfillment.id}_notes")), type: 'button', class: 'btn btn-default form-control actions-button notes list dropdown_badge', data: {notable_id: fulfillment.id, notable_type: "Fulfillment"})
+        )
       )+
       content_tag(:li, raw(
         content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-edit", aria: {hidden: "true"}))+t(:dashboard)[:fulfillments][:actions][:edit], type: 'button', class: 'btn btn-default form-control actions-button otf_fulfillment_edit'))

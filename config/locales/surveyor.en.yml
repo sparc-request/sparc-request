@@ -60,10 +60,11 @@ en:
         reset: "Reset current search"
 
     responses:
-      create: "Thank you for participating in this survey!"
+      completed: "Thank you for participating in this survey!"
+      resent: "Survey re-sent!"
       complete:
         header: "Survey Completed"
-        thanks: "Thank you for completing the survey!"
+        thanks: "Thank you for participating in this survey!"
         to_dashboard: "Return to Dashboard"
       table:
         header: "%{type} Responses"
@@ -71,9 +72,11 @@ en:
           srid: "SRID"
           short_title: "Short Title"
           primary_pi: "Primary PI"
+          request_owner: "Request Owner"
           title: "%{type} Title"
           complete: "Complete"
           date: "Date"
+          survey_sent_date: "Last Sent"
           actions: "Actions"
           by: "By"
       emails:
@@ -87,6 +90,7 @@ en:
           text1: "Thank you for requesting services from"
           text2: "The service(s) you requested have now been completed."
           text3: "Please click on the link(s) below to complete the following survey(s) regarding the service(s) you received. Your feedback is important and appreciated!"
+          org_name: "Organization Name"
         sctr_customer_satisfaction:
           grant_reminder: "Please remember to cite the CTSA grant in any related publications:"
           grant_info: "&quot;This publication [or project] was supported by the South Carolina Clinical & Translation Research (SCTR) Institute, with an academic home at the Medical University of South Carolina <strong class='din-gray-text'>NIH - NCATS Grant Number UL1 TR001450.</strong>&quot;"
@@ -95,6 +99,7 @@ en:
         view: "View existing %{klass} answers."
         edit: "Edit existing %{klass} answers."
         delete: "Delete existing %{klass} answers."
+        resend: "Resend Survey"
 
     surveys:
       new_form:

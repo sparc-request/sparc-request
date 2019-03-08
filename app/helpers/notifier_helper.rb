@@ -41,9 +41,9 @@ module NotifierHelper
   def display_srid_table(ssrs_to_be_displayed, status)
     if ssrs_to_be_displayed
       if status == 'ssr_destroyed'
-        render "deleted_srid_information"
+        render "notifier/deleted_srid_information"
       else
-        render "srid_information"
+        render "notifier/srid_information"
       end
     end
   end

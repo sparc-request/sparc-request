@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -29,10 +29,4 @@ class HumanSubjectsInfo < ApplicationRecord
   belongs_to :protocol
   validates :nct_number, :numericality => {:allow_blank => true, :only_integer => true, :message => "must contain 8 numerical digits"}
   validates :nct_number, :length => {:allow_blank => true, :is => 8, :message => "must contain 8 numerical digits"}
-
-  def irb_and_pro_numbers
-    string = ""
-    string += "HR # #{self.hr_number} " unless hr_number.blank?
-    string += "PRO # #{self.pro_number} " unless pro_number.blank?
-  end
 end

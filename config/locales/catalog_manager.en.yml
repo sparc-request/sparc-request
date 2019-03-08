@@ -20,7 +20,7 @@
 
 en:
   catalog_manager:
-    header: "SPARC Request Services Catalog"
+    header: "SPARCRequest Services Catalog"
     headers:
       actions: "Actions"
       automatic: "Automatic Pricing Adjustment"
@@ -41,13 +41,13 @@ en:
         program: "Create New Program"
         provider: "Create New Provider"
         service: "Create New Service"
-      search_placeholder: "Search by Organization or Service Name..."
+      search_placeholder: "Search by Organization or Service Name, CPT Code, or EAP ID"
       pricing_map1: "No Pricing Map Changes"
       pricing_map2: "Save and Apply to Pricing Maps"
 
     organization_form:
       headers:
-        associated_surveys: "Associated Surveys"
+        associated_surveys: "Surveys"
         general_info: "General Information"
         pricing: "Pricing"
         status_options: "Status Options"
@@ -95,19 +95,13 @@ en:
         source_of_price: "Source of Price / Rate"
         percent_of_fee: "Percent of Fee"
         rates: "Rates"
-        display_date: "Display Date *"
-        effective_date: "Effective Date *"
+        display_date: "Display Date"
+        effective_date: "Effective Date"
         charge_master: "Charge Master"
         federal: "Federal"
-        corporate: "Corporate *"
-        other: "Other *"
-        member: "Member *"
-        college: "College *"
-        industry: "Industry *"
-        investigator: "Investigator *"
-        internal: "Internal *"
-        foundation: "Foundation *"
-        unfunded: "Unfunded Student Research *"
+        corporate: "Corporate"
+        member: "Member"
+        other: "Other"
         required_field: "* Required Field"
         must_be_greater: "* Must be greater than or equal to Federal Percent"
         apply_federal: "Apply Federal % to All"

@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -127,12 +127,12 @@ class ServiceRequest < ApplicationRecord
     self.arms.map(&:visit_groups).flatten.map(&:visits).flatten.each do |visit|
       line_item = visit.line_items_visit.line_item
       unless line_item.valid_pppv_service_relation_quantity? visit
-        line_item.reload.errors.each{ |k,v| errors.add(k, v) unless errors[k].include?(v)}
+        line_item.reload.errors.full_messages.each{|message| (errors[:base] << message) unless errors[:base].include?(message)}
       end
     end
     self.one_time_fee_line_items.each do |li|
       unless li.valid_otf_service_relation_quantity?
-        li.reload.errors.each{ |e| errors.add(e) }
+        li.reload.errors.full_messages.each{|message| (errors[:base] << message) unless errors[:base].include?(message)}
       end
     end
   end
@@ -445,12 +445,13 @@ class ServiceRequest < ApplicationRecord
   # Returns the SSR ids that need an initial submission email, updates the SR status,
   # and updates the SSR status to new status if appropriate
   def update_status(new_status)
-    to_notify = []
-    update_attribute(:status, new_status)
-    sub_service_requests.each do |ssr|
-      to_notify << ssr.update_status_and_notify(new_status)
-    end
-    to_notify.flatten
+    # Do not change the Service Request if it has been submitted
+    update_attribute(:status, new_status) unless self.previously_submitted?
+    update_attribute(:submitted_at, Time.now) if new_status == 'submitted' && !self.previously_submitted?
+
+    self.sub_service_requests.map do |ssr|
+      ssr.update_status_and_notify(new_status)
+    end.compact
   end
 
   # Make sure that all the sub service requests have an ssr id
@@ -470,6 +471,10 @@ class ServiceRequest < ApplicationRecord
       protocol.next_ssr_id = next_ssr_id
       protocol.save(validate: false)
     end
+  end
+
+  def previously_submitted?
+    self.submitted_at.present?
   end
 
   def should_push_to_epic?

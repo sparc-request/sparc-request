@@ -18,12 +18,12 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Identities::SessionsController < Devise::SessionsController
-  def after_sign_in_path_for(resource)
-    if params[:service_request_id]
-      catalog_service_request_path(params[:service_request_id])
-    else
-      super
-    end
+class Status
+  def self.updatable?(status)
+    Setting.get_value('updatable_statuses').include?(status)
+  end
+
+  def self.complete?(status)
+    Setting.get_value('finished_statuses').include?(status)
   end
 end

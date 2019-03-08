@@ -1018,5 +1018,15 @@
     "version":        "",
     "parent_key":     "use_epic",
     "parent_value":   "true"
+  },
+  {
+    "key":            "delayed_job_monitor_slack_webhook",
+    "value":          "",
+    "friendly_name":  "Post to slack when delayed job monitor rake task runs",
+    "description":    "If this is set to a slack webhook url, the rake task will post delayed job status updates every hour or whatever the current config/schedule.rb is.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
   }
 ]

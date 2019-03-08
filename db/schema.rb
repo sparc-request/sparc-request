@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_13_152838) do
+ActiveRecord::Schema.define(version: 2019_03_01_212606) do
 
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
@@ -746,8 +746,6 @@ ActiveRecord::Schema.define(version: 2019_02_13_152838) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
-    t.boolean "linked_quantity", default: false
-    t.integer "linked_quantity_total"
     t.index ["related_service_id"], name: "index_service_relations_on_related_service_id"
     t.index ["service_id"], name: "index_service_relations_on_service_id"
   end

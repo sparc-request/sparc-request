@@ -369,37 +369,6 @@ $ ->
         service_relation:
           required: required
 
-  $(document).on 'change', '.linked_quantity', (event) ->
-    service_relation_id = $(this).data('service-relation-id')
-    linked_quantity = $(this).prop('checked')
-
-    ajax_call = ->
-      $.ajax
-        type: 'POST'
-        url: "/catalog_manager/services/update_related_service"
-        data:
-          service_relation_id: service_relation_id
-          service_relation:
-            linked_quantity: linked_quantity
-
-    if !linked_quantity
-      $(this).siblings('.linked_quantity_container').fadeOut(750, ->
-        ajax_call()
-        )
-    else
-      ajax_call()
-
-  $(document).on 'change', '.linked_quantity_total', (event) ->
-    service_relation_id = $(this).data('service-relation-id')
-    linked_quantity_total = $(this).val()
-    $.ajax
-      type: 'POST'
-      url: "/catalog_manager/services/update_related_service"
-      data:
-        service_relation_id: service_relation_id
-        service_relation:
-          linked_quantity_total: linked_quantity_total
-
   ##############################################
   ###             Service Pricing            ###
   ##############################################

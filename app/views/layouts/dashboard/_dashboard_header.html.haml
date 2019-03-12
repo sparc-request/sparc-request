@@ -24,9 +24,6 @@
       %ul.nav.navbar-nav
         - Setting.get_value("navbar_links").each do |identifier, details|
           = navbar_link(identifier, details, @highlighted_link)
-      - unless @disable_breadcrumb
-        %ol.breadcrumb
-          = session[:breadcrumbs].breadcrumbs
 
     .navbar-right
       %ul.nav.navbar-nav.pull-right

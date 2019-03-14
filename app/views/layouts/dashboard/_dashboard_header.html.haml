@@ -42,3 +42,7 @@
 
       %p#welcome_nav.navbar-text
         = show_welcome_message(user, bootstrap = true)
+
+- unless @disable_breadcrumb
+  %ol.breadcrumb
+    = session[:breadcrumbs].breadcrumbs

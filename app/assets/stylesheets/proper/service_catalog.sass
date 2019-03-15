@@ -197,15 +197,10 @@
 
 /* RELATED TO THE CENTER CATALOG ELEMENTS */
 .service
-  display: flex
-  flex-wrap: wrap
   &:not(:first-child)
     padding-top: 10px
     border-top: 1px solid #EEE
     margin-top: 10px
-
-  .service-name
-    display: flex
 
 .catalog-center
   padding-left: 0 !important
@@ -237,13 +232,9 @@
       color: $sparc-blue
     h3
       margin-top: 0
-    .service
-      .service-name
-        font-size: 16px
   .program-services, .core-services
-    display: inline-block
-    width: 100%
-    max-width: 100%
+    display: flex
+    flex-flow: column
   .core-accordion
     .core-description
       padding-top: 15px

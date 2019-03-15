@@ -51,12 +51,8 @@ RSpec.describe 'User views the catalog', js: true do
     create(:line_item, service_request: @sr, sub_service_request: ssr2, service: service2)
   end
 
-  def visit_catalog_page(service_request)
-    visit "/service_requests/#{service_request.id}/catalog/"
-  end
-
   before(:each) do
-    visit_catalog_page(@sr)
+    visit catalog_service_request_path(srid: @sr)
   end
 
   scenario 'sees Services belonging to each SubServiceRequest in the cart' do

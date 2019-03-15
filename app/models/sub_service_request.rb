@@ -352,7 +352,7 @@ class SubServiceRequest < ApplicationRecord
 
   def update_past_status
     if saved_change_to_status? && !@prev_status.blank?
-      past_status = self.past_statuses.create(status: @prev_status, date: Time.now)
+      past_status = self.past_statuses.create(status: @prev_status, new_status: status, date: Time.now)
       user_id = AuditRecovery.where(auditable_id: past_status.id, auditable_type: 'PastStatus').first.user_id
       past_status.update_attribute(:changed_by_id, user_id)
     end
@@ -383,14 +383,8 @@ class SubServiceRequest < ApplicationRecord
   ## SSR OWNERSHIP ##
   ###################
   def candidate_owners
-    candidates = []
-    self.organization.all_service_providers.each do |sp|
-      candidates << sp.identity
-    end
-    if self.owner
-      candidates << self.owner
-    end
-
+    candidates = Identity.where(id: self.organization.all_service_providers.pluck(:identity_id)).distinct.to_a
+    candidates << self.owner if self.owner
     candidates.uniq
   end
 

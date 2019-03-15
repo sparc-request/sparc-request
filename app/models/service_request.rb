@@ -110,30 +110,8 @@ class ServiceRequest < ApplicationRecord
       errors.add(:base, I18n.t('errors.visit_groups.days_out_of_order', arm_name: vg.arm.name))
     end
 
-    if Setting.get_value("use_epic")
-      self.arms.each do |arm|
-        days = arm.visit_groups.map(&:day)
-
-        visit_group_errors = false
-        invalid_day_errors = false
-
-        unless days.all?{|x| !x.blank?}
-          errors.add(:base, I18n.t('errors.arms.visit_day_missing', arm_name: arm.name))
-          visit_group_errors = true
-        end
-      end
-    end
-
-    self.arms.map(&:visit_groups).flatten.map(&:visits).flatten.each do |visit|
-      line_item = visit.line_items_visit.line_item
-      unless line_item.valid_pppv_service_relation_quantity? visit
-        line_item.reload.errors.full_messages.each{|message| (errors[:base] << message) unless errors[:base].include?(message)}
-      end
-    end
-    self.one_time_fee_line_items.each do |li|
-      unless li.valid_otf_service_relation_quantity?
-        li.reload.errors.full_messages.each{|message| (errors[:base] << message) unless errors[:base].include?(message)}
-      end
+    if Setting.get_value("use_epic") && (arms = self.arms.joins(:visit_groups).where(visit_groups: { day: nil })).any?
+      arms.each{ |arm| errors.add(:base, I18n.t('errors.arms.visit_day_missing', arm_name: arm.name)) }
     end
   end
 

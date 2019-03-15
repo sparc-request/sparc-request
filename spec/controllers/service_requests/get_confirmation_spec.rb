@@ -51,11 +51,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, protocol_id: protocol.id)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:identity_id]        = logged_in_user.id
+      session[:identity_id] = logged_in_user.id
+      session[:srid]        = sr.id
 
-      get :confirmation, params: {
-        id: sr.id
-      }, xhr: true
+      get :confirmation, xhr: true
 
       expect(assigns(:service_request).previous_submitted_at).to eq(sr.submitted_at)
     end
@@ -70,13 +69,12 @@ RSpec.describe ServiceRequestsController, type: :controller do
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                    create(:service_provider, identity: logged_in_user, organization: org)
 
-        session[:identity_id]        = logged_in_user.id
-        time                         = Time.parse('2016-06-01 12:34:56')
+        session[:identity_id] = logged_in_user.id
+        session[:srid]        = sr.id
+        time                  = Time.parse('2016-06-01 12:34:56')
 
         Timecop.freeze(time) do
-          get :confirmation, params: {
-            id: sr.id
-          }, xhr: true
+          get :confirmation, xhr: true
           expect(sr.reload.submitted_at).to eq(time)
         end
       end
@@ -90,11 +88,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                    create(:service_provider, identity: logged_in_user, organization: org)
 
-        session[:identity_id]        = logged_in_user.id
+        session[:identity_id] = logged_in_user.id
+        session[:srid]        = sr.id
 
-        get :confirmation, params: {
-          id: sr.id
-        }, xhr: true
+        get :confirmation, xhr: true
 
         expect(sr.reload.status).to eq('submitted')
         expect(ssr.reload.nursing_nutrition_approved).to eq(false)
@@ -115,13 +112,12 @@ RSpec.describe ServiceRequestsController, type: :controller do
           ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft', protocol_id: protocol.id)
           li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-          session[:identity_id]            = logged_in_user.id
+          session[:identity_id] = logged_in_user.id
+          session[:srid]        = sr.id
 
           setup_valid_study_answers(protocol)
 
-          get :confirmation, params: {
-            id: sr.id
-          }, xhr: true
+          get :confirmation, xhr: true
 
           expect(EpicQueue.count).to eq(1)
           expect(EpicQueue.first.protocol_id).to eq(protocol.id)
@@ -141,14 +137,14 @@ RSpec.describe ServiceRequestsController, type: :controller do
                      create(:service_provider, identity: logged_in_user, organization: org)
           org.submission_emails.create(email: 'hedwig@owlpost.com')
 
-          session[:identity_id]            = logged_in_user.id
+          session[:identity_id] = logged_in_user.id
+          session[:srid]        = sr.id
 
           setup_valid_study_answers(protocol)
 
           # We have an admin, user, and service_provider so we send 3 emails
           get :confirmation, params: {
-            sub_service_request_id: ssr.id,
-            id: sr.id 
+            sub_service_request_id: ssr.id
             }, xhr: true
             
           expect(Delayed::Backend::ActiveRecord::Job.count).to eq(3)
@@ -164,11 +160,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, protocol_id: protocol.id)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:identity_id]        = logged_in_user.id
+      session[:identity_id] = logged_in_user.id
+      session[:srid]        = sr.id
 
-      get :confirmation, params: {
-        id: sr.id
-      }, xhr: true
+      get :confirmation, xhr: true
 
       expect(controller).to render_template(:confirmation)
     end
@@ -181,11 +176,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, protocol_id: protocol.id)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:identity_id]        = logged_in_user.id
+      session[:identity_id] = logged_in_user.id
+      session[:srid]        = sr.id
 
-      get :confirmation, params: {
-        id: sr.id
-      }, xhr: true
+      get :confirmation, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

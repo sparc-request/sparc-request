@@ -213,10 +213,10 @@ class Notifier < ActionMailer::Base
     mail(:to => email_to, :from => Setting.get_value("no_reply_from"), :subject => subject)
   end
 
-  def notify_primary_pi_for_epic_user_removal protocol, project_role
-    @protocol = protocol
-    @primary_pi = @protocol.primary_principal_investigator
-    @project_role = project_role
+  def notify_primary_pi_for_epic_user_removal(protocol, project_roles)
+    @protocol       = protocol
+    @primary_pi     = @protocol.primary_principal_investigator
+    @project_roles  = project_roles
 
     subject = "#{@protocol.id} - Epic User Removal"
 

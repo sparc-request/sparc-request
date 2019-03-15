@@ -24,6 +24,8 @@
   #welcome-message
     - if organization
       = render 'catalogs/description', organization: organization, service_request: service_request, from_portal: from_portal
+    - elsif @service
+      = render 'catalogs/description', organization: @program, service_request: service_request, from_portal: from_portal
     - else
       = render 'catalogs/welcome'
   #calendar-blog.full

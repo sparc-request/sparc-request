@@ -1,0 +1,25 @@
+!!!
+%html{ :xmlns => "http://www.w3.org/1999/xhtml", :"xml:lang" => "en", :lang => "en" }
+  %head
+    = stylesheet_link_tag 'proper/notification_email'
+    %meta{ :"http-equiv" => "content-type", :content => "text/html;charset=UTF-8" }
+  %body
+    %p<
+      = t('mailers.greeting', name: @send_to.full_name)
+
+    %p<
+      = raw t("mailers.protocol_mailer.archive_email.#{@action}.introduction", protocol_id: @protocol.id, archiver_name: @archiver.full_name, link: dashboard_protocol_url(@protocol))
+
+    = render 'notifier/protocol_information', protocol: @protocol
+
+    = display_arm_table(@service_request)
+
+    = render 'protocol_mailer/archive_email/user_information'
+
+    = display_srid_table(@ssrs_to_be_displayed, @action)
+
+    - if (notes = @protocol.notes).any?
+      = render 'notifier/notes', protocol: @protocol, notes: notes
+
+    %p<
+      = raw t('mailer.issue_contact', department_name: Setting.get_value('contact_us_department'), phone: Setting.get_value('contact_us_phone'), email: Setting.get_value('contact_us_mail_to'))

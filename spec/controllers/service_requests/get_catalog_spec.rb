@@ -34,10 +34,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       expect(before_filters.include?(:authorize_identity)).to eq(true)
     end
 
-    it 'should call before_filter #authorize_protocol_edit_request' do
-      expect(before_filters.include?(:authorize_protocol_edit_request)).to eq(true)
-    end
-
     it 'should call before_filter #find_locked_org_ids' do
       expect(before_filters.include?(:find_locked_org_ids)).to eq(true)
     end
@@ -49,9 +45,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
-        get :catalog, params: {
-          id: sr.id
-        }, xhr: true
+        session[:srid] = sr.id
+
+        get :catalog, xhr: true
 
         expect(assigns(:institutions).count).to eq(2)
         expect(assigns(:institutions)[0]).to eq(i1)
@@ -66,9 +62,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
-        get :catalog, params: {
-          id: sr.id
-        }, xhr: true
+        session[:srid] = sr.id
+
+        get :catalog, xhr: true
 
         expect(assigns(:events)).to be
       end
@@ -81,9 +77,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
-        get :catalog, params: {
-          id: sr.id
-        }, xhr: true
+        session[:srid] = sr.id
+
+        get :catalog, xhr: true
 
         expect(assigns(:news)).to be
       end
@@ -93,10 +89,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
+      session[:srid] = sr.id
 
-      get :catalog, params: {
-          id: sr.id
-        }, xhr: true
+      get :catalog, xhr: true
 
       expect(controller).to render_template(:catalog)
     end
@@ -106,9 +101,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
 
-      get :catalog, params: {
-          id: sr.id
-        }, xhr: true
+      session[:srid] = sr.id
+
+      get :catalog, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

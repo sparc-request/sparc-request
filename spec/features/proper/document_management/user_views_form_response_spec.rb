@@ -40,7 +40,7 @@ RSpec.describe 'User views a form response', js: true do
   end
 
   scenario 'and sees the responses' do
-    visit document_management_service_request_path(@sr)
+    visit document_management_service_request_path(srid: @sr.id)
     wait_for_javascript_to_finish
 
     first('.view-response').click

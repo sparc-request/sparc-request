@@ -207,7 +207,7 @@ GEM
     crass (1.0.4)
     css_parser (1.6.0)
       addressable
-    curb (0.9.4)
+    curb (0.9.8)
     daemons (1.2.6)
     database_cleaner (1.7.0)
     deep_cloneable (2.3.2)
@@ -627,7 +627,7 @@ DEPENDENCIES
   coffee-rails
   connection_pool
   country_select
-  curb (~> 0.9.3)
+  curb (~> 0.9.8)
   database_cleaner
   deep_cloneable (~> 2.3.2)
   delayed_job

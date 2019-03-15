@@ -22,8 +22,6 @@
   .panel-heading
     %h4.panel-title
       = t(:protocols)[:authorized_users][:header]
-    .sub_text
-      = t(:protocols)[:authorized_users][:subtext]
   .panel-body
     = form.fields_for :project_roles do |pr_form|
       .form-group.row

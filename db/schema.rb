@@ -1,23 +1,3 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
-# All rights reserved.~
-
-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
-
-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~
-
-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following~
-# disclaimer in the documentation and/or other materials provided with the distribution.~
-
-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products~
-# derived from this software without specific prior written permission.~
-
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,~
-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT~
-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL~
-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
-
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -30,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_22_144657) do
+ActiveRecord::Schema.define(version: 2019_03_01_212606) do
 
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
@@ -239,7 +219,7 @@ ActiveRecord::Schema.define(version: 2019_01_22_144657) do
     t.index ["subsidy_map_id"], name: "index_excluded_funding_sources_on_subsidy_map_id"
   end
 
-  create_table "feedbacks", id: :bigint, default: nil, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+  create_table "feedbacks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.text "message"
     t.string "email"
     t.datetime "created_at", null: false
@@ -445,6 +425,7 @@ ActiveRecord::Schema.define(version: 2019_01_22_144657) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.bigint "changed_by_id"
+    t.string "new_status"
     t.index ["changed_by_id"], name: "index_past_statuses_on_changed_by_id"
     t.index ["sub_service_request_id"], name: "index_past_statuses_on_sub_service_request_id"
   end
@@ -765,8 +746,6 @@ ActiveRecord::Schema.define(version: 2019_01_22_144657) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
-    t.boolean "linked_quantity", default: false
-    t.integer "linked_quantity_total"
     t.index ["related_service_id"], name: "index_service_relations_on_related_service_id"
     t.index ["service_id"], name: "index_service_relations_on_service_id"
   end
@@ -980,7 +959,7 @@ ActiveRecord::Schema.define(version: 2019_01_22_144657) do
     t.index ["surveyable_id", "surveyable_type"], name: "index_surveys_on_surveyable_id_and_surveyable_type"
   end
 
-  create_table "taggings", id: :bigint, default: nil, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+  create_table "taggings", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "tag_id"
     t.bigint "taggable_id"
     t.string "taggable_type"

@@ -48,11 +48,9 @@ task :update_related_services => :environment do
         service = Service.where(id: row['Service ID'].to_i).first
         related_service_id = row['Related Service ID'].to_i
         optional = row['Optional'].to_i
-        linked_quantity = row['Linked Quantity'].to_i
-        linked_quantity_total = row['Linked Quantity Total']
         if service
-          puts "created service relation: service_id: #{service.id}, related_service_id: #{related_service_id}, linked_quantity: #{linked_quantity}, linked_quantity_total: null"
-          service.service_relations.create(related_service_id: related_service_id, optional: optional, linked_quantity: linked_quantity, linked_quantity_total: nil)
+          puts "created service relation: service_id: #{service.id}, related_service_id: #{related_service_id}"
+          service.service_relations.create(related_service_id: related_service_id, optional: optional)
           service.save
           updated_service_relations_count += 1
         else

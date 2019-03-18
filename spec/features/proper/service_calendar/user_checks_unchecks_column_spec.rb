@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -46,7 +46,7 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
   context 'for SSRs which aren\'t locked' do
     context 'check:' do
       scenario 'and sees all visits checked' do
-        visit service_calendar_service_request_path(@sr)
+        visit service_calendar_service_request_path(srid: @sr.id)
         wait_for_javascript_to_finish
 
         find('.service-calendar-column').click
@@ -60,7 +60,7 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
     context 'uncheck:' do
       scenario 'and sees all visits unchecked' do
         @arm.visits.update_all(research_billing_qty: 1)
-        visit service_calendar_service_request_path(@sr)
+        visit service_calendar_service_request_path(srid: @sr.id)
 
         find('.service-calendar-column').click
         accept_confirm
@@ -78,7 +78,7 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
 
     context 'check:' do
       scenario 'and sees the not-locked visits checked and the locked visits not checked' do
-        visit service_calendar_service_request_path(@sr)
+        visit service_calendar_service_request_path(srid: @sr.id)
         wait_for_javascript_to_finish
 
         find('.service-calendar-column').click
@@ -96,7 +96,7 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
       end
 
       scenario 'and sees the not-locked visits unchecked and the locked visits checked' do
-        visit service_calendar_service_request_path(@sr)
+        visit service_calendar_service_request_path(srid: @sr.id)
         wait_for_javascript_to_finish
 
         find('.service-calendar-column').click

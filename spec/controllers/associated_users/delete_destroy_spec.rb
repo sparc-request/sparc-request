@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -24,6 +24,14 @@ RSpec.describe AssociatedUsersController, type: :controller do
   let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
   let!(:other_user)     { create(:identity) }
+
+  before :each do
+    Delayed::Worker.delay_jobs = false
+  end
+
+  after :each do
+    Delayed::Worker.delay_jobs = true
+  end
 
   describe '#destroy' do
     it 'should call before_filter #initialize_service_request' do

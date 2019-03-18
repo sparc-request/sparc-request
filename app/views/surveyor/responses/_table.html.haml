@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -40,5 +40,7 @@
             = t(:surveyor)[:responses][:table][:headers][:complete]
           %th{ data: { class: 'completion-date col-sm-1', align: 'left', sortable: 'true', sorter: 'dateSorter', field: 'completion_date' } }
             = t(:surveyor)[:responses][:table][:headers][:date]
+          %th{ data: {class: 'survey-sent-date col-sm-1', align: 'left', sortable: 'true', sorter: 'dateSorter', field: 'survey_sent_date', visible: 'false'} }
+            = t(:surveyor)[:responses][:table][:headers][:survey_sent_date]
           %th{ data: { class: 'actions col-sm-2', align: 'center', sortable: 'false', field: 'actions' } }
             = t(:surveyor)[:responses][:table][:headers][:actions]

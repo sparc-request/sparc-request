@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -50,9 +50,9 @@ class ProtocolFilter < ApplicationRecord
 
   def self.search_filters
     if Setting.get_value("research_master_enabled")
-        ['Authorized User', 'HR#', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title']
+        ['Authorized User', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title']
     else
-        ['Authorized User', 'HR#', 'PI', 'Protocol ID', 'PRO#', 'Short/Long Title']
+        ['Authorized User', 'PI', 'Protocol ID', 'PRO#', 'Short/Long Title']
     end
   end
 end

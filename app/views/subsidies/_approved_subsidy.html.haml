@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,14 +21,12 @@
 
 - if subsidy.present?
   .panel.panel-default
-    .panel-heading
-      %h4.panel-title.pull-left
+    .panel-heading.justify-content-between
+      %h4.panel-title
         = t(:subsidies)[:approved][:header]
-      .pull-right
-        - if admin
-          %button.btn.btn-sm.btn-default.notes.list{ data: { notable_type: "Subsidy", notable_id: subsidy.id } }
-            = t(:models)[:note][:plural]
-      .clearfix
+      - if admin
+        %button.btn.btn-sm.btn-default.notes.list{ data: { notable_type: "Subsidy", notable_id: subsidy.id } }
+          = t(:models)[:note][:plural]
     %table.table.table-condensed.approved-subsidy-table
       %thead
         %tr.default

@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -45,12 +45,6 @@
                   = t(:protocols)[:studies][:research_involving][:humans][:nct_number]
                 .col-lg-8
                   = human_info.nct_number
-            %tr
-              %td
-                %label.col-lg-4
-                  = t(:protocols)[:studies][:research_involving][:humans][:hr_number]
-                .col-lg-8
-                  = human_info.hr_number
             %tr
               %td
                 %label.col-lg-4{ title: t(:protocols)[:tooltips][:pro_number], data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }

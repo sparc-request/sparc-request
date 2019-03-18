@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -33,7 +33,7 @@ require 'highline/import'
 
 def opening_message
   print_breakline
-  puts "Welcome to the SPARC Request Automated Initial Catalog Manager Identity and Institution Generation Tool!"
+  puts "Welcome to the SPARCRequest Automated Initial Catalog Manager Identity and Institution Generation Tool!"
 end
 
 def opening_menu

@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -190,8 +190,8 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
           expect(page).not_to have_css '.edit-associated-user-button.disabled'
           expect(page).to have_css '.edit-associated-user-button:not(.disabled)'
 
-          expect(page).not_to have_css '.delete-associated-user-button.disabled'
-          expect(page).to have_css '.delete-associated-user-button:not(.disabled)'
+          expect(page).to have_selector('.delete-associated-user-button.disabled')
+          expect(page).to have_selector('.delete-associated-user-button:not(.disabled)')
         end
       end
 

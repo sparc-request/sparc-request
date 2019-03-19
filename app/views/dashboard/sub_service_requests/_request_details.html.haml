@@ -39,7 +39,7 @@
         - if sub_service_request.is_complete? && !sub_service_request.surveys_completed?
           %td.text-center
             %span
-              = I18n.t('dashboard.sub_service_requests.tabs.request_details.options.last_sent', date: format_date(sub_service_request.survey_latest_sent_date))
+              = I18n.t('dashboard.sub_service_requests.tabs.request_details.options.last_sent', date: sub_service_request.survey_latest_sent_date)
             %button.btn.btn-sm.btn-primary#resend-surveys-button{ data: { sub_service_request_id: sub_service_request.id } }
               = t(:dashboard)[:sub_service_requests][:tabs][:request_details][:options][:resend_surveys]
         - if !sub_service_request.in_work_fulfillment

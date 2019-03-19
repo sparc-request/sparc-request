@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -35,7 +35,7 @@
             .form-group
               = form.label :doc_type, t(:documents)[:form_fields][:document_type], class: 'col-sm-4 control-label required'
               .col-sm-7
-                = form.select :doc_type, options_for_select(PermissibleValue.order(:sort_order).get_inverted_hash('document_type'), document.doc_type), { prompt: t(:documents)[:select_type] }, class: 'form-control selectpicker'
+                = form.select :doc_type, options_for_select(PermissibleValue.get_inverted_hash('document_type'), document.doc_type), { prompt: t(:documents)[:select_type] }, class: 'form-control selectpicker'
             .form-group#doc-type-other-field{ display_if(document.doc_type == 'other') }
               = form.label :doc_type_other, t(:documents)[:form_fields][:specify_doc_type], class: 'col-sm-4 control-label required'
               .col-sm-7

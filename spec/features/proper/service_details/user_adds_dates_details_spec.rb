@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -39,7 +39,7 @@ RSpec.describe 'User sets timeline dates', js: true do
 
   context 'and submits the form' do
     scenario 'and sees the dates applied to the protocol' do
-      visit service_details_service_request_path(@sr)
+      visit service_details_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
       bootstrap_datepicker '#study_start_date', '01/02/2016'

@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -31,7 +31,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
     it "should be populated with statuses from associated Organization" do
       protocol = stub_protocol
       organization = stub_organization
-      sub_service_request = stub_sub_service_request(protocol: protocol, organization: organization)
+      sub_service_request = stub_sub_service_request(protocol: protocol, organization: organization, submitted: true)
       logged_in_user = build_stubbed(:identity)
       allow(logged_in_user).to receive(:unread_notification_count).
         with(sub_service_request.id).and_return("12345")
@@ -44,6 +44,24 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
       expect(response).to have_tag("select#sub_service_request_status") do
         with_option("Draft")
         with_option("Invoiced")
+      end
+    end
+
+    context 'SubServiceRequest has been previously submitted' do
+      it 'should disable the dropdown' do
+        protocol = stub_protocol
+        organization = stub_organization
+        sub_service_request = stub_sub_service_request(protocol: protocol, organization: organization, submitted: false)
+        logged_in_user = build_stubbed(:identity)
+        allow(logged_in_user).to receive(:unread_notification_count).
+          with(sub_service_request.id).and_return("12345")
+        stub_current_user(logged_in_user)
+        allow(sub_service_request).to receive(:notes).and_return(["1"])
+        allow(sub_service_request).to receive(:is_complete?).and_return(false)
+
+        render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
+
+        expect(response).to have_selector('select#sub_service_request_status[disabled=disabled]')
       end
     end
   end
@@ -290,6 +308,10 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
     # TODO refactor pricing, cost calculations
     effective_cost = 54321
     displayed_cost = 54320
+
+    expect(d).to receive(:previously_submitted?) do
+      allow(d).to receive(:previously_submitted?).and_return(opts[:submitted])
+    end
     expect(d).to receive(:set_effective_date_for_cost_calculations) do
       allow(d).to receive(:direct_cost_total).and_return(effective_cost)
     end

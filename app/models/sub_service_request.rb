@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -80,7 +80,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def previously_submitted?
-    !submitted_at.nil?
+    self.submitted_at.present?
   end
 
   def formatted_status
@@ -271,34 +271,27 @@ class SubServiceRequest < ApplicationRecord
   # Returns the SSR id that need an initial submission email and updates
   # the SSR status to new status if appropriate
   def update_status_and_notify(new_status)
-    to_notify = []
-    if can_be_edited?
-      available = PermissibleValue.get_key_list('status')
-      editable = self.is_locked? || available
-      changeable = available & editable
-      if changeable.include?(new_status)
-        #  See Pivotal Stories: #133049647 & #135639799
-        if (status != new_status) && ((new_status == 'submitted' && Setting.get_value("updatable_statuses").include?(status)) || new_status != 'submitted')
+    unless self.is_locked? || self.previously_submitted?
+      available   = PermissibleValue.get_key_list('status')
+      editable    = self.is_locked? || available
+      changeable  = (available & editable).include?(new_status) && Status.updatable?(self.status)
+
+      if self.status != new_status && changeable
+        if new_status == 'submitted'
           ### For 'submitted' status ONLY:
           # Since adding/removing services changes a SSR status to 'draft', we have to look at the past status to see if we should notify users of a status change
           # We do NOT notify if updating from an un-updatable status or we're updating to a status that we already were previously
-          if new_status == 'submitted'
-            past_status = PastStatus.where(sub_service_request_id: id).last
-            past_status = past_status.nil? ? nil : past_status.status
-            if status == 'draft' && ((Setting.get_value("updatable_statuses").include?(past_status) && past_status != new_status) || past_status == nil) # past_status == nil indicates a newly created SSR
-              to_notify << id
-            elsif status != 'draft'
-              to_notify << id
-            end
-          else
-            to_notify << id
-          end
-
-          new_status == 'submitted' ? update_attributes(status: new_status, submitted_at: Time.now, nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false) : update_attribute(:status, new_status)
+          # See Pivotal Stories: #133049647 & #135639799
+          old_status  = self.status
+          past_status = PastStatus.where(sub_service_request_id: id).last.try(:status)
+          self.update_attributes(status: new_status, submitted_at: Time.now, nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
+          return self.id if old_status != 'draft' || (old_status == 'draft' && (past_status.nil? || (past_status != new_status && Status.updatable?(past_status)))) # past_status == nil indicates a newly created SSR
+        else
+          self.update_attribute(:status, new_status)
+          return self.id
         end
       end
     end
-    to_notify
   end
 
   def ctrc?
@@ -318,7 +311,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def is_complete?
-    return Setting.get_value("finished_statuses").include?(status)
+    Status.complete?(self.status)
   end
 
   def set_to_draft
@@ -359,7 +352,7 @@ class SubServiceRequest < ApplicationRecord
 
   def update_past_status
     if saved_change_to_status? && !@prev_status.blank?
-      past_status = self.past_statuses.create(status: @prev_status, date: Time.now)
+      past_status = self.past_statuses.create(status: @prev_status, new_status: status, date: Time.now)
       user_id = AuditRecovery.where(auditable_id: past_status.id, auditable_type: 'PastStatus').first.user_id
       past_status.update_attribute(:changed_by_id, user_id)
     end
@@ -390,14 +383,8 @@ class SubServiceRequest < ApplicationRecord
   ## SSR OWNERSHIP ##
   ###################
   def candidate_owners
-    candidates = []
-    self.organization.all_service_providers.each do |sp|
-      candidates << sp.identity
-    end
-    if self.owner
-      candidates << self.owner
-    end
-
+    candidates = Identity.where(id: self.organization.all_service_providers.pluck(:identity_id)).distinct.to_a
+    candidates << self.owner if self.owner
     candidates.uniq
   end
 
@@ -463,6 +450,10 @@ class SubServiceRequest < ApplicationRecord
       eager_load(service: [:associated_surveys, :organization]).
       map{ |li| li.service.available_surveys }.flatten.compact.uniq.
       all?{ |s| s.responses.where(respondable: self).joins(:question_responses).any? }
+  end
+
+  def survey_latest_sent_date
+    self.responses.joins(:survey).where(surveys: { type: 'SystemSurvey' }).first.updated_at
   end
 
   ###############################

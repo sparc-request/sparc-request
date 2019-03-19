@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -51,52 +51,21 @@ RSpec.describe 'User returns to catalog', js: true do
     create(:line_item, service_request: @sr, sub_service_request: ssr2, service: service2)
   end
 
-  def visit_service_details_page(service_request: nil, sub_service_request: nil)
-    params = if sub_service_request
-               "?sub_service_request_id=#{sub_service_request.id}"
-             else
-               ""
-             end
-    visit "/service_requests/#{service_request.id}/service_details/" + params
+  before(:each) do
+    visit service_details_service_request_path(srid: @sr.id)
+    click_link("Return to Catalog")
+    expect(page).to have_content("Browse Service Catalog")
   end
 
-  context 'when editing a ServiceRequest' do
-    before(:each) do
-      visit_service_details_page(service_request: @sr)
-      click_link("Return to Catalog")
-      expect(page).to have_content("Browse Service Catalog")
-    end
-
-    scenario 'sees Services belonging to each SubServiceRequest in the cart' do
-      cart = page.find(".panel", text: /My Services/)
-      expect(cart).to have_content("Service1")
-      expect(cart).to have_content("Service2")
-    end
-
-    scenario 'sees each Institution in the Service accordion' do
-      service_accordion = page.find(".panel", text: /Browse Service Catalog/)
-      expect(service_accordion).to have_content("Institution1")
-      expect(service_accordion).to have_content("Institution2")
-    end
+  scenario 'sees Services belonging to each SubServiceRequest in the cart' do
+    cart = page.find(".panel", text: /My Services/)
+    expect(cart).to have_content("Service1")
+    expect(cart).to have_content("Service2")
   end
 
-  context 'when editing a SubServiceRequest' do
-    before(:each) do
-     visit_service_details_page(service_request: @sr, sub_service_request: @ssr1)
-     click_link("Return to Catalog")
-     expect(page).to have_content("Browse Service Catalog")
-    end
-
-    scenario 'sees Services belonging only to the SubServiceRequest in the cart' do
-      cart = page.find(".panel", text: /My Services/)
-      expect(cart).to have_content("Service1")
-      expect(cart).to_not have_content("Service2")
-    end
-
-    scenario 'sees only the Institution related to the SubServiceRequest' do
-      service_accordion = page.find(".panel", text: /Browse Service Catalog/)
-      expect(service_accordion).to have_content("Institution1")
-      expect(service_accordion).not_to have_content("Institution2")
-    end
+  scenario 'sees each Institution in the Service accordion' do
+    service_accordion = page.find(".panel", text: /Browse Service Catalog/)
+    expect(service_accordion).to have_content("Institution1")
+    expect(service_accordion).to have_content("Institution2")
   end
 end

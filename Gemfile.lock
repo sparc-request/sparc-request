@@ -256,6 +256,7 @@ GEM
     ffi (1.10.0)
       archive-zip (~> 0.7)
     geckodriver-helper (0.23.0)
+      archive-zip (~> 0.7)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
     gon (6.2.1)

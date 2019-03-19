@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -127,10 +127,6 @@ $(document).ready ->
           method: 'GET'
           url: "/dashboard/sub_service_requests/#{id}.js"
           data: show_view_ssr_back: show_view_ssr_back
-
-      $(document).on 'click', '.edit-service-request', ->
-        if $(this).data('permission')
-          window.location = $(this).data('url')
 
       $(document).on 'click', '#add-services-button', ->
         if $(this).data('permission')

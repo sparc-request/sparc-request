@@ -18,10 +18,9 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.col-sm-12.no-padding.about-section
-  .col-sm-3.text-center
-    %a{ href: Setting.get_value("about_sparc_url") }
-      = image_tag 'about.jpg', alt: t(:proper)[:footer][:about_alt], height: 30
-  .col-sm-6
-  .col-sm-3
-    -# Insert custom link here if requested
+= render 'dashboard/protocol_merges/merge_tool.html.haml'
+
+:javascript
+  $(document).ready( function() {
+    Sparc.protocol.ready();
+  })

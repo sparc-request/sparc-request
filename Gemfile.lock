@@ -127,7 +127,7 @@ GEM
     arel (9.0.0)
     audited (4.8.0)
       activerecord (>= 4.0, < 5.3)
-    autoprefixer-rails (9.4.7)
+    autoprefixer-rails (9.5.0)
       execjs
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
@@ -140,9 +140,9 @@ GEM
     bluecloth (2.2.0)
     bootsnap (1.4.0)
       msgpack (~> 1.0)
-    bootstrap-sass (3.3.7)
+    bootstrap-sass (3.4.1)
       autoprefixer-rails (>= 5.2.1)
-      sass (>= 3.3.4)
+      sassc (>= 2.0.0)
     bootstrap-select-rails (1.12.4)
     bootstrap-toggle-rails (2.2.1.0)
     bootstrap3-datetimepicker-rails (4.17.47)
@@ -253,8 +253,9 @@ GEM
       railties (>= 3.0.0)
     faker (1.9.1)
       i18n (>= 0.7)
-    geckodriver-helper (0.23.0)
     ffi (1.10.0)
+      archive-zip (~> 0.7)
+    geckodriver-helper (0.23.0)
       archive-zip (~> 0.7)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
@@ -502,6 +503,15 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
+    sassc (2.0.1)
+      ffi (~> 1.9)
+      rake
+    sassc-rails (2.1.0)
+      railties (>= 4.0.0)
+      sassc (>= 2.0)
+      sprockets (> 3.0)
+      sprockets-rails
+      tilt
     savon (2.2.0)
       akami (~> 1.2.0)
       builder (>= 2.1.2)
@@ -613,7 +623,7 @@ DEPENDENCIES
   axlsx_rails
   bluecloth
   bootsnap
-  bootstrap-sass (= 3.3.7)
+  bootstrap-sass (= 3.4.1)
   bootstrap-select-rails
   bootstrap-toggle-rails
   bootstrap3-datetimepicker-rails
@@ -699,6 +709,7 @@ DEPENDENCIES
   sanitized_data!
   sass
   sass-rails
+  sassc-rails (>= 2.1.0)
   savon (~> 2.2.0)
   selenium-webdriver
   shoulda-callback-matchers

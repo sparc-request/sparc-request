@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,22 +22,15 @@
     %h4.panel-title
       = t(:proper)[:cart][:header]
       %span.glyphicon.glyphicon-shopping-cart
-  = hidden_field_tag :line_item_count, line_items_count
-  - if sub_service_request
-    -# If we are editing a single SSR, we don't want to display the tabs
-    .list-group
-      = render 'service_requests/right_navigation/cart_sub_service_request', service_request: service_request, sub_service_request: sub_service_request, allow_delete: allow_delete
-  - else
-    -# If we are editing a Service Request, we do want to display the tabs
-    .cart-toggle
-      %button.btn.btn-default.col-sm-6.active{ data: { tab: 'active' } }
-        = t(:proper)[:cart][:tab_headers][:open]
-      %button.btn.btn-default.col-sm-6{ data: { tab: 'complete' } }
-        = t(:proper)[:cart][:tab_headers][:complete]
-    .list-group.ssr-tab.active-ssrs
-      = render 'service_requests/right_navigation/cart_sub_service_requests', service_request: service_request, sub_service_requests: sub_service_requests[:active], allow_delete: allow_delete, tab: 'active'
-    .list-group.ssr-tab.complete-ssrs.hidden
-      = render 'service_requests/right_navigation/cart_sub_service_requests', service_request: service_request, sub_service_requests: sub_service_requests[:complete], allow_delete: allow_delete, tab: 'complete'
+  = hidden_field_tag :line_item_count, service_request.line_items.count
+  .cart-toggle
+    %button.btn.btn-default.col-sm-6.active{ data: { tab: 'active' } }
+      = t(:proper)[:cart][:tab_headers][:open]
+    %button.btn.btn-default.col-sm-6{ data: { tab: 'complete' } }
+      = t(:proper)[:cart][:tab_headers][:complete]
+  .list-group.ssr-tab.active-ssrs
+    = render 'service_requests/right_navigation/cart_sub_service_requests', service_request: service_request, sub_service_requests: sub_service_requests[:active], allow_delete: allow_delete, tab: 'active'
+  .list-group.ssr-tab.complete-ssrs.hidden
+    = render 'service_requests/right_navigation/cart_sub_service_requests', service_request: service_request, sub_service_requests: sub_service_requests[:complete], allow_delete: allow_delete, tab: 'complete'
 
-= render 'service_requests/modals/remove_request_modal'
 = render 'service_requests/modals/line_item_required_modal'

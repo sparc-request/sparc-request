@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -32,7 +32,7 @@ RSpec.describe 'dashboard/sub_service_requests/_request_details', type: :view do
       sub_service_request = create(:sub_service_request, protocol: protocol, service_request: service_request, organization: org)
 
       render_request_details(protocol: protocol, service_request: service_request, sub_service_request: sub_service_request)
-      expect(response).to have_tag('a', with: { href: "/service_requests/#{service_request.id}.xlsx?admin_offset=1&report_type=request_report&sub_service_request_id=#{sub_service_request.id}" }, text: "Export to Excel")
+      expect(response).to have_tag('a', with: { href: service_request_path(srid: service_request.id, admin_offset: 1, report_type: 'request_report', sub_service_request_id: sub_service_request.id, format: :xlsx) }, text: "Export to Excel")
     end
   end
 

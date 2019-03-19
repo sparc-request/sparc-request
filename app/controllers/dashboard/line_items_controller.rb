@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -126,10 +126,9 @@ class Dashboard::LineItemsController < Dashboard::BaseController
     updated_service_relations = true
     if params[:quantity]
       @line_item.quantity = params[:quantity]
-      updated_service_relations = @line_item.valid_otf_service_relation_quantity?
     end
 
-    if updated_service_relations && @line_item.update_attributes(line_item_params)
+    if @line_item.update_attributes(line_item_params)
       render 'dashboard/sub_service_requests/add_otf_line_item'
     else
       @line_item.reload
@@ -173,10 +172,9 @@ class Dashboard::LineItemsController < Dashboard::BaseController
     updated_service_relations = true
     if params[:quantity]
       @line_item.quantity = params[:quantity]
-      updated_service_relations = @line_item.valid_otf_service_relation_quantity?
     end
 
-    if updated_service_relations && @line_item.update_attributes(line_item_params)
+    if @line_item.update_attributes(line_item_params)
       render 'dashboard/sub_service_requests/add_line_item'
     else
       @line_item.reload

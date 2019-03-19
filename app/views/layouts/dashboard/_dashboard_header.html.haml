@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,11 +21,10 @@
 %nav.navbar.navbar-default.portal-nav
   .container-fluid
     .navbar-header
-      - if @show_navbar
-        %ul.nav.navbar-nav
-          - Setting.get_value("navbar_links").each do |identifier, details|
-            = navbar_link(identifier, details, @highlighted_link)
-      - else
+      %ul.nav.navbar-nav
+        - Setting.get_value("navbar_links").each do |identifier, details|
+          = navbar_link(identifier, details, @highlighted_link)
+      - unless @disable_breadcrumb
         %ol.breadcrumb
           = session[:breadcrumbs].breadcrumbs
 
@@ -35,6 +34,8 @@
           %li
             %button.btn.btn-info.navbar-btn#epic-queue-btn{ type: 'button', title: t(:dashboard)[:navbar][:tooltips][:epic_queue], data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}'} }
               = t(:dashboard)[:navbar][:epic_queue]
+        - if current_user.catalog_overlord?
+          = link_to "Protocol Merge", dashboard_protocol_merge_path, :class => ' header_button btn btn-primary btn-md', style: 'margin-top:7px;'
         - if @show_messages
           %li
             %button.btn.btn-danger.navbar-btn#messages-btn{ type: 'button', title: t(:dashboard)[:navbar][:tooltips][:messages], data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}'} }

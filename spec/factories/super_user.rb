@@ -24,7 +24,7 @@ FactoryBot.define do
     access_empty_protocols {false}
 
     trait :access_empty_protocols do
-      access_empty_protocols true
+      access_empty_protocols {true}
     end
   end
 end

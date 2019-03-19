@@ -20,14 +20,14 @@
 
 FactoryBot.define do
   factory :study_type_question_group do
-    version 1
+    version {1}
 
     transient do
-      protocol_id nil
+      protocol_id {nil}
     end
 
     trait :active do
-      active true
+      active {true}
     end
 
     trait :with_questions do

@@ -21,20 +21,20 @@
 FactoryBot.define do
 
   factory :subsidy do
-    sub_service_request nil
-    percent_subsidy 1
+    sub_service_request {nil}
+    percent_subsidy {1}
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }
     end
 
     factory :approved_subsidy do
-      status 'Approved'
-      total_at_approval 0
+      status {'Approved'}
+      total_at_approval {0}
     end
 
     factory :pending_subsidy do
-      status 'Pending'
+      status {'Pending'}
     end
 
     factory :subsidy_without_validations, traits: [:without_validations]

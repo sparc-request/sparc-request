@@ -26,7 +26,7 @@ FactoryBot.define do
     active                    { false }
 
     trait :active do
-      active true
+      active {true}
     end
 
     trait :without_validations do

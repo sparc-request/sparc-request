@@ -21,9 +21,9 @@
 FactoryBot.define do
   factory :protocol_filter do
     identity_id          { Random.rand(10000) }
-    search_query         ""
-    with_organization    []
-    with_status          []
-    with_owner           [] 
+    search_query         {""}
+    with_organization    {[]}
+    with_status          {[]}
+    with_owner           {[]}
   end
 end

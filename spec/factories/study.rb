@@ -20,7 +20,7 @@
 
 FactoryBot.define do
   factory :study, parent: :protocol, class: 'Study' do
-    type "Study"
+    type {"Study"}
 
     trait :with_study_type_questions_group do
       after(:create) do |protocol|

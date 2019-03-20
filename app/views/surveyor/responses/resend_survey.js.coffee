@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,17 +17,6 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-class Identities::RegistrationsController < Devise::RegistrationsController
-  def after_sign_up_path_for(resource)
-    if params[:service_request_id]
-      catalog_service_request_path(params[:service_request_id])
-    else
-      super
-    end
-  end
-
-  def after_inactive_sign_up_path_for(resource)
-    after_sign_up_path_for(resource)
-  end
-end
+$("#flashes_container").html("<%= j render 'shared/flash' %>")
+$('#responses-table').bootstrapTable('refresh')
+$("[data-toggle='tooltip']").tooltip()

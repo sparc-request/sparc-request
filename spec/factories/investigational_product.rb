@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -23,11 +23,11 @@ FactoryBot.define do
   factory :investigational_products_info do
     ind_number  { Random.rand(20000).to_s }
     ind_on_hold { false }
-    exemption_type "ide"
+    exemption_type { "ide" }
     inv_device_number  { Random.rand(20000).to_s }
 
     trait :ind_on_hold do
-      ind_on_hold true
+      ind_on_hold {true}
     end
   end
 end

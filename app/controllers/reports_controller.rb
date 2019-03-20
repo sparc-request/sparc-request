@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -25,7 +25,7 @@ class ReportsController < ApplicationController
   before_action :authenticate_identity!
   before_action :require_super_user, :only => [:index, :setup, :generate]
   before_action :set_user
-  before_action :set_show_navbar
+  before_action :set_disable_breadcrumb
 
   def set_highlighted_link
     @highlighted_link ||= 'sparc_report'
@@ -36,8 +36,8 @@ class ReportsController < ApplicationController
     session['uid'] = @user.nil? ? nil : @user.id
   end
 
-  def set_show_navbar
-    @show_navbar = true
+  def set_disable_breadcrumb
+    @disable_breadcrumb = true
   end
 
   def require_super_user

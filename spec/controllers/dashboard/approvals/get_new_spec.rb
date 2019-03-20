@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -24,7 +24,7 @@ RSpec.describe Dashboard::ApprovalsController, type: :controller do
   describe 'GET new' do
     before(:each) do
       @ssr_stub = findable_stub(SubServiceRequest) do
-        build_stubbed(SubServiceRequest)
+        build_stubbed(:sub_service_request)
       end
 
       log_in_dashboard_identity(obj: build_stubbed(:identity))

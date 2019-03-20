@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -184,9 +184,9 @@ module ApplicationHelper
     content_tag(:li, link_to(name.to_s, path, target: '_blank', class: highlighted ? 'highlighted' : ''), class: 'dashboard nav-bar-link')
   end
 
-  def calculate_step_params(service_request, sub_service_request)
-    has_subsidy           = sub_service_request ? sub_service_request.has_subsidy? : service_request.sub_service_requests.map(&:has_subsidy?).any?
-    eligible_for_subsidy  = sub_service_request ? sub_service_request.eligible_for_subsidy? : service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
+  def calculate_step_params(service_request)
+    has_subsidy           = service_request.sub_service_requests.any?(&:has_subsidy?)
+    eligible_for_subsidy  = service_request.sub_service_requests.any?(&:eligible_for_subsidy?)
     subsidy               = has_subsidy || eligible_for_subsidy
     classes               = subsidy ? 'step-with-subsidy' : 'step-no-subsidy'
 

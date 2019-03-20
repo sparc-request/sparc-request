@@ -21,7 +21,7 @@
 FactoryBot.define do
   factory :subsidy_map do
     transient do
-      excluded_funding_source_count 0
+      excluded_funding_source_count {0}
     end
 
     after(:build) do |subsidy_map, evaluator|

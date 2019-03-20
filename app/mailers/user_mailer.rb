@@ -36,6 +36,7 @@ class UserMailer < ActionMailer::Base
 
     if ssr.present?
       @ssr_id = ssr.id
+      @protocol_id = ssr.protocol_id
       @is_service_provider = user.is_service_provider?(ssr)
     end
 

@@ -28,7 +28,7 @@ FactoryBot.define do
     surveyable                { nil }
 
     trait :active do
-      active true
+      active {true}
     end
 
     trait :without_validations do

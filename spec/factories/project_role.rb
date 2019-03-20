@@ -22,17 +22,17 @@
 # because of validations on protocol
 FactoryBot.define do
   factory :project_role do
-    protocol nil
-    identity nil
+    protocol {nil}
+    identity {nil}
     project_rights { Faker::Lorem.sentence(2) }
-    role 'primary-pi'
+    role {'primary-pi'}
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }
     end
 
     trait :approve do
-      project_rights 'approve'
+      project_rights {'approve'}
     end
 
     trait :with_identity do

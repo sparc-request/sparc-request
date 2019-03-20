@@ -15,6 +15,8 @@ task clincard_process_ssrs_move: :environment do
   # in a more complex manner
   big_ssrs = []
   single_ssrs = []
+  touched_ssrs = []
+  created_ssrs = []
 
   ssrs.each do |ssr|
     if ssr.line_items.count > 1
@@ -28,17 +30,56 @@ task clincard_process_ssrs_move: :environment do
     # Set the master org id. All line items belonging to a service with this org id
     # will stay with the original ssr and don't have to be touched
     org_id = ssr.line_items.first.service.organization_id
-    
+    ssr.organization_id = org_id
+    ssr.save(validate: false)
+    protocol = Protocol.find(ssr.protocol_id)
+
+    # We have to keep track of what org ids we have already used in order to decide
+    # whether to create a new ssr or assign a line item to one we've already created
+    used_org_ids = []
+
     ssr.line_items.each do |item|
-      puts "Line item #{count}'s organization: #{item.service.organization_id}"
-      count += 1
+      line_item_org_id = item.service.organization_id
+      # If it's not the master org id, create a new
+      # ssr or assign to newly created ssr
+      if (line_item_org_id != org_id)
+        touched_ssrs << ssr.id
+        # We haven't used this org id yet, so create a new ssr
+        if !used_org_ids.include?(line_item_org_id)
+          puts "Creating new ssr"
+          used_org_ids << line_item_org_id # All future line items with this org id will be assigned to this ssr
+          new_ssr = SubServiceRequest.new(service_request_id: ssr.service_request.id, organization_id: line_item_org_id,
+                                              status: ssr.status, owner_id: ssr.owner_id, 
+                                              ssr_id: (sprintf '%04d', protocol.next_ssr_id), org_tree_display: ssr.org_tree_display,
+                                              service_requester_id: ssr.service_requester.id, submitted_at: ssr.submitted_at,
+                                              protocol_id: protocol.id, in_work_fulfillment: ssr.in_work_fulfillment)
+          new_ssr.save(validate: false)
+          item.update_attributes(sub_service_request_id: new_ssr.id)
+          protocol.next_ssr_id = protocol.next_ssr_id + 1
+          protocol.save(validate: false)
+          new_ssr.update_org_tree
+          created_ssrs << new_ssr.id
+        else
+          # This org id is in the used array, meaning an ssr has already been created.
+          # All we have to do is assign this line item to that ssr.
+          puts "Assigning to ssr"
+          existing_ssr = SubServiceRequest.where(organization_id: line_item_org_id).last
+          item.update_attributes(sub_service_request_id: existing_ssr.id)
+        end
+      end
     end
-    puts "-"*20
   end
 
+  # Dealing with the easy ones. Just simply assigning the org id
   single_ssrs.each do |ssr|
     org_id = ssr.line_items.first.service.organization_id
-    ssr.organzation_id = org_id
+    ssr.organization_id = org_id
     ssr.save(validate: false)
   end
+
+  puts "Ssrs affected by script:"
+  puts touched_ssrs
+  puts ""
+  puts "Newly created ssrs:"
+  puts created_ssrs
 end

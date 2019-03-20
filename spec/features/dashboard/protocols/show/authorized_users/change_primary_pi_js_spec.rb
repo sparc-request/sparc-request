@@ -194,17 +194,17 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
   def when_i_search_and_select_the_user
     @page.authorized_user_modal.instance_exec do
       select_user_field.set('Jane Doe')
-      wait_for_user_choices
+      wait_until_user_choices_visible
       user_choices(text: "Jane Doe").first.click
       # wait for a field to appear to indicate that user search completed
-      wait_for_credentials_dropdown
+      wait_until_credentials_dropdown_visible
     end
   end
 
   def when_i_set_the_user_to_primary_pi
     @page.authorized_user_modal.instance_exec do
       role_dropdown.click
-      wait_for_dropdown_choices
+      wait_until_dropdown_choices_visible
       dropdown_choices(text: /\APrimary PI\Z/).first.click
       wait_until_dropdown_choices_invisible
     end

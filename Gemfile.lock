@@ -114,7 +114,7 @@ GEM
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
-    addressable (2.5.2)
+    addressable (2.6.0)
       public_suffix (>= 2.0.2, < 4.0)
     afm (0.2.2)
     airbrussh (1.3.0)
@@ -607,7 +607,7 @@ DEPENDENCIES
   activeresource
   acts-as-taggable-on!
   acts_as_list!
-  addressable (~> 2.5.2)
+  addressable (~> 2.6.0)
   audited (~> 4.8)
   axlsx!
   axlsx_rails

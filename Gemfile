@@ -87,7 +87,7 @@ gem 'omniauth-cas'
 gem 'dotenv-rails'
 
 group :development, :test, :profile do
-  gem 'addressable', '~> 2.5.2'
+  gem 'addressable', '~> 2.6.0'
   gem 'bullet'
   gem 'connection_pool'
   gem 'equivalent-xml'

@@ -65,8 +65,7 @@ class Organization < ApplicationRecord
         where("super_users.identity_id = ? or service_providers.identity_id = ?", identity_id, identity_id).
         references(:super_users, :service_providers).
         distinct(:organizations).ids
-      ),
-      is_available: true
+      )
     ).distinct
   }
 

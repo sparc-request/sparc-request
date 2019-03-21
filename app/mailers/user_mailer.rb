@@ -40,7 +40,7 @@ class UserMailer < ActionMailer::Base
       @is_service_provider = user.is_service_provider?(ssr)
     end
 
-    send_message("#{t(:mailer)[:email_title][:new]} #{t('mailer.email_title.general', email_status: 'Notification', type: 'Protocol', id: ssr.protocol.id)}")
+    send_message("#{t(:mailer)[:email_title][:new]} #{t('mailer.email_title.general_dashboard', email_status: 'Notification', type: 'Protocol', id: ssr.protocol.id)}")
   end
 
   private

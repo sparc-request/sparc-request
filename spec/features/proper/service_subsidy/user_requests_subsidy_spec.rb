@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -40,7 +40,7 @@ RSpec.describe 'User requests a new subsidy', js: true do
 
   context 'and clicks \'Request a Subsidy\'' do
     scenario 'and sees the subsidy modal' do
-      visit service_subsidy_service_request_path(@sr)
+      visit service_subsidy_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
       click_button 'Request a Subsidy'
@@ -51,7 +51,7 @@ RSpec.describe 'User requests a new subsidy', js: true do
 
     context 'and fills out the form and submits' do
       scenario 'and sees the new pending subsidy' do
-        visit service_subsidy_service_request_path(@sr)
+        visit service_subsidy_service_request_path(srid: @sr.id)
         wait_for_javascript_to_finish
 
         click_button 'Request a Subsidy'

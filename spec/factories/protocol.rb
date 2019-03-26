@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -35,49 +35,49 @@ FactoryBot.define do
     federal_grant_code_id        { Random.rand(1000).to_s }
     federal_non_phs_sponsor      { Faker::Lorem.word }
     federal_phs_sponsor          { Faker::Lorem.word }
-    requester_id                 1
+    requester_id                 { 1 }
     start_date                   { '2015-10-15' }
     end_date                     { '2015-10-15' }
-    selected_for_epic            false
+    selected_for_epic            { false }
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }
     end
 
     trait :project do
-      type "Project"
+      type {"Project"}
     end
 
     trait :funded do
-      funding_status "funded"
-      funding_source "skrill"
+      funding_status {"funded"}
+      funding_source {"skrill"}
     end
 
     trait :pending do
-      funding_status "pending"
+      funding_status {"pending"}
     end
 
     trait :federal do
-      funding_source           "federal"
-      potential_funding_source "federal"
+      funding_source           {"federal"}
+      potential_funding_source {"federal"}
     end
 
     trait :archived do
-      archived true
+      archived {true}
     end
 
     trait :unarchived do
-      archived false
+      archived {false}
     end
 
     trait :blank_funding_start_dates do
-      funding_start_date ""
-      potential_funding_start_date ""
+      funding_start_date {""}
+      potential_funding_start_date {""}
     end
 
     trait :blank_start_and_end_dates do
-      start_date nil
-      end_date nil
+      start_date {nil}
+      end_date {nil}
     end
 
     trait :with_sub_service_request_in_cwf do
@@ -92,13 +92,13 @@ FactoryBot.define do
     end
 
     transient do
-      project_role_count 1
-      pi nil
-      identity nil
-      project_rights nil
-      role nil
-      primary_pi nil
-      project_role nil
+      project_role_count {1}
+      pi {nil}
+      identity {nil}
+      project_rights {nil}
+      role {nil}
+      primary_pi {nil}
+      project_role {nil}
     end
 
     before(:create) do |protocol, evaluator|

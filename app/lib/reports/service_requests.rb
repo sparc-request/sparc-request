@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -91,7 +91,7 @@ class ServiceRequestsReport < ReportingModule
     if params[:apr_data]
       if params[:apr_data].include?("irb")
         attrs["IRB Checked Y/N"] = "service_request.try(:protocol).try(:research_types_info).try(:human_subjects) ? \"Y\" : \"N\""
-        attrs["If true, IRB # (HR or PRO)"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_and_pro_numbers)"
+        attrs["If true, PRO #)"] = "service_request.try(:protocol).try(:human_subjects_info).try(:pro_number)"
         attrs["IRB Approval Date"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_approval_date).try(:strftime, \"%D\")"
         attrs["IRB Expiration Date"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_expiration_date).try(:strftime, \"%D\")"
       end

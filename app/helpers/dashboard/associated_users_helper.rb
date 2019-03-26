@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -31,12 +31,22 @@ module Dashboard::AssociatedUsersHelper
   end
 
   def associated_users_delete_button(pr, permission_to_edit)
+    data  = { id: pr.id, toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' }
+
+    if current_user.id == pr.identity_id && !permission_to_edit
+      data[:batch_select] = {
+        checkConfirm: 'true',
+        checkConfirmSwalText: t(:authorized_users)[:delete][:self_remove_warning]
+      }
+    end
+
     content_tag(:button,
       raw(
         content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
-      ),
-      type: 'button', data: { project_role_id: pr.id, identity_role: pr.role, identity_id: pr.identity_id, permission: permission_to_edit.to_s }, 
-      class: "btn btn-danger actions-button delete-associated-user-button #{permission_to_edit ? '' : 'disabled'}"
+      ), type: 'button',
+      title: pr.primary_pi? ? t(:authorized_users)[:delete][:pi_tooltip] : t(:authorized_users)[:delete][:tooltip],
+      class: ["btn btn-danger actions-button delete-associated-user-button", permission_to_edit && !pr.primary_pi? ? '' : 'disabled'],
+      data: data
     )
   end
 end

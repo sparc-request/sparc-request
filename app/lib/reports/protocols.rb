@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -35,7 +35,8 @@ class ProtocolsReport < ReportingModule
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
       Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
-      "Include Epic Interface Columns" => {:field_type => :check_box_tag, :for => 'show_epic_cols', :field_label => 'Include Epic Interface Columns'}
+      "Include Epic Interface Columns" => {:field_type => :check_box_tag, :for => 'show_epic_cols', :field_label => 'Include Epic Interface Columns'},
+      "Include Investigational Device Columns" => { field_type: :check_box_tag, for: 'show_device_cols', field_label: "Include Investigational Device Columns" }
     }
   end
 
@@ -55,7 +56,6 @@ class ProtocolsReport < ReportingModule
     attrs["Study Phase"] = "service_request.try(:protocol).try{study_phases.map(&:phase).join(', ')}"
 
     attrs["NCT #"] = "service_request.try(:protocol).try(:human_subjects_info).try(:nct_number).try{prepend(' ')}"
-    attrs["HR #"] = "service_request.try(:protocol).try(:human_subjects_info).try(:hr_number).try{prepend(' ')}"
     attrs["PRO #"] = "service_request.try(:protocol).try(:human_subjects_info).try(:pro_number).try{prepend(' ')}"
     attrs["IRB of Record"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_of_record)"
     attrs["IRB Expiration Date"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_expiration_date)"
@@ -80,6 +80,12 @@ class ProtocolsReport < ReportingModule
       attrs["Last Epic Push Status"] = "service_request.try(:protocol).try(:last_epic_push_status)"
     end
 
+    if params[:show_device_cols]
+      attrs["IND #"]            = "service_request.try(:protocol).try(:investigational_products_info).try(:ind_number)"
+      attrs["IDE/HDE/HUD Type"] = "InvestigationalProductsInfo::EXEMPTION_TYPES.detect{ |et| et == service_request.try(:protocol).try(:investigational_products_info).try(:exemption_type) }"
+      attrs["IDE/HDE/HUD #"]    = "service_request.try(:protocol).try(:investigational_products_info).try(:inv_device_number)"
+    end
+
     attrs
   end
 
@@ -100,7 +106,7 @@ class ProtocolsReport < ReportingModule
 
   # Other tables to include
   def includes
-    return :organization, :service_request => {:line_items => :service}
+    [:organization, { service_request: { protocol: [:project_roles, :study_phases, :human_subjects_info, :investigational_products_info, primary_pi_role: { identity: { professional_organization: { parent: { parent: :parent } } } }] } }, { line_items: :service }]
   end
 
   # Conditions

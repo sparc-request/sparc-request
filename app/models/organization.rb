@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -150,7 +150,7 @@ class Organization < ApplicationRecord
   # Organization A, which belongs to
   # Organization B, which belongs to Organization C, return "C > B > A".
   # This "hierarchy" stops at a process_ssrs Organization.
-  def organization_hierarchy(include_self=false, process_ssrs=true, use_css=false)
+  def organization_hierarchy(include_self=false, process_ssrs=true, use_css=false, use_array=false)
     parent_orgs = self.parents.reverse
 
     if process_ssrs
@@ -159,7 +159,9 @@ class Organization < ApplicationRecord
       root = parent_orgs.length - 1
     end
 
-    if use_css
+    if use_array
+      parent_orgs[0..root]
+    elsif use_css
       parent_orgs[0..root].map{ |o| "<span class='#{o.css_class}-text'>#{o.abbreviation}</span>"}.join('<span> / </span>') + (include_self ? '<span> / </span>' + "<span class='#{self.css_class}-text'>#{self.abbreviation}</span>" : '')
     else
       parent_orgs[0..root].map(&:abbreviation).join(' > ') + (include_self ? ' > ' + self.abbreviation : '')

@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,11 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 $(document).ready ->
-
   $(document).on 'click', '#new-associated-user-button', ->
     if $(this).data('permission')
       $.ajax
@@ -43,22 +39,12 @@ $(document).ready ->
           if $('#project_role_identity_attributes_credentials').val() == 'other'
             $('.credentials_dependent.other').show()
 
-  $(document).on 'click', '.delete-associated-user-button', ->
-    if $(this).data('permission')
-      project_role_id        = $(this).data('project-role-id')
-      current_user_id        = parseInt($('#current_user_id').val(), 10)
-      pr_identity_role       = $(this).data('identity-role')
-      pr_identity_id         = $(this).data('identity-id')
-
-      if current_user_id == pr_identity_id
-        confirm_message = I18n['authorized_users']['delete']['self_remove_warning']
-      else
-        confirm_message = I18n['authorized_users']['delete']['remove_warning']
-
-      if pr_identity_role == 'primary-pi'
-        alert I18n['authorized_users']['delete']['pi_warning']
-      else
-        if confirm(confirm_message)
-          $.ajax
-            type: 'delete'
-            url: "/dashboard/associated_users/#{project_role_id}"
+  $(document).on 'load-success.bs.table', '#associated-users-table', ->
+    $('.delete-associated-user-button').batchSelect({
+      batchSelectedText: I18n['actions']['delete_selected']
+      swalTitle: I18n['swal']['swal_confirm']['title']
+      swalText: I18n['swal']['swal_confirm']['text']
+      type: 'warning'
+      ajaxUrl: '/dashboard/associated_users/'
+      ajaxType: 'delete'
+    })

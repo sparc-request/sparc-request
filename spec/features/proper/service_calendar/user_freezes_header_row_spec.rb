@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -50,7 +50,7 @@ RSpec.describe 'User freezes header row', js: true do
     end
 
     scenario 'does NOT see Freeze Header Row Button' do
-      visit service_calendar_service_request_path(@sr)
+      visit service_calendar_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
       expect(page).not_to have_selector(".freeze-header-button")
     end
@@ -79,7 +79,7 @@ RSpec.describe 'User freezes header row', js: true do
       arm       = create(:arm, protocol: protocol)
       vg        = create(:visit_group, arm: arm)
 
-      visit service_calendar_service_request_path(@sr)
+      visit service_calendar_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
     end
 

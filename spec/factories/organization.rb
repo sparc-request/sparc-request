@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -59,11 +59,11 @@ FactoryBot.define do
     end
 
     trait :process_ssrs do
-      process_ssrs true
+      process_ssrs {true}
     end
 
     trait :disabled do
-      is_available false
+      is_available {false}
     end
 
     trait :without_validations do
@@ -71,15 +71,15 @@ FactoryBot.define do
     end
 
     transient do
-      sub_service_request_count 0
-      service_count 0
-      catalog_manager_count 0
-      super_user_count 0
-      service_provider_count 0
-      pricing_setup_count 0
-      submission_email_count 0
-      admin nil
-      service_provider nil
+      sub_service_request_count {0}
+      service_count {0}
+      catalog_manager_count {0}
+      super_user_count {0}
+      service_provider_count {0}
+      pricing_setup_count {0}
+      submission_email_count {0}
+      admin {nil}
+      service_provider {nil}
     end
 
     after(:build) do |organization, evaluator|

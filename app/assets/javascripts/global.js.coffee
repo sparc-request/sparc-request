@@ -39,7 +39,22 @@ $ ->
       $control.text(alt)
       $control.attr('alt', text)
 
-(exports ? this).getSRId = ->
+  $(document).on 'click', '.copy-to-clipboard', ->
+    $that = $(this)
+
+    document.getElementById($(this).data('target')).select()
+    document.execCommand('copy')
+
+    $(this).parents('.input-group').siblings('.help-text').remove()
+    $(this).parents('.input-group').after("<span class='help-text text-success'>#{I18n['actions']['copy_clipboard']['complete']}</span>")
+
+    setTimeout (->
+      $that.parents('.input-group').siblings('.help-text').fadeOut('slow', ->
+        $that.parents('.input-group').siblings('.help-text').remove()
+      )
+    ), 1500
+
+(exports ? this).getSRId ->
   $("input[name='service_request_id']").val()
 
 (exports ? this).getSSRId = ->

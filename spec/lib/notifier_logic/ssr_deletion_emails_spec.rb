@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -66,7 +66,7 @@ RSpec.describe NotifierLogic do
           expect(mailer).to receive(:deliver_now)
           mailer
         end
-        NotifierLogic.new(@sr, nil, logged_in_user).ssr_deletion_emails(deleted_ssr: @ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
+        NotifierLogic.new(@sr, logged_in_user).ssr_deletion_emails(deleted_ssr: @ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
         expect(Notifier).not_to have_received(:notify_user)
       end
 
@@ -77,8 +77,8 @@ RSpec.describe NotifierLogic do
           mailer
         end
 
-        NotifierLogic.new(@sr, nil, logged_in_user).ssr_deletion_emails(deleted_ssr: @ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
-        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, logged_in_user, @ssr, nil, true, false, false)
+        NotifierLogic.new(@sr, logged_in_user).ssr_deletion_emails(deleted_ssr: @ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
+        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, logged_in_user, @ssr, nil, true, false)
       end
 
       it 'should notify admin (deletion email)' do
@@ -88,8 +88,8 @@ RSpec.describe NotifierLogic do
           mailer
         end
 
-        NotifierLogic.new(@sr, nil, logged_in_user).ssr_deletion_emails(deleted_ssr: @ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
-        expect(Notifier).to have_received(:notify_admin).with(@admin_email, logged_in_user, @ssr, nil, true, false)
+        NotifierLogic.new(@sr, logged_in_user).ssr_deletion_emails(deleted_ssr: @ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
+        expect(Notifier).to have_received(:notify_admin).with(@admin_email, logged_in_user, @ssr, nil, true)
       end
     end
   end

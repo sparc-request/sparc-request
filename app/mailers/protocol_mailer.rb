@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,12 +18,34 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Identities::SessionsController < Devise::SessionsController
-  def after_sign_in_path_for(resource)
-    if params[:service_request_id]
-      catalog_service_request_path(params[:service_request_id])
-    else
-      super
+class ProtocolMailer < ActionMailer::Base
+  helper ApplicationHelper
+  helper NotifierHelper
+
+  default from: Setting.get_value("no_reply_from")
+
+  # https://www.pivotaltracker.com/story/show/161483270
+  def archive_email
+    @protocol             = params[:protocol]
+    @archiver             = params[:archiver]
+    @action               = params[:action]
+    @service_request      = @protocol.service_requests.first
+    @ssrs_to_be_displayed = @protocol.sub_service_requests.where.not(status: Setting.get_value('finished_statuses') << 'draft')
+
+    archive_email_recipients.each do |recipient|
+      send_email(recipient, t('mailers.protocol_mailer.archive_email.subject', protocol_id: @protocol.id))
     end
+  end
+
+  private
+
+  def send_email(recipient, subject)
+    @send_to = recipient
+
+    mail(to: recipient.email, subject: subject)
+  end
+
+  def archive_email_recipients
+    (@protocol.identities + @ssrs_to_be_displayed.map(&:candidate_owners).flatten).uniq
   end
 end

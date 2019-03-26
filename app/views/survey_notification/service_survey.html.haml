@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -33,7 +33,9 @@
 
 %ul
 - @surveys.each do |survey|
-  - unless response = survey.responses.where(identity: @identity, respondable: @ssr).first
+  - if response = survey.responses.where(identity: @identity, respondable: @ssr).first
+    - response.update_attribute(:updated_at, Time.now)
+  - else
     - response = survey.responses.create(identity: @identity, respondable: @ssr)
   %li
     = link_to survey.title, url_for(controller: '/surveyor/responses', action: :edit, only_path: false, id: response.id, format: :html), target: '_blank'
@@ -45,3 +47,8 @@
     %br
     %em.gray-text
       = raw(t(:surveyor)[:responses][:emails][:sctr_customer_satisfaction][:grant_info])
+
+%br
+%br
+
+= render "info_table"

@@ -1,0 +1,1 @@
+$("#flashes_container").html("<%= j render 'shared/flash' %>")

@@ -35,6 +35,7 @@ en:
     copy: "Copy"
     create: "Create"
     delete: "Delete"
+    delete_selected: "Delete Selected"
     disable: "Disable"
     edit: "Edit"
     filter: "Filter"
@@ -155,12 +156,12 @@ en:
     edit:
       header: "Edit Authorized User"
     delete:
-      self_remove_warning: "This action will remove you from the Protocol. Are you sure?"
-      remove_warning: "Are you sure you want to remove this user?"
-      pi_warning: "Projects/Studies require a Primary PI. Please add a new one before continuing."
+      tooltip: "Click to delete this user or hold to delete multiple users."
+      self_remove_warning: "This action will remove yourself from this Protocol."
+      pi_tooltip: "Projects/Studies require a Primary PI. Please add a new one before removing this user."
     created: "Authorized User Added!"
     updated: "Authorized User Updated!"
-    destroyed: "Authorized User Removed!"
+    destroyed: "Authorized User(s) Removed!"
     form_fields:
       orcid: "ORCID:"
       era_commons_name: "ERA Commons Name:"
@@ -368,22 +369,20 @@ en:
   # ERROR PAGES #
   ###############
   error_pages:
+    link_href: "mailto:"
+    link_display: "Email: "
+    phone_href: "tel:"
+    phone_display: "Call: "
+
     not_found:
       heading: "Uh, oh.  You've hit a"
       error: "Page Not Found (404)"
       help_text: "For help, contact us:"
-      link_href: "mailto:success@musc.edu"
-      link_display: "Email: success@musc.edu"
-      phone_href: "tel:843-792-8300"
-      phone_display: "Call: 843-792-8300"
+
     server_error:
       heading: "Uh, oh.  You've hit an"
       error: "Internal Server Error (500)"
       help_text: "For help, contact us:"
-      link_href: "mailto:success@musc.edu"
-      link_display: "Email: success@musc.edu"
-      phone_href: "tel:843-792-8300"
-      phone_display: "Call: 843-792-8300"
 
   #########
   # FORMS #
@@ -410,6 +409,22 @@ en:
     header: "Internet Explorer Version Warning"
     text1: "Your browser version is out of date. SPARCRequest does not support Internet Explorer versions older than version 8."
     text2: "Using versions lower than 8 can cause data curruption and other serious problems using this tool."
+
+  ###########
+  # MAILERS #
+  ###########
+  mailers:
+    greeting: "Dear %{name}"
+    protocol_mailer:
+      archive_email:
+        archive:
+          subject: "SPARCRequest Protocol Archive Notification (Protocol %{protocol_id})"
+          introduction: "Protocol %{protocol_id} has been archived in SPARCRequest by %{archiver_name}. Your protocol can still be accessed through archived protocols or by <a href='%{link}' target='blank'>this direct link to SPARCDashboard</a>."
+          archiver: "(Archiver)"
+        unarchive:
+          subject: "SPARCRequest Protocol Unarchive Notification (Protocol %{protocol_id})"
+          introduction: "Protocol %{protocol_id} has been unarchived in SPARCRequest by %{archiver_name}. Your protocol can still be accessed through archived protocols or by <a href='%{link}' target='blank'>this direct link to SPARCDashboard</a>."
+          unarchiver: "(Unarchiver)"
 
   ##########
   # MODELS #
@@ -451,7 +466,9 @@ en:
     summary:
       header: "%{protocol_type} Summary"
       archive: "Archive"
+      archive_note: "%{protocol_type} was archived."
       unarchive: "Unarchive"
+      unarchive_note: "%{protocol_type} was unarchived."
       id: "%{protocol_type} ID:"
       title: "Title:"
       short_title: "Short Title:"
@@ -524,7 +541,6 @@ en:
         humans:
           header: "Human Subjects"
           nct_number: "NCT# (National Clinical Trials Number):"
-          hr_number: "HR #:"
           pro_number: "PRO #:"
           record_irb: "IRB of Record:"
           submission_type: "Submission Type:"
@@ -654,7 +670,7 @@ en:
   swal:
     swal_confirm:
       title: "Are you sure?"
-      text: "You cannot undo this action"
+      text: "You cannot undo this action."
 
   #############################
   # VALIDATION ERROR MESSAGES #
@@ -921,7 +937,6 @@ en:
     funding_rfa: "Funding Opportunity #/RFA:"
     funding_source_other: "Please Specify"
     funding_start_date: "Funding Start Date:"
-    hr_number: "HR #:"
     human_subjects: "Human Subjects:"
     iacuc_approval_date: "IACUC Approval Date:"
     iacuc_expiration_date: "IACUC Expiration Date:"
@@ -1069,13 +1084,13 @@ en:
     type: 'Type'
   footer:
     mail_to: "hundc@musc.edu"
-    mail_link: "Sign Up For the SPARC Request Listserv"
-    mail_subject: "SPARC Request Listserv"
-    link_one_text: "SPARC Request Blog"
+    mail_link: "Sign Up For the SPARCRequest Listserv"
+    mail_subject: "SPARCRequest Listserv"
+    link_one_text: "SPARCRequest Blog"
     link_one_url: "https://sparcrequestblog.com/"
     link_two_text: "SCTR"
     link_two_url: "http://sctr.musc.edu"
-    link_three_text: "SPARC Request Home"
+    link_three_text: "SPARCRequest Home"
     link_three_url: "http://academicdepartments.musc.edu/sctr/sparc_request"
   identity:
     approved: "Account approved"
@@ -1084,7 +1099,7 @@ en:
     create_report: "Create Report"
     defined_reports_desc: "Please select a defined report below and click to proceed with report customizations."
     defined_reports: "Defined Reports"
-    intro: "Welcome to the SPARC Request Reporting Module"
+    intro: "Welcome to the SPARCRequest Reporting Module"
     sub_intro: "Please select a report type to proceed"
     proceed: "Proceed"
     return_to_admin_portal: "Return to Admin Portal"
@@ -1313,7 +1328,7 @@ en:
     p_id: "Protocol ID:"
     p_info: "Protocol Information"
     proxy: "SPARC Proxy Rights"
-    received: "You have received a new notification on your SPARC Request User Dashboard. Please login  @ %{portal_root_url} to retrieve it. Thank you."
+    received: "You have received a new notification on your SPARCRequest User Dashboard. Please login  @ %{portal_root_url} to retrieve it. Thank you."
     role: "Role:"
     s_name: "Sponsor Name"
     sparc_dashboard_period: "SPARCDashboard."
@@ -1344,7 +1359,7 @@ en:
     fname: "First Name:"
     lname: "Last Name:"
     mail: "Email:"
-    message: "To create an account for the utilization of the SPARC Request application, please provide the following information:"
+    message: "To create an account for the utilization of the SPARCRequest application, please provide the following information:"
     not_approved: "Close Window"
     phone: "Telephone Number:"
     reason: "Reason for account/login request:"
@@ -1431,11 +1446,11 @@ en:
     ssr_id: "Sub Service Request ID:"
     status: "Status"
     status_change:
-      body1: "Request for new SPARC Request account status change"
-      body2: "Your request for a new SPARC Request account has been approved.  You may proceed with your service "
+      body1: "Request for new SPARCRequest account status change"
+      body2: "Your request for a new SPARCRequest account has been approved.  You may proceed with your service "
       body3: "request using your newly created"
       body4: "username and password."
-      body5: "Your request for a new SPARC Request account has NOT been approved."
+      body5: "Your request for a new SPARCRequest account has NOT been approved."
     study_info: "Study Information"
     study_id: "Study ID"
     study_title: "Study Title"
@@ -1498,7 +1513,7 @@ en:
     greeting: "Welcome!"
     information: "Information:"
     loading: "Loading your Projects/Studies"
-    message1: "Within your dashboard, you can view (and/or edit and submit) service requests currently in SPARC Request, as well as all of those still in 'draft' status."
+    message1: "Within your dashboard, you can view (and/or edit and submit) service requests currently in SPARCRequest, as well as all of those still in 'draft' status."
     message2: "Please note that Projects/Studies are listed in descending order."
     name: "Name:"
     no_authorized_users: "Currently no authorized users"
@@ -1575,16 +1590,16 @@ en:
   # Rails Root Page Messages
   rails_root:
     message1: "Search for services above or browse the catalog to your left."
-    welcome: "Welcome to the SPARC Request Services Catalog"
+    welcome: "Welcome to the SPARCRequest Services Catalog"
     # message2: "Click \"Add Services\" at the bottom of any service description to add it to your \"My Services\"."
     # message3: "To delete a service from \"My Services\", use the red X beside any service."
     message4: "** Please Note: You may only select services applicable to ONE research study/project at a time.**"
-    message5: "Welcome to SPARC Request Version 4.0. We're happy to announce that Step 2 now includes the concept of clinical trial arms. You'll find other numerous enhancements and upgrades in Version 4.0. For more information and training documents, please visit our new website at"
+    message5: "Welcome to SPARCRequest Version 4.0. We're happy to announce that Step 2 now includes the concept of clinical trial arms. You'll find other numerous enhancements and upgrades in Version 4.0. For more information and training documents, please visit our new website at"
     # <a>http://academicdepartments.musc.edu/sparc_request/</a>.
     message6: "Please contact the SUCCESS Center at 792-8300 with any questions or to set up a demonstration!"
-    message7: "Check out our SPARC Request Blog ("
-    message8: "). This feature allows you to follow our latest news and is a great way to ask questions of and leave feedback for the SPARC Request Team as well as communicate with both us and other SPARC Request Users."
-    # message7: "Due to user feedback regarding the inclusion of Indirect Costs in the Grand Total of Study Costs, Indirect Costs (as a line item) have currently been removed from SPARC Request and will be reintroduced in the budget template tools in the Study Tracker Release. Please contact the SUCCESS Center at 792-8300 with any questions."
+    message7: "Check out our SPARCRequest Blog ("
+    message8: "). This feature allows you to follow our latest news and is a great way to ask questions of and leave feedback for the SPARCRequest Team as well as communicate with both us and other SPARCRequest Users."
+    # message7: "Due to user feedback regarding the inclusion of Indirect Costs in the Grand Total of Study Costs, Indirect Costs (as a line item) have currently been removed from SPARCRequest and will be reintroduced in the budget template tools in the Study Tracker Release. Please contact the SUCCESS Center at 792-8300 with any questions."
     message9: "Website/Training: "
     message9link: 'http://academicdepartments.musc.edu/sctr/sparc_request'
     message10: "Blog: "
@@ -1638,7 +1653,7 @@ en:
       provider: "Provider:"
       short_title: "Short Title: "
     download_button: "Download my Service Request"
-    instructions: "Thank you for submitting your service request(s) through SPARC Request. An email has been sent to each of your service providers and they should be contacting you soon. If you have any questions or concerns, please don't hesitate to contact the SUCCESS Center at 792-8300 or success@musc.edu."
+    instructions: "Thank you for submitting your service request(s) through SPARCRequest. An email has been sent to each of your service providers and they should be contacting you soon. If you have any questions or concerns, please don't hesitate to contact the SUCCESS Center at 792-8300 or success@musc.edu."
     portal_button: "Go to Dashboard"
     research_pricing_instructions : "You have successfully submitted a request to get a cost estimate. An email(s) has been submitted on your behalf, and we will respond to your request for a cost estimate shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
 
@@ -1649,7 +1664,7 @@ en:
     number_of_subjects: "Estimated Total Number of Subjects"
     number_of_visits: "Estimated Total Number of Visits"
     one_time_fee_and_per_patient_instructions: "Next, please enter the following information specific to your research study/project. This information will help us generate applicable service fees for your review."
-    one_time_fee_instructions: "Please enter service details for SPARC Request Services that you selected"
+    one_time_fee_instructions: "Please enter service details for SPARCRequest Services that you selected"
     per_patient_instructions: "Please enter the following information specific to your research study/project. This information will help us generate applicable service fees for your review."
     recruitment_end_date: "Estimated Recruitment End Date"
     recruitment_start_date: "Estimated Recruitment Start Date"
@@ -1676,7 +1691,7 @@ en:
         indirect_cost: "Total Indirect Costs"
     instructions: "<ul class='review_instructions'><li>Review your request.</li><li>Makes changes (if needed).</li><li>Save as draft for later, get a cost estimate, or submit to start services.</li></ul>"
     notes_header: "Service Request Notes"
-    participate_in_survey: "Would you like to participate in a brief 1 question SPARC Request satisfaction survey?"
+    participate_in_survey: "Would you like to participate in a brief 1 question SPARCRequest satisfaction survey?"
     participate_in_survey_title: "System Satisfaction Survey"
     save_as_draft_notification: "This study will be saved as a draft, and no notifications or emails will be sent to the service providers. Do you wish to proceed?"
     save_as_draft_notification_title: "Notification"
@@ -1729,13 +1744,13 @@ en:
     button3: "Sign In"
     message1: "MUSC Users- Sign in here"
     message2: ""
-    message3: "Outside Users- Sign in here with your SPARC Request account"
+    message3: "Outside Users- Sign in here with your SPARCRequest account"
     message4: ""
 
   # Sign in popup
   create_new_account_link: "Outside Users: Don't have an account? Click here."
-  initial_signin_dialog: "You are not currently logged into SPARC Request. If you are affiliated with an institution and have an institutional login OR have created a SPARC Request account and have a SPARC Request login and password, please click the top button to proceed. If you are not currently affiliated with an institution OR do not have a SPARC Request login/password, please click the button on the bottom to proceed with creating a new account."
-  proceed_to_database_login: "Outside Users with existing SPARC Request Accounts"
+  initial_signin_dialog: "You are not currently logged into SPARCRequest. If you are affiliated with an institution and have an institutional login OR have created a SPARCRequest account and have a SPARCRequest login and password, please click the top button to proceed. If you are not currently affiliated with an institution OR do not have a SPARCRequest login/password, please click the button on the bottom to proceed with creating a new account."
+  proceed_to_database_login: "Outside Users with existing SPARCRequest Accounts"
   proceed_to_shibboleth: "MUSC Users"
 
   # Steps navigation
@@ -1808,9 +1823,9 @@ en:
       answer_text3: "Add as many Authorized Users as you feel is pertinent. There is no limit."
       question_text4: "What is the difference  between a Research Study and a Project?"
       answer_text4: "A Research Study is an individual research protocol with defined aims and outcomes."
-      question_text5: "How is SPARC Request calculating my indirect costs?"
-      answer_text5: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARC Request uses this data to calculate your total overall indirect costs."
-      question_text6: "I'm stuck! Who can I contact for assistance with SPARC Request?"
+      question_text5: "How is SPARCRequest calculating my indirect costs?"
+      answer_text5: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARCRequest uses this data to calculate your total overall indirect costs."
+      question_text6: "I'm stuck! Who can I contact for assistance with SPARCRequest?"
       answer_text6: "The SUCCESS Center is happy to assist you! Please contact us at success@musc.edu or (843) 792-3357."
 
   # User details partial

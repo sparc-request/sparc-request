@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -48,7 +48,7 @@ RSpec.describe 'User adds a line items visit note', js: true do
 
   context 'before clicking the notes button' do
     scenario 'sees black note badge with note count 0' do
-      visit service_calendar_service_request_path(@sr)
+      visit service_calendar_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
       expect(page).not_to have_selector("#lineitemsvisit_#{@liv.id}_notes",class: 'blue-badge')
@@ -58,7 +58,7 @@ RSpec.describe 'User adds a line items visit note', js: true do
 
   context 'clicks notes button' do
     before :each do
-      visit service_calendar_service_request_path(@sr)
+      visit service_calendar_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
       find("#lineitemsvisit_#{@liv.id}_notes").click
@@ -76,7 +76,7 @@ RSpec.describe 'User adds a line items visit note', js: true do
 
   context 'clicks add note button' do
     before :each do
-      visit service_calendar_service_request_path(@sr)
+      visit service_calendar_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
       find("#lineitemsvisit_#{@liv.id}_notes").click
@@ -97,7 +97,7 @@ RSpec.describe 'User adds a line items visit note', js: true do
 
   context 'enters a note and clicks add' do
     before :each do
-      visit service_calendar_service_request_path(@sr)
+      visit service_calendar_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
       find("#lineitemsvisit_#{@liv.id}_notes").click
@@ -123,7 +123,7 @@ RSpec.describe 'User adds a line items visit note', js: true do
 
   context 'clicks notes button on consolidated request tab' do
     before :each do
-      visit service_calendar_service_request_path(@sr)
+      visit service_calendar_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
       click_link 'Consolidated Request Tab'
@@ -144,7 +144,7 @@ RSpec.describe 'User adds a line items visit note', js: true do
 
   context 'clicks notes button on quantity/billing tab' do
     before :each do
-      visit service_calendar_service_request_path(@sr)
+      visit service_calendar_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
       click_link 'Quantity/Billing Tab'

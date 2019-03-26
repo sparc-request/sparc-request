@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -65,7 +65,7 @@ RSpec.describe 'User adds service to cart', js: true do
       ssr = create(:sub_service_request_without_validations, service_request: sr, organization: @program, status: 'first_draft')
             create(:line_item, service_request: sr, sub_service_request: ssr, service: @service)
 
-      visit catalog_service_request_path(sr)
+      visit catalog_service_request_path(srid: sr.id)
       wait_for_javascript_to_finish
 
       find('.provider-header').click

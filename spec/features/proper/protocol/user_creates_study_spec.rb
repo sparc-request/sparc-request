@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -25,7 +25,7 @@ RSpec.describe 'User creates study', js: true do
   fake_login_for_each_test
 
   def click_new_research_study(sr)
-    visit protocol_service_request_path(sr)
+    visit protocol_service_request_path(srid: sr)
     wait_for_javascript_to_finish
 
     click_link 'New Research Study'
@@ -84,9 +84,8 @@ RSpec.describe 'User creates study', js: true do
         click_button 'Save'
         wait_for_javascript_to_finish
 
-        sr_protocol_page = protocol_service_request_path(@sr)
-        wait_for_page(sr_protocol_page)
-        expect(current_path).to eq(sr_protocol_page)
+        wait_for_page(protocol_service_request_path)
+        expect(current_path).to eq(protocol_service_request_path)
         expect(Study.count).to eq(1)
       end
 

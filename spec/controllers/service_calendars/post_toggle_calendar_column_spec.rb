@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -136,6 +136,7 @@ RSpec.describe ServiceCalendarsController do
       it 'should not update other sub service requests statuses' do
         org       = create(:organization)
         org2      = create(:organization)
+                    create(:service_provider, organization: org, identity: logged_in_user)
         service   = create(:service, organization: org, pricing_map_count: 1)
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol)
@@ -153,7 +154,8 @@ RSpec.describe ServiceCalendarsController do
           service_request_id: sr.id,
           page: '1',
           check: 'true',
-          admin: 'false'
+          admin: 'false',
+          portal: 'true'
         }, xhr: true
 
         expect(ssr.reload.status).to eq('draft')

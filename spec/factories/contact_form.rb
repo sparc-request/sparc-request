@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -20,8 +20,8 @@
 
 FactoryBot.define do
   factory :contact_form, class: ContactForm do
-    subject 'SPARC-Request'
-    email 'example@example.com'
-    message 'this is a sample message'
+    subject {'SPARC-Request'}
+    email {'example@example.com'}
+    message {'this is a sample message'}
   end
 end

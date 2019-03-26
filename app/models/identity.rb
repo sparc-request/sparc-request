@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -117,7 +117,7 @@ class Identity < ApplicationRecord
   # Return the netid (ldap_uid without the @musc.edu)
   def netid
     if Setting.get_value("use_ldap") then
-      return ldap_uid.sub(/@#{Directory::DOMAIN}/, '')
+      return ldap_uid.sub(/@#{Directory.domain}/, '')
     else
       return ldap_uid
     end
@@ -245,11 +245,6 @@ class Identity < ApplicationRecord
   # Only users with request or approve rights can edit.
   def can_edit_service_request?(sr)
     has_correct_project_role?(sr) || self.catalog_overlord?
-  end
-
-  # If a user has request or approve rights AND the request is editable, then the user can edit.
-  def can_edit_sub_service_request?(ssr)
-    ssr.can_be_edited? && has_correct_project_role?(ssr)
   end
 
   def has_correct_project_role?(request)

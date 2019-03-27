@@ -520,7 +520,7 @@ GEM
       nokogiri (>= 1.4.0)
       nori (~> 2.1.0)
       wasabi (~> 3.1.0)
-    selenium-webdriver (3.14.1)
+    selenium-webdriver (3.141.0)
       childprocess (~> 0.5)
       rubyzip (~> 1.2, >= 1.2.2)
     shoulda-callback-matchers (1.1.4)

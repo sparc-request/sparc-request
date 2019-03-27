@@ -39,7 +39,7 @@ FactoryBot.define do
     sequence(:effective_date)   {|n| Date.parse('2000-01-01') + n}
 
     trait :charge_master do
-      charge_master true
+      charge_master {true}
     end
 
     trait :without_validations do

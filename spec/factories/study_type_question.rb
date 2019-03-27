@@ -20,10 +20,10 @@
 
 FactoryBot.define do
   factory :study_type_question do
-    question "This is a test question"
+    question {"This is a test question"}
 
     transient do
-      protocol_id nil
+      protocol_id {nil}
     end
 
     trait :with_answer do

@@ -85,7 +85,7 @@ RSpec.describe ApplicationController, type: :controller do
     context 'params[:srid] is present' do
       it 'should assign @service_request and session[:srid] and redirect' do
         sr = findable_stub(ServiceRequest) do
-          build_stubbed(ServiceRequest)
+          build_stubbed(:service_request)
         end
         expect(controller).to receive(:redirect_to)
         allow(controller).to receive(:params).and_return({srid: sr.id.to_s})
@@ -99,7 +99,7 @@ RSpec.describe ApplicationController, type: :controller do
     context 'session[:srid] is present' do
       it 'should assign @service_request' do
         sr = findable_stub(ServiceRequest) do
-          build_stubbed(ServiceRequest)
+          build_stubbed(:service_request)
         end
         session[:srid] = sr.id
         controller.send(:initialize_service_request)

@@ -20,14 +20,6 @@
 require 'rails_helper'
 
 RSpec.describe Protocol, type: :model do
-  before :each do
-    Delayed::Worker.delay_jobs = false
-  end
-
-  after :each do
-    Delayed::Worker.delay_jobs = true
-  end
-
   describe "#email_about_change_in_authorized_user" do
     context "send_authorized_user_emails is true and sr was previously submitted" do
       it "should send authorized user email" do

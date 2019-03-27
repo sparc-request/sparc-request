@@ -26,7 +26,7 @@
 
 = render '/service_requests/navigation/steps', service_request: @service_request, step_text: @step_text, css_class: @css_class
 = render 'catalogs/service_accordion', institutions: @institutions, locked_org_ids: @locked_org_ids
-= render 'catalogs/catalog_center', service_request: @service_request, from_portal: @from_portal, organization: nil
+= render 'catalogs/catalog_center', service_request: @service_request, locked_org_ids: @locked_org_ids, organization: nil
 = render 'catalogs/catalog_right', service_request: @service_request, sub_service_requests: @sub_service_requests
 = render 'catalogs/back_to_top'
 

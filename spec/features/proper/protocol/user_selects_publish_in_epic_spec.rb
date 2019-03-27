@@ -27,7 +27,7 @@ RSpec.describe 'User creates study', js: true do
   build_study_type_questions
 
   def visit_create_study_form
-    visit protocol_service_request_path(@sr)
+    visit protocol_service_request_path(srid: @sr.id)
     page.find('.new-study').click
     wait_for_javascript_to_finish
   end

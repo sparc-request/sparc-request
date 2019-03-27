@@ -20,6 +20,6 @@
 
 FactoryBot.define do
   factory :study_type_answer do
-    answer 1
+    answer {1}
   end
 end

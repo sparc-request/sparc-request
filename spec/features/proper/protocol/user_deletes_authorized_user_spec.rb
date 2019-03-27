@@ -40,11 +40,13 @@ RSpec.describe 'User wants to delete an authorized user', js: true do
 
   context 'and clicks the delete button' do
     scenario 'and sees the user deleted' do
-      visit protocol_service_request_path(@sr)
+      visit protocol_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
       all('.delete-associated-user-button').last.click
-      accept_confirm
+      wait_for_javascript_to_finish
+
+      find('.sweet-alert.visible button.confirm').click
       wait_for_javascript_to_finish
 
       expect(ProjectRole.count).to eq(1)

@@ -52,16 +52,16 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
           with_organization: Dashboard::GroupedOrganizations.new(@organizations).collect_grouped_options,
           with_owner: build_with_owner_params
         },
-        persistence_id: false #resets filters on page reload
+        persistence_id: true #selected filters remain the same on page reload
       ) || return
 
     @protocols        = @filterrific.find.page(params[:page])
     @admin_protocols  = Protocol.for_admin(@user.id).pluck(:id)
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, ProtocolFilter::MAX_FILTERS)
 
-    #toggles the display of the navigation bar, instead of breadcrumbs
-    @show_navbar      = true
-    @show_messages    = true
+    #toggles the display of the breadcrumbs, navbar always displays
+    @disable_breadcrumb  = true
+    @show_messages       = true
     session[:breadcrumbs].clear
 
     setup_sorting_variables
@@ -213,8 +213,14 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def archive
     @protocol.toggle!(:archived)
-    @protocol_type = @protocol.type
+
+    @protocol_type      = @protocol.type
     @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
+    action = @protocol.archived ? 'archive' : 'unarchive'
+
+    @protocol.notes.create(identity: current_user, body: t("protocols.summary.#{action}_note", protocol_type: @protocol_type))
+    ProtocolMailer.with(protocol: @protocol, archiver: current_user, action: action).archive_email.deliver
+
     respond_to do |format|
       format.js
     end

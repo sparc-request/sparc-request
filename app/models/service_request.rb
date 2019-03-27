@@ -110,31 +110,8 @@ class ServiceRequest < ApplicationRecord
       errors.add(:base, I18n.t('errors.visit_groups.days_out_of_order', arm_name: vg.arm.name))
     end
 
-    if Setting.get_value("use_epic")
-      self.arms.each do |arm|
-        days = arm.visit_groups.map(&:day)
-
-        visit_group_errors = false
-        invalid_day_errors = false
-
-        unless days.all?{|x| !x.blank?}
-          errors.add(:base, I18n.t('errors.arms.visit_day_missing', arm_name: arm.name))
-          visit_group_errors = true
-        end
-      end
-    end
-
-    self.arms.map(&:visit_groups).flatten.map(&:visits).flatten.each do |visit|
-      line_item = visit.line_items_visit.line_item
-      unless line_item.valid_pppv_service_relation_quantity? visit
-        line_item.reload.errors.full_messages.each{|message| (errors[:base] << message) unless errors[:base].include?(message)}
-        line_item.reload.errors.each{ |k,v| errors.add(k, v) unless errors[k].include?(v)}
-      end
-    end
-    self.one_time_fee_line_items.each do |li|
-      unless li.valid_otf_service_relation_quantity?
-        li.reload.errors.full_messages.each{|message| (errors[:base] << message) unless errors[:base].include?(message)}
-      end
+    if Setting.get_value("use_epic") && (arms = self.arms.joins(:visit_groups).where(visit_groups: { day: nil })).any?
+      arms.each{ |arm| errors.add(:base, I18n.t('errors.arms.visit_day_missing', arm_name: arm.name)) }
     end
   end
 
@@ -446,12 +423,13 @@ class ServiceRequest < ApplicationRecord
   # Returns the SSR ids that need an initial submission email, updates the SR status,
   # and updates the SSR status to new status if appropriate
   def update_status(new_status)
-    to_notify = []
-    update_attribute(:status, new_status)
-    sub_service_requests.each do |ssr|
-      to_notify << ssr.update_status_and_notify(new_status)
-    end
-    to_notify.flatten
+    # Do not change the Service Request if it has been submitted
+    update_attribute(:status, new_status) unless self.previously_submitted?
+    update_attribute(:submitted_at, Time.now) if new_status == 'submitted' && !self.previously_submitted?
+
+    self.sub_service_requests.map do |ssr|
+      ssr.update_status_and_notify(new_status)
+    end.compact
   end
 
   # Make sure that all the sub service requests have an ssr id
@@ -471,6 +449,10 @@ class ServiceRequest < ApplicationRecord
       protocol.next_ssr_id = next_ssr_id
       protocol.save(validate: false)
     end
+  end
+
+  def previously_submitted?
+    self.submitted_at.present?
   end
 
   def should_push_to_epic?

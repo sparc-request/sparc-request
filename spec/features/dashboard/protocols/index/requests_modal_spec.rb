@@ -67,7 +67,7 @@ RSpec.describe 'requests modal', js: true do
       page.requests_modal.modify_request_button.click
       wait_for_javascript_to_finish
 
-      expect(URI.parse(current_url).path).to eq "/service_requests/#{service_request.id}/catalog"
+      expect(URI.parse(current_url).path).to eq catalog_service_request_path
     end
   end
 
@@ -83,21 +83,6 @@ RSpec.describe 'requests modal', js: true do
       wait_for_javascript_to_finish
 
       expect(page).to have_selector ".modal-dialog.user-view-ssr-modal"
-    end
-  end
-
-  context 'user clicks "Edit" button' do
-    it 'should take user to SPARC homepage' do
-      page = visit_protocols_index_page
-      page.search_results.protocols.first.requests_button.click
-      wait_for_javascript_to_finish
-
-      expect(page).to have_requests_modal
-
-      page.requests_modal.sub_service_requests.first.edit_button.click
-        wait_for_javascript_to_finish
-
-      expect(URI.parse(current_url).path).to eq "/service_requests/#{service_request.id}/catalog"
     end
   end
 

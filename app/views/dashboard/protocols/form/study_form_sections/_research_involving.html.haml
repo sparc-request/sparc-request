@@ -19,11 +19,10 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .panel.panel-default
-  .panel-heading
+  .panel-heading.flex-column
     %h4.panel-title
       = t(:protocols)[:studies][:research_involving][:header]
-    .sub_text
-      = t(:protocols)[:studies][:research_involving][:subtext]
+    = t(:protocols)[:studies][:research_involving][:subtext]
   .panel-body
     = form.fields_for :research_types_info do |rt_form|
       .form-group.row.human_subjects

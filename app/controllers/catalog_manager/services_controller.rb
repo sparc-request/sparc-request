@@ -218,9 +218,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
 
   def service_relation_params
     params.require(:service_relation).permit(
-      :required,
-      :linked_quantity,
-      :linked_quantity_total
+      :required
     )
   end
 end

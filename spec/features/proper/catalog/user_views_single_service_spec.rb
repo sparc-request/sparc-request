@@ -20,5 +20,40 @@
 
 require 'rails_helper'
 
-RSpec.describe CatalogManager::ServicesHelper do
+RSpec.describe 'User view single service landing page', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
+
+  before :each do
+    institution = create(:institution, name: "Institution")
+    provider    = create(:provider, name: "Provider", parent: institution)
+    @program    = create(:program, name: "Program", parent: provider, process_ssrs: true, pricing_setup_count: 1)
+  end
+
+  context 'under a program' do
+    before :each do
+      @service = create(:service, name: "Service", abbreviation: "Service", organization: @program, pricing_map_count: 1)
+
+      visit root_path(service_id: @service.id)
+    end
+
+    it 'should show the service' do
+      expect(page).to have_selector("#service#{@service.id}", visible: false)
+      expect(page).to have_content(@service.name)
+    end
+  end
+
+  context 'under a core' do
+    before :each do
+      @core     = create(:core, name: 'Core', parent: @program)
+      @service  = create(:service, name: "Service", abbreviation: "Service", organization: @core, pricing_map_count: 1)
+
+      visit root_path(service_id: @service.id)
+    end
+
+    it 'should show the service' do
+      expect(page).to have_selector("#service#{@service.id}", visible: false)
+      expect(page).to have_content(@service.name)
+    end
+  end
 end

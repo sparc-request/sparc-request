@@ -20,8 +20,8 @@
 
 FactoryBot.define do
   factory :section do
-    survey  nil
-    title   { Faker::Lorem.word() }
+    survey  {nil}
+    title   {Faker::Lorem.word()}
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }

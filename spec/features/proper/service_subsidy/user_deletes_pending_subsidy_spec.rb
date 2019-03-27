@@ -41,7 +41,7 @@ RSpec.describe 'User deletes a pending subsidy', js: true do
 
   context 'and clicks the delete button' do
     scenario 'and sees the subsidy was destroyed' do
-      visit service_subsidy_service_request_path(@sr)
+      visit service_subsidy_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
       find('.delete-subsidy-button').click

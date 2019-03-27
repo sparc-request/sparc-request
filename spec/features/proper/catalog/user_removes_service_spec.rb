@@ -36,7 +36,7 @@ RSpec.describe 'User removes service from cart', js: true do
     ssr = create(:sub_service_request_without_validations, service_request: sr, organization: @program, status: 'first_draft')
           create(:line_item, service_request: sr, sub_service_request: ssr, service: @service, optional: true)
 
-    visit catalog_service_request_path(sr)
+    visit catalog_service_request_path(srid: sr.id)
     wait_for_javascript_to_finish
 
     find('.line-item .remove-service').click
@@ -51,7 +51,7 @@ RSpec.describe 'User removes service from cart', js: true do
       ssr = create(:sub_service_request_without_validations, service_request: sr, organization: @program, status: 'first_draft')
             create(:line_item, service_request: sr, sub_service_request: ssr, service: @service, optional: true)
 
-      visit catalog_service_request_path(sr)
+      visit catalog_service_request_path(srid: sr.id)
       wait_for_javascript_to_finish
 
       find('.line-item .remove-service').click

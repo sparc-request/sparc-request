@@ -37,7 +37,6 @@ $(document).ready ->
     data =
       process_ssr_found: $(this).data('process-ssr-found')
       service_request_id: getSRId()
-      sub_service_request_id: $('input[name="sub_service_request_id"]').val()
     $.ajax
       type: 'POST'
       data: data
@@ -90,16 +89,12 @@ $(document).ready ->
   ).on('typeahead:render', (event, a, b, c) ->
     $('.twitter-typeahead [data-toggle="tooltip"]').tooltip({ 'delay' : { show: 1000, hide: 500 } })
   ).on('typeahead:select', (event, suggestion) ->
-    window.cart.selectService(suggestion.value, $(this).data('srid'), $(this).data('ssrid'))
+    window.cart.selectService(suggestion.value)
   )
 
   ### CONTINUE BUTTON ###
   $(document).on 'click', '.submit-request-button', ->
-    signed_in = parseInt($('#signed_in').val())
-    if signed_in == 0
-      window.location.href = $('#login-link').attr('href')
-      return false
-    else if $('#line_item_count').val() <= 0
+    if $('#line_item_count').val() <= 0
       $('#modal_place').html($('#submit-error-modal').html())
       $('#modal_place').modal('show')
       $('.modal #submit-error-modal').removeClass('hidden')

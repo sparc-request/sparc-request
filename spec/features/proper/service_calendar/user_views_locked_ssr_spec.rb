@@ -46,7 +46,7 @@ RSpec.describe 'User views a locked SSR', js: true do
 
     org.editable_statuses.where(status: [ssr1.status, ssr2.status]).destroy_all
 
-    visit service_calendar_service_request_path(@sr)
+    visit service_calendar_service_request_path(srid: @sr.id)
     wait_for_javascript_to_finish
   end
 

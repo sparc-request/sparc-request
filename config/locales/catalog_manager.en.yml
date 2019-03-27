@@ -20,7 +20,7 @@
 
 en:
   catalog_manager:
-    header: "SPARC Request Services Catalog"
+    header: "SPARCRequest Services Catalog"
     headers:
       actions: "Actions"
       automatic: "Automatic Pricing Adjustment"
@@ -181,8 +181,6 @@ en:
       new_related_services: "New Related Service"
       service: "Service"
       required: "Required?"
-      linked_quantity: "Linked Quantity?"
-      linked_quantity_total: "Quantity Total:"
       remove_add: "Remove / Add"
       remove_related_service_confirm: "Are you sure you want to delete the selected related service from this service?"
       service_in_list: "is already related to this service."

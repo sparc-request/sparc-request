@@ -197,6 +197,13 @@ $(document).ready ->
         $(this).find('.freeze-header-button').removeClass('unfreeze')
         $(this).find('.freeze-header-button').addClass('freeze')
 
+  $(document).on 'click', 'td.visit:has(input), td.visit:has(a)', (e) ->
+    if !(e.target.tagName in ['INPUT', 'A'])
+      if $(this).hasClass('template-visit')
+        $(this).find('input').click()
+      else
+        $(this).find('a').first().click()
+
   $(document).on 'change', '.visit-quantity', ->
     $.ajax
       type: 'PUT'

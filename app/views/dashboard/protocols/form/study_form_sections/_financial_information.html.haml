@@ -19,11 +19,10 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .panel.panel-default
-  .panel-heading
+  .panel-heading.flex-column
     %h4.panel-title
       = t(:protocols)[:studies][:financial_information][:header]
-    .sub_text
-      = t(:protocols)[:studies][:financial_information][:subtext]
+    = t(:protocols)[:studies][:financial_information][:subtext]
   .panel-body
     .form-group.row#udak-number
       = form.label :udak_project_number, t(:protocols)[:studies][:financial_information][:udak_project_number], class: 'col-lg-2 control-label'

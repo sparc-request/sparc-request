@@ -29,6 +29,7 @@
 //
 //= require jquery2
 //= require jquery-migrate
+//= require batch-select
 //= require bootstrap-sprockets
 //= require bootstrap-select
 //= require bootstrap-table

@@ -1,6 +1,18 @@
-task clincard_process_ssrs_move: :environment do
+task process_ssrs_move: :environment do
 
-  org_id = 211 # Old split/notify organization
+  def prompt(*args)
+    print(*args)
+    STDIN.gets.strip
+  end
+
+  puts "This task will move sub service requests created under a split/notify"
+  puts "organization and place them under child split/notify organizations,"
+  puts "given that the services have already been moved to their proper split/"
+  puts "notify."
+
+  id = prompt "Enter the id of the old split/notify organization: "
+
+  org_id = id.to_i # Old split/notify organization
   old_org = Organization.find org_id
   old_org.process_ssrs = false # Fix the main problem. Split/notify is now on the child orgs 
   old_org.save(validate: false)

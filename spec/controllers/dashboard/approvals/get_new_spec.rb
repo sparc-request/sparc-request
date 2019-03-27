@@ -24,7 +24,7 @@ RSpec.describe Dashboard::ApprovalsController, type: :controller do
   describe 'GET new' do
     before(:each) do
       @ssr_stub = findable_stub(SubServiceRequest) do
-        build_stubbed(SubServiceRequest)
+        build_stubbed(:sub_service_request)
       end
 
       log_in_dashboard_identity(obj: build_stubbed(:identity))

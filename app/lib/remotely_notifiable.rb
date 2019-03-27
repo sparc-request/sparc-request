@@ -65,11 +65,11 @@ module RemotelyNotifiable
   end
 
   def notify_remote_around_update
-    yield
-
     if qualifying_changes_detected?
       RemoteServiceNotifierJob.enqueue(self.id, self.class.name, 'update')
     end
+
+    yield
   end
 
   def notify_remote_after_destroy

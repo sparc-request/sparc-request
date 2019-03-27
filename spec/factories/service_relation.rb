@@ -25,7 +25,7 @@ FactoryBot.define do
     required           { false }
 
     trait :is_required do
-      is_required true
+      is_required {true}
     end
   end
 end

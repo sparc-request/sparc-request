@@ -94,7 +94,7 @@ RSpec.feature 'User wants to add a document', js: true do
   def fill_out_document_fields
     @page.document_modal.instance_exec do
       doc_type_dropdown.click
-      wait_for_dropdown_choices
+      wait_until_dropdown_choices_visible
       dropdown_choices(text: 'Protocol').first.click
     end
 
@@ -106,7 +106,7 @@ RSpec.feature 'User wants to add a document', js: true do
   def open_access_dropdown
     @page.document_modal.instance_exec do
       access_dropdown.click
-      wait_for_dropdown_choices
+      wait_until_dropdown_choices_visible
     end
   end
 end

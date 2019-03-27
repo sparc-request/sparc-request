@@ -21,6 +21,6 @@
 FactoryBot.define do
 
   factory :available_status do
-    selected true
+    selected {true}
   end
 end

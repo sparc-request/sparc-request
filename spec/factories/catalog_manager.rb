@@ -21,10 +21,10 @@
 FactoryBot.define do
 
   factory :catalog_manager do
-    edit_historic_data { false } 
-    
+    edit_historic_data {false}
+
     trait :can_edit_historic_data do
-      edit_historic_data true
+      edit_historic_data {true}
     end
   end
 end

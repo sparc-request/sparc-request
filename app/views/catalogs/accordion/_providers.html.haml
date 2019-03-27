@@ -24,13 +24,12 @@
 
     .panel.panel-default
       .panel-heading.provider-header{ class: [css_class(p), locked ? 'bg-danger text-danger' : ''], data: { id: p.id, toggle: 'collapse', target: ".provider-#{p.id}", parent: "#institution-#{i.id}" } }
-        .row
-          .col-lg-10
-            %h4.panel-title.text-left
-              = organization_name_display(p, locked)
-          .col-lg-2
-            - if p.programs.any?
-              %span.caret
+        .col-lg-11.no-padding
+          %h4.panel-title.text-left
+            = organization_name_display(p, locked)
+        .col-lg-1.no-padding.text-right
+          - if p.programs.any?
+            %span.caret
       .panel-collapse.collapse{ class: ["provider-#{p.id}", @provider == p ? 'in' : ''] }
         .panel-body
           = render 'catalogs/accordion/programs', programs: p.programs, locked_ids: locked_ids

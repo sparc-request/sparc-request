@@ -20,10 +20,10 @@
 
 FactoryBot.define do
   factory :question_response do
-    question nil
-    response nil
-    content  { Faker::Lorem.sentence(4) }
-    required false
+    question {nil}
+    response {nil}
+    content  {Faker::Lorem.sentence(4)}
+    required {false}
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }

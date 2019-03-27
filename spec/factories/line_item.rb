@@ -37,7 +37,7 @@ FactoryBot.define do
     end
 
     trait :is_optional do
-      optional true
+      optional {true}
     end
 
     trait :per_patient_per_visit do
@@ -49,8 +49,8 @@ FactoryBot.define do
     end
 
     transient do
-      fulfillment_count 0
-      visit_count 0
+      fulfillment_count {0}
+      visit_count {0}
     end
 
     after(:build) do |line_item, evaluator|

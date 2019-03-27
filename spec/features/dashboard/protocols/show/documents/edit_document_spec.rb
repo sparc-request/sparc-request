@@ -60,7 +60,7 @@ RSpec.feature 'User wants to edit a document', js: true do
   def edit_document_fields
     @page.document_modal.instance_exec do
       doc_type_dropdown.click
-      wait_for_dropdown_choices
+      wait_until_dropdown_choices_visible
       dropdown_choices(text: 'Consent').first.click
     end
 

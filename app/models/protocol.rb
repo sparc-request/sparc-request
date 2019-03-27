@@ -51,6 +51,9 @@ class Protocol < ApplicationRecord
   has_many :identities,                   through: :project_roles
   has_many :services,                     through: :service_requests
   has_many :line_items,                   through: :service_requests
+  has_many :line_items_visits,            through: :arms
+  has_many :visit_groups,                 through: :arms
+  has_many :visits,                       through: :arms
   has_many :organizations,                through: :sub_service_requests
   has_many :study_type_questions,         through: :study_type_question_group
   has_many :responses,                    through: :sub_service_requests
@@ -64,6 +67,11 @@ class Protocol < ApplicationRecord
   has_many :coordinators, -> { where(project_roles: { role: 'research-assistant-coordinator' }) },
     source: :identity, through: :project_roles
 
+  ########################
+  ### CWF Associations ###
+  ########################
+
+  has_many :fulfillment_protocols, class_name: 'Shard::Fulfillment::Protocol', foreign_key: :sparc_id
 
   validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
   validates :research_master_id, presence: true, if: :rmid_requires_validation?

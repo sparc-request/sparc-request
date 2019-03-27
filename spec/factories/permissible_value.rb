@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -23,11 +23,11 @@ FactoryBot.define do
     key          { Faker::Lorem.word.humanize }
     value        { Faker::Lorem.word.humanize }
     category     { Faker::Lorem.word.humanize }
-    concept_code nil
-    parent_id    nil
-    sort_order    nil
-    default      true
-    reserved     false
-    is_available true
+    concept_code {nil}
+    parent_id    {nil}
+    sort_order   {nil}
+    default      {true}
+    reserved     {false}
+    is_available {true}
   end
 end

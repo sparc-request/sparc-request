@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -49,9 +49,17 @@ class Arm < ApplicationRecord
   def display_line_items_visits(use_epic, display_all_services)
     if use_epic
       # only show the services that are set to be pushed to Epic
-      display_all_services ? line_items_visits.joins(:service).where(services: {send_to_epic: true}) : line_items_visits.joins(:service).where(services: {send_to_epic: true}).joins(:visits).where.not( "research_billing_qty = 0 and insurance_billing_qty = 0 and effort_billing_qty = 0" ).uniq
+      if display_all_services
+        self.line_items_visits.joins(:service).where.not(services: { cpt_code: [nil, ''] })
+      else
+        self.line_items_visits.joins(:service, :visits).where.not(services: { cpt_code: [nil, ''] }, visits: { research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0 }).distinct
+      end
     else
-      display_all_services ? line_items_visits : line_items_visits.joins(:visits).where.not( "research_billing_qty = 0 and insurance_billing_qty = 0 and effort_billing_qty = 0" ).uniq
+      if display_all_services
+        self.line_items_visits
+      else
+        self.line_items_visits.joins(:visits).where.not(visits: { research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0 }).distinct
+      end
     end
   end
 

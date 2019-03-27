@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -20,11 +20,11 @@
 
 FactoryBot.define do
   factory :feedback do
-    letters Digest::SHA1.hexdigest(Time.now.usec.to_s)[0..16]
-    name 'name'
-    email 'email@email.com'
-    date Date.today
-    version '1'
-    sparc_request_id '123'
+    letters {Digest::SHA1.hexdigest(Time.now.usec.to_s)[0..16]}
+    name {'name'}
+    email {'email@email.com'}
+    date {Date.today}
+    version {'1'}
+    sparc_request_id {'123'}
   end
 end

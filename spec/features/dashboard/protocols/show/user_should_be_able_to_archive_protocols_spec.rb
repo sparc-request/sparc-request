@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -34,10 +34,8 @@ RSpec.describe 'User should be able to archive protocols', js: true do
 
   fake_login_for_each_test('johnd')
 
-  let!(:project) do
-    create(:unarchived_project_without_validations,
-            primary_pi: user)
-  end
+  let!(:project)  { create(:unarchived_project_without_validations, primary_pi: user) }
+  let!(:sr)       { create(:service_request_without_validations, protocol: project) }
 
   before :each do
     visit dashboard_protocol_path(project)

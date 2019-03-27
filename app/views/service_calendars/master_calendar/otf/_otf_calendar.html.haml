@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,14 +18,12 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .panel.panel-primary.calendar-container.otf-calendar
-  .panel-heading
-    .pull-left
-      %h3.panel-title
-        = t(:calendars)[:otf][:header]
+  .panel-heading.justify-content-between
+    %h3.panel-title
+      = t(:calendars)[:otf][:header]
     - unless review
       .pull-right
         = render 'service_calendars/master_calendar/otf/otf_freeze_header_button', service_request: service_request, sub_service_request: sub_service_request, merged: merged, statuses_hidden: statuses_hidden, scroll_true: @scroll_true
-    .clearfix
   %table.table.table-bordered{ class: @scroll_true ? "scrolling-table" : "non-scrolling-table" }
     %thead{ class: @scroll_true ? "scrolling-thead" : "" }
       = render 'service_calendars/master_calendar/otf/otf_header', tab: tab,

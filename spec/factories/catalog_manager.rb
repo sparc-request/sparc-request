@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,10 +21,10 @@
 FactoryBot.define do
 
   factory :catalog_manager do
-    edit_historic_data { false } 
-    
+    edit_historic_data {false}
+
     trait :can_edit_historic_data do
-      edit_historic_data true
+      edit_historic_data {true}
     end
   end
 end

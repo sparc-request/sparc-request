@@ -18,35 +18,42 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class UserMailer < ActionMailer::Base
-  default :from => Setting.get_value("no_reply_from")
+require 'rails_helper'
 
-  def authorized_user_changed(protocol, recipients, modified_roles, action)
-    @protocol         = protocol
-    @modified_roles   = modified_roles
-    @action           = action
-    @protocol_link    = dashboard_protocol_url(@protocol)
-    @service_request  = @protocol.service_requests.first
+RSpec.describe 'User view single service landing page', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
 
-    recipients.each do |recipient|
-      send_email(recipient, t('mailer.email_title.general', email_status: "Authorized Users Update", type: "Protocol", id: @protocol.id))
+  before :each do
+    institution = create(:institution, name: "Institution")
+    provider    = create(:provider, name: "Provider", parent: institution)
+    @program    = create(:program, name: "Program", parent: provider, process_ssrs: true, pricing_setup_count: 1)
+  end
+
+  context 'under a program' do
+    before :each do
+      @service = create(:service, name: "Service", abbreviation: "Service", organization: @program, pricing_map_count: 1)
+
+      visit root_path(service_id: @service.id)
+    end
+
+    it 'should show the service' do
+      expect(page).to have_selector("#service#{@service.id}", visible: false)
+      expect(page).to have_content(@service.name)
     end
   end
 
-  def notification_received(user, ssr)
-    if ssr.present?
-      @ssr_id = ssr.id
-      @is_service_provider = user.is_service_provider?(ssr)
+  context 'under a core' do
+    before :each do
+      @core     = create(:core, name: 'Core', parent: @program)
+      @service  = create(:service, name: "Service", abbreviation: "Service", organization: @core, pricing_map_count: 1)
+
+      visit root_path(service_id: @service.id)
     end
 
-    send_email(user, "#{t(:mailer)[:email_title][:new]} #{t('mailer.email_title.general', email_status: 'Notification', type: 'Protocol', id: ssr.protocol.id)}")
-  end
-
-  private
-
-  def send_email(recipient, subject)
-    @send_to = recipient
-
-    mail(to: recipient.email, subject: subject)
+    it 'should show the service' do
+      expect(page).to have_selector("#service#{@service.id}", visible: false)
+      expect(page).to have_content(@service.name)
+    end
   end
 end

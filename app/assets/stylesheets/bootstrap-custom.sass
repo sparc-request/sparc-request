@@ -36,7 +36,12 @@
 
   .panel-heading, .panel-footer
     @extend .d-flex
+
+  .panel-heading:not(.flex-column), .panel-footer:not(.flex-column)
     @extend .align-items-center
+
+  .panel-heading.flex-column, .panel-footer.flex-column
+    @extend .justify-content-center
 
 
 

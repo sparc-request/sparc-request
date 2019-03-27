@@ -18,34 +18,40 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-# config valid only for current version of Capistrano
-lock "3.11.0"
+module Shard
+  module Fulfillment
+    class LineItem < Shard::Fulfillment::Base
+      self.table_name = 'line_items'
 
-set :application, "sparc_rails"
-set :repo_url, "git@github.com:bmic-development/sparc-request.git"
-set :user, 'capistrano'
-set :use_sudo, false
+      belongs_to :arm
 
-set :stages, %w(testing demo demo2 staging production)
-set :default_stage, 'testing'
+      has_many :fulfillments
+      has_many :visits, -> { joins(:visit_group).order('visit_groups.position') }
 
-set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
+      has_many :procedures, through: :visits
 
-set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/fulfillment_db.yml', 'config/setup_load_paths.rb', 'config/application.yml', 'config/ldap.yml', 'config/epic.yml', '.env', 'app/views/shared/_analytics.html.haml')
+      ##########################
+      ### SPARC Associations ###
+      ##########################
 
-set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'public/system', 'public/assets', 'public/images')
+      belongs_to :sparc_line_item, class_name: '::LineItem', foreign_key: :sparc_id
+      belongs_to :sparc_service, class_name: '::Service', foreign_key: :service_id
 
-namespace :survey do
-  desc "load/update a survey"
-  task :parse do
-    if ENV['FILE']
-      transaction do
-        run "cd #{current_path} && rake surveyor FILE=#{ENV['FILE']} RAILS_ENV=#{rails_env}"
+      def one_time_fee?
+        self.sparc_line_item.one_time_fee?
       end
-    else
-      raise "FILE must be specified (eg. cap survey:parse FILE=surveys/your_survey.rb)"
+
+      def fulfilled?
+        if self.one_time_fee?
+          self.fulfillments.any?
+        else
+          self.procedures.where(status: %w(complete incomplete follow_up)).any?
+        end
+      end
+
+      def deleted?
+        self.deleted_at.present?
+      end
     end
   end
 end
-
-after "deploy:restart", "delayed_job:restart"

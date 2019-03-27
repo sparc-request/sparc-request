@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -36,13 +36,13 @@
           %fieldset
             %legend= t(:catalog_manager)[:organization_form][:pricing][:dates]
             .form-group.has-feedback
-              = f.label :display_date, t(:catalog_manager)[:organization_form][:pricing][:display_date], class: 'col-sm-4 control-label'
+              = f.label :display_date, t(:catalog_manager)[:organization_form][:pricing][:display_date], class: 'col-sm-4 control-label required'
               .col-sm-7
                 = f.text_field :display_date, {disabled: pricing_map_disabled, class: 'form-control datetimepicker'}
                 %span.glyphicon.glyphicon-calendar.form-control-feedback
 
             .form-group.has-feedback
-              = f.label :effective_date, t(:catalog_manager)[:organization_form][:pricing][:effective_date], class: 'col-sm-4 control-label'
+              = f.label :effective_date, t(:catalog_manager)[:organization_form][:pricing][:effective_date], class: 'col-sm-4 control-label required'
               .col-sm-7
                 = f.text_field :effective_date, {disabled: pricing_map_disabled, class: 'form-control datetimepicker' }
                 %span.glyphicon.glyphicon-calendar.form-control-feedback
@@ -55,7 +55,7 @@
           %fieldset
             %legend= t(:catalog_manager)[:organization_form][:pricing][:rates]
             .form-group
-              = f.label :full_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:full_rate], class: 'col-sm-4 control-label'
+              = f.label :full_rate, t(:catalog_manager)[:service_form][:pricing_map_form][:full_rate], class: 'col-sm-4 control-label required'
               .col-sm-7= f.text_field :full_rate, {value: number_with_precision(Service.cents_to_dollars(pricing_map.full_rate), precision: 2), disabled: pricing_map_disabled, class: 'form-control', data: {pricing_map_id: pricing_map.id, service_id: service.id}}
 
             .form-group
@@ -118,9 +118,6 @@
               .form-group
                 .col-sm-7.col-sm-offset-4.small
                   = t(:catalog_manager)[:organization_form][:pricing][:required_field]
-
-
-            .clearfix
         .modal-footer
           %button.btn.btn-default{data: {dismiss: 'modal'}, type: 'button'} Close
           - unless pricing_map_disabled

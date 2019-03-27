@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -32,7 +32,7 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :cc => cc, :from => @identity.email, :subject => subject)
   end
 
-  def notify_user(project_role, service_request, ssr, approval, user_current, audit_report=nil, individual_ssr=false, deleted_ssrs=nil, admin_delete_ssr=false)
+  def notify_user(project_role, service_request, approval, user_current, audit_report=nil, deleted_ssrs=nil, admin_delete_ssr=false)
     @protocol = service_request.protocol
     @service_request = service_request
     @deleted_ssrs = deleted_ssrs
@@ -45,7 +45,7 @@ class Notifier < ActionMailer::Base
     xls = controller.render_to_string action: 'request_report', formats: [:xlsx]
     ### END ATTACHMENTS ###
 
-    @status = status(admin_delete_ssr, audit_report.present?, individual_ssr, ssr, @service_request)
+    @status = status(admin_delete_ssr, audit_report.present?, @service_request)
     @notes = @protocol.notes.eager_load(:identity)
     @identity = project_role.identity
     @role = project_role.role
@@ -56,7 +56,7 @@ class Notifier < ActionMailer::Base
     if admin_delete_ssr
       @ssrs_to_be_displayed = [@deleted_ssrs]
     else
-      @ssrs_to_be_displayed = individual_ssr ? [ssr] : @service_request.sub_service_requests
+      @ssrs_to_be_displayed = @service_request.sub_service_requests
     end
 
     if !admin_delete_ssr
@@ -70,8 +70,7 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => Setting.get_value("no_reply_from"), :subject => subject)
   end
 
-  def notify_admin(submission_email_address, user_current, ssr, audit_report=nil, ssr_destroyed=false, individual_ssr=false)
-
+  def notify_admin(submission_email_address, user_current, ssr, audit_report=nil, ssr_destroyed=false)
     @protocol = ssr.protocol
     @service_request = ssr.service_request
 
@@ -85,7 +84,7 @@ class Notifier < ActionMailer::Base
     @ssr_deleted = false
     @notes = @protocol.notes.eager_load(:identity)
 
-    @status = status(ssr_destroyed, audit_report.present?, individual_ssr, ssr, @service_request)
+    @status = status(ssr_destroyed, audit_report.present?, @service_request)
 
     @role = 'none'
     @full_name = submission_email_address
@@ -106,12 +105,12 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => Setting.get_value("no_reply_from"), :subject => subject)
   end
 
-  def notify_service_provider(service_provider, service_request, user_current, ssr, audit_report=nil, ssr_destroyed=false, request_amendment=false, individual_ssr=false)
+  def notify_service_provider(service_provider, service_request, user_current, ssr, audit_report=nil, ssr_destroyed=false, request_amendment=false)
     @protocol = service_request.protocol
     @service_request = service_request
     @notes = @protocol.notes.eager_load(:identity)
 
-    @status = status(ssr_destroyed, request_amendment, individual_ssr, ssr, @service_request)
+    @status = status(ssr_destroyed, request_amendment, @service_request)
 
     @role = 'none'
     @full_name = service_provider.identity.full_name
@@ -214,10 +213,10 @@ class Notifier < ActionMailer::Base
     mail(:to => email_to, :from => Setting.get_value("no_reply_from"), :subject => subject)
   end
 
-  def notify_primary_pi_for_epic_user_removal protocol, project_role
-    @protocol = protocol
-    @primary_pi = @protocol.primary_principal_investigator
-    @project_role = project_role
+  def notify_primary_pi_for_epic_user_removal(protocol, project_roles)
+    @protocol       = protocol
+    @primary_pi     = @protocol.primary_principal_investigator
+    @project_roles  = project_roles
 
     subject = "#{@protocol.id} - Epic User Removal"
 
@@ -275,13 +274,11 @@ class Notifier < ActionMailer::Base
     controller
   end
 
-  def status(ssr_destroyed, request_amendment, individual_ssr, ssr, service_request)
+  def status(ssr_destroyed, request_amendment, service_request)
     if ssr_destroyed
       status = 'ssr_destroyed'
     elsif request_amendment
       status = 'request_amendment'
-    elsif individual_ssr
-      status = ssr.status
     else
       status = service_request.status
     end

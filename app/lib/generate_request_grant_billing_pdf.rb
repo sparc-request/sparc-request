@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -37,8 +37,7 @@ class RequestGrantBillingPdf
     principal_investigators = protocol.project_roles.where(:role => "pi").map{|pr| pr.identity.full_name}.join(", ")
     billing_business_managers = protocol.project_roles.where(:role => "business-grants-manager").map{|pr| pr.identity.full_name}.join(", ")
 
-    hr_pro_numbers = ""
-    hr_pro_numbers = [protocol.human_subjects_info.hr_number, protocol.human_subjects_info.pro_number].compact.join(", ") if protocol.human_subjects_info
+    pro_number  = protocol.human_subjects_info.pro_number if protocol.human_subjects_info
     udak_number = protocol.udak_project_number || ""
     short_title = protocol.short_title
 
@@ -46,7 +45,7 @@ class RequestGrantBillingPdf
     pdf.text_box principal_investigators, text_box_options(:at => [222, 659], :width => 175)
 
     # question 2
-    pdf.text_box hr_pro_numbers, text_box_options(:at => [280, 636], :width => 100)
+    pdf.text_box pro_number, text_box_options(:at => [280, 636], :width => 100) if protocol.human_subjects_info
     pdf.text_box udak_number, text_box_options(:at => [210, 620], :width => 220)
     pdf.text_box billing_business_managers, text_box_options(:at => [275, 592], :width => 160)
 

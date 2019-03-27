@@ -24,6 +24,8 @@ default: &default
   port: 3306
   timeout: 5000
   pool: 5
+  variables:
+    sql_mode: TRADITIONAL
 
 development:
   <<: *default
@@ -31,8 +33,9 @@ development:
   username: root
   password:
 
+# configured for travis-ci
 test:
   <<: *default
-  database: test_sparc_request
+  database: cwf_test # for travis-ci, needs to match sparc-fulfillment test database name
   username: travis
   password:

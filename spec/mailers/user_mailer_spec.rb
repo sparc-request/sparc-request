@@ -47,7 +47,7 @@ RSpec.describe UserMailer do
       it "should display the 'added' message" do
         # An Authorized User has been added in SparcDashboard ***(link to protocol)***
         expect(@mail).to have_xpath("//p[normalize-space(text()) = 'An Authorized User has been added in']")
-        expect(@mail).to have_xpath "//p//a[@href='/dashboard/protocols/#{@protocol.id}'][text()= 'SPARCDashboard.']/@href"
+        expect(@mail).to have_xpath "//p//a[@href='http://localhost:0/dashboard/protocols/#{@protocol.id}'][text()= 'SPARCDashboard.']/@href"
       end
 
       it "should display the Protocol information table" do
@@ -110,7 +110,7 @@ RSpec.describe UserMailer do
       it "should display the 'deleted' message" do
         # An Authorized User has been deleted in SparcDashboard ***(link to protocol)***
         expect(@mail).to have_xpath("//p[normalize-space(text()) = 'An Authorized User has been deleted in']")
-        expect(@mail).to have_xpath "//p//a[@href='/dashboard/protocols/#{@protocol.id}'][text()= 'SPARCDashboard.']/@href"
+        expect(@mail).to have_xpath "//p//a[@href='http://localhost:0/dashboard/protocols/#{@protocol.id}'][text()= 'SPARCDashboard.']/@href"
       end
 
       it "should display the Protocol information table" do

@@ -33,6 +33,12 @@ class Visit < ApplicationRecord
   has_one :service, through: :line_item
   has_one :sub_service_request, through: :line_item
   
+  ########################
+  ### CWF Associations ###
+  ########################
+
+  has_many :fulfillment_visits, class_name: 'Shard::Fulfillment::Visit', foreign_key: :sparc_id
+
   validates :research_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :insurance_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :effort_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }

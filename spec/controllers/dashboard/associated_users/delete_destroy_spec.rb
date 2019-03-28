@@ -21,14 +21,6 @@
 require 'rails_helper'
 
 RSpec.describe Dashboard::AssociatedUsersController do
-  before :each do
-    Delayed::Worker.delay_jobs = false
-  end
-
-  after :each do
-    Delayed::Worker.delay_jobs = true
-  end
-
   describe 'DELETE destroy' do
     context "when not authorized" do
       before :each do

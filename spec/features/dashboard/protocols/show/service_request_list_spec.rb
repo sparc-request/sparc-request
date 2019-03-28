@@ -188,7 +188,7 @@ RSpec.describe 'service request list', js: true do
             # Select the service requester, say
             first_ssr.recipients.find { |li| li.text == 'Easter Bunny' }.click
             # fill in and submit notification
-            page.wait_for_new_notification_form
+            page.wait_until_new_notification_form_visible
             page.new_notification_form.instance_exec do
               subject_field.set 'Hello'
               message_field.set 'Hows it going?'
@@ -251,7 +251,7 @@ RSpec.describe 'service request list', js: true do
 
       page.service_requests.first.ssrs.first.view_button.click
 
-      page.wait_for_view_ssr_modal
+      page.wait_until_view_ssr_modal_visible
       expect(page).to have_view_ssr_modal
     end
 

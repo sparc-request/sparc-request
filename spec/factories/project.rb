@@ -20,7 +20,7 @@
 
 FactoryBot.define do
   factory :project, parent: :protocol, class: 'Project' do
-    type "Project"
+    type {"Project"}
 
     factory :project_federally_funded,                    traits: [:funded, :federal]
     factory :project_without_validations,                 traits: [:without_validations]

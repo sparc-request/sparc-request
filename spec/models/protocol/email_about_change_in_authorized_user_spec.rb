@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,45 +17,38 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-require 'date'
 require 'rails_helper'
 
 RSpec.describe Protocol, type: :model do
-  let_there_be_lane
-  let_there_be_j
-  build_service_request_with_study()
-  build_service_request_with_project()
-  build_study_type_question_groups()
-  build_study_type_questions()
-  build_study_type_answers()
-
   describe "#email_about_change_in_authorized_user" do
-    context "send_authorized_user_emails is true and ssr.status is 'not_draft'" do
+    context "send_authorized_user_emails is true and sr was previously submitted" do
       it "should send authorized user email" do
         organization = create(:organization)
         @protocol1 = create(:study_without_validations)
-        @sr1 = create(:service_request_without_validations, protocol_id: @protocol1.id)
-        @ssr1 = create(:sub_service_request_without_validations, service_request_id: @sr1.id, organization: organization, status: 'not_draft', protocol: @protocol1)
+        @sr1 = create(:service_request_without_validations, protocol_id: @protocol1.id, submitted_at: Time.now)
+        @ssr1 = create(:sub_service_request_without_validations, service_request_id: @sr1.id, organization: organization, protocol: @protocol1)
         create(:project_role_with_identity, protocol: @protocol1)
         modified_role = create(:project_role_with_identity, protocol: @protocol1)
 
-        allow(UserMailer).to receive(:authorized_user_changed).twice do
+        allow(UserMailer).to receive(:authorized_user_changed) do
           mailer = double("mailer")
           expect(mailer).to receive(:deliver)
           mailer
         end
 
-        @protocol1.email_about_change_in_authorized_user(modified_role, 'destroy')
-        expect(UserMailer).to have_received(:authorized_user_changed).twice
+        @protocol1.email_about_change_in_authorized_user([modified_role], 'destroy')
+        expect(UserMailer).to have_received(:authorized_user_changed)
       end
     end
 
-    context "send_authorized_user_emails is true and ssr.status is 'draft'" do
-      it "should send authorized user email" do
+    context "send_authorized_user_emails is false and sr was previously submitted" do
+      stub_config("send_authorized_user_emails", false)
+
+      it "should not send authorized user email" do
         organization = create(:organization)
         @protocol1 = create(:study_without_validations)
-        @sr1 = create(:service_request_without_validations, protocol_id: @protocol1.id)
-        @ssr1 = create(:sub_service_request_without_validations, service_request_id: @sr1.id, organization: organization, status: 'draft', protocol: @protocol1)
+        @sr1 = create(:service_request_without_validations, protocol_id: @protocol1.id, submitted_at: Time.now)
+        @ssr1 = create(:sub_service_request_without_validations, service_request_id: @sr1.id, organization: organization, protocol: @protocol1)
         create(:project_role_with_identity, protocol: @protocol1)
         modified_role = create(:project_role_with_identity, protocol: @protocol1)
 
@@ -65,19 +58,17 @@ RSpec.describe Protocol, type: :model do
           mailer
         end
 
-        @protocol1.email_about_change_in_authorized_user(modified_role, 'destroy')
+        @protocol1.email_about_change_in_authorized_user([modified_role], 'destroy')
         expect(UserMailer).not_to have_received(:authorized_user_changed)
       end
     end
 
-    context "send_authorized_user_emails is false and ssr.status is 'draft'" do
-      stub_config("send_authorized_user_emails", false)
-
-      it "should send authorized user email" do
+    context "send_authorized_user_emails is true and sr was not previously submitted" do
+      it "should not send authorized user email" do
         organization = create(:organization)
         @protocol1 = create(:study_without_validations)
         @sr1 = create(:service_request_without_validations, protocol_id: @protocol1.id)
-        @ssr1 = create(:sub_service_request_without_validations, service_request_id: @sr1.id, organization: organization, status: 'draft', protocol: @protocol1)
+        @ssr1 = create(:sub_service_request_without_validations, service_request_id: @sr1.id, organization: organization, protocol: @protocol1)
         create(:project_role_with_identity, protocol: @protocol1)
         modified_role = create(:project_role_with_identity, protocol: @protocol1)
 
@@ -87,29 +78,7 @@ RSpec.describe Protocol, type: :model do
           mailer
         end
 
-        @protocol1.email_about_change_in_authorized_user(modified_role, 'destroy')
-        expect(UserMailer).not_to have_received(:authorized_user_changed)
-      end
-    end
-
-    context "send_authorized_user_emails is false and ssr.status is 'not_draft'" do
-      stub_config("send_authorized_user_emails", false)
-      
-      it "should send authorized user email" do
-        organization = create(:organization)
-        @protocol1 = create(:study_without_validations)
-        @sr1 = create(:service_request_without_validations, protocol_id: @protocol1.id)
-        @ssr1 = create(:sub_service_request_without_validations, service_request_id: @sr1.id, organization: organization, status: 'not_draft', protocol: @protocol1)
-        create(:project_role_with_identity, protocol: @protocol1)
-        modified_role = create(:project_role_with_identity, protocol: @protocol1)
-
-        allow(UserMailer).to receive(:authorized_user_changed) do
-          mailer = double()
-          expect(mailer).not_to receive(:deliver)
-          mailer
-        end
-
-        @protocol1.email_about_change_in_authorized_user(modified_role, 'destroy')
+        @protocol1.email_about_change_in_authorized_user([modified_role], 'destroy')
         expect(UserMailer).not_to have_received(:authorized_user_changed)
       end
     end

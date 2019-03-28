@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development~
+-# Copyright © 2011-2019 MUSC Foundation for Research Development~
 -# All rights reserved.~
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -28,27 +28,29 @@
           %strong= t(:notifier)[:study_info]
   %tbody
     %tr{:style => 'border: 1px solid black;'}
-      - if @protocol.type.capitalize == "Project"
-        %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:p_id]
-      - else
-        %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:study_id]
-      %td{:style => 'border: 1px solid black;'}= @protocol.id
+      %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:forms)[:table_fields][:srid]
+      %td{:style => 'border: 1px solid black;'}= @ssr.display_id
+
     %tr{:style => 'border: 1px solid black;'}
       %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:title1]
       %td{:style => 'border: 1px solid black;'}= @protocol.try(:short_title)
+
     %tr{:style => 'border: 1px solid black;'}
       - if @protocol.type.capitalize == "Project"
         %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:p_title]
       - else
         %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:study_title]
       %td{:style => 'border: 1px solid black;'}= @protocol.try(:title)
+
     %tr{:style => 'border: 1px solid black;'}
-      %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:s_name]
-      %td{:style => 'border: 1px solid black;'}= @protocol.try(:sponsor_name)
+      %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:surveyor)[:responses][:emails][:service_survey][:org_name]
+      %td{:style => 'border: 1px solid black;'}= @ssr.organization.name
+
     %tr{:style => 'border: 1px solid black;'}
-      %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= @protocol.funding_status == 'funded' ? t(:notifier)[:source] : t(:notifier)[:potential_source]
-      %td{:style => 'border: 1px solid black;'}= @protocol.display_funding_source_value
-    - if @protocol.type == 'Project'
-      %tr{:style => 'border: 1px solid black;'}
-        %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:description]
-        %td{:style => 'border: 1px solid black;'}= @protocol.brief_description
+      %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:surveyor)[:responses][:table][:headers][:primary_pi]
+      %td{:style => 'border: 1px solid black;'}= @protocol.primary_principal_investigator.full_name
+
+    %tr{:style => 'border: 1px solid black;'}
+      %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:surveyor)[:responses][:table][:headers][:request_owner]
+      %td{:style => 'border: 1px solid black;'}= @ssr.owner.full_name
+

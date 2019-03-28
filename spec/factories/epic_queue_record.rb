@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -20,9 +20,9 @@
 
 FactoryBot.define do
   factory :epic_queue_record do
-    protocol_id nil
-    status 'complete'
-    origin 'tattoine'
-    identity_id nil
+    protocol_id {nil}
+    status {'complete'}
+    origin {'tattoine'}
+    identity_id {nil}
   end
 end

@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -26,8 +26,8 @@ FactoryBot.define do
     end
 
     transient do
-      body nil
-      message_created_at nil
+      body {nil}
+      message_created_at {nil}
     end
 
     after(:build) do |notification, evaluator|

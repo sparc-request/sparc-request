@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -41,7 +41,7 @@ RSpec.describe 'User edits a form response', js: true do
   end
 
   scenario 'and sees the updated response' do
-    visit document_management_service_request_path(@sr)
+    visit document_management_service_request_path(srid: @sr.id)
     wait_for_javascript_to_finish
 
     first('.edit-response').click

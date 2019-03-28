@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -40,7 +40,7 @@ RSpec.describe 'Show protocol Study notes spec', js: true do
     @page = Dashboard::Protocols::ShowPage.new
     @page.load(id: protocol.id)
     @page.protocol_summary.study_notes_button.click
-    @page.wait_for_index_notes_modal
+    @page.wait_until_index_notes_modal_visible
   end
 
   context 'when user presses Add Note button and saves a note' do
@@ -49,14 +49,14 @@ RSpec.describe 'Show protocol Study notes spec', js: true do
         new_note_button.click
       end
 
-      @page.wait_for_note_form_modal
+      @page.wait_until_note_form_modal_visible
 
       @page.note_form_modal.instance_exec do
         message_area.set('my important note')
         add_note_button.click
       end
 
-      @page.wait_for_index_notes_modal
+      @page.wait_until_index_notes_modal_visible
 
       expect(@page.index_notes_modal).to have_notes(text: 'my important note')
       expect(Note.count).to eq 1

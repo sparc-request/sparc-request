@@ -18,8 +18,9 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%select.form-control.selectpicker.survey-select{ id: 'filterrific_with_survey', multiple: true, data: { hide_disabled: 'true', live_search: 'true' } }
+= hidden_field_tag "filterrific[with_survey][]"
+%select.form-control.selectpicker.survey-select{ id: 'filterrific_with_survey', name: 'filterrific[with_survey][]', multiple: true, data: { hide_disabled: 'true', live_search: 'true' } }
   - surveys.order(:title).group_by(&:title).each do |title, surveys|
     %optgroup{ label: title }
       - surveys.each do |survey|
-        %option{ disabled: filterrific.with_state && filterrific.with_state.length > 1 && !filterrific.with_state.include?(survey.active ? 1 : 0), selected: filterrific.with_survey && filterrific.with_survey.include?(survey.id), data: { active: survey.active ? '1' : '0', content: "<span class='hidden'>#{survey.title}</span> Version #{survey.version} (#{I18n.t(:surveyor)[:response_filters][:fields][:state_filters][survey.active ? :active : :inactive]})" } }
+        %option{ value: survey.id, disabled: filterrific.with_state && filterrific.with_state.length > 1 && !filterrific.with_state.include?(survey.active ? 1 : 0), selected: filterrific.with_survey && filterrific.with_survey.include?(survey.id), data: { active: survey.active ? '1' : '0', content: "<span class='hidden'>#{survey.title}</span><span>Version #{survey.version} (#{I18n.t(:surveyor)[:response_filters][:fields][:state_filters][survey.active ? :active : :inactive]})</span>" } }

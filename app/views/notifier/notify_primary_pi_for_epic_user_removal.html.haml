@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,14 +21,16 @@
 %p="Dear #{@primary_pi.full_name},"
 
 %p
-  The following SPARC Request user have been removed from your study ##{@protocol.id} (#{@protocol.short_title.strip}).
+  The following SPARCRequest user(s) have been removed from your study ##{@protocol.id} (#{@protocol.short_title.strip}).
 
 %ul
-  %li= "#{@project_role.identity.full_name}"
+  - @project_roles.each do |pr|
+    %li
+      = pr.identity.full_name
 
 %p
   The following users are still present on the study. Each individual is listed below with the Epic responsibilities requested. Please review carefully. When ready, please click the Approve link. This will send your study information to Epic automatically. If you
-  need to make any changes to the personnel/responsibilities below, please click the “Edit” link which will redirect you to your SPARC Request Dashboard. Here, under your study’s “User” section, you can add/delete/edit any listed personnel as needed."
+  need to make any changes to the personnel/responsibilities below, please click the “Edit” link which will redirect you to your SPARCRequest Dashboard. Here, under your study’s “User” section, you can add/delete/edit any listed personnel as needed."
 
 =render :partial => 'epic_access_rights'
 
@@ -40,7 +42,7 @@
 
 %br
 
-= raw t('mailer.issue_contact', department_name: Setting.get_value('contact_us_department'), phone: Setting.get_value('contact_us_phone'), email: Setting.get_value('contact_us_mail_to'))
+= render 'issue_contact'
 
 :scss
   table, th, td {
@@ -51,4 +53,3 @@
       padding: 1px 5px;
     }
   }
-

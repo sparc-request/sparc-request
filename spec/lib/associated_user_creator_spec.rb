@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -27,7 +27,8 @@ RSpec.describe AssociatedUserCreator do
       @user          = create(:identity)
       @protocol      = create(:protocol_without_validations, selected_for_epic: false, funding_status: 'funded', funding_source: 'federal', type: 'Study')
       create(:project_role, protocol: @protocol, identity: @user, project_rights: 'approve', role: 'primary-pi')
-      @ssr = create(:sub_service_request, status: 'not_draft', organization: create(:organization), service_request: create(:service_request_without_validations, protocol: @protocol), protocol: @protocol)
+      @sr = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now)
+      @ssr = create(:sub_service_request, status: 'not_draft', organization: create(:organization), service_request: @sr, protocol: @protocol)
 
       @project_role_attrs = { protocol_id: @protocol.id,
         identity_id: @identity.id,
@@ -50,7 +51,7 @@ RSpec.describe AssociatedUserCreator do
       expect(creator.protocol_role).to eq(ProjectRole.last)
     end
 
-    context "send_authorized_user_emails is true and protocol has non-draft status" do
+    context "send_authorized_user_emails is true and protocol has a previously-submitted SR" do
       it "should send authorized user changed emails" do
         allow(UserMailer).to receive(:authorized_user_changed).twice do
           mailer = double("mailer")
@@ -59,7 +60,7 @@ RSpec.describe AssociatedUserCreator do
         end
 
         AssociatedUserCreator.new(@project_role_attrs, @identity)
-        expect(UserMailer).to have_received(:authorized_user_changed).twice
+        expect(UserMailer).to have_received(:authorized_user_changed)
       end
     end
 

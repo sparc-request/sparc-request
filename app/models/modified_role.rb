@@ -18,33 +18,26 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class UserMailer < ActionMailer::Base
-  default :from => Setting.get_value("no_reply_from")
+# This is a wrapper structure to hold Project Role information 
+# to avoid persistence issues within delayed jobs
 
-  def authorized_user_changed(protocol, recipient, modified_roles, action)
-    @protocol         = protocol
-    @modified_roles   = modified_roles
-    @action           = action
-    @protocol_link    = dashboard_protocol_url(@protocol)
-    @service_request  = @protocol.service_requests.first
+class ModifiedRole
 
-    send_email(recipient, t('mailer.email_title.general', email_status: "Authorized Users Update", type: "Protocol", id: @protocol.id))
+  attr_accessor *ProjectRole.column_names
+
+  def initialize(project_role_attrs)
+    project_role_attrs.each{ |attr, value| instance_variable_set("@#{attr}", value) }
   end
 
-  def notification_received(user, ssr)
-    if ssr.present?
-      @ssr_id = ssr.id
-      @is_service_provider = user.is_service_provider?(ssr)
+  def identity
+    Identity.find(@identity_id)
+  end
+
+  def display_rights
+    case @project_rights
+    when "none"    then "Member Only"
+    when "view"    then "View Rights"
+    when "approve" then "Authorize/Change Study Charges"
     end
-
-    send_email(user, "#{t(:mailer)[:email_title][:new]} #{t('mailer.email_title.general', email_status: 'Notification', type: 'Protocol', id: ssr.protocol.id)}")
-  end
-
-  private
-
-  def send_email(recipient, subject)
-    @send_to = recipient
-
-    mail(to: recipient.email, subject: subject)
   end
 end

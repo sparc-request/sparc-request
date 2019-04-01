@@ -47,8 +47,8 @@ Once the Installation is complete you will need to create your initial instituti
 Once you have created an initial institution and set yourself as a catalog manager, you will be able to access the catalog manager part of the application and begin inputing your organizational structure and service offerings. This tool can be found at <root_url>/catalog_manager. In order to access administrative options for a particular request within the dashboard, you will need to either be a service provider or a super user for the organizational level of the services in that request. These rights can be granted in the catalog manager under the ‘Service Providers’ and ‘Super Users’ sections for each organizational entity.
 
 Some basic important URLs for the application are as follows:
-<root_url> - The main SPARC Request shopping screen
-<root_url/dashboard> - The SPARC Request Dashboard
+<root_url> - The main SPARCRequest shopping screen
+<root_url/dashboard> - The SPARCRequest Dashboard
 <root_url/catalog_manager> - The Catalog Manager application for managing organizational structure and service offerings
-<root_url/reports> - The SPARC Request reporting module
+<root_url/reports> - The SPARCRequest reporting module
 

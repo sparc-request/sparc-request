@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -111,7 +111,7 @@ RSpec.describe Notifier do
         @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
         @approval             = create(:approval, service_request: @service_request)
         @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
-        @mail                 = Notifier.notify_user(@project_role, @service_request, nil, @approval, identity)
+        @mail                 = Notifier.notify_user(@project_role, @service_request, @approval, identity)
         
         @service_request.reload
       end
@@ -139,7 +139,7 @@ RSpec.describe Notifier do
         @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'get_a_cost_estimate')
         @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
         @approval             = create(:approval, service_request: @service_request)
-        @mail                 = Notifier.notify_user(@project_role, @service_request, nil, @approval, identity)
+        @mail                 = Notifier.notify_user(@project_role, @service_request, @approval, identity)
         
         @service_request.reload
       end
@@ -158,7 +158,7 @@ RSpec.describe Notifier do
         @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'get_a_cost_estimate')
         @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
         @approval             = create(:approval, service_request: @service_request)
-        @mail                 = Notifier.notify_user(@project_role, @service_request, nil, @approval, identity)
+        @mail                 = Notifier.notify_user(@project_role, @service_request, @approval, identity)
         
         @service_request.reload
       end

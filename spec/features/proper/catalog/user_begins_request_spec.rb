@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -51,41 +51,17 @@ RSpec.describe 'User begins Service Request', js: true do
     create(:line_item, service_request: @sr, sub_service_request: ssr2, service: service2)
   end
 
-  def visit_catalog_page(service_request:, sub_service_request: nil)
-    params = if sub_service_request
-               "?sub_service_request_id=#{sub_service_request.id}"
-             else
-               ""
-             end
-    visit "/service_requests/#{service_request.id}/catalog/" + params
+  before(:each) do
+    visit catalog_service_request_path(srid: @sr.id)
   end
 
-  context 'editing a SubServiceRequest' do
-    before(:each) { visit_catalog_page(service_request: @sr, sub_service_request: @ssr1) }
+  scenario 'and sees the Protocol page' do
+    click_link("Continue")
+    expect(page).to have_content("STEP 1")
 
-    scenario 'and sees the Protocol page with Services scoped to SubServiceRequest under edit' do
-      click_link("Continue")
-      expect(page).to have_content("STEP 1")
+    cart = page.find(".panel", text: /My Services/)
 
-      cart = page.find(".panel", text: /My Services/)
-
-      expect(cart).to have_content("Service1")
-      expect(cart).not_to have_content("Service2")
-    end
-  end
-
-  context 'not editing a SubServiceRequest' do
-    before(:each) { visit_catalog_page(service_request: @sr) }
-
-    scenario 'and sees the Protocol page' do
-      click_link("Continue")
-      expect(page).to have_content("STEP 1")
-
-      cart = page.find(".panel", text: /My Services/)
-
-      expect(cart).to have_content("Service1")
-      expect(cart).to have_content("Service2")
-    end
+    expect(cart).to have_content("Service1")
+    expect(cart).to have_content("Service2")
   end
 end
-

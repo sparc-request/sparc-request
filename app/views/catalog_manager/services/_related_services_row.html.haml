@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,20 +20,10 @@
 
 - related_service = service_relation.related_service
 .row.form_row{id: "service-relation-id-#{service_relation.id}", data: { related_service_id: related_service.id } }
-  .col-sm-5
+  .col-sm-8
     = service_relation.related_service.display_service_name
   .col-sm-2.text-center
-    -# = label_tag :required, t(:catalog_manager)[:related_services_form][:required], class: 'non_bold_label'
     = check_box_tag service_relation.id, true, service_relation.required, :class => 'required', data: { service_relation_id: service_relation.id }
-  .col-sm-3.text-center
-    -# = label_tag :linked_quantity, t(:catalog_manager)[:related_services_form][:linked_quantity], class: 'non_bold_label'
-    = check_box_tag "linked_quantity_#{service_relation.id}", true, service_relation.linked_quantity, data: { service_relation_id: service_relation.id }, class: 'linked_quantity'
-
-    - if service_relation.linked_quantity
-      .linked_quantity_container
-        .form_row
-        = label_tag :linked_quantity_total, t(:catalog_manager)[:related_services_form][:linked_quantity_total], class: 'non_bold_label'
-        = text_field_tag "linked_quantity_total_#{service_relation.id}", service_relation.linked_quantity_total, data: { service_relation_id: service_relation.id }, class: 'linked_quantity_total text-center', style: "width:45px;"
   .form-group.col-sm-2.text-center
     %button.btn.btn-xs.btn-danger.remove-related-services{ data:  {service_relation_id: service_relation.id } }
       %span.glyphicon.glyphicon-remove

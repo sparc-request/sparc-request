@@ -1,0 +1,19 @@
+#protocol-merges-container
+  %h1{style: 'text-align:center;'}
+    Protocol Merge Tool
+  %p &nbsp
+  %p &nbsp
+  %p &nbsp
+  %p
+    = label_tag 'master_protocol', 'Enter the id of the Master Protocol:' 
+    = text_field_tag 'master_protocol', nil, style: 'margin-left:207px'
+  %p &nbsp
+  %p &nbsp
+  %p
+    = label_tag 'sub_protocol', 'Enter the id of the Protocol to be merged into the Master Protocol:' 
+    = text_field_tag 'sub_protocol'
+  %p &nbsp
+  %p &nbsp
+  %p{style: 'text-align:center;'}
+    %button.btn.btn-info.navbar-btn#merge-button{ type: 'button', title: "Perform Protocol Merge"}
+      = "Perform Protocol Merge"

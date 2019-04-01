@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,24 +17,19 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 .panel-group{ id: "institution-#{i.id}" }
   - providers.select{ |prov| prov.is_available != false }.each do |p|
-    - # Skip the provider if:
-    - # 1. We are editing an SSR
-    - # 2. The institution was not the process_ssr organization
-    - # 3. The provider is not the ssr_org or an ancestor of the ssr_org
-    - next if ssr_org && !institution_is_process_ssr && !((provider_is_process_ssr = ssr_org == p) || ssr_org.parents.include?(p))
     - locked = locked_ids.include?(p.id)
 
     .panel.panel-default
-      .panel-heading.provider-header{ class: [css_class(p), locked ? 'bg-danger text-danger' : ''], data: { id: p.id, process_ssr_found: provider_is_process_ssr.to_s, toggle: 'collapse', target: ".provider-#{p.id}", parent: "#institution-#{i.id}" } }
-        .row
-          .col-lg-10
-            %h4.panel-title.text-left
-              = organization_name_display(p, locked)
-          .col-lg-2
-            - if p.programs.any?
-              %span.caret
-      .panel-collapse.collapse{ class: "provider-#{p.id}" }
+      .panel-heading.provider-header{ class: [css_class(p), locked ? 'bg-danger text-danger' : ''], data: { id: p.id, toggle: 'collapse', target: ".provider-#{p.id}", parent: "#institution-#{i.id}" } }
+        .col-lg-11.no-padding
+          %h4.panel-title.text-left
+            = organization_name_display(p, locked)
+        .col-lg-1.no-padding.text-right
+          - if p.programs.any?
+            %span.caret
+      .panel-collapse.collapse{ class: ["provider-#{p.id}", @provider == p ? 'in' : ''] }
         .panel-body
-          = render 'catalogs/accordion/programs', programs: p.programs, locked_ids: locked_ids, ssr_org: ssr_org, provider_is_process_ssr: provider_is_process_ssr
+          = render 'catalogs/accordion/programs', programs: p.programs, locked_ids: locked_ids

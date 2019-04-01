@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -107,24 +107,16 @@ class AssociatedUsersController < ApplicationController
   end
 
   def destroy
-    epic_access         = @protocol_role.epic_access
-    protocol_role_clone = @protocol_role.clone
-    epic_queue_manager = EpicQueueManager.new(
-      @protocol_role.protocol, current_user, @protocol_role
-    )
-    epic_queue_manager.create_epic_queue
+    @epic_access = @protocol_roles.any?(&:epic_access)
+    @protocol_roles.each{ |pr| EpicQueueManager.new(@protocol, current_user, pr).create_epic_queue }
+    Notifier.notify_primary_pi_for_epic_user_removal(@protocol, @protocol_roles).deliver if is_epic?
+    @protocol.email_about_change_in_authorized_user(@protocol_roles, "destroy")
 
-    @protocol_role.destroy
-
+    @protocol_roles.destroy_all
     flash.now[:alert] = t(:authorized_users)[:destroyed]
-
-    if Setting.get_value("use_epic") && @protocol.selected_for_epic && epic_access && !Setting.get_value("queue_epic")
-      Notifier.notify_primary_pi_for_epic_user_removal(@protocol, protocol_role_clone).deliver
-    end
 
     respond_to do |format|
       format.js
-      format.html
     end
   end
 
@@ -137,7 +129,8 @@ class AssociatedUsersController < ApplicationController
     render json: results.to_json
   end
 
-private
+  private
+
   def project_role_params
     params.require(:project_role).permit(:protocol_id,
       :identity_id,
@@ -163,15 +156,26 @@ private
   end
 
   def find_protocol_role
-    @protocol_role = ProjectRole.find(params[:id])
+    if /^[0-9]+$/ =~ params[:id]
+      @protocol_role  = ProjectRole.find(params[:id])
+      @protocol_roles = ProjectRole.where(id: @protocol_role)
+    else
+      @protocol_roles = ProjectRole.where(id: params[:id].split(','))
+    end
   end
 
   def find_protocol
-    if @protocol_role.present?
-      @protocol   = @protocol_role.protocol
-    else
-      protocol_id = params[:protocol_id] || project_role_params[:protocol_id]
-      @protocol   = Protocol.find(protocol_id)
-    end
+    @protocol = 
+      if @protocol_role.present?
+        @protocol_role.protocol
+      elsif @protocol_roles.present?
+        @protocol_roles.first.protocol
+      else
+        Protocol.find(params[:protocol_id] || project_role_params[:protocol_id])
+      end
+  end
+
+  def is_epic?
+    Setting.get_value("use_epic") && @protocol.selected_for_epic && @epic_access && !Setting.get_value("queue_epic")
   end
 end

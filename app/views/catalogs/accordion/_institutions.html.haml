@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,25 +17,19 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- institution_is_process_ssr = false
 
 .panel-group#institution-accordion
   - institutions.includes(providers: :programs).select{ |inst| inst.is_available != false }.each do |i|
-    - # Skip the institution if:
-    - # 1. We are editing an SSR
-    - # 2. The institution is not the ssr_org or an ancestor of ssr_org
-    - next if ssr_org && !((institution_is_process_ssr = ssr_org == i) || ssr_org.parents.include?(i))
     - locked = locked_ids.include?(i.id)
 
     .panel.panel-default
-      .panel-heading.institution-header.clicked{ class: [i.css_class, locked ? 'bg-danger text-danger' : ''], data: { id: i.id, process_ssr_found: institution_is_process_ssr.to_s, toggle: 'collapse', target: ".institution-#{i.id}", parent: '#institution-accordion' } }
-        .row
-          .col-lg-10
-            %h4.panel-title.text-left
-              = organization_name_display(i, locked)
-          .col-lg-2
-            - if i.providers.any?
-              %span.caret
+      .panel-heading.institution-header.clicked{ class: [i.css_class, locked ? 'bg-danger text-danger' : ''], data: { id: i.id, toggle: 'collapse', target: ".institution-#{i.id}", parent: '#institution-accordion' } }
+        .col-lg-11.no-padding
+          %h4.panel-title.text-left
+            = organization_name_display(i, locked)
+        .col-lg-1.no-padding.text-right
+          - if i.providers.any?
+            %span.caret
       .panel-collapse.collapse.in{ class: "institution-#{i.id}" }
         .panel-body
-          = render 'catalogs/accordion/providers', providers: i.providers, locked_ids: locked_ids, ssr_org: ssr_org, institution_is_process_ssr: institution_is_process_ssr, i: i
+          = render 'catalogs/accordion/providers', providers: i.providers, locked_ids: locked_ids, i: i

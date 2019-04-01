@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -31,6 +31,12 @@ class VisitGroup < ApplicationRecord
   
   has_many :line_items_visits, through: :visits
   
+  ########################
+  ### CWF Associations ###
+  ########################
+
+  has_many :fulfillment_visit_groups, class_name: 'Shard::Fulfillment::VisitGroup', foreign_key: :sparc_id
+
   acts_as_list scope: :arm
 
   after_create :build_visits, if: Proc.new { |vg| vg.arm.present? }

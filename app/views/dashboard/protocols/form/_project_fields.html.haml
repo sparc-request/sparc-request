@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -48,7 +48,7 @@
         title: t(:protocols)[:tooltips][:funding_status]
       .col-lg-10
         = form.select :funding_status,
-          options_for_select(PermissibleValue.order(:sort_order).get_inverted_hash('funding_status') , protocol.funding_status),
+          options_for_select(PermissibleValue.get_inverted_hash('funding_status') , protocol.funding_status),
           { include_blank: t(:protocols)[:prompts][:status] },
           class: 'selectpicker project'
 
@@ -60,7 +60,7 @@
         title: t(:protocols)[:tooltips][:funding_source]
       .col-lg-10
         = form.select :funding_source,
-          options_for_select(PermissibleValue.order(:sort_order).get_inverted_hash('funding_source'), protocol.funding_source),
+          options_for_select(PermissibleValue.get_inverted_hash('funding_source'), protocol.funding_source),
           { include_blank: t(:protocols)[:prompts][:source] },
           class: 'selectpicker'
 
@@ -72,7 +72,7 @@
         title: t(:protocols)[:tooltips][:potential_funding_source]
       .col-lg-10
         = form.select :potential_funding_source,
-          options_for_select(PermissibleValue.order(:sort_order).get_inverted_hash('potential_funding_source'), protocol.potential_funding_source),
+          options_for_select(PermissibleValue.get_inverted_hash('potential_funding_source'), protocol.potential_funding_source),
           { include_blank: t(:protocols)[:prompts][:potential_source] },
           class: 'selectpicker'
 

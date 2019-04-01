@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,4 +17,4 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$('#welcome-message').html("<%= escape_javascript render 'catalogs/description', organization: @organization, service_request: @service_request, sub_service_request: @sub_service_request, ssr_org: @ssr_org, process_ssr_found: @process_ssr_found, locked_org_ids: @locked_org_ids %>")
+$('#welcome-message').html("<%= escape_javascript render 'catalogs/description', organization: @organization, service_request: @service_request, locked_org_ids: @locked_org_ids %>")

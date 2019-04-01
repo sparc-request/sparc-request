@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -26,14 +26,16 @@ class LineItemsVisit < ApplicationRecord
 
   belongs_to :arm
   belongs_to :line_item
+
   has_many :visits, :dependent => :destroy
   has_many :ordered_visits, -> { ordered }, class_name: "Visit"
   has_many :notes, as: :notable, dependent: :destroy
 
+  has_many :visit_groups, through: :visits
+
   has_one :service_request, through: :line_item
   has_one :sub_service_request, through: :line_item
   has_one :service, through: :line_item
-  has_many :visit_groups, through: :visits
 
   validate :subject_count_valid
   validate :pppv_line_item

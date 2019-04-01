@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -26,16 +26,25 @@ class SearchController < ApplicationController
 
   def services_search
     term = params[:term].strip
-    results = Service.where("is_available=1 AND (name LIKE '%#{term}%' OR abbreviation LIKE '%#{term}%' OR cpt_code LIKE '%#{term}%')").to_a
+    results = Service.
+                eager_load(:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]).
+                where("(services.name LIKE ? OR services.abbreviation LIKE ? OR services.cpt_code LIKE ? OR services.eap_id LIKE ?) AND services.is_available = 1", "%#{term}%", "%#{term}%", "%#{term}%", "%#{term}%").
+                sort_by{ |s| s.organization_hierarchy(true, false, false, true).map{ |o| [o.order, o.abbreviation] }.flatten }
 
     results.map!{ |service|
       {
-        name: service.name,
-        id: service.id,
-        cpt_code: cpt_code_text(service),
-        breadcrumb: breadcrumb_text(service)
+        breadcrumb:     breadcrumb_text(service),
+        label:          service.name,
+        value:          service.id,
+        description:    raw(service.description),
+        abbreviation:   service.abbreviation,
+        cpt_code_text:  cpt_code_text(service),
+        eap_id_text:    eap_id_text(service),
+        pricing_text:   service_pricing_text(service),
+        term:           term
       }
     }
+
     render json: results.to_json
   end
 
@@ -51,7 +60,8 @@ class SearchController < ApplicationController
                 eager_load(:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]).
                 where("(services.name LIKE ? OR services.abbreviation LIKE ? OR services.cpt_code LIKE ? OR services.eap_id LIKE ?) AND services.is_available = 1", "%#{term}%", "%#{term}%", "%#{term}%", "%#{term}%").
                 where.not(organization_id: locked_org_ids + locked_child_ids).
-                reject { |s| (s.current_pricing_map rescue false) == false } # Why is this here? ##Agreed, why????
+                reject { |s| (s.current_pricing_map rescue false) == false }. # Why is this here? ##Agreed, why????
+                sort_by{ |s| s.organization_hierarchy(true, false, false, true).map{ |o| [o.order, o.abbreviation] }.flatten }
 
     unless @sub_service_request.nil?
       results.reject!{ |s| s.parents.exclude?(@sub_service_request.organization) }
@@ -62,7 +72,7 @@ class SearchController < ApplicationController
         breadcrumb:     breadcrumb_text(s),
         label:          s.name,
         value:          s.id,
-        description:    (s.description.nil? || s.description.blank?) ? t(:proper)[:catalog][:no_description] : s.description,
+        description:    raw(s.description),
         abbreviation:   s.abbreviation,
         cpt_code_text:  cpt_code_text(s),
         eap_id_text:    eap_id_text(s),
@@ -79,25 +89,27 @@ class SearchController < ApplicationController
     org_available_query   = params[:show_available_only] == 'true' ? " AND is_available = 1" : ""
     serv_available_query  = params[:show_available_only] == 'true' ? " AND services.is_available = 1" : ""
 
-    results = Organization.
+    results = (Organization.
                 includes(parent: { parent: :parent }).
                 where("(name LIKE ? OR abbreviation LIKE ?)#{org_available_query}", "%#{term}%", "%#{term}%") +
               Service.
                 eager_load(:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]).
-                where("(services.name LIKE ? OR services.abbreviation LIKE ? OR services.cpt_code LIKE ? OR services.eap_id LIKE ?)#{serv_available_query}", "%#{term}%", "%#{term}%", "%#{term}%", "%#{term}%")
+                where("(services.name LIKE ? OR services.abbreviation LIKE ? OR services.cpt_code LIKE ? OR services.eap_id LIKE ?)#{serv_available_query}", "%#{term}%", "%#{term}%", "%#{term}%", "%#{term}%")).
+              sort_by{ |item| item.organization_hierarchy(true, false, false, true).map{ |o| [o.order, o.abbreviation] }.flatten }
 
     results.map! { |item|
       {
         id:             item.id,
         name:           item.name,
         abbreviation:   item.abbreviation,
-        type:           item.class.base_class.to_s,
-        text_color:     "text-#{item.class.to_s.downcase}",
+        type:           item.class.base_class.name.downcase,
+        text_color:     "text-#{item.class.name.downcase}",
         cpt_code_text:  item.is_a?(Service) ? cpt_code_text(item) : "",
         eap_id_text:    item.is_a?(Service) ? eap_id_text(item) : "",
         inactive_tag:   inactive_text(item),
         breadcrumb:     breadcrumb_text(item),
-        pricing_text:   item.is_a?(Service) ? service_pricing_text(item) : ""
+        pricing_text:   item.is_a?(Service) ? service_pricing_text(item) : "",
+        description:    raw(item.description)
       }
     }
     render json: results.to_json

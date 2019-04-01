@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,8 +17,8 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$('.shopping-cart').html("<%= escape_javascript(render( 'service_requests/right_navigation/cart', service_request: @service_request, sub_service_request: @sub_service_request, sub_service_requests: @sub_service_requests, line_items_count: @line_items_count, allow_delete: true )) %>")
+$('.shopping-cart').html("<%= escape_javascript(render( 'service_requests/right_navigation/cart', service_request: @service_request, sub_service_requests: @sub_service_requests, allow_delete: true )) %>")
 
 <% if request.referrer.split('/').last == 'protocol' %>
-$('.service-list').html("<%= escape_javascript(render( 'service_requests/protocol/service_list', service_request: @service_request, sub_service_request: @sub_service_request )) %>")
+$('.service-list').html("<%= escape_javascript(render( 'service_requests/protocol/service_list', service_request: @service_request )) %>")
 <% end %>

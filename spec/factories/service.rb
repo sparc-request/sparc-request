@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -49,7 +49,7 @@ FactoryBot.define do
     end
 
     trait :with_components do
-      components "eine,meine,mo,"
+      components {"eine,meine,mo,"}
     end
 
     trait :with_pricing_map do
@@ -63,15 +63,15 @@ FactoryBot.define do
     end
 
     trait :disabled do
-      is_available false
+      is_available {false}
     end
 
     trait :one_time_fee do
-      one_time_fee true
+      one_time_fee {true}
     end
 
     trait :per_patient_per_visit do
-      one_time_fee false
+      one_time_fee {false}
     end
 
     trait :with_questionnaires do
@@ -81,10 +81,10 @@ FactoryBot.define do
     end
 
     transient do
-      line_item_count 0
-      pricing_map_count 0
-      service_provider_count 0
-      service_relation_count 0
+      line_item_count {0}
+      pricing_map_count {0}
+      service_provider_count {0}
+      service_relation_count {0}
     end
 
     # Note that this is a before(:create) block.  This is necessary to

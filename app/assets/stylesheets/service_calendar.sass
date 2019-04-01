@@ -1,4 +1,4 @@
-/* Copyright © 2011-2018 MUSC Foundation for Research Development*/
+/* Copyright © 2011-2019 MUSC Foundation for Research Development*/
 /* All rights reserved.*/
 
 /* Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:*/
@@ -35,35 +35,6 @@
 
   .zero-cell
     color: lightgrey
-
-  .divider
-    width: 5px
-    height: auto
-    display: inline-block
-
-  button.notes
-    position: relative
-
-    &:hover
-      .note-icon
-        &.black-note
-          color: black
-        &.blue-note
-          color: blue
-
-      .badge
-        &.blue-badge
-          background-color: blue
-
-    .note-icon
-      color: grey
-      font-size: 18px
-
-    .badge
-      background-color: grey
-      position: absolute
-      top: -10px
-      left: 10px
 
   .panel-title
     width: 100%
@@ -183,9 +154,21 @@
         width: 55.1%
       td.total-costs-width-template
         width: 41.7%
-
       td
         vertical-align: middle
+      td.visit.template-visit, td.visit.billing-visit:not(.locked-visit)
+        cursor: pointer
+
+        &:hover
+          a
+            color: #22527b
+          .visit-quantity
+            box-shadow: 0 0 2px 2px #ddd
+
+        .visit-quantity
+          transform: scale(1.75)
+          cursor: pointer
+
 
       .unit-type.col-sm-6,
       .qty-type

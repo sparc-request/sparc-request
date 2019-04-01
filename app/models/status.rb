@@ -18,7 +18,12 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'rails_helper'
+class Status
+  def self.updatable?(status)
+    Setting.get_value('updatable_statuses').include?(status)
+  end
 
-RSpec.describe CatalogManager::ServicesHelper do
+  def self.complete?(status)
+    Setting.get_value('finished_statuses').include?(status)
+  end
 end

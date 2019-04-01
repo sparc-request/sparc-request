@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -49,9 +49,10 @@ RSpec.describe LineItemsController, type: :controller do
         li        = create(:line_item_without_validations, sub_service_request: ssr, quantity: 1, service: service, service_request: sr)
         li_params = { quantity: 2 }
 
+        session[:srid] = sr.id
+
         put :update, params: {
           id: li.id,
-          srid: sr.id,
           line_item: li_params
         }, xhr: true
 
@@ -67,9 +68,10 @@ RSpec.describe LineItemsController, type: :controller do
         li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
         li_params = { quantity: 2 }
 
+        session[:srid] = sr.id
+
         put :update, params: {
           id: li.id,
-          srid: sr.id,
           line_item: li_params
         }, xhr: true
 
@@ -85,9 +87,10 @@ RSpec.describe LineItemsController, type: :controller do
         li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
         li_params = { quantity: 2 }
 
+        session[:srid] = sr.id
+
         put :update, params: {
           id: li.id,
-          srid: sr.id,
           line_item: li_params
         }, xhr: true
 
@@ -103,9 +106,10 @@ RSpec.describe LineItemsController, type: :controller do
         li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
         li_params = { quantity: 2 }
 
+        session[:srid] = sr.id
+
         put :update, params: {
           id: li.id,
-          srid: sr.id,
           line_item: li_params
         }, xhr: true
 
@@ -125,9 +129,10 @@ RSpec.describe LineItemsController, type: :controller do
         li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
         li_params = { quantity: 2 }
 
+        session[:srid] = sr.id
+
         put :update, params: {
           id: li.id,
-          srid: sr.id,
           line_item: li_params
         }, xhr: true
 
@@ -145,9 +150,10 @@ RSpec.describe LineItemsController, type: :controller do
         li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
         li_params = { quantity: nil }
 
+        session[:srid] = sr.id
+
         put :update, params: {
           id: li.id,
-          srid: sr.id,
           line_item: li_params
         }, xhr: true
 
@@ -163,9 +169,10 @@ RSpec.describe LineItemsController, type: :controller do
         li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
         li_params = { quantity: nil }
 
+        session[:srid] = sr.id
+
         put :update, params: {
           id: li.id,
-          srid: sr.id,
           line_item: li_params
         }, xhr: true
 

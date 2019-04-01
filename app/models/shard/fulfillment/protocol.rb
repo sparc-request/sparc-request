@@ -18,34 +18,21 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-# config valid only for current version of Capistrano
-lock "3.11.0"
+module Shard
+  module Fulfillment
+    class Protocol < Shard::Fulfillment::Base
+      self.table_name = 'protocols'
 
-set :application, "sparc_rails"
-set :repo_url, "git@github.com:bmic-development/sparc-request.git"
-set :user, 'capistrano'
-set :use_sudo, false
+      has_many :arms
+      has_many :pppv_line_items, -> { includes(:service).where(services: { one_time_fee: false }) }
+      has_many :otf_line_items,  -> { includes(:service).where(services: { one_time_fee: true }) }
 
-set :stages, %w(testing demo demo2 staging production)
-set :default_stage, 'testing'
+      ##########################
+      ### SPARC Associations ###
+      ##########################
 
-set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
-
-set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/fulfillment_db.yml', 'config/setup_load_paths.rb', 'config/application.yml', 'config/ldap.yml', 'config/epic.yml', '.env', 'app/views/shared/_analytics.html.haml')
-
-set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'public/system', 'public/assets', 'public/images')
-
-namespace :survey do
-  desc "load/update a survey"
-  task :parse do
-    if ENV['FILE']
-      transaction do
-        run "cd #{current_path} && rake surveyor FILE=#{ENV['FILE']} RAILS_ENV=#{rails_env}"
-      end
-    else
-      raise "FILE must be specified (eg. cap survey:parse FILE=surveys/your_survey.rb)"
+      belongs_to :sparc_protocol, class_name: '::Protocol', foreign_key: :sparc_id
+      belongs_to :sparc_sub_service_request, class_name: '::SubServiceRequest', foreign_key: :sub_service_request_id
     end
   end
 end
-
-after "deploy:restart", "delayed_job:restart"

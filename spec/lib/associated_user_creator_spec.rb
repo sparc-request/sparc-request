@@ -37,14 +37,6 @@ RSpec.describe AssociatedUserCreator do
 
     end
 
-    before :each do
-      Delayed::Worker.delay_jobs = false
-    end
-
-    after :each do
-      Delayed::Worker.delay_jobs = true
-    end
-
     it "#successful? should return true" do
       creator = AssociatedUserCreator.new(@project_role_attrs, @identity)
       expect(creator.successful?).to eq(true)

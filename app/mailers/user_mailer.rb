@@ -31,8 +31,9 @@ class UserMailer < ActionMailer::Base
     send_message(t('mailer.email_title.general', email_status: "Authorized Users Update", type: "Protocol", id: @protocol.id))
   end
 
-  def notification_received(user, ssr)
+  def notification_received(user, ssr, sender)
     @send_to = [user]
+    @sender_name = sender.full_name
 
     if ssr.present?
       @ssr_id = ssr.id

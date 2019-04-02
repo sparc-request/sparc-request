@@ -1329,7 +1329,7 @@ en:
     p_id: "Protocol ID:"
     p_info: "Protocol Information"
     proxy: "SPARC Proxy Rights"
-    received: "You have received a new notification on your <a href='%{portal_root_url}/protocols/%{protocol_id}'>SPARCDashboard</a> in regard to protocol (%{protocol_id})"
+    received: "%{sender_name} sent you a new notification on your <a href='%{link}'>SPARCDashboard</a> in regard to protocol (%{protocol_id})"
     role: "Role:"
     s_name: "Sponsor Name"
     sparc_dashboard_period: "SPARCDashboard."

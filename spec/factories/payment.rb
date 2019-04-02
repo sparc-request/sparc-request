@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,13 +21,13 @@
 FactoryBot.define do
 
   factory :payment do
-    sub_service_request nil
-    amount_invoiced 100.0
-    amount_received 100.0
-    date_submitted  Date.parse('2000-01-01')
-    date_received   Date.parse('2000-01-01')
-    payment_method 'Check'
-    percent_subsidy 50.0
-    details 'details'
+    sub_service_request {nil}
+    amount_invoiced {100.0}
+    amount_received {100.0}
+    date_submitted  {Date.parse('2000-01-01')}
+    date_received   {Date.parse('2000-01-01')}
+    payment_method {'Check'}
+    percent_subsidy {50.0}
+    details {'details'}
   end
 end

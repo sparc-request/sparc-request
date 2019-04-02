@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -38,9 +38,10 @@ RSpec.describe ServiceCalendarsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
+      session[:srid] = sr.id
+
       get :merged_calendar, params: {
-        tab: 'template',
-        service_request_id: sr.id
+        tab: 'template'
       }, xhr: true
 
       expect(assigns(:tab)).to eq('template')
@@ -50,9 +51,10 @@ RSpec.describe ServiceCalendarsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
+      session[:srid] = sr.id
+
       get :merged_calendar, params: {
-        review: 'true',
-        service_request_id: sr.id
+        review: 'true'
       }, xhr: true
 
       expect(assigns(:review)).to eq(true)
@@ -62,9 +64,10 @@ RSpec.describe ServiceCalendarsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
+      session[:srid] = sr.id
+
       get :merged_calendar, params: {
-        portal: 'false',
-        service_request_id: sr.id
+        portal: 'false'
       }, xhr: true
 
       expect(assigns(:portal)).to eq(false)
@@ -74,7 +77,9 @@ RSpec.describe ServiceCalendarsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      get :merged_calendar, params: { service_request_id: sr.id }, xhr: true
+      session[:srid] = sr.id
+
+      get :merged_calendar, xhr: true
 
       expect(assigns(:merged)).to eq(true)
     end
@@ -83,7 +88,9 @@ RSpec.describe ServiceCalendarsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      get :merged_calendar, params: { service_request_id: sr.id }, xhr: true
+      session[:srid] = sr.id
+
+      get :merged_calendar, xhr: true
 
       expect(assigns(:consolidated)).to eq(false)
     end
@@ -92,7 +99,9 @@ RSpec.describe ServiceCalendarsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      get :merged_calendar, params: { service_request_id: sr.id }, xhr: true
+      session[:srid] = sr.id
+
+      get :merged_calendar, xhr: true
 
       expect(assigns(:statuses_hidden)).to eq([])
     end
@@ -103,7 +112,9 @@ RSpec.describe ServiceCalendarsController do
       arm1      = create(:arm, protocol: protocol, name: "Arm 1")
       arm2      = create(:arm, protocol: protocol, name: "Arm 2")
 
-      get :merged_calendar, params: { service_request_id: sr.id }, xhr: true
+      session[:srid] = sr.id
+
+      get :merged_calendar, xhr: true
 
       expect(assigns(:pages).count).to eq(2)
       expect(assigns(:pages)[arm1.id]).to be
@@ -115,9 +126,10 @@ RSpec.describe ServiceCalendarsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
       arm      = create(:arm, protocol: protocol, name: "Arm")
 
+      session[:srid] = sr.id
+
       get :merged_calendar, params: {
-        arm_id: arm.id,
-        service_request_id: sr.id
+        arm_id: arm.id
       }, xhr: true
 
       expect(assigns(:arm)).to eq(arm)
@@ -128,9 +140,10 @@ RSpec.describe ServiceCalendarsController do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
+        session[:srid] = sr.id
+
         get :merged_calendar, params: {
-          format: :js,
-          service_request_id: sr.id
+          format: :js
         }, xhr: true
 
         expect(controller).to render_template(:merged_calendar)
@@ -140,9 +153,10 @@ RSpec.describe ServiceCalendarsController do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
+        session[:srid] = sr.id
+
         get :merged_calendar, params: {
-          format: :js,
-          service_request_id: sr.id
+          format: :js
         }, xhr: true
 
         expect(controller).to respond_with(:ok)
@@ -154,9 +168,10 @@ RSpec.describe ServiceCalendarsController do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
+        session[:srid] = sr.id
+
         get :merged_calendar, params: {
-          format: :html,
-          service_request_id: sr.id
+          format: :html
         }, xhr: true
 
         expect(controller).to render_template(:merged_calendar)
@@ -166,9 +181,10 @@ RSpec.describe ServiceCalendarsController do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
+        session[:srid] = sr.id
+
         get :merged_calendar, params: {
-          format: :html,
-          service_request_id: sr.id
+          format: :html
         }, xhr: true
 
         expect(controller).to respond_with(:ok)

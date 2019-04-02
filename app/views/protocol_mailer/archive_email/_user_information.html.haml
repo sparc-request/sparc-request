@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development~
+-# Copyright © 2011-2019 MUSC Foundation for Research Development~
 -# All rights reserved.~
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -18,5 +18,34 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-- @protocol.service_requests.first.service_list.map{|k, v| v[:acks]}.flatten.uniq.each do |ack|
-  %p{:style => 'font-size: small;'}=ack
+%table.table{cellpadding: 3}
+  %thead
+    %tr.skinny-black-border
+      %td{:colspan => 4}
+        %strong= t(:notifier)[:u_info]
+    %tr
+      %th.skinny-black-border<
+        = t(:notifier)[:name]
+      %th.skinny-black-border<
+        = t(:notifier)[:contact_info]
+      %th.skinny-black-border<
+        = t(:notifier)[:role]
+      - if @protocol.selected_for_epic
+        %th.skinny-black-border<
+          = t(:notifier)[:epic_access]
+  %tbody
+    - @protocol.project_roles.each do |pr|
+      %tr.skinny-black-border
+        %td.skinny-black-border.center<
+          = pr.identity.full_name
+          - if @archiver == pr.identity
+            = " " + t("mailers.protocol_mailer.archive_email.#{@action}.#{@action}r")
+        %td.skinny-black-border.center<
+          = pr.identity.email
+        %td.skinny-black-border.center<
+          = pr.role.titleize
+        - if @protocol.selected_for_epic
+          %td.skinny-black-border.center<
+            = pr.epic_access == true ? t(:constants)[:yes_select] : t(:constants)[:no_select]
+%br
+%br

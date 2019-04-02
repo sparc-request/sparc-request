@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,19 +27,19 @@ FactoryBot.define do
     ip_patents               { false }
 
     trait :has_human_subjects do
-      human_subjects true
+      human_subjects {true}
     end
 
     trait :has_vertebrate_animals do
-      vertebrate_animals true
+      vertebrate_animals {true}
     end
 
     trait :has_investigational_products do
-      investigational_products true
+      investigational_products {true}
     end
 
     trait :has_ip_patents do
-      ip_patents true
+      ip_patents {true}
     end
   end
 end

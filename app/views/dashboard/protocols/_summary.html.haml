@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development~
+-# Copyright © 2011-2019 MUSC Foundation for Research Development~
 -# All rights reserved.~
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -18,10 +18,10 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 .panel.panel-primary#summary-panel
-  .panel-heading
-    %h4.panel-title.pull-left
+  .panel-heading.justify-content-between
+    %h4.panel-title
       = I18n.t('protocols.summary.header', protocol_type: protocol_type)
-    .pull-right<
+    .protocol-links-container<
       = link_to notes_path(note: { notable_id: protocol.id, notable_type: Protocol.name }), remote: true, class: 'btn btn-sm btn-default', title: t(:protocols)[:summary][:tooltips][:notes], data: { toggle: 'tooltip', placement: 'left', delay: '{"show":"500"}' } do
         = "#{protocol_type} #{t(:models)[:note][:plural]}"
         %span.badge{id: "protocol_#{protocol.id}_notes"}
@@ -30,7 +30,6 @@
         = I18n.t('protocols.view_details.button', protocol_type: protocol_type)
       = edit_protocol_button_display(protocol, (permission_to_edit || admin))
       = display_archive_button(protocol, permission_to_edit, user)
-    .clearfix
   .panel-body#protocol-summary.text-left
     - if Setting.get_value("research_master_enabled") && protocol.is_study?
       .row

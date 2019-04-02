@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -188,7 +188,7 @@ RSpec.describe 'service request list', js: true do
             # Select the service requester, say
             first_ssr.recipients.find { |li| li.text == 'Easter Bunny' }.click
             # fill in and submit notification
-            page.wait_for_new_notification_form
+            page.wait_until_new_notification_form_visible
             page.new_notification_form.instance_exec do
               subject_field.set 'Hello'
               message_field.set 'Hows it going?'
@@ -242,7 +242,7 @@ RSpec.describe 'service request list', js: true do
 
       page.service_requests.first.modify_request_button.click
 
-      expect(URI.parse(current_url).path).to eq "/service_requests/#{service_request.id}/catalog"
+      expect(URI.parse(current_url).path).to eq catalog_service_request_path
     end
 
     scenario 'user clicks "View" button' do
@@ -251,17 +251,8 @@ RSpec.describe 'service request list', js: true do
 
       page.service_requests.first.ssrs.first.view_button.click
 
-      page.wait_for_view_ssr_modal
+      page.wait_until_view_ssr_modal_visible
       expect(page).to have_view_ssr_modal
-    end
-
-    scenario 'user clicks "Edit" button' do
-      page = go_to_show_protocol(protocol.id)
-      wait_for_javascript_to_finish
-
-      page.service_requests.first.ssrs.first.edit_button.click
-
-      expect(URI.parse(current_url).path).to eq "/service_requests/#{service_request.id}/catalog"
     end
 
     scenario 'user clicks "Admin Edit" button' do

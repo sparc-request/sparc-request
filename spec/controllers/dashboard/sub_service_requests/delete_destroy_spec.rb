@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -94,7 +94,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
           it 'should notify them' do
             project_role = @protocol.project_roles.first
-            expect(Notifier).to have_received(:notify_user).with(project_role, @service_request, nil, anything, @logged_in_user, nil, false, @sub_service_request, true)
+            expect(Notifier).to have_received(:notify_user).with(project_role, @service_request, anything, @logged_in_user, nil, @sub_service_request, true)
           end
 
           it { is_expected.to render_template "dashboard/sub_service_requests/destroy" }
@@ -118,7 +118,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
           end
 
           it 'should notify them' do
-            expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @service_request, @logged_in_user, @sub_service_request, anything, true, false, false)
+            expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @service_request, @logged_in_user, @sub_service_request, anything, true, false)
           end
 
           it { is_expected.to render_template "dashboard/sub_service_requests/destroy" }
@@ -144,7 +144,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
           end
 
           it 'should notify them' do
-            expect(Notifier).to have_received(:notify_admin).with(@admin_email, @logged_in_user, @sub_service_request, anything, true, false)
+            expect(Notifier).to have_received(:notify_admin).with(@admin_email, @logged_in_user, @sub_service_request, anything, true)
           end
 
           it { is_expected.to render_template "dashboard/sub_service_requests/destroy" }

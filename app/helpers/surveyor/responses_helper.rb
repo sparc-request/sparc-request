@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -45,8 +45,16 @@ module Surveyor::ResponsesHelper
         accessible_surveys.include?(response.survey)
       end
 
+    resend_permissions =
+      if response.completed?
+        false
+      else
+        current_user.is_site_admin? || accessible_surveys.include?(response.survey)
+      end
+
     [ view_response_button(response, view_permissions),
-      edit_response_button(response, edit_permissions)
+      edit_response_button(response, edit_permissions),
+      resend_survey_button(response, resend_permissions)
     ].join('')
   end
 
@@ -55,7 +63,7 @@ module Surveyor::ResponsesHelper
       content_tag(:span, '', class: 'glyphicon glyphicon-search', aria: { hidden: 'true' }),
       response.new_record? ? '' : surveyor_response_path(response),
       remote: true,
-      class: ['btn btn-info view-response', permissions && response.completed? ? '' : 'disabled'],
+      class: ['btn btn-primary view-response', permissions && response.completed? ? '' : 'disabled'],
       title: I18n.t('surveyor.responses.tooltips.view', klass: response.survey.class.yaml_klass),
       data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}', container: 'body' }
     )
@@ -81,12 +89,16 @@ module Surveyor::ResponsesHelper
     )
   end
 
-  def download_response_button(response)
-    link_to(
-      content_tag(:span, '', class: 'glyphicon glyphicon-download-alt', aria: { hidden: 'true' }),
-      'javascript:void(0)',
-      class: 'btn btn-success download-response'
-    )
+  def resend_survey_button(response, permissions=true)
+    if @type == 'Survey'
+      link_to(
+        content_tag(:span, '', class: 'glyphicon glyphicon-share-alt', aria: { hidden: 'true'}),
+        surveyor_response_resend_survey_path(response), method: :put, remote: true,
+        class: ['btn btn-info resend-survey', permissions ? '' : 'disabled'],
+        title: I18n.t('surveyor.responses.tooltips.resend', klass: response.survey.class.yaml_klass),
+        data: { response_id: response.id, toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}', container: 'body'}
+      )
+    end
   end
 
   def dependency_classes(question, question_response)

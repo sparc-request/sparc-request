@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -30,7 +30,7 @@ RSpec.describe 'User edits a related service', js: true do
     @program      = create(:program, parent: @provider)
     @service      = create(:service, organization: @program)
     @rel_serv     = create(:service, organization: @program)
-    @relation     = create(:service_relation, service: @service, related_service: @rel_serv, required: true, linked_quantity: false)
+    @relation     = create(:service_relation, service: @service, related_service: @rel_serv, required: true)
     create(:catalog_manager, organization: @institution, identity: jug2)
 
     visit catalog_manager_catalog_index_path
@@ -52,28 +52,6 @@ RSpec.describe 'User edits a related service', js: true do
       wait_for_javascript_to_finish
 
       expect(@relation.reload.required).to eq(false)
-    end
-  end
-
-  context 'linked_quantity field' do
-    it 'should change the linked_quantity field' do
-      first('.linked_quantity').click
-      wait_for_javascript_to_finish
-
-      expect(@relation.reload.linked_quantity).to eq(true)
-    end
-  end
-
-  context 'quantity_total field' do
-    it 'should change the quantity_total field' do
-      first('.linked_quantity').click
-      wait_for_javascript_to_finish
-
-      fill_in "linked_quantity_total_#{@relation.id}", with: 100
-      first('label').click
-      wait_for_javascript_to_finish
-
-      expect(@relation.reload.linked_quantity_total).to eq(100)
     end
   end
 end

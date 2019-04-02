@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -25,13 +25,13 @@
 = hidden_field_tag :admin_filter, filterrific_params[:admin_filter]
 = hidden_field_tag :page, page
 .panel.panel-primary
-  .panel-heading
-    .pull-left
+  .panel-heading.justify-content-between
+    .protocols-header-container
       %h2.panel-title
         = t(:dashboard)[:protocols][:table][:header]
       = page_entries_info protocols, {model: "Protocol"}
       = render_filterrific_spinner
-    .pull-right
+    .protocol-links-container
       = link_to t(:dashboard)[:protocols][:table][:export], dashboard_protocols_path(:format => :csv, :filterrific => @filterrific.to_hash), class: 'btn btn-success',
         data: { toggle: 'tooltip', placement: 'left', delay: '{"show":"500"}' },
         title: t(:dashboard)[:protocols][:table][:tooltips][:export]
@@ -45,7 +45,6 @@
             = link_to t(:dashboard)[:protocols][:table][:new_study], new_dashboard_protocol_path(protocol_type: 'study')
           %li
             = link_to t(:dashboard)[:protocols][:table][:new_project], new_dashboard_protocol_path(protocol_type: 'project')
-    .clearfix
   %table.table.table-hover
     %tr
       %th.col-sm-2

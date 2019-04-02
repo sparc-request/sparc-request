@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -81,7 +81,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     ##########
     # Step 1 #
     ##########
-    visit "/"
+    visit root_path
     wait_for_javascript_to_finish
 
     expect(page).to have_selector('.step-header', text: 'STEP 1')
@@ -196,7 +196,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     wait_for_javascript_to_finish
 
     click_button 'Save'
-    wait_for_page(protocol_service_request_path(ServiceRequest.first.id))
+    wait_for_page(protocol_service_request_path)
 
     click_link 'Save and Continue'
     wait_for_javascript_to_finish

@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -34,7 +34,8 @@ RSpec.describe 'User should see notes', js: true do
     ssr           = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                     create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
                     create(:arm, protocol: @protocol, visit_count: 1)
-    visit document_management_service_request_path(@sr)
+
+    visit document_management_service_request_path(srid: @sr.id)
     wait_for_javascript_to_finish
   end
 

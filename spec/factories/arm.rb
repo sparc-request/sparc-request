@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,8 +27,8 @@ FactoryBot.define do
     minimum_visit_count   { 0 }
 
     transient do
-      line_item_count   0
-      service_request   nil
+      line_item_count {0}
+      service_request {nil}
     end
 
     trait :without_validations do

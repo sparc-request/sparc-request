@@ -26,8 +26,8 @@ FactoryBot.define do
     end
 
     transient do
-      body nil
-      message_created_at nil
+      body {nil}
+      message_created_at {nil}
     end
 
     after(:build) do |notification, evaluator|

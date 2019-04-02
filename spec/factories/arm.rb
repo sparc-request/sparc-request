@@ -27,8 +27,8 @@ FactoryBot.define do
     minimum_visit_count   { 0 }
 
     transient do
-      line_item_count   0
-      service_request   nil
+      line_item_count {0}
+      service_request {nil}
     end
 
     trait :without_validations do

@@ -20,14 +20,14 @@
 
 FactoryBot.define do
   factory :question do
-    section       nil
+    section       { nil }
     is_dependent  { false }
     content       { Faker::Lorem.sentence(4) }
     question_type { 'text' }
     required      { false }
 
     transient do
-      option_count 0
+      option_count {0}
     end
 
     after(:create) do |question, evaluator|
@@ -44,7 +44,7 @@ FactoryBot.define do
     end
 
     trait :required do
-      required true
+      required {true}
     end
 
     factory :question_without_validations, traits: [:without_validations]

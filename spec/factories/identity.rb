@@ -36,20 +36,20 @@ FactoryBot.define do
     credentials           { Faker::Name.suffix }
     subspecialty          { Faker::Lorem.word }
     phone                 { Faker::PhoneNumber.phone_number }
-    password              "abc123456789!"
-    password_confirmation "abc123456789!"
+    password              {"abc123456789!"}
+    password_confirmation {"abc123456789!"}
 
 
     created_at       { 1.day.ago }
     updated_at       { Time.now }
 
     transient do
-      catalog_manager_count 0
-      super_user_count 0
-      approval_count 0
-      project_role_count 0
-      service_provider_count 0
-      protocol_filter_count 0
+      catalog_manager_count {0}
+      super_user_count {0}
+      approval_count {0}
+      project_role_count {0}
+      service_provider_count {0}
+      protocol_filter_count {0}
     end
 
     trait :without_validations do

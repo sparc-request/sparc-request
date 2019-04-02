@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -40,7 +40,7 @@
             .col-sm-7= f.text_field :max_dollar_cap, {value: number_with_precision(subsidy_map.max_dollar_cap, precision: 2), class: 'form-control'}
           .form-group
             = f.label :excluded_funding_sources, t(:catalog_manager)[:organization_form][:pricing][:excluded_funding_sources], class: 'col-sm-4 control-label'
-            .col-sm-7= f.select :excluded_funding_sources, options_for_select(PermissibleValue.order(:sort_order).get_inverted_hash('funding_source'), subsidy_map.excluded_funding_sources.map(&:funding_source)), {}, class: 'form-control selectpicker', multiple: true
+            .col-sm-7= f.select :excluded_funding_sources, options_for_select(PermissibleValue.get_inverted_hash('funding_source'), subsidy_map.excluded_funding_sources.map(&:funding_source)), {}, class: 'form-control selectpicker', multiple: true
           .form-group
             = f.label :instructions, t(:catalog_manager)[:organization_form][:pricing][:instructions], class: 'col-sm-4 control-label'
             .col-sm-7= f.text_field :instructions, {class: 'form-control'}

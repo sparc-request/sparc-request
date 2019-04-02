@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -76,7 +76,7 @@ RSpec.describe EpicInterface do
   build_study_type_question_groups
 
   let!(:study) {
-    human_subjects_info = build(:human_subjects_info, pro_number: nil, hr_number: nil)
+    human_subjects_info = build(:human_subjects_info, pro_number: nil)
     investigational_products_info = build(:investigational_products_info, inv_device_number: nil)
     study = build(:study, human_subjects_info: human_subjects_info, investigational_products_info: investigational_products_info, study_type_question_group_id: study_type_question_group_version_3.id)
     study.save(validate: false)
@@ -364,33 +364,6 @@ RSpec.describe EpicInterface do
       expect(node[0]).to be_equivalent_to(expected.root)
     end
 
-    it 'should emit a subjectOf for an hr number' do
-      study.human_subjects_info.update_attributes(hr_number: '5678')
-
-      epic_interface.send_study_creation(study)
-
-      xml = <<-END
-        <subjectOf typeCode="SUBJ"
-                   xmlns='urn:hl7-org:v3'
-                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
-          <studyCharacteristic classCode="OBS" moodCode="EVN">
-            <code code="IRB" />
-            <value value="5678" />
-          </studyCharacteristic>
-        </subjectOf>
-      END
-
-      expected = Nokogiri::XML(xml)
-
-      node = epic_received[0].xpath(
-          '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
-          'env' => 'http://www.w3.org/2003/05/soap-envelope',
-          'rpe' => 'urn:ihe:qrph:rpe:2009',
-          'hl7' => 'urn:hl7-org:v3')
-
-      expect(node[0]).to be_equivalent_to(expected.root)
-    end
-
     it 'should emit a subjectOf for an nct number' do
       study.human_subjects_info.update_attributes(nct_number: '12345678')
       study.research_types_info.update_attributes(human_subjects: true)
@@ -446,33 +419,6 @@ RSpec.describe EpicInterface do
       expect(node[1]).to be_equivalent_to(expected.root)
     end
 
-    it 'should emit a subjectOf for a pro number if the study has both a pro number and an hr number' do
-      study.human_subjects_info.update_attributes(pro_number: '1234')
-      study.human_subjects_info.update_attributes(hr_number: '5678')
-
-      epic_interface.send_study_creation(study)
-
-      xml = <<-END
-        <subjectOf typeCode="SUBJ"
-                   xmlns='urn:hl7-org:v3'
-                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
-          <studyCharacteristic classCode="OBS" moodCode="EVN">
-            <code code="IRB" />
-            <value value="1234" />
-          </studyCharacteristic>
-        </subjectOf>
-      END
-
-      expected = Nokogiri::XML(xml)
-
-      node = epic_received[0].xpath(
-          '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
-          'env' => 'http://www.w3.org/2003/05/soap-envelope',
-          'rpe' => 'urn:ihe:qrph:rpe:2009',
-          'hl7' => 'urn:hl7-org:v3')
-
-      expect(node[0]).to be_equivalent_to(expected.root)
-    end
     describe 'emitting a subjectOf for an version 1 study type' do
 
       before :each do

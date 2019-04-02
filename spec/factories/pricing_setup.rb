@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -39,7 +39,7 @@ FactoryBot.define do
     sequence(:effective_date)   {|n| Date.parse('2000-01-01') + n}
 
     trait :charge_master do
-      charge_master true
+      charge_master {true}
     end
 
     trait :without_validations do

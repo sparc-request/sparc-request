@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,11 +19,10 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .panel.panel-default
-  .panel-heading
+  .panel-heading.flex-column
     %h4.panel-title
       = t(:protocols)[:studies][:information][:header]
-    .sub_text
-      = t(:protocols)[:studies][:information][:subtext]
+    = t(:protocols)[:studies][:information][:subtext]
   .panel-body.container-fluid
     - if Setting.get_value("research_master_enabled")
       .form-group.row
@@ -67,7 +66,7 @@
         title: t(:protocols)[:tooltips][:funding_status]
       .col-lg-10
         = form.select :funding_status,
-          options_for_select(PermissibleValue.order(:sort_order).get_inverted_hash('funding_status'), protocol.funding_status),
+          options_for_select(PermissibleValue.get_inverted_hash('funding_status'), protocol.funding_status),
           { include_blank: t(:protocols)[:prompts][:status] },
           class: 'selectpicker study'
 
@@ -79,7 +78,7 @@
         title: t(:protocols)[:tooltips][:funding_source]
       .col-lg-10
         = form.select :funding_source,
-          options_for_select(PermissibleValue.order(:sort_order).get_inverted_hash('funding_source'), protocol.funding_source),
+          options_for_select(PermissibleValue.get_inverted_hash('funding_source'), protocol.funding_source),
           { include_blank: t(:protocols)[:prompts][:source] },
           class: 'selectpicker'
 
@@ -91,7 +90,7 @@
         title: t(:protocols)[:tooltips][:potential_funding_source]
       .col-lg-10
         = form.select :potential_funding_source,
-          options_for_select(PermissibleValue.order(:sort_order).get_inverted_hash('potential_funding_source'), protocol.potential_funding_source),
+          options_for_select(PermissibleValue.get_inverted_hash('potential_funding_source'), protocol.potential_funding_source),
           { include_blank: t(:protocols)[:prompts][:potential_source] },
           class: 'selectpicker'
 
@@ -111,12 +110,12 @@
       .form-group.row
         = form.label :federal_grant_code_id, t(:protocols)[:studies][:information][:funding_source_federal][:code], class: 'col-lg-2 control-label'
         .col-lg-10
-          = form.select :federal_grant_code_id, options_for_select(PermissibleValue.order(:sort_order).get_inverted_hash('federal_grant_code'), protocol.federal_grant_code_id), { include_blank: t(:study_form)[:code_blank] }, class: 'selectpicker'
+          = form.select :federal_grant_code_id, options_for_select(PermissibleValue.get_inverted_hash('federal_grant_code'), protocol.federal_grant_code_id), { include_blank: t(:study_form)[:code_blank] }, class: 'selectpicker'
 
       .form-group.row
         = form.label :federal_phs_sponsor, t(:protocols)[:studies][:information][:funding_source_federal][:phs_sponsor], class: 'col-lg-2 control-label'
         .col-lg-10
-          = form.select :federal_phs_sponsor, options_for_select(PermissibleValue.order(:sort_order).get_inverted_hash('federal_grant_phs_sponsor'), protocol.federal_phs_sponsor), { include_blank: t(:protocols)[:prompts][:federal_sponsor] }, class: 'selectpicker'
+          = form.select :federal_phs_sponsor, options_for_select(PermissibleValue.get_inverted_hash('federal_grant_phs_sponsor'), protocol.federal_phs_sponsor), { include_blank: t(:protocols)[:prompts][:federal_sponsor] }, class: 'selectpicker'
 
       .row
         %label.col-lg-2
@@ -126,7 +125,7 @@
       .form-group.row#federal-non-phs
         = form.label :federal_non_phs_sponsor, t(:protocols)[:studies][:information][:funding_source_federal][:non_phs_sponsor], class: 'col-lg-2 control-label'
         .col-lg-10
-          = form.select :federal_non_phs_sponsor, options_for_select(PermissibleValue.order(:sort_order).get_inverted_hash('federal_grant_non_phs_sponsor'), protocol.federal_non_phs_sponsor), { include_blank: t(:protocols)[:prompts][:federal_sponsor] }, class: 'selectpicker'
+          = form.select :federal_non_phs_sponsor, options_for_select(PermissibleValue.get_inverted_hash('federal_grant_non_phs_sponsor'), protocol.federal_non_phs_sponsor), { include_blank: t(:protocols)[:prompts][:federal_sponsor] }, class: 'selectpicker'
 
       .form-group.row
         = form.label :federal_grant_serial_number, t(:protocols)[:studies][:information][:funding_source_federal][:serial_number], class: 'col-lg-2 control-label'

@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,9 +18,8 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.panel.panel-info
-  .panel-heading
-    %h4.text-primary
-      = link_to 'javascript:void(0)', class: 'edit_pricing_setup_link', data: {pricing_setup_id: pricing_setup.id} do
-        %span.glyphicon.glyphicon-edit
-      = "Pricing Setup: Effective on #{pricing_setup.effective_date.to_date.strftime('%-m/%d/%Y')} -  Display on #{pricing_setup.display_date.to_date.strftime('%-m/%d/%Y')}"
+.alert.alert-info
+  %h4.no-margin
+    = link_to 'javascript:void(0)', class: 'edit_pricing_setup_link', data: {pricing_setup_id: pricing_setup.id} do
+      %span.glyphicon.glyphicon-edit
+    = "Pricing Setup: Effective on #{pricing_setup.effective_date.to_date.strftime('%-m/%d/%Y')} -  Display on #{pricing_setup.display_date.to_date.strftime('%-m/%d/%Y')}"

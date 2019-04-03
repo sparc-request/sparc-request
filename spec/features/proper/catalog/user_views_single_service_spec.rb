@@ -20,52 +20,40 @@
 
 require 'rails_helper'
 
-RSpec.feature 'User wants to edit a document', js: true do
-  let!(:logged_in_user) { create(:identity, last_name: "Doe", first_name: "John", ldap_uid: "johnd", email: "johnd@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
-
-  fake_login_for_each_test("johnd")
+RSpec.describe 'User view single service landing page', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
 
   before :each do
-    @protocol = create(:unarchived_study_without_validations, primary_pi: logged_in_user)
-                create(:document, protocol: @protocol, doc_type: 'Protocol')
-
-    @page = Dashboard::Protocols::ShowPage.new
-    @page.load(id: @protocol.id)
-    wait_for_javascript_to_finish
+    institution = create(:institution, name: "Institution")
+    provider    = create(:provider, name: "Provider", parent: institution)
+    @program    = create(:program, name: "Program", parent: provider, process_ssrs: true, pricing_setup_count: 1)
   end
 
-  context 'and clicks the Edit button' do
+  context 'under a program' do
     before :each do
-      @page.documents.first.enabled_edit_button.click
-      wait_for_javascript_to_finish
+      @service = create(:service, name: "Service", abbreviation: "Service", organization: @program, pricing_map_count: 1)
+
+      visit root_path(service_id: @service.id)
     end
 
-    scenario 'and sees the document modal' do
-      expect(@page).to have_document_modal
-    end
-
-    context 'and edits a field and submits' do
-      before :each do
-        edit_document_fields
-        wait_for_javascript_to_finish
-      end
-
-      scenario 'and sees the updated document' do
-        wait_for_javascript_to_finish
-        expect(@page).to have_documents(text: 'Consent')
-      end
+    it 'should show the service' do
+      expect(page).to have_selector("#service#{@service.id}", visible: false)
+      expect(page).to have_content(@service.name)
     end
   end
 
-  def edit_document_fields
-    @page.document_modal.instance_exec do
-      doc_type_dropdown.click
-      wait_until_dropdown_choices_visible
-      dropdown_choices(text: 'Consent').first.click
+  context 'under a core' do
+    before :each do
+      @core     = create(:core, name: 'Core', parent: @program)
+      @service  = create(:service, name: "Service", abbreviation: "Service", organization: @core, pricing_map_count: 1)
+
+      visit root_path(service_id: @service.id)
     end
 
-    attach_file 'document_document', File.expand_path('spec/fixtures/files/text_document.txt')
-
-    @page.document_modal.upload_button.click
+    it 'should show the service' do
+      expect(page).to have_selector("#service#{@service.id}", visible: false)
+      expect(page).to have_content(@service.name)
+    end
   end
 end

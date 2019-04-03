@@ -31,6 +31,12 @@ class Arm < ApplicationRecord
   has_many :sub_service_requests, through: :line_items
   has_many :visits, :through => :line_items_visits
 
+  ########################
+  ### CWF Associations ###
+  ########################
+
+  has_many :fulfillment_arms, class_name: 'Shard::Fulfillment::Arm', foreign_key: :sparc_id
+
   after_create :create_calendar_objects, if: Proc.new { |arm| arm.protocol.present? }
   after_update :update_visit_groups
   after_update :update_liv_subject_counts

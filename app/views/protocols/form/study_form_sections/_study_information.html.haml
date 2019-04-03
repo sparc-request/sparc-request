@@ -19,11 +19,10 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .panel.panel-default
-  .panel-heading
+  .panel-heading.flex-column
     %h4.panel-title
       = t(:protocols)[:studies][:information][:header]
-    .sub_text
-      = t(:protocols)[:studies][:information][:subtext]
+    = t(:protocols)[:studies][:information][:subtext]
   .panel-body.container-fluid
     - if Setting.get_value("research_master_enabled")
       .form-group.row

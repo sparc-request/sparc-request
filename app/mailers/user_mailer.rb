@@ -21,16 +21,14 @@
 class UserMailer < ActionMailer::Base
   default :from => Setting.get_value("no_reply_from")
 
-  def authorized_user_changed(protocol, recipients, modified_roles, action)
+  def authorized_user_changed(protocol, recipient, modified_roles, action)
     @protocol         = protocol
     @modified_roles   = modified_roles
     @action           = action
     @protocol_link    = dashboard_protocol_url(@protocol)
     @service_request  = @protocol.service_requests.first
 
-    recipients.each do |recipient|
-      send_email(recipient, t('mailer.email_title.general', email_status: "Authorized Users Update", type: "Protocol", id: @protocol.id))
-    end
+    send_email(recipient, t('mailer.email_title.general', email_status: "Authorized Users Update", type: "Protocol", id: @protocol.id))
   end
 
   def notification_received(user, ssr)

@@ -17,16 +17,10 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.service-list
-  .page-header
-    %h3
-      = t(:proper)[:protocol][:review_services_notice]
-      %small
-        = t(:proper)[:protocol][:review_services_instructions]
-  - service_request.service_list.each do |key, value|
-    .panel.panel-primary.sub-service-request-review
-      .panel-heading
-        %h1.panel-title
-          = value[:name]
-      .panel-body
-        = render 'catalogs/accordion/services', services: Service.where(id: value[:line_items].map(&:service_id))
+
+= hidden_field_tag "filterrific[with_survey][]"
+%select.form-control.selectpicker.survey-select{ id: 'filterrific_with_survey', name: 'filterrific[with_survey][]', multiple: true, data: { hide_disabled: 'true', live_search: 'true' } }
+  - surveys.order(:title).group_by(&:title).each do |title, surveys|
+    %optgroup{ label: title }
+      - surveys.each do |survey|
+        %option{ value: survey.id, disabled: filterrific.with_state && filterrific.with_state.length > 1 && !filterrific.with_state.include?(survey.active ? 1 : 0), selected: filterrific.with_survey && filterrific.with_survey.include?(survey.id), data: { active: survey.active ? '1' : '0', content: "<span class='hidden'>#{survey.title}</span><span>Version #{survey.version} (#{I18n.t(:surveyor)[:response_filters][:fields][:state_filters][survey.active ? :active : :inactive]})</span>" } }

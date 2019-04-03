@@ -29,7 +29,7 @@
     - if organization.type == "Program"
       - if organization.services.any?
         .program-services
-          = render 'catalogs/accordion/services', services: organization.services.eager_load(:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]).select{ |serv| serv.is_available != false && serv.current_pricing_map }, service_request: service_request
+          = render 'catalogs/accordion/services', services: organization.services, service_request: service_request
 
       - if organization.cores.any?
-        = render 'catalogs/accordion/cores', program: organization, cores: organization.cores.eager_load(services: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]), service_request: service_request, locked_ids: locked_org_ids
+        = render 'catalogs/accordion/cores', program: organization, cores: organization.cores, service_request: service_request, locked_ids: locked_org_ids

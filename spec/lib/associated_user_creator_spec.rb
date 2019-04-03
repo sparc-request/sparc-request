@@ -21,6 +21,14 @@
 require "rails_helper"
 
 RSpec.describe AssociatedUserCreator do
+  before :each do
+    Delayed::Worker.delay_jobs = false
+  end
+
+  after :each do
+    Delayed::Worker.delay_jobs = true
+  end
+
   context "params[:project_role] describes a valid ProjectRole" do
     before(:each) do
       @identity = create(:identity)
@@ -60,7 +68,7 @@ RSpec.describe AssociatedUserCreator do
         end
 
         AssociatedUserCreator.new(@project_role_attrs, @identity)
-        expect(UserMailer).to have_received(:authorized_user_changed)
+        expect(UserMailer).to have_received(:authorized_user_changed).twice
       end
     end
 

@@ -20,6 +20,14 @@
 require 'rails_helper'
 
 RSpec.describe Protocol, type: :model do
+  before :each do
+    Delayed::Worker.delay_jobs = false
+  end
+
+  after :each do
+    Delayed::Worker.delay_jobs = true
+  end
+
   describe "#email_about_change_in_authorized_user" do
     context "send_authorized_user_emails is true and sr was previously submitted" do
       it "should send authorized user email" do
@@ -30,14 +38,14 @@ RSpec.describe Protocol, type: :model do
         create(:project_role_with_identity, protocol: @protocol1)
         modified_role = create(:project_role_with_identity, protocol: @protocol1)
 
-        allow(UserMailer).to receive(:authorized_user_changed) do
+        allow(UserMailer).to receive(:authorized_user_changed).twice do
           mailer = double("mailer")
           expect(mailer).to receive(:deliver)
           mailer
         end
 
         @protocol1.email_about_change_in_authorized_user([modified_role], 'destroy')
-        expect(UserMailer).to have_received(:authorized_user_changed)
+        expect(UserMailer).to have_received(:authorized_user_changed).twice
       end
     end
 

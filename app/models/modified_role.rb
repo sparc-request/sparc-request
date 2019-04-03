@@ -18,11 +18,26 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#per_patient_services").html("<%= j render 'dashboard/sub_service_requests/per_patient_per_visit', sub_service_request: @sub_service_request, service_request: @service_request %>")
-$("#sub_service_request_header").html("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request %>")
-$("#subsidy_information").html("<%= j render 'dashboard/subsidies/subsidy', sub_service_request: @sub_service_request, admin: true %>")
-$(".selectpicker").selectpicker()
-$("#modal_place").modal('hide')
-$("#flashes_container").html("<%= j render 'shared/flash' %>")
+# This is a wrapper structure to hold Project Role information 
+# to avoid persistence issues within delayed jobs
 
-refresh_study_schedule()
+class ModifiedRole
+
+  attr_accessor *ProjectRole.column_names
+
+  def initialize(project_role_attrs)
+    project_role_attrs.each{ |attr, value| instance_variable_set("@#{attr}", value) }
+  end
+
+  def identity
+    Identity.find(@identity_id)
+  end
+
+  def display_rights
+    case @project_rights
+    when "none"    then "Member Only"
+    when "view"    then "View Rights"
+    when "approve" then "Authorize/Change Study Charges"
+    end
+  end
+end

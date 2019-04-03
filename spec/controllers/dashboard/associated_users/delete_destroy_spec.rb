@@ -21,6 +21,14 @@
 require 'rails_helper'
 
 RSpec.describe Dashboard::AssociatedUsersController do
+  before :each do
+    Delayed::Worker.delay_jobs = false
+  end
+
+  after :each do
+    Delayed::Worker.delay_jobs = true
+  end
+
   describe 'DELETE destroy' do
     context "when not authorized" do
       before :each do
@@ -121,7 +129,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
         it 'should email authorized user' do
           delete :destroy, params: { id: @protocol_role.id }, xhr: true
-          expect(UserMailer).to have_received(:authorized_user_changed)
+          expect(UserMailer).to have_received(:authorized_user_changed).twice
         end
 
         it 'should render appropriate template' do

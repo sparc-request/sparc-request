@@ -33,6 +33,9 @@ en:
     complete: "Complete"
     continue: "Continue"
     copy: "Copy"
+    copy_clipboard:
+      action: "Copy to Clipboard"
+      complete: "Text successfully copied to your clipboard"
     create: "Create"
     delete: "Delete"
     delete_selected: "Delete Selected"

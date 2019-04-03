@@ -32,6 +32,7 @@ class ServiceRequestsController < ApplicationController
   before_action :authorize_identity,              except: [:approve_changes, :get_help, :feedback, :show]
   before_action :authenticate_identity!,          except: [:catalog, :add_service, :remove_service, :get_help, :feedback]
   before_action :find_locked_org_ids,             only:   [:catalog]
+  before_action :find_service,                    only:   [:catalog]
 
   def show
     @protocol = @service_request.protocol
@@ -58,13 +59,6 @@ class ServiceRequestsController < ApplicationController
 
   def catalog
     @institutions = Institution.all
-
-    if params[:service_id]
-      @service  = Service.find(params[:service_id])
-      @provider = @service.provider
-      @program  = @service.program
-      @core     = @service.core
-    end
 
     setup_catalog_calendar
     setup_catalog_news_feed
@@ -411,6 +405,17 @@ class ServiceRequestsController < ApplicationController
       return false
     else
       return true
+    end
+  end
+
+  def find_service
+    if params[:service_id]
+      @service  = Service.find(params[:service_id])
+      @provider = @service.provider
+      @program  = @service.program
+      @core     = @service.core
+
+      redirect_to catalog_service_request_path unless @service.is_available?
     end
   end
 end

@@ -23,9 +23,9 @@
     %span.glyphicon.glyphicon-search.form-control-feedback.text-primary{ aria: { hidden: true } }
   #welcome-message
     - if organization
-      = render 'catalogs/description', organization: organization, service_request: service_request, from_portal: from_portal
+      = render 'catalogs/description', organization: organization, service_request: service_request, locked_org_ids: locked_org_ids
     - elsif @service
-      = render 'catalogs/description', organization: @program, service_request: service_request, from_portal: from_portal
+      = render 'catalogs/description', organization: @program, service_request: service_request, locked_org_ids: locked_org_ids
     - else
       = render 'catalogs/welcome'
   #calendar-blog.full

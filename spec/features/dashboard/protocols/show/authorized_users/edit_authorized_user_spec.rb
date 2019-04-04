@@ -248,7 +248,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
   def when_i_set_the_role_to(role)
     @page.authorized_user_modal.instance_exec do
       role_dropdown.click
-      wait_for_dropdown_choices
+      wait_until_dropdown_choices_visible
       dropdown_choices(text: /\A#{role}\Z/).first.click
       wait_until_dropdown_choices_invisible
     end
@@ -257,7 +257,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
   def when_i_set_the_credentials_to(credentials)
     @page.authorized_user_modal.instance_exec do
       credentials_dropdown.click
-      wait_for_dropdown_choices
+      wait_until_dropdown_choices_visible
       dropdown_choices(text: /\A#{credentials}\Z/).first.click
       wait_until_dropdown_choices_invisible
     end

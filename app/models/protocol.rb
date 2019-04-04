@@ -51,6 +51,9 @@ class Protocol < ApplicationRecord
   has_many :identities,                   through: :project_roles
   has_many :services,                     through: :service_requests
   has_many :line_items,                   through: :service_requests
+  has_many :line_items_visits,            through: :arms
+  has_many :visit_groups,                 through: :arms
+  has_many :visits,                       through: :arms
   has_many :organizations,                through: :sub_service_requests
   has_many :study_type_questions,         through: :study_type_question_group
   has_many :responses,                    through: :sub_service_requests
@@ -64,6 +67,11 @@ class Protocol < ApplicationRecord
   has_many :coordinators, -> { where(project_roles: { role: 'research-assistant-coordinator' }) },
     source: :identity, through: :project_roles
 
+  ########################
+  ### CWF Associations ###
+  ########################
+
+  has_many :fulfillment_protocols, class_name: 'Shard::Fulfillment::Protocol', foreign_key: :sparc_id
 
   validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
   validates :research_master_id, presence: true, if: :rmid_requires_validation?
@@ -396,7 +404,7 @@ class Protocol < ApplicationRecord
     if Setting.get_value("send_authorized_user_emails") && self.service_requests.any?(&:previously_submitted?)
       alert_users = Identity.where(id: (self.emailed_associated_users + modified_roles.reject{ |pr| pr.project_rights == 'none' }).map(&:identity_id))
 
-      UserMailer.delay.authorized_user_changed(self, alert_users, modified_roles, action)
+      UserMailer.authorized_user_changed(self, alert_users, modified_roles, action).deliver
     end
   end
 

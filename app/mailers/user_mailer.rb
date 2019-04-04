@@ -21,18 +21,19 @@
 class UserMailer < ActionMailer::Base
   default :from => Setting.get_value("no_reply_from")
 
-  def authorized_user_changed(protocol, send_to, modified_roles, action)
-    @protocol       = protocol
-    @send_to        = send_to
-    @modified_roles = modified_roles
-    @action         = action
-    @protocol_link  = Setting.get_value("dashboard_link") + "/protocols/#{@protocol.id}"
+  def authorized_user_changed(protocol, recipients, modified_roles, action)
+    @protocol         = protocol
+    @modified_roles   = modified_roles
+    @action           = action
+    @protocol_link    = dashboard_protocol_url(@protocol)
+    @service_request  = @protocol.service_requests.first
 
-    send_message(t('mailer.email_title.general', email_status: "Authorized Users Update", type: "Protocol", id: @protocol.id))
+    recipients.each do |recipient|
+      send_email(recipient, t('mailer.email_title.general', email_status: "Authorized Users Update", type: "Protocol", id: @protocol.id))
+    end
   end
 
   def notification_received(user, ssr, sender)
-    @send_to = [user]
     @sender_name = sender.full_name
 
     if ssr.present?
@@ -41,14 +42,14 @@ class UserMailer < ActionMailer::Base
       @is_service_provider = user.is_service_provider?(ssr)
     end
 
-    send_message("#{t(:mailer)[:email_title][:new]} #{t('mailer.email_title.general_dashboard', email_status: 'Notification', type: 'Protocol', id: ssr.protocol.id)}")
+    send_email(user, "#{t(:mailer)[:email_title][:new]} #{t('mailer.email_title.general_dashboard', email_status: 'Notification', type: 'Protocol', id: ssr.protocol.id)}")
   end
 
   private
 
-  def send_message(subject)
-    email = @send_to.map(&:email).join(',')
+  def send_email(recipient, subject)
+    @send_to = recipient
 
-    mail(to: email, subject: subject)
+    mail(to: recipient.email, subject: subject)
   end
 end

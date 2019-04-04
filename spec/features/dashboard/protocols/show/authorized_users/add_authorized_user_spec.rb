@@ -163,7 +163,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
             # try to add same user again
             given_i_have_clicked_the_add_authorized_user_button
-            when_i_select_a_user_from_the_search
+            when_i_select_a_duplicate_user_from_the_search
             then_i_should_see_an_error_of_type 'user already added'
           end
         end
@@ -225,17 +225,25 @@ RSpec.feature 'User wants to add an authorized user', js: true do
   def when_i_select_a_user_from_the_search(user='Jane Doe')
     @page.authorized_user_modal.instance_exec do
       select_user_field.set(user)
-      wait_for_user_choices
+      wait_until_user_choices_visible
       user_choices(text: user).first.click
       # wait for a field to appear to indicate that user search completed
-      wait_for_credentials_dropdown
+      wait_until_credentials_dropdown_visible
+    end
+  end
+
+  def when_i_select_a_duplicate_user_from_the_search(user='Jane Doe')
+    @page.authorized_user_modal.instance_exec do
+      select_user_field.set(user)
+      wait_until_user_choices_visible
+      user_choices(text: user).first.click
     end
   end
 
   def when_i_set_the_role_to(role)
     @page.authorized_user_modal.instance_exec do
       role_dropdown.click
-      wait_for_dropdown_choices
+      wait_until_dropdown_choices_visible
       dropdown_choices(text: /\A#{role}\Z/).first.click
       wait_until_dropdown_choices_invisible
     end
@@ -244,7 +252,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
   def when_i_set_the_credentials_to(credentials)
     @page.authorized_user_modal.instance_exec do
       credentials_dropdown.click
-      wait_for_dropdown_choices
+      wait_until_dropdown_choices_visible
       dropdown_choices(text: /\A#{credentials}\Z/).first.click
       wait_until_dropdown_choices_invisible
     end

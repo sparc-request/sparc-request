@@ -31,13 +31,16 @@ class UserMailer < ActionMailer::Base
     send_email(recipient, t('mailer.email_title.general', email_status: "Authorized Users Update", type: "Protocol", id: @protocol.id))
   end
 
-  def notification_received(user, ssr)
+  def notification_received(user, ssr, sender)
+    @sender_name = sender.full_name
+
     if ssr.present?
       @ssr_id = ssr.id
+      @protocol_id = ssr.protocol_id
       @is_service_provider = user.is_service_provider?(ssr)
     end
 
-    send_email(user, "#{t(:mailer)[:email_title][:new]} #{t('mailer.email_title.general', email_status: 'Notification', type: 'Protocol', id: ssr.protocol.id)}")
+    send_email(user, "#{t(:mailer)[:email_title][:new]} #{t('mailer.email_title.general_dashboard', email_status: 'Notification', type: 'Protocol', id: ssr.protocol.id)}")
   end
 
   private

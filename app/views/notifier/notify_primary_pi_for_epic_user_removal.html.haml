@@ -42,7 +42,7 @@
 
 %br
 
-= raw t('mailer.issue_contact', department_name: Setting.get_value('contact_us_department'), phone: Setting.get_value('contact_us_phone'), email: Setting.get_value('contact_us_mail_to'))
+= render 'issue_contact'
 
 :scss
   table, th, td {
@@ -53,4 +53,3 @@
       padding: 1px 5px;
     }
   }
-

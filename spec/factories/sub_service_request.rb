@@ -22,8 +22,8 @@ FactoryBot.define do
   factory :sub_service_request do
     service_requester_id { Random.rand(1000) }
     sequence(:ssr_id) { |n| "000#{n}" }
-    status "draft"
-    imported_to_fulfillment true
+    status {"draft"}
+    imported_to_fulfillment {true}
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }
@@ -36,13 +36,13 @@ FactoryBot.define do
     end
 
     trait :submitted do
-      status        'submitted'
-      submitted_at  Time.now
+      status        {'submitted'}
+      submitted_at  {Time.now}
     end
 
     transient do
-      line_item_count 0
-      past_status_count 0
+      line_item_count {0}
+      past_status_count {0}
     end
 
     after(:build) do |sub_service_request, evaluator|
@@ -54,7 +54,7 @@ FactoryBot.define do
     end
 
     trait :in_cwf do
-      in_work_fulfillment true
+      in_work_fulfillment {true}
     end
 
     trait :with_subsidy do

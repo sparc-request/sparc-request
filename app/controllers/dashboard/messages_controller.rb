@@ -42,7 +42,7 @@ class Dashboard::MessagesController < Dashboard::BaseController
       @recipient = @message.recipient
       @notification.set_read_by(@recipient, false)
 
-      UserMailer.notification_received(@recipient, @notification.sub_service_request).deliver unless @recipient.email.blank?
+      UserMailer.notification_received(@recipient, @notification.sub_service_request, @user).deliver unless @recipient.email.blank?
     end
     @messages = @notification.messages
   end

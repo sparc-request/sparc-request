@@ -109,7 +109,7 @@ class AssociatedUsersController < ApplicationController
   def destroy
     @epic_access = @protocol_roles.any?(&:epic_access)
     @protocol_roles.each{ |pr| EpicQueueManager.new(@protocol, current_user, pr).create_epic_queue }
-    Notifier.delay.notify_primary_pi_for_epic_user_removal(@protocol, @protocol_roles) if is_epic?
+    Notifier.notify_primary_pi_for_epic_user_removal(@protocol, @protocol_roles).deliver if is_epic?
     @protocol.email_about_change_in_authorized_user(@protocol_roles, "destroy")
 
     @protocol_roles.destroy_all

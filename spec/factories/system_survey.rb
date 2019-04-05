@@ -27,7 +27,7 @@ FactoryBot.define do
     type                      { 'SystemSurvey' }
 
     trait :active do
-      active true
+      active {true}
     end
 
     trait :without_validations do

@@ -20,7 +20,7 @@
 
 FactoryBot.define do
   factory :option do
-    question  nil
+    question  {nil}
     content   { Faker::Lorem.sentence(4) }
 
     trait :without_validations do

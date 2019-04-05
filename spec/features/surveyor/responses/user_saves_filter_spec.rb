@@ -40,7 +40,8 @@ RSpec.describe 'User saves a response filters', js: true do
     find('#filterrific_start_date').click
     find('#filter-responses .panel-title').click
     find('#filterrific_include_incomplete').click
-    click_link I18n.t(:actions)[:save]
+
+    find('#save-filters').click
     wait_for_javascript_to_finish
 
     fill_in 'response_filter_name', with: 'My Filters'

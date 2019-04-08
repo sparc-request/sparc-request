@@ -22,7 +22,7 @@
 # from single line item creation and deletion which will happen on the study schedule
 class Dashboard::MultipleLineItemsController < Dashboard::BaseController
 
-  repsond_to :js
+  respond_to :js
 
   def new_line_items
     # called to render modal to mass create line items

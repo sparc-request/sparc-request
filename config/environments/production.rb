@@ -118,6 +118,7 @@ SparcRails::Application.configure do
 
       end
     end
+    config.action_mailer.default_url_options = { :host => Setting.get_value("root_url") }
   end
 
 end

@@ -53,4 +53,9 @@ SparcRails::Application.configure do
   config.assets.debug = true
 
   config.action_mailer.default_url_options = { :host => 'sparc-d.obis.musc.edu' }
+
+  config.after_initialize do
+    # Need to do this after initialization so that obis_setup has run and our config is loaded
+    config.action_mailer.default_url_options = { :host => Setting.get_value("root_url") }
+  end
 end

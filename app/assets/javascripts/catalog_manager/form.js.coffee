@@ -319,6 +319,12 @@ $ ->
       data:
         program_id: program_id
 
+  $(document).on 'change', '[name="service[is_available]"]', ->
+    if $(this).prop('checked')
+      $('.shareable-link').removeClass('hidden')
+    else
+      $('.shareable-link').addClass('hidden')
+
   ##############################################
   ###          Service Components            ###
   ##############################################

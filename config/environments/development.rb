@@ -46,6 +46,11 @@ SparcRails::Application.configure do
   config.action_mailer.delivery_method = :letter_opener
   config.action_mailer.perform_deliveries = true
 
+  config.after_initialize do
+    # Need to do this after initialization so that obis_setup has run and our config is loaded
+    config.action_mailer.default_url_options = { :host => Setting.get_value("root_url") }
+  end
+
   config.log_level = :debug
 
   # Stuff to do on each request

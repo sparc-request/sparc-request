@@ -337,6 +337,10 @@ class Service < ApplicationRecord
     ["components"]
   end
 
+  def direct_link
+    "#{Setting.get_value('root_url')}/services/#{id}"
+  end
+
   private
 
   def one_time_fee_choice

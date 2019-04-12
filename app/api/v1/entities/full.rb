@@ -172,7 +172,8 @@ module V1
             :revenue_code_range_id,
             :one_time_fee,
             :line_items_count,
-            :components
+            :components,
+            :direct_link
 
     expose  :process_ssrs_organization, using: V1::ProcessSsrsOrganizationFull
   end

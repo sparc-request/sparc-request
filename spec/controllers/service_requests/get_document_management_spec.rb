@@ -57,9 +57,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       arm      = create(:arm, protocol: protocol)
                  create(:subsidy, sub_service_request: ssr)
 
-      session[:srid] = sr.id
-
-      get :document_management, xhr: true
+      get :document_management, params: { srid: sr.id }, xhr: true
 
       expect(assigns(:notable_type)).to eq('Protocol')
     end
@@ -75,9 +73,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       arm      = create(:arm, protocol: protocol)
                  create(:subsidy, sub_service_request: ssr)
 
-      session[:srid] = sr.id
-
-      get :document_management, xhr: true
+      get :document_management, params: { srid: sr.id }, xhr: true
 
       expect(assigns(:notable_id)).to eq(protocol.id)
     end
@@ -93,9 +89,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       arm      = create(:arm, protocol: protocol)
                  create(:subsidy, sub_service_request: ssr)
 
-      session[:srid] = sr.id
-
-      get :document_management, xhr: true
+      get :document_management, params: { srid: sr.id }, xhr: true
 
       expect(assigns(:has_subsidy)).to eq(true)
     end
@@ -110,9 +104,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
       arm      = create(:arm, protocol: protocol)
 
-      session[:srid] = sr.id
-
-      get :document_management, xhr: true
+      get :document_management, params: { srid: sr.id }, xhr: true
       
       expect(assigns(:eligible_for_subsidy)).to eq(true)
     end
@@ -126,9 +118,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-        session[:srid] = sr.id
-
-        get :document_management, xhr: true
+        get :document_management, params: { srid: sr.id }, xhr: true
 
         expect(assigns(:back)).to eq('service_calendar')
       end
@@ -142,9 +132,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:srid] = sr.id
-
-      get :document_management, xhr: true
+      get :document_management, params: { srid: sr.id }, xhr: true
 
       expect(controller).to render_template(:document_management)
     end
@@ -157,9 +145,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:srid] = sr.id
-
-      get :document_management, xhr: true
+      get :document_management, params: { srid: sr.id }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

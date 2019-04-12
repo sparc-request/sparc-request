@@ -42,10 +42,9 @@ RSpec.describe SearchController do
       s1    = create(:service, organization: org, name: 'Serve me Well', pricing_map_count: 1)
       s2    = create(:service, organization: org, name: 'Serves me Poorly', pricing_map_count: 1)
 
-      session[:srid] = sr.id
-
       get :services, params: {
-        term: 'Well'
+        term: 'Well',
+        srid: sr.id
       }, xhr: true
 
       results = JSON.parse(response.body)
@@ -63,10 +62,9 @@ RSpec.describe SearchController do
       s1    = create(:service, organization: org, abbreviation: 'Serve me Well', pricing_map_count: 1)
       s2    = create(:service, organization: org, abbreviation: 'Serves me Poorly', pricing_map_count: 1)
 
-      session[:srid] = sr.id
-
       get :services, params: {
-        term: 'Well'
+        term: 'Well',
+        srid: sr.id
       }, xhr: true
 
       results = JSON.parse(response.body)
@@ -83,10 +81,9 @@ RSpec.describe SearchController do
       s1    = create(:service, organization: org, cpt_code: 1234, pricing_map_count: 1)
       s2    = create(:service, organization: org, cpt_code: 4321, pricing_map_count: 1)
 
-      session[:srid] = sr.id
-
       get :services, params: {
-        term: '1234'
+        term: '1234',
+        srid: sr.id
       }, xhr: true
 
       results = JSON.parse(response.body)
@@ -103,10 +100,9 @@ RSpec.describe SearchController do
       s1    = create(:service, organization: org, name: 'Service 123', is_available: 1, pricing_map_count: 1)
       s2    = create(:service, organization: org, name: 'Service 321', is_available: 0, pricing_map_count: 1)
 
-      session[:srid] = sr.id
-
       get :services, params: {
-        term: 'Service'
+        term: 'Service',
+        srid: sr.id
       }, xhr: true
 
       results = JSON.parse(response.body)
@@ -131,10 +127,9 @@ RSpec.describe SearchController do
 
       org.editable_statuses.where(status: 'on_hold').destroy_all
 
-      session[:srid] = sr.id
-
       get :services, params: {
-        term: 'Service'
+        term: 'Service',
+        srid: sr.id
       }, xhr: true
 
       results = JSON.parse(response.body)

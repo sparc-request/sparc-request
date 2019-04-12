@@ -61,7 +61,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     #toggles the display of the breadcrumbs, navbar always displays
     @disable_breadcrumb  = true
-    @show_messages       = true
     session[:breadcrumbs].clear
 
     setup_sorting_variables

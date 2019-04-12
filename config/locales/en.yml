@@ -1326,6 +1326,7 @@ en:
     add_intro: "An Authorized User has been added in"
     contact_information: "Contact Information"
     delete_intro: "An Authorized User has been deleted in"
+    delete_intro_p: "Authorized Users have been deleted in"
     epic_access: "Epic Access"
     issue_contact: "Please contact the %{department_name} at %{phone} or <a href='mailto:%{email}'>%{email}</a> for assistance with this process or with any questions you may have."
     name: "Name:"

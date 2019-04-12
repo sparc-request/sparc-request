@@ -21,7 +21,10 @@
 %p= "Dear #{@send_to.try(:full_name)},"
 %p{ style: 'display: inline;' }
   - if @action == "destroy"
-    = t(:mailer)[:delete_intro]
+    - if @modified_roles.count == 1
+      = t(:mailer)[:delete_intro]
+    - else
+      = t(:mailer)[:delete_intro_p]
   - if @action == "add"
     = t(:mailer)[:add_intro]
 %p{ style: 'display: inline;' }

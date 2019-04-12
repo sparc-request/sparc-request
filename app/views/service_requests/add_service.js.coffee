@@ -27,5 +27,5 @@ url = new URL(window.location.href)
 if !url.searchParams.get('srid')
   url.searchParams.append('srid', "<%= @service_request.id %>")
   window.history.pushState({}, null, url.href)
-  $('input[name=service_request_id]').val("<%= @service_request.id %>")
+  $('input[name=srid]').val("<%= @service_request.id %>")
 <% end %>

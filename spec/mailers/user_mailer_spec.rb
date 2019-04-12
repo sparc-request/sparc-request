@@ -76,7 +76,7 @@ RSpec.describe UserMailer do
       end
 
       it 'should show epic column' do
-        user_information_table_with_epic_col
+        user_information_table_with_epic_col(true)
       end
     end
 
@@ -91,7 +91,7 @@ RSpec.describe UserMailer do
       end
 
       it 'should not show epic col' do
-        user_information_table_without_epic_col
+        user_information_table_without_epic_col(true)
       end
     end
   end
@@ -139,7 +139,7 @@ RSpec.describe UserMailer do
       end
 
       it 'should show epic column' do
-        user_information_table_with_epic_col
+        user_information_table_with_epic_col(true)
       end
     end
 
@@ -154,7 +154,7 @@ RSpec.describe UserMailer do
       end
 
       it 'should not show epic col' do
-        user_information_table_without_epic_col
+        user_information_table_without_epic_col(true)
       end
     end
   end

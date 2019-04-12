@@ -443,8 +443,8 @@ ActiveRecord::Schema.define(version: 2019_03_01_212606) do
   end
 
   create_table "patient_registrars", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
-    t.bigint "identity_id"
-    t.bigint "organization_id"
+    t.integer "identity_id"
+    t.integer "organization_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["identity_id"], name: "index_patient_registrars_on_identity_id"

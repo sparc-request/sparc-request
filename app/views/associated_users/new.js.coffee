@@ -31,7 +31,7 @@ identities_bloodhound = new Bloodhound(
     Bloodhound.tokenizers.whitespace datum.value
   queryTokenizer: Bloodhound.tokenizers.whitespace
   remote:
-    url: "/associated_users/search_identities?term=%QUERY&service_request_id=#{getSRId()}",
+    url: "/associated_users/search_identities?term=%QUERY&srid=#{getSRId()}",
     wildcard: '%QUERY'
 )
 identities_bloodhound.initialize() # Initialize the Bloodhound suggestion engine
@@ -56,7 +56,7 @@ $('#authorized_user_search').typeahead(
     data:
       protocol_id: $(this).data('protocol-id')
       identity_id: suggestion.value
-      service_request_id: getSRId()
+      srid: getSRId()
     success: ->
       $("#loading_authorized_user_spinner").addClass('hidden')
 <% end %>

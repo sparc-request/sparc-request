@@ -66,6 +66,7 @@ $(document).ready( function() {
     ajaxType: 'get',
     ajaxDataType: 'script',
     ajaxUrl: '/',
+    ajaxData: {},
     batchSelectedClass: null,
     batchSelectedText: 'Submit Selected',
     checkConfirmSwalTitle: 'Are you sure?',
@@ -252,7 +253,8 @@ $(document).ready( function() {
     $.ajax({
       type: this.options.ajaxType,
       dataType: this.options.ajaxDataType,
-      url: this.options.ajaxUrl + id
+      url: this.options.ajaxUrl + id,
+      data: this.options.ajaxData
     });
   }
 

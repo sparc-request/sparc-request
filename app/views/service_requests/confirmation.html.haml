@@ -21,7 +21,7 @@
 
 = render '/service_requests/navigation/steps', service_request: @service_request, step_text: @step_text, css_class: @css_class
 .col-sm-12.body-container#confirmation-page
-  = form_tag navigate_service_request_path(@service_request) do
+  = form_tag navigate_service_request_path(srid: @service_request.id) do
     = hidden_field_tag :location, ''
     = hidden_field_tag :validates, ''
     .form-group

@@ -24,6 +24,6 @@ class LockedOrganizationsController < ApplicationController
     @service_provider = @organization.service_providers.where(is_primary_contact: true).first
     @identity = Identity.find(@service_provider.identity_id)
     @protocol = Protocol.find(params[:protocol_id])
-    @ssr = SubServiceRequest.where(service_request_id: params[:service_request_id], organization_id: @organization.id).first
+    @ssr = SubServiceRequest.where(service_request_id: params[:srid], organization_id: @organization.id).first
   end
 end

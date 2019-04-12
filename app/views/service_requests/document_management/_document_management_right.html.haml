@@ -20,5 +20,5 @@
 .col-md-3.document-management-right
   = render 'service_requests/right_navigation/cart', service_request: service_request, sub_service_requests: sub_service_requests, allow_delete: false
   .nav-buttons
-    = link_to t(:proper)[:cart][:to_catalog], catalog_service_request_path, class: 'submit-request-button btn btn-warning btn-lg btn-block'
+    = link_to t(:proper)[:cart][:to_catalog], catalog_service_request_path(srid: service_request.id), class: 'submit-request-button btn btn-warning btn-lg btn-block'
     = render 'service_requests/right_navigation/right_navigation'

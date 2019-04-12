@@ -19,6 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #protocol-form-display
   = form_for protocol, as: :protocol, remote: true, html: { class: 'form-horizontal', autocomplete: 'off' } do |form|
+    = hidden_field_tag :srid, service_request.id
     = form.hidden_field :requester_id
     = form.hidden_field :type
     - if protocol.type.capitalize == "Study"
@@ -39,5 +40,5 @@
       .col-lg-4
       .col-lg-4.text-center
         %input.btn.btn-lg.btn-success{ type: "submit", value: t(:actions)[:save], data: { disable_with: t(:proper)[:navigation][:bottom][:saving] }  }
-        = link_to t(:actions)[:cancel], protocol_service_request_path, class: 'btn btn-lg btn-danger'
+        = link_to t(:actions)[:cancel], protocol_service_request_path(srid: service_request.id), class: 'btn btn-lg btn-danger'
       .col-lg-4

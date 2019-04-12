@@ -24,6 +24,8 @@
 - else
   #sign-up-form
     = form_for resource, as: resource_name, url: registration_path(resource_name) do |f|
+      - if service_request
+        = hidden_field_tag :srid, service_request.id
       - if resource.errors.any?
         = render 'shared/modal_errors', errors: resource.errors
       .form-group.field

@@ -85,7 +85,6 @@ RSpec.describe ApplicationController, type: :controller do
     context 'params[:srid] is present' do
       it 'should assign @service_request' do
         sr = findable_stub(ServiceRequest) { build_stubbed(:service_request) }
-        expect(controller).to receive(:redirect_to)
         allow(controller).to receive(:params).and_return({srid: sr.id.to_s})
         controller.send(:initialize_service_request)
         expect(assigns(:service_request)).to eq(sr)

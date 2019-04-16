@@ -118,7 +118,12 @@ SparcRails::Application.configure do
 
       end
     end
-    config.action_mailer.default_url_options = { :host => Setting.get_value("root_url") }
+
+    begin
+      config.action_mailer.default_url_options = { :host => Setting.get_value("root_url") }
+    rescue
+      puts "WARNING: Database does not exist, restart server after database has been created and populated, to set mailer default url options from database."
+    end
   end
 
 end

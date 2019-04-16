@@ -49,6 +49,7 @@ class Service < ApplicationRecord
   has_many :related_services, :through => :service_relations
   has_many :required_services, -> { where("required = ? and is_available = ?", true, true) }, :through => :service_relations, :source => :related_service
   has_many :optional_services, -> { where("required = ? and is_available = ?", false, true) }, :through => :service_relations, :source => :related_service
+  has_many :surveys, through: :associated_surveys
 
   has_many :depending_services, :through => :depending_service_relations, :source => :service# Services that depend on this service
 
@@ -126,17 +127,7 @@ class Service < ApplicationRecord
 
   # do i have any available surveys, otherwise, look up tree and return first available surveys
   def available_surveys
-    available = nil
-
-    #TODO: Should we get all parent surveys instead of the closest parent's surveys?
-    parents.reverse.each do |parent|
-      next if parent.type == 'Institution' # Institutions can't define associated surveys
-      available = parent.associated_surveys.map(&:survey) unless parent.associated_surveys.empty?
-    end
-
-    available = associated_surveys.map(&:survey) unless associated_surveys.empty? # i have available surveys, use those instead
-
-    available
+    (self.surveys + self.parents.map{ |parent| parent.surveys }.flatten).compact.uniq
   end
 
   # Given a dollar amount as a String, return an integer number of

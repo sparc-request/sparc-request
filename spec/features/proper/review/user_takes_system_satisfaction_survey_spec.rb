@@ -32,7 +32,7 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
                   create(:pricing_setup, organization: program)
     service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
     @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2)
-    @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
+    @sr         = create(:service_request_without_validations, status: 'draft', protocol: @protocol)
     ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                   create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
                   create(:arm, protocol: @protocol)
@@ -56,7 +56,7 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
       scenario 'and is taken directly to Confirmation' do
         click_link 'Submit Request'
         wait_for_javascript_to_finish
-
+        wait_for_page(confirmation_service_request_path)
         expect(current_path).to eq(confirmation_service_request_path)
       end
     end

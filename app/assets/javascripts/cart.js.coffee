@@ -22,7 +22,6 @@
 # Functions for manipulating the Services cart.
 window.cart =
   selectService: (id) ->
-    srid = getSRId()
     has_protocol = parseInt($('#has_protocol').val())
     li_count = parseInt($('#line_item_count').val())
 
@@ -33,17 +32,19 @@ window.cart =
         $.ajax
           type: 'POST'
           url: "/service_request/add_service/#{id}"
+          data:
+            srid: getSRId()
     else
       $.ajax
         type: 'POST'
         url: "/service_request/add_service/#{id}"
+        data:
+            srid: getSRId()
 
   removeService: (id, move_on, spinner) ->
-    srid = getSRId()
-
     $.ajax
       type: 'DELETE'
-      url: "/service_request/remove_service/#{id}"
+      url: "/service_request/remove_service/#{id}?srid=#{getSRId()}"
       success: (data, textStatus, jqXHR) ->
         if move_on
           window.location = '/dashboard'

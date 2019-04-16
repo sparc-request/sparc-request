@@ -55,7 +55,7 @@ $ ->
     ), 1500
 
 (exports ? this).getSRId = ->
-  $("input[name='service_request_id']").val()
+  $("input[name='srid']").val()
 
 (exports ? this).getSSRId = ->
   $("input[name='sub_service_request_id']").val()

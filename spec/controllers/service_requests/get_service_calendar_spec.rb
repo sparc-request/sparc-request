@@ -56,9 +56,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
       arm      = create(:arm, protocol: protocol)
       pages    = { arm.id.to_s => '3' }
 
-      session[:srid] = sr.id
-
       get :service_calendar, params: {
+        srid: sr.id,
         pages: pages
       }, xhr: true
 
@@ -74,9 +73,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                  create(:arm, protocol: protocol)
 
-      session[:srid] = sr.id
-
-      get :service_calendar, xhr: true
+      get :service_calendar, params: { srid: sr.id }, xhr: true
 
       expect(controller).to render_template(:service_calendar)
     end
@@ -90,9 +87,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                  create(:arm, protocol: protocol)
 
-      session[:srid] = sr.id
-
-      get :service_calendar, xhr: true
+      get :service_calendar, params: { srid: sr.id }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

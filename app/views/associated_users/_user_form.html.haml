@@ -35,7 +35,7 @@
       = render 'associated_users/form/primary_pi_warning', protocol: protocol, identity: identity
       = form_for project_role, url: determine_url(dashboard, project_role), remote: true, html: { class: "protocol-role-form" } do |form|
         - unless dashboard
-          = hidden_field_tag :service_request_id, service_request.id
+          = hidden_field_tag :srid, service_request.id
         = form.hidden_field :identity_id
         = form.hidden_field :protocol_id
         .row

@@ -44,7 +44,7 @@ RSpec.describe LockedOrganizationsController, type: :controller do
       get :show, params: {
         org_id: organization.id,
         protocol_id: protocol.id,
-        service_request_id: sr.id
+        srid: sr.id
         }, xhr: true
 
 
@@ -70,7 +70,7 @@ RSpec.describe LockedOrganizationsController, type: :controller do
       get :show, params: {
         org_id: organization.id,
         protocol_id: protocol.id,
-        service_request_id: sr.id
+        srid: sr.id
         }, xhr: true
 
 
@@ -96,7 +96,7 @@ RSpec.describe LockedOrganizationsController, type: :controller do
       get :show, params: {
         org_id: organization.id,
         protocol_id: protocol.id,
-        service_request_id: sr.id
+        srid: sr.id
         }, xhr: true
 
 
@@ -122,7 +122,7 @@ RSpec.describe LockedOrganizationsController, type: :controller do
       get :show, params: {
         org_id: organization.id,
         protocol_id: protocol.id,
-        service_request_id: sr.id
+        srid: sr.id
         }, xhr: true
 
 
@@ -148,7 +148,7 @@ RSpec.describe LockedOrganizationsController, type: :controller do
       get :show, params: {
         org_id: organization.id,
         protocol_id: protocol.id,
-        service_request_id: sr.id
+        srid: sr.id
         }, xhr: true
 
 
@@ -174,7 +174,7 @@ RSpec.describe LockedOrganizationsController, type: :controller do
       get :show, params: {
         org_id: organization.id,
         protocol_id: protocol.id,
-        service_request_id: sr.id
+        srid: sr.id
         }, xhr: true
 
 

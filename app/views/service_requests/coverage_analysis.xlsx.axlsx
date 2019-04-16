@@ -218,7 +218,7 @@ wb.add_worksheet(name: "Review") do |sheet|
   services_sub_header_rows << sheet.add_row(['Other Services'], :style => name_header_style)
 
   @service_list_true.each do |key, value|
-    line_items = display_line_items_otf(@sub_service_request, Setting.get_value('use_epic'), value[:line_items])
+    line_items = display_line_items_otf(Setting.get_value('use_epic'), value[:line_items])
     next if line_items.empty?
 
     services_sub_header_rows << sheet.add_row([value[:name]], :style => sub_header_style)
@@ -247,7 +247,7 @@ wb.add_worksheet(name: "Review") do |sheet|
   merge_sub_header_rows << services_sub_header_rows
 
   ##Total
-  grand_total_row = ["", "", "", "", "", ""] ) + ( [""] * (visit_count*2)
+  grand_total_row = ["", "", "", "", "", ""] + ([""] * (visit_count*2))
 
   grand_total_row = sheet.add_row(grand_total_row, :style => row_header_style)
 

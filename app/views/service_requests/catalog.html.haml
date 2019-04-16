@@ -20,7 +20,6 @@
 = javascript_include_tag "catalog"
 
 = hidden_field_tag :has_protocol, @service_request.protocol ? 1 : 0
-= hidden_field_tag :service_request_id, @service_request.id, class: 'service-request-id'
 - if !@service_request.protocol.nil?
   = hidden_field_tag :protocol_id, @service_request.protocol.id, class: 'protocol-id'
 

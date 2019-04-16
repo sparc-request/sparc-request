@@ -34,28 +34,29 @@ $(document).ready ->
       $('.program-link').removeClass('clicked')
     $(this).addClass('clicked')
     id    = $(this).data('id')
-    data =
-      process_ssr_found: $(this).data('process-ssr-found')
-      service_request_id: getSRId()
     $.ajax
       type: 'POST'
-      data: data
       url: "/catalogs/#{id}/update_description"
+      data:
+        srid:               getSRId()
+        process_ssr_found:  $(this).data('process-ssr-found')
 
   $(document).on 'click', '.program-link.locked-program', ->
     organizationId = $(this).data('id')
-    protocolId = $('.protocol-id').val()
-    serviceRequestId = $('.service-request-id').val()
     $.ajax
       type: 'GET'
-      url: "/locked_organizations?org_id=#{organizationId}&protocol_id=#{protocolId}&service_request_id=#{serviceRequestId}"
+      url: "/locked_organizations"
+      data:
+        org_id:       organizationId
+        protocol_id:  $('.protocol-id').val()
+        srid:         getSRId()
 
   ### SERVICE SEARCH BLOODHOUND ###
   services_bloodhound = new Bloodhound(
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     remote:
-      url: "/search/services?term=%QUERY&service_request_id=#{getSRId()}",
+      url: "/search/services?term=%QUERY&srid=#{getSRId()}",
       wildcard: '%QUERY'
   )
   services_bloodhound.initialize() # Initialize the Bloodhound suggestion engine

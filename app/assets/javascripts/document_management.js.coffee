@@ -26,7 +26,7 @@ $(document).ready ->
   $(document).on 'click', '#document-new', ->
     data =
       protocol_id: $(this).data('protocol-id')
-      service_request_id: getSRId()
+      srid: getSRId()
     $.ajax
       type: 'GET'
       url: '/documents/new'
@@ -40,7 +40,7 @@ $(document).ready ->
       type: 'GET'
       url: "/documents/#{document_id}/edit"
       data:
-        service_request_id: getSRId()
+        srid: getSRId()
 
   $(document).on 'click', '.document-delete', ->
     row_index   = $(this).parents('tr').data('index')
@@ -48,7 +48,7 @@ $(document).ready ->
     if confirm I18n['documents']['delete_confirm']
       $.ajax
         type: 'DELETE'
-        url: "/documents/#{document_id}?service_request_id=#{getSRId()}"
+        url: "/documents/#{document_id}?srid=#{getSRId()}"
 
   $(document).on 'change', '#document_doc_type', ->
     if $(this).val() == 'other'

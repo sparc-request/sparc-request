@@ -25,7 +25,7 @@ $(document).ready ->
       url: '/associated_users/new.js'
       data:
         protocol_id: $(this).data('protocol-id')
-        service_request_id: getSRId()
+        srid: getSRId()
     return false
 
   $(document).on 'click', '.edit-associated-user-button', (event) ->
@@ -34,7 +34,7 @@ $(document).ready ->
       type: 'get'
       url: "/associated_users/#{project_role_id}/edit.js"
       data:
-        service_request_id: getSRId()
+        srid: getSRId()
       success: ->
         if $('#project_role_role').val() == 'other'
           $('.role_dependent.other').show()
@@ -50,4 +50,6 @@ $(document).ready ->
       type: 'warning'
       ajaxUrl: '/associated_users/'
       ajaxType: 'delete'
+      ajaxData:
+        srid: getSRId()
     })

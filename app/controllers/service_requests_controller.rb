@@ -52,7 +52,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def navigate
-    redirect_to eval("#{@forward}_service_request_path")
+    redirect_to eval("#{@forward}_service_request_path(srid: #{@service_request.id})")
   end
 
   # service request wizard pages
@@ -87,7 +87,7 @@ class ServiceRequestsController < ApplicationController
     @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
 
     if !@has_subsidy && !@eligible_for_subsidy
-      redirect_to document_management_service_request_path
+      redirect_to document_management_service_request_path(srid: @service_request.id)
     end
   end
 
@@ -278,7 +278,7 @@ class ServiceRequestsController < ApplicationController
 
   def validate_catalog
     unless @service_request.group_valid?(:catalog)
-      redirect_to catalog_service_request_path and return false unless action_name == 'catalog'
+      redirect_to catalog_service_request_path(srid: @service_request.id) and return false unless action_name == 'catalog'
       @errors = @service_request.errors
     end
     return true
@@ -286,7 +286,7 @@ class ServiceRequestsController < ApplicationController
 
   def validate_protocol
     unless @service_request.group_valid?(:protocol)
-      redirect_to protocol_service_request_path and return false unless action_name == 'protocol'
+      redirect_to protocol_service_request_path(srid: @service_request.id) and return false unless action_name == 'protocol'
       @errors = @service_request.errors
     end
     return true
@@ -296,7 +296,7 @@ class ServiceRequestsController < ApplicationController
     @service_request.protocol.update_attributes(details_params) if details_params
 
     unless @service_request.group_valid?(:service_details)
-      redirect_to service_details_service_request_path(@service_request, navigate: 'true') and return false unless action_name == 'service_details'
+      redirect_to service_details_service_request_path(srid: @service_request.id, navigate: 'true') and return false unless action_name == 'service_details'
       @errors = @service_request.errors
     end
     return true
@@ -304,7 +304,7 @@ class ServiceRequestsController < ApplicationController
 
   def validate_service_calendar
     unless @service_request.group_valid?(:service_calendar)
-      redirect_to service_calendar_service_request_path(@service_request, navigate: 'true') and return false unless action_name == 'service_calendar'
+      redirect_to service_calendar_service_request_path(srid: @service_request.id, navigate: 'true') and return false unless action_name == 'service_calendar'
       @errors = @service_request.errors
     end
     return true
@@ -415,7 +415,7 @@ class ServiceRequestsController < ApplicationController
       @program  = @service.program
       @core     = @service.core
 
-      redirect_to catalog_service_request_path unless @service.is_available?
+      redirect_to catalog_service_request_path(srid: @service_request.id) unless @service.is_available?
     end
   end
 end

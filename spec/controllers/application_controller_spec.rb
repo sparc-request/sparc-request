@@ -83,38 +83,21 @@ RSpec.describe ApplicationController, type: :controller do
 
   describe '#initialize_service_request' do
     context 'params[:srid] is present' do
-      it 'should assign @service_request and session[:srid] and redirect' do
-        sr = findable_stub(ServiceRequest) do
-          build_stubbed(:service_request)
-        end
-        expect(controller).to receive(:redirect_to)
-        allow(controller).to receive(:params).and_return({srid: sr.id.to_s})
-        controller.send(:initialize_service_request)
-        expect(assigns(:service_request)).to eq(sr)
-        expect(session[:srid]).to eq(sr.id)
-      end
-
-    end
-
-    context 'session[:srid] is present' do
       it 'should assign @service_request' do
-        sr = findable_stub(ServiceRequest) do
-          build_stubbed(:service_request)
-        end
-        session[:srid] = sr.id
+        sr = findable_stub(ServiceRequest) { build_stubbed(:service_request) }
+        allow(controller).to receive(:params).and_return({srid: sr.id.to_s})
         controller.send(:initialize_service_request)
         expect(assigns(:service_request)).to eq(sr)
       end
     end
 
     context 'action_name == \'add_service\'' do
-      it 'should initialize a new service request' do
+      it 'should create a new service request' do
         allow(controller).to receive(:action_name).and_return('add_service')
         controller.send(:initialize_service_request)
         sr = ServiceRequest.first
         expect(assigns(:service_request)).to eq(sr)
         expect(sr.status).to eq('first_draft')
-        expect(session[:srid]).to eq(sr.id)
       end
     end
 

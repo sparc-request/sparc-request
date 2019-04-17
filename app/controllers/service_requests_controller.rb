@@ -52,7 +52,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def navigate
-    redirect_to eval("#{@forward}_service_request_path(srid: #{@service_request.id})")
+    redirect_to @forward
   end
 
   # service request wizard pages
@@ -314,8 +314,8 @@ class ServiceRequestsController < ApplicationController
     if c = YAML.load_file(Rails.root.join('config', 'navigation.yml'))[current_page]
       @step_text   = c['step_text']
       @css_class   = c['css_class']
-      @back        = c['back']
-      @forward     = c['forward']
+      @back        = eval("#{c['back']}_service_request_path(srid: #{@service_request.id})")
+      @forward     = eval("#{c['forward']}_service_request_path(srid: #{@service_request.id})")
     end
   end
 

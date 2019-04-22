@@ -28,4 +28,5 @@ if !url.searchParams.get('srid')
   url.searchParams.append('srid', "<%= @service_request.id %>")
   window.history.pushState({}, null, url.href)
   $('input[name=srid]').val("<%= @service_request.id %>")
+  $('#login-link').attr('href', "<%= new_identity_session_path(srid: @service_request.id) %>")
 <% end %>

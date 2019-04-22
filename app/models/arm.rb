@@ -52,8 +52,8 @@ class Arm < ApplicationRecord
     write_attribute(:name, name.squish)
   end
 
-  def display_line_items_visits(use_epic, display_all_services)
-    if use_epic
+  def display_line_items_visits(display_all_services)
+    if Setting.get_value('use_epic')
       # only show the services that are set to be pushed to Epic
       if display_all_services
         self.line_items_visits.joins(:service).where.not(services: { cpt_code: [nil, ''] })

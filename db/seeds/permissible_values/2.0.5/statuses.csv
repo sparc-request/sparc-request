@@ -7,11 +7,12 @@ id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_avai
 ,declined,Declined,,,6,status,0,,1
 ,draft,Draft,,,7,status,1,,1
 ,get_a_cost_estimate,Get a Cost Estimate,,,8,status,1,,1
-,invoiced,Invoiced,,,13,status,0,,1
 ,ctrc_review,In Admin Review,,,9,status,0,,1
 ,committee_review,In Committee Review,,,10,status,0,,1
 ,fulfillment_queue,In Fulfillment Queue,,,11,status,0,,1
 ,in_process,In Process,,,12,status,1,,1
-,on_hold,On Hold,,,14,status,1,,1
-,submitted,Submitted,,,15,status,1,,1
-,withdrawn,Withdrawn,,,16,status,0,,1
+,invoiced,Invoiced,,,13,status,0,,1
+,pending,Pending,,,14,status,0,,1
+,on_hold,On Hold,,,15,status,1,,1
+,submitted,Submitted,,,16,status,1,,1
+,withdrawn,Withdrawn,,,17,status,0,,1

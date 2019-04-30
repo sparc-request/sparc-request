@@ -437,12 +437,10 @@ class ServiceRequest < ApplicationRecord
     next_ssr_id = self.protocol && self.protocol.next_ssr_id.present? ? self.protocol.next_ssr_id : 1
 
     self.sub_service_requests.each do |ssr|
-      unless ssr.ssr_id
+      unless ssr.ssr_id && self.protocol
         ssr.update_attributes(ssr_id: "%04d" % next_ssr_id)
         next_ssr_id += 1
       end
-      # If we have created a protocol, we don't want to ensure that the ssr_ids are sequential because the user may remove SSRs
-      next_ssr_id += 1 unless self.protocol
     end
 
     if protocol

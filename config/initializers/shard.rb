@@ -18,4 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-FULFILLMENT_DB = YAML.load_file(File.join(Rails.root, 'config', 'fulfillment_db.yml'))[Rails.env]
+FULFILLMENT_DB =
+  if File.exists?(File.join(Rails.root, 'config', 'fulfillment_db.yml'))
+   YAML.load_file(File.join(Rails.root, 'config', 'fulfillment_db.yml'))[Rails.env]
+ else
+  nil
+  end

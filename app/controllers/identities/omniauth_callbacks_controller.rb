@@ -23,8 +23,9 @@ class Identities::OmniauthCallbacksController < Devise::OmniauthCallbacksControl
     @identity = Identity.find_for_shibboleth_oauth(request.env["omniauth.auth"], current_identity)
 
     if @identity.persisted?
-      sign_in_and_redirect @identity, :event => :authentication #this will throw if @identity is not activated
-      set_flash_message(:notice, :success, :kind => "Shibboleth") if is_navigational_format?
+      store_location_for(@identity, catalog_service_request_path(srid: params[:srid])) if params[:srid]
+      sign_in_and_redirect(@identity, event: :authentication) #this will throw if @identity is not activated
+      set_flash_message(:notice, :success, kind: "Shibboleth") if is_navigational_format?
     else
       session["devise.shibboleth_data"] = request.env["omniauth.auth"]
       redirect_to new_identity_registration_url(srid: params[:srid])
@@ -35,8 +36,9 @@ class Identities::OmniauthCallbacksController < Devise::OmniauthCallbacksControl
     @identity = Identity.find_for_cas_oauth(request.env['omniauth.auth'], current_identity)
 
     if @identity.persisted?
-      sign_in_and_redirect @identity, :event => :authentication #this will throw if @identity is not activated
-      set_flash_message(:notice, :success, :kind => "CAS") if is_navigational_format?
+      store_location_for(@identity, catalog_service_request_path(srid: params[:srid])) if params[:srid]
+      sign_in_and_redirect(@identity, event: :authentication) #this will throw if @identity is not activated
+      set_flash_message(:notice, :success, kind: "CAS") if is_navigational_format?
     else
       session["devise.cas_data"] = request.env["omniauth.auth"]
       redirect_to new_identity_registration_url(srid: params[:srid])

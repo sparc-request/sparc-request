@@ -56,9 +56,8 @@ class AvailableStatus < ApplicationRecord
   private
 
   def sync_editable_status
-    if selected_changed?
+    if selected_changed? && editable_status
       editable_status.update_attribute(:selected, selected)
     end
   end
-
 end

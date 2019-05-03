@@ -110,7 +110,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
     end
 
     context '!@has_subsidy && !@eligible_for_subidy' do
-      it 'should assign @back to \'service_calendar\'' do
+      it 'should assign @back to \'service_calendar\' path' do
         org      = create(:organization)
         service  = create(:service, organization: org, one_time_fee: true)
         protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
@@ -120,7 +120,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
         get :document_management, params: { srid: sr.id }, xhr: true
 
-        expect(assigns(:back)).to eq('service_calendar')
+        expect(assigns(:back)).to eq(service_calendar_service_request_path(srid: sr.id))
       end
     end
 

@@ -32,7 +32,7 @@
             %button.btn.btn-info.navbar-btn#epic-queue-btn{ type: 'button', title: t(:dashboard)[:navbar][:tooltips][:epic_queue], data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}'} }
               = t(:dashboard)[:navbar][:epic_queue]
         - if current_user.catalog_overlord?
-          = link_to "Protocol Merge", dashboard_protocol_merge_path, :class => ' header_button btn btn-primary btn-md', style: 'margin-top:7px;'
+          = link_to "Protocol Merge", dashboard_protocol_merge_path, :class => ' header_button btn btn-primary btn-md', style: 'margin-top:7px;margin-left:7px;'
         %li
           %button.btn.btn-danger.navbar-btn#messages-btn{ type: 'button', title: t(:dashboard)[:navbar][:tooltips][:messages], data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}'} }
             = t(:dashboard)[:navbar][:messages]

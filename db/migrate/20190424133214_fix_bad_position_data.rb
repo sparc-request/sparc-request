@@ -1,8 +1,8 @@
-class FixBadPositionData < ActiveRecord::Migration[5.2]
-  class VisitGroup < ApplicationRecord
-    belongs_to :arm
-  end
+class VisitGroup < ApplicationRecord
+  belongs_to :arm
+end
 
+class FixBadPositionData < ActiveRecord::Migration[5.2]
   def change
     bar = ProgressBar.new(Arm.count)
     Arm.find_each do |arm|

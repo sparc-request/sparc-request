@@ -98,7 +98,7 @@ class ServiceRequestsController < ApplicationController
     @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
 
     unless @has_subsidy || @eligible_for_subsidy
-      @back = 'service_calendar'
+      @back = service_calendar_service_request_path(srid: @service_request.id)
     end
   end
 

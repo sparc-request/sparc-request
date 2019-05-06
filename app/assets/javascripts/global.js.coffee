@@ -21,7 +21,6 @@ $ ->
 
   _super = $.fn.modal
   $.extend _super.Constructor.DEFAULTS,
-    keyboard: false
     backdrop: 'static'
 
   $(".datetimepicker:not(.time)").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)

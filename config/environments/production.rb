@@ -105,22 +105,15 @@ SparcRails::Application.configure do
   config.action_mailer.delivery_method = :sendmail
   config.action_mailer.default_url_options = { host: "sparc.musc.edu" }
   config.after_initialize do
-    # Need to do this after initialization so that obis_setup has run and our config is loaded
-    if defined? ROOT_URL
-      unless ROOT_URL.nil?
-        new_options = { host: ROOT_URL.sub(/^http(s)?\:\/\//, '') }
-        config.action_mailer.default_url_options = new_options
-
-        # By the time we run ActionMailer has already copied the options
-        # from config so we need to override here to really make the change
-        # We only set the default_url_options to keep the settings consistent
-        ActionMailer::Base.default_url_options = new_options
-
-      end
-    end
-
+    # Need to do this after initialization so that the database is loaded
     begin
-      config.action_mailer.default_url_options = { :host => Setting.get_value("root_url") }
+      new_options = { host: Setting.get_value("root_url") }
+      config.action_mailer.default_url_options = new_options
+
+      # By the time we run ActionMailer has already copied the options
+      # from config so we need to override here to really make the change
+      # We only set the default_url_options to keep the settings consistent
+      ActionMailer::Base.default_url_options = new_options
     rescue
       puts "WARNING: Database does not exist, restart server after database has been created and populated, to set mailer default url options from database."
     end

@@ -277,10 +277,11 @@ class SubServiceRequest < ApplicationRecord
         # Since adding/removing services changes a SSR status to 'draft', we have to look at the past status to see if we should notify users of a status change
         # We do NOT notify if updating from an un-updatable status or we're updating to a status that we already were previously
         # See Pivotal Stories: #133049647 & #135639799
-        old_status  = self.status
-        past_status = self.past_statuses.last.try(:status)
+        old_status      = self.status
+        submitted_prior = self.previously_submitted?
+        past_status     = self.past_statuses.last.try(:status)
         self.update_attributes(status: new_status, submitted_at: Time.now, nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
-        return self.id if !self.previously_submitted? && (old_status != 'draft' || (old_status == 'draft' && (past_status.nil? || (past_status != new_status && Status.updatable?(past_status))))) # past_status == nil indicates a newly created SSR
+        return self.id if !submitted_prior && (old_status != 'draft' || (old_status == 'draft' && (past_status.nil? || (past_status != new_status && Status.updatable?(past_status))))) # past_status == nil indicates a newly created SSR
       else
         self.update_attribute(:status, new_status)
         return self.id

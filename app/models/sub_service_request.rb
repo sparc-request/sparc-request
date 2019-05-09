@@ -271,25 +271,20 @@ class SubServiceRequest < ApplicationRecord
   # Returns the SSR id that need an initial submission email and updates
   # the SSR status to new status if appropriate
   def update_status_and_notify(new_status)
-    unless self.is_locked? || self.previously_submitted?
-      available   = PermissibleValue.get_key_list('status')
-      editable    = self.is_locked? || available
-      changeable  = (available & editable).include?(new_status) && Status.updatable?(self.status)
-
-      if self.status != new_status && changeable
-        if new_status == 'submitted'
-          ### For 'submitted' status ONLY:
-          # Since adding/removing services changes a SSR status to 'draft', we have to look at the past status to see if we should notify users of a status change
-          # We do NOT notify if updating from an un-updatable status or we're updating to a status that we already were previously
-          # See Pivotal Stories: #133049647 & #135639799
-          old_status  = self.status
-          past_status = PastStatus.where(sub_service_request_id: id).last.try(:status)
-          self.update_attributes(status: new_status, submitted_at: Time.now, nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
-          return self.id if old_status != 'draft' || (old_status == 'draft' && (past_status.nil? || (past_status != new_status && Status.updatable?(past_status)))) # past_status == nil indicates a newly created SSR
-        else
-          self.update_attribute(:status, new_status)
-          return self.id
-        end
+    if self.status != new_status && self.can_be_edited? && Status.updatable?(self.status)
+      if new_status == 'submitted'
+        ### For 'submitted' status ONLY:
+        # Since adding/removing services changes a SSR status to 'draft', we have to look at the past status to see if we should notify users of a status change
+        # We do NOT notify if updating from an un-updatable status or we're updating to a status that we already were previously
+        # See Pivotal Stories: #133049647 & #135639799
+        old_status      = self.status
+        submitted_prior = self.previously_submitted?
+        past_status     = self.past_statuses.last.try(:status)
+        self.update_attributes(status: new_status, submitted_at: Time.now, nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
+        return self.id if !submitted_prior && (old_status != 'draft' || (old_status == 'draft' && (past_status.nil? || (past_status != new_status && Status.updatable?(past_status))))) # past_status == nil indicates a newly created SSR
+      else
+        self.update_attribute(:status, new_status)
+        return self.id
       end
     end
   end

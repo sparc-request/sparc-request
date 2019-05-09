@@ -25,17 +25,8 @@ RSpec.describe SubServiceRequest, type: :model do
   let!(:sr)       { create(:service_request_without_validations, protocol: protocol) }
 
   describe "#update_status_and_notify" do
-    context 'SubServiceRequest can be edited' do
-      context 'and has been submitted prior' do
-        let!(:ssr) { create(:sub_service_request_without_validations, :submitted, service_request: sr, organization: org) }
-
-        it 'should not update the SubServiceRequest nor notify' do
-          expect(ssr.update_status_and_notify('draft')).to eq(nil)
-          expect(ssr.reload.status).to eq('submitted')
-        end
-      end
-
-      context 'and has not been submitted prior' do
+    context 'new status is different than current status' do
+      context 'and the SSR can be edited' do
         context 'and current status is updatable' do
           context 'and new_status == submitted' do
             it 'should update status and nursing_nutrition, lab, imaging, and committee approvals' do
@@ -50,41 +41,51 @@ RSpec.describe SubServiceRequest, type: :model do
               expect(ssr.committee_approved).to eq(false)
             end
 
-            context 'and current status == draft' do
-              let!(:ssr) { create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft') }
+            context 'and ssr was not previously submitted' do
+              context 'and current status == draft' do
+                let!(:ssr) { create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft') }
 
-              context 'and past_status is nil indicating a newly created SubServiceRequest' do
-                it 'should update the SubServiceRequest and notify' do
-                  expect(ssr.update_status_and_notify('submitted')).to eq(ssr.id)
-                  expect(ssr.reload.status).to eq('submitted')
+                context 'and past_status is nil indicating a newly created SubServiceRequest' do
+                  it 'should update the SubServiceRequest and notify' do
+                    expect(ssr.update_status_and_notify('submitted')).to eq(ssr.id)
+                    expect(ssr.reload.status).to eq('submitted')
+                  end
+                end
+
+                context 'and past_status is updatable' do
+                  let!(:past_status) { create(:past_status, sub_service_request: ssr, status: 'draft') }
+
+                  it 'should update the SubServiceRequest and notify' do
+                    expect(ssr.update_status_and_notify('submitted')).to eq(ssr.id)
+                    expect(ssr.reload.status).to eq('submitted')
+                  end
+                end
+
+                context 'and past_status is un-updatable' do
+                  let!(:past_status) { create(:past_status, sub_service_request: ssr, status: 'complete') }
+
+                  it 'should update the SubServiceRequest but not notify' do
+                    expect(ssr.update_status_and_notify('submitted')).to eq(nil)
+                    expect(ssr.reload.status).to eq('submitted')
+                  end
                 end
               end
 
-              context 'and past_status is updatable' do
-                let!(:past_status) { create(:past_status, sub_service_request: ssr, status: 'draft') }
+              context 'and current status != draft' do
+                let!(:ssr) { create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'awaiting_pi_approval') }
 
                 it 'should update the SubServiceRequest and notify' do
                   expect(ssr.update_status_and_notify('submitted')).to eq(ssr.id)
-                  expect(ssr.reload.status).to eq('submitted')
-                end
-              end
-
-              context 'and past_status is un-updatable' do
-                let!(:past_status) { create(:past_status, sub_service_request: ssr, status: 'complete') }
-
-                it 'should update the SubServiceRequest but not notify' do
-                  expect(ssr.update_status_and_notify('submitted')).to eq(nil)
                   expect(ssr.reload.status).to eq('submitted')
                 end
               end
             end
 
-            context 'and current status != draft' do
-              let!(:ssr) { create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'awaiting_pi_approval') }
+            context 'and ssr was previously submitted' do
+              let!(:ssr) { create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft', submitted_at: DateTime.now) }
 
-              it 'should update the SubServiceRequest and notify' do
-                expect(ssr.update_status_and_notify('submitted')).to eq(ssr.id)
-                expect(ssr.reload.status).to eq('submitted')
+              it 'should not notify' do
+                expect(ssr.update_status_and_notify('submitted')).to eq(nil)
               end
             end
           end
@@ -92,7 +93,7 @@ RSpec.describe SubServiceRequest, type: :model do
           context 'and new_status != submitted' do
             let!(:ssr) { create(:sub_service_request_without_validations, service_request: sr, organization: org, nursing_nutrition_approved: nil, lab_approved: nil, imaging_approved: nil, committee_approved: nil) }
 
-            it 'should update only status and notify' do
+            it 'should only update status and notify' do
               expect(ssr.update_status_and_notify('get_a_cost_estimate')).to eq(ssr.id)
               ssr.reload
               expect(ssr.status).to eq('get_a_cost_estimate')
@@ -105,22 +106,35 @@ RSpec.describe SubServiceRequest, type: :model do
         end
 
         context 'and current status is un-updatable' do
-          let!(:ssr) { create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'complete') }
+          let!(:ssr) { create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'pending') }
 
           it 'should not update the SubServiceRequest nor notify' do
             expect(ssr.update_status_and_notify('draft')).to eq(nil)
-            expect(ssr.reload.status).to eq('complete')
+            expect(ssr.reload.status).to eq('pending')
           end
+        end
+      end
+
+      context 'and the SSR can\'t be edited' do
+        let!(:ssr) {
+          ssr = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft')
+          allow(ssr).to receive(:can_be_edited?).and_return(false)
+          ssr
+        }
+
+        it 'should not update the SubServiceRequest nor notify' do
+          expect(ssr.update_status_and_notify('submitted')).to eq(nil)
+          expect(ssr.reload.status).to eq('draft')
         end
       end
     end
 
-    context 'and SubServiceRequest can\'t be edited' do
-      let!(:ssr) { create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'get_a_cost_estimate') }
+    context 'new status is the same as current status' do
+      let!(:ssr) { create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft') }
 
-      it 'should not update the SubServiceRequest nor notify' do
+      it 'should not update the SSR nor notify' do
         expect(ssr.update_status_and_notify('draft')).to eq(nil)
-        expect(ssr.reload.status).to eq('get_a_cost_estimate')
+        expect(ssr.reload.status).to eq('draft')
       end
     end
   end

@@ -41,7 +41,6 @@ class NotifierLogic
   def update_ssrs_and_send_emails
     # @to_notify holds the SSRs that require an "initial submission" email
     @send_request_amendment_and_not_initial = @ssrs_updated_from_un_updatable_status.present? || @destroyed_ssrs_needing_notification.present? || @created_ssrs_needing_notification.present?
-    @to_notify = []
     @to_notify = @service_request.update_status('submitted')
     @service_request.previous_submitted_at = @service_request.submitted_at
     @service_request.update_arm_minimum_counts
@@ -50,7 +49,6 @@ class NotifierLogic
   end
 
   def update_status_and_send_get_a_cost_estimate_email
-    to_notify = []
     to_notify = @service_request.update_status('get_a_cost_estimate')
     sub_service_requests = @service_request.sub_service_requests.where(id: to_notify)
     if !sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
@@ -89,12 +87,9 @@ class NotifierLogic
     # Filtering out the newly created draft ssrs
     ssrs_that_have_been_updated_from_a_un_updatable_status = []
     draft_ssrs.each do |ssr|
-      past_status = PastStatus.where(sub_service_request_id: ssr.id).last
-      un_updatable_statuses = SubServiceRequest.all.map(&:status).uniq - Setting.get_value("updatable_statuses")
-      if past_status.present?
-        if un_updatable_statuses.include?(past_status.status)
-          ssrs_that_have_been_updated_from_a_un_updatable_status << ssr
-        end
+      past_status = ssr.past_statuses.last.try(:status)
+      if past_status.present? && !Status.updatable?(past_status)
+        ssrs_that_have_been_updated_from_a_un_updatable_status << ssr
       end
     end
     ssrs_that_have_been_updated_from_a_un_updatable_status

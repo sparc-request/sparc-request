@@ -425,7 +425,7 @@ class ServiceRequest < ApplicationRecord
   def update_status(new_status)
     # Do not change the Service Request if it has been submitted
     update_attribute(:status, new_status) unless self.previously_submitted?
-    update_attribute(:submitted_at, Time.now) if new_status == 'submitted' && !self.previously_submitted?
+    update_attribute(:submitted_at, Time.now) if new_status == 'submitted'
 
     self.sub_service_requests.map do |ssr|
       ssr.update_status_and_notify(new_status)

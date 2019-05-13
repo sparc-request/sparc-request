@@ -41,8 +41,8 @@ class NotifierLogic
   def update_ssrs_and_send_emails
     # @to_notify holds the SSRs that require an "initial submission" email
     @send_request_amendment_and_not_initial = @ssrs_updated_from_un_updatable_status.present? || @destroyed_ssrs_needing_notification.present? || @created_ssrs_needing_notification.present?
-    @to_notify = @service_request.update_status('submitted')
     @service_request.previous_submitted_at = @service_request.submitted_at
+    @to_notify = @service_request.update_status('submitted')
     @service_request.update_arm_minimum_counts
     send_request_amendment_email_evaluation
     send_initial_submission_email
@@ -179,7 +179,6 @@ class NotifierLogic
   end
 
   def authorized_user_audit_report
-
     added_ssrs_ids = @created_ssrs_needing_notification.map(&:auditable_id)
 
     destroyed_ssrs_ids = @service_request.deleted_ssrs_since_previous_submission(true).map(&:auditable_id)
@@ -220,19 +219,15 @@ class NotifierLogic
   def destroyed_ssr_that_needs_a_request_amendment_email
     deleted_ssr_audits_that_need_request_amendment_email = []
     destroyed_ssr_audit = @service_request.deleted_ssrs_since_previous_submission
-
     destroyed_ssr_audit.each do |ssr_audit|
-      un_updatable_statuses = SubServiceRequest.all.map(&:status).uniq - Setting.get_value("updatable_statuses")
-      latest_action_update_audit = AuditRecovery.where("auditable_id = #{ssr_audit.auditable_id} AND action = 'update'")
-      latest_action_update_audit = latest_action_update_audit.present? ? latest_action_update_audit.order(created_at: :desc).first : nil
+      latest_action_update_audit = AuditRecovery.where("auditable_id = #{ssr_audit.auditable_id} AND action = 'update'").order(created_at: :desc).first
       if latest_action_update_audit.nil? || latest_action_update_audit.audited_changes['status'].nil?
-        latest_action_destroy_audit = AuditRecovery.where("auditable_id = #{ssr_audit.auditable_id} AND action = 'destroy'")
-        latest_action_destroy_audit = latest_action_destroy_audit.present? ? latest_action_destroy_audit.order(created_at: :desc).first : nil
-        if latest_action_destroy_audit.present? && un_updatable_statuses.include?(latest_action_destroy_audit.audited_changes['status'])
+        latest_action_destroy_audit = AuditRecovery.where("auditable_id = #{ssr_audit.auditable_id} AND action = 'destroy'").order(created_at: :desc).first
+        if latest_action_destroy_audit.present? && !Status.updatable?(latest_action_destroy_audit.audited_changes['status'])
           deleted_ssr_audits_that_need_request_amendment_email << ssr_audit
         end
       else
-        if un_updatable_statuses.include?(latest_action_update_audit.audited_changes['status'].first)
+        if !Status.updatable?(latest_action_update_audit.audited_changes['status'].first)
           deleted_ssr_audits_that_need_request_amendment_email << ssr_audit
         end
       end

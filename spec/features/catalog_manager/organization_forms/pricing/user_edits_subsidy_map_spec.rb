@@ -40,7 +40,7 @@ RSpec.describe 'User edits organization subsidy map', js: true do
         wait_for_javascript_to_finish
         click_link @provider.name
         wait_for_javascript_to_finish
-        click_link 'Pricing'
+        click_link I18n.t(:catalog_manager)[:organization_form][:headers][:pricing]
         wait_for_javascript_to_finish
         find("#edit_subsidy_map_button").click
         wait_for_javascript_to_finish
@@ -48,7 +48,7 @@ RSpec.describe 'User edits organization subsidy map', js: true do
 
       it 'should edit the max percentage' do
         fill_in 'subsidy_map_max_percentage', with: "100"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @subsidy_map.reload
@@ -57,7 +57,7 @@ RSpec.describe 'User edits organization subsidy map', js: true do
 
       it 'should edit the default percentage' do
         fill_in 'subsidy_map_default_percentage', with: "75"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @subsidy_map.reload
@@ -65,7 +65,7 @@ RSpec.describe 'User edits organization subsidy map', js: true do
       end
       it 'should edit the max dollar cap' do
         fill_in 'subsidy_map_max_dollar_cap', with: "150"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @subsidy_map.reload
@@ -75,7 +75,7 @@ RSpec.describe 'User edits organization subsidy map', js: true do
       it 'should edit the excluded funding sources' do
         bootstrap_select('#subsidy_map_excluded_funding_sources', 'Federal')
         find('form.form-horizontal').click
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @subsidy_map.reload
@@ -85,7 +85,7 @@ RSpec.describe 'User edits organization subsidy map', js: true do
 
       it 'should edit the instructions' do
         fill_in 'subsidy_map_instructions', with: "Use the subsidy!"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @subsidy_map.reload

@@ -40,7 +40,7 @@ RSpec.describe 'User edits Organization Pricing', js: true do
         wait_for_javascript_to_finish
         click_link @provider.name
         wait_for_javascript_to_finish
-        click_link 'Pricing'
+        click_link I18n.t(:catalog_manager)[:organization_form][:headers][:pricing]
         wait_for_javascript_to_finish
       end
 
@@ -49,7 +49,7 @@ RSpec.describe 'User edits Organization Pricing', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'pricing_setup_federal', with: "50.00"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @provider.reload
@@ -61,7 +61,7 @@ RSpec.describe 'User edits Organization Pricing', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'pricing_setup_corporate', with: "150.00"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @provider.reload
@@ -73,7 +73,7 @@ RSpec.describe 'User edits Organization Pricing', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'pricing_setup_other', with: "150.00"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @provider.reload
@@ -85,7 +85,7 @@ RSpec.describe 'User edits Organization Pricing', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'pricing_setup_member', with: "150.00"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @provider.reload
@@ -112,7 +112,7 @@ RSpec.describe 'User edits Organization Pricing', js: true do
         fill_in 'pricing_setup_federal', with: "50.00"
         find("#apply_federal_percent").click
         wait_for_javascript_to_finish
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @provider.reload
@@ -126,7 +126,7 @@ RSpec.describe 'User edits Organization Pricing', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'pricing_setup_federal', with: "150.00"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         expect(page).to have_content("Corporate must be greater than or equal to Federal Rate.")

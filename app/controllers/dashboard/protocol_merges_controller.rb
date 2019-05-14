@@ -38,7 +38,7 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
     elsif (master_protocol.has_clinical_services? && sub_protocol.has_clinical_services?)
       flash[:alert] = 'Both protocols have calendars. Only one protocol may have a calendar for merge to work.'
     elsif sub_protocol.fulfillment_protocols.any?
-      flash[:alert] = 'Protocol to be merge into Master Protocol cannot exist in SPARCFulfillment.'
+      flash[:alert] = 'Protocol to be merged into Master Protocol cannot exist in SPARCFulfillment.'
     else
       ActiveRecord::Base.transaction do
 
@@ -105,7 +105,7 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
         end
 
         #log change to DB
-        ProtocolMerge.create(master_protocol_id: master_protocol.id, merged_protocol_id: sub_protocol.id)
+        ProtocolMerge.create(master_protocol_id: master_protocol.id, merged_protocol_id: sub_protocol.id, identity_id: current_identity.id)
 
         #delete sub protocol
         sub_protocol.delete

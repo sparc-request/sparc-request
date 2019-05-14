@@ -75,6 +75,8 @@ module Dashboard
 
         delete_empty_srs(protocol)
       end
+
+      ServiceRequest.set_callback(:save, :after, :set_original_submitted_date)
     end
 
     private

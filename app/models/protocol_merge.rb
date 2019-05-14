@@ -1,0 +1,2 @@
+class ProtocolMerge < ApplicationRecord
+end

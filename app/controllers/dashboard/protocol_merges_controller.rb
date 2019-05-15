@@ -87,7 +87,6 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
 
         #assigning arms..."
         sub_protocol.arms.each do |arm|
-          check_arm_names(arm, master_protocol)
           arm.protocol_id = master_protocol.id
           arm.save(validate: false)
         end

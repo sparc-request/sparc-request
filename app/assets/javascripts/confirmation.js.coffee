@@ -23,6 +23,21 @@
 $(document).ready ->
   $(document).on 'click', 'tbody tr', ->
     ssrid = $(this).data('ssrid')
+    if ssrid
+      $.ajax
+        type: 'GET'
+        url: "/dashboard/sub_service_requests/#{ssrid}.js"
+
+  $(document).on 'click', 'button.notes',  ->
+    id = $(this).data('notable-id')
+    type = $(this).data('notable-type')
+
     $.ajax
       type: 'GET'
-      url: "/dashboard/sub_service_requests/#{ssrid}.js"
+      dataType: 'script'
+      url: '/notes'
+      data:
+        note:
+          notable_id: id
+          notable_type: type
+        review: true

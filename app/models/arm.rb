@@ -58,13 +58,13 @@ class Arm < ApplicationRecord
       if display_all_services
         self.line_items_visits.joins(:service).where.not(services: { cpt_code: [nil, ''] })
       else
-        self.line_items_visits.joins(:service, :visits).where.not(services: { cpt_code: [nil, ''] }, visits: { research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0 }).distinct
+        self.line_items_visits.joins(:service, :visits).where.not(services: { cpt_code: [nil, ''] }).where(Visit.arel_table[:research_billing_qty].gt(0).or(Visit.arel_table[:insurance_billing_qty].gt(0)).or(Visit.arel_table[:effort_billing_qty].gt(0))).distinct
       end
     else
       if display_all_services
         self.line_items_visits
       else
-        self.line_items_visits.joins(:visits).where.not(visits: { research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0 }).distinct
+        self.line_items_visits.joins(:visits).where(Visit.arel_table[:research_billing_qty].gt(0).or(Visit.arel_table[:insurance_billing_qty].gt(0)).or(Visit.arel_table[:effort_billing_qty].gt(0))).distinct
       end
     end
   end

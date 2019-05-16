@@ -46,7 +46,7 @@ RSpec.describe 'User edits Service Pricing Map', js: true do
         find('a span', text: @service.name).click
         wait_for_javascript_to_finish
 
-        click_link 'Pricing'
+        click_link I18n.t(:catalog_manager)[:organization_form][:headers][:pricing]
         wait_for_javascript_to_finish
       end
 
@@ -55,7 +55,7 @@ RSpec.describe 'User edits Service Pricing Map', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_full_rate', with: "150.00"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @service.reload
@@ -68,7 +68,7 @@ RSpec.describe 'User edits Service Pricing Map', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_federal_rate', with: "250.00"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         accept_confirm
         wait_for_javascript_to_finish
 
@@ -82,7 +82,7 @@ RSpec.describe 'User edits Service Pricing Map', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_corporate_rate', with: "350.00"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         accept_confirm
         wait_for_javascript_to_finish
 
@@ -96,7 +96,7 @@ RSpec.describe 'User edits Service Pricing Map', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_other_rate', with: "450.00"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         accept_confirm
         wait_for_javascript_to_finish
 
@@ -110,7 +110,7 @@ RSpec.describe 'User edits Service Pricing Map', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_member_rate', with: "550.00"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         accept_confirm
         wait_for_javascript_to_finish
 

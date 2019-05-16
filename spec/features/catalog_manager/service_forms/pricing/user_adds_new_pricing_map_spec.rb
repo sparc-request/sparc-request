@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+gggg# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -48,7 +48,7 @@ RSpec.describe 'User adds Service Pricing Map', js: true do
 
         find('a span', text: @service.name).click
         wait_for_javascript_to_finish
-        click_link 'Pricing'
+        click_link I18n.t(:catalog_manager)[:organization_form][:headers][:pricing]
         wait_for_javascript_to_finish
 
         find("#new_pricing_map_link").click
@@ -97,7 +97,7 @@ RSpec.describe 'User adds Service Pricing Map', js: true do
 
         find('a span', text: @service.name).click
         wait_for_javascript_to_finish
-        click_link 'Pricing'
+        click_link I18n.t(:catalog_manager)[:organization_form][:headers][:pricing]
         wait_for_javascript_to_finish
 
 
@@ -146,7 +146,7 @@ RSpec.describe 'User adds Service Pricing Map', js: true do
       it 'should disable Add Pricing Map button if there is no pricing setup' do
         find('a span', text: @service.name).click
         wait_for_javascript_to_finish
-        click_link 'Pricing'
+        click_link I18n.t(:catalog_manager)[:organization_form][:headers][:pricing]
         wait_for_javascript_to_finish
 
         expect(page).to have_selector('#new_pricing_map_link[disabled=disabled]')

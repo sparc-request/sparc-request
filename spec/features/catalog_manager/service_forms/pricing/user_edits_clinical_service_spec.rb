@@ -46,7 +46,7 @@ RSpec.describe 'User edits Service Pricing Map', js: true do
         find('a span', text: @service.name).click
         wait_for_javascript_to_finish
 
-        click_link 'Pricing'
+        click_link I18n.t(:catalog_manager)[:organization_form][:headers][:pricing]
         wait_for_javascript_to_finish
       end
 
@@ -55,7 +55,7 @@ RSpec.describe 'User edits Service Pricing Map', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_unit_type', with: "each"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         expect(@service.pricing_maps.first.unit_type).to eq("each")
@@ -66,7 +66,7 @@ RSpec.describe 'User edits Service Pricing Map', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_unit_factor', with: "1.00"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         expect(@service.pricing_maps.first.unit_factor.to_i).to eq(1)
@@ -77,7 +77,7 @@ RSpec.describe 'User edits Service Pricing Map', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_unit_minimum', with: "1"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         expect(@service.pricing_maps.first.unit_minimum).to eq(1)

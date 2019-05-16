@@ -46,7 +46,7 @@ RSpec.describe 'User edits Service Pricing Map', js: true do
         find('a span', text: @service.name).click
         wait_for_javascript_to_finish
 
-        click_link 'Pricing'
+        click_link I18n.t(:catalog_manager)[:organization_form][:headers][:pricing]
         wait_for_javascript_to_finish
       end
 
@@ -60,7 +60,7 @@ RSpec.describe 'User edits Service Pricing Map', js: true do
         find('#pricing_map_effective_date').click
         find('td.today').click
 
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @service.reload
@@ -75,7 +75,7 @@ RSpec.describe 'User edits Service Pricing Map', js: true do
         find('#pricing_map_display_date').click
         find('td.today').click
 
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         expect(page).to have_content('Effective date must be the same, or later than display date.')

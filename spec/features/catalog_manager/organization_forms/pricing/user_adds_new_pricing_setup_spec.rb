@@ -68,7 +68,7 @@ RSpec.describe 'User adds Organization Pricing Setup', js: true do
         bootstrap_select('#pricing_setup_foundation_rate_type', 'Federal Rate')
         bootstrap_select('#pricing_setup_unfunded_rate_type', 'Federal Rate')
 
-        click_button I18n.t(:catalog_manager)[:headers][:save]
+        click_button
         wait_for_javascript_to_finish
 
         @provider.reload

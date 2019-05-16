@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,16 +18,11 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
-<% unless @errors %>
-$("#per_patient_services").html("<%= escape_javascript(render(:partial =>'dashboard/sub_service_requests/per_patient_per_visit', locals: {sub_service_request: @sub_service_request, service_request: @service_request})) %>");
-
-$("#sub_service_request_header").html("<%= escape_javascript(render(partial: 'dashboard/sub_service_requests/header', locals: { sub_service_request: @sub_service_request })) %>");
-$("#subsidy_information").html("<%= escape_javascript(render(partial: 'dashboard/subsidies/subsidy', locals: { sub_service_request: @sub_service_request, admin: true })) %>");
+$("#per_patient_services").html("<%= j render 'dashboard/sub_service_requests/per_patient_per_visit', sub_service_request: @sub_service_request, service_request: @service_request %>")
+$("#sub_service_request_header").html("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request %>")
+$("#subsidy_information").html("<%= j render 'dashboard/subsidies/subsidy', sub_service_request: @sub_service_request, admin: true %>")
 $(".selectpicker").selectpicker()
+$("#modal_place").modal('hide')
+$("#flashes_container").html("<%= j render 'shared/flash' %>")
 
 refresh_study_schedule()
-
-$("#modal_place").modal 'hide'
-$("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
-<% end %>

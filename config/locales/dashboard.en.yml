@@ -357,6 +357,7 @@ en:
     sub_service_requests:
       header:
         status: "Status"
+        not_submitted: "Request must be submitted first"
         lock_message: "Request is in a locked status, and cannot be changed."
         owner: "Owner"
         fulfillment:
@@ -377,6 +378,7 @@ en:
             send_to_epic: "Send to Epic"
             core_approvals: "Administrative Approvals"
             export_to_excel: "Export to Excel"
+            last_sent: "Survey last sent on: %{date}"
             resend_surveys: "Resend Surveys"
             delete_request: "Delete Request"
           timeline:

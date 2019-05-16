@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,16 +19,16 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 = javascript_include_tag 'confirmation'
 
-= render '/service_requests/navigation/steps', service_request: @service_request, sub_service_request: @sub_service_request, step_text: @step_text, css_class: @css_class
+= render '/service_requests/navigation/steps', service_request: @service_request, step_text: @step_text, css_class: @css_class
 .col-sm-12.body-container#confirmation-page
-  = form_tag navigate_service_request_path(@service_request) do
+  = form_tag navigate_service_request_path(srid: @service_request.id) do
     = hidden_field_tag :location, ''
     = hidden_field_tag :validates, ''
     .form-group
-      %p.instructions.text-danger
+      %p.instructions.text-success
         = t(:proper)[:confirmation][:cost_estimate_warning]
     .form-group
       = render 'service_requests/confirmation/confirmation_details', service_request: @service_request
     .form-group.text-center
-      = link_to t(:proper)[:confirmation][:download_request], service_request_path(format: :xlsx, report_type: 'request_report'), class: 'btn btn-lg btn-success'
+      = link_to t(:proper)[:confirmation][:download_request], service_request_path(srid: @service_request.id, format: :xlsx, report_type: 'request_report'), class: 'btn btn-lg btn-success'
       = link_to t(:proper)[:confirmation][:to_dashboard], Setting.get_value("dashboard_link"), class: 'btn btn-lg btn-success'

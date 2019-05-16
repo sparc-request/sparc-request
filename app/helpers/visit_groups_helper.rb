@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,28 +21,11 @@
 module VisitGroupsHelper
   def visit_position_options(arm, visit_group=nil)
     if visit_group
-      options_from_collection_for_select(
-        arm.visit_groups.where.not(id: visit_group.id),
-        'position',
-        'insertion_name',
-        visit_group.position
-      ) +
-      content_tag(
-        :option,
-        t(:constants)[:add_as_last],
-        value: "#{arm.visit_groups.count+1}"
-      )
+      options_from_collection_for_select(arm.visit_groups.where.not(id: visit_group.id), :position, :insertion_name, visit_group.position + 1) +
+      content_tag(:option, t(:constants)[:add_as_last], value: (last_position = arm.visit_groups.maximum(:position)) + 1, selected: visit_group.position == last_position)
     else
-      options_from_collection_for_select(
-        arm.visit_groups,
-        'position',
-        'insertion_name'
-      ) +
-      content_tag(
-        :option,
-        t(:constants)[:add_as_last],
-        value: "#{arm.visit_groups.count+1}"
-      )
+      options_from_collection_for_select(arm.visit_groups, :position, :insertion_name) +
+      content_tag(:option, t(:constants)[:add_as_last], value: arm.visit_groups.maximum(:position) + 1)
     end
   end
 end

@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,4 +21,4 @@
 = stylesheet_link_tag 'protocol_form'
 
 #protocol
-  = render 'protocols/form/protocol_form', protocol: @protocol, protocol_type: @protocol_type, service_request: @service_request, rmid_server_down: @rmid_server_down
+  = render 'protocols/form/protocol_form', service_request: @service_request, protocol: @protocol, protocol_type: @protocol_type, rmid_server_down: @rmid_server_down

@@ -1,4 +1,4 @@
-/* Copyright © 2011-2018 MUSC Foundation for Research Development*/
+/* Copyright © 2011-2019 MUSC Foundation for Research Development*/
 /* All rights reserved.*/
 
 /* Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:*/
@@ -36,35 +36,6 @@
   .zero-cell
     color: lightgrey
 
-  .divider
-    width: 5px
-    height: auto
-    display: inline-block
-
-  button.notes
-    position: relative
-
-    &:hover
-      .note-icon
-        &.black-note
-          color: black
-        &.blue-note
-          color: blue
-
-      .badge
-        &.blue-badge
-          background-color: blue
-
-    .note-icon
-      color: grey
-      font-size: 18px
-
-    .badge
-      background-color: grey
-      position: absolute
-      top: -10px
-      left: 10px
-
   .panel-title
     width: 100%
 
@@ -98,8 +69,8 @@
       display: table
       width: 100%
       table-layout: fixed
-    thead.scrolling-thead
-      width: calc( 100% - 1em )
+    //.scrolling-thead
+      //width: calc( 100% - 1em )
     thead
       font-size: 13px
       border-bottom: 2px solid #DDD
@@ -180,12 +151,24 @@
       td.maximum-total-per-patient-width-template,
       td.maximum-total-direct-cost-per-patient-template,
       td.total-per-patient-per-visit-cost-per-study-width-template,
-        width: 55.1%
+        width: 54.5%
       td.total-costs-width-template
         width: 41.7%
-
       td
         vertical-align: middle
+      td.visit.template-visit, td.visit.billing-visit:not(.locked-visit)
+        cursor: pointer
+
+        &:hover
+          a
+            color: #22527b
+          .visit-quantity
+            box-shadow: 0 0 2px 2px #ddd
+
+        .visit-quantity
+          transform: scale(1.75)
+          cursor: pointer
+
 
       .unit-type.col-sm-6,
       .qty-type
@@ -195,7 +178,7 @@
       display: block
       overflow-y: scroll
       height: 100%
-      max-height: 450px 
+      max-height: 450px
       tr
         display: table
         width: 100%
@@ -203,7 +186,7 @@
       .maximum-total-per-patient-width-template,
       .maximum-total-direct-cost-per-patient-template,
       .total-per-patient-per-visit-cost-per-study-width-template,
-        width: 54.8%
+        width: 54.5%
       .max-total-per-patient-width,
       .maximum-total-direct-cost-per-patient-width,
       .total-per-patient-per-visit-cost-per-study-width,
@@ -262,11 +245,11 @@ th.visit-group-select > div
 .tooltip-inner
   width: 500px
 
-.scrolling-div::-webkit-scrollbar 
+.scrolling-div::-webkit-scrollbar
   width: 1em
 .scrolling-div::-webkit-scrollbar-track
   -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5)
   border-radius: 10px
-.scrolling-div::-webkit-scrollbar-thumb 
+.scrolling-div::-webkit-scrollbar-thumb
   border-radius: 10px
   background-color: #337ab7

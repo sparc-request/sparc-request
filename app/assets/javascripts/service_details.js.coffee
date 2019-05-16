@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -28,7 +28,7 @@ $(document).ready ->
       url: '/arms/new'
       data:
         protocol_id: $(this).data('protocol-id')
-        service_request_id: getSRId()
+        srid: getSRId()
     return false
 
   $(document).on 'click', '.edit-arm-button', ->
@@ -37,7 +37,7 @@ $(document).ready ->
       type: 'get'
       url: "/arms/#{arm_id}/edit"
       data:
-        service_request_id: getSRId()
+        srid: getSRId()
 
   $(document).on 'click', '#edit-arm-form-button', ->
     $(this).attr('disabled','disabled')
@@ -48,7 +48,7 @@ $(document).ready ->
       arm_id = $(this).data('arm-id')
       $.ajax
         type: 'delete'
-        url: "/arms/#{arm_id}?service_request_id=#{getSRId()}"
+        url: "/arms/#{arm_id}?srid=#{getSRId()}"
 
   $('#arms-table').on 'all.bs.table', ->
     $('.screening-info').tooltip()

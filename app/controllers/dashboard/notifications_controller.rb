@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -68,7 +68,7 @@ class Dashboard::NotificationsController < Dashboard::BaseController
         ssr = @notification.sub_service_request
         @notifications = Notification.belonging_to(@user.id, params[:sub_service_request_id])
 
-        UserMailer.notification_received(@recipient, ssr).deliver unless @recipient.email.blank?
+        UserMailer.notification_received(@recipient, ssr, @user).deliver unless @recipient.email.blank?
         flash[:success] = 'Notification Sent!'
       else
         @errors = @message.errors

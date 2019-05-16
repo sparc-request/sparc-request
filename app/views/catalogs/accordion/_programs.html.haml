@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,17 +17,13 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 %table
   %tbody
     - programs.select{ |prog| prog.is_available != false }.each do |p|
-      - # Skip the program if:
-      - # 1. We are editing an SSR
-      - # 2. The provider was not the process_ssr organization
-      - # 3. The program is not the ssr_org or an ancestor of the ssr_org
-      - next if ssr_org && !provider_is_process_ssr && !((program_is_process_ssr = ssr_org == p) || ssr_org.parents.include?(p))
       - locked = locked_ids.include?(p.id)
 
       %tr
         %td
-          %div.program-link.text-left{ class: locked ? 'bg-danger text-danger locked-program' : '', data: { id: p.id, process_ssr_found: program_is_process_ssr.to_s } }
+          %div.program-link.text-left{ class: [locked ? 'bg-danger text-danger locked-program' : '', @program == p ? 'clicked' : ''], data: { id: p.id } }
             = organization_name_display(p, locked)

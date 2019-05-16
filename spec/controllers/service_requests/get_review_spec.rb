@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -54,9 +54,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      get :review, params: {
-        id: sr.id
-      }, xhr: true
+      get :review, params: { srid: sr.id }, xhr: true
 
       expect(assigns(:tab)).to eq('calendar')
     end
@@ -69,9 +67,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      get :review, params: {
-        id: sr.id
-      }, xhr: true
+      get :review, params: { srid: sr.id }, xhr: true
 
       expect(assigns(:review)).to eq(true)
     end
@@ -84,9 +80,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      get :review, params: {
-        id: sr.id
-      }, xhr: true
+      get :review, params: { srid: sr.id }, xhr: true
 
       expect(assigns(:portal)).to eq(false)
     end
@@ -99,9 +93,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      get :review, params: {
-        id: sr.id
-      }, xhr: true
+      get :review, params: { srid: sr.id }, xhr: true
 
       expect(assigns(:merged)).to eq(true)
     end
@@ -114,9 +106,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      get :review, params: {
-        id: sr.id
-      }, xhr: true
+      get :review, params: { srid: sr.id }, xhr: true
 
       expect(assigns(:consolidated)).to eq(false)
     end
@@ -132,9 +122,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       arm2     = create(:arm, protocol: protocol)
       pages    = { arm1.id => 1, arm2.id => 1 }
 
-      get :review, params: {
-        id: sr.id
-      }, xhr: true
+      get :review, params: { srid: sr.id }, xhr: true
 
       expect(assigns(:pages)).to eq(pages)
     end
@@ -147,9 +135,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      get :review, params: {
-        id: sr.id
-      }, xhr: true
+      get :review, params: { srid: sr.id }, xhr: true
 
       expect(controller).to render_template(:review)
     end
@@ -162,9 +148,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      get :review, params: {
-        id: sr.id
-      }, xhr: true
+      get :review, params: { srid: sr.id }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,8 +21,8 @@
 FactoryBot.define do
 
   factory :clinical_provider do
-    identity nil
-    organization nil
+    identity {nil}
+    organization {nil}
 
     trait :with_identity_and_organization do
       identity

@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -45,9 +45,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
       li2      = create(:line_item, service_request: sr, sub_service_request: ssr, service: service2)
       ServiceRelation.create(service_id: service.id, related_service_id: service2.id, required: true)
 
-
-      post :remove_service, params: {
-        id: sr.id,
+      delete :remove_service, params: {
+        srid: sr.id,
         line_item_id: li.id
       }, xhr: true
 
@@ -62,9 +61,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, protocol_id: protocol.id)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-
-      post :remove_service, params: {
-        id: sr.id,
+      delete :remove_service, params: {
+        srid: sr.id,
         line_item_id: li.id
       }, xhr: true
 
@@ -80,9 +78,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'complete', protocol_id: protocol.id)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-
-      post :remove_service, params: {
-        id: sr.id,
+      delete :remove_service, params: {
+        srid: sr.id,
         line_item_id: li.id
       }, xhr: true
 
@@ -101,8 +98,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
         org.editable_statuses.where(status: 'on_hold').destroy_all
 
-        post :remove_service, params: {
-          id: sr.id,
+        delete :remove_service, params: {
+          srid: sr.id,
           line_item_id: li.id
         }, xhr: true
 
@@ -120,10 +117,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                    create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
-        session[:identity_id]        = logged_in_user.id
+        session[:identity_id] = logged_in_user.id
 
-        post :remove_service, params: {
-          id: sr.id,
+        delete :remove_service, params: {
+          srid: sr.id,
           line_item_id: li.id
         }, xhr: true
 
@@ -139,10 +136,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                    create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
-        session[:identity_id]        = logged_in_user.id
+        session[:identity_id] = logged_in_user.id
 
-        post :remove_service, params: {
-          id: sr.id,
+        delete :remove_service, params: {
+          srid: sr.id,
           line_item_id: li.id
         }, xhr: true
 
@@ -161,9 +158,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                    create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
-
-        post :remove_service, params: {
-          id: sr.id,
+        delete :remove_service, params: {
+          srid: sr.id,
           line_item_id: li.id
         }, xhr: true
 
@@ -180,10 +176,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
         ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'first_draft', protocol_id: protocol.id)
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-        session[:identity_id]        = logged_in_user.id
+        session[:identity_id] = logged_in_user.id
 
-        post :remove_service, params: {
-          id: sr.id,
+        delete :remove_service, params: {
+          srid: sr.id,
           line_item_id: li.id
         }, xhr: true
 
@@ -200,9 +196,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
-
-      post :remove_service, params: {
-        id: sr.id,
+      delete :remove_service, params: {
+        srid: sr.id,
         line_item_id: li.id
       }, xhr: true
 
@@ -218,9 +213,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
-
-      post :remove_service, params: {
-        id: sr.id,
+      delete :remove_service, params: {
+        srid: sr.id,
         line_item_id: li.id
       }, xhr: true
 
@@ -235,9 +229,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, protocol_id: protocol.id)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-
-      post :remove_service, params: {
-        id: sr.id,
+      delete :remove_service, params: {
+        srid: sr.id,
         line_item_id: li.id
       }, xhr: true
 
@@ -252,9 +245,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, protocol_id: protocol.id)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-
-      post :remove_service, params: {
-        id: sr.id,
+      delete :remove_service, params: {
+        srid: sr.id,
         line_item_id: li.id
       }, xhr: true
 

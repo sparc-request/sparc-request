@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -35,7 +35,7 @@
       = render 'associated_users/form/primary_pi_warning', protocol: protocol, identity: identity
       = form_for project_role, url: determine_url(dashboard, project_role), remote: true, html: { class: "protocol-role-form" } do |form|
         - unless dashboard
-          = hidden_field_tag :service_request_id, service_request.id
+          = hidden_field_tag :srid, service_request.id
         = form.hidden_field :identity_id
         = form.hidden_field :protocol_id
         .row
@@ -48,7 +48,7 @@
                 = identity_form.text_field :era_commons_name, class: 'form-control'
 
               = user_form_group(name: :credentials, form: identity_form) do
-                = identity_form.select :credentials, options_for_select(PermissibleValue.order(:sort_order).get_inverted_hash('user_credential'), identity.credentials), { include_blank: t(:authorized_users)[:form_fields][:credentials_prompt] }, class: 'form-control selectpicker'
+                = identity_form.select :credentials, options_for_select(PermissibleValue.get_inverted_hash('user_credential'), identity.credentials), { include_blank: t(:authorized_users)[:form_fields][:credentials_prompt] }, class: 'form-control selectpicker'
 
               = user_form_group(name: :credentials_other, classes: ['credentials_dependent other', identity_form.object.credentials == 'other' ? '' : 'hidden'], form: identity_form, title: t(:authorized_users)[:form_fields][:credentials_specify], required: true) do
                 = identity_form.text_field :credentials_other, class: 'form-control'
@@ -59,10 +59,10 @@
                 = identity_form.text_field :phone, class: 'form-control'
 
               = user_form_group(name: :subspecialty, classes: ['role_dependent subspecialty', ['pi', 'primary-pi'].include?(form.object.role) ? '' : 'hidden'], form: identity_form) do
-                = identity_form.select :subspecialty, options_for_select((PermissibleValue.order(:sort_order).get_inverted_hash('subspecialty')), identity.subspecialty), { include_blank: t(:authorized_users)[:form_fields][:subspecialty_prompt] }, class: 'form-control selectpicker'
+                = identity_form.select :subspecialty, options_for_select((PermissibleValue.get_inverted_hash('subspecialty')), identity.subspecialty), { include_blank: t(:authorized_users)[:form_fields][:subspecialty_prompt] }, class: 'form-control selectpicker'
 
             = user_form_group(name: :role, form: form, required: true) do
-              = form.select :role, options_for_select(PermissibleValue.order(:sort_order).get_inverted_hash('user_role'), form.object.role), { include_blank: t(:authorized_users)[:form_fields][:role_prompt] }, class: 'form-control selectpicker'
+              = form.select :role, options_for_select(PermissibleValue.get_inverted_hash('user_role'), form.object.role), { include_blank: t(:authorized_users)[:form_fields][:role_prompt] }, class: 'form-control selectpicker'
 
             = user_form_group(name: :role_specify, classes: ['role_dependent other', form.object.role == 'other' ? '' : 'hidden'], form: form, required: true) do
               = form.text_field :role_other, class: 'form-control'

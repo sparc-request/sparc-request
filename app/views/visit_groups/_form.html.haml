@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development~
+-# Copyright © 2011-2019 MUSC Foundation for Research Development~
 -# All rights reserved.~
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 .modal-dialog.modal-md
-  = form_for @visit_group, remote: true, url: visit_group_path(@visit_group, service_request_id: params[:service_request_id], sub_service_request_id: params[:sub_service_request_id], page: params[:page], pages: params[:pages], tab: params[:tab], portal: params[:portal], admin: params[:admin], review: params[:review], merged: params[:merged], consolidated: params[:consolidated], statuses_hidden: params[:statuses_hidden]), html: { method: 'put', class: 'modal-content form-horizontal visit-group-form' } do |f|
+  = form_for @visit_group, remote: true, url: visit_group_path(@visit_group, srid: params[:srid], sub_service_request_id: params[:sub_service_request_id], page: params[:page], pages: params[:pages], tab: params[:tab], portal: params[:portal], admin: params[:admin], review: params[:review], merged: params[:merged], consolidated: params[:consolidated], statuses_hidden: params[:statuses_hidden]), html: { method: 'put', class: 'modal-content form-horizontal visit-group-form' } do |f|
     .modal-header
       %button.close{type: 'button', data: {dismiss: 'modal'}}
         %span{aria: {hidden:'true'}} &times;

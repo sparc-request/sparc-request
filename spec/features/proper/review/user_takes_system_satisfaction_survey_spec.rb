@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -32,7 +32,7 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
                   create(:pricing_setup, organization: program)
     service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
     @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2)
-    @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
+    @sr         = create(:service_request_without_validations, status: 'draft', protocol: @protocol)
     ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                   create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
                   create(:arm, protocol: @protocol)
@@ -40,16 +40,15 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
 
   context 'but system is not using system satisfaction survey' do
     before :each do
-      visit review_service_request_path(@sr)
+      visit review_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
     end
 
     context 'by clicking Get a Cost Estimate' do
       scenario 'and is taken directly to Obtain Research Pricing' do
         click_link 'Get a Cost Estimate'
-        cost_estimate_page = obtain_research_pricing_service_request_path(@sr)
-        wait_for_page(cost_estimate_page)
-        expect(current_path).to eq(cost_estimate_page)
+        wait_for_page(obtain_research_pricing_service_request_path)
+        expect(current_path).to eq(obtain_research_pricing_service_request_path)
       end
     end
 
@@ -57,8 +56,8 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
       scenario 'and is taken directly to Confirmation' do
         click_link 'Submit Request'
         wait_for_javascript_to_finish
-
-        expect(current_path).to eq(confirmation_service_request_path(@sr))
+        wait_for_page(confirmation_service_request_path)
+        expect(current_path).to eq(confirmation_service_request_path)
       end
     end
   end
@@ -69,7 +68,7 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
     before :each do
       @survey = create(:system_survey, access_code: 'system-satisfaction-survey', title: 'System Satisfaction Survey', active: true)
 
-      visit review_service_request_path(@sr)
+      visit review_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
     end
 
@@ -87,9 +86,8 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
         scenario 'and is redirected to Obtain Research Pricing' do
           find('#modal_place .no-button').click
           wait_for_javascript_to_finish
-          cost_estimate_page = obtain_research_pricing_service_request_path(@sr)
-          wait_for_page(cost_estimate_page)
-          expect(current_path).to eq(cost_estimate_page)
+          wait_for_page(obtain_research_pricing_service_request_path)
+          expect(current_path).to eq(obtain_research_pricing_service_request_path)
         end
       end
 
@@ -114,9 +112,8 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
           end
 
           scenario 'and is redirected to Obtain Research Pricing' do
-            cost_estimate_page = obtain_research_pricing_service_request_path(@sr)
-            wait_for_page(cost_estimate_page)
-            expect(current_path).to eq(cost_estimate_page)
+            wait_for_page(obtain_research_pricing_service_request_path)
+            expect(current_path).to eq(obtain_research_pricing_service_request_path)
           end
         end
       end
@@ -136,9 +133,8 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
         scenario 'and is redirected to Confirmation ' do
           find('#modal_place .no-button').click
           wait_for_javascript_to_finish
-          confirmation_page = confirmation_service_request_path(@sr)
-          wait_for_page(confirmation_page)
-          expect(current_path).to eq(confirmation_page)
+          wait_for_page(confirmation_service_request_path)
+          expect(current_path).to eq(confirmation_service_request_path)
         end
       end
 
@@ -163,9 +159,8 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
           end
 
           scenario 'and is redirected to Confirmation' do
-            confirmation_page = confirmation_service_request_path(@sr)
-            wait_for_page(confirmation_page)
-            expect(current_path).to eq(confirmation_page)
+            wait_for_page(confirmation_service_request_path)
+            expect(current_path).to eq(confirmation_service_request_path)
           end
         end
       end

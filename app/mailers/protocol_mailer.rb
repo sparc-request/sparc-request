@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,35 +18,34 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'rails_helper'
+class ProtocolMailer < ActionMailer::Base
+  helper ApplicationHelper
+  helper NotifierHelper
 
-RSpec.describe 'User views a SSR', js: true do
-  let_there_be_lane
+  default from: Setting.get_value("no_reply_from")
 
-  fake_login_for_each_test
+  # https://www.pivotaltracker.com/story/show/161483270
+  def archive_email
+    @protocol             = params[:protocol]
+    @archiver             = params[:archiver]
+    @action               = params[:action]
+    @service_request      = @protocol.service_requests.first
+    @ssrs_to_be_displayed = @protocol.sub_service_requests.where.not(status: Setting.get_value('finished_statuses') << 'draft')
 
-  before :each do
-    institution = create(:institution, name: "Institution")
-    provider    = create(:provider, name: "Provider", parent: institution)
-    program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
-    service     = create(:service, name: "Service", abbreviation: "Service", organization: program, pricing_map_count: 1)
-                  create(:pricing_setup, organization: program)
-    @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2)
-    @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
-    ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
-                  create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-                  create(:arm, protocol: @protocol, visit_count: 1)
+    archive_email_recipients.each do |recipient|
+      send_email(recipient, t('mailers.protocol_mailer.archive_email.subject', protocol_id: @protocol.id))
+    end
   end
 
-  context 'and clicks the row' do
-    scenario 'and sees the view SSR modal' do
-      visit confirmation_service_request_path(@sr)
-      wait_for_javascript_to_finish
+  private
 
-      find('#request-ssrs-table tbody tr').click
-      wait_for_javascript_to_finish
+  def send_email(recipient, subject)
+    @send_to = recipient
 
-      expect(page).to have_selector('.modal-dialog', text: 'Program', visible: true)
-    end
+    mail(to: recipient.email, subject: subject)
+  end
+
+  def archive_email_recipients
+    (@protocol.identities + @ssrs_to_be_displayed.map(&:candidate_owners).flatten).uniq
   end
 end

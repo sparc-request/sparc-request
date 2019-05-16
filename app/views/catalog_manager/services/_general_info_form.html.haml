@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -63,10 +63,16 @@
       = f.label :tag_list, t(:catalog_manager)[:organization_form][:tag_list], class: 'col-sm-3 control-label'
       .col-sm-9
         = f.select :tag_list, options_from_collection_for_select(tags, :name, :humanized_name, service.tags.pluck(:name)), {}, class: 'form-control selectpicker', multiple: true, data: { none_selected_text: t(:constants)[:prompts][:none]}
+  .form-group.shareable-link{ class: service.is_available ? '' : 'hidden' }
+    = label_tag :share_link, t(:catalog_manager)[:service_form][:share_link], class: 'col-sm-3 control-label'
+    .col-sm-9
+      .input-group
+        = text_field_tag :share_link, service.direct_link, class: 'form-control', readonly: true
+        %span.input-group-btn
+          %button.btn.btn-default.copy-to-clipboard{ type: 'button', title: t(:actions)[:copy_clipboard][:action], data: { toggle: 'tooltip', target: 'share_link' } }
+            %span.glyphicon.glyphicon-copy
 
   %hr
   .pull-right
     %input.btn.btn-default#close-general-info{ type: 'button', value: t(:actions)[:close], data: {toggle: 'collapse', target: '#general-info-collapse'}}
     %input.btn.btn-primary{ type: 'submit', value: t(:actions)[:save]}
-
-  .clearfix

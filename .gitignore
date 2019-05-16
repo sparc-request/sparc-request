@@ -44,6 +44,7 @@ config/alfresco.yml
 config/database.yml
 config/ldap.yml
 config/application.yml
+config/fulfillment_db.yml
 config/ldap.yml
 config/epic.yml
 config/cas.yml

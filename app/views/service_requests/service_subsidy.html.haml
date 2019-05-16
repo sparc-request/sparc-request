@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,11 +19,9 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 = javascript_include_tag 'service_subsidy'
 
-= render '/service_requests/navigation/steps', service_request: @service_request, sub_service_request: @sub_service_request, step_text: @step_text, css_class: @css_class
+= render '/service_requests/navigation/steps', service_request: @service_request, step_text: @step_text, css_class: @css_class
 .col-sm-12.body-container#service-subsidy-page
-  = form_tag navigate_service_request_path(@service_request), id: 'service-request-form', class: 'form-horizontal' do
-    - if @sub_service_request
-      = hidden_field_tag :sub_service_request_id, @sub_service_request.id
+  = form_tag navigate_service_request_path(srid: @service_request.id), id: 'service-request-form', class: 'form-horizontal' do
     = render 'service_requests/service_subsidy/service_subsidy_left', service_request: @service_request, has_subsidy: @has_subsidy, eligible_for_subsidy: @eligible_for_subsidy
-    = render 'service_requests/service_subsidy/service_subsidy_right', service_request: @service_request, sub_service_request: @sub_service_request, sub_service_requests: @sub_service_requests, line_items_count: @line_items_count
-= render 'service_requests/navigation/footer', service_request: @service_request, sub_service_request_id: @sub_service_request.try(:id), css_class: @css_class, back: @back, forward: @forward
+    = render 'service_requests/service_subsidy/service_subsidy_right', service_request: @service_request, sub_service_requests: @sub_service_requests
+= render 'service_requests/navigation/footer', service_request: @service_request, css_class: @css_class, back: @back, forward: @forward

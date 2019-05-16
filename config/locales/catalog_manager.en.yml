@@ -20,7 +20,7 @@
 
 en:
   catalog_manager:
-    header: "SPARC Request Services Catalog"
+    header: "SPARCRequest Services Catalog"
     headers:
       actions: "Actions"
       automatic: "Automatic Pricing Adjustment"
@@ -41,13 +41,13 @@ en:
         program: "Create New Program"
         provider: "Create New Provider"
         service: "Create New Service"
-      search_placeholder: "Search by Organization or Service Name..."
+      search_placeholder: "Search by Organization or Service Name, CPT Code, or EAP ID"
       pricing_map1: "No Pricing Map Changes"
       pricing_map2: "Save and Apply to Pricing Maps"
 
     organization_form:
       headers:
-        associated_surveys: "Associated Surveys"
+        associated_surveys: "Surveys"
         general_info: "General Information"
         pricing: "Pricing"
         status_options: "Status Options"
@@ -95,19 +95,13 @@ en:
         source_of_price: "Source of Price / Rate"
         percent_of_fee: "Percent of Fee"
         rates: "Rates"
-        display_date: "Display Date *"
-        effective_date: "Effective Date *"
+        display_date: "Display Date"
+        effective_date: "Effective Date"
         charge_master: "Charge Master"
         federal: "Federal"
-        corporate: "Corporate *"
-        other: "Other *"
-        member: "Member *"
-        college: "College *"
-        industry: "Industry *"
-        investigator: "Investigator *"
-        internal: "Internal *"
-        foundation: "Foundation *"
-        unfunded: "Unfunded Student Research *"
+        corporate: "Corporate"
+        member: "Member"
+        other: "Other"
         required_field: "* Required Field"
         must_be_greater: "* Must be greater than or equal to Federal Percent"
         apply_federal: "Apply Federal % to All"
@@ -187,8 +181,6 @@ en:
       new_related_services: "New Related Service"
       service: "Service"
       required: "Required?"
-      linked_quantity: "Linked Quantity?"
-      linked_quantity_total: "Quantity Total:"
       remove_add: "Remove / Add"
       remove_related_service_confirm: "Are you sure you want to delete the selected related service from this service?"
       service_in_list: "is already related to this service."
@@ -203,6 +195,7 @@ en:
       remove_component_confirm: "Are you sure you want to delete the selected service component from this service?"
       org_is_disabled: "Parent Organization is disabled."
       no_pricing_maps: "Service must have at least one pricing map to display in SPARC."
+      share_link: "Shareable Link"
 
       pricing_map_form:
         add_pricing: "Add Pricing Map"

@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,13 +19,11 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 = javascript_include_tag 'service_calendar'
 
-= render '/service_requests/navigation/steps', service_request: @service_request, sub_service_request: @sub_service_request, step_text: @step_text, css_class: @css_class
+= render '/service_requests/navigation/steps', service_request: @service_request, step_text: @step_text, css_class: @css_class
 .col-sm-12.body-container
-  = form_tag navigate_service_request_path(@service_request), id: 'service-request-form' do
-    - if @sub_service_request
-      = hidden_field_tag :sub_service_request_id, @sub_service_request.id
+  = form_tag navigate_service_request_path(srid: @service_request.id), id: 'service-request-form' do
     - if params[:navigate]
       = render 'shared/modal_errors', errors: @errors
     = render 'service_calendars/quantity_billing_labels'
-    = render 'service_requests/service_calendar/tabs', service_request: @service_request, sub_service_request: @sub_service_request
-= render 'service_requests/navigation/footer', service_request: @service_request, sub_service_request_id: @sub_service_request.try(:id), css_class: @css_class, back: @back, forward: @forward
+    = render 'service_requests/service_calendar/tabs', service_request: @service_request
+= render 'service_requests/navigation/footer', service_request: @service_request, css_class: @css_class, back: @back, forward: @forward

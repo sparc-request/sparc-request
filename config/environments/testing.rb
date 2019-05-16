@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -53,4 +53,19 @@ SparcRails::Application.configure do
   config.assets.debug = true
 
   config.action_mailer.default_url_options = { :host => 'sparc-d.obis.musc.edu' }
+
+  config.after_initialize do
+    # Need to do this after initialization so that the database is loaded
+    begin
+      new_options = { host: Setting.get_value("root_url") }
+      config.action_mailer.default_url_options = new_options
+
+      # By the time we run ActionMailer has already copied the options
+      # from config so we need to override here to really make the change
+      # We only set the default_url_options to keep the settings consistent
+      ActionMailer::Base.default_url_options = new_options
+    rescue
+      puts "WARNING: Database does not exist, restart server after database has been created and populated, to set mailer default url options from database."
+    end
+  end
 end

@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,10 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class NotifierLogic
 
-  def initialize(service_request, sub_service_request, current_user)
+  def initialize(service_request, current_user)
     @service_request = service_request
     @current_user = current_user
-    @sub_service_request = sub_service_request
     @destroyed_ssrs_needing_notification = destroyed_ssr_that_needs_a_request_amendment_email
     @created_ssrs_needing_notification = @service_request.created_ssrs_since_previous_submission
     @ssrs_updated_from_un_updatable_status = ssrs_that_have_been_updated_from_a_un_updatable_status
@@ -42,36 +41,20 @@ class NotifierLogic
   def update_ssrs_and_send_emails
     # @to_notify holds the SSRs that require an "initial submission" email
     @send_request_amendment_and_not_initial = @ssrs_updated_from_un_updatable_status.present? || @destroyed_ssrs_needing_notification.present? || @created_ssrs_needing_notification.present?
-    @to_notify = []
-    if @sub_service_request
-      @to_notify = @sub_service_request.update_status_and_notify('submitted')
-    else
-      @to_notify = @service_request.update_status('submitted')
-      @service_request.previous_submitted_at = @service_request.submitted_at
-      @service_request.update_attribute(:submitted_at, Time.now)
-      @service_request.update_arm_minimum_counts
-    end
+    @service_request.previous_submitted_at = @service_request.submitted_at
+    @to_notify = @service_request.update_status('submitted')
+    @service_request.update_arm_minimum_counts
     send_request_amendment_email_evaluation
     send_initial_submission_email
   end
 
   def update_status_and_send_get_a_cost_estimate_email
-    to_notify = []
-    if @sub_service_request
-      to_notify = @sub_service_request.update_status_and_notify('get_a_cost_estimate')
-      if to_notify.include?(@sub_service_request.id)
-        send_user_notifications(request_amendment: false, admin_delete_ssr: false, deleted_ssr: nil)
-        send_admin_notifications([@sub_service_request], request_amendment: false)
-        send_service_provider_notifications([@sub_service_request], request_amendment: false)
-      end
-    else
-      to_notify = @service_request.update_status('get_a_cost_estimate')
-      sub_service_requests = @service_request.sub_service_requests.where(id: to_notify)
-      if !sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
-        send_user_notifications(request_amendment: false, admin_delete_ssr: false, deleted_ssr: nil)
-        send_admin_notifications(sub_service_requests, request_amendment: false)
-        send_service_provider_notifications(sub_service_requests, request_amendment: false)
-      end
+    to_notify = @service_request.update_status('get_a_cost_estimate')
+    sub_service_requests = @service_request.sub_service_requests.where(id: to_notify)
+    if !sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
+      send_user_notifications(request_amendment: false, admin_delete_ssr: false, deleted_ssr: nil)
+      send_admin_notifications(sub_service_requests, request_amendment: false)
+      send_service_provider_notifications(sub_service_requests, request_amendment: false)
     end
   end
 
@@ -88,11 +71,10 @@ class NotifierLogic
     sub_service_requests.each do |sub_service_request|
       audit_report = request_amendment ? sub_service_request.audit_line_items(@current_user) : nil
       sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-        individual_ssr = @sub_service_request.present? ? true : false
         if ssr_destroyed
-          Notifier.notify_admin(submission_email.email, @current_user, sub_service_request, audit_report, ssr_destroyed, individual_ssr).deliver_now
+          Notifier.notify_admin(submission_email.email, @current_user, sub_service_request, audit_report, ssr_destroyed).deliver_now
         else
-          Notifier.delay.notify_admin(submission_email.email, @current_user, sub_service_request, audit_report, ssr_destroyed, individual_ssr)
+          Notifier.delay.notify_admin(submission_email.email, @current_user, sub_service_request, audit_report, ssr_destroyed)
         end
       end
     end
@@ -105,12 +87,9 @@ class NotifierLogic
     # Filtering out the newly created draft ssrs
     ssrs_that_have_been_updated_from_a_un_updatable_status = []
     draft_ssrs.each do |ssr|
-      past_status = PastStatus.where(sub_service_request_id: ssr.id).last
-      un_updatable_statuses = SubServiceRequest.all.map(&:status).uniq - Setting.get_value("updatable_statuses")
-      if past_status.present?
-        if un_updatable_statuses.include?(past_status.status)
-          ssrs_that_have_been_updated_from_a_un_updatable_status << ssr
-        end
+      past_status = ssr.past_statuses.last.try(:status)
+      if past_status.present? && !Status.updatable?(past_status)
+        ssrs_that_have_been_updated_from_a_un_updatable_status << ssr
       end
     end
     ssrs_that_have_been_updated_from_a_un_updatable_status
@@ -118,9 +97,7 @@ class NotifierLogic
 
 
   def send_initial_submission_email
-    if @sub_service_request && @to_notify.include?(@sub_service_request.id)
-      send_notifications([@sub_service_request])
-    elsif !@to_notify.empty?
+    unless @to_notify.empty?
       sub_service_requests = @service_request.sub_service_requests.where(id: @to_notify)
       send_notifications(sub_service_requests) unless sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
     end
@@ -148,14 +125,9 @@ class NotifierLogic
   def send_user_notifications(request_amendment: false, admin_delete_ssr: false, deleted_ssr: nil)
     # Does an approval need to be created?  Check that the user
     # submitting has approve rights.
-    individual_ssr = @sub_service_request.present? ? true : false
 
     if request_amendment
-      if individual_ssr
-        audit_report = @sub_service_request.audit_line_items(@current_user)
-      else
-        audit_report = authorized_user_audit_report
-      end
+      audit_report = authorized_user_audit_report
     else
       audit_report = nil
     end
@@ -172,11 +144,11 @@ class NotifierLogic
     @service_request.protocol.project_roles.each do |project_role|
       next if project_role.project_rights == 'none' || project_role.identity.email.blank?
       if admin_delete_ssr # Users get an Deletion Email upon SSR deletion from Dashboard --> Admin Edit, otherwise deleted SSR is included in the Request Amendment Email
-        Notifier.notify_user(project_role, @service_request, @sub_service_request, approval, @current_user, audit_report, individual_ssr, deleted_ssr, admin_delete_ssr).deliver
+        Notifier.notify_user(project_role, @service_request, approval, @current_user, audit_report, deleted_ssr, admin_delete_ssr).deliver
       elsif request_amendment && audit_report.present? # Request Amendment Email
-        Notifier.delay.notify_user(project_role, @service_request, @sub_service_request, approval, @current_user, audit_report, individual_ssr, deleted_ssrs, admin_delete_ssr)
+        Notifier.delay.notify_user(project_role, @service_request, approval, @current_user, audit_report, deleted_ssrs, admin_delete_ssr)
       elsif !request_amendment # Initial Submission Email
-        Notifier.delay.notify_user(project_role, @service_request, @sub_service_request, approval, @current_user, audit_report, individual_ssr, nil, admin_delete_ssr)
+        Notifier.delay.notify_user(project_role, @service_request, approval, @current_user, audit_report, nil, admin_delete_ssr)
       end
     end
   end
@@ -188,11 +160,10 @@ class NotifierLogic
   end
 
   def send_individual_service_provider_notification(sub_service_request, service_provider, audit_report=nil, ssr_destroyed=false, request_amendment=false)
-    individual_ssr = @sub_service_request.present? ? true : false
     if ssr_destroyed
-      Notifier.notify_service_provider(service_provider, @service_request, @current_user, sub_service_request, audit_report, ssr_destroyed, request_amendment, individual_ssr).deliver_now
+      Notifier.notify_service_provider(service_provider, @service_request, @current_user, sub_service_request, audit_report, ssr_destroyed, request_amendment).deliver_now
     else
-      Notifier.delay.notify_service_provider(service_provider, @service_request, @current_user, sub_service_request, audit_report, ssr_destroyed, request_amendment, individual_ssr)
+      Notifier.delay.notify_service_provider(service_provider, @service_request, @current_user, sub_service_request, audit_report, ssr_destroyed, request_amendment)
     end
   end
 
@@ -208,7 +179,6 @@ class NotifierLogic
   end
 
   def authorized_user_audit_report
-
     added_ssrs_ids = @created_ssrs_needing_notification.map(&:auditable_id)
 
     destroyed_ssrs_ids = @service_request.deleted_ssrs_since_previous_submission(true).map(&:auditable_id)
@@ -249,19 +219,15 @@ class NotifierLogic
   def destroyed_ssr_that_needs_a_request_amendment_email
     deleted_ssr_audits_that_need_request_amendment_email = []
     destroyed_ssr_audit = @service_request.deleted_ssrs_since_previous_submission
-
     destroyed_ssr_audit.each do |ssr_audit|
-      un_updatable_statuses = SubServiceRequest.all.map(&:status).uniq - Setting.get_value("updatable_statuses")
-      latest_action_update_audit = AuditRecovery.where("auditable_id = #{ssr_audit.auditable_id} AND action = 'update'")
-      latest_action_update_audit = latest_action_update_audit.present? ? latest_action_update_audit.order(created_at: :desc).first : nil
+      latest_action_update_audit = AuditRecovery.where("auditable_id = #{ssr_audit.auditable_id} AND action = 'update'").order(created_at: :desc).first
       if latest_action_update_audit.nil? || latest_action_update_audit.audited_changes['status'].nil?
-        latest_action_destroy_audit = AuditRecovery.where("auditable_id = #{ssr_audit.auditable_id} AND action = 'destroy'")
-        latest_action_destroy_audit = latest_action_destroy_audit.present? ? latest_action_destroy_audit.order(created_at: :desc).first : nil
-        if latest_action_destroy_audit.present? && un_updatable_statuses.include?(latest_action_destroy_audit.audited_changes['status'])
+        latest_action_destroy_audit = AuditRecovery.where("auditable_id = #{ssr_audit.auditable_id} AND action = 'destroy'").order(created_at: :desc).first
+        if latest_action_destroy_audit.present? && !Status.updatable?(latest_action_destroy_audit.audited_changes['status'])
           deleted_ssr_audits_that_need_request_amendment_email << ssr_audit
         end
       else
-        if un_updatable_statuses.include?(latest_action_update_audit.audited_changes['status'].first)
+        if !Status.updatable?(latest_action_update_audit.audited_changes['status'].first)
           deleted_ssr_audits_that_need_request_amendment_email << ssr_audit
         end
       end
@@ -270,11 +236,6 @@ class NotifierLogic
   end
 
   def find_draft_ssrs
-    if @sub_service_request
-      ssrs_with_draft_status = @sub_service_request.status == 'draft' ? [@sub_service_request] : []
-    else
-      ssrs_with_draft_status = @service_request.sub_service_requests.select{ |ssr| (ssr.status == "draft") }
-    end
-    ssrs_with_draft_status
+    @service_request.sub_service_requests.select{ |ssr| (ssr.status == "draft") }
   end
 end

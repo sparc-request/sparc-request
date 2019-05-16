@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development~
+-# Copyright © 2011-2019 MUSC Foundation for Research Development~
 -# All rights reserved.~
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -19,10 +19,14 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 %p= "Dear #{@send_to.try(:full_name)},"
-%p{ :style => 'display: inline;' }
+%p{ style: 'display: inline;' }
   - if @action == "destroy"
-    = t(:mailer)[:delete_intro]
+    - if @modified_roles.count == 1
+      = t(:mailer)[:delete_intro]
+    - else
+      = t(:mailer)[:delete_intro_p]
   - if @action == "add"
     = t(:mailer)[:add_intro]
-%p{ :style => 'display: inline;' }
-  %a{:style => "color: blue; font-weight: bold;", :href => @protocol_link}=t(:mailer)[:sparc_dashboard_period]
+%p{ style: 'display: inline;' }
+  %a{style: "color: blue; font-weight: bold;", href: @protocol_link, target: :blank}<
+    =t(:mailer)[:sparc_dashboard_period] 

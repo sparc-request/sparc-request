@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,18 +17,19 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 .panel.panel-default
   .panel-heading{ class: css_class(organization) }
     %h1.panel-title.text-center
       = organization.name
   .panel-body{ class: "#{organization.type.downcase}-display" }
-    %p.description
-      = organization_description_display(organization)
-
+    - if organization.description
+      %p.description
+        = raw(organization.description)
     - if organization.type == "Program"
-      - if organization.services.any? && (sub_service_request.nil? || process_ssr_found || organization.parents.include?(ssr_org))
+      - if organization.services.any?
         .program-services
-          = render 'catalogs/accordion/services', services: organization.services.eager_load(:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]).select{ |serv| serv.is_available != false && serv.current_pricing_map }, service_request: service_request, sub_service_request: sub_service_request
+          = render 'catalogs/accordion/services', services: organization.services, service_request: service_request
 
       - if organization.cores.any?
-        = render 'catalogs/accordion/cores', program: organization, cores: organization.cores.eager_load(services: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]), ssr_org: ssr_org, service_request: service_request, locked_ids: locked_org_ids, process_ssr_found: process_ssr_found, sub_service_request: sub_service_request
+        = render 'catalogs/accordion/cores', program: organization, cores: organization.cores, service_request: service_request, locked_ids: locked_org_ids

@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,12 +21,12 @@
 - new_user ||= false
 
 .row.form_row{ id: "fulfillment-rights-row-#{fr.id}", data: { identity_id: fr.id } }
-  .col-sm-7
+  .col-sm-4
     = "#{fr.full_name}, #{fr.email}"
   .col-sm-3.text-center
     = check_box_tag :clinical_provider, true, !get_user_rights(fulfillment_rights[:clinical_providers], fr.id).nil?, { class: "clinical-provider-checkbox", data: { identity_id: fr.id, organization_id: organization.id } }
-  / .col-sm-3.text-center
-  /   = check_box_tag :patient_registrar, true, !get_user_rights(fulfillment_rights[:patient_registrars], fr.id).nil?, { class: "patient-registrar-checkbox", data: { identity_id: fr.id, organization_id: organization.id } }
+  .col-sm-3.text-center
+    = check_box_tag :patient_registrar, true, !get_user_rights(fulfillment_rights[:patient_registrars], fr.id).nil?, { class: "patient-registrar-checkbox", data: { identity_id: fr.id, organization_id: organization.id } }
   -#.col-sm-3.text-center
     -#= check_box_tag :invoicer, true, !get_user_rights(fulfillment_rights[:invoicers], fr.id).nil?, { class: "invoicer-checkbox", data: { identity_id: fr.id, organization_id: organization.id } }
   .col-sm-2.text-center

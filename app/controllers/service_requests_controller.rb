@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,11 +27,12 @@ class ServiceRequestsController < ApplicationController
 
   before_action :initialize_service_request,      except: [:approve_changes, :get_help, :feedback]
   before_action :validate_step,                   only:   [:navigate, :protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation, :save_and_exit]
+  before_action :find_cart_ssrs,                  only:   [:navigate, :catalog, :protocol, :service_details, :service_subsidy, :document_management]
   before_action :setup_navigation,                only:   [:navigate, :catalog, :protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
   before_action :authorize_identity,              except: [:approve_changes, :get_help, :feedback, :show]
   before_action :authenticate_identity!,          except: [:catalog, :add_service, :remove_service, :get_help, :feedback]
-  before_action :authorize_protocol_edit_request, only:   [:catalog]
   before_action :find_locked_org_ids,             only:   [:catalog]
+  before_action :find_service,                    only:   [:catalog]
 
   def show
     @protocol = @service_request.protocol
@@ -51,17 +52,13 @@ class ServiceRequestsController < ApplicationController
   end
 
   def navigate
-    redirect_to eval("#{@forward}_service_request_path(@service_request, sub_service_request_id: @sub_service_request.try(:id))")
+    redirect_to @forward
   end
 
   # service request wizard pages
 
   def catalog
-    if @sub_service_request
-      @institutions = Institution.where(id: @sub_service_request.organization.parents.select{|x| x.type == 'Institution'}.map(&:id))
-    else
-      @institutions = Institution.all
-    end
+    @institutions = Institution.all
 
     setup_catalog_calendar
     setup_catalog_news_feed
@@ -86,12 +83,11 @@ class ServiceRequestsController < ApplicationController
   end
 
   def service_subsidy
-    @has_subsidy          = @sub_service_request ? @sub_service_request.has_subsidy? : @service_request.sub_service_requests.map(&:has_subsidy?).any?
-    @eligible_for_subsidy = @sub_service_request ? @sub_service_request.eligible_for_subsidy? : @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
+    @has_subsidy          = @service_request.sub_service_requests.map(&:has_subsidy?).any?
+    @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
 
     if !@has_subsidy && !@eligible_for_subsidy
-      ssr_id_params = @sub_service_request ? "?sub_service_request_id=#{@sub_service_request.id}" : ""
-      redirect_to "/service_requests/#{@service_request.id}/document_management" + ssr_id_params
+      redirect_to document_management_service_request_path(srid: @service_request.id)
     end
   end
 
@@ -102,7 +98,7 @@ class ServiceRequestsController < ApplicationController
     @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
 
     unless @has_subsidy || @eligible_for_subsidy
-      @back = 'service_calendar'
+      @back = service_calendar_service_request_path(srid: @service_request.id)
     end
   end
 
@@ -129,7 +125,7 @@ class ServiceRequestsController < ApplicationController
     @protocol = @service_request.protocol
     @service_request.previous_submitted_at = @service_request.submitted_at
 
-    NotifierLogic.new(@service_request, @sub_service_request, current_user).update_status_and_send_get_a_cost_estimate_email
+    NotifierLogic.new(@service_request, current_user).update_status_and_send_get_a_cost_estimate_email
     render formats: [:html]
   end
 
@@ -138,8 +134,7 @@ class ServiceRequestsController < ApplicationController
     @service_request.previous_submitted_at = @service_request.submitted_at
     @display_all_services = true
 
-    should_push_to_epic = @sub_service_request ? @sub_service_request.should_push_to_epic? : @service_request.should_push_to_epic?
-    if should_push_to_epic && Setting.get_value("use_epic") && @protocol.selected_for_epic
+    if @service_request.should_push_to_epic? && Setting.get_value("use_epic") && @protocol.selected_for_epic
       # Send a notification to Lane et al to create users in Epic.  Once
       # that has been done, one of them will click a link which calls
       # approve_epic_rights.
@@ -151,20 +146,16 @@ class ServiceRequestsController < ApplicationController
         send_epic_notification_for_user_approval(@protocol)
       end
     end
-    NotifierLogic.new(@service_request, @sub_service_request, current_user).update_ssrs_and_send_emails
+    NotifierLogic.new(@service_request, current_user).update_ssrs_and_send_emails
     render formats: [:html]
   end
 
   def save_and_exit
     respond_to do |format|
       format.html {
-        if @sub_service_request #if editing a sub service request, update status
-          @sub_service_request.update_attribute(:status, 'draft')
-        else
-          @service_request.update_status('draft')
-          @service_request.ensure_ssr_ids
-        end
-        redirect_to dashboard_root_path, sub_service_request_id: @sub_service_request.try(:id)
+        @service_request.update_status('draft')
+        @service_request.ensure_ssr_ids
+        redirect_to dashboard_root_path
       }
       format.js
     end
@@ -180,9 +171,12 @@ class ServiceRequestsController < ApplicationController
       @duplicate_service = true
     else
       add_service.generate_new_service_request
-      @line_items_count     = (@sub_service_request || @service_request).line_items.count
-      @sub_service_requests = @service_request.cart_sub_service_requests
     end
+
+    @service_request.reload
+
+    @line_items_count = @service_request.line_items.count
+    find_cart_ssrs
   end
 
   def remove_service
@@ -198,15 +192,15 @@ class ServiceRequestsController < ApplicationController
       @service_request.reload
 
       if ssr.line_items.empty?
-        NotifierLogic.new(@service_request, nil, current_user).ssr_deletion_emails(deleted_ssr: ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
+        NotifierLogic.new(@service_request, current_user).ssr_deletion_emails(deleted_ssr: ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
         ssr.destroy
       end
     end
 
     @service_request.reload
 
-    @line_items_count     = (@sub_service_request || @service_request).line_items.count
-    @sub_service_requests = @service_request.cart_sub_service_requests
+    @line_items_count = @service_request.line_items.count
+    find_cart_ssrs
 
     respond_to do |format|
       format.js { render layout: false }
@@ -267,6 +261,10 @@ class ServiceRequestsController < ApplicationController
     action_name == 'navigate' ? Rails.application.routes.recognize_path(request.referrer)[:action] : action_name
   end
 
+  def find_cart_ssrs
+    @sub_service_requests = @service_request.cart_sub_service_requests
+  end
+
   def validate_step
     case current_page
     when -> (n) { ['protocol', 'save_and_exit'].include?(n) }
@@ -280,7 +278,7 @@ class ServiceRequestsController < ApplicationController
 
   def validate_catalog
     unless @service_request.group_valid?(:catalog)
-      redirect_to catalog_service_request_path(@service_request, sub_service_request_id: @sub_service_request.try(:id)) and return false unless action_name == 'catalog'
+      redirect_to catalog_service_request_path(srid: @service_request.id) and return false unless action_name == 'catalog'
       @errors = @service_request.errors
     end
     return true
@@ -288,7 +286,7 @@ class ServiceRequestsController < ApplicationController
 
   def validate_protocol
     unless @service_request.group_valid?(:protocol)
-      redirect_to protocol_service_request_path(@service_request, sub_service_request_id: @sub_service_request.try(:id)) and return false unless action_name == 'protocol'
+      redirect_to protocol_service_request_path(srid: @service_request.id) and return false unless action_name == 'protocol'
       @errors = @service_request.errors
     end
     return true
@@ -298,7 +296,7 @@ class ServiceRequestsController < ApplicationController
     @service_request.protocol.update_attributes(details_params) if details_params
 
     unless @service_request.group_valid?(:service_details)
-      redirect_to service_details_service_request_path(@service_request, sub_service_request_id: @sub_service_request.try(:id), navigate: 'true') and return false unless action_name == 'service_details'
+      redirect_to service_details_service_request_path(srid: @service_request.id, navigate: 'true') and return false unless action_name == 'service_details'
       @errors = @service_request.errors
     end
     return true
@@ -306,7 +304,7 @@ class ServiceRequestsController < ApplicationController
 
   def validate_service_calendar
     unless @service_request.group_valid?(:service_calendar)
-      redirect_to service_calendar_service_request_path(@service_request, sub_service_request_id: @sub_service_request.try(:id), navigate: 'true') and return false unless action_name == 'service_calendar'
+      redirect_to service_calendar_service_request_path(srid: @service_request.id, navigate: 'true') and return false unless action_name == 'service_calendar'
       @errors = @service_request.errors
     end
     return true
@@ -316,8 +314,8 @@ class ServiceRequestsController < ApplicationController
     if c = YAML.load_file(Rails.root.join('config', 'navigation.yml'))[current_page]
       @step_text   = c['step_text']
       @css_class   = c['css_class']
-      @back        = c['back']
-      @forward     = c['forward']
+      @back        = eval("#{c['back']}_service_request_path(srid: #{@service_request.id})") if c['back']
+      @forward     = eval("#{c['forward']}_service_request_path(srid: #{@service_request.id})") if c['forward']
     end
   end
 
@@ -392,44 +390,8 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def ssr_has_changed?(service_request, sub_service_request) #specific ssr has changed?
-    previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
-    unless sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)[:line_items].empty?
-      return true
-    end
-    return false
-  end
-
-  def service_request_has_changed_ssr?(service_request) #any ssr on sr has changed?
-    service_request.sub_service_requests.each do |ssr|
-      if ssr_has_changed?(service_request, ssr)
-        return true
-      end
-    end
-    return false
-  end
-
   def send_epic_notification_for_user_approval(protocol)
     Notifier.notify_for_epic_user_approval(protocol).deliver unless Setting.get_value("queue_epic")
-  end
-
-  def authorize_protocol_edit_request
-    if current_user
-      authorized  = if @sub_service_request
-                      current_user.can_edit_sub_service_request?(@sub_service_request)
-                    else
-                      @service_request.status == 'first_draft' || current_user.can_edit_service_request?(@service_request)
-                    end
-
-      protocol = @sub_service_request ? @sub_service_request.protocol : @service_request.protocol
-
-      unless authorized || protocol.project_roles.find_by(identity: current_user).present?
-        @service_request     = nil
-        @sub_service_request = nil
-
-        render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to edit this Request.' }
-      end
-    end
   end
 
   def set_highlighted_link
@@ -443,6 +405,17 @@ class ServiceRequestsController < ApplicationController
       return false
     else
       return true
+    end
+  end
+
+  def find_service
+    if params[:service_id]
+      @service  = Service.find(params[:service_id])
+      @provider = @service.provider
+      @program  = @service.program
+      @core     = @service.core
+
+      redirect_to catalog_service_request_path(srid: @service_request.id) unless @service.is_available?
     end
   end
 end

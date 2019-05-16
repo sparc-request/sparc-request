@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -29,27 +29,34 @@ module EmailHelpers
     expect(@mail).to have_xpath "//th[text()='Funding Source']/following-sibling::td[text()='#{@protocol.funding_source.capitalize}']"
   end
 
-  def user_information_table_with_epic_col
+  def user_information_table_with_epic_col(delete=false)
     expect(@mail).to have_xpath "//table//strong[text()='User Information']"
     expect(@mail).to have_xpath "//th[text()='User Modification']/following-sibling::th[text()='Contact Information']/following-sibling::th[text()='Role']/following-sibling::th[text()='SPARC Proxy Rights']/following-sibling::th[text()='Epic Access']"
-    expect(@mail).to have_xpath "//td[text()=\"#{modified_identity.full_name}\"]/following-sibling::td[text()=\"#{modified_identity.email}\"]/following-sibling::td[text()='#{modified_identity.project_roles.first.role.upcase}']/following-sibling::td[text()='#{modified_identity.project_roles.first.display_rights}']"
-    if modified_identity.project_roles.first.epic_access == false
-      expect(@mail).to have_xpath "//td[text()='No']"
+
+    if delete
+      [modified_identity.full_name, modified_identity.email, modified_identity.project_roles.first.role.upcase, modified_identity.project_roles.first.display_rights, modified_identity.project_roles.first.epic_access ? 'Yes' : 'No'].each do |text|
+        expect(@mail).to have_selector('td del', text: text)
+      end
     else
-      expect(@mail).to have_xpath "//td[text()='Yes']"
+      expect(@mail).to have_xpath "//td[text()=\"#{modified_identity.full_name}\"]/following-sibling::td[text()=\"#{modified_identity.email}\"]/following-sibling::td[text()='#{modified_identity.project_roles.first.role.upcase}']/following-sibling::td[text()='#{modified_identity.project_roles.first.display_rights}']"
+      expect(@mail).to have_xpath "//td[text()=\"#{modified_identity.project_roles.first.epic_access ? 'Yes' : 'No'}\"]"
     end
   end
 
-  def user_information_table_without_epic_col
+  def user_information_table_without_epic_col(delete=false)
     expect(@mail).to have_xpath "//table//strong[text()='User Information']"
     expect(@mail).to have_xpath "//th[text()='User Modification']/following-sibling::th[text()='Contact Information']/following-sibling::th[text()='Role']/following-sibling::th[text()='SPARC Proxy Rights']"
     expect(@mail).not_to have_xpath "//following-sibling::th[text()='Epic Access']"
-    expect(@mail).to have_xpath "//td[text()=\"#{modified_identity.full_name}\"]/following-sibling::td[text()=\"#{modified_identity.email}\"]/following-sibling::td[text()='#{modified_identity.project_roles.first.role.upcase}']/following-sibling::td[text()='#{modified_identity.project_roles.first.display_rights}']"
 
-    if modified_identity.project_roles.first.epic_access == false
-      expect(@mail).not_to have_xpath "//td[text()='No']"
+    if delete
+      [modified_identity.full_name, modified_identity.email, modified_identity.project_roles.first.role.upcase, modified_identity.project_roles.first.display_rights].each do |text|
+        expect(@mail).to have_selector('td del', text: text)
+      end
+
+      expect(@mail).to_not have_selector('td del', text: modified_identity.project_roles.first.epic_access ? 'Yes' : 'No')
     else
-      expect(@mail).not_to have_xpath "//td[text()='Yes']"
+      expect(@mail).to have_xpath "//td[text()=\"#{modified_identity.full_name}\"]/following-sibling::td[text()=\"#{modified_identity.email}\"]/following-sibling::td[text()='#{modified_identity.project_roles.first.role.upcase}']/following-sibling::td[text()='#{modified_identity.project_roles.first.display_rights}']"
+      expect(@mail).to_not have_xpath "//td[text()=\"#{modified_identity.project_roles.first.epic_access ? 'Yes' : 'No'}\"]"
     end
   end
 end

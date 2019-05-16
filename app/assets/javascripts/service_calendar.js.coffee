@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -117,7 +117,7 @@ $(document).ready ->
       type: 'GET'
       url: "/visit_groups/#{$(this).data('id')}/edit.js"
       data:
-        service_request_id:     getSRId()
+        srid:                   getSRId()
         sub_service_request_id: getSSRId()
         tab:                    $(this).data('tab')
         pages:                  $(this).data('pages')
@@ -162,7 +162,7 @@ $(document).ready ->
       url: '/service_calendars/show_move_visits'
       data:
         arm_id:                 $(this).data('arm-id')
-        service_request_id:     getSRId()
+        srid:                   getSRId()
         sub_service_request_id: getSSRId()
         tab:                    $(this).data('tab')
         pages:                  $(this).data('pages')
@@ -197,6 +197,13 @@ $(document).ready ->
         $(this).find('.freeze-header-button').removeClass('unfreeze')
         $(this).find('.freeze-header-button').addClass('freeze')
 
+  $(document).on 'click', 'td.visit:has(input), td.visit:has(a)', (e) ->
+    if !(e.target.tagName in ['INPUT', 'A'])
+      if $(this).hasClass('template-visit')
+        $(this).find('input').click()
+      else
+        $(this).find('a').first().click()
+
   $(document).on 'change', '.visit-quantity', ->
     $.ajax
       type: 'PUT'
@@ -206,7 +213,7 @@ $(document).ready ->
           research_billing_qty:   $(this).data('research-billing-qty')
           insurance_billing_qty:  $(this).data('insurance-billing-qty')
           effort_billing_qty:     $(this).data('effort-billing-qty')
-        service_request_id:       getSRId()
+        srid:                     getSRId()
         sub_service_request_id:   getSSRId()
         admin:                    $(this).data('admin')
         tab:                      $(this).data('tab')
@@ -217,7 +224,7 @@ $(document).ready ->
     $.ajax
       type: 'GET'
       data:
-        service_request_id:     getSRId()
+        srid:                   getSRId()
         sub_service_request_id: getSSRId()
         admin:                  $(this).data('admin')
         page:                   $(this).data('page')
@@ -232,7 +239,7 @@ $(document).ready ->
       data:
         arm_id:                   arm_id
         visit_group_id:           $(this).val()
-        service_request_id:       getSRId()
+        srid:                     getSRId()
         sub_service_request_id:   getSSRId()
         tab:                      $(move_visit_button).data('tab')
         pages:                    $(move_visit_button).data('pages')

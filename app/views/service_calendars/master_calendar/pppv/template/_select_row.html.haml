@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,7 +22,7 @@
 - icon         = checked ? 'glyphicon-remove' : 'glyphicon-ok'
 - klass        = checked ? 'btn-danger' : 'btn-success'
 - tooltip      = checked ? t(:calendars)[:pppv][:editable_fields][:row_select][:uncheck] : t(:calendars)[:pppv][:editable_fields][:row_select][:check]
-- url          = toggle_calendar_row_service_calendars_path(service_request_id: service_request.id, line_items_visit_id: liv.id, admin: admin, page: page, :"#{check_param}" => 'true')
+- url          = toggle_calendar_row_service_calendars_path(srid: service_request.id, line_items_visit_id: liv.id, admin: admin, page: page, :"#{check_param}" => 'true')
 - url         += "&sub_service_request_id=#{sub_service_request.id}" if sub_service_request
 
 %span.btn.btn-xs.glyphicon.service-calendar-row{ id: "check-all-row-#{liv.id}", class: [icon, klass], data: { toggle: 'tooltip', animation: 'false', title: tooltip, url: url }, disabled: locked }

@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -36,11 +36,12 @@ RSpec.describe 'User saves a response filters', js: true do
 
     bootstrap_multiselect '#filterrific_with_state', [I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active], I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]]
     find('#filterrific_end_date').click
-    find('#filter-responses .panel-heading .pull-left').click
+    find('#filter-responses .panel-title').click
     find('#filterrific_start_date').click
-    find('#filter-responses .panel-heading .pull-left').click
+    find('#filter-responses .panel-title').click
     find('#filterrific_include_incomplete').click
-    click_link I18n.t(:actions)[:save]
+
+    find('#save-filters').click
     wait_for_javascript_to_finish
 
     fill_in 'response_filter_name', with: 'My Filters'

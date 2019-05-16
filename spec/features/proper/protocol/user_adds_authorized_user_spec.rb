@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -40,7 +40,7 @@ RSpec.describe 'User wants to add an authorized user', js: true do
 
   context 'and clicks \'Add an Authorized User\'' do
     scenario 'and sees the add user modal' do
-      visit protocol_service_request_path(@sr)
+      visit protocol_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
       click_button 'Add an Authorized User'
@@ -51,7 +51,7 @@ RSpec.describe 'User wants to add an authorized user', js: true do
 
     context 'and fills out and submits the form' do
       scenario 'and sees the new authorized user' do
-        visit protocol_service_request_path(@sr)
+        visit protocol_service_request_path(srid: @sr.id)
         wait_for_javascript_to_finish
 
         click_button 'Add an Authorized User'

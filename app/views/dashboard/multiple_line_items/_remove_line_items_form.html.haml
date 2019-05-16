@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,7 +20,7 @@
 
 .modal-dialog
   .modal-content
-    = form_tag(destroy_line_items_dashboard_multiple_line_items_path, method: "put", class: "form-horizontal", id: "destroy_service", remote: true) do
+    = form_tag destroy_line_items_dashboard_multiple_line_items_path, method: :put, class: "form-horizontal", id: "destroy_service", remote: true do
       .modal-header
         %button.close{type: 'button', data: {dismiss: 'modal'}}
           %span{aria: {hidden:'true'}} &times;
@@ -31,12 +31,10 @@
         #modal_errors
         .row
           .col-md-12
-            = hidden_field_tag :service_request_id, service_request.id
-            = hidden_field_tag :sub_service_request_id, sub_service_request.id
             .form-group
-              = label_tag "remove_service_id", t(:dashboard)[:multiple_line_items][:service], class: "col-sm-4 control-label"
+              = label_tag :line_item_id, t(:dashboard)[:multiple_line_items][:service], class: "col-sm-4 control-label"
               .col-sm-7
-                = select_tag "remove_service_id", options_from_collection_for_select(all_services, 'id' , 'display_service_name', service.id), class: "form-control selectpicker"
+                = select_tag :line_item_id, options_from_collection_for_select(sub_service_request.per_patient_per_visit_line_items, :id , :name), class: "form-control selectpicker"
       .modal-footer
         .center-block
           %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}

@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -49,6 +49,7 @@ class Service < ApplicationRecord
   has_many :related_services, :through => :service_relations
   has_many :required_services, -> { where("required = ? and is_available = ?", true, true) }, :through => :service_relations, :source => :related_service
   has_many :optional_services, -> { where("required = ? and is_available = ?", false, true) }, :through => :service_relations, :source => :related_service
+  has_many :surveys, through: :associated_surveys
 
   has_many :depending_services, :through => :depending_service_relations, :source => :service# Services that depend on this service
 
@@ -87,7 +88,7 @@ class Service < ApplicationRecord
   # Service belongs to Organization A, which belongs to
   # Organization B, which belongs to Organization C, return "C > B > A".
   # This "hierarchy" stops at a process_ssrs Organization.
-  def organization_hierarchy(include_self=false, process_ssrs=true, use_css=false)
+  def organization_hierarchy(include_self=false, process_ssrs=true, use_css=false, use_array=false)
     parent_orgs = self.parents.reverse
 
     if process_ssrs
@@ -96,7 +97,9 @@ class Service < ApplicationRecord
       root = parent_orgs.length - 1
     end
 
-    if use_css
+    if use_array
+      parent_orgs[0..root]
+    elsif use_css
       parent_orgs[0..root].map{ |o| "<span class='#{o.css_class}-text'>#{o.abbreviation}</span>"}.join('<span> / </span>') + (include_self ? '<span> / </span>' + "<span>#{self.abbreviation}</span>" : '')
     else
       parent_orgs[0..root].map(&:abbreviation).join(' > ') + (include_self ? ' > ' + self.abbreviation : '')
@@ -108,40 +111,23 @@ class Service < ApplicationRecord
   end
 
   def program
-    return core.parent if organization.type == 'Core'
+    return core.parent  if organization.type == 'Core'
     return organization if organization.type == 'Program'
   end
 
   def provider
-    org = nil
-    org = core.program.parent if organization.type == 'Core'
-    org = program.parent if organization.type == 'Program'
-    org = organization if organization.type == 'Provider'
-    org
+    return program.parent if ['Core', 'Program'].include?(organization.type)
+    return organization   if organization.type == 'Provider'
   end
 
   def institution
-    org = nil
-    org = core.program.provider.parent if organization.type == 'Core'
-    org = program.provider.parent if organization.type == 'Program'
-    org = provider.parent if organization.type == 'Provider'
-    org = organization if organization.type == 'Institution'
-    org
+    return provider.parent  if ['Core', 'Program', 'Provider'].include?(organization.type)
+    return organization     if organization.type == 'Institution'
   end
 
   # do i have any available surveys, otherwise, look up tree and return first available surveys
   def available_surveys
-    available = nil
-
-    #TODO: Should we get all parent surveys instead of the closest parent's surveys?
-    parents.reverse.each do |parent|
-      next if parent.type == 'Institution' # Institutions can't define associated surveys
-      available = parent.associated_surveys.map(&:survey) unless parent.associated_surveys.empty?
-    end
-
-    available = associated_surveys.map(&:survey) unless associated_surveys.empty? # i have available surveys, use those instead
-
-    available
+    (self.surveys + self.parents.map{ |parent| parent.surveys }.flatten).compact.uniq
   end
 
   # Given a dollar amount as a String, return an integer number of
@@ -340,6 +326,10 @@ class Service < ApplicationRecord
 
   def remotely_notifiable_attributes_to_watch_for_change
     ["components"]
+  end
+
+  def direct_link
+    "#{Setting.get_value('root_url')}/services/#{id}"
   end
 
   private

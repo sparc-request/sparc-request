@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -52,9 +52,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       session[:identity_id] = logged_in_user.id
 
-      get :obtain_research_pricing, params: {
-        id: sr.id
-      }, xhr: true
+      get :obtain_research_pricing, params: { srid: sr.id }, xhr: true
 
       expect(assigns(:service_request).previous_submitted_at).to eq(sr.submitted_at)
     end
@@ -72,26 +70,19 @@ RSpec.describe ServiceRequestsController, type: :controller do
       end
 
       it 'should update SR status to "get_a_cost_estimate"' do
-        get :obtain_research_pricing, params: {
-          id: @sr.id
-        }, xhr: true
+        get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
 
         expect(@sr.reload.status).to eq('get_a_cost_estimate')
       end
 
       it 'should update SSR status to "get_a_cost_estimate"' do
-        get :obtain_research_pricing, params: {
-          id: @sr.id
-        }, xhr: true
+        get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
 
         expect(@ssr.reload.status).to eq('get_a_cost_estimate')
       end
 
       it 'should create past status' do
-
-        get :obtain_research_pricing, params: {
-          id: @sr.id
-        }, xhr: true
+        get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
 
         expect(PastStatus.count).to eq(1)
         expect(PastStatus.first.sub_service_request).to eq(@ssr)
@@ -99,9 +90,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       context 'with an authorized_user' do
         it 'should notify everyone (authorized_user)' do
-          get :obtain_research_pricing, params: {
-            id: @sr.id
-          }, xhr: true
+          get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
 
           expect(Delayed::Backend::ActiveRecord::Job.count).to eq(1)
         end
@@ -110,9 +99,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       context 'with an authorized_user, a service_provider' do
         it 'should notify everyone (authorized_user, service_provider)' do
           create(:service_provider, identity: logged_in_user, organization: @org)
-          get :obtain_research_pricing, params: {
-            id: @sr.id
-          }, xhr: true
+          get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
 
           expect(Delayed::Backend::ActiveRecord::Job.count).to eq(2)
         end
@@ -122,9 +109,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         it 'should notify everyone (authorized_user, service_provider, and admin)' do
           create(:service_provider, identity: logged_in_user, organization: @org)
           @org.submission_emails.create(email: 'hedwig@owlpost.com')
-          get :obtain_research_pricing, params: {
-            id: @sr.id
-          }, xhr: true
+          get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
 
           expect(Delayed::Backend::ActiveRecord::Job.count).to eq(3)
         end
@@ -145,20 +130,15 @@ RSpec.describe ServiceRequestsController, type: :controller do
         end
 
         it 'status should remain get_a_cost_estimate' do
-          get :obtain_research_pricing, params: {
-            id: @sr.id
-          }, xhr: true
+          get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
 
           expect(@ssr.reload.status).to eq('get_a_cost_estimate')
         end
 
         context 'with an authorized_user' do
           it 'should not notify anyone' do
-
             expect {
-              get :obtain_research_pricing, params: {
-                id: @sr.id
-              }, xhr: true
+              get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
             }.to change(ActionMailer::Base.deliveries, :count).by(0)
           end
         end
@@ -168,9 +148,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
             create(:service_provider, identity: logged_in_user, organization: @org)
 
             expect {
-              get :obtain_research_pricing, params: {
-                id: @sr.id
-              }, xhr: true
+              get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
             }.to change(ActionMailer::Base.deliveries, :count).by(0)
           end
         end
@@ -181,9 +159,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
             @org.submission_emails.create(email: 'hedwig@owlpost.com')
 
             expect {
-              get :obtain_research_pricing, params: {
-                id: @sr.id
-              }, xhr: true
+              get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
             }.to change(ActionMailer::Base.deliveries, :count).by(0)
           end
         end
@@ -201,14 +177,12 @@ RSpec.describe ServiceRequestsController, type: :controller do
           li       = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
 
           session[:identity_id] = logged_in_user.id
+
           @org.editable_statuses.where(status: 'on_hold').destroy_all
         end
 
         it 'should not update status to "get_a_cost_estimate"' do
-
-          get :obtain_research_pricing, params: {
-            id: @sr.id
-          }, xhr: true
+          get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
 
           expect(@ssr.reload.status).to eq('on_hold')
         end
@@ -216,9 +190,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         context 'with an authorized_user' do
           it 'should not notify anyone' do
             expect {
-              get :obtain_research_pricing, params: {
-                id: @sr.id
-              }, xhr: true
+              get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
             }.to change(ActionMailer::Base.deliveries, :count).by(0)
           end
         end
@@ -227,9 +199,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
           it 'should not notify anyone' do
             create(:service_provider, identity: logged_in_user, organization: @org)
             expect {
-              get :obtain_research_pricing, params: {
-                id: @sr.id
-              }, xhr: true
+              get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
             }.to change(ActionMailer::Base.deliveries, :count).by(0)
           end
         end
@@ -239,9 +209,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
             create(:service_provider, identity: logged_in_user, organization: @org)
             @org.submission_emails.create(email: 'hedwig@owlpost.com')
             expect {
-              get :obtain_research_pricing, params: {
-                id: @sr.id
-              }, xhr: true
+              get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
             }.to change(ActionMailer::Base.deliveries, :count).by(0)
           end
         end
@@ -260,9 +228,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         end
 
         it 'should not update status to "get_a_cost_estimate"' do
-          get :obtain_research_pricing, params: {
-            id: @sr.id
-          }, xhr: true
+          get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
 
           expect(@ssr.reload.status).to eq('complete')
         end
@@ -270,9 +236,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         context 'with an authorized_user' do
           it 'should not notify anyone' do
             expect {
-              get :obtain_research_pricing, params: {
-                id: @sr.id
-              }, xhr: true
+              get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
             }.to change(ActionMailer::Base.deliveries, :count).by(0)
           end
         end
@@ -281,9 +245,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
           it 'should not notify anyone' do
             create(:service_provider, identity: logged_in_user, organization: @org)
             expect {
-              get :obtain_research_pricing, params: {
-                id: @sr.id
-              }, xhr: true
+              get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
             }.to change(ActionMailer::Base.deliveries, :count).by(0)
           end
         end
@@ -294,9 +256,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
             @org.submission_emails.create(email: 'hedwig@owlpost.com')
 
             expect {
-              get :obtain_research_pricing, params: {
-                id: @sr.id
-              }, xhr: true
+              get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
             }.to change(ActionMailer::Base.deliveries, :count).by(0)
           end
         end
@@ -313,9 +273,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       session[:identity_id] = logged_in_user.id
 
-      get :obtain_research_pricing, params: {
-        id: sr.id
-      }, xhr: true
+      get :obtain_research_pricing, params: { srid: sr.id }, xhr: true
 
       expect(controller).to render_template(:obtain_research_pricing)
     end
@@ -330,9 +288,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       session[:identity_id] = logged_in_user.id
 
-      get :obtain_research_pricing, params: {
-        id: sr.id
-      }, xhr: true
+      get :obtain_research_pricing, params: { srid: sr.id }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

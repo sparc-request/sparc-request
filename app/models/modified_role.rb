@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,16 +18,26 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Identities::RegistrationsController < Devise::RegistrationsController
-  def after_sign_up_path_for(resource)
-    if params[:service_request_id]
-      catalog_service_request_path(params[:service_request_id])
-    else
-      super
-    end
+# This is a wrapper structure to hold Project Role information 
+# to avoid persistence issues within delayed jobs
+
+class ModifiedRole
+
+  attr_accessor *ProjectRole.column_names
+
+  def initialize(project_role_attrs)
+    project_role_attrs.each{ |attr, value| instance_variable_set("@#{attr}", value) }
   end
 
-  def after_inactive_sign_up_path_for(resource)
-    after_sign_up_path_for(resource)
+  def identity
+    Identity.find(@identity_id)
+  end
+
+  def display_rights
+    case @project_rights
+    when "none"    then "Member Only"
+    when "view"    then "View Rights"
+    when "approve" then "Authorize/Change Study Charges"
+    end
   end
 end

@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -88,7 +88,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
     subsidy = subsidy.grant_approval(current_user)
     @sub_service_request = subsidy.sub_service_request.reload
     @admin = true
-    flash[:success] = t(:subsidies)[:approved]
+    flash[:success] = t(:subsidies)[:approval_message]
   end
 
   private
@@ -109,7 +109,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   def perform_subsidy_creation(admin_param=false)
     @sub_service_request = @subsidy.sub_service_request
     @admin = admin_param
-    flash[:success] = t(:dashboard)[:subsidies][:created]
+    flash[:success] = t(:subsidies)[:created]
     unless @admin
       redirect_to dashboard_sub_service_request_path(@sub_service_request, format: :js)
     end
@@ -117,7 +117,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
 
   def perform_subsidy_update(admin_param=false)
     @admin = admin_param
-    flash[:success] = t(:dashboard)[:subsidies][:updated]
+    flash[:success] = t(:subsidies)[:updated]
     unless @admin
       redirect_to dashboard_sub_service_request_path(@sub_service_request, format: :js)
     end

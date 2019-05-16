@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -34,11 +34,11 @@ class AvailableStatus < ApplicationRecord
   end
 
   def self.statuses
-    @statuses ||= PermissibleValue.order(:sort_order).get_hash('status')
+    @statuses ||= PermissibleValue.get_hash('status')
   end
 
   def self.defaults
-    @defaults ||= PermissibleValue.order(:sort_order).get_key_list('status', true)
+    @defaults ||= PermissibleValue.get_key_list('status', true)
   end
 
   def humanize
@@ -56,9 +56,8 @@ class AvailableStatus < ApplicationRecord
   private
 
   def sync_editable_status
-    if selected_changed?
+    if selected_changed? && editable_status
       editable_status.update_attribute(:selected, selected)
     end
   end
-
 end

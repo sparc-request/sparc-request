@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -25,7 +25,6 @@ $ ->
     if $(this).data('permission')
       data =
         protocol_id: $(this).data('protocol-id')
-        service_request_id: getSRId()
 
       $.ajax
         type: 'GET'
@@ -39,8 +38,6 @@ $ ->
       $.ajax
         type: 'GET'
         url: "/dashboard/documents/#{document_id}/edit"
-        data:
-          service_request_id: getSRId()
 
   $(document).on 'click', '.document-delete', ->
     if $(this).data('permission')
@@ -49,7 +46,7 @@ $ ->
       if confirm "Are you sure you want to delete the selected Document from this Protocol?"
         $.ajax
           type: 'DELETE'
-          url: "/dashboard/documents/#{document_id}?service_request_id=#{getSRId()}"
+          url: "/dashboard/documents/#{document_id}"
 
   $(document).on 'change', '#document_doc_type', ->
     if $(this).val() == 'other'

@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -42,21 +42,12 @@ module Dashboard::SubServiceRequestsHelper
     end
   end
 
-  def display_line_items_otf(sub_service_request, use_epic, lis)
-    if sub_service_request.nil?
-      # only show the services that are set to be pushed to Epic when use_epic = true
-      if use_epic
-        lis.select{ |li| Service.find(li.service_id).send_to_epic }
-      else
-        lis
-      end
+  def display_line_items_otf(lis)
+    # only show the services that are set to be pushed to Epic when use_epic = true
+    if Setting.get_value('use_epic')
+      lis.select{ |li| li.service.cpt_code.present? }
     else
-      # only show the services that are set to be pushed to Epic when use_epic = true
-      if use_epic
-        sub_service_request.one_time_fee_line_items.select{ |li| Service.find(li.service_id).send_to_epic }
-      else
-        sub_service_request.one_time_fee_line_items
-      end
+      lis
     end
   end
 
@@ -210,7 +201,6 @@ module Dashboard::SubServiceRequestsHelper
     admin_access = (admin_orgs & ssr.org_tree).any?
 
     ssr_view_button(ssr, show_view_ssr_back)+
-    ssr_edit_button(ssr, user, permission_to_edit)+
     ssr_admin_button(ssr, user, permission_to_edit, admin_access)
   end
 
@@ -242,18 +232,9 @@ module Dashboard::SubServiceRequestsHelper
     content_tag(:button, t(:dashboard)[:service_requests][:actions][:view], class: 'view-service-request btn btn-primary btn-sm', type: 'button', data: { sub_service_request_id: ssr.id, show_view_ssr_back: show_view_ssr_back.to_s, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:dashboard)[:service_requests][:actions][:tooltips][:view])
   end
 
-  def ssr_edit_button(ssr, user, permission_to_edit)
-    # The SSR must not be locked, and the user must either be an authorized user or an authorized admin
-    if ssr.can_be_edited? && permission_to_edit
-      content_tag(:button, t(:dashboard)[:service_requests][:actions][:edit], class: 'edit-service-request btn btn-warning btn-sm', type: 'button', data: { permission: permission_to_edit.to_s, url: "/service_requests/#{ssr.service_request.id}/catalog?sub_service_request_id=#{ssr.id}", toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}', title: t(:dashboard)[:service_requests][:actions][:tooltips][:edit]})
-    else
-      ''
-    end
-  end
-
   def ssr_admin_button(ssr, user, permission_to_edit, admin_access)
     if admin_access
-      content_tag(:button, t(:dashboard)[:service_requests][:actions][:admin_edit], class: "edit-service-request btn btn-warning btn-sm", type: 'button', data: { permission: admin_access.to_s, url: "/dashboard/sub_service_requests/#{ssr.id}", toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:dashboard)[:service_requests][:actions][:tooltips][:admin])
+      link_to t(:dashboard)[:service_requests][:actions][:admin_edit], dashboard_sub_service_request_path(ssr), class: "edit-service-request btn btn-warning btn-sm", type: 'button', data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:dashboard)[:service_requests][:actions][:tooltips][:admin]
     else
       ''
     end
@@ -298,7 +279,7 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def sorted_by_permissible_values(statuses)
-    values = PermissibleValue.order(:sort_order).get_hash('status')
+    values = PermissibleValue.get_hash('status')
     sorted_hash = {}
     values.each do |k, v|
       if statuses.has_key?(k)

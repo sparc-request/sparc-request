@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -51,6 +51,9 @@ class Protocol < ApplicationRecord
   has_many :identities,                   through: :project_roles
   has_many :services,                     through: :service_requests
   has_many :line_items,                   through: :service_requests
+  has_many :line_items_visits,            through: :arms
+  has_many :visit_groups,                 through: :arms
+  has_many :visits,                       through: :arms
   has_many :organizations,                through: :sub_service_requests
   has_many :study_type_questions,         through: :study_type_question_group
   has_many :responses,                    through: :sub_service_requests
@@ -64,6 +67,11 @@ class Protocol < ApplicationRecord
   has_many :coordinators, -> { where(project_roles: { role: 'research-assistant-coordinator' }) },
     source: :identity, through: :project_roles
 
+  ########################
+  ### CWF Associations ###
+  ########################
+
+  has_many :fulfillment_protocols, class_name: 'Shard::Fulfillment::Protocol', foreign_key: :sparc_id
 
   validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
   validates :research_master_id, presence: true, if: :rmid_requires_validation?
@@ -196,7 +204,7 @@ class Protocol < ApplicationRecord
   )
 
   scope :search_query, lambda { |search_attrs|
-    # Searches protocols based on 'Authorized User', 'HR#', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title', OR 'Search All'
+    # Searches protocols based on 'Authorized User', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title', OR 'Search All'
     # Protects against SQL Injection with ActiveRecord::Base::sanitize
     # inserts ! so that we can escape special characters
     escaped_search_term = search_attrs[:search_text].to_s.gsub(/[!%_]/) { |x| "\\#{x}" }
@@ -204,7 +212,6 @@ class Protocol < ApplicationRecord
 
     ### SEARCH QUERIES ###
     identity_query    = Arel::Nodes::NamedFunction.new('concat', [Identity.arel_table[:first_name], Arel::Nodes.build_quoted(' '), Identity.arel_table[:last_name]]).matches(like_search_term).or(Identity.arel_table[:email].matches(like_search_term))
-    hr_query          = HumanSubjectsInfo.arel_table[:hr_number].matches(like_search_term)
     protocol_id_query = Protocol.arel_table[:id].eq(search_attrs[:search_text])
     pro_num_query     = HumanSubjectsInfo.arel_table[:pro_number].matches(like_search_term)
     rmid_query        = Protocol.arel_table[:research_master_id].eq(search_attrs[:search_text])
@@ -219,9 +226,6 @@ class Protocol < ApplicationRecord
       others    = self.current_scope
 
       where(id: others & unscoped).distinct
-    when "HR#"
-      joins(:human_subjects_info).
-        where(hr_query).distinct
     when "PI"
       unscoped  = self.unscoped.joins(:principal_investigators).where(identity_query)
       others    = self.current_scope
@@ -238,7 +242,7 @@ class Protocol < ApplicationRecord
       where(title_query).distinct
     when ""
       joins(:identities).left_outer_joins(:human_subjects_info).
-        where(identity_query.or(protocol_id_query).or(title_query).or(hr_query).or(pro_num_query).or(rmid_query)).
+        where(identity_query.or(protocol_id_query).or(title_query).or(pro_num_query).or(rmid_query)).
         distinct
     end
   }
@@ -392,17 +396,16 @@ class Protocol < ApplicationRecord
     update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
   end
 
-  def email_about_change_in_authorized_user(modified_role, action)
+  def email_about_change_in_authorized_user(modified_roles, action)
     # Alert authorized users of deleted authorized user
     # Send emails if send_authorized_user_emails is set to true and if there are any non-draft SSRs
     # For example:  if a SR has SSRs all with a status of 'draft', don't send emails
-    if Setting.get_value("send_authorized_user_emails") && sub_service_requests.where.not(status: 'draft').any?
-      alert_users = emailed_associated_users << modified_role
-      alert_users.flatten.uniq.each do |project_role|
-        unless project_role.project_rights == 'none'
-          UserMailer.authorized_user_changed(project_role.identity, self, modified_role, action).deliver unless project_role.identity.email.blank?
-        end
-      end
+
+    if Setting.get_value("send_authorized_user_emails") && self.service_requests.any?(&:previously_submitted?)
+      alert_users     = Identity.where(id: (self.emailed_associated_users + modified_roles.reject{ |pr| pr.project_rights == 'none' }).map(&:identity_id))
+      modified_roles  = modified_roles.map{ |pr| ModifiedRole.new(pr.attributes) }
+
+      alert_users.each{ |u| UserMailer.delay.authorized_user_changed(self, u, modified_roles, action) }
     end
   end
 
@@ -431,7 +434,7 @@ class Protocol < ApplicationRecord
   end
 
   def emailed_associated_users
-    project_roles.reject {|pr| pr.project_rights == 'none'}
+    self.project_roles.where.not(project_rights: 'none')
   end
 
   def primary_pi_exists

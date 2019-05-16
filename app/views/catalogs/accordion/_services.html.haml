@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,23 +17,27 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- services.each do |service|
-  .service.col-sm-12.no-padding-x{ id: "#service#{service.id}" }
-    .service-details.no-padding-x{ class: action_name == 'update_description' ?  'col-sm-10' : 'col-sm-12' }
-      .service-name.no-padding
-        %strong.col-sm-12.no-padding.no-margin
-          = service.display_service_name
-      - if service.description.present?
-        .col-sm-12.no-padding
-          = link_to t(:constants)[:show], "#service#{service.id}Description", class: 'collapsed', alt: t(:constants)[:hide], data: { toggle: 'collapse' }, aria: { expanded: 'false', controls: "service#{service.id}Description" }
-      - if service.description.present?
-        .collapse.service-description.col-sm-12.no-padding{ id: "service#{service.id}Description" }
-          %p.no-margin
-            = raw service.description
-      = cpt_code_text(service)
-      = eap_id_text(service)
-    - if action_name == 'update_description'
-      .col-sm-2.no-padding
-        %button.add-service.pull-right.btn.btn-success{ data: { id: service.id } }
-          = t(:actions)[:add]
-    = raw service_pricing_text(service)
+
+- show_add_button = action_name == 'update_description' || @service
+
+- services.eager_load(:pricing_maps).select{ |serv| serv.is_available != false && serv.current_pricing_map }.each do |service|
+  - if !@service || @service == service
+    .service.col-sm-12.no-padding-x{ id: "service#{service.id}" }
+      .service-details.no-padding-x{ class: show_add_button ? 'col-sm-10' : 'col-sm-12' }
+        .service-name.no-padding
+          %strong.col-sm-12.no-padding.no-margin
+            = service.display_service_name
+        - if service.description.present?
+          - unless @service
+            .col-sm-12.no-padding
+              = link_to t(:constants)[:show], "#service#{service.id}Description", class: 'collapsed', alt: t(:constants)[:hide], data: { toggle: 'collapse' }, aria: { expanded: 'false', controls: "service#{service.id}Description" }
+          .collapse.service-description.col-sm-12.no-padding{ id: "service#{service.id}Description", class: [@service == service ? 'in' : ''] }
+            %p.no-margin
+              = raw(service.description)
+        = cpt_code_text(service)
+        = eap_id_text(service)
+      - if show_add_button
+        .col-sm-2.no-padding
+          %button.add-service.pull-right.btn.btn-success{ data: { id: service.id } }
+            = t(:actions)[:add]
+      = raw service_pricing_text(service)

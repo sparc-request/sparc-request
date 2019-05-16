@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,14 +19,13 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .panel.panel-default
-  .panel-heading
-    .pull-left
+  .panel-heading.justify-content-between
+    %h1.panel-title
       = t(:surveyor)[:response_filters][:header]
-    .pull-right
+    .filter-links-container
       = link_to t(:actions)[:save], 'javascript:void(0)', id: 'save-filters'
       = " | "
       = link_to t(:actions)[:reset], reset_filterrific_url, id: 'reset-filters'
-    .clearfix
   = form_for_filterrific filterrific, remote: true do |form|
     .panel-body
       .form-group.row
@@ -40,11 +39,11 @@
       .form-group.row{ id: "for-#{Form.name}", class: filterrific.of_type == Form.name ? "" : "hidden" }
         = form.label :with_survey, Form.name, class: 'col-lg-3 control-label text-left'
         .col-lg-9
-          = form.select :with_survey, grouped_options_for_select(Form.for(current_user).for_dropdown_select(filterrific.with_state, filterrific.with_survey)), {}, class: 'form-control selectpicker survey-select', multiple: true, data: { hide_disabled: 'true' }
+          = render 'surveyor/responses/surveys_dropdown', surveys: Form.for(current_user), filterrific: filterrific, form: form
       .form-group.row{ id: "for-#{SystemSurvey.name}", class: filterrific.of_type == SystemSurvey.name ? "" : "hidden" }
         = form.label :with_survey, Survey.name, class: 'col-lg-3 control-label text-left'
         .col-lg-9
-          = form.select :with_survey, grouped_options_for_select(SystemSurvey.unscoped.for_dropdown_select(filterrific.with_state, filterrific.with_survey)), {}, class: 'form-control selectpicker survey-select', multiple: true, data: { hide_disabled: 'true' }
+          = render 'surveyor/responses/surveys_dropdown', surveys: SystemSurvey.unscoped, filterrific: filterrific, form: form
       .form-group.row
         .col-sm-12
           %label
@@ -66,11 +65,9 @@
         = form.label :include_incomplete, t(:surveyor)[:response_filters][:fields][:include_incomplete], class: 'col-lg-10 control-label text-left'
         .col-lg-2
           = form.check_box :include_incomplete, {}, 'true', 'false'
-    .panel-footer
-      .pull-right
-        %button.btn.btn-default{ type: 'submit' }
-          = t(:actions)[:filter]
-      .clearfix
+    .panel-footer.justify-content-end
+      %button.btn.btn-default{ type: 'submit' }
+        = t(:actions)[:filter]
 
 #saved-searches
   = render 'surveyor/response_filters/saved_searches'

@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -57,9 +57,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       arm      = create(:arm, protocol: protocol)
                  create(:subsidy, sub_service_request: ssr)
 
-      get :service_subsidy, params: {
-        id: sr.id
-      }, xhr: true
+      get :service_subsidy, params: { srid: sr.id }, xhr: true
 
       expect(assigns(:has_subsidy)).to eq(true)
     end
@@ -74,9 +72,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
       arm      = create(:arm, protocol: protocol)
 
-      get :service_subsidy, params: {
-        id: sr.id
-      }, xhr: true
+      get :service_subsidy, params: { srid: sr.id }, xhr: true
 
       expect(assigns(:eligible_for_subsidy)).to eq(true)
     end
@@ -90,9 +86,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-        get :service_subsidy, params: {
-          id: sr.id
-        }, xhr: true
+        get :service_subsidy, params: { srid: sr.id }, xhr: true
       end
     end
 
@@ -105,11 +99,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
       arm      = create(:arm, protocol: protocol)
 
-      get :service_subsidy, params: {
-        id: sr.id
-      }, xhr: true
+      get :service_subsidy, params: { srid: sr.id }, xhr: true
 
-      expect(controller).to redirect_to("/service_requests/#{sr.id}/document_management")
+      expect(controller).to redirect_to(document_management_service_request_path(srid: sr.id))
     end
 
     it 'should render template' do
@@ -122,9 +114,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
       arm      = create(:arm, protocol: protocol)
 
-      get :service_subsidy, params: {
-        id: sr.id
-      }, xhr: true
+      get :service_subsidy, params: { srid: sr.id }, xhr: true
 
       expect(controller).to render_template(:service_subsidy)
     end
@@ -139,9 +129,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
       arm      = create(:arm, protocol: protocol)
 
-      get :service_subsidy, params: {
-        id: sr.id
-      }, xhr: true
+      get :service_subsidy, params: { srid: sr.id }, xhr: true
     end
   end
 end

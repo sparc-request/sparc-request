@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -20,28 +20,12 @@
 
 module ServiceRequestsHelper
 
-  def protocol_id_display(sub_service_request, service_request)
-    if sub_service_request && sub_service_request.protocol.present?
-      " (SRID: #{sub_service_request.protocol.id})"
-    elsif service_request && service_request.protocol.present?
+  def protocol_id_display(service_request)
+    if service_request && service_request.protocol.present?
       " (SRID: #{service_request.protocol.id})"
     else
       ""
     end
-  end
-
-  def current_organizations(service_request, sub_service_request)
-    organizations = {}
-
-    if sub_service_request.present?
-      organizations[sub_service_request.organization_id] = sub_service_request.organization.name
-    else
-      service_request.sub_service_requests.each do |ssr|
-        organizations[ssr.organization_id] = ssr.organization.name
-      end
-    end
-
-   organizations
   end
 
   def organization_name_display(organization, locked)
@@ -49,10 +33,6 @@ module ServiceRequestsHelper
     header += content_tag(:span, '', class: 'glyphicon glyphicon-lock locked') if locked
 
     header
-  end
-
-  def organization_description_display(organization)
-    organization.description.present? ? raw(organization.description) : t(:proper)[:catalog][:no_description]
   end
 
   def ssr_name_display(sub_service_request)
@@ -91,32 +71,18 @@ module ServiceRequestsHelper
     end
   end
 
-  def save_as_draft_button(sub_service_request_id=nil)
+  def save_as_draft_button(service_request)
     link_to t(:proper)[:navigation][:bottom][:save_as_draft],
-      save_and_exit_service_request_path(sub_service_request_id: sub_service_request_id),
+      save_and_exit_service_request_path(srid: service_request.id),
       remote: true, class: 'btn btn-default'
   end
 
-  def step_nav_button(text, color, url, inactive_link)
-    if inactive_link
-      content_tag(:div,
-        content_tag(:div, raw(text), class: "btn step-text")+
-        content_tag(:div, '', class: "right-arrow"),
-        class: "step-btn step-btn-#{color} disabled_steps"
-      )
-    else
-      link_to(
-        content_tag(:div, raw(text), class: "btn step-text")+
-        content_tag(:div, '', class: "right-arrow"),
-        url,
-        class: "step-btn step-btn-#{color}"
-      )
-    end
-  end
-
-  def display_ssr_id(sub_service_request)
-    if sub_service_request
-      sub_service_request.protocol_id.to_s + '-' + sub_service_request.ssr_id
-    end
+  def step_nav_button(text, color, url)
+    link_to(
+      content_tag(:div, raw(text), class: "btn step-text")+
+      content_tag(:div, '', class: "right-arrow"),
+      url,
+      class: "step-btn step-btn-#{color}"
+    )
   end
 end

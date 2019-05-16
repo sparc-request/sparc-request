@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,12 +19,12 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .row{style: 'margin-bottom: 25px;'}
-  .col-sm-7
+  .col-sm-4
     %h5= t(:catalog_manager)[:organization_form][:user_rights][:name_email]
   .col-sm-3.text-center
     %h5= t(:catalog_manager)[:organization_form][:fulfillment_rights][:clinical_provider]
-  / .col-sm-3.text-center
-  /   %h5= t(:catalog_manager)[:organization_form][:fulfillment_rights][:patient_registrar]
+  .col-sm-3.text-center
+    %h5= t(:catalog_manager)[:organization_form][:fulfillment_rights][:patient_registrar]
   -# Placeholder for invoiceing addition
   -# .col-sm-3.text-center
     -# %h5= t(:catalog_manager)[:organization_form][:fulfillment_rights][:invoicer]

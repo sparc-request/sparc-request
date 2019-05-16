@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -39,8 +39,8 @@ RSpec.describe ServiceCalendarsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
       get :table, params: {
-        service_request_id: sr.id,
-        tab: 'template'
+        tab: 'template',
+        srid: sr.id
       }, xhr: true
 
       expect(assigns(:tab)).to eq('template')
@@ -51,8 +51,8 @@ RSpec.describe ServiceCalendarsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
       get :table, params: {
-        service_request_id: sr.id,
-        review: 'true'
+        review: 'true',
+        srid: sr.id
       }, xhr: true
 
       expect(assigns(:review)).to eq(true)
@@ -63,8 +63,8 @@ RSpec.describe ServiceCalendarsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
       get :table, params: {
-        service_request_id: sr.id,
-        portal: 'false'
+        portal: 'false',
+        srid: sr.id
       }, xhr: true
 
       expect(assigns(:portal)).to eq(false)
@@ -74,7 +74,9 @@ RSpec.describe ServiceCalendarsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      get :table, params: { service_request_id: sr.id }, xhr: true
+      session[:srid] = sr.id
+
+      get :table, params: { srid: sr.id }, xhr: true
 
       expect(assigns(:merged)).to eq(false)
     end
@@ -83,7 +85,7 @@ RSpec.describe ServiceCalendarsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      get :table, params: { service_request_id: sr.id }, xhr: true
+      get :table, params: { srid: sr.id }, xhr: true
 
       expect(assigns(:consolidated)).to eq(false)
     end
@@ -94,7 +96,7 @@ RSpec.describe ServiceCalendarsController do
       arm1      = create(:arm, protocol: protocol, name: "Arm 1")
       arm2      = create(:arm, protocol: protocol, name: "Arm 2")
 
-      get :table, params: { service_request_id: sr.id }, xhr: true
+      get :table, params: { srid: sr.id }, xhr: true
 
       expect(assigns(:pages).count).to eq(2)
       expect(assigns(:pages)[arm1.id]).to be
@@ -107,8 +109,8 @@ RSpec.describe ServiceCalendarsController do
       arm      = create(:arm, protocol: protocol, name: "Arm")
 
       get :table, params: {
-        service_request_id: sr.id,
-        arm_id: arm.id
+        arm_id: arm.id,
+        srid: sr.id
       }, xhr: true
 
       expect(assigns(:arm)).to eq(arm)
@@ -120,7 +122,7 @@ RSpec.describe ServiceCalendarsController do
         sr       = create(:service_request_without_validations, protocol: protocol)
 
         get :table, params: {
-          service_request_id: sr.id,
+          srid: sr.id,
           format: :js
         }, xhr: true
 
@@ -132,7 +134,7 @@ RSpec.describe ServiceCalendarsController do
         sr       = create(:service_request_without_validations, protocol: protocol)
 
         get :table, params: {
-          service_request_id: sr.id,
+          srid: sr.id,
           format: :js
         }, xhr: true
 
@@ -146,7 +148,7 @@ RSpec.describe ServiceCalendarsController do
         sr       = create(:service_request_without_validations, protocol: protocol)
 
         get :table, params: {
-          service_request_id: sr.id,
+          srid: sr.id,
           format: :html
         }, xhr: true
 
@@ -158,7 +160,7 @@ RSpec.describe ServiceCalendarsController do
         sr       = create(:service_request_without_validations, protocol: protocol)
 
         get :table, params: {
-          service_request_id: sr.id,
+          srid: sr.id,
           format: :html
         }, xhr: true
 

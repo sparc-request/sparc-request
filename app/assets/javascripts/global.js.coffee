@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,11 +18,16 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $ ->
+
+  _super = $.fn.modal
+  $.extend _super.Constructor.DEFAULTS,
+    backdrop: 'static'
+
   $(".datetimepicker:not(.time)").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
   $('.datetimepicker.time').datetimepicker(format: 'hh:mm A', allowInputToggle: true)
   $(".selectpicker").selectpicker()
   $('[data-toggle="tooltip"]').tooltip()
-  
+
   $(document).ajaxComplete ->
     $('[data-toggle="tooltip"]').tooltip()
 
@@ -39,8 +44,23 @@ $ ->
       $control.text(alt)
       $control.attr('alt', text)
 
+  $(document).on 'click', '.copy-to-clipboard', ->
+    $that = $(this)
+
+    document.getElementById($(this).data('target')).select()
+    document.execCommand('copy')
+
+    $(this).parents('.input-group').siblings('.help-text').remove()
+    $(this).parents('.input-group').after("<span class='help-text text-success'>#{I18n['actions']['copy_clipboard']['complete']}</span>")
+
+    setTimeout (->
+      $that.parents('.input-group').siblings('.help-text').fadeOut('slow', ->
+        $that.parents('.input-group').siblings('.help-text').remove()
+      )
+    ), 1500
+
 (exports ? this).getSRId = ->
-  $("input[name='service_request_id']").val()
+  $("input[name='srid']").val()
 
 (exports ? this).getSSRId = ->
   $("input[name='sub_service_request_id']").val()

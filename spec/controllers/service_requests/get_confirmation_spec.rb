@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -51,109 +51,11 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, protocol_id: protocol.id)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:identity_id]        = logged_in_user.id
+      session[:identity_id] = logged_in_user.id
 
-      get :confirmation, params: {
-        id: sr.id
-      }, xhr: true
+      get :confirmation, params: { srid: sr.id }, xhr: true
 
       expect(assigns(:service_request).previous_submitted_at).to eq(sr.submitted_at)
-    end
-
-    context 'editing sub service request' do
-
-      it 'should update status to submitted and approvals to false' do
-        org      = create(:organization)
-        service  = create(:service, organization: org, one_time_fee: true)
-        protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
-        sr       = create(:service_request_without_validations, protocol: protocol)
-        ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft', protocol_id: protocol.id)
-        li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-
-        session[:identity_id]            = logged_in_user.id
-
-        get :confirmation, params: {
-          sub_service_request_id: ssr.id,
-          id: sr.id
-        }, xhr: true
-
-        expect(ssr.reload.status).to eq('submitted')
-        expect(ssr.reload.nursing_nutrition_approved).to eq(false)
-        expect(ssr.reload.lab_approved).to eq(false)
-        expect(ssr.reload.imaging_approved).to eq(false)
-        expect(ssr.reload.committee_approved).to eq(false)
-      end
-
-      it 'should create past status' do
-        org      = create(:organization)
-        service  = create(:service, organization: org, one_time_fee: true)
-        protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
-        sr       = create(:service_request_without_validations, protocol: protocol)
-        ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft', protocol_id: protocol.id)
-        li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-
-        session[:identity_id]            = logged_in_user.id
-
-        get :confirmation, params: {
-          sub_service_request_id: ssr.id,
-          id: sr.id
-        }, xhr: true
-
-        expect(PastStatus.count).to eq(1)
-        expect(PastStatus.first.sub_service_request).to eq(ssr)
-      end
-
-      context 'using EPIC and queue_epic' do
-        stub_config("use_epic", true)
-        stub_config("queue_epic", true)
-
-        it 'should create an item in the queue' do
-          org      = create(:organization)
-          service  = create(:service, organization: org, one_time_fee: true, send_to_epic: true)
-          protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study', selected_for_epic: true)
-          sr       = create(:service_request_without_validations, protocol: protocol)
-          ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft', protocol_id: protocol.id)
-          li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-
-          session[:identity_id]            = logged_in_user.id
-          
-          setup_valid_study_answers(protocol)
-
-          get :confirmation, params: {
-            sub_service_request_id: ssr.id,
-            id: sr.id
-          }, xhr: true
-
-          expect(EpicQueue.count).to eq(1)
-          expect(EpicQueue.first.protocol_id).to eq(protocol.id)
-        end
-      end
-
-      context 'using EPIC but not queue_epic' do
-        stub_config("use_epic", true)
-        
-        it 'should notify' do
-          org      = create(:organization)
-          service  = create(:service, organization: org, one_time_fee: true, send_to_epic: true)
-          protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study', selected_for_epic: true)
-          sr       = create(:service_request_without_validations, protocol: protocol)
-          ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft', protocol_id: protocol.id)
-          li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-                     create(:service_provider, identity: logged_in_user, organization: org)
-
-          session[:identity_id]            = logged_in_user.id
-
-          setup_valid_study_answers(protocol)
-
-          # We have a user, and service_provider so we send 2 emails
-          get :confirmation, params: {
-            sub_service_request_id: ssr.id,
-            id: sr.id
-          }, xhr: true
-
-          expect(Delayed::Backend::ActiveRecord::Job.count).to eq(2)
-        end
-      end
     end
 
     context 'editing a service request' do
@@ -166,13 +68,11 @@ RSpec.describe ServiceRequestsController, type: :controller do
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                    create(:service_provider, identity: logged_in_user, organization: org)
 
-        session[:identity_id]        = logged_in_user.id
-        time                         = Time.parse('2016-06-01 12:34:56')
+        session[:identity_id] = logged_in_user.id
+        time                  = Time.parse('2016-06-01 12:34:56')
 
         Timecop.freeze(time) do
-          get :confirmation, params: {
-            id: sr.id
-          }, xhr: true
+          get :confirmation, params: { srid: sr.id }, xhr: true
           expect(sr.reload.submitted_at).to eq(time)
         end
       end
@@ -186,11 +86,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                    create(:service_provider, identity: logged_in_user, organization: org)
 
-        session[:identity_id]        = logged_in_user.id
+        session[:identity_id] = logged_in_user.id
 
-        get :confirmation, params: {
-          id: sr.id
-        }, xhr: true
+        get :confirmation, params: { srid: sr.id }, xhr: true
 
         expect(sr.reload.status).to eq('submitted')
         expect(ssr.reload.nursing_nutrition_approved).to eq(false)
@@ -211,13 +109,11 @@ RSpec.describe ServiceRequestsController, type: :controller do
           ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft', protocol_id: protocol.id)
           li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-          session[:identity_id]            = logged_in_user.id
+          session[:identity_id] = logged_in_user.id
 
           setup_valid_study_answers(protocol)
 
-          get :confirmation, params: {
-            id: sr.id
-          }, xhr: true
+          get :confirmation, params: { srid: sr.id }, xhr: true
 
           expect(EpicQueue.count).to eq(1)
           expect(EpicQueue.first.protocol_id).to eq(protocol.id)
@@ -231,21 +127,20 @@ RSpec.describe ServiceRequestsController, type: :controller do
           org      = create(:organization)
           service  = create(:service, organization: org, one_time_fee: true, send_to_epic: true)
           protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study', selected_for_epic: true)
-          sr       = create(:service_request_without_validations, protocol: protocol)
+          sr       = create(:service_request_without_validations, protocol: protocol, submitted_at: (Time.now + 1.day))
           ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft', protocol_id: protocol.id)
           li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                      create(:service_provider, identity: logged_in_user, organization: org)
           org.submission_emails.create(email: 'hedwig@owlpost.com')
 
-          session[:identity_id]            = logged_in_user.id
+          session[:identity_id] = logged_in_user.id
 
           setup_valid_study_answers(protocol)
 
           # We have an admin, user, and service_provider so we send 3 emails
           get :confirmation, params: {
-            sub_service_request_id: ssr.id,
-            id: sr.id 
-            }, xhr: true
+            srid: sr.id
+          }, xhr: true
             
           expect(Delayed::Backend::ActiveRecord::Job.count).to eq(3)
         end
@@ -260,11 +155,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, protocol_id: protocol.id)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:identity_id]        = logged_in_user.id
+      session[:identity_id] = logged_in_user.id
 
-      get :confirmation, params: {
-        id: sr.id
-      }, xhr: true
+      get :confirmation, params: { srid: sr.id }, xhr: true
 
       expect(controller).to render_template(:confirmation)
     end
@@ -277,11 +170,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, protocol_id: protocol.id)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:identity_id]        = logged_in_user.id
+      session[:identity_id] = logged_in_user.id
 
-      get :confirmation, params: {
-        id: sr.id
-      }, xhr: true
+      get :confirmation, params: { srid: sr.id }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

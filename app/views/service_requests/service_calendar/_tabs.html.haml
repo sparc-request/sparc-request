@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,15 +18,15 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #service-calendar
-  = render 'service_calendars/master_calendar/pppv/services_toggle', service_request_id: @service_request.id, sub_service_request_id: @sub_service_request ? @sub_service_request.id : nil, tab: 'calendar', review: @review, portal: @portal, display_all_services: @display_all_services
+  = render 'service_calendars/master_calendar/pppv/services_toggle', srid: @service_request.id, sub_service_request_id: nil, tab: 'calendar', review: @review, portal: @portal, display_all_services: @display_all_services
   .schedule-tabs
     %ul.nav.nav-tabs.nav-justified{ role: 'tablist' }
       %li.custom-tab.active{ role: 'presentation' }
-        = link_to t(:calendars)[:tabs][:template], '#template-calendar', id: 'template-tab', data: { toggle: 'tab', url: table_service_calendars_path(service_request_id: service_request.id, sub_service_request_id: sub_service_request ? sub_service_request.id : nil, tab: 'template', review: false, portal: false), role: 'tab', 'aria-controls' => 'template-calendar', target: '#template-calendar' }
+        = link_to t(:calendars)[:tabs][:template], '#template-calendar', id: 'template-tab', data: { toggle: 'tab', url: table_service_calendars_path(srid: service_request.id, tab: 'template', review: false, portal: false), role: 'tab', 'aria-controls' => 'template-calendar', target: '#template-calendar' }
       %li.custom-tab{ role: 'presentation' }
-        = link_to t(:calendars)[:tabs][:billing], '#billing-strategy-calendar', id: 'billing-strategy-tab', data: { toggle: 'tab', url: table_service_calendars_path(service_request_id: service_request.id, sub_service_request_id: sub_service_request ? sub_service_request.id : nil, tab: 'billing_strategy', review: false, portal: false), role: 'tab', 'aria-controls' => 'billing-strategy-calendar', target: '#billing-strategy-calendar' }
+        = link_to t(:calendars)[:tabs][:billing], '#billing-strategy-calendar', id: 'billing-strategy-tab', data: { toggle: 'tab', url: table_service_calendars_path(srid: service_request.id, tab: 'billing_strategy', review: false, portal: false), role: 'tab', 'aria-controls' => 'billing-strategy-calendar', target: '#billing-strategy-calendar' }
       %li.custom-tab{ role: 'presentation' }
-        = link_to t(:calendars)[:tabs][:pricing], '#consolidated-request-calendar', id: 'calendar-tab', data: { toggle: 'tab', url: merged_calendar_service_calendars_path(service_request_id: service_request.id, sub_service_request_id: sub_service_request ? sub_service_request.id : nil, tab: 'calendar', review: false, portal: false), role: 'tab', 'aria-controls' => 'consolidated-request-calendar', target: '#consolidated-request-calendar' }
+        = link_to t(:calendars)[:tabs][:pricing], '#consolidated-request-calendar', id: 'calendar-tab', data: { toggle: 'tab', url: merged_calendar_service_calendars_path(srid: service_request.id, tab: 'calendar', review: false, portal: false), role: 'tab', 'aria-controls' => 'consolidated-request-calendar', target: '#consolidated-request-calendar' }
   .tab-content
     .tab-pane.active#template-calendar{ role: 'tabpanel' }
     .tab-pane#billing-strategy-calendar{ role: 'tabpanel' }

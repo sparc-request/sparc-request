@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,24 +19,19 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - visit_groups = arm.visit_groups.page(page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] } })
 .panel.panel-primary.calendar-container.pppv-calendar{ class: "arm-calendar-container-#{arm.id}", data: { arm_id: arm.id } }
-  .panel-heading
-    .pull-left
-      %h3.panel-title
-        = raw(I18n.t('calendars.pppv.header', arm_name: arm.name))
-    .pull-right
+  .panel-heading.justify-content-between
+    %h3.panel-title
+      = raw(I18n.t('calendars.pppv.header', arm_name: arm.name))
+    .calendar-links-container.d-flex
+      - unless portal || review
+        - if arm.protocol.locked
+          .text-center
+            %span{class: 'glyphicon glyphicon-lock locked', style: 'font-size:50px;color:black;', data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' }, title: t(:calendar_structure)[:tooltips][:arm_info] }
+        - unless arm.protocol.locked
+          %button.btn.btn-warning.move-visit-button{ type: "button", data: { arm_id: arm.id, pages: pages.to_s, page: page, review: review.to_s, portal: portal.to_s, admin: admin.to_s, tab: tab, merged: merged.to_s, consolidated: consolidated.to_s, statuses_hidden: statuses_hidden, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:calendars)[:tooltips][:move_visit_button]}
+            = t(:proper)[:service_calendar][:move_visit][:header]
       - unless review
         = render 'service_calendars/master_calendar/pppv/pppv_freeze_header_button', tab: tab, portal: portal, arm: arm, service_request: service_request, sub_service_request: sub_service_request, merged: merged, statuses_hidden: statuses_hidden, scroll_true: @scroll_true, display_all_services: display_all_services
-    - unless portal || review
-      - if arm.protocol.locked
-        .text-center
-          %span{class: 'glyphicon glyphicon-lock locked', style: 'font-size:50px;color:black;', data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' }, title: t(:calendar_structure)[:tooltips][:arm_info] }
-      .pull-right
-        - unless arm.protocol.locked
-          %button.btn.btn-warning.move-visit-button{ data: { arm_id: arm.id, pages: pages.to_s, page: page, review: review.to_s, portal: portal.to_s, admin: admin.to_s, tab: tab, merged: merged.to_s, consolidated: consolidated.to_s, statuses_hidden: statuses_hidden, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:calendars)[:tooltips][:move_visit_button]}
-            = t(:proper)[:service_calendar][:move_visit][:header]
-        .divider
-    .clearfix
-  = hidden_field_tag :service_request_id, service_request.id
   %table.table.table-bordered{ class: @scroll_true ? "scrolling-table" : "non-scrolling-table" }
     %thead.pppv-thead{ class: @scroll_true ? "scrolling-thead" : "" }
       = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_header", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, review: review, portal: portal, admin: admin, merged: merged, consolidated: consolidated, statuses_hidden: statuses_hidden, visit_groups: visit_groups

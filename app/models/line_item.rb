@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,20 +27,28 @@ class LineItem < ApplicationRecord
   belongs_to :service_request
   belongs_to :service, counter_cache: true
   belongs_to :sub_service_request
+
   has_many :fulfillments, dependent: :destroy
   has_many :line_items_visits, dependent: :destroy
   has_many :procedures
   has_many :admin_rates, dependent: :destroy
   has_many :notes, as: :notable, dependent: :destroy
-  
+
   has_many :arms, through: :line_items_visits
   has_one :protocol, through: :service_request
+
+  ########################
+  ### CWF Associations ###
+  ########################
+
+  has_many :fulfillment_line_items, -> { order(:arm_id) }, class_name: 'Shard::Fulfillment::LineItem', foreign_key: :sparc_id
 
   attr_accessor :pricing_scheme
 
   accepts_nested_attributes_for :fulfillments, allow_destroy: true
 
   delegate :one_time_fee, to: :service
+  delegate :name, to: :service
   delegate :status, to: :sub_service_request
 
   validates :service_id, numericality: true, presence: true
@@ -270,59 +278,8 @@ class LineItem < ApplicationRecord
     self.service.organization
   end
 
-  def service_relations
-    # Get the relations for this line item and others to this line item, Narrow the list to those with linked quantities
-    service_relations = ServiceRelation.where(service_id: self.service_id).reject { |sr| sr.linked_quantity == false }
-    related_service_relations = ServiceRelation.where(related_service_id: self.service_id).reject { |sr| sr.linked_quantity == false }
-
-    (service_relations + related_service_relations)
-  end
-
   def has_service_relation
     service_relations.any?
-  end
-
-  def valid_otf_service_relation_quantity?
-    line_items = service_request.one_time_fee_line_items
-    service_relations.each do |sr|
-      # Check to see if the request has the service in the relation
-      sr_id = (service_id == sr.related_service_id ? sr.service_id : sr.related_service_id)
-      line_item = line_items.detect { |li| li.service_id == sr_id }
-      next unless line_item
-      total_quantity_between_line_items = self.quantity + line_item.quantity
-
-      unless (total_quantity_between_line_items == 0 or total_quantity_between_line_items == sr.linked_quantity_total)
-        self.errors.add(:invalid_total, "The quantity between #{self.service.name} and #{line_item.service.name}is not equal to the total quantity amount which is #{sr.linked_quantity_total}")
-        return false
-      end
-    end
-
-    return true
-  end
-
-  def valid_pppv_service_relation_quantity? visit
-    visit_group = visit.visit_group
-    arm = visit_group.arm
-    line_items = arm.line_items
-    visit_position = visit.position - 1
-
-    service_relations.each do |sr|
-      # Check to see if the request has the service in the relation
-      sr_id = (service_id == sr.related_service_id ? sr.service_id : sr.related_service_id)
-      line_item = line_items.detect { |li| li.service_id == sr_id }
-      next unless line_item && line_item.arms.find(arm.id)
-
-      line_item_visit = line_item.line_items_visits.find_by_arm_id arm.id
-      v = line_item_visit.ordered_visits[visit_position]
-      total_quantity_between_visits = visit.quantity_total + v.quantity_total
-      if not(total_quantity_between_visits == 0 or total_quantity_between_visits == sr.linked_quantity_total)
-        first_service, second_service = [self.service.name, line_item.service.name].sort
-        self.errors.add(:invalid_total, "The quantity on #{visit_group.name} on #{arm.name} between #{first_service} and #{second_service} is not equal to the total quantity amount which is #{sr.linked_quantity_total}")
-        return false
-      end
-    end
-
-    return true
   end
 
   def display_service_abbreviation

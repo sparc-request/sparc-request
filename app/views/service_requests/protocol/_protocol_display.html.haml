@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -24,11 +24,7 @@
         = t(:proper)[:protocol][:review_protocol_notice]
         %small
           = t(:proper)[:protocol][:review_protocol_instructions]
-    - if @errors
-      %h4.text-danger
-        = t(:errors)[:service_requests][:protocol_errors]
-      = render 'shared/modal_errors', errors: @errors
-    = render 'protocols/summary', protocol: protocol, protocol_type: protocol.type, service_request: service_request, sub_service_request_id: sub_service_request_id, allow_edit: true
+    = render 'protocols/summary', protocol: protocol, protocol_type: protocol.type, service_request: service_request, allow_edit: true
     = render 'associated_users/table', protocol: protocol, service_request: service_request
   - else
     .page-header
@@ -37,5 +33,5 @@
         %small
           = t(:proper)[:protocol][:create_protocol_instructions]
     .col-sm-12.protocol-container.text-center
-      = link_to t(:protocols)[:studies][:new], new_protocol_path(srid: service_request.id, protocol_type: 'Study', service_request_id: service_request.id), class: 'btn btn-lg btn-success new-study', title: t(:proper)[:protocol][:study_tooltip], data: { toggle: 'tooltip' }
-      = link_to t(:protocols)[:projects][:new], new_protocol_path(srid: service_request.id, protocol_type: 'Project', service_request_id: service_request.id), class: 'btn btn-lg btn-primary new-project', title: t(:proper)[:protocol][:project_tooltip], data: { toggle: 'tooltip' }
+      = link_to t(:protocols)[:studies][:new], new_protocol_path(protocol_type: 'Study', srid: service_request.id), class: 'btn btn-lg btn-success new-study', title: t(:proper)[:protocol][:study_tooltip], data: { toggle: 'tooltip' }
+      = link_to t(:protocols)[:projects][:new], new_protocol_path(protocol_type: 'Project', srid: service_request.id), class: 'btn btn-lg btn-primary new-project', title: t(:proper)[:protocol][:project_tooltip], data: { toggle: 'tooltip' }

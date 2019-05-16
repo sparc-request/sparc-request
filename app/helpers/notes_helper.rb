@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -24,7 +24,7 @@ module NotesHelper
 
     content_tag(:button, type: 'button', class: 'btn btn-link no-padding notes', disabled: disabled, data: { notable_id: notable.id, notable_type: notable.class.name }) do
       content_tag(:span, '', class: ["glyphicon glyphicon-list-alt note-icon", has_notes ? "blue-note" : "black-note"], aria: {hidden: "true"}) +
-      content_tag(:span, notable.notes.length, class: has_notes ? "badge blue-badge" : "badge", id: "#{notable.class.name.downcase}_#{notable.id}_notes")
+      content_tag(:span, notable.notes.length, class: ["badge", has_notes ? "blue-badge" : ""], id: "#{notable.class.name.downcase}_#{notable.id}_notes")
     end
   end
 
@@ -36,7 +36,7 @@ module NotesHelper
   end
 
   def edit_note_button(note)
-    link_to edit_note_path(note, note: { notable_id: note.notable_id, notable_type: note.notable_type }, cancel: params[:cancel]), remote: true, class: ['btn btn-warning', note.identity_id == current_user.id ? '' : 'disabled'] do
+    link_to edit_note_path(note, note: { notable_id: note.notable_id, notable_type: note.notable_type }, cancel: params[:cancel], review: params[:review]), remote: true, class: ['btn btn-warning', note.identity_id == current_user.id ? '' : 'disabled'] do
       content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: {hidden: "true"})
     end
   end

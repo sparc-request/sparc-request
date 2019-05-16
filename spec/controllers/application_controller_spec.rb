@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,29 +21,8 @@
 require 'rails_helper'
 
 RSpec.describe ApplicationController, type: :controller do
-  controller do
-    def index
-      initialize_service_request
-      render body: nil
-    end
-
-    def show
-      render head :ok
-    end
-
-    def not_navigate
-      initialize_service_request
-      render head :ok
-    end
-
-    def navigate
-      initialize_service_request
-      render head :ok
-    end
-  end
 
   let_there_be_lane
-  let_there_be_j
 
   describe '#current_user' do
     it 'should call current_identity' do
@@ -53,99 +32,49 @@ RSpec.describe ApplicationController, type: :controller do
   end
 
   describe '#authorize_identity' do
-    context 'Identity logged in' do
-      before(:each) do
-        allow(controller).to receive(:current_user).and_return(jug2)
-      end
-
-      context '@sub_service_request nil and Identity can edit @service_request' do
-        it 'should authorize Identity' do
-          sr = build(:service_request)
-          controller.instance_variable_set(:@service_request, sr)
-          allow(jug2).to receive(:can_edit_service_request?)
-            .with(sr)
-            .and_return(true)
-          expect(controller).to_not receive(:authorization_error)
-          controller.send(:authorize_identity)
-        end
-      end
-
-      context '@sub_service_request set and Identity can edit @sub_service_request' do
-        it 'should authorize Identity' do
-          controller.instance_variable_set(:@sub_service_request, :sub_service_request)
-          allow(jug2).to receive(:can_edit_sub_service_request?)
-            .with(:sub_service_request)
-            .and_return(true)
-          expect(controller).to_not receive(:authorization_error)
-          controller.send(:authorize_identity)
-        end
-      end
-
-      context '@sub_service_request nil and Identity cannot edit @service_request' do
-        it 'should not authorize Identity' do
-          sr = build(:service_request)
-          controller.instance_variable_set(:@service_request, sr)
-          allow(jug2).to receive(:can_edit_service_request?)
-            .with(sr)
-            .and_return(false)
-          expect(controller).to receive(:authorization_error)
-          controller.send(:authorize_identity)
-        end
-      end
-
-      context '@sub_service_request set and Identity cannot edit @sub_service_request' do
-        it 'should not authorize Identity' do
-          controller.instance_variable_set(:@sub_service_request, :sub_service_request)
-          allow(jug2).to receive(:can_edit_sub_service_request?)
-            .with(:sub_service_request)
-            .and_return(false)
-          expect(controller).to receive(:authorization_error)
-          controller.send(:authorize_identity)
-        end
+    context '@service_request is \'first_draft\'' do
+      it 'should return true' do
+        sr = build(:service_request, status: 'first_draft')
+        controller.instance_variable_set(:@service_request, sr)
+        expect(controller).to_not receive(:authorization_error)
+        controller.send(:authorize_identity)
       end
     end
 
-    context 'Identity not logged in' do
-      before(:each) do
-        allow(controller).to receive(:current_user).and_return(nil)
-      end
+    context '@service_request is not \'first_draft\'' do
+      context 'Identity logged in' do
+        before(:each) do
+          allow(controller).to receive(:current_user).and_return(jug2)
+        end
 
-      context 'ServiceRequest in first_draft and not submitted yet' do
-        it 'should authorize Identity' do
-          service_request = instance_double('ServiceRequest', status: 'first_draft')
-          controller.instance_variable_set(:@service_request, service_request)
-          allow(controller).to receive(:controller_name) { 'service_requests' }
-          allow(controller).to receive(:action_name) { 'catalog' }
-          expect(controller).to_not receive(:authorization_error)
-          controller.send(:authorize_identity)
+        context 'user can edit @service_request' do
+          it 'should authorize identity' do
+            sr = build(:service_request, status: 'draft')
+            controller.instance_variable_set(:@service_request, sr)
+            allow(jug2).to receive(:can_edit_service_request?).with(sr).and_return(true)
+            expect(controller).to_not receive(:authorization_error)
+            controller.send(:authorize_identity)
+          end
+        end
+
+        context 'user can not edit @service_request' do
+          it 'should authorize identity' do
+            sr = build(:service_request, status: 'draft')
+            controller.instance_variable_set(:@service_request, sr)
+            allow(jug2).to receive(:can_edit_service_request?).with(sr).and_return(false)
+            expect(controller).to receive(:authorization_error)
+            controller.send(:authorize_identity)
+          end
         end
       end
 
-      context 'ServiceRequest status not first_draft' do
-        it 'should authenticate and authorize Identity' do
+      context 'Identity not logged in' do
+        it 'should call \'authenticate_identity!\'' do
           service_request = instance_double('ServiceRequest', status: 'draft')
           controller.instance_variable_set(:@service_request, service_request)
-          expect(controller).to_not receive(:authorization_error)
+          allow(controller).to receive(:not_signed_in?).and_return(true)
           expect(controller).to receive(:authenticate_identity!)
-          controller.send(:authorize_identity)
-        end
-      end
-
-      context 'ServiceRequest and status' do
-        it 'should authorize Identity' do
-          service_request = instance_double('ServiceRequest', status: 'draft')
-          controller.instance_variable_set(:@service_request, service_request)
           expect(controller).to_not receive(:authorization_error)
-          expect(controller).to receive(:authenticate_identity!)
-          controller.send(:authorize_identity)
-        end
-      end
-
-      context 'ServiceRequest has nil status' do
-        it 'should not authorize Identity' do
-          service_request = instance_double('ServiceRequest', status: nil)
-          controller.instance_variable_set(:@service_request, service_request)
-          expect(controller).to receive(:authorization_error)
           controller.send(:authorize_identity)
         end
       end
@@ -153,33 +82,30 @@ RSpec.describe ApplicationController, type: :controller do
   end
 
   describe '#initialize_service_request' do
-    build_service_request_with_study
+    context 'params[:srid] is present' do
+      it 'should assign @service_request' do
+        sr = findable_stub(ServiceRequest) { build_stubbed(:service_request) }
+        allow(controller).to receive(:params).and_return({srid: sr.id.to_s})
+        controller.send(:initialize_service_request)
+        expect(assigns(:service_request)).to eq(sr)
+      end
+    end
 
-    context 'not hitting ServiceRequestsController' do
-      context 'params[:service_request_id] present' do
-        it 'should set @service_request' do
-          get :index, params: { service_request_id: service_request.id }
-          expect(assigns(:service_request)).to eq service_request
-        end
+    context 'action_name == \'add_service\'' do
+      it 'should create a new service request' do
+        allow(controller).to receive(:action_name).and_return('add_service')
+        controller.send(:initialize_service_request)
+        sr = ServiceRequest.first
+        expect(assigns(:service_request)).to eq(sr)
+        expect(sr.status).to eq('first_draft')
+      end
+    end
 
-        context 'params[:sub_service_request_id] present' do
-          before(:each) do
-            get :index, params: { service_request_id: service_request.id,
-              sub_service_request_id: sub_service_request.id }
-          end
-
-          it 'should set @sub_service_request' do
-            expect(assigns(:sub_service_request)).to eq sub_service_request
-          end
-        end
-
-        context 'session[:sub_service_request_id] absent' do
-          before(:each) { get :index, params: { service_request_id: service_request.id } }
-
-          it 'should not set @sub_service_request' do
-            expect(assigns(:sub_service_request)).to_not be
-          end
-        end
+    context 'service request not yet created' do
+      it '@service_request is unsaved' do
+        controller.send(:initialize_service_request)
+        sr = assigns(:service_request)
+        expect(sr.new_record?).to eq(true)
       end
     end
   end

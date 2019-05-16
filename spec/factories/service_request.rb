@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -32,17 +32,22 @@ FactoryBot.define do
     end
 
     trait :approved do
-      approved true
+      approved {true}
+    end
+
+    trait :submitted do
+      status        {'submitted'}
+      submitted_at  {Time.now}
     end
 
     transient do
-      sub_service_count 0
-      line_item_count 0
-      subsidy_count 0
-      charge_count 0
-      token_count 0
-      approval_count 0
-      organizations []
+      sub_service_count {0}
+      line_item_count {0}
+      subsidy_count {0}
+      charge_count {0}
+      token_count {0}
+      approval_count {0}
+      organizations {[]}
     end
 
     after(:build) do |service_request, evaluator|

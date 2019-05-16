@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development~
+-# Copyright © 2011-2019 MUSC Foundation for Research Development~
 -# All rights reserved.~
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -37,4 +37,4 @@
         .btn.btn-success.btn-sm.glyphicon.glyphicon-plus#add_service_button{title: t(:dashboard)[:multiple_line_items][:add], type: "button", aria: {label: "Add Service"}}
         .btn.btn-danger.btn-sm.glyphicon.glyphicon-remove#remove_service_button{title: t(:dashboard)[:multiple_line_items][:remove], type: "button", aria: {label: "Remove Service"}}
   %br
-  = render 'service_calendars/master_calendar/pppv/services_toggle', service_request_id: service_request.id, sub_service_request_id: sub_service_request ? sub_service_request.id : nil, tab: 'calendar', review: true, portal: true, display_all_services: @display_all_services
+  = render 'service_calendars/master_calendar/pppv/services_toggle', srid: service_request.id, sub_service_request_id: sub_service_request.try(:id), tab: 'calendar', review: true, portal: true, display_all_services: @display_all_services

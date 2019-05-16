@@ -36,7 +36,7 @@ module NotesHelper
   end
 
   def edit_note_button(note)
-    link_to edit_note_path(note, note: { notable_id: note.notable_id, notable_type: note.notable_type }, cancel: params[:cancel]), remote: true, class: ['btn btn-warning', note.identity_id == current_user.id ? '' : 'disabled'] do
+    link_to edit_note_path(note, note: { notable_id: note.notable_id, notable_type: note.notable_type }, cancel: params[:cancel], review: params[:review]), remote: true, class: ['btn btn-warning', note.identity_id == current_user.id ? '' : 'disabled'] do
       content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: {hidden: "true"})
     end
   end

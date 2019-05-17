@@ -319,7 +319,7 @@ RSpec.describe "Admin User filters My Admin Protocols using Search functionality
       end
 
       it "should not display RMID as a filter option" do
-        bootstrap_select = page.find("select#filterrific_search_query_search_drop + .bootstrap-select")
+        bootstrap_select = page.find(".bootstrap-select select#filterrific_search_query_search_drop .dropdown-toggle")
         bootstrap_select.click
         expect(page).to_not have_content('RMID')
       end

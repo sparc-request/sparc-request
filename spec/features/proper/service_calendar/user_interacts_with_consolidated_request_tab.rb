@@ -114,8 +114,8 @@ RSpec.describe 'User interacts with Consolidated Request tab', js: true do
       click_link 'Consolidated Request Tab'
       wait_for_javascript_to_finish
 
-      find("#visits-select-for-#{@arm.id} + .bootstrap-select").click
-      all("#visits-select-for-#{@arm.id} + .bootstrap-select li")[1].click
+      find(".bootstrap-select #visits-select-for-#{@arm.id} + .dropdown-toggle").click
+      all(".bootstrap-select #visits-select-for-#{@arm.id} + .dropdown-menu li")[1].click
       wait_for_javascript_to_finish
 
       expect(page).to have_selector('#service-calendars', visible: true)

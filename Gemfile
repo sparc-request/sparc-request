@@ -12,7 +12,6 @@ gem 'bluecloth'
 gem 'bootsnap', require: false
 gem 'bootstrap-sass', '3.4.1'
 gem 'sassc-rails', '>= 2.1.0'
-gem 'bootstrap-select-rails'
 gem 'bootstrap3-datetimepicker-rails'
 gem 'bootstrap-toggle-rails'
 gem 'capistrano', '~> 3.9'

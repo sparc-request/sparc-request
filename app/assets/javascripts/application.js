@@ -32,6 +32,7 @@
 //= require batch-select
 //= require bootstrap-sprockets
 //= require bootstrap-select
+//= require bootstrap-select-custom
 //= require bootstrap-table
 //= require bootstrap-table-export
 //= require tableExport

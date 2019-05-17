@@ -373,8 +373,12 @@ en:
       tabs:
         request_details:
           header: "Request Details"
+          save: "Save"
+
           options:
             header: "Options"
+            template: "Template Tab"
+            quantity_billing: "Quantity/Billing Tab"
             send_to_epic: "Send to Epic"
             core_approvals: "Administrative Approvals"
             export_to_excel: "Export to Excel"

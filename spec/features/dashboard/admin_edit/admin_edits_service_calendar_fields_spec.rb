@@ -46,14 +46,14 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
     visit dashboard_sub_service_request_path(ssr)
     wait_for_javascript_to_finish
 
-    click_link 'Clinical Services'
+    click_link I18n.t(:dashboard)[:sub_service_requests][:tabs][:study_schedule][:header]
     wait_for_javascript_to_finish
   end
 
   context 'in the Template Tab' do
 
     before :each do
-      click_link 'Template Tab'
+      click_link I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:options][:template]
       wait_for_javascript_to_finish
     end
 
@@ -161,7 +161,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
 
   context 'in the Quantity/Billing Tab' do
     before :each do
-      click_link 'Quantity/Billing Tab'
+      click_link I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:options][:quantity_billing]
       wait_for_javascript_to_finish
     end
 
@@ -189,7 +189,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
           wait_for_javascript_to_finish
 
           fill_in 'visit_research_billing_qty', with: 5
-          click_button 'Save'
+          click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
           wait_for_javascript_to_finish
         end
 
@@ -208,7 +208,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
           wait_for_javascript_to_finish
 
           fill_in 'visit_insurance_billing_qty', with: 5
-          click_button 'Save'
+          click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
           wait_for_javascript_to_finish
         end
 
@@ -226,7 +226,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
           wait_for_javascript_to_finish
 
           fill_in 'visit_effort_billing_qty', with: 5
-          click_button 'Save'
+          click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
           wait_for_javascript_to_finish
         end
 
@@ -264,7 +264,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
           wait_for_javascript_to_finish
 
           fill_in 'visit_research_billing_qty', with: 'string'
-          click_button 'Save'
+          click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
           wait_for_javascript_to_finish
         end
 
@@ -283,7 +283,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
           wait_for_javascript_to_finish
 
           fill_in 'visit_insurance_billing_qty', with: 'string'
-          click_button 'Save'
+          click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
           wait_for_javascript_to_finish
         end
 
@@ -302,7 +302,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
           wait_for_javascript_to_finish
 
           fill_in 'visit_effort_billing_qty', with: 'string'
-          click_button 'Save'
+          click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
           wait_for_javascript_to_finish
         end
 

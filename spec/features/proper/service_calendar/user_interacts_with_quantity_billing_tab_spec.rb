@@ -115,7 +115,7 @@ RSpec.describe 'User interacts with Quantity/Billing tab', js: true do
       wait_for_javascript_to_finish
 
       find("#visits-select-for-#{@arm.id} + .dropdown-toggle").click
-      all("#visits-select-for-#{@arm.id} + .dropdown-menu li")[1].click
+      all(".dropdown-menu.open a")[1].click
       wait_for_javascript_to_finish
 
       expect(page).to have_selector('#service-calendars', visible: true)

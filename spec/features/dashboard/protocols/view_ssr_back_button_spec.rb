@@ -52,9 +52,9 @@ RSpec.describe 'view SSR back button', js: true do
     scenario 'sees the back button' do
       visit dashboard_root_path
       wait_for_javascript_to_finish
-      click_button 'Requests'
+      click_button I18n.t(:dashboard)[:service_requests][:actions][:requests]
       wait_for_javascript_to_finish
-      click_button 'View'
+      click_button I18n.t(:dashboard)[:service_requests][:actions][:view]
       wait_for_javascript_to_finish
 
       expect(page).to have_selector('.view-ssr-back-button')
@@ -65,11 +65,11 @@ RSpec.describe 'view SSR back button', js: true do
 
       visit dashboard_root_path
       wait_for_javascript_to_finish
-      click_button 'Requests'
+      click_button I18n.t(:dashboard)[:service_requests][:actions][:requests]
       wait_for_javascript_to_finish
-      click_button 'View'
+      click_button I18n.t(:dashboard)[:service_requests][:actions][:view]
       wait_for_javascript_to_finish
-      click_button 'Back'
+      click_button I18n.t(:dashboard)[:service_requests][:actions][:back]
       wait_for_javascript_to_finish
 
       expect(page).to have_selector(".modal-title", text: "#{@protocol.short_title}")
@@ -82,7 +82,7 @@ RSpec.describe 'view SSR back button', js: true do
     scenario 'does not see the back button' do
       visit dashboard_protocol_path(@protocol)
       wait_for_javascript_to_finish
-      click_button 'View'
+      click_button I18n.t(:dashboard)[:service_requests][:actions][:view]
       wait_for_javascript_to_finish
 
       expect(page).to have_no_selector('.view-ssr-back-button')

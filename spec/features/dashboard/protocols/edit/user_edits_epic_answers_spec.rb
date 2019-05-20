@@ -42,13 +42,13 @@ RSpec.describe 'User edits epic answers', js: true do
                       create(:super_user, identity: jug2,
                               organization: organization,
                               access_empty_protocols: true)
-    
+
     allow(Protocol).to receive(:rmid_status).and_return(true)
   end
 
   context 'use epic = true' do
     stub_config("use_epic", true)
-    
+
     scenario 'Study, selected for epic: false, question group 3' do
       @protocol.update_attribute(:selected_for_epic, false)
       @protocol.update_attribute(:study_type_question_group_id, 3)
@@ -60,7 +60,7 @@ RSpec.describe 'User edits epic answers', js: true do
       ### EDIT STUDY TYPE ANSWERS ###
       edit_study_type_answers_selected_for_epic_true_cofc_true_and_see_note
 
-      click_button 'Save'
+      click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
       wait_for_page(dashboard_protocol_path(@protocol))
 
       ### GO BACK INTO EDIT ###
@@ -85,7 +85,7 @@ RSpec.describe 'User edits epic answers', js: true do
       wait_for_javascript_to_finish
       expect(page).to have_selector('#study_type_note', text: 'Note: Full Epic Functionality: no notification, no pink header, no MyChart access.')
 
-      click_button 'Save'
+      click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
       wait_for_page(dashboard_protocol_path(@protocol))
 
       ### EDIT AGAIN TO SEE CORRRECT ANSWERS AND NOTE DISPLAYED ###
@@ -135,7 +135,7 @@ RSpec.describe 'User edits epic answers', js: true do
       ### EDIT STUDY TYPE ANSWERS ###
       edit_study_type_answers_selected_for_epic_false_cofc_true_and_see_no_note(true)
 
-      click_button 'Save'
+      click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
       wait_for_page(dashboard_protocol_path(@protocol))
 
       ### GO BACK INTO EDIT ###
@@ -148,7 +148,7 @@ RSpec.describe 'User edits epic answers', js: true do
       ### EDIT STUDY TYPE ANSWERS ###
       edit_study_type_answers_all_answers_no_and_no_note(true)
 
-      click_button 'Save'
+      click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
       wait_for_page(dashboard_protocol_path(@protocol))
 
       ### EDIT AGAIN TO SEE CORRRECT ANSWERS ARE DISPLAYED ###
@@ -187,7 +187,7 @@ RSpec.describe 'User edits epic answers', js: true do
 
         edit_study_type_answers_selected_for_epic_true_cofc_true_and_see_note
 
-        click_button 'Save'
+        click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
         wait_for_page(dashboard_protocol_path(@protocol))
 
         ### SEE THAT CORRECT ANSWER IS DISPLAYING ###
@@ -208,8 +208,8 @@ RSpec.describe 'User edits epic answers', js: true do
       wait_for_javascript_to_finish
 
       edit_study_type_answers_selected_for_epic_false_cofc_true_and_see_no_note(false)
-      
-      click_button 'Save'
+
+      click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
       wait_for_page(dashboard_protocol_path(@protocol))
       find('.edit-protocol-information-button').click
       wait_for_page(edit_dashboard_protocol_path(@protocol))
@@ -220,7 +220,7 @@ RSpec.describe 'User edits epic answers', js: true do
 
       edit_study_type_answers_all_answers_no_and_no_note(false)
 
-      click_button 'Save'
+      click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
       wait_for_page(dashboard_protocol_path(@protocol))
       find('.edit-protocol-information-button').click
       wait_for_page(edit_dashboard_protocol_path(@protocol))
@@ -236,7 +236,7 @@ RSpec.describe 'User edits epic answers', js: true do
 
       edit_study_type_answers_selected_for_epic_false_cofc_true_and_see_no_note(false)
 
-      click_button 'Save'
+      click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
       wait_for_page(dashboard_protocol_path(@protocol))
       find('.edit-protocol-information-button').click
       wait_for_page(edit_dashboard_protocol_path(@protocol))
@@ -247,8 +247,8 @@ RSpec.describe 'User edits epic answers', js: true do
       expect(page).not_to have_selector('#study_type_note')
 
       edit_study_type_answers_all_answers_no_and_no_note(false)
-      
-      click_button 'Save'
+
+      click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
       wait_for_page(dashboard_protocol_path(@protocol))
       find('.edit-protocol-information-button').click
       wait_for_page(edit_dashboard_protocol_path(@protocol))
@@ -266,11 +266,11 @@ RSpec.describe 'User edits epic answers', js: true do
         visit edit_dashboard_protocol_path(@protocol)
         wait_for_javascript_to_finish
 
-        expect(page).to_not have_css('#study_selected_for_epic_true_button') 
+        expect(page).to_not have_css('#study_selected_for_epic_true_button')
 
         edit_study_type_answers_selected_for_epic_false_cofc_true_and_see_no_note(false)
 
-        click_button 'Save'
+        click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
         wait_for_page(dashboard_protocol_path(@protocol))
         find('.edit-protocol-information-button').click
         wait_for_page(edit_dashboard_protocol_path(@protocol))
@@ -281,7 +281,7 @@ RSpec.describe 'User edits epic answers', js: true do
 
         edit_study_type_answers_all_answers_no_and_no_note(false)
 
-        click_button 'Save'
+        click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
         wait_for_page(dashboard_protocol_path(@protocol))
         find('.edit-protocol-information-button').click
         wait_for_page(edit_dashboard_protocol_path(@protocol))
@@ -296,16 +296,16 @@ RSpec.describe 'User edits epic answers', js: true do
         @protocol.update_attribute(:study_type_question_group_id, 3)
         visit edit_dashboard_protocol_path(@protocol)
         wait_for_javascript_to_finish
-        
+
         find('.edit-answers', match: :first).click
         wait_for_javascript_to_finish
 
-        expect(page).to_not have_css('#study_selected_for_epic_true_button') 
+        expect(page).to_not have_css('#study_selected_for_epic_true_button')
         bootstrap_select '#study_type_answer_certificate_of_conf_no_epic_answer', 'No'
         wait_for_javascript_to_finish
         expect(page).not_to have_selector('#study_type_note')
 
-        click_button 'Save'
+        click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
         wait_for_page(dashboard_protocol_path(@protocol))
         find('.edit-protocol-information-button').click
         wait_for_page(edit_dashboard_protocol_path(@protocol))
@@ -389,7 +389,7 @@ RSpec.describe 'User edits epic answers', js: true do
       expect(page).to have_css('a.edit-answers')
     end
 
-    expect(page).to_not have_css('#study_type_answer_higher_level_of_privacy') 
+    expect(page).to_not have_css('#study_type_answer_higher_level_of_privacy')
     expect(page).to_not have_css('#study_type_answer_epic_inbasket')
     expect(page).to_not have_css('#study_type_answer_research_active')
     expect(page).to_not have_css('#study_type_answer_restrict_sending')
@@ -403,8 +403,8 @@ RSpec.describe 'User edits epic answers', js: true do
       find('#study_selected_for_epic_false_button').click
       wait_for_javascript_to_finish
     else
-      expect(page).to_not have_css('#study_selected_for_epic_true_button') 
-    end  
+      expect(page).to_not have_css('#study_selected_for_epic_true_button')
+    end
     bootstrap_select '#study_type_answer_certificate_of_conf_no_epic_answer', 'Yes'
     wait_for_javascript_to_finish
     ### SEE APPROPRIATE STUDY TYPE NOTE ###
@@ -416,7 +416,7 @@ RSpec.describe 'User edits epic answers', js: true do
   end
 
   def edit_study_type_answers_all_answers_no_and_no_note(use_epic)
-    expect(page).to_not have_css('#study_type_answer_higher_level_of_privacy_no_epic_answer') 
+    expect(page).to_not have_css('#study_type_answer_higher_level_of_privacy_no_epic_answer')
     find('a.edit-answers', match: :first).click
     wait_for_javascript_to_finish
     bootstrap_select '#study_type_answer_certificate_of_conf_no_epic_answer', 'No'
@@ -471,12 +471,12 @@ RSpec.describe 'User edits epic answers', js: true do
     ### STQ GROUP ###
     @study_type_question_group_version_2 = StudyTypeQuestionGroup.create(active: false, version: 2)
     ### STQ'S ###
-    @stq_certificate_of_conf_version_2 = StudyTypeQuestion.create("order"=>1, "question"=>"1. Does your study have a Certificate of Confidentiality?", "friendly_id"=>"certificate_of_conf", "study_type_question_group_id" => study_type_question_group_version_2.id) 
-    @stq_higher_level_of_privacy_version_2 = StudyTypeQuestion.create("order"=>2, "question"=>"2. Does your study require a higher level of privacy for the participants?", "friendly_id"=>"higher_level_of_privacy", "study_type_question_group_id" => study_type_question_group_version_2.id) 
-    @stq_access_study_info_version_2 = StudyTypeQuestion.create("order"=>3, "question"=>"2b. Do participants enrolled in your study require a second DEIDENTIFIED Medical Record that is not connected to their primary record in Epic?", "friendly_id"=>"access_study_info", "study_type_question_group_id" => study_type_question_group_version_2.id) 
-    @stq_epic_inbasket_version_2 = StudyTypeQuestion.create("order"=>4, "question"=>"3. Do you wish to receive a notification via Epic InBasket when your research participants are admitted to the hospital or ED?", "friendly_id"=>"epic_inbasket", "study_type_question_group_id" => study_type_question_group_version_2.id) 
-    @stq_research_active_version_2 = StudyTypeQuestion.create("order"=>5, "question"=>"4. Do you wish to remove the 'Research: Active' indicator in the Patient Header for your study participants?", "friendly_id"=>"research_active", "study_type_question_group_id" => study_type_question_group_version_2.id) 
-    @stq_restrict_sending_version_2 = StudyTypeQuestion.create("order"=>6, "question"=>"5. Do you need to restrict the sending of study related results, such as laboratory and radiology results, to a participants MyChart?", "friendly_id"=>"restrict_sending", "study_type_question_group_id" => study_type_question_group_version_2.id) 
+    @stq_certificate_of_conf_version_2 = StudyTypeQuestion.create("order"=>1, "question"=>"1. Does your study have a Certificate of Confidentiality?", "friendly_id"=>"certificate_of_conf", "study_type_question_group_id" => study_type_question_group_version_2.id)
+    @stq_higher_level_of_privacy_version_2 = StudyTypeQuestion.create("order"=>2, "question"=>"2. Does your study require a higher level of privacy for the participants?", "friendly_id"=>"higher_level_of_privacy", "study_type_question_group_id" => study_type_question_group_version_2.id)
+    @stq_access_study_info_version_2 = StudyTypeQuestion.create("order"=>3, "question"=>"2b. Do participants enrolled in your study require a second DEIDENTIFIED Medical Record that is not connected to their primary record in Epic?", "friendly_id"=>"access_study_info", "study_type_question_group_id" => study_type_question_group_version_2.id)
+    @stq_epic_inbasket_version_2 = StudyTypeQuestion.create("order"=>4, "question"=>"3. Do you wish to receive a notification via Epic InBasket when your research participants are admitted to the hospital or ED?", "friendly_id"=>"epic_inbasket", "study_type_question_group_id" => study_type_question_group_version_2.id)
+    @stq_research_active_version_2 = StudyTypeQuestion.create("order"=>5, "question"=>"4. Do you wish to remove the 'Research: Active' indicator in the Patient Header for your study participants?", "friendly_id"=>"research_active", "study_type_question_group_id" => study_type_question_group_version_2.id)
+    @stq_restrict_sending_version_2 = StudyTypeQuestion.create("order"=>6, "question"=>"5. Do you need to restrict the sending of study related results, such as laboratory and radiology results, to a participants MyChart?", "friendly_id"=>"restrict_sending", "study_type_question_group_id" => study_type_question_group_version_2.id)
 
     ### ST ANSWERS ###
     StudyTypeAnswer.create(protocol_id: @protocol.id, study_type_question_id: stq_certificate_of_conf_version_2.id, answer: 0)

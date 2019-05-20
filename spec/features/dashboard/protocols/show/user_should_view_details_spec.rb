@@ -34,7 +34,7 @@ RSpec.describe "User should view details", js: true do
       visit dashboard_protocol_path(protocol)
       wait_for_javascript_to_finish
 
-      click_button 'View Study Details'
+      click_button I18n.t(:dashboard)[:protocols][:documents][:view_study_details]
       wait_for_javascript_to_finish
 
       within '.modal-content' do
@@ -69,7 +69,7 @@ RSpec.describe "User should view details", js: true do
       visit dashboard_protocol_path(protocol)
       wait_for_javascript_to_finish
 
-      click_button 'View Study Details'
+      click_button I18n.t(:dashboard)[:protocols][:documents][:view_study_details]
       wait_for_javascript_to_finish
 
       within '.modal-content' do

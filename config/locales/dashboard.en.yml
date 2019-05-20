@@ -224,6 +224,9 @@ en:
       documents:
         header: "Documents"
         add_document: "Add Document"
+        view_study_details: "View Study Details"
+        archive_project: "Archive Project"
+        unarchive_project: "Unarchive Project"
 
       service_requests:
         header: "Requests"
@@ -281,6 +284,8 @@ en:
       actions:
         header: "Actions"
         view: "View"
+        requests: "Requests"
+        back: "Back"
         edit: "Edit"
         admin_edit: "Admin Edit"
         tooltips:

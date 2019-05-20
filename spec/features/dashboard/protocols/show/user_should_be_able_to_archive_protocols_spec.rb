@@ -48,17 +48,17 @@ RSpec.describe 'User should be able to archive protocols', js: true do
 
   it 'archives the project when the archive button is clicked' do
     expect(project.archived).to eq(false)
-    click_button 'Archive Project'
+    click_button I18n.t(:dashboard)[:protocols][:documents][:archive_project]
     wait_for_javascript_to_finish
     expect(project.reload.archived).to eq(true)
     expect(page).to have_content 'Unarchive Project'
   end
 
   it 'unarchives the project when the unarchive button is clicked' do
-    click_button 'Archive Project'
+    click_button I18n.t(:dashboard)[:protocols][:documents][:archive_project]
     wait_for_javascript_to_finish
     expect(project.reload.archived).to eq(true)
-    click_button 'Unarchive Project'
+    click_button I18n.t(:dashboard)[:protocols][:documents][:unarchive_project]
     wait_for_javascript_to_finish
     expect(project.reload.archived).to eq(false)
     expect(page).to have_content 'Archive Project'

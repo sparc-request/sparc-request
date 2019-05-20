@@ -24,7 +24,7 @@ RSpec.describe 'User edits study', js: true do
   let_there_be_lane
   fake_login_for_each_test
   build_study_phases
-  
+
   stub_config("research_master_enabled", false)
 
   before :each do
@@ -56,7 +56,7 @@ RSpec.describe 'User edits study', js: true do
 
     it 'and sees updated study phases (IV)' do
       find('body').click # Click away
-      click_button 'Save'
+      click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
       wait_for_javascript_to_finish
       expect(@protocol.reload.study_phase_ids).to eq([study_phase_IV.id])
     end
@@ -65,7 +65,7 @@ RSpec.describe 'User edits study', js: true do
       first('.dropdown-menu.open span.text', text: "I").click
       first('.dropdown-menu.open span.text', text: "O").click
       find('body').click # Click away
-      click_button 'Save'
+      click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
       wait_for_javascript_to_finish
       expect(@protocol.reload.study_phase_ids).to eq([study_phase_O.id, study_phase_I.id, study_phase_IV.id])
     end
@@ -75,7 +75,7 @@ RSpec.describe 'User edits study', js: true do
       first('.dropdown-menu.open span.text', text: "O").click
       first('.dropdown-menu.open span.text', text: "IIa").click
       find('body').click # Click away
-      click_button 'Save'
+      click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
       wait_for_javascript_to_finish
       expect(@protocol.reload.study_phase_ids).to eq([study_phase_O.id, study_phase_I.id, study_phase_IIa.id, study_phase_IV.id])
     end

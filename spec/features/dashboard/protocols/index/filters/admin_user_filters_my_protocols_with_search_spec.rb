@@ -319,8 +319,7 @@ RSpec.describe "Admin User filters My Protocols using Search functionality", js:
       end
 
       it "should not display RMID as a filter option" do
-        bootstrap_select = page.find(".bootstrap-select select#filterrific_search_query_search_drop + .dropdown-toggle")
-        bootstrap_select.click
+        find(".bootstrap-select select#filterrific_search_query_search_drop + .dropdown-toggle").click
         expect(page).to_not have_content('RMID')
       end
     end

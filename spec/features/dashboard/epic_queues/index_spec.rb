@@ -119,7 +119,7 @@ RSpec.describe 'Notifications index', js: true do
       visit_epic_queues_index_page
       wait_for_javascript_to_finish
 
-      click_link 'Past'
+      click_link click_link I18n.t(:dashboard)[:epic_queues][:headers][:past]
 
       expect(page).to have_css('td',
         text: "#{protocol.type.capitalize}: #{protocol.id} - #{protocol.short_title}"
@@ -152,7 +152,7 @@ RSpec.describe 'Notifications index', js: true do
     page = visit_epic_queues_index_page
     wait_for_javascript_to_finish
 
-    click_link 'Past'
+    click_link click_link I18n.t(:dashboard)[:epic_queues][:headers][:past]
     date = epic_queue.created_at.strftime("%m/%d/%Y %I:%M:%S %p")
 
     expect(page).to have_css('td', text: "#{date}")

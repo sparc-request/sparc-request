@@ -84,7 +84,7 @@ RSpec.describe 'User creates study', js: true do
         first('.tt-suggestion').click
         wait_for_javascript_to_finish
 
-        click_button 'Save'
+        click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
 
         expect(Study.count).to eq(1)
         protocol_show = dashboard_protocol_path(Study.first)

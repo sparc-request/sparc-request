@@ -35,9 +35,9 @@ namespace :data do
 
       def sparc_arm_styles(sparc_arm)
         styles  = [@bc]
-        styles << (sparc_arm.fulfillment_arms.where.not(name: sparc_arm.name).any?                   ? @data_error : @b)
-        styles << (sparc_arm.fulfillment_arms.where.not(subject_count: sparc_arm.subject_count).any? ? @data_error : @c)
-        styles << (sparc_arm.fulfillment_arms.where.not(visit_count: sparc_arm.visit_count).any?     ? @data_error : @c)
+        styles << (sparc_arm.fulfillment_arms.any? && sparc_arm.fulfillment_arms.where.not(name: sparc_arm.name).any?                   ? @data_error : @b)
+        styles << (sparc_arm.fulfillment_arms.any? && sparc_arm.fulfillment_arms.where.not(subject_count: sparc_arm.subject_count).any? ? @data_error : @c)
+        styles << (sparc_arm.fulfillment_arms.any? && sparc_arm.fulfillment_arms.where.not(visit_count: sparc_arm.visit_count).any?     ? @data_error : @c)
         styles += [@default, @default]
         styles
       end
@@ -53,7 +53,7 @@ namespace :data do
 
       def sparc_li_styles(sparc_liv, sparc_li)
         styles  = [@bc, @b]
-        styles << (sparc_li.fulfillment_line_items.where.not(subject_count: sparc_liv.subject_count).any? ? @data_error : @c)
+        styles << (sparc_li.fulfillment_line_items.any? && sparc_li.fulfillment_line_items.where.not(subject_count: sparc_liv.subject_count).any? ? @data_error : @c)
         styles += [@default, @default, @default]
         styles
       end
@@ -67,11 +67,11 @@ namespace :data do
 
       def sparc_vg_styles(sparc_vg)
         styles  = [@bc]
-        styles << (sparc_vg.fulfillment_visit_groups.where.not(name: sparc_vg.name).any?                   ? @data_error : @b)
-        styles << (sparc_vg.fulfillment_visit_groups.where.not(position: sparc_vg.position).any?           ? @data_error : @c)
-        styles << (sparc_vg.fulfillment_visit_groups.where.not(window_before: sparc_vg.window_before).any? ? @data_error : @c)
-        styles << (sparc_vg.fulfillment_visit_groups.where.not(day: sparc_vg.day).any?                     ? @data_error : @c)
-        styles << (sparc_vg.fulfillment_visit_groups.where.not(window_after: sparc_vg.window_after).any?   ? @data_error : @c)
+        styles << (sparc_vg.fulfillment_visit_groups.any? && sparc_vg.fulfillment_visit_groups.where.not(name: sparc_vg.name).any?                   ? @data_error : @b)
+        styles << (sparc_vg.fulfillment_visit_groups.any? && sparc_vg.fulfillment_visit_groups.where.not(position: sparc_vg.position).any?           ? @data_error : @c)
+        styles << (sparc_vg.fulfillment_visit_groups.any? && sparc_vg.fulfillment_visit_groups.where.not(window_before: sparc_vg.window_before).any? ? @data_error : @c)
+        styles << (sparc_vg.fulfillment_visit_groups.any? && sparc_vg.fulfillment_visit_groups.where.not(day: sparc_vg.day).any?                     ? @data_error : @c)
+        styles << (sparc_vg.fulfillment_visit_groups.any? && sparc_vg.fulfillment_visit_groups.where.not(window_after: sparc_vg.window_after).any?   ? @data_error : @c)
         styles
       end
 
@@ -87,9 +87,9 @@ namespace :data do
 
       def sparc_visit_styles(sparc_visit)
         styles  = [@bc]
-        styles << (sparc_visit.fulfillment_visits.where.not(research_billing_qty: sparc_visit.research_billing_qty).any?   ? @data_error : @c)
-        styles << (sparc_visit.fulfillment_visits.where.not(insurance_billing_qty: sparc_visit.insurance_billing_qty).any? ? @data_error : @c)
-        styles << (sparc_visit.fulfillment_visits.where.not(effort_billing_qty: sparc_visit.effort_billing_qty).any?       ? @data_error : @c)
+        styles << (sparc_visit.fulfillment_visits.any? && sparc_visit.fulfillment_visits.where.not(research_billing_qty: sparc_visit.research_billing_qty).any?   ? @data_error : @c)
+        styles << (sparc_visit.fulfillment_visits.any? && sparc_visit.fulfillment_visits.where.not(insurance_billing_qty: sparc_visit.insurance_billing_qty).any? ? @data_error : @c)
+        styles << (sparc_visit.fulfillment_visits.any? && sparc_visit.fulfillment_visits.where.not(effort_billing_qty: sparc_visit.effort_billing_qty).any?       ? @data_error : @c)
         styles += [@default, @default]
         styles
       end
@@ -103,7 +103,7 @@ namespace :data do
         styles
       end
 
-      Protocol.includes(:arms, :sub_service_requests).where(sub_service_requests: { in_work_fulfillment: true }).distinct.to_a.each_slice(100).each do |sparc_protocols|
+      Protocol.includes(:arms, :sub_service_requests).where(sub_service_requests: { in_work_fulfillment: true }).distinct.order(:id).to_a.each_slice(100).each do |sparc_protocols|
         wb.add_worksheet(name: "#{sparc_protocols.first.id} to #{sparc_protocols.last.id}") do |sheet|
           sparc_protocols.each do |sparc_protocol|
             header_row              = ["SPARC Protocol #{sparc_protocol.id}", "", "", "", "", ""]
@@ -203,7 +203,14 @@ namespace :data do
               ### Get all remaining SPARC Arms without corresponding Fulfillment Arms
               ### Get all remaining Fulfillment Arms without corresponding SPARC Arms
 
-              sparc_protocol.arms.includes(:fulfillment_arms).select{ |sparc_arm| sparc_arm.fulfillment_arms.where.not(name: sparc_arm.name, subject_count: sparc_arm.subject_count, visit_count: sparc_arm.visit_count).any? }.each do |sparc_arm|
+              sparc_arms = sparc_protocol.arms.includes(:fulfillment_arms).select do |sparc_arm|
+                sparc_arm.fulfillment_arms.where.not(name: sparc_arm.name)
+                  .or(sparc_arm.fulfillment_arms.where.not(subject_count: sparc_arm.subject_count))
+                  .or(sparc_arm.fulfillment_arms.where.not(visit_count: sparc_arm.visit_count))
+                  .any?
+              end
+
+              sparc_arms.each do |sparc_arm|
                 row     = [sparc_arm.id, sparc_arm.name, sparc_arm.subject_count, sparc_arm.visit_count, "", ""]
                 styles  = sparc_arm_styles(sparc_arm)
 
@@ -243,20 +250,20 @@ namespace :data do
                 arm_styles[1] << styles
               end
 
-              Shard::Fulfillment::Arm.where(protocol: sparc_protocol.fulfillment_protocols, sparc_id: nil).each do |cwf_arm|
-                if cwf_arm.sparc_id.nil?
-                  # There was never a record in SPARCRequest
-                  row     = ["Arm Missing", "", "", "", "", ""]
-                  styles  = [@data_error, @data_error, @data_error, @data_error, @data_error, @data_error]
-                elsif AuditRecovery.where(auditable_type: 'Arm', auditable_id: cwf_arm.sparc_id, action: 'destroy')
+              Shard::Fulfillment::Arm.where(protocol: sparc_protocol.fulfillment_protocols).select{ |cwf_arm| cwf_arm.sparc_arm.nil? rescue true }.each do |cwf_arm|
+                if AuditRecovery.where(auditable_type: 'Arm', auditable_id: cwf_arm.sparc_id, action: 'destroy')
                   # The record was deleted in SPARCRequest
                   row     = ["Arm Deleted", "", "", "", "", ""]
+                  styles  = [@data_error, @data_error, @data_error, @data_error, @data_error, @data_error]
+                else
+                  # There was never a record in SPARCRequest or the data is corrupted
+                  row     = ["Arm Missing", "", "", "", "", ""]
                   styles  = [@data_error, @data_error, @data_error, @data_error, @data_error, @data_error]
                 end
 
                 sparc_protocol.fulfillment_protocols.each do |cwf_protocol|
                   if cwf_arm.protocol_id == cwf_protocol.id
-                    row    += ["", "#{cwf_arm.id} / #{cwf_arm.sparc_id || 'N/A'}", cwf_arm.name, cwf_arm.subject_count, cwf_arm.visit_count, "", ""]
+                    row    += ["", "#{cwf_arm.id} / #{cwf_arm.sparc_id || 'NULL'}", cwf_arm.name, cwf_arm.subject_count, cwf_arm.visit_count, "", ""]
                     styles += [@default, @bc, @b, @c, @c, @default, @default]
                   else
                     row    += ["", "", "", "", "", "", ""]
@@ -275,7 +282,12 @@ namespace :data do
               ### Get all remaining SPARC Line Items without corresponding Fulfillment Line Items
               ### Get all remaining Fulfillment Line Items without corresponding SPARC Line Items
 
-              sparc_protocol.line_items_visits.includes(line_item: :fulfillment_line_items).select{ |sparc_liv| sparc_liv.line_item.fulfillment_line_items.where.not(subject_count: sparc_liv.subject_count).any? }.each do |sparc_liv|
+              sparc_livs = sparc_protocol.line_items_visits.includes(:sub_service_request, line_item: :fulfillment_line_items).select do |sparc_liv|
+                sparc_liv.sub_service_request.in_work_fulfillment && 
+                  sparc_liv.line_item.fulfillment_line_items.where.not(subject_count: sparc_liv.subject_count).any?
+              end
+
+              sparc_livs.each do |sparc_liv|
                 sparc_li  = sparc_liv.line_item
                 row       = ["#{sparc_li.id} / #{sparc_liv.id}", sparc_liv.service.abbreviation, sparc_liv.subject_count, "", "", ""]
                 styles    = sparc_li_styles(sparc_liv, sparc_li)
@@ -303,7 +315,7 @@ namespace :data do
                 liv_styles[0] << styles
               end
 
-              sparc_protocol.line_items_visits.includes(:line_item).select{ |sparc_liv| sparc_liv.line_item.fulfillment_line_items.empty? }.each do |sparc_liv|
+              sparc_protocol.line_items_visits.includes(:sub_service_request, line_item: :fulfillment_line_items).select{ |sparc_liv| sparc_liv.sub_service_request.in_work_fulfillment && sparc_liv.line_item.fulfillment_line_items.empty? }.each do |sparc_liv|
                 sparc_li  = sparc_liv.line_item
                 row       = ["#{sparc_li.id} / #{sparc_liv.id}", sparc_liv.service.abbreviation, sparc_liv.subject_count, "", "", ""]
                 styles    = sparc_li_styles(sparc_liv, sparc_li)
@@ -317,20 +329,20 @@ namespace :data do
                 liv_styles[1] << styles
               end
 
-              Shard::Fulfillment::LineItem.where(arm: Shard::Fulfillment::Arm.where(protocol: sparc_protocol.fulfillment_protocols)).each do |cwf_li|
-                if cwf_li.sparc_id.nil?
-                  # There was never a record in SPARCRequest
-                  row     = ["Line Item Missing", "", "", "", "", ""]
-                  styles  = [@data_error, @data_error, @data_error, @data_error, @data_error, @data_error]
-                elsif AuditRecovery.where(auditable_type: 'LineItem', auditable_id: cwf_li.sparc_id, action: 'destroy')
+              Shard::Fulfillment::LineItem.where(arm: Shard::Fulfillment::Arm.where(protocol: sparc_protocol.fulfillment_protocols)).select{ |cwf_li| cwf_li.sparc_line_item.nil? rescue true }.each do |cwf_li|
+                if AuditRecovery.where(auditable_type: 'LineItem', auditable_id: cwf_li.sparc_id, action: 'destroy').any?
                   # The record was deleted in SPARCRequest
                   row     = ["Line Item Deleted", "", "", "", "", ""]
+                  styles  = [@data_error, @data_error, @data_error, @data_error, @data_error, @data_error]
+                else
+                  # There was never a record in SPARCRequest or the data is corrupted
+                  row     = ["Line Item Missing", "", "", "", "", ""]
                   styles  = [@data_error, @data_error, @data_error, @data_error, @data_error, @data_error]
                 end
 
                 sparc_protocol.fulfillment_protocols.each do |cwf_protocol|
                   if cwf_li.arm.protocol_id == cwf_protocol.id
-                    row    += ["", "#{cwf_li.id} / #{cwf_li.sparc_id || 'N/A'}", cwf_li.sparc_service.abbreviation, cwf_li.subject_count, "", "", ""]
+                    row    += ["", "#{cwf_li.id} / #{cwf_li.sparc_id || 'NULL'}", cwf_li.sparc_service.abbreviation, cwf_li.subject_count, "", "", ""]
                     styles += [@default, @bc, @b, @c, @default, @default, @default]
                   else
                     row    += ["", "", "", "", "", "", ""]
@@ -349,7 +361,16 @@ namespace :data do
               ### Get all remaining SPARC Visit Groups without corresponding Fulfillment Visit Groups
               ### Get all remaining Fulfillment Visit Groups without corresponding SPARC Visit Groups
 
-              sparc_protocol.visit_groups.includes(:fulfillment_visit_groups).select{ |sparc_vg| sparc_vg.fulfillment_visit_groups.where.not(name: sparc_vg.name, position: sparc_vg.position, day: sparc_vg.day, window_before: sparc_vg.window_before, window_after: sparc_vg.window_after).any? }.each do |sparc_vg|
+              sparc_vgs = sparc_protocol.visit_groups.includes(:fulfillment_visit_groups).select do |sparc_vg|
+                sparc_vg.fulfillment_visit_groups.where.not(name: sparc_vg.name)
+                  .or(sparc_vg.fulfillment_visit_groups.where.not(position: sparc_vg.position))
+                  .or(sparc_vg.fulfillment_visit_groups.where.not(day: sparc_vg.day))
+                  .or(sparc_vg.fulfillment_visit_groups.where.not(window_before: sparc_vg.window_before))
+                  .or(sparc_vg.fulfillment_visit_groups.where.not(window_after: sparc_vg.window_after))
+                  .any?
+              end
+
+              sparc_vgs.each do |sparc_vg|
                 row     = [sparc_vg.id, sparc_vg.name, sparc_vg.position, sparc_vg.window_before, sparc_vg.day, sparc_vg.window_after]
                 styles  = sparc_vg_styles(sparc_vg)
 
@@ -389,20 +410,20 @@ namespace :data do
                 vg_styles[1] << styles
               end
 
-              Shard::Fulfillment::VisitGroup.where(arm: Shard::Fulfillment::Arm.where(protocol: sparc_protocol.fulfillment_protocols), sparc_id: nil).each do |cwf_vg|
-                if cwf_vg.sparc_id.nil?
-                  # There was never a record in SPARCRequest
-                  row     = ["Visit Group Missing", "", "", "", "", ""]
-                  styles  = [@data_error, @data_error, @data_error, @data_error, @data_error, @data_error]
-                elsif AuditRecovery.where(auditable_type: 'VisitGroup', auditable_id: cwf_vg.sparc_id, action: 'destroy')
+              Shard::Fulfillment::VisitGroup.where(arm: Shard::Fulfillment::Arm.where(protocol: sparc_protocol.fulfillment_protocols)).select{ |cwf_vg| cwf_vg.sparc_visit_group.nil? rescue true }.each do |cwf_vg|
+                if AuditRecovery.where(auditable_type: 'VisitGroup', auditable_id: cwf_vg.sparc_id, action: 'destroy')
                   # The record was deleted in SPARCRequest
                   row     = ["Visit Group Deleted", "", "", "", "", ""]
+                  styles  = [@data_error, @data_error, @data_error, @data_error, @data_error, @data_error]
+                else
+                  # There was never a record in SPARCRequest or the data is corrupted
+                  row     = ["Visit Group Missing", "", "", "", "", ""]
                   styles  = [@data_error, @data_error, @data_error, @data_error, @data_error, @data_error]
                 end
 
                 sparc_protocol.fulfillment_protocols.each do |cwf_protocol|
                   if cwf_vg.arm.protocol_id == cwf_protocol.id
-                    row    += ["", "#{cwf_vg.id} / #{cwf_vg.sparc_id || 'N/A'}", cwf_vg.name, cwf_vg.position, cwf_vg.window_before, cwf_vg.day, cwf_vg.window_after]
+                    row    += ["", "#{cwf_vg.id} / #{cwf_vg.sparc_id || 'NULL'}", cwf_vg.name, cwf_vg.position, cwf_vg.window_before, cwf_vg.day, cwf_vg.window_after]
                     styles += [@default, @bc, @default, @default, @default, @default, @default]
                   else
                     row    += ["", "", "", "", "", "", ""]
@@ -420,8 +441,15 @@ namespace :data do
               ### Get all Visits in SPARC with corresponding Fulfillment Visits
               ### Get all remaining SPARC Visits without corresponding Fulfillment Visits
               ### Get all remaining Fulfillment Visits without corresponding SPARC Visits
+              sparc_visits = sparc_protocol.visits.includes(:sub_service_request, :fulfillment_visits).select do |sparc_visit|
+                sparc_visit.sub_service_request.in_work_fulfillment &&
+                  sparc_visit.fulfillment_visits.where.not(research_billing_qty: sparc_visit.research_billing_qty)
+                    .or(sparc_visit.fulfillment_visits.where.not(insurance_billing_qty: sparc_visit.insurance_billing_qty))
+                    .or(sparc_visit.fulfillment_visits.where.not(effort_billing_qty: sparc_visit.effort_billing_qty))
+                    .any?
+              end
 
-              sparc_protocol.visits.includes(:fulfillment_visits).select{ |sparc_visit| sparc_visit.fulfillment_visits.where.not(research_billing_qty: sparc_visit.research_billing_qty, insurance_billing_qty: sparc_visit.insurance_billing_qty, effort_billing_qty: sparc_visit.effort_billing_qty).any? }.each do |sparc_visit|
+              sparc_visits.each do |sparc_visit|
                 row     = [sparc_visit.id, sparc_visit.research_billing_qty, sparc_visit.insurance_billing_qty, sparc_visit.effort_billing_qty, "", ""]
                 styles  = sparc_visit_styles(sparc_visit)
 
@@ -448,7 +476,7 @@ namespace :data do
                 visit_styles[0] << styles
               end
 
-              sparc_protocol.visits.select{ |sparc_visit| sparc_visit.fulfillment_visits.empty? }.each do |sparc_visit|
+              sparc_protocol.visits.includes(:sub_service_request).select{ |sparc_visit| sparc_visit.sub_service_request.in_work_fulfillment && sparc_visit.fulfillment_visits.empty? }.each do |sparc_visit|
                 row     = [sparc_visit.id, sparc_visit.research_billing_qty, sparc_visit.insurance_billing_qty, sparc_visit.effort_billing_qty, "", ""]
                 styles  = sparc_visit_styles(sparc_visit)
 
@@ -461,20 +489,20 @@ namespace :data do
                 visit_styles[1] << styles
               end
 
-              Shard::Fulfillment::Visit.where(line_item: Shard::Fulfillment::LineItem.where(arm: Shard::Fulfillment::Arm.where(protocol: sparc_protocol.fulfillment_protocols)), sparc_id: nil).each do |cwf_visit|
-                if cwf_visit.sparc_id.nil?
-                  # There was never a record in SPARCRequest
-                  row     = ["Visit Missing", "", "", "", "", ""]
-                  styles  = [@data_error, @data_error, @data_error, @data_error, @data_error, @data_error]
-                elsif AuditRecovery.where(auditable_type: 'Visit', auditable_id: cwf_visit.sparc_id, action: 'destroy')
+              Shard::Fulfillment::Visit.where(line_item: Shard::Fulfillment::LineItem.where(arm: Shard::Fulfillment::Arm.where(protocol: sparc_protocol.fulfillment_protocols))).select{ |cwf_visit| cwf_visit.sparc_visit.nil? rescue true }.each do |cwf_visit|
+                if AuditRecovery.where(auditable_type: 'Visit', auditable_id: cwf_visit.sparc_id, action: 'destroy')
                   # The record was deleted in SPARCRequest
                   row     = ["Visit Deleted", "", "", "", "", ""]
+                  styles  = [@data_error, @data_error, @data_error, @data_error, @data_error, @data_error]
+                else
+                  # There was never a record in SPARCRequest or the data is corrupted
+                  row     = ["Visit Missing", "", "", "", "", ""]
                   styles  = [@data_error, @data_error, @data_error, @data_error, @data_error, @data_error]
                 end
 
                 sparc_protocol.fulfillment_protocols.each do |cwf_protocol|
                   if cwf_visit.line_item.arm.protocol_id == cwf_protocol.id
-                    row    += ["", "#{cwf_visit.id} / #{cwf_visit.sparc_id || 'N/A'}", cwf_visit.research_billing_qty, cwf_visit.insurance_billing_qty, cwf_visit.effort_billing_qty, "", ""]
+                    row    += ["", "#{cwf_visit.id} / #{cwf_visit.sparc_id || 'NULL'}", cwf_visit.research_billing_qty, cwf_visit.insurance_billing_qty, cwf_visit.effort_billing_qty, "", ""]
                     styles += [@default, @bc, @c, @c, @c, @default, @default]
                   else
                     row    += ["", "", "", "", "", "", ""]

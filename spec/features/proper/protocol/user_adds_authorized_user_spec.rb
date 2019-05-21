@@ -23,7 +23,7 @@ require 'rails_helper'
 RSpec.describe 'User wants to add an authorized user', js: true do
   let_there_be_lane
   let_there_be_j
-  
+
   fake_login_for_each_test
 
   before :each do
@@ -43,7 +43,7 @@ RSpec.describe 'User wants to add an authorized user', js: true do
       visit protocol_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
-      click_button 'Add an Authorized User'
+      click_button I18n.t(:authorized_users)[:add_user]
       wait_for_javascript_to_finish
 
       expect(page).to have_selector('#modal-title', text: 'Add Authorized User', visible: true)
@@ -54,20 +54,20 @@ RSpec.describe 'User wants to add an authorized user', js: true do
         visit protocol_service_request_path(srid: @sr.id)
         wait_for_javascript_to_finish
 
-        click_button 'Add an Authorized User'
+        click_button I18n.t(:authorized_users)[:add_user]
         wait_for_javascript_to_finish
 
         # Select the user
         fill_in 'authorized_user_search', with: jpl6.first_name
         page.execute_script %Q{ $('#authorized_user_search').trigger("keydown") }
         expect(page).to have_selector('.tt-suggestion')
-        
+
         first('.tt-suggestion').click
         wait_for_javascript_to_finish
 
         bootstrap_select '#project_role_role', 'PD/PI'
 
-        click_button 'Save'
+        click_button I18n.t(:actions)[:save]
         wait_for_javascript_to_finish
 
         expect(ProjectRole.count).to eq(2)

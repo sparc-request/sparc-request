@@ -48,12 +48,12 @@ RSpec.describe 'User edits protocol', js: true do
         find('.human-subjects').click
         wait_for_javascript_to_finish
         find('[data-id="protocol_study_phase_ids"]').click
-        first('.dropdown-menu.open span.text', text: "IV").click   
+        first('.dropdown-menu.open span.text', text: "IV").click
       end
 
       it 'and sees updated study phases (IV)' do
         find('body').click # Click away
-        click_button 'Save'
+        click_button I18n.t(:actions)[:save]
         wait_for_javascript_to_finish
         expect(@protocol.reload.study_phases).to eq([study_phase_IV])
       end
@@ -62,7 +62,7 @@ RSpec.describe 'User edits protocol', js: true do
         first('.dropdown-menu.open span.text', text: "I").click
         first('.dropdown-menu.open span.text', text: "O").click
         find('body').click # Click away
-        click_button 'Save'
+        click_button I18n.t(:actions)[:save]
         wait_for_javascript_to_finish
         expect(@protocol.reload.study_phases).to eq([study_phase_O, study_phase_I, study_phase_IV])
       end
@@ -72,7 +72,7 @@ RSpec.describe 'User edits protocol', js: true do
         first('.dropdown-menu.open span.text', text: "O").click
         first('.dropdown-menu.open span.text', text: "IIa").click
         find('body').click # Click away
-        click_button 'Save'
+        click_button I18n.t(:actions)[:save]
         wait_for_javascript_to_finish
         expect(@protocol.reload.study_phases).to eq([study_phase_O, study_phase_I, study_phase_IIa, study_phase_IV])
       end

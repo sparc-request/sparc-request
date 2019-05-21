@@ -59,6 +59,7 @@ en:
       continue: "Continue"
       contact: "Contact Us"
       help: "Help/FAQs"
+      return_to_catalog: "Return to Catalog"
       center:
         search_placeholder: "Search by Service Name, CPT Code, or EAP ID"
         welcome: "Welcome to SPARCRequest:<br>Storefront of Research Services"
@@ -87,6 +88,8 @@ en:
     # PROTOCOL #
     ############
     protocol:
+      new_research_study: "New Research Study"
+      edit: "Edit %{study_type} Information"
       review_services_notice: "Services"
       review_services_instructions: "Please review the SPARCRequest Services you have selected"
       create_protocol_notice: "Create Protocol"

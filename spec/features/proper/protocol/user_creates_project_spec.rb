@@ -41,7 +41,7 @@ RSpec.describe 'User creates project', js: true do
       visit protocol_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
-      click_link 'New Project'
+      click_link I18n.t(:study_assignment)[:new_project]
       wait_for_javascript_to_finish
 
       expect(page).to have_content('Project Information')
@@ -53,7 +53,7 @@ RSpec.describe 'User creates project', js: true do
       visit protocol_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
-      click_link 'New Project'
+      click_link I18n.t(:study_assignment)[:new_project]
       wait_for_javascript_to_finish
 
       fill_in 'protocol_short_title', with: 'asd'
@@ -64,11 +64,11 @@ RSpec.describe 'User creates project', js: true do
       fill_in 'protocol_project_roles_attributes_0_identity_id', with: 'Julia'
       page.execute_script %Q{ $('#protocol_project_roles_attributes_0_identity_id').trigger("keydown") }
       expect(page).to have_selector('.tt-suggestion')
-      
+
       first('.tt-suggestion').click
       wait_for_javascript_to_finish
 
-      click_button 'Save'
+      click_button I18n.t(:actions)[:save]
       wait_for_javascript_to_finish
 
       wait_for_page(protocol_service_request_path)

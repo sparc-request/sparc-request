@@ -53,6 +53,12 @@ en:
       accordion:
         header: "Browse Service Catalog"
       back_to_top: "Back to Top"
+      short_interaction: "Short Interaction"
+      submit: "Submit"
+      add: "Add"
+      continue: "Continue"
+      contact: "Contact Us"
+      help: "Help/FAQs"
       center:
         search_placeholder: "Search by Service Name, CPT Code, or EAP ID"
         welcome: "Welcome to SPARCRequest:<br>Storefront of Research Services"

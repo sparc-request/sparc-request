@@ -35,6 +35,7 @@ class ServiceRequestsController < ApplicationController
   before_action :find_service,                    only:   [:catalog]
 
   def show
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id]) if params[:sub_service_request_id]
     @protocol = @service_request.protocol
     @admin_offset = params[:admin_offset]
     @show_signature_section = params[:show_signature_section]

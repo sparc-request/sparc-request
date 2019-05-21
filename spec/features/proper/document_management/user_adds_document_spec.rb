@@ -42,7 +42,7 @@ RSpec.describe 'User adds a new document', js: true do
       visit document_management_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
-      click_button 'Add a Document'
+      click_button I18n.t(:proper)[:document_management][:add_document]
       wait_for_javascript_to_finish
 
       expect(page).to have_selector('.modal-dialog', text: 'Add Document', visible: true)
@@ -53,13 +53,13 @@ RSpec.describe 'User adds a new document', js: true do
         visit document_management_service_request_path(srid: @sr.id)
         wait_for_javascript_to_finish
 
-        click_button 'Add a Document'
+        click_button I18n.t(:proper)[:document_management][:add_document]
         wait_for_javascript_to_finish
 
         bootstrap_select '#document_doc_type', 'Protocol'
         attach_file 'document_document', File.expand_path('spec/fixtures/files/text_document.txt')
 
-        click_button 'Upload'
+        click_button I18n.t(:proper)[:document_management][:upload]
         wait_for_javascript_to_finish
 
         expect(@protocol.documents.count).to eq(1)

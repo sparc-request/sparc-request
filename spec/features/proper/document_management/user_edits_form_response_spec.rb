@@ -49,7 +49,7 @@ RSpec.describe 'User edits a form response', js: true do
 
     fill_in 'response_question_responses_attributes_0_content', with: 'Not respondable at all'
 
-    click_button 'Submit'
+    click_button I18n.t(:actions)[:submit]
     wait_for_javascript_to_finish
 
     expect(@response.question_responses.first.content).to eq('Not respondable at all')

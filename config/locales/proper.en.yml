@@ -156,7 +156,9 @@ en:
     document_management:
       documents_notice: "Documents"
       notes_notice: "Notes"
-      forms_notice: 'Forms'
+      forms_notice: "Forms"
+      add_document: "Add a Document"
+      upload: "Upload"
       tooltips:
         documents: "Visible to Authorized Users and selected Service Providers"
         notes: "Important notes for your Study/Project"

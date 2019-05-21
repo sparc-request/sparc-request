@@ -46,7 +46,7 @@ RSpec.describe 'User completes a form', js: true do
     wait_for_javascript_to_finish
 
     fill_in "response_question_responses_attributes_0_content", with: 'response to a question'
-    click_button 'Submit'
+    click_button I18n.t(:actions)[:submit]
     wait_for_javascript_to_finish
 
     expect(@form.responses.count).to eq(1)

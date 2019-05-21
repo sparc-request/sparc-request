@@ -79,7 +79,7 @@ RSpec.describe 'User edits survey fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        first('.survey-actions + .bootstrap-select').click
+        first('.bootstrap-select .survey-actions + .dropdown-toggle').click
         within '.dropdown-menu.open' do
           find('a', text: /Edit/).click
         end

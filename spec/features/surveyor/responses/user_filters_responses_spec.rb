@@ -124,7 +124,7 @@ RSpec.describe 'User filters responses', js: true do
       end
 
       scenario 'and sees responses for those Surveys' do
-        find('#for-SystemSurvey select#filterrific_with_survey + .btn-group').click
+        find('#for-SystemSurvey select#filterrific_with_survey + .dropdown-toggle').click
         first('.dropdown-menu.open span', text: "Version #{@survey.version} (#{@survey.active ? I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active] : I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]})").click
         find('body').click
         click_button I18n.t(:actions)[:filter]
@@ -146,7 +146,7 @@ RSpec.describe 'User filters responses', js: true do
 
       scenario 'and sees responses for those Forms' do
         bootstrap_select '#filterrific_of_type', 'Form'
-        find('#for-Form select#filterrific_with_survey + .btn-group').click
+        find('#for-Form select#filterrific_with_survey + .dropdown-toggle').click
         first('.dropdown-menu.open span', text: "Version #{@form.version} (#{@form.active ? I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active] : I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]})").click
         find('body').click
         click_button I18n.t(:actions)[:filter]

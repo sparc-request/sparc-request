@@ -542,7 +542,7 @@ RSpec.describe 'User takes a survey', js: true do
       visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
       wait_for_javascript_to_finish
       
-      find('.bootstrap-select').click
+      find('.bootstrap-select .dropdown-toggle').click
       find('span.text', text: 'Option 1').click
       find('span.text', text: 'Option 2').click
       # For some reason bootstrap_multiselect was causing 'Option 1' to be checked but then unchecked when it also clicks 'Option 2'

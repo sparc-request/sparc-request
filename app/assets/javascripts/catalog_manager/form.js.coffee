@@ -155,7 +155,7 @@ $ ->
     if $('#new_associated_survey').val() == ''
       alert "No survey selected"
     else
-      survey_id = $(this).closest('.row').find('.new_associated_survey')[0].value
+      survey_id = $('#new_associated_survey').selectpicker('val')
       surveyable_type = $(this).data('type')
       surveyable_id = $(this).data('id')
       $.ajax

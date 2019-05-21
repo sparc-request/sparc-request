@@ -143,7 +143,6 @@ GEM
     bootstrap-sass (3.4.1)
       autoprefixer-rails (>= 5.2.1)
       sassc (>= 2.0.0)
-    bootstrap-select-rails (1.12.4)
     bootstrap-toggle-rails (2.2.1.0)
     bootstrap3-datetimepicker-rails (4.17.47)
       momentjs-rails (>= 2.8.1)
@@ -623,7 +622,6 @@ DEPENDENCIES
   bluecloth
   bootsnap
   bootstrap-sass (= 3.4.1)
-  bootstrap-select-rails
   bootstrap-toggle-rails
   bootstrap3-datetimepicker-rails
   bullet
@@ -731,4 +729,4 @@ DEPENDENCIES
   x-editable-rails
 
 BUNDLED WITH
-   1.16.4
+   1.17.3

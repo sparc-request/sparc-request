@@ -23,13 +23,15 @@ $(document).ready ->
   ### Survey Table ###
   $(document).on 'change', '.survey-actions', ->
     $selected = $(this).find('option:selected')
-    $(this).selectpicker('deselectAll')
+    $this = $(this)
 
     if $selected.data('url')
       $.ajax
         type: $selected.data('method') || 'get'
         dataType: 'script'
         url: $selected.data('url')
+        success: ->
+          $this.selectpicker('val', '')
     else if $selected.hasClass('delete-survey')
       survey_id = $selected.data('survey-id')
       swal {
@@ -45,6 +47,8 @@ $(document).ready ->
           type: 'delete'
           dataType: 'script'
           url: "/surveyor/surveys/#{survey_id}"
+          success: ->
+            $this.selectpicker('val', '')
 
   $(document).on 'load-success.bs.table', '.survey-table, .form-table', ->
     $('.selectpicker').selectpicker()

@@ -38,7 +38,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
   end
 
   stub_config("system_satisfaction_survey", true)
-  
+
   it "is happy" do
     allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
 
@@ -91,7 +91,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     ##########
     # Log in #
     ##########
-    click_link 'Login / Sign Up'
+    click_link I18n.t(:proper)[:navbar][:login]
     wait_for_javascript_to_finish
 
     expect(page).to have_selector("a", text: /Outside User Login/)
@@ -100,7 +100,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
 
     fill_in "Login", with: "johnd"
     fill_in "Password", with: "p4ssword"
-    click_button 'Login'
+    click_button I18n.t(:activerecord)[:attributes][:identity][:ldap_uid]
     wait_for_javascript_to_finish
 
 
@@ -167,7 +167,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
       expect(page).to have_selector('.service', text: pppv_service_core_2.abbreviation, visible: true)
     end
 
-    click_link 'Continue'
+    click_link I18n.t(:actions)[:continue]
     wait_for_javascript_to_finish
 
 
@@ -177,16 +177,16 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     ##########
     expect(page).to have_selector('.step-header', text: 'STEP 2')
 
-    click_link("New Project")
+    click_link I18n.t(:protocols)[:projects][:new]
     wait_for_javascript_to_finish
 
     fill_in("Short Title:", with: "My Protocol")
     fill_in("Project Title:", with: "My Protocol is Very Important - #12345")
 
-    click_button("Select a Funding Status")
+    click_button I18n.t(:protocols)[:prompts][:status]
     find("li", text: "Funded").click
     expect(page).to have_button("Select a Funding Source")
-    click_button("Select a Funding Source")
+    click_button I18n.t(:protocols)[:prompts][:source]
     find("li", text: "Federal").click
 
     fill_in "Primary PI:", with: "john"
@@ -195,10 +195,10 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     first("div.tt-selectable", text: /johnd@musc.edu/).click
     wait_for_javascript_to_finish
 
-    click_button 'Save'
+    click_button I18n.t(:actions)[:save]
     wait_for_page(protocol_service_request_path)
 
-    click_link 'Save and Continue'
+    click_link I18n.t(:actions)[:save_continue]
     wait_for_javascript_to_finish
 
 
@@ -207,7 +207,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     # Step 3 #
     ##########
     expect(page).to have_selector('.step-header', text: 'STEP 3')
-    
+
     find('#project_start_date').click
     within(".bootstrap-datetimepicker-widget") do
       first("td.day", text: "1").click
@@ -218,7 +218,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
       first("td.day", text: "1").click
     end
 
-    click_link 'Save and Continue'
+    click_link I18n.t(:actions)[:save_continue]
     wait_for_javascript_to_finish
 
 
@@ -227,16 +227,16 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     # Step 4 #
     ##########
     expect(page).to have_selector('.step-header', text: 'STEP 4')
-    
+
     find("a", text: "(?)").click
     wait_for_javascript_to_finish
 
     fill_in 'visit_group_day', with: 1
 
-    click_button 'Save changes'
+    click_button I18n.t(:proper)[:service_calendar][:save_changes]
     wait_for_javascript_to_finish
 
-    click_link 'Save and Continue'
+    click_link I18n.t(:actions)[:save_continue]
     wait_for_javascript_to_finish
 
 
@@ -246,7 +246,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     ##########
     expect(page).to have_selector('.step-header', text: 'STEP 5')
 
-    click_link 'Save and Continue'
+    click_link I18n.t(:actions)[:save_continue]
     wait_for_javascript_to_finish
 
 
@@ -256,7 +256,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     ##########
     expect(page).to have_selector('.step-header', text: 'STEP 6')
 
-    click_link 'Submit Request'
+    click_link I18n.t(:proper)[:navigation][:bottom][:submit_request]
     wait_for_javascript_to_finish
 
 
@@ -271,7 +271,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
       find('#response_question_responses_attributes_0_content_very_satisfied').click
       fill_in 'response_question_responses_attributes_1_content', with: 'I\'m so happy!'
 
-      click_button 'Submit'
+      click_button I18n.t(:proper)[:catalog][:submit]
       wait_for_javascript_to_finish
     end
 
@@ -282,7 +282,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     ##########
     expect(page).to have_selector('.step-header', text: 'Confirmation')
 
-    click_link 'Go to Dashboard'
+    click_link I18n.t(:proper)[:confirmation][:to_dashboard]
     wait_for_javascript_to_finish
 
 

@@ -53,7 +53,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'visit_group_window_before', with: 5
-        click_button 'Save changes'
+        click_button I18n.t(:proper)[:service_calendar][:save_changes]
         wait_for_javascript_to_finish
 
         expect(@vg.reload.window_before).to eq(5)
@@ -64,7 +64,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'visit_group_window_after', with: 5
-        click_button 'Save changes'
+        click_button I18n.t(:proper)[:service_calendar][:save_changes]
         wait_for_javascript_to_finish
 
         expect(@vg.reload.window_after).to eq(5)
@@ -75,7 +75,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'visit_group_day', with: 5
-        click_button 'Save changes'
+        click_button I18n.t(:proper)[:service_calendar][:save_changes]
         wait_for_javascript_to_finish
 
         expect(@vg.reload.day).to eq(5)
@@ -86,7 +86,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'visit_group_name', with: 'Visit Me'
-        click_button 'Save changes'
+        click_button I18n.t(:proper)[:service_calendar][:save_changes]
         wait_for_javascript_to_finish
 
         expect(@vg.reload.name).to eq('Visit Me')
@@ -126,7 +126,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'visit_group_window_before', with: 'a lot'
-        click_button 'Save changes'
+        click_button I18n.t(:proper)[:service_calendar][:save_changes]
         wait_for_javascript_to_finish
 
         expect(page).to have_content('Window before is not a number')
@@ -137,7 +137,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'visit_group_window_after', with: 'a lot'
-        click_button 'Save changes'
+        click_button I18n.t(:proper)[:service_calendar][:save_changes]
         wait_for_javascript_to_finish
 
         expect(page).to have_content('Window after is not a number')
@@ -148,7 +148,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'visit_group_day', with: 'someday'
-        click_button 'Save changes'
+        click_button I18n.t(:proper)[:service_calendar][:save_changes]
         wait_for_javascript_to_finish
 
         expect(page).to have_content('Day is not a number')
@@ -198,7 +198,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'visit_group_window_before', with: 5
-        click_button 'Save changes'
+        click_button I18n.t(:proper)[:service_calendar][:save_changes]
         wait_for_javascript_to_finish
 
         expect(@vg.reload.window_before).to eq(5)
@@ -209,7 +209,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'visit_group_window_after', with: 5
-        click_button 'Save changes'
+        click_button I18n.t(:proper)[:service_calendar][:save_changes]
         wait_for_javascript_to_finish
 
         expect(@vg.reload.window_after).to eq(5)
@@ -220,7 +220,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'visit_group_day', with: 5
-        click_button 'Save changes'
+        click_button I18n.t(:proper)[:service_calendar][:save_changes]
         wait_for_javascript_to_finish
 
         expect(@vg.reload.day).to eq(5)
@@ -231,7 +231,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'visit_group_name', with: 'Visit Me'
-        click_button 'Save changes'
+        click_button I18n.t(:proper)[:service_calendar][:save_changes]
         wait_for_javascript_to_finish
 
         expect(@vg.reload.name).to eq('Visit Me')
@@ -251,7 +251,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'visit_research_billing_qty', with: 5
-        click_button 'Save'
+        click_button I18n.t(:actions)[:save]
         wait_for_javascript_to_finish
 
         expect(@arm.visits.first.research_billing_qty).to eq(5)
@@ -262,7 +262,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'visit_insurance_billing_qty', with: 5
-        click_button 'Save'
+        click_button I18n.t(:actions)[:save]
         wait_for_javascript_to_finish
 
         expect(@arm.visits.first.insurance_billing_qty).to eq(5)
@@ -273,7 +273,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'visit_effort_billing_qty', with: 5
-        click_button 'Save'
+        click_button I18n.t(:actions)[:save]
         wait_for_javascript_to_finish
 
         expect(@arm.visits.first.effort_billing_qty).to eq(5)
@@ -304,7 +304,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'visit_group_window_before', with: 'a lot'
-        click_button 'Save changes'
+        click_button I18n.t(:proper)[:service_calendar][:save_changes]
         wait_for_javascript_to_finish
 
         expect(page).to have_content('Window before is not a number')
@@ -315,7 +315,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'visit_group_window_after', with: 'a lot'
-        click_button 'Save changes'
+        click_button I18n.t(:proper)[:service_calendar][:save_changes]
         wait_for_javascript_to_finish
 
         expect(page).to have_content('Window after is not a number')
@@ -326,7 +326,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'visit_group_day', with: 'a lot'
-        click_button 'Save changes'
+        click_button I18n.t(:proper)[:service_calendar][:save_changes]
         wait_for_javascript_to_finish
 
         expect(page).to have_content('Day is not a number')
@@ -346,7 +346,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'visit_research_billing_qty', with: 'string'
-        click_button 'Save'
+        click_button I18n.t(:actions)[:save]
         wait_for_javascript_to_finish
 
         expect(page).to have_content("Research Billing Quantity is not a number")
@@ -357,7 +357,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'visit_insurance_billing_qty', with: 'string'
-        click_button 'Save'
+        click_button I18n.t(:actions)[:save]
         wait_for_javascript_to_finish
 
         expect(page).to have_content("Insurance Billing Quantity is not a number")
@@ -368,7 +368,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'visit_effort_billing_qty', with: 'string'
-        click_button 'Save'
+        click_button I18n.t(:actions)[:save]
         wait_for_javascript_to_finish
 
         expect(page).to have_content("Effort Billing Quantity is not a number")

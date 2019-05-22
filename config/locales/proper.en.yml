@@ -131,6 +131,7 @@ en:
     # SERVICE CALENDAR #
     ####################
     service_calendar:
+      save_changes: "Save changes"
       move_visit:
         header: "Move Visit"
       legend:

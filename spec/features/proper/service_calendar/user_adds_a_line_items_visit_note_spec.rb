@@ -39,7 +39,7 @@ RSpec.describe 'User adds a line items visit note', js: true do
     @ssr2     = create(:sub_service_request, service_request: @sr, organization: org2)
     li        = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
     li2       = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service2)
-    
+
     arm       = create(:arm, protocol: protocol)
     @liv      = arm.line_items_visits.first
 
@@ -66,7 +66,7 @@ RSpec.describe 'User adds a line items visit note', js: true do
     end
 
     scenario 'and sees notes modal' do
-      expect(page).to have_css('#notes-modal')  
+      expect(page).to have_css('#notes-modal')
     end
 
     scenario 'and sees service name' do
@@ -87,7 +87,7 @@ RSpec.describe 'User adds a line items visit note', js: true do
     end
 
     scenario 'and sees new notes modal' do
-      expect(page).to have_css('#note-form-modal')  
+      expect(page).to have_css('#note-form-modal')
     end
 
     scenario 'and sees service name' do
@@ -116,7 +116,7 @@ RSpec.describe 'User adds a line items visit note', js: true do
     end
 
     scenario 'and closes the modal to see the blue note with updated note count' do
-      click_button 'Close'
+      click_button I18n.t(:actions)[:close]
       expect(page).to have_selector("#lineitemsvisit_#{@liv.id}_notes", text: '1', visible: true, class: 'blue-badge')
     end
   end
@@ -126,7 +126,7 @@ RSpec.describe 'User adds a line items visit note', js: true do
       visit service_calendar_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
-      click_link 'Consolidated Request Tab'
+      click_link I18n.t(:calendars)[:tabs][:pricing]
       wait_for_javascript_to_finish
 
       find("#lineitemsvisit_#{@liv.id}_notes").click
@@ -134,7 +134,7 @@ RSpec.describe 'User adds a line items visit note', js: true do
     end
 
     scenario 'and sees notes modal' do
-      expect(page).to have_css('#notes-modal')  
+      expect(page).to have_css('#notes-modal')
     end
 
     scenario 'and sees service name' do
@@ -147,15 +147,15 @@ RSpec.describe 'User adds a line items visit note', js: true do
       visit service_calendar_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
-      click_link 'Quantity/Billing Tab'
+      click_link I18n.t(:calendars)[:tabs][:billing]
       wait_for_javascript_to_finish
-      
+
       find("#lineitemsvisit_#{@liv.id}_notes").click
       wait_for_javascript_to_finish
     end
 
     scenario 'and sees notes modal' do
-      expect(page).to have_css('#notes-modal')  
+      expect(page).to have_css('#notes-modal')
     end
 
     scenario 'and sees service name' do

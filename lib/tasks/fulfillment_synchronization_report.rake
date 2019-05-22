@@ -67,7 +67,7 @@ namespace :report do
 
       def sparc_vg_styles(sparc_vg)
         styles  = [@bc, @bc]
-        styles << (sparc_vg.fulfillment_visit_groups.any? && sparc_vg.fulfillment_visit_groups.where.not(name: sparc_vg.name).any?                   ? @data_error : @b)
+        styles << (sparc_vg.fulfillment_visit_groups.any? && sparc_vg.fulfillment_visit_groups.where.not(name: sparc_vg.name).any?                   ? @data_error : @bc)
         styles << (sparc_vg.fulfillment_visit_groups.any? && sparc_vg.fulfillment_visit_groups.where.not(position: sparc_vg.position).any?           ? @data_error : @c)
         styles << (sparc_vg.fulfillment_visit_groups.any? && sparc_vg.fulfillment_visit_groups.where.not(window_before: sparc_vg.window_before).any? ? @data_error : @c)
         styles << (sparc_vg.fulfillment_visit_groups.any? && sparc_vg.fulfillment_visit_groups.where.not(day: sparc_vg.day).any?                     ? @data_error : @c)
@@ -127,12 +127,12 @@ namespace :report do
             visit_header_styles     = [@section_header] * 7
             visit_sub_header_styles = [@sub_header] * 7
 
-            if sparc_protocol.fulfillment_protocols.any?
+            if sparc_protocol.fulfillment_protocols.with_pppv_services.any?
               ###############
               # HEADER ROWS #
               ###############
 
-              sparc_protocol.fulfillment_protocols.each do |cwf_protocol|
+              sparc_protocol.fulfillment_protocols.with_pppv_services.each do |cwf_protocol|
                 if cwf_protocol.sparc_sub_service_request
                   header_row              += ["", "CWF Protocol #{cwf_protocol.sparc_sub_service_request.display_id}", "", "", "", "", "", ""]
                   header_styles           += [@default] + ([@header] * 7)
@@ -213,7 +213,7 @@ namespace :report do
                 row     = [sparc_arm.id, sparc_arm.name, sparc_arm.subject_count, sparc_arm.visit_count, "", "", ""]
                 styles  = sparc_arm_styles(sparc_arm)
 
-                sparc_protocol.fulfillment_protocols.each do |cwf_protocol|
+                sparc_protocol.fulfillment_protocols.with_pppv_services.each do |cwf_protocol|
                   if cwf_arm = sparc_arm.fulfillment_arms.detect{ |cwf_arm| cwf_arm.protocol_id == cwf_protocol.id }
                     # The SPARC record is present for the protocol
                     if cwf_arm.deleted_at.nil?
@@ -240,7 +240,7 @@ namespace :report do
                 row     = [sparc_arm.id, sparc_arm.name, sparc_arm.subject_count, sparc_arm.visit_count, "", "", ""]
                 styles  = sparc_arm_styles(sparc_arm)
 
-                sparc_protocol.fulfillment_protocols.each do |cwf_protocol|
+                sparc_protocol.fulfillment_protocols.with_pppv_services.each do |cwf_protocol|
                   row    += ["", "Arm Missing", "", "", "", "", "", ""]
                   styles += [@default, @data_error, @data_error, @data_error, @data_error, @data_error, @data_error, @data_error]
                 end
@@ -249,7 +249,7 @@ namespace :report do
                 arm_styles[1] << styles
               end
 
-              Shard::Fulfillment::Arm.where(protocol: sparc_protocol.fulfillment_protocols).select{ |cwf_arm| cwf_arm.sparc_arm.nil? rescue true }.each do |cwf_arm|
+              Shard::Fulfillment::Arm.where(protocol: sparc_protocol.fulfillment_protocols.with_pppv_services).select{ |cwf_arm| cwf_arm.sparc_arm.nil? rescue true }.each do |cwf_arm|
                 if AuditRecovery.where(auditable_type: 'Arm', auditable_id: cwf_arm.sparc_id, action: 'destroy')
                   # The record was deleted in SPARCRequest
                   row     = ["Arm Deleted", "", "", "", "", "", ""]
@@ -260,7 +260,7 @@ namespace :report do
                   styles  = [@data_error, @data_error, @data_error, @data_error, @data_error, @data_error, @data_error]
                 end
 
-                sparc_protocol.fulfillment_protocols.each do |cwf_protocol|
+                sparc_protocol.fulfillment_protocols.with_pppv_services.each do |cwf_protocol|
                   if cwf_arm.protocol_id == cwf_protocol.id
                     row    += ["", "#{cwf_arm.id} / #{cwf_arm.sparc_id || 'NULL'}", cwf_arm.name, cwf_arm.subject_count, cwf_arm.visit_count, "", "", ""]
                     styles += cwf_arm_styles(cwf_arm)
@@ -293,7 +293,7 @@ namespace :report do
                 row       = ["#{sparc_li.id} / #{sparc_liv.id}", "#{sparc_liv.arm.id} / #{sparc_liv.arm.name}", sparc_liv.service.abbreviation, sparc_liv.subject_count, "", "", ""]
                 styles    = sparc_li_styles(sparc_liv, sparc_li)
 
-                sparc_protocol.fulfillment_protocols.each do |cwf_protocol|
+                sparc_protocol.fulfillment_protocols.with_pppv_services.each do |cwf_protocol|
                   if cwf_li = sparc_li.fulfillment_line_items.includes(:arm).detect{ |cwf_li| cwf_li.arm.try(:sparc_id) == sparc_liv.arm_id }
                     # The SPARC record is present for the protocol
                     if cwf_li.deleted_at.nil?
@@ -321,7 +321,7 @@ namespace :report do
                 row       = ["#{sparc_li.id} / #{sparc_liv.id}", "#{sparc_liv.arm.id} / #{sparc_liv.arm.name}", sparc_liv.service.abbreviation, sparc_liv.subject_count, "", "", ""]
                 styles    = sparc_li_styles(sparc_liv, sparc_li)
 
-                sparc_protocol.fulfillment_protocols.each do |cwf_protocol|
+                sparc_protocol.fulfillment_protocols.with_pppv_services.each do |cwf_protocol|
                   row    += ["", "Line Item Missing", "", "", "", "", "", ""]
                   styles += [@default, @data_error, @data_error, @data_error, @data_error, @data_error, @data_error, @data_error]
                 end
@@ -330,7 +330,7 @@ namespace :report do
                 liv_styles[1] << styles
               end
 
-              Shard::Fulfillment::LineItem.where(arm: Shard::Fulfillment::Arm.where(protocol: sparc_protocol.fulfillment_protocols)).select{ |cwf_li| cwf_li.sparc_line_item.nil? rescue true }.each do |cwf_li|
+              Shard::Fulfillment::LineItem.where(arm: Shard::Fulfillment::Arm.where(protocol: sparc_protocol.fulfillment_protocols.with_pppv_services)).select{ |cwf_li| cwf_li.sparc_line_item.nil? rescue true }.each do |cwf_li|
                 if AuditRecovery.where(auditable_type: 'LineItem', auditable_id: cwf_li.sparc_id, action: 'destroy').any?
                   # The record was deleted in SPARCRequest
                   row     = ["Line Item Deleted", "", "", "", "", "", ""]
@@ -341,7 +341,7 @@ namespace :report do
                   styles  = [@data_error, @data_error, @data_error, @data_error, @data_error, @data_error, @data_error]
                 end
 
-                sparc_protocol.fulfillment_protocols.each do |cwf_protocol|
+                sparc_protocol.fulfillment_protocols.with_pppv_services.each do |cwf_protocol|
                   if cwf_li.arm.protocol_id == cwf_protocol.id
                     row    += ["", "#{cwf_li.id} / #{cwf_li.sparc_id || 'NULL'}", "#{cwf_li.arm.id} / #{cwf_li.arm.name}", cwf_li.sparc_service.abbreviation, cwf_li.subject_count, "", "", ""]
                     styles += cwf_li_styles(cwf_li, nil)
@@ -376,7 +376,7 @@ namespace :report do
                 row     = [sparc_vg.id, "#{sparc_vg.arm.id} / #{sparc_vg.arm.name}", sparc_vg.name, sparc_vg.position, sparc_vg.window_before, "#{sparc_vg.day || 'NULL'}", sparc_vg.window_after]
                 styles  = sparc_vg_styles(sparc_vg)
 
-                sparc_protocol.fulfillment_protocols.each do |cwf_protocol|
+                sparc_protocol.fulfillment_protocols.with_pppv_services.each do |cwf_protocol|
                   if cwf_vg = sparc_vg.fulfillment_visit_groups.includes(:arm).detect{ |cwf_vg| cwf_vg.arm.try(:sparc_id) == sparc_vg.arm_id }
                     # The SPARC record is present for the protocol
                     if cwf_vg.deleted_at.nil?
@@ -403,7 +403,7 @@ namespace :report do
                 row     = [sparc_vg.id, "#{sparc_vg.arm.id} / #{sparc_vg.arm.name}", sparc_vg.name, sparc_vg.position, sparc_vg.window_before, "#{sparc_vg.day || 'NULL'}", sparc_vg.window_after]
                 styles  = sparc_vg_styles(sparc_vg)
 
-                sparc_protocol.fulfillment_protocols.each do |cwf_protocol|
+                sparc_protocol.fulfillment_protocols.with_pppv_services.each do |cwf_protocol|
                   row    += ["", "Visit Group Missing", "", "", "", "", "", ""]
                   styles += [@default, @data_error, @data_error, @data_error, @data_error, @data_error, @data_error, @data_error]
                 end
@@ -412,7 +412,7 @@ namespace :report do
                 vg_styles[1] << styles
               end
 
-              Shard::Fulfillment::VisitGroup.where(arm: Shard::Fulfillment::Arm.where(protocol: sparc_protocol.fulfillment_protocols)).select{ |cwf_vg| cwf_vg.sparc_visit_group.nil? rescue true }.each do |cwf_vg|
+              Shard::Fulfillment::VisitGroup.where(arm: Shard::Fulfillment::Arm.where(protocol: sparc_protocol.fulfillment_protocols.with_pppv_services)).select{ |cwf_vg| cwf_vg.sparc_visit_group.nil? rescue true }.each do |cwf_vg|
                 if AuditRecovery.where(auditable_type: 'VisitGroup', auditable_id: cwf_vg.sparc_id, action: 'destroy')
                   # The record was deleted in SPARCRequest
                   row     = ["Visit Group Deleted", "", "", "", "", "", ""]
@@ -423,7 +423,7 @@ namespace :report do
                   styles  = [@data_error, @data_error, @data_error, @data_error, @data_error, @data_error, @data_error]
                 end
 
-                sparc_protocol.fulfillment_protocols.each do |cwf_protocol|
+                sparc_protocol.fulfillment_protocols.with_pppv_services.each do |cwf_protocol|
                   if cwf_vg.arm.protocol_id == cwf_protocol.id
                     row    += ["", "#{cwf_vg.id} / #{cwf_vg.sparc_id || 'NULL'}", "#{cwf_vg.arm.id} / #{cwf_vg.arm.name}", cwf_vg.name, cwf_vg.position, cwf_vg.window_before, "#{cwf_vg.day || 'NULL'}", cwf_vg.window_after]
                     styles += cwf_vg_styles(cwf_vg)
@@ -456,7 +456,7 @@ namespace :report do
                 row     = [sparc_visit.id, "#{sparc_visit.arm.id} / #{sparc_visit.arm.name}", "#{sparc_visit.line_item.id} / #{sparc_visit.line_items_visit.id} / #{sparc_visit.service.abbreviation}", "#{sparc_visit.visit_group.id} / #{sparc_visit.visit_group.name}", sparc_visit.research_billing_qty, sparc_visit.insurance_billing_qty, sparc_visit.effort_billing_qty]
                 styles  = sparc_visit_styles(sparc_visit)
 
-                sparc_protocol.fulfillment_protocols.each do |cwf_protocol|
+                sparc_protocol.fulfillment_protocols.with_pppv_services.each do |cwf_protocol|
                   if cwf_visit = sparc_visit.fulfillment_visits.includes(:arm, :visit_group).detect{ |cwf_visit| cwf_visit.arm.protocol_id == cwf_protocol.id }
                     # The SPARC record is present for the protocol
                     if cwf_visit.deleted_at.nil?
@@ -483,7 +483,7 @@ namespace :report do
                 row     = [sparc_visit.id, "#{sparc_visit.arm.id} / #{sparc_visit.arm.name}", "#{sparc_visit.line_item.id} / #{sparc_visit.line_items_visit.id} / #{sparc_visit.service.abbreviation}", "#{sparc_visit.visit_group.id} / #{sparc_visit.visit_group.name}", sparc_visit.research_billing_qty, sparc_visit.insurance_billing_qty, sparc_visit.effort_billing_qty]
                 styles  = sparc_visit_styles(sparc_visit)
 
-                sparc_protocol.fulfillment_protocols.each do |cwf_protocol|
+                sparc_protocol.fulfillment_protocols.with_pppv_services.each do |cwf_protocol|
                   row    += ["", "Visit Missing", "", "", "", "", "", ""]
                   styles += [@default, @data_error, @data_error, @data_error, @data_error, @data_error, @data_error, @data_error]
                 end
@@ -492,7 +492,7 @@ namespace :report do
                 visit_styles[1] << styles
               end
 
-              Shard::Fulfillment::Visit.where(line_item: Shard::Fulfillment::LineItem.where(arm: Shard::Fulfillment::Arm.where(protocol: sparc_protocol.fulfillment_protocols))).select{ |cwf_visit| cwf_visit.sparc_visit.nil? rescue true }.each do |cwf_visit|
+              Shard::Fulfillment::Visit.where(line_item: Shard::Fulfillment::LineItem.where(arm: Shard::Fulfillment::Arm.where(protocol: sparc_protocol.fulfillment_protocols.with_pppv_services))).select{ |cwf_visit| cwf_visit.sparc_visit.nil? rescue true }.each do |cwf_visit|
                 if AuditRecovery.where(auditable_type: 'Visit', auditable_id: cwf_visit.sparc_id, action: 'destroy')
                   # The record was deleted in SPARCRequest
                   row     = ["Visit Deleted", "", "", "", "", "", ""]
@@ -503,7 +503,7 @@ namespace :report do
                   styles  = [@data_error, @data_error, @data_error, @data_error, @data_error, @data_error, @data_error]
                 end
 
-                sparc_protocol.fulfillment_protocols.each do |cwf_protocol|
+                sparc_protocol.fulfillment_protocols.with_pppv_services.each do |cwf_protocol|
                   if cwf_visit.line_item.arm.protocol_id == cwf_protocol.id
                     row    += ["", "#{cwf_visit.id} / #{cwf_visit.sparc_id || 'NULL'}", "#{cwf_visit.arm.id} / #{cwf_visit.arm.name}", "#{cwf_visit.line_item.id} / #{cwf_visit.line_item.sparc_id || 'NULL'} / #{cwf_visit.line_item.sparc_service.abbreviation}", "#{cwf_visit.visit_group.id} / #{cwf_visit.visit_group.name}", cwf_visit.research_billing_qty, cwf_visit.insurance_billing_qty, cwf_visit.effort_billing_qty]
                     styles += cwf_visit_styles(cwf_visit)
@@ -583,7 +583,7 @@ namespace :report do
 
                 2.times{ sheet.add_row [] }
               end
-            elsif (ssrs = sparc_protocol.sub_service_requests.where(in_work_fulfillment: true)).any?
+            elsif (ssrs = sparc_protocol.sub_service_requests.includes(:fulfillment_protocol).where(in_work_fulfillment: true)).select{ |ssr| ssr.fulfillment_protocol.nil? }.any?
               ssrs.each do |missing_ssr|
                 header_row    += ["", "CWF Protocol Missing (#{missing_ssr.display_id})", "", "", "", "", "", ""]
                 header_styles += [@default, @data_error, @data_error, @data_error, @data_error, @data_error, @data_error, @data_error]

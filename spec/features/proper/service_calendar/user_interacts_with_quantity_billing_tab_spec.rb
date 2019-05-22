@@ -40,7 +40,7 @@ RSpec.describe 'User interacts with Quantity/Billing tab', js: true do
     visit service_calendar_service_request_path(srid: @sr.id)
     wait_for_javascript_to_finish
 
-    click_link 'Quantity/Billing Tab'
+    click_link I18n.t(:calendars)[:tabs][:billing]
     wait_for_javascript_to_finish
 
     expect(page).to have_selector('#service-calendars', visible: true)
@@ -63,7 +63,7 @@ RSpec.describe 'User interacts with Quantity/Billing tab', js: true do
       visit service_calendar_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
-      click_link 'Quantity/Billing Tab'
+      click_link I18n.t(:calendars)[:tabs][:billing]
       wait_for_javascript_to_finish
 
       expect(page).to have_text("Clinical Services Arm: #{@arm.name}", normalize_ws: true)
@@ -87,7 +87,7 @@ RSpec.describe 'User interacts with Quantity/Billing tab', js: true do
       visit service_calendar_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
-      click_link 'Quantity/Billing Tab'
+      click_link I18n.t(:calendars)[:tabs][:billing]
       wait_for_javascript_to_finish
 
       expect(page).to have_selector('.panel-title', text: "Non-clinical Services")
@@ -111,7 +111,7 @@ RSpec.describe 'User interacts with Quantity/Billing tab', js: true do
       visit service_calendar_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
-      click_link 'Quantity/Billing Tab'
+      click_link I18n.t(:calendars)[:tabs][:billing]
       wait_for_javascript_to_finish
 
       find("#visits-select-for-#{@arm.id} + .bootstrap-select").click

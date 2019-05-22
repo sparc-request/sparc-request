@@ -40,7 +40,7 @@ RSpec.describe 'User interacts with Consolidated Request tab', js: true do
     visit service_calendar_service_request_path(srid: @sr.id)
     wait_for_javascript_to_finish
 
-    click_link 'Consolidated Request Tab'
+    click_link I18n.t(:calendars)[:tabs][:pricing]
     wait_for_javascript_to_finish
 
     expect(page).to have_selector('#service-calendars', visible: true)
@@ -63,7 +63,7 @@ RSpec.describe 'User interacts with Consolidated Request tab', js: true do
       visit service_calendar_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
-      click_link 'Consolidated Request Tab'
+      click_link I18n.t(:calendars)[:tabs][:pricing]
       wait_for_javascript_to_finish
 
       expect(page).to have_selector('.panel-title', text: "Clinical Services -- #{@arm.name}")
@@ -87,7 +87,7 @@ RSpec.describe 'User interacts with Consolidated Request tab', js: true do
       visit service_calendar_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
-      click_link 'Consolidated Request Tab'
+      click_link I18n.t(:calendars)[:tabs][:pricing]
       wait_for_javascript_to_finish
 
       expect(page).to have_selector('.panel-title', text: "One Time Fee Services")
@@ -111,7 +111,7 @@ RSpec.describe 'User interacts with Consolidated Request tab', js: true do
       visit service_calendar_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
-      click_link 'Consolidated Request Tab'
+      click_link I18n.t(:calendars)[:tabs][:pricing]
       wait_for_javascript_to_finish
 
       find("#visits-select-for-#{@arm.id} + .bootstrap-select").click

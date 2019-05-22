@@ -53,7 +53,7 @@ RSpec.describe 'User returns to catalog', js: true do
 
   before(:each) do
     visit service_details_service_request_path(srid: @sr.id)
-    click_link("Return to Catalog")
+    click_link I18n.t(:proper)[:catalog][:return_to_catalog]
     expect(page).to have_content("Browse Service Catalog")
   end
 

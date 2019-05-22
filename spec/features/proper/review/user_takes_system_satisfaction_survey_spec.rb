@@ -46,7 +46,7 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
 
     context 'by clicking Get a Cost Estimate' do
       scenario 'and is taken directly to Obtain Research Pricing' do
-        click_link 'Get a Cost Estimate'
+        click_link I18n.t(:proper)[:navigation][:bottom][:submit_request]
         wait_for_page(obtain_research_pricing_service_request_path)
         expect(current_path).to eq(obtain_research_pricing_service_request_path)
       end
@@ -54,7 +54,7 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
 
     context 'by clicking Submit Request' do
       scenario 'and is taken directly to Confirmation' do
-        click_link 'Submit Request'
+        click_link I18n.t(:proper)[:navigation][:bottom][:submit_request]
         wait_for_javascript_to_finish
 
         expect(current_path).to eq(confirmation_service_request_path)
@@ -64,7 +64,7 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
 
   context 'and system is using system satisfaction survey' do
     stub_config("system_satisfaction_survey", true)
-    
+
     before :each do
       @survey = create(:system_survey, access_code: 'system-satisfaction-survey', title: 'System Satisfaction Survey', active: true)
 
@@ -74,7 +74,7 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
 
     context 'by clicking Get a Cost Estimate' do
       before :each do
-        click_link 'Get a Cost Estimate'
+        click_link I18n.t(:proper)[:navigation][:bottom][:get_cost_estimate]
         wait_for_javascript_to_finish
       end
 
@@ -121,7 +121,7 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
 
     context 'By clicking Submit Request' do
       before :each do
-        click_link 'Submit Request'
+        click_link I18n.t(:proper)[:navigation][:bottom][:submit_request]
         wait_for_javascript_to_finish
       end
 

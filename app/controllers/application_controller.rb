@@ -50,7 +50,7 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_out_path_for(resource)
-    root_path(srid: @service_request.id)
+    root_path
   end
 
   def set_highlighted_link  # default value, override inside controllers

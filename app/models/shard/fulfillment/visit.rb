@@ -26,6 +26,8 @@ module Shard
       belongs_to :line_item
       belongs_to :visit_group
 
+      has_one :arm, through: :visit_group
+
       ##########################
       ### SPARC Associations ###
       ##########################

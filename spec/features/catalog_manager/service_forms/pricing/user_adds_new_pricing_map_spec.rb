@@ -84,7 +84,7 @@ RSpec.describe 'User adds Service Pricing Map', js: true do
         fill_in 'pricing_map_unit_factor', with: "1.00"
         fill_in 'pricing_map_unit_minimum', with: "1"
 
-        click_button 'Save'
+        click_button I18n.t(:actions)[:save]
         wait_for_javascript_to_finish
 
         @service.reload
@@ -136,7 +136,7 @@ RSpec.describe 'User adds Service Pricing Map', js: true do
         fill_in 'pricing_map_unit_factor', with: "1.00"
         fill_in 'pricing_map_units_per_qty_max', with: "1"
 
-        click_button 'Save'
+        click_button I18n.t(:actions)[:save]
         wait_for_javascript_to_finish
 
         @service.reload

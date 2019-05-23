@@ -82,7 +82,7 @@ RSpec.describe 'User takes a survey', js: true do
 
       fill_in('response_question_responses_attributes_0_content', with: 'text value')
 
-      click_button 'Submit'
+      click_button I18n.t(:actions)[:submit]
       wait_for_javascript_to_finish
 
       expect(QuestionResponse.find_by(question_id: @q_text.id).content).to eq('text value')
@@ -110,14 +110,14 @@ RSpec.describe 'User takes a survey', js: true do
 
       fill_in('response_question_responses_attributes_0_content', with: 'textarea value')
 
-      click_button 'Submit'
+      click_button I18n.t(:actions)[:submit]
       wait_for_javascript_to_finish
 
       expect(QuestionResponse.find_by(question_id: @q_textarea.id).content).to eq('textarea value')
     end
-  
+
   end
- 
+
 
 
   context 'radio button questions' do
@@ -145,7 +145,7 @@ RSpec.describe 'User takes a survey', js: true do
 
       first('input').click
 
-      click_button 'Submit'
+      click_button I18n.t(:actions)[:submit]
       wait_for_javascript_to_finish
 
       expect(QuestionResponse.find_by(question_id: @q_radio_button.id).content).to eq('Option 1')
@@ -181,7 +181,7 @@ RSpec.describe 'User takes a survey', js: true do
 
       first('input').click
 
-      click_button 'Submit'
+      click_button I18n.t(:actions)[:submit]
       wait_for_javascript_to_finish
 
       expect(QuestionResponse.find_by(question_id: @q_likert.id).content).to eq('Option 1')
@@ -217,7 +217,7 @@ RSpec.describe 'User takes a survey', js: true do
         input.click
       end
 
-      click_button 'Submit'
+      click_button I18n.t(:actions)[:submit]
       wait_for_javascript_to_finish
 
       expect(QuestionResponse.find_by(question_id: @q_checkbox.id).content).to eq('["Option 1", "Option 2"]')
@@ -241,13 +241,13 @@ RSpec.describe 'User takes a survey', js: true do
 
     scenario 'and sees correctly saved value' do
       @q_yes_no = create(:question, section: @section, question_type: 'yes_no', content: 'Yes/No Question')
-      
+
       visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
       wait_for_javascript_to_finish
 
       first('input').click
 
-      click_button 'Submit'
+      click_button I18n.t(:actions)[:submit]
       wait_for_javascript_to_finish
 
       expect(QuestionResponse.find_by(question_id: @q_yes_no.id).content).to eq('yes')
@@ -275,7 +275,7 @@ RSpec.describe 'User takes a survey', js: true do
 
       fill_in('response_question_responses_attributes_0_content', with: 'email@email.email')
 
-      click_button 'Submit'
+      click_button I18n.t(:actions)[:submit]
       wait_for_javascript_to_finish
 
       expect(QuestionResponse.find_by(question_id: @q_email.id).content).to eq('email@email.email')
@@ -304,7 +304,7 @@ RSpec.describe 'User takes a survey', js: true do
 
         first('input').click
 
-        click_button 'Submit'
+        click_button I18n.t(:actions)[:submit]
         wait_for_javascript_to_finish
 
         expect(QuestionResponse.find_by(question_id: @q_date.id).content).to eq(Date.today.strftime("%m/%d/%Y"))
@@ -333,7 +333,7 @@ RSpec.describe 'User takes a survey', js: true do
 
       fill_in('response_question_responses_attributes_0_content', with: '9000')
 
-      click_button 'Submit'
+      click_button I18n.t(:actions)[:submit]
       wait_for_javascript_to_finish
 
       expect(QuestionResponse.find_by(question_id: @q_number.id).content).to eq('9000')
@@ -361,7 +361,7 @@ RSpec.describe 'User takes a survey', js: true do
 
       fill_in('response_question_responses_attributes_0_content', with: '12345')
 
-      click_button 'Submit'
+      click_button I18n.t(:actions)[:submit]
       wait_for_javascript_to_finish
 
       expect(QuestionResponse.find_by(question_id: @q_zipcode.id).content).to eq('12345')
@@ -391,7 +391,7 @@ RSpec.describe 'User takes a survey', js: true do
 
       bootstrap_select('#response_question_responses_attributes_0_content', 'South Carolina')
 
-      click_button 'Submit'
+      click_button I18n.t(:actions)[:submit]
       wait_for_javascript_to_finish
 
       expect(QuestionResponse.find_by(question_id: @q_state.id).content).to eq('SC')
@@ -421,7 +421,7 @@ RSpec.describe 'User takes a survey', js: true do
 
       bootstrap_select('#response_question_responses_attributes_0_content', 'United States')
 
-      click_button 'Submit'
+      click_button I18n.t(:actions)[:submit]
       wait_for_javascript_to_finish
 
       expect(QuestionResponse.find_by(question_id: @q_country.id).content).to eq('US')
@@ -450,9 +450,9 @@ RSpec.describe 'User takes a survey', js: true do
 
         first('input').click
 
-        click_button 'Submit'
+        click_button I18n.t(:actions)[:submit]
         wait_for_javascript_to_finish
-        
+
         expect(Time.parse(QuestionResponse.find_by(question_id: @q_time.id).content).strftime("%I:%M %p")).to eq(Time.now.strftime("%I:%M %p"))
       end
     end
@@ -479,7 +479,7 @@ RSpec.describe 'User takes a survey', js: true do
 
       fill_in('response_question_responses_attributes_0_content', with: '1234567890')
 
-      click_button 'Submit'
+      click_button I18n.t(:actions)[:submit]
       wait_for_javascript_to_finish
 
       expect(QuestionResponse.find_by(question_id: @q_phone.id).content).to eq('1234567890')
@@ -511,7 +511,7 @@ RSpec.describe 'User takes a survey', js: true do
 
       bootstrap_select('#response_question_responses_attributes_0_content', 'Option 1')
 
-      click_button 'Submit'
+      click_button I18n.t(:actions)[:submit]
       wait_for_javascript_to_finish
 
       expect(QuestionResponse.find_by(question_id: @q_dropdown.id).content).to eq('Option 1')
@@ -541,7 +541,7 @@ RSpec.describe 'User takes a survey', js: true do
 
       visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
       wait_for_javascript_to_finish
-      
+
       find('.bootstrap-select').click
       find('span.text', text: 'Option 1').click
       find('span.text', text: 'Option 2').click
@@ -549,7 +549,7 @@ RSpec.describe 'User takes a survey', js: true do
       #bootstrap_multiselect('#response_question_responses_attributes_0_content', [/Option 1/, /Option 2/])
       first('.panel').click
 
-      click_button 'Submit'
+      click_button I18n.t(:actions)[:submit]
       wait_for_javascript_to_finish
 
       expect(QuestionResponse.find_by(question_id: @q_multiple_dropdown.id).content).to eq('["", "Option 1", "Option 2"]')
@@ -563,7 +563,7 @@ RSpec.describe 'User takes a survey', js: true do
       visit new_surveyor_response_path(type: @survey.class.name, survey_id: @survey.id, respondable_id: @ssr.id, respondable_type: @ssr.class.name)
       wait_for_javascript_to_finish
 
-      click_button 'Submit'
+      click_button I18n.t(:actions)[:submit]
 
       complete_page = surveyor_response_complete_path(Response.last)
       wait_for_page(complete_page)

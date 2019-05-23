@@ -22,6 +22,6 @@ class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
 
   def self.table_name_prefix
-    "sparc-request_#{Rails.env}."
+    Rails.configuration.database_configuration[Rails.env]['database'] + '.'
   end
 end

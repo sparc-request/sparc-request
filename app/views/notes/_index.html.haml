@@ -26,7 +26,7 @@
         = note_header(notable)
     .modal-body
       #modal_errors
-      = render 'notes/table', notable_id: notable_id, notable_type: notable_type, cancel: 'true'
+      = render 'notes/table', notable_id: notable_id, notable_type: notable_type, review: @review, cancel: 'true'
     .modal-footer
       .center-block
         %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }

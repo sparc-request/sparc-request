@@ -21,12 +21,17 @@
 namespace :data do
   desc "Backfill missing `original_submitted_date`s for Service Requests"
   task backfill_original_submissions: :environment do
-    ServiceRequest.joins(:sub_service_requests).where(original_submitted_date: nil).each do |sr|
+    ServiceRequest.where.not(submitted_at: nil).where(original_submitted_date: nil).each do |sr|
       if first_submitted_ssr = sr.sub_service_requests.where.not(submitted_at: nil).order(submitted_at: :asc).first
-        puts "Updating Request ##{sr.id}"
         sr.original_submitted_date = first_submitted_ssr.submitted_at
+      elsif sr.submitted_at
+        sr.original_submitted_date = sr.submitted_at
+      end
+
+      if sr.original_submitted_date
+        puts "Updating Request ##{sr.id}"
         puts "- New Original Submitted Date: #{sr.original_submitted_date}"
-        sr.save(validate: false) 
+        sr.save(validate: false)
       end
     end
   end

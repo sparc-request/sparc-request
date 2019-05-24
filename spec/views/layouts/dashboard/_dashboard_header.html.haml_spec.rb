@@ -38,7 +38,7 @@ RSpec.describe 'layouts/dashboard/_dashboard_header.html.haml', view: true do
   context 'epic configuration turned on' do
     stub_config("use_epic", true)
     stub_config("epic_queue_access", ['jug2'])
-    
+
     it 'should display view epic queue button' do
       render 'layouts/dashboard/dashboard_header', user: @user, current_user: @user
 
@@ -47,7 +47,6 @@ RSpec.describe 'layouts/dashboard/_dashboard_header.html.haml', view: true do
   end
 
   it 'should display number of unread notifications (for user)' do
-    @show_messages = true
     render 'layouts/dashboard/dashboard_header', user: @user, current_user: @user
 
     expect(response).to have_selector('button#messages-btn span.badge', text: '2')

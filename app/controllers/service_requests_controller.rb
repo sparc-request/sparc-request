@@ -32,8 +32,10 @@ class ServiceRequestsController < ApplicationController
   before_action :authorize_identity,              except: [:approve_changes, :get_help, :feedback, :show]
   before_action :authenticate_identity!,          except: [:catalog, :add_service, :remove_service, :get_help, :feedback]
   before_action :find_locked_org_ids,             only:   [:catalog]
+  before_action :find_service,                    only:   [:catalog]
 
   def show
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id]) if params[:sub_service_request_id]
     @protocol = @service_request.protocol
     @admin_offset = params[:admin_offset]
     @show_signature_section = params[:show_signature_section]
@@ -51,20 +53,13 @@ class ServiceRequestsController < ApplicationController
   end
 
   def navigate
-    redirect_to eval("#{@forward}_service_request_path")
+    redirect_to @forward
   end
 
   # service request wizard pages
 
   def catalog
     @institutions = Institution.all
-
-    if params[:service_id]
-      @service  = Service.find(params[:service_id])
-      @provider = @service.provider
-      @program  = @service.program
-      @core     = @service.core
-    end
 
     setup_catalog_calendar
     setup_catalog_news_feed
@@ -93,7 +88,7 @@ class ServiceRequestsController < ApplicationController
     @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
 
     if !@has_subsidy && !@eligible_for_subsidy
-      redirect_to document_management_service_request_path
+      redirect_to document_management_service_request_path(srid: @service_request.id)
     end
   end
 
@@ -104,7 +99,7 @@ class ServiceRequestsController < ApplicationController
     @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
 
     unless @has_subsidy || @eligible_for_subsidy
-      @back = 'service_calendar'
+      @back = service_calendar_service_request_path(srid: @service_request.id)
     end
   end
 
@@ -284,7 +279,7 @@ class ServiceRequestsController < ApplicationController
 
   def validate_catalog
     unless @service_request.group_valid?(:catalog)
-      redirect_to catalog_service_request_path and return false unless action_name == 'catalog'
+      redirect_to catalog_service_request_path(srid: @service_request.id) and return false unless action_name == 'catalog'
       @errors = @service_request.errors
     end
     return true
@@ -292,7 +287,7 @@ class ServiceRequestsController < ApplicationController
 
   def validate_protocol
     unless @service_request.group_valid?(:protocol)
-      redirect_to protocol_service_request_path and return false unless action_name == 'protocol'
+      redirect_to protocol_service_request_path(srid: @service_request.id) and return false unless action_name == 'protocol'
       @errors = @service_request.errors
     end
     return true
@@ -302,7 +297,7 @@ class ServiceRequestsController < ApplicationController
     @service_request.protocol.update_attributes(details_params) if details_params
 
     unless @service_request.group_valid?(:service_details)
-      redirect_to service_details_service_request_path(@service_request, navigate: 'true') and return false unless action_name == 'service_details'
+      redirect_to service_details_service_request_path(srid: @service_request.id, navigate: 'true') and return false unless action_name == 'service_details'
       @errors = @service_request.errors
     end
     return true
@@ -310,7 +305,7 @@ class ServiceRequestsController < ApplicationController
 
   def validate_service_calendar
     unless @service_request.group_valid?(:service_calendar)
-      redirect_to service_calendar_service_request_path(@service_request, navigate: 'true') and return false unless action_name == 'service_calendar'
+      redirect_to service_calendar_service_request_path(srid: @service_request.id, navigate: 'true') and return false unless action_name == 'service_calendar'
       @errors = @service_request.errors
     end
     return true
@@ -320,8 +315,8 @@ class ServiceRequestsController < ApplicationController
     if c = YAML.load_file(Rails.root.join('config', 'navigation.yml'))[current_page]
       @step_text   = c['step_text']
       @css_class   = c['css_class']
-      @back        = c['back']
-      @forward     = c['forward']
+      @back        = eval("#{c['back']}_service_request_path(srid: #{@service_request.id})") if c['back']
+      @forward     = eval("#{c['forward']}_service_request_path(srid: #{@service_request.id})") if c['forward']
     end
   end
 
@@ -411,6 +406,17 @@ class ServiceRequestsController < ApplicationController
       return false
     else
       return true
+    end
+  end
+
+  def find_service
+    if params[:service_id]
+      @service  = Service.find(params[:service_id])
+      @provider = @service.provider
+      @program  = @service.program
+      @core     = @service.core
+
+      redirect_to catalog_service_request_path(srid: @service_request.id) unless @service.is_available?
     end
   end
 end

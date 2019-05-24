@@ -38,7 +38,7 @@ ExceptionNotification.configure do |config|
   # Email notifier sends notifications by email.
   config.add_notifier :email, {
     :email_prefix         => "[#{ENV['HOSTNAME']} Exception",
-    :sender_address       => ENV["EXCEPTION_SENDER_ADDRESS"] || %{"Notifier" <no-reply@example.org},
+    :sender_address       => ENV["EXCEPTION_SENDER_ADDRESS"] || %{"Notifier" <no-reply@example.org>},
     :exception_recipients => ENV["EXCEPTION_RECIPIENTS"] || %w{admin@example.org}
   }
 

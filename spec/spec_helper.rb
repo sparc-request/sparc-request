@@ -132,10 +132,6 @@ Capybara.register_driver :webkit do |app|
   driver
 end
 
-SitePrism.configure do |config|
-  config.use_implicit_waits = true
-end
-
 Shoulda::Matchers.configure do |config|
   config.integrate do |with|
     # Choose a test framework:

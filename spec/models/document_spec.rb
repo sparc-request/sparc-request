@@ -22,7 +22,9 @@ require 'rails_helper'
 
 RSpec.describe Document, type: :model do
   it { should belong_to(:protocol) }
-  it { should have_and_belong_to_many(:sub_service_requests) }
+  
+  # See https://github.com/thoughtbot/shoulda-matchers/issues/1210
+  # it { should have_and_belong_to_many(:sub_service_requests) }
 
   it 'should create a document' do
     doc = Document.create()

@@ -117,7 +117,7 @@ $(document).ready ->
       type: 'GET'
       url: "/visit_groups/#{$(this).data('id')}/edit.js"
       data:
-        service_request_id:     getSRId()
+        srid:                   getSRId()
         sub_service_request_id: getSSRId()
         tab:                    $(this).data('tab')
         pages:                  $(this).data('pages')
@@ -162,7 +162,7 @@ $(document).ready ->
       url: '/service_calendars/show_move_visits'
       data:
         arm_id:                 $(this).data('arm-id')
-        service_request_id:     getSRId()
+        srid:                   getSRId()
         sub_service_request_id: getSSRId()
         tab:                    $(this).data('tab')
         pages:                  $(this).data('pages')
@@ -213,7 +213,7 @@ $(document).ready ->
           research_billing_qty:   $(this).data('research-billing-qty')
           insurance_billing_qty:  $(this).data('insurance-billing-qty')
           effort_billing_qty:     $(this).data('effort-billing-qty')
-        service_request_id:       getSRId()
+        srid:                     getSRId()
         sub_service_request_id:   getSSRId()
         admin:                    $(this).data('admin')
         tab:                      $(this).data('tab')
@@ -224,7 +224,7 @@ $(document).ready ->
     $.ajax
       type: 'GET'
       data:
-        service_request_id:     getSRId()
+        srid:                   getSRId()
         sub_service_request_id: getSSRId()
         admin:                  $(this).data('admin')
         page:                   $(this).data('page')
@@ -239,7 +239,7 @@ $(document).ready ->
       data:
         arm_id:                   arm_id
         visit_group_id:           $(this).val()
-        service_request_id:       getSRId()
+        srid:                     getSRId()
         sub_service_request_id:   getSSRId()
         tab:                      $(move_visit_button).data('tab')
         pages:                    $(move_visit_button).data('pages')

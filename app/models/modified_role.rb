@@ -18,35 +18,26 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'rails_helper'
+# This is a wrapper structure to hold Project Role information 
+# to avoid persistence issues within delayed jobs
 
-RSpec.describe 'User views a SSR', js: true do
-  let_there_be_lane
+class ModifiedRole
 
-  fake_login_for_each_test
+  attr_accessor *ProjectRole.column_names
 
-  before :each do
-    institution = create(:institution, name: "Institution")
-    provider    = create(:provider, name: "Provider", parent: institution)
-    program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
-                  create(:pricing_setup, organization: program)
-    service     = create(:service, name: "Service", abbreviation: "Service", organization: program, pricing_map_count: 1)
-    @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2)
-    @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
-    ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
-                  create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-                  create(:arm, protocol: @protocol, visit_count: 1)
+  def initialize(project_role_attrs)
+    project_role_attrs.each{ |attr, value| instance_variable_set("@#{attr}", value) }
   end
 
-  context 'and clicks the row' do
-    scenario 'and sees the view SSR modal' do
-      visit obtain_research_pricing_service_request_path(srid: @sr.id)
-      wait_for_javascript_to_finish
+  def identity
+    Identity.find(@identity_id)
+  end
 
-      find('#request-ssrs-table tbody tr').click
-      wait_for_javascript_to_finish
-
-      expect(page).to have_selector('.modal-dialog', text: 'Program', visible: true)
+  def display_rights
+    case @project_rights
+    when "none"    then "Member Only"
+    when "view"    then "View Rights"
+    when "approve" then "Authorize/Change Study Charges"
     end
   end
 end

@@ -21,7 +21,7 @@
 
 = render '/service_requests/navigation/steps', service_request: @service_request, step_text: @step_text, css_class: @css_class
 .col-sm-12.body-container
-  = form_tag navigate_service_request_path(@service_request), id: 'service-request-form' do
+  = form_tag navigate_service_request_path(srid: @service_request.id), id: 'service-request-form' do
     - if params[:navigate]
       = render 'shared/modal_errors', errors: @errors
     = render 'service_calendars/quantity_billing_labels'

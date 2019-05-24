@@ -60,7 +60,7 @@ module Dashboard
         end
 
         def select_search(page, search, search_term)
-          bootstrap_select = page.find("select#filterrific_search_query_search_drop + .bootstrap-select")
+          bootstrap_select = page.find(".bootstrap-select select#filterrific_search_query_search_drop + .dropdown-toggle")
           bootstrap_select.click
           first('.dropdown-menu.open span.text', text: /\A#{search}\Z/).click
           page.filter_protocols.search_field.set(search_term.to_s)

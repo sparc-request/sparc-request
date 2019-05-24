@@ -2,12 +2,12 @@ id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_avai
 ,C06,C06 Research Facilities Construction Grant,,,1,federal_grant_code,,,1
 ,D43,D43 International Research Training Grants,,,2,federal_grant_code,,,1
 ,D71,D71 International Research Training Planning Grant,,,3,federal_grant_code,,,1
-,DP1,DP1 NIH Director‰Ûªs Pioneer Award (NDPA),,,4,federal_grant_code,,,1
-,DP2,DP2 NIH Director‰Ûªs New Innovator Awards,,,5,federal_grant_code,,,1
+,DP1,DP1 NIH Director's Pioneer Award (NDPA),,,4,federal_grant_code,,,1
+,DP2,DP2 NIH Director's New Innovator Awards,,,5,federal_grant_code,,,1
 ,DP3,DP3 Type 1 Diabetes Targeted Research Award,,,6,federal_grant_code,,,1
-,DP4,DP4 NIH Director‰Ûªs Pathfinder Award - Multi-Yr Funding,,,7,federal_grant_code,,,1
+,DP4,DP4 NIH Director's Pathfinder Award - Multi-Yr Funding,,,7,federal_grant_code,,,1
 ,DP5,DP5 Early Independence Award,,,8,federal_grant_code,,,1
-,DP7,DP7 NIH Director‰Ûªs Workforce Innovation Award,,,9,federal_grant_code,,,1
+,DP7,DP7 NIH Director's Workforce Innovation Award,,,9,federal_grant_code,,,1
 ,E11,E11 Grants for Public Health Special Projects,,,10,federal_grant_code,,,1
 ,F05,F05 International Research Fellowships (FIC),,,11,federal_grant_code,,,1
 ,F30,F30 Individual Predoctoral NRSA for M.D./Ph.D. Fellowships,,,12,federal_grant_code,,,1
@@ -110,7 +110,7 @@ id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_avai
 ,RC1,RC1 NIH Challenge Grants and Partnerships Program, ,,109,federal_grant_code,,,1
 ,RC2,RC2 High Impact Research and Research Infrastructure Programs, ,,110,federal_grant_code,,,1
 ,RC3,"RC3 Biomedical Research, Development, and Growth to Spur the Acceleration of New Technologies (BRDG-SPAN) Program", ,,111,federal_grant_code,,,1
-,RC4,RC4 High Impact Research and Research Infrastructure Programs‰ÛÓMulti-Yr Funding, ,,112,federal_grant_code,,,1
+,RC4,RC4 High Impact Research and Research Infrastructure Programs--Multi-Yr Funding, ,,112,federal_grant_code,,,1
 ,RF1,RF1 Multi-Year Funded Research Project Grant, ,,113,federal_grant_code,,,1
 ,RL1,RL1 Linked Research project Grant, ,,114,federal_grant_code,,,1
 ,RL2,RL2 Linked Exploratory/Development Grant, ,,115,federal_grant_code,,,1
@@ -199,11 +199,11 @@ id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_avai
 ,U90,U90 Cooperative Agreements for Special Projects of National Significance (SPNS), ,,198,federal_grant_code,,,1
 ,UA1,UA1 AIDS Research Project Cooperative Agreement, ,,199,federal_grant_code,,,1
 ,UA5,UA5 Academic Research Enhancement Award (AREA) Cooperative Agreements, ,,200,federal_grant_code,,,1
-,UB1,UB1 Commercialization Readiness Program ‰ÛÒ Cooperative Agreement, ,,201,federal_grant_code,,,1
+,UB1,UB1 Commercialization Readiness Program - Cooperative Agreement, ,,201,federal_grant_code,,,1
 ,UC1,UC1 NIH Challenge Grants and Partnerships Program - Phase II-Coop.Agreement, ,,202,federal_grant_code,,,1
 ,UC2,UC2 High Impact Research and Research Infrastructure Cooperative Agreement Programs, ,,203,federal_grant_code,,,1
 ,UC3,"UC3 Biomedical Research, Development, and Growth to Spur the Acceleration of New Technologies (BRDG-SPAN) Cooperative Agreement Program", ,,204,federal_grant_code,,,1
-,UC4,UC4 High Impact Research and Research Infrastructure Cooperative Agreement Programs‰ÛÓMulti-Yr Funding, ,,205,federal_grant_code,,,1
+,UC4,UC4 High Impact Research and Research Infrastructure Cooperative Agreement Programs--Multi-Yr Funding, ,,205,federal_grant_code,,,1
 ,UC6,UC6 Construction Cooperative Agreement, ,,206,federal_grant_code,,,1
 ,UC7,UC7 National Biocontainment Laboratory Operation Cooperative Agreement, ,,207,federal_grant_code,,,1
 ,UD1,UD1 Mental Health and/or Substance Abuse KD&A Cooperative Agreements, ,,208,federal_grant_code,,,1
@@ -226,8 +226,8 @@ id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_avai
 ,UR8,UR8 Applied Research in Emerging Infections-(including Tick-borne Diseases) Cooperative Agreements, ,,225,federal_grant_code,,,1
 ,US3,US3 Hantaviral Reservoir Studies Cooperative Agreements, ,,226,federal_grant_code,,,1
 ,US4,US4 Community-Based Primary Prevention Programs: Intimate Partner Violence Cooperative Agreements, ,,227,federal_grant_code,,,1
-,UT1,UT1 Small Business Technology Transfer (STTR) ‰ÛÒ Cooperative Agreements - Phase I, ,,228,federal_grant_code,,,1
-,UT2,UT2 Small Business Technology Transfer (STTR) ‰ÛÒ Cooperative Agreements - Phase II, ,,229,federal_grant_code,,,1
+,UT1,UT1 Small Business Technology Transfer (STTR) - Cooperative Agreements - Phase I, ,,228,federal_grant_code,,,1
+,UT2,UT2 Small Business Technology Transfer (STTR) - Cooperative Agreements - Phase II, ,,229,federal_grant_code,,,1
 ,VF1,VF1 Rape Prevention and Education Grants, ,,230,federal_grant_code,,,1
 ,X01,X01 Resource Access Program, ,,231,federal_grant_code,,,1
 ,X02,X02 Preapplication, ,,232,federal_grant_code,,,1

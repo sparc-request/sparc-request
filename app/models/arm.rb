@@ -31,6 +31,12 @@ class Arm < ApplicationRecord
   has_many :sub_service_requests, through: :line_items
   has_many :visits, :through => :line_items_visits
 
+  ########################
+  ### CWF Associations ###
+  ########################
+
+  has_many :fulfillment_arms, class_name: 'Shard::Fulfillment::Arm', foreign_key: :sparc_id
+
   after_create :create_calendar_objects, if: Proc.new { |arm| arm.protocol.present? }
   after_update :update_visit_groups
   after_update :update_liv_subject_counts
@@ -46,19 +52,19 @@ class Arm < ApplicationRecord
     write_attribute(:name, name.squish)
   end
 
-  def display_line_items_visits(use_epic, display_all_services)
-    if use_epic
+  def display_line_items_visits(display_all_services)
+    if Setting.get_value('use_epic')
       # only show the services that are set to be pushed to Epic
       if display_all_services
         self.line_items_visits.joins(:service).where.not(services: { cpt_code: [nil, ''] })
       else
-        self.line_items_visits.joins(:service, :visits).where.not(services: { cpt_code: [nil, ''] }, visits: { research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0 }).distinct
+        self.line_items_visits.joins(:service, :visits).where.not(services: { cpt_code: [nil, ''] }).where(Visit.arel_table[:research_billing_qty].gt(0).or(Visit.arel_table[:insurance_billing_qty].gt(0)).or(Visit.arel_table[:effort_billing_qty].gt(0))).distinct
       end
     else
       if display_all_services
         self.line_items_visits
       else
-        self.line_items_visits.joins(:visits).where.not(visits: { research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0 }).distinct
+        self.line_items_visits.joins(:visits).where(Visit.arel_table[:research_billing_qty].gt(0).or(Visit.arel_table[:insurance_billing_qty].gt(0)).or(Visit.arel_table[:effort_billing_qty].gt(0))).distinct
       end
     end
   end

@@ -42,10 +42,10 @@ module Dashboard::SubServiceRequestsHelper
     end
   end
 
-  def display_line_items_otf(use_epic, lis)
+  def display_line_items_otf(lis)
     # only show the services that are set to be pushed to Epic when use_epic = true
-    if use_epic
-      lis.select{ |li| Service.find(li.service_id).send_to_epic }
+    if Setting.get_value('use_epic')
+      lis.select{ |li| li.service.cpt_code.present? }
     else
       lis
     end
@@ -221,7 +221,7 @@ module Dashboard::SubServiceRequestsHelper
     if form_list.empty?
       ''
     else
-      content_tag(:select, grouped_options_for_select(form_list).html_safe, title: t(:dashboard)[:service_requests][:forms][:selectpicker],
+      select_tag(:complete_forms, grouped_options_for_select(form_list).html_safe, include_blank: t(:dashboard)[:service_requests][:forms][:selectpicker],
         class: 'selectpicker complete-forms', data: { style: 'btn-danger', counter: 'true' })
     end
   end

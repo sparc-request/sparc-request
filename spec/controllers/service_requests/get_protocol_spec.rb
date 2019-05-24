@@ -55,9 +55,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
       session[:identity_id] = logged_in_user.id
-      session[:srid]        = sr.id
 
-      get :protocol, xhr: true
+      get :protocol, params: { srid: sr.id }, xhr: true
 
       expect(ssr.reload.service_requester).to eq(logged_in_user)
     end
@@ -71,9 +70,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
       session[:identity_id] = logged_in_user.id
-      session[:srid]        = sr.id
 
-      get :protocol, xhr: true
+      get :protocol, params: { srid: sr.id }, xhr: true
 
       expect(controller).to render_template(:protocol)
     end
@@ -87,9 +85,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
       session[:identity_id] = logged_in_user.id
-      session[:srid]        = sr.id
 
-      get :protocol, xhr: true
+      get :protocol, params: { srid: sr.id }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

@@ -155,7 +155,7 @@ $ ->
     if $('#new_associated_survey').val() == ''
       alert "No survey selected"
     else
-      survey_id = $(this).closest('.row').find('.new_associated_survey')[0].value
+      survey_id = $('#new_associated_survey').selectpicker('val')
       surveyable_type = $(this).data('type')
       surveyable_id = $(this).data('id')
       $.ajax
@@ -318,6 +318,12 @@ $ ->
       url: "/catalog_manager/services/#{service_id}/reload_core_dropdown"
       data:
         program_id: program_id
+
+  $(document).on 'change', '[name="service[is_available]"]', ->
+    if $(this).prop('checked')
+      $('.shareable-link').removeClass('hidden')
+    else
+      $('.shareable-link').addClass('hidden')
 
   ##############################################
   ###          Service Components            ###

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_01_212606) do
+ActiveRecord::Schema.define(version: 2019_05_14_181151) do
 
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
@@ -72,7 +72,7 @@ ActiveRecord::Schema.define(version: 2019_03_01_212606) do
     t.index ["survey_id"], name: "index_associated_surveys_on_survey_id"
   end
 
-  create_table "audits", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+  create_table "audits", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "auditable_id"
     t.string "auditable_type"
     t.bigint "associated_id"
@@ -219,7 +219,7 @@ ActiveRecord::Schema.define(version: 2019_03_01_212606) do
     t.index ["subsidy_map_id"], name: "index_excluded_funding_sources_on_subsidy_map_id"
   end
 
-  create_table "feedbacks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+  create_table "feedbacks", id: :bigint, default: nil, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.text "message"
     t.string "email"
     t.datetime "created_at", null: false
@@ -443,8 +443,8 @@ ActiveRecord::Schema.define(version: 2019_03_01_212606) do
   end
 
   create_table "patient_registrars", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
-    t.bigint "identity_id"
-    t.bigint "organization_id"
+    t.integer "identity_id"
+    t.integer "organization_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["identity_id"], name: "index_patient_registrars_on_identity_id"
@@ -565,6 +565,14 @@ ActiveRecord::Schema.define(version: 2019_03_01_212606) do
     t.datetime "updated_at"
     t.string "admin_filter"
     t.string "with_owner"
+  end
+
+  create_table "protocol_merges", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+    t.integer "master_protocol_id"
+    t.integer "merged_protocol_id"
+    t.integer "identity_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "protocols", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
@@ -959,7 +967,7 @@ ActiveRecord::Schema.define(version: 2019_03_01_212606) do
     t.index ["surveyable_id", "surveyable_type"], name: "index_surveys_on_surveyable_id_and_surveyable_type"
   end
 
-  create_table "taggings", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+  create_table "taggings", id: :bigint, default: nil, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "tag_id"
     t.bigint "taggable_id"
     t.string "taggable_type"

@@ -59,11 +59,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       stub_config('use_google_calendar', true)
 
       it 'should assign @events' do
-        protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-        sr       = create(:service_request_without_validations, protocol: protocol)
-
-        session[:srid] = sr.id
-
         get :catalog, xhr: true
 
         expect(assigns(:events)).to be
@@ -74,17 +69,37 @@ RSpec.describe ServiceRequestsController, type: :controller do
       stub_config('use_news_feed', true)
 
       it 'should assign @news' do
-        protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-        sr       = create(:service_request_without_validations, protocol: protocol)
-
-        session[:srid] = sr.id
-
         get :catalog, xhr: true
 
         expect(assigns(:news)).to be
       end
     end
 
+    context 'params[:service_id] is present' do
+      it 'should assign @service' do
+        service = create(:service)
+        allow_any_instance_of(Service).to receive(:provider).and_return(nil)
+        allow_any_instance_of(Service).to receive(:program).and_return(nil)
+        allow_any_instance_of(Service).to receive(:core).and_return(nil)
+
+        get :catalog, params: { service_id: service.id }, xhr: true
+
+        expect(assigns(:service)).to eq(service)
+      end
+
+      context 'service is inactive' do
+        it 'should redirect' do
+          service = create(:service, is_available: false)
+          allow_any_instance_of(Service).to receive(:provider).and_return(nil)
+          allow_any_instance_of(Service).to receive(:program).and_return(nil)
+          allow_any_instance_of(Service).to receive(:core).and_return(nil)
+
+          get :catalog, params: { service_id: service.id }, xhr: true
+
+          expect(controller).to redirect_to(catalog_service_request_path)
+        end
+      end
+    end
     it 'should render template' do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)

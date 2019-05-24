@@ -33,4 +33,4 @@
                 %p.description
                   = raw(c.description)
               .core-services
-                = render 'catalogs/accordion/services', services: c.services.select{ |serv| serv.is_available != false && serv.current_pricing_map }, service_request: service_request
+                = render 'catalogs/accordion/services', services: c.services, service_request: service_request

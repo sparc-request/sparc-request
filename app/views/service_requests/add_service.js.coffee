@@ -18,8 +18,15 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <% if @duplicate_service %>
-$('#modal_place').html("<%= escape_javascript(render( 'service_requests/modals/service_already_added_modal' )) %>")
+$('#modal_place').html("<%= j render 'service_requests/modals/service_already_added_modal' %>")
 $('#modal_place').modal('show')
 <% else %>
-$('.shopping-cart').html("<%= escape_javascript(render( 'service_requests/right_navigation/cart', service_request: @service_request, sub_service_requests: @sub_service_requests, allow_delete: true )) %>")
+$('.catalog-right').replaceWith("<%= j render 'catalogs/catalog_right', service_request: @service_request, sub_service_requests: @sub_service_requests %>")
+
+url = new URL(window.location.href)
+if !url.searchParams.get('srid')
+  url.searchParams.append('srid', "<%= @service_request.id %>")
+  window.history.pushState({}, null, url.href)
+  $('input[name=srid]').val("<%= @service_request.id %>")
+  $('#login-link').attr('href', "<%= new_identity_session_path(srid: @service_request.id) %>")
 <% end %>

@@ -26,14 +26,16 @@ class LineItemsVisit < ApplicationRecord
 
   belongs_to :arm
   belongs_to :line_item
+
   has_many :visits, :dependent => :destroy
   has_many :ordered_visits, -> { ordered }, class_name: "Visit"
   has_many :notes, as: :notable, dependent: :destroy
 
+  has_many :visit_groups, through: :visits
+
   has_one :service_request, through: :line_item
   has_one :sub_service_request, through: :line_item
   has_one :service, through: :line_item
-  has_many :visit_groups, through: :visits
 
   validate :subject_count_valid
   validate :pppv_line_item

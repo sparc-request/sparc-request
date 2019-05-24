@@ -54,9 +54,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:srid] = sr.id
-
-      get :service_details, xhr: true
+      get :service_details, params: { srid: sr.id }, xhr: true
 
       expect(protocol.arms.count).to eq(1)
       expect(protocol.arms.first.name).to eq('Screening Phase')
@@ -70,9 +68,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:srid] = sr.id
-
-      get :service_details, xhr: true
+      get :service_details, params: { srid: sr.id }, xhr: true
 
       expect(controller).to render_template(:service_details)
     end
@@ -85,9 +81,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:srid] = sr.id
-
-      get :service_details, xhr: true
+      get :service_details, params: { srid: sr.id }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

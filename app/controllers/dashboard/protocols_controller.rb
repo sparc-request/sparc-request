@@ -52,7 +52,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
           with_organization: Dashboard::GroupedOrganizations.new(@organizations).collect_grouped_options,
           with_owner: build_with_owner_params
         },
-        persistence_id: false #resets filters on page reload
+        persistence_id: false #selected filters remain the same on page reload
       ) || return
 
     @protocols        = @filterrific.find.page(params[:page])
@@ -61,7 +61,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     #toggles the display of the breadcrumbs, navbar always displays
     @disable_breadcrumb  = true
-    @show_messages       = true
     session[:breadcrumbs].clear
 
     setup_sorting_variables

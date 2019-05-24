@@ -129,7 +129,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
         it 'should email authorized user' do
           delete :destroy, params: { id: @protocol_role.id }, xhr: true
-          expect(UserMailer).to have_received(:authorized_user_changed)
+          expect(UserMailer).to have_received(:authorized_user_changed).twice
         end
 
         it 'should render appropriate template' do

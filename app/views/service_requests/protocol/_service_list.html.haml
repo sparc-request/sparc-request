@@ -29,4 +29,4 @@
         %h1.panel-title
           = value[:name]
       .panel-body
-        = render 'catalogs/accordion/services', services: value[:line_items].map(&:service)
+        = render 'catalogs/accordion/services', services: Service.where(id: value[:line_items].map(&:service_id))

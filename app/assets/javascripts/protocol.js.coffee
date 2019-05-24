@@ -29,5 +29,5 @@ $(document).ready ->
       type: 'get'
       url: "/protocols/#{protocol_id}.js"
       data:
-        service_request_id: $("input[name='service_request_id']").val()
+        srid: getSRId()
     return false

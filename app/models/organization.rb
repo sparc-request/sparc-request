@@ -43,6 +43,7 @@ class Organization < ApplicationRecord
   has_many :org_children, class_name: "Organization", foreign_key: :parent_id
 
   has_many :protocols, through: :sub_service_requests
+  has_many :surveys, through: :associated_surveys
 
   validates :abbreviation,
             :order,
@@ -65,8 +66,7 @@ class Organization < ApplicationRecord
         where("super_users.identity_id = ? or service_providers.identity_id = ?", identity_id, identity_id).
         references(:super_users, :service_providers).
         distinct(:organizations).ids
-      ),
-      is_available: true
+      )
     ).distinct
   }
 

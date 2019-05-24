@@ -27,6 +27,7 @@ class LineItem < ApplicationRecord
   belongs_to :service_request
   belongs_to :service, counter_cache: true
   belongs_to :sub_service_request
+
   has_many :fulfillments, dependent: :destroy
   has_many :line_items_visits, dependent: :destroy
   has_many :procedures
@@ -36,11 +37,18 @@ class LineItem < ApplicationRecord
   has_many :arms, through: :line_items_visits
   has_one :protocol, through: :service_request
 
+  ########################
+  ### CWF Associations ###
+  ########################
+
+  has_many :fulfillment_line_items, -> { order(:arm_id) }, class_name: 'Shard::Fulfillment::LineItem', foreign_key: :sparc_id
+
   attr_accessor :pricing_scheme
 
   accepts_nested_attributes_for :fulfillments, allow_destroy: true
 
   delegate :one_time_fee, to: :service
+  delegate :name, to: :service
   delegate :status, to: :sub_service_request
 
   validates :service_id, numericality: true, presence: true

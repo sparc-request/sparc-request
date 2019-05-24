@@ -57,7 +57,7 @@ $(document).ready( function() {
     this.options = options;
     this.$els = $(els).filter(':not(.disabled, [disabled=disabled])');
     this.$checks = $();
-    this.$container = options.container || this.$els.parents('tbody');
+    this.$container = this.$els.parents('tbody');
 
     this.init();
   };
@@ -66,6 +66,7 @@ $(document).ready( function() {
     ajaxType: 'get',
     ajaxDataType: 'script',
     ajaxUrl: '/',
+    ajaxData: {},
     batchSelectedClass: null,
     batchSelectedText: 'Submit Selected',
     checkConfirmSwalTitle: 'Are you sure?',
@@ -159,14 +160,29 @@ $(document).ready( function() {
         position = $tr.position();
 
     if (position) {
-      this.$selectedButton = $("<button class=\"" + (this.options.batchSelectedClass || determineBatchSelectedClass(this.options.type)) + " batch-selected-btn\" style=\"position:absolute;\">" + this.options.batchSelectedText + "</button>");
-      this.$container.append(this.$selectedButton);
+      this.$selectedButtonContainer1  = $("<div style=\"position:absolute;\"></div>")
+      this.$selectedButtonContainer2  = $("<div style=\"position:relative;height:100%;\"></div>");
+      this.$selectedButtonContainer3  = $("<div style=\"position:absolute;\"></div>");
+      this.$selectedButton            = $("<button class=\"" + (this.options.batchSelectedClass || determineBatchSelectedClass(this.options.type)) + " batch-selected-btn\" style=\"position:sticky;top:15px;bottom:15px;\">" + this.options.batchSelectedText + "</button>");
 
-      var top = position.top + ($tr.outerHeight() - this.$selectedButton.outerHeight()) / 2;
-      var right = -(this.$selectedButton.outerWidth() + 30);
+      this.$selectedButtonContainer1.append(this.$selectedButtonContainer2)
+      this.$selectedButtonContainer2.append(this.$selectedButtonContainer3)
+      this.$selectedButtonContainer3.append(this.$selectedButton)
+      this.$container.append(this.$selectedButtonContainer1);
 
-      this.$selectedButton.css('top', top + "px");
-      this.$selectedButton.css('right', right + "px");
+      var trPadd  = ($tr.outerHeight() - this.$selectedButton.outerHeight()) / 2,
+          height  = this.$container.outerHeight() - (trPadd * 2),
+          width   = this.$selectedButton.outerWidth(),
+          top1    = this.$container.siblings('thead').outerHeight() + trPadd,
+          top3    = position.top + trPadd - top1;
+
+      this.$selectedButtonContainer1.css('height', height + "px");
+      this.$selectedButtonContainer3.css('height', height - top3 + "px");
+      this.$selectedButtonContainer1.css('width', width + "px");
+      this.$selectedButtonContainer2.css('width', width + "px");
+      this.$selectedButtonContainer1.css('right', -(width + 30) + "px");
+      this.$selectedButtonContainer1.css('top', top1 + "px");
+      this.$selectedButtonContainer3.css('top', top3 + "px");
 
       this.$selectedButton.on('click', function () {
         swal({
@@ -237,7 +253,8 @@ $(document).ready( function() {
     $.ajax({
       type: this.options.ajaxType,
       dataType: this.options.ajaxDataType,
-      url: this.options.ajaxUrl + id
+      url: this.options.ajaxUrl + id,
+      data: this.options.ajaxData
     });
   }
 

@@ -19,7 +19,11 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class PermissibleValue < ApplicationRecord
-  belongs_to :parent, :class_name => 'PermissibleValue'
+  belongs_to :parent, class_name: 'PermissibleValue'
+
+  acts_as_list column: :sort_order, scope: [:category]
+
+  validates :key, uniqueness: { scope: :category }
 
   default_scope { order(:sort_order) }
 

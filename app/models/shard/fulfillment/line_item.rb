@@ -23,12 +23,10 @@ module Shard
     class LineItem < Shard::Fulfillment::Base
       self.table_name = 'line_items'
 
+      belongs_to :protocol
       belongs_to :arm
 
-      has_many :fulfillments
       has_many :visits, -> { joins(:visit_group).order('visit_groups.position') }
-
-      has_many :procedures, through: :visits
 
       ##########################
       ### SPARC Associations ###

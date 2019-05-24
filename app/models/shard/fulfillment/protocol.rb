@@ -24,8 +24,7 @@ module Shard
       self.table_name = 'protocols'
 
       has_many :arms
-      has_many :pppv_line_items, -> { includes(:service).where(services: { one_time_fee: false }) }
-      has_many :otf_line_items,  -> { includes(:service).where(services: { one_time_fee: true }) }
+      has_many :line_items
 
       ##########################
       ### SPARC Associations ###
@@ -33,6 +32,10 @@ module Shard
 
       belongs_to :sparc_protocol, class_name: '::Protocol', foreign_key: :sparc_id
       belongs_to :sparc_sub_service_request, class_name: '::SubServiceRequest', foreign_key: :sub_service_request_id
+
+      scope :with_pppv_services, -> {
+        includes(line_items: :sparc_service).where(services: { one_time_fee: false })
+      }
     end
   end
 end

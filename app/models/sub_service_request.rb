@@ -55,6 +55,11 @@ class SubServiceRequest < ApplicationRecord
   has_many :service_forms, -> { active }, through: :services, source: :forms
   has_many :organization_forms, -> { active }, through: :organization, source: :forms
 
+  ########################
+  ### CWF Associations ###
+  ########################
+
+  has_one :fulfillment_protocol, class_name: 'Shard::Fulfillment::Protocol'
 
   delegate :percent_subsidy, to: :approved_subsidy, allow_nil: true
 

@@ -61,6 +61,7 @@ $(document).ready ->
         url: "/dashboard/sub_service_requests/#{sub_service_request_id}"
 
   $(document).on 'click', '#send_to_fulfillment_button', ->
+    $(this).prop('disabled', true)
     sub_service_request_id = $(this).data('sub-service-request-id')
     data = 'sub_service_request' : 'in_work_fulfillment' : 1
     $.ajax

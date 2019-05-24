@@ -33,7 +33,7 @@ class ProtocolMailer < ActionMailer::Base
     @ssrs_to_be_displayed = @protocol.sub_service_requests.where.not(status: Setting.get_value('finished_statuses') << 'draft')
 
     archive_email_recipients.each do |recipient|
-      send_email(recipient, t('mailers.protocol_mailer.archive_email.subject', protocol_id: @protocol.id))
+      send_email(recipient, t("mailers.protocol_mailer.archive_email.#{@action}.subject", protocol_id: @protocol.id))
     end
   end
 

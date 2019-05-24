@@ -221,7 +221,7 @@ module Dashboard::SubServiceRequestsHelper
     if form_list.empty?
       ''
     else
-      content_tag(:select, grouped_options_for_select(form_list).html_safe, title: t(:dashboard)[:service_requests][:forms][:selectpicker],
+      select_tag(:complete_forms, grouped_options_for_select(form_list).html_safe, include_blank: t(:dashboard)[:service_requests][:forms][:selectpicker],
         class: 'selectpicker complete-forms', data: { style: 'btn-danger', counter: 'true' })
     end
   end

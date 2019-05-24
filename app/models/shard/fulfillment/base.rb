@@ -24,6 +24,14 @@ module Shard
       self.abstract_class = true
       establish_connection(FULFILLMENT_DB)
 
+      default_scope -> {
+        where(deleted_at: nil)
+      }
+
+      scope :deleted, -> {
+        where.not(deleted_at: nil)
+      }
+
       def self.inherited(child)
         child.establish_connection(FULFILLMENT_DB)
         super

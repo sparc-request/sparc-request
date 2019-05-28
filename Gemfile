@@ -1,19 +1,18 @@
 source 'https://rubygems.org'
 
-gem 'activerecord-import'
+gem 'activerecord-import' # Use this more! In particular for arms/calendar creation
 gem 'activeresource'
-gem 'activerecord-session_store'
-gem 'acts_as_list', :git => 'https://github.com/swanandp/acts_as_list.git'
-gem 'acts-as-taggable-on', :git => 'https://github.com/Fodoj/acts-as-taggable-on.git', branch: 'rails-5.2'
+gem 'activerecord-session_store' # Check usage
+gem 'acts_as_list', git: 'https://github.com/swanandp/acts_as_list.git'
+gem 'acts-as-taggable-on', git: 'https://github.com/Fodoj/acts-as-taggable-on.git', branch: 'rails-5.2' # Consider updating to https://github.com/mbleigh/acts-as-taggable-on
 gem 'audited', '~> 4.8'
 gem 'axlsx', git: 'https://github.com/randym/axlsx', branch: 'master'
 gem 'axlsx_rails'
-gem 'bluecloth'
+gem 'bluecloth' # Check usage
 gem 'bootsnap', require: false
-gem 'bootstrap-sass', '3.4.1'
-gem 'sassc-rails', '>= 2.1.0'
-gem 'bootstrap3-datetimepicker-rails'
-gem 'bootstrap-toggle-rails'
+gem 'bootstrap-sass', '3.4.1' # Bootstrap 4 purge
+gem 'bootstrap3-datetimepicker-rails' # Bootstrap 4 purge
+gem 'bootstrap-toggle-rails' # Bootstrap 4 purge
 gem 'capistrano', '~> 3.9'
 gem 'capistrano-bundler', require: false
 gem 'capistrano-rvm', require: false
@@ -27,105 +26,110 @@ gem 'deep_cloneable', '~> 2.3.2'
 gem 'delayed_job_active_record'
 gem 'delayed_job'
 gem 'devise', '~> 4.6'
-gem 'dynamic_form'
-gem 'execjs'
+gem 'dotenv-rails'
+gem 'dynamic_form' # Check usage
+gem 'execjs' # Check usage
 gem 'exception_notification'
+gem 'font-awesome-sass'
 gem 'filterrific', git: 'https://github.com/ayaman/filterrific.git'
 gem 'gon', '~> 6.2'
 gem 'grape', '1.1.0'
 gem 'grape-entity', '~> 0.7.1'
 gem 'grouped_validations', :git => 'https://github.com/jleonardw9/grouped_validations.git', branch: 'master'
-gem 'gyoku'
+gem 'gyoku' # Check usage
 gem 'haml'
-gem 'hashie-forbidden_attributes'
+gem 'hashie-forbidden_attributes' # Check usage
 gem 'httparty', '~> 0.16.2'
+gem 'i18n-js'
 gem 'icalendar'
 gem 'icalendar-recurrence'
-gem 'jquery_datepicker'
-gem 'jquery-rails'
+gem 'jquery_datepicker' # Check usage
+gem 'jquery-rails' # Bootstrap 4 purge
 gem 'jbuilder', '~> 2.8'
 gem 'json', '>= 1.8'
 gem 'letter_opener'
-gem 'momentjs-rails', '>= 2.8.1'
+gem 'momentjs-rails', '>= 2.8.1' # Bootstrap 4 purge
 gem 'mysql2', '~> 0.5'
-gem 'nested_form'
-gem 'nested_form_fields'
-gem 'newrelic_rpm'
+gem 'nested_form' # Check usage
+gem 'nested_form_fields' # Check usage
+gem 'newrelic_rpm' # Check usage
 gem 'nokogiri'
-gem 'nori'
-gem 'nprogress-rails'
+gem 'nori' # Check usage
+gem 'nprogress-rails' # Bootstrap 4 purge
 gem 'net-ldap', '~> 0.16.0'
 gem 'omniauth'
+gem 'omniauth-cas'
 gem 'omniauth-shibboleth'
-gem 'paperclip', '~> 6.1'
-gem 'pdfkit'
-gem 'prawn', '0.12.0'
+gem 'paperclip', '~> 6.1' # Deprecated https://github.com/thoughtbot/paperclip
+gem 'pdfkit' # Check usage
+gem 'prawn', '0.12.0' # Check usage
 gem 'premailer-rails'
+gem 'puma', '~> 3.12'
 gem 'rack-mini-profiler', require: false
 gem 'rails', '5.2.3'
-gem 'rails-html-sanitizer'
-# Needed to used audited-activerecord w/ Rails 5
-gem "rails-observers", git: 'https://github.com/rails/rails-observers.git'
-gem 'redcarpet'
+gem 'rails-html-sanitizer' # Check usage
+gem "rails-observers", git: 'https://github.com/rails/rails-observers.git' # Needed to used audited-activerecord w/ Rails 5
+gem 'redcarpet' # Check usage
 gem 'remotipart'
-gem 'rest-client'
+gem 'rest-client' # Consider replacing usage with httparty
 gem 'request_store'
 gem 'sanitized_data',  git: 'https://github.com/HSSC/sanitized_data.git'
 gem 'rubyzip', '>= 1.2.1'
-gem 'sass'
-gem 'sass-rails'
-gem 'savon', '~> 2.2.0'
-gem 'simplecov', require: false, group: :test
+gem 'sassc-rails'
+gem 'savon', '~> 2.2.0' # Check usage
 gem 'slack-notifier'
-gem 'therubyracer', '0.12.3', :platforms => :ruby, group: :production
-gem 'twitter-typeahead-rails'
+gem 'turbolinks', '~> 5'
+gem 'twitter-typeahead-rails' # Bootstrap 4 purge
 gem 'uglifier', '>= 1.0.3'
 gem 'whenever', require: false
 gem 'will_paginate'
-gem 'will_paginate-bootstrap'
-gem 'x-editable-rails'
-gem 'omniauth-cas'
-gem 'dotenv-rails'
+gem 'will_paginate-bootstrap' # Not maintained - consider replacing with https://github.com/delef/will_paginate-bootstrap4
+gem 'x-editable-rails' # Bootstrap 4 purge
+
+group :production do
+  gem 'therubyracer', '0.12.3', platforms: :ruby # Consider replacing with ExecJS Node Library for performance boost
+end
 
 group :development, :test, :profile do
-  gem 'addressable', '~> 2.6.0'
+  gem 'addressable', '~> 2.6.0' # Check usage
   gem 'bullet'
-  gem 'connection_pool'
-  gem 'equivalent-xml'
+  gem 'connection_pool' # Check usage
+  gem 'equivalent-xml' # Check usage
   gem 'faker'
-  gem 'launchy'
+  gem 'launchy' # Check usage
   gem 'timecop'
   gem 'progress_bar'
 end
-gem 'puma', '~> 3.12'
 
 group :development, :test do
+  gem 'byebug'
+  gem 'factory_bot_rails'
+  gem 'parallel_tests' # Check usage
   gem 'pry'
-  gem 'rails-erd'
+  gem 'rails-erd' # Check usage
   gem 'rspec-rails', '~> 3.8'
 end
 
 group :development do
-  gem 'highline'
-  gem 'spring-commands-rspec'
-  gem 'byebug'
+  gem 'highline' # Check usage
+  gem 'spring-commands-rspec' # Check usage
   gem 'spring'
-  gem 'sqlite3'
-  gem 'traceroute'
-  gem 'parallel_tests', group: :development
+  gem 'sqlite3' # Check usage
+  gem 'traceroute' # Check usage
 end
 
 group :test do
-  gem 'database_cleaner'
-  gem 'email_spec'
-  gem "factory_bot_rails"
-  gem 'geckodriver-helper'
-  gem 'rails-controller-testing', require: false
-  gem 'rspec-activemodel-mocks'
-  gem 'rspec-html-matchers'
-  gem 'selenium-webdriver'
-  gem 'shoulda-matchers', require: false
+  gem 'capybara'
+  gem 'database_cleaner' # Consider removing https://stackoverflow.com/q/49246124
+  gem 'email_spec' # Check usage
+  gem 'geckodriver-helper' # Replace with https://github.com/titusfortner/webdrivers
+  gem 'rails-controller-testing', require: false # Consider removing and cleaning up controller specs
+  gem 'rspec-activemodel-mocks' # Check usage
+  gem 'rspec-html-matchers' # Consider removing and using `have_selector` matchers
+  gem 'selenium-webdriver' # Replace with https://github.com/titusfortner/webdrivers
+  gem 'simplecov', require: false # Check usage
   gem 'shoulda-callback-matchers'
+  gem 'shoulda-matchers'
   gem 'site_prism'
   gem 'webmock'
 end
@@ -143,5 +147,5 @@ group :assets do
 end
 
 group :profile do
-  gem 'ruby-prof'
+  gem 'ruby-prof' # Check usage
 end

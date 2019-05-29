@@ -34,7 +34,7 @@
   %body#body
     #container
       #header
-        = render 'layouts/header_logos', in_dashboard: false, location: 'proper'
+        = render 'layouts/header_logos', location: 'proper'
       = render 'layouts/header', user: @user, service_request: @service_request
       .flash
         = render 'shared/flash'

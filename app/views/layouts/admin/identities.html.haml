@@ -26,8 +26,8 @@
     = csrf_meta_tags
     %meta{ charset: 'utf8' }
     %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1, shrink-to-fit=no' }
-    = stylesheet_link_tag 'admin/application', data: { turbolinks_track: 'reload' }
-    = javascript_include_tag 'admin/application', async: true, data: { turbolinks_track: 'reload' }
+    = stylesheet_link_tag 'admin/application', media: 'all', data: { turbolinks_track: 'reload' }
+    = javascript_include_tag 'admin/application', data: { turbolinks_track: 'reload' }
     = render 'layouts/i18n-js'
   %body
     %nav.navbar.navbar-default

@@ -18,47 +18,72 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+///////////////////////////////////////
+/// These need to be required first ///
+///////////////////////////////////////
+
 //= require i18n/translations
+//= require sweetalert2/dist/sweetalert2.min
+//= require custom/sweetalert-integration
+//= require rails-ujs
 //= require turbolinks
+//= require jquery/dist/jquery.min
+
+//////////////////////////////////
+/// Require Remaining Packages ///
+//////////////////////////////////
+
+//= require popper.js/dist/umd/popper.min
+//= require bootstrap/dist/js/bootstrap.min
+//= require bootstrap-datepicker/dist/js/bootstrap-datepicker.min
+//= require bootstrap-select/dist/js/bootstrap-select.min
+//= require corejs-typeahead/dist/typeahead.bundle.min
+//= require nprogress/nprogress
+
+///////////////////////////////
+/// Require Our JavaScripts ///
+///////////////////////////////
 
 
 
 
-//= require jquery2
-//= require jquery-migrate
-//= require batch-select
-//= require bootstrap-sprockets
-//= require bootstrap-select
-//= require bootstrap-select-custom
-//= require bootstrap-table
-//= require bootstrap-table-export
-//= require tableExport
-//= require bootstrap-table-custom
-//= require moment
-//= require bootstrap-datetimepicker
-//= require jquery_ujs
-//= require jquery.remotipart
-//= require jquery.cookie
-//= require jquery.form
-//= require editable/bootstrap-editable
-//= require editable/rails
-//= require nprogress
-//= require nprogress-ajax
-//= require json2
-//= require underscore-min
-//= require form_manager
-//= require form_fx_manager
-//= require twitter/typeahead.min
-//= require handlebars-v4.0.5
-//= require assert
-//= require ajax_handler
 
-//= require global
-//= require associated_users_form
-//= require study_schedule_tabs
-//= require subsidy_form
-//= require surveyor/responses
-//= require surveyor/surveys
-//= require sweetalert.min
-//= require feedback
-//= require notes
+
+
+// require jquery2
+// require batch-select
+// require bootstrap-sprockets
+// require bootstrap-select
+// require bootstrap-select-custom
+// require bootstrap-table
+// require bootstrap-table-export
+// require tableExport
+// require bootstrap-table-custom
+// require moment
+// require bootstrap-datetimepicker
+// require jquery_ujs
+// require jquery.remotipart
+// require jquery.cookie
+// require jquery.form
+// require editable/bootstrap-editable
+// require editable/rails
+// require nprogress
+// require nprogress-ajax
+// require json2
+// require underscore-min
+// require form_manager
+// require form_fx_manager
+// require twitter/typeahead.min
+// require handlebars-v4.0.5
+// require assert
+// require ajax_handler
+
+// require global
+// require associated_users_form
+// require study_schedule_tabs
+// require subsidy_form
+// require surveyor/responses
+// require surveyor/surveys
+// require sweetalert.min
+// require feedback
+// require notes

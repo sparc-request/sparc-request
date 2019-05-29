@@ -19,12 +19,6 @@
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //= require i18n/translations
-//= require turbolinks
-
-
-
-
-
 //= require jquery
 //= require batch-select
 //= require bootstrap-sprockets

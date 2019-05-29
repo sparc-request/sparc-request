@@ -1,0 +1,25 @@
+.twitter-typeahead {
+  display: block !important;
+}
+
+.tt-menu {
+  @extend .bg-white;
+  @extend .border;
+  @extend .rounded;
+  @extend .shadow-sm;
+
+  .tt-suggestion, .tt-no-results {
+    @extend .bg-white;
+    @extend .px-3;
+    @extend .py-2;
+    cursor: pointer;
+
+    &:not(:first-child) {
+      @extend .border-top;
+    }
+
+    &:hover {
+      @extend .bg-light;
+    }
+  }
+}

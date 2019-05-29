@@ -35,8 +35,8 @@ $(document).ready ->
     else if $selected.hasClass('delete-survey')
       survey_id = $selected.data('survey-id')
       swal {
-        title: I18n['swal']['swal_confirm']['title']
-        text: I18n['swal']['swal_confirm']['text']
+        title: I18n.t('swal.swal_confirm.title')
+        text: I18n.t('swal.swal_confirm.text')
         type: 'warning'
         showCancelButton: true
         confirmButtonColor: '#DD6B55'

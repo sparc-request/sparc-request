@@ -48,7 +48,7 @@ $(document).ready ->
 
     if empty.length
       event.preventDefault()
-      alert I18n['reporting']['actions']['errors']
+      alert(I18n.t('reporting.actions.errors'))
 
 optionswitch = (myfilter, res) ->
   #Populate the optionstore if the first time through

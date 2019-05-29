@@ -78,7 +78,7 @@ gem 'rubyzip', '>= 1.2.1'
 gem 'sassc-rails'
 gem 'savon', '~> 2.2.0' # Check usage
 gem 'slack-notifier'
-gem 'turbolinks', '~> 5'
+gem 'turbolinks', '~> 5.2.0'
 gem 'twitter-typeahead-rails' # Bootstrap 4 purge
 gem 'uglifier', '>= 1.0.3'
 gem 'whenever', require: false

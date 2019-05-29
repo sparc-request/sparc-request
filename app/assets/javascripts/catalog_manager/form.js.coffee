@@ -120,7 +120,7 @@ $ ->
 
   $(document).on 'click', '.remove-user-rights', (event) ->
     event.preventDefault()
-    if confirm (I18n['catalog_manager']['organization_form']['user_rights']['remove_confirm'])
+    if confirm(I18n.t('catalog_manager.organization_form.user_rights.remove_confirm'))
       identity_id = $(this).data('identity-id')
       organization_id = $(this).data('organization-id')
       $.ajax
@@ -143,7 +143,7 @@ $ ->
   $(document).on 'click', 'button.remove-associated-survey', (event) ->
     survey_id = $(this).data('survey-id')
     surveyable_id = $(this).data('id')
-    if confirm(I18n['catalog_manager']['organization_form']['surveys']['survey_delete'])
+    if confirm(I18n.t('catalog_manager.organization_form.surveys.survey_delete'))
       $.ajax
         type: 'POST'
         url: "/catalog_manager/organizations/remove_associated_survey"
@@ -187,7 +187,7 @@ $ ->
 
   $(document).on 'click', '.remove-fulfillment-rights', (event) ->
     event.preventDefault()
-    if confirm (I18n['catalog_manager']['organization_form']['user_rights']['remove_confirm'])
+    if confirm(I18n.t('catalog_manager.organization_form.user_rights.remove_confirm'))
       identity_id = $(this).data('identity-id')
       organization_id = $(this).data('organization-id')
       $.ajax
@@ -289,7 +289,7 @@ $ ->
 
   $(document).on 'click', 'button.remove-submission-email', (event) ->
     id = $(this).data('submission-id')
-    if confirm (I18n['catalog_manager']['organization_form']['submission_emails']['remove_confirm'])
+    if confirm(I18n.t('catalog_manager.organization_form.submission_emails.remove_confirm'))
       $.ajax
         type: 'DELETE'
         url: "/catalog_manager/submission_emails/#{id}"
@@ -332,7 +332,7 @@ $ ->
   $(document).on 'click', 'button.remove-service-component', (event) ->
     component = $(this).data('component')
     service_id = $(this).data('service-id')
-    if confirm (I18n['catalog_manager']['service_form']['remove_component_confirm'])
+    if confirm(I18n.t('catalog_manager.service_form.remove_component_confirm'))
       $.ajax
         type: 'POST'
         url: "/catalog_manager/services/#{service_id}/change_components"
@@ -357,7 +357,7 @@ $ ->
 
   $(document).on 'click', 'button.remove-related-services', (event) ->
     service_relation_id = $(this).data('service-relation-id')
-    if confirm (I18n['catalog_manager']['related_services_form']['remove_related_service_confirm'])
+    if confirm(I18n.t('catalog_manager.related_services_form.remove_related_service_confirm'))
       $.ajax
         type: 'POST'
         url: "/catalog_manager/services/remove_related_service"
@@ -420,7 +420,7 @@ $ ->
     $('.input-group-addon').text(new_value)
 
   $(document).on 'change', 'input.override_field', ->
-    alert(I18n['catalog_manager']['service_form']['pricing_map_form']['change_override_alert'])
+    alert(I18n.t('catalog_manager.service_form.pricing_map_form.change_override_alert'))
 
 (exports ? this).togglePrimaryContactChecks = () ->
   if $('.sp-is-primary-contact:checked').length >= 3

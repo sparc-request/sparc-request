@@ -112,13 +112,13 @@ $(document).ready ->
     $.cookie('admin-ss-tab', $(this).attr('id'), {path: '/'})
 
   $(document).on 'click', '.service_calendar_row', ->
-    if confirm(I18n['calendars']['confirm_row_select'])
+    if confirm(I18n.t('calendars.confirm_row_select'))
       $.ajax
         type: 'post'
         url: $(this).data('url')
 
   $(document).on 'click', '.service_calendar_column', ->
-    if confirm(I18n['calendars']['confirm_column_select'])
+    if confirm(I18n.t('calendars.confirm_column_select'))
       $.ajax
         type: 'post'
         url: $(this).data('url')

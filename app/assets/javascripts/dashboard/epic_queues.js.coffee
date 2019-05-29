@@ -24,7 +24,7 @@ $(document).ready ->
   $('.epic-queue-records-table').bootstrapTable()
 
   $(document).on 'click', '.delete-epic-queue-button', ->
-    if confirm(I18n['epic_queues']['confirm'])
+    if confirm(I18n.t('epic_queues.confirm'))
       eq_id = $(this).data('epic-queue-id')
       $.ajax
         type: 'DELETE'

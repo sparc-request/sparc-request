@@ -105,7 +105,7 @@ $(document).ready ->
     data =
       type : $("#protocol_type").val()
       srid : srid
-    if confirm(I18n['protocols']['change_type']['warning'])
+    if confirm(I18n.t('protocols.change_type.warning'))
       $.ajax
         type: 'PUT'
         url: "#{in_dashboard}/protocols/#{protocol_id}/update_protocol_type"

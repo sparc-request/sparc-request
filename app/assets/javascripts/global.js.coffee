@@ -51,7 +51,7 @@ $ ->
     document.execCommand('copy')
 
     $(this).parents('.input-group').siblings('.help-text').remove()
-    $(this).parents('.input-group').after("<span class='help-text text-success'>#{I18n['actions']['copy_clipboard']['complete']}</span>")
+    $(this).parents('.input-group').after("<span class='help-text text-success'>#{I18n.t('actions.copy_clipboard.complete')}</span>")
 
     setTimeout (->
       $that.parents('.input-group').siblings('.help-text').fadeOut('slow', ->

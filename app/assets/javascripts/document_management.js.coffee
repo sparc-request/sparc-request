@@ -45,7 +45,7 @@ $(document).ready ->
   $(document).on 'click', '.document-delete', ->
     row_index   = $(this).parents('tr').data('index')
     document_id = $(this).parents('table#documents-table').bootstrapTable('getData')[row_index].id
-    if confirm I18n['documents']['delete_confirm']
+    if confirm(I18n.t('documents.delete_confirm'))
       $.ajax
         type: 'DELETE'
         url: "/documents/#{document_id}?srid=#{getSRId()}"

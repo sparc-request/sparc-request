@@ -40,7 +40,7 @@ $(document).ready ->
 
   $(document).on 'click', '.delete-subsidy-button', ->
     id = $(this).data('subsidy-id')
-    if confirm(I18n['subsidies']['delete_confirm'])
+    if confirm(I18n.t('subsidies.delete_confirm'))
       $.ajax
         type: 'DELETE'
         url: "/subsidies/#{id}"

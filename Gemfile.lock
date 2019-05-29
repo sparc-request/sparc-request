@@ -714,7 +714,7 @@ DEPENDENCIES
   therubyracer (= 0.12.3)
   timecop
   traceroute
-  turbolinks (~> 5)
+  turbolinks (~> 5.2.0)
   twitter-typeahead-rails
   uglifier (>= 1.0.3)
   webmock

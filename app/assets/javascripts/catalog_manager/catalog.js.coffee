@@ -194,7 +194,7 @@ window.initialize_user_rights_search = () ->
       return $(this).data('identity-id')
 
     if suggestion['identity_id'] in users_on_table
-      $('#user-rights-query').parent().prepend("<div class='alert alert-danger alert-dismissable'>#{suggestion['name']} #{I18n['catalog_manager']['organization_form']['user_rights']['user_in_table']}</div>")
+      $('#user-rights-query').parent().prepend("<div class='alert alert-danger alert-dismissable'>#{suggestion['name']} #{I18n.t('catalog_manager.organization_form.user_rights.user_in_table')}</div>")
       $('.alert-dismissable').delay(3000).fadeOut()
     else
       $.ajax
@@ -242,7 +242,7 @@ window.initialize_fulfillment_rights_search = () ->
       return $(this).data('identity-id')
 
     if suggestion['identity_id'] in users_on_table
-      $('#fulfillment-rights-query').parent().prepend("<div class='alert alert-danger alert-dismissable'>#{suggestion['name']} #{I18n['catalog_manager']['organization_form']['fulfillment_rights']['user_in_table']}</div>")
+      $('#fulfillment-rights-query').parent().prepend("<div class='alert alert-danger alert-dismissable'>#{suggestion['name']} #{I18n.t('catalog_manager.organization_form.fulfillment_rights.user_in_table')}</div>")
       $('.alert-dismissable').delay(3000).fadeOut()
     else
       $.ajax
@@ -300,7 +300,7 @@ window.initialize_related_services_search = () ->
       return $(this).data('related-service-id')
 
     if suggestion.value in existing_services
-      $('#new_related_services_search').parent().prepend("<div class='alert alert-danger alert-dismissable'>#{suggestion.label} #{I18n['catalog_manager']['related_services_form']['service_in_list']}</div>")
+      $('#new_related_services_search').parent().prepend("<div class='alert alert-danger alert-dismissable'>#{suggestion.label} #{I18n.t('catalog_manager.related_services_form.service_in_list')}</div>")
       $('.alert-dismissable').delay(3000).fadeOut()
     else
       $.ajax

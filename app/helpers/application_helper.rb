@@ -115,11 +115,6 @@ module ApplicationHelper
     devise_mapping.to
   end
 
-  def current_translations
-    @translations ||= I18n.backend.send(:translations)
-    @translations[I18n.locale].with_indifferent_access
-  end
-
   def entity_visibility_class entity
     entity.is_available == false ? 'entity_visibility' : ''
   end

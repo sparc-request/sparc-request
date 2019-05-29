@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $(document).ready ->
-  $('#push-to-epic-status').text(I18n['proper']['confirmation']['push_to_epic']['message'])
+  $('#push-to-epic-status').text(I18n.t('proper.confirmation.push_to_epic.message'))
   get_epic_push_status()
 
 get_epic_push_status = () ->
@@ -40,4 +40,4 @@ get_epic_push_status = () ->
         else
           $('#push-to-epic-status').text(data['last_epic_push_status_text'])
     error:
-      $('push-to-epic-status').text(I18n['proper']['confirmation']['push_to_epic']['failed'])
+      $('push-to-epic-status').text(I18n.t('proper.confirmation.push_to_epic.failed'))

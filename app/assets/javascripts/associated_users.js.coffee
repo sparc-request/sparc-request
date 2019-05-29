@@ -44,9 +44,9 @@ $(document).ready ->
 
   $(document).on 'load-success.bs.table', '#associated-users-table', ->
     $('.delete-associated-user-button').batchSelect({
-      batchSelectedText: I18n['actions']['delete_selected']
-      swalTitle: I18n['swal']['swal_confirm']['title']
-      swalText: I18n['swal']['swal_confirm']['text']
+      batchSelectedText: I18n.t('actions.delete_selected')
+      swalTitle: I18n.t('swal.swal_confirm.title')
+      swalText: I18n.t('swal.swal_confirm.text')
       type: 'warning'
       ajaxUrl: '/associated_users/'
       ajaxType: 'delete'

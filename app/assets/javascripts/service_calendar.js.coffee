@@ -131,14 +131,14 @@ $(document).ready ->
 
   $(document).on 'click', '.service-calendar-row', ->
     return false if $(this).attr('disabled')
-    if confirm(I18n['calendars']['pppv']['editable_fields']['row_select']['confirm'])
+    if confirm(I18n.t('calendars.pppv.editable_fields.row_select.confirm'))
       $.ajax
         type: 'post'
         url: $(this).data('url')
 
   $(document).on 'click', '.service-calendar-column', ->
     return false if $(this).attr('disabled')
-    if confirm(I18n['calendars']['pppv']['editable_fields']['column_select']['confirm'])
+    if confirm(I18n.t('calendars.pppv.editable_fields.column_select.confirm'))
       $.ajax
         type: 'post'
         url: $(this).data('url')

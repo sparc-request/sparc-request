@@ -44,7 +44,7 @@ $(document).ready ->
     $(this).closest('form').submit()
 
   $(document).on 'click', '.delete-arm-button', ->
-    if confirm(I18n['arms']['delete_warning'])
+    if confirm(I18n.t('arms.delete_warning'))
       arm_id = $(this).data('arm-id')
       $.ajax
         type: 'delete'

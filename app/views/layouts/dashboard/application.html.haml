@@ -23,6 +23,9 @@
   %head
     %title
       = t(:dashboard)[:header]
+    = csrf_meta_tags
+    %meta{ charset: 'utf8' }
+    %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1, shrink-to-fit=no' }
     = stylesheet_link_tag 'dashboard/application', data: { turbolinks_track: 'reload' }
     = javascript_include_tag 'dashboard/application', async: true, data: { turbolinks_track: 'reload' }
     = render 'layouts/i18n-js'
@@ -32,7 +35,6 @@
       = stylesheet_link_tag 'ie8_plus'
     /[if lt IE 8]
       = javascript_include_tag "ie7_warning"
-    = csrf_meta_tags
     = Gon::Base.render_data
   %body#body
     - if ENV.key?("site_name")

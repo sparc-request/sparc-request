@@ -21,14 +21,14 @@
 !!! 1.1
 %html{"ng-app" => "app", "xml:lang" => "en", :xmlns => "http://www.w3.org/1999/xhtml"}
   %head
-    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
-    %meta{:name => "viewport", :content => "width=device-width, initial-scale=1"}/
-    %meta{ "http-equiv"=>"X-UA-Compatible", "content"=>"IE=edge"}
-    %title= t(:mailer)[:application_title]
+    %title
+      = t(:mailer)[:application_title]
+    = csrf_meta_tags
+    %meta{ charset: 'utf8' }
+    %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1, shrink-to-fit=no' }
     = stylesheet_link_tag 'admin/application', data: { turbolinks_track: 'reload' }
     = javascript_include_tag 'admin/application', async: true, data: { turbolinks_track: 'reload' }
     = render 'layouts/i18n-js'
-    = csrf_meta_tags
   %body
     %nav.navbar.navbar-default
       .container-fluid

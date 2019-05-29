@@ -25,8 +25,8 @@
     %meta{:name => "viewport", :content => "width=device-width, initial-scale=1"}/
     %meta{ "http-equiv"=>"X-UA-Compatible", "content"=>"IE=edge"}
     %title= t(:mailer)[:application_title]
-    = stylesheet_link_tag    'admin/application'
-    = javascript_include_tag 'admin/application', async: true
+    = stylesheet_link_tag 'admin/application', data: { turbolinks_track: 'reload' }
+    = javascript_include_tag 'admin/application', async: true, data: { turbolinks_track: 'reload' }
     = render 'layouts/i18n-js'
     = csrf_meta_tags
   %body

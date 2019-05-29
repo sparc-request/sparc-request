@@ -23,8 +23,9 @@
   %head
     %title
       = t(:proper)[:header]
-    = stylesheet_link_tag 'application'
-    = javascript_include_tag "application"
+    = stylesheet_link_tag 'application', data: { turbolinks_track: 'reload' }
+    = javascript_include_tag "application", async: true, data: { turbolinks_track: 'reload' }
+    = render 'layouts/i18n-js'
     /[if IE]
       = stylesheet_link_tag 'ie'
     /[if gt IE 7]
@@ -32,22 +33,17 @@
     /[if lt IE 8]
       = javascript_include_tag "ie7_warning"
     = csrf_meta_tags
-    :javascript
-      window.I18n = #{current_translations.to_json.html_safe};
-
   %body#body
     #container
       #header
         = render 'layouts/header_logos', in_dashboard: false, location: 'proper'
-        %input#current_user_id{ type: 'hidden', value: @user.try(:id) }
       = render 'layouts/header', user: @user, service_request: @service_request
       .flash
         = render 'shared/flash'
       #inner-content.row
         = render 'shared/authorization_error_content', error: error
-  %footer
-    = render 'layouts/footer'
-    = render 'shared/analytics' if Rails.env == 'production'
-    = render 'shared/ie7_modal'
-    = render 'shared/modal'
-        
+    %footer
+      = render 'layouts/footer'
+      = render 'shared/analytics' if Rails.env == 'production'
+      = render 'shared/ie7_modal'
+      = render 'shared/modal'

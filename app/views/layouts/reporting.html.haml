@@ -23,8 +23,8 @@
   %head
     %title
       = t(:reporting)[:header]
-    = stylesheet_link_tag 'dashboard/application'
-    = javascript_include_tag 'dashboard/application', async: true
+    = stylesheet_link_tag 'dashboard/application', data: { turbolinks_track: 'reload' }
+    = javascript_include_tag 'dashboard/application', async: true, data: { turbolinks_track: 'reload' }
     = render 'layouts/i18n-js'
     /[if IE]
       = stylesheet_link_tag 'ie'
@@ -37,7 +37,6 @@
     #container
       #header
         = render 'layouts/header_logos', in_dashboard: true, location: @location
-        %input#current_user_id{type: 'hidden', value: @user.try(:id)}
       = render 'layouts/dashboard/dashboard_header', user: @user
       .flash
         = render 'shared/flash'

@@ -22,7 +22,7 @@
 //= require jquery
 //= require bootstrap-sprockets
 //= require bootstrap-select
-//= require bootstrap-select-custom
+//= require custom/bootstrap-select-custom
 //= require bootstrap-table
 //= require bootstrap-table-export
 //= require bootstrap-table-custom

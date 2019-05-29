@@ -38,45 +38,30 @@
 //= require bootstrap-datepicker/dist/js/bootstrap-datepicker.min
 //= require bootstrap-select/dist/js/bootstrap-select.min
 //= require corejs-typeahead/dist/typeahead.bundle.min
+//= require js-cookie/src/js.cookie
+
 //= require nprogress/nprogress
 
 ///////////////////////////////
 /// Require Our JavaScripts ///
 ///////////////////////////////
 
+//= require custom/bootstrap-select-custom
 
 
 
 
 
-
-// require jquery2
 // require batch-select
-// require bootstrap-sprockets
-// require bootstrap-select
-// require bootstrap-select-custom
 // require bootstrap-table
 // require bootstrap-table-export
 // require tableExport
 // require bootstrap-table-custom
-// require moment
-// require bootstrap-datetimepicker
-// require jquery_ujs
 // require jquery.remotipart
-// require jquery.cookie
-// require jquery.form
 // require editable/bootstrap-editable
 // require editable/rails
-// require nprogress
-// require nprogress-ajax
-// require json2
-// require underscore-min
-// require form_manager
-// require form_fx_manager
 // require twitter/typeahead.min
 // require handlebars-v4.0.5
-// require assert
-// require ajax_handler
 
 // require global
 // require associated_users_form

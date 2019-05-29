@@ -33,17 +33,9 @@
 //= require catalog_manager/form
 //= require jquery_ujs
 //= require jquery.remotipart
-//= require jquery.cookie
-//= require jquery.form
 //= require nprogress
 //= require nprogress-ajax
-//= require json2
-//= require underscore-min
-//= require form_manager
-//= require form_fx_manager
 //= require twitter/typeahead.min
 //= require handlebars-v4.0.5
-//= require assert
-//= require ajax_handler
 //= require sweetalert.min
 //= require ../global

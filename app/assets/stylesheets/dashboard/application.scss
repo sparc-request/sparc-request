@@ -18,43 +18,73 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-@import 'flex-utils';
-@import 'bootstrap-custom';
+////////////////////////
+/// Require Packages ///
+////////////////////////
+
+@import 'custom/bootstrap-variables-custom';
+@import 'bootstrap/scss/bootstrap';
+@import 'bootstrap-datepicker/dist/css/bootstrap-datepicker.min';
+@import 'bootstrap-select/dist/css/bootstrap-select.min';
+@import 'sweetalert2/dist/sweetalert2.min';
+
+@import 'font-awesome-sprockets';
+@import 'font-awesome';
+
+/////////////////////////////////////
+/// Require Package Customization ///
+/////////////////////////////////////
+
+@import 'custom/nprogress-custom';
+@import 'custom/bootstrap-custom';
+@import 'custom/typeahead-custom';
+@import 'custom/turbolinks-custom';
+
+
+
+
+
+
+
+
+
+//@import 'flex-utils';
+//@import 'bootstrap-custom';
 
 // replaced require_tree .
-@import 'admin_edit';
-@import 'cover_letters';
-@import 'documents';
-@import 'epic_queues';
-@import 'layout';
-@import 'notifications';
-@import 'payments';
-@import 'printer_friendly_requests';
-@import 'project';
-@import 'protocol';
-@import 'related_service_requests';
-@import 'service_requests';
-@import 'services';
-@import 'study_level_charges';
-@import 'sub_service_requests';
-@import 'users';
-@import 'sweetalert';
-@import 'surveyor/responses';
-@import 'surveyor/surveys';
+//@import 'admin_edit';
+//@import 'cover_letters';
+//@import 'documents';
+//@import 'epic_queues';
+//@import 'layout';
+//@import 'notifications';
+//@import 'payments';
+//@import 'printer_friendly_requests';
+//@import 'project';
+//@import 'protocol';
+//@import 'related_service_requests';
+//@import 'service_requests';
+//@import 'services';
+//@import 'study_level_charges';
+//@import 'sub_service_requests';
+//@import 'users';
+//@import 'sweetalert';
+//@import 'surveyor/responses';
+//@import 'surveyor/surveys';
 
 // original require files
-@import 'bootstrap-sprockets';
-@import 'bootstrap';
-@import 'bootstrap-select';
-@import 'bootstrap-select-custom';
-@import 'bootstrap-table';
-@import 'bootstrap-table-custom';
-@import 'bootstrap-datetimepicker';
-@import 'editable/bootstrap-editable';
-@import '../layout';
-@import 'twitter_typeahead';
-@import 'associated_user_form';
-@import 'protocol_form';
-@import 'service_calendar';
-@import 'nprogress_config';
-@import 'notes';
+//@import 'bootstrap-sprockets';
+//@import 'bootstrap';
+//@import 'bootstrap-select';
+//@import 'bootstrap-select-custom';
+//@import 'bootstrap-table';
+//@import 'bootstrap-table-custom';
+//@import 'bootstrap-datetimepicker';
+//@import 'editable/bootstrap-editable';
+//@import '../layout';
+//@import 'twitter_typeahead';
+//@import 'associated_user_form';
+//@import 'protocol_form';
+//@import 'service_calendar';
+//@import 'nprogress_config';
+//@import 'notes';

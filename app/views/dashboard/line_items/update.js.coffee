@@ -20,7 +20,7 @@
 
 <% if @otf %>
 <% if @errors %>
-$("#modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
+$("#modal_errors").html("<%= escape_javascript(render( 'layouts/modal_errors', errors: @errors )) %>")
 <% else %>
 $("#modalContainer").modal('hide')
 <% end %>

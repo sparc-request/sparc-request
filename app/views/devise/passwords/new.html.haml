@@ -24,7 +24,7 @@
     #forgot-password-form
       = form_for resource, as: resource_name, url: password_path(resource_name), method: :post do |f|
         - if resource.errors.any?
-          = render 'shared/modal_errors', errors: resource.errors
+          = render 'layouts/modal_errors', errors: resource.errors
         .form-group.field
           = f.label :ldap_uid, t(:devise)[:passwords][:new][:login]
           = f.text_field :ldap_uid, class: 'form-control'

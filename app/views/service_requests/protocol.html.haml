@@ -25,7 +25,7 @@
     - if @service_request.protocol && @errors
       %h4.text-danger
         = t(:errors)[:service_requests][:protocol_errors]
-      = render 'shared/modal_errors', errors: @errors
+      = render 'layouts/modal_errors', errors: @errors
     = render 'service_requests/protocol/protocol_left', service_request: @service_request
     = render 'service_requests/protocol/protocol_right', service_request: @service_request, sub_service_requests: @sub_service_requests
 = render 'service_requests/navigation/footer', service_request: @service_request, css_class: @css_class, back: @back, forward: @forward

@@ -24,7 +24,7 @@ $("#org-form-container").html("<%= j render 'form', service: @service %>")
 initialize_related_services_search()
 
 <% if @errors %>
-$("#error_place").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
+$("#error_place").html("<%= escape_javascript(render( 'layouts/modal_errors', errors: @errors )) %>")
 $("#org-form-container [data-toggle='toggle']").bootstrapToggle();
 <% else %>
 $('#cm-accordion').replaceWith("<%= j render '/catalog_manager/catalog/accordion', institutions: @institutions, show_available_only: @show_available_only %>")

@@ -30,5 +30,5 @@ $(".datetimepicker").datetimepicker(format: 'MM/DD/YYYY')
 $("#flashContainer").html("<%= escape_javascript(render('layouts/flash')) %>")
 
 <% else %>
-$("#flashContainer").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
+$("#flashContainer").html("<%= escape_javascript(render(partial: 'layouts/modal_errors', locals: {errors: @errors})) %>")
 <% end %>

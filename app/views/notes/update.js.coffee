@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <% if @errors %>
-$("#modal_errors").html("<%= j render 'shared/modal_errors', errors: @errors %>")
+$("#modal_errors").html("<%= j render 'layouts/modal_errors', errors: @errors %>")
 <% else %>
 <% if params[:cancel] %>
 $("#modalContainer").html("<%= j render 'index', notable_id: @notable_id, notable_type: @notable_type, in_dashboard: @in_dashboard, notable: @notable %>")

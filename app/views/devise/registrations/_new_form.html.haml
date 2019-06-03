@@ -27,7 +27,7 @@
       - if service_request
         = hidden_field_tag :srid, service_request.id
       - if resource.errors.any?
-        = render 'shared/modal_errors', errors: resource.errors
+        = render 'layouts/modal_errors', errors: resource.errors
       .form-group.field
         = f.label :last_name, t(:devise)[:registrations][:last_name], class: 'col-sm-3 required'
         .col-sm-9

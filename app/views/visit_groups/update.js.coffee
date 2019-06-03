@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <% if @errors %>
-$("#modalContainer #modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
+$("#modalContainer #modal_errors").html("<%= escape_javascript(render( 'layouts/modal_errors', errors: @errors )) %>")
 <% else %>
 $('.visit-group-<%=@visit_group.id%>:visible').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/visit_group', visit_group: @visit_group, tab: params[:tab], page: @page, pages: @pages, portal: @portal, review: @review, admin: @admin, merged: @merged, consolidated: @consolidated, statuses_hidden: params[:statuses_hidden] %>")
 $('.visit-group-select:visible').html("<%= j render 'service_calendars/master_calendar/pppv/visit_group_page_select', service_request: @service_request, sub_service_request: @sub_service_request, arm: @visit_group.arm, tab: params[:tab], page: @page, pages: @pages, portal: @portal, review: @review, admin: @admin, merged: @merged, consolidated: @consolidated, statuses_hidden: params[:statuses_hidden] %>")

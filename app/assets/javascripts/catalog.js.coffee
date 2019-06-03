@@ -94,8 +94,8 @@ $(document).ready ->
   ### CONTINUE BUTTON ###
   $(document).on 'click', '.submit-request-button', ->
     if $('#line_item_count').val() <= 0
-      $('#modal_place').html($('#submit-error-modal').html())
-      $('#modal_place').modal('show')
+      $('#modalContainer').html($('#submit-error-modal').html())
+      $('#modalContainer').modal('show')
       $('.modal #submit-error-modal').removeClass('hidden')
       return false
 

@@ -48,8 +48,8 @@ $(document).ready ->
           type: 'get'
           url: "/dashboard/protocols/#{protocol_id}/display_requests"
           success: (data) ->
-            $('#modal_place').html(data.modal)
-            $('#modal_place').modal 'show'
+            $('#modalContainer').html(data.modal)
+            $('#modalContainer').modal 'show'
             $('.service-requests-table').bootstrapTable()
             reset_service_requests_handlers()
 
@@ -139,8 +139,8 @@ $(document).ready ->
           type: 'GET'
           url: "/dashboard/protocols/#{protocol_id}/display_requests"
           success: (data) ->
-            $('#modal_place').html(data.modal)
-            $('#modal_place').modal 'show'
+            $('#modalContainer').html(data.modal)
+            $('#modalContainer').modal 'show'
             $('.service-requests-table').bootstrapTable()
             reset_service_requests_handlers()
 

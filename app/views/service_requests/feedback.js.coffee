@@ -20,6 +20,6 @@
 <% if @errors.present? %>
 $(".modal #modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
 <% else %>
-$("#modal_place").modal 'hide'
+$("#modalContainer").modal 'hide'
 $('.flash').html("<%= escape_javascript(render('shared/flash')) %>")
 <% end %>

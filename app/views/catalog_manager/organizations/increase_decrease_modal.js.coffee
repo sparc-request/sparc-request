@@ -18,8 +18,8 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$('#modal_place').html("<%= j render '/catalog_manager/organizations/increase_decrease_modal', organization: @organization %>")
-$('#modal_place').modal('show')
+$('#modalContainer').html("<%= j render '/catalog_manager/organizations/increase_decrease_modal', organization: @organization %>")
+$('#modalContainer').modal('show')
 
 <% if @can_edit_historical %>
 $('.datetimepicker').datetimepicker(format: 'YYYY-MM-DD', allowInputToggle: false, useCurrent: false)

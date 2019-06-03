@@ -18,8 +18,8 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <% if @response.valid? %>
-if $('#modal_place:visible').length > 0
-  $('#modal_place').modal('hide')
+if $('#modalContainer:visible').length > 0
+  $('#modalContainer').modal('hide')
 else
   window.location = "<%= surveyor_response_complete_path(@response) %>"
 <% else %>

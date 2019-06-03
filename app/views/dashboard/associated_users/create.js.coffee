@@ -18,8 +18,8 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <% if @errors.present? %>
-$("#modal_place #modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
-$("#modal_place").scrollTop(0)
+$("#modalContainer #modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
+$("#modalContainer").scrollTop(0)
 <% else %>
 <% if @current_user_created %>
 $("#documents-panel").html("<%= escape_javascript(render( 'dashboard/documents/documents_table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin )) %>")
@@ -30,7 +30,7 @@ $(".service-requests-table").bootstrapTable()
 
 reset_service_requests_handlers()
 <% end %>
-$("#modal_place").modal 'hide'
+$("#modalContainer").modal 'hide'
 $("#associated-users-table").bootstrapTable 'refresh', {silent: true}
 $("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
 <% end %>

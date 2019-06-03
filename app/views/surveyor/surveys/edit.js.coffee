@@ -17,8 +17,8 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$('#modal_place').html("<%= j render 'surveyor/surveys/form/survey_form', survey: @survey, modal_title: @modal_title %>")
-$('#modal_place').modal('show')
+$('#modalContainer').html("<%= j render 'surveyor/surveys/form/survey_form', survey: @survey, modal_title: @modal_title %>")
+$('#modalContainer').modal('show')
 $('.selectpicker').selectpicker()
 
 <% if @survey.is_a?(SystemSurvey) %>
@@ -34,7 +34,7 @@ surveyable_bloodhound = new Bloodhound(
     wildcard: '%QUERY'
 )
 surveyable_bloodhound.initialize() # Initialize the Bloodhound suggestion engine
-$("#modal_place [id$='-surveyable']").typeahead(
+$("#modalContainer [id$='-surveyable']").typeahead(
   {
     minLength: 3
     hint: false

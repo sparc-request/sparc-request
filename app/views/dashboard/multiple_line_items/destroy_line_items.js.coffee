@@ -22,7 +22,7 @@ $("#per_patient_services").html("<%= j render 'dashboard/sub_service_requests/pe
 $("#sub_service_request_header").html("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request %>")
 $("#subsidy_information").html("<%= j render 'dashboard/subsidies/subsidy', sub_service_request: @sub_service_request, admin: true %>")
 $(".selectpicker").selectpicker()
-$("#modal_place").modal('hide')
+$("#modalContainer").modal('hide')
 $("#flashes_container").html("<%= j render 'shared/flash' %>")
 
 refresh_study_schedule()

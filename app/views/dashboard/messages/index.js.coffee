@@ -29,6 +29,6 @@ if $('#notification_count').length
   $('#notification_count').text(notification_count - 1)
 
 <% end %>
-$("#modal_place").html("<%= escape_javascript(render(partial: 'index', locals: { messages: @messages, notification: @notification })) %>")
+$("#modalContainer").html("<%= escape_javascript(render(partial: 'index', locals: { messages: @messages, notification: @notification })) %>")
 refresh_notifications_table()
-$("#modal_place").modal 'show'
+$("#modalContainer").modal 'show'

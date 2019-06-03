@@ -30,6 +30,6 @@ $(".selectpicker").selectpicker()
 
 refresh_study_schedule()
 
-$("#modal_place").modal 'hide'
+$("#modalContainer").modal 'hide'
 $("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
 <% end %>

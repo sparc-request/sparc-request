@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <% if @errors %>
-$("#modal_place #modal_errors").html("<%= escape_javascript(render( '/shared/modal_errors', errors: @errors )) %>")
+$("#modalContainer #modal_errors").html("<%= escape_javascript(render( '/shared/modal_errors', errors: @errors )) %>")
 <% else %>
 $("#flashes_container").html("<%= escape_javascript(render( '/shared/flash' )) %>")
 $("#org-form-container").html("<%= j render 'form', organization: @organization, user_rights: @user_rights, fulfillment_rights: @fulfillment_rights, path: @path %>")
@@ -29,7 +29,7 @@ $('#availability_toggle_container').html("<%= j render '/catalog_manager/catalog
 $("[data-toggle='toggle']").bootstrapToggle();
 $('.selectpicker').selectpicker();
 
-$("#modal_place").modal('hide');
+$("#modalContainer").modal('hide');
 
 initialize_user_rights_search();
 initialize_fulfillment_rights_search();

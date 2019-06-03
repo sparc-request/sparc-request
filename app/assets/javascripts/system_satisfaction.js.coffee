@@ -26,10 +26,10 @@ $(document).ready ->
 
     if !survey_offered
       event.preventDefault()
-      $('#modal_place').html($('#participate-in-survey-modal').html())
-      $('#modal_place').modal('show')
+      $('#modalContainer').html($('#participate-in-survey-modal').html())
+      $('#modalContainer').modal('show')
 
-      $(document).on 'click', '#modal_place .yes-button', ->
+      $(document).on 'click', '#modalContainer .yes-button', ->
         survey_offered = true
         $.ajax
           type: 'get'
@@ -40,5 +40,5 @@ $(document).ready ->
             respondable_id: getSRId()
             respondable_type: 'ServiceRequest'
 
-      $(document).on 'hidden.bs.modal', "#modal_place", ->
+      $(document).on 'hidden.bs.modal', "#modalContainer", ->
         window.location = button.attr('href')

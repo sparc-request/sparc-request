@@ -19,5 +19,5 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(".center-block").html("<%= escape_javascript(render(partial: 'new', locals: { message: @message, notification: @notification })) %>");
-#$("#modal_place").modal 'show'
+#$("#modalContainer").modal 'show'
 #$(".modal-content").find(":input").not("[type='hidden'],[type='button']").first().focus()

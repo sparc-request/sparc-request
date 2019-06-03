@@ -21,6 +21,6 @@
 $("#modal_errors").html("<%= j render 'shared/modal_errors', errors: @errors %>")
 <% else %>
 $("#saved-searches").html("<%= j render 'surveyor/response_filters/saved_searches' %>")
-$("#modal_place").modal('hide')
+$("#modalContainer").modal('hide')
 $("#flashes_container").html("<%= j render 'shared/flash' %>")
 <% end %>

@@ -25,9 +25,9 @@ window.cart =
     li_count = parseInt($('#line_item_count').val())
 
     if has_protocol == 0 && li_count == 0
-      $('#modal_place').html($('#new-request-modal').html())
-      $('#modal_place').modal('show')
-      $('#modal_place .yes-button').on 'click', (e) ->
+      $('#modalContainer').html($('#new-request-modal').html())
+      $('#modalContainer').modal('show')
+      $('#modalContainer .yes-button').on 'click', (e) ->
         $.ajax
           type: 'POST'
           url: "/service_request/add_service/#{id}"
@@ -74,16 +74,16 @@ $(document).ready ->
 
     if request_submitted == 1
       button = $(this)
-      $('#modal_place').html($('#request-submitted-modal').html())
-      $('#modal_place').modal('show')
+      $('#modalContainer').html($('#request-submitted-modal').html())
+      $('#modalContainer').modal('show')
 
-      $('#modal_place .yes-button').on 'click', (e) ->
+      $('#modalContainer .yes-button').on 'click', (e) ->
         button.replaceWith(spinner)
         window.cart.removeService(id, false, spinner)
     else if li_count == 1 && window.location.pathname != '/' && window.location.pathname.indexOf('catalog') == -1
       # Do not allow the user to remove the last service except in the catalog
-      $('#modal_place').html($('#line-item-required-modal').html())
-      $('#modal_place').modal('show')
+      $('#modalContainer').html($('#line-item-required-modal').html())
+      $('#modalContainer').modal('show')
     else
       $(this).replaceWith(spinner)
       window.cart.removeService(id, false, spinner)

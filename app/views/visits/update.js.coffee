@@ -18,14 +18,14 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <% if @errors %>
-$("#modal_place #modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
+$("#modalContainer #modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
 <% else %>
 <% if @tab == 'template' %>
 # Replace checkboxes
 $("#check-all-column-<%=@visit_group.id%>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_column', service_request: @service_request, sub_service_request: @sub_service_request, visit_group: @visit_group, page: @page, index: @index, admin: @admin %>")
 $("#check-all-row-<%=@line_items_visit.id%>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_row', service_request: @service_request, sub_service_request: @sub_service_request, liv: @line_items_visit, page: @page, admin: @admin, locked: @locked %>")
 <% elsif @tab == 'billing_strategy' %>
-$('#modal_place').modal('hide')
+$('#modalContainer').modal('hide')
 <% end %>
 
 <% if @admin %>

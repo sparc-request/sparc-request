@@ -18,8 +18,8 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <% if @duplicate_service %>
-$('#modal_place').html("<%= j render 'service_requests/modals/service_already_added_modal' %>")
-$('#modal_place').modal('show')
+$('#modalContainer').html("<%= j render 'service_requests/modals/service_already_added_modal' %>")
+$('#modalContainer').modal('show')
 <% else %>
 $('.catalog-right').replaceWith("<%= j render 'catalogs/catalog_right', service_request: @service_request, sub_service_requests: @sub_service_requests %>")
 

@@ -21,10 +21,10 @@
 $("#modal_errors").html("<%= j render 'shared/modal_errors', errors: @errors %>")
 <% else %>
 <% if params[:cancel] %>
-$("#modal_place").html("<%= j render 'index', notable_id: @notable_id, notable_type: @notable_type, in_dashboard: @in_dashboard, notable: @notable %>")
+$("#modalContainer").html("<%= j render 'index', notable_id: @notable_id, notable_type: @notable_type, in_dashboard: @in_dashboard, notable: @notable %>")
 $('#notes-table').bootstrapTable()
 <% else %>
-$("#modal_place").modal('hide')
+$("#modalContainer").modal('hide')
 $('#notes-table').bootstrapTable('refresh')
 <% end %>
 $("#flashes_container").html("<%= j render 'shared/flash' %>")

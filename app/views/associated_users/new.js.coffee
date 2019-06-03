@@ -18,12 +18,12 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <% if @errors.present? %> #User already associated with Protocol
-$("#modal_place #modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
+$("#modalContainer #modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
 $('#authorized_user_search').val('')
 <% elsif @identity.present? %># User selected, go to 'User Form'
-$("#modal_place").html("<%= escape_javascript(render( 'associated_users/user_form', protocol: @protocol, project_role: @project_role, identity: @identity, current_pi: @current_pi, header_text: @header_text, dashboard: @dashboard, service_request: @service_request, admin: @admin )) %>")
+$("#modalContainer").html("<%= escape_javascript(render( 'associated_users/user_form', protocol: @protocol, project_role: @project_role, identity: @identity, current_pi: @current_pi, header_text: @header_text, dashboard: @dashboard, service_request: @service_request, admin: @admin )) %>")
 <% else %># User not selected, go to 'Select User Form'
-$("#modal_place").html("<%= escape_javascript(render( 'associated_users/select_user_form', protocol: @protocol, header_text: @header_text )) %>")
+$("#modalContainer").html("<%= escape_javascript(render( 'associated_users/select_user_form', protocol: @protocol, header_text: @header_text )) %>")
 
 # Initialize Authorized Users Searcher
 identities_bloodhound = new Bloodhound(
@@ -61,5 +61,5 @@ $('#authorized_user_search').typeahead(
       $("#loading_authorized_user_spinner").addClass('hidden')
 <% end %>
 
-$("#modal_place").modal 'show'
+$("#modalContainer").modal 'show'
 $(".selectpicker").selectpicker()

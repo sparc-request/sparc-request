@@ -30,5 +30,5 @@ $(".selectpicker").selectpicker()
 
 refresh_study_schedule()
 
-$("#modal_place").modal 'hide'
+$("#modalContainer").modal 'hide'
 <% end %>

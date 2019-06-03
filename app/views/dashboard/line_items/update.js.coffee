@@ -22,7 +22,7 @@
 <% if @errors %>
 $("#modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
 <% else %>
-$("#modal_place").modal('hide')
+$("#modalContainer").modal('hide')
 <% end %>
 $("#study-level-activities-table").bootstrapTable 'refresh', {silent: true}
 <% end %>

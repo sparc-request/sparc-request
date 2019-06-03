@@ -54,7 +54,7 @@ $(document).ready ->
     $('.selectpicker').selectpicker()
 
   ### Survey Modal ###
-  $(document).on 'hide.bs.modal', '#modal_place', ->
+  $(document).on 'hide.bs.modal', '#modalContainer', ->
     if $(this).children("#survey-modal").length > 0
       $('.survey-table').bootstrapTable('refresh')
     else if $(this).children("#form-modal").length > 0

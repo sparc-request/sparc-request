@@ -23,9 +23,9 @@ $('#user_search').val('')
 $('#loading_recipient_spinner').hide()
 <% else %>
 <% if @message.present? %> #User has been selected
-$("#modal_place").html("<%= escape_javascript(render(partial: 'dashboard/notifications/new_notification', locals: { notification: @notification, message: @message, sub_service_request_id: @sub_service_request_id })) %>");
+$("#modalContainer").html("<%= escape_javascript(render(partial: 'dashboard/notifications/new_notification', locals: { notification: @notification, message: @message, sub_service_request_id: @sub_service_request_id })) %>");
 <% else %> #No user selected
-$("#modal_place").html("<%= escape_javascript(render(partial: 'dashboard/notifications/select_user_form', locals: { sub_service_request_id: @sub_service_request_id })) %>");
+$("#modalContainer").html("<%= escape_javascript(render(partial: 'dashboard/notifications/select_user_form', locals: { sub_service_request_id: @sub_service_request_id })) %>");
 
 # Initialize Authorized Users Searcher
 identities_bloodhound = new Bloodhound(
@@ -61,4 +61,4 @@ $('#user_search').typeahead(
 <% end %>
 <% end %>
 $(".selectpicker").selectpicker()
-$("#modal_place").modal 'show'
+$("#modalContainer").modal 'show'

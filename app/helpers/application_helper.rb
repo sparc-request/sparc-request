@@ -149,34 +149,34 @@ module ApplicationHelper
 
   def navbar_link(identifier, details, highlighted_link)
     name, path = details
-    highlighted = identifier == highlighted_link
+    active = identifier == highlighted_link
 
     accessible = false
 
     if current_user
       accessible = case identifier
-      when 'sparc_fulfillment'
-        current_user.clinical_providers.any? || current_user.is_super_user?
-      when 'sparc_catalog'
-        current_user.catalog_managers.any?
-      when 'sparc_report'
-        current_user.is_super_user?
-      when 'sparc_funding'
-        current_user.is_funding_admin?
-      when 'sparc_forms'
-        current_user.is_site_admin? || current_user.is_super_user? || current_user.is_service_provider?
-      else
-        true
-      end
+        when 'sparc_fulfillment'
+          current_user.clinical_providers.any? || current_user.is_super_user?
+        when 'sparc_catalog'
+          current_user.catalog_managers.any?
+        when 'sparc_report'
+          current_user.is_super_user?
+        when 'sparc_funding'
+          current_user.is_funding_admin?
+        when 'sparc_forms'
+          current_user.is_site_admin? || current_user.is_super_user? || current_user.is_service_provider?
+        else
+          true
+        end
     else ## show base module when logged out
-      accessible = true if ['sparc_dashboard', 'sparc_request', 'sparc_info'].include? identifier
+      accessible = true if ['sparc_dashboard', 'sparc_request', 'sparc_info'].include?(identifier)
     end
 
-    render_navbar_link(name, path, highlighted) if accessible
-  end
-
-  def render_navbar_link(name, path, highlighted)
-    content_tag(:li, link_to(name.to_s, path, target: '_blank', class: highlighted ? 'highlighted' : ''), class: 'dashboard nav-bar-link')
+    if accessible
+      content_tag :li, class: 'nav-item' do
+        link_to name, path, target: :blank, class: ['nav-link', active ? 'active' : '']
+      end
+    end
   end
 
   def calculate_step_params(service_request)

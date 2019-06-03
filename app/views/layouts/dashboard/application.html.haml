@@ -31,15 +31,9 @@
     = render 'layouts/i18n-js'
     = Gon::Base.render_data
   %body#body
-    - if ENV.key?("site_name")
-      .alert.alert-danger
-        %p.text-center{:style => "letter-spacing: 8px"}
-          = ENV['site_name']
-
+    = render 'layouts/header', location: 'dashboard'
+    = render 'layouts/dashboard/dashboard_header', user: @user
     #container
-      #header
-        = render 'layouts/header_logos', location: "dashboard"
-      = render 'layouts/dashboard/dashboard_header', user: @user
       .flash
         = render "shared/flash"
       #inner-content.row

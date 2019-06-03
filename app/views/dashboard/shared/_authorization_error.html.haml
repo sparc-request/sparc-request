@@ -30,10 +30,9 @@
     = javascript_include_tag 'dashboard/application', data: { turbolinks_track: 'reload' }
     = render 'layouts/i18n-js'
   %body#body
+    = render 'layouts/header', location: 'dashboard'
+    = render 'layouts/dashboard/dashboard_header', user: @user
     #container
-      #header
-        = render 'layouts/header_logos', location: "dashboard"
-      = render 'layouts/dashboard/dashboard_header', user: @user
       .flash
         = render "shared/flash"
       #inner-content.row

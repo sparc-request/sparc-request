@@ -405,13 +405,16 @@ en:
     approved: "Account Approved"
     disapproved: "Account Disapproved"
 
-  ###############
-  # IE7 WARNING #
-  ###############
-  ie_warning:
-    header: "Internet Explorer Version Warning"
-    text1: "Your browser version is out of date. SPARCRequest does not support Internet Explorer versions older than version 8."
-    text2: "Using versions lower than 8 can cause data curruption and other serious problems using this tool."
+  ##########
+  # LAYOUT #
+  ##########
+  layout:
+    header:
+      org_logo_alt: "Organization Logo"
+      brand_logo_alt: "SPARC%{location} Logo"
+      institution_logo_alt: "Institution Logo"
+    navigation:
+      toggle: "Toggle Navigation"
 
   ###########
   # MAILERS #

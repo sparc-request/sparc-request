@@ -31,10 +31,9 @@
     = javascript_include_tag 'application', data: { turbolinks_track: 'reload' }
     = render 'layouts/i18n-js'
   %body#body
+    = render 'layouts/header', location: 'proper'
+    = render 'layouts/navbar', highlighted_link: @highlighted_link
     #container
-      #header
-        = render 'layouts/header_logos', location: "proper"
-      = render 'layouts/header', user: @user
       .flash
         = render 'shared/flash'
       #inner-content.row

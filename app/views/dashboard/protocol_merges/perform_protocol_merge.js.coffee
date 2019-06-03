@@ -1,1 +1,1 @@
-$("#flashes_container").html("<%= j render 'shared/flash' %>")
+$("#flashContainer").html("<%= j render 'layouts/flash' %>")

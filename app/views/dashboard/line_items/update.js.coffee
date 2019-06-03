@@ -27,6 +27,6 @@ $("#modalContainer").modal('hide')
 $("#study-level-activities-table").bootstrapTable 'refresh', {silent: true}
 <% end %>
 
-$("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
+$("#flashContainer").html("<%= escape_javascript(render('layouts/flash')) %>")
 $("#sub_service_request_header").html("<%= escape_javascript(render( 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request )) %>")
 $(".selectpicker").selectpicker()

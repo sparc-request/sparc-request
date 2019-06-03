@@ -32,9 +32,8 @@
   %body#body
     = render 'layouts/header', location: 'proper'
     = render 'layouts/navbar', highlighted_link: @highlighted_link, service_request: @service_request
+    = render 'layouts/flash'
     #container
-      .flash
-        = render 'shared/flash'
       #inner-content.row
         = render 'shared/authorization_error_content', error: error
     %footer

@@ -32,9 +32,8 @@
   %body#body
     = render 'layouts/header', location: 'catalog'
     = render 'layouts/navbar'
+    = render 'layouts/flash'
     #container
-      .flash
-        = render "shared/flash"
       #inner-content.row
         = yield
     %footer

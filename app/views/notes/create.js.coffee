@@ -33,5 +33,5 @@ $("span#<%= @note.unique_selector %>_notes").html("<%= @notes.count %>").addClas
 <% else %>
 $("span#<%= @note.unique_selector %>_notes").html("<%= @notes.count %>").removeClass('blue-badge').siblings().removeClass("blue-note").addClass("black-note")
 <% end %>
-$("#flashes_container").html("<%= j render 'shared/flash' %>")
+$("#flashContainer").html("<%= j render 'layouts/flash' %>")
 <% end %>

@@ -21,5 +21,5 @@
 $(".modal #modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
 <% else %>
 $("#modalContainer").modal 'hide'
-$('.flash').html("<%= escape_javascript(render('shared/flash')) %>")
+$('.flash').html("<%= escape_javascript(render('layouts/flash')) %>")
 <% end %>

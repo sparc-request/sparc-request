@@ -21,5 +21,5 @@ $("#modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', er
 <% unless @errors %>
 $("#pending-subsidy").html("<%= escape_javascript(render( 'subsidies/pending_subsidy', sub_service_request: @sub_service_request, subsidy: @subsidy, admin: @admin )) %>");
 $("#modalContainer").modal 'hide'
-$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+$("#flashContainer").html("<%= escape_javascript(render( 'layouts/flash' )) %>")
 <% end %>

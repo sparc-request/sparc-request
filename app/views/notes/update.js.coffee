@@ -27,5 +27,5 @@ $('#notes-table').bootstrapTable()
 $("#modalContainer").modal('hide')
 $('#notes-table').bootstrapTable('refresh')
 <% end %>
-$("#flashes_container").html("<%= j render 'shared/flash' %>")
+$("#flashContainer").html("<%= j render 'layouts/flash' %>")
 <% end %>

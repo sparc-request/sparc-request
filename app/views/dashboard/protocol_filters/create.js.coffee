@@ -24,5 +24,5 @@ $("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_err
 $("#saved_searches").html("<%= escape_javascript(render partial: 'dashboard/protocol_filters/saved_searches', locals: { current_user: @user, protocol_filters: @protocol_filters }) %>")
 
 $("#modalContainer").modal 'hide'
-$("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
+$("#flashContainer").html("<%= escape_javascript(render('layouts/flash')) %>")
 <% end %>

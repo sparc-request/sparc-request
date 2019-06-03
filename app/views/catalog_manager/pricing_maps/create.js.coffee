@@ -23,7 +23,7 @@ $("#modalContainer #modal_errors").html("<%= escape_javascript(render( 'shared/m
 $("#pricing_map_submit").removeAttr('disabled')
 <% else %>
 $("#modalContainer").modal('hide')
-$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+$("#flashContainer").html("<%= escape_javascript(render( 'layouts/flash' )) %>")
 $("#pricing_maps_container").html("<%= j render '/catalog_manager/services/pricing_form', service: @service, user: @user %>")
 
 ##Re render general info form, to refresh availability toggle, etc.

@@ -20,7 +20,7 @@
 
 $("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
 <% unless @errors %>
-$("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
+$("#flashContainer").html("<%= escape_javascript(render('layouts/flash')) %>")
 $("#modalContainer").html("<%= escape_javascript(render(partial: 'dashboard/study_level_activities/fulfillments_table', locals: {line_item: @line_item, header_text: 'Fulfillments List'})) %>");
 $("#fulfillments-table").bootstrapTable()
 <% end %>

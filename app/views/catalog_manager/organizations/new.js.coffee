@@ -22,6 +22,6 @@
 $("#modalContainer").html("<%= escape_javascript(render( 'catalog_manager/organizations/new', organization: @organization )) %>")
 $("#modalContainer").modal('show')
 <% else %>
-$("#flashes_container").html("<%= escape_javascript(render( '/shared/flash' )) %>")
+$("#flashContainer").html("<%= escape_javascript(render( '/layouts/flash' )) %>")
 <% end %>
 

@@ -19,4 +19,4 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # Send the user back to dashboard if theyre a member and not an admin
 $("#associated-users-table").bootstrapTable 'refresh', {silent: true}
-$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+$("#flashContainer").html("<%= escape_javascript(render( 'layouts/flash' )) %>")

@@ -20,4 +20,4 @@
 
 $("#status-row-<%= j @status_key %>").replaceWith("<%= j render 'status_row', status_key: @status_key, status_value: @status_value, organization: @organization, available_statuses: @available_statuses, editable_statuses: @editable_statuses, using_defaults: @using_defaults, user: @user %>")
 
-$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+$("#flashContainer").html("<%= escape_javascript(render( 'layouts/flash' )) %>")

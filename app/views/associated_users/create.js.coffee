@@ -22,5 +22,5 @@ $("#modalContainer #modal_errors").html("<%= escape_javascript(render( 'shared/m
 <% else %>
 $("#modalContainer").modal 'hide'
 $("#associated-users-table").bootstrapTable 'refresh', {silent: true}
-$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+$("#flashContainer").html("<%= escape_javascript(render( 'layouts/flash' )) %>")
 <% end %>

@@ -32,5 +32,5 @@ reset_service_requests_handlers()
 <% end %>
 $("#modalContainer").modal 'hide'
 $("#associated-users-table").bootstrapTable 'refresh', {silent: true}
-$("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
+$("#flashContainer").html("<%= escape_javascript(render('layouts/flash')) %>")
 <% end %>

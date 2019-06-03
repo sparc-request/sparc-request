@@ -23,6 +23,6 @@ $("#sub_service_request_header").html("<%= j render 'dashboard/sub_service_reque
 $("#subsidy_information").html("<%= j render 'dashboard/subsidies/subsidy', sub_service_request: @sub_service_request, admin: true %>")
 $(".selectpicker").selectpicker()
 $("#modalContainer").modal('hide')
-$("#flashes_container").html("<%= j render 'shared/flash' %>")
+$("#flashContainer").html("<%= j render 'layouts/flash' %>")
 
 refresh_study_schedule()

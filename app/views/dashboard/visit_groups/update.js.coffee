@@ -30,5 +30,5 @@ $(".selectpicker").selectpicker()
 refresh_study_schedule()
 
 $("#modalContainer").modal 'hide'
-$("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
+$("#flashContainer").html("<%= escape_javascript(render('layouts/flash')) %>")
 <% end %>

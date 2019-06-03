@@ -23,5 +23,5 @@ $("#modalContainer #modal_errors").html("<%= escape_javascript(render( 'shared/m
 $("#subsidy_map_submit").removeAttr('disabled')
 <% else %>
 $("#modalContainer").modal('hide')
-$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+$("#flashContainer").html("<%= escape_javascript(render( 'layouts/flash' )) %>")
 <% end %>

@@ -20,6 +20,6 @@
 <% unless @errors %>
 window.location = "<%= protocol_service_request_path(srid: @service_request.id) %>"
 <% else %>
-$("#flashes_container").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
+$("#flashContainer").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
 $('#body').scrollTop(0)
 <% end %>

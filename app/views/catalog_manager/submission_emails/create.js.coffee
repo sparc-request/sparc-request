@@ -21,7 +21,7 @@
 <% if @errors %>
 $("#errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
 <% else %>
-$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+$("#flashContainer").html("<%= escape_javascript(render( 'layouts/flash' )) %>")
 $("#submission-emails .panel-body").html("<%= j render '/catalog_manager/submission_emails/form', organization: @submission_email.organization %>")
 <% end %>
 

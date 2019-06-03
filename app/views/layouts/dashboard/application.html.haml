@@ -33,9 +33,8 @@
   %body#body
     = render 'layouts/header', location: 'dashboard'
     = render 'layouts/dashboard/dashboard_header', user: @user
+    = render 'layouts/flash'
     #container
-      .flash
-        = render "shared/flash"
       #inner-content.row
         = yield
     %footer

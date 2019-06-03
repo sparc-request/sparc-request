@@ -21,7 +21,7 @@
 <% if @errors %>
 $("#modalContainer #modal_errors").html("<%= escape_javascript(render( '/shared/modal_errors', errors: @errors )) %>")
 <% else %>
-$("#flashes_container").html("<%= escape_javascript(render( '/shared/flash' )) %>")
+$("#flashContainer").html("<%= escape_javascript(render( '/layouts/flash' )) %>")
 $("#org-form-container").html("<%= j render 'form', service: @service, user: @user %>")
 $('#cm-accordion').replaceWith("<%= j render '/catalog_manager/catalog/accordion', institutions: @institutions, show_available_only: false %>")
 $('#availability_toggle_container').html("<%= j render '/catalog_manager/catalog/availability_toggle', show_available_only: false %>")

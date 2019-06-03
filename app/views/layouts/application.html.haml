@@ -36,13 +36,12 @@
         = Rails.env.capitalize
     = render 'layouts/header', location: 'proper'
     = render 'layouts/navbar', highlighted_link: @highlighted_link, service_request: @service_request
+    = render 'layouts/flash'
 
     - if @service_request
       = hidden_field_tag :srid, @service_request.id, disabled: true
 
     #container
-      .flash
-        = render 'shared/flash'
       #inner-content.row
         = yield
     %footer

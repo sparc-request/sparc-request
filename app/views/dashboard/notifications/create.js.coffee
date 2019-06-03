@@ -23,5 +23,5 @@ $("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_err
 refresh_notifications_table()
 
 $("#modalContainer").modal 'hide'
-$("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
+$("#flashContainer").html("<%= escape_javascript(render('layouts/flash')) %>")
 <% end %>

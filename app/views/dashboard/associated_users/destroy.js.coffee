@@ -35,4 +35,4 @@ reset_service_requests_handlers()
 <% else %>
 $("#associated-users-table").bootstrapTable 'refresh', {silent: true}
 <% end %>
-$("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
+$("#flashContainer").html("<%= escape_javascript(render('layouts/flash')) %>")

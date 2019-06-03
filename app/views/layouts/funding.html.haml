@@ -30,8 +30,6 @@
     = stylesheet_link_tag 'application', media: 'all', data: { turbolinks_track: 'reload' }
     = javascript_include_tag 'application', data: { turbolinks_track: 'reload' }
     = render 'layouts/i18n-js'
-    /[if lt IE 8]
-      = javascript_include_tag "ie7_warning"
   %body#body
     #container
       #header
@@ -44,6 +42,4 @@
 
   %footer
     = render 'layouts/footer'
-    = render 'shared/analytics' if Rails.env == 'production'
-    = render 'shared/ie7_modal'
-    = render 'shared/modal'
+  = render 'shared/modal'

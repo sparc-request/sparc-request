@@ -62,7 +62,7 @@ $(document).ready ->
       $(document).on 'submit', '#filterrific-no-ajax-auto-submit', ->
         $('#filterrific_sorted_by').val("#{$('.protocol-sort').data('sort-name')} #{$('.protocol-sort').data('sort-order')}")
 
-      $(document).on 'click', '#save_filters_link', ->
+      $(document).on 'click', '#saveProtocolFilters', ->
         data = {} #Grab form values
 
         # REVIEW this is not fetching values from multiselects

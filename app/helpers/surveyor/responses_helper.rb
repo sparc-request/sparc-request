@@ -65,7 +65,7 @@ module Surveyor::ResponsesHelper
       remote: true,
       class: ['btn btn-primary view-response', permissions && response.completed? ? '' : 'disabled'],
       title: I18n.t('surveyor.responses.tooltips.view', klass: response.survey.class.yaml_klass),
-      data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}', container: 'body' }
+      data: { toggle: 'tooltip', placement: 'top', container: 'body' }
     )
   end
 
@@ -76,7 +76,7 @@ module Surveyor::ResponsesHelper
       remote: true,
       class: ['btn btn-warning edit-response', permissions && response.completed? ? '' : 'disabled'],
       title: I18n.t('surveyor.responses.tooltips.edit', klass: response.survey.class.yaml_klass),
-      data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}', container: 'body' }
+      data: { toggle: 'tooltip', placement: 'top', container: 'body' }
     )
   end
 
@@ -85,7 +85,7 @@ module Surveyor::ResponsesHelper
       content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' }),
       class: 'btn btn-danger delete-response',
       title: I18n.t('surveyor.responses.tooltips.delete', klass: response.survey.class.yaml_klass),
-      data: { response_id: response.id, toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}', container: 'body' }
+      data: { response_id: response.id, toggle: 'tooltip', placement: 'top', container: 'body' }
     )
   end
 
@@ -96,7 +96,7 @@ module Surveyor::ResponsesHelper
         surveyor_response_resend_survey_path(response), method: :put, remote: true,
         class: ['btn btn-info resend-survey', permissions ? '' : 'disabled'],
         title: I18n.t('surveyor.responses.tooltips.resend', klass: response.survey.class.yaml_klass),
-        data: { response_id: response.id, toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}', container: 'body'}
+        data: { response_id: response.id, toggle: 'tooltip', placement: 'top', container: 'body'}
       )
     end
   end

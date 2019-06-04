@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - sr_table ||= false
-%div.tooltip-wrapper{ data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' }, title: t("dashboard.notifications.tooltips.#{sr_table ? "table_button" : "main_button"}") }
+%div.tooltip-wrapper{ data: { toggle: 'tooltip', placement: 'top' }, title: t("dashboard.notifications.tooltips.#{sr_table ? "table_button" : "main_button"}") }
   %select.selectpicker.new-notification{ data: { style: "btn-success new_notification_button", live_search: 'true', sub_service_request_id: sub_service_request.ssr_id } }
     %option{ label: ' ', value: '' }
       = t(:dashboard)[:notifications][:table][:send]

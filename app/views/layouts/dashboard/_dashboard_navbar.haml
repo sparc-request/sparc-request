@@ -25,9 +25,9 @@
   .navbar-nav.flex-row
     - if Setting.get_value('use_epic') && Setting.get_value('epic_queue_access').include?(current_user.ldap_uid)
       .nav-item
-        = link_to dashboard_epic_queues_path, title: t('layout.dashboard.navigation.tooltips.epic_queue'), class: 'nav-link', data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' } do
+        = link_to dashboard_epic_queues_path, title: t('layout.dashboard.navigation.tooltips.epic_queue'), class: 'nav-link', data: { toggle: 'tooltip', placement: 'bottom' } do
           = icon('fas', 'cloud fa-2x')
     - if current_user.catalog_overlord?
       .nav-item
-        = link_to dashboard_protocol_merge_path, title: t('layout.dashboard.navigation.tooltips.protocol_merge'), class: 'nav-link', data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' } do
+        = link_to dashboard_protocol_merge_path, title: t('layout.dashboard.navigation.tooltips.protocol_merge'), class: 'nav-link', data: { toggle: 'tooltip', placement: 'bottom' } do
           = icon('far', 'object-ungroup fa-2x')

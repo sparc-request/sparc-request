@@ -60,7 +60,7 @@ $(document).on 'turbolinks:load', ->
   $('.selectpicker').selectpicker()
 
 (exports ? this).initializeTooltips = () ->
-  $('[data-toggle=tooltip]').tooltip()
+  $('[data-toggle=tooltip]').tooltip({ delay: { show: 500 } })
 
 (exports ? this).initializePopovers = () ->
   $('[data-toggle=popover]').popover()

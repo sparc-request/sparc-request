@@ -18,6 +18,41 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
+/////////////
+/// Badge ///
+/////////////
+
+.badge {
+  &.notification-badge {
+    display: inline-block;
+    position: absolute;
+    top: 4px;
+    right: 12px;
+    width: 16px;
+    height: 16px;
+    padding: 0;
+  }
+}
+
+////////////
+/// Card ///
+////////////
+
+.card {
+  .card-header, .card-footer {
+    display: flex;
+    align-items: center;
+  }
+
+  .card-header, .card-body, .card-footer {
+    padding: 0.75rem;
+  }
+}
+
+////////////////
+/// Dropdown ///
+////////////////
+
 .dropdown {
   .dropdown-menu {
     .dropdown-header, .dropdown-item {
@@ -41,6 +76,10 @@
     }
   }
 }
+
+//////////////
+/// Navbar ///
+//////////////
 
 nav.navbar {
   @extend .py-0;
@@ -151,17 +190,5 @@ nav.navbar {
         }
       }
     }
-  }
-}
-
-.badge {
-  &.notification-badge {
-    display: inline-block;
-    position: absolute;
-    top: 4px;
-    right: 12px;
-    width: 16px;
-    height: 16px;
-    padding: 0;
   }
 }

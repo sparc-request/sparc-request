@@ -41,13 +41,13 @@
           %tbody
             %tr
               %td
-                %label.col-lg-4{ title: t(:protocols)[:tooltips][:nct_number], data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }
+                %label.col-lg-4{ title: t(:protocols)[:tooltips][:nct_number], data: { toggle: 'tooltip', placement: 'right' } }
                   = t(:protocols)[:studies][:research_involving][:humans][:nct_number]
                 .col-lg-8
                   = human_info.nct_number
             %tr
               %td
-                %label.col-lg-4{ title: t(:protocols)[:tooltips][:pro_number], data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }
+                %label.col-lg-4{ title: t(:protocols)[:tooltips][:pro_number], data: { toggle: 'tooltip', placement: 'right' } }
                   = t(:protocols)[:studies][:research_involving][:humans][:pro_number]
                 .col-lg-8
                   = human_info.pro_number
@@ -143,7 +143,7 @@
           %tbody
             %tr
               %td
-                %label.col-lg-4{ title: t(:protocols)[:tooltips][:ind_number], data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }
+                %label.col-lg-4{ title: t(:protocols)[:tooltips][:ind_number], data: { toggle: 'tooltip', placement: 'right' } }
                   = t(:protocols)[:studies][:research_involving][:products][:ind_number]
                 .col-lg-8
                   = products_info.ind_number
@@ -156,7 +156,7 @@
             - if products_info.exemption_type.present?
               %tr
                 %td
-                  %label.col-lg-4{ title: t(:protocols)[:tooltips][products_info.exemption_type.to_sym], data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }
+                  %label.col-lg-4{ title: t(:protocols)[:tooltips][products_info.exemption_type.to_sym], data: { toggle: 'tooltip', placement: 'right' } }
                     = t(:protocols)[:studies][:research_involving][:products][:numbers][products_info.exemption_type.to_sym]
                   .col-lg-8
                     = products_info.inv_device_number

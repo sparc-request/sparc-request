@@ -108,7 +108,7 @@ module AssociatedUsersHelper
   end
 
   def authorized_users_delete_button(pr)
-    data  = { id: pr.id, toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' }
+    data  = { id: pr.id, toggle: 'tooltip', placement: 'right' }
 
     if current_user.id == pr.identity_id
       data[:batch_select] = {

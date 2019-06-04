@@ -24,7 +24,7 @@
         = "#{t(:dashboard)[:protocols][:service_requests][:header]} - #{protocol_panel_header_line(sr)}"
       .service-request-links-container
         .dropdown>
-          %button.btn.btn-primary.btn-sm.dropdown-toggle.view-consolidated{ data: { placement: 'top', delay: '{"show":"500"}', toggle: 'dropdown' }, title: t(:dashboard)[:protocols][:service_requests][:tooltips][:consolidated_request] }<
+          %button.btn.btn-primary.btn-sm.dropdown-toggle.view-consolidated{ data: { placement: 'top', toggle: 'dropdown' }, title: t(:dashboard)[:protocols][:service_requests][:tooltips][:consolidated_request] }<
             = t(:dashboard)[:protocols][:service_requests][:view_consolidated]
           %ul.dropdown-menu
             %li
@@ -34,7 +34,7 @@
               %a.view-full-calendar-button{ data: { protocol_id: protocol.id, statuses_hidden: %w(draft first_draft) } }
                 = t(:dashboard)[:protocols][:service_requests][:consolidated_exclude_drafts]
         .dropdown.export-consolidated-request>
-          %button.btn.btn-primary.btn-sm.dropdown-toggle.export-consolidated{ data: { protocol_id: protocol.id, toggle: 'dropdown', placement: 'top', delay: '{"show":"500"}' }, title: t(:dashboard)[:protocols][:service_requests][:tooltips][:export_consolidated_request] }<
+          %button.btn.btn-primary.btn-sm.dropdown-toggle.export-consolidated{ data: { protocol_id: protocol.id, toggle: 'dropdown', placement: 'top' }, title: t(:dashboard)[:protocols][:service_requests][:tooltips][:export_consolidated_request] }<
             = t(:dashboard)[:protocols][:service_requests][:export_consolidated]
           %ul.dropdown-menu
             %li
@@ -44,7 +44,7 @@
               = link_to t(:dashboard)[:protocols][:service_requests][:consolidated_exclude_drafts],
                 dashboard_protocol_path(protocol, statuses_hidden: %w(draft first_draft), format: :xlsx)
         .dropdown>
-          %button.btn.btn-success.btn-sm.dropdown-toggle.coverage-analysis-report{ data: { protocol_id: protocol.id, toggle: 'dropdown', placement: 'top', delay: '{"show":"500"}' }, title: t(:dashboard)[:service_requests][:tooltips][:coverage_report] }<
+          %button.btn.btn-success.btn-sm.dropdown-toggle.coverage-analysis-report{ data: { protocol_id: protocol.id, toggle: 'dropdown', placement: 'top' }, title: t(:dashboard)[:service_requests][:tooltips][:coverage_report] }<
             = t(:dashboard)[:protocols][:service_requests][:coverage_report]
           %ul.dropdown-menu
             %li

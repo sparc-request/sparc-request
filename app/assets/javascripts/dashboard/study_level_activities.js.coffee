@@ -99,9 +99,3 @@ $ ->
 
   $(document).on 'load-success.bs.table', '.study_level_activities', ->
     setup_xeditable_fields()
-
-  $('body').tooltip(
-    selector: '[data-title]'
-    delay: {show: 500}
-  )
-

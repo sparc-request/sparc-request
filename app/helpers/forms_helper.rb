@@ -47,7 +47,7 @@ module FormsHelper
       remote: true,
       class: 'btn btn-success new-form-response',
       title: t(:surveyor)[:responses][:tooltips][:complete],
-      data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}', container: 'body' }
+      data: { toggle: 'tooltip', placement: 'top', container: 'body' }
     )
   end
 end

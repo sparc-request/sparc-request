@@ -26,18 +26,18 @@
   .bootstrap-table-dropdown-overflow
     #arms-custom-toolbar
       - unless service_request.protocol.locked
-        %button.btn.btn-success#new-arm-button{ data: { protocol_id: service_request.protocol_id, toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' }, title: t(:arms)[:tooltips][:add_arm]}
+        %button.btn.btn-success#new-arm-button{ data: { protocol_id: service_request.protocol_id, toggle: 'tooltip', placement: 'top' }, title: t(:arms)[:tooltips][:add_arm]}
           = t(:arms)[:add]
       - else
-        %span{class: 'glyphicon glyphicon-lock locked', style: 'font-size:50px;', data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' }, title: t(:calendar_structure)[:tooltips][:arm_info] }
+        %span{class: 'glyphicon glyphicon-lock locked', style: 'font-size:50px;', data: { toggle: 'tooltip', placement: 'top' }, title: t(:calendar_structure)[:tooltips][:arm_info] }
     %table#arms-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: arms_path(format: :json, srid: service_request.id), striped: 'true', toolbar: '#arms-custom-toolbar' } }
       %thead.primary-header
         %tr
-          %th.name-validation{ title: t(:arms)[:tooltips][:name], data: { field: 'name', align: 'left', sortable: 'true', toggle: 'tooltip', container: 'body', delay: '{"show":"500"}' } }
+          %th.name-validation{ title: t(:arms)[:tooltips][:name], data: { field: 'name', align: 'left', sortable: 'true', toggle: 'tooltip', container: 'body' } }
             = t(:arms)[:table_fields][:name]
-          %th.subject-count{ title: t(:arms)[:tooltips][:subject_count], data: { field: 'subject_count', align: 'left', sortable: 'true', toggle: 'tooltip', container: 'body', delay: '{"show":"500"}' } }
+          %th.subject-count{ title: t(:arms)[:tooltips][:subject_count], data: { field: 'subject_count', align: 'left', sortable: 'true', toggle: 'tooltip', container: 'body' } }
             = t(:arms)[:table_fields][:subject_count]
-          %th.visit-count{ title: t(:arms)[:tooltips][:visit_count], data: { field: 'visit_count', align: 'left', sortable: 'true', toggle: 'tooltip', container: 'body', delay: '{"show":"500"}' } }
+          %th.visit-count{ title: t(:arms)[:tooltips][:visit_count], data: { field: 'visit_count', align: 'left', sortable: 'true', toggle: 'tooltip', container: 'body' } }
             = t(:arms)[:table_fields][:visit_count]
           - unless service_request.protocol.locked
             %th{ data: { field: 'edit', align: 'center', sortable: 'false' } }

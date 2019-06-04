@@ -29,7 +29,7 @@
           = f.label :start_date,
             t('dashboard.protocols.milestones.start_date', type: protocol.type),
             class: 'col-lg-2 control-label required',
-            data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
+            data: { toggle: 'tooltip', placement: 'right' },
             title: t('dashboard.protocols.milestones.tooltips.start_date')
           .col-lg-10
             = text_field_tag 'start_date', nil,
@@ -40,7 +40,7 @@
           = f.label :end_date,
             t('dashboard.protocols.milestones.end_date', type: protocol.type),
             class: 'col-lg-2 control-label required',
-            data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
+            data: { toggle: 'tooltip', placement: 'right' },
             title: t('dashboard.protocols.milestones.tooltips.end_date')
           .col-lg-10
             = text_field_tag 'end_date', nil,
@@ -53,7 +53,7 @@
             = f.label :recruitment_start_date,
               t('dashboard.protocols.milestones.recruitment_start', type: protocol.type),
               class: 'col-lg-2 control-label',
-              data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
+              data: { toggle: 'tooltip', placement: 'right' },
               title: t('dashboard.protocols.milestones.tooltips.recruitment_start_date')
             .col-lg-10
               = text_field_tag 'recruitment_start_date', nil,
@@ -64,7 +64,7 @@
             = f.label :recruitment_end_date,
               t('dashboard.protocols.milestones.recruitment_end', type: protocol.type),
               class: 'col-lg-2 control-label',
-              data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
+              data: { toggle: 'tooltip', placement: 'right' },
               title: t('dashboard.protocols.milestones.tooltips.recruitment_end_date')
             .col-lg-10
               = text_field_tag 'recruitment_end_date', nil,

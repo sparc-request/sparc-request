@@ -20,7 +20,7 @@
 - if current_user.is_site_admin?
   .panel.panel-default
     .panel-heading
-      %h4.panel-title{ title: t(:surveyor)[:systemsurveys][:tooltip], data: { toggle: 'tooltip', delay: '{"show":"500"}', placement: 'left' } }
+      %h4.panel-title{ title: t(:surveyor)[:systemsurveys][:tooltip], data: { toggle: 'tooltip', placement: 'left' } }
         = t(:surveyor)[:systemsurveys][:header]
     .panel-body
       .bootstrap-table-dropdown-overflow
@@ -43,7 +43,7 @@
 - if current_user.is_site_admin? || current_user.is_super_user? || current_user.is_service_provider? || current_user.is_catalog_manager?
   .panel.panel-default
     .panel-heading
-      %h4.panel-title{ title: t(:surveyor)[:forms][:tooltip], data: { toggle: 'tooltip', delay: '{"show":"500"}', placement: 'left' } }
+      %h4.panel-title{ title: t(:surveyor)[:forms][:tooltip], data: { toggle: 'tooltip', placement: 'left' } }
         = t(:surveyor)[:forms][:header]
     .panel-body
       .bootstrap-table-dropdown-overflow

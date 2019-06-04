@@ -33,7 +33,7 @@
       = render_filterrific_spinner
     .protocol-links-container
       = link_to t(:dashboard)[:protocols][:table][:export], dashboard_protocols_path(:format => :csv, :filterrific => @filterrific.to_hash), class: 'btn btn-success',
-        data: { toggle: 'tooltip', placement: 'left', delay: '{"show":"500"}' },
+        data: { toggle: 'tooltip', placement: 'left' },
         title: t(:dashboard)[:protocols][:table][:tooltips][:export]
       .btn-group#create-new-protocol-select
         %button.btn.btn-success.dropdown-toggle#create-new-study-button{ type: 'button', 'aria-expanded' => 'false', data: { toggle: 'dropdown' }}
@@ -48,25 +48,25 @@
   %table.table.table-hover
     %tr
       %th.col-sm-2
-        %div.tooltip-wrapper{ data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' }, title: t(:dashboard)[:protocols][:table][:tooltips][:protocol_id] }
+        %div.tooltip-wrapper{ data: { toggle: 'tooltip', placement: 'top' }, title: t(:dashboard)[:protocols][:table][:tooltips][:protocol_id] }
           = t(:dashboard)[:protocols][:table][:id]
         %span.protocol-sort{ name: 'id', data: { sort_name: 'id', sort_order: 'asc' } }
           %span.glyphicon.glyphicon-triangle-top.asc
           %span.glyphicon.glyphicon-triangle-bottom.desc.sort-active
       %th.col-sm-4
-        %div.tooltip-wrapper{ data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' }, title: t(:dashboard)[:protocols][:table][:tooltips][:short_title] }
+        %div.tooltip-wrapper{ data: { toggle: 'tooltip', placement: 'top' }, title: t(:dashboard)[:protocols][:table][:tooltips][:short_title] }
           = t(:dashboard)[:protocols][:table][:short_title]
         %span.protocol-sort{ name: 'short_title', data: { sort_name: 'short_title', sort_order: 'asc' } }
           %span.glyphicon.glyphicon-triangle-top.asc
           %span.glyphicon.glyphicon-triangle-bottom.desc
       %th.col-sm-3
-        %div.tooltip-wrapper{ data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' }, title: t(:dashboard)[:protocols][:table][:tooltips][:pi] }
+        %div.tooltip-wrapper{ data: { toggle: 'tooltip', placement: 'right' }, title: t(:dashboard)[:protocols][:table][:tooltips][:pi] }
           = t(:dashboard)[:protocols][:table][:pis]
         %span.protocol-sort{ name: 'pis', data: { sort_name: 'pis', sort_order: 'asc' } }
           %span.glyphicon.glyphicon-triangle-top.asc
           %span.glyphicon.glyphicon-triangle-bottom.desc
       %th.col-sm-2.text-center
-        %div.tooltip-wrapper{ data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' }, title: t(:dashboard)[:protocols][:table][:tooltips][:requests] }
+        %div.tooltip-wrapper{ data: { toggle: 'tooltip', placement: 'top' }, title: t(:dashboard)[:protocols][:table][:tooltips][:requests] }
           = t(:dashboard)[:protocols][:table][:requests]
         %span.protocol-sort{ name: 'requests', data: { sort_name: 'requests', sort_order: 'asc' } }
           %span.glyphicon.glyphicon-triangle-top.asc

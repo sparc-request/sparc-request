@@ -229,12 +229,12 @@ module Dashboard::SubServiceRequestsHelper
   private
 
   def ssr_view_button(ssr, show_view_ssr_back)
-    content_tag(:button, t(:dashboard)[:service_requests][:actions][:view], class: 'view-service-request btn btn-primary btn-sm', type: 'button', data: { sub_service_request_id: ssr.id, show_view_ssr_back: show_view_ssr_back.to_s, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:dashboard)[:service_requests][:actions][:tooltips][:view])
+    content_tag(:button, t(:dashboard)[:service_requests][:actions][:view], class: 'view-service-request btn btn-primary btn-sm', type: 'button', data: { sub_service_request_id: ssr.id, show_view_ssr_back: show_view_ssr_back.to_s, toggle: 'tooltip', placement: 'bottom' }, title: t(:dashboard)[:service_requests][:actions][:tooltips][:view])
   end
 
   def ssr_admin_button(ssr, permission_to_edit, admin_access)
     if admin_access
-      link_to t(:dashboard)[:service_requests][:actions][:admin_edit], dashboard_sub_service_request_path(ssr), class: "edit-service-request btn btn-warning btn-sm", type: 'button', data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:dashboard)[:service_requests][:actions][:tooltips][:admin]
+      link_to t(:dashboard)[:service_requests][:actions][:admin_edit], dashboard_sub_service_request_path(ssr), class: "edit-service-request btn btn-warning btn-sm", type: 'button', data: { toggle: 'tooltip', placement: 'bottom' }, title: t(:dashboard)[:service_requests][:actions][:tooltips][:admin]
     else
       ''
     end

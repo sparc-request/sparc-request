@@ -6,8 +6,10 @@ header#siteHeader {
   }
 }
 
-main {
-  @extend .p-3;
+#contentContainer {
+  @extend .py-3;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 a, .btn-link {

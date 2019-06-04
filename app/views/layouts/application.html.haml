@@ -37,7 +37,7 @@
     = render 'layouts/header', location: @location || 'proper'
     = render 'layouts/navbar'
     = yield(:sub_header) if content_for(:sub_header)
-    %main
+    .container-fluid#contentContainer
       = render 'layouts/flash'
       = render 'layouts/srid'
       = yield

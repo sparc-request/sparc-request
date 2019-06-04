@@ -257,7 +257,7 @@ class ProtocolsController < ApplicationController
 
   def resolve_layout
     if from_portal?
-      @user = current_user
+      current_user = current_user
       render layout: "portal/application"
     end
   end

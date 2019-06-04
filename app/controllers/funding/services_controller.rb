@@ -35,7 +35,7 @@ class Funding::ServicesController < ApplicationController
       format.html
       format.json{
         @services = Service.funding_opportunities
-        @user = current_user
+        current_user = current_user
       }
     end
   end

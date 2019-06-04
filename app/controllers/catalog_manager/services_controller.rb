@@ -24,7 +24,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
 
   def new
     parent_org = Organization.find(params[:organization_id])
-    if @user.can_edit_organization?(parent_org)
+    if current_user.can_edit_organization?(parent_org)
       @service = Service.new(organization_id: params[:organization_id])
     else
       flash[:alert] = "You must have catalog manager rights to the parent organization. to create a new service."
@@ -38,7 +38,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       @programs = @service.provider.programs
       @cores    = @service.program.cores
       @institutions = Institution.order('`order`')
-      @editable_organizations = @user.catalog_manager_organizations
+      @editable_organizations = current_user.catalog_manager_organizations
       flash[:success] = "New Service created successfully."
     else
       @errors = @service.errors
@@ -75,7 +75,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     if @service.update_attributes(service_params.except(:program, :core))
       flash[:success] = "#{@service.name} saved correctly."
       @institutions = Institution.order('`order`')
-      @editable_organizations = @user.catalog_manager_organizations
+      @editable_organizations = current_user.catalog_manager_organizations
     else
       flash[:alert] = "Failed to update service."
       @errors = @service.errors

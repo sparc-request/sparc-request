@@ -27,7 +27,7 @@
         = protocol.short_title
     .modal-body
       - protocol.service_requests.each do |sr|
-        = render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, protocol: protocol, user: user, permission_to_edit: permission_to_edit, view_only: true, show_view_ssr_back: show_view_ssr_back
+        = render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, protocol: protocol, permission_to_edit: permission_to_edit, view_only: true, show_view_ssr_back: show_view_ssr_back
     .modal-footer
       .center-block
         %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} 

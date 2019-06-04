@@ -22,7 +22,7 @@ class SetupProtocol
   def initialize(portal, protocol, user, service_request_id)
     @portal = portal
     @protocol = protocol
-    @user = user
+    current_user = user
     @service_request_id = service_request_id
   end
 
@@ -58,6 +58,6 @@ class SetupProtocol
   end
 
   def requester_id
-    @protocol.requester_id = @user.id
+    @protocol.requester_id = current_user.id
   end
 end

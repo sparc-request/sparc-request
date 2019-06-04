@@ -21,8 +21,6 @@
 require 'generate_request_grant_billing_pdf'
 
 class ServiceRequestsController < ApplicationController
-  include ActionView::Helpers::TextHelper
-
   respond_to :js, :json, :html
 
   before_action :initialize_service_request,      except: [:approve_changes, :get_help, :feedback]
@@ -315,23 +313,6 @@ class ServiceRequestsController < ApplicationController
       @back        = eval("#{c['back']}_service_request_path(srid: #{@service_request.id})") if c['back']
       @forward     = eval("#{c['forward']}_service_request_path(srid: #{@service_request.id})") if c['forward']
     end
-  end
-
-  def create_calendar_event event, occurence
-    all_day     = !occurence.start_time.to_s.include?("UTC")
-    start_time  = Time.parse(occurence.start_time.to_s).in_time_zone("Eastern Time (US & Canada)")
-    end_time    = Time.parse(occurence.end_time.to_s).in_time_zone("Eastern Time (US & Canada)")
-    {
-      month:          start_time.strftime("%b"),
-      day:            start_time.day,
-      title:          event.summary,
-      description:    simple_format(event.description).gsub(URI::regexp(%w(http https)), '<a href="\0" target="_blank">\0</a>'),
-      all_day:        all_day,
-      start_time:     start_time.strftime("%l:%M %p"),
-      end_time:       end_time.strftime("%l:%M %p"),
-      sort_by_start:  start_time.strftime("%Y%m%d"),
-      where:          event.location
-    }
   end
 
   def send_epic_notification_for_user_approval(protocol)

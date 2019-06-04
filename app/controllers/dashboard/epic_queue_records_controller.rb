@@ -37,7 +37,7 @@ class Dashboard::EpicQueueRecordsController < Dashboard::BaseController
 
   # Check to see if user has rights to view epic queues
   def authorize_overlord
-    unless Setting.get_value("epic_queue_access").include?(@user.ldap_uid)
+    unless Setting.get_value("epic_queue_access").include?(current_user.ldap_uid)
       authorization_error('You do not have access to view the Epic Queues')
     end
   end

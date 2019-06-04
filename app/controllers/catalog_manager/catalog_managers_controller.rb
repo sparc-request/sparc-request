@@ -24,7 +24,7 @@ class CatalogManager::CatalogManagersController < CatalogManager::AppController
     @catalog_manager = CatalogManager.new(catalog_manager_params)
     @identity = @catalog_manager.identity
     @organization = @catalog_manager.organization
-    @user_rights  = user_rights(@organization.id)
+    current_user_rights  = user_rights(@organization.id)
 
     if @catalog_manager.save
       flash[:notice] = "Catalog Manager created successfully."
@@ -41,7 +41,7 @@ class CatalogManager::CatalogManagersController < CatalogManager::AppController
     @catalog_manager = CatalogManager.find_by(catalog_manager_params)
     @identity = @catalog_manager.identity
     @organization = @catalog_manager.organization
-    @user_rights  = user_rights(@organization.id)
+    current_user_rights  = user_rights(@organization.id)
 
     if @catalog_manager.destroy
       flash[:notice] = "Catalog Manager removed successfully."
@@ -56,7 +56,7 @@ class CatalogManager::CatalogManagersController < CatalogManager::AppController
     @catalog_manager = CatalogManager.find_by(identity_id: catalog_manager_params[:identity_id], organization_id: catalog_manager_params[:organization_id])
     @identity = @catalog_manager.identity
     @organization = @catalog_manager.organization
-    @user_rights  = user_rights(@organization.id)
+    current_user_rights  = user_rights(@organization.id)
 
     if @catalog_manager.update_attributes(catalog_manager_params)
       flash[:notice] = "Catalog Manager successfully updated."

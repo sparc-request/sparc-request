@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $("#flashContainer").html("<%= escape_javascript(render( 'layouts/flash' )) %>")
-$("#org-form-container").html("<%= j render 'form', organization: @organization, user_rights: @user_rights, fulfillment_rights: @fulfillment_rights, path: @path %>")
+$("#org-form-container").html("<%= j render 'form', organization: @organization, user_rights: current_user_rights, fulfillment_rights: @fulfillment_rights, path: @path %>")
 
 initialize_user_rights_search();
 initialize_fulfillment_rights_search();

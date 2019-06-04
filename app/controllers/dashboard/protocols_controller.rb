@@ -30,18 +30,18 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   before_action :check_rmid_server_status,  only: [:new, :create, :edit, :update, :update_protocol_type]
 
   def index
-    admin_orgs = @user.authorized_admin_organizations
+    admin_orgs = current_user.authorized_admin_organizations
     @admin     = admin_orgs.any?
 
     @default_filter_params = { show_archived: 0, sorted_by: 'id desc' }
 
     # if we are an admin we want to default to admin organizations
     if @admin
-      @organizations = Dashboard::IdentityOrganizations.new(@user.id).admin_organizations_with_protocols
-      @default_filter_params[:admin_filter] = "for_admin #{@user.id}"
+      @organizations = Dashboard::IdentityOrganizations.new(current_user.id).admin_organizations_with_protocols
+      @default_filter_params[:admin_filter] = "for_admin #{current_user.id}"
     else
-      @organizations = Dashboard::IdentityOrganizations.new(@user.id).general_user_organizations_with_protocols
-      @default_filter_params[:admin_filter] = "for_identity #{@user.id}"
+      @organizations = Dashboard::IdentityOrganizations.new(current_user.id).general_user_organizations_with_protocols
+      @default_filter_params[:admin_filter] = "for_identity #{current_user.id}"
     end
 
     @filterrific =
@@ -56,11 +56,10 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       ) || return
 
     @protocols        = @filterrific.find.page(params[:page])
-    @admin_protocols  = Protocol.for_admin(@user.id).pluck(:id)
-    @protocol_filters = ProtocolFilter.latest_for_user(@user.id, ProtocolFilter::MAX_FILTERS)
+    @admin_protocols  = Protocol.for_admin(current_user.id).pluck(:id)
+    @protocol_filters = ProtocolFilter.latest_for_user(current_user.id, ProtocolFilter::MAX_FILTERS)
 
     #toggles the display of the breadcrumbs, navbar always displays
-    @disable_breadcrumb  = true
     session[:breadcrumbs].clear
 
     setup_sorting_variables
@@ -184,7 +183,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def update_protocol_type
-    protocol_role       = @protocol.project_roles.find_by(identity_id: @user.id)
+    protocol_role       = @protocol.project_roles.find_by(identity_id: current_user.id)
     @permission_to_edit = protocol_role.nil? ? false : protocol_role.can_edit?
 
     # Setting type and study_type_question_group, not actually saving
@@ -227,7 +226,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def display_requests
     permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
-    modal              = render_to_string(partial: 'dashboard/protocols/requests_modal', locals: { protocol: @protocol, user: @user, permission_to_edit: permission_to_edit, show_view_ssr_back: true })
+    modal              = render_to_string(partial: 'dashboard/protocols/requests_modal', locals: { protocol: @protocol, permission_to_edit: permission_to_edit, show_view_ssr_back: true })
 
     data = { modal: modal }
     render json: data

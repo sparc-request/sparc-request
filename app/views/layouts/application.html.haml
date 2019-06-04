@@ -34,7 +34,7 @@
     - unless Rails.env.production?
       .alert.alert-danger.rounded-0.text-center.m-0{ role: 'alert' }
         = Rails.env.capitalize
-    = render 'layouts/header', location: 'proper'
+    = render 'layouts/header', location: @location || 'proper'
     = render 'layouts/navbar'
     = yield(:sub_header) if content_for(:sub_header)
     %main

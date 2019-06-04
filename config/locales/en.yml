@@ -429,6 +429,11 @@ en:
       profile:
         notifications: "Notifications"
         edit: "Edit Profile"
+    dashboard:
+      navigation:
+        tooltips:
+          epic_queue: "View Epic Protocols"
+          protocol_merge: "Merge Protocols"
     footer:
       version: "SPARCRequest %{version}"
       copyright: "&copy; 2011-2019 MUSC Foundation for Research Development"

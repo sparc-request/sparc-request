@@ -24,10 +24,10 @@ $("#pricing_map_submit").removeAttr('disabled')
 <% else %>
 $("#modalContainer").modal('hide')
 $("#flashContainer").html("<%= escape_javascript(render( 'layouts/flash' )) %>")
-$("#pricing_maps_container").html("<%= j render '/catalog_manager/services/pricing_form', service: @service, user: @user %>")
+$("#pricing_maps_container").html("<%= j render '/catalog_manager/services/pricing_form', service: @service %>")
 
 ##Re render general info form, to refresh availability toggle, etc.
-$("#general-info .panel-body").html("<%= j render '/catalog_manager/services/general_info_form', service: @service, user: @user %>")
+$("#general-info .panel-body").html("<%= j render '/catalog_manager/services/general_info_form', service: @service %>")
 $("[data-toggle='toggle']").bootstrapToggle();
 $('.selectpicker').selectpicker();
 

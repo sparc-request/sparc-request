@@ -25,12 +25,12 @@
 
 .row.admin-dashboard
   %p.col-xs-6.text-left
-    = @user.full_name
+    = current_user.full_name
     |
-    = @user.email
+    = current_user.email
   .col-xs-6.text-right
     = link_to "Create A Request", root_path, :class => 'create_new_request header_button btn btn-primary btn-md'
-    - if @user.is_super_user?
+    - if current_user.is_super_user?
       = link_to "Reporting", reports_path, :class => 'reporting header_button btn btn-primary btn-md'
     - if Setting.get_value("epic_queue_access").include?(current_user.ldap_uid)
       = link_to "View Epic Queue", dashboard_epic_queues_path, :class => 'epic_queues header_button btn btn-primary btn-md'

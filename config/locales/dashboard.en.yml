@@ -121,17 +121,6 @@ en:
       destroyed: "Services Removed!"
       service: "Service:"
 
-    ##########
-    # NAVBAR #
-    ##########
-    navbar:
-      logged_in_as: "Logged in as "
-      epic_queue: "Epic Queue"
-      messages: "All Notifications"
-      tooltips:
-        epic_queue: "View or edit protocols for Epic interface"
-        messages: "Access to correspondence"
-
     ##############
     # NAVIGATION #
     ##############

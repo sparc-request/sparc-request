@@ -20,11 +20,11 @@
 
 .col-lg-3
   #filterrific_form
-    = render 'dashboard/protocol_filters/filter_protocols_form', filterrific: @filterrific, current_user: @user, admin: @admin
+    = render 'dashboard/protocol_filters/filter_protocols_form', filterrific: @filterrific, admin: @admin
 
 .col-lg-9
   #filterrific_results
-    = render 'dashboard/protocols/protocols_list', protocols: @protocols, current_user: @user, admin_protocols: @admin_protocols, filterrific_params: @filterrific_params, page: @page
+    = render 'dashboard/protocols/protocols_list', protocols: @protocols, admin_protocols: @admin_protocols, filterrific_params: @filterrific_params, page: @page
 
 :javascript
   $(document).ready( function() {

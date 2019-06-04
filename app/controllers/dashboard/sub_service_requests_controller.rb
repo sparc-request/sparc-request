@@ -31,7 +31,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   def index
     service_request       = ServiceRequest.find(params[:srid])
     protocol              = service_request.protocol
-    @admin_orgs           = @user.authorized_admin_organizations
+    @admin_orgs           = current_user.authorized_admin_organizations
     @sub_service_requests = service_request.sub_service_requests.where.not(status: 'first_draft') # TODO: Remove Historical first_draft SSRs and remove this
     @show_view_ssr_back   = params[:show_view_ssr_back]
     @sr_table             = params[:sr_table] || false
@@ -234,16 +234,16 @@ private
   end
 
   def find_permissions
-    @permission_to_edit = @user.can_edit_protocol?(@service_request.protocol)
-    @permission_to_view = @permission_to_edit || @user.can_view_protocol?(@service_request.protocol)
+    @permission_to_edit = current_user.can_edit_protocol?(@service_request.protocol)
+    @permission_to_view = @permission_to_edit || current_user.can_view_protocol?(@service_request.protocol)
   end
 
   def find_admin_orgs
-    @admin_orgs = @user.authorized_admin_organizations
+    @admin_orgs = current_user.authorized_admin_organizations
   end
 
   def authorize_protocol
-    unless @permission_to_view || Protocol.for_admin(@user.id).include?(@service_request.protocol)
+    unless @permission_to_view || Protocol.for_admin(current_user.id).include?(@service_request.protocol)
       @sub_service_request  = nil
       @service_request      = nil
       @permission_to_edit   = nil

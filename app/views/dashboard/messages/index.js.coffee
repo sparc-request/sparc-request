@@ -21,8 +21,8 @@
 <% unless @read_by_user %>
 #Decrement the notification count if the notification was unread
 
-badge_count = parseInt($('#messages-btn .badge').text())
-$('#messages-btn .badge').text(badge_count - 1)
+badge_count = parseInt($('#messagesBadge').text())
+$('#messagesBadge').text(badge_count - 1)
 
 if $('#notification_count').length
   notification_count = parseInt($('#notification_count').text())

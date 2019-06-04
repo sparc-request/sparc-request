@@ -19,6 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class ApplicationController < ActionController::Base
+  include ActionView::Helpers::TextHelper
+
   protect_from_forgery prepend: true
 
   helper :all
@@ -120,6 +122,23 @@ class ApplicationController < ActionController::Base
         end
       end
     end
+  end
+
+  def create_calendar_event(event, occurence)
+    all_day     = !occurence.start_time.to_s.include?("UTC")
+    start_time  = Time.parse(occurence.start_time.to_s).in_time_zone("Eastern Time (US & Canada)")
+    end_time    = Time.parse(occurence.end_time.to_s).in_time_zone("Eastern Time (US & Canada)")
+    {
+      month:          start_time.strftime("%b"),
+      day:            start_time.day,
+      title:          event.summary,
+      description:    simple_format(event.description).gsub(URI::regexp(%w(http https)), '<a href="\0" target="_blank">\0</a>'),
+      all_day:        all_day,
+      start_time:     start_time.strftime("%l:%M %p"),
+      end_time:       end_time.strftime("%l:%M %p"),
+      sort_by_start:  start_time.strftime("%Y%m%d"),
+      where:          event.location
+    }
   end
 
   #####################

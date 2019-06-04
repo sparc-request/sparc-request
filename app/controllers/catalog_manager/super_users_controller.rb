@@ -24,7 +24,7 @@ class CatalogManager::SuperUsersController < CatalogManager::AppController
     @super_user = SuperUser.new(super_user_params)
     @identity = Identity.find(@super_user.identity_id)
     @organization = @super_user.organization
-    @user_rights  = user_rights(@organization.id)
+    current_user_rights  = user_rights(@organization.id)
 
     if @super_user.save
       flash[:notice] = "Super User created successfully."
@@ -41,7 +41,7 @@ class CatalogManager::SuperUsersController < CatalogManager::AppController
     @super_user = SuperUser.find_by(super_user_params)
     @identity = Identity.find(@super_user.identity_id)
     @organization = @super_user.organization
-    @user_rights  = user_rights(@organization.id)
+    current_user_rights  = user_rights(@organization.id)
 
     if @super_user.destroy
       flash[:notice] = "Super User removed successfully."
@@ -56,7 +56,7 @@ class CatalogManager::SuperUsersController < CatalogManager::AppController
     @super_user = SuperUser.find_by(identity_id: super_user_params[:identity_id], organization_id: super_user_params[:organization_id])
     @identity = @super_user.identity
     @organization = @super_user.organization
-    @user_rights  = user_rights(@organization.id)
+    current_user_rights  = user_rights(@organization.id)
 
     if @super_user.update_attributes(super_user_params)
       flash[:notice] = "Super User successfully updated."

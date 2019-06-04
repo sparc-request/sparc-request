@@ -23,7 +23,7 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
   respond_to :json, :html
 
   def show
-    @user = current_identity
+    current_user = current_identity
   end
 
   def perform_protocol_merge
@@ -129,7 +129,7 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
   end
 
   def authorize_overlord
-    unless @user.catalog_overlord?
+    unless current_user.catalog_overlord?
       authorization_error('You do not have access to perform a Protocol Merge')
     end
   end

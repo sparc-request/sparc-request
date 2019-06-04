@@ -27,7 +27,6 @@ class AssociatedUsersController < ApplicationController
   before_action :find_protocol,               only: [:index, :new, :edit, :destroy]
 
   def index
-    @current_user   = current_user
     @protocol_roles = @protocol.project_roles
 
     respond_to do |format|

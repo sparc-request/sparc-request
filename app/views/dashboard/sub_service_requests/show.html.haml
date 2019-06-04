@@ -39,7 +39,7 @@
       %a#notifications-tab{href: "#notifications", role: 'tab', 'aria-controls' => 'notifications-tab', data: {toggle: 'tab', partial_name: 'notifications/notifications'}}
         = t(:dashboard)[:sub_service_requests][:tabs][:notifications][:header]
         %span#notification_count.badge
-          = @user.unread_notification_count(@sub_service_request.id)
+          = current_user.unread_notification_count(@sub_service_request.id)
 
   .tab-content
     .tab-pane#details{role: 'tabpanel', class: cookies['admin-tab'] == 'details-tab' ? 'active' : '', data: {partial_name: 'sub_service_requests/request_details'}}
@@ -52,4 +52,4 @@
     .tab-pane#history{role: 'tabpanel', class: cookies['admin-tab'] == 'history-tab' ? 'active' : '', data: {partial_name: 'sub_service_requests/history/status_changes'}}
       = render 'dashboard/sub_service_requests/history/status_changes', sub_service_request: @sub_service_request, tab: 'status_changes' if cookies['admin-tab'] == 'history-tab'
     .tab-pane#notifications{role: 'tabpanel', class: cookies['admin-tab'] == 'notifications-tab' ? 'active' : '', data: {partial_name: 'notifications/notifications'}}
-      = render 'dashboard/notifications/notifications', sub_service_request: @sub_service_request, user: @user if cookies['admin-tab'] == 'notifications-tab'
+      = render 'dashboard/notifications/notifications', sub_service_request: @sub_service_request if cookies['admin-tab'] == 'notifications-tab'

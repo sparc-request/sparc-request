@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $("#modal_errors").html("<%= j render 'layouts/modal_errors', errors: @errors %>")
 <% unless @errors %>
-$("#saved_searches").html("<%= j render 'dashboard/protocol_filters/saved_searches', current_user: @user, protocol_filters: @protocol_filters %>")
+$("#saved_searches").html("<%= j render 'dashboard/protocol_filters/saved_searches', protocol_filters: @protocol_filters %>")
 $("#modalContainer").modal('hide')
 <% if @protocol_filters.count == 0 %>
 $("#saved_searches").html("")

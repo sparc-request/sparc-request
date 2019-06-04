@@ -20,7 +20,7 @@
 
 .bootstrap-table-dropdown-overflow
   %div{ class: "service-requests-custom-toolbar-#{service_request.id}" }
-    - permission_to_edit = permission_to_edit || user.catalog_overlord
+    - permission_to_edit = permission_to_edit || current_user.catalog_overlord
     - if permission_to_edit
       %div.tooltip-wrapper{ data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' }, title: t(:dashboard)[:service_requests][:tooltips][:modify_request] }
         = link_to t(:dashboard)[:service_requests][:modify_request], catalog_service_request_path(srid: service_request.id), class: ['edit-service-request btn btn-warning btn-sm', permission_to_edit ? '' : 'disabled']

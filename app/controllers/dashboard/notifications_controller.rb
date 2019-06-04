@@ -30,9 +30,9 @@ class Dashboard::NotificationsController < Dashboard::BaseController
 
     @notifications =
       if @table == 'inbox'
-        Notification.in_inbox_of(@user.id, params[:sub_service_request_id])
+        Notification.in_inbox_of(current_user.id, params[:sub_service_request_id])
       else
-        Notification.in_sent_of(@user.id, params[:sub_service_request_id])
+        Notification.in_sent_of(current_user.id, params[:sub_service_request_id])
       end.uniq
   end
 
@@ -59,16 +59,16 @@ class Dashboard::NotificationsController < Dashboard::BaseController
   def create
     if message_params[:to].present?
       @recipient = Identity.find(message_params[:to])
-      @notification = Notification.new(notification_params.merge(originator_id: @user.id, read_by_originator: true, other_user_id: @recipient.id, read_by_other_user: false))
-      @message = @notification.messages.new(message_params.merge(from: @user.id, email: @recipient.email))
+      @notification = Notification.new(notification_params.merge(originator_id: current_user.id, read_by_originator: true, other_user_id: @recipient.id, read_by_other_user: false))
+      @message = @notification.messages.new(message_params.merge(from: current_user.id, email: @recipient.email))
       if @message.valid?
         @notification.save
         @message.save
 
         ssr = @notification.sub_service_request
-        @notifications = Notification.belonging_to(@user.id, params[:sub_service_request_id])
+        @notifications = Notification.belonging_to(current_user.id, params[:sub_service_request_id])
 
-        UserMailer.notification_received(@recipient, ssr, @user).deliver unless @recipient.email.blank?
+        UserMailer.notification_received(@recipient, ssr, current_user).deliver unless @recipient.email.blank?
         flash[:success] = 'Notification Sent!'
       else
         @errors = @message.errors
@@ -79,13 +79,13 @@ class Dashboard::NotificationsController < Dashboard::BaseController
   def mark_as_read
     # handles marking notification messages as read or unread
     as_read = (params[:read] == 'true') #could be 'true'(read) or 'false'(unread)
-    Notification.where(id: params[:notification_ids]).each { |n| n.set_read_by(@user, as_read)}
+    Notification.where(id: params[:notification_ids]).each { |n| n.set_read_by(current_user, as_read)}
 
     if params[:sub_service_request_id]
-      @unread_notification_count_for_ssr = @user.unread_notification_count(params[:sub_service_request_id])
+      @unread_notification_count_for_ssr = current_user.unread_notification_count(params[:sub_service_request_id])
     end
 
-    @unread_notification_count = @user.unread_notification_count
+    @unread_notification_count = current_user.unread_notification_count
   end
 
   private

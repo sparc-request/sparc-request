@@ -8,5 +8,5 @@ json.(@protocol_roles) do |pr|
   json.phone             pr.identity.phone
   json.protocol_id       pr.protocol_id
   json.edit              authorized_users_edit_button(pr)
-  json.delete            authorized_users_delete_button(pr, @current_user)
+  json.delete            authorized_users_delete_button(pr)
 end

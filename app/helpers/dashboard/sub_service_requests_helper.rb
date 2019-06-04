@@ -59,11 +59,11 @@ module Dashboard::SubServiceRequestsHelper
     end
   end
 
-  def ready_for_fulfillment_display user, sub_service_request
+  def ready_for_fulfillment_display(sub_service_request)
     display = content_tag(:div, "", class: "row")
     if sub_service_request.ready_for_fulfillment?
       if sub_service_request.in_work_fulfillment?
-        if user.go_to_cwf_rights?(sub_service_request.organization)
+        if current_user.go_to_cwf_rights?(sub_service_request.organization)
           if sub_service_request.imported_to_fulfillment?
             # In fulfillment, and user has rights to view in Fulfillment
             display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:go_to_fulfillment], "#{Setting.get_value("clinical_work_fulfillment_url")}/sub_service_request/#{sub_service_request.id}", target: "_blank", class: "btn btn-primary btn-md fulfillment_status"
@@ -79,7 +79,7 @@ module Dashboard::SubServiceRequestsHelper
           display += button_tag t(:dashboard)[:sub_service_requests][:header][:fulfillment][:in_fulfillment], class: "btn btn-primary btn-md form-control", disabled: true
         end
       else
-        if user.send_to_cwf_rights?(sub_service_request.organization)
+        if current_user.send_to_cwf_rights?(sub_service_request.organization)
           # Not in Fulfillment, and user has rights to send to Fulfillment
           display += button_tag t(:dashboard)[:sub_service_requests][:header][:fulfillment][:send_to_fulfillment], data: { sub_service_request_id: sub_service_request.id }, id: "send_to_fulfillment_button", class: "btn btn-success btn-md form-control"
         else
@@ -193,15 +193,15 @@ module Dashboard::SubServiceRequestsHelper
     total
   end
 
-  def ssr_notifications_display(ssr, user, sr_table)
-    render 'dashboard/notifications/dropdown.html', sub_service_request: ssr, user: user, sr_table: sr_table
+  def ssr_notifications_display(ssr, sr_table)
+    render 'dashboard/notifications/dropdown.html', sub_service_request: ssr, sr_table: sr_table
   end
 
-  def ssr_actions_display(ssr, user, permission_to_edit, admin_orgs, show_view_ssr_back)
+  def ssr_actions_display(ssr, permission_to_edit, admin_orgs, show_view_ssr_back)
     admin_access = (admin_orgs & ssr.org_tree).any?
 
     ssr_view_button(ssr, show_view_ssr_back)+
-    ssr_admin_button(ssr, user, permission_to_edit, admin_access)
+    ssr_admin_button(ssr, permission_to_edit, admin_access)
   end
 
   def display_owner(ssr)
@@ -232,7 +232,7 @@ module Dashboard::SubServiceRequestsHelper
     content_tag(:button, t(:dashboard)[:service_requests][:actions][:view], class: 'view-service-request btn btn-primary btn-sm', type: 'button', data: { sub_service_request_id: ssr.id, show_view_ssr_back: show_view_ssr_back.to_s, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:dashboard)[:service_requests][:actions][:tooltips][:view])
   end
 
-  def ssr_admin_button(ssr, user, permission_to_edit, admin_access)
+  def ssr_admin_button(ssr, permission_to_edit, admin_access)
     if admin_access
       link_to t(:dashboard)[:service_requests][:actions][:admin_edit], dashboard_sub_service_request_path(ssr), class: "edit-service-request btn btn-warning btn-sm", type: 'button', data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:dashboard)[:service_requests][:actions][:tooltips][:admin]
     else

@@ -19,11 +19,5 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  $(document).on 'click', '#messages-btn', ->
-    window.location.href = '/dashboard/notifications'
-
-  $(document).on 'click', '#epic-queue-btn', ->
-    window.location.href = '/dashboard/epic_queues'
-
   $(document).on 'click', '#survey-btn', ->
     window.location.href = '/surveyor/surveys'

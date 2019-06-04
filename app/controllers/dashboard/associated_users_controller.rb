@@ -77,10 +77,10 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
   def create
-    creator = AssociatedUserCreator.new(project_role_params, @user)
+    creator = AssociatedUserCreator.new(project_role_params, current_user)
 
     if creator.successful?
-      if @current_user_created = params[:project_role][:identity_id].to_i == @user.id
+      if @current_user_created = params[:project_role][:identity_id].to_i == current_user.id
         @permission_to_edit = creator.protocol_role.can_edit?
       end
 
@@ -95,11 +95,11 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
   def update
-    updater = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params, current_identity: @user)
+    updater = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params, current_identity: current_user)
 
     if updater.successful?
       # We care about this because the new rights will determine what is rendered
-      if @current_user_updated = params[:project_role][:identity_id].to_i == @user.id
+      if @current_user_updated = params[:project_role][:identity_id].to_i == current_user.id
         @protocol_type      = @protocol.type
         protocol_role       = updater.protocol_role
         @permission_to_edit = protocol_role.can_edit?
@@ -131,7 +131,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     Notifier.notify_primary_pi_for_epic_user_removal(@protocol, @protocol_roles).deliver if is_epic?
     @protocol.email_about_change_in_authorized_user(@protocol_roles, "destroy")
 
-    if @current_user_destroyed = @protocol_roles.map(&:identity_id).include?(@user.id)
+    if @current_user_destroyed = @protocol_roles.map(&:identity_id).include?(current_user.id)
       @protocol_type      = @protocol.type
       @permission_to_edit = false
 

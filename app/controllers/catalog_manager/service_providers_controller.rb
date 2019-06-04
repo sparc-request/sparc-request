@@ -24,7 +24,7 @@ class CatalogManager::ServiceProvidersController < CatalogManager::AppController
     @service_provider = ServiceProvider.new(service_provider_params)
     @identity = Identity.find(@service_provider.identity_id)
     @organization = @service_provider.organization
-    @user_rights  = user_rights(@organization.id)
+    current_user_rights  = user_rights(@organization.id)
 
     if @service_provider.save
       flash[:notice] = "Service Provider created successfully."
@@ -41,7 +41,7 @@ class CatalogManager::ServiceProvidersController < CatalogManager::AppController
     @service_provider = ServiceProvider.find_by(service_provider_params)
     @identity = Identity.find(@service_provider.identity_id)
     @organization = @service_provider.organization
-    @user_rights  = user_rights(@organization.id)
+    current_user_rights  = user_rights(@organization.id)
 
     if @service_provider.destroy
       flash[:notice] = "Service Provider removed successfully."
@@ -56,7 +56,7 @@ class CatalogManager::ServiceProvidersController < CatalogManager::AppController
     @service_provider = ServiceProvider.find_by(identity_id: service_provider_params[:identity_id], organization_id: service_provider_params[:organization_id])
     @identity = Identity.find(@service_provider.identity_id)
     @organization = @service_provider.organization
-    @user_rights  = user_rights(@organization.id)
+    current_user_rights  = user_rights(@organization.id)
 
     if @service_provider.update_attributes(service_provider_params)
       flash[:notice] = "Service Provider successfully updated."

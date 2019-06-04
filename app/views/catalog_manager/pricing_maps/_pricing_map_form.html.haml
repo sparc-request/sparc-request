@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- pricing_map_disabled = (pricing_map.new_record? ? false : pricing_map.disabled?(@user))
+- pricing_map_disabled = (pricing_map.new_record? ? false : pricing_map.disabled?(current_user))
 - rate_map = pricing_map.service.get_rate_maps(pricing_map.display_date.to_date.strftime("%F"), pricing_map.full_rate) rescue nil
 
 #pricing_map_modal

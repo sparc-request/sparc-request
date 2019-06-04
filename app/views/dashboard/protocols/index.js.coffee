@@ -17,8 +17,8 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$("#filterrific_form").html("<%= escape_javascript(render( '/dashboard/protocol_filters/filter_protocols_form', filterrific: @filterrific, current_user: @user, admin: @admin )) %>")
-$("#filterrific_results").html("<%= escape_javascript(render( '/dashboard/protocols/protocols_list', protocols: @protocols, current_user: @user, admin_protocols: @admin_protocols, filterrific_params: @filterrific_params, page: @page )) %>")
+$("#filterrific_form").html("<%= escape_javascript(render( '/dashboard/protocol_filters/filter_protocols_form', filterrific: @filterrific, admin: @admin )) %>")
+$("#filterrific_results").html("<%= escape_javascript(render( '/dashboard/protocols/protocols_list', protocols: @protocols, admin_protocols: @admin_protocols, filterrific_params: @filterrific_params, page: @page )) %>")
 $(".selectpicker").selectpicker()
 
 <% if @sorted_by %>

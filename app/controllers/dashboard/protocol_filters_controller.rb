@@ -22,7 +22,7 @@ class Dashboard::ProtocolFiltersController < Dashboard::BaseController
   respond_to :html, :json
 
   def new
-    @protocol_filter = @user.protocol_filters.new(new_params)
+    @protocol_filter = current_user.protocol_filters.new(new_params)
   end
 
   def create
@@ -32,13 +32,13 @@ class Dashboard::ProtocolFiltersController < Dashboard::BaseController
       flash[:alert] = 'Search Failed to Save.'
     end
 
-    @protocol_filters = ProtocolFilter.latest_for_user(@user.id, ProtocolFilter::MAX_FILTERS)
+    @protocol_filters = ProtocolFilter.latest_for_user(current_user.id, ProtocolFilter::MAX_FILTERS)
   end
 
   def destroy
     filter = ProtocolFilter.find(params[:id])
     filter.destroy
-    @protocol_filters = ProtocolFilter.latest_for_user(@user.id, ProtocolFilter::MAX_FILTERS)
+    @protocol_filters = ProtocolFilter.latest_for_user(current_user.id, ProtocolFilter::MAX_FILTERS)
     
     flash[:alert] = 'Search Deleted!'
     

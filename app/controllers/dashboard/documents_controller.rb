@@ -29,9 +29,9 @@ class Dashboard::DocumentsController < Dashboard::BaseController
 
   def index
     @documents          = @protocol.documents
-    @permission_to_edit = @user.can_edit_protocol?(@protocol)
-    permission_to_view  = @user.can_view_protocol?(@protocol)
-    @admin_orgs         = @user.authorized_admin_organizations
+    @permission_to_edit = current_user.can_edit_protocol?(@protocol)
+    permission_to_view  = current_user.can_view_protocol?(@protocol)
+    @admin_orgs         = current_user.authorized_admin_organizations
   end
 
   def new
@@ -100,10 +100,10 @@ class Dashboard::DocumentsController < Dashboard::BaseController
   end
 
   def authorize_admin_access_document
-    if @user.catalog_overlord?
+    if current_user.catalog_overlord?
       true
     else
-      @admin_orgs = @user.authorized_admin_organizations
+      @admin_orgs = current_user.authorized_admin_organizations
 
       unless @authorization.can_edit? || (@admin_orgs & @document.all_organizations).any?
         authorization_error('You are not allowed to edit this document.')

@@ -24,5 +24,5 @@ $("#pricing_map_submit").removeAttr('disabled')
 <% else %>
 $("#modalContainer").modal('hide')
 $("#flashContainer").html("<%= escape_javascript(render( 'layouts/flash' )) %>")
-$("#pricing_maps_container").html("<%= j render '/catalog_manager/services/pricing_form', service: @service, user: @user %>")
+$("#pricing_maps_container").html("<%= j render '/catalog_manager/services/pricing_form', service: @service %>")
 <% end %>

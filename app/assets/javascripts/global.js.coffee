@@ -17,19 +17,16 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$ ->
 
-  _super = $.fn.modal
-  $.extend _super.Constructor.DEFAULTS,
-    backdrop: 'static'
-
-  $(".datetimepicker:not(.time)").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
-  $('.datetimepicker.time').datetimepicker(format: 'hh:mm A', allowInputToggle: true)
-  $(".selectpicker").selectpicker()
-  $('[data-toggle="tooltip"]').tooltip()
+$(document).on 'turbolinks:load', ->
+  initializeSelectpickers()
+  initializeTooltips()
+  initializePopovers()
 
   $(document).ajaxComplete ->
-    $('[data-toggle="tooltip"]').tooltip()
+    initializeSelectpickers()
+    initializeTooltips()
+    initializePopovers()
 
   $(document).on 'show.bs.collapse hide.bs.collapse', '.collapse, .collapsing', ->
     $control = $("[href='##{$(this).attr('id')}']")
@@ -58,6 +55,15 @@ $ ->
         $that.parents('.input-group').siblings('.help-text').remove()
       )
     ), 1500
+
+(exports ? this).initializeSelectpickers = () ->
+  $('.selectpicker').selectpicker()
+
+(exports ? this).initializeTooltips = () ->
+  $('[data-toggle=tooltip]').tooltip()
+
+(exports ? this).initializePopovers = () ->
+  $('[data-toggle=popover]').popover()
 
 (exports ? this).getSRId = ->
   $("input[name='srid']").val()

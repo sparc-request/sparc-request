@@ -40,15 +40,21 @@
 //= require bootstrap-table/dist/bootstrap-table.min
 //= require corejs-typeahead/dist/typeahead.bundle.min
 //= require js-cookie/src/js.cookie
-
 //= require nprogress/nprogress
 
-///////////////////////////////
-/// Require Our JavaScripts ///
-///////////////////////////////
+//////////////////////////////////
+/// Require Our Custom Scripts ///
+//////////////////////////////////
 
+//= require custom/bootstrap-custom
 //= require custom/bootstrap-select-custom
+//= require custom/nprogress-custom
 
+///////////////////////////
+/// Require Our Scripts ///
+///////////////////////////
+
+//= require global
 
 
 

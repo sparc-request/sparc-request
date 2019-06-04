@@ -138,15 +138,6 @@ en:
       subject_count: 'Total number of estimated participants per arm'
       visit_count: 'Total number of visits per arm'
 
-  #######################
-  # AUTHORIZATION ERROR #
-  #######################
-  authorization_error:
-    header: "Authorization Error"
-    link: "Return to your Dashboard"
-    dashboard:
-      visit_groups: 'You are not allowed to access that Visit Group.'
-
   ####################
   # AUTHORIZED USERS #
   ####################
@@ -368,6 +359,16 @@ en:
     select_type: "Please Select Type"
     delete_confirm: "Are you sure you want to delete the selected Document from this protocol?"
 
+  ##########
+  # ERRORS #
+  ##########
+  errors:
+    authorization_error:
+      header: "Authorization Error"
+      link: "Return to your Dashboard"
+      dashboard:
+        visit_groups: 'You are not allowed to access that Visit Group.'
+
   ###############
   # ERROR PAGES #
   ###############
@@ -417,6 +418,17 @@ en:
       toggle: "Toggle Navigation"
       sign_in_up: "Sign In / Sign Up"
       sign_out: "Sign Out"
+      news:
+        header: "Recent News"
+        none: "There is no recent news. Please check back later."
+      events:
+        header: "Upcoming Events"
+        all_day: "All Day"
+        none: "No events scheduled within a month from today."
+        learn_more: "Learn More"
+      profile:
+        notifications: "Notifications"
+        edit: "Edit Profile"
     footer:
       version: "SPARCRequest %{version}"
       copyright: "&copy; 2011-2019 MUSC Foundation for Research Development"
@@ -700,7 +712,7 @@ en:
   #############################
   # VALIDATION ERROR MESSAGES #
   #############################
-  errors:
+  validation_errors:
     user_note: "Fields marked with an asterisk ( * ) are required"
     arms:
       name_unique: "has to be unique within a study/project"

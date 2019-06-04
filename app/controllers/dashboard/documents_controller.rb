@@ -106,7 +106,7 @@ class Dashboard::DocumentsController < Dashboard::BaseController
       @admin_orgs = @user.authorized_admin_organizations
 
       unless @authorization.can_edit? || (@admin_orgs & @document.all_organizations).any?
-        render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to edit this document.' }
+        authorization_error('You are not allowed to edit this document.')
       end
     end
   end

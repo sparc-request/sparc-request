@@ -122,13 +122,7 @@ class Dashboard::VisitGroupsController < Dashboard::BaseController
 
   def authorize_admin_visit_group
     unless (@user.authorized_admin_organizations & @sub_service_request.org_tree).any?
-      @protocol            = nil
-      @service_request     = nil
-      @sub_service_request = nil
-      @visit_group         = nil
-
-      # This is an intruder
-      flash[:alert] = t(:authorization_error)[:dashboard][:visit_groups]
+      flash[:alert] = t(:errors)[:authorization_error)[:dashboard][:visit_groups]
       redirect_to dashboard_root_path
     end
   end

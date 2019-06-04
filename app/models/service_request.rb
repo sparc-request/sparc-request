@@ -70,13 +70,13 @@ class ServiceRequest < ApplicationRecord
 
   def validate_line_items
     if self.line_items.empty?
-      errors.add(:base, I18n.t(:errors)[:service_requests][:line_items_missing])
+      errors.add(:base, I18n.t(:validation_errors)[:service_requests][:line_items_missing])
     end
   end
 
   def validate_protocol
     if self.protocol_id.blank?
-      errors.add(:base, I18n.t(:errors)[:service_requests][:protocol_missing])
+      errors.add(:base, I18n.t(:validation_errors)[:service_requests][:protocol_missing])
     elsif !self.protocol.valid?
       self.protocol.errors.full_messages.each{ |e| errors.add(:base, e) }
     end
@@ -85,13 +85,13 @@ class ServiceRequest < ApplicationRecord
   def validate_service_details
     if protocol
       if protocol.start_date.nil?
-        errors.add(:base, I18n.t(:errors)[:protocols][:start_date_missing])
+        errors.add(:base, I18n.t(:validation_errors)[:protocols][:start_date_missing])
       end
       if protocol.end_date.nil?
-        errors.add(:base, I18n.t(:errors)[:protocols][:end_date_missing])
+        errors.add(:base, I18n.t(:validation_errors)[:protocols][:end_date_missing])
       end
       if protocol.start_date && protocol.end_date && protocol.start_date > protocol.end_date
-        errors.add(:base, I18n.t(:errors)[:protocols][:date_range_invalid])
+        errors.add(:base, I18n.t(:validation_errors)[:protocols][:date_range_invalid])
       end
     else
       protocol
@@ -100,18 +100,18 @@ class ServiceRequest < ApplicationRecord
 
   def validate_arms
     if has_per_patient_per_visit_services? && protocol && protocol.arms.empty?
-      errors.add(:base, I18n.t(:errors)[:service_requests][:arms_missing])
+      errors.add(:base, I18n.t(:validation_errors)[:service_requests][:arms_missing])
     end
   end
 
   def validate_service_calendar
     vg = visit_groups.to_a.find { |vg| !vg.in_order? }
     if vg
-      errors.add(:base, I18n.t('errors.visit_groups.days_out_of_order', arm_name: vg.arm.name))
+      errors.add(:base, I18n.t('validation_errors.visit_groups.days_out_of_order', arm_name: vg.arm.name))
     end
 
     if Setting.get_value("use_epic") && (arms = self.arms.joins(:visit_groups).where(visit_groups: { day: nil })).any?
-      arms.each{ |arm| errors.add(:base, I18n.t('errors.arms.visit_day_missing', arm_name: arm.name)) }
+      arms.each{ |arm| errors.add(:base, I18n.t('validation_errors.arms.visit_day_missing', arm_name: arm.name)) }
     end
   end
 

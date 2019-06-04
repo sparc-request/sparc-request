@@ -19,32 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 SparcRails::Application.routes.draw do
-  post 'study_type/determine_study_type_note'
-
-  namespace :surveyor do
-    resources :surveys, only: [:index, :new, :create, :edit, :destroy] do
-      get :preview
-      get :update_dependents_list
-      post :copy
-    end
-    resource :survey, only: [] do
-      get :search_surveyables
-    end
-    resources :sections, only: [:create, :destroy]
-    resources :questions, only: [:create, :destroy]
-    resources :options, only: [:create, :destroy]
-    resources :responses do
-      get :complete
-      put :resend_survey
-    end
-    resources :response_filters, only: [:new, :create, :destroy]
-    resources :survey_updater, only: [:update]
-    root to: 'surveys#index'
-  end
-
-  resources :forms, only: [:index]
-
-  resources :feedback
+  ####################
+  ### Devise Setup ###
+  ####################
 
   begin
     use_shibboleth_only = Setting.get_value("use_shibboleth_only")
@@ -73,14 +50,27 @@ SparcRails::Application.routes.draw do
   end
 
   resources :identities, only: [] do
-
     member do
       get 'approve_account'
       get 'disapprove_account'
     end
   end
 
+  ####################
+  ### Other Routes ###
+  ####################
+
+  post 'study_type/determine_study_type_note'
+
+  resource :errors, only: [] do
+    get :authorization_error
+  end
+  resources :forms, only: [:index]
+
+  resources :feedback
+
   resources :contact_forms, only: [:new, :create]
+
   resources :short_interactions, only: [:new, :create]
 
   resource :locked_organizations, only: [:show]
@@ -341,18 +331,32 @@ SparcRails::Application.routes.draw do
     root to: 'protocols#index'
   end
 
+  namespace :surveyor do
+    resources :surveys, only: [:index, :new, :create, :edit, :destroy] do
+      get :preview
+      get :update_dependents_list
+      post :copy
+    end
+    resource :survey, only: [] do
+      get :search_surveyables
+    end
+    resources :sections, only: [:create, :destroy]
+    resources :questions, only: [:create, :destroy]
+    resources :options, only: [:create, :destroy]
+    resources :responses do
+      get :complete
+      put :resend_survey
+    end
+    resources :response_filters, only: [:new, :create, :destroy]
+    resources :survey_updater, only: [:update]
+    root to: 'surveys#index'
+  end
+
   resources :reports, only: [:index] do
     collection do
       get :setup
       post :generate
     end
-  end
-
-  ##### Admin Identities #####
-  namespace :admin do
-    root :to => 'identities#index'
-    match 'identities/search' => 'identities#search', :via => :get
-    resources :identities, only: [:index, :show, :create, :update]
   end
 
   ##### Funding Download #####

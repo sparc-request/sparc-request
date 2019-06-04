@@ -38,7 +38,7 @@ class QuestionResponse < ActiveRecord::Base
 
   def phone_number_format
     if content.match(/\d{10}/).nil?
-      errors.add(:base, I18n.t(:errors)[:question_responses][:phone_invalid])
+      errors.add(:base, I18n.t(:validation_errors)[:question_responses][:phone_invalid])
     end
   end
 
@@ -49,7 +49,7 @@ class QuestionResponse < ActiveRecord::Base
     # X@X.X.X
     # X-X@X.X
     if content.match(Devise::email_regexp).nil?
-      errors.add(:base, I18n.t(:errors)[:question_responses][:email_invalid])
+      errors.add(:base, I18n.t(:validation_errors)[:question_responses][:email_invalid])
     end
   end
 
@@ -58,7 +58,7 @@ class QuestionResponse < ActiveRecord::Base
     # XXXXX
     # XXXXX-XXXX
     if content.match(/\A[0-9]{5}(?:-[0-9]{4})?\z/).nil?
-      errors.add(:base, I18n.t(:errors)[:question_responses][:zipcode_invalid])
+      errors.add(:base, I18n.t(:validation_errors)[:question_responses][:zipcode_invalid])
     end
   end
 

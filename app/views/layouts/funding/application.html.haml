@@ -18,25 +18,4 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-
-!!!
-%html
-  %head
-    %title
-      = t(:funding)[:header]
-    = csrf_meta_tags
-    %meta{ charset: 'utf8' }
-    %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1, shrink-to-fit=no' }
-    = stylesheet_link_tag 'application', media: 'all', data: { turbolinks_track: 'reload' }
-    = javascript_include_tag 'application', data: { turbolinks_track: 'reload' }
-    = render 'layouts/i18n-js'
-  %body#body
-    = render 'layouts/header', location: 'proper'
-    = render 'layouts/navbar', highlighted_link: @highlighted_link
-    = render 'layouts/flash'
-    #container
-      #inner-content.row
-        = yield
-
-  = render 'layouts/footer'
-  = render 'layouts/modal'
+= render template: 'layouts/application'

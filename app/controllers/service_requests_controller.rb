@@ -60,9 +60,6 @@ class ServiceRequestsController < ApplicationController
 
   def catalog
     @institutions = Institution.all
-
-    setup_catalog_calendar
-    setup_catalog_news_feed
   end
 
   def protocol
@@ -335,60 +332,6 @@ class ServiceRequestsController < ApplicationController
       sort_by_start:  start_time.strftime("%Y%m%d"),
       where:          event.location
     }
-  end
-
-
-  def setup_catalog_calendar
-    if Setting.get_value("use_google_calendar")
-      curTime   = Time.now.utc
-      startMin  = curTime
-      startMax  = (curTime + 1.month)
-
-      @events = []
-      begin
-        path = Rails.root.join("tmp", "basic.ics")
-        if path.exist?
-          #to parse file and get events
-          cal_file = File.open(path)
-
-          cals = Icalendar::Calendar.parse(cal_file)
-
-          cal = cals.first
-
-          cal.events.each do |event|
-            if event.occurrences_between(startMin, startMax).present?
-              event.occurrences_between(startMin, startMax).each do |occurence|
-                @events << create_calendar_event(event, occurence)
-              end
-            end
-          end
-
-          if @events.present?
-            @events.sort!{ |x, y| y[:sort_by_start].to_i <=> x[:sort_by_start].to_i }
-            @events.reverse!
-          end
-
-          Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).update_all(status: ALERT_STATUSES['clear'])
-        end
-      rescue Exception, ArgumentError => e
-        active_alert = Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).first_or_initialize
-        if Rails.env == 'production' && active_alert.new_record?
-          active_alert.save
-          ExceptionNotifier::Notifier.exception_notification(request.env, e).deliver unless request.remote_ip == '128.23.150.107' # this is an ignored IP address, MUSC security causes issues when they pressure test,  this should be extracted/configurable
-        end
-      end
-    end
-  end
-
-  def setup_catalog_news_feed
-    if Setting.get_value("use_news_feed")
-      @news =
-        if Setting.get_value("use_news_feed_api")
-          NewsFeed.const_get("#{Setting.get_value("news_feed_api")}Adapter").new.posts
-        else
-          @news = NewsFeed::PageParser.new.posts
-        end
-    end
   end
 
   def send_epic_notification_for_user_approval(protocol)

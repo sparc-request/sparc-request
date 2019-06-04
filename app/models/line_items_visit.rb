@@ -48,7 +48,7 @@ class LineItemsVisit < ApplicationRecord
 
   def subject_count_valid
     if subject_count && subject_count > arm.subject_count
-      errors.add(:blank, I18n.t('errors.line_items_visits.subject_count_invalid', arm_subject_count: arm.subject_count))
+      errors.add(:blank, I18n.t('validation_errors.line_items_visits.subject_count_invalid', arm_subject_count: arm.subject_count))
     end
   end
 

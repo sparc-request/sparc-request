@@ -37,13 +37,6 @@ en:
         welcome: "Welcome to SPARCRequest:<br>Storefront of Research Services"
         description: "Search for services above or browse the providers/services on the left sidebar"
         notice: "** You may only select services applicable to ONE Study/Project at a time **"
-        news:
-          header: "News"
-          none: "There is no recent news. Please check back later."
-        calendar:
-          header: "Calendar"
-          all_day: "All Day"
-          none: "No events scheduled within a month from today."
       new_request:
         header: "New or Existing"
         warning: "Would you like to enter a new study or project into SPARCRequest?"

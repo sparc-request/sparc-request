@@ -17,17 +17,5 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.col-sm-3
-.col-sm-6
-  .panel.panel-default
-    .panel-body
-      .page-header.text-center
-        %h1
-          = t(:authorization_error)[:header]
-      .text-center
-        .alert.alert-danger.text-center
-          = raw(error)
-      %br
-      .text-center
-        = link_to t(:authorization_error)[:link], Setting.get_value("dashboard_link"), class: 'btn btn-warning'
-.col-sm-3
+
+= render template: 'layouts/application'

@@ -77,8 +77,8 @@ class LineItem < ApplicationRecord
     return true if displayed_cost.nil?
     is_float  = /\A-?[0-9]+(\.[0-9]*)?\z/ =~ displayed_cost
     num       = displayed_cost.to_f
-    errors.add(:displayed_cost, I18n.t(:errors)[:line_items][:displayed_cost_numeric]) if is_float.nil?
-    errors.add(:displayed_cost, I18n.t(:errors)[:line_items][:displayed_cost_gte_zero]) if num < 0
+    errors.add(:displayed_cost, I18n.t(:validation_errors)[:line_items][:displayed_cost_numeric]) if is_float.nil?
+    errors.add(:displayed_cost, I18n.t(:validation_errors)[:line_items][:displayed_cost_gte_zero]) if num < 0
     return is_float && num >= 0
   end
 

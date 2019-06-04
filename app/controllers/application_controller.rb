@@ -24,20 +24,21 @@ class ApplicationController < ActionController::Base
   helper :all
 
   helper_method :current_user
-  helper_method :xeditable?
 
   before_action :preload_settings
-  before_action :set_highlighted_link  # default is to not highlight a link
-  before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :set_highlighted_link
+  before_action :get_news_feed,                   if: Proc.new{ request.format.html? }
+  before_action :get_calendar_events,             if: Proc.new{ request.format.html? }
+  before_action :configure_permitted_parameters,  if: :devise_controller?
 
   protected
 
-  def preload_settings
-    Setting.preload_values
-  end
+  ##############################
+  ### Devise-Related Methods ###
+  ##############################
 
-  def not_signed_in?
-    !current_user.present?
+  def current_user
+    current_identity
   end
 
   def redirect_to_login
@@ -53,17 +54,77 @@ class ApplicationController < ActionController::Base
     root_path
   end
 
-  def set_highlighted_link  # default value, override inside controllers
-    @highlighted_link ||= ''
-  end
-
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up) { |u| u.permit!}
   end
 
-  def current_user
-    current_identity
+  #############################
+  ### Before-Action Methods ###
+  #############################
+  def preload_settings
+    Setting.preload_values
   end
+
+  def set_highlighted_link  # default value, override inside controllers
+    @highlighted_link ||= ''
+  end
+
+  def get_news_feed
+    if Setting.get_value("use_news_feed")
+      @news =
+        if Setting.get_value("use_news_feed_api")
+          NewsFeed.const_get("#{Setting.get_value("news_feed_api")}Adapter").new.posts
+        else
+          @news = NewsFeed::PageParser.new.posts
+        end
+    end
+  end
+
+  def get_calendar_events
+    if Setting.get_value("use_google_calendar")
+      curTime   = Time.now.utc
+      startMin  = curTime
+      startMax  = (curTime + 1.month)
+
+      @events = []
+      begin
+        path = Rails.root.join("tmp", "basic.ics")
+        if path.exist?
+          #to parse file and get events
+          cal_file = File.open(path)
+
+          cals = Icalendar::Calendar.parse(cal_file)
+
+          cal = cals.first
+
+          cal.events.each do |event|
+            if event.occurrences_between(startMin, startMax).present?
+              event.occurrences_between(startMin, startMax).each do |occurence|
+                @events << create_calendar_event(event, occurence)
+              end
+            end
+          end
+
+          if @events.present?
+            @events.sort!{ |x, y| y[:sort_by_start].to_i <=> x[:sort_by_start].to_i }
+            @events.reverse!
+          end
+
+          Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).update_all(status: ALERT_STATUSES['clear'])
+        end
+      rescue Exception, ArgumentError => e
+        active_alert = Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).first_or_initialize
+        if Rails.env == 'production' && active_alert.new_record?
+          active_alert.save
+          ExceptionNotifier::Notifier.exception_notification(request.env, e).deliver unless request.remote_ip == '128.23.150.107' # this is an ignored IP address, MUSC security causes issues when they pressure test,  this should be extracted/configurable
+        end
+      end
+    end
+  end
+
+  #####################
+  ### Other Methods ###
+  #####################
 
   def check_rmid_server_status
     if Setting.get_value("research_master_enabled") && (@rmid_server_down = !Protocol.rmid_status)
@@ -71,13 +132,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def authorization_error msg, ref
+  def authorization_error(msg, ref=nil)
     error = msg
     error += "<br />If you believe this is in error please contact, #{I18n.t 'error_contact'}, and provide the following information:"
-    error += "<br /> Reference #: "
-    error += ref
+    error += "<br /> Reference #: " + ref if ref
 
-    render partial: 'service_requests/authorization_error', locals: { error: error }
+    redirect_to authorization_error_errors_path(error: error)
   end
 
   def clean_errors errors
@@ -106,12 +166,12 @@ class ApplicationController < ActionController::Base
       return true
     elsif current_user && current_user.can_edit_service_request?(@service_request)
       return true
-    elsif not_signed_in?
+    elsif current_user.nil?
       authenticate_identity!
       return true
     end
 
-    authorization_error "The service request you are trying to access is not editable.", "SR#{params[:id]}"
+    authorization_error("The service request you are trying to access is not editable.", "SR#{params[:id]}")
   end
 
   def in_dashboard?
@@ -134,23 +194,19 @@ class ApplicationController < ActionController::Base
     permission_to_view  = current_user.can_view_protocol?(@protocol)
 
     unless permission_to_view || Protocol.for_admin(current_user.id).include?(@protocol)
-      @protocol = nil
-
-      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
+      authorization_error('You are not allowed to access this Sub Service Request.')
     end
   end
 
   def authorize_admin
-    if not_signed_in?
-      redirect_to_login
-    else
+    if current_user
       @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
       @service_request     = @sub_service_request.service_request
       unless (current_user.authorized_admin_organizations & @sub_service_request.org_tree).any?
-        @sub_service_request = nil
-        @service_request = nil
-        render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
+        authorization_error('You are not allowed to access this Sub Service Request.')
       end
+    else
+      redirect_to_login
     end
   end
 
@@ -168,10 +224,6 @@ class ApplicationController < ActionController::Base
         @locked_org_ids = @locked_org_ids.flatten.uniq
       end
     end
-  end
-
-  def xeditable? object=nil
-    true
   end
 
   def authorize_funding_admin

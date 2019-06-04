@@ -5,3 +5,81 @@ header#siteHeader {
     justify-content: center;
   }
 }
+
+nav#siteNav {
+  padding: 0;
+
+  .navbar-collapse {
+    display: flex;
+    align-items: stretch;
+
+    .navbar-nav {
+      .nav-item {
+        display: flex;
+        align-items: stretch;
+
+        &.dropdown {
+          &:hover {
+            .dropdown-menu {
+              display: block;
+            }
+          }
+
+          .dropdown-toggle {
+            &::after {
+              display: none;
+            }
+          }
+
+          .dropdown-menu {
+            margin: 0;
+            border-top: 0;
+            border-top-right-radius: 0;
+            border-top-left-radius: 0;
+          }
+        }
+
+        &.profile {
+          #notificationBadge {
+            position: absolute;
+            top: 4px;
+            right: 16px;
+            width: 16px;
+            height: 16px;
+            padding: 0;
+          }
+        }
+
+        .nav-link {
+          display: flex;
+          align-items: center;
+          @extend .px-3;
+          @extend .py-2;
+          color: theme-color-level('light') !important;
+
+          &:hover {
+            background: theme-color-level('primary', 1);
+          }
+
+          &:focus, &:active, &.active {
+            background: theme-color-level('primary', 2);
+          }
+
+          i {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+        }
+      }
+    }
+  }
+}
+
+a, .btn-link {
+  outline: none !important;
+  text-decoration: none !important;
+  @include transition($btn-transition);
+}

@@ -1,0 +1,30 @@
+- if current_user
+  .nav-item.dropdown.profile
+    = link_to 'javascript:void(0)', class: 'nav-link dropdown-toggle', id: 'profileDropdown', role: 'button', aria: { haspopup: 'true', expanded: 'false' } do
+      = icon('fas', 'user-circle fa-2x')
+      - if current_user.unread_notification_count > 0
+        %span.badge.badge-pill.badge-danger#notificationBadge> &nbsp;
+    .dropdown-menu.dropdown-menu-right{ aria: { labelledby: 'profileDropdown' } }
+      = link_to 'javascript:void(0)', class: 'dropdown-header d-flex text-secondary' do
+        = icon('fas', 'user-circle fa-3x mr-2')
+        %h6.m-0<
+          = current_user.full_name
+          %br
+          %small
+            = "(#{current_user.email})"
+      .dropdown-divider
+      = link_to dashboard_notifications_path, class: 'dropdown-item text-secondary' do
+        = icon('far', 'envelope mr-1')
+        = t('layout.navigation.profile.notifications')
+        - if current_user.unread_notification_count > 0
+          %span.badge.badge-pill.badge-danger.ml-1
+            = current_user.unread_notification_count
+      = link_to 'javascript:void(0)', class: 'dropdown-item text-secondary' do
+        = icon('far', 'edit mr-1')
+        = t('layout.navigation.profile.edit')
+      = link_to destroy_identity_session_path(srid: @service_request.try(:id)), method: :delete, class: 'dropdown-item text-danger' do
+        = icon('fas', 'sign-out-alt mr-1')
+        = t('layout.navigation.sign_out')
+- else
+  .nav-item
+    = link_to t('layout.navigation.sign_in_up'), new_identity_session_path(srid: @service_request.try(:id)), class: 'nav-link'

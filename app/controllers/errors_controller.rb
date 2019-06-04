@@ -17,29 +17,18 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-class Dashboard::EpicQueueRecordsController < Dashboard::BaseController
-  before_action :authorize_overlord
 
-  def index
-    @epic_queue_records = EpicQueueRecord.with_valid_protocols.
-                            eager_load(:identity, :notes, protocol: :principal_investigators).
-                            search(params[:search]).ordered(params[:sort], params[:order])
+class ErrorsController < ApplicationController
+  respond_to :html
 
-    respond_to do |format|
-      format.json
-      format.xlsx {
-        response.headers['Content-Disposition'] = "attachment; filename=\"#{@type} Epic Queue Records.xlsx\""
-      }
-    end
+  before_action :get_error
+
+  def authorization_error
   end
 
   private
 
-  # Check to see if user has rights to view epic queues
-  def authorize_overlord
-    unless Setting.get_value("epic_queue_access").include?(@user.ldap_uid)
-      authorization_error('You do not have access to view the Epic Queues')
-    end
+  def get_error
+    @error = params[:error]
   end
 end
-

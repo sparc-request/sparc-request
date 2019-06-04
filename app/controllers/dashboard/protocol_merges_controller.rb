@@ -130,10 +130,7 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
 
   def authorize_overlord
     unless @user.catalog_overlord?
-      render partial: 'service_requests/authorization_error',
-        locals: { error: 'You do not have access to perform a Protocol Merge',
-                  in_dashboard: false
-      }
+      authorization_error('You do not have access to perform a Protocol Merge')
     end
   end
 

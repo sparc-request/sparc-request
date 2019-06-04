@@ -249,14 +249,13 @@ private
       @permission_to_edit   = nil
       @permission_to_view   = nil
 
-      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
+      authorization_error('You are not allowed to access this Sub Service Request.')
     end
   end
 
   def authorize_admin
     unless (@admin_orgs & @sub_service_request.org_tree).any?
-      @sub_service_request = nil
-      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
+      authorization_error('You are not allowed to access this Sub Service Request.')
     end
   end
 

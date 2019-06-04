@@ -27,7 +27,7 @@
       %p.survey-description.no-margin
         = raw(survey.description)
   .form-group.alert.alert-warning
-    = t(:errors)[:user_note]
+    = t(:validation_errors)[:user_note]
   .survey-sections
     - survey.sections.eager_load(questions: :options).each do |section|
       .panel.panel-default.section

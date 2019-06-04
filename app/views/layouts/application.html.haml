@@ -30,19 +30,16 @@
     = javascript_include_tag 'application', data: { turbolinks_track: 'reload' }
     = render 'layouts/i18n-js'
     = Gon::Base.render_data
-  %body#body
+  %body
     - unless Rails.env.production?
       .alert.alert-danger.rounded-0.text-center.m-0{ role: 'alert' }
         = Rails.env.capitalize
     = render 'layouts/header', location: 'proper'
-    = render 'layouts/navbar', highlighted_link: @highlighted_link, service_request: @service_request
-    = render 'layouts/flash'
-
-    - if @service_request
-      = hidden_field_tag :srid, @service_request.id, disabled: true
-
-    #container
-      #inner-content.row
-        = yield
+    = render 'layouts/navbar'
+    = yield(:sub_header) if content_for(:sub_header)
+    %main
+      = render 'layouts/flash'
+      = render 'layouts/srid'
+      = yield
     = render 'layouts/footer'
     = render 'layouts/modal'

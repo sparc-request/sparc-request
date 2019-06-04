@@ -71,7 +71,7 @@ class Arm < ApplicationRecord
 
   def name_formatted_properly
     if !name.blank? && name.match(/\A([ ]*[A-Za-z0-9``~!@#$%^&()\-_+={}|<>.,;'"][ ]*)+\z/).nil?
-      errors.add(:name, I18n.t(:errors)[:arms][:bad_characters])
+      errors.add(:name, I18n.t(:validation_errors)[:arms][:bad_characters])
     end
   end
 
@@ -79,7 +79,7 @@ class Arm < ApplicationRecord
     arm_names = self.protocol.arms.where.not(id: self.id).pluck(:name)
     arm_names = arm_names.map(&:downcase)
 
-    errors.add(:name, I18n.t(:errors)[:arms][:name_unique]) if arm_names.include?(self.name.downcase)
+    errors.add(:name, I18n.t(:validation_errors)[:arms][:name_unique]) if arm_names.include?(self.name.downcase)
   end
 
   def per_patient_per_visit_line_items

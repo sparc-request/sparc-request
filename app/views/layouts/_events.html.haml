@@ -1,0 +1,30 @@
+.nav-item.dropdown.toggle-hover.events
+  = link_to 'javascript:void(0)', class: 'nav-link dropdown-toggle', id: 'calendarDropdown', role: 'button', aria: { haspopup: 'true', expanded: 'false' } do
+    = icon('far', 'calendar-alt fa-2x')
+  .dropdown-menu.dropdown-menu-right{ aria: { labelledby: 'calendarDropdown' } }
+    .dropdown-header.d-flex.text-secondary
+      %h5.m-0<
+        = icon('far', 'calendar-alt fa-lg mr-2')
+        = t('layout.navigation.events.header')
+    .dropdown-divider
+    - if @events.empty?
+      .dropdown-item
+        = t('layout.navigation.events.none')
+    - else
+      - @events.first(Setting.get_value('calendar_event_limit')).each do |event|
+        = link_to 'javascript:void(0)', class: 'dropdown-item text-primary', title: t('layout.navigation.events.learn_more') do
+          .event-details.mr-auto
+            %h6.m-0
+              = event[:title]
+              %br
+              %small.text-muted
+                - if event[:all_day]
+                  = t('layout.navigation.events.all_day')
+                - else
+                  = [event[:start_time], event[:end_time]].join(' - ')
+          .card.bg-primary.ml-3
+            .card-body.text-center.px-2.py-0
+              %small.d-flex.text-light.font-weight-bold.m-0
+                = event[:month]
+                %br
+                = event[:day]

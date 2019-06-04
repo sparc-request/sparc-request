@@ -46,9 +46,7 @@ class Dashboard::BaseController < ApplicationController
 
     # Admins should be able to view too
     unless @authorization.can_view? || @admin
-      @protocol = nil
-      render partial: 'dashboard/shared/authorization_error',
-        locals: { error: 'You are not allowed to access this protocol.' }
+      authorization_error('You are not allowed to access this protocol.')
     end
   end
 
@@ -56,9 +54,7 @@ class Dashboard::BaseController < ApplicationController
     @authorization  = ProtocolAuthorizer.new(@protocol, @user)
 
     unless @authorization.can_edit? || @admin
-      @protocol = nil
-      render partial: 'dashboard/shared/authorization_error',
-        locals: { error: 'You are not allowed to edit this protocol.' }
+      authorization_error('You are not allowed to edit this protocol.')
     end
   end
 

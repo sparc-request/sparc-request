@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class Funding::ServicesController < ApplicationController
-  layout "funding"
+  layout 'funding/application'
   protect_from_forgery
 
   before_action :authenticate_identity!

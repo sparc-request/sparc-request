@@ -39,6 +39,7 @@ SparcRails::Application.configure do
   config.public_file_server.enabled = false
 
   # Compress JavaScripts and CSS
+  config.assets.css_compressor = :sass
   config.assets.js_compressor = :uglifier
 
   # Don't fallback to assets pipeline if a precompiled asset is missed

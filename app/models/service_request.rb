@@ -453,6 +453,10 @@ class ServiceRequest < ApplicationRecord
     self.submitted_at.present?
   end
 
+  def eligible_for_subsidy?
+    self.sub_service_requests.any?(&:eligible_for_subsidy?)
+  end
+
   def should_push_to_epic?
     return self.line_items.any? { |li| li.should_push_to_epic? }
   end

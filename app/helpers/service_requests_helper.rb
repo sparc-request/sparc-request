@@ -76,13 +76,4 @@ module ServiceRequestsHelper
       save_and_exit_service_request_path(srid: service_request.id),
       remote: true, class: 'btn btn-default'
   end
-
-  def step_nav_button(text, color, url)
-    link_to(
-      content_tag(:div, raw(text), class: "btn step-text")+
-      content_tag(:div, '', class: "right-arrow"),
-      url,
-      class: "step-btn step-btn-#{color}"
-    )
-  end
 end

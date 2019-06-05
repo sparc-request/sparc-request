@@ -17,32 +17,23 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- subsidy, klass = calculate_step_params(service_request)
-- unless ['obtain_research_pricing', 'confirmation'].include?(action_name)
-  .col-sm-12.no-padding.steps
-    .container-fluid.no-padding
-      .steps-banner-container
-        %ul.no-padding.no-margin#steps-banner
-          %li{ class: klass }
-            = step_nav_button t(:proper)[:navigation][:steps][:step1], 'blue', catalog_service_request_path(srid: service_request.id)
-          %li{ class: klass }
-            = step_nav_button t(:proper)[:navigation][:steps][:step2], 'blue-green', protocol_service_request_path(srid: service_request.id)
-          %li{ class: klass }
-            = step_nav_button t(:proper)[:navigation][:steps][:step3], 'green', service_details_service_request_path(srid: service_request.id)
-          %li{ class: klass }
-            = step_nav_button t(:proper)[:navigation][:steps][:step4], 'light-blue', service_calendar_service_request_path(srid: service_request.id)
-          - if subsidy
-            %li{ class: klass }
-              = step_nav_button t(:proper)[:navigation][:steps][:step4a], 'pink', service_subsidy_service_request_path(srid: service_request.id)
-          %li{ class: klass }
-            = step_nav_button t(:proper)[:navigation][:steps][:step5], 'orange', document_management_service_request_path(srid: service_request.id)
-          %li{ class: klass }
-            = step_nav_button t(:proper)[:navigation][:steps][:step6], 'red', review_service_request_path(srid: service_request.id)
 
-.col-sm-12.ui-corner-all.step-header{ class: css_class }
-  .col-sm-6.no-padding
-    %h4
-      = step_text
-  .col-sm-6.no-padding.text-right
-    %h4
-      = protocol_id_display(service_request)
+- subsidy = service_request.eligible_for_subsidy?
+
+- unless ['obtain_research_pricing', 'confirmation'].include?(action_name)
+  %nav.nav.w-100.mb-3#stepsNav{ class: subsidy ? 'has-subsidy' : '' }
+    .steps-container.d-flex.w-100
+      = render 'service_requests/navigation/step_arrow', text: t('proper.navigation.steps.step1'), link: catalog_service_request_path(srid: service_request.id), color: 'primary'
+      = render 'service_requests/navigation/step_arrow', text: t('proper.navigation.steps.step2'), link: protocol_service_request_path(srid: service_request.id), color: 'info-alt'
+      = render 'service_requests/navigation/step_arrow', text: t('proper.navigation.steps.step3'), link: service_details_service_request_path(srid: service_request.id), color: 'success'
+      = render 'service_requests/navigation/step_arrow', text: t('proper.navigation.steps.step4'), link: service_calendar_service_request_path(srid: service_request.id), color: 'info'
+      - if subsidy
+        = render 'service_requests/navigation/step_arrow', text: t('proper.navigation.steps.step4a'), link: service_subsidy_service_request_path(srid: service_request.id), color: 'danger-alt'
+      = render 'service_requests/navigation/step_arrow', text: t('proper.navigation.steps.step5'), link: document_management_service_request_path(srid: service_request.id), color: 'warning'
+      = render 'service_requests/navigation/step_arrow', text: t('proper.navigation.steps.step6'), link: review_service_request_path(srid: service_request.id), color: 'danger'
+
+.w-100.rounded.d-flex.p-2.mb-3#step-header{ class: css_class }
+  %h4.text-light.mr-auto.mb-0
+    = step_text
+  %h4.mb-0
+    = protocol_id_display(service_request)

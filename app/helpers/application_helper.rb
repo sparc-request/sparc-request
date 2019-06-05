@@ -160,13 +160,4 @@ module ApplicationHelper
       end
     end
   end
-
-  def calculate_step_params(service_request)
-    has_subsidy           = service_request.sub_service_requests.any?(&:has_subsidy?)
-    eligible_for_subsidy  = service_request.sub_service_requests.any?(&:eligible_for_subsidy?)
-    subsidy               = has_subsidy || eligible_for_subsidy
-    classes               = subsidy ? 'step-with-subsidy' : 'step-no-subsidy'
-
-    return subsidy, classes
-  end
 end

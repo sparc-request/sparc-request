@@ -20,41 +20,41 @@
 
 catalog:
   step_text: "STEP 1: Add/Update Services"
-  css_class: "blue-provider"
+  css_class: "bg-primary"
 
 protocol:
   step_text: 'STEP 2: Services and Protocol Information'
-  css_class: blue-green-provider
+  css_class: bg-info-alt
   back: catalog
   forward: service_details
 
 service_details:
   step_text: 'STEP 3: Milestones and Calendar Structure'
-  css_class: green-provider
+  css_class: bg-success
   back: protocol
   forward: service_calendar
 
 service_calendar:
   step_text: 'STEP 4: Service Calendar'
-  css_class: light-blue-provider
+  css_class: bg-info
   back: service_details
   forward: service_subsidy
 
 service_subsidy:
   step_text: 'STEP 4a: Subsidy Information'
-  css_class: pink-provider
+  css_class: bg-danger-alt
   back: service_calendar
   forward: document_management
 
 document_management:
   step_text: 'STEP 5: Document, Notes, and Forms'
-  css_class: orange-provider
+  css_class: bg-warning
   back: service_subsidy
   forward: review
 
 review:
   step_text: 'STEP 6: Review Your Request'
-  css_class: red-provider
+  css_class: bg-danger
   back: document_management
   forward: confirmation
 

@@ -22,11 +22,8 @@ $(document).on 'turbolinks:load', ->
   initializeSelectpickers()
   initializeTooltips()
   initializePopovers()
-
-  $(document).ajaxComplete ->
-    initializeSelectpickers()
-    initializeTooltips()
-    initializePopovers()
+  initializeToggles()
+  $('html').addClass('ready')
 
   $(document).on 'show.bs.collapse hide.bs.collapse', '.collapse, .collapsing', ->
     $control = $("[href='##{$(this).attr('id')}']")
@@ -57,13 +54,17 @@ $(document).on 'turbolinks:load', ->
     ), 1500
 
 (exports ? this).initializeSelectpickers = () ->
-  $('.selectpicker').selectpicker()
+  $('.selectpicker').each ->
+    $(this).selectpicker() if ! $(this).siblings('.dropdown-toggle')
 
 (exports ? this).initializeTooltips = () ->
   $('[data-toggle=tooltip]').tooltip({ delay: { show: 500 } })
 
 (exports ? this).initializePopovers = () ->
   $('[data-toggle=popover]').popover()
+
+(exports ? this).initializeToggles = () ->
+  $('input[data-toggle=toggle]').bootstrapToggle()
 
 (exports ? this).getSRId = ->
   $("input[name='srid']").val()

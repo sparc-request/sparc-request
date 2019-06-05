@@ -32,7 +32,7 @@
     = Gon::Base.render_data
   %body
     - unless Rails.env.production?
-      .alert.alert-danger.rounded-0.text-center.m-0{ role: 'alert' }
+      %h4.alert.alert-danger.rounded-0.text-center.m-0{ role: 'alert' }
         = Rails.env.capitalize
     = render 'layouts/header', location: @location || 'proper'
     = render 'layouts/navbar'

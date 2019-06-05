@@ -27,8 +27,3 @@
   = render 'dashboard/documents/documents_table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin
   = render 'dashboard/forms/table', protocol: @protocol
   = render "dashboard/protocols/milestone", protocol: @protocol
-
-:javascript
-  $(document).ready( function() {
-    Sparc.protocol.ready();
-  })

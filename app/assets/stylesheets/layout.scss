@@ -18,6 +18,19 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+html {
+  &.ready {
+    body {
+      opacity: 1;
+    }
+  }
+
+  body {
+    opacity: 0;
+    transition: 0.5s opacity ease-in-out;
+  }
+}
+
 header#siteHeader {
   .logo-container {
     display: flex;

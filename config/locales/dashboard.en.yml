@@ -163,7 +163,8 @@ en:
     ######################
     protocol_filters:
       header: "Filter Protocols"
-      search_by: "Search All"
+      search_by: "All"
+      search_placeholder: "Search for protocols"
       archived: "Archived"
       unarchived: "Unarchived"
       inactive: "(inactive)"

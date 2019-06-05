@@ -20,11 +20,4 @@
 
 = render 'dashboard/protocol_filters/filter_protocols_form', filterrific: @filterrific, admin: @admin
 
-.col-lg-9
-  #filterrific_results
-    = render 'dashboard/protocols/protocols_list', protocols: @protocols, admin_protocols: @admin_protocols, filterrific_params: @filterrific_params, page: @page
-
-:javascript
-  $(document).ready( function() {
-    Sparc.protocol.ready();
-  })
+= render 'dashboard/protocols/protocols_list', protocols: @protocols, admin_protocols: @admin_protocols, filterrific_params: @filterrific_params, page: @page

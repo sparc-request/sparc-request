@@ -165,6 +165,7 @@ en:
       header: "Filter Protocols"
       search_by: "Search All"
       archived: "Archived"
+      unarchived: "Unarchived"
       inactive: "(inactive)"
       status: "Status"
       organization: "Organization"

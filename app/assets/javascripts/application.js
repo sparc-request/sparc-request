@@ -38,6 +38,7 @@
 //= require bootstrap-datepicker/dist/js/bootstrap-datepicker.min
 //= require bootstrap-select/dist/js/bootstrap-select.min
 //= require bootstrap-table/dist/bootstrap-table.min
+//= require bootstrap4-toggle/js/bootstrap4-toggle
 //= require corejs-typeahead/dist/typeahead.bundle.min
 //= require js-cookie/src/js.cookie
 //= require nprogress/nprogress

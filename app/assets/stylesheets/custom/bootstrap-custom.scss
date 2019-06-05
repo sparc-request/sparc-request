@@ -42,6 +42,7 @@
   .card-header, .card-footer {
     display: flex;
     align-items: center;
+    background: white;
   }
 
   .card-header, .card-body, .card-footer {
@@ -60,7 +61,7 @@
       padding-right: 1rem;
     }
 
-    a {
+    a.dropdown-item {
       &:hover {
         background: theme-color('light');
       }

@@ -27,6 +27,7 @@
 @import 'bootstrap-datepicker/dist/css/bootstrap-datepicker.min';
 @import 'bootstrap-select/dist/css/bootstrap-select.min';
 @import 'bootstrap-table/dist/bootstrap-table.min';
+@import 'bootstrap4-toggle/css/bootstrap4-toggle';
 @import 'sweetalert2/dist/sweetalert2.min';
 
 @import 'font-awesome-sprockets';
@@ -38,6 +39,8 @@
 
 @import 'custom/nprogress-custom';
 @import 'custom/bootstrap-custom';
+@import 'custom/bootstrap-select-custom';
+@import 'custom/bootstrap-toggle-custom';
 @import 'custom/typeahead-custom';
 @import 'custom/turbolinks-custom';
 
@@ -46,6 +49,7 @@
 /////////////////////////////////////
 
 @import 'layout';
+@import 'dashboard/protocols';
 
 
 

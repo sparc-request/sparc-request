@@ -59,14 +59,14 @@ $(document).ready ->
           type: 'PATCH'
           url:  "/dashboard/protocols/#{protocol_id}/archive.js"
 
-      $(document).on 'submit', '#filterrific-no-ajax-auto-submit', ->
+      $(document).on 'submit', '#protocolFiltersForm', ->
         $('#filterrific_sorted_by').val("#{$('.protocol-sort').data('sort-name')} #{$('.protocol-sort').data('sort-order')}")
 
       $(document).on 'click', '#saveProtocolFilters', ->
         data = {} #Grab form values
 
         # REVIEW this is not fetching values from multiselects
-        $.each $('form#filterrific-no-ajax-auto-submit').serializeArray(), (i, field) ->
+        $.each $('form#protocolFiltersForm').serializeArray(), (i, field) ->
           data[field.name] = field.value
 
         # manually enter those in
@@ -84,11 +84,6 @@ $(document).ready ->
           url:  "/dashboard/protocol_filters/new"
           data: data
         return false
-
-      $(document).on 'click', '#reset_filters_link, .saved_search_link', ->
-        # This makes the reset filter and saved search links go through AJAX
-        $.getScript @href
-        false
 
       $(document).on 'click', '.pagination a', ->
         # This makes the pagination links go through AJAX, rather than link hrefs
@@ -171,7 +166,7 @@ $(document).ready ->
         data = {} #Grab form values
 
         # REVIEW this is not fetching values from multiselects
-        $.each $('form#filterrific-no-ajax-auto-submit').serializeArray(), (i, field) ->
+        $.each $('form#protocolFiltersForm').serializeArray(), (i, field) ->
           data[field.name] = field.value
 
         data["page"] = page

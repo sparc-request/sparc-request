@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -72,8 +72,8 @@ class EpicInterface
     @config = config
     @errors = {}
 
-    @namespace = @config['namespace'] || 'urn:ihe:qrph:rpe:2009'
-    @study_root = @config['study_root'] || 'UNCONFIGURED'
+    @namespace = @config['epic_namespace'] || 'urn:ihe:qrph:rpe:2009'
+    @study_root = @config['epic_study_root'] || 'UNCONFIGURED'
 
     # TODO: I'm not really convinced that Savon is buying us very much
     # other than some added complexity, but it's working, so no point in
@@ -91,8 +91,8 @@ class EpicInterface
         convert_request_keys_to: :none,
         namespace_identifier: nil,
         namespace: @namespace,
-        endpoint: @config['endpoint'],
-        wsdl: @config['wsdl'],
+        endpoint: @config['epic_endpoint'],
+        wsdl: @config['epic_wsdl'],
         headers: {
         },
         soap_header: {
@@ -118,7 +118,7 @@ class EpicInterface
   def call(action, message)
     # Wasabi (Savon's WSDL parser) turns CamelCase actions into
     # snake_case.
-    if @config['wsdl'] then
+    if @config['epic_wsdl'] then
       action = action.snakecase.to_sym
     end
 
@@ -286,7 +286,7 @@ class EpicInterface
   end
 
   def emit_cofc(xml, study)
-    # Certificate of confidentiality question is the first question for 
+    # Certificate of confidentiality question is the first question for
     # versions 2 and 3, but the second question for version 1
     order = study.version_type == 3 || 2 ? 1 : 2
     cofc = study.study_type_answers.where(study_type_question_id: StudyTypeQuestion.where(study_type_question_group_id: StudyTypeQuestionGroup.where(version: study.version_type).pluck(:id)).where(order:order).first.id).first.answer == true ? 'YES_COFC' : 'NO_COFC'
@@ -551,7 +551,7 @@ class EpicInterface
     when 'technician' then 'OP'
     when 'mentor' then 'RC'
     when 'general-access-user' then 'RC'
-    when 'business-grants-manager' then 'RC'
+    when 'business-grants-manager' then 'SC'
     when 'research-nurse' then 'N'
     when 'other' then 'RC'
     else 'NA'

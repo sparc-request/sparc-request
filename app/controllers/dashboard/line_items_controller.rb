@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -53,6 +53,9 @@ class Dashboard::LineItemsController < Dashboard::BaseController
     if line_item_params[:service_id].blank?
       @sub_service_request.errors.add(:service, 'must be selected')
       @errors = @sub_service_request.errors
+    elsif line_item_params[:quantity].blank? && Service.find(line_item_params[:service_id]).one_time_fee
+      @sub_service_request.errors.add(:base, 'Must input a quantity')
+      @errors = @sub_service_request.errors
     elsif !@sub_service_request.create_line_item(line_item_params)
       @errors = @sub_service_request.errors
     else
@@ -83,6 +86,7 @@ class Dashboard::LineItemsController < Dashboard::BaseController
           end
         elsif @otf
           @errors = @line_item.errors
+          flash[:alert] = @errors.full_messages.join("\n")
         end
       end
       format.json do
@@ -108,7 +112,8 @@ class Dashboard::LineItemsController < Dashboard::BaseController
       @line_items = @sub_service_request.line_items
 
       if @line_item.destroy
-        render 'dashboard/sub_service_requests/add_line_item'
+        # I don't think this ever was called since this view does not exist.
+        #render 'dashboard/sub_service_requests/add_line_item'
       end
     end
   end
@@ -121,10 +126,9 @@ class Dashboard::LineItemsController < Dashboard::BaseController
     updated_service_relations = true
     if params[:quantity]
       @line_item.quantity = params[:quantity]
-      updated_service_relations = @line_item.valid_otf_service_relation_quantity?
     end
 
-    if updated_service_relations && @line_item.update_attributes(line_item_params)
+    if @line_item.update_attributes(line_item_params)
       render 'dashboard/sub_service_requests/add_otf_line_item'
     else
       @line_item.reload
@@ -168,10 +172,9 @@ class Dashboard::LineItemsController < Dashboard::BaseController
     updated_service_relations = true
     if params[:quantity]
       @line_item.quantity = params[:quantity]
-      updated_service_relations = @line_item.valid_otf_service_relation_quantity?
     end
 
-    if updated_service_relations && @line_item.update_attributes(line_item_params)
+    if @line_item.update_attributes(line_item_params)
       render 'dashboard/sub_service_requests/add_line_item'
     else
       @line_item.reload

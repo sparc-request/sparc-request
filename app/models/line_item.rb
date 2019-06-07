@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,33 +27,51 @@ class LineItem < ApplicationRecord
   belongs_to :service_request
   belongs_to :service, counter_cache: true
   belongs_to :sub_service_request
-  has_many :fulfillments, dependent: :destroy
 
+  has_many :fulfillments, dependent: :destroy
   has_many :line_items_visits, dependent: :destroy
-  has_many :arms, through: :line_items_visits
   has_many :procedures
   has_many :admin_rates, dependent: :destroy
   has_many :notes, as: :notable, dependent: :destroy
+
+  has_many :arms, through: :line_items_visits
   has_one :protocol, through: :service_request
-  
+
+  ########################
+  ### CWF Associations ###
+  ########################
+
+  has_many :fulfillment_line_items, -> { order(:arm_id) }, class_name: 'Shard::Fulfillment::LineItem', foreign_key: :sparc_id
+
   attr_accessor :pricing_scheme
 
   accepts_nested_attributes_for :fulfillments, allow_destroy: true
 
   delegate :one_time_fee, to: :service
+  delegate :name, to: :service
   delegate :status, to: :sub_service_request
 
   validates :service_id, numericality: true, presence: true
   validates :service_request_id, numericality:  true
 
-  validates :quantity, numericality: { only_integer: true }, on: :update, if: Proc.new { |li| li.service.one_time_fee }
+  validates :quantity, numericality: true, on: :update, if: Proc.new { |li| li.service.one_time_fee }
   validate :quantity_must_be_smaller_than_max_and_greater_than_min, on: :update, if: Proc.new { |li| li.service.one_time_fee }
   validates :units_per_quantity, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, on: :update, if: Proc.new { |li| li.service.one_time_fee }
 
   after_create :build_line_items_visits_if_pppv
-  before_destroy :destroy_arms_if_last_pppv_line_item
-  
+  before_destroy :destroy_arms_if_last_pppv_line_item, if: Proc.new { |li| !li.one_time_fee }
+
   default_scope { order('line_items.id ASC') }
+
+  ### These only pertain to OTF services
+  def otf_unit_type
+    service.displayed_pricing_map.try(:otf_unit_type)
+  end
+
+  def quantity_type
+    service.displayed_pricing_map.try(:quantity_type)
+  end
+  ### End OTF services only methods (may be more below but these were added)
 
   def displayed_cost_valid?(displayed_cost)
     return true if displayed_cost.nil?
@@ -118,8 +136,7 @@ class LineItem < ApplicationRecord
   end
 
   def has_admin_rates?
-    has_admin_rates = !self.admin_rates.empty? && !self.admin_rates.last.admin_cost.blank?
-    has_admin_rates
+    self.admin_rates.present? && self.admin_rates.last.admin_cost.present?
   end
 
   def attached_to_submitted_request
@@ -194,7 +211,7 @@ class LineItem < ApplicationRecord
 
   # Determine the indirect cost rate related to a particular line item
   def indirect_cost_rate
-    if Setting.find_by_key("use_indirect_cost").value
+    if Setting.get_value("use_indirect_cost")
       self.service_request.protocol.indirect_cost_rate.to_f / 100
     else
       return 0
@@ -203,7 +220,7 @@ class LineItem < ApplicationRecord
 
   # Determine the indirect cost rate for a visit-based service for one subject
   def indirect_costs_for_visit_based_service_single_subject
-    if Setting.find_by_key("use_indirect_cost").value
+    if Setting.get_value("use_indirect_cost")
       total = 0
       self.line_items_visits.each do |line_items_visit|
         total += self.direct_costs_for_visit_based_service_single_subject(line_items_visit) * self.indirect_cost_rate
@@ -216,7 +233,7 @@ class LineItem < ApplicationRecord
 
   # Determine the indirect costs for a visit-based service
   def indirect_costs_for_visit_based_service
-    if Setting.find_by_key("use_indirect_cost").value
+    if Setting.get_value("use_indirect_cost")
       self.direct_costs_for_visit_based_service * self.indirect_cost_rate
     else
       return 0
@@ -225,7 +242,7 @@ class LineItem < ApplicationRecord
 
   # Determine the indirect costs for a one-time-fee service
   def indirect_costs_for_one_time_fee
-    if self.service.displayed_pricing_map.exclude_from_indirect_cost || !Setting.find_by_key("use_indirect_cost").value
+    if self.service.displayed_pricing_map.exclude_from_indirect_cost || !Setting.get_value("use_indirect_cost")
       return 0
     else
       self.direct_costs_for_one_time_fee * self.indirect_cost_rate
@@ -261,59 +278,8 @@ class LineItem < ApplicationRecord
     self.service.organization
   end
 
-  def service_relations
-    # Get the relations for this line item and others to this line item, Narrow the list to those with linked quantities
-    service_relations = ServiceRelation.where(service_id: self.service_id).reject { |sr| sr.linked_quantity == false }
-    related_service_relations = ServiceRelation.where(related_service_id: self.service_id).reject { |sr| sr.linked_quantity == false }
-
-    (service_relations + related_service_relations)
-  end
-
   def has_service_relation
     service_relations.any?
-  end
-
-  def valid_otf_service_relation_quantity?
-    line_items = service_request.one_time_fee_line_items
-    service_relations.each do |sr|
-      # Check to see if the request has the service in the relation
-      sr_id = (service_id == sr.related_service_id ? sr.service_id : sr.related_service_id)
-      line_item = line_items.detect { |li| li.service_id == sr_id }
-      next unless line_item
-      total_quantity_between_line_items = self.quantity + line_item.quantity
-
-      unless (total_quantity_between_line_items == 0 or total_quantity_between_line_items == sr.linked_quantity_total)
-        self.errors.add(:invalid_total, "The quantity between #{self.service.name} and #{line_item.service.name}is not equal to the total quantity amount which is #{sr.linked_quantity_total}")
-        return false
-      end
-    end
-
-    return true
-  end
-
-  def valid_pppv_service_relation_quantity? visit
-    visit_group = visit.visit_group
-    arm = visit_group.arm
-    line_items = arm.line_items
-    visit_position = visit.position - 1
-
-    service_relations.each do |sr|
-      # Check to see if the request has the service in the relation
-      sr_id = (service_id == sr.related_service_id ? sr.service_id : sr.related_service_id)
-      line_item = line_items.detect { |li| li.service_id == sr_id }
-      next unless line_item && line_item.arms.find(arm.id)
-
-      line_item_visit = line_item.line_items_visits.find_by_arm_id arm.id
-      v = line_item_visit.ordered_visits[visit_position]
-      total_quantity_between_visits = visit.quantity_total + v.quantity_total
-      if not(total_quantity_between_visits == 0 or total_quantity_between_visits == sr.linked_quantity_total)
-        first_service, second_service = [self.service.name, line_item.service.name].sort
-        self.errors.add(:invalid_total, "The quantity on #{visit_group.name} on #{arm.name} between #{first_service} and #{second_service} is not equal to the total quantity amount which is #{sr.linked_quantity_total}")
-        return false
-      end
-    end
-
-    return true
   end
 
   def display_service_abbreviation
@@ -346,7 +312,7 @@ class LineItem < ApplicationRecord
 
   def destroy_arms_if_last_pppv_line_item
     if self.try(:protocol).try(:service_requests).try(:none?) { |sr| sr.has_per_patient_per_visit_services? }
-      self.service_request.try(:arms).try(:destroy_all)
+      self.service_request.protocol.try(:arms).try(:destroy_all)
     end
   end
 end

@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -25,11 +25,7 @@ module Dashboard::EpicQueuesHelper
   end
 
   def format_pis(protocol)
-    pis = protocol.principal_investigators.map(&:full_name).each do |pi|
-      "#{pi}"
-    end
-    #bootstrap-table can't search within arrays
-    pis.join(',')
+    protocol.principal_investigators.map(&:full_name).join(', ')
   end
 
   def epic_queue_delete_button(epic_queue)

@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,19 +20,19 @@
 
 # Relationships with protocols must be created manually through the id's
 # because of validations on protocol
-FactoryGirl.define do
+FactoryBot.define do
   factory :project_role do
-    protocol nil
-    identity nil
+    protocol {nil}
+    identity {nil}
     project_rights { Faker::Lorem.sentence(2) }
-    role 'primary-pi'
+    role {'primary-pi'}
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }
     end
 
     trait :approve do
-      project_rights 'approve'
+      project_rights {'approve'}
     end
 
     trait :with_identity do

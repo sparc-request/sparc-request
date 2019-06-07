@@ -1,4 +1,4 @@
-// Copyright © 2011-2017 MUSC Foundation for Research Development
+// Copyright © 2011-2019 MUSC Foundation for Research Development
 // All rights reserved.
 
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -25,19 +25,20 @@
 // the compiled file.
 //
 //= require jquery
+//= require batch-select
 //= require bootstrap-sprockets
 //= require bootstrap-select
+//= require bootstrap-select-custom
 //= require bootstrap-table
 //= require bootstrap-table-export
 //= require bootstrap-table-custom
+//= require tableExport
 //= require moment
 //= require bootstrap-datetimepicker
 //= require jquery_ujs
 //= require jquery.remotipart
-//= require jquery_nested_form
 //= require jquery.cookie
 //= require jquery.form
-//= require jquery.toastmessage
 //= require jquery.printElement
 //= require editable/bootstrap-editable
 //= require editable/rails
@@ -59,6 +60,9 @@
 //= require associated_users_form
 //= require study_schedule_tabs
 //= require subsidy_form
+//= require surveyor/responses
+//= require surveyor/surveys
 //= require dashboard/navbar
+//= require notes
 
 window.Sparc = {};

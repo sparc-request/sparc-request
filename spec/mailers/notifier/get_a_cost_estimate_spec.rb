@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -31,11 +31,12 @@ RSpec.describe Notifier do
   context 'service_provider' do
     context 'general' do
       before :each do
+        service_requester     = create(:identity)
         @organization         = create(:organization)
         @service_provider     = create(:service_provider, identity: identity, organization: @organization)
-        @protocol             = create(:study_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
+        @protocol             = create(:study_without_validations, funding_source: 'college', funding_status: 'funded', primary_pi: jpl6)
         @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'get_a_cost_estimate')
-        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
+        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
         @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
         @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, identity, @sub_service_request)
 
@@ -55,20 +56,20 @@ RSpec.describe Notifier do
         assert_notification_email_tables_for_service_provider
       end
 
-      it 'should NOT have a notes reminder message' do
-        get_a_cost_estimate_does_not_have_notes(@mail)
+      it 'should not have a submission reminder' do
+        does_not_have_a_submission_reminder(@mail)
       end
     end
 
     context 'when protocol has selected for epic' do
       before :each do
+        service_requester     = create(:identity)
         @organization         = create(:organization)
         @service_provider     = create(:service_provider, identity: identity, organization: @organization)
-        @protocol             = create(:study_without_validations, funding_source: 'cash flow', primary_pi: jpl6, selected_for_epic: true)
+        @protocol             = create(:study_without_validations, funding_source: 'college', funding_status: 'funded', primary_pi: jpl6, selected_for_epic: true)
         @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'get_a_cost_estimate')
-        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
+        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
         @submission_email     = create(:submission_email, email: 'success@musc.edu', organization: @organization)
-        @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
         @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, identity, @sub_service_request)
         
         @service_request.reload
@@ -81,13 +82,13 @@ RSpec.describe Notifier do
 
     context 'when protocol is not selected for epic' do
       before :each do
+        service_requester     = create(:identity)
         @organization         = create(:organization)
         @service_provider     = create(:service_provider, identity: identity, organization: @organization)
-        @protocol             = create(:study_without_validations, funding_source: 'cash flow', primary_pi: jpl6, selected_for_epic: false)
+        @protocol             = create(:study_without_validations, funding_source: 'college', funding_status: 'funded', primary_pi: jpl6, selected_for_epic: false)
         @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'get_a_cost_estimate')
-        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
+        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
         @submission_email     = create(:submission_email, email: 'success@musc.edu', organization: @organization)
-        @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
         @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, identity, @sub_service_request)
         
         @service_request.reload
@@ -102,14 +103,15 @@ RSpec.describe Notifier do
   context 'authorized users' do
     context 'general' do
       before :each do
+        service_requester     = create(:identity)
         @organization         = create(:organization)
-        @protocol             = create(:study_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
+        @protocol             = create(:study_without_validations, funding_source: 'college', funding_status: 'funded', primary_pi: jpl6)
         @project_role         = create(:project_role, identity: identity, project_rights: 'view')
         @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'get_a_cost_estimate')
-        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
+        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
         @approval             = create(:approval, service_request: @service_request)
         @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
-        @mail                 = Notifier.notify_user(@project_role, @service_request, nil, @approval, identity)
+        @mail                 = Notifier.notify_user(@project_role, @service_request, @approval, identity)
         
         @service_request.reload
       end
@@ -123,21 +125,21 @@ RSpec.describe Notifier do
         assert_notification_email_tables_for_user
       end
 
-      it 'should NOT have a notes reminder message' do
-        get_a_cost_estimate_does_not_have_notes(@mail.body.parts.first.body)
+      it 'should not have a submission reminder' do
+        does_not_have_a_submission_reminder(@mail.body.parts.first.body)
       end
     end
 
     context 'when protocol has selected for epic' do
       before :each do
+        service_requester     = create(:identity)
         @organization         = create(:organization)
-        @protocol             = create(:study_without_validations, funding_source: 'cash flow', primary_pi: jpl6, selected_for_epic: true)
+        @protocol             = create(:study_without_validations, funding_source: 'college', funding_status: 'funded', primary_pi: jpl6, selected_for_epic: true)
         @project_role         = create(:project_role, identity: identity, project_rights: 'view')
         @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'get_a_cost_estimate')
-        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
+        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
         @approval             = create(:approval, service_request: @service_request)
-        @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
-        @mail                 = Notifier.notify_user(@project_role, @service_request, nil, @approval, identity)
+        @mail                 = Notifier.notify_user(@project_role, @service_request, @approval, identity)
         
         @service_request.reload
       end
@@ -149,14 +151,14 @@ RSpec.describe Notifier do
 
     context 'when protocol is not selected for epic' do
       before :each do
+        service_requester     = create(:identity)
         @organization         = create(:organization)
-        @protocol             = create(:study_without_validations, funding_source: 'cash flow', primary_pi: jpl6, selected_for_epic: false)
+        @protocol             = create(:study_without_validations, funding_source: 'college', funding_status: 'funded', primary_pi: jpl6, selected_for_epic: false)
         @project_role         = create(:project_role, identity: identity, project_rights: 'view')
         @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'get_a_cost_estimate')
-        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
+        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
         @approval             = create(:approval, service_request: @service_request)
-        @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
-        @mail                 = Notifier.notify_user(@project_role, @service_request, nil, @approval, identity)
+        @mail                 = Notifier.notify_user(@project_role, @service_request, @approval, identity)
         
         @service_request.reload
       end
@@ -170,11 +172,12 @@ RSpec.describe Notifier do
   context 'admin' do
     context 'general' do
       before :each do
+        service_requester     = create(:identity)
         @organization         = create(:organization)
         @service_provider     = create(:service_provider, identity: identity, organization: @organization)
-        @protocol             = create(:study_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
+        @protocol             = create(:study_without_validations, funding_source: 'college', funding_status: 'funded', primary_pi: jpl6)
         @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'get_a_cost_estimate')
-        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
+        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
         @submission_email     = create(:submission_email, email: 'success@musc.edu', organization: @organization)
         @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
         @mail                 = Notifier.notify_admin(@submission_email, identity, @sub_service_request)
@@ -191,20 +194,20 @@ RSpec.describe Notifier do
         assert_notification_email_tables_for_admin
       end
 
-      it 'should NOT have a notes reminder message' do
-        get_a_cost_estimate_does_not_have_notes(@mail.body.parts.first.body)
+      it 'should not have a submission reminder' do
+        does_not_have_a_submission_reminder(@mail.body.parts.first.body)
       end
     end
 
     context 'when protocol has selected for epic' do
       before :each do
+        service_requester     = create(:identity)
         @organization         = create(:organization)
         @service_provider     = create(:service_provider, identity: identity, organization: @organization)
-        @protocol             = create(:study_without_validations, funding_source: 'cash flow', primary_pi: jpl6, selected_for_epic: true)
+        @protocol             = create(:study_without_validations, funding_source: 'college', funding_status: 'funded', primary_pi: jpl6, selected_for_epic: true)
         @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'get_a_cost_estimate')
-        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
+        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
         @submission_email     = create(:submission_email, email: 'success@musc.edu', organization: @organization)
-        @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
         @mail                 = Notifier.notify_admin(@submission_email, identity, @sub_service_request)
         
         @service_request.reload
@@ -217,13 +220,13 @@ RSpec.describe Notifier do
 
     context 'when protocol is not selected for epic' do
       before :each do
+        service_requester     = create(:identity)
         @organization         = create(:organization)
         @service_provider     = create(:service_provider, identity: identity, organization: @organization)
-        @protocol             = create(:study_without_validations, funding_source: 'cash flow', primary_pi: jpl6, selected_for_epic: false)
+        @protocol             = create(:study_without_validations, funding_source: 'college', funding_status: 'funded', primary_pi: jpl6, selected_for_epic: false)
         @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'get_a_cost_estimate')
-        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
+        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
         @submission_email     = create(:submission_email, email: 'success@musc.edu', organization: @organization)
-        @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
         @mail                 = Notifier.notify_admin(@submission_email, identity, @sub_service_request)
         
         @service_request.reload

@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FactoryGirl.define do
+FactoryBot.define do
   sequence :ldap_uid do |n|
     "ldap_uid#{n}@email.com"
   end
@@ -36,20 +36,20 @@ FactoryGirl.define do
     credentials           { Faker::Name.suffix }
     subspecialty          { Faker::Lorem.word }
     phone                 { Faker::PhoneNumber.phone_number }
-    password              "abc123456789!"
-    password_confirmation "abc123456789!"
+    password              {"abc123456789!"}
+    password_confirmation {"abc123456789!"}
 
 
     created_at       { 1.day.ago }
     updated_at       { Time.now }
 
     transient do
-      catalog_manager_count 0
-      super_user_count 0
-      approval_count 0
-      project_role_count 0
-      service_provider_count 0
-      protocol_filter_count 0
+      catalog_manager_count {0}
+      super_user_count {0}
+      approval_count {0}
+      project_role_count {0}
+      service_provider_count {0}
+      protocol_filter_count {0}
     end
 
     trait :without_validations do

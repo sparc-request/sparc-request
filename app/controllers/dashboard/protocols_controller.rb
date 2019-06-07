@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,11 +22,12 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   respond_to :html, :json, :xlsx
 
-  before_action :find_protocol,                                   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
-  before_action :find_admin_for_protocol,                         only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
-  before_action :protocol_authorizer_view,                        only: [:show, :view_full_calendar, :display_requests]
-  before_action :protocol_authorizer_edit,                        only: [:edit, :update, :update_protocol_type, :archive]
-  before_action :bypass_rmid_validations?,                        only: [:update, :edit]
+  before_action :find_protocol,             only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
+  before_action :find_admin_for_protocol,   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
+  before_action :protocol_authorizer_view,  only: [:show, :view_full_calendar, :display_requests]
+  before_action :protocol_authorizer_edit,  only: [:edit, :update, :update_protocol_type, :archive]
+  before_action :bypass_rmid_validations?,  only: [:update, :edit]
+  before_action :check_rmid_server_status,  only: [:new, :create, :edit, :update, :update_protocol_type]
 
   def index
     admin_orgs = @user.authorized_admin_organizations
@@ -51,16 +52,15 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
           with_organization: Dashboard::GroupedOrganizations.new(@organizations).collect_grouped_options,
           with_owner: build_with_owner_params
         },
-        persistence_id: false #resets filters on page reload
+        persistence_id: false #selected filters remain the same on page reload
       ) || return
 
     @protocols        = @filterrific.find.page(params[:page])
     @admin_protocols  = Protocol.for_admin(@user.id).pluck(:id)
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, ProtocolFilter::MAX_FILTERS)
 
-    #toggles the display of the navigation bar, instead of breadcrumbs
-    @show_navbar      = true
-    @show_messages    = true
+    #toggles the display of the breadcrumbs, navbar always displays
+    @disable_breadcrumb  = true
     session[:breadcrumbs].clear
 
     setup_sorting_variables
@@ -73,7 +73,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def show
-    @submissions = @protocol.submissions
     respond_to do |format|
       format.html {
         session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id)
@@ -85,7 +84,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       }
       format.xlsx {
         @statuses_hidden = params[:statuses_hidden] || %w(draft first_draft)
-        response.headers['Content-Disposition'] = "attachment; filename=\"(#{@protocol.id}) Consolidated Corporate Study Budget.xlsx\""
+        response.headers['Content-Disposition'] = "attachment; filename=\"(#{@protocol.id}) Consolidated #{@protocol.industry_funded? ? 'Corporate ' : ''}Study Budget.xlsx\""
       }
     end
   end
@@ -96,15 +95,14 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol.requester_id  = current_user.id
     @protocol.populate_for_edit
     session[:protocol_type] = params[:protocol_type]
-    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
-    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
-    rmid_server_status(@protocol)
+    gon.rm_id_api_url = Setting.get_value("research_master_api")
+    gon.rm_id_api_token = Setting.get_value("rmid_api_token")
   end
 
   def create
     protocol_class                          = protocol_params[:type].capitalize.constantize
     ### if lazy load enabled, we need create the identiy if necessary here
-    attrs                                   = Setting.find_by_key("use_ldap").value && Setting.find_by_key("lazy_load_ldap").value ? fix_identity : fix_date_params
+    attrs                                   = Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") ? fix_identity : fix_date_params
     @protocol                               = protocol_class.new(attrs)
     @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id
 
@@ -118,16 +116,15 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
       @protocol.service_requests.new(status: 'draft').save(validate: false)
 
-      if Setting.find_by_key("use_epic").value && @protocol.selected_for_epic
+      if Setting.get_value("use_epic") && @protocol.selected_for_epic
         @protocol.ensure_epic_user
-        Notifier.notify_for_epic_user_approval(@protocol).deliver unless Setting.find_by_key("queue_epic").value
+        Notifier.notify_for_epic_user_approval(@protocol).deliver unless Setting.get_value("queue_epic")
       end
 
       flash[:success] = I18n.t('protocols.created', protocol_type: @protocol.type)
     else
       @errors = @protocol.errors
     end
-    rmid_server_status(@protocol)
   end
 
   def edit
@@ -135,8 +132,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @permission_to_edit = @authorization.nil? ? false : @authorization.can_edit?
     @in_dashboard       = true
     @protocol.populate_for_edit
-    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
-    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
+    gon.rm_id_api_url = Setting.get_value("research_master_api")
+    gon.rm_id_api_token = Setting.get_value("rmid_api_token")
 
     session[:breadcrumbs].
       clear.
@@ -146,41 +143,43 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @errors = @protocol.errors
     @errors.delete(:research_master_id) if @bypass_rmid_validation
 
-    rmid_server_status(@protocol)
-
     respond_to do |format|
       format.html
     end
   end
 
   def update
-    protocol_type = protocol_params[:type]
-    @protocol = @protocol.becomes(protocol_type.constantize) unless protocol_type.nil?
-    if (params[:updated_protocol_type] == 'true' && protocol_type == 'Study') || params[:can_edit] == 'true'
-      @protocol.assign_attributes(study_type_question_group_id: StudyTypeQuestionGroup.active_id)
-      @protocol.assign_attributes(selected_for_epic: protocol_params[:selected_for_epic]) if protocol_params[:selected_for_epic]
-      if @protocol.valid?
-        @protocol.update_attribute(:type, protocol_type)
-        @protocol.activate
-        @protocol.reload
+    unless params[:locked]
+      protocol_type = protocol_params[:type]
+      @protocol = @protocol.becomes(protocol_type.constantize) unless protocol_type.nil?
+      if (params[:updated_protocol_type] == 'true' && protocol_type == 'Study') || params[:can_edit] == 'true'
+        @protocol.assign_attributes(study_type_question_group_id: StudyTypeQuestionGroup.active_id)
+        @protocol.assign_attributes(selected_for_epic: protocol_params[:selected_for_epic]) if protocol_params[:selected_for_epic]
+        if @protocol.valid?
+          @protocol.update_attribute(:type, protocol_type)
+          @protocol.activate
+          @protocol.reload
+        end
       end
-    end
 
-    attrs               = fix_date_params
-    permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
-    # admin is not able to activate study_type_question_group
+      attrs               = fix_date_params
+      permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
+      # admin is not able to activate study_type_question_group
 
-    @protocol.bypass_rmid_validation = @bypass_rmid_validation
+      @protocol.bypass_rmid_validation = @bypass_rmid_validation
 
-    if @protocol.update_attributes(attrs)
-      flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
+      if @protocol.update_attributes(attrs)
+        flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
+      else
+        @errors = @protocol.errors
+      end
+
+      if params[:sub_service_request]
+        @sub_service_request = SubServiceRequest.find params[:sub_service_request][:id]
+        render "/dashboard/sub_service_requests/update"
+      end
     else
-      @errors = @protocol.errors
-    end
-
-    if params[:sub_service_request]
-      @sub_service_request = SubServiceRequest.find params[:sub_service_request][:id]
-      render "/dashboard/sub_service_requests/update"
+      perform_protocol_lock(@protocol, params[:locked])
     end
   end
 
@@ -195,20 +194,32 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol_type = params[:type]
 
     @protocol = @protocol.becomes(@protocol_type.constantize) unless @protocol_type.nil?
+
+    #### switching to a Project should clear out RMID and RMID validated flag ####
+    if @protocol_type && @protocol_type == 'Project'
+      @protocol.update_attribute :research_master_id, nil
+      @protocol.update_attribute :rmid_validated, false
+    end
+    #### end clearing RMID and RMID validated flag ####
+
     @protocol.populate_for_edit
 
     flash[:success] = t(:protocols)[:change_type][:updated]
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
       flash[:alert] = t(:protocols)[:change_type][:new_study_warning]
     end
-    
-    rmid_server_status(@protocol)
   end
 
   def archive
     @protocol.toggle!(:archived)
-    @protocol_type = @protocol.type
+
+    @protocol_type      = @protocol.type
     @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
+    action = @protocol.archived ? 'archive' : 'unarchive'
+
+    @protocol.notes.create(identity: current_user, body: t("protocols.summary.#{action}_note", protocol_type: @protocol_type))
+    ProtocolMailer.with(protocol: @protocol, archiver: current_user, action: action).archive_email.deliver
+
     respond_to do |format|
       format.js
     end
@@ -269,12 +280,16 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         :selected_for_epic,
         :short_title,
         :sponsor_name,
+        :locked,
         {:study_phase_ids => []},
         :start_date,
         :study_type_question_group_id,
         :title,
         :type,
         :udak_project_number,
+        :guarantor_contact,
+        :guarantor_phone,
+        :guarantor_email,
         :research_master_id,
         research_types_info_attributes: [:id, :human_subjects, :vertebrate_animals, :investigational_products, :ip_patents],
         study_types_attributes: [:id, :name, :new, :position, :_destroy],
@@ -289,7 +304,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
           :ind_on_hold],
         ip_patents_info_attributes: [:id, :patent_number, :inventors],
         impact_areas_attributes: [:id, :name, :other_text, :new, :_destroy],
-        human_subjects_info_attributes: [:id, :nct_number, :hr_number, :pro_number, :irb_of_record, :submission_type, :irb_approval_date, :irb_expiration_date, :approval_pending],
+        human_subjects_info_attributes: [:id, :nct_number, :pro_number, :irb_of_record, :submission_type, :initial_irb_approval_date, :irb_approval_date, :irb_expiration_date, :approval_pending],
         affiliations_attributes: [:id, :name, :new, :position, :_destroy],
         project_roles_attributes: [:id, :identity_id, :role, :project_rights, :_destroy],
         study_type_answers_attributes: [:id, :answer, :study_type_question_id, :_destroy])
@@ -349,6 +364,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     attrs                                        = convert_date_for_save attrs, :potential_funding_start_date
 
     if attrs[:human_subjects_info_attributes]
+      attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :initial_irb_approval_date
       attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :irb_approval_date
       attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :irb_expiration_date
     end
@@ -359,5 +375,13 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     end
 
     attrs
+  end
+
+  def perform_protocol_lock(protocol, lock_status)
+    if lock_status == 'true'
+      protocol.update_attributes(locked: false)
+    else
+      protocol.update_attributes(locked: true)
+    end
   end
 end

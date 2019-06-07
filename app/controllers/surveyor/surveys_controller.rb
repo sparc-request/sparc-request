@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,22 +18,43 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Surveyor::SurveysController < ApplicationController
+class Surveyor::SurveysController < Surveyor::BaseController
   respond_to :html, :js, :json
 
   before_action :authenticate_identity!
-  before_action :authorize_site_admin
+  before_action :authorize_survey_builder_access
 
   def index
     respond_to do |format|
       format.html
       format.json {
-        @surveys = Survey.all
+        @surveys = 
+          if params[:type] == "SystemSurvey"
+            SystemSurvey.all
+          elsif params[:type] == "Form"
+            Form.for(current_user)
+          else
+            Survey.none
+          end
       }
     end
   end
 
-  def show
+  def new
+    @survey = Survey.new(type: params[:type])
+  end
+
+  def create
+    @survey = build_survey
+
+    if @survey.save
+      redirect_to edit_surveyor_survey_path(@survey, type: params[:type]), format: :js
+    else
+      @errors = @survey.errors
+    end
+  end
+
+  def edit
     @survey = Survey.eager_load(sections: { questions: :options }).find(params[:id])
 
     respond_to do |format|
@@ -41,20 +62,11 @@ class Surveyor::SurveysController < ApplicationController
     end
   end
 
-  def create
-    @survey = Survey.create(
-                title: "Untitled Survey",
-                access_code: "untitled-survey",
-                version: (Survey.where(access_code: "untitled-survey").order(:version).last.try(:version) || 0) + 1,
-                active: true,
-                display_order: (Survey.all.order(:display_order).last.try(:display_order) || 0) + 1
-              )
-
-    redirect_to surveyor_survey_path(@survey), format: :js
-  end
-
   def destroy
-    Survey.find(params[:id]).destroy
+    @survey = Survey.find(params[:id])
+    @type   = @survey.class.yaml_klass.downcase
+    
+    @survey.destroy
 
     respond_to do |format|
       format.js
@@ -74,10 +86,69 @@ class Surveyor::SurveysController < ApplicationController
 
   def update_dependents_list
     @survey     = Survey.find(params[:survey_id])
-    @questions  = @survey.questions.eager_load(section: :survey)
+    @questions  = @survey.questions.eager_load(section: { survey: { questions: :options } })
 
     respond_to do |format|
       format.js
     end
+  end
+
+  def copy
+    @survey = Survey.find(params[:survey_id]).clone
+    @survey.save
+  end
+
+  def search_surveyables
+    term            = params[:term].strip
+    org_ids         =
+      if current_user.is_site_admin?
+        Organization.all.ids
+      else
+        Organization.authorized_for_super_user(current_user.id).or(
+          Organization.authorized_for_service_provider(current_user.id)).or(
+          Organization.authorized_for_catalog_manager(current_user.id)).ids
+      end
+    service_ids     = Service.where(organization_id: org_ids).ids
+    
+    org_results     = Organization.where("(name LIKE ? OR abbreviation LIKE ?) AND is_available = 1 AND process_ssrs = 1 AND id IN (?)", "%#{term}%", "%#{term}%", org_ids)
+    service_results = Service.where("(name LIKE ? OR abbreviation LIKE ? OR cpt_code LIKE ?) AND is_available = 1 AND id IN (?)", "%#{term}%", "%#{term}%", "%#{term}%", service_ids).reject{ |s| (s.current_pricing_map rescue false) == false}
+    results         = org_results + service_results
+    
+    results.map!{ |r|
+      {
+        parents:        r.is_a?(Service) ? r.organization_hierarchy(false, false, true) : r.organization_hierarchy(true, false, true),
+        klass:          r.is_a?(Service) ? 'Service' : 'Organization',
+        label:          r.name,
+        value:          r.id,
+        cpt_code:       r.try(:cpt_code),
+        term:           term
+      }
+    }
+
+    render json: results.to_json
+  end
+
+  private
+
+  def build_survey
+    klass = params[:type].constantize
+
+    if existing = klass.where(survey_params).last
+      @survey = existing.clone
+    else
+      @survey = klass.new(
+        title: "New #{klass.yaml_klass}",
+        access_code: survey_params[:access_code],
+        version: 1,
+        active: false,
+        surveyable: klass == Form ? current_user : nil
+      )
+    end
+  end
+
+  def survey_params
+    params.require(params[:type].underscore).permit(
+      :access_code
+    )
   end
 end

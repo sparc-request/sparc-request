@@ -1,0 +1,46 @@
+#!/bin/sh
+
+set -o nounset
+set -e
+
+. {{pkg.svc_config_path}}/dotenv
+
+echo "Creating runtime directories"
+mkdir -pv $HOME
+mkdir -pv $EYE_HOME
+
+echo "Creating symlinked directories"
+mkdir -pv {{pkg.svc_var_path}}/log
+mkdir -pv {{pkg.svc_var_path}}/tmp
+mkdir -pv {{pkg.svc_var_path}}/tmp/pids
+mkdir -pv {{pkg.svc_data_path}}/system
+
+# Need these permissions to make apache happy
+# and let it serve our static stuff
+# chmod +rx ${SERVICE_DIR}/release/public
+# chmod +rx ${SERVICE_DIR}/release
+# chmod +rx ${SERVICE_DIR}
+
+echo "Permissions for apache to serve file uploads"
+chmod 775 {{pkg.svc_data_path}}/system
+chmod +rx {{pkg.svc_data_path}}
+
+echo "Copying static assets to apache path"
+{{pkgPathFor "core/rsync"}}/bin/rsync -avhr -delete $RAILS_ROOT/public {{pkg.svc_static_path}}/release/
+
+echo "Permissions for apache to serve assets"
+chmod +rx {{pkg.svc_static_path}}/release/public
+chmod +rx {{pkg.svc_static_path}}/release
+chmod +rx {{pkg.svc_static_path}}
+
+cd $RAILS_ROOT
+
+if [[ -e {{pkg.svc_data_path}}/migrate ]]; then
+  echo "Running bootstrap task to initialize database"
+
+  bin/rake sparc:bootstrap
+  echo "Running database data upgrades"
+  script/upgrade/{{strReplace pkg.version "." "_"}}-upgrade.sh
+  rm {{pkg.svc_data_path}}/migrate
+fi
+

@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -63,8 +63,8 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         parsed_body         = JSON.parse(response.body)
         expected_attributes = build(:service).attributes.
                                 keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'order_code'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'process_ssrs_organization').
+                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'order_code', 'tag_list'].include?(key) }.
+                                push('callback_url', 'sparc_id', 'process_ssrs_organization', 'direct_link').
                                 sort
 
         expect(parsed_body['service'].keys.sort).to eq(expected_attributes)
@@ -79,8 +79,8 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         parsed_body         = JSON.parse(response.body)
         expected_attributes = build(:service).attributes.
                                 keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'order_code'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'process_ssrs_organization', 'line_items').
+                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'order_code', 'tag_list'].include?(key) }.
+                                push('callback_url', 'sparc_id', 'process_ssrs_organization', 'direct_link', 'line_items').
                                 sort
 
         expect(parsed_body['service'].keys.sort).to eq(expected_attributes)

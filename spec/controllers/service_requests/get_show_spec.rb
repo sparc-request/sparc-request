@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -39,7 +39,8 @@ RSpec.describe ServiceRequestsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
       get :show, params: {
-        id: sr.id
+        srid: sr.id,
+        report_type: 'request_report'
       }, xhr: true
 
       expect(assigns(:protocol)).to eq(protocol)
@@ -50,22 +51,36 @@ RSpec.describe ServiceRequestsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
       get :show, params: {
-        id: sr.id,
-        admin_offset: '10'
+        srid: sr.id,
+        admin_offset: '10',
+        report_type: 'request_report'
       }, xhr: true
 
       expect(assigns(:admin_offset)).to eq('10')
     end
 
-    it 'should render template' do
+    it 'should render request report template' do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
       get :show, params: {
-        id: sr.id
+        srid: sr.id,
+        report_type: 'request_report'
       }, xhr: true
 
-      expect(controller).to render_template(:show)
+      expect(controller).to render_template(:request_report)
+    end
+
+    it 'should render coverage_analysis template' do
+      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+
+      get :show, params: {
+        srid: sr.id,
+        report_type: 'coverage_analysis'
+      }, xhr: true
+
+      expect(controller).to render_template(:coverage_analysis)
     end
 
     it 'should respond ok' do
@@ -73,7 +88,8 @@ RSpec.describe ServiceRequestsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
       get :show, params: {
-        id: sr.id
+        srid: sr.id,
+        report_type: 'request_report'
       }, xhr: true
 
       expect(controller).to respond_with(:ok)

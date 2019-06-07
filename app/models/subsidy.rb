@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,6 +22,7 @@ class Subsidy < ApplicationRecord
   audited
 
   belongs_to :sub_service_request
+  belongs_to :identity, foreign_key: 'approved_by'
   has_many :notes, as: :notable
 
   delegate :organization, :direct_cost_total, to: :sub_service_request, allow_nil: true

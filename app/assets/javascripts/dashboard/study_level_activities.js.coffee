@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -42,15 +42,6 @@ $ ->
     row_index   = $(this).parents('tr').data('index')
     line_item_id = $(this).parents('table.study_level_activities').bootstrapTable('getData')[row_index].id
     data = 'modal' : 'study_level_activity_form'
-    $.ajax
-      type: 'GET'
-      url: "/dashboard/line_items/#{line_item_id}/edit"
-      data: data
-
-  $(document).on 'click', '.otf_admin_rate', ->
-    row_index   = $(this).parents('tr').data('index')
-    line_item_id = $(this).parents('table.study_level_activities').bootstrapTable('getData')[row_index].id
-    data = 'modal' : 'sla_admin_rate_form'
     $.ajax
       type: 'GET'
       url: "/dashboard/line_items/#{line_item_id}/edit"
@@ -105,3 +96,12 @@ $ ->
       $.ajax
         type: 'DELETE'
         url: "/dashboard/fulfillments/#{fulfillment_id}"
+
+  $(document).on 'load-success.bs.table', '.study_level_activities', ->
+    setup_xeditable_fields()
+
+  $('body').tooltip(
+    selector: '[data-title]'
+    delay: {show: 500}
+  )
+

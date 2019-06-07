@@ -1,0 +1,21 @@
+default: &default
+  adapter: mysql2
+  encoding: utf8
+  pool: 5
+
+production:
+  <<: *default
+  database: {{cfg.database_name}}
+{{#if bind.database.first}}
+  {{#with bind.database.first as |db|}}
+  username: root
+  password:
+  host: {{db.sys.ip}}
+  port: {{db.cfg.port}}
+  {{/with}}
+{{else}}
+  username: {{cfg.database_username}}
+  password: {{cfg.database_password}}
+  host: {{cfg.database_host}}
+  port: {{cfg.database_port}}
+{{/if}}

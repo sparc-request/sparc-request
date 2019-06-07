@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -23,12 +23,12 @@
 Devise.setup do |config|
 
   # Secret key
-  config.secret_key = '7f528de4b8c0f8d08e6f2928c4284943a072b280cf29b845f3a978b032d2853c6a659f5d628c59aa34fea8a106395021803daff07f5a7c064d24ebcb79a8d0bd'
+  config.secret_key = ENV['SECRET_KEY_BASE'] if Rails.env.production?
 
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class with default "from" parameter.
-  config.mailer_sender = "testsparcrequest@childrensnational.org"
+  config.mailer_sender = ENV["sender_address"] || "no-reply@sample.org"
 
   # Configure the class responsible to send e-mails.
   # config.mailer = "Devise::Mailer"
@@ -235,10 +235,12 @@ Devise.setup do |config|
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', :scope => 'user,public_repo'
 
-  #config.omniauth :shibboleth, {:uid_field => 'eppn',
-  #                :info_fields => {:email => 'mail', :name => 'cn', :last_name => 'sn', :first_name => 'givenName'},
-  #                :extra_fields => [:schacHomeOrganization]
-  #}
+  request_type = ENV['SHIBBOLETH_REQUEST_TYPE'] || :env
+
+  config.omniauth :shibboleth, {:uid_field => 'eppn', :request_type => request_type,
+                  :info_fields => {:email => 'mail', :name => 'cn', :last_name => 'sn', :first_name => 'givenName'},
+                  :extra_fields => [:schacHomeOrganization]
+  }
 
   cas_config_file_path = Rails.root.join('config', 'cas.yml')
   if File.exist?(cas_config_file_path)

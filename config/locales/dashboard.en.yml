@@ -59,7 +59,13 @@ en:
       headers:
         current: "Current"
         past: "Past"
-        authorized_user_update: "Authorized User Update"
+        protocol_update: "Protocol Update"
+
+    #########
+    # FORMS #
+    #########
+    forms:
+      header: "Form Submissions"
 
     ##################
     #  FULFILLMENTS  #
@@ -120,19 +126,18 @@ en:
     ##########
     navbar:
       logged_in_as: "Logged in as "
-      surveys: "Surveys"
       epic_queue: "Epic Queue"
       messages: "All Notifications"
       tooltips:
-        surveys: "Survey builder"
         epic_queue: "View or edit protocols for Epic interface"
         messages: "Access to correspondence"
 
-    ###########
-    #  NOTES  #
-    ###########
-    notes:
-      header: "%{notable_type} Notes"
+    ##############
+    # NAVIGATION #
+    ##############
+    navigation:
+      bottom:
+        saving: "Saving..."
 
     ###################
     #  NOTIFICATIONS  #
@@ -170,7 +175,6 @@ en:
     protocol_filters:
       header: "Filter Protocols"
       search_by: "Search All"
-      search_by_options: ['Authorized User', 'HR#', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title']
       archived: "Archived"
       inactive: "(inactive)"
       status: "Status"
@@ -179,7 +183,6 @@ en:
       my_protocols: "My Protocols"
       my_admin_protocols: "My Admin Protocols"
       empty_protocols: "Empty Protocols (No Services)"
-      filter: "Filter"
       saved_filters:
         header: "Recently Saved Filters"
         modal:
@@ -212,7 +215,7 @@ en:
         requests: Requests
         tooltips:
           protocol_id: "System generated from SPARCRequest"
-          short_title: "An abbreviated form of the title used to identify your study/project"
+          short_title: "An abbreviated form of the title used to identify your study/project. Special characters outside the allowed range will be removed automatically."
           pi: "Principal Investigator(s)"
           export: "Export displayed protocols to Excel"
           requests: "Quick access to requests"
@@ -233,8 +236,8 @@ en:
           export_consolidated_request: "Quick access to export all service requests to Excel"
       milestones:
         title: 'Milestones (Timeline)'
-        start_date: "Start Date"
-        end_date: "End Date"
+        start_date: "Estimated Start Date"
+        end_date: "Estimated End Date"
         recruitment_start: "Estimated Recruitment Start Date"
         recruitment_end: "Estimated Recruitment End Date"
         update_button: 'Update Milestones'
@@ -283,8 +286,8 @@ en:
           view: "Quick access to view services for selected provider"
           edit: "Ability to change services for a selected provider (routes to SPARCRequest)"
           admin: "Service Provider administrative access to track and manage services"
-      additional_details:
-        header: "Form Functionality"
+      forms:
+        header: "Forms"
         selectpicker: "Complete Form"
       tooltips:
         modify_request: "Allows Authorized User to add or edit services (routes to SPARCRequest)"
@@ -307,16 +310,19 @@ en:
       destroyed: "Non-clinical Services Destroyed!"
       table:
         service: "Service"
-        unit_requested: "Unit Requested"
+        unit_requested: "Units Requested"
         unit_type: "Unit Type"
         quantity_requested: "Qty Requested"
         quantity_type: "Qty Type"
-        cost: "Cost"
+        service_rate: "Service Rate"
+        cost: "Your Cost"
+        total: "Total Per Study"
         in_process: "In Process"
         complete: "Complete"
         actions: "Actions"
       form:
         service: "Service:"
+        unit_per_quantity: "Units Requested:"
         quantity_requested: "Quantity Requested:"
         in_process: "In Process Date:"
         complete: "Complete Date:"
@@ -329,7 +335,7 @@ en:
       details:
         header: "Non-clinical Services Details"
         charge_code: "Charge Code"
-        unit_quantity: "Units / Quantity"
+        unit_quantity: "Units Requested"
         unit_type: "Unit Type"
         quantity_requested: "Quantity Requested"
         quantity_type: "Quantity Type"
@@ -342,6 +348,8 @@ en:
         cost: "Cost:"
       tooltips:
         add_non_clinical_services: "Add Non-clinical services related to selected organization"
+        modified_rate: 'Modified Rate'
+        change_rate: "Click to modify rate"
 
     ##########################
     #  SUB SERVICE REQUESTS  #
@@ -349,12 +357,14 @@ en:
     sub_service_requests:
       header:
         status: "Status"
+        not_submitted: "Request must be submitted first"
         lock_message: "Request is in a locked status, and cannot be changed."
         owner: "Owner"
         fulfillment:
           header: "Fulfillment"
           go_to_fulfillment: "Go to Fulfillment"
           in_fulfillment: "In Fulfillment"
+          pending: "Pending"
           send_to_fulfillment: "Send to Fulfillment"
           not_enabled: "Not enabled in SPARCCatalog."
         cost: "Cost"
@@ -368,6 +378,7 @@ en:
             send_to_epic: "Send to Epic"
             core_approvals: "Administrative Approvals"
             export_to_excel: "Export to Excel"
+            last_sent: "Survey last sent on: %{date}"
             resend_surveys: "Resend Surveys"
             delete_request: "Delete Request"
           timeline:
@@ -400,7 +411,7 @@ en:
             to: "Status Changed To"
             by: "Changed by"
           approval:
-            header: "Approval History"
+            header: "Administrative Approvals"
             date: "Date Approved"
             type: "Type"
             by: "Approved By"

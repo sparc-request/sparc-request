@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,17 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Study < Protocol
-  validate  :validate_sponsor_source
+  validates :sponsor_name,                presence: true
   validates :selected_for_epic,           inclusion: [true, false], :if => [:is_epic?]
   validate  :validate_study_type_answers
-  
-  def validate_sponsor_source
-    if self.funding_status == "funded" && self.sponsor_name.blank?
-      errors.add(:sponsor_name, "You must select a sponsor")
-    elsif self.funding_status == "pending_funding" && self.sponsor_name.blank?
-      errors.add(:sponsor_name, "You must select a sponsor")
-    end
-  end
 
   def classes
     return [ 'project' ] # for backward-compatibility
@@ -114,7 +106,7 @@ class Study < Protocol
   FRIENDLY_IDS = ["certificate_of_conf", "higher_level_of_privacy", "epic_inbasket", "research_active", "restrict_sending"]
 
   def validate_study_type_answers
-    if Setting.find_by_key("use_epic").value && self.selected_for_epic && StudyTypeQuestionGroup.active.ids.first == self.study_type_question_group_id
+    if Setting.get_value("use_epic") && self.selected_for_epic && StudyTypeQuestionGroup.active.ids.first == self.study_type_question_group_id
       answers = {}
       FRIENDLY_IDS.each do |fid|
         q = StudyTypeQuestion.active.find_by_friendly_id(fid)
@@ -147,6 +139,6 @@ class Study < Protocol
   end
 
   def is_epic?
-    Setting.find_by_key("use_epic").value
+    Setting.get_value("use_epic")
   end
 end

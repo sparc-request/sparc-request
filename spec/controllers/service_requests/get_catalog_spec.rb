@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -34,24 +34,20 @@ RSpec.describe ServiceRequestsController, type: :controller do
       expect(before_filters.include?(:authorize_identity)).to eq(true)
     end
 
-    it 'should call before_filter #authorize_protocol_edit_request' do
-      expect(before_filters.include?(:authorize_protocol_edit_request)).to eq(true)
-    end
-
     it 'should call before_filter #find_locked_org_ids' do
       expect(before_filters.include?(:find_locked_org_ids)).to eq(true)
     end
 
     context 'editing service request' do
       it 'should assign @institutions' do
-        i1       = create(:institution)
-        i2       = create(:institution)
+        i1       = create(:institution, order: 1)
+        i2       = create(:institution, order: 2)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
-        get :catalog, params: {
-          id: sr.id
-        }, xhr: true
+        session[:srid] = sr.id
+
+        get :catalog, xhr: true
 
         expect(assigns(:institutions).count).to eq(2)
         expect(assigns(:institutions)[0]).to eq(i1)
@@ -59,60 +55,58 @@ RSpec.describe ServiceRequestsController, type: :controller do
       end
     end
 
-    context 'editing sub service request' do
-      it 'should assign @institutions' do
-        i1       = create(:institution)
-        i2       = create(:institution)
-        prvdr    = create(:provider, parent: i1)
-        prgrm    = create(:program, parent: prvdr)
-        protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-        sr       = create(:service_request_without_validations, protocol: protocol)
-        ssr      = create(:sub_service_request_without_validations, organization: prgrm, service_request: sr)
-
-        get :catalog, params: {
-          sub_service_request_id: ssr.id,
-          id: sr.id
-        }, xhr: true
-
-        expect(assigns(:institutions).count).to eq(1)
-        expect(assigns(:institutions)[0]).to eq(i1)
-      end
-    end
-
     context 'use_google_calendar is true' do
-      it 'should assign @events' do
-        protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-        sr       = create(:service_request_without_validations, protocol: protocol)
+      stub_config('use_google_calendar', true)
 
-        get :catalog, params: {
-          id: sr.id
-        }, xhr: true
+      it 'should assign @events' do
+        get :catalog, xhr: true
 
         expect(assigns(:events)).to be
       end
     end
 
     context 'use_news_feed is true' do
-      it 'should assign @news' do
-        protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-        sr       = create(:service_request_without_validations, protocol: protocol)
+      stub_config('use_news_feed', true)
 
-        get :catalog, params: {
-          id: sr.id
-        }, xhr: true
+      it 'should assign @news' do
+        get :catalog, xhr: true
 
         expect(assigns(:news)).to be
       end
     end
 
+    context 'params[:service_id] is present' do
+      it 'should assign @service' do
+        service = create(:service)
+        allow_any_instance_of(Service).to receive(:provider).and_return(nil)
+        allow_any_instance_of(Service).to receive(:program).and_return(nil)
+        allow_any_instance_of(Service).to receive(:core).and_return(nil)
+
+        get :catalog, params: { service_id: service.id }, xhr: true
+
+        expect(assigns(:service)).to eq(service)
+      end
+
+      context 'service is inactive' do
+        it 'should redirect' do
+          service = create(:service, is_available: false)
+          allow_any_instance_of(Service).to receive(:provider).and_return(nil)
+          allow_any_instance_of(Service).to receive(:program).and_return(nil)
+          allow_any_instance_of(Service).to receive(:core).and_return(nil)
+
+          get :catalog, params: { service_id: service.id }, xhr: true
+
+          expect(controller).to redirect_to(catalog_service_request_path)
+        end
+      end
+    end
     it 'should render template' do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
+      session[:srid] = sr.id
 
-      get :catalog, params: {
-          id: sr.id
-        }, xhr: true
+      get :catalog, xhr: true
 
       expect(controller).to render_template(:catalog)
     end
@@ -122,9 +116,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
 
-      get :catalog, params: {
-          id: sr.id
-        }, xhr: true
+      session[:srid] = sr.id
+
+      get :catalog, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

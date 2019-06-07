@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,19 +18,74 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $ ->
+
+  _super = $.fn.modal
+  $.extend _super.Constructor.DEFAULTS,
+    backdrop: 'static'
+
   $(".datetimepicker:not(.time)").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
   $('.datetimepicker.time').datetimepicker(format: 'hh:mm A', allowInputToggle: true)
   $(".selectpicker").selectpicker()
   $('[data-toggle="tooltip"]').tooltip()
-  
+
   $(document).ajaxComplete ->
     $('[data-toggle="tooltip"]').tooltip()
 
+  $(document).on 'show.bs.collapse hide.bs.collapse', '.collapse, .collapsing', ->
+    $control = $("[href='##{$(this).attr('id')}']")
+
+    if $control.length == 0
+      $control = $("[data-target='##{$(this).attr('id')}']")
+
+    if $control.attr('alt')
+      text  = $control.text()
+      alt   = $control.attr('alt')
+
+      $control.text(alt)
+      $control.attr('alt', text)
+
+  $(document).on 'click', '.copy-to-clipboard', ->
+    $that = $(this)
+
+    document.getElementById($(this).data('target')).select()
+    document.execCommand('copy')
+
+    $(this).parents('.input-group').siblings('.help-text').remove()
+    $(this).parents('.input-group').after("<span class='help-text text-success'>#{I18n['actions']['copy_clipboard']['complete']}</span>")
+
+    setTimeout (->
+      $that.parents('.input-group').siblings('.help-text').fadeOut('slow', ->
+        $that.parents('.input-group').siblings('.help-text').remove()
+      )
+    ), 1500
+
 (exports ? this).getSRId = ->
-  $("input[name='service_request_id']").val()
+  $("input[name='srid']").val()
 
 (exports ? this).getSSRId = ->
   $("input[name='sub_service_request_id']").val()
+
+VALID_MONETARY_KEYS = [
+  8, # backspace
+  37, 38, 39, 40, # arrow keys
+  46, # Delete
+  48, 49, 50, 51, 52, 53, 54, 55, 56, 57, # 0-9
+  96, 97, 98, 99, 100, 101, 102, 103, 104, 105, # numpad 0-9
+  110, # decimal
+  190 # period
+]
+
+(exports ? this).validateMonetaryInput = (e) ->
+  charCode = if e.which then e.which else event.keyCode
+  element  = e.target
+
+  # dont allow multiple decimal points
+  if (charCode == 110 || charCode == 190) && $(element).val().indexOf('.') >= 0
+    e.preventDefault()
+
+  # make sure only valid keys are allowed
+  if !VALID_MONETARY_KEYS.includes(charCode)
+    e.preventDefault()
 
 (exports ? this).formatMoney = (n, t=',', d='.', c='$') ->
   s = if n < 0 then "-#{c}" else c

@@ -41,8 +41,8 @@ en:
       listserv_subject: "SPARCRequest Listserv"
       sparc_blog: "Blog"
       sparc_blog_url: "https://sparcrequestblog.com/"
-      sctr: "CTSI"
-      sctr_url: "http://www.ctsicn.org"
+      sctr: "SCTR"
+      sctr_url: "http://sctr.musc.edu"
       about: "About"
       about_alt: "About SPARCRequest"
 
@@ -50,12 +50,11 @@ en:
     # CATALOG #
     ###########
     catalog:
-      no_description: "No description available."
       accordion:
         header: "Browse Service Catalog"
       back_to_top: "Back to Top"
       center:
-        search_placeholder: "Search by Service Name or CPT Code..."
+        search_placeholder: "Search by Service Name, CPT Code, or EAP ID"
         welcome: "Welcome to SPARCRequest:<br>Storefront of Research Services"
         description: "Search for services above or browse the providers/services on the left sidebar"
         notice: "** You may only select services applicable to ONE Study/Project at a time **"
@@ -102,10 +101,16 @@ en:
       enter_dates_instructions: "Used for Study/Project metric tracking"
       arm_information_notice: "Arm Information"
       arm_information_instructions: "Used to build your Calendar Structure"
-      start_date: "Start Date"
-      end_date: "End Date"
+      start_date: "Estimated Start Date"
+      end_date: "Estimated End Date"
       recruitment_start: "Estimated Recruitment Start Date"
       recruitment_end: "Estimated Recruitment End Date"
+      initial_budget_sponsor_received_date: "Initial Budget Sponsor Received Date"
+      budget_agreed_upon_date: 'Budget Agreed Upon Date'
+      initial_amount_clinical_services: 'Initial Amount Per Patient'
+      initial_amount_non_clinical_services: 'Initial Site Level Amount Offered'
+      negotiated_amount_clinical_services: 'Negotiated Amount Per Patient'
+      negotiated_amount_non_clinical_services: 'Negotiated Site Level Amount'
       tooltips:
         start_date: 'Study/Project estimated start date (used by service providers to prioritize)'
         end_date: 'Study/Project estimated end date (used by service providers to prioritize)'
@@ -136,8 +141,8 @@ en:
       eligible_notice: "The services selected below may be eligible for a <b><i>funding award</i></b> or subsidy to cover some or all of the costs of the services."
       not_eligible_notice: "None of the services you have selected are eligible for a subsidy."
       request_funding_notice: "To request additional research funding go to "
-      request_funding_link: "www.ctsicn.org"
-      request_funding_url: "https://www.ctsicn.org/"
+      request_funding_link: "sctr.musc.edu"
+      request_funding_url: "https://sctr.musc.edu/"
 
     #######################
     # DOCUMENT MANAGEMENT #
@@ -145,11 +150,10 @@ en:
     document_management:
       documents_notice: "Documents"
       notes_notice: "Notes"
-      additional_details_notice: 'Forms'
+      forms_notice: 'Forms'
       tooltips:
         documents: "Visible to Authorized Users and selected Service Providers"
         notes: "Important notes for your Study/Project"
-        additional_details: "Forms to collect additional information related to requesting a service"
 
     ##########
     # REVIEW #
@@ -178,7 +182,7 @@ en:
     # CONFIRMATION #
     ################
     confirmation:
-      confirmation_warning: "Thank you for submitting your service request(s) through SPARCRequest. An email has been sent to each of your service providers and they should be contacting you soon. If you have any questions or concerns, please don't hesitate to contact the SUCCESS Center at 792-8300 or success@musc.edu."
+      confirmation_warning: "Thank you for submitting your service request(s) through SPARCRequest. An email has been sent to each of your service providers and they should be contacting you soon. If you have any questions or concerns, please don't hesitate to contact the %{department_name} at %{phone} or <a href='mailto:%{email}'>%{email}</a>"
       cost_estimate_warning: "You have successfully submitted a request to get a cost estimate. Emails have been submitted on your behalf and we will respond to your request shortly. Should you have any questions regarding your request, please contact the Service Providers listed below."
       service_requests_notice: "My Service Requests"
       download_request: "Download Service Request"
@@ -211,9 +215,6 @@ en:
       has_fulfillments:
         header: "Remove Service"
         warning: "This line item has one or more fulfillments associated with it and can not be deleted."
-      remove_request:
-        header: "Remove Service"
-        warning: "This action will delete this request (%{ssr_id}) and you will be redirected to your SPARCDashboard. Click Yes to proceed."
       submit_error:
         header: "Submission Error"
         warning: "Please ensure that you have added all necessary research services to your \"My Services\" cart before proceeding. For a listing of available services to add, click on any of the Programs listed on the left-hand side of the page. Services will appear in the middle of the screen. Add services by clicking \"Add\"."
@@ -262,10 +263,10 @@ en:
         answer_3: "Add as many Authorized Users as you feel is pertinent. There is no limit."
         question_4: "What is the difference  between a Research Study and a Project?"
         answer_4: "A Research Study is an individual research protocol with defined aims and outcomes."
-        question_5: "How is SPARC Request calculating my indirect costs?"
-        answer_5: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARC Request uses this data to calculate your total overall indirect costs."
-        question_6: "I\'m stuck! Who can I contact for assistance with SPARC Request?"
-        answer_6: "The SUCCESS Center is happy to assist you! Please contact us at success@musc.edu or (843) 792-3357."
+        question_5: "How is SPARCRequest calculating my indirect costs?"
+        answer_5: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARCRequest uses this data to calculate your total overall indirect costs."
+        question_6: "I'm stuck! Who can I contact for assistance with SPARCRequest?"
+        answer_6: "The %{department_name} is happy to assist you! Please contact us at %{phone} or <a href='mailto:%{email}'>%{email}</a>."
       feedback:
         header: "Feedback"
         email: "Email:"
@@ -278,4 +279,23 @@ en:
         email: "Email:"
         message: "Message:"
         submitted: "Message sent successfully!"
-      ctrc_lock: "CTSI Research Nexus services are already present on this request (%{protocol_id}-%{ssr_id}) pertaining to this %{protocol_type}, '%{short_title}'. Please call (843) 792-8688 to edit the existing request."
+      ctrc_lock: "SCTR Research Nexus services are already present on this request (%{protocol_id}-%{ssr_id}) pertaining to this %{protocol_type}, '%{short_title}'. Please call (843) 792-8688 to edit the existing request."
+      #### short_interaction ####
+      short_interaction:
+        header: "Short Interaction"
+        subject: "Subject of Interaction:*"
+        subject_select: " - Select Category - "
+        type: "Type of Interaction:* "
+        type_select: "- Select Type -"
+        duration: "Duration (in minutes):*"
+        duration_placeholder: "Enter an integer"
+        institution: "Investigator Institution:*"
+        institution_select: " - Select Institution - "
+        investigator_email: "Email:*"
+        investigator_email_placeholder: "Investigator's Email"
+        investigator_name: "Name:*"
+        investigator_name_placeholder: "Investigator's Name"
+        note: "Note:"
+        subject: "Subject of Interaction:* "
+        title: "Short Interaction"
+        submitted: "Interaction saved successfully!"

@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -26,10 +26,10 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
   fake_login_for_each_test
 
   before :each do
-    org       = create(:organization, admin: jug2, service_provider: jug2)
+    org       = create(:organization, admin: jug2, service_provider: jug2, process_ssrs: true)
     pricing   = create(:pricing_setup, organization: org)
-    pppv      = create(:service, organization: org, one_time_fee: false)
-    otf       = create(:service, organization: org, one_time_fee: true)
+    pppv      = create(:service, organization: org, one_time_fee: false, pricing_map_count: 1)
+    otf       = create(:service, organization: org, one_time_fee: true, pricing_map_count: 1)
     otf.pricing_maps.first.update_attributes(otf_unit_type: 'total')
 
     protocol  = create(:protocol_federally_funded, primary_pi: jug2)
@@ -77,8 +77,8 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
 
       context 'check row' do
         before :each do
-          @visit_row = find('.service-calendar-row', match: :first)
-          @visit_row.click
+          first('.service-calendar-row').click
+          accept_confirm
           wait_for_javascript_to_finish
         end
 
@@ -93,8 +93,8 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
 
        context 'check column' do
         before :each do
-          @visit_col = find('.service-calendar-column', match: :first)
-          @visit_col.click
+          first('.service-calendar-column').click
+          accept_confirm
           wait_for_javascript_to_finish
         end
 
@@ -135,10 +135,6 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         it 'updates your cost' do
           expect(page).to have_css('.edit-your-cost', text: '$100.00')
         end
-
-        it 'should update header total cost' do
-          expect(page).to have_css('.display_cost', text: '$1,001.00')
-        end
       end
     end
 
@@ -154,24 +150,6 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         it 'should throw error' do
           expect(page).to have_selector('.editable-error-block', visible: true)
           expect(page).to have_content('Subject Count is not a number')
-        end
-
-        it 'should not update header total' do
-          expect(page).to have_css('.display_cost', text: '$11.00')
-        end
-      end
-
-      context 'your cost' do
-        before :each do
-          find('.edit-your-cost.editable', match: :first).click
-          find('.editable-input input').set('a number')
-          find('.editable-submit').click
-          wait_for_javascript_to_finish
-        end
-
-        it 'should throw error' do
-          expect(page).to have_selector('.editable-error-block', visible: true)
-          expect(page).to have_content('Displayed Cost must be a number')
         end
 
         it 'should not update header total' do

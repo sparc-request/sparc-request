@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,12 +21,28 @@
 class Tag < ApplicationRecord
   audited
 
+  scope :for_services, -> {
+    where(name: ['epic'])
+  }
+
+  scope :for_organization, -> (organization) {
+    if organization.process_ssrs
+      where(name: ['ctrc', 'clinical work fulfillment'])
+    else
+      where(name: [])
+    end
+  }
+
   def self.to_hash
     tags = {}
     where.not(name: 'epic').each do |tag|
       tags[tag.name] = I18n.t(:tags)[tag.ymlized_name] ? I18n.t(:tags)[tag.ymlized_name] : tag.name.humanize
     end
     tags
+  end
+
+  def humanized_name
+    I18n.t(:tags)[self.ymlized_name]
   end
 
   def ymlized_name

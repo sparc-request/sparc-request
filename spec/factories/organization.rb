@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :organization do
     name          { Faker::Lorem.sentence(3) }
@@ -28,10 +28,19 @@ FactoryGirl.define do
     process_ssrs  { false }
     is_available  { true }
     use_default_statuses { true }
+    order         { 1 }
 
     trait :ctrc do
       after(:create) do |organization, evaluator|
-        organization.tag_list = "ctrc_clinical_services"
+        organization.tag_list = "ctrc"
+
+        organization.save
+      end
+    end
+
+    trait :in_fulfillment do
+      after(:create) do |organization, evaluator|
+        organization.tag_list = "clinical work fulfillment"
 
         organization.save
       end
@@ -43,12 +52,18 @@ FactoryGirl.define do
       end
     end
 
+    trait :with_subsidy_map do
+      after(:create) do |organization, evaluator|
+        create(:subsidy_map, organization: organization)
+      end
+    end
+
     trait :process_ssrs do
-      process_ssrs true
+      process_ssrs {true}
     end
 
     trait :disabled do
-      is_available false
+      is_available {false}
     end
 
     trait :without_validations do
@@ -56,15 +71,15 @@ FactoryGirl.define do
     end
 
     transient do
-      sub_service_request_count 0
-      service_count 0
-      catalog_manager_count 0
-      super_user_count 0
-      service_provider_count 0
-      pricing_setup_count 0
-      submission_email_count 0
-      admin nil
-      service_provider nil
+      sub_service_request_count {0}
+      service_count {0}
+      catalog_manager_count {0}
+      super_user_count {0}
+      service_provider_count {0}
+      pricing_setup_count {0}
+      submission_email_count {0}
+      admin {nil}
+      service_provider {nil}
     end
 
     after(:build) do |organization, evaluator|
@@ -102,212 +117,26 @@ FactoryGirl.define do
     factory :organization_with_process_ssrs, traits: [:process_ssrs, :with_pricing_setup]
     factory :organization_ctrc, traits: [:ctrc]
     factory :organization_without_validations, traits: [:without_validations]
-  end
 
-  factory :institution do
-    name          { Faker::Lorem.sentence(3) }
-    description   { Faker::Lorem.paragraph(4) }
-    abbreviation  { Faker::Lorem.word }
-    ack_language  { Faker::Lorem.paragraph(4) }
-    process_ssrs  { false }
-    is_available  { true }
-    use_default_statuses { true }
-
-    trait :disabled do
-      is_available false
+    factory :institution, class: Institution do
+      factory :institution_without_validations, traits: [:without_validations]
     end
 
-    trait :without_validations do
-      to_create { |instance| instance.save(validate: false) }
+    factory :provider, class: Provider do
+      factory :provider_without_validations, traits: [:without_validations]
     end
 
-    transient do
-      catalog_manager_count 0
-      super_user_count 0
-    end
-
-    after(:build) do |organization, evaluator|
-      create_list(:catalog_manager,
-       evaluator.catalog_manager_count, organization: organization)
-
-      create_list(:super_user,
-       evaluator.super_user_count, organization: organization)
-
-    end
-    factory :institution_without_validations, traits: [:without_validations]
-  end
-
-  factory :provider do
-    name          { Faker::Lorem.sentence(3) }
-    description   { Faker::Lorem.paragraph(4) }
-    abbreviation  { Faker::Lorem.word }
-    ack_language  { Faker::Lorem.paragraph(4) }
-    process_ssrs  { false }
-    is_available  { true }
-    use_default_statuses { true }
-
-    trait :process_ssrs do
-      process_ssrs true
-    end
-
-    trait :without_validations do
-      to_create { |instance| instance.save(validate: false) }
-    end
-
-    trait :disabled do
-      is_available false
-    end
-
-    transient do
-      sub_service_request_count 0
-      catalog_manager_count 0
-      super_user_count 0
-      service_provider_count 0
-      pricing_setup_count 0
-      submission_email_count 0
-    end
-
-    after(:build) do |organization, evaluator|
-      create_list(:sub_service_request, evaluator.sub_service_request_count,
-        organization: organization)
-
-      create_list(:catalog_manager,
-       evaluator.catalog_manager_count, organization: organization)
-
-      create_list(:super_user,
-       evaluator.super_user_count, organization: organization)
-
-      create_list(:service_provider, evaluator.service_provider_count,
-       organization: organization)
-
-      create_list(:pricing_setup, evaluator.pricing_setup_count,
-       organization: organization)
-
-      create_list(:submission_email, evaluator.submission_email_count,
-       organization: organization)
-    end
-    factory :provider_without_validations, traits: [:without_validations]
-  end
-
-  factory :program do
-    name          { Faker::Lorem.sentence(3) }
-    description   { Faker::Lorem.paragraph(4) }
-    abbreviation  { Faker::Lorem.word }
-    ack_language  { Faker::Lorem.paragraph(4) }
-    process_ssrs  { false }
-    is_available  { true }
-    use_default_statuses { true }
-
-    trait :process_ssrs do
-      process_ssrs true
-    end
-
-    trait :disabled do
-      is_available false
-    end
-
-    trait :without_validations do
-      to_create { |instance| instance.save(validate: false) }
-    end
-
-    trait :with_provider do
-      parent factory: :provider
-    end
-
-    trait :with_pricing_setup do
-      after(:create) do |program, evaluator|
-        create(:pricing_setup, organization: program)
+    factory :program, class: Program do
+      trait :without_validations do
+        to_create { |instance| instance.save(validate: false) }
       end
+
+      factory :program_with_pricing_setup, traits: [:with_pricing_setup]
+      factory :program_without_validations, traits: [:without_validations]
     end
 
-    transient do
-      sub_service_request_count 0
-      service_count 0
-      catalog_manager_count 0
-      super_user_count 0
-      service_provider_count 0
-      pricing_setup_count 0
-      submission_email_count 0
+    factory :core, class: Core do
+      factory :core_without_validations, traits: [:without_validations]
     end
-
-    after(:build) do |organization, evaluator|
-      create_list(:sub_service_request, evaluator.sub_service_request_count,
-        organization: organization)
-
-      create_list(:service, evaluator.service_count,
-        organization: organization)
-
-      create_list(:catalog_manager,
-       evaluator.catalog_manager_count, organization: organization)
-
-      create_list(:super_user,
-       evaluator.super_user_count, organization: organization)
-
-      create_list(:service_provider, evaluator.service_provider_count,
-       organization: organization)
-
-      create_list(:pricing_setup, evaluator.pricing_setup_count,
-       organization: organization)
-
-      create_list(:submission_email, evaluator.submission_email_count,
-       organization: organization)
-    end
-
-    factory :program_with_provider, traits: [:with_provider]
-    factory :program_with_pricing_setup, traits: [:with_pricing_setup]
-    factory :program_without_validations, traits: [:without_validations]
-  end
-
-  factory :core do
-    name          { Faker::Lorem.sentence(3) }
-    description   { Faker::Lorem.paragraph(4) }
-    abbreviation  { Faker::Lorem.word }
-    ack_language  { Faker::Lorem.paragraph(4) }
-    process_ssrs  { false }
-    is_available  { true }
-    use_default_statuses { true }
-
-    trait :process_ssrs do
-      process_ssrs true
-    end
-
-    trait :disabled do
-      is_available false
-    end
-
-    trait :without_validations do
-      to_create { |instance| instance.save(validate: false) }
-    end
-
-    transient do
-      sub_service_request_count 0
-      service_count 0
-      catalog_manager_count 0
-      super_user_count 0
-      service_provider_count 0
-      submission_email_count 0
-    end
-
-    after(:build) do |organization, evaluator|
-      create_list(:sub_service_request, evaluator.sub_service_request_count,
-        organization: organization)
-
-      create_list(:service, evaluator.service_count,
-        organization: organization)
-
-      create_list(:catalog_manager,
-       evaluator.catalog_manager_count, organization: organization)
-
-      create_list(:super_user,
-       evaluator.super_user_count, organization: organization)
-
-      create_list(:service_provider, evaluator.service_provider_count,
-       organization: organization)
-
-      create_list(:submission_email, evaluator.submission_email_count,
-       organization: organization)
-    end
-
-    factory :core_without_validations, traits: [:without_validations]
   end
 end

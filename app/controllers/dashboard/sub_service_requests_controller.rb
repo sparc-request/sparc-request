@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -84,6 +84,13 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   end
 
   def update
+    if params[:check_sr_calendar] == 'true'
+      sr = @sub_service_request.service_request
+      sr.validate_service_calendar
+      if sr.errors[:base].length > 0
+        raise 'error'
+      end
+    end
     if @sub_service_request.update_attributes(sub_service_request_params)
       @sub_service_request.distribute_surveys if (@sub_service_request.status == 'complete' && sub_service_request_params[:status].present?)
       flash[:success] = 'Request Updated!'
@@ -95,9 +102,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   def destroy
     @protocol = @sub_service_request.protocol
     if @sub_service_request.destroy
-      # Delete all related toast messages
-      ToastMessage.where(sending_class_id: params[:id], sending_class: 'SubServiceRequest').each(&:destroy)
-      notifier_logic = NotifierLogic.new(@sub_service_request.service_request, nil, current_user)
+      notifier_logic = NotifierLogic.new(@sub_service_request.service_request, current_user)
       notifier_logic.ssr_deletion_emails(deleted_ssr: @sub_service_request, ssr_destroyed: false, request_amendment: false, admin_delete_ssr: true)
 
       flash[:alert] = 'Request Destroyed!'
@@ -128,11 +133,17 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   end
 
   def push_to_epic
-    begin
-      @sub_service_request.protocol.push_to_epic(EPIC_INTERFACE, "admin_push", current_user.id)
-      flash[:success] = 'Request Pushed to Epic!'
-    rescue
-      flash[:alert] = $!.message
+    sr = @sub_service_request.service_request
+    sr.validate_service_calendar
+    unless sr.errors[:base].length > 0
+      begin
+        @sub_service_request.protocol.push_to_epic(EPIC_INTERFACE, "admin_push", current_user.id)
+        flash[:success] = 'Request Pushed to Epic!'
+      rescue
+        flash[:alert] = $!.message
+      end
+    else
+      raise 'error'
     end
   end
 
@@ -142,6 +153,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       flash[:alert] = 'All surveys have already been completed.'
     else
       @sub_service_request.distribute_surveys
+      @refresh = true
       flash[:success] = 'Surveys re-sent!'
     end
   end
@@ -199,6 +211,7 @@ private
         :service_requester_id,
         :requester_contacted_date,
         :submitted_at,
+        :imported_to_fulfillment,
         line_items_attributes: [:service_request_id,
           :sub_service_request_id,
           :service_id,

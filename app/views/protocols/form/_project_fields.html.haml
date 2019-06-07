@@ -1,4 +1,4 @@
--# Copyright © 2011-2017 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -48,7 +48,7 @@
         title: t(:protocols)[:tooltips][:funding_status]
       .col-lg-10
         = form.select :funding_status,
-          options_for_select(FUNDING_STATUSES, protocol.funding_status),
+          options_for_select(PermissibleValue.get_inverted_hash('funding_status'), protocol.funding_status),
           { include_blank: t(:protocols)[:prompts][:status] },
           class: 'selectpicker project'
 
@@ -81,7 +81,7 @@
       .col-sm-8
         = form.text_area :brief_description, {class: 'form-control', rows: "6"}
 
-    - if Setting.find_by_key("use_indirect_cost").value
+    - if Setting.get_value("use_indirect_cost")
       .form-group.row.indirect_cost_rate
         = form.label :indirect_cost_rate, t(:protocols)[:projects][:information][:rate], class: 'col-lg-2 control-label'
         .col-lg-10

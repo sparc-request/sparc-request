@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,39 +19,53 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 SparcRails::Application.configure do
+  # Settings specified here will take precedence over those in config/application.rb
 
-  config.cache_classes = true
-  config.eager_load = true
-  config.enable_dependency_loading = true
+  # In the development environment your application's code is reloaded on
+  # every request. This slows down response time but is perfect for development
+  # since you don't have to restart the web server when you make code changes.
+  config.cache_classes = false
 
-  config.consider_all_requests_local       = false
-  config.action_controller.perform_caching = true
+  # Do not eager load code on boot.
+  config.eager_load = false
 
-  config.public_file_server.enabled = false
-  config.assets.js_compressor = :uglifier
+  # Show full error reports and disable caching
+  config.consider_all_requests_local       = true
+  config.action_controller.perform_caching = false
 
-  config.assets.compile = true
+  # Don't care if the mailer can't send
+  config.action_mailer.raise_delivery_errors = true
 
-  config.assets.digest = true
+  # Print deprecation notices to the Rails logger
+  config.active_support.deprecation = :log
 
-  config.log_level = :info
+  # Only use best-standards-support built into browsers
+  config.action_dispatch.best_standards_support = :builtin
 
-  config.i18n.fallbacks = true
+  # Log the query plan for queries taking more than this (works
+  # with SQLite, MySQL, and PostgreSQL)
+  # config.active_record.auto_explain_threshold_in_seconds = 0.5
 
-  config.active_support.deprecation = :notify
+  # Do not compress assets
+  config.assets.compress = false
 
-  config.action_mailer.default_url_options = { :host => 'sparctest.ctsicn.org' }
-  config.action_mailer.delivery_method = :sendmail
-  config.action_mailer.perform_deliveries = true
+  # Expands the lines which load the assets
+  config.assets.debug = true
 
-  config.middleware.use ExceptionNotification::Rack,
-    email: {
-      ignore_if: ->(env, exception) { ['xx.xx.xx.xx'].include?(env['REMOTE_ADDR']) },
-      sender_address: 'sparcrequest@childrensnational.org',
-      exception_recipients: ['mskhan2@cnmc.org', 'hmorizono@cnmc.org',
-                             'dkkim@cnmc.org', 'ccolvin@cnmc.org',
-                             'hiroki@cnmcresearch.org']
-    }
+  config.action_mailer.default_url_options = { :host => 'sparc-d.obis.musc.edu' }
 
+  config.after_initialize do
+    # Need to do this after initialization so that the database is loaded
+    begin
+      new_options = { host: Setting.get_value("root_url") }
+      config.action_mailer.default_url_options = new_options
+
+      # By the time we run ActionMailer has already copied the options
+      # from config so we need to override here to really make the change
+      # We only set the default_url_options to keep the settings consistent
+      ActionMailer::Base.default_url_options = new_options
+    rescue
+      puts "WARNING: Database does not exist, restart server after database has been created and populated, to set mailer default url options from database."
+    end
+  end
 end
-

@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -29,7 +29,7 @@ SparcRails::Application.configure do
   # and those relying on copy on write to perform better.
   # Rake tasks automatically ignore this option for performance.
   config.eager_load = true
-  config.enable_dependency_loading = true
+  config.enable_dependency_loading = false
 
   # Full error reports are disabled and caching is turned on
   config.consider_all_requests_local       = false
@@ -43,6 +43,7 @@ SparcRails::Application.configure do
 
   # Don't fallback to assets pipeline if a precompiled asset is missed
   config.assets.compile = true
+  config.assets.initialize_on_precompile = false
 
   # Generate digests for assets URLs
   config.assets.digest = true
@@ -55,7 +56,15 @@ SparcRails::Application.configure do
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for nginx
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # config.force_ssl = true
+  config.force_ssl = true
+
+  # Set HTTP/S security headers
+  # config.action_dispatch.default_headers = {
+  #   'Referrer-Policy' => 'strict-origin-when-cross-origin',
+  #   'X-Content-Type-Options' => 'nosniff',
+  #   'X-Frame-Options' => 'SAMEORIGIN',
+  #   'X-XSS-Protection' => '1; mode=block'
+  # }
 
   # See everything in the log (default is :info)
   # config.log_level = :debug
@@ -64,8 +73,7 @@ SparcRails::Application.configure do
   # Prepend all log lines with the following tags
   # config.log_tags = [ :subdomain, :uuid ]
 
-  # Use a different logger for distributed setups
-  # config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)
+  # config.logger = ActiveSupport::TaggedLogging.new(Logger.new(STDOUT))
 
   # Use a different cache store in production
   # config.cache_store = :mem_cache_store
@@ -92,18 +100,23 @@ SparcRails::Application.configure do
   # Log the query plan for queries taking more than this (works
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
-  config.action_mailer.default_url_options = { :host => 'sparc.ctsicn.org' }
-  config.action_mailer.delivery_method = :sendmail
-  config.action_mailer.perform_deliveries = true
+  config.active_record.dump_schema_after_migration = false
 
-  config.middleware.use ExceptionNotification::Rack,
-    email: {
-      ignore_if: ->(env, exception) { ['xx.xx.xx.xx'].include?(env['REMOTE_ADDR']) },
-      sender_address: 'sparcrequest@childrensnational.org',
-      exception_recipients: ['mskhan2@cnmc.org', 'hmorizono@cnmc.org',
-                             'dkkim@cnmc.org', 'ccolvin@cnmc.org',
-                             'hiroki@cnmcresearch.org']
-    }
+  config.action_mailer.delivery_method = :sendmail
+  config.action_mailer.default_url_options = { host: "sparc.musc.edu" }
+  config.after_initialize do
+    # Need to do this after initialization so that the database is loaded
+    begin
+      new_options = { host: Setting.get_value("root_url") }
+      config.action_mailer.default_url_options = new_options
+
+      # By the time we run ActionMailer has already copied the options
+      # from config so we need to override here to really make the change
+      # We only set the default_url_options to keep the settings consistent
+      ActionMailer::Base.default_url_options = new_options
+    rescue
+      puts "WARNING: Database does not exist, restart server after database has been created and populated, to set mailer default url options from database."
+    end
+  end
 
 end
-

@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,12 +20,9 @@
 
 class AssociatedSurvey < ApplicationRecord
   audited
-  
-  belongs_to :survey
-  belongs_to :surveyable, polymorphic: true
-  
-  validates :surveyable_type,
-            presence: true
 
-  validates_uniqueness_of :survey_id, scope: [:surveyable_id, :surveyable_type]
+  belongs_to :survey, -> { where(type: 'SystemSurvey') }
+  belongs_to :associable, polymorphic: true
+
+  validates_uniqueness_of :survey_id, scope: [:associable_id, :associable_type], message: "The survey you are trying to add is already associated with this Organization"
 end

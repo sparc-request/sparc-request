@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -19,20 +19,19 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 # config valid only for current version of Capistrano
-#new line
-lock "3.10.0"
+lock "3.11.0"
 
 set :application, "sparc_rails"
-set :repo_url, "git@github.com:BI-CTSICN/sparc-request.git"
+set :repo_url, "git@github.com:bmic-development/sparc-request.git"
 set :user, 'capistrano'
 set :use_sudo, false
 
 set :stages, %w(testing demo demo2 staging production)
-set :default_stage, 'production'
+set :default_stage, 'testing'
 
 set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
 
-set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/setup_load_paths.rb', 'config/application.yml', 'config/ldap.yml', 'config/epic.yml', '.env')
+set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/fulfillment_db.yml', 'config/setup_load_paths.rb', 'config/application.yml', 'config/ldap.yml', 'config/epic.yml', '.env', 'app/views/shared/_analytics.html.haml')
 
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'public/system', 'public/assets', 'public/images')
 
@@ -49,4 +48,4 @@ namespace :survey do
   end
 end
 
-after "deploy:restart", "delayed_job:restart" 
+after "deploy:restart", "delayed_job:restart"

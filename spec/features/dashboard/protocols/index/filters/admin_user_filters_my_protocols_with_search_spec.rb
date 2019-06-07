@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -263,98 +263,66 @@ RSpec.describe "Admin User filters My Protocols using Search functionality", js:
 
 
   context "RMID search" do
-    before :each do
-      @protocol1 = create(:study_without_validations, primary_pi: jug2, title: "title%", short_title: "Protocol1")
-      @protocol2 = create(:study_without_validations, primary_pi: jug2, title: "xTitle", short_title: "Protocol2")
-      @protocol3 = create(:study_without_validations, primary_pi: jug2, title: "a%a", short_title: "Protocol3", research_master_id: 1234)
+    context 'RMID enabled' do
+      stub_config('research_master_enabled', true)
+      before :each do
+        @protocol1 = create(:study_without_validations, primary_pi: jug2, title: "title%", short_title: "Protocol1")
+        @protocol2 = create(:study_without_validations, primary_pi: jug2, title: "xTitle", short_title: "Protocol2")
+        @protocol3 = create(:study_without_validations, primary_pi: jug2, title: "a%a", short_title: "Protocol3", research_master_id: 1234)
 
-      service_request1 = create(:service_request_without_validations, protocol: @protocol1)
-      service_request2 = create(:service_request_without_validations, protocol: @protocol2)
-      service_request3 = create(:service_request_without_validations, protocol: @protocol3)
+        service_request1 = create(:service_request_without_validations, protocol: @protocol1)
+        service_request2 = create(:service_request_without_validations, protocol: @protocol2)
+        service_request3 = create(:service_request_without_validations, protocol: @protocol3)
 
-      visit dashboard_protocols_path
-      wait_for_javascript_to_finish
+        visit dashboard_protocols_path
+        wait_for_javascript_to_finish
 
-      find("#filterrific_admin_filter_for_identity_#{jug2.id}").click
-      find('#apply-filter-button').click
-      wait_for_javascript_to_finish
+        find("#filterrific_admin_filter_for_identity_#{jug2.id}").click
+        find('#apply-filter-button').click
+        wait_for_javascript_to_finish
 
-      expect(page).to have_selector(".protocols_index_row", count: 3)
+        expect(page).to have_selector(".protocols_index_row", count: 3)
+      end
+
+      it "should match against RMID" do
+        bootstrap_select '#filterrific_search_query_search_drop', 'RMID'
+        fill_in 'filterrific_search_query_search_text', with: @protocol3.research_master_id
+        find('#apply-filter-button').click
+        wait_for_javascript_to_finish
+
+        expect(page).to have_selector(".protocols_index_row", count: 1)
+        expect(page).to_not have_content(@protocol1.short_title)
+        expect(page).to_not have_content(@protocol2.short_title)
+        expect(page).to have_content(@protocol3.short_title)
+      end
     end
 
-    it "should match against RMID" do
-      bootstrap_select '#filterrific_search_query_search_drop', 'RMID'
-      fill_in 'filterrific_search_query_search_text', with: @protocol3.research_master_id
-      find('#apply-filter-button').click
-      wait_for_javascript_to_finish
+    context 'RMID disabled' do
+      stub_config('research_master_enabled', false)
+      before :each do
+        @protocol1 = create(:study_without_validations, primary_pi: jug2, title: "title%", short_title: "Protocol1")
+        @protocol2 = create(:study_without_validations, primary_pi: jug2, title: "xTitle", short_title: "Protocol2")
+        @protocol3 = create(:study_without_validations, primary_pi: jug2, title: "a%a", short_title: "Protocol3", research_master_id: 1234)
 
-      expect(page).to have_selector(".protocols_index_row", count: 1)
-      expect(page).to_not have_content(@protocol1.short_title)
-      expect(page).to_not have_content(@protocol2.short_title)
-      expect(page).to have_content(@protocol3.short_title)
-    end
-  end
+        service_request1 = create(:service_request_without_validations, protocol: @protocol1)
+        service_request2 = create(:service_request_without_validations, protocol: @protocol2)
+        service_request3 = create(:service_request_without_validations, protocol: @protocol3)
 
+        visit dashboard_protocols_path
+        wait_for_javascript_to_finish
 
+        find("#filterrific_admin_filter_for_identity_#{jug2.id}").click
+        find('#apply-filter-button').click
+        wait_for_javascript_to_finish
 
-  context "HR# search" do
-    before :each do
-      hsi1       = create(:human_subjects_info, hr_number: 111111)
-      hsi2       = create(:human_subjects_info, hr_number: 222222)
-      hsi3       = create(:human_subjects_info, hr_number: 333333)
+        expect(page).to have_selector(".protocols_index_row", count: 3)
+      end
 
-      @protocol1 = create(:study_without_validations, primary_pi: jug2, title: "title%", short_title: "Protocol1", human_subjects_info: hsi1)
-      @protocol2 = create(:study_without_validations, primary_pi: jug2, title: "xTitle", short_title: "Protocol2", human_subjects_info: hsi2)
-      @protocol3 = create(:study_without_validations, primary_pi: jug2, title: "a%a", short_title: "Protocol3", human_subjects_info: hsi3)
-
-      service_request1 = create(:service_request_without_validations, protocol: @protocol1)
-      service_request2 = create(:service_request_without_validations, protocol: @protocol2)
-      service_request3 = create(:service_request_without_validations, protocol: @protocol3)
-
-      visit dashboard_protocols_path
-      wait_for_javascript_to_finish
-
-      find("#filterrific_admin_filter_for_identity_#{jug2.id}").click
-      find('#apply-filter-button').click
-      wait_for_javascript_to_finish
-
-      expect(page).to have_selector(".protocols_index_row", count: 3)
-    end
-
-    it "should match against whole HR#" do
-      bootstrap_select '#filterrific_search_query_search_drop', 'HR#'
-      fill_in 'filterrific_search_query_search_text', with: @protocol3.human_subjects_info.hr_number
-      find('#apply-filter-button').click
-      wait_for_javascript_to_finish
-
-      expect(page).to have_selector(".protocols_index_row", count: 1)
-      expect(page).to_not have_content(@protocol1.short_title)
-      expect(page).to_not have_content(@protocol2.short_title)
-      expect(page).to have_content(@protocol3.short_title)
-    end
-
-    it "should match against partial HR#" do
-      bootstrap_select '#filterrific_search_query_search_drop', 'HR#'
-      fill_in 'filterrific_search_query_search_text', with: @protocol3.human_subjects_info.hr_number.split(//, 2).last
-      find('#apply-filter-button').click
-      wait_for_javascript_to_finish
-
-      expect(page).to have_selector(".protocols_index_row", count: 1)
-      expect(page).to_not have_content(@protocol1.short_title)
-      expect(page).to_not have_content(@protocol2.short_title)
-      expect(page).to have_content(@protocol3.short_title)
-    end
-
-    it "should not have any HR# matches" do
-      bootstrap_select '#filterrific_search_query_search_drop', 'HR#'
-      fill_in 'filterrific_search_query_search_text', with: '11111111111
-      find('#apply-filter-button').click
-      wait_for_javascript_to_finish
-
-      expect(page).to have_selector(".protocols_index_row", count: 0)
-      expect(page).to_not have_content(@protocol1.short_title)
-      expect(page).to_not have_content(@protocol2.short_title)
-      expect(page).to_not have_content(@protocol3.short_title)
+      it "should not display RMID as a filter option" do
+        expect(page).to have_selector(".bootstrap-select select#filterrific_search_query_search_drop + .dropdown-toggle")
+        find(".bootstrap-select select#filterrific_search_query_search_drop + .dropdown-toggle").click
+        expect(page).to_not have_content('RMID')
+      end
     end
   end
 
@@ -394,7 +362,7 @@ RSpec.describe "Admin User filters My Protocols using Search functionality", js:
 
     it "should not have any PRO# matches" do
       bootstrap_select '#filterrific_search_query_search_drop', 'PRO#'
-      fill_in 'filterrific_search_query_search_text', with: '11111111111
+      fill_in 'filterrific_search_query_search_text', with: '123123'
       find('#apply-filter-button').click
       wait_for_javascript_to_finish
 
@@ -409,9 +377,9 @@ RSpec.describe "Admin User filters My Protocols using Search functionality", js:
 
   context "All search" do
     before :each do
-      hsi1       = create(:human_subjects_info, hr_number: 111111)
-      hsi2       = create(:human_subjects_info, hr_number: 222222)
-      hsi3       = create(:human_subjects_info, hr_number: 333333)
+      hsi1       = create(:human_subjects_info)
+      hsi2       = create(:human_subjects_info)
+      hsi3       = create(:human_subjects_info)
 
       @protocol1 = create(:study_without_validations, id: 555555, primary_pi: jug2, title: "title%", short_title: "Protocol1", human_subjects_info: hsi1)
       @protocol2 = create(:study_without_validations, id: 666666, primary_pi: jug2, title: "xTitle", short_title: "Protocol2", human_subjects_info: hsi2)
@@ -589,44 +557,6 @@ RSpec.describe "Admin User filters My Protocols using Search functionality", js:
       end
     end
 
-    context 'HR#' do
-      it "should match against whole HR#" do
-        fill_in 'filterrific_search_query_search_text', with: @protocol1.human_subjects_info.hr_number
-        find('#apply-filter-button').click
-        wait_for_javascript_to_finish
-
-        expect(page).to have_selector(".protocols_index_row", count: 1)
-        expect(page).to have_content(@protocol1.short_title)
-        expect(page).to_not have_content(@protocol2.short_title)
-        expect(page).to_not have_content(@protocol3.short_title)
-        expect(page).to_not have_content(@protocol4.short_title)
-      end
-
-      it "should match against partial HR#" do
-        fill_in 'filterrific_search_query_search_text', with: @protocol1.human_subjects_info.hr_number.split(//, 2).last
-        find('#apply-filter-button').click
-        wait_for_javascript_to_finish
-
-        expect(page).to have_selector(".protocols_index_row", count: 1)
-        expect(page).to have_content(@protocol1.short_title)
-        expect(page).to_not have_content(@protocol2.short_title)
-        expect(page).to_not have_content(@protocol3.short_title)
-        expect(page).to_not have_content(@protocol4.short_title)
-      end
-
-      it "should not have any HR# matches" do
-        fill_in 'filterrific_search_query_search_text', with: '11111111111'
-        find('#apply-filter-button').click
-        wait_for_javascript_to_finish
-
-        expect(page).to have_selector(".protocols_index_row", count: 0)
-        expect(page).to_not have_content(@protocol1.short_title)
-        expect(page).to_not have_content(@protocol2.short_title)
-        expect(page).to_not have_content(@protocol3.short_title)
-        expect(page).to_not have_content(@protocol4.short_title)
-      end
-    end
-
     context 'PRO#' do
       it "should match against whole PRO#" do
         fill_in 'filterrific_search_query_search_text', with: @protocol1.human_subjects_info.pro_number
@@ -641,7 +571,7 @@ RSpec.describe "Admin User filters My Protocols using Search functionality", js:
       end
 
       it "should not have any PRO# matches" do
-        fill_in 'filterrific_search_query_search_text', with: '11111111111'
+        fill_in 'filterrific_search_query_search_text', with: '123123'
         find('#apply-filter-button').click
         wait_for_javascript_to_finish
 

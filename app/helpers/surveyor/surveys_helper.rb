@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,67 +27,44 @@ module Surveyor::SurveysHelper
   end
 
   def survey_options(survey)
-    [ edit_survey_button(survey),
-      delete_survey_button(survey),
-      activate_survey_button(survey),
-      preview_survey_button(survey)
-    ].join('')
+    render 'surveyor/surveys/actions_dropdown.html', survey: survey
   end
 
-  def edit_survey_button(survey)
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' })
-      ),
-      title: t(:surveyor)[:surveys][:table][:fields][:edit],
-      data: { survey_id: survey.id, toggle: 'tooltip', animation: 'false' },
-      class: 'btn btn-warning edit-survey'
-    )
+  def preview_survey
+    content_tag(:span, '', class: 'glyphicon glyphicon-search text-info', aria: { hidden: 'true' }) +
+    content_tag(:span, t(:actions)[:preview], class: 'text text-info')
   end
 
-  def delete_survey_button(survey)
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
-      ),
-      title: t(:surveyor)[:surveys][:table][:fields][:delete],
-      data: { survey_id: survey.id, toggle: 'tooltip', animation: 'false' },
-      class: 'btn btn-danger delete-survey'
-    )
+  def activate_survey(survey, disabled)
+    context_class =
+      if disabled
+        ''
+      elsif survey.active?
+        'text-danger'
+      else
+        'text-success'
+      end
+
+    content_tag(:span, '', class: [context_class, survey.active? ? 'glyphicon glyphicon-remove' : 'glyphicon glyphicon-ok'], aria: { hidden: 'true' }) +
+    content_tag(:span, (survey.active? ? t(:actions)[:disable] : t(:actions)[:activate]), class: ['text', context_class])
   end
 
-  def activate_survey_button(survey)
-    text = survey.active? ? t(:surveyor)[:surveys][:table][:fields][:disable] : t(:surveyor)[:surveys][:table][:fields][:activate]
-    klass = survey.active? ? 'btn-danger activate-survey' : 'btn-success disable-survey'
-    
-    link_to text, surveyor_survey_updater_path(survey, klass: 'survey', survey: { active: !survey.active }), method: :patch, remote: true, class: ['btn', klass]
+  def copy_survey
+    content_tag(:span, '', class: 'glyphicon glyphicon-copy text-primary', aria: { hidden: 'true' }) +
+    content_tag(:span, t(:actions)[:copy], class: 'text text-primary')
   end
 
-  def preview_survey_button(survey)
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: 'glyphicon glyphicon-search', aria: { hidden: 'true' })+
-        t(:surveyor)[:surveys][:table][:fields][:preview]
-      ),
-      data: { survey_id: survey.id },
-      class: 'btn btn-info preview-survey'
-    )
+  def edit_survey(disabled)
+    content_tag(:span, '', class: ['glyphicon glyphicon-edit', disabled ? '' : 'text-warning'], aria: { hidden: 'true' }) +
+    content_tag(:span, t(:actions)[:edit], class: ['text', disabled ? '' : 'text-warning'])
+  end
+
+  def delete_survey(disabled)
+    content_tag(:span, '', class: ['glyphicon glyphicon-trash', disabled ? '' : 'text-danger'], aria: { hidden: 'true' }) +
+    content_tag(:span, t(:actions)[:delete], class: ['text', disabled ? '' : 'text-danger'])
   end
 
   ### Surveys Form ###
-  def display_order_options
-    options_from_collection_for_select(
-      Survey.all,
-      'display_order',
-      'insertion_name'
-    )+
-    content_tag(
-      :option,
-      t(:constants)[:add_as_last],
-      value: Survey.order('display_order DESC').first.display_order+1
-    )
-  end
-
   def add_section_content
     raw(
       [ content_tag(:span, '', class: 'glyphicon glyphicon-th-list'),
@@ -102,5 +79,62 @@ module Surveyor::SurveysHelper
         t(:surveyor)[:surveys][:form][:content][:question][:add]
       ].join("")
     )
+  end
+
+  def us_states
+    [
+      ['Alabama', 'AL'],
+      ['Alaska', 'AK'],
+      ['Arizona', 'AZ'],
+      ['Arkansas', 'AR'],
+      ['California', 'CA'],
+      ['Colorado', 'CO'],
+      ['Connecticut', 'CT'],
+      ['Delaware', 'DE'],
+      ['District of Columbia', 'DC'],
+      ['Florida', 'FL'],
+      ['Georgia', 'GA'],
+      ['Hawaii', 'HI'],
+      ['Idaho', 'ID'],
+      ['Illinois', 'IL'],
+      ['Indiana', 'IN'],
+      ['Iowa', 'IA'],
+      ['Kansas', 'KS'],
+      ['Kentucky', 'KY'],
+      ['Louisiana', 'LA'],
+      ['Maine', 'ME'],
+      ['Maryland', 'MD'],
+      ['Massachusetts', 'MA'],
+      ['Michigan', 'MI'],
+      ['Minnesota', 'MN'],
+      ['Mississippi', 'MS'],
+      ['Missouri', 'MO'],
+      ['Montana', 'MT'],
+      ['Nebraska', 'NE'],
+      ['Nevada', 'NV'],
+      ['New Hampshire', 'NH'],
+      ['New Jersey', 'NJ'],
+      ['New Mexico', 'NM'],
+      ['New York', 'NY'],
+      ['North Carolina', 'NC'],
+      ['North Dakota', 'ND'],
+      ['Ohio', 'OH'],
+      ['Oklahoma', 'OK'],
+      ['Oregon', 'OR'],
+      ['Pennsylvania', 'PA'],
+      ['Puerto Rico', 'PR'],
+      ['Rhode Island', 'RI'],
+      ['South Carolina', 'SC'],
+      ['South Dakota', 'SD'],
+      ['Tennessee', 'TN'],
+      ['Texas', 'TX'],
+      ['Utah', 'UT'],
+      ['Vermont', 'VT'],
+      ['Virginia', 'VA'],
+      ['Washington', 'WA'],
+      ['West Virginia', 'WV'],
+      ['Wisconsin', 'WI'],
+      ['Wyoming', 'WY']
+    ]
   end
 end

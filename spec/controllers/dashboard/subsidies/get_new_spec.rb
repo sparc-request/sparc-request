@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -53,7 +53,7 @@ RSpec.describe Dashboard::SubsidiesController do
     it 'should set @subsidy to a new PendingSubsidy with default percentage and the current SSR id' do
       expect(assigns(:subsidy).class.name).to eq('PendingSubsidy')
       expect(assigns(:subsidy).sub_service_request_id).to eq(@ssr.id)
-      expect(assigns(:subsidy).percent_subsidy).to eq(@subsidy_map.default_percentage)
+      expect(assigns(:subsidy).percent_subsidy).to eq(@subsidy_map.default_percentage / 100.0)
     end
 
     it 'should assign header text' do

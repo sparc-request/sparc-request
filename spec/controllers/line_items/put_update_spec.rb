@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -45,7 +45,7 @@ RSpec.describe LineItemsController, type: :controller do
         sr        = create(:service_request_without_validations, protocol: protocol)
         org       = create(:organization)
         ssr       = create(:sub_service_request_without_validations, service_request: sr, organization: org)
-        service   = create(:service, one_time_fee: true)
+        service   = create(:service, one_time_fee: true, pricing_map_count: 1)
         li        = create(:line_item_without_validations, sub_service_request: ssr, quantity: 1, service: service, service_request: sr)
         li_params = { quantity: 2 }
 
@@ -63,7 +63,7 @@ RSpec.describe LineItemsController, type: :controller do
         sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
         org       = create(:organization)
         ssr       = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'on_hold')
-        service   = create(:service, one_time_fee: true)
+        service   = create(:service, one_time_fee: true, pricing_map_count: 1)
         li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
         li_params = { quantity: 2 }
 
@@ -81,7 +81,7 @@ RSpec.describe LineItemsController, type: :controller do
         sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
         org       = create(:organization)
         ssr       = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'on_hold')
-        service   = create(:service, one_time_fee: true)
+        service   = create(:service, one_time_fee: true, pricing_map_count: 1)
         li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
         li_params = { quantity: 2 }
 
@@ -99,7 +99,7 @@ RSpec.describe LineItemsController, type: :controller do
         sr        = create(:service_request_without_validations, protocol: protocol)
         org       = create(:organization)
         ssr       = create(:sub_service_request_without_validations, service_request: sr, organization: org)
-        service   = create(:service, one_time_fee: true)
+        service   = create(:service, one_time_fee: true, pricing_map_count: 1)
         li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
         li_params = { quantity: 2 }
 
@@ -121,7 +121,7 @@ RSpec.describe LineItemsController, type: :controller do
         sr        = create(:service_request_without_validations, protocol: protocol)
         org       = create(:organization)
         ssr       = create(:sub_service_request_without_validations, service_request: sr, organization: org)
-        service   = create(:service, one_time_fee: true)
+        service   = create(:service, one_time_fee: true, pricing_map_count: 1)
         li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
         li_params = { quantity: 2 }
 
@@ -141,7 +141,7 @@ RSpec.describe LineItemsController, type: :controller do
         sr        = create(:service_request_without_validations, protocol: protocol)
         org       = create(:organization)
         ssr       = create(:sub_service_request_without_validations, service_request: sr, organization: org)
-        service   = create(:service, one_time_fee: true)
+        service   = create(:service, one_time_fee: true, pricing_map_count: 1)
         li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
         li_params = { quantity: nil }
 
@@ -159,7 +159,7 @@ RSpec.describe LineItemsController, type: :controller do
         sr        = create(:service_request_without_validations, protocol: protocol)
         org       = create(:organization)
         ssr       = create(:sub_service_request_without_validations, service_request: sr, organization: org)
-        service   = create(:service, one_time_fee: true)
+        service   = create(:service, one_time_fee: true, pricing_map_count: 1)
         li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
         li_params = { quantity: nil }
 

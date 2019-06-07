@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,8 +20,4 @@
 
 class Institution < Organization
   has_many :providers, :dependent => :destroy, :foreign_key => "parent_id"
-
-  def populate_for_edit
-    self.setup_available_statuses
-  end
 end

@@ -18,17 +18,12 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class ErrorsController < ApplicationController
-  respond_to :html
+class PagesController < ApplicationController
+  def event_details
+    respond_to :js
 
-  before_action :get_error
+    get_calendar_events
 
-  def authorization_error
-  end
-
-  private
-
-  def get_error
-    @error = params[:error]
+    @event = @events.detect{ |event| event[:index] == params[:index].to_i }
   end
 end

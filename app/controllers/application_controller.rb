@@ -151,12 +151,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def authorization_error(msg, ref=nil)
+  def authorization_error(msg=t('error_pages.authorization_error.error'), ref=nil)
     error = msg
     error += "<br />If you believe this is in error please contact, #{I18n.t 'error_contact'}, and provide the following information:"
     error += "<br /> Reference #: " + ref if ref
 
-    redirect_to authorization_error_errors_path(error: error)
+    redirect_to authorization_error_path(error: error), format: request.format
   end
 
   def clean_errors errors

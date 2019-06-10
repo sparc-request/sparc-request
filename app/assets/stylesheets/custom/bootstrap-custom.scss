@@ -78,6 +78,16 @@
   }
 }
 
+////////////
+/// FORM ///
+////////////
+
+form, .form {
+  .form-error {
+    color: theme-color('danger');
+  }
+}
+
 //////////////
 /// Navbar ///
 //////////////

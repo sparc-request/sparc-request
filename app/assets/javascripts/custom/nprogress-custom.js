@@ -3,9 +3,9 @@ $(document).on('turbolinks:load', function() {
 
   NProgress.configure({ trickleRate: 0.025, trickleSpeed: 100 });
 
-  $(document).on('ajaxStart turbolinks:click', function() {
+  $(document).on('ajax:send turbolinks:click', function() {
     NProgress.start()
-  }).on('ajaxStop turbolinks:render', function() {
+  }).on('ajax:complete turbolinks:render', function() {
     NProgress.done()
   });
 });

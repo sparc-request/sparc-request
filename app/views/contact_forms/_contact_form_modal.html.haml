@@ -18,18 +18,28 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-= form_for @contact_form, remote: true do |f|
-  .field
-    = f.label :subject, 'Subject'
-    = f.text_field :subject, class: 'contact-form-fields'
-  .field
-    = f.label :email, 'Email'
-    - if current_user.present?
-      = f.email_field :email, class: 'contact-form-fields', value: current_user.email
-    - else
-      = f.email_field :email, class: 'contact-form-fields'
-  .field
-    = f.label :message
-    = f.text_area :message, class: 'contact-form-textarea'
-  %br/
-  = f.submit 'Send Message', class: 'dark-blue-button'
+.modal-dialog{ role: 'document'}
+  = form_for contact_form, remote: true do |f|
+    .modal-content
+      .modal-header
+        %h5.modal-title
+          = t('contact_forms.header')
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t(:actions)[:close] } }
+          %span{ aria: { hidden: 'true' } } &times;
+      .modal-body
+        - if current_user
+          = f.hidden_field :email, value: current_user.email
+        - else
+          .form-group
+            = f.label :email, class: 'required'
+            = f.text_field :email, class: 'form-control'
+        .form-group
+          = f.label :subject, class: 'required'
+          = f.text_field :subject, size: 35, class: 'form-control'
+        .form-group
+          = f.label :message, class: 'required'
+          = f.text_area :message, rows: 10, class: 'form-control'
+      .modal-footer
+        %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+          = t(:actions)[:close]
+        = f.submit t(:actions)[:submit], class: 'btn btn-primary'

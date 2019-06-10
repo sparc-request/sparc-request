@@ -27,6 +27,14 @@
       }
     }
   }
+
+  .selectpicker.is-valid + .dropdown-toggle {
+    @extend .border-success;
+  }
+
+  .selectpicker.is-invalid + .dropdown-toggle {
+    @extend .border-danger;
+  }
 }
 
 .input-group {

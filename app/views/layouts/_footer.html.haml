@@ -17,14 +17,22 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 %footer.bg-light.border-top#siteFooter
   .container.d-flex.flex-column.align-items-center.py-3
-    %nav.nav.mb-3
-      = link_to t('layout.footer.links.about.text'), Setting.get_value("about_sparc_url"), target: :blank, class: 'nav-link'
-      = link_to t('layout.footer.links.sctr.text'), t('layout.footer.links.sctr.url'), target: :blank, class: 'nav-link'
-      = link_to t('layout.footer.links.blog.text'), t('layout.footer.links.blog.url'), target: :blank, class: 'nav-link'
-      = mail_to Setting.get_value("listserv_mail_to"), t('layout.footer.links.listserv.text'), subject: t('layout.footer.links.listserv.subject'), class: 'nav-link'
+    .d-flex.mb-3
+      %nav.flex-column.nav.px-3
+        = link_to t('layout.footer.links.blog.text'), t('layout.footer.links.blog.url'), target: :blank, class: 'mb-1'
+        = link_to t('layout.footer.links.about'), Setting.get_value("about_sparc_url"), target: :blank, class: 'mb-1'
+        = link_to t('layout.footer.links.sctr.text'), t('layout.footer.links.sctr.url'), target: :blank
+      %nav.flex-column.nav.px-3
+        = link_to t('layout.footer.links.contact'), new_contact_form_path, remote: true, class: 'mb-1'
+        - if Setting.get_value("use_short_interaction") && current_user.try(&:is_service_provider?)
+          = link_to t('layout.footer.links.short_interaction'), new_short_interaction_path, remote: true, class: 'mb-1'
+        = mail_to Setting.get_value("listserv_mail_to"), t('layout.footer.links.listserv.text'), subject: t('layout.footer.links.listserv.subject'), class: 'mb-1'
+      %nav.flex.column.nav.px-3
+        = link_to t('layout.footer.links.faqs')
     %span.text-muted.mb-3
       = t('layout.footer.version', version: ENV['sparc_version'])
-    %small.text-muted
+    %span.text-muted
       = raw t('layout.footer.copyright')

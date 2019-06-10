@@ -122,8 +122,7 @@ class Dashboard::VisitGroupsController < Dashboard::BaseController
 
   def authorize_admin_visit_group
     unless (current_user.authorized_admin_organizations & @sub_service_request.org_tree).any?
-      flash[:alert] = t(:errors)[:authorization_error][:dashboard][:visit_groups]
-      redirect_to dashboard_root_path
+      authorization_error
     end
   end
 end

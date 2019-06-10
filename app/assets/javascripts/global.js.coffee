@@ -23,7 +23,15 @@ $(document).on 'turbolinks:load', ->
   initializeTooltips()
   initializePopovers()
   initializeToggles()
+  setRequiredFields()
   $('html').addClass('ready')
+
+  $(document).on 'ajax:complete', ->
+    initializeSelectpickers()
+    initializeTooltips()
+    initializePopovers()
+    initializeToggles()
+    setRequiredFields()
 
   $(document).on 'show.bs.collapse hide.bs.collapse', '.collapse, .collapsing', ->
     $control = $("[href='##{$(this).attr('id')}']")
@@ -55,7 +63,7 @@ $(document).on 'turbolinks:load', ->
 
 (exports ? this).initializeSelectpickers = () ->
   $('.selectpicker').each ->
-    $(this).selectpicker() if ! $(this).siblings('.dropdown-toggle')
+    $(this).selectpicker() if $(this).siblings('.dropdown-toggle').length == 0
 
 (exports ? this).initializeTooltips = () ->
   $('[data-toggle=tooltip]').tooltip({ delay: { show: 500 } })
@@ -65,6 +73,9 @@ $(document).on 'turbolinks:load', ->
 
 (exports ? this).initializeToggles = () ->
   $('input[data-toggle=toggle]').bootstrapToggle()
+
+(exports ? this).setRequiredFields = () ->
+  $('.required:not(.has-indicator)').addClass('has-indicator').append('<span class="text-danger ml-1">*</span>')
 
 (exports ? this).getSRId = ->
   $("input[name='srid']").val()

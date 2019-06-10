@@ -19,7 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 module ServiceRequestsHelper
-
   def protocol_id_display(service_request)
     if service_request && service_request.protocol.present?
       " (SRID: #{service_request.protocol.id})"

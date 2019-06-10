@@ -23,14 +23,7 @@ class ShortInteraction < ApplicationRecord
 
   belongs_to :identity
 
-  validates :subject,
-            :interaction_type,
-            :duration_in_minutes,
-            :name,
-            :email,
-            :institution,
-            :note,
-            presence: true
+  validates_presence_of :subject, :interaction_type, :duration_in_minutes, :name, :email, :institution, :note
   validates_format_of :email, with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
   validates_numericality_of :duration_in_minutes
 

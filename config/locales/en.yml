@@ -67,7 +67,7 @@ en:
         project_role:
           attributes:
             identity_id:
-              blank: "^Primary PI can't be blank"
+              Inblank: "^Primary PI can't be blank"
         question_response:
           attributes:
             content:
@@ -80,7 +80,7 @@ en:
         spoofed_media_type: "has format errors. Please re-save the file in a different format and try again."
     attributes:
       arm:
-        name: "Arm Name"
+        name: "Arm Name" 
       fulfillment:
         time: "Quantity"
       human_subjects_info:
@@ -104,6 +104,13 @@ en:
         content: "Question"
       question_response:
         content: "Question"
+      short_interaction:
+        subject: "Subject of Interaction"
+        interaction_type: "Type of Interaction"
+        duration_in_minutes: "Duration (in minutes)"
+        name: "Investigator's Name"
+        email: "Investigator's Email"
+        institution: "Investigator's Institution"
       survey:
         active: ""
       visit:
@@ -330,6 +337,13 @@ en:
     more: "More..."
     less: "Less..."
 
+  #################
+  # CONTACT FORMS #
+  #################
+  contact_forms:
+    header: "Contact Us"
+    sent: "Message sent successfully!"
+
   #############
   # DOCUMENTS #
   #############
@@ -359,34 +373,21 @@ en:
     select_type: "Please Select Type"
     delete_confirm: "Are you sure you want to delete the selected Document from this protocol?"
 
-  ##########
-  # ERRORS #
-  ##########
-  errors:
-    authorization_error:
-      header: "Authorization Error"
-      link: "Return to your Dashboard"
-      dashboard:
-        visit_groups: 'You are not allowed to access that Visit Group.'
-
   ###############
   # ERROR PAGES #
   ###############
   error_pages:
-    link_href: "mailto:"
-    link_display: "Email: "
-    phone_href: "tel:"
-    phone_display: "Call: "
-
+    help_text: "For help, email us at %{email} or call %{phone}"
+    dashboard_link: "Return to your Dashboard"
+    authorization_error:
+      header: "Authorization Error"
+      error: "You do not have permission perform this action."
     not_found:
-      heading: "Uh, oh.  You've hit a"
+      header: "Uh, oh.  You've hit a"
       error: "Page Not Found (404)"
-      help_text: "For help, contact us:"
-
     server_error:
-      heading: "Uh, oh.  You've hit an"
+      header: "Uh, oh.  You've hit an"
       error: "Internal Server Error (500)"
-      help_text: "For help, contact us:"
 
   #########
   # FORMS #
@@ -438,17 +439,19 @@ en:
       version: "SPARCRequest %{version}"
       copyright: "&copy; 2011-2019 MUSC Foundation for Research Development"
       links:
-        about:
-          text: "About"
-        sctr:
-          text: "SCTR"
-          url: "http://sctr.musc.edu"
         blog:
           text: "Blog"
           url: "https://sparcrequestblog.com/"
+        about: "About"
+        sctr:
+          text: "SCTR"
+          url: "http://sctr.musc.edu"
+        contact: "Contact Us"
+        short_interaction: "Short Interaction"
         listserv: 
           text: "Listserv"
           subject: "SPARCRequest Listserv"
+        faqs: "Help/FAQs"
 
   ###########
   # MAILERS #
@@ -665,6 +668,17 @@ en:
     header: "Account not Approved"
     text1: "Your account has not yet been approved for use in SPARCRequest."
     text2: "If you believe this is incorrect, please contact the SUCCESS center at (843) 792-8300 or success@musc.edu."
+
+  ######################
+  # SHORT INTERACTIONS #
+  ######################
+  short_interactions:
+    header: "Short Interaction"
+    sent: "Interaction saved successfully!"
+    subject_prompt: "- Select Category -"
+    type_prompt: "- Select Type -"
+    duration_placeholder: "Enter an integer"
+    institution_prompt: "- Select Institution -"
 
   #############
   # SUBSIDIES #

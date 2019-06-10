@@ -18,11 +18,15 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 class ErrorPagesController < ApplicationController
+  def authorization_error
+    render(status: 403, error: params[:error])
+  end
+
   def not_found
-    render(:status => 404)
+    render(status: 404)
   end
 
   def internal_server_error
-    render(:status => 500)
+    render(status: 500)
   end
 end

@@ -19,6 +19,8 @@
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 html {
+  position: relative;
+
   &.ready {
     body {
       opacity: 1;
@@ -26,6 +28,9 @@ html {
   }
 
   body {
+    min-height: 100vh;
+    display: flex;
+    flex-flow: column;
     opacity: 0;
     transition: 0.5s opacity ease-in-out;
   }
@@ -39,16 +44,27 @@ header#siteHeader {
   }
 }
 
-#contentContainer {
-  @extend .py-3;
-  display: flex;
-  flex-wrap: wrap;
+.event {
+  .event-date-display {
+    width: 40px;
+    height: 40px;
+  }
 }
 
-a, .btn-link {
-  outline: none !important;
-  text-decoration: none !important;
-  @include transition($btn-transition);
+#contentContainer {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  margin-bottom: 150px;
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1 0;
+}
+
+footer#siteFooter {
+  position: absolute;
+  height: 150px;
+  width: 100%;
+  bottom: 0;
 }
 
 @media (max-width: 1679.98px) {

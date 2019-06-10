@@ -32,7 +32,7 @@
       = render 'service_requests/navigation/step_arrow', text: t('proper.navigation.steps.step5'), link: document_management_service_request_path(srid: service_request.id), color: 'warning'
       = render 'service_requests/navigation/step_arrow', text: t('proper.navigation.steps.step6'), link: review_service_request_path(srid: service_request.id), color: 'danger'
 
-.w-100.rounded.d-flex.p-2.mb-3#step-header{ class: css_class }
+.w-100.rounded.d-flex.px-3.py-2.mb-3#step-header{ class: css_class }
   %h4.text-light.mr-auto.mb-0
     = step_text
   %h4.mb-0

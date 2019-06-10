@@ -62,11 +62,10 @@ SparcRails::Application.routes.draw do
 
   post 'study_type/determine_study_type_note'
 
-  resource :errors, only: [] do
-    get :authorization_error
+  resource :pages, only: [] do
+    get :event_details
+    get :faqs
   end
-
-  resources :events, param: :index, only: [:show]
 
   resources :forms, only: [:index]
 
@@ -376,7 +375,7 @@ SparcRails::Application.routes.draw do
 
   root to: 'service_requests#catalog'
 
-  ## error page routes ##
-  match "/404", :to => "error_pages#not_found", :via => :all
-  match "/500", :to => "error_pages#internal_server_error", :via => :all
+  get "/authorization_error", to: "error_pages#authorization_error"
+  get "/404", to: "error_pages#not_found"
+  get "/500", to: "error_pages#internal_server_error"
 end

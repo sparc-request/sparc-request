@@ -132,7 +132,7 @@ class ApplicationController < ActionController::Base
       index:          index,
       title:          event.summary,
       description:    simple_format(event.description).gsub(URI::regexp(%w(http https)), '<a href="\0" target="blank">\0</a>'),
-      date:           start_time.strftime("%A %B %d"),
+      date:           start_time.strftime("%A, %B %d"),
       time:           all_day ? t('layout.navigation.events.all_day') : [start_time.strftime("%l:%M %p"), end_time.strftime("%l:%M %p")].join(' - '),
       where:          event.location,
       month:          start_time.strftime("%b"),

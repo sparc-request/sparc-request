@@ -15,7 +15,7 @@
         = link_to event_path(event[:index]), remote: true, class: 'event dropdown-item align-items-start text-primary', title: t('layout.navigation.events.learn_more') do
           .event-details.mr-auto
             %h6.m-0<
-              = event[:title]
+              = event[:title].truncate(50)
               %br
               %small.text-muted<
                 = event[:date]

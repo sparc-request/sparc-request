@@ -14,7 +14,7 @@
       - @news.each do |article|
         = link_to article[:link], target: :blank, class: 'dropdown-item text-primary' do
           %h6.m-0<
-            = article[:title]
+            = article[:title].truncate(75)
             %br
             %small.text-muted
               = article[:date]

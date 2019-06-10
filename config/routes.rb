@@ -65,6 +65,9 @@ SparcRails::Application.routes.draw do
   resource :errors, only: [] do
     get :authorization_error
   end
+
+  resources :events, param: :index, only: [:show]
+
   resources :forms, only: [:index]
 
   resources :feedback

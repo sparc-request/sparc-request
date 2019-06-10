@@ -12,19 +12,23 @@
         = t('layout.navigation.events.none')
     - else
       - @events.first(Setting.get_value('calendar_event_limit')).each do |event|
-        = link_to 'javascript:void(0)', class: 'dropdown-item text-primary', title: t('layout.navigation.events.learn_more') do
+        = link_to event_path(event[:index]), remote: true, class: 'event dropdown-item align-items-start text-primary', title: t('layout.navigation.events.learn_more') do
           .event-details.mr-auto
-            %h6.m-0
+            %h6.m-0<
               = event[:title]
               %br
-              %small.text-muted
-                - if event[:all_day]
-                  = t('layout.navigation.events.all_day')
-                - else
-                  = [event[:start_time], event[:end_time]].join(' - ')
-          .card.bg-primary.ml-3
-            .card-body.text-center.px-2.py-0
-              %small.d-flex.text-light.font-weight-bold.m-0
+              %small.text-muted<
+                = event[:date]
+              %br
+              %small.text-muted<
+                = event[:time]
+              %br
+              - if event[:where].present?
+                %small.text-muted<
+                  = event[:where]
+          .event-date-display.card.bg-primary.ml-3
+            .card-body.d-flex.align-items-center.justify-content-center.p-0
+              %h6.text-center.text-light.m-0
                 = event[:month]
                 %br
                 = event[:day]

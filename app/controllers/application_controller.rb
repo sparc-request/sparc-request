@@ -92,17 +92,17 @@ class ApplicationController < ActionController::Base
       begin
         path = Rails.root.join("tmp", "basic.ics")
         if path.exist?
-          #to parse file and get events
-          cal_file = File.open(path)
+          cal_file  = File.open(path)
+          cals      = Icalendar::Calendar.parse(cal_file)
+          cal       = cals.first
 
-          cals = Icalendar::Calendar.parse(cal_file)
-
-          cal = cals.first
-
+          # Use index like an ID to view more information
+          index = 0
           cal.events.each do |event|
             if event.occurrences_between(startMin, startMax).present?
-              event.occurrences_between(startMin, startMax).each do |occurence|
-                @events << create_calendar_event(event, occurence)
+              event.occurrences_between(startMin, startMax).each do |occurrence|
+                @events << create_calendar_event(event, occurrence, index)
+                index += 1
               end
             end
           end
@@ -124,20 +124,20 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def create_calendar_event(event, occurence)
-    all_day     = !occurence.start_time.to_s.include?("UTC")
-    start_time  = Time.parse(occurence.start_time.to_s).in_time_zone("Eastern Time (US & Canada)")
-    end_time    = Time.parse(occurence.end_time.to_s).in_time_zone("Eastern Time (US & Canada)")
+  def create_calendar_event(event, occurrence, index)
+    all_day     = !occurrence.start_time.to_s.include?("UTC")
+    start_time  = DateTime.parse(occurrence.start_time.to_s).in_time_zone("Eastern Time (US & Canada)")
+    end_time    = DateTime.parse(occurrence.end_time.to_s).in_time_zone("Eastern Time (US & Canada)")
     {
+      index:          index,
+      title:          event.summary,
+      description:    simple_format(event.description).gsub(URI::regexp(%w(http https)), '<a href="\0" target="blank">\0</a>'),
+      date:           start_time.strftime("%A %B %d"),
+      time:           all_day ? t('layout.navigation.events.all_day') : [start_time.strftime("%l:%M %p"), end_time.strftime("%l:%M %p")].join(' - '),
+      where:          event.location,
       month:          start_time.strftime("%b"),
       day:            start_time.day,
-      title:          event.summary,
-      description:    simple_format(event.description).gsub(URI::regexp(%w(http https)), '<a href="\0" target="_blank">\0</a>'),
-      all_day:        all_day,
-      start_time:     start_time.strftime("%l:%M %p"),
-      end_time:       end_time.strftime("%l:%M %p"),
-      sort_by_start:  start_time.strftime("%Y%m%d"),
-      where:          event.location
+      sort_by_start:  start_time.strftime("%Y%m%d")
     }
   end
 

@@ -20,7 +20,7 @@
 
 - show_add_button = action_name == 'update_description' || @service
 
-- services.eager_load(:pricing_maps).select{ |serv| serv.is_available != false && serv.current_pricing_map }.each do |service|
+- services.eager_load(:pricing_maps).select{ |serv| serv.current_pricing_map }.each do |service|
   - if !@service || @service == service
     .service.col-sm-12.no-padding-x{ id: "service#{service.id}" }
       .service-details.no-padding-x{ class: show_add_button ? 'col-sm-10' : 'col-sm-12' }

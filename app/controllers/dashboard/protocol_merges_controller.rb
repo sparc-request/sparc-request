@@ -37,7 +37,7 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
       flash[:alert] = 'Protocol(s) not found. Check IDs and try again.'
     elsif (master_protocol.has_clinical_services? && sub_protocol.has_clinical_services?)
       flash[:alert] = 'Both protocols have calendars. Only one protocol may have a calendar for merge to work.'
-    elsif sub_protocol.fulfillment_protocols.any?
+    elsif Setting.get_value("fulfillment_contingent_on_catalog_manager") && sub_protocol.fulfillment_protocols.any?
       flash[:alert] = 'Protocol to be merged into Master Protocol cannot exist in SPARCFulfillment.'
     else
       ActiveRecord::Base.transaction do

@@ -261,7 +261,7 @@ GEM
       actionpack (>= 3.0)
       multi_json
       request_store (>= 1.0)
-    grape (1.1.0)
+    grape (1.2.3)
       activesupport
       builder
       mustermann-grape (~> 1.0.0)
@@ -652,7 +652,7 @@ DEPENDENCIES
   filterrific!
   geckodriver-helper
   gon (~> 6.2)
-  grape (= 1.1.0)
+  grape (= 1.2.3)
   grape-entity (~> 0.7.1)
   grouped_validations!
   gyoku

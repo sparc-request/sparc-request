@@ -237,7 +237,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def current_page
-    action_name == 'navigate' ? Rails.application.routes.recognize_path(request.referrer)[:action] : action_name
+    @current_page ||= action_name == 'navigate' ? Rails.application.routes.recognize_path(request.referrer)[:action] : action_name
   end
 
   def find_cart_ssrs

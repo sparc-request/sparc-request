@@ -33,6 +33,10 @@ $(document).on 'turbolinks:load', ->
     initializeToggles()
     setRequiredFields()
 
+  $(document).on 'turbolinks:click', (event) ->
+    if event.target.getAttribute('href').charAt(0) == '#'
+      event.preventDefault()
+
   $(document).on 'keydown', '.is-valid, .is-invalid', ->
     $(this).removeClass('is-valid is-invalid')
     $(this).parents('.form-group').find('.form-error').remove()

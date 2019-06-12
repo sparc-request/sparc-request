@@ -22,7 +22,7 @@
 - if !@service_request.protocol.nil?
   = hidden_field_tag :protocol_id, @service_request.protocol.id, class: 'protocol-id'
 
-= render '/service_requests/navigation/steps', service_request: @service_request, step_text: @step_text, css_class: @css_class
+= render '/service_requests/navigation/steps', service_request: @service_request, step_text: @step_text, css_class: @css_class, current_page: @current_page
 .row
   = render 'catalogs/service_accordion', institutions: @institutions, locked_org_ids: @locked_org_ids
   = render 'catalogs/catalog_center', service_request: @service_request, locked_org_ids: @locked_org_ids, organization: nil

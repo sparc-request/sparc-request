@@ -22,11 +22,12 @@
 - if !@service_request.protocol.nil?
   = hidden_field_tag :protocol_id, @service_request.protocol.id, class: 'protocol-id'
 
-= render '/service_requests/navigation/steps', service_request: @service_request, step_text: @step_text, css_class: @css_class, current_page: @current_page
+= render '/service_requests/navigation/steps'
 .row
   = render 'catalogs/service_accordion', institutions: @institutions, locked_org_ids: @locked_org_ids
   = render 'catalogs/catalog_center', service_request: @service_request, locked_org_ids: @locked_org_ids, organization: nil
   = render 'catalogs/catalog_right', service_request: @service_request, sub_service_requests: @sub_service_requests
+= render 'service_requests/navigation/footer'
 
 -#= render 'service_requests/modals/submit_error_modal'
 -#= render 'service_requests/modals/new_request_modal'

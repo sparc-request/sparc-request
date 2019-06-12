@@ -18,45 +18,50 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-html {
-  position: relative;
+header#siteHeader {
+  .logo-container {
+    .header-logo {
+      max-width: 100%;
+    }
 
-  &.ready {
-    body {
-      opacity: 1;
+    #orgLogo {
+      height: 110px;
+    }
+
+    #sparcLogo {
+      height: 110px;
+    }
+
+    #institutionLogo {
+      height: 110px;
     }
   }
+}
 
-  body {
-    min-height: 100vh;
-    opacity: 0;
-    transition: 0.5s opacity ease-in-out;
+@include media-breakpoint-down(lg) {
+  header#siteHeader {
+    .logo-container .header-logo {
+      height: 100px;
+    }
   }
 }
 
-.event {
-  .event-date-display {
-    width: 40px;
-    height: 40px;
+@include media-breakpoint-down(md) {
+  header#siteHeader {
+    .logo-container {
+      padding: 0;
+
+      #sparcLogo {
+        height: 80px;
+      }
+    }
   }
 }
 
-#contentContainer {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  display: flex;
-  flex-wrap: wrap;
-  flex: 1 0;
-}
-
-@media (max-width: 1679.98px) {
-  html {
-    font-size: 75%;
-  }
-}
-
-@media (min-width: 1680px) and (max-width: 1919.98px) {
-  html {
-    font-size: 87.5%;
+@include media-breakpoint-down(sm) {
+  header#siteHeader {
+    .logo-container #sparcLogo {
+      height: 65px;
+    }
   }
 }

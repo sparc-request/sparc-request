@@ -28,6 +28,7 @@
     %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1, shrink-to-fit=no' }
     = stylesheet_link_tag 'application', media: 'all', data: { turbolinks_track: 'reload' }
     = javascript_include_tag 'application', data: { turbolinks_track: 'reload' }
+    = favicon_link_tag asset_path('favicon.ico')
     = render 'layouts/i18n-js'
     = Gon::Base.render_data
   %body
@@ -37,9 +38,9 @@
     = render 'layouts/header', location: @location || 'proper'
     = render 'layouts/navbar'
     = yield(:sub_header) if content_for(:sub_header)
-    = render 'layouts/flash'
     .container-fluid#contentContainer
       = render 'layouts/srid'
+      = render 'layouts/flash'
       = yield
     = render 'layouts/footer'
     = render 'layouts/modal'

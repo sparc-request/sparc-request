@@ -18,45 +18,27 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-html {
-  position: relative;
+nav#siteNav {
+  .container-fluid {
+    align-items: stretch;
+  }
+}
 
-  &.ready {
-    body {
-      opacity: 1;
+@include media-breakpoint-down(lg) {
+  nav#siteNav {
+    .navbar-nav#navbarUtilities {
+      flex-flow: row;
+      flex: 3;
+    }
+
+    .navbar-toggler {
+      flex: 1;
     }
   }
 
-  body {
-    min-height: 100vh;
-    opacity: 0;
-    transition: 0.5s opacity ease-in-out;
-  }
-}
-
-.event {
-  .event-date-display {
-    width: 40px;
-    height: 40px;
-  }
-}
-
-#contentContainer {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  display: flex;
-  flex-wrap: wrap;
-  flex: 1 0;
-}
-
-@media (max-width: 1679.98px) {
-  html {
-    font-size: 75%;
-  }
-}
-
-@media (min-width: 1680px) and (max-width: 1919.98px) {
-  html {
-    font-size: 87.5%;
+  nav#dashboardNav {
+    .navbar-nav {
+      flex: 1 0;
+    }
   }
 }

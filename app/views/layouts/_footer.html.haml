@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%footer.bg-light.border-top#siteFooter
+%footer.bg-light.border-top.w-100#siteFooter
   .container.d-flex.flex-column.align-items-center.py-3
     .d-flex.mb-3
       %nav.flex-column.nav.px-3
@@ -34,5 +34,5 @@
         = link_to t('layout.footer.links.faqs')
     %span.text-muted.mb-3
       = t('layout.footer.version', version: ENV['sparc_version'])
-    %span.text-muted
+    %span.text-muted.text-center
       = raw t('layout.footer.copyright')

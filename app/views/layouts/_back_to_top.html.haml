@@ -18,6 +18,5 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%a.back-to-top.btn.btn-primary.btn-lg.hidden{href: '#', role: 'button', data: { toggle: 'tooltip', placement: 'left' }}
-  = t(:proper)[:catalog][:back_to_top]
-  %span.glyphicon.glyphicon-chevron-up
+= link_to '#', id: 'backToTop', class: 'btn btn-lg btn-primary hide' do
+  = t('layout.back_to_top')

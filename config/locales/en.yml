@@ -54,6 +54,15 @@ en:
     upload: "Upload"
     view: "View"
 
+  ###############
+  # ACTIVEMODEL #
+  ###############
+  activemodel:
+    attributes:
+      feedback:
+        typeofrequest: "Type of Request"
+        sparc_request_id: "SRID"
+
   ################
   # ACTIVERECORD #
   ################
@@ -80,7 +89,7 @@ en:
         spoofed_media_type: "has format errors. Please re-save the file in a different format and try again."
     attributes:
       arm:
-        name: "Arm Name" 
+        name: "Arm Name"
       fulfillment:
         time: "Quantity"
       human_subjects_info:
@@ -389,6 +398,14 @@ en:
       header: "Uh, oh.  You've hit an"
       error: "Internal Server Error (500)"
 
+  ############
+  # FEEDBACK #
+  ############
+  feedback:
+    header: "Feedback"
+    sent: "Thank you for providing your feedback!"
+
+
   #########
   # FORMS #
   #########
@@ -451,7 +468,23 @@ en:
         listserv: 
           text: "Listserv"
           subject: "SPARCRequest Listserv"
-        faqs: "Help/FAQs"
+        faqs:
+          text: "Help/FAQs"
+          header: "Frequently Asked Questions"
+          question_1: "May I submit a request for services for multiple research studies/projects simultaneously?"
+          answer_1: "No. Please browse and select services for only one research study/project at a time."
+          question_2: "May I select and add services from multiple Service Providers and Programs at one time?"
+          answer_2: "Yes. Please feel free to browse, select, and add services from any Service Provider, Program, and/or Core displayed in the system for any given research study/project."
+          question_3: "How many Authorized Users can I add?"
+          answer_3: "Add as many Authorized Users as you feel is pertinent. There is no limit."
+          question_4: "What is the difference  between a Research Study and a Project?"
+          answer_4: "A Research Study is an individual research protocol with defined aims and outcomes."
+          question_5: "How is SPARCRequest calculating my indirect costs?"
+          answer_5: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARCRequest uses this data to calculate your total overall indirect costs."
+          question_6: "I'm stuck! Who can I contact for assistance with SPARCRequest?"
+          answer_6: "The %{department_name} is happy to assist you! Please contact us at %{phone} or <a href='mailto:%{email}'>%{email}</a>."
+        feedback: "Feedback"
+    back_to_top: "Return to Top"
 
   ###########
   # MAILERS #
@@ -1332,8 +1365,6 @@ en:
   epic_box:
     epic_box_error: "Epic Information Error"
     epic_box_alert: "Please fill out the Epic Information correctly."
-  feedback:
-    message_error: "Message can't be blank"
   fulfillment_js:
     arm_delete_confirm: "Are you sure you want to remove the arm?"
     arm_remove_alert: "You can't delete the last arm while Clinical Services still exist."

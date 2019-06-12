@@ -26,4 +26,7 @@ class PagesController < ApplicationController
 
     @event = @events.detect{ |event| event[:index] == params[:index].to_i }
   end
+
+  def faqs
+  end
 end

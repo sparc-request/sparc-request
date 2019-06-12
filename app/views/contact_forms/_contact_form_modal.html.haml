@@ -24,15 +24,16 @@
       .modal-header
         %h5.modal-title
           = t('contact_forms.header')
-        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t(:actions)[:close] } }
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
           %span{ aria: { hidden: 'true' } } &times;
       .modal-body
-        - if current_user
-          = f.hidden_field :email, value: current_user.email
-        - else
-          .form-group
+        .form-row
+          .form-group.col-6
+            = f.label :name, class: 'required'
+            = f.text_field :name, value: current_user.try(&:full_name), class: 'form-control'
+          .form-group.col-6
             = f.label :email, class: 'required'
-            = f.text_field :email, class: 'form-control'
+            = f.text_field :email, value: current_user.try(:email), class: 'form-control'
         .form-group
           = f.label :subject, class: 'required'
           = f.text_field :subject, size: 35, class: 'form-control'
@@ -41,5 +42,5 @@
           = f.text_area :message, rows: 10, class: 'form-control'
       .modal-footer
         %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
-          = t(:actions)[:close]
-        = f.submit t(:actions)[:submit], class: 'btn btn-primary'
+          = t('actions.close')
+        = f.submit t('actions.submit'), class: 'btn btn-primary'

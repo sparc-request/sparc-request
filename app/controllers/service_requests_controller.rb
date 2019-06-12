@@ -23,12 +23,12 @@ require 'generate_request_grant_billing_pdf'
 class ServiceRequestsController < ApplicationController
   respond_to :js, :json, :html
 
-  before_action :initialize_service_request,      except: [:approve_changes, :get_help, :feedback]
+  before_action :initialize_service_request,      except: [:approve_changes]
   before_action :validate_step,                   only:   [:navigate, :protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation, :save_and_exit]
   before_action :find_cart_ssrs,                  only:   [:navigate, :catalog, :protocol, :service_details, :service_subsidy, :document_management]
   before_action :setup_navigation,                only:   [:navigate, :catalog, :protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
-  before_action :authorize_identity,              except: [:approve_changes, :get_help, :feedback, :show]
-  before_action :authenticate_identity!,          except: [:catalog, :add_service, :remove_service, :get_help, :feedback]
+  before_action :authorize_identity,              except: [:approve_changes, :show]
+  before_action :authenticate_identity!,          except: [:catalog, :add_service, :remove_service]
   before_action :find_locked_org_ids,             only:   [:catalog]
   before_action :find_service,                    only:   [:catalog]
 
@@ -203,19 +203,6 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def get_help
-  end
-
-  def feedback
-    feedback = Feedback.new(feedback_params)
-    if feedback.save
-      Notifier.provide_feedback(feedback).deliver_now
-      flash.now[:success] = t(:proper)[:right_navigation][:feedback][:submitted]
-    else
-      @errors = feedback.errors
-    end
-  end
-
   def approve_changes
     @service_request = ServiceRequest.find params[:id]
     @approval = @service_request.approvals.where(id: params[:approval_id]).first
@@ -228,10 +215,6 @@ class ServiceRequestsController < ApplicationController
   end
 
   private
-
-  def feedback_params
-    params.require(:feedback).permit(:email, :message)
-  end
 
   def details_params
     @details_params ||= begin

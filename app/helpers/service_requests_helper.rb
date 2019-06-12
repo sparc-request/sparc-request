@@ -53,23 +53,6 @@ module ServiceRequestsHelper
     end
   end
 
-  # RIGHT NAVIGATION BUTTONS
-  def faq_helper
-    if Setting.get_value("use_faq_link")
-      link_to t(:proper)[:right_navigation][:faqs][:header], Setting.get_value("faq_url"), target: :blank, class: 'btn btn-primary btn-lg btn-block help-faq-button no-margin-x'
-    else
-      link_to t(:proper)[:right_navigation][:faqs][:header], get_help_service_request_path, remote: true, class: 'btn btn-primary btn-lg btn-block help-faq-button no-margin-x'
-    end
-  end
-
-  def feedback_helper
-    if Setting.get_value("use_feedback_link")
-      link_to t(:proper)[:right_navigation][:feedback][:header], Setting.get_value("feedback_link"), target: :blank, class: 'feedback-button btn btn-primary btn-lg btn-block no-margin-x'
-    else
-      content_tag(:button, t(:proper)[:right_navigation][:feedback][:header], class: 'feedback-button btn btn-primary btn-lg btn-block no-margin-x')
-    end
-  end
-
   def save_as_draft_button(service_request)
     link_to t(:proper)[:navigation][:bottom][:save_as_draft],
       save_and_exit_service_request_path(srid: service_request.id),

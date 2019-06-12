@@ -69,7 +69,7 @@ SparcRails::Application.routes.draw do
 
   resources :forms, only: [:index]
 
-  resources :feedback
+  resources :feedback, only: [:new, :create]
 
   resources :contact_forms, only: [:new, :create]
 
@@ -90,11 +90,9 @@ SparcRails::Application.routes.draw do
     get :obtain_research_pricing
     get :confirmation
     get :save_and_exit
-    get :get_help
     get :approve_changes
 
     post :navigate
-    post :feedback
 
     resources :projects, except: [:index, :show, :destroy]
     resources :studies, except: [:index, :show, :destroy]

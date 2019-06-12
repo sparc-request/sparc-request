@@ -100,6 +100,12 @@ form, .form {
   .form-error {
     color: theme-color('danger');
   }
+
+  .form-check {
+    .form-check-label {
+      margin-left: 0.5rem;
+    }
+  }
 }
 
 //////////////

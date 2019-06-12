@@ -33,6 +33,16 @@ $(document).on 'turbolinks:load', ->
     initializeToggles()
     setRequiredFields()
 
+  $(document).on 'keydown', '.is-valid, .is-invalid', ->
+    $(this).removeClass('is-valid is-invalid')
+    $(this).parents('.form-group').find('.form-error').remove()
+
+  $(window).scroll ->
+    if $(this).scrollTop() > 50
+      $('#backToTop').removeClass('hide')
+    else
+      $('#backToTop').addClass('hide')
+
   $(document).on 'show.bs.collapse hide.bs.collapse', '.collapse, .collapsing', ->
     $control = $("[href='##{$(this).attr('id')}']")
 

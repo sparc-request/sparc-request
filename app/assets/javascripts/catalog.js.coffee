@@ -98,9 +98,3 @@ $(document).ready ->
       $('#modalContainer').modal('show')
       $('.modal #submit-error-modal').removeClass('hidden')
       return false
-
-  $(window).scroll ->
-    if $(this).scrollTop() > 50
-      $('.back-to-top').removeClass('hidden')
-    else
-      $('.back-to-top').addClass('hidden')

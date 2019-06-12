@@ -18,6 +18,16 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-<% if @feedback.valid? %>
-$('#modalContainer').modal('hide')
+<% if @errors %>
+$('[id^=feedback_]').removeClass('is-invalid').addClass('is-valid')
+$('.form-error').remove()
+
+<% @errors.messages.each do |attr, messages| %>
+<% messages.each do |message| %>
+$("#feedback_<%= attr.to_s %>").removeClass('is-valid').addClass('is-invalid').parents('.form-group').append('<small class="form-text form-error"><%= message.capitalize %></small>')
+<% end %>
+<% end %>
+<% else %>
+$("#modalContainer").modal('hide')
+$('.flash').html("<%= j render 'layouts/flash' %>")
 <% end %>

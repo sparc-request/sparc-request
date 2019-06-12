@@ -147,5 +147,5 @@ browser_versions: {
   'Internet Explorer': '1',
   'Mozilla Firefox': '2',
   'Google Chrome': '3',
-  'Safari': '4'
+  'Safari': '4',
 }

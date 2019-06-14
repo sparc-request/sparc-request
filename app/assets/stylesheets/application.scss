@@ -41,6 +41,7 @@
 @import 'custom/bootstrap-custom';
 @import 'custom/bootstrap-select-custom';
 @import 'custom/bootstrap-toggle-custom';
+@import 'custom/sweetalert2-custom';
 @import 'custom/typeahead-custom';
 @import 'custom/turbolinks-custom';
 
@@ -48,11 +49,15 @@
 /// Require All Other Stylesheets ///
 /////////////////////////////////////
 
+@import 'utilities';
 @import 'layout';
 @import 'header';
 @import 'navbar';
 @import 'footer';
 @import 'components';
+
+@import 'service_requests';
+
 @import 'dashboard/protocols';
 
 

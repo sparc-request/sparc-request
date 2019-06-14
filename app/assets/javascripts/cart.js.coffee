@@ -18,7 +18,14 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Functions for manipulating the Services cart.
+$(document).on 'turbolinks:load', ->
+  $(document).on 'click', '.cart-toggle', ->
+    if !$(this).hasClass('active')
+      $('.cart-toggle').removeClass('active')
+      $(this).addClass('active')
+      $('.cart-services').addClass('d-none')
+      $($(this).data('target')).removeClass('d-none')
+
 window.cart =
   selectService: (id) ->
     has_protocol = parseInt($('#has_protocol').val())

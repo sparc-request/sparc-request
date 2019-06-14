@@ -27,11 +27,13 @@ module ServiceRequestsHelper
     end
   end
 
-  def organization_name_display(organization, locked)
-    header  = content_tag(:span, organization.name)
-    header += content_tag(:span, '', class: 'glyphicon glyphicon-lock locked') if locked
-
-    header
+  def organization_name_display(organization, locked, has_children)
+    content_tag(:span, organization.name, class: 'text-left') +
+      if locked
+        icon('fas', 'lock mt-1 pl-2')
+      elsif has_children
+        icon('fas', 'caret-down mt-1 pl-2')
+      end
   end
 
   def ssr_name_display(sub_service_request)

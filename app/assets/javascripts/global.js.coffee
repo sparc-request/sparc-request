@@ -26,7 +26,7 @@ $(document).on 'turbolinks:load', ->
   setRequiredFields()
   $('html').addClass('ready')
 
-  $(document).on 'ajax:complete', ->
+  $(document).on 'ajaxSuccess ajax:complete', ->
     initializeSelectpickers()
     initializeTooltips()
     initializePopovers()

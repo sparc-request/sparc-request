@@ -17,16 +17,18 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-<% if @duplicate_service %>
-$('#modalContainer').html("<%= j render 'service_requests/modals/service_already_added_modal' %>")
-$('#modalContainer').modal('show')
+
+<% if @new_request %>
+Swal.fire().then((result) => { console.log(result) });
+<% elsif @duplicate_service %>
 <% else %>
-$('.catalog-right').replaceWith("<%= j render 'catalogs/catalog_right', service_request: @service_request, sub_service_requests: @sub_service_requests %>")
+$('#stepsNav').replaceWith("<%= j render 'service_requests/navigation/steps' %>")
+$('#cart').replaceWith("<%= j render 'service_requests/cart/cart', service_request: @service_request %>")
 
 url = new URL(window.location.href)
 if !url.searchParams.get('srid')
   url.searchParams.append('srid', "<%= @service_request.id %>")
   window.history.pushState({}, null, url.href)
   $('input[name=srid]').val("<%= @service_request.id %>")
-  $('#login-link').attr('href', "<%= new_identity_session_path(srid: @service_request.id) %>")
+  $('#loginLink').attr('href', "<%= new_identity_session_path(srid: @service_request.id) %>")
 <% end %>

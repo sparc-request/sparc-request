@@ -34,11 +34,25 @@
   }
 }
 
+//////////////
+/// Button ///
+//////////////
+
+.btn {
+  &.btn-info, &.btn-warning {
+    color: white !important;
+  }
+}
+
 ////////////
 /// Card ///
 ////////////
 
 .card {
+  &:not(:last-of-type) {
+    margin-bottom: 0.25rem;
+  }
+
   .card-header, .card-footer {
     display: flex;
     align-items: center;
@@ -47,6 +61,23 @@
 
   .card-header, .card-body, .card-footer {
     padding: 0.75rem;
+  }
+
+  .card-header {
+    .btn[data-toggle=collapse] {
+      border-radius: inherit;
+      border: 0;
+    }
+  }
+}
+
+////////////////
+/// Collapse ///
+////////////////
+
+.accordion {
+  .card:first-of-type, .card:last-of-type, .card:not(:first-of-type):not(:last-of-type) {
+    border-radius: 0.25rem
   }
 }
 
@@ -104,6 +135,33 @@ form, .form {
   .form-check {
     .form-check-label {
       margin-left: 0.5rem;
+    }
+  }
+}
+
+///////////////////
+/// Input Group ///
+///////////////////
+
+.input-group {
+  .input-group-icon {
+    position: absolute;
+    height: 100%;
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    z-index: 10;
+  }
+
+  .input-group-icon + input {
+    padding-left: 3rem;
+
+    &.form-control {
+      border-radius: 0.25rem;
+    }
+
+    &.form-control-lg {
+      border-radius: 0.3rem;
     }
   }
 }

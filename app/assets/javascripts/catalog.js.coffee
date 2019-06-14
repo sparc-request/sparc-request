@@ -18,36 +18,24 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(document).ready ->
-  ### ACCORDION LOGIC ###
-  $(document).on 'click', '.institution-header, .provider-header, .program-link:not(.locked-program)', ->
-    if $(this).hasClass('institution-header')
-      $('.institution-header').removeClass('clicked')
-      $('.provider-header').removeClass('clicked')
-      $('.program-link').removeClass('clicked')
-    else if $(this).hasClass('provider-header')
-      $('.provider-header').removeClass('clicked')
-      $('.program-link').removeClass('clicked')
-    else if $(this).hasClass('program-link')
-      $('.program-link').removeClass('clicked')
-    $(this).addClass('clicked')
-    id    = $(this).data('id')
-    $.ajax
-      type: 'POST'
-      url: "/catalogs/#{id}/update_description"
-      data:
-        srid:               getSRId()
-        process_ssr_found:  $(this).data('process-ssr-found')
+$(document).on 'turbolinks:load', ->
+  $(document).on 'click', '#institutionAccordion .org-link:not(.licked)', ->
+    id = $(this).data('id')
 
-  $(document).on 'click', '.program-link.locked-program', ->
-    organizationId = $(this).data('id')
-    $.ajax
-      type: 'GET'
-      url: "/locked_organizations"
-      data:
-        org_id:       organizationId
-        protocol_id:  $('.protocol-id').val()
-        srid:         getSRId()
+    if $(this).hasClass('locked')
+      $.ajax
+        type: 'get'
+        dataType: 'script'
+        url: "/catalogs/#{id}/locked_organization"
+        data:
+          srid: getSRId()
+    else
+      $.ajax
+        type: 'get'
+        dataType: 'script'
+        url: "/catalogs/#{id}/update_description"
+        data:
+          srid: getSRId()
 
   ### SERVICE SEARCH BLOODHOUND ###
   services_bloodhound = new Bloodhound(

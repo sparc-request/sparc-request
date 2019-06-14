@@ -18,12 +18,29 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#contentContainer {
-  padding-bottom: 200px;
+////////////
+/// Cart ///
+////////////
+
+#cart {
+  #cartCard {
+    min-height: 400px;
+  }
+}
+///////////////////////
+/// Service Catalog ///
+///////////////////////
+
+#serviceCatalog #institutionAccordion {
+  .btn.btn-light:not(:last-child) {
+    border-bottom: 1px solid $border-color;
+  }
 }
 
-footer#siteFooter {
-  position: absolute;
-  height: 200px;
-  bottom: 0;
+#catalogCenter {
+  .service:not(:last-of-type) {
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid $border-color;
+  }
 }

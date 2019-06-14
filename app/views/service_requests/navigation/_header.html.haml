@@ -18,7 +18,13 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.col-3#catalogRight
-  = render 'service_requests/right_navigation/cart', service_request: service_request, sub_service_requests: sub_service_requests, allow_delete: true
-  .nav-buttons
-    = link_to t(:actions)[:continue], protocol_service_request_path(srid: service_request.id), class: 'submit-request-button btn btn-success btn-lg btn-block'
+%header.w-100.mb-3#stepsHeader
+  .row.py-2.bg-light.border-top.border-bottom{ class: "bg-#{@css_class}" }
+    .container-fluid
+      %h3.mr-auto.mb-0{ class: "text-#{@css_class}" }
+        = @step_text
+        %br
+        %small.text-muted
+          = @step_sub_text
+      %h3.mb-0
+        = protocol_id_display(@service_request)

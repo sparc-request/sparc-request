@@ -17,13 +17,6 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-class LockedOrganizationsController < ApplicationController
 
-  def show
-    @organization = Organization.find(params[:org_id])
-    @service_provider = @organization.service_providers.where(is_primary_contact: true).first
-    @identity = Identity.find(@service_provider.identity_id)
-    @protocol = Protocol.find(params[:protocol_id])
-    @ssr = SubServiceRequest.where(service_request_id: params[:srid], organization_id: @organization.id).first
-  end
-end
+$('#modalContainer').html("<%= j render 'catalogs/locked_organization_modal', organization: @organization, identity: @identity, ssr: @ssr %>")
+$('#modalContainer').modal('show')

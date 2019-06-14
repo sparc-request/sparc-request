@@ -19,15 +19,11 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class AddService
-
-  def initialize(service_request, service_id, current_user)
-    @service_request = service_request
-    @service_id = service_id
-    @current_user = current_user
-  end
-
-  def existing_service_ids
-    @service_request.line_items.reject{ |line_item| Setting.get_value("finished_statuses").include?(line_item.status) }.map(&:service_id)
+  def initialize(service_request, service_id, current_user, confirmed)
+    @service_request  = service_request
+    @service_id       = service_id
+    @current_user     = current_user
+    @confirmed        = confirmed
   end
 
   def generate_new_service_request
@@ -38,6 +34,14 @@ class AddService
       existing_service_ids: existing_service_ids,
       recursive_call: false ) || []
     create_sub_service_requests(new_line_items)
+  end
+
+  def new_request?
+    !@confirmed && @service_request.line_items.none?
+  end
+
+  def duplicate_service?
+    @service_request.line_items.joins(:sub_service_request).where.not(service_id: @service_id, sub_service_requests: { status: Setting.get_value('finished_statuses') }).any?
   end
 
   private

@@ -55,7 +55,11 @@
 /// Require Our Scripts ///
 ///////////////////////////
 
+/// Replace with //= require_tree . when finished! ///
+
 //= require global
+//= require cart
+//= require catalog
 
 
 

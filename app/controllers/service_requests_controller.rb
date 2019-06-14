@@ -25,7 +25,6 @@ class ServiceRequestsController < ApplicationController
 
   before_action :initialize_service_request,      except: [:approve_changes]
   before_action :validate_step,                   only:   [:navigate, :protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation, :save_and_exit]
-  before_action :find_cart_ssrs,                  only:   [:navigate, :catalog, :protocol, :service_details, :service_subsidy, :document_management]
   before_action :setup_navigation,                only:   [:navigate, :catalog, :protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
   before_action :authorize_identity,              except: [:approve_changes, :show]
   before_action :authenticate_identity!,          except: [:catalog, :add_service, :remove_service]
@@ -158,21 +157,16 @@ class ServiceRequestsController < ApplicationController
   end
 
   def add_service
-    add_service = AddService.new(@service_request,
-                                 params[:service_id].to_i,
-                                 current_user
-                                )
-    add_service.existing_service_ids
-    if add_service.existing_service_ids.include?( params[:service_id].to_i )
+    add_service = AddService.new(@service_request, params[:service_id].to_i, current_user, params[:confirm_new_request])
+
+    if add_service.new_request?
+      @new_request = true
+    elsif add_service.duplicate_service?
       @duplicate_service = true
     else
       add_service.generate_new_service_request
+      @service_request.reload
     end
-
-    @service_request.reload
-
-    @line_items_count = @service_request.line_items.count
-    find_cart_ssrs
   end
 
   def remove_service
@@ -194,9 +188,6 @@ class ServiceRequestsController < ApplicationController
     end
 
     @service_request.reload
-
-    @line_items_count = @service_request.line_items.count
-    find_cart_ssrs
 
     respond_to do |format|
       format.js { render layout: false }
@@ -238,10 +229,6 @@ class ServiceRequestsController < ApplicationController
 
   def current_page
     @current_page ||= action_name == 'navigate' ? Rails.application.routes.recognize_path(request.referrer)[:action] : action_name
-  end
-
-  def find_cart_ssrs
-    @sub_service_requests = @service_request.cart_sub_service_requests
   end
 
   def validate_step
@@ -291,10 +278,11 @@ class ServiceRequestsController < ApplicationController
 
   def setup_navigation
     if c = YAML.load_file(Rails.root.join('config', 'navigation.yml'))[current_page]
-      @step_text   = c['step_text']
-      @css_class   = c['css_class']
-      @back        = eval("#{c['back']}_service_request_path(srid: #{@service_request.id})") if c['back']
-      @forward     = eval("#{c['forward']}_service_request_path(srid: #{@service_request.id})") if c['forward']
+      @step_text      = c['step_text']
+      @step_sub_text  = c['step_sub_text']
+      @css_class      = c['css_class']
+      @back           = eval("#{c['back']}_service_request_path(srid: #{@service_request.id})") if c['back']
+      @forward        = eval("#{c['forward']}_service_request_path(srid: #{@service_request.id})") if c['forward']
     end
   end
 

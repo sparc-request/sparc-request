@@ -25,7 +25,12 @@ nav#siteNav {
 }
 
 nav#stepsNav {
-  height: 7vw;
+  height: 21vh;
+
+  &.has-subsidy {
+    height: 18vh;
+
+  }
 
   .steps-container {
     .col:first-child .nav-link {

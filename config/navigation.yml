@@ -20,6 +20,7 @@
 
 catalog:
   step_text: "Step 1: Add/Update Services"
+  step_sub_text: "Start a new Study/Project or modify an existing request"
   css_class: "primary"
 
 protocol:

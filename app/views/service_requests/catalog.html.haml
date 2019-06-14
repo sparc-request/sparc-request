@@ -23,10 +23,12 @@
   = hidden_field_tag :protocol_id, @service_request.protocol.id, class: 'protocol-id'
 
 = render '/service_requests/navigation/steps'
-.row
-  = render 'catalogs/service_accordion', institutions: @institutions, locked_org_ids: @locked_org_ids
-  = render 'catalogs/catalog_center', service_request: @service_request, locked_org_ids: @locked_org_ids, organization: nil
-  = render 'catalogs/catalog_right', service_request: @service_request, sub_service_requests: @sub_service_requests
+= render '/service_requests/navigation/header'
+.w-100
+  .row
+    = render 'catalogs/service_accordion', institutions: @institutions, locked_org_ids: @locked_org_ids
+    = render 'catalogs/catalog_center', service_request: @service_request, locked_org_ids: @locked_org_ids, organization: nil
+    = render 'service_requests/cart/cart', service_request: @service_request, allow_delete: true
 = render 'service_requests/navigation/footer'
 
 -#= render 'service_requests/modals/submit_error_modal'

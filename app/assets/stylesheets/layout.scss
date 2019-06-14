@@ -42,8 +42,6 @@ html {
 }
 
 #contentContainer {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
   display: flex;
   flex-wrap: wrap;
   flex: 1 0;
@@ -65,6 +63,7 @@ html {
     right: 1rem;
     opacity: 1;
     transition: $transition-base;
+    pointer-events: all;
 
     &.hide {
       opacity: 0;

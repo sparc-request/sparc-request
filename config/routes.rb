@@ -75,8 +75,6 @@ SparcRails::Application.routes.draw do
 
   resources :short_interactions, only: [:new, :create]
 
-  resource :locked_organizations, only: [:show]
-
   resources :subsidies, only: [:new, :create, :edit, :update, :destroy]
 
   resource :service_request, only: [:show] do
@@ -93,6 +91,9 @@ SparcRails::Application.routes.draw do
     get :approve_changes
 
     post :navigate
+    post :add_service
+
+    delete :remove_service
 
     resources :projects, except: [:index, :show, :destroy]
     resources :studies, except: [:index, :show, :destroy]
@@ -145,9 +146,10 @@ SparcRails::Application.routes.draw do
 
   resources :sub_service_requests, only: [:show]
 
-  resources :catalogs, only: [] do
+  resources :catalogs, param: :organization_id, only: [] do
     member do
-      post 'update_description'
+      get :update_description
+      get :locked_organization
     end
   end
 
@@ -161,8 +163,6 @@ SparcRails::Application.routes.draw do
   end
 
   match 'services/:service_id' => 'service_requests#catalog', via: [:get]
-  match 'service_request/add_service/:service_id' => 'service_requests#add_service', via: [:post]
-  match 'service_request/remove_service/:line_item_id' => 'service_requests#remove_service', via: [:delete]
 
   ##### sparc-services routes brought in and name-spaced
   namespace :catalog_manager do

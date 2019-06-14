@@ -32,21 +32,24 @@ en:
       accordion:
         header: "Browse Service Catalog"
       center:
-        search_placeholder: "Search by Service Name, CPT Code, or EAP ID"
-        welcome: "Welcome to SPARCRequest:<br>Storefront of Research Services"
-        description: "Search for services above or browse the providers/services on the left sidebar"
-        notice: "** You may only select services applicable to ONE Study/Project at a time **"
+        search_placeholder: "Search by name, CPT Code, or EAP ID"
+        header: "Welcome to SPARCRequest"
+        subheader: "Storefront of Research Services"
+        description: "<b>SPARCRequest</b> (<b>S</b>ervices, <b>P</b>ricing, & <b>A</b>pplication for <b>R</b>esearch <b>C</b>enters) is a web-based research transaction management system that provides a central portal to researchers and their study teams to browse for research services and resources as well as submit service and pricing requests with a focus on billing compliance and proposal/budget development. SPARCRequest is OSS (Open-Source Software) for which MUSC holds the copyright license. SPARCRequest is developed in a collaborative and public manner for easy adoptability and the source code is available to anyone."
+        text: "Browse our service catalog to start a new request<sup>*</sup> or"
+        notice: "* You may only select services applicable to ONE Study/Project at a time"
+        dashboard_link: "Visit Your Dashboard"
       new_request:
-        header: "New or Existing"
-        warning: "Would you like to enter a new study or project into SPARCRequest?"
-        yes_button: "<b>Yes</b> <br>(Continue with Shopping Cart)"
-        no_button: "<b>No</b> <br>(Go to SPARCDashboard to Choose)"
+        header: "Is this a new request?"
+        warning: "Would you like to start a new Study/Project in SPARCRequest?"
+        yes_button: "<b>Yes</b> <br>Continue Shopping"
+        no_button: "<b>No</b> <br>Visit my Dashboard"
       request_submitted:
         header: "Remove Service Warning"
         warning: "Deleting this service from the service cart will be irreversible and will cause it to be deleted from the associated protocol (%{protocol_id}). Are you sure you want to proceed?"
       locked_organization:
-        header: "Locked Organization"
-        warning: "%{organization} services are already present on request %{request} pertaining to this %{protocol_type}, %{title}.<br>Please contact %{contact_name} at %{contact_info} to edit existing request."
+        header: "%{organization} services are already present on this request."
+        text: "Please contact %{contact_name} at %{contact_info} to make changes to the existing request."
 
     ############
     # PROTOCOL #
@@ -172,13 +175,13 @@ en:
     ########
     cart:
       header: "My Services"
-      view_active: "View Active"
-      view_complete: "View Complete"
+      add_service: "Add to cart"
+      remove_service: "Remove from cart"
       tab_headers:
-        open: "Open"
-        complete: "Completed"
-      no_active_services_message: "You do not have any active requested Services"
-      no_complete_services_message: "You do not have any requested Services in 'Complete' status"
+        current: "Current Services"
+        complete: "Completed Services"
+      no_active_services_message: "You do not have any requested services."
+      no_complete_services_message: "You do not have any completed services."
       to_catalog: "Return to Catalog"
       service_exists:
         header: "Service Already Present"
@@ -229,10 +232,14 @@ en:
           short: "Step 6<br/>Review"
           xs: "Step 6"
       bottom:
-        back: "← Go Back"
+        back:
+          full: "Go Back"
+          small: "Back"
         save_as_draft: "Save as Draft"
         get_cost_estimate: "Get a Cost Estimate"
-        save_and_continue: "Save and Continue →"
+        save_and_continue:
+          full: "Save and Continue"
+          small: "Continue"
         submit: "Submit Request →"
         saving: "Saving..."
         submitting: "Submitting..."

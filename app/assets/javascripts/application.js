@@ -24,6 +24,7 @@
 
 //= require i18n/translations
 //= require sweetalert2/dist/sweetalert2.min
+//= require custom/sweetalert-custom
 //= require custom/sweetalert-integration
 //= require rails-ujs
 //= require turbolinks

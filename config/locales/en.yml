@@ -327,6 +327,20 @@ en:
       lock_calendar: 'Locking the calendar will prevent users from making changes to arm, subject, and visit information.'
       arm_info: 'The calendar has been locked by an administrator. No changes to the stucture may be made at this time.'
 
+  ##############################
+  # Confirms (via Sweet Alert) #
+  ##############################
+
+  # These are the default values used by SweetAlert Confirms
+  # denoted by elements with the `data-confirm-swal` property.
+  # See `sweetalert-integration.js`
+
+  confirm:
+    title: "Are you sure?"
+    text: "This action can't be undone."
+    confirm: "Yes"
+    cancel: "No"
+
   #############
   # CONSTANTS #
   #############
@@ -754,14 +768,6 @@ en:
       percent: "Percent of Current Request Cost to be covered by Service Provider"
       pi: "Amount PI is responsible to provide to Service Provider"
       cost: "Amount of Current Request Cost to be covered by Service Provider"
-
-  #######################
-  # SWEET ALERT CONTENT #
-  #######################
-  swal:
-    swal_confirm:
-      title: "Are you sure?"
-      text: "You cannot undo this action."
 
   #############################
   # VALIDATION ERROR MESSAGES #

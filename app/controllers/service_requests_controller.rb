@@ -157,7 +157,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def add_service
-    add_service = AddService.new(@service_request, params[:service_id].to_i, current_user, params[:confirm_new_request])
+    add_service = AddService.new(@service_request, params[:service_id].to_i, current_user, params[:confirmed])
 
     if add_service.new_request?
       @new_request = true

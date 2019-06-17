@@ -27,26 +27,6 @@ $(document).on 'turbolinks:load', ->
       $($(this).data('target')).removeClass('d-none')
 
 window.cart =
-  selectService: (id) ->
-    has_protocol = parseInt($('#has_protocol').val())
-    li_count = parseInt($('#line_item_count').val())
-
-    if has_protocol == 0 && li_count == 0
-      $('#modalContainer').html($('#new-request-modal').html())
-      $('#modalContainer').modal('show')
-      $('#modalContainer .yes-button').on 'click', (e) ->
-        $.ajax
-          type: 'POST'
-          url: "/service_request/add_service/#{id}"
-          data:
-            srid: getSRId()
-    else
-      $.ajax
-        type: 'POST'
-        url: "/service_request/add_service/#{id}"
-        data:
-            srid: getSRId()
-
   removeService: (id, move_on, spinner) ->
     $.ajax
       type: 'DELETE'

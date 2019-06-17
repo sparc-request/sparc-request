@@ -8,6 +8,7 @@ gem 'acts-as-taggable-on', git: 'https://github.com/Fodoj/acts-as-taggable-on.gi
 gem 'audited', '~> 4.8'
 gem 'axlsx', git: 'https://github.com/randym/axlsx', branch: 'master'
 gem 'axlsx_rails'
+gem 'babel-transpiler'
 gem 'bluecloth' # Check usage
 gem 'bootsnap', require: false
 gem 'bootstrap-sass', '3.4.1' # Bootstrap 4 purge
@@ -78,17 +79,16 @@ gem 'rubyzip', '>= 1.2.1'
 gem 'sassc-rails'
 gem 'savon', '~> 2.2.0' # Check usage
 gem 'slack-notifier'
+gem 'sprockets', '~> 4.0.0.beta9'
 gem 'turbolinks', '~> 5.2.0'
 gem 'twitter-typeahead-rails' # Bootstrap 4 purge
 gem 'uglifier', '>= 1.0.3'
-gem 'webpacker', '~> 4.0.2'
 gem 'whenever', require: false
 gem 'will_paginate'
 gem 'will_paginate-bootstrap' # Not maintained - consider replacing with https://github.com/delef/will_paginate-bootstrap4
 gem 'x-editable-rails' # Bootstrap 4 purge
 
 group :production do
-  gem 'therubyracer', '0.12.3', platforms: :ruby # Consider replacing with ExecJS Node Library for performance boost
 end
 
 group :development, :test, :profile do

@@ -183,7 +183,7 @@ en:
       no_active_services_message: "You do not have any requested services."
       no_complete_services_message: "You do not have any completed services."
       to_catalog: "Return to Catalog"
-      service_exists:
+      duplicate_service:
         header: "Service Already Present"
         warning: "You have already added this service to your cart"
       has_fulfillments:

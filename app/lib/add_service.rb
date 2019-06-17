@@ -23,16 +23,12 @@ class AddService
     @service_request  = service_request
     @service_id       = service_id
     @current_user     = current_user
-    @confirmed        = confirmed
+    @confirmed        = confirmed == 'true'
   end
 
   def generate_new_service_request
     service        = Service.find(@service_id)
-    new_line_items = @service_request.create_line_items_for_service(
-      service: service,
-      optional: true,
-      existing_service_ids: existing_service_ids,
-      recursive_call: false ) || []
+    new_line_items = @service_request.create_line_items_for_service(service: service, optional: true, recursive_call: false ) || []
     create_sub_service_requests(new_line_items)
   end
 
@@ -41,7 +37,7 @@ class AddService
   end
 
   def duplicate_service?
-    @service_request.line_items.joins(:sub_service_request).where.not(service_id: @service_id, sub_service_requests: { status: Setting.get_value('finished_statuses') }).any?
+    @service_request.line_items.incomplete.where(service_id: @service_id).any?
   end
 
   private

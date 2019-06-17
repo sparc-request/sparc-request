@@ -19,8 +19,33 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <% if @new_request %>
-Swal.fire().then((result) => { console.log(result) });
+ConfirmSwal.fire(
+  type: 'question'
+  title: I18n.t('proper.catalog.new_request.header')
+  text: I18n.t('proper.catalog.new_request.warning')
+  confirmButtonText: I18n.t('proper.catalog.new_request.yes_button')
+  cancelButtonText: I18n.t('proper.catalog.new_request.no_button')
+  customClass:
+    confirmButton: 'btn-success'
+    cancelButton: 'btn-danger'
+
+).then (result) =>
+  if result.value
+    $.ajax
+      type: 'post'
+      dataType: 'script'
+      url: '/service_request/add_service'
+      data:
+        service_id: "<%= params[:service_id] %>"
+        confirmed: "true"
+  else
+    window.location = "<%= dashboard_root_path %>"
 <% elsif @duplicate_service %>
+AlertSwal.fire(
+  type: 'error'
+  title: I18n.t('proper.cart.duplicate_service.header')
+  text: I18n.t('proper.cart.duplicate_service.warning')
+)
 <% else %>
 $('#stepsNav').replaceWith("<%= j render 'service_requests/navigation/steps' %>")
 $('#cart').replaceWith("<%= j render 'service_requests/cart/cart', service_request: @service_request %>")

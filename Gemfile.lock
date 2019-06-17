@@ -136,6 +136,10 @@ GEM
     axlsx_rails (0.5.2)
       actionpack (>= 3.1)
       axlsx (>= 2.0.1)
+    babel-source (5.8.35)
+    babel-transpiler (0.7.0)
+      babel-source (>= 4.0, < 6)
+      execjs (~> 2.0)
     bcrypt (3.1.12)
     bluecloth (2.2.0)
     bootsnap (1.4.2)
@@ -404,13 +408,11 @@ GEM
       method_source (~> 0.9.0)
     public_suffix (3.0.3)
     puma (3.12.1)
-    rack (2.0.6)
+    rack (2.0.7)
     rack-accept (0.4.5)
       rack (>= 0.4)
     rack-mini-profiler (1.0.0)
       rack (>= 1.2.0)
-    rack-proxy (0.6.5)
-      rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (5.2.3)
@@ -533,7 +535,7 @@ GEM
       activesupport (>= 4.2)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
-    sprockets (3.7.2)
+    sprockets (4.0.0.beta9)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
     sprockets-rails (3.2.1)
@@ -587,10 +589,6 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
-    webpacker (4.0.4)
-      activesupport (>= 4.2)
-      rack-proxy (>= 0.6.1)
-      railties (>= 4.2)
     websocket-driver (0.7.0)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.3)
@@ -618,6 +616,7 @@ DEPENDENCIES
   audited (~> 4.8)
   axlsx!
   axlsx_rails
+  babel-transpiler
   bluecloth
   bootsnap
   bootstrap-sass (= 3.4.1)
@@ -716,6 +715,7 @@ DEPENDENCIES
   slack-notifier
   spring
   spring-commands-rspec
+  sprockets (~> 4.0.0.beta9)
   sqlite3
   therubyracer (= 0.12.3)
   timecop
@@ -724,7 +724,6 @@ DEPENDENCIES
   twitter-typeahead-rails
   uglifier (>= 1.0.3)
   webmock
-  webpacker (~> 4.0.2)
   whenever
   will_paginate
   will_paginate-bootstrap

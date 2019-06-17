@@ -133,42 +133,24 @@ class ServiceRequest < ApplicationRecord
   #
   #   optional:             whether the service is optional
   #
-  #   existing_service_ids: an array containing the ids of all the
-  #                         services that have already been added to the
-  #                         service request.  This array will be
-  #                         modified to contain the services for the
-  #                         newly created line items.
-  #
   def create_line_items_for_service(args)
-    service = args[:service]
-    optional = args[:optional]
-    existing_service_ids = args[:existing_service_ids]
-    allow_duplicates = args[:allow_duplicates]
-    recursive_call = args[:recursive_call]
+    service               = args[:service]
+    optional              = args[:optional]
+    allow_duplicates      = args[:allow_duplicates]
+    recursive_call        = args[:recursive_call]
 
     # If this service has already been added, then do nothing
-    unless allow_duplicates
-      return if existing_service_ids.include?(service.id)
-    end
+    return if !allow_duplicates && self.line_items.incomplete.where(service_id: service.id).any?
 
     line_items = []
 
     # add service to line items
-    line_items << create_line_item(
-        service_id: service.id,
-        optional: optional,
-        quantity: service.displayed_pricing_map.quantity_minimum)
-
-    existing_service_ids << service.id
+    line_items << create_line_item(service_id: service.id, optional: optional, quantity: service.displayed_pricing_map.quantity_minimum)
 
     # add required services to line items
     service.required_services.each do |rs|
       next unless rs.parents_available?
-      rs_line_items = create_line_items_for_service(
-        service: rs,
-        optional: false,
-        existing_service_ids: existing_service_ids,
-        recursive_call: true)
+      rs_line_items = create_line_items_for_service( service: rs, optional: false, recursive_call: true)
       rs_line_items.nil? ? line_items : line_items.concat(rs_line_items)
     end
 
@@ -177,11 +159,7 @@ class ServiceRequest < ApplicationRecord
     unless recursive_call
       service.optional_services.each do |rs|
         next unless rs.parents_available?
-        rs_line_items = create_line_items_for_service(
-          service: rs,
-          optional: true,
-          existing_service_ids: existing_service_ids,
-          recursive_call: true)
+        rs_line_items = create_line_items_for_service(service: rs, optional: true, recursive_call: true)
         rs_line_items.nil? ? line_items : line_items.concat(rs_line_items)
       end
     end
@@ -192,7 +170,6 @@ class ServiceRequest < ApplicationRecord
   def create_line_item(args)
     quantity = args.delete('quantity') || args.delete(:quantity) || 1
     if line_item = self.line_items.create(args)
-
       if line_item.service.one_time_fee
         # quantity is only set for one time fee
         line_item.update_attribute(:quantity, quantity)

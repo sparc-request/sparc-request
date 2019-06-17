@@ -63,6 +63,10 @@ class LineItem < ApplicationRecord
 
   default_scope { order('line_items.id ASC') }
 
+  scope :incomplete, -> {
+    joins(:sub_service_request).where.not(sub_service_requests: { status: Status.complete })
+  }
+
   ### These only pertain to OTF services
   def otf_unit_type
     service.displayed_pricing_map.try(:otf_unit_type)

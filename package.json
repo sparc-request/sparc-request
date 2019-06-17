@@ -6,7 +6,6 @@
   "author": "SPARCRequest <sparcrequest@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@rails/webpacker": "^4.0.4",
     "bootstrap": "^4.3.1",
     "bootstrap-datepicker": "^1.9.0",
     "bootstrap-select": "^1.13.10",
@@ -19,10 +18,7 @@
     "js-cookie": "^2.2.0",
     "nprogress": "^0.2.0",
     "popper.js": "^1.15.0",
-    "sweetalert2": "^8.11.4",
-    "webpack": "^4.32.2"
+    "sweetalert2": "^8.11.4"
   },
-  "devDependencies": {
-    "webpack-dev-server": "^3.4.1"
-  }
+  "devDependencies": {}
 }

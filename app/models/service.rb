@@ -68,6 +68,10 @@ class Service < ApplicationRecord
     order(:order, :name)
   }
 
+  scope :available, -> {
+    where(is_available: true)
+  }
+
   # Services listed under the funding organizations
   scope :funding_opportunities, -> { where(organization_id: Setting.get_value("funding_org_ids")) }
 

@@ -33,4 +33,4 @@
                 %p.description
                   = raw(c.description)
               .core-services
-                = render 'catalogs/accordion/services', services: c.services, service_request: service_request
+                = render 'catalogs/accordion/services', services: c.services.available, service_request: service_request

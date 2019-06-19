@@ -69,26 +69,6 @@ en:
   # ACTIVERECORD #
   ################
   activerecord:
-    errors:
-      models:
-        form:
-          attributes:
-            active:
-              taken: "A different version of this Form is already active"
-        project_role:
-          attributes:
-            identity_id:
-              Inblank: "^Primary PI can't be blank"
-        question_response:
-          attributes:
-            content:
-              blank: "required"
-        system_survey:
-          attributes:
-            active:
-              taken: "A different version of this Survey is already active"
-      messages:
-        spoofed_media_type: "has format errors. Please re-save the file in a different format and try again."
     attributes:
       arm:
         name: "Arm Name"
@@ -115,6 +95,8 @@ en:
         content: "Question"
       question_response:
         content: "Question"
+      service:
+        abbreviation: "Abbreviation"
       short_interaction:
         subject: "Subject of Interaction"
         interaction_type: "Type of Interaction"
@@ -128,6 +110,28 @@ en:
         research_billing_qty: "Research Billing Quantity"
         insurance_billing_qty: "Insurance Billing Quantity"
         effort_billing_qty: "Effort Billing Quantity"
+    errors:
+      models:
+        form:
+          attributes:
+            active:
+              taken: "A different version of this Form is already active"
+        project_role:
+          attributes:
+            identity_id:
+              Inblank: "^Primary PI can't be blank"
+        question_response:
+          attributes:
+            content:
+              blank: "required"
+        system_survey:
+          attributes:
+            active:
+              taken: "A different version of this Survey is already active"
+      messages:
+        spoofed_media_type: "has format errors. Please re-save the file in a different format and try again."
+    models:
+      service: "Service"
 
   ########
   # ARMS #
@@ -361,6 +365,9 @@ en:
     hide: "Hide Details"
     more: "More..."
     less: "Less..."
+    search:
+      loading: "Loading..."
+      no_results: "No Results"
 
   #################
   # CONTACT FORMS #
@@ -793,8 +800,8 @@ en:
       email_invalid: "Email is invalid"
       zipcode_invalid: "Zipcode is invalid"
     service_requests:
-      line_items_missing: "You must add Services to your cart before continuing"
-      protocol_missing: "You must create a Protocol before continuing"
+      line_items_missing: "You must add services to your cart before continuing."
+      protocol_missing: "You must create a Study or Project before continuing."
       protocol_errors: "This Protocol has errors which must be fixed before continuing."
       arms_missing: "You must create Arms before proceeding to the Service Calendar"
     visit_groups:

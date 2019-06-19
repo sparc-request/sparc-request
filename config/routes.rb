@@ -92,7 +92,6 @@ SparcRails::Application.routes.draw do
 
     post :navigate
     post :add_service
-
     delete :remove_service
 
     resources :projects, except: [:index, :show, :destroy]

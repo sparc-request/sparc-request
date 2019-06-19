@@ -230,19 +230,7 @@ class ApplicationController < ActionController::Base
   end
 
   def find_locked_org_ids
-    @locked_org_ids = []
-    if @service_request.protocol.present?
-      @service_request.sub_service_requests.each do |ssr|
-        if ssr.is_locked?
-          @locked_org_ids << ssr.organization_id
-          @locked_org_ids << ssr.organization.all_child_organizations_with_self.map(&:id)
-        end
-      end
-
-      unless @locked_org_ids.empty?
-        @locked_org_ids = @locked_org_ids.flatten.uniq
-      end
-    end
+    @locked_org_ids = @service_request.sub_service_requests.select(&:is_locked?).map{ |ssr| [ssr.organization_id, ssr.organization.all_child_organizations_with_self.map(&:id)] }.flatten.uniq
   end
 
   def authorize_funding_admin

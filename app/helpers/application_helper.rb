@@ -110,7 +110,9 @@ module ApplicationHelper
   end
 
   def inactive_tag
-    content_tag(:span, t(:calendars)[:inactive], class: 'inactive-text')
+    content_tag(:small, class: 'text-danger') do
+      content_tag(:i, t('calendars.inactive'))
+    end
   end
 
   ##Sets css bootstrap classes for rails flash message types##

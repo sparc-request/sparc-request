@@ -19,13 +19,13 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .accordion#institutionAccordion
-  - institutions.includes(providers: :programs).select{ |inst| inst.is_available != false }.each_with_index do |i, index|
+  - institutions.includes(providers: :programs).select{ |inst| inst.is_available != false }.each do |i|
     - locked = locked_ids.include?(i.id)
 
     .card
       .card-header.p-0{ id: "institution#{i.id}Header" }
-        %button.org-link.btn.btn-lg.w-100.d-flex.justify-content-between{ class: [css_class(i), locked ? 'locked' : ''], data: { toggle: 'collapse', target: "#institution#{i.id}Collapse", id: i.id }, aria: { expanded: 'true', controls: "institution#{i.id}Collapse" } }
+        %button.org-link.btn.btn-lg.w-100.d-flex.justify-content-between{ class: [css_class(i), locked ? 'locked' : ''], type: 'button', data: { toggle: 'collapse', target: "#institution#{i.id}Collapse", id: i.id }, aria: { expanded: 'true', controls: "institution#{i.id}Collapse" } }
           = organization_name_display(i, locked, i.providers.any?)
-      .collapse{ id: "institution#{i.id}Collapse", class: index.zero? ? 'show' : '', data: { parent: '#institutionAccordion' }, aria: { labelledby: "institution#{i.id}Header" } }
+      .collapse{ id: "institution#{i.id}Collapse", data: { parent: '#institutionAccordion' }, aria: { labelledby: "institution#{i.id}Header" } }
         .card-body
           = render 'catalogs/accordion/providers', providers: i.providers, locked_ids: locked_ids, i: i

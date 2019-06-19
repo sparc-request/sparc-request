@@ -19,6 +19,10 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .col-6#catalogCenter
+  .form-group.input-group
+    %span.input-group-icon
+      = icon('fas', 'search fa-lg text-muted')
+    = text_field_tag 'serviceQuery', nil, placeholder: t(:proper)[:catalog][:center][:search_placeholder], class: "form-control form-control-lg"
   #welcomeMessage
     - if organization
       = render 'catalogs/description', organization: organization, service_request: service_request, locked_org_ids: locked_org_ids

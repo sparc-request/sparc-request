@@ -18,17 +18,13 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-<% if @new_request %>
+<% if @confirm_new_request %>
 ConfirmSwal.fire(
   type: 'question'
   title: I18n.t('proper.catalog.new_request.header')
   text: I18n.t('proper.catalog.new_request.warning')
   confirmButtonText: I18n.t('proper.catalog.new_request.yes_button')
   cancelButtonText: I18n.t('proper.catalog.new_request.no_button')
-  customClass:
-    confirmButton: 'btn-success'
-    cancelButton: 'btn-danger'
-
 ).then (result) =>
   if result.value
     $.ajax
@@ -38,13 +34,12 @@ ConfirmSwal.fire(
       data:
         service_id: "<%= params[:service_id] %>"
         confirmed: "true"
-  else
+  else if result.dismiss == 'cancel'
     window.location = "<%= dashboard_root_path %>"
 <% elsif @duplicate_service %>
 AlertSwal.fire(
   type: 'error'
   title: I18n.t('proper.cart.duplicate_service.header')
-  text: I18n.t('proper.cart.duplicate_service.warning')
 )
 <% else %>
 $('#stepsNav').replaceWith("<%= j render 'service_requests/navigation/steps' %>")
@@ -56,4 +51,5 @@ if !url.searchParams.get('srid')
   window.history.pushState({}, null, url.href)
   $('input[name=srid]').val("<%= @service_request.id %>")
   $('#loginLink').attr('href', "<%= new_identity_session_path(srid: @service_request.id) %>")
+  $('#serviceCatalogForm').attr('action', "<%= navigate_service_request_path(srid: @service_request.id) %>")
 <% end %>

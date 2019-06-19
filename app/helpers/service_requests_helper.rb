@@ -37,10 +37,11 @@ module ServiceRequestsHelper
   end
 
   def ssr_name_display(sub_service_request)
-    header  = content_tag(:span, sub_service_request.organization.name + (sub_service_request.ssr_id ? " (#{sub_service_request.ssr_id})" : ""))
-    header += content_tag(:span, '', class: 'glyphicon glyphicon-lock locked') if !sub_service_request.can_be_edited?
-
-    header
+    content_tag(:h5, class: 'mb-0') do
+      content_tag(:strong, "(#{sub_service_request.ssr_id})") + " " +
+      (!sub_service_request.can_be_edited? ? icon('fas', 'lock') + " " : "") +
+      sub_service_request.organization.name
+    end
   end
 
   def service_name_display(line_item)

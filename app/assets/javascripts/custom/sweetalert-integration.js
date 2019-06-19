@@ -45,7 +45,7 @@
     const cancelText = element.getAttribute('data-cancel-text');
     const customClass = element.getAttribute('data-class');
 
-    ConfirmSwal.fire({
+    Swal.fire({
       title: title || I18n.t('confirm.title') || "Are you sure?",
       html: html || I18n.t('confirm.text') || "This action can't be undone.",
       type: type === null ? 'warning' : type,

@@ -22,47 +22,48 @@ catalog:
   step_text: "Step 1: Add/Update Services"
   step_sub_text: "Start a new Study/Project or modify an existing request"
   css_class: "primary"
+  forward: "protocol"
 
 protocol:
-  step_text: 'Step 2: Services and Protocol Information'
-  css_class: info-alt
-  back: catalog
-  forward: service_details
+  step_text: "Step 2: Services and Protocol Information"
+  css_class: "info-alt"
+  back: "catalog"
+  forward: "service_details"
 
 service_details:
-  step_text: 'Step 3: Milestones and Calendar Structure'
-  css_class: success
-  back: protocol
-  forward: service_calendar
+  step_text: "Step 3: Milestones and Calendar Structure"
+  css_class: "success"
+  back: "protocol"
+  forward: "service_calendar"
 
 service_calendar:
-  step_text: 'Step 4: Service Calendar'
-  css_class: info
-  back: service_details
-  forward: service_subsidy
+  step_text: "Step 4: Service Calendar"
+  css_class: "info"
+  back: "service_details"
+  forward: "service_subsidy"
 
 service_subsidy:
-  step_text: 'Step 4a: Subsidy Information'
-  css_class: danger-alt
-  back: service_calendar
-  forward: document_management
+  step_text: "Step 4a: Subsidy Information"
+  css_class: "danger-alt"
+  back: "service_calendar"
+  forward: "document_management"
 
 document_management:
-  step_text: 'Step 5: Document, Notes, and Forms'
-  css_class: warning
-  back: service_subsidy
-  forward: review
+  step_text: "Step 5: Document, Notes, and Forms"
+  css_class: "warning"
+  back: "service_subsidy"
+  forward: "review"
 
 review:
-  step_text: 'Step 6: Review Your Request'
-  css_class: danger
-  back: document_management
-  forward: confirmation
+  step_text: "Step 6: Review Your Request"
+  css_class: "danger"
+  back: "document_management"
+  forward: "confirmation"
 
 obtain_research_pricing:
-  step_text: 'Get a Cost Estimate'
-  css_class: green-provider
+  step_text: "Get a Cost Estimate"
+  css_class: "green-provider"
 
 confirmation:
-  step_text: 'Submission Confirmation'
-  css_class: green-provider
+  step_text: "Submission Confirmation"
+  css_class: "green-provider"

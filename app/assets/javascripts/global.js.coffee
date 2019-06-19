@@ -18,6 +18,13 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+# Provide the CSRF Authenticity Token for all Ajax requests
+$.ajaxSetup({
+  headers: {
+    'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+  }
+});
+
 $(document).on 'turbolinks:load', ->
   initializeSelectpickers()
   initializeTooltips()
@@ -80,7 +87,8 @@ $(document).on 'turbolinks:load', ->
     $(this).selectpicker() if $(this).siblings('.dropdown-toggle').length == 0
 
 (exports ? this).initializeTooltips = () ->
-  $('[data-toggle=tooltip]').tooltip({ delay: { show: 500 } })
+  $('.tooltip').tooltip('hide')
+  $('[data-toggle=tooltip]').tooltip({ delay: { show: 500 }, animation: false })
 
 (exports ? this).initializePopovers = () ->
   $('[data-toggle=popover]').popover()

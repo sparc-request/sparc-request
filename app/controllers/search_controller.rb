@@ -19,7 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class SearchController < ApplicationController
-  include ServicesHelper
 
   before_action :initialize_service_request, only: [:services]
   before_action :authorize_identity, only: [:services]
@@ -38,9 +37,9 @@ class SearchController < ApplicationController
         value:          service.id,
         description:    raw(service.description),
         abbreviation:   service.abbreviation,
-        cpt_code_text:  cpt_code_text(service),
-        eap_id_text:    eap_id_text(service),
-        pricing_text:   service_pricing_text(service),
+        cpt_code_text:  helpers.cpt_code_text(service),
+        eap_id_text:    helpers.eap_id_text(service),
+        pricing_text:   helpers.service_pricing_text(service),
         term:           term
       }
     }
@@ -63,20 +62,16 @@ class SearchController < ApplicationController
                 reject { |s| (s.current_pricing_map rescue false) == false }. # Why is this here? ##Agreed, why????
                 sort_by{ |s| s.organization_hierarchy(true, false, false, true).map{ |o| [o.order, o.abbreviation] }.flatten }
 
-    unless @sub_service_request.nil?
-      results.reject!{ |s| s.parents.exclude?(@sub_service_request.organization) }
-    end
-
     results.map! { |s|
       {
-        breadcrumb:     breadcrumb_text(s),
-        label:          s.name,
-        value:          s.id,
+        service_id:     s.id,
+        name:           s.display_service_name,
         description:    raw(s.description),
+        breadcrumb:     breadcrumb_text(s),
         abbreviation:   s.abbreviation,
-        cpt_code_text:  cpt_code_text(s),
-        eap_id_text:    eap_id_text(s),
-        pricing_text:   service_pricing_text(s),
+        cpt_code_text:  helpers.cpt_code_text(s),
+        eap_id_text:    helpers.eap_id_text(s),
+        pricing_text:   helpers.service_pricing_text(s),
         term:           term
       }
     }
@@ -138,7 +133,7 @@ class SearchController < ApplicationController
       breadcrumb = []
       item.parents.reverse.each do |parent|
         breadcrumb << "<span class='text-#{parent.type.downcase}'>#{parent.abbreviation} </span>"
-        breadcrumb << "<span class='inline-glyphicon glyphicon glyphicon-triangle-right'> </span>"
+        breadcrumb << helpers.icon('fas', 'caret-right') + " "
       end
       breadcrumb.pop
       breadcrumb.join.html_safe

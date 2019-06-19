@@ -19,19 +19,20 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 - sub_service_requests.each do |ssr|
-  .list-group-item.cart-sub-service-request{ class: ssr.can_be_edited? ? '' : 'list-group-item-danger' }
-    .col-sm-12.ssr-header
-      %h5.list-group-item-heading.text-center
-        = ssr_name_display(ssr)
-    - ssr.line_items.each do |li|
-      .col-sm-12.line-item
-        %span.col-sm-9.service
-          = li.service.abbreviation
-          %strong
-            = li.service.cpt_code? ? " (#{li.service.cpt_code})" : ""
-          - unless li.service.is_available
-            = inactive_tag
-        .col-sm-3
-          - if ssr.can_be_edited? && allow_delete && li.optional?
-            %button.btn.btn-xs.btn-danger.remove-service.pull-right{ type: 'button', data: { id: li.id, request_submitted: service_request.submitted_at? ? 1 : 0, toggle: "tooltip", animation: 'false', placement: 'right'}, title: "Remove" }
-              %span.glyphicon.glyphicon-remove{ aria: { hidden: 'true' } }
+  .list-group-item{ class: ssr.can_be_edited? ? 'list-group-item-primary' : 'list-group-item-danger' }
+    = ssr_name_display(ssr)
+  - ssr.line_items.each do |li|
+    .list-group-item
+      .row
+        .col-10.d-flex.align-items-center.pr-0
+          %h5.mb-0
+            = li.service.abbreviation
+            - if li.service.cpt_code.present?
+              %strong
+                = "(#{li.service.cpt_code})"
+            - unless li.service.is_available
+              = inactive_tag
+        - if li.optional? && ssr.can_be_edited? && ['document_management'].exclude?(action_name)
+          .col-2.pl-0.text-right
+            %button.btn.btn-danger.remove-service{ type: 'button', title: t('proper.cart.remove_service'), data: { toggle: 'tooltip', line_item_id: li.id } }
+              = icon('fas', 'trash')

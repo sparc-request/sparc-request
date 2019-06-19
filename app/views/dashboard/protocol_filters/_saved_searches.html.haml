@@ -22,10 +22,10 @@
   .card-header
     %h5.mb-0
       = t(:dashboard)[:protocol_filters][:saved_filters][:header]
-  .card-body
-    %ul.list-group.border-0
+  .card-body.p-0
+    %ul.list-group.list-group-flush.border-0
       - @protocol_filters.each do |pf|
         %li.list-group-item.d-flex.align-items-center<
           = link_to pf.search_name, pf.href, remote: true, class: "saved-search-link mr-auto"
           = link_to dashboard_protocol_filter_path(pf.id), method: :delete, remote: true, class: "text-danger delete-filter" do
-            = icon('fas', 'times')
+            = icon('fas', 'trash-alt')

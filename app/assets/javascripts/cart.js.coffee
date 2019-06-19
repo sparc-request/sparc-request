@@ -26,51 +26,28 @@ $(document).on 'turbolinks:load', ->
       $('.cart-services').addClass('d-none')
       $($(this).data('target')).removeClass('d-none')
 
-window.cart =
-  removeService: (id, move_on, spinner) ->
-    $.ajax
-      type: 'DELETE'
-      url: "/service_request/remove_service/#{id}?srid=#{getSRId()}"
-      success: (data, textStatus, jqXHR) ->
-        if move_on
-          window.location = '/dashboard'
-        else
-          spinner.hide()
-
-$(document).ready ->
-  $(document).on 'click', '.cart-toggle .btn', ->
-    tab = $(this).data('tab')
-    if !$(this).hasClass('active')
-      $(this).addClass('active' )
-      $(this).siblings('.btn').removeClass('active')
-      $('.ssr-tab').addClass('hidden')
-      if tab == 'active'
-        $('.active-ssrs').removeClass('hidden')
-      else if tab == 'complete'
-        $('.complete-ssrs').removeClass('hidden')
-    return false
-
   $(document).on 'click', '.add-service', ->
-    window.cart.selectService($(this).data('id'))
+    $this = $(this)
+    $this.prop('disabled', true)
+    $.ajax
+      method: 'post'
+      dataType: 'script'
+      url: '/service_request/add_service'
+      data:
+        srid:       getSRId()
+        service_id: $(this).data('service-id')
+      success: ->
+        $this.prop('disabled', false)
 
   $(document).on 'click', '.remove-service', ->
-    id = $(this).data('id')
-    li_count = parseInt($('#line_item_count').val())
-    request_submitted = $(this).data('request-submitted')
-    spinner = $('<span class="spinner"><img src="/assets/catalog_manager/spinner_small.gif"/></span>')
-
-    if request_submitted == 1
-      button = $(this)
-      $('#modalContainer').html($('#request-submitted-modal').html())
-      $('#modalContainer').modal('show')
-
-      $('#modalContainer .yes-button').on 'click', (e) ->
-        button.replaceWith(spinner)
-        window.cart.removeService(id, false, spinner)
-    else if li_count == 1 && window.location.pathname != '/' && window.location.pathname.indexOf('catalog') == -1
-      # Do not allow the user to remove the last service except in the catalog
-      $('#modalContainer').html($('#line-item-required-modal').html())
-      $('#modalContainer').modal('show')
-    else
-      $(this).replaceWith(spinner)
-      window.cart.removeService(id, false, spinner)
+    $this = $(this)
+    $(this).prop('disabled', true)
+    $.ajax
+      method: 'delete'
+      dataType: 'script'
+      url: '/service_request/remove_service'
+      data:
+        srid:         getSRId()
+        line_item_id: $(this).data('line-item-id')
+      success: ->
+        $(this).prop('disabled', false)

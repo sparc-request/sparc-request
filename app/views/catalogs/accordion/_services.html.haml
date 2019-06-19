@@ -32,6 +32,6 @@
         = eap_id_text(service)
       - unless action_name == 'protocol'
         .col-2.text-right
-          = link_to add_service_service_request_path(srid: service_request.id, service_id: service.id), remote: true, method: :post, title: t('proper.cart.add_service'), class: 'btn btn-success', data: { toggle: 'tooltip', placement: 'right' } do
+          %button.btn.btn-success.add-service{ type: 'button', title: t('proper.cart.add_service'), data: { toggle: 'tooltip', placement: 'right', service_id: service.id } }
             = icon('fas', 'plus')
       = raw service_pricing_text(service)

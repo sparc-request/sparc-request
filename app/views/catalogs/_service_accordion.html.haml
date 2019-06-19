@@ -19,14 +19,10 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .col-3.pr-md-0#serviceCatalog
-  .card
+  .card.h-100
     .card-header.bg-light
       %h4.mb-0<
         = icon('fas', 'book-medical mr-2')
         = t(:proper)[:catalog][:accordion][:header]
     .card-body
-      .form-group.input-group
-        %span.input-group-icon
-          = icon('fas', 'search fa-lg text-muted')
-        = text_field_tag 'service-query', nil, placeholder: t(:proper)[:catalog][:center][:search_placeholder], class: "form-control form-control-lg"
       = render 'catalogs/accordion/institutions', institutions: institutions, locked_ids: locked_org_ids ? locked_org_ids : []

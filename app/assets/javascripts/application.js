@@ -26,9 +26,9 @@
 //= require sweetalert2/dist/sweetalert2.min
 //= require custom/sweetalert-custom
 //= require custom/sweetalert-integration
+//= require jquery/dist/jquery.min
 //= require rails-ujs
 //= require turbolinks
-//= require jquery/dist/jquery.min
 
 //////////////////////////////////
 /// Require Remaining Packages ///

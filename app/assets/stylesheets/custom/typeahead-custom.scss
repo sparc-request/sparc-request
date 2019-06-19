@@ -19,6 +19,7 @@
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 .twitter-typeahead {
+  width: 100%;
   display: block !important;
 }
 
@@ -27,6 +28,9 @@
   @extend .border;
   @extend .rounded;
   @extend .shadow-sm;
+  max-height: 600px;
+  overflow-x: hidden;
+  overflow-y: auto;
 
   .tt-suggestion, .tt-no-results {
     @extend .bg-white;

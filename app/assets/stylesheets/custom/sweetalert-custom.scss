@@ -18,10 +18,22 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-@each $color, $value in $theme-colors {
-  .btn-#{$color} {
-    &.swal2-styled.swal2-confirm, &.swal2-styled.swal2-cancel {
-      @extend .btn-#{$color}
+.swal2-container {
+  .swal2-actions {
+    flex-wrap: nowrap;
+
+    button {
+      width: 50%;
+      height: 100%;
+      padding: .5rem 1rem;
+    }
+  }
+
+  @each $color, $value in $theme-colors {
+    .btn-#{$color} {
+      &.swal2-styled.swal2-confirm, &.swal2-styled.swal2-cancel {
+        @extend .btn-#{$color}
+      }
     }
   }
 }

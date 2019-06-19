@@ -157,41 +157,34 @@ class ServiceRequestsController < ApplicationController
   end
 
   def add_service
-    add_service = AddService.new(@service_request, params[:service_id].to_i, current_user, params[:confirmed])
+    add_service = AddService.new(@service_request, params[:service_id], current_user, params[:srid].blank?, params[:confirmed] == 'true')
 
-    if add_service.new_request?
-      @new_request = true
+    if add_service.confirm_new_request?
+      @confirm_new_request = true
     elsif add_service.duplicate_service?
       @duplicate_service = true
     else
       add_service.generate_new_service_request
       @service_request.reload
     end
+
+    respond_to :js
   end
 
   def remove_service
-    line_item = @service_request.line_items.find(params[:line_item_id])
-    ssr       = line_item.sub_service_request
+    page            = Rails.application.routes.recognize_path(request.referrer)[:action]
+    remove_service  = RemoveService.new(@service_request, params[:line_item_id], current_user, page, params[:confirmed] == 'true')
 
-    if ssr.can_be_edited?
-      @service_request.line_items.where(service: line_item.service.related_services).update_all(optional: true)
-
-      line_item.destroy
-
-      ssr.update_attribute(:status, 'draft') unless ssr.status == 'first_draft'
-      @service_request.reload
-
-      if ssr.line_items.empty?
-        NotifierLogic.new(@service_request, current_user).ssr_deletion_emails(deleted_ssr: ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
-        ssr.destroy
-      end
+    if remove_service.confirm_previously_submitted?
+      @confirm_previously_submitted = true
+    elsif remove_service.confirm_last_service?
+      @confirm_last_service = true
+    else
+      remove_service.remove_service
+      redirect_to root_path(srid: @service_request.id) if @service_request.line_items.empty? && page != 'catalog'
     end
 
-    @service_request.reload
-
-    respond_to do |format|
-      format.js { render layout: false }
-    end
+    respond_to :js
   end
 
   def approve_changes
@@ -228,11 +221,13 @@ class ServiceRequestsController < ApplicationController
   end
 
   def current_page
-    @current_page ||= action_name == 'navigate' ? Rails.application.routes.recognize_path(request.referrer)[:action] : action_name
+    @current_page ||= ['add_service', 'remove_service', 'navigate'].include?(action_name) ? Rails.application.routes.recognize_path(request.referrer)[:action] : action_name
   end
 
   def validate_step
     case current_page
+    when 'catalog'
+      validate_catalog
     when -> (n) { ['protocol', 'save_and_exit'].include?(n) }
       validate_catalog && validate_protocol
     when 'service_details'
@@ -281,8 +276,8 @@ class ServiceRequestsController < ApplicationController
       @step_text      = c['step_text']
       @step_sub_text  = c['step_sub_text']
       @css_class      = c['css_class']
-      @back           = eval("#{c['back']}_service_request_path(srid: #{@service_request.id})") if c['back']
-      @forward        = eval("#{c['forward']}_service_request_path(srid: #{@service_request.id})") if c['forward']
+      @back           = eval("#{c['back']}_service_request_path(#{@service_request.new_record? ? "" : "srid: " + @service_request.id.to_s})") if c['back']
+      @forward        = eval("#{c['forward']}_service_request_path(#{@service_request.new_record? ? "" : "srid: " + @service_request.id.to_s})") if c['forward']
     end
   end
 

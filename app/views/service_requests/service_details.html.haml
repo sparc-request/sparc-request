@@ -23,5 +23,5 @@
 .col-sm-12.body-container#service-details-page
   = form_tag navigate_service_request_path(srid: @service_request.id), id: 'service-request-form' do
     = render 'service_requests/service_details/service_details_left', service_request: @service_request, protocol: @service_request.protocol
-    = render 'service_requests/service_details/service_details_right', service_request: @service_request, sub_service_requests: @sub_service_requests
+    = render 'service_requests/service_details/service_details_right', service_request: @service_request
 = render 'service_requests/navigation/footer', service_request: @service_request, css_class: @css_class, back: @back, forward: @forward

@@ -18,30 +18,31 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- sub_service_requests  = service_request.cart_sub_service_requests
-- allow_delete        ||= true
+- sub_service_requests = service_request.cart_sub_service_requests
 
 .col-3.pl-md-0#cart
-  .card#cartCard
+  .card.h-100
     .card-header.bg-light
       %h4.mb-0<
         = icon('fas', 'shopping-cart mr-2')
-        = t(:proper)[:cart][:header]
+        = t('proper.cart.header')
     .card-header.p-0
-      %button.btn.btn-lg.btn-light.rounded-0.w-50.cart-toggle.active{ data: { target: '#activeServices' } }
-        = t(:proper)[:cart][:tab_headers][:current]
-      %button.btn.btn-lg.btn-light.rounded-0.w-50.cart-toggle.col-6{ data: { target: '#completedServices' } }
-        = t(:proper)[:cart][:tab_headers][:complete]
+      %button.btn.btn-lg.btn-light.rounded-0.w-50.cart-toggle.active{ type: 'button', data: { target: '#activeServices' } }
+        = t('proper.cart.tabs.active.header')
+      %button.btn.btn-lg.btn-light.rounded-0.w-50.cart-toggle.col-6{  type: 'button', data: { target: '#completedServices' } }
+        = t('proper.cart.tabs.complete.header')
     .card-body.p-0
-      .list-group.list-group-flush.cart-services#activeServices
+      .cart-services#activeServices
         - if sub_service_requests[:active].any?
-          = render 'service_requests/cart/cart_sub_service_requests', service_request: service_request, sub_service_requests: sub_service_requests[:active], allow_delete: allow_delete, tab: 'active'
+          .list-group.list-group-flush
+            = render 'service_requests/cart/cart_sub_service_requests', service_request: service_request, sub_service_requests: sub_service_requests[:active], tab: 'active'
         - else
           %h5.alert.alert-danger.text-center.rounded-0.mb-0
-            = t(:proper)[:cart][:no_active_services_message]
-      .list-group.list-group-flush.cart-services.d-none#completedServices
+            = t('proper.cart.tabs.active.message')
+      .cart-services.d-none#completedServices
         - if sub_service_requests[:complete].any?
-          = render 'service_requests/cart/cart_sub_service_requests', service_request: service_request, sub_service_requests: sub_service_requests[:complete], allow_delete: allow_delete, tab: 'complete'
+          .list-group.list-group-flush
+            = render 'service_requests/cart/cart_sub_service_requests', service_request: service_request, sub_service_requests: sub_service_requests[:complete], tab: 'complete'
         - else
           %h5.alert.alert-danger.text-center.rounded-0.mb-0
-            = t(:proper)[:cart][:no_complete_services_message]
+            = t('proper.cart.tabs.complete.message')

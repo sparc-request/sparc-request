@@ -33,7 +33,6 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     protocol              = service_request.protocol
     @admin_orgs           = current_user.authorized_admin_organizations
     @sub_service_requests = service_request.sub_service_requests.where.not(status: 'first_draft') # TODO: Remove Historical first_draft SSRs and remove this
-    @show_view_ssr_back   = params[:show_view_ssr_back]
     @sr_table             = params[:sr_table] || false
   end
 
@@ -70,7 +69,6 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         @review                 = true
         @merged                 = false
         @consolidated           = false
-        @show_view_ssr_back     = params[:show_view_ssr_back] == "true"
         @display_all_services   = true
         @pages                  = {}
         @service_request.arms.each do |arm|

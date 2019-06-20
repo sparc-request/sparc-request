@@ -20,6 +20,8 @@
 
 class Identities::RegistrationsController < Devise::RegistrationsController
   def create
+    respond_to :js
+
     build_resource(sign_up_params)
 
     resource.save

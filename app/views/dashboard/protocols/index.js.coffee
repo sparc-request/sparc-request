@@ -18,15 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#protocolFilters").replaceWith("<%= j render '/dashboard/protocol_filters/filter_protocols_form', filterrific: @filterrific, admin: @admin %>")
-$("#protocolsList").replaceWith("<%= j render '/dashboard/protocols/protocols_list', protocols: @protocols, admin_protocols: @admin_protocols, filterrific_params: @filterrific_params, page: @page %>")
-
+$("#protocolFilters").replaceWith("<%= j render '/dashboard/protocol_filters/filter_protocols_form', filterrific: @filterrific, protocol_filters: @protocol_filters, admin: @admin %>")
+$("#protocolsList").replaceWith("<%= j render '/dashboard/protocols/protocols_list', filterrific_params: @filterrific_params %>")
 initializeSelectpickers()
 initializeTooltips()
 initializeToggles()
-
-<% if @sorted_by %>
-$(".protocol-sort span").removeClass('sort-active')
-$(".protocol-sort[name='<%= @sort_name %>'] .<%= @sort_order %>").addClass('sort-active')
-$(".protocol-sort[name='<%= @sort_name %>']").data('sort-order', "<%= @new_sort_order %>")
-<% end %>
+$('#protocolsTable').bootstrapTable()

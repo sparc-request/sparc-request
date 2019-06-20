@@ -17,22 +17,6 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-# Send the user back to dashboard if theyre a member and not an admin
-<% if @return_to_dashboard %>
-window.location = "/dashboard"
-# Update the entire view to ensure the user now only has their admin privileges
-<% elsif @current_user_destroyed && @admin %>
-$("#summary-panel").html("<%= escape_javascript(render('dashboard/protocols/summary', protocol: @protocol, protocol_type: @protocol_type, permission_to_edit: @permission_to_edit || @admin)) %>")
-$("#authorized-users-panel").html("<%= escape_javascript(render('dashboard/associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin)) %>")
-$("#documents-panel").html("<%= escape_javascript(render( 'dashboard/documents/documents_table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin )) %>")
-$("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, view_only: false)) %>")
 
-$("#associated-users-table").bootstrapTable()
-$("#documents-table").bootstrapTable()
-$(".service-requests-table").bootstrapTable()
-
-reset_service_requests_handlers()
-<% else %>
-$("#associated-users-table").bootstrapTable 'refresh', {silent: true}
-<% end %>
-$("#flashContainer").html("<%= escape_javascript(render('layouts/flash')) %>")
+$('#modalContainer').html("<%= j render 'dashboard/protocols/requests_modal', protocol: @protocol, permission_to_edit: @permission_to_edit %>")
+$('#modalContainer').modal('show')

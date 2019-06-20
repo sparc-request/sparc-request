@@ -18,10 +18,11 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
-$(document).ready ->
+$(document).on 'turbolinks:load', ->
+  $(document).on 'click', '#protocolsTable tbody tr', ->
+    window.location = $(this).find('.protocol-link').attr('href')
+
+  Sparc = {}
   Sparc.protocol =
     ready: ->
       $(document).on 'click', '.calendar-lock', ->
@@ -41,26 +42,11 @@ $(document).ready ->
         protocol_id = $(this).parent().data('protocol-id')
         window.location = "/dashboard/protocols/#{protocol_id}"
 
-      $(document).on 'click', '.requests_display_link', ->
-        # Opens the requests modal
-        protocol_id = $(this).parents("tr").data('protocol-id')
-        $.ajax
-          type: 'get'
-          url: "/dashboard/protocols/#{protocol_id}/display_requests"
-          success: (data) ->
-            $('#modalContainer').html(data.modal)
-            $('#modalContainer').modal 'show'
-            $('.service-requests-table').bootstrapTable()
-            reset_service_requests_handlers()
-
       $(document).on 'click', '.protocol-archive-button', ->
         protocol_id = $(this).data('protocol-id')
         $.ajax
           type: 'PATCH'
           url:  "/dashboard/protocols/#{protocol_id}/archive.js"
-
-      $(document).on 'submit', '#protocolFiltersForm', ->
-        $('#filterrific_sorted_by').val("#{$('.protocol-sort').data('sort-name')} #{$('.protocol-sort').data('sort-order')}")
 
       $(document).on 'click', '#saveProtocolFilters', ->
         data = {} #Grab form values
@@ -85,12 +71,7 @@ $(document).ready ->
           data: data
         return false
 
-      $(document).on 'click', '.pagination a', ->
-        # This makes the pagination links go through AJAX, rather than link hrefs
-        $('.pagination').html 'Page is loading...'
-        $.getScript @href
-        false
-      # Protocol Index End
+      
 
       # Protocol Show Begin
       $(document).on 'click', '.view-protocol-details-button', ->
@@ -117,27 +98,14 @@ $(document).ready ->
 
       $(document).on 'click', '.view-service-request', ->
         id = $(this).data('sub-service-request-id')
-        show_view_ssr_back = $(this).data('show-view-ssr-back')
         $.ajax
           method: 'GET'
           url: "/dashboard/sub_service_requests/#{id}.js"
-          data: show_view_ssr_back: show_view_ssr_back
 
       $(document).on 'click', '#add-services-button', ->
         if $(this).data('permission')
           protocol_id         = $(this).data('protocol-id')
           window.location     = "/?protocol_id=#{protocol_id}&from_portal=true"
-
-      $(document).on 'click', '.view-ssr-back-button', ->
-        protocol_id = $(this).data('protocol-id')
-        $.ajax
-          type: 'GET'
-          url: "/dashboard/protocols/#{protocol_id}/display_requests"
-          success: (data) ->
-            $('#modalContainer').html(data.modal)
-            $('#modalContainer').modal 'show'
-            $('.service-requests-table').bootstrapTable()
-            reset_service_requests_handlers()
 
       $(document).on 'change', '.complete-forms', ->
         if $(this).val()
@@ -160,17 +128,11 @@ $(document).ready ->
 
       # Protocol Table Sorting
       $(document).on 'click', '.protocol-sort', ->
-        sorted_by         = "#{$(this).data('sort-name')} #{$(this).data('sort-order')}"
-        page              = $('#page').val() || 1
-
         data = {} #Grab form values
 
         # REVIEW this is not fetching values from multiselects
         $.each $('form#protocolFiltersForm').serializeArray(), (i, field) ->
           data[field.name] = field.value
-
-        data["page"] = page
-        data["filterrific[sorted_by]"] = sorted_by
 
         # manually enter those in
         if data["filterrific[with_status][]"].length

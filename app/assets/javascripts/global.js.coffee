@@ -30,6 +30,7 @@ $(document).on 'turbolinks:load', ->
   initializeTooltips()
   initializePopovers()
   initializeToggles()
+  initializeTables()
   setRequiredFields()
   $('html').addClass('ready')
 
@@ -38,6 +39,7 @@ $(document).on 'turbolinks:load', ->
     initializeTooltips()
     initializePopovers()
     initializeToggles()
+    initializeTables()
     setRequiredFields()
 
   # Turbolinks fix for hash hrefs
@@ -100,6 +102,9 @@ $(document).on 'turbolinks:load', ->
 
 (exports ? this).initializeToggles = () ->
   $('input[data-toggle=toggle]').bootstrapToggle()
+
+(exports ? this).initializeTables = () ->
+  $('[data-toggle=table]').bootstrapTable()
 
 (exports ? this).setRequiredFields = () ->
   $('.required:not(.has-indicator)').addClass('has-indicator').append('<span class="text-danger ml-1">*</span>')

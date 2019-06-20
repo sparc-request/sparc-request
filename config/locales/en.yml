@@ -88,6 +88,7 @@ en:
       option:
         content: "Option"
       protocol:
+        short_title: "Short Title"
         human_subjects_info: "The NCT #"
         guarantor_contact: "Contact"
         guarantor_phone: "Phone"
@@ -571,7 +572,6 @@ en:
       research_master_id: "Research Master ID:"
       na_research_master_id: 'Not Available'
       rmid_validated: "Updated to corresponding Research Master ID %{title}"
-      rmid_short_title: "Short Title"
       rmid_title: "Title"
       tooltips:
         notes: "Protocol notes viewable to Administrators and Authorized Users"

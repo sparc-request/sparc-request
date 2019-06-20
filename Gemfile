@@ -85,7 +85,7 @@ gem 'twitter-typeahead-rails' # Bootstrap 4 purge
 gem 'uglifier', '>= 1.0.3'
 gem 'whenever', require: false
 gem 'will_paginate'
-gem 'will_paginate-bootstrap' # Not maintained - consider replacing with https://github.com/delef/will_paginate-bootstrap4
+gem 'will_paginate-bootstrap4'
 gem 'x-editable-rails' # Bootstrap 4 purge
 
 group :production do

@@ -590,8 +590,8 @@ GEM
     whenever (0.11.0)
       chronic (>= 0.6.3)
     will_paginate (3.1.7)
-    will_paginate-bootstrap (1.0.2)
-      will_paginate (>= 3.0.3)
+    will_paginate-bootstrap4 (0.2.2)
+      will_paginate (~> 3.0, >= 3.0.0)
     x-editable-rails (1.5.5.1)
       railties
     xpath (3.2.0)
@@ -720,7 +720,7 @@ DEPENDENCIES
   webmock
   whenever
   will_paginate
-  will_paginate-bootstrap
+  will_paginate-bootstrap4
   x-editable-rails
 
 BUNDLED WITH

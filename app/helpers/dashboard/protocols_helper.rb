@@ -36,21 +36,27 @@ module Dashboard::ProtocolsHelper
     end
   end
 
+  def protocol_id_button(protocol)
+    link_to protocol.id, dashboard_protocol_path(protocol), class: 'btn btn-block btn-outline-primary protocol-link'
+  end
+
   def short_title_display(protocol)
-    truncate_string_length(protocol.short_title, 100)
+    truncate_string_length(protocol.short_title, 100) + content_tag(:br) + display_rmid_validated_protocol(protocol, Protocol.human_attribute_name(:short_title))
   end
 
   def pis_display(protocol)
     protocol.principal_investigators.map(&:full_name).join ", "
   end
 
-  def display_requests_button(protocol, admin_protocols, current_user)
-    if protocol.sub_service_requests.any? && (protocol.project_roles.where(identity: current_user).any? || admin_protocols.try(:include?, protocol.id))
-      content_tag( :button, t(:dashboard)[:protocols][:table][:requests], type: 'button', class: 'requests_display_link btn btn-default btn-sm' )
+  def display_requests_button(protocol, access)
+    if protocol.sub_service_requests.any? && access
+      link_to(display_requests_dashboard_protocol_path(protocol), remote: true, class: 'btn btn-secondary') do
+        raw(t(:dashboard)[:protocols][:table][:requests] + content_tag(:span, protocol.sub_service_requests.length, class: 'badge badge-pill badge-light ml-1'))
+      end
     end
   end
 
-  def display_archive_button(protocol, permission_to_edit, current_user)
+  def display_archive_button(protocol, permission_to_edit)
     if permission_to_edit || Protocol.for_super_user(current_user.id).include?(protocol)
       content_tag( :button, (protocol.archived ? t(:protocols)[:summary][:unarchive] : t(:protocols)[:summary][:archive])+" #{protocol.type.capitalize}", 
                     type: 'button', 

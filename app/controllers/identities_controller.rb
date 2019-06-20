@@ -22,6 +22,8 @@ class IdentitiesController < ApplicationController
   before_action :authenticate_identity!
 
   def approve_account
+    respond_to :js
+
     @identity = Identity.find(params[:id])
     if !@identity.try(:approved)
       @identity.update_attribute(:approved, true)
@@ -35,6 +37,8 @@ class IdentitiesController < ApplicationController
   end
 
   def disapprove_account
+    respond_to :js
+
     @identity = Identity.find(params[:id])
     if @identity.try(:approved)
       @identity.update_attribute(:approved, false)

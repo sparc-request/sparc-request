@@ -197,10 +197,10 @@ module Dashboard::SubServiceRequestsHelper
     render 'dashboard/notifications/dropdown.html', sub_service_request: ssr, sr_table: sr_table
   end
 
-  def ssr_actions_display(ssr, permission_to_edit, admin_orgs, show_view_ssr_back)
+  def ssr_actions_display(ssr, permission_to_edit, admin_orgs)
     admin_access = (admin_orgs & ssr.org_tree).any?
 
-    ssr_view_button(ssr, show_view_ssr_back)+
+    ssr_view_button(ssr)+
     ssr_admin_button(ssr, permission_to_edit, admin_access)
   end
 
@@ -228,8 +228,8 @@ module Dashboard::SubServiceRequestsHelper
 
   private
 
-  def ssr_view_button(ssr, show_view_ssr_back)
-    content_tag(:button, t(:dashboard)[:service_requests][:actions][:view], class: 'view-service-request btn btn-primary btn-sm', type: 'button', data: { sub_service_request_id: ssr.id, show_view_ssr_back: show_view_ssr_back.to_s, toggle: 'tooltip', placement: 'bottom' }, title: t(:dashboard)[:service_requests][:actions][:tooltips][:view])
+  def ssr_view_button(ssr)
+    content_tag(:button, t(:dashboard)[:service_requests][:actions][:view], class: 'view-service-request btn btn-primary btn-sm', type: 'button', data: { sub_service_request_id: ssr.id, toggle: 'tooltip', placement: 'bottom' }, title: t(:dashboard)[:service_requests][:actions][:tooltips][:view])
   end
 
   def ssr_admin_button(ssr, permission_to_edit, admin_access)

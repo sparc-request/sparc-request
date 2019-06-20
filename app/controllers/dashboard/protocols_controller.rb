@@ -33,7 +33,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     admin_orgs = current_user.authorized_admin_organizations
     @admin     = admin_orgs.any?
 
-    @default_filter_params = { show_archived: 0, sorted_by: 'id desc' }
+    @default_filter_params  = { show_archived: 0 }
+    @filterrific_params     = params[:filterrific] && filterrific_params
 
     # if we are an admin we want to default to admin organizations
     if @admin
@@ -55,19 +56,22 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         persistence_id: false #selected filters remain the same on page reload
       ) || return
 
-    @protocols        = @filterrific.find.page(params[:page])
-    @admin_protocols  = Protocol.for_admin(current_user.id).pluck(:id)
-    @protocol_filters = ProtocolFilter.latest_for_user(current_user.id, ProtocolFilter::MAX_FILTERS)
-
     #toggles the display of the breadcrumbs, navbar always displays
     session[:breadcrumbs].clear
 
-    setup_sorting_variables
-
     respond_to do |format|
-      format.html
-      format.js
-      format.csv { send_data Protocol.to_csv(@filterrific.find), :filename => "dashboard_protocols.csv"}
+      format.html {
+        @protocol_filters = ProtocolFilter.latest_for_user(current_user.id, ProtocolFilter::MAX_FILTERS)
+      }
+      format.js {
+        @protocol_filters = ProtocolFilter.latest_for_user(current_user.id, ProtocolFilter::MAX_FILTERS)
+      }
+      format.json {
+        @protocols = @filterrific.find.limit(params[:limit]).offset(params[:offset])
+      }
+      format.csv {
+        send_data Protocol.to_csv(@filterrific.find), :filename => "dashboard_protocols.csv"
+      }
     end
   end
 
@@ -77,7 +81,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id)
         @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
         @protocol_type      = @protocol.type.capitalize
-        @show_view_ssr_back = false
 
         render
       }
@@ -225,11 +228,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def display_requests
-    permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
-    modal              = render_to_string(partial: 'dashboard/protocols/requests_modal', locals: { protocol: @protocol, permission_to_edit: permission_to_edit, show_view_ssr_back: true })
+    respond_to :js
 
-    data = { modal: modal }
-    render json: data
+    @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
   end
 
   private
@@ -240,7 +241,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       :show_archived,
       :admin_filter,
       :search_query,
-      :sorted_by,
       :reset_filterrific,
       search_query: [:search_drop, :search_text],
       with_organization: [],
@@ -320,16 +320,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def find_protocol
     @protocol = Protocol.find(params[:id])
-  end
-
-  def setup_sorting_variables
-    # Set filterrific params for sorting logic, store sorted by to re-apply styling
-    @filterrific_params = params[:filterrific] ? filterrific_params.except(:sorted_by) : @default_filter_params
-    @page               = params[:page]
-    @sorted_by          = filterrific_params[:sorted_by] if params[:filterrific]
-    @sort_name          = @sorted_by.split(' ')[0] if @sorted_by
-    @sort_order         = @sorted_by.split(' ')[1] if @sorted_by
-    @new_sort_order     = (@sort_order == 'asc' ? 'desc' : 'asc') if @sort_order
   end
 
   def convert_date_for_save(attrs, date_field)

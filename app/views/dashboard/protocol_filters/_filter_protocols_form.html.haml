@@ -21,12 +21,11 @@
 %aside#protocolFilters
   .card
     = form_for_filterrific filterrific, remote: true, html: { id: 'protocolFiltersForm', autocomplete: 'off' } do |form|
-      = form.hidden_field :sorted_by
-      .card-header
+      .card-header.bg-light
         %h4.mb-0.mr-auto
           = t(:dashboard)[:protocol_filters][:header]
-        = link_to t(:actions)[:save], 'javascript:void(0)', title: t(:dashboard)[:protocol_filters][:tooltips][:save], class: 'border-right px-2', id: 'saveProtocolFilters', data: { toggle: 'tooltip', placement: 'top' }
-        = link_to t(:actions)[:reset], reset_filterrific_url, remote: true, title: t(:dashboard)[:protocol_filters][:tooltips][:reset], class: 'px-2', data: { toggle: 'tooltip', placement: 'top' }
+        = link_to t(:actions)[:save], 'javascript:void(0)', title: t(:dashboard)[:protocol_filters][:tooltips][:save], class: 'btn btn-link border-right px-2', id: 'saveProtocolFilters', data: { toggle: 'tooltip', placement: 'top' }
+        = link_to t(:actions)[:reset], reset_filterrific_url, remote: true, title: t(:dashboard)[:protocol_filters][:tooltips][:reset], class: 'btn btn-link px-2', data: { toggle: 'tooltip', placement: 'top' }
       .card-body
         .form-group
           .input-group
@@ -68,7 +67,7 @@
         - else
           = form.hidden_field :admin_filter, value: "for_identity #{current_user.id}"
       .card-footer
-        %button.btn.btn-primary.btn-block{ type: 'submit' }
+        %button.btn.btn-block.btn-outline-primary{ type: 'submit' }
           = t(:actions)[:filter]
 
-  = render 'dashboard/protocol_filters/saved_searches'
+  = render 'dashboard/protocol_filters/saved_searches', protocol_filters: protocol_filters

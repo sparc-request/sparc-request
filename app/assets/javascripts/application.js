@@ -64,6 +64,8 @@
 //= require cart
 //= require catalog
 
+//= require dashboard/protocols
+
 
 
 

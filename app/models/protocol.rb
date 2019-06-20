@@ -198,10 +198,24 @@ class Protocol < ApplicationRecord
       :show_archived,
       :with_status,
       :with_organization,
-      :with_owner,
-      :sorted_by
+      :with_owner
     ]
   )
+
+  scope :sorted, -> (sort, order) {
+    return order(id: order) if sort.blank?
+
+    case sort
+    when 'id'
+      order(id: order)
+    when 'short_title'
+      order("TRIM(REPLACE(short_title, CHAR(9), ' ')) #{order}")
+    when 'pis'
+      joins(primary_pi_role: :identity).order("identities.first_name" => order)
+    when 'requests'
+      order("sub_service_requests_count" => order)
+    end
+  }
 
   scope :search_query, lambda { |search_attrs|
     # Searches protocols based on 'Authorized User', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title', OR 'Search All'
@@ -322,22 +336,6 @@ class Protocol < ApplicationRecord
     joins(:sub_service_requests).
     where(sub_service_requests: {owner_id: owner_ids}).
       where.not(sub_service_requests: {status: 'first_draft'})
-  }
-
-  scope :sorted_by, -> (key) {
-    arr         = key.split(' ')
-    sort_name   = arr[0]
-    sort_order  = arr[1]
-    case sort_name
-    when 'id'
-      order("protocols.id #{sort_order.upcase}")
-    when 'short_title'
-      order("TRIM(REPLACE(short_title, CHAR(9), ' ')) #{sort_order.upcase}")
-    when 'pis'
-      joins(primary_pi_role: :identity).order(".identities.first_name #{sort_order.upcase}")
-    when 'requests'
-      order("sub_service_requests_count #{sort_order.upcase}")
-    end
   }
 
   def initial_amount=(amount)

@@ -20,6 +20,8 @@
 
 class Identities::PasswordsController < Devise::PasswordsController
   def create
+    respond_to :js
+
     self.resource = resource_class.send_reset_password_instructions(resource_params)
     yield resource if block_given?
 
@@ -32,6 +34,8 @@ class Identities::PasswordsController < Devise::PasswordsController
   end
 
   def update
+    respond_to :js
+
     self.resource = resource_class.reset_password_by_token(resource_params)
     yield resource if block_given?
 

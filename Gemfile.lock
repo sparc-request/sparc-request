@@ -281,7 +281,7 @@ GEM
     hashie (3.6.0)
     hashie-forbidden_attributes (0.1.1)
       hashie (>= 3.0)
-    highline (1.7.10)
+    highline (2.0.2)
     htmlentities (4.3.4)
     http-cookie (1.0.3)
       domain_name (~> 0.5)

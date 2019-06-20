@@ -20,11 +20,11 @@
 
 %header.w-100.mb-3#stepsHeader
   .row.py-2.bg-light.border-top.border-bottom{ class: "bg-#{@css_class}" }
-    .container-fluid
+    .container-fluid.d-flex.align-items-center
       %h3.mr-auto.mb-0{ class: "text-#{@css_class}" }
         = @step_text
         %br
         %small.text-muted
           = @step_sub_text
-      %h3.mb-0
+      %h3.text-muted.mb-0
         = protocol_id_display(@service_request)

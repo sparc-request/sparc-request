@@ -59,6 +59,8 @@
 /// Replace with //= require_tree . when finished! ///
 
 //= require global
+//= require login
+
 //= require cart
 //= require catalog
 

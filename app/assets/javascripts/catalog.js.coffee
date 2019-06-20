@@ -45,6 +45,7 @@ $(document).on 'turbolinks:load', ->
         title: I18n.t('proper.catalog.services_missing.header')
         text: I18n.t('validation_errors.service_requests.line_items_missing')
       )
+      $('html, body').animate({ scrollTop: $('#stepsHeader').offset().top }, 'slow')
 
   servicesBloodhound = new Bloodhound(
     datumTokenizer: Bloodhound.tokenizers.whitespace

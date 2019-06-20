@@ -17,4 +17,13 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-= render template: "layouts/application"
+
+- content_for :content do
+  .col-12.col-sm-8.col-lg-6.px-0.py-md-3.py-xl-5.mx-auto.my-xl-5{ class: controller_name == 'registrations' ? 'col-xl-6' : 'col-xl-4' }
+    .card
+      .card-body.p-xl-5
+        = yield
+
+- content_for :flash, true
+
+= render template: 'layouts/application'

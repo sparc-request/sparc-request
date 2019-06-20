@@ -88,6 +88,10 @@ nav#stepsNav {
   }
 }
 
+nav#dashboardNav {
+  margin-top: -1rem;
+}
+
 @each $color, $value in $theme-colors {
   nav#stepsNav .nav-link.active.text-#{$color} {
     color: theme-color-level($color, 3) !important;

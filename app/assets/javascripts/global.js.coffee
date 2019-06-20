@@ -40,9 +40,14 @@ $(document).on 'turbolinks:load', ->
     initializeToggles()
     setRequiredFields()
 
+  # Turbolinks fix for hash hrefs
   $(document).on 'turbolinks:click', (event) ->
     if event.target.getAttribute('href').charAt(0) == '#'
       event.preventDefault()
+
+  # Back To Top button scroll
+  $(document).on 'click', '#backToTop', ->
+    $('html, body').animate({ scrollTop: 0 }, 'slow')
 
   $(document).on 'keydown', '.is-valid, .is-invalid', ->
     $(this).removeClass('is-valid is-invalid')

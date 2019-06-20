@@ -18,21 +18,41 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%h1.text-center.mb-4
-  = t('devise.passwords.edit.header')
-= form_for resource, as: resource_name, url: password_path(resource_name), method: :put, remote: true do |f|
-  = f.hidden_field :reset_password_token, value: resource.reset_password_token
+= form_for resource, as: resource_name, url: registration_path(resource_name), remote: true do |f|
+  = hidden_field_tag :srid, service_request.try(:id)
+  .form-row
+    .form-group.col-12.col-xl-6
+      = f.label :first_name, class: 'required'
+      = f.text_field :first_name, autofocus: true, class: 'form-control'
+    .form-group.col-12.col-xl-6
+      = f.label :last_name, class: 'required'
+      = f.text_field :last_name, class: 'form-control'
+  .form-row
+    .form-group.col-12.col-xl-6
+      = f.label :email, class: 'required'
+      = f.email_field :email, class: 'form-control'
+    .form-group.col-12.col-xl-6
+      = f.label :phone, class: 'required'
+      = f.telephone_field :phone, class: 'form-control'
   .form-group
-    = f.label :password, t('devise.passwords.edit.new_password'), class: 'required'
-    = f.password_field :password, autofocus: true, autocomplete: 'off', class: 'form-control'
+    = f.label :company
+    = f.text_field :company, class: 'form-control'
+  .form-group
+    = f.label :reason, class: 'required'
+    = f.text_area :reason, class: 'form-control', rows: 5
+  .form-group
+    = f.label :ldap_uid, class: 'required'
+    = f.text_field :ldap_uid, class: 'form-control'
+  .form-group
+    = f.label :password, class: 'required'
+    = f.password_field :password, autocomplete: 'off', class: 'form-control'
     - if @minimum_password_length
       %small.form-text.text-muted
         = t('devise.min_password_length', min_length: @minimum_password_length)
   .form-group
-    = f.label :password_confirmation, t('devise.passwords.edit.confirm_password'), class: 'required'
+    = f.label :password_confirmation, class: 'required'
     = f.password_field :password_confirmation, autocomplete: 'off', class: 'form-control'
   .form-group
-    = f.submit t('devise.passwords.edit.submit'), class: 'btn btn-lg btn-block btn-outline-primary'
-= render 'devise/shared/links'
-.form-group.mb-0
-  = link_to t('devise.back_to_catalog'), root_path, class: 'btn btn-lg btn-block btn-secondary'
+    = f.submit t('devise.registrations.submit'), class: 'btn btn-lg btn-block btn-outline-primary'
+  .form-group.text-center
+    = link_to t('devise.links.sign_in'), new_identity_session_path(srid: service_request.try(:id))

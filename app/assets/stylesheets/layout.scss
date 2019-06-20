@@ -71,12 +71,6 @@ html {
   }
 }
 
-@include media-breakpoint-down(sm) {
-  #contentContainer {
-    padding: 1rem 0.5rem;
-  }
-}
-
 @media (max-width: 1679.98px) {
   html {
     font-size: 75%;

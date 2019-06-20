@@ -92,7 +92,7 @@
       padding-right: 1rem;
     }
 
-    a.dropdown-item {
+    a.dropdown-header, a.dropdown-item {
       &:hover {
         background: theme-color('light');
       }
@@ -328,8 +328,4 @@ nav.navbar {
       align-items: stretch;
     }
   }
-}
-
-.popover {
-  position: fixed;
 }

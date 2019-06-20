@@ -35,8 +35,9 @@ class Identity < ApplicationRecord
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :omniauthable
+  devise :database_authenticatable, :registerable, :validatable,
+         :recoverable, :rememberable, :trackable, :omniauthable,
+         omniauth_providers: Devise.omniauth_providers
 
   email_regexp = /\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/
   password_length = 6..128
@@ -76,21 +77,12 @@ class Identity < ApplicationRecord
   validates             :ldap_uid, uniqueness: {case_sensitive: false}, presence: true
   validates             :orcid, format: { with: /\A([0-9]{4}-){3}[0-9]{3}[0-9X]\z/ }, allow_blank: true
 
-  validates_presence_of     :password, if: :password_required?
-  validates_length_of       :password, within: password_length, allow_blank: true
-  validates_confirmation_of :password, if: :password_required?
+  validates_presence_of :phone
+  validates_presence_of :reason, if: :new_record?
 
   ###############################################################################
   ############################## DEVISE OVERRIDES ###############################
   ###############################################################################
-
-  def password_required?
-    !persisted? || !password.nil? || !password_confirmation.nil?
-  end
-
-  def email_required?
-    false
-  end
 
   def suggestion_value
     Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") ? ldap_uid : id

@@ -21,7 +21,7 @@
 - subsidy = @service_request.eligible_for_subsidy?
 
 - unless ['obtain_research_pricing', 'confirmation'].include?(action_name)
-  %nav.nav.w-100.my-3#stepsNav{ class: subsidy ? 'has-subsidy' : '' }
+  %nav.nav.w-100.mb-3#stepsNav{ class: subsidy ? 'has-subsidy' : '' }
     .steps-container.d-flex.w-100
       = render 'service_requests/navigation/step_arrow', text: t('proper.navigation.steps.step1'), link: catalog_service_request_path(srid: @service_request.id), color: 'primary', active: @current_page == 'catalog'
       = render 'service_requests/navigation/step_arrow', text: t('proper.navigation.steps.step2'), link: protocol_service_request_path(srid: @service_request.id), color: 'info-alt', active: @current_page == 'protocol'

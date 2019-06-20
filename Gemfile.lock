@@ -322,7 +322,6 @@ GEM
       addressable (~> 2.3)
     letter_opener (1.7.0)
       launchy (~> 2.2)
-    libv8 (3.16.14.19)
     loofah (2.2.3)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -450,7 +449,6 @@ GEM
       thor (>= 0.19.0, < 2.0)
     rake (12.3.2)
     redcarpet (3.4.0)
-    ref (2.0.0)
     regexp_parser (1.4.0)
     remotipart (1.4.2)
     request_store (1.4.1)
@@ -549,9 +547,6 @@ GEM
     temple (0.8.1)
     terrapin (0.6.0)
       climate_control (>= 0.0.3, < 1.0)
-    therubyracer (0.12.3)
-      libv8 (~> 3.16.14.15)
-      ref
     thor (0.20.3)
     thread_safe (0.3.6)
     tilt (2.0.9)
@@ -717,7 +712,6 @@ DEPENDENCIES
   spring-commands-rspec
   sprockets (~> 4.0.0.beta9)
   sqlite3
-  therubyracer (= 0.12.3)
   timecop
   traceroute
   turbolinks (~> 5.2.0)

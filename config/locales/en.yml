@@ -80,7 +80,8 @@ en:
         ldap_uid: "Login"
         first_name: "First Name"
         last_name: "Last Name"
-        password_confirmation: "Password Confirmation"
+        password_confirmation: "Confirm Password"
+        reason: "Reason for Account Request"
         orcid: "ORCID"
       note:
         body: "Note"
@@ -439,13 +440,6 @@ en:
       title: "Form Title"
       completed: "Completed"
       options: "Options"
-
-  ##############
-  # IDENTITIES #
-  ##############
-  identities:
-    approved: "Account Approved"
-    disapproved: "Account Disapproved"
 
   ##########
   # LAYOUT #
@@ -1418,7 +1412,6 @@ en:
       epic_queue_summary: "Epic Queue Summary"
       epic_queue_report: "Epic Queue Report"
       new: "New"
-      new_account_registration: "New SPARCRequest Account Registration"
       general: "SPARCRequest %{email_status} (%{type} %{id})"
       general_dashboard: "SPARCDashboard %{email_status} (%{type} %{id})"
     application_title: "SPARCRequest"
@@ -1515,17 +1508,6 @@ en:
     note: "Note"
     note_date: "Date"
     note_user: "User"
-    notice:
-      approve: "Approve Account"
-      body1: "Request for new SPARCRequest account submitted and awaiting approval"
-      body2: "A new SPARCRequest account is waiting for approval."
-      company: "Company"
-      disapprove: "Disapprove Account"
-      email: "Email"
-      first: "First Name"
-      last: "Last Name"
-      number: "Telephone Number"
-      reason: "Reason for account/login request"
     organization: "Organization"
     p_id: "Project ID"
     p_info: "Project Information"

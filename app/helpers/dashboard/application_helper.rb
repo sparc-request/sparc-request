@@ -57,7 +57,7 @@ module Dashboard::ApplicationHelper
   end
 
   def display_user_role(user)
-    user.role == 'other' ? user.role_other.humanize : user.role.humanize
+    user.role == 'other' ? user.role_other.humanize : PermissibleValue.get_value('user_role', user.role)
   end
 
   def truncate_string_length(s, max=70, elided = ' ...')

@@ -22,31 +22,31 @@
 /// These need to be required first ///
 ///////////////////////////////////////
 
-//= require i18n/translations
-//= require sweetalert2/dist/sweetalert2.min
-//= require custom/sweetalert-integration
-//= require rails-ujs
-//= require turbolinks
-//= require jquery/dist/jquery.min
+// require i18n/translations
+// require sweetalert2/dist/sweetalert2.min
+// require custom/sweetalert-integration
+// require jquery-ujs
+// require turbolinks
+// require jquery/dist/jquery.min
 
 //////////////////////////////////
 /// Require Remaining Packages ///
 //////////////////////////////////
 
-//= require popper.js/dist/umd/popper.min
-//= require bootstrap/dist/js/bootstrap.min
-//= require bootstrap-datepicker/dist/js/bootstrap-datepicker.min
-//= require bootstrap-select/dist/js/bootstrap-select.min
-//= require corejs-typeahead/dist/typeahead.bundle.min
-//= require js-cookie/src/js.cookie
+// require popper.js/dist/umd/popper.min
+// require bootstrap/dist/js/bootstrap.min
+// require bootstrap-datepicker/dist/js/bootstrap-datepicker.min
+// require bootstrap-select/dist/js/bootstrap-select.min
+// require corejs-typeahead/dist/typeahead.bundle.min
+// require js-cookie/src/js.cookie
 
-//= require nprogress/nprogress
+// require nprogress/nprogress
 
 ///////////////////////////////
 /// Require Our JavaScripts ///
 ///////////////////////////////
 
-//= require custom/bootstrap-select-custom
+// require custom/bootstrap-select-custom
 
 
 

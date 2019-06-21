@@ -42,6 +42,10 @@
   &.btn-info, &.btn-warning {
     color: white !important;
   }
+
+  &.btn-light {
+    @extend .border;
+  }
 }
 
 ////////////
@@ -86,6 +90,10 @@
 ////////////////
 
 .dropdown {
+  &.no-caret .dropdown-toggle::after {
+    display: none;
+  }
+
   .dropdown-menu {
     .dropdown-header, .dropdown-item {
       padding-left: 1rem;
@@ -242,10 +250,6 @@ nav.navbar {
       &.dropdown {
         &:hover .dropdown-menu {
           display: block;
-        }
-
-        .dropdown-toggle::after {
-          display: none;
         }
 
         .dropdown-menu {

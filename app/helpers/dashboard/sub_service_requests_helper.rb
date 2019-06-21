@@ -19,7 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Dashboard::SubServiceRequestsHelper
-
   def ssr_statuses
     arr = {}
     @service_requests.map do |s|
@@ -193,15 +192,14 @@ module Dashboard::SubServiceRequestsHelper
     total
   end
 
-  def ssr_notifications_display(ssr, sr_table)
-    render 'dashboard/notifications/dropdown.html', sub_service_request: ssr, sr_table: sr_table
+  def ssr_notifications_display(ssr)
+    render 'dashboard/notifications/dropdown.html', sub_service_request: ssr
   end
 
-  def ssr_actions_display(ssr, permission_to_edit, admin_orgs)
+  def ssr_actions_display(ssr, admin_orgs)
     admin_access = (admin_orgs & ssr.org_tree).any?
 
-    ssr_view_button(ssr)+
-    ssr_admin_button(ssr, permission_to_edit, admin_access)
+    ssr_view_button(ssr) + ssr_admin_button(ssr, admin_access)
   end
 
   def display_owner(ssr)
@@ -218,25 +216,24 @@ module Dashboard::SubServiceRequestsHelper
       form_list[f.surveyable_type.to_sym] << [f.surveyable.name, f.surveyable.name, data: { type: 'Form', survey_id: f.id, respondable_id: ssr.id, respondable_type: 'SubServiceRequest' }]
     end
 
-    if form_list.empty?
-      ''
-    else
-      select_tag(:complete_forms, grouped_options_for_select(form_list).html_safe, include_blank: t(:dashboard)[:service_requests][:forms][:selectpicker],
-        class: 'selectpicker complete-forms', data: { style: 'btn-danger', counter: 'true' })
+    unless form_list.empty?
+      select_tag :complete_forms, grouped_options_for_select(form_list).html_safe, title: t('dashboard.service_requests.forms.selectpicker'), class: 'selectpicker complete-forms', data: { style: 'btn-danger', counter: 'true', header: t('dashboard.service_requests.forms.selectpicker') }
     end
   end
 
   private
 
   def ssr_view_button(ssr)
-    content_tag(:button, t(:dashboard)[:service_requests][:actions][:view], class: 'view-service-request btn btn-primary btn-sm', type: 'button', data: { sub_service_request_id: ssr.id, toggle: 'tooltip', placement: 'bottom' }, title: t(:dashboard)[:service_requests][:actions][:tooltips][:view])
+    link_to dashboard_sub_service_request_path(ssr), remote: true, title: t('dashboard.service_requests.actions.tooltips.view'), class: 'btn btn-primary mr-1', data: { toggle: 'tooltip', boundary: 'window' } do
+      icon('fas', 'eye mr-1') + t('dashboard.service_requests.actions.view')
+    end
   end
 
-  def ssr_admin_button(ssr, permission_to_edit, admin_access)
+  def ssr_admin_button(ssr, admin_access)
     if admin_access
-      link_to t(:dashboard)[:service_requests][:actions][:admin_edit], dashboard_sub_service_request_path(ssr), class: "edit-service-request btn btn-warning btn-sm", type: 'button', data: { toggle: 'tooltip', placement: 'bottom' }, title: t(:dashboard)[:service_requests][:actions][:tooltips][:admin]
-    else
-      ''
+      link_to dashboard_sub_service_request_path(ssr), title: t('dashboard.service_requests.actions.tooltips.admin_edit'), class: "btn btn-warning", data: { toggle: 'tooltip', boundary: 'window' } do
+        icon('fas', 'edit mr-1') + t('dashboard.service_requests.actions.admin_edit')
+      end
     end
   end
 

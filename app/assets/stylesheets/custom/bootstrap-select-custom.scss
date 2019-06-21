@@ -1,20 +1,22 @@
 .bootstrap-select {
-  .dropdown-toggle {
-    @extend .border;
+  &:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+    width: initial;
+  }
 
+  .dropdown-toggle {
     &.btn-light {
       @extend .text-muted;
+    }
+
+    &[class*='btn-']:not(.btn-light) {
+      @extend .text-white;
     }
 
     .filter-option {
       .filter-option-inner {
         display: flex;
-        align-items: end;
+        align-items: center;
         justify-content: center;
-
-        .bootstrap-select-badge {
-          margin-left: 5px;
-        }
       }
     }
   }

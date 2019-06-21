@@ -67,7 +67,7 @@
         - else
           = form.hidden_field :admin_filter, value: "for_identity #{current_user.id}"
       .card-footer
-        %button.btn.btn-block.btn-outline-primary{ type: 'submit' }
+        %button.btn.btn-block.btn-primary{ type: 'submit' }
           = t(:actions)[:filter]
 
   = render 'dashboard/protocol_filters/saved_searches', protocol_filters: protocol_filters

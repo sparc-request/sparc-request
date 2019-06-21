@@ -20,3 +20,5 @@
 
 $('#modalContainer').html("<%= j render 'dashboard/protocols/requests_modal', protocol: @protocol, permission_to_edit: @permission_to_edit %>")
 $('#modalContainer').modal('show')
+initializeTables()
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

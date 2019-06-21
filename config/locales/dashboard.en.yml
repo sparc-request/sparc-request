@@ -153,7 +153,7 @@ en:
         subject: "Subject"
         message: "Please enter message text here..."
       tooltips:
-        table_button: "Ability to send correspondence to Service Providers or Authorized Users"
+        table_button: "Send correspondence to Service Providers or Authorized Users"
         main_button: "Send SPARC system notification to an Authorized User or Service Provider"
 
 
@@ -262,7 +262,7 @@ en:
     #  SERVICE REQUESTS  #
     ######################
     service_requests:
-      modify_request: "Add / Modify Request"
+      modify_request: "Add / Modify Requests"
       srid: "SRID"
       organization: "Organization"
       owner: "Owner"
@@ -271,12 +271,10 @@ en:
       actions:
         header: "Actions"
         view: "View"
-        edit: "Edit"
         admin_edit: "Admin Edit"
         tooltips:
-          view: "Quick access to view services for selected provider"
-          edit: "Ability to change services for a selected provider (routes to SPARCRequest)"
-          admin: "Service Provider administrative access to track and manage services"
+          view: "Quick access to view services from this provider"
+          admin_edit: "Service Provider administrative access to track and manage services"
       forms:
         header: "Forms"
         selectpicker: "Complete Form"

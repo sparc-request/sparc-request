@@ -50,7 +50,7 @@ module Dashboard::ProtocolsHelper
 
   def display_requests_button(protocol, access)
     if protocol.sub_service_requests.any? && access
-      link_to(display_requests_dashboard_protocol_path(protocol), remote: true, class: 'btn btn-secondary') do
+      link_to(display_requests_dashboard_protocol_path(protocol), remote: true, class: 'btn btn-secondary', turbolinks: false) do
         raw(t(:dashboard)[:protocols][:table][:requests] + content_tag(:span, protocol.sub_service_requests.length, class: 'badge badge-pill badge-light ml-1'))
       end
     end

@@ -96,12 +96,6 @@ $(document).on 'turbolinks:load', ->
             protocol_id: protocol_id
             statuses_hidden: statuses_hidden
 
-      $(document).on 'click', '.view-service-request', ->
-        id = $(this).data('sub-service-request-id')
-        $.ajax
-          method: 'GET'
-          url: "/dashboard/sub_service_requests/#{id}.js"
-
       $(document).on 'click', '#add-services-button', ->
         if $(this).data('permission')
           protocol_id         = $(this).data('protocol-id')

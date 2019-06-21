@@ -19,8 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).on 'turbolinks:load', ->
-  $(document).on 'click', '#protocolsTable tbody tr', ->
-    window.location = $(this).find('.protocol-link').attr('href')
+  $(document).on 'click', '#protocolsTable tbody tr', (event) ->
+    if event.target.tagName != 'A'
+      window.location = $(this).find('.protocol-link').attr('href')
 
   Sparc = {}
   Sparc.protocol =

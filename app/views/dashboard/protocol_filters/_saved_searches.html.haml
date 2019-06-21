@@ -21,7 +21,7 @@
 .card.mt-3#savedFilters{ class: protocol_filters.any? ? '' : 'd-none'}
   .card-header.bg-light
     %h5.mb-0
-      = t(:dashboard)[:protocol_filters][:saved_filters][:header]
+      = t('dashboard.protocol_filters.saved_filters.header')
   .card-body.p-0
     %ul.list-group.list-group-flush.border-0
       - protocol_filters.each do |pf|

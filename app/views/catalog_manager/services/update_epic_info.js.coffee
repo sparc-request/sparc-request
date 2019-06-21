@@ -20,6 +20,6 @@
 
 $("#epic .panel-body").html("<%= j render '/catalog_manager/services/epic_form', service: @service %>")
 
-$("#flashContainer").html("<%= escape_javascript(render( 'layouts/flash' )) %>")
+$("#flashContainer").replaceWith("<%= escape_javascript(render( 'layouts/flash' )) %>")
 
 $("#epic .panel-body [data-toggle='toggle']").bootstrapToggle();

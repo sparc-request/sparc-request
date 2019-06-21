@@ -184,6 +184,16 @@ form, .form {
   }
 }
 
+/////////////
+/// Modal ///
+/////////////
+
+.modal {
+  .modal-dialog {
+    @extend .modal-dialog-centered;
+  }
+}
+
 //////////////
 /// Navbar ///
 //////////////

@@ -27,5 +27,5 @@ $('#notes-table').bootstrapTable()
 $("#modalContainer").modal('hide')
 $('#notes-table').bootstrapTable('refresh')
 <% end %>
-$("#flashContainer").html("<%= j render 'layouts/flash' %>")
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

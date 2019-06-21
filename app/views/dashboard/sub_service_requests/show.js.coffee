@@ -22,4 +22,5 @@ $('#modalContainer').html("<%= j render 'dashboard/sub_service_requests/user_mod
 $('#modalContainer').modal('show')
 initializeTooltips()
 initializeSelectpickers()
+
 $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

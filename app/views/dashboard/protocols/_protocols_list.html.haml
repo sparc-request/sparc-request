@@ -25,7 +25,7 @@
         %h4.mb-0
           = t('dashboard.protocols.table.header')
         .text-muted
-      = link_to t('dashboard.protocols.table.export'), dashboard_protocols_path(format: :csv, filterrific: @filterrific.to_hash), title: t('dashboard.protocols.table.tooltips.export'), class: 'btn btn-info mr-1', data: { toggle: 'tooltip', placement: 'left' }
+      = link_to t('dashboard.protocols.table.export'), dashboard_protocols_path(format: :csv, filterrific: filterrific.to_hash), title: t('dashboard.protocols.table.tooltips.export'), class: 'btn btn-info mr-1', data: { toggle: 'tooltip', placement: 'left' }
       .dropdown.no-caret
         %button.btn.btn-success.dropdown-toggle#newProtocolButton{ type: 'button', data: { toggle: 'dropdown' }, aria: { haspopup: 'true', expanded: 'false' } }
           = icon('fas', 'plus')
@@ -34,7 +34,7 @@
           = link_to t('dashboard.protocols.table.new_study'), new_dashboard_protocol_path(protocol_type: 'study'), class: 'dropdown-item'
           = link_to t('dashboard.protocols.table.new_project'), new_dashboard_protocol_path(protocol_type: 'project'), class: 'dropdown-item'
     .bootstrap-table-dropdown-overflow
-      %table#protocolsTable{ data: { toggle: 'table', url: dashboard_protocols_path(filterrific: filterrific_params, format: :json), pagination: 'true', side_pagination: 'server', page_size: '25', sort_name: 'id', sort_order: 'desc' } }
+      %table#protocolsTable{ data: { toggle: 'table', url: dashboard_protocols_path(filterrific: filterrific.to_hash, format: :json), pagination: 'true', side_pagination: 'server', page_size: '25', sort_name: 'id', sort_order: 'desc' } }
         %thead.bg-light
           %tr
             %th.col-2{ data: { field: 'id', align: 'center', sortable: 'true' } }

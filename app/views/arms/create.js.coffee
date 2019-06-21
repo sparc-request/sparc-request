@@ -24,5 +24,5 @@ $("#add-arm-form-button").removeAttr('disabled')
 <% else %>
 $('#arms-table').bootstrapTable 'refresh', { silent: true }
 $("#modalContainer").modal 'hide'
-$("#flashContainer").html("<%= escape_javascript(render( 'layouts/flash' )) %>")
+$("#flashContainer").replaceWith("<%= escape_javascript(render( 'layouts/flash' )) %>")
 <% end %>

@@ -25,6 +25,6 @@ $("#modalContainer").modal 'hide'
 window.location = "/dashboard"
 <% else %>
 $("#associated-users-table").bootstrapTable 'refresh', {silent: true}
-$("#flashContainer").html("<%= escape_javascript(render( 'layouts/flash' )) %>")
+$("#flashContainer").replaceWith("<%= escape_javascript(render( 'layouts/flash' )) %>")
 <% end %>
 <% end %>

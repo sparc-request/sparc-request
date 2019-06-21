@@ -18,16 +18,16 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-.modal-dialog{ role: 'document'}
-  = form_for feedback, url: feedback_index_path, remote: true do |f|
-    = f.hidden_field :date, value: Date.today
-    .modal-content
+.modal-dialog{ role: 'document' }
+  .modal-content
+    = form_for feedback, url: feedback_index_path, remote: true do |f|
       .modal-header
         %h5.modal-title
           = t('feedback.header')
         %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
           %span{ aria: { hidden: 'true' } } &times;
       .modal-body
+        = f.hidden_field :date, value: Date.today
         .form-row
           .form-group.col-6
             = f.label :name, class: 'required'

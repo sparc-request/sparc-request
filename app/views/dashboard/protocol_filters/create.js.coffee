@@ -18,11 +18,17 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-<% if @errors.present? %>
-$("#modal_errors").html("<%= escape_javascript(render(partial: 'layouts/modal_errors', locals: {errors: @errors})) %>")
-<% else %>
-$("#saved_searches").html("<%= escape_javascript(render partial: 'dashboard/protocol_filters/saved_searches', locals: { protocol_filters: @protocol_filters }) %>")
+<% if @errors %>
+$('[id^=protocol_filter_]').removeClass('is-invalid').addClass('is-valid')
+$('.form-error').remove()
 
-$("#modalContainer").modal 'hide'
-$("#flashContainer").html("<%= escape_javascript(render('layouts/flash')) %>")
+<% @errors.messages.each do |attr, messages| %>
+<% messages.each do |message| %>
+$("#protocol_filter_<%= attr.to_s %>").removeClass('is-valid').addClass('is-invalid').parents('.form-group').append('<small class="form-text form-error"><%= message.capitalize %></small>')
+<% end %>
+<% end %>
+<% else %>
+$('#savedFilters').html("<%= escape_javascript(render partial: 'dashboard/protocol_filters/saved_searches', locals: { protocol_filters: @protocol_filters }) %>")
+$("#modalContainer").modal('hide')
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

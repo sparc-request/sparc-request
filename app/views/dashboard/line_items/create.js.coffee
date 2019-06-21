@@ -27,5 +27,5 @@ $("#subsidy_information").html("<%= escape_javascript(render(partial: 'dashboard
 $(".selectpicker").selectpicker()
 
 $("#modalContainer").modal 'hide'
-$("#flashContainer").html("<%= escape_javascript(render('layouts/flash')) %>")
+$("#flashContainer").replaceWith("<%= escape_javascript(render('layouts/flash')) %>")
 <% end %>

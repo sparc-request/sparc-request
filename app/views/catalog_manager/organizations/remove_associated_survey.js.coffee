@@ -25,4 +25,4 @@ $("#survey-row-<%= escape_javascript(@survey_id) %>").fadeOut(1000, () -> $(this
 
 <% end %>
 
-$("#flashContainer").html("<%= escape_javascript(render( 'layouts/flash' )) %>")
+$("#flashContainer").replaceWith("<%= escape_javascript(render( 'layouts/flash' )) %>")

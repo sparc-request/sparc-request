@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $("#protocol-form-display").replaceWith("<%= escape_javascript(render( '/protocols/form/protocol_form', protocol: @protocol, protocol_type: @protocol_type, service_request: @service_request, rmid_server_down: @rmid_server_down )) %>")
-$("#flashContainer").html("<%= escape_javascript(render( 'layouts/flash' )) %>")
+$("#flashContainer").replaceWith("<%= escape_javascript(render( 'layouts/flash' )) %>")
 $(".datetimepicker").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
 $(".selectpicker").selectpicker()
 

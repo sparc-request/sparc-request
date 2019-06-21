@@ -23,5 +23,5 @@ $("#modal_errors").html("<%= escape_javascript(render(partial: 'layouts/modal_er
 refresh_notifications_table()
 
 $("#modalContainer").modal 'hide'
-$("#flashContainer").html("<%= escape_javascript(render('layouts/flash')) %>")
+$("#flashContainer").replaceWith("<%= escape_javascript(render('layouts/flash')) %>")
 <% end %>

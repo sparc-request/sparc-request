@@ -173,12 +173,10 @@ en:
       owner: "Owner"
       my_protocols: "My Protocols"
       my_admin_protocols: "My Admin Protocols"
-      empty_protocols: "Empty Protocols (No Services)"
+      modal:
+        header: "Choose a name for your search"
       saved_filters:
         header: "Recently Saved Filters"
-        modal:
-          header: "Choose a name for your search."
-          name: "Name"
       tooltips:
         save: "Save current search"
         reset: "Clear current search"

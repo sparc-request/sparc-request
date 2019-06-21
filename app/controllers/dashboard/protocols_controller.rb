@@ -34,7 +34,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @admin     = admin_orgs.any?
 
     @default_filter_params  = { show_archived: 0 }
-    @filterrific_params     = params[:filterrific] && filterrific_params
 
     # if we are an admin we want to default to admin organizations
     if @admin

@@ -21,6 +21,6 @@
 $("#modalContainer #modal_errors").html("<%= escape_javascript(render( 'layouts/modal_errors', errors: @errors )) %>")
 <% unless @errors %>
 $("#documents-table").bootstrapTable 'refresh', {silent: true}
-$("#flashContainer").html("<%= escape_javascript(render( 'layouts/flash' )) %>")
+$("#flashContainer").replaceWith("<%= escape_javascript(render( 'layouts/flash' )) %>")
 $("#modalContainer").modal 'hide'
 <% end %>

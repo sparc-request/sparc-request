@@ -23,51 +23,51 @@
     = form_for_filterrific filterrific, remote: true, html: { id: 'protocolFiltersForm', autocomplete: 'off' } do |form|
       .card-header.bg-light
         %h4.mb-0.mr-auto
-          = t(:dashboard)[:protocol_filters][:header]
-        = link_to t(:actions)[:save], 'javascript:void(0)', title: t(:dashboard)[:protocol_filters][:tooltips][:save], class: 'btn btn-link border-right px-2', id: 'saveProtocolFilters', data: { toggle: 'tooltip', placement: 'top' }
-        = link_to t(:actions)[:reset], reset_filterrific_url, remote: true, title: t(:dashboard)[:protocol_filters][:tooltips][:reset], class: 'btn btn-link px-2', data: { toggle: 'tooltip', placement: 'top' }
+          = t('dashboard.protocol_filters.header')
+        = link_to t('actions.save'), new_dashboard_protocol_filter_path(filterrific: filterrific.to_hash), remote: true, title: t('dashboard.protocol_filters.tooltips.save'), class: 'btn btn-link border-right px-2', id: 'saveProtocolFilters', data: { toggle: 'tooltip', placement: 'top' }
+        = link_to t('actions.reset'), reset_filterrific_url, remote: true, title: t('dashboard.protocol_filters.tooltips.reset'), class: 'btn btn-link px-2', data: { toggle: 'tooltip', placement: 'top' }
       .card-body
         .form-group
           .input-group
             = form.fields_for :search_query do |search|
               .input-group-prepend.col-3.p-0
-                = search.select :search_drop, options_for_select(ProtocolFilter.search_filters, filterrific.search_query.try(:search_drop)), { prompt:  t(:dashboard)[:protocol_filters][:search_by] }, class: "selectpicker form-control", data: { style: 'btn btn-primary' }
+                = search.select :search_drop, options_for_select(ProtocolFilter.search_filters, filterrific.search_query.try(:search_drop)), { prompt:  t('dashboard.protocol_filters.search_by') }, class: "selectpicker form-control", data: { style: 'btn btn-primary' }
               = search.text_field :search_text, value: filterrific.search_query.try(:search_text), placeholder: t('dashboard.protocol_filters.search_placeholder'), class: 'form-control'
         .form-group.row
-          = form.label :with_status, t(:dashboard)[:protocol_filters][:status], class: 'col-4 col-form-label pr-0'
+          = form.label :with_status, t('dashboard.protocol_filters.status'), class: 'col-4 col-form-label pr-0'
           .col-8
-            = form.select :with_status, filterrific.select_options[:with_status], {}, class: "form-control selectpicker", multiple: true, data: { none_selected_text: t(:constants)[:prompts][:any], live_search: true }
+            = form.select :with_status, filterrific.select_options[:with_status], {}, class: "form-control selectpicker", multiple: true, data: { none_selected_text: t('constants.prompts.any'), live_search: true }
         .form-group.row
-          = form.label :with_organization, t(:dashboard)[:protocol_filters][:organization], class: 'col-4 col-form-label pr-0'
+          = form.label :with_organization, t('dashboard.protocol_filters.organization'), class: 'col-4 col-form-label pr-0'
           .col-8.drop-underneath
-            = form.select :with_organization, nil, {}, class: "form-control selectpicker", multiple: true, data: { none_selected_text: t(:constants)[:prompts][:any], live_search: true } do
+            = form.select :with_organization, nil, {}, class: "form-control selectpicker", multiple: true, data: { none_selected_text: t('constants.prompts.any'), live_search: true } do
               = filterrific.select_options[:with_organization].each do |org_type, orgs|
                 %optgroup{ label: org_type }
                   - orgs.each do |name, id|
                     %option{ value: id, selected: filterrific.with_organization && filterrific.with_organization.include?(id), data: {content: name} }
         - if admin
           .form-group.row
-            = form.label :with_owner, t(:dashboard)[:protocol_filters][:owner], class: 'col-4 col-form-label pr-0'
+            = form.label :with_owner, t('dashboard.protocol_filters.owner'), class: 'col-4 col-form-label pr-0'
             .col-8
-              = form.select :with_owner, filterrific.select_options[:with_owner], {}, class: "form-control selectpicker owner-select", multiple: true, data: { none_selected_text: t(:constants)[:prompts][:any], live_search: true }
+              = form.select :with_owner, filterrific.select_options[:with_owner], {}, class: "form-control selectpicker owner-select", multiple: true, data: { none_selected_text: t('constants.prompts.any'), live_search: true }
         .form-group.row
-          = form.label :show_archived, t(:dashboard)[:protocol_filters][:archived], class: 'col-4 col-form-label pr-0'
+          = form.label :show_archived, t('dashboard.protocol_filters.archived'), class: 'col-4 col-form-label pr-0'
           .col-8
             = form.check_box :show_archived, data: { toggle: 'toggle', on: t('dashboard.protocol_filters.archived'), off: t('dashboard.protocol_filters.unarchived'), style: 'btn-block' }
         - if admin
           %hr
           .form-group.row.mb-0
-            = form.label "admin_filter_for_identity_#{current_user.id}", t(:dashboard)[:protocol_filters][:my_protocols], class: 'col-6 col-form-label pr-0'
+            = form.label "admin_filter_for_identity_#{current_user.id}", t('dashboard.protocol_filters.my_protocols'), class: 'col-6 col-form-label pr-0'
             .col-4.d-flex.align-items-center.justify-content-center
               = form.radio_button :admin_filter, "for_identity #{current_user.id}"
           .form-group.row.mb-0
-            = form.label "admin_filter_for_admin_#{current_user.id}", t(:dashboard)[:protocol_filters][:my_admin_protocols], class: 'col-6 col-form-label pr-0'
+            = form.label "admin_filter_for_admin_#{current_user.id}", t('dashboard.protocol_filters.my_admin_protocols'), class: 'col-6 col-form-label pr-0'
             .col-4.d-flex.align-items-center.justify-content-center
               = form.radio_button :admin_filter, "for_admin #{current_user.id}"
         - else
           = form.hidden_field :admin_filter, value: "for_identity #{current_user.id}"
       .card-footer
         %button.btn.btn-block.btn-primary{ type: 'submit' }
-          = t(:actions)[:filter]
+          = t('actions.filter')
 
   = render 'dashboard/protocol_filters/saved_searches', protocol_filters: protocol_filters

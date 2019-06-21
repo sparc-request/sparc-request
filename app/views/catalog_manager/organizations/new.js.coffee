@@ -22,6 +22,6 @@
 $("#modalContainer").html("<%= escape_javascript(render( 'catalog_manager/organizations/new', organization: @organization )) %>")
 $("#modalContainer").modal('show')
 <% else %>
-$("#flashContainer").html("<%= escape_javascript(render( '/layouts/flash' )) %>")
+$("#flashContainer").replaceWith("<%= escape_javascript(render( '/layouts/flash' )) %>")
 <% end %>
 

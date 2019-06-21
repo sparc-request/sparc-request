@@ -1,1 +1,1 @@
-$("#flashContainer").html("<%= j render 'layouts/flash' %>")
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")

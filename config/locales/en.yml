@@ -93,6 +93,8 @@ en:
         guarantor_contact: "Contact"
         guarantor_phone: "Phone"
         guarantor_email: "Email"
+      protocol_filter:
+        search_name: "Name"
       question:
         content: "Question"
       question_response:

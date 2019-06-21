@@ -23,6 +23,6 @@ $("#modalContainer #modal_errors").html("<%= escape_javascript(render( 'layouts/
 $("#pricing_setup_submit").removeAttr('disabled')
 <% else %>
 $("#modalContainer").modal('hide')
-$("#flashContainer").html("<%= escape_javascript(render( 'layouts/flash' )) %>")
+$("#flashContainer").replaceWith("<%= escape_javascript(render( 'layouts/flash' )) %>")
 $("#pricing_setups_container").html("<%= j render '/catalog_manager/organizations/pricing_form', organization: @organization %>")
 <% end %>

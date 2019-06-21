@@ -21,7 +21,7 @@
 $("#modal_errors").html("<%= escape_javascript(render(partial: 'layouts/modal_errors', locals: {errors: @errors})) %>")
 <% unless @errors %>
 $("#modalContainer").html("<%= escape_javascript(render(:partial =>'dashboard/approvals/form', locals: { sub_service_request: @sub_service_request })) %>");
-$("#flashContainer").html("<%= escape_javascript(render('layouts/flash')) %>")
+$("#flashContainer").replaceWith("<%= escape_javascript(render('layouts/flash')) %>")
 #refresh approvals table
 $("#approval-history-table").bootstrapTable('refresh')
 <% end %>

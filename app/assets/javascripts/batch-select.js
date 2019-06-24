@@ -163,7 +163,7 @@ $(document).ready( function() {
       this.$selectedButtonContainer1  = $("<div style=\"position:absolute;\"></div>")
       this.$selectedButtonContainer2  = $("<div style=\"position:relative;height:100%;\"></div>");
       this.$selectedButtonContainer3  = $("<div style=\"position:absolute;\"></div>");
-      this.$selectedButton            = $("<button class=\"" + (this.options.batchSelectedClass || determineBatchSelectedClass(this.options.type)) + " batch-selected-btn\" style=\"position:sticky;top:15px;bottom:15px;\">" + this.options.batchSelectedText + "</button>");
+      this.$selectedButton            = $("<button class=\"" + (this.options.batchSelectedClass || determineBatchSelectedClass(this.options.type)) + " batch-selected-btn\" type=\"button\" style=\"position:sticky;top:15px;bottom:15px;\">" + this.options.batchSelectedText + "</button>");
 
       this.$selectedButtonContainer1.append(this.$selectedButtonContainer2)
       this.$selectedButtonContainer2.append(this.$selectedButtonContainer3)

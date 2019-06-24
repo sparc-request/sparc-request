@@ -193,7 +193,6 @@ en:
         cancel_edit_answer: 'Cancel Edit'
 
       table:
-        export: "Export"
         header: "Protocols"
         new_protocol: "New Protocol"
         new_study: "New Study"

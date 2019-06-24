@@ -203,7 +203,8 @@ class Protocol < ApplicationRecord
   )
 
   scope :sorted, -> (sort, order) {
-    return order(id: order) if sort.blank?
+    sort  = 'id' if sort.blank?
+    order = 'desc' if order.blank?
 
     case sort
     when 'id'

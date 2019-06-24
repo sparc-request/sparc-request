@@ -19,6 +19,18 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).on 'turbolinks:load', ->
+  
+  ###################
+  # Protocols Table #
+  ###################
+
+  $('#protocolsList .export button').removeClass('dropdown-toggle').attr('data-toggle', 'tooltip').data('toggle', 'tooltip').attr('title', I18n.t('dashboard.protocols.table.tooltips.export'))
+
+  $(document).on 'click', '#protocolsList .export button', ->
+    url = new URL($('#protocolsTable').data('url'), window.location.origin)
+    url.pathname = url.pathname.replace('json', 'csv')
+    window.location = url
+
   $(document).on 'click', '#protocolsTable tbody tr', (event) ->
     if event.target.tagName != 'A'
       window.location = $(this).find('.protocol-link').attr('href')

@@ -28,7 +28,7 @@ $("#protocol_filter_<%= attr.to_s %>").removeClass('is-valid').addClass('is-inva
 <% end %>
 <% end %>
 <% else %>
-$('#savedFilters').html("<%= escape_javascript(render partial: 'dashboard/protocol_filters/saved_searches', locals: { protocol_filters: @protocol_filters }) %>")
+$('#savedFilters').html("<%= j render 'dashboard/protocol_filters/saved_searches', protocol_filters: @protocol_filters %>")
 $("#modalContainer").modal('hide')
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

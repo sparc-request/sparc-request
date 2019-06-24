@@ -66,10 +66,13 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         @protocol_filters = ProtocolFilter.latest_for_user(current_user.id, ProtocolFilter::MAX_FILTERS)
       }
       format.json {
-        @protocols = @filterrific.find.limit(params[:limit]).offset(params[:offset])
+        @protocol_count = @filterrific.find.length
+        @protocols      = @filterrific.find.includes(:principal_investigators, :sub_service_requests).sorted(params[:sort], params[:order]).limit(params[:limit]).offset(params[:offset])
       }
       format.csv {
-        send_data Protocol.to_csv(@filterrific.find), :filename => "dashboard_protocols.csv"
+        @protocols = @filterrific.find.includes(:principal_investigators, :sub_service_requests).sorted(params[:sort], params[:order])
+
+        send_data Protocol.to_csv(@protocols), filename: "sparcrequest_protocols.csv"
       }
     end
   end

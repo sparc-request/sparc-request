@@ -209,34 +209,49 @@ en:
     ##############
     navigation:
       steps:
-        step1: 
-          full: "Step 1<br/>Add/Update<br/>Services"
-          short: "Step 1<br/>Services"
-          xs: "Step 1"
-        step2:
-          full: "Step 2<br/>Services &<br/>Protocol Information"
-          short: "Step 2<br/>Protocol"
-          xs: "Step 2"
-        step3:
-          full: "Step 3<br/>Milestones &<br/>Calendar Structure"
-          short: "Step 3<br/>Milestones"
-          xs: "Step 3"
-        step4:
-          full: "Step 4<br/>Service<br/>Calendar"
-          short: "Step 4<br/>Calendar"
-          xs: "Step 4"
-        step4a:
-          full: "Step 4a<br/>Subsidy<br/>Information"
-          short: "Step 4a<br/>Subsidies"
-          xs: "Step 4a"
-        step5:
-          full: "Step 5<br/>Documents,<br/>Notes & Forms"
-          short: "Step 5<br/>Documents"
-          xs: "Step 5"
-        step6:
-          full: "Step 6<br/>Review Your<br/>Request"
-          short: "Step 6<br/>Review"
-          xs: "Step 6"
+        catalog:
+          step_text:
+            full: "Step 1<br/>Manage<br/>Services"
+            short: "Step 1<br/>Services"
+            xs: "Step 1"
+          header: "Step 1: Manage Services"
+          sub_header: "Select services to start a new request or modify an existing request"
+        protocol:
+          step_text:
+            full: "Step 2<br/>Protocol<br/>Information"
+            short: "Step 2<br/>Protocol"
+            xs: "Step 2"
+          header: "Step 2: Protocol Information"
+          sub_header: "Fill in relevant information about your Protocol"
+        service_details:
+          step_text:
+            full: "Step 3<br/>Milestones &<br/>Calendar Structure"
+            short: "Step 3<br/>Milestones"
+            xs: "Step 3"
+        service_calendar:
+          step_text:
+            full: "Step 4<br/>Service<br/>Calendar"
+            short: "Step 4<br/>Calendar"
+            xs: "Step 4"
+        service_subsidy:
+          step_text:
+            full: "Step 4a<br/>Subsidy<br/>Information"
+            short: "Step 4a<br/>Subsidies"
+            xs: "Step 4a"
+        document_management:
+          step_text:
+            full: "Step 5<br/>Documents,<br/>Notes & Forms"
+            short: "Step 5<br/>Documents"
+            xs: "Step 5"
+        review:
+          step_text:
+            full: "Step 6<br/>Review Your<br/>Request"
+            short: "Step 6<br/>Review"
+            xs: "Step 6"
+        obtain_research_pricing:
+          header: "Get a Cost Estimate"
+        confirmation:
+          header: "Submission Confirmation"
       bottom:
         back:
           full: "Go Back"

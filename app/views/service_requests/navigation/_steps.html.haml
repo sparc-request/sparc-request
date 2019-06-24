@@ -15,7 +15,7 @@
 -# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
 -# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
--# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, ORe
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 - subsidy = @service_request.eligible_for_subsidy?
@@ -23,11 +23,8 @@
 - unless ['obtain_research_pricing', 'confirmation'].include?(action_name)
   %nav.nav.w-100.mb-3#stepsNav{ class: subsidy ? 'has-subsidy' : '' }
     .steps-container.d-flex.w-100
-      = render 'service_requests/navigation/step_arrow', text: t('proper.navigation.steps.step1'), link: catalog_service_request_path(srid: @service_request.id), color: 'primary', active: @current_page == 'catalog'
-      = render 'service_requests/navigation/step_arrow', text: t('proper.navigation.steps.step2'), link: protocol_service_request_path(srid: @service_request.id), color: 'info-alt', active: @current_page == 'protocol'
-      = render 'service_requests/navigation/step_arrow', text: t('proper.navigation.steps.step3'), link: service_details_service_request_path(srid: @service_request.id), color: 'success', active: @current_page == 'service_details'
-      = render 'service_requests/navigation/step_arrow', text: t('proper.navigation.steps.step4'), link: service_calendar_service_request_path(srid: @service_request.id), color: 'info', active: @current_page == 'service_calendar'
-      - if subsidy
-        = render 'service_requests/navigation/step_arrow', text: t('proper.navigation.steps.step4a'), link: service_subsidy_service_request_path(srid: @service_request.id), color: 'danger-alt', active: @current_page == 'service_subsidy'
-      = render 'service_requests/navigation/step_arrow', text: t('proper.navigation.steps.step5'), link: document_management_service_request_path(srid: @service_request.id), color: 'warning', active: @current_page == 'document_management'
-      = render 'service_requests/navigation/step_arrow', text: t('proper.navigation.steps.step6'), link: review_service_request_path(srid: @service_request.id), color: 'danger', active: @current_page == 'review'
+      - Step::CONFIG.each do |step, _|
+        - next if ['obtain_research_pricing', 'confirmation'].include?(step)
+        - next if !subsidy && step == 'service_subsidy'
+        - config = Step.get(step)
+        = render 'service_requests/navigation/step_arrow', text: config[:step_text], link: eval("#{step}_service_request_path(#{@service_request.new_record? ? "" : "srid: " + @service_request.id.to_s})"), color: config[:css_class], active: @current_page == step

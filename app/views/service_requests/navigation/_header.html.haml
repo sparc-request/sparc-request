@@ -19,12 +19,12 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 %header.w-100.mb-3#stepsHeader
-  .row.py-2.bg-light.border-top.border-bottom{ class: "bg-#{@css_class}" }
+  .row.py-2.bg-light.border-top.border-bottom
     .container-fluid.d-flex.align-items-center
       %h3.mr-auto.mb-0{ class: "text-#{@css_class}" }
-        = @step_text
+        = @step_header
         %br
         %small.text-muted
-          = @step_sub_text
+          = @step_sub_header
       %h3.text-muted.mb-0
         = protocol_id_display(@service_request)

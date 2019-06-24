@@ -22,7 +22,7 @@
 
   .w-100.service
     .row
-      %div{ class: action_name == 'protocol' ? 'col-12' : 'col-10' }
+      .col-10
         %h5.mb-0
           - if service.description.present?
             = link_to service.display_service_name, 'javascript:void(0)', data: { toggle: 'popover', title: service.display_service_name, content: raw(service.description), placement: 'left', trigger: 'hover' }
@@ -30,8 +30,7 @@
             = service.display_service_name
         = cpt_code_text(service)
         = eap_id_text(service)
-      - unless action_name == 'protocol'
-        .col-2.text-right
-          %button.btn.btn-success.add-service{ type: 'button', title: t('proper.cart.add_service'), data: { toggle: 'tooltip', placement: 'right', service_id: service.id } }
-            = icon('fas', 'plus')
+      .col-2.text-right
+        %button.btn.btn-success.add-service{ type: 'button', title: t('proper.cart.add_service'), data: { toggle: 'tooltip', placement: 'right', service_id: service.id } }
+          = icon('fas', 'plus')
       = raw service_pricing_text(service)

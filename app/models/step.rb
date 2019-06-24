@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,42 +18,19 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-catalog:
-  css_class: "primary"
-  forward: "protocol"
+class Step
+  CONFIG = YAML.load_file(Rails.root.join('config', 'navigation.yml'))
 
-protocol:
-  css_class: "info-alt"
-  back: "catalog"
-  forward: "service_details"
-
-service_details:
-  css_class: "success"
-  back: "protocol"
-  forward: "service_calendar"
-
-service_calendar:
-  css_class: "info"
-  back: "service_details"
-  forward: "service_subsidy"
-
-service_subsidy:
-  css_class: "danger-alt"
-  back: "service_calendar"
-  forward: "document_management"
-
-document_management:
-  css_class: "warning"
-  back: "service_subsidy"
-  forward: "review"
-
-review:
-  css_class: "danger"
-  back: "document_management"
-  forward: "confirmation"
-
-obtain_research_pricing:
-  css_class: "green-provider"
-
-confirmation:
-  css_class: "green-provider"
+  def self.get(page)
+    if (config = Step::CONFIG[page]) && (yaml = I18n.t("proper.navigation.steps.#{page}"))
+      {
+        step_text:  yaml[:step_text],
+        header:     yaml[:header],
+        sub_header: yaml[:sub_header],
+        css_class:  config['css_class'],
+        back:       config['back'],
+        forward:    config['forward']
+      }
+    end
+  end
+end

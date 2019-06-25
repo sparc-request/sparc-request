@@ -285,7 +285,8 @@ GEM
     htmlentities (4.3.4)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    httparty (0.16.2)
+    httparty (0.17.0)
+      mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
     httpi (2.0.2)
       rack
@@ -659,7 +660,7 @@ DEPENDENCIES
   haml
   hashie-forbidden_attributes
   highline
-  httparty (~> 0.16.2)
+  httparty (~> 0.17.0)
   icalendar
   icalendar-recurrence
   jbuilder (~> 2.8)

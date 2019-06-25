@@ -88,7 +88,13 @@ en:
       option:
         content: "Option"
       protocol:
+        id: "SRID"
         short_title: "Short Title"
+        title: "Title"
+        description: "Brief Description"
+        funding_status: "Proposal Funding Status"
+        funding_source: "Funding Source"
+        potential_funding_source: "Potential Funding Source"
         human_subjects_info: "The NCT #"
         guarantor_contact: "Contact"
         guarantor_phone: "Phone"
@@ -555,7 +561,7 @@ en:
   # PROTOCOLS #
   #############
   protocols:
-    new: "New Protocol"
+    new: "Start a New Protocol"
     edit: "Edit %{protocol_type} Information"
     created: "%{protocol_type} Created!"
     updated: "%{protocol_type} Updated!"
@@ -595,7 +601,7 @@ en:
       updated: "Protocol Type Updated!"
       new_study_warning: "Please complete Sponsor Name and Publish Study in Epic"
     studies:
-      new: "New Research Study"
+      new: "New Study"
       information:
         header: "Study Information"
         subtext: "Necessary to obtain correct pricing"
@@ -695,6 +701,10 @@ en:
       phase: "Select Study Phase(s)"
       submission_type: "Select a Submission Type"
     tooltips:
+      new_study: >
+        Choose "New Study" for a Research Study with defined aims and outcomes.
+      new_project: >
+        Choose "New Project" for non-study-specific requests or anything that is not a Research Study.
       short_title: 'An abbreviated form of the title used to identify your Study/Project.'
       title: 'Full title of your Study/Project.'
       funding_status: 'Indicates whether or not funding has been applied for or obtained.'

@@ -22,9 +22,9 @@
   rmId = $('.research-master-field').val()
   if rmId
     $.ajax
-      url: "#{gon.rm_id_api_url}research_masters/#{rmId}.json"
+      url: "#{gon.rmid_api_url}research_masters/#{rmId}.json"
       type: 'GET'
-      headers: {"Authorization": "Token token=\"#{gon.rm_id_api_token}\""}
+      headers: {"Authorization": "Token token=\"#{gon.rmid_api_token}\""}
       success: (data) ->
         $('#protocol_short_title').val(data.short_title)
         $('#protocol_title').val(data.long_title)

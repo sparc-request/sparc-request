@@ -194,9 +194,6 @@ en:
 
       table:
         header: "Protocols"
-        new_protocol: "New Protocol"
-        new_study: "New Study"
-        new_project: "New Project"
         short_title: "Short Title"
         id: "Protocol ID"
         pis: "PI(s)"

@@ -99,8 +99,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol.requester_id  = current_user.id
     @protocol.populate_for_edit
     session[:protocol_type] = params[:protocol_type]
-    gon.rm_id_api_url = Setting.get_value("research_master_api")
-    gon.rm_id_api_token = Setting.get_value("rmid_api_token")
+    gon.rmid_api_url = Setting.get_value("research_master_api")
+    gon.rmid_api_token = Setting.get_value("rmid_api_token")
   end
 
   def create
@@ -136,8 +136,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @permission_to_edit = @authorization.nil? ? false : @authorization.can_edit?
     @in_dashboard       = true
     @protocol.populate_for_edit
-    gon.rm_id_api_url = Setting.get_value("research_master_api")
-    gon.rm_id_api_token = Setting.get_value("rmid_api_token")
+    gon.rmid_api_url = Setting.get_value("research_master_api")
+    gon.rmid_api_token = Setting.get_value("rmid_api_token")
 
     session[:breadcrumbs].
       clear.

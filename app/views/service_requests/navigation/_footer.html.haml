@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 %footer.w-100.mt-3#stepsFooter
-  .row.py-2.bg-light.border-top.border-bottom
+  .row.py-2.bg-white.border-top.border-bottom
     .container-fluid.d-flex.justify-content-between
       - if @current_page == 'catalog'
         .placeholder
@@ -39,7 +39,7 @@
         = link_to t(:proper)[:navigation][:bottom][:submit], confirmation_service_request_path(srid: @service_request.id), class: 'btn btn-default form-submit-button', data: { disable_with: t(:proper)[:navigation][:bottom][:submitting] }
       - else
         - if action_name == 'review'
-          %button.btn.btn-lg.btn-success{ type: 'submit' }
+          %button.btn.btn-lg.btn-outline-success{ type: 'submit' }
             = t('proper.navigation.bottom.submit')
             = icon('fas', 'arrow-right')
         - else

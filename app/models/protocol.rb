@@ -383,6 +383,14 @@ class Protocol < ApplicationRecord
     self.type == 'Project'
   end
 
+  def funded?
+    self.funding_status == 'funded'
+  end
+
+  def pending_funding?
+    self.funding_status == 'pending_funding'
+  end
+
   def active?
     study_type_question_group.nil? ? false : study_type_question_group.active
   end

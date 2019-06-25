@@ -18,5 +18,26 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.col-12.col-lg-9
-  = render 'service_requests/protocol/protocol_display', service_request: @service_request, protocol: @service_request.protocol
+.col-12.col-lg-9.mb-3.mb-lg-0#protocolInformation
+  - if protocol
+    = render 'protocols/summary', protocol: protocol, protocol_type: protocol.type, service_request: service_request, allow_edit: true
+    = render 'associated_users/table', protocol: protocol, service_request: service_request
+  - else
+    .card.h-100#newProtocolCard
+      .card-header.bg-primary.text-white
+        %h4.mb-0
+          = t('proper.protocol.new_protocol_header')
+      .card-body
+        .row
+          .col-12.col-sm-6.mb-3.mb-sm-0.new-protocol-container
+            %h5.text-muted#newStudyHeader
+              = t('protocols.tooltips.new_study')
+            = link_to new_protocol_path(protocol_type: Study.name, srid: service_request.id), class: 'btn btn-lg btn-success new-study' do
+              = icon('fas', 'plus mr-1')
+              = t('protocols.studies.new')
+          .col-12.col-sm-6.new-protocol-container
+            %h5.text-muted#newProjectHeader
+              = t('protocols.tooltips.new_project')
+            = link_to new_protocol_path(protocol_type: Project.name, srid: service_request.id), class: 'btn btn-lg btn-primary new-project' do
+              = icon('fas', 'plus mr-1')
+              = t('protocols.projects.new')

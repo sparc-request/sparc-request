@@ -32,7 +32,7 @@
     = favicon_link_tag asset_path('favicon.ico')
     = render 'layouts/i18n-js'
     = Gon::Base.render_data
-  %body
+  %body.bg-light
     - unless Rails.env.production?
       %h4.alert.alert-danger.rounded-0.text-center.m-0{ role: 'alert' }
         = Rails.env.capitalize

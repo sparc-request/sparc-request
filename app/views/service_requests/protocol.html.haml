@@ -26,6 +26,6 @@
       %h4.text-danger
         = t(:validation_errors)[:service_requests][:protocol_errors]
       = render 'layouts/modal_errors', errors: @errors
-    = render 'service_requests/protocol/protocol_left', service_request: @service_request
+    = render 'service_requests/protocol/protocol_information', service_request: @service_request, protocol: @service_request.protocol
     = render 'service_requests/cart/cart', service_request: @service_request
   = render 'service_requests/navigation/footer'

@@ -28,7 +28,7 @@ module Dashboard::ApplicationHelper
     end
   end
 
-  def display_if to_compare_1, to_compare_2=true
+  def display_if(to_compare_1, to_compare_2=true)
     if to_compare_1 == to_compare_2
       return { style: "display: block;" }
     else

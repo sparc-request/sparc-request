@@ -35,3 +35,17 @@
     border-bottom: 1px solid $border-color;
   }
 }
+
+////////////////
+/// Protocol ///
+////////////////
+
+@include media-breakpoint-down(md) {
+  #protocolInformation {
+    .new-protocol-container {
+      display: flex;
+      flex-flow: column;
+      justify-content: space-between;
+    }
+  }
+}

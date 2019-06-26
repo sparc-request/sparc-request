@@ -35,6 +35,30 @@ $(document).on 'turbolinks:load', ->
     if event.target.tagName != 'A'
       window.location = $(this).find('.protocol-link').attr('href')
 
+  ####################
+  # Protocol Filters #
+  ####################
+
+  $(document).on 'click', '#saveProtocolFilters', ->
+    data = {}
+
+    $.each $('form#protocolFiltersForm').serializeArray(), (i, field) ->
+      data[field.name] = field.value
+
+    if data["filterrific[with_status][]"].length
+      data["filterrific[with_status][]"] = $("#filterrific_with_status").val()
+
+    if data["filterrific[with_organization][]"] && data["filterrific[with_organization][]"].length
+      data["filterrific[with_organization][]"] = $("#filterrific_with_organization").val()
+
+    if data["filterrific[with_owner][]"] && data["filterrific[with_owner][]"].length
+      data["filterrific[with_owner][]"] = $("#filterrific_with_owner").val()
+
+    $.ajax
+      type: 'GET'
+      url:  "/dashboard/protocol_filters/new"
+      data: data
+
   Sparc = {}
   Sparc.protocol =
     ready: ->
@@ -50,39 +74,11 @@ $(document).on 'turbolinks:load', ->
           data: data
 
       #  Protocol Index Begin
-      $(document).on 'click', '.protocols_index_row > .id, .protocols_index_row > .title, .protocols_index_row > .pis', ->
-        #if you click on the row, it opens the protocol show
-        protocol_id = $(this).parent().data('protocol-id')
-        window.location = "/dashboard/protocols/#{protocol_id}"
-
       $(document).on 'click', '.protocol-archive-button', ->
         protocol_id = $(this).data('protocol-id')
         $.ajax
           type: 'PATCH'
           url:  "/dashboard/protocols/#{protocol_id}/archive.js"
-
-      $(document).on 'click', '#saveProtocolFilters', ->
-        data = {} #Grab form values
-
-        # REVIEW this is not fetching values from multiselects
-        $.each $('form#protocolFiltersForm').serializeArray(), (i, field) ->
-          data[field.name] = field.value
-
-        # manually enter those in
-        if data["filterrific[with_status][]"].length
-          data["filterrific[with_status][]"] = $("#filterrific_with_status").val()
-
-        if data["filterrific[with_organization][]"] && data["filterrific[with_organization][]"].length
-          data["filterrific[with_organization][]"] = $("#filterrific_with_organization").val()
-
-        if data["filterrific[with_owner][]"] && data["filterrific[with_owner][]"].length
-          data["filterrific[with_owner][]"] = $("#filterrific_with_owner").val()
-
-        $.ajax
-          type: 'GET'
-          url:  "/dashboard/protocol_filters/new"
-          data: data
-        return false
 
       
 

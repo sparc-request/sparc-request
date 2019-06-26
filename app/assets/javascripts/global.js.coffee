@@ -89,6 +89,34 @@ $(document).on 'turbolinks:load', ->
       )
     ), 1500
 
+  $(document).on('keydown', 'input[type=tel]', (event) ->
+    val       = $(this).val()
+    key       = event.keyCode || event.charCode
+    isDelete  = [8, 46].includes(key)
+
+    if isDelete
+      if val.length == 2
+        $(this).val('')
+      else if val.length == 7
+        $(this).val(val.substr(0, 5))
+      else if val.length == 11
+        $(this).val(val.substr(0,10))
+      else if val.length == 20
+        $(this).val(val.substr(0, 15))
+    else if (key >= 96 && key <= 105) || (key >= 48 && key <= 57)
+      if val.length == 0
+        $(this).val('(')
+      else if val.length == 4
+        $(this).val(val + ') ')
+      else if val.length == 9
+        $(this).val(val + '-')
+      else if val.length == 14
+        $(this).val(val + " #{I18n.t('constants.phone.extension')} ")
+    else
+      event.stopImmediatePropagation()
+      return false
+  )
+
 (exports ? this).initializeSelectpickers = () ->
   $('.selectpicker').each ->
     $(this).selectpicker() if $(this).siblings('.dropdown-toggle').length == 0

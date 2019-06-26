@@ -21,6 +21,30 @@
 class Study < Protocol
   validates :sponsor_name,                presence: true
   validates :selected_for_epic,           inclusion: [true, false], :if => [:is_epic?]
+
+  ##Removed for now, perhaps to be added later
+  # validation_group :guarantor_fields, if: :selected_for_epic do
+  #   validates :guarantor_contact,
+  #             :guarantor_phone,
+  #             :guarantor_address,
+  #             :guarantor_city,
+  #             :guarantor_state,
+  #             :guarantor_zip,
+  #             :guarantor_county,
+  #             :guarantor_country, presence: true
+  # end
+  # validates :guarantor_fax, numericality: {allow_blank: true, only_integer: true}
+  # validates :guarantor_fax, length: { maximum: 10 }
+  # validates :guarantor_address, length: { maximum: 500 }
+  # validates :guarantor_city, length: { maximum: 40 }
+  # validates :guarantor_state, length: { maximum: 2 }
+  # validates :guarantor_zip, length: { maximum: 9 }
+
+  validates_format_of :guarantor_email, with: Devise::email_regexp, allow_blank: true
+  validates_format_of :phone, with: /[0-9]{10}(#[0-9]+)?/, allow_blank: true
+
+  validates :guarantor_contact, length: { maximum: 192 }
+
   validate  :validate_study_type_answers
 
   def classes
@@ -50,7 +74,6 @@ class Study < Protocol
     self.setup_impact_areas
     self.setup_affiliations
     self.setup_study_type_answers
-    self.setup_project_roles
   end
 
   def setup_study_types
@@ -97,10 +120,6 @@ class Study < Protocol
     end
 
     affiliations.sort_by(&:position)
-  end
-
-  def setup_project_roles
-    project_roles.build(role: "primary-pi", project_rights: "approve") unless project_roles.primary_pis.any?
   end
 
   FRIENDLY_IDS = ["certificate_of_conf", "higher_level_of_privacy", "epic_inbasket", "research_active", "restrict_sending"]

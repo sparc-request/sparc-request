@@ -28,6 +28,10 @@
         color: white;
       }
     }
+
+    li .dropdown-item {
+      min-height: 24px;
+    }
   }
 
   .selectpicker.is-valid + .dropdown-toggle {

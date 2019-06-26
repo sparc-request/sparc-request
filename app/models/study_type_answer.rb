@@ -23,4 +23,6 @@ class StudyTypeAnswer < ApplicationRecord
   
   belongs_to :study_type_question
   belongs_to :protocol
+
+  delegate :active, :active?, to: :study_type_question
 end

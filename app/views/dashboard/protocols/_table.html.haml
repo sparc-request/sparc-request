@@ -18,8 +18,8 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%main#protocolsList
-  .card
+#protocolsList
+  %main.card
     .card-header.bg-primary.text-white
       .mr-auto
         %h4.mb-0
@@ -28,14 +28,14 @@
       .dropdown.no-caret
         %button.btn.btn-success.dropdown-toggle#newProtocolButton{ type: 'button', data: { toggle: 'dropdown' }, aria: { haspopup: 'true', expanded: 'false' } }<
           = icon('fas', 'plus mr-1')
-          = t('protocols.new')
+          = t('dashboard.protocols.new')
         .dropdown-menu{ aria: { labelledby: 'newProtocolButton' } }
-          = link_to new_dashboard_protocol_path(protocol_type: 'study'), class: 'dropdown-item' do
+          = link_to new_dashboard_protocol_path(protocol_type: Study.name), class: 'dropdown-item' do
             = icon('far', 'question-circle text-primary mr-1', '', title: t('protocols.tooltips.new_study'), data: { toggle: 'tooltip', placement: 'left' })
-            = t('protocols.studies.new')
-          = link_to new_dashboard_protocol_path(protocol_type: 'project'), class: 'dropdown-item' do
+            = t('protocols.new', protocol_type: Study.model_name.human)
+          = link_to new_dashboard_protocol_path(protocol_type: Project.name), class: 'dropdown-item' do
             = icon('far', 'question-circle text-primary mr-1', '', title: t('protocols.tooltips.new_project'), data: { toggle: 'tooltip', placement: 'left' })
-            = t('protocols.projects.new')
+            = t('protocols.new', protocol_type: Project.model_name.human)
     %table#protocolsTable{ data: { toggle: 'table', url: dashboard_protocols_path(filterrific: filterrific.to_hash, format: :json), show_columns: 'true', show_refresh: 'true', show_export: 'true', pagination: 'true', side_pagination: 'server', page_size: '25', sort_name: 'id', sort_order: 'desc', toolbar: '#protocolsTableToolbar' } }
       %thead
         %tr

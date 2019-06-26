@@ -18,18 +18,12 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.panel.panel-default#project-roles
-  .panel-heading
-    %h4.panel-title
-      = t(:protocols)[:authorized_users][:header]
-  .panel-body
-    = f.fields_for :project_roles do |ff_pr|
-      .form-group.row
-        = ff_pr.label :identity_id, t(:protocols)[:authorized_users][:primary_pi], class: 'col-lg-2 control-label required'
-        .col-lg-10
-          = ff_pr.text_field :identity_id, placeholder: t(:constants)[:prompts][:search_for_user], class: 'form-control rm-id-dependent'
-          %label#primary_pi_name.hidden
-          %a.btn.btn-xs.btn-danger.glyphicon.glyphicon-remove#user-select-clear-icon{ href: "javascript:void(0);", style: 'display: none; vertical-align: middle;', data: { toggle: "tooltip", animation: 'false', placement: 'right'}, title: "Remove" }
-          = ff_pr.hidden_field :identity_id
-          = ff_pr.hidden_field :role
-          = ff_pr.hidden_field :project_rights
+#studyTypeQuestionsContainer{ class: [(protocol.selected_for_epic? || !Setting.get_value('use_epic') ? '' : 'd-none')] }
+  = f.label :study_type_questions, class: (Setting.get_value("use_epic") && protocol.selected_for_epic? ? 'required' : ''), title: t(:protocols)[:tooltips][:study_type_questions], data: { toggle: 'tooltip', placement: 'right' }
+  = f.fields_for :study_type_answers, protocol.study_type_answers.select(&:active?) do |ff_sta|
+    .form-row{ id: "study_type_answer_#{ff_sta.object.study_type_question.friendly_id}", style: display_study_type_question?(protocol, ff_sta.object) ? 'display:block;' : 'display:none;' }
+      .form-group.col-9
+        = ff_sta.hidden_field :study_type_question_id
+        = ff_sta.label :answer, break_before_parenthetical(ff_sta.object.study_type_question.question)
+      .form-group.col-3
+        = ff_sta.select :answer, options_for_select([[t('constants.yes_select'), true], [t('constants.no_select'), false]], ff_sta.object.answer), { include_blank: true }, { class: 'selectpicker form-control', id: "study_type_answer_#{ff_sta.object.study_type_question.friendly_id}_answer" }

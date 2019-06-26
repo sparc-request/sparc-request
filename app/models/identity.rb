@@ -39,7 +39,6 @@ class Identity < ApplicationRecord
          :recoverable, :rememberable, :trackable, :omniauthable,
          omniauth_providers: Devise.omniauth_providers
 
-  email_regexp = /\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/
   password_length = 6..128
 
   #### END DEVISE SETUP ####
@@ -70,14 +69,14 @@ class Identity < ApplicationRecord
 
   cattr_accessor :current_user
 
-  validates_presence_of :last_name
-  validates_presence_of :first_name
-  validates_presence_of :email
-  validates_format_of   :email, with: email_regexp, allow_blank: true, if: :email_changed?
-  validates             :ldap_uid, uniqueness: {case_sensitive: false}, presence: true
-  validates             :orcid, format: { with: /\A([0-9]{4}-){3}[0-9]{3}[0-9X]\z/ }, allow_blank: true
+  validates_presence_of :first_name, :last_name, :email, :phone
 
-  validates_presence_of :phone
+  validates_format_of :email, with: Devise::email_regexp, allow_blank: true, if: :email_changed?
+  validates_format_of :phone, with: /[0-9]{10}(#[0-9]+)?/
+
+  validates :ldap_uid, uniqueness: {case_sensitive: false}, presence: true
+  validates :orcid, format: { with: /\A([0-9]{4}-){3}[0-9]{3}[0-9X]\z/ }, allow_blank: true
+
   validates_presence_of :reason, if: :new_record?
 
   ###############################################################################

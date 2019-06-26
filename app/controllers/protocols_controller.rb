@@ -25,17 +25,16 @@ class ProtocolsController < ApplicationController
 
   before_action :initialize_service_request,  unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
   before_action :authorize_identity,          unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
-  before_action :set_portal
   before_action :find_protocol,               only: [:edit, :update, :show]
   before_action :check_rmid_server_status,    only: [:new, :create, :edit, :update, :update_protocol_type]
 
   def new
-    @protocol_type          = params[:protocol_type]
-    @protocol               = @protocol_type.capitalize.constantize.new
-    @protocol.requester_id  = current_user.id
+    @protocol = params[:protocol_type].capitalize.constantize.new
     @protocol.populate_for_edit
-    gon.rmid_api_url = Setting.get_value("research_master_api")
-    gon.rmid_api_token = Setting.get_value("rmid_api_token")
+    @protocol.setup_study_type_answers if @protocol.is_a?(Study)
+
+    gon.rmid_api_url    = Setting.get_value("research_master_api")
+    gon.rmid_api_token  = Setting.get_value("rmid_api_token")
   end
 
   def create
@@ -199,81 +198,69 @@ class ProtocolsController < ApplicationController
   end
 
   def protocol_params
-    @protocol_params ||= begin
-        params.require(:protocol).permit(:archived,
-        :arms_attributes,
-        :billing_business_manager_static_email,
-        :brief_description,
-        :federal_grant_code_id,
-        :federal_grant_serial_number,
-        :federal_grant_title,
-        :federal_non_phs_sponsor,
-        :federal_phs_sponsor,
-        :funding_rfa,
-        :funding_source,
-        :funding_source_other,
-        :funding_start_date,
-        :funding_status,
-        :identity_id,
-        :indirect_cost_rate,
-        :last_epic_push_status,
-        :last_epic_push_time,
-        :next_ssr_id,
-        :potential_funding_source,
-        :potential_funding_source_other,
-        :potential_funding_start_date,
-        :requester_id,
-        :selected_for_epic,
-        :short_title,
-        :sponsor_name,
-        :study_type_question_group_id,
-        :title,
-        :type,
-        :udak_project_number,
-        :guarantor_contact,
-        :guarantor_phone,
-        :guarantor_email,
-        :research_master_id,
-        {:study_phase_ids => []},
-        research_types_info_attributes: [:id, :human_subjects, :vertebrate_animals, :investigational_products, :ip_patents],
-        study_types_attributes: [:id, :name, :new, :position, :_destroy],
-        vertebrate_animals_info_attributes: [:id, :iacuc_number,
-          :name_of_iacuc,
-          :iacuc_approval_date,
-          :iacuc_expiration_date],
-        investigational_products_info_attributes: [:id, :protocol_id,
-          :ind_number,
-          :inv_device_number,
-          :exemption_type,
-          :ind_on_hold],
-        ip_patents_info_attributes: [:id, :patent_number, :inventors],
-        impact_areas_attributes: [:id, :name, :other_text, :new, :_destroy],
-        human_subjects_info_attributes: [:id, :nct_number, :pro_number, :irb_of_record, :submission_type, :initial_irb_approval_date, :irb_approval_date, :irb_expiration_date, :approval_pending],
-        affiliations_attributes: [:id, :name, :new, :position, :_destroy],
-        project_roles_attributes: [:id, :identity_id, :role, :project_rights, :_destroy],
-        study_type_answers_attributes: [:id, :answer, :study_type_question_id, :_destroy])
+    # Fix identity_id nil problem when lazy loading is enabled
+    # when lazy loadin is enabled, identity_id is merely ldap_uid, the identity may not exist in database yet, so we create it if necessary here
+    if Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") && params[:primary_pi_role_attributes][:identity_id].present?
+      params[:primary_pi_role_attributes][:identity_id] = Identity.find_or_create(params[:primary_pi_role_attributes][:identity_id]).id
     end
-  end
 
-  def resolve_layout
-    if from_portal?
-      current_user = current_user
-      render layout: "portal/application"
-    end
-  end
+    # Sanitize date formats
+    params[:funding_start_date]           = sanitize_date params[:funding_start_date]
+    params[:potential_funding_start_date] = sanitize_date params[:potential_funding_start_date]
 
-  def set_cookies
-    current_step_cookie = cookies['current_step']
-    cookies['current_step'] = 'protocol'
-  end
+    params[:human_subjects_info_attributes][:initial_irb_approval_date] = sanitize_date params[:human_subjects_info_attributes][:initial_irb_approval_date]
+    params[:human_subjects_info_attributes][:irb_approval_date]         = sanitize_date params[:human_subjects_info_attributes][:irb_approval_date]
+    params[:human_subjects_info_attributes][:irb_expiration_date]       = sanitize_date params[:human_subjects_info_attributes][:irb_expiration_date]
 
-  def set_portal
-    # Where is this used? - Kyle Glick
-    @portal = params[:portal]
-  end
+    params[:vertebrate_animals_info_attributes][:iacuc_approval_date]   = sanitize_date params[:vertebrate_animals_info_attributes][:iacuc_approval_date]
+    params[:vertebrate_animals_info_attributes][:iacuc_expiration_date] = sanitize_date params[:vertebrate_animals_info_attributes][:iacuc_expiration_date]
 
-  def send_epic_notification_for_final_review(protocol)
-    Notifier.notify_primary_pi_for_epic_user_final_review(protocol).deliver unless Setting.get_value("queue_epic")
+    params.require(:protocol).permit(
+      :archived,
+      :arms_attributes,
+      :billing_business_manager_static_email,
+      :brief_description,
+      :federal_grant_code_id,
+      :federal_grant_serial_number,
+      :federal_grant_title,
+      :federal_non_phs_sponsor,
+      :federal_phs_sponsor,
+      :funding_rfa,
+      :funding_source,
+      :funding_source_other,
+      :funding_start_date,
+      :funding_status,
+      :guarantor_contact,
+      :guarantor_email,
+      :guarantor_phone,
+      :identity_id,
+      :indirect_cost_rate,
+      :last_epic_push_status,
+      :last_epic_push_time,
+      :next_ssr_id,
+      :potential_funding_source,
+      :potential_funding_source_other,
+      :potential_funding_start_date,
+      :requester_id,
+      :research_master_id,
+      :selected_for_epic,
+      :short_title,
+      :sponsor_name,
+      :study_type_question_group_id,
+      :title,
+      :type,
+      :udak_project_number,
+      research_types_info_attributes: [:id, :human_subjects, :vertebrate_animals, :investigational_products, :ip_patents],
+      study_types_attributes: [:id, :name, :new, :position, :_destroy],
+      vertebrate_animals_info_attributes: [:id, :iacuc_number, :name_of_iacuc, :iacuc_approval_date, :iacuc_expiration_date],
+      investigational_products_info_attributes: [:id, :protocol_id, :ind_number, :inv_device_number, :exemption_type, :ind_on_hold],
+      ip_patents_info_attributes: [:id, :patent_number, :inventors],
+      impact_areas_attributes: [:id, :name, :other_text, :new, :_destroy],
+      human_subjects_info_attributes: [:id, :nct_number, :pro_number, :irb_of_record, :submission_type, :initial_irb_approval_date, :irb_approval_date, :irb_expiration_date, :approval_pending],
+      affiliations_attributes: [:id, :name, :new, :position, :_destroy],
+      primary_pi_role_attributes: [:id, :identity_id, :role, :project_rights, :_destroy],
+      study_type_answers_attributes: [:id, :answer, :study_type_question_id, :_destroy]
+    )
   end
 
   def push_protocol_to_epic protocol
@@ -314,42 +301,6 @@ class ProtocolsController < ApplicationController
   def convert_date_for_save(attrs, date_field)
     if attrs[date_field] && attrs[date_field].present?
       attrs[date_field] = Time.strptime(attrs[date_field], "%m/%d/%Y")
-    end
-
-    attrs
-  end
-
-  ### fix identity id nil problem when lazy loading is enabled
-  ### when lazy loadin is enabled, identity_id is merely ldap_uid, the identity may not exist in database yet, so we create it if necessary here
-  def fix_identity
-    attrs               = protocol_params
-    attrs[:project_roles_attributes].each do |index, project_role|
-      if project_role[:identity_id].present?
-        identity = Identity.find_or_create project_role[:identity_id]
-        project_role[:identity_id] = identity.id
-      end
-    end unless attrs[:project_roles_attributes].nil?
-    attrs
-  end
-
-  def fix_date_params
-    attrs               = protocol_params
-
-    #### fix dates so they are saved correctly ####
-    attrs                                        = convert_date_for_save attrs, :start_date
-    attrs                                        = convert_date_for_save attrs, :end_date
-    attrs                                        = convert_date_for_save attrs, :funding_start_date
-    attrs                                        = convert_date_for_save attrs, :potential_funding_start_date
-
-    if attrs[:human_subjects_info_attributes]
-      attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :initial_irb_approval_date
-      attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :irb_approval_date
-      attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :irb_expiration_date
-    end
-
-    if attrs[:vertebrate_animals_info_attributes]
-      attrs[:vertebrate_animals_info_attributes] = convert_date_for_save attrs[:vertebrate_animals_info_attributes], :iacuc_approval_date
-      attrs[:vertebrate_animals_info_attributes] = convert_date_for_save attrs[:vertebrate_animals_info_attributes], :iacuc_expiration_date
     end
 
     attrs

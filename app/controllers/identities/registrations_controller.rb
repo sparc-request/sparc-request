@@ -22,7 +22,10 @@ class Identities::RegistrationsController < Devise::RegistrationsController
   def create
     respond_to :js
 
-    build_resource(sign_up_params)
+    params          = sign_up_params
+    params[:phone]  = sanitize_phone(params[:phone])
+
+    build_resource(params)
 
     resource.save
     yield resource if block_given?
@@ -42,5 +45,13 @@ class Identities::RegistrationsController < Devise::RegistrationsController
 
       @errors = resource.errors
     end
+  end
+
+  private
+
+  def sign_up_params
+    attrs = devise_parameter_sanitizer.sanitize(:sign_up)
+    attrs[:phone] = sanitize_phone(attrs[:phone])
+    attrs
   end
 end

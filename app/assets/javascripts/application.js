@@ -61,6 +61,7 @@
 
 //= require global
 //= require login
+//= require protocol_form
 
 //= require cart
 //= require catalog

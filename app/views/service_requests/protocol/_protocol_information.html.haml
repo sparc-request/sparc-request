@@ -33,11 +33,11 @@
             %h5.text-muted#newStudyHeader
               = t('protocols.tooltips.new_study')
             = link_to new_protocol_path(protocol_type: Study.name, srid: service_request.id), class: 'btn btn-lg btn-success new-study' do
-              = icon('fas', 'plus mr-1')
-              = t('protocols.studies.new')
+              - succeed t('protocols.new', protocol_type: Study.model_name.human) do
+                = icon('fas', 'plus mr-2')
           .col-12.col-sm-6.new-protocol-container
             %h5.text-muted#newProjectHeader
               = t('protocols.tooltips.new_project')
             = link_to new_protocol_path(protocol_type: Project.name, srid: service_request.id), class: 'btn btn-lg btn-primary new-project' do
-              = icon('fas', 'plus mr-1')
-              = t('protocols.projects.new')
+              - succeed t('protocols.new', protocol_type: Project.model_name.human) do
+                = icon('fas', 'plus mr-2')

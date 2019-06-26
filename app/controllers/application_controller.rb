@@ -56,10 +56,6 @@ class ApplicationController < ActionController::Base
     root_path
   end
 
-  def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up) { |u| u.permit!}
-  end
-
   #############################
   ### Before-Action Methods ###
   #############################
@@ -237,16 +233,11 @@ class ApplicationController < ActionController::Base
     redirect_to root_path unless Setting.get_value("use_funding_module") && current_user.is_funding_admin?
   end
 
-  def sanitize_dates(params, field_names)
-    attrs = {}
-    params.each do |k, v|
-      if field_names.include?(k.to_sym)
-        attrs[k] = v.blank? ? v : Date.strptime(v, '%m/%d/%Y')
-      else
-        attrs[k] = v
-      end
-    end
+  def sanitize_date(date)
+    Date.strptime(date, '%m/%d/%Y') rescue date
+  end
 
-    attrs
+  def sanitize_phone(phone)
+    phone.gsub(/\(|\)|-|\s/, '').gsub(I18n.t('constants.phone.extension'), '#')
   end
 end

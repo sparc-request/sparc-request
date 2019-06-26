@@ -251,65 +251,69 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def protocol_params
-    @protocol_params ||= begin
-        params.require(:protocol).permit(:archived,
-        :arms_attributes,
-        :billing_business_manager_static_email,
-        :brief_description,
-        :end_date,
-        :federal_grant_code_id,
-        :federal_grant_serial_number,
-        :federal_grant_title,
-        :federal_non_phs_sponsor,
-        :federal_phs_sponsor,
-        :funding_rfa,
-        :funding_source,
-        :funding_source_other,
-        :funding_start_date,
-        :funding_status,
-        :identity_id,
-        :indirect_cost_rate,
-        :last_epic_push_status,
-        :last_epic_push_time,
-        :next_ssr_id,
-        :potential_funding_source,
-        :potential_funding_source_other,
-        :potential_funding_start_date,
-        :recruitment_end_date,
-        :recruitment_start_date,
-        :requester_id,
-        :selected_for_epic,
-        :short_title,
-        :sponsor_name,
-        :locked,
-        {:study_phase_ids => []},
-        :start_date,
-        :study_type_question_group_id,
-        :title,
-        :type,
-        :udak_project_number,
-        :guarantor_contact,
-        :guarantor_phone,
-        :guarantor_email,
-        :research_master_id,
-        research_types_info_attributes: [:id, :human_subjects, :vertebrate_animals, :investigational_products, :ip_patents],
-        study_types_attributes: [:id, :name, :new, :position, :_destroy],
-        vertebrate_animals_info_attributes: [:id, :iacuc_number,
-          :name_of_iacuc,
-          :iacuc_approval_date,
-          :iacuc_expiration_date],
-        investigational_products_info_attributes: [:id, :protocol_id,
-          :ind_number,
-          :inv_device_number,
-          :exemption_type,
-          :ind_on_hold],
-        ip_patents_info_attributes: [:id, :patent_number, :inventors],
-        impact_areas_attributes: [:id, :name, :other_text, :new, :_destroy],
-        human_subjects_info_attributes: [:id, :nct_number, :pro_number, :irb_of_record, :submission_type, :initial_irb_approval_date, :irb_approval_date, :irb_expiration_date, :approval_pending],
-        affiliations_attributes: [:id, :name, :new, :position, :_destroy],
-        project_roles_attributes: [:id, :identity_id, :role, :project_rights, :_destroy],
-        study_type_answers_attributes: [:id, :answer, :study_type_question_id, :_destroy])
+    # Fix identity_id nil problem when lazy loading is enabled
+    # when lazy loadin is enabled, identity_id is merely ldap_uid, the identity may not exist in database yet, so we create it if necessary here
+    if Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") && params[:primary_pi_role][:identity_id].present?
+      params[:primary_pi_role][:identity_id] = Identity.find_or_create(params[:primary_pi_role][:identity_id]).id
     end
+
+    # Sanitize date formats
+    params[:funding_start_date]           = sanitize_date params[:funding_start_date]
+    params[:potential_funding_start_date] = sanitize_date params[:potential_funding_start_date]
+
+    params[:human_subjects_info_attributes][:initial_irb_approval_date] = sanitize_date params[:human_subjects_info_attributes][:initial_irb_approval_date]
+    params[:human_subjects_info_attributes][:irb_approval_date]         = sanitize_date params[:human_subjects_info_attributes][:irb_approval_date]
+    params[:human_subjects_info_attributes][:irb_expiration_date]       = sanitize_date params[:human_subjects_info_attributes][:irb_expiration_date]
+
+    params[:vertebrate_animals_info_attributes][:iacuc_approval_date]   = sanitize_date params[:vertebrate_animals_info_attributes][:iacuc_approval_date]
+    params[:vertebrate_animals_info_attributes][:iacuc_expiration_date] = sanitize_date params[:vertebrate_animals_info_attributes][:iacuc_expiration_date]
+
+    params.require(:protocol).permit(
+      :archived,
+      :arms_attributes,
+      :billing_business_manager_static_email,
+      :brief_description,
+      :federal_grant_code_id,
+      :federal_grant_serial_number,
+      :federal_grant_title,
+      :federal_non_phs_sponsor,
+      :federal_phs_sponsor,
+      :funding_rfa,
+      :funding_source,
+      :funding_source_other,
+      :funding_start_date,
+      :funding_status,
+      :guarantor_contact,
+      :guarantor_email,
+      :guarantor_phone,
+      :identity_id,
+      :indirect_cost_rate,
+      :last_epic_push_status,
+      :last_epic_push_time,
+      :next_ssr_id,
+      :potential_funding_source,
+      :potential_funding_source_other,
+      :potential_funding_start_date,
+      :requester_id,
+      :research_master_id,
+      :selected_for_epic,
+      :short_title,
+      :sponsor_name,
+      :study_type_question_group_id,
+      :title,
+      :type,
+      :udak_project_number,
+      research_types_info_attributes: [:id, :human_subjects, :vertebrate_animals, :investigational_products, :ip_patents],
+      study_types_attributes: [:id, :name, :new, :position, :_destroy],
+      vertebrate_animals_info_attributes: [:id, :iacuc_number, :name_of_iacuc, :iacuc_approval_date, :iacuc_expiration_date],
+      investigational_products_info_attributes: [:id, :protocol_id, :ind_number, :inv_device_number, :exemption_type, :ind_on_hold],
+      ip_patents_info_attributes: [:id, :patent_number, :inventors],
+      impact_areas_attributes: [:id, :name, :other_text, :new, :_destroy],
+      human_subjects_info_attributes: [:id, :nct_number, :pro_number, :irb_of_record, :submission_type, :initial_irb_approval_date, :irb_approval_date, :irb_expiration_date, :approval_pending],
+      affiliations_attributes: [:id, :name, :new, :position, :_destroy],
+      primary_pi_role_attributes: [:id, :identity_id, :role, :project_rights, :_destroy],
+      study_type_answers_attributes: [:id, :answer, :study_type_question_id, :_destroy]
+    )
   end
 
   def build_with_owner_params
@@ -322,50 +326,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def find_protocol
     @protocol = Protocol.find(params[:id])
-  end
-
-  def convert_date_for_save(attrs, date_field)
-    if attrs[date_field] && attrs[date_field].present?
-      attrs[date_field] = Time.strptime(attrs[date_field].strip, "%m/%d/%Y")
-    end
-
-    attrs
-  end
-
-  ### fix identity id nil problem when lazy loading is enabled
-  ### when lazy loadin is enabled, identity_id is merely ldap_uid, the identity may not exist in database yet, so we create it if necessary here
-  def fix_identity
-    attrs               = protocol_params
-    attrs[:project_roles_attributes].each do |index, project_role|
-      if project_role[:identity_id].present?
-        identity = Identity.find_or_create project_role[:identity_id]
-        project_role[:identity_id] = identity.id
-      end
-    end unless attrs[:project_roles_attributes].nil?
-    attrs
-  end
-
-  def fix_date_params
-    attrs               = protocol_params
-
-    #### fix dates so they are saved correctly ####
-    attrs                                        = convert_date_for_save attrs, :start_date
-    attrs                                        = convert_date_for_save attrs, :end_date
-    attrs                                        = convert_date_for_save attrs, :funding_start_date
-    attrs                                        = convert_date_for_save attrs, :potential_funding_start_date
-
-    if attrs[:human_subjects_info_attributes]
-      attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :initial_irb_approval_date
-      attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :irb_approval_date
-      attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :irb_expiration_date
-    end
-
-    if attrs[:vertebrate_animals_info_attributes]
-      attrs[:vertebrate_animals_info_attributes] = convert_date_for_save attrs[:vertebrate_animals_info_attributes], :iacuc_approval_date
-      attrs[:vertebrate_animals_info_attributes] = convert_date_for_save attrs[:vertebrate_animals_info_attributes], :iacuc_expiration_date
-    end
-
-    attrs
   end
 
   def perform_protocol_lock(protocol, lock_status)

@@ -18,8 +18,18 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#study_type_note.gray_note
-  - if protocol.active? && action_name != 'update_protocol_type'
-    - note = protocol.determine_study_type_note
-    - if note.present?
-      = form.label :note, t(:protocols)[:studies][:information][:note] + note
+%section#primaryPiInformation
+  %h4.pb-2.mb-3.border-bottom
+    = t('protocols.form.primary_pi.header')
+    %br
+    %small.text-muted
+      = t('protocols.form.primary_pi.subtext')
+  = f.fields_for :primary_pi_role do |ff_ppi|
+    .form-row
+      .form-group.col-6.mb-0
+        = label_tag :primary_pi_search, t('protocols.form.primary_pi.field'), class: 'required'
+        = text_field_tag :primary_pi_search, ff_ppi.object.try(&:display_name), class: 'form-control typeahead', placeholder: t('constants.prompts.search_for_user')
+        = ff_ppi.hidden_field :identity_id
+      .form-group.col-12
+        %span.form-text.text-muted
+          = t('protocols.form.primary_pi.note')

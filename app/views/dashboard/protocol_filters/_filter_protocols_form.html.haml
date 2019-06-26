@@ -67,7 +67,8 @@
       .card-footer.flex-wrap
         = f.submit t('actions.filter'), class: 'btn btn-block btn-primary mb-2'
         .col-lg-6.col-12.pl-0.pr-1
-          = link_to t('actions.save'), new_dashboard_protocol_filter_path(filterrific: filterrific.to_hash), remote: true, title: t('dashboard.protocol_filters.tooltips.save'), class: 'btn btn-block btn-outline-primary', id: 'saveProtocolFilters', data: { toggle: 'tooltip', placement: 'top' }
+          %button.btn.btn-block.btn-outline-primary#saveProtocolFilters{ type: 'button', title: t('dashboard.protocol_filters.tooltips.save'), data: { toggle: 'tooltip', placement: 'top' } }
+            = t('actions.save')
         .col-lg-6.col-12.pr-0.pl-1
           = link_to t('actions.reset'), reset_filterrific_url, remote: true, title: t('dashboard.protocol_filters.tooltips.reset'), class: 'btn btn-block btn-outline-primary', data: { toggle: 'tooltip', placement: 'top' }
 

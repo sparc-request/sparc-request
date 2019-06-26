@@ -19,14 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Project < Protocol
-
-  def populate_for_edit
-    super
-    self.setup_project_roles
+  def setup_study_type_questions
   end
-
-  def setup_project_roles
-    project_roles.build(role: "primary-pi", project_rights: "approve") unless project_roles.primary_pis.any?
-  end
-
 end

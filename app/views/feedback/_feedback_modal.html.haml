@@ -29,16 +29,17 @@
       .modal-body
         = f.hidden_field :date, value: Date.today
         .form-row
-          .form-group.col-6
+          .form-group{ class: Setting.get_value('use_redcap_api') ? 'col-4' : 'col-6' }
             = f.label :name, class: 'required'
             = f.text_field :name, value: current_user.try(&:full_name), class: 'form-control'
-          .form-group.col-6
+          .form-group{ class: Setting.get_value('use_redcap_api') ? 'col-4' : 'col-6' }
             = f.label :email, class: 'required'
             = f.text_field :email, value: current_user.try(:email), class: 'form-control'
+          - if Setting.get_value('use_redcap_api')
+            .form-group.col-4
+              = f.label :sparc_request_id, class: 'required'
+              = f.text_field :sparc_request_id, class: 'form-control'
         - if Setting.get_value('use_redcap_api')
-          .form-group
-            = f.label :sparc_request_id, class: 'required'
-            = f.text_field :sparc_request_id, class: 'form-control'
           .form-row
             .form-group.col-6
               = f.label :browser, class: 'required'

@@ -87,16 +87,28 @@ en:
         body: "Note"
       option:
         content: "Option"
+      project:
+        title: "Project Title"
       protocol:
         id: "SRID"
+        research_master_id: "Research Master ID"
         short_title: "Short Title"
-        title: "Title"
-        description: "Brief Description"
+        brief_description: "Brief Description"
         funding_status: "Proposal Funding Status"
         funding_source: "Funding Source"
+        funding_source_other: "Specify Funding Source"
         potential_funding_source: "Potential Funding Source"
+        indirect_cost_rate: "Indirect Cost Rate"
+        sponsor_name: "Sponsor Name"
+        selected_for_epic: "Publish Study in Epic"
+        study_type_questions: "Study Type Questions"
+        federal_grant_code_id: "Grant Code"
+        federal_grant_serial_number: "Serial Number"
+        federal_grant_title: "Title"
+        federal_phs_sponsor: "PHS Sponsor"
+        federal_non_phs_sponsor: "Non-PHS Sponsor"
         human_subjects_info: "The NCT #"
-        guarantor_contact: "Contact"
+        guarantor_contact: "Contact Name"
         guarantor_phone: "Phone"
         guarantor_email: "Email"
       protocol_filter:
@@ -114,6 +126,8 @@ en:
         name: "Investigator's Name"
         email: "Investigator's Email"
         institution: "Investigator's Institution"
+      study:
+        title: "Study Title"
       survey:
         active: ""
       visit:
@@ -364,8 +378,8 @@ en:
     prompts:
       none: "Nothing Selected"
       any: "- Any -"
-      please_specify: "Please specify: *"
-      search_for_user: "Search for a User"
+      please_specify: "Please Specify"
+      search_for_user: "Search for a user"
       select: "---Please Select---"
       select_action: "Select an action"
       select_one: "Select One"
@@ -378,6 +392,10 @@ en:
     search:
       loading: "Loading..."
       no_results: "No Results"
+    phone:
+      placeholder: "(XXX) XXX-XXXX"
+      note: "For extensions add ext XXXXX"
+      extension: "ext"
 
   #################
   # CONTACT FORMS #
@@ -561,7 +579,7 @@ en:
   # PROTOCOLS #
   #############
   protocols:
-    new: "Start a New Protocol"
+    new: "New %{protocol_type}"
     edit: "Edit %{protocol_type} Information"
     created: "%{protocol_type} Created!"
     updated: "%{protocol_type} Updated!"
@@ -600,30 +618,27 @@ en:
       warning: "This will change the type of this Protocol. Are you sure?"
       updated: "Protocol Type Updated!"
       new_study_warning: "Please complete Sponsor Name and Publish Study in Epic"
-    studies:
-      new: "New Study"
+    form:
+      header:
+        new: "Start a New %{protocol_type}"
+        edit: "Edit an Existing %{protocol_type}"
       information:
-        header: "Study Information"
-        subtext: "Necessary to obtain correct pricing"
-        short_title: "Short Title:"
-        title: "Study Title:"
-        funding_status: "Proposal Funding Status:"
-        funding_source: "Funding Source:"
-        potential_funding_source: "Potential Funding Source:"
-        funding_source_internal: "Please Specify:"
-        research_master_id: "Research Master ID:"
-        funding_source_federal:
-          title: "Federal Grant Title:"
-          code: "Federal Grant Code:"
-          phs_sponsor: "Federal PHS Sponsor:"
-          separator: "-OR-"
-          non_phs_sponsor: "Federal Non-PHS Sponsor:"
-          serial_number: "Federal Grant Serial Number:"
-        phase: "Study Phase(s):"
-        sponsor: "Sponsor Name:"
-        push_to_epic: "Publish Study in Epic:"
-        study_type_questions: "Study Type Questions:"
-        note: "Note: "
+        header: "General %{protocol_type} Information"
+        rmid_note: "If your %{protocol_type} has a <a href='%{rmid_url}' target='blank'>%{rmid_field}</a>, enter it here and we will automatically fill in some information for you."
+        rmid_error:
+          title: "No Records Found"
+          text: "Could not find a Research Master record with RMID <strong>%{rmid}</strong>"
+        specify_funding_source: "Specify Funding Source"
+        study_type_note: "Note: %{note}"
+      primary_pi:
+        header: "Add Your Primary PI"
+        subtext: "Additional users may be added later"
+        field: "Primary PI"
+        note: "If you are not the Primary PI, you will be added as a general access user and you may change your role later"
+      grant_information:
+        header: "Federal Grant Information"
+        sponsor_separator: "- OR -"
+    studies:
       financial_information:
         header: "Financial Information"
         subtext: "Used for reporting purposes and saved for your future use"
@@ -632,9 +647,6 @@ en:
         rfa: "Funding Opportunity # / RFA:"
         potential_start_date: "Potential Funding Start Date:"
         start_date: "Funding Start Date:"
-        contact: "Contact:"
-        phone: "Phone:"
-        email: "Email:"
       research_involving:
         none: "No Research Types selected"
         header: "Research Involving"
@@ -682,23 +694,7 @@ en:
         none: "No Affiliations selected"
         header: "Affiliations, Collaborations, and Memberships"
         subtext: "Check all that apply"
-    projects:
-      new: "New Project"
-      information:
-        header: "Project Information"
-        short_title: "Short Title:"
-        title: "Project Title:"
-        funding_status: "Proposal Funding Status:"
-        funding_source: "Funding Source:"
-        potential_funding_source: "Potential Funding Source:"
-        description: "Brief Description:"
-        rate: "Indirect Cost Rate:"
     prompts:
-      status: "Select a Funding Status"
-      source: "Select a Funding Source"
-      potential_source: "Select a Potential Funding Source"
-      federal_sponsor: "Select if Applicable"
-      phase: "Select Study Phase(s)"
       submission_type: "Select a Submission Type"
     tooltips:
       new_study: >
@@ -719,9 +715,6 @@ en:
       ide: 'Investigation Device Exemption Number'
       hde: 'Humanitarian Device Exemption Number'
       hud: 'Humanitarian Use Device Number'
-    authorized_users:
-      header: "Add Primary PI"
-      primary_pi: "Primary PI:"
 
   ########################
   # NOT APPROVED WARNING #
@@ -882,87 +875,6 @@ en:
   ###########################################################################################
   ###########################################################################################
 
-  # Admin Dashboard
-  admin_dashboard:
-    billing_business: "Billing/Business Manager"
-    delete_confirm: "Are you sure?"
-    delete_link: "Delete"
-    delete: "Delete This Request"
-    edit_protocol_title: "Dashboard <span>|</span> Edit Protocol Information"
-    epic_interface: "Epic Interface"
-    export_link: "Export"
-    export: "Export to Excel"
-    id: "SRID"
-    notifications_title: "Dashboard <span>|</span> Notifications"
-    pi: "Principal Investigator"
-    requester: "Requester"
-    routing: "Routing"
-    send_to_epic: "Send To Epic"
-    short_title: "Short Title"
-    status: "Status"
-    tabs:
-      cw_fulfillment: "Fulfillment"
-      docs: "Documents"
-      fulfillment: "Fulfillment"
-      invoices: "Invoices"
-      notifications: "Notifications"
-      payments: "Payments"
-      protocol_info: "Project/Study Information"
-      related_srs: "Related Service Requests"
-      services: "Services"
-      subject_tracker: "Subject Tracker"
-      template: "Template"
-      users: "Authorized Users"
-    title: "Dashboard <span>|</span> Welcome"
-
-  admin_identities:
-    button_cancel: "Cancel"
-    button_add_user: "Add User"
-    button_edit_user: "Edit User"
-    button_search: "Search"
-    button_update_user: "Update User"
-    catalog_manager: "Catalog Manager"
-    edit_user_modal_title: "Update "
-    edit_user_email: "Email"
-    edit_user_first_name: "First name"
-    edit_user_last_name: "Last name"
-    edit_user_required: "Required"
-    edit_user_valid_email_required: "Valid email required"
-    footer: "* Close this window or tab when you're done adding new users."
-    grid_uid: "LDAP UID"
-    home: "Users"
-    page_title: "Advanced User Search"
-    portal: "Dashboard"
-    portal_admin: "Portal Admin"
-    request_services: "Request Services"
-    return_to_basic_user_search: "Please go back to the 'STEP 1: Add Users' window to add them to your study/project."
-    search_help_block: "Filter the results by searching within the column headers in the grid below. Edit User buttons are displayed for people already in the system and only usable by administrators."
-    search_placeholder: "Find users by first name, last name, email, or user ID"
-
-  # Admin Root Page
-  admin_root:
-    assigned: "Person Assigned"
-    date: "Date Submitted"
-    orgs: "Provider/Program/Core"
-    requester: "Requester"
-    search_placeholder: "Search all service requests..."
-    service: "Service"
-    title: "My Profile"
-
-  # Bottom navigation
-  bottom_navigation:
-    cancel: " ⟵ Cancel"
-    continue: "Continue ⟶ "
-    get_cost_estimate: "Get Cost Estimate"
-    go_back: " ⟵ Go Back"
-    save_and_continue: "Save & Continue ⟶ "
-    save_and_exit: "Save as Draft"
-    save_as_draft: "Save As Draft"
-    submit_to_start: "    Submit to Start Services ⟶ "
-
-  message:
-    red_message: "Pricing is consistent across locations unless otherwise stated."
-
   # Calendar Page
   calendar_page:
     billing_legend:
@@ -1015,82 +927,6 @@ en:
       pricing: "Consolidated Request Tab"
       quantity: "Quantity Display Tab"
       template: "Template Tab"
-
-  # Edit Project Form
-  project_form:
-    description: "Brief Description:"
-    dropdown_default1: "Select a Funding Status"
-    dropdown_default2: "Select a Funding Source"
-    dropdown_default3: "Select a Potential Funding Source"
-    message: "Before you can complete a service request, please tell us more about your project.  This information will be used by our staff to decide the best way to process your request."
-    push_to_epic: "Publish Project to Epic:"
-    rate: "Indirect Cost Rate:"
-    save: "Save"
-    title: "Project Title:*"
-
-  # Edit Study form
-  study_form:
-    affiliations: "Affiliations, Collaborations, and Memberships"
-    approval_pending: "Application/Approval Pending:"
-    study_type_questions: "Study Type Questions"
-    attributes: "Study Attributes"
-    clear: "Clear"
-    code_blank: "Select a Federal Grant Code"
-    description: "Before you can complete a service request, please tell us more about your research study. This information will be used by our staff to decide the best way to process your request."
-    epic: "Epic Information"
-    federal_grant_code_id: "Federal Grant Code:"
-    federal_grant_serial_number: "Federal Grant Serial Number:"
-    federal_grant_title: "Federal Grant Title:"
-    federal_non_phs_sponsor: "Federal Grant Non-PHS Sponsor:"
-    federal_phs_sponsor: "Federal Grant PHS Sponsor:"
-    funding_blank: "Select a Funding Source"
-    funding_rfa: "Funding Opportunity #/RFA:"
-    funding_source_other: "Please Specify"
-    funding_start_date: "Funding Start Date:"
-    human_subjects: "Human Subjects:"
-    iacuc_approval_date: "IACUC Approval Date:"
-    iacuc_expiration_date: "IACUC Expiration Date:"
-    iacuc_number: "IACUC #:"
-    impact: "Impact Areas"
-    ind_number: "IND#:"
-    ind_on_hold: "IND on Hold?"
-    indirect_cost_rate: "Indirect Cost Rate"
-    inventors: "Inventors:"
-    investigational_products: "Investigational Products:"
-    ip_patents: "IP/Patents:"
-    irb_approval_date: "IRB Approval Date:"
-    irb_expiration_date: "IRB Expiration Date:"
-    irb_of_record: "IRB of Record:"
-    name_of_iacuc: "Name of IACUC:"
-    nct_number: "NCT# (National Clinical Trials Number):"
-    needed_info: "Information needed to obtain correct pricing"
-    numbers:
-      hde: "HDE #:"
-      hud: "HUD #:"
-      ide: "IDE #:"
-    optional_text: "Optional Information"
-    optional_text2: "(used for reporting purposes and saved for your future use)"
-    options: "Optional"
-    rate: "Indirect Cost Rate:"
-    research: "Research Involving (Check all that apply)"
-    patent_number: "Patent Number:"
-    phase_blank: "Select a Study Phase"
-    phs_blank: "Please Select if Applicable"
-    potential_blank: "Select a Potential Funding Source"
-    potential_funding_source_other: "Please Specify"
-    potential_funding_start_date: "Potential Funding Start Date:"
-    pro_number: "Pro #:"
-    push_to_epic: "Publish Study in Epic: *"
-    save: "Save"
-    sponsor_name: "Sponsor Name:*"
-    status_blank: "Select a Funding Status"
-    study_phase: "Study Phase:"
-    submission_blank: "Pick a Submission Type"
-    submission_type: "Submission Type:"
-    title: "Protocol Title:*"
-    type: "Study Type (Check all that apply)"
-    udak_project_number: "Financial Account (UDAK#):"
-    vertebrate_animals: "Vertebrate Animals:"
 
   # Fulfillment tab
   fulfillments:
@@ -1311,29 +1147,6 @@ en:
         submit: "Save Appointments"
         visit_complete: "Date of Visit (entering date signifies a completed visit)"
         visit_selector: "Please select a visit:"
-  # Portal Editing user for study/project
-  portal_user_form:
-    add_user: "Add User"
-    credential_prompt: "Select a Credential"
-    credentials: "Credentials:"
-    edit_user: "Edit User"
-    email: "E-mail:"
-    epic_access: "Epic EMR Access?:"
-    era: "ERA Commons Name:"
-    name: "Name:"
-    credentials_other: "Other Credentials:"
-    phone: "Phone:"
-    rights:
-      header: "User Rights:"
-      none: 'Member Only'
-      view: 'View Rights'
-      request: 'Request/Approve Services'
-      approve: 'Authorize/Change Study Charges'
-    role_other: "Other Role:"
-    role_prompt: "Select a Role"
-    role: "Role:*"
-    subspecialty_prompt: "Select a Subspecialty"
-    subspecialty: "Subspecialty:"
 
   # Indirect cost rates, default values used to prepopulate forms
   indirect_cost_rates:
@@ -1353,69 +1166,6 @@ en:
     pricing_setup_industry_rate_type: "Pricing setup's 'industry rate type'"
     pricing_setup_investigator_rate_type: "Pricing setup's 'investigator rate type'"
     pricing_setup_internal_rate_type: "Pricing setup's 'internal rate type'"
-
-  # Javascript localizations
-  ajax_error: "An error happened processing your request: "
-  cart:
-    remove_request_confirm: "This action will delete this service request and you will be redirected to your user portal. Click OK to proceed."
-    new_request_dialog1: "New Request?"
-    new_request_dialog2: "Is this a new research study or project?"
-    request_submitted1: "Delete Service Warning"
-    request_submitted2: "Deleting this service from the service cart will be irreversible and will cause it to be deleted from the associated protocol (%{protocol_id}). Are you sure you want to proceed?"
-  catalog_manager_js:
-    clinical_provider_remove: "Are you sure you want to remove this Fulfillment Provider?"
-    cm_rights_remove: "Are you sure you want to remove rights for this user from the Catalog Manager?"
-    core_prompt: "Please enter the name of the core you would like to create"
-    institution_prompt: "Please enter the name of the institution you would like to create"
-    later_display_date: "This display date is before the display date of existing pricing maps, are you sure you want to do this?"
-    later_effective_date: "This effective date is before the effective date of existing pricing maps, are you sure you want to do this?"
-    permission_change: "You are changing your own permissions. Your page will refresh automatically when this window closes."
-    program_prompt: "Please enter the name of the program you would like to create"
-    provider_prompt: "Please enter the name of the provider you would like to create"
-    same_display_date: "A pricing map already exists with that display date.  Please choose another date."
-    same_effective_date: "A pricing map already exists with that effective date.  Please choose another date."
-    service_alert: "There needs to be at least one service provider on a parent organization to create a new service."
-    service_provider_remove: "Are you sure you want to remove this Service Provider?"
-    service_remove: "Are you sure you want to remove this Related Service?"
-    super_user_remove: "Are you sure you want to remove this Super User?"
-    survey_delete: "Are you sure you want to remove this Associated Survey?"
-  cwf_js:
-    calendar_changed: "Changes to patient calendars need to be saved, click 'Stay on page' and save the form to save the calendar, or click 'Leave page' to leave the page and dismiss your changes."
-    subject_changed: "Changes to subjects need to be saved. Click 'Cancel' to return to the page and save the form, or 'OK' to leave the page and dismiss your changes."
-    subject_delete: "This subject has one or more completed appointments and can't be deleted."
-  epic_box:
-    epic_box_error: "Epic Information Error"
-    epic_box_alert: "Please fill out the Epic Information correctly."
-  fulfillment_js:
-    arm_delete_confirm: "Are you sure you want to remove the arm?"
-    arm_remove_alert: "You can't delete the last arm while Clinical Services still exist."
-    arm_subject_data_alert: "This arm has subject data and can not be deleted."
-    cwf_service_delete: "Are you sure you want to remove this service?"
-    date_error: "Please enter a start date before the end date"
-    deleted: " has been deleted."
-    epic: "Project/Study has been sent to Epic"
-    last_visit_delete: "You can't delete the last visit. Please delete the arm if visits are no longer required."
-    pi_contribution: "Value is over maximum dollar cap."
-    remove_service: "Are you sure that you want to remove this service from all subjects' visit calendars in this arm?"
-    service_delete_confirm: "Are you sure that you want to remove this service from all subjects' visit calendars?"
-    subsidy: "Value is over maximum subsidy percentage."
-  in_fulfillment: "This line item is associated with a request that is in Fulfillment and cannot be deleted."
-  js_confirm: "Are you sure?"
-  notifications_js:
-    send: "Message has been sent."
-  service_deleted: "Service has been deleted."
-  service_details_alerts:
-    subject_count: "This arm has completed subject data in Fulfillment. The subject count cannot be decreased."
-    visit_count: "This arm has completed subject data in Fulfillment. The visit count cannot be decreased."
-  service_request_success: "Service request has been saved."
-  services_js:
-    before_display_date: "You have selected a display date before an existing display date, are you sure you want to do this?"
-    before_effective_date: "You have selected a effective date before an existing effective date, are you sure you want to do this?"
-    rate_field_confirm: "Changing this value will override the pre-calculated rate for this service."
-    same_display_date: "You can't have two display dates on the same day!"
-    same_effective_date: "You can't have two effective dates on the same day!"
-  sign_in_dialog: "Please select one of the options below:"
-  signed_up_dialog: "New account created:"
 
   # Mailer
   mailer:
@@ -1445,34 +1195,6 @@ en:
     title2: "Project Title:"
     user_info: "User Information:"
     user_modification: "User Modification"
-
-  # New/editing projects
-  sr_project:
-    description: "Brief Description:"
-    dropdown_default1: "Select a Funding Status"
-    dropdown_default2: "Select a Funding Source"
-    dropdown_default3: "Select a Potential Funding Source"
-    funding_source: "Funding Source:*"
-    funding_status: "Proposal Funding Status:*"
-    message: "Before you can complete a service request, please tell us more about your project.  This information will be used by our staff to decide the best way to process your request."
-    potential_funding_source: "Potential Funding Source:*"
-    rate: "Indirect Cost Rate:"
-    title1: "Short Title:*"
-    title2: "Project Title:*"
-
-  # New user sign up
-  signup:
-    cancel: "Cancel"
-    company: "Company:"
-    confirm: "Password Confirmation:"
-    fname: "First Name:"
-    lname: "Last Name:"
-    mail: "Email:"
-    message: "To create an account for the utilization of the SPARCRequest application, please provide the following information:"
-    not_approved: "Close Window"
-    phone: "Telephone Number:"
-    reason: "Reason for account/login request:"
-    submit: "Create New User"
 
   # Notifications
   notifications:

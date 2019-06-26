@@ -30,10 +30,20 @@
   .form-row
     .form-group.col-12.col-xl-6
       = f.label :email, class: 'required'
-      = f.email_field :email, class: 'form-control'
+      .input-group
+        = f.email_field :email, class: 'form-control'
+        .input-group-append
+          %span.input-group-text
+            = icon('far', 'envelope')
     .form-group.col-12.col-xl-6
       = f.label :phone, class: 'required'
-      = f.telephone_field :phone, class: 'form-control'
+      .input-group
+        = f.telephone_field :phone, class: 'form-control', placeholder: t('constants.phone.placeholder')
+        .input-group-append
+          %span.input-group-text
+            = icon('fas', 'phone')
+      %span.form-text.text-muted
+        = t('constants.phone.note')
   .form-group
     = f.label :company
     = f.text_field :company, class: 'form-control'

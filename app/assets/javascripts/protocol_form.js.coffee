@@ -18,34 +18,147 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-(exports ? this).updateRmidFields = () ->
-  rmId = $('.research-master-field').val()
-  if rmId
-    $.ajax
-      url: "#{gon.rmid_api_url}research_masters/#{rmId}.json"
-      type: 'GET'
-      headers: {"Authorization": "Token token=\"#{gon.rmid_api_token}\""}
-      success: (data) ->
-        $('#protocol_short_title').val(data.short_title)
-        $('#protocol_title').val(data.long_title)
-        if data.eirb_validated
-          $('#protocol_human_subjects_info_attributes_pro_number').val(data.eirb_pro_number)
-          $('#protocol_human_subjects_info_attributes_initial_irb_approval_date').val(data.date_initially_approved)
-          $('#protocol_human_subjects_info_attributes_irb_approval_date').val(data.date_approved)
-          $('#protocol_human_subjects_info_attributes_irb_expiration_date').val(data.date_expiration)
-          toggleFields('.rm-locked-fields', true)
-        else
-          toggleFields('.rm-locked-fields:not(.hr-field)', true)
-      error: ->
-        swal("Error", "Research Master Record not found", "error")
-        resetRmIdFields('.rm-id-dependent', '')
-        toggleFields('.rm-locked-fields', false)
+$(document).on 'turbolinks:load', ->
+  
+  rmidTimer = null
 
-toggleFields = (fields, state) ->
-  $(fields).prop('disabled', state)
+  $(document).on('keyup', '#protocol_research_master_id:not([readonly=readonly])', ->
+    clearTimeout(rmidTimer)
+    if rmid = $(this).val()
+      rmidTimer = setTimeout( (->
+        $.ajax
+          method: 'get'
+          dataType: 'json'
+          url: "#{gon.rmid_api_url}research_masters/#{rmid}"
+          headers: 
+            Authorization: "Token token=\"#{gon.rmid_api_token}\""
+          success: (data) ->
+            $('#protocol_short_title').val(data.short_title).prop('readonly', true)
+            $('#protocol_title').val(data.long_title).prop('readonly', true)
 
-resetRmIdFields = (fields, value) ->
-  $(fields).val(value)
+            if data.eirb_validated
+              $('#protocol_human_subjects_info_attributes_pro_number').val(data.eirb_pro_number).prop('readonly', true)
+              $('#protocol_human_subjects_info_attributes_initial_irb_approval_date').datepicker('update', data.date_initially_approved).prop('readonly', true)
+              $('#protocol_human_subjects_info_attributes_irb_approval_date').datepicker('update', data.date_approved).prop('readonly', true)
+              $('#protocol_human_subjects_info_attributes_irb_expiration_date').datepicker('update', data.date_expiration).prop('readonly', true)
+          error: ->
+            AlertSwal.fire(
+              type: 'error',
+              title: I18n.t('protocols.form.information.rmid_error.title'),
+              html: I18n.t('protocols.form.information.rmid_error.text', rmid: rmid)
+            )
+            resetRmidFields()
+      ), 250)
+    else
+      resetRmidFields()
+  ).on('keydown', '#protocol_research_master_id:not([readonly=readonly])', ->
+    clearTimeout(rmidTimer)
+  )
+
+  $(document).on 'change', '#protocol_funding_status', ->
+    toggleFundingSource($(this).val())
+
+  $(document).on 'change', '#protocol_funding_source, #protocol_potential_funding_source', ->
+    toggleFederalFields($(this).val())
+    toggleFundingSourceOther($(this).val())
+
+  $(document).on 'change', '[name="protocol[selected_for_epic]"]', ->
+    if $('#studyTypeQuestionsContainer').hasClass('d-none') 
+      $('#studyTypeQuestionsContainer').removeClass('d-none')
+
+  $(document).on 'change', '#protocol_federal_phs_sponsor', ->
+    if $('#protocol_federal_non_phs_sponsor').val()
+      $('#protocol_federal_non_phs_sponsor').selectpicker('val', '')
+
+  $(document).on 'change', '#protocol_federal_non_phs_sponsor', ->
+    if $('#protocol_federal_phs_sponsor').val()
+      $('#protocol_federal_phs_sponsor').selectpicker('val', '')
+
+resetRmidFields = () ->
+  $('#protocol_short_title').val('').prop('readonly', false)
+  $('#protocol_title').val('').prop('readonly', false)
+  $('#protocol_human_subjects_info_attributes_pro_number').val('').prop('readonly', false)
+  $('#protocol_human_subjects_info_attributes_initial_irb_approval_date').datepicker('update', '').prop('readonly', false)
+  $('#protocol_human_subjects_info_attributes_irb_approval_date').datepicker('update', '').prop('readonly', false)
+  $('#protocol_human_subjects_info_attributes_irb_expiration_date').datepicker('update', '').prop('readonly', false)
+
+fundingSource           = ""
+potentialFundingSource  = ""
+
+toggleFundingSource = (val) ->
+  if val == 'pending_funding'
+    fundingSource = $('#protocol_funding_source').val()
+
+    $('#fundingSourceContainer').addClass('d-none')
+    $('#potentialFundingSourceContainer').removeClass('d-none')
+    $('#protocol_funding_source').selectpicker('val', '')
+    $('#protocol_potential_funding_source').selectpicker('val', potentialFundingSource)
+
+    toggleFederalFields(potentialFundingSource)
+    toggleFundingSourceOther(potentialFundingSource)
+  else
+    potentialFundingSource = $('#protocol_potential_funding_source').val()
+
+    $('#fundingSourceContainer').removeClass('d-none')
+    $('#potentialFundingSourceContainer').addClass('d-none')
+    $('#protocol_funding_source').selectpicker('val', fundingSource)
+    $('#protocol_potential_funding_source').selectpicker('val', '')
+
+    toggleFederalFields(fundingSource)
+    toggleFundingSourceOther(fundingSource)
+
+
+federalGrantCode          = ""
+federalGrantSerialNumber  = ""
+federalGrantTitle         = ""
+federalGrantPhsSponsor    = ""
+federalGrantNonPhsSponsor = ""
+
+toggleFederalFields = (val) ->
+  if val == 'federal'
+    $('#federalGrantInformation').removeClass('d-none')
+    $('#protocol_federal_grant_code_id').selectpicker('val', federalGrantCode)
+    $('#protocol_federal_grant_serial_number').val(federalGrantSerialNumber)
+    $('#protocol_federal_grant_title').val(federalGrantTitle)
+    $('#protocol_federal_phs_sponsor').selectpicker('val', federalGrantPhsSponsor)
+    $('#protocol_federal_non_phs_sponsor').selectpicker('val', federalGrantNonPhsSponsor)
+  else
+    federalGrantCode          = $('#protocol_federal_grant_code_id').val()
+    federalGrantSerialNumber  = $('#protocol_federal_grant_serial_number').val()
+    federalGrantTitle         = $('#protocol_federal_grant_title').val()
+    federalGrantPhsSponsor    = $('#protocol_federal_phs_sponsor').val()
+    federalGrantNonPhsSponsor = $('#protocol_federal_non_phs_sponsor').val()
+
+    $('#federalGrantInformation').addClass('d-none')
+    $('#protocol_federal_grant_code_id').selectpicker('val', '')
+    $('#protocol_federal_grant_serial_number').val('')
+    $('#protocol_federal_grant_title').val('')
+    $('#protocol_federal_phs_sponsor').selectpicker('val', '')
+    $('#protocol_federal_non_phs_sponsor').selectpicker('val', '')
+
+fundingSourceOther = ""
+
+toggleFundingSourceOther = (val) ->
+  if val == 'internal'
+    $('#fundingSourceOtherContainer').removeClass('d-none')
+    $('#protocol_funding_source_other').val(fundingSourceOther)
+  else
+    fundingSourceOther = $('#protocol_funding_source_other').val()
+
+    $('#fundingSourceOtherContainer').addClass('d-none')
+    $('#protocol_funding_source_other').val('')
+
+
+
+
+
+
+
+
+
+
+
+
 
 study_type_form = '.selected_for_epic_dependent'
 study_selected_for_epic_button = '#selected_for_epic_button'
@@ -80,16 +193,6 @@ $(document).ready ->
       $('.rm-id').removeClass('required')
     else
       $('.rm-id').addClass('required')
-
-  updateRmidFields()
-
-  $(document).on 'blur', '.research-master-field', ->
-    updateRmidFields()
-
-  $(document).on 'change', '.research-master-field', ->
-    if $(this).val() == ''
-      resetRmIdFields('.rm-id-dependent', '')
-      toggleFields('.rm-locked-fields', false)
 
   $(document).on 'click', '.edit-rmid', ->
     $('#protocol_research_master_id').prop('readonly', false)

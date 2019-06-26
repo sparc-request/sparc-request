@@ -185,6 +185,7 @@ en:
     #  PROTOCOLS  #
     ###############
     protocols:
+      new: "Start a New Protocol"
       form:
         edit_selected_for_epic: 'Edit'
         cancel_edit_selected_for_epic: 'Cancel Edit'

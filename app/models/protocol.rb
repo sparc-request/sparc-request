@@ -91,7 +91,7 @@ class Protocol < ApplicationRecord
   accepts_nested_attributes_for :study_types,                   allow_destroy: true
   accepts_nested_attributes_for :impact_areas,                  allow_destroy: true
   accepts_nested_attributes_for :affiliations,                  allow_destroy: true
-  accepts_nested_attributes_for :project_roles,                 allow_destroy: true
+  accepts_nested_attributes_for :primary_pi_role,               allow_destroy: true
   accepts_nested_attributes_for :arms,                          allow_destroy: true
   accepts_nested_attributes_for :study_type_answers,            allow_destroy: true
 
@@ -107,30 +107,6 @@ class Protocol < ApplicationRecord
     validate :validate_proxy_rights
     validate :primary_pi_exists
   end
-
-  ##Removed for now, perhaps to be added later
-  # validation_group :guarantor_fields, if: :selected_for_epic do
-  #   validates :guarantor_contact,
-  #             :guarantor_phone,
-  #             :guarantor_address,
-  #             :guarantor_city,
-  #             :guarantor_state,
-  #             :guarantor_zip,
-  #             :guarantor_county,
-  #             :guarantor_country, presence: true
-  # end
-  # validates :guarantor_fax, numericality: {allow_blank: true, only_integer: true}
-  # validates :guarantor_fax, length: { maximum: 10 }
-  # validates :guarantor_address, length: { maximum: 500 }
-  # validates :guarantor_city, length: { maximum: 40 }
-  # validates :guarantor_state, length: { maximum: 2 }
-  # validates :guarantor_zip, length: { maximum: 9 }
-
-  validates :guarantor_phone, numericality: {allow_blank: true, only_integer: true}
-  validates_format_of :guarantor_email, with: (/\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/), allow_blank: true
-
-  validates :guarantor_contact, length: { maximum: 192 }
-  validates :guarantor_phone, length: { maximum: 10 }
 
   def rmid_requires_validation?
     # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]
@@ -391,6 +367,14 @@ class Protocol < ApplicationRecord
     self.funding_status == 'pending_funding'
   end
 
+  def federally_funded?
+    self.funding_source_based_on_status == 'federal'
+  end
+
+  def internally_funded?
+    self.funding_source_based_on_status == 'internal'
+  end
+
   def active?
     study_type_question_group.nil? ? false : study_type_question_group.active
   end
@@ -495,13 +479,13 @@ class Protocol < ApplicationRecord
   end
 
   def funding_source_based_on_status
-    funding_source = case self.funding_status
-      when 'pending_funding' then self.potential_funding_source
-      when 'funded' then self.funding_source
-      else raise ArgumentError, "Invalid funding status: #{self.funding_status.inspect}"
-      end
-
-    return funding_source
+    if self.funded?
+      self.funding_source
+    elsif self.pending_funding?
+      self.potential_funding_source
+    else
+      nil
+    end
   end
 
   # Note: this method is called inside a child thread by the service
@@ -560,9 +544,7 @@ class Protocol < ApplicationRecord
   end
 
   def populate_for_edit
-    project_roles.each do |pr|
-      pr.populate_for_edit
-    end
+    self.build_primary_pi_role
   end
 
   def create_arm(args)

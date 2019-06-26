@@ -201,23 +201,27 @@ class ServiceRequestsController < ApplicationController
   private
 
   def details_params
-    @details_params ||= begin
-      required_keys = params[:study] ? :study : params[:project] ? :project : nil
-      if required_keys.present?
-        temp = params.require(required_keys).permit(:start_date, :end_date,
-          :recruitment_start_date, :recruitment_end_date, :initial_budget_sponsor_received_date, :budget_agreed_upon_date, :initial_amount, :negotiated_amount, :initial_amount_clinical_services, :negotiated_amount_clinical_services).to_h
+    key = params[:study] ? :study : :project
 
-        # Finally, transform date attributes.
-        date_attrs = %w(start_date end_date recruitment_start_date recruitment_end_date initial_budget_sponsor_received_date budget_agreed_upon_date)
-        temp.inject({}) do |h, (k, v)|
-          if date_attrs.include?(k) && v.present?
-            h.merge(k => Time.strptime(v, "%m/%d/%Y"))
-          else
-            h.merge(k => v)
-          end
-        end
-      end
-    end
+    params[key][:start_date]                            = sanitize_date params[key][:start_date]
+    params[key][:end_date]                              = sanitize_date params[key][:end_date]
+    params[key][:recruitment_start_date]                = sanitize_date params[key][:recruitment_start_date]
+    params[key][:recruitment_end_date]                  = sanitize_date params[key][:recruitment_end_date]
+    params[key][:initial_budget_sponsor_received_date]  = sanitize_date params[key][:initial_budget_sponsor_received_date]
+    params[key][:budget_agreed_upon_date]               = sanitize_date params[key][:budget_agreed_upon_date]
+
+    params.require(key).permit(
+      :start_date,
+      :end_date,
+      :recruitment_start_date,
+      :recruitment_end_date,
+      :initial_budget_sponsor_received_date,
+      :budget_agreed_upon_date,
+      :initial_amount,
+      :negotiated_amount,
+      :initial_amount_clinical_services,
+      :negotiated_amount_clinical_services
+    )
   end
 
   def current_page

@@ -36,6 +36,8 @@ class ProjectRole < ApplicationRecord
   validates :role, :presence => true
   validates :project_rights, :presence => true
 
+  delegate :first_name, :last_name, :full_name, :display_name, to: :identity
+
   scope :primary_pis, -> { where(role: "primary-pi") }
 
   def can_edit?

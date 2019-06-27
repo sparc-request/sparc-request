@@ -27,6 +27,7 @@ $.ajaxSetup({
 
 $(document).on 'turbolinks:load', ->
   initializeSelectpickers()
+  initializeDateTimePickers()
   initializeTooltips()
   initializePopovers()
   initializeToggles()
@@ -36,6 +37,7 @@ $(document).on 'turbolinks:load', ->
 
   $(document).on 'ajaxSuccess ajax:complete', ->
     initializeSelectpickers()
+    initializeDateTimePickers()
     initializeTooltips()
     initializePopovers()
     initializeToggles()
@@ -50,6 +52,11 @@ $(document).on 'turbolinks:load', ->
   # Back To Top button scroll
   $(document).on 'click', '#backToTop', ->
     $('html, body').animate({ scrollTop: 0 }, 'slow')
+
+  # Smooth scroll anchors with hash
+  $(document).on 'click', "a[href^='#']", (event) ->
+    event.preventDefault()
+    $('html, body').animate({ scrollTop: $(this.hash).offset().top }, 'slow')
 
   $(document).on 'keydown', '.is-valid, .is-invalid', ->
     $(this).removeClass('is-valid is-invalid')
@@ -121,6 +128,11 @@ $(document).on 'turbolinks:load', ->
   $('.selectpicker').each ->
     $(this).selectpicker() if $(this).siblings('.dropdown-toggle').length == 0
 
+(exports ? this).initializeDateTimePickers = () ->
+  $('.datetimepicker.date:not(.time)').datetimepicker({ format: 'L' })
+  $('.datetimepicker.time:not(.date)').datetimepicker({ format: 'T' })
+  $('.datetimepicker.date.time').datetimepicker({ format: 'LT' })
+
 (exports ? this).initializeTooltips = () ->
   $('.tooltip').tooltip('hide')
   $('[data-toggle=tooltip]').tooltip({ delay: { show: 500 }, animation: false })
@@ -135,7 +147,8 @@ $(document).on 'turbolinks:load', ->
   $('[data-toggle=table]').bootstrapTable()
 
 (exports ? this).setRequiredFields = () ->
-  $('.required:not(.has-indicator)').addClass('has-indicator').append('<span class="text-danger ml-1">*</span>')
+  $('.required:not(.has-indicator)').addClass('has-indicator').append('<span class="required-indicator text-danger ml-1">*</span>')
+  $('.has-indicator:not(.required').removeClass('has-indicator').children('.required-indicator').remove()
 
 (exports ? this).getSRId = ->
   $("input[name='srid']").val()

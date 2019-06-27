@@ -29,7 +29,7 @@ gem 'delayed_job'
 gem 'devise', '~> 4.6'
 gem 'dotenv-rails'
 gem 'dynamic_form' # Check usage
-gem 'execjs' # Check usage
+gem 'execjs'
 gem 'exception_notification'
 gem 'font-awesome-sass'
 gem 'filterrific', git: 'https://github.com/ayaman/filterrific.git'
@@ -82,7 +82,7 @@ gem 'slack-notifier'
 gem 'sprockets', '~> 4.0.0.beta9'
 gem 'turbolinks', '~> 5.2.0'
 gem 'twitter-typeahead-rails' # Bootstrap 4 purge
-gem 'uglifier', '>= 1.0.3'
+gem 'uglifier', '>= 1.3.0'
 gem 'whenever', require: false
 gem 'will_paginate'
 gem 'will_paginate-bootstrap4'

@@ -147,15 +147,6 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     end
   end
 
-  def search_identities
-    # Like SearchController#identities, but without ssr/sr authorization
-    term    = params[:term].strip
-    results = Identity.search(term).map { |i| { label: i.display_name, value: i.suggestion_value, email: i.email } }
-    results = [{ label: 'No Results' }] if results.empty?
-
-    render json: results.to_json
-  end
-
   private
 
   def project_role_params

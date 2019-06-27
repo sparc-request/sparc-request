@@ -54,8 +54,6 @@ SparcRails::Application.routes.draw do
   ### Other Routes ###
   ####################
 
-  post 'study_type/determine_study_type_note'
-
   resource :pages, only: [] do
     get :event_details
     get :faqs
@@ -92,8 +90,9 @@ SparcRails::Application.routes.draw do
     resources :studies, except: [:index, :show, :destroy]
   end
 
+  resource :research_master, only: [:update]
+
   resources :protocols, except: [:index, :destroy] do
-    resource :research_master, only: [:update]
     member do
       put :update_protocol_type
       get :approve_epic_rights
@@ -102,15 +101,15 @@ SparcRails::Application.routes.draw do
     end
   end
 
+  resource :protocol do
+    get :get_study_type_note
+  end
+
   resources :projects, controller: :protocols, except: [:index, :show, :destroy]
 
   resources :studies, controller: :protocols, except: [:index, :show, :destroy]
 
-  resources :associated_users, except: [:show] do
-    collection do
-      get :search_identities
-    end
-  end
+  resources :associated_users, except: [:show]
 
   resources :arms, only: [:index, :new, :create, :edit, :update, :destroy]
 
@@ -220,7 +219,6 @@ SparcRails::Application.routes.draw do
 
     resources :associated_users, only: [:index, :new, :create, :edit, :update, :destroy] do
       collection do
-        get :search_identities
         get :update_professional_organization_form_items
       end
     end

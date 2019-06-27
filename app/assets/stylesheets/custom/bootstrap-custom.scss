@@ -172,6 +172,30 @@ form, .form {
       border-radius: 0.3rem;
     }
   }
+
+  &.is-valid {
+    .form-control, .custom-select {
+      @extend .is-valid;
+    }
+
+    .input-group-append, .input-group-prepend {
+      .input-group-text {
+        border-color: theme-color('success');
+      }
+    }
+  }
+
+  &.is-invalid {
+    .form-control, .custom-select {
+      @extend .is-invalid;
+    }
+
+    .input-group-append, .input-group-prepend {
+      .input-group-text {
+        border-color: theme-color('danger');
+      }
+    }
+  }
 }
 
 //////////////////

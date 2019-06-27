@@ -36,12 +36,13 @@
 
 //= require popper.js/dist/umd/popper.min
 //= require bootstrap/dist/js/bootstrap.min
-//= require bootstrap-datepicker/dist/js/bootstrap-datepicker.min
 //= require bootstrap-select/dist/js/bootstrap-select.min
 //= require bootstrap-table/dist/bootstrap-table.min
 //= require bootstrap-table/dist/extensions/export/bootstrap-table-export.min
 //= require bootstrap4-toggle/js/bootstrap4-toggle
 //= require corejs-typeahead/dist/typeahead.bundle.min
+//= require moment/min/moment-with-locales.min
+//= require tempusdominus-bootstrap-4/build/js/tempusdominus-bootstrap-4.min
 //= require js-cookie/src/js.cookie
 //= require nprogress/nprogress
 
@@ -51,6 +52,7 @@
 
 //= require custom/bootstrap-custom
 //= require custom/bootstrap-select-custom
+//= require custom/tempusdominus-custom
 //= require custom/nprogress-custom
 
 ///////////////////////////

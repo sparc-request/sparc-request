@@ -86,7 +86,7 @@ $(document).on 'turbolinks:load', ->
         ].join('')
       }
     }
-  ).on('typeahead:select', (event, suggestion) ->
+  ).on 'typeahead:select', (event, suggestion) ->
     $.ajax
       method: 'post'
       dataType: 'script'
@@ -94,4 +94,3 @@ $(document).on 'turbolinks:load', ->
       data:
         srid:       getSRId()
         service_id: suggestion.service_id
-  )

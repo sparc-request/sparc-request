@@ -18,19 +18,15 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-(function($) {
-  $.extend($.fn.selectpicker.Constructor.Defaults, { counter: false });
+.datetimepicker {
+  .bootstrap-datetimepicker-widget {
+    width: initial;
 
-  var render = $.fn.selectpicker.Constructor.prototype.render;
-
-  $.fn.selectpicker.Constructor.prototype.render = function() {
-    if (this.options.counter && this.$button.find('.bootstrap-select-badge').length === 0) {
-      var badgeContext  = this.$button.hasClass('btn-light') ? 'badge-secondary' : 'badge-light';
-      var count         = this.$element.find("option:not([value=''])").length
-      this.$button.find('.filter-option-inner').append(`<span class='badge badge-pill ${badgeContext} ml-1'>${count}</span>`)
+    .datepicker {
+      th.prev, th.next, th.dow, td.day {
+        width: 32px;
+        height: 32px;
+      }
     }
-
-    render.apply(this);
-  };
-
-})(jQuery);
+  }
+}

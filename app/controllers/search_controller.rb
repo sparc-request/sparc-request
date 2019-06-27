@@ -20,8 +20,8 @@
 
 class SearchController < ApplicationController
 
-  before_action :initialize_service_request, only: [:services]
-  before_action :authorize_identity, only: [:services]
+  before_action :initialize_service_request,  only: [:services]
+  before_action :authorize_identity,          only: [:services]
 
   def services_search
     term = params[:term].strip
@@ -111,12 +111,11 @@ class SearchController < ApplicationController
   end
 
   def identities
-    term = params[:term].strip
-    results = Identity.search(term).map { |i|
+    term    = params[:term].strip
+    results = Identity.search(term).map{ |i|
       {
-        identity_id: i.id,
-        name: i.full_name,
-        email: i.email
+        label: i.display_name,
+        value: i.suggestion_value
       }
     }
     render json: results.to_json

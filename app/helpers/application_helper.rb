@@ -20,7 +20,7 @@
 
 module ApplicationHelper
   def format_date(date)
-    date.try(:strftime, '%D') || ""
+    date.strftime('%D') rescue date
   end
 
   def css_class(organization)

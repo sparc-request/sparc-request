@@ -29,9 +29,9 @@ class ApplicationController < ActionController::Base
 
   before_action :preload_settings
   before_action :set_highlighted_link
-  before_action :get_news_feed,                   if: Proc.new{ request.format.html? }
-  before_action :get_calendar_events,             if: Proc.new{ request.format.html? }
-  before_action :configure_permitted_parameters,  if: :devise_controller?
+  before_action :get_news_feed,               if: Proc.new{ request.format.html? }
+  before_action :get_calendar_events,         if: Proc.new{ request.format.html? }
+  before_action :configure_permitted_params,  if: :devise_controller?
 
   protected
 
@@ -54,6 +54,10 @@ class ApplicationController < ActionController::Base
 
   def after_sign_out_path_for(resource)
     root_path
+  end
+
+  def configure_permitted_params
+    devise_parameter_sanitizer.permit(:sign_up) { |u| u.permit! }
   end
 
   #############################
@@ -238,6 +242,6 @@ class ApplicationController < ActionController::Base
   end
 
   def sanitize_phone(phone)
-    phone.gsub(/\(|\)|-|\s/, '').gsub(I18n.t('constants.phone.extension'), '#')
+    phone.gsub(/\(|\)|-|\s/, '').gsub(I18n.t('constants.phone.extension'), '#') rescue phone
   end
 end

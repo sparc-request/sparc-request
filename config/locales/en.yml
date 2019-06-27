@@ -90,27 +90,31 @@ en:
       project:
         title: "Project Title"
       protocol:
-        id: "SRID"
-        research_master_id: "Research Master ID"
-        short_title: "Short Title"
         brief_description: "Brief Description"
-        funding_status: "Proposal Funding Status"
-        funding_source: "Funding Source"
-        funding_source_other: "Specify Funding Source"
-        potential_funding_source: "Potential Funding Source"
-        indirect_cost_rate: "Indirect Cost Rate"
-        sponsor_name: "Sponsor Name"
-        selected_for_epic: "Publish Study in Epic"
-        study_type_questions: "Study Type Questions"
         federal_grant_code_id: "Grant Code"
         federal_grant_serial_number: "Serial Number"
         federal_grant_title: "Title"
-        federal_phs_sponsor: "PHS Sponsor"
         federal_non_phs_sponsor: "Non-PHS Sponsor"
-        human_subjects_info: "The NCT #"
+        federal_phs_sponsor: "PHS Sponsor"
+        funding_rfa: "Funding Opportunity # / RFA"
+        funding_source: "Funding Source"
+        funding_source_other: "Specify Funding Source"
+        funding_start_date: "Funding Start Date"
+        funding_status: "Proposal Funding Status"
         guarantor_contact: "Contact Name"
-        guarantor_phone: "Phone"
         guarantor_email: "Email"
+        guarantor_phone: "Phone"
+        human_subjects_info: "The NCT #"
+        id: "SRID"
+        indirect_cost_rate: "Indirect Cost Rate"
+        potential_funding_source: "Potential Funding Source"
+        potential_funding_start_date: "Est. Funding Start Date"
+        research_master_id: "Research Master ID"
+        selected_for_epic: "Publish Study in Epic"
+        short_title: "Short Title"
+        sponsor_name: "Sponsor Name"
+        study_type_questions: "Study Type Questions"
+        udak_project_number: "Financial Account (UDAK #)"
       protocol_filter:
         search_name: "Name"
       question:
@@ -622,31 +626,26 @@ en:
       header:
         new: "Start a New %{protocol_type}"
         edit: "Edit an Existing %{protocol_type}"
+      navigation:
+        header: "Navigation"
       information:
-        header: "General %{protocol_type} Information"
-        rmid_note: "If your %{protocol_type} has a <a href='%{rmid_url}' target='blank'>%{rmid_field}</a>, enter it here and we will automatically fill in some information for you."
-        rmid_error:
-          title: "No Records Found"
-          text: "Could not find a Research Master record with RMID <strong>%{rmid}</strong>"
-        specify_funding_source: "Specify Funding Source"
+        header: "General Information"
+        rmid:
+          note: "If your %{protocol_type} has a <a href='%{rmid_url}' target='blank'>%{rmid_field}</a>, enter it here and we will automatically fill in some information for you."
+          error:
+            title: "No Records Found"
+            text: "Could not find a Research Master record with RMID <strong>%{rmid}</strong>"
+        primary_pi:
+          field: "Primary PI"
+          note: "If you are not the Primary PI you will be added as a general access user and you may change your role later"
         study_type_note: "Note: %{note}"
-      primary_pi:
-        header: "Add Your Primary PI"
-        subtext: "Additional users may be added later"
-        field: "Primary PI"
-        note: "If you are not the Primary PI, you will be added as a general access user and you may change your role later"
+      financial_information:
+        header: "Financial Information"
+        specify_funding_source: "Specify Funding Source"
       grant_information:
         header: "Federal Grant Information"
         sponsor_separator: "- OR -"
     studies:
-      financial_information:
-        header: "Financial Information"
-        subtext: "Used for reporting purposes and saved for your future use"
-        udak_project_number: "Financial Account (UDAK #):"
-        rate: "Indirect Cost Rate:"
-        rfa: "Funding Opportunity # / RFA:"
-        potential_start_date: "Potential Funding Start Date:"
-        start_date: "Funding Start Date:"
       research_involving:
         none: "No Research Types selected"
         header: "Research Involving"

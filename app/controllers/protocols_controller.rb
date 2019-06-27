@@ -23,8 +23,8 @@ class ProtocolsController < ApplicationController
   respond_to :html, :js, :json
   protect_from_forgery except: :show
 
-  before_action :initialize_service_request,  unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
-  before_action :authorize_identity,          unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
+  before_action :initialize_service_request,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
+  before_action :authorize_identity,          except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
   before_action :find_protocol,               only: [:edit, :update, :show]
   before_action :check_rmid_server_status,    only: [:new, :create, :edit, :update, :update_protocol_type]
 
@@ -187,8 +187,9 @@ class ProtocolsController < ApplicationController
     end
   end
 
-  def from_portal?
-    return params[:portal] == "true"
+  def get_study_type_note
+    answers = params[:answers].values.map{ |a| ActiveModel::Type::Boolean.new.cast(a) }
+    @note   = StudyTypeFinder.new(nil, answers).determine_study_type_note
   end
 
   private
@@ -208,12 +209,16 @@ class ProtocolsController < ApplicationController
     params[:funding_start_date]           = sanitize_date params[:funding_start_date]
     params[:potential_funding_start_date] = sanitize_date params[:potential_funding_start_date]
 
-    params[:human_subjects_info_attributes][:initial_irb_approval_date] = sanitize_date params[:human_subjects_info_attributes][:initial_irb_approval_date]
-    params[:human_subjects_info_attributes][:irb_approval_date]         = sanitize_date params[:human_subjects_info_attributes][:irb_approval_date]
-    params[:human_subjects_info_attributes][:irb_expiration_date]       = sanitize_date params[:human_subjects_info_attributes][:irb_expiration_date]
+    if params[:human_subjects_info_attributes]
+      params[:human_subjects_info_attributes][:initial_irb_approval_date] = sanitize_date params[:human_subjects_info_attributes][:initial_irb_approval_date]
+      params[:human_subjects_info_attributes][:irb_approval_date]         = sanitize_date params[:human_subjects_info_attributes][:irb_approval_date]
+      params[:human_subjects_info_attributes][:irb_expiration_date]       = sanitize_date params[:human_subjects_info_attributes][:irb_expiration_date]
+    end
 
-    params[:vertebrate_animals_info_attributes][:iacuc_approval_date]   = sanitize_date params[:vertebrate_animals_info_attributes][:iacuc_approval_date]
-    params[:vertebrate_animals_info_attributes][:iacuc_expiration_date] = sanitize_date params[:vertebrate_animals_info_attributes][:iacuc_expiration_date]
+    if params[:vertebrate_animals_info_attributes]
+      params[:vertebrate_animals_info_attributes][:iacuc_approval_date]   = sanitize_date params[:vertebrate_animals_info_attributes][:iacuc_approval_date]
+      params[:vertebrate_animals_info_attributes][:iacuc_expiration_date] = sanitize_date params[:vertebrate_animals_info_attributes][:iacuc_expiration_date]
+    end
 
     params.require(:protocol).permit(
       :archived,

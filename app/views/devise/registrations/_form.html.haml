@@ -31,17 +31,17 @@
     .form-group.col-12.col-xl-6
       = f.label :email, class: 'required'
       .input-group
-        = f.email_field :email, class: 'form-control'
-        .input-group-append
+        .input-group-prepend
           %span.input-group-text
             = icon('far', 'envelope')
+        = f.email_field :email, class: 'form-control'
     .form-group.col-12.col-xl-6
       = f.label :phone, class: 'required'
       .input-group
-        = f.telephone_field :phone, class: 'form-control', placeholder: t('constants.phone.placeholder')
-        .input-group-append
+        .input-group-prepend
           %span.input-group-text
             = icon('fas', 'phone')
+        = f.telephone_field :phone, class: 'form-control', placeholder: t('constants.phone.placeholder')
       %span.form-text.text-muted
         = t('constants.phone.note')
   .form-group

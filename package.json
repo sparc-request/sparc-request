@@ -7,7 +7,6 @@
   "license": "MIT",
   "dependencies": {
     "bootstrap": "^4.3.1",
-    "bootstrap-datepicker": "^1.9.0",
     "bootstrap-select": "^1.13.10",
     "bootstrap-table": "^1.14.2",
     "bootstrap4-toggle": "^3.4.0",
@@ -16,9 +15,13 @@
     "corejs-typeahead": "^1.2.1",
     "jquery": "^3.4.1",
     "js-cookie": "^2.2.0",
+    "moment": "^2.24.0",
+    "moment-timezone": "^0.5.25",
     "nprogress": "^0.2.0",
     "popper.js": "^1.15.0",
-    "sweetalert2": "^8.11.4"
+    "sweetalert2": "^8.11.4",
+    "tempusdominus-bootstrap-4": "^5.1.2",
+    "tempusdominus-core": "^5.0.3"
   },
   "devDependencies": {}
 }

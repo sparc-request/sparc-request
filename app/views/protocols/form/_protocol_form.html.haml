@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.container
+.container.position-relative
   %aside.form-navigation.d-none.d-xl-block
     .card.sticky-top
       .card-header
@@ -30,6 +30,8 @@
             = link_to Protocol.human_attribute_name(:research_master_id), '#protocolHeader', class: 'nav-link h5'
           = link_to t('protocols.form.information.header'), '#protocolInformation', class: 'nav-link h5'
           = link_to t('protocols.form.financial_information.header'), '#financialInformation', class: 'nav-link h5'
+          - if protocol.is_a?(Study)
+            = link_to t('protocols.form.research_involving.header'), '#researchInvolving', class: 'nav-link h5'
 
   %main.col-8.mx-auto
     = form_for protocol, as: :protocol, remote: true, html: { autocomplete: 'off', id: 'protocolForm' } do |f|
@@ -40,6 +42,9 @@
       = render 'protocols/form/header', f: f, protocol: protocol, rmid_server_down: rmid_server_down
       = render 'protocols/form/protocol_information', f: f, protocol: protocol
       = render 'protocols/form/financial_information', f: f, protocol: protocol
+
+      - if protocol.is_a?(Study)
+        = render 'protocols/form/research_involving', f: f, protocol: protocol
 
       %footer.pt-3
         .card

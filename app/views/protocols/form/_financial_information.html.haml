@@ -28,14 +28,14 @@
 
       .form-row
         .form-group.col-3
-          = f.label :funding_status, class: 'required', title: t(:protocols)[:tooltips][:funding_status], data: { toggle: 'tooltip', placement: 'right' }
+          = f.label :funding_status, class: 'required', title: t('protocols.tooltips.funding_status'), data: { toggle: 'tooltip', placement: 'right' }
           = f.select :funding_status,options_for_select(PermissibleValue.get_inverted_hash('funding_status'), protocol.funding_status), { include_blank: true }, class: 'selectpicker form-control'
         .form-group.col-3#fundingSourceContainer{ class: protocol.new_record? || protocol.funded? ? '' : 'd-none' }
-          = f.label :funding_source, class: 'required', title: t(:protocols)[:tooltips][:funding_source], data: { toggle: 'tooltip', placement: 'right' }
-          = f.select :funding_source,options_for_select(PermissibleValue.get_inverted_hash('funding_source'), protocol.funding_source), { include_blank: true }, class: 'selectpicker form-control'
+          = f.label :funding_source, class: 'required', title: t('protocols.tooltips.funding_source'), data: { toggle: 'tooltip', placement: 'right' }
+          = f.select :funding_source,options_for_select(PermissibleValue.get_inverted_hash('funding_source'), protocol.funding_source), { include_blank: true }, class: 'selectpicker form-control', disabled: protocol.new_record?
         .form-group.col-3#potentialFundingSourceContainer{ class: protocol.pending_funding? ? '' : 'd-none' }
-          = f.label :potential_funding_source, class: 'required', title: t(:protocols)[:tooltips][:potential_funding_source], data: { toggle: 'tooltip', placement: 'right' }
-          = f.select :potential_funding_source, options_for_select(PermissibleValue.get_inverted_hash('potential_funding_source'), protocol.potential_funding_source), { include_blank: true }, class: 'selectpicker form-control'
+          = f.label :potential_funding_source, class: 'required', title: t('protocols.tooltips.potential_funding_source'), data: { toggle: 'tooltip', placement: 'right' }
+          = f.select :potential_funding_source, options_for_select(PermissibleValue.get_inverted_hash('potential_funding_source'), protocol.potential_funding_source), { include_blank: true }, class: 'selectpicker form-control', disabled: protocol.new_record?
         .form-group.col-3#fundingSourceOtherContainer{ class: protocol.internally_funded? ? '' : 'd-none' }
           = f.label :funding_source_other, t('protocols.form.financial_information.specify_funding_source'), class: 'required'
           = f.text_field :funding_source_other, class: 'form-control'
@@ -51,21 +51,21 @@
           .form-group.col-3#fundingStartDateContainer{ class: protocol.new_record? || protocol.funded? ? '' : 'd-none' }
             = f.label :funding_start_date
             .input-group.datetimepicker.date#fundingStartDatePicker{ data: { target_input: 'nearest' } }
-              = f.text_field :funding_start_date, class: 'datetimepicker-input form-control', value: format_date(protocol.funding_start_date), readonly: !protocol.funded?, data: { target: '#fundingStartDatePicker' }
+              = f.text_field :funding_start_date, class: 'datetimepicker-input form-control', value: format_date(protocol.funding_start_date), readonly: protocol.new_record?, data: { target: '#fundingStartDatePicker' }
               .input-group-append{ data: { toggle: 'datetimepicker', target: '#fundingStartDatePicker' } }
                 %span.input-group-text
                   = icon('fas', 'calendar-alt')
           .form-group.col-3#potentialFundingStartDateContainer{ class: protocol.pending_funding? ? '' : 'd-none' }
             = f.label :potential_funding_start_date
             .input-group.datetimepicker.date#potentialFundingStartDatePicker{ data: { target_input: 'nearest' } }
-              = f.text_field :potential_funding_start_date, class: 'datetimepicker-input form-control', value: format_date(protocol.potential_funding_start_date), readonly: !protocol.pending_funding?, data: { target: '#potentialFundingStartDatePicker' }
+              = f.text_field :potential_funding_start_date, class: 'datetimepicker-input form-control', value: format_date(protocol.potential_funding_start_date), readonly: protocol.new_record?, data: { target: '#potentialFundingStartDatePicker' }
               .input-group-append{ data: { toggle: 'datetimepicker', target: '#potentialFundingStartDatePicker' } }
                 %span.input-group-text
                   = icon('fas', 'calendar-alt')
 
       - if protocol.is_a?(Study)
         .form-group
-          = f.label :sponsor_name, class: 'required', title: t(:protocols)[:tooltips][:sponsor_name], data: { toggle: 'tooltip', placement: 'right' }
+          = f.label :sponsor_name, class: 'required', title: t('protocols.tooltips.sponsor_name'), data: { toggle: 'tooltip', placement: 'right' }
           = f.text_field :sponsor_name, class: 'form-control'
 
         .form-row

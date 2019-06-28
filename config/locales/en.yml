@@ -75,7 +75,14 @@ en:
       fulfillment:
         time: "Quantity"
       human_subjects_info:
-        nct_number: "The NCT #"
+        approval_pending: "Pending Approval?"
+        initial_irb_approval_date: "Initial IRB Approval Date"
+        irb_approval_date: "Current IRB Approval Date"
+        irb_expiration_date: "IRB Expiration Date"
+        irb_of_record: "IRB of Record"
+        nct_number: "National Clinical Trials (NCT) #"
+        pro_number: "PRO #"
+        submission_type: "Submission Type"
       identity:
         ldap_uid: "Login"
         first_name: "First Name"
@@ -83,6 +90,14 @@ en:
         password_confirmation: "Confirm Password"
         reason: "Reason for Account Request"
         orcid: "ORCID"
+      investigational_products_info:
+        exemption_type: "Exemption Type"
+        ind_number: "IND #"
+        ind_on_hold: "IND on Hold?"
+        inv_device_number: "Device #"
+      ip_patents_info:
+        patent_number: "Patent #"
+        inventors: "Inventor(s)"
       note:
         body: "Note"
       option:
@@ -113,6 +128,7 @@ en:
         selected_for_epic: "Publish Study in Epic"
         short_title: "Short Title"
         sponsor_name: "Sponsor Name"
+        study_phases: "Study Phase(s)"
         study_type_questions: "Study Type Questions"
         udak_project_number: "Financial Account (UDAK #)"
       protocol_filter:
@@ -121,6 +137,11 @@ en:
         content: "Question"
       question_response:
         content: "Question"
+      research_types_info:
+        human_subjects: "Human Subjects"
+        vertebrate_animals: "Vertebrate Animals"
+        investigational_products: "Investigational Products"
+        ip_patents: "IP/Patents"
       service:
         abbreviation: "Abbreviation"
       short_interaction:
@@ -134,6 +155,11 @@ en:
         title: "Study Title"
       survey:
         active: ""
+      vertebrate_animals_info:
+        iacuc_approval_date: "Approval Date"
+        iacuc_expiration_date: "Expiration Date"
+        iacuc_number: "IACUC #"
+        name_of_iacuc: "IACUC Organization Name"
       visit:
         research_billing_qty: "Research Billing Quantity"
         insurance_billing_qty: "Insurance Billing Quantity"
@@ -380,8 +406,9 @@ en:
     yes_select: "Yes"
     no_select: "No"
     prompts:
-      none: "Nothing Selected"
       any: "- Any -"
+      check_all: "Check all that apply"
+      none: "Nothing Selected"
       please_specify: "Please Specify"
       search_for_user: "Search for a user"
       select: "---Please Select---"
@@ -645,41 +672,13 @@ en:
       grant_information:
         header: "Federal Grant Information"
         sponsor_separator: "- OR -"
+      research_involving:
+        header: "Research Involving"
+        note: "Check all that apply"
+        subheader: "%{research_type} Information"
     studies:
       research_involving:
         none: "No Research Types selected"
-        header: "Research Involving"
-        subtext: "Check all that apply"
-        humans:
-          header: "Human Subjects"
-          nct_number: "NCT# (National Clinical Trials Number):"
-          pro_number: "PRO #:"
-          record_irb: "IRB of Record:"
-          submission_type: "Submission Type:"
-          pending_approval: "Application/Approval Pending?:"
-          initial_irb_approval_date: "Initial IRB Approval Date:"
-          irb_approval_date: "Current IRB Approval Date:"
-          irb_expiration_date: "IRB Expiration Date:"
-        vertebrates:
-          header: "Vertebrate Animals"
-          iacuc_number: "IACUC #:"
-          iacuc_name: "Name of IACUC:"
-          iacuc_approval_date: "IACUC Approval Date:"
-          iacuc_expiration_date: "IACUC Expiration Date:"
-        products:
-          clear: "Clear"
-          header: "Investigational Products"
-          ind_number: "IND #:"
-          ind_on_hold: "IND on Hold?:"
-          ide_number: "IDE# / HDE# / HUD#:"
-          numbers:
-            ide: "IDE #:"
-            hde: "HDE #:"
-            hud: "HUD #:"
-        ip_patents:
-          header: "IP/Patents"
-          number: "Patent Number:"
-          inventors: "Inventors:"
       study_type:
         none: "No Study Types selected"
         header: "Study Type"
@@ -711,9 +710,6 @@ en:
       nct_number: 'Clinicaltrials.gov Registry Number.'
       pro_number: 'Institutional Review Board (IRB) Unique Identifier.'
       ind_number: 'Investigational New Drug Number'
-      ide: 'Investigation Device Exemption Number'
-      hde: 'Humanitarian Device Exemption Number'
-      hud: 'Humanitarian Use Device Number'
 
   ########################
   # NOT APPROVED WARNING #

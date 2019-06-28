@@ -19,15 +19,30 @@
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 .toggle {
-  @extend .border;
+  height: calc(1.5em + 0.75rem + 2px) !important;
+  border: 0 !important;
+
+  &.off {
+    @extend .border-left;
+  }
+
+  &:not(.off) {
+    @extend .border-right;
+  }
 
   &.btn-block {
     width: 100% !important;
   }
 
-  .btn {
-    &:hover {
-      cursor: pointer;
+  &[disabled=disabled], &[disabled=disabled] .btn {
+    @extend .disabled;
+  }
+
+  &:not([disabled=disabled]) {
+    .btn:hover {
+      &:hover {
+        cursor: pointer;
+      }
     }
   }
 

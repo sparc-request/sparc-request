@@ -43,7 +43,7 @@
     color: white !important;
   }
 
-  &.btn-light {
+  &.btn-light:not(.toggle) {
     @extend .border;
   }
 }
@@ -132,7 +132,7 @@
 }
 
 ////////////
-/// FORM ///
+/// Form ///
 ////////////
 
 form, .form {
@@ -143,6 +143,22 @@ form, .form {
   .form-check {
     .form-check-label {
       margin-left: 0.5rem;
+    }
+  }
+}
+
+.custom-control {
+  &.custom-control-lg {
+    .custom-control-label {
+      margin-left: 1rem !important;
+      font-size: 1.5rem !important;
+
+      &::before, &::after {
+        top: 0.25rem !important;
+        left: -2.5rem !important;
+        width: 1.75rem !important;
+        height: 1.75rem !important;
+      }
     }
   }
 }

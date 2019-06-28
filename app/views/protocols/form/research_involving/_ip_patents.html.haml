@@ -18,12 +18,17 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#service_request_cost
-  #current_cost
-    %label= t(:fulfillments)[:totals][:effective_current_total_cost]
-    %span.effective_cost= number_to_currency(calculate_effective_current_total)
+= f.fields_for :ip_patents_info do |ff_ipi|
+  %section.mt-3#ipPatentsInfoContainer{ class: ff_rti.object.ip_patents? ? '' : 'd-none' }
+    .form-group
+      %h4.pb-2.mb-2.border-bottom
+        = t('protocols.form.research_involving.subheader', research_type: ResearchTypesInfo.human_attribute_name(:ip_patents))
 
-  #user_display_cost
-    %label= t(:fulfillments)[:totals][:user_display_total_cost]
-    %span.display_cost= number_to_currency(calculate_user_display_total)
-  .clear
+    .form-row
+      .form-group.col-6
+        = ff_ipi.label :patent_number
+        = ff_ipi.text_field :patent_number, class: 'form-control'
+
+      .form-group.col-6
+        = ff_ipi.label :inventors
+        = ff_ipi.text_field :inventors, class: 'form-control'

@@ -229,6 +229,7 @@ en:
         view_consolidated: "View Consolidated Request"
         export_consolidated: "Export Consolidated Request"
         coverage_report: 'Coverage Analysis Report'
+        cost_analysis_report: 'Cost Analysis Report'
         consolidated_all: "All"
         consolidated_exclude_drafts: "Exclude Drafts"
         tooltips:

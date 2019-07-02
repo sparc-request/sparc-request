@@ -83,13 +83,14 @@ module SparcRails
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
-    config.middleware.use PDFKit::Middleware,
+    config.middleware.use PDFKit::Middleware, {
       orientation: 'Portrait',
       margin_left: '1in',
       margin_right: '1in',
       margin_top: '2in',
       margin_bottom: '1in',
       print_media_type: true
+    }, :except => [%r[^/dashboard/protocols/\d+\.pdf$]]
       
     ##  Error pages
     config.exceptions_app = self.routes

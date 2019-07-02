@@ -46,3 +46,12 @@ en:
     service_pricing:
       available: "Active"
       unavailable: "Inactive"
+
+    cost_analysis:
+      disclaimer:
+      - "*These charges are for CRU services only."
+      - "If the lab manual is not available during protocol review, lab processing fees will be included as an estimate based on the cost of similar studies."
+      - "Prices are valid as of the approval date and effective for up to 12 months after signing."
+      - "Any changes to the original I-CART request may result in a new cost analysis."
+      - "Modifications and extensions may be subject to price changes reflective of current CRU rates."
+      - "Adverse reactions requiring additional time or personnel will be an additional $100/hour."

@@ -92,6 +92,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
         it 'should notify everyone (authorized_user)' do
           get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
 
+          Delayed::Worker.new.run(Delayed::Job.last) # manually run the primary delayed job so that we can see how many e-mail are queued up
+
           expect(Delayed::Backend::ActiveRecord::Job.count).to eq(1)
         end
       end
@@ -101,7 +103,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
           create(:service_provider, identity: logged_in_user, organization: @org)
           get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
 
-          expect(Delayed::Backend::ActiveRecord::Job.count).to eq(1)
+          Delayed::Worker.new.run(Delayed::Job.last) # manually run the primary delayed job so that we can see how many e-mail are queued up
+
+          expect(Delayed::Backend::ActiveRecord::Job.count).to eq(2)
         end
       end
 
@@ -111,7 +115,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
           @org.submission_emails.create(email: 'hedwig@owlpost.com')
           get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
 
-          expect(Delayed::Backend::ActiveRecord::Job.count).to eq(1)
+          Delayed::Worker.new.run(Delayed::Job.last) # manually run the primary delayed job so that we can see how many e-mail are queued up
+
+          expect(Delayed::Backend::ActiveRecord::Job.count).to eq(3)
         end
       end
     end

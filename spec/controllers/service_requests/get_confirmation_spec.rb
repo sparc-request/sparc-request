@@ -142,7 +142,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
             srid: sr.id
           }, xhr: true
 
-          expect(Delayed::Backend::ActiveRecord::Job.count).to eq(1)
+          Delayed::Worker.new.run(Delayed::Job.last) # manually run the primary delayed job so that we can see how many e-mail are queued up
+
+          expect(Delayed::Backend::ActiveRecord::Job.count).to eq(3)
         end
       end
     end

@@ -52,9 +52,9 @@
             %li
               = link_to t(:calendars)[:show_all_services], service_request_path(srid: sr.id, display_all_services: true, format: :xlsx, report_type: 'coverage_analysis', show_signature_section: 1)
 
-            - if protocol.is_study?
-              %a.btn.btn-success.btn-sm.cost-analysis-report{ href: dashboard_protocol_path(protocol, format: :pdf), target: '_blank' } 
-                = t(:dashboard)[:protocols][:service_requests][:cost_analysis_report]
+          - if protocol.is_study?
+            %a.btn.btn-success.btn-sm.cost-analysis-report{ href: dashboard_protocol_path(protocol, format: :pdf), target: '_blank' } 
+              = t(:dashboard)[:protocols][:service_requests][:cost_analysis_report]
     .panel-body
       = render 'dashboard/service_requests/protocol_service_request_show',
         service_request: sr,

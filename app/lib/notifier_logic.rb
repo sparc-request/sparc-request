@@ -19,12 +19,12 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class NotifierLogic
 
-  def self.obtain_research_pricing_emails(service_request, current_user)
-    NotifierLogic.new(service_request, current_user).update_status_and_send_get_a_cost_estimate_email
+  def self.obtain_research_pricing_emails(service_request, current_user, to_notify)
+    NotifierLogic.new(service_request, current_user).update_status_and_send_get_a_cost_estimate_email(to_notify)
   end
 
-  def self.confirmation_emails(service_request, current_user)
-    NotifierLogic.new(service_request, current_user).update_ssrs_and_send_emails
+  def self.confirmation_emails(service_request, current_user, to_notify)
+    NotifierLogic.new(service_request, current_user).update_ssrs_and_send_emails(to_notify)
   end
 
   def initialize(service_request, current_user)
@@ -46,18 +46,17 @@ class NotifierLogic
     end
   end
 
-  def update_ssrs_and_send_emails
+  def update_ssrs_and_send_emails(to_notify)
     # @to_notify holds the SSRs that require an "initial submission" email
     @send_request_amendment_and_not_initial = @ssrs_updated_from_un_updatable_status.present? || @destroyed_ssrs_needing_notification.present? || @created_ssrs_needing_notification.present?
     @service_request.previous_submitted_at = @service_request.submitted_at
-    @to_notify = @service_request.update_status('submitted')
+    @to_notify = to_notify
     @service_request.update_arm_minimum_counts
     send_request_amendment_email_evaluation
     send_initial_submission_email
   end
 
-  def update_status_and_send_get_a_cost_estimate_email
-    to_notify = @service_request.update_status('get_a_cost_estimate')
+  def update_status_and_send_get_a_cost_estimate_email(to_notify)
     sub_service_requests = @service_request.sub_service_requests.where(id: to_notify)
     if !sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
       send_user_notifications(request_amendment: false, admin_delete_ssr: false, deleted_ssr: nil)

@@ -126,7 +126,9 @@ class ServiceRequestsController < ApplicationController
     @protocol = @service_request.protocol
     @service_request.previous_submitted_at = @service_request.submitted_at
 
-    NotifierLogic.delay.obtain_research_pricing_emails(@service_request, current_user)
+    to_notify = @service_request.update_status('get_a_cost_estimate')
+    NotifierLogic.delay.obtain_research_pricing_emails(@service_request, current_user, to_notify)
+
     render formats: [:html]
   end
 
@@ -147,7 +149,10 @@ class ServiceRequestsController < ApplicationController
         send_epic_notification_for_user_approval(@protocol)
       end
     end
-    NotifierLogic.delay.confirmation_emails(@service_request, current_user)
+
+    to_notify = @service_request.update_status('submitted')
+    NotifierLogic.delay.confirmation_emails(@service_request, current_user, to_notify)
+
     render formats: [:html]
   end
 

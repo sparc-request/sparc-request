@@ -141,8 +141,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
           get :confirmation, params: {
             srid: sr.id
           }, xhr: true
-            
-          expect(Delayed::Backend::ActiveRecord::Job.count).to eq(3)
+
+          expect(Delayed::Backend::ActiveRecord::Job.count).to eq(1)
         end
       end
     end

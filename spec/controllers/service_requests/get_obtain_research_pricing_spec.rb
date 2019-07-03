@@ -101,7 +101,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
           create(:service_provider, identity: logged_in_user, organization: @org)
           get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
 
-          expect(Delayed::Backend::ActiveRecord::Job.count).to eq(2)
+          expect(Delayed::Backend::ActiveRecord::Job.count).to eq(1)
         end
       end
 
@@ -111,7 +111,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
           @org.submission_emails.create(email: 'hedwig@owlpost.com')
           get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
 
-          expect(Delayed::Backend::ActiveRecord::Job.count).to eq(3)
+          expect(Delayed::Backend::ActiveRecord::Job.count).to eq(1)
         end
       end
     end

@@ -29,7 +29,7 @@ en:
     # NAVBAR #
     ##########
     navbar:
-      logged_in: "Logged in as %{email}"
+      logged_in: "Logged in as"
       login: "Login / Sign Up"
       logout: "Logout"
 

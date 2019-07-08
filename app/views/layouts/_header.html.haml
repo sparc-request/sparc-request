@@ -28,7 +28,9 @@
     %p.navbar-text.navbar-right.welcome-nav
       - if current_user.present?
         %span
-          = I18n.t('proper.navbar.logged_in', email: current_user.email)
+          = I18n.t('proper.navbar.logged_in')
+          = link_to("#{current_user.full_name}", '/identities/edit', {id: 'logged-in-as',  'data-toggle' => 'tooltip', title: 'Edit your profile' })
+        %span.glyphicon.glyphicon-user
         = link_to t(:proper)[:navbar][:logout], destroy_identity_session_path(url_params), method: :delete, class: 'btn btn-warning'
       - else
         = link_to t(:proper)[:navbar][:login], new_identity_session_path(url_params), class: 'btn btn-primary', id: 'login-link'

@@ -155,6 +155,7 @@ RSpec.describe NotifierLogic do
         @deleted_li.first.update_attribute(:created_at, Time.now.utc - 5.hours)
         @deleted_li.first.update_attribute(:user_id, logged_in_user.id)
         @sr.reload
+        to_notify = @sr.update_status('submitted')
       end
 
       it 'should notify authorized users' do

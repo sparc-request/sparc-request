@@ -70,19 +70,21 @@ RSpec.describe 'User adds Service Pricing Map', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_corporate_rate', with: "350.00"
+        find('.modal-body').click
         accept_confirm
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_other_rate', with: "450.00"
+        find('.modal-body').click
         accept_confirm
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_member_rate', with: "550.00"
+        find('.modal-body').click
         accept_confirm
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_unit_type', with: "each"
-        accept_confirm
         fill_in 'pricing_map_unit_factor', with: "1.00"
         fill_in 'pricing_map_unit_minimum', with: "1"
 
@@ -122,19 +124,21 @@ RSpec.describe 'User adds Service Pricing Map', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_corporate_rate', with: "350.00"
+        find('.modal-body').click
         accept_confirm
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_other_rate', with: "450.00"
+        find('.modal-body').click
         accept_confirm
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_member_rate', with: "550.00"
+        find('.modal-body').click
         accept_confirm
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_otf_unit_type', with: "days"
-        accept_confirm
         fill_in 'pricing_map_quantity_type', with: "hours"
         fill_in 'pricing_map_quantity_minimum', with: "1"
         fill_in 'pricing_map_unit_factor', with: "1.00"

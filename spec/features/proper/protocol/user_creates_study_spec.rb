@@ -34,7 +34,7 @@ RSpec.describe 'User creates study', js: true do
 
   stub_config("research_master_enabled", true)
   stub_config("use_epic", true)
-  
+
   context "RMID server is up and running" do
     before :each do
       institution = create(:institution, name: "Institution")
@@ -55,11 +55,12 @@ RSpec.describe 'User creates study', js: true do
         expect(page).to have_content('Study Information')
       end
 
-      scenario 'and does not see a server down flash message' do
-        click_new_research_study(@sr)
+      # TODO: Server is always down, but this spec sometimes passes because the flash message goes away too fast. Needs to actually be stubbed out, etc.
+      # scenario 'and does not see a server down flash message' do
+      #   click_new_research_study(@sr)
 
-        expect(page).not_to have_content( I18n.t(:protocols)[:summary][:tooltips][:rmid_server_down] )
-      end
+      #   expect(page).not_to have_content( I18n.t(:protocols)[:summary][:tooltips][:rmid_server_down] )
+      # end
     end
 
     context 'and fills out and submits the form' do
@@ -77,7 +78,7 @@ RSpec.describe 'User creates study', js: true do
         page.execute_script %Q{ $('#protocol_project_roles_attributes_0_identity_id').trigger("keydown") }
         wait_for_javascript_to_finish
         expect(page).to have_selector('.tt-suggestion')
-        
+
         first('.tt-suggestion').click
         wait_for_javascript_to_finish
 
@@ -124,7 +125,7 @@ RSpec.describe 'User creates study', js: true do
     context 'and clicks \'New Research Study\'' do
       scenario 'and sees that the rmid server is down through flash message' do
         click_new_research_study(@sr)
-        
+
         expect(page).to have_content( I18n.t(:protocols)[:summary][:tooltips][:rmid_server_down] )
       end
 

@@ -26,7 +26,7 @@ module ApplicationHelper
       logged_in_as = current_user.email ? current_user.email : current_user.full_name
       returning_html +=
         content_tag(:span, t(:dashboard)[:navbar][:logged_in_as]) +
-        link_to("#{logged_in_as} ", "/identities/edit" ,  {id: 'logged-in-as', 'data-toggle' => 'tooltip', title: 'Edit your profile' }) +
+        link_to("#{logged_in_as} ", "/identities/edit" ,  {id: 'logged-in-as', target: 'blank' , 'data-toggle' => 'tooltip', title: 'Edit your profile' }) +
         content_tag(:span, '', class: "glyphicon glyphicon-user") +
         link_to('Logout', destroy_identity_session_path, method: :delete, class: bootstrap ? "btn btn-warning" : "")
     else

@@ -29,7 +29,7 @@
       - if current_user.present?
         %span
           = I18n.t('proper.navbar.logged_in')
-          = link_to("#{current_user.full_name}", '/identities/edit', {id: 'logged-in-as',  'data-toggle' => 'tooltip', title: 'Edit your profile' })
+          = link_to("#{current_user.full_name}", '/identities/edit', {id: 'logged-in-as', target: 'blank' ,  'data-toggle' => 'tooltip', title: 'Edit your profile' })
         %span.glyphicon.glyphicon-user
         = link_to t(:proper)[:navbar][:logout], destroy_identity_session_path(url_params), method: :delete, class: 'btn btn-warning'
       - else

@@ -21,9 +21,7 @@
 class Identities::RegistrationsController < Devise::RegistrationsController
 
   def edit
-    session[:return_to] ||= request.referer
     @identity = current_user
-    @back = request.referer 
   end
 
   def update
@@ -31,10 +29,18 @@ class Identities::RegistrationsController < Devise::RegistrationsController
     @professional_organization_id = params[:project_role][:identity_attributes][:professional_organization_id]
     attrs = fix_professional_organization_id if @professional_organization_id != @identity.professional_organization_id
     if @identity.update_attributes(attrs)
-      redirect_to session.delete(:return_to)
+      respond_with resource, location: after_update_path_for(resource)
       flash[:success] = t(:devise)[:profile][:updated]
     else
       render 'edit'
+    end
+  end
+
+  def after_sign_up_path_for(resource)
+    if params[:srid]
+      catalog_service_request_path(params[:srid])
+    else
+      super
     end
   end
 

@@ -299,9 +299,8 @@ GEM
     ice_nine (0.11.2)
     iconv (1.0.8)
     io-like (0.3.0)
-    jbuilder (2.8.0)
+    jbuilder (2.9.1)
       activesupport (>= 4.2.0)
-      multi_json (>= 1.2)
     jquery-rails (4.3.5)
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
@@ -654,7 +653,7 @@ DEPENDENCIES
   httparty (~> 0.17.0)
   icalendar
   icalendar-recurrence
-  jbuilder (~> 2.8)
+  jbuilder (~> 2.9)
   jquery-rails
   jquery_datepicker
   json (>= 1.8)

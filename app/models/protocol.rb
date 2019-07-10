@@ -35,7 +35,7 @@ class Protocol < ApplicationRecord
   has_one :vertebrate_animals_info,       dependent: :destroy
   has_one :investigational_products_info, dependent: :destroy
   has_one :ip_patents_info,               dependent: :destroy
-  has_one :primary_pi_role,               -> { where(role: 'primary-pi') }, class_name: "ProjectRole", dependent: :destroy
+  has_one :primary_pi_role,               -> { where(role: 'primary-pi', project_rights: 'approve') }, class_name: "ProjectRole", dependent: :destroy
   has_many :study_types,                  dependent: :destroy
   has_many :project_roles,                dependent: :destroy
   has_many :service_requests,             dependent: :destroy
@@ -73,11 +73,6 @@ class Protocol < ApplicationRecord
 
   has_many :fulfillment_protocols, class_name: 'Shard::Fulfillment::Protocol', foreign_key: :sparc_id
 
-  validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
-  validates :research_master_id, presence: true, if: :rmid_requires_validation?
-
-  validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 1000 }, allow_blank: true, if: :indirect_cost_enabled
-
   attr_accessor :requester_id
   attr_accessor :validate_nct
   attr_accessor :study_type_questions
@@ -95,11 +90,17 @@ class Protocol < ApplicationRecord
   accepts_nested_attributes_for :arms,                          allow_destroy: true
   accepts_nested_attributes_for :study_type_answers,            allow_destroy: true
 
+  validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
+  validates :research_master_id, presence: true, if: :rmid_requires_validation?
+
+  validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 1000 }, allow_blank: true, if: :indirect_cost_enabled
+
   validation_group :protocol do
-    validates :short_title,                    presence: true
-    validates :title,                          presence: true
-    validates :funding_status,                 presence: true
-    validate  :validate_funding_source
+    validates_presence_of :short_title, 
+                          :title,
+                          :funding_status
+    validates_presence_of :funding_source,            if: Proc.new{ |p| p.funded? || p.funding_status.blank? }
+    validates_presence_of :potential_funding_source,  if: :pending_funding?
     validates_associated :human_subjects_info, message: "must contain 8 numerical digits", if: :validate_nct
   end
 
@@ -400,14 +401,6 @@ class Protocol < ApplicationRecord
     end
   end
 
-  def validate_funding_source
-    if self.funding_status == "funded" && self.funding_source.blank?
-      errors.add(:funding_source, "You must select a funding source")
-    elsif self.funding_status == "pending_funding" && self.potential_funding_source.blank?
-      errors.add(:potential_funding_source, "You must select a potential funding source")
-    end
-  end
-
   def validate_proxy_rights
     errors.add(:base, "All users must be assigned a proxy right") unless self.project_roles.map(&:project_rights).find_all(&:nil?).empty?
   end
@@ -429,7 +422,7 @@ class Protocol < ApplicationRecord
   end
 
   def primary_pi_exists
-    errors.add(:base, "You must add a Primary PI to the study/project") unless project_roles.map(&:role).include? 'primary-pi'
+    errors.add(:base, "You must add a Primary PI to the study/project") unless self.primary_pi_role
     errors.add(:base, "Only one Primary PI is allowed. Please ensure that only one exists") if project_roles.select { |pr| pr.role == 'primary-pi'}.count > 1
   end
 

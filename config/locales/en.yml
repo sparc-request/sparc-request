@@ -90,6 +90,9 @@ en:
         password_confirmation: "Confirm Password"
         reason: "Reason for Account Request"
         orcid: "ORCID"
+      impact_areas:
+        name: "Name"
+        other_text: "Other"
       investigational_products_info:
         exemption_type: "Exemption Type"
         ind_number: "IND #"
@@ -113,7 +116,7 @@ en:
         federal_phs_sponsor: "PHS Sponsor"
         funding_rfa: "Funding Opportunity # / RFA"
         funding_source: "Funding Source"
-        funding_source_other: "Specify Funding Source"
+        funding_source_other: "Other"
         funding_start_date: "Funding Start Date"
         funding_status: "Proposal Funding Status"
         guarantor_contact: "Contact Name"
@@ -128,7 +131,7 @@ en:
         selected_for_epic: "Publish Study in Epic"
         short_title: "Short Title"
         sponsor_name: "Sponsor Name"
-        study_phases: "Study Phase(s)"
+        study_phase_ids: "Study Phase(s)"
         study_type_questions: "Study Type Questions"
         udak_project_number: "Financial Account (UDAK #)"
       protocol_filter:
@@ -170,10 +173,10 @@ en:
           attributes:
             active:
               taken: "A different version of this Form is already active"
-        project_role:
+        protocol:
           attributes:
-            identity_id:
-              Inblank: "^Primary PI can't be blank"
+            study_type_answers:
+              blank: "can't be blank"
         question_response:
           attributes:
             content:
@@ -658,7 +661,7 @@ en:
       information:
         header: "General Information"
         rmid:
-          note: "If your %{protocol_type} has a <a href='%{rmid_url}' target='blank'>%{rmid_field}</a>, enter it here and we will automatically fill in some information for you."
+          note: "If your Study has a <a href='%{rmid_url}' target='blank'>%{rmid_field}</a>, please enter it here and associated information will be automatically filled in."
           error:
             title: "No Records Found"
             text: "Could not find a Research Master record with RMID <strong>%{rmid}</strong>"
@@ -668,7 +671,6 @@ en:
         study_type_note: "Note: %{note}"
       financial_information:
         header: "Financial Information"
-        specify_funding_source: "Specify Funding Source"
       grant_information:
         header: "Federal Grant Information"
         sponsor_separator: "- OR -"
@@ -676,24 +678,11 @@ en:
         header: "Research Involving"
         note: "Check all that apply"
         subheader: "%{research_type} Information"
-    studies:
-      research_involving:
-        none: "No Research Types selected"
-      study_type:
-        none: "No Study Types selected"
-        header: "Study Type"
-        subtext: "Check all that apply"
-      impact_areas:
-        none: "No Impact Areas selected"
-        header: "Impact Areas"
-        subtext: "Check all that apply"
-        other: "Please Specify:"
-      affiliations:
-        none: "No Affiliations selected"
-        header: "Affiliations, Collaborations, and Memberships"
-        subtext: "Check all that apply"
-    prompts:
-      submission_type: "Select a Submission Type"
+      other_details:
+        header: "Other Details"
+        study_types: "Study Types"
+        impact_areas: "Impact Areas"
+        affiliations: "Affiliations, Collaborations, & Memberships"
     tooltips:
       new_study: >
         Choose "New Study" for a Research Study with defined aims and outcomes.

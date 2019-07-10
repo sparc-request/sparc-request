@@ -179,10 +179,10 @@ en:
       remove_service: "Remove from cart"
       tabs:
         active:
-          header: "Current Services"
+          header: "Current"
           message: "You do not have any requested services."
         complete:
-          header: "Completed Services"
+          header: "Completed"
           message: "You do not have any completed services."
       duplicate_service:
         header: "This service is already in your cart"

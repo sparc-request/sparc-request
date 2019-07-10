@@ -29,16 +29,16 @@
           .input-group
             = f.fields_for :search_query do |ff_s|
               .input-group-prepend.col-3.p-0
-                = ff_s.select :search_drop, options_for_select(ProtocolFilter.search_filters, filterrific.search_query.try(:search_drop)), { prompt:  t('dashboard.protocol_filters.search_by') }, class: "selectpicker form-control", data: { style: 'btn btn-primary' }
+                = ff_s.select :search_drop, options_for_select(ProtocolFilter.search_filters, filterrific.search_query.try(:search_drop)), { prompt:  t('dashboard.protocol_filters.search_by') }, class: "selectpicker", data: { style: 'btn btn-primary' }
               = ff_s.text_field :search_text, value: filterrific.search_query.try(:search_text), placeholder: t('dashboard.protocol_filters.search_placeholder'), class: 'form-control'
         .form-group.row
           = f.label :with_status, t('dashboard.protocol_filters.status'), class: 'col-4 col-form-label pr-0'
           .col-8
-            = f.select :with_status, filterrific.select_options[:with_status], {}, class: "form-control selectpicker", multiple: true, data: { none_selected_text: t('constants.prompts.any'), live_search: true }
+            = f.select :with_status, filterrific.select_options[:with_status], {}, class: "selectpicker", multiple: true, data: { none_selected_text: t('constants.prompts.any'), live_search: true }
         .form-group.row
           = f.label :with_organization, t('dashboard.protocol_filters.organization'), class: 'col-4 col-form-label pr-0'
           .col-8.drop-underneath
-            = f.select :with_organization, nil, {}, class: "form-control selectpicker", multiple: true, data: { none_selected_text: t('constants.prompts.any'), live_search: true } do
+            = f.select :with_organization, nil, {}, class: "selectpicker", multiple: true, data: { none_selected_text: t('constants.prompts.any'), live_search: true } do
               = filterrific.select_options[:with_organization].each do |org_type, orgs|
                 %optgroup{ label: org_type }
                   - orgs.each do |name, id|
@@ -47,7 +47,7 @@
           .form-group.row
             = f.label :with_owner, t('dashboard.protocol_filters.owner'), class: 'col-4 col-form-label pr-0'
             .col-8
-              = f.select :with_owner, filterrific.select_options[:with_owner], {}, class: "form-control selectpicker owner-select", multiple: true, data: { none_selected_text: t('constants.prompts.any'), live_search: true }
+              = f.select :with_owner, filterrific.select_options[:with_owner], {}, class: "selectpicker owner-select", multiple: true, data: { none_selected_text: t('constants.prompts.any'), live_search: true }
         .form-group.row
           = f.label :show_archived, t('dashboard.protocol_filters.archived'), class: 'col-4 col-form-label pr-0'
           .col-8

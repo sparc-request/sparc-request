@@ -188,30 +188,6 @@ form, .form {
       border-radius: 0.3rem;
     }
   }
-
-  &.is-valid {
-    .form-control, .custom-select {
-      @extend .is-valid;
-    }
-
-    .input-group-append, .input-group-prepend {
-      .input-group-text {
-        border-color: theme-color('success');
-      }
-    }
-  }
-
-  &.is-invalid {
-    .form-control, .custom-select {
-      @extend .is-invalid;
-    }
-
-    .input-group-append, .input-group-prepend {
-      .input-group-text {
-        border-color: theme-color('danger');
-      }
-    }
-  }
 }
 
 //////////////////
@@ -370,6 +346,40 @@ nav.navbar {
     .navbar-collapse {
       display: flex;
       align-items: stretch;
+    }
+  }
+}
+
+/////////////////
+/// Utilities ///
+/////////////////
+
+.form-group, .form-row {
+  &.is-valid {
+    .bootstrap-select .dropdown-toggle, .toggle, .input-group .input-group-text {
+      border: 1px solid theme-color('success') !important;
+    }
+
+    label {
+      color: theme-color('success');
+    }
+
+    .form-control, .custom-select {
+      @extend .is-valid;
+    }
+  }
+
+  &.is-invalid {
+    .bootstrap-select .dropdown-toggle, .toggle, .input-group .input-group-text {
+      border: 1px solid theme-color('danger') !important;
+    }
+
+    label {
+      color: theme-color('danger');
+    }
+
+    .form-control, .custom-select {
+      @extend .is-invalid;
     }
   }
 }

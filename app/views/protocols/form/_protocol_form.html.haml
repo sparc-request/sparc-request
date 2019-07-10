@@ -21,17 +21,18 @@
 .container.position-relative
   %aside.form-navigation.d-none.d-xl-block
     .card.sticky-top
-      .card-header
-        %h3.w-100.text-center.mb-0
+      .card-header.px-4
+        %h3.mb-0
           = t('protocols.form.navigation.header')
       .card-body.p-0
-        %nav.flex-column.text-center#protocolNavigation
+        %nav.flex-column#protocolNavigation
           - if protocol.is_a?(Study) && Setting.get_value('research_master_enabled')
             = link_to Protocol.human_attribute_name(:research_master_id), '#protocolHeader', class: 'nav-link h5'
           = link_to t('protocols.form.information.header'), '#protocolInformation', class: 'nav-link h5'
           = link_to t('protocols.form.financial_information.header'), '#financialInformation', class: 'nav-link h5'
           - if protocol.is_a?(Study)
             = link_to t('protocols.form.research_involving.header'), '#researchInvolving', class: 'nav-link h5'
+            = link_to t('protocols.form.other_details.header'), '#otherDetails', class: 'nav-link h5'
 
   %main.col-8.mx-auto
     = form_for protocol, as: :protocol, remote: true, html: { autocomplete: 'off', id: 'protocolForm' } do |f|
@@ -45,10 +46,11 @@
 
       - if protocol.is_a?(Study)
         = render 'protocols/form/research_involving', f: f, protocol: protocol
+        = render 'protocols/form/other_details', f: f, protocol: protocol
 
       %footer.pt-3
         .card
-          .card-body.p-3
+          .card-body.py-3.px-5
             .form-group.mb-0<
               = link_to protocol_service_request_path(srid: service_request.id), class: 'btn btn-lg btn-link px-0' do
                 - succeed t('actions.cancel') do

@@ -77,13 +77,23 @@ $(document).on 'turbolinks:load', ->
     if $('#protocol_federal_phs_sponsor').val()
       $('#protocol_federal_phs_sponsor').selectpicker('val', '')
 
-  $(document).on 'change', '.research-type-category', ->
+  $(document).on 'change', '.research-involving', ->
     target = $(this).data('target')
+
+    $(target).find('.is-valid, .is-invalid').removeClass('is-valid is-invalid')
+    $(target).find('.form-error').remove()
 
     if $(this).prop('checked')
       $(target).removeClass('d-none')
     else
       $(target).addClass('d-none')
+
+  $(document).on 'change', '[name="protocol[research_types_info_attributes][human_subjects]"]', ->
+    if $(this).prop('checked')
+      $('#protocol_research_master_id').siblings('label').addClass('required')
+    else
+      $('#protocol_research_master_id').siblings('label').removeClass('required')
+    setRequiredFields()
 
   $(document).on 'keyup', '#protocol_investigational_products_info_attributes_ind_number', ->
     if $(this).val().length > 0
@@ -98,6 +108,15 @@ $(document).on 'turbolinks:load', ->
     $('.device-container').addClass('d-none')
     $('.device-container input').val('').attr('disabled', true)
     $(".device-container##{exemption}DeviceContainer").removeClass('d-none').children('input').attr('disabled', false)
+
+  $(document).on 'change', '.impact-area', ->
+    $specifyField = $('#' + $(this).prop('id').replace('__destroy', '_other_text'))
+
+    if $specifyField.length > 0
+      if $(this).prop('checked')
+        $specifyField.parents('.form-group').removeClass('d-none')
+      else
+        $specifyField.parents('.form-group').addClass('d-none')
 
   ############################
   ### Primary PI Typeahead ###
@@ -215,6 +234,8 @@ potentialFundingStartDate = ""
 
 toggleFundingSource = (val) ->
   if val == ''
+    $('#fundingSourceContainer').removeClass('d-none')
+    $('#potentialFundingSourceContainer').addClass('d-none')
     $('#protocol_funding_source, #protocol_potential_funding_source').attr('disabled', true).selectpicker('val', '').selectpicker('refresh')
     $('#protocol_funding_start_date, #protocol_potential_funding_start_date').prop('readonly', true).datetimepicker('clear')
   else

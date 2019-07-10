@@ -43,7 +43,7 @@
           .form-row
             .form-group.col-6
               = f.label :browser, class: 'required'
-              = f.select :browser, options_for_select(BROWSER_VERSIONS.to_a), { prompt: 'Please Choose a Browser' }, class: 'selectpicker form-control'
+              = f.select :browser, options_for_select(BROWSER_VERSIONS.to_a), { prompt: 'Please Choose a Browser' }, class: 'selectpicker'
             .form-group.col-6
               = f.label :version, class: 'required'
               = f.text_field :version, class: 'form-control'

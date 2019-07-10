@@ -58,9 +58,8 @@ $(document).on 'turbolinks:load', ->
     event.preventDefault()
     $('html, body').animate({ scrollTop: $(this.hash).offset().top }, 'slow')
 
-  $(document).on 'keydown', '.is-valid, .is-invalid', ->
-    $(this).removeClass('is-valid is-invalid')
-    $(this).parents('.form-group').find('.form-error').remove()
+  $(document).on 'keydown change change.datetimepicker', '.is-valid, .is-invalid', ->
+    $(this).removeClass('is-valid is-invalid').find('.form-error').remove()
 
   $(window).scroll ->
     if $(this).scrollTop() > 50

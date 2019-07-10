@@ -19,8 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Study < Protocol
-  validates :sponsor_name,                presence: true
-  validates :selected_for_epic,           inclusion: [true, false], :if => [:is_epic?]
+  validates_presence_of :sponsor_name
+  validates_inclusion_of :selected_for_epic, in: [true, false]
 
   ##Removed for now, perhaps to be added later
   # validation_group :guarantor_fields, if: :selected_for_epic do
@@ -41,11 +41,11 @@ class Study < Protocol
   # validates :guarantor_zip, length: { maximum: 9 }
 
   validates_format_of :guarantor_email, with: Devise::email_regexp, allow_blank: true
-  validates_format_of :phone, with: /[0-9]{10}(#[0-9]+)?/, allow_blank: true
+  validates_format_of :guarantor_phone, with: /[0-9]{10}(#[0-9]+)?/, allow_blank: true
 
   validates :guarantor_contact, length: { maximum: 192 }
 
-  validate  :validate_study_type_answers
+  validate :validate_study_type_answers
 
   def classes
     return [ 'project' ] # for backward-compatibility
@@ -132,27 +132,22 @@ class Study < Protocol
         answers[fid] = study_type_answers.find{|x| x.study_type_question_id == q.id}
       end
 
-      has_errors = false
-      begin
-        if answers["certificate_of_conf"].answer.nil?
-          has_errors = true
-        elsif answers["certificate_of_conf"].answer == false
-          if (answers["higher_level_of_privacy"].answer.nil?)
-            has_errors = true
-          elsif (answers["epic_inbasket"].answer.nil?)
-            has_errors = true
-          elsif (answers["research_active"].answer.nil?)
-            has_errors = true
-          elsif (answers["restrict_sending"].answer.nil?)
-            has_errors = true
-          end
+      if answers['certificate_of_conf'].answer.nil?
+        error = 'certificate_of_conf'
+      elsif answers['certificate_of_conf'].answer == false
+        if (answers['higher_level_of_privacy'].answer.nil?)
+          error = 'higher_level_of_privacy'
+        elsif (answers['epic_inbasket'].answer.nil?)
+          error = 'epic_inbasket'
+        elsif (answers['research_active'].answer.nil?)
+          error = 'research_active'
+        elsif (answers['restrict_sending'].answer.nil?)
+          error = 'restrict_sending'
         end
-      rescue => e
-        has_errors = true
       end
 
-      if has_errors
-        errors.add(:study_type_answers, "must be selected")
+      if error
+        errors.add(:study_type_answers, { error => I18n.t('activerecord.errors.models.protocol.attributes.study_type_answers.blank') })
       end
     end
   end

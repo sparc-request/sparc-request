@@ -21,33 +21,29 @@
 %section.pt-3#researchInvolving
   .card
     .card-body.p-5
-      %h2.text-center.mb-5
+      %h2.text-center
         = t('protocols.form.research_involving.header')
-
-      = render 'layouts/required_fields'
-
-      .form-group
-        %h4.text-muted
-          = t('constants.prompts.check_all')
+      %h4.text-muted.text-center.mb-5
+        = t('constants.prompts.check_all')
 
       = f.fields_for :research_types_info do |ff_rti|
         %section
           .form-row
             .form-group.col-6
               .custom-control.custom-checkbox.custom-control-lg.custom-control-inline
-                = ff_rti.check_box :human_subjects, class: 'custom-control-input research-type-category', data: { target: '#humanSubjectsInfoContainer' }
+                = ff_rti.check_box :human_subjects, class: 'custom-control-input research-involving', data: { target: '#humanSubjectsInfoContainer' }
                 = ff_rti.label :human_subjects, class: 'custom-control-label'
             .form-group.col-6
               .custom-control.custom-checkbox.custom-control-lg.custom-control-inline
-                = ff_rti.check_box :vertebrate_animals, class: 'custom-control-input research-type-category', data: { target: '#vertebrateAnimalsInfoContainer' }
+                = ff_rti.check_box :vertebrate_animals, class: 'custom-control-input research-involving', data: { target: '#vertebrateAnimalsInfoContainer' }
                 = ff_rti.label :vertebrate_animals, class: 'custom-control-label'
             .form-group.col-6
               .custom-control.custom-checkbox.custom-control-lg.custom-control-inline
-                = ff_rti.check_box :investigational_products, class: 'custom-control-input research-type-category', data: { target: '#investigationalProductsInfoContainer' }
+                = ff_rti.check_box :investigational_products, class: 'custom-control-input research-involving', data: { target: '#investigationalProductsInfoContainer' }
                 = ff_rti.label :investigational_products, class: 'custom-control-label'
             .form-group.col-6
               .custom-control.custom-checkbox.custom-control-lg.custom-control-inline
-                = ff_rti.check_box :ip_patents, class: 'custom-control-input research-type-category', data: { target: '#ipPatentsInfoContainer' }
+                = ff_rti.check_box :ip_patents, class: 'custom-control-input research-involving', data: { target: '#ipPatentsInfoContainer' }
                 = ff_rti.label :ip_patents, class: 'custom-control-label'
 
         = render 'protocols/form/research_involving/human_subjects', f: f, ff_rti: ff_rti, protocol: protocol

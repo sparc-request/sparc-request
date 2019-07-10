@@ -38,11 +38,7 @@ class ProtocolsController < ApplicationController
   end
 
   def create
-    protocol_class                          = protocol_params[:type].capitalize.constantize
-    ### if lazy load enabled, we need create the identiy if necessary here
-    attrs                                   = Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") ? fix_identity : fix_date_params
-    @protocol                               = protocol_class.new(attrs)
-    @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id if protocol_class == Study
+    @protocol = protocol_params[:type].capitalize.constantize.new(protocol_params)
 
     if @protocol.valid?
       unless @protocol.project_roles.map(&:identity_id).include? current_user.id
@@ -66,6 +62,8 @@ class ProtocolsController < ApplicationController
       end
 
       flash[:success] = I18n.t('protocols.created', protocol_type: @protocol.type)
+
+      redirect_to protocol_service_request_path(srid: @service_request.id)
     else
       @errors = @protocol.errors
     end
@@ -94,9 +92,7 @@ class ProtocolsController < ApplicationController
       @protocol.reload
     end
 
-    attrs = fix_date_params
-
-    if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
+    if @protocol.update_attributes(protocol_params.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
       flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
     else
       @errors = @protocol.errors
@@ -208,6 +204,7 @@ class ProtocolsController < ApplicationController
     # Sanitize date formats
     params[:funding_start_date]           = sanitize_date params[:funding_start_date]
     params[:potential_funding_start_date] = sanitize_date params[:potential_funding_start_date]
+    params[:guarantor_phone]              = sanitize_phone params[:guarantor_phone]
 
     if params[:human_subjects_info_attributes]
       params[:human_subjects_info_attributes][:initial_irb_approval_date] = sanitize_date params[:human_subjects_info_attributes][:initial_irb_approval_date]
@@ -255,16 +252,17 @@ class ProtocolsController < ApplicationController
       :title,
       :type,
       :udak_project_number,
-      research_types_info_attributes: [:id, :human_subjects, :vertebrate_animals, :investigational_products, :ip_patents],
-      study_types_attributes: [:id, :name, :new, :position, :_destroy],
-      vertebrate_animals_info_attributes: [:id, :iacuc_number, :name_of_iacuc, :iacuc_approval_date, :iacuc_expiration_date],
+      affiliations_attributes: [:id, :name, :new, :position, :_destroy],
+      human_subjects_info_attributes: [:id, :nct_number, :pro_number, :irb_of_record, :submission_type, :initial_irb_approval_date, :irb_approval_date, :irb_expiration_date, :approval_pending],
+      impact_areas_attributes: [:id, :name, :other_text, :new, :_destroy],
       investigational_products_info_attributes: [:id, :protocol_id, :ind_number, :inv_device_number, :exemption_type, :ind_on_hold],
       ip_patents_info_attributes: [:id, :patent_number, :inventors],
-      impact_areas_attributes: [:id, :name, :other_text, :new, :_destroy],
-      human_subjects_info_attributes: [:id, :nct_number, :pro_number, :irb_of_record, :submission_type, :initial_irb_approval_date, :irb_approval_date, :irb_expiration_date, :approval_pending],
-      affiliations_attributes: [:id, :name, :new, :position, :_destroy],
       primary_pi_role_attributes: [:id, :identity_id, :role, :project_rights, :_destroy],
-      study_type_answers_attributes: [:id, :answer, :study_type_question_id, :_destroy]
+      research_types_info_attributes: [:id, :human_subjects, :vertebrate_animals, :investigational_products, :ip_patents],
+      study_phase_ids: [],
+      study_types_attributes: [:id, :name, :new, :position, :_destroy],
+      study_type_answers_attributes: [:id, :answer, :study_type_question_id, :_destroy],
+      vertebrate_animals_info_attributes: [:id, :iacuc_number, :name_of_iacuc, :iacuc_approval_date, :iacuc_expiration_date]
     )
   end
 

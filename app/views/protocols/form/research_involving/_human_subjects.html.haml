@@ -39,7 +39,7 @@
         = ff_hsi.text_field :irb_of_record, class: 'form-control'
       .form-group.col-3
         = ff_hsi.label :submission_type
-        = ff_hsi.select :submission_type, options_for_select(PermissibleValue.get_inverted_hash('submission_type'), protocol.human_subjects_info.submission_type), { include_blank: true }, class: 'selectpicker form-control'
+        = ff_hsi.select :submission_type, options_for_select(PermissibleValue.get_inverted_hash('submission_type'), protocol.human_subjects_info.submission_type), { include_blank: true }, class: 'selectpicker'
       .form-group.col-3
         = ff_hsi.label :approval_pending
         = ff_hsi.check_box :approval_pending, data: { toggle: 'toggle', on: t('constants.yes_select'), off: t('constants.no_select'), style: 'btn-block' }
@@ -69,5 +69,5 @@
 
     .form-row
       .form-group.col-4
-        = f.label :study_phases
-        = f.collection_select :study_phases, StudyPhase.v1, :id, :phase, {}, class: 'selectpicker form-control', multiple: true
+        = f.label :study_phase_ids
+        = f.collection_select :study_phase_ids, StudyPhase.v1, :id, :phase, {}, class: 'selectpicker', multiple: true

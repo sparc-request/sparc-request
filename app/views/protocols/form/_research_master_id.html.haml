@@ -21,7 +21,7 @@
 .form-row.mb-4
   .form-group.col-12.mb-0
     %h5
-      = raw t('protocols.form.information.rmid.note', protocol_type: protocol.model_name.human, rmid_url: Setting.get_value("research_master_link"), rmid_field: Protocol.human_attribute_name(:research_master_id))
+      = raw t('protocols.form.information.rmid.note', rmid_url: Setting.get_value("research_master_link"), rmid_field: Protocol.human_attribute_name(:research_master_id))
   .form-group.col-6.mb-0
     = f.label :research_master_id
     = f.text_field :research_master_id, class: 'form-control research-master-field', disabled: rmid_server_down

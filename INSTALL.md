@@ -8,22 +8,22 @@ Software requirements:
   apache-devel (sometimes referred to as httpd-devel)
   curl-devel
   mysql
-  ruby-1.9.3-p286
+  ruby (see .ruby-version)
   rubygems
 
 From a brand new server:
 - Install Apache
 - Install MySQL
-- Install the dependencies for Ruby:
-  build-essential vim git-core curl bison openssl libreadline6  libreadline6-dev zlib1g zlib1g-dev libssl-dev libyaml-dev   libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev  libcurl4-openssl-dev libopenssl-ruby apache2-prefork-dev  libapr1-dev libaprutil1-dev libx11-dev libffi-dev tcl-dev tk-dev
-- Install Ruby 1.9.3p286 either from source or by using RVM (instructions for installing RVM can be found at rvm.io)
-- Verify that ruby is the correct version, ruby –version should return ‘ruby 1.9.3p286’
+- Install the dependencies for Ruby
+- Install Ruby either from source or by using RVM (instructions for installing RVM can be found at rvm.io)
+- Verify that ruby is the correct version, ruby –version
 - Clone the git repository to a location on the server (/var/www/rails is a good location)
-- Set the application configurations to your liking (see doc/multi_institutional_documentation.md for instructions)
+
 - Depending on the environment that is configured (staging/production/testing/etc) go into the application folder and run
 - RAILS_ENV=environment_chosen bundle install
 - RAILS_ENV=environment_chosen rake db:create
 - RAILS_ENV=environment_chosen rake db:migrate
+- Set the application configurations to your liking (stored in 'settings' table)
 - Install the phusion passenger gem: gem install passenger
 - Install the passenger apache module: passenger-install-apache2-module
 - Follow the instructions provided by the passenger apache module install script.

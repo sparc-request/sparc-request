@@ -52,7 +52,7 @@ RSpec.describe 'User edits Service General Info', js: true do
         wait_for_javascript_to_finish
 
         bootstrap_select('#service_program', @program1.name)
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @service.reload
@@ -65,7 +65,7 @@ RSpec.describe 'User edits Service General Info', js: true do
         wait_for_javascript_to_finish
 
         bootstrap_select('#service_core', @core.name)
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @service.reload
@@ -74,7 +74,7 @@ RSpec.describe 'User edits Service General Info', js: true do
 
       it 'should edit the name' do
         fill_in 'service_name', with: "Daffodil"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @service.reload
@@ -83,7 +83,7 @@ RSpec.describe 'User edits Service General Info', js: true do
 
       it 'should edit the abbreviation' do
         fill_in 'service_abbreviation', with: "Tulip"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @service.reload
@@ -92,7 +92,7 @@ RSpec.describe 'User edits Service General Info', js: true do
 
       it 'should edit the description' do
         fill_in 'service_description', with: "Orchids"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @service.reload
@@ -101,7 +101,7 @@ RSpec.describe 'User edits Service General Info', js: true do
 
       it 'should edit the order' do
         fill_in 'service_order', with: "1"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @service.reload
@@ -111,7 +111,7 @@ RSpec.describe 'User edits Service General Info', js: true do
       it 'should select a tag' do
         bootstrap_select('#service_tag_list', 'Epic')
         find('form.form-horizontal').click
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @service.reload
@@ -120,7 +120,7 @@ RSpec.describe 'User edits Service General Info', js: true do
 
       it 'should toggle Clinical/Non-clinical services if there is no pricing map' do
         first('#general-info div.toggle.btn').click
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @service.reload
@@ -157,7 +157,7 @@ RSpec.describe 'User edits Service General Info', js: true do
         ##
 
         page.all('#general-info div.toggle.btn')[1].click
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @service.reload

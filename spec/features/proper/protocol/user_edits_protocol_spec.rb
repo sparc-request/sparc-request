@@ -27,8 +27,7 @@ RSpec.describe 'User edits protocol', js: true do
   def edit_protocol_information(sr, study_type)
     visit protocol_service_request_path(srid: sr.id)
     wait_for_javascript_to_finish
-
-    click_link "Edit #{study_type} Information"
+    click_link I18n.t('protocols.edit', protocol_type: study_type)
     wait_for_javascript_to_finish
   end
 
@@ -66,7 +65,7 @@ RSpec.describe 'User edits protocol', js: true do
 
           fill_in 'protocol_short_title', with: 'Now this is a short title all about how my life got flipped-turned upside down'
 
-          click_button 'Save'
+          click_button I18n.t(:actions)[:save]
           wait_for_javascript_to_finish
 
           expect(@protocol.reload.short_title).to eq('Now this is a short title all about how my life got flipped-turned upside down')
@@ -77,7 +76,7 @@ RSpec.describe 'User edits protocol', js: true do
 
   context "RMID server is down" do
     stub_config("research_master_enabled", true)
-    
+
     before :each do
       institution = create(:institution, name: "Institution")
       provider    = create(:provider, name: "Provider", parent: institution)

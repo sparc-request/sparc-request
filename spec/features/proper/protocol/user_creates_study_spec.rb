@@ -28,7 +28,7 @@ RSpec.describe 'User creates study', js: true do
     visit protocol_service_request_path(srid: sr)
     wait_for_javascript_to_finish
 
-    click_link 'New Research Study'
+    click_link I18n.t(:proper)[:protocol][:new_research_study]
     wait_for_javascript_to_finish
   end
 
@@ -82,7 +82,7 @@ RSpec.describe 'User creates study', js: true do
         first('.tt-suggestion').click
         wait_for_javascript_to_finish
 
-        click_button 'Save'
+        click_button I18n.t(:actions)[:save]
         wait_for_javascript_to_finish
 
         wait_for_page(protocol_service_request_path)

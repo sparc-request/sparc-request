@@ -44,7 +44,7 @@ RSpec.describe 'User manages Catalog Managers', js: true do
           click_link @provider.name
           wait_for_javascript_to_finish
 
-          click_link 'User Rights'
+          click_link I18n.t(:catalog_manager)[:organization_form][:headers][:user_rights]
           wait_for_javascript_to_finish
         end
 
@@ -74,7 +74,7 @@ RSpec.describe 'User manages Catalog Managers', js: true do
           click_link @provider.name
           wait_for_javascript_to_finish
 
-          click_link 'User Rights'
+          click_link I18n.t(:catalog_manager)[:organization_form][:headers][:user_rights]
           wait_for_javascript_to_finish
         end
 
@@ -105,7 +105,7 @@ RSpec.describe 'User manages Catalog Managers', js: true do
         click_link @provider.name
         wait_for_javascript_to_finish
 
-        click_link 'User Rights'
+        click_link I18n.t(:catalog_manager)[:organization_form][:headers][:user_rights]
         wait_for_javascript_to_finish
       end
 

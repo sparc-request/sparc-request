@@ -40,12 +40,12 @@ RSpec.describe 'User creates new service', js: true do
       find("#program-#{@program.id} .glyphicon").click
       wait_for_javascript_to_finish
 
-      click_link 'Create New Service'
+      click_link I18n.t(:catalog_manager)[:catalog][:new][:service]
       wait_for_javascript_to_finish
 
       find('.modal-body').fill_in 'service_name', with: 'Test Service'
       choose('service_one_time_fee_true', allow_label_click: true)
-      find('.modal-footer').click_button 'Save'
+      find('.modal-footer').click_button I18n.t(:catalog_manager)[:headers][:save]
       wait_for_javascript_to_finish
     end
 
@@ -60,11 +60,11 @@ RSpec.describe 'User creates new service', js: true do
       find("#provider-#{@provider.id} .glyphicon").click
       find("#program-#{@program.id} .glyphicon").click
       wait_for_javascript_to_finish
-      click_link 'Create New Service'
+      click_link I18n.t(:catalog_manager)[:catalog][:new][:service]
       wait_for_javascript_to_finish
 
       find('.modal-body').fill_in 'service_name', with: 'Test Service'
-      find('.modal-footer').click_button 'Save'
+      find('.modal-footer').click_button I18n.t(:catalog_manager)[:headers][:save]
       wait_for_javascript_to_finish
 
       expect(page).to have_content('You must choose either One Time Fee, or Clinical Service.')

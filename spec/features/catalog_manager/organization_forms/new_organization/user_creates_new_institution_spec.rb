@@ -28,11 +28,11 @@ RSpec.describe 'User creates new organization', js: true do
     before :each do
       visit catalog_manager_catalog_index_path
       wait_for_javascript_to_finish
-      click_link 'Create New Institution'
+      click_link I18n.t(:catalog_manager)[:catalog][:new][:institution]
       wait_for_javascript_to_finish
 
       fill_in 'organization_name', with: 'Test Institution'
-      click_button 'Save'
+      click_button I18n.t(:catalog_manager)[:headers][:save]
       wait_for_javascript_to_finish
 
     end

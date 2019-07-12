@@ -42,7 +42,7 @@ RSpec.describe 'User views a SSR', js: true do
       visit review_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
-      click_button 'View Study Details'
+      click_button I18n.t(:proper)[:navigation][:bottom][:view_study_details]
       wait_for_javascript_to_finish
 
       expect(page).to have_selector('.modal-dialog', text: "Study Details: ##{@protocol.id}", visible: true)

@@ -39,11 +39,11 @@ RSpec.describe 'User creates new organization', js: true do
       find("#provider-#{@provider.id} .glyphicon").click
       find("#program-#{@program.id} .glyphicon").click
       wait_for_javascript_to_finish
-      click_link 'Create New Core'
+      click_link I18n.t(:catalog_manager)[:catalog][:new][:core]
       wait_for_javascript_to_finish
 
       fill_in 'organization_name', with: 'Test Core'
-      click_button 'Save'
+      click_button I18n.t(:catalog_manager)[:headers][:save]
       wait_for_javascript_to_finish
     end
 

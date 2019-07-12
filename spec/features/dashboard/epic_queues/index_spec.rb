@@ -52,7 +52,7 @@ RSpec.describe 'Notifications index', js: true do
 
   stub_config("use_epic", true)
   stub_config("epic_queue_access", ['jug2'])
-  
+
   describe "Epic Queue Table" do
     context 'panel title' do
       it 'should display a title of current and past' do
@@ -119,7 +119,7 @@ RSpec.describe 'Notifications index', js: true do
       visit_epic_queues_index_page
       wait_for_javascript_to_finish
 
-      click_link 'Past'
+      click_link I18n.t(:dashboard)[:epic_queues][:headers][:past]
 
       expect(page).to have_css('td',
         text: "#{protocol.type.capitalize}: #{protocol.id} - #{protocol.short_title}"
@@ -130,7 +130,7 @@ RSpec.describe 'Notifications index', js: true do
       page = visit_epic_queues_index_page
       wait_for_javascript_to_finish
 
-      click_link 'Past'
+      click_link I18n.t(:dashboard)[:epic_queues][:headers][:past]
 
       expect(page).to have_css('td', text: "#{epic_queue_record.status.capitalize}")
     end
@@ -140,7 +140,7 @@ RSpec.describe 'Notifications index', js: true do
     page = visit_epic_queues_index_page
     wait_for_javascript_to_finish
 
-    click_link 'Past'
+    click_link I18n.t(:dashboard)[:epic_queues][:headers][:past]
     protocol.principal_investigators.map(&:full_name).each do |pi|
       @pi = "#{pi}"
     end
@@ -152,7 +152,7 @@ RSpec.describe 'Notifications index', js: true do
     page = visit_epic_queues_index_page
     wait_for_javascript_to_finish
 
-    click_link 'Past'
+    click_link I18n.t(:dashboard)[:epic_queues][:headers][:past]
     date = epic_queue.created_at.strftime("%m/%d/%Y %I:%M:%S %p")
 
     expect(page).to have_css('td', text: "#{date}")
@@ -162,7 +162,7 @@ RSpec.describe 'Notifications index', js: true do
     page = visit_epic_queues_index_page
     wait_for_javascript_to_finish
 
-    click_link 'Past'
+    click_link I18n.t(:dashboard)[:epic_queues][:headers][:past]
 
     expect(page).to have_css('td', text: "#{user.full_name}")
   end

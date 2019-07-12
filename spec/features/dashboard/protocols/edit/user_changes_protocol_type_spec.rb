@@ -62,7 +62,7 @@ RSpec.describe 'User changes protocol type', js: true do
 
         context "does not fill out 'Publish Study in Epic'" do
           it 'should throw an error for selected for epic' do
-            click_button 'Save'
+            click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
             expect(page).to have_content("Selected for epic is not included in the list")
           end
         end
@@ -72,7 +72,7 @@ RSpec.describe 'User changes protocol type', js: true do
             it 'should throw an error for study type answers' do
               find('#study_selected_for_epic_true_button').click
               wait_for_javascript_to_finish
-              click_button 'Save'
+              click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
               expect(page).to have_content("Study type answers must be selected")
             end
           end
@@ -85,7 +85,7 @@ RSpec.describe 'User changes protocol type', js: true do
               bootstrap_select '#study_type_answer_certificate_of_conf_answer', 'Yes'
               wait_for_javascript_to_finish
 
-              click_button 'Save'
+              click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
               expect(page).to have_content("Study Updated!")
             end
           end
@@ -97,7 +97,7 @@ RSpec.describe 'User changes protocol type', js: true do
               fill_in 'protocol_sponsor_name', with: 'Hogwarts'
               find('#study_selected_for_epic_false_button').click
               wait_for_javascript_to_finish
-              click_button 'Save'
+              click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
               expect(page).to have_content("Study Updated!")
             end
           end
@@ -123,7 +123,7 @@ RSpec.describe 'User changes protocol type', js: true do
         context 'does not fill out study type questions and saves' do
           it 'should save successfully' do
             wait_for_javascript_to_finish
-            click_button 'Save'
+            click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
             expect(page).to have_content("Study Updated!")
           end
         end
@@ -133,7 +133,7 @@ RSpec.describe 'User changes protocol type', js: true do
             bootstrap_select'#study_type_answer_certificate_of_conf_no_epic_answer', 'Yes'
             wait_for_javascript_to_finish
 
-            click_button 'Save'
+            click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
             expect(page).to have_content("Study Updated!")
           end
         end

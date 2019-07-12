@@ -41,7 +41,7 @@ RSpec.describe 'User edits Organization Pricing', js: true do
         wait_for_javascript_to_finish
         click_link @provider.name
         wait_for_javascript_to_finish
-        click_link 'Pricing'
+        click_link I18n.t(:catalog_manager)[:organization_form][:headers][:pricing]
         wait_for_javascript_to_finish
       end
 
@@ -50,7 +50,7 @@ RSpec.describe 'User edits Organization Pricing', js: true do
         wait_for_javascript_to_finish
 
         bootstrap_select('#pricing_setup_college_rate_type', 'Federal Rate')
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @provider.reload
@@ -62,7 +62,7 @@ RSpec.describe 'User edits Organization Pricing', js: true do
         wait_for_javascript_to_finish
 
         bootstrap_select('#pricing_setup_federal_rate_type', 'Federal Rate')
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @provider.reload
@@ -74,7 +74,7 @@ RSpec.describe 'User edits Organization Pricing', js: true do
         wait_for_javascript_to_finish
 
         bootstrap_select('#pricing_setup_industry_rate_type', 'Federal Rate')
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @provider.reload
@@ -86,7 +86,7 @@ RSpec.describe 'User edits Organization Pricing', js: true do
         wait_for_javascript_to_finish
 
         bootstrap_select('#pricing_setup_investigator_rate_type', 'Federal Rate')
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @provider.reload
@@ -98,7 +98,7 @@ RSpec.describe 'User edits Organization Pricing', js: true do
         wait_for_javascript_to_finish
 
         bootstrap_select('#pricing_setup_internal_rate_type', 'Federal Rate')
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @provider.reload
@@ -110,7 +110,7 @@ RSpec.describe 'User edits Organization Pricing', js: true do
         wait_for_javascript_to_finish
 
         bootstrap_select('#pricing_setup_foundation_rate_type', 'Federal Rate')
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @provider.reload
@@ -122,7 +122,7 @@ RSpec.describe 'User edits Organization Pricing', js: true do
         wait_for_javascript_to_finish
 
         bootstrap_select('#pricing_setup_unfunded_rate_type', 'Federal Rate')
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @provider.reload

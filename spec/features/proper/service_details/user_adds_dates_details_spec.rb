@@ -47,7 +47,7 @@ RSpec.describe 'User sets timeline dates', js: true do
       bootstrap_datepicker '#study_end_date', '03/04/2016'
       first('.page-header').click
 
-      click_link 'Save and Continue →'
+      click_link I18n.t(:proper)[:navigation][:bottom][:save_and_continue]
       wait_for_javascript_to_finish
 
       expect(@protocol.reload.start_date.to_date).to eq('2/1/2016'.to_date)

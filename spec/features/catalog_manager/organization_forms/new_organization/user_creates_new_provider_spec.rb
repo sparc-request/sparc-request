@@ -35,11 +35,11 @@ RSpec.describe 'User creates new organization', js: true do
       wait_for_javascript_to_finish
       find("#institution-#{@institution.id}").click
       wait_for_javascript_to_finish
-      click_link 'Create New Provider'
+      click_link I18n.t(:catalog_manager)[:catalog][:new][:provider]
       wait_for_javascript_to_finish
 
       fill_in 'organization_name', with: 'Test Provider'
-      click_button 'Save'
+      click_button I18n.t(:catalog_manager)[:headers][:save]
       wait_for_javascript_to_finish
 
     end

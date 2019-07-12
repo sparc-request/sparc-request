@@ -31,11 +31,11 @@ RSpec.describe 'User creates a survey', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      click_link 'New Survey'
+      click_link I18n.t(:surveyor)[:systemsurveys][:new]
       wait_for_javascript_to_finish
 
       fill_in 'system_survey_access_code', with: 'test-survey'
-      click_button 'Create'
+      click_button I18n.t(:actions)[:create]
       wait_for_javascript_to_finish
     end
 
@@ -50,11 +50,11 @@ RSpec.describe 'User creates a survey', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      click_link 'New Form'
+      click_link I18n.t(:surveyor)[:forms][:new]
       wait_for_javascript_to_finish
 
       fill_in 'form_access_code', with: 'test-survey'
-      click_button 'Create'
+      click_button I18n.t(:actions)[:create]
       wait_for_javascript_to_finish
     end
 

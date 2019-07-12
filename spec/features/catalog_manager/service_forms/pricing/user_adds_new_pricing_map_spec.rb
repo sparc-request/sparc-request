@@ -48,7 +48,7 @@ RSpec.describe 'User adds Service Pricing Map', js: true do
 
         find('a span', text: @service.name).click
         wait_for_javascript_to_finish
-        click_link 'Pricing'
+        click_link I18n.t(:catalog_manager)[:organization_form][:headers][:pricing]
         wait_for_javascript_to_finish
 
         find("#new_pricing_map_link").click
@@ -88,7 +88,7 @@ RSpec.describe 'User adds Service Pricing Map', js: true do
         fill_in 'pricing_map_unit_factor', with: "1.00"
         fill_in 'pricing_map_unit_minimum', with: "1"
 
-        click_button 'Save'
+        click_button I18n.t(:actions)[:save]
         wait_for_javascript_to_finish
 
         @service.reload
@@ -101,7 +101,7 @@ RSpec.describe 'User adds Service Pricing Map', js: true do
 
         find('a span', text: @service.name).click
         wait_for_javascript_to_finish
-        click_link 'Pricing'
+        click_link I18n.t(:catalog_manager)[:organization_form][:headers][:pricing]
         wait_for_javascript_to_finish
 
 
@@ -144,7 +144,7 @@ RSpec.describe 'User adds Service Pricing Map', js: true do
         fill_in 'pricing_map_unit_factor', with: "1.00"
         fill_in 'pricing_map_units_per_qty_max', with: "1"
 
-        click_button 'Save'
+        click_button I18n.t(:actions)[:save]
         wait_for_javascript_to_finish
 
         @service.reload
@@ -154,7 +154,7 @@ RSpec.describe 'User adds Service Pricing Map', js: true do
       it 'should disable Add Pricing Map button if there is no pricing setup' do
         find('a span', text: @service.name).click
         wait_for_javascript_to_finish
-        click_link 'Pricing'
+        click_link I18n.t(:catalog_manager)[:organization_form][:headers][:pricing]
         wait_for_javascript_to_finish
 
         expect(page).to have_selector('#new_pricing_map_link[disabled=disabled]')

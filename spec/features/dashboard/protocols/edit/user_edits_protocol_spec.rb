@@ -27,7 +27,7 @@ RSpec.describe 'User edits epic answers', js: true do
   build_study_type_questions
 
   stub_config("research_master_enabled", true)
-  
+
   context "RMID server is up and running" do
     before :each do
       @protocol       = create(:protocol_without_validations,
@@ -62,7 +62,7 @@ RSpec.describe 'User edits epic answers', js: true do
         expect(page).not_to have_content( I18n.t(:protocols)[:summary][:tooltips][:rmid_server_down] )
       end
     end
-    
+
     context 'and edits information and submits' do
       scenario 'and sees updated protocol' do
         visit edit_dashboard_protocol_path(@protocol)
@@ -70,7 +70,7 @@ RSpec.describe 'User edits epic answers', js: true do
 
         fill_in 'protocol_short_title', with: 'Now this is a short title all about how my life got flipped-turned upside down'
 
-        click_button 'Save'
+        click_button I18n.t(:actions)[:save]
         wait_for_javascript_to_finish
 
         expect(@protocol.reload.short_title).to eq('Now this is a short title all about how my life got flipped-turned upside down')

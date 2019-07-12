@@ -56,7 +56,7 @@ RSpec.describe "User saves a filter", js: :true do
 
       context "and saves the filter" do
         before :each do
-          click_button 'Save'
+          click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
           wait_for_javascript_to_finish
         end
 
@@ -97,7 +97,7 @@ RSpec.describe "User saves a filter", js: :true do
 
       context "and saves the filter" do
         before :each do
-          click_button 'Save'
+          click_button I18n.t(:dashboard)[:sub_service_requests][:tabs][:request_details][:save]
           wait_for_javascript_to_finish
         end
 

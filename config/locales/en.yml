@@ -48,6 +48,7 @@ en:
     reply: "Reply"
     reset: "Reset"
     save: "Save"
+    save_continue: "Save and Continue"
     search: "Search"
     send: "Send"
     submit: "Submit"
@@ -464,6 +465,7 @@ en:
   protocols:
     new: "New Protocol"
     edit: "Edit %{protocol_type} Information"
+    edit_study: "Edit Study Information"
     created: "%{protocol_type} Created!"
     updated: "%{protocol_type} Updated!"
     summary:

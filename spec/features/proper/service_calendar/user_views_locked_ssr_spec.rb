@@ -76,7 +76,7 @@ RSpec.describe 'User views a locked SSR', js: true do
 
     context 'in the Quantity/Billing Tab' do
       before :each do
-        click_link 'Quantity/Billing Tab'
+        click_link I18n.t(:calendars)[:tabs][:billing]
         wait_for_javascript_to_finish
       end
 

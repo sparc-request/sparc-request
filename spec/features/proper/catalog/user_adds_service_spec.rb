@@ -38,7 +38,7 @@ RSpec.describe 'User adds service to cart', js: true do
 
       find('.provider-header').click
       find('.program-link').click
-      click_button 'Add'
+      click_button I18n.t(:proper)[:catalog][:add]
 
       expect(page).to have_selector('#modal-title', text: 'New or Existing', visible: true)
     end
@@ -51,7 +51,7 @@ RSpec.describe 'User adds service to cart', js: true do
 
       find('.provider-header').click
       find('.program-link').click
-      click_button 'Add'
+      click_button I18n.t(:proper)[:catalog][:add]
       find('.yes-button').click
       wait_for_javascript_to_finish
 
@@ -70,7 +70,7 @@ RSpec.describe 'User adds service to cart', js: true do
 
       find('.provider-header').click
       find('.program-link').click
-      click_button 'Add'
+      click_button I18n.t(:proper)[:catalog][:add]
       wait_for_javascript_to_finish
 
       expect(page).to have_selector('#modal-title', text: 'Service Already Present', visible: true)

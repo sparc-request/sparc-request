@@ -23,7 +23,7 @@ require 'rails_helper'
 RSpec.describe 'User wants to edit an authorized user', js: true do
   let_there_be_lane
   let_there_be_j
-  
+
   fake_login_for_each_test
 
   before :each do
@@ -56,10 +56,10 @@ RSpec.describe 'User wants to edit an authorized user', js: true do
 
         all('.edit-associated-user-button').last.click
         wait_for_javascript_to_finish
-        
+
         bootstrap_select '#project_role_role', 'PD/PI'
 
-        click_button 'Save'
+        click_button I18n.t(:actions)[:save]
         wait_for_javascript_to_finish
 
         expect(@auth_u.reload.role).to eq('pi')

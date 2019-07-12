@@ -46,7 +46,7 @@ RSpec.describe 'User should see notes', js: true do
     click_button I18n.t(:actions)[:submit]
     wait_for_javascript_to_finish
     expect(page).to have_css('td.note', text: 'test')
-    click_link 'Save and Continue'
+    click_link I18n.t(:actions)[:save_continue]
     expect(page).to have_content 'test'
   end
 end

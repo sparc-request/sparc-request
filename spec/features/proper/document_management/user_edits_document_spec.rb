@@ -59,7 +59,7 @@ RSpec.describe 'User edits an existing document', js: true do
 
         bootstrap_select '#document_doc_type', 'Consent'
 
-        click_button 'Upload'
+        click_button I18n.t(:actions)[:upload]
         wait_for_javascript_to_finish
 
         expect(@document.reload.doc_type).to eq('consent')

@@ -43,7 +43,7 @@ RSpec.describe 'User manages Clinical Providers', js: true do
       click_link @provider.name
       wait_for_javascript_to_finish
 
-      click_link 'Fulfillment Rights'
+      click_link I18n.t(:catalog_manager)[:organization_form][:fulfillment_rights][:title]
       wait_for_javascript_to_finish
     end
 
@@ -65,8 +65,7 @@ RSpec.describe 'User manages Clinical Providers', js: true do
       wait_for_javascript_to_finish
       click_link @provider.name
       wait_for_javascript_to_finish
-
-      click_link 'Fulfillment Rights'
+      click_link I18n.t(:catalog_manager)[:organization_form][:fulfillment_rights][:title]
       wait_for_javascript_to_finish
     end
 

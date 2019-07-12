@@ -47,7 +47,7 @@ RSpec.describe 'User edits an arm', js: true do
 
       fill_in 'arm_name', with: 'Armania'
 
-      click_button 'Save'
+      click_button I18n.t(:actions)[:save]
       wait_for_javascript_to_finish
 
       # Screening date + new arm

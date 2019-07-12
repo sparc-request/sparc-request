@@ -53,6 +53,13 @@ en:
       accordion:
         header: "Browse Service Catalog"
       back_to_top: "Back to Top"
+      short_interaction: "Short Interaction"
+      submit: "Submit"
+      add: "Add"
+      continue: "Continue"
+      contact: "Contact Us"
+      help: "Help/FAQs"
+      return_to_catalog: "Return to Catalog"
       center:
         search_placeholder: "Search by Service Name, CPT Code, or EAP ID"
         welcome: "Welcome to SPARCRequest:<br>Storefront of Research Services"
@@ -81,6 +88,8 @@ en:
     # PROTOCOL #
     ############
     protocol:
+      new_research_study: "New Research Study"
+      edit: "Edit %{study_type} Information"
       review_services_notice: "Services"
       review_services_instructions: "Please review the SPARCRequest Services you have selected"
       create_protocol_notice: "Create Protocol"
@@ -122,6 +131,7 @@ en:
     # SERVICE CALENDAR #
     ####################
     service_calendar:
+      save_changes: "Save changes"
       move_visit:
         header: "Move Visit"
       legend:
@@ -150,7 +160,9 @@ en:
     document_management:
       documents_notice: "Documents"
       notes_notice: "Notes"
-      forms_notice: 'Forms'
+      forms_notice: "Forms"
+      add_document: "Add a Document"
+      upload: "Upload"
       tooltips:
         documents: "Visible to Authorized Users and selected Service Providers"
         notes: "Important notes for your Study/Project"
@@ -242,9 +254,11 @@ en:
         get_cost_estimate: "Get a Cost Estimate"
         save_and_continue: "Save and Continue →"
         submit: "Submit Request →"
+        submit_request: "Submit Request"
         saving: "Saving..."
         submitting: "Submitting..."
         getting_cost: "Getting Cost..."
+        view_study_details: "View Study Details"
       save_as_draft:
         header: "Save as Draft"
         body: "This study will be saved as a draft and no notifications or emails will be sent to Service Providers. Do you wish to proceed?"

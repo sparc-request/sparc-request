@@ -40,7 +40,7 @@ RSpec.describe 'User manages status options', js: true do
         click_link @provider.name
         wait_for_javascript_to_finish
 
-        click_link 'Status Options'
+        click_link I18n.t(:catalog_manager)[:organization_form][:headers][:status_options]
         wait_for_javascript_to_finish
       end
 

@@ -37,7 +37,7 @@ RSpec.describe 'Service Provider clicks Short Interaction', js: true do
     visit root_path
     wait_for_javascript_to_finish
 
-    click_link 'Short Interaction'
+    click_link I18n.t(:proper)[:catalog][:short_interaction]
     wait_for_javascript_to_finish
 
     expect(page).to have_selector('#modal-title', text: 'Short Interaction', visible: true)
@@ -48,7 +48,7 @@ RSpec.describe 'Service Provider clicks Short Interaction', js: true do
       visit root_path
       wait_for_javascript_to_finish
 
-      click_link 'Short Interaction'
+      click_link I18n.t(:proper)[:catalog][:short_interaction]
       wait_for_javascript_to_finish
 
       fill_in 'short_interaction_duration_in_minutes', with: '10'
@@ -59,7 +59,7 @@ RSpec.describe 'Service Provider clicks Short Interaction', js: true do
       select('General Question', from: 'short_interaction_subject')
       select('Email', from: 'short_interaction_interaction_type')
 
-      click_button 'Submit'
+      click_button I18n.t(:proper)[:catalog][:submit]
       wait_for_javascript_to_finish
 
       expect(ShortInteraction.count).to eq 1

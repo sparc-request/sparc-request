@@ -44,7 +44,7 @@ RSpec.describe 'User edits organization general info', js: true do
 
       it 'should edit the name' do
         fill_in 'organization_name', with: "Inigo Montoya"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @provider.reload
@@ -53,7 +53,7 @@ RSpec.describe 'User edits organization general info', js: true do
 
       it 'should edit the abbreviation' do
         fill_in 'organization_abbreviation', with: "Mandy Patinkin"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @provider.reload
@@ -62,7 +62,7 @@ RSpec.describe 'User edits organization general info', js: true do
 
       it 'should edit the description' do
         fill_in 'organization_description', with: "Swordsman/Actor"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @provider.reload
@@ -71,7 +71,7 @@ RSpec.describe 'User edits organization general info', js: true do
 
       it 'should edit the acceptance language' do
         fill_in 'organization_ack_language', with: "You Killed My Father, Prepare To Die"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @provider.reload
@@ -80,7 +80,7 @@ RSpec.describe 'User edits organization general info', js: true do
 
       it 'should edit the order' do
         fill_in 'organization_order', with: "2"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @provider.reload
@@ -89,7 +89,7 @@ RSpec.describe 'User edits organization general info', js: true do
 
       it 'should toggle split/notify' do
         find('.split_notify_container div.toggle.btn').click
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @provider.reload
@@ -98,7 +98,7 @@ RSpec.describe 'User edits organization general info', js: true do
 
       it 'should select a color' do
         bootstrap_select('#organization_css_class', 'blue')
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @provider.reload
@@ -107,7 +107,7 @@ RSpec.describe 'User edits organization general info', js: true do
 
       it 'should toggle display in sparc' do
         find('#display-in-sparc div.toggle.btn').click
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @provider.reload
@@ -116,7 +116,7 @@ RSpec.describe 'User edits organization general info', js: true do
 
       it 'should select a tag' do
         bootstrap_multiselect('#organization_tag_list', ['Fulfillment'])
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @provider.reload

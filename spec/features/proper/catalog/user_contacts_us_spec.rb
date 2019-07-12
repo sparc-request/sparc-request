@@ -28,7 +28,7 @@ RSpec.describe 'User clicks Contact Us', js: true do
     visit root_path
     wait_for_javascript_to_finish
 
-    click_link 'Contact Us'
+    click_link I18n.t(:proper)[:catalog][:contact]
     wait_for_javascript_to_finish
 
     expect(page).to have_selector('#modal-title', text: 'Contact Us', visible: true)
@@ -39,13 +39,13 @@ RSpec.describe 'User clicks Contact Us', js: true do
       visit root_path
       wait_for_javascript_to_finish
 
-      click_link 'Contact Us'
+      click_link I18n.t(:proper)[:catalog][:contact]
       wait_for_javascript_to_finish
 
       fill_in 'contact_form_email', with: 'abc@def.ghi'
       fill_in 'contact_form_message', with: 'abcdefghi'
 
-      click_button 'Submit'
+      click_button I18n.t(:proper)[:catalog][:submit]
       wait_for_javascript_to_finish
 
       expect(page).to have_content('Message sent successfully!')

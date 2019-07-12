@@ -28,7 +28,7 @@ RSpec.describe 'User views frequently asked questions', js: true do
     visit root_path
     wait_for_javascript_to_finish
 
-    click_link 'Help/FAQs'
+    click_link I18n.t(:proper)[:catalog][:help]
     wait_for_javascript_to_finish
 
     expect(page).to have_selector('#modal-title', text: 'Help/FAQs', visible: true)
@@ -39,7 +39,7 @@ RSpec.describe 'User views frequently asked questions', js: true do
       visit root_path
       wait_for_javascript_to_finish
 
-      click_link 'Help/FAQs'
+      click_link I18n.t(:proper)[:catalog][:help]
       wait_for_javascript_to_finish
       first('.help-question').click
 

@@ -42,7 +42,7 @@ RSpec.describe 'RMID validated Protocols', js: true do
   end
 
   stub_config("research_master_enabled", true)
-  
+
   before :each do
     visit dashboard_protocol_path(study)
     wait_for_javascript_to_finish
@@ -63,7 +63,7 @@ RSpec.describe 'RMID validated Protocols', js: true do
 
   describe 'view details' do
     it 'shows that the Protocol has been refreshed with RMID data' do
-      click_button 'View Study Details'
+      click_button I18n.t(:dashboard)[:protocols][:documents][:view_study_details]
       within '.modal-content' do
         expect(page).to have_css(
           'h6.text-success',

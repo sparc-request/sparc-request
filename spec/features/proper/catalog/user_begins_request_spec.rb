@@ -56,7 +56,7 @@ RSpec.describe 'User begins Service Request', js: true do
   end
 
   scenario 'and sees the Protocol page' do
-    click_link("Continue")
+    click_link I18n.t(:proper)[:catalog][:continue]
     expect(page).to have_content("STEP 1")
 
     cart = page.find(".panel", text: /My Services/)

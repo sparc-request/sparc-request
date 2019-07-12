@@ -66,6 +66,7 @@ en:
     #########
     forms:
       header: "Form Submissions"
+      submit: "Submit"
 
     ##################
     #  FULFILLMENTS  #
@@ -223,6 +224,9 @@ en:
       documents:
         header: "Documents"
         add_document: "Add Document"
+        view_study_details: "View Study Details"
+        archive_project: "Archive Project"
+        unarchive_project: "Unarchive Project"
 
       service_requests:
         header: "Requests"
@@ -280,6 +284,8 @@ en:
       actions:
         header: "Actions"
         view: "View"
+        requests: "Requests"
+        back: "Back"
         edit: "Edit"
         admin_edit: "Admin Edit"
         tooltips:
@@ -373,8 +379,12 @@ en:
       tabs:
         request_details:
           header: "Request Details"
+          save: "Save"
+
           options:
             header: "Options"
+            template: "Template Tab"
+            quantity_billing: "Quantity/Billing Tab"
             send_to_epic: "Send to Epic"
             core_approvals: "Administrative Approvals"
             export_to_excel: "Export to Excel"

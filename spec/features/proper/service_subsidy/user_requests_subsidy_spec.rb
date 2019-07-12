@@ -43,7 +43,7 @@ RSpec.describe 'User requests a new subsidy', js: true do
       visit service_subsidy_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
-      click_button 'Request a Subsidy'
+      click_button I18n.t(:subsidies)[:add]
       wait_for_javascript_to_finish
 
       expect(page).to have_selector(".modal-dialog", text: "New Subsidy Pending Approval", visible: true)
@@ -54,12 +54,12 @@ RSpec.describe 'User requests a new subsidy', js: true do
         visit service_subsidy_service_request_path(srid: @sr.id)
         wait_for_javascript_to_finish
 
-        click_button 'Request a Subsidy'
+        click_button I18n.t(:subsidies)[:add]
         wait_for_javascript_to_finish
 
         fill_in 'pending_subsidy_percent_subsidy', with: '3'
 
-        click_button 'Save'
+        click_button I18n.t(:actions)[:save]
         wait_for_javascript_to_finish
 
         expect(page).to have_selector('.pending-subsidy', visible: true)

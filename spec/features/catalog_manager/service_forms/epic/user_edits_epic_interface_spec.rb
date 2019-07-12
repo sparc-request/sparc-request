@@ -44,13 +44,13 @@ RSpec.describe 'User edits Service Epic Interface', js: true do
         find('a span', text: @service.name).click
         wait_for_javascript_to_finish
 
-        click_link 'Epic Interface'
+        click_link I18n.t(:catalog_manager)[:organization_form][:epic_info]
         wait_for_javascript_to_finish
       end
 
       it 'should edit the eap id' do
         fill_in 'service_eap_id', with: "1000"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @service.reload
@@ -59,7 +59,7 @@ RSpec.describe 'User edits Service Epic Interface', js: true do
 
       it 'should edit the cpt code' do
         fill_in 'service_cpt_code', with: "2000"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @service.reload
@@ -68,7 +68,7 @@ RSpec.describe 'User edits Service Epic Interface', js: true do
 
       it 'should edit the charge code' do
         fill_in 'service_charge_code', with: "3000"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @service.reload
@@ -77,7 +77,7 @@ RSpec.describe 'User edits Service Epic Interface', js: true do
 
       it 'should edit the revenue code' do
         fill_in 'service_revenue_code', with: "4000"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @service.reload
@@ -86,7 +86,7 @@ RSpec.describe 'User edits Service Epic Interface', js: true do
 
       it 'should edit the order code' do
         fill_in 'service_order_code', with: "5000"
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @service.reload
@@ -95,7 +95,7 @@ RSpec.describe 'User edits Service Epic Interface', js: true do
 
       it 'should toggle Send to Epic' do
         find('#epic div.toggle.btn').click
-        click_button 'Save'
+        click_button I18n.t(:catalog_manager)[:headers][:save]
         wait_for_javascript_to_finish
 
         @service.reload

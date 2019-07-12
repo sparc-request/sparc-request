@@ -40,12 +40,12 @@ RSpec.describe 'User creates an arm', js: true do
     scenario 'and sees the created arm' do
       visit service_details_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
-      click_button 'Add Arm'
+      click_button I18n.t(:arms)[:add]
       wait_for_javascript_to_finish
 
       fill_in 'arm_name', with: 'Armania'
 
-      click_button 'Add'
+      click_button I18n.t(:actions)[:add]
       wait_for_javascript_to_finish
 
       # Screening date + new arm

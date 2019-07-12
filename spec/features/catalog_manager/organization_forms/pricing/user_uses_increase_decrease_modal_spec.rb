@@ -41,7 +41,7 @@ RSpec.describe 'User edits organization subsidy map', js: true do
         wait_for_javascript_to_finish
         click_link @provider.name
         wait_for_javascript_to_finish
-        click_link 'Pricing'
+        click_link I18n.t(:catalog_manager)[:organization_form][:headers][:pricing]
         wait_for_javascript_to_finish
         find("#increase_decrease_button").click
         wait_for_javascript_to_finish
@@ -59,7 +59,7 @@ RSpec.describe 'User edits organization subsidy map', js: true do
         find('#effective_date').click
         find('td.today').click
 
-        click_button 'Adjust Rates'
+        click_button I18n.t(:catalog_manager)[:organization_form][:pricing][:adjust_rates]
         wait_for_javascript_to_finish
 
         @service.reload

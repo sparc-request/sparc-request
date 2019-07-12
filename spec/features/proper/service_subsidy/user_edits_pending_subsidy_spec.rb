@@ -60,7 +60,7 @@ RSpec.describe 'User edits a pending subsidy', js: true do
 
         fill_in 'pending_subsidy_percent_subsidy', with: '3.14'
 
-        click_button 'Save'
+        click_button I18n.t(:actions)[:save]
         wait_for_javascript_to_finish
 
         expect(@subsidy.reload.percent_subsidy).to eq(0.0314)

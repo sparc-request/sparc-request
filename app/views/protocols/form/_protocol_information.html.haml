@@ -41,12 +41,12 @@
 
       = f.fields_for :primary_pi_role do |ff_ppi|
         .form-group
-          = label_tag :primary_pi_search, t('protocols.form.information.primary_pi.field'), class: 'required'
+          = f.label :primary_pi, class: 'required'
           .input-group
             .input-group-prepend
               %span.input-group-text
                 = icon('fas', 'search')
-            = text_field_tag :primary_pi_search, ff_ppi.object.identity.try(&:display_name), class: 'form-control typeahead', placeholder: t('constants.prompts.search_for_user'), readonly: !protocol.new_record?
+            = text_field_tag :primary_pi, ff_ppi.object.identity.try(&:display_name), class: 'form-control typeahead', placeholder: t('constants.prompts.search_for_user'), readonly: !protocol.new_record?
           = ff_ppi.hidden_field :identity_id
           %span.form-text.text-muted
             = t('protocols.form.information.primary_pi.note')
@@ -94,4 +94,4 @@
         - if Setting.get_value('use_epic')
           #studyTypeNote
             - if protocol.active? && note = protocol.determine_study_type_note
-              = render 'protocols/form/study_type_note', f: f, protocol: protocol, note: note
+              = render 'protocols/form/study_type_note', protocol: protocol, note: note

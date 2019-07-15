@@ -42,7 +42,7 @@
         = ff_hsi.select :submission_type, options_for_select(PermissibleValue.get_inverted_hash('submission_type'), protocol.human_subjects_info.submission_type), { include_blank: true }, class: 'selectpicker'
       .form-group.col-3
         = ff_hsi.label :approval_pending
-        = ff_hsi.check_box :approval_pending, data: { toggle: 'toggle', on: t('constants.yes_select'), off: t('constants.no_select'), style: 'btn-block' }
+        = ff_hsi.check_box :approval_pending, data: { toggle: 'toggle', on: t('constants.yes_select'), off: t('constants.no_select'), style: 'btn-block' }, disabled: !ff_rti.object.human_subjects?
 
     .form-row
       .form-group.col-4

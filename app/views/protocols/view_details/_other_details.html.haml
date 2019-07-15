@@ -17,9 +17,41 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-%tr
-  %td
-    %label.col-lg-10
-      = answer.study_type_question.question
-    .col-lg-2
-      = answer.answer ? t(:constants)[:yes_select] : t(:constants)[:no_select]
+
+%section.pt-3#otherDetails
+  .card
+    .card-header.bg-primary.text-white
+      %h3.mb-0
+        = t('protocols.form.other_details.header')
+    %table.table.mb-0
+      %tbody
+        %tr.bg-light
+          %td
+            = t('protocols.form.other_details.study_types')
+        %tr
+          %td
+            .row
+              - PermissibleValue.get_hash('study_type').each do |k, v|
+                .col-3<
+                  = protocol.study_types.detect{ |st| st.name == k } ? icon('fas', 'check text-success mr-1') : icon('fas', 'times text-danger mr-1')
+                  = v
+        %tr.bg-light
+          %td
+            = t('protocols.form.other_details.impact_areas')
+        %tr
+          %td
+            .row
+              - PermissibleValue.get_hash('impact_area').each do |k, v|
+                .col-3<
+                  = protocol.impact_areas.detect{ |st| st.name == k } ? icon('fas', 'check text-success mr-1') : icon('fas', 'times text-danger mr-1')
+                  = v
+        %tr.bg-light
+          %td
+            = t('protocols.form.other_details.affiliations')
+        %tr
+          %td
+            .row
+              - PermissibleValue.get_hash('affiliation_type').each do |k, v|
+                .col-3<
+                  = protocol.affiliations.detect{ |st| st.name == k } ? icon('fas', 'check text-success mr-1') : icon('fas', 'times text-danger mr-1')
+                  = v

@@ -18,11 +18,11 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.modal-dialog.modal-sm{ role: 'document' }
+.modal-dialog{ role: 'document' }
   .modal-content
     = form_for [:dashboard, protocol_filter], remote: true do |f|
       .modal-header
-        %h5.modal-title
+        %h3.modal-title
           = t('dashboard.protocol_filters.modal.header')
         %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
           %span{ aria: { hidden: 'true' } } &times;

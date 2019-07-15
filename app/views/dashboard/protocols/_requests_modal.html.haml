@@ -21,8 +21,10 @@
 .modal-dialog.modal-xl{ role: 'document'}
   .modal-content
     .modal-header
-      %h5.modal-title
-        = protocol.short_title
+      %h3.modal-title
+        = "#{protocol.model_name.human} ##{protocol.id}"
+        %small.text-muted
+          = protocol.short_title
       %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
         %span{ aria: { hidden: 'true' } } &times;
     .modal-body

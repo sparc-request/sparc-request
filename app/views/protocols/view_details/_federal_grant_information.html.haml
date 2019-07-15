@@ -18,9 +18,39 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= render 'protocols/view_details/study_information', protocol: protocol
-= render 'protocols/view_details/financial_information', protocol: protocol
-= render 'protocols/view_details/research_involving', protocol: protocol
-= render 'protocols/view_details/study_type', protocol: protocol
-= render 'protocols/view_details/impact_areas', protocol: protocol
-= render 'protocols/view_details/affiliations', protocol: protocol
+%tr.bg-light
+  %td{ colspan: 2 }
+    = t('protocols.form.grant_information.header')
+%tr
+  %td.col-3
+    = label :protocol, :federal_grant_code_id, class: 'mb-0'
+  %td.col-9
+    = protocol.federal_grant_code_id.present? ? PermissibleValue.get_value('federal_grant_code', protocol.federal_grant_code_id) : t('constants.na')
+%tr
+  %td.col-3
+    = label :protocol, :federal_grant_serial_number, class: 'mb-0'
+  %td.col-9
+    = protocol.federal_grant_serial_number.present? ? protocol.federal_grant_serial_number : t('constants.na')
+%tr
+  %td.col-3
+    = label :protocol, :federal_grant_title, class: 'mb-0'
+  %td.col-9
+    = protocol.federal_grant_title.present? ? protocol.federal_grant_title : t('constants.na')
+- if protocol.federal_phs_sponsor.present?
+  %tr
+    %td.col-3
+      = label :protocol, :federal_phs_sponsor, class: 'mb-0'
+    %td.col-9
+      = PermissibleValue.get_value('federal_grant_phs_sponsor', protocol.federal_phs_sponsor)
+- elsif protocol.federal_non_phs_sponsor.present?
+  %tr
+    %td.col-3
+      = label :protocol, :federal_non_phs_sponsor, class: 'mb-0'
+    %td.col-9
+      = PermissibleValue.get_value('federal_grant_non_phs_sponsor', protocol.federal_non_phs_sponsor)
+- else
+  %tr
+    %td.col-3
+      = label :protocol, :federal_sponsor, class: 'mb-0'
+    %td.col-9
+      = t('constants.na')

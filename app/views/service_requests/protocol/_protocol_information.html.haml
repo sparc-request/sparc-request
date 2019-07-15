@@ -24,8 +24,8 @@
     = render 'associated_users/table', protocol: protocol, service_request: service_request
   - else
     .card#newProtocolCard
-      .card-header
-        %h4.mb-0
+      .card-header.bg-primary.text-white
+        %h3.mb-0
           = t('protocols.form.header.new', protocol_type: Protocol.model_name.human)
       .card-body
         %h4.mb-4

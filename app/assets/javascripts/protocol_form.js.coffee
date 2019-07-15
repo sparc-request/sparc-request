@@ -91,16 +91,21 @@ $(document).on 'turbolinks:load', ->
   $(document).on 'change', '[name="protocol[research_types_info_attributes][human_subjects]"]', ->
     if $(this).prop('checked')
       $('#protocol_research_master_id').siblings('label').addClass('required')
+      $('#protocol_human_subjects_info_attributes_approval_pending').bootstrapToggle('enable')
+      $('[name="protocol[human_subjects_info_attributes][approval_pending]"').attr('disabled', false)
     else
       $('#protocol_research_master_id').siblings('label').removeClass('required')
+      $('#protocol_human_subjects_info_attributes_approval_pending').bootstrapToggle('disable')
+      $('[name="protocol[human_subjects_info_attributes][approval_pending]"').attr('disabled', true)
     setRequiredFields()
 
   $(document).on 'keyup', '#protocol_investigational_products_info_attributes_ind_number', ->
     if $(this).val().length > 0
-      $('#protocol_investigational_products_info_attributes_ind_on_hold').attr('disabled', false).parents('.toggle').attr('disabled', false)
+      $('#protocol_investigational_products_info_attributes_ind_on_hold').bootstrapToggle('enable')
+      $('[name="protocol[investigational_products_info_attributes][ind_on_hold]"]').attr('disabled', false)
     else
-      $('#protocol_investigational_products_info_attributes_ind_on_hold').bootstrapToggle('off')
-      $('#protocol_investigational_products_info_attributes_ind_on_hold').attr('disabled', true).parents('.toggle').attr('disabled', true)
+      $('#protocol_investigational_products_info_attributes_ind_on_hold').bootstrapToggle('off').bootstrapToggle('disable')
+      $('[name="protocol[investigational_products_info_attributes][ind_on_hold]"]').attr('disabled', true)
 
   $(document).on 'change', '#protocol_investigational_products_info_attributes_exemption_type', ->
     exemption = $(this).val()
@@ -130,7 +135,7 @@ $(document).on 'turbolinks:load', ->
       wildcard: '%TERM'
   )
   identitiesBloodhound.initialize() # Initialize the Bloodhound suggestion engine
-  $('#primary_pi_search:not([readonly=readonly])').typeahead(
+  $('#primary_pi:not([readonly=readonly])').typeahead(
     {
       minLength: 3
       hint: false
@@ -146,7 +151,7 @@ $(document).on 'turbolinks:load', ->
     }
   ).on 'typeahead:select', (event, suggestion) ->
     $('#protocol_primary_pi_role_attributes_identity_id').val(suggestion.value)
-    $('#primary_pi_search').prop('placeholder', suggestion.label)
+    $('#primary_pi').prop('placeholder', suggestion.label)
 
   ##################################
   ### Study Type Questions Logic ###
@@ -327,11 +332,11 @@ higherLevelOfPrivacyNoEpic    = '#study_type_answer_higher_level_of_privacy_no_e
 hideStudyTypeQuestion = ($select) ->
   $select.selectpicker('val', '')
   $select.trigger('change')
-  $select.closest('.form-row').hide()
+  $select.closest('.form-row').addClass('d-none')
 
 showStudyTypeQuestion = ($select) ->
   $select.trigger('change')
-  $select.closest('.form-row').show()
+  $select.closest('.form-row').removeClass('d-none')
 
 determineStudyType = () ->
   answers = {

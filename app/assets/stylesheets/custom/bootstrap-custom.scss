@@ -63,13 +63,10 @@
   }
 
   .card-header, .card-footer {
+    padding: 0.75rem 1rem;
     display: flex;
     align-items: center;
     background: white;
-  }
-
-  .card-header, .card-body, .card-footer {
-    padding: 0.75rem;
   }
 
   .card-header {
@@ -79,6 +76,10 @@
       border-radius: inherit;
       border: 0;
     }
+  }
+
+  .card-body {
+    padding: 1rem;
   }
 }
 
@@ -194,16 +195,6 @@ form, .form {
     &.form-control-lg {
       border-radius: 0.3rem;
     }
-  }
-}
-
-//////////////////
-/// List Group ///
-//////////////////
-
-.list-group {
-  .list-group-item {
-    padding: 0.75rem;
   }
 }
 
@@ -353,6 +344,19 @@ nav.navbar {
     .navbar-collapse {
       display: flex;
       align-items: stretch;
+    }
+  }
+}
+
+//////////////
+/// Tables ///
+//////////////
+
+.table {
+  &.table-sm {
+    th, td {
+      padding-left: $grid-gutter-width / 2;
+      padding-right: $grid-gutter-width / 2;
     }
   }
 }

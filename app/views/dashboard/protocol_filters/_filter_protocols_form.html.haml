@@ -21,8 +21,8 @@
 %aside#protocolFilters
   .card
     = form_for_filterrific filterrific, remote: true, html: { id: 'protocolFiltersForm', autocomplete: 'off' } do |f|
-      .card-header
-        %h4.mb-0.mr-auto
+      .card-header.bg-primary.text-white
+        %h3.mb-0.mr-auto
           = t('dashboard.protocol_filters.header')
       .card-body
         .form-group

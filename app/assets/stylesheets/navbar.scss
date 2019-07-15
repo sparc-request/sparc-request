@@ -123,8 +123,6 @@ nav#dashboardNav {
     top: 1rem;
 
     .nav-link {
-      padding: 0.75rem 1.5rem;
-
       &:not(:last-child) {
         @extend .border-bottom;
       }

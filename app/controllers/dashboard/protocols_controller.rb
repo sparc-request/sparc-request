@@ -102,20 +102,15 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def create
-    protocol_class                          = protocol_params[:type].capitalize.constantize
-    ### if lazy load enabled, we need create the identiy if necessary here
-    attrs                                   = Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") ? fix_identity : fix_date_params
-    @protocol                               = protocol_class.new(attrs)
-    @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id
+    @protocol = protocol_params[:type].capitalize.constantize.new(protocol_params)
 
     if @protocol.valid?
-      unless @protocol.project_roles.map(&:identity_id).include? current_user.id
-        # if current user is not authorized, add them as an authorized user
-        @protocol.project_roles.new(identity_id: current_user.id, role: 'general-access-user', project_rights: 'approve')
+      # if current user is not authorized, add them as an authorized user
+      unless @protocol.primary_pi_role.identity == current_user
+        @protocol.project_roles.new(identity: current_user, role: 'general-access-user', project_rights: 'approve')
       end
 
       @protocol.save
-
       @protocol.service_requests.new(status: 'draft').save(validate: false)
 
       if Setting.get_value("use_epic") && @protocol.selected_for_epic
@@ -124,9 +119,13 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       end
 
       flash[:success] = I18n.t('protocols.created', protocol_type: @protocol.type)
+
+      redirect_to dashboard_protocol_path(@protocol)
     else
       @errors = @protocol.errors
     end
+
+    respond_to :js
   end
 
   def edit
@@ -162,13 +161,12 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         end
       end
 
-      attrs               = fix_date_params
       permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
       # admin is not able to activate study_type_question_group
 
       @protocol.bypass_rmid_validation = @bypass_rmid_validation
 
-      if @protocol.update_attributes(attrs)
+      if @protocol.update_attributes(protocol_params)
         flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
       else
         @errors = @protocol.errors

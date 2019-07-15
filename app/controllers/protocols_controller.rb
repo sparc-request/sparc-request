@@ -48,7 +48,6 @@ class ProtocolsController < ApplicationController
 
       @protocol.next_ssr_id = @service_request.sub_service_requests.order(:ssr_id).last.ssr_id.to_i + 1
       @protocol.save
-
       @service_request.update_attribute(:protocol, @protocol)
       @service_request.update_status('draft')
 

@@ -19,8 +19,8 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .card
-  .card-header.justify-content-between
-    %h4.mb-0
+  .card-header.justify-content-between.bg-primary.text-white
+    %h3.mb-0
       - if service_request.previously_submitted?
         = link_to '#protocolSummary', data: { toggle: 'collapse' } do
           = icon('fas', 'caret-down m-1 pr-2')
@@ -32,49 +32,44 @@
       - if action_name == 'protocol'
         = link_to I18n.t('protocols.edit', protocol_type: protocol_type), edit_protocol_path(protocol, srid: service_request.id), class: 'btn btn-warning'
   .collapse#protocolSummary{ class: service_request.previously_submitted? ? '' : 'show' }
-    .card-body
-      %table
-        %tbody
-          - if Setting.get_value("research_master_enabled") && protocol.is_study?
-            %tr
-              %td.text-right.pr-1
-                %h6.mb-0
-                  = Protocol.human_attribute_name(:research_master_id) + ":"
-              %td.pl-2
-                - if protocol.research_master_id.nil?
-                  = I18n.t('protocols.summary.na_research_master_id')
-                - else
-                  = protocol.research_master_id
-          %tr
-            %td.text-right.pr-1
-              %h6.mb-0
-                = protocol.class.human_attribute_name(:id) + ":"
-            %td.pl-2
-              = protocol.try(:id)
-          %tr
-            %td.text-right.pr-1
-              %h6.mb-0{ title: t(:protocols)[:tooltips][:title], data: { toggle: 'tooltip', placement: 'right' } }
-                = Protocol.human_attribute_name(:title) + ":"
-            %td.pl-2
-              = protocol.try(:title)
-              = display_rmid_validated_protocol(protocol, t('protocols.summary.rmid_title'))
-          %tr
-            %td.text-right.pr-1
-              %h6.mb-0{ title: t(:protocols)[:tooltips][:short_title], data: { toggle: 'tooltip', placement: 'right' } }
-                = Protocol.human_attribute_name(:short_title) + ":"
-            %td.pl-2
-              = protocol.short_title
-              = display_rmid_validated_protocol(protocol, t('protocols.summary.rmid_short_title'))
-          - if protocol_type == 'Study'
-            %tr
-              %td.text-right.pr-1
-                %h6.mb-0{ title: t(:protocols)[:tooltips][:sponsor_name], data: { toggle: 'tooltip', placement: 'right' } }
-                  = Protocol.human_attribute_name(:sponsor_name) + ":"
-              %td.pl-2
-                = protocol.sponsor_name
-          %tr
-            %td.text-right.pr-1
-              %h6.mb-0{ title: protocol.funding_status == "funded" ? t(:protocols)[:tooltips][:funding_source] : t(:protocols)[:tooltips][:potential_funding_source], data: { toggle: 'tooltip', placement: 'right' } }
-                = display_funding_source_title(protocol)
-            %td.pl-2
-              = display_funding_source(protocol)
+    %table.table.mb-0
+      - if Setting.get_value("research_master_enabled") && protocol.is_study?
+        %tr
+          %td.col-2
+            %label.mb-0
+              = Protocol.human_attribute_name(:research_master_id)
+          %td.col-10
+            = protocol.research_master_id.present? ? protocol.research_master_id : t('constants.na')
+      %tr
+        %td.col-2
+          %label.mb-0
+            = protocol.class.human_attribute_name(:id)
+        %td.col-10
+          = protocol.try(:id)
+      %tr
+        %td.col-2
+          %label.mb-0{ title: t(:protocols)[:tooltips][:title], data: { toggle: 'tooltip', placement: 'right' } }
+            = protocol.class.human_attribute_name(:title)
+        %td.col-10
+          = protocol.try(:title)
+          = display_rmid_validated_protocol(protocol, t('protocols.summary.rmid_title'))
+      %tr
+        %td.col-2
+          %label.mb-0{ title: t(:protocols)[:tooltips][:short_title], data: { toggle: 'tooltip', placement: 'right' } }
+            = Protocol.human_attribute_name(:short_title)
+        %td.col-10
+          = protocol.short_title
+          = display_rmid_validated_protocol(protocol, t('protocols.summary.rmid_short_title'))
+      - if protocol_type == 'Study'
+        %tr
+          %td.col-2
+            %label.mb-0{ title: t(:protocols)[:tooltips][:sponsor_name], data: { toggle: 'tooltip', placement: 'right' } }
+              = Protocol.human_attribute_name(:sponsor_name)
+          %td.col-10
+            = protocol.sponsor_name
+      %tr
+        %td.col-2
+          %label.mb-0{ title: protocol.funded? ? t(:protocols)[:tooltips][:funding_source] : t(:protocols)[:tooltips][:potential_funding_source], data: { toggle: 'tooltip', placement: 'right' } }
+            = Protocol.human_attribute_name(protocol.funded? ? :funding_source : :potential_funding_source)
+        %td.col-10
+          = protocol.display_funding_source_value

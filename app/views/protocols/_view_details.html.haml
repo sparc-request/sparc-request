@@ -17,22 +17,23 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.modal-dialog.view-protocol-details-modal
+
+.modal-dialog.modal-xl{ role: 'document' }
   .modal-content
     .modal-header
-      %button.close{ type: 'button', data: { dismiss: 'modal' } }
+      %h3.modal-title
+        = "#{protocol.model_name.human} ##{protocol.id}"
+        %small.text-muted
+          = protocol.short_title
+      %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
         %span{ aria: { hidden: 'true' } } &times;
-      %h4.text-center#modal-title
-        = I18n.t('protocols.view_details.header', protocol_type: protocol.type, protocol_id: protocol.id)
     .modal-body
-      #modal_errors
-      .row
-        .col-lg-12
-          .panel-group
-            - if protocol.type == "Study"
-              = render partial: 'protocols/view_details/study_fields', locals: {protocol: protocol}
-            - elsif protocol.type == "Project"
-              = render partial: 'protocols/view_details/project_fields', locals: {protocol: protocol}
+      = render 'protocols/view_details/protocol_information', protocol: protocol
+      = render 'protocols/view_details/financial_information', protocol: protocol
+
+      - if protocol.is_a?(Study)
+        = render 'protocols/view_details/research_involving', protocol: protocol
+        = render 'protocols/view_details/other_details', protocol: protocol
     .modal-footer
-      %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
-        = t(:actions)[:close]
+      %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+        = t('actions.close')

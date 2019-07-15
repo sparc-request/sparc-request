@@ -18,48 +18,18 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.panel.panel-primary
-  .panel-heading
-    %h5
-      %strong
-        = t(:protocols)[:projects][:information][:header]
-  .panel-body
-    .form-group.row
-      %label.col-lg-4
-        = t(:protocols)[:projects][:information][:short_title]
-      .col-lg-8
-        = protocol.short_title
-    .form-group.row
-      %label.col-lg-4
-        = t(:protocols)[:projects][:information][:title]
-      .col-lg-8
-        = protocol.title
-    .form-group.row
-      %label.col-lg-4
-        = t(:protocols)[:projects][:information][:funding_status]
-      .col-lg-8
-        = protocol.funding_status.try(&:titleize)
-
-    /funding source
-    .form-group.row
-      %label.col-lg-4
-        - if protocol.funding_status == "funded"
-          = t(:protocols)[:projects][:information][:funding_source]
-        - else
-          = t(:protocols)[:projects][:information][:potential_funding_source]
-      .col-lg-8
-        = protocol.display_funding_source_value
-
-    .form-group.row
-      %label.col-lg-4
-        = t(:protocols)[:projects][:information][:description]
-      .col-lg-8
-        = protocol.brief_description
-
-    /indirect cost
-    - if Setting.get_value("use_indirect_cost")
-      .form-group.row
-        %label.col-lg-4
-          = t(:protocols)[:projects][:information][:rate]
-        .col-lg-8
-          = protocol.indirect_cost_rate
+%tr.bg-light
+  %td{ colspan: 2 }
+    = t('protocols.form.research_involving.subheader', research_type: ResearchTypesInfo.human_attribute_name(:ip_patents))
+%tr
+  %td.col-3
+    %label.mb-0
+      = IpPatentsInfo.human_attribute_name(:patent_number)
+  %td.col-9
+    = protocol.ip_patents_info.patent_number.present? ? protocol.ip_patents_info.patent_number : t('constants.na')
+%tr
+  %td.col-3
+    %label.mb-0
+      = IpPatentsInfo.human_attribute_name(:inventors)
+  %td.col-9
+    = protocol.ip_patents_info.inventors.present? ? protocol.ip_patents_info.inventors : t('constants.na')

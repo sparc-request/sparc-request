@@ -19,7 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module ProtocolsHelper
-
   def display_study_type_question?(protocol, study_type_answer, view_protocol=false)
     if !Setting.get_value("use_epic") || protocol.selected_for_epic == false
       # If read-only (Dashboard--> 'Edit Study Information' or 'View Study Details') do not show the first CofC question if unanswered

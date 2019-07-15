@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 = f.fields_for :vertebrate_animals_info do |ff_vai|
-  %section.mt-3#vertebrateAnimalsInfoContainer{ class: ff_rti.object.human_subjects? ? '' : 'd-none' }
+  %section.mt-3#vertebrateAnimalsInfoContainer{ class: ff_rti.object.vertebrate_animals? ? '' : 'd-none' }
     .form-group
       %h4.pb-2.mb-2.border-bottom
         = t('protocols.form.research_involving.subheader', research_type: ResearchTypesInfo.human_attribute_name(:vertebrate_animals))
@@ -36,14 +36,14 @@
       .form-group.col-3
         = ff_vai.label :iacuc_approval_date
         .input-group.datetimepicker.date#iacucApprovalDatePicker{ data: { target_input: 'nearest' } }
-          = ff_vai.text_field :iacuc_approval_date, class: 'datetimepicker form-control', value: format_date(protocol.vertebrate_animals_info.iacuc_approval_date), data: { target: '#iacucApprovalDatePicker' }
+          = ff_vai.text_field :iacuc_approval_date, class: 'datetimepicker-input form-control', value: format_date(protocol.vertebrate_animals_info.iacuc_approval_date), data: { target: '#iacucApprovalDatePicker' }
           .input-group-append{ data: { toggle: 'datetimepicker', target: '#iacucApprovalDatePicker' } }
             %span.input-group-text
               = icon('fas', 'calendar-alt')
       .form-group.col-3
         = ff_vai.label :iacuc_expiration_date
         .input-group.datetimepicker.date#iacucExpirationDatePicker{ data: { target_input: 'nearest' } }
-          = ff_vai.text_field :iacuc_expiration_date, class: 'datetimepicker form-control', value: format_date(protocol.vertebrate_animals_info.iacuc_expiration_date), data: { target: '#iacucExpirationDatePicker' }
+          = ff_vai.text_field :iacuc_expiration_date, class: 'datetimepicker-input form-control', value: format_date(protocol.vertebrate_animals_info.iacuc_expiration_date), data: { target: '#iacucExpirationDatePicker' }
           .input-group-append{ data: { toggle: 'datetimepicker', target: '#iacucExpirationDatePicker' } }
             %span.input-group-text
               = icon('fas', 'calendar-alt')

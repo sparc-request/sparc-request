@@ -125,20 +125,22 @@ en:
         funding_rfa: "Funding Opportunity # / RFA"
         funding_source: "Funding Source"
         funding_source_other: "Other"
+        federal_sponsor: "Sponsor"
         funding_start_date: "Funding Start Date"
         funding_status: "Proposal Funding Status"
-        guarantor_contact: "Contact Name"
+        guarantor_contact: "Contact"
         guarantor_email: "Email"
         guarantor_phone: "Phone"
         human_subjects_info: "The NCT #"
         id: "Protocol ID"
         indirect_cost_rate: "Indirect Cost Rate"
+        primary_pi: "Primary PI"
         principal_investigators: "PI(s)"
         potential_funding_source: "Potential Funding Source"
         potential_funding_start_date: "Est. Funding Start Date"
         requests: "Requests"
         research_master_id: "Research Master ID"
-        selected_for_epic: "Publish Study in Epic"
+        selected_for_epic: "Publish Study in Epic?"
         short_title: "Short Title"
         sponsor_name: "Sponsor Name"
         study_phase_ids: "Study Phase(s)"
@@ -412,6 +414,7 @@ en:
   constants:
     yes_select: "Yes"
     no_select: "No"
+    na: "N/A"
     prompts:
       any: "- Any -"
       check_all: "Check all that apply"
@@ -628,7 +631,6 @@ en:
       unarchive: "Unarchive"
       unarchive_note: "%{protocol_type} was unarchived."
       id: "%{protocol_type} ID:"
-      na_research_master_id: 'Not Available'
       rmid_validated: "Updated to corresponding Research Master ID %{title}"
       rmid_title: "Title"
       tooltips:
@@ -664,7 +666,6 @@ en:
             title: "No Records Found"
             text: "Could not find a Research Master record with RMID <strong>%{rmid}</strong>"
         primary_pi:
-          field: "Primary PI"
           note: "If you are not the Primary PI you will be added as a general access user and you may change your role later"
         study_type_note: "Note: %{note}"
       financial_information:

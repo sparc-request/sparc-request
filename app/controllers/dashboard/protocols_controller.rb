@@ -27,7 +27,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   before_action :protocol_authorizer_view,  only: [:show, :view_full_calendar, :display_requests]
   before_action :protocol_authorizer_edit,  only: [:edit, :update, :update_protocol_type, :archive]
   before_action :bypass_rmid_validations?,  only: [:update, :edit]
-  before_action :check_rmid_server_status,  only: [:new, :create, :edit, :update, :update_protocol_type]
+  before_action :set_rmid_api,              only: [:new, :edit]
 
   def index
     admin_orgs = current_user.authorized_admin_organizations
@@ -94,13 +94,11 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def new
-    @protocol_type          = params[:protocol_type]
-    @protocol               = @protocol_type.capitalize.constantize.new
-    @protocol.requester_id  = current_user.id
-    @protocol.populate_for_edit
-    session[:protocol_type] = params[:protocol_type]
-    gon.rmid_api_url = Setting.get_value("research_master_api")
-    gon.rmid_api_token = Setting.get_value("rmid_api_token")
+    controller          = ::ProtocolsController.new
+    controller.request  = request
+    controller.response = response
+    controller.new
+    @protocol = controller.instance_variable_get(:@protocol)
   end
 
   def create
@@ -136,8 +134,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @permission_to_edit = @authorization.nil? ? false : @authorization.can_edit?
     @in_dashboard       = true
     @protocol.populate_for_edit
-    gon.rmid_api_url = Setting.get_value("research_master_api")
-    gon.rmid_api_token = Setting.get_value("rmid_api_token")
 
     session[:breadcrumbs].
       clear.
@@ -188,30 +184,11 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def update_protocol_type
-    protocol_role       = @protocol.project_roles.find_by(identity_id: current_user.id)
-    @permission_to_edit = protocol_role.nil? ? false : protocol_role.can_edit?
-
-    # Setting type and study_type_question_group, not actually saving
-    @protocol.type      = params[:type]
-    @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
-
-    @protocol_type = params[:type]
-
-    @protocol = @protocol.becomes(@protocol_type.constantize) unless @protocol_type.nil?
-
-    #### switching to a Project should clear out RMID and RMID validated flag ####
-    if @protocol_type && @protocol_type == 'Project'
-      @protocol.update_attribute :research_master_id, nil
-      @protocol.update_attribute :rmid_validated, false
-    end
-    #### end clearing RMID and RMID validated flag ####
-
-    @protocol.populate_for_edit
-
-    flash[:success] = t(:protocols)[:change_type][:updated]
-    if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
-      flash[:alert] = t(:protocols)[:change_type][:new_study_warning]
-    end
+    controller          = ::ProtocolsController.new
+    controller.request  = request
+    controller.response = response
+    controller.update_protocol_type
+    @protocol = controller.instance_variable_get(:@protocol)
   end
 
   def archive
@@ -237,6 +214,18 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   private
 
+  def find_protocol
+    @protocol = Protocol.find(params[:id])
+  end
+
+  def build_with_owner_params
+    service_providers = Identity.joins(:service_providers).where(service_providers: {
+                                organization: Organization.authorized_for_identity(current_user.id) })
+                                .distinct.order("last_name")
+
+    service_providers.map{|s| [s.last_name_first, s.id]}
+  end
+
   def filterrific_params
     params.require(:filterrific).permit(:identity_id,
       :search_name,
@@ -253,20 +242,25 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def protocol_params
     # Fix identity_id nil problem when lazy loading is enabled
     # when lazy loadin is enabled, identity_id is merely ldap_uid, the identity may not exist in database yet, so we create it if necessary here
-    if Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") && params[:primary_pi_role][:identity_id].present?
-      params[:primary_pi_role][:identity_id] = Identity.find_or_create(params[:primary_pi_role][:identity_id]).id
+    if Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") && params[:primary_pi_role_attributes][:identity_id].present?
+      params[:protocol][:primary_pi_role_attributes][:identity_id] = Identity.find_or_create(params[:protocol][:primary_pi_role_attributes][:identity_id]).id
     end
 
     # Sanitize date formats
-    params[:funding_start_date]           = sanitize_date params[:funding_start_date]
-    params[:potential_funding_start_date] = sanitize_date params[:potential_funding_start_date]
+    params[:protocol][:funding_start_date]           = sanitize_date params[:protocol][:funding_start_date]
+    params[:protocol][:potential_funding_start_date] = sanitize_date params[:protocol][:potential_funding_start_date]
+    params[:protocol][:guarantor_phone]              = sanitize_phone params[:protocol][:guarantor_phone]
 
-    params[:human_subjects_info_attributes][:initial_irb_approval_date] = sanitize_date params[:human_subjects_info_attributes][:initial_irb_approval_date]
-    params[:human_subjects_info_attributes][:irb_approval_date]         = sanitize_date params[:human_subjects_info_attributes][:irb_approval_date]
-    params[:human_subjects_info_attributes][:irb_expiration_date]       = sanitize_date params[:human_subjects_info_attributes][:irb_expiration_date]
+    if params[:protocol][:human_subjects_info_attributes]
+      params[:protocol][:human_subjects_info_attributes][:initial_irb_approval_date] = sanitize_date params[:protocol][:human_subjects_info_attributes][:initial_irb_approval_date]
+      params[:protocol][:human_subjects_info_attributes][:irb_approval_date]         = sanitize_date params[:protocol][:human_subjects_info_attributes][:irb_approval_date]
+      params[:protocol][:human_subjects_info_attributes][:irb_expiration_date]       = sanitize_date params[:protocol][:human_subjects_info_attributes][:irb_expiration_date]
+    end
 
-    params[:vertebrate_animals_info_attributes][:iacuc_approval_date]   = sanitize_date params[:vertebrate_animals_info_attributes][:iacuc_approval_date]
-    params[:vertebrate_animals_info_attributes][:iacuc_expiration_date] = sanitize_date params[:vertebrate_animals_info_attributes][:iacuc_expiration_date]
+    if params[:protocol][:vertebrate_animals_info_attributes]
+      params[:protocol][:vertebrate_animals_info_attributes][:iacuc_approval_date]   = sanitize_date params[:protocol][:vertebrate_animals_info_attributes][:iacuc_approval_date]
+      params[:protocol][:vertebrate_animals_info_attributes][:iacuc_expiration_date] = sanitize_date params[:protocol][:vertebrate_animals_info_attributes][:iacuc_expiration_date]
+    end
 
     params.require(:protocol).permit(
       :archived,
@@ -303,29 +297,18 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       :title,
       :type,
       :udak_project_number,
-      research_types_info_attributes: [:id, :human_subjects, :vertebrate_animals, :investigational_products, :ip_patents],
-      study_types_attributes: [:id, :name, :new, :position, :_destroy],
-      vertebrate_animals_info_attributes: [:id, :iacuc_number, :name_of_iacuc, :iacuc_approval_date, :iacuc_expiration_date],
+      affiliations_attributes: [:id, :name, :new, :position, :_destroy],
+      human_subjects_info_attributes: [:id, :nct_number, :pro_number, :irb_of_record, :submission_type, :initial_irb_approval_date, :irb_approval_date, :irb_expiration_date, :approval_pending],
+      impact_areas_attributes: [:id, :name, :other_text, :new, :_destroy],
       investigational_products_info_attributes: [:id, :protocol_id, :ind_number, :inv_device_number, :exemption_type, :ind_on_hold],
       ip_patents_info_attributes: [:id, :patent_number, :inventors],
-      impact_areas_attributes: [:id, :name, :other_text, :new, :_destroy],
-      human_subjects_info_attributes: [:id, :nct_number, :pro_number, :irb_of_record, :submission_type, :initial_irb_approval_date, :irb_approval_date, :irb_expiration_date, :approval_pending],
-      affiliations_attributes: [:id, :name, :new, :position, :_destroy],
-      primary_pi_role_attributes: [:id, :identity_id, :role, :project_rights, :_destroy],
-      study_type_answers_attributes: [:id, :answer, :study_type_question_id, :_destroy]
+      primary_pi_role_attributes: [:id, :identity_id, :_destroy],
+      research_types_info_attributes: [:id, :human_subjects, :vertebrate_animals, :investigational_products, :ip_patents],
+      study_phase_ids: [],
+      study_types_attributes: [:id, :name, :new, :position, :_destroy],
+      study_type_answers_attributes: [:id, :answer, :study_type_question_id, :_destroy],
+      vertebrate_animals_info_attributes: [:id, :iacuc_number, :name_of_iacuc, :iacuc_approval_date, :iacuc_expiration_date]
     )
-  end
-
-  def build_with_owner_params
-    service_providers = Identity.joins(:service_providers).where(service_providers: {
-                                organization: Organization.authorized_for_identity(current_user.id) })
-                                .distinct.order("last_name")
-
-    service_providers.map{|s| [s.last_name_first, s.id]}
-  end
-
-  def find_protocol
-    @protocol = Protocol.find(params[:id])
   end
 
   def perform_protocol_lock(protocol, lock_status)

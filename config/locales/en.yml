@@ -23,6 +23,7 @@ en:
   # ACTIONS #
   ###########
   actions:
+    actions: "Actions"
     activate: "Activate"
     add: "Add"
     adding: "Adding..."
@@ -62,8 +63,6 @@ en:
       feedback:
         typeofrequest: "Type of Request"
         sparc_request_id: "SRID"
-      protocol:
-        id: "SRID"
 
   ################
   # ACTIVERECORD #
@@ -84,12 +83,16 @@ en:
         pro_number: "PRO #"
         submission_type: "Submission Type"
       identity:
-        ldap_uid: "Login"
+        email: "Email"
         first_name: "First Name"
         last_name: "Last Name"
+        ldap_uid: "Login"
+        name: "Name"
+        orcid: "ORCID"
+        phone: "Phone"
+        password: "Password"
         password_confirmation: "Confirm Password"
         reason: "Reason for Account Request"
-        orcid: "ORCID"
       impact_areas:
         name: "Name"
         other_text: "Other"
@@ -106,7 +109,12 @@ en:
       option:
         content: "Option"
       project:
+        id: "Project ID"
         title: "Project Title"
+      project_role:
+        epic_emr_access: "Epic EMR Access"
+        project_rights: "Proxy Rights"
+        role: "Role"
       protocol:
         brief_description: "Brief Description"
         federal_grant_code_id: "Grant Code"
@@ -123,10 +131,12 @@ en:
         guarantor_email: "Email"
         guarantor_phone: "Phone"
         human_subjects_info: "The NCT #"
-        id: "SRID"
+        id: "Protocol ID"
         indirect_cost_rate: "Indirect Cost Rate"
+        principal_investigators: "PI(s)"
         potential_funding_source: "Potential Funding Source"
         potential_funding_start_date: "Est. Funding Start Date"
+        requests: "Requests"
         research_master_id: "Research Master ID"
         selected_for_epic: "Publish Study in Epic"
         short_title: "Short Title"
@@ -155,6 +165,7 @@ en:
         email: "Investigator's Email"
         institution: "Investigator's Institution"
       study:
+        id: "Study ID"
         title: "Study Title"
       survey:
         active: ""
@@ -222,7 +233,7 @@ en:
   ####################
   authorized_users:
     header: "Authorized Users"
-    add_user: "Add an Authorized User"
+    new: "Add Authorized User"
     add:
       header: "Add Authorized User"
       select: "Select User:"
@@ -265,13 +276,6 @@ en:
       header: "**Warning**"
       warning: "Adding the new Primary PI (<strong>%{new_pi_name}</strong>) will change the current Primary PI (<strong>%{old_pi_name}</strong>) to a general access user on Protocol (<strong>%{protocol_id}</strong>)."
       prompt: "Do you wish to proceed?"
-    table_fields:
-      name: "Full Name"
-      role: "Role"
-      email: "Email"
-      phone: "Phone"
-      rights: "Proxy Rights"
-      epic_emr_access: 'EPIC EMR </br> Access'
     tooltips:
       add_user: "Ability to add an Authorized User to a protocol"
       epic_access: 'Granting Epic EMR access populates study personnel in Epic Research Record as long as they have Epic certification/training.'
@@ -398,7 +402,7 @@ en:
 
   confirm:
     title: "Are you sure?"
-    text: "This action can't be undone."
+    text: "This action cannot be undone."
     confirm: "Yes"
     cancel: "No"
 
@@ -624,12 +628,6 @@ en:
       unarchive: "Unarchive"
       unarchive_note: "%{protocol_type} was unarchived."
       id: "%{protocol_type} ID:"
-      title: "Title:"
-      short_title: "Short Title:"
-      sponsor: "Sponsor Name:"
-      funding_source: "Funding Source:"
-      potential_source: "Potential Funding Source:"
-      research_master_id: "Research Master ID:"
       na_research_master_id: 'Not Available'
       rmid_validated: "Updated to corresponding Research Master ID %{title}"
       rmid_title: "Title"
@@ -639,29 +637,29 @@ en:
         edit: "Quick access to edit protocol information"
         archive_study: "Ability to hide study from all Authorized User dashboards"
         unarchive_study: "Click to reveal on all associated Authorized User dashboards"
-        rmid_server_down: "Research Master ID Server is down. You cannot edit the Research Master ID field at this time."
+        rmid_server_down: "The Research Master ID Server is down. You cannot edit the Research Master ID field at this time."
     view_details:
       button: "View %{protocol_type} Details"
       header: "%{protocol_type} Details: #%{protocol_id}"
     change_type:
-      header: "Change Protocol Type"
-      type: "Protocol Type:"
-      study: "Study"
-      project: "Project"
-      change_button: "Change Type"
-      warning: "This will change the type of this Protocol. Are you sure?"
+      text: "Choose the wrong type of Protocol?"
+      link_text: "Change this %{current_type} to a %{new_type}"
+      confirm_header: "Change this %{current_type} to a %{new_type}?"
+      confirm_text: "Any unsaved changes will be lost.<br>This action cannot be undone."
+      warning: 
       updated: "Protocol Type Updated!"
-      new_study_warning: "Please complete Sponsor Name and Publish Study in Epic"
     form:
       header:
         new: "Start a New %{protocol_type}"
         edit: "Edit an Existing %{protocol_type}"
       navigation:
-        header: "Navigation"
+        header:
+          new: "New %{protocol_type}"
+          edit: "Edit %{protocol_type}"
       information:
         header: "General Information"
         rmid:
-          note: "If your Study has a <a href='%{rmid_url}' target='blank'>%{rmid_field}</a>, please enter it here and associated information will be automatically filled in."
+          note: "If your Study has a <a href='%{rmid_url}' target='blank'>%{rmid_field}</a>, please enter it here and associated information will be filled in automatically."
           error:
             title: "No Records Found"
             text: "Could not find a Research Master record with RMID <strong>%{rmid}</strong>"

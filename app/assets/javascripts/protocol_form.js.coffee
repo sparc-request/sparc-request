@@ -239,8 +239,6 @@ toggleFundingSource = (val) ->
     $('#protocol_funding_source, #protocol_potential_funding_source').attr('disabled', true).selectpicker('val', '').selectpicker('refresh')
     $('#protocol_funding_start_date, #protocol_potential_funding_start_date').prop('readonly', true).datetimepicker('clear')
   else
-    $('#protocol_funding_source, #protocol_potential_funding_source').attr('disabled', false).selectpicker('refresh')
-
     if val == 'pending_funding'
       fundingSource     = $('#protocol_funding_source').val()
       fundingStartDate  = $('#protocol_funding_start_date').val()
@@ -273,6 +271,8 @@ toggleFundingSource = (val) ->
 
       toggleFederalFields(fundingSource)
       toggleFundingSourceOther(fundingSource)
+
+    $('#protocol_funding_source, #protocol_potential_funding_source').attr('disabled', false).selectpicker('refresh')
 
 
 federalGrantCode          = ""

@@ -34,11 +34,21 @@
     width: 100% !important;
   }
 
-  &[disabled=disabled], &[disabled=disabled] .btn {
-    @extend .disabled;
+  // Bootstrap Toggle does a poor job of handling disabled
+  // toggles. Custom styles make it more consistent with
+  // other elements.
+  &.btn[disabled="disabled"], &[disabled="disabled"] .btn {
+    opacity: $btn-disabled-opacity;
+    cursor: not-allowed;
+
+    @each $color, $value in $theme-colors {
+      &.btn-#{$color} {
+        background: $value;
+      }
+    }
   }
 
-  &:not([disabled=disabled]) {
+  &:not([disabled="disabled"]) {
     .btn:hover {
       &:hover {
         cursor: pointer;

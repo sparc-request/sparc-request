@@ -20,12 +20,15 @@
 
 %header.w-100.mb-3#stepsHeader
   .row.py-2.border-top.border-bottom.bg-white
-    .container-fluid.d-flex.align-items-center
-      %h3.mr-auto.mb-0{ class: "text-#{@css_class}" }
+    .container-fluid.d-flex.align-items-center.justify-content-between
+      %h3.mb-0{ class: "text-#{@css_class}" }
         = @step_header
         %br
         %small.text-muted
           = @step_sub_header
       - if @service_request.protocol.present?
         %h3.mb-0
-          = "#{Protocol.human_attribute_name(:id)}: #{@service_request.protocol.id}"
+          = "#{@service_request.protocol.model_name.human} ##{@service_request.protocol.id}"
+          %br
+          %small.text-muted
+            = @service_request.protocol.short_title.truncate(30)

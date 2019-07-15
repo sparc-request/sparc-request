@@ -97,18 +97,19 @@ module AssociatedUsersHelper
     professional_organization.org_type.capitalize + ":"
   end
 
-  def authorized_users_edit_button(project_role)
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' })
-      ),
-      type: 'button', data: { project_role_id: project_role.id },
-      class: "btn btn-sm btn-warning actions-button edit-associated-user-button"
-    )
+  def authorized_user_actions(pr, service_request)
+    [
+      edit_authorized_user_button(pr, service_request),
+      delete_authorized_user_button(pr)
+    ].join('')
   end
 
-  def authorized_users_delete_button(pr)
-    data  = { id: pr.id, toggle: 'tooltip', placement: 'right' }
+  def edit_authorized_user_button(pr, service_request)
+    link_to icon('far', 'edit'), edit_associated_user_path(pr, srid: service_request.id), remote: true, class: 'btn btn-warning mr-1'
+  end
+
+  def delete_authorized_user_button(pr)
+    data  = { id: pr.id, toggle: 'tooltip', placement: 'right', boundary: 'window' }
 
     if current_user.id == pr.identity_id
       data[:batch_select] = {
@@ -118,9 +119,7 @@ module AssociatedUsersHelper
     end
 
     content_tag(:button,
-      raw(
-        content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
-      ), type: 'button',
+      icon('fas', 'trash-alt'), type: 'button',
       title: pr.primary_pi? ? t(:authorized_users)[:delete][:pi_tooltip] : t(:authorized_users)[:delete][:tooltip],
       class: ["btn btn-danger actions-button delete-associated-user-button", pr.primary_pi? ? 'disabled' : ''],
       data: data

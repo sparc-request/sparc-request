@@ -39,12 +39,17 @@
 //////////////
 
 .btn {
-  &.btn-info, &.btn-warning {
+  &.btn-info, &.btn-warning,
+  &.btn-outline-info:hover, &.btn-outline-warning:hover {
     color: white !important;
   }
 
   &.btn-light:not(.toggle) {
     @extend .border;
+  }
+
+  &.disabled {
+    cursor: not-allowed;
   }
 }
 
@@ -54,7 +59,7 @@
 
 .card {
   &:not(:last-of-type) {
-    margin-bottom: 0.25rem;
+    margin-bottom: $grid-gutter-width / 2;
   }
 
   .card-header, .card-footer {
@@ -68,6 +73,8 @@
   }
 
   .card-header {
+    min-height: 48px;
+
     .btn[data-toggle=collapse] {
       border-radius: inherit;
       border: 0;
@@ -81,7 +88,7 @@
 
 .accordion {
   .card:first-of-type, .card:last-of-type, .card:not(:first-of-type):not(:last-of-type) {
-    border-radius: 0.25rem
+    border-radius: 0.25rem;
   }
 }
 

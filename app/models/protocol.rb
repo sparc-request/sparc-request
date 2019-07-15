@@ -19,10 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Protocol < ApplicationRecord
-
   include RemotelyNotifiable
-
   include SanitizedData
+
   sanitize_setter :short_title, :special_characters, :squish
   sanitize_setter :title, :special_characters, :squish
   sanitize_setter :brief_description, :special_characters, :squish
@@ -30,12 +29,16 @@ class Protocol < ApplicationRecord
   audited
 
   belongs_to :study_type_question_group
+
   has_one :research_types_info,           dependent: :destroy
   has_one :human_subjects_info,           dependent: :destroy
   has_one :vertebrate_animals_info,       dependent: :destroy
   has_one :investigational_products_info, dependent: :destroy
   has_one :ip_patents_info,               dependent: :destroy
   has_one :primary_pi_role,               -> { where(role: 'primary-pi', project_rights: 'approve') }, class_name: "ProjectRole", dependent: :destroy
+  
+  has_one :primary_pi,                    through: :primary_pi_role, source: :identity
+
   has_many :study_types,                  dependent: :destroy
   has_many :project_roles,                dependent: :destroy
   has_many :service_requests,             dependent: :destroy
@@ -46,6 +49,7 @@ class Protocol < ApplicationRecord
   has_many :study_type_answers,           dependent: :destroy
   has_many :notes, as: :notable,          dependent: :destroy
   has_many :documents,                    dependent: :destroy
+
   has_and_belongs_to_many :study_phases
 
   has_many :identities,                   through: :project_roles
@@ -384,10 +388,6 @@ class Protocol < ApplicationRecord
     study_type_question_group.nil? ? nil : study_type_question_group.version
   end
 
-  def activate
-    update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
-  end
-
   def email_about_change_in_authorized_user(modified_roles, action)
     # Alert authorized users of deleted authorized user
     # Send emails if send_authorized_user_emails is set to true and if there are any non-draft SSRs
@@ -537,7 +537,7 @@ class Protocol < ApplicationRecord
   end
 
   def populate_for_edit
-    self.build_primary_pi_role
+    self.build_primary_pi_role unless self.primary_pi_role
   end
 
   def create_arm(args)
@@ -570,10 +570,6 @@ class Protocol < ApplicationRecord
 
   def has_clinical_services?
     service_requests.any?(&:has_per_patient_per_visit_services?)
-  end
-
-  def find_sub_service_request_with_ctrc(service_request)
-    service_request.sub_service_requests.find(&:ctrc?).try(:ssr_id)
   end
 
   def any_service_requests_to_display?

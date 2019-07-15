@@ -98,9 +98,8 @@ $(document).on 'turbolinks:load', ->
   $(document).on('keydown', 'input[type=tel]', (event) ->
     val       = $(this).val()
     key       = event.keyCode || event.charCode
-    isDelete  = [8, 46].includes(key)
 
-    if isDelete
+    if [8, 46].includes(key) # Backspace or Delete keys
       if val.length == 2
         $(this).val('')
       else if val.length == 7
@@ -109,7 +108,9 @@ $(document).on 'turbolinks:load', ->
         $(this).val(val.substr(0,10))
       else if val.length == 20
         $(this).val(val.substr(0, 15))
-    else if (key >= 96 && key <= 105) || (key >= 48 && key <= 57)
+    else if key == 9 # Allow tabbing
+      return true
+    else if (key >= 96 && key <= 105) || (key >= 48 && key <= 57) && !event.shiftKey # Numerical keypresses
       if val.length == 0
         $(this).val('(')
       else if val.length == 4
@@ -121,6 +122,12 @@ $(document).on 'turbolinks:load', ->
     else
       event.stopImmediatePropagation()
       return false
+  ).on('keyup', 'input[type=tel]', (event) ->
+    key = event.keyCode || event.charCode
+    end = this.selectionEnd
+    
+    if key == 9 # Remove range selection when focusing the input
+      this.setSelectionRange(end, end)
   )
 
 (exports ? this).initializeSelectpickers = () ->

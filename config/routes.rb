@@ -94,10 +94,10 @@ SparcRails::Application.routes.draw do
 
   resources :protocols, except: [:index, :destroy] do
     member do
-      put :update_protocol_type
       get :approve_epic_rights
       get :push_to_epic
       get :push_to_epic_status
+      patch :update_protocol_type
     end
   end
 
@@ -267,10 +267,11 @@ SparcRails::Application.routes.draw do
     resources :protocols, except: [:destroy] do
       resource :milestones, only: [:update]
       resource :study_type_answers, only: [:edit]
+
       member do
-        put :update_protocol_type
         get :display_requests
         patch :archive
+        patch :update_protocol_type
       end
     end
 

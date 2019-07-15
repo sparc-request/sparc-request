@@ -38,12 +38,12 @@
 
   // Display the confirmation dialog
   const showConfirmationDialog = element => {
-    const title = element.getAttribute('data-title');
-    const html = element.getAttribute('data-html');
-    const type = element.getAttribute('data-type');
-    const confirmText = element.getAttribute('data-confirm-text');
-    const cancelText = element.getAttribute('data-cancel-text');
-    const customClass = element.getAttribute('data-class');
+    var title = element.getAttribute('data-title');
+    var html = element.getAttribute('data-html');
+    var type = element.getAttribute('data-type');
+    var confirmText = element.getAttribute('data-confirm-text');
+    var cancelText = element.getAttribute('data-cancel-text');
+    var customClass = element.getAttribute('data-class');
 
     Swal.fire({
       title: title || I18n.t('confirm.title') || "Are you sure?",
@@ -60,16 +60,27 @@
   }
 
   const confirmed = (element, result) => {
+    // User clicked confirm button
     if (result.value) {
-      // User clicked confirm button
-      $.ajax({
-        method: element.getAttribute('data-method') || 'GET',
-        url: (element.getAttribute('tagName') === 'A' && element.getAttribute('href') !== 'javascript:void(0)') ? element.getAttribute('href') : element.getAttribute('data-url'),
-        dataType: (element.getAttribute('tagName') === 'A' && element.getAttribute('href') !== 'javascript:void(0)' && element.getAttribute('data-remote') !== 'true') ? 'html' : 'script',
-        data: {
-          authenticity_token: $('meta[name=csrf-token]').attr('content')
-        }
-      });
+      var method  = element.getAttribute('data-method');
+      var tagName = element.tagName;
+      var href    = element.getAttribute('href');
+      var url     = element.getAttribute('data-url');
+      var remote  = element.getAttribute('data-remote');
+
+      if (tagName === 'A' && href !== 'javascript:void(0)' && remote !== 'true') {
+        window.location = href;
+        NProgress.start();
+      } else {
+        $.ajax({
+          method: method || 'GET',
+          url: (tagName === 'A' && href !== 'javascript:void(0)') ? href : url,
+          dataType: 'script',
+          data: {
+            authenticity_token: $('meta[name=csrf-token]').attr('content')
+          }
+        });
+      }
     }
   }
 

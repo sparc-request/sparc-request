@@ -201,27 +201,29 @@ class ServiceRequestsController < ApplicationController
   private
 
   def details_params
-    key = params[:study] ? :study : :project
+    key = @service_request.protocol.type.downcase.to_sym
 
-    params[key][:start_date]                            = sanitize_date params[key][:start_date]
-    params[key][:end_date]                              = sanitize_date params[key][:end_date]
-    params[key][:recruitment_start_date]                = sanitize_date params[key][:recruitment_start_date]
-    params[key][:recruitment_end_date]                  = sanitize_date params[key][:recruitment_end_date]
-    params[key][:initial_budget_sponsor_received_date]  = sanitize_date params[key][:initial_budget_sponsor_received_date]
-    params[key][:budget_agreed_upon_date]               = sanitize_date params[key][:budget_agreed_upon_date]
+    if params[key]
+      params[key][:start_date]                            = sanitize_date params[key][:start_date]
+      params[key][:end_date]                              = sanitize_date params[key][:end_date]
+      params[key][:recruitment_start_date]                = sanitize_date params[key][:recruitment_start_date]
+      params[key][:recruitment_end_date]                  = sanitize_date params[key][:recruitment_end_date]
+      params[key][:initial_budget_sponsor_received_date]  = sanitize_date params[key][:initial_budget_sponsor_received_date]
+      params[key][:budget_agreed_upon_date]               = sanitize_date params[key][:budget_agreed_upon_date]
 
-    params.require(key).permit(
-      :start_date,
-      :end_date,
-      :recruitment_start_date,
-      :recruitment_end_date,
-      :initial_budget_sponsor_received_date,
-      :budget_agreed_upon_date,
-      :initial_amount,
-      :negotiated_amount,
-      :initial_amount_clinical_services,
-      :negotiated_amount_clinical_services
-    )
+      params.require(key).permit(
+        :start_date,
+        :end_date,
+        :recruitment_start_date,
+        :recruitment_end_date,
+        :initial_budget_sponsor_received_date,
+        :budget_agreed_upon_date,
+        :initial_amount,
+        :negotiated_amount,
+        :initial_amount_clinical_services,
+        :negotiated_amount_clinical_services
+      )
+    end
   end
 
   def current_page

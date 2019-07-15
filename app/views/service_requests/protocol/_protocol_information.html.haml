@@ -20,24 +20,34 @@
 
 .col-12.col-lg-9.mb-3.mb-lg-0#protocolInformation
   - if protocol
-    = render 'protocols/summary', protocol: protocol, protocol_type: protocol.type, service_request: service_request, allow_edit: true
+    = render 'protocols/summary', protocol: protocol, protocol_type: protocol.model_name.human, service_request: service_request
     = render 'associated_users/table', protocol: protocol, service_request: service_request
   - else
-    .card.h-100#newProtocolCard
-      .card-header.bg-primary.text-white
+    .card#newProtocolCard
+      .card-header
         %h4.mb-0
-          = t('proper.protocol.new_protocol_header')
+          = t('protocols.form.header.new', protocol_type: Protocol.model_name.human)
       .card-body
+        %h4.mb-4
+          = t('proper.protocol.new.text')
         .row
-          .col-12.col-sm-6.mb-3.mb-sm-0.new-protocol-container
-            %h5.text-muted#newStudyHeader
-              = t('protocols.tooltips.new_study')
-            = link_to new_protocol_path(protocol_type: Study.name, srid: service_request.id), class: 'btn btn-lg btn-success new-study' do
-              - succeed t('protocols.new', protocol_type: Study.model_name.human) do
+          .d-flex.flex-column.col-12.col-sm-6.mb-3.mb-sm-0
+            .flex-fill
+              %h3.text-success.pb-2.mb-2.border-bottom
+                = Study.model_name.human
+              %h3
+                %small.text-muted
+                  = t('proper.protocol.new.study_description')
+            = link_to new_protocol_path(type: Study.name, srid: service_request.id), class: 'btn btn-lg btn-success new-study' do
+              - succeed t('protocols.form.header.new', protocol_type: Study.model_name.human) do
                 = icon('fas', 'plus mr-2')
-          .col-12.col-sm-6.new-protocol-container
-            %h5.text-muted#newProjectHeader
-              = t('protocols.tooltips.new_project')
-            = link_to new_protocol_path(protocol_type: Project.name, srid: service_request.id), class: 'btn btn-lg btn-primary new-project' do
-              - succeed t('protocols.new', protocol_type: Project.model_name.human) do
+          .d-flex.flex-column.col-12.col-sm-6
+            .flex-fill
+              %h3.text-primary.pb-2.mb-2.border-bottom
+                = Project.model_name.human
+              %h3
+                %small.text-muted
+                  = t('proper.protocol.new.project_description')
+            = link_to new_protocol_path(type: Project.name, srid: service_request.id), class: 'btn btn-lg btn-primary new-project' do
+              - succeed t('protocols.form.header.new', protocol_type: Project.model_name.human) do
                 = icon('fas', 'plus mr-2')

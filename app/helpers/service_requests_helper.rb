@@ -49,8 +49,6 @@ module ServiceRequestsHelper
   end
 
   def save_as_draft_button(service_request)
-    link_to t(:proper)[:navigation][:bottom][:save_as_draft],
-      save_and_exit_service_request_path(srid: service_request.id),
-      remote: true, class: 'btn btn-default'
+    link_to t('proper.navigation.bottom.save_as_draft'), save_and_exit_service_request_path(srid: service_request.id), remote: true, class: 'btn btn-lg btn-outline-warning'
   end
 end

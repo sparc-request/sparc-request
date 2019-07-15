@@ -18,21 +18,14 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- sub_service_requests.each do |ssr|
-  .list-group-item{ class: ssr.can_be_edited? ? 'list-group-item-primary' : 'list-group-item-danger' }
-    = ssr_name_display(ssr)
-  - ssr.line_items.each do |li|
-    .list-group-item
-      .row
-        .col-10.d-flex.align-items-center.pr-0
-          %h5.mb-0
-            = li.service.abbreviation
-            - if li.service.cpt_code.present?
-              %strong
-                = "(#{li.service.cpt_code})"
-            - unless li.service.is_available
-              = inactive_tag
-        - if li.optional? && ssr.can_be_edited? && ['document_management'].exclude?(action_name)
-          .col-2.pl-0.text-right
-            %button.btn.btn-danger.remove-service{ type: 'button', title: t('proper.cart.remove_service'), data: { toggle: 'tooltip', line_item_id: li.id } }
-              = icon('fas', 'trash-alt')
+%footer.pt-3#protocolFooter
+  .card
+    .card-body.py-3.px-5
+      .form-group.mb-0<
+        - back_url = @in_dashboard ? dashboard_root_path : protocol_service_request_path(srid: @service_request.try(:id))
+        = link_to back_url, class: 'btn btn-lg btn-link px-0' do
+          - succeed t('actions.cancel') do
+            = icon('fas', 'arrow-left mr-2')
+        = f.button type: 'submit', class: 'btn btn-lg btn-outline-success float-right', data: { disable_with: t(:proper)[:navigation][:bottom][:saving] } do
+          - succeed icon('fas', 'arrow-right ml-2') do
+            = t('actions.save')

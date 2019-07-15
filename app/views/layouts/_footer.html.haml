@@ -39,7 +39,8 @@
           = link_to t('layout.footer.links.feedback'), Setting.get_value("feedback_link"), target: :blank
         - else
           = link_to t('layout.footer.links.feedback'), new_feedback_path, remote: true
-    %span.text-muted.mb-3
+    %span.d-flex.align-items-center.text-muted.mb-3
       = t('layout.footer.version', version: ENV['sparc_version'])
+      = link_to icon('fab', 'github fa-lg'), 'https://github.com/sparc-request/sparc-request', remote: true, class: 'text-muted ml-1'
     %span.text-muted.text-center
       = raw t('layout.footer.copyright')

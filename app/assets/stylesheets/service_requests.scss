@@ -26,9 +26,29 @@
   .btn.btn-light:not(:last-child) {
     border-bottom: 1px solid $border-color;
   }
+
+  .card {
+    &:not(:last-of-type) {
+      margin-bottom: 0.25rem;
+    }
+
+    .card-header {
+      min-height: initial;
+    }
+  }
 }
 
 #catalogCenter {
+  .input-group-icon i {
+    font-size: 1.75rem;
+  }
+
+  #serviceQuery {
+    height: 48px;
+    padding-left: 3.5rem;
+    font-size: 1.75rem;
+  }
+
   .service:not(:last-of-type) {
     padding-bottom: 0.5rem;
     margin-bottom: 0.5rem;
@@ -47,5 +67,15 @@
       flex-flow: column;
       justify-content: space-between;
     }
+  }
+}
+
+////////////
+/// Cart ///
+////////////
+
+#cart {
+  .cart-toggles-container {
+    min-height: initial;
   }
 }

@@ -18,29 +18,17 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.container.position-relative
-  %aside.form-navigation.d-none.d-xl-block
-    .card.sticky-top
-      .card-header.px-4
-        %h3.mb-0
-          = t('protocols.form.navigation.header')
-      .card-body.p-0
-        %nav.flex-column#protocolNavigation
-          - if protocol.is_a?(Study) && Setting.get_value('research_master_enabled')
-            = link_to Protocol.human_attribute_name(:research_master_id), '#protocolHeader', class: 'nav-link h5'
-          = link_to t('protocols.form.information.header'), '#protocolInformation', class: 'nav-link h5'
-          = link_to t('protocols.form.financial_information.header'), '#financialInformation', class: 'nav-link h5'
-          - if protocol.is_a?(Study)
-            = link_to t('protocols.form.research_involving.header'), '#researchInvolving', class: 'nav-link h5'
-            = link_to t('protocols.form.other_details.header'), '#otherDetails', class: 'nav-link h5'
+- @in_dashboard = request.path.starts_with?('/dashboard')
 
+.container.position-relative
+  = render 'protocols/form/navigation', protocol: protocol
   %main.col-8.mx-auto
-    = form_for protocol, as: :protocol, remote: true, html: { autocomplete: 'off', id: 'protocolForm' } do |f|
-      = hidden_field_tag :srid, service_request.id
+    = form_for (@in_dashboard ? [:dashboard, protocol] : protocol), as: :protocol, remote: true, html: { autocomplete: 'off', id: 'protocolForm' } do |f|
+      = hidden_field_tag :srid, @service_request.try(:id)
       = f.hidden_field :type
       = f.hidden_field :requester_id, value: current_user.id
 
-      = render 'protocols/form/header', f: f, protocol: protocol, rmid_server_down: rmid_server_down
+      = render 'protocols/form/header', f: f, protocol: protocol
       = render 'protocols/form/protocol_information', f: f, protocol: protocol
       = render 'protocols/form/financial_information', f: f, protocol: protocol
 
@@ -48,13 +36,4 @@
         = render 'protocols/form/research_involving', f: f, protocol: protocol
         = render 'protocols/form/other_details', f: f, protocol: protocol
 
-      %footer.pt-3
-        .card
-          .card-body.py-3.px-5
-            .form-group.mb-0<
-              = link_to protocol_service_request_path(srid: service_request.id), class: 'btn btn-lg btn-link px-0' do
-                - succeed t('actions.cancel') do
-                  = icon('fas', 'arrow-left mr-2')
-              = f.button type: 'submit', class: 'btn btn-lg btn-outline-success float-right', data: { disable_with: t(:proper)[:navigation][:bottom][:saving] } do
-                - succeed icon('fas', 'arrow-right ml-2') do
-                  = t('actions.save')
+      = render 'protocols/form/footer', f: f

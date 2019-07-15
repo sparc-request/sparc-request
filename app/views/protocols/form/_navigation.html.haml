@@ -18,16 +18,17 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.panel.panel-default
-  .panel-heading.flex-column
-    %h4.panel-title
-      = t(:protocols)[:studies][:affiliations][:header]
-    = t(:protocols)[:studies][:affiliations][:subtext]
-  .panel-body
-    = f.fields_for :affiliations, protocol.affiliations.sort_by(&:position) do |ff_a|
-      - checked = !ff_a.object.new && !ff_a.object.marked_for_destruction?
-      .form-group.row{ class: ff_a.object.name }
-        = ff_a.label :name, "#{PermissibleValue.get_value('affiliation_type', ff_a.object.name)}:", class: 'col-lg-2 control-label'
-        .col-lg-1
-          = ff_a.check_box "_destroy", { checked: checked, class: 'form-control' }, false, true
-          = ff_a.hidden_field :name, value: ff_a.object.name
+%aside.form-navigation.d-none.d-xl-block
+  .card.sticky-top
+    .card-header.px-4
+      %h3.mb-0
+        = t("protocols.form.navigation.header.#{action_name}", protocol_type: protocol.model_name.human)
+    .card-body.p-0
+      %nav.flex-column#protocolNavigation
+        - if protocol.is_a?(Study) && Setting.get_value('research_master_enabled')
+          = link_to Protocol.human_attribute_name(:research_master_id), '#protocolHeader', class: 'nav-link h5 mb-0'
+        = link_to t('protocols.form.information.header'), '#protocolInformation', class: 'nav-link h5 mb-0'
+        = link_to t('protocols.form.financial_information.header'), '#financialInformation', class: 'nav-link h5 mb-0'
+        - if protocol.is_a?(Study)
+          = link_to t('protocols.form.research_involving.header'), '#researchInvolving', class: 'nav-link h5 mb-0'
+          = link_to t('protocols.form.other_details.header'), '#otherDetails', class: 'nav-link h5 mb-0'

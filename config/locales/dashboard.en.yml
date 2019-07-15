@@ -164,7 +164,7 @@ en:
     protocol_filters:
       header: "Filter Protocols"
       search_by: "All"
-      search_placeholder: "Search for protocols"
+      search_placeholder: "Search for Protocols"
       archived: "Archived"
       unarchived: "Unarchived"
       inactive: "(inactive)"
@@ -196,9 +196,6 @@ en:
       table:
         header: "Protocols"
         short_title: "Short Title"
-        id: "Protocol ID"
-        pis: "PI(s)"
-        requests: Requests
         tooltips:
           protocol_id: "System generated from SPARCRequest"
           short_title: "An abbreviated form of the title used to identify your study/project. Special characters outside the allowed range will be removed automatically."

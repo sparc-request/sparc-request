@@ -83,12 +83,6 @@ $(document).on 'turbolinks:load', ->
       
 
       # Protocol Show Begin
-      $(document).on 'click', '.view-protocol-details-button', ->
-        protocol_id = $(this).data('protocol-id')
-        $.ajax
-          method: 'get'
-          url: "/protocols/#{protocol_id}.js?portal=true"
-
       $(document).on 'click', '.edit-protocol-information-button', ->
         if $(this).data('permission')
           protocol_id = $(this).data('protocol-id')

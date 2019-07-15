@@ -66,7 +66,7 @@
               .input-group-prepend
                 %span.input-group-text
                   = icon('fas', 'phone')
-              = f.phone_field :guarantor_phone, class: 'form-control', placeholder: t('constants.phone.placeholder')
+              = f.phone_field :guarantor_phone, value: format_phone(f.object.guarantor_phone), class: 'form-control', placeholder: t('constants.phone.placeholder')
             %span.form-text.text-muted
               = t('constants.phone.note')
           .form-group.col-6
@@ -90,7 +90,8 @@
 
       - if protocol.is_a?(Study)
         = render 'protocols/form/study_type_questions', f: f, protocol: protocol
-      - if Setting.get_value('use_epic')
-        #studyTypeNote
-          - if protocol.active? && note = protocol.determine_study_type_note
-            = render 'protocols/form/study_type_note', f: f, protocol: protocol
+
+        - if Setting.get_value('use_epic')
+          #studyTypeNote
+            - if protocol.active? && note = protocol.determine_study_type_note
+              = render 'protocols/form/study_type_note', f: f, protocol: protocol, note: note

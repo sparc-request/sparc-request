@@ -40,7 +40,7 @@ module Dashboard::ProjectsHelper
 
   def display_funding_source(project)
     if project.funding_status == 'funded'
-      PermissibleValue.get_value('funding_source', project.funding_source)
+      PermissibleValue.get_value('funding_source', project.funding_source) 
     elsif project.funding_status == 'pending_funding'
       PermissibleValue.get_value('potential_funding_source', project.potential_funding_source)
     else
@@ -48,11 +48,11 @@ module Dashboard::ProjectsHelper
     end
   end
 
-  def display_funding_source_title(project)
-    if project.funding_status == 'funded'
-      t(:protocols)[:summary][:funding_source]
-    elsif project.funding_status == 'pending_funding'
-      t(:protocols)[:summary][:potential_source]
+  def display_funding_source_title(protocol)
+    if protocol.funding_status == 'funded'
+      Protocol.human_attribute_name(:funding_source) + ":"
+    elsif protocol.funding_status == 'pending_funding'
+      Protocol.human_attribute_name(:potential_funding_source) + ":"
     else
       ''
     end

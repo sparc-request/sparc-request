@@ -22,14 +22,14 @@
 
 .col-12.col-lg-3.pl-lg-0#cart
   .card.h-100
-    .card-header.bg-primary.text-white
-      %h4.mb-0<
+    .card-header
+      %h3.mb-0<
         = icon('fas', 'shopping-cart mr-2')
         = t('proper.cart.header')
-    .card-header.p-0
+    .card-header.p-0.cart-toggles-container
       %button.btn.btn-lg.btn-light.rounded-0.w-50.cart-toggle.active{ type: 'button', data: { target: '#activeServices' } }
         = t('proper.cart.tabs.active.header')
-      %button.btn.btn-lg.btn-light.rounded-0.w-50.cart-toggle.col-6{  type: 'button', data: { target: '#completedServices' } }
+      %button.btn.btn-lg.btn-light.rounded-0.w-50.cart-toggle{  type: 'button', data: { target: '#completedServices' } }
         = t('proper.cart.tabs.complete.header')
     .card-body.p-0
       .cart-services#activeServices

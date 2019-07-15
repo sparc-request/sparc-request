@@ -19,42 +19,38 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class ProtocolsController < ApplicationController
-
   respond_to :html, :js, :json
-  protect_from_forgery except: :show
 
   before_action :initialize_service_request,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
   before_action :authorize_identity,          except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
-  before_action :find_protocol,               only: [:edit, :update, :show]
-  before_action :check_rmid_server_status,    only: [:new, :create, :edit, :update, :update_protocol_type]
+  before_action :find_protocol,               only:   [:edit, :update, :show]
+  before_action :set_rmid_api,                only:   [:new, :edit]
+
+  def show
+    respond_to :js
+  end
 
   def new
-    @protocol = params[:protocol_type].capitalize.constantize.new
+    @protocol = params[:type].capitalize.constantize.new
     @protocol.populate_for_edit
-    @protocol.setup_study_type_answers if @protocol.is_a?(Study)
 
-    gon.rmid_api_url    = Setting.get_value("research_master_api")
-    gon.rmid_api_token  = Setting.get_value("rmid_api_token")
+    respond_to :html
   end
 
   def create
     @protocol = protocol_params[:type].capitalize.constantize.new(protocol_params)
 
     if @protocol.valid?
-      unless @protocol.project_roles.map(&:identity_id).include? current_user.id
-        # if current user is not authorized, add them as an authorized user
-        @protocol.project_roles.new(identity_id: current_user.id, role: 'general-access-user', project_rights: 'approve')
+      # if current user is not authorized, add them as an authorized user
+      unless @protocol.primary_pi_role.identity == current_user
+        @protocol.project_roles.new(identity: current_user, role: 'general-access-user', project_rights: 'approve')
       end
 
+      @protocol.next_ssr_id = @service_request.sub_service_requests.order(:ssr_id).last.ssr_id.to_i + 1
       @protocol.save
 
       @service_request.update_attribute(:protocol, @protocol)
-      @service_request.update_attribute(:status, 'draft')
-      @service_request.sub_service_requests.update_all(status: 'draft')
-
-      last_ssr_id = @service_request.sub_service_requests.sort_by(&:ssr_id).last.ssr_id.to_i
-
-      @protocol.update_attribute(:next_ssr_id, last_ssr_id + 1)
+      @service_request.update_status('draft')
 
       if Setting.get_value("use_epic") && @protocol.selected_for_epic
         @protocol.ensure_epic_user
@@ -67,72 +63,44 @@ class ProtocolsController < ApplicationController
     else
       @errors = @protocol.errors
     end
+
+    respond_to :js
   end
 
   def edit
-    @protocol_type                          = @protocol.type
-    @in_dashboard                           = false
     @protocol.populate_for_edit
     @protocol.valid?
     @errors = @protocol.errors
-    gon.rmid_api_url = Setting.get_value("research_master_api")
-    gon.rmid_api_token = Setting.get_value("rmid_api_token")
 
-    respond_to do |format|
-      format.html
-    end
+    respond_to :html
   end
 
   def update
-    protocol_type = protocol_params[:type]
-    @protocol = @protocol.becomes(protocol_type.constantize) unless protocol_type.nil?
-    if protocol_type == 'Study' && @protocol.valid?
-      @protocol.update_attribute(:type, protocol_type)
-      @protocol.activate
-      @protocol.reload
-    end
+    if @protocol.update_attributes(protocol_params)
+      if @service_request.status == 'first_draft'
+        @service_request.update_status('draft')
+      end
 
-    if @protocol.update_attributes(protocol_params.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
       flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
+
+      redirect_to protocol_service_request_path(srid: @service_request.id)
     else
       @errors = @protocol.errors
     end
 
-    if @service_request.status == 'first_draft'
-      @service_request.update_attributes(status: 'draft')
-      @service_request.sub_service_requests.update_all(status: 'draft')
-    end
+    respond_to :js
   end
 
   def update_protocol_type
-    @protocol       = Protocol.find(params[:id])
+    @protocol                     = Protocol.find(params[:id]).becomes(params[:type].constantize)
+    @protocol.type                = params[:type]
+    @protocol.research_master_id  = nil   if @protocol.is_a?(Project)
+    @protocol.rmid_validated      = false if @protocol.is_a?(Project)
+    @protocol.save(validate: false)
 
-    # Setting type and study_type_question_group, not actually saving
-    @protocol.type  = params[:type]
-    @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
+    redirect_to edit_protocol_path(@protocol, srid: params[:srid]), flash: { success: t('protocols.change_type.updated') }
 
-    @protocol_type = params[:type]
-    @protocol = @protocol.becomes(@protocol_type.constantize) unless @protocol_type.nil?
-
-    #### switching to a Project should clear out RMID and RMID validated flag ####
-    if @protocol_type && @protocol_type == 'Project'
-      @protocol.update_attribute :research_master_id, nil
-      @protocol.update_attribute :rmid_validated, false
-    end
-    #### end clearing RMID and RMID validated flag ####
-
-    @protocol.populate_for_edit
-
-    flash[:success] = t(:protocols)[:change_type][:updated]
-    if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
-      flash[:alert] = t(:protocols)[:change_type][:new_study_warning]
-    end
-  end
-
-  def show
-    respond_to do |format|
-      format.js
-    end
+    respond_to :js
   end
 
   def push_to_epic_status
@@ -198,23 +166,23 @@ class ProtocolsController < ApplicationController
     # Fix identity_id nil problem when lazy loading is enabled
     # when lazy loadin is enabled, identity_id is merely ldap_uid, the identity may not exist in database yet, so we create it if necessary here
     if Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") && params[:primary_pi_role_attributes][:identity_id].present?
-      params[:primary_pi_role_attributes][:identity_id] = Identity.find_or_create(params[:primary_pi_role_attributes][:identity_id]).id
+      params[:protocol][:primary_pi_role_attributes][:identity_id] = Identity.find_or_create(params[:protocol][:primary_pi_role_attributes][:identity_id]).id
     end
 
     # Sanitize date formats
-    params[:funding_start_date]           = sanitize_date params[:funding_start_date]
-    params[:potential_funding_start_date] = sanitize_date params[:potential_funding_start_date]
-    params[:guarantor_phone]              = sanitize_phone params[:guarantor_phone]
+    params[:protocol][:funding_start_date]           = sanitize_date params[:protocol][:funding_start_date]
+    params[:protocol][:potential_funding_start_date] = sanitize_date params[:protocol][:potential_funding_start_date]
+    params[:protocol][:guarantor_phone]              = sanitize_phone params[:protocol][:guarantor_phone]
 
-    if params[:human_subjects_info_attributes]
-      params[:human_subjects_info_attributes][:initial_irb_approval_date] = sanitize_date params[:human_subjects_info_attributes][:initial_irb_approval_date]
-      params[:human_subjects_info_attributes][:irb_approval_date]         = sanitize_date params[:human_subjects_info_attributes][:irb_approval_date]
-      params[:human_subjects_info_attributes][:irb_expiration_date]       = sanitize_date params[:human_subjects_info_attributes][:irb_expiration_date]
+    if params[:protocol][:human_subjects_info_attributes]
+      params[:protocol][:human_subjects_info_attributes][:initial_irb_approval_date] = sanitize_date params[:protocol][:human_subjects_info_attributes][:initial_irb_approval_date]
+      params[:protocol][:human_subjects_info_attributes][:irb_approval_date]         = sanitize_date params[:protocol][:human_subjects_info_attributes][:irb_approval_date]
+      params[:protocol][:human_subjects_info_attributes][:irb_expiration_date]       = sanitize_date params[:protocol][:human_subjects_info_attributes][:irb_expiration_date]
     end
 
-    if params[:vertebrate_animals_info_attributes]
-      params[:vertebrate_animals_info_attributes][:iacuc_approval_date]   = sanitize_date params[:vertebrate_animals_info_attributes][:iacuc_approval_date]
-      params[:vertebrate_animals_info_attributes][:iacuc_expiration_date] = sanitize_date params[:vertebrate_animals_info_attributes][:iacuc_expiration_date]
+    if params[:protocol][:vertebrate_animals_info_attributes]
+      params[:protocol][:vertebrate_animals_info_attributes][:iacuc_approval_date]   = sanitize_date params[:protocol][:vertebrate_animals_info_attributes][:iacuc_approval_date]
+      params[:protocol][:vertebrate_animals_info_attributes][:iacuc_expiration_date] = sanitize_date params[:protocol][:vertebrate_animals_info_attributes][:iacuc_expiration_date]
     end
 
     params.require(:protocol).permit(
@@ -257,7 +225,7 @@ class ProtocolsController < ApplicationController
       impact_areas_attributes: [:id, :name, :other_text, :new, :_destroy],
       investigational_products_info_attributes: [:id, :protocol_id, :ind_number, :inv_device_number, :exemption_type, :ind_on_hold],
       ip_patents_info_attributes: [:id, :patent_number, :inventors],
-      primary_pi_role_attributes: [:id, :identity_id, :role, :project_rights, :_destroy],
+      primary_pi_role_attributes: [:id, :identity_id, :_destroy],
       research_types_info_attributes: [:id, :human_subjects, :vertebrate_animals, :investigational_products, :ip_patents],
       study_phase_ids: [],
       study_types_attributes: [:id, :name, :new, :position, :_destroy],
@@ -299,13 +267,5 @@ class ProtocolsController < ApplicationController
       # ActiveRecord::Base.connection.close
     end
     # end
-  end
-
-  def convert_date_for_save(attrs, date_field)
-    if attrs[date_field] && attrs[date_field].present?
-      attrs[date_field] = Time.strptime(attrs[date_field], "%m/%d/%Y")
-    end
-
-    attrs
   end
 end

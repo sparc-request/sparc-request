@@ -146,14 +146,11 @@ class ServiceRequestsController < ApplicationController
   end
 
   def save_and_exit
-    respond_to do |format|
-      format.html {
-        @service_request.update_status('draft')
-        @service_request.ensure_ssr_ids
-        redirect_to dashboard_root_path
-      }
-      format.js
-    end
+    @service_request.update_status('draft')
+    @service_request.ensure_ssr_ids
+    redirect_to dashboard_root_path
+
+    respond_to :html
   end
 
   def add_service

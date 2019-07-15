@@ -49,6 +49,14 @@ module ServiceRequestsHelper
   end
 
   def save_as_draft_button(service_request)
-    link_to t('proper.navigation.bottom.save_as_draft'), save_and_exit_service_request_path(srid: service_request.id), remote: true, class: 'btn btn-lg btn-outline-warning'
+    link_to t('proper.navigation.bottom.save_as_draft'),
+      save_and_exit_service_request_path(srid: service_request.id), remote: true,
+      class: 'btn btn-lg btn-outline-warning',
+      data: {
+        confirm_swal: 'true',
+        title: t('proper.navigation.save_as_draft.title'),
+        html: t('proper.navigation.save_as_draft.text', protocol_type: service_request.protocol.model_name.human),
+        remote: 'false'
+      }
   end
 end

@@ -25,8 +25,8 @@ const ConfirmSwal = Swal.mixin({
   confirmButtonText: I18n.t('constants.yes_select'),
   cancelButtonText: I18n.t('constants.no_select'),
   customClass: {
-    confirmButton: 'btn-success',
-    cancelButton: 'btn-danger'
+    confirmButton: 'btn-primary',
+    cancelButton: 'btn-secondary'
   }
 })
 
@@ -35,5 +35,8 @@ const AlertSwal = Swal.mixin({
   showCloseButton: true,
   showConfirmButton: false,
   showCancelButton: true,
-  cancelButtonText: I18n.t('actions.close')
+  cancelButtonText: I18n.t('actions.close'),
+  customClass: {
+    cancelButton: 'btn-secondary'
+  }
 })

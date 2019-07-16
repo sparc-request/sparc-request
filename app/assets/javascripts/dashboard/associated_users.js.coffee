@@ -19,14 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  $(document).on 'click', '#new-associated-user-button', ->
-    if $(this).data('permission')
-      $.ajax
-        type: 'get'
-        url: '/dashboard/associated_users/new.js'
-        data:
-          protocol_id: $(this).data('protocol-id')
-
   $(document).on 'click', '.edit-associated-user-button', (event) ->
     if $(this).data('permission')
       project_role_id = $(this).data('project-role-id')

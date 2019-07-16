@@ -83,7 +83,9 @@ en:
         pro_number: "PRO #"
         submission_type: "Submission Type"
       identity:
+        credentials: "Credentials"
         email: "Email"
+        era_commons_name: "ERA Commons Name"
         first_name: "First Name"
         last_name: "Last Name"
         ldap_uid: "Login"
@@ -93,6 +95,7 @@ en:
         password: "Password"
         password_confirmation: "Confirm Password"
         reason: "Reason for Account Request"
+        subspecialty: "Subspecialty"
       impact_areas:
         name: "Name"
         other_text: "Other"
@@ -112,7 +115,8 @@ en:
         id: "Project ID"
         title: "Project Title"
       project_role:
-        epic_emr_access: "Epic EMR Access"
+        epic_access: "Epic EMR Access?"
+        identity: "User"
         project_rights: "Proxy Rights"
         role: "Role"
       protocol:
@@ -236,11 +240,7 @@ en:
   authorized_users:
     header: "Authorized Users"
     new: "Add Authorized User"
-    add:
-      header: "Add Authorized User"
-      select: "Select User:"
-    edit:
-      header: "Edit Authorized User"
+    edit: "Edit Authorized User"
     delete:
       tooltip: "Click to delete this user or hold to delete multiple users."
       self_remove_warning: "This action will remove yourself from this Protocol."
@@ -248,25 +248,20 @@ en:
     created: "Authorized User Added!"
     updated: "Authorized User Updated!"
     destroyed: "Authorized User(s) Removed!"
-    form_fields:
-      orcid: "ORCID:"
-      era_commons_name: "ERA Commons Name:"
-      credentials: "Credentials:"
-      credentials_prompt: "Select a Credential"
-      credentials_specify: "Please Specify:"
-      phone: "Phone:"
-      subspecialty: "Subspecialty:"
-      subspecialty_prompt: "Select a Subspecialty"
-      role: "Role:"
-      role_prompt: "Select a Role"
-      role_specify: "Please Specify:"
-      epic_access: "Epic EMR Access?:"
+    form:
+      change: "Choose a different user"
       no_epic_access: "User does not have Epic access"
-      rights: "Proxy Rights:"
-      placeholders:
-        orcid: "XXXX-XXXX-XXXX-XXXX"
       links:
         orcid: "https://orcid.org/"
+      placeholders:
+        orcid: "XXXX-XXXX-XXXX-XXXX"
+      primary_pi_change:
+        title: "Change this %{protocol_type}'s Primary PI?"
+        text: "<bold>%{new_pi_name}</bold> will become the new Primary PI.<br/>The current Primary PI, <bold>%{current_pi_name}</bold> will be changed to a General Access User.<br/>Are you sure you want to proceed?"
+      user_role_change:
+        proper_text: "If you change your Proxy Rights you will be taken back to your Dashboard. Are you sure you want to proceed?"
+        dashboard_text: >
+          If you change your Proxy Rights to <bold>Member Only</bold> you will be taken back to your Dashboard. Are you sure you want to proceed?
     rights:
       none: Member Only
       view: "View Rights"
@@ -274,10 +269,6 @@ en:
       change_warning:
         dashboard: "Warning: Changing your Proxy Rights to 'Member Only' will redirect you to your Dashboard"
         proper: "Warning: Changing your Proxy Rights will redirect you to your Dashboard"
-    change_primary_pi:
-      header: "**Warning**"
-      warning: "Adding the new Primary PI (<strong>%{new_pi_name}</strong>) will change the current Primary PI (<strong>%{old_pi_name}</strong>) to a general access user on Protocol (<strong>%{protocol_id}</strong>)."
-      prompt: "Do you wish to proceed?"
     tooltips:
       add_user: "Ability to add an Authorized User to a protocol"
       epic_access: 'Granting Epic EMR access populates study personnel in Epic Research Record as long as they have Epic certification/training.'

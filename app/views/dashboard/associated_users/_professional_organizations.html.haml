@@ -19,20 +19,23 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 - state = professional_organization_state(professional_organization)
-.professional-organization-form
-  = fields_for(:project_role) do |pr_form|
-    = pr_form.fields_for(:identity_attributes) do |identity_form|
+
+.form-row#professionalOrganizationForm
+  = fields_for :project_role do |f|
+    = f.fields_for :identity_attributes do |ff_i|
       - state[:dont_submit_selected].each do |prev_selected_pro_org|
-        = user_form_group(name: prev_selected_pro_org.org_type, label: org_type_label(prev_selected_pro_org)) do
+        .form-group.col-4
+          = ff_i.label prev_selected_pro_org.org_type, org_type_label(prev_selected_pro_org)
           = professional_organization_dropdown(choices_from: prev_selected_pro_org)
-      -# ProfessionalOrganization dropdown whose selected option is actually
-      -# submitted with the Authorized User form.
+
+      -# ProfessionalOrganization dropdown whose selected option is actually submitted with the Authorized User form.
       - if state[:submit_selected]
-        = user_form_group(name: :professional_organization_id, label: org_type_label(state[:submit_selected]), form: identity_form) do
-          = professional_organization_dropdown(choices_from: state[:submit_selected],
-                                               form: identity_form)
-      -# ProfessionalOrganization dropdown for the children of the selected
-      -# organization from prevous dropdown.
+        .form-group.col-4
+          = ff_i.label :professional_organization_id, org_type_label(state[:submit_selected])
+          = professional_organization_dropdown(choices_from: state[:submit_selected], form: ff_i)
+
+      -# ProfessionalOrganization dropdown for the children of the selected organization from prevous dropdown.
       - if state[:dont_submit_unselected].any?
-        = user_form_group(name: state[:dont_submit_unselected].first.org_type, label: org_type_label(state[:dont_submit_unselected].first)) do
+        .form-group.col-4
+          = ff_i.label state[:dont_submit_unselected].first.org_type, org_type_label(state[:dont_submit_unselected].first)
           = professional_organization_dropdown(choices_from: state[:dont_submit_unselected])

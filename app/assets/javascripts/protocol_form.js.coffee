@@ -143,7 +143,7 @@ $(document).on 'turbolinks:load', ->
     }, {
       displayKey: 'label'
       source: identitiesBloodhound.ttAdapter()
-      limit: 100000,
+      limit: 100,
       templates: {
         notFound: "<div class='tt-suggestion'>#{I18n.t('constants.search.no_results')}</div>",
         pending: "<div class='tt-suggestion'>#{I18n.t('constants.search.loading')}</div>"

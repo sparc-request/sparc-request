@@ -18,5 +18,4 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-$('.professional-organization-form').html("<%= escape_javascript(render('dashboard/associated_users/professional_organizations', professional_organization: @professional_organization)) %>")
-$('.professional-organization-form select').selectpicker()
+$('#professionalOrganizationForm').replaceWith("<%= j render 'dashboard/associated_users/professional_organizations', professional_organization: @professional_organization %>")

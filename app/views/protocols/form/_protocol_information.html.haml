@@ -83,7 +83,7 @@
           .d-block
             .custom-control.custom-radio.custom-control-inline
               = f.radio_button :selected_for_epic, true, class: 'custom-control-input'
-              = f.label "selected_for_epic_true", t('constants.yes_select'), class: 'custom-control-label'
+              = f.label :selected_for_epic_true, t('constants.yes_select'), class: 'custom-control-label'
             .custom-control.custom-radio.custom-control-inline
               = f.radio_button :selected_for_epic, false, class: 'custom-control-input'
               = f.label "selected_for_epic_false", t('constants.no_select'), class: 'custom-control-label'

@@ -17,32 +17,9 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$(document).ready ->
 
-  #**************** Add Authorized User Form Begin ****************
-  # Role - Dropdown
-  $(document).on 'changed.bs.select', '#project_role_role', ->
-    $('.role_dependent').addClass('hidden')
-    switch $('#project_role_role').val()
-      when 'other'
-        $('.role_dependent.other').removeClass('hidden')
-      when 'business-grants-manager'
-        $('#project_role_project_rights_none').attr('disabled', true)
-        $('#project_role_project_rights_view').attr('disabled', true)
-        $('#project_role_project_rights_approve').attr('checked', true)
-      when 'pi', 'primary-pi'
-        $('#project_role_project_rights_none').attr('disabled', true)
-        $('#project_role_project_rights_view').attr('disabled', true)
-        $('#project_role_project_rights_approve').attr('checked', true)
-        $('.role_dependent.commons_name').removeClass('hidden')
-        $('.role_dependent.subspecialty').removeClass('hidden')
-      when '', 'grad-research-assistant', 'undergrad-research-assistant', 'research-assistant-coordinator', 'technician', 'general-access-user'
-      else
-        $('input[name="project_role[project_rights]"]').attr('disabled', false).attr('checked', false)
-        $('.role_dependent.commons_name').removeClass('hidden')
-        $('.role_dependent.subspecialty').removeClass('hidden')
-
-  $(document).on 'keydown', '#project_role_identity_attributes_orcid', (event) ->
+$(document).on 'turbolinks:load', ->
+  $(document).on('keydown', '#project_role_identity_attributes_orcid', (event) ->
     key = event.keyCode || event.charCode
     val = $(this).val()
     isDelete = [8, 46].includes(key)
@@ -60,51 +37,51 @@ $(document).ready ->
     else if key == 88 && val.length == 18
       event.stopImmediatePropagation()
       $(this).val(val.substr(0, val.length) + String.fromCharCode(key).toUpperCase())
-
-  $(document).on 'keyup', '#project_role_identity_attributes_orcid', (event) ->
+  ).on('keyup', '#project_role_identity_attributes_orcid', (event) ->
     key = event.keyCode || event.charCode
     val = $(this).val()
     isDelete = [8, 46].includes(key)
 
     if !isDelete && [4, 9, 14].includes(val.length)
       $(this).val(val + "-")
+  )
 
-  # Credentials - Dropdown
   $(document).on 'changed.bs.select', '#project_role_identity_attributes_credentials', ->
     if $(this).val() == 'other'
-      $('.credentials_dependent.other').removeClass('hidden')
+      $('#credentialsOtherContainer').removeClass('d-none')
     else
-      $('.credentials_dependent.other').addClass('hidden')
+      $('#credentialsOtherContainer').addClass('d-none')
 
-  # Show/Hide Warning when changing project rights that will redirect user to Dashboard
-  $(document).on 'change', 'input[name="project_role[project_rights]"]', ->
-    if ($(this).val() == 'view' && !$(this).data('dashboard')) || $(this).val() == 'none'
-      $('.project-rights-redirect-warning').removeClass('hidden')
-    else
-      $('.project-rights-redirect-warning').addClass('hidden')
-
-  # Renders warning when changing Primary PI
-  $(document).on 'click', '#protocol-role-save', ->
-    identity_id = parseInt($('#project_role_identity_id').val())
-    pi_id       = $('#change-primary-pi-warning').data('pi-id')
-    if $("select[name='project_role[role]']").val() == 'primary-pi' && identity_id != pi_id && !$('.protocol-role-form').hasClass('hidden')
-      $(".protocol-role-form").addClass('hidden')
-      $('#change-primary-pi-warning').removeClass('hidden')
-    else
-      $(".protocol-role-form").submit()
-
-  $(document).on 'click', '#protocol-role-close', ->
-    if $(".protocol-role-form").hasClass('hidden')
-      $('#change-primary-pi-warning').addClass('hidden')
-      $(".protocol-role-form").removeClass('hidden')
-    else
-      $(this).closest('.modal').modal('hide')
-
-  $(document).on 'changed.bs.select', '.professional-organization-form select', ->
+  $(document).on 'changed.bs.select', '#professionalOrganizationForm select', ->
     last_selected = $(this).val()
     $.ajax
       type: 'get'
       url: '/dashboard/associated_users/update_professional_organization_form_items.js'
       data:
         last_selected_id: last_selected
-  #**************** Add Authorized User Form End ****************
+
+  $(document).on 'changed.bs.select', '#project_role_role', ->
+    $('input[name="project_role[project_rights]"]').trigger('change')
+
+    if $(this).val() == 'other'
+      $('#roleOtherContainer').removeClass('d-none')
+    else
+      $('#roleOtherContainer').addClass('d-none')
+
+    if ['pi', 'primary-pi', 'business-grants-manager'].includes($(this).val())
+      $('#project_role_project_rights_none, #project_role_project_rights_view').attr('disabled', true)
+      $('#project_role_project_rights_approve').attr('checked', true)
+    else
+      $('input[name="project_role[project_rights]"]').attr('disabled', false).attr('checked', false)
+
+    if ['', 'other', 'business-grants-manager', 'grad-research-assistant', 'undergrad-research-assistant', 'research-assistant-coordinator', 'technician', 'general-access-user'].includes($(this).val())
+      $('#eraCommonsNameContainer, #subspecialtyContainer').addClass('d-none')
+    else
+      $('#eraCommonsNameContainer, #subspecialtyContainer').removeClass('d-none')
+
+  # Remove after replacing with Swal in edit.js.coffee
+  $(document).on 'change', 'input[name="project_role[project_rights]"]', ->
+    if ($(this).val() == 'view' && !$(this).data('dashboard')) || $(this).val() == 'none'
+      $('.project-rights-redirect-warning').removeClass('hidden')
+    else
+      $('.project-rights-redirect-warning').addClass('hidden')

@@ -23,40 +23,43 @@ class AssociatedUsersController < ApplicationController
 
   before_action :initialize_service_request
   before_action :authorize_identity
-  before_action :find_protocol_role,          only: [:edit, :destroy]
-  before_action :find_protocol,               only: [:index, :new, :edit, :destroy]
+  before_action :find_protocol_role,        only: [:edit, :destroy]
+  before_action :find_protocol,             only: [:index, :new, :edit, :destroy]
 
   def index
     @protocol_roles = @protocol.project_roles
 
-    respond_to do |format|
-      format.json
-    end
+    respond_to :json
   end
 
   def new
-    @header_text  = t(:authorized_users)[:add][:header]
-    @dashboard    = false
-
     if params[:identity_id] # if user selected
       @identity = Identity.find_or_create(params[:identity_id])
 
-      if Setting.get_value("use_epic") && Setting.get_value("validate_epic_users") && @protocol != nil && @protocol.selected_for_epic
+      if Setting.get_value("use_epic") && Setting.get_value("validate_epic_users") && @protocol.selected_for_epic
         @epic_user = EpicUser.for_identity(@identity)
       end
 
       @project_role = @protocol.project_roles.new(identity_id: @identity.id)
-      @current_pi   = @protocol.primary_principal_investigator
 
       unless @project_role.unique_to_protocol?
-        # Adds error if user already associated with protocol
         @errors = @project_role.errors
       end
     end
 
-    respond_to do |format|
-      format.js
+    respond_to :js
+  end
+
+  def create
+    creator = AssociatedUserCreator.new(project_role_params, current_user)
+
+    if creator.successful?
+      flash.now[:success] = t('authorized_users.created')
+    else
+      @errors = creator.protocol_role.errors
     end
+
+    respond_to :js
   end
 
   def edit
@@ -66,27 +69,7 @@ class AssociatedUsersController < ApplicationController
       @epic_user = EpicUser.for_identity(@identity)
     end
 
-    @header_text  = t(:authorized_users)[:edit][:header]
-    @dashboard    = false
-    @admin        = false
-
-    respond_to do |format|
-      format.js
-    end
-  end
-
-  def create
-    creator = AssociatedUserCreator.new(project_role_params, current_user)
-
-    if creator.successful?
-      flash.now[:success] = t(:authorized_users)[:created]
-    else
-      @errors = creator.protocol_role.errors
-    end
-
-    respond_to do |format|
-      format.js
-    end
+    respond_to :js
   end
 
   def update
@@ -95,7 +78,7 @@ class AssociatedUsersController < ApplicationController
     @return_to_dashboard  = protocol_role.identity_id == current_user.id && ['none', 'view'].include?(protocol_role.project_rights)
 
     if updater.successful?
-      flash.now[:success] = t(:authorized_users)[:updated]
+      flash.now[:success] = t('authorized_users.updated')
     else
       @errors = updater.protocol_role.errors
     end
@@ -122,27 +105,33 @@ class AssociatedUsersController < ApplicationController
   private
 
   def project_role_params
-    params.require(:project_role).permit(:protocol_id,
+    params[:project_role][:identity_attributes][:phone] = sanitize_phone params[:project_role][:identity_attributes][:phone]
+
+    params.require(:project_role).permit(
+      :epic_access,
       :identity_id,
       :project_rights,
+      :protocol_id,
       :role,
       :role_other,
-      :epic_access,
+      epic_rights_attributes: [
+        :new,
+        :position,
+        :right,
+        :_destroy
+      ],
       identity_attributes: [
-        :orcid,
         :credentials,
         :credentials_other,
         :email,
         :era_commons_name,
-        :professional_organization_id,
+        :id,
+        :orcid,
         :phone,
-        :subspecialty,
-        :id
-      ],
-      epic_rights_attributes: [:right,
-        :new,
-        :position,
-        :_destroy])
+        :professional_organization_id,
+        :subspecialty
+      ]
+    )
   end
 
   def find_protocol_role
@@ -160,6 +149,8 @@ class AssociatedUsersController < ApplicationController
         @protocol_role.protocol
       elsif @protocol_roles.present?
         @protocol_roles.first.protocol
+      elsif @service_request
+        @protocol = @service_request.protocol
       else
         Protocol.find(params[:protocol_id] || project_role_params[:protocol_id])
       end

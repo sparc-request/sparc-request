@@ -20,7 +20,8 @@
 
 %tr.bg-light
   %td{ colspan: 2 }
-    = t('protocols.form.research_involving.subheader', research_type: ResearchTypesInfo.human_attribute_name(:ip_patents))
+    %h6.mb-0
+      = t('protocols.form.research_involving.subheader', research_type: ResearchTypesInfo.human_attribute_name(:ip_patents))
 %tr
   %td.col-3
     %label.mb-0

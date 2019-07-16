@@ -42,7 +42,7 @@
       @extend .border-top;
     }
 
-    &:hover {
+    &:hover, &.tt-cursor {
       @extend .bg-light;
     }
   }

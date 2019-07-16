@@ -72,17 +72,19 @@
           - if display_readonly_study_type_questions?(protocol) && protocol.display_answers.any?{ |as| display_study_type_question?(protocol, as) }
             %tr.bg-light
               %td{ colspan: 2 }
-                %label.mb-0{ title: t(:protocols)[:tooltips][:study_type_questions], data: { toggle: 'tooltip', placement: 'right' } }
+                %h6.mb-0{ title: t(:protocols)[:tooltips][:study_type_questions], data: { toggle: 'tooltip', placement: 'right' } }
                   = Protocol.human_attribute_name(:study_type_questions)
-            %tr
-              %td{ colspan: 2 }
-                - protocol.display_answers.each do |answer|
-                  - if ((answer.study_type_question.study_type_question_group.active && protocol.active?) || (!answer.study_type_question.study_type_question_group.active && !protocol.active?)) && display_study_type_question?(protocol, answer, true)
+            - protocol.display_answers.each do |answer|
+              - if ((answer.study_type_question.study_type_question_group.active && protocol.active?) || (!answer.study_type_question.study_type_question_group.active && !protocol.active?)) && display_study_type_question?(protocol, answer, true)
+                %tr
+                  %td{ colspan: 2 }
                     .row
-                      %label.col-11
+                      %label.col-11.mb-0
                         = answer.study_type_question.question
                       .col-1
                         = answer.answer? ? t('constants.yes_select') : t('constants.no_select')
 
-                - if Setting.get_value('use_epic') && protocol.active? && note = protocol.determine_study_type_note
+            - if Setting.get_value('use_epic') && protocol.active? && note = protocol.determine_study_type_note
+              %tr
+                %td{ colspan: 2 }
                   = render 'protocols/form/study_type_note', protocol: protocol, note: note

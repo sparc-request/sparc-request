@@ -19,27 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module AssociatedUsersHelper
-  # Returns div.form-group for Authorized User forms.
-  # name - Sets label text from t(:authorized_users)[:form_fields][name.to_sym]
-  #        Also used in form helpers.
-  # classes - HTML classes to add to form-group.
-  # label - Override localized label text.
-  def user_form_group(form: nil, name:, classes: [], label: nil, data: {}, title: nil, required: false, link: nil)
-    form_group_classes = %w(row form-group) + [classes]
-    label_class = 'col-lg-3 control-label' + (required ? ' required' : '')
-    label_text = label || t(:authorized_users)[:form_fields][name.to_sym]
-    label_text = link_to(label_text, link, target: :blank) if link
-    label = if form
-              form.label(name, label_text, class: label_class, data: data, title: title)
-            else
-              content_tag(:label, label_text, class: label_class)
-            end
-    input_container = content_tag(:div, class: 'col-lg-9') { yield }
-    content_tag(:div,
-                label + input_container,
-                class: form_group_classes)
-  end
-
   # Generates state for portion of Authorized User form concerned with their
   # professional organizations.
   # professional_organization - Last professional organization selected in form.
@@ -66,8 +45,7 @@ module AssociatedUsersHelper
   #   should be a collection of ProfessionalOrganizations to be presented as
   #   options.
   def professional_organization_dropdown(form: nil, choices_from:)
-    select_class = 'form-control selectpicker'
-    prompt = t(:constants)[:prompts][:select_one]
+    select_class = 'selectpicker'
     if choices_from.kind_of?(ProfessionalOrganization)
       options = options_from_collection_for_select(choices_from.self_and_siblings.order(:name), 'id', 'name', choices_from.id)
       select_id = "select-pro-org-#{choices_from.org_type}"
@@ -79,13 +57,13 @@ module AssociatedUsersHelper
     if form
       form.select(:professional_organization_id,
                   options,
-                  { include_blank: prompt },
+                  { include_blank: true },
                   class: select_class,
                   id: select_id)
     else
       select_tag(nil,
                  options,
-                 include_blank: prompt,
+                 include_blank: true,
                  class: select_class,
                  id: select_id)
     end
@@ -94,7 +72,7 @@ module AssociatedUsersHelper
   # Convert ProfessionalOrganization's org_type to a label for Authorized Users
   # form.
   def org_type_label(professional_organization)
-    professional_organization.org_type.capitalize + ":"
+    professional_organization.org_type.capitalize
   end
 
   def authorized_user_actions(pr, service_request)
@@ -124,21 +102,5 @@ module AssociatedUsersHelper
       class: ["btn btn-danger actions-button delete-associated-user-button", pr.primary_pi? ? 'disabled' : ''],
       data: data
     )
-  end
-
-  def determine_entity(dashboard, project_role)
-    if dashboard
-      [:dashboard, project_role]
-    else
-      project_role
-    end
-  end
-
-  def determine_url(dashboard, project_role)
-    if dashboard
-      project_role.new_record? ? dashboard_associated_users_path : dashboard_associated_user_path(project_role)
-    else
-      project_role.new_record? ? associated_users_path : associated_user_path(project_role)
-    end
   end
 end

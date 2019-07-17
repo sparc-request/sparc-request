@@ -62,12 +62,14 @@
 /// Replace with //= require_tree . when finished! ///
 
 //= require global
+//= require batch-select
 //= require login
 //= require protocol_form
 //= require associated_users_form
 
 //= require cart
 //= require catalog
+//= require protocol
 
 //= require dashboard/protocols
 

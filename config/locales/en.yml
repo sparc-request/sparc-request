@@ -243,7 +243,8 @@ en:
     edit: "Edit Authorized User"
     delete:
       tooltip: "Click to delete this user or hold to delete multiple users."
-      self_remove_warning: "This action will remove yourself from this Protocol."
+      self_remove_warning: "This action will remove you from this Protocol."
+      self_remove_redirect_warning: "This action will remove you from this Protocol and you will be returned to your Dashboard."
       pi_tooltip: "Projects/Studies require a Primary PI. Please add a new one before removing this user."
     created: "Authorized User Added!"
     updated: "Authorized User Updated!"
@@ -268,8 +269,8 @@ en:
       view: "View Rights"
       approve: "Authorized/Change Study Charges"
       change_warning:
-        dashboard: "Warning: Changing your Proxy Rights to 'Member Only' will redirect you to your Dashboard"
-        proper: "Warning: Changing your Proxy Rights will redirect you to your Dashboard"
+        dashboard: "Warning: If you change your Proxy Rights to 'Member Only' you will be returned you to your Dashboard"
+        proper: "Warning: If you change your Proxy Rights you will be returned you to your Dashboard"
     tooltips:
       add_user: "Ability to add an Authorized User to a protocol"
       epic_access: 'Granting Epic EMR access populates study personnel in Epic Research Record as long as they have Epic certification/training.'

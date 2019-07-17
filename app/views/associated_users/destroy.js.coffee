@@ -18,5 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # Send the user back to dashboard if theyre a member and not an admin
-$("#associated-users-table").bootstrapTable 'refresh', {silent: true}
-$("#flashContainer").replaceWith("<%= escape_javascript(render( 'layouts/flash' )) %>")
+
+$("#authorizedUsersTabletable").bootstrapTable('refresh')
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")

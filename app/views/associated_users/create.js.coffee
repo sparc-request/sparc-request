@@ -29,6 +29,6 @@ $("[name='project_role[<%= attr.to_s %>]']").parents('.form-group').removeClass(
 <% end %>
 <% else %>
 $("#modalContainer").modal('hide')
-$("#associated-users-table").bootstrapTable('refresh')
+$("#authorizedUsersTabletable").bootstrapTable('refresh')
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

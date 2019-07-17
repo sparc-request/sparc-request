@@ -76,10 +76,11 @@ module AssociatedUsersHelper
   end
 
   def authorized_user_actions(pr, service_request)
-    [
-      edit_authorized_user_button(pr, service_request),
-      delete_authorized_user_button(pr)
-    ].join('')
+    content_tag :div, class: 'd-flex justify-content-center' do
+      raw([ edit_authorized_user_button(pr, service_request),
+        delete_authorized_user_button(pr)
+      ].join(''))
+    end
   end
 
   def edit_authorized_user_button(pr, service_request)
@@ -92,7 +93,7 @@ module AssociatedUsersHelper
     if current_user.id == pr.identity_id
       data[:batch_select] = {
         checkConfirm: 'true',
-        checkConfirmSwalText: t(:authorized_users)[:delete][:self_remove_warning]
+        checkConfirmSwalText: current_user.catalog_overlord? ? t(:authorized_users)[:delete][:self_remove_warning] : t(:authorized_users)[:delete][:self_remove_redirect_warning]
       }
     end
 

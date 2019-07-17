@@ -17,14 +17,18 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-<% if @errors.present? %>
-$("#modalContainer #modal_errors").html("<%= escape_javascript(render( 'layouts/modal_errors', errors: @errors )) %>")
+<% if @errors %>
+$("[name^='project_role']:not([type='hidden']), #professionalOrganizationForm select").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+$('.form-error').remove()
+
+<% @errors.messages.each do |attr, messages| %>
+<% messages.each do |message| %>
+$("[name='project_role[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
+<% end %>
+<% end %>
 <% else %>
-$("#modalContainer").modal 'hide'
-<% if @return_to_dashboard %>
-window.location = "/dashboard"
-<% else %>
-$("#associated-users-table").bootstrapTable 'refresh', {silent: true}
-$("#flashContainer").replaceWith("<%= escape_javascript(render( 'layouts/flash' )) %>")
+$("#modalContainer").modal('hide')
+$("#authorizedUsersTabletable").bootstrapTable('refresh')
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>
 <% end %>

@@ -75,10 +75,11 @@ class AssociatedUsersController < ApplicationController
   def update
     updater               = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params, current_identity: current_user)
     protocol_role         = updater.protocol_role
-    @return_to_dashboard  = protocol_role.identity_id == current_user.id && !current_user.catalog_overlord? && ['none', 'view'].include?(protocol_role.project_rights)
 
     if updater.successful?
       flash.now[:success] = t('authorized_users.updated')
+
+      redirect_to dashboard_root_path if protocol_role.identity_id == current_user.id && !current_user.catalog_overlord? && ['none', 'view'].include?(protocol_role.project_rights)
     else
       @errors = updater.protocol_role.errors
     end
@@ -87,17 +88,16 @@ class AssociatedUsersController < ApplicationController
   end
 
   def destroy
-    @epic_access = @protocol_roles.any?(&:epic_access)
+    @epic_access = @protocol_roles.where(epic_access: true).any?
     @protocol_roles.each{ |pr| EpicQueueManager.new(@protocol, current_user, pr).create_epic_queue }
     Notifier.notify_primary_pi_for_epic_user_removal(@protocol, @protocol_roles).deliver if is_epic?
     @protocol.email_about_change_in_authorized_user(@protocol_roles, "destroy")
 
     @protocol_roles.destroy_all
+
     flash.now[:alert] = t(:authorized_users)[:destroyed]
 
-    respond_to do |format|
-      format.js
-    end
+    respond_to :js
   end
 
   private

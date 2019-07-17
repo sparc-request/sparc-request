@@ -47,7 +47,7 @@
 
     Swal.fire({
       title: title || I18n.t('confirm.title') || "Are you sure?",
-      html: html || I18n.t('confirm.text') || "This action can't be undone.",
+      html: html || I18n.t('confirm.text') || "This action cannot be undone.",
       type: type === null ? 'warning' : type,
       showCancelButton: true,
       confirmButtonText: confirmText || I18n.t('confirm.confirm') || "Yes",

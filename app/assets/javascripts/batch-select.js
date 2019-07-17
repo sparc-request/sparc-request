@@ -69,11 +69,11 @@ $(document).ready( function() {
     ajaxData: {},
     batchSelectedClass: null,
     batchSelectedText: 'Submit Selected',
-    checkConfirmSwalTitle: 'Are you sure?',
-    checkConfirmSwalText: 'You cannot undo this action.',
+    checkConfirmSwalTitle: I18n.t('confirm.title') || "Are you sure?",
+    checkConfirmSwalText: I18n.t('confirm.text') || "This action cannot be undone.",
     highlightClass: null,
-    swalTitleSingle: 'Are you sure?',
-    swalTextSingle: 'You cannot undo this action.',
+    swalTitle: I18n.t('confirm.title') || "Are you sure?",
+    swalText: I18n.t('confirm.text') || "This action cannot be undone.",
     swalConfirmColor: null,
     type: 'success'
   };
@@ -92,7 +92,7 @@ $(document).ready( function() {
         id = $el.data('id'),
         group = {
           $el:     $el,
-          $check:  ($check = $("<input class=\"batch-select-check\" type=\"checkbox\" value=\"" + id + "\" data-id=\"" + id + "\" style=\"width:100%;height:31px;\" />")),
+          $check:  ($check = $(`<input class="batch-select-check" type="checkbox" value="${id}" data-id="${id}" style="width:30.5px;height:29px;margin:0!important;" />`)),
           $tr:     ($tr = $el.closest('tr'))
         };
 
@@ -128,14 +128,16 @@ $(document).ready( function() {
     $el.on('click', function () {
       var $el = $(this);
 
-      swal({
-        title: that.options.swalTitle,
-        text: that.options.swalText,
+      Swal.fire({
+        title: $el.data('batch-select').checkConfirm ? that.options.checkConfirmSwalTitle : that.options.swalTitle,
+        text: $el.data('batch-select').checkConfirm ? that.options.checkConfirmSwalText : that.options.swalText,
         type: that.options.type,
         showCancelButton: true,
         confirmButtonColor: that.options.swalConfirmColor || determineSwalConfirmColor(that.options.type)
-      }, function () {
-        that.sendRequest($el.data('id'));
+      }).then(result => {
+        if (result.value) {
+          that.sendRequest($el.data('id'));
+        }
       });
     });
 
@@ -185,18 +187,20 @@ $(document).ready( function() {
       this.$selectedButtonContainer3.css('top', top3 + "px");
 
       this.$selectedButton.on('click', function () {
-        swal({
+        Swal.fire({
           title: that.options.swalTitle,
           text: that.options.swalText,
           type: that.options.type,
           showCancelButton: true,
           confirmButtonColor: that.options.swalConfirmColor || determineSwalConfirmColor(that.options.type)
-        }, function () {
-          var ids = $.map(that.$checks, function(el, i) {
-            return $(el).prop('checked') ? $(el).data('id') : '';
-          }).join(',');
+        }).then(result => {
+          if (result.value) {
+            var ids = $.map(that.$checks, function(el, i) {
+              return $(el).prop('checked') ? $(el).data('id') : '';
+            }).join(',');
 
-          that.sendRequest(ids);
+            that.sendRequest(ids);
+          }
         });
       });
     }
@@ -224,14 +228,16 @@ $(document).ready( function() {
   BatchSelect.prototype.checkConfirmSwal = function($check) {
     var that = this;
 
-    swal({
+    Swal.fire({
       title: that.options.checkConfirmSwalTitle,
       text: that.options.checkConfirmSwalText,
       type: that.options.type,
       showCancelButton: true,
       confirmButtonColor: that.options.swalConfirmColor || determineSwalConfirmColor(that.options.type)
-    }, function () {
-      that.toggleCheckbox($check);
+    }).then(result => {
+      if (result.value) {
+        that.toggleCheckbox($check);
+      }
     });
   };
 

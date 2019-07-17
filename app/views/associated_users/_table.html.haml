@@ -32,7 +32,7 @@
       = link_to new_associated_user_path(srid: service_request.id), remote: true, class: 'btn btn-success' do
         = icon('fas', 'plus mr-1')
         = t('authorized_users.new')
-    %table#associated-users-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: associated_users_path(format: :json, srid: service_request.id), toolbar: '#associatedUsersTableToolbar' } }
+    %table#authorizedUsersTable{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: associated_users_path(format: :json, srid: service_request.id), toolbar: '#associatedUsersTableToolbar' } }
       %thead
         %tr
           %th{ data: { field: 'name', sortable: 'true' } }

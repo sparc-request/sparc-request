@@ -23,7 +23,7 @@ gem 'capistrano3-delayed-job', '~> 1.7'
 gem 'coffee-rails'
 gem 'country_select'
 gem 'curb', '~> 0.9.9'
-gem 'deep_cloneable', '~> 2.3.2'
+gem 'deep_cloneable', '~> 2.4.0'
 gem 'delayed_job_active_record'
 gem 'delayed_job'
 gem 'devise', '~> 4.6'
@@ -34,13 +34,13 @@ gem 'exception_notification'
 gem 'font-awesome-sass'
 gem 'filterrific', git: 'https://github.com/ayaman/filterrific.git'
 gem 'gon', '~> 6.2'
-gem 'grape', '1.2.3'
+gem 'grape', '1.2.4'
 gem 'grape-entity', '~> 0.7.1'
 gem 'grouped_validations', :git => 'https://github.com/jleonardw9/grouped_validations.git', branch: 'master'
 gem 'gyoku' # Check usage
 gem 'haml'
 gem 'hashie-forbidden_attributes' # Check usage
-gem 'httparty', '~> 0.16.2'
+gem 'httparty', '~> 0.17.0'
 gem 'i18n-js'
 gem 'icalendar'
 gem 'icalendar-recurrence'
@@ -63,7 +63,7 @@ gem 'omniauth-cas'
 gem 'omniauth-shibboleth'
 gem 'paperclip', '~> 6.1' # Deprecated https://github.com/thoughtbot/paperclip
 gem 'pdfkit' # Check usage
-gem 'prawn', '0.12.0' # Check usage
+gem 'prawn', '2.2.2' # Check usage
 gem 'premailer-rails'
 gem 'puma', '~> 3.12'
 gem 'rack-mini-profiler', require: false

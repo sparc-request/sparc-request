@@ -40,10 +40,10 @@ class AssociatedUsersController < ApplicationController
         @epic_user = EpicUser.for_identity(@identity)
       end
 
-      @project_role = @protocol.project_roles.new(identity_id: @identity.id)
+      @protocol_role = @protocol.project_roles.new(identity_id: @identity.id)
 
-      unless @project_role.unique_to_protocol?
-        @errors = @project_role.errors
+      unless @protocol_role.unique_to_protocol?
+        @errors = @protocol_role.errors
       end
     end
 
@@ -75,7 +75,7 @@ class AssociatedUsersController < ApplicationController
   def update
     updater               = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params, current_identity: current_user)
     protocol_role         = updater.protocol_role
-    @return_to_dashboard  = protocol_role.identity_id == current_user.id && ['none', 'view'].include?(protocol_role.project_rights)
+    @return_to_dashboard  = protocol_role.identity_id == current_user.id && !current_user.catalog_overlord? && ['none', 'view'].include?(protocol_role.project_rights)
 
     if updater.successful?
       flash.now[:success] = t('authorized_users.updated')
@@ -83,9 +83,7 @@ class AssociatedUsersController < ApplicationController
       @errors = updater.protocol_role.errors
     end
 
-    respond_to do |format|
-      format.js
-    end
+    respond_to :js
   end
 
   def destroy

@@ -258,7 +258,8 @@ en:
       primary_pi_change:
         title: "Change this %{protocol_type}'s Primary PI?"
         text: "<bold>%{new_pi_name}</bold> will become the new Primary PI.<br/>The current Primary PI, <bold>%{current_pi_name}</bold> will be changed to a General Access User.<br/>Are you sure you want to proceed?"
-      user_role_change:
+      user_rights_change:
+        title: "Change your Proxy Rights?"
         proper_text: "If you change your Proxy Rights you will be taken back to your Dashboard. Are you sure you want to proceed?"
         dashboard_text: >
           If you change your Proxy Rights to <bold>Member Only</bold> you will be taken back to your Dashboard. Are you sure you want to proceed?

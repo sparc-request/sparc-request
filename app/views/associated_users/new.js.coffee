@@ -29,18 +29,17 @@ $('#user_search').parents('.form-group').removeClass('is-valid').addClass('is-in
 <% end %>
 
 <% elsif @identity %>
-$("#modalContainer").html("<%= j render 'associated_users/user_form', protocol: @protocol, project_role: @project_role, identity: @identity, service_request: @service_request, in_dashboard: false %>")
+$("#modalContainer").html("<%= j render 'associated_users/user_form', protocol: @protocol, protocol_role: @protocol_role, identity: @identity, service_request: @service_request, in_dashboard: false %>")
 
 primaryPiConfirmed = false
 $('#authorizedUserForm').on 'submit', (event) ->
   form = document.getElementById('authorizedUserForm')
-
-  if "<%= @project_role.role %>" != 'primary-pi' && $('#project_role_role').val() == 'primary-pi' && !primaryPiConfirmed
+  if "<%= @protocol_role.role %>" != 'primary-pi' && $('#project_role_role').val() == 'primary-pi' && !primaryPiConfirmed
     event.preventDefault()
     event.stopImmediatePropagation()
     ConfirmSwal.fire(
       title: I18n.t('authorized_users.form.primary_pi_change.title', protocol_type: "<%= @protocol.model_name.human %>")
-      html: I18n.t('authorized_users.form.primary_pi_change.text', new_pi_name: "<%= @project_role.identity.full_name %>", current_pi_name: "<%= @protocol.primary_pi.full_name %>")
+      html: I18n.t('authorized_users.form.primary_pi_change.text', new_pi_name: "<%= @protocol_role.identity.full_name %>", current_pi_name: "<%= @protocol.primary_pi.full_name %>")
     ).then (result) =>
       if result.value
         primaryPiConfirmed = true

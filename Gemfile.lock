@@ -382,8 +382,8 @@ GEM
       addressable
       css_parser (>= 1.6.0)
       htmlentities (>= 4.0.0)
-    premailer-rails (1.10.2)
-      actionmailer (>= 3, < 6)
+    premailer-rails (1.10.3)
+      actionmailer (>= 3)
       premailer (~> 1.7, >= 1.7.9)
     progress_bar (1.3.0)
       highline (>= 1.6, < 3)

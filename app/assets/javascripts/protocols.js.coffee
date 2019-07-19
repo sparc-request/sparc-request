@@ -26,80 +26,98 @@ $(document).on 'turbolinks:load', ->
   # Start & End Date #
   ####################
 
-  startDate = $('#protocolStartDatePicker').data().date
-  endDate   = $('#protocolEndDatePicker').data().date
-
-  if startDate
-    $('#protocolEndDatePicker').datetimepicker('minDate', startDate)
-    if !endDate
-      $('#protocol_end_date').val('')
-
-  $('#protocolStartDatePicker').on 'change.datetimepicker', ->
-    startDate = $('#protocol_start_date').val()
-    endDate   = $('#protocol_end_date').val()
+  if $('#protocolStartDatePicker').length && $('#protocolEndDatePicker').length
+    startDate = $('#protocolStartDatePicker').data().date
+    endDate   = $('#protocolEndDatePicker').data().date
 
     if startDate
       $('#protocolEndDatePicker').datetimepicker('minDate', startDate)
-      $('#protocol_end_date').focus()
       if !endDate
-        $('#protocol_end_date').val(startDate).blur().focus()
-    else
-      $('#protocolEndDatePicker').datetimepicker('minDate', false)
+        $('#protocol_end_date').val('')
 
-  $(document).on 'click', '#protocol_end_date', ->
-    if (startDate = $('#protocol_start_date').val()) && !$(this).val()
-      $(this).val(startDate).blur().focus()
+    $('#protocolStartDatePicker').on 'change.datetimepicker', ->
+      startDate = $('#protocol_start_date').val()
+      endDate   = $('#protocol_end_date').val()
+
+      if startDate
+        $('#protocolEndDatePicker').datetimepicker('minDate', startDate)
+        $('#protocol_end_date').focus()
+        if !endDate
+          $('#protocol_end_date').val(startDate).blur().focus()
+      else
+        $('#protocolEndDatePicker').datetimepicker('minDate', false)
+
+    $(document).on 'click', '#protocol_end_date', ->
+      if (startDate = $('#protocol_start_date').val()) && !$(this).val()
+        $(this).val(startDate).blur().focus()
 
   ################################
   # Recruitment Start & End Date #
   ################################
 
-  recruitmentStartDate = $('#protocolRecruitmentStartDatePicker').data().date
-  recruitmentEndDate   = $('#protocolRecruitmentEndDatePicker').data().date
-
-  if recruitmentStartDate
-    $('#protocolRecruitmentEndDatePicker').datetimepicker('minDate', recruitmentStartDate)
-    if !recruitmentEndDate
-      $('#protocol_recruitment_end_date').val('')
-
-  $('#protocolRecruitmentStartDatePicker').on 'change.datetimepicker', ->
-    recruitmentStartDate = $('#protocol_recruitment_start_date').val()
-    recruitmentEndDate   = $('#protocol_recruitment_end_date').val()
+  if $('#protocolRecruitmentStartDatePicker').length && $('#protocolRecruitmentEndDatePicker').length
+    recruitmentStartDate = $('#protocolRecruitmentStartDatePicker').data().date
+    recruitmentEndDate   = $('#protocolRecruitmentEndDatePicker').data().date
 
     if recruitmentStartDate
       $('#protocolRecruitmentEndDatePicker').datetimepicker('minDate', recruitmentStartDate)
-      $('#protocol_recruitment_end_date').focus()
       if !recruitmentEndDate
-        $('#protocol_recruitment_end_date').val(recruitmentStartDate).blur().focus()
-    else
-      $('#protocolRecruitmentEndDatePicker').datetimepicker('minDate', false)
+        $('#protocol_recruitment_end_date').val('')
 
-  $(document).on 'click', '#protocol_recruitment_end_date', ->
-    if (recruitmentStartDate = $('#protocol_recruitment_start_date').val()) && !$(this).val()
-      $(this).val(recruitmentStartDate).blur().focus()
+    $('#protocolRecruitmentStartDatePicker').on 'change.datetimepicker', ->
+      recruitmentStartDate = $('#protocol_recruitment_start_date').val()
+      recruitmentEndDate   = $('#protocol_recruitment_end_date').val()
+
+      if recruitmentStartDate
+        $('#protocolRecruitmentEndDatePicker').datetimepicker('minDate', recruitmentStartDate)
+        $('#protocol_recruitment_end_date').focus()
+        if !recruitmentEndDate
+          $('#protocol_recruitment_end_date').val(recruitmentStartDate).blur().focus()
+      else
+        $('#protocolRecruitmentEndDatePicker').datetimepicker('minDate', false)
+
+    $(document).on 'click', '#protocol_recruitment_end_date', ->
+      if (recruitmentStartDate = $('#protocol_recruitment_start_date').val()) && !$(this).val()
+        $(this).val(recruitmentStartDate).blur().focus()
 
   ###################
   # Initial Amounts #
   ###################
+
+  initialAmountClinical     = null
+  initialAmountNonClinical  = null
 
   if $('#protocol_initial_budget_sponsor_received_date').val()
     $('#initialAmountClinicalContainer, #initialAmountNonClinicalContainer').removeClass('d-none')
 
   $('#protocolInitialBudgetSponsorReceivedDatePicker').on 'change.datetimepicker', ->
     if $('#protocol_initial_budget_sponsor_received_date').val()
-      $('#initialAmountClinicalContainer, #initialAmountNonClinicalContainer').removeClass('d-none')
+      $('#protocol_initial_amount_clinical_services').val(initialAmountClinical).parents('.form-group').removeClass('d-none')
+      $('#protocol_initial_amount').val(initialAmountNonClinical).parents('.form-group').removeClass('d-none')
     else
-      $('#initialAmountClinicalContainer, #initialAmountNonClinicalContainer').addClass('d-none')
+      initialAmountClinical    = $('#protocol_initial_amount_clinical_services').val()
+      initialAmountNonClinical = $('#protocol_initial_amount').val()
+
+      $('#protocol_initial_amount_clinical_services').val('0.00').parents('.form-group').addClass('d-none')
+      $('#protocol_initial_amount').val('0.00').parents('.form-group').addClass('d-none')
 
   ######################
   # Negotiated Amounts #
   ######################
+
+  negotiatedAmountClinical    = null
+  negotiatedAmountNonClinical = null
 
   if $('#protocol_budget_agreed_upon_date').val()
     $('#negotiatedAmountClinicalContainer, #negotiatedAmountNonClinicalContainer').removeClass('d-none')
 
   $('#protocolBudgetAgreedUponDatePicker').on 'change.datetimepicker', ->
     if $('#protocol_budget_agreed_upon_date').val()
-      $('#negotiatedAmountClinicalContainer, #negotiatedAmountNonClinicalContainer').removeClass('d-none')
+      $('#protocol_negotiated_amount_clinical_services').val(negotiatedAmountClinical).parents('.form-group').removeClass('d-none')
+      $('#protocol_negotiated_amount').val(negotiatedAmountNonClinical).parents('.form-group').removeClass('d-none')
     else
-      $('#negotiatedAmountClinicalContainer, #negotiatedAmountNonClinicalContainer').addClass('d-none')
+      negotiatedAmountClinical    = $('#protocol_negotiated_amount_clinical_services').val()
+      negotiatedAmountNonClinical = $('#protocol_negotiated_amount').val()
+
+      $('#protocol_negotiated_amount_clinical_services').val('0.00').parents('.form-group').addClass('d-none')
+      $('#protocol_negotiated_amount').val('0.00').parents('.form-group').addClass('d-none')

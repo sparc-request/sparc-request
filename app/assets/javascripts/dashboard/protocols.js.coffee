@@ -123,29 +123,6 @@ $(document).on 'turbolinks:load', ->
       reset_service_requests_handlers()
       # Protocol Show End
 
-      # Protocol Table Sorting
-      $(document).on 'click', '.protocol-sort', ->
-        data = {} #Grab form values
-
-        # REVIEW this is not fetching values from multiselects
-        $.each $('form#protocolFiltersForm').serializeArray(), (i, field) ->
-          data[field.name] = field.value
-
-        # manually enter those in
-        if data["filterrific[with_status][]"].length
-          data["filterrific[with_status][]"] = $("#filterrific_with_status").val()
-
-        if data["filterrific[with_organization][]"] && data["filterrific[with_organization][]"].length
-          data["filterrific[with_organization][]"] = $("#filterrific_with_organization").val()
-
-        if data["filterrific[with_owner][]"] && data["filterrific[with_owner][]"].length
-          data["filterrific[with_owner][]"] = $("#filterrific_with_owner").val()
-
-        $.ajax
-          type: 'get'
-          url: "/dashboard/protocols.js"
-          data: data
-
 (exports ? this).reset_service_requests_handlers = ->
   $('.view-consolidated').tooltip()
   $('.export-consolidated').tooltip()

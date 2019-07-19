@@ -238,10 +238,10 @@ class ApplicationController < ActionController::Base
   end
 
   def sanitize_date(date)
-    Date.strptime(date, '%m/%d/%Y') rescue ""
+    return Date.strptime(date, '%m/%d/%Y').to_s rescue Date.strptime(date, '%Y-%m-%d').to_s rescue ""
   end
 
   def sanitize_phone(phone)
-    phone.gsub(/\(|\)|-|\s/, '').gsub(I18n.t('constants.phone.extension'), '#') rescue ""
+    return phone.gsub(/\(|\)|-|\s/, '').gsub(I18n.t('constants.phone.extension'), '#') rescue ""
   end
 end

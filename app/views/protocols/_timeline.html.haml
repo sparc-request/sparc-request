@@ -29,7 +29,7 @@
     = fields_for protocol.becomes(Protocol) do |f|
       .form-row
         .form-group.col-6{ class: show_errors ? @errors.messages[:start_date].any? ? 'is-invalid' : 'is-valid' : '' }
-          = f.label :start_date, class: 'required', title: t('protocols.tooltips.start_date'), data: { toggle: 'tooltip', placement: 'right' }
+          = f.label :start_date, class: 'required', title: t('protocols.tooltips.start_date', protocol_type: protocol.model_name.human), data: { toggle: 'tooltip', placement: 'right' }
           .input-group.datetimepicker.date#protocolStartDatePicker{ data: { target_input: 'nearest' } }
             = f.text_field :start_date, class: 'datetimepicker-input form-control', value: format_date(protocol.start_date), data: { target: '#protocolStartDatePicker' }
             .input-group-append{ data: { toggle: 'datetimepicker', target: '#protocolStartDatePicker' } }
@@ -40,7 +40,7 @@
               %small.form-text.form-error
                 = message
         .form-group.col-6{ class: show_errors ? @errors.messages[:end_date].any? ? 'is-invalid' : 'is-valid' : '' }
-          = f.label :end_date, class: 'required', title: t('protocols.tooltips.end_date'), data: { toggle: 'tooltip', placement: 'right' }
+          = f.label :end_date, class: 'required', title: t('protocols.tooltips.end_date', protocol_type: protocol.model_name.human), data: { toggle: 'tooltip', placement: 'right' }
           .input-group.datetimepicker.date#protocolEndDatePicker{ data: { target_input: 'nearest' } }
             = f.text_field :end_date, class: 'datetimepicker-input form-control', value: format_date(protocol.end_date), data: { target: '#protocolEndDatePicker' }
             .input-group-append{ data: { toggle: 'datetimepicker', target: '#protocolEndDatePicker' } }
@@ -54,7 +54,7 @@
       - if service_request.has_per_patient_per_visit_services?
         .form-row
           .form-group.col-6{ class: show_errors ? @errors.messages[:recruitment_start_date].any? ? 'is-invalid' : 'is-valid' : '' }
-            = f.label :recruitment_start_date, title: t('protocols.tooltips.recruitment_start_date'), data: { toggle: 'tooltip', placement: 'right' }
+            = f.label :recruitment_start_date, title: t('protocols.tooltips.recruitment_start_date', protocol_type: protocol.model_name.human), data: { toggle: 'tooltip', placement: 'right' }
             .input-group.datetimepicker.date#protocolRecruitmentStartDatePicker{ data: { target_input: 'nearest' } }
               = f.text_field :recruitment_start_date, class: 'datetimepicker-input form-control', value: format_date(protocol.recruitment_start_date), data: { target: '#protocolRecruitmentStartDatePicker' }
               .input-group-append{ data: { toggle: 'datetimepicker', target: '#protocolRecruitmentStartDatePicker' } }
@@ -65,7 +65,7 @@
                 %small.form-text.form-error
                   = message
           .form-group.col-6{ class: show_errors ? @errors.messages[:recruitment_end_date].any? ? 'is-invalid' : 'is-valid' : '' }
-            = f.label :recruitment_end_date, title: t('protocols.tooltips.recruitment_end_date'), data: { toggle: 'tooltip', placement: 'right' }
+            = f.label :recruitment_end_date, title: t('protocols.tooltips.recruitment_end_date', protocol_type: protocol.model_name.human), data: { toggle: 'tooltip', placement: 'right' }
             .input-group.datetimepicker.date#protocolRecruitmentEndDatePicker{ data: { target_input: 'nearest' } }
               = f.text_field :recruitment_end_date, class: 'datetimepicker-input form-control', value: format_date(protocol.recruitment_end_date), data: { target: '#protocolRecruitmentEndDatePicker' }
               .input-group-append{ data: { toggle: 'datetimepicker', target: '#protocolRecruitmentEndDatePicker' } }
@@ -77,22 +77,22 @@
                   = message
       - if protocol.industry_funded?
         .form-row
-          .form-group.col-6{ class: show_errors ?  'is-invalid' : '' }
-            = f.label :initial_budget_sponsor_received_date, title: t('protocols.tooltips.initial_budget_sponsor_received_date'), data: { toggle: 'tooltip', placement: 'right' }
+          .form-group.col-6{ class: show_errors ? 'is-valid' : '' }
+            = f.label :initial_budget_sponsor_received_date
             .input-group.datetimepicker.date#protocolInitialBudgetSponsorReceivedDatePicker{ data: { target_input: 'nearest' } }
               = f.text_field :initial_budget_sponsor_received_date, class: 'datetimepicker-input form-control', value: format_date(protocol.initial_budget_sponsor_received_date), data: { target: '#protocolInitialBudgetSponsorReceivedDatePicker' }
               .input-group-append{ data: { toggle: 'datetimepicker', target: '#protocolInitialBudgetSponsorReceivedDatePicker' } }
                 %span.input-group-text
                   = icon('fas', 'calendar-alt')
           - if service_request.has_per_patient_per_visit_services?
-            .form-group.col-3.d-none#initialAmountClinicalContainer
+            .form-group.col-3.d-none#initialAmountClinicalContainer{ class: show_errors ? 'is-valid' : '' }
               = f.label :initial_amount_clinical_services
               .input-group
                 .input-group-prepend
                   %span.input-group-text
                     = t('constants.currency')
                 = f.text_field :initial_amount_clinical_services, class: 'form-control', onkeydown: "validateMonetaryInput(event)", value: format_currency(protocol.initial_amount_clinical_services)
-            .form-group.col-3.d-none#initialAmountNonClinicalContainer
+            .form-group.col-3.d-none#initialAmountNonClinicalContainer{ class: show_errors ? 'is-valid' : '' }
               = f.label :initial_amount
               .input-group
                 .input-group-prepend
@@ -100,7 +100,7 @@
                     = t('constants.currency')
                 = f.text_field :initial_amount, class: 'form-control', onkeydown: "validateMonetaryInput(event)", value: format_currency(protocol.initial_amount)
         .form-row
-          .form-group.col-6{ class: show_errors ?  'is-invalid' : '' }
+          .form-group.col-6{ class: show_errors ? 'is-valid' : '' }
             = f.label :budget_agreed_upon_date
             .input-group.datetimepicker.date#protocolBudgetAgreedUponDatePicker{ data: { target_input: 'nearest' } }
               = f.text_field :budget_agreed_upon_date, class: 'datetimepicker-input form-control', value: format_date(protocol.budget_agreed_upon_date), data: { target: '#protocolBudgetAgreedUponDatePicker' }
@@ -108,14 +108,14 @@
                 %span.input-group-text
                   = icon('fas', 'calendar-alt')
           - if service_request.has_per_patient_per_visit_services?
-            .form-group.col-3.d-none#negotiatedAmountClinicalContainer
+            .form-group.col-3.d-none#negotiatedAmountClinicalContainer{ class: show_errors ? 'is-valid' : '' }
               = f.label :negotiated_amount_clinical_services
               .input-group
                 .input-group-prepend
                   %span.input-group-text
                     = t('constants.currency')
                 = f.text_field :negotiated_amount_clinical_services, class: 'form-control', onkeydown: "validateMonetaryInput(event)", value: format_currency(protocol.negotiated_amount_clinical_services)
-          .form-group.col-3.d-none#negotiatedAmountNonClinicalContainer
+          .form-group.col-3.d-none#negotiatedAmountNonClinicalContainer{ class: show_errors ? 'is-valid' : '' }
             = f.label :negotiated_amount
             .input-group
               .input-group-prepend

@@ -17,38 +17,28 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.modal-dialog
+
+.modal-dialog{ role: 'document' }
   .modal-content
-    = form_for arm, url: path, remote: true, html: { class: "form-horizontal", role: "form" } do |a|
+    = form_for arm, remote: true do |f|
+      = f.hidden_field :protocol_id
+      = hidden_field_tag :srid, service_request.id
       .modal-header
-        %button.close{ type: 'button', data: { dismiss: 'modal' } }
-          %span{ aria: { hidden:'true' } } &times;
-          %span.sr-only &times;
-        %h4.modal-title.text-center
-          = @header_text
+        %h3.modal-title
+          = t("arms.#{action_name}")
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+          %span{ aria: { hidden: 'true' } } &times;
       .modal-body
-        #modal_errors
-        .row
-          .col-md-12
-            = hidden_field_tag :protocol_id, protocol.id
-            = hidden_field_tag :srid, service_request.id
-            .form-group
-              = a.label :name, t(:arms)[:form_fields][:name], class: "col-sm-4 control-label required", title: t(:arms)[:name_tooltip], data: { toggle: 'tooltip', animation: 'false' }
-              .col-sm-7
-                = a.text_field :name, { class: 'form-control' }
-            .form-group
-              = a.label :subject_count, t(:arms)[:form_fields][:subject_count], class: "col-sm-4 control-label required"
-              .col-sm-7
-                = a.text_field :subject_count, { class: 'form-control' }
-            .form-group
-              = a.label :visit_count, t(:arms)[:form_fields][:visit_count], class: "col-sm-4 control-label required"
-              .col-sm-7
-                = a.text_field :visit_count, { class: 'form-control' }
+        .form-group
+          = f.label :name, class: 'required', title: t('arms.tooltips.name'), data: { toggle: 'tooltip' }
+          = f.text_field :name, class: 'form-control'
+        .form-group
+          = f.label :subject_count, class: 'required', title: t('arms.tooltips.subject_count'), data: { toggle: 'tooltip' }
+          = f.text_field :subject_count, class: 'form-control'
+        .form-group
+          = f.label :visit_count, class: 'required', title: t('arms.tooltips.subject_count'), data: { toggle: 'tooltip' }
+          = f.text_field :visit_count, class: 'form-control'
       .modal-footer
-        .center-block
-          %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
-            = t(:actions)[:close]
-          - if @header_text == 'Add Arm'
-            %input.btn.btn-primary#add-arm-form-button{ type: 'submit', value: t(:actions)[:add] }
-          - else
-            %input.btn.btn-primary{ type: 'submit', value: t(:actions)[:save] }
+        %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+          = t('actions.close')
+        = f.submit t('actions.submit'), class: 'btn btn-primary'

@@ -72,6 +72,8 @@ en:
     attributes:
       arm:
         name: "Arm Name"
+        subject_count: "Subject Count"
+        visit_count: "Visit Count"
       fulfillment:
         time: "Quantity"
       human_subjects_info:
@@ -236,28 +238,18 @@ en:
   # ARMS #
   ########
   arms:
-    add: "Add Arm"
-    remove: "Remove Arm"
+    new: "Add Arm"
     edit: "Edit Arm"
+    remove: "Remove Arm"
     created: "Arm Created!"
     updated: "Arm Updated!"
     destroyed: "Arm Destroyed!"
-    form_fields:
-      arm: "Arm:"
-      name: "Arm Name:"
-      subject_count: "Subject Count:"
-      visit_count: "Visit Count:"
-    table_fields:
-      name: "Arm Name"
-      subject_count: "Subject Count"
-      visit_count: "Visit Count"
-    delete_warning: "Are you sure you want to delete this arm?"
-    screening_tooltip: "Enter the number of subjects you expect to screen as well as how many screening visits are required. If no screening phase is required, you can change the name of the Arm to meet your needs."
     tooltips:
-      add_arm: 'A group, or subgroup, of participants in a clinical trial that receive specific intervention, or no intervention, according to the study protocol.'
+      new: 'A group, or subgroup, of participants in a clinical trial that receive specific intervention, or no intervention, according to the study protocol.'
       name: "A group, or subgroup, of participants in a clinical trial that receive specific intervention, or no intervention, according to the study protocol. Arm Name must be unique within a protocol, and the following special characters are not allowed: []*/\\?:)."
       subject_count: 'Total number of estimated participants per arm'
       visit_count: 'Total number of visits per arm'
+      screening: "Enter the number of subjects you expect to screen as well as how many screening visits are required. If no screening phase is required, you can change the name of the Arm to meet your needs."
 
   ####################
   # AUTHORIZED USERS #

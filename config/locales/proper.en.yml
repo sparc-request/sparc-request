@@ -74,10 +74,9 @@ en:
     # SERVICE DETAILS #
     ###################
     service_details:
-      arm_information_notice: "Arm Information"
-      arm_information_instructions: "Used to build your Calendar Structure"
-      initial_budget_sponsor_received_date: "Initial Budget Sponsor Received Date"
-      initial_amount_non_clinical_services: 'Initial Site Level Amount Offered'
+      arms:
+        header: "Arm Information"
+        sub_header: "Used to build your Calendar Structure"
 
     ####################
     # SERVICE CALENDAR #

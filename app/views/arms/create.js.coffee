@@ -19,10 +19,16 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <% if @errors %>
-$("#modalContainer #modal_errors").html("<%= escape_javascript(render( 'layouts/modal_errors', errors: @errors )) %>")
-$("#add-arm-form-button").removeAttr('disabled')
+$("[name^='arm']:not([type='hidden']), #professionalOrganizationForm select").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+$('.form-error').remove()
+
+<% @errors.messages.each do |attr, messages| %>
+<% messages.each do |message| %>
+$("[name='arm[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
+<% end %>
+<% end %>
 <% else %>
-$('#arms-table').bootstrapTable 'refresh', { silent: true }
-$("#modalContainer").modal 'hide'
-$("#flashContainer").replaceWith("<%= escape_javascript(render( 'layouts/flash' )) %>")
+$('#armsTable').bootstrapTable('refresh')
+$("#modalContainer").modal('hide')
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

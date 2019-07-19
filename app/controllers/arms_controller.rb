@@ -29,60 +29,61 @@ class ArmsController < ApplicationController
     @arms           = @service_request.arms
     @arms_editable  = @service_request.arms_editable?
     @arm_count      = @arms.count
+
+    respond_to :json
   end
 
   def new
-    @protocol     = Protocol.find( params[:protocol_id] )
-    @arm          = @protocol.arms.new
-    @header_text  = t(:arms)[:add]
-    @path         = arms_path(@arm)
+    @arm = @service_request.protocol.arms.new
+
+    respond_to :js
   end
 
   def create
-    arm = Arm.create(arm_params.merge(protocol_id: params[:protocol_id]))
+    @arm = Arm.new(arm_params)
 
-    if arm.valid?
-      flash[:success] = t(:arms)[:created]
+    if @arm.save
+      flash[:success] = t('arms.created')
     else
-      @errors = arm.errors
+      @errors = @arm.errors
     end
+
+    respond_to :js
   end
 
   def edit
-    @protocol    = @arm.protocol
-    @header_text = t(:arms)[:edit]
-    @path        = arm_path(@arm)
+    respond_to :js
   end
 
   def update
     if @arm.update_attributes(arm_params)
-
-      flash[:success] = t(:arms)[:updated]
+      flash[:success] = t('arms.updated')
     else
       @errors = @arm.errors
     end
+
+    respond_to :js
   end
 
   def destroy
     @arm.destroy
+    flash[:alert] = t('arms.destroyed')
 
-    flash[:alert] = t(:arms)[:destroyed]
+    respond_to :js
   end
 
   private
 
   def arm_params
-    params.require(:arm).permit(:name,
+    params.require(:arm).permit(
+      :name,
       :visit_count,
       :subject_count,
-      :new_with_draft,
-      :protocol_id,
-      :minimum_visit_count,
-      :minimm_subject_count
+      :protocol_id
     )
   end
 
   def find_arm
-    @arm = Arm.find( params[:id] )
+    @arm = Arm.find(params[:id])
   end
 end

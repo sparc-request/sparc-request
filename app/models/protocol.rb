@@ -99,19 +99,12 @@ class Protocol < ApplicationRecord
 
   validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 1000 }, allow_blank: true, if: :indirect_cost_enabled
 
-  validation_group :protocol do
-    validates_presence_of :short_title, 
-                          :title,
-                          :funding_status
-    validates_presence_of :funding_source,            if: Proc.new{ |p| p.funded? || p.funding_status.blank? }
-    validates_presence_of :potential_funding_source,  if: :pending_funding?
-    validates_associated :human_subjects_info, message: "must contain 8 numerical digits", if: :validate_nct
-  end
-
-  validation_group :user_details do
-    validate :validate_proxy_rights
-    validate :primary_pi_exists
-  end
+  validates_presence_of :short_title, 
+                        :title,
+                        :funding_status
+  validates_presence_of :funding_source,            if: Proc.new{ |p| p.funded? || p.funding_status.blank? }
+  validates_presence_of :potential_funding_source,  if: :pending_funding?
+  validates_associated :human_subjects_info, message: "must contain 8 numerical digits", if: :validate_nct
 
   def rmid_requires_validation?
     # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]
@@ -320,6 +313,29 @@ class Protocol < ApplicationRecord
       where.not(sub_service_requests: {status: 'first_draft'})
   }
 
+  def dates_valid?
+    is_valid = true
+    if self.start_date.blank?
+      self.errors.add(:start_date, :blank)
+      is_valid = false
+    end
+    if self.end_date.blank?
+      self.errors.add(:end_date, :blank)
+      invalid = false
+    end
+    if self.start_date && self.end_date && self.start_date > self.end_date
+      self.errors.add(:start_date, :invalid)
+      self.errors.add(:end_date, :invalid)
+      is_valid = false
+    end
+    if self.recruitment_start_date && self.recruitment_end_date && self.recruitment_start_date > self.recruitment_end_date
+      self.errors.add(:recruitment_start_date, :invalid)
+      self.errors.add(:recruitment_end_date, :invalid)
+      is_valid = false
+    end
+    is_valid
+  end
+
   def initial_amount=(amount)
     write_attribute(:initial_amount, amount.to_f * 100)
   end
@@ -401,10 +417,6 @@ class Protocol < ApplicationRecord
     end
   end
 
-  def validate_proxy_rights
-    errors.add(:base, "All users must be assigned a proxy right") unless self.project_roles.map(&:project_rights).find_all(&:nil?).empty?
-  end
-
   def primary_principal_investigator
     primary_pi_role.try(:identity)
   end
@@ -419,11 +431,6 @@ class Protocol < ApplicationRecord
 
   def emailed_associated_users
     self.project_roles.where.not(project_rights: 'none')
-  end
-
-  def primary_pi_exists
-    errors.add(:base, "You must add a Primary PI to the study/project") unless self.primary_pi_role
-    errors.add(:base, "Only one Primary PI is allowed. Please ensure that only one exists") if project_roles.select { |pr| pr.role == 'primary-pi'}.count > 1
   end
 
   def role_for(identity)

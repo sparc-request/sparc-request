@@ -91,6 +91,16 @@
   .card:first-of-type, .card:last-of-type, .card:not(:first-of-type):not(:last-of-type) {
     border-radius: 0.25rem;
   }
+
+  .card:not(:last-of-type) {
+    margin-bottom: 0.25rem;
+  }
+
+  .card {
+    .card-header {
+      min-height: initial;
+    }
+  }
 }
 
 ////////////////

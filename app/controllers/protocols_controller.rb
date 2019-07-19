@@ -45,7 +45,7 @@ class ProtocolsController < ApplicationController
       unless @protocol.primary_pi_role.identity == current_user
         @protocol.project_roles.new(identity: current_user, role: 'general-access-user', project_rights: 'approve')
       end
-
+      binding.pry
       @protocol.next_ssr_id = @service_request.sub_service_requests.order(:ssr_id).last.ssr_id.to_i + 1
       @protocol.save
       @service_request.update_attribute(:protocol, @protocol)

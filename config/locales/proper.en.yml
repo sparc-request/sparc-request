@@ -74,26 +74,10 @@ en:
     # SERVICE DETAILS #
     ###################
     service_details:
-      enter_dates_notice: "Milestones"
-      enter_dates_instructions: "Used for Study/Project metric tracking"
       arm_information_notice: "Arm Information"
       arm_information_instructions: "Used to build your Calendar Structure"
-      start_date: "Estimated Start Date"
-      end_date: "Estimated End Date"
-      recruitment_start: "Estimated Recruitment Start Date"
-      recruitment_end: "Estimated Recruitment End Date"
       initial_budget_sponsor_received_date: "Initial Budget Sponsor Received Date"
-      budget_agreed_upon_date: 'Budget Agreed Upon Date'
-      initial_amount_clinical_services: 'Initial Amount Per Patient'
       initial_amount_non_clinical_services: 'Initial Site Level Amount Offered'
-      negotiated_amount_clinical_services: 'Negotiated Amount Per Patient'
-      negotiated_amount_non_clinical_services: 'Negotiated Site Level Amount'
-      tooltips:
-        start_date: 'Study/Project estimated start date (used by service providers to prioritize)'
-        end_date: 'Study/Project estimated end date (used by service providers to prioritize)'
-        recruitment_start_date: 'When your study or project is estimated to start recruiting participants'
-        recruitment_end_date: 'When your study or project is estimated to stop recruiting participants'
-
 
     ####################
     # SERVICE CALENDAR #
@@ -180,6 +164,7 @@ en:
       header: "My Services"
       add_service: "Add to cart"
       remove_service: "Remove from cart"
+      back_to_catalog: "Back to Catalog"
       tabs:
         active:
           header: "Current"
@@ -226,6 +211,8 @@ en:
             full: "Step 3<br/>Milestones &<br/>Calendar Structure"
             short: "Step 3<br/>Milestones"
             xs: "Step 3"
+          header: "Step 3: Milestone & Calendar Structure"
+          sub_header: "Fill in milestones & arm details"
         service_calendar:
           step_text:
             full: "Step 4<br/>Service<br/>Calendar"

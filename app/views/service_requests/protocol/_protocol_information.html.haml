@@ -28,6 +28,8 @@
         %h3.mb-0
           = t('protocols.form.header.new', protocol_type: Protocol.model_name.human)
       .card-body
+        - if Rails.application.routes.recognize_path(request.referrer)[:action] == 'protocol' && @errors
+          = render 'layouts/modal_errors', errors: @errors
         %h4.mb-4
           = t('proper.protocol.new.text')
         .row

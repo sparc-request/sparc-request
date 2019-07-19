@@ -45,20 +45,20 @@
             .input-group
               .input-group-append
                 %span.input-group-text
-                  = icon('fas', 'dollar-sign')
+                  = t('constants.currency')
               = f.text_field :indirect_cost_rate, class: 'form-control'
         - if protocol.is_a?(Study)
           .form-group.col-3#fundingStartDateContainer{ class: protocol.new_record? || protocol.funded? ? '' : 'd-none' }
             = f.label :funding_start_date
             .input-group.datetimepicker.date#fundingStartDatePicker{ data: { target_input: 'nearest' } }
-              = f.text_field :funding_start_date, class: 'datetimepicker-input form-control', value: format_date(protocol.funding_start_date), readonly: protocol.new_record?, data: { target: '#fundingStartDatePicker' }
+              = f.text_field :funding_start_date, class: 'datetimepicker-input form-control', value: format_date(protocol.funding_start_date), data: { target: '#fundingStartDatePicker' }, readonly: protocol.new_record?
               .input-group-append{ data: { toggle: 'datetimepicker', target: '#fundingStartDatePicker' } }
                 %span.input-group-text
                   = icon('fas', 'calendar-alt')
           .form-group.col-3#potentialFundingStartDateContainer{ class: protocol.pending_funding? ? '' : 'd-none' }
             = f.label :potential_funding_start_date
             .input-group.datetimepicker.date#potentialFundingStartDatePicker{ data: { target_input: 'nearest' } }
-              = f.text_field :potential_funding_start_date, class: 'datetimepicker-input form-control', value: format_date(protocol.potential_funding_start_date), readonly: protocol.new_record?, data: { target: '#potentialFundingStartDatePicker' }
+              = f.text_field :potential_funding_start_date, class: 'datetimepicker-input form-control', value: format_date(protocol.potential_funding_start_date), data: { target: '#potentialFundingStartDatePicker' }, readonly: protocol.new_record?
               .input-group-append{ data: { toggle: 'datetimepicker', target: '#potentialFundingStartDatePicker' } }
                 %span.input-group-text
                   = icon('fas', 'calendar-alt')
@@ -81,7 +81,7 @@
               .input-group
                 .input-group-append
                   %span.input-group-text
-                    = icon('fas', 'dollar-sign')
+                    = t('constants.currency')
                 = f.text_field :indirect_cost_rate, class: 'form-control'
 
       - if protocol.is_a?(Study)

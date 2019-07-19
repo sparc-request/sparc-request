@@ -64,12 +64,13 @@
 //= require global
 //= require batch-select
 //= require login
+//= require protocols
 //= require protocol_form
+//= require associated_users
 //= require associated_users_form
 
 //= require cart
 //= require catalog
-//= require protocol
 
 //= require dashboard/protocols
 

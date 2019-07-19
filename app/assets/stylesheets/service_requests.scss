@@ -26,16 +26,6 @@
   .btn.btn-light:not(:last-child) {
     border-bottom: 1px solid $border-color;
   }
-
-  .card {
-    &:not(:last-of-type) {
-      margin-bottom: 0.25rem;
-    }
-
-    .card-header {
-      min-height: initial;
-    }
-  }
 }
 
 #catalogCenter {

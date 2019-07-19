@@ -41,25 +41,11 @@ class ServiceRequest < ApplicationRecord
   after_save :set_original_submitted_date
   after_save :set_ssr_protocol_id
 
-  validation_group :catalog do
-    validate :validate_line_items
-  end
-
-  validation_group :protocol do
-    validate :validate_line_items
-    validate :validate_protocol
-  end
-
-  validation_group :service_details do
-    validate :validate_service_details
-    validate :validate_arms
-  end
-
   validation_group :service_calendar do
     validate :validate_service_calendar
   end
 
-  attr_accessor   :previous_submitted_at
+  attr_accessor :previous_submitted_at
 
   accepts_nested_attributes_for :line_items
   accepts_nested_attributes_for :sub_service_requests
@@ -68,51 +54,38 @@ class ServiceRequest < ApplicationRecord
 
   #after_save :fix_missing_visits
 
-  def validate_line_items
-    if self.line_items.empty?
-      errors.add(:base, I18n.t(:validation_errors)[:service_requests][:line_items_missing])
-    end
+  def catalog_valid?
+    errors.add(:base, :line_items_missing) if self.line_items.empty?
+    self.errors.none?
   end
 
-  def validate_protocol
+  def protocol_valid?
     if self.protocol_id.blank?
-      errors.add(:base, I18n.t(:validation_errors)[:service_requests][:protocol_missing])
+      errors.add(:base, :protocol_missing)
     elsif !self.protocol.valid?
       self.protocol.errors.full_messages.each{ |e| errors.add(:base, e) }
     end
+    self.errors.none?
   end
 
-  def validate_service_details
-    if protocol
-      if protocol.start_date.nil?
-        errors.add(:base, I18n.t(:validation_errors)[:protocols][:start_date_missing])
-      end
-      if protocol.end_date.nil?
-        errors.add(:base, I18n.t(:validation_errors)[:protocols][:end_date_missing])
-      end
-      if protocol.start_date && protocol.end_date && protocol.start_date > protocol.end_date
-        errors.add(:base, I18n.t(:validation_errors)[:protocols][:date_range_invalid])
-      end
-    else
-      protocol
+  def service_details_valid?
+    unless self.protocol.dates_valid?
+      self.protocol.errors.full_messages.each{ |e| errors.add(:base, e) }
     end
+
+    errors.add(:base, :arms_missing) if self.has_per_patient_per_visit_services? && self.protocol && self.protocol.arms.empty?
+    self.errors.none?
   end
 
-  def validate_arms
-    if has_per_patient_per_visit_services? && protocol && protocol.arms.empty?
-      errors.add(:base, I18n.t(:validation_errors)[:service_requests][:arms_missing])
-    end
-  end
-
-  def validate_service_calendar
-    vg = visit_groups.to_a.find { |vg| !vg.in_order? }
-    if vg
+  def service_calendar_valid?
+    unless self.visit_groups.all?(&:in_order?)
       errors.add(:base, I18n.t('validation_errors.visit_groups.days_out_of_order', arm_name: vg.arm.name))
     end
 
     if Setting.get_value("use_epic") && (arms = self.arms.joins(:visit_groups).where(visit_groups: { day: nil })).any?
       arms.each{ |arm| errors.add(:base, I18n.t('validation_errors.arms.visit_day_missing', arm_name: arm.name)) }
     end
+    self.errors.none?
   end
 
   # Given a service, create a line item for that service and for all

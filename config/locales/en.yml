@@ -30,6 +30,7 @@ en:
     back: "Back"
     approve: "Approve"
     cancel: "Cancel"
+    clear: "Clear"
     close: "Close"
     complete: "Complete"
     continue: "Continue"
@@ -121,6 +122,8 @@ en:
         role: "Role"
       protocol:
         brief_description: "Brief Description"
+        budget_agreed_upon_date: "Budget Agreed Upon Date"
+        end_date: "End Date"
         federal_grant_code_id: "Grant Code"
         federal_grant_serial_number: "Serial Number"
         federal_grant_title: "Title"
@@ -138,15 +141,23 @@ en:
         human_subjects_info: "The NCT #"
         id: "Protocol ID"
         indirect_cost_rate: "Indirect Cost Rate"
+        initial_amount: "Initial Site Level Amount Offered"
+        initial_amount_clinical_services: "Initial Amount Per Patient"
+        initial_budget_sponsor_received_date: "Initial Budget Sponsor Received Date"
+        negotiated_amount: "Negotiated Site Level Amount"
+        negotiated_amount_clinical_services: "Negotiated Amount Per Patient"
         primary_pi: "Primary PI"
         principal_investigators: "PI(s)"
         potential_funding_source: "Potential Funding Source"
         potential_funding_start_date: "Est. Funding Start Date"
+        recruitment_end_date: "Estimated Recruitment End Date"
+        recruitment_start_date: "Estimated Recruitment Start Date"
         requests: "Requests"
         research_master_id: "Research Master ID"
         selected_for_epic: "Publish Study in Epic?"
         short_title: "Short Title"
         sponsor_name: "Sponsor Name"
+        start_date: "Start Date"
         study_phase_ids: "Study Phase(s)"
         study_type_questions: "Study Type Questions"
         udak_project_number: "Financial Account (UDAK #)"
@@ -192,12 +203,26 @@ en:
               taken: "A different version of this Form is already active"
         protocol:
           attributes:
+            end_date:
+              invalid: "Start Date must come before End Date"
+            recruitment_end_date:
+              invalid: "Recruitment Start Date must come before Recruitment End Date"
+            recruitment_start_date:
+              invalid: "Recruitment Start Date must come before Recruitment End Date"
+            start_date:
+              invalid: "Start Date must come before End Date"
             study_type_answers:
               blank: "can't be blank"
         question_response:
           attributes:
             content:
               blank: "required"
+        service_request:
+          attributes:
+            base:
+              arms_missing: "You must create Arms before proceeding to the Service Calendar"
+              line_items_missing: "You must add services to your cart before continuing."
+              protocol_missing: "You must create a Protocol before continuing."
         system_survey:
           attributes:
             active:
@@ -405,6 +430,7 @@ en:
   # CONSTANTS #
   #############
   constants:
+    currency: "$"
     yes_select: "Yes"
     no_select: "No"
     na: "N/A"
@@ -636,12 +662,14 @@ en:
     view_details:
       button: "View %{protocol_type} Details"
       header: "%{protocol_type} Details: #%{protocol_id}"
+    milestones:
+      header: "Milestones"
+      sub_header: "Used for Protocol metric tracking"
     change_type:
       text: "Choose the wrong type of Protocol?"
       link_text: "Change this %{current_type} to a %{new_type}"
       confirm_header: "Change this %{current_type} to a %{new_type}?"
       confirm_text: "Any unsaved changes will be lost.<br>This action cannot be undone."
-      warning: 
       updated: "Protocol Type Updated!"
     form:
       header:
@@ -676,21 +704,25 @@ en:
         impact_areas: "Impact Areas"
         affiliations: "Affiliations, Collaborations, & Memberships"
     tooltips:
+      end_date: "Estimated end date for your %{protocol_type} (used by service providers to prioritize)"
+      epic: "Defines whether record will interface to Epic EMR."
+      funding_source: "Funding source which drives research pricing for your Study/Project"
+      funding_status: "Indicates whether or not funding has been applied for or obtained."
+      ind_number: "Investigational New Drug Number"
+      nct_number: "Clinicaltrials.gov Registry Number."
       new_study: >
         Choose "New Study" for a Research Study with defined aims and outcomes.
       new_project: >
         Choose "New Project" for non-study-specific requests or anything that is not a Research Study.
-      short_title: 'An abbreviated form of the title used to identify your Study/Project.'
-      title: 'Full title of your Study/Project.'
-      funding_status: 'Indicates whether or not funding has been applied for or obtained.'
-      potential_funding_source: 'Funding source that has been applied for but not yet obtained, which also drives research pricing.'
-      funding_source: 'Funding source which drives research pricing for your Study/Project'
-      sponsor_name: 'Specify name of the entity funding the Study/Project.'
-      epic: 'Defines whether record will interface to Epic EMR.'
-      study_type_questions: 'Information needed to determine confidentiality of patients/protocols.'
-      nct_number: 'Clinicaltrials.gov Registry Number.'
-      pro_number: 'Institutional Review Board (IRB) Unique Identifier.'
-      ind_number: 'Investigational New Drug Number'
+      potential_funding_source: "Funding source that has been applied for but not yet obtained, which also drives research pricing."
+      pro_number: "Institutional Review Board (IRB) Unique Identifier."
+      recruitment_end_date: "When your %{protocol_type} is estimated to stop recruiting participants."
+      recruitment_start_date: "When your %{protocol_type} is estimated to start recruiting participants."
+      short_title: "An abbreviated form of the title used to identify your Study/Project."
+      sponsor_name: "Specify name of the entity funding the Study/Project."
+      start_date: "Estimated start date for your %{protocol_type} (used by service providers to prioritize)"
+      study_type_questions: "Information needed to determine confidentiality of patients/protocols."
+      title: "Full title of your Study/Project."
 
   ########################
   # NOT APPROVED WARNING #
@@ -766,19 +798,12 @@ en:
       displayed_cost_gte_zero: 'must be greater than or equal to 0'
     line_items_visits:
       subject_count_invalid: "Subject Count cannot exceed the Arm Subject Count (%{arm_subject_count})"
-    protocols:
-      start_date_missing: "Start Date can't be blank"
-      end_date_missing: "End Date can't be blank"
-      date_range_invalid: "Start Date must come before End Date"
     question_responses:
       phone_invalid: "Phone is invalid"
       email_invalid: "Email is invalid"
       zipcode_invalid: "Zipcode is invalid"
     service_requests:
-      line_items_missing: "You must add services to your cart before continuing."
-      protocol_missing: "You must create a Study or Project before continuing."
       protocol_errors: "This Protocol has errors which must be fixed before continuing."
-      arms_missing: "You must create Arms before proceeding to the Service Calendar"
     visit_groups:
       days_out_of_order: "Please make sure visit days are in sequential order (%{arm_name})."
 

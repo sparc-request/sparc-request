@@ -20,11 +20,15 @@
 
 module ApplicationHelper
   def format_date(date)
-    date.strftime('%D') rescue date
+    date.strftime('%D') rescue ""
   end
 
   def format_phone(phone)
-    '(' + phone.first(3) + ') ' + phone.from(3).to(2) + '-' + phone.from(6).to(3) + (phone.include?('#') ? phone.from(10).gsub('#', " #{I18n.t('constants.phone.extension')} ") : '') rescue phone
+    '(' + phone.first(3) + ') ' + phone.from(3).to(2) + '-' + phone.from(6).to(3) + (phone.include?('#') ? phone.from(10).gsub('#', " #{I18n.t('constants.phone.extension')} ") : '') rescue ""
+  end
+
+  def format_currency(amount)
+    "%.2f" % amount rescue ""
   end
 
   def css_class(organization)

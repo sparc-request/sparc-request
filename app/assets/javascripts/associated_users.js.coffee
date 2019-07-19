@@ -25,6 +25,7 @@ $(document).on 'turbolinks:load', ->
       type: 'warning'
       ajaxUrl: '/associated_users/'
       ajaxType: 'delete'
-      ajaxData:
+      ajaxData: {
         srid: getSRId()
+      }
     })

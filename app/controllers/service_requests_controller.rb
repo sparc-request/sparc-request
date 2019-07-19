@@ -198,17 +198,15 @@ class ServiceRequestsController < ApplicationController
   private
 
   def details_params
-    key = @service_request.protocol.type.downcase.to_sym
+    if params[:protocol]
+      params[:protocol][:start_date]                            = sanitize_date params[:protocol][:start_date]
+      params[:protocol][:end_date]                              = sanitize_date params[:protocol][:end_date]
+      params[:protocol][:recruitment_start_date]                = sanitize_date params[:protocol][:recruitment_start_date]
+      params[:protocol][:recruitment_end_date]                  = sanitize_date params[:protocol][:recruitment_end_date]
+      params[:protocol][:initial_budget_sponsor_received_date]  = sanitize_date params[:protocol][:initial_budget_sponsor_received_date]
+      params[:protocol][:budget_agreed_upon_date]               = sanitize_date params[:protocol][:budget_agreed_upon_date]
 
-    if params[key]
-      params[key][:start_date]                            = sanitize_date params[key][:start_date]
-      params[key][:end_date]                              = sanitize_date params[key][:end_date]
-      params[key][:recruitment_start_date]                = sanitize_date params[key][:recruitment_start_date]
-      params[key][:recruitment_end_date]                  = sanitize_date params[key][:recruitment_end_date]
-      params[key][:initial_budget_sponsor_received_date]  = sanitize_date params[key][:initial_budget_sponsor_received_date]
-      params[key][:budget_agreed_upon_date]               = sanitize_date params[key][:budget_agreed_upon_date]
-
-      params.require(key).permit(
+      params.require(:protocol).permit(
         :start_date,
         :end_date,
         :recruitment_start_date,
@@ -241,7 +239,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def validate_catalog
-    unless @service_request.group_valid?(:catalog)
+    unless @service_request.catalog_valid?
       redirect_to catalog_service_request_path(srid: @service_request.id) and return false unless action_name == 'catalog'
       @errors = @service_request.errors
     end
@@ -249,9 +247,9 @@ class ServiceRequestsController < ApplicationController
   end
 
   def validate_protocol
-    unless @service_request.group_valid?(:protocol)
+    unless @service_request.protocol_valid?
       redirect_to protocol_service_request_path(srid: @service_request.id) and return false unless action_name == 'protocol'
-      @errors = @service_request.errors
+      @errors = @service_request.protocol ? @service_request.protocol.errors : @service_request.errors
     end
     return true
   end
@@ -259,15 +257,15 @@ class ServiceRequestsController < ApplicationController
   def validate_service_details
     @service_request.protocol.update_attributes(details_params) if details_params
 
-    unless @service_request.group_valid?(:service_details)
-      redirect_to service_details_service_request_path(srid: @service_request.id, navigate: 'true') and return false unless action_name == 'service_details'
-      @errors = @service_request.errors
+    unless @service_request.service_details_valid?
+      redirect_to service_details_service_request_path(srid: @service_request.id) and return false unless action_name == 'service_details'
+      @errors = @service_request.protocol.errors
     end
     return true
   end
 
   def validate_service_calendar
-    unless @service_request.group_valid?(:service_calendar)
+    unless @service_request.service_calendar_valid?
       redirect_to service_calendar_service_request_path(srid: @service_request.id, navigate: 'true') and return false unless action_name == 'service_calendar'
       @errors = @service_request.errors
     end

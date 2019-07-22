@@ -36,14 +36,6 @@ class Identities::RegistrationsController < Devise::RegistrationsController
     end
   end
 
-  def after_sign_up_path_for(resource)
-    if params[:srid]
-      catalog_service_request_path(params[:srid])
-    else
-      super
-    end
-  end
-
   private
   def identity_params
     params.require(:identity).permit(:orcid,

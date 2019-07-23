@@ -197,6 +197,11 @@ en:
         research_billing_qty: "Research Billing Quantity"
         insurance_billing_qty: "Insurance Billing Quantity"
         effort_billing_qty: "Effort Billing Quantity"
+      visit_group:
+        name: "Visit Name"
+        day: "Visit Day"
+        window_before: "Window Before Visit"
+        window_after: "Window After Visit"
     errors:
       models:
         form:
@@ -311,7 +316,8 @@ en:
     inactive: "(Inactive)"
     pppv:
       clinical_services: "Clinical Services"
-      header: "Clinical Services</br>Arm: %{arm_name}"
+      header: "Clinical Services (%{arm_name})"
+      no_calendar_line_items: "There are no line items to show."
       header_fields:
         notes: "Notes"
         service: "Service Name"
@@ -349,7 +355,6 @@ en:
           check: "Check Column"
           uncheck: "Uncheck Column"
           confirm: "This will reset custom values for this column, do you wish to continue?"
-
       totals:
         maximum_direct: "Maximum Total Direct Costs Per Patient"
         maximum_per_patient: "Maximum Total Per Patient"
@@ -803,6 +808,7 @@ en:
   # VISIT GROUPS #
   ################
   visit_groups:
+    edit: "Edit Visit"
     form_fields:
       arm: "Arm:"
       visit: "Visit:"

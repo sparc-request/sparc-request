@@ -18,7 +18,15 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(document).ready ->
+$(document).on 'turbolinks:load', ->
+  if $('#serviceCalendar').length
+    $.ajax
+      method: 'get'
+      dataType: 'script'
+      url: $('#serviceCalendar .nav-tabs .nav-link.active').attr('href')
+      success: ->
+        $('#calendarLoading').removeClass('show active')
+
   freezeHeader = (arm_container) ->
     $(arm_container).each ->
       $(this).find('table').addClass('scrolling-table')
@@ -101,46 +109,6 @@ $(document).ready ->
           statuses_hidden: statuses_hidden
           display_all_services: $(this).is('#all-services')
 
-  $(document).on 'click', '.page-change-arrow', ->
-    scroll = $(this).parents('.scrolling-thead').length > 0
-    unless $(this).attr('disabled')
-      $.ajax
-        type: 'GET'
-        url: $(this).data('url')
-        data:
-          scroll: scroll
-
-  $(document).on 'click', '.edit-visit-group', ->
-    $.ajax
-      type: 'GET'
-      url: "/visit_groups/#{$(this).data('id')}/edit.js"
-      data:
-        srid:                   getSRId()
-        sub_service_request_id: getSSRId()
-        tab:                    $(this).data('tab')
-        pages:                  $(this).data('pages')
-        page:                   $(this).data('page')
-        review:                 $(this).data('review')
-        portal:                 $(this).data('portal')
-        admin:                  $(this).data('admin')
-        merged:                 $(this).data('merged')
-        consolidated:           $(this).data('consolidated')
-        statuses_hidden:        $(this).data('statuses-hidden')
-
-  $(document).on 'click', '.service-calendar-row', ->
-    return false if $(this).attr('disabled')
-    if confirm(I18n.t('calendars.pppv.editable_fields.row_select.confirm'))
-      $.ajax
-        type: 'post'
-        url: $(this).data('url')
-
-  $(document).on 'click', '.service-calendar-column', ->
-    return false if $(this).attr('disabled')
-    if confirm(I18n.t('calendars.pppv.editable_fields.column_select.confirm'))
-      $.ajax
-        type: 'post'
-        url: $(this).data('url')
-
   $(document).on 'change', '.visit-group-select .selectpicker', ->
     scroll = $(this).parents('.scrolling-thead').length > 0
     page = $(this).find('option:selected').attr('page')
@@ -204,7 +172,9 @@ $(document).ready ->
 
   $(document).on 'change', '.visit-quantity', ->
     $.ajax
-      type: 'PUT'
+      method: 'PUT'
+      dataType: 'script'
+      url: "/visits/#{$(this).data('visit-id')}"
       data:
         visit:
           quantity:               $(this).data('quantity')
@@ -213,10 +183,9 @@ $(document).ready ->
           effort_billing_qty:     $(this).data('effort-billing-qty')
         srid:                     getSRId()
         sub_service_request_id:   getSSRId()
-        admin:                    $(this).data('admin')
-        tab:                      $(this).data('tab')
+        admin:                    $('#portal').val()
+        tab:                      $('#tab').val()
         page:                     $(this).data('page')
-      url: "/visits/#{$(this).data('visit-id')}"
 
   $(document).on 'click', '.edit-billing-qty', ->
     $.ajax

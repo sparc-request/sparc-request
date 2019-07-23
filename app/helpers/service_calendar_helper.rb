@@ -59,7 +59,7 @@ module ServiceCalendarHelper
 
   def display_org_name(org_name, ssr, locked)
     header  = content_tag(:span, org_name + (ssr.ssr_id ? " (#{ssr.ssr_id})" : ""))
-    header += content_tag(:span, '', class: 'glyphicon glyphicon-lock locked') if locked
+    header += icon('fas', 'lock fa-lg ml-2') if locked
     header
   end
 

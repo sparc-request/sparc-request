@@ -217,6 +217,8 @@ en:
             full: "Step 4<br/>Service<br/>Calendar"
             short: "Step 4<br/>Calendar"
             xs: "Step 4"
+          header: "Step 4: Service Calendar"
+          sub_header: "Study timeline & service indications"
         service_subsidy:
           step_text:
             full: "Step 4a<br/>Subsidy<br/>Information"

@@ -19,24 +19,19 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class VisitGroupsController < ApplicationController
-  respond_to :json
-
   before_action :initialize_service_request
   before_action :authorize_identity
 
   def edit
     @visit_group = VisitGroup.find(params[:id])
 
-    respond_to do |format|
-      format.js
-    end
+    respond_to :js
   end
 
-  # Used for x-editable update and validations
   def update
     @visit_group  = VisitGroup.find(params[:id])
-    @portal       = params[:portal] == 'true'
-    @review       = params[:review] == 'true'
+    @portal       = in_dashboard?
+    @review       = in_review?
     @admin        = params[:admin] == 'true'
     @merged       = params[:merged] == 'true'
     @consolidated = params[:consolidated] == 'true'
@@ -47,9 +42,7 @@ class VisitGroupsController < ApplicationController
       @errors = @visit_group.errors
     end
 
-    respond_to do |format|
-      format.js
-    end
+    respond_to :js
   end
 
   private

@@ -25,6 +25,13 @@
 nav#siteNav {
   .container-fluid {
     align-items: stretch;
+
+    .profile {
+      .notification-badge {
+        top: 2px;
+        right: 10px;
+      }
+    }
   }
 }
 

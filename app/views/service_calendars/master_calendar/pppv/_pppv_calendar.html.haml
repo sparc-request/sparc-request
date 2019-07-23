@@ -17,11 +17,13 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 - visit_groups = arm.visit_groups.page(page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] } })
-.panel.panel-primary.calendar-container.pppv-calendar{ class: "arm-calendar-container-#{arm.id}", data: { arm_id: arm.id } }
-  .panel-heading.justify-content-between
-    %h3.panel-title
-      = raw(I18n.t('calendars.pppv.header', arm_name: arm.name))
+
+.card{ id: "arm#{arm.id}Container", data: { arm_id: arm.id } }
+  .card-header.bg-primary.text-white.justify-content-between
+    %h3.mb-0
+      = t('calendars.pppv.header', arm_name: arm.name)
     .calendar-links-container.d-flex
       - unless portal || review
         - if arm.protocol.locked
@@ -32,8 +34,8 @@
             = t(:proper)[:service_calendar][:move_visit][:header]
       - unless review
         = render 'service_calendars/master_calendar/pppv/pppv_freeze_header_button', tab: tab, portal: portal, arm: arm, service_request: service_request, sub_service_request: sub_service_request, merged: merged, statuses_hidden: statuses_hidden, scroll_true: @scroll_true, display_all_services: display_all_services
-  %table.table.table-bordered{ class: @scroll_true ? "scrolling-table" : "non-scrolling-table" }
-    %thead.pppv-thead{ class: @scroll_true ? "scrolling-thead" : "" }
+  %table.table.table-bordered.service-calendar-table{ class: @scroll_true ? "scrolling-table" : "non-scrolling-table" }
+    %thead{ class: @scroll_true ? "scrolling-thead" : "" }
       = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_header", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, review: review, portal: portal, admin: admin, merged: merged, consolidated: consolidated, statuses_hidden: statuses_hidden, visit_groups: visit_groups
-    %tbody.pppv-tbody{ class: @scroll_true ? "scrolling-div" : "" }
+    %tbody{ class: @scroll_true ? "scrolling-div" : "" }
       = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_line_items", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, review: review, portal: portal, admin: admin, merged: merged, consolidated: consolidated, visit_groups: visit_groups, statuses_hidden: statuses_hidden, display_all_services: display_all_services

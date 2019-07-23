@@ -23,6 +23,7 @@
 ## NOTES ABOUT SERVICE CALENDAR VARIABLES ##
 ############################################
 ## portal:        Are we accessing the calendar from the dashboard? True or False
+##                Assigned by in_dashboard?
 ##
 ## admin:         Are we accessing the calendar by clicking Admin Edit from the dashboard? True or False
 ##
@@ -33,18 +34,14 @@
 ## consolidated:  Are we using the "View Consolidated Request" calendar in dashboard? True or false
 
 class ServiceCalendarsController < ApplicationController
-  respond_to :html, :js
-  layout false
-
-  before_action :initialize_service_request, unless: :in_dashboard?
-  before_action :authorize_identity,         unless: :in_dashboard?
-  before_action :authorize_dashboard_access, if: :in_dashboard?
+  before_action :initialize_service_request,  unless: :in_dashboard?
+  before_action :authorize_identity,          unless: :in_dashboard?
+  before_action :authorize_dashboard_access,  if: :in_dashboard?
+  before_action :in_review?
 
   def table
     @scroll_true  = params[:scroll].present? && params[:scroll] == 'true'
     @tab          = params[:tab]
-    @review       = params[:review] == 'true'
-    @portal       = params[:portal] == 'true'
 
     if params[:admin]
       @admin = params[:admin] == 'true'
@@ -57,34 +54,24 @@ class ServiceCalendarsController < ApplicationController
     @display_all_services = true
     setup_calendar_pages
 
-    respond_to do |format|
-      format.js
-      format.html
-    end
+    respond_to :js
   end
 
   def merged_calendar
-    @tab                      = params[:tab]
-    @review                   = params[:review] == 'true'
-    @portal                   = params[:portal] == 'true'
-    @admin                    = @portal && @sub_service_request.present?
-    @merged                   = true
-    @consolidated             = false
-    @statuses_hidden          = []
-    @scroll_true              = params[:scroll].present? && params[:scroll] == 'true'
-    @display_all_services     = params[:display_all_services] == 'true' ? true : false
+    @tab                  = params[:tab]
+    @admin                = @portal && @sub_service_request.present?
+    @merged               = true
+    @consolidated         = false
+    @statuses_hidden      = []
+    @scroll_true          = params[:scroll].present? && params[:scroll] == 'true'
+    @display_all_services = params[:display_all_services] == 'true' ? true : false
     setup_calendar_pages
 
-    respond_to do |format|
-      format.js
-      format.html
-    end
+    respond_to :js
   end
 
   def view_full_calendar
     @tab                   = 'calendar'
-    @review                = false
-    @portal                = true
     @admin                 = false
     @merged                = true
     @consolidated          = true
@@ -95,9 +82,7 @@ class ServiceCalendarsController < ApplicationController
     @display_all_services  = params[:display_all_services] == 'true' ? true : false
     setup_calendar_pages
 
-    respond_to do |format|
-      format.js
-    end
+    respond_to :js
   end
 
   def show_move_visits
@@ -105,8 +90,6 @@ class ServiceCalendarsController < ApplicationController
     @sub_service_request  = params[:sub_service_request]
     @page                 = params[:page]
     @pages                = eval(params[:pages]) rescue {}
-    @review               = params[:review]
-    @portal               = params[:portal]
     @admin                = params[:admin]
     @consolidated         = params[:consolidated]
     @merged               = params[:merged]
@@ -114,9 +97,7 @@ class ServiceCalendarsController < ApplicationController
     @arm                  = Arm.find( params[:arm_id] )
     @visit_group          = params[:visit_group_id] ? @arm.visit_groups.find(params[:visit_group_id]) : @arm.visit_groups.first
 
-    respond_to do |format|
-      format.js
-    end
+    respond_to :js
   end
 
   def move_visit_position
@@ -124,8 +105,6 @@ class ServiceCalendarsController < ApplicationController
     @sub_service_request  = params[:sub_service_request]
     @page                 = params[:page]
     @pages                = eval(params[:pages]) rescue {}
-    @review               = params[:review] == "true"
-    @portal               = params[:portal] == "true"
     @admin                = params[:admin] == "true"
     @consolidated         = params[:consolidated] == "true"
     @merged               = params[:merged] == "true"
@@ -143,9 +122,7 @@ class ServiceCalendarsController < ApplicationController
       perform_visit_insertion(@visit_group, new_position)
     end
 
-    respond_to do |format|
-      format.js
-    end
+    respond_to :js
   end
 
   def toggle_calendar_row
@@ -173,9 +150,7 @@ class ServiceCalendarsController < ApplicationController
       @service_request.update_attribute(:status, "draft")
     end
 
-    respond_to do |format|
-      format.js
-    end
+    respond_to :js
   end
 
   def toggle_calendar_column
@@ -212,9 +187,7 @@ class ServiceCalendarsController < ApplicationController
       @service_request.update_attribute(:status, "draft")
     end
 
-    respond_to do |format|
-      format.js
-    end
+    respond_to :js
   end
 
   private

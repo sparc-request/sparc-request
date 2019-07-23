@@ -20,9 +20,9 @@
 
 
 - if subsidy.present?
-  .panel.panel-default
-    .panel-heading.justify-content-between
-      %h4.panel-title
+  .card
+    .card-header.justify-content-between
+      %h4.mb-0
         = t(:subsidies)[:approved][:header]
       - if admin
         %button.btn.btn-sm.btn-default.notes.list{ data: { notable_type: "Subsidy", notable_id: subsidy.id } }

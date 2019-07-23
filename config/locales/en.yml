@@ -186,6 +186,8 @@ en:
       study:
         id: "Study ID"
         title: "Study Title"
+      subsidy:
+        percent_subsidy: "Percent Subsidy"
       survey:
         active: ""
       vertebrate_animals_info:
@@ -764,10 +766,9 @@ en:
       pi_contribution: "PI Contribution"
       cost: "Subsidy Cost"
     form:
-      request_cost: "Current Request Cost:"
-      percent: "Percent Subsidy:"
-      pi: "PI Contribution:"
-      cost: "Subsidy Cost:"
+      request_cost: "Current Request Cost"
+      pi: "PI Contribution"
+      cost: "Subsidy Cost"
     tooltips:
       request_subsidy: "Add a Subsidy request."
       request_cost: "Total cost of services eligible for a subsidy"

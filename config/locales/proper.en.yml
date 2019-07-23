@@ -222,6 +222,8 @@ en:
             full: "Step 4a<br/>Subsidy<br/>Information"
             short: "Step 4a<br/>Subsidies"
             xs: "Step 4a"
+          header: "Step 4a: Subsidy Information"
+          sub_header: "Request subsidies for your services"
         document_management:
           step_text:
             full: "Step 5<br/>Documents,<br/>Notes & Forms"

@@ -23,10 +23,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
 
   def new
     @subsidy = PendingSubsidy.new(sub_service_request_id: params[:sub_service_request_id])
-    @header_text = t(:subsidies)[:new]
     @admin = params[:admin] == 'true'
-    @path = dashboard_subsidies_path
-    @action = 'new'
     @subsidy.percent_subsidy = (@subsidy.default_percentage / 100.0)
   end
 
@@ -49,10 +46,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
 
   def edit
     @subsidy = PendingSubsidy.find(params[:id])
-    @header_text = t(:subsidies)[:edit]
     @admin = params[:admin] == 'true'
-    @path = dashboard_subsidy_path(@subsidy)
-    @action = 'edit'
   end
 
   def update

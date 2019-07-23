@@ -21,13 +21,13 @@
 class SubsidiesController < ApplicationController
   respond_to :json, :js, :html
 
+  before_action :initialize_service_request
+  before_action :authorize_identity
+
   def new
     @subsidy = PendingSubsidy.new(sub_service_request_id: params[:ssrid])
-    @header_text = t(:subsidies)[:new]
     @admin = false
-    @path = subsidies_path
     @subsidy.percent_subsidy = (@subsidy.default_percentage / 100.0)
-    @action = 'new'
   end
 
   def create
@@ -44,10 +44,7 @@ class SubsidiesController < ApplicationController
 
   def edit
     @subsidy = PendingSubsidy.find(params[:id])
-    @header_text = t(:subsidies)[:edit]
     @admin = false
-    @path = subsidy_path(@subsidy)
-    @action = 'edit'
   end
 
   def update

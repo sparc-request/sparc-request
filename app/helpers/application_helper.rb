@@ -170,4 +170,8 @@ module ApplicationHelper
       end
     end
   end
+
+  def in_dashboard?
+    request.path.start_with?('/dashboard')
+  end
 end

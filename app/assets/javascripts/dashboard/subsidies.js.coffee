@@ -19,15 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  $(document).on 'click', '.add-subsidy-button', ->
-    data =
-      'sub_service_request_id': $(this).data('ssrid'),
-      'admin'                 : $(this).data('admin')
-    $.ajax
-      type: 'GET'
-      url:  "/dashboard/subsidies/new"
-      data: data
-
   $(document).on 'click', '.edit-subsidy-button', ->
     id = $(this).data('subsidy-id')
     data = 'admin' : $(this).data('admin')

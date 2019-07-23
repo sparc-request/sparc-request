@@ -22,9 +22,8 @@ module NotesHelper
   def notes_button(notable, disabled=false)
     has_notes = notable.notes.length > 0
 
-    content_tag(:button, type: 'button', class: 'btn btn-link no-padding notes', disabled: disabled, data: { notable_id: notable.id, notable_type: notable.class.name }) do
-      content_tag(:span, '', class: ["glyphicon glyphicon-list-alt note-icon", has_notes ? "blue-note" : "black-note"], aria: {hidden: "true"}) +
-      content_tag(:span, notable.notes.length, class: ["badge", has_notes ? "blue-badge" : ""], id: "#{notable.class.name.downcase}_#{notable.id}_notes")
+    link_to notes_path(note: { notable_id: notable.id, notable_type: notable.class.name }), remote: true, class: ['btn btn-light position-relative', disabled ? 'disabled' : ''] do
+      raw(icon('fas', 'list') + content_tag(:span, notable.notes.length, class: ['badge badge-pill notification-badge', has_notes ? 'badge-primary ' : 'badge-secondary']))
     end
   end
 

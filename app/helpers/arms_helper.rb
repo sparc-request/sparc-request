@@ -19,7 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module ArmsHelper
-
   def arm_name_helper(arm)
     if arm.name == 'Screening Phase'
       content_tag :span, title: t('arms.tooltips.screening'), data: { toggle: 'tooltip', container: 'body', boundary: 'window' } do

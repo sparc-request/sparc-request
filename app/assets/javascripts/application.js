@@ -71,6 +71,7 @@
 
 //= require cart
 //= require catalog
+//= require service_calendar
 
 //= require dashboard/protocols
 

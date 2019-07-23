@@ -39,6 +39,7 @@
   // Display the confirmation dialog
   const showConfirmationDialog = element => {
     var title = element.getAttribute('data-title');
+    var text = element.getAttribute('data-text');
     var html = element.getAttribute('data-html');
     var type = element.getAttribute('data-type');
     var confirmText = element.getAttribute('data-confirm-text');
@@ -47,7 +48,8 @@
 
     Swal.fire({
       title: title || I18n.t('confirm.title') || "Are you sure?",
-      html: html || I18n.t('confirm.text') || "This action cannot be undone.",
+      text: text || (html ? "" : (I18n.t('confirm.text') || "This action cannot be undone.")),
+      html: html || "",
       type: type === null ? 'warning' : type,
       showCancelButton: true,
       confirmButtonText: confirmText || I18n.t('confirm.confirm') || "Yes",

@@ -154,7 +154,7 @@ $(document).on 'turbolinks:load', ->
 
 (exports ? this).setRequiredFields = () ->
   $('.required:not(.has-indicator)').addClass('has-indicator').append('<span class="required-indicator text-danger ml-1">*</span>')
-  $('.has-indicator:not(.required').removeClass('has-indicator').children('.required-indicator').remove()
+  $('.has-indicator:not(.required)').removeClass('has-indicator').children('.required-indicator').remove()
 
 (exports ? this).getSRId = ->
   $("input[name='srid']").val()

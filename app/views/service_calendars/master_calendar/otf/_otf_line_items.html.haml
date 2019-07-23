@@ -22,8 +22,8 @@
   - locked = !ssr.can_be_edited? && !admin
 
   -# SSR Header Row
-  %tr.organization-header{ class: locked ? 'bg-danger text-danger' : '' }
-    %th{ colspan: 14 }
+  %tr{ class: locked ? 'alert-danger' : 'alert-primary' }
+    %th{ colspan: 11 }
       = display_org_name(line_items[0].service.organization_hierarchy, ssr, locked)
 
   -# Line Items

@@ -24,13 +24,15 @@
 
 .badge {
   &.notification-badge {
-    display: inline-block;
     position: absolute;
-    top: 4px;
-    right: 12px;
+    top: -.25rem;
+    right: -.25rem;
     width: 16px;
     height: 16px;
     padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 
@@ -204,6 +206,31 @@ form, .form {
 
     &.form-control-lg {
       border-radius: 0.3rem;
+    }
+  }
+}
+
+///////////
+/// Nav ///
+///////////
+
+.nav {
+  &.nav-tabs {
+    .nav-link.active {
+      background: theme-color('primary');
+      color: white;
+      border-bottom: 1px solid theme-color('primary');
+    }
+
+    .nav-link:not(.active) {
+      background: white;
+      @extend .border-top;
+      @extend .border-left;
+      @extend .border-right;
+
+      &:hover {
+        background: theme-color('light');
+      }
     }
   }
 }

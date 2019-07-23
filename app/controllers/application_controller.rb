@@ -194,7 +194,11 @@ class ApplicationController < ActionController::Base
   end
 
   def in_dashboard?
-    (params[:portal] && params[:portal] == 'true') || (params[:admin] && params[:admin] == 'true')
+    @portal ||= request.path.starts_with?('/dashboard')
+  end
+
+  def in_review?
+    @review ||= Rails.application.routes.recognize_path(request.referrer)[:action_name] == 'review'
   end
 
   def authorize_dashboard_access

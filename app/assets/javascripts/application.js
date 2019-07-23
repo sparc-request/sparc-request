@@ -68,6 +68,7 @@
 //= require protocol_form
 //= require associated_users
 //= require associated_users_form
+//= require subsidies
 
 //= require cart
 //= require catalog
@@ -92,7 +93,6 @@
 // require global
 // require associated_users_form
 // require study_schedule_tabs
-// require subsidy_form
 // require surveyor/responses
 // require surveyor/surveys
 // require sweetalert.min

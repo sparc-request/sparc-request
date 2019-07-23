@@ -18,10 +18,10 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(document).ready ->
-  $(document).on 'change', '#pending_subsidy_pi_contribution', ->
+$(document).on 'turbolinks:load', ->
+  $(document).on 'change', '#subsidy_pi_contribution', ->
     # When user changes PI Contribution, the Percent Subsidy and Subsidy Cost fields are recalculated & displayed
-    pi_contribution = parseFloat $(this).val()
+    pi_contribution = parseFloat($(this).val()) || 0.0
     total_request_cost = parseFloat($("#subsidy_form_table_request_cost").data("cost")) / 100.0
     if pi_contribution > total_request_cost
       pi_contribution = total_request_cost
@@ -31,9 +31,9 @@ $(document).ready ->
     current_cost = recalculate_current_cost(total_request_cost, percent_subsidy)
     redisplay_form_values(percent_subsidy, pi_contribution, current_cost)
 
-  $(document).on 'change', '#pending_subsidy_percent_subsidy', ->
+  $(document).on 'change', '#subsidy_percent_subsidy', ->
     # When user changes Percent Subsidy, the PI Contribution and Subsidy Cost fields are recalculated & displayed
-    percent_subsidy = parseFloat($(this).val()) / 100.0
+    percent_subsidy = parseFloat($(this).val()) / 100.0 || 0.0
     total_request_cost = parseFloat($("#subsidy_form_table_request_cost").data("cost")) / 100.0
     if percent_subsidy > 1
       percent_subsidy = 1.0
@@ -54,8 +54,8 @@ $(document).ready ->
     return if isNaN(percentage) then 0 else percentage
 
   redisplay_form_values = (percent_subsidy, pi_contribution, current_cost) ->
-    $('#pending_subsidy_percent_subsidy').val( (percent_subsidy*100.0).toFixed(2) )
-    $("#pending_subsidy_pi_contribution").val( format_currency(pi_contribution) )
+    $('#subsidy_percent_subsidy').val( (percent_subsidy*100.0).toFixed(2) )
+    $("#subsidy_pi_contribution").val( format_currency(pi_contribution) )
     $("#subsidy_form_table_subsidy_cost").text( format_currency(current_cost) )
 
   format_currency = (total) ->

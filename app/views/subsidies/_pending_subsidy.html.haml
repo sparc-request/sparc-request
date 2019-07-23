@@ -37,9 +37,7 @@
             %th.text-center
               = t(:actions)[:approve]
           %th.text-center
-            = t(:actions)[:edit]
-          %th.text-center
-            = t(:actions)[:delete]
+            = t(:actions)[:actions]
       %tbody
         %tr
           %td.request-cost
@@ -52,17 +50,14 @@
             = number_to_currency(subsidy.current_cost)
           - if admin
             %td.text-center.approve-subsidy
-              %button.btn.btn-sm.btn-success#approve-subsidy-button{ data: { subsidy_id: subsidy.id } }
-                %span.glyphicon.glyphicon-ok
-          %td.text-center.edit-subsidy
-            .btn.btn-warning.btn-sm.edit-subsidy-button{ data: { subsidy_id: subsidy.id, admin: admin.to_s } }
-              %span.glyphicon.glyphicon-edit
-          %td.text-center.delete-subsidy
-            %button.btn.btn-sm.btn-danger.delete-subsidy-button{ data: { subsidy_id: subsidy.id } }
-              %span.glyphicon.glyphicon-remove
+              = link_to icon('fas', 'check'), approve_dashboard_subsidy_path(subsidy), remote: true, class: "btn btn-success approve-subsidy-button"
+          %td.text-center.subsidy-actions
+            = link_to icon('far', 'edit'), edit_subsidy_path(subsidy, srid: service_request.id, admin: admin), remote: true, class: "btn btn-warning edit-subsidy-button mr-1"
+            = link_to icon('fas', 'trash-alt'), subsidy_path(subsidy, srid: service_request.id, admin: admin), method: :delete, remote: true, class: "btn btn-danger delete-subsidy-button", data: { confirm_swal: 'true' }
+
 - else
   .col-xs-12
     - if in_dashboard?
-      = link_to t(:subsidies)[:add], new_dashboard_subsidy_path(ssrid: sub_service_request.id, admin: admin), remote: true, class: "btn btn-sm btn-success", title: t(:subsidies)[:tooltips][:request_subsidy], data: { toggle: 'tooltip', placement: 'right' }
+      = link_to t(:subsidies)[:add], new_dashboard_subsidy_path(ssrid: sub_service_request.id, admin: admin), remote: true, class: "btn btn-success", title: t(:subsidies)[:tooltips][:request_subsidy], data: { toggle: 'tooltip', placement: 'right' }
     - else
-      = link_to t(:subsidies)[:add], new_subsidy_path(ssrid: sub_service_request.id, srid: service_request.id), remote: true, class: "btn btn-sm btn-success", title: t(:subsidies)[:tooltips][:request_subsidy], data: { toggle: 'tooltip', placement: 'right' }
+      = link_to t(:subsidies)[:add], new_subsidy_path(ssrid: sub_service_request.id, srid: service_request.id), remote: true, class: "btn btn-success", title: t(:subsidies)[:tooltips][:request_subsidy], data: { toggle: 'tooltip', placement: 'right' }

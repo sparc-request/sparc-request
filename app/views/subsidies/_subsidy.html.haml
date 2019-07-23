@@ -22,7 +22,7 @@
     %h3.mb-0
       = ssr_name_display(sub_service_request)
   .card-body
-    .approved-subsidy
+    .approved-subsidy.mb-3
       = render 'subsidies/approved_subsidy', subsidy: sub_service_request.approved_subsidy, admin: false
     .pending-subsidy
       = render 'subsidies/pending_subsidy', subsidy: sub_service_request.pending_subsidy, sub_service_request: sub_service_request, service_request: service_request, admin: false

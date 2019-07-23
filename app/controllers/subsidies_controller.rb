@@ -71,16 +71,13 @@ class SubsidiesController < ApplicationController
   private
 
   def subsidy_params
-    @subsidy_params ||= begin
-      temp = params.require(:pending_subsidy).permit(:sub_service_request_id,
-        :overridden,
-        :status,
-        :percent_subsidy)
-      if temp[:percent_subsidy].present?
-        temp[:percent_subsidy] = temp[:percent_subsidy].gsub(/[^\d^\.]/, '').to_f / 100
-      end
-      temp
+    if params[:subsidy][:percent_subsidy]
+      params[:subsidy][:percent_subsidy] = params[:subsidy][:percent_subsidy].gsub(/[^\d^\.]/, '').to_f / 100
     end
+    params.require(:subsidy).permit(:sub_service_request_id,
+      :overridden,
+      :status,
+      :percent_subsidy)
   end
 
   def find_subsidy

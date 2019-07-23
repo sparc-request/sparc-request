@@ -22,6 +22,7 @@
     = form_for in_dashboard? ? [:dashboard, subsidy.becomes(Subsidy)] : subsidy.becomes(Subsidy), remote: true do |f|
       = f.hidden_field :sub_service_request_id
       = hidden_field_tag :admin, admin
+      = hidden_field_tag :srid, @service_request.try(:id)
       .modal-header
         %h3.modal-title
           = t("subsidies.#{action_name}")

@@ -18,36 +18,13 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(document).ready ->
-  $(document).on 'click', '#document-new', ->
-    data =
-      protocol_id: $(this).data('protocol-id')
-      srid: getSRId()
-    $.ajax
-      type: 'GET'
-      url: '/documents/new'
-      data: data
-    return false
-
-  $(document).on 'click', '.document-edit', ->
-    row_index   = $(this).parents('tr').data('index')
-    document_id = $(this).parents('table#documents-table').bootstrapTable('getData')[row_index].id
-    $.ajax
-      type: 'GET'
-      url: "/documents/#{document_id}/edit"
-      data:
-        srid: getSRId()
-
-  $(document).on 'click', '.document-delete', ->
-    row_index   = $(this).parents('tr').data('index')
-    document_id = $(this).parents('table#documents-table').bootstrapTable('getData')[row_index].id
-    if confirm(I18n.t('documents.delete_confirm'))
-      $.ajax
-        type: 'DELETE'
-        url: "/documents/#{document_id}?srid=#{getSRId()}"
-
+$(document).on 'turbolinks:load', ->
   $(document).on 'change', '#document_doc_type', ->
     if $(this).val() == 'other'
-      $('#doc-type-other-field').show()
+      $('#doc-type-other-field').removeClass('d-none')
     else
-      $('#doc-type-other-field').hide()
+      $('#doc-type-other-field').addClass('d-none')
+
+  $(document).on 'change', '#document_document', -> 
+   fileName = $(this).val().split('\\').pop()
+   $(this).next('.custom-file-label').addClass("selected").html(fileName)

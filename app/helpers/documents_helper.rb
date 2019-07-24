@@ -20,23 +20,22 @@
 
 module DocumentsHelper
 
+  def document_actions(document)
+    [
+      edit_document_button(document),
+      delete_document_button(document)
+    ].join('')
+  end
+
   def display_document_title(document)
     link_to document.document_file_name, document.document.url
   end
 
-  def documents_edit_button(document)
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: "glyphicon glyphicon-edit", aria: { hidden: "true" })
-      ), type: 'button', class: "btn btn-warning actions-button document-edit", data: { document_id: document.id }
-    )
+  def edit_document_button(document)
+    link_to icon('far', 'edit'), edit_document_path(document, srid: @service_request.id), remote: true, class: "btn btn-warning edit-document mr-2"
   end
 
-  def documents_delete_button(document)
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: "glyphicon glyphicon-remove", aria: { hidden: "true" })
-      ), type: 'button', class: "btn btn-danger actions-button document-delete", data: { document_id: document.id }
-    )
+  def delete_document_button(document)
+    link_to icon('fas', 'trash-alt'), document_path(document, srid: @service_request.id), method: :delete,  remote: true, class: "btn btn-danger delete-document", data: { confirm_swal: 'true' }
   end
 end

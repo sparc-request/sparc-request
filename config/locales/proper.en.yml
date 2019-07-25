@@ -231,6 +231,8 @@ en:
             full: "Step 5<br/>Documents,<br/>Notes & Forms"
             short: "Step 5<br/>Documents"
             xs: "Step 5"
+          header: "Step 5: Documents, Notes & Forms"
+          sub_header: "Upload documents, add notes, and complete forms"
         review:
           step_text:
             full: "Step 6<br/>Review Your<br/>Request"

@@ -35,15 +35,11 @@ module NotesHelper
   end
 
   def edit_note_button(note)
-    link_to edit_note_path(note, note: { notable_id: note.notable_id, notable_type: note.notable_type }, cancel: params[:cancel], review: params[:review]), remote: true, class: ['btn btn-warning', note.identity_id == current_user.id ? '' : 'disabled'] do
-      content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: {hidden: "true"})
-    end
+    link_to icon('far', 'edit'), edit_note_path(note, note: { notable_id: note.notable_id, notable_type: note.notable_type }, srid: @service_request.id, cancel: params[:cancel], review: params[:review]), remote: true, class: ['btn btn-warning edit-note mr-1', note.identity_id == current_user.id ? '' : 'disabled']
   end
 
   def delete_note_button(note)
-    content_tag(:button, type: 'button', class: ['btn btn-danger delete-note', note.identity_id == current_user.id ? '' : 'disabled'], data: { note_id: note.id } ) do
-      content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: {hidden: "true"})
-    end
+    link_to icon('fas', 'trash-alt'), note_path(note, srid: @service_request.id), method: :delete,  remote: true, class: ['btn btn-danger delete-note', note.identity_id == current_user.id ? '' : 'disabled'], data: { confirm_swal: 'true' }
   end
 
   def note_header(notable)

@@ -18,20 +18,13 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$ ->
-  $(document).on 'click', '.delete-note:not(.disabled)', ->
-    id = $(this).data('note-id')
+$(document).on 'turbolinks:load', ->
+  $(document).on 'change', '#document_doc_type', ->
+    if $(this).val() == 'other'
+      $('#doc-type-other-field').removeClass('d-none')
+    else
+      $('#doc-type-other-field').addClass('d-none')
 
-    swal {
-      title: I18n.t('swal.swal_confirm.title')
-      text: I18n.t('swal.swal_confirm.text')
-      type: 'warning'
-      showCancelButton: true
-      confirmButtonColor: '#DD6B55'
-      confirmButtonText: 'Delete'
-      closeOnConfirm: true
-    }, ->
-      $.ajax
-        type: 'DELETE'
-        dataType: 'script'
-        url: "/notes/#{id}"
+  $(document).on 'change', '#document_document', -> 
+   fileName = $(this).val().split('\\').pop()
+   $(this).next('.custom-file-label').addClass("selected").html(fileName)

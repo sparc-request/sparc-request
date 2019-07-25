@@ -469,7 +469,7 @@ en:
   documents:
     none: "No Documents Found"
     add_document: "Add a Document"
-    add:
+    new:
       header: "Add Document"
     edit:
       header: "Edit Document"

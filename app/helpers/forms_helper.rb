@@ -20,9 +20,10 @@
 
 module FormsHelper
   def form_completed_display(completed)
-    klass = completed ? 'glyphicon glyphicon-ok text-success' : 'glyphicon glyphicon-remove text-danger'
+    icon = completed ? icon('fas', 'check') : icon('fas', 'times')
+    klass = completed ? 'text-success' : 'text-danger'
 
-    content_tag(:h4, content_tag(:span, '', class: klass))
+    content_tag(:h4, content_tag(:span, icon, class: klass))
   end
 
   def form_options(form, completed, respondable, review)
@@ -47,7 +48,7 @@ module FormsHelper
       remote: true,
       class: 'btn btn-success new-form-response',
       title: t(:surveyor)[:responses][:tooltips][:complete],
-      data: { toggle: 'tooltip', placement: 'top', container: 'body' }
+      data: { toggle: 'tooltip', placement: 'top', container: 'body', boundary: 'window' }
     )
   end
 end

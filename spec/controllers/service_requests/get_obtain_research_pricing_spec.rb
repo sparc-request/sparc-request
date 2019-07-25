@@ -72,18 +72,21 @@ RSpec.describe ServiceRequestsController, type: :controller do
       it 'should update SR status to "get_a_cost_estimate"' do
         get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
 
+        Delayed::Worker.new.run(Delayed::Job.last)
         expect(@sr.reload.status).to eq('get_a_cost_estimate')
       end
 
       it 'should update SSR status to "get_a_cost_estimate"' do
         get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
 
+        Delayed::Worker.new.run(Delayed::Job.last)
         expect(@ssr.reload.status).to eq('get_a_cost_estimate')
       end
 
       it 'should create past status' do
         get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
 
+        Delayed::Worker.new.run(Delayed::Job.last)
         expect(PastStatus.count).to eq(1)
         expect(PastStatus.first.sub_service_request).to eq(@ssr)
       end
@@ -92,6 +95,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         it 'should notify everyone (authorized_user)' do
           get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
 
+          Delayed::Worker.new.run(Delayed::Job.last)
           expect(Delayed::Backend::ActiveRecord::Job.count).to eq(1)
         end
       end
@@ -101,6 +105,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
           create(:service_provider, identity: logged_in_user, organization: @org)
           get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
 
+          Delayed::Worker.new.run(Delayed::Job.last)
           expect(Delayed::Backend::ActiveRecord::Job.count).to eq(2)
         end
       end
@@ -111,6 +116,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
           @org.submission_emails.create(email: 'hedwig@owlpost.com')
           get :obtain_research_pricing, params: { srid: @sr.id }, xhr: true
 
+          Delayed::Worker.new.run(Delayed::Job.last)
           expect(Delayed::Backend::ActiveRecord::Job.count).to eq(3)
         end
       end

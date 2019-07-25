@@ -32,7 +32,7 @@ module DocumentsHelper
   end
 
   def edit_document_button(document)
-    link_to icon('far', 'edit'), edit_document_path(document, srid: @service_request.id), remote: true, class: "btn btn-warning edit-document mr-2"
+    link_to icon('far', 'edit'), edit_document_path(document, srid: @service_request.id), remote: true, class: "btn btn-warning edit-document mr-1"
   end
 
   def delete_document_button(document)

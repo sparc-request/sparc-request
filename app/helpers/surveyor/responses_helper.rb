@@ -63,7 +63,7 @@ module Surveyor::ResponsesHelper
       icon('fas', 'eye'),
       response.new_record? ? '' : surveyor_response_path(response),
       remote: true,
-      class: ['btn btn-primary view-response mr-2', permissions && response.completed? ? '' : 'disabled'],
+      class: ['btn btn-primary view-response mr-1', permissions && response.completed? ? '' : 'disabled'],
       title: I18n.t('surveyor.responses.tooltips.view', klass: response.survey.class.yaml_klass),
       data: { toggle: 'tooltip', placement: 'top', container: 'body' }
     )
@@ -74,7 +74,7 @@ module Surveyor::ResponsesHelper
       icon('far', 'edit'),
       response.new_record? ? '' : edit_surveyor_response_path(response),
       remote: true,
-      class: ['btn btn-warning edit-response mr-2', permissions && response.completed? ? '' : 'disabled'],
+      class: ['btn btn-warning edit-response mr-1', permissions && response.completed? ? '' : 'disabled'],
       title: I18n.t('surveyor.responses.tooltips.edit', klass: response.survey.class.yaml_klass),
       data: { toggle: 'tooltip', placement: 'top', container: 'body' }
     )

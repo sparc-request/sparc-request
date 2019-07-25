@@ -35,7 +35,7 @@ module NotesHelper
   end
 
   def edit_note_button(note)
-    link_to icon('far', 'edit'), edit_note_path(note, note: { notable_id: note.notable_id, notable_type: note.notable_type }, srid: @service_request.id, cancel: params[:cancel], review: params[:review]), remote: true, class: ['btn btn-warning edit-note mr-2', note.identity_id == current_user.id ? '' : 'disabled']
+    link_to icon('far', 'edit'), edit_note_path(note, note: { notable_id: note.notable_id, notable_type: note.notable_type }, srid: @service_request.id, cancel: params[:cancel], review: params[:review]), remote: true, class: ['btn btn-warning edit-note mr-1', note.identity_id == current_user.id ? '' : 'disabled']
   end
 
   def delete_note_button(note)

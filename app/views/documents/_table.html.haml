@@ -22,19 +22,17 @@
     %h3.mb-0
       = t(:proper)[:document_management][:documents_notice]
 
-  .bootstrap-table-dropdown-overflow
-    #documents-custom-toolbar
-      - protocol_id = service_request.protocol.id
-      = link_to t(:documents)[:add_document], new_document_path(protocol_id: protocol_id, srid: service_request.id), remote: true, class: "btn btn-success", title: t(:proper)[:document_management][:tooltips][:documents], data: { toggle: 'tooltip' }
+  #documents-custom-toolbar
+    = link_to t(:documents)[:add_document], new_document_path(srid: service_request.id), remote: true, class: "btn btn-success", title: t(:proper)[:document_management][:tooltips][:documents], data: { toggle: 'tooltip' }
 
-    %table#documents-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: documents_path(format: :json, protocol_id: protocol_id, service_request_id: service_request.id), toolbar: "#documents-custom-toolbar" } }
-      %thead.primary-header
-        %tr
-          %th{ data: { class: 'col-sm-2 type', align: "left", sortable: "true", field: "type" } }
-            = t(:documents)[:table_fields][:type]
-          %th{ data: { class: 'col-sm-6 title', align: "left", sortable: "true", field: "title" } }
-            = t(:documents)[:table_fields][:title]
-          %th{ data: { class: 'col-sm-2 uploaded', align: "left", sortable: "true", field: "uploaded", sorter: "dateSorter" } }
-            = t(:documents)[:table_fields][:uploaded]
-          %th{ data: { class: 'col-sm-2 actions', align: "center", sortable: "false", field: "actions" } }
-            = t(:actions)[:actions]
+  %table#documents-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: documents_path(format: :json, srid: service_request.id), toolbar: "#documents-custom-toolbar" } }
+    %thead.primary-header
+      %tr
+        %th{ data: { class: 'col-sm-2 type', align: "left", sortable: "true", field: "type" } }
+          = t(:documents)[:table_fields][:type]
+        %th{ data: { class: 'col-sm-6 title', align: "left", sortable: "true", field: "title" } }
+          = t(:documents)[:table_fields][:title]
+        %th{ data: { class: 'col-sm-2 uploaded', align: "left", sortable: "true", field: "uploaded", sorter: "dateSorter" } }
+          = t(:documents)[:table_fields][:uploaded]
+        %th{ data: { class: 'col-sm-2 actions', align: "center", sortable: "false", field: "actions" } }
+          = t(:actions)[:actions]

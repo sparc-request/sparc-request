@@ -85,7 +85,7 @@ class DocumentsController < ApplicationController
     if @document
       @protocol = @document.protocol
     else
-      @protocol = Protocol.find(params[:protocol_id])
+      @protocol = @service_request.protocol
     end
   end
 

@@ -24,19 +24,17 @@
 
   - review ||= false
   - complete ||= false
-  .bootstrap-table-dropdown-overflow
-    #forms-custom-toolbar
 
-    %table#forms-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: forms_path(format: :json, srid: service_request.id, complete: complete.to_s, review: review.to_s), toolbar: "#forms-custom-toolbar" } }
-      %thead.primary-header
-        %tr
-          %th.col-sm-2{ data: { field: "srid", align: "left", sortable: "true" } }
-            = t(:forms)[:table_fields][:srid]
-          %th.col-sm-4{ data: { field: "association", align: "left", sortable: "true" } }
-            = t(:forms)[:table_fields][:association]
-          %th.col-sm-2{ data: { field: "title", align: "left", sortable: "true" } }
-            = t(:forms)[:table_fields][:title]
-          %th.col-sm-1{ data: { field: "completed", align: "center", sortable: "false" } }
-            = t(:forms)[:table_fields][:completed]
-          %th.col-sm-3{ data: { field: "options", align: "center", sortable: "false" } }
-            = t(:forms)[:table_fields][:options]
+  %table#forms-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: forms_path(format: :json, srid: service_request.id, complete: complete.to_s, review: review.to_s) } }
+    %thead.primary-header
+      %tr
+        %th.col-sm-2{ data: { field: "srid", align: "left", sortable: "true" } }
+          = t(:forms)[:table_fields][:srid]
+        %th.col-sm-4{ data: { field: "association", align: "left", sortable: "true" } }
+          = t(:forms)[:table_fields][:association]
+        %th.col-sm-2{ data: { field: "title", align: "left", sortable: "true" } }
+          = t(:forms)[:table_fields][:title]
+        %th.col-sm-1{ data: { field: "completed", align: "center", sortable: "false" } }
+          = t(:forms)[:table_fields][:completed]
+        %th.col-sm-3{ data: { field: "options", align: "center", sortable: "false" } }
+          = t(:forms)[:table_fields][:options]

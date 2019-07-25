@@ -20,8 +20,7 @@
 .modal-dialog.modal-sm{ role: 'document' }
   .modal-content
     = form_for document, format: :js, remote: true, multipart: true, authenticity_token: form_authenticity_token do |f|
-      = hidden_field_tag :protocol_id, f.object.protocol.id
-      = hidden_field_tag :service_request_id, service_request.id
+      = hidden_field_tag :srid, service_request.id
       .modal-header
         %h3.modal-title
           = t("documents.#{action_name}.header")

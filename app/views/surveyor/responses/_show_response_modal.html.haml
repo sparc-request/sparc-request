@@ -17,13 +17,13 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.modal-dialog.modal-lg
+.modal-dialog.modal-lg{ role: 'document' }
   .modal-content
     .modal-header
-      %button.close{ type: 'button', data: { dismiss: 'modal' } }
-        %span{ aria: { hidden: 'true' } } &times;
-      %h4.text-center.modal-title
+      %h3.modal-title
         = @survey.title
+      %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+        %span{ aria: { hidden: 'true' } } &times;
     .modal-body
       .form#survey-response
         - unless survey.description.blank?
@@ -47,6 +47,5 @@
                 - response.question_responses.eager_load(question: :options).where(questions: { section: section }).each_with_index do |question_response, index|
                   = render 'surveyor/responses/form/response_question', section: section, question: question_response.question, question_response: question_response, index: index
     .modal-footer
-      .center-block
-        %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
-          = t(:actions)[:close]
+      %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+        = t(:actions)[:close]

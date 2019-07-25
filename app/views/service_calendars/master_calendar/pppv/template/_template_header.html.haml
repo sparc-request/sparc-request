@@ -40,7 +40,7 @@
       = t(:calendars)[:pppv][:header_fields][:subject_count]
   %th{ rowspan: 2 }
   %th.visit-group-select.text-center{ colspan: 5 }
-    = render 'service_calendars/master_calendar/pppv/visit_group_page_select', service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, page: page, pages: pages, review: review, portal: portal, admin: admin, merged: merged, consolidated: consolidated, statuses_hidden: statuses_hidden
+    = render 'service_calendars/master_calendar/pppv/visit_group_page_select', service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, page: page, pages: pages, merged: merged, consolidated: consolidated
 
   - unless portal
     %th.total-per-patient.text-center{ rowspan: 2 }
@@ -55,11 +55,11 @@
   %th.your-cost.text-center
     %span{ title: t(:calendars)[:tooltips][:your_cost], data: { toggle: 'tooltip', placement: 'top' } }
       = raw(t(:calendars)[:pppv][:header_fields][:your_cost])
-  = render 'service_calendars/master_calendar/pppv/visit_groups', service_request: service_request, visit_groups: visit_groups, page: page, pages: pages, tab: tab, portal: portal, admin: admin, review: review, merged: merged, consolidated: consolidated, statuses_hidden: statuses_hidden
+  = render 'service_calendars/master_calendar/pppv/visit_groups', service_request: service_request, visit_groups: visit_groups, page: page, pages: pages, tab: tab, portal: portal, merged: merged
 
 %tr
   %th{ colspan: portal ? 10 : 11 }
-  = render 'service_calendars/master_calendar/pppv/check_visit_columns', service_request: service_request, sub_service_request: sub_service_request, tab: tab, admin: admin, visit_groups: visit_groups, page: page
+  = render 'service_calendars/master_calendar/pppv/check_visit_columns', service_request: service_request, sub_service_request: sub_service_request, tab: tab, visit_groups: visit_groups, page: page
 
   -unless portal
     %th{ colspan: 2 }

@@ -23,7 +23,7 @@
 - icon         = checked ? 'times'      : 'check'
 - klass        = checked ? 'btn-danger' : 'btn-success'
 - tooltip      = t(:calendars)[:pppv][:editable_fields][:row_select][checked ? :uncheck : :check]
-- url          = toggle_calendar_row_service_calendars_path(srid: service_request.id, line_items_visit_id: liv.id, admin: admin, page: page, :"#{check_param}" => 'true')
+- url          = toggle_calendar_row_service_calendars_path(srid: service_request.id, line_items_visit_id: liv.id, page: page, :"#{check_param}" => 'true')
 - url         += "&sub_service_request_id=#{sub_service_request.id}" if sub_service_request
 
-= link_to icon('fas', icon), url, method: :post, remote: true, ID: "toggleRow#{liv.id}", class: ['btn btn-sm', klass], title: tooltip, data: { toggle: 'tooltip', confirm_swal: 'true', text: t('calendars.confirm_row_select') }
+= link_to icon('fas', icon), url, method: :post, remote: true, ID: "toggleRow#{liv.id}", class: ['btn btn-sm', klass, locked ? 'disabled' : ''], title: tooltip, data: { toggle: 'tooltip', confirm_swal: 'true', text: t('calendars.confirm_row_select') }

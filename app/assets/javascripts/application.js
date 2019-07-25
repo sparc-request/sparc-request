@@ -85,8 +85,6 @@
 // require tableExport
 // require bootstrap-table-custom
 // require jquery.remotipart
-// require editable/bootstrap-editable
-// require editable/rails
 // require twitter/typeahead.min
 // require handlebars-v4.0.5
 

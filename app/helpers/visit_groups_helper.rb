@@ -19,13 +19,30 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module VisitGroupsHelper
-  def visit_position_options(arm, visit_group=nil)
+  def visit_position_options(arm, visit_group=nil, position=nil)
+    last_position = arm.visit_groups.maximum(:position) + 1
+
     if visit_group
-      options_from_collection_for_select(arm.visit_groups.where.not(id: visit_group.id), :position, :insertion_name, visit_group.position + 1) +
-      content_tag(:option, t(:constants)[:add_as_last], value: (last_position = arm.visit_groups.maximum(:position)) + 1, selected: visit_group.position == last_position)
+      position = position.blank? ? visit_group.position + 1 : position
+      options_from_collection_for_select(arm.visit_groups.where.not(id: visit_group.id), :position, :insertion_name, position) +
+      content_tag(:option, t(:constants)[:add_as_last], value: last_position, selected: position == last_position)
     else
       options_from_collection_for_select(arm.visit_groups, :position, :insertion_name) +
-      content_tag(:option, t(:constants)[:add_as_last], value: arm.visit_groups.maximum(:position) + 1)
+      content_tag(:option, t(:constants)[:add_as_last], value: last_position)
     end
+  end
+
+  def move_visit_group_boundaries(visit_group, arm, position)
+    vg_at_position  = arm.visit_groups.find_by(position: position)
+
+    if vg_at_position
+      min = vg_at_position.higher_items.where.not(id: visit_group.id, day: nil).maximum(:day).try(:+, (vg_at_position.day.present? && vg_at_position.higher_item.try(:day).present? ? 0 : 1))
+      max = vg_at_position.day.present? ? vg_at_position.day - 1 : vg_at_position.lower_items.where.not(id: visit_group.id, day: nil).minimum(:day).try(:-, 1)
+    else
+      min = arm.visit_groups.maximum(:day) + 1
+      max = nil
+    end
+
+    return min, max
   end
 end

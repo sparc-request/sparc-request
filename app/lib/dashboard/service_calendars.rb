@@ -40,27 +40,27 @@ module Dashboard
       returning_html = ''
 
       if page > 1
-        returning_html += button_tag(class: 'btn btn-primary left-arrow', data: { url: path_method.call(service_request, page: page - 1, pages: pages, arm_id: arm.id, tab: tab, portal: portal, sub_service_request_id: ssr_id, format: :js) }) do
+        returning_html += button_tag(class: 'btn btn-primary left-arrow', data: { url: path_method.call(service_request, page: page - 1, pages: pages, arm_id: arm.id, tab: tab, sub_service_request_id: ssr_id, format: :js) }) do
           tag(:span, class: 'glyphicon glyphicon-chevron-left')
         end
       else
-        returning_html += button_tag(class: 'btn btn-primary left-arrow', disabled: true, data: { url: path_method.call(service_request, page: page - 1, pages: pages, arm_id: arm.id, tab: tab, sub_service_request_id: ssr_id, portal: portal, format: :js) }) do
+        returning_html += button_tag(class: 'btn btn-primary left-arrow', disabled: true, data: { url: path_method.call(service_request, page: page - 1, pages: pages, arm_id: arm.id, tab: tab, sub_service_request_id: ssr_id, format: :js) }) do
           tag(:span, class: 'glyphicon glyphicon-chevron-left')
         end
       end
 
-      returning_html += select_tag("jump_to_visit_#{arm.id}", visits_select_options(arm, pages), class: 'jump_to_visit selectpicker', url: path_method.call(service_request, pages: pages, arm_id: arm.id, tab: tab, sub_service_request_id: ssr_id, portal: portal))
+      returning_html += select_tag("jump_to_visit_#{arm.id}", visits_select_options(arm, pages), class: 'jump_to_visit selectpicker', url: path_method.call(service_request, pages: pages, arm_id: arm.id, tab: tab, sub_service_request_id: ssr_id))
 
       unless portal || @merged || @review || service_request.protocol.locked
-        returning_html += link_to 'Move Visit', 'javascript:void(0)', class: 'move_visits', data: { 'arm-id' => arm.id, tab: tab, 'sr-id' => service_request.id, portal: portal }
+        returning_html += link_to 'Move Visit', 'javascript:void(0)', class: 'move_visits', data: { 'arm-id' => arm.id, tab: tab, 'sr-id' => service_request.id }
       end
 
       if ((page + 1) * 5) - 4 > arm.visit_count
-        returning_html += button_tag(class: 'btn btn-primary right-arrow', disabled: true, data: { url: path_method.call(service_request, page: page + 1, pages: pages, arm_id: arm.id, tab: tab, portal: portal, sub_service_request_id: ssr_id, format: :js) }) do
+        returning_html += button_tag(class: 'btn btn-primary right-arrow', disabled: true, data: { url: path_method.call(service_request, page: page + 1, pages: pages, arm_id: arm.id, tab: tab, sub_service_request_id: ssr_id, format: :js) }) do
           tag(:span, class: 'glyphicon glyphicon-chevron-right')
         end
       else
-        returning_html += button_tag(class: 'btn btn-primary right-arrow', data: { url: path_method.call(service_request, page: page + 1, pages: pages, arm_id: arm.id, tab: tab, portal: portal, sub_service_request_id: ssr_id, format: :js) }) do
+        returning_html += button_tag(class: 'btn btn-primary right-arrow', data: { url: path_method.call(service_request, page: page + 1, pages: pages, arm_id: arm.id, tab: tab, sub_service_request_id: ssr_id, format: :js) }) do
           tag(:span, class: 'glyphicon glyphicon-chevron-right')
         end
       end
@@ -69,7 +69,15 @@ module Dashboard
     end
 
     def self.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, opts = {})
-      statuses_hidden = opts[:statuses_hidden] || %w(first_draft)
+      statuses_hidden = 
+        if opts[:merged] && opts[:consolidated] && opts[:show_draft] # View Full Calendar may hide `draft` as well as `first_draft`
+          %w(first_draft draft)
+        elsif opts[:merged] && !opts[:consolidated] # Merged Calendar does not hide by status
+          []
+        else # By default don't show `first_draft`
+          %w(first_draft)
+        end
+
       if opts[:merged]
         if opts[:display_all_services]
           arm.line_items_visits.
@@ -97,10 +105,19 @@ module Dashboard
     end
 
     def self.otf_line_items_to_display(service_request, sub_service_request, opts = {})
+      statuses_hidden = 
+        if opts[:merged] && opts[:consolidated] && opts[:show_draft] # View Full Calendar may hide `draft` as well as `first_draft`
+          %w(first_draft draft)
+        elsif opts[:merged] && !opts[:consolidated] # Merged Calendar does not hide by status
+          []
+        else # By default don't show `first_draft`
+          %w(first_draft)
+        end
+
       (opts[:merged] ? service_request : (sub_service_request || service_request)).line_items.
         eager_load(:admin_rates, :notes, :service_request).
         includes(sub_service_request: :organization, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]).
-        where.not(sub_service_requests: { status: opts[:statuses_hidden] || %w(first_draft) }).
+        where.not(sub_service_requests: { status: statuses_hidden }).
         where(services: { one_time_fee: true }).
         group_by do |li|
           li.sub_service_request
@@ -131,19 +148,18 @@ module Dashboard
         ending_visit = (page * per_page + per_page)
         ending_visit = ending_visit > visit_count ? visit_count : ending_visit
 
-        optgroup = [["Visits #{beginning_visit} - #{ending_visit} of #{visit_count}", page + 1, class: 'title', page: page + 1], []]
+        option = ["Visits #{beginning_visit} - #{ending_visit} of #{visit_count}", page + 1, class: 'title', page: page + 1]
+        arr << option
 
         # (beginning_visit..ending_visit).each do |y|
         if arm.visit_groups.present?
           arm.visit_groups[(beginning_visit-1)...ending_visit].each do |vg|
-            optgroup[1] << ["&nbsp;&nbsp; - #{vg.name}/Day #{vg.day}".html_safe, "#{vg.id}", page: page + 1] if arm.visit_groups.present?
+            arr << ["&nbsp;&nbsp; - #{vg.name}/Day #{vg.day}".html_safe, "#{vg.id}", page: page + 1] if arm.visit_groups.present?
           end
         end
-
-        arr << optgroup
       end
 
-      grouped_options_for_select(arr, cur_page)
+      options_for_select(arr, cur_page)
     end
   end
 end

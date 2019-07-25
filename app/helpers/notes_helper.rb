@@ -19,11 +19,11 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 module NotesHelper
-  def notes_button(notable, disabled=false)
+  def notes_button(notable, disabled=false, service_request=nil, sub_service_request=nil)
     has_notes = notable.notes.length > 0
 
-    link_to notes_path(note: { notable_id: notable.id, notable_type: notable.class.name }), remote: true, class: ['btn btn-light position-relative', disabled ? 'disabled' : ''] do
-      raw(icon('fas', 'list') + content_tag(:span, notable.notes.length, class: ['badge badge-pill notification-badge', has_notes ? 'badge-primary ' : 'badge-secondary']))
+    link_to notes_path(note: { notable_id: notable.id, notable_type: notable.class.name }, srid: service_request.try(:id), ssrid: sub_service_request.try(:id)), remote: true, class: ['btn btn-light position-relative', disabled ? 'disabled' : ''] do
+      raw(icon('far', 'sticky-note') + content_tag(:span, notable.notes.length, class: ['badge badge-pill notification-badge', has_notes ? 'badge-primary ' : 'badge-secondary']))
     end
   end
 

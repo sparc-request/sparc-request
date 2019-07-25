@@ -94,9 +94,6 @@ SparcRails::Application.routes.draw do
     post :navigate
     post :add_service
     delete :remove_service
-
-    resources :projects, except: [:index, :show, :destroy]
-    resources :studies, except: [:index, :show, :destroy]
   end
 
   resource :research_master, only: [:update]
@@ -136,8 +133,8 @@ SparcRails::Application.routes.draw do
     end
   end
 
-  resources :line_items, only: [:update]
-  resources :line_items_visits, only: [:update, :destroy]
+  resources :line_items, only: [:edit, :update]
+  resources :line_items_visits, only: [:edit, :update, :destroy]
   resources :visit_groups, only: [:edit, :update]
   resources :visits, only: [:edit, :update, :destroy]
 

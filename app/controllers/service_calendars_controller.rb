@@ -26,6 +26,7 @@
 ##                Assigned by in_dashboard?
 ##
 ## admin:         Are we accessing the calendar by clicking Admin Edit from the dashboard? True or False
+##                Assigned by in_dashboard?
 ##
 ## merged:        Are we accessing the Consolidated Request calendar? True or False
 ##
@@ -37,96 +38,91 @@ class ServiceCalendarsController < ApplicationController
   before_action :initialize_service_request,  unless: :in_dashboard?
   before_action :authorize_identity,          unless: :in_dashboard?
   before_action :authorize_dashboard_access,  if: :in_dashboard?
-  before_action :in_review?
 
   def table
-    @scroll_true  = params[:scroll].present? && params[:scroll] == 'true'
-    @tab          = params[:tab]
-
-    if params[:admin]
-      @admin = params[:admin] == 'true'
-    else
-      @admin = @portal && @sub_service_request.present?
-    end
-
+    @review               = false
     @merged               = false
     @consolidated         = false
-    @display_all_services = true
+    @tab                  = params[:tab]
+    @scroll_true          = params[:scroll] == 'true'
     setup_calendar_pages
 
     respond_to :js
   end
 
   def merged_calendar
-    @tab                  = params[:tab]
-    @admin                = @portal && @sub_service_request.present?
+    @review               = true
     @merged               = true
     @consolidated         = false
-    @statuses_hidden      = []
-    @scroll_true          = params[:scroll].present? && params[:scroll] == 'true'
-    @display_all_services = params[:display_all_services] == 'true' ? true : false
+    @tab                  = 'calendar'
+    @scroll_true          = params[:scroll] == 'true'
+    @show_unchecked       = params[:show_unchecked] == 'true'
     setup_calendar_pages
 
     respond_to :js
   end
 
   def view_full_calendar
-    @tab                   = 'calendar'
-    @admin                 = false
-    @merged                = true
-    @consolidated          = true
-    @service_request       = @protocol.any_service_requests_to_display?
-    @statuses_hidden       = params[:statuses_hidden]
-    @scroll_true           = params[:scroll].present? && params[:scroll] == 'true'
-    @visit_dropdown_change = params[:pages].present?
-    @display_all_services  = params[:display_all_services] == 'true' ? true : false
+    @review                 = false
+    @merged                 = true
+    @consolidated           = true
+    @tab                    = 'calendar'
+    @scroll_true            = params[:scroll] == 'true'
+    @show_draft             = params[:hide_draft] == 'true'
+    @show_unchecked         = params[:show_unchecked] == 'true'
+    @visit_dropdown_change  = params[:pages].present?
+    @service_request        = @protocol.any_service_requests_to_display?
     setup_calendar_pages
 
     respond_to :js
   end
 
   def show_move_visits
-    @tab                  = params[:tab]
-    @sub_service_request  = params[:sub_service_request]
-    @page                 = params[:page]
-    @pages                = eval(params[:pages]) rescue {}
-    @admin                = params[:admin]
-    @consolidated         = params[:consolidated]
-    @merged               = params[:merged]
-    @statuses_hidden      = params[:statuses_hidden]
-    @arm                  = Arm.find( params[:arm_id] )
-    @visit_group          = params[:visit_group_id] ? @arm.visit_groups.find(params[:visit_group_id]) : @arm.visit_groups.first
+    @tab          = params[:tab]
+    @page         = params[:page]
+    @pages        = params[:pages]
+    @arm          = Arm.find(params[:arm_id])
+    @visit_group  = @arm.visit_groups.find(params[:visit_group_id]) if params[:visit_group_id].present?
+
+    if params[:position].present?  # Inline if converts blank to 0
+      @position = params[:position].to_i
+    end
 
     respond_to :js
   end
 
   def move_visit_position
-    @tab                  = params[:tab]
-    @sub_service_request  = params[:sub_service_request]
-    @page                 = params[:page]
-    @pages                = eval(params[:pages]) rescue {}
-    @admin                = params[:admin] == "true"
-    @consolidated         = params[:consolidated] == "true"
-    @merged               = params[:merged] == "true"
-    @statuses_hidden      = params[:statuses_hidden]
-    @arm                  = Arm.find( params[:arm_id] )
-    @visit_group          = VisitGroup.find(params[:visit_group].to_i)
-    @visit_groups         = @arm.visit_groups.page(@page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] } })
-    @display_all_services = true
+    @review       = false
+    @merged       = false
+    @consolidated = false
+    @tab          = params[:tab]
+    @page         = params[:page]
+    @pages        = Hash[params[:pages].permit!.to_h.map{ |arm_id, page| [arm_id, page.to_i] }]
+    @arm          = Arm.find(params[:arm_id])
+    @visit_group  = VisitGroup.find(params[:visit_group_id]) if params[:visit_group_id].present?
 
-    new_position = params[:position].to_i
+    if @visit_group
+      if params[:position].present?
+        new_position = params[:position].to_i
+        new_position -= 1 if @visit_group.position < new_position
 
-    if @visit_group.position < new_position
-      perform_visit_insertion(@visit_group, new_position - 1)
+        # If no change occurs then insert_at returns nil
+        unless @visit_group.update_attributes(day: params[:day], position: new_position)
+          @errors = @visit_group.errors
+        end
+      else
+        @visit_group.errors.add(:position, :blank)
+        @errors = @visit_group.errors
+      end
     else
-      perform_visit_insertion(@visit_group, new_position)
+      @arm.errors.add(:visit_group_id, :blank)
+      @errors = @arm.errors
     end
 
     respond_to :js
   end
 
   def toggle_calendar_row
-    @admin              = params[:admin] == 'true'
     @tab                = 'template'
     @page               = params[:page]
     @line_items_visit   = LineItemsVisit.eager_load(sub_service_request: { organization: { parent: { parent: :parent } } }, line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]]]).find(params[:line_items_visit_id])
@@ -154,7 +150,6 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def toggle_calendar_column
-    @admin              = params[:admin] == 'true'
     @tab                = 'template'
     @page               = params[:page]
     @visit_group        = VisitGroup.find(params[:visit_group_id])
@@ -194,22 +189,16 @@ class ServiceCalendarsController < ApplicationController
 
   def setup_calendar_pages
     @pages  = {}
-    page    = params[:page].to_i if params[:page]
+    @page   = params[:page].to_i if params[:page]
     arm_id  = params[:arm_id].to_i if params[:arm_id]
     @arm    = Arm.find(arm_id) if arm_id
 
-    session[:service_calendar_pages]          = eval(params[:pages]) if params[:pages]
-    session[:service_calendar_pages][arm_id]  = page if page && arm_id
+    session[:service_calendar_pages]          = params[:pages] if params[:pages]
+    session[:service_calendar_pages][arm_id]  = @page if @page && arm_id
 
     @service_request.arms.each do |arm|
       new_page        = (session[:service_calendar_pages].nil? || session[:service_calendar_pages][arm.id].nil?) ? 1 : session[:service_calendar_pages][arm.id]
       @pages[arm.id]  = @service_request.set_visit_page(new_page, arm)
-    end
-  end
-
-  def perform_visit_insertion(visit_group, position)
-    unless visit_group.insert_at(position)
-      @errors = @visit_group.errors
     end
   end
 end

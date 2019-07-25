@@ -86,7 +86,6 @@ gem 'uglifier', '>= 1.3.0'
 gem 'whenever', require: false
 gem 'will_paginate'
 gem 'will_paginate-bootstrap4'
-gem 'x-editable-rails' # Bootstrap 4 purge
 
 group :production do
 end

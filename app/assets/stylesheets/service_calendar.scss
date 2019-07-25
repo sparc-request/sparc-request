@@ -46,4 +46,16 @@
       border-bottom: 0;
     }
   }
+
+  .visit {
+    &:not(.calendar-visit):not(.locked-visit):hover {
+      cursor: pointer;
+      background: theme-color('light');
+    }
+
+    .visit-quantity {
+      transform: scale(1.5);
+      cursor: pointer;
+    }
+  }
 }

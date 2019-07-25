@@ -18,5 +18,23 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-$('#modalContainer').html("<%= j render 'form', visit_group: @visit_group, service_request: @service_request %>")
-$('#modalContainer').modal('show')
+<% if @errors %>
+$("[name^='line_item']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+$('.form-error').remove()
+
+<% @errors.messages.each do |attr, messages| %>
+<% messages.each do |message| %>
+$("[name='line_item[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
+<% end %>
+<% end %>
+<% else %>
+# Replace Field Cell
+$(".line-item-<%= @line_item.id %>:visible .<%= @field.dasherize %>").replaceWith('<%= j render "service_calendars/master_calendar/otf/#{@field}", line_item: @line_item, merged: @merged %>')
+
+# Replace Per Study Total
+$(".line-item-<%= @line_item.id %>:visible .total-per-study").replaceWith("<%= j render 'service_calendars/master_calendar/otf/total_per_study', line_item: line_item %>")
+
+# Replace Totals
+$('.one-time-fees-container:visible .max-total-direct').replaceWith("<%= j render 'service_calendars/master_calendar/otf/totals/max_total_direct_one_time_fee', service_request: @service_request %>")
+$('.one-time-fees-container:visible .max-total-per-study').replaceWith("<%= j render 'service_calendars/master_calendar/otf/totals/total_cost_per_study', service_request: @service_request %>")
+<% end %>

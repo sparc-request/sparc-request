@@ -195,19 +195,14 @@ class ApplicationController < ActionController::Base
 
   def in_dashboard?
     @portal ||= request.path.starts_with?('/dashboard')
-  end
-
-  def in_review?
-    @review ||= Rails.application.routes.recognize_path(request.referrer)[:action_name] == 'review'
+    @admin  ||= @portal && params[:srrid].present?
   end
 
   def authorize_dashboard_access
-    if params[:sub_service_request_id]
+    if params[:ssrid]
       authorize_admin
     else
-      if params[:service_request_id]
-        @service_request = ServiceRequest.find(params[:service_request_id])
-      end
+      @service_request = ServiceRequest.find(params[:srid]) if params[:srid]
       authorize_protocol
     end
   end
@@ -223,7 +218,7 @@ class ApplicationController < ActionController::Base
 
   def authorize_admin
     if current_user
-      @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+      @sub_service_request = SubServiceRequest.find(params[:ssrid])
       @service_request     = @sub_service_request.service_request
       unless (current_user.authorized_admin_organizations & @sub_service_request.org_tree).any?
         authorization_error('You are not allowed to access this Sub Service Request.')

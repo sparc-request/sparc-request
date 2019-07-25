@@ -110,6 +110,8 @@ en:
       ip_patents_info:
         patent_number: "Patent #"
         inventors: "Inventor(s)"
+      line_items_visit:
+        subject_count: "Subject Count"
       note:
         body: "Note"
       option:
@@ -196,20 +198,30 @@ en:
         iacuc_number: "IACUC #"
         name_of_iacuc: "IACUC Organization Name"
       visit:
-        research_billing_qty: "Research Billing Quantity"
-        insurance_billing_qty: "Insurance Billing Quantity"
-        effort_billing_qty: "Effort Billing Quantity"
+        research_billing_qty: "Research Billing Qty"
+        insurance_billing_qty: "Insurance Billing Qty"
+        effort_billing_qty: "Effort Billing Qty"
       visit_group:
         name: "Visit Name"
-        day: "Visit Day"
+        day: "Day"
         window_before: "Window Before Visit"
         window_after: "Window After Visit"
     errors:
       models:
+        arm:
+          attributes:
+            visit_groups:
+              invalid: "Please specify a day for each visit"
+              out_of_order: "Please make sure all visit days are in sequential order"
         form:
           attributes:
             active:
               taken: "A different version of this Form is already active"
+        line_item:
+          attributes:
+            quantity:
+              min: "must be greater than or equal to #{min}"
+              max: "must be less than or equal to #{max}"
         protocol:
           attributes:
             end_date:
@@ -228,14 +240,20 @@ en:
               blank: "required"
         service_request:
           attributes:
-            base:
-              arms_missing: "You must create Arms before proceeding to the Service Calendar"
-              line_items_missing: "You must add services to your cart before continuing."
-              protocol_missing: "You must create a Protocol before continuing."
+            arms:
+              blank: "You must create Arms before proceeding to the Service Calendar"
+            line_items:
+              blank: "You must add services to your cart before continuing"
+            protocol:
+              blank: "You must create a Protocol before continuing"
         system_survey:
           attributes:
             active:
               taken: "A different version of this Survey is already active"
+        visit_group:
+          attributes:
+            day:
+              out_of_order: "must be in order"
       messages:
         spoofed_media_type: "has format errors. Please re-save the file in a different format and try again."
     models:
@@ -340,15 +358,8 @@ en:
         percent: "%"
         edit_billing_modal: "Edit Billing Quantities"
       editable_fields:
-        window_before: "Edit Window Before Visit"
-        day: "Edit Visit Day"
-        window_after: "Edit Window After Visit"
-        visit_name: "Edit Visit Name"
         your_cost: "Edit Your Cost"
         subject_count: "Edit Subject Count"
-        research: "Research Billing Quantity:"
-        third_party: "Insurance Billing Quantity:"
-        percent: "Effort Billing Quantity:"
         row_select:
           check: "Check Row"
           uncheck: "Uncheck Row"
@@ -373,8 +384,8 @@ en:
         qty_type: "Qty Type #"
         total_per_study: "Total Per Study"
       editable_fields:
-        quantity: "Edit Qty"
-        unit_quantity: "Edit Units per Qty"
+        quantity: "Edit Quantity"
+        units_per_quantity: "Edit Units per Quantity"
       totals:
         total_direct: "Total Direct Costs (Non-clinical Services) Per Study"
         total_costs: "Total Costs (Non-clinical Services) Per Study"
@@ -448,13 +459,15 @@ en:
     hide: "Hide Details"
     more: "More..."
     less: "Less..."
-    search:
-      loading: "Loading..."
-      no_results: "No Results"
+    max: "Max: %{max}"
+    min: "Min: %{min}"
     phone:
       placeholder: "(XXX) XXX-XXXX"
       note: "For extensions add ext XXXXX"
       extension: "ext"
+    search:
+      loading: "Loading..."
+      no_results: "No Results"
 
   #################
   # CONTACT FORMS #
@@ -787,37 +800,26 @@ en:
   validation_errors:
     user_note: "Fields marked with an asterisk ( * ) are required"
     arms:
-      name_unique: "has to be unique within a study/project"
       bad_characters: "can not contain any of the following characters: [ ] * / \\ ? :"
-      visit_day_missing: "Please specify a study day for each visit (%{arm_name})"
-      name_unique: 'must be unique to the Protocol'
     line_items:
       displayed_cost_numeric: 'must be a number'
       displayed_cost_gte_zero: 'must be greater than or equal to 0'
-    line_items_visits:
-      subject_count_invalid: "Subject Count cannot exceed the Arm Subject Count (%{arm_subject_count})"
     question_responses:
       phone_invalid: "Phone is invalid"
       email_invalid: "Email is invalid"
       zipcode_invalid: "Zipcode is invalid"
-    service_requests:
-      protocol_errors: "This Protocol has errors which must be fixed before continuing."
-    visit_groups:
-      days_out_of_order: "Please make sure visit days are in sequential order (%{arm_name})."
 
   ################
   # VISIT GROUPS #
   ################
   visit_groups:
     edit: "Edit Visit"
-    form_fields:
-      arm: "Arm:"
-      visit: "Visit:"
-      name: "Name:"
-      day: "Day:"
-      position: "Insert into Position:"
-      window_before: "Window Before:"
-      window_after: "Window After:"
+    before: "Before"
+    form:
+      arm: "Arm"
+      visit: "Visit"
+      position: "Move To"
+      move_note: "Note: Previous visits will have their day changed as well."
 
 
 

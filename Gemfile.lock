@@ -586,8 +586,6 @@ GEM
     will_paginate (3.1.7)
     will_paginate-bootstrap4 (0.2.2)
       will_paginate (~> 3.0, >= 3.0.0)
-    x-editable-rails (1.5.5.1)
-      railties
     xpath (3.2.0)
       nokogiri (~> 1.8)
 
@@ -715,7 +713,6 @@ DEPENDENCIES
   whenever
   will_paginate
   will_paginate-bootstrap4
-  x-editable-rails
 
 BUNDLED WITH
    2.0.2

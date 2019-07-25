@@ -30,9 +30,7 @@ module ServiceCalendarHelper
     currency_converter(full_rate)
   end
 
-  def display_freeze_header_button_pppv?(arm, service_request, sub_service_request, portal, merged, statuses_hidden, display_all_services)
-    livs_and_ssrs = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, statuses_hidden: statuses_hidden, display_all_services: display_all_services)
-    
+  def display_freeze_header_button_pppv?(livs_and_ssrs, portal, merged)
     if portal && !merged
       livs_and_ssrs.values.flatten.count > 9
     else
@@ -43,9 +41,7 @@ module ServiceCalendarHelper
     end
   end
 
-  def display_freeze_header_button_otf?(service_request, sub_service_request, merged, statuses_hidden)
-    lis_and_ssrs = Dashboard::ServiceCalendars.otf_line_items_to_display(service_request, sub_service_request, merged: merged, statuses_hidden: statuses_hidden)
-    
+  def display_freeze_header_button_otf?(lis_and_ssrs)
     (lis_and_ssrs.values.flatten.count + lis_and_ssrs.keys.count) > 10
   end
 

@@ -55,36 +55,24 @@ class ServiceRequest < ApplicationRecord
   #after_save :fix_missing_visits
 
   def catalog_valid?
-    errors.add(:base, :line_items_missing) if self.line_items.empty?
+    errors.add(:line_items, :blank) if self.line_items.empty?
     self.errors.none?
   end
 
   def protocol_valid?
-    if self.protocol_id.blank?
-      errors.add(:base, :protocol_missing)
-    elsif !self.protocol.valid?
-      self.protocol.errors.full_messages.each{ |e| errors.add(:base, e) }
-    end
+    errors.add(:protocol, :blank) if self.protocol_id.blank?
+    errors.add(:protocol, :invalid) if self.protocol && !self.protocol.valid?
     self.errors.none?
   end
 
   def service_details_valid?
-    unless self.protocol.dates_valid?
-      self.protocol.errors.full_messages.each{ |e| errors.add(:base, e) }
-    end
-
-    errors.add(:base, :arms_missing) if self.has_per_patient_per_visit_services? && self.protocol && self.protocol.arms.empty?
+    self.errors.add(:protocol, :invalid) unless self.protocol.dates_valid?
+    self.errors.add(:arms, :blank) if self.has_per_patient_per_visit_services? && self.arms.none?
     self.errors.none?
   end
 
   def service_calendar_valid?
-    unless self.visit_groups.all?(&:in_order?)
-      errors.add(:base, I18n.t('validation_errors.visit_groups.days_out_of_order', arm_name: vg.arm.name))
-    end
-
-    if Setting.get_value("use_epic") && (arms = self.arms.joins(:visit_groups).where(visit_groups: { day: nil })).any?
-      arms.each{ |arm| errors.add(:base, I18n.t('validation_errors.arms.visit_day_missing', arm_name: arm.name)) }
-    end
+    errors.add(:arms, :invalid) unless self.arms.all?(&:visit_groups_valid?)
     self.errors.none?
   end
 

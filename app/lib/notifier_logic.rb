@@ -19,6 +19,15 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class NotifierLogic
 
+
+  def self.confirmation_logic(service_request, current_user)
+    NotifierLogic.new(service_request, current_user).update_ssrs_and_send_emails
+  end
+
+  def self.obtain_research_pricing_logic(service_request, current_user)
+    NotifierLogic.new(service_request, current_user).update_status_and_send_get_a_cost_estimate_email
+  end
+
   def initialize(service_request, current_user)
     @service_request = service_request
     @current_user = current_user
@@ -137,7 +146,7 @@ class NotifierLogic
     else
       approval = false
     end
-    
+
     deleted_ssrs = @service_request.deleted_ssrs_since_previous_submission(true)
 
     # send e-mail to all folks with view and above

@@ -23,7 +23,7 @@
       = hidden_field_tag :protocol_id, f.object.protocol.id
       = hidden_field_tag :service_request_id, service_request.id
       .modal-header
-        %h4.modal-title.text-center
+        %h3.modal-title
           = t("documents.#{action_name}.header")
         %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
           %span{ aria: { hidden: 'true' } } &times;

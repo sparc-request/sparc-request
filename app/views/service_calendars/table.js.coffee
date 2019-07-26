@@ -19,15 +19,25 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <% if @arm %>
-$(".arm-calendar-container-<%= @arm.id %>").replaceWith("<%= escape_javascript(render( '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @pages[@arm.id], pages: @pages, review: @review, portal: @portal, admin: @admin, merged: @merged, consolidated: @consolidated, statuses_hidden: %w(first_draft), display_all_services: @display_all_services)) %>")
+$(".arm-<%= @arm.id %>-container").replaceWith("<%= j render '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages, review: @review, portal: @portal, admin: @admin, merged: @merged, consolidated: @consolidated %>")
 <% else %>
 $('#serviceCalendar .nav-tabs .nav-link.active, #serviceCalendar .tab-content .tab-pane.active.show').removeClass('active show')
 $("#<%= @tab.camelize(:lower) %>TabLink").addClass('active')
-$("#<%= @tab.camelize(:lower) %>Tab").html("<%= j render 'service_calendars/table', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, portal: @portal, admin: @admin, review: @review, merged: @merged, consolidated: @consolidated, scroll_true: @scroll_true, display_all_services: @display_all_services, pages: @pages %>").addClass('active show')
+$("#<%= @tab.camelize(:lower) %>Tab").html("<%= j render 'service_calendars/table', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, portal: @portal, admin: @admin, review: @review, merged: @merged, consolidated: @consolidated, pages: @pages, page: @page %>").addClass('active show')
 <% end %>
 
 <% if @portal %>
-$("#sub_service_request_header").html("<%= escape_javascript(render( 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request )) %>")
+$("#sub_service_request_header").html("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request %>")
 <% end %>
 
-#setup_xeditable_fields(@scroll_true)
+<% if !@portal && @tab == 'billing_strategy' %>
+$('#billingLabels').removeClass('d-none')
+<% else %>
+$('#billingLabels').addClass('d-none')
+<% end %>
+
+$('#servicesToggle').parent().addClass('invisible')
+
+adjustCalendarHeaders()
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

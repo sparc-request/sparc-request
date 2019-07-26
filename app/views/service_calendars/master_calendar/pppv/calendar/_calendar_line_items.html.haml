@@ -19,35 +19,36 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 - line_items_visits = []
-- line_items = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, statuses_hidden: statuses_hidden, display_all_services: display_all_services)
+- line_items = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, consolidated: consolidated, show_draft: @show_draft, show_unchecked: @show_unchecked)
 
 - if line_items.empty?
   %tr
     %td.alert-warning{ colspan: 15 }
       = t('calendars.pppv.no_calendar_line_items')
+
 - line_items.each do |ssr, livs|
   - line_items_visits << livs
   - locked = !ssr.can_be_edited? && !admin
 
   -# SSR Header Row
-  %tr.organization-header{ class: locked ? 'text-danger' : '' }
+  %tr.organization-header{ class: locked ? 'alert-danger' : 'alert-primary' }
     %th{ colspan: 15 }
       = display_org_name(livs[0].line_item.service.organization_hierarchy, ssr, locked)
 
   -# Line Items Visits
   - livs.each do |liv|
-    %tr.pppv-line-item-row{ class: locked ? 'bg-danger text-danger' : '' }
+    %tr{ class: ["line-items-visit-#{liv.id}", locked ? 'alert-danger' : ''] }
       %td.service-name{ colspan: 2 }
         = liv.line_item.service.display_service_name
         - unless liv.line_item.service.is_available
           = inactive_tag
-      %td.notes.text-center.notes-width
-        = notes_button(liv)
-      %td.status.text-center.status-width
+      %td.notes.text-center
+        = notes_button(liv, locked, service_request, sub_service_request)
+      %td.status.text-center
         = PermissibleValue.get_value('status', ssr.status)
-      %td.service-rate.text-center.sm-col-width
+      %td.service-rate.text-center
         = display_service_rate(liv.line_item)
-      %td.text-center.sm-col-width
+      %td.your-cost.text-center
         - if portal && (tab != 'calendar')
           %a.edit-your-cost{ href: 'javascript:void(0)', data: { name: 'displayed_cost', title: liv.line_item.admin_rates.present? ? t(:dashboard)[:study_level_activities][:tooltips][:modified_rate] : t(:dashboard)[:study_level_activities][:tooltips][:change_rate], value: number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2), id: liv.line_item.id, url: dashboard_line_item_path(liv.line_item) }, class: (liv.line_item.admin_rates.present? ? 'text-danger' : '') }
         - else
@@ -56,22 +57,18 @@
               = "$#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}"
           - else
             = "$#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}"
-      %td.unit-type.text-center.unit-type-width
+      %td.unit-type.text-center
         = display_unit_type(liv)
-      %td.subject-count.text-center.xs-col-width
+      %td.subject-count.text-center
         = liv.subject_count
       - visits      = liv.ordered_visits.page(page).eager_load(line_items_visit: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] })
       - visits.each do |v|
-        %td.text-center.visit.visit-width{ class: "visit-#{v.id}" }
+        %td.visit.calendar-visit.text-center{ class: ["visit-#{v.id}", locked ? 'locked-visit' : ''] }
           = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", visit: v
       - (Visit.per_page - visits.size).times do
-        %td.visit-width &nbsp;
-      %td.text-center.pppv-per-patient-line-item-total.total-width
-        %strong
-          = display_visit_based_direct_cost(liv)
-      %td.text-center.pppv-per-study-line-item-total.total-width
-        %strong
-          = Dashboard::ServiceCalendars.display_visit_based_direct_cost_per_study(liv)
+        %td
+      = render 'service_calendars/master_calendar/pppv/total_per_patient', liv: liv
+      = render 'service_calendars/master_calendar/pppv/total_per_study', liv: liv
 
 - unless review or portal
   = render 'service_calendars/master_calendar/pppv/totals/pppv_totals', service_request: service_request, arm: arm, tab: tab, visit_groups: visit_groups, line_items_visits: line_items_visits.flatten, page: page

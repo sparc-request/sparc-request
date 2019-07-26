@@ -24,7 +24,6 @@ class NotesController < ApplicationController
   before_action :initialize_service_request,  unless: :in_dashboard?
   before_action :authorize_identity,          unless: :in_dashboard?
   before_action :authorize_dashboard_access,  if: :in_dashboard?
-
   before_action :find_notable, except: [:destroy]
   before_action :find_note, only: [:edit, :update, :destroy]
   before_action :set_review

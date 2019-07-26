@@ -19,11 +19,21 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <% if @arm %>
-$(".arm-calendar-container-<%= @arm.id %>").replaceWith("<%= escape_javascript(render( '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @pages[@arm.id], pages: @pages, review: @review, portal: @portal, admin: @admin, merged: @merged, consolidated: @consolidated, statuses_hidden: %w(first_draft), display_all_services: @display_all_services)) %>")
+$(".arm-<%= @arm.id %>-container").replaceWith("<%= j render '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages, review: @review, portal: @portal, admin: @admin, merged: @merged, consolidated: @consolidated %>")
 <% else %>
+$('#serviceCalendar').replaceWith("<%= j render 'service_requests/service_calendar/tabs', service_request: @service_request %>")
+
 $('#serviceCalendar .nav-tabs .nav-link.active, #serviceCalendar .tab-content .tab-pane.active.show').removeClass('active show')
 $("#<%= @tab.camelize(:lower) %>TabLink").addClass('active')
-$("#<%= @tab.camelize(:lower) %>Tab").html("<%= j render 'service_calendars/table', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, portal: @portal, admin: @admin, review: @review, merged: @merged, consolidated: @consolidated, scroll_true: @scroll_true, display_all_services: @display_all_services, pages: @pages %>").addClass('active show')
+$("#<%= @tab.camelize(:lower) %>Tab").html("<%= j render 'service_calendars/table', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, portal: @portal, admin: @admin, review: @review, merged: @merged, consolidated: @consolidated, pages: @pages, page: @page %>").addClass('active show')
+
+$('#billingLabels').addClass('d-none')
 <% end %>
 
-#setup_xeditable_fields()
+adjustCalendarHeaders()
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
+
+# Remove after triggering ajax:complete because the toggle
+# is initialized by that event firing
+$('#servicesToggle').parent().removeClass('invisible')

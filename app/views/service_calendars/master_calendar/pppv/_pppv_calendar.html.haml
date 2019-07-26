@@ -20,22 +20,20 @@
 
 - visit_groups = arm.visit_groups.page(page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] } })
 
-.card{ id: "arm#{arm.id}Container", data: { arm_id: arm.id } }
-  .card-header.bg-primary.text-white.justify-content-between
+.card{ class: "service-calendar-container arm-#{arm.id}-container", data: { arm_id: arm.id, page: page } }
+  .card-header.text-white.justify-content-between.sticky-top{ class: arm.protocol.locked? ? 'bg-danger' : 'bg-primary' }
     %h3.mb-0
       = t('calendars.pppv.header', arm_name: arm.name)
+      - if arm.protocol.locked?
+        %span{ title: t(:calendar_structure)[:tooltips][:arm_info], data: { toggle: 'tooltip' } }
+          = icon('fas', 'lock')
     .calendar-links-container.d-flex
-      - unless portal || review
-        - if arm.protocol.locked
-          .text-center
-            %span{class: 'glyphicon glyphicon-lock locked', style: 'font-size:50px;color:black;', data: { toggle: 'tooltip', placement: 'top' }, title: t(:calendar_structure)[:tooltips][:arm_info] }
-        - unless arm.protocol.locked
-          %button.btn.btn-warning.move-visit-button{ type: "button", data: { arm_id: arm.id, pages: pages.to_s, page: page, review: review.to_s, portal: portal.to_s, admin: admin.to_s, tab: tab, merged: merged.to_s, consolidated: consolidated.to_s, statuses_hidden: statuses_hidden, toggle: 'tooltip', placement: 'bottom' }, title: t(:calendars)[:tooltips][:move_visit_button]}
-            = t(:proper)[:service_calendar][:move_visit][:header]
-      - unless review
-        = render 'service_calendars/master_calendar/pppv/pppv_freeze_header_button', tab: tab, portal: portal, arm: arm, service_request: service_request, sub_service_request: sub_service_request, merged: merged, statuses_hidden: statuses_hidden, scroll_true: @scroll_true, display_all_services: display_all_services
-  %table.table.table-bordered.service-calendar-table{ class: @scroll_true ? "scrolling-table" : "non-scrolling-table" }
-    %thead{ class: @scroll_true ? "scrolling-thead" : "" }
-      = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_header", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, review: review, portal: portal, admin: admin, merged: merged, consolidated: consolidated, statuses_hidden: statuses_hidden, visit_groups: visit_groups
-    %tbody{ class: @scroll_true ? "scrolling-div" : "" }
-      = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_line_items", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, review: review, portal: portal, admin: admin, merged: merged, consolidated: consolidated, visit_groups: visit_groups, statuses_hidden: statuses_hidden, display_all_services: display_all_services
+      - unless portal || review || merged
+        = link_to show_move_visits_service_calendars_path(srid: service_request.try(:id), ssrid: sub_service_request.try(:id), arm_id: arm.id, pages: pages, page: page, tab: tab), remote: true, class: ['btn btn-warning', arm.protocol.locked? ? 'disabled' : ''], title: t(:calendars)[:tooltips][:move_visit_button], data: { toggle: 'tooltip' } do
+          = icon('fas', 'exchange-alt')
+          = t(:proper)[:service_calendar][:move_visit][:header]
+  %table.table.table-bordered.service-calendar-table
+    %thead
+      = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_header", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, portal: portal, merged: merged, consolidated: consolidated, visit_groups: visit_groups
+    %tbody
+      = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_line_items", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, review: review, portal: portal, admin: admin, merged: merged, consolidated: consolidated, visit_groups: visit_groups

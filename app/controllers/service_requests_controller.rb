@@ -267,7 +267,7 @@ class ServiceRequestsController < ApplicationController
 
   def validate_service_calendar
     unless @service_request.service_calendar_valid?
-      redirect_to service_calendar_service_request_path(srid: @service_request.id, navigate: 'true') and return false unless action_name == 'service_calendar'
+      redirect_to service_calendar_service_request_path(srid: @service_request.id) and return false unless action_name == 'service_calendar'
       @errors = @service_request.errors
     end
     return true

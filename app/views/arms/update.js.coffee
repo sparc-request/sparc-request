@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <% if @errors %>
-$("[name^='arm']:not([type='hidden']), #professionalOrganizationForm select").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+$("[name^='arm']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
 $('.form-error').remove()
 
 <% @errors.messages.each do |attr, messages| %>

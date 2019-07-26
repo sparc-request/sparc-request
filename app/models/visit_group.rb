@@ -41,6 +41,9 @@ class VisitGroup < ApplicationRecord
 
   after_create :build_visits, if: Proc.new { |vg| vg.arm.present? }
   after_create :increment_visit_count, if: Proc.new { |vg| vg.arm.present? && vg.arm.visit_count < vg.arm.visit_groups.count }
+  
+  before_update :move_previous_visit_days, if: Proc.new{ |vg| vg.moved_and_days_need_update? }
+
   before_destroy :decrement_visit_count, if: Proc.new { |vg| vg.arm.present? && vg.arm.visit_count >= vg.arm.visit_groups.count  }
 
   validates :name, presence: true
@@ -50,7 +53,7 @@ class VisitGroup < ApplicationRecord
             presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :day, presence: true, numericality: { only_integer: true }
 
-  validate :day_must_be_in_order
+  validate :day_must_be_in_order, if: Proc.new{ |vg| vg.day.present? }
 
   default_scope { order(:position) }
 
@@ -63,8 +66,12 @@ class VisitGroup < ApplicationRecord
     5
   end
 
+  def identifier
+    "#{self.name}" + (self.day.present? ? " (#{self.class.human_attribute_name(:day)} #{self.day})" : "")
+  end
+
   def insertion_name
-    "Before #{name}" + (day.present? ? " (Day #{day})" : "")
+    I18n.t('visit_groups.before') + " " + self.identifier
   end
 
   ### audit reporting methods ###
@@ -83,9 +90,17 @@ class VisitGroup < ApplicationRecord
     visits.any? { |visit| ((visit.quantities_customized?) && (visit.line_items_visit.line_item.service_request_id == service_request.id)) }
   end
 
-  # TODO: remove after day_must_be_in_order validation is fixed.
+  def moved_and_days_need_update?
+    position_changed? && day_changed? && self.day == self.higher_item.day
+  end
+
   def in_order?
-    arm.visit_groups.where("position < ? AND day >= ? OR position > ? AND day <= ?", position, day, position, day).none?
+    self.arm.visit_groups.where.not(id: self.id, day: nil).where(
+      VisitGroup.arel_table[:position].lt(self.position).and(
+      VisitGroup.arel_table[:day].gteq(self.day)).or(
+      VisitGroup.arel_table[:position].gt(self.position).and(
+      VisitGroup.arel_table[:day].lteq(self.day)))
+    ).none?
   end
 
   def per_patient_subtotals
@@ -108,9 +123,13 @@ class VisitGroup < ApplicationRecord
     self.arm.decrement!(:visit_count)
   end
 
-  def day_must_be_in_order
-    unless in_order?
-      errors.add(:day, 'must be in order')
+  def move_previous_visit_days
+    self.higher_items.select{ |vg| vg.higher_item.nil? || (vg.day.present? && vg.day == vg.higher_item.day + 1) }.sort_by(&:position).each do |v|
+      v.update_attribute(:day, v.day - 1)
     end
+  end
+
+  def day_must_be_in_order
+    errors.add(:day, :out_of_order) unless moved_and_days_need_update? || in_order?
   end
 end

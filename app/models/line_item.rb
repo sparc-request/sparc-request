@@ -107,16 +107,16 @@ class LineItem < ApplicationRecord
   end
 
   def quantity_must_be_smaller_than_max_and_greater_than_min
-    pricing = Service.find(service_id).current_effective_pricing_map
+    pricing = self.service.current_effective_pricing_map
     max = pricing.units_per_qty_max
     min = pricing.quantity_minimum
     if quantity.nil?
-      errors.add(:quantity, "must not be blank")
+      errors.add(:quantity, :blank)
     else
       if quantity < min
-        errors.add(:quantity, "must be greater than or equal to the minimum quantity of #{min}")
+        errors.add(:quantity, :min)
       elsif quantity > max
-        errors.add(:quantity, "must be less than or equal to the maximum quantity of #{max}")
+        errors.add(:quantity, :max)
       end
     end
   end

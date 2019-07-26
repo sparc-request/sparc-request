@@ -24,18 +24,17 @@ class VisitGroupsController < ApplicationController
 
   def edit
     @visit_group = VisitGroup.find(params[:id])
-
     respond_to :js
   end
 
   def update
     @visit_group  = VisitGroup.find(params[:id])
-    @portal       = in_dashboard?
-    @review       = in_review?
-    @admin        = params[:admin] == 'true'
-    @merged       = params[:merged] == 'true'
-    @consolidated = params[:consolidated] == 'true'
-    @pages        = eval(params[:pages]) rescue {}
+    @portal       = false
+    @review       = false
+    @merged       = false
+    @consolidated = false
+    @tab          = params[:tab]
+    @pages        = Hash[params[:pages].permit!.to_h.map{ |arm_id, page| [arm_id, page.to_i] }]
     @page         = params[:page].to_i
 
     unless @visit_group.update_attributes(visit_group_params)

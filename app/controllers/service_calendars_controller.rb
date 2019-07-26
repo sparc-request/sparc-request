@@ -44,7 +44,6 @@ class ServiceCalendarsController < ApplicationController
     @merged               = false
     @consolidated         = false
     @tab                  = params[:tab]
-    @scroll_true          = params[:scroll] == 'true'
     setup_calendar_pages
 
     respond_to :js
@@ -55,7 +54,6 @@ class ServiceCalendarsController < ApplicationController
     @merged               = true
     @consolidated         = false
     @tab                  = 'calendar'
-    @scroll_true          = params[:scroll] == 'true'
     @show_unchecked       = params[:show_unchecked] == 'true'
     setup_calendar_pages
 
@@ -67,7 +65,6 @@ class ServiceCalendarsController < ApplicationController
     @merged                 = true
     @consolidated           = true
     @tab                    = 'calendar'
-    @scroll_true            = params[:scroll] == 'true'
     @show_draft             = params[:hide_draft] == 'true'
     @show_unchecked         = params[:show_unchecked] == 'true'
     @visit_dropdown_change  = params[:pages].present?

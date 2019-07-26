@@ -19,7 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).on 'turbolinks:load', ->
-  
   #########################
   # Load Tab on Page Load #
   #########################
@@ -67,18 +66,13 @@ $(document).on 'turbolinks:load', ->
   #####################
 
   $(document).on 'change', '.visit-group-select .selectpicker', ->
-    scroll = $(this).parents('.scrolling-thead').length > 0
-    page = $(this).find('option:selected').attr('page')
-    display_all_services = $('.visit-group-select').hasClass('display_all_services')
-
     $.ajax
       method: 'GET'
       dataType: 'script'
       url: $(this).data('url')
       data:
-        page: page
-        scroll: scroll
-        display_all_services: display_all_services
+        page: $('#page').val()
+        show_unchecked: $('#show_unchecked').val()
 
   ###########################
   # Update Move Visit Modal #
@@ -88,25 +82,30 @@ $(document).on 'turbolinks:load', ->
     $('#moveVisitForm #position').val('').selectpicker('refresh')
     $.ajax
       type: 'GET'
+      dataType: 'script'
       url: '/service_calendars/show_move_visits'
       data: $('#moveVisitForm').serialize()
 
   $(document).on 'change', '#moveVisitForm #position', ->
     $.ajax
       type: 'GET'
+      dataType: 'script'
       url: '/service_calendars/show_move_visits'
       data: $('#moveVisitForm').serialize()
 
-  freezeHeader = (arm_container) ->
-    $(arm_container).each ->
-      $(this).find('table').addClass('scrolling-table')
-      $(this).find('table').removeClass('non-scrolling-table')
-      $(this).find('thead').addClass('scrolling-thead')
-      $(this).find('tbody').addClass('scrolling-div')
-      $(this).find('.freeze-header-button').find('.freeze-header').hide()
-      $(this).find('.freeze-header-button').find('.unfreeze-header').show()
-      $(this).find('.freeze-header-button').removeClass('freeze')
-      $(this).find('.freeze-header-button').addClass('unfreeze')
+  ################################
+  # Calendar Tab Services Toggle #
+  ################################
+
+  $(document).on 'change', '#servicesToggle', ->
+    $.ajax
+      type: 'GET'
+      dataType: 'script'
+      url: '/service_calendars/merged_calendar'
+      data:
+        srid: getSRId
+        ssrid: getSSRId
+        show_unchecked: $(this).prop('checked')
 
   toggleServiceButtons = (clicked_button) ->
     $(clicked_button).addClass('active btn-success').removeClass('btn-custom-green')
@@ -120,44 +119,6 @@ $(document).on 'turbolinks:load', ->
 
     # reset toggle buttons
     toggleServiceButtons($('.toggle-services-btn-group').find('#chosen-services'))
-
-    # Hold freeze header upon tab change
-    $(document).ajaxComplete ->
-      arm_ids_with_frozen_header = []
-      frozen_headers = $('.unfreeze')
-      frozen_headers.each (index, arm) ->
-        if $(arm).data('arm-id') != undefined
-          arm_ids_with_frozen_header.push( $(arm).data('arm-id') )
-
-      $(jQuery.unique(arm_ids_with_frozen_header)).each (index, arm) ->
-        if arm == 'otf-calendar'
-          arm_container = $(".#{arm}")
-        else
-          arm_container = $(".arm-calendar-container-#{arm}")
-
-        freezeHeader(arm_container)
-
-  $(document).on 'click', '.services-toggle', (e) ->
-    if !($(this).hasClass('active'))
-      toggleServiceButtons($(this))
-      href = this.hash
-      pane = $(this)
-
-      # helps keep track of which toggle button is active when changing visit dropdown
-      if $(this).hasClass('all-services')
-        $('.visit-group-select').addClass('display_all_services')
-      else
-        $('.visit-group-select').removeClass('display_all_services')
-
-      $.ajax
-        type: 'GET'
-        url: $(this).attr("data-url")
-        dataType: 'html'
-        data:
-          display_all_services: $(this).is('#all-services')
-        success: (data) ->
-          $(href).html data
-          pane.tab('show')
 
   $(document).on 'click', '.full-calendar-services-toggle', ->
     if !($(this).hasClass('active'))
@@ -173,28 +134,6 @@ $(document).on 'turbolinks:load', ->
           protocol_id: protocol_id
           statuses_hidden: statuses_hidden
           display_all_services: $(this).is('#all-services')
-
-  $(document).on 'click', '.freeze-header-button', ->
-
-    arm = $(this).data('arm-id')
-
-    if arm == 'otf-calendar'
-      arm_container = $(".#{arm}")
-    else
-      arm_container = $(".arm-calendar-container-#{arm}")
-
-    if $(this).hasClass('freeze')
-      freezeHeader(arm_container)
-    else
-      $(arm_container).each ->
-        $(this).find('table').removeClass('scrolling-table')
-        $(this).find('table').addClass('non-scrolling-table')
-        $(this).find('thead').removeClass('scrolling-thead')
-        $(this).find('tbody').removeClass('scrolling-div')
-        $(this).find('.freeze-header-button').find('.unfreeze-header').hide()
-        $(this).find('.freeze-header-button').find('.freeze-header').show()
-        $(this).find('.freeze-header-button').removeClass('unfreeze')
-        $(this).find('.freeze-header-button').addClass('freeze')
 
 (exports ? this).setup_xeditable_fields = (scroll) ->
   $('.edit-your-cost').editable
@@ -223,3 +162,18 @@ $(document).on 'turbolinks:load', ->
       }
     success: (response, newValue) ->
       $('.study_level_activities').bootstrapTable('refresh', silent: true)
+
+(exports ? this).adjustCalendarHeaders = () ->
+  $('.service-calendar-container').each ->
+    $head   = $(this).children('.card-header')
+    $row1   = $(this).find('.service-calendar-table > thead > tr:first-child')
+    $row2   = $(this).find('.service-calendar-table > thead > tr:nth-child(2)')
+    $row3   = $(this).find('.service-calendar-table > thead > tr:nth-child(3)')
+
+    headHeight  = $head.outerHeight()
+    row1Height  = $row1.outerHeight()
+    row2Height  = $row2.outerHeight()
+    row3Height  = $row3.outerHeight()
+
+    $row2.children('th').css('top', headHeight + row1Height)
+    $row3.children('th').css('top', headHeight +  row1Height + row2Height)

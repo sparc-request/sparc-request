@@ -79,7 +79,7 @@ module Dashboard
         end
 
       if opts[:merged]
-        if opts[:display_all_services]
+        if opts[:show_unchecked]
           arm.line_items_visits.
             eager_load(:visits, :notes).
             includes(sub_service_request: :organization, line_item: [:admin_rates, :service_request, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).

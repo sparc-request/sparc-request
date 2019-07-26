@@ -31,7 +31,7 @@
     = t(:calendars)[:pppv][:header_fields][:unit_cost]
 
   - unless portal
-    %th.quantity-type.text-center.border-bottom{ rowspan: 2 }
+    %th.quantity-type.text-center{ rowspan: 2 }
       %span{ title: t(:calendars)[:tooltips][:quantity_type], data: { toggle: 'tooltip', placement: 'top' } }
         = t(:calendars)[:pppv][:header_fields][:quantity_type]
 
@@ -57,7 +57,7 @@
       = raw(t(:calendars)[:pppv][:header_fields][:your_cost])
   = render 'service_calendars/master_calendar/pppv/visit_groups', service_request: service_request, visit_groups: visit_groups, page: page, pages: pages, tab: tab, portal: portal, merged: merged
 
-%tr
+%tr.check-visits-row
   %th{ colspan: portal ? 10 : 11 }
   = render 'service_calendars/master_calendar/pppv/check_visit_columns', service_request: service_request, sub_service_request: sub_service_request, tab: tab, visit_groups: visit_groups, page: page
 

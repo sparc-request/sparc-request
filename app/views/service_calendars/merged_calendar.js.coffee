@@ -21,7 +21,19 @@
 <% if @arm %>
 $(".arm-<%= @arm.id %>-container").replaceWith("<%= j render '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages, review: @review, portal: @portal, admin: @admin, merged: @merged, consolidated: @consolidated %>")
 <% else %>
+$('#serviceCalendar').replaceWith("<%= j render 'service_requests/service_calendar/tabs', service_request: @service_request %>")
+
 $('#serviceCalendar .nav-tabs .nav-link.active, #serviceCalendar .tab-content .tab-pane.active.show').removeClass('active show')
 $("#<%= @tab.camelize(:lower) %>TabLink").addClass('active')
-$("#<%= @tab.camelize(:lower) %>Tab").html("<%= j render 'service_calendars/table', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, portal: @portal, admin: @admin, review: @review, merged: @merged, consolidated: @consolidated, scroll_true: @scroll_true, pages: @pages, page: @page %>").addClass('active show')
+$("#<%= @tab.camelize(:lower) %>Tab").html("<%= j render 'service_calendars/table', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, portal: @portal, admin: @admin, review: @review, merged: @merged, consolidated: @consolidated, pages: @pages, page: @page %>").addClass('active show')
+
+$('#billingLabels').addClass('d-none')
 <% end %>
+
+adjustCalendarHeaders()
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
+
+# Remove after triggering ajax:complete because the toggle
+# is initialized by that event firing
+$('#servicesToggle').parent().removeClass('invisible')

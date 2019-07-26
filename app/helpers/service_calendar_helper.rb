@@ -30,21 +30,6 @@ module ServiceCalendarHelper
     currency_converter(full_rate)
   end
 
-  def display_freeze_header_button_pppv?(livs_and_ssrs, portal, merged)
-    if portal && !merged
-      livs_and_ssrs.values.flatten.count > 9
-    else
-      liv_count = livs_and_ssrs.values.flatten.count
-      ssr_count = livs_and_ssrs.keys.count
-      
-      portal ? (liv_count + ssr_count) > 10 : (liv_count + ssr_count) > 8
-    end
-  end
-
-  def display_freeze_header_button_otf?(lis_and_ssrs)
-    (lis_and_ssrs.values.flatten.count + lis_and_ssrs.keys.count) > 10
-  end
-
   def display_unit_type(liv)
     liv.line_item.service.displayed_pricing_map.unit_type.gsub("/", "/ ")
   end

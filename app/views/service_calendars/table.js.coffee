@@ -23,7 +23,7 @@ $(".arm-<%= @arm.id %>-container").replaceWith("<%= j render '/service_calendars
 <% else %>
 $('#serviceCalendar .nav-tabs .nav-link.active, #serviceCalendar .tab-content .tab-pane.active.show').removeClass('active show')
 $("#<%= @tab.camelize(:lower) %>TabLink").addClass('active')
-$("#<%= @tab.camelize(:lower) %>Tab").html("<%= j render 'service_calendars/table', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, portal: @portal, admin: @admin, review: @review, merged: @merged, consolidated: @consolidated, scroll_true: @scroll_true, pages: @pages, page: @page %>").addClass('active show')
+$("#<%= @tab.camelize(:lower) %>Tab").html("<%= j render 'service_calendars/table', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, portal: @portal, admin: @admin, review: @review, merged: @merged, consolidated: @consolidated, pages: @pages, page: @page %>").addClass('active show')
 <% end %>
 
 <% if @portal %>
@@ -35,5 +35,9 @@ $('#billingLabels').removeClass('d-none')
 <% else %>
 $('#billingLabels').addClass('d-none')
 <% end %>
+
+$('#servicesToggle').parent().addClass('invisible')
+
+adjustCalendarHeaders()
 
 $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

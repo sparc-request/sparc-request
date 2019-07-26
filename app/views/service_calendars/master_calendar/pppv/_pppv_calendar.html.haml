@@ -19,10 +19,9 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 - visit_groups = arm.visit_groups.page(page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] } })
-- line_items = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, consolidated: consolidated, show_draft: @show_draft, show_unchecked: @show_unchecked)
 
-.card{ class: "arm-container arm-#{arm.id}-container", data: { arm_id: arm.id, page: page } }
-  .card-header.text-white.justify-content-between{ class: arm.protocol.locked? ? 'bg-danger' : 'bg-primary' }
+.card{ class: "service-calendar-container arm-#{arm.id}-container", data: { arm_id: arm.id, page: page } }
+  .card-header.text-white.justify-content-between.sticky-top{ class: arm.protocol.locked? ? 'bg-danger' : 'bg-primary' }
     %h3.mb-0
       = t('calendars.pppv.header', arm_name: arm.name)
       - if arm.protocol.locked?
@@ -33,10 +32,8 @@
         = link_to show_move_visits_service_calendars_path(srid: service_request.try(:id), ssrid: sub_service_request.try(:id), arm_id: arm.id, pages: pages, page: page, tab: tab), remote: true, class: ['btn btn-warning', arm.protocol.locked? ? 'disabled' : ''], title: t(:calendars)[:tooltips][:move_visit_button], data: { toggle: 'tooltip' } do
           = icon('fas', 'exchange-alt')
           = t(:proper)[:service_calendar][:move_visit][:header]
-      - unless review
-        = render 'service_calendars/master_calendar/pppv/pppv_freeze_header_button', line_items: line_items, portal: portal, merged: merged, arm: arm
-  %table.table.table-bordered.service-calendar-table{ class: @scroll_true ? "scrolling-table" : "non-scrolling-table" }
-    %thead{ class: @scroll_true ? "scrolling-thead" : "" }
+  %table.table.table-bordered.service-calendar-table
+    %thead
       = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_header", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, portal: portal, merged: merged, consolidated: consolidated, visit_groups: visit_groups
-    %tbody{ class: @scroll_true ? "scrolling-div" : "" }
-      = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_line_items", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, review: review, portal: portal, admin: admin, merged: merged, consolidated: consolidated, visit_groups: visit_groups, line_items: line_items
+    %tbody
+      = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_line_items", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, review: review, portal: portal, admin: admin, merged: merged, consolidated: consolidated, visit_groups: visit_groups

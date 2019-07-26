@@ -19,11 +19,13 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 - line_items_visits = []
+- line_items = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, consolidated: consolidated, show_draft: @show_draft, show_unchecked: @show_unchecked)
 
 - if line_items.empty?
   %tr
     %td.alert-warning{ colspan: 15 }
       = t('calendars.pppv.no_calendar_line_items')
+
 - line_items.each do |ssr, livs|
   - line_items_visits << livs
   - locked = !ssr.can_be_edited? && !admin

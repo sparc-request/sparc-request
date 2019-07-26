@@ -148,13 +148,13 @@ module Dashboard
         ending_visit = (page * per_page + per_page)
         ending_visit = ending_visit > visit_count ? visit_count : ending_visit
 
-        option = ["Visits #{beginning_visit} - #{ending_visit} of #{visit_count}", page + 1, class: 'title', page: page + 1]
+        option = [I18n.t('calendars.pppv.header_fields.page_select.header', start: beginning_visit, stop: ending_visit, total: visit_count), page + 1, class: 'vg-page-header', data: { page: page + 1 }]
         arr << option
 
         # (beginning_visit..ending_visit).each do |y|
         if arm.visit_groups.present?
-          arm.visit_groups[(beginning_visit-1)...ending_visit].each do |vg|
-            arr << ["&nbsp;&nbsp; - #{vg.name}/Day #{vg.day}".html_safe, "#{vg.id}", page: page + 1] if arm.visit_groups.present?
+          arm.visit_groups.order(:position)[(beginning_visit-1)...ending_visit].each do |vg|
+            arr << ["- #{vg.identifier}", "#{vg.id}", data: { page: page + 1 }] if arm.visit_groups.present?
           end
         end
       end

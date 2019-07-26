@@ -71,7 +71,7 @@ $(document).on 'turbolinks:load', ->
       dataType: 'script'
       url: $(this).data('url')
       data:
-        page: $('#page').val()
+        page: $(this).find('option:selected').data('page')
         show_unchecked: $('#show_unchecked').val()
 
   ###########################

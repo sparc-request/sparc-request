@@ -82,6 +82,18 @@
       }
     }
 
+    .visit-group-select .dropdown-menu {
+      li:not(.active) .vg-page-header {
+        @extend .bg-light;
+      }
+
+      .vg-page-header {
+        @extend .border-top;
+        @extend .border-bottom;
+        @extend .font-weight-bold;
+      }
+    }
+
     .visit {
       &:not(.calendar-visit):not(.locked-visit):hover {
         cursor: pointer;

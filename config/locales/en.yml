@@ -351,6 +351,7 @@ en:
         page_select:
           previous: "View Previous"
           next: "View Next"
+          header: "Visits %{start} - %{stop} of %{total}"
         total_per_patient: "Total Per Patient"
         total_per_study: "Total Per Study"
         research: "R"

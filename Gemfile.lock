@@ -442,7 +442,6 @@ GEM
       thor (>= 0.19.0, < 2.0)
     rake (12.3.2)
     redcarpet (3.4.0)
-    ref (2.0.0)
     regexp_parser (1.6.0)
     remotipart (1.4.3)
     request_store (1.4.1)

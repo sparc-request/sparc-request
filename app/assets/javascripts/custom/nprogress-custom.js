@@ -18,15 +18,15 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(document).on('turbolinks:load', function() {
+$(document).ready( function() {
   NProgress.remove()
 
   NProgress.configure({ trickleRate: 0.025, trickleSpeed: 100 });
 
-  $(document).on('ajaxSend ajax:send turbolinks:click', function(event) {
+  $(document).on('ajaxSend ajax:send', function(event) {
     if (event.target.tagName != 'A' || event.target.getAttribute('href').charAt(0) !== '#')
       NProgress.start();
-  }).on('ajaxComplete ajax:complete turbolinks:render', function() {
+  }).on('ajaxComplete ajax:complete', function() {
     NProgress.done()
   });
 });

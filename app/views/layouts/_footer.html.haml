@@ -27,8 +27,6 @@
         = link_to t('layout.footer.links.sctr.text'), t('layout.footer.links.sctr.url'), target: :blank, class: 'mb-0'
       %nav.flex-column.nav.px-5
         = link_to t('layout.footer.links.contact'), new_contact_form_path, remote: true, class: 'mb-1'
-        - if Setting.get_value("use_short_interaction") && current_user.try(&:is_service_provider?)
-          = link_to t('layout.footer.links.short_interaction'), new_short_interaction_path, remote: true, class: 'mb-1'
         = mail_to Setting.get_value("listserv_mail_to"), t('layout.footer.links.listserv.text'), subject: t('layout.footer.links.listserv.subject'), class: 'mb-0'
       %nav.flex-column.nav.px-5
         - if Setting.get_value('use_faq_link')

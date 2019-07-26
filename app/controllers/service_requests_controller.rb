@@ -30,6 +30,7 @@ class ServiceRequestsController < ApplicationController
   before_action :authenticate_identity!,          except: [:catalog, :add_service, :remove_service]
   before_action :find_locked_org_ids,             only:   [:catalog]
   before_action :find_service,                    only:   [:catalog]
+  before_action :current_page
 
   def show
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id]) if params[:sub_service_request_id]

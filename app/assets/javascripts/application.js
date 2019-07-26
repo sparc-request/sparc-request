@@ -28,7 +28,6 @@
 //= require custom/sweetalert-integration
 //= require jquery/dist/jquery.min
 //= require rails-ujs
-//= require turbolinks
 
 //////////////////////////////////
 /// Require Remaining Packages ///

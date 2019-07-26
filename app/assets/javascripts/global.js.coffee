@@ -25,7 +25,7 @@ $.ajaxSetup({
   }
 });
 
-$(document).on 'turbolinks:load', ->
+$(document).ready ->
   initializeSelectpickers()
   initializeDateTimePickers()
   initializeTooltips()
@@ -43,11 +43,6 @@ $(document).on 'turbolinks:load', ->
     initializeToggles()
     initializeTables()
     setRequiredFields()
-
-  # Turbolinks fix for hash hrefs
-  $(document).on 'turbolinks:click', (event) ->
-    if event.target.getAttribute('href').charAt(0) == '#'
-      event.preventDefault()
 
   # Back To Top button scroll
   $(document).on 'click', '#backToTop', ->

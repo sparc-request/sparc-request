@@ -26,7 +26,6 @@
 // require sweetalert2/dist/sweetalert2.min
 // require custom/sweetalert-integration
 // require jquery-ujs
-// require turbolinks
 // require jquery/dist/jquery.min
 
 //////////////////////////////////

@@ -561,14 +561,16 @@ en:
         all_day: "All Day"
         none: "No events scheduled within a month from today."
         learn_more: "Learn More"
+      help:
+        header: "Get Help"
       profile:
         notifications: "Notifications"
         edit: "Edit Profile"
     dashboard:
       navigation:
-        tooltips:
-          epic_queue: "View Epic Protocols"
-          protocol_merge: "Merge Protocols"
+        short_interaction: "Short Interaction"
+        epic_queue: "Epic Protocols"
+        protocol_merge: "Merge Protocols"
     footer:
       version: "SPARCRequest %{version}"
       copyright: "&copy; 2011-2019 MUSC Foundation for Research Development"
@@ -581,12 +583,11 @@ en:
           text: "SCTR"
           url: "http://sctr.musc.edu"
         contact: "Contact Us"
-        short_interaction: "Short Interaction"
         listserv: 
           text: "Listserv"
           subject: "SPARCRequest Listserv"
         faqs:
-          text: "Help/FAQs"
+          text: "FAQs"
           header: "Frequently Asked Questions"
           question_1: "May I submit a request for services for multiple research studies/projects simultaneously?"
           answer_1: "No. Please browse and select services for only one research study/project at a time."

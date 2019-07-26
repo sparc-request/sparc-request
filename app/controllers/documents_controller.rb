@@ -32,8 +32,6 @@ class DocumentsController < ApplicationController
 
   def new
     @document     = @protocol.documents.new
-    @header_text  = t(:documents)[:add][:header]
-    @path         = documents_path(@document)
   end
 
   def create
@@ -51,8 +49,6 @@ class DocumentsController < ApplicationController
   end
 
   def edit
-    @header_text  = t(:documents)[:edit][:header]
-    @path         = document_path(@document)
   end
 
   def update
@@ -89,7 +85,7 @@ class DocumentsController < ApplicationController
     if @document
       @protocol = @document.protocol
     else
-      @protocol = Protocol.find(params[:protocol_id])
+      @protocol = @service_request.protocol
     end
   end
 

@@ -242,6 +242,8 @@ RSpec.describe 'service request list', js: true do
 
       page.service_requests.first.modify_request_button.click
 
+      wait_for_javascript_to_finish
+
       expect(URI.parse(current_url).path).to eq catalog_service_request_path
     end
 

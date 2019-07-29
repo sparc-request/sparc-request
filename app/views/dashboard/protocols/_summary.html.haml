@@ -65,6 +65,6 @@
           = protocol.try(:sponsor_name)
     .row
       %label.col-sm-2{ title: protocol.funding_status == "funded" ? t(:protocols)[:tooltips][:funding_source] : t(:protocols)[:tooltips][:potential_funding_source], data: { toggle: 'tooltip', placement: 'right' } }
-        = display_funding_source_title(protocol)
+        = Protocol.human_attribute_name(protocol.funded? ? :funding_source : :potential_funding_source)
       .col-sm-10
-        = display_funding_source(protocol)
+        = protocol.display_funding_source_value

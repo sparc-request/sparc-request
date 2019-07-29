@@ -174,4 +174,8 @@ module ApplicationHelper
   def in_dashboard?
     request.path.start_with?('/dashboard')
   end
+
+  def in_review?
+    action_name == 'review' || (Rails.application.routes.recognize_path(request.referrer)[:action] == 'review' && !request.format.html?)
+  end
 end

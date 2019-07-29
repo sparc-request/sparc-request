@@ -18,36 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(document).ready ->
-  survey_offered = false
-  if $('#use_system_satisfaction').val() == 'true'
-    $(document).one 'click', '.submit-request', (event) ->
-      button = $(this)
-
-      if !survey_offered
-        event.preventDefault()
-        $.ajax
-          method: 'get'
-          dataType: 'script'
-          url: '/service_request/system_satisfaction_survey'
-          data:
-            srid: getSRId()
-
-        $(document).one 'hide.bs.modal', '#modalContainer', ->
-          form = document.getElementById('serviceRequestForm')
-          Rails.fire(form, 'submit')
-
-    $(document).one 'click', '.get-a-cost-estimate', (event) ->
-      button = $(this)
-
-      if !survey_offered
-        event.preventDefault()
-        $.ajax
-          method: 'get'
-          dataType: 'script'
-          url: '/service_request/system_satisfaction_survey'
-          data:
-            srid: getSRId()
-
-        $(document).one 'hide.bs.modal', '#modalContainer', ->
-          window.location = button.prop('href')
+$("#modalContainer").html("<%= j render 'service_requests/modals/participate_in_survey_modal', survey: @survey, service_request: @service_request %>")
+$("#modalContainer").modal('show')

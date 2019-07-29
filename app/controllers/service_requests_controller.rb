@@ -197,6 +197,12 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
+  def system_satisfaction_survey
+    @survey = SystemSurvey.where(access_code: 'system-satisfaction-survey', active: true).first
+
+    respond_to :js
+  end
+
   private
 
   def details_params

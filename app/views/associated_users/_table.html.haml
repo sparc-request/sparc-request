@@ -28,8 +28,8 @@
       - else
         = t('authorized_users.header')
   .collapse#authorizedUsers{ class: service_request.previously_submitted? ? '' : 'show' }
-    - unless in_review?
-      #associatedUsersTableToolbar
+    #associatedUsersTableToolbar
+      - unless in_review?
         = link_to new_associated_user_path(srid: service_request.id), remote: true, class: 'btn btn-success' do
           = icon('fas', 'plus mr-1')
           = t('authorized_users.new')

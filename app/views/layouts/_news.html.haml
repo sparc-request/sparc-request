@@ -24,7 +24,6 @@
   .dropdown-menu.dropdown-menu-xl-right{ aria: { labelledby: 'newsDropdown' } }
     .dropdown-header.d-flex.text-secondary
       %h5.m-0<
-        = icon('far', 'newspaper fa-lg mr-2')
         = t('layout.navigation.news.header')
     .dropdown-divider
     - if @news.empty?

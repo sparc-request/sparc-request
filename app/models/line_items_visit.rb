@@ -38,8 +38,7 @@ class LineItemsVisit < ApplicationRecord
   has_one :service, through: :line_item
 
   validate :subject_count_valid
-  validate :pppv_line_item
-  validates_numericality_of :subject_count
+  validates_numericality_of :subject_count, greater_than_or_equal_to: 0
 
   after_create :build_visits, if: Proc.new { |liv| liv.arm.present? }
 
@@ -47,15 +46,7 @@ class LineItemsVisit < ApplicationRecord
   after_destroy :release_parent
 
   def subject_count_valid
-    if subject_count && subject_count > arm.subject_count
-      errors.add(:blank, I18n.t('validation_errors.line_items_visits.subject_count_invalid', arm_subject_count: arm.subject_count))
-    end
-  end
-
-  def pppv_line_item
-    if self.line_item.one_time_fee
-      errors.add(:_, 'Line Items Visits should only belong to a PPPV LineItem')
-    end
+    errors.add(:subject_count, :invalid) if subject_count && subject_count > arm.subject_count
   end
 
   # Find a LineItemsVisit for the given arm and line item.  If it does

@@ -1,5 +1,5 @@
 :javascript
-  document.addEventListener('turbolinks:load', function() {
-    I18n.defaultLocale = "#{I18n.default_locale}"
-    I18n.locale = "#{I18n.locale || I18n.default_locale}"
-  });
+  $(document).ready( function() {
+    I18n.defaultLocale = "#{I18n.default_locale}";
+    I18n.locale = "#{I18n.locale || I18n.default_locale}";
+  })

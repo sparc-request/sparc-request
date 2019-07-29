@@ -20,14 +20,12 @@
 
 .modal-dialog{ role: 'document' }
   .modal-content
-    = form_for @visit_group, remote: true do |f|
-      = hidden_field_tag :admin, params[:admin]
-      = hidden_field_tag :review, params[:review]
-      = hidden_field_tag :merged, params[:merged]
-      = hidden_field_tag :consolidated, params[:consolidated]
+    = form_for visit_group, remote: true do |f|
+      = hidden_field_tag :srid, service_request.try(:id)
       = hidden_field_tag :tab, params[:tab]
       = hidden_field_tag :page, params[:page]
-      = hidden_field_tag :pages, params[:pages]
+      - params[:pages].each do |arm_id, page|
+        = hidden_field_tag "pages[#{arm_id}]", page.to_i
       .modal-header
         %h3.modal-title
           = t('visit_groups.edit')
@@ -36,16 +34,24 @@
       .modal-body
         .form-row
           .form-group.col-4
-            = f.label :window_before, class: 'required', title: t(:calendars)[:tooltips][:window_before], data: { toggle: 'tooltip' }
-            = f.text_field :window_before, class: 'form-control'
+            = f.label :window_before, class: 'required'
+            = f.number_field :window_before, class: 'form-control', min: 0
           .form-group.col-4
-            = f.label :day, class: 'required', title: t(:calendars)[:tooltips][:visit_day], data: { toggle: 'tooltip' }
-            = f.text_field :day, class: 'form-control'
+            - min = visit_group.higher_item.try(:day)
+            - max = visit_group.lower_item.try(:day)
+            = f.label :day, class: 'required'
+            = f.number_field :day, class: 'form-control', min: min, max: max
+            - if min || max
+              %small.form-text.text-muted
+                - if min
+                  = t('constants.min', min: min)
+                - if max
+                  = t('constants.max', max: max)
           .form-group.col-4
-            = f.label :window_after, class: 'required', title: t(:calendars)[:tooltips][:window_after], data: { toggle: 'tooltip' }
-            = f.text_field :window_after, class: 'form-control'
+            = f.label :window_after, class: 'required'
+            = f.number_field :window_after, class: 'form-control', min: 0
         .form-group
-          = f.label :name, class: 'required', title: t(:calendars)[:tooltips][:visit_name], data: { toggle: 'tooltip' }
+          = f.label :name, class: 'required'
           = f.text_field :name, class: 'form-control'
       .modal-footer
         %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }

@@ -30,6 +30,7 @@ class ServiceRequestsController < ApplicationController
   before_action :authenticate_identity!,          except: [:catalog, :add_service, :remove_service]
   before_action :find_locked_org_ids,             only:   [:catalog]
   before_action :find_service,                    only:   [:catalog]
+  before_action :current_page
 
   def show
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id]) if params[:sub_service_request_id]
@@ -120,7 +121,7 @@ class ServiceRequestsController < ApplicationController
     @protocol = @service_request.protocol
     @service_request.previous_submitted_at = @service_request.submitted_at
 
-    NotifierLogic.new(@service_request, current_user).update_status_and_send_get_a_cost_estimate_email
+    NotifierLogic.delay.obtain_research_pricing_logic(@service_request, current_user)
     render formats: [:html]
   end
 
@@ -141,7 +142,8 @@ class ServiceRequestsController < ApplicationController
         send_epic_notification_for_user_approval(@protocol)
       end
     end
-    NotifierLogic.new(@service_request, current_user).update_ssrs_and_send_emails
+
+    NotifierLogic.delay.confirmation_logic(@service_request, current_user)
     render formats: [:html]
   end
 
@@ -266,7 +268,7 @@ class ServiceRequestsController < ApplicationController
 
   def validate_service_calendar
     unless @service_request.service_calendar_valid?
-      redirect_to service_calendar_service_request_path(srid: @service_request.id, navigate: 'true') and return false unless action_name == 'service_calendar'
+      redirect_to service_calendar_service_request_path(srid: @service_request.id) and return false unless action_name == 'service_calendar'
       @errors = @service_request.errors
     end
     return true

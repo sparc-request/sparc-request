@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(document).on 'turbolinks:load', ->
+$(document).ready ->
   $(document).on 'click', '#institutionAccordion .org-link:not(.licked)', ->
     id = $(this).data('id')
 
@@ -43,7 +43,7 @@ $(document).on 'turbolinks:load', ->
       AlertSwal.fire(
         type: 'error'
         title: I18n.t('proper.catalog.services_missing.header')
-        text: I18n.t('validation_errors.service_requests.line_items_missing')
+        text: I18n.t('activerecord.errors.models.service_request.attributes.line_items.blank')
       )
       $('html, body').animate({ scrollTop: $('#stepsHeader').offset().top }, 'slow')
 

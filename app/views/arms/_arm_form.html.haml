@@ -34,10 +34,10 @@
           = f.text_field :name, class: 'form-control'
         .form-group
           = f.label :subject_count, class: 'required', title: t('arms.tooltips.subject_count'), data: { toggle: 'tooltip' }
-          = f.text_field :subject_count, class: 'form-control'
+          = f.number_field :subject_count, class: 'form-control', min: 0
         .form-group
           = f.label :visit_count, class: 'required', title: t('arms.tooltips.subject_count'), data: { toggle: 'tooltip' }
-          = f.text_field :visit_count, class: 'form-control'
+          = f.number_field :visit_count, class: 'form-control', min: 0
       .modal-footer
         %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
           = t('actions.close')

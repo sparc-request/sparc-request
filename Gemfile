@@ -5,7 +5,7 @@ gem 'activeresource'
 gem 'activerecord-session_store' # Check usage
 gem 'acts_as_list', git: 'https://github.com/swanandp/acts_as_list.git'
 gem 'acts-as-taggable-on', git: 'https://github.com/Fodoj/acts-as-taggable-on.git', branch: 'rails-5.2' # Consider updating to https://github.com/mbleigh/acts-as-taggable-on
-gem 'audited', '~> 4.8'
+gem 'audited', '~> 4.9'
 gem 'axlsx', git: 'https://github.com/randym/axlsx', branch: 'master'
 gem 'axlsx_rails'
 gem 'babel-transpiler'
@@ -22,7 +22,7 @@ gem 'capistrano-passenger', require: false
 gem 'capistrano3-delayed-job', '~> 1.7'
 gem 'coffee-rails'
 gem 'country_select'
-gem 'curb', '~> 0.9.9'
+gem 'curb', '~> 0.9.10'
 gem 'deep_cloneable', '~> 2.4.0'
 gem 'delayed_job_active_record'
 gem 'delayed_job'
@@ -46,7 +46,7 @@ gem 'icalendar'
 gem 'icalendar-recurrence'
 gem 'jquery_datepicker' # Check usage
 gem 'jquery-rails' # Bootstrap 4 purge
-gem 'jbuilder', '~> 2.8'
+gem 'jbuilder', '~> 2.9'
 gem 'json', '>= 1.8'
 gem 'letter_opener'
 gem 'momentjs-rails', '>= 2.8.1' # Bootstrap 4 purge
@@ -65,7 +65,7 @@ gem 'paperclip', '~> 6.1' # Deprecated https://github.com/thoughtbot/paperclip
 gem 'pdfkit' # Check usage
 gem 'prawn', '2.2.2' # Check usage
 gem 'premailer-rails'
-gem 'puma', '~> 3.12'
+gem 'puma', '~> 4.0'
 gem 'rack-mini-profiler', require: false
 gem 'rails', '5.2.3'
 gem 'rails-html-sanitizer' # Check usage
@@ -80,13 +80,11 @@ gem 'sassc-rails'
 gem 'savon', '~> 2.2.0' # Check usage
 gem 'slack-notifier'
 gem 'sprockets', '~> 4.0.0.beta9'
-gem 'turbolinks', '~> 5.2.0'
 gem 'twitter-typeahead-rails' # Bootstrap 4 purge
 gem 'uglifier', '>= 1.3.0'
 gem 'whenever', require: false
 gem 'will_paginate'
 gem 'will_paginate-bootstrap4'
-gem 'x-editable-rails' # Bootstrap 4 purge
 
 group :production do
 end

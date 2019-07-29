@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <% if @errors %>
-$("[name^='visit_group']:not([type='hidden']), #professionalOrganizationForm select").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+$("[name^='visit_group']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
 $('.form-error').remove()
 
 <% @errors.messages.each do |attr, messages| %>
@@ -28,7 +28,7 @@ $("[name='visit_group[<%= attr.to_s %>]']").parents('.form-group').removeClass('
 <% end %>
 <% end %>
 <% else %>
-$('.visit-group-<%= @visit_group.id %>:visible').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/visit_group', service_request: @service_request, visit_group: @visit_group, tab: params[:tab], page: @page, pages: @pages, portal: @portal, review: @review, admin: @admin, merged: @merged, consolidated: @consolidated, statuses_hidden: params[:statuses_hidden] %>")
-$('.visit-group-select:visible').html("<%= j render 'service_calendars/master_calendar/pppv/visit_group_page_select', service_request: @service_request, sub_service_request: @sub_service_request, arm: @visit_group.arm, tab: params[:tab], page: @page, pages: @pages, portal: @portal, review: @review, admin: @admin, merged: @merged, consolidated: @consolidated, statuses_hidden: params[:statuses_hidden] %>")
+$('.visit-group-<%= @visit_group.id %>:visible').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/visit_group', service_request: @service_request, visit_group: @visit_group, tab: @tab, page: @page, pages: @pages, portal: @portal, merged: @merged %>")
+$('.visit-group-select:visible').html("<%= j render 'service_calendars/master_calendar/pppv/visit_group_page_select', service_request: @service_request, sub_service_request: @sub_service_request, arm: @visit_group.arm, tab: @tab, page: @page, pages: @pages, merged: @merged, consolidated: @consolidated %>")
 $('#modalContainer').modal('hide')
 <% end %>

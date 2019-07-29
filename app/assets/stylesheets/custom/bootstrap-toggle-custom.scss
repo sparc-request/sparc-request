@@ -56,6 +56,10 @@
     }
   }
 
+  .toggle-group {
+    white-space: nowrap;
+  }
+
   .btn.btn-light {
     @extend .text-muted;
   }

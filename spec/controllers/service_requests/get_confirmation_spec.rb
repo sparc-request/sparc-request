@@ -73,6 +73,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
         Timecop.freeze(time) do
           get :confirmation, params: { srid: sr.id }, xhr: true
+          Delayed::Worker.new.run(Delayed::Job.last)
           expect(sr.reload.submitted_at).to eq(time)
         end
       end
@@ -89,6 +90,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
         session[:identity_id] = logged_in_user.id
 
         get :confirmation, params: { srid: sr.id }, xhr: true
+
+        Delayed::Worker.new.run(Delayed::Job.last)
 
         expect(sr.reload.status).to eq('submitted')
         expect(ssr.reload.nursing_nutrition_approved).to eq(false)
@@ -141,7 +144,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
           get :confirmation, params: {
             srid: sr.id
           }, xhr: true
-            
+
+          Delayed::Worker.new.run(Delayed::Job.last)
           expect(Delayed::Backend::ActiveRecord::Job.count).to eq(3)
         end
       end

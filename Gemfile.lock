@@ -46,7 +46,7 @@ GIT
 
 GIT
   remote: https://github.com/swanandp/acts_as_list.git
-  revision: d562563b08ccc814a3a8390926612ec7e01592c2
+  revision: 03f33bff8c7ccee271a52f2c459077afc40accb4
   specs:
     acts_as_list (0.9.19)
       activerecord (>= 3.0)
@@ -92,9 +92,9 @@ GEM
       arel (>= 9.0)
     activerecord-import (1.0.2)
       activerecord (>= 3.2)
-    activerecord-nulldb-adapter (0.3.9)
+    activerecord-nulldb-adapter (0.4.0)
       activerecord (>= 2.0.0)
-    activerecord-session_store (1.1.1)
+    activerecord-session_store (1.1.3)
       actionpack (>= 4.0)
       activerecord (>= 4.0)
       multi_json (~> 1.11, >= 1.11.2)
@@ -123,8 +123,8 @@ GEM
     archive-zip (0.12.0)
       io-like (~> 0.3.0)
     arel (9.0.0)
-    audited (4.8.0)
-      activerecord (>= 4.0, < 5.3)
+    audited (4.9.0)
+      activerecord (>= 4.2, < 6.1)
     autoprefixer-rails (9.5.0)
       execjs
     axiom-types (0.1.1)
@@ -171,7 +171,7 @@ GEM
     capistrano3-delayed-job (1.7.6)
       capistrano (~> 3.0, >= 3.0.0)
       daemons (~> 1.3)
-    capybara (3.25.0)
+    capybara (3.26.0)
       addressable
       mini_mime (>= 0.1.3)
       nokogiri (~> 1.8)
@@ -208,7 +208,7 @@ GEM
     crass (1.0.4)
     css_parser (1.7.0)
       addressable
-    curb (0.9.9)
+    curb (0.9.10)
     daemons (1.3.1)
     database_cleaner (1.7.0)
     deep_cloneable (2.4.0)
@@ -307,9 +307,8 @@ GEM
     ice_nine (0.11.2)
     iconv (1.0.8)
     io-like (0.3.0)
-    jbuilder (2.8.0)
+    jbuilder (2.9.1)
       activesupport (>= 4.2.0)
-      multi_json (>= 1.2)
     jquery-rails (4.3.5)
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
@@ -355,7 +354,7 @@ GEM
     net-ssh (5.2.0)
     netrc (0.11.0)
     newrelic_rpm (6.5.0.357)
-    nio4r (2.3.1)
+    nio4r (2.4.0)
     nokogiri (1.10.3)
       mini_portile2 (~> 2.4.0)
     nori (2.1.0)
@@ -389,8 +388,8 @@ GEM
       addressable
       css_parser (>= 1.6.0)
       htmlentities (>= 4.0.0)
-    premailer-rails (1.10.2)
-      actionmailer (>= 3, < 6)
+    premailer-rails (1.10.3)
+      actionmailer (>= 3)
       premailer (~> 1.7, >= 1.7.9)
     progress_bar (1.3.0)
       highline (>= 1.6, < 3)
@@ -399,7 +398,8 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
     public_suffix (3.1.1)
-    puma (3.12.1)
+    puma (4.0.1)
+      nio4r (~> 2.0)
     rack (2.0.7)
     rack-accept (0.4.5)
       rack (>= 0.4)
@@ -442,7 +442,7 @@ GEM
       thor (>= 0.19.0, < 2.0)
     rake (12.3.2)
     redcarpet (3.4.0)
-    regexp_parser (1.5.1)
+    regexp_parser (1.6.0)
     remotipart (1.4.3)
     request_store (1.4.1)
       rack (>= 1.4)
@@ -507,7 +507,7 @@ GEM
       rubyzip (~> 1.2, >= 1.2.2)
     shoulda-callback-matchers (1.1.4)
       activesupport (>= 3)
-    shoulda-matchers (4.1.0)
+    shoulda-matchers (4.1.1)
       activesupport (>= 4.2.0)
     simplecov (0.17.0)
       docile (~> 1.1)
@@ -523,8 +523,7 @@ GEM
     slack-notifier (2.3.2)
     sort_alphabetical (1.1.0)
       unicode_utils (>= 1.2.2)
-    spring (2.0.2)
-      activesupport (>= 4.2)
+    spring (2.1.0)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
     sprockets (4.0.0.beta9)
@@ -548,9 +547,6 @@ GEM
     traceroute (0.8.0)
       rails (>= 3.0.0)
     ttfunk (1.5.1)
-    turbolinks (5.2.0)
-      turbolinks-source (~> 5.2)
-    turbolinks-source (5.2.0)
     twitter-typeahead-rails (0.11.1)
       actionpack (>= 3.1)
       jquery-rails
@@ -586,8 +582,6 @@ GEM
     will_paginate (3.1.7)
     will_paginate-bootstrap4 (0.2.2)
       will_paginate (~> 3.0, >= 3.0.0)
-    x-editable-rails (1.5.5.1)
-      railties
     xpath (3.2.0)
       nokogiri (~> 1.8)
 
@@ -602,7 +596,7 @@ DEPENDENCIES
   acts-as-taggable-on!
   acts_as_list!
   addressable (~> 2.6.0)
-  audited (~> 4.8)
+  audited (~> 4.9)
   axlsx!
   axlsx_rails
   babel-transpiler
@@ -623,7 +617,7 @@ DEPENDENCIES
   coffee-rails
   connection_pool
   country_select
-  curb (~> 0.9.9)
+  curb (~> 0.9.10)
   database_cleaner
   deep_cloneable (~> 2.4.0)
   delayed_job
@@ -652,7 +646,7 @@ DEPENDENCIES
   i18n-js
   icalendar
   icalendar-recurrence
-  jbuilder (~> 2.8)
+  jbuilder (~> 2.9)
   jquery-rails
   jquery_datepicker
   json (>= 1.8)
@@ -677,7 +671,7 @@ DEPENDENCIES
   premailer-rails
   progress_bar
   pry
-  puma (~> 3.12)
+  puma (~> 4.0)
   rack-mini-profiler
   rails (= 5.2.3)
   rails-controller-testing
@@ -708,14 +702,12 @@ DEPENDENCIES
   sqlite3
   timecop
   traceroute
-  turbolinks (~> 5.2.0)
   twitter-typeahead-rails
   uglifier (>= 1.3.0)
   webmock
   whenever
   will_paginate
   will_paginate-bootstrap4
-  x-editable-rails
 
 BUNDLED WITH
    2.0.2

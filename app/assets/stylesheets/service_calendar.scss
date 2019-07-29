@@ -19,31 +19,91 @@
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #serviceCalendar {
-  .service-calendar-table {
-    border-left: 0;
-    border-right: 0;
-    margin-bottom: 0;
-    border-bottom: 0;
-    table-layout: fixed;
+  .service-calendar-container {
+    .card-header {
+      z-index: 1023;
+    }
 
-    th:first-child, td:first-child {
+    &> .service-calendar-table > thead > tr:first-child > th {
+      z-index: 1022;
+    }
+
+    &> .service-calendar-table > thead > tr:nth-child(2) > th {
+      z-index: 1021;
+    }
+
+    &> .service-calendar-table > thead > tr:nth-child(3) > th {
+      z-index: 1020;
+    }
+
+    .service-calendar-table {
       border-left: 0;
-    }
-
-    th:last-child, td:last-child {
       border-right: 0;
-    }
-
-    tr:last-child td, tr:last-child th {
+      margin-bottom: 0;
       border-bottom: 0;
+      table-layout: fixed;
+
+      &> thead > tr:first-child > th {
+        top: 48px;
+      }
+
+      &> thead > tr > th {
+        @extend .sticky-top;
+        border: 0;
+        background: white;
+
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          border-right: $table-border-width solid $table-border-color;
+          border-bottom: $table-border-width solid $table-border-color;
+          pointer-events: none;
+        }
+      }
+
+      tbody th:first-child, tbody td:first-child {
+        border-left: 0;
+      }
+
+      &> thead > tr:first-child > th:last-child::before, .check-visits-row tr th:last-child::before, tbody th:last-child, tbody td:last-child {
+        border-right: 0;
+      }
+
+      tbody tr:last-child td, tbody tr:last-child th {
+        border-bottom: 0;
+      }
+
+      th, td {
+        vertical-align: middle;
+      }
     }
 
-    th, td {
-      vertical-align: middle;
+    .visit-group-select .dropdown-menu {
+      li:not(.active) .vg-page-header {
+        @extend .bg-light;
+      }
+
+      .vg-page-header {
+        @extend .border-top;
+        @extend .border-bottom;
+        @extend .font-weight-bold;
+      }
     }
 
-    thead th {
-      border-bottom: 0;
+    .visit {
+      &:not(.calendar-visit):not(.locked-visit):hover {
+        cursor: pointer;
+        background: theme-color('light');
+      }
+
+      .visit-quantity {
+        transform: scale(1.5);
+        cursor: pointer;
+      }
     }
   }
 }

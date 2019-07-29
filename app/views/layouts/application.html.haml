@@ -26,9 +26,8 @@
     = csrf_meta_tags
     %meta{ charset: 'utf8' }
     %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1, shrink-to-fit=no' }
-    %meta{ name: 'turbolinks-cache-control', content: 'no-cache' }
-    = stylesheet_link_tag 'application', media: 'all', data: { turbolinks_track: 'reload' }
-    = javascript_include_tag 'application', data: { turbolinks_track: 'reload' }
+    = stylesheet_link_tag 'application', media: 'all'
+    = javascript_include_tag 'application'
     = favicon_link_tag asset_path('favicon.ico')
     = render 'layouts/i18n-js'
     = Gon::Base.render_data

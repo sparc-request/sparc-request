@@ -53,9 +53,8 @@ class Identities::RegistrationsController < Devise::RegistrationsController
 
   def update
     @identity = current_user
-    attrs = identity_params
-    # @professional_organization_id = params[:project_role][:identity_attributes][:professional_organization_id]
-    # attrs = fix_professional_organization_id if @professional_organization_id != @identity.professional_organization_id
+    @professional_organization_id = params[:project_role][:identity_attributes][:professional_organization_id]
+    attrs = fix_professional_organization_id
     if @identity.update_attributes(attrs)
       redirect_to session.delete(:return_to)
       flash[:success] = t(:devise)[:profile][:updated]
@@ -84,6 +83,7 @@ class Identities::RegistrationsController < Devise::RegistrationsController
   end
 
     def fix_professional_organization_id
+    attrs = identity_params
     attrs = attrs.merge(professional_organization_id: @professional_organization_id)
     attrs
   end

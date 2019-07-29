@@ -1,12 +1,47 @@
 = form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f|
   = render "devise/shared/error_messages", resource: resource
-  .field
-    = f.label :email
-    %br/
-    = f.email_field :email, autofocus: true, autocomplete: "email"
-  - if devise_mapping.confirmable? && resource.pending_reconfirmation?
-    %div
-      Currently waiting confirmation for: #{resource.unconfirmed_email}
+  .form-group.row
+    = f.label :full_name, t(:devise)[:profile][:full_name], class: 'col-lg-3 control-label'
+    .col-lg-9
+      = identity.full_name
+
+  .form-group.row
+    = f.label :email, t(:devise)[:profile][:email], class: 'col-lg-3 control-label required'
+    .col-lg-9
+      = f.text_field :email, class: 'form-control'
+
+  .form-group.row
+    = f.label :phone, t(:devise)[:profile][:phone], class: 'col-lg-3 control-label'
+    .col-lg-9
+      = f.text_field :phone, class: 'form-control'
+
+  .form-group.row
+    .col-lg-3.control-label.bold
+      = link_to(t(:devise)[:profile][:orcid], t(:devise)[:profile][:links][:orcid], target: :blank)
+    .col-lg-9
+      = f.text_field :orcid, class: 'form-control', placeholder: t(:devise)[:profile][:placeholders][:orcid], maxlength: 19
+
+  .form-group.row
+    = f.label :era_commons_name, t(:devise)[:profile][:era_commons_name], class: 'col-lg-3 control-label'
+    .col-lg-9
+      = f.text_field :era_commons_name, class: 'form-control'
+
+  .form-group.row
+    = f.label :subspecialty, t(:devise)[:profile][:subspecialty], class: 'col-lg-3 control-label'
+    .col-lg-9
+      = f.select :subspecialty, options_for_select(PermissibleValue.get_inverted_hash('subspecialty'), identity.subspecialty), { include_blank: t(:devise)[:profile][:subspecialty_prompt] }, class: 'form-control selectpicker'
+
+  .form-group.row
+    = f.label :credentials, t(:devise)[:profile][:credentials], class: 'col-lg-3 control-label'
+    .col-lg-9
+      = f.select :credentials, options_for_select(PermissibleValue.get_inverted_hash('user_credential'), identity.credentials), { include_blank: t(:devise)[:profile][:credentials_prompt] }, class: 'form-control selectpicker'
+
+  .form-group.row.style{display_if(identity.credentials == 'other')}
+    = f.label :credentials_other, t(:devise)[:profile][:credentials_other], class: 'col-lg-3 control-label'
+    .col-lg-9
+      = f.text_field :credentials_other, class: 'form-control'
+
+  = render("dashboard/associated_users/professional_organizations", professional_organization: identity.professional_organization)
 
   .actions
-    = f.submit "Update"
+    = f.submit t(:devise)[:profile][:update], class: 'btn btn-lg btn-block btn-outline-primary'

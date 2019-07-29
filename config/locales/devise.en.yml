@@ -132,6 +132,7 @@ en:
     profile:
       header: "User Profile"
       update: "Save Changes"
+      full_name: "Full Name"
       email: "Email:"
       orcid: "ORCID:"
       placeholders:

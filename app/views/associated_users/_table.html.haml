@@ -28,10 +28,11 @@
       - else
         = t('authorized_users.header')
   .collapse#authorizedUsers{ class: service_request.previously_submitted? ? '' : 'show' }
-    #associatedUsersTableToolbar
-      = link_to new_associated_user_path(srid: service_request.id), remote: true, class: 'btn btn-success' do
-        = icon('fas', 'plus mr-1')
-        = t('authorized_users.new')
+    - unless in_review?
+      #associatedUsersTableToolbar
+        = link_to new_associated_user_path(srid: service_request.id), remote: true, class: 'btn btn-success' do
+          = icon('fas', 'plus mr-1')
+          = t('authorized_users.new')
     %table#authorizedUsersTable{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: associated_users_path(format: :json, srid: service_request.id), toolbar: '#associatedUsersTableToolbar' } }
       %thead
         %tr
@@ -48,5 +49,6 @@
           - if Setting.get_value('use_epic') && protocol.selected_for_epic?
             %th{ data: { field: 'epic_access', align: 'center', sortable: 'true' } }
               = ProjectRole.human_attribute_name(:epic_access)
-          %th{ data: { field: 'actions', align: 'center' } }
-            = t('actions.actions')
+          - unless in_review?
+            %th{ data: { field: 'actions', align: 'center' } }
+              = t('actions.actions')

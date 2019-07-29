@@ -83,11 +83,6 @@ $(document).ready ->
       
 
       # Protocol Show Begin
-      $(document).on 'click', '.edit-protocol-information-button', ->
-        if $(this).data('permission')
-          protocol_id = $(this).data('protocol-id')
-          window.location = "/dashboard/protocols/#{protocol_id}/edit"
-
       $(document).on 'click', '.view-full-calendar-button', ->
         protocol_id = $(this).data('protocolId')
         statuses_hidden = $(this).data('statusesHidden')

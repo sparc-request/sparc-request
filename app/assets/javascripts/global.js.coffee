@@ -50,8 +50,9 @@ $(document).ready ->
 
   # Smooth scroll anchors with hash
   $(document).on 'click', "a[href^='#']", (event) ->
-    event.preventDefault()
-    $('html, body').animate({ scrollTop: $(this.hash).offset().top }, 'slow')
+    if !$(this).data('toggle')
+      event.preventDefault()
+      $('html, body').animate({ scrollTop: $(this.hash).offset().top }, 'slow')
 
   $(document).on 'keydown change change.datetimepicker', '.is-valid, .is-invalid', ->
     $(this).removeClass('is-valid is-invalid').find('.form-error').remove()

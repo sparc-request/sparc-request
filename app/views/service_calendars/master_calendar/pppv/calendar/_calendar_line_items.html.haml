@@ -43,7 +43,7 @@
         - unless liv.line_item.service.is_available
           = inactive_tag
       %td.notes.text-center
-        = notes_button(liv, locked, service_request, sub_service_request)
+        = notes_button(liv, disabled: locked, service_request: service_request, sub_service_request: sub_service_request)
       %td.status.text-center
         = PermissibleValue.get_value('status', ssr.status)
       %td.service-rate.text-center

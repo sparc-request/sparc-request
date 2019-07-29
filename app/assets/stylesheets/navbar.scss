@@ -105,7 +105,7 @@ nav#stepsNav {
 
 @each $color, $value in $theme-colors {
   nav#stepsNav .nav-link.active.text-#{$color} {
-    color: theme-color-level($color, 3) !important;
+    color: darken($value, 10%) !important;
   }
 }
 

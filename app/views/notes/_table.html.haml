@@ -26,8 +26,8 @@
 
   - if controller_name == 'service_requests'
     #notes-custom-toolbar
-      = link_to t(:notes)[:add], new_note_path(note: { notable_id: notable_id, notable_type: notable_type }, srid: service_request.id), remote: true, title: t(:proper)[:document_management][:tooltips][:notes], class: 'btn btn-success', data: { toggle: 'tooltip' }
-  %table#notes-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: notes_path(format: :json, note: { notable_id: notable_id, notable_type: notable_type}, srid: service_request.id, review: review, cancel: cancel), striped: "true", toolbar: "#notes-custom-toolbar" } }
+      = link_to t(:notes)[:add], new_note_path(note: { notable_id: notable_id, notable_type: notable_type }, srid: @service_request.id), remote: true, title: t(:proper)[:document_management][:tooltips][:notes], class: 'btn btn-success', data: { toggle: 'tooltip' }
+  %table#notes-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: notes_path(format: :json, note: { notable_id: notable_id, notable_type: notable_type}, srid: @service_request.try(:id), review: review, cancel: cancel), striped: "true", toolbar: "#notes-custom-toolbar" } }
     %thead.primary-header
       %tr
         %th.col-sm-2.user{ data: { align: "left", sortable: "true", field: "user" } }

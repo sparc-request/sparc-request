@@ -19,6 +19,32 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module ProtocolsHelper
+  def protocol_details_button(protocol, opts={})
+    url = in_dashboard? ? dashboard_protocol_path(protocol) : protocol_path(protocol, srid: opts[:srid])
+
+    link_to url, remote: true, class: 'btn btn-info mr-1', title: t('protocols.summary.tooltips.details'), data: { toggle: 'tooltip' } do
+      icon('fas', 'eye mr-1') + I18n.t('protocols.view_details.button', protocol_type: protocol.model_name.human)
+    end
+  end
+
+  def edit_protocol_button(protocol, opts={})
+    if !in_dashboard? || (in_dashboard? && opts[:permission])
+      url = in_dashboard? ? edit_dashboard_protocol_path(protocol) : edit_protocol_path(protocol, srid: opts[:srid])
+
+      link_to url, remote: true, class: 'btn btn-warning mr-1', title: t('protocols.summary.tooltips.edit'), data: { toggle: 'tooltip' } do
+        icon('far', 'edit mr-1') + I18n.t('protocols.edit', protocol_type: protocol.model_name.human)
+      end
+    end
+  end
+
+  def archive_protocol_button(protocol, opts={})
+    if in_dashboard? && opts[:permission]
+      link_to archive_dashboard_protocol_path(protocol), remote: true, method: :patch, class: ['btn', protocol.archived? ? 'btn-success' : 'btn-danger'], title: t("protocols.summary.tooltips.#{protocol.archived ? "unarchive_study" : "archive_study"}"), data: { toggle: 'tooltip' } do
+        icon('fas', 'archive mr-1') + t(:protocols)[:summary][protocol.archived? ? :unarchive : :archive] + " " + protocol.model_name.human
+      end
+    end
+  end
+
   def display_study_type_question?(protocol, study_type_answer, view_protocol=false)
     if !Setting.get_value("use_epic") || protocol.selected_for_epic == false
       # If read-only (Dashboard--> 'Edit Study Information' or 'View Study Details') do not show the first CofC question if unanswered

@@ -59,7 +59,7 @@ $(document).ready ->
         srid:                     getSRId()
         ssrid:                    getSSRId()
         tab:                      $('#tab').val()
-        page:                     $(this).parents('.arm-container').data('page')
+        page:                     $(this).parents('.service-calendar-container').data('page')
 
   #####################
   # Change Visit Page #

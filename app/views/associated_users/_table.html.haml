@@ -19,14 +19,11 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .card
-  .card-header.bg-primary.text-white
-    %h3.mb-0
+  .card-header.bg-primary.text-white{ data: { toggle: 'collapse', target: '#authorizedUsers' } }
+    %h3.mb-0<
       - if service_request.previously_submitted?
-        = link_to '#authorizedUsers', data: { toggle: 'collapse' } do
-          %span.caret
-          = t('authorized_users.header')
-      - else
-        = t('authorized_users.header')
+        = icon('fas', 'caret-down mr-3')
+      = t('authorized_users.header')
   .collapse#authorizedUsers{ class: service_request.previously_submitted? ? '' : 'show' }
     #associatedUsersTableToolbar
       = link_to new_associated_user_path(srid: service_request.id), remote: true, class: 'btn btn-success' do

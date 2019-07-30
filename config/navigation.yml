@@ -53,7 +53,7 @@ review:
   forward: "confirmation"
 
 obtain_research_pricing:
-  css_class: "green-provider"
+  css_class: "success"
 
 confirmation:
-  css_class: "green-provider"
+  css_class: "success"

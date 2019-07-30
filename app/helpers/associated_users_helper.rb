@@ -19,6 +19,14 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module AssociatedUsersHelper
+  def new_authorized_user_button(opts={})
+    url = in_dashboard? ? new_dashboard_associated_user_path(protocol_id: opts[:protocol_id]) : new_associated_user_path(srid: opts[:srid])
+
+    link_to url, remote: true, class: ['btn btn-success', in_dashboard? && !opts[:permission] ? 'disabled' : ''] do
+      icon('fas', 'plus mr-1') + t('authorized_users.new')
+    end
+  end
+
   # Generates state for portion of Authorized User form concerned with their
   # professional organizations.
   # professional_organization - Last professional organization selected in form.

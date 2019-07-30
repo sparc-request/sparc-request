@@ -670,8 +670,8 @@ en:
         notes: "Protocol notes viewable to Administrators and Authorized Users"
         details: "Quick access to protocol information"
         edit: "Quick access to edit protocol information"
-        archive_study: "Ability to hide study from all Authorized User dashboards"
-        unarchive_study: "Click to reveal on all associated Authorized User dashboards"
+        archive: "Ability to hide study from all Authorized User dashboards"
+        unarchive: "Click to reveal on all associated Authorized User dashboards"
         rmid_server_down: "The Research Master ID Server is down. You cannot edit the Research Master ID field at this time."
     view_details:
       button: "%{protocol_type} Details"

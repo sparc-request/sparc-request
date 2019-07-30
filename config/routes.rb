@@ -92,6 +92,7 @@ SparcRails::Application.routes.draw do
     get :confirmation
     get :save_and_exit
     get :approve_changes
+    get :system_satisfaction_survey
 
     post :navigate
     post :add_service

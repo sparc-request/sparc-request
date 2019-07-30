@@ -18,37 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module FormsHelper
-  def form_completed_display(completed)
-    icon = completed ? icon('fas', 'check') : icon('fas', 'times')
-    klass = completed ? 'text-success' : 'text-danger'
-
-    content_tag(:h4, content_tag(:span, icon, class: klass))
-  end
-
-  def form_options(form, completed, respondable, review)
-    if review
-      response = Response.where(survey: form, respondable: respondable).first
-      response ? view_response_button(response) : link_to(icon('fas', 'eye'), 'javascript:void(0)', class: 'btn btn-info disabled')
-    elsif completed
-      response = Response.where(survey: form, respondable: respondable).first
-      [ view_response_button(response),
-        edit_response_button(response),
-        delete_response_button(response)
-      ].join('')
-    else
-      complete_form_button(form, respondable)
-    end
-  end
-
-  def complete_form_button(form, respondable)
-    link_to(
-      t(:actions)[:complete],
-      new_surveyor_response_path(type: form.class.name, survey_id: form.id, respondable_id: respondable.id, respondable_type: respondable.class.name),
-      remote: true,
-      class: 'btn btn-success new-form-response',
-      title: t(:surveyor)[:responses][:tooltips][:complete],
-      data: { toggle: 'tooltip', placement: 'top', container: 'body', boundary: 'window' }
-    )
-  end
-end
+$("#modalContainer").html("<%= j render 'service_requests/modals/participate_in_survey_modal', survey: @survey, service_request: @service_request %>")
+$("#modalContainer").modal('show')

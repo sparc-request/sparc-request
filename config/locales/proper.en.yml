@@ -115,22 +115,6 @@ en:
         documents: "Visible to Authorized Users and selected Service Providers"
         notes: "Important notes for your Study/Project"
 
-    ##########
-    # REVIEW #
-    ##########
-    review:
-      instructions:
-        first: "Review your request"
-        second: "Make changes if necessary"
-        third: "Click 'Save as Draft', 'Get a Cost Estimate', or 'Submit Request'"
-      protocol_information_notice: "Protocol Information"
-      authorized_users_notice: "Authorized Users"
-      documents_notice: "Documents"
-      notes_notice: "Notes"
-      pppv_calendars_notice: "Clinical Services"
-      otf_calendar_notice: "Non-clinical Services"
-      totals_notice: "Total Costs"
-
     ##############################
     # SYSTEM SATISFACTION SURVEY #
     ##############################
@@ -238,6 +222,8 @@ en:
             full: "Step 6<br/>Review Your<br/>Request"
             short: "Step 6<br/>Review"
             xs: "Step 6"
+          header: "Step 6: Review Your Request"
+          sub_header: "Review your request and make changes if necessary"
         obtain_research_pricing:
           header: "Get a Cost Estimate"
         confirmation:
@@ -251,7 +237,7 @@ en:
         save_and_continue:
           full: "Save and Continue"
           small: "Continue"
-        submit: "Submit Request →"
+        submit: "Submit Request"
         saving: "Saving..."
         submitting: "Submitting..."
         getting_cost: "Getting Cost..."

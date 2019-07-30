@@ -51,7 +51,8 @@ class AssociatedUsersController < ApplicationController
   end
 
   def create
-    creator = AssociatedUserCreator.new(project_role_params, current_user)
+    creator         = AssociatedUserCreator.new(project_role_params, current_user)
+    @protocol_role  = creator.protocol_role
 
     if creator.successful?
       flash.now[:success] = t('authorized_users.created')
@@ -73,13 +74,13 @@ class AssociatedUsersController < ApplicationController
   end
 
   def update
-    updater               = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params, current_identity: current_user)
-    protocol_role         = updater.protocol_role
+    updater       = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params, current_identity: current_user)
+    protocol_role = updater.protocol_role
 
     if updater.successful?
       flash.now[:success] = t('authorized_users.updated')
 
-      redirect_to dashboard_root_path if protocol_role.identity_id == current_user.id && !current_user.catalog_overlord? && ['none', 'view'].include?(protocol_role.project_rights)
+      redirect_to dashboard_root_path if protocol_role.identity == current_user && !current_user.catalog_overlord? && ['none', 'view'].include?(protocol_role.project_rights)
     else
       @errors = updater.protocol_role.errors
     end
@@ -104,6 +105,7 @@ class AssociatedUsersController < ApplicationController
 
   def project_role_params
     params[:project_role][:identity_attributes][:phone] = sanitize_phone params[:project_role][:identity_attributes][:phone]
+    params[:project_role][:project_rights] ||= ""
 
     params.require(:project_role).permit(
       :epic_access,

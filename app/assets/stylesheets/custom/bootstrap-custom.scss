@@ -118,8 +118,6 @@
   }
 }
 
-// #1b6384
-
 @each $color, $value in $theme-colors {
   $hover-background: darken($value, 7.5%);
   $active-background: darken($value, 10%);
@@ -127,12 +125,12 @@
   div.bg-#{$color}[data-toggle=collapse] {
     transition: $btn-transition;
 
-    &:hover {
+    &.hover {
       color: color-yiq($hover-background) !important;
       background-color: $hover-background !important;
     }
 
-    &:active {
+    &.active {
       color: color-yiq($active-background) !important;
       background-color: $active-background !important;
     }

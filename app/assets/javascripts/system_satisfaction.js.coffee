@@ -20,25 +20,34 @@
 
 $(document).ready ->
   survey_offered = false
+  if $('#use_system_satisfaction').val() == 'true'
+    $(document).one 'click', '.submit-request', (event) ->
+      button = $(this)
 
-  $(document).one 'click', '.get-a-cost-estimate, .form-submit-button', (event) ->
-    button = $(this)
-
-    if !survey_offered
-      event.preventDefault()
-      $('#modalContainer').html($('#participate-in-survey-modal').html())
-      $('#modalContainer').modal('show')
-
-      $(document).on 'click', '#modalContainer .yes-button', ->
-        survey_offered = true
+      if !survey_offered
+        event.preventDefault()
         $.ajax
-          type: 'get'
-          url: '/surveyor/responses/new.js'
+          method: 'get'
+          dataType: 'script'
+          url: '/service_request/system_satisfaction_survey'
           data:
-            type: 'SystemSurvey'
-            survey_id: $(this).data('id')
-            respondable_id: getSRId()
-            respondable_type: 'ServiceRequest'
+            srid: getSRId()
 
-      $(document).on 'hidden.bs.modal', "#modalContainer", ->
-        window.location = button.attr('href')
+        $(document).one 'hide.bs.modal', '#modalContainer', ->
+          form = document.getElementById('serviceRequestForm')
+          Rails.fire(form, 'submit')
+
+    $(document).one 'click', '.get-a-cost-estimate', (event) ->
+      button = $(this)
+
+      if !survey_offered
+        event.preventDefault()
+        $.ajax
+          method: 'get'
+          dataType: 'script'
+          url: '/service_request/system_satisfaction_survey'
+          data:
+            srid: getSRId()
+
+        $(document).one 'hide.bs.modal', '#modalContainer', ->
+          window.location = button.prop('href')

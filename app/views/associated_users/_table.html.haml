@@ -18,17 +18,16 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.card.w-100
+.card.w-100#authorizedUsersCard
   .card-header.bg-primary.text-white{ data: { toggle: 'collapse', target: '#authorizedUsers' } }
     %h3.mb-0<
-      - if in_dashboard? || service_request.previously_submitted?
-        = icon('fas', 'caret-down mr-3')
+      = icon('fas', 'caret-down mr-3')
       = t('authorized_users.header')
   .collapse#authorizedUsers{ class: controller_name == 'service_requests' && service_request.previously_submitted? ? '' : 'show' }
     #associatedUsersTableToolbar
       - if in_dashboard?
         = new_authorized_user_button(protocol_id: protocol.id, permission: permission_to_edit || admin)
-      - else
+      - elsif !in_review?
         = new_authorized_user_button(srid: service_request.id)
     - url = in_dashboard? ? dashboard_associated_users_path(format: :json, protocol_id: protocol.id) : associated_users_path(format: :json, srid: service_request.id)
     %table#authorizedUsersTable{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: url, toolbar: '#associatedUsersTableToolbar' } }
@@ -47,5 +46,6 @@
           - if Setting.get_value('use_epic') && protocol.selected_for_epic?
             %th{ data: { field: 'epic_access', align: 'center', sortable: 'true' } }
               = ProjectRole.human_attribute_name(:epic_access)
-          %th{ data: { field: 'actions', align: 'center' } }
-            = t('actions.actions')
+          - unless in_review?
+            %th{ data: { field: 'actions', align: 'center' } }
+              = t('actions.actions')

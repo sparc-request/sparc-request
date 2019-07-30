@@ -83,22 +83,30 @@ module AssociatedUsersHelper
     professional_organization.org_type.capitalize
   end
 
-  def authorized_user_actions(pr, service_request)
+  def authorized_user_actions(pr, opts={})
     content_tag :div, class: 'd-flex justify-content-center' do
-      raw([ edit_authorized_user_button(pr, service_request),
-        delete_authorized_user_button(pr)
+      raw([
+        edit_authorized_user_button(pr, opts),
+        delete_authorized_user_button(pr, opts)
       ].join(''))
     end
   end
 
-  def edit_authorized_user_button(pr, service_request)
-    link_to icon('far', 'edit'), edit_associated_user_path(pr, srid: service_request.id), remote: true, class: 'btn btn-warning mr-1'
+  def edit_authorized_user_button(pr, opts={})
+    url = in_dashboard? ? edit_dashboard_associated_user_path(pr) : edit_associated_user_path(pr, srid: opts[:srid])
+
+    link_to icon('far', 'edit'), url, remote: true, class: ['btn btn-warning mr-1', in_dashboard? && !opts[:permission] ? 'disabled' : '']
   end
 
-  def delete_authorized_user_button(pr)
-    data  = { id: pr.id, toggle: 'tooltip', placement: 'right', boundary: 'window' }
+  def delete_authorized_user_button(pr, opts={})
+    data = { id: pr.id, toggle: 'tooltip', placement: 'right', boundary: 'window' }
 
-    if current_user.id == pr.identity_id
+    if current_user.id == pr.identity_id && in_dashboard? && !opts[:permission] # Dashboard Logic
+      data[:batch_select] = {
+        checkConfirm: 'true',
+        checkConfirmSwalText: t(:authorized_users)[:delete][:self_remove_warning]
+      }
+    elsif current_user.id == pr.identity_id # SPARC Proper logic
       data[:batch_select] = {
         checkConfirm: 'true',
         checkConfirmSwalText: current_user.catalog_overlord? ? t(:authorized_users)[:delete][:self_remove_warning] : t(:authorized_users)[:delete][:self_remove_redirect_warning]
@@ -108,7 +116,7 @@ module AssociatedUsersHelper
     content_tag(:button,
       icon('fas', 'trash-alt'), type: 'button',
       title: pr.primary_pi? ? t(:authorized_users)[:delete][:pi_tooltip] : t(:authorized_users)[:delete][:tooltip],
-      class: ["btn btn-danger actions-button delete-associated-user-button", pr.primary_pi? ? 'disabled' : ''],
+      class: ["btn btn-danger actions-button delete-associated-user-button", (in_dashboard? && !opts[:permission]) || pr.primary_pi? ? 'disabled' : ''],
       data: data
     )
   end

@@ -65,6 +65,7 @@ html {
     opacity: 1;
     transition: $transition-base;
     pointer-events: all;
+    z-index: 1050;
 
     &.hide {
       opacity: 0;

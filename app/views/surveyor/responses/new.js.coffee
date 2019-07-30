@@ -19,6 +19,5 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 $('#modalContainer').html("<%= j render 'surveyor/responses/new_response_modal', survey: @survey, response: @response, respondable: @respondable %>")
 $('#modalContainer').modal('show')
-$('.datetimepicker.date').datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
-$('.datetimepicker.time').datetimepicker(format: 'hh:mm A', allowInputToggle: true)
-$('.selectpicker').selectpicker()
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

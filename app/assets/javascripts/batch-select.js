@@ -33,11 +33,11 @@ $(document).ready( function() {
   var determineHighlightClass = function(type) {
     switch(type) {
       case 'success':
-        return 'success';
+        return 'alert-success';
       case 'warning':
-        return 'danger';
+        return 'alert-danger';
       default:
-        return 'primary';
+        return 'alert-primary';
     }
   };
 
@@ -127,10 +127,9 @@ $(document).ready( function() {
 
     $el.on('click', function () {
       var $el = $(this);
-
       Swal.fire({
-        title: $el.data('batch-select').checkConfirm ? that.options.checkConfirmSwalTitle : that.options.swalTitle,
-        text: $el.data('batch-select').checkConfirm ? that.options.checkConfirmSwalText : that.options.swalText,
+        title: $el.data('batch-select') && $el.data('batch-select').checkConfirm ? that.options.checkConfirmSwalTitle : that.options.swalTitle,
+        text: $el.data('batch-select') && $el.data('batch-select').checkConfirm ? that.options.checkConfirmSwalText : that.options.swalText,
         type: that.options.type,
         showCancelButton: true,
         confirmButtonColor: that.options.swalConfirmColor || determineSwalConfirmColor(that.options.type)
@@ -159,13 +158,14 @@ $(document).ready( function() {
   BatchSelect.prototype.showBatchSelected = function ($el) {
     var that = this,
         $tr = $el.parents('tr'),
+        $td = $el.parents('td'),
         position = $tr.position();
 
     if (position) {
       this.$selectedButtonContainer1  = $("<div style=\"position:absolute;\"></div>")
       this.$selectedButtonContainer2  = $("<div style=\"position:relative;height:100%;\"></div>");
       this.$selectedButtonContainer3  = $("<div style=\"position:absolute;\"></div>");
-      this.$selectedButton            = $("<button class=\"" + (this.options.batchSelectedClass || determineBatchSelectedClass(this.options.type)) + " batch-selected-btn\" type=\"button\" style=\"position:sticky;top:15px;bottom:15px;\">" + this.options.batchSelectedText + "</button>");
+      this.$selectedButton            = $(`<button class="${this.options.batchSelectedClass || determineBatchSelectedClass(this.options.type)} batch-selected-btn" type="button" style="position:sticky;top:15px;bottom:15px;z-index:1;white-space:nowrap;"><i class="fas fa-check mr-2"></i>${this.options.batchSelectedText}</button>`);
 
       this.$selectedButtonContainer1.append(this.$selectedButtonContainer2)
       this.$selectedButtonContainer2.append(this.$selectedButtonContainer3)
@@ -173,6 +173,7 @@ $(document).ready( function() {
       this.$container.append(this.$selectedButtonContainer1);
 
       var trPadd  = ($tr.outerHeight() - this.$selectedButton.outerHeight()) / 2,
+          tdWidth = $td.outerWidth(),
           height  = this.$container.outerHeight() - (trPadd * 2),
           width   = this.$selectedButton.outerWidth(),
           top1    = this.$container.siblings('thead').outerHeight() + trPadd,
@@ -180,9 +181,7 @@ $(document).ready( function() {
 
       this.$selectedButtonContainer1.css('height', height + "px");
       this.$selectedButtonContainer3.css('height', height - top3 + "px");
-      this.$selectedButtonContainer1.css('width', width + "px");
-      this.$selectedButtonContainer2.css('width', width + "px");
-      this.$selectedButtonContainer1.css('right', -(width + 30) + "px");
+      this.$selectedButtonContainer1.css('right', `calc(${tdWidth + width}px + 1rem)`);
       this.$selectedButtonContainer1.css('top', top1 + "px");
       this.$selectedButtonContainer3.css('top', top3 + "px");
 
@@ -207,7 +206,7 @@ $(document).ready( function() {
   };
 
   BatchSelect.prototype.hideBatchSelected = function() {
-    this.$selectedButton.remove();
+    this.$selectedButtonContainer1.remove();
   }
 
   BatchSelect.prototype.toggleGroups = function(showChecks) {
@@ -217,9 +216,11 @@ $(document).ready( function() {
 
       if (showChecks) {
         $el.hide();
+        $el.siblings().hide()
         $check.show();
       } else {
         $el.show();
+        $el.siblings().show()
         $check.hide();
       }
     });
@@ -237,6 +238,9 @@ $(document).ready( function() {
     }).then(result => {
       if (result.value) {
         that.toggleCheckbox($check);
+      } else {
+        that.toggleGroups(false);
+        that.hideBatchSelected();
       }
     });
   };

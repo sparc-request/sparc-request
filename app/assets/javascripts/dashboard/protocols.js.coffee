@@ -117,12 +117,3 @@ $(document).ready ->
 
       reset_service_requests_handlers()
       # Protocol Show End
-
-(exports ? this).reset_service_requests_handlers = ->
-  $('.view-consolidated').tooltip()
-  $('.export-consolidated').tooltip()
-  $('.coverage-analysis-report').tooltip()
-  
-  $('.service-requests-table').on 'all.bs.table', ->
-    #Enable selectpickers
-    $(this).find('.selectpicker').selectpicker()

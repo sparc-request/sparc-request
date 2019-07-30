@@ -29,7 +29,7 @@ $('#user_search').parents('.form-group').removeClass('is-valid').addClass('is-in
 <% end %>
 
 <% elsif @identity %>
-$("#modalContainer").html("<%= j render 'associated_users/user_form', protocol: @protocol, protocol_role: @protocol_role, identity: @identity, service_request: @service_request, in_dashboard: false %>")
+$("#modalContainer").html("<%= j render 'associated_users/user_form', protocol: @protocol, protocol_role: @protocol_role, identity: @identity, epic_user: @epic_user, service_request: @service_request %>")
 
 primaryPiConfirmed = false
 $('#authorizedUserForm').on 'submit', (event) ->
@@ -75,8 +75,9 @@ $('#user_search').typeahead(
   }
 ).on 'typeahead:select', (event, suggestion) ->
   $.ajax
-    type: 'get'
-    url: '/associated_users/new.js'
+    method: 'get'
+    dataType: 'script'
+    url: '/associated_users/new'
     data:
       identity_id: suggestion.value
       srid: getSRId()

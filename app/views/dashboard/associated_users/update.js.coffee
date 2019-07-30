@@ -17,28 +17,29 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-<% if @errors.present? %>
-$("#modalContainer #modal_errors").html("<%= escape_javascript(render('layouts/modal_errors', errors: @errors)) %>")
-$("#modalContainer").scrollTop(0)
-<% else %>
-$("#modalContainer").modal('hide')
-# Send the user back to dashboard if theyre a member and not an admin
-<% if @return_to_dashboard %>
-window.location = "/dashboard"
-# Update the entire view to account for the current users rights change
-<% elsif @current_user_updated %>
-$("#summary-panel").html("<%= escape_javascript(render('dashboard/protocols/summary', protocol: @protocol, protocol_type: @protocol_type, permission_to_edit: @permission_to_edit, admin: @admin)) %>")
-$("#authorized-users-panel").html("<%= escape_javascript(render('dashboard/associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin)) %>")
-$("#documents-panel").html("<%= escape_javascript(render( 'dashboard/documents/documents_table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin )) %>")
-$("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, view_only: false)) %>")
 
-$("#associated-users-table").bootstrapTable()
-$("#documents-table").bootstrapTable()
-$(".service-requests-table").bootstrapTable()
+<% if @errors %>
+$("[name^='project_role']:not([type='hidden']), #professionalOrganizationForm select").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+$('.form-error').remove()
 
-reset_service_requests_handlers()
-<% else %>
-$("#associated-users-table").bootstrapTable 'refresh', {silent: true}
+<% @errors.messages.each do |attr, messages| %>
+<% messages.each do |message| %>
+$("[name='project_role[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
 <% end %>
-$("#flashContainer").replaceWith("<%= escape_javascript(render('layouts/flash')) %>")
+<% end %>
+<% else %>
+<% if @protocol_role.identity == current_user %>
+$("#protocolSummaryCard").replaceWith("<%= j render 'dashboard/protocols/summary', protocol: @protocol, protocol_type: @protocol_type, permission_to_edit: @permission_to_edit, admin: @admin %>")
+$("#authorizedUsersCard").replaceWith("<%= j render 'dashboard/associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin %>")
+$("#documentsCard").replaceWith("<%= j render 'dashboard/documents/documents_table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin  %>")
+$("#serviceRequestsCard").replaceWith("<%= j render 'dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit %>")
+
+$("#authorizedUsersTable").bootstrapTable()
+$("#documentsTable").bootstrapTable()
+$(".service-requests-table").bootstrapTable()
+<% end %>
+
+$("#modalContainer").modal('hide')
+$("#authorizedUsersTable").bootstrapTable('refresh')
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

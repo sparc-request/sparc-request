@@ -76,6 +76,25 @@ $(document).ready ->
       $control.text(alt)
       $control.attr('alt', text)
 
+  $(document).on 'show.bs.collapse hide.bs.collapse', 'div[data-toggle=collapse] + .collapse', (event) ->
+    if event.delegateTarget.activeElement.tagName == 'A'
+      event.preventDefault()
+
+  $(document).on('mouseover', 'div[data-toggle=collapse]', (event) ->
+    if event.target.tagName == 'DIV'
+      $(this).addClass('hover')
+    else
+      $(this).removeClass('hover')
+  ).on('mouseleave', 'div[data-toggle=collapse]', (event) ->
+    $(this).removeClass('hover')
+  ).on('mousedown', 'div[data-toggle=collapse]', (event) ->
+    if event.target.tagName == 'DIV'
+      $(this).addClass('active')
+  ).on('mouseup', 'div[data-toggle=collapse]', (event) ->
+    if event.target.tagName == 'DIV'
+      $(this).removeClass('active')
+  )
+
   $(document).on 'click', '.copy-to-clipboard', ->
     $that = $(this)
 

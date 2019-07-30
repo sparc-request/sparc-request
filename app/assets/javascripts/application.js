@@ -69,6 +69,7 @@
 //= require associated_users_form
 //= require subsidies
 //= require documents
+//= require system_satisfaction
 
 //= require cart
 //= require catalog

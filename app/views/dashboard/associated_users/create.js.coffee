@@ -17,20 +17,25 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-<% if @errors.present? %>
-$("#modalContainer #modal_errors").html("<%= escape_javascript(render(partial: 'layouts/modal_errors', locals: {errors: @errors})) %>")
-$("#modalContainer").scrollTop(0)
-<% else %>
-<% if @current_user_created %>
-$("#documents-panel").html("<%= escape_javascript(render( 'dashboard/documents/documents_table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin )) %>")
-$("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, view_only: false)) %>")
 
-$("#documents-table").bootstrapTable()
-$(".service-requests-table").bootstrapTable()
+<% if @errors %>
+$("[name^='project_role']:not([type='hidden']), #professionalOrganizationForm select").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+$('.form-error').remove()
 
-reset_service_requests_handlers()
+<% @errors.messages.each do |attr, messages| %>
+<% messages.each do |message| %>
+$("[name='project_role[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
 <% end %>
-$("#modalContainer").modal 'hide'
-$("#associated-users-table").bootstrapTable 'refresh', {silent: true}
-$("#flashContainer").replaceWith("<%= escape_javascript(render('layouts/flash')) %>")
+<% end %>
+<% else %>
+<% if @protocol_role.identity == current_user %>
+$("#documentsCard").replaceWith("<%= j render 'dashboard/documents/documents_table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin %>")
+$("#serviceRequestsCard").replaceWith("<%= j render'dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, user: @user %>")
+
+$("#documentsTable").bootstrapTable()
+$(".service-requests-table").bootstrapTable()
+<% end %>
+$("#authorizedUsersTable").bootstrapTable('refresh')
+$("#modalContainer").modal('hide')
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

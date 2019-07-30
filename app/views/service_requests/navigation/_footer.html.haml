@@ -28,23 +28,18 @@
     - unless @current_page == 'catalog'
       .col.text-center
         = link_to t('proper.cart.back_to_catalog'), catalog_service_request_path(srid: @service_request.id), class: 'btn btn-lg btn-outline-primary'
+    - if @service_request.submitted_at.blank? && @service_request.protocol.present?
+      .col.text-center
+        = save_as_draft_button(@service_request)
     - if controller.action_name == 'review'
       .col.text-center
-        = save_as_draft_button(@service_request)
-        = link_to t(:proper)[:navigation][:bottom][:get_cost_estimate],obtain_research_pricing_service_request_path(srid: @service_request.id), class: 'btn btn-default get-a-cost-estimate', data: { disable_with: t(:proper)[:navigation][:bottom][:getting_cost] }
-    - elsif @service_request.submitted_at.blank? && @service_request.protocol.present?
-      .col.text-center
-        = save_as_draft_button(@service_request)
+        = link_to t("proper.navigation.bottom.get_cost_estimate"),obtain_research_pricing_service_request_path(srid: @service_request.id), class: 'btn btn-lg btn-outline-secondary get-a-cost-estimate'
     .col.text-right
-      -# This was extracted because the surveyor gem requires an href location to redirect to post-submit and it was being cranky
-      - if Setting.get_value("system_satisfaction_survey") && action_name == 'review'
-        = link_to t(:proper)[:navigation][:bottom][:submit], confirmation_service_request_path(srid: @service_request.id), class: 'btn btn-default form-submit-button', data: { disable_with: t(:proper)[:navigation][:bottom][:submitting] }
+      - if action_name == 'review'
+        %button.btn.btn-lg.btn-outline-success.submit-request{ type: 'submit' }<
+          = t('proper.navigation.bottom.submit')
+          = icon('fas', 'arrow-right ml-2')
       - else
-        - if action_name == 'review'
-          %button.btn.btn-lg.btn-outline-success{ type: 'submit' }<
-            = t('proper.navigation.bottom.submit')
-            = icon('fas', 'arrow-right ml-2')
-        - else
-          %button.btn.btn-lg.btn-outline-success{ type: 'submit' }<
-            = t('proper.navigation.bottom.save_and_continue.full')
-            = icon('fas', 'arrow-right ml-2')
+        %button.btn.btn-lg.btn-outline-success{ type: 'submit' }<
+          = t('proper.navigation.bottom.save_and_continue.full')
+          = icon('fas', 'arrow-right ml-2')

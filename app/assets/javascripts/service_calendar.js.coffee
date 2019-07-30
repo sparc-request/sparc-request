@@ -31,6 +31,9 @@ $(document).ready ->
       success: ->
         $('#calendarLoading').removeClass('show active')
 
+  else if $('#serviceCalendarReview').length
+    adjustCalendarHeaders()
+
   ##########################
   # Visit Checkbox / Input #
   ##########################

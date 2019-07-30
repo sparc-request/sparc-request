@@ -98,6 +98,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     controller.response = response
     controller.new
     @protocol = controller.instance_variable_get(:@protocol)
+
+    respond_to :js
   end
 
   def create
@@ -169,6 +171,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     else
       perform_protocol_lock(@protocol, params[:locked])
     end
+
+    respond_to :js
   end
 
   def update_protocol_type
@@ -193,15 +197,13 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol.notes.create(identity: current_user, body: t("protocols.summary.#{action}_note", protocol_type: @protocol_type))
     ProtocolMailer.with(protocol: @protocol, archiver: current_user, action: action).archive_email.deliver
 
-    respond_to do |format|
-      format.js
-    end
+    respond_to :js
   end
 
   def display_requests
-    respond_to :js
-
     @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
+
+    respond_to :js
   end
 
   private

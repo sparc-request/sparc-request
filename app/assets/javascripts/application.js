@@ -75,6 +75,7 @@
 //= require service_calendar
 
 //= require dashboard/protocols
+//= require profile_form
 
 
 

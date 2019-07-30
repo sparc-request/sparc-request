@@ -133,8 +133,8 @@ en:
       header: "User Profile"
       update: "Save Changes"
       full_name: "Full Name"
-      email: "Email:"
-      orcid: "ORCID:"
+      email: "Email"
+      orcid: "ORCID"
       placeholders:
         orcid: "XXXX-XXXX-XXXX-XXXX"
       links:
@@ -143,7 +143,7 @@ en:
       phone: "Phone:"
       credentials: "Credentials:"
       credentials_prompt: "Select One"
-      credentials_other: "Credentials Other:"
+      credentials_other: "Credentials Other"
       updated: "Profile Updated!!"
-      subspecialty: "Subspecialty:"
+      subspecialty: "Subspecialty"
       subspecialty_prompt: "Select a Subspecialty:"

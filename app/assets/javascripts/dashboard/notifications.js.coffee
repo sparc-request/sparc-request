@@ -105,7 +105,7 @@ $(document).ready ->
     class_string = 'notifications_row'
     if not row.read
       #makes unread messages appear green in notifications bs table
-      class_string += ' success'
+      class_string += ' alert-success'
     return { classes: class_string }
 
   window.refresh_notifications_table = ->

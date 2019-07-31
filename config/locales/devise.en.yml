@@ -139,9 +139,9 @@ en:
         orcid: "XXXX-XXXX-XXXX-XXXX"
       links:
         orcid: "https://orcid.org/"
-      era_commons_name: "ERA Commons Name:"
-      phone: "Phone:"
-      credentials: "Credentials:"
+      era_commons_name: "ERA Commons Name"
+      phone: "Phone"
+      credentials: "Credentials"
       credentials_prompt: "Select One"
       credentials_other: "Credentials Other"
       updated: "Profile Updated!!"

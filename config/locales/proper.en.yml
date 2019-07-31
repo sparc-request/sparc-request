@@ -139,6 +139,7 @@ en:
         contact: "Contact"
       push_to_epic:
         message: "Getting status of last push to Epic..."
+        failed: "Unable to get status of last push to Epic."
 
     ########
     # CART #

@@ -18,25 +18,4 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(document).ready ->
-  $(document).on 'click', '.edit-associated-user-button', (event) ->
-    if $(this).data('permission')
-      project_role_id = $(this).data('project-role-id')
-      $.ajax
-        type: 'get'
-        url: "/dashboard/associated_users/#{project_role_id}/edit.js"
-        success: ->
-          if $('#project_role_role').val() == 'other'
-            $('.role_dependent.other').show()
-          if $('#project_role_identity_attributes_credentials').val() == 'other'
-            $('.credentials_dependent.other').show()
-
-  $(document).on 'load-success.bs.table', '#associated-users-table', ->
-    $('.delete-associated-user-button').batchSelect({
-      batchSelectedText: I18n.t('actions.delete_selected')
-      swalTitle: I18n.t('swal.swal_confirm.title')
-      swalText: I18n.t('swal.swal_confirm.text')
-      type: 'warning'
-      ajaxUrl: '/dashboard/associated_users/'
-      ajaxType: 'delete'
-    })
+window.location = "<%= edit_protocol_path(@protocol, srid: @service_request.id %>"

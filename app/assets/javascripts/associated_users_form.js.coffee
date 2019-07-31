@@ -78,10 +78,3 @@ $(document).ready ->
       $('#eraCommonsNameContainer, #subspecialtyContainer').addClass('d-none')
     else
       $('#eraCommonsNameContainer, #subspecialtyContainer').removeClass('d-none')
-
-  # Remove after replacing with Swal in edit.js.coffee
-  $(document).on 'change', 'input[name="project_role[project_rights]"]', ->
-    if ($(this).val() == 'view' && !$(this).data('dashboard')) || $(this).val() == 'none'
-      $('.project-rights-redirect-warning').removeClass('hidden')
-    else
-      $('.project-rights-redirect-warning').addClass('hidden')

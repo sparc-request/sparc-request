@@ -57,8 +57,6 @@ class ProtocolsController < ApplicationController
       end
 
       flash[:success] = I18n.t('protocols.created', protocol_type: @protocol.type)
-
-      redirect_to protocol_service_request_path(srid: @service_request.id)
     else
       @errors = @protocol.errors
     end
@@ -81,8 +79,6 @@ class ProtocolsController < ApplicationController
       end
 
       flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
-
-      redirect_to protocol_service_request_path(srid: @service_request.id)
     else
       @errors = @protocol.errors
     end
@@ -97,7 +93,7 @@ class ProtocolsController < ApplicationController
     @protocol.rmid_validated      = false if @protocol.is_a?(Project)
     @protocol.save(validate: false)
 
-    redirect_to edit_protocol_path(@protocol, srid: params[:srid]), flash: { success: t('protocols.change_type.updated') }
+    flash[:success] = t('protocols.change_type.updated')
 
     respond_to :js
   end

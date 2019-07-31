@@ -17,6 +17,7 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 - protocol.service_requests.each do |sr|
   .panel.panel-default#service-requests-panel
     .panel-heading.justify-content-between
@@ -52,4 +53,4 @@
             %li
               = link_to t(:calendars)[:show_all_services], service_request_path(srid: sr.id, display_all_services: true, format: :xlsx, report_type: 'coverage_analysis', show_signature_section: 1)
     .panel-body
-      = render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, protocol: protocol, permission_to_edit: permission_to_edit, view_only: view_only
+      = render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, protocol: protocol, permission_to_edit: permission_to_edit

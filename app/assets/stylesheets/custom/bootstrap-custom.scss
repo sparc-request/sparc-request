@@ -105,6 +105,38 @@
   }
 }
 
+[data-toggle=collapse] {
+  cursor: pointer;
+
+  &.collapsed .fa-caret-down {
+    transform: rotate(-90deg);
+  }
+
+  i {
+    // Match Collapse duration
+    transition: 0.35s all ease-in-out;
+  }
+}
+
+@each $color, $value in $theme-colors {
+  $hover-background: darken($value, 7.5%);
+  $active-background: darken($value, 10%);
+
+  div.bg-#{$color}[data-toggle=collapse] {
+    transition: $btn-transition;
+
+    &.hover {
+      color: color-yiq($hover-background) !important;
+      background-color: $hover-background !important;
+    }
+
+    &.active {
+      color: color-yiq($active-background) !important;
+      background-color: $active-background !important;
+    }
+  }
+}
+
 ////////////////
 /// Dropdown ///
 ////////////////

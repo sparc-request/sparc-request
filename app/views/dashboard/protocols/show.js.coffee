@@ -18,35 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module Dashboard::AssociatedUsersHelper
-  
-  def associated_users_edit_button(pr, permission_to_edit)
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' })
-      ),
-      type: 'button', data: { project_role_id: pr.id, permission: permission_to_edit.to_s },
-      class: "btn btn-warning actions-button edit-associated-user-button #{permission_to_edit ? '' : 'disabled'}"
-    )
-  end
-
-  def associated_users_delete_button(pr, permission_to_edit)
-    data  = { id: pr.id, toggle: 'tooltip', placement: 'right' }
-
-    if current_user.id == pr.identity_id && !permission_to_edit
-      data[:batch_select] = {
-        checkConfirm: 'true',
-        checkConfirmSwalText: t(:authorized_users)[:delete][:self_remove_warning]
-      }
-    end
-
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
-      ), type: 'button',
-      title: pr.primary_pi? ? t(:authorized_users)[:delete][:pi_tooltip] : t(:authorized_users)[:delete][:tooltip],
-      class: ["btn btn-danger actions-button delete-associated-user-button", permission_to_edit && !pr.primary_pi? ? '' : 'disabled'],
-      data: data
-    )
-  end
-end
+$("#modalContainer").html("<%= j render 'protocols/view_details', protocol: @protocol %>")
+$("#modalContainer").modal('show')

@@ -55,17 +55,17 @@ class Dashboard::Breadcrumber
         notifications_label_and_url
     ].compact!
 
-    r = content_tag(:li, content_tag(:a, 'Dashboard', href: dashboard_protocols_url))
+    crumbs = [content_tag(:li, content_tag(:a, 'Dashboard', href: dashboard_protocols_url))]
     labels_and_urls.each_with_index do |breadcrumb_array, index|
       label, url = breadcrumb_array
       if index == labels_and_urls.size - 1
-        r += content_tag(:li, label, class: "active")
+        crumbs << content_tag(:li, label, class: "active")
       else
-        r += content_tag(:li, content_tag(:a, label, href: url))
+        crumbs << content_tag(:li, content_tag(:a, label, href: url))
       end
     end
 
-    r.html_safe
+    crumbs.join(content_tag(:li, '/', class: 'px-2')).html_safe
   end
 
   private

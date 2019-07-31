@@ -17,6 +17,7 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 <% if @errors %>
 $("[name^='project_role']:not([type='hidden']), #professionalOrganizationForm select").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
 $('.form-error').remove()
@@ -28,7 +29,6 @@ $("[name='project_role[<%= attr.to_s %>]']").parents('.form-group').removeClass(
 <% end %>
 <% else %>
 $("#modalContainer").modal('hide')
-$("#authorizedUsersTabletable").bootstrapTable('refresh')
+$("#authorizedUsersTable").bootstrapTable('refresh')
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
-<% end %>
 <% end %>

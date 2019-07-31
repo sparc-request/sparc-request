@@ -127,9 +127,10 @@ $(document).ready( function() {
 
     $el.on('click', function () {
       var $el = $(this);
+
       Swal.fire({
-        title: $el.data('batch-select') && $el.data('batch-select').checkConfirm ? that.options.checkConfirmSwalTitle : that.options.swalTitle,
-        text: $el.data('batch-select') && $el.data('batch-select').checkConfirm ? that.options.checkConfirmSwalText : that.options.swalText,
+        title: $el.data('batch-select') && $el.data('batch-select').checkConfirm ? ($el.data('batch-select').checkConfirmSwalTitle || that.options.checkConfirmSwalTitle) : that.options.swalTitle,
+        text: $el.data('batch-select') && $el.data('batch-select').checkConfirm ? ($el.data('batch-select').checkConfirmSwalText || that.options.checkConfirmSwalText) : that.options.swalText,
         type: that.options.type,
         showCancelButton: true,
         confirmButtonColor: that.options.swalConfirmColor || determineSwalConfirmColor(that.options.type)

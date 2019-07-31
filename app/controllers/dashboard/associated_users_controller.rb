@@ -81,7 +81,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     @permission_to_edit = @protocol_role.can_edit?
 
     if updater.successful?
-      flash.now[:success] = t('authorized_users.updated')
+      flash[:success] = t('authorized_users.updated')
 
       redirect_to dashboard_root_path if @protocol_role.identity == current_user && !@admin && ['none'].include?(protocol_role.project_rights)
     else
@@ -99,25 +99,20 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
   def destroy
-    @epic_access = @protocol_roles.any?(&:epic_access)
+    @current_user_destroyed = @protocol_roles.where(identity: current_user).any?
     @protocol_roles.each{ |pr| EpicQueueManager.new(@protocol, current_user, pr).create_epic_queue }
     Notifier.notify_primary_pi_for_epic_user_removal(@protocol, @protocol_roles).deliver if is_epic?
     @protocol.email_about_change_in_authorized_user(@protocol_roles, "destroy")
-
-    if @current_user_destroyed = @protocol_roles.map(&:identity_id).include?(current_user.id)
-      @protocol_type      = @protocol.type
-      @permission_to_edit = false
-
-      # If the user is no longer an authorized user, if they're not an admin, go to dashboard
-      @return_to_dashboard = !@admin
-    end
-
     @protocol_roles.destroy_all
-    flash.now[:alert] = t(:authorized_users)[:destroyed]
 
-    respond_to do |format|
-      format.js
+    if @current_user_destroyed
+      @redirect           = @current_user_destroyed && !@admin
+      @permission_to_edit = false
     end
+
+    flash[:alert] = t(:authorized_users)[:destroyed]
+
+    respond_to :js
   end
 
   private
@@ -174,6 +169,6 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
   def is_epic?
-    Setting.get_value("use_epic") && @protocol.selected_for_epic && @epic_access && !Setting.get_value("queue_epic")
+    Setting.get_value("use_epic") && !Setting.get_value("queue_epic") && @protocol.selected_for_epic && @protocol_roles.where(epic_access: true).any?
   end
 end

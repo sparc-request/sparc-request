@@ -106,7 +106,7 @@ module AssociatedUsersHelper
         checkConfirm: 'true',
         checkConfirmSwalText: t(:authorized_users)[:delete][:self_remove_warning]
       }
-    elsif current_user.id == pr.identity_id # SPARC Proper logic
+    elsif current_user.id == pr.identity_id && !in_dashboard? # SPARC Proper logic
       data[:batch_select] = {
         checkConfirm: 'true',
         checkConfirmSwalText: current_user.catalog_overlord? ? t(:authorized_users)[:delete][:self_remove_warning] : t(:authorized_users)[:delete][:self_remove_redirect_warning]

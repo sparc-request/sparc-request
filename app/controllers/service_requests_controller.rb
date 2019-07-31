@@ -122,7 +122,7 @@ class ServiceRequestsController < ApplicationController
     @service_request.previous_submitted_at = @service_request.submitted_at
 
     NotifierLogic.delay.obtain_research_pricing_logic(@service_request, current_user)
-    render formats: [:html]
+    render :confirmation
   end
 
   def confirmation

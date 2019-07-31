@@ -29,10 +29,14 @@
           = t(:proper)[:confirmation][:service_requests_notice]
 
       .card-body
-        %h5.font-weight-normal.text-success.mb-0
-          = raw t('proper.confirmation.confirmation_warning', department_name: Setting.get_value('contact_us_department'), phone: Setting.get_value('contact_us_phone'), email: Setting.get_value('contact_us_mail_to'))
-        - if Setting.get_value("use_epic") && !Setting.get_value("queue_epic")
-          .my-2#pushToEpicStatus{ data: { protocol_id: @protocol.id } }
+        - if action_name == 'obtain_research_pricing'
+          %h5.font-weight-normal.text-success.mb-0
+            = t(:proper)[:confirmation][:cost_estimate_warning]
+        - else
+          %h5.font-weight-normal.text-success.mb-0
+            = raw t('proper.confirmation.confirmation_warning', department_name: Setting.get_value('contact_us_department'), phone: Setting.get_value('contact_us_phone'), email: Setting.get_value('contact_us_mail_to'))
+          - if Setting.get_value("use_epic") && !Setting.get_value("queue_epic")
+            .my-2#pushToEpicStatus{ data: { protocol_id: @protocol.id } }
 
       %table.table.table-bordered.mb-0#request-ssrs-table
         %thead

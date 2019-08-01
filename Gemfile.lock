@@ -689,7 +689,7 @@ DEPENDENCIES
   parallel_tests
   pdf-inspector
   pdfkit
-  prawn (= 2.2.2)
+  prawn
   prawn-table
   premailer-rails
   progress_bar

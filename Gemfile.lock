@@ -494,7 +494,7 @@ GEM
       rspec-support (~> 3.8.0)
     rspec-support (3.8.2)
     ruby-graphviz (1.2.4)
-    ruby-prof (0.18.0)
+    ruby-prof (1.0.0)
     ruby-rc4 (0.1.5)
     rubyzip (1.2.3)
     safe_yaml (1.0.5)

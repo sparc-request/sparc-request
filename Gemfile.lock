@@ -54,6 +54,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
+    Ascii85 (1.0.3)
     actioncable (5.2.3)
       actionpack (= 5.2.3)
       nio4r (~> 2.0)
@@ -115,6 +116,7 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.6.0)
       public_suffix (>= 2.0.2, < 4.0)
+    afm (0.2.2)
     airbrussh (1.3.2)
       sshkit (>= 1.6.1, != 1.7.0)
     akami (1.2.2)
@@ -275,6 +277,7 @@ GEM
       temple (>= 0.8.0)
       tilt
     hashdiff (0.4.0)
+    hashery (2.1.2)
     hashie (3.6.0)
     hashie-forbidden_attributes (0.1.1)
       hashie (>= 3.0)
@@ -373,10 +376,20 @@ GEM
     parallel_tests (2.29.1)
       parallel
     pdf-core (0.7.0)
+    pdf-inspector (1.3.0)
+      pdf-reader (>= 1.0, < 3.0.a)
+    pdf-reader (2.2.0)
+      Ascii85 (~> 1.0.0)
+      afm (~> 0.2.1)
+      hashery (~> 2.0)
+      ruby-rc4
+      ttfunk
     pdfkit (0.8.4.1)
     prawn (2.2.2)
       pdf-core (~> 0.7.0)
       ttfunk (~> 1.5)
+    prawn-table (0.2.2)
+      prawn (>= 1.3.0, < 3.0.0)
     premailer (1.11.1)
       addressable
       css_parser (>= 1.6.0)
@@ -458,6 +471,8 @@ GEM
       activemodel (>= 3.0)
       activesupport (>= 3.0)
       rspec-mocks (>= 2.99, < 4.0)
+    rspec-collection_matchers (1.1.3)
+      rspec-expectations (>= 2.99.0.beta1)
     rspec-core (3.8.2)
       rspec-support (~> 3.8.0)
     rspec-expectations (3.8.4)
@@ -480,6 +495,7 @@ GEM
     rspec-support (3.8.2)
     ruby-graphviz (1.2.4)
     ruby-prof (0.18.0)
+    ruby-rc4 (0.1.5)
     rubyzip (1.2.3)
     safe_yaml (1.0.5)
     sass (3.7.4)
@@ -675,8 +691,10 @@ DEPENDENCIES
   omniauth-shibboleth
   paperclip (~> 6.1)
   parallel_tests
+  pdf-inspector
   pdfkit
   prawn (= 2.2.2)
+  prawn-table
   premailer-rails
   progress_bar
   pry
@@ -692,6 +710,7 @@ DEPENDENCIES
   request_store
   rest-client
   rspec-activemodel-mocks
+  rspec-collection_matchers
   rspec-html-matchers
   rspec-rails (~> 3.8)
   ruby-prof

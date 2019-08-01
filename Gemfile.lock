@@ -54,6 +54,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
+    Ascii85 (1.0.3)
     actioncable (5.2.3)
       actionpack (= 5.2.3)
       nio4r (~> 2.0)
@@ -381,7 +382,7 @@ GEM
       hashery (~> 2.0)
       ruby-rc4
       ttfunk
-    pdfkit (0.8.2)
+    pdfkit (0.8.4.1)
     prawn (2.2.2)
       pdf-core (~> 0.7.0)
       ttfunk (~> 1.5)

@@ -60,7 +60,7 @@ gem 'omniauth-shibboleth'
 gem 'paperclip', '~> 6.1'
 gem 'pdfkit'
 gem 'prawn-table'
-gem 'prawn', '2.2.2'
+gem 'prawn'
 gem 'premailer-rails'
 gem 'rack-mini-profiler', require: false
 gem 'rails', '5.2.3'

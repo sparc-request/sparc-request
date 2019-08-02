@@ -21,9 +21,9 @@
 FactoryBot.define do
 
   factory :service do
-    name                { Faker::Lorem.sentence(3) }
+    name                { Faker::Lorem.sentence(word_count: 3) }
     abbreviation        { Faker::Lorem.words(1).first }
-    description         { Faker::Lorem.paragraph(4) }
+    description         { Faker::Lorem.paragraph(sentence_count: 4) }
     is_available        { true }
     service_center_cost { Random.rand(100) }
     charge_code         { Faker::Lorem.words().first }

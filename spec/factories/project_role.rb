@@ -24,7 +24,7 @@ FactoryBot.define do
   factory :project_role do
     protocol {nil}
     identity {nil}
-    project_rights { Faker::Lorem.sentence(2) }
+    project_rights { Faker::Lorem.sentence(word_count: 2) }
     role {'primary-pi'}
 
     trait :without_validations do

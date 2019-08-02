@@ -1,0 +1,81 @@
+<table>
+  <% @service_request.arms.each do |arm| %>
+  <tr>
+    <th>
+      <%= t(:calendars)[:pppv][:header_fields][:service] %>
+    </th>
+    <th>
+      <%= t(:calendars)[:pppv][:header_fields][:notes] %>
+    </th>
+    <th>
+      <%= t(:calendars)[:pppv][:header_fields][:status] %>
+    </th>
+    <th>
+      <%= raw(t(:calendars)[:pppv][:header_fields][:service_rate]) %>
+    </th>
+    <th>
+      <%= raw(t(:calendars)[:pppv][:header_fields][:your_cost]) %>
+    </th>
+    <th>
+      <%= t(:calendars)[:pppv][:header_fields][:quantity_type] %>
+    </th>
+    <th>
+      <%= t(:calendars)[:pppv][:header_fields][:subject_count] %>
+    </th>
+    <% arm.visit_groups.each do |vg| %>
+      <th>
+        <%= vg.name %>
+      </th>
+    <% end %>
+    <th>
+      <%= t(:calendars)[:pppv][:header_fields][:total_per_patient] %>
+    </th>
+    <th>
+      <%= t(:calendars)[:pppv][:header_fields][:total_per_study] %>
+    </th>
+  </tr>
+  <% Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, @service_request, nil, merged: true, statuses_hidden: nil, display_all_services: true).each do |ssr, livs| %>
+    <tr>
+      <th colspan="<%= 9 + arm.visit_groups.count %>" style="text-align:left">
+        <%= display_org_name(livs[0].line_item.service.organization_hierarchy, ssr, true) %>
+      </th>
+    </tr>
+    <% livs.each do |liv| %>
+      <tr>
+        <td colspan="2">
+          <%= liv.line_item.service.display_service_name %>
+          <% unless liv.line_item.service.is_available %>
+            <%= inactive_tag %>
+          <% end %>
+        </td>
+        <td>
+          <%= display_liv_notes(liv, true, false) %>
+        </td>
+        <td>
+          <%= PermissibleValue.get_value('status', ssr.status) %>
+        </td>
+        <td>
+          <%= display_service_rate(liv.line_item) %>
+        </td>
+        <td>
+          <%= "$#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}" %>
+        </td>
+        <td>
+          <%= display_unit_type(liv) %>
+        </td>
+        <td>
+          <%= liv.subject_count %>
+        </td>
+
+        <% visits = liv.ordered_visits.eager_load(line_items_visit: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] }) %>
+        <% visits.each do |v| %>
+          <td>
+            <%= render "service_calendars/master_calendar/pppv/calendar/calendar_visit_input", visit: v %>
+          </td>
+        <% end %>
+      </tr>
+    <% end %>
+  <% end %>
+<% end %>
+</table>
+

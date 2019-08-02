@@ -63,6 +63,7 @@ gem 'omniauth-cas'
 gem 'omniauth-shibboleth'
 gem 'paperclip', '~> 6.1' # Deprecated https://github.com/thoughtbot/paperclip
 gem 'pdfkit' # Check usage
+gem 'prawn-table'
 gem 'prawn', '2.2.2' # Check usage
 gem 'premailer-rails'
 gem 'puma', '~> 4.0'
@@ -118,6 +119,7 @@ group :development do
 end
 
 group :test do
+<<<<<<< HEAD
   gem 'capybara'
   gem 'database_cleaner' # Consider removing https://stackoverflow.com/q/49246124
   gem 'email_spec' # Check usage
@@ -127,10 +129,23 @@ group :test do
   gem 'rspec-html-matchers' # Consider removing and using `have_selector` matchers
   gem 'selenium-webdriver' # Replace with https://github.com/titusfortner/webdrivers
   gem 'simplecov', require: false # Check usage
+=======
+  gem 'database_cleaner'
+  gem 'email_spec'
+  gem "factory_bot_rails"
+  gem 'geckodriver-helper'
+  gem 'rails-controller-testing', require: false
+  gem 'rspec-activemodel-mocks'
+  gem 'rspec-html-matchers'
+  gem 'selenium-webdriver'
+  gem 'rspec-collection_matchers'
+  gem 'shoulda-matchers', require: false
+>>>>>>> v3.6.0
   gem 'shoulda-callback-matchers'
   gem 'shoulda-matchers'
   gem 'site_prism'
   gem 'webmock'
+  gem 'pdf-inspector', require: false
 end
 
 group :assets do

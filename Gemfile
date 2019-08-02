@@ -119,30 +119,17 @@ group :development do
 end
 
 group :test do
-<<<<<<< HEAD
-  gem 'capybara'
   gem 'database_cleaner' # Consider removing https://stackoverflow.com/q/49246124
   gem 'email_spec' # Check usage
   gem 'geckodriver-helper' # Replace with https://github.com/titusfortner/webdrivers
   gem 'rails-controller-testing', require: false # Consider removing and cleaning up controller specs
   gem 'rspec-activemodel-mocks' # Check usage
-  gem 'rspec-html-matchers' # Consider removing and using `have_selector` matchers
-  gem 'selenium-webdriver' # Replace with https://github.com/titusfortner/webdrivers
-  gem 'simplecov', require: false # Check usage
-=======
-  gem 'database_cleaner'
-  gem 'email_spec'
-  gem "factory_bot_rails"
-  gem 'geckodriver-helper'
-  gem 'rails-controller-testing', require: false
-  gem 'rspec-activemodel-mocks'
-  gem 'rspec-html-matchers'
-  gem 'selenium-webdriver'
   gem 'rspec-collection_matchers'
-  gem 'shoulda-matchers', require: false
->>>>>>> v3.6.0
+  gem 'rspec-html-matchers' # Consider removing and using `have_selector` matchers
+  gem 'selenium-webdriver'
   gem 'shoulda-callback-matchers'
-  gem 'shoulda-matchers'
+  gem 'shoulda-matchers', require: false
+  gem 'simplecov', require: false # Check usage
   gem 'site_prism'
   gem 'webmock'
   gem 'pdf-inspector', require: false

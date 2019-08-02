@@ -629,7 +629,6 @@ DEPENDENCIES
   capistrano-rails
   capistrano-rvm
   capistrano3-delayed-job (~> 1.7)
-  capybara
   coffee-rails
   connection_pool
   country_select

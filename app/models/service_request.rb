@@ -34,6 +34,7 @@ class ServiceRequest < ApplicationRecord
 
   has_many :arms, through: :protocol
   has_many :services, through: :line_items
+  has_many :forms, through: :services
   has_many :line_items_visits, through: :line_items
   has_many :subsidies, through: :sub_service_requests
   has_many :visit_groups, through: :arms
@@ -385,6 +386,10 @@ class ServiceRequest < ApplicationRecord
       protocol.next_ssr_id = next_ssr_id
       protocol.save(validate: false)
     end
+  end
+
+  def submitted?
+    self.status == 'submitted'
   end
 
   def previously_submitted?

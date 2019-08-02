@@ -23,7 +23,7 @@ module NotesHelper
     has_notes = notable.notes.length > 0
 
     link_to notes_path(note: { notable_id: notable.id, notable_type: notable.class.name }, srid: opts[:service_request].try(:id), ssrid:opts[:sub_service_request].try(:id)), remote: true, class: ['btn btn-light position-relative', opts[:class], opts[:disabled] ? 'disabled' : ''], title: opts[:tooltip], data: { toggle: opts[:tooltip] ? 'tooltip' : '' } do
-      raw(icon('far', 'sticky-note') + content_tag(:span, notable.notes.length, class: ['badge badge-pill notification-badge', has_notes ? 'badge-primary ' : 'badge-secondary'])) + (opts[:model] ? content_tag(:span, opts[:model].model_name.human + " " + Note.model_name.plural.capitalize, class: 'ml-1') : '')
+      raw(icon('far', 'sticky-note') + content_tag(:span, notable.notes.length, class: ['badge badge-pill notification-badge', has_notes ? 'badge-primary ' : 'badge-secondary'])) + (opts[:model] ? content_tag(:span, opts[:model].model_name.human + " " + Note.model_name.plural.capitalize, class: 'ml-2') : '')
     end
   end
 

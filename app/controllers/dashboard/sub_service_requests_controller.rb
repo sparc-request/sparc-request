@@ -63,7 +63,6 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         @review                 = true
         @merged                 = false
         @consolidated           = false
-        @display_all_services   = true
         @pages                  = {}
         @service_request.arms.each do |arm|
           new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i

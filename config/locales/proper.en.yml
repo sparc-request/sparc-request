@@ -108,11 +108,9 @@ en:
     # DOCUMENT MANAGEMENT #
     #######################
     document_management:
-      documents_notice: "Documents"
       notes_notice: "Notes"
       forms_notice: 'Forms'
       tooltips:
-        documents: "Visible to Authorized Users and selected Service Providers"
         notes: "Important notes for your Study/Project"
 
     ##############################

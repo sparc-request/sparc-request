@@ -26,7 +26,7 @@
     #protocolsTableToolbar
       .dropdown.no-caret
         %button.btn.btn-success.dropdown-toggle#newProtocolButton{ type: 'button', data: { toggle: 'dropdown' }, aria: { haspopup: 'true', expanded: 'false' } }<
-          = icon('fas', 'plus mr-1')
+          = icon('fas', 'plus mr-2')
           = t('dashboard.protocols.new')
         .dropdown-menu{ aria: { labelledby: 'newProtocolButton' } }
           = link_to new_dashboard_protocol_path(type: Study.name), class: 'dropdown-item' do

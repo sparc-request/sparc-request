@@ -18,9 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$('#modalContainer').html("<%= j render 'dashboard/sub_service_requests/user_modal_ssr_show', sub_service_request: @sub_service_request, service_request: @service_request, service_list: @service_list, tab: @tab, portal: @portal, admin: @admin, review: @review, consolidated: @consolidated, pages: @pages, merged: @merged, protocol: @protocol, statuses_hidden: %w(first_draft), display_all_services: @display_all_services %>")
+$('#modalContainer').one 'shown.bs.modal', ->
+  adjustCalendarHeaders()
+$('#modalContainer').html("<%= j render 'dashboard/sub_service_requests/user_modal_ssr_show', sub_service_request: @sub_service_request, service_request: @service_request, service_list: @service_list, tab: @tab, portal: @portal, admin: @admin, review: @review, consolidated: @consolidated, pages: @pages, merged: @merged, protocol: @protocol %>")
 $('#modalContainer').modal('show')
-initializeTooltips()
-initializeSelectpickers()
 
 $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

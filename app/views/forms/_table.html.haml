@@ -26,7 +26,7 @@
   - complete ||= false
 
   %table#forms-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: forms_path(format: :json, srid: service_request.id, complete: complete.to_s, review: review.to_s) } }
-    %thead.primary-header
+    %thead.bg-light
       %tr
         %th.col-sm-2{ data: { field: "srid", align: "left", sortable: "true" } }
           = t(:forms)[:table_fields][:srid]

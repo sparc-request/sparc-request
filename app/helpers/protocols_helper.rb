@@ -23,21 +23,24 @@ module ProtocolsHelper
     url = in_dashboard? ? dashboard_protocol_path(protocol) : protocol_path(protocol, srid: opts[:srid])
 
     link_to url, remote: true, class: 'btn btn-info mr-1', title: t('protocols.summary.tooltips.details'), data: { toggle: 'tooltip' } do
-      icon('fas', 'eye mr-1') + I18n.t('protocols.view_details.button', protocol_type: protocol.model_name.human)
+      icon('fas', 'eye mr-2') + I18n.t('protocols.view_details.button', protocol_type: protocol.model_name.human)
     end
   end
 
   def edit_protocol_button(protocol, opts={})
-    url = in_dashboard? ? edit_dashboard_protocol_path(protocol) : edit_protocol_path(protocol, srid: opts[:srid])
-
-    link_to url, class: ['btn btn-warning mr-1', in_dashboard? && !opts[:permission] ? 'disabled' : ''], title: t('protocols.summary.tooltips.edit'), data: { toggle: 'tooltip' } do
-      icon('far', 'edit mr-1') + I18n.t('protocols.edit', protocol_type: protocol.model_name.human)
+    unless in_dashboard? && !opts[:permission]
+      url = in_dashboard? ? edit_dashboard_protocol_path(protocol) : edit_protocol_path(protocol, srid: opts[:srid])
+      link_to url, class: 'btn btn-warning mr-1', title: t('protocols.summary.tooltips.edit'), data: { toggle: 'tooltip' } do
+        icon('far', 'edit mr-2') + I18n.t('protocols.edit', protocol_type: protocol.model_name.human)
+      end
     end
   end
 
   def archive_protocol_button(protocol, opts={})
-    link_to archive_dashboard_protocol_path(protocol), remote: true, method: :patch, class: ['btn', in_dashboard? && !opts[:permission] ? 'disabled' : '', protocol.archived? ? 'btn-success' : 'btn-danger'], title: t("protocols.summary.tooltips.#{protocol.archived ? "unarchive" : "archive"}"), data: { toggle: 'tooltip' } do
-      icon('fas', 'archive mr-1') + t(:protocols)[:summary][protocol.archived? ? :unarchive : :archive]
+    unless in_dashboard? && !opts[:permission]
+      link_to archive_dashboard_protocol_path(protocol), remote: true, method: :patch, class: ['btn', protocol.archived? ? 'btn-success' : 'btn-danger'], title: t("protocols.summary.tooltips.#{protocol.archived ? "unarchive" : "archive"}"), data: { toggle: 'tooltip' } do
+        icon('fas', 'archive mr-2') + t(:protocols)[:summary][protocol.archived? ? :unarchive : :archive]
+      end
     end
   end
 

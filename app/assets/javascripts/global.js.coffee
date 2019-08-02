@@ -177,6 +177,9 @@ $(document).ready ->
 (exports ? this).getSSRId = ->
   $("input[name='sub_service_request_id']").val()
 
+(exports ? this).getProtocolId = ->
+  $("input[name=protocol_id]").val()
+
 VALID_MONETARY_KEYS = [
   8, # backspace
   37, 38, 39, 40, # arrow keys

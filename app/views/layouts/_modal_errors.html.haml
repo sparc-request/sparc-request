@@ -18,21 +18,20 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-- if errors
-  - messages  ||= errors.full_messages
-  - margin      = defined?(margin) ? margin : true
-  - rounded     = defined?(rounded) ? rounded : true  
+- messages  ||= defined?(errors) ? errors.errors.full_messages : []
+- margin      = defined?(margin) && !margin.nil? ? margin : true
+- rounded     = defined?(rounded) && !rounded.nil? ? rounded : true  
 
-  .alert.alert-danger{ class: [margin ? '' : 'mb-0', rounded ? '' : 'rounded-0'], role: 'alert' }
-    - if defined?(header)
-      .d-flex.align-items-center
-        %h3.alert-heading.mb-0.mr-3
-          = header
-        %div.error-messages.ml-1
-          - messages.each do |msg|
-            %p.mb-0
-              = msg
-    - else
-      - messages.each do |msg|
-        %p.mb-0
-          = msg
+.alert.alert-danger{ class: [margin ? '' : 'mb-0', rounded ? '' : 'rounded-0'], role: 'alert' }
+  - if defined?(header)
+    .d-flex.align-items-center
+      %h3.alert-heading.mb-0.mr-3
+        = header
+      %div.error-messages.ml-1
+        - messages.each do |msg|
+          %p.mb-0
+            = msg
+  - else
+    - messages.each do |msg|
+      %p.mb-0
+        = msg

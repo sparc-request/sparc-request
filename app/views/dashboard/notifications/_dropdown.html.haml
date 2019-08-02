@@ -21,7 +21,7 @@
 - tooltip = controller_name == 'sub_service_requests' ? 'table_button' : 'main_button'
 
 .tooltip-wrapper{ title: t("dashboard.notifications.tooltips.#{tooltip}"), data: { toggle: 'tooltip', placement: 'top', boundary: 'window' } }
-  %select.selectpicker.new-notification.no-caret{ title: t('dashboard.notifications.table.send'), data: { style: "btn-success", live_search: 'true', header: t('dashboard.notifications.table.send'), container: 'body', sub_service_request_id: sub_service_request.ssr_id } }
+  %select.selectpicker.new-notification.no-caret{ title: t('dashboard.notifications.table.send'), data: { style: "btn-primary", live_search: 'true', header: t('dashboard.notifications.table.send'), container: 'body', sub_service_request_id: sub_service_request.ssr_id } }
     %optgroup{ label: t(:dashboard)[:notifications][:table][:authorized_users]}
       - sub_service_request.protocol.project_roles.each do |pr|
         %option{ value: pr.identity_id, data: { identity_id: pr.identity_id, sub_service_request_id: sub_service_request.id, is_service_provider: 'false', current_user_id: current_user.id, content: display_authorized_user(pr, sub_service_request.service_requester_id) } }

@@ -19,31 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Dashboard::DocumentsHelper
-
-  def dashboard_display_document_title(document, permission)
-    if permission
-      link_to document.document_file_name, document.document.url
-    else
-      document.document_file_name
-    end
-  end
-
-  def dashboard_document_edit_button(document, permission)
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: "glyphicon glyphicon-edit", aria: {hidden: "true"})
-      ), type: 'button', class: "btn btn-warning actions-button document-edit #{permission ? '' : 'disabled'}", data: { permission: permission.to_s }
-    )
-  end
-
-  def dashboard_document_delete_button(document, permission)
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: "glyphicon glyphicon-remove", aria: {hidden: "true"})
-      ), type: 'button', class: "btn btn-danger actions-button document-delete #{permission ? '' : 'disabled'}", data: { permission: permission.to_s }
-    )
-  end
-
   def document_org_access_collection(document, action)
     default_select  = if action == 'new'
                         document.protocol.organizations.ids

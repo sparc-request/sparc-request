@@ -19,28 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Dashboard::SubServiceRequestsHelper
-  def ssr_statuses
-    arr = {}
-    @service_requests.map do |s|
-      ssr_status = pretty_tag(s.status).blank? ? "draft" : pretty_tag(s.status)
-      if arr[ssr_status].blank?
-        arr[ssr_status] = [s]
-      else
-        arr[ssr_status] << s
-      end
-    end
-    arr
-  end
-
-  def full_ssr_id(ssr)
-    protocol = ssr.protocol
-    if protocol
-      "#{protocol.id}-#{ssr.ssr_id}"
-    else
-      "-#{ssr.ssr_id}"
-    end
-  end
-
   def display_line_items_otf(lis)
     # only show the services that are set to be pushed to Epic when use_epic = true
     if Setting.get_value('use_epic')
@@ -94,25 +72,6 @@ module Dashboard::SubServiceRequestsHelper
     return display
   end
 
-  def candidate_service_options(services, include_cpt=false)
-    services.map do |service|
-      n = include_cpt ? service.display_service_name : service.name
-      [n, service.id]
-    end
-  end
-
-  def per_patient_line_items(line_items)
-    line_items.map { |line_item| [line_item.service.name, line_item.id]}
-  end
-
-  def calculate_total
-    if @sub_service_request
-      total = @sub_service_request.direct_cost_total / 100.0
-    end
-
-    total
-  end
-
   def user_display_total sub_service_request
     return (sub_service_request.direct_cost_total / 100.0)
   end
@@ -127,83 +86,6 @@ module Dashboard::SubServiceRequestsHelper
     sub_service_request.unset_effective_date_for_cost_calculations
 
     return total
-  end
-
-  def subsidy_user_display_total sub_service_request, subsidy
-    pi_contribution = (subsidy.pi_contribution / 100.0)
-
-    return user_display_total(sub_service_request) - pi_contribution
-  end
-
-  def subsidy_effective_current_total sub_service_request, subsidy
-    pi_contribution = (subsidy.pi_contribution / 100.0)
-
-    return effective_current_total(sub_service_request) - pi_contribution
-  end
-
-  def clinical_provider_cores(user)
-    cores = []
-    user.clinical_providers.each do |provider|
-      cores << provider.core
-    end
-
-    cores
-  end
-
-  def full_user_name_from_id id
-    user = Identity.find(id)
-
-    user.display_name
-  end
-
-  def extract_subsidy_audit_data object, convert_to_dollars=false
-    if object
-      display = []
-      if object.kind_of?(Array) && !object.empty?
-        object.each do |element|
-          if convert_to_dollars
-            display << (element.to_f / 100)
-          else
-            display << element
-          end
-        end
-        return (display[0] ? display[0].to_s : "0") + " => " + (display[1] ? display[1].to_s : "0")
-      else
-        return convert_to_dollars ? (object.to_f / 100) : object
-      end
-    end
-  end
-
-  def calculate_effective_current_total
-    if @sub_service_request
-      @sub_service_request.set_effective_date_for_cost_calculations
-      total = @sub_service_request.direct_cost_total / 100
-      @sub_service_request.unset_effective_date_for_cost_calculations
-    end
-
-    total
-  end
-
-  def calculate_user_display_total
-    if @sub_service_request
-      total = @sub_service_request.direct_cost_total / 100
-    end
-
-    total
-  end
-
-  def ssr_notifications_display(ssr)
-    render 'dashboard/notifications/dropdown.html', sub_service_request: ssr
-  end
-
-  def ssr_actions_display(ssr, admin_orgs)
-    admin_access = (admin_orgs & ssr.org_tree).any?
-
-    ssr_view_button(ssr) + ssr_admin_button(ssr, admin_access)
-  end
-
-  def display_owner(ssr)
-    ssr.owner.full_name if ssr.owner_id.present?
   end
 
   def display_ssr_submissions(ssr)
@@ -221,21 +103,33 @@ module Dashboard::SubServiceRequestsHelper
     end
   end
 
-  private
+  def ssr_actions_display(ssr, admin_orgs)
+    admin_access = (admin_orgs & ssr.org_tree).any?
+
+    content_tag :div, class: 'd-flex justify-content-center' do
+      raw([
+        ssr_notifications_display(ssr),
+        ssr_view_button(ssr),
+        ssr_admin_button(ssr, admin_access)
+      ].join(''))
+    end
+  end
+
+  def ssr_notifications_display(ssr)
+    render 'dashboard/notifications/dropdown.html', sub_service_request: ssr
+  end
 
   def ssr_view_button(ssr)
-    link_to dashboard_sub_service_request_path(ssr), remote: true, title: t('dashboard.service_requests.actions.tooltips.view'), class: 'btn btn-primary mr-1', data: { toggle: 'tooltip', boundary: 'window' } do
-      icon('fas', 'eye mr-1') + t('dashboard.service_requests.actions.view')
-    end
+    link_to icon('fas', 'eye'), dashboard_sub_service_request_path(ssr), remote: true, title: t('dashboard.service_requests.tooltips.view'), class: 'btn btn-info mx-1', data: { toggle: 'tooltip', boundary: 'window' }
   end
 
   def ssr_admin_button(ssr, admin_access)
     if admin_access
-      link_to dashboard_sub_service_request_path(ssr), title: t('dashboard.service_requests.actions.tooltips.admin_edit'), class: "btn btn-warning", data: { toggle: 'tooltip', boundary: 'window' } do
-        icon('fas', 'edit mr-1') + t('dashboard.service_requests.actions.admin_edit')
-      end
+      link_to icon('fas', 'edit'), dashboard_sub_service_request_path(ssr), title: t('dashboard.service_requests.tooltips.admin_edit'), class: "btn btn-warning", data: { toggle: 'tooltip', boundary: 'window' }
     end
   end
+
+  private
 
   def ssr_select_options(ssr)
     if ssr.is_complete?
@@ -245,10 +139,7 @@ module Dashboard::SubServiceRequestsHelper
     end
   end
 
-  private
-
   def statuses_with_classes(ssr)
-
     sorted_by_permissible_values(ssr.organization.get_available_statuses).invert.map do |status|
       if in_finished_status?(status)
         status.push(:class=> 'finished-status')

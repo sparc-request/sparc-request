@@ -46,12 +46,6 @@ en:
     arms:
       manage: "Manage Arms"
 
-    ###############
-    #  DOCUMENTS  #
-    ###############
-    documents:
-      header: "Documents"
-
     #################
     #  EPIC QUEUES  #
     #################
@@ -203,16 +197,12 @@ en:
           export: "Export displayed protocols to Excel"
           requests: "Quick access to requests"
 
-      documents:
-        header: "Documents"
-        add_document: "Add Document"
-
       service_requests:
-        header: "Requests"
-        view_consolidated: "View Consolidated Request"
+        header: "Requests - %{status} - %{date}"
+        view_consolidated: "Consolidated Request"
         export_consolidated: "Export Consolidated Request"
         coverage_report: 'Coverage Analysis Report'
-        consolidated_all: "All"
+        consolidated_all: "All Requests"
         consolidated_exclude_drafts: "Exclude Drafts"
         tooltips:
           consolidated_request: "Quick access to view all service requests"
@@ -255,30 +245,14 @@ en:
     ######################
     service_requests:
       modify_request: "Add / Modify Requests"
-      srid: "SRID"
-      organization: "Organization"
-      owner: "Owner"
-      status: "Status"
-      notifications: "Notifications"
-      actions:
-        header: "Actions"
-        view: "View"
-        admin_edit: "Admin Edit"
-        tooltips:
-          view: "Quick access to view services from this provider"
-          admin_edit: "Service Provider administrative access to track and manage services"
       forms:
         header: "Forms"
         selectpicker: "Complete Form"
       tooltips:
+        view: "Quick access to view services from this provider"
+        admin_edit: "Service Provider administrative access to track and manage services"
         modify_request: "Allows Authorized User to add or edit services (routes to SPARCRequest)"
         coverage_report: "Ability to export research and third-party payer information to Excel"
-      view_ssr:
-        documents:
-          header: "Documents"
-          none: "No Documents"
-          file_name: "File Name"
-          program_core: "Program/Core"
 
     ############################
     #  Non-clinical Services #
@@ -379,9 +353,6 @@ en:
 
         study_level_activities:
           header: "Non-clinical Services"
-
-        documents:
-          header: "Documents"
 
         history:
           header: "History"

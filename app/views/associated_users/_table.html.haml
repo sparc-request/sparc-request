@@ -31,7 +31,7 @@
         = new_authorized_user_button(srid: service_request.id)
     - url = in_dashboard? ? dashboard_associated_users_path(format: :json, protocol_id: protocol.id) : associated_users_path(format: :json, srid: service_request.id)
     %table#authorizedUsersTable{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: url, toolbar: '#associatedUsersTableToolbar' } }
-      %thead
+      %thead.bg-light
         %tr
           %th{ data: { field: 'name', sortable: 'true' } }
             = Identity.human_attribute_name(:name)

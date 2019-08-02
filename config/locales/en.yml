@@ -74,6 +74,11 @@ en:
         name: "Arm Name"
         subject_count: "Subject Count"
         visit_count: "Visit Count"
+      document:
+        doc_type: "Document Type"
+        document: "Document"
+        document_updated_at: "Uploaded"
+        org_ids: "Service Provider Access"
       fulfillment:
         time: "Quantity"
       human_subjects_info:
@@ -178,6 +183,12 @@ en:
         ip_patents: "IP/Patents"
       service:
         abbreviation: "Abbreviation"
+      service_request:
+        id: "SRID"
+        organization: "Organization"
+        owner: "Owner"
+        status: "Status"
+        forms: "Forms"
       short_interaction:
         subject: "Subject of Interaction"
         interaction_type: "Type of Interaction"
@@ -255,7 +266,7 @@ en:
             day:
               out_of_order: "must be in order"
       messages:
-        spoofed_media_type: "has format errors. Please re-save the file in a different format and try again."
+        spoofed_media_type: "invalid file type"
     models:
       service: "Service"
 
@@ -320,6 +331,7 @@ en:
       approve: 'Full protocol access.'
       view: 'View only access.'
       none: 'No protocol access or email notifications.'
+      notify: "Send correspondence"
 
   #############
   # CALENDARS #
@@ -481,26 +493,16 @@ en:
   # DOCUMENTS #
   #############
   documents:
+    header: "Documents"
     none: "No Documents Found"
-    add_document: "Add a Document"
-    new:
-      header: "Add Document"
-    edit:
-      header: "Edit Document"
+    new: "Add Document"
+    edit: "Edit Document"
     created: "Document Uploaded!"
     updated: "Document Updated!"
     destroyed: "Document Destroyed!"
-    table_fields:
-      type: "Type"
-      title: "Title"
-      uploaded: "Uploaded"
-      shared_with: "Service Provider Access"
-    form_fields:
-      document_type: "Document Type:"
-      specify_doc_type: "Please Specify:"
-      document: "Document:"
-      access: "Allow Access:"
+    supported_types: "Supported File Types:<br>%{file_types}"
     tooltips:
+      new: "Visible to Authorized Users and selected Service Providers"
       access: "Uploaded documents are made viewable to all service providers unless checkmark is removed"
       add_document: "Upload document(s) in repository"
     select_type: "Please Select Type"

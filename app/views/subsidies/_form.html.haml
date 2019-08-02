@@ -51,13 +51,13 @@
           .input-group
             = f.text_field :percent_subsidy, class: 'form-control', value: display_as_percent(subsidy.percent_subsidy)
             .input-group-append
-              %span.input-group-text %
+              = f.label :percent_subsidy, '%', class: 'input-group-text'
 
         .form-group
           = f.label :pi_contribution, t(:subsidies)[:form][:pi], title: t(:subsidies)[:tooltips][:pi], data: { toggle: 'tooltip' }
           .input-group
             .input-group-prepend
-              %span.input-group-text $
+              = f.label :pi_contribution, t('constants.currency'), class: 'input-group-text'
             = f.text_field :pi_contribution, { class: 'form-control', value: (cents_to_dollars_float(subsidy.pi_contribution)).to_s }
 
       .modal-footer

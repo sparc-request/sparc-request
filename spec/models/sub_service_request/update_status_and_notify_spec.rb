@@ -23,6 +23,7 @@ RSpec.describe SubServiceRequest, type: :model do
   let!(:org)      { create(:organization_with_process_ssrs) }
   let!(:protocol) { create(:study_federally_funded, primary_pi: build_stubbed(:identity)) }
   let!(:sr)       { create(:service_request_without_validations, protocol: protocol) }
+  let!(:identity) { build_stubbed(:identity) }
 
   describe "#update_status_and_notify" do
     context 'new status is different than current status' do
@@ -31,7 +32,7 @@ RSpec.describe SubServiceRequest, type: :model do
           context 'and new_status == submitted' do
             it 'should update status and nursing_nutrition, lab, imaging, and committee approvals' do
               ssr = create(:sub_service_request_without_validations, service_request: sr, organization: org)
-              ssr.update_status_and_notify('submitted')
+              ssr.update_status_and_notify('submitted', identity)
               ssr.reload
 
               expect(ssr.status).to eq('submitted')
@@ -47,7 +48,7 @@ RSpec.describe SubServiceRequest, type: :model do
 
                 context 'and past_status is nil indicating a newly created SubServiceRequest' do
                   it 'should update the SubServiceRequest and notify' do
-                    expect(ssr.update_status_and_notify('submitted')).to eq(ssr.id)
+                    expect(ssr.update_status_and_notify('submitted', identity)).to eq(ssr.id)
                     expect(ssr.reload.status).to eq('submitted')
                   end
                 end
@@ -56,7 +57,7 @@ RSpec.describe SubServiceRequest, type: :model do
                   let!(:past_status) { create(:past_status, sub_service_request: ssr, status: 'draft') }
 
                   it 'should update the SubServiceRequest and notify' do
-                    expect(ssr.update_status_and_notify('submitted')).to eq(ssr.id)
+                    expect(ssr.update_status_and_notify('submitted', identity)).to eq(ssr.id)
                     expect(ssr.reload.status).to eq('submitted')
                   end
                 end
@@ -65,7 +66,7 @@ RSpec.describe SubServiceRequest, type: :model do
                   let!(:past_status) { create(:past_status, sub_service_request: ssr, status: 'complete') }
 
                   it 'should update the SubServiceRequest but not notify' do
-                    expect(ssr.update_status_and_notify('submitted')).to eq(nil)
+                    expect(ssr.update_status_and_notify('submitted', identity)).to eq(nil)
                     expect(ssr.reload.status).to eq('submitted')
                   end
                 end
@@ -75,7 +76,7 @@ RSpec.describe SubServiceRequest, type: :model do
                 let!(:ssr) { create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'awaiting_pi_approval') }
 
                 it 'should update the SubServiceRequest and notify' do
-                  expect(ssr.update_status_and_notify('submitted')).to eq(ssr.id)
+                  expect(ssr.update_status_and_notify('submitted', identity)).to eq(ssr.id)
                   expect(ssr.reload.status).to eq('submitted')
                 end
               end
@@ -85,7 +86,7 @@ RSpec.describe SubServiceRequest, type: :model do
               let!(:ssr) { create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft', submitted_at: DateTime.now) }
 
               it 'should not notify' do
-                expect(ssr.update_status_and_notify('submitted')).to eq(nil)
+                expect(ssr.update_status_and_notify('submitted', identity)).to eq(nil)
               end
             end
           end
@@ -94,7 +95,7 @@ RSpec.describe SubServiceRequest, type: :model do
             let!(:ssr) { create(:sub_service_request_without_validations, service_request: sr, organization: org, nursing_nutrition_approved: nil, lab_approved: nil, imaging_approved: nil, committee_approved: nil) }
 
             it 'should only update status and notify' do
-              expect(ssr.update_status_and_notify('get_a_cost_estimate')).to eq(ssr.id)
+              expect(ssr.update_status_and_notify('get_a_cost_estimate', identity)).to eq(ssr.id)
               ssr.reload
               expect(ssr.status).to eq('get_a_cost_estimate')
               expect(ssr.nursing_nutrition_approved).to eq(nil)
@@ -109,7 +110,7 @@ RSpec.describe SubServiceRequest, type: :model do
           let!(:ssr) { create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'pending') }
 
           it 'should not update the SubServiceRequest nor notify' do
-            expect(ssr.update_status_and_notify('draft')).to eq(nil)
+            expect(ssr.update_status_and_notify('draft', identity)).to eq(nil)
             expect(ssr.reload.status).to eq('pending')
           end
         end
@@ -123,7 +124,7 @@ RSpec.describe SubServiceRequest, type: :model do
         }
 
         it 'should not update the SubServiceRequest nor notify' do
-          expect(ssr.update_status_and_notify('submitted')).to eq(nil)
+          expect(ssr.update_status_and_notify('submitted', identity)).to eq(nil)
           expect(ssr.reload.status).to eq('draft')
         end
       end
@@ -133,7 +134,7 @@ RSpec.describe SubServiceRequest, type: :model do
       let!(:ssr) { create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft') }
 
       it 'should not update the SSR nor notify' do
-        expect(ssr.update_status_and_notify('draft')).to eq(nil)
+        expect(ssr.update_status_and_notify('draft', identity)).to eq(nil)
         expect(ssr.reload.status).to eq('draft')
       end
     end

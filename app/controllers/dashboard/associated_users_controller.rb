@@ -21,11 +21,11 @@
 class Dashboard::AssociatedUsersController < Dashboard::BaseController
   respond_to :html, :json, :js
 
-  before_action :find_protocol_role,                              only: [:edit, :destroy]
-  before_action :find_protocol,                                   only: [:index, :new, :create, :edit, :update, :destroy]
-  before_action :find_admin_for_protocol,                         only: [:index, :new, :create, :edit, :update, :destroy]
-  before_action :protocol_authorizer_view,                        only: [:index]
-  before_action :protocol_authorizer_edit,                        only: [:new, :create, :edit, :update, :destroy]
+  before_action :find_protocol_role,        only: [:edit, :destroy]
+  before_action :find_protocol,             only: [:index, :new, :create, :edit, :update, :destroy]
+  before_action :find_admin_for_protocol,   only: [:index, :new, :create, :edit, :update, :destroy]
+  before_action :protocol_authorizer_view,  only: [:index]
+  before_action :protocol_authorizer_edit,  only: [:new, :create, :edit, :update, :destroy]
 
   def index
     @protocol_roles     = @protocol.project_roles
@@ -89,13 +89,6 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     end
 
     respond_to :js
-  end
-
-  def update_professional_organization_form_items
-    @professional_organization = ProfessionalOrganization.find_by_id(params[:last_selected_id])
-    respond_to do |format|
-      format.js
-    end
   end
 
   def destroy

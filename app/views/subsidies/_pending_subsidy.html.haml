@@ -17,6 +17,7 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 - if subsidy.present?
   .card
     .card-header.justify-content-between
@@ -58,6 +59,6 @@
 - else
   .col-xs-12
     - if in_dashboard?
-      = link_to t(:subsidies)[:add], new_dashboard_subsidy_path(ssrid: sub_service_request.id, admin: admin), remote: true, class: "btn btn-success", title: t(:subsidies)[:tooltips][:request_subsidy], data: { toggle: 'tooltip', placement: 'right' }
+      = new_subsidy_button(sub_service_request, admin: admin)
     - else
-      = link_to t(:subsidies)[:add], new_subsidy_path(ssrid: sub_service_request.id, srid: service_request.id), remote: true, class: "btn btn-success", title: t(:subsidies)[:tooltips][:request_subsidy], data: { toggle: 'tooltip', placement: 'right' }
+      = new_subsidy_button(sub_service_request, srid: service_request.id)

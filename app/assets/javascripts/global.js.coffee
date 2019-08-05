@@ -35,7 +35,7 @@ $(document).ready ->
   setRequiredFields()
   $('html').addClass('ready')
 
-  $(document).on 'ajaxSuccess ajax:complete', ->
+  $(document).on 'ajax:complete', ->
     initializeSelectpickers()
     initializeDateTimePickers()
     initializeTooltips()

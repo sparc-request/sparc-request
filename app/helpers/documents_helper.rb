@@ -63,4 +63,10 @@ module DocumentsHelper
   def document_file_types_as_string
     Document::SUPPORTED_FILE_TYPES.map(&:source).map{ |d| d.gsub('\\', '').gsub('$', '').gsub('?', '') }.join(' ')
   end
+
+  def document_org_access_collection(document)
+    default_select = action_name == 'new' ? document.protocol.organizations.ids : document.sub_service_requests.pluck(:organization_id)
+
+    options_from_collection_for_select(document.protocol.organizations.distinct.order(:name), :id, :name, default_select)
+  end
 end

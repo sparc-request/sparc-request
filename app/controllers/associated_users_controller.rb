@@ -21,10 +21,10 @@
 class AssociatedUsersController < ApplicationController
   respond_to :html, :json, :js
 
-  before_action :initialize_service_request
-  before_action :authorize_identity
-  before_action :find_protocol_role,        only: [:edit, :destroy]
-  before_action :find_protocol,             only: [:index, :new, :edit, :destroy]
+  before_action :initialize_service_request,  except: [:update_professional_organizations]
+  before_action :authorize_identity,          except: [:update_professional_organizations]
+  before_action :find_protocol_role,          only: [:edit, :destroy]
+  before_action :find_protocol,               only: [:index, :new, :edit, :destroy]
 
   def index
     @protocol_roles = @protocol.project_roles
@@ -96,6 +96,12 @@ class AssociatedUsersController < ApplicationController
     @protocol_roles.destroy_all
 
     flash[:alert] = t(:authorized_users)[:destroyed]
+
+    respond_to :js
+  end
+
+  def update_professional_organizations
+    @professional_organization = ProfessionalOrganization.find_by_id(params[:last_selected_id])
 
     respond_to :js
   end

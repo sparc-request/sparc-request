@@ -18,20 +18,19 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-.panel.panel-default
-  .panel-heading
-    %h4.panel-title
-      = t(:funding)[:index][:header]
-  .panel-body
-    .bootstrap-table-dropdown-overflow
-      %table.funding-table{ data: { toggle: 'table', search: 'true', url: funding_services_path(format: :json), striped: 'true', toolbar: '#fundings-custom-toolbar', pagination: 'true', page_size: '20' , sort_name: 'created', sort_order: 'desc' } }
-        %thead.primary-header
-          %tr
-            %th.col-md-8{ data: { field: "title", align: "left", sortable: 'true' } }
-              = t(:funding)[:index][:table][:headers][:title]
-            %th.col-md-2{ data: { field: "program", align: "left", sortable: 'true' } }
-              = t(:funding)[:index][:table][:headers][:program]
-            %th.col-md-2{ data: { field: "created", align: "left", sortable: 'true' , sorter: "dateSorter"  } }
-              = t(:funding)[:index][:table][:headers][:created]
-            %th.col-md-2{ data: { field: "action", align: "center" } }
-              = t(:funding)[:index][:table][:headers][:action]
+.panel.panel-primary#fundings-panel
+  .bootstrap-table-dropdown-overflow
+    #fundings-custom-toolbar
+      %h2.panel-title
+        = t('funding.index.header')
+    %table#fundings-table{ data: { toggle: 'table', url: funding_services_path(format: :json), search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-export' => 'true', pagination: 'true', page_size: '20', sort_name: 'created', sort_order: 'desc', toolbar: '#fundings-custom-toolbar' } }
+      %thead
+        %tr
+          %th{ data: { class: 'title col-sm-6', field: "title", align: "left", sortable: 'true' } }
+            = t(:funding)[:index][:table][:headers][:title]
+          %th{ class: 'program col-sm-2', data: { field: "program", align: "left", sortable: 'true' } }
+            = t(:funding)[:index][:table][:headers][:program]
+          %th{ class: 'created col-sm-1', data: { field: "created", align: "left", sortable: 'true' , sorter: "dateSorter"  } }
+            = t(:funding)[:index][:table][:headers][:created]
+          %th{ class: 'action col-sm-3', data: { field: "action", align: "center" } }
+            = t(:funding)[:index][:table][:headers][:action]

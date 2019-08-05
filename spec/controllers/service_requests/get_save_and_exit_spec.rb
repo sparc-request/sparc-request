@@ -25,6 +25,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
   let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
 
+  before(:each) do
+    allow(controller).to receive(:current_user).and_return(logged_in_user)
+  end
+
   describe '#obtain_research_pricing' do
     it 'should call before_filter #initialize_service_request' do
       expect(before_filters.include?(:initialize_service_request)).to eq(true)

@@ -22,21 +22,22 @@ require 'rails_helper'
 RSpec.describe ServiceRequest, type: :model do
   let!(:org)      { create(:organization_with_process_ssrs) }
   let!(:protocol) { create(:study_federally_funded, primary_pi: build_stubbed(:identity)) }
+  let!(:identity) { build_stubbed(:identity) }
 
   describe "#update_status" do
     it 'should try to update SubServiceRequests and notify' do
       sr  = create(:service_request_without_validations, protocol: protocol)
       ssr = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       sr.reload
-      expect_any_instance_of(SubServiceRequest).to receive(:update_status_and_notify).with('get_a_cost_estimate').and_return(ssr.id)
-      expect(sr.update_status('get_a_cost_estimate')).to eq([ssr.id])
+      expect_any_instance_of(SubServiceRequest).to receive(:update_status_and_notify).with('get_a_cost_estimate', identity).and_return(ssr.id)
+      expect(sr.update_status('get_a_cost_estimate', identity)).to eq([ssr.id])
     end
 
     context 'ServiceRequest has been submitted prior' do
       let!(:sr) { create(:service_request_without_validations, :submitted, protocol: protocol) }
 
       it 'should not update the ServiceRequest' do
-        sr.update_status('draft')
+        sr.update_status('draft', identity)
         sr.reload
         expect(sr.status).to eq('submitted')
       end
@@ -47,7 +48,7 @@ RSpec.describe ServiceRequest, type: :model do
 
       context 'and new_status == submitted' do
         before :each do
-          sr.update_status('submitted')
+          sr.update_status('submitted', identity)
           sr.reload
         end
 
@@ -58,7 +59,7 @@ RSpec.describe ServiceRequest, type: :model do
       end
 
       it 'should update the status but not submitted_at' do
-        sr.update_status('get_a_cost_estimate')
+        sr.update_status('get_a_cost_estimate', identity)
         sr.reload
         expect(sr.status).to eq('get_a_cost_estimate')
         expect(sr.submitted_at).to be_nil

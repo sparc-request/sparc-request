@@ -21,10 +21,10 @@
 FactoryBot.define do
 
   factory :organization do
-    name          { Faker::Lorem.sentence(3) }
-    description   { Faker::Lorem.paragraph(4) }
+    name          { Faker::Lorem.sentence(word_count: 3) }
+    description   { Faker::Lorem.paragraph(sentence_count: 4) }
     abbreviation  { Faker::Lorem.word }
-    ack_language  { Faker::Lorem.paragraph(4) }
+    ack_language  { Faker::Lorem.paragraph(sentence_count: 4) }
     process_ssrs  { false }
     is_available  { true }
     use_default_statuses { true }

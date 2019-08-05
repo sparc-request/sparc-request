@@ -20,7 +20,7 @@
 
 FactoryBot.define do
   factory :service_request do
-    status               { Faker::Lorem.sentence(3) }
+    status               { Faker::Lorem.sentence(word_count: 3) }
     approved             { false }
 
     trait :without_validations do

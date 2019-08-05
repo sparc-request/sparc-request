@@ -21,7 +21,7 @@
 FactoryBot.define do
   factory :option do
     question  {nil}
-    content   { Faker::Lorem.sentence(4) }
+    content   { Faker::Lorem.sentence(word_count: 4) }
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }

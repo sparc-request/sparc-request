@@ -18,40 +18,29 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.modal-dialog.modal-lg
+.modal-dialog.modal-lg{ role: 'document' }
   .modal-content
     .modal-header
-      %button.close{type: 'button', data: {dismiss: 'modal'}}
-        %span{aria: {hidden:'true'}} &times;
-        %span.sr-only &times;
-      %h4.modal-title.text-center
+      %h3.modal-title
         = notification_subject_line(notification, false)
+      %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+        %span{ aria: { hidden: 'true' } } &times;
     .modal-body
       - if messages.any?
-        .details-table
-          .details-header.text-center
-            .col-xs-2 
-              = t(:dashboard)[:messages][:index][:user]
-            .col-xs-2
-              = t(:dashboard)[:messages][:index][:date]
-            .col-xs-8
-              = t(:dashboard)[:messages][:index][:message]
-          - messages.each do |message|
-            .detail
-              .col-xs-2.name
+        - messages.each do |message|
+          .card-callout.w-75{ class: message.from == current_user.id ? 'card-callout-right callout-secondary float-right' : 'callout-info' }
+            .card-body
+              %h5.card-title.mb-2
                 = message.sender.full_name
-              .col-xs-2.created-at
+              .card-text.mb-2
+                = simple_format(message.body)
+              %small.card-text.text-muted
                 = format_datetime(message.created_at)
-              .col-xs-8.message
-                = message.body
+
       -else
         .text-center
           = t(:dashboard)[:messages][:index][:no_messages]
-    .modal-footer
-      .center-block
-        %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}
-          = t(:actions)[:close]
-        %button.btn.btn-primary.message.new{type: "button", aria: {label: "Reply"}, data: {notification_id: notification.id }}
-          %span.glyphicon.glyphicon-share-alt{aria: {hidden: "true"}}
-          %span
-            = t(:actions)[:reply]
+    #reply-block.modal-footer.justify-content-end
+      %button.btn.btn-secondary.mr-1{type: 'button', data: {dismiss: 'modal'}}
+        = t(:actions)[:close]
+      = link_to t(:actions)[:reply], new_dashboard_message_path(notification_id: notification.id), remote: true, class: 'btn btn-primary'

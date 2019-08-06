@@ -39,7 +39,7 @@
         - if current_user.unread_notification_count > 0
           %span.badge.badge-pill.badge-danger.ml-1#messagesBadge
             = current_user.unread_notification_count
-      = link_to 'javascript:void(0)', class: 'dropdown-item text-secondary' do
+      = link_to edit_identity_registration_path, class: 'dropdown-item text-secondary' do
         = icon('far', 'edit mr-2')
         = t('layout.navigation.profile.edit')
       = link_to destroy_identity_session_path(srid: @service_request.try(:id)), method: :delete, class: 'dropdown-item text-danger' do

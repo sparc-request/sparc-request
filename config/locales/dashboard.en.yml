@@ -143,8 +143,6 @@ en:
         requester: "(Requester)"
       form:
         select_header: "Send Notification"
-        select: "Select User:"
-        subject: "Subject"
         message: "Please enter message text here..."
       tooltips:
         table_button: "Send correspondence to Service Providers or Authorized Users"
@@ -200,9 +198,11 @@ en:
       service_requests:
         header: "Requests - %{status} - %{date}"
         view_consolidated: "Consolidated Request"
-        export_consolidated: "Export Consolidated Request"
-        coverage_report: 'Coverage Analysis Report'
+        export_consolidated: "Export"
+        coverage_report: 'Coverage Analysis'
+        cost_analysis_report: 'Cost Analysis'
         consolidated_all: "All Requests"
+        consolidated_all: "All"
         consolidated_exclude_drafts: "Exclude Drafts"
         tooltips:
           consolidated_request: "Quick access to view all service requests"

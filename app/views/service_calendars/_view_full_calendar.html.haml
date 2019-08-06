@@ -29,6 +29,10 @@
             = t(:calendars)[:show_chosen_services]
           %label.full-calendar-services-toggle{ id: 'all-services', class: display_all_services ? "btn btn-success active" : "btn btn-custom-green", data: { protocol_id: service_request.protocol.id, statuses_hidden: statuses_hidden } }
             = t(:calendars)[:show_all_services]
+      .text-right
+        - if service_request.protocol.is_study?
+          %a.btn.btn-default{ href: dashboard_protocol_path(service_request.protocol,format: :pdf) }
+            = t(:dashboard)[:protocols][:service_requests][:cost_analysis_report]
     .modal-body
       #modal_errors
       .row

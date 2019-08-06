@@ -22,7 +22,7 @@ FactoryBot.define do
   factory :question_response do
     question {nil}
     response {nil}
-    content  {Faker::Lorem.sentence(4)}
+    content  {Faker::Lorem.sentence(word_count: 4)}
     required {false}
 
     trait :without_validations do

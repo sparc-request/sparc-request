@@ -35,7 +35,7 @@
           = f.label :email, icon('far', 'envelope'), class: 'input-group-text'
         = f.email_field :email, class: 'form-control'
     .form-group.col-12.col-xl-6
-      = f.label :phone, class: 'required'
+      = f.label :phone
       .input-group
         .input-group-prepend
           = f.label :phone, icon('fas', 'phone'), class: 'input-group-text'
@@ -46,7 +46,7 @@
     = f.label :company
     = f.text_field :company, class: 'form-control'
   .form-group
-    = f.label :reason, class: 'required'
+    = f.label :reason
     = f.text_area :reason, class: 'form-control', rows: 5
   .form-group
     = f.label :ldap_uid, class: 'required'

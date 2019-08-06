@@ -38,7 +38,7 @@
     = render 'layouts/header', location: @location || 'proper'
     = render 'layouts/navbar'
     = yield(:sub_header) if content_for(:sub_header)
-    .container-fluid.px-3#contentContainer
+    .container-fluid#contentContainer
       = hidden_field_tag :protocol_id, @protocol.try(:id), disabled: true
       = hidden_field_tag :srid, @service_request.try(:id), disabled: true
       - unless content_for?(:flash)

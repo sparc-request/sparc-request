@@ -27,13 +27,15 @@ SparcRails::Application.routes.draw do
     if Setting.get_value("use_shibboleth_only")
       devise_for :identities,
                  controllers: {
-                   omniauth_callbacks: 'identities/omniauth_callbacks'
+                   omniauth_callbacks: 'identities/omniauth_callbacks',
+                   registrations: 'identities/registrations'
                  }, path_names: { sign_in: 'auth/shibboleth', sign_up: 'auth/shibboleth' }
 
     elsif Setting.get_value("use_cas_only")
       devise_for :identities,
                  controllers: {
-                   omniauth_callbacks: 'identities/omniauth_callbacks'
+                   omniauth_callbacks: 'identities/omniauth_callbacks',
+                   registrations: 'identities/registrations'
                  }, path_names: { sign_in: 'auth/cas', sign_up: 'auth/cas' }
     else
       devise_for :identities,
@@ -261,7 +263,6 @@ SparcRails::Application.routes.draw do
 
     resources :notifications, only: [:index, :new, :create] do
       member do
-        put :user_portal_update
         put :admin_update
       end
       collection do

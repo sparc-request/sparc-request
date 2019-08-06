@@ -83,7 +83,38 @@
   .card-body {
     padding: 1rem;
   }
+
+  &-callout {
+    @extend .card;
+    &.card-callout-right {
+      border-right-width: .25rem;
+      text-align: right;
+    }
+
+    &:not(.card-callout-right) {
+      border-left-width: .25rem;
+    }
+  }
+
+
+  @each $color, $value in $theme-colors {
+    &-callout.callout-#{$color} {
+      &.card-callout-right {
+        border-right-color: $value;
+      }
+
+      &:not(.card-callout-right) {
+        border-left-color: $value;
+      }
+
+      .card-title {
+        color: $value;
+      }
+    }
+  }
 }
+
+
 
 ////////////////
 /// Collapse ///

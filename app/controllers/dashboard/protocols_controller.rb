@@ -86,6 +86,14 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         @show_draft = params[:show_draft] == 'true'
         response.headers['Content-Disposition'] = "attachment; filename=\"(#{@protocol.id}) Consolidated #{@protocol.industry_funded? ? 'Corporate ' : ''}Study Budget.xlsx\""
       }
+      format.pdf {
+        response.headers['Content-Disposition'] = "attachment; filename=\"(#{@protocol.id}).pdf\""
+        pdf = Prawn::Document.new(:page_layout => :landscape)
+        generator = CostAnalysis::Generator.new
+        generator.protocol = @protocol
+        generator.to_pdf(pdf)
+        send_data pdf.render, filename: "Cost Analysis (#{@protocol.id}).pdf", type: "application/pdf", disposition: "inline"
+      }
     end
   end
 

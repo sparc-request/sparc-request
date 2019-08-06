@@ -47,11 +47,44 @@ class Identities::RegistrationsController < Devise::RegistrationsController
     end
   end
 
+  def edit
+    session[:return_to] ||= request.referer
+  end
+
+  def update
+    @identity = current_user
+    @professional_organization_id = params[:project_role][:identity_attributes][:professional_organization_id]
+    attrs = fix_professional_organization_id
+    if @identity.update_attributes(attrs)
+      redirect_to session.delete(:return_to)
+      flash[:success] = t(:devise)[:profile][:updated]
+    else
+      render 'edit'
+    end
+  end
+
   private
 
   def sign_up_params
     attrs = devise_parameter_sanitizer.sanitize(:sign_up)
     attrs[:phone] = sanitize_phone(attrs[:phone])
+    attrs
+  end
+
+  def identity_params
+    params.require(:identity).permit(:orcid,
+        :credentials,
+        :credentials_other,
+        :email,
+        :era_commons_name,
+        :professional_organization_id,
+        :phone,
+        :subspecialty)
+  end
+
+    def fix_professional_organization_id
+    attrs = identity_params
+    attrs = attrs.merge(professional_organization_id: @professional_organization_id)
     attrs
   end
 end

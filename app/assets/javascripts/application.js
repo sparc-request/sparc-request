@@ -63,6 +63,7 @@
 //= require global
 //= require batch-select
 //= require login
+//= require profile_form
 //= require protocols
 //= require protocol_form
 //= require associated_users

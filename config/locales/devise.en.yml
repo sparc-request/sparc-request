@@ -126,3 +126,24 @@ en:
         subject: "SPARCRequest Reset Password Instructions"
       unlock_instructions:
         subject: "SPARCRequest Unlock Instructions"
+    ###########
+    # Profile #
+    ###########
+    profile:
+      header: "User Profile"
+      update: "Save Changes"
+      full_name: "Full Name"
+      email: "Email"
+      orcid: "ORCID"
+      placeholders:
+        orcid: "XXXX-XXXX-XXXX-XXXX"
+      links:
+        orcid: "https://orcid.org/"
+      era_commons_name: "ERA Commons Name"
+      phone: "Phone"
+      credentials: "Credentials"
+      credentials_prompt: "Select One"
+      credentials_other: "Credentials Other"
+      updated: "Profile Updated!!"
+      subspecialty: "Subspecialty"
+      subspecialty_prompt: "Select a Subspecialty:"

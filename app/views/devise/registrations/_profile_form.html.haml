@@ -1,0 +1,58 @@
+= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f|
+  = render "devise/shared/error_messages", resource: resource
+  .form-group.row
+    = f.label :full_name, t(:devise)[:profile][:full_name], class: 'col-lg-4 col-form-label'
+    .col-lg-8
+      = identity.full_name
+
+  .form-group.row
+    = f.label :email, t(:devise)[:profile][:email], class: 'col-lg-4 col-form-label required'
+    .input-group.col-lg-8
+      .input-group-prepend
+        %span.input-group-text
+          = icon('far', 'envelope')
+      = f.text_field :email, class: 'form-control'
+
+  .form-group.row
+    = f.label :phone, t(:devise)[:profile][:phone], class: 'col-lg-4 col-form-label'
+    .col-lg-8
+      .input-group
+        .input-group-prepend
+          %span.input-group-text
+            = icon('fas', 'phone')
+        = f.telephone_field :phone, class: 'form-control', placeholder: t('constants.phone.placeholder')
+      %span.form-text.text-muted
+        = t('constants.phone.note')
+
+  .form-group.row
+    = f.label :orcid, class: 'col-lg-4 col-form-label'
+    .col-lg-8
+      = f.text_field :orcid, class: 'form-control', placeholder: t(:devise)[:profile][:placeholders][:orcid], maxlength: 19
+      %smal.form-text
+        = link_to t(:devise)[:profile][:links][:orcid], t(:devise)[:profile][:links][:orcid], target: :blank
+
+  .form-group.row
+    = f.label :era_commons_name, t(:devise)[:profile][:era_commons_name], class: 'col-lg-4 col-form-label'
+    .col-lg-8
+      = f.text_field :era_commons_name, class: 'form-control'
+
+  .form-group.row
+    = f.label :subspecialty, t(:devise)[:profile][:subspecialty], class: 'col-lg-4 col-form-label'
+    .col-lg-8
+      = f.select :subspecialty, options_for_select(PermissibleValue.get_inverted_hash('subspecialty'), identity.subspecialty), { include_blank: t(:devise)[:profile][:subspecialty_prompt] }, class: 'form-control selectpicker'
+
+  .form-group.row
+    = f.label :credentials, t(:devise)[:profile][:credentials], class: 'col-lg-4 col-form-label'
+    .col-lg-8
+      = f.select :credentials, options_for_select(PermissibleValue.get_inverted_hash('user_credential'), identity.credentials), { include_blank: t(:devise)[:profile][:credentials_prompt] }, class: 'form-control selectpicker'
+
+  .form-group.row#credentialsOtherContainer{ class: f.object.credentials == 'other' ? '' : 'd-none' }
+    .col-lg-4
+      = f.label :credentials_other, t('constants.prompts.please_specify')
+    .col-lg-8
+      = f.text_field :credentials_other, class: 'form-control'
+
+  = render("dashboard/associated_users/professional_organizations", professional_organization: identity.professional_organization)
+
+  .actions
+    = f.submit t(:devise)[:profile][:update], class: 'btn btn-lg btn-block btn-outline-primary'

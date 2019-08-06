@@ -83,12 +83,19 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id)
         @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
         @protocol_type      = @protocol.type.capitalize
-
-        render
       }
+      format.js
       format.xlsx {
         @statuses_hidden = params[:statuses_hidden] || %w(draft first_draft)
         response.headers['Content-Disposition'] = "attachment; filename=\"(#{@protocol.id}) Consolidated #{@protocol.industry_funded? ? 'Corporate ' : ''}Study Budget.xlsx\""
+      }
+      format.pdf {
+        response.headers['Content-Disposition'] = "attachment; filename=\"(#{@protocol.id}).pdf\""
+        pdf = Prawn::Document.new(:page_layout => :landscape)
+        generator = CostAnalysis::Generator.new
+        generator.protocol = @protocol
+        generator.to_pdf(pdf)
+        send_data pdf.render, filename: "Cost Analysis (#{@protocol.id}).pdf", type: "application/pdf", disposition: "inline"
       }
     end
   end
@@ -99,6 +106,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     controller.response = response
     controller.new
     @protocol = controller.instance_variable_get(:@protocol)
+
+    respond_to :js
   end
 
   def create
@@ -129,42 +138,33 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def edit
-    @protocol_type      = @protocol.type
-    @permission_to_edit = @authorization.nil? ? false : @authorization.can_edit?
-    @in_dashboard       = true
-    @protocol.populate_for_edit
+    # Prevent STQ Errors from Controller
+    @protocol.bypass_stq_validation = @protocol.selected_for_epic.nil?
 
-    session[:breadcrumbs].
-      clear.
-      add_crumbs(protocol_id: @protocol.id, edit_protocol: true)
+    controller          = ::ProtocolsController.new
+    controller.request  = request
+    controller.response = response
+    controller.instance_variable_set(:@protocol, @protocol)
+    controller.edit
 
-    @protocol.valid?
-    @errors = @protocol.errors
-    @errors.delete(:research_master_id) if @bypass_rmid_validation
+    @protocol = controller.instance_variable_get(:@protocol)
+    @errors   = controller.instance_variable_get(:@errors)
 
-    respond_to do |format|
-      format.html
-    end
+    # Re-Assign bypass
+    @protocol.bypass_stq_validation = @protocol.selected_for_epic.nil?
+
+    session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id, edit_protocol: true)
+
+    respond_to :html
   end
 
   def update
     unless params[:locked]
-      protocol_type = protocol_params[:type]
-      @protocol = @protocol.becomes(protocol_type.constantize) unless protocol_type.nil?
-      if (params[:updated_protocol_type] == 'true' && protocol_type == 'Study') || params[:can_edit] == 'true'
-        @protocol.assign_attributes(study_type_question_group_id: StudyTypeQuestionGroup.active_id)
-        @protocol.assign_attributes(selected_for_epic: protocol_params[:selected_for_epic]) if protocol_params[:selected_for_epic]
-        if @protocol.valid?
-          @protocol.update_attribute(:type, protocol_type)
-          @protocol.activate
-          @protocol.reload
-        end
-      end
-
-      permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
+      permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
       # admin is not able to activate study_type_question_group
 
       @protocol.bypass_rmid_validation = @bypass_rmid_validation
+      @protocol.bypass_stq_validation = @protocol.selected_for_epic.nil? && protocol_params[:selected_for_epic].nil?
 
       if @protocol.update_attributes(protocol_params)
         flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
@@ -179,6 +179,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     else
       perform_protocol_lock(@protocol, params[:locked])
     end
+
+    respond_to :js
   end
 
   def update_protocol_type
@@ -187,6 +189,10 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     controller.response = response
     controller.update_protocol_type
     @protocol = controller.instance_variable_get(:@protocol)
+
+    flash[:success] = t('protocols.change_type.updated')
+
+    respond_to :js
   end
 
   def archive
@@ -199,15 +205,13 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol.notes.create(identity: current_user, body: t("protocols.summary.#{action}_note", protocol_type: @protocol_type))
     ProtocolMailer.with(protocol: @protocol, archiver: current_user, action: action).archive_email.deliver
 
-    respond_to do |format|
-      format.js
-    end
+    respond_to :js
   end
 
   def display_requests
-    respond_to :js
-
     @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
+
+    respond_to :js
   end
 
   private

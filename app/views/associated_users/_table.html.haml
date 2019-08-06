@@ -18,22 +18,19 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.card
-  .card-header.bg-primary.text-white
-    %h3.mb-0
-      - if service_request.previously_submitted?
-        = link_to '#authorizedUsers', data: { toggle: 'collapse' } do
-          %span.caret
-          = t('authorized_users.header')
-      - else
-        = t('authorized_users.header')
-  .collapse#authorizedUsers{ class: service_request.previously_submitted? ? '' : 'show' }
+.card.w-100#authorizedUsersCard
+  .card-header.bg-primary.text-white{ data: { toggle: 'collapse', target: '#authorizedUsers' } }
+    %h3.mb-0<
+      = icon('fas', 'caret-down mr-3')
+      = t('authorized_users.header')
+  .collapse#authorizedUsers{ class: controller_name == 'service_requests' && service_request.previously_submitted? ? '' : 'show' }
     #associatedUsersTableToolbar
-      - unless in_review?
-        = link_to new_associated_user_path(srid: service_request.id), remote: true, class: 'btn btn-success' do
-          = icon('fas', 'plus mr-1')
-          = t('authorized_users.new')
-    %table#authorizedUsersTable{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: associated_users_path(format: :json, srid: service_request.id), toolbar: '#associatedUsersTableToolbar' } }
+      - if in_dashboard?
+        = new_authorized_user_button(protocol_id: protocol.id, permission: permission_to_edit || admin)
+      - elsif !in_review?
+        = new_authorized_user_button(srid: service_request.id)
+    - url = in_dashboard? ? dashboard_associated_users_path(format: :json, protocol_id: protocol.id) : associated_users_path(format: :json, srid: service_request.id)
+    %table#authorizedUsersTable{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: url, toolbar: '#associatedUsersTableToolbar' } }
       %thead
         %tr
           %th{ data: { field: 'name', sortable: 'true' } }

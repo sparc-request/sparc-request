@@ -51,14 +51,14 @@ class NotifierLogic
     # @to_notify holds the SSRs that require an "initial submission" email
     @send_request_amendment_and_not_initial = @ssrs_updated_from_un_updatable_status.present? || @destroyed_ssrs_needing_notification.present? || @created_ssrs_needing_notification.present?
     @service_request.previous_submitted_at = @service_request.submitted_at
-    @to_notify = @service_request.update_status('submitted')
+    @to_notify = @service_request.update_status('submitted', @current_user)
     @service_request.update_arm_minimum_counts
     send_request_amendment_email_evaluation
     send_initial_submission_email
   end
 
   def update_status_and_send_get_a_cost_estimate_email
-    to_notify = @service_request.update_status('get_a_cost_estimate')
+    to_notify = @service_request.update_status('get_a_cost_estimate', @current_user)
     sub_service_requests = @service_request.sub_service_requests.where(id: to_notify)
     if !sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
       send_user_notifications(request_amendment: false, admin_delete_ssr: false, deleted_ssr: nil)

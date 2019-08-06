@@ -71,6 +71,8 @@ class SubServiceRequest < ApplicationRecord
   scope :in_work_fulfillment, -> { where(in_work_fulfillment: true) }
   scope :imported_to_fulfillment, -> { where(imported_to_fulfillment: true) }
 
+  attribute :current_user_id, :big_integer
+
   def consult_arranged_date=(date)
     write_attribute(:consult_arranged_date, date.present? ? Time.strptime(date, "%m/%d/%Y") : nil)
   end
@@ -275,7 +277,8 @@ class SubServiceRequest < ApplicationRecord
 
   # Returns the SSR id that need an initial submission email and updates
   # the SSR status to new status if appropriate
-  def update_status_and_notify(new_status)
+  def update_status_and_notify(new_status, current_user)
+    self.current_user_id = current_user.id
     if self.status != new_status && self.can_be_edited? && Status.updatable?(self.status)
       if new_status == 'submitted'
         ### For 'submitted' status ONLY:
@@ -352,9 +355,13 @@ class SubServiceRequest < ApplicationRecord
 
   def update_past_status
     if saved_change_to_status? && !@prev_status.blank?
-      past_status = self.past_statuses.create(status: @prev_status, new_status: status, date: Time.now)
-      user_id = AuditRecovery.where(auditable_id: past_status.id, auditable_type: 'PastStatus').first.user_id
-      past_status.update_attribute(:changed_by_id, user_id)
+      past_status = self.past_statuses.create(status: @prev_status, new_status: status, date: Time.now, changed_by_id: self.current_user_id)
+
+      # fall back to old method of assigning using audit trail, TODO: this is more of safety measure as it is hard to tell everywhere a SSR is saved/updated
+      if past_status.changed_by_id.blank?
+        user_id = AuditRecovery.where(auditable_id: past_status.id, auditable_type: 'PastStatus').first.user_id
+        past_status.update_attribute(:changed_by_id, user_id)
+      end
     end
   end
 

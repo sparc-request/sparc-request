@@ -22,7 +22,7 @@ FactoryBot.define do
   factory :question do
     section       { nil }
     is_dependent  { false }
-    content       { Faker::Lorem.sentence(4) }
+    content       { Faker::Lorem.sentence(word_count: 4) }
     question_type { 'text' }
     required      { false }
 

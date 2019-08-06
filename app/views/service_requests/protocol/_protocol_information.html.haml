@@ -20,7 +20,7 @@
 
 .col-12.col-lg-9.mb-3.mb-lg-0#protocolInformation
   - if protocol
-    = render 'protocols/summary', protocol: protocol, protocol_type: protocol.model_name.human, service_request: service_request
+    = render 'protocols/summary', protocol: protocol, service_request: service_request
     = render 'associated_users/table', protocol: protocol, service_request: service_request
   - else
     .card#newProtocolCard

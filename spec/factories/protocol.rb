@@ -21,17 +21,17 @@
 FactoryBot.define do
   factory :protocol do
     next_ssr_id                  { Random.rand(10000) }
-    short_title                  { Faker::Lorem.sentence(2) }
-    title                        { Faker::Lorem.sentence(3) }
-    sponsor_name                 { Faker::Lorem.sentence(3) }
-    brief_description            { Faker::Lorem.paragraph(2) }
+    short_title                  { Faker::Lorem.sentence(word_count: 2) }
+    title                        { Faker::Lorem.sentence(word_count: 3) }
+    sponsor_name                 { Faker::Lorem.sentence(word_count: 3) }
+    brief_description            { Faker::Lorem.paragraph(sentence_count: 2) }
     indirect_cost_rate           { Random.rand(1..1000) }
     udak_project_number          { Random.rand(1000).to_s }
     funding_rfa                  { Faker::Lorem.word }
     potential_funding_start_date { Time.now + 1.year }
     funding_start_date           { '2015-10-15' }
     federal_grant_serial_number  { Random.rand(200000).to_s }
-    federal_grant_title          { Faker::Lorem.sentence(2) }
+    federal_grant_title          { Faker::Lorem.sentence(word_count: 2) }
     federal_grant_code_id        { Random.rand(1000).to_s }
     federal_non_phs_sponsor      { Faker::Lorem.word }
     federal_phs_sponsor          { Faker::Lorem.word }

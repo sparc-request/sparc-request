@@ -51,10 +51,11 @@ class AssociatedUsersController < ApplicationController
   end
 
   def create
-    creator = AssociatedUserCreator.new(project_role_params, current_user)
+    creator         = AssociatedUserCreator.new(project_role_params, current_user)
+    @protocol_role  = creator.protocol_role
 
     if creator.successful?
-      flash.now[:success] = t('authorized_users.created')
+      flash[:success] = t('authorized_users.created')
     else
       @errors = creator.protocol_role.errors
     end
@@ -73,13 +74,13 @@ class AssociatedUsersController < ApplicationController
   end
 
   def update
-    updater               = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params, current_identity: current_user)
-    protocol_role         = updater.protocol_role
+    updater       = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params, current_identity: current_user)
+    protocol_role = updater.protocol_role
 
     if updater.successful?
-      flash.now[:success] = t('authorized_users.updated')
+      flash[:success] = t('authorized_users.updated')
 
-      redirect_to dashboard_root_path if protocol_role.identity_id == current_user.id && !current_user.catalog_overlord? && ['none', 'view'].include?(protocol_role.project_rights)
+      redirect_to dashboard_root_path(method: :get) if protocol_role.identity == current_user && !current_user.catalog_overlord? && ['none', 'view'].include?(protocol_role.project_rights)
     else
       @errors = updater.protocol_role.errors
     end
@@ -88,14 +89,13 @@ class AssociatedUsersController < ApplicationController
   end
 
   def destroy
-    @epic_access = @protocol_roles.where(epic_access: true).any?
+    @redirect = @protocol_roles.where(identity: current_user).any? && !current_user.catalog_overlord?
     @protocol_roles.each{ |pr| EpicQueueManager.new(@protocol, current_user, pr).create_epic_queue }
     Notifier.notify_primary_pi_for_epic_user_removal(@protocol, @protocol_roles).deliver if is_epic?
     @protocol.email_about_change_in_authorized_user(@protocol_roles, "destroy")
-
     @protocol_roles.destroy_all
 
-    flash.now[:alert] = t(:authorized_users)[:destroyed]
+    flash[:alert] = t(:authorized_users)[:destroyed]
 
     respond_to :js
   end
@@ -104,6 +104,7 @@ class AssociatedUsersController < ApplicationController
 
   def project_role_params
     params[:project_role][:identity_attributes][:phone] = sanitize_phone params[:project_role][:identity_attributes][:phone]
+    params[:project_role][:project_rights] ||= ""
 
     params.require(:project_role).permit(
       :epic_access,
@@ -155,6 +156,6 @@ class AssociatedUsersController < ApplicationController
   end
 
   def is_epic?
-    Setting.get_value("use_epic") && @protocol.selected_for_epic && @epic_access && !Setting.get_value("queue_epic")
+    Setting.get_value("use_epic") && !Setting.get_value("queue_epic") && @protocol.selected_for_epic? && @protocol_roles.where(epic_access: true).any?
   end
 end

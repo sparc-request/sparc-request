@@ -19,23 +19,27 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  # $(document).on 'click', 'tbody tr', ->
-  #   ssrid = $(this).data('ssrid')
-  #   if ssrid
-  #     $.ajax
-  #       type: 'GET'
-  #       url: "/dashboard/sub_service_requests/#{ssrid}.js"
+  $('#pushToEpicStatus').text(I18n.t('proper.confirmation.push_to_epic.message'))
+  get_epic_push_status()
 
-  # $(document).on 'click', 'button.notes',  ->
-  #   id = $(this).data('notable-id')
-  #   type = $(this).data('notable-type')
+get_epic_push_status = () ->
+  protocol_id = $('#pushToEpicStatus').data('protocol-id')
 
-  #   $.ajax
-  #     type: 'GET'
-  #     dataType: 'script'
-  #     url: '/notes'
-  #     data:
-  #       note:
-  #         notable_id: id
-  #         notable_type: type
-  #       review: true
+  $.ajax
+    method: 'GET'
+    url: "/protocols/#{protocol_id}/push_to_epic_status.json"
+    contentType: 'application/json; charset=utf-8'
+    success: (data, text, request) ->
+      status = data['last_epic_push_status']
+      if status == 'started' || status == 'sent_study'
+        window.setTimeout(get_epic_push_status, 5000)
+      else
+        status_text = data['last_epic_push_status_text']
+
+        if status_text == null
+          $('#pushToEpicStatus').removeClass('my-2')
+          $('#pushToEpicStatus').text('')
+        else
+          $('#pushToEpicStatus').text(data['last_epic_push_status_text'])
+    error:
+      $('#pushToEpicStatus').text(I18n.t('proper.confirmation.push_to_epic.failed'))

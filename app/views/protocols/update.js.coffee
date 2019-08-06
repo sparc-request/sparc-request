@@ -40,4 +40,6 @@ $("[name='protocol[primary_pi_role_attributes][<%= attr.to_s %>]']").parents('.f
 $("#study_type_answer_<%= question_id %>").children('.form-group:last-of-type').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
 <% end %>
 <% end %>
+<% else %>
+window.location = "<%= protocol_service_request_path(srid: @service_request.id) %>"
 <% end %>

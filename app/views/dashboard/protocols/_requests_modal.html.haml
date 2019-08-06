@@ -29,7 +29,7 @@
         %span{ aria: { hidden: 'true' } } &times;
     .modal-body
       - protocol.service_requests.each do |sr|
-        = render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, protocol: protocol, permission_to_edit: permission_to_edit, view_only: true
+        = render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, protocol: protocol, permission_to_edit: permission_to_edit
     .modal-footer
       %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
         = t('actions.close')

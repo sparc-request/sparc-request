@@ -20,7 +20,7 @@
 
 class Study < Protocol
   validates_presence_of :sponsor_name
-  validates_inclusion_of :selected_for_epic, in: [true, false]
+  validates_inclusion_of :selected_for_epic, in: [true, false], unless: :bypass_stq_validation
 
   ##Removed for now, perhaps to be added later
   # validation_group :guarantor_fields, if: :selected_for_epic do
@@ -45,7 +45,7 @@ class Study < Protocol
 
   validates :guarantor_contact, length: { maximum: 192 }
 
-  validate :validate_study_type_answers
+  validate :validate_study_type_answers, unless: :bypass_stq_validation
 
   def classes
     return [ 'project' ] # for backward-compatibility

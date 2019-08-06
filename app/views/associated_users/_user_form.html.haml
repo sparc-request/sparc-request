@@ -18,10 +18,10 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- entity = in_dashboard ? [:dashboard, protocol_role] : protocol_role
+- entity = in_dashboard? ? [:dashboard, protocol_role] : protocol_role
 
 -# TODO: Refactoring ProjectRole to AssociatedUser will remove the need for specifying the URL
-- if in_dashboard
+- if in_dashboard?
   - url = protocol_role.new_record? ? dashboard_associated_users_path : dashboard_associated_user_path(protocol_role)
   - change_user_url = new_dashboard_associated_user_path(protocol_id: protocol.id)
 - else
@@ -33,7 +33,8 @@
     = form_for entity, url: url, remote: true, html: { id: 'authorizedUserForm' } do |f|
       = f.hidden_field :identity_id
       = f.hidden_field :protocol_id
-      = hidden_field_tag :srid, service_request.try(:id)
+      - unless in_dashboard?
+        = hidden_field_tag :srid, service_request.id
       .modal-header
         %h3.modal-title
           = t("authorized_users.#{action_name}")
@@ -104,13 +105,13 @@
               = f.label :epic_access, class: 'required', title: t('authorized_users.tooltips.epic_access'), data: { toggle: 'tooltip', placement: 'right' }
               .d-block
                 .custom-control.custom-radio.custom-control-inline
-                  = f.radio_button :epic_access, true, class: 'custom-control-input', disabled: Setting.get_value("validate_epic_users") && !EpicUser.is_active?(@epic_user)
+                  = f.radio_button :epic_access, true, class: 'custom-control-input', disabled: Setting.get_value("validate_epic_users") && !EpicUser.is_active?(epic_user)
                   = f.label :epic_access_true, t('constants.yes_select'), class: 'custom-control-label'
                 .custom-control.custom-radio.custom-control-inline
-                  = f.radio_button :epic_access, false, class: 'custom-control-input', disabled: Setting.get_value("validate_epic_users") && !EpicUser.is_active?(@epic_user)
+                  = f.radio_button :epic_access, false, class: 'custom-control-input', disabled: Setting.get_value("validate_epic_users") && !EpicUser.is_active?(epic_user)
                   = f.label :epic_access_false, t('constants.no_select'), class: 'custom-control-label'
 
-              - if Setting.get_value("validate_epic_users") && !EpicUser.is_active?(@epic_user)
+              - if Setting.get_value("validate_epic_users") && !EpicUser.is_active?(epic_user)
                 %small.form-text.text-danger
                   = t('authorized_users.form.no_epic_access')
 

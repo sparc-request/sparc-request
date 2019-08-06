@@ -30,18 +30,8 @@ module Dashboard::ProtocolsHelper
     end
   end
 
-  def edit_protocol_button_display(protocol, permission_to_edit)
-    if permission_to_edit
-      content_tag( :button, I18n.t('protocols.edit', protocol_type: protocol.type), type: 'button', class: 'edit-protocol-information-button btn btn-warning btn-sm', data: { permission: permission_to_edit.to_s, protocol_id: protocol.id, toggle: 'tooltip', placement: 'bottom' }, title: t(:protocols)[:summary][:tooltips][:edit])
-    end
-  end
-
   def protocol_id_button(protocol)
     link_to protocol.id, dashboard_protocol_path(protocol), class: 'btn btn-block btn-outline-primary protocol-link'
-  end
-
-  def short_title_display(protocol)
-    truncate_string_length(protocol.short_title, 100) + content_tag(:br) + display_rmid_validated_protocol(protocol, Protocol.human_attribute_name(:short_title))
   end
 
   def pis_display(protocol)
@@ -53,17 +43,6 @@ module Dashboard::ProtocolsHelper
       link_to(display_requests_dashboard_protocol_path(protocol), remote: true, class: 'btn btn-secondary') do
         raw(Protocol.human_attribute_name(:requests) + content_tag(:span, protocol.sub_service_requests.length, class: 'badge badge-pill badge-light ml-1'))
       end
-    end
-  end
-
-  def display_archive_button(protocol, permission_to_edit)
-    if permission_to_edit || Protocol.for_super_user(current_user.id).include?(protocol)
-      content_tag( :button, (protocol.archived ? t(:protocols)[:summary][:unarchive] : t(:protocols)[:summary][:archive])+" #{protocol.type.capitalize}", 
-                    type: 'button', 
-                    class: 'protocol-archive-button btn btn-default btn-sm',
-                    data: { protocol_id: protocol.id, toggle: 'tooltip', placement: 'bottom' },
-                    title: t("protocols.summary.tooltips.#{protocol.archived ? "unarchive_study" : "archive_study"}")
-      )
     end
   end
 end

@@ -112,6 +112,8 @@ en:
         inventors: "Inventor(s)"
       line_items_visit:
         subject_count: "Subject Count"
+      message:
+        body: "Message"
       note:
         body: "Note"
       option:

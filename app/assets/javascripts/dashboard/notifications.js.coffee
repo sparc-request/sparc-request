@@ -33,7 +33,7 @@ $(document).ready ->
 
   $(document).on('click', '.notifications_row > .bs-checkbox', ->
     #clicks checkbox if you click in the same td
-    $(this).children("input[type='checkbox']").trigger('click')
+    $(this).find("input[type='checkbox']").trigger('click')
   )
 
   $(document).on 'change', '.new-notification', ->
@@ -62,13 +62,6 @@ $(document).ready ->
             success: ->
               $this.selectpicker('val', '')
 
-  $(document).on 'click', 'button.message.new',  ->
-    data = notification_id: $(this).data('notification-id')
-    $.ajax
-      type: 'GET'
-      url: '/dashboard/messages/new'
-      data: data
-
   $(document).on 'click', 'button.mark_as_read_unread',  ->
     selections = $('#notifications-table').bootstrapTable 'getSelections'
     notification_ids = selections.map( (hash, i) -> return hash['id'] )
@@ -95,11 +88,6 @@ $(document).ready ->
     $(this).removeClass('btn-default').addClass('btn-primary').find('.glyphicon-refresh').show()
     $('#notification_tabs').data('selected', 'inbox')
     $('#notifications-table').bootstrapTable 'refresh', { query: { table: 'inbox' } }
-
-  $(document).on 'click', '#compose-notification',  ->
-    $.ajax
-      type: 'GET'
-      url:  '/dashboard/notifications/new'
 
   window.notifications_row_style = (row, index) ->
     class_string = 'notifications_row'

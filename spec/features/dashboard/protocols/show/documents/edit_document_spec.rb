@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -51,7 +51,7 @@ RSpec.feature 'User wants to edit a document', js: true do
       end
 
       scenario 'and sees the updated document' do
-        @page.wait_for_documents(text: 'Protocol')
+        wait_for_javascript_to_finish
         expect(@page).to have_documents(text: 'Consent')
       end
     end
@@ -60,11 +60,11 @@ RSpec.feature 'User wants to edit a document', js: true do
   def edit_document_fields
     @page.document_modal.instance_exec do
       doc_type_dropdown.click
-      wait_for_dropdown_choices
+      wait_until_dropdown_choices_visible
       dropdown_choices(text: 'Consent').first.click
     end
 
-    attach_file 'document_document', './spec/fixtures/files/text_document.txt'
+    attach_file 'document_document', File.expand_path('spec/fixtures/files/text_document.txt')
 
     @page.document_modal.upload_button.click
   end

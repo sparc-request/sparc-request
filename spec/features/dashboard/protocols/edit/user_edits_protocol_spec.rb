@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -43,9 +43,10 @@ RSpec.describe 'User edits epic answers', js: true do
                                 service_request: service_request,
                                 status: 'draft')
                         create(:super_user, identity: jug2,
-                                organization: organization)
+                                organization: organization,
+                                access_empty_protocols: true)
 
-      allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
+      allow(Protocol).to receive(:rmid_status).and_return(true)
     end
 
     context 'and clicks Edit Information' do
@@ -94,7 +95,7 @@ RSpec.describe 'User edits epic answers', js: true do
                         create(:super_user, identity: jug2,
                                 organization: organization)
 
-      allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(true)
+      allow(Protocol).to receive(:rmid_status).and_return(false)
     end
 
     context 'and clicks Edit Information' do

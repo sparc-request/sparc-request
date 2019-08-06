@@ -1,235 +1,235 @@
-id,key,value,concept_code,parent_id,sort_order,category,default,reserved
-,C06,C06 Research Facilities Construction Grant,,,1,federal_grant_code,,
-,D43,D43 International Research Training Grants,,,2,federal_grant_code,,
-,D71,D71 International Research Training Planning Grant,,,3,federal_grant_code,,
-,DP1,DP1 NIH Director’s Pioneer Award (NDPA),,,4,federal_grant_code,,
-,DP2,DP2 NIH Director’s New Innovator Awards,,,5,federal_grant_code,,
-,DP3,DP3 Type 1 Diabetes Targeted Research Award,,,6,federal_grant_code,,
-,DP4,DP4 NIH Director’s Pathfinder Award - Multi-Yr Funding,,,7,federal_grant_code,,
-,DP5,DP5 Early Independence Award,,,8,federal_grant_code,,
-,DP7,DP7 NIH Director’s Workforce Innovation Award,,,9,federal_grant_code,,
-,E11,E11 Grants for Public Health Special Projects,,,10,federal_grant_code,,
-,F05,F05 International Research Fellowships (FIC),,,11,federal_grant_code,,
-,F30,F30 Individual Predoctoral NRSA for M.D./Ph.D. Fellowships,,,12,federal_grant_code,,
-,F31,F31 Predoctoral Individual National Research Service Award,,,13,federal_grant_code,,
-,F32,F32 Postdoctoral Individual National Research Service Award,,,14,federal_grant_code,,
-,F33,F33 National Research Service Awards for Senior Fellows,,,15,federal_grant_code,,
-,F37,F37 Medical Informatics Fellowships,,,16,federal_grant_code,,
-,F38,F38 Applied Medical Informatics Fellowships,,,17,federal_grant_code,,
-,F99,F99 Pre-doc to Post-doc Transition Award,,,18,federal_grant_code,,
-,FI2,FI2 Intramural Postdoctoral Research Associate,,,19,federal_grant_code,,
-,G07,G07 Resources Improvement Grant, ,,20,federal_grant_code,,
-,G08,G08 Resources Project Grant (NLM), ,,21,federal_grant_code,,
-,G11,G11 Extramural Associate Research Development Award (EARDA), ,,22,federal_grant_code,,
-,G12,G12 Research Centers in Minority Institutions Award, ,,23,federal_grant_code,,
-,G13,G13 Health Sciences Publication Support Awards (NLM), ,,24,federal_grant_code,,
-,G20,"G20 Grants for Repair, Renovation and Modernization of Existing Research Facilities", ,,25,federal_grant_code,,
-,G94,G94 Administrative Support for Public Health Service Agency Foundations, ,,26,federal_grant_code,,
-,H13,H13 Conferences Active, ,,27,federal_grant_code,,
-,H25,H25 Venereal Disease Control, ,,28,federal_grant_code,,
-,H50,"H50 Maternal and Child Health Services Project, RB Funds Active", ,,29,federal_grant_code,,
-,H57,H57 Indian Health Service Loan Repayment Program, ,,30,federal_grant_code,,
-,H62,H62 Services or Education on AIDS, ,,31,federal_grant_code,,
-,H64,H64 State and Community-Based Childhood Lead Poisoning Prevention Program, ,,32,federal_grant_code,,
-,H75,H75 Health Investigations/Assessments of Control/Preven. Methods, ,,33,federal_grant_code,,
-,H79,H79 Mental Health and/or Substance Abuse Services Grants, ,,34,federal_grant_code,,
-,HD4,HD4 Drug Use/Alcohol Abuse Prevention Demo: Community Partnership Study, ,,35,federal_grant_code,,
-,I01,I01 Non-HHS Research Projects, ,,36,federal_grant_code,,
-,IK3,IK3 Non-DHHS Nursing Research Initiative, ,,37,federal_grant_code,,
-,K00,K00 Post-doctoral Transition Award, ,,38,federal_grant_code,,
-,K01,K01 Research Scientist Development Award - Research & Training, ,,39,federal_grant_code,,
-,K02,K02 Research Scientist Development Award - Research, ,,40,federal_grant_code,,
-,K05,K05 Research Scientist Award, ,,41,federal_grant_code,,
-,K06,K06 Research Career Awards, ,,42,federal_grant_code,,
-,K07,K07 Academic/Teacher Award (ATA), ,,43,federal_grant_code,,
-,K08,K08 Clinical Investigator Award (CIA), ,,44,federal_grant_code,,
-,K12,K12 Physician Scientist Award (Program) (PSA), ,,45,federal_grant_code,,
-,K14,K14 Minority School Faculty Development Awards, ,,46,federal_grant_code,,
-,K18,K18 The Career Enhancement Award, ,,47,federal_grant_code,,
-,K21,K21 Scientist Development Award, ,,48,federal_grant_code,,
-,K22,K22 Career Transition Award, ,,49,federal_grant_code,,
-,K23,K23 Mentored Patient-Oriented Research Career Development Award, ,,50,federal_grant_code,,
-,K24,K24 Midcareer Investigator Award in Patient-Oriented Research, ,,51,federal_grant_code,,
-,K25,K25 Mentored Quantitative Research Career Development Award, ,,52,federal_grant_code,,
-,K26,K26 Midcareer Investigator Award in Biomedical and Behavioral Research, ,,53,federal_grant_code,,
-,K43,K43 International Research Career Development Award, ,,54,federal_grant_code,,
-,K76,K76 Emerging Leaders Career Development Award, ,,55,federal_grant_code,,
-,K99,K99 Career Transition Award, ,,56,federal_grant_code,,
-,KD1,KD1 Mental Health and/or Substance Abuse KD&A Grants, ,,57,federal_grant_code,,
-,KL1,KL1 Linked Research Career Development Award, ,,58,federal_grant_code,,
-,KL2,KL2 Mentored Career Development Award, ,,59,federal_grant_code,,
-,KM1,KM1 Institutional Career Enhancement Awards - Multi-Yr Funding, ,,60,federal_grant_code,,
-,L30,L30 Loan Repayment Program for Clinical Researchers, ,,61,federal_grant_code,,
-,L32,L32 Loan Repayment Program for Clinical Researchers from Disadvantaged Backgrounds, ,,62,federal_grant_code,,
-,L40,L40 Loan Repayment Program for Pediatric Research, ,,63,federal_grant_code,,
-,L50,L50 Loan Repayment Program for Contraception and Infertility Research, ,,64,federal_grant_code,,
-,L60,L60 Loan Repayment Program for Health Disparities Research, ,,65,federal_grant_code,,
-,M01,M01 General Clinical Research Centers Program, ,,66,federal_grant_code,,
-,OT1,OT1 Pre-Application for an Other Transaction Award, ,,67,federal_grant_code,,
-,OT2,OT2 Research Project-Other Transaction Award, ,,68,federal_grant_code,,
-,P01,P01 Research Program Projects, ,,69,federal_grant_code,,
-,P20,P20 Exploratory Grants, ,,70,federal_grant_code,,
-,P2C,P2C Resource-Related Research Multi-Component Projects and Centers, ,,71,federal_grant_code,,
-,P30,P30 Center Core Grants, ,,72,federal_grant_code,,
-,P40,"P40 Animal (Mammalian and Nonmammalian) Model, and Animal and Biological Material Resource Grants", ,,73,federal_grant_code,,
-,P41,P41 Biotechnology Resource Grants, ,,74,federal_grant_code,,
-,P42,P42 Hazardous Substances Basic Research Grants Program (NIEHS), ,,75,federal_grant_code,,
-,P50,P50 Specialized Center, ,,76,federal_grant_code,,
-,P51,P51 Primate Research Center Grants, ,,77,federal_grant_code,,
-,P60,P60 Comprehensive Center, ,,78,federal_grant_code,,
-,PL1,PL1 Linked Center Core Grant, ,,79,federal_grant_code,,
-,PM1,PM1 Program Project or Center with Complex Structure, ,,80,federal_grant_code,,
-,PN1,PN1 Concept Development Award, ,,81,federal_grant_code,,
-,PN2,PN2 Research Development Center, ,,82,federal_grant_code,,
-,R00,R00 Research Transition Award, ,,83,federal_grant_code,,
-,R01,R01 Research Project, ,,84,federal_grant_code,,
-,R03,R03 Small Research Grants, ,,85,federal_grant_code,,
-,R13,R13 Conference, ,,86,federal_grant_code,,
-,R15,R15 Academic Research Enhancement Awards (AREA), ,,87,federal_grant_code,,
-,R18,R18 Research Demonstration and Dissemination Projects, ,,88,federal_grant_code,,
-,R21,R21 Exploratory/Developmental Grants, ,,89,federal_grant_code,,
-,R24,R24 Resource-Related Research Projects, ,,90,federal_grant_code,,
-,R25,R25 Education Projects, ,,91,federal_grant_code,,
-,R28,R28 Resource-Related Research Projects, ,,92,federal_grant_code,,
-,R30,"R30 Preventive Health Service - Venereal Disease Research, Demonstration, and Public Information and Education Grants", ,,93,federal_grant_code,,
-,R33,R33 Exploratory/Developmental Grants Phase II, ,,94,federal_grant_code,,
-,R34,R34 Planning Grant, ,,95,federal_grant_code,,
-,R35,R35 Outstanding Investigator Award, ,,96,federal_grant_code,,
-,R36,R36 Dissertation Award, ,,97,federal_grant_code,,
-,R37,R37 Method to Extend Research in Time (MERIT) Award, ,,98,federal_grant_code,,
-,R41,R41 Small Business Technology Transfer (STTR) Grants - Phase I, ,,99,federal_grant_code,,
-,R42,R42 Small Business Technology Transfer (STTR) Grants - Phase II, ,,100,federal_grant_code,,
-,R43,R43 Small Business Innovation Research Grants (SBIR) - Phase I, ,,101,federal_grant_code,,
-,R44,R44 Small Business Innovation Research Grants (SBIR) - Phase II, ,,102,federal_grant_code,,
-,R49,R49 Injury Control Research and Demonstration Projects and Injury Prevention Research Centers, ,,103,federal_grant_code,,
-,R50,R50 Research Specialist Award, ,,104,federal_grant_code,,
-,R55,R55 James A. Shannon Director's Award, ,,105,federal_grant_code,,
-,R56,"R56 High Priority, Short Term Project Award", ,,106,federal_grant_code,,
-,R61,R61 Phase 1 Exploratory/Developmental Grant, ,,107,federal_grant_code,,
-,R90,R90 Interdisciplinary Regular Research Training Award, ,,108,federal_grant_code,,
-,RC1,RC1 NIH Challenge Grants and Partnerships Program, ,,109,federal_grant_code,,
-,RC2,RC2 High Impact Research and Research Infrastructure Programs, ,,110,federal_grant_code,,
-,RC3,"RC3 Biomedical Research, Development, and Growth to Spur the Acceleration of New Technologies (BRDG-SPAN) Program", ,,111,federal_grant_code,,
-,RC4,RC4 High Impact Research and Research Infrastructure Programs—Multi-Yr Funding, ,,112,federal_grant_code,,
-,RF1,RF1 Multi-Year Funded Research Project Grant, ,,113,federal_grant_code,,
-,RL1,RL1 Linked Research project Grant, ,,114,federal_grant_code,,
-,RL2,RL2 Linked Exploratory/Development Grant, ,,115,federal_grant_code,,
-,RL5,RL5 Linked Education Project, ,,116,federal_grant_code,,
-,RL9,RL9 Linked Research Training Award, ,,117,federal_grant_code,,
-,RM1,RM1 Research Project with Complex Structure, ,,118,federal_grant_code,,
-,RS1,RS1 Programs to Prevent the Emergence and Spread of Antimicrobial Resistance in the United States, ,,119,federal_grant_code,,
-,S06,S06 Minority Biomedical Research Support - MBRS, ,,120,federal_grant_code,,
-,S07,S07 Biomedical Research Support Grants, ,,121,federal_grant_code,,
-,S10,S10 Biomedical Research Support Shared Instrumentation Grants, ,,122,federal_grant_code,,
-,S11,S11 Minority Biomedical Research Support Thematic Project Grants, ,,123,federal_grant_code,,
-,S21,S21 Research and Institutional Resources Health Disparities Endowment Grants -Capacity Building, ,,124,federal_grant_code,,
-,S22,S22 Research and Student Resources Health Disparities Endowment Grants - Educational Programs, ,,125,federal_grant_code,,
-,SB1,SB1 Commercialization Readiness Program, ,,126,federal_grant_code,,
-,SC1,SC1 Research Enhancement Award, ,,127,federal_grant_code,,
-,SC2,SC2 Pilot Research Project, ,,128,federal_grant_code,,
-,SC3,SC3 Research Continuance Award, ,,129,federal_grant_code,,
-,SI2,SI2 Intramural Clinical Scholar Research Award, ,,130,federal_grant_code,,
-,T01,T01 Graduate Training Program, ,,131,federal_grant_code,,
-,T02,T02 Undergraduate Training Program, ,,132,federal_grant_code,,
-,T09,T09 Scientific Evaluation, ,,133,federal_grant_code,,
-,T14,T14 Conferences, ,,134,federal_grant_code,,
-,T32,T32 Institutional National Research Service Award, ,,135,federal_grant_code,,
-,T34,T34 Undergraduate NRSA Institutional Research Training Grants, ,,136,federal_grant_code,,
-,T35,T35 NRSA Short -Term Research Training, ,,137,federal_grant_code,,
-,T37,T37 Minority International Research Training Grants (FIC), ,,138,federal_grant_code,,
-,T42,T42 Educational Resource Center Training Grants, ,,139,federal_grant_code,,
-,T90,T90 Interdisciplinary Research Training Award, ,,140,federal_grant_code,,
-,TL1,TL1 Linked Training Award, ,,141,federal_grant_code,,
-,TL4,TL4 Undergraduate NRSA Institutional Research Training Grants, ,,142,federal_grant_code,,
-,TU2,TU2 Institutional National Research Service Award with Involvement of NIH Intramural Faculty, ,,143,federal_grant_code,,
-,U01,U01 Research Project--Cooperative Agreements, ,,144,federal_grant_code,,
-,U09,U09 Scientific Review and Evaluation--Cooperative Agreements, ,,145,federal_grant_code,,
-,U10,U10 Cooperative Clinical Research--Cooperative Agreements, ,,146,federal_grant_code,,
-,U11,U11 Study (in China) of Periconceptional Vitamin Supplements to Prevent Spina Bifida and Anencephaly Cooperative Agreements, ,,147,federal_grant_code,,
-,U13,U13 Conference--Cooperative Agreements, ,,148,federal_grant_code,,
-,U17,U17 Applied Methods in Violence-Related or Accidental Injury Surveillance Cooperative Agreements, ,,149,federal_grant_code,,
-,U18,U18 Research Demonstration--Cooperative Agreements, ,,150,federal_grant_code,,
-,U19,U19 Research Program--Cooperative Agreements, ,,151,federal_grant_code,,
-,U1A,U1A Capacity Building for Core Components of Tobacco Prevention and Control Programs Cooperative Agreements, ,,152,federal_grant_code,,
-,U1B,U1B Cooperative Agreement for Research and Surveillance Activities to Reduce the Incidence of HIV/AIDS, ,,153,federal_grant_code,,
-,U1Q,U1Q Emergency Disaster Relief Relating to CDC Programs Cooperative Agreement, ,,154,federal_grant_code,,
-,U1V,U1V Capacity Building for Core Components of Tobacco Prevention and Control Programs Cooperative Agreements, ,,155,federal_grant_code,,
-,U21,"U21 Immunization Service for Racial and Ethnic Minorities, Cooperative Agreements", ,,156,federal_grant_code,,
-,U22,U22 HIV/STD Preventive Services for Racial and Minorities, ,,157,federal_grant_code,,
-,U23,U23 TB Prevention and Control Services for Racial and Ethnic Minorities Cooperative Agreements, ,,158,federal_grant_code,,
-,U24,U24 Resource-Related Research Projects--Cooperative Agreements, ,,159,federal_grant_code,,
-,U27,U27 Surveillance of Complications of Hemophilia Cooperative Agreements, ,,160,federal_grant_code,,
-,U2C,U2C Resource-Related Research Multi-Component Projects and Centers Cooperative Agreements, ,,161,federal_grant_code,,
-,U2G,U2G Global HIV/AIDS Non-Research Cooperative Agreements, ,,162,federal_grant_code,,
-,U2R,U2R International Research Training Cooperative Agreements, ,,163,federal_grant_code,,
-,U30,"U30 Prev. Health Services: Venereal Disease Research, Demonstration, and Public Information and Education Projects", ,,164,federal_grant_code,,
-,U32,U32 State-based Diabetes Control Programs, ,,165,federal_grant_code,,
-,U34,U34 Planning Cooperative Agreement, ,,166,federal_grant_code,,
-,U36,U36 Program Improvements for Schools of Public Health, ,,167,federal_grant_code,,
-,U38,U38 Uniform National Health Program Reporting System, ,,168,federal_grant_code,,
-,U41,U41 Biotechnology Resource Cooperative Agreements, ,,169,federal_grant_code,,
-,U42,"U42 Animal (Mammalian and Nonmammalian) Model, and Animal and Biological Materials Resource Cooperative Agreements", ,,170,federal_grant_code,,
-,U43,U43 Small Business Innovation Research (SBIR) Cooperative Agreements - Phase I, ,,171,federal_grant_code,,
-,U44,U44 Small Business Innovation Research (SBIR) Cooperative Agreements - Phase II, ,,172,federal_grant_code,,
-,U45,U45 Hazardous Waste Worker Health and Safety Training Cooperative Agreements (NIEHS), ,,173,federal_grant_code,,
-,U47,U47 Laboratory/Other Diagnostic Medical Quality Improvement Cooperative Agreements, ,,174,federal_grant_code,,
-,U48,U48 Health Promotion and Disease Prevention Research Centers, ,,175,federal_grant_code,,
-,U49,U49 Coop: Injury Control Res. and Demo and Injury Prevention, ,,176,federal_grant_code,,
-,U50,U50 Special Cooperative Investigations/Assessment of Control/Prevention Methods, ,,177,federal_grant_code,,
-,U51,U51 Health Planning Strategies/National Academy of Sciences Activities, ,,178,federal_grant_code,,
-,U52,U52 Cooperative Agreement for Tuberculosis Control, ,,179,federal_grant_code,,
-,U53,U53 Capacity Bldg: Occupational Safety/Community Environmental Health, ,,180,federal_grant_code,,
-,U54,U54 Specialized Center--Cooperative Agreements, ,,181,federal_grant_code,,
-,U55,U55 Core Support For American Council on Transplantation Active, ,,182,federal_grant_code,,
-,U56,U56 Exploratory Grants--Cooperative Agreements, ,,183,federal_grant_code,,
-,U57,U57 State-Based Comprehensive Breast/Cervical Cancer Control Program Cooperative Agreements, ,,184,federal_grant_code,,
-,U58,U58 Chronic Disease Control Cooperative Agreement, ,,185,federal_grant_code,,
-,U59,U59 Disabilities Prevention Cooperative Agreement Program, ,,186,federal_grant_code,,
-,U60,"U60 Cooperative Agreements in Occupational Safety and Health Research, Demonstrations, Evaluation and Education Research, Demonstrations, Evaluation and Education", ,,187,federal_grant_code,,
-,U61,U61 Preventive Health Activities Regarding Hazardous Substances, ,,188,federal_grant_code,,
-,U62,U62 Prevention/Surveillance Activities/Studies of AIDS, ,,189,federal_grant_code,,
-,U65,"U65 Minority/Other Community-based HIV Prevention Project, Cooperative Agreements", ,,190,federal_grant_code,,
-,U66,U66 Immunization Demonstration Projects Cooperative Agreements, ,,191,federal_grant_code,,
-,U75,U75 National Cancer Registries Cooperative Agreements, ,,192,federal_grant_code,,
-,U79,U79 Mental Health and/or Substance Abuse Services Cooperative Agreements, ,,193,federal_grant_code,,
-,U81,U81 Injury Community Demonstration Projects: Evaluation of Youth Violence Prevention Program, ,,194,federal_grant_code,,
-,U82,U82 Enhancement of State and Local Capacity to Assess the Progress toward Healthy People 2010 Objectives, ,,195,federal_grant_code,,
-,U83,U83 Research to Advance the Understanding of the Health of Racial and Ethnic Populations or Subpopulations Cooperative Agreements, ,,196,federal_grant_code,,
-,U84,U84 Cooperative Agreements for Fetal Alcohol Syndrome Prevention Research Programs, ,,197,federal_grant_code,,
-,U90,U90 Cooperative Agreements for Special Projects of National Significance (SPNS), ,,198,federal_grant_code,,
-,UA1,UA1 AIDS Research Project Cooperative Agreement, ,,199,federal_grant_code,,
-,UA5,UA5 Academic Research Enhancement Award (AREA) Cooperative Agreements, ,,200,federal_grant_code,,
-,UB1,UB1 Commercialization Readiness Program – Cooperative Agreement, ,,201,federal_grant_code,,
-,UC1,UC1 NIH Challenge Grants and Partnerships Program - Phase II-Coop.Agreement, ,,202,federal_grant_code,,
-,UC2,UC2 High Impact Research and Research Infrastructure Cooperative Agreement Programs, ,,203,federal_grant_code,,
-,UC3,"UC3 Biomedical Research, Development, and Growth to Spur the Acceleration of New Technologies (BRDG-SPAN) Cooperative Agreement Program", ,,204,federal_grant_code,,
-,UC4,UC4 High Impact Research and Research Infrastructure Cooperative Agreement Programs—Multi-Yr Funding, ,,205,federal_grant_code,,
-,UC6,UC6 Construction Cooperative Agreement, ,,206,federal_grant_code,,
-,UC7,UC7 National Biocontainment Laboratory Operation Cooperative Agreement, ,,207,federal_grant_code,,
-,UD1,UD1 Mental Health and/or Substance Abuse KD&A Cooperative Agreements, ,,208,federal_grant_code,,
-,UE1,UE1 Studies of Environmental Hazards and Health Effects, ,,209,federal_grant_code,,
-,UE2,UE2 Emergency and Environmental Health Services, ,,210,federal_grant_code,,
-,UF1,UF1 Multi-Year Funded Research Project Cooperative Agreement, ,,211,federal_grant_code,,
-,UF2,UF2 Rape Prevention and Education Cooperative Agreement, ,,212,federal_grant_code,,
-,UG1,UG1 Clinical Research Cooperative Agreements - Single Project, ,,213,federal_grant_code,,
-,UG3,UG3 Phase 1 Exploratory/Developmental Cooperative Agreement, ,,214,federal_grant_code,,
-,UG4,UG4 National Network of Libraries of Medicine, ,,215,federal_grant_code,,
-,UH1,UH1 HBCU Research Scientist Award, ,,216,federal_grant_code,,
-,UH2,UH2 Exploratory/Developmental Cooperative Agreement Phase I, ,,217,federal_grant_code,,
-,UH3,UH3 Exploratory/Developmental Cooperative Agreement Phase II, ,,218,federal_grant_code,,
-,UH4,UH4 Hazmat Training at DOE Nuclear Weapons Complex, ,,219,federal_grant_code,,
-,UL1,UL1 Linked Specialized Center Cooperative Agreement, ,,220,federal_grant_code,,
-,UM1,UM1 Research Project with Complex Structure Cooperative Agreement, ,,221,federal_grant_code,,
-,UM2,UM2 Program Project or Center with Complex Structure Cooperative Agreement, ,,222,federal_grant_code,,
-,UP5,UP5 Early Independence Award Cooperative Agreement, ,,223,federal_grant_code,,
-,UR6,UR6 Prevention Intervention Research on Substance Abuse in Children Cooperative Agreements, ,,224,federal_grant_code,,
-,UR8,UR8 Applied Research in Emerging Infections-(including Tick-borne Diseases) Cooperative Agreements, ,,225,federal_grant_code,,
-,US3,US3 Hantaviral Reservoir Studies Cooperative Agreements, ,,226,federal_grant_code,,
-,US4,US4 Community-Based Primary Prevention Programs: Intimate Partner Violence Cooperative Agreements, ,,227,federal_grant_code,,
-,UT1,UT1 Small Business Technology Transfer (STTR) – Cooperative Agreements - Phase I, ,,228,federal_grant_code,,
-,UT2,UT2 Small Business Technology Transfer (STTR) – Cooperative Agreements - Phase II, ,,229,federal_grant_code,,
-,VF1,VF1 Rape Prevention and Education Grants, ,,230,federal_grant_code,,
-,X01,X01 Resource Access Program, ,,231,federal_grant_code,,
-,X02,X02 Preapplication, ,,232,federal_grant_code,,
-,X98,X98 Protection and Advocacy for Mentally Ill Individuals, ,,233,federal_grant_code,,
-,X99,X99 National All Schedules Prescription Electronic Reporting (NASPER), ,,234,federal_grant_code,,
+id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_available
+,C06,C06 Research Facilities Construction Grant,,,1,federal_grant_code,,,1
+,D43,D43 International Research Training Grants,,,2,federal_grant_code,,,1
+,D71,D71 International Research Training Planning Grant,,,3,federal_grant_code,,,1
+,DP1,DP1 NIH Director's Pioneer Award (NDPA),,,4,federal_grant_code,,,1
+,DP2,DP2 NIH Director's New Innovator Awards,,,5,federal_grant_code,,,1
+,DP3,DP3 Type 1 Diabetes Targeted Research Award,,,6,federal_grant_code,,,1
+,DP4,DP4 NIH Director's Pathfinder Award - Multi-Yr Funding,,,7,federal_grant_code,,,1
+,DP5,DP5 Early Independence Award,,,8,federal_grant_code,,,1
+,DP7,DP7 NIH Director's Workforce Innovation Award,,,9,federal_grant_code,,,1
+,E11,E11 Grants for Public Health Special Projects,,,10,federal_grant_code,,,1
+,F05,F05 International Research Fellowships (FIC),,,11,federal_grant_code,,,1
+,F30,F30 Individual Predoctoral NRSA for M.D./Ph.D. Fellowships,,,12,federal_grant_code,,,1
+,F31,F31 Predoctoral Individual National Research Service Award,,,13,federal_grant_code,,,1
+,F32,F32 Postdoctoral Individual National Research Service Award,,,14,federal_grant_code,,,1
+,F33,F33 National Research Service Awards for Senior Fellows,,,15,federal_grant_code,,,1
+,F37,F37 Medical Informatics Fellowships,,,16,federal_grant_code,,,1
+,F38,F38 Applied Medical Informatics Fellowships,,,17,federal_grant_code,,,1
+,F99,F99 Pre-doc to Post-doc Transition Award,,,18,federal_grant_code,,,1
+,FI2,FI2 Intramural Postdoctoral Research Associate,,,19,federal_grant_code,,,1
+,G07,G07 Resources Improvement Grant, ,,20,federal_grant_code,,,1
+,G08,G08 Resources Project Grant (NLM), ,,21,federal_grant_code,,,1
+,G11,G11 Extramural Associate Research Development Award (EARDA), ,,22,federal_grant_code,,,1
+,G12,G12 Research Centers in Minority Institutions Award, ,,23,federal_grant_code,,,1
+,G13,G13 Health Sciences Publication Support Awards (NLM), ,,24,federal_grant_code,,,1
+,G20,"G20 Grants for Repair, Renovation and Modernization of Existing Research Facilities", ,,25,federal_grant_code,,,1
+,G94,G94 Administrative Support for Public Health Service Agency Foundations, ,,26,federal_grant_code,,,1
+,H13,H13 Conferences Active, ,,27,federal_grant_code,,,1
+,H25,H25 Venereal Disease Control, ,,28,federal_grant_code,,,1
+,H50,"H50 Maternal and Child Health Services Project, RB Funds Active", ,,29,federal_grant_code,,,1
+,H57,H57 Indian Health Service Loan Repayment Program, ,,30,federal_grant_code,,,1
+,H62,H62 Services or Education on AIDS, ,,31,federal_grant_code,,,1
+,H64,H64 State and Community-Based Childhood Lead Poisoning Prevention Program, ,,32,federal_grant_code,,,1
+,H75,H75 Health Investigations/Assessments of Control/Preven. Methods, ,,33,federal_grant_code,,,1
+,H79,H79 Mental Health and/or Substance Abuse Services Grants, ,,34,federal_grant_code,,,1
+,HD4,HD4 Drug Use/Alcohol Abuse Prevention Demo: Community Partnership Study, ,,35,federal_grant_code,,,1
+,I01,I01 Non-HHS Research Projects, ,,36,federal_grant_code,,,1
+,IK3,IK3 Non-DHHS Nursing Research Initiative, ,,37,federal_grant_code,,,1
+,K00,K00 Post-doctoral Transition Award, ,,38,federal_grant_code,,,1
+,K01,K01 Research Scientist Development Award - Research & Training, ,,39,federal_grant_code,,,1
+,K02,K02 Research Scientist Development Award - Research, ,,40,federal_grant_code,,,1
+,K05,K05 Research Scientist Award, ,,41,federal_grant_code,,,1
+,K06,K06 Research Career Awards, ,,42,federal_grant_code,,,1
+,K07,K07 Academic/Teacher Award (ATA), ,,43,federal_grant_code,,,1
+,K08,K08 Clinical Investigator Award (CIA), ,,44,federal_grant_code,,,1
+,K12,K12 Physician Scientist Award (Program) (PSA), ,,45,federal_grant_code,,,1
+,K14,K14 Minority School Faculty Development Awards, ,,46,federal_grant_code,,,1
+,K18,K18 The Career Enhancement Award, ,,47,federal_grant_code,,,1
+,K21,K21 Scientist Development Award, ,,48,federal_grant_code,,,1
+,K22,K22 Career Transition Award, ,,49,federal_grant_code,,,1
+,K23,K23 Mentored Patient-Oriented Research Career Development Award, ,,50,federal_grant_code,,,1
+,K24,K24 Midcareer Investigator Award in Patient-Oriented Research, ,,51,federal_grant_code,,,1
+,K25,K25 Mentored Quantitative Research Career Development Award, ,,52,federal_grant_code,,,1
+,K26,K26 Midcareer Investigator Award in Biomedical and Behavioral Research, ,,53,federal_grant_code,,,1
+,K43,K43 International Research Career Development Award, ,,54,federal_grant_code,,,1
+,K76,K76 Emerging Leaders Career Development Award, ,,55,federal_grant_code,,,1
+,K99,K99 Career Transition Award, ,,56,federal_grant_code,,,1
+,KD1,KD1 Mental Health and/or Substance Abuse KD&A Grants, ,,57,federal_grant_code,,,1
+,KL1,KL1 Linked Research Career Development Award, ,,58,federal_grant_code,,,1
+,KL2,KL2 Mentored Career Development Award, ,,59,federal_grant_code,,,1
+,KM1,KM1 Institutional Career Enhancement Awards - Multi-Yr Funding, ,,60,federal_grant_code,,,1
+,L30,L30 Loan Repayment Program for Clinical Researchers, ,,61,federal_grant_code,,,1
+,L32,L32 Loan Repayment Program for Clinical Researchers from Disadvantaged Backgrounds, ,,62,federal_grant_code,,,1
+,L40,L40 Loan Repayment Program for Pediatric Research, ,,63,federal_grant_code,,,1
+,L50,L50 Loan Repayment Program for Contraception and Infertility Research, ,,64,federal_grant_code,,,1
+,L60,L60 Loan Repayment Program for Health Disparities Research, ,,65,federal_grant_code,,,1
+,M01,M01 General Clinical Research Centers Program, ,,66,federal_grant_code,,,1
+,OT1,OT1 Pre-Application for an Other Transaction Award, ,,67,federal_grant_code,,,1
+,OT2,OT2 Research Project-Other Transaction Award, ,,68,federal_grant_code,,,1
+,P01,P01 Research Program Projects, ,,69,federal_grant_code,,,1
+,P20,P20 Exploratory Grants, ,,70,federal_grant_code,,,1
+,P2C,P2C Resource-Related Research Multi-Component Projects and Centers, ,,71,federal_grant_code,,,1
+,P30,P30 Center Core Grants, ,,72,federal_grant_code,,,1
+,P40,"P40 Animal (Mammalian and Nonmammalian) Model, and Animal and Biological Material Resource Grants", ,,73,federal_grant_code,,,1
+,P41,P41 Biotechnology Resource Grants, ,,74,federal_grant_code,,,1
+,P42,P42 Hazardous Substances Basic Research Grants Program (NIEHS), ,,75,federal_grant_code,,,1
+,P50,P50 Specialized Center, ,,76,federal_grant_code,,,1
+,P51,P51 Primate Research Center Grants, ,,77,federal_grant_code,,,1
+,P60,P60 Comprehensive Center, ,,78,federal_grant_code,,,1
+,PL1,PL1 Linked Center Core Grant, ,,79,federal_grant_code,,,1
+,PM1,PM1 Program Project or Center with Complex Structure, ,,80,federal_grant_code,,,1
+,PN1,PN1 Concept Development Award, ,,81,federal_grant_code,,,1
+,PN2,PN2 Research Development Center, ,,82,federal_grant_code,,,1
+,R00,R00 Research Transition Award, ,,83,federal_grant_code,,,1
+,R01,R01 Research Project, ,,84,federal_grant_code,,,1
+,R03,R03 Small Research Grants, ,,85,federal_grant_code,,,1
+,R13,R13 Conference, ,,86,federal_grant_code,,,1
+,R15,R15 Academic Research Enhancement Awards (AREA), ,,87,federal_grant_code,,,1
+,R18,R18 Research Demonstration and Dissemination Projects, ,,88,federal_grant_code,,,1
+,R21,R21 Exploratory/Developmental Grants, ,,89,federal_grant_code,,,1
+,R24,R24 Resource-Related Research Projects, ,,90,federal_grant_code,,,1
+,R25,R25 Education Projects, ,,91,federal_grant_code,,,1
+,R28,R28 Resource-Related Research Projects, ,,92,federal_grant_code,,,1
+,R30,"R30 Preventive Health Service - Venereal Disease Research, Demonstration, and Public Information and Education Grants", ,,93,federal_grant_code,,,1
+,R33,R33 Exploratory/Developmental Grants Phase II, ,,94,federal_grant_code,,,1
+,R34,R34 Planning Grant, ,,95,federal_grant_code,,,1
+,R35,R35 Outstanding Investigator Award, ,,96,federal_grant_code,,,1
+,R36,R36 Dissertation Award, ,,97,federal_grant_code,,,1
+,R37,R37 Method to Extend Research in Time (MERIT) Award, ,,98,federal_grant_code,,,1
+,R41,R41 Small Business Technology Transfer (STTR) Grants - Phase I, ,,99,federal_grant_code,,,1
+,R42,R42 Small Business Technology Transfer (STTR) Grants - Phase II, ,,100,federal_grant_code,,,1
+,R43,R43 Small Business Innovation Research Grants (SBIR) - Phase I, ,,101,federal_grant_code,,,1
+,R44,R44 Small Business Innovation Research Grants (SBIR) - Phase II, ,,102,federal_grant_code,,,1
+,R49,R49 Injury Control Research and Demonstration Projects and Injury Prevention Research Centers, ,,103,federal_grant_code,,,1
+,R50,R50 Research Specialist Award, ,,104,federal_grant_code,,,1
+,R55,R55 James A. Shannon Director's Award, ,,105,federal_grant_code,,,1
+,R56,"R56 High Priority, Short Term Project Award", ,,106,federal_grant_code,,,1
+,R61,R61 Phase 1 Exploratory/Developmental Grant, ,,107,federal_grant_code,,,1
+,R90,R90 Interdisciplinary Regular Research Training Award, ,,108,federal_grant_code,,,1
+,RC1,RC1 NIH Challenge Grants and Partnerships Program, ,,109,federal_grant_code,,,1
+,RC2,RC2 High Impact Research and Research Infrastructure Programs, ,,110,federal_grant_code,,,1
+,RC3,"RC3 Biomedical Research, Development, and Growth to Spur the Acceleration of New Technologies (BRDG-SPAN) Program", ,,111,federal_grant_code,,,1
+,RC4,RC4 High Impact Research and Research Infrastructure Programs--Multi-Yr Funding, ,,112,federal_grant_code,,,1
+,RF1,RF1 Multi-Year Funded Research Project Grant, ,,113,federal_grant_code,,,1
+,RL1,RL1 Linked Research project Grant, ,,114,federal_grant_code,,,1
+,RL2,RL2 Linked Exploratory/Development Grant, ,,115,federal_grant_code,,,1
+,RL5,RL5 Linked Education Project, ,,116,federal_grant_code,,,1
+,RL9,RL9 Linked Research Training Award, ,,117,federal_grant_code,,,1
+,RM1,RM1 Research Project with Complex Structure, ,,118,federal_grant_code,,,1
+,RS1,RS1 Programs to Prevent the Emergence and Spread of Antimicrobial Resistance in the United States, ,,119,federal_grant_code,,,1
+,S06,S06 Minority Biomedical Research Support - MBRS, ,,120,federal_grant_code,,,1
+,S07,S07 Biomedical Research Support Grants, ,,121,federal_grant_code,,,1
+,S10,S10 Biomedical Research Support Shared Instrumentation Grants, ,,122,federal_grant_code,,,1
+,S11,S11 Minority Biomedical Research Support Thematic Project Grants, ,,123,federal_grant_code,,,1
+,S21,S21 Research and Institutional Resources Health Disparities Endowment Grants -Capacity Building, ,,124,federal_grant_code,,,1
+,S22,S22 Research and Student Resources Health Disparities Endowment Grants - Educational Programs, ,,125,federal_grant_code,,,1
+,SB1,SB1 Commercialization Readiness Program, ,,126,federal_grant_code,,,1
+,SC1,SC1 Research Enhancement Award, ,,127,federal_grant_code,,,1
+,SC2,SC2 Pilot Research Project, ,,128,federal_grant_code,,,1
+,SC3,SC3 Research Continuance Award, ,,129,federal_grant_code,,,1
+,SI2,SI2 Intramural Clinical Scholar Research Award, ,,130,federal_grant_code,,,1
+,T01,T01 Graduate Training Program, ,,131,federal_grant_code,,,1
+,T02,T02 Undergraduate Training Program, ,,132,federal_grant_code,,,1
+,T09,T09 Scientific Evaluation, ,,133,federal_grant_code,,,1
+,T14,T14 Conferences, ,,134,federal_grant_code,,,1
+,T32,T32 Institutional National Research Service Award, ,,135,federal_grant_code,,,1
+,T34,T34 Undergraduate NRSA Institutional Research Training Grants, ,,136,federal_grant_code,,,1
+,T35,T35 NRSA Short -Term Research Training, ,,137,federal_grant_code,,,1
+,T37,T37 Minority International Research Training Grants (FIC), ,,138,federal_grant_code,,,1
+,T42,T42 Educational Resource Center Training Grants, ,,139,federal_grant_code,,,1
+,T90,T90 Interdisciplinary Research Training Award, ,,140,federal_grant_code,,,1
+,TL1,TL1 Linked Training Award, ,,141,federal_grant_code,,,1
+,TL4,TL4 Undergraduate NRSA Institutional Research Training Grants, ,,142,federal_grant_code,,,1
+,TU2,TU2 Institutional National Research Service Award with Involvement of NIH Intramural Faculty, ,,143,federal_grant_code,,,1
+,U01,U01 Research Project--Cooperative Agreements, ,,144,federal_grant_code,,,1
+,U09,U09 Scientific Review and Evaluation--Cooperative Agreements, ,,145,federal_grant_code,,,1
+,U10,U10 Cooperative Clinical Research--Cooperative Agreements, ,,146,federal_grant_code,,,1
+,U11,U11 Study (in China) of Periconceptional Vitamin Supplements to Prevent Spina Bifida and Anencephaly Cooperative Agreements, ,,147,federal_grant_code,,,1
+,U13,U13 Conference--Cooperative Agreements, ,,148,federal_grant_code,,,1
+,U17,U17 Applied Methods in Violence-Related or Accidental Injury Surveillance Cooperative Agreements, ,,149,federal_grant_code,,,1
+,U18,U18 Research Demonstration--Cooperative Agreements, ,,150,federal_grant_code,,,1
+,U19,U19 Research Program--Cooperative Agreements, ,,151,federal_grant_code,,,1
+,U1A,U1A Capacity Building for Core Components of Tobacco Prevention and Control Programs Cooperative Agreements, ,,152,federal_grant_code,,,1
+,U1B,U1B Cooperative Agreement for Research and Surveillance Activities to Reduce the Incidence of HIV/AIDS, ,,153,federal_grant_code,,,1
+,U1Q,U1Q Emergency Disaster Relief Relating to CDC Programs Cooperative Agreement, ,,154,federal_grant_code,,,1
+,U1V,U1V Capacity Building for Core Components of Tobacco Prevention and Control Programs Cooperative Agreements, ,,155,federal_grant_code,,,1
+,U21,"U21 Immunization Service for Racial and Ethnic Minorities, Cooperative Agreements", ,,156,federal_grant_code,,,1
+,U22,U22 HIV/STD Preventive Services for Racial and Minorities, ,,157,federal_grant_code,,,1
+,U23,U23 TB Prevention and Control Services for Racial and Ethnic Minorities Cooperative Agreements, ,,158,federal_grant_code,,,1
+,U24,U24 Resource-Related Research Projects--Cooperative Agreements, ,,159,federal_grant_code,,,1
+,U27,U27 Surveillance of Complications of Hemophilia Cooperative Agreements, ,,160,federal_grant_code,,,1
+,U2C,U2C Resource-Related Research Multi-Component Projects and Centers Cooperative Agreements, ,,161,federal_grant_code,,,1
+,U2G,U2G Global HIV/AIDS Non-Research Cooperative Agreements, ,,162,federal_grant_code,,,1
+,U2R,U2R International Research Training Cooperative Agreements, ,,163,federal_grant_code,,,1
+,U30,"U30 Prev. Health Services: Venereal Disease Research, Demonstration, and Public Information and Education Projects", ,,164,federal_grant_code,,,1
+,U32,U32 State-based Diabetes Control Programs, ,,165,federal_grant_code,,,1
+,U34,U34 Planning Cooperative Agreement, ,,166,federal_grant_code,,,1
+,U36,U36 Program Improvements for Schools of Public Health, ,,167,federal_grant_code,,,1
+,U38,U38 Uniform National Health Program Reporting System, ,,168,federal_grant_code,,,1
+,U41,U41 Biotechnology Resource Cooperative Agreements, ,,169,federal_grant_code,,,1
+,U42,"U42 Animal (Mammalian and Nonmammalian) Model, and Animal and Biological Materials Resource Cooperative Agreements", ,,170,federal_grant_code,,,1
+,U43,U43 Small Business Innovation Research (SBIR) Cooperative Agreements - Phase I, ,,171,federal_grant_code,,,1
+,U44,U44 Small Business Innovation Research (SBIR) Cooperative Agreements - Phase II, ,,172,federal_grant_code,,,1
+,U45,U45 Hazardous Waste Worker Health and Safety Training Cooperative Agreements (NIEHS), ,,173,federal_grant_code,,,1
+,U47,U47 Laboratory/Other Diagnostic Medical Quality Improvement Cooperative Agreements, ,,174,federal_grant_code,,,1
+,U48,U48 Health Promotion and Disease Prevention Research Centers, ,,175,federal_grant_code,,,1
+,U49,U49 Coop: Injury Control Res. and Demo and Injury Prevention, ,,176,federal_grant_code,,,1
+,U50,U50 Special Cooperative Investigations/Assessment of Control/Prevention Methods, ,,177,federal_grant_code,,,1
+,U51,U51 Health Planning Strategies/National Academy of Sciences Activities, ,,178,federal_grant_code,,,1
+,U52,U52 Cooperative Agreement for Tuberculosis Control, ,,179,federal_grant_code,,,1
+,U53,U53 Capacity Bldg: Occupational Safety/Community Environmental Health, ,,180,federal_grant_code,,,1
+,U54,U54 Specialized Center--Cooperative Agreements, ,,181,federal_grant_code,,,1
+,U55,U55 Core Support For American Council on Transplantation Active, ,,182,federal_grant_code,,,1
+,U56,U56 Exploratory Grants--Cooperative Agreements, ,,183,federal_grant_code,,,1
+,U57,U57 State-Based Comprehensive Breast/Cervical Cancer Control Program Cooperative Agreements, ,,184,federal_grant_code,,,1
+,U58,U58 Chronic Disease Control Cooperative Agreement, ,,185,federal_grant_code,,,1
+,U59,U59 Disabilities Prevention Cooperative Agreement Program, ,,186,federal_grant_code,,,1
+,U60,"U60 Cooperative Agreements in Occupational Safety and Health Research, Demonstrations, Evaluation and Education Research, Demonstrations, Evaluation and Education", ,,187,federal_grant_code,,,1
+,U61,U61 Preventive Health Activities Regarding Hazardous Substances, ,,188,federal_grant_code,,,1
+,U62,U62 Prevention/Surveillance Activities/Studies of AIDS, ,,189,federal_grant_code,,,1
+,U65,"U65 Minority/Other Community-based HIV Prevention Project, Cooperative Agreements", ,,190,federal_grant_code,,,1
+,U66,U66 Immunization Demonstration Projects Cooperative Agreements, ,,191,federal_grant_code,,,1
+,U75,U75 National Cancer Registries Cooperative Agreements, ,,192,federal_grant_code,,,1
+,U79,U79 Mental Health and/or Substance Abuse Services Cooperative Agreements, ,,193,federal_grant_code,,,1
+,U81,U81 Injury Community Demonstration Projects: Evaluation of Youth Violence Prevention Program, ,,194,federal_grant_code,,,1
+,U82,U82 Enhancement of State and Local Capacity to Assess the Progress toward Healthy People 2010 Objectives, ,,195,federal_grant_code,,,1
+,U83,U83 Research to Advance the Understanding of the Health of Racial and Ethnic Populations or Subpopulations Cooperative Agreements, ,,196,federal_grant_code,,,1
+,U84,U84 Cooperative Agreements for Fetal Alcohol Syndrome Prevention Research Programs, ,,197,federal_grant_code,,,1
+,U90,U90 Cooperative Agreements for Special Projects of National Significance (SPNS), ,,198,federal_grant_code,,,1
+,UA1,UA1 AIDS Research Project Cooperative Agreement, ,,199,federal_grant_code,,,1
+,UA5,UA5 Academic Research Enhancement Award (AREA) Cooperative Agreements, ,,200,federal_grant_code,,,1
+,UB1,UB1 Commercialization Readiness Program - Cooperative Agreement, ,,201,federal_grant_code,,,1
+,UC1,UC1 NIH Challenge Grants and Partnerships Program - Phase II-Coop.Agreement, ,,202,federal_grant_code,,,1
+,UC2,UC2 High Impact Research and Research Infrastructure Cooperative Agreement Programs, ,,203,federal_grant_code,,,1
+,UC3,"UC3 Biomedical Research, Development, and Growth to Spur the Acceleration of New Technologies (BRDG-SPAN) Cooperative Agreement Program", ,,204,federal_grant_code,,,1
+,UC4,UC4 High Impact Research and Research Infrastructure Cooperative Agreement Programs--Multi-Yr Funding, ,,205,federal_grant_code,,,1
+,UC6,UC6 Construction Cooperative Agreement, ,,206,federal_grant_code,,,1
+,UC7,UC7 National Biocontainment Laboratory Operation Cooperative Agreement, ,,207,federal_grant_code,,,1
+,UD1,UD1 Mental Health and/or Substance Abuse KD&A Cooperative Agreements, ,,208,federal_grant_code,,,1
+,UE1,UE1 Studies of Environmental Hazards and Health Effects, ,,209,federal_grant_code,,,1
+,UE2,UE2 Emergency and Environmental Health Services, ,,210,federal_grant_code,,,1
+,UF1,UF1 Multi-Year Funded Research Project Cooperative Agreement, ,,211,federal_grant_code,,,1
+,UF2,UF2 Rape Prevention and Education Cooperative Agreement, ,,212,federal_grant_code,,,1
+,UG1,UG1 Clinical Research Cooperative Agreements - Single Project, ,,213,federal_grant_code,,,1
+,UG3,UG3 Phase 1 Exploratory/Developmental Cooperative Agreement, ,,214,federal_grant_code,,,1
+,UG4,UG4 National Network of Libraries of Medicine, ,,215,federal_grant_code,,,1
+,UH1,UH1 HBCU Research Scientist Award, ,,216,federal_grant_code,,,1
+,UH2,UH2 Exploratory/Developmental Cooperative Agreement Phase I, ,,217,federal_grant_code,,,1
+,UH3,UH3 Exploratory/Developmental Cooperative Agreement Phase II, ,,218,federal_grant_code,,,1
+,UH4,UH4 Hazmat Training at DOE Nuclear Weapons Complex, ,,219,federal_grant_code,,,1
+,UL1,UL1 Linked Specialized Center Cooperative Agreement, ,,220,federal_grant_code,,,1
+,UM1,UM1 Research Project with Complex Structure Cooperative Agreement, ,,221,federal_grant_code,,,1
+,UM2,UM2 Program Project or Center with Complex Structure Cooperative Agreement, ,,222,federal_grant_code,,,1
+,UP5,UP5 Early Independence Award Cooperative Agreement, ,,223,federal_grant_code,,,1
+,UR6,UR6 Prevention Intervention Research on Substance Abuse in Children Cooperative Agreements, ,,224,federal_grant_code,,,1
+,UR8,UR8 Applied Research in Emerging Infections-(including Tick-borne Diseases) Cooperative Agreements, ,,225,federal_grant_code,,,1
+,US3,US3 Hantaviral Reservoir Studies Cooperative Agreements, ,,226,federal_grant_code,,,1
+,US4,US4 Community-Based Primary Prevention Programs: Intimate Partner Violence Cooperative Agreements, ,,227,federal_grant_code,,,1
+,UT1,UT1 Small Business Technology Transfer (STTR) - Cooperative Agreements - Phase I, ,,228,federal_grant_code,,,1
+,UT2,UT2 Small Business Technology Transfer (STTR) - Cooperative Agreements - Phase II, ,,229,federal_grant_code,,,1
+,VF1,VF1 Rape Prevention and Education Grants, ,,230,federal_grant_code,,,1
+,X01,X01 Resource Access Program, ,,231,federal_grant_code,,,1
+,X02,X02 Preapplication, ,,232,federal_grant_code,,,1
+,X98,X98 Protection and Advocacy for Mentally Ill Individuals, ,,233,federal_grant_code,,,1
+,X99,X99 National All Schedules Prescription Electronic Reporting (NASPER), ,,234,federal_grant_code,,,1

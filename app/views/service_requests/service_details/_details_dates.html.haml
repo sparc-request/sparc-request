@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -23,6 +23,8 @@
       = t(:proper)[:service_details][:enter_dates_notice]
       %small
         = t(:proper)[:service_details][:enter_dates_instructions]
+  - if params[:navigate]
+    = render 'shared/modal_errors', errors: @errors
   = fields_for protocol do |f|
     .form-group.col-lg-12
       = f.label :start_date,

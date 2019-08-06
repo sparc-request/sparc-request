@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,17 +19,14 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 = javascript_include_tag "catalog"
 
-= hidden_field_tag :signed_in, identity_signed_in? ? 1 : 0
 = hidden_field_tag :has_protocol, @service_request.protocol ? 1 : 0
-= hidden_field_tag :service_request_id, @service_request.id, class: 'service-request-id'
 - if !@service_request.protocol.nil?
   = hidden_field_tag :protocol_id, @service_request.protocol.id, class: 'protocol-id'
 
-= render '/service_requests/navigation/steps', service_request: @service_request, sub_service_request: @sub_service_request, step_text: @step_text, css_class: @css_class
-= render 'catalogs/about_section'
-= render 'catalogs/service_accordion', institutions: @institutions, ssr_org: @sub_service_request.try(:organization), locked_org_ids: @locked_org_ids
-= render 'catalogs/catalog_center', service_request: @service_request, sub_service_request: @sub_service_request, from_portal: @from_portal, organization: nil
-= render 'catalogs/catalog_right', service_request: @service_request, sub_service_request: @sub_service_request, sub_service_requests: @sub_service_requests, line_items_count: @line_items_count
+= render '/service_requests/navigation/steps', service_request: @service_request, step_text: @step_text, css_class: @css_class
+= render 'catalogs/service_accordion', institutions: @institutions, locked_org_ids: @locked_org_ids
+= render 'catalogs/catalog_center', service_request: @service_request, locked_org_ids: @locked_org_ids, organization: nil
+= render 'catalogs/catalog_right', service_request: @service_request, sub_service_requests: @sub_service_requests
 = render 'catalogs/back_to_top'
 
 = render 'service_requests/modals/submit_error_modal'

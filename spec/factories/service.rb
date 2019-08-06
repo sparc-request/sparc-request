@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,13 +21,14 @@
 FactoryBot.define do
 
   factory :service do
-    name                { Faker::Lorem.sentence(3) }
-    abbreviation        { Faker::Lorem.words(1).first }
-    description         { Faker::Lorem.paragraph(4) }
+    name                { Faker::Lorem.sentence(word_count: 3) }
+    abbreviation        { Faker::Lorem.words(number: 1).first }
+    description         { Faker::Lorem.paragraph(sentence_count: 4) }
     is_available        { true }
     service_center_cost { Random.rand(100) }
-    charge_code         { Faker::Lorem.words().first }
-    revenue_code        { Faker::Lorem.words().first }
+    charge_code         { Faker::Lorem.words.first }
+    revenue_code        { Faker::Lorem.words.first }
+    order               { 1 }
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }
@@ -48,7 +49,7 @@ FactoryBot.define do
     end
 
     trait :with_components do
-      components "eine,meine,mo,"
+      components {"eine,meine,mo,"}
     end
 
     trait :with_pricing_map do
@@ -62,15 +63,15 @@ FactoryBot.define do
     end
 
     trait :disabled do
-      is_available false
+      is_available {false}
     end
 
     trait :one_time_fee do
-      one_time_fee true
+      one_time_fee {true}
     end
 
     trait :per_patient_per_visit do
-      one_time_fee false
+      one_time_fee {false}
     end
 
     trait :with_questionnaires do
@@ -80,10 +81,10 @@ FactoryBot.define do
     end
 
     transient do
-      line_item_count 0
-      pricing_map_count 1
-      service_provider_count 0
-      service_relation_count 0
+      line_item_count {0}
+      pricing_map_count {0}
+      service_provider_count {0}
+      service_relation_count {0}
     end
 
     # Note that this is a before(:create) block.  This is necessary to

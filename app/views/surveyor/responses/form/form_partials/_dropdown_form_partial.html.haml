@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,4 +22,4 @@
   - if ['new', 'edit', 'preview'].include?(action_name)
     = qr.select :content, options_for_select(question.options.map{ |o| [o.content, o.content, { class: 'option', data: { option_id: o.id } }] }), { include_blank: true }, { class: 'form-control selectpicker', data: { question_id: question.id } }
   - else
-    = select_tag :content, options_for_select(question.options.map{ |o| [o.content, o.content.downcase, { class: 'option', data: { option_id: o.id } }] }, question_response.content.downcase), class: 'form-control selectpicker', include_blank: true, disabled: true, data: { question_id: question.id }
+    = select_tag :content, options_for_select(question.options.map{ |o| [o.content, o.content.downcase, { class: 'option', data: { option_id: o.id } }] }, question_response.content.try(:downcase)), class: 'form-control selectpicker', include_blank: true, disabled: true, data: { question_id: question.id }

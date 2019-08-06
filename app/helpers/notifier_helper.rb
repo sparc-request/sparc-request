@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -41,9 +41,9 @@ module NotifierHelper
   def display_srid_table(ssrs_to_be_displayed, status)
     if ssrs_to_be_displayed
       if status == 'ssr_destroyed'
-        render "deleted_srid_information"
+        render "notifier/deleted_srid_information"
       else
-        render "srid_information"
+        render "notifier/srid_information"
       end
     end
   end
@@ -52,10 +52,6 @@ module NotifierHelper
     if status == 'request_amendment' && audit_report.present? && audit_report[:line_items].present?
       render "audit_action"
     end   
-  end
-
-  def display_notes?(status, role, notes)
-    (status == "submitted" || status == "request_amendment") && role == 'none' && !notes.empty?
   end
 
   def determine_ssr(last_change, action_name, deleted_ssrs)

@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development~
+-# Copyright © 2011-2019 MUSC Foundation for Research Development~
 -# All rights reserved.~
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -22,11 +22,11 @@
 - if @role != 'none'
   %p= I18n.t('notifier.body1', :full_name => @full_name)
   %p.inline
-    = raw(I18n.t('notifier.non_service_provider_message', :welcome => welcome_text, :href => link_to( t(:notifier)[:sparc_dashboard],@portal_link), :application_title => t(:mailer)[:application_title], :root_url => Setting.find_by_key("root_url").value, :protocol_type => @protocol.type.downcase))
+    = raw(I18n.t('notifier.non_service_provider_message', :welcome => welcome_text, :href => link_to( t(:notifier)[:sparc_dashboard],@portal_link), :application_title => t(:mailer)[:application_title], :root_url => Setting.get_value("root_url"), :protocol_type => @protocol.type.downcase))
 - else
   %p= I18n.t('notifier.body1', :full_name => @full_name)
   %p.inline
-    = raw(I18n.t('notifier.service_provider_message', :welcome => welcome_text, :href => link_to( t(:notifier)[:sparc_dashboard],@portal_link), :application_title => t(:mailer)[:application_title], :root_url => Setting.find_by_key("root_url").value, :protocol_type => @protocol.type.downcase))
+    = raw(I18n.t('notifier.service_provider_message', :welcome => welcome_text, :href => link_to( t(:notifier)[:sparc_dashboard],@portal_link), :application_title => t(:mailer)[:application_title], :root_url => Setting.get_value("root_url"), :protocol_type => @protocol.type.downcase))
 %br
 - if @portal_text
   %p

@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -20,6 +20,7 @@
 
 require 'rails_helper'
 require 'support/pages/dashboard/notes/index_modal'
+require 'support/pages/dashboard/notes/form_modal'
 
 module Dashboard
   module Protocols
@@ -27,11 +28,12 @@ module Dashboard
       set_url '/dashboard/protocols{/id}'
 
       section :protocol_summary, '#protocol_show_information_panel' do
-        element :study_notes_button, 'button', text: 'Study Notes'
+        element :study_notes_button, 'a', text: 'Study Notes'
         element :edit_study_info_button, 'button', text: 'Edit Study Information'
       end
 
       section :index_notes_modal, Dashboard::Notes::IndexModal, '#notes-modal'
+      section :note_form_modal, Dashboard::Notes::FormModal, '#note-form-modal'
 
       element :enabled_add_authorized_user_button, 'button:not(.disabled)', text: 'Add an Authorized User'
       element :disabled_add_authorized_user_button, 'button.disabled', text: 'Add an Authorized User'
@@ -106,15 +108,14 @@ module Dashboard
 
       # actual service request panels
       sections :service_requests, '#service-requests-panel' do
-        element :modify_request_button, :button, text: "Modify Request"
+        element :modify_request_button, "a", text: "Add / Modify Request"
 
         sections :ssrs, 'tbody tr' do
           element :send_notification_select, :button, text: "Send Notification"
           elements :recipients, '.new-notification ul li'
           element :send_notification_select, :button, text: "Send"
           element :view_button, :button, "View"
-          element :edit_button, :button, "Edit"
-          element :admin_edit_button, :button, "Admin Edit"
+          element :admin_edit_button, "a", text: "Admin Edit"
           element :complete_details_select, :button, text: "Complete Details"
         end
       end

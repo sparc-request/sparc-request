@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -20,12 +20,15 @@
 #= require likert
 
 $(document).ready ->
+  $(document).on 'load-success.bs.table', '#responses-table', ->
+    $('[data-toggle="tooltip"]').tooltip()
+
   $(document).on 'change', '.option input', ->
     question_id = $(this).parents('.option').data('question-id')
     option_id = $(this).parents('.option').data('option-id')
 
     $(".dependent-for-question-#{question_id}").addClass('hidden')
-    
+
     if $(this).is(":checked")
       $(".dependent-for-option-#{option_id}").removeClass('hidden')
     else
@@ -40,7 +43,7 @@ $(document).ready ->
 
   $(document).on 'change', '.question .selectpicker[multiple=multiple]', ->
     question_id = $(this).data('question-id')
-    option_ids = $(this).find('.option:checked').map( -> 
+    option_ids = $(this).find('.option:checked').map( ->
       $(this).data('option-id')).get()
 
     $(".dependent-for-question-#{question_id}").addClass('hidden')
@@ -88,3 +91,11 @@ $(document).ready ->
     else
       $('.survey-select option').prop('disabled', false)
       $('.survey-select').selectpicker('refresh')
+
+  $('#responses-panel .export button').removeClass('dropdown-toggle').removeAttr('data-toggle')
+  $('#responses-panel .export button .caret').remove()
+  $('#responses-panel .export .dropdown-menu').remove()
+
+  $(document).on 'click', '#responses-panel .export button', ->
+    $(this).parent().removeClass('open')
+    window.location = '/surveyor/responses.xlsx'

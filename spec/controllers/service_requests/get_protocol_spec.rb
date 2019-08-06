@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -54,11 +54,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, service_requester_id: nil)
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:identity_id]        = logged_in_user.id
+      session[:identity_id] = logged_in_user.id
 
-      get :protocol, params: {
-        id: sr.id
-      }, xhr: true
+      get :protocol, params: { srid: sr.id }, xhr: true
 
       expect(ssr.reload.service_requester).to eq(logged_in_user)
     end
@@ -71,11 +69,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:identity_id]        = logged_in_user.id
+      session[:identity_id] = logged_in_user.id
 
-      get :protocol, params: {
-        id: sr.id
-      }, xhr: true
+      get :protocol, params: { srid: sr.id }, xhr: true
 
       expect(controller).to render_template(:protocol)
     end
@@ -88,11 +84,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:identity_id]        = logged_in_user.id
+      session[:identity_id] = logged_in_user.id
 
-      get :protocol, params: {
-        id: sr.id
-      }, xhr: true
+      get :protocol, params: { srid: sr.id }, xhr: true
 
       expect(controller).to respond_with(:ok)
     end

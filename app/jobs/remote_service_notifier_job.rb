@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -41,14 +41,14 @@ class RemoteServiceNotifierJob < Struct.new(:object_id, :object_class, :action)
 
   def url
     [
-      Setting.find_by_key("remote_service_notifier_protocol").value,
+      Setting.get_value("remote_service_notifier_protocol"),
       '://',
-      Setting.find_by_key("remote_service_notifier_username").value,
+      Setting.get_value("remote_service_notifier_username"),
       ':',
-      Setting.find_by_key("remote_service_notifier_password").value,
+      Setting.get_value("remote_service_notifier_password"),
       '@',
-      Setting.find_by_key("remote_service_notifier_host").value,
-      Setting.find_by_key("remote_service_notifier_path").value
+      Setting.get_value("remote_service_notifier_host"),
+      Setting.get_value("remote_service_notifier_path")
     ].join
   end
 

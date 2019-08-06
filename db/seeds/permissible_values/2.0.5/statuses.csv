@@ -1,17 +1,19 @@
-id,key,value,concept_code,parent_id,sort_order,category,default,reserved
-,ctrc_approved,Active,,,1,status,0,
-,administrative_review,Administrative Review,,,2,status,0,
-,approved,Approved,,,3,status,0,
-,awaiting_pi_approval,Awaiting Requester Response,,,4,status,1,
-,complete,Complete,,,5,status,1,
-,declined,Declined,,,6,status,0,
-,draft,Draft,,,7,status,1,
-,get_a_cost_estimate,Get a Cost Estimate,,,8,status,1,
-,invoiced,Invoiced,,,13,status,0,
-,ctrc_review,In Admin Review,,,9,status,0,
-,committee_review,In Committee Review,,,10,status,0,
-,fulfillment_queue,In Fulfillment Queue,,,11,status,0,
-,in_process,In Process,,,12,status,1,
-,on_hold,On Hold,,,14,status,1,
-,submitted,Submitted,,,15,status,1,
-,withdrawn,Withdrawn,,,16,status,0,
+id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_available
+,ctrc_approved,Active,,,1,status,0,,1
+,administrative_review,Administrative Review,,,2,status,0,,1
+,approved,Approved,,,3,status,0,,1
+,awaiting_pi_approval,Awaiting Requester Response,,,4,status,1,,1
+,draft,Draft,,,5,status,1,,1
+,get_a_cost_estimate,Get a Cost Estimate,,,6,status,1,,1
+,ctrc_review,In Admin Review,,,7,status,0,,1
+,committee_review,In Committee Review,,,8,status,0,,1
+,fulfillment_queue,In Fulfillment Queue,,,9,status,0,,1
+,in_process,In Process,,,10,status,1,,1
+,on_hold,On Hold,,,11,status,1,,1
+,pending,Pending,,,12,status,0,,1
+,submitted,Submitted,,,13,status,1,,1
+,complete,Complete,,,14,status,1,,1
+,declined,Declined,,,15,status,0,,1
+,invoiced,Invoiced,,,16,status,0,,1
+,withdrawn,Withdrawn,,,17,status,0,,1
+,incomplete,Incomplete,,,18,status,0,,1

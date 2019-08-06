@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -24,17 +24,13 @@ module AssociatedUsersHelper
   #        Also used in form helpers.
   # classes - HTML classes to add to form-group.
   # label - Override localized label text.
-  def user_form_group(form: nil, name:, classes: [], label: nil, data: {}, title: nil, required: false)
+  def user_form_group(form: nil, name:, classes: [], label: nil, data: {}, title: nil, required: false, link: nil)
     form_group_classes = %w(row form-group) + [classes]
     label_class = 'col-lg-3 control-label' + (required ? ' required' : '')
     label_text = label || t(:authorized_users)[:form_fields][name.to_sym]
+    label_text = link_to(label_text, link, target: :blank) if link
     label = if form
-              form.label(name,
-                         label_text,
-                         class: label_class,
-                         data: data,
-                         title: title
-                        )
+              form.label(name, label_text, class: label_class, data: data, title: title)
             else
               content_tag(:label, label_text, class: label_class)
             end
@@ -111,14 +107,23 @@ module AssociatedUsersHelper
     )
   end
 
-  def authorized_users_delete_button(project_role, current_user)
+  def authorized_users_delete_button(pr, current_user)
+    data  = { id: pr.id, toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' }
+
+    if current_user.id == pr.identity_id
+      data[:batch_select] = {
+        checkConfirm: 'true',
+        checkConfirmSwalText: t(:authorized_users)[:delete][:self_remove_warning]
+      }
+    end
+
     content_tag(:button,
       raw(
         content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
-      ),
-      type: 'button', data: { project_role_id: project_role.id, identity_role: project_role.role, identity_id: project_role.identity_id },
-      class: "btn btn-sm btn-danger actions-button delete-associated-user-button",
-      disabled: project_role.identity_id == current_user.id
+      ), type: 'button',
+      title: pr.primary_pi? ? t(:authorized_users)[:delete][:pi_tooltip] : t(:authorized_users)[:delete][:tooltip],
+      class: ["btn btn-danger actions-button delete-associated-user-button", pr.primary_pi? ? 'disabled' : ''],
+      data: data
     )
   end
 

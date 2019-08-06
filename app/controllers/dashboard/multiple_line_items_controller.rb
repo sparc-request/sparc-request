@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,10 +18,11 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+# this controller exists in order to separate the mass creation of line items
+# from single line item creation and deletion which will happen on the study schedule
 class Dashboard::MultipleLineItemsController < Dashboard::BaseController
-  respond_to :json, :html
-  #this controller exists in order to separate the mass creation of line items
-  #from single line item creation and deletion which will happen on the study schedule
+
+  respond_to :js
 
   def new_line_items
     # called to render modal to mass create line items
@@ -66,23 +67,16 @@ class Dashboard::MultipleLineItemsController < Dashboard::BaseController
   end
 
   def edit_line_items
-    # called to render modal to mass remove line items
-    @service_request = ServiceRequest.find(params[:service_request_id])
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @protocol = Protocol.find(params[:protocol_id])
-    @all_services = @sub_service_request.line_items.map(&:service).uniq
-    @service = params[:service_id].present? ? Service.find(params[:service_id]) : @all_services.first
-    @arms = @protocol.arms.joins(:line_items).where(line_items: { service_id: @service.id })
+    @sub_service_request  = SubServiceRequest.find(params[:sub_service_request_id])
   end
 
   def destroy_line_items
-    # handles submission of the remove line items form
-    @service_request = ServiceRequest.find(params[:service_request_id])
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @service = Service.find(params[:remove_service_id])
+    @line_item            = LineItem.find(params[:line_item_id])
+    @sub_service_request  = @line_item.sub_service_request
+    @service_request      = @sub_service_request.service_request
 
-    @line_items = @sub_service_request.line_items.where(service_id: @service.id)
-    @line_items.each(&:destroy)
+    @line_item.destroy
+
     flash.now[:alert] = t(:dashboard)[:multiple_line_items][:destroyed]
   end
 end

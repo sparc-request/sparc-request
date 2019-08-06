@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -42,21 +42,12 @@ module Dashboard::SubServiceRequestsHelper
     end
   end
 
-  def display_line_items_otf(sub_service_request, use_epic, lis)
-    if sub_service_request.nil?
-      # only show the services that are set to be pushed to Epic when use_epic = true
-      if use_epic
-        lis.select{ |li| Service.find(li.service_id).send_to_epic }
-      else
-        lis
-      end
+  def display_line_items_otf(lis)
+    # only show the services that are set to be pushed to Epic when use_epic = true
+    if Setting.get_value('use_epic')
+      lis.select{ |li| li.service.cpt_code.present? }
     else
-      # only show the services that are set to be pushed to Epic when use_epic = true
-      if use_epic
-        sub_service_request.one_time_fee_line_items.select{ |li| Service.find(li.service_id).send_to_epic }
-      else
-        sub_service_request.one_time_fee_line_items
-      end
+      lis
     end
   end
 
@@ -72,16 +63,29 @@ module Dashboard::SubServiceRequestsHelper
     display = content_tag(:div, "", class: "row")
     if sub_service_request.ready_for_fulfillment?
       if sub_service_request.in_work_fulfillment?
-        if user.clinical_provider_rights?
-          # In fulfillment and user has rights
-          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:go_to_fulfillment], "#{Setting.find_by_key("clinical_work_fulfillment_url").value}/sub_service_request/#{sub_service_request.id}", target: "_blank", class: "btn btn-primary btn-md"
+        if user.go_to_cwf_rights?(sub_service_request.organization)
+          if sub_service_request.imported_to_fulfillment?
+            # In fulfillment, and user has rights to view in Fulfillment
+            display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:go_to_fulfillment], "#{Setting.get_value("clinical_work_fulfillment_url")}/sub_service_request/#{sub_service_request.id}", target: "_blank", class: "btn btn-primary btn-md fulfillment_status"
+          else
+            # Pending button displayed until ssr is imported to fulfillment
+            display += content_tag(:button, data: { imported_to_fulfillment: sub_service_request.imported_to_fulfillment? }, class: "btn btn-primary btn-md form-control fulfillment_status", disabled: true) do
+              content = content_tag(:span, "Pending")
+              content.concat image_tag 'spinner.gif', id: 'pending_fulfillment_status', class: 'pull-right'
+            end
+          end
         else
-          # In fulfillment, user does not have rights, disable button
-          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:in_fulfillment], "#{Setting.find_by_key("clinical_work_fulfillment_url").value}/sub_service_request/#{sub_service_request.id}", target: "_blank", class: "btn btn-primary btn-md", disabled: true
+          # In fulfillment, but user has no rights to view in Fulfillment
+          display += button_tag t(:dashboard)[:sub_service_requests][:header][:fulfillment][:in_fulfillment], class: "btn btn-primary btn-md form-control", disabled: true
         end
       else
-        # Not in Fulfillment
-        display += button_tag t(:dashboard)[:sub_service_requests][:header][:fulfillment][:send_to_fulfillment], data: { sub_service_request_id: sub_service_request.id }, id: "send_to_fulfillment_button", class: "btn btn-success btn-md form-control"
+        if user.send_to_cwf_rights?(sub_service_request.organization)
+          # Not in Fulfillment, and user has rights to send to Fulfillment
+          display += button_tag t(:dashboard)[:sub_service_requests][:header][:fulfillment][:send_to_fulfillment], data: { sub_service_request_id: sub_service_request.id }, id: "send_to_fulfillment_button", class: "btn btn-success btn-md form-control"
+        else
+          # Not in Fulfillment, but user has no rights to send to Fulfillment
+          display += button_tag t(:dashboard)[:sub_service_requests][:header][:fulfillment][:send_to_fulfillment], class: "btn btn-success btn-md form-control", disabled: true
+        end
       end
     else
       # Not ready for Fulfillment
@@ -136,26 +140,6 @@ module Dashboard::SubServiceRequestsHelper
     pi_contribution = (subsidy.pi_contribution / 100.0)
 
     return effective_current_total(sub_service_request) - pi_contribution
-  end
-
-  #This is used to filter out ssr's on the cfw home page
-  #so that clinical providers can only see ones that are
-  #under their core.  Super users and clinical providers on the
-  #ctrc can see all ssr's.
-  def user_can_view_ssr?(study_tracker, ssr, user)
-    can_view = false
-    if user.is_super_user? || user.clinical_provider_for_ctrc? || (user.is_service_provider?(ssr) && (study_tracker == false))
-      can_view = true
-    else
-      ssr.line_items.each do |line_item|
-        clinical_provider_cores(user).each do |core|
-          if line_item.core == core
-            can_view = true
-          end
-        end
-      end
-    end
-    can_view
   end
 
   def clinical_provider_cores(user)
@@ -217,7 +201,6 @@ module Dashboard::SubServiceRequestsHelper
     admin_access = (admin_orgs & ssr.org_tree).any?
 
     ssr_view_button(ssr, show_view_ssr_back)+
-    ssr_edit_button(ssr, user, permission_to_edit)+
     ssr_admin_button(ssr, user, permission_to_edit, admin_access)
   end
 
@@ -228,8 +211,8 @@ module Dashboard::SubServiceRequestsHelper
   def display_ssr_submissions(ssr)
     forms                     = ssr.forms_to_complete
     form_list                 = {}
-    form_list[:Organization]  = [] if forms.detect{ |f| f.surveyable_type == 'Organization' }
-    form_list[:Service]       = [] if forms.detect{ |f| f.surveyable_type == 'Service' }
+    form_list[:Organization]  = [] if forms.any?{ |f| f.surveyable_type == 'Organization' }
+    form_list[:Service]       = [] if forms.any?{ |f| f.surveyable_type == 'Service' }
 
     forms.each do |f|
       form_list[f.surveyable_type.to_sym] << [f.surveyable.name, f.surveyable.name, data: { type: 'Form', survey_id: f.id, respondable_id: ssr.id, respondable_type: 'SubServiceRequest' }]
@@ -238,7 +221,7 @@ module Dashboard::SubServiceRequestsHelper
     if form_list.empty?
       ''
     else
-      content_tag(:select, grouped_options_for_select(form_list).html_safe, title: t(:dashboard)[:service_requests][:forms][:selectpicker],
+      select_tag(:complete_forms, grouped_options_for_select(form_list).html_safe, include_blank: t(:dashboard)[:service_requests][:forms][:selectpicker],
         class: 'selectpicker complete-forms', data: { style: 'btn-danger', counter: 'true' })
     end
   end
@@ -249,18 +232,9 @@ module Dashboard::SubServiceRequestsHelper
     content_tag(:button, t(:dashboard)[:service_requests][:actions][:view], class: 'view-service-request btn btn-primary btn-sm', type: 'button', data: { sub_service_request_id: ssr.id, show_view_ssr_back: show_view_ssr_back.to_s, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:dashboard)[:service_requests][:actions][:tooltips][:view])
   end
 
-  def ssr_edit_button(ssr, user, permission_to_edit)
-    # The SSR must not be locked, and the user must either be an authorized user or an authorized admin
-    if ssr.can_be_edited? && permission_to_edit
-      content_tag(:button, t(:dashboard)[:service_requests][:actions][:edit], class: 'edit-service-request btn btn-warning btn-sm', type: 'button', data: { permission: permission_to_edit.to_s, url: "/service_requests/#{ssr.service_request.id}/catalog?sub_service_request_id=#{ssr.id}", toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}', title: t(:dashboard)[:service_requests][:actions][:tooltips][:edit]})
-    else
-      ''
-    end
-  end
-
   def ssr_admin_button(ssr, user, permission_to_edit, admin_access)
     if admin_access
-      content_tag(:button, t(:dashboard)[:service_requests][:actions][:admin_edit], class: "edit-service-request btn btn-warning btn-sm", type: 'button', data: { permission: admin_access.to_s, url: "/dashboard/sub_service_requests/#{ssr.id}", toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:dashboard)[:service_requests][:actions][:tooltips][:admin])
+      link_to t(:dashboard)[:service_requests][:actions][:admin_edit], dashboard_sub_service_request_path(ssr), class: "edit-service-request btn btn-warning btn-sm", type: 'button', data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:dashboard)[:service_requests][:actions][:tooltips][:admin]
     else
       ''
     end
@@ -277,7 +251,7 @@ module Dashboard::SubServiceRequestsHelper
   private
 
   def statuses_with_classes(ssr)
-    
+
     sorted_by_permissible_values(ssr.organization.get_available_statuses).invert.map do |status|
       if in_finished_status?(status)
         status.push(:class=> 'finished-status')
@@ -301,11 +275,11 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def in_finished_status?(status)
-    Setting.find_by_key("finished_statuses").value.include?(status.last)
+    Setting.get_value("finished_statuses").include?(status.last)
   end
 
   def sorted_by_permissible_values(statuses)
-    values = PermissibleValue.order(:sort_order).get_hash('status')
+    values = PermissibleValue.get_hash('status')
     sorted_hash = {}
     values.each do |k, v|
       if statuses.has_key?(k)

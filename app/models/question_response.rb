@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -86,7 +86,7 @@ class QuestionResponse < ActiveRecord::Base
   end
 
   def depender_selected?
-    self.depender && self.response.question_responses.detect{ |qr| qr.question_id == self.depender.question_id}.try(:content) == self.depender.content
+    self.depender && self.response.question_responses.detect{ |qr| qr.question_id == self.depender.question_id }.try(:content).try(:downcase) == self.depender.content.downcase
   end
 
   private

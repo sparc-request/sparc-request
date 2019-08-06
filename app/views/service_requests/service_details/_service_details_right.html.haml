@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .col-md-3.service-details-right
   .shopping-cart
-    = render 'service_requests/right_navigation/cart', service_request: service_request, sub_service_request: sub_service_request, sub_service_requests: sub_service_requests, line_items_count: line_items_count, allow_delete: true
+    = render 'service_requests/right_navigation/cart', service_request: service_request, sub_service_requests: sub_service_requests, allow_delete: true
   .nav-buttons
-    = link_to t(:proper)[:cart][:to_catalog], catalog_service_request_path(service_request, sub_service_request_id: sub_service_request.try(:id)), class: 'submit-request-button btn btn-warning btn-lg btn-block'
+    = link_to t(:proper)[:cart][:to_catalog], catalog_service_request_path(srid: service_request.id), class: 'submit-request-button btn btn-warning btn-lg btn-block'
     = render 'service_requests/right_navigation/right_navigation'

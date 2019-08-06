@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -155,6 +155,14 @@ RSpec.describe Dashboard::BaseController, type: :controller do
         get :index
         expect(controller).to render_template(partial: 'dashboard/shared/_authorization_error')
       end
+      it 'should not render an error message for super users with access to empty protocols' do
+        @organization    = create(:organization)
+        create(:super_user, identity: @user, organization: @organization, access_empty_protocols: true)
+        log_in_dashboard_identity({id: @user.id})
+
+        get :index
+        expect(controller).to_not render_template(partial: 'dashboard/shared/_authorization_error')
+      end
     end
   end
 
@@ -231,6 +239,14 @@ RSpec.describe Dashboard::BaseController, type: :controller do
 
         get :new
         expect(controller).to render_template(partial: 'dashboard/shared/_authorization_error')
+      end
+      it 'should not render an error message for super users with access to empty protocols' do
+        @organization    = create(:organization)
+        create(:super_user, identity: @user, organization: @organization, access_empty_protocols: true)
+        log_in_dashboard_identity({id: @user.id})
+
+        get :index
+        expect(controller).to_not render_template(partial: 'dashboard/shared/_authorization_error')
       end
     end
   end

@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -34,7 +34,7 @@ RSpec.describe 'User saves a response filters', js: true do
     visit surveyor_responses_path
     wait_for_javascript_to_finish
 
-    expect(page).to_not have_selector('td', text: survey.title)
+    expect(page).to have_no_selector('td', text: survey.title)
 
     find('.delete-filter').click
     wait_for_javascript_to_finish

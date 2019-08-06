@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,10 +22,10 @@ FactoryBot.define do
 
   factory :service_relation do
     related_service_id { Random.rand(10000) }
-    optional           { false }
+    required           { false }
 
-    trait :is_optional do
-      is_optional true
+    trait :is_required do
+      is_required {true}
     end
   end
 end

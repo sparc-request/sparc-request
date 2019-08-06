@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -34,13 +34,17 @@
         - unless line_item.service.is_available
           = inactive_tag
       %td.notes.text-center
-        = display_li_notes(line_item, portal, review)
+        = notes_button(line_item, locked)
       %td.status.text-center
         = PermissibleValue.get_value('status', ssr.status)
       %td.service-rate.text-center
         = display_service_rate(line_item)
-      %td.your-cost.text-center
-        = "$#{number_with_precision(Service.cents_to_dollars(line_item.applicable_rate), precision: 2)}"
+      %td.text-center
+        - if line_item.admin_rates.present?
+          %span.text-danger{data: {toggle: 'tooltip', title: t(:dashboard)[:study_level_activities][:tooltips][:modified_rate]}}
+            = "$#{number_with_precision(Service.cents_to_dollars(line_item.applicable_rate), precision: 2)}"
+        -else
+          = "$#{number_with_precision(Service.cents_to_dollars(line_item.applicable_rate), precision: 2)}"
 
       - if line_item.otf_unit_type == 'N/A'
         %td.unit-type-number.unit-type.text-center{ colspan: 2 }

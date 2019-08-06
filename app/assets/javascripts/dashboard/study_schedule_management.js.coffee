@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -211,29 +211,14 @@ $ ->
     $("#add_line_items_form_button").attr('disabled','disabled')
 
   $(document).on 'click', '#remove_service_button', ->
-    line_item_count = $('#study_schedule_buttons').data('line-item-count')
-    data =
-      'protocol_id'             : $('#study_schedule_buttons').data('protocol-id')
-      'sub_service_request_id'  : $('#study_schedule_buttons').data('sub-service-request-id')
-      'service_request_id'      : $('#study_schedule_buttons').data('service-request-id')
-    if line_item_count == 1
+    if $('#study_schedule_buttons').data('line-item-count') == 1
       sweetAlert("Warning", "Please add a new service(s) prior to removing the last service; To remove all services use the 'Delete Request' button.")
     else
       $.ajax
         type: 'GET'
         url: '/dashboard/multiple_line_items/edit_line_items'
-        data: data
-
-  $(document).on 'change', "#remove_service_id", ->
-    data =
-      'protocol_id' : $('#study_schedule_buttons').data('protocol-id')
-      'service_id'  : $(this).find('option:selected').val()
-      'sub_service_request_id'  : $('#study_schedule_buttons').data('sub-service-request-id')
-      'service_request_id'      : $('#study_schedule_buttons').data('service-request-id')
-    $.ajax
-      type: 'GET'
-      url: '/dashboard/multiple_line_items/edit_line_items'
-      data: data
+        data:
+          sub_service_request_id: $('#study_schedule_buttons').data('sub-service-request-id')
 
   $(document).on 'submit', '#destroy_service', ->
     $("#remove_line_items_form_button").attr('disabled','disabled')

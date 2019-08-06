@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -53,7 +53,7 @@ RSpec.describe 'User filters responses', js: true do
         wait_for_javascript_to_finish
 
         expect(page).to have_selector('td', text: @form.title)
-        expect(page).to_not have_selector('td', text: @survey.title)
+        expect(page).to have_no_selector('td', text: @survey.title)
       end
     end
 
@@ -64,14 +64,14 @@ RSpec.describe 'User filters responses', js: true do
         wait_for_javascript_to_finish
 
         expect(page).to have_selector('td', text: @survey.title)
-        expect(page).to_not have_selector('td', text: @form.title)
+        expect(page).to have_no_selector('td', text: @form.title)
       end
     end
   end
 
   describe 'state filter' do
     before :each do
-      @inactive_survey  = create(:system_survey, title: 'Hollywoo Stars and Celebrities. Do they know things? What do they know? Let\'s find out', active: false)
+      @inactive_survey  = create(:system_survey, title: 'Hollywood Stars and Celebrities. Do they know things? What do they know? Let\'s find out', active: false)
       inactive_response = create(:response, survey: @inactive_survey)
       survey_response   = create(:response, survey: @survey)
                           create(:question_response, response: inactive_response)
@@ -86,7 +86,7 @@ RSpec.describe 'User filters responses', js: true do
         wait_for_javascript_to_finish
 
         expect(page).to have_selector('td', text: @survey.title)
-        expect(page).to_not have_selector('td', text: @inactive_survey.title)
+        expect(page).to have_no_selector('td', text: @inactive_survey.title)
       end
     end
 
@@ -97,7 +97,7 @@ RSpec.describe 'User filters responses', js: true do
         wait_for_javascript_to_finish
 
         expect(page).to have_selector('td', text: @inactive_survey.title)
-        expect(page).to_not have_selector('td', text: @survey.title)
+        expect(page).to have_no_selector('td', text: @survey.title)
       end
     end
 
@@ -116,7 +116,7 @@ RSpec.describe 'User filters responses', js: true do
   describe 'Survey/Form filter' do
     context 'user filters by Survey' do
       before :each do
-        @other_survey   = create(:system_survey, title: 'Hollywoo Stars and Celebrities. Do they know things? What do they know? Let\'s find out', active: true)
+        @other_survey   = create(:system_survey, title: 'Hollywood Stars and Celebrities. Do they know things? What do they know? Let\'s find out', active: true)
         survey_response = create(:response, survey: @survey)
         other_response  = create(:response, survey: @other_survey)
                           create(:question_response, response: survey_response)
@@ -124,20 +124,20 @@ RSpec.describe 'User filters responses', js: true do
       end
 
       scenario 'and sees responses for those Surveys' do
-        find('#for-SystemSurvey select#filterrific_with_survey + .btn-group').click
-        first('.dropdown-menu.open span.text', text: "Version #{@survey.version} (#{@survey.active ? I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active] : I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]})").click
+        find('#for-SystemSurvey select#filterrific_with_survey + .dropdown-toggle').click
+        first('.dropdown-menu.open span', text: "Version #{@survey.version} (#{@survey.active ? I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active] : I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]})").click
         find('body').click
         click_button I18n.t(:actions)[:filter]
         wait_for_javascript_to_finish
 
         expect(page).to have_selector('td', text: @survey.title)
-        expect(page).to_not have_selector('td', text: @other_survey.title)
+        expect(page).to have_no_selector('td', text: @other_survey.title)
       end
     end
 
     context 'user filters by Form' do
       before :each do
-        @other_form     = create(:form, title: 'Hollywoo Stars and Celebrities. Do they know things? What do they know? Let\'s find out', active: true)
+        @other_form     = create(:form, title: 'Hollywood Stars and Celebrities. Do they know things? What do they know? Let\'s find out', active: true)
         form_response   = create(:response, survey: @form)
         other_response  = create(:response, survey: @other_form)
                           create(:question_response, response: form_response)
@@ -146,21 +146,21 @@ RSpec.describe 'User filters responses', js: true do
 
       scenario 'and sees responses for those Forms' do
         bootstrap_select '#filterrific_of_type', 'Form'
-        find('#for-Form select#filterrific_with_survey + .btn-group').click
-        first('.dropdown-menu.open span.text', text: "Version #{@form.version} (#{@form.active ? I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active] : I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]})").click
+        find('#for-Form select#filterrific_with_survey + .dropdown-toggle').click
+        first('.dropdown-menu.open span', text: "Version #{@form.version} (#{@form.active ? I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active] : I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]})").click
         find('body').click
         click_button I18n.t(:actions)[:filter]
         wait_for_javascript_to_finish
 
         expect(page).to have_selector('td', text: @form.title)
-        expect(page).to_not have_selector('td', text: @other_form.title)
+        expect(page).to have_no_selector('td', text: @other_form.title)
       end
     end
   end
 
   describe 'completion date' do
     before :each do
-      @other_survey   = create(:system_survey, title: 'Hollywoo Stars and Celebrities. Do they know things? What do they know? Let\'s find out', active: true)
+      @other_survey   = create(:system_survey, title: 'Hollywood Stars and Celebrities. Do they know things? What do they know? Let\'s find out', active: true)
       survey_response = create(:response, survey: @survey, updated_at: Time.now - 5.days)
       other_response  = create(:response, survey: @other_survey, updated_at: Time.now + 5.days)
                         create(:question_response, response: survey_response)
@@ -176,7 +176,7 @@ RSpec.describe 'User filters responses', js: true do
 
 
         expect(page).to have_selector('td', text: @other_survey.title)
-        expect(page).to_not have_selector('td', text: @survey.title)
+        expect(page).to have_no_selector('td', text: @survey.title)
       end
     end
 
@@ -188,14 +188,14 @@ RSpec.describe 'User filters responses', js: true do
         wait_for_javascript_to_finish
 
         expect(page).to have_selector('td', text: @survey.title)
-        expect(page).to_not have_selector('td', text: @other_survey.title)
+        expect(page).to have_no_selector('td', text: @other_survey.title)
       end
     end
   end
 
   describe 'incomplete filter' do
     before :each do
-      @other_survey   = create(:system_survey, title: 'Hollywoo Stars and Celebrities. Do they know things? What do they know? Let\'s find out', active: true)
+      @other_survey   = create(:system_survey, title: 'Hollywood Stars and Celebrities. Do they know things? What do they know? Let\'s find out', active: true)
       survey_response = create(:response, survey: @survey)
       other_response  = create(:response, survey: @other_survey)
                         create(:question_response, response: survey_response)
@@ -208,7 +208,7 @@ RSpec.describe 'User filters responses', js: true do
         wait_for_javascript_to_finish
 
         expect(page).to have_selector('td', text: @survey.title)
-        expect(page).to_not have_selector('td', text: @other_survey.title)
+        expect(page).to have_no_selector('td', text: @other_survey.title)
       end
     end
 

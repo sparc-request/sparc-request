@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -37,32 +37,30 @@ $(document).ready ->
   )
 
   $(document).on 'change', '.new-notification', ->
-    $selected_options = $('option:selected', this)
+    if $(this).val()
+      $selected_options = $('option:selected', this)
 
-    if $selected_options.length > 0
-      $selected_option       = $selected_options.first()
-      sub_service_request_id = $selected_option.data('sub-service-request-id')
-      identity_id            = $selected_option.data('identity-id')
-      is_service_provider    = $selected_option.data('is-service-provider')
-      current_user_id        = $selected_option.data('current-user-id')
-      $this                  = $(this)
-      reset_select_picker    = ->
-        $this.selectpicker('deselectAll')
-        $this.selectpicker('render')
+      if $selected_options.length > 0
+        $selected_option       = $selected_options.first()
+        sub_service_request_id = $selected_option.data('sub-service-request-id')
+        identity_id            = $selected_option.data('identity-id')
+        is_service_provider    = $selected_option.data('is-service-provider')
+        current_user_id        = $selected_option.data('current-user-id')
+        $this                  = $(this)
 
-      if current_user_id == identity_id
-        alert("You can not send a message to yourself.")
-        reset_select_picker()
-      else
-        $.ajax
-          type: 'GET'
-          url:  '/dashboard/notifications/new.js'
-          data:
-            sub_service_request_id: sub_service_request_id
-            identity_id:            identity_id
-            is_service_provider:    is_service_provider
-          success: ->
-            reset_select_picker()
+        if current_user_id == identity_id
+          alert("You can not send a message to yourself.")
+          $this.selectpicker('val', '')
+        else
+          $.ajax
+            type: 'GET'
+            url:  '/dashboard/notifications/new.js'
+            data:
+              sub_service_request_id: sub_service_request_id
+              identity_id:            identity_id
+              is_service_provider:    is_service_provider
+            success: ->
+              $this.selectpicker('val', '')
 
   $(document).on 'click', 'button.message.new',  ->
     data = notification_id: $(this).data('notification-id')

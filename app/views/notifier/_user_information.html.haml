@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development~
+-# Copyright © 2011-2019 MUSC Foundation for Research Development~
 -# All rights reserved.~
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -36,6 +36,6 @@
         %td.skinny-black-border.center= pr.identity.email
         %td.skinny-black-border.center= pr.role.titleize
         - if @protocol.selected_for_epic
-          %td.skinny-black-border.center= pr.epic_access == true ? "Yes" : "No"
+          %td.skinny-black-border.center= pr.epic_access == true ? t(:constants)[:yes_select] : t(:constants)[:no_select]
 %br
 %br

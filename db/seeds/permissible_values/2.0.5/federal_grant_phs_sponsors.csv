@@ -1,58 +1,58 @@
-id,key,value,concept_code,parent_id,sort_order,category,default,reserved
-,AA,AA National Institute on Alcohol Abuse and Alcoholism,,,1,federal_grant_phs_sponsor,,
-,AE,AE Assistant Secretary of Planning and Evaluation,,,2,federal_grant_phs_sponsor,,
-,AG,AG National Institute on Aging,,,3,federal_grant_phs_sponsor,,
-,AI,AI National Institute of Allergy and Infectious Diseases,,,4,federal_grant_phs_sponsor,,
-,AR,AR National Institute of Arthritis and Musculoskeletal and Skin Diseases,,,5,federal_grant_phs_sponsor,,
-,AT,AT National Center For Complementary and Alternative Medicine,,,6,federal_grant_phs_sponsor,,
-,CA,CA National Cancer Institute,,,7,federal_grant_phs_sponsor,,
-,CC,CC Centers for Disease Control and Prevention,,,8,federal_grant_phs_sponsor,,
-,CH,"CH Coordinating Center for Infectious Diseases, CDC",,,9,federal_grant_phs_sponsor,,
-,CI,"CI National Center for Preparedness, Detection, and Control of Infectious Diseases, CDC",,,10,federal_grant_phs_sponsor,,
-,CK,"CK National Center for Zoonotic, Vector-Borne, and Enteric Diseases, CDC",,,11,federal_grant_phs_sponsor,,
-,DA,DA National Institute on Drug Abuse,,,12,federal_grant_phs_sponsor,,
-,DC,DC National Institute on Deafness and Other Communication Disorders,,,13,federal_grant_phs_sponsor,,
-,DD,"DD National Center on Birth Defects and Developmental Disabilities, CDC",,,14,federal_grant_phs_sponsor,,
-,DE,DE National Institute of Dental and Craniofacial Research,,,15,federal_grant_phs_sponsor,,
-,DK,DK National Institute of Diabetes and Digestive and Kidney Diseases,,,16,federal_grant_phs_sponsor,,
-,DP,"DP National Center for Chronic Disease Prevention and Health Promotion, CDC",,,17,federal_grant_phs_sponsor,,
-,EB,EB National Institute of Biomedical Imaging and Bioengineering,,,18,federal_grant_phs_sponsor,,
-,EH,"EH National Center for Environmental Health, CDC",,,19,federal_grant_phs_sponsor,,
-,EP,"EP Epidemiology Program Office, CDC",,,20,federal_grant_phs_sponsor,,
-,ES,ES National Institute of Environmental Health Sciences,,,21,federal_grant_phs_sponsor,,
-,EY,EY National Eye Institute,,,22,federal_grant_phs_sponsor,,
-,FD,FD Food and Drug Administration,,,23,federal_grant_phs_sponsor,,
-,GD,"GD Office of Genomics and Disease Prevention, CDC",,,24,federal_grant_phs_sponsor,,
-,GH,"GH Coordinating Office for Global Health, CDC",,,25,federal_grant_phs_sponsor,,
-,GM,GM National Institute of General Medical Sciences,,,26,federal_grant_phs_sponsor,,
-,GW,GW Genome Wide Association Studies,,,27,federal_grant_phs_sponsor,,
-,HD,HD National Institute of Child Health and Human Development,,,28,federal_grant_phs_sponsor,,
-,HG,HG National Human Genome Research Institute,,,29,federal_grant_phs_sponsor,,
-,HH,HH Department of Health and Human Services,,,30,federal_grant_phs_sponsor,,
-,HK,"HK Office of National Center for Public Health Informatics, CDC",,,31,federal_grant_phs_sponsor,,
-,HL,"HL National Heart, Lung, and Blood Institute",,,32,federal_grant_phs_sponsor,,
-,HM,"HM National Center for Health Marketing, CDC",,,33,federal_grant_phs_sponsor,,
-,HS,HS Agency for Healthcare Research and Quality,,,34,federal_grant_phs_sponsor,,
-,IP,"IP National Center for Immunization and Respiratory Diseases, CDC",,,35,federal_grant_phs_sponsor,,
-,IS,IS Indian Health Service,,,36,federal_grant_phs_sponsor,,
-,LM,LM National Library of Medicine,,,37,federal_grant_phs_sponsor,,
-,MC,MC Maternal and Child Health Services,,,38,federal_grant_phs_sponsor,,
-,MD,MD National Center on Minority Health and Health Disparities,,,39,federal_grant_phs_sponsor,,
-,MH,MH National Institute of Mental Health,,,40,federal_grant_phs_sponsor,,
-,MN,"MN Office of Minority Health, CDC ",,,41,federal_grant_phs_sponsor,,
-,NR,NR National Institute of Nursing Research,,,42,federal_grant_phs_sponsor,,
-,NS,NS National Institute of Neurological Disorders and Stroke,,,43,federal_grant_phs_sponsor,,
-,OD,"OD Office of the Director, NIH",,,44,federal_grant_phs_sponsor,,
-,OH,OH National Institute for Occupational Safety and Health,,,45,federal_grant_phs_sponsor,,
-,PH,"PH Public Health Practice Program Office, CDC",,,46,federal_grant_phs_sponsor,,
-,PR,"PR Office of Chief Public Health Practice, CDC",,,47,federal_grant_phs_sponsor,,
-,PS,"PS National Center for HIV, Viral Hepatitis, STDs, and Tuberculosis Prevention, CDC",,,48,federal_grant_phs_sponsor,,
-,RR,RR National Center for Research Resources,,,49,federal_grant_phs_sponsor,,
-,SH,SH National Center for Health Statistics,,,50,federal_grant_phs_sponsor,,
-,SM,"SM Center for Mental Health Services, SAMHSA",,,51,federal_grant_phs_sponsor,,
-,SP,"SP Center for Substance Abuse Prevention, SAMHSA",,,52,federal_grant_phs_sponsor,,
-,TI,"TI Center for Substance Abuse Treatment, SAMHSA",,,53,federal_grant_phs_sponsor,,
-,TP,"TP Coordinating Office for Terrorism Preparedness and Emergency Response, CDC",,,54,federal_grant_phs_sponsor,,
-,TS,TS Agency for Toxic Substances and Disease Registry,,,55,federal_grant_phs_sponsor,,
-,TW,TW Fogarty International Center,,,56,federal_grant_phs_sponsor,,
-,WC,"WC Office of Workforce and Career Development, CDC",,,57,federal_grant_phs_sponsor,,
+id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_available
+,AA,AA National Institute on Alcohol Abuse and Alcoholism,,,1,federal_grant_phs_sponsor,,,1
+,AE,AE Assistant Secretary of Planning and Evaluation,,,2,federal_grant_phs_sponsor,,,1
+,AG,AG National Institute on Aging,,,3,federal_grant_phs_sponsor,,,1
+,AI,AI National Institute of Allergy and Infectious Diseases,,,4,federal_grant_phs_sponsor,,,1
+,AR,AR National Institute of Arthritis and Musculoskeletal and Skin Diseases,,,5,federal_grant_phs_sponsor,,,1
+,AT,AT National Center For Complementary and Alternative Medicine,,,6,federal_grant_phs_sponsor,,,1
+,CA,CA National Cancer Institute,,,7,federal_grant_phs_sponsor,,,1
+,CC,CC Centers for Disease Control and Prevention,,,8,federal_grant_phs_sponsor,,,1
+,CH,"CH Coordinating Center for Infectious Diseases, CDC",,,9,federal_grant_phs_sponsor,,,1
+,CI,"CI National Center for Preparedness, Detection, and Control of Infectious Diseases, CDC",,,10,federal_grant_phs_sponsor,,,1
+,CK,"CK National Center for Zoonotic, Vector-Borne, and Enteric Diseases, CDC",,,11,federal_grant_phs_sponsor,,,1
+,DA,DA National Institute on Drug Abuse,,,12,federal_grant_phs_sponsor,,,1
+,DC,DC National Institute on Deafness and Other Communication Disorders,,,13,federal_grant_phs_sponsor,,,1
+,DD,"DD National Center on Birth Defects and Developmental Disabilities, CDC",,,14,federal_grant_phs_sponsor,,,1
+,DE,DE National Institute of Dental and Craniofacial Research,,,15,federal_grant_phs_sponsor,,,1
+,DK,DK National Institute of Diabetes and Digestive and Kidney Diseases,,,16,federal_grant_phs_sponsor,,,1
+,DP,"DP National Center for Chronic Disease Prevention and Health Promotion, CDC",,,17,federal_grant_phs_sponsor,,,1
+,EB,EB National Institute of Biomedical Imaging and Bioengineering,,,18,federal_grant_phs_sponsor,,,1
+,EH,"EH National Center for Environmental Health, CDC",,,19,federal_grant_phs_sponsor,,,1
+,EP,"EP Epidemiology Program Office, CDC",,,20,federal_grant_phs_sponsor,,,1
+,ES,ES National Institute of Environmental Health Sciences,,,21,federal_grant_phs_sponsor,,,1
+,EY,EY National Eye Institute,,,22,federal_grant_phs_sponsor,,,1
+,FD,FD Food and Drug Administration,,,23,federal_grant_phs_sponsor,,,1
+,GD,"GD Office of Genomics and Disease Prevention, CDC",,,24,federal_grant_phs_sponsor,,,1
+,GH,"GH Coordinating Office for Global Health, CDC",,,25,federal_grant_phs_sponsor,,,1
+,GM,GM National Institute of General Medical Sciences,,,26,federal_grant_phs_sponsor,,,1
+,GW,GW Genome Wide Association Studies,,,27,federal_grant_phs_sponsor,,,1
+,HD,HD National Institute of Child Health and Human Development,,,28,federal_grant_phs_sponsor,,,1
+,HG,HG National Human Genome Research Institute,,,29,federal_grant_phs_sponsor,,,1
+,HH,HH Department of Health and Human Services,,,30,federal_grant_phs_sponsor,,,1
+,HK,"HK Office of National Center for Public Health Informatics, CDC",,,31,federal_grant_phs_sponsor,,,1
+,HL,"HL National Heart, Lung, and Blood Institute",,,32,federal_grant_phs_sponsor,,,1
+,HM,"HM National Center for Health Marketing, CDC",,,33,federal_grant_phs_sponsor,,,1
+,HS,HS Agency for Healthcare Research and Quality,,,34,federal_grant_phs_sponsor,,,1
+,IP,"IP National Center for Immunization and Respiratory Diseases, CDC",,,35,federal_grant_phs_sponsor,,,1
+,IS,IS Indian Health Service,,,36,federal_grant_phs_sponsor,,,1
+,LM,LM National Library of Medicine,,,37,federal_grant_phs_sponsor,,,1
+,MC,MC Maternal and Child Health Services,,,38,federal_grant_phs_sponsor,,,1
+,MD,MD National Center on Minority Health and Health Disparities,,,39,federal_grant_phs_sponsor,,,1
+,MH,MH National Institute of Mental Health,,,40,federal_grant_phs_sponsor,,,1
+,MN,"MN Office of Minority Health, CDC ",,,41,federal_grant_phs_sponsor,,,1
+,NR,NR National Institute of Nursing Research,,,42,federal_grant_phs_sponsor,,,1
+,NS,NS National Institute of Neurological Disorders and Stroke,,,43,federal_grant_phs_sponsor,,,1
+,OD,"OD Office of the Director, NIH",,,44,federal_grant_phs_sponsor,,,1
+,OH,OH National Institute for Occupational Safety and Health,,,45,federal_grant_phs_sponsor,,,1
+,PH,"PH Public Health Practice Program Office, CDC",,,46,federal_grant_phs_sponsor,,,1
+,PR,"PR Office of Chief Public Health Practice, CDC",,,47,federal_grant_phs_sponsor,,,1
+,PS,"PS National Center for HIV, Viral Hepatitis, STDs, and Tuberculosis Prevention, CDC",,,48,federal_grant_phs_sponsor,,,1
+,RR,RR National Center for Research Resources,,,49,federal_grant_phs_sponsor,,,1
+,SH,SH National Center for Health Statistics,,,50,federal_grant_phs_sponsor,,,1
+,SM,"SM Center for Mental Health Services, SAMHSA",,,51,federal_grant_phs_sponsor,,,1
+,SP,"SP Center for Substance Abuse Prevention, SAMHSA",,,52,federal_grant_phs_sponsor,,,1
+,TI,"TI Center for Substance Abuse Treatment, SAMHSA",,,53,federal_grant_phs_sponsor,,,1
+,TP,"TP Coordinating Office for Terrorism Preparedness and Emergency Response, CDC",,,54,federal_grant_phs_sponsor,,,1
+,TS,TS Agency for Toxic Substances and Disease Registry,,,55,federal_grant_phs_sponsor,,,1
+,TW,TW Fogarty International Center,,,56,federal_grant_phs_sponsor,,,1
+,WC,"WC Office of Workforce and Career Development, CDC",,,57,federal_grant_phs_sponsor,,,1

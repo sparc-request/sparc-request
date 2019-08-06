@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -34,11 +34,12 @@ FactoryBot.define do
     industry_rate_type          { rate_types.sample }
     investigator_rate_type      { rate_types.sample }
     internal_rate_type          { rate_types.sample }
-    display_date                Date.parse('2000-01-01')
-    effective_date              Date.parse('2000-01-01')
+    unfunded_rate_type          { rate_types.sample }
+    sequence(:display_date)     {|n| Date.parse('2000-01-01') + n}
+    sequence(:effective_date)   {|n| Date.parse('2000-01-01') + n}
 
     trait :charge_master do
-      charge_master true
+      charge_master {true}
     end
 
     trait :without_validations do

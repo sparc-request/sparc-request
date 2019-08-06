@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,16 +20,22 @@
 
 FactoryBot.define do
   factory :question do
-    section       nil
+    section       { nil }
     is_dependent  { false }
-    content       { Faker::Lorem.sentence(4) }
+    content       { Faker::Lorem.sentence(word_count: 4) }
     question_type { 'text' }
     required      { false }
 
-    after(:create) do |question|
+    transient do
+      option_count {0}
+    end
+
+    after(:create) do |question, evaluator|
       if question.question_type == 'yes_no'
         create(:option, question: question, content: 'Yes')
         create(:option, question: question, content: 'No')
+      elsif evaluator.option_count > 0
+        create_list(:option, evaluator.option_count, question: question)
       end
     end
 
@@ -38,7 +44,7 @@ FactoryBot.define do
     end
 
     trait :required do
-      required true
+      required {true}
     end
 
     factory :question_without_validations, traits: [:without_validations]

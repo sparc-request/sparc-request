@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,10 +19,12 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - sr_table ||= false
 %div.tooltip-wrapper{ data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' }, title: t("dashboard.notifications.tooltips.#{sr_table ? "table_button" : "main_button"}") }
-  %select.selectpicker.new-notification{ title: t(:dashboard)[:notifications][:table][:send], data: { style: "btn-success new_notification_button", live_search: 'true', sub_service_request_id: sub_service_request.ssr_id } }
+  %select.selectpicker.new-notification{ data: { style: "btn-success new_notification_button", live_search: 'true', sub_service_request_id: sub_service_request.ssr_id } }
+    %option{ label: ' ', value: '' }
+      = t(:dashboard)[:notifications][:table][:send]
     %optgroup{ label: t(:dashboard)[:notifications][:table][:authorized_users]}
       - sub_service_request.protocol.project_roles.each do |pr|
-        %option{ data: { identity_id: pr.identity_id, sub_service_request_id: sub_service_request.id, is_service_provider: 'false', current_user_id: user.id, content: display_authorized_user(pr, sub_service_request.service_requester_id) } }
+        %option{ value: pr.identity_id, data: { identity_id: pr.identity_id, sub_service_request_id: sub_service_request.id, is_service_provider: 'false', current_user_id: user.id, content: display_authorized_user(pr, sub_service_request.service_requester_id) } }
     %optgroup{ label: t(:dashboard)[:notifications][:table][:service_providers]}
       - sub_service_request.organization.service_providers.includes(:identity).sort_by { |sp| sp.identity.last_name }.each do |sp|
-        %option{ data: { identity_id: sp.identity.id, sub_service_request_id: sub_service_request.id, is_service_provider: 'true', current_user_id: user.id, content: display_service_provider(sp, sub_service_request.owner_id) } }
+        %option{ value: sp.identity_id, data: { identity_id: sp.identity_id, sub_service_request_id: sub_service_request.id, is_service_provider: 'true', current_user_id: user.id, content: display_service_provider(sp, sub_service_request.owner_id) } }

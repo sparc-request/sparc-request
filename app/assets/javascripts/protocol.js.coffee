@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -23,21 +23,11 @@
 #= require associated_users
 
 $(document).ready ->
-  $(document).on 'click', '.service-view a', ->
-    description = $(".service-description-#{$(this).data('id')}")
-    if description.hasClass('hidden')
-      $('.service-description').addClass('hidden')
-      description.removeClass('hidden')
-    else
-      description.addClass('hidden')
-
-  $('.protocol-select-help a').tooltip()
-
   $(document).on 'click', '.view-protocol-details-button', ->
     protocol_id = $(this).data('protocol-id')
     $.ajax
       type: 'get'
       url: "/protocols/#{protocol_id}.js"
       data:
-        service_request_id: $("input[name='service_request_id']").val()
+        srid: getSRId()
     return false

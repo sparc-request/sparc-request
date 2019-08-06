@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development~
+-# Copyright © 2011-2019 MUSC Foundation for Research Development~
 -# All rights reserved.~
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -31,10 +31,21 @@
       - if @protocol.selected_for_epic
         %th{:style => 'border: 1px solid black;'}= t(:notifier)[:epic_access]
   %tbody
-    %tr{:style => 'border: 1px solid black;'}
-      %td{:style => 'border: 1px solid black; text-align: center;'}= @modified_role.identity.full_name
-      %td{:style => 'border: 1px solid black; text-align: center;'}= @modified_role.identity.email
-      %td{:style => 'border: 1px solid black; text-align: center;'}= @modified_role.role.upcase
-      %td{:style => 'border: 1px solid black; text-align: center;'}= @modified_role.display_rights
-      - if @protocol.selected_for_epic
-        %td{:style => 'border: 1px solid black; text-align: center;'}= @modified_role.epic_access == true ? "Yes" : "No"
+    - @modified_roles.each do |pr|
+      %tr{:style => 'border: 1px solid black;'}
+        %td{:style => 'border: 1px solid black; text-align: center;'}
+          %del<
+            = pr.identity.full_name
+        %td{:style => 'border: 1px solid black; text-align: center;'}
+          %del<
+            = pr.identity.email
+        %td{:style => 'border: 1px solid black; text-align: center;'}
+          %del<
+            = pr.role.upcase
+        %td{:style => 'border: 1px solid black; text-align: center;'}
+          %del<
+            = pr.display_rights
+        - if @protocol.selected_for_epic
+          %td{:style => 'border: 1px solid black; text-align: center;'}
+            %del<
+              = pr.epic_access == true ? "Yes" : "No"

@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,7 +20,7 @@
 .modal-dialog.modal-md
   .modal-content
     = hidden_field_tag :arm_id, arm.id
-    = form_for arm, url: move_visit_position_service_calendars_path(arm_id: arm.id, service_request_id: service_request.id, sub_service_request: sub_service_request, tab: tab, pages: pages.to_s, page: page, review: review, portal: portal, visit_group_id: visit_group.id, admin: admin, merged: merged, consolidated: consolidated, statuses_hidden: statuses_hidden), remote: true, method: :post, html: { class: 'form-horizontal', role: 'form' } do |f|
+    = form_for arm, url: move_visit_position_service_calendars_path(arm_id: arm.id, srid: service_request.id, sub_service_request: sub_service_request, tab: tab, pages: pages.to_s, page: page, review: review, portal: portal, visit_group_id: visit_group.id, admin: admin, merged: merged, consolidated: consolidated, statuses_hidden: statuses_hidden), remote: true, method: :post, html: { class: 'form-horizontal', role: 'form' } do |f|
       .modal-header
         %button.close{type: 'button', data: {dismiss: 'modal'}}
           %span{aria: {hidden:'true'}} &times;

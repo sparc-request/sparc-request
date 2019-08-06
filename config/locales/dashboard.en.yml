@@ -139,12 +139,6 @@ en:
       bottom:
         saving: "Saving..."
 
-    ###########
-    #  NOTES  #
-    ###########
-    notes:
-      header: "%{notable_type} Notes"
-
     ###################
     #  NOTIFICATIONS  #
     ###################
@@ -235,6 +229,7 @@ en:
         view_consolidated: "View Consolidated Request"
         export_consolidated: "Export Consolidated Request"
         coverage_report: 'Coverage Analysis Report'
+        cost_analysis_report: 'Cost Analysis Report'
         consolidated_all: "All"
         consolidated_exclude_drafts: "Exclude Drafts"
         tooltips:
@@ -354,6 +349,8 @@ en:
         cost: "Cost:"
       tooltips:
         add_non_clinical_services: "Add Non-clinical services related to selected organization"
+        modified_rate: 'Modified Rate'
+        change_rate: "Click to modify rate"
 
     ##########################
     #  SUB SERVICE REQUESTS  #
@@ -361,12 +358,14 @@ en:
     sub_service_requests:
       header:
         status: "Status"
+        not_submitted: "Request must be submitted first"
         lock_message: "Request is in a locked status, and cannot be changed."
         owner: "Owner"
         fulfillment:
           header: "Fulfillment"
           go_to_fulfillment: "Go to Fulfillment"
           in_fulfillment: "In Fulfillment"
+          pending: "Pending"
           send_to_fulfillment: "Send to Fulfillment"
           not_enabled: "Not enabled in SPARCCatalog."
         cost: "Cost"
@@ -380,6 +379,7 @@ en:
             send_to_epic: "Send to Epic"
             core_approvals: "Administrative Approvals"
             export_to_excel: "Export to Excel"
+            last_sent: "Survey last sent on: %{date}"
             resend_surveys: "Resend Surveys"
             delete_request: "Delete Request"
           timeline:
@@ -412,7 +412,7 @@ en:
             to: "Status Changed To"
             by: "Changed by"
           approval:
-            header: "Approval History"
+            header: "Administrative Approvals"
             date: "Date Approved"
             type: "Type"
             by: "Approved By"

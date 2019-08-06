@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -190,8 +190,8 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
           expect(page).not_to have_css '.edit-associated-user-button.disabled'
           expect(page).to have_css '.edit-associated-user-button:not(.disabled)'
 
-          expect(page).not_to have_css '.delete-associated-user-button.disabled'
-          expect(page).to have_css '.delete-associated-user-button:not(.disabled)'
+          expect(page).to have_selector('.delete-associated-user-button.disabled')
+          expect(page).to have_selector('.delete-associated-user-button:not(.disabled)')
         end
       end
 
@@ -233,9 +233,9 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
           page.authorized_users(text: "John Doe").first.edit_button.click
           page.authorized_user_modal.none_rights.click
           page.authorized_user_modal.save_button.click
-          wait_for_javascript_to_finish
 
-          expect(URI.parse(current_url).path).to eq("/dashboard")
+          wait_for_page(dashboard_root_path)
+          expect(current_path).to eq(dashboard_root_path)
         end
       end
     end
@@ -248,7 +248,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
   def when_i_set_the_role_to(role)
     @page.authorized_user_modal.instance_exec do
       role_dropdown.click
-      wait_for_dropdown_choices
+      wait_until_dropdown_choices_visible
       dropdown_choices(text: /\A#{role}\Z/).first.click
       wait_until_dropdown_choices_invisible
     end
@@ -257,7 +257,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
   def when_i_set_the_credentials_to(credentials)
     @page.authorized_user_modal.instance_exec do
       credentials_dropdown.click
-      wait_for_dropdown_choices
+      wait_until_dropdown_choices_visible
       dropdown_choices(text: /\A#{credentials}\Z/).first.click
       wait_until_dropdown_choices_invisible
     end

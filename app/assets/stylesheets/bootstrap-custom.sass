@@ -1,4 +1,4 @@
-// Copyright © 2011-2018 MUSC Foundation for Research Development*/
+// Copyright © 2011-2019 MUSC Foundation for Research Development*/
 // All rights reserved.~
 
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -20,18 +20,28 @@
 @import 'proper/colors'
 
 // Panels
-.panel-primary
-  border-color: $sparc-blue !important
-  > .panel-heading
-    background: $sparc-blue !important
+.panel
+  &.panel-primary
     border-color: $sparc-blue !important
+    > .panel-heading
+      background: $sparc-blue !important
+      border-color: $sparc-blue !important
 
-.panel-info
-  border-color: $sparc-light-blue !important
-  > .panel-heading
-    background: $sparc-light-blue !important
+  &.panel-info
     border-color: $sparc-light-blue !important
-    color: white !important
+    > .panel-heading
+      background: $sparc-light-blue !important
+      border-color: $sparc-light-blue !important
+      color: white !important
+
+  .panel-heading, .panel-footer
+    @extend .d-flex
+
+  .panel-heading:not(.flex-column), .panel-footer:not(.flex-column)
+    @extend .align-items-center
+
+  .panel-heading.flex-column, .panel-footer.flex-column
+    @extend .justify-content-center
 
 
 
@@ -82,6 +92,8 @@
 // Backgrounds
 .bg-primary
   background: $sparc-blue !important
+.bg-danger
+  background: #f2dede !important
 
 
 
@@ -89,6 +101,8 @@
 .text-danger
   color: $sparc-red !important
 
+.text-black
+  color: black
 
 
 // Navs
@@ -106,3 +120,8 @@
   background: $sparc-blue-hover
 .btn.dropdown-toggle:not(.btn-default):not(.btn-success):not(.btn-warning):not(.btn-danger):not(.btn-info):focus
   background: $sparc-blue-focus
+
+.inline-glyphicon
+  font-size: 90%
+  padding-left: 2px
+  padding-right: 2px

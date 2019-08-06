@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -25,6 +25,57 @@ class EpicQueueRecord < ApplicationRecord
   has_many :notes, as: :notable, dependent: :destroy
   
   audited
+
+  scope :search, -> (term) {
+    return if term.blank?
+
+    records = includes(:protocol).where(
+      self.arel_table[:status].matches("%#{term}%")
+    ).or(
+      includes(:protocol).where(self.arel_table[:origin].matches("%#{term}%"))
+    ).or(
+      includes(:protocol).where(Protocol.arel_table[:type].matches("%#{term}%"))
+    ).or(
+      includes(:protocol).where(Protocol.arel_table[:id].matches(term))
+    ).or(
+      includes(:protocol).where(Protocol.arel_table[:short_title].matches("%#{term}%"))
+    )
+
+    identity_records = includes(:identity).where(
+      Identity.arel_table[:first_name].matches("%#{term}%")
+    ).or(
+      includes(:identity).where(Identity.arel_table[:last_name].matches("%#{term}%"))
+    )
+
+    pi_records = unscoped.joins(protocol: :principal_investigators).where(
+      Identity.arel_table[:first_name].matches("%#{term}%")
+    ).or(
+      unscoped.joins(protocol: :principal_investigators).where(Identity.arel_table[:last_name].matches("%#{term}%"))
+    )
+
+    where(id: records + identity_records + pi_records).distinct
+  }
+
+  scope :ordered, -> (sort, order) {
+    if sort
+      case sort
+      when 'protocol'
+        eager_load(:protocol).order(Arel.sql("protocols.id #{order}"))
+      when 'pis'
+        joins(protocol: :principal_investigators).order(Arel.sql("identities.first_name #{order}, identities.last_name #{order}"))
+      when 'date'
+        order(Arel.sql("epic_queue_records.created_at #{order}"))
+      when 'status'
+        order(Arel.sql("epic_queue_records.status #{order}"))
+      when 'type'
+        order(Arel.sql("epic_queue_records.origin #{order}"))
+      when 'by'
+        eager_load(:identity).order(Arel.sql("identities.first_name #{order}, identities.last_name #{order}"))
+      end
+    else
+      order(created_at: :desc)
+    end
+  }
 
   def self.with_valid_protocols
     joins(:protocol).where.not(protocols: { id: nil } )

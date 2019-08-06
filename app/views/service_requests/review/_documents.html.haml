@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -23,7 +23,7 @@
       = t(:proper)[:review][:documents_notice]
   .bootstrap-table-dropdown-overflow
     #documents-custom-toolbar
-    %table#documents-table{ data: { toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: documents_path(format: :json, protocol_id: protocol.id, service_request_id: service_request.id), striped: "true", toolbar: "#documents-custom-toolbar", "show-export" => "false", "export-types" => ['excel'] } }
+    %table#documents-table{ data: { toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: documents_path(format: :json, protocol_id: protocol.id, srid: service_request.id), striped: "true", toolbar: "#documents-custom-toolbar", "show-export" => "false", "export-types" => ['excel'] } }
       %thead.primary-header
         %tr
           %th{ data: { class: 'type', align: "left", sortable: "true", field: "type" } }

@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,6 +27,7 @@ RSpec.describe "User views SSR table", js: true do
   def go_to_show_protocol(protocol_id)
     page = Dashboard::Protocols::ShowPage.new
     page.load(id: protocol_id)
+    wait_for_javascript_to_finish
     page
   end
 
@@ -39,30 +40,10 @@ RSpec.describe "User views SSR table", js: true do
       let!(:organization)         { create(:organization,type: 'Institution', name: 'Megacorp', admin: bob, service_provider: bob) }
       let!(:sub_service_request)  { create(:sub_service_request, id: 9999, ssr_id: '1234', service_request: service_request, organization_id: organization.id, status: 'draft', protocol: protocol) }
 
-      scenario 'and sees View and Edit' do
+      scenario 'and sees View' do
         page = go_to_show_protocol(protocol.id)
-
         expect(page).to have_selector('button', text: /\AView\z/)
-        expect(page).to have_selector('button', text: /\AEdit\z/)
-        expect(page).not_to have_selector('button', text: 'Admin Edit')
-      end
-
-      context 'for a locked SSR' do
-        let!(:protocol)             { create(:unarchived_study_without_validations, primary_pi: jug2) }
-        let!(:service_request)      { create(:service_request_without_validations, protocol: protocol, status: 'draft') }
-        let!(:organization)         { create(:organization,type: 'Institution', name: 'Megacorp', admin: bob, service_provider: bob, use_default_statuses: false) }
-
-        scenario 'and sees View but not Edit' do
-          organization.editable_statuses.where(status: 'on_hold').destroy_all
-
-          sub_service_request.update_attribute(:status, 'on_hold')
-
-          page = go_to_show_protocol(protocol.id)
-
-          expect(page).to have_selector('button', text: /\AView\z/)
-          expect(page).not_to have_selector('button', text: /\AEdit\z/)
-          expect(page).not_to have_selector('button', text: 'Admin Edit')
-        end
+        expect(page).not_to have_selector('a', text: 'Admin Edit')
       end
     end
 
@@ -78,8 +59,7 @@ RSpec.describe "User views SSR table", js: true do
         page = go_to_show_protocol(protocol.id)
 
         expect(page).to have_selector('button', text: /\AView\z/)
-        expect(page).not_to have_selector('button', text: /\AEdit\z/)
-        expect(page).not_to have_selector('button', text: 'Admin Edit')
+        expect(page).not_to have_selector('a', text: 'Admin Edit')
       end
     end
 
@@ -89,12 +69,11 @@ RSpec.describe "User views SSR table", js: true do
       let!(:organization)         { create(:organization,type: 'Institution', name: 'Megacorp', admin: jug2, service_provider: jug2) }
       let!(:sub_service_request)  { create(:sub_service_request, id: 9999, ssr_id: '1234', service_request: service_request, organization_id: organization.id, status: 'draft', protocol: protocol) }
 
-      scenario 'and sees View, and Admin Edit, but not Edit' do
+      scenario 'and sees View, and Admin Edit' do
         page = go_to_show_protocol(protocol.id)
 
         expect(page).to have_selector('button', text: /\AView\z/)
-        expect(page).not_to have_selector('button', text: /\AEdit\z/)
-        expect(page).to have_selector('button', text: 'Admin Edit')
+        expect(page).to have_selector('a', text: 'Admin Edit')
       end
     end
   end
@@ -127,8 +106,8 @@ RSpec.describe "User views SSR table", js: true do
     scenario 'and does not see the complete form dropdown' do
       page = go_to_show_protocol(protocol.id)
 
-      expect(page).to_not have_selector('.complete-forms button .filter-option', text: /\AComplete Form\z/)
-      expect(page).to_not have_selector('.complete-forms button .filter-option .badge', text: /\A1\z/)
+      expect(page).to have_no_selector('.complete-forms button .filter-option', text: /\AComplete Form\z/)
+      expect(page).to have_no_selector('.complete-forms button .filter-option .badge', text: /\A1\z/)
     end
   end
 end

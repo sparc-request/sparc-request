@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,7 +20,7 @@
 
 FactoryBot.define do
   factory :study, parent: :protocol, class: 'Study' do
-    type "Study"
+    type {"Study"}
 
     trait :with_study_type_questions_group do
       after(:create) do |protocol|
@@ -36,6 +36,7 @@ FactoryBot.define do
       protocol.build_vertebrate_animals_info(attributes_for(:vertebrate_animals_info)) unless protocol.vertebrate_animals_info
     end
 
+    factory :study_federally_funded,                    traits: [:funded, :federal]
     factory :study_without_validations,                 traits: [:without_validations]
     factory :unarchived_study_without_validations,      traits: [:without_validations, :unarchived]
     factory :archived_study_without_validations,        traits: [:without_validations, :archived]

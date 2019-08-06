@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -53,8 +53,8 @@ RSpec.describe LineItemsVisit, type: :model do
     context "business methods" do
 
       let!(:service)         { create(:service, organization_id: program.id)}
-      let!(:pricing_map)     { create(:pricing_map, service_id: service.id, display_date: Date.today) }
-      let!(:pricing_map2)    { create(:pricing_map, service_id: service.id, display_date: Date.today + 1) }
+      let!(:pricing_map)     { create(:pricing_map, service_id: service.id, display_date: Date.today, effective_date: Date.today) }
+      let!(:pricing_map2)    { create(:pricing_map, service_id: service.id, display_date: Date.today + 1, effective_date: Date.today + 1) }
 
       describe "per unit cost" do
 
@@ -157,7 +157,7 @@ RSpec.describe LineItemsVisit, type: :model do
 
       describe "indirect cost" do
         stub_config("use_indirect_cost", true)
-        
+
         before :each do
           study.update_attribute(:indirect_cost_rate, 200)
         end

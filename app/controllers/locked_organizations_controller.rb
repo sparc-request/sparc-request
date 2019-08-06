@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -24,6 +24,6 @@ class LockedOrganizationsController < ApplicationController
     @service_provider = @organization.service_providers.where(is_primary_contact: true).first
     @identity = Identity.find(@service_provider.identity_id)
     @protocol = Protocol.find(params[:protocol_id])
-    @ssr = SubServiceRequest.where(service_request_id: params[:service_request_id], organization_id: @organization.id).first
+    @ssr = SubServiceRequest.where(service_request_id: params[:srid], organization_id: @organization.id).first
   end
 end

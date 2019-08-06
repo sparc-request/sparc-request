@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -56,7 +56,15 @@ SparcRails::Application.configure do
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for nginx
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # config.force_ssl = true
+  config.force_ssl = true
+
+  # Set HTTP/S security headers
+  # config.action_dispatch.default_headers = {
+  #   'Referrer-Policy' => 'strict-origin-when-cross-origin',
+  #   'X-Content-Type-Options' => 'nosniff',
+  #   'X-Frame-Options' => 'SAMEORIGIN',
+  #   'X-XSS-Protection' => '1; mode=block'
+  # }
 
   # See everything in the log (default is :info)
   # config.log_level = :debug
@@ -65,7 +73,7 @@ SparcRails::Application.configure do
   # Prepend all log lines with the following tags
   # config.log_tags = [ :subdomain, :uuid ]
 
-  config.logger = ActiveSupport::TaggedLogging.new(Logger.new(STDOUT))
+  # config.logger = ActiveSupport::TaggedLogging.new(Logger.new(STDOUT))
 
   # Use a different cache store in production
   # config.cache_store = :mem_cache_store
@@ -97,18 +105,17 @@ SparcRails::Application.configure do
   config.action_mailer.delivery_method = :sendmail
   config.action_mailer.default_url_options = { host: "sparc.musc.edu" }
   config.after_initialize do
-    # Need to do this after initialization so that obis_setup has run and our config is loaded
-    if defined? ROOT_URL
-      unless ROOT_URL.nil?
-        new_options = { host: ROOT_URL.sub(/^http(s)?\:\/\//, '') }
-        config.action_mailer.default_url_options = new_options
+    # Need to do this after initialization so that the database is loaded
+    begin
+      new_options = { host: Setting.get_value("root_url") }
+      config.action_mailer.default_url_options = new_options
 
-        # By the time we run ActionMailer has already copied the options
-        # from config so we need to override here to really make the change
-        # We only set the default_url_options to keep the settings consistent
-        ActionMailer::Base.default_url_options = new_options
-
-      end
+      # By the time we run ActionMailer has already copied the options
+      # from config so we need to override here to really make the change
+      # We only set the default_url_options to keep the settings consistent
+      ActionMailer::Base.default_url_options = new_options
+    rescue
+      puts "WARNING: Database does not exist, restart server after database has been created and populated, to set mailer default url options from database."
     end
   end
 

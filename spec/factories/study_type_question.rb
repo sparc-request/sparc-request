@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,10 +20,10 @@
 
 FactoryBot.define do
   factory :study_type_question do
-    question "This is a test question"
+    question {"This is a test question"}
 
     transient do
-      protocol_id nil
+      protocol_id {nil}
     end
 
     trait :with_answer do

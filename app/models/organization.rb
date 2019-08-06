@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -26,35 +26,39 @@ class Organization < ApplicationRecord
   acts_as_taggable
 
   belongs_to :parent, :class_name => 'Organization'
+  has_one :subsidy_map, :dependent => :destroy
   has_many :submission_emails, :dependent => :destroy
   has_many :associated_surveys, as: :associable, dependent: :destroy
   has_many :pricing_setups, :dependent => :destroy
-  has_one :subsidy_map, :dependent => :destroy
   has_many :forms, -> { active }, as: :surveyable, dependent: :destroy
   has_many :super_users, :dependent => :destroy
-  has_many :identities, :through => :super_users
-
   has_many :service_providers, :dependent => :destroy
-  has_many :identities, :through => :service_providers
-
   has_many :catalog_managers, :dependent => :destroy
   has_many :clinical_providers, :dependent => :destroy
-  has_many :identities, :through => :catalog_managers
+  has_many :patient_registrars, :dependent => :destroy
   has_many :services, :dependent => :destroy
   has_many :sub_service_requests, :dependent => :destroy
-  has_many :protocols, through: :sub_service_requests
   has_many :available_statuses, :dependent => :destroy
   has_many :editable_statuses, :dependent => :destroy
   has_many :org_children, class_name: "Organization", foreign_key: :parent_id
 
-  accepts_nested_attributes_for :subsidy_map
-  accepts_nested_attributes_for :pricing_setups
+  has_many :protocols, through: :sub_service_requests
+  has_many :surveys, through: :associated_surveys
+
+  validates :abbreviation,
+            :order,
+            presence: true, on: :update
+  validates :name, presence: true
+  validates :order, numericality: { only_integer: true }, on: :update
+
   accepts_nested_attributes_for :submission_emails
-  accepts_nested_attributes_for :available_statuses
-  accepts_nested_attributes_for :editable_statuses
 
   after_create :create_statuses
-  
+
+  default_scope -> {
+    order(:order, :name)
+  }
+
   scope :authorized_for_identity, -> (identity_id) {
     where(
       id: Organization.authorized_child_organization_ids(
@@ -62,8 +66,7 @@ class Organization < ApplicationRecord
         where("super_users.identity_id = ? or service_providers.identity_id = ?", identity_id, identity_id).
         references(:super_users, :service_providers).
         distinct(:organizations).ids
-      ),
-      is_available: true
+      )
     ).distinct
   }
 
@@ -97,6 +100,20 @@ class Organization < ApplicationRecord
     ).distinct
   }
 
+  scope :authorized_for_clinical_provider, -> (identity_id) {
+    where(
+      id: Organization.authorized_child_organization_ids(
+        joins(:clinical_providers).
+        where(clinical_providers: { identity_id: identity_id } ).
+        references(:clinical_providers).
+        distinct(:organizations).ids)
+    ).distinct
+  }
+
+  scope :available, -> {
+    where(is_available: true)
+  }
+
   scope :in_cwf, -> { joins(:tags).where(tags: { name: 'clinical work fulfillment' }) }
 
   def label
@@ -126,15 +143,15 @@ class Organization < ApplicationRecord
     if self.process_ssrs
       return self
     else
-      return self.parents.detect {|x| x.process_ssrs} || self
+      return self.parents.detect {|x| x.process_ssrs}
     end
   end
 
   # Organization A, which belongs to
   # Organization B, which belongs to Organization C, return "C > B > A".
   # This "hierarchy" stops at a process_ssrs Organization.
-  def organization_hierarchy(include_self=false, process_ssrs=true, use_css=false)
-    parent_orgs = self.parents
+  def organization_hierarchy(include_self=false, process_ssrs=true, use_css=false, use_array=false)
+    parent_orgs = self.parents.reverse
 
     if process_ssrs
       root = parent_orgs.find_index { |org| org.process_ssrs? } || (parent_orgs.length - 1)
@@ -142,16 +159,17 @@ class Organization < ApplicationRecord
       root = parent_orgs.length - 1
     end
 
-    if use_css
-      parent_orgs[0..root].map{ |o| "<span class='#{o.css_class}-text'>#{o.abbreviation}</span>"}.reverse.join('<span> / </span>') + (include_self ? '<span> / </span>' + "<span class='#{self.css_class}-text'>#{self.abbreviation}</span>" : '')
+    if use_array
+      parent_orgs[0..root]
+    elsif use_css
+      parent_orgs[0..root].map{ |o| "<span class='#{o.css_class}-text'>#{o.abbreviation}</span>"}.join('<span> / </span>') + (include_self ? '<span> / </span>' + "<span class='#{self.css_class}-text'>#{self.abbreviation}</span>" : '')
     else
-      parent_orgs[0..root].map(&:abbreviation).reverse.join(' > ') + (include_self ? ' > ' + self.abbreviation : '')
+      parent_orgs[0..root].map(&:abbreviation).join(' > ') + (include_self ? ' > ' + self.abbreviation : '')
     end
   end
 
-  #TODO SubServiceRequest.where(organization: self.all_child_organizations).each(:&update_org_tree)
   def update_ssr_org_name
-    SubServiceRequest.where( organization: self.all_child_organizations<<self ).each(&:update_org_tree)
+    SubServiceRequest.where( organization: self.all_child_organizations_with_self ).each(&:update_org_tree)
   end
 
   def service_providers_lookup
@@ -174,24 +192,13 @@ class Organization < ApplicationRecord
     get_editable_statuses.include?(status)
   end
 
-  # Returns the immediate children of this organization (shallow search)
-  def children orgs
-    children = []
-
-    orgs.each do |org|
-      if org.parent_id == self.id
-        children << org
-      end
-    end
-
-    children
+  #Returns all child organizations, all the way down the tree
+  def all_child_organizations
+    [org_children, org_children.map(&:all_child_organizations)].flatten
   end
 
-  def all_child_organizations
-    [
-      org_children,
-      org_children.map(&:all_child_organizations)
-    ].flatten
+  def all_child_organizations_with_self
+    all_child_organizations << self
   end
 
   def child_orgs_with_protocols
@@ -205,44 +212,29 @@ class Organization < ApplicationRecord
     organizations_with_protocols.flatten.uniq
   end
 
-  # Returns an array of all children (and children of children) of this organization (deep search).
-  # Optionally includes self
-  def all_children (all_children=[], include_self=true, orgs)
-    self.children(orgs).each do |child|
-      all_children << child
-      child.all_children(all_children, orgs)
-    end
-
-    all_children << self if include_self
-
-    all_children.uniq
-  end
-
   def update_descendants_availability(is_available)
-    if is_available == "0"
-      children = Organization.where(id: all_child_organizations << self)
-      children.update_all(is_available: false)
-      services = Service.where(organization_id: children)
-      services.each do |service|
-        service.update_attributes(is_available: false)
-      end
+    child_orgs_with_self = Organization.where(id: all_child_organizations_with_self)
+    child_orgs_with_self.each do |org|
+      org.update_attributes(is_available: is_available)
+    end
+    Service.where(organization_id: child_orgs_with_self).each do |service|
+      service.update_attributes(is_available: is_available)
     end
   end
 
   # Returns an array of all services that are offered by this organization as well of all of its
   # deep children.
-  def all_child_services include_self=true
-    orgs = Organization.all
-    all_services = []
-    children = self.all_children [], include_self, orgs
-    children.each do |child|
-      if child.services
-        services = Service.where(:organization_id => child.id).includes(:pricing_maps)
-        all_services = all_services | services.sort_by{|x| x.name}
-      end
-    end
+  def all_child_services(include_self=true)
+    org_ids = include_self ? all_child_organizations_with_self.map(&:id) : all_child_organizations.map(&:id)
+    Service.where(organization_id: org_ids).sort_by{|x| x.name}
+  end
 
-    all_services
+  def has_one_time_fee_services?
+    Service.where(one_time_fee: true, organization_id: Organization.authorized_child_organization_ids([self.id])).any?
+  end
+
+  def has_per_patient_per_visit_services?
+    Service.where(one_time_fee: false, organization_id: Organization.authorized_child_organization_ids([self.id])).any?
   end
 
   ###############################################################################
@@ -353,68 +345,80 @@ class Organization < ApplicationRecord
   # service providers, as well as the service providers on all parents.  If the process_ssrs flag
   # is true at this organization, also returns the service providers of all children.
   def all_service_providers(include_children=true)
-    orgs = Organization.all
-    all_service_providers = []
-
     # If process_ssrs is true, we need to also get our children's service providers
     if self.process_ssrs and include_children
-      self.all_children(orgs).each do |child|
-        all_service_providers << child.service_providers
-      end
+      org_ids = all_child_organizations_with_self.map(&:id)
+    else
+      org_ids = [self.id]
     end
-
-    # Get the service providers on self
-    all_service_providers << self.service_providers
 
     # Get the service providers on all parents
-    self.parents.each do |parent|
-      all_service_providers << parent.service_providers
-    end
+    org_ids << parents.map(&:id)
 
-    return all_service_providers.flatten.uniq {|x| x.identity_id}
+    ServiceProvider.where(organization_id: org_ids.flatten)
   end
 
   # Returns all *relevant* super users for an organization.  Returns this organization's
   # super users, as well as the super users on all parents.  If the process_ssrs flag
   # is true at this organization, also returns the super users of all children.
   def all_super_users
-    orgs = Organization.all
-    all_super_users = []
-
     # If process_ssrs is true, we need to also get our children's super users
     if self.process_ssrs
-      self.all_children(orgs).each do |child|
-        all_super_users << child.super_users
-      end
+      org_ids = all_child_organizations_with_self.map(&:id)
+    else
+      org_ids = [self.id]
     end
-
-    # Get the super users on self
-    all_super_users << self.super_users
 
     # Get the super users on all parents
-    self.parents.each do |parent|
-      all_super_users << parent.super_users
-    end
+    org_ids << parents.map(&:id)
 
-    return all_super_users.flatten.uniq {|x| x.identity_id}
+    SuperUser.where(organization_id: org_ids.flatten)
+  end
+
+  # Returns all user rights on the organization, optionally including Service Providers
+  def all_user_rights(include_service_providers=false)
+    identity_ids = self.super_users.pluck(:identity_id) + self.catalog_managers.pluck(:identity_id)
+    identity_ids += self.service_providers.pluck(:identity_id) if include_service_providers
+    Identity.where(id: identity_ids)
+  end
+
+  # Returns all fulfillment user rights on the organization
+  def all_fulfillment_rights
+    identity_ids = self.clinical_providers.pluck(:identity_id)
+    identity_ids += self.patient_registrars.pluck(:identity_id)
+    # Placeholder for invoicers, which will be included later
+    # identity_ids += self.invoicers.pluck(:identity_id)
+    Identity.where(id: identity_ids)
   end
 
   def get_available_statuses
-    selected_statuses = []
-    if self.use_default_statuses
-      selected_statuses = AvailableStatus.defaults
-    elsif self.available_statuses.selected.present?
-      selected_statuses = self.available_statuses.selected.pluck(:status)
+    if process_ssrs
+      if use_default_statuses
+        selected_statuses = AvailableStatus.defaults
+      else
+        selected_statuses = available_statuses.selected.pluck(:status)
+      end
+    elsif process_ssrs_parent
+      if process_ssrs_parent.use_default_statuses
+        selected_statuses = AvailableStatus.defaults
+      else
+        selected_statuses = process_ssrs_parent.available_statuses.selected.pluck(:status)
+      end
     else
-      status_parent = self.parents.detect{ |parent| parent.available_statuses.selected.present? } || self
-      selected_statuses = status_parent.available_statuses.selected.pluck(:status)
+      selected_statuses = AvailableStatus.defaults
     end
 
     AvailableStatus.statuses.slice(*selected_statuses)
   end
 
   def get_editable_statuses
-    self.use_default_statuses ? AvailableStatus.defaults : self.editable_statuses.selected.pluck(:status)
+    if process_ssrs
+      self.use_default_statuses ? AvailableStatus.defaults : self.editable_statuses.selected.pluck(:status)
+    elsif process_ssrs_parent
+      process_ssrs_parent.get_editable_statuses
+    else
+      AvailableStatus.defaults
+    end
   end
 
   def self.find_all_by_available_status status
@@ -431,11 +435,12 @@ class Organization < ApplicationRecord
     end
   end
 
+
   private
 
   def create_statuses
-    EditableStatus.import EditableStatus.types.map{|status| EditableStatus.new(organization: self, status: status)}
-    AvailableStatus.import AvailableStatus.types.map{|status| AvailableStatus.new(organization: self, status: status)}
+    EditableStatus.import PermissibleValue.available.where(category: 'status').map{|pv| EditableStatus.new(organization: self, status: pv.key, selected: pv.default)}
+    AvailableStatus.import PermissibleValue.available.where(category: 'status').map{|pv| AvailableStatus.new(organization: self, status: pv.key, selected: pv.default)}
   end
 
   def self.authorized_child_organization_ids(org_ids)

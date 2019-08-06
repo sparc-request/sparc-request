@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -66,7 +66,6 @@ require 'rails_helper'
 # # modified:   app/models/subsidy.rb
 # # modified:   app/models/subsidy_map.rb
 # # modified:   app/models/super_user.rb
-# # modified:   app/models/toast_message.rb
 # # modified:   app/models/token.rb
 # # modified:   app/models/user_notification.rb
 # # modified:   app/models/vertebrate_animals_info.rb

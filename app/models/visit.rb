@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -33,6 +33,12 @@ class Visit < ApplicationRecord
   has_one :service, through: :line_item
   has_one :sub_service_request, through: :line_item
   
+  ########################
+  ### CWF Associations ###
+  ########################
+
+  has_many :fulfillment_visits, class_name: 'Shard::Fulfillment::Visit', foreign_key: :sparc_id
+
   validates :research_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :insurance_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :effort_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }

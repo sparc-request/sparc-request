@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -35,6 +35,7 @@ RSpec.feature 'User wants to edit a document', js: true do
       wait_for_javascript_to_finish
 
       @page.documents.first.enabled_remove_button.click
+      accept_confirm
       wait_for_javascript_to_finish
 
       expect(@page.documents(text: 'Protocol').count).to eq(0)

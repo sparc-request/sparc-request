@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -105,7 +105,7 @@ RSpec.describe 'dashboard index', js: :true do
           end
         end
         describe 'protocol does not have ssr' do
-          scenario 'user should see requests button' do
+          scenario 'user should not see requests button' do
             page = visit_protocols_index_page
 
             expect(page.search_results.protocols.first).to have_no_requests_button

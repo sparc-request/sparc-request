@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development~
+-# Copyright © 2011-2019 MUSC Foundation for Research Development~
 -# All rights reserved.~
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -47,7 +47,7 @@
               %li
                 %a{:href=> catalog_manager_root_path() }= t(:admin_identities)[:catalog_manager]
               %li
-                %a{:href=> Setting.find_by_key("dashboard_link").value }= t(:admin_identities)[:portal]
+                %a{:href=> Setting.get_value("dashboard_link") }= t(:admin_identities)[:portal]
               %li
                 %a{:href=> root_path() }= t(:admin_identities)[:request_services]
     .container-fluid

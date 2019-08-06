@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -72,8 +72,8 @@ class EpicInterface
     @config = config
     @errors = {}
 
-    @namespace = @config['namespace'] || 'urn:ihe:qrph:rpe:2009'
-    @study_root = @config['study_root'] || 'UNCONFIGURED'
+    @namespace = @config['epic_namespace'] || 'urn:ihe:qrph:rpe:2009'
+    @study_root = @config['epic_study_root'] || 'UNCONFIGURED'
 
     # TODO: I'm not really convinced that Savon is buying us very much
     # other than some added complexity, but it's working, so no point in
@@ -91,8 +91,8 @@ class EpicInterface
         convert_request_keys_to: :none,
         namespace_identifier: nil,
         namespace: @namespace,
-        endpoint: @config['endpoint'],
-        wsdl: @config['wsdl'],
+        endpoint: @config['epic_endpoint'],
+        wsdl: @config['epic_wsdl'],
         headers: {
         },
         soap_header: {
@@ -118,7 +118,7 @@ class EpicInterface
   def call(action, message)
     # Wasabi (Savon's WSDL parser) turns CamelCase actions into
     # snake_case.
-    if @config['wsdl'] then
+    if @config['epic_wsdl'] then
       action = action.snakecase.to_sym
     end
 

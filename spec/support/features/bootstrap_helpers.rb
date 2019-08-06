@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -19,13 +19,13 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 module Features
-
   module BootstrapHelpers
-
     def bootstrap_multiselect(class_or_id, selections = ['all'])
-      bootstrap_multiselect = find("select#{class_or_id} + .btn-group")
+      expect(page).to have_selector(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
+      bootstrap_multiselect = page.first(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
       bootstrap_multiselect.click
 
+      expect(page).to have_selector('.dropdown-menu.open')
       if selections.first == 'all'
         first('.dropdown-menu.open span.text', text: 'Select all').click
       else
@@ -38,15 +38,24 @@ module Features
     end
 
     def bootstrap_select(class_or_id, choice)
-      bootstrap_select = page.find("select#{class_or_id} + .bootstrap-select")
-
+      expect(page).to have_selector(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
+      bootstrap_select = page.first(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
       bootstrap_select.click
+
+      expect(page).to have_selector('.dropdown-menu.open')
       first('.dropdown-menu.open span.text', text: choice).click
       wait_for_javascript_to_finish
     end
 
     def bootstrap_selected?(element, choice)
       page.find("button.selectpicker[data-id='#{element}'][title='#{choice}']")
+    end
+
+    def bootstrap_datepicker(element, text)
+      e = page.find(element)
+      e.click
+      e.send_keys(:delete)
+      e.set(text)
     end
   end
 end

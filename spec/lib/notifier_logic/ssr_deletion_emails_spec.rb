@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -40,7 +40,7 @@ RSpec.describe NotifierLogic do
         ### ADMIN EMAIL ###
         @org2.submission_emails.create(email: 'hedwig@owlpost.com')
         @admin_email = 'hedwig@owlpost.com'
-        service      = create(:service, organization: @org, one_time_fee: true)
+        service      = create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1)
         protocol     = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
@@ -62,34 +62,34 @@ RSpec.describe NotifierLogic do
 
       it 'should not notify authorized users (deletion email)' do
         allow(Notifier).to receive(:notify_user) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver_now)
           mailer
         end
-        NotifierLogic.new(@sr, nil, logged_in_user).ssr_deletion_emails(deleted_ssr: @ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
-        expect(Notifier).not_to have_received(:notify_user) 
+        NotifierLogic.new(@sr, logged_in_user).ssr_deletion_emails(deleted_ssr: @ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
+        expect(Notifier).not_to have_received(:notify_user)
       end
 
       it 'should notify service providers (deletion email)' do
         allow(Notifier).to receive(:notify_service_provider) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver_now)
           mailer
         end
 
-        NotifierLogic.new(@sr, nil, logged_in_user).ssr_deletion_emails(deleted_ssr: @ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
-        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, logged_in_user, @ssr, nil, true, false, false)
+        NotifierLogic.new(@sr, logged_in_user).ssr_deletion_emails(deleted_ssr: @ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
+        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, logged_in_user, @ssr, nil, true, false)
       end
 
       it 'should notify admin (deletion email)' do
         allow(Notifier).to receive(:notify_admin) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver_now)
           mailer
-        end 
-        
-        NotifierLogic.new(@sr, nil, logged_in_user).ssr_deletion_emails(deleted_ssr: @ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false) 
-        expect(Notifier).to have_received(:notify_admin).with(@admin_email, logged_in_user, @ssr, nil, true, false)
+        end
+
+        NotifierLogic.new(@sr, logged_in_user).ssr_deletion_emails(deleted_ssr: @ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
+        expect(Notifier).to have_received(:notify_admin).with(@admin_email, logged_in_user, @ssr, nil, true)
       end
     end
   end

@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,12 +22,12 @@ class Question < ActiveRecord::Base
 
   belongs_to :section
   belongs_to :depender, class_name: 'Option'
-  
-  delegate :survey, to: :section
-
   has_many :options, dependent: :destroy
   has_many :question_responses, dependent: :destroy
+
   has_many :dependents, through: :options
+
+  delegate :survey, to: :section
 
   validates :content,
             :question_type,
@@ -39,7 +39,7 @@ class Question < ActiveRecord::Base
 
   accepts_nested_attributes_for :options, allow_destroy: true
   
-  after_update :update_options_based_on_question_type, if: :question_type_changed?
+  before_update :update_options_based_on_question_type, if: :question_type_changed?
 
   def previous_questions
     self.survey.questions.select{ |q| q.id < self.id }
@@ -52,7 +52,9 @@ class Question < ActiveRecord::Base
   private
 
   def update_options_based_on_question_type
-    self.options.destroy_all
+    unless ['radio_button', 'likert', 'checkbox', 'dropdown', 'multiple_dropdown'].include?(self.question_type)
+      self.options.destroy_all
+    end
 
     if self.question_type == 'yes_no'
       self.options.create(content: 'Yes')

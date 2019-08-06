@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,4 +19,5 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $("#modal_place").html("<%= escape_javascript(render(:partial =>'dashboard/line_items/details_modal', locals: {line_item: @line_item})) %>");
-$("#modal_place").modal 'show'
+$("#modal_place").modal('show')
+$('[data-toggle=tooltip]').tooltip()

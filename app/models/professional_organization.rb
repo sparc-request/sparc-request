@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -25,10 +25,28 @@ class ProfessionalOrganization < ApplicationRecord
 
   belongs_to :parent, class_name: "ProfessionalOrganization"
 
+  scope :institutions, -> {
+    where(org_type: 'institution')
+  }
+
+  scope :colleges, -> {
+    where(org_type: 'college')
+  }
+
+  scope :departments, -> {
+    where(org_type: 'department')
+  }
+
+  scope :divisions, -> {
+    where(org_type: 'division')
+  }
+
   # Returns collection like [greatgrandparent, grandparent, parent].
   def parents
     parent ? (parent.parents + [parent]) : []
   end
+
+  scope :institutions, -> { where(org_type: 'institution').order(:name) }
 
   # Returns collection like [greatgrandparent, grandparent, parent, self].
   def parents_and_self

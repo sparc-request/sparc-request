@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,24 +27,22 @@ class ProtocolsController < ApplicationController
   before_action :authorize_identity,          unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
   before_action :set_portal
   before_action :find_protocol,               only: [:edit, :update, :show]
+  before_action :check_rmid_server_status,    only: [:new, :create, :edit, :update, :update_protocol_type]
 
   def new
     @protocol_type          = params[:protocol_type]
     @protocol               = @protocol_type.capitalize.constantize.new
     @protocol.requester_id  = current_user.id
-    @service_request        = ServiceRequest.find(params[:srid])
     @protocol.populate_for_edit
-    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
-    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
-    rmid_server_status(@protocol)
+    gon.rm_id_api_url = Setting.get_value("research_master_api")
+    gon.rm_id_api_token = Setting.get_value("rmid_api_token")
   end
 
   def create
     protocol_class                          = protocol_params[:type].capitalize.constantize
     ### if lazy load enabled, we need create the identiy if necessary here
-    attrs                                   = Setting.find_by_key("use_ldap").value && Setting.find_by_key("lazy_load_ldap").value ? fix_identity : fix_date_params
+    attrs                                   = Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") ? fix_identity : fix_date_params
     @protocol                               = protocol_class.new(attrs)
-    @service_request                        = ServiceRequest.find(params[:srid])
     @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id if protocol_class == Study
 
     if @protocol.valid?
@@ -63,29 +61,25 @@ class ProtocolsController < ApplicationController
 
       @protocol.update_attribute(:next_ssr_id, last_ssr_id + 1)
 
-      if Setting.find_by_key("use_epic").value && @protocol.selected_for_epic
+      if Setting.get_value("use_epic") && @protocol.selected_for_epic
         @protocol.ensure_epic_user
-        Notifier.notify_for_epic_user_approval(@protocol).deliver unless Setting.find_by_key("queue_epic").value
+        Notifier.notify_for_epic_user_approval(@protocol).deliver unless Setting.get_value("queue_epic")
       end
 
       flash[:success] = I18n.t('protocols.created', protocol_type: @protocol.type)
     else
       @errors = @protocol.errors
     end
-    rmid_server_status(@protocol)
   end
 
   def edit
     @protocol_type                          = @protocol.type
-    @service_request                        = ServiceRequest.find(params[:srid])
-    @sub_service_request                    = SubServiceRequest.find(params[:sub_service_request_id]) if params[:sub_service_request_id]
     @in_dashboard                           = false
     @protocol.populate_for_edit
     @protocol.valid?
     @errors = @protocol.errors
-    gon.rm_id_api_url = Setting.find_by_key("research_master_api").value
-    gon.rm_id_api_token = Setting.find_by_key("rmid_api_token").value
-    rmid_server_status(@protocol)
+    gon.rm_id_api_url = Setting.get_value("research_master_api")
+    gon.rm_id_api_token = Setting.get_value("rmid_api_token")
 
     respond_to do |format|
       format.html
@@ -101,12 +95,9 @@ class ProtocolsController < ApplicationController
       @protocol.reload
     end
 
-    attrs            = fix_date_params
-    @service_request = ServiceRequest.find(params[:srid])
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id]) if params[:sub_service_request_id]
+    attrs = fix_date_params
 
     if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
-
       flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
     else
       @errors = @protocol.errors
@@ -141,7 +132,6 @@ class ProtocolsController < ApplicationController
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
       flash[:alert] = t(:protocols)[:change_type][:new_study_warning]
     end
-    rmid_server_status(@protocol)
   end
 
   def show
@@ -240,6 +230,9 @@ class ProtocolsController < ApplicationController
         :title,
         :type,
         :udak_project_number,
+        :guarantor_contact,
+        :guarantor_phone,
+        :guarantor_email,
         :research_master_id,
         {:study_phase_ids => []},
         research_types_info_attributes: [:id, :human_subjects, :vertebrate_animals, :investigational_products, :ip_patents],
@@ -255,7 +248,7 @@ class ProtocolsController < ApplicationController
           :ind_on_hold],
         ip_patents_info_attributes: [:id, :patent_number, :inventors],
         impact_areas_attributes: [:id, :name, :other_text, :new, :_destroy],
-        human_subjects_info_attributes: [:id, :nct_number, :hr_number, :pro_number, :irb_of_record, :submission_type, :irb_approval_date, :irb_expiration_date, :approval_pending],
+        human_subjects_info_attributes: [:id, :nct_number, :pro_number, :irb_of_record, :submission_type, :initial_irb_approval_date, :irb_approval_date, :irb_expiration_date, :approval_pending],
         affiliations_attributes: [:id, :name, :new, :position, :_destroy],
         project_roles_attributes: [:id, :identity_id, :role, :project_rights, :_destroy],
         study_type_answers_attributes: [:id, :answer, :study_type_question_id, :_destroy])
@@ -280,7 +273,7 @@ class ProtocolsController < ApplicationController
   end
 
   def send_epic_notification_for_final_review(protocol)
-    Notifier.notify_primary_pi_for_epic_user_final_review(protocol).deliver unless Setting.find_by_key("queue_epic").value
+    Notifier.notify_primary_pi_for_epic_user_final_review(protocol).deliver unless Setting.get_value("queue_epic")
   end
 
   def push_protocol_to_epic protocol
@@ -349,6 +342,7 @@ class ProtocolsController < ApplicationController
     attrs                                        = convert_date_for_save attrs, :potential_funding_start_date
 
     if attrs[:human_subjects_info_attributes]
+      attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :initial_irb_approval_date
       attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :irb_approval_date
       attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :irb_expiration_date
     end

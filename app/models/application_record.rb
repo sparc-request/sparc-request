@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -20,4 +20,8 @@
 
 class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
+
+  def self.table_name_prefix
+    Rails.configuration.database_configuration[Rails.env]['database'] + '.'
+  end
 end

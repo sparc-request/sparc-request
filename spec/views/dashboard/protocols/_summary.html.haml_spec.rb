@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -57,7 +57,31 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
 
       render_summary_for protocol
 
-      expect(response).to have_selector('button', text: 'Study Notes')
+      expect(response).to have_selector('a', text: 'Study Notes')
+    end
+
+    context 'RMID is enabled' do
+      stub_config('research_master_enabled', true)
+
+      it 'should display Research Master ID' do
+        protocol = build(:study, research_master_id: 1234)
+
+        render_summary_for protocol
+
+        expect(response).to have_content('1234')
+      end
+    end
+
+    context 'RMID is disabled' do
+      stub_config('research_master_enabled', false)
+
+      it 'should not display Research Master ID' do
+        protocol = build(:study, research_master_id: 1234)
+
+        render_summary_for protocol
+
+        expect(response).to_not have_content('1234')
+      end
     end
 
     context 'Study has potential funding source' do
@@ -140,7 +164,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
 
       render_summary_for protocol
 
-      expect(response).to have_selector('button', text: 'Project Notes')
+      expect(response).to have_selector('a', text: 'Project Notes')
     end
 
     it 'should be titled "Project Summary"' do

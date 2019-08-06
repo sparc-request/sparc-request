@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -19,7 +19,13 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class PermissibleValue < ApplicationRecord
-  belongs_to :parent, :class_name => 'PermissibleValue'
+  belongs_to :parent, class_name: 'PermissibleValue'
+
+  acts_as_list column: :sort_order, scope: [:category]
+
+  validates :key, uniqueness: { scope: :category }
+
+  default_scope { order(:sort_order) }
 
   scope :available, -> {
     where(is_available: true)
@@ -43,7 +49,7 @@ class PermissibleValue < ApplicationRecord
     end
   end
 
-  # Get a hash of PermissibleValue keys as they keys and values as values
+  # Get a hash of PermissibleValue keys as the keys and values as the values
   def self.get_hash(category, default=nil)
     unless default.nil?
       Hash[PermissibleValue.available.where(category: category, default: default).pluck(:key, :value)]
@@ -52,7 +58,7 @@ class PermissibleValue < ApplicationRecord
     end
   end
 
-  # Get a hash of PermissibleValue values as the keys and keys as values
+  # Get a hash of PermissibleValue values as the keys and keys as the values
   def self.get_inverted_hash(category, default=nil)
     unless default.nil?
       Hash[PermissibleValue.available.where(category: category, default: default).pluck(:value, :key)]

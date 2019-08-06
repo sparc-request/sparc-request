@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -27,7 +27,7 @@ class AddService
   end
 
   def existing_service_ids
-    @service_request.line_items.reject{ |line_item| Setting.find_by_key("finished_statuses").value.include?(line_item.status) }.map(&:service_id)
+    @service_request.line_items.reject{ |line_item| Setting.get_value("finished_statuses").include?(line_item.status) }.map(&:service_id)
   end
 
   def generate_new_service_request

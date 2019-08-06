@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,6 +21,4 @@
 # require the base class
 $canned_reports = []
 require 'reporting_module'
-
-# require subclasses
-Dir[Rails.root.join("app/reports/*.rb")].each {|f| require f}
+Dir[Rails.root.join('app', 'lib', 'reports', '*.rb')].each { |f| require f }

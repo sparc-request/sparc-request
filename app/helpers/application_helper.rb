@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -35,6 +35,10 @@ module ApplicationHelper
     end
 
     raw(returning_html)
+  end
+
+  def format_date(date)
+    date.try(:strftime, '%D') || ""
   end
 
   def css_class(organization)
@@ -152,35 +156,37 @@ module ApplicationHelper
     name, path = details
     highlighted = identifier == highlighted_link
 
-    conditions = false
+    accessible = false
 
     if current_user
-      conditions = case identifier
+      accessible = case identifier
       when 'sparc_fulfillment'
-        current_user.clinical_providers.empty? && !current_user.is_super_user?
+        current_user.clinical_providers.any? || current_user.is_super_user?
       when 'sparc_catalog'
-        current_user.catalog_managers.empty?
+        current_user.catalog_managers.any?
       when 'sparc_report'
-        !current_user.is_super_user?
+        current_user.is_super_user?
       when 'sparc_funding'
-        !current_user.is_funding_admin?
+        current_user.is_funding_admin?
       when 'sparc_forms'
-        !current_user.is_site_admin? && !current_user.is_super_user? && !current_user.is_service_provider?
+        current_user.is_site_admin? || current_user.is_super_user? || current_user.is_service_provider?
       else
-        false
+        true
       end
+    else ## show base module when logged out
+      accessible = true if ['sparc_dashboard', 'sparc_request', 'sparc_info'].include? identifier
     end
 
-    render_navbar_link(name, path, highlighted) unless conditions
+    render_navbar_link(name, path, highlighted) if accessible
   end
 
   def render_navbar_link(name, path, highlighted)
     content_tag(:li, link_to(name.to_s, path, target: '_blank', class: highlighted ? 'highlighted' : ''), class: 'dashboard nav-bar-link')
   end
 
-  def calculate_step_params(service_request, sub_service_request)
-    has_subsidy           = sub_service_request ? sub_service_request.has_subsidy? : service_request.sub_service_requests.map(&:has_subsidy?).any?
-    eligible_for_subsidy  = sub_service_request ? sub_service_request.eligible_for_subsidy? : service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
+  def calculate_step_params(service_request)
+    has_subsidy           = service_request.sub_service_requests.any?(&:has_subsidy?)
+    eligible_for_subsidy  = service_request.sub_service_requests.any?(&:eligible_for_subsidy?)
     subsidy               = has_subsidy || eligible_for_subsidy
     classes               = subsidy ? 'step-with-subsidy' : 'step-no-subsidy'
 

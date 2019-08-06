@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,7 +19,21 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
+  refreshFulfillmentButton = ->
+   refresh = window.setInterval((->
+      imported_to_fulfillment = $('.fulfillment_status').data('imported-to-fulfillment')
+      if imported_to_fulfillment == false
+        $("#nprogress").hide()
+        $("#ssr_fulfillment_status").load(location.href + " .fulfillment_status")
+        $("#nprogress").hide()
+      else
+        window.clearInterval refresh
+      return
+    ), 5000)
+   
   # SERVICE REQUEST INFO LISTENERS BEGIN
+  if $('#pending_fulfillment_status').is(':visible')
+    refreshFulfillmentButton()
 
   $(document).on 'change', '#sub_service_request_owner', ->
     ssr_id = $(this).data('sub_service_request_id')
@@ -47,6 +61,7 @@ $(document).ready ->
         url: "/dashboard/sub_service_requests/#{sub_service_request_id}"
 
   $(document).on 'click', '#send_to_fulfillment_button', ->
+    $(this).prop('disabled', true)
     sub_service_request_id = $(this).data('sub-service-request-id')
     data = 'sub_service_request' : 'in_work_fulfillment' : 1
     $.ajax
@@ -55,6 +70,8 @@ $(document).ready ->
       data: data
       error: (xhr, ajaxOptions, thrownError) ->
         swal('Error', 'This protocol has failed to be sent to SPARCFulfillment because of failed validation. Please make sure the service calendar is intact before trying again.', 'error')
+      success: ->
+        refreshFulfillmentButton()
 
   $(document).on 'click', '#send_to_epic_button', ->
     $(this).prop( "disabled", true )

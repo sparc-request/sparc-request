@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -39,7 +39,7 @@ RSpec.describe ServiceRequestsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
       get :show, params: {
-        id: sr.id,
+        srid: sr.id,
         report_type: 'request_report'
       }, xhr: true
 
@@ -51,7 +51,7 @@ RSpec.describe ServiceRequestsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
       get :show, params: {
-        id: sr.id,
+        srid: sr.id,
         admin_offset: '10',
         report_type: 'request_report'
       }, xhr: true
@@ -64,7 +64,7 @@ RSpec.describe ServiceRequestsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
       get :show, params: {
-        id: sr.id,
+        srid: sr.id,
         report_type: 'request_report'
       }, xhr: true
 
@@ -76,7 +76,7 @@ RSpec.describe ServiceRequestsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
       get :show, params: {
-        id: sr.id,
+        srid: sr.id,
         report_type: 'coverage_analysis'
       }, xhr: true
 
@@ -88,7 +88,7 @@ RSpec.describe ServiceRequestsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
       get :show, params: {
-        id: sr.id,
+        srid: sr.id,
         report_type: 'request_report'
       }, xhr: true
 

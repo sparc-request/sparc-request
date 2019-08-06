@@ -27,8 +27,8 @@ wrap_bordered = wb.styles.add_style :border=> {:style => :thin, :color => "00000
 centered_bordered = wb.styles.add_style :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
 rt_hdr_even_style = wb.styles.add_style bg_color: 'E8E8E8', :alignment => {:horizontal => :center}
 rt_hdr_odd_style = wb.styles.add_style :alignment => {:horizontal => :center}
-rt_even_style = wb.styles.add_style bg_color: 'E8E8E8', :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
-rt_odd_style = wb.styles.add_style :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
+rt_even_style = wb.styles.add_style format_code: '#;[Red]-#; ;', bg_color: 'E8E8E8', :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
+rt_odd_style = wb.styles.add_style format_code: '#;[Red]-#; ;', :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
 row_header_style = wb.styles.add_style b: true
 wrapped_row_header_style = wb.styles.add_style b: true, alignment: { wrap_text: true }
 header_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :left }
@@ -74,7 +74,6 @@ wb.add_worksheet(name: "Review") do |sheet|
   sheet.add_row doc_row, :style => sub_header_style
 
   @service_request.protocol.documents.each do |doc|
-    next unless @sub_service_request.nil? or doc.sub_service_requests.map{|ssr| ssr.id}.include?(@sub_service_request.id)
     sheet.add_row [doc.document_file_name, PermissibleValue.get_value('document_type', doc.doc_type), "", "", doc.updated_at.strftime('%m/%d/%y')], :style => default
   end
 
@@ -88,7 +87,7 @@ wb.add_worksheet(name: "Review") do |sheet|
   ##### beginning of arms
   if has_per_patient_per_visit_services
     
-    arms_to_be_displayed = @display_all_services ? @service_request.arms : Arm.where(protocol: @service_request.protocol).joins(:line_items_visits).joins(:visits).where.not( "research_billing_qty = 0 and insurance_billing_qty = 0 and effort_billing_qty = 0" ).uniq
+    arms_to_be_displayed = @display_all_services ? @service_request.arms : @service_request.arms.joins(:visits).where(Visit.arel_table[:research_billing_qty].gt(0).or(Visit.arel_table[:insurance_billing_qty].gt(0)).or(Visit.arel_table[:effort_billing_qty].gt(0))).distinct
 
     arms_to_be_displayed.each do |arm|
       services_row = ["Selected Services", "CPT Code", "Order Code", "Notes"]
@@ -150,9 +149,7 @@ wb.add_worksheet(name: "Review") do |sheet|
       sheet.add_row(r_t_row, :style => styles_array)
 
       @service_list_false.each do |key, value|
-        next if @sub_service_request.present? && @sub_service_request.organization.name != value[:process_ssr_organization_name]
-
-        line_items_visits = arm.display_line_items_visits(@use_epic, @display_all_services)
+        line_items_visits = arm.display_line_items_visits(@display_all_services)
 
         #Only show value[:name] when it hasn't been filtered out by the above line
         if (value[:line_items].map(&:id) & line_items_visits.map(&:line_item_id) ).present?
@@ -164,10 +161,10 @@ wb.add_worksheet(name: "Review") do |sheet|
           even_set = true
           line_item = line_items_visit.line_item
 
-          next if value[:line_items].exclude?(line_item) || (@sub_service_request.present? && line_item.sub_service_request_id != @sub_service_request.id)
+          next if value[:line_items].exclude?(line_item)
 
           totals_hash = line_items_visit.try(:per_subject_rt_indicated)
-          service_row = [line_item.service.name, line_item.service.cpt_code, line_item.service.order_code]
+          service_row = [line_item.service.name, "=\"#{line_item.service.cpt_code}\"", line_item.service.order_code]
 
           if line_items_visit.notes.empty?
             service_row += [""]
@@ -210,8 +207,8 @@ wb.add_worksheet(name: "Review") do |sheet|
   end
   ############ end of arms.each
 
-  services_row = ["Selected Services"]
-  services_row += [""] * (visit_count * 2 + 4)
+  services_row = ["Selected Services", "CPT Code"]
+  services_row += [""] * (visit_count * 2 + 3)
 
   services_row = sheet.add_row services_row, :style => header_style
   merge_services_row << services_row
@@ -221,15 +218,13 @@ wb.add_worksheet(name: "Review") do |sheet|
   services_sub_header_rows << sheet.add_row(['Other Services'], :style => name_header_style)
 
   @service_list_true.each do |key, value|
-    next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
-
-    line_items = display_line_items_otf(@sub_service_request, @use_epic, value[:line_items])
-
+    line_items = display_line_items_otf(value[:line_items])
     next if line_items.empty?
+
     services_sub_header_rows << sheet.add_row([value[:name]], :style => sub_header_style)
 
     line_items.each do |line_item|
-      service_row = [line_item.service.name, "", "", ""]
+      service_row = [line_item.service.name, "=\"#{line_item.service.cpt_code}\"", "", ""]
       line_item_total = display_one_time_fee_direct_cost(line_item)
 
       if !@service_list_true.empty? && !@service_list_false.empty?
@@ -251,17 +246,8 @@ wb.add_worksheet(name: "Review") do |sheet|
   merge_service_rows << service_rows
   merge_sub_header_rows << services_sub_header_rows
 
-  line_items = @sub_service_request ? @sub_service_request.line_items : @service_request.line_items
-
-  ##SSR Total
-  if @sub_service_request
-    ssr_total_row = ["", "", "", "", "", "", ""] + ( [""] * (visit_count*2) )
-    ssr_total_row += ["#{@sub_service_request.organization.abbreviation} Total", display_ssr_grand_total(@sub_service_request)]
-    ssr_total_row = sheet.add_row(ssr_total_row, :style => row_header_style)
-  end
-
   ##Total
-  grand_total_row = ( @sub_service_request ? ["", "", "", "", "", "", ""] : ["", "", "", "", "", ""] ) + ( [""] * (visit_count*2) )
+  grand_total_row = ["", "", "", "", "", ""] + ([""] * (visit_count*2))
 
   grand_total_row = sheet.add_row(grand_total_row, :style => row_header_style)
 

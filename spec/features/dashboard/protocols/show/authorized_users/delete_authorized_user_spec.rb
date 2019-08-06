@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -42,13 +42,6 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
         wait_for_javascript_to_finish
       end
 
-      context 'and tries to delete the Primary PI' do
-        scenario 'and sees an error message' do
-          given_i_have_clicked_the_delete_authorized_user_button_for_the_primary_pi
-          then_i_should_see_an_error_of_type 'need Primary PI'
-        end
-      end
-
       context 'and tries to delete a user who is not the Primary PI' do
         scenario 'and sees the user is gone' do
           given_i_have_clicked_the_delete_authorized_user_button_and_confirmed
@@ -79,6 +72,7 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
     let!(:protocol) do
       protocol  = create(:unarchived_project_without_validations, primary_pi: other_user)
                   create(:project_role, protocol: protocol, identity: logged_in_user, project_rights: 'approve', role: 'mentor')
+                  create(:project_role, protocol: protocol, identity: create(:identity), project_rights: 'approve', role: 'mentor')
       protocol
     end
 
@@ -98,6 +92,9 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
 
         page.authorized_users(text: "John Doe").first.enabled_remove_button.click
         wait_for_javascript_to_finish
+
+        find('.sweet-alert.visible button.confirm').click
+        wait_for_javascript_to_finish
       end
 
       scenario 'and should see the Edit Study Information button' do
@@ -110,8 +107,8 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
         expect(page).not_to have_css '.edit-associated-user-button.disabled'
         expect(page).to have_css '.edit-associated-user-button:not(.disabled)'
 
-        expect(page).not_to have_css '.delete-associated-user-button.disabled'
-        expect(page).to have_css '.delete-associated-user-button:not(.disabled)'
+        expect(page).to have_selector('.delete-associated-user-button.disabled')
+        expect(page).to have_selector('.delete-associated-user-button:not(.disabled)')
       end
     end
 
@@ -125,19 +122,29 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
         page.authorized_users(text: "John Doe").first.enabled_remove_button.click
         wait_for_javascript_to_finish
 
-        expect(URI.parse(current_url).path).to eq("/dashboard")
+        find('.sweet-alert.visible button.confirm').click
+        wait_for_javascript_to_finish
+
+        wait_for_page(dashboard_root_path)
+        expect(current_path).to eq(dashboard_root_path)
       end
     end
   end
 
   def given_i_have_clicked_the_delete_authorized_user_button_and_confirmed
     @page.authorized_users(text: "Jane Doe").first.enabled_remove_button.click
+    wait_for_javascript_to_finish
+
+    find('.sweet-alert.visible button.confirm').click
+    wait_for_javascript_to_finish
   end
 
   def given_i_have_clicked_the_delete_authorized_user_button_for_the_primary_pi
-    accept_alert do
-      @page.authorized_users(text: "John Doe").first.enabled_remove_button.click
-    end
+    @page.authorized_users(text: "John Doe").first.enabled_remove_button.click
+    wait_for_javascript_to_finish
+
+    find('.sweet-alert.visible button.confirm').click
+    wait_for_javascript_to_finish
   end
 
   def then_i_should_not_see_the_authorized_user

@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -24,12 +24,18 @@ class Arm < ApplicationRecord
   audited
 
   belongs_to :protocol
-
   has_many :line_items_visits, :dependent => :destroy
+  has_many :visit_groups, -> { order("position") }, :dependent => :destroy
+
   has_many :line_items, :through => :line_items_visits
   has_many :sub_service_requests, through: :line_items
-  has_many :visit_groups, -> { order("position") }, :dependent => :destroy
   has_many :visits, :through => :line_items_visits
+
+  ########################
+  ### CWF Associations ###
+  ########################
+
+  has_many :fulfillment_arms, class_name: 'Shard::Fulfillment::Arm', foreign_key: :sparc_id
 
   after_create :create_calendar_objects, if: Proc.new { |arm| arm.protocol.present? }
   after_update :update_visit_groups
@@ -46,12 +52,20 @@ class Arm < ApplicationRecord
     write_attribute(:name, name.squish)
   end
 
-  def display_line_items_visits(use_epic, display_all_services)
-    if use_epic
+  def display_line_items_visits(display_all_services)
+    if Setting.get_value('use_epic')
       # only show the services that are set to be pushed to Epic
-      display_all_services ? line_items_visits.joins(:service).where(services: {send_to_epic: true}) : line_items_visits.joins(:service).where(services: {send_to_epic: true}).joins(:visits).where.not( "research_billing_qty = 0 and insurance_billing_qty = 0 and effort_billing_qty = 0" ).uniq
+      if display_all_services
+        self.line_items_visits.joins(:service).where.not(services: { cpt_code: [nil, ''] })
+      else
+        self.line_items_visits.joins(:service, :visits).where.not(services: { cpt_code: [nil, ''] }).where(Visit.arel_table[:research_billing_qty].gt(0).or(Visit.arel_table[:insurance_billing_qty].gt(0)).or(Visit.arel_table[:effort_billing_qty].gt(0))).distinct
+      end
     else
-      display_all_services ? line_items_visits : line_items_visits.joins(:visits).where.not( "research_billing_qty = 0 and insurance_billing_qty = 0 and effort_billing_qty = 0" ).uniq
+      if display_all_services
+        self.line_items_visits
+      else
+        self.line_items_visits.joins(:visits).where(Visit.arel_table[:research_billing_qty].gt(0).or(Visit.arel_table[:insurance_billing_qty].gt(0)).or(Visit.arel_table[:effort_billing_qty].gt(0))).distinct
+      end
     end
   end
 
@@ -66,11 +80,6 @@ class Arm < ApplicationRecord
     arm_names = arm_names.map(&:downcase)
 
     errors.add(:name, I18n.t(:errors)[:arms][:name_unique]) if arm_names.include?(self.name.downcase)
-  end
-
-  def sanitized_name
-    # Sanitized for Excel
-    name.gsub(/\[|\]|\*|\/|\\|\?|\:/, ' ').truncate(31)
   end
 
   def per_patient_per_visit_line_items
@@ -89,7 +98,7 @@ class Arm < ApplicationRecord
   end
 
   def maximum_indirect_costs_per_patient line_items_visits=self.line_items_visits
-    if Setting.find_by_key("use_indirect_cost").value
+    if Setting.get_value("use_indirect_cost")
       self.maximum_direct_costs_per_patient(line_items_visits) * (self.protocol.indirect_cost_rate.to_f / 100)
     else
       return 0
@@ -110,7 +119,7 @@ class Arm < ApplicationRecord
 
   def indirect_costs_for_visit_based_service line_items_visits=self.line_items_visits
     total = 0.0
-    if Setting.find_by_key("use_indirect_cost").value
+    if Setting.get_value("use_indirect_cost")
       line_items_visits.each do |vg|
         total += vg.indirect_costs_for_visit_based_service
       end
@@ -134,7 +143,7 @@ class Arm < ApplicationRecord
       last_parent = nil
       last_parent_name = nil
       found_parent = false
-      service.parents.reverse.each do |parent|
+      service.parents.each do |parent|
         next if !parent.process_ssrs? && !found_parent
         found_parent = true
         last_parent = last_parent || parent.id
@@ -143,7 +152,7 @@ class Arm < ApplicationRecord
         acks << parent.ack_language unless parent.ack_language.blank?
       end
       if found_parent == false
-        service.parents.reverse.each do |parent|
+        service.parents.each do |parent|
           name << parent.abbreviation
           acks << parent.ack_language unless parent.ack_language.blank?
         end

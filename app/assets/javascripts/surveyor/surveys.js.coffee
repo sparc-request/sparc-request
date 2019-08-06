@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -21,20 +21,37 @@ $(document).ready ->
   $("[data-toggle='tooltip']").tooltip()
 
   ### Survey Table ###
-  $(document).on 'click', '.delete-survey', ->
-    survey_id = $(this).data('survey-id')
-    swal {
-      title: I18n['swal']['swal_confirm']['title']
-      text: I18n['swal']['swal_confirm']['text']
-      type: 'warning'
-      showCancelButton: true
-      confirmButtonColor: '#DD6B55'
-      confirmButtonText: 'Delete'
-      closeOnConfirm: true
-    }, ->
+  $(document).on 'change', '.survey-actions', ->
+    $selected = $(this).find('option:selected')
+    $this = $(this)
+
+    if $selected.data('url')
       $.ajax
-        type: 'delete'
-        url: "/surveyor/surveys/#{survey_id}.js"
+        type: $selected.data('method') || 'get'
+        dataType: 'script'
+        url: $selected.data('url')
+        success: ->
+          $this.selectpicker('val', '')
+    else if $selected.hasClass('delete-survey')
+      survey_id = $selected.data('survey-id')
+      swal {
+        title: I18n['swal']['swal_confirm']['title']
+        text: I18n['swal']['swal_confirm']['text']
+        type: 'warning'
+        showCancelButton: true
+        confirmButtonColor: '#DD6B55'
+        confirmButtonText: 'Delete'
+        closeOnConfirm: true
+      }, ->
+        $.ajax
+          type: 'delete'
+          dataType: 'script'
+          url: "/surveyor/surveys/#{survey_id}"
+          success: ->
+            $this.selectpicker('val', '')
+
+  $(document).on 'load-success.bs.table', '.survey-table, .form-table', ->
+    $('.selectpicker').selectpicker()
 
   ### Survey Modal ###
   $(document).on 'hide.bs.modal', '#modal_place', ->

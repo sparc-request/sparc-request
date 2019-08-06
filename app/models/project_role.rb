@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -44,6 +44,10 @@ class ProjectRole < ApplicationRecord
 
   def can_view?
     project_rights != 'none'
+  end
+
+  def primary_pi?
+    self.role == 'primary-pi'
   end
 
   def unique_to_protocol?
@@ -154,13 +158,13 @@ class ProjectRole < ApplicationRecord
   end
 
   def populate_for_edit
-    if Setting.find_by_key("use_epic").value
+    if Setting.get_value("use_epic")
       setup_epic_rights
     end
   end
 
   def set_epic_rights
-    if Setting.find_by_key("use_epic").value
+    if Setting.get_value("use_epic")
       if self.role == 'primary-pi'
         rights = setup_epic_rights(false)
         self.epic_access = true

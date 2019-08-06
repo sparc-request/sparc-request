@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,10 +21,15 @@ class Dashboard::EpicQueueRecordsController < Dashboard::BaseController
   before_action :authorize_overlord
 
   def index
-    @epic_queue_records = EpicQueueRecord.with_valid_protocols
-      .order(created_at: :desc)
+    @epic_queue_records = EpicQueueRecord.with_valid_protocols.
+                            eager_load(:identity, :notes, protocol: :principal_investigators).
+                            search(params[:search]).ordered(params[:sort], params[:order])
+
     respond_to do |format|
       format.json
+      format.xlsx {
+        response.headers['Content-Disposition'] = "attachment; filename=\"#{@type} Epic Queue Records.xlsx\""
+      }
     end
   end
 
@@ -32,7 +37,7 @@ class Dashboard::EpicQueueRecordsController < Dashboard::BaseController
 
   # Check to see if user has rights to view epic queues
   def authorize_overlord
-    unless Setting.find_by_key("epic_queue_access").value.include?(@user.ldap_uid)
+    unless Setting.get_value("epic_queue_access").include?(@user.ldap_uid)
       @epic_queues = nil
       @epic_queue = nil
       render partial: 'service_requests/authorization_error',

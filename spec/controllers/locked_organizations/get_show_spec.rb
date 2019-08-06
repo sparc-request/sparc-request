@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -44,7 +44,7 @@ RSpec.describe LockedOrganizationsController, type: :controller do
       get :show, params: {
         org_id: organization.id,
         protocol_id: protocol.id,
-        service_request_id: sr.id
+        srid: sr.id
         }, xhr: true
 
 
@@ -70,7 +70,7 @@ RSpec.describe LockedOrganizationsController, type: :controller do
       get :show, params: {
         org_id: organization.id,
         protocol_id: protocol.id,
-        service_request_id: sr.id
+        srid: sr.id
         }, xhr: true
 
 
@@ -96,7 +96,7 @@ RSpec.describe LockedOrganizationsController, type: :controller do
       get :show, params: {
         org_id: organization.id,
         protocol_id: protocol.id,
-        service_request_id: sr.id
+        srid: sr.id
         }, xhr: true
 
 
@@ -122,7 +122,7 @@ RSpec.describe LockedOrganizationsController, type: :controller do
       get :show, params: {
         org_id: organization.id,
         protocol_id: protocol.id,
-        service_request_id: sr.id
+        srid: sr.id
         }, xhr: true
 
 
@@ -148,7 +148,7 @@ RSpec.describe LockedOrganizationsController, type: :controller do
       get :show, params: {
         org_id: organization.id,
         protocol_id: protocol.id,
-        service_request_id: sr.id
+        srid: sr.id
         }, xhr: true
 
 
@@ -174,7 +174,7 @@ RSpec.describe LockedOrganizationsController, type: :controller do
       get :show, params: {
         org_id: organization.id,
         protocol_id: protocol.id,
-        service_request_id: sr.id
+        srid: sr.id
         }, xhr: true
 
 

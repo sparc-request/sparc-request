@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -128,10 +128,6 @@ $(document).ready ->
           url: "/dashboard/sub_service_requests/#{id}.js"
           data: show_view_ssr_back: show_view_ssr_back
 
-      $(document).on 'click', '.edit-service-request', ->
-        if $(this).data('permission')
-          window.location = $(this).data('url')
-
       $(document).on 'click', '#add-services-button', ->
         if $(this).data('permission')
           protocol_id         = $(this).data('protocol-id')
@@ -149,20 +145,20 @@ $(document).ready ->
             reset_service_requests_handlers()
 
       $(document).on 'change', '.complete-forms', ->
-        $option = $('option:selected', this)
-        $this   = $(this)
+        if $(this).val()
+          $option = $('option:selected', this)
+          $this   = $(this)
 
-        $.ajax
-          method: 'GET'
-          url: "/surveyor/responses/new.js"
-          data:
-            type:             $option.data('type')
-            survey_id:        $option.data('survey-id')
-            respondable_id:   $option.data('respondable-id')
-            respondable_type: $option.data('respondable-type')
-          success: ->
-            $this.selectpicker('deselectAll')
-            $this.selectpicker('render')
+          $.ajax
+            method: 'GET'
+            url: "/surveyor/responses/new.js"
+            data:
+              type:             $option.data('type')
+              survey_id:        $option.data('survey-id')
+              respondable_id:   $option.data('respondable-id')
+              respondable_type: $option.data('respondable-type')
+            success: ->
+              $this.selectpicker('val', '')
 
       reset_service_requests_handlers()
       # Protocol Show End

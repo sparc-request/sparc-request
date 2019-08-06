@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -53,13 +53,13 @@ module V1
 
     expose  :protocol_id,
             :nct_number,
-            :hr_number,
             :pro_number,
             :irb_of_record,
             :submission_type,
             :approval_pending
 
     with_options(format_with: :iso_timestamp) do
+      expose :initial_irb_approval_date
       expose :irb_approval_date
       expose :irb_expiration_date
     end
@@ -172,7 +172,8 @@ module V1
             :revenue_code_range_id,
             :one_time_fee,
             :line_items_count,
-            :components
+            :components,
+            :direct_link
 
     expose  :process_ssrs_organization, using: V1::ProcessSsrsOrganizationFull
   end
@@ -205,7 +206,8 @@ module V1
             :routing,
             :org_tree_display,
             :grand_total,
-            :service_requester_id
+            :service_requester_id,
+            :imported_to_fulfillment
 
     expose  :formatted_status, as: :status
 

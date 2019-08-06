@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,7 +22,6 @@ class FormsController < ApplicationController
   respond_to :json
 
   before_action :initialize_service_request
-  before_action :authorize_identity
 
   def index
     @forms  = params[:complete] == 'true' ? @service_request.completed_forms : @service_request.associated_forms

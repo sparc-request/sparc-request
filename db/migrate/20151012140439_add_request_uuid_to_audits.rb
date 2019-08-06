@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -21,7 +21,7 @@
 class AddRequestUuidToAudits < ActiveRecord::Migration[4.2]
   # switch to separate audit database to run migration
   begin
-    @@use_separate_audit_database = Setting.find_by_key("use_separate_audit_database").value
+    @@use_separate_audit_database = Setting.get_value("use_separate_audit_database")
   rescue
     @@use_separate_audit_database = false
   end

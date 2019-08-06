@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -24,7 +24,14 @@ RSpec.describe SurveyNotification do
 
   let(:identity)  { create(:identity, email: 'nobody@nowhere.com') }
   let(:org)       { create(:organization) }
-  let(:ssr)       { create(:sub_service_request_without_validations, organization: org) }
+  let(:ssr)       { create(:sub_service_request_without_validations, organization: org, protocol: protocol, service_request: service_request, owner: build(:identity)) }
+  let(:protocol)  { create(:protocol_without_validations, type: "Study") }
+  let(:service_request) { create(:service_request_without_validations, protocol: protocol) }
+  let(:pi)        { create(:project_role, identity_id:  identity.id, protocol:  protocol) }
+
+  before :each do
+    pi.reload
+  end
 
   describe 'system satisfaction survey' do
     let(:survey)    { create(:system_survey, title: "System Satisfaction survey", access_code: "system-satisfaction-survey") }
@@ -43,7 +50,7 @@ RSpec.describe SurveyNotification do
 
     #ensure that the sender is correct
     it 'should render the sender email' do
-      expect(mail).to deliver_to(Setting.find_by_key("admin_mail_to").value)
+      expect(mail).to deliver_to(Setting.get_value("admin_mail_to"))
     end
 
     #ensure that the e-mail contains a link to the survey

@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -60,7 +60,7 @@ module Dashboard
         end
 
         def select_search(page, search, search_term)
-          bootstrap_select = page.find("select#filterrific_search_query_search_drop + .bootstrap-select")
+          bootstrap_select = page.find(".bootstrap-select select#filterrific_search_query_search_drop + .dropdown-toggle")
           bootstrap_select.click
           first('.dropdown-menu.open span.text', text: /\A#{search}\Z/).click
           page.filter_protocols.search_field.set(search_term.to_s)
@@ -120,12 +120,11 @@ module Dashboard
       section :requests_modal, "#requests-modal" do
         # the collection of all blue-header'd tables titled by 'Service Request: <digits>''
         element :notes_button, :button, "Notes"
-        element :modify_request_button, :button, "Modify Request"
+        element :modify_request_button, "a", text: "Add / Modify Request"
 
         sections :sub_service_requests, "tbody tr" do
           element :view_button, :button, "View"
-          element :edit_button, :button, "Edit"
-          element :admin_edit_button, :button, "Admin Edit"
+          element :admin_edit_button, "a", text: "Admin Edit"
         end
       end
 

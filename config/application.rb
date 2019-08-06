@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -59,6 +59,7 @@ module SparcRails
     # and, you don't need to override all of the text, only the sets of texts you need customized
     config.i18n.load_path += Dir[Rails.root.join('config/locales/proper', '*.{rb,yml}').to_s]
     config.i18n.load_path += Dir[Rails.root.join('config/locales/dashboard', '*.{rb,yml}').to_s]
+    config.i18n.load_path += Dir[Rails.root.join('config/locales/catalog_manager', '*.{rb,yml}').to_s]
     config.i18n.load_path += Dir[Rails.root.join('config/locales/surveyor', '*.{rb,yml}').to_s]
     config.i18n.fallbacks = [:en]
 
@@ -82,13 +83,14 @@ module SparcRails
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
-    config.middleware.use PDFKit::Middleware,
+    config.middleware.use PDFKit::Middleware, {
       orientation: 'Portrait',
       margin_left: '1in',
       margin_right: '1in',
       margin_top: '2in',
       margin_bottom: '1in',
       print_media_type: true
+    }, :except => [%r[^/dashboard/protocols/\d+\.pdf$]]
       
     ##  Error pages
     config.exceptions_app = self.routes

@@ -1,0 +1,14 @@
+.bootstrap-select {
+  .dropdown-toggle {
+    .filter-option {
+      .filter-option-inner {
+        display: flex;
+        align-items: end;
+
+        .bootstrap-select-badge {
+          margin-left: 5px;
+        }
+      }
+    }
+  }
+}

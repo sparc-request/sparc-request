@@ -1,4 +1,4 @@
-# Copyright © 2011-2017 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,12 +21,11 @@
 SparcRails::Application.routes.draw do
   post 'study_type/determine_study_type_note'
 
-  resources :services
-
   namespace :surveyor do
-    resources :surveys, only: [:index, :edit, :create, :destroy] do
+    resources :surveys, only: [:index, :new, :create, :edit, :destroy] do
       get :preview
       get :update_dependents_list
+      post :copy
     end
     resource :survey, only: [] do
       get :search_surveyables
@@ -36,6 +35,7 @@ SparcRails::Application.routes.draw do
     resources :options, only: [:create, :destroy]
     resources :responses do
       get :complete
+      put :resend_survey
     end
     resources :response_filters, only: [:new, :create, :destroy]
     resources :survey_updater, only: [:update]
@@ -47,34 +47,28 @@ SparcRails::Application.routes.draw do
   resources :feedback
 
   begin
-    use_shibboleth_only = Setting.find_by_key("use_shibboleth_only").try(:value)
-    use_cas_only        = Setting.find_by_key("use_cas_only").try(:value)
+    use_shibboleth_only = Setting.get_value("use_shibboleth_only")
+    use_cas_only        = Setting.get_value("use_cas_only")
   rescue
     use_shibboleth_only = nil
-    use_cas_only        = nil
+    use_cas_only = nil
   end
 
   if use_shibboleth_only
     devise_for :identities,
                controllers: {
                  omniauth_callbacks: 'identities/omniauth_callbacks',
-                 sessions: 'identities/sessions',
-                 registrations: 'identities/registrations'
                }, path_names: { sign_in: 'auth/shibboleth' }
 
   elsif use_cas_only
     devise_for :identities,
                controllers: {
                  omniauth_callbacks: 'identities/omniauth_callbacks',
-                 sessions: 'identities/sessions',
-                 registrations: 'identities/registrations'
                }, path_names: { sign_in: 'auth/cas' }
   else
     devise_for :identities,
                controllers: {
                  omniauth_callbacks: 'identities/omniauth_callbacks',
-                 sessions: 'identities/sessions',
-                 registrations:      'identities/registrations'
                }
   end
 
@@ -93,29 +87,25 @@ SparcRails::Application.routes.draw do
 
   resources :subsidies, only: [:new, :create, :edit, :update, :destroy]
 
-  resources :service_requests, only: [:show] do
+  resource :service_request, only: [:show] do
+    get :catalog
+    get :protocol
+    get :service_details
+    get :service_calendar
+    get :service_subsidy
+    get :document_management
+    get :review
+    get :obtain_research_pricing
+    get :confirmation
+    get :save_and_exit
+    get :get_help
+    get :approve_changes
+
+    post :navigate
+    post :feedback
+
     resources :projects, except: [:index, :show, :destroy]
     resources :studies, except: [:index, :show, :destroy]
-    member do
-      get 'catalog'
-      get 'protocol'
-      get 'review'
-      get 'obtain_research_pricing'
-      get 'confirmation'
-      get 'service_details'
-      get 'service_calendar'
-      get 'service_subsidy'
-      get 'document_management'
-      post 'navigate'
-      get 'refresh_service_calendar'
-      get 'save_and_exit'
-      get 'get_help'
-      get 'approve_changes'
-    end
-
-    collection do
-      post 'feedback'
-    end
   end
 
   resources :protocols, except: [:index, :destroy] do
@@ -161,7 +151,7 @@ SparcRails::Application.routes.draw do
 
   resources :documents, only: [:index, :new, :create, :edit, :update, :destroy]
 
-  resources :notes, only: [:index, :new, :create]
+  resources :notes, only: [:index, :new, :create, :edit, :update, :destroy]
 
   resources :sub_service_requests, only: [:show]
 
@@ -173,57 +163,64 @@ SparcRails::Application.routes.draw do
 
   resources :search, only: [] do
     collection do
+      get :services_search
       get :services
+      get :organizations
       get :identities
     end
   end
 
-  match 'service_requests/:id/add_service/:service_id' => 'service_requests#add_service', via: [:get, :post]
-  match 'service_requests/:id/remove_service/:line_item_id' => 'service_requests#remove_service', via: [:all]
+  match 'services/:service_id' => 'service_requests#catalog', via: [:get]
+  match 'service_request/add_service/:service_id' => 'service_requests#add_service', via: [:post]
+  match 'service_request/remove_service/:line_item_id' => 'service_requests#remove_service', via: [:delete]
 
-  ##### sparc-services routes brought in and namespaced
+  ##### sparc-services routes brought in and name-spaced
   namespace :catalog_manager do
     match 'services/search' => 'services#search', via: [:get, :post]
-    match 'services/associate' => 'services#associate', via: [:get, :post]
-    match 'services/disassociate' => 'services#disassociate', via: [:get, :post]
-    match 'services/set_optional' => 'services#set_optional', via: [:get, :post]
-    match 'services/set_linked_quantity' => 'services#set_linked_quantity', via: [:get, :post]
-    match 'services/set_linked_quantity_total' => 'services#set_linked_quantity_total', via: [:get, :post]
-    match 'services/get_updated_rate_maps' => 'services#get_updated_rate_maps', via: [:get, :post]
+    match 'services/update_related_service' => 'services#update_related_service', via: [:post]
+    match 'services/add_related_service' => 'services#add_related_service', via: [:post]
+    match 'services/remove_related_service' => 'services@remove_related_service', via: [:post]
+    match 'organizations/remove_fulfillment_rights_row' => 'organizations#remove_fulfillment_rights_row', via: [:post]
+    match 'organizations/remove_user_rights_row' => 'organizations#remove_user_rights_row', via: [:post]
+    match 'organizations/toggle_default_statuses' => 'organizations#toggle_default_statuses', via: [:post]
+    match 'organizations/update_status_row' => 'organizations#update_status_row', via: [:post]
+    match 'organizations/add_associated_survey' => 'organizations#add_associated_survey', via: [:post]
+    match 'organizations/remove_associated_survey' => 'organizations#remove_associated_survey', via: [:post]
+    match 'organizations/increase_decrease_modal' => 'organizations#increase_decrease_modal', via: [:get]
+    match 'organizations/increase_decrease_rates' => 'organizations#increase_decrease_rates', via: [:post]
+    match 'pricing_maps/refresh_rates' => 'pricing_maps#refresh_rates', via: [:get]
+
+    resources :services, only: [:edit, :update, :create, :new] do
+      get :reload_core_dropdown
+      post :change_components
+      patch :update_epic_info
+    end
 
     resources :catalog, only: [:index] do
       collection do
-        post :add_excluded_funding_source
-        delete :remove_excluded_funding_source
-        post :remove_associated_survey
-        post :add_associated_survey
-        post :remove_submission_email
+        get :load_core_accordion
+        get :load_program_accordion
       end
     end
 
-    resources :organizations, only: [:show, :update, :create]
-    resources :institutions, only: [:show, :update, :create]
-    resources :providers, only: [:show, :update, :create]
-    resources :programs, only: [:show, :update, :create]
-    resources :cores, only: [:show, :update, :create]
-    resources :services, except: [:index, :edit, :destroy] do
-      collection do
-        get :verify_parent_service_provider
-      end
+    resources :organizations, only: [:edit, :update, :create, :new] do
+      get :add_user_rights_row
+      get :add_fulfillment_rights_row
     end
-
-    match 'identities/associate_with_org_unit' => 'identities#associate_with_org_unit', via: [:get, :post]
-    match 'identities/disassociate_with_org_unit' => 'identities#disassociate_with_org_unit', via: [:get, :post]
-    match 'identities/set_view_draft_status' => 'identities#set_view_draft_status', via: [:get, :post]
-    match 'identities/set_primary_contact' => 'identities#set_primary_contact', via: [:get, :post]
-    match 'identities/set_hold_emails' => 'identities#set_hold_emails', via: [:get, :post]
-    match 'identities/set_edit_historic_data' => 'identities#set_edit_historic_data', via: [:get, :post]
-    match 'identities/search' => 'identities#search', via: [:get, :post]
-    match 'services/update_cores/:id' => 'services#update_cores', via: [:get, :post]
-    match 'update_pricing_maps' => 'catalog#update_pricing_maps', via: [:get, :post]
-    match 'update_dates_on_pricing_maps' => 'catalog#update_dates_on_pricing_maps', via: [:get, :post]
-    match 'validate_pricing_map_dates' => 'catalog#validate_pricing_map_dates', via: [:get, :post]
-    match '*verify_valid_pricing_setups' => 'catalog#verify_valid_pricing_setups', via: [:get, :post]
+    resources :institutions, only: [:edit, :update]
+    resources :providers, only: [:edit, :update]
+    resources :programs, only: [:edit, :update]
+    resources :cores, only: [:edit, :update]
+    resource :super_user, only: [:create, :destroy, :update]
+    resource :catalog_manager, only: [:create, :destroy, :update]
+    resource :service_provider, only: [:create, :destroy, :update]
+    resource :clinical_provider, only: [:create, :destroy]
+    resource :patient_registrar, only: [:create, :destroy]
+    resources :services, except: [:index, :show, :destroy]
+    resources :pricing_setups, except: [:index, :show, :destroy]
+    resources :subsidy_maps, only: [:edit, :update]
+    resources :pricing_maps, only: [:new, :create, :edit, :update]
+    resources :submission_emails, only: [:create, :destroy]
 
     root to: 'catalog#index'
   end
@@ -249,6 +246,10 @@ SparcRails::Application.routes.draw do
 
     resources :epic_queues, only: [:index, :destroy]
     resources :epic_queue_records, only: [:index]
+
+    resource :protocol_merge do
+      get :perform_protocol_merge
+    end
 
     resources :fulfillments
 
@@ -309,8 +310,6 @@ SparcRails::Application.routes.draw do
     end
 
     resources :protocol_filters, only: [:new, :create, :destroy]
-
-    resources :service_requests, only: [:show]
 
     resources :studies, controller: :protocols, except: [:destroy]
 

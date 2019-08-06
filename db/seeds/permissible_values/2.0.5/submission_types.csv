@@ -1,4 +1,4 @@
-id,key,value,concept_code,parent_id,sort_order,category,default,reserved
-,exempt,Exempt,,,1,submission_type,,
-,expedited,Expedited,,,2,submission_type,,
-,full_board,Full Board,,,3,submission_type,,
+id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_available
+,exempt,Exempt,,,1,submission_type,,,1
+,expedited,Expedited,,,2,submission_type,,,1
+,full_board,Full Board,,,3,submission_type,,,1

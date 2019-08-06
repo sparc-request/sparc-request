@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -21,16 +21,10 @@
 module Dashboard
   module Notes
     class IndexModal < SitePrism::Section
-      element :new_note_button, "button", text: "Add a Note"
+      element :new_note_button, "a", text: "Add a Note"
 
       # list of notes
-      elements :notes, ".note"
-
-      # appears after clicking :new_note_button
-      element :message_area, :field, "Note:"
-
-      # send note button
-      element :add_note_button, "input[type='submit']"
+      elements :notes, "#notes-table"
     end
   end
 end

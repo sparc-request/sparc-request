@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,8 +21,23 @@
 #= require navigation
 
 $(document).ready ->
-  $(document).on 'click', 'tbody tr', ->
-    ssrid = $(this).data('ssrid')
-    $.ajax
-      type: 'GET'
-      url: "/dashboard/sub_service_requests/#{ssrid}.js"
+  # $(document).on 'click', 'tbody tr', ->
+  #   ssrid = $(this).data('ssrid')
+  #   if ssrid
+  #     $.ajax
+  #       type: 'GET'
+  #       url: "/dashboard/sub_service_requests/#{ssrid}.js"
+
+  # $(document).on 'click', 'button.notes',  ->
+  #   id = $(this).data('notable-id')
+  #   type = $(this).data('notable-type')
+
+  #   $.ajax
+  #     type: 'GET'
+  #     dataType: 'script'
+  #     url: '/notes'
+  #     data:
+  #       note:
+  #         notable_id: id
+  #         notable_type: type
+  #       review: true

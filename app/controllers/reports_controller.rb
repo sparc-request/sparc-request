@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,19 +21,14 @@
 class ReportsController < ApplicationController
   layout "reporting"
   protect_from_forgery
-  helper_method :current_user
 
   before_action :authenticate_identity!
   before_action :require_super_user, :only => [:index, :setup, :generate]
   before_action :set_user
-  before_action :set_show_navbar
+  before_action :set_disable_breadcrumb
 
   def set_highlighted_link
     @highlighted_link ||= 'sparc_report'
-  end
-
-  def current_user
-    current_identity
   end
 
   def set_user
@@ -41,8 +36,8 @@ class ReportsController < ApplicationController
     session['uid'] = @user.nil? ? nil : @user.id
   end
 
-  def set_show_navbar
-    @show_navbar = true
+  def set_disable_breadcrumb
+    @disable_breadcrumb = true
   end
 
   def require_super_user
@@ -67,7 +62,7 @@ class ReportsController < ApplicationController
 
     # generate excel
     tempfile = @report.to_excel
-    send_file tempfile.path, :filename => 'report.xlsx', :disposition => 'inline', :type =>  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    send_file tempfile.path, :filename => "#{Time.now.strftime('%F')} #{@report.title}.xlsx", :disposition => 'inline', :type =>  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
     # generate csv
     #tempfile = @report.to_csv

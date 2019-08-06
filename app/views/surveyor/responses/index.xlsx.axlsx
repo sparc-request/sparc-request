@@ -1,0 +1,108 @@
+# Copyright © 2011-2018 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+def survey_header(survey)
+  row  = ["Survey Information", "", ""]
+  row << "" if @type == 'Form'
+  row += [""] * survey.questions.count
+
+  row
+end
+
+def responses_header(survey)
+  row  = ["Responses", "", ""]
+  row << "" if @type == 'Form'
+  survey.questions.each_with_index do |q, i|
+    row << "Question #{i + 1}"
+  end
+
+  row
+end
+
+def responses_subheader(survey)
+  row  = ["Responder"]
+  row << "SRID" if @type == 'Form'
+  row += ["Date Responded", ""]
+  row += survey.questions.pluck(:content)
+
+  row
+end
+
+def question_response_row(survey, response)
+  row   = [response.identity.try(:full_name)]
+  row  << response.respondable.display_id if @type == 'Form'
+  row  += [format_date(response.created_at), ""]
+
+  survey.questions.each do |q|
+    row <<
+      if qr = response.question_responses.detect{ |qr| qr.question_id == q.id }
+        qr.content
+      else
+        ""
+      end
+  end
+
+  row
+end
+
+def column_widths(survey)
+  widths  = [40]
+  widths << 40 if @type == 'Form'
+  widths += [40, 20]
+  widths += [80] * survey.questions.count
+
+  widths
+end
+
+wb                = xlsx_package.workbook
+default           = wb.styles.add_style alignment: { horizontal: :left, vertical: :center, wrap_text: true }
+bold              = wb.styles.add_style alignment: { horizontal: :left, vertical: :center }, b: true
+header_style      = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :left, vertical: :center, wrap_text: true}
+sub_header_style  = wb.styles.add_style sz: 12, b: true, bg_color: 'ADADAD', alignment: { horizontal: :left, vertical: :center, wrap_text: true }
+
+@responses.includes(:question_responses).order("surveys.title, surveys.version").group_by(&:survey).each do |survey, responses|
+  version = "v#{survey.version}"
+  wb.add_worksheet(name: "#{survey.full_title.truncate(30 - version.length)} #{version}") do |sheet|
+    sheet.add_row survey_header(survey), style: header_style
+    sheet.add_row ["Title:", survey.title], style: [bold, default]
+    sheet.add_row ["Version:", survey.version], style: [bold, default]
+    sheet.add_row ["Access Code:", survey.access_code], style: [bold, default]
+
+    if @type == 'Form'
+      sheet.add_row ["Association", survey.surveyable.organization_hierarchy], style: [bold]
+    end
+      
+    sheet.add_row []
+
+    sheet.add_row ["Total Responses:", responses.count], style: [bold, default]
+
+    sheet.add_row []
+
+    sheet.add_row responses_header(survey), style: header_style
+
+    sheet.add_row responses_subheader(survey), style: sub_header_style
+    
+    responses.each do |response|
+      sheet.add_row question_response_row(survey, response), style: default
+    end
+
+    sheet.column_widths *column_widths(survey)
+  end
+end

@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -158,7 +158,7 @@ namespace :data do
                         elsif service.related_services.include? related_service
                           puts "Error: Related Service" + row[23].to_s + " already exists for Service[" + row[4].to_s + "] for Institution[" + row[0].to_s + "], Provider[" + row[1].to_s + "], and Program[" + row[2].to_s + "]"
                         else
-                          service.service_relations.create :related_service_id => related_service.id, :optional => false
+                          service.service_relations.create :related_service_id => related_service.id, :required => true
                           puts "Inserted: Related Service" + row[23].to_s + " for Service[" + row[4].to_s + "] for Institution[" + row[0].to_s + "], Provider[" + row[1].to_s + "], and Program[" + row[2].to_s + "]"
                         end
                       end

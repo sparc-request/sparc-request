@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -21,10 +21,10 @@
 RSpec.configure do |config|
 
   config.before(:each) do
-    stub_request(:post, /#{Setting.find_by_key("remote_service_notifier_host").value}/).to_return(status: 201)
+    stub_request(:post, /#{Setting.get_value("remote_service_notifier_host")}/).to_return(status: 201)
   end
 
   config.before(:each, remote_service: :unavailable) do
-    stub_request(:post, /#{Setting.find_by_key("remote_service_notifier_host").value}/).to_return(status: 500)
+    stub_request(:post, /#{Setting.get_value("remote_service_notifier_host")}/).to_return(status: 500)
   end
 end

@@ -22,18 +22,23 @@ class Dashboard::NotificationsController < Dashboard::BaseController
   respond_to :html, :json
 
   def index
-    session[:breadcrumbs].
-      add_crumbs(notifications: true).
-      clear(:edit_protocol)
+    respond_to do |format|
+      format.html{
+        session[:breadcrumbs].
+          add_crumbs(notifications: true).
+          clear(:edit_protocol)
+      }
+      format.json{
+        @table = params[:table]
 
-    @table = params[:table]
-
-    @notifications =
-      if @table == 'inbox'
-        Notification.in_inbox_of(current_user.id, params[:sub_service_request_id])
-      else
-        Notification.in_sent_of(current_user.id, params[:sub_service_request_id])
-      end.uniq
+        @notifications =
+          if @table == 'inbox'
+            Notification.in_inbox_of(current_user.id, params[:sub_service_request_id])
+          else
+            Notification.in_sent_of(current_user.id, params[:sub_service_request_id])
+          end.distinct
+      }
+    end
   end
 
   def new

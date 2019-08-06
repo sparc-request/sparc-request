@@ -261,7 +261,6 @@ SparcRails::Application.routes.draw do
 
     resources :notifications, only: [:index, :new, :create] do
       member do
-        put :user_portal_update
         put :admin_update
       end
       collection do

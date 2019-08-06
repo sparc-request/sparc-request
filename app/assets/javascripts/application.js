@@ -77,7 +77,7 @@
 //= require service_calendar
 
 //= require dashboard/protocols
-
+//= require dashboard/notifications
 
 
 

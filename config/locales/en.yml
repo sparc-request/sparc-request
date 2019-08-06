@@ -114,6 +114,7 @@ en:
         subject_count: "Subject Count"
       message:
         body: "Message"
+        subject: "Subject"
       note:
         body: "Note"
       option:

@@ -54,8 +54,6 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         end
 
         @service_request        = @sub_service_request.service_request
-        @service_list           = @service_request.service_list
-        @line_items             = @sub_service_request.line_items
         @protocol               = @service_request.protocol
         @tab                    = 'calendar'
         @portal                 = true

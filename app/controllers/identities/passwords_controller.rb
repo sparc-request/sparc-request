@@ -26,8 +26,8 @@ class Identities::PasswordsController < Devise::PasswordsController
     yield resource if block_given?
 
     if successfully_sent?(resource)
-      set_flash_message!(:notice, :created)
-      respond_with({}, location: new_session_path(resource_name))
+      flash[:notice] = t('devise.passwords.created')
+      @path = new_session_path(resource_name)
     else
       @errors = resource.errors
     end
@@ -43,13 +43,13 @@ class Identities::PasswordsController < Devise::PasswordsController
       resource.unlock_access! if unlockable?(resource)
       if Devise.sign_in_after_reset_password
         flash_message = resource.active_for_authentication? ? :updated : :updated_not_active
-        set_flash_message!(:notice, flash_message)
+        flash[:notice] = t("devise.passwords.#{flash_message}")
         resource.after_database_authentication
         sign_in(resource_name, resource)
       else
-        set_flash_message!(:notice, :updated_not_active)
+        flash[:notice] = t('devise.passwords.updated_not_active')
       end
-      respond_with resource, location: after_resetting_password_path_for(resource)
+      @path = after_resetting_password_path_for(resource)
     else
       set_minimum_password_length
       @errors = resource.errors

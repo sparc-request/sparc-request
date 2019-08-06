@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-<% if @errors.any? %>
+<% if @errors %>
 $("[name^='identity']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
 $('.form-error').remove()
 
@@ -27,4 +27,6 @@ $('.form-error').remove()
 $("[name='identity[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
 <% end %>
 <% end %>
+<% else %>
+window.location = "<%= @path %>"
 <% end %>

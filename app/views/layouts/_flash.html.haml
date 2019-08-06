@@ -20,7 +20,7 @@
 
 .container-fluid.p-0#flashContainer
   - flash.each do |type, message|
-    .alert.fade.show{ class: twitterized_type(type) }
+    .alert.d-flex.align-items-start.justify-content-between.fade.show{ class: twitterized_type(type) }
       = message
       %button.close{ type: 'button', data: { dismiss: 'alert' }, aria: { label: t('actions.close') } }
         %span{ aria: { hidden: 'true' } } &times;
@@ -29,4 +29,4 @@
   :javascript
     setTimeout( function() {
       $('#flashContainer .alert').alert('close');
-    }, 2000)
+    }, 5000)

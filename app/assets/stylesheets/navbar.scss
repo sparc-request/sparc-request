@@ -41,6 +41,7 @@ nav#siteNav {
 
 nav#stepsNav {
   height: 7vw;
+  margin-top: -0.75rem;
 
   &.has-subsidy {
     height: 6vw;
@@ -98,6 +99,7 @@ nav#stepsNav {
       align-items: center;
       justify-content: center;
       z-index: 8;
+      line-height: 1.3;
       pointer-events: none;
     }
   }

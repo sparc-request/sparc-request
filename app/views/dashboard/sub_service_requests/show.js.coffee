@@ -20,7 +20,7 @@
 
 $('#modalContainer').one 'shown.bs.modal', ->
   adjustCalendarHeaders()
-$('#modalContainer').html("<%= j render 'dashboard/sub_service_requests/user_modal_ssr_show', sub_service_request: @sub_service_request, service_request: @service_request, service_list: @service_list, tab: @tab, portal: @portal, admin: @admin, review: @review, consolidated: @consolidated, pages: @pages, merged: @merged, protocol: @protocol %>")
+$('#modalContainer').html("<%= j render 'dashboard/sub_service_requests/details_modal', sub_service_request: @sub_service_request, service_request: @service_request, tab: @tab, portal: @portal, admin: @admin, review: @review, consolidated: @consolidated, pages: @pages, merged: @merged, protocol: @protocol %>")
 $('#modalContainer').modal('show')
 
 $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

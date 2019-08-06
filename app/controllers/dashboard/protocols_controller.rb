@@ -104,7 +104,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     controller.new
     @protocol = controller.instance_variable_get(:@protocol)
 
-    respond_to :js
+    respond_to :html
   end
 
   def create

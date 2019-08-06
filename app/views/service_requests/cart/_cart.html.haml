@@ -21,28 +21,26 @@
 - sub_service_requests = service_request.cart_sub_service_requests
 
 .col-12.col-lg-3.pl-lg-0#cart
-  .card.h-100
+  .card
     .card-header.bg-primary.text-white.justify-content-between
       %h3.mb-0<
         = icon('fas', 'shopping-cart mr-2')
         = t('proper.cart.header')
     .card-header.p-0.cart-toggles-container
-      %button.btn.btn-lg.btn-light.rounded-0.w-50.cart-toggle.active{ type: 'button', data: { target: '#activeServices' } }
+      %button.btn.btn-lg.btn-link.rounded-0.w-50.cart-toggle.active{ type: 'button', data: { target: '#activeServices' } }
         = t('proper.cart.tabs.active.header')
-      %button.btn.btn-lg.btn-light.rounded-0.w-50.cart-toggle{  type: 'button', data: { target: '#completedServices' } }
+      %button.btn.btn-lg.btn-link.rounded-0.w-50.cart-toggle{  type: 'button', data: { target: '#completedServices' } }
         = t('proper.cart.tabs.complete.header')
     .card-body.p-0
       .cart-services#activeServices
         - if sub_service_requests[:active].any?
-          .list-group.list-group-flush
-            = render 'service_requests/cart/cart_sub_service_requests', service_request: service_request, sub_service_requests: sub_service_requests[:active], tab: 'active'
+          = render 'service_requests/cart/cart_sub_service_requests', service_request: service_request, sub_service_requests: sub_service_requests[:active], tab: 'active'
         - else
           %h5.alert.alert-danger.text-center.rounded-0.mb-0
             = t('proper.cart.tabs.active.message')
       .cart-services.d-none#completedServices
         - if sub_service_requests[:complete].any?
-          .list-group.list-group-flush
-            = render 'service_requests/cart/cart_sub_service_requests', service_request: service_request, sub_service_requests: sub_service_requests[:complete], tab: 'complete'
+          = render 'service_requests/cart/cart_sub_service_requests', service_request: service_request, sub_service_requests: sub_service_requests[:complete], tab: 'complete'
         - else
           %h5.alert.alert-danger.text-center.rounded-0.mb-0
             = t('proper.cart.tabs.complete.message')

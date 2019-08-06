@@ -22,60 +22,60 @@
   %td{ colspan: 2 }
     %h6.mb-0
       = t('protocols.form.research_involving.subheader', research_type: ResearchTypesInfo.human_attribute_name(:human_subjects))
-%tr
-  %td.col-3
+%tr.d-flex
+  %td.d-inline-block.col-3
     %label.mb-0{ title: t('protocols.tooltips.nct_number'), data: { toggle: 'tooltip', placement: 'right' } }
       = HumanSubjectsInfo.human_attribute_name(:nct_number)
-  %td.col-9
+  %td.d-inline-block.col-9
     = protocol.human_subjects_info.nct_number.present? ? protocol.human_subjects_info.nct_number : t('constants.na')
-%tr
-  %td.col-3
+%tr.d-flex
+  %td.d-inline-block.col-3
     %label.mb-0{ title: t('protocols.tooltips.pro_number'), data: { toggle: 'tooltip', placement: 'right' } }
       = HumanSubjectsInfo.human_attribute_name(:pro_number)
-  %td.col-9
+  %td.d-inline-block.col-9
     = protocol.human_subjects_info.pro_number.present? ? protocol.human_subjects_info.pro_number : t('constants.na')
-%tr
-  %td.col-3
+%tr.d-flex
+  %td.d-inline-block.col-3
     %label.mb-0
       = HumanSubjectsInfo.human_attribute_name(:irb_of_record)
-  %td.col-9
+  %td.d-inline-block.col-9
     = protocol.human_subjects_info.irb_of_record.present? ? protocol.human_subjects_info.irb_of_record : t('constants.na')
-%tr
-  %td.col-3
+%tr.d-flex
+  %td.d-inline-block.col-3
     %label.mb-0
       = HumanSubjectsInfo.human_attribute_name(:submission_type)
-  %td.col-9
+  %td.d-inline-block.col-9
     = protocol.human_subjects_info.submission_type.present? ? PermissibleValue.get_value('submission_type', protocol.human_subjects_info.submission_type) : t('constants.na')
-%tr
-  %td.col-3
+%tr.d-flex
+  %td.d-inline-block.col-3
     %label.mb-0
       = HumanSubjectsInfo.human_attribute_name(:approval_pending)
-  %td.col-9
+  %td.d-inline-block.col-9
     - if protocol.human_subjects_info.approval_pending.nil?
       = t('constants.na')
     - else
       = protocol.human_subjects_info.approval_pending? ? t('constants.yes_select') : t('constants.no_select')
-%tr
-  %td.col-3
+%tr.d-flex
+  %td.d-inline-block.col-3
     %label.mb-0
       = HumanSubjectsInfo.human_attribute_name(:initial_irb_approval_date)
-  %td.col-9
+  %td.d-inline-block.col-9
     = protocol.human_subjects_info.initial_irb_approval_date.present? ? format_date(protocol.human_subjects_info.initial_irb_approval_date) : t('constants.na')
-%tr
-  %td.col-3
+%tr.d-flex
+  %td.d-inline-block.col-3
     %label.mb-0
       = HumanSubjectsInfo.human_attribute_name(:irb_approval_date)
-  %td.col-9
+  %td.d-inline-block.col-9
     = protocol.human_subjects_info.irb_approval_date.present? ? format_date(protocol.human_subjects_info.irb_approval_date) : t('constants.na')
-%tr
-  %td.col-3
+%tr.d-flex
+  %td.d-inline-block.col-3
     %label.mb-0
       = HumanSubjectsInfo.human_attribute_name(:irb_expiration_date)
-  %td.col-9
+  %td.d-inline-block.col-9
     = protocol.human_subjects_info.irb_expiration_date.present? ? format_date(protocol.human_subjects_info.irb_expiration_date) : t('constants.na')
-%tr
-  %td.col-3
+%tr.d-flex
+  %td.d-inline-block.col-3
     %label.mb-0
       = Protocol.human_attribute_name(:study_phase_ids)
-  %td.col-9
+  %td.d-inline-block.col-9
     = protocol.study_phases.any? ? protocol.study_phases.pluck(:phase).join(', ') : t('constants.na')

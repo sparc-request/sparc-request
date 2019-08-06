@@ -26,47 +26,47 @@
     %table.table.mb-0
       %tbody
         - if protocol.is_a?(Study)
-          %tr
-            %td.col-3
+          %tr.d-flex
+            %td.d-inline-block.col-3
               = label :protocol, :research_master_id, class: 'mb-0'
-            %td.col-9
+            %td.d-inline-block.col-9
               = protocol.research_master_id.present? ? protocol.research_master_id : t('constants.na')
-        %tr
-          %td.col-3
+        %tr.d-flex
+          %td.d-inline-block.col-3
             = label :protocol, :title, class: 'mb-0', title: t(:protocols)[:tooltips][:title], data: { toggle: 'tooltip', placement: 'right' }
-          %td.col-9
+          %td.d-inline-block.col-9
             = protocol.title
-        %tr
-          %td.col-3
+        %tr.d-flex
+          %td.d-inline-block.col-3
             = label :protocol, :short_title, class: 'mb-0', title: t(:protocols)[:tooltips][:short_title], data: { toggle: 'tooltip', placement: 'right' }
-          %td.col-9
+          %td.d-inline-block.col-9
             = protocol.short_title
             = display_rmid_validated_protocol(protocol, t('protocols.summary.rmid_short_title'))
         - if protocol.is_a?(Project)
-          %tr
-            %td.col-3
+          %tr.d-flex
+            %td.d-inline-block.col-3
               = label :protocol, :brief_description, class: 'mb-0'
-            %td.col-9
+            %td.d-inline-block.col-9
               = protocol.brief_description
-        %tr
-          %td.col-3
+        %tr.d-flex
+          %td.d-inline-block.col-3
             = label :protocol, :primary_pi, class: 'mb-0'
-          %td.col-9
+          %td.d-inline-block.col-9
             = protocol.primary_pi.display_name
         - if protocol.is_a?(Study)
-          %tr
-            %td.col-3
+          %tr.d-flex
+            %td.d-inline-block.col-3
               = label :protocol, :guarantor_contact, class: 'mb-0'
-            %td.col-9
+            %td.d-inline-block.col-9
               = protocol.guarantor_contact
               %br
               = protocol.guarantor_email
               %br
               = format_phone(protocol.guarantor_phone)
-          %tr
-            %td.col-3
+          %tr.d-flex
+            %td.d-inline-block.col-3
               = label :protocol, :selected_for_epic, class: 'mb-0'
-            %td.col-9
+            %td.d-inline-block.col-9
               = protocol.selected_for_epic ? t('constants.yes_select') : t('constants.no_select')
 
           - if display_readonly_study_type_questions?(protocol) && protocol.display_answers.any?{ |as| display_study_type_question?(protocol, as) }

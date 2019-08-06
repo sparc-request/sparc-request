@@ -46,9 +46,9 @@
             %thead
               %tr
                 %th
-                  = t(:dashboard)[:service_requests][:view_ssr][:documents][:file_name]
+                  = Document.human_attribute_name(:document)
                 %th
-                  = t(:dashboard)[:service_requests][:view_ssr][:documents][:program_core]
+                  = Document.human_attribute_name(:org_ids)
             %tbody
               - sub_service_request.documents.each do |document|
                 %tr

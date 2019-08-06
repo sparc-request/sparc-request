@@ -22,22 +22,20 @@ class Identities::RegistrationsController < Devise::RegistrationsController
   def create
     respond_to :js
 
-    params          = sign_up_params
-    params[:phone]  = sanitize_phone(params[:phone])
-
-    build_resource(params)
+    build_resource(sign_up_params)
 
     resource.save
     yield resource if block_given?
     if resource.persisted?
       if resource.active_for_authentication?
         set_flash_message! :notice, :signed_up
+        flash[:notice] = t('devise.registrations.signed_up')
         sign_up(resource_name, resource)
-        respond_with resource, location: after_sign_up_path_for(resource)
+        @path = after_sign_up_path_for(resource)
       else
-        set_flash_message! :notice, :"signed_up_but_#{resource.inactive_message}"
+        flash[:notice] = t("devise.registrations.signed_up_but_#{resource.inactive_message}")
         expire_data_after_sign_in!
-        respond_with resource, location: after_inactive_sign_up_path_for(resource)
+        @path = after_inactive_sign_up_path_for(resource)
       end
     else
       clean_up_passwords resource
@@ -48,18 +46,16 @@ class Identities::RegistrationsController < Devise::RegistrationsController
   end
 
   def edit
-    session[:return_to] ||= request.referer
+    store_location_for(resource, request.referrer)
   end
 
   def update
     @identity = current_user
-    @professional_organization_id = params[:project_role][:identity_attributes][:professional_organization_id]
-    attrs = fix_professional_organization_id
-    if @identity.update_attributes(attrs)
-      redirect_to session.delete(:return_to)
+    if @identity.update_attributes(identity_params)
       flash[:success] = t(:devise)[:profile][:updated]
+      @path = stored_location_for(resource) || root_path
     else
-      render 'edit'
+      @errors = @identity.errors
     end
   end
 
@@ -72,19 +68,18 @@ class Identities::RegistrationsController < Devise::RegistrationsController
   end
 
   def identity_params
-    params.require(:identity).permit(:orcid,
-        :credentials,
-        :credentials_other,
-        :email,
-        :era_commons_name,
-        :professional_organization_id,
-        :phone,
-        :subspecialty)
-  end
+    params[:identity][:phone]                         = sanitize_phone(params[:identity][:phone])
+    params[:identity][:professional_organization_id]  = params[:project_role][:identity_attributes][:professional_organization_id]
 
-    def fix_professional_organization_id
-    attrs = identity_params
-    attrs = attrs.merge(professional_organization_id: @professional_organization_id)
-    attrs
+    params.require(:identity).permit(
+      :orcid,
+      :credentials,
+      :credentials_other,
+      :email,
+      :era_commons_name,
+      :professional_organization_id,
+      :phone,
+      :subspecialty
+    )
   end
 end

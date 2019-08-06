@@ -23,8 +23,8 @@
   = render '/service_requests/navigation/header'
   .row
     .col-12.col-lg-9.mb-3.mb-lg-0#serviceDetails
-      = render 'protocols/milestones', service_request: service_request, protocol: protocol
-      - if service_request.has_per_patient_per_visit_services?
-        = render 'arms/table', service_request: service_request, protocol: protocol
+      = render 'protocols/milestones', service_request: @service_request, protocol: @service_request.protocol
+      - if @service_request.has_per_patient_per_visit_services?
+        = render 'arms/table', service_request: @service_request, protocol: @service_request.protocol
     = render 'service_requests/cart/cart', service_request: @service_request
   = render 'service_requests/navigation/footer'

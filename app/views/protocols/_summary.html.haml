@@ -38,42 +38,42 @@
   .collapse#protocolSummary{ class: controller_name == 'service_requests' && service_request.previously_submitted? ? '' : 'show' }
     %table.table.mb-0
       - if Setting.get_value("research_master_enabled") && protocol.is_study?
-        %tr
-          %td.col-2
-            %label.mb-0
+        %tr.d-flex
+          %td.d-inline-block.col-2
+            %label.mb-0<
               = Protocol.human_attribute_name(:research_master_id)
-          %td.col-10
+          %td.d-inline-block.col-10
             = protocol.research_master_id.present? ? protocol.research_master_id : t('constants.na')
-      %tr
-        %td.col-2
-          %label.mb-0
+      %tr.d-flex
+        %td.d-inline-block.col-2
+          %label.mb-0<
             = protocol.class.human_attribute_name(:id)
-        %td.col-10
+        %td.d-inline-block.col-10
           = protocol.try(:id)
-      %tr
-        %td.col-2
-          %label.mb-0{ title: t('protocols.tooltips.title'), data: { toggle: 'tooltip', placement: 'right' } }
+      %tr.d-flex
+        %td.d-inline-block.col-2
+          %label.mb-0{ title: t('protocols.tooltips.title'), data: { toggle: 'tooltip', placement: 'right' } }<
             = protocol.class.human_attribute_name(:title)
-        %td.col-10
+        %td.d-inline-block.col-10
           = protocol.try(:title)
           = display_rmid_validated_protocol(protocol, t('protocols.summary.rmid_title'))
-      %tr
-        %td.col-2
-          %label.mb-0{ title: t('protocols.tooltips.short_title'), data: { toggle: 'tooltip', placement: 'right' } }
+      %tr.d-flex
+        %td.d-inline-block.col-2
+          %label.mb-0{ title: t('protocols.tooltips.short_title'), data: { toggle: 'tooltip', placement: 'right' } }<
             = Protocol.human_attribute_name(:short_title)
-        %td.col-10
+        %td.d-inline-block.col-10
           = protocol.short_title
           = display_rmid_validated_protocol(protocol, t('protocols.summary.rmid_short_title'))
       - if protocol.is_a?(Study)
-        %tr
-          %td.col-2
-            %label.mb-0{ title: t('protocols.tooltips.sponsor_name'), data: { toggle: 'tooltip', placement: 'right' } }
+        %tr.d-flex
+          %td.d-inline-block.col-2
+            %label.mb-0{ title: t('protocols.tooltips.sponsor_name'), data: { toggle: 'tooltip', placement: 'right' } }<
               = Protocol.human_attribute_name(:sponsor_name)
-          %td.col-10
+          %td.d-inline-block.col-10
             = protocol.sponsor_name
-      %tr
-        %td.col-2
-          %label.mb-0{ title: protocol.funded? ? t('protocols.tooltips.funding_source') : t('protocols.tooltips.potential_funding_source'), data: { toggle: 'tooltip', placement: 'right' } }
+      %tr.d-flex
+        %td.d-inline-block.col-2
+          %label.mb-0{ title: protocol.funded? ? t('protocols.tooltips.funding_source') : t('protocols.tooltips.potential_funding_source'), data: { toggle: 'tooltip', placement: 'right' } }<
             = Protocol.human_attribute_name(protocol.funded? ? :funding_source : :potential_funding_source)
-        %td.col-10
+        %td.d-inline-block.col-10
           = protocol.display_funding_source_value

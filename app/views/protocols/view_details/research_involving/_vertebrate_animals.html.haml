@@ -22,21 +22,21 @@
   %td{ colspan: 2 }
     %h6.mb-0
       = t('protocols.form.research_involving.subheader', research_type: ResearchTypesInfo.human_attribute_name(:vertebrate_animals))
-%tr
-  %td.col-3
+%tr.d-flex
+  %td.d-inline-block.col-3
     %label.mb-0
       = VertebrateAnimalsInfo.human_attribute_name(:name_of_iacuc)
-  %td.col-9
+  %td.d-inline-block.col-9
     = protocol.vertebrate_animals_info.name_of_iacuc.present? ? protocol.vertebrate_animals_info.name_of_iacuc : t('constants.na')
-%tr
-  %td.col-3
+%tr.d-flex
+  %td.d-inline-block.col-3
     %label.mb-0
       = VertebrateAnimalsInfo.human_attribute_name(:iacuc_approval_date)
-  %td.col-9
+  %td.d-inline-block.col-9
     = protocol.vertebrate_animals_info.iacuc_approval_date.present? ? format_date(protocol.vertebrate_animals_info.iacuc_approval_date) : t('constants.na')
-%tr
-  %td.col-3
+%tr.d-flex
+  %td.d-inline-block.col-3
     %label.mb-0
       = VertebrateAnimalsInfo.human_attribute_name(:iacuc_expiration_date)
-  %td.col-9
+  %td.d-inline-block.col-9
     = protocol.vertebrate_animals_info.iacuc_expiration_date.present? ? format_date(protocol.vertebrate_animals_info.iacuc_expiration_date) : t('constants.na')

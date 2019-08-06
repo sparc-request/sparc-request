@@ -23,7 +23,7 @@
     %h4.mb-0.text-white
       = organization.name
   .card-body
-    - if organization.description
+    - if organization.description.present?
       %p.description
         = raw(organization.description)
     - if organization.type == "Program"

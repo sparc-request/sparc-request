@@ -22,15 +22,15 @@
   %td{ colspan: 2 }
     %h6.mb-0
       = t('protocols.form.research_involving.subheader', research_type: ResearchTypesInfo.human_attribute_name(:ip_patents))
-%tr
-  %td.col-3
+%tr.d-flex
+  %td.d-inline-block.col-3
     %label.mb-0
       = IpPatentsInfo.human_attribute_name(:patent_number)
-  %td.col-9
+  %td.d-inline-block.col-9
     = protocol.ip_patents_info.patent_number.present? ? protocol.ip_patents_info.patent_number : t('constants.na')
-%tr
-  %td.col-3
+%tr.d-flex
+  %td.d-inline-block.col-3
     %label.mb-0
       = IpPatentsInfo.human_attribute_name(:inventors)
-  %td.col-9
+  %td.d-inline-block.col-9
     = protocol.ip_patents_info.inventors.present? ? protocol.ip_patents_info.inventors : t('constants.na')

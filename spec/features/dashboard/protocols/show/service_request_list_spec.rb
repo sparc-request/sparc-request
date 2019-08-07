@@ -244,6 +244,8 @@ RSpec.describe 'service request list', js: true do
 
       wait_for_javascript_to_finish
 
+      sleep 5
+
       expect(URI.parse(current_url).path).to eq catalog_service_request_path
     end
 

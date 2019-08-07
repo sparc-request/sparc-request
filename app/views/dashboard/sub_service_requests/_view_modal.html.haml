@@ -42,8 +42,8 @@
         - if sub_service_request.documents.empty?
           = render 'layouts/modal_errors', messages: [t(:documents)[:none]], margin: false, rounded: false
         - else
-          %table.table.table-striped
-            %thead
+          %table.table.table-bordered.mb-0
+            %thead.bg-light
               %tr
                 %th
                   = Document.human_attribute_name(:document)
@@ -53,11 +53,11 @@
               - sub_service_request.documents.each do |document|
                 %tr
                   %td
-                    = link_to document.document_file_name, document.document.url
+                    = display_document_title(document, permission: true)
                   %td
                     = sub_service_request.org_tree_display
       - if sub_service_request.eligible_for_subsidy?
-        = render 'dashboard/subsidies/subsidy', sub_service_request: sub_service_request, admin: false
+        = render 'subsidies/subsidy', sub_service_request: sub_service_request
     .modal-footer
       - if Rails.application.routes.recognize_path(request.referrer)[:action] == 'index'
         = link_to t(:actions)[:back],display_requests_dashboard_protocol_path(protocol), remote: true, class: 'btn btn-light'

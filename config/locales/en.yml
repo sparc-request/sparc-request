@@ -78,7 +78,7 @@ en:
         doc_type: "Document Type"
         document: "Document"
         document_updated_at: "Uploaded"
-        org_ids: "Service Provider Access"
+        org_ids: "Service Providers With Access"
       fulfillment:
         time: "Quantity"
       human_subjects_info:

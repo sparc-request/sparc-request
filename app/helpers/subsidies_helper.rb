@@ -18,13 +18,19 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module Dashboard::DocumentsHelper
-  def document_org_access_collection(document, action)
-    default_select  = if action == 'new'
-                        document.protocol.organizations.ids
-                      else
-                        document.sub_service_requests.map(&:organization_id)
-                      end
-    options_from_collection_for_select(document.protocol.organizations.distinct.sort_by(&:name), :id, :name, default_select)
+module SubsidiesHelper
+  def new_subsidy_button(sub_service_request, opts={})
+    url = in_dashboard? ? new_dashboard_subsidy_path(ssrid: sub_service_request.id, admin: opts[:admin]) : new_subsidy_path(ssrid: sub_service_request.id, srid: opts[:srid])
+
+    link_to url, remote: true, class: 'btn btn-success', title: t(:subsidies)[:tooltips][:request_subsidy], data: { toggle: 'tooltip' } do
+      icon('fas', 'plus mr-2') + t('subsidies.add')
+    end
+  end
+
+  def edit_subsidy_button(subsidy, opts={})
+    
+  end
+
+  def delete_subsidy_button(subsidy, opts={})
   end
 end

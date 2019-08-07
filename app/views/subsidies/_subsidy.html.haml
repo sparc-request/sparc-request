@@ -23,9 +23,21 @@
 .card{ id: "subsidy#{sub_service_request.id}" }
   .card-header.bg-primary.text-white
     %h3.mb-0
-      = ssr_name_display(sub_service_request)
-  .card-body
-    .approved-subsidy.mb-3
-      = render 'subsidies/approved_subsidy', subsidy: sub_service_request.approved_subsidy, admin: false
-    .pending-subsidy
-      = render 'subsidies/pending_subsidy', subsidy: sub_service_request.pending_subsidy, sub_service_request: sub_service_request, service_request: service_request, admin: false
+      - if in_dashboard?
+        = t('subsidies.header')
+      - else
+        = ssr_name_display(sub_service_request)
+  - if sub_service_request.approved_subsidy
+    = render 'subsidies/approved_subsidy', subsidy: sub_service_request.approved_subsidy, admin: admin
+  - if sub_service_request.pending_subsidy
+    = render 'subsidies/pending_subsidy', subsidy: sub_service_request.pending_subsidy, sub_service_request: sub_service_request, service_request: service_request, admin: admin
+  - unless sub_service_request.pending_subsidy
+    - unless sub_service_request.approved_subsidy
+      .card-body
+        %p.mb-0
+          = t(:subsidies)[:approved][:none]
+    .card-footer
+      - if in_dashboard?
+        = new_subsidy_button(sub_service_request)
+      - else
+        = new_subsidy_button(sub_service_request, srid: service_request.id)

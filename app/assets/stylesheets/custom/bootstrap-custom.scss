@@ -465,6 +465,30 @@ nav.navbar {
       padding-right: $grid-gutter-width / 2;
     }
   }
+
+  &.table-centered {
+    th, td {
+      vertical-align: middle;
+    }
+  }
+}
+
+.card > .table, .card > .collapse > .table, .card > .collapsing > .table {
+  border: 0;
+
+  thead th, tbody td, tbody th {
+    &:first-child {
+      border-left: 0;
+    }
+
+    &:last-child {
+      border-right: 0;
+    }
+  }
+
+  tbody tr:last-child td, tbody tr:last-child th {
+    border-bottom: 0;
+  }
 }
 
 /////////////////

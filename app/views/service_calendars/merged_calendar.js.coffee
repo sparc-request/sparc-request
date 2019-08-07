@@ -34,6 +34,6 @@ adjustCalendarHeaders()
 
 $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
 
-# Remove after triggering ajax:complete because the toggle
+# Toggle after triggering ajax:complete because the toggle
 # is initialized by that event firing
-$('#servicesToggle').parent().removeClass('invisible')
+toggleServicesToggle(true)

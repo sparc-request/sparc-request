@@ -62,31 +62,9 @@ $(document).ready ->
   # Protocol Show #
   #################
 
-  # Milestone Updates
-  if window.location.pathname.startsWith('/dashboard')
-    $('.milestone-field.datetimepicker').on 'hide.datetimepicker', ->
-      $.ajax
-        method: 'PUT'
-        dataType: 'script'
-        url: "/dashboard/protocols/#{getProtocolId()}"
-        data: $(this).children('input').serialize()
-
-    $('.milestone-field:not(.datetimepicker').on 'change', ->
-      $.ajax
-        method: 'PUT'
-        dataType: 'script'
-        url: "/dashboard/protocols/#{getProtocolId()}"
-        data: $(this).children('input').serialize()
-
   Sparc = {}
   Sparc.protocol =
     ready: ->
-      # Protocol Show Begin
-      $(document).on 'click', '#add-services-button', ->
-        if $(this).data('permission')
-          protocol_id         = $(this).data('protocol-id')
-          window.location     = "/?protocol_id=#{protocol_id}&from_portal=true"
-
       $(document).on 'change', '.complete-forms', ->
         if $(this).val()
           $option = $('option:selected', this)

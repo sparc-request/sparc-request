@@ -20,6 +20,11 @@
 
 - line_items = Dashboard::ServiceCalendars.otf_line_items_to_display(service_request, sub_service_request, merged: merged, consolidated: consolidated, show_draft: @show_draft)
 
+- if line_items.empty? && merged 
+  %tr
+    %td.alert-warning{ colspan: 11 }
+      = t('calendars.no_line_items')
+
 - line_items.each do |ssr, line_items|
   - locked = !ssr.can_be_edited? && !admin
 

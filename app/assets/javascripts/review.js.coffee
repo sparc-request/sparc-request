@@ -19,6 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
+  if $('#serviceCalendarReview').length
+    adjustCalendarHeaders()
+
   survey_offered = false
   if $('#use_system_satisfaction').val() == 'true'
     $(document).one 'click', '.submit-request', (event) ->

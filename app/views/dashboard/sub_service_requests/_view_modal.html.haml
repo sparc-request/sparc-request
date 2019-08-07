@@ -57,7 +57,7 @@
                   %td
                     = sub_service_request.org_tree_display
       - if sub_service_request.eligible_for_subsidy?
-        = render 'subsidies/subsidy', sub_service_request: sub_service_request
+        = render 'subsidies/subsidy', sub_service_request: sub_service_request, admin: false
     .modal-footer
       - if Rails.application.routes.recognize_path(request.referrer)[:action] == 'index'
         = link_to t(:actions)[:back],display_requests_dashboard_protocol_path(protocol), remote: true, class: 'btn btn-light'

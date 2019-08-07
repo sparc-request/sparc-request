@@ -39,8 +39,10 @@
     = render 'layouts/navbar'
     = yield(:sub_header) if content_for(:sub_header)
     .container-fluid#contentContainer
-      = hidden_field_tag :protocol_id, @protocol.try(:id), disabled: true
-      = hidden_field_tag :srid, @service_request.try(:id), disabled: true
+      - if @protocol
+        = hidden_field_tag :protocol_id, @protocol.id, disabled: true
+      - if @service_requestt
+        = hidden_field_tag :srid, @service_request.id, disabled: true
       - unless content_for?(:flash)
         = render 'layouts/flash'
       = content_for?(:content) ? yield(:content) : yield

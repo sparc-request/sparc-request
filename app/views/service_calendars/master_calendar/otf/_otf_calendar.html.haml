@@ -19,11 +19,13 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .card.service-calendar-container.one-time-fees-container
-  .card-header.bg-primary.text-white.justify-content-between.sticky-top
-    %h3.mb-0
+  .card-header.bg-primary.text-white.justify-content-between.sticky-top{ data: { toggle: 'collapse', target: ".otf-collapse" } }
+    %h3.mb-0<
+      = icon('fas', 'caret-down mr-3')
       = t('calendars.otf.header')
-  %table.table.table-bordered.service-calendar-table
-    %thead
-      = render 'service_calendars/master_calendar/otf/otf_header'
-    %tbody
-      = render 'service_calendars/master_calendar/otf/otf_line_items', service_request: service_request, sub_service_request: sub_service_request, review: review, admin: admin, merged: merged, consolidated: consolidated
+  .collapse.show.otf-collapse
+    %table.table.table-bordered.service-calendar-table
+      %thead
+        = render 'service_calendars/master_calendar/otf/otf_header'
+      %tbody
+        = render 'service_calendars/master_calendar/otf/otf_line_items', service_request: service_request, sub_service_request: sub_service_request, review: review, admin: admin, merged: merged, consolidated: consolidated

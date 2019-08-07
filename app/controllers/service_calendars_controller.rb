@@ -67,7 +67,6 @@ class ServiceCalendarsController < ApplicationController
     @tab                    = 'calendar'
     @show_draft             = params[:show_draft] == 'true'
     @show_unchecked         = params[:show_unchecked] == 'true'
-    @visit_dropdown_change  = params[:pages].present?
     @service_request        = @protocol.any_service_requests_to_display?
     setup_calendar_pages
 

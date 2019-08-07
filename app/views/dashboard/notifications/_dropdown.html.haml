@@ -20,11 +20,16 @@
 
 - tooltip = controller_name == 'sub_service_requests' ? 'table_button' : 'main_button'
 
-.tooltip-wrapper{ title: t("dashboard.notifications.tooltips.#{tooltip}"), data: { toggle: 'tooltip', placement: 'top', boundary: 'window' } }
-  %select.selectpicker.new-notification.no-caret{ title: t('dashboard.notifications.table.send'), data: { style: "btn-primary", live_search: 'true', header: t('dashboard.notifications.table.send'), container: 'body', sub_service_request_id: sub_service_request.ssr_id } }
-    %optgroup{ label: t(:dashboard)[:notifications][:table][:authorized_users]}
-      - sub_service_request.protocol.project_roles.each do |pr|
-        %option{ value: pr.identity_id, data: { identity_id: pr.identity_id, sub_service_request_id: sub_service_request.id, is_service_provider: 'false', current_user_id: current_user.id, content: display_authorized_user(pr, sub_service_request.service_requester_id) } }
-    %optgroup{ label: t(:dashboard)[:notifications][:table][:service_providers]}
-      - sub_service_request.organization.service_providers.sort_by{ |sp| sp.identity.last_name }.each do |sp|
-        %option{ value: sp.identity_id, data: { identity_id: sp.identity_id, sub_service_request_id: sub_service_request.id, is_service_provider: 'true', current_user_id: current_user.id, content: display_service_provider(sp, sub_service_request.owner_id) } }
+.dropdown.no-caret
+  %button.btn.btn-primary.dropdown-toggle{ id: "sendNotificationRequest#{sub_service_request.id}", role: 'button', data: { toggle: 'dropdown', boundary: 'window' }, aria: { haspopup: 'true', expanded: 'false' } }
+    %span{ title: t("dashboard.notifications.tooltips.#{tooltip}"), data: { toggle: 'tooltip', container: 'body', boundary: 'window' } }
+      = icon('far', 'envelope')
+  .dropdown-menu.dropdown-menu-right{ aria: { labelledby: "sendNotificationRequest#{sub_service_request.id}" } }
+    .dropdown-header
+      %h6.mb-0
+        = t('dashboard.notifications.service_providers.header')
+    .dropdown-divider
+    - sub_service_request.organization.service_providers.includes(:identity).order("identities.first_name", "identities.last_name").each do |sp|
+      = link_to new_dashboard_notification_path(identity_id: sp.identity_id, sub_service_request_id: sub_service_request.id), remote: true, class: 'dropdown-item' do
+        = icon('far mr-2', 'envelope')
+        = display_service_provider(sp, sub_service_request.owner_id)

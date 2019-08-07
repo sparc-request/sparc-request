@@ -176,7 +176,7 @@ module ApplicationHelper
   end
 
   def in_dashboard?
-    request.path.start_with?('/dashboard')
+    (request.format.html? && request.path.start_with?('/dashboard') && request.format.html?) || Rails.application.routes.recognize_path(request.referrer)[:controller].starts_with?('dashboard/')
   end
 
   def in_review?

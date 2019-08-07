@@ -194,20 +194,22 @@ class ApplicationController < ActionController::Base
   end
 
   def in_dashboard?
-    @portal ||= request.path.starts_with?('/dashboard')
+    @portal ||= (request.format.html? && request.path.start_with?('/dashboard') && request.format.html?) || Rails.application.routes.recognize_path(request.referrer)[:controller].starts_with?('dashboard/')
     @admin  ||= @portal && params[:srrid].present?
+
+    @portal
   end
 
   def authorize_dashboard_access
     if params[:ssrid]
       authorize_admin
     else
-      @service_request = ServiceRequest.find(params[:srid]) if params[:srid]
       authorize_protocol
     end
   end
 
   def authorize_protocol
+    @service_request    = ServiceRequest.find(params[:srid]) if params[:srid]
     @protocol           = @service_request ? @service_request.protocol : Protocol.find(params[:protocol_id])
     permission_to_view  = current_user.can_view_protocol?(@protocol)
 

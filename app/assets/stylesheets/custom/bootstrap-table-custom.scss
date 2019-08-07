@@ -32,6 +32,10 @@
           border-right: 0;
         }
       }
+
+      tbody tr:last-child td {
+        border-bottom: 0;
+      }
     }
 
     .fixed-table-toolbar, .fixed-table-pagination {

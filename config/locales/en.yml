@@ -203,7 +203,12 @@ en:
         id: "Study ID"
         title: "Study Title"
       subsidy:
+        approved_at: "Approved At"
+        approver: "Approved By"
         percent_subsidy: "Percent Subsidy"
+        pi_contribution: "PI Contribution"
+        request_cost: "Current Request Cost"
+        subsidy_cost: "Subsidy Cost"
       survey:
         active: ""
       vertebrate_animals_info:
@@ -345,14 +350,14 @@ en:
     show_all_services: 'Show All Services'
     show_chosen_services: 'Show Chosen Services'
     tabs:
-      template: "Template Tab"
-      billing: "Quantity/Billing Tab"
-      pricing: "Consolidated Request Tab"
+      template: "Template"
+      billing: "Quantity/Billing"
+      pricing: "Consolidated Request"
     inactive: "(Inactive)"
+    no_line_items: "No line items to show."
     pppv:
       clinical_services: "Clinical Services"
       header: "Clinical Services (%{arm_name})"
-      no_calendar_line_items: "There are no line items to show."
       header_fields:
         notes: "Notes"
         service: "Service Name"
@@ -766,23 +771,18 @@ en:
   # SUBSIDIES #
   #############
   subsidies:
+    header: "Subsidies"
     add: "Request a Subsidy"
     new: "New Subsidy Pending Approval"
     edit: "Edit Subsidy Pending Approval"
     created: "Subsidy created successfully"
     updated: "Subsidy updated successfully"
     destroyed: "Subsidy deleted successfully"
-    approval_message: "Subsidy has been approved"
+    approved: "Subsidy has been approved"
     disapproval_message: "Subsidy has been disapproved"
     delete_confirm: "Are you sure that you would like to delete this subsidy?"
     approved:
       header: "Current Effective Subsidy"
-      request_cost: "Cost at Approval"
-      percent: "% Subsidy"
-      pi_contribution: "PI Contribution"
-      cost: "Subsidy Cost"
-      approved_by: "Approved By"
-      approved_at: "Approved At"
       none: "There is no current effective subsidy."
     pending:
       header: "Subsidy Pending Approval"
@@ -790,12 +790,8 @@ en:
       percent: "% Subsidy"
       pi_contribution: "PI Contribution"
       cost: "Subsidy Cost"
-    form:
-      request_cost: "Current Request Cost"
-      pi: "PI Contribution"
-      cost: "Subsidy Cost"
     tooltips:
-      request_subsidy: "Add a Subsidy request."
+      request_subsidy: "Request a new subsidy"
       request_cost: "Total cost of services eligible for a subsidy"
       percent: "Percent of Current Request Cost to be covered by Service Provider"
       pi: "Amount PI is responsible to provide to Service Provider"

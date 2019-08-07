@@ -126,6 +126,8 @@ en:
     #  NOTIFICATIONS  #
     ###################
     notifications:
+      service_providers:
+        header: "Notify a Service Provider"
       table:
         send: "Send Notification"
         compose: "Compose Message"
@@ -145,7 +147,7 @@ en:
         select_header: "Send Notification"
         message: "Please enter message text here..."
       tooltips:
-        table_button: "Send correspondence to Service Providers or Authorized Users"
+        table_button: "Send correspondence to Service Providers"
         main_button: "Send SPARC system notification to an Authorized User or Service Provider"
 
 

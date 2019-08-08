@@ -47,7 +47,7 @@ $(document).ready ->
       )
       $('html, body').animate({ scrollTop: $('#stepsHeader').offset().top }, 'slow')
   ).on('click', '#stepsNav .nav-link:not(.active)', (event) ->
-    if $('#cart #activeServices .list-group-item').length == 0
+    if $('#serviceCatalogForm').length && $('#cart #activeServices .list-group-item').length == 0
       $(this).trigger('blur')
       event.preventDefault()
       AlertSwal.fire(

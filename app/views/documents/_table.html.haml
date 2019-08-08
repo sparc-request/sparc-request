@@ -21,14 +21,14 @@
 .card.w-100#documentsCard
   .card-header.bg-primary.text-white{ data: { toggle: 'collapse', target: '#documents' } }
     %h3.mb-0
-      = icon('fas', 'caret-down mr-3')
+      = icon('fas', 'caret-down pr-1 mr-2')
       = t('documents.header')
   .collapse#documents{ class: controller_name == 'service_requests' && service_request.previously_submitted? ? '' : 'show' }
     #documentsTableToolbar
       - if in_dashboard?
         = new_document_button(protocol_id: protocol.id, permission: permission_to_edit)
       - elsif !in_review?
-        = new_document_button(srid: service_Request.id)
+        = new_document_button(srid: service_request.id)
     - url = in_dashboard? ? dashboard_documents_path(format: :json, protocol_id: protocol.id) : documents_path(format: :json, srid: service_request.id)
     %table#documentsTable{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: url, toolbar: "#documentsTableToolbar" } }
       %thead.bg-light

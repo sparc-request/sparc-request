@@ -26,21 +26,26 @@
       %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
         %span{ aria: { hidden: 'true' } } &times;
     .modal-body
-      - if messages.any?
-        - messages.each do |message|
-          .card-callout.w-75{ class: message.from == current_user.id ? 'card-callout-right callout-secondary float-right' : 'callout-info' }
-            .card-body
-              %h5.card-title.mb-2
-                = message.sender.full_name
-              .card-text.mb-2
-                = simple_format(message.body)
-              %small.card-text.text-muted
-                = format_datetime(message.created_at)
-
-      -else
-        .text-center
-          = t(:dashboard)[:messages][:index][:no_messages]
-    #reply-block.modal-footer.justify-content-end
-      %button.btn.btn-secondary.mr-1{type: 'button', data: {dismiss: 'modal'}}
-        = t(:actions)[:close]
-      = link_to t(:actions)[:reply], new_dashboard_message_path(notification_id: notification.id), remote: true, class: 'btn btn-primary'
+      - messages.each do |msg|
+        .card-callout.w-75{ class: msg.from == current_user.id ? 'card-callout-right callout-secondary float-right' : 'callout-info' }
+          .card-body
+            %h5.card-title.mb-2
+              = msg.sender.full_name
+            = simple_format(msg.body)
+            %small.card-text.text-muted
+              = format_datetime(msg.created_at)
+      - if messages.none?
+        .alert.alert-danger.mb-0
+          = t('messages.none')
+    .modal-footer
+      = form_for [:dashboard, message], remote: true, html: { class: 'w-100' } do |f|
+        = f.hidden_field :notification_id
+        = f.hidden_field :to
+        = f.hidden_field :from
+        .form-row
+          .form-group.col-9.offset-3
+            = f.text_area :body, class: 'form-control', rows: 3, placeholder: t('messages.placeholder')
+        .text-right
+          %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+            = t('actions.close')
+          = f.submit t('actions.reply'), class: 'btn btn-primary'

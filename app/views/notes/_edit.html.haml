@@ -18,29 +18,18 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.modal-dialog.modal-sm#note-form-modal{ role: 'document' }
-  .modal-content
-    = form_for note, remote: true, html: { class: 'form', role: 'form' } do |f|
-      - if params[:cancel]
-        = hidden_field_tag :cancel, params[:cancel]
-      - if params[:review]
-        = hidden_field_tag :review, params[:review]
-      = f.hidden_field :notable_id
-      = f.hidden_field :notable_type
-      = f.hidden_field :identity_id
-      .modal-header
-        %h3.modal-title
-          = note_header(note.notable)
-        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
-          %span{ aria: { hidden: 'true' } } &times;
-      .modal-body
-        .form-group
-          = f.label :body, t(:notes)[:form_fields][:note], class: 'control-label text-right'
-          = f.text_area :body, { class: 'form-control', rows: 6 }
-      .modal-footer
-        - if params[:cancel]
-          = link_to t(:actions)[:cancel], notes_path(note: { notable_id: notable_id, notable_type: notable_type }), remote: true, class: 'btn btn-secondary'
-        - else
-          %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
-            = t(:actions)[:close]
-        = f.submit t(:actions)[:submit], class: 'btn btn-primary'
+= form_for note, remote: true, html: { class: '' } do |f|
+  - if @service_request
+    = hidden_field_tag :srid, @service_request.id
+  - if @sub_service_request
+    = hidden_field_tag :ssrid, @sub_service_request.id
+  - if @protocol
+    = hidden_field_tag :protocol_id, @protocol.id
+  .form-group
+    = f.text_area :body, class: 'form-control', rows: 3, placeholder: t('notes.placeholder')
+  .d-flex.justify-content-between.align-items-center
+    = note_date(note)
+    %div<
+      %button.btn.btn-xs.btn-primary.mb-0.mr-1{ type: 'submit', title: t('notes.update'), data: { toggle: 'tooltip' } }
+        = icon('fas', 'check')
+      = link_to icon('fas', 'times'), notes_path(note: { notable_id: notable.id, notable_type: notable.class.name }, protocol_id: @protocol.try(:id), srid: @service_request.try(:id), ssrid: @sub_service_request.try(:id)), remote: true, class: 'btn btn-xs btn-secondary', title: t('actions.cancel'), data: { toggle: 'tooltip' }

@@ -21,7 +21,7 @@
 .card.w-100#authorizedUsersCard
   .card-header.bg-primary.text-white{ data: { toggle: 'collapse', target: '#authorizedUsers' } }
     %h3.mb-0<
-      = icon('fas', 'caret-down mr-3')
+      = icon('fas', 'caret-down pr-1 mr-2')
       = t('authorized_users.header')
   .collapse#authorizedUsers{ class: controller_name == 'service_requests' && service_request.previously_submitted? ? '' : 'show' }
     #associatedUsersTableToolbar

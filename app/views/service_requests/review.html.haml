@@ -17,6 +17,7 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 = form_tag navigate_service_request_path(srid: @service_request.id), id: 'serviceRequestForm', class: 'w-100' do
   = render '/service_requests/navigation/steps'
   = render '/service_requests/navigation/header'
@@ -28,7 +29,6 @@
       = render 'service_calendars/table', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, portal: @portal, admin: @admin, review: @review, merged: @merged, consolidated: @consolidated, pages: @pages, page: @page 
 
     = render 'documents/table', service_request: @service_request, protocol: @service_request.protocol
-    = render 'notes/table', service_request: @service_request, notable_id: @notable_id, notable_type: @notable_type
     - if @service_request.has_associated_forms?
       = render "forms/table", service_request: @service_request, review: @review
   = render 'service_requests/navigation/footer'

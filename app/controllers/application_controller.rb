@@ -152,11 +152,10 @@ class ApplicationController < ActionController::Base
   #####################
 
   def authorization_error(msg=t('error_pages.authorization_error.error'), ref=nil)
-    error = msg
-    error += "<br />If you believe this is in error, please contact #{Setting.get_value('contact_us_cc')} and provide the following information:"
-    error += "<br /> Reference #: " + ref if ref
+    error   = msg + t('error_pages.authorization_error.contact', email: Setting.get_value('contact_us_cc'))
+    error  += t('error_pages.authorization_error.reference', ref: ref) if ref
 
-    redirect_to authorization_error_path(error: error, format: request.format)
+    redirect_to authorization_error_path(error: error, format: request.format.html? ? :html : :js)
   end
 
   def clean_errors errors
@@ -181,9 +180,9 @@ class ApplicationController < ActionController::Base
   def authorize_identity
     # can the user edit the service request
     # we have a current user
-    if @service_request.status == 'first_draft'
+    if @service_request.status == 'first_draft' && Rails.application.routes.recognize_path(request.referrer)[:action] == 'catalog'
       return true
-    elsif current_user && current_user.can_edit_service_request?(@service_request)
+    elsif current_user && @service_request.status != 'first_draft' && current_user.can_edit_service_request?(@service_request)
       return true
     elsif current_user.nil?
       authenticate_identity!

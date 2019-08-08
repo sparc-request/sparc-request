@@ -21,7 +21,7 @@
 .card.w-100#calendarStructureCard
   .card-header.text-white{ class: protocol.locked? ? 'bg-danger' : 'bg-primary', data: { toggle: 'collapse', target: '#calendarStructure' } }
     %h3.mb-0<
-      = icon('fas', 'caret-down mr-3')
+      = icon('fas', 'caret-down pr-1 mr-2')
       - if protocol.locked?
         = icon('fas', 'lock mr-2')
       = t(:calendar_structure)[:header]

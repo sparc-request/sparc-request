@@ -211,11 +211,11 @@ en:
           sub_header: "Request a subsidy for eligible services"
         document_management:
           step_text:
-            full: "Step 5<br/>Documents,<br/>Notes & Forms"
+            full: "Step 5<br/>Documents<br/>& Forms"
             short: "Step 5<br/>Documents"
             xs: "Step 5"
-          header: "Step 5: Documents, Notes & Forms"
-          sub_header: "Upload documents, add notes, and complete forms"
+          header: "Step 5: Documents & Forms"
+          sub_header: "Upload documents and complete forms"
         review:
           step_text:
             full: "Step 6<br/>Review Your<br/>Request"

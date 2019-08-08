@@ -224,6 +224,16 @@ VALID_MONETARY_KEYS = [
     new_str += word.charAt(0).toUpperCase() + word.slice(1) + ' '
   return new_str
 
-(exports ? this).refresh_study_schedule = () ->
-  $('#service-calendar .tab-content .tab-pane.active').load $('#service-calendar .active a').attr("data-url"), (result) ->
-    $('#service-calendar .active a').tab('show')
+(exports ? this).dateSorter = (a, b) ->
+  if !a && !b
+    return 0
+  else if a && !b
+    return 1
+  else if !a && b
+    return -1
+  else
+    sort_a = new Date(a)
+    sort_b = new Date(b)
+    return 1 if sort_a > sort_b
+    return -1 if sort_a < sort_b
+    return 0

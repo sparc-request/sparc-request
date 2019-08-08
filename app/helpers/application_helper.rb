@@ -24,7 +24,7 @@ module ApplicationHelper
   end
 
   def format_datetime(datetime)
-    datetime.strftime('%D %I:%M:%S %p') rescue ""
+    datetime.strftime('%D %l:%M %p') rescue ""
   end
 
   def format_phone(phone)
@@ -33,6 +33,14 @@ module ApplicationHelper
 
   def format_currency(amount)
     "%.2f" % amount rescue ""
+  end
+
+  def format_count(value, digits=1)
+    if value >= 10.pow(digits)
+      "#{value - (value - (10.pow(digits) - 1))}+"
+    else
+      value
+    end
   end
 
   def css_class(organization)

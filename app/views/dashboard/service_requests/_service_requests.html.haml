@@ -22,7 +22,7 @@
   .card.service-request-card.w-100
     .card-header.justify-content-between.bg-primary.text-white{ data: { toggle: 'collapse', target: ".service-request-#{sr.id}" } }
       %h3.mb-0<
-        = icon('fas', 'caret-down mr-3')
+        = icon('fas', 'caret-down pr-1 mr-2')
         = t('dashboard.protocols.service_requests.header', status: PermissibleValue.get_value('status', sr.status), date: format_date(sr.submitted? ? sr.submitted_at : sr.updated_at))
       .service-request-links-container.d-flex
         .dropdown.no-caret.mr-1>

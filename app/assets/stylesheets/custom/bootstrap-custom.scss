@@ -36,6 +36,16 @@
   }
 }
 
+/////////////
+/// Badge ///
+/////////////
+
+.badge {
+  &.badge-info, &.badge-warning {
+    color: white;
+  }
+}
+
 //////////////
 /// Button ///
 //////////////
@@ -43,7 +53,7 @@
 .btn {
   &.btn-info, &.btn-warning,
   &.btn-outline-info:hover, &.btn-outline-warning:hover {
-    color: white !important;
+    color: white;
   }
 
   &.btn-light:not(.toggle) {
@@ -86,6 +96,7 @@
 
   &-callout {
     @extend .card;
+
     &.card-callout-right {
       border-right-width: .25rem;
       text-align: right;
@@ -93,6 +104,14 @@
 
     &:not(.card-callout-right) {
       border-left-width: .25rem;
+    }
+
+    .card-body {
+      @extend .py-2;
+
+      *:not(:last-child) {
+        margin-bottom: 0.5rem;
+      }
     }
   }
 

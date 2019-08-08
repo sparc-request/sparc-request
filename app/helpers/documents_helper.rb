@@ -29,7 +29,7 @@ module DocumentsHelper
     end
   end
 
-  def display_document_title(document, opts)
+  def display_document_title(document, opts={})
     if in_dashboard? && !opts[:permission]
       document.file_name
     else
@@ -38,15 +38,17 @@ module DocumentsHelper
   end
 
   def document_actions(document, opts={})
-    [
-      edit_document_button(document, opts),
-      delete_document_button(document, opts)
-    ].join('')
+    content_tag :div, class: 'd-flex justify-content-center' do
+      raw([
+        edit_document_button(document, opts),
+        delete_document_button(document, opts)
+      ].join(''))
+    end
   end
 
   def edit_document_button(document, opts={})
     unless in_dashboard? && !opts[:permission]
-      url = in_dashboard? ? edit_dashboard_document_path(document) : edit_document_path(srid: opts[:srid])
+      url = in_dashboard? ? edit_dashboard_document_path(document) : edit_document_path(document, srid: opts[:srid])
 
       link_to icon('far', 'edit'), url, remote: true, class: "btn btn-warning mr-1"
     end
@@ -54,7 +56,7 @@ module DocumentsHelper
 
   def delete_document_button(document, opts={})
     unless in_dashboard? && !opts[:permission]
-      url = in_dashboard? ? dashboard_document_path(document) : document_path(srid: opts[:srid])
+      url = in_dashboard? ? dashboard_document_path(document) : document_path(document, srid: opts[:srid])
 
       link_to icon('fas', 'trash-alt'), url, method: :delete,  remote: true, class: "btn btn-danger", data: { confirm_swal: 'true' }
     end

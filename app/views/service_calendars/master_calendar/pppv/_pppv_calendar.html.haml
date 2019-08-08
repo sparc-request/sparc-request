@@ -23,7 +23,7 @@
 .card{ class: "service-calendar-container arm-#{arm.id}-container", data: { arm_id: arm.id, page: page } }
   .card-header.text-white.justify-content-between.sticky-top{ class: arm.protocol.locked? ? 'bg-danger' : 'bg-primary', data: { toggle: 'collapse', target: ".arm-#{arm.id}-collapse" } }
     %h3.mb-0<
-      = icon('fas', 'caret-down mr-3')
+      = icon('fas', 'caret-down pr-1 mr-2')
       = t('calendars.pppv.header', arm_name: arm.name)
       - if arm.protocol.locked?
         %span{ title: t(:calendar_structure)[:tooltips][:arm_info], data: { toggle: 'tooltip' } }

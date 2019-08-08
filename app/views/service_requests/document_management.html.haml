@@ -24,7 +24,6 @@
   .row
     .col-12.col-lg-9.mb-3.mb-lg-0#documentsPage
       = render 'documents/table', protocol: @service_request.protocol,service_request: @service_request
-      = render 'notes/table', service_request: @service_request, notable_type: @notable_type, notable_id: @notable_id
       - if @service_request.has_associated_forms?
         = render "forms/table", service_request: @service_request
 

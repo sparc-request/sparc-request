@@ -29,18 +29,11 @@ module Dashboard::EpicQueuesHelper
   end
 
   def epic_queue_delete_button(epic_queue)
-    content_tag(:button,
-      raw(content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })),
-      type: 'button', data: { epic_queue_id: epic_queue.id, permission: 'true' }, class: "btn btn-danger actions-button delete-epic-queue-button")
+    link_to icon('fas', 'trash-alt'), dashboard_epic_queue_path(epic_queue.id), remote: true, method: :delete, class: 'btn btn-danger', data: { confirm_swal: 'true' }
   end
 
   def epic_queue_send_button(epic_queue)
-    content_tag(
-      :a,
-      raw(content_tag(:span, '', class: 'glyphicon glyphicon-hand-right')),
-      data: { protocol_id: epic_queue.protocol.id, permission: 'true',
-              eq_id: epic_queue.id },
-      class: 'btn btn-success push-to-epic')
+    link_to icon('fas', 'hand-point-right'), push_to_epic_protocol_path(epic_queue.protocol.id, eq_id: epic_queue.id, from_portal: true, format: :js), remote: true, method: :get, class: 'btn btn-success push-to-epic', data: { permission: 'true' }
   end
 
   def format_epic_queue_date(protocol)

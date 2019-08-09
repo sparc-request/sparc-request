@@ -20,10 +20,10 @@
 .modal-dialog.modal-lg#notes-modal
   .modal-content
     .modal-header
-      %button.close{ type: 'button', data: { dismiss: 'modal' } }
-        %span{ aria: { hidden:'true' } } &times;
       %h4.modal-title.text-center
         = note_header(notable)
+      %button.close{ type: 'button', data: { dismiss: 'modal' } }
+        %span{ aria: { hidden:'true' } } &times;
     .modal-body
       #modal_errors
       = render 'notes/table', notable_id: notable_id, notable_type: notable_type, review: @review, cancel: 'true'

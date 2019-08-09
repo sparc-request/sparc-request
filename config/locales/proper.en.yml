@@ -197,10 +197,10 @@ en:
           sub_header: "Fill in milestones & arm details"
         service_calendar:
           step_text:
-            full: "Step 4<br/>Service<br/>Calendar"
-            short: "Step 4<br/>Calendar"
+            full: "Step 4<br/>Service<br/>Details"
+            short: "Step 4<br/>Details"
             xs: "Step 4"
-          header: "Step 4: Service Calendar"
+          header: "Step 4: Service Details"
           sub_header: "Study timeline & service indications"
         service_subsidy:
           step_text:

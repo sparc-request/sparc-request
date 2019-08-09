@@ -97,20 +97,30 @@
   &-callout {
     @extend .card;
 
-    &.card-callout-right {
+    &.callout-right {
       border-right-width: .25rem;
       text-align: right;
     }
 
-    &:not(.card-callout-right) {
+    &:not(.callout-right) {
       border-left-width: .25rem;
     }
 
+    &.callout-condensed {
+      &:not(:last-of-type) {
+        margin-bottom: 0.5rem;
+      }
+
+      .card-body {
+        padding: 0.25rem 0.5rem;
+      }
+    }
+
     .card-body {
-      @extend .py-2;
+      padding: 0.5rem 1rem;
 
       *:not(:last-child) {
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.25rem;
       }
     }
   }
@@ -118,11 +128,11 @@
 
   @each $color, $value in $theme-colors {
     &-callout.callout-#{$color} {
-      &.card-callout-right {
+      &.callout-right {
         border-right-color: $value;
       }
 
-      &:not(.card-callout-right) {
+      &:not(.callout-right) {
         border-left-color: $value;
       }
 

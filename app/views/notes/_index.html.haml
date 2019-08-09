@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.modal-dialog{ role: 'document' }
+.modal-dialog.modal-lg{ role: 'document' }
   .modal-content
     .modal-header
       %h3.modal-title
@@ -27,8 +27,8 @@
         %span{ aria: { hidden: 'true' } } &times;
     .modal-body
       - notes.order(:created_at).each do |note|
-        .card-callout.callout-warning{ id: "note#{note.id}" }
-          .card-body.d-flex.px-2
+        .card-callout.callout-warning.callout-condensed{ id: "note#{note.id}" }
+          .card-body.d-flex
             .justify-content-start.pr-2
               %h5.mb-0
                 = icon('far', 'sticky-note text-warning')
@@ -43,7 +43,7 @@
                 = simple_format(note.body)
                 = note_date(note)
       - if notes.empty?
-        .alert.alert-danger.mb-0
+        .alert.alert-success.mb-0
           = t('notes.none', notable_type: notable.try(:friendly_notable_type) || notable.model_name.human)
     .modal-footer
       = form_for note, remote: true, html: { class: 'w-100' } do |f|

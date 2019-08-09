@@ -46,8 +46,14 @@ module NotesHelper
 
   def note_header(notable)
     header  = t('notes.header', notable_type: notable.try(:friendly_notable_type) || notable.model_name.human)
-    header += " " + content_tag(:small, "#{Protocol.model_name.human} ##{notable.protocol_id}", class: 'text-muted') if [Protocol, Study, Project, EpicQueueRecord].include?(notable)
-    header += " " + content_tag(:small, "#{notable.service.abbreviation}", class: 'text-muted') if [LineItem, LineItemsVisit].include?(notable.class)
+    header +=
+      if notable.is_a?(EpicQueueRecord)
+        " " + content_tag(:small, "#{Protocol.model_name.human} ##{notable.protocol_id}", class: 'text-muted')
+      elsif [Study, Project].include?(notable.class)
+        " " + content_tag(:small, "#{notable.model_name.human} ##{notable.id}", class: 'text-muted')
+      elsif [LineItem, LineItemsVisit].include?(notable.class)
+        " " + content_tag(:small, "#{notable.service.display_service_name}", class: 'text-muted')
+      end
 
     raw(header)
   end
@@ -57,7 +63,7 @@ module NotesHelper
       if note.created_at == note.updated_at
         format_datetime(note.created_at)
       else
-        raw(format_datetime(note.updated_at) + content_tag(:i, t('notes.edited'), class: 'ml-1'))
+        raw(format_datetime(note.created_at) + content_tag(:i, t('notes.edited', updated_at: format_datetime(note.updated_at)), class: 'ml-1'))
       end
     end
   end

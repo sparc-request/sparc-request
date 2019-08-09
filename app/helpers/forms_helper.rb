@@ -26,11 +26,11 @@ module FormsHelper
     content_tag(:h4, content_tag(:span, icon, class: klass))
   end
 
-  def form_options(form, completed, respondable, review)
-    if review
+  def form_options(form, completed, respondable)
+    if in_review?
       response = Response.where(survey: form, respondable: respondable).first
       response ? view_response_button(response) : link_to(icon('fas', 'eye'), 'javascript:void(0)', class: 'btn btn-info disabled')
-    elsif completed
+    elsif in_dashboard?
       response = Response.where(survey: form, respondable: respondable).first
       [ view_response_button(response),
         edit_response_button(response),

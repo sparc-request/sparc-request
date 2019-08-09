@@ -88,42 +88,27 @@ module Dashboard::SubServiceRequestsHelper
     return total
   end
 
-  def display_ssr_submissions(ssr)
-    forms                     = ssr.forms_to_complete
-    form_list                 = {}
-    form_list[:Organization]  = [] if forms.any?{ |f| f.surveyable_type == 'Organization' }
-    form_list[:Service]       = [] if forms.any?{ |f| f.surveyable_type == 'Service' }
-
-    forms.each do |f|
-      form_list[f.surveyable_type.to_sym] << [f.surveyable.name, f.surveyable.name, data: { type: 'Form', survey_id: f.id, respondable_id: ssr.id, respondable_type: 'SubServiceRequest' }]
-    end
-
-    unless form_list.empty?
-      select_tag :complete_forms, grouped_options_for_select(form_list).html_safe, title: t('dashboard.service_requests.forms.selectpicker'), class: 'selectpicker complete-forms', data: { style: 'btn-danger', counter: 'true', header: t('dashboard.service_requests.forms.selectpicker') }
-    end
-  end
-
-  def ssr_actions_display(ssr, admin_orgs)
+  def ssr_actions(ssr, admin_orgs)
     admin_access = (admin_orgs & ssr.org_tree).any?
 
     content_tag :div, class: 'd-flex justify-content-center' do
       raw([
-        ssr_notifications_display(ssr),
-        ssr_view_button(ssr),
-        ssr_admin_button(ssr, admin_access)
+        notify_ssr_button(ssr),
+        view_ssr_button(ssr),
+        admin_edit_ssr_buttton(ssr, admin_access)
       ].join(''))
     end
   end
 
-  def ssr_notifications_display(ssr)
+  def notify_ssr_button(ssr)
     render 'dashboard/notifications/dropdown.html', sub_service_request: ssr
   end
 
-  def ssr_view_button(ssr)
+  def view_ssr_button(ssr)
     link_to icon('fas', 'eye'), dashboard_sub_service_request_path(ssr), remote: true, title: t('dashboard.service_requests.tooltips.view'), class: 'btn btn-info mx-1', data: { toggle: 'tooltip', boundary: 'window' }
   end
 
-  def ssr_admin_button(ssr, admin_access)
+  def admin_edit_ssr_buttton(ssr, admin_access)
     if admin_access
       link_to icon('fas', 'edit'), dashboard_sub_service_request_path(ssr), title: t('dashboard.service_requests.tooltips.admin_edit'), class: "btn btn-warning", data: { toggle: 'tooltip', boundary: 'window' }
     end

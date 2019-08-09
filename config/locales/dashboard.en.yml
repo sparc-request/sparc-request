@@ -241,8 +241,7 @@ en:
     service_requests:
       modify_request: "Add / Modify Requests"
       forms:
-        header: "Forms"
-        selectpicker: "Complete Form"
+        selectpicker: "Complete Forms"
       tooltips:
         view: "Quick access to view services from this provider"
         admin_edit: "Service Provider administrative access to track and manage services"

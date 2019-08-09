@@ -79,6 +79,11 @@ en:
         document: "Document"
         document_updated_at: "Uploaded"
         org_ids: "Service Providers With Access"
+      form:
+        respondable_id: "SRID"
+        surveyable: "Association"
+        title: "Title"
+        completed: "Completed"
       fulfillment:
         time: "Quantity"
       human_subjects_info:
@@ -276,7 +281,9 @@ en:
       messages:
         spoofed_media_type: "invalid file type"
     models:
-      service: "Service"
+      service:
+        one: "Service"
+        other: "Services"
 
   ########
   # ARMS #
@@ -546,12 +553,7 @@ en:
   # FORMS #
   #########
   forms:
-    table_fields:
-      srid: "SRID"
-      association: "Association"
-      title: "Form Title"
-      completed: "Completed"
-      options: "Options"
+    none: "You don't have any forms to complete"
 
   ##########
   # LAYOUT #
@@ -657,7 +659,7 @@ en:
     update: "Update Note"
     none: "This %{notable_type} doesn't have any notes."
     placeholder: "Type a note..."
-    edited: "(Edited)"
+    edited: "(Edited %{updated_at})"
 
   #############
   # PROTOCOLS #

@@ -405,10 +405,6 @@ class Protocol < ApplicationRecord
     study_type_question_group.nil? ? nil : study_type_question_group.version
   end
 
-  def friendly_notable_type
-    Protocol.model_name.human
-  end
-
   def email_about_change_in_authorized_user(modified_roles, action)
     # Alert authorized users of deleted authorized user
     # Send emails if send_authorized_user_emails is set to true and if there are any non-draft SSRs

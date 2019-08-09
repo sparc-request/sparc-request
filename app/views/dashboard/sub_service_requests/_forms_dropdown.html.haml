@@ -18,11 +18,19 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= render 'protocols/summary', protocol: @protocol, permission_to_edit: @permission_to_edit, admin: @admin
-= render 'associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit, admin: @admin
-= render "protocols/milestones", protocol: @protocol
-- if @protocol.has_clinical_services?
-  = render 'dashboard/calendar_structure/table', protocol: @protocol
-= render 'dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit
-= render 'documents/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin
-= render 'forms/table', protocol: @protocol
+- if (forms = sub_service_request.forms_to_complete).any?
+  .dropdown.no-caret
+    %button.btn.btn-danger.dropdown-toggle.position-relative{ id: "subServiceRequest#{sub_service_request.id}Forms", role: 'button', data: { toggle: 'dropdown', boundary: 'window' }, aria: { haspopup: 'true', expanded: 'false' } }
+      = t('dashboard.service_requests.forms.selectpicker')
+      %span.badge.badge-pill.notification-badge.badge-secondary
+        = format_count(forms.values.sum(&:count))
+    .dropdown-menu{ aria: { labelledby: "subServiceRequest#{sub_service_request.id}Forms" } }
+      - forms.each do |surveyable_name, grouped_forms|
+        .dropdown-header
+          %h6.mb-0
+            = surveyable_name
+        .dropdown-divider
+        - grouped_forms.each do |f|
+          = link_to new_surveyor_response_path(type: Form.name, survey_id: f.id, respondable_id: sub_service_request.id, respondable_type: SubServiceRequest.name), remote: true, class: 'dropdown-item' do
+            = succeed f.title do
+              = icon('fas', 'poll-h mr-2')

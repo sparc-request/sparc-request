@@ -118,7 +118,11 @@ SparcRails::Application.routes.draw do
 
   resources :studies, controller: :protocols, except: [:index, :show, :destroy]
 
-  resources :associated_users, except: [:show]
+  resources :associated_users, except: [:show] do
+    collection do
+      get :update_professional_organizations
+    end
+  end
 
   resources :arms, only: [:index, :new, :create, :edit, :update, :destroy]
 
@@ -143,7 +147,7 @@ SparcRails::Application.routes.draw do
 
   resources :documents, only: [:index, :new, :create, :edit, :update, :destroy]
 
-  resources :notes, only: [:index, :new, :create, :edit, :update, :destroy]
+  resources :notes, only: [:index, :create, :edit, :update, :destroy]
 
   resources :sub_service_requests, only: [:show]
 
@@ -226,11 +230,7 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :associated_users, only: [:index, :new, :create, :edit, :update, :destroy] do
-      collection do
-        get :update_professional_organization_form_items
-      end
-    end
+    resources :associated_users, except: [:show]
 
     resources :documents, except: [:show]
 

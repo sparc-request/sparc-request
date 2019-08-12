@@ -24,7 +24,7 @@
       %h1.mb-5
         = t('error_pages.authorization_error.header')
       %h4.alert.alert-danger.mb-5
-        = raw params[:error]
+        = raw(@error)
       %h4.text-muted
         = raw t('error_pages.help_text', email: link_to(Setting.get_value('contact_us_cc'), "mailto#{Setting.get_value('contact_us_cc')}"), phone: link_to(Setting.get_value('contact_us_phone'), "mailto#{Setting.get_value('contact_us_phone')}"))
       - if current_user

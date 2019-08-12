@@ -19,9 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::ProtocolsController < Dashboard::BaseController
-
-  respond_to :html, :json, :xlsx
-
   before_action :find_protocol,             only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
   before_action :find_admin_for_protocol,   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
   before_action :protocol_authorizer_view,  only: [:show, :view_full_calendar, :display_requests]
@@ -86,7 +83,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       }
       format.js
       format.xlsx {
-        @statuses_hidden = params[:statuses_hidden] || %w(draft first_draft)
+        @show_draft = params[:show_draft] == 'true'
         response.headers['Content-Disposition'] = "attachment; filename=\"(#{@protocol.id}) Consolidated #{@protocol.industry_funded? ? 'Corporate ' : ''}Study Budget.xlsx\""
       }
       format.pdf {
@@ -107,7 +104,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     controller.new
     @protocol = controller.instance_variable_get(:@protocol)
 
-    respond_to :js
+    respond_to :html
   end
 
   def create
@@ -159,7 +156,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def update
-    unless params[:locked]
+    if @locked = params[:locked]
+      @protocol.toggle!(:locked)
+    else
       permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
       # admin is not able to activate study_type_question_group
 
@@ -176,8 +175,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         @sub_service_request = SubServiceRequest.find params[:sub_service_request][:id]
         render "/dashboard/sub_service_requests/update"
       end
-    else
-      perform_protocol_lock(@protocol, params[:locked])
     end
 
     respond_to :js
@@ -264,11 +261,20 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       params[:protocol][:vertebrate_animals_info_attributes][:iacuc_expiration_date] = sanitize_date params[:protocol][:vertebrate_animals_info_attributes][:iacuc_expiration_date]
     end
 
+    params[:protocol][:start_date]                            = sanitize_date params[:protocol][:start_date]                            if params[:protocol][:start_date]
+    params[:protocol][:end_date]                              = sanitize_date params[:protocol][:end_date]                              if params[:protocol][:end_date]
+    params[:protocol][:recruitment_start_date]                = sanitize_date params[:protocol][:recruitment_start_date]                if params[:protocol][:recruitment_start_date]
+    params[:protocol][:recruitment_end_date]                  = sanitize_date params[:protocol][:recruitment_end_date]                  if params[:protocol][:recruitment_end_date]
+    params[:protocol][:initial_budget_sponsor_received_date]  = sanitize_date params[:protocol][:initial_budget_sponsor_received_date]  if params[:protocol][:initial_budget_sponsor_received_date]
+    params[:protocol][:budget_agreed_upon_date]               = sanitize_date params[:protocol][:budget_agreed_upon_date]               if params[:protocol][:budget_agreed_upon_date]
+
     params.require(:protocol).permit(
       :archived,
       :arms_attributes,
       :billing_business_manager_static_email,
       :brief_description,
+      :budget_agreed_upon_date,
+      :end_date,
       :federal_grant_code_id,
       :federal_grant_serial_number,
       :federal_grant_title,
@@ -284,17 +290,25 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       :guarantor_phone,
       :identity_id,
       :indirect_cost_rate,
+      :initial_amount,
+      :initial_amount_clinical_services,
+      :initial_budget_sponsor_received_date,
       :last_epic_push_status,
       :last_epic_push_time,
+      :negotiated_amount,
+      :negotiated_amount_clinical_services,
       :next_ssr_id,
       :potential_funding_source,
       :potential_funding_source_other,
       :potential_funding_start_date,
+      :recruitment_end_date,
+      :recruitment_start_date,
       :requester_id,
       :research_master_id,
       :selected_for_epic,
       :short_title,
       :sponsor_name,
+      :start_date,
       :study_type_question_group_id,
       :title,
       :type,
@@ -311,13 +325,5 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       study_type_answers_attributes: [:id, :answer, :study_type_question_id, :_destroy],
       vertebrate_animals_info_attributes: [:id, :iacuc_number, :name_of_iacuc, :iacuc_approval_date, :iacuc_expiration_date]
     )
-  end
-
-  def perform_protocol_lock(protocol, lock_status)
-    if lock_status == 'true'
-      protocol.update_attributes(locked: false)
-    else
-      protocol.update_attributes(locked: true)
-    end
   end
 end

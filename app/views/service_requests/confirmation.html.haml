@@ -37,7 +37,7 @@
             .my-2#pushToEpicStatus{ data: { protocol_id: @protocol.id } }
 
       %table.table.table-bordered.mb-0#request-ssrs-table
-        %thead
+        %thead.bg-light
           %tr
             %th
               = t(:proper)[:confirmation][:table_fields][:request_id]
@@ -66,7 +66,7 @@
       .card-footer.justify-content-center
         .col-3
           = link_to service_request_path(srid: @service_request.id, format: :xlsx, report_type: 'request_report'), class: 'btn btn-lg btn-block btn-secondary' do
-            = icon('fas', 'download')
-            = t(:proper)[:confirmation][:download_request]
+            = succeed t(:proper)[:confirmation][:download_request] do
+              = icon('fas', 'download mr-2')
         .col-3
           = link_to t(:proper)[:confirmation][:to_dashboard], Setting.get_value("dashboard_link"), class: 'btn btn-lg btn-block btn-success'

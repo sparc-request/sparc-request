@@ -18,37 +18,4 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-$ ->
-
-  if $('.initial-budget-sponsor-received-date-picker').val() != ''
-    $('.initial-amount').removeClass('hide')
-    $('.initial-amount-cs').removeClass('hide')
-
-  if $('.budget-agreed-upon-date-picker').val() != ''
-    $('.negotiated-amount').removeClass('hide')
-    $('.negotiated-amount-cs').removeClass('hide')
-
-  $(document).on 'dp.change', '.start-date-picker', (e) ->
-    $('.start-date-setter').val(e.date)
-
-  $(document).on 'dp.change', '.end-date-picker', (e) ->
-    $('.end-date-setter').val(e.date)
-
-  $(document).on 'dp.change', '.recruitment-start-date-picker', (e) ->
-    $('.recruitment-start-date-setter').val(e.date)
-
-  $(document).on 'dp.change', '.recruitment-end-date-picker', (e) ->
-    $('.recruitment-end-date-setter').val(e.date)
-
-  $(document).on 'dp.change', '.initial-budget-sponsor-received-date-picker', (e) ->
-    $('.initial-budget-sponsor-received-date-setter').val(e.date)
-
-  $(document).on 'dp.change', '.budget-agreed-upon-date-picker', (e) ->
-    $('.budget-agreed-upon-setter').val(e.date)
-
-  $(document).on 'dp.hide', '.start-date-picker, .end-date-picker, .recruitment-start-date-picker, .recruitment-end-date-picker, .initial-budget-sponsor-received-date-picker, .budget-agreed-upon-date-picker', ->
-    $('.milestone-form').submit()
-
-  $(document).on 'blur', '.initial-amount, .negotiated-amount, .negotiated-amount-cs, .initial-amount-cs', ->
-    $('.milestone-form').submit()
-
+$('#professionalOrganizationForm').replaceWith("<%= j render 'associated_users/professional_organizations', professional_organization: @professional_organization %>")

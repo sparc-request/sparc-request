@@ -49,7 +49,7 @@ class ProtocolsController < ApplicationController
       @protocol.next_ssr_id = @service_request.sub_service_requests.order(:ssr_id).last.ssr_id.to_i + 1
       @protocol.save
       @service_request.update_attribute(:protocol, @protocol)
-      @service_request.update_status('draft')
+      @service_request.update_status('draft', current_user)
 
       if Setting.get_value("use_epic") && @protocol.selected_for_epic
         @protocol.ensure_epic_user
@@ -75,7 +75,7 @@ class ProtocolsController < ApplicationController
   def update
     if @protocol.update_attributes(protocol_params)
       if @service_request.status == 'first_draft'
-        @service_request.update_status('draft')
+        @service_request.update_status('draft', current_user)
       end
 
       flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)

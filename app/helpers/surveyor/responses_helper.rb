@@ -64,7 +64,7 @@ module Surveyor::ResponsesHelper
       response.new_record? ? '' : surveyor_response_path(response),
       remote: true,
       class: ['btn btn-primary view-response mr-1', permissions && response.completed? ? '' : 'disabled'],
-      title: I18n.t('surveyor.responses.tooltips.view', klass: response.survey.class.yaml_klass),
+      title: I18n.t('surveyor.responses.tooltips.view'),
       data: { toggle: 'tooltip', placement: 'top', container: 'body' }
     )
   end
@@ -75,7 +75,7 @@ module Surveyor::ResponsesHelper
       response.new_record? ? '' : edit_surveyor_response_path(response),
       remote: true,
       class: ['btn btn-warning edit-response mr-1', permissions && response.completed? ? '' : 'disabled'],
-      title: I18n.t('surveyor.responses.tooltips.edit', klass: response.survey.class.yaml_klass),
+      title: I18n.t('surveyor.responses.tooltips.edit'),
       data: { toggle: 'tooltip', placement: 'top', container: 'body' }
     )
   end
@@ -87,7 +87,7 @@ module Surveyor::ResponsesHelper
       method: :delete,
       remote: true,
       class: 'btn btn-danger delete-response',
-      title: I18n.t('surveyor.responses.tooltips.delete', klass: response.survey.class.yaml_klass),
+      title: I18n.t('surveyor.responses.tooltips.delete'),
       data: { toggle: 'tooltip', placement: 'top', container: 'body', confirm_swal: 'true' }
     )
   end
@@ -98,7 +98,7 @@ module Surveyor::ResponsesHelper
         content_tag(:span, '', class: 'glyphicon glyphicon-share-alt', aria: { hidden: 'true'}),
         surveyor_response_resend_survey_path(response), method: :put, remote: true,
         class: ['btn btn-info resend-survey', permissions ? '' : 'disabled'],
-        title: I18n.t('surveyor.responses.tooltips.resend', klass: response.survey.class.yaml_klass),
+        title: I18n.t('surveyor.responses.tooltips.resend'),
         data: { response_id: response.id, toggle: 'tooltip', placement: 'top', container: 'body'}
       )
     end

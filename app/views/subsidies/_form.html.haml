@@ -17,50 +17,51 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 .modal-dialog{ role: 'document' }
   .modal-content
     = form_for in_dashboard? ? [:dashboard, subsidy.becomes(Subsidy)] : subsidy.becomes(Subsidy), remote: true do |f|
-      = f.hidden_field :sub_service_request_id
-      = hidden_field_tag :admin, admin
-      = hidden_field_tag :srid, @service_request.try(:id)
+      = hidden_field_tag :ssrid, subsidy.sub_service_request_id
+      - unless in_dashboard?
+        = hidden_field_tag :srid, service_request.id
       .modal-header
         %h3.modal-title
           = t("subsidies.#{action_name}")
         %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
           %span{ aria: { hidden: 'true' } } &times;
       .modal-body
-        #modal_errors
-
         %table.table.table-bordered
           %tr
             %td.col-6
               .d-flex.justify-content-between
                 %span{ title: t(:subsidies)[:tooltips][:request_cost],  data: { toggle: 'tooltip' } }
-                  = t(:subsidies)[:form][:request_cost]
+                  = Subsidy.human_attribute_name(:request_cost)
                 %span#subsidy_form_table_request_cost{ data: { cost:  subsidy.total_request_cost } }
                   = number_to_currency(subsidy.total_request_cost / 100.0)
             %td.col-6
               .d-flex.justify-content-between
                 %span{ title: t(:subsidies)[:tooltips][:cost], data: {  toggle: 'tooltip' } }
-                  = t(:subsidies)[:form][:cost]
+                  = Subsidy.human_attribute_name(:subsidy_cost)
                 %span#subsidy_form_table_subsidy_cost{ data: { cost:  subsidy.current_cost } }
                   = number_to_currency(subsidy.current_cost)
-
         .form-group
           = f.label :percent_subsidy, title: t(:subsidies)[:tooltips][:percent], data: { toggle: 'tooltip' }
           .input-group
             = f.text_field :percent_subsidy, class: 'form-control', value: display_as_percent(subsidy.percent_subsidy)
             .input-group-append
-              %span.input-group-text %
+              = f.label :percent_subsidy, '%', class: 'input-group-text'
 
         .form-group
-          = f.label :pi_contribution, t(:subsidies)[:form][:pi], title: t(:subsidies)[:tooltips][:pi], data: { toggle: 'tooltip' }
+          = f.label :pi_contribution, title: t(:subsidies)[:tooltips][:pi], data: { toggle: 'tooltip' }
           .input-group
             .input-group-prepend
-              %span.input-group-text $
+              = f.label :pi_contribution, t('constants.currency'), class: 'input-group-text'
             = f.text_field :pi_contribution, { class: 'form-control', value: (cents_to_dollars_float(subsidy.pi_contribution)).to_s }
 
       .modal-footer
-        %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
-          = t('actions.close')
+        - if in_dashboard? && !admin
+          = link_to t('actions.back'), dashboard_sub_service_request_path(subsidy.sub_service_request_id), remote: true, class: 'btn btn-secondary'
+        - else
+          %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+            = t('actions.close')
         = f.submit t('actions.submit'), class: 'btn btn-primary'

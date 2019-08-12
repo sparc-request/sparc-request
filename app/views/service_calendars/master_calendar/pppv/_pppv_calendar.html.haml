@@ -21,8 +21,9 @@
 - visit_groups = arm.visit_groups.page(page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] } })
 
 .card{ class: "service-calendar-container arm-#{arm.id}-container", data: { arm_id: arm.id, page: page } }
-  .card-header.text-white.justify-content-between.sticky-top{ class: arm.protocol.locked? ? 'bg-danger' : 'bg-primary' }
-    %h3.mb-0
+  .card-header.text-white.justify-content-between.sticky-top{ class: arm.protocol.locked? ? 'bg-danger' : 'bg-primary', data: { toggle: 'collapse', target: ".arm-#{arm.id}-collapse" } }
+    %h3.mb-0<
+      = icon('fas', 'caret-down pr-1 mr-2')
       = t('calendars.pppv.header', arm_name: arm.name)
       - if arm.protocol.locked?
         %span{ title: t(:calendar_structure)[:tooltips][:arm_info], data: { toggle: 'tooltip' } }
@@ -32,8 +33,9 @@
         = link_to show_move_visits_service_calendars_path(srid: service_request.try(:id), ssrid: sub_service_request.try(:id), arm_id: arm.id, pages: pages, page: page, tab: tab), remote: true, class: ['btn btn-warning', arm.protocol.locked? ? 'disabled' : ''], title: t(:calendars)[:tooltips][:move_visit_button], data: { toggle: 'tooltip' } do
           = icon('fas', 'exchange-alt')
           = t(:proper)[:service_calendar][:move_visit][:header]
-  %table.table.table-bordered.service-calendar-table
-    %thead
-      = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_header", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, portal: portal, merged: merged, consolidated: consolidated, visit_groups: visit_groups
-    %tbody
-      = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_line_items", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, review: review, portal: portal, admin: admin, merged: merged, consolidated: consolidated, visit_groups: visit_groups
+  .collapse.show{ class: "arm-#{arm.id}-collapse" }
+    %table.table.table-bordered.service-calendar-table
+      %thead
+        = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_header", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, portal: portal, merged: merged, consolidated: consolidated, visit_groups: visit_groups
+      %tbody
+        = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_line_items", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, review: review, portal: portal, admin: admin, merged: merged, consolidated: consolidated, visit_groups: visit_groups

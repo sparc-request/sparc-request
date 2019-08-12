@@ -56,6 +56,10 @@ class LineItemsVisit < ApplicationRecord
     return liv
   end
 
+  def friendly_notable_type
+    Service.model_name.human
+  end
+
   # Returns the cost per unit based on a quantity (usually just the quantity on the line_item)
   def per_unit_cost quantity_total=self.line_item.quantity
     if quantity_total == 0 || quantity_total.nil?

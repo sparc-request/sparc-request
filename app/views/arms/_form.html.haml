@@ -18,16 +18,28 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.panel.panel-default
-  .panel-heading.flex-column
-    %h4.panel-title
-      = t(:protocols)[:studies][:study_type][:header]
-    = t(:protocols)[:studies][:study_type][:subtext]
-  .panel-body
-    = form.fields_for :study_types, protocol.study_types.sort_by(&:position) do |st_form|
-      - checked = !st_form.object.new && !st_form.object.marked_for_destruction?
-      .form-group.row{ class: st_form.object.name }
-        = st_form.label :name, "#{PermissibleValue.get_value('study_type', st_form.object.name)}:", class: 'col-lg-2 control-label'
-        .col-lg-1
-          = st_form.check_box "_destroy", { checked: checked, class: 'form-control' }, false, true
-          = st_form.hidden_field :name, value: st_form.object.name
+.modal-dialog{ role: 'document' }
+  .modal-content
+    = form_for in_dashboard? ? [:dashboard, arm] : arm, remote: true do |f|
+      = f.hidden_field :protocol_id
+      - unless in_dashboard?
+        = hidden_field_tag :srid, service_request.id
+      .modal-header
+        %h3.modal-title
+          = t("arms.#{action_name}")
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+          %span{ aria: { hidden: 'true' } } &times;
+      .modal-body
+        .form-group
+          = f.label :name, class: 'required', title: t('arms.tooltips.name'), data: { toggle: 'tooltip' }
+          = f.text_field :name, class: 'form-control'
+        .form-group
+          = f.label :subject_count, class: 'required', title: t('arms.tooltips.subject_count'), data: { toggle: 'tooltip' }
+          = f.number_field :subject_count, class: 'form-control', min: 0
+        .form-group
+          = f.label :visit_count, class: 'required', title: t('arms.tooltips.subject_count'), data: { toggle: 'tooltip' }
+          = f.number_field :visit_count, class: 'form-control', min: 0
+      .modal-footer
+        %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+          = t('actions.close')
+        = f.submit t('actions.submit'), class: 'btn btn-primary'

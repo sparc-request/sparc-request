@@ -108,11 +108,9 @@ en:
     # DOCUMENT MANAGEMENT #
     #######################
     document_management:
-      documents_notice: "Documents"
       notes_notice: "Notes"
       forms_notice: 'Forms'
       tooltips:
-        documents: "Visible to Authorized Users and selected Service Providers"
         notes: "Important notes for your Study/Project"
 
     ##############################
@@ -199,10 +197,10 @@ en:
           sub_header: "Fill in milestones & arm details"
         service_calendar:
           step_text:
-            full: "Step 4<br/>Service<br/>Calendar"
-            short: "Step 4<br/>Calendar"
+            full: "Step 4<br/>Service<br/>Details"
+            short: "Step 4<br/>Details"
             xs: "Step 4"
-          header: "Step 4: Service Calendar"
+          header: "Step 4: Service Details"
           sub_header: "Study timeline & service indications"
         service_subsidy:
           step_text:
@@ -213,11 +211,11 @@ en:
           sub_header: "Request a subsidy for eligible services"
         document_management:
           step_text:
-            full: "Step 5<br/>Documents,<br/>Notes & Forms"
+            full: "Step 5<br/>Documents<br/>& Forms"
             short: "Step 5<br/>Documents"
             xs: "Step 5"
-          header: "Step 5: Documents, Notes & Forms"
-          sub_header: "Upload documents, add notes, and complete forms"
+          header: "Step 5: Documents & Forms"
+          sub_header: "Upload documents and complete forms"
         review:
           step_text:
             full: "Step 6<br/>Review Your<br/>Request"

@@ -80,4 +80,8 @@ class EpicQueueRecord < ApplicationRecord
   def self.with_valid_protocols
     joins(:protocol).where.not(protocols: { id: nil } )
   end
+
+  def friendly_notable_type
+    Protocol.model_name.human
+  end
 end

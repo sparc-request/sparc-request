@@ -55,8 +55,9 @@ $(document).ready ->
   $(document).on 'changed.bs.select', '#professionalOrganizationForm select', ->
     last_selected = $(this).val()
     $.ajax
-      type: 'get'
-      url: '/dashboard/associated_users/update_professional_organization_form_items.js'
+      method: 'get'
+      dataType: 'script'
+      url: '/associated_users/update_professional_organizations'
       data:
         last_selected_id: last_selected
 

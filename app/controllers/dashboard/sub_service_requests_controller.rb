@@ -54,8 +54,6 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         end
 
         @service_request        = @sub_service_request.service_request
-        @service_list           = @service_request.service_list
-        @line_items             = @sub_service_request.line_items
         @protocol               = @service_request.protocol
         @tab                    = 'calendar'
         @portal                 = true
@@ -63,7 +61,6 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         @review                 = true
         @merged                 = false
         @consolidated           = false
-        @display_all_services   = true
         @pages                  = {}
         @service_request.arms.each do |arm|
           new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i

@@ -20,7 +20,7 @@
 
 - content_for :content do
   .container
-    .col-12.col-sm-8.col-lg-6.px-0.mx-auto
+    .col-12.col-sm-8.px-0.mx-auto{ class: controller_name == 'registrations' ? '' : 'col-lg-6' }
       .card
         .card-body.p-xl-5
           = yield

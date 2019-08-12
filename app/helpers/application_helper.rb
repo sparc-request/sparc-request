@@ -23,12 +23,24 @@ module ApplicationHelper
     date.strftime('%D') rescue ""
   end
 
+  def format_datetime(datetime)
+    datetime.strftime('%D %l:%M %p') rescue ""
+  end
+
   def format_phone(phone)
     '(' + phone.first(3) + ') ' + phone.from(3).to(2) + '-' + phone.from(6).to(3) + (phone.include?('#') ? phone.from(10).gsub('#', " #{I18n.t('constants.phone.extension')} ") : '') rescue ""
   end
 
   def format_currency(amount)
     "%.2f" % amount rescue ""
+  end
+
+  def format_count(value, digits=1)
+    if value >= 10.pow(digits)
+      "#{value - (value - (10.pow(digits) - 1))}+"
+    else
+      value
+    end
   end
 
   def css_class(organization)
@@ -172,7 +184,7 @@ module ApplicationHelper
   end
 
   def in_dashboard?
-    request.path.start_with?('/dashboard')
+    (request.format.html? && request.path.start_with?('/dashboard') && request.format.html?) || Rails.application.routes.recognize_path(request.referrer)[:controller].starts_with?('dashboard/')
   end
 
   def in_review?

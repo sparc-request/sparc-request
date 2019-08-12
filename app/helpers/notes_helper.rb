@@ -22,43 +22,49 @@ module NotesHelper
   def notes_button(notable, opts={})
     has_notes = notable.notes.length > 0
 
-    link_to notes_path(note: { notable_id: notable.id, notable_type: notable.class.name }, srid: opts[:service_request].try(:id), ssrid:opts[:sub_service_request].try(:id)), remote: true, class: ['btn btn-light position-relative', opts[:class], opts[:disabled] ? 'disabled' : ''], title: opts[:tooltip], data: { toggle: opts[:tooltip] ? 'tooltip' : '' } do
-      raw(icon('far', 'sticky-note') + content_tag(:span, notable.notes.length, class: ['badge badge-pill notification-badge', has_notes ? 'badge-primary ' : 'badge-secondary'])) + (opts[:model] ? content_tag(:span, opts[:model].model_name.human + " " + Note.model_name.plural.capitalize, class: 'ml-1') : '')
+    link_to notes_path(note: { notable_id: notable.id, notable_type: notable.class.name }, protocol_id: opts[:protocol_id], srid: opts[:srid], ssrid: opts[:ssrid]), remote: true, id: "#{notable.class.name.downcase}#{notable.id}Notes", class: ['btn btn-light position-relative', opts[:class], opts[:disabled] ? 'disabled' : ''], title: opts[:tooltip], data: { toggle: opts[:tooltip] ? 'tooltip' : '' } do
+      raw(icon('far', 'sticky-note') + content_tag(:span, format_count(notable.notes.length, 1), class: ['badge badge-pill notification-badge', has_notes ? 'badge-warning ' : 'badge-secondary'])) + (opts[:model] ? content_tag(:span, opts[:model].model_name.human + " " + Note.model_name.plural.capitalize, class: 'ml-2') : '')
     end
   end
 
-  def note_actions(note)
-    [
-      edit_note_button(note),
-      delete_note_button(note)
-    ].join('')
+  def note_actions(note, opts={})
+    content_tag :div, class: 'd-flex justify-content-center' do
+      raw([
+        edit_note_button(note, opts),
+        delete_note_button(note, opts)
+      ].join(''))
+    end
   end
 
-  def edit_note_button(note)
-    link_to icon('far', 'edit'), edit_note_path(note, note: { notable_id: note.notable_id, notable_type: note.notable_type }, srid: @service_request.id, cancel: params[:cancel], review: params[:review]), remote: true, class: ['btn btn-warning edit-note mr-1', note.identity_id == current_user.id ? '' : 'disabled']
+  def edit_note_button(note, opts={})
+    link_to icon('far', 'edit'), edit_note_path(note, note: { notable_id: note.notable_id, notable_type: note.notable_type }, srid: opts[:srid], ssrid: opts[:ssrid], protocol_id: opts[:protocol_id]), remote: true, class: ['edit-note', opts[:button] ? 'btn btn-warning mr-1' : 'text-warning mr-2', note.identity_id == current_user.id ? '' : 'disabled'], title: t('actions.edit'), data: { toggle: 'tooltip' }
   end
 
-  def delete_note_button(note)
-    link_to icon('fas', 'trash-alt'), note_path(note, srid: @service_request.id), method: :delete,  remote: true, class: ['btn btn-danger delete-note', note.identity_id == current_user.id ? '' : 'disabled'], data: { confirm_swal: 'true' }
+  def delete_note_button(note, opts={})
+    link_to icon('fas', 'trash-alt'), note_path(note, srid: opts[:srid], ssrid: opts[:ssrid], protocol_id: opts[:protocol_id]), method: :delete,  remote: true, class: ['delete-note', opts[:button] ? 'btn btn-danger' : 'text-danger', note.identity_id == current_user.id ? '' : 'disabled'], title: t('actions.delete'), data: { toggle: 'tooltip', confirm_swal: 'true' }
   end
 
   def note_header(notable)
-    action = ['create', 'update'].include?(action_name) ? 'index' : action_name
-
-    header =
+    header  = t('notes.header', notable_type: notable.try(:friendly_notable_type) || notable.model_name.human)
+    header +=
       if notable.is_a?(EpicQueueRecord)
-        t("notes.headers.#{action}", notable_type: "Epic Queue Record")
-      elsif notable.is_a?(Protocol)
-        t("notes.headers.#{action}", notable_type: "Protocol")
+        " " + content_tag(:small, "#{Protocol.model_name.human} ##{notable.protocol_id}", class: 'text-muted')
+      elsif [Study, Project].include?(notable.class)
+        " " + content_tag(:small, "#{notable.model_name.human} ##{notable.id}", class: 'text-muted')
       elsif [LineItem, LineItemsVisit].include?(notable.class)
-        t("notes.headers.#{action}", notable_type: "Service")
-      else
-        t("notes.headers.#{action}", notable_type: notable.class.name)
+        " " + content_tag(:small, "#{notable.service.display_service_name}", class: 'text-muted')
       end
 
-    header += " | Study: #{notable.protocol_id}" if notable.is_a?(EpicQueueRecord)
-    header += " | #{notable.service.display_service_name}" if [LineItem, LineItemsVisit].include?(notable.class)
+    raw(header)
+  end
 
-    header
+  def note_date(note)
+    content_tag :small, class: 'text-muted mb-0' do
+      if note.created_at == note.updated_at
+        format_datetime(note.created_at)
+      else
+        raw(format_datetime(note.created_at) + content_tag(:i, t('notes.edited', updated_at: format_datetime(note.updated_at)), class: 'ml-1'))
+      end
+    end
   end
 end

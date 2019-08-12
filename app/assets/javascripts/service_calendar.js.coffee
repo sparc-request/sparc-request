@@ -31,8 +31,11 @@ $(document).ready ->
       success: ->
         $('#calendarLoading').removeClass('show active')
 
-  else if $('#serviceCalendarReview').length
+  $(document).on('hide.bs.collapse', '.service-calendar-container .collapse', ->
+    $(this).find('.service-calendar-table thead tr th').css('top', 0)
+  ).on('shown.bs.collapse', '.service-calendar-container .collapse', ->
     adjustCalendarHeaders()
+  )
 
   ##########################
   # Visit Checkbox / Input #
@@ -101,42 +104,17 @@ $(document).ready ->
   ################################
 
   $(document).on 'change', '#servicesToggle', ->
+    method = if $('#consolidated').val() == 'true' then 'view_full_calendar' else 'merged_calendar'
+
     $.ajax
       type: 'GET'
       dataType: 'script'
-      url: '/service_calendars/merged_calendar'
+      url: "/service_calendars/#{method}"
       data:
-        srid: getSRId
-        ssrid: getSSRId
+        srid: getSRId()
+        ssrid: getSSRId()
+        show_draft: $('#show_draft').val()
         show_unchecked: $(this).prop('checked')
-
-  toggleServiceButtons = (clicked_button) ->
-    $(clicked_button).addClass('active btn-success').removeClass('btn-custom-green')
-    $(clicked_button).siblings().first().removeClass('active btn-success').addClass('btn-custom-green')
-
-    # hide and show service toggle buttons based on current tab
-    if $(this).is('#calendar_tab') || $(this).is('#calendar-tab')
-      $('.toggle-services-btn-group').css('display', 'inline-block')
-    else
-      $('.toggle-services-btn-group').css('display', 'none')
-
-    # reset toggle buttons
-    toggleServiceButtons($('.toggle-services-btn-group').find('#chosen-services'))
-
-  $(document).on 'click', '.full-calendar-services-toggle', ->
-    if !($(this).hasClass('active'))
-      toggleServiceButtons($(this))
-      protocol_id = $(this).data('protocolId')
-      statuses_hidden = $(this).data('statusesHidden')
-      $.ajax
-        method: 'get'
-        dataType: 'script'
-        url: "/service_calendars/view_full_calendar"
-        data:
-          portal: 'true'
-          protocol_id: protocol_id
-          statuses_hidden: statuses_hidden
-          display_all_services: $(this).is('#all-services')
 
 (exports ? this).setup_xeditable_fields = (scroll) ->
   $('.edit-your-cost').editable
@@ -178,5 +156,12 @@ $(document).ready ->
     row2Height  = $row2.outerHeight()
     row3Height  = $row3.outerHeight()
 
+    $row1.children('th').css('top', headHeight)
     $row2.children('th').css('top', headHeight + row1Height)
     $row3.children('th').css('top', headHeight +  row1Height + row2Height)
+
+(exports ? this).toggleServicesToggle = (toggleOn) ->
+  if toggleOn
+    $('#servicesToggle').parent().removeClass('invisible')
+  else
+    $('#servicesToggle').parent().addClass('invisible')

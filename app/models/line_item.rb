@@ -67,6 +67,10 @@ class LineItem < ApplicationRecord
     joins(:sub_service_request).where.not(sub_service_requests: { status: Status.complete })
   }
 
+  def friendly_notable_type
+    Service.model_name.human
+  end
+
   ### These only pertain to OTF services
   def otf_unit_type
     service.displayed_pricing_map.try(:otf_unit_type)

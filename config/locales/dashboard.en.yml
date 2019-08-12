@@ -25,11 +25,6 @@ en:
     ##########
     header: "SPARCRequest Dashboard"
 
-    ###########
-    #  ADMIN  #
-    ###########
-    admin:
-
     ###############
     #  APPROVALS  #
     ###############
@@ -45,12 +40,6 @@ en:
     ##########
     arms:
       manage: "Manage Arms"
-
-    ###############
-    #  DOCUMENTS  #
-    ###############
-    documents:
-      header: "Documents"
 
     #################
     #  EPIC QUEUES  #
@@ -105,10 +94,8 @@ en:
         user: "User"
         date: "Date"
         message: "Message"
-        no_messages: "This Notification currently has no Messages."
       new:
         header: "New Message to "
-        message: "Message:"
 
     #########################
     #  MULTIPLE LINE ITEMS  #
@@ -132,6 +119,8 @@ en:
     #  NOTIFICATIONS  #
     ###################
     notifications:
+      service_providers:
+        header: "Notify a Service Provider"
       table:
         send: "Send Notification"
         compose: "Compose Message"
@@ -151,7 +140,7 @@ en:
         select_header: "Send Notification"
         message: "Please enter message text here..."
       tooltips:
-        table_button: "Send correspondence to Service Providers or Authorized Users"
+        table_button: "Send correspondence to Service Providers"
         main_button: "Send SPARC system notification to an Authorized User or Service Provider"
 
 
@@ -201,16 +190,13 @@ en:
           export: "Export displayed protocols to Excel"
           requests: "Quick access to requests"
 
-      documents:
-        header: "Documents"
-        add_document: "Add Document"
-
       service_requests:
-        header: "Requests"
-        view_consolidated: "View Consolidated Request"
-        export_consolidated: "Export Consolidated Request"
-        coverage_report: 'Coverage Analysis Report'
-        cost_analysis_report: 'Cost Analysis Report'
+        header: "Requests - %{status} - %{date}"
+        view_consolidated: "Consolidated Request"
+        export_consolidated: "Export"
+        coverage_report: 'Coverage Analysis'
+        cost_analysis_report: 'Cost Analysis'
+        consolidated_all: "All Requests"
         consolidated_all: "All"
         consolidated_exclude_drafts: "Exclude Drafts"
         tooltips:
@@ -254,30 +240,13 @@ en:
     ######################
     service_requests:
       modify_request: "Add / Modify Requests"
-      srid: "SRID"
-      organization: "Organization"
-      owner: "Owner"
-      status: "Status"
-      notifications: "Notifications"
-      actions:
-        header: "Actions"
-        view: "View"
-        admin_edit: "Admin Edit"
-        tooltips:
-          view: "Quick access to view services from this provider"
-          admin_edit: "Service Provider administrative access to track and manage services"
       forms:
-        header: "Forms"
-        selectpicker: "Complete Form"
+        selectpicker: "Complete Forms"
       tooltips:
+        view: "Quick access to view services from this provider"
+        admin_edit: "Service Provider administrative access to track and manage services"
         modify_request: "Allows Authorized User to add or edit services (routes to SPARCRequest)"
         coverage_report: "Ability to export research and third-party payer information to Excel"
-      view_ssr:
-        documents:
-          header: "Documents"
-          none: "No Documents"
-          file_name: "File Name"
-          program_core: "Program/Core"
 
     ############################
     #  Non-clinical Services #
@@ -378,9 +347,6 @@ en:
 
         study_level_activities:
           header: "Non-clinical Services"
-
-        documents:
-          header: "Documents"
 
         history:
           header: "History"

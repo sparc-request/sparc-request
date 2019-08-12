@@ -80,7 +80,7 @@
               = ff_i.select :subspecialty, options_for_select(PermissibleValue.get_inverted_hash('subspecialty'), identity.subspecialty), { include_blank: true }, class: 'selectpicker'
             
 
-          = render 'dashboard/associated_users/professional_organizations', professional_organization: ff_i.object.professional_organization
+          = render 'associated_users/professional_organizations', professional_organization: ff_i.object.professional_organization
 
         %hr
 

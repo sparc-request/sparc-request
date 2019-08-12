@@ -19,7 +19,7 @@
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .card {
-  &> .bootstrap-table {
+  &> .bootstrap-table, &> .collapse > .bootstrap-table, &> .collapsing > .bootstrap-table {
     table {
       border: 0;
 
@@ -31,6 +31,10 @@
         &:last-child {
           border-right: 0;
         }
+      }
+
+      tbody tr:last-child td {
+        border-bottom: 0;
       }
     }
 

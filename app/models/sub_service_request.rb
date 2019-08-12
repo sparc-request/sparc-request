@@ -419,7 +419,7 @@ class SubServiceRequest < ApplicationRecord
   def forms_to_complete
     completed_ids = self.responses.pluck(:survey_id)
 
-    (self.service_forms + self.organization_forms).select{ |f| !completed_ids.include?(f.id) }
+    (self.service_forms + self.organization_forms).select{ |f| !completed_ids.include?(f.id) }.group_by{ |f| f.surveyable.name }
   end
 
   def form_completed?(form)

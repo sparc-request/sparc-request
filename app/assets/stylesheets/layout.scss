@@ -43,6 +43,9 @@ html {
 
 #contentContainer {
   position: relative;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
   display: flex;
   flex-wrap: wrap;
   flex: 1 0;

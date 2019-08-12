@@ -19,23 +19,56 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module DocumentsHelper
+  def new_document_button(opts={})
+    unless in_dashboard? && !opts[:permission]
+      url = in_dashboard? ? new_dashboard_document_path(protocol_id: opts[:protocol_id]) : new_document_path(srid: opts[:srid])
 
-  def document_actions(document)
-    [
-      edit_document_button(document),
-      delete_document_button(document)
-    ].join('')
+      link_to url, remote: true, class: 'btn btn-success', title: t('documents.tooltips.new'), data: { toggle: 'tooltip' } do
+        icon('fas', 'plus mr-2') + t('documents.new')
+      end
+    end
   end
 
-  def display_document_title(document)
-    link_to document.document_file_name, document.document.url
+  def display_document_title(document, opts={})
+    if in_dashboard? && !opts[:permission]
+      document.file_name
+    else
+      link_to document.document_file_name, document.document.url, target: :blank
+    end
   end
 
-  def edit_document_button(document)
-    link_to icon('far', 'edit'), edit_document_path(document, srid: @service_request.id), remote: true, class: "btn btn-warning edit-document mr-1"
+  def document_actions(document, opts={})
+    content_tag :div, class: 'd-flex justify-content-center' do
+      raw([
+        edit_document_button(document, opts),
+        delete_document_button(document, opts)
+      ].join(''))
+    end
   end
 
-  def delete_document_button(document)
-    link_to icon('fas', 'trash-alt'), document_path(document, srid: @service_request.id), method: :delete,  remote: true, class: "btn btn-danger delete-document", data: { confirm_swal: 'true' }
+  def edit_document_button(document, opts={})
+    unless in_dashboard? && !opts[:permission]
+      url = in_dashboard? ? edit_dashboard_document_path(document) : edit_document_path(document, srid: opts[:srid])
+
+      link_to icon('far', 'edit'), url, remote: true, class: "btn btn-warning mr-1"
+    end
+  end
+
+  def delete_document_button(document, opts={})
+    unless in_dashboard? && !opts[:permission]
+      url = in_dashboard? ? dashboard_document_path(document) : document_path(document, srid: opts[:srid])
+
+      link_to icon('fas', 'trash-alt'), url, method: :delete,  remote: true, class: "btn btn-danger", data: { confirm_swal: 'true' }
+    end
+  end
+
+  def document_file_types_as_string
+    Document::SUPPORTED_FILE_TYPES.map(&:source).map{ |d| d.gsub('\\', '').gsub('$', '').gsub('?', '') }.join(' ')
+  end
+
+  def document_org_access_collection(document)
+    default_select = action_name == 'new' ? document.protocol.organizations.ids : document.sub_service_requests.pluck(:organization_id)
+
+    options_from_collection_for_select(document.protocol.organizations.distinct.order(:name), :id, :name, default_select)
   end
 end

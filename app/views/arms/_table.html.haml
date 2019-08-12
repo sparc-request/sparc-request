@@ -32,7 +32,7 @@
         - succeed t('arms.new') do
           = icon('fas', 'plus mr-2')
   %table#armsTable{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: arms_path(srid: service_request.id), toolbar: '#armsTableToolbar' } }
-    %thead.primary-header
+    %thead.bg-light
       %tr
         %th{ data: { field: 'name', align: 'left', sortable: 'true' } }
           %span{ title: t('arms.tooltips.name'), data: { toggle: 'tooltip', container: 'body', boundary: 'window', placement: 'top' } }<

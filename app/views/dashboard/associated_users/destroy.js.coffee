@@ -24,8 +24,9 @@ window.location = "<%= dashboard_root_path %>"
 <% elsif @current_user_destroyed && @admin %>
 $("#protocolSummaryCard").replaceWith("<%= j render 'protocols/summary', protocol: @protocol, protocol_type: @protocol_type, permission_to_edit: @permission_to_edit, admin: @admin %>")
 $("#authorizedUsersCard").replaceWith("<%= j render 'associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin %>")
-$("#documentsCard").replaceWith("<%= j render 'dashboard/documents/documents_table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin  %>")
-$("#serviceRequestsCard").replaceWith("<%= j render 'dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit %>")
+$("#documentsCard").replaceWith("<%= j render 'documents/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin  %>")
+$('.service-request-card:not(:first-of-type').remove()
+$(".service-request-card:first-of-type").replaceWith("<%= j render 'dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit %>")
 
 $("#authorizedUsersTable").bootstrapTable()
 $("#documentsTable").bootstrapTable()

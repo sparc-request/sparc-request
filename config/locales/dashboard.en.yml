@@ -49,6 +49,20 @@ en:
         current: "Current"
         past: "Past"
         protocol_update: "Protocol Update"
+      confirm: "Are you sure you want to delete this item from the Epic Queue?"
+      date_formatter: "%m/%d/%Y %I:%M:%S %p"
+      date: "Last Queue Date"
+      delete: "Delete"
+      PIs: "PI(s)"
+      protocol: "Queued Protocol"
+      notes: "Notes"
+      status: "Last Queue Status"
+      created_at: 'Current Queue Date'
+      send: 'Send'
+      by: 'By'
+      sent_protocols: 'Sent Protocols'
+      type: 'Type'
+
 
     #########
     # FORMS #

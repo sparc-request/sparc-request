@@ -22,7 +22,7 @@ wb      = xlsx_package.workbook
 header  = wb.styles.add_style alignment: { horizontal: :center, vertical: :center }, b: true
 
 wb.add_worksheet(name: "Epic Queue Records") do |sheet|
-  sheet.add_row [t(:epic_queues)[:sent_protocols], t(:epic_queues)[:notes], t(:epic_queues)[:PIs], t(:epic_queues)[:date], t(:epic_queues)[:status], t(:epic_queues)[:type], t(:epic_queues)[:by]], style: [header, header, header, header, header, header, header]
+  sheet.add_row [t(:dashboard)[:epic_queues][:sent_protocols], t(:dashboard)[:epic_queues][:notes], t(:dashboard)[:epic_queues][:PIs], t(:dashboard)[:epic_queues][:date], t(:dashboard)[:epic_queues][:status], t(:dashboard)[:epic_queues][:type], t(:dashboard)[:epic_queues][:by]], style: [header, header, header, header, header, header, header]
 
   @epic_queue_records.each do |eqr|
     sheet.add_row [

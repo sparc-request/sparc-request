@@ -65,6 +65,10 @@
 ////////////
 
 #cart {
+  &> .card {
+    min-height: 50vh;
+  }
+
   .cart-toggles-container {
     min-height: initial;
 

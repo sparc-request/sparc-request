@@ -178,9 +178,8 @@ class ApplicationController < ActionController::Base
   end
 
   def authorize_identity
-    # can the user edit the service request
-    # we have a current user
-    if @service_request.status == 'first_draft' && Rails.application.routes.recognize_path(request.referrer)[:action] == 'catalog'
+    # If the request is in first_draft status
+    if @service_request.status == 'first_draft' && ['catalog', 'protocol'].include?(Rails.application.routes.recognize_path(request.referrer)[:action]) || Rails.application.routes.recognize_path(request.referrer)[:controller] == 'protocols'
       return true
     elsif current_user && @service_request.status != 'first_draft' && current_user.can_edit_service_request?(@service_request)
       return true

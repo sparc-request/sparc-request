@@ -98,7 +98,7 @@ group :development, :test, :profile do
   gem 'timecop'
   gem 'progress_bar'
 end
-gem 'puma', '~> 4.0'
+gem 'puma', '~> 4.1'
 
 group :development, :test do
   gem 'pry'

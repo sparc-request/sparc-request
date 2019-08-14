@@ -1,4 +1,4 @@
--# Copyright © 2011-2018 MUSC Foundation for Research Development
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,4 +18,22 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= render 'dashboard/protocol_merges/merge_tool.html.haml'
+.modal-dialog.modal-xl
+  .modal-content
+    .modal-header
+      %h3.modal-title
+        = t(:dashboard)[:protocol_merge][:modal_header]
+      %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+        %span{ aria: { hidden: 'true' } } &times;
+    .modal-body#protocol-merges-container
+      .card
+        .card-body
+          %h6.text-left.m-0
+            = label_tag 'master_protocol', t(:dashboard)[:protocol_merge][:enter_master_protocol] 
+            = text_field_tag 'master_protocol'
+          %h6.text-left.m-0
+            = label_tag 'sub_protocol', t(:dashboard)[:protocol_merge][:enter_sub_protocol]
+            = text_field_tag 'sub_protocol'
+    .modal-footer
+      %button.btn.btn-info.navbar-btn#merge-button{ type: 'button', title: t(:dashboard)[:protocol_merge][:perform_protocol_merge]}
+        = t(:dashboard)[:protocol_merge][:perform_protocol_merge]

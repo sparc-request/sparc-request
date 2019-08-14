@@ -33,6 +33,6 @@
           = icon('fas', 'eye mr-2')
           = t('layout.dashboard.navigation.epic_queue')
       - if current_user.catalog_overlord?
-        = link_to dashboard_protocol_merge_path, class: 'btn btn-warning ml-1' do
+        = link_to dashboard_protocol_merge_path, remote: true, class: 'btn btn-warning ml-1' do
           = icon('far', 'object-ungroup mr-2')
           = t('layout.dashboard.navigation.protocol_merge')

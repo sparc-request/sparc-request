@@ -228,6 +228,14 @@ en:
           end_date: "Project/Study estimated end date (used by service providers to prioritize)"
           recruitment_start_date: "When your Project/Study is estimated to start recruiting participants"
           recruitment_end_date: "When your Project/Study is estimated to stop recruiting participants"
+    ###############
+    #  PROTOCOL MERGE  #
+    ###############
+    protocol_merge:
+      modal_header: "Protocol Merge Tool"
+      enter_master_protocol: "Enter the id of the Master Protocol:"
+      enter_sub_protocol: "Enter the id of the Protocol to be merged into the Master Protocol:"
+      perform_protocol_merge: "Perform Protocol Merge"
     #####################
     # SERVICE CALENDARS #
     #####################

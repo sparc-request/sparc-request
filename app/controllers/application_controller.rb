@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user
 
-  before_action :preload_settings
+  before_action :preload_database_values
   before_action :set_highlighted_link
   before_action :get_news_feed,               if: Proc.new{ request.format.html? }
   before_action :get_calendar_events,         if: Proc.new{ request.format.html? }
@@ -64,8 +64,9 @@ class ApplicationController < ActionController::Base
   ### Before-Action Methods ###
   #############################
 
-  def preload_settings
+  def preload_database_values
     Setting.preload_values
+    PermissibleValue.preload_values
   end
 
   def set_highlighted_link  # default value, override inside controllers

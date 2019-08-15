@@ -130,7 +130,7 @@ module ApplicationHelper
   end
 
   def inactive_tag
-    content_tag(:small, class: 'text-danger') do
+    content_tag(:small, class: 'text-danger ml-1') do
       content_tag(:i, t('calendars.inactive'))
     end
   end

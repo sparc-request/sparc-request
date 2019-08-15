@@ -18,7 +18,7 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#serviceCalendar, #serviceCalendarReview {
+#serviceCalendar {
   .service-calendar-container {
     .card-header {
       z-index: 1023;
@@ -65,7 +65,7 @@
         border-left: 0;
       }
 
-      &> thead > tr:first-child > th:last-child::before, .check-visits-row tr th:last-child::before, tbody th:last-child, tbody td:last-child {
+      &> thead > tr:first-child > th:last-child::before, &> thead > tr.check-visits-row th:last-child::before, tbody th:last-child, tbody td:last-child {
         border-right: 0;
       }
 
@@ -75,6 +75,7 @@
 
       th, td {
         vertical-align: middle;
+        padding: 0.5rem 0.25rem;
       }
     }
 
@@ -90,16 +91,30 @@
       }
     }
 
-    .visit {
+    .visit-group table, .visit table {
+      table-layout: fixed;
+    }
+
+    th.visit-group, th.check-column, td.check-row, td.subject-count, td.visit, td.units-per-quantity, td.quantity {
       &:not(.calendar-visit):not(.locked-visit):hover {
         cursor: pointer;
         background: theme-color('light');
+
+        a {
+          @extend .active;
+        }
       }
 
       .visit-quantity {
         transform: scale(1.5);
         cursor: pointer;
       }
+    }
+
+    tbody td, tbody th {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 }

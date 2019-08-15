@@ -22,7 +22,7 @@ module NotesHelper
   def notes_button(notable, opts={})
     has_notes = notable.notes.length > 0
 
-    link_to notes_path(note: { notable_id: notable.id, notable_type: notable.class.name }, protocol_id: opts[:protocol_id], srid: opts[:srid], ssrid: opts[:ssrid]), remote: true, id: "#{notable.class.name.downcase}#{notable.id}Notes", class: ['btn btn-light position-relative', opts[:class], opts[:disabled] ? 'disabled' : ''], title: opts[:tooltip], data: { toggle: opts[:tooltip] ? 'tooltip' : '' } do
+    link_to notes_path(note: { notable_id: notable.id, notable_type: notable.class.name }, protocol_id: opts[:protocol_id], srid: opts[:srid], ssrid: opts[:ssrid]), remote: true, id: "#{notable.class.name.downcase}#{notable.id}Notes", class: ['btn btn-light position-relative', opts[:class], opts[:disabled] ? 'disabled' : '', opts[:model] ? '' : 'btn-sq'], title: opts[:tooltip], data: { toggle: opts[:tooltip] ? 'tooltip' : '' } do
       raw(icon('far', 'sticky-note') + content_tag(:span, format_count(notable.notes.length, 1), class: ['badge badge-pill notification-badge', has_notes ? 'badge-warning ' : 'badge-secondary'])) + (opts[:model] ? content_tag(:span, opts[:model].model_name.human + " " + Note.model_name.plural.capitalize, class: 'ml-2') : '')
     end
   end

@@ -21,4 +21,4 @@
 - visit_groups.each do |visit_group|
   = render 'service_calendars/master_calendar/pppv/visit_group', service_request: service_request, visit_group: visit_group, page: page, pages: pages, tab: tab, portal: portal, merged: merged
 - (visit_groups.size...Visit.per_page).each do
-  %th.text-center
+  %th.text-center{ colspan: 3 }

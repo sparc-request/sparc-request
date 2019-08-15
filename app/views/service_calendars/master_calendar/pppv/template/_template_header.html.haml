@@ -19,47 +19,47 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 %tr
-  %th.service-name.text-center{ colspan: 4, rowspan: 2 }
+  %th.service-name.text-center{ colspan: 8, rowspan: 2 }
     = t(:calendars)[:pppv][:header_fields][:service]
-  %th.notes.text-center{ rowspan: 2 }
+  %th.notes.text-center{ colspan: 2, rowspan: 2 }
     %span{ title: t(:calendars)[:tooltips][:line_item_notes], data: { toggle: 'tooltip', placement: 'top' } }
       = t(:calendars)[:pppv][:header_fields][:notes]
-  %th.status.text-center{ rowspan: 2 }
+  %th.status.text-center{ colspan: 3, rowspan: 2 }
     %span{ title: t(:calendars)[:tooltips][:pppv_status], data: { toggle: 'tooltip', placement: 'top' } }
       = t(:calendars)[:pppv][:header_fields][:status]
-  %th.unit-cost.text-center{ colspan: 2 }
+  %th.unit-cost.text-center{ colspan: 6 }
     = t(:calendars)[:pppv][:header_fields][:unit_cost]
 
   - unless portal
-    %th.quantity-type.text-center{ rowspan: 2 }
+    %th.unit-type.text-center{ colspan: 4, rowspan: 2 }
       %span{ title: t(:calendars)[:tooltips][:quantity_type], data: { toggle: 'tooltip', placement: 'top' } }
-        = t(:calendars)[:pppv][:header_fields][:quantity_type]
+        = raw t(:calendars)[:pppv][:header_fields][:quantity_type]
 
-  %th.subject-count.text-center{ rowspan: 2 }
+  %th.subject-count.text-center{ colspan: 2, rowspan: 2 }
     %span{ title: t(:calendars)[:tooltips][:subject_count], data: { toggle: 'tooltip', placement: 'top' } }
       = t(:calendars)[:pppv][:header_fields][:subject_count]
-  %th{ rowspan: 2 }
-  %th.visit-group-select.text-center{ colspan: 5 }
+  %th{ colspan: 2, rowspan: 2 }
+  %th.visit-group-select.text-center{ colspan: 15 }
     = render 'service_calendars/master_calendar/pppv/visit_group_page_select', service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, page: page, pages: pages, merged: merged, consolidated: consolidated
 
   - unless portal
-    %th.total-per-patient.text-center{ rowspan: 2 }
-      = t(:calendars)[:pppv][:header_fields][:total_per_patient]
-    %th.total-per-study.text-center{ rowspan: 2 }
-      = t(:calendars)[:pppv][:header_fields][:total_per_study]
+    %th.total-per-patient.text-center{ colspan: 4, rowspan: 2 }
+      = raw t(:calendars)[:pppv][:header_fields][:total_per_patient]
+    %th.total-per-study.text-center{ colspan: 4, rowspan: 2 }
+      = raw t(:calendars)[:pppv][:header_fields][:total_per_study]
 
 %tr
-  %th.service-rate.text-center
+  %th.service-rate.text-center{ colspan: 3 }
     %span{ title: t(:calendars)[:tooltips][:service_rate], data: { toggle: 'tooltip', placement: 'top' } }
-      = raw(t(:calendars)[:pppv][:header_fields][:service_rate])
-  %th.your-cost.text-center
+      = raw t(:calendars)[:pppv][:header_fields][:service_rate]
+  %th.your-cost.text-center{ colspan: 3 }
     %span{ title: t(:calendars)[:tooltips][:your_cost], data: { toggle: 'tooltip', placement: 'top' } }
-      = raw(t(:calendars)[:pppv][:header_fields][:your_cost])
+      = raw t(:calendars)[:pppv][:header_fields][:your_cost]
   = render 'service_calendars/master_calendar/pppv/visit_groups', service_request: service_request, visit_groups: visit_groups, page: page, pages: pages, tab: tab, portal: portal, merged: merged
 
 %tr.check-visits-row
-  %th{ colspan: portal ? 10 : 11 }
-  = render 'service_calendars/master_calendar/pppv/check_visit_columns', service_request: service_request, sub_service_request: sub_service_request, tab: tab, visit_groups: visit_groups, page: page
+  %th{ colspan: portal ? 10 : 27 }
+  = render 'service_calendars/master_calendar/pppv/check_visit_columns', service_request: service_request, sub_service_request: sub_service_request, visit_groups: visit_groups, page: page
 
   -unless portal
-    %th{ colspan: 2 }
+    %th{ colspan: 8 }

@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%td.units-per-quantity.text-center
+%td.units-per-quantity.text-center{ title: line_item.units_per_quantity, data: { toggle: 'tooltip' } }
   - if locked || merged
     = line_item.units_per_quantity
   - else

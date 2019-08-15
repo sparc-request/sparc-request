@@ -23,7 +23,7 @@
 
 - if line_items.empty?
   %tr
-    %td.alert-warning{ colspan: 15 }
+    %td.alert-warning.text-center{ colspan: 48 }
       = t('calendars.no_line_items')
 
 - line_items.each do |ssr, livs|
@@ -32,23 +32,21 @@
 
   -# SSR Header Row
   %tr.organization-header{ class: locked ? 'alert-danger' : 'alert-primary' }
-    %th{ colspan: 15 }
+    %th{ colspan: 48 }
       = display_org_name(livs[0].line_item.service.organization_hierarchy, ssr, locked)
 
   -# Line Items Visits
   - livs.each do |liv|
     %tr{ class: ["line-items-visit-#{liv.id}", locked ? 'alert-danger' : ''] }
-      %td.service-name{ colspan: 2 }
-        = liv.line_item.service.display_service_name
-        - unless liv.line_item.service.is_available
-          = inactive_tag
-      %td.notes.text-center
+      %td.service-name{ colspan: 8, title: calendar_service(liv), data: { toggle: 'tooltip', html: 'true' } }
+        = calendar_service(liv)
+      %td.notes.text-center{ colspan: 2 }
         = notes_button(liv, disabled: locked, srid: service_request.try(:id), ssrid: sub_service_request.try(:id))
-      %td.status.text-center
+      %td.status.text-center{ colspan: 3, title: PermissibleValue.get_value('status', ssr.status), data: { toggle: 'tooltip' } }
         = PermissibleValue.get_value('status', ssr.status)
-      %td.service-rate.text-center
+      %td.service-rate.text-center{ colspan: 3, title: display_service_rate(liv.line_item), data: { toggle: 'tooltip' } }
         = display_service_rate(liv.line_item)
-      %td.your-cost.text-center
+      %td.your-cost.text-center{ colspan: 3, title: "$#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}", data: { toggle: 'tooltip' } }
         - if portal && (tab != 'calendar')
           %a.edit-your-cost{ href: 'javascript:void(0)', data: { name: 'displayed_cost', title: liv.line_item.admin_rates.present? ? t(:dashboard)[:study_level_activities][:tooltips][:modified_rate] : t(:dashboard)[:study_level_activities][:tooltips][:change_rate], value: number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2), id: liv.line_item.id, url: dashboard_line_item_path(liv.line_item) }, class: (liv.line_item.admin_rates.present? ? 'text-danger' : '') }
         - else
@@ -56,17 +54,18 @@
             %span.text-danger{data: {toggle: 'tooltip', title: t(:dashboard)[:study_level_activities][:tooltips][:modified_rate]}}
               = "$#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}"
           - else
-            = "$#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}"
-      %td.unit-type.text-center
+            %span{ title: "$#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}", data: { toggle: 'tooltip' } }
+              = "$#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}"
+      %td.unit-type.text-center{ colspan: 4, title: display_unit_type(liv), data: { toggle: 'tooltip' } }
         = display_unit_type(liv)
-      %td.subject-count.text-center
-        = liv.subject_count
+      = render 'service_calendars/master_calendar/pppv/subject_count', liv: liv, service_request: service_request, sub_service_request: sub_service_request, page: page, tab: tab, merged: merged, locked: locked
       - visits      = liv.ordered_visits.page(page).eager_load(line_items_visit: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] })
       - visits.each do |v|
-        %td.visit.calendar-visit.text-center{ class: ["visit-#{v.id}", locked ? 'locked-visit' : ''] }
+        %td.visit.calendar-visit.text-center{ class: ["visit-#{v.id}", locked ? 'locked-visit' : ''], colspan: 3 }
           = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", visit: v
       - (Visit.per_page - visits.size).times do
-        %td
+        %td{ colspan: 3 }
+
       = render 'service_calendars/master_calendar/pppv/total_per_patient', liv: liv
       = render 'service_calendars/master_calendar/pppv/total_per_study', liv: liv
 

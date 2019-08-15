@@ -65,7 +65,7 @@
 ////////////
 
 #cart {
-  &> .card {
+  &> .card .card-body {
     min-height: 50vh;
   }
 

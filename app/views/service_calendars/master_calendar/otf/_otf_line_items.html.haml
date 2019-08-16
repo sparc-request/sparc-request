@@ -38,20 +38,20 @@
     %tr{ class: ["line-item-#{line_item.id}", locked ? 'bg-danger text-danger' : ''] }
       %td.service-name{ colspan: 2, title: calendar_service(line_item), data: { toggle: 'tooltip', html: 'true' } }
         = calendar_service(line_item)
-      %td.notes.text-center
+      %td.notes.text-center{ class: locked ? '' : 'editable', title: "#{Service.model_name.human} #{Note.model_name.plural.capitalize}", data: { toggle: 'tooltip' } }
         = notes_button(line_item, srid: service_request.id, disabled: locked)
       %td.status.text-center{ title: PermissibleValue.get_value('status', ssr.status), data: { toggle: 'tooltip' } }
         = PermissibleValue.get_value('status', ssr.status)
       %td.service-rate.text-center{ title: display_service_rate(line_item), data: { toggle: 'tooltip' } }
         = display_service_rate(line_item)
       - your_cost = currency_converter(line_item.applicable_rate)
-      %td.your-cost.text-center{ title: your_cost, data: { toggle: 'tooltip' } }
-        - if line_item.admin_rates.present?
-          %span.text-danger{data: {toggle: 'tooltip', title: t(:dashboard)[:study_level_activities][:tooltips][:modified_rate]}}
+      - modified = line_item.admin_rates.present?
+      %td.your-cost.text-center{ title: modified ? t('calendars.tooltips.modified_rate', cost: your_cost) : your_cost, data: { toggle: 'tooltip', html: 'true' } }
+        - if modified
+          %span.text-warning
             = your_cost
         - else
           = your_cost
-
       - if line_item.otf_unit_type == 'N/A'
         %td.unit-type.text-center{ colspan: 2, title: line_item.otf_unit_type, data: { toggle: 'tooltip' } }
           = line_item.otf_unit_type

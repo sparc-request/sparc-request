@@ -20,7 +20,7 @@
 
 - url = edit_visit_group_path(visit_group, srid: service_request.id, tab: tab, page: page, pages: pages)
 
-%th.visit-group.px-0{ class: "visit-group-#{visit_group.id}", colspan: 3 }
+%th.visit-group.px-0{ class: ["visit-group-#{visit_group.id}", merged ? '' : 'editable'], colspan: 3 }
   %table.table-sm.table-borderless.w-100
     %thead
       %tr

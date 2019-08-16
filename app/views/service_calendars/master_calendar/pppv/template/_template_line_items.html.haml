@@ -35,7 +35,7 @@
     %tr{ class: ["line-items-visit-#{liv.id}", locked ? 'alert-danger' : ''] }
       %td.service-name{ colspan: 8, title: calendar_service(liv), data: { toggle: 'tooltip', html: 'true' } }
         = calendar_service(liv)
-      %td.notes.text-center{ colspan: 2 }
+      %td.notes.text-center{ colspan: 2, class: locked ? '' : 'editable', title: "#{Service.model_name.human} #{Note.model_name.plural.capitalize}", data: { toggle: 'tooltip' } }
         = notes_button(liv, disabled: locked, srid: service_request.try(:id), ssrid: sub_service_request.try(:id))
       %td.status.text-center{ colspan: 3, title: PermissibleValue.get_value('status', ssr.status), data: { toggle: 'tooltip' } }
         = PermissibleValue.get_value('status', ssr.status)
@@ -43,12 +43,13 @@
         = display_service_rate(liv.line_item)
       -# TODO: Fix with Admin Calendar
       - your_cost = currency_converter(liv.line_item.applicable_rate)
-      %td.your-cost.text-center{ colspan: 3, title: your_cost, data: { toggle: 'tooltip' } }
+      - modified  = liv.line_item.admin_rates.present?
+      %td.your-cost.text-center{ colspan: 3, title: modified ? t('calendars.tooltips.modified_rate', cost: your_cost) : your_cost, data: { toggle: 'tooltip', html: 'true' } }
         - if portal
           %a.edit-your-cost{ href: 'javascript:void(0)', data: { name: 'displayed_cost', title: liv.line_item.admin_rates.present? ? t(:dashboard)[:study_level_activities][:tooltips][:modified_rate] : t(:dashboard)[:study_level_activities][:tooltips][:change_rate], value: your_cost, id: liv.line_item.id, url: dashboard_line_item_path(liv.line_item) }, class: (liv.line_item.admin_rates.present? ? 'text-danger' : '') }
         - else
-          - if liv.line_item.admin_rates.present?
-            %span.text-danger{data: {toggle: 'tooltip', title: t(:dashboard)[:study_level_activities][:tooltips][:modified_rate]}}
+          - if modified
+            %span.text-warning
               = your_cost
           - else
             = your_cost
@@ -62,7 +63,7 @@
       = render 'service_calendars/master_calendar/pppv/template/select_row', liv: liv, service_request: service_request, sub_service_request: sub_service_request, locked: locked, page: page
       - visits = liv.ordered_visits.page(page).eager_load(line_items_visit: { line_item: { service: :pricing_maps } })
       - visits.each do |v|
-        %td.visit.template-visit.text-center{ class: ["visit-#{v.id}", locked ? 'locked-visit' : ''], colspan: 3 }
+        %td.visit.template-visit.text-center{ class: ["visit-#{v.id}", locked ? '' : 'editable'], colspan: 3 }
           = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", service_request: service_request, visit: v, tab: tab, page: page, admin: admin, locked: locked
       - (Visit.per_page - visits.size).times do
         %td{ colspan: 3 }

@@ -95,8 +95,8 @@
       table-layout: fixed;
     }
 
-    th.visit-group, th.check-column, td.check-row, td.subject-count, td.visit, td.units-per-quantity, td.quantity {
-      &:not(.calendar-visit):not(.locked-visit):hover {
+    th.visit-group, th.check-column, td.check-row, td.notes, td.subject-count, td.visit:not(.calendar-visit), td.units-per-quantity, td.quantity {
+      &.editable:hover {
         cursor: pointer;
         background: theme-color('light');
 

@@ -18,8 +18,10 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%td.quantity.text-center{ title: line_item.quantity, data: { toggle: 'tooltip' } }
-  - if locked || merged
-    = line_item.quantity
-  - else
+- editable = !(locked || merged)
+
+%td.quantity.text-center{ class: editable ? 'editable' : '', title: line_item.quantity, data: { toggle: 'tooltip' } }
+  - if editable
     = link_to line_item.quantity, edit_line_item_path(line_item, srid: service_request.id, field: 'quantity'), remote: true
+  - else
+    = line_item.quantity

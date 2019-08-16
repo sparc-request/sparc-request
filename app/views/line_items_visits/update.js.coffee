@@ -36,7 +36,7 @@ $('#sub_service_request_header').html("<%= j render 'dashboard/sub_service_reque
 <% end %>
 
 # Replace Field Cell
-$(".line-items-visit-<%= @line_items_visit.id %>:visible .<%= @field.dasherize %>").replaceWith('<%= j render "service_calendars/master_calendar/pppv/#{@field}", liv: @line_items_visit, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, tab: @tab, locked: @locked %>')
+$(".line-items-visit-<%= @line_items_visit.id %>:visible .<%= @field.dasherize %>").replaceWith('<%= j render "service_calendars/master_calendar/pppv/#{@field}", liv: @line_items_visit, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, tab: @tab, merged: false, locked: @locked %>')
 
 # Replace Per Patient / Study Totals
 $(".line-items-visit-<%= @line_items_visit.id %>:visible .total-per-patient").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_patient', liv: @line_items_visit %>")

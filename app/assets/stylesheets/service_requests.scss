@@ -82,4 +82,8 @@
       }
     }
   }
+
+  .cart-services > div:last-of-type > .list-group {
+    @extend .border-bottom;
+  }
 }

@@ -170,9 +170,6 @@ class ApplicationController < ActionController::Base
   def initialize_service_request
     if params[:srid].present?
       @service_request = ServiceRequest.find(params[:srid])
-    elsif action_name == 'add_service'
-      @service_request = ServiceRequest.new(status: 'first_draft')
-      @service_request.save(validate: false)
     else
       @service_request = ServiceRequest.new(status: 'first_draft')
     end
@@ -180,9 +177,9 @@ class ApplicationController < ActionController::Base
 
   def authorize_identity
     # If the request is in first_draft status
-    if @service_request.status == 'first_draft' && ['catalog', 'protocol'].include?(Rails.application.routes.recognize_path(request.referrer)[:action]) || Rails.application.routes.recognize_path(request.referrer)[:controller] == 'protocols'
+    if @service_request.status == 'first_draft' && (action_name == 'catalog' || (Rails.application.routes.recognize_path(request.referrer)[:action] == 'catalog' && request.format.js?))
       return true
-    elsif current_user && @service_request.status != 'first_draft' && current_user.can_edit_service_request?(@service_request)
+    elsif current_user && current_user.can_edit_service_request?(@service_request)
       return true
     elsif current_user.nil?
       authenticate_identity!

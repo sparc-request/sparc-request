@@ -44,9 +44,8 @@ $ ->
   # Visit Checkbox / Input #
   ##########################
 
-  $(document).on 'click', 'th.visit-group, td.visit.billing-strategy-visit, td.subject-count, td.units-per-quantity, td.quantity', (event) ->
-    if event.target.tagName != 'A'
-      $link = $(this).find('a')
+  $(document).on 'click', 'th.visit-group, td.visit.billing-strategy-visit, td.notes, td.subject-count, td.units-per-quantity, td.quantity', (event) ->
+    if $(this).hasClass('editable') && event.target.tagName != 'A' && $link = $(this).find('a:not(.disabled)')
       $.ajax
         method: $link.data('method') || 'GET'
         dataType: 'script'

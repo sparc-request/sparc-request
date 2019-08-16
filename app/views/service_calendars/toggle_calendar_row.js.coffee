@@ -23,7 +23,7 @@ $("#toggleRow<%= @line_items_visit.id %>").replaceWith("<%= j render 'service_ca
 
 # Replace Column checkboxes
 <% @visit_groups.each do |vg| %>
-$("#toggleColumn<%= vg.id %>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_column', service_request: @service_request, sub_service_request: @sub_service_request, visit_group: vg, page: @page, admin: @admin %>")
+$("#toggleColumn<%= vg.id %>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_column', service_request: @service_request, sub_service_request: @sub_service_request, visit_group: vg, page: @page, admin: @admin, locked: false %>")
 <% end %>
 
 <% if @admin %>
@@ -37,8 +37,8 @@ $(".visit-<%= visit.id %>:visible").html('<%= j render "service_calendars/master
 <% end %>
 
 # Replace Per Patient / Study Totals
-$("#toggleRow<%= @line_items_visit.id %>").parent().siblings('.total-per-patient').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_patient', liv: @line_items_visit %>")
-$("#toggleRow<%= @line_items_visit.id %>").parent().siblings('.total-per-study').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_study', liv: @line_items_visit %>")
+$("#toggleRow<%= @line_items_visit.id %>").siblings('.total-per-patient').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_patient', liv: @line_items_visit %>")
+$("#toggleRow<%= @line_items_visit.id %>").siblings('.total-per-study').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_study', liv: @line_items_visit %>")
 
 # Replace Totals
 $(".arm-<%= @arm.id %>-container:visible .max-total-direct-per-patient").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/totals/max_total_direct_per_patient', arm: @arm, visit_groups: @visit_groups, line_items_visits: @line_items_visits, tab: @tab, page: @page %>")

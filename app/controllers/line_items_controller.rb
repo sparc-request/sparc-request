@@ -30,10 +30,10 @@ class LineItemsController < ApplicationController
 
   def update
     @line_item  = LineItem.find(params[:id])
-    @merged     = false
+    @field      = params[:field]
 
     if @line_item.update_attributes(line_item_params)
-      @service_request.update_attribute(:status, 'draft')
+      @service_request.update_attribute(:status, 'draft') unless @service_request.previously_submitted?
       @line_item.sub_service_request.update_attribute(:status, 'draft')
     else
       @errors = @line_item.errors

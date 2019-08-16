@@ -26,13 +26,13 @@
     .navbar-nav.flex-row<
       - if Setting.get_value("use_short_interaction") && current_user.is_service_provider?
         = link_to new_short_interaction_path, remote: true, class: 'btn btn-success' do
-          = icon('fas', 'comment mr-1')
+          = icon('fas', 'comment mr-2')
           = t('layout.dashboard.navigation.short_interaction')
       - if Setting.get_value('use_epic') && Setting.get_value('epic_queue_access').include?(current_user.ldap_uid)
         = link_to dashboard_epic_queues_path, class: 'btn btn-info ml-1' do
-          = icon('fas', 'eye mr-1')
+          = icon('fas', 'eye mr-2')
           = t('layout.dashboard.navigation.epic_queue')
       - if current_user.catalog_overlord?
         = link_to dashboard_protocol_merge_path, class: 'btn btn-warning ml-1' do
-          = icon('far', 'object-ungroup mr-1')
+          = icon('far', 'object-ungroup mr-2')
           = t('layout.dashboard.navigation.protocol_merge')

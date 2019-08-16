@@ -148,7 +148,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def save_and_exit
-    @service_request.update_status('draft')
+    @service_request.update_status('draft', current_user)
     @service_request.ensure_ssr_ids
     redirect_to dashboard_root_path
 

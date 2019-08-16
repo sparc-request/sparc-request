@@ -22,22 +22,20 @@ class Identities::RegistrationsController < Devise::RegistrationsController
   def create
     respond_to :js
 
-    params          = sign_up_params
-    params[:phone]  = sanitize_phone(params[:phone])
-
-    build_resource(params)
+    build_resource(sign_up_params)
 
     resource.save
     yield resource if block_given?
     if resource.persisted?
       if resource.active_for_authentication?
         set_flash_message! :notice, :signed_up
+        flash[:notice] = t('devise.registrations.signed_up')
         sign_up(resource_name, resource)
-        respond_with resource, location: after_sign_up_path_for(resource)
+        @path = after_sign_up_path_for(resource)
       else
-        set_flash_message! :notice, :"signed_up_but_#{resource.inactive_message}"
+        flash[:notice] = t("devise.registrations.signed_up_but_#{resource.inactive_message}")
         expire_data_after_sign_in!
-        respond_with resource, location: after_inactive_sign_up_path_for(resource)
+        @path = after_inactive_sign_up_path_for(resource)
       end
     else
       clean_up_passwords resource
@@ -47,11 +45,41 @@ class Identities::RegistrationsController < Devise::RegistrationsController
     end
   end
 
+  def edit
+    store_location_for(resource, request.referrer)
+  end
+
+  def update
+    @identity = current_user
+    if @identity.update_attributes(identity_params)
+      flash[:success] = t(:devise)[:profile][:updated]
+      @path = stored_location_for(resource) || root_path
+    else
+      @errors = @identity.errors
+    end
+  end
+
   private
 
   def sign_up_params
     attrs = devise_parameter_sanitizer.sanitize(:sign_up)
     attrs[:phone] = sanitize_phone(attrs[:phone])
     attrs
+  end
+
+  def identity_params
+    params[:identity][:phone]                         = sanitize_phone(params[:identity][:phone])
+    params[:identity][:professional_organization_id]  = params[:project_role][:identity_attributes][:professional_organization_id]
+
+    params.require(:identity).permit(
+      :orcid,
+      :credentials,
+      :credentials_other,
+      :email,
+      :era_commons_name,
+      :professional_organization_id,
+      :phone,
+      :subspecialty
+    )
   end
 end

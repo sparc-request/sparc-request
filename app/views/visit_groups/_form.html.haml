@@ -37,8 +37,8 @@
             = f.label :window_before, class: 'required'
             = f.number_field :window_before, class: 'form-control', min: 0
           .form-group.col-4
-            - min = visit_group.higher_item.try(:day)
-            - max = visit_group.lower_item.try(:day)
+            - min = visit_group.higher_items.where.not(day: nil).maximum(:day).try(:+, 1)
+            - max = visit_group.lower_items.where.not(day: nil).minimum(:day).try(:-, 1)
             = f.label :day, class: 'required'
             = f.number_field :day, class: 'form-control', min: min, max: max
             - if min || max

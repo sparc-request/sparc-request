@@ -17,7 +17,8 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-<% if @errors%>
+
+<% if @errors %>
 $("[name^='document']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
 $('.form-error').remove()
 <% @errors.messages.each do |attr, messages| %>
@@ -25,9 +26,8 @@ $('.form-error').remove()
 $("[name='document[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
 <% end %>
 <% end %>
-
 <% else %>
-$("#documents-table").bootstrapTable 'refresh'
-$("#flashContainer").replaceWith("<%= escape_javascript(render( 'layouts/flash' )) %>")
-$("#modalContainer").modal 'hide'
+$("#documentsTable").bootstrapTable('refresh')
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
+$("#modalContainer").modal('hide')
 <% end %>

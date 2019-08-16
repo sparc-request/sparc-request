@@ -36,7 +36,7 @@ $('#billingLabels').removeClass('d-none')
 $('#billingLabels').addClass('d-none')
 <% end %>
 
-$('#servicesToggle').parent().addClass('invisible')
+toggleServicesToggle(false)
 
 adjustCalendarHeaders()
 

@@ -19,8 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  $('#pushToEpicStatus').text(I18n.t('proper.confirmation.push_to_epic.message'))
-  get_epic_push_status()
+  if $('#pushToEpicStatus').length
+    $('#pushToEpicStatus').text(I18n.t('proper.confirmation.push_to_epic.message'))
+    get_epic_push_status()
 
 get_epic_push_status = () ->
   protocol_id = $('#pushToEpicStatus').data('protocol-id')

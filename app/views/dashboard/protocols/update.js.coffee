@@ -40,6 +40,13 @@ $("[name='protocol[primary_pi_role_attributes][<%= attr.to_s %>]']").parents('.f
 $("#study_type_answer_<%= question_id %>").children('.form-group:last-of-type').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
 <% end %>
 <% end %>
+<% elsif @locked %>
+$('#calendarStructureCard').replaceWith("<%= j render '/dashboard/calendar_structure/table', protocol: @protocol %>")
+$('#calendarStructureTable').bootstrapTable()
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
+<% elsif Rails.application.routes.recognize_path(request.referrer)[:action] == 'show' %>
+# Do nothing - updating Milestones
 <% else %>
 window.location = "<%= dashboard_protocol_path(@protocol) %>"
 <% end %>

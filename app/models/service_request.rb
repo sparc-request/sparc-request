@@ -34,6 +34,7 @@ class ServiceRequest < ApplicationRecord
 
   has_many :arms, through: :protocol
   has_many :services, through: :line_items
+  has_many :forms, through: :services
   has_many :line_items_visits, through: :line_items
   has_many :subsidies, through: :sub_service_requests
   has_many :visit_groups, through: :arms
@@ -360,13 +361,13 @@ class ServiceRequest < ApplicationRecord
 
   # Returns the SSR ids that need an initial submission email, updates the SR status,
   # and updates the SSR status to new status if appropriate
-  def update_status(new_status)
+  def update_status(new_status, current_user)
     # Do not change the Service Request if it has been submitted
     update_attribute(:status, new_status) unless self.previously_submitted?
     update_attribute(:submitted_at, Time.now) if new_status == 'submitted'
 
     self.sub_service_requests.map do |ssr|
-      ssr.update_status_and_notify(new_status)
+      ssr.update_status_and_notify(new_status, current_user)
     end.compact
   end
 
@@ -385,6 +386,10 @@ class ServiceRequest < ApplicationRecord
       protocol.next_ssr_id = next_ssr_id
       protocol.save(validate: false)
     end
+  end
+
+  def submitted?
+    self.status == 'submitted'
   end
 
   def previously_submitted?

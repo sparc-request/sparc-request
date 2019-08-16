@@ -18,8 +18,8 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%footer.w-100.mt-3
-  .row.py-2.bg-white.border-top.border-bottom
+%footer.col-12.py-2.mt-3.border.bg-white
+  .row
     .col.text-left
       = link_to @back, class: ['btn btn-lg btn-link d-none d-sm-inline-block px-0', @current_page == 'catalog' ? 'invisible' : ''] do
         - succeed t(:proper)[:navigation][:bottom][:back][:full] do

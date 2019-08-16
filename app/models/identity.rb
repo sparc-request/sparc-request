@@ -69,15 +69,15 @@ class Identity < ApplicationRecord
 
   cattr_accessor :current_user
 
-  validates_presence_of :first_name, :last_name, :email, :phone
+  validates_presence_of :first_name, :last_name, :email
 
   validates_format_of :email, with: Devise::email_regexp, allow_blank: true, if: :email_changed?
-  validates_format_of :phone, with: /[0-9]{10}(#[0-9]+)?/
+  validates_format_of :phone, with: /[0-9]{10}(#[0-9]+)?/, allow_blank: true, if: :phone_changed?
 
   validates :ldap_uid, uniqueness: {case_sensitive: false}, presence: true
   validates :orcid, format: { with: /\A([0-9]{4}-){3}[0-9]{3}[0-9X]\z/ }, allow_blank: true
 
-  validates_presence_of :reason, if: :new_record?
+  # validates_presence_of :reason, if: :new_record?
 
   ###############################################################################
   ############################## DEVISE OVERRIDES ###############################

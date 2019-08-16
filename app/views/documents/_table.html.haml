@@ -17,27 +17,30 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.card
-  .card-header.bg-primary.text-white
+
+.card.w-100#documentsCard
+  .card-header.bg-primary.text-white{ data: { toggle: 'collapse', target: '#documents' } }
     %h3.mb-0
-      = t(:proper)[:document_management][:documents_notice]
-
-  #documents-custom-toolbar
-    - unless in_review?
-      = link_to t(:documents)[:add_document], new_document_path(srid: service_request.id), remote: true, class: "btn btn-success", title: t(:proper)[:document_management][:tooltips][:documents], data: { toggle: 'tooltip' }
-
-  %table#documents-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: documents_path(format: :json, srid: service_request.id), toolbar: "#documents-custom-toolbar" } }
-    %thead.primary-header
-      %tr
-        %th{ data: { class: 'col-sm-2 type', align: "left", sortable: "true", field: "type" } }
-          = t(:documents)[:table_fields][:type]
-        %th{ data: { class: 'col-sm-6 title', align: "left", sortable: "true", field: "title" } }
-          = t(:documents)[:table_fields][:title]
-        %th{ data: { class: 'col-sm-2 uploaded', align: "left", sortable: "true", field: "uploaded", sorter: "dateSorter" } }
-          = t(:documents)[:table_fields][:uploaded]
-        - if in_review?
-          %th{ data: { class: 'col-sm-2 shared_with', align: "left", field: "shared_with" } }
-            = t(:documents)[:table_fields][:shared_with]
-        - else
-          %th{ data: { class: 'col-sm-2 actions', align: "center", sortable: "false", field: "actions" } }
-            = t(:actions)[:actions]
+      = icon('fas', 'caret-down pr-1 mr-2')
+      = t('documents.header')
+  .collapse#documents{ class: controller_name == 'service_requests' && service_request.previously_submitted? ? '' : 'show' }
+    #documentsTableToolbar
+      - if in_dashboard?
+        = new_document_button(protocol_id: protocol.id, permission: permission_to_edit)
+      - elsif !in_review?
+        = new_document_button(srid: service_request.id)
+    - url = in_dashboard? ? dashboard_documents_path(format: :json, protocol_id: protocol.id) : documents_path(format: :json, srid: service_request.id)
+    %table#documentsTable{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: url, toolbar: "#documentsTableToolbar" } }
+      %thead.bg-light
+        %tr
+          %th{ data: { field: 'document', align: "left", sortable: "true" } }
+            = Document.human_attribute_name(:document)
+          %th{ data: { field: 'type', align: "left", sortable: "true" } }
+            = Document.human_attribute_name(:doc_type)
+          %th{ data: { field: 'uploaded', align: "left", sortable: "true", sorter: "dateSorter" } }
+            = Document.human_attribute_name(:document_updated_at)
+          %th{ data: { field: 'shared_with', align: "left" } }
+            = Document.human_attribute_name(:org_ids)
+          - unless in_review?
+            %th{ data: { field: 'actions', align: "center" } }
+              = t('actions.actions')

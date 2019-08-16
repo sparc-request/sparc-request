@@ -96,9 +96,9 @@ en:
           grant_info: "&quot;This publication [or project] was supported by the South Carolina Clinical & Translation Research (SCTR) Institute, with an academic home at the Medical University of South Carolina <strong class='din-gray-text'>NIH - NCATS Grant Number UL1 TR001450.</strong>&quot;"
       tooltips:
         complete: "Forms to collect additional information related to requesting a service"
-        view: "View existing %{klass} answers."
-        edit: "Edit existing %{klass} answers."
-        delete: "Delete existing %{klass} answers."
+        view: "View Response"
+        edit: "Edit Response"
+        delete: "Delete Response"
         resend: "Resend Survey"
 
     surveys:

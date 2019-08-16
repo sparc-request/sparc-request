@@ -18,5 +18,8 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$('#modalContainer').html("<%= j render 'error_pages/authorization_error_modal', error: @error %>")
-$('#modalContainer').modal('show')
+AlertSwal.fire(
+  type: 'error'
+  title: I18n.t('error_pages.authorization_error.header')
+  html: "<%= raw(@error) %>"
+)

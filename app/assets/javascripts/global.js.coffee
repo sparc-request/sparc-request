@@ -35,7 +35,7 @@ $(document).ready ->
   setRequiredFields()
   $('html').addClass('ready')
 
-  $(document).on 'ajaxSuccess ajax:complete', ->
+  $(document).on 'load-success.bs.table ajax:complete', ->
     initializeSelectpickers()
     initializeDateTimePickers()
     initializeTooltips()
@@ -45,6 +45,12 @@ $(document).ready ->
     setRequiredFields()
 
   # Back To Top button scroll
+  $(window).scroll ->
+    if $(this).scrollTop() > 50
+      $('#backToTop').removeClass('hide')
+    else
+      $('#backToTop').addClass('hide')
+
   $(document).on 'click', '#backToTop', ->
     $('html, body').animate({ scrollTop: 0 }, 'slow')
 
@@ -54,15 +60,11 @@ $(document).ready ->
       event.preventDefault()
       $('html, body').animate({ scrollTop: $(this.hash).offset().top }, 'slow')
 
+  # Form validation
   $(document).on 'keydown change change.datetimepicker', '.is-valid, .is-invalid', ->
     $(this).removeClass('is-valid is-invalid').find('.form-error').remove()
 
-  $(window).scroll ->
-    if $(this).scrollTop() > 50
-      $('#backToTop').removeClass('hide')
-    else
-      $('#backToTop').addClass('hide')
-
+  # Smooth Collapses
   $(document).on 'show.bs.collapse hide.bs.collapse', '.collapse, .collapsing', ->
     $control = $("[href='##{$(this).attr('id')}']")
 
@@ -81,10 +83,10 @@ $(document).ready ->
       event.preventDefault()
 
   $(document).on('mouseover', 'div[data-toggle=collapse]', (event) ->
-    if event.target.tagName == 'DIV'
-      $(this).addClass('hover')
-    else
+    if ['A', 'BUTTON'].includes(event.target.tagName) || (['I', 'SPAN'].includes(event.target.tagName) && ['A', 'BUTTON', 'SPAN'].includes(event.target.parentElement.tagName))
       $(this).removeClass('hover')
+    else
+      $(this).addClass('hover')
   ).on('mouseleave', 'div[data-toggle=collapse]', (event) ->
     $(this).removeClass('hover')
   ).on('mousedown', 'div[data-toggle=collapse]', (event) ->
@@ -94,6 +96,11 @@ $(document).ready ->
     if event.target.tagName == 'DIV'
       $(this).removeClass('active')
   )
+
+  # Close dropdowns after clicking an item
+  $(document).on 'ajax:beforeSend', '.dropdown:not(.nav-item) .dropdown-item', ->
+    $(this).parents('.dropdown-menu').siblings('.dropdown-toggle').dropdown('hide')
+    return true
 
   $(document).on 'click', '.copy-to-clipboard', ->
     $that = $(this)
@@ -110,6 +117,7 @@ $(document).ready ->
       )
     ), 1500
 
+  # Phone Field Handler
   $(document).on('keydown', 'input[type=tel]', (event) ->
     val       = $(this).val()
     key       = event.keyCode || event.charCode
@@ -177,6 +185,9 @@ $(document).ready ->
 (exports ? this).getSSRId = ->
   $("input[name='sub_service_request_id']").val()
 
+(exports ? this).getProtocolId = ->
+  $("input[name=protocol_id]").val()
+
 VALID_MONETARY_KEYS = [
   8, # backspace
   37, 38, 39, 40, # arrow keys
@@ -213,6 +224,16 @@ VALID_MONETARY_KEYS = [
     new_str += word.charAt(0).toUpperCase() + word.slice(1) + ' '
   return new_str
 
-(exports ? this).refresh_study_schedule = () ->
-  $('#service-calendar .tab-content .tab-pane.active').load $('#service-calendar .active a').attr("data-url"), (result) ->
-    $('#service-calendar .active a').tab('show')
+(exports ? this).dateSorter = (a, b) ->
+  if !a && !b
+    return 0
+  else if a && !b
+    return 1
+  else if !a && b
+    return -1
+  else
+    sort_a = new Date(a)
+    sort_b = new Date(b)
+    return 1 if sort_a > sort_b
+    return -1 if sort_a < sort_b
+    return 0

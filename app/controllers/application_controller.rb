@@ -152,11 +152,10 @@ class ApplicationController < ActionController::Base
   #####################
 
   def authorization_error(msg=t('error_pages.authorization_error.error'), ref=nil)
-    error = msg
-    error += "<br />If you believe this is in error, please contact #{Setting.get_value('contact_us_cc')} and provide the following information:"
-    error += "<br /> Reference #: " + ref if ref
+    error   = msg + t('error_pages.authorization_error.contact', email: Setting.get_value('contact_us_cc'))
+    error  += t('error_pages.authorization_error.reference', ref: ref) if ref
 
-    redirect_to authorization_error_path(error: error, format: request.format)
+    redirect_to authorization_error_path(error: error, format: request.format.html? ? :html : :js)
   end
 
   def clean_errors errors
@@ -179,11 +178,10 @@ class ApplicationController < ActionController::Base
   end
 
   def authorize_identity
-    # can the user edit the service request
-    # we have a current user
-    if @service_request.status == 'first_draft'
+    # If the request is in first_draft status
+    if @service_request.status == 'first_draft' && ['catalog', 'protocol'].include?(Rails.application.routes.recognize_path(request.referrer)[:action]) || Rails.application.routes.recognize_path(request.referrer)[:controller] == 'protocols'
       return true
-    elsif current_user && current_user.can_edit_service_request?(@service_request)
+    elsif current_user && @service_request.status != 'first_draft' && current_user.can_edit_service_request?(@service_request)
       return true
     elsif current_user.nil?
       authenticate_identity!
@@ -194,20 +192,22 @@ class ApplicationController < ActionController::Base
   end
 
   def in_dashboard?
-    @portal ||= request.path.starts_with?('/dashboard')
+    @portal ||= (request.format.html? && request.path.start_with?('/dashboard') && request.format.html?) || Rails.application.routes.recognize_path(request.referrer)[:controller].starts_with?('dashboard/')
     @admin  ||= @portal && params[:srrid].present?
+
+    @portal
   end
 
   def authorize_dashboard_access
     if params[:ssrid]
       authorize_admin
     else
-      @service_request = ServiceRequest.find(params[:srid]) if params[:srid]
       authorize_protocol
     end
   end
 
   def authorize_protocol
+    @service_request    = ServiceRequest.find(params[:srid]) if params[:srid]
     @protocol           = @service_request ? @service_request.protocol : Protocol.find(params[:protocol_id])
     permission_to_view  = current_user.can_view_protocol?(@protocol)
 

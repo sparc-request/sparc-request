@@ -18,9 +18,23 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-<% if @visit_dropdown_change %>
-$(".arm-<%= @arm.id %>-container").replaceWith("<%= escape_javascript(render( '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages, review: @review, portal: @portal, admin: @admin, merged: @merged, consolidated: @consolidated)) %>")
+<% if @arm %>
+$(".arm-<%= @arm.id %>-container").replaceWith("<%= j render '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages, review: @review, portal: @portal, admin: @admin, merged: @merged, consolidated: @consolidated %>")
 <% else %>
-$('#modalContainer').html("<%= escape_javascript(render( 'service_calendars/view_full_calendar', tab: @tab, service_request: @service_request, sub_service_request: @sub_service_request, pages: @pages, page: @page, review: @review, portal: @portal, admin: @admin, merged: @merged, consolidated: @consolidated)) %>")
+$('#modalContainer').html("<%= j render 'service_calendars/view_full_calendar', tab: @tab, service_request: @service_request, sub_service_request: @sub_service_request, pages: @pages, page: @page, review: @review, portal: @portal, admin: @admin, merged: @merged, consolidated: @consolidated %>")
 <% end %>
+if $('#modalContainer:visible').length
+  $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
+  toggleServicesToggle(true)
+  adjustCalendarHeaders()
+else
+  $('#modalContainer').one 'shown.bs.modal', ->
+    $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
+    # The BootstrapToggle initialization doesn't calculate the correct
+    # dimensions of a modal fading in, so we have to destroy and
+    # re-initialize it
+    $('#servicesToggle').bootstrapToggle('destroy').bootstrapToggle()
+    toggleServicesToggle(true)
+    adjustCalendarHeaders()
+
 $('#modalContainer').modal('show')

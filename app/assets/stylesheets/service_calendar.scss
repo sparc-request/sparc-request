@@ -24,15 +24,15 @@
       z-index: 1023;
     }
 
-    &> .service-calendar-table > thead > tr:first-child > th {
+    & .service-calendar-table > thead > tr:first-child > th {
       z-index: 1022;
     }
 
-    &> .service-calendar-table > thead > tr:nth-child(2) > th {
+    & .service-calendar-table > thead > tr:nth-child(2) > th {
       z-index: 1021;
     }
 
-    &> .service-calendar-table > thead > tr:nth-child(3) > th {
+    & .service-calendar-table > thead > tr:nth-child(3) > th {
       z-index: 1020;
     }
 
@@ -42,10 +42,6 @@
       margin-bottom: 0;
       border-bottom: 0;
       table-layout: fixed;
-
-      &> thead > tr:first-child > th {
-        top: 48px;
-      }
 
       &> thead > tr > th {
         @extend .sticky-top;

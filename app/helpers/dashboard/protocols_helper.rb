@@ -35,13 +35,24 @@ module Dashboard::ProtocolsHelper
   end
 
   def pis_display(protocol)
-    protocol.principal_investigators.map(&:full_name).join ", "
+    if protocol.primary_pi
+      content_tag(:span, title: t('activerecord.attributes.protocol.primary_pi'), data: { toggle: 'tooltip', boundary: 'window' }) do
+        icon('fas', 'user-circle mr-2') + protocol.primary_pi.display_name
+      end + '<br>'.html_safe
+    else
+      ""
+    end + raw(
+    protocol.principal_investigators.where.not(id: protocol.primary_pi).map do |pi|
+      content_tag(:span) do
+        icon('fas', 'user mr-2') + pi.display_name
+      end
+    end.join('<br>'.html_safe))
   end
 
   def display_requests_button(protocol, access)
     if protocol.sub_service_requests.any? && access
       link_to(display_requests_dashboard_protocol_path(protocol), remote: true, class: 'btn btn-secondary') do
-        raw(Protocol.human_attribute_name(:requests) + content_tag(:span, protocol.sub_service_requests.length, class: 'badge badge-pill badge-light ml-1'))
+        raw(Protocol.human_attribute_name(:requests) + content_tag(:span, protocol.sub_service_requests.length, class: 'badge badge-pill badge-light ml-2'))
       end
     end
   end

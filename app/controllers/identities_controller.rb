@@ -22,7 +22,7 @@ class IdentitiesController < ApplicationController
   before_action :authenticate_identity!
 
   def approve_account
-    respond_to :js
+    respond_to :html
 
     @identity = Identity.find(params[:id])
     if !@identity.try(:approved)
@@ -37,7 +37,7 @@ class IdentitiesController < ApplicationController
   end
 
   def disapprove_account
-    respond_to :js
+    respond_to :html
 
     @identity = Identity.find(params[:id])
     if @identity.try(:approved)

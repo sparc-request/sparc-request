@@ -21,7 +21,7 @@
 - subsidy = @service_request.eligible_for_subsidy?
 
 - unless ['obtain_research_pricing', 'confirmation'].include?(action_name)
-  %nav.nav.w-100.mb-3#stepsNav{ class: subsidy ? 'has-subsidy' : '' }
+  %nav.nav.w-100.mb-1#stepsNav{ class: subsidy ? 'has-subsidy' : '' }
     .steps-container.d-flex.w-100
       - Step::CONFIG.each do |step, _|
         - next if ['obtain_research_pricing', 'confirmation'].include?(step)

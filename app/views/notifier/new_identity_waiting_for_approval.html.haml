@@ -28,9 +28,7 @@
   %body
     %p
       = t('devise.mailer.new_account.body')
-    %br
-    %br
-    %table
+    %table{ style: "text-align:left;" }
       %tr
         %th
           = Identity.human_attribute_name(:first_name)
@@ -61,9 +59,6 @@
           = Identity.human_attribute_name(:reason)
         %td
           = @identity.reason
-
-    %br
-    %br
 
     = link_to t('devise.mailer.new_account.approve'), approve_account_identity_url(@identity)
 

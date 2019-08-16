@@ -36,6 +36,16 @@
   }
 }
 
+/////////////
+/// Badge ///
+/////////////
+
+.badge {
+  &.badge-info, &.badge-warning {
+    color: white;
+  }
+}
+
 //////////////
 /// Button ///
 //////////////
@@ -43,7 +53,7 @@
 .btn {
   &.btn-info, &.btn-warning,
   &.btn-outline-info:hover, &.btn-outline-warning:hover {
-    color: white !important;
+    color: white;
   }
 
   &.btn-light:not(.toggle) {
@@ -83,7 +93,57 @@
   .card-body {
     padding: 1rem;
   }
+
+  &-callout {
+    @extend .card;
+
+    &.callout-right {
+      border-right-width: .25rem;
+      text-align: right;
+    }
+
+    &:not(.callout-right) {
+      border-left-width: .25rem;
+    }
+
+    &.callout-condensed {
+      &:not(:last-of-type) {
+        margin-bottom: 0.5rem;
+      }
+
+      .card-body {
+        padding: 0.25rem 0.5rem;
+      }
+    }
+
+    .card-body {
+      padding: 0.5rem 1rem;
+
+      *:not(:last-child) {
+        margin-bottom: 0.25rem;
+      }
+    }
+  }
+
+
+  @each $color, $value in $theme-colors {
+    &-callout.callout-#{$color} {
+      &.callout-right {
+        border-right-color: $value;
+      }
+
+      &:not(.callout-right) {
+        border-left-color: $value;
+      }
+
+      .card-title {
+        color: $value;
+      }
+    }
+  }
 }
+
+
 
 ////////////////
 /// Collapse ///
@@ -212,6 +272,12 @@ form, .form {
         height: 1.75rem !important;
       }
     }
+  }
+}
+
+.custom-file {
+  .custom-file-input {
+    cursor: pointer;
   }
 }
 
@@ -427,6 +493,30 @@ nav.navbar {
       padding-left: $grid-gutter-width / 2;
       padding-right: $grid-gutter-width / 2;
     }
+  }
+
+  &.table-centered {
+    th, td {
+      vertical-align: middle;
+    }
+  }
+}
+
+.card > .table, .card > .collapse > .table, .card > .collapsing > .table {
+  border: 0;
+
+  thead th, tbody td, tbody th {
+    &:first-child {
+      border-left: 0;
+    }
+
+    &:last-child {
+      border-right: 0;
+    }
+  }
+
+  tbody tr:last-child td, tbody tr:last-child th {
+    border-bottom: 0;
   }
 }
 

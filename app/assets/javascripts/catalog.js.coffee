@@ -37,7 +37,7 @@ $(document).ready ->
         data:
           srid: getSRId()
 
-  $(document). on 'submit', '#serviceCatalogForm', (event) ->
+  $(document).on('submit', '#serviceCatalogForm', (event) ->
     if $('#cart #activeServices .list-group-item').length == 0
       event.preventDefault()
       AlertSwal.fire(
@@ -46,6 +46,17 @@ $(document).ready ->
         text: I18n.t('activerecord.errors.models.service_request.attributes.line_items.blank')
       )
       $('html, body').animate({ scrollTop: $('#stepsHeader').offset().top }, 'slow')
+  ).on('click', '#stepsNav .nav-link:not(.active)', (event) ->
+    if $('#serviceCatalogForm').length && $('#cart #activeServices .list-group-item').length == 0
+      $(this).trigger('blur')
+      event.preventDefault()
+      AlertSwal.fire(
+        type: 'error'
+        title: I18n.t('proper.catalog.services_missing.header')
+        text: I18n.t('activerecord.errors.models.service_request.attributes.line_items.blank')
+      )
+      $('html, body').animate({ scrollTop: $('#stepsHeader').offset().top }, 'slow')
+  )
 
   servicesBloodhound = new Bloodhound(
     datumTokenizer: Bloodhound.tokenizers.whitespace

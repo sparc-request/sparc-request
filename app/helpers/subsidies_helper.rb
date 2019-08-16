@@ -18,38 +18,34 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module Dashboard::DocumentsHelper
+module SubsidiesHelper
+  def new_subsidy_button(sub_service_request, opts={})
+    url = in_dashboard? ? new_dashboard_subsidy_path(ssrid: sub_service_request.id) : new_subsidy_path(ssrid: sub_service_request.id, srid: opts[:srid])
 
-  def dashboard_display_document_title(document, permission)
-    if permission
-      link_to document.document_file_name, document.document.url
-    else
-      document.document_file_name
+    link_to url, remote: true, class: 'btn btn-success mr-1', title: t(:subsidies)[:tooltips][:request_subsidy], data: { toggle: 'tooltip' } do
+      icon('fas', 'plus mr-2') + t('subsidies.add')
     end
   end
 
-  def dashboard_document_edit_button(document, permission)
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: "glyphicon glyphicon-edit", aria: {hidden: "true"})
-      ), type: 'button', class: "btn btn-warning actions-button document-edit #{permission ? '' : 'disabled'}", data: { permission: permission.to_s }
-    )
+  def approve_subsidy_button(subsidy, opts={})
+    link_to approve_dashboard_subsidy_path, remote: true, class: 'btn btn-success mr-1', title: t('actions.approve'), data: { toggle: 'tooltip' } do
+      icon('fas', 'check')
+    end
   end
 
-  def dashboard_document_delete_button(document, permission)
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: "glyphicon glyphicon-remove", aria: {hidden: "true"})
-      ), type: 'button', class: "btn btn-danger actions-button document-delete #{permission ? '' : 'disabled'}", data: { permission: permission.to_s }
-    )
+  def edit_subsidy_button(subsidy, opts={})
+    url = in_dashboard? ? edit_dashboard_subsidy_path(subsidy) : edit_dashboard_subsidy_path(subsidy, srid: opts[:srid])
+
+    link_to url, remote: true, class: 'btn btn-warning mr-1' do
+      icon('far', 'edit')
+    end
   end
 
-  def document_org_access_collection(document, action)
-    default_select  = if action == 'new'
-                        document.protocol.organizations.ids
-                      else
-                        document.sub_service_requests.map(&:organization_id)
-                      end
-    options_from_collection_for_select(document.protocol.organizations.distinct.sort_by(&:name), :id, :name, default_select)
+  def delete_subsidy_button(subsidy, opts={})
+    url = in_dashboard? ? dashboard_subsidy_path(subsidy) : subsidy_path(subsidy, srid: opts[:srid])
+
+    link_to url, remote: true, method: :delete, class: 'btn btn-danger', data: { confirm_swal: 'true' } do
+      icon('fas', 'trash-alt')
+    end
   end
 end

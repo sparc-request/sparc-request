@@ -19,7 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  
   ###################
   # Protocols Table #
   ###################
@@ -59,46 +58,13 @@ $(document).ready ->
       url:  "/dashboard/protocol_filters/new"
       data: data
 
+  #################
+  # Protocol Show #
+  #################
+
   Sparc = {}
   Sparc.protocol =
     ready: ->
-      $(document).on 'click', '.calendar-lock', ->
-        protocol_id = $(this).data('protocol-id')
-        locked = $(this).data('locked')
-        data =
-        'protocol_id'       : protocol_id,
-        'locked'            : locked
-        $.ajax
-          type: 'PUT'
-          url: "/dashboard/protocols/#{protocol_id}"
-          data: data
-
-      #  Protocol Index Begin
-      $(document).on 'click', '.protocol-archive-button', ->
-        protocol_id = $(this).data('protocol-id')
-        $.ajax
-          type: 'PATCH'
-          url:  "/dashboard/protocols/#{protocol_id}/archive.js"
-
-      
-
-      # Protocol Show Begin
-      $(document).on 'click', '.view-full-calendar-button', ->
-        protocol_id = $(this).data('protocolId')
-        statuses_hidden = $(this).data('statusesHidden')
-        $.ajax
-          method: 'get'
-          url: "/service_calendars/view_full_calendar.js"
-          data:
-            portal: 'true'
-            protocol_id: protocol_id
-            statuses_hidden: statuses_hidden
-
-      $(document).on 'click', '#add-services-button', ->
-        if $(this).data('permission')
-          protocol_id         = $(this).data('protocol-id')
-          window.location     = "/?protocol_id=#{protocol_id}&from_portal=true"
-
       $(document).on 'change', '.complete-forms', ->
         if $(this).val()
           $option = $('option:selected', this)
@@ -114,6 +80,3 @@ $(document).ready ->
               respondable_type: $option.data('respondable-type')
             success: ->
               $this.selectpicker('val', '')
-
-      reset_service_requests_handlers()
-      # Protocol Show End

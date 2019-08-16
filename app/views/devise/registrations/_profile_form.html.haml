@@ -1,0 +1,79 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+= form_for resource, as: resource_name, url: registration_path(resource_name), remote: true, method: :put do |f|
+  .form-row
+    .form-group.col-4
+      = f.label :email, t(:devise)[:profile][:email], class: 'col-form-label required'
+    .form-group.col-8
+      .input-group
+        .input-group-prepend
+          %span.input-group-text
+            = icon('far', 'envelope')
+        = f.text_field :email, class: 'form-control'
+
+  .form-row
+    .form-group.col-4
+      = f.label :phone, t(:devise)[:profile][:phone], class: 'col-form-label'
+    .form-group.col-8
+      .input-group
+        .input-group-prepend
+          %span.input-group-text
+            = icon('fas', 'phone')
+        = f.telephone_field :phone, class: 'form-control', placeholder: t('constants.phone.placeholder'), value: format_phone(identity.phone)
+      %span.form-text.text-muted
+        = t('constants.phone.note')
+
+  .form-row
+    .form-group.col-4
+      = f.label :orcid, class: 'col-form-label'
+    .form-group.col-8
+      = f.text_field :orcid, class: 'form-control', placeholder: t(:devise)[:profile][:placeholders][:orcid], maxlength: 19
+      %small.form-text
+        = link_to t(:devise)[:profile][:links][:orcid], t(:devise)[:profile][:links][:orcid], target: :blank
+
+  .form-row
+    .form-group.col-4
+      = f.label :era_commons_name, t(:devise)[:profile][:era_commons_name], class: 'col-form-label'
+    .form-group.col-8
+      = f.text_field :era_commons_name, class: 'form-control'
+
+  .form-row
+    .form-group.col-4
+      = f.label :subspecialty, t(:devise)[:profile][:subspecialty], class: 'col-form-label'
+    .form-group.col-8
+      = f.select :subspecialty, options_for_select(PermissibleValue.get_inverted_hash('subspecialty'), identity.subspecialty), { include_blank: t(:devise)[:profile][:subspecialty_prompt] }, class: 'selectpicker'
+
+  .form-row
+    .form-group.col-4
+      = f.label :credentials, t(:devise)[:profile][:credentials], class: 'col-form-label'
+    .form-group.col-8
+      = f.select :credentials, options_for_select(PermissibleValue.get_inverted_hash('user_credential'), identity.credentials), { include_blank: t(:devise)[:profile][:credentials_prompt] }, class: 'selectpicker'
+
+  .form-row#credentialsOtherContainer{ class: f.object.credentials == 'other' ? '' : 'd-none' }
+    .form-group.col-4
+      = f.label :credentials_other, t('constants.prompts.please_specify')
+    .form-group.col-8
+      = f.text_field :credentials_other, class: 'form-control'
+
+  = render "associated_users/professional_organizations", professional_organization: identity.professional_organization
+
+  .form-group.mb-0
+    = f.submit t(:devise)[:profile][:update], class: 'btn btn-lg btn-block btn-outline-primary'

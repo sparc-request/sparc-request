@@ -18,10 +18,17 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#modal_errors").html("<%= escape_javascript(render(partial: 'layouts/modal_errors', locals: {errors: @errors})) %>")
-<% unless @errors %>
-refresh_notifications_table()
+<% if @errors%>
+$("[name^='notification']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+$('.form-error').remove()
+<% @errors.messages.each do |attr, messages| %>
+<% messages.each do |message| %>
+$("[name='notification[<%= attr.to_s %>]'], [name='notification[message][<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
+<% end %>
+<% end %>
 
+<% else %>
+refresh_notifications_table()
 $("#modalContainer").modal 'hide'
 $("#flashContainer").replaceWith("<%= escape_javascript(render('layouts/flash')) %>")
 <% end %>

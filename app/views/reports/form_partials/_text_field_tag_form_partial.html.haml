@@ -18,10 +18,8 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - required_class  = options[:required] ? 'required' : ''
-- default_classes = ["form-control text-field", required_class]
 - id              = options[:for] ? options[:for] : field.delete(' ').underscore
 - name            = options[:for] ? "report[#{options[:for]}]" : "report[#{id}]"
 
-= label_tag id, field_label, class: ['col-sm-3 control-label', required_class]
-.col-sm-9
-  = text_field_tag name, nil, id: id, class: default_classes, type: "text"
+= label_tag id, field_label, class: required_class
+= text_field_tag name, nil, id: id, class: 'form-control', type: "text"

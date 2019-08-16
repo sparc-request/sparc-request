@@ -18,21 +18,21 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#reporting-container.col-lg-10.col-lg-offset-1
-  - @counter = 0
-  #report-selection.text-center
-    .page-header
-      %h1
-        = t(:reporting)[:index][:intro]
-        %br
-        %small
-          = t(:reporting)[:index][:subtext]
-    - if !Setting.get_value('use_short_interaction')
-      - $canned_reports.delete("ShortInteractionsReport")
-    - $canned_reports.sort.each do |report|
-      = link_to report.constantize.title, setup_reports_path(report: report), method: :get, remote: true, class: "btn btn-primary btn-lg"
-      - @counter += 1
-      - if @counter.modulo(4) == 0
-        %br
-        %br
-  #report-container
+#reporting-container.container
+  .col-12.col-sm-8.px-0.mx-auto
+    .card
+      .card-body.p-xl-5
+        #report-selection
+          %h1.text-center.mb-2
+            .card-title
+              = t(:reporting)[:index][:intro]
+            .card-subtitle.text-muted
+              %small
+                = t(:reporting)[:index][:subtext]
+
+          .d-flex.justify-content-center.flex-wrap
+            - if !Setting.get_value('use_short_interaction')
+              - $canned_reports.delete("ShortInteractionsReport")
+            - $canned_reports.sort.each do |report|
+              = link_to report.constantize.title, setup_reports_path(report: report), method: :get, remote: true, class: "btn btn-primary btn-lg m-2"
+          #report-container

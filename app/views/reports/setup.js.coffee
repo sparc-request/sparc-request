@@ -17,18 +17,32 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$('#report-container').html("<%= j render 'setup', report: @report %>")
-$('#report-container').show()
-$('#report-selection').hide()
-$('.selectpicker').selectpicker()
+$('#modalContainer').html("<%= j render 'setup', report: @report %>")
+$("#modalContainer").modal('show')
 first_dependency = "#" + $('.reporting-field.has-dependencies').attr('id')
 window.disable_deps(first_dependency)
 
-<% @date_ranges.each do |dr| %>
-<% field,options = dr %>
-<% from_id = options[:for] ? options[:for] + "_from" : field.delete(" ").underscore + "_from" %>
-<% to_id = options[:for] ? options[:for] + "_to" : field.delete(" ").underscore + "_to" %>
-window.create_date_pickers("#<%= from_id %>", "#<%= to_id %>")
-<% end %>
+if $('.from-date').length && $('.to-date').length
+  startDate = $('.from-date').data().date
+  endDate   = $('.to-date').data().date
 
-window.create_single_date_pickers()
+  if startDate
+    $('.to-date').datetimepicker('minDate', startDate)
+    if !endDate
+      $('.to-input').val('')
+
+  $('.from-date').on 'change.datetimepicker', ->
+    startDate = $('.from-input').val()
+    endDate   = $('.to-input').val()
+
+    if startDate
+      $('.to-date').datetimepicker('minDate', startDate)
+      $('.to-input').focus()
+      if !endDate
+        $('.to-input').val(startDate).blur().focus()
+    else
+      $('.to-date').datetimepicker('minDate', false)
+
+  $('.to-input').on 'click', ->
+    if (startDate = $('.from-input').val()) && !$(this).val()
+      $(this).val(startDate).blur().focus()

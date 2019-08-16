@@ -33,7 +33,16 @@ module Dashboard::EpicQueuesHelper
   end
 
   def epic_queue_send_button(epic_queue)
-    link_to icon('fas', 'hand-point-right'), push_to_epic_protocol_path(epic_queue.protocol.id, eq_id: epic_queue.id, from_portal: true, format: :js), remote: true, method: :get, class: 'btn btn-success push-to-epic', data: { permission: 'true' }
+    link_to icon('fas', 'hand-point-right'), push_to_epic_protocol_path(epic_queue.protocol.id, eq_id: epic_queue.id), remote: true, method: :get, class: 'btn btn-success push-to-epic', data: { permission: 'true' }
+  end
+
+  def epic_queue_actions(epic_queue)
+    content_tag :div, class: 'd-flex justify-content-center' do
+      raw([
+        epic_queue_send_button(epic_queue),
+        epic_queue_delete_button(epic_queue)
+      ].join(''))
+    end
   end
 
   def format_epic_queue_date(protocol)

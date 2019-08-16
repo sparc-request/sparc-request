@@ -20,20 +20,22 @@
 
 .modal-dialog.modal-xl
   .modal-content
-    .modal-header
-      %h3.modal-title
-        = t(:dashboard)[:protocol_merge][:modal_header]
-      %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
-        %span{ aria: { hidden: 'true' } } &times;
-    .modal-body#protocol-merges-container
-      .card
-        .card-body
-          %h6.text-left.m-0
-            = label_tag 'master_protocol', t(:dashboard)[:protocol_merge][:enter_master_protocol] 
-            = text_field_tag 'master_protocol'
-          %h6.text-left.m-0
-            = label_tag 'sub_protocol', t(:dashboard)[:protocol_merge][:enter_sub_protocol]
-            = text_field_tag 'sub_protocol'
-    .modal-footer
-      %button.btn.btn-info.navbar-btn#merge-button{ type: 'button', title: t(:dashboard)[:protocol_merge][:perform_protocol_merge]}
-        = t(:dashboard)[:protocol_merge][:perform_protocol_merge]
+    = form_tag perform_protocol_merge_dashboard_protocol_merge_path, method: :put, remote: true do |f|
+      .modal-header
+        %h3.modal-title
+          = t(:dashboard)[:protocol_merge][:modal_header]
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+          %span{ aria: { hidden: 'true' } } &times;
+      .modal-body#protocol-merges-container
+        .card
+          .card-body
+            %h6.text-left.m-0
+              = f.label 'master_protocol', t(:dashboard)[:protocol_merge][:enter_master_protocol] 
+              = f.text_field 'master_protocol'
+            %h6.text-left.m-0
+              = f.label 'sub_protocol', t(:dashboard)[:protocol_merge][:enter_sub_protocol]
+              = f.text_field 'sub_protocol'
+      .modal-footer
+        %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+          = t('actions.close')
+        = f.submit t('actions.submit'), class: 'btn btn-primary'

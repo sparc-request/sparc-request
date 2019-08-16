@@ -23,7 +23,6 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
   respond_to :json, :html
 
   def show
-    current_user = current_identity
   end
 
   def perform_protocol_merge

@@ -21,9 +21,9 @@
 .card
   #epic-queues-custom-toolbar
   %table.epic-queue-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', pagination: 'true', side_pagination: 'server', url: dashboard_epic_queues_path, striped: 'true', toolbar: '#epic-queues-custom-toolbar' } }
-    %thead.primary-header
+    %thead.bg-light
       %tr
-        %th{data: { field: "protocol", align: "left", sortable: 'true', class: 'text-primary' } }
+        %th{data: { field: "protocol", align: "left", sortable: 'true' } }
           = t(:dashboard)[:epic_queues][:protocol]
         %th{data: { field: "pis", align: "left", sortable: 'true' } }
           = t(:dashboard)[:epic_queues][:PIs]
@@ -35,7 +35,5 @@
           = t(:dashboard)[:epic_queues][:date]
         %th{data: { field: "status", align: "left", sortable: 'true' } }
           = t(:dashboard)[:epic_queues][:status]
-        %th{data: { field: 'send', align: 'center' } }
-          = t(:dashboard)[:epic_queues][:send]
-        %th.last{data: { field: "delete", align: "center" } }
-          = t(:dashboard)[:epic_queues][:delete]
+        %th.last{data: {class: 'actions', align: "center", field: "actions"}}
+          = t(:dashboard)[:epic_queues][:actions]

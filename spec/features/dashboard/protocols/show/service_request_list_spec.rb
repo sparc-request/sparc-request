@@ -238,13 +238,16 @@ RSpec.describe 'service request list', js: true do
 
     scenario 'user clicks "Modify Request" button' do
       page = go_to_show_protocol(protocol.id)
+
+      sleep 5
+
       wait_for_javascript_to_finish
 
       page.service_requests.first.modify_request_button.click
 
-      wait_for_javascript_to_finish
-
       sleep 5
+
+      wait_for_javascript_to_finish
 
       expect(URI.parse(current_url).path).to eq catalog_service_request_path
     end

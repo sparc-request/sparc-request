@@ -29,20 +29,20 @@ module ArmsHelper
     end
   end
 
-  def arms_actions(arm, arms_editable, arm_count)
+  def arms_actions(arm, opts={})
     [
-      arms_edit_button(arm, arms_editable),
-      arms_delete_button(arm, arms_editable, arm_count)
+      arms_edit_button(arm, opts),
+      arms_delete_button(arm, opts)
     ].join('')
   end
 
-  def arms_edit_button(arm, arms_editable)
-    link_to icon('far', 'edit'), edit_arm_path(arm), remote: true, class: ['btn btn-warning mr-1', arms_editable ? '' : 'disabled']
+  def arms_edit_button(arm, opts={})
+    link_to icon('far', 'edit'), edit_arm_path(arm, srid: opts[:srid]), remote: true, class: ['btn btn-warning mr-1', opts[:editable] ? '' : 'disabled']
   end
 
-  def arms_delete_button(arm, arms_editable, arm_count)
-    link_to icon('fas', 'trash-alt'), arm_path(arm), remote: true, method: :delete,
-    class: ['btn btn-danger', arms_editable && arm_count > 1 ? '' : 'disabled'],
+  def arms_delete_button(arm, opts={})
+    link_to icon('fas', 'trash-alt'), arm_path(arm, srid: opts[:srid]), remote: true, method: :delete,
+    class: ['btn btn-danger', opts[:editable] && opts[:count] > 1 ? '' : 'disabled'],
     data: {
       confirm_swal: 'true'
     }

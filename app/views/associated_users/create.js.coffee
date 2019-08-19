@@ -27,6 +27,12 @@ $('.form-error').remove()
 $("[name='project_role[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
 <% end %>
 <% end %>
+
+<% @protocol_role.identity.errors.messages.each do |attr, messages| %>
+<% messages.each do |message| %>
+$("[name='project_role[identity_attributes][<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
+<% end %>
+<% end %>
 <% else %>
 $("#authorizedUsersTable").bootstrapTable('refresh')
 $("#modalContainer").modal('hide')

@@ -125,8 +125,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       end
 
       flash[:success] = I18n.t('protocols.created', protocol_type: @protocol.type)
-
-      redirect_to dashboard_protocol_path(@protocol)
     else
       @errors = @protocol.errors
     end

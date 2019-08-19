@@ -28,6 +28,7 @@ class AddService
   end
 
   def generate_new_service_request
+    @service_request.save
     new_line_items = @service_request.create_line_items_for_service(service: @service, optional: true, recursive_call: false ) || []
     create_sub_service_requests(new_line_items)
   end

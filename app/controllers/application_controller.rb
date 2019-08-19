@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user
 
-  before_action :preload_settings
+  before_action :preload_database_values
   before_action :set_highlighted_link
   before_action :get_news_feed,               if: Proc.new{ request.format.html? }
   before_action :get_calendar_events,         if: Proc.new{ request.format.html? }
@@ -64,8 +64,9 @@ class ApplicationController < ActionController::Base
   ### Before-Action Methods ###
   #############################
 
-  def preload_settings
+  def preload_database_values
     Setting.preload_values
+    PermissibleValue.preload_values
   end
 
   def set_highlighted_link  # default value, override inside controllers
@@ -169,20 +170,16 @@ class ApplicationController < ActionController::Base
   def initialize_service_request
     if params[:srid].present?
       @service_request = ServiceRequest.find(params[:srid])
-    elsif action_name == 'add_service'
-      @service_request = ServiceRequest.new(status: 'first_draft')
-      @service_request.save(validate: false)
     else
       @service_request = ServiceRequest.new(status: 'first_draft')
     end
   end
 
   def authorize_identity
-    # can the user edit the service request
-    # we have a current user
-    if @service_request.status == 'first_draft' && Rails.application.routes.recognize_path(request.referrer)[:action] == 'catalog'
+    # If the request is in first_draft status
+    if @service_request.status == 'first_draft' && (action_name == 'catalog' || (Rails.application.routes.recognize_path(request.referrer)[:action] == 'catalog' && request.format.js?))
       return true
-    elsif current_user && @service_request.status != 'first_draft' && current_user.can_edit_service_request?(@service_request)
+    elsif current_user && current_user.can_edit_service_request?(@service_request)
       return true
     elsif current_user.nil?
       authenticate_identity!

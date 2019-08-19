@@ -72,7 +72,7 @@ class Identity < ApplicationRecord
   validates_presence_of :first_name, :last_name, :email
 
   validates_format_of :email, with: Devise::email_regexp, allow_blank: true, if: :email_changed?
-  validates_format_of :phone, with: /[0-9]{10}(#[0-9]+)?/, allow_blank: true
+  validates_format_of :phone, with: /[0-9]{10}(#[0-9]+)?/, allow_blank: true, if: :phone_changed?
 
   validates :ldap_uid, uniqueness: {case_sensitive: false}, presence: true
   validates :orcid, format: { with: /\A([0-9]{4}-){3}[0-9]{3}[0-9X]\z/ }, allow_blank: true
@@ -235,11 +235,7 @@ class Identity < ApplicationRecord
 
   # Only users with request or approve rights can edit.
   def can_edit_service_request?(sr)
-    has_correct_project_role?(sr) || self.catalog_overlord?
-  end
-
-  def has_correct_project_role?(request)
-    can_edit_protocol?(request.protocol)
+    sr.sub_service_requests.where(service_requester: self).any? || (sr.protocol && can_edit_protocol?(sr.protocol)) || self.catalog_overlord?
   end
 
   def can_view_protocol?(protocol)

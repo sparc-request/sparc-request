@@ -18,20 +18,19 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= form_tag navigate_service_request_path(srid: @service_request.id), id: 'serviceRequestForm', class: 'w-100' do
-  = render '/service_requests/navigation/steps'
-  = render '/service_requests/navigation/header'
-  #review-page
-    = render 'protocols/summary', protocol: @service_request.protocol, protocol_type: @service_request.protocol.type, service_request: @service_request
-    = render 'associated_users/table', service_request: @service_request, protocol: @service_request.protocol
-
-    #serviceCalendarReview
-      = render 'service_calendars/table', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, portal: @portal, admin: @admin, review: @review, merged: @merged, consolidated: @consolidated, pages: @pages, page: @page 
-
-    = render 'documents/table', service_request: @service_request, protocol: @service_request.protocol
-    - if @service_request.has_associated_forms?
-      = render "forms/table", service_request: @service_request, review: @review
-  = render 'service_requests/navigation/footer'
-
 - if Setting.get_value("system_satisfaction_survey") && SystemSurvey.where(access_code: 'system-satisfaction-survey', active: true).any?
   = hidden_field_tag :use_system_satisfaction, 'true'
+
+= render '/service_requests/navigation/steps'
+= render '/service_requests/navigation/header'
+#review-page
+  = render 'protocols/summary', protocol: @service_request.protocol, protocol_type: @service_request.protocol.type, service_request: @service_request
+  = render 'associated_users/table', service_request: @service_request, protocol: @service_request.protocol
+
+  #serviceCalendar
+    = render 'service_calendars/table', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, portal: @portal, admin: @admin, review: @review, merged: @merged, consolidated: @consolidated, pages: @pages, page: @page 
+
+  = render 'documents/table', service_request: @service_request, protocol: @service_request.protocol
+  - if @service_request.has_associated_forms?
+    = render "forms/table", service_request: @service_request, review: @review
+= render 'service_requests/navigation/footer'

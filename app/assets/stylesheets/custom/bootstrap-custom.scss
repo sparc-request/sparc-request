@@ -63,6 +63,21 @@
   &.disabled {
     cursor: not-allowed;
   }
+
+  &.btn-sq {
+    width: 28px;
+    height: 28px;
+
+    &.btn-sm {
+      width: 24px;
+      height: 24px;
+    }
+
+    &.btn-lg {
+      width: 36px;
+      height: 36px;
+    }
+  }
 }
 
 ////////////
@@ -121,6 +136,10 @@
 
       *:not(:last-child) {
         margin-bottom: 0.25rem;
+      }
+
+      p {
+        word-break: break-word;
       }
     }
   }

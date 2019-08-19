@@ -17,10 +17,10 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 .modal-dialog.modal-xl
   .modal-content
-    = form_tag perform_protocol_merge_dashboard_protocol_merge_path, method: :put, remote: true do |f|
+    #flashContainerModal
+    = form_with url: '#', id: 'protocolMergeForm', method: :put, remote: true do |f|
       .modal-header
         %h3.modal-title
           = t(:dashboard)[:protocol_merge][:modal_header]
@@ -31,11 +31,11 @@
           .card-body
             %h6.text-left.m-0
               = f.label 'master_protocol', t(:dashboard)[:protocol_merge][:enter_master_protocol] 
-              = f.text_field 'master_protocol'
+              = f.text_field 'master_protocol', id: 'master_protocol'
             %h6.text-left.m-0
               = f.label 'sub_protocol', t(:dashboard)[:protocol_merge][:enter_sub_protocol]
-              = f.text_field 'sub_protocol'
+              = f.text_field 'sub_protocol', id: 'sub_protocol'
       .modal-footer
         %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
           = t('actions.close')
-        = f.submit t('actions.submit'), class: 'btn btn-primary'
+        = f.submit t(:dashboard)[:protocol_merge][:perform_protocol_merge], class: 'btn btn-primary', id: 'merge-button'

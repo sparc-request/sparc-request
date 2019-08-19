@@ -236,9 +236,9 @@ en:
       enter_master_protocol: "Enter the id of the Master Protocol:"
       enter_sub_protocol: "Enter the id of the Protocol to be merged into the Master Protocol:"
       perform_protocol_merge: "Perform Protocol Merge"
-      warning: "Preparing to merge protocol #{master_protocol_id} and protocol #{sub_protocol_id}. Do you wish to continue?"
+      warning: "Preparing to merge protocol %{master_protocol_id} and protocol %{sub_protocol_id}. Do you wish to continue?"
       yes_button: "<b>Yes</b> <br>Continue Merging"
-      no_button: "<b>No</b> <br>Visit my Dashboard"
+      no_button: "<b>No</b> <br>Cancel Merge"
 
     #####################
     # SERVICE CALENDARS #

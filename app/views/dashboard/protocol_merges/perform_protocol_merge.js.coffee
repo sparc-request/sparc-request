@@ -1,1 +1,1 @@
-$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
+$("#flashContainerModal").replaceWith("<%= j render 'layouts/flash' %>")

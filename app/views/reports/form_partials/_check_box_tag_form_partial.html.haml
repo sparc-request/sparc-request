@@ -34,7 +34,7 @@
           = k
         - v.each do |sv|
           = label_tag sv, '', class: ['checkbox-inline', required_class] do
-            = check_box_tag name, sv, selected.include?(sv), type: "checkbox"
+            = check_box_tag name, sv, selected.include?(sv), type: "checkbox", id: sv
             = multiple[sv]
 
 - elsif multiple
@@ -42,7 +42,7 @@
     %div
       - multiple.each do |k,v|
         = label_tag k, '', class: ['mr-3', required_class] do
-          = check_box_tag name, k, selected.include?(v), type: "checkbox"
+          = check_box_tag name, k, selected.include?(v), type: "checkbox", id: k
           = v
 - else # for individual checkboxes that have true/false
   = check_box_tag name, true, selected.any?, type: "checkbox" unless (show_epic && !(Setting.get_value("use_epic"))) # Only show Epic checkbox if use_epic is set to true

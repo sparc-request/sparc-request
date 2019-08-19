@@ -79,6 +79,7 @@
 
 //= require dashboard/protocols
 //= require dashboard/notifications
+//= require funding/documents
 
 
 

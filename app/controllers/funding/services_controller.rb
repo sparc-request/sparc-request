@@ -45,9 +45,13 @@ class Funding::ServicesController < ApplicationController
   end
 
   def documents
-    @table = params[:table]
-    @service_id = params[:id]
-    @funding_documents = Document.joins(sub_service_requests: {line_items: :service}).where(services: {id: @service_id}, doc_type: @table).distinct
+    respond_to do |format|
+      format.json{
+        @table = params[:table]
+        @service_id = params[:id]
+        @funding_documents = Document.joins(sub_service_requests: {line_items: :service}).where(services: {id: @service_id}, doc_type: @table).distinct
+      }
+    end
   end
 
   private

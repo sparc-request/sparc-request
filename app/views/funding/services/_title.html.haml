@@ -18,8 +18,8 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-.row#selected-opp
-  .col-lg-2.text-left.bold
-    = label_tag 'funding_opp',  t(:funding)[:download][:funding_opp]
-  .col-lg-10.text-left
-    = label_tag 'funding_title',  "#{service.organization.name} / #{service.abbreviation}", class: 'normal'
+.d-flex
+  .p-2
+    =t('funding.download.funding_opp')
+  .p-2
+    = label_tag 'funding_title',  "#{service.organization.name} / #{service.abbreviation}"

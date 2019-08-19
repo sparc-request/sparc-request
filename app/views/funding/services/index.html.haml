@@ -24,13 +24,13 @@
       %h2.panel-title
         = t('funding.index.header')
     %table#fundings-table{ data: { toggle: 'table', url: funding_services_path(format: :json), search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-export' => 'true', pagination: 'true', page_size: '20', sort_name: 'created', sort_order: 'desc', toolbar: '#fundings-custom-toolbar' } }
-      %thead
+      %thead.bg-primary.text-white
         %tr
-          %th{ data: { class: 'title col-sm-6', field: "title", align: "left", sortable: 'true' } }
+          %th{ data: { class: 'title', field: "title", align: "left", sortable: 'true' } }
             = t(:funding)[:index][:table][:headers][:title]
-          %th{ class: 'program col-sm-2', data: { field: "program", align: "left", sortable: 'true' } }
+          %th{ class: 'program', data: { field: "program", align: "left", sortable: 'true' } }
             = t(:funding)[:index][:table][:headers][:program]
-          %th{ class: 'created col-sm-1', data: { field: "created", align: "left", sortable: 'true' , sorter: "dateSorter"  } }
+          %th{ class: 'created', data: { field: "created", align: "left", sortable: 'true' , sorter: "dateSorter"  } }
             = t(:funding)[:index][:table][:headers][:created]
-          %th{ class: 'action col-sm-3', data: { field: "action", align: "center" } }
+          %th{ class: 'action', data: { field: "action", align: "center" } }
             = t(:funding)[:index][:table][:headers][:action]

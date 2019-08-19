@@ -44,6 +44,7 @@ html {
 #contentContainer {
   position: relative;
   width: 90%;
+  padding-bottom: 200px;
   margin-left: auto;
   margin-right: auto;
   display: flex;
@@ -63,8 +64,8 @@ html {
 
   #backToTop {
     position: sticky;
-    bottom: 1rem;
-    right: 1rem;
+    bottom: 5rem;
+    right: calc(5% + 1rem);
     opacity: 1;
     transition: $transition-base;
     pointer-events: all;

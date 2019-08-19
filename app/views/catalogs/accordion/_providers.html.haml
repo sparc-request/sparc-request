@@ -23,8 +23,9 @@
 
   .card
     .card-header.p-0{ id: "provider#{p.id}Header" }
-      %button.org-link.btn.btn-lg.w-100.d-flex.justify-content-between.align-items-start.collapsed{ class: [css_class(p), locked ? 'locked' : ''], type: 'button', data: { toggle: 'collapse', target: "#provider#{p.id}Collapse", id: p.id }, aria: { expanded: 'true', controls: "provider#{p.id}Collapse" } }
-        = organization_name_display(p, locked, p.programs.any?)
+      %button.org-link.btn.btn-block.collapsed{ class: [css_class(p), locked ? 'locked' : ''], type: 'button', data: { toggle: 'collapse', target: "#provider#{p.id}Collapse", id: p.id }, aria: { expanded: 'true', controls: "provider#{p.id}Collapse" } }
+        %h6.d-flex.align-items-start.mb-0
+          = organization_name_display(p, locked, p.programs.any?)
     .collapse{ id: "provider#{p.id}Collapse", data: { parent: "#institution#{i.id}Collapse" }, aria: { labelledby: "provider#{p.id}Header" } }
       .card-body.p-0
         = render 'catalogs/accordion/programs', programs: p.programs, locked_ids: locked_ids

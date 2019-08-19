@@ -30,7 +30,7 @@ module ServiceRequestsHelper
   end
 
   def ssr_name_display(sub_service_request)
-    content_tag(:h5, class: 'mb-0') do
+    content_tag :span do
       content_tag(:strong, "(#{sub_service_request.ssr_id})") + " " +
       (!sub_service_request.can_be_edited? ? icon('fas', 'lock') + " " : "") +
       sub_service_request.organization.name

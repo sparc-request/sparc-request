@@ -53,7 +53,7 @@
 .btn {
   &.btn-info, &.btn-warning,
   &.btn-outline-info:hover, &.btn-outline-warning:hover {
-    color: white;
+    color: white !important;
   }
 
   &.btn-light:not(.toggle) {
@@ -76,6 +76,16 @@
     &.btn-lg {
       width: 36px;
       height: 36px;
+    }
+  }
+
+  &.btn-link.bg-white {
+    &:hover {
+      background: darken(#fff, 8%) !important;
+    }
+
+    &.active, &:active, &:focus {
+      background: darken(#fff, 10%) !important;
     }
   }
 }
@@ -198,10 +208,9 @@
 }
 
 @each $color, $value in $theme-colors {
-  $hover-background: darken($value, 7.5%);
-  $active-background: darken($value, 10%);
-
   div.bg-#{$color}[data-toggle=collapse] {
+    $hover-background: darken($value, 7.5%);
+    $active-background: darken($value, 10%);
     transition: $btn-transition;
 
     &.hover {
@@ -213,6 +222,20 @@
       color: color-yiq($active-background) !important;
       background-color: $active-background !important;
     }
+  }
+
+  div.list-group-item-#{$color}[data-toggle=collapse] {
+    transition: $btn-transition;
+
+    &.hover {
+      color: theme-color-level($color, 6) !important;
+      background-color: theme-color-level($color, -7) !important;
+    }
+
+    &.active {
+      color: theme-color-level($color, 7) !important;
+      background-color: theme-color-level($color, -5) !important;
+    } 
   }
 }
 

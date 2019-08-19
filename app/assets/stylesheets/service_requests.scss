@@ -22,9 +22,9 @@
 /// Service Catalog ///
 ///////////////////////
 
-#serviceCatalog #institutionAccordion {
-  .btn.btn-light:not(:last-child) {
-    border-bottom: 1px solid $border-color;
+#serviceCatalogForm {
+  .accordion .btn[data-toggle=collapse] {
+    padding: 0.75rem 1.25rem; // Match list group item padding from cart
   }
 }
 
@@ -71,19 +71,20 @@
 
   .cart-toggles-container {
     min-height: initial;
-
-    .cart-toggle {
-      &:hover {
-        background: darken(#fff, 8%);
-      }
-
-      &.active {
-        background: darken(#fff, 10%);
-      }
-    }
   }
 
   .cart-services > div:last-of-type > .list-group {
     @extend .border-bottom;
   }
+}
+
+//////////////
+/// Footer ///
+//////////////
+
+#serviceRequestFooter {
+  position: sticky;
+  bottom: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }

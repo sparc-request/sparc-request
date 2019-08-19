@@ -18,5 +18,16 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$('#modalContainer').html("<%= j render 'catalogs/locked_organization_modal', organization: @organization, identity: @identity, ssr: @ssr %>")
-$('#modalContainer').modal('show')
+
+<% if @identity %>
+AlertSwal.fire(
+  type: 'error'
+  title: I18n.t('proper.catalog.locked_organization.header', ssr_id: "<%= @ssr.ssr_id %>", organization: "<%= @organization.name %>")
+  html: I18n.t('proper.catalog.locked_organization.text', contact_name: "<%= @identity.full_name %>", contact_info: "<%= @identity.phone.blank? ? @identity.email : @identity.phone %>")
+)
+<% else %>
+AlertSwal.fire(
+  type: 'error'
+  html: I18n.t('proper.catalog.locked_organization.header', ssr_id: "<%= @ssr.ssr_id %>", organization: "<%= @organization.name %>")
+)
+<% end %>

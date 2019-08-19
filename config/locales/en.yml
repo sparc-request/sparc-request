@@ -228,8 +228,8 @@ en:
       visit_group:
         name: "Visit Name"
         day: "Day"
-        window_before: "Window Before Visit"
-        window_after: "Window After Visit"
+        window_before: "Window Before"
+        window_after: "Window After"
     errors:
       models:
         arm:
@@ -615,7 +615,7 @@ en:
           question_6: "I'm stuck! Who can I contact for assistance with SPARCRequest?"
           answer_6: "The %{department_name} is happy to assist you! Please contact us at %{phone} or <a href='mailto:%{email}'>%{email}</a>."
         feedback: "Feedback"
-    back_to_top: "Return to Top"
+    back_to_top: "Go to Top"
 
   ###########
   # MAILERS #

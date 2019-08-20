@@ -18,31 +18,31 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - required_class  = options[:required] ? 'required' : ''
-- default_classes = ['form-control date datetimepicker', required_class] 
-= label_tag nil, field_label, class: ['col-sm-3 control-label', required_class]
 
 /* from information */
 - from_id     = options[:for] ? "#{options[:for]}_from" : "#{field.delete(" ").underscore}_from"
 - from_name   = options[:for] ? "report[#{options[:for]}_from]" : "report[#{from_id}]"
-- from_label  = "#{options[:from_label] || "From"}:"
-- from_date   = options[:from] ? options[:from].strftime('%B %d, %Y %H:%M:%S') : nil
+- from_label  = "#{options[:from_label] || "From"}"
+- from_date   = options[:from] ? format_date(options[:from]) : nil
 
 /* to information */
 - to_id     = options[:for] ? "#{options[:for]}_to" : "#{field.delete(" ").underscore}_to"
 - to_name   = options[:for] ? "report[#{options[:for]}_to]" : "report[#{to_id}]"
-- to_label  = "#{options[:to_label] || "To"}:"
-- to_date   = options[:to] ? options[:to].strftime('%B %d, %Y %H:%M:%S') : nil
+- to_label  = "#{options[:to_label] || "To"}"
+- to_date   = options[:to] ? format_date(options[:to]) : nil
 
-= label_tag from_id, from_label, class: ['col-sm-1 col-sm-offset-1 control-label', required_class]
-.col-sm-3
-  .input-group.date
-    = text_field_tag from_name, nil, id: from_id, class: default_classes, data: { from: from_date }
-    %span.input-group-addon
-      %span.glyphicon.glyphicon-calendar
+.row
+  = label_tag nil, field_label, class: ['col-sm-12', required_class]
+  .col-sm-6
+    .input-group.datetimepicker.date.from-date{ id: from_id, data: { target_input: 'nearest' } }
+      = text_field_tag from_name, nil, class: 'datetimepicker-input from-input form-control', placeholder: from_label, data: { target: "##{from_id}" }
+      .input-group-append{ data: { toggle: 'datetimepicker', target: "##{from_id}" } }
+        %span.input-group-text
+          = icon('fas', 'calendar-alt')
 
-= label_tag to_id, to_label, class: ['col-sm-1 control-label', required_class]
-.col-sm-3
-  .input-group.date
-    = text_field_tag to_name, nil, id: to_id, class: default_classes, data: { to: to_date }
-    %span.input-group-addon
-      %span.glyphicon.glyphicon-calendar
+  .col-sm-6
+    .input-group.datetimepicker.date.to-date{ id: to_id, data: { target_input: 'nearest' } }
+      = text_field_tag to_name, nil, class: 'datetimepicker-input to-input form-control', placeholder: to_label, data: { target: "##{to_id}" }
+      .input-group-append{ data: { toggle: 'datetimepicker', target: "##{to_id}" } }
+        %span.input-group-text
+          = icon('fas', 'calendar-alt')

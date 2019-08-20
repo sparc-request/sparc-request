@@ -21,9 +21,9 @@
 module ServiceRequestsHelper
   def organization_name_display(organization, locked, has_children)
     raw(if locked
-      icon('fas', 'lock mt-1 mr-3')
+      icon('fas', 'lock mr-3')
     elsif has_children
-      icon('fas', 'caret-down mt-1 mr-3')
+      icon('fas', 'caret-down mr-3')
     else
       ""
     end + content_tag(:span, organization.name, class: 'flex-fill text-left'))

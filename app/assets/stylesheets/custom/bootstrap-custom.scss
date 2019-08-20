@@ -53,7 +53,7 @@
 .btn {
   &.btn-info, &.btn-warning,
   &.btn-outline-info:hover, &.btn-outline-warning:hover {
-    color: white !important;
+    color: white;
   }
 
   &.btn-light:not(.toggle) {
@@ -62,31 +62,6 @@
 
   &.disabled {
     cursor: not-allowed;
-  }
-
-  &.btn-sq {
-    width: 28px;
-    height: 28px;
-
-    &.btn-sm {
-      width: 24px;
-      height: 24px;
-    }
-
-    &.btn-lg {
-      width: 36px;
-      height: 36px;
-    }
-  }
-
-  &.btn-link.bg-white {
-    &:hover {
-      background: darken(#fff, 8%) !important;
-    }
-
-    &.active, &:active, &:focus {
-      background: darken(#fff, 10%) !important;
-    }
   }
 }
 
@@ -147,10 +122,6 @@
       *:not(:last-child) {
         margin-bottom: 0.25rem;
       }
-
-      p {
-        word-break: break-word;
-      }
     }
   }
 
@@ -208,9 +179,10 @@
 }
 
 @each $color, $value in $theme-colors {
+  $hover-background: darken($value, 7.5%);
+  $active-background: darken($value, 10%);
+
   div.bg-#{$color}[data-toggle=collapse] {
-    $hover-background: darken($value, 7.5%);
-    $active-background: darken($value, 10%);
     transition: $btn-transition;
 
     &.hover {
@@ -222,20 +194,6 @@
       color: color-yiq($active-background) !important;
       background-color: $active-background !important;
     }
-  }
-
-  div.list-group-item-#{$color}[data-toggle=collapse] {
-    transition: $btn-transition;
-
-    &.hover {
-      color: theme-color-level($color, 6) !important;
-      background-color: theme-color-level($color, -7) !important;
-    }
-
-    &.active {
-      color: theme-color-level($color, 7) !important;
-      background-color: theme-color-level($color, -5) !important;
-    } 
   }
 }
 
@@ -346,6 +304,18 @@ form, .form {
 
     &.form-control-lg {
       border-radius: 0.3rem;
+    }
+  }
+}
+
+/////////////
+/// Modal ///
+/////////////
+
+@include media-breakpoint-up(lg) {
+  .modal {
+    .modal-dialog {
+      max-width: 600px;
     }
   }
 }

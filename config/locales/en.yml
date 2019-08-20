@@ -228,8 +228,8 @@ en:
       visit_group:
         name: "Visit Name"
         day: "Day"
-        window_before: "Window Before"
-        window_after: "Window After"
+        window_before: "Window Before Visit"
+        window_after: "Window After Visit"
     errors:
       models:
         arm:

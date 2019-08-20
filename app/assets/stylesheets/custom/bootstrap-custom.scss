@@ -53,7 +53,7 @@
 .btn {
   &.btn-info, &.btn-warning,
   &.btn-outline-info:hover, &.btn-outline-warning:hover {
-    color: white;
+    color: white !important;
   }
 
   &.btn-light:not(.toggle) {
@@ -62,6 +62,16 @@
 
   &.disabled {
     cursor: not-allowed;
+  }
+
+  &.btn-link.bg-white {
+    &:hover {
+      background: darken(#fff, 8%) !important;
+    }
+
+    &.active, &:active, &:focus {
+      background: darken(#fff, 10%) !important;
+    }
   }
 }
 

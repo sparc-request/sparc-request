@@ -18,24 +18,24 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// require i18n/translations
-// require jquery
-// require bootstrap-sprockets
-// require bootstrap-select
-// require custom/bootstrap-select-custom
-// require bootstrap-table
-// require bootstrap-table-export
-// require bootstrap-table-custom
-// require bootstrap-toggle
-// require moment
-// require bootstrap-datetimepicker
-// require catalog_manager/catalog
-// require catalog_manager/form
-// require jquery_ujs
-// require jquery.remotipart
-// require nprogress
-// require nprogress-ajax
-// require twitter/typeahead.min
-// require handlebars-v4.0.5
-// require sweetalert.min
-// require ../global
+//= require i18n/translations
+//= require jquery
+//= require bootstrap-sprockets
+//= require bootstrap-select
+//= require bootstrap-select-custom
+//= require bootstrap-table
+//= require bootstrap-table-export
+//= require bootstrap-table-custom
+//= require bootstrap-toggle
+//= require moment
+//= require bootstrap-datetimepicker
+//= require catalog_manager/catalog
+//= require catalog_manager/form
+//= require jquery_ujs
+//= require jquery.remotipart
+//= require nprogress
+//= require nprogress-ajax
+//= require twitter/typeahead.min
+//= require handlebars-v4.0.5
+//= require sweetalert.min
+//= require ../global

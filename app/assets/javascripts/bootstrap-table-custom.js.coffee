@@ -18,7 +18,19 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#user-rights-row-<%= j @identity.id.to_s %>").replaceWith("<%= j render '/catalog_manager/organizations/user_rights_row', organization: @organization, user_rights: @user_rights, user: @identity %>")
-$("#flashContainer").replaceWith("<%= escape_javascript(render( 'layouts/flash' )) %>")
-$('[data-toggle="tooltip"]').tooltip()
-togglePrimaryContactChecks()
+getOrder = ->
+  if $table.bootstrapTable('getOptions').sortOrder == 'asc' then -1 else 1
+
+(exports ? this).dateSorter = (a, b) ->
+  if !a && !b
+    return 0
+  else if a && !b
+    return 1
+  else if !a && b
+    return -1
+  else
+    sort_a = new Date(a)
+    sort_b = new Date(b)
+    return 1 if sort_a > sort_b
+    return -1 if sort_a < sort_b
+    return 0

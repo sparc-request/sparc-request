@@ -17,19 +17,15 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- url_params = defined?(service_request) ? { srid: service_request.try(:id) } : {}
 
-.row#use_default_statuses{style: "margin:20px -15px 25px;"}
-  .col-sm-4.col-sm-offset-3.text-right
-    %h4{style: "margin-top:5px;"}= t(:catalog_manager)[:organization_form][:status_options][:use_default_statuses]
-  .col-sm-5
-    = check_box_tag :use_default_statuses, true, organization.use_default_statuses, data: { toggle: 'toggle', organization_id: organization.id, on: 'Yes', off: 'No'}
-.row
-  .col-sm-6
-    %h5= t(:catalog_manager)[:organization_form][:status_options][:title]
-  .col-sm-3.text-center
-    %h5= t(:catalog_manager)[:organization_form][:status_options][:available_statuses]
-  .col-sm-3.text-center
-    %h5= t(:catalog_manager)[:organization_form][:status_options][:editable_statuses]
-
-- PermissibleValue.get_hash("status").sort_by{ |key, value| value}.each do |status_key, status_value|
-  = render partial: 'status_row', locals: {status_key: status_key, status_value: status_value, organization: organization, available_statuses: available_statuses, editable_statuses: editable_statuses, using_defaults: @using_defaults}
+%nav.navbar.navbar-default
+  .container-fluid
+    .navbar-header
+      %ul.nav.navbar-nav
+        - Setting.get_value("navbar_links").each do |identifier, data|
+          = navbar_link(identifier, data, @highlighted_link)
+    %p.navbar-text.navbar-right.welcome-nav
+      %span
+        = t('proper.navbar.logged_in', email: current_user.email)
+      = link_to t('layout.navigation.sign_out'), destroy_identity_session_path(url_params), method: :delete, class: 'btn btn-warning'

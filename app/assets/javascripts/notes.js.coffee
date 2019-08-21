@@ -18,7 +18,20 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#user-rights-row-<%= j @identity.id.to_s %>").replaceWith("<%= j render '/catalog_manager/organizations/user_rights_row', organization: @organization, user_rights: @user_rights, user: @identity %>")
-$("#flashContainer").replaceWith("<%= escape_javascript(render( 'layouts/flash' )) %>")
-$('[data-toggle="tooltip"]').tooltip()
-togglePrimaryContactChecks()
+$ ->
+  $(document).on 'click', '.delete-note:not(.disabled)', ->
+    id = $(this).data('note-id')
+
+    swal {
+      title: I18n['swal']['swal_confirm']['title']
+      text: I18n['swal']['swal_confirm']['text']
+      type: 'warning'
+      showCancelButton: true
+      confirmButtonColor: '#DD6B55'
+      confirmButtonText: 'Delete'
+      closeOnConfirm: true
+    }, ->
+      $.ajax
+        type: 'DELETE'
+        dataType: 'script'
+        url: "/notes/#{id}"

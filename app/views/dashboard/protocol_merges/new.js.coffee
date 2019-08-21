@@ -18,5 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$('#modalContainer').html("<%= j render 'dashboard/protocol_merges/merge_tool_modal.html.haml', current_user: @current_user %>")
+$('#modalContainer').html("<%= j render 'dashboard/protocol_merges/merge_tool_modal.html.haml', protocol_merge: @protocol_merge, current_user: @current_user %>")
 $('#modalContainer').modal('show')

@@ -79,9 +79,6 @@
 
 //= require dashboard/protocols
 //= require dashboard/notifications
-//= require dashboard/protocol_merges
-
-
 
 // require batch-select
 // require bootstrap-table

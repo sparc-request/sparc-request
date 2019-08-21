@@ -234,11 +234,19 @@ en:
     protocol_merge:
       modal_header: "Protocol Merge Tool"
       enter_master_protocol: "Enter the id of the Master Protocol:"
-      enter_sub_protocol: "Enter the id of the Protocol to be merged into the Master Protocol:"
+      enter_merged_protocol: "Enter the id of the Protocol to be merged into the Master Protocol:"
       perform_protocol_merge: "Perform Protocol Merge"
-      warning: "Preparing to merge protocol %{master_protocol_id} and protocol %{sub_protocol_id}. Do you wish to continue?"
+      warning: "Preparing to merge protocol %{master_protocol_id} and protocol %{merged_protocol_id}. Do you wish to continue?"
       yes_button: "<b>Yes</b> <br>Continue Merging"
       no_button: "<b>No</b> <br>Cancel Merge"
+      errors:
+        master_blank: "Master protocol can't be blank"
+        merged_blank: "Protocol to be merged can't be blank"
+        master_does_not_exist: "Master protocol ID does not exist"
+        merged_does_not_exist: "Protocol to be merged ID does not exist"
+        one_calendar: "Only one protocol may have a calendar to be merged"
+        cannot_merge: "Protocol to be merged has already been pushed to SPARCFulfillment and can't be merged"
+      success: "Protocol merge successful"
 
     #####################
     # SERVICE CALENDARS #

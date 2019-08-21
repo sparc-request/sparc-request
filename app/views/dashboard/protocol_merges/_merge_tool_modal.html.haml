@@ -17,24 +17,24 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.modal-dialog.modal-xl
+.modal-dialog.modal-xl#protocol_merge_container
   .modal-content
     #flashContainerModal
-    = form_with url: '#', id: 'protocolMergeForm', method: :put, remote: true do |f|
+    = form_for protocol_merge, url: perform_protocol_merge_dashboard_protocol_merge_path, id: 'protocolMergeForm', method: :put, remote: true do |f|
+      = f.hidden_field :confirmed, value: false
       .modal-header
         %h3.modal-title
           = t(:dashboard)[:protocol_merge][:modal_header]
         %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
           %span{ aria: { hidden: 'true' } } &times;
       .modal-body#protocol-merges-container
-        .card
-          .card-body
-            %h6.text-left.m-0
-              = f.label 'master_protocol', t(:dashboard)[:protocol_merge][:enter_master_protocol] 
-              = f.text_field 'master_protocol', id: 'master_protocol'
-            %h6.text-left.m-0
-              = f.label 'sub_protocol', t(:dashboard)[:protocol_merge][:enter_sub_protocol]
-              = f.text_field 'sub_protocol', id: 'sub_protocol'
+        .form
+          .form-group
+            = f.label 'master_protocol_id', t(:dashboard)[:protocol_merge][:enter_master_protocol], class: 'required'
+            = f.text_field 'master_protocol_id', id: 'master_protocol_id', class: 'form-control'
+          .form-group
+            = f.label 'merged_protocol_id', t(:dashboard)[:protocol_merge][:enter_merged_protocol], class: 'required'
+            = f.text_field 'merged_protocol_id', id: 'merged_protocol_id', class: 'form-control'
       .modal-footer
         %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
           = t('actions.close')

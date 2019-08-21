@@ -82,7 +82,6 @@
 
 //= require reporting
 
-
 // require batch-select
 // require bootstrap-table
 // require bootstrap-table-export

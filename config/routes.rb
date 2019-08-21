@@ -238,7 +238,7 @@ SparcRails::Application.routes.draw do
     resources :epic_queue_records, only: [:index]
 
     resource :protocol_merge do
-      get :perform_protocol_merge
+      put :perform_protocol_merge
     end
 
     resources :fulfillments

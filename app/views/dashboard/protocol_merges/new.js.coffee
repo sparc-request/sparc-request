@@ -17,31 +17,6 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-<% if @errors.present? %>
-<% @errors.each do |field, message| %>
-$("#<%= field.to_s %>").parents('.form-group').find('.form-text').remove()
-$("#<%= field.to_s %>").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
-<% end %>
-<% elsif @no_errors %>
-ConfirmSwal.fire(
-  type: 'question'
-  text: I18n.t('dashboard.protocol_merge.warning', master_protocol_id: "<%= @master_protocol.id %>", merged_protocol_id:"<%= @merged_protocol.id %>")
-  confirmButtonText: I18n.t('dashboard.protocol_merge.yes_button')
-  cancelButtonText: I18n.t('dashboard.protocol_merge.no_button')
-).then (result) =>
-  if result.value
-    $.ajax
-      type: 'PUT'
-      url: "/dashboard/protocol_merge/perform_protocol_merge"
-      data:
-        protocol_merge:
-          master_protocol_id: "<%= @master_protocol.id %>"
-          merged_protocol_id: "<%= @merged_protocol.id %>"
-          confirmed: "<%= true %>"
-  else if result.dismiss == 'cancel'
-    $('#merge-button').removeAttr('disabled')
-<% else %>
-$("#flashContainerModal").replaceWith("<%= j render 'layouts/flash' %>")
-$('#master_protocol_id').val('')
-$('#merged_protocol_id').val('')
-<% end %>
+
+$('#modalContainer').html("<%= j render 'dashboard/protocol_merges/merge_tool_modal.html.haml', protocol_merge: @protocol_merge, current_user: @current_user %>")
+$('#modalContainer').modal('show')

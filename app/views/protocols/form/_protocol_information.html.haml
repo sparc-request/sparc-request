@@ -58,7 +58,7 @@
               .input-group-prepend
                 = f.label :guarantor_contact, icon('fas', 'user'), class: 'input-group-text'
               = f.text_field :guarantor_contact, class: 'form-control'
-          .form-group.col-6
+          .form-group.col-6.persist-validation
             = f.label :guarantor_phone
             .input-group
               .input-group-prepend

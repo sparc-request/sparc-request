@@ -240,6 +240,7 @@ en:
       yes_button: "<b>Yes</b> <br>Continue Merging"
       no_button: "<b>No</b> <br>Cancel Merge"
       errors:
+        access:  "You do not have access to perform a Protocol Merge"
         master_blank: "Master protocol can't be blank"
         merged_blank: "Protocol to be merged can't be blank"
         master_does_not_exist: "Master protocol ID does not exist"

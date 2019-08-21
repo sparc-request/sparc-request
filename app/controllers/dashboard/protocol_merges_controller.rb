@@ -152,7 +152,7 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
 
   def authorize_overlord
     unless current_user.catalog_overlord?
-      authorization_error('You do not have access to perform a Protocol Merge')
+      authorization_error(t(:dashboard)[:protocol_merge][:errors][:access])
     end
   end
 

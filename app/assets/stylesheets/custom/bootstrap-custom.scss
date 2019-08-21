@@ -53,7 +53,7 @@
 .btn {
   &.btn-info, &.btn-warning,
   &.btn-outline-info:hover, &.btn-outline-warning:hover {
-    color: white;
+    color: white !important;
   }
 
   &.btn-light:not(.toggle) {
@@ -64,18 +64,13 @@
     cursor: not-allowed;
   }
 
-  &.btn-sq {
-    width: 28px;
-    height: 28px;
-
-    &.btn-sm {
-      width: 24px;
-      height: 24px;
+  &.btn-link.bg-white {
+    &:hover {
+      background: darken(#fff, 8%) !important;
     }
 
-    &.btn-lg {
-      width: 36px;
-      height: 36px;
+    &.active, &:active, &:focus {
+      background: darken(#fff, 10%) !important;
     }
   }
 }
@@ -136,10 +131,6 @@
 
       *:not(:last-child) {
         margin-bottom: 0.25rem;
-      }
-
-      p {
-        word-break: break-word;
       }
     }
   }
@@ -323,6 +314,18 @@ form, .form {
 
     &.form-control-lg {
       border-radius: 0.3rem;
+    }
+  }
+}
+
+/////////////
+/// Modal ///
+/////////////
+
+@include media-breakpoint-up(lg) {
+  .modal {
+    .modal-dialog {
+      max-width: 600px;
     }
   }
 }

@@ -20,7 +20,7 @@
 
 - @in_dashboard = request.path.starts_with?('/dashboard')
 
-.container.position-relative
+.position-relative
   = render 'protocols/form/navigation', protocol: protocol
   %main.col-8.mx-auto
     = form_for (@in_dashboard ? [:dashboard, protocol] : protocol), as: :protocol, remote: true, html: { autocomplete: 'off', id: 'protocolForm' } do |f|

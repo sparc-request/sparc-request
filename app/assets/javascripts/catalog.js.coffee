@@ -81,18 +81,16 @@ $(document).ready ->
         pending: "<div class='tt-suggestion'>#{I18n.t('constants.search.loading')}</div>",
         suggestion: (s) -> [
           "<div class='tt-suggestion' data-toggle='#{if s.description then 'popover' else ''}' data-title='#{s.name}' data-content='#{s.description}' data-container='body' data-boundary='window' data-placement='right' data-trigger='hover'>",
-            "<div class='row'>",
-              "<div class='col-12'>",
-                "<h5 class='mb-0'><span class='text-service'>#{I18n.t('activerecord.models.service')}: </span>#{s.name}</h5>",
-              "</div>",
-              "<div class='col-12'>#{s.breadcrumb}</div>",
-              "<div class='col-12'>",
-                "<span><strong>#{I18n.t('activerecord.attributes.service.abbreviation')}: </strong>#{s.abbreviation}</span>",
-              "</div>",
-              s.cpt_code_text,
-              s.eap_id_text,
-              s.pricing_text,
+            "<div class='w-100'>",
+              "<h5 class='mb-0'><span class='text-service'>#{I18n.t('activerecord.models.service.one')}: </span>#{s.name}</h5>",
             "</div>",
+            "<div class='w-100'>#{s.breadcrumb}</div>",
+            "<div class='w-100'>",
+              "<span><strong>#{I18n.t('activerecord.attributes.service.abbreviation')}: </strong>#{s.abbreviation}</span>",
+            "</div>",
+            s.cpt_code_text,
+            s.eap_id_text,
+            s.pricing_text,
           "</div>"
         ].join('')
       }

@@ -24,8 +24,9 @@
 
     .card
       .card-header.p-0{ id: "core#{c.id}Header" }
-        %button.btn.btn-lg.w-100.d-flex.justify-content-between{ class: [css_class(p), locked ? 'locked' : ''], type: 'button', data: { toggle: 'collapse', target: "#core#{c.id}Collapse" }, aria: { expanded: 'true', controls: "core#{c.id}Collapse" } }
-          = organization_name_display(c, locked, c.services.any?)
+        %button.btn.btn-block.d-flex.justify-content-between.collapsed{ class: [css_class(p), locked ? 'locked' : ''], type: 'button', data: { toggle: 'collapse', target: "#core#{c.id}Collapse" }, aria: { expanded: 'true', controls: "core#{c.id}Collapse" } }
+          %h6.mb-0
+            = organization_name_display(c, locked, c.services.any?)
       .collapse{ id: "core#{c.id}Collapse", data: { parent: "#program#{p.id}Accordion" }, aria: { labelledby: "core#{c.id}Header" } }
         .card-body
           - if c.description.present?

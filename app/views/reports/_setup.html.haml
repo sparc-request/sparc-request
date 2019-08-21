@@ -17,19 +17,24 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-%h2.report-title.text-center.bg-primary
-  = report.title
-= form_tag generate_reports_path, id: 'reporting-form', class: "form-horizontal" do
-  = hidden_field_tag 'report[type]', report.class.name
-  #report-fields
-    - report.options.each do |field, options|
-      .form-group
-        - next if (field == "Include Epic Interface Columns" && !Setting.get_value("use_epic")) # Only show Epic field if use_epic is set to true
-        - field_type  = options[:field_type] || 'text_field_tag'
-        - field_label = "#{options[:field_label] || field.to_s.titleize}:"
-        = render "reports/form_partials/#{options[:field_type]}_form_partial", options: options, field_label: field_label, field: field
-  .report-actions.text-center
-    = submit_tag t(:reporting)[:actions][:create], class: "btn btn-success", data: { disable_with: false }
-    = button_to t(:reporting)[:actions][:return], reports_path, method: :get, id: "reporting-return-to-list", class: "btn btn-primary"
-%br
-%br
+.modal-dialog{ role: 'document' }
+  .modal-content
+    = form_tag generate_reports_path, id: 'reporting-form' do
+      = hidden_field_tag 'report[type]', report.class.name
+      .modal-header
+        %h3.modal-title
+          = report.title
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+          %span{ aria: { hidden: 'true' } } &times;
+      .modal-body
+        #report-fields
+          - report.options.each do |field, options|
+            .form-group
+              - next if (field == "Include Epic Interface Columns" && !Setting.get_value("use_epic")) # Only show Epic field if use_epic is set to true
+              - field_type  = options[:field_type] || 'text_field_tag'
+              - field_label = "#{options[:field_label] || field.to_s.titleize}:"
+              = render "reports/form_partials/#{options[:field_type]}_form_partial", options: options, field_label: field_label, field: field
+      .modal-footer
+        %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+          = t(:actions)[:close]
+        = submit_tag t(:reporting)[:actions][:create], class: "btn btn-success", data: { disable_with: false }

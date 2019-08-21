@@ -80,6 +80,8 @@
 //= require dashboard/protocols
 //= require dashboard/notifications
 
+//= require reporting
+
 // require batch-select
 // require bootstrap-table
 // require bootstrap-table-export

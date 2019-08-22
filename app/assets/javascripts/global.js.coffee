@@ -25,7 +25,8 @@ $.ajaxSetup({
   }
 });
 
-$(document).ready ->
+$ ->
+  $('html').addClass('ready')
   initializeSelectpickers()
   initializeDateTimePickers()
   initializeTooltips()
@@ -33,7 +34,6 @@ $(document).ready ->
   initializeToggles()
   initializeTables()
   setRequiredFields()
-  $('html').addClass('ready')
 
   $(document).on 'load-success.bs.table ajax:complete', ->
     initializeSelectpickers()

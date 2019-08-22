@@ -80,6 +80,8 @@
 //= require dashboard/protocols
 //= require dashboard/notifications
 
+//= require surveyor/responses
+//= require surveyor/surveys
 
 
 // require batch-select
@@ -94,8 +96,6 @@
 // require global
 // require associated_users_form
 // require study_schedule_tabs
-// require surveyor/responses
-// require surveyor/surveys
 // require sweetalert.min
 // require feedback
 // require notes

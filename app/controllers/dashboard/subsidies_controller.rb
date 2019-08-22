@@ -69,7 +69,6 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
 
   def destroy
     authorization_error if @subsidy.status == 'Approved' && !@admin
-
     @subsidy.destroy
     flash[:alert] = t(:subsidies)[:destroyed]
 

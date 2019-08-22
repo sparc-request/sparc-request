@@ -18,17 +18,13 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.card
-  .card-header#organizationHeader{ class: css_class(organization) }
-    %h6.mb-0.text-white
-      = organization.name
-  .card-body
-    - if organization.description.present?
-      %p.description
-        = raw(organization.description)
-    - if organization.type == "Program"
-      - if organization.services.any?
-        = render 'catalogs/accordion/services', organization: organization, service_request: service_request
-
-      - if organization.cores.any?
-        = render 'catalogs/accordion/cores', p: organization, service_request: service_request, locked_ids: locked_org_ids
+.row.no-margin.text-center
+  .col-md-3
+    %a{ href: Setting.get_value("header_link_1"), class: 'org-logo' }
+      = image_tag ENV['org_logo'] || 'logos/sctr_header_sized.jpg', alt: 'org_logo', height: 140
+  .col-md-6
+    %a{ href: Setting.get_value("header_link_2_catalog") }
+      = image_tag 'logos/catalog_logo.jpg', alt: 'catalog_manager_logo', class: 'sparc-request-header', height: 110
+  .col-md-3
+    %a{ href: Setting.get_value("header_link_3"), target: '_blank', class: 'institution-logo' }
+      = image_tag ENV['institution_logo'] || 'logos/musc_header.jpg', alt: 'institution_logo', height: 140

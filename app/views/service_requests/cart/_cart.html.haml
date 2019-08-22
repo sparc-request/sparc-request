@@ -22,26 +22,25 @@
 
 .col-12.col-lg-3.pl-lg-0#cart
   .card
-    .card-header.bg-primary.text-white.justify-content-between{ data: { toggle: 'collapse', target: '#cartCollapse' } }
+    .card-header.bg-primary.text-white.justify-content-between
       %h3.mb-0<
         = icon('fas', 'shopping-cart mr-2')
         = t('proper.cart.header')
-    .collapse.show#cartCollapse
-      .card-header.p-0.cart-toggles-container
-        %button.btn.btn-lg.btn-link.rounded-0.w-50.cart-toggle.active{ type: 'button', data: { target: '#activeServices' } }
-          = t('proper.cart.tabs.active.header')
-        %button.btn.btn-lg.btn-link.rounded-0.w-50.cart-toggle{  type: 'button', data: { target: '#completedServices' } }
-          = t('proper.cart.tabs.complete.header')
-      .card-body.p-0
-        .cart-services#activeServices
-          - if sub_service_requests[:active].any?
-            = render 'service_requests/cart/cart_sub_service_requests', service_request: service_request, sub_service_requests: sub_service_requests[:active], tab: 'active'
-          - else
-            %h5.alert.alert-danger.text-center.rounded-0.mb-0
-              = t('proper.cart.tabs.active.message')
-        .cart-services.d-none#completedServices
-          - if sub_service_requests[:complete].any?
-            = render 'service_requests/cart/cart_sub_service_requests', service_request: service_request, sub_service_requests: sub_service_requests[:complete], tab: 'complete'
-          - else
-            %h5.alert.alert-danger.text-center.rounded-0.mb-0
-              = t('proper.cart.tabs.complete.message')
+    .card-header.p-0.cart-toggles-container
+      %button.btn.btn-lg.btn-link.bg-white.rounded-0.w-50.cart-toggle.active{ type: 'button', data: { target: '#activeServices' } }
+        = t('proper.cart.tabs.active.header')
+      %button.btn.btn-lg.btn-link.bg-white.rounded-0.w-50.cart-toggle{  type: 'button', data: { target: '#completedServices' } }
+        = t('proper.cart.tabs.complete.header')
+    .card-body.p-0
+      .cart-services#activeServices
+        - if sub_service_requests[:active].any?
+          = render 'service_requests/cart/cart_sub_service_requests', service_request: service_request, sub_service_requests: sub_service_requests[:active], tab: 'active'
+        - else
+          %h5.alert.alert-danger.text-center.rounded-0.mb-0
+            = t('proper.cart.tabs.active.message')
+      .cart-services.d-none#completedServices
+        - if sub_service_requests[:complete].any?
+          = render 'service_requests/cart/cart_sub_service_requests', service_request: service_request, sub_service_requests: sub_service_requests[:complete], tab: 'complete'
+        - else
+          %h5.alert.alert-danger.text-center.rounded-0.mb-0
+            = t('proper.cart.tabs.complete.message')

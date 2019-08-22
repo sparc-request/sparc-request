@@ -17,18 +17,16 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-.modal-dialog{ role: 'document' }
-  .modal-content
-    .modal-header
-      %h3.modal-title
-        = raw t('proper.catalog.locked_organization.header', organization: organization.name)
-      %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
-        %span{ aria: { hidden: 'true' } } &times;
-    .modal-body
-      - if identity
-        %p
-          = raw t('proper.catalog.locked_organization.text', contact_name: identity.full_name, contact_info: identity.phone.blank? ? identity.email : identity.phone)
-    .modal-footer
-      %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
-        = t('actions.close')
+.container.footer-container
+  .footer.text-center
+    %ul.footer-links
+      %li
+        = mail_to Setting.get_value("listserv_mail_to"), t('layout.footer.links.listserv.text'), subject: t('layout.footer.links.listserv.subject')
+      %li
+        = link_to t('layout.footer.links.blog.text'), t('layout.footer.links.blog.url'), target: :blank
+      %li
+        = link_to t('layout.footer.links.sctr.text'), t('layout.footer.links.sctr.url'), target: :blank
+      %li
+        = link_to t('layout.footer.links.about'), Setting.get_value("about_sparc_url"), target: :blank
+      %li
+        = ENV['SPARC_VERSION']

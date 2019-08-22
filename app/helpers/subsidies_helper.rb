@@ -34,7 +34,7 @@ module SubsidiesHelper
   end
 
   def edit_subsidy_button(subsidy, opts={})
-    url = in_dashboard? ? edit_dashboard_subsidy_path(subsidy) : edit_dashboard_subsidy_path(subsidy, srid: opts[:srid])
+    url = in_dashboard? ? edit_dashboard_subsidy_path(subsidy) : edit_subsidy_path(subsidy, srid: opts[:srid])
 
     link_to url, remote: true, class: 'btn btn-warning mr-1' do
       icon('far', 'edit')

@@ -79,10 +79,9 @@
 
 //= require dashboard/protocols
 //= require dashboard/notifications
-
 //= require surveyor/responses
 //= require surveyor/surveys
-
+//= require reporting
 
 // require batch-select
 // require bootstrap-table

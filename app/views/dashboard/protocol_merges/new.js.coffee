@@ -18,6 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$('#welcomeMessage').html("<%= j render 'catalogs/description', organization: @organization, service_request: @service_request, locked_org_ids: @locked_org_ids %>")
-
-$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
+$('#modalContainer').html("<%= j render 'dashboard/protocol_merges/merge_tool_modal.html.haml', protocol_merge: @protocol_merge, current_user: @current_user %>")
+$('#modalContainer').modal('show')

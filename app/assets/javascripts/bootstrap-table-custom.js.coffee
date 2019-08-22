@@ -18,6 +18,19 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$('#welcomeMessage').html("<%= j render 'catalogs/description', organization: @organization, service_request: @service_request, locked_org_ids: @locked_org_ids %>")
+getOrder = ->
+  if $table.bootstrapTable('getOptions').sortOrder == 'asc' then -1 else 1
 
-$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
+(exports ? this).dateSorter = (a, b) ->
+  if !a && !b
+    return 0
+  else if a && !b
+    return 1
+  else if !a && b
+    return -1
+  else
+    sort_a = new Date(a)
+    sort_b = new Date(b)
+    return 1 if sort_a > sort_b
+    return -1 if sort_a < sort_b
+    return 0

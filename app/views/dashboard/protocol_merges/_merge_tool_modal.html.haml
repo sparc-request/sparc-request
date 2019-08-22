@@ -17,18 +17,25 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-.card
-  .card-header#organizationHeader{ class: css_class(organization) }
-    %h6.mb-0.text-white
-      = organization.name
-  .card-body
-    - if organization.description.present?
-      %p.description
-        = raw(organization.description)
-    - if organization.type == "Program"
-      - if organization.services.any?
-        = render 'catalogs/accordion/services', organization: organization, service_request: service_request
-
-      - if organization.cores.any?
-        = render 'catalogs/accordion/cores', p: organization, service_request: service_request, locked_ids: locked_org_ids
+.modal-dialog#protocol_merge_container
+  .modal-content
+    = form_for protocol_merge, url: perform_protocol_merge_dashboard_protocol_merge_path, id: 'protocolMergeForm', method: :put, remote: true do |f|
+      = f.hidden_field :confirmed, value: false
+      .modal-header
+        %h3.modal-title
+          = t(:dashboard)[:protocol_merge][:modal_header]
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+          %span{ aria: { hidden: 'true' } } &times;
+      .modal-body#protocol-merges-container
+        #flashContainerModal
+        .form
+          .form-group
+            = f.label 'master_protocol_id', t(:dashboard)[:protocol_merge][:enter_master_protocol], class: 'required'
+            = f.text_field 'master_protocol_id', id: 'master_protocol_id', class: 'form-control'
+          .form-group
+            = f.label 'merged_protocol_id', t(:dashboard)[:protocol_merge][:enter_merged_protocol], class: 'required'
+            = f.text_field 'merged_protocol_id', id: 'merged_protocol_id', class: 'form-control'
+      .modal-footer
+        %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+          = t('actions.close')
+        = f.submit t(:dashboard)[:protocol_merge][:perform_protocol_merge], class: 'btn btn-primary', id: 'merge-button'

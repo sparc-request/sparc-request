@@ -18,6 +18,20 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$('#welcomeMessage').html("<%= j render 'catalogs/description', organization: @organization, service_request: @service_request, locked_org_ids: @locked_org_ids %>")
+$ ->
+  $(document).on 'click', '.delete-note:not(.disabled)', ->
+    id = $(this).data('note-id')
 
-$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
+    swal {
+      title: I18n['swal']['swal_confirm']['title']
+      text: I18n['swal']['swal_confirm']['text']
+      type: 'warning'
+      showCancelButton: true
+      confirmButtonColor: '#DD6B55'
+      confirmButtonText: 'Delete'
+      closeOnConfirm: true
+    }, ->
+      $.ajax
+        type: 'DELETE'
+        dataType: 'script'
+        url: "/notes/#{id}"

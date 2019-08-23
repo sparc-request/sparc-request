@@ -35,6 +35,8 @@ $ ->
   initializeTables()
   setRequiredFields()
 
+  stickybits('.position-sticky, .sticky-top')
+
   $(document).on 'load-success.bs.table ajax:complete', ->
     initializeSelectpickers()
     initializeDateTimePickers()

@@ -658,7 +658,7 @@ en:
     update: "Update Note"
     none: "This %{notable_type} doesn't have any notes."
     placeholder: "Type a note..."
-    edited: "(Edited %{updated_at})"
+    edited: "(Edited)"
 
   #############
   # PROTOCOLS #

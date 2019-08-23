@@ -28,18 +28,22 @@ module ApplicationHelper
   end
 
   def format_phone(phone)
-    phone.gsub!(/[^0-9#]/, '')
+    if phone
+      phone.gsub!(/[^0-9#]/, '')
 
-    formatted = ""
-    begin
-      formatted += "(#{phone.first(3)})"
-      formatted += " #{phone.from(3).to(2)}"
-      formatted += "-#{phone.from(6).to(3)}"
-      formatted += phone.from(10).gsub('#', " #{I18n.t('constants.phone.extension')} ") if phone.include?('#')
-    rescue
+      formatted = ""
+      begin
+        formatted += "(#{phone.first(3)})"
+        formatted += " #{phone.from(3).to(2)}"
+        formatted += "-#{phone.from(6).to(3)}"
+        formatted += phone.from(10).gsub('#', " #{I18n.t('constants.phone.extension')} ") if phone.include?('#')
+      rescue
+      end
+
+      return formatted
+    else
+      return phone
     end
-
-    return formatted
   end
 
   def format_currency(amount)

@@ -23,3 +23,7 @@ a, .btn-link {
   text-decoration: none !important;
   @include transition($btn-transition);
 }
+
+span[data-toggle=tooltip], label[data-toggle=tooltip] {
+  border-bottom: 1px dashed theme-color('info');
+}

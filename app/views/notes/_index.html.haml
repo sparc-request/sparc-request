@@ -26,7 +26,7 @@
       %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
         %span{ aria: { hidden: 'true' } } &times;
     .modal-body
-      - notes.order(:created_at).each do |note|
+      - notes.order(updated_at: :desc).each do |note|
         .card-callout.callout-warning.callout-condensed{ id: "note#{note.id}" }
           .card-body.d-flex
             .justify-content-start.pr-2

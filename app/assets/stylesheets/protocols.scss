@@ -39,7 +39,7 @@
   left: 3%;
 
   .sticky-top {
-    top: 1rem;
+    top: 1rem !important;
 
     .nav-link {
       &:not(:last-child) {
@@ -64,6 +64,10 @@
 
 #protocolFilters {
   width: 20%;
+
+  .sticky-top {
+    top: 1rem !important;
+  }
 
   #protocolSearchSelect .bootstrap-select {
     width: 100%;

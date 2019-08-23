@@ -81,7 +81,7 @@
     min-height: initial;
   }
 
-  .cart-services > div:last-of-type > .list-group {
+  .cart-services > .list-group:last-of-type > div:last-child {
     @extend .border-bottom;
   }
 }

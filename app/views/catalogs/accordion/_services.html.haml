@@ -22,8 +22,8 @@
 
   .w-100.service
     .row
-      .col-10
-        %h6.mb-0
+      .col-10.d-flex.align-items-center
+        %h6.mb-0.font-weight-bold
           - if service.description.present?
             = link_to service.display_service_name, 'javascript:void(0)', data: { toggle: 'popover', title: service.display_service_name, content: raw(service.description), placement: 'left', trigger: 'hover' }
           - else

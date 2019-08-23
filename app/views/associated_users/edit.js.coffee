@@ -34,7 +34,7 @@ $('#authorizedUserForm').on 'submit', (event) ->
     ConfirmSwal.fire(
       title: I18n.t('authorized_users.form.primary_pi_change.title', protocol_type: "<%= @protocol.model_name.human %>")
       html: I18n.t('authorized_users.form.primary_pi_change.text', new_pi_name: "<%= @protocol_role.identity.full_name %>", current_pi_name: "<%= @protocol.primary_pi.full_name %>")
-    ).then (result) =>
+    ).then (result) ->
       if result.value
         primaryPiConfirmed = true
         Rails.fire(form, 'submit')
@@ -44,7 +44,7 @@ $('#authorizedUserForm').on 'submit', (event) ->
     ConfirmSwal.fire(
       title: I18n.t('authorized_users.form.user_rights_change.title')
       html: I18n.t('authorized_users.form.user_rights_change.proper_text')
-    ).then (result) =>
+    ).then (result) ->
       if result.value
         rightsChangeConfirmed = true
         Rails.fire(form, 'submit')

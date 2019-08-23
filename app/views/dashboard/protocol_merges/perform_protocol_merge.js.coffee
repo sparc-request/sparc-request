@@ -28,7 +28,7 @@ ConfirmSwal.fire(
   text: I18n.t('dashboard.protocol_merge.warning', master_protocol_id: "<%= @master_protocol.id %>", merged_protocol_id:"<%= @merged_protocol.id %>")
   confirmButtonText: I18n.t('dashboard.protocol_merge.yes_button')
   cancelButtonText: I18n.t('dashboard.protocol_merge.no_button')
-).then (result) =>
+).then (result) ->
   if result.value
     $.ajax
       type: 'PUT'

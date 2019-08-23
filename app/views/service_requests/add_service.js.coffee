@@ -25,7 +25,7 @@ ConfirmSwal.fire(
   text: I18n.t('proper.catalog.new_request.warning')
   confirmButtonText: I18n.t('proper.catalog.new_request.yes_button')
   cancelButtonText: I18n.t('proper.catalog.new_request.no_button')
-).then (result) =>
+).then (result) ->
   if result.value
     $.ajax
       type: 'post'

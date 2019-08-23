@@ -21,35 +21,6 @@ $(document).ready ->
   $("[data-toggle='tooltip']").tooltip()
 
   ### Survey Table ###
-  $(document).on 'change', '.survey-actions', ->
-    $selected = $(this).find('option:selected')
-    $this = $(this)
-
-    if $selected.data('url')
-      $.ajax
-        type: $selected.data('method') || 'get'
-        dataType: 'script'
-        url: $selected.data('url')
-        success: ->
-          $this.selectpicker('val', '')
-    else if $selected.hasClass('delete-survey')
-      survey_id = $selected.data('survey-id')
-      swal {
-        title: I18n.t('swal.swal_confirm.title')
-        text: I18n.t('swal.swal_confirm.text')
-        type: 'warning'
-        showCancelButton: true
-        confirmButtonColor: '#DD6B55'
-        confirmButtonText: 'Delete'
-        closeOnConfirm: true
-      }, ->
-        $.ajax
-          type: 'delete'
-          dataType: 'script'
-          url: "/surveyor/surveys/#{survey_id}"
-          success: ->
-            $this.selectpicker('val', '')
-
   $(document).on 'load-success.bs.table', '.survey-table, .form-table', ->
     $('.selectpicker').selectpicker()
 

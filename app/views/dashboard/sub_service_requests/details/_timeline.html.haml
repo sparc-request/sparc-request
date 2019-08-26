@@ -17,14 +17,26 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.panel.panel-default
-  .panel-heading
-    %h4.panel-title
-      = t(:dashboard)[:subsidies][:header]
-  .panel-body
-    #approved-subsidy
-      - if sub_service_request.approved_subsidy
-        = render 'subsidies/approved_subsidy', sub_service_request: sub_service_request, subsidy: sub_service_request.approved_subsidy, admin: admin
-    #pending-subsidy
-      - if sub_service_request.pending_subsidy
-        = render 'subsidies/pending_subsidy', sub_service_request: sub_service_request, subsidy: sub_service_request.pending_subsidy, admin: admin
+
+.card.w-100
+  .card-header.bg-primary.text-white
+    %h3.mb-0<
+      = t(:dashboard)[:sub_service_requests][:request_details][:timeline][:header]
+  .card-body
+    = form_for sub_service_request do |f|
+      .form-row
+        .form-group.col-6
+          = f.label :consult_arranged_date
+          .input-group.datetimepicker.date#consultArrangedDatePicker{ data: { target_input: 'nearest' } }
+            = f.text_field :consult_arranged_date, class: 'datetimepicker-input form-control', value: format_date(sub_service_request.consult_arranged_date), data: { target: '#consultArrangedDatePicker' }
+            .input-group-append{ data: { toggle: 'datetimepicker', target: '#consultArrangedDatePicker' } }
+              %span.input-group-text
+                = icon('fas', 'calendar-alt')
+        .form-group.col-6
+          = f.label :requester_contacted_date
+          .input-group.datetimepicker.date#requesterContactedDatePicker{ data: { target_input: 'nearest' } }
+            = f.text_field :requester_contacted_date, class: 'datetimepicker-input form-control', value: format_date(sub_service_request.requester_contacted_date), data: { target: '#requesterContactedDatePicker' }
+            .input-group-append{ data: { toggle: 'datetimepicker', target: '#requesterContactedDatePicker' } }
+              %span.input-group-text
+                = icon('fas', 'calendar-alt')
+

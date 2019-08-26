@@ -18,13 +18,21 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(document).ready ->
+$ ->
+  if $('#subServiceRequestDetails').length
+    $.ajax
+      method: 'get'
+      dataType: 'script'
+      url: $('#subServiceRequestDetails .nav-tabs .nav-link.active').attr('href')
+      success: ->
+        $('#requestLoading').removeClass('show active')
+
   refreshFulfillmentButton = ->
    refresh = window.setInterval((->
-      imported_to_fulfillment = $('.fulfillment_status').data('imported-to-fulfillment')
+      imported_to_fulfillment = $('#fulfillmentStatus').data('imported-to-fulfillment')
       if imported_to_fulfillment == false
         $("#nprogress").hide()
-        $("#ssr_fulfillment_status").load(location.href + " .fulfillment_status")
+        $("#ssr_fulfillment_status").load(location.href + " #fulfillmentStatus")
         $("#nprogress").hide()
       else
         window.clearInterval refresh
@@ -32,7 +40,7 @@ $(document).ready ->
     ), 5000)
    
   # SERVICE REQUEST INFO LISTENERS BEGIN
-  if $('#pending_fulfillment_status').is(':visible')
+  if $('#fulfillmentStatus').length
     refreshFulfillmentButton()
 
   $(document).on 'change', '#sub_service_request_owner', ->
@@ -53,34 +61,24 @@ $(document).ready ->
       url: "/dashboard/sub_service_requests/#{ssr_id}"
       data: data
 
-  $(document).on 'click', '#delete_ssr_button', ->
-    if confirm "Are you sure you want to delete this request forever?"
-      sub_service_request_id = $(this).data('sub-service-request-id')
-      $.ajax
-        type: 'DELETE'
-        url: "/dashboard/sub_service_requests/#{sub_service_request_id}"
-
-  $(document).on 'click', '#send_to_fulfillment_button', ->
+  $(document).on 'click', '#pushToFulfillment', ->
     $(this).prop('disabled', true)
-    sub_service_request_id = $(this).data('sub-service-request-id')
-    data = 'sub_service_request' : 'in_work_fulfillment' : 1
     $.ajax
       type: 'PATCH'
-      url: "/dashboard/sub_service_requests/#{sub_service_request_id}?check_sr_calendar=true"
-      data: data
-      error: (xhr, ajaxOptions, thrownError) ->
-        swal('Error', 'This protocol has failed to be sent to SPARCFulfillment because of failed validation. Please make sure the service calendar is intact before trying again.', 'error')
+      dataType: 'script'
+      url: "/dashboard/sub_service_requests/#{getSSRId()}"
+      data:
+        sub_service_request:
+          in_work_fulfillment: 1
       success: ->
         refreshFulfillmentButton()
 
-  $(document).on 'click', '#send_to_epic_button', ->
-    $(this).prop( "disabled", true )
-    sub_service_request_id = $(this).data('sub-service-request-id')
+  $(document).on 'click', '#pushToEpic', ->
+    $(this).prop('disabled', true)
     $.ajax
-      type: 'PUT'
-      url: "/dashboard/sub_service_requests/#{sub_service_request_id}/push_to_epic"
-      error: (xhr, ajaxOptions, thrownError) ->
-        swal('Error', 'This protocol has failed to be sent to Epic because of failed validation. Please make sure the service calendar is intact before trying again.', 'error')
+      method: 'PUT'
+      dataType: 'script'
+      url: "/dashboard/sub_service_requests/#{getSSRId()}/push_to_epic"
 
   $(document).on 'click', '#resend-surveys-button', ->
     $(this).prop('disabled', true)

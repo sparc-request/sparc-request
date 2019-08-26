@@ -232,7 +232,7 @@ $ ->
   $("input[name='srid']").val()
 
 (exports ? this).getSSRId = ->
-  $("input[name='sub_service_request_id']").val()
+  $("input[name='ssrid']").val()
 
 (exports ? this).getProtocolId = ->
   $("input[name=protocol_id]").val()

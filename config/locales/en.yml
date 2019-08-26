@@ -43,6 +43,7 @@ en:
     delete_selected: "Delete Selected"
     disable: "Disable"
     edit: "Edit"
+    export: "Export"
     filter: "Filter"
     preview: "Preview"
     print: "Print"
@@ -52,6 +53,7 @@ en:
     save: "Save"
     search: "Search"
     send: "Send"
+    sync: "Sync"
     submit: "Submit"
     upload: "Upload"
     view: "View"
@@ -214,6 +216,9 @@ en:
         pi_contribution: "PI Contribution"
         request_cost: "Current Request Cost"
         subsidy_cost: "Subsidy Cost"
+      sub_service_request:
+        consult_arranged_date: "Consult Arranged Date"
+        requester_contacted_date: "Requester Contact Date"
       survey:
         active: ""
       vertebrate_animals_info:
@@ -281,9 +286,7 @@ en:
       messages:
         spoofed_media_type: "invalid file type"
     models:
-      service:
-        one: "Service"
-        other: "Services"
+      sub_service_request: "Request"
 
   ########
   # ARMS #
@@ -326,12 +329,12 @@ en:
         orcid: "XXXX-XXXX-XXXX-XXXX"
       primary_pi_change:
         title: "Change this %{protocol_type}'s Primary PI?"
-        text: "<bold>%{new_pi_name}</bold> will become the new Primary PI.<br/>The current Primary PI, <bold>%{current_pi_name}</bold> will be changed to a General Access User.<br/>Are you sure you want to proceed?"
+        text: "<bold>%{new_pi_name}</bold> will become the new Primary PI.<br/>The current Primary PI, <bold>%{current_pi_name}</bold> will be changed to a General Access User.<br><br>Are you sure you want to proceed?"
       user_rights_change:
         title: "Change your Proxy Rights?"
-        proper_text: "If you change your Proxy Rights you will be taken back to your Dashboard. Are you sure you want to proceed?"
+        proper_text: "If you change your Proxy Rights you will be taken back to your Dashboard.<br><br>Are you sure you want to proceed?"
         dashboard_text: >
-          If you change your Proxy Rights to <bold>Member Only</bold> you will be taken back to your Dashboard. Are you sure you want to proceed?
+          If you change your Proxy Rights to <bold>Member Only</bold> you will be taken back to your Dashboard.<br><br>Are you sure you want to proceed?
     rights:
       none: Member Only
       view: "View Rights"

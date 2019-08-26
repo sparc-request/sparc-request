@@ -18,8 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-$(".tab-content [data-partial-name='<%= escape_javascript(@partial_name) %>']").html("<%= escape_javascript(render(partial: ('dashboard/' + @partial_name), locals: { tab: 'status_changes', service_request: @service_request, sub_service_request: @sub_service_request, protocol: @protocol })) %>")
-$("li.ss_tab.active a").click()
+$('#subServiceRequestDetails .nav-tabs .nav-link.active, #subServiceRequestDetails .tab-content .tab-pane.active.show').removeClass('active show')
+$("#<%= @tab.camelize(:lower) %>TabLink").addClass('active')
+$("#<%= @tab.camelize(:lower) %>Tab").html('<%= j render "dashboard/sub_service_requests/#{@tab}", sub_service_request: @sub_service_request %>').addClass('active show')
 $(".bootstrap_table").bootstrapTable()
-$(".datetimepicker").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
-$(".new-notification").selectpicker()

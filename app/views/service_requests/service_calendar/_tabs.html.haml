@@ -20,10 +20,11 @@
 
 .col-12#serviceCalendar
   .d-flex.justify-content-between.align-items-center
-    %ul.nav.nav-tabs.border-bottom-0{ role: 'tablist' }
-      = link_to t('calendars.tabs.template'), table_service_calendars_path(srid: service_request.id, tab: 'template'), remote: true, id: 'templateTabLink', class: 'nav-link h4 mb-0 ml-3 active', role: 'tab', data: {toggle: 'tab' }, aria: { controls: 'templateTab', selected: 'true' }
-      = link_to t('calendars.tabs.billing'), table_service_calendars_path(srid: service_request.id, tab: 'billing_strategy'), remote: true, id: 'billingStrategyTabLink', class: 'nav-link h4 mb-0', role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'billingStrategyTab', selected: 'false' }
-      = link_to t('calendars.tabs.pricing'), merged_calendar_service_calendars_path(srid: service_request.id, show_unchecked: @show_unchecked), remote: true, id: 'calendarTabLink', class: 'nav-link h4 mb-0', role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'calendarTab', selected: 'false' }
+    %nav
+      .nav.nav-tabs.border-bottom-0{ role: 'tablist' }
+        = link_to t('calendars.tabs.template'), table_service_calendars_path(srid: service_request.id, tab: 'template'), remote: true, id: 'templateTabLink', class: 'nav-link nav-item h4 mb-0 ml-3 active', role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'templateTab', selected: 'true' }
+        = link_to t('calendars.tabs.billing'), table_service_calendars_path(srid: service_request.id, tab: 'billing_strategy'), remote: true, id: 'billingStrategyTabLink', class: 'nav-link nav-item h4 mb-0', role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'billingStrategyTab', selected: 'false' }
+        = link_to t('calendars.tabs.pricing'), merged_calendar_service_calendars_path(srid: service_request.id, show_unchecked: @show_unchecked), remote: true, id: 'calendarTabLink', class: 'nav-link nav-item h4 mb-0', role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'calendarTab', selected: 'false' }
     = render 'service_calendars/master_calendar/pppv/services_toggle'
   .tab-content
     .tab-pane.fade.show.active#templateTab{ role: 'tabpanel', aria: { labelledby: 'templateTabLink' } }

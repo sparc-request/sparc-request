@@ -261,14 +261,9 @@ class SubServiceRequest < ApplicationRecord
   ######################## FULFILLMENT RELATED METHODS ##########################
   ###############################################################################
   def ready_for_fulfillment?
-    # return true if work fulfillment has already been turned "on" or global variable fulfillment_contingent_on_catalog_manager is set to false or nil
+    # return true if the request is already in fulfillmentt and fulfillment_contingent_on_catalog_manager is turned off
     # otherwise, return true only if fulfillment_contingent_on_catalog_manager is true and the parent organization has tag 'clinical work fulfillment'
-    if self.in_work_fulfillment || !Setting.get_value("fulfillment_contingent_on_catalog_manager") ||
-        (Setting.get_value("fulfillment_contingent_on_catalog_manager") && self.organization.tag_list.include?('clinical work fulfillment'))
-      return true
-    else
-      return false
-    end
+    (self.in_work_fulfillment && !Setting.get_value("fulfillment_contingent_on_catalog_manager")) || (Setting.get_value("fulfillment_contingent_on_catalog_manager") && self.organization.tag_list.include?('clinical work fulfillment'))
   end
 
   ########################
@@ -460,8 +455,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def survey_latest_sent_date
-    survey_response = self.responses.joins(:survey).where(surveys: { type: 'SystemSurvey' })
-    survey_response.any? ? survey_response.first.updated_at.try(:strftime, '%D') : 'N/A'
+    self.responses.joins(:survey).where(surveys: { type: 'SystemSurvey' }).first.try(:updated_at)
   end
 
   ###############################

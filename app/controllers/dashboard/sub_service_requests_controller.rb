@@ -35,7 +35,8 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   def show
     respond_to do |format|
       format.html { # Admin Edit
-        cookies['admin-tab'] = 'details-tab' unless cookies['admin-tab']
+        cookies["admin-tab-#{@sub_service_request.id}"] ||= 'details'
+
         session[:service_calendar_pages] = params[:pages] if params[:pages]
         session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.protocol.id, sub_service_request_id: @sub_service_request.id).clear(:notifications)
 
@@ -71,16 +72,9 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   end
 
   def update
-    if params[:check_sr_calendar] == 'true'
-      sr = @sub_service_request.service_request
-      sr.validate_service_calendar
-      if sr.errors[:base].length > 0
-        raise 'error'
-      end
-    end
     if @sub_service_request.update_attributes(sub_service_request_params)
       @sub_service_request.distribute_surveys if (@sub_service_request.status == 'complete' && sub_service_request_params[:status].present?)
-      flash[:success] = 'Request Updated!'
+      flash[:success] = t('dashboard.sub_service_requests.updated')
     else
       @errors = @sub_service_request.errors
     end
@@ -92,7 +86,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       notifier_logic = NotifierLogic.new(@sub_service_request.service_request, current_user)
       notifier_logic.ssr_deletion_emails(deleted_ssr: @sub_service_request, ssr_destroyed: false, request_amendment: false, admin_delete_ssr: true)
 
-      flash[:alert] = 'Request Destroyed!'
+      flash[:alert] = t('dashboard.sub_service_requests.deleted')
       session[:breadcrumbs].clear(:sub_service_request_id)
     end
   end
@@ -120,17 +114,11 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   end
 
   def push_to_epic
-    sr = @sub_service_request.service_request
-    sr.validate_service_calendar
-    unless sr.errors[:base].length > 0
-      begin
-        @sub_service_request.protocol.push_to_epic(EPIC_INTERFACE, "admin_push", current_user.id)
-        flash[:success] = 'Request Pushed to Epic!'
-      rescue
-        flash[:alert] = $!.message
-      end
-    else
-      raise 'error'
+    begin
+      @sub_service_request.protocol.push_to_epic(EPIC_INTERFACE, "admin_push", current_user.id)
+      flash[:success] = t('dashboard.sub_service_requests.pushed_to_epic')
+    rescue
+      @error = $!.message
     end
   end
 
@@ -170,15 +158,11 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   end
   #History Table Methods End
 
-  #Tab Change Ajax
   def refresh_tab
-    @service_request = @sub_service_request.service_request
-    @protocol = Protocol.find(params[:protocol_id])
-    @partial_name = params[:partial_name]
+    @tab = params[:tab]
   end
 
-
-private
+  private
 
   def sub_service_request_params
       params.require(:sub_service_request).permit(:service_request_id,

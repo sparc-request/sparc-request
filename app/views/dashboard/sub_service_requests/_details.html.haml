@@ -17,14 +17,11 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.panel.panel-default
-  .panel-heading
-    %h4.panel-title
-      = t(:dashboard)[:subsidies][:header]
-  .panel-body
-    #approved-subsidy
-      - if sub_service_request.approved_subsidy
-        = render 'subsidies/approved_subsidy', sub_service_request: sub_service_request, subsidy: sub_service_request.approved_subsidy, admin: admin
-    #pending-subsidy
-      - if sub_service_request.pending_subsidy
-        = render 'subsidies/pending_subsidy', sub_service_request: sub_service_request, subsidy: sub_service_request.pending_subsidy, admin: admin
+
+- if sub_service_request.ctrc?
+  = render 'dashboard/sub_service_requests/details/approvals', sub_service_request: sub_service_request
+
+= render 'dashboard/sub_service_requests/details/timeline', sub_service_request: sub_service_request
+
+- if sub_service_request.eligible_for_subsidy?
+  = render 'subsidies/subsidy', sub_service_request: sub_service_request, collapse: false

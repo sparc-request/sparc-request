@@ -80,6 +80,7 @@
 
 //= require dashboard/protocols
 //= require dashboard/notifications
+//= require dashboard/sub_service_requests
 
 //= require reporting
 

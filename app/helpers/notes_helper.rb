@@ -53,6 +53,8 @@ module NotesHelper
         " " + content_tag(:small, "#{notable.model_name.human} ##{notable.id}", class: 'text-muted')
       elsif [LineItem, LineItemsVisit].include?(notable.class)
         " " + content_tag(:small, "#{notable.service.display_service_name}", class: 'text-muted')
+      else
+        ""
       end
 
     raw(header)

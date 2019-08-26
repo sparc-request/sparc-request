@@ -338,78 +338,84 @@ en:
     #  SUB SERVICE REQUESTS  #
     ##########################
     sub_service_requests:
+      updated: "Request updated!"
+      deleted: "Request deleted!"
+      pushed_to_epic: "Request pushed to Epic!"
       header:
-        status: "Status"
-        not_submitted: "Request must be submitted first"
-        lock_message: "Request is in a locked status, and cannot be changed."
-        owner: "Owner"
+        status:
+          header: "Status"
+        owner: 
+          header: "Owner"
+          not_available: "Not available in %{status} status"
+        epic:
+          header: "Epic"
+          push: "Push to Epic"
+          pushed: "Request sent to Epic!"
+          failed: "Request has errors and"
         fulfillment:
           header: "Fulfillment"
           go_to_fulfillment: "Go to Fulfillment"
           in_fulfillment: "In Fulfillment"
           pending: "Pending"
-          send_to_fulfillment: "Send to Fulfillment"
-          not_enabled: "Not enabled in SPARCCatalog."
-        cost: "Cost"
+          send_to_fulfillment: "Push to Fulfillment"
+          not_enabled: "Not enabled in SPARCCatalog"
+        surveys:
+          header: "Surveys"
+          resend: "Resend Surveys"
+          last_sent: "Surveys last sent out on %{date}"
+          completed: "All surveys completed"
+        cost: "%{provider} Cost"
         user_cost: "Total Cost"
+      request_details:
+        header: "Request Details"
+        approvals:
+          header: "Administrative Approvals"
+        timeline:
+          header: "Timeline"
+      study_schedule:
+        header: "Clinical Services"
+        no_requests: "There are no clinical services requested."
+      study_level_activities:
+        header: "Non-clinical Services"
+      history:
+        header: "History"
+        status:
+          header: "Status History"
+          date: "Date Changed"
+          from: "Status Changed From"
+          to: "Status Changed To"
+          by: "Changed by"
+        approval:
+          header: "Administrative Approvals"
+          date: "Date Approved"
+          type: "Type"
+          by: "Approved By"
+        subsidy:
+          header: "Subsidy History"
+          request_cost: "Request Cost at Approval"
+          percent: "% Subsidy"
+          contribution: "PI Contribution"
+          subsidy_cost: "Subsidy Cost"
+          approved_by: "Approved By"
+          date: "Date Approved"
+        tooltips:
+          status_history: "Status log of request"
+          approval_history: "Time stamp log of approvals"
+          subsidy_history: "Time stamp of approved subsidies"
+      notifications:
+        header: "Notifications"
+      tooltips:
+        export: "Generates spreadsheet with request information"
+        delete: "Deletes requested services and all associated information"
+        not_submitted: "Request must be submitted first in order to manually change the status"
+        request_invalid: "This request has errors and can't be pushed at this time. Please ensure that the service calendar is correct and try again."
+        push_to_epic: "Push entire protocol to Epic Research EMR"
+      confirm:
+        delete:
+          text: "This request and all requested services and associated information will be lost forever.<br><br>Are you sure you want to proceed?"
+        push_to_epic:
+          text: "This request could not be push to Epic due to an unexpected error.<br><br><i>%{error}</i><br><br>Please try again later."
 
-      tabs:
-        request_details:
-          header: "Request Details"
-          options:
-            header: "Options"
-            send_to_epic: "Send to Epic"
-            core_approvals: "Administrative Approvals"
-            export_to_excel: "Export to Excel"
-            last_sent: "Survey last sent on: %{date}"
-            resend_surveys: "Resend Surveys"
-            delete_request: "Delete Request"
-          timeline:
-            header: "Timeline"
-            start_date: "Proposed Start Date"
-            end_date: "Proposed End Date"
-            arranged_date: "Consult Arranged Date"
-            contacted_date: "Requester Contacted Date"
-          tooltips:
-            send_to_epic: "Push entire protocol to Epic Research EMR"
-            export_to_excel: "Generates spreadsheet with request information"
-            delete_request: "Deletes requested services and all associated information"
-
-        study_schedule:
-          header: "Clinical Services"
-          no_requests: "There are no clinical services requested."
-
-        study_level_activities:
-          header: "Non-clinical Services"
-
-        history:
-          header: "History"
-          status:
-            header: "Status History"
-            date: "Date Changed"
-            from: "Status Changed From"
-            to: "Status Changed To"
-            by: "Changed by"
-          approval:
-            header: "Administrative Approvals"
-            date: "Date Approved"
-            type: "Type"
-            by: "Approved By"
-          subsidy:
-            header: "Subsidy History"
-            request_cost: "Request Cost at Approval"
-            percent: "% Subsidy"
-            contribution: "PI Contribution"
-            subsidy_cost: "Subsidy Cost"
-            approved_by: "Approved By"
-            date: "Date Approved"
-          tooltips:
-            status_history: "Status log of request"
-            approval_history: "Time stamp log of approvals"
-            subsidy_history: "Time stamp of approved subsidies"
-
-        notifications:
-          header: "Notifications"
 
     ###############
     #  SUBSIDIES  #

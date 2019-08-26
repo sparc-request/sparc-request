@@ -19,6 +19,16 @@
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 /////////////
+/// Alert ///
+/////////////
+
+.alert {
+  &.alert-sm {
+    padding: 0.375rem 0.75rem;
+  }
+}
+
+/////////////
 /// Badge ///
 /////////////
 
@@ -521,6 +531,10 @@ nav.navbar {
     th, td {
       vertical-align: middle;
     }
+  }
+
+  &.table-fixed {
+    table-layout: fixed;
   }
 }
 

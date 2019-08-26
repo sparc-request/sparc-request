@@ -19,11 +19,13 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 - service_request ||= nil
+- collapse = defined?(collapse) ? collapse : true
 
 .card{ id: "subsidy#{sub_service_request.id}" }
-  .card-header.bg-primary.text-white{ data: { toggle: 'collapse', target: ".subsidy-#{sub_service_request.id}-collapse" } }
+  .card-header.bg-primary.text-white{ data: { toggle: collapse ? 'collapse' : '', target: ".subsidy-#{sub_service_request.id}-collapse" } }
     %h3.mb-0<
-      = icon('fas', 'caret-down pr-1 mr-2')
+      - if collapse
+        = icon('fas', 'caret-down pr-1 mr-2')
       - if in_dashboard?
         = t('subsidies.header')
       - else

@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .card.w-100#protocolSummaryCard
-  .card-header.justify-content-between.bg-primary.text-white{ data: { toggle: 'collapse', target: '#protocolSummary' } }
+  .card-header.justify-content-between.bg-primary.text-white{ class: controller_name == 'service_requests' && service_request.previously_submitted? ? 'collapsed' : '', data: { toggle: 'collapse', target: '#protocolSummary' } }
     %h3.mb-0<
       = icon('fas', 'caret-down pr-1 mr-2')
       = I18n.t('protocols.summary.header', protocol_type: protocol.model_name.human)

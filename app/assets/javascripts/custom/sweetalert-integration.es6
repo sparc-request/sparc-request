@@ -20,9 +20,11 @@
 
 // This file has to be required before rails-ujs
 // To use it change `data-confirm` of your links to `data-confirm-swal`
+
 (function() {
-  const handleConfirm = function(element) {
-    if (!allowAction(this)) {
+  window.handleConfirm = function(element) {
+    var target = this.tagName === 'A' ? this : element;
+    if (!allowAction(target) && this.tagName === 'A') {
       Rails.stopEverything(element)
     }
   }

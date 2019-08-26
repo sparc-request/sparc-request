@@ -20,40 +20,37 @@
 
 - url = edit_visit_group_path(visit_group, srid: service_request.id, tab: tab, page: page, pages: pages)
 
-%th.p-0{ class: "visit-group-#{visit_group.id}" }
+%th.visit-group.px-0{ class: ["visit-group-#{visit_group.id}", merged ? '' : 'editable'], colspan: 3 }
   %table.table-sm.table-borderless.w-100
     %thead
       %tr
-        %th.text-center.py-0.px-1
+        %th.text-center.py-0.px-1{ title: t(:calendars)[:tooltips][:window_before], data: { toggle: 'tooltip' } }
           = icon('fas', 'minus')
-        %th.text-center.p-0
+        %th.text-center.p-0{ title: t(:calendars)[:tooltips][:visit_day], data: { toggle: 'tooltip' } }
           = t(:calendars)[:pppv][:header_fields][:day]
-        %th.text-center.py-0.px-1
+        %th.text-center.py-0.px-1{ title: t(:calendars)[:tooltips][:window_after], data: { toggle: 'tooltip' } }
           = icon('fas', 'plus')
     %tbody
       %tr
-        %td.text-center.py-0.px-1
+        %td.text-center.py-0.px-1{ title: visit_group.window_before, data: { toggle: 'tooltip' } }
           - if portal || merged || visit_group.arm.protocol.locked?
-            = visit_group.window_before 
+            = visit_group.window_before
           - else
-            = link_to visit_group.window_before, url, remote: true, title: t(:calendars)[:tooltips][:window_before], data: { toggle: 'tooltip' }
-        %td.text-center.p-0
+            = link_to visit_group.window_before, url, remote: true
+        %td.text-center.p-0{ title: visit_group.day, data: { toggle: 'tooltip' } }
           - if portal || merged || visit_group.arm.protocol.locked?
             = visit_group.day
           - else
-            - if visit_group.day.blank?
-              - day = '(?)'
-            - else
-              - day = visit_group.day
-            = link_to day, url, remote: true, title: t(:calendars)[:tooltips][:visit_day], data: { toggle: 'tooltip' }
-        %td.text-center.py-0.px-1
+            - day = visit_group.day.blank? ? '?' : visit_group.day
+            = link_to day, url, remote: true
+        %td.text-center.py-0.px-1{ title: visit_group.window_after, data: { toggle: 'tooltip' } }
           - if portal || merged || visit_group.arm.protocol.locked?
             = visit_group.window_after 
           - else
-            = link_to visit_group.window_after, url, remote: true, title: t(:calendars)[:tooltips][:window_after], data: { toggle: 'tooltip' }
+            = link_to visit_group.window_after, url, remote: true
       %tr
-        %td.text-center.py-0.px-1{ colspan: 3 }
+        %td.text-center.py-0.px-1{ colspan: 3, title: visit_group.name, data: { toggle: 'tooltip' } }
           - if portal || merged || visit_group.arm.protocol.locked?
             = visit_group.name
           - else
-            = link_to visit_group.name, url, remote: true, title: t(:calendars)[:tooltips][:visit_name], data: { toggle: 'tooltip' }
+            = link_to visit_group.name, url, remote: true

@@ -18,15 +18,16 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%header.d-flex.align-items-center.justify-content-between.col-12.py-2.mb-3.border.bg-white#stepsHeader
-  %h3.mb-0{ class: "text-#{@css_class}" }
-    = @step_header
-    %br
-    %small.text-muted
-      = @step_sub_header
-  - if @service_request.protocol.present?
-    %h3.mb-0
-      = "#{@service_request.protocol.model_name.human} ##{@service_request.protocol.id}"
+%header.card.w-100.mb-3#stepsHeader
+  .card-body.d-flex.py-2
+    %h3.mb-0{ class: "text-#{@css_class}" }
+      = @step_header
       %br
       %small.text-muted
-        = @service_request.protocol.short_title.truncate(30)
+        = @step_sub_header
+    - if @service_request.protocol.present?
+      %h3.mb-0.ml-auto
+        = "#{@service_request.protocol.model_name.human} ##{@service_request.protocol.id}"
+        %br
+        %small.text-muted
+          = @service_request.protocol.short_title.truncate(30)

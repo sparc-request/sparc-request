@@ -42,10 +42,6 @@ class ServiceRequest < ApplicationRecord
   after_save :set_original_submitted_date
   after_save :set_ssr_protocol_id
 
-  validation_group :service_calendar do
-    validate :validate_service_calendar
-  end
-
   attr_accessor :previous_submitted_at
 
   accepts_nested_attributes_for :line_items

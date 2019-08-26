@@ -57,30 +57,3 @@ RSpec.configure do |config|
     end
   end
 end
-
-# There is a bug with Shoulda-Matchers that causes the
-# serialize matcher to throw the following error:
-#
-# NoMethodError:
-#   undefined method `cast_type' for #<ActiveRecord::ConnectionAdapters::MySQL::Column:0x007f8dcc21d778>
-#
-# See https://github.com/thoughtbot/shoulda-matchers/issues/913
-module Shoulda
-  module Matchers
-    RailsShim.class_eval do
-      def self.serialized_attributes_for(model)
-        if defined?(::ActiveRecord::Type::Serialized)
-          # Rails 5+
-          model.columns.select do |column|
-            model.type_for_attribute(column.name).is_a?(::ActiveRecord::Type::Serialized)
-          end.inject({}) do |hash, column|
-            hash[column.name.to_s] = model.type_for_attribute(column.name).coder
-            hash
-          end
-        else
-          model.serialized_attributes
-        end
-      end
-    end
-  end
-end

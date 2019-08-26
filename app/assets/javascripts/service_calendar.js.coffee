@@ -18,12 +18,15 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(document).ready ->
+$ ->
+  if $('#serviceCalendar').length
+    adjustCalendarHeaders()
+
   #########################
   # Load Tab on Page Load #
   #########################
 
-  if $('#serviceCalendar').length
+  if $('#serviceCalendar .nav-tabs').length
     $.ajax
       method: 'get'
       dataType: 'script'
@@ -41,15 +44,20 @@ $(document).ready ->
   # Visit Checkbox / Input #
   ##########################
 
-  $(document).on 'click', 'td.visit:has(input), td.visit:has(a)', (event) ->
-    if !(event.target.tagName in ['INPUT', 'A'])
-      if $(this).hasClass('template-visit')
-        $(this).find('input').click()
-      else
-        $.ajax
-          method: 'GET'
-          dataType: 'script'
-          url: $(this).find('a').first().attr('href')
+  $(document).on 'click', 'th.visit-group, td.visit.billing-strategy-visit, td.notes, td.subject-count, td.units-per-quantity, td.quantity', (event) ->
+    if $(this).hasClass('editable') && event.target.tagName != 'A' && $link = $(this).find('a:not(.disabled)')
+      $.ajax
+        method: $link.data('method') || 'GET'
+        dataType: 'script'
+        url: $link.attr('href')
+
+  $(document).on 'click', 'th.check-column, td.check-row', (event) ->
+    if event.target.tagName != 'A' && handleConfirm(this.querySelector('a'))
+      console.log 'test'
+
+  $(document).on 'click', 'td.visit.template-visit', (event) ->
+    if event.target.tagName != 'INPUT'
+      $(this).find('input').click()
 
   $(document).on 'change', '.visit-quantity', ->
     $.ajax

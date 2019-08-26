@@ -45,7 +45,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
       @institutions = Institution.order('`order`')
       @path = catalog_manager_organization_path(@organization)
-      current_user_rights  = user_rights(@organization.id)
+      @user_rights  = user_rights(@organization.id)
       @editable_organizations = current_user.catalog_manager_organizations
       @fulfillment_rights = fulfillment_rights(@organization.id)
 
@@ -57,7 +57,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
   def edit
     @organization = Organization.find(params[:id])
-    current_user_rights  = user_rights(@organization.id)
+    @user_rights  = user_rights(@organization.id)
     @fulfillment_rights = fulfillment_rights(@organization.id)
     set_status_variables
 
@@ -68,7 +68,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
   def update
     @organization = Organization.find(params[:id])
-    current_user_rights  = user_rights(@organization.id)
+    @user_rights  = user_rights(@organization.id)
     @fulfillment_rights = fulfillment_rights(@organization.id)
     set_status_variables
 
@@ -94,7 +94,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   def add_user_rights_row
     @organization = Organization.find(params[:organization_id])
     @new_ur_identity = Identity.find(params[:new_ur_identity_id])
-    current_user_rights  = user_rights(@organization.id)
+    @user_rights  = user_rights(@organization.id)
   end
 
   def remove_user_rights_row

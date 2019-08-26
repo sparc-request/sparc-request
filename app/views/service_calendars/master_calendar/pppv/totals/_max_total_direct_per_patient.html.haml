@@ -20,13 +20,13 @@
 
 - if Setting.get_value("use_indirect_cost")
   %tr.bg-light.max-total-direct-per-patient
-    %th{ colspan: tab == 'template' ? 11 : 8 }
+    %th{ colspan: tab == 'template' ? 27 : 25 }
       = t(:calendars)[:pppv][:totals][:maximum_direct]
     - visit_groups.each do |vg|
-      %th.text-center
+      %th.text-center{ colspan: 3, title: currency_converter(vg.per_patient_subtotals), data: { toggle: 'tooltip' } }
         = currency_converter(vg.per_patient_subtotals)
     - (VisitGroup.per_page - visit_groups.length).times do
-      %td
-    %th.text-center
+      %td{ colspan: 3 }
+    %th.text-center{ colspan: 4, title: display_max_total_direct_cost_per_patient(arm, line_items_visits), data: { toggle: 'tooltip' } }
       = display_max_total_direct_cost_per_patient(arm, line_items_visits)
-    %td
+    %td{ colspan: 4 }

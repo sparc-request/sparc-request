@@ -235,11 +235,7 @@ class Identity < ApplicationRecord
 
   # Only users with request or approve rights can edit.
   def can_edit_service_request?(sr)
-    has_correct_project_role?(sr) || self.catalog_overlord?
-  end
-
-  def has_correct_project_role?(request)
-    can_edit_protocol?(request.protocol)
+    sr.sub_service_requests.where(service_requester: self).any? || (sr.protocol && can_edit_protocol?(sr.protocol)) || self.catalog_overlord?
   end
 
   def can_view_protocol?(protocol)

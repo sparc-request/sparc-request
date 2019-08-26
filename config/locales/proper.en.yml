@@ -51,7 +51,7 @@ en:
         yes_button: "<b>Yes</b> <br>Continue Shopping"
         no_button: "<b>No</b> <br>Visit my Dashboard"
       locked_organization:
-        header: "%{organization} services are already present on this request."
+        header: "%{ssr_id} - %{organization} is Locked"
         text: "Please contact %{contact_name} at %{contact_info} to make changes to the existing request."
       services_missing:
         header: "Add Services to Continue"

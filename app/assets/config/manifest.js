@@ -19,7 +19,9 @@
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //= link application.js
+//= link catalog_manager/application.js
 
 //= link application.css
+//= link catalog_manager/application.css
 
 //= link_tree ../images/

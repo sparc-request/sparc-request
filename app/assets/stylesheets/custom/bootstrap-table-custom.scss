@@ -39,6 +39,7 @@
     }
 
     .fixed-table-toolbar, .fixed-table-pagination {
+      @extend .border-top;
       padding: 0 0.75rem;
     }
   }

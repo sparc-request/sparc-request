@@ -28,11 +28,13 @@ $("[name='line_item[<%= attr.to_s %>]']").parents('.form-group').removeClass('is
 <% end %>
 <% end %>
 <% else %>
+$('#modalContainer').modal('hide')
+
 # Replace Field Cell
-$(".line-item-<%= @line_item.id %>:visible .<%= @field.dasherize %>").replaceWith('<%= j render "service_calendars/master_calendar/otf/#{@field}", line_item: @line_item, merged: @merged %>')
+$(".line-item-<%= @line_item.id %>:visible .<%= @field.dasherize %>").replaceWith('<%= j render "service_calendars/master_calendar/otf/#{@field}", line_item: @line_item, service_request: @service_request, merged: false, locked: false %>')
 
 # Replace Per Study Total
-$(".line-item-<%= @line_item.id %>:visible .total-per-study").replaceWith("<%= j render 'service_calendars/master_calendar/otf/total_per_study', line_item: line_item %>")
+$(".line-item-<%= @line_item.id %>:visible .total-per-study").replaceWith("<%= j render 'service_calendars/master_calendar/otf/total_per_study', line_item: @line_item %>")
 
 # Replace Totals
 $('.one-time-fees-container:visible .max-total-direct').replaceWith("<%= j render 'service_calendars/master_calendar/otf/totals/max_total_direct_one_time_fee', service_request: @service_request %>")

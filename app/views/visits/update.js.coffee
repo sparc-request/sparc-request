@@ -30,7 +30,7 @@ $("[name='visit[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-val
 <% else %>
 <% if @tab == 'template' %>
 # Replace checkboxes
-$("#toggleColumn<%= @visit_group.id %>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_column', service_request: @service_request, sub_service_request: @sub_service_request, visit_group: @visit_group, page: @page, index: @index, admin: @admin %>")
+$("#toggleColumn<%= @visit_group.id %>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_column', service_request: @service_request, sub_service_request: @sub_service_request, visit_group: @visit_group, page: @page, index: @index, admin: @admin, locked: false %>")
 $("#toggleRow<%= @line_items_visit.id %>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_row', service_request: @service_request, sub_service_request: @sub_service_request, liv: @line_items_visit, page: @page, admin: @admin, locked: @locked %>")
 <% elsif @tab == 'billing_strategy' %>
 $('#modalContainer').modal('hide')

@@ -20,7 +20,7 @@
 
 - query               = { research_billing_qty: 0 }
 - query[:line_items]  = { sub_service_request: sub_service_request } if sub_service_request
-- checked             = visit_group.visits.joins(line_items_visit: :line_item).where(query).empty?
+- checked             = visit_group.visits.joins(line_items_visit: :line_item).where(query).none?
 - check_param         = checked ? 'uncheck'     : 'check'
 - icon                = checked ? 'times'       : 'check'
 - klass               = checked ? 'btn-danger'  : 'btn-success'
@@ -28,4 +28,5 @@
 - url                 = toggle_calendar_column_service_calendars_path(srid: service_request.id, visit_group_id: visit_group.id, page: page, :"#{check_param}" => 'true')
 - url                += "&sub_service_request_id=#{sub_service_request.id}" if sub_service_request
 
-= link_to icon('fas', icon), url, method: :post, remote: true, id: "toggleColumn#{visit_group.id}", class: ['btn btn-sm', klass], title: tooltip, data: { toggle: 'tooltip', confirm_swal: 'true', text: t('calendars.confirm_column_select') }
+%th.check-column.text-center{ colspan: 3, class: locked ? '' : 'editable', id: "toggleColumn#{visit_group.id}", title: tooltip, data: { toggle: 'tooltip' } }
+  = link_to icon('fas', icon), url, method: :post, remote: true, class: ['btn btn-sm btn-sq', klass, locked ? 'disabled' : ''], data: { confirm_swal: 'true', text: t('calendars.confirm_column_select') }

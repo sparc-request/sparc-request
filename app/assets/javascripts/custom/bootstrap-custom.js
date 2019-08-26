@@ -20,4 +20,19 @@
 
 (function($) {
   $.extend($.fn.modal.Constructor.Default, { backdrop: 'static' });
+
+  $(document).ready( function() {
+    $(document).on('hide.bs.popover', '[data-toggle="popover"][data-trigger="hover"]', event => {
+      var $this = $(event.target);
+
+      if ($(`.popover:hover`).length) {
+        event.preventDefault();
+
+        $('.popover').on('mouseleave', event => {
+          $this.popover('hide')
+        })
+      }
+    })
+  })
 })(jQuery);
+

@@ -372,15 +372,15 @@ en:
         unit_cost: "Unit Costs"
         service_rate: "Service<br>Rate"
         your_cost: "Your<br>Cost"
-        quantity_type: "Clinical Qty Type"
+        quantity_type: "Clinical<br>Qty Type"
         subject_count: "N"
         day: "Day"
         page_select:
           previous: "View Previous"
           next: "View Next"
           header: "Visits %{start} - %{stop} of %{total}"
-        total_per_patient: "Total Per Patient"
-        total_per_study: "Total Per Study"
+        total_per_patient: "Total Per<br>Patient"
+        total_per_study: "Total Per<br>Study"
         research: "R"
         third_party: "T"
         percent: "%"
@@ -428,8 +428,6 @@ en:
       line_item_notes: 'Line Item Notes'
       pppv_status: 'Used to track the progress of a service'
       quantity_type: 'Unit of measurement'
-      freeze_header: 'Freeze Header Row'
-      unfreeze_header: 'Unfreeze Header Row'
       subject_count: 'Number of participants'
       service_rate: 'Cost of service prior to any discounts'
       your_cost: 'Price after research discount (based on selected funding source)'
@@ -437,6 +435,7 @@ en:
       window_after: 'Visit window days after visit'
       visit_day: 'Day the anticipated visit occurs (incremental)'
       visit_name: 'Name of the visit'
+      modified_rate: "Modified Rate<br>%{cost}"
 
   calendar_structure:
     header: "Calendar Structure"
@@ -493,6 +492,9 @@ en:
       placeholder: "(XXX) XXX-XXXX"
       note: "For extensions add ext XXXXX"
       extension: "ext"
+    required_fields:
+      indicator: "*"
+      message: "required fields"
     search:
       loading: "Loading..."
       no_results: "No Results"
@@ -616,7 +618,7 @@ en:
           question_6: "I'm stuck! Who can I contact for assistance with SPARCRequest?"
           answer_6: "The %{department_name} is happy to assist you! Please contact us at %{phone} or <a href='mailto:%{email}'>%{email}</a>."
         feedback: "Feedback"
-    back_to_top: "Return to Top"
+    back_to_top: "Go to Top"
 
   ###########
   # MAILERS #
@@ -659,7 +661,7 @@ en:
     update: "Update Note"
     none: "This %{notable_type} doesn't have any notes."
     placeholder: "Type a note..."
-    edited: "(Edited %{updated_at})"
+    edited: "(Edited)"
 
   #############
   # PROTOCOLS #

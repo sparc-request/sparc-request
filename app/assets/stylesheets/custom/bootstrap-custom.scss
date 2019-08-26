@@ -53,7 +53,7 @@
 .btn {
   &.btn-info, &.btn-warning,
   &.btn-outline-info:hover, &.btn-outline-warning:hover {
-    color: white;
+    color: white !important;
   }
 
   &.btn-light:not(.toggle) {
@@ -62,6 +62,16 @@
 
   &.disabled {
     cursor: not-allowed;
+  }
+
+  &.btn-link.bg-white {
+    &:hover {
+      background: darken(#fff, 8%) !important;
+    }
+
+    &.active, &:active, &:focus {
+      background: darken(#fff, 10%) !important;
+    }
   }
 }
 
@@ -304,6 +314,18 @@ form, .form {
 
     &.form-control-lg {
       border-radius: 0.3rem;
+    }
+  }
+}
+
+/////////////
+/// Modal ///
+/////////////
+
+@include media-breakpoint-up(lg) {
+  .modal {
+    .modal-dialog:not(.modal-xl):not(.modal-lg):not(.modal-sm):not(.modal-xs) {
+      max-width: 600px;
     }
   }
 }
@@ -556,5 +578,12 @@ nav.navbar {
 
 .sticky-top {
   position: -webkit-sticky;
+  position: sticky;
   top: 0;
+}
+
+.sticky-bottom {
+  position: -webkit-sticky;
+  position: sticky;
+  bottom: 0;
 }

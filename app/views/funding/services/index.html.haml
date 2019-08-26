@@ -18,12 +18,12 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-.panel.panel-primary#fundings-panel
-  .bootstrap-table-dropdown-overflow
-    #fundings-custom-toolbar
-      %h2.panel-title
-        = t('funding.index.header')
-    %table#fundings-table{ data: { toggle: 'table', url: funding_services_path(format: :json), search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-export' => 'true', pagination: 'true', page_size: '20', sort_name: 'created', sort_order: 'desc', toolbar: '#fundings-custom-toolbar' } }
+.card#fundingsList
+  .card-header.bg-default.text-dark
+    %h2.p-1
+      = t('funding.index.header')
+  .card-body
+    %table#fundings_table{ data: { toggle: 'table', url: funding_services_path(format: :json), search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-export' => 'true', pagination: 'true', page_size: '20', sort_name: 'created', sort_order: 'desc', toolbar: '#fundings-custom-toolbar' } }
       %thead.bg-primary.text-white
         %tr
           %th{ data: { class: 'title', field: "title", align: "left", sortable: 'true' } }

@@ -492,6 +492,9 @@ en:
       placeholder: "(XXX) XXX-XXXX"
       note: "For extensions add ext XXXXX"
       extension: "ext"
+    required_fields:
+      indicator: "*"
+      message: "required fields"
     search:
       loading: "Loading..."
       no_results: "No Results"

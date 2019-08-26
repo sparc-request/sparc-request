@@ -38,4 +38,5 @@
 //= require twitter/typeahead.min
 //= require handlebars-v4.0.5
 //= require sweetalert.min
+//= require stickybits/dist/stickybits.min
 //= require ../global

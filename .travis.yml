@@ -1,4 +1,7 @@
 language: ruby
+language: node_js
+node_js:
+  - 7
 cache: bundler
 dist: precise
 addons:

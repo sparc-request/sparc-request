@@ -120,10 +120,12 @@ task :update_hb_services => :environment do
             updated = true    
           end
 
-          unless service.is_available == row['Is Available'].to_i
-            is_available << [service.id, service.is_available]
-            puts "Altering the service's is_available status with an id of #{service.id} from #{service.is_available} to #{row['Is Available']}"
-            service.is_available = row['Is Available'].to_i
+          service_is_available = service.is_available
+          row_is_available = (row['Is Available'].to_i == 1 ? true : false)
+          unless service_is_available == row_is_available
+            is_available << [service.id, service_is_available]
+            puts "Altering the service's is_available status with an id of #{service.id} from #{service_is_available} to #{row_is_available}"
+            service.is_available = row_is_available
             updated = true    
           end
 

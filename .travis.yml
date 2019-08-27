@@ -36,6 +36,7 @@ before_script:
   - cd ../sparc-request
   - rvm use $(< .ruby-version) --install --binary --fuzzy
   - export BUNDLE_GEMFILE=$PWD/Gemfile
+  - yarn install
   - RAILS_ENV=test bundle exec rake assets:precompile
 jobs:
   include:

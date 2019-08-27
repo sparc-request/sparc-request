@@ -44,6 +44,7 @@
 //= require tempusdominus-bootstrap-4/build/js/tempusdominus-bootstrap-4.min
 //= require js-cookie/src/js.cookie
 //= require nprogress/nprogress
+//= require stickybits/dist/stickybits.min
 
 //////////////////////////////////
 /// Require Our Custom Scripts ///

@@ -10,6 +10,7 @@ before_install:
   - gem update --system
   - gem install bundler
   - "export TZ=America/New_York"
+  - nvm install node
 before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
@@ -36,6 +37,8 @@ before_script:
   - cd ../sparc-request
   - rvm use $(< .ruby-version) --install --binary --fuzzy
   - export BUNDLE_GEMFILE=$PWD/Gemfile
+  - npm install -g yarn
+  - yarn install
   - RAILS_ENV=test bundle exec rake assets:precompile
 jobs:
   include:

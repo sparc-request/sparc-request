@@ -81,7 +81,7 @@
     min-height: initial;
   }
 
-  .cart-services > div:last-of-type > .list-group {
+  .cart-services > .list-group:last-of-type > div:last-child {
     @extend .border-bottom;
   }
 }
@@ -91,8 +91,5 @@
 //////////////
 
 #serviceRequestFooter {
-  position: sticky;
-  bottom: 0;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
+  z-index: 2000;
 }

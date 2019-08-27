@@ -35,7 +35,7 @@
 
   -# Line Items
   - line_items.each do |line_item|
-    %tr{ class: ["line-item-#{line_item.id}", locked ? 'bg-danger text-danger' : ''] }
+    %tr{ class: ["line-item-#{line_item.id}", locked ? 'text-danger' : ''] }
       %td.service-name{ colspan: 2, title: calendar_service(line_item), data: { toggle: 'tooltip', html: 'true' } }
         = calendar_service(line_item)
       %td.notes.text-center{ class: locked ? '' : 'editable', title: "#{Service.model_name.human} #{Note.model_name.plural.capitalize}", data: { toggle: 'tooltip' } }

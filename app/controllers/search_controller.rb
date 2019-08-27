@@ -32,7 +32,7 @@ class SearchController < ApplicationController
 
     results.map!{ |service|
       {
-        breadcrumb:     breadcrumb_text(service),
+        breadcrumb:     breadcrumb_text_bs3(service),
         label:          service.name,
         value:          service.id,
         description:    raw(service.description),
@@ -49,10 +49,7 @@ class SearchController < ApplicationController
 
   def services
     term              = params[:term].strip
-    locked_org_ids    = @service_request.
-                          sub_service_requests.
-                          reject{ |ssr| !ssr.is_locked? }.
-                          map(&:organization_id)
+    locked_org_ids    = @service_request.sub_service_requests.select{ |ssr| ssr.is_locked? }.map(&:organization_id)
     locked_child_ids  = Organization.authorized_child_organization_ids(locked_org_ids)
 
     results = Service.
@@ -66,7 +63,7 @@ class SearchController < ApplicationController
       {
         service_id:     s.id,
         name:           s.display_service_name,
-        description:    raw(s.description),
+        description:    s.description,
         breadcrumb:     breadcrumb_text(s),
         abbreviation:   s.abbreviation,
         cpt_code_text:  helpers.cpt_code_text(s),
@@ -97,13 +94,13 @@ class SearchController < ApplicationController
         id:             item.id,
         name:           item.name,
         abbreviation:   item.abbreviation,
-        type:           item.class.base_class.name.downcase,
+        type:           item.model_name.human,
         text_color:     "text-#{item.class.name.downcase}",
-        cpt_code_text:  item.is_a?(Service) ? cpt_code_text(item) : "",
-        eap_id_text:    item.is_a?(Service) ? eap_id_text(item) : "",
-        inactive_tag:   inactive_text(item),
-        breadcrumb:     breadcrumb_text(item),
-        pricing_text:   item.is_a?(Service) ? service_pricing_text(item) : "",
+        cpt_code_text:  item.is_a?(Service) ? helpers.cpt_code_text(item) : "",
+        eap_id_text:    item.is_a?(Service) ? helpers.eap_id_text(item) : "",
+        inactive_tag:   item.is_available? ? '' : helpers.inactive_tag,
+        breadcrumb:     breadcrumb_text_bs3(item),
+        pricing_text:   item.is_a?(Service) ? helpers.service_pricing_text(item) : "",
         description:    raw(item.description)
       }
     }
@@ -133,6 +130,18 @@ class SearchController < ApplicationController
       item.parents.reverse.each do |parent|
         breadcrumb << "<span class='text-#{parent.type.downcase}'>#{parent.abbreviation} </span>"
         breadcrumb << helpers.icon('fas', 'caret-right') + " "
+      end
+      breadcrumb.pop
+      breadcrumb.join.html_safe
+    end
+  end
+
+  def breadcrumb_text_bs3(item)
+    if item.parents.any?
+      breadcrumb = []
+      item.parents.reverse.each do |parent|
+        breadcrumb << "<span class='text-#{parent.type.downcase}'>#{parent.abbreviation}</span>"
+        breadcrumb << "<span class='inline-glyphicon glyphicon glyphicon-triangle-right'></span>"
       end
       breadcrumb.pop
       breadcrumb.join.html_safe

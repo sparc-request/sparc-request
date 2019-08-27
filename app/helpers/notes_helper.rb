@@ -63,7 +63,7 @@ module NotesHelper
       if note.created_at == note.updated_at
         format_datetime(note.created_at)
       else
-        raw(format_datetime(note.created_at) + content_tag(:i, t('notes.edited', updated_at: format_datetime(note.updated_at)), class: 'ml-1'))
+        raw(format_datetime(note.updated_at) + content_tag(:i, t('notes.edited'), class: 'ml-1'))
       end
     end
   end

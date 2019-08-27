@@ -492,6 +492,9 @@ en:
       placeholder: "(XXX) XXX-XXXX"
       note: "For extensions add ext XXXXX"
       extension: "ext"
+    required_fields:
+      indicator: "*"
+      message: "required fields"
     search:
       loading: "Loading..."
       no_results: "No Results"
@@ -658,7 +661,7 @@ en:
     update: "Update Note"
     none: "This %{notable_type} doesn't have any notes."
     placeholder: "Type a note..."
-    edited: "(Edited %{updated_at})"
+    edited: "(Edited)"
 
   #############
   # PROTOCOLS #

@@ -18,33 +18,32 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.card
-  .card-header.bg-primary.text-white{ class: protocol.locked? ? 'bg-danger' : 'bg-primary' }
+.card.w-100
+  .card-header.bg-primary.text-white{ class: [protocol.locked? ? 'bg-danger' : 'bg-primary', service_request.previously_submitted? ? 'collapsed' : ''], data: { toggle: 'collapse', target: '#arms' } }
     %h3.mb-0<
+      = icon('fas', 'caret-down pr-1 mr-2')
       - if protocol.locked
         = icon('fas', 'lock mr-2', title: t('calendar_structure.tooltips.arm_info'), data: { toggle: 'tooltip' })
       = t('proper.service_details.arms.header')
       %small.text-light
         = t('proper.service_details.arms.sub_header')
-  #armsTableToolbar
-    - unless service_request.protocol.locked?
-      = link_to new_arm_path(srid: service_request.id), remote: true, class: 'btn btn-success', title: t('arms.tooltips.new'), data: { toggle: 'tooltip' } do
-        - succeed t('arms.new') do
-          = icon('fas', 'plus mr-2')
-  %table#armsTable{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: arms_path(srid: service_request.id), toolbar: '#armsTableToolbar' } }
-    %thead.bg-light
-      %tr
-        %th{ data: { field: 'name', align: 'left', sortable: 'true' } }
-          %span{ title: t('arms.tooltips.name'), data: { toggle: 'tooltip', container: 'body', boundary: 'window', placement: 'top' } }<
-            = icon('fas', 'info-circle text-primary mr-1')
-            = Arm.human_attribute_name(:name)
-        %th{ data: { field: 'subject_count', align: 'left', sortable: 'true' } }
-          %span{ title: t('arms.tooltips.subject_count'), data: { toggle: 'tooltip', container: 'body', boundary: 'window', placement: 'top' } }<
-            = icon('fas', 'info-circle text-primary mr-1')
-            = Arm.human_attribute_name(:subject_count)
-        %th{ data: { field: 'visit_count', align: 'left', sortable: 'true' } }
-          %span{ title: t('arms.tooltips.visit_count'), data: { toggle: 'tooltip', container: 'body', boundary: 'window', placement: 'top' } }<
-            = icon('fas', 'info-circle text-primary mr-1')
-            = Arm.human_attribute_name(:visit_count)
-        %th{ data: { field: 'actions', align: 'center' } }
-          = t('actions.actions')
+  .collapse#arms{ class: service_request.previously_submitted? ? '' : 'show' }
+    #armsTableToolbar
+      - unless service_request.protocol.locked?
+        = link_to new_arm_path(srid: service_request.id), remote: true, class: 'btn btn-success', title: t('arms.tooltips.new'), data: { toggle: 'tooltip' } do
+          - succeed t('arms.new') do
+            = icon('fas', 'plus mr-2')
+    %table#armsTable{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: arms_path(srid: service_request.id), toolbar: '#armsTableToolbar' } }
+      %thead.bg-light
+        %tr
+          %th{ data: { field: 'name', align: 'left', sortable: 'true' } }
+            %span{ title: t('arms.tooltips.name'), data: { toggle: 'tooltip', container: 'body', boundary: 'window', placement: 'top' } }<
+              = Arm.human_attribute_name(:name)
+          %th{ data: { field: 'subject_count', align: 'left', sortable: 'true' } }
+            %span{ title: t('arms.tooltips.subject_count'), data: { toggle: 'tooltip', container: 'body', boundary: 'window', placement: 'top' } }<
+              = Arm.human_attribute_name(:subject_count)
+          %th{ data: { field: 'visit_count', align: 'left', sortable: 'true' } }
+            %span{ title: t('arms.tooltips.visit_count'), data: { toggle: 'tooltip', container: 'body', boundary: 'window', placement: 'top' } }<
+              = Arm.human_attribute_name(:visit_count)
+          %th{ data: { field: 'actions', align: 'center' } }
+            = t('actions.actions')

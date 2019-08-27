@@ -18,14 +18,13 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%footer.pt-3#protocolFooter
-  .card
-    .card-body.py-3.px-5
-      .form-group.mb-0<
-        - back_url = @in_dashboard ? dashboard_root_path : protocol_service_request_path(srid: @service_request.try(:id))
-        = link_to back_url, class: 'btn btn-lg btn-link px-0' do
-          - succeed t('actions.cancel') do
-            = icon('fas', 'arrow-left mr-2')
-        = f.button type: 'submit', class: 'btn btn-lg btn-outline-success float-right', data: { disable_with: t(:proper)[:navigation][:bottom][:saving] } do
-          - succeed icon('fas', 'arrow-right ml-2') do
-            = t('actions.save')
+%footer.card.w-100.sticky-bottom.mt-3#protocolFooter
+  .card-body.py-2.px-5
+    .form-group.mb-0<
+      - back_url = in_dashboard? ? dashboard_root_path : protocol_service_request_path(srid: @service_request.try(:id))
+      = link_to back_url, class: 'btn btn-lg btn-link px-0' do
+        - succeed t('actions.cancel') do
+          = icon('fas', 'arrow-left mr-2')
+      = f.button type: 'submit', class: 'btn btn-lg btn-outline-success float-right', data: { disable_with: t(:proper)[:navigation][:bottom][:saving] } do
+        - succeed icon('fas', 'arrow-right ml-2') do
+          = t('actions.save')

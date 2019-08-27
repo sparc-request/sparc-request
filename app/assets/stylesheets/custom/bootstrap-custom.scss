@@ -324,7 +324,7 @@ form, .form {
 
 @include media-breakpoint-up(lg) {
   .modal {
-    .modal-dialog {
+    .modal-dialog:not(.modal-xl):not(.modal-lg):not(.modal-sm):not(.modal-xs) {
       max-width: 600px;
     }
   }
@@ -578,5 +578,12 @@ nav.navbar {
 
 .sticky-top {
   position: -webkit-sticky;
+  position: sticky;
   top: 0;
+}
+
+.sticky-bottom {
+  position: -webkit-sticky;
+  position: sticky;
+  bottom: 0;
 }

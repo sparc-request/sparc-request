@@ -47,7 +47,7 @@
 
   -# Line Item Visits
   - livs.each do |liv|
-    %tr{ class: ["line-items-visit-#{liv.id}", locked ? 'alert-danger' : ''] }
+    %tr{ class: ["line-items-visit-#{liv.id}", locked ? 'text-danger' : ''] }
       %td.service-name{ colspan: 8, title: calendar_service(liv), data: { toggle: 'tooltip', html: 'true' } }
         = calendar_service(liv)
       %td.notes.text-center{ colspan: 2, class: locked ? '' : 'editable', title: "#{Service.model_name.human} #{Note.model_name.plural.capitalize}", data: { toggle: 'tooltip' } }

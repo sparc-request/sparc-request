@@ -23,17 +23,17 @@
     %h3.mb-0<
       = t('dashboard.sub_service_requests.request_details.approvals.header')
   .card-body
-    = form_for sub_service_request do |f|
+    = fields_for sub_service_request do |f|
       .d-flex.justify-content-between
         .custom-control.custom-checkbox.custom-control-lg.custom-control-inline<>
-          = f.check_box :nursing_nutrition_approved, { class: 'custom-control-input' }
+          = f.check_box :nursing_nutrition_approved, { class: 'custom-control-input approval-check', disabled: sub_service_request.nursing_nutrition_approved? }
           = f.label :nursing_nutrition_approved, class: 'custom-control-label'
         .custom-control.custom-checkbox.custom-control-lg.custom-control-inline<>
-          = f.check_box :lab_approved, { class: 'custom-control-input' }
+          = f.check_box :lab_approved, { class: 'custom-control-input approval-check', disabled: sub_service_request.lab_approved? }
           = f.label :lab_approved, class: 'custom-control-label'
         .custom-control.custom-checkbox.custom-control-lg.custom-control-inline<>
-          = f.check_box :imaging_approved, { class: 'custom-control-input' }
+          = f.check_box :imaging_approved, { class: 'custom-control-input approval-check', disabled: sub_service_request.imaging_approved? }
           = f.label :imaging_approved, class: 'custom-control-label'
-        .custom-control.custom-checkbox.custom-control-lg.custom-control-inline<>
-          = f.check_box :committee_approved, { class: 'custom-control-input' }
+        .custom-control.custom-checkbox.custom-control-lg.custom-control-inline.mr-0<>
+          = f.check_box :committee_approved, { class: 'custom-control-input approval-check', disabled: sub_service_request.committee_approved? }
           = f.label :committee_approved, class: 'custom-control-label'

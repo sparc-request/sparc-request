@@ -62,21 +62,40 @@ $(document).ready ->
   # Protocol Show #
   #################
 
-  Sparc = {}
-  Sparc.protocol =
-    ready: ->
-      $(document).on 'change', '.complete-forms', ->
-        if $(this).val()
-          $option = $('option:selected', this)
-          $this   = $(this)
+  if window.location.pathname.startsWith('/dashboard')
+    $(document).on 'keyup', '.milestone-field.datetimepicker input', (event) ->
+      key = event.keyCode || event.charCode
+      if !$(this).val() && [8, 46].includes(key) # Backspace or Delete keys
+        data = $(this).serialize()
 
-          $.ajax
-            method: 'GET'
-            url: "/surveyor/responses/new.js"
-            data:
-              type:             $option.data('type')
-              survey_id:        $option.data('survey-id')
-              respondable_id:   $option.data('respondable-id')
-              respondable_type: $option.data('respondable-type')
-            success: ->
-              $this.selectpicker('val', '')
+        $.ajax
+          method: 'put'
+          dataType: 'script'
+          url: "/dashboard/protocols/#{getProtocolId()}"
+          data: data
+
+    $(document).on 'change.datetimepicker', '.milestone-field.datetimepicker', ->
+      data = $(this).find('input').serialize()
+
+      $.ajax
+        method: 'put'
+        dataType: 'script'
+        url: "/dashboard/protocols/#{getProtocolId()}"
+        data: data
+
+    milestoneTimer = null
+    $(document).on('keydown', '.milestone-field:not(.datetimepicker) input', ->
+      clearTimeout(milestoneTimer)
+    ).on('keyup', '.milestone-field:not(.datetimepicker) input', ->
+      clearTimeout(milestoneTimer)
+
+      data = $(this).serialize()
+
+      milestoneTimer = setTimeout( (->
+        $.ajax
+          method: 'put'
+          dataType: 'script'
+          url: "/dashboard/protocols/#{getProtocolId()}"
+          data: data
+      ), 500)
+    )

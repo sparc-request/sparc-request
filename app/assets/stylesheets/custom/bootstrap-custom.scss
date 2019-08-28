@@ -365,6 +365,40 @@ form, .form {
   }
 }
 
+.tabs {
+  nav.nav-tabs {
+
+    &.nav-justified {
+      &+ .tab-content .tab-pane {
+        &:not(.loading) .card:first-of-type {
+          border-top: 0;
+        }
+
+        .card:first-of-type .card-header {
+          border-top-right-radius: 0;
+        }
+      }
+    }
+
+    &:not(.nav-justified) {
+      margin-bottom: -1px;
+      z-index: 1048;
+
+      .nav-link:not(.active) {
+        border-bottom: 1px solid $border-color;
+      }
+    }
+
+    .nav-link.active:first-child {
+      border-bottom: 0 !important;
+    }
+  }
+
+  .tab-content .tab-pane .card:first-of-type .card-header {
+    border-top-left-radius: 0;
+  }
+}
+
 //////////////
 /// Navbar ///
 //////////////

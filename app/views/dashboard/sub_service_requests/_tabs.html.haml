@@ -20,24 +20,25 @@
 
 - tab = cookies["admin-tab-#{@sub_service_request.id}"]
 
-%ul.nav.nav-tabs.nav-justified{ role: 'tablist' }
-  = link_to t(:dashboard)[:sub_service_requests][:request_details][:header], refresh_tab_dashboard_sub_service_request_path(@sub_service_request, tab: 'details'), remote: true, id: 'detailsTabLink', class: ['nav-link nav-item', tab.blank? || tab == 'details' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'detailsTab', selected: (tab.blank? || tab == 'details').to_s }
-  - if @sub_service_request.process_ssrs_organization.has_per_patient_per_visit_services?
-    = link_to t(:dashboard)[:sub_service_requests][:study_schedule][:header], refresh_tab_dashboard_sub_service_request_path(@sub_service_request, tab: 'study_schedule'), remote: true, id: 'studyScheduleTabLink', class: ['nav-link nav-item', tab == 'study-schedule' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'studyScheduleTab', selected: (tab == 'study-schedule').to_s }
-  - if @sub_service_request.process_ssrs_organization.has_one_time_fee_services?
-    = link_to t(:dashboard)[:sub_service_requests][:study_level_activities][:header], refresh_tab_dashboard_sub_service_request_path(@sub_service_request, tab: 'study_level_activities'), remote: true, id: 'studyLevelActivitiesTabLink', class: ['nav-link nav-item', tab == 'study-level-activities' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'studyLevelActivitiesTab', selected: (tab == 'study-level-activities').to_s }
-  = link_to t(:dashboard)[:sub_service_requests][:history][:header], refresh_tab_dashboard_sub_service_request_path(@sub_service_request, tab: 'history'), remote: true, id: 'historyTabLink', class: ['nav-link nav-item', tab == 'history' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'historyTab', selected: (tab == 'history').to_s }
-  = link_to refresh_tab_dashboard_sub_service_request_path(@sub_service_request, tab: 'notifications'), remote: true, id: 'notificationsTabLink', class: ['nav-link nav-item', tab == 'notifications' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'notificationsTab', selected: (tab == 'notifications').to_s } do
-    = t(:dashboard)[:sub_service_requests][:notifications][:header]
-    = current_user.unread_notification_count(@sub_service_request.id)
-.tab-content
-  .tab-pane.fade#detailsTab{ role: 'tabpanel', class: tab.blank? || tab == 'details' ? 'show active' : '', aria: { labelledby: 'detailsTabLink' } }
-  .tab-pane.fade#studyScheduleTab{ role: 'tabpanel', class: tab == 'study-schedule' ? 'show active' : '', aria: { labelledby: 'studyScheduleTabLink' } }
-  .tab-pane.fade#studyLevelActivitiesTab{ role: 'tabpanel', class: tab == 'study-level-activities' ? 'show active' : '', aria: { labelledby: 'studyLevelActivitiesTabLink' } }
-  .tab-pane.fade#historyTab{ role: 'tabpanel', class: tab == 'history' ? 'show active' : '', aria: { labelledby: 'historyTabLink' } }
-  .tab-pane.fade#notificationsTab{ role: 'tabpanel', class: tab == 'notifications' ? 'active' : '', aria: { labelledby: 'notificationsTabLink' } }
-  .tab-pane.fade.show.active#requestLoading
-    .card
-      .card-body.text-center
-        %h3.d-flex.justify-content-center.align-items-center.mb-0
-          = t('constants.search.loading')
+.tabs.w-100
+  %nav.nav.nav-tabs.nav-justified{ role: 'tablist' }
+    = link_to t(:dashboard)[:sub_service_requests][:request_details][:header], refresh_tab_dashboard_sub_service_request_path(@sub_service_request, tab: 'details'), remote: true, id: 'detailsTabLink', class: ['nav-link nav-item', tab.blank? || tab == 'details' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'detailsTab', selected: (tab.blank? || tab == 'details').to_s }
+    - if @sub_service_request.process_ssrs_organization.has_per_patient_per_visit_services?
+      = link_to t(:dashboard)[:sub_service_requests][:study_schedule][:header], refresh_tab_dashboard_sub_service_request_path(@sub_service_request, tab: 'study_schedule'), remote: true, id: 'studyScheduleTabLink', class: ['nav-link nav-item', tab == 'study-schedule' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'studyScheduleTab', selected: (tab == 'study-schedule').to_s }
+    - if @sub_service_request.process_ssrs_organization.has_one_time_fee_services?
+      = link_to t(:dashboard)[:sub_service_requests][:study_level_activities][:header], refresh_tab_dashboard_sub_service_request_path(@sub_service_request, tab: 'study_level_activities'), remote: true, id: 'studyLevelActivitiesTabLink', class: ['nav-link nav-item', tab == 'study-level-activities' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'studyLevelActivitiesTab', selected: (tab == 'study-level-activities').to_s }
+    = link_to t(:dashboard)[:sub_service_requests][:history][:header], refresh_tab_dashboard_sub_service_request_path(@sub_service_request, tab: 'history'), remote: true, id: 'historyTabLink', class: ['nav-link nav-item', tab == 'history' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'historyTab', selected: (tab == 'history').to_s }
+    = link_to refresh_tab_dashboard_sub_service_request_path(@sub_service_request, tab: 'notifications'), remote: true, id: 'notificationsTabLink', class: ['nav-link nav-item', tab == 'notifications' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'notificationsTab', selected: (tab == 'notifications').to_s } do
+      = t(:dashboard)[:sub_service_requests][:notifications][:header]
+      = current_user.unread_notification_count(@sub_service_request.id)
+  .tab-content
+    .tab-pane.fade#detailsTab{ role: 'tabpanel', class: tab.blank? || tab == 'details' ? 'show active' : '', aria: { labelledby: 'detailsTabLink' } }
+    .tab-pane.fade#studyScheduleTab{ role: 'tabpanel', class: tab == 'study-schedule' ? 'show active' : '', aria: { labelledby: 'studyScheduleTabLink' } }
+    .tab-pane.fade#studyLevelActivitiesTab{ role: 'tabpanel', class: tab == 'study-level-activities' ? 'show active' : '', aria: { labelledby: 'studyLevelActivitiesTabLink' } }
+    .tab-pane.fade#historyTab{ role: 'tabpanel', class: tab == 'history' ? 'show active' : '', aria: { labelledby: 'historyTabLink' } }
+    .tab-pane.fade#notificationsTab{ role: 'tabpanel', class: tab == 'notifications' ? 'active' : '', aria: { labelledby: 'notificationsTabLink' } }
+    .tab-pane.fade.show.active.loading#requestLoading
+      .card
+        .card-body.text-center
+          %h3.d-flex.justify-content-center.align-items-center.mb-0
+            = t('constants.search.loading')

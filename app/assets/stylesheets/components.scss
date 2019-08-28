@@ -26,4 +26,5 @@ a, .btn-link {
 
 span[data-toggle=tooltip], label[data-toggle=tooltip] {
   border-bottom: 1px dashed theme-color('info');
+  cursor: pointer;
 }

@@ -28,7 +28,7 @@ module SubsidiesHelper
   end
 
   def approve_subsidy_button(subsidy, opts={})
-    link_to approve_dashboard_subsidy_path, remote: true, class: 'btn btn-success mr-1', title: t('actions.approve'), data: { toggle: 'tooltip' } do
+    link_to approve_dashboard_subsidy_path(subsidy), remote: true, method: :patch, class: 'btn btn-success mr-1', title: t('actions.approve'), data: { toggle: 'tooltip' } do
       icon('fas', 'check')
     end
   end

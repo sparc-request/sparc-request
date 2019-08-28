@@ -216,7 +216,7 @@ class ApplicationController < ActionController::Base
 
   def authorize_admin
     if current_user
-      @sub_service_request = SubServiceRequest.find(params[:ssrid])
+      @sub_service_request ||= SubServiceRequest.find(params[:ssrid])
       @service_request     = @sub_service_request.service_request
       unless (current_user.authorized_admin_organizations & @sub_service_request.org_tree).any?
         authorization_error('You are not allowed to access this Sub Service Request.')

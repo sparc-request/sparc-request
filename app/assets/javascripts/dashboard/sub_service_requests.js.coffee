@@ -19,6 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $ ->
+  # Load tab on page load
   if $('#subServiceRequestDetails').length
     $.ajax
       method: 'get'
@@ -26,6 +27,10 @@ $ ->
       url: $('#subServiceRequestDetails .nav-tabs .nav-link.active').attr('href')
       success: ->
         $('#requestLoading').removeClass('show active')
+
+  ##############
+  # SSR Header #
+  ##############
 
   refreshFulfillmentButton = ->
    refresh = window.setInterval((->
@@ -38,10 +43,48 @@ $ ->
         window.clearInterval refresh
       return
     ), 5000)
-   
+
   # SERVICE REQUEST INFO LISTENERS BEGIN
   if $('#fulfillmentStatus').length
     refreshFulfillmentButton()
+
+  ###############
+  # Details Tab #
+  ###############
+
+  # Approvals
+  $(document).on 'change', '.approval-check', ->
+    data = $(this).serialize()
+    $(this).prop('disabled', true)
+    $.ajax
+      method: 'put'
+      dataType: 'script'
+      url: "/dashboard/sub_service_requests/#{getSSRId()}"
+      data: data
+
+  # Milestones
+  $(document).on 'keyup', '#consultArrangedDatePicker input, #requesterContactedDatePicker input', (event) ->
+    key = event.keyCode || event.charCode
+    if !$(this).val() && [8, 46].includes(key) # Backspace or Delete keys
+      data = $(this).serialize()
+
+      $.ajax
+        method: 'put'
+        dataType: 'script'
+        url: "/dashboard/sub_service_requests/#{getSSRId()}"
+        data: data
+
+  $(document).on 'change.datetimepicker', '#consultArrangedDatePicker, #requesterContactedDatePicker', ->
+    data = $(this).find('input').serialize()
+
+    $.ajax
+      method: 'put'
+      dataType: 'script'
+      url: "/dashboard/sub_service_requests/#{getSSRId()}"
+      data: data
+
+
+
 
   $(document).on 'change', '#sub_service_request_owner', ->
     ssr_id = $(this).data('sub_service_request_id')
@@ -79,14 +122,6 @@ $ ->
       method: 'PUT'
       dataType: 'script'
       url: "/dashboard/sub_service_requests/#{getSSRId()}/push_to_epic"
-
-  $(document).on 'click', '#resend-surveys-button', ->
-    $(this).prop('disabled', true)
-    ssr_id = $(this).data('sub-service-request-id')
-    $.ajax
-      type: 'PUT'
-      url: "/dashboard/sub_service_requests/#{ssr_id}/resend_surveys"
-      success: ->
 
   # SERVICE REQUEST INFO LISTENERS END
   # ADMIN TAB LISTENER BEGIN

@@ -217,7 +217,11 @@ en:
         request_cost: "Current Request Cost"
         subsidy_cost: "Subsidy Cost"
       sub_service_request:
+        committee_approved: "Committee Approved"
         consult_arranged_date: "Consult Arranged Date"
+        imaging_approved: "Imaging Approved"
+        lab_approved: "Lab Approved"
+        nursing_nutrition_approved: "Nursing/Nutrition Approved"
         requester_contacted_date: "Requester Contact Date"
       survey:
         active: ""

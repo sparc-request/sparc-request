@@ -27,6 +27,7 @@ class SubServiceRequest < ApplicationRecord
   before_create :set_protocol_id
   after_save :update_org_tree
   after_save :update_past_status
+  after_update :generate_approvals
 
   belongs_to :service_requester, class_name: "Identity", foreign_key: "service_requester_id"
   belongs_to :owner, :class_name => 'Identity', :foreign_key => "owner_id"
@@ -390,24 +391,6 @@ class SubServiceRequest < ApplicationRecord
     candidates.uniq
   end
 
-  def generate_approvals current_user, params
-    if params[:nursing_nutrition_approved]
-      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Time.now, :approval_type => "Nursing/Nutrition Approved"})
-    end
-
-    if params[:lab_approved]
-      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Time.now, :approval_type => "Lab Approved"})
-    end
-
-    if params[:imaging_approved]
-      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Time.now, :approval_type => "Imaging Approved"})
-    end
-
-    if params[:committee_approved]
-      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Time.now, :approval_type => "Committee Approved"})
-    end
-  end
-
   #############
   ### FORMS ###
   #############
@@ -544,6 +527,24 @@ class SubServiceRequest < ApplicationRecord
 
   def set_protocol_id
     self.protocol_id = service_request.try(:protocol_id)
+  end
+
+  def generate_approvals
+    if self.nursing_nutrition_approved_changed? && self.nursing_nutrition_approved?
+      self.approvals.create(identity: current_user, approval_date: self.updated_at, approval_type: self.human_attribute_name(:nursing_nutrition_approved))
+    end
+
+    if self.lab_approved_changed? && self.lab_approved?
+      self.approvals.create(identity: current_user, approval_date: self.updated_at, approval_type: self.human_attribute_name(:lab_approved))
+    end
+
+    if self.imaging_approved_changed? && self.imaging_approved?
+      self.approvals.create(identity: current_user, approval_date: self.updated_at, approval_type: self.human_attribute_name(:imaging_approved))
+    end
+
+    if self.committee_approved_changed? && self.committee_approved?
+      self.approvals.create(identity: current_user, approval_date: self.updated_at, approval_type: self.human_attribute_name(:committee_approved))
+    end
   end
 
   def notify_remote_around_update?

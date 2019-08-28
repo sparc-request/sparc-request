@@ -19,12 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <% if @errors %>
-$("#flashContainer").replaceWith("<%= j render 'layouts/flash', errors: @errors %>")
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash', errors: { 'alert' => @errors } %>")
 <% else %>
-$("#subServiceRequestSummary").html("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request %>")
-$("#subsidy_information").html("<%= j render 'dashboard/subsidies/subsidy', sub_service_request: @sub_service_request, admin: true %>")
-$("#details").html("<%= j render 'dashboard/sub_service_requests/request_details', protocol: @sub_service_request.protocol, service_request: @sub_service_request.service_request, sub_service_request: @sub_service_request %>")
-
+$("#subServiceRequestSummary").replaceWith("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request %>")
 $("#status-history-table").bootstrapTable 'refresh'
 
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")

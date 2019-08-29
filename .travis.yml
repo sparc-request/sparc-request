@@ -7,6 +7,7 @@ env:
   - MOZ_HEADLESS=1
 services:
   - xvfb
+  - mysql
 
 before_install:
   - gem update --system

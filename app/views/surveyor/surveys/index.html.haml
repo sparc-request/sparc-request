@@ -19,12 +19,12 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - if current_user.is_site_admin?
   .card.w-100#surveysCard
-    .card-header{ title: t(:surveyor)[:systemsurveys][:tooltip], data: { toggle: 'tooltip', placement: 'left' } }
+    .card-header.bg-primary.text-white{ title: t(:surveyor)[:systemsurveys][:tooltip], data: { toggle: 'tooltip', placement: 'left' } }
       %h3.mb-0
         = t(:surveyor)[:systemsurveys][:header]
     #surveysCustomToolbar
       = link_to t(:surveyor)[:systemsurveys][:new], new_surveyor_survey_path(type: 'SystemSurvey'), remote: true, class: "btn btn-success", id: "new-survey-button"
-    %table.survey-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: surveyor_surveys_path(type: 'SystemSurvey'), striped: 'true', toolbar: '#surveysCustomToolbar', pagination: 'true', page_size: '20' } }
+    %table.system-survey-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: surveyor_surveys_path(type: 'SystemSurvey'), striped: 'true', toolbar: '#surveysCustomToolbar', pagination: 'true', page_size: '20' } }
       %thead.primary-header
         %tr
           %th{ data: { field: "title", align: "left", sortable: 'true' } }
@@ -40,7 +40,7 @@
 
 - if current_user.is_site_admin? || current_user.is_super_user? || current_user.is_service_provider? || current_user.is_catalog_manager?
   .card.w-100#formsCard
-    .card-header{ title: t(:surveyor)[:forms][:tooltip], data: { toggle: 'tooltip', placement: 'left' } }
+    .card-header.bg-primary.text-white{ title: t(:surveyor)[:forms][:tooltip], data: { toggle: 'tooltip', placement: 'left' } }
       %h3.mb-0
         = t(:surveyor)[:forms][:header]
     #formsCustomToolbar

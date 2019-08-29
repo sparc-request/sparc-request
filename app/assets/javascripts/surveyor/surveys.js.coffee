@@ -21,40 +21,15 @@ $(document).ready ->
   $("[data-toggle='tooltip']").tooltip()
 
   ### Survey Table ###
-  $(document).on 'load-success.bs.table', '.survey-table, .form-table', ->
+  $(document).on 'load-success.bs.table', '.system-survey-table, .form-table', ->
     $('.selectpicker').selectpicker()
 
   ### Survey Modal ###
   $(document).on 'hide.bs.modal', '#modalContainer', ->
     if $(this).children("#survey-modal").length > 0
-      $('.survey-table').bootstrapTable('refresh')
+      $('.system-survey-table').bootstrapTable('refresh')
     else if $(this).children("#form-modal").length > 0
       $('.form-table').bootstrapTable('refresh')
-
-  $(document).on 'click', '.add-section', ->
-    $.ajax
-      type: 'post'
-      url: '/surveyor/sections'
-      data:
-        survey_id: $('.survey').data('survey-id')
-      success: ->
-        build_dependents_selectpicker($('.survey').data('survey-id'))
-
-  $(document).on 'click', '.delete-section', ->
-    $.ajax
-      type: 'delete'
-      url: "/surveyor/sections/#{$(this).parents('.section').data('section-id')}"
-      success: ->
-        build_dependents_selectpicker($('.survey').data('survey-id'))
-
-  $(document).on 'click', '.add-question', ->
-    $.ajax
-      type: 'post'
-      url: '/surveyor/questions'
-      data:
-        section_id: $(this).parents('.section').data('section-id')
-      success: ->
-        build_dependents_selectpicker($('.survey').data('survey-id'))
 
   $(document).on 'click', '.delete-question', ->
     $.ajax

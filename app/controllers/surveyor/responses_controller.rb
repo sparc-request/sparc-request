@@ -40,7 +40,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
         }
       ) || return
 
-    @type = @filterrific.of_type.constantize.yaml_klass
+    @type = @filterrific.of_type.constantize.model_name.human
 
     respond_to do |format|
       format.html

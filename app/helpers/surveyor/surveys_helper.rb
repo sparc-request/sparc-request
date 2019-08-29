@@ -34,22 +34,6 @@ module Surveyor::SurveysHelper
   end
 
   ### Surveys Form ###
-  def add_section_content
-    raw(
-      [ content_tag(:span, '', class: 'glyphicon glyphicon-th-list'),
-        t(:surveyor)[:surveys][:form][:content][:section][:add]
-      ].join("")
-    )
-  end
-
-  def add_question_content
-    raw(
-      [ content_tag(:span, '', class: 'glyphicon glyphicon-plus'),
-        t(:surveyor)[:surveys][:form][:content][:question][:add]
-      ].join("")
-    )
-  end
-
   def us_states
     [
       ['Alabama', 'AL'],

@@ -26,7 +26,7 @@
           %span{aria: {hidden:'true'}} &times;
           %span.sr-only &times;
         %h4.modal-title.text-center
-          = I18n.t('surveyor.surveys.new_form.header', klass: survey.class.yaml_klass)
+          = I18n.t('surveyor.surveys.new_form.header', klass: survey.model_name.human)
       .modal-body
         #modal_errors
         .form-group

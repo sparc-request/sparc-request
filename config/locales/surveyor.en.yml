@@ -117,6 +117,9 @@ en:
           active: "Active:"
         content:
           section:
+            header: "Section Information"
+            title: "Section Title"
+            description: "Section Description"
             add: "Add Section"
             delete: "Delete Section"
           question:
@@ -135,9 +138,6 @@ en:
           survey:
             description: "Describe this %{klass} (Recommended)"
             surveyable: "Select an Organization or Service for this form"
-          section:
-            title: "Section Title (Required)"
-            description: "Describe this section (Optional)"
           question:
             content: "Question (Required)"
             description: "Describe this question (Optional)"

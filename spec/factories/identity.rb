@@ -35,7 +35,7 @@ FactoryBot.define do
     era_commons_name      { Faker::Internet.user_name }
     credentials           { Faker::Name.suffix }
     subspecialty          { Faker::Lorem.word }
-    phone                 { Faker::PhoneNumber.phone_number }
+    phone                 { Faker::Number.number(digits: 10) }
     password              {"abc123456789!"}
     password_confirmation {"abc123456789!"}
 

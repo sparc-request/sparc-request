@@ -59,7 +59,7 @@ html {
   opacity: 1;
   transition: $transition-base;
   pointer-events: all;
-  z-index: 1049; // 1 less than modal
+  z-index: 1039;
 
   &.hide {
     opacity: 0;

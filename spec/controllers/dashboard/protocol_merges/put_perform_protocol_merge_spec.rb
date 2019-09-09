@@ -24,63 +24,71 @@ RSpec.describe Dashboard::ProtocolMergesController do
 
   stub_controller
 
-  context 'user is catalog overlord, no errors' do
+  context 'user is catalog overlord' do
 
-    let!(:logged_in_user) { create(:identity, catalog_overlord: true) }
+    context 'master protocol id and merged protocol id are valid' do
 
-    before(:each) do
-      log_in_dashboard_identity(obj: logged_in_user)
-      allow(controller).to receive(:current_user).and_return(logged_in_user)
-      protocol_stub_master  = create(:protocol_without_validations)
-      protocol_stub_to_be_merged  = create(:protocol_without_validations)
+      let!(:logged_in_user) { create(:identity, catalog_overlord: true) }
+      let!(:protocol_stub_master) { create(:protocol_without_validations) }
+      before(:each) do
+        log_in_dashboard_identity(obj: logged_in_user)
+        allow(controller).to receive(:current_user).and_return(logged_in_user)
+        
+        protocol_stub_to_be_merged  = create(:protocol_without_validations)
 
-      create(:research_types_info,
-             protocol: protocol_stub_master,
-             human_subjects: true,
-             vertebrate_animals: false,
-             investigational_products: false,
-             ip_patents: false
-            )
+        create(:research_types_info,
+               protocol: protocol_stub_master,
+               human_subjects: true,
+               vertebrate_animals: false,
+               investigational_products: false,
+               ip_patents: false
+              )
 
-      create(:research_types_info,
-             protocol: protocol_stub_to_be_merged,
-             human_subjects: true,
-             vertebrate_animals: false,
-             investigational_products: false,
-             ip_patents: false
-            )
+        create(:research_types_info,
+               protocol: protocol_stub_to_be_merged,
+               human_subjects: true,
+               vertebrate_animals: false,
+               investigational_products: false,
+               ip_patents: false
+              )
 
-      put :perform_protocol_merge, params: {
-          protocol_merge: {master_protocol_id: protocol_stub_master.id, merged_protocol_id: protocol_stub_to_be_merged.id, confirmed: 'false', format: :js }
-        }, xhr: true
+        put :perform_protocol_merge, params: {
+            protocol_merge: {master_protocol_id: protocol_stub_master.id, merged_protocol_id: protocol_stub_to_be_merged.id, confirmed: 'false', format: :js }
+          }, xhr: true
 
+      end
+
+      it "should call has_research?  and return true" do
+        allow(controller).to receive(:has_research?).with(protocol_stub_master, "human_subjects").and_return(true)
+      end
+
+      it "should not see any errors" do
+        expect(assigns(:errors)).to be_empty
+      end
+
+      it { is_expected.to respond_with :ok }
+      it { is_expected.to render_template :perform_protocol_merge}
     end
-
-    it "should call has_research?  and return true" do
-      allow(controller).to receive(:has_research?).with(protocol_stub_master, "human_subjects").and_return(true)
-    end
-
-    it "should not see any errors" do
-      expect(assigns(:errors)).to be_nil
-    end
-
-    it { is_expected.to respond_with :ok }
-    it { is_expected.to render_template :perform_protocol_merge}
   end
 
-  context 'user is catalog overlord, see errors' do
+  context 'user is catalog overlord' do
 
-    before(:each) do
+    context 'master protocol id and merged protocol id are empty' do
 
-      log_in_dashboard_identity(obj: logged_in_user)
-      allow(controller).to receive(:current_user).and_return(logged_in_user)
+      let!(:logged_in_user) { create(:identity, catalog_overlord: true) }
 
-      put :perform_protocol_merge, params: {
-          protocol_merge: {master_protocol_id: '', merged_protocol_id: '', confirmed: 'false', format: :js }
-        }, xhr: true
+      before(:each) do
 
+        log_in_dashboard_identity(obj: logged_in_user)
+        allow(controller).to receive(:current_user).and_return(logged_in_user)
+
+        put :perform_protocol_merge, params: {
+            protocol_merge: {master_protocol_id: '', merged_protocol_id: '', confirmed: 'false', format: :js }
+          }, xhr: true
+
+      end
+
+      it { expect(assigns(:errors)).to be }
     end
-
-    it { expect(assigns(:errors)).to be }
   end
 end

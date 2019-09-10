@@ -105,13 +105,13 @@
               = f.label :epic_access, class: 'required', title: t('authorized_users.tooltips.epic_access'), data: { toggle: 'tooltip', placement: 'right' }
               .d-block
                 .custom-control.custom-radio.custom-control-inline
-                  = f.radio_button :epic_access, true, class: 'custom-control-input', disabled: Setting.get_value("validate_epic_users") && !EpicUser.is_active?(@epic_user)
+                  = f.radio_button :epic_access, true, class: 'custom-control-input', disabled: Setting.get_value("validate_epic_users") && !EpicUser.is_active?(epic_user)
                   = f.label :epic_access_true, t('constants.yes_select'), class: 'custom-control-label'
                 .custom-control.custom-radio.custom-control-inline
-                  = f.radio_button :epic_access, false, class: 'custom-control-input', disabled: Setting.get_value("validate_epic_users") && !EpicUser.is_active?(@epic_user)
+                  = f.radio_button :epic_access, false, class: 'custom-control-input', disabled: Setting.get_value("validate_epic_users") && !EpicUser.is_active?(epic_user)
                   = f.label :epic_access_false, t('constants.no_select'), class: 'custom-control-label'
 
-              - if Setting.get_value("validate_epic_users") && !EpicUser.is_active?(@epic_user)
+              - if Setting.get_value("validate_epic_users") && !EpicUser.is_active?(epic_user)
                 %small.form-text.text-danger
                   = t('authorized_users.form.no_epic_access')
 

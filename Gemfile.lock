@@ -46,10 +46,10 @@ GIT
 
 GIT
   remote: https://github.com/swanandp/acts_as_list.git
-  revision: 03f33bff8c7ccee271a52f2c459077afc40accb4
+  revision: 709ea7a313bec560b401eb43d5fde8739de2f01e
   specs:
     acts_as_list (0.9.19)
-      activerecord (>= 3.0)
+      activerecord (>= 4.2)
 
 GEM
   remote: https://rubygems.org/

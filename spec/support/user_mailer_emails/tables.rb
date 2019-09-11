@@ -38,8 +38,7 @@ module EmailHelpers
         expect(@mail).to have_selector('td del', text: text)
       end
     else
-      expect(@mail).to have_xpath "//td[text()=\"#{modified_identity.full_name}\"]/following-sibling::td[text()=\"#{modified_identity.email}\"]/following-sibling::td[text()='#{modified_identity.project_roles.first.role.upcase}']/following-sibling::td[text()='#{modified_identity.project_roles.first.display_rights}']"
-      expect(@mail).to have_xpath "//td[text()=\"#{modified_identity.project_roles.first.epic_access ? 'Yes' : 'No'}\"]"
+      expect(@mail).to_not have_selector('td del')
     end
   end
 
@@ -55,8 +54,7 @@ module EmailHelpers
 
       expect(@mail).to_not have_selector('td del', text: modified_identity.project_roles.first.epic_access ? 'Yes' : 'No')
     else
-      expect(@mail).to have_xpath "//td[text()=\"#{modified_identity.full_name}\"]/following-sibling::td[text()=\"#{modified_identity.email}\"]/following-sibling::td[text()='#{modified_identity.project_roles.first.role.upcase}']/following-sibling::td[text()='#{modified_identity.project_roles.first.display_rights}']"
-      expect(@mail).to_not have_xpath "//td[text()=\"#{modified_identity.project_roles.first.epic_access ? 'Yes' : 'No'}\"]"
+      expect(@mail).to_not have_selector('td del')
     end
   end
 end

@@ -37,14 +37,12 @@ module ArmsHelper
   end
 
   def arms_edit_button(arm, opts={})
-    link_to icon('far', 'edit'), edit_arm_path(arm, srid: opts[:srid]), remote: true, class: ['btn btn-warning mr-1', opts[:editable] ? '' : 'disabled']
+    link_to icon('far', 'edit'), edit_arm_path(arm, srid: opts[:srid]), remote: true, class: ['btn btn-warning mr-1', opts[:editable] ? '' : 'disabled'], title: t('arms.edit'), data: { toggle: 'tooltip' }
   end
 
   def arms_delete_button(arm, opts={})
     link_to icon('fas', 'trash-alt'), arm_path(arm, srid: opts[:srid]), remote: true, method: :delete,
     class: ['btn btn-danger', opts[:editable] && opts[:count] > 1 ? '' : 'disabled'],
-    data: {
-      confirm_swal: 'true'
-    }
+    title: t('arms.delete'), data: { toggle: 'tooltip', confirm_swal: 'true' }
   end
 end

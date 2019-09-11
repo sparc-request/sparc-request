@@ -20,33 +20,6 @@
 
 $ ->
 ##              **BEGIN MANAGE ARMS**                     ##
-
-  $(document).on 'click', '#add_arm_button', ->
-    data =
-      'protocol_id'             : $('#study_schedule_buttons').data('protocol-id')
-      'sub_service_request_id'  : $('#study_schedule_buttons').data('sub-service-request-id')
-      'service_request_id'      : $('#study_schedule_buttons').data('service-request-id')
-      'schedule_tab'            : $('#current_tab').attr('value')
-    $.ajax
-      type: 'GET'
-      url: '/dashboard/arms/new'
-      data: data
-
-  ## This is keyed off of form submit, instead of button click, because chrome does stupid things.
-  $(document).on 'submit', 'form#new_arm', ->
-    $('form#new_arm input#add_arm_form_button').attr('disabled','disabled')
-
-  $(document).on 'click', '#remove_arm_button', ->
-    data =
-      'protocol_id'             : $('#study_schedule_buttons').data('protocol-id')
-      'sub_service_request_id'  : $('#study_schedule_buttons').data('sub-service-request-id')
-      'service_request_id'      : $('#study_schedule_buttons').data('service-request-id')
-      'intended_action'         : 'destroy'
-    $.ajax
-      type: 'GET'
-      url: '/dashboard/arms/navigate'
-      data: data
-
   $(document).on 'click', '#remove_arm_form_button', ->
     $(this).attr('disabled','disabled')
     arm_id = $("#arm_form_select").val()
@@ -61,46 +34,17 @@ $ ->
         url: "/dashboard/arms/#{arm_id}"
         data: data
 
-  $(document).on 'click', '#edit_arm_button', ->
-    data =
-      'protocol_id'             : $('#study_schedule_buttons').data('protocol-id')
-      'sub_service_request_id'  : $('#study_schedule_buttons').data('sub-service-request-id')
-      'service_request_id'      : $('#study_schedule_buttons').data('service-request-id')
-      'intended_action'         : 'edit'
+  $(document).on 'change', "#arm_select", ->
     $.ajax
       type: 'GET'
       url: '/dashboard/arms/navigate'
-      data: data
-
-  $(document).on 'submit', 'form#edit_arm', ->
-    $("#edit_arm_form_button").attr('disabled','disabled')
-
-  $(document).on 'change', "#arm_form_select", ->
-    data =
-      'protocol_id'             : $('#study_schedule_buttons').data('protocol-id')
-      'sub_service_request_id'  : $('#study_schedule_buttons').data('sub-service-request-id')
-      'service_request_id'      : $('#study_schedule_buttons').data('service-request-id')
-      'intended_action'         : $("#navigate_arm_form").data('intended-action')
-      'arm_id'                  : $(this).val()
-    $.ajax
-      type: 'GET'
-      url: '/dashboard/arms/navigate'
-      data: data
+      data:
+        ssrid: getSSRId()
+        arm_id: $(this).val()
+        intended_action: $('#navigateArmForm').data('intended-action')
 
 ##              **END MANAGE ARMS**                     ##
 ##          **BEGIN MANAGE VISIT GROUPS**               ##
-
-  $(document).on 'click', '#add_visit_group_button', ->
-    data =
-      'current_page'            : $(".visit_dropdown").first().attr('page')
-      'schedule_tab'            : $('#current_tab').attr('value')
-      'protocol_id'             : $('#study_schedule_buttons').data('protocol-id')
-      'sub_service_request_id'  : $('#study_schedule_buttons').data('sub-service-request-id')
-      'service_request_id'      : $('#study_schedule_buttons').data('service-request-id')
-    $.ajax
-      type: 'GET'
-      url: '/dashboard/visit_groups/new'
-      data: data
 
   $(document).on 'change', '#visit_group_arm_id', ->
     arm_id = $(this).find('option:selected').val()
@@ -114,28 +58,6 @@ $ ->
     $.ajax
       type: 'GET'
       url: '/dashboard/visit_groups/new'
-      data: data
-
-  $(document).on 'click', '#edit_visit_group_button', ->
-    data =
-      'protocol_id'             : $('#study_schedule_buttons').data('protocol-id')
-      'sub_service_request_id'  : $('#study_schedule_buttons').data('sub-service-request-id')
-      'service_request_id'      : $('#study_schedule_buttons').data('service-request-id')
-      'intended_action'         : 'edit'
-    $.ajax
-      type: 'GET'
-      url: '/dashboard/visit_groups/navigate'
-      data: data
-
-  $(document).on 'click', '#remove_visit_group_button', ->
-    data =
-      'protocol_id'             : $('#study_schedule_buttons').data('protocol-id')
-      'sub_service_request_id'  : $('#study_schedule_buttons').data('sub-service-request-id')
-      'service_request_id'      : $('#study_schedule_buttons').data('service-request-id')
-      'intended_action'         : 'destroy'
-    $.ajax
-      type: 'GET'
-      url: '/dashboard/visit_groups/navigate'
       data: data
 
   $(document).on 'submit', 'form#edit_visit_group', ->
@@ -190,35 +112,8 @@ $ ->
 ##          **END MANAGE VISIT GROUPS**               ##
 ##          **BEGIN MANAGE LINE ITEMS**               ##
 
-  $(document).on 'click', '#add_service_button', ->
-    page_hash = {}
-    $(".jump_to_visit").each (index) ->
-      key = $(this).attr('id').replace('jump_to_visit_', '')
-      value = $(this).find("option:selected").val()
-      page_hash[key] = value
-    data =
-      'sub_service_request_id'  : $('#study_schedule_buttons').data('sub-service-request-id')
-      'service_request_id'      : $('#study_schedule_buttons').data('service-request-id')
-      'page_hash'   : page_hash
-      'schedule_tab': $('#current_tab').attr('value')
-      'protocol_id' : $('#study_schedule_buttons').data('protocol-id')
-    $.ajax
-      type: 'GET'
-      url: '/dashboard/multiple_line_items/new_line_items'
-      data: data
-
   $(document).on 'submit', 'form#new_service', ->
     $("#add_line_items_form_button").attr('disabled','disabled')
-
-  $(document).on 'click', '#remove_service_button', ->
-    if $('#study_schedule_buttons').data('line-item-count') == 1
-      sweetAlert("Warning", "Please add a new service(s) prior to removing the last service; To remove all services use the 'Delete Request' button.")
-    else
-      $.ajax
-        type: 'GET'
-        url: '/dashboard/multiple_line_items/edit_line_items'
-        data:
-          sub_service_request_id: $('#study_schedule_buttons').data('sub-service-request-id')
 
   $(document).on 'submit', '#destroy_service', ->
     $("#remove_line_items_form_button").attr('disabled','disabled')

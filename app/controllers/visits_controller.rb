@@ -38,10 +38,10 @@ class VisitsController < ApplicationController
     @line_items_visit   = @line_items_visits.find(@visit.line_items_visit_id)
     @visit_groups       = @arm.visit_groups.paginate(page: @page.to_i, per_page: VisitGroup.per_page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol] } })
     @visit_group        = @arm.visit_groups.find(@visit.visit_group_id)
-    @locked             = !@visit.sub_service_request.can_be_edited? && !@admin
+    @locked             = !@visit.sub_service_request.can_be_edited? && !@in_admin
 
     if @visit.update_attributes(visit_params)
-      @visit.sub_service_request.set_to_draft unless @admin
+      @visit.sub_service_request.set_to_draft unless @in_admin
     else
       @errors = @visit.errors
     end

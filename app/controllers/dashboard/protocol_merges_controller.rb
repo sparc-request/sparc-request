@@ -151,12 +151,6 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
     return true
   end
 
-  def authorize_overlord
-    unless current_user.catalog_overlord?
-      authorization_error(t(:dashboard)[:protocol_merge][:errors][:access])
-    end
-  end
-
   def has_research?(protocol, research_type)
     protocol.research_types_info.try(research_type) || false
   end

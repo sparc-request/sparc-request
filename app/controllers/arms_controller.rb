@@ -40,7 +40,7 @@ class ArmsController < ApplicationController
   end
 
   def create
-    @arm = Arm.new(arm_params)
+    @arm = @service_request.protocol.arms.new(arm_params)
 
     if @arm.save
       flash[:success] = t('arms.created')

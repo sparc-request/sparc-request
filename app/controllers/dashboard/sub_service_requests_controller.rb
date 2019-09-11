@@ -57,9 +57,6 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         @service_request        = @sub_service_request.service_request
         @protocol               = @service_request.protocol
         @tab                    = 'calendar'
-        @portal                 = true
-        @admin                  = false
-        @review                 = true
         @merged                 = false
         @consolidated           = false
         @pages                  = {}
@@ -160,6 +157,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
 
   def refresh_tab
     @tab = params[:tab]
+    cookies["admin-tab-#{@sub_service_request.id}"] = @tab
   end
 
   private

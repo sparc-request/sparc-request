@@ -199,10 +199,14 @@ module ApplicationHelper
   end
 
   def in_dashboard?
-    (request.format.html? && request.path.start_with?('/dashboard') && request.format.html?) || Rails.application.routes.recognize_path(request.referrer)[:controller].starts_with?('dashboard/')
+    @in_dashboard ||= (request.format.html? && request.path.start_with?('/dashboard') && request.format.html?) || Rails.application.routes.recognize_path(request.referrer)[:controller].starts_with?('dashboard/')
+  end
+
+  def in_admin?
+    @in_admin ||= in_dashboard? && params[:ssrid].present?
   end
 
   def in_review?
-    action_name == 'review' || (Rails.application.routes.recognize_path(request.referrer)[:action] == 'review' && !request.format.html?)
+    @in_review ||= action_name == 'review' || (Rails.application.routes.recognize_path(request.referrer)[:action] == 'review' && !request.format.html?)
   end
 end

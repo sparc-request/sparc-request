@@ -122,6 +122,8 @@ en:
       ip_patents_info:
         patent_number: "Patent #"
         inventors: "Inventor(s)"
+      line_item:
+        displayed_cost: "Your Cost"
       line_items_visit:
         subject_count: "Subject Count"
       message:
@@ -243,6 +245,8 @@ en:
       models:
         arm:
           attributes:
+            name:
+              invalid: "The following characters are not allowed: [ ] * / \\ ? :"
             visit_groups:
               invalid: "Please specify a day for each visit"
               out_of_order: "Please make sure all visit days are in sequential order"
@@ -298,7 +302,7 @@ en:
   arms:
     new: "Add Arm"
     edit: "Edit Arm"
-    remove: "Remove Arm"
+    delete: "Delete Arm"
     created: "Arm Created!"
     updated: "Arm Updated!"
     destroyed: "Arm Destroyed!"
@@ -383,8 +387,8 @@ en:
         subject_count: "N"
         day: "Day"
         page_select:
-          previous: "View Previous"
-          next: "View Next"
+          previous: "Previous Page"
+          next: "Next Page"
           header: "Visits %{start} - %{stop} of %{total}"
         total_per_patient: "Total Per<br>Patient"
         total_per_study: "Total Per<br>Study"
@@ -392,17 +396,6 @@ en:
         third_party: "T"
         percent: "%"
         edit_billing_modal: "Edit Billing Quantities"
-      editable_fields:
-        your_cost: "Edit Your Cost"
-        subject_count: "Edit Subject Count"
-        row_select:
-          check: "Check Row"
-          uncheck: "Uncheck Row"
-          confirm: "This will reset custom values for this row, do you wish to continue?"
-        column_select:
-          check: "Check Column"
-          uncheck: "Uncheck Column"
-          confirm: "This will reset custom values for this column, do you wish to continue?"
       totals:
         maximum_direct: "Maximum Total Direct Costs Per Patient"
         maximum_per_patient: "Maximum Total Per Patient"
@@ -418,12 +411,24 @@ en:
         unit_type: "Unit Type #"
         qty_type: "Qty Type #"
         total_per_study: "Total Per Study"
-      editable_fields:
-        quantity: "Edit Quantity"
-        units_per_quantity: "Edit Units per Quantity"
       totals:
         total_direct: "Total Direct Costs (Non-clinical Services) Per Study"
         total_costs: "Total Costs (Non-clinical Services) Per Study"
+    editable_fields:
+      your_cost: "Edit Your Cost"
+      displayed_cost: "Edit Your Cost"
+      modified_rate: "Modified Rate: %{rate}"
+      subject_count: "Edit Subject Count"
+      row_select:
+        check: "Check Row"
+        uncheck: "Uncheck Row"
+        confirm: "This will reset custom values for this row, do you wish to continue?"
+      column_select:
+        check: "Check Column"
+        uncheck: "Uncheck Column"
+        confirm: "This will reset custom values for this column, do you wish to continue?"
+      quantity: "Edit Quantity"
+      units_per_quantity: "Edit Units per Quantity"
     merged_totals:
       header: "Study Cost Totals"
       grand_total: "Grand Total"
@@ -627,6 +632,13 @@ en:
         feedback: "Feedback"
     back_to_top: "Go to Top"
 
+  ##############
+  # Line Items #
+  ##############
+  line_items:
+    new: "Add Service"
+    delete: "Delete Service"
+
   ###########
   # MAILERS #
   ###########
@@ -813,8 +825,6 @@ en:
   #############################
   validation_errors:
     user_note: "Fields marked with an asterisk ( * ) are required"
-    arms:
-      bad_characters: "can not contain any of the following characters: [ ] * / \\ ? :"
     line_items:
       displayed_cost_numeric: 'must be a number'
       displayed_cost_gte_zero: 'must be greater than or equal to 0'
@@ -827,7 +837,9 @@ en:
   # VISIT GROUPS #
   ################
   visit_groups:
+    new: "Add Visit"
     edit: "Edit Visit"
+    delete: "Delete Visit"
     before: "Before"
     form:
       arm: "Arm"

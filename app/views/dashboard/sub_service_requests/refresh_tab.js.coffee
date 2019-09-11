@@ -23,4 +23,8 @@ $("#<%= @tab.camelize(:lower) %>TabLink").addClass('active')
 $("#<%= @tab.camelize(:lower) %>Tab").html('<%= j render "dashboard/sub_service_requests/#{@tab}", sub_service_request: @sub_service_request %>').addClass('active show')
 $(".bootstrap_table").bootstrapTable()
 
+<% if @tab == 'study_schedule' %>
+loadServiceCalendar()
+<% end %>
+
 $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

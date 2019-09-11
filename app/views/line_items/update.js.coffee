@@ -31,7 +31,7 @@ $("[name='line_item[<%= attr.to_s %>]']").parents('.form-group').removeClass('is
 $('#modalContainer').modal('hide')
 
 # Replace Field Cell
-$(".line-item-<%= @line_item.id %>:visible .<%= @field.dasherize %>").replaceWith('<%= j render "service_calendars/master_calendar/otf/#{@field}", line_item: @line_item, service_request: @service_request, merged: false, locked: false %>')
+$(".line-item-<%= @line_item.id %>:visible .<%= @field.dasherize %>").replaceWith('<%= j render "service_calendars/#{@field}", line_item: @line_item, service_request: @service_request, sub_service_request: @sub_service_request, merged: false, locked: false %>')
 
 # Replace Per Study Total
 $(".line-item-<%= @line_item.id %>:visible .total-per-study").replaceWith("<%= j render 'service_calendars/master_calendar/otf/total_per_study', line_item: @line_item %>")

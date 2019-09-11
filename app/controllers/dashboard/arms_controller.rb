@@ -19,8 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::ArmsController < Dashboard::BaseController
-  respond_to :json, :html
-  before_action :find_arm, only: [:update]
+  before_action :authorize_admin,     except: [:index]
+  before_action :authorize_overlord,  only:   [:index]
+  before_action :find_arm,            only:   [:update, :destroy]
 
   def index
     protocol = Protocol.find(params[:protocol_id])
@@ -32,39 +33,32 @@ class Dashboard::ArmsController < Dashboard::BaseController
   end
 
   def new
-    @protocol = Protocol.find(params[:protocol_id])
-    @service_request = ServiceRequest.find(params[:service_request_id])
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @arm = Arm.new(protocol_id: params[:protocol_id])
-    @schedule_tab = params[:schedule_tab]
+    @arm = @sub_service_request.protocol.arms.new
   end
 
   def create
-    @protocol = Protocol.find(arm_params[:protocol_id])
-    @service_request = ServiceRequest.find(params[:service_request_id])
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @selected_arm = Arm.create(arm_params)
-    @selected_arm.default_visit_days
+    @service_request  = @sub_service_request.service_request
+    @arm              = @sub_service_request.protocol.arms.new(arm_params)
+    @tab              = params[:tab]
+    @pages            = {}
+    @page             = 1
 
-    if @selected_arm.valid?
+    if @arm.save
+      @arm.default_visit_days
       flash[:success] = t(:arms)[:created]
     else
-      @errors = @selected_arm.errors
+      @errors = @arm.errors
     end
   end
 
   def navigate
     # Used in study schedule management for navigating to a arm.
-    @protocol = Protocol.find(params[:protocol_id])
-    @service_request = ServiceRequest.find(params[:service_request_id])
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @intended_action = params[:intended_action]
-    @arm = params[:arm_id].present? ? Arm.find(params[:arm_id]) : @protocol.arms.first
+    @intended_action  = params[:intended_action]
+    @protocol         = @sub_service_request.protocol
+    @arm              = params[:arm_id].present? ? Arm.find(params[:arm_id]) : Arm.new
   end
 
   def update
-    @service_request = ServiceRequest.find(params[:service_request_id])
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     if @arm.update_attributes(arm_params)
       flash[:success] = t(:arms)[:updated]
     else
@@ -73,8 +67,8 @@ class Dashboard::ArmsController < Dashboard::BaseController
   end
 
   def destroy
-    @selected_arm = Arm.find(params[:id])
-    @selected_arm.destroy
+    @arm = Arm.find(params[:id])
+    @arm.destroy
 
     @service_request = ServiceRequest.find(params[:service_request_id])
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])

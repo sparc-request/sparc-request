@@ -190,10 +190,10 @@ class ApplicationController < ActionController::Base
   end
 
   def in_dashboard?
-    @portal ||= (request.format.html? && request.path.start_with?('/dashboard') && request.format.html?) || Rails.application.routes.recognize_path(request.referrer)[:controller].starts_with?('dashboard/')
-    @admin  ||= @portal && params[:srrid].present?
+    @in_dashboard ||= (request.format.html? && request.path.start_with?('/dashboard') && request.format.html?) || Rails.application.routes.recognize_path(request.referrer)[:controller].starts_with?('dashboard/')
+    @in_admin     ||= @portal && params[:srrid].present?
 
-    @portal
+    @in_dashboard
   end
 
   def authorize_dashboard_access
@@ -220,6 +220,16 @@ class ApplicationController < ActionController::Base
       @service_request     = @sub_service_request.service_request
       unless (current_user.authorized_admin_organizations & @sub_service_request.org_tree).any?
         authorization_error('You are not allowed to access this Sub Service Request.')
+      end
+    else
+      redirect_to_login
+    end
+  end
+
+  def authorize_overlord
+    if current_user
+      unless current_user.catalog_overlord?
+        authorization_error
       end
     else
       redirect_to_login

@@ -33,16 +33,19 @@
 /////////////
 
 .badge {
-  &.notification-badge {
-    position: absolute;
-    top: -.25rem;
-    right: -.25rem;
+  &.badge-c {
     width: 16px;
     height: 16px;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  &.notification-badge {
+    position: absolute;
+    top: -.25rem;
+    right: -.25rem;
   }
 }
 
@@ -227,6 +230,8 @@
   }
 
   .dropdown-menu {
+    z-index: 1030;
+
     .dropdown-header, .dropdown-item {
       padding-left: 1rem;
       padding-right: 1rem;
@@ -367,10 +372,9 @@ form, .form {
 
 .tabs {
   nav.nav-tabs {
-
     &.nav-justified {
-      &+ .tab-content .tab-pane {
-        &:not(.loading) .card:first-of-type {
+      &+ .tab-content > .tab-pane {
+        &:not(.loading) > .card:first-of-type {
           border-top: 0;
         }
 
@@ -382,7 +386,7 @@ form, .form {
 
     &:not(.nav-justified) {
       margin-bottom: -1px;
-      z-index: 1048;
+      z-index: 1037;
 
       .nav-link:not(.active) {
         border-bottom: 1px solid $border-color;
@@ -569,6 +573,10 @@ nav.navbar {
 
   &.table-fixed {
     table-layout: fixed;
+  }
+
+  thead th {
+    border-bottom: 0;
   }
 }
 

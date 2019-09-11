@@ -19,8 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class VisitGroupsController < ApplicationController
-  before_action :initialize_service_request
-  before_action :authorize_identity
+  before_action :initialize_service_request,  unless: :in_dashboard?
+  before_action :authorize_identity,          unless: :in_dashboard?
+  before_action :authorize_dashboard_access,  if: :in_dashboard?
 
   def edit
     @visit_group = VisitGroup.find(params[:id])

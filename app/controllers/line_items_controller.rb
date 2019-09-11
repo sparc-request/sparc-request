@@ -19,8 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class LineItemsController < ApplicationController
-  before_action :initialize_service_request
-  before_action :authorize_identity
+  before_action :initialize_service_request,  unless: :in_dashboard?
+  before_action :authorize_identity,          unless: :in_dashboard?
+  before_action :authorize_dashboard_access,  if: :in_dashboard?
 
   def edit
     @line_item = LineItem.find(params[:id])
@@ -32,7 +33,7 @@ class LineItemsController < ApplicationController
     @line_item  = LineItem.find(params[:id])
     @field      = params[:field]
 
-    if @line_item.update_attributes(line_item_params)
+    if @line_item.displayed_cost_valid?(line_item_params[:displayed_cost]) && @line_item.update_attributes(line_item_params)
       @service_request.update_attribute(:status, 'draft') unless @service_request.previously_submitted?
       @line_item.sub_service_request.update_attribute(:status, 'draft')
     else

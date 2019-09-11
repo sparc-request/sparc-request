@@ -19,17 +19,16 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <% if @errors %>
-$("#modal_errors").html("<%= escape_javascript(render( 'layouts/modal_errors', errors: @errors )) %>")
-$("#add_arm_form_button").removeAttr('disabled')
+$("[name^='arm']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+$('.form-error').remove()
+
+<% @errors.messages.each do |attr, messages| %>
+<% messages.each do |message| %>
+$("[name='arm[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
+<% end %>
+<% end %>
 <% else %>
-$("#per_patient_services").html("<%= escape_javascript(render( 'dashboard/sub_service_requests/per_patient_per_visit', sub_service_request: @sub_service_request, service_request: @service_request )) %>");
-
-$("#sub_service_request_header").html("<%= escape_javascript(render( 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request )) %>");
-$("#subsidy_information").html("<%= escape_javascript(render( 'dashboard/subsidies/subsidy', sub_service_request: @sub_service_request, admin: true )) %>");
-$(".selectpicker").selectpicker()
-
-refresh_study_schedule()
-
-$("#modalContainer").modal 'hide'
-$("#flashContainer").replaceWith("<%= escape_javascript(render( 'layouts/flash' )) %>")
+$('#serviceCalendar .tab-pane.active').append("<%= j render '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages, merged: @merged, consolidated: @consolidated %>")
+$("#modalContainer").modal('hide')
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

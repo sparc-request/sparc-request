@@ -25,12 +25,6 @@ en:
     ##########
     header: "SPARCRequest Dashboard"
 
-    ##########
-    #  ARMS  #
-    ##########
-    arms:
-      manage: "Manage Arms"
-
     #################
     #  EPIC QUEUES  #
     #################
@@ -365,6 +359,11 @@ en:
           header: "Timeline"
       study_schedule:
         header: "Clinical Services"
+        manage:
+          header: "Manage Clinical Services"
+          arms: "Manage Arms"
+          visit_groups: "Manage Visits"
+          services: "Manage Services"
         no_requests: "There are no clinical services requested."
       study_level_activities:
         header: "Non-clinical Services"
@@ -418,7 +417,6 @@ en:
     #  VISIT GROUPS  #
     ##################
     visit_groups:
-      manage: "Manage Visits"
       add: "Add Visit Group"
       remove: "Remove Visit Group"
       edit: "Edit Visit Group"

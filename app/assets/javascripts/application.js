@@ -82,6 +82,7 @@
 //= require dashboard/protocols
 //= require dashboard/notifications
 //= require dashboard/sub_service_requests
+//= require dashboard/study_schedule_management
 
 //= require reporting
 

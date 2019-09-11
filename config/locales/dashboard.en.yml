@@ -222,7 +222,7 @@ en:
     #  PROTOCOL MERGE  #
     ###############
     protocol_merge:
-      modal_header: "Protocol Merge Tool"
+      modal_header: "Merge Protocols"
       enter_master_protocol: "Enter the id of the Master Protocol:"
       enter_merged_protocol: "Enter the id of the Protocol to be merged into the Master Protocol:"
       perform_protocol_merge: "Perform Protocol Merge"

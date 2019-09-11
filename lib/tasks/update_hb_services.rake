@@ -89,6 +89,7 @@ task :update_hb_services => :environment do
 
   revenue_codes = []
   cpt_codes = []
+  is_available = []
   service_names = []
   pricing_maps = []
   puts ""
@@ -116,6 +117,15 @@ task :update_hb_services => :environment do
             cpt_codes << [service.id, service.cpt_code]
             puts "Altering the CPT code of service with an id of #{service.id} from #{service.cpt_code} to #{row['CPT Code']}"
             service.cpt_code = row['CPT Code'] == 'NULL' ? nil : row['CPT Code'] 
+            updated = true    
+          end
+
+          service_is_available = service.is_available
+          row_is_available = (row['Is Available'].to_i == 1 ? true : false)
+          unless service_is_available == row_is_available
+            is_available << [service.id, service_is_available]
+            puts "Altering the service's is_available status with an id of #{service.id} from #{service_is_available} to #{row_is_available}"
+            service.is_available = row_is_available
             updated = true    
           end
 
@@ -155,6 +165,13 @@ task :update_hb_services => :environment do
         cpt_codes.each do |id_and_code|
           service = Service.find(id_and_code[0])
           csv << [service.name, id_and_code[0], 'Cpt Code', service.cpt_code, id_and_code[1]]
+        end
+      end
+
+      unless is_available.empty?
+        is_available.each do |id_and_code|
+          service = Service.find(id_and_code[0])
+          csv << [service.name, id_and_code[0], 'Is Available', service.is_available, id_and_code[1]]
         end
       end
 

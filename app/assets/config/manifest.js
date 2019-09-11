@@ -24,4 +24,6 @@
 //= link application.css
 //= link catalog_manager/application.css
 
+//= link proper/notification_email.css
+
 //= link_tree ../images/

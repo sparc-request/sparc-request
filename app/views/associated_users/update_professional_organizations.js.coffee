@@ -19,4 +19,4 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 $('#professionalOrganizationForm').replaceWith("<%= j render 'associated_users/professional_organizations', professional_organization: @professional_organization %>")
-$('#professionalOrganizationForm select').selectpicker()
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

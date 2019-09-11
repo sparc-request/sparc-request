@@ -132,10 +132,8 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
 
   #History Table Methods Begin
   def change_history_tab
-    #Replaces currently displayed ssr history bootstrap table
-    history_path = 'dashboard/sub_service_requests/history/'
-    @partial_to_render = history_path + params[:partial]
-    @tab = params[:partial]
+    @tab = params[:tab]
+    cookies["history-tab-ssr-#{@sub_service_request.id}"] = @tab
   end
 
   def status_history

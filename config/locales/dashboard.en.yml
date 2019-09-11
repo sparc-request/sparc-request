@@ -369,18 +369,18 @@ en:
         header: "Non-clinical Services"
       history:
         header: "History"
-        status:
+        status_history:
           header: "Status History"
           date: "Date Changed"
           from: "Status Changed From"
           to: "Status Changed To"
           by: "Changed by"
-        approval:
+        approval_history:
           header: "Administrative Approvals"
           date: "Date Approved"
           type: "Type"
           by: "Approved By"
-        subsidy:
+        subsidy_history:
           header: "Subsidy History"
           request_cost: "Request Cost at Approval"
           percent: "% Subsidy"

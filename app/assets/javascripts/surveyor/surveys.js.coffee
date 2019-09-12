@@ -18,11 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 $(document).ready ->
-  $("[data-toggle='tooltip']").tooltip()
-
-  ### Survey Table ###
-  $(document).on 'load-success.bs.table', '.system-survey-table, .form-table', ->
-    $('.selectpicker').selectpicker()
 
   ### Survey Modal ###
   $(document).on 'hide.bs.modal', '#modalContainer', ->
@@ -30,29 +25,6 @@ $(document).ready ->
       $('.system-survey-table').bootstrapTable('refresh')
     else if $(this).children("#form-modal").length > 0
       $('.form-table').bootstrapTable('refresh')
-
-  $(document).on 'click', '.delete-question', ->
-    $.ajax
-      type: 'delete'
-      url: "/surveyor/questions/#{$(this).parents('.question').data('question-id')}"
-      success: ->
-        build_dependents_selectpicker($('.survey').data('survey-id'))
-
-  $(document).on 'click', '.add-option', ->
-    $.ajax
-      type: 'post'
-      url: '/surveyor/options'
-      data:
-        question_id: $(this).parents('.question').data('question-id')
-      success: ->
-        build_dependents_selectpicker($('.survey').data('survey-id'))
-
-  $(document).on 'click', '.delete-option', ->
-    $.ajax
-      type: 'delete'
-      url: "/surveyor/options/#{$(this).parents('.option').data('option-id')}"
-      success: ->
-        build_dependents_selectpicker($('.survey').data('survey-id'))
 
   $(document).on 'change', '.select-depender, .select-question-type', ->
     send_update_request($(this), $(this).val())
@@ -67,10 +39,10 @@ $(document).ready ->
     question = $(this).parents('.question')
     container = $(question).find('.dependent-dropdown-container')
 
-    if $(container).hasClass('hidden')
-      $(container).removeClass('hidden')
+    if $(container).hasClass('d-none')
+      $(container).removeClass('d-none')
     else
-      $(container).addClass('hidden')
+      $(container).addClass('d-none')
 
 send_update_request = (obj, val) ->
   field_data  = $(obj).attr('id').split('-')

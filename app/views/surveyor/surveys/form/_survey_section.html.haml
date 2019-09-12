@@ -21,8 +21,8 @@
 
   .d-flex.justify-content-between
     %h4
-      Section Information
-    = link_to icon('fas', 'trash-alt'), surveyor_section_path(section), method: :delete, remote: true, class: ' btn btn-danger delete-section', title: t(:surveyor)[:surveys][:form][:content][:section][:delete], data: { toggle: 'tooltip' } 
+      = t(:surveyor)[:surveys][:form][:content][:section][:header]
+    = link_to icon('fas', 'trash-alt'), surveyor_section_path(section), method: :delete, remote: true, class: ' btn btn-danger delete-section', title: t(:surveyor)[:surveys][:form][:content][:section][:delete], data: { toggle: 'tooltip', confirm_swal: true }
   .form-group
     = label_tag "section-#{section.id}-title", t(:surveyor)[:surveys][:form][:content][:section][:title], class: 'required'
     = text_field_tag "section-#{section.id}-title", section.title, class: 'form-control', maxlength: 255

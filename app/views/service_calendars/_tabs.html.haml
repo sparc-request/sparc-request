@@ -23,6 +23,7 @@
 - tab = service_request ? cookies["calendar-tab-sr-#{service_request.id}"] : cookies["calendar-tab-ssr-#{sub_service_request.id}"]
 
 .tabs.w-100#serviceCalendar
+  = render 'service_calendars/header', service_request: service_request, sub_service_request: sub_service_request, tab: tab, page: page, pages: pages
   .d-flex.justify-content-between.align-items-center
     %nav.nav.nav-tabs.border-bottom-0{ role: 'tablist' }
       = link_to t('calendars.tabs.template'), table_service_calendars_path(srid: service_request.try(:id), ssrid: sub_service_request.try(:id), tab: 'template'), remote: true, id: 'templateTabLink', class: ['nav-link nav-item h4 mb-0', tab.blank? || tab == 'template' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'templateTab', selected: (tab.blank? || tab == 'template').to_s }

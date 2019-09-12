@@ -334,6 +334,28 @@ form, .form {
   }
 }
 
+//////////////////
+/// List Group ///
+//////////////////
+
+@each $color, $value in $theme-colors {
+  $hover-background: darken($value, 7.5%);
+  $active-background: darken($value, 10%);
+
+  .list-group-item.list-group-item-#{$color}[data-toggle=collapse] {
+    transition: $btn-transition;
+
+    &:hover {
+      background-color: theme-color-level($color, -8) !important;
+    }
+
+    &.active, &:active, &:focus {
+      background-color: theme-color-level($color, -6) !important;
+      color: theme-color-level($color, 6) !important;
+    }
+  }
+}
+
 /////////////
 /// Modal ///
 /////////////

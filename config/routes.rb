@@ -83,7 +83,6 @@ SparcRails::Application.routes.draw do
   resource :service_request, only: [:show] do
     get :catalog
     get :protocol
-    get :service_details
     get :service_calendar
     get :service_subsidy
     get :document_management
@@ -124,7 +123,7 @@ SparcRails::Application.routes.draw do
     end
   end
 
-  resources :arms, only: [:index, :new, :create, :edit, :update, :destroy]
+  resources :arms, only: [:new, :create, :edit, :update, :destroy]
 
   resource :service_calendars, only: [] do
     member do
@@ -142,7 +141,7 @@ SparcRails::Application.routes.draw do
 
   resources :line_items, only: [:edit, :update]
   resources :line_items_visits, only: [:edit, :update, :destroy]
-  resources :visit_groups, only: [:edit, :update]
+  resources :visit_groups, only: [:new, :create, :edit, :update]
   resources :visits, only: [:edit, :update, :destroy]
 
   resources :documents, only: [:index, :new, :create, :edit, :update, :destroy]

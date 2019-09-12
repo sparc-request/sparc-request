@@ -314,7 +314,7 @@ class Protocol < ApplicationRecord
       where.not(sub_service_requests: {status: 'first_draft'})
   }
 
-  def dates_valid?
+  def validate_dates
     is_valid = true
     if self.start_date.blank?
       self.errors.add(:start_date, :blank)

@@ -158,7 +158,7 @@ $ ->
 (exports ? this).adjustCalendarHeaders = () ->
   zIndex = $('.service-calendar-container').length * 4
 
-  $('.service-calendar-container').each ->
+  $('.service-calendar-container:not(.header-adjusted').each ->
     $head   = $(this).children('.card-header')
     $row1   = $(this).find('.service-calendar-table > thead > tr:first-child')
     $row2   = $(this).find('.service-calendar-table > thead > tr:nth-child(2)')
@@ -177,6 +177,8 @@ $ ->
     zIndex--
     $row3.children('th').css({ 'top': headHeight +  row1Height + row2Height, 'z-index': zIndex })
     zIndex--
+
+    $(this).addClass('header-adjusted')
 
 (exports ? this).toggleServicesToggle = (toggleOn) ->
   if toggleOn

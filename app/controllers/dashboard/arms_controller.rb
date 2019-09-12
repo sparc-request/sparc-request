@@ -39,9 +39,6 @@ class Dashboard::ArmsController < Dashboard::BaseController
   def create
     @service_request  = @sub_service_request.service_request
     @arm              = @sub_service_request.protocol.arms.new(arm_params)
-    @tab              = params[:tab]
-    @pages            = {}
-    @page             = 1
 
     if @arm.save
       @arm.default_visit_days

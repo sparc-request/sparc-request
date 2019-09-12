@@ -306,6 +306,8 @@ en:
     created: "Arm Created!"
     updated: "Arm Updated!"
     destroyed: "Arm Destroyed!"
+    form:
+      visit_count_note: "Note: Lowering the %{visit_count} will delete visits from this arm's calendar."
     tooltips:
       new: 'A group, or subgroup, of participants in a clinical trial that receive specific intervention, or no intervention, according to the study protocol.'
       name: "A group, or subgroup, of participants in a clinical trial that receive specific intervention, or no intervention, according to the study protocol. Arm Name must be unique within a protocol, and the following special characters are not allowed: []*/\\?:)."

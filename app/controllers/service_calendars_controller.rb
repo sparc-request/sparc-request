@@ -180,21 +180,6 @@ class ServiceCalendarsController < ApplicationController
 
   private
 
-  def setup_calendar_pages
-    @pages  = {}
-    @page   = params[:page].to_i if params[:page]
-    arm_id  = params[:arm_id].to_i if params[:arm_id]
-    @arm    = Arm.find(arm_id) if arm_id
-
-    session[:service_calendar_pages]          = params[:pages] if params[:pages]
-    session[:service_calendar_pages][arm_id]  = @page if @page && arm_id
-
-    @service_request.arms.each do |arm|
-      new_page        = (session[:service_calendar_pages].nil? || session[:service_calendar_pages][arm.id].nil?) ? 1 : session[:service_calendar_pages][arm.id]
-      @pages[arm.id]  = @service_request.set_visit_page(new_page, arm)
-    end
-  end
-
   def set_service_calendar_cookie
     if in_dashboard?
       cookies["calendar-tab-ssr-#{@sub_service_request.id}"] = @tab

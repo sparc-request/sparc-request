@@ -19,6 +19,12 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module VisitGroupsHelper
+  def new_visit_group_button(arm, opts={})
+    link_to new_visit_group_path(arm_id: arm.id, srid: opts[:srid], ssrid: opts[:ssrid]), remote: true, class: 'btn btn-success mr-1', title: t('visit_groups.new'), data: { toggle: 'tooltip' } do
+      icon('fas', 'plus mr-2') + t('visit_groups.new')
+    end
+  end
+
   def visit_position_options(arm, visit_group=nil, position=nil)
     last_position = arm.visit_groups.maximum(:position) + 1
 

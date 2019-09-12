@@ -236,10 +236,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def find_locked_org_ids
-    @locked_org_ids = @service_request.sub_service_requests.select(&:is_locked?).map{ |ssr| [ssr.organization_id, ssr.organization.all_child_organizations_with_self.map(&:id)] }.flatten.uniq
-  end
-
   def authorize_funding_admin
     redirect_to root_path unless Setting.get_value("use_funding_module") && current_user.is_funding_admin?
   end
@@ -250,5 +246,26 @@ class ApplicationController < ActionController::Base
 
   def sanitize_phone(phone)
     return phone.gsub(/\(|\)|-|\s/, '').gsub(I18n.t('constants.phone.extension'), '#') rescue ""
+  end
+
+  # More Specific Helpers #
+
+  def setup_calendar_pages
+    @pages  = {}
+    @page   = params[:page].try(:to_i) || 1
+    arm_id  = params[:arm_id].to_i if params[:arm_id]
+    @arm    = Arm.find(arm_id) if arm_id
+
+    session[:service_calendar_pages]          = params[:pages] if params[:pages]
+    session[:service_calendar_pages][arm_id]  = @page if @page && arm_id
+
+    @service_request.arms.each do |arm|
+      new_page        = (session[:service_calendar_pages].nil? || session[:service_calendar_pages][arm.id].nil?) ? 1 : session[:service_calendar_pages][arm.id]
+      @pages[arm.id]  = @service_request.set_visit_page(new_page, arm)
+    end
+  end
+
+  def find_locked_org_ids
+    @locked_org_ids = @service_request.sub_service_requests.select(&:is_locked?).map{ |ssr| [ssr.organization_id, ssr.organization.all_child_organizations_with_self.map(&:id)] }.flatten.uniq
   end
 end

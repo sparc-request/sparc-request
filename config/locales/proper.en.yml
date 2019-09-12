@@ -70,14 +70,6 @@ en:
       authorized_users:
         self_remove_warning: "You can't remove yourself as an Authorized User of this Protocol. Please complete this request first or create a new request."
 
-    ###################
-    # SERVICE DETAILS #
-    ###################
-    service_details:
-      arms:
-        header: "Arm Information"
-        sub_header: "Used to build your Calendar Structure"
-
     ####################
     # SERVICE CALENDAR #
     ####################
@@ -188,40 +180,33 @@ en:
             xs: "Step 2"
           header: "Step 2: Protocol Information"
           sub_header: "Fill in relevant information about your Protocol"
-        service_details:
-          step_text:
-            full: "Step 3<br/>Milestones &<br/>Calendar Structure"
-            short: "Step 3<br/>Milestones"
-            xs: "Step 3"
-          header: "Step 3: Milestone & Calendar Structure"
-          sub_header: "Fill in milestones & arm details"
         service_calendar:
           step_text:
-            full: "Step 4<br/>Service<br/>Details"
-            short: "Step 4<br/>Details"
-            xs: "Step 4"
-          header: "Step 4: Service Details"
+            full: "Step 3<br/>Service<br/>Details"
+            short: "Step 3<br/>Details"
+            xs: "Step 3"
+          header: "Step 3: Service Details"
           sub_header: "Study timeline & service indications"
         service_subsidy:
           step_text:
-            full: "Step 4a<br/>Subsidy<br/>Information"
-            short: "Step 4a<br/>Subsidies"
-            xs: "Step 4a"
-          header: "Step 4a: Subsidy Information"
+            full: "Step 3a<br/>Subsidy<br/>Information"
+            short: "Step 3a<br/>Subsidies"
+            xs: "Step 3a"
+          header: "Step 3a: Subsidy Information"
           sub_header: "Request a subsidy for eligible services"
         document_management:
           step_text:
-            full: "Step 5<br/>Documents<br/>& Forms"
-            short: "Step 5<br/>Documents"
-            xs: "Step 5"
-          header: "Step 5: Documents & Forms"
+            full: "Step 4<br/>Documents<br/>& Forms"
+            short: "Step 4<br/>Documents"
+            xs: "Step 4"
+          header: "Step 4: Documents & Forms"
           sub_header: "Upload documents and complete forms"
         review:
           step_text:
-            full: "Step 6<br/>Review Your<br/>Request"
-            short: "Step 6<br/>Review"
-            xs: "Step 6"
-          header: "Step 6: Review Your Request"
+            full: "Step 5<br/>Review Your<br/>Request"
+            short: "Step 5<br/>Review"
+            xs: "Step 5"
+          header: "Step 5: Review Your Request"
           sub_header: "Review your request and make changes if necessary"
         obtain_research_pricing:
           header: "Get a Cost Estimate"

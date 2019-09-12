@@ -21,26 +21,26 @@
 class ArmsController < ApplicationController
   respond_to :html, :js, :json
 
-  before_action :initialize_service_request
-  before_action :authorize_identity
-  before_action :find_arm, only: [:edit, :update, :destroy]
-
-  def index
-    @arms           = @service_request.arms
-    @arms_editable  = @service_request.arms_editable?
-    @arm_count      = @arms.count
-
-    respond_to :json
-  end
+  before_action :initialize_service_request,  unless: :in_dashboard?
+  before_action :authorize_identity,          unless: :in_dashboard?
+  before_action :authorize_admin,             if: :in_dashboard?
+  before_action :find_arm,                    only: [:edit, :update, :destroy]
+  before_action :find_service_request,        if: :in_dashboard?
 
   def new
     @arm = @service_request.protocol.arms.new
+    @tab = params[:tab]
+
+    setup_calendar_pages
 
     respond_to :js
   end
 
   def create
     @arm = @service_request.protocol.arms.new(arm_params)
+    @tab = params[:tab]
+
+    setup_calendar_pages
 
     if @arm.save
       flash[:success] = t('arms.created')
@@ -52,10 +52,18 @@ class ArmsController < ApplicationController
   end
 
   def edit
+    @tab = params[:tab]
+
+    setup_calendar_pages
+
     respond_to :js
   end
 
   def update
+    @tab = params[:tab]
+
+    setup_calendar_pages
+
     if @arm.update_attributes(arm_params)
       flash[:success] = t('arms.updated')
     else
@@ -85,5 +93,9 @@ class ArmsController < ApplicationController
 
   def find_arm
     @arm = Arm.find(params[:id])
+  end
+
+  def find_service_request
+    @service_request = @sub_service_request.service_request
   end
 end

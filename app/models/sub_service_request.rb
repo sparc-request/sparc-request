@@ -345,10 +345,6 @@ class SubServiceRequest < ApplicationRecord
     self.update_attributes(service_request_id: new_sr.id)
   end
 
-  def arms_editable?
-    !self.in_work_fulfillment?
-  end
-
   def update_past_status
     if saved_change_to_status? && !@prev_status.blank?
       past_status = self.past_statuses.create(status: @prev_status, new_status: status, date: Time.now, changed_by_id: self.current_user_id)

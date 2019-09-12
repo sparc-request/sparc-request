@@ -42,5 +42,9 @@
       @extend .border-top;
       padding: 0 0.75rem;
     }
+
+    .fixed-table-loading {
+      border: 0 !important;
+    }
   }
 }

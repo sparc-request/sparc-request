@@ -20,35 +20,34 @@
 
 - sub_service_request ||= nil
 
-.col-12.col-sm-10.mx-auto
-  %main.card
-    .card-body
-      .row
-        .col-2#notification_tabs{data: {selected: "inbox"}}
-          - if sub_service_request
-            = render "dashboard/notifications/dropdown", sub_service_request: sub_service_request
-            %hr
-          %button.btn.btn-primary.btn-block.notification_nav#notifications_inbox<
-            = icon('fas', 'inbox mr-2')
-            = t(:dashboard)[:notifications][:table][:inbox]
-          %button.btn.btn-default.btn-block.notification_nav#notifications_sent<
-            = icon('fas', 'paper-plane mr-2')
-            = t(:dashboard)[:notifications][:table][:sent]
-        .col-10{ role: 'tabpanel' }
-          #notifications-custom-toolbar
-            %button.btn.btn-outline-secondary.mark_as_read_unread{data: {sub_service_request_id: sub_service_request.try(:id), read: "false"}}
-              -# mark as unread
-              = t(:dashboard)[:notifications][:table][:mark_as_unread]
-            %button.btn.btn-outline-secondary.mark_as_read_unread{data: {sub_service_request_id: sub_service_request.try(:id), read: "true"}}
-              -# mark as read
-              = t(:dashboard)[:notifications][:table][:mark_as_read]
-          %table.notifications_table.table-condensed{id: "notifications-table", data: {toggle: 'table', search: "true", url: dashboard_notifications_path(format: :json, sub_service_request_id: sub_service_request.try(:id), table: "inbox"), toolbar: "#notifications-custom-toolbar", "sort-name" => "time", "sort-order" => 'desc', "row-style" => "notifications_row_style"}}
-            %thead.bg-light
-              %tr
-                %th{data: {class: 'state', field: "state", checkbox: "true"}}
-                %th{data: {class: 'user', align: "left", sortable: "true", field: "user"}}
-                  = t(:dashboard)[:notifications][:table][:user]
-                %th{data: {class: 'subject', align: "left", sortable: "false", field: "subject"}}
-                  = t(:dashboard)[:notifications][:table][:subject]
-                %th{data: {class: 'time', align: "right", sortable: "true", field: "time", sorter: "dateSorter"}}
-                  = t(:dashboard)[:notifications][:table][:time]
+%main.card.w-100
+  .card-body
+    .row
+      .col-2#notification_tabs{data: {selected: "inbox"}}
+        - if sub_service_request
+          = render "dashboard/notifications/dropdown", sub_service_request: sub_service_request
+          %hr
+        %button.btn.btn-primary.btn-block.notification_nav#notifications_inbox<
+          = icon('fas', 'inbox mr-2')
+          = t(:dashboard)[:notifications][:table][:inbox]
+        %button.btn.btn-default.btn-block.notification_nav#notifications_sent<
+          = icon('fas', 'paper-plane mr-2')
+          = t(:dashboard)[:notifications][:table][:sent]
+      .col-10.pl-0{ role: 'tabpanel' }
+        #notifications-custom-toolbar
+          %button.btn.btn-outline-secondary.mark_as_read_unread{data: {sub_service_request_id: sub_service_request.try(:id), read: "false"}}
+            -# mark as unread
+            = t(:dashboard)[:notifications][:table][:mark_as_unread]
+          %button.btn.btn-outline-secondary.mark_as_read_unread{data: {sub_service_request_id: sub_service_request.try(:id), read: "true"}}
+            -# mark as read
+            = t(:dashboard)[:notifications][:table][:mark_as_read]
+        %table.notifications_table.table-condensed{id: "notifications-table", data: {toggle: 'table', search: "true", url: dashboard_notifications_path(format: :json, sub_service_request_id: sub_service_request.try(:id), table: "inbox"), toolbar: "#notifications-custom-toolbar", "sort-name" => "time", "sort-order" => 'desc', "row-style" => "notifications_row_style"}}
+          %thead.bg-light
+            %tr
+              %th{data: {class: 'state', field: "state", checkbox: "true"}}
+              %th{data: {class: 'user', align: "left", sortable: "true", field: "user"}}
+                = t(:dashboard)[:notifications][:table][:user]
+              %th{data: {class: 'subject', align: "left", sortable: "false", field: "subject"}}
+                = t(:dashboard)[:notifications][:table][:subject]
+              %th{data: {class: 'time', align: "right", sortable: "true", field: "time", sorter: "dateSorter"}}
+                = t(:dashboard)[:notifications][:table][:time]

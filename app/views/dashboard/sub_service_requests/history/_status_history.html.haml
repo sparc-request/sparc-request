@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%table.ssr_history_table.bootstrap_table{ id: "status-history-table", data: { toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", url: status_history_dashboard_sub_service_request_path(id: sub_service_request.id, format: :json), striped: "true", "show-export" => "false", sort_name: 'created_at', sort_order: 'desc', "export-types" => ['excel'] } }
+%table#statusHistoryTable{ data: { toggle: 'table', url: status_history_dashboard_sub_service_request_path(id: sub_service_request.id, format: :json), search: "true", show_columns: 'true', show_refresh: 'true', sort_name: 'created_at', sort_order: 'desc' } }
   %thead.bg-light
     %tr
       %th{ data: { class: 'created_at', align: "left", sortable: "true", field: "created_at", sorter: "dateSorter" } }

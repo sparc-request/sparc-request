@@ -178,18 +178,10 @@ $ ->
       data: data
 
   # TIMELINE LISTENERS END
-  # HISTORY LISTENERS BEGIN
 
-  $(document).on 'click', '.history_button', ->
-    $('#history-spinner').removeClass('hidden')
-    ssr_id = $(this).data("sub-service-request-id")
-    data = 'partial': $(this).data('table')
-    $.ajax
-      type: 'GET'
-      url: "/dashboard/sub_service_requests/#{ssr_id}/change_history_tab"
-      data: data
-      success: ->
-        $('#history-spinner').addClass('hidden')
+  ###############
+  # History Tab #
+  ###############
 
-
-  # HISTORY LISTENERS END
+  $(document).on 'show.bs.tab', '#historyTab [data-toggle=tab]', (event) ->
+    $("#{this.hash}").find('table[data-toggle=table]').bootstrapTable('refresh')

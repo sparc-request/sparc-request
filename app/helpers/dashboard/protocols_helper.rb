@@ -30,8 +30,12 @@ module Dashboard::ProtocolsHelper
     end
   end
 
-  def protocol_id_button(protocol)
-    link_to protocol.id, dashboard_protocol_path(protocol), class: 'btn btn-block btn-outline-primary protocol-link'
+  def protocol_id_link(protocol)
+    link_to protocol.id, dashboard_protocol_path(protocol)
+  end
+
+  def protocol_short_title_link(protocol)
+    link_to protocol.short_title, dashboard_protocol_path(protocol)
   end
 
   def pis_display(protocol)

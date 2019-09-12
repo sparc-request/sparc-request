@@ -23,16 +23,12 @@ $(document).ready ->
   # Protocols Table #
   ###################
 
-  $('#protocolsList .export button').removeClass('dropdown-toggle').attr('data-toggle', 'tooltip').data('toggle', 'tooltip').attr('title', I18n.t('dashboard.protocols.table.tooltips.export'))
+  $('#protocolsList .export button').addClass('no-caret').siblings('.dropdown-menu').addClass('d-none')
 
   $(document).on 'click', '#protocolsList .export button', ->
     url = new URL($('#protocolsTable').data('url'), window.location.origin)
     url.pathname = url.pathname.replace('json', 'csv')
     window.location = url
-
-  $(document).on 'click', '#protocolsTable tbody tr', (event) ->
-    if event.target.tagName != 'A'
-      window.location = $(this).find('.protocol-link').attr('href')
 
   ####################
   # Protocol Filters #

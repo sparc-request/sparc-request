@@ -225,10 +225,6 @@
 ////////////////
 
 .dropdown {
-  &.no-caret .dropdown-toggle::after {
-    display: none;
-  }
-
   .dropdown-menu {
     z-index: 1030;
 
@@ -252,6 +248,11 @@
       align-items: center;
     }
   }
+}
+
+.dropdown.no-caret .dropdown-toggle::after,
+.dropdown-toggle.no-caret::after {
+  display: none;
 }
 
 @include media-breakpoint-down(sm) {
@@ -367,6 +368,10 @@ form, .form {
         background: theme-color('light');
       }
     }
+  }
+
+  &.nav-pills .nav-link:not(.active):hover {
+    background: theme-color('light');
   }
 }
 
@@ -569,6 +574,10 @@ nav.navbar {
     th, td {
       vertical-align: middle;
     }
+  }
+
+  &.table-interactive tbody tr:hover {
+    cursor: pointer;
   }
 
   &.table-fixed {

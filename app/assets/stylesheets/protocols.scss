@@ -77,32 +77,4 @@
 #protocolsList {
   width: 80%;
   @extend .pl-3;
-
-  .bootstrap-table {
-    .fixed-table-toolbar {
-      .export {
-        button {
-          box-shadow: none;
-          border-top-right-radius: 0.25rem;
-          border-bottom-right-radius: 0.25rem;
-
-          &::after, &.caret {
-            display: none;
-          }
-        }
-
-        .dropdown-menu {
-          display: none;
-        }
-      }
-    }
-
-    #protocolsTable {
-      tbody {
-        tr:hover {
-          cursor: pointer;
-        }
-      }
-    }
-  }
 }

@@ -29,10 +29,14 @@ en:
     #  EPIC QUEUES  #
     #################
     epic_queues:
+      tabs:
+        current: "Currently Queued"
+        past: "Previously Queued"
+        protocol_update: "Queued Updates"
       headers:
-        current: "Current"
-        past: "Past"
-        protocol_update: "Protocol Update"
+        current: "Queued Epic Protocols"
+        past: "Previously Queued Epic Protocols"
+        protocol_update: "Epic Protocols Queued for Update"
       confirm: "Are you sure you want to delete this item from the Epic Queue?"
       date_formatter: "%m/%d/%Y %I:%M:%S %p"
       date: "Last Queue Date"

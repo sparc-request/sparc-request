@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%table.ssr_history_table{ id: "approval-history-table", data: { toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", url: approval_history_dashboard_sub_service_request_path(id: sub_service_request.id, format: :json), striped: "true", sort_name: 'date', sort_order: 'desc', "show-export" => "false", "export-types" => ['excel'] } }
+%table#approvalHistoryTable{ data: { toggle: 'table', url: approval_history_dashboard_sub_service_request_path(id: sub_service_request.id, format: :json), search: "true", show_columns: 'true', show_refresh: 'true', striped: "true", sort_name: 'date', sort_order: 'desc' } }
   %thead.bg-light
     %tr
       %th{ data: { class: 'date', align: "left", sortable: "true", field: "date", sorter: "dateSorter" } }

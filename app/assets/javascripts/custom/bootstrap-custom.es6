@@ -33,6 +33,18 @@
         })
       }
     })
+
+    $(document).on('click', '.nav-pills .nav-link:not(.active)', event => {
+      $this = $(event.target)
+      $this.parents('.nav-pills').find('.nav-link.active').removeClass('active');
+      $this.addClass('active');
+    })
+
+    $(document).on('click', 'table.table-interactive tbody tr', event => {
+      if (event.target.tagName != 'A') {
+        window.location = $(event.target).find('a').first().attr('href');
+      }
+    })
   })
 })(jQuery);
 

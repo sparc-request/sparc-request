@@ -63,7 +63,7 @@ class ServiceRequest < ApplicationRecord
     self.errors.none?
   end
 
-  def service_calendar_valid?
+  def service_details_valid?
     self.errors.add(:arms, :invalid) unless self.arms.all?(&:visit_groups_valid?)
     self.errors.none?
   end

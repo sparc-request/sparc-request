@@ -25,16 +25,16 @@ catalog:
 protocol:
   css_class: "success"
   back: "catalog"
-  forward: "service_calendar"
+  forward: "service_details"
 
-service_calendar:
+service_details:
   css_class: "info"
   back: "protocol"
   forward: "service_subsidy"
 
 service_subsidy:
   css_class: "info-alt"
-  back: "service_calendar"
+  back: "service_details"
   forward: "document_management"
 
 document_management:

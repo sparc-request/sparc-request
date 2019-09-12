@@ -21,7 +21,7 @@
 = form_tag navigate_service_request_path(srid: @service_request.id), id: 'serviceRequestForm', class: 'w-100' do
   = render '/service_requests/navigation/steps'
   = render '/service_requests/navigation/header'
-  - if @errors && (@service_request.previously_submitted? || Rails.application.routes.recognize_path(request.referrer)[:action] == 'service_calendar')
+  - if @errors && (@service_request.previously_submitted? || Rails.application.routes.recognize_path(request.referrer)[:action] == 'service_details')
     - @service_request.arms.select{ |a| a.errors.any? }.each do |arm|
       = render 'layouts/modal_errors', errors: arm.errors, messages: arm.errors.messages[:visit_groups], header: arm.name
   = render 'service_calendars/tabs', service_request: @service_request, page: @page, pages: @pages

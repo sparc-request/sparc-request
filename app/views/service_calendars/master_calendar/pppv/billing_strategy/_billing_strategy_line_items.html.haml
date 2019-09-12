@@ -33,11 +33,11 @@
         %table.table-sm.table-borderless.w-100
           %thead
             %tr
-              %th.py-0{ data: { toggle: 'tooltip', animation: 'false', title: t(:proper)[:service_calendar][:tooltips][:r] } }
+              %th.py-0{ data: { toggle: 'tooltip', animation: 'false', title: t(:proper)[:service_details][:tooltips][:r] } }
                 = t(:calendars)[:pppv][:header_fields][:research]
-              %th.py-0{ data: { toggle: 'tooltip', animation: 'false', title: t(:proper)[:service_calendar][:tooltips][:t] } }
+              %th.py-0{ data: { toggle: 'tooltip', animation: 'false', title: t(:proper)[:service_details][:tooltips][:t] } }
                 = t(:calendars)[:pppv][:header_fields][:third_party]
-              %th.py-0{ data: { toggle: 'tooltip', animation: 'false', title: t(:proper)[:service_calendar][:tooltips][:effort] } }
+              %th.py-0{ data: { toggle: 'tooltip', animation: 'false', title: t(:proper)[:service_details][:tooltips][:effort] } }
                 = t(:calendars)[:pppv][:header_fields][:percent]
     - (VisitGroup.per_page - visit_groups.size).times do
       %th{ colspan: 3 }

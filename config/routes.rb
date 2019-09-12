@@ -83,7 +83,7 @@ SparcRails::Application.routes.draw do
   resource :service_request, only: [:show] do
     get :catalog
     get :protocol
-    get :service_calendar
+    get :service_details
     get :service_subsidy
     get :document_management
     get :review

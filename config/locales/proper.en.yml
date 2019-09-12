@@ -70,10 +70,10 @@ en:
       authorized_users:
         self_remove_warning: "You can't remove yourself as an Authorized User of this Protocol. Please complete this request first or create a new request."
 
-    ####################
-    # SERVICE CALENDAR #
-    ####################
-    service_calendar:
+    ###################
+    # SERVICE DETAILS #
+    ###################
+    service_details:
       move_visit:
         header: "Move Visit"
       legend:
@@ -180,7 +180,7 @@ en:
             xs: "Step 2"
           header: "Step 2: Protocol Information"
           sub_header: "Fill in relevant information about your Protocol"
-        service_calendar:
+        service_details:
           step_text:
             full: "Step 3<br/>Service<br/>Details"
             short: "Step 3<br/>Details"

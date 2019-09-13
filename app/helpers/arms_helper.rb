@@ -30,8 +30,22 @@ module ArmsHelper
   end
 
   def new_arm_button(opts={})
-    link_to new_arm_path(srid: opts[:srid], ssrid: opts[:ssrid], tab: opts[:tab], page: opts[:page], pages: opts[:pages]), remote: true, class: ['btn btn-success new-arm-button', opts[:tab] == 'calendar' ? 'disabled' : ''], title: t('arms.tooltips.new'), data: { toggle: 'tooltip' } do
+    link_to new_arm_path(srid: opts[:srid], ssrid: opts[:ssrid], tab: opts[:tab], page: opts[:page], pages: opts[:pages]), remote: true, class: ['btn btn-lg btn-success new-arm-button', opts[:tab] == 'calendar' ? 'disabled' : ''], title: t('arms.tooltips.new'), data: { toggle: 'tooltip' } do
       icon('fas', 'plus mr-2') + t('arms.new')
+    end
+  end
+
+  def edit_arm_button(arm, opts={})
+    link_to edit_arm_path(arm, srid: opts[:srid], ssrid: opts[:ssrid], tab: opts[:tab], page: opts[:page], pages: opts[:pages]), remote: true, class: ['btn btn-warning mr-1 edit-arm-button'], title: t('arms.edit'), data: { toggle: 'tooltip' } do
+      icon('far', 'edit mr-2') + t('arms.edit')
+    end
+  end
+
+  def delete_arm_button(arm, opts={})
+    link_to arm_path(arm, srid: opts[:srid], ssrid: opts[:ssrid]), remote: true, method: :delete,
+    class: ['btn btn-danger delete-arm-button', opts[:count] && opts[:count] > 1 ? '' : 'disabled'],
+    title: t('arms.delete'), data: { toggle: 'tooltip', confirm_swal: 'true' } do
+      icon('fas', 'trash-alt mr-2') + t('arms.delete')
     end
   end
 
@@ -41,15 +55,5 @@ module ArmsHelper
       edit_arm_button(arm, opts),
       delete_arm_button(arm, opts)
     ].join(''))
-  end
-
-  def edit_arm_button(arm, opts={})
-    link_to icon('far', 'edit'), edit_arm_path(arm, srid: opts[:srid], ssrid: opts[:ssrid], tab: opts[:tab], page: opts[:page], pages: opts[:pages]), remote: true, class: ['btn btn-warning mr-1 edit-arm-button'], title: t('arms.edit'), data: { toggle: 'tooltip' }
-  end
-
-  def delete_arm_button(arm, opts={})
-    link_to icon('fas', 'trash-alt'), arm_path(arm, srid: opts[:srid], ssrid: opts[:ssrid]), remote: true, method: :delete,
-    class: ['btn btn-danger delete-arm-button', opts[:count] && opts[:count] > 1 ? '' : 'disabled'],
-    title: t('arms.delete'), data: { toggle: 'tooltip', confirm_swal: 'true' }
   end
 end

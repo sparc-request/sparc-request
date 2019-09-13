@@ -30,10 +30,16 @@
         = hidden_field_tag "pages[#{arm_id}]", page
       .modal-header
         %h3.modal-title
-          = t("visit_groups.#{action_name}")
+          - if action_name == 'new'
+            = t('visit_groups.new')
+          - else
+            = t('visit_groups.edit', visit_name: visit_group.name)
         %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
           %span{ aria: { hidden: 'true' } } &times;
       .modal-body
+        .form-group
+          = f.label :name, class: 'required'
+          = f.text_field :name, class: 'form-control'
         .form-row
           .form-group.col-4
             = f.label :window_before, class: 'required'
@@ -66,9 +72,6 @@
           .form-group.col-4
             = f.label :window_after, class: 'required'
             = f.number_field :window_after, class: 'form-control', min: 0
-        .form-group
-          = f.label :name, class: 'required'
-          = f.text_field :name, class: 'form-control'
         .form-group
           = f.label :position, class: 'required'
           = f.select :position, visit_position_options(arm, visit_group, position), { include_blank: true }, class: 'selectpicker', disabled: visit_group.nil?

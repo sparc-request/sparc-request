@@ -20,7 +20,7 @@
 
 - question.options.each do |option|
   .form-group.option.d-flex.justify-content-left{ data: {option_id: option.id } }
-    = text_field_tag "option-#{option.id}-content", option.content, class: 'form-control w-75 mr-2', placeholder: t(:surveyor)[:surveys][:form][:placeholders][:option][:content], maxlength: 255
+    = text_field_tag "option-#{option.id}-content", option.content, class: 'form-control w-75 mr-2', placeholder: t(:surveyor)[:surveys][:form][:placeholders][:option][:content]
     = render 'surveyor/surveys/form/form_partials/delete_option_button', option: option
 
 .form-group

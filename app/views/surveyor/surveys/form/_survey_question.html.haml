@@ -18,17 +18,14 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.question{ class: "question-#{question.id}", data: { question_id: question.id } }
-
-  .col-2.offset-5.my-5
-    %hr
+.question.mt-5{ id: "question-#{question.id}", data: { question_id: question.id } }
 
   .form-row
     .form-group.col-9
-      = label_tag "question-#{question.id}-content", t(:surveyor)[:surveys][:form][:content][:question][:content], class: 'required'
+      = label_tag "question-#{question.id}-content", t(:surveyor)[:surveys][:form][:content][:question][:content], class: 'required font-weight-bold'
       = text_field_tag "question-#{question.id}-content", question.content, class: 'form-control col-auto', maxlength: 255
     .form-group.col.pl-0
-      = label_tag "question-#{question.id}-question_type", t(:surveyor)[:surveys][:form][:content][:question][:type]
+      = label_tag "question-#{question.id}-question_type", t(:surveyor)[:surveys][:form][:content][:question][:type], class: 'font-weight-bold'
       = select_tag "question-#{question.id}-question_type", options_for_select(Survey::QUESTION_TYPES, question.question_type), class: 'selectpicker select-question-type', data: { question_id: question.id }, disabled: question.question_responses.any?
     .form-group
       %label.w-100 &nbsp;

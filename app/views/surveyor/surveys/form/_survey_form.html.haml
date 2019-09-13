@@ -31,7 +31,7 @@
           - survey.sections.each do |section|
             = render 'surveyor/surveys/form/survey_section', survey: survey, section: section
           .list-group-item
-            = link_to surveyor_sections_path(survey_id: survey.id), method: :post, remote: true, class: 'btn btn-sm btn-primary add-section' do
+            = link_to surveyor_sections_path(survey_id: survey.id), method: :post, remote: true, class: 'btn btn-success add-section' do
               = icon('fas', 'plus mr-2')
               = t(:surveyor)[:surveys][:form][:content][:section][:add]
     .modal-footer

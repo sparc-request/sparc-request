@@ -22,7 +22,7 @@
   - question.options.each do |option|
     .form-check.option.d-flex.justify-content-left.align-items-center.mb-2{ data: { option_id: option.id } }
       = check_box_tag :response_example, '', false, class: 'checkbox-example form-check-input', disabled: true
-      = text_field_tag "option-#{option.id}-content", option.content, class: 'form-control form-check-label w-75 mr-2', placeholder: t(:surveyor)[:surveys][:form][:placeholders][:option][:content], maxlength: 255
+      = text_field_tag "option-#{option.id}-content", option.content, class: 'form-control form-check-label w-75 mr-2', placeholder: t(:surveyor)[:surveys][:form][:placeholders][:option][:content]
       = render 'surveyor/surveys/form/form_partials/delete_option_button', option: option
 
 .form-group

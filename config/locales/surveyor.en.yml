@@ -146,7 +146,7 @@ en:
             content: "Question (Required)"
             description: "Describe this question (Optional)"
             zipcode: "XXXXX or XXXXX-XXXX"
-            phone: "XXXXXXXXXX"
+            phone: "(XXX) XXX-XXXX"
           example:
             email: "example@email.com"
             date: "XX/XX/XXXX"

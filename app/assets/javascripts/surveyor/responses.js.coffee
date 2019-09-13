@@ -19,36 +19,36 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 $(document).ready ->
-  $(document).on 'load-success.bs.table', '#responses-table', ->
-    $('[data-toggle="tooltip"]').tooltip()
+  $(document).on 'click', '.likert-group:not(.disabled) .likert-option', ->
+    $(this).find('input').prop('checked', true)
 
   $(document).on 'change', '.option input', ->
     question_id = $(this).parents('.option').data('question-id')
     option_id = $(this).parents('.option').data('option-id')
 
-    $(".dependent-for-question-#{question_id}").addClass('hidden')
+    $(".dependent-for-question-#{question_id}").addClass('d-none')
 
     if $(this).is(":checked")
-      $(".dependent-for-option-#{option_id}").removeClass('hidden')
+      $(".dependent-for-option-#{option_id}").removeClass('d-none')
     else
-      $(".dependent-for-option-#{option_id}").addClass('hidden')
+      $(".dependent-for-option-#{option_id}").addClass('d-none')
 
   $(document).on 'change', '.question .selectpicker:not([multiple=multiple])', ->
     question_id = $(this).data('question-id')
     option_id = $(this).find('.option:checked').data('option-id')
 
-    $(".dependent-for-question-#{question_id}").addClass('hidden')
-    $(".dependent-for-option-#{option_id}").removeClass('hidden')
+    $(".dependent-for-question-#{question_id}").addClass('d-none')
+    $(".dependent-for-option-#{option_id}").removeClass('d-none')
 
   $(document).on 'change', '.question .selectpicker[multiple=multiple]', ->
     question_id = $(this).data('question-id')
     option_ids = $(this).find('.option:checked').map( ->
       $(this).data('option-id')).get()
 
-    $(".dependent-for-question-#{question_id}").addClass('hidden')
+    $(".dependent-for-question-#{question_id}").addClass('d-none')
 
     for option_id in option_ids
-      $(".dependent-for-option-#{option_id}").removeClass('hidden')
+      $(".dependent-for-option-#{option_id}").removeClass('d-none')
 
   $(document).on 'click', '#save-filters', ->
     data = {} # Grab form values
@@ -60,7 +60,7 @@ $(document).ready ->
       data["filterrific[with_state][]"] = $("#filterrific_with_state").val()
 
     if data["filterrific[with_survey][]"].length
-      data["filterrific[with_survey][]"] = $(".form-group:not(.hidden) #filterrific_with_survey").val()
+      data["filterrific[with_survey][]"] = $(".form-group:not(.d-none) #filterrific_with_survey").val()
 
     $.ajax
       type: 'GET'
@@ -71,13 +71,13 @@ $(document).ready ->
     selected_value = $(this).find('option:selected').val()
 
     if selected_value == 'Form'
-      $("#for-SystemSurvey").addClass('hidden')
+      $("#for-SystemSurvey").addClass('d-none')
       $("#for-SystemSurvey .selectpicker").selectpicker('deselectAll')
-      $("#for-Form").removeClass('hidden')
+      $("#for-Form").removeClass('d-none')
     else
-      $("#for-Form").addClass('hidden')
+      $("#for-Form").addClass('d-none')
       $("#for-Form .selectpicker").selectpicker('deselectAll')
-      $("#for-SystemSurvey").removeClass('hidden')
+      $("#for-SystemSurvey").removeClass('d-none')
 
   $(document).on 'change', '#filterrific_with_state', ->
     selected = $(this).find('option:selected')

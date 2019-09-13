@@ -132,8 +132,6 @@ SparcRails::Application.routes.draw do
       get 'view_full_calendar'
     end
     collection do
-      get 'show_move_visits'
-      post 'move_visit_position'
       post 'toggle_calendar_row'
       post 'toggle_calendar_column'
     end

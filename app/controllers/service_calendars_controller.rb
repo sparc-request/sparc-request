@@ -71,50 +71,6 @@ class ServiceCalendarsController < ApplicationController
     respond_to :js
   end
 
-  def show_move_visits
-    @tab          = params[:tab]
-    @page         = params[:page]
-    @pages        = params[:pages]
-    @arm          = Arm.find(params[:arm_id])
-    @visit_group  = @arm.visit_groups.find(params[:visit_group_id]) if params[:visit_group_id].present?
-
-    if params[:position].present?  # Inline if converts blank to 0
-      @position = params[:position].to_i
-    end
-
-    respond_to :js
-  end
-
-  def move_visit_position
-    @merged       = false
-    @consolidated = false
-    @tab          = params[:tab]
-    @page         = params[:page]
-    @pages        = Hash[params[:pages].permit!.to_h.map{ |arm_id, page| [arm_id, page.to_i] }]
-    @arm          = Arm.find(params[:arm_id])
-    @visit_group  = VisitGroup.find(params[:visit_group_id]) if params[:visit_group_id].present?
-
-    if @visit_group
-      if params[:position].present?
-        new_position = params[:position].to_i
-        new_position -= 1 if @visit_group.position < new_position
-
-        # If no change occurs then insert_at returns nil
-        unless @visit_group.update_attributes(day: params[:day], position: new_position)
-          @errors = @visit_group.errors
-        end
-      else
-        @visit_group.errors.add(:position, :blank)
-        @errors = @visit_group.errors
-      end
-    else
-      @arm.errors.add(:visit_group_id, :blank)
-      @errors = @arm.errors
-    end
-
-    respond_to :js
-  end
-
   def toggle_calendar_row
     @tab                = 'template'
     @page               = params[:page]

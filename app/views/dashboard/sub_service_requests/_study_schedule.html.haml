@@ -20,7 +20,7 @@
 
 - if sub_service_request.has_per_patient_per_visit_services?
   = render 'dashboard/sub_service_requests/study_schedule/management_buttons', sub_service_request: sub_service_request, tab: cookies["calendar-tab-ssr-#{sub_service_request.id}"] || 'template'
-  = render 'service_calendars/tabs', sub_service_request: sub_service_request
+  = render 'service_calendars/tabs', service_request: @service_request, sub_service_request: sub_service_request, tab: tab, page: page, pages: pages
 - else
   .alert.alert-warning
     = t(:dashboard)[:sub_service_requests][:study_schedule][:no_requests]

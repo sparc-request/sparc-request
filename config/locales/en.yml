@@ -842,12 +842,14 @@ en:
     new: "Add Visit"
     edit: "Edit Visit"
     delete: "Delete Visit"
+    created: "Visit created!"
+    updated: "Visit updated!"
+    deleted: "Visit deleted!"
     before: "Before"
     form:
       arm: "Arm"
       visit: "Visit"
-      position: "Move To"
-      move_note: "Note: Previous visits will have their day changed as well."
+      move_note: "Note: Previous consecutive visits will also be updated."
 
 
 

@@ -46,16 +46,20 @@ class VisitGroup < ApplicationRecord
 
   before_destroy :decrement_visit_count, if: Proc.new { |vg| vg.arm.present? && vg.arm.visit_count >= vg.arm.visit_groups.count  }
 
-  validates :name, presence: true
+  validates :name, :position, :day, :window_before, :window_after, presence: true
+
   validates :position, presence: true
-  validates :window_before,
-            :window_after,
-            presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-  validates :day, presence: true, numericality: { only_integer: true }
+  validates :window_before, :window_after, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, if: Proc.new{ |vg| vg.day.present? }
+
+  validates :day, numericality: { only_integer: true }, if: Proc.new{ |vg| vg.day.present? }
 
   validate :day_must_be_in_order, if: Proc.new{ |vg| vg.day.present? }
 
   default_scope { order(:position) }
+
+  def lower_position
+    self.position - 1
+  end
 
   def <=> (other_vg)
     return unless other_vg.respond_to?(:day)
@@ -91,7 +95,7 @@ class VisitGroup < ApplicationRecord
   end
 
   def moved_and_days_need_update?
-    position_changed? && day_changed? && self.day == self.higher_item.day
+    self.persisted? && position_changed? && day_changed? && self.day == self.higher_item.day
   end
 
   def in_order?

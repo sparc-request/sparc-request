@@ -20,7 +20,7 @@
 
 $('#subServiceRequestDetails .nav-tabs .nav-link.active, #subServiceRequestDetails .tab-content .tab-pane.active.show').removeClass('active show')
 $("#<%= @tab.camelize(:lower) %>TabLink").addClass('active')
-$("#<%= @tab.camelize(:lower) %>Tab").html('<%= j render "dashboard/sub_service_requests/#{@tab}", sub_service_request: @sub_service_request %>').addClass('active show')
+$("#<%= @tab.camelize(:lower) %>Tab").html('<%= j render "dashboard/sub_service_requests/#{@tab}", service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, page: @page, pages: @pages %>').addClass('active show')
 $(".bootstrap_table").bootstrapTable()
 
 <% if @tab == 'study_schedule' %>

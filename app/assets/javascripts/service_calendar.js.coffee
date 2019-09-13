@@ -87,20 +87,14 @@ $ ->
   # Update Move Visit Modal #
   ###########################
 
-  $(document).on 'change', '#moveVisitForm #visit_group_id', ->
-    $('#moveVisitForm #position').val('').selectpicker('refresh')
+  $(document).on 'change', '#visit_group_position', ->
+    $form   = $(this).parents('form')
+    action  = if $form.is('.new_visit_group') then 'new' else 'edit'
     $.ajax
       type: 'GET'
       dataType: 'script'
-      url: '/service_calendars/show_move_visits'
-      data: $('#moveVisitForm').serialize()
-
-  $(document).on 'change', '#moveVisitForm #position', ->
-    $.ajax
-      type: 'GET'
-      dataType: 'script'
-      url: '/service_calendars/show_move_visits'
-      data: $('#moveVisitForm').serialize()
+      url: "#{$form.attr('action')}/#{action}"
+      data: $form.serialize()
 
   ################################
   # Calendar Tab Services Toggle #
@@ -158,7 +152,7 @@ $ ->
 (exports ? this).adjustCalendarHeaders = () ->
   zIndex = $('.service-calendar-container').length * 4
 
-  $('.service-calendar-container:not(.header-adjusted').each ->
+  $('.service-calendar-container').each ->
     $head   = $(this).children('.card-header')
     $row1   = $(this).find('.service-calendar-table > thead > tr:first-child')
     $row2   = $(this).find('.service-calendar-table > thead > tr:nth-child(2)')
@@ -177,8 +171,6 @@ $ ->
     zIndex--
     $row3.children('th').css({ 'top': headHeight +  row1Height + row2Height, 'z-index': zIndex })
     zIndex--
-
-    $(this).addClass('header-adjusted')
 
 (exports ? this).toggleServicesToggle = (toggleOn) ->
   if toggleOn

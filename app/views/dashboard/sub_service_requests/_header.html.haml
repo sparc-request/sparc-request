@@ -20,7 +20,7 @@
 
 - use_epic = Setting.get_value("use_epic") && sub_service_request.protocol.selected_for_epic? && sub_service_request.candidate_services.any?(&:send_to_epic?)
 - use_fulfillment = Setting.get_value('fulfillment_contingent_on_catalog_manager')
-- request_valid = sub_service_request.service_request.service_calendar_valid?
+- request_valid = sub_service_request.service_request.service_details_valid?
 
 .card#subServiceRequestSummary
   .card-header.justify-content-between.bg-primary.text-white

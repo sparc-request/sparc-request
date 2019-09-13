@@ -18,79 +18,20 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class ArmsController < ApplicationController
-  respond_to :html, :js, :json
+<% if @errors %>
+$("[name^='visit_group']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+$('.form-error').remove()
 
-  before_action :initialize_service_request,  unless: :in_dashboard?
-  before_action :authorize_identity,          unless: :in_dashboard?
-  before_action :authorize_admin,             if: :in_dashboard?
-  before_action :find_arm,                    only: [:edit, :update, :destroy]
+<% @errors.messages.each do |attr, messages| %>
+<% messages.each do |message| %>
+$("[name='visit_group[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
+<% end %>
+<% end %>
+<% else %>
+$(".arm-<%= @arm.id %>-container").replaceWith("<%= j render '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages, merged: false, consolidated: false %>")
 
-  def new
-    @arm = @service_request.protocol.arms.new
-    @tab = params[:tab]
+adjustCalendarHeaders()
 
-    setup_calendar_pages
-
-    respond_to :js
-  end
-
-  def create
-    @arm = @service_request.protocol.arms.new(arm_params)
-    @tab = params[:tab]
-
-    setup_calendar_pages
-
-    if @arm.save
-      flash[:success] = t('arms.created')
-    else
-      @errors = @arm.errors
-    end
-
-    respond_to :js
-  end
-
-  def edit
-    @tab = params[:tab]
-
-    setup_calendar_pages
-
-    respond_to :js
-  end
-
-  def update
-    @tab = params[:tab]
-
-    setup_calendar_pages
-
-    if @arm.update_attributes(arm_params)
-      flash[:success] = t('arms.updated')
-    else
-      @errors = @arm.errors
-    end
-
-    respond_to :js
-  end
-
-  def destroy
-    @arm.destroy
-    flash[:alert] = t('arms.destroyed')
-
-    respond_to :js
-  end
-
-  private
-
-  def arm_params
-    params.require(:arm).permit(
-      :name,
-      :visit_count,
-      :subject_count,
-      :protocol_id
-    )
-  end
-
-  def find_arm
-    @arm = Arm.find(params[:id])
-  end
-end
+$("#modalContainer").modal('hide')
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
+<% end %>

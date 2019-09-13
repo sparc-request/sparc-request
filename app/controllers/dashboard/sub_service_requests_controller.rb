@@ -37,7 +37,6 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       format.html { # Admin Edit
         cookies["admin-tab-#{@sub_service_request.id}"] ||= 'details'
 
-        session[:service_calendar_pages] = params[:pages] if params[:pages]
         session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.protocol.id, sub_service_request_id: @sub_service_request.id).clear(:notifications)
 
         @service_request  = @sub_service_request.service_request
@@ -154,8 +153,11 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   #History Table Methods End
 
   def refresh_tab
-    @tab = params[:tab]
+    @service_request  = @sub_service_request.service_request
+    @tab              = params[:tab]
     cookies["admin-tab-#{@sub_service_request.id}"] = @tab
+
+    setup_calendar_pages if @tab == 'study_schedule'
   end
 
   private

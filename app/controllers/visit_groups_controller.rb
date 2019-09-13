@@ -23,22 +23,54 @@ class VisitGroupsController < ApplicationController
   before_action :authorize_identity,          unless: :in_dashboard?
   before_action :authorize_dashboard_access,  if: :in_dashboard?
 
+  def new
+    @arm          = Arm.find(params[:arm_id])
+    @visit_group  = @arm.visit_groups.new
+    @tab          = params[:tab]
+    @position     = visit_group_params[:position].to_i if params[:visit_group]
+
+    setup_calendar_pages
+
+    respond_to :js
+  end
+
+  def create
+    @visit_group  = VisitGroup.new(visit_group_params)
+    @arm          = @visit_group.arm
+    @tab          = params[:tab]
+
+    setup_calendar_pages
+
+    if @visit_group.save
+      flash[:success] = t('visit_groups.created')
+    else
+      @errors = @visit_group.errors
+    end
+
+    respond_to :js
+  end
+
   def edit
-    @visit_group = VisitGroup.find(params[:id])
+    @visit_group  = VisitGroup.find(params[:id])
+    @arm          = @visit_group.arm
+    @tab          = params[:tab]
+    @position     = params[:visit_group] ? visit_group_params[:position].to_i : @visit_group.position
+
+    setup_calendar_pages
+
     respond_to :js
   end
 
   def update
     @visit_group  = VisitGroup.find(params[:id])
-    @portal       = false
-    @review       = false
-    @merged       = false
-    @consolidated = false
+    @arm          = @visit_group.arm
     @tab          = params[:tab]
-    @pages        = Hash[params[:pages].permit!.to_h.map{ |arm_id, page| [arm_id, page.to_i] }]
-    @page         = params[:page].to_i
 
-    unless @visit_group.update_attributes(visit_group_params)
+    setup_calendar_pages
+
+    if @visit_group.update_attributes(visit_group_params)
+      flash[:success] = t('visit_groups.updated')
+    else
       @errors = @visit_group.errors
     end
 

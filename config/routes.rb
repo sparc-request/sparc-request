@@ -139,7 +139,7 @@ SparcRails::Application.routes.draw do
 
   resources :line_items, only: [:edit, :update]
   resources :line_items_visits, only: [:edit, :update, :destroy]
-  resources :visit_groups, only: [:new, :create, :edit, :update]
+  resources :visit_groups, only: [:new, :create, :edit, :update, :destroy]
   resources :visits, only: [:edit, :update, :destroy]
 
   resources :documents, only: [:index, :new, :create, :edit, :update, :destroy]

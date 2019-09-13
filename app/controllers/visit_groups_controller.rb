@@ -22,6 +22,7 @@ class VisitGroupsController < ApplicationController
   before_action :initialize_service_request,  unless: :in_dashboard?
   before_action :authorize_identity,          unless: :in_dashboard?
   before_action :authorize_dashboard_access,  if: :in_dashboard?
+  before_action :find_visit_group,            only: [:edit, :update, :destroy]
 
   def new
     @arm          = Arm.find(params[:arm_id])
@@ -51,7 +52,6 @@ class VisitGroupsController < ApplicationController
   end
 
   def edit
-    @visit_group  = VisitGroup.find(params[:id])
     @arm          = @visit_group.arm
     @tab          = params[:tab]
     @position     = params[:visit_group] ? visit_group_params[:position].to_i : @visit_group.position
@@ -62,7 +62,6 @@ class VisitGroupsController < ApplicationController
   end
 
   def update
-    @visit_group  = VisitGroup.find(params[:id])
     @arm          = @visit_group.arm
     @tab          = params[:tab]
 
@@ -77,9 +76,25 @@ class VisitGroupsController < ApplicationController
     respond_to :js
   end
 
+  def destroy
+    @arm = @visit_group.arm
+    @tab = params[:tab]
+
+    setup_calendar_pages
+    @visit_group.destroy
+
+    flash[:success] = t('visit_groups.deleted')
+
+    respond_to :js 
+  end
+
   private
 
   def visit_group_params
     params.require(:visit_group).permit(:day, :name, :window_before, :window_after, :position, :arm_id)
+  end
+
+  def find_visit_group
+    @visit_group = VisitGroup.find(params[:id])
   end
 end

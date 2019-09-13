@@ -25,6 +25,12 @@ module VisitGroupsHelper
     end
   end
 
+  def delete_visit_group_button(visit_group, opts={})
+    link_to visit_group_path(visit_group, srid: opts[:srid], ssrid: opts[:ssrid], tab: opts[:tab], page: opts[:page], pages: opts[:pages]), remote: true, method: :delete, class: 'btn btn-danger', title: t('visit_groups.delete'), data: { toggle: 'tooltip', confirm_swal: 'true' } do
+      icon('fas', 'trash-alt mr-2') + t('actions.delete')
+    end
+  end
+
   def visit_position_options(arm, visit_group=nil, position=nil)
     last_position = arm.visit_groups.maximum(:position) + 1
 

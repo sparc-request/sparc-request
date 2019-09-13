@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.question.mt-5{ id: "question-#{question.id}", data: { question_id: question.id } }
+.question.my-5{ id: "question-#{question.id}", data: { question_id: question.id } }
 
   .form-row
     .form-group.col-9
@@ -50,7 +50,7 @@
           = render 'surveyor/surveys/form/dependent_dropdown', survey: survey, question: question
   - if question.question_responses.any?
     .form-group
-      .col-sm-12.no-padding
+      .col-sm-12
         %span.text-danger
           = t(:surveyor)[:surveys][:form][:content][:question][:warning]
 

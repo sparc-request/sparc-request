@@ -28,7 +28,7 @@
           %strong= t(:notifier)[:study_info]
   %tbody
     %tr{:style => 'border: 1px solid black;'}
-      %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:forms)[:table_fields][:srid]
+      %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= SubServiceRequest.human_attribute_name(:srid)
       %td{:style => 'border: 1px solid black;'}= @ssr.display_id
 
     %tr{:style => 'border: 1px solid black;'}

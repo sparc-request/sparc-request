@@ -197,6 +197,8 @@ en:
         owner: "Owner"
         status: "Status"
         forms: "Forms"
+      sub_service_request:
+        srid: "SRID"
       short_interaction:
         subject: "Subject of Interaction"
         interaction_type: "Type of Interaction"
@@ -599,7 +601,7 @@ en:
           text: "SCTR"
           url: "http://sctr.musc.edu"
         contact: "Contact Us"
-        listserv: 
+        listserv:
           text: "Listserv"
           subject: "SPARCRequest Listserv"
         faqs:
